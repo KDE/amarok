@@ -519,7 +519,8 @@ GstEngine::createElement( const QCString& factoryName, const QCString& name )
     if ( element )
         gst_bin_add ( GST_BIN ( m_thread ), element );
     else {
-        kdWarning() << "GStreamer could not create the element: " << factoryName << endl;
+        kdWarning() << "GStreamer could not create the element: " << factoryName << endl
+                    << "Please make sure that you have run 'gst-register'" << endl;
         gst_object_unref( GST_OBJECT( m_thread ) );
         emit stopped();
     }
