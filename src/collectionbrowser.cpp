@@ -233,7 +233,7 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-    DirectoryList list( m_dirs, m_recursively, m_monitor );
+    DirectoryList list( m_dirs, m_recursively, m_monitor, pApp->mainWindow() );
     DirectoryList::Result result = list.exec();
 
     // Check to see if Cancel was pressed
@@ -251,7 +251,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::setupCoverFetcher()  //SLOT
 {
-    AmazonDialog* dia = new AmazonDialog( topLevelWidget() );
+    AmazonDialog* dia = new AmazonDialog( pApp->mainWindow() );
     dia->kLineEdit1->setText( m_amazonLicense );
     dia->setModal( true );
 
