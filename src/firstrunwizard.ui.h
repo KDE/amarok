@@ -32,7 +32,8 @@ FirstRunWizard::init()
 
     cancelButton()->setFixedWidth( cancelButton()->width() );
 
-    option_xmms->setPixmap( getPNG( "wizard_xmms" ) );
+    //option_xmms->setPixmap( getPNG( "wizard_xmms" ) );
+    //option_compact->setPixmap( getPNG( "wizard_compact" ) );
     picture1->setPixmap( getJPG( "amarok_rocks" ) );
     picture4->setPixmap( *picture1->pixmap() );
 
