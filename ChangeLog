@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: Big speedup for PlaylistLoader, when adding many items.
   ADD: Show songs you once played, but didn't play for the longest
        time on ContextBrowser's Home-page. (least played) (BR 89479)
   FIX: Don't crash on song switch, when there's only one visible
