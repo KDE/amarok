@@ -1188,7 +1188,7 @@ Playlist::removeDuplicates() //SLOT
 
     QPtrListIterator<PlaylistItem> it( list );
     PlaylistItem *item;
-    while( item = it.current() ) {
+    while( (item = it.current()) ) {
         const KURL &compare = item->url();
         ++it;
         if ( it && compare == it.current()->url() ) {
