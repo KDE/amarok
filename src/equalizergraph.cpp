@@ -67,7 +67,7 @@ EqualizerGraph::paintEvent( QPaintEvent* )
     float gains[NUM_BANDS];
 
     for ( int count = 0; count < NUM_BANDS; count++ )
-        gains[count] = (float) *AmarokConfig::equalizerGains().at( count ) * 0.3;
+        gains[count] = (float) ( ( *AmarokConfig::equalizerGains().at( count ) ) - 50 ) * 0.3;
 
     init_spline( x, gains, NUM_BANDS, yf );
 
