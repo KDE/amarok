@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  FIX: Directory column in the playlist was eating the first letter.
   ADD: New DCOP call "playlist: setStopAfterCurrent(bool)". (BR 99944)
   FIX: Coverfetcher: Do not crash when no cover was found. (BR 99942)
   ADD: Support for amazon.co.jp.
