@@ -152,7 +152,8 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void slotConfigWidgetDestroyed();
         void slotUpdateTrayIcon( bool visible );
         void createVis();
-
+        void slotReportBug();
+        
     public /* DCOP */ slots:
        /* FIXME: move dcop iface to a separate impl class */
        void play();
@@ -162,7 +163,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
        void pause();
        QString nowPlaying();
        bool isPlaying();
-
+       
     signals:
         void sigAboutToHide();
         void sigAboutToShow();

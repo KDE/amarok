@@ -51,6 +51,7 @@ email                :
 #include <qtimer.h>
 
 #include <kaction.h>
+#include <kbugreport.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <khelpmenu.h>
@@ -187,6 +188,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     KStdAction::aboutApp( pApp, SLOT( slotShowAbout() ), m_pActionCollection );
     KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
     KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
+    KStdAction::reportBug( this, SLOT( slotReportBug() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
                              "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
@@ -564,9 +566,10 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu = new QPopupMenu( this );
             m_pPopupMenu->setCheckable( true );
 
-            m_pActionCollection->action( "help_about_app" )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "help_contents"  )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "help_show_tip"  )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "help_about_app"  )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "help_contents"   )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "help_show_tip"   )->plug( m_pPopupMenu );
+            m_pActionCollection->action( "help_report_bug" )->plug( m_pPopupMenu );
 
             m_pPopupMenu->insertSeparator();
 
@@ -577,13 +580,20 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu->insertSeparator();
 
             m_pPopupMenu->insertItem( i18n( "Effects" ), pApp, SLOT( slotConfigEffects() ) );
-            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ), this, SLOT( slotConfigPlayObject() ) );
+            
+            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ),
+                                 this, SLOT( slotConfigPlayObject() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ), pApp, SLOT( slotSetRepeatTrack() ) );
-            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ), pApp, SLOT( slotSetRepeatPlaylist() ) );
-            m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random Mode" ), pApp, SLOT( slotSetRandomMode() ) );
+            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ),
+                              pApp, SLOT( slotSetRepeatTrack() ) );
+            
+            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ),
+                                 pApp, SLOT( slotSetRepeatPlaylist() ) );
+            
+            m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random Mode" ),
+                             pApp, SLOT( slotSetRandomMode() ) );
 
             m_pPopupMenu->insertSeparator();
 
@@ -741,6 +751,13 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
     {
         m_pTray->hide();
     }
+}
+
+
+void PlayerWidget::slotReportBug()
+{
+    KBugReport report;
+    report.exec();
 }
 
 
