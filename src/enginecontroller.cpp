@@ -130,6 +130,7 @@ void EngineController::play( const MetaBundle &bundle )
             emit orderNext();
             return;
         }
+        m_pEngine->stop(); //hack, prevents artsengine killing the proxy when stopped() is emitted
         m_pEngine->play( proxy->proxyUrl() );
         
         connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
