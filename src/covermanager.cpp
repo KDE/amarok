@@ -6,6 +6,7 @@
 
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
+#include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpainter.h>    //paintItem()
@@ -20,6 +21,7 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kfiledialog.h>
 #include <kfileitem.h>
 #include <kiconloader.h>
 #include <klineedit.h>    //search filter
@@ -284,12 +286,14 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
     
-    enum Id { SHOW, FETCH, DELETE };
+    enum Id { SHOW, FETCH, CUSTOM, DELETE };
     
     KPopupMenu menu( this );
     menu.insertItem( SmallIcon("viewmag"), i18n("Show fullsize"), SHOW );
     menu.setItemEnabled( SHOW, item->hasCover() );
-    menu.insertItem( SmallIcon("filesave"), i18n("Fetch cover"), FETCH );
+    menu.insertItem( SmallIcon("www"), i18n("Fetch cover"), FETCH );
+    menu.insertSeparator();
+    menu.insertItem( SmallIcon("folder_image"), i18n("Add custom cover"), CUSTOM );
     menu.insertSeparator();
     menu.insertItem( SmallIcon("editdelete"), i18n("Delete cover"), DELETE );
     menu.setItemEnabled( DELETE, item->hasCover() );
@@ -302,6 +306,17 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         case FETCH:
             m_db->fetchCover( this, item->artist(), item->album(), false );
             break;
+            
+        case CUSTOM: 
+        {
+            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file..." ) );
+            QImage img( file.directory() + "/" + file.fileName() );
+            QPixmap pixmap;
+            pixmap.convertFromImage( img );
+            pixmap.save( item->albumPath(), "PNG" );
+            item->updateCover( pixmap );
+            break;
+        }
             
         case DELETE: {
             
