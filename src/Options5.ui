@@ -29,6 +29,9 @@
             <property name="checked">
                 <bool>true</bool>
             </property>
+            <property name="toolTip" stdset="0">
+                <string>Check to enable the On-Screen-Display. &lt;br&gt;The OSD briefly displays track data when a new track is played.</string>
+            </property>
             <property name="whatsThis" stdset="0">
                 <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
             </property>
@@ -88,6 +91,9 @@
                             <property name="sampleText">
                                 <string></string>
                             </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use for the On-Screen Display.</string>
+                            </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The font to use for the On-Screen Display.</string>
                             </property>
@@ -120,6 +126,12 @@
                             <property name="text">
                                 <string>Use &amp;custom colors</string>
                             </property>
+            <property name="toolTip" stdset="0">
+                <string>Check to enable custom colors for the On-Screen-Display.</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Check to enable custom colors for the On-Screen-Display.</string>
+            </property>
                         </widget>
                         <widget class="QGroupBox">
                             <property name="name">
@@ -141,6 +153,25 @@
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel2</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>5</hsizetype>
+                                            <vsizetype>5</vsizetype>
+                                            <horstretch>1</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="text">
+                                        <string>Text color:</string>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>The color of the OSD text.</string>
+                                    </property>
+                                </widget>
                                 <widget class="KColorButton" row="0" column="1">
                                     <property name="name">
                                         <cstring>kcfg_OsdTextColor</cstring>
@@ -162,6 +193,9 @@
                                             <green>0</green>
                                             <blue>0</blue>
                                         </color>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Click to select the color of the OSD text.</string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
                                         <string>The color of the OSD text.</string>
@@ -211,27 +245,11 @@
                                             <blue>0</blue>
                                         </color>
                                     </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Click to select the background color of the OSD.</string>
+                                    </property>
                                     <property name="whatsThis" stdset="0">
                                         <string>The color of the OSD background.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QLabel" row="0" column="0">
-                                    <property name="name">
-                                        <cstring>textLabel2</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>1</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>Text color:</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The color of the OSD text.</string>
                                     </property>
                                 </widget>
                             </grid>
@@ -328,6 +346,9 @@
                             <property name="value">
                                 <number>5000</number>
                             </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+                            </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
                             </property>
@@ -351,6 +372,9 @@
                                     <horstretch>2</horstretch>
                                     <verstretch>0</verstretch>
                                 </sizepolicy>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The screen that should display the OSD.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>The screen that should display the OSD.</string>
