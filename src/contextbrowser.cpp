@@ -419,7 +419,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 break;
 
             case BURN_AUDIOCD:
-                if( EngineController::canDecode( url ) ) K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
+                K3bExporter::instance()->exportTracks( url, K3bExporter::AudioCD );
                 break;
         }
      }
@@ -696,7 +696,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         for ( uint i = 0; i < values.count(); i += 4 )
         {
             browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top' class='rbalbum'>"
-                                       "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><a href=\"album:%6 @@@ %7\"><span class='album'>%8</span><br>%9 %10</a></td>"
+                                       "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><a class='album' href=\"album:%6 @@@ %7\">%8</class><br>%9 %10</a></td>"
                                        "</tr>" )
                             .args( QStringList()
                                     << values[i + 3].replace( "\"", "%22" ) // artist.id
