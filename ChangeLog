@@ -2,7 +2,7 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-
+  * add: Shift drag appends items to the end of the playlist.
   * fix: startup notification icon staying on screen when amaroK started by loader
   * fix: amaroK showing the "X" icon instead of the correct one
 

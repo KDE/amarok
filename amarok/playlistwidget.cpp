@@ -48,7 +48,7 @@
 #include <kurl.h>
 #include <kurldrag.h>
 
-
+#include <X11/Xlib.h>  // for XQueryPointer
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
@@ -978,12 +978,20 @@ void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     slotEraseMarker();
 
+    Window root;
+    Window child;
+    int root_x, root_y, win_x, win_y;
+    uint keybstate;
+    XQueryPointer( qt_xdisplay(), qt_xrootwin(), &root, &child,
+                   &root_x, &root_y, &win_x, &win_y, &keybstate );
+    bool shiftPressed = keybstate & ShiftMask;
+
     //NOTE this code straight from KListView::findDrop()
     //TODO use findDrop()!
     //Get the closest item before us ('atpos' or the one above, if any)
     QPoint p = contentsToViewport( e->pos() );
     m_marker = itemAt( p );
-    if( NULL == m_marker )
+    if( NULL == m_marker || shiftPressed )
         m_marker = lastItem();
     else if( p.y() - itemRect( m_marker ).topLeft().y() < (m_marker->height()/2) )
         m_marker = m_marker->itemAbove();
@@ -1068,7 +1076,6 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
         }
 
         return TRUE; // eat event
-
     } else {
         //allow the header to process this
         return KListView::eventFilter( o, e );
