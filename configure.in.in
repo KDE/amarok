@@ -144,35 +144,15 @@ if test "$build_gstreamer" != "no"; then
     dnl And we can also ask for the right version of gstreamer
     have_gst=no
 
-    dnl start with 0.6
-    GST_MAJORMINOR=0.6
-    GST_REQ=0.6.0
+    GST_MAJORMINOR=0.8
+    GST_REQ=0.8.0
+    
     KDE_PKG_CHECK_MODULES(GST, \
         gstreamer-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
         gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
         have_gst=yes,have_gst=no)
-
-    dnl fall back to 0.7
-    if test "x$have_gst" = "xno"; then
-        GST_MAJORMINOR=0.7
-        KDE_PKG_CHECK_MODULES(GST, \
-        gstreamer-$GST_MAJORMINOR >= $GST_REQ \
-        gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
-        gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-        have_gst=yes,have_gst=no)
-    fi
-
-    dnl fall back to 0.8
-    if test "x$have_gst" = "xno"; then
-        GST_MAJORMINOR=0.8
-        KDE_PKG_CHECK_MODULES(GST, \
-        gstreamer-$GST_MAJORMINOR >= $GST_REQ \
-        gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
-        gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
-        have_gst=yes,have_gst=no)
-    fi
-    
+   
     dnl Give error if we don't have gstreamer
     if test "x$have_gst" = "xno"; then
         LIB_GST=""
