@@ -47,12 +47,13 @@ class CollectionBrowser: public QVBox
         enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
 
         KPopupMenu* m_actionsMenu;
+        KPopupMenu* m_categoryMenu;
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
-        QTimer* timer;
+        QTimer* m_timer;
 };
 
 

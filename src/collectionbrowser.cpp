@@ -44,21 +44,20 @@ static const int MONITOR_INTERVAL = 1000 * 30; //ms
 
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
+    , m_actionsMenu( new KPopupMenu( this ) )
+    , m_categoryMenu( new KPopupMenu( this ) )
+    , m_cat1Menu( new KPopupMenu( this ) )
+    , m_cat2Menu( new KPopupMenu( this ) )
+    , m_cat3Menu( new KPopupMenu( this ) )
+    , m_view( new CollectionView( this ) )
+    , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
     setMargin( 5 );
 
-    m_actionsMenu = new KPopupMenu( this );
-    m_cat1Menu = new KPopupMenu( this );
-    m_cat2Menu = new KPopupMenu( this );
-    m_cat3Menu = new KPopupMenu( this );
-
     KMenuBar* menu = new KMenuBar( this );
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
-    menu->insertSeparator();
-    menu->insertItem( i18n( "First" ), m_cat1Menu );
-    menu->insertItem( i18n( "Second" ), m_cat2Menu );
-    menu->insertItem( i18n( "Third" ), m_cat3Menu );
+    menu->insertItem( i18n( "Tag Filter" ), m_categoryMenu );
 
     { //<Search LineEdit>
         QHBox *hbox; KToolBarButton *button;
@@ -75,11 +74,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
 
-    timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
-
-    m_view = new CollectionView( this );
-    //m_view->setMargin( 2 );
+    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 
     m_actionsMenu->insertItem( i18n( "Configure Collection Folders..." ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Cover Manager" ), this, SLOT(openCoverManager()) );
@@ -87,6 +82,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
     connect( m_actionsMenu, SIGNAL( aboutToShow() ), SLOT( slotCheckFolders() ) );
+
+    m_categoryMenu->insertItem( i18n( "First Level" ), m_cat1Menu );
+    m_categoryMenu->insertItem( i18n( "Second Level"), m_cat2Menu );
+    m_categoryMenu->insertItem( i18n( "Third Level" ), m_cat3Menu );
 
     m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -124,8 +123,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
 void
 CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
-    if ( timer->isActive() ) timer->stop();
-    timer->start( 180, true );
+    if ( m_timer->isActive() ) m_timer->stop();
+    m_timer->start( 180, true );
 }
 
 
