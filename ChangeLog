@@ -5,6 +5,7 @@ amaroK ChangeLog
 
   FIX: TitleProxy hogging 100% CPU when unable to connect to server.
   CHG: Bumped GStreamer requirement to 0.8.1.
+  ADD: Glowing player window icons.
   ADD: amaroK finally remembers if it was hidden on exit.
   ADD: OSDPreview now has snap to regions.
   FIX: Newly shown columns in playlist can now be resized.
