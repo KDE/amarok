@@ -38,12 +38,13 @@ class TitleProxy : public QObject
         ~TitleProxy();
 
         KURL proxyUrl();
-
+        
         // ATTRIBUTES ------
 
     signals:
         void metaData( QString, QString, QString );
-
+        void error();
+        
     public slots:
 
     private slots:

@@ -110,6 +110,7 @@ KURL TitleProxy::proxyUrl()
 void TitleProxy::accept()
 {
     int acceptResult = m_sockPassive.accept( m_pSockProxy );
+    m_sockPassive.close();
     m_pSockProxy->setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::bufferedSocket );
     kdDebug() << "acceptResult: " << acceptResult << endl;
 
@@ -142,45 +143,38 @@ void TitleProxy::readRemote()
     if ( !m_headerFinished )
         processHeader( index, bytesRead );
 
-    if ( m_metaInt )        //does the stream contain metaData?
-    {
-        //This is the main loop which processes the stream data
-        while ( index < bytesRead )
-        {                
-            if ( m_byteCount == m_metaInt )
+    //This is the main loop which processes the stream data
+    while ( index < bytesRead )
+    {                
+        if ( m_byteCount == m_metaInt )
+        {
+            m_byteCount = 0;
+            m_metaLen = m_pBuf[ index++ ] << 4;
+//            if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
+        }
+        else if ( m_metaLen )
+        {
+            m_metaData.append( m_pBuf[ index++ ] );
+            --m_metaLen;
+
+            if ( !m_metaLen )
             {
-                m_byteCount = 0;
-                m_metaLen = m_pBuf[ index++ ] << 4;
-    //            if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
-            }
-            else if ( m_metaLen )
-            {
-                m_metaData.append( m_pBuf[ index++ ] );
-                --m_metaLen;
-    
-                if ( !m_metaLen )
-                {
-                    transmitData( m_metaData );
-                    m_metaData = "";
-                }
-            }
-            else 
-            {
-                bytesWrite = bytesRead - index;
-                
-                if ( bytesWrite > m_metaInt - m_byteCount )
-                    bytesWrite = m_metaInt - m_byteCount;
-                            
-                m_pSockProxy->writeBlock( m_pBuf + index, bytesWrite );
-            
-                index += bytesWrite;
-                m_byteCount += bytesWrite;
+                transmitData( m_metaData );
+                m_metaData = "";
             }
         }
-    }
-    else            //stream does not contain metaData --> simply copy all data
-    {
-        m_pSockProxy->writeBlock( m_pBuf + index, bytesRead - index );
+        else 
+        {
+            bytesWrite = bytesRead - index;
+            
+            if ( bytesWrite > m_metaInt - m_byteCount )
+                bytesWrite = m_metaInt - m_byteCount;
+                        
+            m_pSockProxy->writeBlock( m_pBuf + index, bytesWrite );
+        
+            index += bytesWrite;
+            m_byteCount += bytesWrite;
+        }
     }
 }        
 
@@ -193,12 +187,10 @@ void TitleProxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
                                 
         if ( m_headerStr.endsWith( "\r\n\r\n" ) )
         {
-            kdDebug() << "DUMP:" << m_headerStr << endl;
-            
             m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
                         QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
                         .toInt();
-            
+                
             kdDebug() << "m_metaInt: " << m_metaInt << endl;
             
             m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
@@ -207,6 +199,9 @@ void TitleProxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
             m_pSockProxy->writeBlock( m_headerStr.latin1(), m_headerStr.length() );
             m_headerFinished = true;
             
+            if ( !m_metaInt )
+                emit error();
+                        
             break;
         }                                                      
     }

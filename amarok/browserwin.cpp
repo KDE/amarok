@@ -153,7 +153,8 @@ void BrowserWin::initChildren()
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
     m_pBrowserLineEdit->setDuplicatesEnabled( false );
-
+    m_pBrowserLineEdit->setMinimumWidth( 1 );
+    
     connect( m_pBrowserLineEdit, SIGNAL( activated( const QString& ) ),
              m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),

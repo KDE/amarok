@@ -163,7 +163,8 @@ class PlayerApp : public KUniqueApplication
 
     private slots:
         void receiveStreamMeta( QString title, QString url, QString kbps );
-
+        void proxyError();
+        
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
@@ -203,7 +204,8 @@ class PlayerApp : public KUniqueApplication
         EffectWidget *m_pEffectWidget;
         bool m_bIsPlaying;
         bool m_bChangingSlider;
-
+        bool m_proxyError;
+        
         bool m_XFadeRunning;
         float m_XFadeValue;
         QString m_XFadeCurrent;

@@ -107,6 +107,7 @@ PlayerApp::PlayerApp() :
         m_pEffectWidget( NULL ),
         m_bIsPlaying( false ),
         m_bChangingSlider( false ),
+        m_proxyError( false ),
         m_XFadeRunning( false ),
         m_XFadeValue( 1.0 ),
         m_XFadeCurrent( "invalue1" )
@@ -1039,8 +1040,8 @@ void PlayerApp::slotPlay()
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
-
-    if ( m_optTitleStream )
+    
+    if ( m_optTitleStream && !m_proxyError )
     {
         TitleProxy *pProxy = new TitleProxy( item->url() );
         m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
@@ -1049,12 +1050,15 @@ void PlayerApp::slotPlay()
                  pProxy, SLOT( deleteLater() ) );
         connect( pProxy, SIGNAL( metaData( QString, QString, QString ) ),
                  this, SLOT( receiveStreamMeta( QString, QString, QString ) ) );
+        connect( pProxy, SIGNAL( error() ), this, SLOT( proxyError() ) );
     }
     else
     {
-        m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter: create BUS(true/false)
+        m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter:
+                                                                        //create BUS(true/false)
     }
 
+    m_proxyError = false;
     m_bIsPlaying = true;
 
     if ( m_pPlayObject == NULL )
@@ -1109,6 +1113,15 @@ void PlayerApp::slotConnectPlayObj()
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
+}
+
+
+void PlayerApp::proxyError()
+{
+    m_proxyError = true;
+    
+    slotStopCurrent();
+    slotPlay();
 }
 
 
