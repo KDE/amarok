@@ -27,9 +27,8 @@ SHORT-TERM (URGENT):
                    X responds to no input, mouse nor keyboard. Haven't tried ssh yet as laptop is crap.
                    Will try..
 
+                   
 MID-TERM:
-
-  ADD 146 <markey> Option for automatic switching to ContextBrowser when you start playing a track.
 
   ADD 145 <markey> Function for removing dupes in playlist. Possibly with toolbar button and/or context item.
 
@@ -173,13 +172,6 @@ LONG-TERM:
 
 IDEAS:
 
-  ADD  12 <markey> Prevent zombie processes after amarok has exited (proper exit or crashing).
-                   such zombies can lead to very weird behaviour on next amarok start and eat ressources,
-                   and the user has no chance of noticing what's wrong.
-                   Is it possible to catch crash signals and do some cleanup?
-          <mxcl>   I just read that KApplication tries to prevent zombies, so something is amiss.
-          <mxcl>   Perhaps KCrash can help us
-
   ADD              Bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
   ADD              Using filelight (as a kpart maybe) for a graphical representation of the playlist. so
@@ -195,6 +187,7 @@ DISCUSSING:
           <mxcl>   I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
                    Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
 
+                   
 DO-NOT-IMPLEMENT:
 
   FIX  61 <markey> Allow removing of playlist items by dragging back into browser.
