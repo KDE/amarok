@@ -389,7 +389,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             setPixmap( column, SmallIcon( "artsbuilderexecute" ) );
         else
             //hide "Play" icon
-            setPixmap( column, QPixmap() );
+            setPixmap( column, 0 );
                     
         setHeight( listView()->fontMetrics().height() * 2 );
         QColorGroup glowCg = cg; //shallow copy
@@ -402,7 +402,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     }
     else {
         //hide "Play" icon
-        setPixmap( column, QPixmap() );
+        setPixmap( column, 0 );
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
     }
         
