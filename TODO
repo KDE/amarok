@@ -15,7 +15,7 @@ SHORT-TERM (URGENT):
                nothing happens. you must close it using the mouse
 
     * fix: #43 <markey> since we rely on TagLib now for length-detection, we cannot determine the length
-               of .mod (etc.) files. either: 1) extend TagLib or 2) resurrect aRts length detection as 
+               of .mod (etc.) files. either: 1) extend TagLib or 2) resurrect aRts length detection as
                backup
 
     * fix: #42 with restore track on startup and crossfade volume starts at max and then crossfades
@@ -24,15 +24,6 @@ SHORT-TERM (URGENT):
     * fix: #41 <mxcl> id3v2 tags append rather than write tags, ie Dr.DreDr.Dre
 
     * fix: #40 <markey> change "EQ" button to "FX", as it is more appropriate.
-
-    * fix: #38 <mxcl> saving edited-tags sometimes hangs the ui because it takes ages! Is this
-               just a weak point in taglib or should we expect this and do something drastic like
-               call tag.save() in a separate thread?
-               <berkus> Saving i.e. ogg tags can take considerable time (esp. when you add a tag
-               for a first time)
-
-    * fix: #35 <mxcl>restore quick tag loading when users don't have bitrate/length columns
-               in playlist -->mxcl
 
     * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
 
@@ -45,7 +36,7 @@ SHORT-TERM (URGENT):
 
     * fix: #11 <markey> TagLib delivers incorrect length for VBR mp3 files w/o XING header
                (there is no known method to determine that quickly. muesli once claimed he knows one (?))
-    
+
     * fix: #7<mxcl> originally reported all this, <berkus> summarized
              * The playwidget and playlistwidget should display as single entry on taskbar.
              * Clicking on either or on tray icon should bring both up/down.
@@ -200,8 +191,8 @@ DISCUSSING:
 
 TROUBLE:
 
-BT 2004/02/09 (while trying to start a stream):           
-                      
+BT 2004/02/09 (while trying to start a stream):
+
 [New Thread 1024 (LWP 24369)]
 [New Thread 2049 (LWP 24371)]
 0x421b2449 in wait4 () from /lib/libc.so.6
@@ -216,7 +207,7 @@ BT 2004/02/09 (while trying to start a stream):
    from /opt/kde3/lib/libartskde.so.1
 #7  0x080c24dc in ArtsEngine::connectPlayObject() (this=0x821fdd0)
     at /opt/kde3/include/arts/reference.h:179
-#8  0x080c84b9 in ArtsEngine::qt_invoke(int, QUObject*) (this=0x821fdd0, 
+#8  0x080c84b9 in ArtsEngine::qt_invoke(int, QUObject*) (this=0x821fdd0,
     _id=8, _o=0xbfffe340) at amarok/engine/artsengine.moc:118
 #9  0x416da310 in QObject::activate_signal(QConnectionList*, QUObject*) ()
    from /usr/lib/qt3/lib/libqt-mt.so.3
