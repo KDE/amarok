@@ -85,19 +85,17 @@ void AmarokSlider::mouseMoveEvent( QMouseEvent *e )
         if ( m_orientation == Qt::Horizontal )
             setValue( valueFromPosition( e->pos().x(), width() ) );
         else
-            setValue( valueFromPosition( e->pos().y(), height() ) );
+            setValue( valueFromPosition( height() - e->pos().y(), height() ) );
     }
 }
 
 
 void AmarokSlider::mousePressEvent( QMouseEvent *e )
 {
-    if ( m_orientation == Qt::Horizontal )
-        setValue( valueFromPosition( e->x(), width() ) );
-    else
-        setValue( valueFromPosition( e->y(), height() ) );
-
     m_isPressed = true;
+
+    mouseMoveEvent( e );
+
     emit sliderPressed();
 }
 
@@ -114,7 +112,7 @@ void AmarokSlider::paintEvent( QPaintEvent * )
     int length = ( m_orientation == Qt::Horizontal ) ? width() : height();
     int val = value();
     if (m_orientation == Vertical && m_dir == BottomUp)
-	val = maxValue() - val;
+        val = maxValue() - val;
     int pos = positionFromValue( val, length-2-1 );
 
     QPixmap pBufPixmap( width(), height() );
