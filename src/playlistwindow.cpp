@@ -245,6 +245,9 @@ PlaylistWindow::init()
         addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" );
         addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
+
+        connect( CollectionView::instance(), SIGNAL( sigScanDone() ),
+                        m_browsers->browser("ContextBrowser"), SLOT( collectionScanDone() ) );
     //</Browsers>
 
 

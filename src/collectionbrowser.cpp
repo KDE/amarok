@@ -290,6 +290,7 @@ CollectionView::scan()  //SLOT
     {
         m_insertdb->dropTables();
         this->clear();
+        emit sigScanDone();
     }
     else if ( !m_isScanning )
     {

@@ -28,6 +28,7 @@ class ContextBrowser : public QVBox, public EngineObserver
 
     public slots:
         void openURLRequest(const KURL &url );
+        void collectionScanDone();
 
     protected:
         void engineTrackEnded( int finalPosition, int trackLength );
@@ -52,6 +53,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         KURL m_url;
         QString m_artist;
         QString m_album;
+        bool m_emptyDB;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

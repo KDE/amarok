@@ -40,7 +40,6 @@ ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
         , m_currentTrack( 0 )
         , m_db( new CollectionDB() )
-//         , m_loaded( false )
 {
     kdDebug() << k_funcinfo << endl;
     EngineController::instance()->attach( this );
@@ -59,10 +58,13 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                          SLOT( openURLRequest( const KURL & ) ) );
 
-    if ( m_db->isEmpty() || !m_db->isDbValid() )
+    if ( m_db->isEmpty() || !m_db->isDbValid() ) {
         showIntroduction();
-    else
+        m_emptyDB = true;
+    } else {
         showHome();
+        m_emptyDB = false;
+    }
 
     setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
 }
@@ -76,22 +78,6 @@ ContextBrowser::~ContextBrowser()
     EngineController::instance()->detach( this );
 }
 
-/*void ContextBrowser::showEvent( QShowEvent *)
-{
-    kdDebug() << k_funcinfo << endl;
-    if( m_loaded ) return;
-    QTime t;
-    t.start();
-
-    if ( m_db->isEmpty() || !m_db->isDbValid() )
-        showIntroduction();
-    else
-        showHome();
-    kdDebug()<<"END show"<<endl;
-    qDebug( "Context show elapsed: %d ms", t.elapsed() );
-
-    m_loaded = true;
-}*/
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
@@ -153,10 +139,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
             QObject *o = parent()->child( "CollectionBrowser" );
             if ( o ) static_cast<CollectionBrowser*>( o )->setupDirs();
 
-            if ( CollectionView::instance() ) {
-                connect( CollectionView::instance(), SIGNAL( sigScanDone() ), SLOT( showHome() ) );
+            if ( CollectionView::instance() )
                 showScanning();
-            }
             else
                 showHome();
         }
@@ -203,6 +187,20 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
 }
+
+
+void ContextBrowser::collectionScanDone()
+{
+    if( CollectionDB().isEmpty() ) {
+        showIntroduction();
+        m_emptyDB = true;
+    }
+    else if( m_emptyDB ) {
+        showHome();
+        m_emptyDB = false;
+    }
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
