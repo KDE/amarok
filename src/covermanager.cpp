@@ -665,7 +665,7 @@ void CoverManager::updateStatusBar()
                 text += i18n( "1 fetched", "%n fetched", m_coversFetched );
             if( m_coverErrors ) {
                 if( m_coversFetched ) text += " - ";
-                text += i18n( "1 error", "%n errors", m_coverErrors );
+                text += i18n( "1 not found", "%n not found", m_coverErrors );
             }
             if( m_coversFetched + m_coverErrors == 0 )
                 text += i18n( "Connecting..." );
