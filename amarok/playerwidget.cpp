@@ -518,13 +518,13 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             switch( id )
             {
             case ID_REPEAT_TRACK:
-                pApp->config()->setRepeatTrack( m_pPopupMenu->isItemChecked(id) );
+                pApp->config()->setRepeatTrack( !m_pPopupMenu->isItemChecked(id) );
                 break;
             case ID_REPEAT_PLAYLIST:
-                pApp->config()->setRepeatPlaylist( m_pPopupMenu->isItemChecked(id) );
+                pApp->config()->setRepeatPlaylist( !m_pPopupMenu->isItemChecked(id) );
                 break;
             case ID_RANDOM_MODE:
-                pApp->config()->setRandomMode( m_pPopupMenu->isItemChecked(id) );
+                pApp->config()->setRandomMode( !m_pPopupMenu->isItemChecked(id) );
                 break;
             }
         }
