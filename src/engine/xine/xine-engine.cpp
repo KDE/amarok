@@ -19,12 +19,15 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include "debug.h"
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <limits>
+#include <limits.h>
 #include <math.h>
 #include <qapplication.h>
 #include <qdir.h>
 #include "unistd.h"
 
+#ifndef LLONG_MAX
+#define LLONG_MAX 9223372036854775807LL
+#endif
 
 //define this to use xine in a more standard way
 //#define XINE_SAFE_MODE
@@ -417,7 +420,7 @@ XineEngine::timerEvent( QTimerEvent* )
 
    m_currentVpts = (xine_get_status( m_stream ) == XINE_STATUS_PLAY)
       ? xine_get_current_vpts( m_stream )
-      : std::numeric_limits<int64_t>::max(); //if state is not playing OR paused, empty the list
+      : LLONG_MAX; //if state is not playing OR paused, empty the list
 
    for( MyNode *prev = first_node, *node = first_node->next; node != list_end; node = node->next )
    {
