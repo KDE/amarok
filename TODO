@@ -8,11 +8,13 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #73 <markey> PlayerWidget in front of BrowserWin does funny things, like flash all the time
+    * fix: #74 <markey> PlayerWidget in front of BrowserWin does funny things, like flash all the time
                or hide when you click on it
 
                
 MID-TERM:
+
+    * fix: #73 <mxcl> can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
 
     * fix: #72 <markey> get amaroK to play nice with valgrind
 
@@ -24,6 +26,9 @@ MID-TERM:
                but kruler uses the hand. KRuler is borderless, so I chose the hand. Label in front of
                the preview button with info about dragging?
                <larson>OSD preview now reads: OSD Preview - Drag to reposition.
+	       <mxcl> hand still means "activate" I think KRuler is wrong to use the hand. Throughout KDE
+	       applications use the hand to mean "if you click I will do something" and not to mean
+	       "click to drag"
 
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)
