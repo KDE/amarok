@@ -12,7 +12,6 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QSpacerItem;
-class QComboBox;
 class KLineEdit;
 class QPushButton;
 class QLabel;
@@ -26,7 +25,6 @@ public:
     ~AmazonSearch();
 
     KLineEdit* searchString;
-    QComboBox* searchSite;
     QPushButton* cancelButton;
     QPushButton* okButton;
     QPushButton* fileButton;
