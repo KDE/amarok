@@ -42,6 +42,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void showCurrentTrack();
 
     private:
+        void viewImage( const QString& path );
         void setStyleSheet();
         void showIntroduction();
         void showScanning();

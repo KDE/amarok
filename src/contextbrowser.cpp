@@ -104,6 +104,25 @@ void ContextBrowser::openURLRequest( const KURL &url )
     m_url = url;
     QStringList info = QStringList::split( " @@@ ", url.path() );
 
+    if ( url.protocol() == "album" )
+    {
+        QStringList values;
+        QStringList names;
+
+        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
+                       .arg( info[0] )
+                       .arg( info[1] ), &values, &names );
+
+        for ( uint i = 0; i < values.count(); i++ )
+        {
+            if ( values[i].isEmpty() ) continue;
+
+            KURL tmp;
+            tmp.setPath( values[i] );
+            Playlist::instance()->appendMedia( tmp, false, true );
+        }
+    }
+
     if ( url.protocol() == "file" )
         Playlist::instance()->appendMedia( url, true, true );
 
@@ -129,39 +148,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
     }
 
-#ifdef AMAZON_SUPPORT
-    /* fetch covers from amazon on click */
+    // When left-clicking on cover image, open browser with amazon site
     if ( m_url.protocol() == "fetchcover" )
-        m_db->fetchCover( this, info[0], info[1], false );
-#else
-    if ( m_url.protocol() == "fetchcover" )
-    {
-        if( m_db->getImageForAlbum( info[0], info[1], 0 ) != locate( "data", "amarok/images/nocover.png" ) )
-        {
-            /* if a cover exists, open a widget with the image on click */
-            QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-            widget->setCaption( i18n( "Cover Viewer" ) + " - amaroK" );
-            QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], 0 ) );
-            widget->setPaletteBackgroundPixmap( pixmap );
-            widget->setMinimumSize( pixmap.size() );
-            widget->setFixedSize( pixmap.size() );
-            widget->show();
-        }
-        else
-        {
-            /* if no cover exists, open a file dialog to add a cover */
-            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-            if ( !file.isEmpty() )
-            {
-                QImage img( file.directory() + "/" + file.fileName() );
-                QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
-                filename.replace( " ", "_" ).append( ".png" );
-                img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
-                ContextBrowser::showCurrentTrack();
-            }
-        }
-     }
-#endif
+        kapp->invokeBrowser( "http://www.amazon.com" );
+
     /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" )
     {
@@ -260,38 +250,53 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
 {
-    kdDebug() << k_funcinfo << endl;
-
     DOM::Node node = browser->nodeUnderMouse();
     kdDebug() << "Node Name: " << node.nodeName() << endl;
+    kdDebug() << "url: " << url << endl;
 
     if ( node.nodeName() == "img" ) {
-        enum menuIds { FETCH, DELETE };
+        enum menuIds { FETCH, VIEW, DELETE };
 
         KPopupMenu menu( this );
-        menu.insertTitle( "Cover Image" );
-        menu.insertItem( "Fetch Image from Amazon" );
-        menu.insertItem( "Delete Image" );
+        menu.insertTitle( i18n( "Cover Image" ) );
+        menu.insertItem( i18n( "Fetch from Amazon" ), FETCH );
+    #ifndef AMAZON_SUPPORT
+        menu.setItemEnabled( FETCH, false );
+    #endif
+        menu.insertItem( i18n( "View Full-Sized" ), VIEW );
+        menu.insertItem( i18n( "Delete" ), DELETE );
         int id = menu.exec( point );
 
-        QStringList names, values;
-        QStringList info = QStringList::split( " @@@ ", node.nodeValue().string() );
+        QStringList info = QStringList::split( " @@@ ", url );
 
         switch ( id )
         {
             case FETCH:
-                m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
-                            .arg( info[0] )
-                            .arg( info[1] ), &values, &names );
-
-                for ( uint i = 0; i < values.count(); i++ )
+            #ifdef AMAZON_SUPPORT
+                /* fetch covers from amazon on click */
+                m_db->fetchCover( this, info[0], info[1], false );
+            #else
+                if( m_db->getImageForAlbum( info[0], info[1], 0 ) != locate( "data", "amarok/images/nocover.png" ) )
+                    viewImage( m_db->getImageForAlbum( info[0], info[1], 0 ) );
+                else
                 {
-                    if ( values[i].isEmpty() ) continue;
-
-                    KURL tmp;
-                    tmp.setPath( values[i] );
-                    Playlist::instance()->appendMedia( tmp, false, true );
+                    /* if no cover exists, open a file dialog to add a cover */
+                    KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
+                    if ( !file.isEmpty() )
+                    {
+                        QImage img( file.directory() + "/" + file.fileName() );
+                        QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
+                        filename.replace( " ", "_" ).append( ".png" );
+                        img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
+                        ContextBrowser::showCurrentTrack();
+                    }
                 }
+            #endif
+                break;
+
+            case VIEW:
+                /* open an image view widget */
+                viewImage( m_db->getImageForAlbum( info[0], info[1], 0 ) );
                 break;
 
             case DELETE:
@@ -598,6 +603,19 @@ void ContextBrowser::showCurrentTrack() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::viewImage( const QString& path )
+{
+    /* if a cover exists, open a widget with the image on click */
+    QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
+    widget->setCaption( i18n( "Cover Viewer" ) + " - amaroK" );
+    QPixmap pixmap( path );
+    widget->setPaletteBackgroundPixmap( pixmap );
+    widget->setMinimumSize( pixmap.size() );
+    widget->setFixedSize( pixmap.size() );
+    widget->show();
+}
+
 
 void ContextBrowser::setStyleSheet()
 {
