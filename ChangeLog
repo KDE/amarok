@@ -3,6 +3,9 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * add: re-added m_optCrossFade, so we don't lose the crossfade length on switching it on/off.
+         set default crossfade length to 2500.
+  * chg: "Title Streaming" on by default
   * chg: integrated streambrowser into playlist window
   * add: added dcop implementation for url adding. Relevant diffs for mediacontrol are
          available.

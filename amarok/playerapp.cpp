@@ -571,6 +571,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Random Mode", m_optRandomMode );
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
     m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
+    m_pConfig->writeEntry( "Crossfade", m_optXFade );
     m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
     m_pConfig->writeEntry( "Track Delay Length", m_optTrackDelay );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
@@ -628,7 +629,8 @@ void PlayerApp::readConfig()
     m_optRandomMode = m_pConfig->readBoolEntry( "Random Mode", false );
     m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", true );
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
-    m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 0 );
+    m_optXFade = m_pConfig->readNumEntry( "Crossfade", true );
+    m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 2500 );
     m_optTrackDelay = m_pConfig->readNumEntry( "Track Delay Length", 0 );
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
 
@@ -656,7 +658,7 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->createVis();
 
     m_optBrowserSortSpec = m_pConfig->readNumEntry( "Browser Sorting Spec", QDir::Name | QDir::DirsFirst );
-    m_optTitleStream = m_pConfig->readBoolEntry( "Title Streaming", false );
+    m_optTitleStream = m_pConfig->readBoolEntry( "Title Streaming", true );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
@@ -1112,9 +1114,7 @@ void PlayerApp::slotNext()
         pItem = pNextItem;
     }
     else if ( !m_optRepeatTrack && pItem != NULL )
-    {
         pItem = pItem->nextSibling();
-    }
 
     //if pItem == NULL and bIsPlaying == TRUE  then we reached end of playlist
     //if pItem == NULL and bIsPlaying == FALSE then nothing is selected
@@ -1127,13 +1127,12 @@ void PlayerApp::slotNext()
         if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || ( !m_optRepeatPlaylist && m_bIsPlaying ) )
         {
             slotStop();
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() ) );
+            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>(
+                                                               m_pBrowserWin->m_pPlaylistWidget->firstChild() ) );
             return ;
         }
         else //select first item in playlist again
-        {
             pItem = m_pBrowserWin->m_pPlaylistWidget->firstChild();
-        }
     }
 
     if ( pItem != NULL )
@@ -1141,9 +1140,7 @@ void PlayerApp::slotNext()
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( pItem );
 
         if ( m_bIsPlaying )
-        {
             slotPlay();
-        }
     }
 }
 
@@ -1295,7 +1292,7 @@ void PlayerApp::slotMainTimer()
     // </Draw TimeDisplay>
 
     // <Crossfading>
-    if ( ( m_optXFadeLength > 0 ) &&
+    if ( ( m_optXFade ) &&
          ( !m_pPlayObject->stream() ) &&
          ( !m_XFadeRunning ) &&
          ( m_length ) &&
@@ -1417,7 +1414,7 @@ void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 {
    if (item)
    {
-        if ( m_optXFadeLength > 0 )
+        if ( m_optXFade )
             startXFade();
 
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );

@@ -94,6 +94,7 @@ class PlayerApp : public KUniqueApplication
         bool m_optResumePlayback;
         bool m_optUseCustomFonts;
         QString m_optDropMode;
+        bool m_optXFade;
         long m_optXFadeLength;
         long m_optTrackDelay;
         QFont m_optBrowserWindowFont;
