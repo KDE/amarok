@@ -340,7 +340,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
 
         else if( !line.startsWith( "#" ) && !line.isEmpty() )
         {
-            // KURL::isRelativeURL() expects a protocol, so prepend it if missing
+            // KURL::isRelativeURL() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
             if( url.startsWith( "/" ) )
                 url.prepend( "file://" );
