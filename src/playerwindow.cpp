@@ -19,6 +19,7 @@ email                : markey@web.de
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "analyzerbase.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "metabundle.h"      //setScroll()
 #include "playerwindow.h"
@@ -37,7 +38,6 @@ email                : markey@web.de
 #include <qtooltip.h>        //analyzer tooltip
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
@@ -295,6 +295,8 @@ void PlayerWidget::drawScroll()
 
 void PlayerWidget::engineStateChanged( Engine::State state )
 {
+    DEBUG_BLOCK
+
     switch( state )
     {
         case Engine::Empty:

@@ -9,6 +9,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "systray.h"
 
@@ -104,6 +105,8 @@ amaroK::TrayIcon::event( QEvent *e )
 void
 amaroK::TrayIcon::engineStateChanged( Engine::State state )
 {
+    DEBUG_BLOCK
+
     // stop timer
     if ( blinkTimerID )
     {

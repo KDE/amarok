@@ -790,6 +790,8 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 void
 Playlist::engineStateChanged( Engine::State state )
 {
+    DEBUG_BLOCK
+
     switch( state )
     {
     case Engine::Playing:

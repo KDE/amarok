@@ -703,6 +703,8 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 
 void App::engineStateChanged( Engine::State state )
 {
+    DEBUG_BLOCK
+
     switch( state )
     {
     case Engine::Empty:
@@ -818,7 +820,7 @@ void App::firstRunWizard()
     config->updateWidgets();
    // connect(config, SIGNAL(settingsChanged()), SLOT(updateSettings()));
     wizard.setCaption( makeStdCaption( i18n( "First-Run Wizard" ) ) );
-    
+
     if( wizard.exec() != QDialog::Rejected )
     {
         switch( wizard.interface() )
@@ -840,12 +842,12 @@ void App::firstRunWizard()
 
         const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
         wizard.writeCollectionConfig();
-        
+
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
         if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
              oldCollectionFolders != AmarokConfig::collectionFolders() )
             CollectionDB::instance()->startScan();
-    
+
         config->updateSettings();
     }
 }

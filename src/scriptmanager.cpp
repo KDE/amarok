@@ -458,6 +458,8 @@ ScriptManager::loadScript( const QString& path )
 void
 ScriptManager::engineStateChanged( Engine::State state )
 {
+    DEBUG_BLOCK
+
     switch ( state )
     {
         case Engine::Empty:
