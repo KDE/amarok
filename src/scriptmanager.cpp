@@ -112,6 +112,21 @@ ScriptManager::~ScriptManager()
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// public
+////////////////////////////////////////////////////////////////////////////////
+
+bool
+ScriptManager::runScript( const QString& name )
+{
+    if ( !m_scripts.contains( name ) )
+        return false;
+
+    m_base->listView->setCurrentItem( m_scripts[name].li );
+    return slotRunScript();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -297,7 +312,7 @@ ScriptManager::slotEditScript()
 }
 
 
-void
+bool
 ScriptManager::slotRunScript()
 {
     DEBUG_BLOCK
@@ -316,7 +331,7 @@ ScriptManager::slotRunScript()
         KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
                                      "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
-        return;
+        return false;
     }
 
     li->setPixmap( 0, SmallIcon( "player_play" ) );
@@ -325,6 +340,7 @@ ScriptManager::slotRunScript()
     m_scripts[name].process = script;
     slotCurrentChanged( m_base->listView->currentItem() );
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
+    return true;
 }
 
 
@@ -339,7 +355,7 @@ ScriptManager::slotStopScript()
     // Kill script process
     m_scripts[name].process->kill();
     m_scripts[name].process->detach();
-    
+
     delete m_scripts[name].process;
     m_scripts[name].process = 0;
     slotCurrentChanged( m_base->listView->currentItem() );

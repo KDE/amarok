@@ -88,6 +88,7 @@ k_dcop:
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual QString setContextStyle(const QString& ) =0;     ///< Set the CSS style for the context browser
    virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;      ///< Set the equalizer bands
+   virtual bool runScript(const QString& name) = 0;         ///< Starts the script with the given name. Returns true on success.
 
    virtual void transferCliArgs( QStringList args ) = 0;
 };

@@ -59,6 +59,13 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }
 
+        /**
+         * Runs a script with a given name. Used by the DCOP handler.
+         * @param name The name of the script.
+         * @return True if successful.
+         */
+        bool runScript( const QString& name );
+
     private slots:
         /** Finds all installed scripts and adds them to the listview */
         void findScripts();
@@ -69,7 +76,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void slotInstallScript();
         void slotUninstallScript();
         void slotEditScript();
-        void slotRunScript();
+        bool slotRunScript();
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();

@@ -28,6 +28,7 @@
 #include "osd.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "scriptmanager.h"
 #include "statusbar.h"
 
 #include <qfile.h>
@@ -362,6 +363,11 @@ namespace amaroK
         EngineController::engine()->setEqualizerParameters(preamp, gains);
         if (EqualizerSetup::isInstantiated())
             EqualizerSetup::instance()->updateSliders(preamp,gains);
+    }
+
+    bool DcopPlayerHandler::runScript(const QString& name)
+    {
+        return ScriptManager::instance()->runScript(name);
     }
 
 
