@@ -390,7 +390,6 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         if( (*tag).isEmpty() )
             // remove the token from "text"
             text.replace( QRegExp( QString("\\{[^}]*%1[^{]*\\}").arg( *tok ) ), QString::null );
-
         else
             // replace the token directly, this will leave the {braces}
             text.replace( *tok, *tag );
@@ -449,7 +448,7 @@ amaroK::OSD::forceToggleOSD()
     if ( !isShown() ) {
         const bool b = isEnabled();
         setEnabled( true );
-        OSDWidget::show( m_text );
+        OSDWidget::show();
         setEnabled( b );
     }
     else
