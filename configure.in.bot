@@ -150,7 +150,7 @@ else
     echo " ===  amaroK - PLUGINS  ========================================================"
     echo " =========================="
     echo " ="
-    echo " = The following plugins will be built:"
+    echo " = The following extra functionality will be included:"
 
     if test x$build_arts = xyes -a x$have_kdemm = xyes; then
         echo " =   + aRts-engine"
@@ -176,12 +176,12 @@ else
         echo " =   + MAS-engine"
     fi
 
-    if test x$build_xmmswrapper = xyes; then
-        echo " =   + XMMS Visualization Wrapper"
+    if test x$build_libvisual = xyes; then
+        echo " =   + libvisual Support"
     fi
 
-    if test x$build_libvisual = xyes; then
-        echo " =   + LibVisual Plugin"
+    if test x$build_xmmswrapper = xyes; then
+        echo " =   + XMMS Visualization Wrapper"
     fi
 
     if test x$enable_mysql = xyes; then
@@ -193,7 +193,7 @@ else
     fi
 
     if test x$have_tunepimp = xyes; then
-        echo " =   + MusicBrainz support"
+        echo " =   + MusicBrainz Support"
     fi
 
     echo " ="
