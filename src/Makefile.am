@@ -77,7 +77,6 @@ amarokapp_SOURCES = \
     sliderwidget.cpp \
     socketserver.cpp \
     statusbar.cpp \
-    streambrowser.cpp \
     systray.cpp \
     tagdialog.cpp \
     tagdialogbase.ui \

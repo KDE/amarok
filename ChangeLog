@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  REM: Stream-Browser.
   ADD: New meta-info dialog, with editable tags and MusicBrainz support.
   ADD: Inline-tag editing auto-completion based on the Collection Database.
   ADD: Deleting files physically from playlist context menu. (BR 75208)

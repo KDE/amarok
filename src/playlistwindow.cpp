@@ -29,7 +29,6 @@
 #include "playlistwindow.h"
 #include "searchbrowser.h"
 #include "statusbar.h"
-#include "streambrowser.h"
 
 #include <qcolor.h>        //setPalettes()
 #include <qevent.h>        //eventFilter()
@@ -168,18 +167,6 @@ PlaylistWindow::init()
         m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "info" );
         m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
         m_browsers->addBrowser( new PlaylistBrowser( "Playlists" ), i18n( "Playlists" ), "midi" );
-
-        { //<StreamBrowser>
-            QVBox   *vb = new QVBox( 0, "StreamBrowser" );
-            QWidget *b  = new KPushButton( KGuiItem(i18n("&Fetch Stream Information"), "2downarrow"), vb );
-            QWidget *sb = new StreamBrowser( vb );
-            vb->setSpacing( 3 );
-            vb->setMargin( 5 );
-            vb->setFocusProxy( sb );
-            connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
-            connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
-            m_browsers->addBrowser( vb, i18n( "Streams" ), "network" );
-        } //</StreamBrowser>
 
         if( AmarokConfig::showWelcomeTab() )
         {
