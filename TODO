@@ -4,6 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: show bitrate/frequency also for streams
+    
     * fix: <muesli> clean up the GUI
 
     * add: <muesli> background chooser
@@ -46,8 +48,6 @@ SHORT-TERM:
 MID-TERM:
 
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
-
-    * change: move analyzers into separate dir. make parent pure virtual.
 
     * add: "add item"-dialog should support multiple selections
 
