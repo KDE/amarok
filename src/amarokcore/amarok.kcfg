@@ -181,11 +181,6 @@
         <label>Sound system to use</label>
         <whatsthis>Select the sound system used to play media. amaroK currently support aRts, GStreamer, xine and NMM, however their availability depends on the configuration used at compile time.</whatsthis>
     </entry>
-    <entry key="Title Streaming" type="Bool">
-        <label>Read titles of shoutcast streams</label>
-        <whatsthis>Enable/Disable shoutcast metadata fetching. If set, amaroK displays metadata also for shoutcast streams.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Equalizer Enabled" type="Bool">
         <label>Enables the equalizer plugin</label>
         <whatsthis>When enabled, an equalizer plugin filters the audio stream.</whatsthis>

@@ -64,7 +64,7 @@
                                 <cstring>radioButtonNormalPlayback</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Normal</string>
+                                <string>&amp;No Crossfading</string>
                             </property>
                             <property name="checked">
                                 <bool>true</bool>
@@ -143,7 +143,7 @@
                                 <cstring>kcfg_Crossfade</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;Crossfade</string>
+                                <string>&amp;Crossfading</string>
                             </property>
                             <property name="checked">
                                 <bool>false</bool>
@@ -258,20 +258,6 @@
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_TitleStreaming</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Display Shoutcast &amp;metadata (title streaming)</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK displays&lt;br&gt;metadata also for shoutcast streams.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK displays metadata also for shoutcast streams.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">

@@ -425,16 +425,13 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
 void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
 {
-    if ( AmarokConfig::titleStreaming() )
-    {
-        m_bundle = bundle;
-        newMetaDataNotify( m_bundle, false /* not a new track */ );
-    }
+    m_bundle = bundle;
+    newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
 void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &bundle ) //SLOT
 {
-    if ( AmarokConfig::titleStreaming() && m_engine->isStream() )
+    if ( m_engine->isStream() )
     {
         m_bundle.setArtist( bundle.artist );
         m_bundle.setTitle( bundle.title );
