@@ -17,7 +17,6 @@
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
-#include <ktimewidget.h>
 
 
 TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
@@ -29,10 +28,10 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     kLineEdit_album->setText( mb.album() );
     kComboBox_genre->insertStringList( MetaBundle::genreList() );
     kComboBox_genre->setCurrentText( mb.genre() );
+    kIntSpinBox_track->setValue( mb.track().toInt() );
     kIntSpinBox_year->setValue( mb.year().toInt() );
     kLineEdit_comment->setText( mb.comment() );
-    QTime length; length.addSecs( mb.length() );
-    kTimeWidget_length->setTime( length );
+    kLineEdit_length->setText( mb.prettyLength() );
     kLineEdit_bitrate->setText( mb.prettyBitrate() );
     kLineEdit_samplerate->setText( mb.prettySampleRate() );
     kLineEdit_location->setText( mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
@@ -42,9 +41,10 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     connect( kLineEdit_artist, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
     connect( kLineEdit_album, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
     connect( kComboBox_genre, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_genre, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kIntSpinBox_track, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
     connect( kIntSpinBox_year, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
     connect( kLineEdit_comment, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kTimeWidget_length, SIGNAL( valueChanged( const QTime& ) ), this, SLOT( checkModified() ) );
     
     // Remember original button text
     m_buttonMbText = pushButton_musicbrainz->text();
@@ -77,14 +77,14 @@ TagDialog::okPressed() //SLOT
 
     if ( !f.isNull() ) {
         TagLib::Tag * t = f.tag();
-
+        
         t->setTitle( QStringToTString( kLineEdit_title->text() ) );
         t->setArtist( QStringToTString( kLineEdit_artist->text() ) );
         t->setAlbum( QStringToTString( kLineEdit_album->text() ) );
+        t->setTrack( kIntSpinBox_track->value() );
         t->setYear( kIntSpinBox_year->value() );
         t->setComment( QStringToTString( kLineEdit_comment->text() ) );
         t->setGenre( QStringToTString( kComboBox_genre->currentText() ) );
-        t->setTrack( m_metaBundle.track().toInt() );
         
         f.save();
     }
@@ -98,12 +98,13 @@ TagDialog::checkModified() //SLOT
 {
     bool modified = false;
     
-    modified |= ( kLineEdit_title->text()        != m_metaBundle.title() );
-    modified |= ( kLineEdit_artist->text()       != m_metaBundle.artist() );
-    modified |= ( kLineEdit_album->text()        != m_metaBundle.album() );
-    modified |= ( kComboBox_genre->currentText() != m_metaBundle.genre() );
-    modified |= ( kIntSpinBox_year->value()      != m_metaBundle.year().toInt() );
-    modified |= ( kLineEdit_comment->text()      != m_metaBundle.comment() );
+    modified |= kLineEdit_title->text()        != m_metaBundle.title();
+    modified |= kLineEdit_artist->text()       != m_metaBundle.artist();
+    modified |= kLineEdit_album->text()        != m_metaBundle.album();
+    modified |= kComboBox_genre->currentText() != m_metaBundle.genre();
+    modified |= kIntSpinBox_track->value()     != m_metaBundle.track().toInt();
+    modified |= kIntSpinBox_year->value()      != m_metaBundle.year().toInt();
+    modified |= kLineEdit_comment->text()      != m_metaBundle.comment();
     
     pushButton_ok->setEnabled( modified );
 }
@@ -115,14 +116,14 @@ TagDialog::musicbrainzQuery() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    pushButton_musicbrainz->setEnabled( false );
-    pushButton_musicbrainz->setText( i18n( "Working.." ) );
-    
     MusicBrainzQuery* query = new MusicBrainzQuery( MusicBrainzQuery::File, m_metaBundle.url().path() );
     connect( query, SIGNAL( signalDone( const MusicBrainzQuery::TrackList& ) ),
               this,   SLOT( queryDone( const MusicBrainzQuery::TrackList& ) ) );
     
-    query->start();
+    if ( !query->start() ) return;
+
+    pushButton_musicbrainz->setEnabled( false );
+    pushButton_musicbrainz->setText( i18n( "Working.." ) );
 }
 
 
@@ -142,8 +143,6 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
     if ( !tracklist[0].name.isEmpty() )     kLineEdit_title->setText( tracklist[0].name );
     if ( !tracklist[0].artist.isEmpty() )   kLineEdit_artist->setText( tracklist[0].artist );
     if ( !tracklist[0].album.isEmpty() )    kLineEdit_album->setText( tracklist[0].album );
-    QTime length; length.addSecs( tracklist[0].duration.toInt() );
-    if ( !tracklist[0].duration.isEmpty() ) kTimeWidget_length->setTime( length );
 }
 #endif
 

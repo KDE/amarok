@@ -107,7 +107,7 @@ class MusicBrainzQuery : public QObject, public MusicBrainz
         MusicBrainzQuery( QueryType query, const QStringList &args,
                           QObject *parent = 0, const char *name = 0 );
 
-        void start();
+        bool start();
 
     signals:
         void signalStatusMsg( const QString &msg, int timeout );

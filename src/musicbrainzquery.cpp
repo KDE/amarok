@@ -29,6 +29,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmainwindow.h>
+#include <kmessagebox.h>
 #include <kprocess.h>
 #include <kstatusbar.h>
 
@@ -47,7 +48,7 @@ MusicBrainzQuery::MusicBrainzQuery( QueryType query, const QStringList &args,
         m_tracks( false )
 {}
 
-void MusicBrainzQuery::start()
+bool MusicBrainzQuery::start()
 {
     if ( m_query == File ) {
         KProcess * process = new KProcess( this );
@@ -63,11 +64,13 @@ void MusicBrainzQuery::start()
         emit signalStatusMsg( i18n( "Generating TRM signature..." ), 0 );
         bool started = process->start( KProcess::NotifyOnExit, KProcess::AllOutput );
         if ( !started ) {
-            kdDebug( 65432 ) << "trm utility could not be started." << endl;
-            emit signalDone();
+            KMessageBox::error( 0, i18n( "Could not start the 'trm' utility, which is needed for MusicBrainz fingerprint generation." ) );
+            return false;
         }
     } else
         QTimer::singleShot( 0, this, SLOT( slotQuery() ) );
+
+    return true;
 }
 
 void MusicBrainzQuery::slotQuery()
