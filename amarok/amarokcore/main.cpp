@@ -23,6 +23,7 @@ PlayerApp *pApp;
 
 int main( int argc, char *argv[] )
 {
+    KApplication::disableAutoDcopRegistration();
     PlayerApp::initCliArgs( argc, argv );
     PlayerApp app;
     

@@ -3,6 +3,9 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+
+  * fix: amaroK registering with dcop as "amarok-PID". it's back to just "amarok" now
+
 VERSION 0.9-beta3:
   * add: "Show Current Track" button in playlist.
   * add: Volume OSD when changing with mousewheel over trayicon.

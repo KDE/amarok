@@ -29,7 +29,7 @@ AmarokDcopHandler::AmarokDcopHandler()
     // Register with DCOP
     if ( !kapp->dcopClient()->isRegistered() )
     {
-        kapp->dcopClient()->registerAs( "amarok" );
+        kapp->dcopClient()->registerAs( "amarok", false );
         kapp->dcopClient()->setDefaultObject( objId() );
     }
 }
