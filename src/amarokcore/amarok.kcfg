@@ -279,7 +279,7 @@
     </entry>
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
-        <whatsthis>The relative position of the OSD. Possible choices are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
+        <whatsthis>The relative position of the OSD. Possible choices are Left, Middle, Right and Center.</whatsthis>
         <choices>
             <choice name="Left"/>
             <choice name="Middle"/>
