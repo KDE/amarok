@@ -22,9 +22,6 @@ MID-TERM:
                the preview button with info about dragging?
                <larson>OSD preview now reads: OSD Preview - Drag to reposition.
 
-    * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
-               nothing happens. you must close it using the mouse
-
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)
 
@@ -32,8 +29,6 @@ MID-TERM:
                the first track automagically
                <mxcl> fixed, but the cause is not fixed. Somewhere it seems a KURL::List with 1 empty KURL is
                being submitted.
-
-    * add: #50 <markey> make amaroK configurable --without-arts -->markey
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
