@@ -9,16 +9,19 @@ base directory of the amaroK distribution:
                 % make
                 % make install
 
-                
+
 For a much faster compile we recommend configuring with --enable-final:
 
-                
+
                 % ./configure --enable-final --prefix=`kde-config --prefix`
 
 
+However it is probably not advisable to compile --enable-final if your computer
+resorts to swap easily.
+
 The GNU Installtion instructions follow.
-                
-                
+
+
 Basic Installation
 ==================
 
@@ -61,7 +64,7 @@ The simplest way to compile this package is:
      documentation.
 
   4. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  
+     source code directory by typing `make clean'.
 
 Compilers and Options
 =====================
