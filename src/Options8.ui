@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>443</width>
-            <height>509</height>
+            <width>533</width>
+            <height>649</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -196,7 +196,7 @@
                 <property name="spacing">
                     <number>12</number>
                 </property>
-                <widget class="QLabel" row="0" column="1" rowspan="1" colspan="2">
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
                         <cstring>textLabel1</cstring>
                     </property>
@@ -207,7 +207,7 @@
                         <enum>RichText</enum>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="1" column="2">
+                <widget class="QCheckBox" row="1" column="0">
                     <property name="name">
                         <cstring>kcfg_SubmitPlayedSongs</cstring>
                     </property>
@@ -235,22 +235,19 @@
             <property name="title">
                 <string>Similar Artists</string>
             </property>
-            <widget class="QCheckBox">
+            <vbox>
                 <property name="name">
-                    <cstring>kcfg_RetrieveSimilarArtists</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="geometry">
-                    <rect>
-                        <x>20</x>
-                        <y>20</y>
-                        <width>290</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="text">
-                    <string>Retrieve similar artists from Audioscrobbler</string>
-                </property>
-            </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_RetrieveSimilarArtists</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Retrieve similar artists from Audioscrobbler</string>
+                    </property>
+                </widget>
+            </vbox>
         </widget>
         <widget class="KActiveLabel">
             <property name="name">
@@ -287,8 +284,6 @@
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kactivelabel.h</includehint>
