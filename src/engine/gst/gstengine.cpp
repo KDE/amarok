@@ -333,7 +333,7 @@ GstEngine::play( const KURL& url )            //SLOT
     kdDebug() << "Sound Device:       " << m_soundDevice << endl;
 
     /* setting device property for AudioSink*/
-    if (!m_defaultSoundDevice || !m_soundDevice.isEmpty())
+    if (!m_defaultSoundDevice && !m_soundDevice.isEmpty())
     {
 	g_object_set(G_OBJECT (m_pAudiosink), "device", m_soundDevice.latin1(), NULL);
     }
