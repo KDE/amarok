@@ -23,7 +23,7 @@ email                :
 #include "playerwidget.h"
 #include "playlistwidget.h"
 #include "analyzers/baranalyzer.h"
-#include "analyzers/baranalyzer2.h"
+//#include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
 #include "analyzers/turbine.h"
 #include "analyzers/spectralshine.h"
@@ -688,16 +688,17 @@ void PlayerWidget::createVis()
     case 1:
         m_pVis = new DistortAnalyzer( this );
         break;
+/*    //FIXME deactivated piggz' analyzer for now, since it's too similar to #1 (confusing the user)
     case 2:
         m_pVis = new BarAnalyzer2( this );
-        break;
-    case 3:
+        break;*/
+    case 2:
         m_pVis = new TurbineAnalyzer( this );
         break;
-    case 4:
+    case 3:
         m_pVis = new SpectralShineAnalyzer( this );
         break;
-    case 5:
+    case 4:
         m_pVis = new XmasAnalyzer( this );
         break;
     default:
