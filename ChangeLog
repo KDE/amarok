@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: Support for ID3v2 cover images. (Thanks to M. Thiesen!) (BR 88492)
   ADD: DCOP calls for the status of Random Mode, Repeat Playlist and
        Repeat Track.
   ADD: DCOP call to return the sample rate. 
