@@ -165,7 +165,7 @@ PlaylistWindow::init()
 
     //<Browsers>
         m_browsers->addBrowser( new FileBrowser( "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
-        m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "kscd" );
+        m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "kfm" );
         m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "info" );
         m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
 
