@@ -80,11 +80,12 @@ LONG-TERM:
 
     * add visualisations
 
-    * add pitch-slider (?) (berkus: should be in separate "Effects Control"
-      panel)
+    * <mxcl> implement beat detection (thread?), interface should glow/move to the beat, visualisations have access to beat/bpm info
+
+    * add pitch-slider (?) (berkus: should be in separate "Effects Control" panel)
 
     * add: aRts info widget, showing all available codecs and maybe more
-    
+
 
 IDEAS:
 
@@ -92,15 +93,15 @@ IDEAS:
       (http://www.nongnu.org/streamtuner). possibly map this to the filebrowser
 
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
-    
+
     * resizable playerwidget, like in Winamp3. Maybe using SVG graphics, or
       scaled down bitmaps. Would look most cool when it could resize smoothly
       in realtime *drool*
-    
+
     * think about moving amarok to kdeextragear. this would get us access to the kde bug system
       (and possibly something else), packaging and better visibility
-   
+
     * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
       see at first glance how the altogether playing time is divided into different albums, tunes and
       so on.
-          
+
