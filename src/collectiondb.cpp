@@ -45,6 +45,7 @@ CollectionDB::CollectionDB()
     if ( file.open( IO_ReadOnly ) ) {
         QString format;
         file.readLine( format, 50 );
+        file.close();
         if ( !format.startsWith( "SQLite format 3" ) ) {
             kdWarning() << "Database versions incompatible. Removing and rebuilding database.\n";
             failOpen = true;
@@ -55,6 +56,7 @@ CollectionDB::CollectionDB()
         }
     }
     if ( failOpen ) {
+        file.close();
         // Remove old db file; create new
         QFile::remove( path );
         sqlite3_open( path, &m_db );
