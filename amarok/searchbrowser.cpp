@@ -86,14 +86,21 @@ void SearchBrowser::SearchListView::startDrag()
 
 void SearchBrowser::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::SearchModule )
+    if ( e->type() == (QEvent::Type) SearchModule::ProgressEventType )
     {
-        SearchModule *sm = static_cast<SearchModule *>( e );
+        SearchModule::ProgressEvent* p =
+            static_cast<SearchModule::ProgressEvent*>( e );
 
         kdDebug() << "********************************\n";
-        kdDebug() << "SearchModuleEvent arrived.\n";
+        kdDebug() << "SearchModuleEvent arrived, found item: " << p->curPath() << p->curFile() << "\n";
         kdDebug() << "********************************\n";
         
+          p->item()->setText( 1, QString::number( p->count() ) );
+          p->item()->setText( 2, p->curPath() );
+
+          KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
+          resItem->setText( 1, p->curPath() );
+          resItem->setText( 2, p->curPath() + p->curFile() );
     }
 }
 

@@ -190,7 +190,7 @@ SearchModule::~SearchModule()
 
 bool SearchModule::doJob()
 {
-    m_resultView->clear();
+//    m_resultView->clear();
 
     resultCount = 0;
     searchDir( m_path.local8Bit() );
@@ -200,9 +200,6 @@ bool SearchModule::doJob()
 
 void SearchModule::searchDir( QString path )
 {
-//    kdDebug() << "Reading DIRECTORY: " << path << endl;
-    m_historyItem->setText( 2, path );
-
     DIR *d = opendir( path.local8Bit() );
     if ( d )
     {
@@ -222,12 +219,7 @@ void SearchModule::searchDir( QString path )
                 else
                     if ( file.contains( m_token, FALSE ) )
                     {
-                        m_historyItem->setText( 1, QString::number( ++resultCount ) );
-
-                        KListViewItem *resItem = new KListViewItem( m_resultView, file );
-                        resItem->setText( 1, path );
-                        resItem->setText( 2, path + file );
-
+                        QApplication::postEvent( m_parent, new ProgressEvent( 0, ++resultCount, m_resultView, m_historyItem, path, file ) );
                         m_resultList.append( path + file );
                     }
             }

@@ -139,15 +139,28 @@ public:
         public:
             enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
 
-            ProgressEvent( int state, int value = -1 )
+            ProgressEvent( int state, int count = 0, KListView* resultView = 0, KListViewItem* historyItem = 0, QString curPath = "", QString curFile = "" )
             : QCustomEvent( ProgressEventType )
             , m_state( state )
-            , m_value( value ) {}
+            , m_count( count )
+            , m_tresultView ( resultView )
+            , m_item ( historyItem )
+            , m_curPath ( curPath )
+            , m_curFile ( curFile ) {}
+
             int state() { return m_state; }
-            int value() { return m_value; }
+            int count() { return m_count; }
+            KListView* resultView() { return m_tresultView; }
+            KListViewItem* item() { return m_item; }
+            QString curPath() { return m_curPath; }
+            QString curFile() { return m_curFile; }
         private:
             int m_state;
-            int m_value;
+            int m_count;
+            KListView* m_tresultView;
+            KListViewItem* m_item;
+            QString m_curPath;
+            QString m_curFile;
     };
 
     SearchModule( QObject* parent, const QString path, const QString token, KListView* resultView, KListViewItem* historyItem );
