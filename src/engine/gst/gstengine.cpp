@@ -387,7 +387,7 @@ GstEngine::stop()             //SLOT
     if ( !m_pipelineFilled ) return ;
 
     /* stop the thread */
-    gst_element_set_state ( GST_ELEMENT( m_pThread ), GST_STATE_NULL );
+    gst_element_set_state ( m_pThread, GST_STATE_READY );
 }
 
 
@@ -529,6 +529,7 @@ void
 GstEngine::cleanPipeline()
 {
     if ( m_pipelineFilled ) {
+        gst_element_set_state ( m_pThread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_pThread ) );
         m_pipelineFilled = false;
     }
