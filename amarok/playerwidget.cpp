@@ -219,7 +219,7 @@ AmarokSystray::AmarokSystray( PlayerWidget *child ) : KSystemTray( child )
     contextMenu() ->insertItem( i18n( "&Configure..." ), kapp, SLOT( slotShowOptions() ) );
     contextMenu() ->insertItem( i18n( "&Help" ), ( new KHelpMenu( this, KGlobal::instance() ->aboutData() ) ) ->menu() );
     quitAction->plug( contextMenu() );
-    connect( this, SIGNAL( quitSelected() ), child, SLOT( quit() ) );
+    connect( this, SIGNAL( quitSelected() ), kapp, SLOT( quit() ) );
 
     contextMenu() ->insertSeparator();
 
