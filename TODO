@@ -259,6 +259,17 @@ BACKTRACE
 
 ////////////////
 
+Debug output from TitleProxy freezing bug:
+amarok: [TitleProxy::Proxy::Proxy(KURL)]
+amarok: [TitleProxy::Proxy::Proxy(KURL)] sock.connect() result: 0
+amarok: [TitleProxy::Proxy::Proxy(KURL)] Trying to bind to port 6666, listen() result: 0
+amarok: [TitleProxy::Proxy::Proxy(KURL)] final listen() result: 0
+amarok: [virtual const QObject* ArtsEngine::play(const KURL&)]  m_pPlayObject->object().isNull()
+amarok: WARNING: [void EngineController::proxyError()]  TitleProxy error! Switching to normal playback..
+amarok: [virtual void ArtsEngine::stop()]
+amarok: [engine] Playing:
+amarok: [virtual const QObject* ArtsEngine::play(const KURL&)]  m_pPlayObject->object().isNull()
+
 
 
 

@@ -687,21 +687,21 @@ void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
 void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
-    if( m_currentTrack && m_currentTrack->url() == bundle.url() )
+    if( m_currentTrack && !trackChanged )
     {
         //if the track hasn't changed then we should update the meta data for the item
-        if( !trackChanged ) m_currentTrack->setText( bundle );
-        return;
-
-    } else if( !m_cachedTrack || m_cachedTrack->url() != bundle.url() ) {
-
+        m_currentTrack->setText( bundle );
+    
+    }
+    if( !m_cachedTrack || m_cachedTrack->url() != bundle.url() )
+    {
         //FIXME most likely best to start at currentTrack() and be clever
         for( m_cachedTrack = firstChild();
              m_cachedTrack && m_cachedTrack->url() != bundle.url();
              m_cachedTrack = m_cachedTrack->nextSibling() );
     }
-
-    setCurrentTrack( m_cachedTrack );
+    if ( trackChanged )
+        setCurrentTrack( m_cachedTrack );
 }
 
 

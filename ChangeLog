@@ -2,7 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-  
+
+  FIX: When playing a stream with title streaming activated, the track is not
+       marked as playing (BR 79999).
   FIX: Invoking "Track Information" in Collection Browser sometimes crashed
        the application (BR 80266).
   FIX: In CollectionBrowser's folder setup dialog pressing cancel did not abort

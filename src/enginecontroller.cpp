@@ -119,22 +119,14 @@ void EngineController::play( const MetaBundle &bundle )
                      this,        SLOT( newMetaData( const MetaBundle& ) ) );
         }
         else
-        {
-            delete pProxy;
             proxyError();
-            return;
-        }
     }
     else
-    {
-        const bool b = m_pEngine->state() != EngineBase::Playing;
         m_pEngine->play( url );
-        if( b ) stateChangedNotify( EngineBase::Playing );
-    }
 
-    m_proxyError = false;
-
+    stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( bundle, true /* track change */ );
+    m_proxyError = false;
 
     //when TagLib can't get us the track length, we ask the engine as fallback
 //    m_determineLength = ( engine->isStream() || bundle.length() ) ? false : true;

@@ -115,7 +115,13 @@ Proxy::~Proxy()
     kdDebug() << k_funcinfo << endl;
     
     delete[] m_pBuf;
-    delete m_pSockProxy;
+    
+    if ( m_pSockProxy ) {
+        m_pSockProxy->flush();
+        m_pSockProxy->closeNow();
+        m_pSockProxy->reset();
+//         delete m_pSockProxy;
+    }
 }
 
 
