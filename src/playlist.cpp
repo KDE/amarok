@@ -26,6 +26,7 @@
 #include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
+#include "smartplaylist.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadweaver.h"
@@ -403,6 +404,32 @@ Playlist::insertMediaSql( const QString& sql, int options )
     ThreadWeaver::instance()->queueJob( new SqlLoader( sql, 0 ) );
 }
 
+void
+Playlist::addSpecialTracks( uint songCount, QString type )
+{
+    QueryBuilder qb;
+    qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    QString text = "track";
+    if ( songCount > 1 )    text += "s";
+
+    if ( type == "Random" ) {
+        amaroK::StatusBar::instance()->shortMessage( i18n("Adding random %1.").arg(text) );
+    } else if ( type == "Suggestion" ) {
+        QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
+        qb.addMatches( QueryBuilder::tabArtist, suggestions );;
+        amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested %1.").arg(text) );
+    } else { //we have playlists to choose from.
+        amaroK::StatusBar::instance()->shortMessage( i18n("Not implemented") );
+        return;
+    }
+
+    qb.setLimit( 0, songCount );
+    QStringList url = qb.run();
+    insertMedia( KURL::List( url ), Playlist::Unique );
+}
+
+
 QString
 Playlist::defaultPlaylistPath() //static
 {
@@ -432,6 +459,13 @@ void
 Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
+
+    if( AmarokConfig::partyMode() && childCount() < AmarokConfig::partyUpcomingCount() )
+    {
+        uint songCount = 1;
+        songCount = AmarokConfig::partyUpcomingCount() - childCount();
+        addSpecialTracks( songCount, AmarokConfig::partyType() );
+    }
 
     if( isEmpty() )
         return;
@@ -498,6 +532,32 @@ Playlist::playNextTrack( bool forceNext )
             item = MyIt::nextVisible( item );
         else
             item = *MyIt( this ); //ie. first visible item
+
+        if ( AmarokConfig::partyMode() && item != firstChild() )
+        {
+            MyIterator it( this, MyIterator::Visible );
+
+            for( int x=0; *it; ++it, ++x )
+            {
+                if ( *it == currentTrack() )
+                {
+                    if ( x < 5 )
+                    {
+                        activate( item );
+                        return;
+                    }
+                    else if ( x > childCount() - 5 )
+                        kdDebug() << "Not implemented yet" << endl;
+                    else
+                    {
+                        PlaylistItem *first = firstChild();
+                        removeItem( first ); //first visible item
+                        delete first;
+                        addSpecialTracks( 1, AmarokConfig::partyType() );
+                    }
+                }
+            }
+        }
 
         if ( !item && AmarokConfig::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
@@ -574,6 +634,7 @@ Playlist::queue( QListViewItem *item )
     updateNextPrev();
     #undef item
 }
+
 
 void
 Playlist::activate( QListViewItem *item )

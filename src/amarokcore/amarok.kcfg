@@ -56,9 +56,34 @@
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Dynamic Mode" type="Bool">
-        <label>Plays a dynamic playlist</label>
-        <whatsthis>Dynamic playlist which removes the played track from the playlist and appends a similar song.</whatsthis>
+    <entry key="Party Mode" type="Bool">
+        <label>Plays a party playlist</label>
+        <whatsthis>Party playlist which removes the played track from the playlist and appends a similar song.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="Party Type" type="String">
+        <label>Adds this type of song</label>
+        <whatsthis>Party mode will append this type of song to the end of the playlist.</whatsthis>
+        <default>Suggestion</default>
+    </entry>
+    <entry key="Party Custom List" type="String">
+        <label>List of smart playlists to be appended for party mode.</label>
+        <whatsthis>List of smart playlists to be appended for party mode.</whatsthis>
+        <default></default>
+    </entry>
+    <entry key="Party Upcoming Count" type="Int">
+        <label>Number of upcoming songs to show</label>
+        <whatsthis>Number of upcoming songs to show in the Playlist for party mode.</whatsthis>
+        <default>15</default>
+    </entry>
+    <entry key="Party Previous Count" type="Int">
+        <label>History of songs count</label>
+        <whatsthis>Number of previously played songs to show in the Playlist for party mode.</whatsthis>
+        <default>4</default>
+    </entry>
+    <entry key="Append Mode" type="Bool">
+        <label>Plays a party playlist</label>
+        <whatsthis>Party playlist which removes the played track from the playlist and appends a similar song.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Show Tray Icon" type="Bool">

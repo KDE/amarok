@@ -27,6 +27,7 @@
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
+#include "party.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
@@ -57,6 +58,7 @@
 #include <kxmlguifactory.h>   //XMLGUI
 
 #include <fixx11h.h>
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -138,7 +140,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RepeatTrackAction( ac );
     new amaroK::RepeatPlaylistAction( ac );
     new amaroK::RandomAction( ac );
-    new amaroK::DynamicAction( ac );
+    new amaroK::AppendAction( ac );
     new amaroK::VolumeAction( ac );
 
     if( K3bExporter::isAvailable() )
@@ -180,17 +182,21 @@ PlaylistWindow::init()
 
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
+        QWidget *party_button = new KToolBarButton( "party", 2, bar );
 
         bar->setStretchableWidget( m_lineEdit );
-
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
+        connect( party_button, SIGNAL(clicked()), this, SLOT(configureParty() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
+        QToolTip::add( party_button, i18n( "Configure party" ) );
     } //</Search LineEdit>
+
+
 
     QFrame *playlist = new Playlist( m_browsers->container() );
     m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
@@ -268,7 +274,7 @@ PlaylistWindow::init()
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
     actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
-    actionCollection()->action("dynamic_mode")->plug( m_settingsMenu );
+    actionCollection()->action("append_mode")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
     m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
@@ -436,6 +442,23 @@ void PlaylistWindow::applySettings()
     }
 }
 
+void PlaylistWindow::configureParty()
+{
+    if( CollectionDB::instance()->isEmpty() )
+        return;
+
+    Party dialog( i18n("Configuring party"), this );
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        AmarokConfig::setPartyMode( dialog.isChecked() );
+        AmarokConfig::setPartyType( dialog.appendType() );
+        if ( AmarokConfig::partyType() == "Custom" )
+            AmarokConfig::setPartyCustomList( dialog.customList() );
+
+        AmarokConfig::setPartyUpcomingCount( dialog.upcomingCount() );
+        AmarokConfig::setPartyPreviousCount( dialog.previousCount() );
+    }
+}
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {

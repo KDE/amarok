@@ -1,4 +1,4 @@
-// (c) Pierpaolo Di Panfilo 2004
+// (c) Pierpaolo Di Panfilo 2004, Seb Ruiz 2005
 // See COPYING file for licensing information
 
 #include "amarok.h"
@@ -117,6 +117,18 @@ void SmartPlaylistView::removeSelectedPlaylists()
             delete item;
 }
 
+SmartPlaylist *
+SmartPlaylistView::getPlaylist( QString name )
+{
+    QListViewItemIterator it( this );
+    for ( ; it.current(); ++it )
+        if ( (*it)->text( 0 ) == name )
+            break;
+
+    //FIXME: What if a non-valid playlist is requested? BooooM!
+    return static_cast<SmartPlaylist*>(*it);
+
+}
 
 void SmartPlaylistView::loadDefaultPlaylists()
 {

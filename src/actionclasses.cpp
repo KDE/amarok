@@ -91,7 +91,7 @@ Menu::Menu()
     safePlug( ac, "repeat_track", this );
     safePlug( ac, "repeat_playlist", this );
     safePlug( ac, "random_mode", this );
-    safePlug( ac, "dynamic_mode", this );
+    safePlug( ac, "append_mode", this );
 
     insertSeparator();
 
@@ -347,14 +347,23 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// DynamicAction
+// AppendAction
 //////////////////////////////////////////////////////////////////////////////////////////
-DynamicAction::DynamicAction( KActionCollection *ac ) :
-        // we call it append suggestions for the 1.2 series
-        ToggleAction( i18n( "&Append Suggestions" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
+AppendAction::AppendAction( KActionCollection *ac ) :
+    ToggleAction( i18n( "&Append Suggestions" ), &AmarokConfig::setAppendMode, ac, "append_mode" )
 {
-    KToggleAction::setChecked( AmarokConfig::dynamicMode() );
+    KToggleAction::setChecked( AmarokConfig::appendMode() );
     setIcon( "dynamic" );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PartyAction
+//////////////////////////////////////////////////////////////////////////////////////////
+PartyAction::PartyAction( KActionCollection *ac ) :
+    ToggleAction( i18n( "&Party Mode" ), &AmarokConfig::setPartyMode, ac, "party_mode" )
+{
+    KToggleAction::setChecked( AmarokConfig::partyMode() );
+    setIcon( "party" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

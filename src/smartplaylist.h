@@ -29,6 +29,7 @@ Q_OBJECT
     public slots:
         void createCustomPlaylist();
         void removeSelectedPlaylists();
+        SmartPlaylist *getPlaylist( QString name );
 
     protected:
         virtual class QDragObject *dragObject();

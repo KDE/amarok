@@ -49,6 +49,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         static PlaylistWindow *self() { return s_instance; }
 
     public slots:
+        void configureParty();
         void showHide();
 
     private slots:
@@ -82,6 +83,5 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
         static PlaylistWindow *s_instance;
 };
-
 
 #endif //AMAROK_PLAYLISTWINDOW_H

@@ -42,6 +42,7 @@ k_dcop:
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
+   virtual void enablePartyMode(bool enable) = 0;           ///< Switch Party Mode on or off.
 
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
       track lengths and positions in seconds. DO NOT TOUCH! */
@@ -54,6 +55,7 @@ k_dcop:
    virtual bool repeatTrackStatus() = 0;                    ///< Return repeat track status.
    virtual bool repeatPlaylistStatus() = 0;                 ///< Return repeat playlist status.
    virtual bool randomModeStatus() = 0;                     ///< Return random mode status.
+   virtual bool partyModeStatus() = 0;                      ///< Return party mode status.
 
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.

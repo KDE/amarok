@@ -18,6 +18,7 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
+#include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
@@ -80,6 +81,7 @@ class Playlist : private KListView, public EngineObserver
          *  @param options you can OR these together, see the enum
          */
         void insertMediaSql( const QString& sql, int options = Append );
+        void addSpecialTracks( uint songCount, QString type = "Random" );
 
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;

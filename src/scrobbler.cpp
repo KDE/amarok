@@ -276,7 +276,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
     {
         m_submitter->submitItem( m_item );
-        if ( AmarokConfig::dynamicMode() )
+        if ( AmarokConfig::appendMode() )
             appendSimilar( m_item );
         m_item = NULL;
         m_validForSending = false;

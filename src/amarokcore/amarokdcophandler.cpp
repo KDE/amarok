@@ -120,6 +120,11 @@ namespace amaroK
         return AmarokConfig::randomMode();
     }
 
+    bool DcopPlayerHandler::partyModeStatus()
+    {
+        return AmarokConfig::partyMode();
+    }
+
     QString DcopPlayerHandler::nowPlaying()
     {
         return EngineController::instance()->bundle().prettyTitle();
@@ -241,6 +246,11 @@ namespace amaroK
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_playlist" ))->setChecked( enable );
     }
 
+    void DcopPlayerHandler::enablePartyMode(bool enable)
+    {
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "party_mode" ))->setChecked( enable );
+    }
+
     void DcopPlayerHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
@@ -271,17 +281,17 @@ namespace amaroK
         EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
     }
-	bool DcopPlayerHandler::equalizerEnabled()
-	{
-		if(EngineController::hasEngineProperty( "HasEqualizer" ))
-			return AmarokConfig::equalizerEnabled();
-		else
-			return false;
-	}
+    bool DcopPlayerHandler::equalizerEnabled()
+    {
+        if(EngineController::hasEngineProperty( "HasEqualizer" ))
+            return AmarokConfig::equalizerEnabled();
+        else
+            return false;
+    }
     void DcopPlayerHandler::configEqualizer()
     {
         if(EngineController::hasEngineProperty( "HasEqualizer" ))
-        	EqualizerSetup::instance()->raise();
+            EqualizerSetup::instance()->raise();
     }
 
     void DcopPlayerHandler::enableOSD(bool enable)

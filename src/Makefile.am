@@ -77,6 +77,7 @@ amarokapp_SOURCES = \
     mediabrowser.cpp \
     metabundle.cpp \
     osd.cpp \
+    party.cpp \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
