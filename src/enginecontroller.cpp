@@ -37,7 +37,7 @@ bool EngineController::s_initialised = false;
 ExtensionCache EngineController::s_extensionCache;
 
 
-inline EngineController*
+EngineController*
 EngineController::instance()
 {
     //will only be instantiated the first time this function is called
