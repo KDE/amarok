@@ -2,6 +2,8 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
+  ADD: Collection Browser - a database powered music collection manager
   ADD: Playlist toolbar is now configurable
   ADD: use XML playlists internally within amaroK so tags don't have to be
        loaded/reloaded all the time. Makes undo/redo much quicker.
