@@ -10,14 +10,15 @@
 #include <xine/xineutils.h>
 #include <xine/post.h>
 
-#define NUMSAMPLES 512
+#define NUMSAMPLES 4096
 #define MAXCHANNELS  6
 
 
 typedef struct post_plugin_scope_s post_plugin_scope_t;
 typedef struct post_class_scope_s post_class_scope_t;
 
-short myBuffer[MAXCHANNELS][NUMSAMPLES];
+short  myBuffer[NUMSAMPLES];
+int    myIndex = 0, myEnd = 0;
 
 
 struct post_class_scope_s
@@ -31,11 +32,9 @@ struct post_plugin_scope_s
 {
     post_plugin_t post;
 
-    int data_idx;
     audio_buffer_t buf;   /* dummy buffer just to hold a copy of audio data */
 
     int channels;
-    int samples_left;     /* the number of samples we have left to put in myBuffer */
 };
 
 
@@ -57,7 +56,6 @@ scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bit
 
   this->channels = _x_ao_mode2channels(mode);
   if( this->channels > MAXCHANNELS ) this->channels = MAXCHANNELS;
-  this->data_idx = 0;
 
   return port->original_port->open(port->original_port, stream, bits, rate, mode );
 }
@@ -83,7 +81,7 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
 
-    int samples_used = 0;
+    int i, offset = 0;
 
     /* make a copy of buf data for private use */
     if( this->buf.mem_size < buf->mem_size )
@@ -92,12 +90,10 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
         this->buf.mem_size = buf->mem_size;
     }
 
-    if( buf->num_frames > 512 ) printf( "Samples: %d", buf->num_frames );
-
     memcpy( this->buf.mem, buf->mem, buf->num_frames * this->channels * ((port->bits == 8)?1:2) ); /*TODO bitshift instead of branch*/
     this->buf.num_frames = buf->num_frames;
 
-    /* pass data to original port */
+    /* pass data to original port TODO is this necessary? */
     port->original_port->put_buffer(port->original_port, buf, stream );
 
     /* we must not use original data anymore, it should have already being moved
@@ -105,40 +101,39 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     */
     buf = &this->buf;
 
-    this->samples_left += buf->num_frames;
-
-    do
+    /*try to ensure we don't lose samples, but don't get silly!*/
+    if( myEnd != NUMSAMPLES && myIndex < myEnd )
     {
-        if( port->bits == 8 )
-        {
-            int c, i;
-            int8_t*
-            data8  = (int8_t *)buf->mem;
-            data8 += samples_used * this->channels;
+        int x;
 
-            /* scale 8 bit data to 16 bits and convert to signed as well */
-            for( i = 0; i < buf->num_frames && this->data_idx < NUMSAMPLES; i++, this->data_idx++, data8 += this->channels )
-                for( c = 0; c < this->channels; c++)
-                    myBuffer[c][this->data_idx] = ((int16_t)data8[c] << 8) - 0x8000;
-        } else {
-            int c, i;
-            int16_t*
-            data16  = buf->mem;
-            data16 += samples_used * this->channels;
-
-            for( i = 0; i < buf->num_frames && this->data_idx < NUMSAMPLES; i++, this->data_idx++, data16 += this->channels )
-                for( c = 0; c < this->channels; c++)
-                    myBuffer[c][this->data_idx] = data16[c];
-        }
-
-        if( this->data_idx == NUMSAMPLES )
-        {
-            this->data_idx = 0;
-            samples_used += NUMSAMPLES;
-            this->samples_left -= NUMSAMPLES;
-        }
+        //printf( "unused buffers: %d\n", myEnd - myIndex );
+        for( x = myIndex; x < myEnd; ++x, ++offset )
+            myBuffer[offset] = myBuffer[x];
     }
-    while( this->samples_left >= NUMSAMPLES );
+    //else printf( "all buffers used\n" );
+
+    if( port->bits == 8 )
+    {
+        int c;
+        int8_t *data8 = (int8_t *)buf->mem;
+
+        /* scale 8 bit data to 16 bits and convert to signed as well */
+        for( i = offset; i < buf->num_frames + offset && i < NUMSAMPLES; ++i, data8 += this->channels )
+            for( myBuffer[i] = 0, c = 0; c < this->channels; ++c )
+                myBuffer[i] += ((int16_t)data8[c] << 8) - 0x8000;
+
+    } else {
+
+        int c;
+        int16_t *data16 = buf->mem;
+
+        for( i = offset; i < buf->num_frames + offset && i < NUMSAMPLES; ++i, data16 += this->channels )
+            for( myBuffer[i] = 0, c = 0; c < this->channels; ++c )
+                myBuffer[i] += data16[c];
+    }
+
+    myIndex = 0;
+    myEnd = i;
 }
 
 static void

@@ -182,13 +182,15 @@ XineEngine::state() const
 std::vector<float>*
 XineEngine::scope()
 {
-    extern short myBuffer[6][512];
+    extern short myBuffer[4096];
+    extern int myIndex;
+    extern int myEnd;
 
     std::vector<float> &v = *(new std::vector<float>( 512 ));
 
     for( uint x = 0; x < 513; ++x )
     {
-        v[x] = double(myBuffer[0][x]+myBuffer[1][x])/double(2<<15);
+        v[x] = double( (myIndex < myEnd) ? myBuffer[myIndex++] : 0 )/double(2<<15);
     }
 
     return &v;
