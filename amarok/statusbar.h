@@ -1,5 +1,5 @@
 /***************************************************************************
-                        browserwin.cpp  -  description
+                statusbar.h  -  amaroK browserwin statusbar
                            -------------------
   begin                : Fre Apr 24 2002
   copyright            : (C) 2002 by Frederik Holljen
@@ -38,7 +38,7 @@ public:
     virtual ~StatusBar();
 
     static StatusBar* self() { return m_self; }
-    
+
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( EngineBase::EngineState state );
     virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
@@ -47,10 +47,10 @@ protected: /* reimpl from engineobserver */
 
 private slots:
     void slotToggleTime();
-    
+
 private:
     void customEvent( QCustomEvent* e );
-    
+
     static StatusBar* m_self;
     static const int ID_STATUS = 1;
     ToggleLabel *m_pTimeLabel;
@@ -85,6 +85,3 @@ private:
 
 
 #endif //AMAROK_STATUSBAR_H
-
-
-

@@ -1,3 +1,20 @@
+/***************************************************************************
+		statusbar.h  -  amaroK browserwin statusbar
+			   -------------------
+  begin                : Fre Apr 24 2002
+  copyright            : (C) 2002 by Frederik Holljen
+  email                : fh@ez.no
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "statusbar.h"
 #include "amarokconfig.h"
 #include "metabundle.h"
@@ -68,14 +85,14 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
 {
     switch( state )
     {
-	case EngineBase::Idle:
-	case EngineBase::Empty:
-	    engineTrackPositionChanged( 0 );
-	    changeItem( QString::null, ID_STATUS );
-	    break;
-	case EngineBase::Playing: // gcc silence
-	case EngineBase::Paused:
-	    break;
+        case EngineBase::Idle:
+        case EngineBase::Empty:
+            engineTrackPositionChanged( 0 );
+            changeItem( QString::null, ID_STATUS );
+            break;
+        case EngineBase::Playing: // gcc silence
+        case EngineBase::Paused:
+            break;
     }
 }
 
@@ -114,24 +131,23 @@ void amaroK::StatusBar::customEvent( QCustomEvent *e )
 {
     if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
 //         kdDebug() << k_funcinfo << "Received ProgressEvent\n";
+        CollectionReader::ProgressEvent* p =
+            static_cast<CollectionReader::ProgressEvent*>( e );
 
-	CollectionReader::ProgressEvent* p =
-	    static_cast<CollectionReader::ProgressEvent*>( e );
-
-	switch ( p->state() ) {
-	    case CollectionReader::ProgressEvent::Start:
-		m_progress->setProgress( 0 );
-		m_progress->show();
-		break;
-	    case CollectionReader::ProgressEvent::Stop:
-		m_progress->hide();
-		break;
-	    case CollectionReader::ProgressEvent::Total:
-		m_progress->setTotalSteps( p->value() );
-		break;
-	    case CollectionReader::ProgressEvent::Progress:
-		m_progress->setProgress( p->value() );
-	}
+        switch ( p->state() ) {
+            case CollectionReader::ProgressEvent::Start:
+                m_progress->setProgress( 0 );
+                m_progress->show();
+                break;
+            case CollectionReader::ProgressEvent::Stop:
+                m_progress->hide();
+                break;
+            case CollectionReader::ProgressEvent::Total:
+                m_progress->setTotalSteps( p->value() );
+                break;
+            case CollectionReader::ProgressEvent::Progress:
+                m_progress->setProgress( p->value() );
+        }
     }
 }
 
@@ -161,8 +177,8 @@ void amaroK::ToggleLabel::mouseDoubleClickEvent ( QMouseEvent */*e*/ )
     m_State = !m_State;
     if( m_ColorToggle )
     {
-	QColorGroup group = palette().active();
-	setPaletteForegroundColor( m_State ? group.text() : group.mid() );
+        QColorGroup group = palette().active();
+        setPaletteForegroundColor( m_State ? group.text() : group.mid() );
     }
     emit toggled( m_State );
 }
@@ -171,8 +187,8 @@ void amaroK::ToggleLabel::setOn( bool on )
 {
     if( m_ColorToggle )
     {
-	QColorGroup group = palette().active();
-	setPaletteForegroundColor( on ? group.text() : group.mid() );
+        QColorGroup group = palette().active();
+        setPaletteForegroundColor( on ? group.text() : group.mid() );
     }
 
     m_State = on;
