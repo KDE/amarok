@@ -128,8 +128,13 @@ void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
         }
         else
         {
-            if (! m_on)
-                setOn( false );
+            if ( m_isToggleButton )
+            {
+                if (! m_on)
+                    setOn( false );
+            }
+            else
+                 setOn( false );
         }
         
         m_clicked = false;
