@@ -239,6 +239,9 @@ CollectionReader::doJob()
     log << "=======================\n";
     log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
 
+    // we need to create the temp tables before readDir gets called ( for the dir stats )
+    m_parent->createTables( true );
+    
     if ( !m_folders.empty() )
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
   
@@ -349,8 +352,6 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
     QValueList<CoverBundle> cbl;
     QStringList images;
     KURL url;
-
-    m_parent->createTables( true );
 
     QStringList validImages, validMusic;
     validImages << "jpg" << "png" << "gif" << "jpeg";
