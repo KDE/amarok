@@ -1,3 +1,5 @@
+kde_kcfg_DATA = amarok.kcfg
+
 SUBDIRS = images amarokarts analyzers titleproxy data engine
 
 INCLUDES = \
@@ -32,8 +34,6 @@ KDE_ICON = AUTO
 
 rcdir = $(kde_datadir)/amarok
 rc_DATA = amarokui.rc
-
-kde_kcfg_DATA = amarok.kcfg
 
 configdir = $(kde_confdir)
 config_DATA = amarokrc
