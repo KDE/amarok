@@ -327,7 +327,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             int button = KMessageBox::warningContinueCancel(
                             this,
                             i18n( "Are you sure you want to delete this cover?",
-                                  "Are you sure you want to delete these covers?",
+                                  "Are you sure you want to delete these %n covers?",
                                   selectedItems.count() ),
                             QString::null,
                             i18n("&Delete Confirmation") );
