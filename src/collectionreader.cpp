@@ -133,19 +133,22 @@ CollectionReader::doJob()
         readTags( entries );
     }
 
-    if ( !m_incremental )
-        CollectionDB::instance()->clearTables();
-    else
-        foreach( m_folders )
-            CollectionDB::instance()->removeSongsInDir( *it );
+    if ( !isAborted() ) {
+        if ( !m_incremental )
+            CollectionDB::instance()->clearTables();
+        else
+            foreach( m_folders )
+                CollectionDB::instance()->removeSongsInDir( *it );
 
-    // rename tables
-    CollectionDB::instance()->moveTempTables( m_db );
+        // rename tables
+        CollectionDB::instance()->moveTempTables( m_db );
+    }
+
     CollectionDB::instance()->dropTables( m_db );
 
     log.close();
 
-    return true;
+    return !isAborted();
 }
 
 
