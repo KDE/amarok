@@ -37,6 +37,10 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * add: <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
+           Of course, there would still be the up to 150ms gap, but we can fix that some other
+           time..
+
     * add: <muesli>length and bitrate to the playlist as optional columns. -->muesli or mxcl
 
     * fix: add dirs to combo history when user adds a track from that dir to the playlist
