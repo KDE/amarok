@@ -182,13 +182,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     else
         m_oldBgPixmap.fill( pApp->m_bgColor );
 
-    setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/amaroKonlyHG_w320.jpg" ) ) );
+    setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/player_background.jpg" ) ) );
 
     m_pFrame = new QFrame( this );
 
     //layout, widgets, assembly
     m_pFrameButtons = new QFrame( this );
-    m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
 
     m_pSlider = new AmarokSlider( this, Qt::Horizontal );
     m_pSlider->setFocusPolicy( QWidget::NoFocus );
@@ -252,6 +251,52 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pButtonNext->setFlat( true );
     //</Player Buttons>
 
+    // redesign
+    m_pTimeDisplayLabel = new QLabel( this );
+    QFont timeFont( "Arial" );
+    timeFont.setBold( TRUE );
+    timeFont.setPixelSize( 18 );
+    m_pTimeDisplayLabel->setFont( timeFont );
+    m_pTimeDisplayLabel->setPaletteForegroundColor( QColor( 255, 255, 255 ) );
+    m_pTimeDisplayLabel->move( 5, 36 );
+
+    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
+                                      locate( "data", "amarok/images/logo_new_inactive.png" ), false );
+    m_pButtonLogo->move( -100, -100 );
+
+    m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_inactive2.png" ),
+                                    locate( "data", "amarok/images/pl_active2.png" ), true );
+    m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_inactive2.png" ),
+                                    locate( "data", "amarok/images/eq_active2.png" ), false );
+    m_pButtonEq->move( 11, 75 );
+    m_pButtonEq->resize( 28, 13 );
+    m_pButtonPl->move( 40, 75 );
+    m_pButtonPl->resize( 28, 13 );
+
+    m_pSlider->move( 4, 103 );
+    m_pSlider->resize( 302, 12 );
+    m_pSliderVol->move( 292, 24 );
+    m_pSliderVol->resize( 12, 76 );
+
+    m_pFrameButtons->move( 0, 119 );
+    m_pFrameButtons->resize( 311, 21 );
+    m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
+
+    m_pButtonPrev->move( 1, 0 );
+    m_pButtonPrev->resize( 61, 20 );
+
+    m_pButtonPlay->move( 63, 0 );
+    m_pButtonPlay->resize( 61, 20 );
+
+    m_pButtonPause->move( 125, 0 );
+    m_pButtonPause->resize( 61, 20 );
+
+    m_pButtonStop->move( 187, 0 );
+    m_pButtonStop->resize( 61, 20 );
+
+    m_pButtonNext->move( 249, 0 );
+    m_pButtonNext->resize( 61, 20 );
+/*
     QBoxLayout* lay = new QVBoxLayout( this );
     lay->addWidget( m_pFrame );
 
@@ -305,6 +350,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     lay4->setResizeMode( QLayout::FreeResize );
     lay5->setResizeMode( QLayout::FreeResize );
     lay7->setResizeMode( QLayout::FreeResize );
+    */
 
     // set up system tray
     m_pTray = new AmarokSystray( this, m_pActionCollection );
@@ -313,13 +359,14 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     // some sizing details
     initScroll(); //requires m_pFrame to be created
     setFixedSize( 310, 120 + m_pFrame->height() ); //y was 130
+
     initTimeDisplay();
-    m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
+    m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 16 );
     timeDisplay( false, 0, 0, 0 );
 
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
-    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );    
+    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
 }
 
 
@@ -339,7 +386,8 @@ void PlayerWidget::initScroll()
     //QFont font( "Helvetica", 10 );
     //font.setStyleHint( QFont::Helvetica );
     //int frameHeight = QFontMetrics( font ).height() + 5;
-    int frameHeight = fontMetrics().height() + 5;
+//    int frameHeight = fontMetrics().height() + 5;
+    int frameHeight = 19;
 
     m_pFrame->setFixedSize( width(), frameHeight );
     //m_pFrame->setFont( font );
@@ -390,7 +438,7 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
         QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
         m_pDcopHandler->setNowPlaying( text ); //text = ""
         m_bitrate = m_samplerate = text; //better to use text than create a temporary QString
-                                         //looks better if these are clear        
+                                         //looks better if these are clear
         text = i18n( "Welcome to amaroK" );
     }
     else
@@ -398,20 +446,26 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
         QToolTip::add( m_pTray, text );
         m_pDcopHandler->setNowPlaying( text );
         m_bitrate = bitrate;
-        m_samplerate = sampleRate;       
+        m_samplerate = sampleRate;
     }
 
-    text.prepend( "   ***   " );
+    text.prepend( " | " );
 
     m_pScrollMask->fill( Qt::color0 );
     QPainter painterPix( m_pScrollPixmap );
     QPainter painterMask( m_pScrollMask );
     painterPix.setBackgroundColor( Qt::black );
-    painterPix.setPen( pApp->m_fgColor );
+    painterPix.setPen( QColor( 255, 255, 255 ) );
     painterMask.setPen( Qt::color1 );
 
-    painterPix.setFont( m_pFrame->font() );
-    painterMask.setFont( m_pFrame->font() );
+    QFont scrollerFont( "Arial" );
+    scrollerFont.setBold( TRUE );
+    scrollerFont.setPixelSize( 14 );
+
+    painterPix.setFont( scrollerFont );
+    painterMask.setFont( scrollerFont );
+//    painterPix.setFont( m_pFrame->font() );
+//    painterMask.setFont( m_pFrame->font() );
 
     painterPix.eraseRect( 0, 0, m_pixmapWidth, m_pixmapHeight );
     painterPix.drawText( 0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
@@ -462,6 +516,23 @@ void PlayerWidget::drawScroll()
 
 void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
 {
+    QString str;
+    str += " ";
+    if ( hours < 10 )
+        str += "0";
+    str += QString::number( hours );
+    str += ":";
+    if ( minutes < 10 )
+        str += "0";
+    str += QString::number( minutes );
+    str += ":";
+    if ( seconds < 10 )
+        str += "0";
+    str += QString::number( seconds );
+
+    m_pTimeDisplayLabel->setText( str );
+
+/*
     bitBlt( m_pTimeComposePixmap, 0, 0, m_pTimeBgPixmap );
 
     int x = 0;
@@ -498,7 +569,7 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
     bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
 
 
-    m_pTimeDisplayLabel->setPixmap( *m_pTimeComposePixmap );
+    m_pTimeDisplayLabel->setPixmap( *m_pTimeComposePixmap );*/
 }
 
 
@@ -509,10 +580,13 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     erase( 20, 40, 120, 50 );
     QPainter pF( this );
 
-    QFont font( "Helvetica", 8 );
-    font.setStyleHint( QFont::Helvetica );
+    QFont font( "Arial" );
+//    font.setStyleHint( QFont::Arial );
+    font.setBold( TRUE );
+    font.setPixelSize( 10 );
     pF.setFont( font );
-    pF.setPen( pApp->m_fgColor );
+//    pF.setPen( pApp->m_fgColor );
+    pF.setPen( QColor( 255, 255, 255 ) );
 
     /*
         pF.drawText( 20, 40, m_bitrate );
@@ -521,7 +595,7 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     //<mxcl> was above, however this wasn't working for me as at 1280x1024 I have fonts with lots of pixels
     //<mxcl> we can use QFontMetrics, however, we should decide on how to present these datas first!
     //<mxcl> below is temporary solution
-    pF.drawText( 20, 40, m_bitrate + "  " + m_samplerate );
+    pF.drawText( 11, 62, m_bitrate + " / " + m_samplerate );
 }
 
 
@@ -573,8 +647,8 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu->insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ), 0, ID_CONF_PLAYOBJECT );
 
             m_pPopupMenu->insertSeparator();
-            
-            //FIXME bad form, test the pointers!  
+
+            //FIXME bad form, test the pointers!
             m_pActionCollection->action( "options_configure_keybinding" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure_global_keybinding" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
@@ -594,12 +668,12 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
         m_pPopupMenu->setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
 
-        
-        
+
+
         if( int id = m_pPopupMenu->exec( e->globalPos() ) )
         {
             bool *ptr;
-            
+
             //set various bool items if clicked
             switch( id )
             {
@@ -614,8 +688,8 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
                 break;
             default:
                 ptr = 0;
-            } 
-                            
+            }
+
             if( ptr != 0 )
             {
                 *ptr = !m_pPopupMenu->isItemChecked( id );
@@ -710,7 +784,8 @@ void PlayerWidget::createVis()
     }
 
     m_pVis->setFixedSize( 168, 50 );
-    m_pLay6->addWidget( m_pVis );
+    m_pVis->move( 113, 40 );
+//    m_pLay6->addWidget( m_pVis );
     connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
 
     m_visTimer->start( m_pVis->timeout() );
@@ -741,7 +816,7 @@ void PlayerWidget::slotConfigPlayObject()
     {
         m_pPlayObjConfigWidget = new ArtsConfigWidget( pApp->m_pPlayObject->object(), this );
         connect( pApp->m_pPlayObject, SIGNAL( destroyed() ), m_pPlayObjConfigWidget, SLOT( deleteLater() ) );
-        
+
         m_pPlayObjConfigWidget->show();
     }
 }
