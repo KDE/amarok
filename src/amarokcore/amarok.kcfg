@@ -82,7 +82,7 @@
     </entry>
     <entry key="Show Status Bar" type="Bool">
         <label>Whether to show the Playlist Statusbar</label>
-        <default>false</default>
+        <default>true</default>
         <whatsthis>View some status information on the playlist.</whatsthis>
     </entry>
     <entry key="Show Welcome Tab" type="Bool">
