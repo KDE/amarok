@@ -329,35 +329,17 @@ CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id 
 }
 
 
-QString
-CollectionDB::getPathForAlbum( const QString &artist, const QString &album )
-{
-    query( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2' LIMIT 0, 1;" )
-                    .arg( escapeString( album ) )
-                    .arg( escapeString( artist ) ) );
-
-    return m_values.first();
-}
-
-
-QString
-CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
-{
-    query( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2 LIMIT 0, 1;" )
-                    .arg( album_id )
-                    .arg( artist_id ) );
-
-    return m_values.first();
-}
-
-
 void
-CollectionDB::addImageToPath( const QString path, const QString image, bool temporary )
+CollectionDB::addImageToAlbum( const QString& image, const QStringList& albums, bool temporary )
 {
-    query( QString( "INSERT INTO images%1 ( path, name ) VALUES ( '%1', '%2' );" )
-     .arg( temporary ? "_temp" : "" )
-     .arg( escapeString( path ) )
-     .arg( escapeString( image ) ) );
+    for ( uint i = 0; i < albums.count(); i++ )
+    {
+        kdDebug() << "Added image for album: " << albums[i] << " - " << image << endl;
+        query( QString( "INSERT INTO images%1 ( path, album ) VALUES ( '%1', '%2' );" )
+         .arg( temporary ? "_temp" : "" )
+         .arg( escapeString( image ) )
+         .arg( escapeString( albums[ i ] ) ) );
+    }
 }
 
 
@@ -395,16 +377,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
     QCString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( artist.isEmpty() && album.isEmpty() )
-    {
-        if ( m_cacheDir.exists( widthKey + "nocover.png" ) )
-            return m_cacheDir.filePath( widthKey + "nocover.png" );
-        else
-        {
-            QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
-            nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
-            return m_cacheDir.filePath( widthKey + "nocover.png" );
-        }
-    }
+        return notAvailCover( width );
     else
     {
         QCString key = md5sum( artist, album );
@@ -429,10 +402,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
         }
 
         // no amazon cover found, let's try to find a cover in the song's directory
-        KURL url;
-        url.setPath( getPathForAlbum( artist, album ) );
-
-        return getImageForPath( url.directory(), width );
+        return getImageForAlbum( album, width );
     }
 }
 
@@ -444,33 +414,16 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 
 
 QString
-CollectionDB::getImageForPath( const QString path, uint width )
+CollectionDB::getImageForAlbum( const QString& album, uint width )
 {
     if ( !width ) width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
 
-    if ( path.isEmpty() )
-    {
-        if( m_cacheDir.exists( widthKey + "nocover.png" ) )
-            return m_cacheDir.filePath( widthKey + "nocover.png" );
-        else
-        {
-            QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
-            nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
-            return m_cacheDir.filePath( widthKey + "nocover.png" );
-        }
-    }
+    if ( album.isEmpty() )
+        return notAvailCover();
 
-    KURL file( path );
-    QString filename( QString::number( width ) + "@" + file.fileName() );
-    filename.replace( "'", "_" ).append( ".png" );
-
-#ifdef AMAZON_SUPPORT
-    if ( m_cacheDir.exists( filename.lower() ) )
-        return m_cacheDir.absPath() + "/" + filename.lower();
-#endif
-    query( QString( "SELECT name FROM images WHERE path = '%1' ORDER BY name;" )
-                    .arg( escapeString( path ) ) );
+    query( QString( "SELECT path FROM images WHERE album LIKE '%1' ORDER BY path;" )
+              .arg( escapeString( album ) ) );
 
     if ( !m_values.isEmpty() )
     {
@@ -479,32 +432,17 @@ CollectionDB::getImageForPath( const QString path, uint width )
             if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ))
                 image = m_values[i];
 
-        if ( width > 0 )
+        KURL u( image );
+        if ( !m_cacheDir.exists( u.fileName().lower() ) )
         {
-            QImage img = QImage( path + "/" + image );
-            img.smoothScale( width, width ).save( m_cacheDir.absPath() + "/" + filename.lower(), "PNG" );
-            return m_cacheDir.absPath() + "/" + filename.lower();
+            QImage img = QImage( image );
+            img.smoothScale( width, width ).save( m_cacheDir.absPath() + "/" + u.fileName().lower(), "PNG" );
+        }
 
-        } else
-
-            return path + "/" + image;
+        return m_cacheDir.absPath() + "/" + u.fileName().lower();
     }
 
-    if( m_cacheDir.exists( widthKey + "nocover.png" ) )
-        return m_cacheDir.filePath( widthKey + "nocover.png" );
-    else
-    {
-        QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
-        nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
-        return m_cacheDir.filePath( widthKey + "nocover.png" );
-    }
-}
-
-
-bool
-CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
-{
-    return removeAlbumImage( artistValue( artist_id ), albumValue( album_id ) );
+    return notAvailCover();
 }
 
 
@@ -528,6 +466,29 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
     return false;
 }
 
+bool
+CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
+{
+    return removeAlbumImage( artistValue( artist_id ), albumValue( album_id ) );
+}
+
+
+QString
+CollectionDB::notAvailCover( int width )
+{
+    if ( !width ) width = AmarokConfig::coverPreviewSize();
+    QString widthKey = QString::number( width ) + "@";
+
+    if( m_cacheDir.exists( widthKey + "nocover.png" ) )
+        return m_cacheDir.filePath( widthKey + "nocover.png" );
+    else
+    {
+        QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
+        nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
+        return m_cacheDir.filePath( widthKey + "nocover.png" );
+    }
+}
+
 
 QStringList
 CollectionDB::artistList( bool withUnknowns, bool withCompilations )
@@ -536,7 +497,7 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabArtist, "Unknown" );
+        qb.excludeMatch( QueryBuilder::tabArtist, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -553,7 +514,7 @@ CollectionDB::albumList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabAlbum, "Unknown" );
+        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -570,7 +531,7 @@ CollectionDB::genreList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabGenre, "Unknown" );
+        qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -587,7 +548,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabYear, "Unknown" );
+        qb.excludeMatch( QueryBuilder::tabYear, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -851,7 +812,7 @@ CollectionDB::checkCompilations( const QString &path )
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
-        if ( albums[ i ] == "Unknown" || albums[ i ].isEmpty() ) continue;
+        if ( albums[ i ] == i18n( "Unknown" ) || albums[ i ].isEmpty() ) continue;
 
         const uint album_id = albumID( albums[ i ], FALSE, FALSE );
         artists = query( QString( "SELECT DISTINCT artist_temp.name FROM tags_temp, artist_temp WHERE tags_temp.album = '%1' AND tags_temp.artist = artist_temp.id;" )
@@ -941,7 +902,7 @@ CollectionDB::createTables( bool temporary )
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
                     "path VARCHAR(255),"
-                    "name VARCHAR(255) );" )
+                    "album VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -963,6 +924,8 @@ CollectionDB::createTables( bool temporary )
         query( "CREATE INDEX genre_tag ON tags( genre );" );
         query( "CREATE INDEX year_tag ON tags( year );" );
         query( "CREATE INDEX sampler_tag ON tags( sampler );" );
+
+        query( "CREATE INDEX images_album ON images( album );" );
 
         // create directory statistics database
         query( QString( "CREATE TABLE directories ("
@@ -1262,7 +1225,7 @@ QCString
 CollectionDB::md5sum( const QString& artist, const QString& album )
 {
     KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() );
-    kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
+//    kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }
 
@@ -1394,10 +1357,18 @@ QueryBuilder::linkTables( int tables )
     if ( tables & tabGenre ) m_tables += ",genre";
     if ( tables & tabYear ) m_tables += ",year";
 
-    if ( tables & tabAlbum ) m_where += "AND album.id=tags.album ";
-    if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
-    if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
-    if ( tables & tabYear ) m_where += "AND year.id=tags.year ";
+    // when there are multiple tables involved, we always need table tags for linking them
+    m_tables = m_tables.mid( 1 );
+    if ( m_tables.contains( ',' ) ) tables |= tabSong;
+
+    if ( tables & tabSong )
+    {
+        m_tables = "tags," + m_tables;
+        if ( tables & tabAlbum ) m_where += "AND album.id=tags.album ";
+        if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
+        if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
+        if ( tables & tabYear ) m_where += "AND year.id=tags.year ";
+    }
 }
 
 
@@ -1505,7 +1476,10 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 void
 QueryBuilder::setOptions( int options )
 {
-    if ( options & optNoCompilations ) m_where += "AND tags.sampler <> 1 ";
+    if ( options & optNoCompilations || options & optOnlyCompilations )
+        m_linkTables |= tabSong;
+
+    if ( options & optNoCompilations ) m_where += "AND tags.sampler = 0 ";
     if ( options & optOnlyCompilations ) m_where += "AND tags.sampler = 1 ";
     if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
 }
@@ -1516,7 +1490,7 @@ QueryBuilder::sortBy( int table, int value )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID || value & valTrack) b = false;
+    if ( value & valID || value & valTrack ) b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
@@ -1549,7 +1523,7 @@ QueryBuilder::run()
 {
     linkTables( m_linkTables );
 
-    QString cmd = "SELECT " + m_values + " FROM tags " + m_tables + " WHERE 1 " + m_where;
+    QString cmd = "SELECT " + m_values + " FROM " + m_tables + " WHERE 1 " + m_where;
     if ( !m_sort.isEmpty() ) cmd += " ORDER BY " + m_sort;
     cmd += m_limit;
 

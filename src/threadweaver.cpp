@@ -320,6 +320,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
+    QStringList albums;
     QString lastdir;
     KURL url;
     m_parent->createTables( true );
@@ -347,6 +348,9 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         {
             MetaBundle bundle( url, f.tag(), 0 );
             m_parent->addSong( bundle, m_incremental );
+
+            if ( !albums.contains( bundle.album() ) )
+                albums << bundle.album();
         }
         // Add tag-less tracks to database
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
@@ -357,11 +361,14 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         }
         // Add images to the cover database
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
-            m_parent->addImageToPath( url.directory(), url.filename(), true );
+            m_parent->addImageToAlbum( url.path(), albums, true );
 
         // Update Compilation-flag
         if ( url.path().section( '/', 0, -2 ) != lastdir || ( i + 1 ) == entries.count() )
         {
+            // we entered the next directory
+            albums.clear();
+
             if ( !lastdir.isEmpty() ) m_parent->checkCompilations( lastdir );
             lastdir = url.path().section( '/', 0, -2 );
         }

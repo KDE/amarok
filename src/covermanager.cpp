@@ -389,16 +389,14 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
             QString artist = allAlbums ? albums[i] : item->text(0);
             QString album = albums[ allAlbums ? i+1 : i ];
 
-            if( !album.isEmpty() ) {
-                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album);
+            if( !album.isEmpty() )
+            {
+                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album );
                 m_coverItems.append( coverItem );
                 if( coverItem->hasCover() )
                     m_loadAlbums += artist + " @@@ " + album; //used for thumbnail loading
                 else
                     missingCovers++;
-
-                // Update GUI regularly
-                if ( !( i % 10 ) ) kapp->processEvents();
             }
         }
 

@@ -76,8 +76,6 @@ class CollectionDB : public QObject
         //album methods
         void checkCompilations( const QString &path );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
-        QString getPathForAlbum( const uint artist_id, const uint album_id );
-        QString getPathForAlbum( const QString &artist, const QString &album );
 
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
@@ -100,8 +98,10 @@ class CollectionDB : public QObject
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString &artist, const QString &album );
 
-        void addImageToPath( const QString path, const QString image, bool temporary );
-        QString getImageForPath( const QString path, uint width = 0 );
+        //local cover methods
+        void addImageToAlbum( const QString& image, const QStringList& albums, bool temporary );
+        QString getImageForAlbum( const QString& album, uint width = 0 );
+        QString notAvailCover( int width = 0 );
 
         uint artistID( QString value, bool autocreate = true, bool useTempTables = false );
         QString artistValue( uint id );
