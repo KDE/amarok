@@ -81,7 +81,6 @@ namespace KDE
 
     public:
         StatusBar( QWidget *parent, const char *name = "mainStatusBar" );
-       ~StatusBar();
 
         enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox };
 
@@ -177,6 +176,8 @@ namespace KDE
     protected:
         virtual void polish();
         virtual void customEvent( QCustomEvent* );
+        virtual void paintEvent( QPaintEvent* );
+        virtual bool event( QEvent* );
 
         QLabel *m_mainTextLabel;
 

@@ -50,13 +50,19 @@
 namespace KDE {
 
 
+//TODO allow for uncertain progress periods
+
+
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : QFrame( parent, name )
         , m_tempMessageTimer( new QTimer( this ) )
 {
+    //we need extra spacing due to the way we paint the surrounding boxes
+    QBoxLayout *layout = new QHBoxLayout( this, /*margin*/2, /*spacing*/5 );
+    layout->setAutoAdd( true );
+
     m_mainTextLabel = new QLabel( this, "mainTextLabel" );
     m_mainTextLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-//     m_mainTextLabel->setFrameStyle( QFrame::Panel | QFrame::Sunken );
 
     QHBox *mainProgressBarBox = new QHBox( this, "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
@@ -79,15 +85,11 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
    (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
 
-    QBoxLayout *layout = new QHBoxLayout( this, /*margin*/1, /*spacing*/3 );
-    //layout->setStretchFactor( m_mainTextLabel, 1 );
-    layout->setAutoAdd( true );
-
     connect( m_tempMessageTimer, SIGNAL(timeout()), SLOT(resetMainText()) );
 }
 
-StatusBar::~StatusBar()
-{}
+
+/// reimplemented functions
 
 void
 StatusBar::polish()
@@ -102,12 +104,10 @@ StatusBar::polish()
         if ( _h > h )
             h = _h;
 
-        debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>( o ) ->minimumHeight() << endl;
+        debug() << o->className() << ", " << o->name() << ": " << _h << ": " << static_cast<QWidget*>(o)->minimumHeight() << endl;
 
-        if ( o->inherits( "QFrame" ) ) {
-            QFrame * frame = (QFrame*)o;
-            frame->setFrameStyle( QFrame::Panel | QFrame::Sunken );
-        }
+        if ( o->inherits( "QLabel" ) )
+            static_cast<QLabel*>(o)->setIndent( 4 );
     }
 
     for ( QObject * o = list->first(); o; o = list->next() )
@@ -115,6 +115,42 @@ StatusBar::polish()
 
     delete list;
 }
+
+void
+StatusBar::paintEvent( QPaintEvent* )
+{
+    QObjectList *list = queryList( "QWidget", 0, false, false );
+    QPainter p( this );
+
+    for( QObject * o = list->first(); o; o = list->next() ) {
+        QWidget *w = (QWidget*)o;
+
+        if ( !w->isVisible() )
+            continue;
+
+        style().drawPrimitive(
+                QStyle::PE_StatusBarSection,
+                &p,
+                QRect( w->x() - 1, w->y() - 1, w->width() + 2, w->height() + 2 ),
+                colorGroup(),
+                QStyle::Style_Default,
+                QStyleOption( w ) );
+    }
+
+    delete list;
+}
+
+bool
+StatusBar::event( QEvent *e )
+{
+    if ( e->type() == QEvent::LayoutHint )
+        update();
+
+    return QWidget::event( e );
+}
+
+
+/// Messaging system
 
 void
 StatusBar::setMainText( const QString &text )
@@ -186,14 +222,8 @@ StatusBar::customEvent( QCustomEvent *e )
     delete s;
 }
 
-/// reimplementations from QFrame
-
-
-
 
 /// application wide progress monitor
-
-//TODO allow for uncertain amounts of progress
 
 ProgressBar&
 StatusBar::newProgressOperation( QObject *owner )
