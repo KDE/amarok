@@ -27,6 +27,7 @@ email                : markey@web.de
 #include "analyzers/baranalyzer.h"
 #include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
+#include "analyzers/sonograph.h"
 #include "analyzers/turbine.h"
 //#include "analyzers/spectralshine.h"
 #include "analyzers/xmasdrug.h"
@@ -621,6 +622,9 @@ void PlayerWidget::createVis()
     case 5:
     	m_pVis = new BarAnalyzer2( this );
 	break;
+    case 6:
+        m_pVis = new Sonograph( this );
+        break;
     case 0:
     default: //so we don't have to remember how many vis's there are
         m_pVis = new BarAnalyzer( this );
