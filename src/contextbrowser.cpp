@@ -881,9 +881,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 + i18n( "If you would like to see contextual information about this track,"
                         " you should add it to your Collection." ) +
                 "</p>"
-                "<a href='show:collectionSetup'>"
+                "<a href='show:collectionSetup' class='button'>"
                 + i18n( "Click here to change your Collection setup" ) +
-                "</a>."
+                "</a>"
             "</div>"
         "</div>"
                            );
@@ -1216,9 +1216,6 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".song-artist { }" );
     styleSheet += QString( ".song-album { }" );
     styleSheet += QString( ".song-time { } " );
-    styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" )
-            .arg( pxSize )
-            .arg( bg );
 
     //box: the base container for every block (border hilighted on hover, 'A' without underlining)
     styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
@@ -1258,6 +1255,9 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-song-trackno { }" );
     styleSheet += QString( ".album-song-title { } " );
     styleSheet += QString( ".album-song-time { } " );
+
+    styleSheet += QString( ".button { margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( bg ).arg( fg );
+    styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( bg ).arg( bg ).arg( fg );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
@@ -1346,7 +1346,7 @@ void ContextBrowser::showIntroduction()
                           "In order to use this feature of amaroK, you need to build a collection."
                         ) +
                     "</p>"
-                    "<a href='show:collectionSetup'>" + i18n( "Click here to build one..." ) + "</a>"
+                    "<a href='show:collectionSetup' class='button'>" + i18n( "Click here to build one..." ) + "</a>"
                 "</div>"
             "</div>"
             "</html>"
@@ -1490,7 +1490,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     else
     {
         m_lyrics = i18n( "Lyrics not found." );
-        m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></div>" );
+        m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
     }
 
 
@@ -1543,7 +1543,7 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
         m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
-    m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "'>" + i18n("Add Lyrics") + "</a></div>" );
+    m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='lyricspage:" + m_lyricUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
 
 
 }
