@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
+    * Add %comment token for comment display in OSD. (BR 100944)
     * View/Edit track entry into context menus of ContextBrowser and
       CollectionBrowser.
     * You can mark/unmark albums as compilations via CollectionBrowser's
