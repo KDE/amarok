@@ -124,10 +124,11 @@ class BrowserWin : public QWidget
         ~BrowserWin();
 
         //convenience functions
-        void insertMedia( const QString&, bool = false );
-        void insertMedia( const KURL&, bool = false );
+        void insertMedia( const QString& );
+        void insertMedia( const KURL& );
         void insertMedia( const KURL::List&, bool = false );
         bool isAnotherTrack() const;
+        QString defaultPlaylistPath() const;
 
         void setFont( const QFont& );
         void setColors( const QPalette&, const QColor& );
@@ -141,7 +142,6 @@ class BrowserWin : public QWidget
 
     private:
         bool    eventFilter( QObject*, QEvent* );
-        QString defaultPlaylistPath() const; //inline convenience function
 
         QSplitter       *m_splitter;
         PlaylistSideBar *m_sideBar;
@@ -151,19 +151,19 @@ class BrowserWin : public QWidget
 
 
 inline
-void BrowserWin::insertMedia( const QString &path, bool b )
+void BrowserWin::insertMedia( const QString &path )
 {
     KURL url;
     url.setPath( path );
-    insertMedia( KURL::List( url ), b );
+    insertMedia( KURL::List( url ) );
 }
 
 inline
-void BrowserWin::insertMedia( const KURL &url, bool b )
+void BrowserWin::insertMedia( const KURL &url )
 {
     if( !url.isEmpty() )
     {
-        insertMedia( KURL::List( url ), b );
+        insertMedia( KURL::List( url ) );
     }
 }
 

@@ -65,14 +65,20 @@ PlayerApp::PlayerApp()
         , m_pOSD( new OSDWidget() )
         , m_proxyError( false )
 {
+    //TODO readConfig and applySettings first
+    //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
+    //     the time amaroK is visible
+
     setName( "amarok" );
     pApp = this; //global
 
     if ( AmarokConfig::showSplashscreen() ) {
         m_pOSD->showSplash( locate( "data", "amarok/images/logo_splash.png" ) );
+        //<mxcl> is there any events to process? I know newInstance is triggered by an event,
+        //is it safe to do this because newInstance() expects the playlist to exist!
         kapp->processEvents();
     }
-            
+
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     initPlayerWidget();
@@ -88,10 +94,13 @@ PlayerApp::PlayerApp()
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
     applySettings();  //will create the engine
-    restoreSession(); //resume playback
-    //TODO remember if we were in tray last exit, if so don't show!
-    
+
+    //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    if( args->count() == 0 || args->isSet( "enqueue" ) ) restoreSession(); //resume playback + load prev PLS
+
     m_pOSD->removeOSD();
+    //TODO remember if we were in tray last exit, if so don't show!
     m_pPlayerWidget->show(); //BrowserWin will sponaneously show if appropriate
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -113,11 +122,11 @@ PlayerApp::~PlayerApp()
 {
     kdDebug() << "PlayerApp:~PlayerApp()" << endl;
 
+    m_pMainTimer->stop();
+
     //hiding these widgets stops visual oddness
     //I know they won't dissapear because the event Loop isn't updated, but it stops
     //some syncronous updates etc.
-    m_pMainTimer->stop();
-
     m_pPlayerWidget->hide();
     m_pBrowserWin->hide();
 
@@ -125,7 +134,7 @@ PlayerApp::~PlayerApp()
     //and we may in the future start to use read and saveConfig() in other situations
     //    kapp->config()->setGroup( "Session" );
 
-    if( !m_playingURL.isEmpty() )
+    if( AmarokConfig::resumePlayback() && !m_playingURL.isEmpty() )
     {
         AmarokConfig::setResumeTrack( m_playingURL.url() );
 
@@ -134,6 +143,7 @@ PlayerApp::~PlayerApp()
         else
             AmarokConfig::setResumeTime( -1 );
     }
+    else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
 
     slotStop();
 
@@ -151,14 +161,6 @@ int PlayerApp::newInstance()
 {
     KCmdLineArgs * args = KCmdLineArgs::parsedArgs();
 
-    QCString playlistUrl = args->getOption( "playlist" );
-
-    if ( !playlistUrl.isEmpty() )             //playlist
-    {
-        //FIXME should we remove the playlist option now we figure that out dynamically?
-        m_pBrowserWin->insertMedia( KCmdLineArgs::makeURL( playlistUrl ), true );
-    }
-
     if ( args->count() > 0 )
     {
         KURL::List list;
@@ -168,21 +170,21 @@ int PlayerApp::newInstance()
             list << args->url( i );
         }
 
-        bool b = !args->isSet( "e" ); //b = not enqueue
-
-        m_pBrowserWin->insertMedia( list, b );
-
-        //TODO play first inserted track automatically?
+        m_pBrowserWin->insertMedia( list, !args->isSet( "enqueue" ) );
     }
 
-    if ( args->isSet( "r" ) )                 //rewind
+
+    if ( args->isSet( "previous" ) )
         pApp->slotPrev();
-    if ( args->isSet( "f" ) )                 //forward
+    if ( args->isSet( "next" ) )
         pApp->slotNext();
-    if ( args->isSet( "p" ) )                 //play
+    if ( args->isSet( "play" ) )
         pApp->slotPlay();
-    if ( args->isSet( "s" ) )                 //stop
+    if ( args->isSet( "stop" ) )
         pApp->slotStop();
+    if ( args->isSet( "pause" ) )
+        pApp->slotPause();
+
 
     return KUniqueApplication::newInstance();
 }
@@ -233,22 +235,20 @@ void PlayerApp::restoreSession()
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
 
-    if ( AmarokConfig::resumePlayback() )
+    //load previous playlist
+    if ( AmarokConfig::savePlaylist() )
+        m_pBrowserWin->insertMedia( m_pBrowserWin->defaultPlaylistPath() );
+
+    if ( AmarokConfig::resumePlayback() && !AmarokConfig::resumeTrack().isEmpty() )
     {
+        MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
+        play( *bundle );
+        delete bundle;
+
         //see if we also saved the time
         int seconds = AmarokConfig::resumeTime();
-
-        if ( seconds >= 0 )
-        {
-            MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
-
-            play( *bundle );
-
-            if ( seconds > 0 )
-                m_pEngine->seek( seconds * 1000 );
-
-            delete bundle;
-        }
+        if ( seconds > 0 )
+            m_pEngine->seek( seconds * 1000 );
     }
 }
 
@@ -281,7 +281,7 @@ void PlayerApp::applySettings()
     m_pOSD->setFont    ( AmarokConfig::osdFont() );
     m_pOSD->setColor   ( AmarokConfig::osdColor() );
     m_pOSD->setDuration( AmarokConfig::osdDuration() );
-    
+
     m_pPlayerWidget->createAnalyzer( false );
     m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?
                             AmarokConfig::browserWindowFont() : QApplication::font() );
@@ -517,10 +517,10 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     m_proxyError = false;
 
-    emit metaData( bundle );
+    emit metaData( bundle ); //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
     m_length = bundle.length() * 1000;
 
-    kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
+    kdDebug() << "[play()] " << url.prettyURL() << endl;
     m_pEngine->play();
 
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
@@ -564,6 +564,7 @@ void PlayerApp::slotStop()
     m_pEngine->stop();
 
     m_length = 0;
+    m_playingURL = KURL();
     m_pPlayerWidget->defaultScroll          ();
     m_pPlayerWidget->timeDisplay            ( 0 );
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
@@ -574,16 +575,7 @@ void PlayerApp::slotStop()
 
 void PlayerApp::slotPlaylistShowHide()
 {
-    if( m_pBrowserWin->isHidden() )
-    {
-        m_pPlayerWidget->m_pButtonPl->setOn(true);
-        m_pBrowserWin->show();
-    }
-    else
-    {
-        m_pPlayerWidget->m_pButtonPl->setOn(false);
-        m_pBrowserWin->hide();
-    }
+    m_pBrowserWin->setShown( m_pBrowserWin->isHidden() );
 }
 
 bool PlayerApp::playObjectConfigurable()

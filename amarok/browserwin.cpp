@@ -407,9 +407,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     } //</StreamBrowser>
 
 
-    //load previous playlist
-    insertMedia( defaultPlaylistPath() );
-
     //we intercept keyEvents to the playlist
     m_playlist->installEventFilter( this );
     //we intercept keyEvents to the lineEdit
@@ -444,7 +441,8 @@ BrowserWin::~BrowserWin()
 
 void BrowserWin::insertMedia( const KURL::List &list, bool b )
 {
-    if( b ) m_playlist->clear();
+    if( b ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
+
     m_playlist->insertMedia( list );
 }
 
@@ -486,7 +484,6 @@ void BrowserWin::saveConfig()
 }
 
 
-inline
 QString BrowserWin::defaultPlaylistPath() const
 {
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u";

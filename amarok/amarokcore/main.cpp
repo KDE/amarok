@@ -25,17 +25,23 @@
 
 PlayerApp *pApp;
 
-static const char *description = I18N_NOOP( "A media player for KDE" );
+static const char *description = I18N_NOOP( "An audio player for KDE" );
 
 static KCmdLineOptions options[] =
     {
-        { "+[URL]", I18N_NOOP( "Files/URLs to Open" ), 0 },
-        { "e", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
-        { "s", I18N_NOOP( "Stop current song" ), 0 },
-        { "p", I18N_NOOP( "Start playing current playlist" ), 0 },
-        { "r", I18N_NOOP( "Skip backwards in playlist" ), 0 },
-        { "f", I18N_NOOP( "Skip forward in playlist" ), 0 },
-        { "playlist <file>", I18N_NOOP( "Open a Playlist" ), 0 },
+        { "+[URL(s)]", I18N_NOOP( "Files/URLs to Open" ), 0 },
+        { "r", 0, 0 },
+        { "previous", I18N_NOOP( "Skip backwards in playlist" ), 0 },
+        { "p", 0, 0 },
+        { "play", I18N_NOOP( "Start playing current playlist" ), 0 },
+        { "s", 0, 0 },
+        { "stop", I18N_NOOP( "Stop playback" ), 0 },
+        { "pause", I18N_NOOP( "Pause playback" ), 0 },
+        { "f", 0, 0 },
+        { "next", I18N_NOOP( "Skip forwards in playlist" ), 0 },
+        { ":", I18N_NOOP("Additional options:"), 0 },
+        { "e", 0, 0 },
+        { "enqueue", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
         { 0, 0, 0 }
     };
 
@@ -43,8 +49,8 @@ int main( int argc, char *argv[] )
 {
     KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
                           APP_VERSION, description, KAboutData::License_GPL,
-                          I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ), 
-                          I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\n" 
+                          I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ),
+                          I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\n"
                                      "Feedback:\namarok-devel@lists.sourceforge.net" ),
                           I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
