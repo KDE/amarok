@@ -67,7 +67,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
         QWidget( parent, name, Qt::WPaintUnclipped )
 {
     setName( "BrowserWin" );
-    setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
     setFont ( pApp->m_browserWindowFont );
 
     setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
@@ -90,8 +89,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
 
-    connect( pApp, SIGNAL( sigUpdateFonts() ),
-             this, SLOT( slotUpdateFonts() ) );
+/*    connect( pApp, SIGNAL( sigUpdateFonts() ),
+             this, SLOT( slotUpdateFonts() ) );*/
 }
 
 
@@ -181,6 +180,21 @@ void BrowserWin::closeEvent( QCloseEvent *e )
     e->accept();
 
     emit signalHide();
+}
+
+
+void BrowserWin::moveEvent( QMoveEvent *e )
+{
+    // FIXME: needed for PlaylistWidget transparency
+/*    m_pPlaylistWidget->repaint();
+    m_pPlaylistWidget->viewport()->repaint();*/
+}
+
+
+void BrowserWin::paintEvent( QPaintEvent *e )
+{
+/*    m_pPlaylistWidget->repaint();
+    m_pPlaylistWidget->viewport()->repaint();*/
 }
 
 
@@ -477,11 +491,13 @@ void BrowserWin::slotKeyDelete()
     {}
 }
 
+
 void BrowserWin::slotUpdateFonts()
 {
     setFont ( pApp->m_browserWindowFont );
     m_pBrowserLineEdit->setFont ( pApp->m_browserWindowFont );
     m_pPlaylistLineEdit->setFont ( pApp->m_browserWindowFont );
 }
+
 
 #include "browserwin.moc"

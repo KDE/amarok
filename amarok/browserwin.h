@@ -22,14 +22,16 @@
 #include <qpixmap.h>
 
 class BrowserWidget;
+class ExpandButton;
 class PlaylistItem;
 class PlaylistWidget;
-class ExpandButton;
 
 class QCloseEvent;
 class QColor;
 class QListViewItem;
+class QPaintEvent;
 class QPoint;
+class QMoveEvent;
 class QSplitter;
 
 class KActionCollection;
@@ -98,6 +100,8 @@ class BrowserWin : public QWidget
     private:
         void initChildren();
         void closeEvent( QCloseEvent *e );
+        void moveEvent( QMoveEvent *e );
+        void paintEvent( QPaintEvent *e );
 
 // ATTRIBUTES ------
         QColor m_TextColor;

@@ -152,7 +152,6 @@ EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( p
     setName( "EffectWidget" );
     setWFlags( Qt::WType_TopLevel );
     setCaption( kapp->makeStdCaption( i18n("Effects") ) );
-    setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
     showButtonApply( false );
     showButtonCancel( false );
     setButtonText( Ok, i18n("Close") );

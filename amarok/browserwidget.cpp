@@ -41,7 +41,6 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( p
 {
     setName( "BrowserWidget" );
     setFocusPolicy( QWidget::ClickFocus );
-    setPaletteBackgroundColor( pApp->m_bgColor );
 
     addColumn( i18n("Filebrowser") );
     setFullWidth( true );
@@ -54,11 +53,9 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( p
 }
 
 
-
 BrowserWidget::~BrowserWidget()
 {
 }
-
 
 
 // METHODS ------------------------------------------------------------------
@@ -69,13 +66,11 @@ void BrowserWidget::readDir( KURL url )
 }
 
 
-
 void BrowserWidget::contentsDragMoveEvent( QDragMoveEvent* e)
 {
     e->acceptAction();
 
 }
-
 
 
 void BrowserWidget::contentsDropEvent( QDropEvent* e)
@@ -94,14 +89,12 @@ void BrowserWidget::contentsDropEvent( QDropEvent* e)
 }
 
 
-
 void BrowserWidget::focusInEvent( QFocusEvent *e )
 {
     pApp->m_pBrowserWin->m_pBrowserLineEdit->setFocus();
 
     KListView::focusInEvent( e );
 }
-
 
 
 // SLOTS ------------------------------------------------------------------
@@ -156,10 +149,10 @@ void BrowserWidget::slotCompleted()
 }
 
 
-
 void BrowserWidget::slotReturnPressed( const QString &str )
 {
     readDir( str );
 }
+
 
 #include "browserwidget.moc"

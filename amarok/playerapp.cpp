@@ -15,18 +15,17 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokarts/amarokarts.h"
+#include "browserwidget.h"
+#include "browserwin.h"
+#include "configdlg.h"
+#include "effectwidget.h"
+#include "expandbutton.h"
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "browserwin.h"
-#include "browserwidget.h"
-#include "playlistwidget.h"
 #include "playlistitem.h"
+#include "playlistwidget.h"
 #include "viswidget.h"
-#include "expandbutton.h"
-#include "Options1.h"
-#include "Options2.h"
-#include "effectwidget.h"
-#include "amarokarts/amarokarts.h"
 
 #include "debugareas.h"
 
@@ -39,18 +38,14 @@ email                :
 #include <kcmdlineargs.h>
 #include <kconfig.h>
 #include <kdebug.h>
-#include <kdialogbase.h>
 #include <kdirlister.h>
 #include <kfile.h>
 #include <kfiledialog.h>
 #include <kfileitem.h>
-#include <kfontdialog.h>
 #include <kglobalaccel.h>
-#include <kiconloader.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kmimetype.h>
 #include <kshortcut.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
@@ -72,18 +67,14 @@ email                :
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
 
-#include <qpopupmenu.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
 #include <qdialog.h>
 #include <qdir.h>
-#include <qfileinfo.h>
 #include <qpoint.h>
+#include <qpopupmenu.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
-#include <qspinbox.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -384,7 +375,7 @@ void PlayerApp::initArts()
 
     m_effectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_effectStack.start();
-    long id = m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
+    m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
 
     Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
     Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
@@ -478,7 +469,7 @@ void PlayerApp::initMixer()
 
         m_usingMixerHW = false;
         m_volumeControl.start();
-        long id = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
+        m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
 
         //TEST
         kdDebug(DA_COMMON) << "end PlayerApp::initMixer()" << endl;
@@ -516,7 +507,7 @@ bool PlayerApp::initScope()
     }
 
     m_scopeActive = false;
-    long id = m_globalEffectStack.insertBottom( m_Scope, "Analyzer" );
+    m_globalEffectStack.insertBottom( m_Scope, "Analyzer" );
 
     //TEST
     kdDebug(DA_COMMON) << "end PlayerApp::initScope()" << endl;
@@ -706,6 +697,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Crossfading", m_optXFade );
     m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
+    m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
 
     //store current item
     PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
@@ -753,6 +745,11 @@ void PlayerApp::readConfig()
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
     m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 3000 );
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
+    m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &( QColor( 0x80, 0xa0, 0xff ) ) );
+    m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &( QColor( Qt::black ) ) );
+    m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->update();
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
@@ -995,8 +992,6 @@ void PlayerApp::slotPlay()
    if( m_bIsPlaying )
      m_pPlayerWidget->m_pVis->m_dynamics = !m_pPlayerWidget->m_pVis->m_dynamics;
 
-    slotStop();
-
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
     if ( item == NULL )
@@ -1019,14 +1014,11 @@ void PlayerApp::slotPlay()
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
     }
 
-    m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
+    slotStop();
 
-    m_length = 0;
+    m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
-    factory.setAllowStreaming( true );
-    m_pPlayObject = NULL;
-    //second parameter: create BUS(true/false)
-    m_pPlayObject = factory.createPlayObject( item->url(), false );
+    m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter: create BUS(true/false)
     m_bIsPlaying = true;
 
     if ( m_pPlayObject == NULL )
@@ -1113,7 +1105,7 @@ void PlayerApp::slotStop()
         m_pPlayObject = NULL;
     }
 
-    stopXFade();
+//     stopXFade();
 
     m_bIsPlaying = false;
     m_length = 0;
@@ -1238,7 +1230,6 @@ void PlayerApp::slotAddLocation()
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
     dlg.setCaption( makeStdCaption( i18n( "Enter file or URL" ) ) );
-    dlg.setIcon( icon() );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
@@ -1444,6 +1435,8 @@ void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 void PlayerApp::slotShowAbout()
 {
     KAboutApplication dia;
+    dia.setLogo( locate( "data", "amarok/images/logo_new_active.png" ) );
+
     dia.exec();
 }
 
@@ -1467,7 +1460,6 @@ void PlayerApp::slotPlaylistHide()
 }
 
 
-
 void PlayerApp::slotEq( bool b )
 {
     if ( b )
@@ -1480,106 +1472,10 @@ void PlayerApp::slotEq( bool b )
 
 void PlayerApp::slotShowOptions()
 {
-    KDialogBase * pDia = new KDialogBase( KDialogBase::IconList, i18n( "Options" ),
-                                          KDialogBase::Ok | KDialogBase::Cancel, KDialogBase::Ok );
+    ConfigDlg *pDlg = new ConfigDlg();
+    pDlg->show();
 
-    QFrame *frame;
-    KIconLoader iconLoader;
-
-    frame = pDia->addPage( i18n( "General" ) , i18n( "Configure general options" ),
-                           iconLoader.loadIcon( "misc", KIcon::NoGroup, KIcon::SizeMedium ) );
-
-    Options1 *opt1 = new Options1( frame );
-    opt1->checkBox1->setChecked( m_optSavePlaylist );
-    opt1->checkBox7->setChecked( m_optConfirmClear );
-    opt1->checkBox6->setChecked( m_optConfirmExit );
-    opt1->checkBox4->setChecked( m_optReadMetaInfo );
-    opt1->checkBox3->setChecked( m_optShowTrayIcon );
-    opt1->checkBox5->setChecked( m_optHidePlaylistWindow );
-    opt1->checkBoxXFade->setChecked( m_optXFade );
-    opt1->crossfadeLength->setValue( m_optXFadeLength );
-
-    if ( m_optDropMode == "Ask" )
-        opt1->comboBox1->setCurrentItem( 0 );
-    if ( m_optDropMode == "Recursively" )
-        opt1->comboBox1->setCurrentItem( 1 );
-    if ( m_optDropMode == "NonRecursively" )
-        opt1->comboBox1->setCurrentItem( 2 );
-
-    //  frame = pDia->addVBoxPage( QString( "Sound" ) , QString( "Configure sound options" ),
-    //                             iconLoader.loadIcon( "sound", KIcon::NoGroup, KIcon::SizeMedium ) );
-
-    frame = pDia->addPage(i18n( "Fonts" ) , i18n( "Configure fonts" ),
-                           iconLoader.loadIcon( "fonts", KIcon::NoGroup, KIcon::SizeMedium ) );
-
-    Options2 *opt2 = new Options2( frame );
-    opt2->labelPlayerWidgetFont->setText("Some text");
-    opt2->labelPlayerWidgetScrollerFont->setText("Some another text");
-    opt2->labelBrowserWindowFont->setText("Some more text");
-
-    connect( opt2->pushPlayerWidgetFont, SIGNAL(clicked()), this, SLOT(slotChoosePlayerWidgetFont()) );
-
-    connect( opt2->pushPlayerWidgetScrollerFont, SIGNAL(clicked()), this, SLOT(slotChoosePlayerWidgetScrollerFont()) );
-
-    connect( opt2->pushBrowserWindowFont, SIGNAL(clicked()), this, SLOT(slotChooseBrowserWindowFont()) );
-
-    
-    pDia->resize( 520, 430 );
-
-    if ( pDia->exec() == QDialog::Accepted )
-    {
-        if ( opt1->checkBox1->isChecked() )
-            m_optSavePlaylist = true;
-        else
-            m_optSavePlaylist = false;
-
-        if ( opt1->checkBox7->isChecked() )
-            m_optConfirmClear = true;
-        else
-            m_optConfirmClear = false;
-
-        if ( opt1->checkBox6->isChecked() )
-            m_optConfirmExit = true;
-        else
-            m_optConfirmExit = false;
-
-        if ( opt1->checkBox4->isChecked() )
-            m_optReadMetaInfo = true;
-        else
-            m_optReadMetaInfo = false;
-
-        if ( opt1->checkBox3->isChecked() )
-            m_optShowTrayIcon = true;
-        else
-            m_optShowTrayIcon = false;
-
-        if ( opt1->checkBox5->isChecked() )
-            m_optHidePlaylistWindow = true;
-        else
-            m_optHidePlaylistWindow = false;
-
-        if ( opt1->checkBoxXFade->isChecked() )
-            m_optXFade = true;
-        else
-            m_optXFade = false;
-
-        m_optXFadeLength = opt1->crossfadeLength->value();
-
-        switch ( opt1->comboBox1->currentItem() )
-        {
-            case 0:
-                m_optDropMode = "Ask";
-                break;
-            case 1:
-                m_optDropMode = "Recursively";
-                break;
-            case 2:
-                m_optDropMode = "NonRecursively";
-                break;
-        }
-        emit sigShowTrayIcon( m_optShowTrayIcon );
-    }
-    delete pDia;
+    emit sigShowTrayIcon( m_optShowTrayIcon );
 }
 
 
@@ -1675,25 +1571,5 @@ void PlayerApp::slotWidgetRestored()
         m_pBrowserWin->show();
 }
 
-void PlayerApp::slotChooseBrowserWindowFont()
-{
-   int result = KFontDialog::getFont(m_browserWindowFont);
-   if ( result == KFontDialog::Accepted )
-      emit sigUpdateFonts();
-}
-
-void PlayerApp::slotChoosePlayerWidgetFont()
-{
-   int result = KFontDialog::getFont(m_playerWidgetFont);
-   if ( result == KFontDialog::Accepted )
-      emit sigUpdateFonts();
-}
-
-void PlayerApp::slotChoosePlayerWidgetScrollFont()
-{
-   int result = KFontDialog::getFont(m_playerWidgetScrollFont);
-   if ( result == KFontDialog::Accepted )
-      emit sigUpdateFonts();
-}
 
 #include "playerapp.moc"

@@ -33,6 +33,7 @@
 #include <arts/kartsdispatcher.h>
 #include <arts/kplayobjectfactory.h>
 
+class QColor;
 class QListView;
 class QListViewItem;
 class QString;
@@ -91,6 +92,8 @@ class PlayerApp : public KUniqueApplication
         QString m_optDropMode;
         bool m_optXFade;
         long m_optXFadeLength;
+        QColor m_optBrowserFgColor;
+        QColor m_optBrowserBgColor;
         // </option attributes>
 
         int m_Volume;
@@ -142,15 +145,12 @@ class PlayerApp : public KUniqueApplication
 
     private slots:
         void saveSessionState();
-        void slotChooseBrowserWindowFont();
-        void slotChoosePlayerWidgetFont();
-        void slotChoosePlayerWidgetScrollFont();
 
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
         void sigShowTrayIcon( bool );
-        void sigUpdateFonts();
+/*         void sigUpdateFonts(); */
 
     private:
         void initArts();

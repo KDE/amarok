@@ -39,6 +39,12 @@
                     <verstretch>0</verstretch>
                 </sizepolicy>
             </property>
+            <property name="frameShape">
+                <enum>GroupBoxPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
             <property name="title">
                 <string>&amp;General Options</string>
             </property>
@@ -206,27 +212,6 @@
     </grid>
 </widget>
 <connections>
-    <connection>
-        <sender>checkBoxXFade</sender>
-        <signal>stateChanged(int)</signal>
-        <receiver>Options1</receiver>
-        <slot>crossfadeChanged(int)</slot>
-    </connection>
-    <connection>
-        <sender>checkBoxXFade</sender>
-        <signal>stateChanged(int)</signal>
-        <receiver>Options1</receiver>
-        <slot>crossfadeChanged(int)</slot>
-    </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">Options1.ui.h</include>
-</includes>
-<slots>
-    <slot access="protected" specifier="non virtual">crossfadeChanged( int state )</slot>
-</slots>
-<functions>
-    <function access="private" specifier="non virtual">init()</function>
-</functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

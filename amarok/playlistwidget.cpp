@@ -39,32 +39,37 @@
 #include <qvaluelist.h>
 #include <qwidget.h>
 
+#include <kaccel.h>
 #include <kapplication.h>
 #include <kdebug.h>
 #include <kdirlister.h>
 #include <kfileitem.h>
+#include <klineedit.h>
 #include <klistview.h>
 #include <klocale.h>
+#include <krootpixmap.h>
 #include <kurl.h>
 #include <kurldrag.h>
-#include <klineedit.h>
-#include <kaccel.h>
 
 // CLASS PlaylistWidget --------------------------------------------------------
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         KListView( parent, name ),
+        m_rootPixmap( viewport() ),
         m_GlowCount( 100 ),
         m_GlowAdd( 5 )
 {
     kdDebug(DA_PLAYLIST) << "PlaylistWidget::PlaylistWidget()" << endl;
-    
+
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
-    setPaletteBackgroundColor( pApp->m_bgColor );
     setShowSortIndicator( true );
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
+    setStaticBackground( true );
+
+//     m_rootPixmap.setFadeEffect( 0.5, Qt::black );
+//     m_rootPixmap.start();
 
     addColumn( i18n( "Trackname" ), 280 );
     addColumn( i18n( "Title" ), 200 );
@@ -148,10 +153,10 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
         if ( e->source() == NULL )                      // dragging from outside amarok
         {
             kdDebug(DA_PLAYLIST) << "dropped item from outside amaroK" << endl;
-            
+
             if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
                 return ;
-            
+
             kdDebug(DA_PLAYLIST) << "dropped item KURL parsed ok" << endl;
 
             m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
@@ -197,8 +202,8 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
 
     for ( KURL::List::Iterator it = urlList.begin(); it != urlList.end(); it++ )
     {
-        kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist" << endl;
-        
+//         kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist" << endl;
+
         m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
         while ( !m_pDirLister->isFinished() )
             kapp->processEvents( 300 );
@@ -238,7 +243,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         }
         else
         {
-           kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
+//            kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
             if ( pApp->m_pBrowserWin->isFileValid( *it ) )
             {
                 m_pDropCurrentItem = addItem( m_pDropCurrentItem, *it );

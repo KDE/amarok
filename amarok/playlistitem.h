@@ -32,10 +32,6 @@ class QString;
 class PlayerApp;
 extern PlayerApp *pApp;
 
-/**
- *@author mark
- */
-
 class PlaylistItem : public KListViewItem
 {
 

@@ -260,7 +260,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 {
     setName( "PlayerWidget " );
     setCaption( "amaroK" );
-    setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
     setFixedSize( 310, 155 );
     setPaletteForegroundColor( pApp->m_fgColor );
     m_pPopupMenu = NULL;

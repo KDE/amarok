@@ -4,14 +4,16 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * playmode checks in popup menu set incorrectly upon loading??
+    * fix: shortcuts not saved (?)
 
-    * fix: berkus: make sure the expandbutton doesn't fire events when
-           it has had its stack expanded (behaviour a-la Winamp Classic)
+    * fix: playmode checks in popup menu set incorrectly upon loading (?)
+
+    * fix: <berkus> make sure the expandbutton doesn't fire events when
+      it has had its stack expanded (behaviour a-la Winamp Classic) (?)
 
     * fix: app freezing when renaming the file that's currently playing
 
-    * fix: sample looping @ end of track or pause (fixed?) (berkus: nope, not, just had it when emitted stop() through dcop)
+    * fix: sample looping @ end of track or pause
 
     * fix: redirected URLs do not work
 
@@ -19,12 +21,15 @@ SHORT-TERM:
 
     * add: extend documentation
 
-    * add: show not only total track length but also how much is played in playerwidget
+    * add: show not only total track length but also remaining time in
+      playerwidget
 
 
 MID-TERM:
 
-    * add: use SVG graphics in the playerWidget, and then allow the widget to be resizeable to any size the user desires
+    * add: option for forcing software mixing
+
+    * add: option to add dirs sorted automatically
 
     * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
@@ -32,30 +37,24 @@ MID-TERM:
 
     * fix: honor KDE single/double-click setting in BrowserWin
 
-    * add: generate text or html document from playlist entries
-
     * add: display warning when artsd is run w/o realtime
 
-    * add: background "transparency" for playlist window
+    * add: background pseudo-transparency for playlist window
 
     * add: better cleanup at program exit; delete all new'ed objects
 
-    * add: title streaming ( mp3PlayObject needs to be patched )
-
-    * change: ability to get currently playing title to clipboard, or writing info in some file or
-      some other easy way to get this info..
+    * extend: ability to get currently playing title to clipboard, or writing
+      info in some file or some other easy way to get this info..
 
     * change: let timedisplay also count with streams
 
-    * fix: try to make title-scrolling smoother / debug scrolling code
-
-    * add: function "add current dir"
+    * add: function for adding all files in current dir to playlist
 
     * add: seeking with mousewheel
 
     * add: make windows magnetic / sticking together
 
-    * add: option to show dirs sorted alphabetically
+    * add: option to show dirs in Filebrowser sorted by time
 
     * add: make blinking currentTrack optional
 
@@ -65,6 +64,13 @@ MID-TERM:
 
 
 LONG-TERM:
+
+    * add: playmode indication button in main widget (repeat track/pl/shuffle),
+      clickable
+
+    * add: title streaming (mp3PlayObject needs to be patched)
+
+    * add: generate text or html document from playlist entries
 
     * fix: polish and finish i18n() stuff
 
@@ -86,8 +92,11 @@ LONG-TERM:
 
     * add bookmarks (inside of tracks) and nifty bookmark browser
 
-    * add pitch-slider (?) (berkus: should be in separate "Effects Control" panel)
+    * add pitch-slider (?) (berkus: should be in separate "Effects Control"
+      panel)
 
 
 IDEAS:
-
+    * resizable playerwidget, like in Winamp3. Maybe using SVG graphics, or
+      scaled down bitmaps. Would look most cool when it could resize smoothly
+      in realtime *drool*

@@ -19,6 +19,7 @@
 #define PLAYLISTWIDGET_H
 
 #include <klistview.h>
+#include <krootpixmap.h>
 #include <kurl.h>
 
 class PlaylistItem;
@@ -57,6 +58,7 @@ class PlaylistWidget : public KListView
         void contentsDropEvent( QDropEvent* e);
 
 // ATTRIBUTES ------
+        KRootPixmap m_rootPixmap;
 
     public slots:
         void slotGlowTimer();

@@ -1,14 +1,18 @@
 amaroK Changelog
 ==================
-(c) 2002, 2003 by Mark Kretschmann. GPL License.
+(c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: rewritten config dialog and moved into separate file
+  * add: started configurable colors
   * change: spectrum analyser bars now have dynamics, ie. they move smoothly between values
   * add: mouse wheel over systray icon changes the track, hold shift to change the volume
   * change: rearranged menu order for systray (quit = last)
   * change: moved volume slider to the right, lets see if this is better
   * add: started a font selection page in settings
   * fix: Stream urls are now properly demangled/unescaped (%20 => space etc)
+
+VERSION 0.6.91:
   * fix: ExpandButton submenu now slightly delayed
   * fix: dropping items into playlist
   * add: drop-target indicator line in PlaylistWidget, providing visual feedback
@@ -124,7 +128,7 @@ VERSION 0.5.1:
   * lots of UI-changes in the main widget. uses a background pixmap now, a 
     custom font and widget for the time-display, and generally looks better	
   * fixed issues with the liquid skin. unfortunately, there seems to be no way 
-    to display pushbuttons correctly with a black background under liquid. so, 
+    to display pushbuttons correctly with a black background under liquid. so,
     until I find a solution for that, the expandbutton widget doesn't look quite 
     as cool as it used to. maybe I should ask mosfet about this..
 
@@ -136,9 +140,9 @@ VERSION 0.15:
   * fixed tons of bugs in aRts playing code. i think i got it right now.
   * fixed loading and saving of playlists. can cope with all protocols now.
   * fixed a bug in EffectWidget.cpp, that gave a compile error on some systems. 
-  * Converting QString into std::string was not donecorrectly. Thanks to 
+  * Converting QString into std::string was not donecorrectly. Thanks to
     Whitehawk Stormchaser for that one :)					
-  * changed project name to "amaroK" and built new project-file 
+  * changed project name to "amaroK" and built new project-file
 
 VERSION 0.14 (internal):
   * implemented use of arts-software-mixing, in case hardware-mixing 

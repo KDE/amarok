@@ -26,8 +26,10 @@
 #include <qlistview.h>
 #include <qmessagebox.h>
 #include <qpainter.h>
+#include <qpalette.h>
 #include <qpen.h>
 #include <qpixmap.h>
+#include <qpoint.h>
 #include <qrect.h>
 #include <qstring.h>
 
@@ -152,9 +154,16 @@ void PlaylistItem::setDir( bool on )
 }
 
 
-void PlaylistItem::paintCell( QPainter * p, const QColorGroup&, int column, int width, int align )
+void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    QColor col( 0x80, 0xa0, 0xff );
+    // FIXME: alternative version
+//     QColorGroup colGroup( cg );
+//     colGroup.setColor( QColorGroup::Text, m_bIsGlowing ? m_glowCol : pApp->m_optBrowserFgColor );
+//
+//     KListViewItem::paintCell( p, colGroup, column, width, align );
+
+// ----------------------------------------------
+
     int margin = 1;
 
     QPixmap *pBufPixmap = new QPixmap( width, height() );
@@ -163,11 +172,11 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup&, int column, int 
     if ( listView() && QString( listView()->name() ) == "PlaylistWidget" &&
          isAlternate() )
     {
-        pPainterBuf.setBackgroundColor( QColor( Qt::darkGray ).dark( 250 ) );
+        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor.dark( 250 ) );
     }
     else
     {
-        pPainterBuf.setBackgroundColor( Qt::black );
+        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor );
     }
 
     if ( m_bIsGlowing )
@@ -176,12 +185,12 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup&, int column, int 
     }
     else
     {
-        pPainterBuf.setPen( col );
+        pPainterBuf.setPen( pApp->m_optBrowserFgColor );
     }
 
     if ( isSelected() )
     {
-        pPainterBuf.fillRect( 0, 0, width, height(), col.dark( 290 ) );
+        pPainterBuf.fillRect( 0, 0, width, height(), pApp->m_optBrowserFgColor.dark( 290 ) );
     }
     else
     {
