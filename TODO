@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #44 being the highest available (take this one for your next bug and increase here)
+           #45 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
+               nothing happens. you must close it using the mouse
 
     * fix: #43 <markey> since we rely on TagLib now for length-detection, we cannot determine the length
                of .mod (etc.) files. either: 1) extend TagLib or 2) resurrect aRts length detection as 
