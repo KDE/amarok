@@ -3,12 +3,16 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #79 being the highest available (take this one for your next bug and increase here)
+           #81 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * fix: #80 with the new toolbar it's impossible to resize the playlist smaller than ca. 700px width
+
 MID-TERM:
+
+    * fix: #79 GstEngine log volume -->markey
 
     * chg: #78 determine some behavior for the clear/shuffle/etc. buttons when a search is in action
                clear   -> only clear the stuff that was searched for?
