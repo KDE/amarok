@@ -62,6 +62,7 @@ Q_OBJECT
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 
+        void show();
         void loadCover( const QString &, const QString & );
         void fetchSelectedCovers();
         void deleteSelectedCovers();
@@ -101,6 +102,9 @@ Q_OBJECT
         int m_fetchingCovers;
         int m_coversFetched;
         int m_coverErrors;
+
+        //used in show()
+        bool m_firstShow;
 };
 
 class CoverView : public KIconView

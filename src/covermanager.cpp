@@ -27,6 +27,7 @@
 
 #include <kapplication.h>
 #include <kconfig.h>
+#include <kcursor.h>
 #include <kdebug.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -56,6 +57,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     , m_fetchingCovers( 0 )
     , m_coversFetched( 0 )
     , m_coverErrors( 0 )
+    , m_firstShow( true )
 {
     instance = this;
 
@@ -195,7 +197,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     #endif
 
     m_currentView = AllAlbums;
-    m_artistView->setSelected( m_artistView->firstChild(), true );    //load all albums
 
     //set saved window size
     KConfig *config = kapp->config();
@@ -214,6 +215,23 @@ CoverManager::~CoverManager()
 
     delete nocover;
     instance = 0;
+}
+
+
+void CoverManager::show()
+{
+    QWidget::show();
+    setCursor( KCursor::workingCursor() );
+    kapp->processEvents();
+
+    // We do this operation after the first showing, as it would block the GUI in the ctor
+
+    if ( m_firstShow ) {
+        m_firstShow = false;
+        m_artistView->setSelected( m_artistView->firstChild(), true );    //load all albums
+    }
+
+    unsetCursor();
 }
 
 
