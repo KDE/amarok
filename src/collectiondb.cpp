@@ -502,7 +502,7 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabArtist, i18n( "Unknown" ) );
+        qb.excludeMatch( QueryBuilder::tabArtist, "" );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -519,7 +519,7 @@ CollectionDB::albumList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+        qb.excludeMatch( QueryBuilder::tabAlbum, "" );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -536,7 +536,7 @@ CollectionDB::genreList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabGenre, i18n( "Unknown" ) );
+        qb.excludeMatch( QueryBuilder::tabGenre, "" );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -553,7 +553,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabYear, i18n( "Unknown" ) );
+        qb.excludeMatch( QueryBuilder::tabYear, "" );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
@@ -569,7 +569,7 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
     return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
                   "tags.album = album.id AND tags.artist = artist.id "
                   "AND artist.name = '" + escapeString( artist ) + "' " +
-                  ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
+                  ( withUnknown ? QString() : "AND album.name <> '' " ) +
                   ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
                   "ORDER BY lower( album.name );" );
 }
@@ -580,7 +580,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
     return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
                   "tags.album = album.id AND tags.artist = artist.id " +
-                  ( withUnknown ? QString() : "AND album.name <> 'Unknown' AND artist.name <> 'Unknown' " ) +
+                  ( withUnknown ? QString() : "AND album.name <> '' AND artist.name <> '' " ) +
                   ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
                   "ORDER BY lower( album.name );" );
 }
@@ -615,10 +615,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool temporary )
     command += escapeString( bundle->url().directory() ) + "',";
     command += "'" + QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + "',";
 
-    command += escapeString( QString::number( albumID( bundle->album().isEmpty() ? i18n( "Unknown" ) : bundle->album(), true, !temporary ) ) ) + ",";
-    command += escapeString( QString::number( artistID( bundle->artist().isEmpty() ? i18n( "Unknown" ) : bundle->artist(), true, !temporary ) ) ) + ",";
-    command += escapeString( QString::number( genreID( bundle->genre().isEmpty() ? i18n( "Unknown" ) : bundle->genre(), true, !temporary ) ) ) + ",'";
-    command += escapeString( QString::number( yearID( bundle->year().isEmpty() ? i18n( "Unknown" ) : bundle->year(), true, !temporary ) ) ) + "','";
+    command += escapeString( QString::number( albumID( bundle->album(), true, !temporary ) ) ) + ",";
+    command += escapeString( QString::number( artistID( bundle->artist(), true, !temporary ) ) ) + ",";
+    command += escapeString( QString::number( genreID( bundle->genre(), true, !temporary ) ) ) + ",'";
+    command += escapeString( QString::number( yearID( bundle->year(), true, !temporary ) ) ) + "','";
 
     command += escapeString( bundle->title() ) + "','";
     command += escapeString( bundle->comment() ) + "','";
@@ -819,7 +819,7 @@ CollectionDB::checkCompilations( const QString &path )
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
-        if ( albums[ i ] == i18n( "Unknown" ) || albums[ i ].isEmpty() ) continue;
+        if ( albums[ i ].isEmpty() ) continue;
 
         const uint album_id = albumID( albums[ i ], FALSE, TRUE );
         artists = query( QString( "SELECT DISTINCT artist_temp.name FROM tags_temp, artist_temp WHERE tags_temp.album = '%1' AND tags_temp.artist = artist_temp.id;" )

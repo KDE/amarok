@@ -353,7 +353,7 @@ CollectionView::renderView( )  //SLOT
 
     for ( int i = values.count() - 1; i >= 0; --i )
     {
-        if ( values[i].isEmpty() )
+        if ( values[i].stripWhiteSpace().isEmpty() )
             values[i] = i18n( "Unknown" );
 
         KListViewItem* item = new KListViewItem( this );
@@ -526,7 +526,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         Item* child = new Item( item );
         child->setDragEnabled( true );
         child->setDropEnabled( false );
-        child->setText( 0, values[ i ] );
+        child->setText( 0, values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ] );
         if ( expandable )
             child->setPixmap( 0, pixmap );
         else
