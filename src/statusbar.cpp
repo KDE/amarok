@@ -105,11 +105,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     w2->setFixedHeight( h );
     m_pSlider->setFixedHeight( h );
 
-    connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
-
-    // set us up the bomb
+    // set up us the bomb
     engineStateChanged( EngineBase::Empty );
     slotItemCountChanged( 0 );
+
+    // for great justice!
+    connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 }
 
 
