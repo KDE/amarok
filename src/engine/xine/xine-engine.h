@@ -48,12 +48,16 @@ private:
     xine_post_t        *m_post;
 };
 
-class Fader : public QThread
+class Fader : public QObject, public QThread
 {
-   xine_stream_t *m_stream; /// has to be disposed manually
+    xine_t             *m_xine;
+    xine_stream_t      *m_decrease;
+    xine_stream_t      *m_increase;
+    xine_audio_port_t  *m_port;
 public:
-   Fader( xine_stream_t* );
-   virtual void run();
+    Fader( xine_t*, xine_stream_t*, xine_stream_t*, xine_audio_port_t* );
+   ~Fader();
+    virtual void run();
 };
 
 #endif

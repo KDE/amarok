@@ -26,7 +26,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 
 //define this to use xine in a more standard way
-//#define XINE_SAFE_MODE
+#define XINE_SAFE_MODE
 
 
 ///some logging static globals
@@ -54,6 +54,7 @@ XineEngine::XineEngine()
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
     addPluginProperty( "HasEqualizer", "true" );
+    addPluginProperty( "HasCrossfade", "true" );
 }
 
 XineEngine::~XineEngine()
@@ -121,10 +122,11 @@ XineEngine::init()
    }
 
    xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
-                                       &XineEngine::XineEventListener,
-                                       (void*)this );
+                                      &XineEngine::XineEventListener,
+                                      (void*)this );
 
    #ifndef XINE_SAFE_MODE
+
    //implemented in xine-scope.h
    m_post = scope_plugin_new( m_xine, m_audioPort );
 
@@ -137,6 +139,8 @@ XineEngine::init()
    return true;
 }
 
+static Fader *s_fader = 0;
+
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
@@ -148,11 +152,23 @@ XineEngine::load( const KURL &url, bool isStream )
 
     Engine::Base::load( url, isStream || url.protocol() == "http" );
 
-//     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
-//        //TODO not paused
-//        new Fader( m_stream );
-//        m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
-//     }
+    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
+
+       //TODO not paused
+
+       xine_stream_t *oldstream = m_stream;
+       xine_audio_port_t *oldport = m_audioPort;
+
+       m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
+       m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
+
+       s_fader = new Fader( m_xine, oldstream, m_stream, oldport );
+
+       xine_event_dispose_queue( m_eventQueue );
+       xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
+          &XineEngine::XineEventListener,
+          (void*)this );
+    }
 
     if( xine_open( m_stream, url.url().local8Bit() ) )
     {
@@ -176,10 +192,16 @@ XineEngine::play( uint offset )
 {
     if( xine_play( m_stream, 0, offset ) )
     {
+        if( s_fader )
+           s_fader->start();
+
         emit stateChanged( Engine::Playing );
 
         return true;
     }
+
+    //we need to stop the track that is prepped for crossfade
+    delete s_fader;
 
     emit stateChanged( Engine::Empty );
 
@@ -548,36 +570,121 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 /// class Fader
 //////////////////
 
-Fader::Fader( xine_stream_t *stream )
-   : QThread()
-   , m_stream( stream )
+Fader::Fader( xine_t *xine, xine_stream_t *decrease, xine_stream_t *increase, xine_audio_port_t *port )
+   : QObject()
+   , QThread()
+   , m_xine( xine )
+   , m_decrease( decrease )
+   , m_increase( increase )
+   , m_port( port )
 {
-   start();
+    xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+    xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
 }
 
+Fader::~Fader()
+{
+     wait();
+
+     debug() << k_funcinfo << endl;
+
+     xine_close( m_decrease );
+     xine_dispose( m_decrease );
+     xine_close_audio_driver( m_xine, m_port );
+}
+
+struct fade_s {
+    int sleep;
+    uint volume;
+    xine_stream_t *stream;
+
+    fade_s( uint s, uint v, xine_stream_t *st ) : sleep( s ), volume( v ), stream( st ) {}
+};
+
+#include <list>
 void
 Fader::run()
 {
-   int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
+    using std::list;
 
-   while( volume ) {
-      int time = int(30000.0 * (-log10( volume ) + 2));
-      debug() << volume << ": " << time << "us\n";
-      ::usleep( time );
+    list<fade_s> data;
 
-      /*xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, */--volume/* )*/;
-   }
+    int sleeps[100];
+    for( uint v = 0; v < 100; ++v )
+        //the usleep time for this volume
+        sleeps[v] = int(120000.0 * (-log10( v+1 ) + 2));
 
-   debug() << "ready... " << endl;
-   ::usleep( 2 * 1000 * 1000 );
-   debug() << "go\n";
+    for( int v = 99; v >= 0; --v ) {
+        data.push_back( fade_s( sleeps[v], v, m_decrease ) );
+        kdDebug() << v << ": " << sleeps[v] << endl;
+    }
 
-   //xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+    {
+        /**
+         * Here we try to make a list consisting of many small sleeps
+         * inbetween each volume increase/decrease
+         */
 
-   xine_close( m_stream );
-   xine_dispose( m_stream );
+        int v = 0;
+        int tu = 0;
+        int td = sleeps[0];
+        for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it ) {
+            tu += (*it).sleep;
 
-   delete this;
+            while ( tu > td ) {
+                kdDebug() << tu << ", " << td << " for v=" << v << endl;
+
+                //this is the sleeptime for the structure we are about to insert
+                const int newsleep = tu - td;
+
+                //first we need to update the sleep for the previous structure
+                list<fade_s>::iterator jt = it; --jt;
+                (*jt).sleep -= newsleep;
+
+                //insert the new structure for the increasing stream
+                data.insert( it, fade_s( newsleep, v, m_increase ) );
+
+                kdDebug() << "new: " << newsleep << endl;
+
+                //decrease the contextual volume
+                if ( ++v > 99 )
+                    goto done;
+
+                //update td
+                td += sleeps[v];
+            }
+
+            kdDebug() << tu << ", " << td << " for v=" << v << endl;
+        }
+
+        done: ;
+    }
+
+    // perform the fading operations
+    for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it )
+    {
+        debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
+
+        int sleep = (*it).sleep;
+
+        if( sleep < 0 ) {
+            kdDebug() << "sleep < 0 for " << ((*it).stream == m_increase ? "increasing stream" : "decreasing stream") << " at volume=" << (*it).volume << endl;
+            sleep = 0;
+        }
+
+            QThread::usleep( sleep );
+
+        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, (*it).volume );
+    }
+
+    debug() << "[fader] Done!\n";
+
+    //stop using cpu!
+    xine_stop( m_decrease );
+
+    QThread::msleep( 5000 );
+
+    deleteLater();
 }
 
 #include "xine-engine.moc"
