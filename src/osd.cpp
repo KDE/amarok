@@ -566,6 +566,7 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     text.replace( "&lt;",  "<" );
     text.replace( "&gt;",  ">" );
     text.replace( "&amp;", "&" );
+    text.replace( "\\n", "\n" );
 
     m_text = text;
     m_image = image;
