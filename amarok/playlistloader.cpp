@@ -123,7 +123,7 @@ void PlaylistLoader::run()
        m_recursionCount = -1;
        process( m_list );
 
-       QApplication::postEvent( m_listView, new LoaderDoneEvent( this ) );
+       QApplication::postEvent( m_listView, new PlaylistLoader::DoneEvent( this ) );
 }
 
 
@@ -190,16 +190,17 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
 }
 
 
+//FIXME make separate classes you dolt!
 inline
 void PlaylistLoader::postDownloadRequest( const KURL &u )
 {
-    QApplication::postEvent( m_listView, new LoaderEvent( this, u ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u ) );
 }
 
 inline
 void PlaylistLoader::postBundle( const KURL &u, MetaBundle *mb )
 {
-    QApplication::postEvent( m_listView, new LoaderEvent( this, u, mb ) );
+    QApplication::postEvent( m_listView, new PlaylistLoader::SomeUrlEvent( this, u, mb ) );
 }
 
 inline
@@ -227,8 +228,12 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
         switch( type )
         {
         case 1:
-           loadM3u( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
+        {
+           KURL::List urls = loadM3u( stream, path.left( path.findRev( '/' ) + 1 ) ); //TODO verify that relative playlists work!!
+           urls.prepend( path ); //FIXME
+           QApplication::postEvent( m_listView, new PlaylistFoundEvent( urls ) );
            break;
+        }
         case 2:
            loadPls( stream );
            break;
@@ -325,8 +330,10 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 }
 
 
-void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
+KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
 {
+    KURL::List urls;
+
     QString str, title;
     int length = 0;
 
@@ -344,11 +351,16 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
             if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
-            postBundle( KURL::fromPathOrURL( str ), ( length != 0 ) ? new MetaBundle( title, length ) : 0 );
+            KURL url = KURL::fromPathOrURL( str );
+            urls.append( url );
+
+            postBundle( url, ( length != 0 ) ? new MetaBundle( title, length ) : 0 );
 
             length = 0;
         }
     }
+
+    return urls;
 }
 
 
@@ -391,13 +403,13 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 
 
 
-PlaylistLoader::LoaderEvent::~LoaderEvent()
+PlaylistLoader::SomeUrlEvent::~SomeUrlEvent()
 {
    delete m_tags;
 }
 
 
-PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
+PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
 {
    //This function must be called from the GUI!
 
@@ -462,81 +474,128 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
 
 
-// TagReader ===============
+// ThreadWeaver ===============
 
-void TagReader::append( PlaylistItem *item )
+void
+ThreadWeaver::append( Job* const job )
 {
    //for GUI access only
-   //we're a friend of PlaylistItem
 
-   //TODO taglib isn't network transparent
-   if( item->url().protocol() == "file" )
-   {
-      //QDeepCopy<QString> url = item->url().path();
-      Bundle bundle( item, item->url() );
+    mutex.lock();
+    m_Q.append( job );
+    mutex.unlock();
 
-      mutex.lock();
-      m_Q.push_back( bundle );
-      mutex.unlock();
-
-      if( !running() )
-      {
-          start( QThread::LowestPriority );
-          //m_parent->setCursor( KCursor::workingCursor() );
-          QApplication::setOverrideCursor( KCursor::workingCursor() );
-      }
-   }
+    if( !running() )
+    {
+        start( QThread::LowestPriority );
+    }
 }
 
-
-void TagReader::run()
+bool
+ThreadWeaver::remove( Job* const job )
 {
-    MetaBundle *tags;
+    //TODO you need to be able to only remove jobs of a certain type frankly.
+    //TODO this is no good when you say need to remove a job that will act on a playlistitem etc.
+    //maybe above is void* and you make operator== pure virtual?
 
+    Q_ASSERT( "ThreadWeaver::remove() called, this is NOT YET SAFE!\n" );
+
+    bool b;
+
+    mutex.lock();
+    //TODO we delete or user deletes is yet undecided
+    b = m_Q.remove( job );
+    mutex.unlock();
+
+    //TODO inform users of thread that you have to postpone deletion of stuff that may be in event loop
+    return b;
+}
+
+void
+ThreadWeaver::cancel()
+{
+    //TODO you need to be able to only remove jobs of a certain type frankly.
+
+    Q_ASSERT( "ThreadWeaver::cancel() called, this is NOT YET SAFE!\n" );
+
+    m_Q.setAutoDelete( true );
+    mutex.lock();
+    m_Q.clear();
+    mutex.unlock();
+    m_Q.setAutoDelete( false );
+
+    //TODO inform users of thread that you have to postpone deletion of stuff that may be in event loop
+}
+
+void
+ThreadWeaver::run()
+{
     msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
                    //start processing, and thus prevent unecessary stopping and starting of the thread
 
-    kdDebug() << "[reader] Started..\n";
+    kdDebug() << "[weaver] Started..\n";
+    QApplication::postEvent( m_parent, new QCustomEvent( ThreadWeaver::Started ) );
 
     while( m_bool )
     {
         mutex.lock();
-        if( m_Q.empty() ) { mutex.unlock(); break; } //point of loop exit is here
-        Bundle bundle( m_Q.front() );
+        if( m_Q.isEmpty() ) { mutex.unlock(); break; } //we exit the loop here
+        Job *job = m_Q.getFirst();
+        m_Q.removeFirst();
         mutex.unlock();
 
-        tags = readTags( bundle.url ); //rate-limiting step
-
-        //we need to check the item is still there
-        //if the playlistItem was removed it will no longer be in the queue
-        mutex.lock();
-        if( !m_Q.empty() && m_Q.front() == bundle )
-        {
-            QApplication::postEvent( m_parent, new TagReaderEvent( bundle.item, tags ) );
-            m_Q.pop_front();
-        }
-        mutex.unlock();
+        if( job->doJob() )
+            job->postJob(); //Qt will delete the job for us
+        else
+            delete job;     //we need to delete the job
     }
-    kdDebug() << "[reader] Done!\n";
 
-
-    QApplication::postEvent( m_parent, new QCustomEvent( TagReader::Done ) );
+    kdDebug() << "[weaver] Done!\n";
+    QApplication::postEvent( m_parent, new QCustomEvent( ThreadWeaver::Done ) );
 }
 
+inline void
+ThreadWeaver::Job::postJob() { QApplication::postEvent( m_target, this ); } //TODO rename
 
-MetaBundle *TagReader::readTags( const KURL &url ) //STATIC
+
+
+TagReader::TagReader( QObject *o, PlaylistItem *pi )
+   : Job( o, Job::TagReader )
+   , m_item( pi )
+   , m_url( pi->url() )
+   , m_tags( 0 )
+{}
+
+TagReader::~TagReader()
 {
-   MetaBundle *tags = 0;
+    delete m_tags;
+}
 
-   //audioproperties are read on demand
-   TagLib::FileRef f( url.path().local8Bit(), true );
+bool
+TagReader::doJob()
+{
+    if( m_url.protocol() == "file" )
+    {
+        m_tags = readTags( m_url );
+        return true;
+    }
 
-   if ( !f.isNull() )
+    return false;
+}
+
+MetaBundle*
+TagReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
+{
+   //audioproperties are read on demand (TODO make this so!)
+   //TODO read only the audioproperties that are visible
+   TagLib::FileRef f( url.path().local8Bit(), /*readAudioProps*/ true );
+
+   if( !f.isNull() )
    {
       //it is my impression from looking at the source that tag() never returns 0
       const TagLib::Tag *tag = f.tag();
 
-      tags = new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
+      return new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
                        TStringToQString( tag->artist() ).stripWhiteSpace(),
                        TStringToQString( tag->album() ).stripWhiteSpace(),
                        ( tag->year() == 0 ) ? QString() : QString::number( tag->year() ),
@@ -545,42 +604,11 @@ MetaBundle *TagReader::readTags( const KURL &url ) //STATIC
                        ( tag->track() == 0 ) ? QString() : QString::number( tag->track() ),
                        f.audioProperties() );
    }
-
-   return tags;
-}
-
-
-void TagReader::cancel()
-{
-   mutex.lock();
-   m_Q.clear();
-   mutex.unlock();
-
-   //this is because currently, tagreader 98% of the time has sent events for playlistitems to be deleted
-   //by processing events you process these playlistItem events and then after this function theory are deleted
-   //FIXME delay deletion of the items instead (use an event to do it instead)
-   kapp->processEvents();
-}
-
-
-void TagReader::remove( PlaylistItem *pi )
-{
-   //thread safe removal of above item, called when above item no longer needs tags, ie is about to be deleted
-
-   mutex.lock();
-   m_Q.remove( Bundle( pi, KURL() ) );
-   mutex.unlock();
-}
-
-
-
-TagReader::TagReaderEvent::~TagReaderEvent()
-{
-    delete m_tags;
+   else return 0;
 }
 
 void
-TagReader::TagReaderEvent::bindTags()
+TagReader::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
@@ -591,7 +619,7 @@ TagReader::TagReaderEvent::bindTags()
 }
 
 void
-TagReader::TagReaderEvent::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
+TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 {
     //for GUI access only
     //we need to add this item to the search-index
@@ -608,4 +636,75 @@ TagReader::TagReaderEvent::addSearchTokens( QStringList &tokens, QPtrList<QListV
 
     tokens.append( s );
     ptrs.append( m_item );
+}
+
+
+
+
+//TODO deepcopy?
+//TODO leave a temp message in the listview item until this completes
+//TODO use a enum for TagType
+TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int col )
+: Job( o, Job::TagWriter )
+, m_item( pi )
+, m_tagString( s )
+, m_tagType( col )
+{
+    pi->setText( col, i18n( "Writing tag..." ) );
+}
+
+#include <taglib/tag.h>
+#include <taglib/tstring.h>
+
+bool
+TagWriter::doJob()
+{
+    const KURL url = m_item->url(); //FIXME safe?
+    TagLib::FileRef f( url.path().local8Bit(), false );
+
+    if( !f.isNull() )
+    {
+        TagLib::Tag *t = f.tag();
+        TagLib::String s = QStringToTString( m_tagString );
+
+        switch( m_tagType ) {
+        case 1:
+            t->setTitle( s );
+            break;
+        case 2:
+            t->setArtist( s );
+            break;
+        case 3:
+            t->setAlbum( s );
+            break;
+        case 4:
+            t->setYear( m_tagString.toInt() );
+            break;
+        case 5:
+            //FIXME how does this work for vorbis files?
+            //Are we likely to overwrite some other comments?
+            //Vorbis can have multiple comment fields..
+            t->setComment( s );
+            break;
+        case 6:
+            t->setGenre( s );
+            break;
+        case 7:
+            t->setTrack( m_tagString.toInt() );
+            break;
+        default:
+            return false;
+        }
+
+        f.save();
+    }
+
+    //FIXME can TagLib::Tag::save() not fail?
+    return true;
+}
+
+void
+TagWriter::updatePlaylistItem()
+{
+    m_item->setText( m_tagType, m_tagString );
 }

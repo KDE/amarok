@@ -19,6 +19,7 @@
 #define PLAYLISTWIDGET_H
 
 #include "browserwin.h"  //friend
+
 #include <qstringlist.h> //stack allocated
 #include <qptrlist.h>    //stack allocated
 #include <klistview.h>   //baseclass
@@ -42,7 +43,8 @@ class QTimer;
 class QEvent;
 
 class MetaBundle;
-class TagReader;
+class ThreadWeaver;
+class PlaylistBrowser;
 
 
 /*
@@ -61,6 +63,17 @@ class TagReader;
  *
  */
 
+/*******
+ * TODO
+ *
+ * The engine and playlist should be more linked, through a few signals or direct functions IMO.
+ * Then the engine says, isThereMoreTracks(), gimmeNextTrack() and it has a series of signals:
+ * play( const MetaBundle& ), stopped(), etc. that all UI bits can connect to. But the link between the
+ * playlist and the engine needs to be concrete.
+ * The playlist should offer out next/prev/play/undo/redo as KActions.
+ * We'd have to derive our own KAction class so we can plug QPushButtons into layouts, etc.
+ *
+ ***/
 
 class PlaylistWidget : private KListView
 {
@@ -73,6 +86,8 @@ class PlaylistWidget : private KListView
         void saveM3u( const QString& ) const;
         bool isEmpty() const { return childCount() == 0; }
         bool isAnotherTrack() const;
+
+        QWidget *browser();
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
@@ -142,6 +157,8 @@ class PlaylistWidget : private KListView
         void setSorting( int, bool=true );
 
 // ATTRIBUTES ------
+        PlaylistBrowser *m_browser;
+
         QTimer* const m_GlowTimer; //FIXME allocate on stack
         int m_GlowCount;
         int m_GlowAdd;
@@ -157,7 +174,7 @@ class PlaylistWidget : private KListView
         QPtrList<QListViewItem> searchPtrs;
         QPtrList<QListViewItem> recentPtrs;
 
-        TagReader* const m_tagReader;
+        ThreadWeaver* const m_weaver;
 
         QPushButton *m_undoButton;
         QPushButton *m_redoButton;

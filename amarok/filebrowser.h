@@ -108,7 +108,7 @@ public:
     KActionCollection *actionCollection() { return mActionCollection; };
     QString location() const;
     static QColor altBgColor;
-    QSize sizeHint() { return QSize( 100, 100 ); }
+    QSize sizeHint() const { return QSize( 220, 50 ); } //default embedded sidebar width
 
 public slots:
     void slotFilterChange(const QString&);

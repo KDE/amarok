@@ -17,6 +17,7 @@
 
 #include "amarokconfig.h"
 #include "playerapp.h" //restoreCurrentTrack(), removeSelectedItems(), restoreCurrentTrack() //FIXME remove!
+#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlistwidget.h"
@@ -51,6 +52,7 @@
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
     : KListView( parent, name )
+    , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
     , m_GlowTimer( new QTimer( this ) )
     , m_GlowCount( 100 )
     , m_GlowAdd( 5 )
@@ -58,7 +60,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     , m_cachedTrack( 0 )
     , m_nextTrack( 0 )
     , m_marker( 0 )
-    , m_tagReader( new TagReader( this ) )
+    , m_weaver( new ThreadWeaver( this ) )
     , m_undoButton( new QPushButton( i18n( "&Undo" ), 0 ) )
     , m_redoButton( new QPushButton( i18n( "&Redo" ), 0 ) )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
@@ -162,6 +164,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
 
     // Read playlist columns layout
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
+
+    //TODO remove this in a few versions
+    if( columnWidth( 0 ) == 0 ) setColumnWidth( 100 );
 }
 
 
@@ -169,17 +174,19 @@ PlaylistWidget::~PlaylistWidget()
 {
    saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-   if( m_tagReader->running() )
+   if( m_weaver->running() )
    {
        kdDebug() << "[TagReader] Halting jobs..\n";
-       m_tagReader->halt();
-       m_tagReader->wait();
+       m_weaver->halt();
+       m_weaver->wait();
    }
 }
 
 
 
 //PUBLIC INTERFACE ===================================================
+
+QWidget *PlaylistWidget::browser() { return m_browser; }
 
 void PlaylistWidget::insertMedia( const KURL::List &list )
 {
@@ -228,7 +235,7 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
    case Prev:
       //I've talked on a few channels, people hate it when media players restart the current track
       //first before going to the previous one (most players do this), so let's not do it!
-      
+
       // choose right order in random-mode
       if( AmarokConfig::randomMode() && recentPtrs.count() > 1 )
       {
@@ -344,7 +351,10 @@ void PlaylistWidget::clear() //SLOT
     emit aboutToClear(); //will cause an saveUndoState()
 
     setCurrentTrack( NULL );
-    m_tagReader->cancel(); //stop tag reading (very important!)
+    m_weaver->cancel(); //stop tag reading (very important!)
+
+    kapp->processEvents(); //FIXME FIXME FIXME!!!
+
     recentPtrs.clear();
     searchTokens.clear();
     searchPtrs.clear();
@@ -401,7 +411,7 @@ void PlaylistWidget::removeSelectedItems() //SLOT
             searchTokens.remove( searchTokens.at( x ) );
             searchPtrs.remove( searchPtrs.at( x ) );
         }
-        
+
         do
         {
             x = recentPtrs.find( item );
@@ -410,11 +420,11 @@ void PlaylistWidget::removeSelectedItems() //SLOT
         } while ( x >= 0 );
 
         //if tagreader is running don't let tags be read for this item and delete later
-        if ( m_tagReader->running() )
+        if ( m_weaver->running() )
         {
             //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
             item->setVisible( false ); //will be removed next time playlist is cleared
-            m_tagReader->remove( item );
+            //FIXME m_weaver->remove( item );
         }
         else
             delete item;
@@ -694,8 +704,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
             {
                 if( it.current()->isSelected() )
                 {
-                    static_cast<PlaylistItem *>(*it)->writeTag( newTag, col );
-                    it.current()->setText( col, newTag );
+                    m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ) );
                 }
                 else break;
             }
@@ -819,8 +828,7 @@ void PlaylistWidget::slotEraseMarker() //SLOT
 
 void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
 {
-    //Surely we don't need to test for NULL here?
-    static_cast<PlaylistItem*>(lvi)->writeTag( tag, col );
+    m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ) );
 
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
@@ -836,8 +844,10 @@ void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
 void PlaylistWidget::contentsDragEnterEvent( QDragEnterEvent* e )
 {
+    //TODO accept only if we want it!
     e->accept();
 }
+
 
 void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 {
@@ -913,7 +923,8 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
         popup.setCheckable( true );
         popup.insertTitle( i18n( "Available Columns" ) );
 
-        for( int i = 0; i < columns(); ++i ) //columns() references a property
+        //<mxcl> don't include Trackname yet as you can end up with "invisible" tracks
+        for( int i = 1; i < columns(); ++i ) //columns() references a property
         {
             popup.insertItem( columnText( i ), i, i );
             popup.setItemChecked( i, columnWidth( i ) != 0 );
@@ -940,7 +951,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 {
     switch( e->type() )
     {
-    case PlaylistLoader::Started: //LoaderStartedEvent
+    case PlaylistLoader::Started:
 
         //FIXME This is done here rather than startLoader()
         //because Qt DnD sets the overrideCursor and then when it
@@ -951,12 +962,12 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         QApplication::setOverrideCursor( KCursor::workingCursor() );
         break;
 
-    case PlaylistLoader::SomeURL: //LoaderEvent
+    case PlaylistLoader::SomeUrl:
 
-        if( PlaylistItem *item = static_cast<PlaylistLoader::LoaderEvent*>(e)->makePlaylistItem( this ) )
+        if( PlaylistItem *item = static_cast<PlaylistLoader::SomeUrlEvent*>(e)->makePlaylistItem( this ) )
         {
             if( AmarokConfig::showMetaInfo() )
-                m_tagReader->append( item );
+                m_weaver->append( new TagReader( this, item ) );
             else
             {
                 searchTokens.append( item->text( 0 ) );
@@ -965,26 +976,42 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         }
         break;
 
-    case PlaylistLoader::Done: //LoaderDoneEvent
+    case PlaylistLoader::PlaylistFound:
+
+        m_browser->newPlaylist( static_cast<PlaylistLoader::PlaylistFoundEvent*>(e)->playlist() );
+        break;
+
+    case PlaylistLoader::Done:
 
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack();
         break;
 
 
-    case TagReader::SomeTags:
+    case ThreadWeaver::Started:
 
-        #define e static_cast<TagReader::TagReaderEvent*>(e)
+        QApplication::setOverrideCursor( KCursor::workingCursor() );
+        break;
+
+    case ThreadWeaver::Done:
+
+        QApplication::restoreOverrideCursor();
+        break;
+
+    case ThreadWeaver::Job::TagReader:
+
+        #define e static_cast<TagReader*>(e)
         e->bindTags();
         e->addSearchTokens( searchTokens, searchPtrs );
         #undef e
         break;
 
-    case TagReader::Done:
+    case ThreadWeaver::Job::TagWriter:
 
-        QApplication::restoreOverrideCursor();
+        #define e static_cast<TagWriter*>(e)
+        e->updatePlaylistItem();
+        #undef e
         break;
-
 
     default: ;
     }

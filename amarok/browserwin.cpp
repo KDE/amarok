@@ -230,7 +230,7 @@ void PlaylistSideBar::addPage( QWidget *widget, const QString &title, const QStr
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistSideBar" );
-    widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DefaultHeight );
+    widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() + m_multiTabBar->width() ), DefaultHeight );
     {
         //FIXME what if there's no correlation between QPtrList index and multiTabBar id?
         //we need some kind of sensible behavior that doesn't require much code
@@ -275,6 +275,7 @@ QSize PlaylistSideBar::sizeHint() const
 {
     //return a sizeHint that will make the splitter space our pages as the user expects
     //note you can't just return width() that wouldn't work unfortunately
+    //NOTE the widget's baseSize is the whole sidebar width, not just the widget's width
     return ( m_pages.current() ) ? m_pages.current()->baseSize() : m_multiTabBar->size();
 }
 
@@ -389,6 +390,10 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</FileBrowser>
         m_sideBar->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
     //</FileBrowser>
+
+    //</PlaylistBrowser>
+        //m_sideBar->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
+    //</PlaylistBrowser>
 
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );

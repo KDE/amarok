@@ -126,52 +126,6 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
 }
 
 
-#include <taglib/tag.h>
-#include <taglib/tstring.h>
-
-void PlaylistItem::writeTag( const QString &newtag, int col )
-{
-    TagLib::FileRef f( m_url.path().local8Bit(), false );
-
-    if( !f.isNull() )
-    {
-        TagLib::Tag *t = f.tag(); //it is my impression from looking at the source that tag() never returns 0
-        TagLib::String s = QStringToTString( newtag );
-
-        switch( col ) {
-        case 1:
-            t->setTitle( s );
-            break;
-        case 2:
-            t->setArtist( s );
-            break;
-        case 3:
-            t->setAlbum( s );
-            break;
-        case 4:
-            t->setYear( newtag.toInt() );
-            break;
-        case 5:
-            //FIXME how does this work for vorbis files?
-            //Are we likely to overwrite some other comments?
-            //Vorbis can have multiple comment fields..
-            t->setComment( s );
-            break;
-        case 6:
-            t->setGenre( s );
-            break;
-        case 7:
-            t->setTrack( newtag.toInt() );
-            break;
-        default:
-            return;
-        }
-
-        f.save();
-    }
-}
-
-
 const QString PlaylistItem::length( uint se ) const
 {
    //FIXME, we rely on arts. This function is silly currently
