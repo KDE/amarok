@@ -126,7 +126,7 @@ PlaylistWindow::init()
         m_lineEdit = new KLineEdit( hbox );
 
         hbox->setMargin( 4 );
-        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
+        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 

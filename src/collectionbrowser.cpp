@@ -12,6 +12,7 @@
 
 #include <unistd.h>         //CollectionView ctor
 
+#include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
 #include <qmessagebox.h>
@@ -58,7 +59,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         m_searchEdit = new KLineEdit( hbox );
 
         hbox->setMargin( 4 );
-        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
+        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
         m_searchEdit->setFrame( QFrame::Sunken );
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
@@ -72,7 +73,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view = new CollectionView( this );
     //m_view->setMargin( 2 );
 
-    m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
+    m_actionsMenu->insertItem( i18n( "Configure Folders..." ), m_view, SLOT( setupDirs() ) );
 
 //     //FIXME Deactivated for 1.0 release.
 //     m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view, SLOT( setupCoverFetcher() ) );
