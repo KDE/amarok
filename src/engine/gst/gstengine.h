@@ -82,7 +82,7 @@ class GstEngine : public EngineBase
         /** Get a list of available plugins from a specified Class */
         QStringList                              getPluginList( const QCString& classname );
         
-        GstElement*                              createElement( GstElement* bin, const QCString& factoryName, const QCString& name = 0 );
+        GstElement*                              createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
     
