@@ -78,4 +78,4 @@ void AmarokConfigDialog::updateSettings()
     emit settingsChanged();
 }
 
-#include "amarokconfigdialog.moc"
+#include "configdialog.moc"
