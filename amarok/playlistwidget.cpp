@@ -345,6 +345,7 @@ void PlaylistWidget::clear() //SLOT
 
     setCurrentTrack( NULL );
     m_tagReader->cancel(); //stop tag reading (very important!)
+    recentPtrs.clear();
     searchTokens.clear();
     searchPtrs.clear();
     KListView::clear();
@@ -393,13 +394,20 @@ void PlaylistWidget::removeSelectedItems() //SLOT
                     tmp->setSelected( true );
         }
 
-        //keep search system synchronised
+        //keep search system and recent buffer synchronised
         int x = searchPtrs.find( item );
         if ( x >= 0 )
         {
             searchTokens.remove( searchTokens.at( x ) );
             searchPtrs.remove( searchPtrs.at( x ) );
         }
+        
+        do
+        {
+            x = recentPtrs.find( item );
+            if ( x >= 0 )
+                recentPtrs.remove( recentPtrs.at( x ) );
+        } while ( x >= 0 );
 
         //if tagreader is running don't let tags be read for this item and delete later
         if ( m_tagReader->running() )
