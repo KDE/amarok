@@ -18,15 +18,10 @@ username = gets.chomp
 puts( "\n " )
 
 name     = "amaroK"
-$cvsroot  = ":pserver:#{username}@cvs.kde.org:/home/kde"
+$cvsroot = ":pserver:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
-$log      = "/dev/null"
 
-
-def log( text )
-    puts( "#{text}\n" )
-end
 
 def cvs( command )
     `cvs -z3 -d #{$cvsroot} #{command}`
