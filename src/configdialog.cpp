@@ -126,6 +126,8 @@ void AmarokConfigDialog::updateSettings()
     OSDWidget *osd = (OSDWidget*)child( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
+    amaroK::OSD::instance()->applySettings();
+
     if ( m_engineConfig ) m_engineConfig->save();
 
     // When sound system has changed, update engine config page
