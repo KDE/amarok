@@ -181,18 +181,20 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
             tag = fileref.tag();
     }
 
-    if( !fileref.isNull() && tag ) {
-        #define strip( x ) TStringToQString( x ).stripWhiteSpace()
-        m_title   = strip( tag->title() );
-        m_artist  = strip( tag->artist() );
-        m_album   = strip( tag->album() );
-        m_comment = strip( tag->comment() );
-        m_genre   = strip( tag->genre() );
-        m_year    = tag->year() ? QString::number( tag->year() ) : QString();
-        m_track   = tag->track() ? QString::number( tag->track() ) : QString();
-        #undef strip
+    if( !fileref.isNull() ) {
+        if ( tag ) {
+            #define strip( x ) TStringToQString( x ).stripWhiteSpace()
+            m_title   = strip( tag->title() );
+            m_artist  = strip( tag->artist() );
+            m_album   = strip( tag->album() );
+            m_comment = strip( tag->comment() );
+            m_genre   = strip( tag->genre() );
+            m_year    = tag->year() ? QString::number( tag->year() ) : QString();
+            m_track   = tag->track() ? QString::number( tag->track() ) : QString();
+            #undef strip
 
-        m_isValidMedia = true;
+            m_isValidMedia = true;
+        }
 
         init( fileref.audioProperties() );
     }

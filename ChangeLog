@@ -4,11 +4,11 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  FIX: Bitrate/length showed random values for untagged mp3 files. (BR 100200)
   FIX: Crash when recoding stream MetaData without CODEC selected. (BR 100077)
   CHG: Show an additional "Compilations with Artist" box in ContextBrowser.
   ADD: Remember collapse-state of boxes in ContextBrowser. (BR 98664)
   ADD: Display an error when unable to connect to MySQL.
-  ADD: amaroK now makes Big Kahuna burgers and fries.
   ADD: Konqueror Sidebar now has full drag and drop support.
   CHG: Replaced "Blue Wolf" icon with Nenad Grujicic's amaroK 1.1
        icon, due to legal issues.
