@@ -17,8 +17,7 @@
 #include "xmmswrapper.h"
 
 #include <iostream>
-#include <list>
-//#include <string> in header
+#include <list> 
 #include <vector>
 
 #define SHARED_LIB_EXT ".so"
@@ -27,7 +26,6 @@
 //TODO keep socket open
 
 #include "fft.c"
-
 
 // This increases our little wrapper a lot, but unless Max implements
 // auto search for proper place of visualization_socket, I'll do it KDE way.
@@ -50,12 +48,11 @@ QString socketpath; //global
 KInstance *inst;
 
 int
-main( int argc, char** argv ) {
-    //Hi! You can tell I haven't done any c programming in a while can't you! ;-)
-
+main( int argc, char** argv )
+{
     //TODO fork after connection?
-    
-    inst = new KInstance("xmmswrapper");
+
+    inst = new KInstance( "xmmswrapper" );
     std::string plugin;
 
     if ( argc == 1 ) {
@@ -99,8 +96,7 @@ main( int argc, char** argv ) {
         if ( selection > v.size() ) return 1;
 
         plugin = v[ selection - 1 ];
-    }
-    else
+    } else
         plugin = argv[ 1 ];
 
     socketpath = ::locateLocal( "socket", "amarok.visualization_socket", inst );
@@ -115,7 +111,7 @@ main( int argc, char** argv ) {
     const int nch = 1; //no of channels?
 
     sockfd = tryConnect();
-    
+
     while ( ( sockfd ) != -1 ) {
         gtk_main_iteration_do( FALSE );
         usleep( 20 * 1000 );
@@ -153,7 +149,7 @@ main( int argc, char** argv ) {
             */
         }
 
-        if ( wrap.renderFFT() )  //NOTE xmms has no else
+        if ( wrap.renderFFT() )   //NOTE xmms has no else
         {
             //TODO check float and gfloat are the same thing!
             //TODO do second channel as mirror for the moment
@@ -181,7 +177,6 @@ main( int argc, char** argv ) {
                 fft_data[ 0 ][ i ] = fft_data[ 1 ][ i ] = ( ( gint ) sqrt( tmp_out[ i + 1 ] ) ) >> 8;
             }
 
-
             wrap.vis() ->render_freq( fft_data );
             /*
                         if (wrap.vis()->num_freq_chs_wanted == 1)
@@ -203,8 +198,10 @@ main( int argc, char** argv ) {
     close( sockfd );
 }
 
+
 int
-tryConnect() {
+tryConnect()
+{
     //try to connect to the LoaderServer
     int fd = socket( AF_UNIX, SOCK_STREAM, 0 );
 
@@ -214,14 +211,14 @@ tryConnect() {
 
         strcpy( &local.sun_path[ 0 ], socketpath.local8Bit() );
         local.sun_family = AF_UNIX;
-	
-	std::cout << "[amK] Connecting to " << socketpath.local8Bit() << '\n';
+
+        std::cout << "[amK] Connecting to " << socketpath.local8Bit() << '\n';
 
         if ( connect( fd, ( struct sockaddr* ) & local, sizeof( local ) ) == -1 ) {
             close ( fd );
             fd = -1;
 
-	    std::cerr << "[amK] tryConnect() failed\n";
+            std::cerr << "[amK] tryConnect() failed\n";
         }
     }
 
@@ -229,7 +226,12 @@ tryConnect() {
 }
 
 
-XmmsWrapper::XmmsWrapper( const std::string &plugin ) {
+/////////////////////////////////////////////////////////////////////////////////////////
+// CLASS XmmsWrapper
+/////////////////////////////////////////////////////////////////////////////////////////
+
+XmmsWrapper::XmmsWrapper( const std::string &plugin )
+{
     std::cout << "[amK] loading xmms plugin: " << plugin << '\n';
 
     std::string
@@ -264,7 +266,8 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin ) {
 }
 
 
-XmmsWrapper::~XmmsWrapper() {
+XmmsWrapper::~XmmsWrapper()
+{
     dlclose( m_vis );
 
     std::cout << "[amK] ~\n";
@@ -275,7 +278,8 @@ XmmsWrapper::~XmmsWrapper() {
 
 //NOTE as yet, these functions are a little mysterious to me
 
-static void calc_stereo_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint nch ) {
+static void calc_stereo_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint nch )
+{
     memcpy( dest[ 0 ], src[ 0 ], 512 * sizeof( gint16 ) );
     if ( nch == 1 )
         memcpy( dest[ 1 ], src[ 0 ], 512 * sizeof( gint16 ) );
@@ -283,7 +287,8 @@ static void calc_stereo_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gi
         memcpy( dest[ 1 ], src[ 1 ], 512 * sizeof( gint16 ) );
 }
 
-static void calc_mono_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint nch ) {
+static void calc_mono_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint nch )
+{
     gint i;
     gint16 *d, *sl, *sr;
 
@@ -299,7 +304,9 @@ static void calc_mono_pcm( gint16 dest[ 2 ][ 512 ], gint16 src[ 2 ][ 512 ], gint
     }
 }
 
-static void calc_freq( gint16 *dest, gint16 *src ) {
+
+static void calc_freq( gint16 *dest, gint16 *src )
+{
     /* FIXME
             static fft_state *state = NULL;
             gfloat tmp_out[257];
@@ -316,7 +323,8 @@ static void calc_freq( gint16 *dest, gint16 *src ) {
 }
 
 
-static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch ) {
+static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch )
+{
     /* FIXME
             gint i;
             gint16 *d, *sl, *sr, tmp[512];
@@ -338,7 +346,8 @@ static void calc_mono_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gin
 }
 
 
-static void calc_stereo_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch ) {
+static void calc_stereo_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], gint nch )
+{
     /*
     FIXME
             calc_freq(dest[0], src[0]);
@@ -349,3 +358,5 @@ static void calc_stereo_freq( gint16 dest[ 2 ][ 256 ], gint16 src[ 2 ][ 512 ], g
                     memcpy(dest[1], dest[0], 256 * sizeof(gint16));
     */
 }
+
+

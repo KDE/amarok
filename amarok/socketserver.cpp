@@ -10,10 +10,10 @@
 #include "socketserver.h"
 
 #include <qguardedptr.h>
-#include <qlistview.h>
 #include <qsocketnotifier.h>
 
 #include <kdebug.h>
+#include <klistview.h>
 #include <klocale.h>
 #include <kprocess.h>         //visClicked()
 
@@ -27,7 +27,7 @@
 
 #include <kstandarddirs.h>
 
-static QGuardedPtr<QListView> lv;
+static QGuardedPtr<Vis::Selector> lv;
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
 //TODO build xmms wrapper
@@ -84,12 +84,14 @@ void
 Vis::SocketServer::showSelector() //SLOT
 {
     if ( !lv ) {
-        lv = new QListView( 0, 0, Qt::WDestructiveClose );
+        lv = new Selector();
+        lv->setFullWidth( true );
+        lv->setShowSortIndicator( true );
+        lv->setSorting( 0 );
         lv->setCaption( i18n( "Visualizations - amaroK" ) );
-    
         lv->addColumn( i18n( "Name" ) );
-        lv->addColumn( i18n( "Description" ) );
         lv->show();
+        
         connect( lv, SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
                  this, SLOT( visClicked( QListViewItem*, const QPoint&, int ) ) );
             
@@ -108,7 +110,7 @@ Vis::SocketServer::showSelector() //SLOT
             filepath = dirname + filename;
             if ( filename.endsWith( ".so" ) )
                 if ( !stat( filepath.local8Bit(), &statbuf ) && S_ISREG( statbuf.st_mode ) )
-                    new QListViewItem( lv, filename );
+                    new KListViewItem( lv, filename );
         }
     }
 }
