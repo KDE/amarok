@@ -51,9 +51,9 @@ void OSDWidget::showSplash( const QString& imagePath )
         QPainter p( &bm );
         p.drawImage( 0, 0, image.createAlphaMask() );
 
-        QWidget *d = QApplication::desktop();
-        move( d->width()  / 2 - image.width () / 2,
-              d->height() / 2 - image.height() / 2 );
+        QRect d = QApplication::desktop()->screenGeometry( QApplication::desktop()->screenNumber( QPoint(0,0) ) );
+        move( ( d.width () - image.width () ) / 2 + d.left(),
+              ( d.height() - image.height() ) / 2 + d.top() );
         resize( osdBuffer.size() );
 
         setMask( bm );
