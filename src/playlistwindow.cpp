@@ -131,6 +131,7 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media") );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist") );
+    new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
@@ -221,17 +222,17 @@ PlaylistWindow::init()
     m_menubar = new KMenuBar( this );
     m_menubar->setShown( AmarokConfig::showMenuBar() );
 
-    //BEGIN Play menu
-    KPopupMenu *fileMenu = new KPopupMenu( m_menubar );
-    fileMenu->insertItem( SmallIcon("fileopen"), i18n("Play Media...") );
-//     fileMenu->insertItem( SmallIcon("cdaudio_unmount"),i18n("Play Audio CD") );
-    fileMenu->insertSeparator();
-    actionCollection()->action("prev")->plug( fileMenu );
-    actionCollection()->action("play_pause")->plug( fileMenu );
-    actionCollection()->action("stop")->plug( fileMenu );
-    actionCollection()->action("next")->plug( fileMenu );
-    fileMenu->insertSeparator();
-    actionCollection()->action(KStdAction::name(KStdAction::Quit))->plug( fileMenu );
+    //BEGIN Actions menu
+    KPopupMenu *actionsMenu = new KPopupMenu( m_menubar );
+    actionsMenu->insertItem( SmallIcon("fileopen"), i18n("Play Media...") );
+    actionCollection()->action("play_audiocd")->plug( actionsMenu );
+    actionsMenu->insertSeparator();
+    actionCollection()->action("prev")->plug( actionsMenu );
+    actionCollection()->action("play_pause")->plug( actionsMenu );
+    actionCollection()->action("stop")->plug( actionsMenu );
+    actionCollection()->action("next")->plug( actionsMenu );
+    actionsMenu->insertSeparator();
+    actionCollection()->action(KStdAction::name(KStdAction::Quit))->plug( actionsMenu );
     //END Play menu
 
     //BEGIN Playlist menu
@@ -284,7 +285,7 @@ PlaylistWindow::init()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "&Actions" ), fileMenu );
+    m_menubar->insertItem( i18n( "&Actions" ), actionsMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Tools" ), toolsMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
@@ -664,6 +665,14 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.exec();
 
     m_playlist->appendMedia( dlg.selectedURL() );
+}
+
+
+void PlaylistWindow::playAudioCD() //SLOT
+{
+    m_browsers->showBrowser( 4 ); //show the file browser
+    FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
+    fb->setDir( KURL("audiocd:/") );
 }
 
 

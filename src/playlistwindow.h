@@ -69,6 +69,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
+        void playAudioCD();
         void slotSetFilter();
         void clearFilter();
         void slotSetFilterTimeout();
