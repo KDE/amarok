@@ -1155,16 +1155,19 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     //"Albums by ..." related styles
     styleSheet += QString( ".album-header {}" );
     styleSheet += QString( ".album-header:hover { color: %1; background-color: %2; cursor: pointer; }" ).arg( fg ).arg( bg );
+    styleSheet += QString( ".album-header:hover a { color: %1 }" ).arg( fg );
     styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
+    styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
+    styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".album-song-trackno { text-align: right; width: 2em; display: block; float: left;}" );
     styleSheet += QString( ".album-song-title { } " );
     styleSheet += QString( ".album-song-time { } " );
+    styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
-    styleSheet += QString( ".albuminfo { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
     styleSheet += QString( ".default { font-size: %1px }" ).arg( pxSize );
 
     styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
