@@ -322,23 +322,24 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
-    static cacheItem cacheTable[12];
+    static paintCacheItem paintCache[12];
 
     if( this == listView()->currentTrack() )
     {
-        const QString colString =
+        const QString colorString =
             QString::number( glowBase.red() ) +
             QString::number( glowBase.green() ) +
             QString::number( glowBase.blue() );
 
-        const bool cacheDirty =
-            width == cacheTable[column].width &&
-            height() == cacheTable[column].height &&
-            text( column ) == cacheTable[column].text;
+        const bool cacheValid =
+            width == paintCache[column].width &&
+            height() == paintCache[column].height &&
+            text( column ) == paintCache[column].text;
 
-        if ( !cacheDirty && cacheTable[column].map.find( colString ) != cacheTable[column].map.end() )
-            p->drawPixmap( 0, 0, cacheTable[column].map[colString] );
-
+        if ( cacheValid && paintCache[column].map.find( colorString ) != paintCache[column].map.end() )
+        {
+            p->drawPixmap( 0, 0, paintCache[column].map[colorString] );
+        }
         else
         {
             //flicker-free drawing
@@ -379,11 +380,11 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paint.end();
             p->drawPixmap( 0, 0, buffer );
 
-            if ( cacheDirty ) cacheTable[column].map.clear();
-            cacheTable[column].width = width;
-            cacheTable[column].height = height();
-            cacheTable[column].text = text( column );
-            cacheTable[column].map[colString] = buffer;
+            if ( !cacheValid ) paintCache[column].map.clear();
+            paintCache[column].width = width;
+            paintCache[column].height = height();
+            paintCache[column].text = text( column );
+            paintCache[column].map[colorString] = buffer;
         }
     }
     else KListViewItem::paintCell( p, cg, column, width, align );

@@ -71,7 +71,7 @@ class PlaylistItem : public KListViewItem
         bool operator< ( const PlaylistItem & item ) const;
 
     private:
-        struct cacheItem {
+        struct paintCacheItem {
             int width;
             int height;
             QString text;
