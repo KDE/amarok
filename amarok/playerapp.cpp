@@ -702,7 +702,7 @@ void PlayerApp::readConfig()
     setupColors();
 
     m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
-    m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", false );
+    m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", true );
 
     m_optVisCurrent = m_pConfig->readUnsignedNumEntry( "Current Analyzer", 0 );
     m_pPlayerWidget->createVis();

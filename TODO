@@ -4,8 +4,6 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: SHIFT+Delete shortcut (remove items) not working
-
     * fix: load playlist _after_ showing mainwidget (and asyncronously if possible, at least
       give ui a chance every 100 read entries or so).
 
