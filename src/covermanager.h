@@ -64,7 +64,8 @@ Q_OBJECT
         int m_currentView;
 
         // Used by fetchMissingCovers() for temporary storage
-        CoverViewItem* m_currentItem;
+        QStringList m_missingCovers;
+        int m_fetchCounter;
 };
 
 

@@ -169,7 +169,15 @@ CoverManager::~CoverManager()
 void CoverManager::fetchMissingCovers() //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    m_currentItem = static_cast<CoverViewItem*>( m_coverView->firstItem() );
+    m_missingCovers.clear();
+    m_fetchCounter = 0;
+
+    for ( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
+        CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
+        if( !coverItem->hasCover() )
+            m_missingCovers += coverItem->artist() + " - " + coverItem->album();
+    }
+
     fetchMissingCoversLoop();
     #endif
 }
@@ -178,16 +186,14 @@ void CoverManager::fetchMissingCovers() //SLOT
 void CoverManager::fetchMissingCoversLoop() //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    if ( m_currentItem )
-    {
-        if( !m_currentItem->hasCover() )
-            m_db->fetchCover( this, m_currentItem->artist(), m_currentItem->album(), true );
+    //get artist and album from keyword
+    QStringList values = QStringList::split( " - ", m_missingCovers[m_fetchCounter] );
+    m_db->fetchCover( this, values[0], values[1], true );
+    m_fetchCounter++;
 
-        m_currentItem = static_cast<CoverViewItem*>( m_currentItem->nextItem() );
-
-        // Wait 1 second, since amazon caps the number of accesses per client
-        QTimer::singleShot( 1000, this, SLOT( fetchMissingCoversLoop() ) );
-    }
+    // Wait 1 second, since amazon caps the number of accesses per client
+    QTimer::singleShot( 1000, this, SLOT( fetchMissingCoversLoop() ) );
+    
     #endif
 }
 
