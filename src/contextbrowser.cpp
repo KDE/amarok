@@ -173,12 +173,12 @@ void ContextBrowser::openURLRequest( const KURL &url )
 #else
     if ( m_url.protocol() == "fetchcover" )
     {
-        if( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) != locate( "data", "amarok/images/sound.png" ) )
+        if( m_db->getImageForAlbum( info[0], info[1], 0 ) != locate( "data", "amarok/images/nocover.png" ) )
         {
             /* if a cover exists, open a widget with the image on click */
             QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
             widget->setCaption( i18n( "Cover Viewer" ) + " - amaroK" );
-            QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], locate( "data", "amarok/images/sound.png" ), 0 ) );
+            QPixmap pixmap( m_db->getImageForAlbum( info[0], info[1], 0 ) );
             widget->setPaletteBackgroundPixmap( pixmap );
             widget->setMinimumSize( pixmap.size() );
             widget->setFixedSize( pixmap.size() );
@@ -405,7 +405,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
-                                << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound80.png" ) ) )
+                                << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
                                 << values[4]
                                 << values[5]
                                 << values[2].left( values[2].length() - 3 )
@@ -418,12 +418,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 "FROM album, tags, artist "
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
                       .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
-
-        QString imageurl;
-        if ( !values.isEmpty() )
-            imageurl = m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound80.png" ) );
-        else
-            imageurl = locate( "data", "amarok/images/sound80.png" );
 
              browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
                                         "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
@@ -442,7 +436,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                     << escapeHTMLAttr( m_currentTrack->artist() )
                                     << escapeHTMLAttr( m_currentTrack->album() )
-                                    << escapeHTMLAttr( imageurl )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
                                     )
                              );
     }
@@ -542,7 +536,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTMLAttr( values[i + 1] ) // artist.name
                                     << escapeHTMLAttr( values[i + 0] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound50.png" ), 50 ) )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], 50 ) )
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
                                     )

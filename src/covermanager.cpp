@@ -264,7 +264,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                 m_coverItems.append( coverItem );
 
                 if( coverItem->hasCover() ) {
-                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ], "" );
+                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ] );
                     coverItem->updateCover( QPixmap( imgPath ) );
                 }
             }
@@ -450,7 +450,7 @@ void CoverManager::coverFetched( const QString &key )
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( key == coverItem->artist() + " - " + coverItem->album() ) {
-            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album(), "" );
+            QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album() );
             coverItem->updateCover( QPixmap( imgPath ) );
             return;
         }

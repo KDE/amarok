@@ -144,57 +144,79 @@ CollectionDB::getPathForAlbum( const uint artist_id, const uint album_id )
 
 
 QString
-CollectionDB::getImageForAlbum( const QString artist, const QString album, const QString defaultImage, const uint width )
+CollectionDB::getImageForAlbum( const QString artist, const QString album, const uint width )
 {
     QString widthKey = QString::number( width ) + "@";
-    QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
-
-    if ( m_cacheDir.exists( widthKey + key.lower() ) )
-        return m_cacheDir.filePath( widthKey + key.lower() );
+    
+    if( artist.isEmpty() && album.isEmpty() )
+    {
+        if( m_cacheDir.exists( widthKey + "nocover.png" ) )
+            return m_cacheDir.filePath( widthKey + "nocover.png" );
+        else
+        {
+            QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
+            nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
+            return m_cacheDir.filePath( widthKey + "nocover.png" );
+        }
+    }
     else
     {
-        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
+        QString key( QFile::encodeName( artist + " - " + album ) );
+        key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+    
+        if ( m_cacheDir.exists( widthKey + key.lower() ) )
+            return m_cacheDir.filePath( widthKey + key.lower() );
+        else
+        {
+            QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
 
-        if ( largeCoverDir.exists( key.lower() ) )
-            if ( width > 0 )
-            {
-                QImage img( largeCoverDir.filePath( key.lower() ) );
-                img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key.lower() ), "PNG" );
+            if ( largeCoverDir.exists( key.lower() ) )
+                if ( width > 0 )
+                {
+                    QImage img( largeCoverDir.filePath( key.lower() ) );
+                    img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key.lower() ), "PNG" );
 
-                return m_cacheDir.filePath( widthKey + key.lower() );
-            }
-            else
-                return largeCoverDir.filePath( key.lower() );
+                    return m_cacheDir.filePath( widthKey + key.lower() );
+                }
+                else
+                    return largeCoverDir.filePath( key.lower() );
+        }
+
+        KURL url;
+        url.setPath( getPathForAlbum( artist, album ) );
+
+        return getImageForPath( url.directory(), width );
     }
-
-    KURL url;
-    url.setPath( getPathForAlbum( artist, album ) );
-
-    return getImageForPath( url.directory(), defaultImage, width );
 }
 
-
 QString
-CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const QString defaultImage, const uint width )
+CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const uint width )
 {
     QStringList values;
     execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
                       "WHERE artist.id = %1 AND album.id = %2;" )
                       .arg( artist_id ).arg( album_id ), &values );
 
-    if ( !values.isEmpty() )
-        return getImageForAlbum( values[0], values[1], defaultImage, width );
-    else
-        return defaultImage;
+    return getImageForAlbum( values[0], values[1], width );
 }
 
 
 QString
-CollectionDB::getImageForPath( const QString path, const QString defaultImage, const uint width )
+CollectionDB::getImageForPath( const QString path, const uint width )
 {
+    QString widthKey = QString::number( width ) + "@";
+
     if ( path.isEmpty() )
-        return defaultImage;
+    {
+        if( m_cacheDir.exists( widthKey + "nocover.png" ) )
+            return m_cacheDir.filePath( widthKey + "nocover.png" );
+        else
+        {
+            QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
+            nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
+            return m_cacheDir.filePath( widthKey + "nocover.png" );
+        }
+    }
 
     QStringList values;
     QStringList names;
@@ -231,7 +253,14 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
             return path + "/" + image;
     }
 
-    return defaultImage;
+    if( m_cacheDir.exists( widthKey + "nocover.png" ) )
+        return m_cacheDir.filePath( widthKey + "nocover.png" );
+    else
+    {
+        QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
+        nocover.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
+        return m_cacheDir.filePath( widthKey + "nocover.png" );
+    }
 }
 
 

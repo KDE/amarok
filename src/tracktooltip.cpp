@@ -25,9 +25,9 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
     QStringList left, right;
     const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
-    QString image = db.getImageForAlbum( tags.artist(), tags.album(), QString::null );
+    QString image = db.getImageForAlbum( tags.artist(), tags.album() );
     if ( !image )
-        image = db.getImageForPath( tags.url().directory(), QString::null );
+        image = db.getImageForPath( tags.url().directory() );
 
     left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" ) << i18n( "Length" ) << i18n( "Bitrate" ) << i18n( "Samplerate" );
     right << tags.title() << tags.artist() << tags.album() << tags.prettyLength() << tags.prettyBitrate() << tags.prettySampleRate();

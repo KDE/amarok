@@ -19,10 +19,9 @@ images_DATA = \
     logo_splash.png \
     logo_web.png \
     musicbrainz.png \
+    nocover.png \
     pl_active2.png \
     pl_inactive2.png \
-    sound50.png \
-    sound80.png \
     time_minus.png \
     time_plus.png \
     vol_speaker.png \
