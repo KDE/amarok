@@ -3,7 +3,9 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
-  * fix: collection of fixes related to showing/raising/hiding the playlist when showing/raising/hiding the mainWidget
+VERSION 0.7.0:
+  * fix: collection of fixes related to showing/raising/hiding the playlist
+    when showing/raising/hiding the mainWidget
   * fix: by muesli: make playlist searches a bit faster at the expense of memory
   * fix: (partial fix) bitrate/samplerate font overlap at large font sizes
   * change: less staccato loading of widgets
