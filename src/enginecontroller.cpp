@@ -267,6 +267,7 @@ int EngineController::setVolume( int percent )
 {
     percent = uint(percent);
     if( percent > 100 ) percent = 100;
+    if( percent < 0 ) percent = 0;
 
     if( (uint)percent != m_pEngine->volume() )
     {
