@@ -113,7 +113,7 @@ PlayerApp::PlayerApp()
 {
     setName( "amaroK" );
     pApp = this; //global
-    
+
     initArts();
     initPlayerWidget();
     initBrowserWin();
@@ -326,7 +326,7 @@ void PlayerApp::initArts()
     m_amanPlay.start();
 
     m_XFade = Arts::DynamicCast( m_Server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
-    
+
     if ( m_XFade.isNull() )
     {
         KMessageBox::error( 0,
@@ -336,12 +336,12 @@ void PlayerApp::initArts()
                             i18n( "Fatal Error" ) );
         ::exit( 1 );
     }
-            
+
     m_XFade.percentage( m_XFadeValue );
     m_XFade.start();
 
     m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
-       
+
     m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
 
@@ -686,11 +686,13 @@ void PlayerApp::readConfig()
                             this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, CTRL + ALT + Key_P, 0,
                             this, SLOT( slotPlay() ), true, true );
+    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, CTRL + ALT + Key_C, 0,
+                            this, SLOT( slotPause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, CTRL + ALT + Key_S, 0,
                             this, SLOT( slotStop() ), true, true );
-    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, CTRL + ALT + Key_N, 0,
+    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, CTRL + ALT + Key_B, 0,
                             this, SLOT( slotNext() ), true, true );
-    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, CTRL + ALT + Key_R, 0,
+    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, CTRL + ALT + Key_Z, 0,
                             this, SLOT( slotPrev() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
@@ -791,9 +793,9 @@ void PlayerApp::startXFade()
 
     if ( m_XFadeRunning )
         stopXFade();
-    
+
     m_XFadeRunning = true;
-   
+
     m_pPlayObjectXFade = m_pPlayObject;
     m_pPlayObject = NULL;
 }
@@ -847,10 +849,10 @@ void PlayerApp::setupColors()
 
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pBrowserWidget->setPaletteForegroundColor( m_optBrowserFgColor );
-    
+
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteForegroundColor( m_optBrowserFgColor );
-    
+
     m_pBrowserWin->m_pStreamBrowser->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pStreamBrowser->setPaletteForegroundColor( m_optBrowserFgColor );
     m_pBrowserWin->m_pStreamBrowser->setAlternateBackground( m_optBrowserBgAltColor );
@@ -1035,7 +1037,7 @@ void PlayerApp::slotConnectPlayObj()
             else
                 m_XFade.percentage( m_XFadeValue = 1.0 );
         }
-                                
+
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
