@@ -3,6 +3,10 @@ amaroK ChangeLog
 (c) 2002-2005 the amaroK authors.
 
 
+VERSION 1.2-beta4:
+  CHG: New amaroK icon "Blue Wolf", made by Da-Flow.
+  FIX: Possible crash when enabling Player-Window. (BR 94668)
+
 VERSION 1.2-beta3:
   ADD: Smart Playlists can have a random order or a score weighted random
        order (BR 90861)
