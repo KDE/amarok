@@ -26,7 +26,21 @@ noinst_HEADERS = Options1.h browserwidget.h browserwin.h \
 	playerwidget.h playlistitem.h playlistwidget.h\
 	viswidget.h
 
-KDE_ICONS = AUTO
+install-data-local:
+	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/
+	$(INSTALL_DATA) $(srcdir)/lo32-app-amarok.png $(kde_icondir)/locolor/32x32/apps/amarok.png
+	$(mkinstalldirs) $(kde_icondir)/locolor/16x16/apps/
+	$(INSTALL_DATA) $(srcdir)/lo16-app-amarok.png $(kde_icondir)/locolor/16x16/apps/amarok.png
+	$(mkinstalldirs) $(kde_icondir)/default.kde/48x48/apps/
+	$(INSTALL_DATA) $(srcdir)/lo48-app-amarok.png $(kde_icondir)/default.kde/48x48/apps/amarok.png
+	$(mkinstalldirs) $(kde_icondir)/default.kde/64x64/apps/
+	$(INSTALL_DATA) $(srcdir)/lo64-app-amarok.png $(kde_icondir)/default.kde/64x64/apps/amarok.png
+
+uninstall-local:
+	-rm -f $(kde_icondir)/default.kde/64x64/apps/amarok.png
+	-rm -f $(kde_icondir)/default.kde/48x48/apps/amarok.png
+	-rm -f $(kde_icondir)/locolor/32x32/apps/amarok.png
+	-rm -f $(kde_icondir)/locolor/16x16/apps/amarok.png
 
 rcdir = $(kde_datadir)/amarok
 rc_DATA = amarokui.rc
