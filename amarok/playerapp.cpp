@@ -574,9 +574,10 @@ bool PlayerApp::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
+	    QString str;
             QTextStream stream( &file );
 
-            while ( QString str = stream.readLine() )
+            while ( (str = stream.readLine()) != QString::null )
             {
                 if ( !str.startsWith( "#" ) )
                 {
@@ -597,9 +598,10 @@ bool PlayerApp::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
+	    QString str;
             QTextStream stream( &file );
 
-            while ( QString str = stream.readLine() )
+            while ( (str = stream.readLine()) != QString::null )
             {
                 if ( str.startsWith( "File" ) )
                 {
