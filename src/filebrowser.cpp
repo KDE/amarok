@@ -61,7 +61,9 @@ protected:
             item->isDir() ||
             EngineController::canDecode( item->url() ) ||
             item->url().protocol() == "audiocd" ||
-            PlaylistFile::isPlaylistFile( item->name() );
+            PlaylistFile::isPlaylistFile( item->name() ) ||
+            item->name().endsWith( ".mp3", false ) || //for now this is less confusing for the user
+            item->name().endsWith( ".ogg", false );
     }
 };
 
