@@ -62,6 +62,7 @@ protected:
   std::vector<peak_t> m_peakArray;
   std::vector<uint> m_barArray;;
   std::vector<uint> m_lvlMap;
-  
+  std::vector<float> m_bands;
+  //std::vector<float> m_freqMap; //See .cpp file init() for description 
 };
 #endif

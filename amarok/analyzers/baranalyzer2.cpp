@@ -66,16 +66,25 @@ void BarAnalyzer2::init()
   p.setBackgroundColor( Qt::black );
   p.eraseRect( 0, 0, m_pSrcPixmap->width(), m_pSrcPixmap->height() );
 
-  m_lvlMap.resize(50, 0);
+  m_lvlMap.resize(height() , 0);
   m_barArray.resize(width() - 20, 0);
+  m_bands.resize(width() - 20, 0);
   m_peakArray.resize(width() - 20);
   
-  //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
-  m_lvlMap[0] = 0;
-  for( uint x = 1; x < 50; x++ )
+  //Maybe use this in the future
+  //A frequency level mapper to boost frequencies for display purposes
+  /*m_freqMap.resize(width() - 20, 0);
+  
+  for (uint i = 0; i < uint(width() - 20); i++)
   {
-    m_lvlMap[x] = uint(-(((x-50)*(x-50))/50)+50-1);
-    kdDebug() << "X=" << x << " Y=" << m_lvlMap[x] << endl;
+  	m_freqMap[i] = (((0/(width() - 20)) * i) + 1);
+  }*/
+  
+  //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on square scale
+  m_lvlMap[0] = 0;
+  for( uint x = 1; x < height(); x++ )
+  {
+    m_lvlMap[x] = uint(-(((x-height())*(x-height()))/height())+height()-1);
   }
     
   for ( uint x=0, r=0x40, g=0x30, b=0xff; x < height(); ++x )
@@ -96,19 +105,20 @@ void BarAnalyzer2::drawAnalyzer( std::vector<float> *s )
   uint newval;
   int change;
   
-  std::vector<float> bands(width() - 20, 0);
-
   if ( s )
   {
-    interpolate( s, bands ); //if no s then we are paused/stopped
+    interpolate( s, m_bands ); //if no s then we are paused/stopped
   }
   
   bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
 
-  for ( uint i = 0, x = 10; i < bands.size(); ++i, x++ )
+  for ( uint i = 0, x = 10; i < m_bands.size(); ++i, x++ )
   {
     //note: values in bands can be greater than 1!
-    newval = uint(bands[i] * 49);
+    newval = uint((m_bands[i] * (height()-1)) /** m_freqMap[i]*/);
+    if (newval > height()-1)
+      newval = height() - 1;
+      
     newval = m_lvlMap[newval];
     change = newval - m_barArray[i];
     if (change < MAX_DECREASE)
