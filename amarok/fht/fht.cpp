@@ -14,7 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
-// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// Foundation, 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA
 //
 // $Id$
 
@@ -47,10 +47,10 @@ fht::~fht()
 
 
 void fht::makecastable(void)
-{	
+{
 	double d, *costab, *sintab;
 	int ul, ndiv2 = num / 2;
-	
+
 	for (costab = tab, sintab = tab + num / 2 + 1, ul = 0; ul < num; ul++) {
 		d = M_PI * ul / ndiv2;
 		*costab = *sintab = cos(d);
@@ -88,7 +88,6 @@ void fht::transform(double *p)
 	else
 		_transform(p);		// doesn't need scaling
 	return;
-	
 }
 
 
@@ -131,7 +130,7 @@ inline double fht::_transform(double *p)
 void fht::power(double *p)
 {
 	_power(p);
-	
+
 	for (int i = 0; i < (num / 2); i++)
 		*p++ *= .5;
 }
@@ -142,9 +141,9 @@ double fht::_power(double *p)
 	int i;
 	double *q;
 	_transform(p);
-	
+
 	*p = (*p * *p), *p += *p, p++;
-	
+
 	for (i = 1, q = p + num - 2; i < (num / 2); i++, --q)
 		*p++ = (*p * *p) + (*q * *q);
 
@@ -161,37 +160,36 @@ void fht::__transform(double *p, int n, int k)
 
 	int i, j, ndiv2 = n / 2;
 	double a, *t1, *t2, *t3, *t4, *ptab, *pp;
-	
+
 	for (i = 0, t1 = buf, t2 = buf + ndiv2, pp = &p[k]; i < ndiv2; i++)
 		*t1++ = *pp++, *t2++ = *pp++;
-	
+
 	memcpy(p + k, buf, sizeof(double) * n);
-	
+
 	__transform(p, ndiv2, k);
 	__transform(p, ndiv2, k + ndiv2);
-	
+
 	j = num / ndiv2 - 1;
 	t1 = buf;
 	t2 = t1 + ndiv2;
 	t3 = p + k + ndiv2;
 	ptab = tab;
 	pp = p + k;
-	
+
 	a = *ptab++ * *t3++;
 	a += *ptab * *pp;
 	ptab += j;
-	
+
 	*t1++ = *pp + a;
 	*t2++ = *pp++ - a;
-	
+
 	for (i = 1, t4 = p + k + n; i < ndiv2; i++, ptab += j) {
 		a = *ptab++ * *t3++;
 		a += *ptab * *--t4;
-		
+
 		*t1++ = *pp + a;
 		*t2++ = *pp++ - a;
 	}
-	
 	memcpy(p + k, buf, sizeof(double) * n);
 }
 
