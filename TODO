@@ -10,16 +10,6 @@ SHORT-TERM (URGENT):
 
     * fix: #70 <markey> when sending stream URL to amaroK, it does not always start to play it (seems random)
 
-    * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
-               <mxcl> can you be more specific? WORKSFORME
-
-    * fix: #62 < buff> hmm: one question: I have QT installes without OpenGL, aRrts is available and configure is run with
-               "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in
-               0.9-beta2 btw <markey> WORKSFORME
-
-    * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
-               <mxcl> I'm not! heh. Anyone else getting these? Looks like release is still on.
-
 
 MID-TERM:
 
