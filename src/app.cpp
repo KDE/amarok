@@ -90,7 +90,7 @@ App::App()
     //set a default interface
     engineStateChanged( EngineBase::Empty );
 
-    if( AmarokConfig::resumePlayback() && bRestoreSession )
+    if( AmarokConfig::resumePlayback() && bRestoreSession && !args->isSet( "stop" ) )
     {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly

@@ -49,7 +49,7 @@ Proxy::Proxy( KURL url, int streamingMode )
     m_pBuf = new char[ BUFSIZE ];
     // Don't try to get metdata for ogg streams (different protocol)
     m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
-    
+
     if ( streamingMode == EngineBase::Socket ) {
         uint i;
         Server* server;
@@ -109,54 +109,54 @@ void Proxy::accept( int socket ) //SLOT
     m_sockProxy.setSocket( socket );
     m_sockProxy.waitForMore( TIMEOUT );
 
-    connectToHost();    
+    connectToHost();
 }
 
 
 void Proxy::connectToHost() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-  
+
     { //initialisations
         m_connectSuccess = false;
         m_headerFinished = false;
         m_headerStr = QString();
     }
-            
+
     { //connect to server
         connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
         connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
         connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
         QTimer::singleShot( TIMEOUT, this, SLOT( connectError() ) );
-                
+
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
     }
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
-}        
+}
 
 
 void Proxy::sendRequest() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-        
-    { //send request                                 
+
+    { //send request
         QString request = QString( "GET %1 HTTP/1.1\r\n" )
                                 .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
         //request metadata
         if ( m_icyMode ) request += "Icy-MetaData:1\r\n";
-    
+
         request += "Connection: Keep-Alive\r\n"
                 "User-Agent: aRts/1.2.2\r\n"
                 "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
                 "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
                 "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
                 "Accept-Language: de, en\r\n\r\n";
-                                
+
         connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
         m_sockRemote.writeBlock( request.latin1(), request.length() );
     }
-        
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -168,7 +168,7 @@ void Proxy::readRemote() //SLOT
     Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
     if ( bytesRead == -1 ) { emit error(); return; }
-    
+
     if ( !m_headerFinished )
         if ( !processHeader( index, bytesRead ) ) return;
 
@@ -195,11 +195,11 @@ void Proxy::readRemote() //SLOT
 
             if ( m_streamingMode == EngineBase::Socket )
                 bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
-            else 
+            else
                 emit streamData( m_pBuf + index, bytesWrite );
-            
+
             if ( bytesWrite == -1 ) { error(); return; }
-            
+
             index += bytesWrite;
             m_byteCount += bytesWrite;
         }
@@ -211,7 +211,7 @@ void Proxy::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
         kdWarning() << "TitleProxy error: Unable to connect to this stream server. Can't play the stream!\n";
-        
+
         emit proxyError();
         //Commit suicide
         deleteLater();
@@ -273,13 +273,13 @@ void Proxy::transmitData( const QString &data )
     //(some servers repeat it every 10 seconds)
     if ( data == m_lastMetadata ) return;
     m_lastMetadata = data;
-        
+
     MetaBundle bundle( extractStr( data, "StreamTitle" ),
-                       extractStr( data, "StreamUrl" ),
+                       /*extractStr( data, "StreamUrl" )*/m_streamUrl,
                        m_bitRate,
                        m_streamGenre,
                        m_streamName,
-                       m_streamUrl );
+                       m_url );
 
     emit metaData( bundle );
 }
@@ -289,11 +289,11 @@ void Proxy::error()
 {
     kdDebug() <<  "TitleProxy error: Stream does not support shoutcast metadata. "
                   "Restarting in non-metadata mode.\n";
-    
+
     m_sockRemote.close();
     m_sockRemote.disconnect( SIGNAL( readyRead() ) );
     m_icyMode = false;
-    
+
     //open stream again,  but this time without metadata, please
     connectToHost();
 }

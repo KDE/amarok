@@ -36,13 +36,13 @@ static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "
 
 //TitleProxy ctor
 MetaBundle::MetaBundle( const QString& title,
-                        const QString& url,
+                        const QString& streamUrl,
                         const int      bitrate,
                         const QString& genre,
                         const QString& /*streamName*/,
-                        const QString& streamUrl )
-  : m_url       ( streamUrl )
-  , m_title     ( /*url + QString( " -- " ) + */title )
+                        const KURL& url )
+  : m_url       ( url )
+  , m_title     ( streamUrl + QString( " -- " ) + title )
   , m_genre     ( genre )
   , m_bitrate   ( bitrate )
   , m_length    ( Irrelevant )

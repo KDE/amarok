@@ -35,11 +35,11 @@ public:
 
     //TitleProxy:
     MetaBundle( const QString& title,
-                const QString& url,
+                const QString& streamUrl,
                 const int      bitrate,
                 const QString& genre,
                 const QString& streamName,
-                const QString& streamUrl );
+                const KURL& );
 
     //PlaylistItems:
     MetaBundle( const PlaylistItem *item );
