@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> In CoverManager, the album list on the left side doesn't work. Clicking on it does nothing.
+
   <markey> After rescanning the Collection, ContextBrowser still shows "Rebuilding Collection..."
 
   <markey> Automatic Collection rebuilding at startup (with increased DATABASE_VERSION) doesn't work at all!
