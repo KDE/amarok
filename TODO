@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <muesli> Add a flatview for the CollectionBrowser.
+
+          <muesli> Run the incremental filescan inside the thread. GUI blocking is bad.
+
           <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry
                    users if they start to lose stats.
 
