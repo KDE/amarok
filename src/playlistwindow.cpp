@@ -189,8 +189,8 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
 PlaylistWindow::~PlaylistWindow()
 {
-    AmarokConfig::setBrowserWinPos( pos() );  //TODO no need to be XT'd
-    AmarokConfig::setBrowserWinSize( size() ); //TODO no need to be XT'd
+    AmarokConfig::setPlaylistWindowPos( pos() );  //TODO no need to be XT'd
+    AmarokConfig::setPlaylistWindowSize( size() ); //TODO no need to be XT'd
 }
 
 
