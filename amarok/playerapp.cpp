@@ -116,7 +116,7 @@ PlayerApp::PlayerApp()
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( prepareTextForOSD( const MetaBundle& ) ) );
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
-
+   
     handleCliArgs( KCmdLineArgs::parsedArgs() );
 }
 
@@ -867,7 +867,7 @@ void LoaderServer::newConnection( int sockfd )
         buf[nbytes] = '\000';
         QCString result( buf );
         kdDebug() << result << endl;
-
+        
         emit loaderArgs( result );
     }
 

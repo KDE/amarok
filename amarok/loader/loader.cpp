@@ -22,6 +22,7 @@
 #include <qprocess.h>
 #include <qstring.h>
 
+#include <iostream>
 #include <stdlib.h>
 #include <unistd.h>  
 #include <sys/socket.h>
@@ -46,21 +47,26 @@ Loader::Loader( int& argc, char** argv )
         if ( splashEnabled() )
             showSplash();
         
-        QProcess* proc = new QProcess( this );
-        proc->addArgument( "amarokapp" );
+        m_pProc = new QProcess( this );
+        m_pProc->addArgument( "amarokapp" );
         //hand arguments through to amaroK
         for ( int i = 1; i < m_argc; i++ )
-            proc->addArgument( m_argv[i] );
-        proc->start();
+            m_pProc->addArgument( m_argv[i] );
+        
+        connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
+        connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( quit() ) );
+        m_pProc->start();
         
         //wait until LoaderServer starts (== amaroK is up and running)
         while( ( sockfd = tryConnect() ) == -1 ) {
             processEvents();
             ::usleep( 200 * 1000 );    //== 200ms                    
         }
+        
+        loaded();
     }
     else {
-        //yes, amaroK is running -> transmit new command line args to the LoaderServer
+        //yes, amaroK is running -> transmit new command line args to the LoaderServer and exit
         qDebug( "[Loader::Loader()] connected to LoaderServer!" );
         
         //put all arguments into one string
@@ -70,10 +76,9 @@ Loader::Loader( int& argc, char** argv )
             str.append( " " );
         }
         ::send( sockfd, str, str.length(), 0 );
+        ::close(sockfd );
+        ::exit( 0 );
     }
-
-    ::close(sockfd );
-    loaded();    
 }
 
 
@@ -160,7 +165,18 @@ int Loader::tryConnect()
 void Loader::loaded()
 {
     qDebug( "[Loader::loaded()]" );
-    ::exit( 0 );
+    
+    delete m_pOsd;
+    m_pOsd = NULL;
+}
+
+//SLOT
+void Loader::stdoutActive()
+{
+    qDebug( "[Loader::stdoutActive()]" );
+    
+    //hand amarokapp's stdout messages through to the cli
+    qDebug( m_pProc->readStdout() );
 }
 
 

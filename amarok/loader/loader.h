@@ -21,7 +21,7 @@
 #include <qapplication.h>    //baseclass
 
 class OSDWidget;
-
+class QProcess;
 
 class Loader : public QApplication
 {
@@ -33,6 +33,7 @@ class Loader : public QApplication
         
     private slots:
         void loaded();
+        void stdoutActive();
         
     private:
         bool splashEnabled() const;
@@ -43,6 +44,7 @@ class Loader : public QApplication
         int        m_argc;        
         char**     m_argv;
         
+        QProcess*  m_pProc;
         OSDWidget* m_pOsd;
 };
 
