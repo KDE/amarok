@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #98 being the highest available (take this one for your next bug and increase here)
+           #99 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -30,6 +30,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD #98 <mxcl> use the collection browser to add KCompletion to inline tag editing
 
   ADD #96 <mxcl> user asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
                  of a track. I'll see if I can do it with tiny amount of code -->mxcl
