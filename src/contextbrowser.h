@@ -23,8 +23,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         ContextBrowser( const char *name );
         ~ContextBrowser();
 
-        void showContextForItem( const KURL &url );
-
     public slots:
         void openURLRequest(const KURL &url, const KParts::URLArgs & );
 

@@ -133,18 +133,11 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
 void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    delete m_currentTrack;
-    m_currentTrack = new MetaBundle( bundle );
-    showCurrentTrack();
-}
-
-void ContextBrowser::showContextForItem( const KURL &url )
-{
     //prevents segfault when playing streams
-    if ( !url.isLocalFile() ) return;
+    if ( !bundle.url().isLocalFile() ) return;
 
     delete m_currentTrack;
-    m_currentTrack = TagReader::readTags( url, true ); //we have to delete this
+    m_currentTrack = TagReader::readTags( bundle.url(), true ); //we have to delete this
     showCurrentTrack();
 
     // increase song counter
