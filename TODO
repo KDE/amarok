@@ -8,7 +8,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <muesli> When PlaylistLoader adds a bunch of items to the playlist, it deletes the item _above_ the first 
+          <muesli> When PlaylistLoader adds a bunch of items to the playlist, it deletes the item _above_ the first
                    added item, afterwards.
 
           <markey> Make CoverManager thumbnail generation threaded.
@@ -36,9 +36,6 @@ SHORT-TERM (URGENT):
   FIX 134 <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
 MID-TERM:
-
-  CHG     <markey> When building collection, use a 2-phase progressbar: count to 100 for tagreading, and
-                   then count to 100 again for database inserts.
 
   CHG     <markey> Consider following the system tray spec on http://www.freedesktop.org/Standards/systemtray-spec.
                    Apparently this makes it possible to make the tray KDE and GNOME compatible.
