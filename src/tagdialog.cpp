@@ -173,7 +173,7 @@ void TagDialog::init()
         CollectionDB db;
         artistList = db.artistList();
         albumList  = db.albumList();
-	cover = db.getImageForAlbum( m_bundle.artist(), m_bundle.album(), 50 );
+        cover = db.getImageForAlbum( m_bundle.artist(), m_bundle.album() );
     }
 
     //enable auto-completion for artist, album and genre
