@@ -37,7 +37,7 @@ ContextBrowser::ContextBrowser( const char *name )
         : QVBox( 0, name )
         , m_currentTrack( 0 )
         , m_db( new CollectionDB() )
-        , m_loaded( false )
+//         , m_loaded( false )
 {
     kdDebug() << k_funcinfo << endl;
     EngineController::instance()->attach( this );
