@@ -19,6 +19,11 @@ class QWidget;
 class QTextStream;
 class PlaylistItem;
 
+//TODO this is a temporary measure until the new FileBrowser is a bit more finished
+//I'm doing it because I miss fast directory entry, but simply omit the definition
+//to restore sorting, I think it sorts alphabetically only by default currently
+//#define FAST_TRANSLATE
+
 class PlaylistLoader : public QThread
 {
 public:
@@ -88,7 +93,11 @@ private:
     void postBundle( const KURL&, MetaBundle* = 0 );
 
     bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown ) const;
+#ifdef FAST_TRANSLATE
+    void translate( QString & ); //recursively gets urls from a directory
+#else
     void translate( QString &, KFileItemList & ); //turns a directory into a KURL::List
+#endif
     int  isPlaylist( const QString & ) const;
     void loadLocalPlaylist( const QString &, int );
     void loadM3u( QTextStream &, const QString & );

@@ -4,7 +4,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "amarokfilelist.h"
+#include "amarokfilelist.h"    //for sorting directories
 #include "engine/enginebase.h"
 #include "metabundle.h"
 #include "playerapp.h"
@@ -145,7 +145,9 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
             //some options prevent recursion
             //FIXME depth check too
             if( list.count() > 1 && ( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) ) ) ) continue;
-
+#ifdef FAST_TRANSLATE
+            translate( path );
+#else
             AmarokFileList files( options.sortSpec );
             files.setAutoDelete( true );
             translate( path, files );
@@ -156,8 +158,8 @@ void PlaylistLoader::process( const KURL::List &list, bool validate )
             {
                 urls << (*it)->url();
             }
-
             process( urls, false ); //false will prevent stating for dir, etc.
+#endif
             continue;
          }
       }
@@ -259,7 +261,11 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 }
 
 
+#ifdef FAST_TRANSLATE
+void PlaylistLoader::translate( QString &path )
+#else
 void PlaylistLoader::translate( QString &path, KFileItemList &list )
+#endif
 {
    DIR *d = opendir( path.local8Bit() );
    if( !path.endsWith( "/" ) ) path += '/';
@@ -275,10 +281,10 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
 
          if( file == "." || file == ".." ) continue;
 
-         QString newpath = path + ent->d_name;
+         QString newPath = path + ent->d_name;
 
          //get file information
-         if( LSTAT( newpath.local8Bit(), &statbuf ) == 0 )
+         if( LSTAT( newPath.local8Bit(), &statbuf ) == 0 )
          {
             //check for these first as they are not mutually exclusive WRT dir/files
             if( S_ISCHR(  statbuf.st_mode ) ||
@@ -289,18 +295,26 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
             else if( S_ISDIR( statbuf.st_mode ) && options.recurse )  //directory
             {
                if( !options.symlink && S_ISLNK( statbuf.st_mode ) ) continue;
-               translate( newpath, list );
+            #ifdef FAST_TRANSLATE
+               translate( newPath );
+            #else
+               translate( newPath, list );
+            #endif
             }
 
             else if( S_ISREG( statbuf.st_mode ) )  //file
             {
-               KURL url; url.setPath( newpath ); //apparently this is the safe way to do it for unix paths
+               KURL url; url.setPath( newPath ); //safe way to do it for unix paths
 
                //we save some time and pass the stat'd information
                if( isValidMedia( url, statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777 ) )
                {
+               #ifdef FAST_TRANSLATE
+                  postBundle( url, 0 );
+               #else
                   //true means don't determine mimetype (waste of cycles for sure!)
                   list.append( new KFileItem( statbuf.st_mode & S_IFMT, statbuf.st_mode & 07777, url, true ) );
+               #endif
                }
             }
          } //if( LSTAT )
