@@ -412,7 +412,13 @@ void ContextBrowser::showHome() //SLOT
                fave[i+3] + " - " + fave[i+4] +
               "</a>"
              "</td>"
-            "</tr>" );
+/*           "<td class='sbtext' width='1'><i>" + fave[i+2] + "</i></td>"
+             "<td width='1'>"
+              "<div class='sbouter'>"
+               "<div class='sbinner' style='width: " + QString::number( fave[i+2].toInt() / 2 ) + "px;'></div>"
+              "</div>"
+             "</td>"
+*/          "</tr>" );
 
     browser->write(
          "</table>"
@@ -464,7 +470,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
               "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                "<tr><th>&nbsp;" + i18n( "Currently Playing" ) + "</th></tr>"
               "</table>"
-              "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+              "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
 
     if ( EngineController::engine()->isStream() ) {
@@ -508,7 +514,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr><th>&nbsp;" + i18n( "Metadata History" ) + "</th></tr>"
                     "</table>"
-                    "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+                    "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             QStringList::const_iterator it;
             // Ignore first two items, as they don't belong in the history
@@ -642,7 +648,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                    "<tr><th>" + i18n("Suggested Songs") + "</th></tr>"
                   "</table>"
-                  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+                  "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 3 )
                 browser->write(
@@ -675,15 +681,20 @@ void ContextBrowser::showCurrentTrack() //SLOT
              "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
               "<tr><th>" + i18n( "Favorite Tracks By This Artist" ) + "</th></tr>"
              "</table>"
-             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+             "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
             browser->write(
               "<tr>"
                "<td class='song'>"
-                "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" +
-                 values[i] + " <i>(" + i18n("Score: %1").arg( values[i + 2] ) + ")</i>"
+                "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" + values[i] +
                 "</a>"
+               "</td>"
+               "<td class='sbtext' width='1'><i>" + values[i + 2] + "</i></td>"
+               "<td width='1'>"
+                "<div class='sbouter'>"
+                 "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
+                "</div>"
                "</td>"
               "</tr>" );
 
@@ -708,7 +719,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                             "<tr><th>" + i18n( "Tracks On This Album" ) + "</th></tr>"
                             "</table>"
-                            "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+                            "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 3 ) {
                 QString tmp = values[i + 2].stripWhiteSpace().isEmpty() ? "" : values[i + 2] + ". ";
@@ -762,7 +773,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
     // </Albums by this artist>
 
-    browser->write( "<br></html>" );
+    browser->write( "</html>" );
     browser->end();
 }
 
@@ -817,6 +828,11 @@ void ContextBrowser::setStyleSheet() {
 
     m_styleSheet += QString( ".rbcontent .rbalbum:hover { background-color: %1; cursor: pointer; }" ).arg( bg );
     m_styleSheet += QString( ".rbcontent .rbalbum:hover a { color: %1; }" ).arg( fg );
+
+    //boxes used to display score (sb: score box)
+    m_styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
+    m_styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
+    m_styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
 
     browser->setUserStyleSheet( m_styleSheet );
 }
