@@ -5,8 +5,6 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#define MAX_COVERS_CHOICE  10
-
 #include <qimage.h>       //stack allocated
 #include <qobject.h>      //baseclass
 #include <qstringlist.h>  //stack allocated
@@ -18,28 +16,25 @@ class CoverFetcher : public QObject
    Q_OBJECT
 
    static const uint BUFFER_SIZE = 2000000; // 2mb
+   static const uint MAX_COVERS_CHOICE = 10;
 
 public:
-   CoverFetcher( QWidget *parent, QString artist, QString album );
-  ~CoverFetcher();
+    CoverFetcher( QWidget *parent, QString artist, QString album );
+   ~CoverFetcher();
 
-   /// allow the user to edit the query?
-   void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
+    /// allow the user to edit the query?
+    void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
 
-   /// starts the fetch
-   void startFetch();
+    /// starts the fetch
+    void startFetch();
 
-   /// @param the text to show in the dialog, there is a default text
-   void showQueryEditor( QString text = QString::null );
-
-public:
     QString artist() const { return m_artist; }
     QString album() const { return m_album; }
     QString amazonURL() const { return m_amazonURL; }
     QImage image() const { return m_image; }
 
-    bool error() const { return !m_errorMessage.isEmpty(); }
-    QString errorMessage() const { return m_errorMessage; }
+    bool wasError() const { return !m_errors.isEmpty(); }
+    QStringList errors() const { return m_errors; }
 
 signals:
     /// The CollectionDB can get the cover information using the pointer
@@ -51,36 +46,38 @@ private slots:
     void receivedImageData( KIO::Job* job, const QByteArray& data );
     void finishedImageFetch( KIO::Job* job );
 
-    void finish();
-
 private:
     const QString m_artist;
     const QString m_album;
-    QStringList   m_queries;
 
     bool    m_userCanEditQuery;
-    QString m_userQuery;
-    QString m_fetchedXML;
+    QString m_userQuery; /// the query from the query edit dialog
+    QString m_xml;
     QImage  m_image;
-
     QString m_amazonURL;
-    QString m_imageURL[MAX_COVERS_CHOICE];
-    uint    m_iCoverNbr;
-    uint    m_iCover;
-
     uchar  *m_buffer;
     uint    m_bufferIndex;
-
     int     m_size;
 
-    QString m_errorMessage;
+    QStringList m_queries;
+    QStringList m_coverUrls;
+    QStringList m_errors;
 
 private:
-    /// the fetch failed, exit with error message
-    void error( const QString &message, KIO::Job *job = 0 );
-    
-    // run the cover query job
-    void query_cover( int iCoverIndex );
+    /// The fetch was successful!
+    void finish();
+
+    /// The fetch failed, finish up and log an error message
+    void finishWithError( const QString &message, KIO::Job *job = 0 );
+
+    /// Will try all available queries, and then prompt the user, if allowed
+    void attemptAnotherFetch();
+
+    /// Prompt the user for a query
+    void getUserQuery( QString explanation = QString::null );
+
+    /// Show the cover that has been found
+    void showCover();
 };
 
 #endif /* AMAROK_COVERFETCHER_H */
