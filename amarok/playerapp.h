@@ -122,7 +122,9 @@ class PlayerApp : public KUniqueApplication
         void slotShow();
         
     private slots:
+        void readConfig();
         void receiveStreamMeta( QString title, QString url, QString kbps );
+        void saveConfig();
 
     signals:
         void sigScope( std::vector<float> *s );
@@ -137,9 +139,6 @@ class PlayerApp : public KUniqueApplication
         void initBrowserWin();
         void initColors();
         void restoreSession();
-
-        void saveConfig();
-        void readConfig();
 
         void setupScrolltext();
 
