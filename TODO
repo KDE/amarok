@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #171 being the highest available (take this one for your next bug and increase here)
+           #172 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+  FIX 171 <heliocastro>
+                  file /usr/lib/kde3/share/icons/crystalsvg/16x16/actions/player_playlist.png from install of
+                  amarok-3.3.1-1cl conflicts with file from package kde-base-icons-3.3.1-1cl
 
   FIX 170 <markey> Pasting URLs into playlist with mid-click is broken.
 
