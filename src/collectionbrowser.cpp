@@ -433,7 +433,7 @@ CollectionView::renderView( )  //SLOT
         filterToken = QString
                       ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
                       .arg( m_category1.lower() )
-		      .arg( m_db->escapeString( m_filter ) )
+                      .arg( m_db->escapeString( m_filter ) )
                       .arg( m_db->escapeString( m_filter ) );
 
     QString command = QString
