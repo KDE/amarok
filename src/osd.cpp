@@ -195,8 +195,10 @@ void OSDWidget::showOSD( const QString &text, const QString &image, bool preempt
             m_dirty = true;
 
             show();
-        } else
+        } else {
             textBuffer.append( text ); //queue
+            imageBuffer.append( image ); //queue
+        }
     }
 }
 
@@ -205,8 +207,9 @@ void OSDWidget::minReached() //SLOT
 {
     if ( !textBuffer.isEmpty() )
     {
-        renderOSDText( textBuffer.front() );
+        renderOSDText( textBuffer.front(), imageBuffer.front() );
         textBuffer.pop_front();
+        imageBuffer.pop_front();
 
         if( m_duration )
             //timerMin is still running

@@ -77,6 +77,7 @@ class OSDWidget : public QWidget
         QTimer      timerMin;
         QPixmap     osdBuffer;
         QStringList textBuffer;
+        QStringList imageBuffer;
         QString     m_currentText;
         QString     m_currentImage;
         bool        m_shadow;
