@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>386</width>
-            <height>344</height>
+            <height>346</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -67,13 +67,13 @@
                         </size>
                     </property>
                     <property name="suffix">
-                        <string> s</string>
+                        <string> ms</string>
                     </property>
                     <property name="maxValue">
-                        <number>10</number>
+                        <number>10000</number>
                     </property>
                     <property name="lineStep">
-                        <number>1</number>
+                        <number>100</number>
                     </property>
                     <property name="value">
                         <number>0</number>

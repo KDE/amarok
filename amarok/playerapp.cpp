@@ -72,6 +72,7 @@ PlayerApp::PlayerApp()
         , m_pAnimTimer( new QTimer( this ) )
         , m_length( 0 )
         , m_playRetryCounter( 0 )
+        , m_delayTime( 0 )
         , m_pEffectWidget( NULL )
         , m_pFht( new FHT( SCOPE_SIZE ) )
         , m_pOSD( new OSDWidget() )
@@ -711,14 +712,22 @@ void PlayerApp::slotMainTimer()
         slotNext();
         return;
     }
-
+    
     // check if track has ended
     if ( m_pEngine->state() == EngineBase::Idle )
     {
-        if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, true ) )
+        if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
         {
-            slotStop();
+            //delay before start of next track, without freezing the app
+            m_delayTime += MAIN_TIMER;
+            if ( m_delayTime >= AmarokConfig::trackDelayLength() )
+            {
+                m_delayTime = 0;
+                slotNext();
+            }
         }
+        else if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, true ) )
+            slotStop();
     }
 }
 

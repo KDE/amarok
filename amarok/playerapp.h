@@ -134,6 +134,7 @@ class PlayerApp : public KUniqueApplication
         QTimer *m_pAnimTimer;
         long m_length;
         int m_playRetryCounter;
+        int m_delayTime;
         EffectWidget *m_pEffectWidget;
         FHT *m_pFht;
         OSDWidget *m_pOSD;
