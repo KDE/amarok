@@ -4,10 +4,10 @@ Abstract
 ========
 
 In order to create a visualisation framework that is superior to anything 
-popular available for Linux today we are going to plan amaroK's thoroughly 
+popular available for Linux today we should plan amaroK's thoroughly 
 before implementation. This document exists to map out our ideas and is
 available for anyone to edit, please, if you have some good suggestion, or 
-experience with this kind of work, add some comments! Thanks,Max Howell
+experience with this kind of work, add some comments! Thanks, Max Howell
 
 
 Formatting
@@ -20,11 +20,7 @@ unmanageable.
 Editing
 =======
 
-If you want to add a comment, stick it in square brackets [], and put your
-name/nick at the front. Or add a new paragraph after, or whatever really. Just
-make sure that if you insert text to put it in square brackets. If you want to
-edit spelling or correct something that is wrong then just do so, after all we
-do have cvs history.
+Whatever goes. Please correct my spelling!
 
 
 Plan
@@ -53,3 +49,10 @@ it.
 
 If we make the visualisations not amaroK specific it may be possible to embed
 visualisations into the Kicker, onto the desktop, etc.
+
+MCOP seems to be the best way to get the audio data to the visuals. Problem with
+current FFT arts implementation is it seems to be stuck at 17 bands, can we 
+improve this? Do we want more than an FFT of the audio data? Would other data
+be useful to visuals at all? Beat detection certainly would be a useful thing to
+offer the visualisations, and it would certainly stop every visual implementing
+its own detection.
