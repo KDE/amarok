@@ -95,7 +95,7 @@ public:
     QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength() const { return prettyLength( m_length ); }
-    QString prettySampleRate() const { return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate ); }
+    QString prettySampleRate( bool shortened = false ) const { return prettyGeneric( i18n( "SampleRate", "%1 kHz" ), shortened ? m_sampleRate / 1000 : m_sampleRate ); }
 
     static /*inline */QString prettyBitrate( int );
     static QString prettyLength( int );

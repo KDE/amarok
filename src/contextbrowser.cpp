@@ -746,7 +746,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                          /* *** UGLY HACK ALERT ***
                                             Without the 2 <br> after %9, hover borks on mouseover.
                                             TODO: find out why + make it nice ;) */
-                                         "<b>%6</b><br>%7<br><br>"
+                                         "<a href='album:%6 @@@ %7'><b>%8</b><br>%9<br><br></a>"
                                         "</td>"
                                        "</tr>" )
                             .args( QStringList()
@@ -755,6 +755,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << escapeHTMLAttr( m_currentTrack->artist() ) // artist name
                                     << escapeHTMLAttr( values[ i ] ) // album.name
                                     << escapeHTMLAttr( m_db->getImageForAlbum( m_currentTrack->artist(), values[ i ], 50 ) )
+                                    << QString::number( artist_id )
+                                    << values[ i+1 ] //album.id
                                     << escapeHTML( values[ i ] ) // album.name
                                     << i18n( "1 Track", "%n Tracks", m_db->albumSongCount( QString::number(artist_id), values[ i+1 ] ).toInt() )
                              ) );

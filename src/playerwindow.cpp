@@ -342,10 +342,10 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     m_pSlider->setEnabled( bundle.length() > 0 );
 
     m_rateString     = bundle.prettyBitrate();
-    const QString Hz = bundle.prettySampleRate();
+    const QString Hz = bundle.prettySampleRate( true );
     if( !Hz.isEmpty() )
     {
-        if( !m_rateString.isEmpty() ) m_rateString += " / ";
+        if( !m_rateString.isEmpty() ) m_rateString += " - ";
         m_rateString += Hz;
     }
 
