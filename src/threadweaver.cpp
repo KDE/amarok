@@ -156,7 +156,7 @@ ThreadWeaver::registerDependent( QObject *dependent, const char *name )
 void
 ThreadWeaver::dependentAboutToBeDestroyed()
 {
-    debug() << "Dependent: " <<  sender()->name() << " destroyed\n";
+    debug() << "Dependent: " << sender()->name() << " destroyed\n";
 }
 
 void
@@ -169,20 +169,30 @@ ThreadWeaver::customEvent( QCustomEvent *e )
         break;
 
     case JobEvent: {
-        Job *job = (Job*)e;
+        Job    *job    = (Job*)e;
+        Thread *thread = findThread( job->name() );
+        kdbgstream d   = debug() << "Job ";
+
+        if ( !job->isAborted() ) {
+            d << "completed";
+            job->completeJob();
+        }
+        else d << "aborted";
+
+        d << ": " << QCString(job->name());
+
         // is there any more jobs of this type?
         // if so start the next one
-        Thread *thread = findThread( job->name() );
+
 
         if ( thread ) {
-            if ( !job->isAborted() )
-                job->completeJob();
-
+            d << ". Jobs pending: " << thread->pendingJobs.count();
             //run next job, if there is one
-            thread->runJob( 0 );
-        }
+            thread->runJob( 0 ); }
         else
-            warning() << "Thread was deleted while processing this job: " << QCString(job->name()) << endl;
+            warning() << "Thread is unexpectedly already deleted: " << QCString(job->name()) << endl;
+
+        d << endl;
 
         break;
     }
@@ -249,8 +259,6 @@ ThreadWeaver::Thread::run()
     Job *job = runningJob;
 
     job->m_aborted |= !job->doJob();
-
-    debug() << "Job done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
 
     QApplication::postEvent( ThreadWeaver::instance(), job );
 }
