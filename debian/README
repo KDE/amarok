@@ -1,0 +1,27 @@
+amaroK packages for Debian
+==========================
+
+  A couple of notes which you may find useful:
+
+    - if you want amarok to be able to play CDs, you need to install the
+      kdemultimedia-kio-plugins package.
+
+    - these Debian packages ship the amarokapp and amarok_xmmswrapper2
+      binaries in /usr/lib/amarok instead of /usr/bin, which upstream
+      does. This is done to comply with Debian Policy, which mandates
+      that binaries not meant to be invoked by the user shall not reside
+      in /usr/bin.
+
+      You should experience no problems because of this change. If you
+      do, please let me now.
+
+  Also, users not using the full KDE environment may get the following
+  error when executing amarok for the first time: "Socket-path is not a
+  link or a directory: /home/$USER/.kde/socket-$HOSTNAME". Just execute:
+
+    $ lnusertemp socket
+
+  Note that you only need to execute it once, not each time that you
+  start amaroK.
+
+ -- Adeodato Simó <asp16@alu.ua.es>
