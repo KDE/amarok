@@ -30,6 +30,12 @@ extern "C"
 #include <taglib/taglib.h>
 
 
+#ifndef TAGLIB_PATCH_VERSION
+// seems to be wheel's style
+#define TAGLIB_PATCH_VERSION 0
+#endif
+
+
 namespace amaroK
 {
     #if 0
