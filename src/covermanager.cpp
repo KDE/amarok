@@ -227,24 +227,6 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
             }
         }
     }
-
-    m_db->execSql("SELECT DISTINCT album.name FROM album, artist, tags "
-                  "WHERE album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " "
-                  "ORDER BY album.name;", &values, &names );
-
-    if ( !values.isEmpty() )
-    {
-        KListViewItem *after = 0;
-        for ( uint i=0; i < values.count(); i++ )
-        {
-            if ( !values[i].isEmpty() )
-            {
-                after = new KListViewItem( item, after, values[i] );
-                after->setPixmap( 0, SmallIcon("cdrom_unmount") );
-            }
-        }
-    }
-    
 }
 
 
@@ -272,13 +254,13 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     bool allAlbums = (item == m_artistView->firstChild());
     QString command;
     if( allAlbums ) {
-        command = "SELECT DISTINCT artist.name, album.name FROM album,artist,tags "
-                             "WHERE album.name <> 'Unknown' AND tags.album=album.id AND tags.artist=artist.id ORDER BY album.name;";
+        command = "SELECT DISTINCT artist.name, album.name FROM album, artist, tags "
+                  "WHERE tags.sampler = 0 AND album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = artist.id ORDER BY album.name;";
 
     } else {
         QString id = QString::number( m_db->getValueID( "artist", item->text(0) ) );
-        command = "SELECT DISTINCT album.name, '' FROM album,tags "
-                             "WHERE album.name <> 'Unknown' AND tags.album=album.id AND tags.artist="+id+" ORDER BY album.name;";
+        command = "SELECT DISTINCT album.name, '' FROM album, tags "
+                  "WHERE tags.sampler = 0 AND album.name <> 'Unknown' AND tags.album = album.id AND tags.artist = " + id + " ORDER BY album.name;";
     }
 
     m_db->execSql(command, &values, &names);
