@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>TagDialogBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>526</width>
-            <height>444</height>
+            <height>430</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,6 +19,50 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout7</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pushButton_musicbrainz</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Perform MusicBrainz Lookup</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+P</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Detect metadata from fingerprint. Requires the "trm" utility.</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout8</cstring>
@@ -391,13 +435,13 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>35</height>
                 </size>
             </property>
         </spacer>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout26</cstring>
+                <cstring>layout5</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -405,16 +449,18 @@
                 </property>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>pushButton_musicbrainz</cstring>
+                        <cstring>pushButton_previous</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Perform MusicBrainz Lookup</string>
+                        <string>Previous</string>
                     </property>
-                    <property name="autoDefault">
-                        <bool>false</bool>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pushButton_next</cstring>
                     </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Detect metadata from fingerprint. Requires the "trm" utility.</string>
+                    <property name="text">
+                        <string>Next</string>
                     </property>
                 </widget>
                 <spacer>
@@ -429,7 +475,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>50</width>
+                            <width>99</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -440,6 +486,9 @@
                     </property>
                     <property name="text">
                         <string>&amp;Save &amp;&amp; Close</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -458,6 +507,9 @@
                     <property name="text">
                         <string>&amp;Cancel</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
                     <property name="autoDefault">
                         <bool>true</bool>
                     </property>
@@ -472,8 +524,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <tabstops>
     <tabstop>kLineEdit_title</tabstop>
     <tabstop>kComboBox_artist</tabstop>

@@ -45,6 +45,7 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
 }
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,12 +53,8 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
 void
 TagDialog::accept() //SLOT
 {
-    if ( hasChanged() ) {
-        pushButton_ok->setEnabled( false ); //visual feedback
-        if ( writeTag() )
-            if ( m_playlistItem )
-                syncItemText();
-    }                
+    pushButton_ok->setEnabled( false ); //visual feedback
+    saveTags();
 
     deleteLater();
 }
@@ -69,6 +66,40 @@ TagDialog::openPressed() //SLOT
     // run konqueror with the track's directory
     const QString cmd = "kfmclient openURL \"%1\"";
     KRun::runCommand( cmd.arg( m_path ), "kfmclient", "konqueror" );
+}
+
+
+inline void
+TagDialog::previousTrack()
+{
+    if( !m_playlistItem->itemAbove() ) return;
+
+    if( hasChanged() )
+        storeTags();
+
+    m_playlistItem = (PlaylistItem *)m_playlistItem->itemAbove();
+    QMap<QString, MetaBundle>::ConstIterator it;
+    it = storedTags.find( m_playlistItem->url().path() );
+    m_bundle = it != storedTags.end() ? it.data() : m_playlistItem->metaBundle();
+
+    readTags();
+}
+
+
+inline void
+TagDialog::nextTrack()
+{
+    if( !m_playlistItem->itemBelow() ) return;
+
+    if( hasChanged() )
+        storeTags();
+
+    m_playlistItem = (PlaylistItem *)m_playlistItem->itemBelow();
+    QMap<QString, MetaBundle>::ConstIterator it;
+    it = storedTags.find( m_playlistItem->url().path() );
+    m_bundle = it != storedTags.end() ? it.data() : m_playlistItem->metaBundle();
+
+    readTags();
 }
 
 
@@ -125,8 +156,7 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 
 void TagDialog::init()
 {
-    setWFlags( getWFlags() | Qt::WDestructiveClose );    
-    kLineEdit_title->setText( m_bundle.title() );
+    setWFlags( getWFlags() | Qt::WDestructiveClose );
 
     //get artist and album list from collection db
     QStringList artistList, albumList;
@@ -139,20 +169,60 @@ void TagDialog::init()
     //enable auto-completion for artist, album and genre
     kComboBox_artist->insertStringList( artistList );
     kComboBox_artist->completionObject()->insertItems( artistList );
-    kComboBox_artist->setCurrentText( m_bundle.artist() );
     kComboBox_album->insertStringList( albumList );
     kComboBox_album->completionObject()->insertItems( albumList );
-    kComboBox_album->setCurrentText( m_bundle.album() );
 
     QStringList genreList = MetaBundle::genreList();
     kComboBox_genre->insertStringList( genreList );
     kComboBox_genre->completionObject()->insertItems( genreList );
-    kComboBox_genre->setCurrentText( m_bundle.genre() );
 
     //looks better to have a blank label than 0
     kIntSpinBox_track->setSpecialValueText( " " );
     kIntSpinBox_year->setSpecialValueText( " " );
 
+    // Connects for modification check
+    connect( kLineEdit_title,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kComboBox_artist, SIGNAL(activated( int )),              SLOT(checkModified()) );
+    connect( kComboBox_artist, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kComboBox_album,  SIGNAL(activated( int )),              SLOT(checkModified()) );
+    connect( kComboBox_album,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kComboBox_genre,  SIGNAL(activated( int )),              SLOT(checkModified()) );
+    connect( kComboBox_genre,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kIntSpinBox_track,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
+    connect( kIntSpinBox_year, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
+    connect( kLineEdit_comment,SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+
+    // Remember original button text
+    m_buttonMbText = pushButton_musicbrainz->text();
+
+    connect( pushButton_cancel,   SIGNAL(clicked()), SLOT(reject()) );
+    connect( pushButton_ok,       SIGNAL(clicked()), SLOT(accept()) );
+    connect( pushButton_open,     SIGNAL(clicked()), SLOT(openPressed()) );
+    connect( pushButton_previous, SIGNAL(clicked()), SLOT(previousTrack()) );
+    connect( pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
+
+    // draw an icon onto the open-in-konqui button
+    pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
+    // draw the fancy amaroK logo on the dialog ;-)
+    pixmap_cover->setPixmap( QPixmap( locate( "data", QString( "amarok/images/amarok_cut.png" ) ), "PNG" ) );
+
+#ifdef HAVE_MUSICBRAINZ
+    connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
+    QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
+#endif
+
+    readTags();
+
+    adjustSize();
+}
+
+
+void TagDialog::readTags()
+{
+    kLineEdit_title->setText( m_bundle.title() );
+    kComboBox_artist->setCurrentText( m_bundle.artist() );
+    kComboBox_album->setCurrentText( m_bundle.album() );
+    kComboBox_genre->setCurrentText( m_bundle.genre() );
     kIntSpinBox_track->setValue( m_bundle.track().toInt() );
     kIntSpinBox_year->setValue( m_bundle.year().toInt() );
     kLineEdit_comment->setText( m_bundle.comment() );
@@ -173,46 +243,27 @@ void TagDialog::init()
           kLineEdit_comment->setEnabled( false );
     }
 
-    // Connects for modification check
-    connect( kLineEdit_title,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_artist, SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_artist, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_album,  SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_album,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kComboBox_genre,  SIGNAL(activated( int )),              SLOT(checkModified()) );
-    connect( kComboBox_genre,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kIntSpinBox_track,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
-    connect( kIntSpinBox_year, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
-    connect( kLineEdit_comment,SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-
-    // Remember original button text
-    m_buttonMbText = pushButton_musicbrainz->text();
-
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     if ( m_bundle.url().isLocalFile() )
         m_path = m_bundle.url().directory();
     else
         pushButton_open->setEnabled( false );
 
-    connect( pushButton_cancel, SIGNAL(clicked()), SLOT(reject()) );
-    connect( pushButton_ok,     SIGNAL(clicked()), SLOT(accept()) );
-    connect( pushButton_open,   SIGNAL(clicked()), SLOT(openPressed()) );
-    pushButton_ok->setEnabled( false );
-    
-    // draw an icon onto the open-in-konqui button
-    pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
-    // draw the fancy amaroK logo on the dialog ;-)
-    pixmap_cover->setPixmap( QPixmap( locate( "data", QString( "amarok/images/amarok_cut.png" ) ), "PNG" ) );
+    pushButton_ok->setEnabled( storedTags.count() > 0 );
 
 #ifdef HAVE_MUSICBRAINZ
-    connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
     pushButton_musicbrainz->setEnabled( m_bundle.url().isLocalFile() );
 #else
     pushButton_musicbrainz->setEnabled( false );
-    QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
 #endif
 
-    adjustSize();
+    if( m_playlistItem ) {
+        pushButton_previous->setEnabled( m_playlistItem->itemAbove() );
+        pushButton_next->setEnabled( m_playlistItem->itemBelow() );
+    } else {
+        pushButton_previous->hide();
+        pushButton_next->hide();
+    }
 }
 
 
@@ -233,10 +284,47 @@ TagDialog::hasChanged()
 }
 
 
-bool
-TagDialog::writeTag()
+void
+TagDialog::storeTags()
 {
-    QCString path = QFile::encodeName( m_bundle.url().path() );
+    MetaBundle mb;
+    QString url = m_bundle.url().path();
+
+    mb.setUrl( url );
+    mb.setTitle( kLineEdit_title->text() );
+    mb.setArtist( kComboBox_artist->currentText() );
+    mb.setAlbum( kComboBox_album->currentText() );
+    mb.setComment( kLineEdit_comment->text() );
+    mb.setGenre( kComboBox_genre->currentText() );
+    mb.setTrack( QString::number( kIntSpinBox_track->value() ) );
+    mb.setYear( QString::number( kIntSpinBox_year->value() ) );
+    mb.setLength( m_bundle.length() );
+    mb.setBitrate( m_bundle.bitrate() );
+    mb.setSampleRate( m_bundle.sampleRate() );
+
+    storedTags.insert( url, mb );
+}
+
+
+void
+TagDialog::saveTags()
+{
+    if( hasChanged() )
+        storeTags();
+
+    QMap<QString, MetaBundle>::ConstIterator it;
+    for( it = storedTags.begin(); it != storedTags.end(); ++it ) {
+        if( writeTag( it.data() ) )
+            syncItemText( it.data() );
+    }
+
+}
+
+
+bool
+TagDialog::writeTag( MetaBundle mb )
+{
+    QCString path = QFile::encodeName( mb.url().path() );
 
     if ( !TagLib::File::isWritable( path ) ) {
         KMessageBox::error( this, i18n( "The file is not writable." ) );
@@ -251,18 +339,18 @@ TagDialog::writeTag()
         QApplication::setOverrideCursor( KCursor::waitCursor() );
 
         TagLib::Tag * t = f.tag();
-        t->setTitle( QStringToTString( kLineEdit_title->text() ) );
-        t->setArtist( QStringToTString( kComboBox_artist->currentText() ) );
-        t->setAlbum( QStringToTString( kComboBox_album->currentText() ) );
-        t->setTrack( kIntSpinBox_track->value() );
-        t->setYear( kIntSpinBox_year->value() );
-        t->setComment( QStringToTString( kLineEdit_comment->text() ) );
-        t->setGenre( QStringToTString( kComboBox_genre->currentText() ) );
+        t->setTitle( QStringToTString( mb.title() ) );
+        t->setArtist( QStringToTString( mb.artist() ) );
+        t->setAlbum( QStringToTString( mb.album() ) );
+        t->setTrack( mb.track().toInt() );
+        t->setYear( mb.year().toInt() );
+        t->setComment( QStringToTString( mb.comment() ) );
+        t->setGenre( QStringToTString( mb.genre() ) );
 
         f.save();
 
          //update the collection db
-        CollectionDB().updateTags( path, MetaBundle( m_bundle.url(), t ) );
+        CollectionDB().updateTags( path, mb );
 
         QApplication::restoreOverrideCursor();
 
@@ -273,27 +361,27 @@ TagDialog::writeTag()
 
 
 void
-TagDialog::syncItemText()
-{    
-    QListViewItem* item = m_playlistItem->listView()->firstChild();
-    
+TagDialog::syncItemText( MetaBundle mb )
+{
+    if( !m_playlistItem ) return;
+
+    PlaylistItem* item = (PlaylistItem*)((KListView*)m_playlistItem->listView())->firstChild();
+
     // Find out if item still exists in the listView
     do {
-        if ( item == m_playlistItem ) break;
+        if ( item->url() == mb.url() ) {
+            // Reflect changes in PlaylistItem text
+            item->setText( PlaylistItem::Title,   mb.title() );
+            item->setText( PlaylistItem::Artist,  mb.artist() );
+            item->setText( PlaylistItem::Album,   mb.album() );
+            item->setText( PlaylistItem::Genre,   mb.genre() );
+            item->setText( PlaylistItem::Track,   mb.track() );
+            item->setText( PlaylistItem::Year,    mb.year() );
+            item->setText( PlaylistItem::Comment, mb.comment() );
+        }
         item = item->nextSibling();
     }
     while( item );
-    
-    if ( item ) {
-        // Reflect changes in PlaylistItem text
-        m_playlistItem->setText( PlaylistItem::Title,   kLineEdit_title->text() );
-        m_playlistItem->setText( PlaylistItem::Artist,  kComboBox_artist->currentText() );
-        m_playlistItem->setText( PlaylistItem::Album,   kComboBox_album->currentText() );
-        m_playlistItem->setText( PlaylistItem::Genre,   kComboBox_genre->currentText() );
-        m_playlistItem->setText( PlaylistItem::Track,   kIntSpinBox_track->text() );
-        m_playlistItem->setText( PlaylistItem::Year,    kIntSpinBox_year->text() );
-        m_playlistItem->setText( PlaylistItem::Comment, kLineEdit_comment->text() );
-    }
 }
 
 

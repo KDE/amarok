@@ -9,14 +9,15 @@
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
 
-#ifdef HAVE_MUSICBRAINZ    
+#ifdef HAVE_MUSICBRAINZ
     #include "ktrm.h"
-#else    
+#else
     // Dummy class for queryDone argument.
     class KTRMResultList {};
 #endif
 
 #include <kurl.h>             //stack alloc
+#include <qmap.h>
 
 class PlaylistItem;
 
@@ -32,6 +33,8 @@ class TagDialog : public TagDialogBase
     private slots:
         void accept();
         void openPressed();
+        void previousTrack();
+        void nextTrack();
         void checkModified();
 
         void musicbrainzQuery();
@@ -39,12 +42,16 @@ class TagDialog : public TagDialogBase
 
     private:
         void init();
+        void readTags();
         bool hasChanged();
-        bool writeTag();
-        void syncItemText();
-        
+        void storeTags();
+        void saveTags();
+        bool writeTag( MetaBundle mb );
+        void syncItemText( MetaBundle mb );
+
         MetaBundle m_bundle;
-        QListViewItem* m_playlistItem;
+        PlaylistItem* m_playlistItem;
+        QMap<QString, MetaBundle> storedTags;
         QString m_buttonMbText;
         QString m_path;
 };

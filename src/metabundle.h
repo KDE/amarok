@@ -70,6 +70,9 @@ public:
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
+    void setLength( int length )         { m_length = length; }
+    void setBitrate( int bitrate )       { m_bitrate = bitrate; }
+    void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
     const KURL    &url()     const { return m_url; }
     const QString &title()   const { return m_title; }
@@ -79,6 +82,14 @@ public:
     const QString &comment() const { return m_comment; }
     const QString &genre()   const { return m_genre; }
     const QString &track()   const { return m_track; }
+    void setUrl( QString url ) { m_url = url; }
+    void setTitle( QString title ) { m_title = title; }
+    void setArtist( QString artist ) { m_artist = artist; }
+    void setAlbum( QString album ) { m_album = album; }
+    void setYear( QString year ) { m_year = year; }
+    void setComment( QString comment ) { m_comment = comment; }
+    void setGenre( QString genre ) { m_genre = genre; }
+    void setTrack( QString track ) { m_track = track; }
 
     QString prettyTitle() const;
     QString prettyURL() const { return m_url.prettyURL(); }
