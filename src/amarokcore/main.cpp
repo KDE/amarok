@@ -50,6 +50,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "icons" ), "kwwii@bootsplash.org" );
+    aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
 
 
     KApplication::disableAutoDcopRegistration();
