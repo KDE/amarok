@@ -4,7 +4,6 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "browserwin.h"
 #include "playlistitem.h" //for Tags struct
 #include "playlistloader.h"
 #include "playlistwidget.h"
@@ -32,7 +31,7 @@
 extern PlayerApp *pApp;
 
 
-///// ctor, dtor and run() are basic and in header
+///// ctor and dtor are basic and in header
 
 //URGENT
 //TODO instead of deleting m_first, change the item texts or at the very least delete it outside the loader thread!
@@ -43,6 +42,7 @@ extern PlayerApp *pApp;
 //     also you can get the customEvent function to check if new items are current if current request is sitting there
 
 //LESS IMPORTANT
+//TODO add non-local directories as items with a [+] next to, you open them by clicking the plus!!
 //TODO display dialog that lists unloadable media after thread is exited
 //TODO undo/redo suckz0r as you can push both simultaneously and you get a list which is a mixture!
 //     perhaps a static method that accepts a ListView pointer and loads playlists only would help speed up undo/redo
@@ -54,7 +54,7 @@ extern PlayerApp *pApp;
 //TODO consider loading the TagLib::AudioProperties on demand only as they are slow to load
 //TODO rethink recursion options <mxcl> IMHO they suck big chunks, always do it recursively, why drop/add a directory if you don't want its contents?
 //     you can always open the dir and select the files. Stupid option and PITA to implement.
-
+//TODO reimplement ask recursive in PlaylistWidget::insertMedia()
 
 PlaylistItem *PlaylistLoader::PlaylistEvent::makePlaylistItem( QListView *lv )
 {
@@ -75,7 +75,7 @@ PlaylistItem *PlaylistLoader::PlaylistEvent::makePlaylistItem( QListView *lv )
       //FIXME this seems to block the ui
 
       #if KDE_IS_VERSION(3,1,92)
-      if( KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin->m_pPlaylistWidget ) )
+      if( KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin ) )
       #else
       if( KIO::NetAccess::download( m_url, path ) )
       #endif
@@ -115,62 +115,129 @@ void PlaylistLoader::run()
        //delete this;
 }
 
-void PlaylistLoader::process( KURL::List &list )
+
+#include <dirent.h>   //dirent
+#include <sys/stat.h> //lstat()
+
+//some GNU systems don't support big files for some reason
+#ifndef __USE_LARGEFILE64 //see dirent.h
+ #define DIRENT dirent
+ #define SCANDIR scandir
+ #define STATSTRUCT stat
+ #define LSTAT lstat
+#else
+ #define DIRENT dirent64
+ #define SCANDIR scandir64
+ #define STATSTRUCT stat64
+ #define LSTAT lstat64
+#endif
+
+void PlaylistLoader::process( KURL::List &list, bool bTranslate )
 {
+   struct STATSTRUCT statbuf;
+
    for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
    {
-      Tags *tags = 0;
+      QString path = (*it).path();
 
-      if( (*it).isLocalFile() )
+      if( (*it).isLocalFile() && bTranslate )
       {
-         KFileItem file( KFileItem::Unknown, KFileItem::Unknown, *it, true );
+         if( LSTAT( path, &statbuf ) != 0 ) continue;
 
-         if( file.isDir() )
+         if( S_ISDIR( statbuf.st_mode ) )
          {
-            if( pApp->m_optDropMode != "Recursively" || ( !pApp->m_optFollowSymlinks && file.isLink() && list.count() > 1 ) ) continue; //FIXME depth check too
+            if( pApp->m_optDropMode != "Recursively" || ( !pApp->m_optFollowSymlinks && S_ISLNK( statbuf.st_mode ) && list.count() > 1 ) ) continue; //FIXME depth check too
 
             KURL::List list2;
-            translate( file.url(), list2 );
-            process( list2 ); //FIXME inefficient as doubles # of stats (KFileItem uses stat)
+            translate( *it, list2 );
+            process( list2, false ); //FIXME inefficient as doubles # of stats (KFileItem uses stat)
             continue;
          }
       }
 
-      if( parsePlaylist( *it ) ) //will arrange for playlist to be parsed
+      if( int type = isPlaylist( path.lower() ) )
       {
-         continue;
-      }
-      else if( (*it).isLocalFile() )
-      {
-         TagLib::String str( QStringToTString( (*it).path() ) );
-         TagLib::FileRef f( str.toCString() );
-
-         if ( !f.isNull() && f.tag() )
+         if( !(*it).isLocalFile() )
          {
-            TagLib::Tag * tag = f.tag();
-
-            tags = new Tags( TStringToQString( tag->title() ).stripWhiteSpace(),
-                             TStringToQString( tag->artist() ).stripWhiteSpace(),
-                             TStringToQString( tag->album() ).stripWhiteSpace(),
-                             TStringToQString( tag->genre() ).stripWhiteSpace(),
-                             TStringToQString( tag->comment() ).stripWhiteSpace(),
-                             QString::number( tag->year() ),
-                             QString::number( tag->track() ),
-                             QString( (*it).directory().section( '/', -1 ) ),
-                             f.audioProperties() );
+           //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
+           //so this will organise the d/l to occur syncronously and then a new thread spawned :)
+           QApplication::postEvent( m_parent, new PlaylistEvent( &m_after, *it ) );
          }
-      }
-
-      if( isValidMedia( *it ) )
-      {
-         QApplication::postEvent( m_parent, new PlaylistEvent( &m_after, *it, tags ) );
+         else
+         {
+            loadLocalPlaylist( path, type );
+         }
       }
       else
       {
-        kdDebug() << "[loader] Not valid file: " << (*it).prettyURL() << endl;
+         Tags *meta = 0;
+
+         if( pApp->m_optReadMetaInfo )
+         {
+            //TODO can we use filerefs instead of stating above? may shave a few ms
+
+            TagLib::FileRef f( path, false ); //false = don't read audioproperties
+
+            if ( !f.isNull() && f.tag() )
+            {
+               TagLib::Tag * tag = f.tag();
+
+               meta = new Tags( TStringToQString( tag->title() ).stripWhiteSpace(),
+                                TStringToQString( tag->artist() ).stripWhiteSpace(),
+                                TStringToQString( tag->album() ).stripWhiteSpace(),
+                                TStringToQString( tag->genre() ).stripWhiteSpace(),
+                                TStringToQString( tag->comment() ).stripWhiteSpace(),
+                                QString::number( tag->year() ),
+                                QString::number( tag->track() ),
+                                QString( (*it).directory().section( '/', -1 ) ),
+                                f.audioProperties() );
+            }
+         }
+
+         QApplication::postEvent( m_parent, new PlaylistEvent( &m_after, *it, meta ) );
       }
    }
 }
+
+
+inline
+int PlaylistLoader::isPlaylist( const QString &path )
+{
+   //TODO case insensitive endsWith exists in Qt3.2
+   //TODO investigate faster methods
+   //TODO try to achieve retVal optimisation
+
+        if( path.endsWith( ".m3u" ) ) return 1;
+   else if( path.endsWith( ".pls" ) ) return 2;
+   else return 0;
+}
+
+
+void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
+{
+   QFile file( path );
+
+      if ( file.open( IO_ReadOnly ) )
+      {
+        QTextStream stream( &file );
+
+        switch( type )
+        {
+        case 1:
+           loadM3u( stream, path.left( path.findRev( '/' ) ) ); //TODO verify that relative playlists work!!
+           break;
+        case 2:
+           loadPls( stream );
+           break;
+        default:
+           break;
+        }
+      }
+
+   file.close();
+}
+
+
 
 
 #include <arts/soundserver.h>
@@ -199,21 +266,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url )
 }
 
 
-#include <dirent.h>   //dirent
-#include <sys/stat.h> //lstat()
 
-//some GNU systems don't support big files for some reason
-#ifndef __USE_LARGEFILE64 //see dirent.h
- #define DIRENT dirent
- #define SCANDIR scandir
- #define STATSTRUCT stat
- #define LSTAT lstat
-#else
- #define DIRENT dirent64
- #define SCANDIR scandir64
- #define STATSTRUCT stat64
- #define LSTAT lstat64
-#endif
 
 
 static int selector( struct DIRENT const *ent )
@@ -289,61 +342,7 @@ void PlaylistLoader::translate( const KURL &dir, KURL::List &list ) //FIXME KURL
 }
 
 
-bool PlaylistLoader::parsePlaylist( const KURL &url )
-{
-   //TODO returns bool
-
-   //TODO mime-based checks would be better, as long as we don't have to fuss with the implementation
-   int type;
-   QString path( url.path().lower() );
-
-   //1. test for playlist-ness
-        if( path.endsWith( ".m3u" ) ) type = 0;
-   else if( path.endsWith( ".pls" ) ) type = 1;
-   else return false;
-
-   kdDebug() << "[loader] Parsing: " << url.prettyURL() << endl;
-
-   KURL::List list;
-   path = url.path();
-
-   if ( !url.isLocalFile() )
-   {
-      //if the playlist is not local, we need to d/l it, and KIO doesn't work in QThreads. sigh
-      //so this will organise the d/l to occur syncronously and then a new thread spawned :)
-      QApplication::postEvent( m_parent, new PlaylistEvent( &m_after, url ) );
-   }
-   else
-   {
-      QFile file( url.path() );
-
-      if ( file.open( IO_ReadOnly ) )
-      {
-        QTextStream stream( &file );
-
-        switch( type )
-        {
-        case 0:
-           loadM3u( stream, url.directory( false ), list );
-           break;
-        case 1:
-           loadPls( stream, url.directory( false ), list );
-           break;
-        default:
-           break;
-        }
-      }
-
-      file.close();
-   }
-
-   process( list );
-
-   return true;
-}
-
-
-void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir, KURL::List &list )
+void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
 {
     QString str, extStr;
 
@@ -359,7 +358,7 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir, KURL::Lis
             if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
-            list << KURL( str );
+            QApplication::postEvent( m_parent, new PlaylistEvent( &m_after, KURL( str ), 0 ) );
 
             /*
             //FIXME: what is this about?
@@ -374,7 +373,7 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir, KURL::Lis
 }
 
 
-void PlaylistLoader::loadPls( QTextStream &stream, const QString&, KURL::List &list )
+void PlaylistLoader::loadPls( QTextStream &stream )
 {
     QString str;
 
@@ -384,7 +383,8 @@ void PlaylistLoader::loadPls( QTextStream &stream, const QString&, KURL::List &l
         {
             //destItem = addItem( destItem, str.section( "=", -1 ) );
             KURL url( str.section( "=", -1 ) );
-            list << url;
+
+            QApplication::postEvent( m_parent, new PlaylistEvent( &m_after, url, 0 ) );
 
             /*
             //FIXME: no regressions ok?

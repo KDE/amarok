@@ -50,13 +50,14 @@ public:
     friend class PlaylistEvent;
 
 private:
-    void process( KURL::List & );
+    void process( KURL::List &, bool = true );
 
     bool isValidMedia( const KURL & );
     void translate( const KURL &, KURL::List & );
-    bool parsePlaylist( const KURL & );
-    void loadM3u( QTextStream &, const QString &, KURL::List & );
-    void loadPls( QTextStream &, const QString &, KURL::List & );
+    int  isPlaylist( const QString & );
+    void loadLocalPlaylist( const QString &, int );
+    void loadM3u( QTextStream &, const QString & );
+    void loadPls( QTextStream & );
 
     KURL::List     m_list;
     QWidget       *m_parent;
