@@ -81,7 +81,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
     move( AmarokConfig::playerPos() );
     setFixedSize( 311, 140 );
-    setFocusPolicy( NoFocus );
+    //setFocusPolicy( NoFocus );
     setCaption( "amaroK" );
     setAcceptDrops( true );
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
@@ -114,7 +114,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
 
-        m_pButtonPlay->setFocus();
+        //m_pButtonPlay->setFocus();
     } //</NavButtons>
 
     { //<Sliders>
@@ -706,6 +706,7 @@ NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, c
     setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
 
     setFlat( true );
+    setFocusPolicy( NoFocus ); //commanded by Markey and his kin
 
     connect( this, SIGNAL( clicked() ), receiver, slot );
 }
@@ -721,7 +722,7 @@ IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal
     connect( this, SIGNAL(toggled( bool )), parent, signal );
 
     setToggleButton( true );
-     setFocusPolicy( NoFocus ); //FIXME we have no way to show focus on these widgets currently
+    setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently
 }
 
 void IconButton::drawButton( QPainter *p )
