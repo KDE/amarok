@@ -106,7 +106,7 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) \
-    $(mysql_libs)
+    $(mysql_libs) $(LIB_EXECINFO)
 
 ##make this work as it is not a good flag to force on everyone, sadly
 ##"$kde_use_debug_code" != "no"; then
