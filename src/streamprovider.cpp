@@ -15,15 +15,18 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "StreamProvider"
+
+#include "amarokconfig.h"
 #include "debug.h"
-#include <kmdcodec.h>
-#include <kprotocolmanager.h>
 #include "metabundle.h"
-#include <qtimer.h>
 #include "streamprovider.h"
 
-// TODO:
-// Look at LibVorbisfile for ogg comment decoding.
+#include <qtextcodec.h>
+#include <qtimer.h>
+
+#include <kmdcodec.h>
+#include <kprotocolmanager.h>
 
 
 using namespace amaroK;
@@ -44,7 +47,7 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
         , m_usedPort( 0 )
         , m_pBuf( new char[BUFSIZE] )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BLOCK
 
     // Don't try to get metdata for ogg streams (different protocol)
     m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
@@ -60,13 +63,13 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
         StreamProxy* server;
         for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
             server = new StreamProxy( i, this );
-            kdDebug() << k_funcinfo << "Trying to bind to port: " << i << endl;
+            debug() << "Trying to bind to port: " << i << endl;
             if ( server->ok() )     // found a free port
                 break;
             delete server;
         }
         if ( i > MAX_PROXYPORT ) {
-            kdWarning() << k_funcinfo << "Unable to find a free local port. Aborting.\n";
+            warning() << "Unable to find a free local port. Aborting.\n";
             m_initSuccess = false;
             return;
         }
@@ -161,7 +164,7 @@ StreamProvider::sendRequest() //SLOT
                                .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
                                .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
-    kdDebug() << "StreamProvider sending request:\n" << request << endl;
+    debug() << "Sending request:\n" << request << endl;
     m_sockRemote.writeBlock( request.latin1(), request.length() );
 }
 
@@ -221,7 +224,7 @@ void
 StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
-        kdError() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
+        warning() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
 
         emit sigError();
     }
@@ -235,12 +238,12 @@ StreamProvider::connectError() //SLOT
 bool
 StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BLOCK
 
     while ( index < bytesRead ) {
         m_headerStr.append( m_pBuf[ index++ ] );
         if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
-            kdDebug() << k_funcinfo << "Got shoutcast header: '" << m_headerStr << "'" << endl;
+            debug() << "Got shoutcast header: '" << m_headerStr << "'" << endl;
             // Handle redirection
             QString loc( "Location: " );
             int index = m_headerStr.find( loc );
@@ -248,7 +251,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 int start = index + loc.length();
                 int end = m_headerStr.find( "\n", index );
                 m_url = m_headerStr.mid( start, end - start - 1 );
-                kdDebug() << "Stream redirected to: " << m_url << endl;
+                debug() << "Stream redirected to: " << m_url << endl;
                 m_sockRemote.close();
                 connectToHost();
                 return false;
@@ -279,12 +282,11 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
     return false;
 }
 
-#include "amarokconfig.h"
-#include <qtextcodec.h>
+
 void
 StreamProvider::transmitData( const QString &data )
 {
-    kdDebug() << "[StreamProvider] Received new metadata: " << data << endl;
+    debug() << "Received new metadata: " << data << endl;
 
     // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
     if ( !data.isNull() && data == m_lastMetadata ) return;
@@ -311,8 +313,8 @@ StreamProvider::transmitData( const QString &data )
 void
 StreamProvider::error()
 {
-    kdDebug() <<  "StreamProvider error: Stream does not support shoutcast metadata. "
-                  "Restarting in non-metadata mode.\n";
+    debug() <<  "StreamProvider error: Stream does not support shoutcast metadata. "
+                "Restarting in non-metadata mode.\n";
 
     m_sockRemote.close();
     m_icyMode = false;
