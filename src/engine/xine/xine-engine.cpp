@@ -44,6 +44,19 @@ debug()
     return kdbgstream( "[xine-engine] ", 0, 0 );
 }
 
+static inline void
+emptyMyList()
+{
+    for( MyNode *next, *node = myList->next; node->next != myList; node = next )
+    {
+        next = node->next;
+
+        free( node->buf.mem );
+        free( node );
+    }
+    myList->next = myList;
+}
+
 
 //some logging static globals
 namespace Log
@@ -65,16 +78,20 @@ XineEngine::XineEngine()
   , m_audioPort( 0 )
   , m_eventQueue( 0 )
   , m_post( 0 )
-{}
+{
+    myList->next = myList; //init the buffer list
+}
 
 XineEngine::~XineEngine()
 {
-    //if (m_post)       xine_post_dispose(m_xine, m_post);
     if (m_stream)     xine_close(m_stream);
     if (m_eventQueue) xine_event_dispose_queue(m_eventQueue);
     if (m_stream)     xine_dispose(m_stream);
     if (m_audioPort)  xine_close_audio_driver(m_xine, m_audioPort);
+    if (m_post)       xine_post_dispose(m_xine, m_post);
     if (m_xine)       xine_exit(m_xine);
+
+    emptyMyList();
 
     debug() << "xine closed\n";
 
@@ -170,17 +187,13 @@ XineEngine::init( bool&, int, bool )
 }
 
 void
-XineEngine::play()
+XineEngine::play( const KURL &url, bool )
 {
-    if( xine_get_status( m_stream ) == XINE_STATUS_PLAY && !xine_get_param( m_stream, XINE_PARAM_SPEED ) )
-    {
-        xine_set_param(m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
-        return;
-    }
+    m_url = url;
 
     xine_close( m_stream );
 
-    if( xine_open( m_stream, m_url.url().local8Bit() ) )
+    if( xine_open( m_stream, url.url().local8Bit() ) )
     {
         xine_post_out_t *source = xine_get_audio_source( m_stream );
         xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
@@ -195,8 +208,25 @@ XineEngine::play()
 }
 
 void
+XineEngine::play()
+{
+    if( xine_get_status( m_stream ) == XINE_STATUS_PLAY && !xine_get_param( m_stream, XINE_PARAM_SPEED ) )
+    {
+        xine_set_param(m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+        return;
+    }
+
+    if( xine_play( m_stream, 0, 0 ) ) return;
+
+    //we should get a ui message from the event listener
+    emit stopped();
+}
+
+void
 XineEngine::stop()
 {
+    emptyMyList();
+
     xine_stop( m_stream );
     emit stopped();
 }
@@ -223,7 +253,10 @@ std::vector<float>*
 XineEngine::scope()
 {
     std::vector<float> &v = *(new std::vector<float>( 512 ));
-    current_vpts = m_xine->clock->get_current_time( m_xine->clock );
+
+    if( xine_get_status( m_stream ) != XINE_STATUS_PLAY ) return &v;
+
+    current_vpts = xine_get_current_vpts( m_stream );//m_xine->clock->get_current_time( m_xine->clock );
     audio_buffer_t *best_buf = 0;
     uint x = 0;
 
@@ -233,12 +266,14 @@ XineEngine::scope()
     memcpy( myMetronom, m_stream->metronom, sizeof( metronom_t ) );
 
 
-    for( MyNode *prev = &myList, *node = myList.next; node != &myList; node = node->next )
+    for( MyNode *prev = myList, *node = myList->next; node != myList; node = node->next )
     {
         audio_buffer_t *buf = &node->buf;
 
         if( buf->stream != 0 )
         {
+            debug() << "timestamp| pts:" << buf->vpts << " n:" << buf->num_frames << endl;
+
             buf->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
             buf->stream = 0;
 
@@ -246,14 +281,19 @@ XineEngine::scope()
             Log::buffCount++;
         }
 
-        if( buf->vpts < current_vpts )
+        if( buf->vpts < current_vpts  )
         {
-            prev->next = node->next;
+            if( prev != myList ) //thread-safety
+            {
+                debug() << "dispose\n";
 
-            free( buf->mem );
-            free( node );
+                prev->next = node->next;
 
-            node = prev;
+                free( buf->mem );
+                free( node );
+
+                node = prev;
+            }
         }
         else if( !best_buf || buf->vpts < best_buf->vpts ) best_buf = buf;
 
@@ -265,7 +305,7 @@ XineEngine::scope()
 
     if( best_buf )
     {
-        uint
+        int64_t
         diff  = best_buf->vpts - current_vpts;
         diff *= myMetronom->audio_samples;
         diff /= myMetronom->pts_per_smpls;
@@ -274,10 +314,12 @@ XineEngine::scope()
         Log::diffSize += diff;
         Log::scopeRequests++;
 
-        if( diff+512 <= (uint)best_buf->num_frames )
+        debug() << "vpts:" << best_buf->vpts << " d:" << diff << " n:" << best_buf->num_frames << endl;
+
+        if( diff < best_buf->num_frames - 512 ) //done this way as diff is a 64bit int => less cycles
         {
             const int16_t *data16 = best_buf->mem;
-            data16 += diff*2;
+            data16 += diff * myChannels;
 
             for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
             {
@@ -355,6 +397,7 @@ XineEngine::customEvent( QCustomEvent *e )
     switch( e->type() )
     {
     case 3000:
+        emptyMyList();
         emit endOfTrack();
         break;
 

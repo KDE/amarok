@@ -12,11 +12,13 @@
 #include <xine/post.h>
 
 
-MyNode myList;
+static MyNode     theList;
 static metronom_t theMetronom;
+
+MyNode     *myList = &theList;
 metronom_t *myMetronom = &theMetronom;
-int myChannels;
-int64_t current_vpts;
+int         myChannels;
+int64_t     current_vpts;
 
 
 /*************************
@@ -37,9 +39,7 @@ scope_port_open( xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bi
   port->rate = rate;
   port->mode = mode;
 
-  myList.next = &myList; /* this list is empty, I promise! */
   myChannels = _x_ao_mode2channels( mode );
-  if( myChannels > MAXCHANNELS ) myChannels = MAXCHANNELS;
 
   return port->original_port->open( port->original_port, stream, bits, rate, mode );
 }
@@ -52,15 +52,6 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 
     port->stream = NULL;
     port->original_port->close(port->original_port, stream );
-    myMetronom->set_master( myMetronom, NULL );
-
-    for( node = myList.next; node->next != &myList; node = next )
-    {
-        next = node->next;
-
-        free( node->buf.mem );
-        free( node );
-    }
 
     _x_post_dec_usage(port);
 }
@@ -68,14 +59,13 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 static void
 scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
-    MyNode *new_node;
     post_audio_port_t *port = (post_audio_port_t*)port_gen;
 
     /*FIXME*/
     if( port->bits == 8 ) { printf( "You dare tempt me with 8 bits?!\n" ); return; }
 
     /*first we need to copy this buffer*/
-    new_node = malloc( sizeof(MyNode) );
+    MyNode *new_node = malloc( sizeof(MyNode) );
     memcpy( &new_node->buf, buf, sizeof(audio_buffer_t) );
 
     new_node->buf.mem = malloc( buf->num_frames * myChannels * 2 );
@@ -84,20 +74,16 @@ scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     /* pass data to original port - TODO is this necessary? */
     port->original_port->put_buffer( port->original_port, buf, stream );
 
-    /*finally we should prepend the current buffer to the list*/
-    new_node->next = myList.next;
-    myList.next    = new_node;
+    /* finally we should prepend the current buffer to the list
+     * NOTE this _is_ thread-safe */
+    new_node->next = theList.next;
+    theList.next   = new_node;
 }
 
 static void
 scope_dispose( post_plugin_t *this )
 {
-    if( _x_post_dispose( this ) )
-    {
-        myMetronom->exit( myMetronom );
-
-        free( this );
-    }
+    free( this );
 }
 
 
@@ -126,8 +112,6 @@ scope_class_open_plugin( post_class_t *class, int inputs, xine_audio_port_t **au
   this->xine_post.audio_input[0] = &port->new_port;
 
   this->dispose = scope_dispose;
-
-  myList.next = &myList; /*init the buffer list*/
 
   return this;
 }
