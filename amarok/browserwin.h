@@ -54,12 +54,16 @@ class BrowserWin : public QWidget
         bool isFileValid( const KURL &url );
 // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
+
         ExpandButton *m_pButtonAdd;
-        ExpandButton *m_pButtonSave;
+
         ExpandButton *m_pButtonClear;
-        ExpandButton *m_pButtonSort;
-        ExpandButton *m_pButtonSortDesc;
         ExpandButton *m_pButtonShuffle;
+        ExpandButton *m_pButtonSave;
+
+        ExpandButton *m_pButtonUndo;
+        ExpandButton *m_pButtonRedo;
+
         ExpandButton *m_pButtonPlay;
         ExpandButton *m_pButtonPause;
         ExpandButton *m_pButtonStop;
@@ -74,8 +78,6 @@ class BrowserWin : public QWidget
 
     public slots:
         void slotBrowserDoubleClicked( QListViewItem *pItem );
-        void slotSortPlaylist();
-        void slotSortDescPlaylist();
         void slotShufflePlaylist();
         void slotBrowserDrop();
         void slotPlaylistRightButton( QListViewItem *pItem, const QPoint &rPoint );
@@ -87,7 +89,7 @@ class BrowserWin : public QWidget
         void slotKeyPageDown();
         void slotKeyEnter();
         void slotKeyDelete();
-                
+
         signals:
         void signalHide();
 

@@ -528,6 +528,12 @@ void PlayerApp::initBrowserWin()
     connect( m_pBrowserWin->m_pButtonClear, SIGNAL( clicked() ),
         this, SLOT( slotClearPlaylistAsk() ) );
 
+    connect( m_pBrowserWin->m_pButtonUndo, SIGNAL( clicked() ),
+        this, SLOT( slotUndoPlaylist() ) );
+
+    connect( m_pBrowserWin->m_pButtonRedo, SIGNAL( clicked() ),
+        this, SLOT( slotRedoPlaylist() ) );
+
     connect( m_pBrowserWin->m_pButtonPlay, SIGNAL( clicked() ),
         this, SLOT( slotPlay() ) );
 
@@ -1137,6 +1143,20 @@ void PlayerApp::slotClearPlaylistAsk()
     }
 
     slotClearPlaylist();
+}
+
+
+
+void PlayerApp::slotUndoPlaylist()
+{
+    kdDebug() << "PlayerApp::slotUndoPlaylist()" << endl;
+}
+
+
+
+void PlayerApp::slotRedoPlaylist()
+{
+    kdDebug() << "PlayerApp::slotRedoPlaylist()" << endl;
 }
 
 

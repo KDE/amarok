@@ -1,10 +1,10 @@
 /***************************************************************************
-                          browserwin.cpp  -  description
-                             -------------------
-    begin                : Fre Nov 15 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                         browserwin.cpp  -  description
+                            -------------------
+   begin                : Fre Nov 15 2002
+   copyright            : (C) 2002 by Mark Kretschmann
+   email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -63,7 +63,7 @@
 #include <arts/soundserver.h>
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
-QWidget( parent, name, Qt::WPaintUnclipped )
+        QWidget( parent, name, Qt::WPaintUnclipped )
 {
     setName( "BrowserWin" );
     setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
@@ -78,52 +78,44 @@ QWidget( parent, name, Qt::WPaintUnclipped )
     initChildren();
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
-        this, SLOT( slotBrowserDoubleClicked( QListViewItem*) ) );
+             this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
 
     connect( m_pBrowserWidget, SIGNAL( browserDrop() ),
-        this, SLOT( slotBrowserDrop() ) );
+             this, SLOT( slotBrowserDrop() ) );
 
     connect( m_pPlaylistWidget, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-        this, SLOT( slotPlaylistRightButton( QListViewItem*, const QPoint&) ) );
-
-    connect( m_pButtonSort, SIGNAL( clicked() ),
-        this, SLOT( slotSortPlaylist() ) );
-
-    connect( m_pButtonSortDesc, SIGNAL( clicked() ),
-        this, SLOT( slotSortDescPlaylist() ) );
+             this, SLOT( slotPlaylistRightButton( QListViewItem*, const QPoint& ) ) );
 
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
-        this, SLOT( slotShufflePlaylist() ) );
+             this, SLOT( slotShufflePlaylist() ) );
 }
-
 
 
 BrowserWin::~BrowserWin()
-{
-}
-
+{}
 
 
 // INIT -------------------------------------------------------------
 
 void BrowserWin::initChildren()
 {
-    m_pButtonAdd = new ExpandButton("Add Item", this );
+    m_pButtonAdd = new ExpandButton( "Add Item", this );
 
-    m_pButtonClear = new ExpandButton("Clear", this );
+    m_pButtonClear = new ExpandButton( "Clear", this );
+    QToolTip::add( m_pButtonClear, "Keep button pressed for sub-menu" );
+    m_pButtonShuffle = new ExpandButton( "Shuffle", m_pButtonClear );
+    m_pButtonSave = new ExpandButton( "Save Playlist", m_pButtonClear );
 
-    m_pButtonSort = new ExpandButton("Sort", this );
-    QToolTip::add( m_pButtonSort, "Keep button pressed for sub-menu" );
-    m_pButtonSortDesc = new ExpandButton("Sort Descending", m_pButtonSort );
-    m_pButtonShuffle = new ExpandButton("Shuffle", m_pButtonSort );
-    m_pButtonSave = new ExpandButton("Save Playlist", m_pButtonSort );
+    m_pButtonUndo = new ExpandButton( "Undo", this );
+    QToolTip::add( m_pButtonUndo, "Keep button pressed for sub-menu" );
+    m_pButtonRedo = new ExpandButton( "Redo", m_pButtonUndo );
 
-    m_pButtonPlay = new ExpandButton("Play", this );
+    m_pButtonPlay = new ExpandButton( "Play", this );
     QToolTip::add( m_pButtonPlay, "Keep button pressed for sub-menu" );
-    m_pButtonPause = new ExpandButton("Pause", m_pButtonPlay );
-    m_pButtonStop = new ExpandButton("Stop", m_pButtonPlay );
-    m_pButtonNext = new ExpandButton("Next", m_pButtonPlay );
-    m_pButtonPrev = new ExpandButton("Previous", m_pButtonPlay );
+    m_pButtonPause = new ExpandButton( "Pause", m_pButtonPlay );
+    m_pButtonStop = new ExpandButton( "Stop", m_pButtonPlay );
+    m_pButtonNext = new ExpandButton( "Next", m_pButtonPlay );
+    m_pButtonPrev = new ExpandButton( "Previous", m_pButtonPlay );
 
     m_pSplitter = new QSplitter( this );
 
@@ -144,8 +136,8 @@ void BrowserWin::initChildren()
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pBrowserLineEdit->setFont ( QFont( "Arial", 9 ) );
     KURLCompletion *compBrowser = new KURLCompletion( KURLCompletion::DirCompletion );
-//disabled because the popup combo is useful
-//    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
+    //disabled because the popup combo is useful
+    //    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
     m_pBrowserLineEdit->setCompletionObject( compBrowser );
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
 
@@ -167,16 +159,15 @@ void BrowserWin::initChildren()
     m_pSplitter->setResizeMode( pBrowserWidgetContainer, QSplitter::Stretch );
     m_pSplitter->setResizeMode( pPlaylistWidgetContainer, QSplitter::Stretch );
 
-    QBoxLayout *layV = new QVBoxLayout(this);
+    QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_pSplitter );
 
-    QBoxLayout *layH = new QHBoxLayout(layV);
+    QBoxLayout *layH = new QHBoxLayout( layV );
     layH->addWidget( m_pButtonAdd );
     layH->addWidget( m_pButtonClear );
-    layH->addWidget( m_pButtonSort );
+    layH->addWidget( m_pButtonUndo );
     layH->addWidget( m_pButtonPlay );
 }
-
 
 
 // METHODS -----------------------------------------------------------------
@@ -189,14 +180,13 @@ void BrowserWin::closeEvent( QCloseEvent *e )
 }
 
 
-
 // SLOTS --------------------------------------------------------------------
 
 void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
     if ( pItem )
     {
-        PlaylistItem *pPlayItem = static_cast<PlaylistItem*>( pItem );
+        PlaylistItem * pPlayItem = static_cast<PlaylistItem*>( pItem );
         KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pPlayItem->url() );
 
         if ( pPlayItem->text( 0 ) == ".." )
@@ -210,33 +200,14 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
         }
 
         else if ( isFileValid( fileItem.url() ) )
-            m_pPlaylistWidget->addItem( (PlaylistItem*) 1, fileItem.url() );
+            m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, fileItem.url() );
     }
 }
 
 
-
-void BrowserWin::slotSortPlaylist()
-{
-    m_pPlaylistWidget->setSorting( 0, true );
-    m_pPlaylistWidget->sort();
-    m_pPlaylistWidget->setSorting( -1 );
-}
-
-
-
-void BrowserWin::slotSortDescPlaylist()
-{
-    m_pPlaylistWidget->setSorting( 0, false );
-    m_pPlaylistWidget->sort();
-    m_pPlaylistWidget->setSorting( -1 );
-}
-
-
-
 void BrowserWin::slotShufflePlaylist()
 {
-// not evil, but corrrrect :)
+    // not evil, but corrrrect :)
     QPtrList<QListViewItem> list;
 
     while ( m_pPlaylistWidget->childCount() )
@@ -245,7 +216,7 @@ void BrowserWin::slotShufflePlaylist()
         m_pPlaylistWidget->takeItem( m_pPlaylistWidget->firstChild() );
     }
 
-                                                  // initalize with seed
+    // initalize with seed
     KRandomSequence seq( static_cast<long>( KApplication::random() ) );
     seq.randomize( &list );
 
@@ -256,10 +227,9 @@ void BrowserWin::slotShufflePlaylist()
 }
 
 
-
 void BrowserWin::slotBrowserDrop()
 {
-    QListViewItem *item, *item1;
+    QListViewItem * item, *item1;
     item = m_pPlaylistWidget->firstChild();
 
     while ( item != NULL )
@@ -267,11 +237,10 @@ void BrowserWin::slotBrowserDrop()
         item1 = item;
         item = item->nextSibling();
 
-        if ( item1->isSelected()    )
+        if ( item1->isSelected() )
             delete item1;
     }
 }
-
 
 
 bool BrowserWin::isFileValid( const KURL &url )
@@ -295,40 +264,38 @@ bool BrowserWin::isFileValid( const KURL &url )
 }
 
 
-
-void BrowserWin::slotPlaylistRightButton( QListViewItem */*pItem*/, const QPoint &rPoint )
+void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoint &rPoint )
 {
     QPopupMenu popup( this );
     int item1 = popup.insertItem( "Show File Info", this, SLOT( slotShowInfo() ) );
 
-// only enable when file is selected
+    // only enable when file is selected
     if ( !m_pPlaylistWidget->currentItem() )
         popup.setItemEnabled( item1, false );
 
-    /*int item2 = */popup.insertItem( "Play Track", this, SLOT( slotMenuPlay() ) );
-    /*int item3 = */popup.insertItem( "Remove Selected", this, SLOT( slotBrowserDrop() ) );
+    /*int item2 = */popup.insertItem(  "Play Track",  this,  SLOT(  slotMenuPlay()  )  );
+    /*int item3 = */popup.insertItem(  "Remove Selected",  this,  SLOT(  slotBrowserDrop()  )  );
 
     popup.exec( rPoint );
 }
 
 
-
 void BrowserWin::slotShowInfo()
 {
-    PlaylistItem *pItem = static_cast<PlaylistItem*>( m_pPlaylistWidget->currentItem() );
+    PlaylistItem * pItem = static_cast<PlaylistItem*>( m_pPlaylistWidget->currentItem() );
 
     QMessageBox *box = new QMessageBox( "Track Information", 0,
-        QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton,
-        QMessageBox::NoButton, 0, "Track Information", true,
-        Qt::WDestructiveClose | Qt::WStyle_DialogBorder );
+                                        QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton,
+                                        QMessageBox::NoButton, 0, "Track Information", true,
+                                        Qt::WDestructiveClose | Qt::WStyle_DialogBorder );
 
     QString str( "<html><body><table border=""1"">" );
 
     if ( pItem->url().protocol() == "file" )
     {
         KFileMetaInfo metaInfo( pItem->url().path(), QString::null, KFileMetaInfo::Everything );
-//    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pItem->url() );
-//    KFileMetaInfo metaInfo = fileItem.metaInfo();
+        //    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pItem->url() );
+        //    KFileMetaInfo metaInfo = fileItem.metaInfo();
         if ( metaInfo.isValid() && !metaInfo.isEmpty() )
         {
             str += "<tr><td>Title   </td><td>" + metaInfo.item( "Title" ).string() + "</td></tr>";
@@ -359,7 +326,6 @@ void BrowserWin::slotShowInfo()
 }
 
 
-
 void BrowserWin::slotMenuPlay()
 {
     m_pPlaylistWidget->setCurrentTrack( m_pPlaylistWidget->currentItem() );
@@ -367,10 +333,9 @@ void BrowserWin::slotMenuPlay()
 }
 
 
-
 void BrowserWin::slotKeyUp()
 {
-    KListView *pListView = 0L;
+    KListView * pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
@@ -392,10 +357,9 @@ void BrowserWin::slotKeyUp()
 }
 
 
-
 void BrowserWin::slotKeyDown()
 {
-    KListView *pListView = 0L;
+    KListView * pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
@@ -417,10 +381,9 @@ void BrowserWin::slotKeyDown()
 }
 
 
-
 void BrowserWin::slotKeyPageUp()
 {
-    KListView *pListView = 0L;
+    KListView * pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
@@ -447,10 +410,9 @@ void BrowserWin::slotKeyPageUp()
 }
 
 
-
 void BrowserWin::slotKeyPageDown()
 {
-    KListView *pListView = 0L;
+    KListView * pListView = 0L;
 
     if ( m_pPlaylistLineEdit->hasFocus() )
         pListView = m_pPlaylistWidget;
@@ -477,7 +439,6 @@ void BrowserWin::slotKeyPageDown()
 }
 
 
-
 void BrowserWin::slotKeyEnter()
 {
     if ( m_pPlaylistLineEdit->hasFocus() )
@@ -500,7 +461,6 @@ void BrowserWin::slotKeyEnter()
 }
 
 
-
 void BrowserWin::slotKeyDelete()
 {
     if ( m_pPlaylistLineEdit->hasFocus() )
@@ -509,8 +469,8 @@ void BrowserWin::slotKeyDelete()
     }
 
     if ( m_pBrowserLineEdit->hasFocus() )
-    {
-    }
+    {}
 }
+
 
 #include "browserwin.moc"

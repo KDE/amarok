@@ -99,6 +99,8 @@ class PlayerApp : public KUniqueApplication
         void slotSavePlaylist();
         void slotClearPlaylist();
         void slotClearPlaylistAsk();
+        void slotUndoPlaylist();
+        void slotRedoPlaylist();
         void slotAddLocation();
         void slotSliderPressed();
         void slotSliderReleased();
