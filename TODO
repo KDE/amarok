@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #145 being the highest available (take this one for your next bug and increase here)
+           #146 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -28,6 +28,8 @@ SHORT-TERM (URGENT):
                    Will try..
 
 MID-TERM:
+
+  ADD 145 <markey> Function for removing dupes in playlist. Possibly with toolbar button and/or context item.
 
   ADD 143 <mxcl>   DCOP interface for ContextBrowser
 
