@@ -196,7 +196,8 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 
 void TagDialog::init()
 {
-    setWFlags( getWFlags() | Qt::WDestructiveClose );
+//     NOTE: WDestructiveClose must not be used when the widget is created on the stack
+//     setWFlags( getWFlags() | Qt::WDestructiveClose );
 
     //get artist and album list from collection db
     QStringList artistList, albumList;
