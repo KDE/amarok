@@ -23,30 +23,51 @@
     <property name="caption">
         <string>Form1</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup" row="0" column="0">
+        <widget class="QGroupBox">
             <property name="name">
-                <cstring>buttonGroup1</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>3</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>GroupBoxPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
+                <cstring>groupBox2</cstring>
             </property>
             <property name="title">
-                <string>&amp;General Options</string>
+                <string>General Options</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_ShowSplashscreen</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show splash-screen on start&amp;up</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_ShowTrayIcon</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show &amp;tray icon</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+T</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Playlist Options</string>
             </property>
             <vbox>
                 <property name="name">
@@ -76,17 +97,6 @@
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>kcfg_ShowTrayIcon</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show &amp;tray icon</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+T</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
                         <cstring>kcfg_HidePlaylistWindow</cstring>
                     </property>
                     <property name="text">
@@ -94,17 +104,6 @@
                     </property>
                     <property name="accel">
                         <string>Alt+H</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_DirectoriesRecursively</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Add &amp;directories recursively</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -118,9 +117,20 @@
                         <string>Alt+F</string>
                     </property>
                 </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_DirectoriesRecursively</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Add &amp;directories recursively</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                </widget>
             </vbox>
         </widget>
-    </grid>
+    </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

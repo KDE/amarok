@@ -51,13 +51,12 @@ email                : markey@web.de
 #include <kwin.h>    //eventFilter()
 
 #include <qpixmap.h> //QPixmap::setDefaultOptimization()
-#include <qdir.h>
 #include <qpoint.h>
+#include <qpushbutton.h> //initPlayerWidget()
 #include <qsize.h>
 #include <qstring.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
-#include <qpushbutton.h> //initPlayerWidget()
 
 //statics
 EngineBase* PlayerApp::m_pEngine = 0;
@@ -79,6 +78,9 @@ PlayerApp::PlayerApp()
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
+    if ( AmarokConfig::showSplashscreen() )
+        m_pOSD->showSplash( locate( "data", "amarok/images/logo_splash.png" ) );
+    
     initPlayerWidget();
     initBrowserWin();
 
@@ -279,10 +281,11 @@ void PlayerApp::applySettings()
     m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
-    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
-    m_pOSD->setFont   ( AmarokConfig::osdFont() );
-    m_pOSD->setColor  ( AmarokConfig::osdColor() );
-
+    m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
+    m_pOSD->setFont    ( AmarokConfig::osdFont() );
+    m_pOSD->setColor   ( AmarokConfig::osdColor() );
+    m_pOSD->setDuration( AmarokConfig::osdDuration() );
+    
     m_pPlayerWidget->createAnalyzer( false );
     m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?
                             AmarokConfig::browserWindowFont() : QApplication::font() );

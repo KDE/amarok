@@ -15,17 +15,13 @@
 #ifndef OSD_H
 #define OSD_H
 
+#include <qpixmap.h>
 #include <qwidget.h> //baseclass
 
-#include <qtimer.h>
-#include <qpainter.h>
-#include <qapplication.h>
-#include <qpixmap.h>
-#include <qbitmap.h>
-#include <qregion.h>
-#include <qstyle.h>
-#include <qregexp.h>
-
+class QFont;
+class QString;
+class QStringList;
+class QTimer;
 class MetaBundle;
 
 class OSDWidget : public QWidget
@@ -34,11 +30,13 @@ class OSDWidget : public QWidget
       
       public:
         OSDWidget();
+        void setDuration(int ms);
         void setFont(QFont newfont);
         void setColor(QColor newcolor);
       
       public slots:
         void showOSD(const MetaBundle&);
+        void showSplash(const QString& imagePath);
       
       protected slots:
         void removeOSD();
@@ -49,12 +47,16 @@ class OSDWidget : public QWidget
         void paintOSD(const QString &text);
         void paintEvent(QPaintEvent*);
 //        void mouseDoubleClickEvent(QMouseEvent *e);
-        QString text;
-        QTimer *timer;
-        QTimer *timerMin;
-        QFont font;
-        QColor color;
-        QPixmap osdBuffer;
+        
+        static const int SPLASH_DURATION = 6000; 
+        
+        int         m_duration;
+        QString     text;
+        QTimer      *timer;
+        QTimer      *timerMin;
+        QFont       font;
+        QColor      color;
+        QPixmap     osdBuffer;
         QStringList textBuffer;
 };
 

@@ -120,8 +120,12 @@
         <default>false</default>
         <whatsthis>Blahblahblah</whatsthis>
      </entry>
+     <entry key="Show Splashscreen" type="Bool">
+        <label>Whether a splash-screen should be displayed on startup</label>
+        <default>true</default>
+     </entry>
   </group>
-
+ 
   <group name="Playback">
      <entry key="Master Volume" type="Int">
         <label>Master volume</label>
@@ -170,6 +174,12 @@
      <entry key="Osd Color" type="Color">
         <label>Color for On-Screen Display</label>
         <default>#ffff00</default>
+     </entry>
+     <entry key="Osd Duration" type="Int">
+        <label>How many milliseconds the text should be displayed</label>
+        <min>500</min>
+        <max>10000</max>
+        <default>5000</default>
      </entry>
   </group>
   
