@@ -173,7 +173,6 @@ int Loader::tryConnect()
     const char *kde_home = uid ? getenv("KDEHOME") : getenv("KDEROOTHOME");
     char kde_tmp_dir[PATH_MAX];
     struct stat stat_buf;
-    char tmp_buf[PATH_MAX+1];
     int result;
 
     struct passwd *pw_ent = getpwuid( uid );
@@ -229,16 +228,8 @@ int Loader::tryConnect()
         qFatal("Error: \"%s\" is not a link or a directory.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
         return -1;
     }
-    /* kde_tmp_dir is a link. Check whether it points to a valid directory. */
-    result = readlink(kde_tmp_dir, tmp_buf, PATH_MAX);
-    if (result == -1)
-    {
-        qFatal("Error: \"%s\" could not be read.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
-        return -1;
-    }
-    tmp_buf[result] = '\0';
 
-    QCString path(tmp_buf);
+    QCString path(kde_tmp_dir);
     path += "/amarok.loader_socket";
     ::strcpy( &local.sun_path[0], path );
 
