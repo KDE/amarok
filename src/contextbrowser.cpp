@@ -614,7 +614,6 @@ void ContextBrowser::showHome() //SLOT
     QString ftBox;
     QString ntBox;
     QString ltBox;
-    const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
 
     m_homePage->begin();
     m_HTMLSource="";
@@ -641,45 +640,40 @@ void ContextBrowser::showHome() //SLOT
     }
     else
     {
-        m_HTMLSource.append( "<iframe name='ftframe' height='200' width='100%'></iframe>" );
-        ftBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='favorites_box-body' class='box-body'>" );
+        m_HTMLSource.append( "<iframe name='ftframe' width='100%'></iframe>" );
+        ftBox.append( "<html>"
+                        "<style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
+                        "<div id='favorites_box-body' class='box-body'>"
+                            "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
 
         for( uint i = 0; i < fave.count(); i = i + 5 )
         {
-            ftBox.append(
-                "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<div class='song'>"
-                        "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr>"
-                            "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
-                            "<td>"
-                                "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                                "<span class='song-title'>" + fave[i] + "</span><br /> "
-                                "<span class='song-artist'>" + fave[i + 3] + "</span>"
-                        );
+            ftBox.append(       "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
+                                    "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
+                                    "<td>"
+                                        "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                                            "<span class='song-title'>" + fave[i] + "</span><br /> "
+                                            "<span class='song-artist'>" + fave[i + 3] + "</span>" );
 
             if ( !fave[i + 4].isEmpty() )
-                ftBox.append(
-                                "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>"+ fave[i + 4] +"</span>"
-                            );
+                ftBox.append(               "<span class='song-separator'> - </span>"
+                                            "<span class='song-album'>"+ fave[i + 4] +"</span>" );
 
-            ftBox.append(
-                                "</a>"
-                            "</td>"
-                            "<td class='sbtext' width='" + pctWidth + "'>" + fave[i + 2] + "</td>"
-                            "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                "<div class='sbouter'>"
-                                    "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
-                                "</div>"
-                            "</td>"
-                            "<td width='3'></td>"
-                        "</tr></table>"
-                    "</div>"
-                "</div>"
-                        );
+            ftBox.append(               "</a>"
+                                    "</td>"
+                                    "<td class='sbtext'>" + fave[i + 2] + "</td>"
+                                    "<td width='1' title='" + i18n( "Score" ) + "'>"
+                                        "<div class='sbouter'>"
+                                            "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
+                                        "</div>"
+                                    "</td>"
+                                    "<td width='3'></td>"
+                                "</tr>" );
         }
 
-        ftBox.append( "</div></html>" );
+        ftBox.append(       "</table>"
+                        "</div>"
+                      "</html>" );
     }
 
     m_HTMLSource.append(
@@ -694,7 +688,7 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<iframe name='ntframe' height='200' width='100%'></iframe>"
+                "<iframe name='ntframe' width='100%'></iframe>"
                        );
 
     ntBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='newest_box-body' class='box-body'>" );
@@ -749,7 +743,7 @@ void ContextBrowser::showHome() //SLOT
     }
     else
     {
-        m_HTMLSource.append( "<iframe name='ltframe' height='200' width='100%'></iframe>" );
+        m_HTMLSource.append( "<iframe name='ltframe' width='100%'></iframe>" );
         ltBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='least_box-body' class='box-body'>" );
 
         QDateTime lastPlay = QDateTime();
@@ -940,6 +934,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
     const QString pctWidth = QString::number( fontMetrics().width( "999" ) );
+    QString ssBox;
+    QString fsBox;
 
     QueryBuilder qb;
     // <Current Track Information>
@@ -1081,7 +1077,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         values = qb.run();
 
         // not enough items returned, let's fill the list with score-less tracks
-        if ( values.count() < 15 * qb.countReturnValues() )
+        if ( values.count() < 20 * qb.countReturnValues() )
         {
             qb.clear();
             qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
@@ -1090,7 +1086,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addMatches( QueryBuilder::tabArtist, relArtists );
             qb.setOptions( QueryBuilder::optRandomize );
-            qb.setLimit( 0, 15 - values.count() / 4 );
+            qb.setLimit( 0, 20 - values.count() / 4 );
 
             QStringList sl;
             sl = qb.run();
@@ -1112,11 +1108,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     + i18n( "Suggested Songs" ) +
                     "</span>"
                 "</div>"
-                "<table class='box-body' id='T_SS' width='100%' border='0' cellspacing='0' cellpadding='1'>"
-                               );
+                "<div id='T_SS'><iframe name='ssframe' height='130' width='100%'></iframe></div></div>" );
+
+            ssBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
+                          "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 4 )
-                m_HTMLSource.append(
+                ssBox.append(
                     "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
@@ -1132,12 +1130,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "</div>"
                         "</td>"
                         "<td width='3'></td>"
-                    "</tr>"
-                                   );
+                    "</tr>" );
 
-            m_HTMLSource.append(
+            ssBox.append(
                  "</table>"
-                "</div>" );
+               "</html>" );
 
             if ( !m_suggestionsOpen )
                 m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>" );
@@ -1165,10 +1162,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
                 "</span>"
             "</div>"
-            "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+            "<div id='T_FT'><iframe name='fsframe' height='130' width='100%'></iframe></div></div>" );
+
+            fsBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
+                          "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            m_HTMLSource.append(
+            fsBox.append(
                 "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                     "<td class='song'>"
                         "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -1185,10 +1185,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "</tr>"
                                );
 
-        m_HTMLSource.append(
+        fsBox.append(
             "</table>"
-            "</div>"
-                           );
+            "</div>" );
 
         if ( !m_favouritesOpen )
             m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
@@ -1433,6 +1432,32 @@ void ContextBrowser::showCurrentTrack() //SLOT
     m_HTMLSource.append( "</html>" );
     m_currentTrackPage->write( m_HTMLSource );
     m_currentTrackPage->end();
+
+    if ( !ssBox.isEmpty() )
+    {
+        connect( m_currentTrackPage->findFrame( "ssframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+                 this,                                                             SLOT( openURLRequest( const KURL & ) ) );
+        connect( m_currentTrackPage->findFrame( "ssframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+                 this,                                         SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
+        m_currentTrackPage->findFrame( "ssframe" )->begin();
+        m_currentTrackPage->findFrame( "ssframe" )->setUserStyleSheet( m_styleSheet );
+        m_currentTrackPage->findFrame( "ssframe" )->write( ssBox );
+        m_currentTrackPage->findFrame( "ssframe" )->end();
+    }
+    if ( !fsBox.isEmpty() )
+    {
+        connect( m_currentTrackPage->findFrame( "fsframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+                 this,                                                             SLOT( openURLRequest( const KURL & ) ) );
+        connect( m_currentTrackPage->findFrame( "fsframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+                 this,                                         SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
+        m_currentTrackPage->findFrame( "fsframe" )->begin();
+        m_currentTrackPage->findFrame( "fsframe" )->setUserStyleSheet( m_styleSheet );
+        m_currentTrackPage->findFrame( "fsframe" )->write( fsBox );
+        m_currentTrackPage->findFrame( "fsframe" )->end();
+    }
+
     m_dirtyCurrentTrackPage = false;
     saveHtmlData(); // Send html code to file
 }
