@@ -38,7 +38,7 @@ class FHT
 	int	*m_log;
 
 	/**
-	 * Create a table of CAS (cosine and sine) values.
+	 * Create a table of "cas" (cosine and sine) values.
 	 * Has only to be done in the constructor and saves from
 	 * calculating the same values over and over while transforming.
 	 */
@@ -73,13 +73,6 @@ class FHT
 	void	ewma(float *d, float *s, float w);
 
 	/**
-	 * Test routine to create wobbling sine or rectangle wave.
-	 * @param d destination vector.
-	 * @param rect rectangle if true, sine otherwise.
-	 */
-	void	pattern(float *d, bool rect);
-
-	/**
 	 * Logarithmic audio spectrum. Maps semi-logarithmic spectrum
 	 * to logarithmic frequency scale, interpolates missing values.
 	 * A logarithmic index map is calculated at the first run only.
@@ -110,7 +103,7 @@ class FHT
 	 * Calculates an FFT power spectrum with doubled values as a
 	 * result. The values need to be multiplied by 0.5 to be exact.
 	 * Note that you only get @f$2^{n-1}@f$ power values for a data set
-	 * of @f$2^n@f$ input values.
+	 * of @f$2^n@f$ input values. This is the fastest transform.
 	 * @see FHT::power()
 	 */
 	void	power2(float *);
