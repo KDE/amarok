@@ -8,11 +8,17 @@ TODO-list for amaroK
                       
 SHORT-TERM (URGENT):
 
+
+    * fix: #7<mxcl> playlist should hide/raise/minimise with the playerWidget. Works if playlist
+           is WType_Dialog, but then the mainWidget can't rise above the playlistWidget (was #1).
+           It is best to let the WM handle this, (hence it was WType_Dialog), but berkus
+           disabled it to fix #1 so we need an alternative solution.
+
     * fix: #6<markey> install correct icons (not the inactive logo version)
 
-    * fix: #5<markey> amaroK is not listed in my K-menu any more
+    * fix: #5<markey> amaroK is not listed in my K-menu any more <mxcl> desktop file bug I think
 
-    * fix: #4<markey> re-add "report bug" menu entry
+    * fix: #4<markey> re-add "report bug" menu entry <mxcl> It's there in KDE 3.1
 
     * fix: #3<markey> crash when pressing cancel in "Add item" dialog
 
@@ -70,6 +76,15 @@ MID-TERM:
 
     * add: column "length" in playlist
 
+<<<<<<< TODO
+    * add: option to automatically adjust column widths
+
+    * add: option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
+
+    * fix: honor KDE single/double-click setting in BrowserWin
+    
+=======
+>>>>>>> 1.95
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
 
     * add: "add item"-dialog should support multiple selections
