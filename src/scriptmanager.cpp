@@ -180,6 +180,9 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
             KArchiveDirectory* dir = (KArchiveDirectory*) archEntry;
             recurseInstall( dir, destination + entry + "/" );
         }
+        else
+            if ( QFileInfo( destination + entry ).isExecutable() )
+                loadScript( destination + entry );
     }
 }
 
