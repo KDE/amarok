@@ -80,9 +80,12 @@ void OSDWidget::renderOSDText( const QString &text )
     // Draw backing rectangle
     bufferPainter.setPen( Qt::black );
 
-    QBrush brush;
-    brush.setPixmap( createGradient( textRect.size() ) );
-    bufferPainter.setBrush( brush );
+//  Disabled for now
+//     QBrush brush;
+//     brush.setPixmap( createGradient( textRect.size() ) );
+//     bufferPainter.setBrush( brush );
+
+    bufferPainter.setBrush( backgroundColor() );
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
     bufferPainter.setFont( font() );
 
