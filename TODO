@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #173 being the highest available (take this one for your next bug and increase here)
+           #174 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -22,6 +22,9 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  CHG 173 <markey> Move ui files into seperate folder, and compile as lib. Currently, when you change one
+                   file, you need to rebuild the world --> suckage
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
