@@ -54,6 +54,9 @@ http://www.radioparadise.com/musiclinks/rp_128.m3u
 #EXTINF:-1,TranceAirWaves [Trance]
 http://www.tranceairwaves.com/stream/bbhigh.pls
 
+#EXTINF:-1,Virgin Radio [Rock/Pop]
+http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb
+
 #EXTINF:-1,X T C Radio [Techno/Trance]
 http://stream.xtcradio.com:8069/listen.pls
 
