@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #133 being the highest available (take this one for your next bug and increase here)
+           #134 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 133 <markey> OSD preview reported incompatible with KDE 3.3 (HEAD): preview vanishes instantly when moved.
 
   FIX 132 <mxcl>   GSTengine, pick a bad audio sink in playback config and it crashes, default sink is one
                    nobody has. Needs fixing or we should disable the code.
