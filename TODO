@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> "REP" and "RAND" buttons show wrong state at startup.
+
           <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
                    so show the artist or album that is right clicked.
 
