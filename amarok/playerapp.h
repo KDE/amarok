@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.6.0-PRE5"
+#define APP_VERSION "0.6.0"
 
 
 #include "amarokarts/amarokarts.h"

@@ -22,9 +22,9 @@ interface, that really makes playlist handling easy.
     - nice GUI, integrates into the KDE look, but with a unique touch
 
 
+--------------------------------------------------------------------------------
 
-Important installation direction:
-
+Important install instructions:
 In order to compile and install amaroK on your system, type the following in the base directory of the amaroK distribution:
 
 
@@ -35,7 +35,6 @@ In order to compile and install amaroK on your system, type the following in the
 
 
 Project Site:   http://amarok.sf.net
-
 Irc Channel:    irc.freenode.net: #amarok
 
 
