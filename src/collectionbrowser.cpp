@@ -8,7 +8,7 @@
 #include "coverfetcher.h"
 #include "directorylist.h"
 #include "metabundle.h"
-#include "playlist.h"       //insertMedia()
+#include "playlist.h"       //insertMedia(), showTrackInfo()
 #include "statusbar.h"
 
 #include <unistd.h>         //CollectionView ctor
@@ -506,38 +506,8 @@ CollectionView::showTrackInfo() //SLOT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
 
-    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
-        QString command = QString
-                          ( "SELECT DISTINCT artist.name, album.name, genre.name, year.name, comment FROM tags, artist, album, genre, year "
-                            "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
-                            .arg( m_db->escapeString( item->url().path() ) );
-
-        QStringList values;
-        QStringList names;
-        m_db->execSql( command, &values, &names );
-        if ( values.isEmpty() ) return;
-
-        QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-        QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-        str += body.arg( i18n( "Title" ),  item->text( 0 ) );
-        str += body.arg( i18n( "Artist" ), values[0] );
-        str += body.arg( i18n( "Album" ),  values[1] );
-        str += body.arg( i18n( "Genre" ),  values[2] );
-        str += body.arg( i18n( "Year" ),  values[3] );
-        str += body.arg( i18n( "Comment" ),values[4] );
-    //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
-    //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
-    //     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-
-        str.append( "</table></body></html>" );
-
-        QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
-                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
-                        0, 0, true, Qt::WStyle_DialogBorder );
-        box.setTextFormat( Qt::RichText );
-        box.exec();
-    }
+    if ( m_category2 == i18n( "None" ) || item->depth() == 2 )
+        Playlist::showTrackInfo( item->url() );
 }
 
 

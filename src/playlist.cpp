@@ -1139,7 +1139,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
         break;
 
     case VIEW:
-        showTrackInfo( static_cast<PlaylistItem *>(item) );
+        showTrackInfo( item->url() );
         break;
 
     case EDIT:
@@ -1185,36 +1185,28 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 }
 
 
-void Playlist::showTrackInfo( PlaylistItem *pItem ) const //SLOT
+void Playlist::showTrackInfo( const KURL& url ) //STATIC
 {
     QString str  = "<html><body><table width=\"100%\" border=\"1\">";
     QString body = "<tr><td>%1</td><td>%2</td></tr>";
 
-    if( AmarokConfig::showMetaInfo() )
-    {
-         MetaBundle mb = pItem->metaBundle();
+    KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
+    MetaBundle mb( url, info );  
 
-         str += body.arg( i18n( "Title" ),  mb.title() );
-         str += body.arg( i18n( "Artist" ), mb.artist() );
-         str += body.arg( i18n( "Album" ),  mb.album() );
-         str += body.arg( i18n( "Genre" ),  mb.genre() );
-         str += body.arg( i18n( "Year" ),   mb.year() );
-         str += body.arg( i18n( "Comment" ),mb.comment() );
-         str += body.arg( i18n( "Length" ), mb.prettyLength() );
-         str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
-         str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-         str += body.arg( i18n( "Location" ), mb.url().path() );
-    }
-    else
-    {
-        //FIXME this is wrong, see above if statement
-        str += body.arg( i18n( "Stream" ), pItem->url().prettyURL() );
-        str += body.arg( i18n( "Title" ),  pItem->trackName() );
-    }
+    str += body.arg( i18n( "Title" ),  mb.title() );
+    str += body.arg( i18n( "Artist" ), mb.artist() );
+    str += body.arg( i18n( "Album" ),  mb.album() );
+    str += body.arg( i18n( "Genre" ),  mb.genre() );
+    str += body.arg( i18n( "Year" ),   mb.year() );
+    str += body.arg( i18n( "Comment" ),mb.comment() );
+    str += body.arg( i18n( "Length" ), mb.prettyLength() );
+    str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
+    str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
+    str += body.arg( i18n( "Location" ), mb.url().path() );
 
     str.append( "</table></body></html>" );
 
-    KMessageBox::information( parentWidget(), str, i18n( "Meta Information" )  );
+    KMessageBox::information( 0, str, i18n( "Meta Information" )  );
 }
 
 

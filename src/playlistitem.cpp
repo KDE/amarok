@@ -147,7 +147,7 @@ MetaBundle PlaylistItem::metaBundle()
     //TODO <markey> why read this crap twice?
     //              wouldn't it be wise to just keep of copy of the MetaBundle around here? 
     
-    KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::TechnicalInfo );
+    KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::Everything );
     MetaBundle bundle( this, info );  
     
     setText( Length,  bundle.prettyLength()  );

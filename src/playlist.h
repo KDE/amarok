@@ -19,14 +19,14 @@
 #define AMAROK_PLAYLIST_H
 
 #include "playlistwindow.h"  //friend
-#include "engineobserver.h" //baseclass
+#include "engineobserver.h"  //baseclass
 
-#include <qstringlist.h> //stack allocated
-#include <qptrlist.h>    //stack allocated
-#include <qmap.h>        //stack allocated
-#include <klistview.h>   //baseclass
-#include <kurl.h>        //KURL::List
-#include <qdir.h>        //stack allocated
+#include <qstringlist.h>     //stack allocated
+#include <qptrlist.h>        //stack allocated
+#include <qmap.h>            //stack allocated
+#include <klistview.h>       //baseclass
+#include <kurl.h>            //KURL::List
+#include <qdir.h>            //stack allocated
 
 class QColor;
 class QCustomEvent;
@@ -108,6 +108,7 @@ class Playlist : private KListView, public EngineObserver
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
+        static void showTrackInfo( const KURL& url );
 
         //enums, typedefs and friends
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
@@ -151,7 +152,6 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *restoreCurrentTrack();
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         void setCurrentTrack( PlaylistItem* );
-        void showTrackInfo( PlaylistItem* ) const;
         void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
