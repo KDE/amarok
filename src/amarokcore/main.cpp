@@ -39,7 +39,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "graphics: amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "developer, DCOP, improvements, cleanups, i18n" ), "berk@upnet.ru" );
 
-    aboutData.addAuthor( "Bochi", I18N_NOOP( "butt-monkey, arse-munger!" ) );
+    aboutData.addAuthor( "Stefan 'Monk-Buddy' Bogner", I18N_NOOP( "butt-monkey, arse-munger!" ), "bochi@online.ms" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
@@ -53,7 +53,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "splash screen for 1.1" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
-    aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
 
 
