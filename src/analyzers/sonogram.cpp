@@ -39,7 +39,7 @@ void Sonogram::analyze(const Scope &s)
 
 	bitBlt(canvas(), 0, 0, canvas(), 1, 0, x, height());
 	Scope::const_iterator it = s.begin(), end = s.end();
-	for (int y = height() - 1; y; it++) {
+	for (int y = height() - 1; y;) {
 		if (it >= end || *it < .005)
 			c = backgroundColor();
 		else if (*it < .05)
@@ -51,6 +51,9 @@ void Sonogram::analyze(const Scope &s)
 
 		p.setPen(c);
 		p.drawPoint(x, y--);
+
+		if (it < end)
+			++it;
 	}
 }
 
@@ -58,9 +61,9 @@ void Sonogram::analyze(const Scope &s)
 void Sonogram::transform(Scope &scope)
 {
 	float *front = static_cast<float*>(&scope.front());
-	m_fht->power(front);
-	m_fht->scale(front, 1.0 / 128);
-	scope.resize( scope.size() / 2 );
+	m_fht->power2(front);
+	m_fht->scale(front, 1.0 / 256);
+	scope.resize( m_fht->size() / 2 );
 }
 
 
