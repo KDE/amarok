@@ -50,7 +50,7 @@ class CollectionDB : public QObject
         void dropStatsTable();
 
         void updateTags( const QString &url, const MetaBundle &bundle, bool updateCB=true );
-        void updateTag( const QString &url, const QString &field, const QString &newTag );
+        void updateURL( const QString &url );
 
         //general management methods
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
@@ -183,7 +183,6 @@ class CollectionEmitter : public QObject, public EngineObserver
         void scanDone( bool changed );
 
         void scoreChanged( const QString &url, int score );
-        void metaDataEdited( const MetaBundle &bundle );
 
         void coverFetched( const QString &keyword );
         void coverFetched();

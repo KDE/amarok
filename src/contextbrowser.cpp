@@ -80,7 +80,6 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( CollectionDB::emitter(), SIGNAL(scanStarted()), SLOT(collectionScanStarted()) );
     connect( CollectionDB::emitter(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone()) );
-    connect( CollectionDB::emitter(), SIGNAL(metaDataEdited( const MetaBundle& )), SLOT(metaDataEdited( const MetaBundle& )) );
     connect( CollectionDB::emitter(), SIGNAL(coverFetched()), SLOT(showCurrentTrack()) );
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
@@ -195,13 +194,6 @@ void ContextBrowser::collectionScanDone() {
 }
 
 
-void ContextBrowser::metaDataEdited( const MetaBundle &bundle ) {
-    if ( EngineController::instance()->bundle().url() == bundle.url() ) {
-        kdDebug() << "Current song edited, updating Context Browser" << endl;
-        showCurrentTrack();
-    }
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -224,19 +216,19 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
 
 void ContextBrowser::engineStateChanged( Engine::State state ) {
     switch( state ) {
-    case Engine::Empty:
-        m_metadataHistory.clear();
-        m_toolbar->getButton( CurrentTrack )->setEnabled( false );
-        m_toolbar->getButton( Lyrics )->setEnabled( false );
-        showHome();
-        break;
-    case Engine::Playing:
-        m_metadataHistory.clear();
-        m_toolbar->getButton( CurrentTrack )->setEnabled( true );
-        m_toolbar->getButton( Lyrics )->setEnabled( true );
-        break;
-    default:
-        ;
+        case Engine::Empty:
+            m_metadataHistory.clear();
+            m_toolbar->getButton( CurrentTrack )->setEnabled( false );
+            m_toolbar->getButton( Lyrics )->setEnabled( false );
+            showHome();
+            break;
+        case Engine::Playing:
+            m_metadataHistory.clear();
+            m_toolbar->getButton( CurrentTrack )->setEnabled( true );
+            m_toolbar->getButton( Lyrics )->setEnabled( true );
+            break;
+        default:
+            ;
     }
 }
 
@@ -536,7 +528,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
     }
 
-
     const uint artist_id = m_db->artistID( currentTrack.artist() );
     const uint album_id  = m_db->albumID ( currentTrack.album() );
 
@@ -547,7 +538,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         "FROM  statistics "
         "WHERE url = '%1';" )
             .arg( m_db->escapeString( currentTrack.url().path() ) ) );
-    
+
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     browser->write( QStringx(
         "<tr>"
@@ -595,8 +586,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
         const uint score = values[3].toInt();
         browser->write( QStringx("%1<br>%2<br>%3<br>%4<br>")
             .args( QStringList()
-                << i18n( "Track played once", "Track played %n times", values[2].toInt() )
-                << i18n( "Score: %1" ).arg( values[3] )
+                << i18n( "Track played once", "Track played %n times", playtimes )
+                << i18n( "Score: %1" ).arg( score )
                 << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDateTime( lastPlay, true /* short */ ) )
                 << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) ) 
                        ) );
@@ -612,13 +603,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // </Current Track Information>
 
-
     if ( !m_db->isFileInCollection( currentTrack.url().path() ) ) {
         browser->write( "<div class='warning' style='padding: 1em 0.5em 2em 0.5em'>" );
         browser->write( i18n("If you would like to see contextual information about this track, you should add it to your Collection.") );
         browser->write( "&nbsp;<a class='warning' href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>.</div>" );
     }
-
 
     // scrobblaaaaaar
     if ( m_relatedArtists.isEmpty() )

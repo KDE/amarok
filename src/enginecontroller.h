@@ -62,6 +62,8 @@ public:
     void restoreSession();
     void endSession();
 
+    void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
+
 public slots:
     void previous();
     void next();

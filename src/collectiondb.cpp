@@ -1003,33 +1003,23 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, bool upd
 
     query( command );
 
-    if ( updateCB )    //update the collection browser
-        CollectionView::instance()->renderView();
+    if ( EngineController::instance()->bundle().url() == bundle.url() )
+    {
+        kdDebug() << "Current song edited, updating widgets: " << bundle.title() << endl;
+        EngineController::instance()->currentTrackMetaDataChanged( bundle );
+    }
 
-    emit s_emitter->metaDataEdited( bundle );
+    if ( updateCB )    //update the collection browser
+      CollectionView::instance()->renderView();
 }
 
 
 void
-CollectionDB::updateTag( const QString &url, const QString &field, const QString &newTag )
+CollectionDB::updateURL( const QString &url )
 {
-    QStringList idFields;
-    idFields << "artist" << "album" << "genre" << "year";
+    const MetaBundle bundle = MetaBundle( url );
 
-    QString command = "UPDATE tags "
-                      "SET " + field + " = ";
-
-    if( idFields.contains( field ) )
-        command += escapeString( QString::number( IDFromValue( field, newTag, true ) ) ) + " ";
-    else
-        command += "'" + escapeString( newTag ) + "' ";
-
-    command += "WHERE url = '" + escapeString(url) + "';";
-
-    query( command );
-
-    CollectionView::instance()->renderView();
-
+    updateTags( url, bundle, true );
 }
 
 

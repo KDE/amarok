@@ -98,7 +98,6 @@ class PlayerWidget : public QWidget, public EngineObserver
     public slots:
         void createAnalyzer( int = 0 );
         void setEffectsWindowShown( bool );
-        void metaDataEdited( const MetaBundle &bundle );
 
     protected:
     /** Observer reimpls **/

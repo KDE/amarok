@@ -527,7 +527,7 @@ TagWriter::doJob()
         {
            // Update the collection db.
            // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
-           CollectionDB().updateTag( path, field, m_newTagString );
+           CollectionDB().updateURL( path );
 
            m_failed = false;
         }

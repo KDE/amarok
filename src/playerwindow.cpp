@@ -19,7 +19,6 @@ email                : markey@web.de
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "analyzerbase.h"
-#include "collectiondb.h"
 #include "enginecontroller.h"
 #include "metabundle.h"      //setScroll()
 #include "playerwindow.h"
@@ -198,8 +197,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     //KWin::setOnAllDesktops( winId(), true );
 
     connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
-    connect( CollectionDB::emitter(), SIGNAL( metaDataEdited( const MetaBundle & ) ),
-                                        SLOT( metaDataEdited( const MetaBundle & ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -775,24 +772,6 @@ void PlayerWidget::setEffectsWindowShown( bool on )
     m_pButtonFx->blockSignals( false );
 }
 
-
-void PlayerWidget::metaDataEdited( const MetaBundle &bundle )
-{
-  if ( m_currentURL == bundle.url().path() )
-  {
-      kdDebug() << "LALALA: current song edited, updating view" << endl;
-      kdDebug() << bundle.album() << endl;
-      QStringList list( bundle.prettyTitle() );
-      list << bundle.album();
-      if( bundle.length() ) list << bundle.prettyLength();
-      setScroll( list );
-
-      //update image tooltip
-      TrackToolTip::add( m_pScrollFrame, bundle );
-
-      update(); //we need to update rateString
-  }
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS NavButton

@@ -18,6 +18,7 @@ email                : fh@ez.no
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "collectiondb.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "pluginmanager.h"
@@ -490,6 +491,7 @@ void EngineController::streamError() //SLOT
     delete m_stream;
     next();
 }
+
 
 
 #include "enginecontroller.moc"
