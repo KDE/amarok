@@ -205,8 +205,8 @@
     </entry>
     <entry key="Osd Text" type="String">
         <label>The OSD text to show</label>
-        <default>%artist - %track{ (%length)}\n{%album}</default>
         <whatsthis>Customise the OSD display text.</whatsthis>
+        <default>%artist - %track{ (%length)}\n{%album}</default>
     </entry>
     <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
@@ -261,8 +261,8 @@
     </entry>
     <entry key="Osd Cover" type="Bool">
         <label>Whether the album cover should be shown</label>
-        <default>true</default>
         <whatsthis>If enabled, shows the album cover in the OSD.</whatsthis>
+        <default>true</default>
     </entry>
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
