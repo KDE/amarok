@@ -1616,9 +1616,10 @@ Playlist::removeSelectedItems() //SLOT
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
+      /* FIXME  URGENT 
         PlaylistItem* plitem = (PlaylistItem*)item;
         CollectionDB::instance()->removeSong( plitem->url().path() );
-
+      */
         removeItem( (PlaylistItem*)item );
         delete item;
     }
