@@ -6,7 +6,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> Make it possible to auto-run scripts on amaroK startup.
+  <markey> Gst-Engine: Some users report trouble with the first track they play after startup.
 
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
 
