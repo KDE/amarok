@@ -49,6 +49,8 @@ class EffectWidget;
 class PlaylistItem;
 class PlayerWidget;
 
+struct Tags;
+
 class PlayerApp;
 extern PlayerApp *pApp;
 
@@ -130,15 +132,14 @@ class PlayerApp : public KUniqueApplication
         // </aRts>
 
     public slots:
-        void slotPrev();
-        void slotPlay();
+        void slotPrev() const;
+	void slotNext() const;
+        void slotPlay() const;
+        void play( const KURL&, const Tags * = 0 );
         void slotConnectPlayObj();
         void slotPause();
         void slotStop();
         void slotStopCurrent();
-        void slotNext();
-        void slotSavePlaylist();
-        void slotAddLocation();
         void slotSliderPressed();
         void slotSliderReleased();
         void slotSliderChanged( int );
@@ -146,18 +147,11 @@ class PlayerApp : public KUniqueApplication
         void slotMainTimer();
         void slotAnimTimer();
         void slotVisTimer();
-        void slotItemDoubleClicked( QListViewItem *item );
-        void slotShowAbout();
         void slotPlaylistToggle( bool b );
         void slotPlaylistIsHidden();
         void slotEq( bool b );
         void slotShowOptions();
         void slotConfigEffects();
-        void slotShowTip();
-        void slotSetRepeatTrack();
-        void slotSetRepeatPlaylist();
-        void slotSetRandomMode();
-        void slotShowHelp();
         void slotHide();
         void slotShow();
 

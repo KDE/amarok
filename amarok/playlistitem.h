@@ -24,7 +24,6 @@
 
 #include "playlistloader.h" //friendships
 
-
 struct Tags
 {
    Tags( const QString &t1, const QString &t2, const QString &t3, const QString &t4, const QString &t5, const QString &t6, const QString &t7, const QString &t8, const TagLib::AudioProperties *ap )
@@ -54,6 +53,8 @@ struct Tags
    uint m_sampleRate;
 };
 
+
+
 class QColor;
 class QColorGroup;
 class QListViewItem;
@@ -68,51 +69,44 @@ extern PlayerApp *pApp;
 class PlaylistItem : public KListViewItem
 {
     public:
-        PlaylistItem( QListView *, const KURL & );
-        PlaylistItem( QListView *, QListViewItem *, const KURL &, Tags * = 0 );
-        ~PlaylistItem();
+        PlaylistItem( QListView *, QListViewItem *, const KURL &, Tags * = 0, bool = false );
+        virtual ~PlaylistItem();
 
-        // These accessor methods obsolete public fields in next release
-        QString title()   { return m_tags->m_title; }
-        QString artist()  { return m_tags->m_artist; }
-        QString album()   { return m_tags->m_album; }
-        QString genre()   { return m_tags->m_genre; }
-        QString comment() { return m_tags->m_comment; }
-        QString year()    { return m_tags->m_year; }
-        QString track()   { return m_tags->m_track; }
-        int     seconds() { return m_tags->m_length; } //can be -1
-        uint    bitrate() { return m_tags->m_bitrate; }
-        uint samplerate() { return m_tags->m_sampleRate; }
+        const Tags    *tags()     const { return m_tags; }
+        const QString  filename() const { return text( 0 ); }
+        const QString &title()    const { return m_tags->m_title; }
+        const QString &artist()   const { return m_tags->m_artist; }
+        const QString &album()    const { return m_tags->m_album; }
+        const QString &genre()    const { return m_tags->m_genre; }
+        const QString &comment()  const { return m_tags->m_comment; }
+        const QString &year()     const { return m_tags->m_year; }
+        const QString &track()    const { return m_tags->m_track; }
+        const int     &seconds()  const { return m_tags->m_length; } //can be -1
+        const uint    &bitrate()  const { return m_tags->m_bitrate; }
+        const uint  &sampleRate() const { return m_tags->m_sampleRate; }
 
-        QString length( uint = 0 ); //Return track length as mm:ss
+        const QString length( uint = 0 ) const; //Return track length as mm:ss
 
-        KURL url() const { return m_url; }
+        const KURL &url()   const { return m_url; }
+        const bool &isDir() const { return m_isDir; }        
+        bool hasMetaInfo()  const { return ( m_tags != 0 ); }
+        void setDir( bool b )     { m_isDir = b; }        
         void setMetaTitle();
-        bool hasMetaInfo();
-        bool isDir();
-        void setDir( bool on );
-
-        bool isGlowing() const  { return m_bIsGlowing; }
-        void setGlowing( bool b ) { m_bIsGlowing = b; }
-        void setGlowCol( QColor col ) { m_glowCol = col; }
-
 
         friend void TagReader::append( PlaylistItem * );
         friend void TagReader::TagReaderEvent::bindTags();
 
+        //save memory, use a single static to represent these properties
+        static QColor GlowColor;
+        static PlaylistItem *GlowItem;
 
     private:
-        QString zeroPad( const long digit );
-        QString nameForUrl( const KURL &url ) const;
-        void init();
-        void paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align );
+        void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
-        KURL m_url;
-        bool m_bIsGlowing;
+        const KURL m_url;
         bool m_isDir;
-        QString m_sPath;
-        QColor m_glowCol;
         Tags *m_tags;
 };
+
 #endif

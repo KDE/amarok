@@ -198,14 +198,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     setPaletteForegroundColor( pApp->m_fgColor );
 
     //actions
-    KStdAction::aboutApp( pApp, SLOT( slotShowAbout() ), m_pActionCollection );
-    KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
-    KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
-    KStdAction::reportBug( this, SLOT( slotReportBug() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                             "options_configure_global_keybinding" )->
-    setText( i18n( "Configure Global Shortcuts..." ) );
+                             "options_configure_global_keybinding"
+                           )->setText( i18n( "Configure Global Shortcuts..." ) );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
     KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
@@ -357,7 +353,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     // set up system tray
     m_pTray = new AmarokSystray( this, m_pActionCollection );
     m_pTray->show();
-    QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
 
     // some sizing details
     initScroll(); //requires m_pFrame to be created
@@ -368,6 +363,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
+    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );    
 }
 
 
@@ -401,7 +397,7 @@ void PlayerWidget::initScroll()
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
     m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    setScroll( i18n( "   welcome to amaroK   " ), " ", " " );
+    setScroll();
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
@@ -429,13 +425,21 @@ void PlayerWidget::polish()
 }
 
 
-void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate )
+void PlayerWidget::setScroll( QString text, const QString &bitrate, const QString &samplerate )
 {
-    /* Update tray tooltip */
+    //Update tray tooltip
     if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
-    QToolTip::add( m_pTray, text );
-
-    m_pDcopHandler->setNowPlaying( text );
+    if ( text.isEmpty() )
+    {
+       QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
+       m_pDcopHandler->setNowPlaying( text ); //text = ""
+       text = i18n( "Welcome to amaroK" );
+    }
+    else
+    {
+       QToolTip::add( m_pTray, text );
+       m_pDcopHandler->setNowPlaying( text );
+    }
 
     m_bitrate = bitrate;
     m_samplerate = samplerate;
@@ -587,6 +591,11 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
 }
 
 
+#define ID_REPEAT_TRACK 100
+#define ID_REPEAT_PLAYLIST 101
+#define ID_RANDOM_MODE 102
+#define ID_CONF_PLAYOBJECT 103
+
 void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
@@ -596,17 +605,18 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu = new QPopupMenu( this );
             m_pPopupMenu->setCheckable( true );
 
-            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat &Track" ), pApp, SLOT( slotSetRepeatTrack() ) );
-            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Play&list" ), pApp, SLOT( slotSetRepeatPlaylist() ) );
-            m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random &Mode" ), pApp, SLOT( slotSetRandomMode() ) );
+            m_pPopupMenu->insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
+            m_pPopupMenu->insertItem( i18n( "Repeat Play&list" ), ID_REPEAT_PLAYLIST );
+            m_pPopupMenu->insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
 
             m_pPopupMenu->insertSeparator();
 
             m_pPopupMenu->insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
-            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ) );
+            m_pPopupMenu->insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ), 0, ID_CONF_PLAYOBJECT );
 
             m_pPopupMenu->insertSeparator();
-
+            
+            //FIXME bad form, test the pointers!  
             m_pActionCollection->action( "options_configure_keybinding" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure_global_keybinding" )->plug( m_pPopupMenu );
             m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
@@ -620,13 +630,39 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
         }
 
-        m_pPopupMenu->setItemChecked( m_IdRepeatTrack, pApp->m_optRepeatTrack );
-        m_pPopupMenu->setItemChecked( m_IdRepeatPlaylist, pApp->m_optRepeatPlaylist );
-        m_pPopupMenu->setItemChecked( m_IdRandomMode, pApp->m_optRandomMode );
+        m_pPopupMenu->setItemChecked( ID_REPEAT_TRACK, pApp->m_optRepeatTrack );
+        m_pPopupMenu->setItemChecked( ID_REPEAT_PLAYLIST, pApp->m_optRepeatPlaylist );
+        m_pPopupMenu->setItemChecked( ID_RANDOM_MODE, pApp->m_optRandomMode );
 
-        m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, pApp->playObjectConfigurable() );
+        m_pPopupMenu->setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
 
-        m_pPopupMenu->exec( e->globalPos() );
+        
+        
+        if( int id = m_pPopupMenu->exec( e->globalPos() ) )
+        {
+            bool *ptr;
+            
+            //set various bool items if clicked
+            switch( id )
+            {
+            case ID_REPEAT_TRACK:
+                ptr = &pApp->m_optRepeatTrack;
+                break;
+            case ID_REPEAT_PLAYLIST:
+                ptr = &pApp->m_optRepeatPlaylist;
+                break;
+            case ID_RANDOM_MODE:
+                ptr = &pApp->m_optRandomMode;
+                break;
+            default:
+                ptr = 0;
+            } 
+                            
+            if( ptr != 0 )
+            {
+                *ptr = !m_pPopupMenu->isItemChecked( id );
+            }
+        }
     }
 }
 
@@ -739,13 +775,17 @@ void PlayerWidget::slotConfigGlobalShortcuts()
 
 void PlayerWidget::slotCopyClipboard()
 {
-    QListViewItem * currentTrack = pApp->m_pBrowserWin->m_pPlaylistWidget->currentTrack();
+/*
+    //TODO <mxcl> if Max hasn't done this yet, bug him!
+    //FIXME move this to the playlist then requestClipboardData()
+    const PlaylistItem* currentTrack = pApp->m_pBrowserWin->m_pPlaylistWidget->currentTrack();
 
     if ( currentTrack )
     {
         QClipboard * cb = QApplication::clipboard();
         cb->setText( currentTrack->text( 0 ) );
     }
+*/
 }
 
 

@@ -18,44 +18,36 @@ email                :
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
 #include "analyzers/analyzerbase.h"
-#include "browserwidget.h"
 #include "browserwin.h"
 #include "configdlg.h"
 #include "effectwidget.h"
-#include "expandbutton.h"
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "playlistitem.h"
-#include "playlistwidget.h"
 #include "titleproxy/titleproxy.h"
-#include "streambrowser.h"
 
 #include <vector>
 #include <string>
 
-#include <kaboutapplication.h>
 #include <kaction.h>
 #include <kapp.h>
 #include <kcmdlineargs.h>
 #include <kconfig.h>
 #include <kdebug.h>
-#include <kdirlister.h>
-#include <kfile.h>
-#include <kfiledialog.h>
 #include <kglobalaccel.h>
-#include <klineedit.h>
 #include <klocale.h>
-#include <kmessagebox.h>
+#include <kmessagebox.h> //initArts()
 #include <kshortcut.h>
-#include <kstandarddirs.h>
+#include <kstandarddirs.h> //ctor
 #include <ktip.h>
 #include <kuniqueapplication.h>
 #include <kurl.h>
-#include <kurlrequester.h>
-#include <kurlrequesterdlg.h>
-#include <kcombobox.h> //for *Config(), browserWin::KComboHistory (file chooser lineEdit)
-                       //FIXME this is an extra header this source file doesn't need, Markey's
-                       //compile times would be more pleasant if we could remove some #includes
+
+
+//FIXME remove these dependencies, we can implement saveConfig across objects and use a save() signal
+//      a little less neat, but boy would that help with compile times
+#include "playlistitem.h"   //for Tags only //FIXME separate Tags into its own header
+#include "playlistwidget.h"  
+
 
 #include <arts/artsflow.h>
 #include <arts/artskde.h>
@@ -68,15 +60,13 @@ email                :
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
 
-#include <qdialog.h>
 #include <qdir.h>
 #include <qpoint.h>
-#include <qpopupmenu.h>
 #include <qsize.h>
 #include <qstring.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
-#include <qdir.h>
+#include <qpushbutton.h> //initPlayerWidget()
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -121,13 +111,9 @@ PlayerApp::PlayerApp()
 
     readConfig();
 
-    connect( m_pPlayerWidget, SIGNAL( sigAboutToHide() ), this, SLOT( slotHide() ) );
-    connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotShow() ) );
-
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
-    m_pAnimTimer->start( ANIM_TIMER );
 
     m_pPlayerWidget->show(); //browserwin will be shown automatically if the playlistButton is setOn( true )
 
@@ -136,10 +122,13 @@ PlayerApp::PlayerApp()
     //restore last playlist
     //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so
     //       the playlist seems to be loaded when the browserWindow appears
+    //TODO   now it's threaded, it's more feasable to load it early
     m_pBrowserWin->m_pPlaylistWidget->insertMedia( kapp->dirs()->saveLocation
                                                  ( "data", kapp->instanceName() + "/" ) + "current.m3u" );
 
     restoreSession();
+
+    m_pAnimTimer->start( ANIM_TIMER ); //do it after restoreSession() avoid some visual nastys
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
@@ -152,11 +141,12 @@ PlayerApp::~PlayerApp()
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
     m_pConfig->setGroup( "Session" );
-    PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
-    if ( item != NULL )
+    KURL url( m_bIsPlaying ? m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
+
+    if ( !url.isEmpty() )
     {
-       m_pConfig->writeEntry( "Track", item->url().url() );
-       if( m_bIsPlaying )
+       m_pConfig->writeEntry( "Track", url.url() );
+       if ( m_bIsPlaying )
        {
           Arts::poTime timeC( m_pPlayObject->currentTime() );
           m_pConfig->writeEntry( "Time", timeC.seconds );
@@ -171,7 +161,7 @@ PlayerApp::~PlayerApp()
     saveConfig();
 
     delete m_pEffectWidget;
-    delete m_pPlayerWidget; //deletes browserWin
+    delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
 
     m_XFade             = Amarok::Synth_STEREO_XFADE::null();
     m_scope             = Arts::StereoFFTScope::null();
@@ -193,9 +183,7 @@ int PlayerApp::newInstance()
 
     if ( !playlistUrl.isEmpty() )             //playlist
     {
-        m_pBrowserWin->m_pPlaylistWidget->clear();
-        m_pBrowserWin->m_pPlaylistWidget->insertMedia( KCmdLineArgs::makeURL( playlistUrl ).path() );
-
+        m_pBrowserWin->m_pPlaylistWidget->insertMedia( KURL::List( KCmdLineArgs::makeURL( playlistUrl ) ), true );
     }
 
     if ( args->count() > 0 )
@@ -336,12 +324,12 @@ void PlayerApp::initArts()
                             i18n( "Fatal Error" ) );
         ::exit( 1 );
     }
-
+            
     m_XFade.percentage( m_XFadeValue );
     m_XFade.start();
 
     m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
-
+       
     m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
 
@@ -407,8 +395,8 @@ void PlayerApp::initPlayerWidget()
     connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( clicked() ),
              this, SLOT( slotConfigEffects() ) );
 
-    connect( m_pPlayerWidget->m_pButtonLogo, SIGNAL( clicked() ),
-             this, SLOT( slotShowAbout() ) );
+    connect( m_pPlayerWidget, SIGNAL( sigAboutToHide() ), this, SLOT( slotHide() ) );
+    connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotShow() ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -466,41 +454,30 @@ void PlayerApp::initBrowserWin()
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
-    connect( m_pBrowserWin->m_pButtonAdd, SIGNAL( clicked() ),
-             this, SLOT( slotAddLocation() ) );
 
-    connect( m_pBrowserWin->m_pButtonSave, SIGNAL( clicked() ),
-             this, SLOT( slotSavePlaylist() ) );
-
-    connect( m_pBrowserWin->m_pButtonUndo, SIGNAL( clicked() ),
-             m_pBrowserWin->m_pPlaylistWidget, SLOT( doUndo() ) );
-
-    connect( m_pBrowserWin->m_pButtonRedo, SIGNAL( clicked() ),
-             m_pBrowserWin->m_pPlaylistWidget, SLOT( doRedo() ) );
-
-    connect( m_pBrowserWin->m_pButtonPlay, SIGNAL( clicked() ),
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonPlay, SIGNAL( clicked() ),
              this, SLOT( slotPlay() ) );
 
-    connect( m_pBrowserWin->m_pButtonPause, SIGNAL( clicked() ),
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonPause, SIGNAL( clicked() ),
              this, SLOT( slotPause() ) );
 
-    connect( m_pBrowserWin->m_pButtonStop, SIGNAL( clicked() ),
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonStop, SIGNAL( clicked() ),
              this, SLOT( slotStop() ) );
 
-    connect( m_pBrowserWin->m_pButtonNext, SIGNAL( clicked() ),
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonNext, SIGNAL( clicked() ),
              this, SLOT( slotNext() ) );
 
-    connect( m_pBrowserWin->m_pButtonPrev, SIGNAL( clicked() ),
+    connect( (QPushButton *)m_pBrowserWin->m_pButtonPrev, SIGNAL( clicked() ),
              this, SLOT( slotPrev() ) );
-
-    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
-             this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
-    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( returnPressed( QListViewItem* ) ),
-             this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
 
     connect( m_pBrowserWin, SIGNAL( signalHide() ),
              this, SLOT( slotPlaylistIsHidden() ) );
 
+    //make sure playlist is linked to playback
+    //FIXME move Tags struct implementation to separate header
+    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const Tags * ) ),
+             this, SLOT( play( const KURL&, const Tags * ) ) );
+ 
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
 
@@ -513,10 +490,6 @@ void PlayerApp::restoreSession()
    m_pConfig->setGroup( "Session" );
    KURL url = m_pConfig->readEntry( "Track" );
 
-   //first check if this item is already in the playlist
-   //FIXME this block sucks a little
-   m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( url ); //will insert the item for us if not in the list
-
    if ( m_optResumePlayback )
    {
       //see if we also saved the time
@@ -524,7 +497,7 @@ void PlayerApp::restoreSession()
 
       if ( seconds >= 0 )
       {
-         slotPlay();
+         play( url );
 
          if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
          {
@@ -545,6 +518,11 @@ void PlayerApp::restoreSession()
 
 // METHODS --------------------------------------------------------------------------
 
+#include <klineedit.h>     //browserWin
+#include <kcombobox.h>     //browserWin::KComboHistory (file chooser lineEdit)
+#include "browserwidget.h" //anoyingly necessary //FIXME KConfig XT!
+#include <kdirlister.h>    //for browserwin component also
+
 void PlayerApp::saveConfig()
 {
     m_pConfig->setGroup( "" );
@@ -563,7 +541,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Save Playlist", m_optSavePlaylist );
     m_pConfig->writeEntry( "Confirm Clear", m_optConfirmClear );
     m_pConfig->writeEntry( "Confirm Exit", m_optConfirmExit );
-    m_pConfig->writeEntry( "Follow Symlinks", m_optFollowSymlinks );
+    m_pConfig->writeEntry( "FollowSymlinks", m_optFollowSymlinks );
     m_pConfig->writeEntry( "Drop Mode", m_optDropMode );
     m_pConfig->writeEntry( "Time Display Remaining", m_optTimeDisplayRemaining );
     m_pConfig->writeEntry( "Repeat Track", m_optRepeatTrack );
@@ -588,9 +566,6 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Current Analyzer", m_optVisCurrent );
     m_pConfig->writeEntry( "Browser Sorting Spec", m_optBrowserSortSpec );
     m_pConfig->writeEntry( "Title Streaming", m_optTitleStream );
-
-    // Write playlist columns layout
-    m_pBrowserWin->m_pPlaylistWidget->saveLayout(m_pConfig, "PlaylistColumnsLayout");
 
     m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs() ->saveLocation(
         "data", kapp->instanceName() + "/" ) + "current.m3u" );
@@ -677,11 +652,8 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->slotUpdateTrayIcon( m_optShowTrayIcon );
 
-    // Read playlist columns layout
-    m_pBrowserWin->m_pPlaylistWidget->restoreLayout(m_pConfig, "PlaylistColumnsLayout");
-
-
 // Actions ==========
+
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
                             this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, CTRL + ALT + Key_P, 0,
@@ -700,6 +672,7 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->updateConnections();
 
 
+    //FIXME use a global actionCollection (perhaps even at global scope)
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
 
@@ -733,57 +706,21 @@ void PlayerApp::setupTrackLength()
 }
 
 
-void PlayerApp::setupScrolltext()
-{
-    PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
-
-    if ( item != NULL )
-    {
-        if ( item->hasMetaInfo() )
-        {
-            QString str;
-            if ( item->artist() == "" ||
-                    item->title() == "" )
-            {
-                str.append( item->text( 0 ) + " " );
-            }
-            else
-            { // FIXME <berkus> user tunable title format!
-                str.append( item->artist() + " - " + item->title() + " " );
-            }
-
-            str.append( "(" + item->length( m_length ) + ")" );
-
-            m_pPlayerWidget->setScroll( str,
-                                        QString::number(item->bitrate()) + "kbps",
-                                        QString::number(item->samplerate()) + "Hz" );
-        }
-        else
-        {
-            QString str( m_pPlayObject->mediaName() );
-
-            if ( str.isEmpty() )
-                m_pPlayerWidget->setScroll( item->text( 0 ), " ? ", " ? " );
-            else
-                m_pPlayerWidget->setScroll( str, " ? ", " ? " );
-        }
-    }
-}
-
-
+//FIXME use const & QStrings!!
 void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 {
-    PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
-
+    //FIXME this could all be compressed into a single setScroll() if the bitrate is used in the else case
     if ( url.isEmpty() )
     {
-        if ( item == NULL )
-            m_pPlayerWidget->setScroll( title + i18n( " (stream)" ), "--", "--" );
-        else
-            m_pPlayerWidget->setScroll( title + " (" + item->text( 0 ) + ")", kbps + "kbps", "--" );
+        QString text = m_pBrowserWin->m_pPlaylistWidget->currentTrackName();
+        if ( text.isEmpty() ) text = i18n( "stream" );
+        
+        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( text ), kbps + "kbps", "--" );
     }
     else
-        m_pPlayerWidget->setScroll( title + " (" + url + ")", "--", "--" );
+        //FIXME show bitrate? this was how it was before so I am leaving it as is.. <mxcl>
+        m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( url ), "--", "--" );
+
 }
 
 
@@ -795,7 +732,7 @@ void PlayerApp::startXFade()
         stopXFade();
 
     m_XFadeRunning = true;
-
+   
     m_pPlayObjectXFade = m_pPlayObject;
     m_pPlayObject = NULL;
 }
@@ -847,121 +784,37 @@ void PlayerApp::setupColors()
         v = 255;
     m_optBrowserSelColor.setHsv( h, s, v );
 
-    m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pBrowserWidget->setPaletteForegroundColor( m_optBrowserFgColor );
-
-    m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pPlaylistWidget->setPaletteForegroundColor( m_optBrowserFgColor );
-
-    m_pBrowserWin->m_pStreamBrowser->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pStreamBrowser->setPaletteForegroundColor( m_optBrowserFgColor );
-    m_pBrowserWin->m_pStreamBrowser->setAlternateBackground( m_optBrowserBgAltColor );
-
-    //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
-    QObject *pIconBox = m_pBrowserWin->m_pJanusWidget->child( 0, "KListBox" );
-    if ( pIconBox )
-    {
-        static_cast<QWidget*>( pIconBox )->setPaletteBackgroundColor( m_optBrowserBgColor );
-        static_cast<QWidget*>( pIconBox )->setPaletteForegroundColor( m_optBrowserFgColor );
-    }
-
-    m_pBrowserWin->m_pBrowserLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pBrowserLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
-
-    m_pBrowserWin->m_pPlaylistLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pPlaylistLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
-
-    m_pBrowserWin->update();
-    m_pBrowserWin->m_pBrowserWidget->triggerUpdate();
-    m_pBrowserWin->m_pPlaylistWidget->triggerUpdate();
+    m_pBrowserWin->setPalettes( m_optBrowserFgColor, m_optBrowserBgColor, m_optBrowserBgAltColor );
 }
 
 
 // SLOTS -----------------------------------------------------------------
 
-void PlayerApp::slotPrev()
+void PlayerApp::slotPrev() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Prev, m_bIsPlaying ); }
+void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_bIsPlaying ); }
+void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Current ); }
+
+
+void PlayerApp::play( const KURL &url, const Tags *tags )
 {
-    if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 )
-        return;
-
-    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack(); //NULL is handled later
-
-    if ( pItem != NULL ) //optRepeatTrack only applies to next since that is called automatically
+    if ( m_optXFade && m_bIsPlaying && url != m_playingURL )
     {
-        //I've talked on a few channels, people hate it when media players restart the current track
-        //first before going to the previous one (most players do this), so let's not do it!
-        pItem = pItem->itemAbove();
+      startXFade();
+    }
+    else if ( m_pPlayObject != NULL )
+    {
+        //<mxcl> this used to call stopCurrent(), but that function causes nasty UI flicker so I did this
+        m_pPlayObject->halt();
+        delete m_pPlayObject;
+        m_pPlayObject = NULL;
+        //m_playingURL = KURL(); <berkus> this doesn't work for some reason and i'm not sure if it ever could, but seems almost okay for now
     }
 
-    //if pItem == NULL and bIsPlaying == TRUE  then we reached the beginning of the playlist
-    //if pItem == NULL and bIsPlaying == FALSE then nothing is selected
-    //FIXME always the chance that nothing is selected and bIsPlaying (eg deleted currentTrack from playlist)
-    //      current behavior will stop playback, is this acceptable?
-    //    * perhaps if user expects playback to continue we should continue playing from the beginning
-    //    * perhaps we should stop playback dead if the playing item is removed from the playlist (this gives a more consistent interface) <berkus>: no no no when a track is deleted we should continue playing it (this is consistent with WinAmp classic and also i hate when it stops playing in the middle of the song when i'm trying to compose a new playlist already).
-    //FIXME detection of empty playlist seems broken for above behavior
-    //FIXME <markey> this comment is becoming a f*cking bible. may I add greetings to my grandma?
-    //FIXME <mxcl> if( pItem != NULL && !m_bIsPlaying ) KGreet::emphatically( m_pMarkey->grandma() );
-
-    if ( pItem == NULL )
-    {
-        if ( m_bIsPlaying && !!m_optRepeatPlaylist )
-        {
-            //no previous track, don't restart this track because we don't restart tracks when previous is pushed as a rule
-            //also if we are repeating playlists then there is a previous track, i.e. the last track
-            return ;
-        }
-        else
-        {
-            //nothing is selected and we are not playing, select last track
-            pItem = m_pBrowserWin->m_pPlaylistWidget->lastItem();
-        }
-    }
-
-    if ( pItem != NULL )
-    {
-        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( pItem );
-
-        if ( m_bIsPlaying )
-        {
-            slotPlay();
-        }
-    }
-}
-
-
-void PlayerApp::slotPlay()
-{
-    PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
-
-    if ( item == NULL )
-    {
-        item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
-        PlaylistItem *tmpItem = item;
-
-        if ( !tmpItem )
-            return ;
-
-        while ( tmpItem )
-        {
-            if ( tmpItem->isSelected() )
-                break;
-            tmpItem = static_cast<PlaylistItem*>( tmpItem->nextSibling() );
-        }
-        if ( tmpItem )                                //skip to the first selected item
-            item = tmpItem;
-
-        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-    }
-
-    slotStopCurrent();
-
-    m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
     KDE::PlayObjectFactory factory( m_Server );
 
     if ( m_optTitleStream && !m_proxyError )
     {
-        TitleProxy *pProxy = new TitleProxy( item->url() );
+        TitleProxy *pProxy = new TitleProxy( url );
         m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
 
         connect( m_pPlayObject, SIGNAL( destroyed() ),
@@ -972,18 +825,17 @@ void PlayerApp::slotPlay()
     }
     else
     {
-        m_pPlayObject = factory.createPlayObject( item->url(), false ); //second parameter:
-                                                                        //create BUS(true/false)
+        m_pPlayObject = factory.createPlayObject( url, false ); //second parameter:
+                                                                //create BUS(true/false)
     }
 
     m_proxyError = false;
-    m_bIsPlaying = true;
 
     if ( m_pPlayObject == NULL )
     {
         kdDebug() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
         slotNext();
-        return ;
+        return;
     }
     if ( m_pPlayObject->isNull() )
     {
@@ -991,7 +843,7 @@ void PlayerApp::slotPlay()
         delete m_pPlayObject;
         m_pPlayObject = NULL;
         slotNext();
-        return ;
+        return;
     }
 
     if ( m_pPlayObject->object().isNull() )
@@ -999,24 +851,60 @@ void PlayerApp::slotPlay()
     else
         slotConnectPlayObj();
 
-    m_pPlayObject->play();
 
-    if ( m_pPlayObject->stream() )
+    if ( tags )
     {
-        m_length = 0;
-        m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-        m_pPlayerWidget->setScroll( i18n( "Stream from: " ) + item->text( 0 ), "--", "--" );
+       QString text, bps, Hz;
+       
+       if( tags->m_title.isEmpty() )
+       {
+          text = url.fileName();
+       }       
+       else
+       {
+          //TODO <berkus> user tunable title format!          
+          text = tags->m_artist;
+          if( text != "" ) text += " - ";
+          text += tags->m_title;
+       }
+
+       //FIXME add this back
+       //text.append( " (" + tags->length() + ")" );
+       
+       bps  = QString::number( tags->m_bitrate );
+       bps += "kbps";
+       Hz   = QString::number( tags->m_sampleRate );
+       Hz  += "Hz";
+       
+       m_pPlayerWidget->setScroll( text, bps, Hz ); //FIXME get end function to add units!
+    }
+    else
+    {
+       m_pPlayerWidget->setScroll( url.fileName() );
     }
 
-    kdDebug() << "[slotPlay] Playing item " << item->text(0) << " for " << item->url().url() << endl;
-    m_playingURL = item->url();
+
+    kdDebug() << "[play()] Playing " << url.prettyURL() << endl;    
+    m_pPlayObject->play();
+    m_bIsPlaying = true;
+
+    //set track length stuff
+    if ( m_pPlayObject->stream() )
+    {
+        m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
+        m_pPlayerWidget->setScroll( i18n( "Stream from: %1" ).arg( url.prettyURL() ), "?", "--" );
+    }
+
+    m_length = 0; //length will be established when arts knows after a few timer iterations
+    m_playingURL = url;
 
     m_pPlayerWidget->m_pSlider->setValue( 0 );
     m_pPlayerWidget->m_pSlider->setMinValue( 0 );
 
+    //interface consistency
+    m_pPlayerWidget->m_pButtonPlay->setOn( true );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
 }
-
 
 
 void PlayerApp::slotConnectPlayObj()
@@ -1037,7 +925,7 @@ void PlayerApp::slotConnectPlayObj()
             else
                 m_XFade.percentage( m_XFadeValue = 1.0 );
         }
-
+                                
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
@@ -1095,64 +983,13 @@ void PlayerApp::slotStopCurrent()
     m_length = 0;
     m_pPlayerWidget->m_pButtonPause->setDown( false );
     m_pPlayerWidget->m_pSlider->setValue( 0 );
-    m_pPlayerWidget->m_pSlider->setMinValue( 0 );
+    m_pPlayerWidget->m_pSlider->setMinValue( 0 ); //FIXME disable it and setvalue(0) instead (?)
     m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-    m_pPlayerWidget->setScroll( i18n( "   I feel empty   " ), " ", " " );
+    m_pPlayerWidget->setScroll();
     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
     delete m_pPlayerWidget->m_pPlayObjConfigWidget;
     m_pPlayerWidget->m_pPlayObjConfigWidget = NULL;
-}
-
-
-void PlayerApp::slotNext()
-{
-    QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack(); //NULL is handled later
-
-    // random mode
-    if ( m_optRandomMode && m_pBrowserWin->m_pPlaylistWidget->childCount() > 3 )
-    {
-        QListViewItem *pNextItem;
-        int number;
-
-        do
-        {
-            number = KApplication::random() % m_pBrowserWin->m_pPlaylistWidget->childCount();
-            pNextItem = m_pBrowserWin->m_pPlaylistWidget->itemAtIndex( number );
-        }
-        while ( pNextItem == pItem );    // try not to play same track twice in a row
-
-        pItem = pNextItem;
-    }
-    else if ( !m_optRepeatTrack && pItem != NULL )
-        pItem = pItem->nextSibling();
-
-    //if pItem == NULL and bIsPlaying == TRUE  then we reached end of playlist
-    //if pItem == NULL and bIsPlaying == FALSE then nothing is selected
-    //FIXME always the chance that nothing is selected and bIsPlaying (eg deleted currentTrack from playlist)
-    //      current behavior will stop playback, is this acceptable?
-    //FIXME detection of empty playlist seems broken for above behavior
-
-    if ( pItem == NULL )
-    {
-        if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || ( !m_optRepeatPlaylist && m_bIsPlaying ) )
-        {
-            slotStop();
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>(
-                                                               m_pBrowserWin->m_pPlaylistWidget->firstChild() ) );
-            return ;
-        }
-        else //select first item in playlist again
-            pItem = m_pBrowserWin->m_pPlaylistWidget->firstChild();
-    }
-
-    if ( pItem != NULL )
-    {
-        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( pItem );
-
-        if ( m_bIsPlaying )
-            slotPlay();
-    }
 }
 
 
@@ -1172,31 +1009,6 @@ bool PlayerApp::playObjectConfigurable()
     }
 
     return false;
-}
-
-
-void PlayerApp::slotSavePlaylist()
-{
-    QString path = KFileDialog::getSaveFileName( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path(), "*.m3u" );
-
-    if ( !path.isEmpty() )
-    {
-        if ( path.right( 4 ) != ".m3u" ) // <berkus> FIXME: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
-            path += ".m3u";
-
-        m_pBrowserWin->m_pPlaylistWidget->saveM3u( path );
-    }
-}
-
-
-void PlayerApp::slotAddLocation()
-{
-    KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( makeStdCaption( i18n( "Enter file or URL" ) ) );
-    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
-    dlg.exec();
-
-    m_pBrowserWin->m_pPlaylistWidget->insertMedia( dlg.selectedURL() );
 }
 
 
@@ -1265,15 +1077,17 @@ void PlayerApp::slotMainTimer()
         return;
     }
 
-    if ( ( m_length == 0 ) && ( !m_pPlayObject->stream() ) )
+    if ( ( m_length == 0 ) && !m_pPlayObject->stream() )
     {
-        setupTrackLength();
-        setupScrolltext();
+       Arts::poTime timeO( m_pPlayObject->overallTime() );
+
+       m_length = timeO.seconds;
+       m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( m_length ) );
+       
+       kdDebug() << "length: " << m_length << endl;
     }
 
-    if ( m_bSliderIsPressed )
-        return;
-    if ( !m_bIsPlaying )
+    if ( m_bSliderIsPressed || !m_bIsPlaying )
         return;
 
     //only enable scope when needed, so we save some cpu
@@ -1303,13 +1117,13 @@ void PlayerApp::slotMainTimer()
     // </Draw TimeDisplay>
 
     // <Crossfading>
-    if ( ( m_optXFade ) &&
+    if ( ( !m_XFadeRunning ) && //this logic order is probably most efficient
+         ( m_optXFade ) &&         
+         ( !m_optRepeatTrack ) &&
          ( !m_pPlayObject->stream() ) &&
-         ( !m_XFadeRunning ) &&
          ( m_length ) &&
          ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
     {
-        startXFade();
         slotNext();
         return;
     }
@@ -1327,7 +1141,7 @@ void PlayerApp::slotMainTimer()
         else if ( m_XFadeValue > 1.0 )
             m_XFadeValue = 1.0;
 
-        kdDebug() << "[void PlayerApp::slotMainTimer()] m_XFadeValue: " << m_XFadeValue << endl;
+        kdDebug() << "[slotMainTimer] m_XFadeValue: " << m_XFadeValue << endl;
         m_XFade.percentage( m_XFadeValue );
 
         if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )
@@ -1338,7 +1152,7 @@ void PlayerApp::slotMainTimer()
     // check if track has ended
     if ( m_pPlayObject->state() == Arts::posIdle )
     {
-        if ( m_optTrackDelay > 0 ) //this can occur syncronously to XFade and it wouldn't be fatal
+        if ( m_optTrackDelay > 0 ) //this can occur syncronously to XFade and not be fatal
         {
                 //delay before start of next track, without freezing the app
                 m_DelayTime += MAIN_TIMER;
@@ -1346,13 +1160,11 @@ void PlayerApp::slotMainTimer()
                 {
                         m_DelayTime = 0;
                         slotNext();
-                        return;
                 }
         }
         else
         {
-                slotNext();
-                return;
+                if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_bIsPlaying ) ) slotStopCurrent();
         }
     }
 }
@@ -1388,7 +1200,7 @@ void PlayerApp::slotAnimTimer()
 }
 
 
-#include <math.h>
+#include <math.h> //I put it here so we remember it's only used by this function
 
 void PlayerApp::slotVisTimer()
 {
@@ -1404,7 +1216,7 @@ void PlayerApp::slotVisTimer()
         }
         else
         {
-            if ( t > 999 ) t = 1; //0 is pointless
+            if ( t > 999 ) t = 1; //0 = wasted calculations
             if ( t < 201 )
             {
                 double dt = double(t) / 200 ;
@@ -1419,28 +1231,6 @@ void PlayerApp::slotVisTimer()
             ++t;
         }
     }
-}
-
-
-void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
-{
-   if (item)
-   {
-        if ( m_optXFade )
-            startXFade();
-
-        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
-        slotPlay();
-   }
-}
-
-
-void PlayerApp::slotShowAbout()
-{
-    KAboutApplication dia;
-    dia.exec();
-
-//    FIXME would be nice to get the amarok logo from the site in here.
 }
 
 
@@ -1459,7 +1249,7 @@ void PlayerApp::slotPlaylistToggle( bool b )
 
 void PlayerApp::slotPlaylistIsHidden()
 {
-    //only called when playlist is closed()
+    //only called via playlist::closeEvent() - NOT hideEvent()
 
     m_pPlayerWidget->m_pButtonPl->setOn( false );
 }
@@ -1490,69 +1280,6 @@ void PlayerApp::slotConfigEffects()
         m_pEffectWidget = new EffectWidget();
 
     m_pEffectWidget->show();
-}
-
-
-void PlayerApp::slotShowTip()
-{
-    KTipDialog::showTip( "amarok/data/startupTip.txt", true );
-}
-
-
-void PlayerApp::slotSetRepeatTrack()
-{
-    int id = m_pPlayerWidget->m_IdRepeatTrack ;
-
-    if ( m_pPlayerWidget->m_pPopupMenu->isItemChecked( id ) )
-    {
-        m_optRepeatTrack = false;
-        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
-    }
-    else
-    {
-        m_optRepeatTrack = true;
-        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, true );
-    }
-}
-
-
-void PlayerApp::slotSetRepeatPlaylist()
-{
-    int id = m_pPlayerWidget->m_IdRepeatPlaylist;
-
-    if ( m_pPlayerWidget->m_pPopupMenu->isItemChecked( id ) )
-    {
-        m_optRepeatPlaylist = false;
-        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
-    }
-    else
-    {
-        m_optRepeatPlaylist = true;
-        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, true );
-    }
-}
-
-
-void PlayerApp::slotSetRandomMode()
-{
-    int id = m_pPlayerWidget->m_IdRandomMode;
-
-    if ( m_pPlayerWidget->m_pPopupMenu->isItemChecked( id ) )
-    {
-        m_optRandomMode = false;
-        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
-    }
-    else
-    {
-        m_optRandomMode = true;
-        m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, true );
-    }
-}
-
-
-void PlayerApp::slotShowHelp()
-{
-    KApplication::KApp->invokeHelp( QString::null, "amarok" );
 }
 
 

@@ -19,8 +19,9 @@
 #include <kio/netaccess.h>
 
 //taglib
-#include <fileref.h>
-#include <tag.h>
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+#include <taglib/audioproperties.h>
 
 
 
@@ -456,8 +457,10 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
       //FIXME this seems to block the ui
       //      <markey> err, I was wrong. it _does_ really block the UI when it gets stuck.
+      //      <mxcl> to fix this we need to do more work with signals and slots on KIO::NetAccess
       
       //FIXME <markey> NetAccess::download will create tempfile automagically, if given an empty string
+      //      <mxcl> true, but "amarok4857895.tmp" looked bad in the playlist, so I used KTempFile
       #if KDE_IS_VERSION(3,1,92)
       if( KIO::NetAccess::download( m_url, path, m_thread->m_parent ) ) //should be thread-safe as we are only reading it no?
       #else
@@ -467,8 +470,9 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
          //we set true to ensure the place-holder (newItem) is deleted after processing
          PlaylistLoader *loader = new PlaylistLoader( KURL::List( KURL( path ) ), lv, newItem, true );
          loader->start();
-         //KIO::NetAccess::removeTempFile( path );    //FIXME <markey> why deactivated?
-         
+         //KIO::NetAccess::removeTempFile( path );
+         //FIXME <markey> why deactivated?
+         //FIXME <mxcl> it can't be deleted until the thread has read it. Implementation is required..
       }
       else
       {
@@ -486,23 +490,20 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
 // TagReader ===============
 
-//PRE-COMMIT URGENT!
+//URGENT!
 //TODO read threading notes in Qt assistant to check you haven't made some silly error
 
 //NORMAL
 //TODO in cases where some tags are already set, keep them if there is no replacement
 //TODO read audio tags on demand only?
-//TODO tags can only be read by taglib over file: currently, so you should reject other protocols perhaps
 //TODO audioproperties stuff
-//TODO consider just using the Taglib::Tag itself? -- how would you copy playlist info?
-//TODO it seems taglib returns a load of blank tags for all mp3s (? -- test this), this means we always have a tag object even though some tracks have nothing in them! Try to stop this
 
 void TagReader::append( PlaylistItem *item )
 {
    //for GUI access only
    //we're a friend of PlaylistItem
 
-   //FIXME as far as I can tell,          b = !m_Q.empty();taglib requires the files to be local and file:/ as it doesn't accept KURLs
+   //FIXME as far as I can tell, taglib requires the files to be local and file:/ as it doesn't accept KURLs
    if( item->url().protocol() == "file" )
    {
       //QDeepCopy<QString> url = item->url().path();
@@ -518,32 +519,33 @@ void TagReader::append( PlaylistItem *item )
 
 void TagReader::run()
 {
-   Tags *tags;
-   
-   msleep( 100 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
-                    //start processing, and thus prevent unecessary stopping and starting of the thread
+    Tags *tags;
+    
+    msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
+                   //start processing, and thus prevent unecessary stopping and starting of the thread
+    kdDebug() << "[reader] Started..\n";    
 
-      while( m_bool )
-      {
-         mutex.lock();
-	 if( m_Q.empty() ) { mutex.unlock(); break; }
-	 Bundle bundle( m_Q.front() );
-         mutex.unlock();
+    while( m_bool )
+    {
+        mutex.lock();
+        if( m_Q.empty() ) { mutex.unlock(); break; }
+        Bundle bundle( m_Q.front() );
+        mutex.unlock();
 
-         tags = readTags( bundle.url, bundle.tags );
+        tags = readTags( bundle.url, bundle.tags );
 
-         //we need to check the item is still there, if the playlistItem was removed, it will no longer be in
-         //the queue
-         mutex.lock();
-         if( ( !m_Q.empty() ) && m_Q.front() == bundle )
-         {
+        //we need to check the item is still there, if the playlistItem was removed, it will no longer be in
+        //the queue
+        mutex.lock();
+        if( ( !m_Q.empty() ) && m_Q.front() == bundle )
+        {
             QApplication::postEvent( m_parent, new TagReaderEvent( bundle.item, tags ) );
             m_Q.pop_front();
-         }
-         mutex.unlock();
-      }
+        }
+        mutex.unlock();
+    }
 
-      kdDebug() << "[tagReader] done!\n";
+    kdDebug() << "[reader] Done!\n";
 }
 
 Tags *TagReader::readTags( const KURL &url, Tags *tags )
@@ -551,7 +553,8 @@ Tags *TagReader::readTags( const KURL &url, Tags *tags )
    //TODO use old tags if available
    delete tags;
 
-   TagLib::FileRef f( url.path().local8Bit(), false ); //false = don't read audioproperties
+   //TODO read audioproperties on demand
+   TagLib::FileRef f( url.path().local8Bit(), true/*, AudioProperties::ReadStyle::Fast*/ ); //bool = read audioproperties
 
    if ( !f.isNull() && f.tag() )
    {

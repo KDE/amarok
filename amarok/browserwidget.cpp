@@ -20,7 +20,7 @@
 #include "browserwin.h"
 #include "playerapp.h"
 #include "playlistitem.h"
-#include "playlistwidget.h"
+//#include "playlistwidget.h"
 
 #include <qapplication.h>
 #include <qcstring.h>
@@ -50,15 +50,15 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
    , m_pDirLister( new KDirLister() )
    , m_Count( 0 )
 {
-    setFocusPolicy( QWidget::ClickFocus );
-
     addColumn( i18n( "Filebrowser" ) );
+
+    setFocusPolicy( QWidget::ClickFocus );
     setAcceptDrops( true );
     setDragEnabled( true ); //NEW
+    header()->setMovingEnabled( false );
+    m_pDirLister->setAutoUpdate( true );
 
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
-
-    m_pDirLister->setAutoUpdate( true );
     connect( m_pDirLister, SIGNAL( completed() ), this, SLOT( slotCompleted() ) );
 }
 
@@ -89,7 +89,6 @@ QDragObject *BrowserWidget::dragObject()
 {
   KURL::List::List list;
 
-  //FIXME dont cast to PlaylistItem as this is illegal!
   for( PlaylistItem *item = (PlaylistItem *)firstChild(); item != NULL; item = (PlaylistItem *)item->nextSibling() )
     if( item->isSelected() )
       list.append( item->url() );
@@ -156,10 +155,7 @@ void BrowserWidget::slotCompleted()
 
     while ( *it )
     {
-        item = new PlaylistItem( this, lastChild(), (*it)->url() );
-        item->setDir( (*it)->isDir() );
-        item->setDragEnabled( true );
-        item->setDropEnabled( true );
+        item = new PlaylistItem( this, lastChild(), (*it)->url(), 0, (*it)->isDir() );
 
         QString iconName( (*it)->determineMimeType()->icon( QString::null, true ) );
         item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
@@ -167,7 +163,7 @@ void BrowserWidget::slotCompleted()
     }
 
     if ( m_pDirLister->url().path() != "/" )
-        new PlaylistItem( this, ".." );
+        new PlaylistItem( this, 0, ".." );
 
     clearSelection();
 
@@ -227,8 +223,8 @@ void BrowserWidget::slotHeaderClicked( int )
     }
 
     QPoint menuPos = QCursor::pos();
-    menuPos.setX( menuPos.x() - 20 );
-    menuPos.setY( menuPos.y() + 10 );
+    //menuPos.setX( menuPos.x() - 20 );
+    //menuPos.setY( menuPos.y() + 10 );
 
     int result = popup.exec( menuPos );
 
@@ -257,6 +253,8 @@ void BrowserWidget::slotHeaderClicked( int )
 
     if ( result == MENU_REVERSE )
     {
+        header()->setSortIndicator( 0, !popup.isItemChecked( MENU_REVERSE ) );
+
         if ( popup.isItemChecked( MENU_REVERSE ) )
             pApp->m_optBrowserSortSpec &= ~QDir::Reversed;
         else

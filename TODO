@@ -26,7 +26,10 @@ SHORT-TERM (URGENT):
              <mxcl> also it is _not_ kwin that shows both windows, we force the playlist window to be
              shown ourselves. kwin_iii handles none of this behavior unless we set WType_Dialog as
              it was before.
-
+             <mxcl> it also had the added effect of making amaroK one taskbar entry, which I thought
+             was right, but I'm not sure if that's to everyone's taste. I think you should be able to
+             click on a single taskbar entry and have both widgets raised. Rather than have to click on
+             both.
 
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!

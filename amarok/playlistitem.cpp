@@ -18,8 +18,7 @@
 #include "playerapp.h"
 #include "playlistitem.h"
 #include "playlistwidget.h"
-//#include "browserwin.h"
-#include "playlistloader.h"
+//#include "playlistloader.h"
 
 #include <string.h>
 
@@ -42,69 +41,47 @@
 #include <tag.h>
 
 
-PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
-        KListViewItem( parent, nameForUrl( url ) ),
-        m_url( url ),
-        m_tags( 0 )
+//statics
+QColor PlaylistItem::GlowColor = Qt::white;
+PlaylistItem *PlaylistItem::GlowItem  = 0;
+
+//no reason to make this a member function
+static const QString zeroPad( long );
+
+
+
+PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, Tags *t, bool b )
+      : KListViewItem( lv, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
+      , m_url( u )
+      , m_isDir( b )      
+      , m_tags( t )
 {
-    init();
-}
-
-
-PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url, Tags *tags )
-      : KListViewItem( parent, after, nameForUrl( url ) )
-      , m_url( url )
-      , m_tags( tags )
-{
-    init();
-}
-
-
-PlaylistItem::~PlaylistItem()
-{
-    if ( listView() )
-    {
-        if ( QString( listView()->name() ) == "PlaylistWidget" )
-        {
-            PlaylistWidget * parentView = static_cast<PlaylistWidget*>( listView() );
-
-            if ( parentView->currentTrack() == this )
-            {
-                parentView->setCurrentTrack( NULL );
-            }
-        }
-    }
-
-    delete m_tags;
-}
-
-
-void PlaylistItem::init()
-{
-    m_isDir = false;
-    m_bIsGlowing = false;
     setDragEnabled( true );
     setDropEnabled( true );
     setMetaTitle();
 }
 
 
-QString PlaylistItem::nameForUrl( const KURL &url ) const
+PlaylistItem::~PlaylistItem()
 {
-    //only files have a filename.. for all other protocols the url itself is used as the name
-    return ( url.protocol() == "file" ) ? url.fileName() : url.prettyURL();
-}
+    //FIXME this is hacky but necessary, it would be nice to tidy it up somewhat
+    
+    if( listView() && QString( listView()->name() ) == "PlaylistWidget" )
+    {      
+       PlaylistWidget *parentView = static_cast<PlaylistWidget *>( listView() );
 
+       if( parentView->currentTrack() == this )
+       {
+           parentView->setCurrentTrack( NULL );
+       }
+    }
+    
+    delete m_tags;
+}
 
 
 
 // METHODS -------------------------------------------------------
-
-bool PlaylistItem::hasMetaInfo()
-{
-    return m_tags != 0;
-}
-
 
 void PlaylistItem::setMetaTitle()
 {
@@ -118,18 +95,6 @@ void PlaylistItem::setMetaTitle()
       setText( 6, m_tags->m_genre );
       setText( 7, m_tags->m_directory );
    }
-}
-
-
-bool PlaylistItem::isDir()
-{
-    return m_isDir;
-}
-
-
-void PlaylistItem::setDir( bool on )
-{
-    m_isDir = on;
 }
 
 
@@ -158,9 +123,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
         pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor );
     }
 
-    if ( m_bIsGlowing )
+    if ( this == PlaylistItem::GlowItem ) //static member
     {
-        pPainterBuf.setPen( m_glowCol );
+        pPainterBuf.setPen( PlaylistItem::GlowColor );
     }
     else
     {
@@ -204,33 +169,30 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
 void PlaylistItem::paintFocus( QPainter*, const QColorGroup&, const QRect& )
 {}
 
-QString PlaylistItem::zeroPad( const long digit )
-{
-    QString str;
-    str.setNum( digit );
 
-    if ( digit > 9 )
-    {
-        return str;
-    }
-
-    str.prepend("0");
-    return str;
-}
-
-QString PlaylistItem::length( uint se )
+const QString PlaylistItem::length( uint se ) const
 {
    //FIXME the uint is because mostly taglib doesn't return the track length, probably because we need
    //      to do an extended audioProperties scan, so do that, but can we do it lazily, ie on demand?
 
-   if( seconds() == -1 ) return QString( "" ); //-1 is set for streams by pls files and means "display no length info"
+   if( seconds() == -1 ) return "--"; //-1 is set for streams by pls files and means "display no length info"
 
    int s = ( seconds() == 0 ) ? se : seconds();
    int m = s / 60;
    int h = m / 60;
-
-   if (h)
+   
+   if ( h )
       return QString("%1:%2:%3").arg(h).arg(zeroPad(m % 60)).arg(zeroPad(s % 60));
    else
       return QString("%1:%2").arg(zeroPad(m)).arg(zeroPad(s % 60));
+}
+
+
+//non-member
+const QString zeroPad( const long digit )
+{
+    QString str;
+    str.setNum( digit );
+
+    return ( digit > 9 ) ? str : str.prepend( '0' );
 }

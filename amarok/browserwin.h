@@ -60,6 +60,8 @@ class BrowserWin : public QWidget
         BrowserWin( QWidget *parent = 0, const char *name = 0 );
         ~BrowserWin();
 
+        void setPalettes( const QColor &, const QColor &, const QColor & );
+
 // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
         
@@ -90,13 +92,12 @@ class BrowserWin : public QWidget
 
     public slots:
         void slotBrowserDoubleClicked( QListViewItem *pItem );
-        void slotPlaylistRightButton( QListViewItem *pItem, const QPoint &rPoint );
-        void slotShowInfo();
-        void slotMenuPlay();
         void slotUpdateFonts();
+        void savePlaylist();
 
     private slots:
         void setBrowserURL( const KURL& ); //sets browser line edit to KURL
+        void slotAddLocation();
 
     signals:
         void signalHide();
@@ -109,8 +110,8 @@ class BrowserWin : public QWidget
         void keyPressEvent( QKeyEvent * );
 
         // ATTRIBUTES ------
-        QColor m_TextColor;
-        QPixmap m_bgPixmap;
+        //QColor m_TextColor;
+        //QPixmap m_bgPixmap;
 };
 
 #endif

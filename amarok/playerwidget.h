@@ -106,7 +106,7 @@ class PlayerWidget : public QWidget
         PlayerWidget( QWidget *parent = 0, const char *name = 0 );
         ~PlayerWidget();
 
-        void setScroll( QString text, QString bitrate, QString samplerate );
+        void setScroll( QString = "", const QString & = "?", const QString & = "?" );
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
@@ -135,13 +135,9 @@ class PlayerWidget : public QWidget
         QPushButton *m_pButtonStop;
         QPushButton *m_pButtonNext;
 
-        int m_IdRepeatTrack;
-        int m_IdRepeatPlaylist;
-        int m_IdConfPlayObject;
-        int m_IdRandomMode;
         ArtsConfigWidget *m_pPlayObjConfigWidget;
 
-        void wheelEvent( QWheelEvent *e );
+        void wheelEvent( QWheelEvent *e ); //systray requires access
 
     public slots:
         void slotConfigShortcuts();

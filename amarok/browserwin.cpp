@@ -19,16 +19,12 @@
 #include "browserwin.h"
 #include "expandbutton.h"
 #include "playerapp.h"
-#include "playlistitem.h"
 #include "playlistwidget.h"
 #include "streambrowser.h"
-
-#include <vector>
 
 #include <qcolor.h>
 #include <qfile.h>
 #include <qlayout.h>
-#include <qmessagebox.h>
 #include <qpixmap.h>
 #include <qpopupmenu.h>
 #include <qsplitter.h>
@@ -50,10 +46,8 @@
 #include <klineedit.h>
 #include <klistview.h>
 #include <kstandarddirs.h>
-#include <ktip.h>
 #include <kurl.h>
 #include <kurlcompletion.h>
-#include <kurlrequesterdlg.h>
 #include <kcombobox.h>
 
 
@@ -79,11 +73,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              m_pPlaylistWidget, SLOT( removeSelectedItems() ) );
     connect( m_pBrowserWidget, SIGNAL( directoryChanged( const KURL& ) ),
              this, SLOT( setBrowserURL( const KURL& ) ) );
-    connect( m_pBrowserWidget, SIGNAL( focusIn() ),
-             m_pBrowserLineEdit, SLOT( setFocus() ) );
 
-    connect( m_pPlaylistWidget, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-             this, SLOT( slotPlaylistRightButton( QListViewItem*, const QPoint& ) ) );
     connect( m_pPlaylistWidget, SIGNAL( sigUndoState( bool ) ),
              m_pButtonUndo, SLOT( setEnabled( bool ) ) );
     connect( m_pPlaylistWidget, SIGNAL( sigRedoState( bool ) ),
@@ -97,6 +87,20 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //FIXME <mxcl> MAKE_IT_CLEAN: kaction-ify
     connect( m_pButtonShuffle,  SIGNAL( clicked() ),
              m_pPlaylistWidget, SLOT( shuffle() ) );
+
+    //moved from playerapp
+    connect( m_pButtonAdd, SIGNAL( clicked() ),
+             this, SLOT( slotAddLocation() ) );
+
+    connect( m_pButtonSave, SIGNAL( clicked() ),
+             this, SLOT( savePlaylist() ) );
+
+    connect( m_pButtonUndo, SIGNAL( clicked() ),
+             m_pPlaylistWidget, SLOT( doUndo() ) );
+
+    connect( m_pButtonRedo, SIGNAL( clicked() ),
+             m_pPlaylistWidget, SLOT( doRedo() ) );
+
 }
 
 
@@ -172,8 +176,6 @@ void BrowserWin::initChildren()
     //<Playlist>
     QWidget *pPlaylistWidgetContainer = new QWidget( m_pSplitter );
     m_pPlaylistWidget = new PlaylistWidget( pPlaylistWidgetContainer );
-    m_pPlaylistWidget->setAcceptDrops( true );
-    m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
    //<mxcl> MAKE_IT_CLEAN: move to playlistWidget implementation
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
@@ -251,7 +253,7 @@ void BrowserWin::setBrowserURL( const KURL& url )
    m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
 }
 
-
+#include "playlistitem.h" //FIXME create a listitem for browserwidget
 //<mxcl> MAKE_IT_CLEAN: some should be in playlistWidget some in browserWidget
 void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
@@ -273,68 +275,6 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 
         else m_pPlaylistWidget->insertMedia( fileItem.url() );
     }
-}
-
-
-//<mxcl> MAKE_IT_CLEAN: playlist can do this itself
-void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoint &rPoint )
-{
-    QPopupMenu popup( this );
-    int item1 = popup.insertItem( i18n( "Show File Info" ), this, SLOT( slotShowInfo() ) );
-
-    // only enable when file is selected
-    if ( !m_pPlaylistWidget->currentItem() )
-        popup.setItemEnabled( item1, false );
-
-    popup.insertItem( i18n( "Play Track" ), this, SLOT( slotMenuPlay() ) );
-    popup.insertItem( i18n( "Remove Selected" ), m_pPlaylistWidget, SLOT( removeSelectedItems() ) );
-
-    popup.exec( rPoint );
-}
-
-
-//<mxcl> MAKE_IT_CLEAN: playlist can do this itself
-void BrowserWin::slotShowInfo()
-{
-    PlaylistItem * pItem = static_cast<PlaylistItem*>( m_pPlaylistWidget->currentItem() );
-
-    // FIXME KMessageBoxize?
-    QMessageBox *box = new QMessageBox( "Track Information", 0,
-                                        QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton,
-                                        QMessageBox::NoButton, 0, "Track Information", true,
-                                        Qt::WDestructiveClose | Qt::WStyle_DialogBorder );
-
-    QString str( "<html><body><table border=""1"">" );
-
-    if ( pItem->hasMetaInfo() )
-    {
-         str += "<tr><td>" + i18n( "Title"   ) + "</td><td>" + pItem->title()   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Artist"  ) + "</td><td>" + pItem->artist()  + "</td></tr>";
-         str += "<tr><td>" + i18n( "Album"   ) + "</td><td>" + pItem->album()   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Genre"   ) + "</td><td>" + pItem->genre()   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Year"    ) + "</td><td>" + pItem->year()    + "</td></tr>";
-         str += "<tr><td>" + i18n( "Comment" ) + "</td><td>" + pItem->comment() + "</td></tr>";
-         str += "<tr><td>" + i18n( "Length"  ) + "</td><td>" + pItem->length()  + "</td></tr>";
-         str += "<tr><td>" + i18n( "Bitrate" ) + "</td><td>" + QString::number(pItem->bitrate()) + " kbps</td></tr>";
-         str += "<tr><td>" + i18n( "Samplerate" ) + "</td><td>" + QString::number(pItem->samplerate()) + " Hz</td></tr>";
-    }
-    else
-    {
-        str += "<tr><td>" + i18n( "Stream" ) + "</td><td>" + pItem->url().prettyURL() + "</td></tr>";
-        str += "<tr><td>" + i18n( "Title"  ) + "</td><td>" + pItem->text( 0 ) + "</td></tr>";
-    }
-
-    str.append( "</table></body></html>" );
-    box->setText( str );
-    box->setTextFormat( Qt::RichText );
-    box->show();
-}
-
-
-void BrowserWin::slotMenuPlay()
-{
-    m_pPlaylistWidget->setCurrentTrack( m_pPlaylistWidget->currentItem() );
-    pApp->slotPlay();
 }
 
 
@@ -397,6 +337,67 @@ void BrowserWin::slotUpdateFonts()
     m_pBrowserWidget ->setFont( font );
     m_pStreamBrowser ->setFont( font );
     m_pPlaylistWidget->setFont( font );
+}
+
+
+#include <kfiledialog.h>
+#include <kurlrequester.h>
+#include <kurlrequesterdlg.h>
+
+void BrowserWin::savePlaylist()
+{
+    QString path = KFileDialog::getSaveFileName( m_pBrowserWidget->m_pDirLister->url().path(), "*.m3u" );
+
+    if ( !path.isEmpty() )
+    {
+        if ( path.right( 4 ) != ".m3u" ) // <berkus> FIXME: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
+            path += ".m3u";
+
+        m_pPlaylistWidget->saveM3u( path );
+    }
+}
+
+
+void BrowserWin::slotAddLocation()
+{
+    KURLRequesterDlg dlg( QString::null, 0, 0 );
+    dlg.setCaption( kapp->makeStdCaption( i18n( "Enter file or URL" ) ) );
+    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
+    dlg.exec();
+
+    m_pPlaylistWidget->insertMedia( dlg.selectedURL() );
+}
+
+
+void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &altbg )
+{
+    m_pBrowserWidget->setPaletteBackgroundColor( bg );
+    m_pBrowserWidget->setPaletteForegroundColor( fg );
+    
+    m_pPlaylistWidget->setPaletteBackgroundColor( bg );
+    m_pPlaylistWidget->setPaletteForegroundColor( fg );
+    
+    m_pStreamBrowser->setPaletteBackgroundColor( bg );
+    m_pStreamBrowser->setPaletteForegroundColor( fg );
+    m_pStreamBrowser->setAlternateBackground( altbg );
+
+    //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
+    QObject *pIconBox = m_pJanusWidget->child( 0, "KListBox" );
+    if ( pIconBox )
+    {
+        static_cast<QWidget*>( pIconBox )->setPaletteBackgroundColor( bg );
+        static_cast<QWidget*>( pIconBox )->setPaletteForegroundColor( fg );
+    }
+
+    m_pBrowserLineEdit->setPaletteBackgroundColor( bg );
+    m_pBrowserLineEdit->setPaletteForegroundColor( fg );
+
+    m_pPlaylistLineEdit->setPaletteBackgroundColor( bg );
+    m_pPlaylistLineEdit->setPaletteForegroundColor( fg );
+
+    update();
+    m_pBrowserWidget->triggerUpdate();
+    m_pPlaylistWidget->triggerUpdate();
 }
 
 
