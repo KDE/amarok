@@ -968,7 +968,15 @@ Playlist::paletteChange( const QPalette &p )
 void
 Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
+    QString data;
+    QCString subtype;
+    QTextDrag::decode( e, data, subtype );
+
+    e->accept(
+            e->source() == viewport() ||
+            subtype == "amarok-sql" ||
+            subtype == "uri-list" || //this is to prevent DelayedUrlLists from performing their queries
+            KURLDrag::canDecode( e ) );
 }
 
 void
@@ -988,13 +996,10 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
     if( !item || ctrlPressed ) item = lastItem();
     else if( p.y() - itemRect( item ).top() < (item->height()/2) ) item = item->itemAbove();
 
-    if( item != m_marker )
-    {
-        //NOTE the if block prevents flicker
-        //NOTE it is correct to set m_marker in the middle
-
+    if( item != m_marker ) {
+        //NOTE this if block prevents flicker
         slotEraseMarker();
-        m_marker = item;
+        m_marker = item; //NOTE this is the correct place to set m_marker
         viewportPaintEvent( 0 );
     }
 }
@@ -1008,7 +1013,7 @@ Playlist::contentsDragLeaveEvent( QDragLeaveEvent* )
 void
 Playlist::contentsDropEvent( QDropEvent *e )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BLOCK
 
     //NOTE parent is always 0 currently, but we support it in case we start using trees
     QListViewItem *parent = 0;
@@ -1022,33 +1027,29 @@ Playlist::contentsDropEvent( QDropEvent *e )
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
     }
-    else if( QTextDrag::canDecode( e ) ) {
 
-        debug() << "QTextDrag::canDecode" << endl;
-
+    else {
         QString data;
         QCString subtype;
         QTextDrag::decode( e, data, subtype );
 
-        debug() << subtype << endl;
+        debug() << "QTextDrag::subtype(): " << subtype << endl;
 
         if( subtype == "amarok-sql" ) {
             setSorting( NO_SORT );
             ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
         }
-        else
-            goto url;
-    }
-    else if( KURLDrag::canDecode( e ) ) {
-    url:
-        debug() << "KURLDrag::canDecode" << endl;
+        else if( KURLDrag::canDecode( e ) )
+        {
+            debug() << "KURLDrag::canDecode" << endl;
 
-        KURL::List list;
-        KURLDrag::decode( e, list );
-        insertMediaInternal( list, (PlaylistItem*)after );
+            KURL::List list;
+            KURLDrag::decode( e, list );
+            insertMediaInternal( list, (PlaylistItem*)after );
+        }
+        else
+            e->ignore();
     }
-    else
-        e->ignore();
 
     updateNextPrev();
 }
@@ -1059,7 +1060,8 @@ Playlist::dragObject()
     DEBUG_FUNC_INFO
 
     //TODO use of the map is pointless
-    //just use another list in same order as kurl::list
+    //TODO just get the tags with metabundle like every other part of amaroK does, the performance issues are negligible
+    //     and this is just code-bloat
 
     KURL::List list;
     QMap<QString,QString> map;
@@ -1329,9 +1331,6 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
-    //TODO do as much of this as possible inside playlistLoader, it is a friend after all
-
-    //the threads send their results here for completion that is GUI-safe
     switch( e->type() )
     {
     case PlaylistLoader::JobStartedEvent:

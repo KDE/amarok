@@ -24,7 +24,7 @@ class SmartPlaylistView : public KListView
 Q_OBJECT
     public:
         SmartPlaylistView( QWidget *parent, const char *name = 0 );
-        ~SmartPlaylistView();
+       ~SmartPlaylistView();
 
     public slots:
         void createCustomPlaylist();
@@ -35,18 +35,14 @@ Q_OBJECT
         virtual void paintEmptyArea( QPainter *p, const QRect &r );
 
     private slots:
-        void loadPlaylistSlot( QListViewItem * );
+        void loadPlaylistSlot( QListViewItem* );
         void showContextMenu( QListViewItem *item, const QPoint &p, int );
         void collectionScanDone();
 
     private:
         void loadDefaultPlaylists();
         void loadCustomPlaylists();
-        KURL::List loadSmartPlaylist( QListViewItem *item );    //query the database and returns a list of url
         QString customPlaylistsFile();
-
-        /// convenience function
-        SmartPlaylist *currentItem() { return (SmartPlaylist*)currentItem(); }
 
         bool m_loaded;
 };
@@ -55,41 +51,24 @@ Q_OBJECT
 class SmartPlaylist : public KListViewItem
 {
     public:
-        SmartPlaylist(
-                KListView *parent,
-                KListViewItem *after,
-                const QString &name,
-                const QString &query = QString::null,
-                const QString &icon = QString::null,
-                bool custom = false );
+        SmartPlaylist( const QString &name, const QString &query, KListView *parent );
+        SmartPlaylist( const QString &name, const QString &query, SmartPlaylist *parent );
 
-        SmartPlaylist(
-                SmartPlaylist *parent,
-                KListViewItem *after,
-                const QString &name,
-                const QString &query = QString::null,
-                const QString &icon = QString::null,
-                bool custom = false );
+        void setCustom( bool b ) { m_custom = b; setDragEnabled( true ); }
+        bool isCustom() const { return m_custom; }
 
-        void setQuery( const QString &query ) { m_query = query; };
-        const QString &query() { return m_query; }
-        bool isCustom() { return m_custom; }
+        /// used for sorting
         void setKey( int pos ) { m_key = pos; }
         QString key( int c, bool ) const;
 
-        /// returns the URLs for this playlist
-        KURL::List urls() const; ///DEPRECATE this!
+        KURL::List urls() const;
 
-        /// returns the SQL to get this playlist's URLs
-        QString sqlForUrls() const { return QString(); }
-
-        /// returns the SQL to get this playlist's URLs + tags
-        QString sqlForTags() const { return QString(); }
+        QString sqlForUrls;
+        QString sqlForTags;
 
     private:
-        QString m_query;
         bool m_custom;
-        int m_key;
+        int  m_key;
 };
 
 #endif

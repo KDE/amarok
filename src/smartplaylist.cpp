@@ -8,6 +8,7 @@
 #include "smartplaylist.h"
 #include "smartplaylisteditor.h"
 
+#include <qdragobject.h>    //qtextdrag
 #include <qheader.h>
 #include <qpainter.h>
 #include <qpoint.h>
@@ -15,38 +16,33 @@
 #include <qstringlist.h>
 #include <qtextstream.h>    //loadCustomPlaylists()
 
-#include <kaction.h>
-#include <kactioncollection.h>
-#include <kapplication.h>    //customPlaylistsFile()
 #include <kguiitem.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kmultipledrag.h>    //::dragObject()
 #include <kpopupmenu.h>
-#include <kstandarddirs.h>    //KGlobal::dirs()
-#include <kurldrag.h>         //dragObject()
+#include <kurldrag.h>         //::dragObject()
 #include <ktoolbar.h>
 
 
 SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
-    : QVBox( parent, name )
+        : QVBox( parent, name )
 {
     KToolBar *toolbar = new KToolBar( this );
-    toolbar->setMovingEnabled(false);
-    toolbar->setFlat(true);
+    toolbar->setFlat( true );
+    toolbar->setMovingEnabled( false );
     toolbar->setIconSize( 16 );
-    toolbar->setEnableContextMenu( false );
 
-    SmartPlaylistView *smartListView = new SmartPlaylistView( this );
+    QObject *view = new SmartPlaylistView( this );
 
-    KActionCollection *ac = new KActionCollection( this );
-    KAction *createSmartPlayist = new KAction( i18n("Create Smart-Playlist"), "filenew", 0, smartListView, SLOT( createCustomPlaylist() ), ac, "Create Smart-playlist" );
-    KAction *remove = new KAction( i18n("Remove"), "edittrash", 0, smartListView, SLOT( removeSelectedPlaylists() ), ac, "Remove" );
-
-    toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the "create smart-playlist" button to have text on right
-    createSmartPlayist->plug( toolbar );
+    toolbar->setIconText( KToolBar::IconTextRight, false ); //the "create smart-playlist" will have text on right
+    toolbar->insertButton( "filenew", 0, true, i18n("Create Smart-Playlist") );
     toolbar->insertLineSeparator();
-    toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
-    remove->plug( toolbar);
+    toolbar->setIconText( KToolBar::IconOnly, false ); //the "remove" button will have default appearance
+    toolbar->insertButton( "edittrash", 1, true, i18n("Remove") );
+
+    connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), view, SLOT(createCustomPlaylist()) );
+    connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), view, SLOT(removeSelectedPlaylists()) );
 }
 
 
@@ -56,23 +52,19 @@ SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
 ////////////////////////////////////////////////////////////////////////////
 
 SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
-   : KListView( parent, name )
-   , m_loaded( 0 )
+        : KListView( parent, name )
+        , m_loaded( false )
 {
     addColumn( i18n("Smart-Playlists") );
-    setSelectionMode(QListView::Extended);
+    setSelectionMode( QListView::Extended );
     setSorting( 0 ); //enable sorting (used for custom smart playlists)
     setFullWidth( true );
     setRootIsDecorated( true );
     setShowSortIndicator( true );
 
-    if( !CollectionDB::instance()->isEmpty() ) {
-        loadDefaultPlaylists();
-        loadCustomPlaylists();
-        m_loaded = true;
-    }
+    collectionScanDone(); //load playlist files if appropriate
 
-    connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
+    connect( CollectionDB::instance(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone()) );
 
     connect( this, SIGNAL( doubleClicked(QListViewItem*) ), SLOT( loadPlaylistSlot(QListViewItem*) ) );
     connect( this, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -84,19 +76,18 @@ SmartPlaylistView::~SmartPlaylistView()
 {
     QFile file( customPlaylistsFile() );
 
-    if( file.open( IO_WriteOnly ) )
-    {
-        //save all custom smart playlists
+    if( !file.open( IO_WriteOnly ) )
+        return;
 
-        QTextStream stream( &file );
-        for( QListViewItemIterator it( this ); it.current(); ++it ) {
-            SmartPlaylist *item = static_cast<SmartPlaylist*>(*it);
-            if( item->isCustom() ) {  //save only custom playlists
-                stream << "Name=" + item->text(0);
-                stream << "\n";
-                stream << item->query();
-                stream << "\n";
-            }
+    //save all custom smart playlists
+    QTextStream stream( &file );
+
+    for( QListViewItemIterator it( this ); it.current(); ++it ) {
+        SmartPlaylist *item = static_cast<SmartPlaylist*>(*it);
+        if( item->isCustom() ) {
+            //save only custom playlists
+            stream << "Name=" + item->text( 0 ) << "\n";
+            stream << item->sqlForUrls << "\n";
         }
     }
 }
@@ -110,16 +101,16 @@ void SmartPlaylistView::createCustomPlaylist() //SLOT
         return;
 
     int counter = 1;
-    QListViewItemIterator it( this );
-    for( ; it.current(); ++it ) {
-        if( (*it)->text(0).startsWith( i18n("Untitled") ) )
+    for( QListViewItemIterator it( this ); it.current(); ++it )
+        if( (*it)->text( 0 ).startsWith( i18n("Untitled") ) )
             counter++;
-    }
 
-    SmartPlaylistEditor *editor = new SmartPlaylistEditor( this, i18n("Untitled %1").arg(counter) );
-    SmartPlaylistEditor::Result r = editor->exec();
-    if( r.result == QDialog::Accepted )
-        new SmartPlaylist( this, 0, r.playlistName, r.query, QString::null, true );
+    SmartPlaylistEditor dialog( i18n("Untitled %1").arg( counter ), this );
+    if( dialog.exec() == QDialog::Accepted ) {
+        SmartPlaylist *item = new SmartPlaylist( dialog.name(), QString(), this );
+        item->setCustom( true );
+        item->sqlForUrls = dialog.query();
+    }
 }
 
 
@@ -134,8 +125,8 @@ void SmartPlaylistView::removeSelectedPlaylists()
 
 void SmartPlaylistView::loadDefaultPlaylists()
 {
+    const QStringList genres  = CollectionDB::instance()->query( "SELECT DISTINCT name FROM genre;" );
     const QStringList artists = CollectionDB::instance()->artistList();
-    QString sql;
     SmartPlaylist *item;
     QueryBuilder qb;
 
@@ -147,7 +138,8 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
-    item = new SmartPlaylist( this, 0, i18n( "All Collection" ), qb.query(), "kfm" );
+    item = new SmartPlaylist( i18n( "All Collection" ), qb.query(), this );
+    item->setPixmap( 0, SmallIcon("kfm") );
     item->setKey( 1 );
 
     /********** Favorite Tracks **************/
@@ -155,17 +147,15 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( this, 0, i18n( "Favorite Tracks" ), qb.query() );
+    item = new SmartPlaylist( i18n( "Favorite Tracks" ), qb.query(), this );
     item->setKey( 2 );
-    SmartPlaylist *childItem = 0;
-    foreach( artists )
-    {
+    foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setLimit( 0, 15 );
 
-        childItem = new SmartPlaylist( item, childItem, i18n( "By %1" ).arg( *it ), qb.query() );
+        new SmartPlaylist( i18n( "By %1" ).arg( *it ), qb.query(), item );
     }
 
     /********** Most Played **************/
@@ -173,17 +163,15 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( this, 0, i18n( "Most Played" ), qb.query() );
+    item = new SmartPlaylist( i18n( "Most Played" ), qb.query(), this );
     item->setKey( 3 );
-    childItem = 0;
-    foreach( artists )
-    {
+    foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 15 );
 
-        childItem = new SmartPlaylist( item, childItem, i18n( "By %1" ).arg( *it ), qb.query() );
+        new SmartPlaylist( i18n( "By %1" ).arg( *it ), qb.query(), item );
     }
 
     /********** Newest Tracks **************/
@@ -191,17 +179,15 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( this, 0, i18n( "Newest Tracks" ), qb.query() );
+    item = new SmartPlaylist( i18n( "Newest Tracks" ), qb.query(), this );
     item->setKey( 4 );
-    childItem = 0;
-    foreach( artists )
-    {
+    foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
         qb.setLimit( 0, 15 );
 
-        childItem = new SmartPlaylist( item, childItem, i18n( "By %1" ).arg( *it ), qb.query() );
+        new SmartPlaylist( i18n( "By %1" ).arg( *it ), qb.query(), item );
     }
 
     /********** Last Played **************/
@@ -209,33 +195,30 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( this, 0, i18n( "Last Played" ), qb.query() );
+    item = new SmartPlaylist( i18n( "Last Played" ), qb.query(), this );
     item->setKey( 5 );
 
     /********** Never Played **************/
-    sql = "SELECT tags.url "
-          "FROM tags, artist "
-          "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id "
-          "ORDER BY artist.name, tags.title;";
-    item = new SmartPlaylist(this, 0, i18n( "Never Played" ), sql );
+    item = new SmartPlaylist( i18n( "Never Played" ), QString(), this );
+    item->setDragEnabled( true ); //because we pass QString() in the ctor
     item->setKey( 6 );
+    item->sqlForUrls =
+            "SELECT tags.url "
+            "FROM tags, artist "
+            "WHERE tags.url NOT IN(SELECT url FROM statistics) AND tags.artist = artist.id "
+            "ORDER BY artist.name, tags.title;";
 
     /********** Genres **************/
-    item = new SmartPlaylist( this, 0, i18n( "Genres" ) );
-    item->setDragEnabled( false );
+    item = new SmartPlaylist( i18n( "Genres" ), QString(), this );
     item->setKey( 7 );
-
-    const QStringList genres = CollectionDB::instance()->query( "SELECT DISTINCT name FROM genre;" );
-    childItem = 0;
-    foreach( genres )
-    {
+    foreach( genres ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabGenre, *it );
         qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
-        childItem = new SmartPlaylist( item, childItem, *it, qb.query() );
+        new SmartPlaylist( *it, qb.query(), item );
     }
 
     /********** 100 Random Tracks **************/
@@ -243,7 +226,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 100 );
 
-    item = new SmartPlaylist( this, 0, i18n( "100 Random Tracks" ), qb.query() );
+    item = new SmartPlaylist( i18n( "100 Random Tracks" ), qb.query(), this );
     item->setKey( 8 );
 }
 
@@ -255,15 +238,17 @@ void SmartPlaylistView::loadCustomPlaylists()
     if( file.open( IO_ReadOnly ) )
     {
         QTextStream stream( &file );
-        QString str;
-        QString name, query;
+        QString line, name, query;
 
-        while ( !( str = stream.readLine() ).isNull() ) {
-            if ( str.startsWith( "Name=" ) )
-                name = str.mid( 5 );
+        while( !( line = stream.readLine() ).isNull() )
+        {
+            if( line.startsWith( "Name=" ) )
+                name = line.mid( 5 );
             else {
-                query = str;
-                new SmartPlaylist( this, 0, name, query, QString::null, true );
+                query = line;
+                SmartPlaylist *item = new SmartPlaylist( name, QString(), this );
+                item->sqlForUrls = query;
+                item->setCustom( true );
             }
         }
     }
@@ -276,32 +261,48 @@ QString SmartPlaylistView::customPlaylistsFile()
     return amaroK::saveLocation() + "smartplaylists";
 }
 
-#include "debug.h"
-#include <qdragobject.h>
-#include <kmultipledrag.h>
+
+class DelayedKURLDrag : public KURLDrag
+{
+    QString m_sql;
+    bool    m_done;
+
+    virtual QByteArray encodedData( const char *mimetype ) const
+    {
+        if( !m_done ) {
+            //TODO cheating the const check like this is hardly sensible
+            ((DelayedKURLDrag*)this)->setFileNames( CollectionDB::instance()->query( m_sql ) );
+            ((DelayedKURLDrag*)this)->m_done = true;
+        }
+
+        return KURLDrag::encodedData( mimetype );
+    }
+
+public:
+    DelayedKURLDrag( const QString &sql, QWidget *dragsource )
+            : KURLDrag( KURL::List(), dragsource )
+            , m_sql( sql )
+            , m_done( false ) {}
+};
+
 QDragObject *SmartPlaylistView::dragObject()
 {
-    DEBUG_FUNC_INFO
+    //FIXME currentItem() doesn't seem to work -- strange
+    SmartPlaylist *item = (SmartPlaylist*)selectedItems().first();
 
-    //TODO KURL drag is also required, but preferably only
-    //     determine the KURLs when pasting, otherwise only
-    //     provide the mimetype
-
-    KURL::List urls;
-    QPtrList<QListViewItem> items = selectedItems();
+    //TODO handle all selected items
 
     KMultipleDrag *drag = new KMultipleDrag( this );
 
-    for( SmartPlaylist *item = (SmartPlaylist*)items.first(); item; item = (SmartPlaylist*)items.next() )
-    {
-        urls += item->urls();
-
-        QTextDrag *textdrag = new QTextDrag( item->query(), 0 );
+    if( !item->isCustom() && !item->sqlForTags.isEmpty() ) {
+        QTextDrag *textdrag = new QTextDrag( item->sqlForTags, 0 );
         textdrag->setSubtype( "amarok-sql" );
         drag->addDragObject( textdrag );
     }
 
-    drag->addDragObject( new KURLDrag( urls, 0 ) );
+    if( !item->sqlForUrls.isEmpty() )
+        drag->addDragObject( new DelayedKURLDrag( item->sqlForUrls, 0 ) );
+
     return drag;
 }
 
@@ -310,7 +311,7 @@ void SmartPlaylistView::paintEmptyArea( QPainter *p, const QRect &r )
 {
     if( !childCount() ) {
         p->fillRect( r, colorGroup().base() );
-        p->drawText( 10, 10, width()-20, height()-20, WordBreak,
+        p->drawText( 10, 10, width()-20, height()-20, Qt::WordBreak,
                 i18n("You need to build a collection to use \"Smart Playlists\"") );
     } else
         QListView::paintEmptyArea( p, r );
@@ -322,13 +323,7 @@ void SmartPlaylistView::loadPlaylistSlot( QListViewItem *item ) //SLOT
     if( !item )
         return;
 
-    #define item static_cast<SmartPlaylist*>(item)
-    if( !item->query().isEmpty() ) {
-        // open the smart playlist
-        Playlist::instance()->clear();
-        Playlist::instance()->insertMedia( item->urls() );
-    }
-    #undef item
+    Playlist::instance()->insertMedia( static_cast<SmartPlaylist*>(item)->urls(), Playlist::Clear );
 }
 
 
@@ -390,45 +385,44 @@ void SmartPlaylistView::collectionScanDone() //SLOT
 //    CLASS SmartPlaylist
 ////////////////////////////////////////////////////////////////////////////
 
-SmartPlaylist::SmartPlaylist( KListView *parent, KListViewItem *after, const QString &name,
-                              const QString &query, const QString &icon, bool custom )
-    : KListViewItem( parent, after, name )
-    , m_query( query )
-    , m_custom( custom )
+SmartPlaylist::SmartPlaylist( const QString &name, const QString &query, KListView *parent )
+        : KListViewItem( parent, 0, name )
+        , sqlForTags( query )
+        , m_custom( false )
 {
-    setPixmap( 0, SmallIcon( icon.isEmpty() ? "player_playlist_2" : icon ) );
-    setDragEnabled(true);
+    setPixmap( 0, SmallIcon( "player_playlist_2" ) );
+    setDragEnabled( query.isEmpty() ? false : true );
 }
 
-SmartPlaylist::SmartPlaylist( SmartPlaylist *item, KListViewItem *after, const QString &name,
-                             const QString &query, const QString &icon, bool custom )
-    : KListViewItem( item, after, name )
-    , m_query( query )
-    , m_custom( custom )
+SmartPlaylist::SmartPlaylist( const QString &name, const QString &query, SmartPlaylist *parent )
+        : KListViewItem( parent, name )
+        , sqlForTags( query )
+        , m_custom( false )
 {
-    setPixmap( 0, SmallIcon( icon.isEmpty() ? "player_playlist_2" : icon ) );
-    setDragEnabled(true);
+    setPixmap( 0, SmallIcon( "player_playlist_2" ) );
+    setDragEnabled( true );
 }
 
-QString SmartPlaylist::key( int column, bool ) const
+QString
+SmartPlaylist::key( int column, bool ) const
 {
     //we want to show default playlists above the custom playlists
-    return ( m_custom || parent() ? text(column) : QString( "000000" + QString::number(m_key) ) );
+    return (m_custom || parent()) ? text( column ) : QString( "000000%1" ).arg( m_key );
 }
 
 KURL::List
 SmartPlaylist::urls() const
 {
-    KURL::List list;
     KURL url;
+    KURL::List urls;
+    const QStringList paths = CollectionDB::instance()->query( sqlForUrls );
 
-    const QStringList values = CollectionDB::instance()->query( m_query );
-    foreach( values ) {
+    foreach( paths ) {
         url.setPath( *it );
-        list += url;
+        urls += url;
     }
 
-    return list;
+    return urls;
 }
 
 #include "smartplaylist.moc"

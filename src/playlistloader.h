@@ -86,6 +86,8 @@ public:
     PlaylistLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
    ~PlaylistLoader();
 
+    static const uint OPTIMUM_BUNDLE_COUNT = 50;
+
 protected:
     /// reimplemented from ThreadWeaver::Job
     virtual bool doJob();
@@ -98,14 +100,11 @@ private:
     KURL::List recurse( const KURL& );
 
 private:
-    KURL::List m_badURLs;
-    KURL::List m_URLs;
-
+    KURL::List    m_badURLs;
+    KURL::List    m_URLs;
     PlaylistItem *m_markerListViewItem;
-
-    bool m_playFirstUrl;
-
-    Debug::Block m_block;
+    bool          m_playFirstUrl;
+    Debug::Block  m_block;
 
 protected:
     PlaylistLoader( const PlaylistLoader& ); //undefined

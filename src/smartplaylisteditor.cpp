@@ -28,7 +28,7 @@ QStringList m_fields;
 QStringList m_dbFields;
 
 
-SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QString defaultName, const char *name )
+SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n("Create Smart Playlist"), Ok|Cancel)
 {
     makeVBoxMainWidget();
@@ -110,23 +110,6 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QString defaultName, 
 }
 
 
-SmartPlaylistEditor::~SmartPlaylistEditor()
-{
-}
-
-
-SmartPlaylistEditor::Result SmartPlaylistEditor::exec()
-{
-    Result r;
-    r.result = DialogCode(KDialogBase::exec());
-    if( r.result == Accepted ) {
-        r.query = getQuery();
-        r.playlistName = m_nameLineEdit->text();
-    }
-    return r;
-}
-
-
 void SmartPlaylistEditor::addCriteria()
 {
     CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaGroupBox );
@@ -166,7 +149,7 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
     m_orderTypeCombo->updateGeometry();
 }
 
-QString SmartPlaylistEditor::getQuery()
+QString SmartPlaylistEditor::query()
 {
     QString tables = "tags";
     QString whereStr;

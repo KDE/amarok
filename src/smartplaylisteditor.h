@@ -4,10 +4,10 @@
 #ifndef SMARTPLAYLISTEDITOR_H
 #define SMARTPLAYLISTEDITOR_H
 
-#include <kdialogbase.h>
-#include <qhbox.h>
-#include <qmap.h>
-#include <qptrlist.h>
+#include <kdialogbase.h> //baseclass
+#include <qhbox.h>       //baseclass
+#include <qptrlist.h>    //definition required
+#include <klineedit.h>   //inline function
 
 class KComboBox;
 class KIntSpinBox;
@@ -25,26 +25,19 @@ Q_OBJECT
     friend class CriteriaEditor;
 
     public:
-        struct Result
-        {
-            DialogCode result;
-            QString query;
-            QString playlistName;
-        };
+        SmartPlaylistEditor( QString name, QWidget *parent, const char *name=0 );
 
-        SmartPlaylistEditor( QWidget *parent, QString name = QString::null, const char *name=0 );
-        ~SmartPlaylistEditor();
+        QString query();
+        QString name() const { return m_nameLineEdit->text(); }
 
     public slots:
-        Result exec();
         void addCriteria();
         void removeCriteria( CriteriaEditor *criteria );
-    
+
     private slots:
         void updateOrderTypes( int index );
 
     private:
-        QString getQuery();
         void updateMatchWidgets();
 
         KLineEdit *m_nameLineEdit;

@@ -140,7 +140,7 @@ PlaylistLoader::doJob()
             (EngineController::canDecode( url ) ? urls : m_badURLs) += url;
         }
 
-        if( urls.count() == 50 || it == last ) {
+        if( urls.count() == OPTIMUM_BUNDLE_COUNT || it == last ) {
             QApplication::postEvent( this, new TagsEvent( CollectionDB::instance()->bundlesByUrls( urls ) ) );
             urls.clear();
         }
@@ -283,7 +283,7 @@ PlaylistLoader::loadXml( const KURL &url )
         if( !n.toElement().isNull() )
             e->nodes += n;
 
-        if( e->nodes.count() == 50 ) {
+        if( e->nodes.count() == OPTIMUM_BUNDLE_COUNT ) {
             QApplication::postEvent( this, e );
             e = new TagsEvent;
         }
@@ -343,7 +343,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
         {
             // KURL::isRelativeURL() expects a protocol, so prepend it if missing
             QString url = line;
-            if ( url.startsWith( "/" ) )
+            if( url.startsWith( "/" ) )
                 url.prepend( "file://" );
 
             if( KURL::isRelativeURL( url ) )
@@ -478,7 +478,7 @@ SqlLoader::doJob()
             b.readTags( TagLib::AudioProperties::Fast );
         }
 
-        if( bundles.count() == 30 || it == last ) {
+        if( bundles.count() == OPTIMUM_BUNDLE_COUNT || it == last ) {
             QApplication::postEvent( this, new TagsEvent( bundles ) );
             bundles.clear();
         }
