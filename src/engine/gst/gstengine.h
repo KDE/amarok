@@ -61,15 +61,19 @@ class GstEngine : public EngineBase
         void                                     setVolume( int percent );
         void                                     newStreamData( char* data, int size );
 
+    private slots:
+        void                                     handleFakesrc();
+        void                                     handleError();
+        
     private:
         /** Called at end of track */
         static void                              eos_cb( GstElement*, GstElement* );
         /** Duplicates audio data for application side processing */
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
-        static GstCaps*                          fixate_cb( GstPad* pad, const GstCaps* ccaps, gpointer data );
         /** Called when pipeline needs new data from source */
         static void                              handoff_fakesrc_cb( GstElement*, GstBuffer*, GstPad, gpointer );
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
+        static void                              error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
 
         /** Get a list of available plugins from a specified Class */
         QStringList                              getPluginList( const QCString& classname );
@@ -79,6 +83,8 @@ class GstEngine : public EngineBase
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
+        static GstBuffer*                        fakesrc_buf;
+        static GError*                           error_msg;
         static GstEngine*                        self;
         
         GstElement*                              m_pThread;

@@ -85,4 +85,12 @@ void EngineBase::setXfadeLength( int ms )
 }
 
 
+void EngineBase::setSoundOutput( const QString& output )
+{
+    kdDebug() << "Setting sound output to: " << output << endl;
+    
+    m_soundOutput = output;
+}
+
+
 #include "enginebase.moc"

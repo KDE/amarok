@@ -126,7 +126,7 @@ class EngineBase : public QObject, public amaroK::Plugin {
          */
         virtual void setVolume( int percent ) = 0;
         virtual void setXfadeLength( int ms );
-        virtual void setSoundOutput( const QString& output ) { m_soundOutput = output; }
+        virtual void setSoundOutput( const QString& output );
         virtual void setSoundDevice( const QString& device ) { m_soundDevice = device; }
         virtual void setDefaultSoundDevice( bool isDefault ) { m_defaultSoundDevice = isDefault; }
         
