@@ -273,7 +273,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             m_tabBar->blockSignals( false );
             break;
         default:
-            ;
+        saveHtmlData();
     }
 
 }
