@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <markey> CoverManager doesn't find anything if no locale is selected.
+
+          <markey> CoverManager shows wrong count in StatusBar when fetching a couple of images.
+
           <muesli> Sort albums by date, name in ContextBrowser.
 
           <muesli> Don't show '0' as a date for an album in ContextBrowser.
