@@ -274,8 +274,14 @@ void EngineController::play( const MetaBundle &bundle )
 
             newMetaDataNotify( bundle, true /* track change */ );
         }
+        else goto some_kind_of_failure;
     }
-    else m_bundle = MetaBundle::null;
+    else
+    some_kind_of_failure:
+        //don't do for repeatPlaylist() as it can produce a freeze
+        //FIXME -> mxcl
+        if ( !AmarokConfig::repeatPlaylist() )
+            next();
 }
 
 
@@ -384,7 +390,8 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;
-            next();
+            if ( !AmarokConfig::repeatPlaylist() )
+                next();
             return; //don't notify
         }
 
@@ -395,7 +402,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         connect( m_stream, SIGNAL(sigError()),
                  this,     SIGNAL(orderNext()) );
     }
-    else if( !m_engine->play( url, isStream ) )
+    else if( !m_engine->play( url, isStream ) && !AmarokConfig::repeatPlaylist() )
     {
         next();
         return; //don't notify
