@@ -2,6 +2,8 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
+  ADD: Cover art fetcher, downloads album cover images from amazon.com.
   ADD: Configure->Playback->Device && default device option for audiosinks.
   ADD: ContextBrowser now also shows your overall-favorites and the newest tracks
        in your collection. Therefor I had to reset the statistics, sorry.
