@@ -34,7 +34,7 @@ class PlaylistFile
 public:
     PlaylistFile( const QString &path );
 
-    enum Format { M3U, PLS, XML, Unknown, NotPlaylist = Unknown };
+    enum Format { M3U, PLS, XML, RAM, ASX, Unknown, NotPlaylist = Unknown };
 
     /// the bundles from this playlist, they only contain
     /// the information that can be extracted from the playlists
@@ -67,6 +67,8 @@ PlaylistFile::format( const QString &fileName )
 
     if( ext == ".m3u" ) return M3U;
     if( ext == ".pls" ) return PLS;
+    if( ext == ".ram" ) return RAM;
+    if( ext == ".asx" ) return ASX;
     if( ext == ".xml" ) return XML;
 
     return Unknown;

@@ -338,6 +338,8 @@ PlaylistFile::PlaylistFile( const QString &path )
     case XML:
         m_error = i18n( "This component of amaroK cannot translate XML playlists." );
         return;
+    case RAM:
+    case ASX:
     default:
         m_error = i18n( "amaroK does not support this playlist format." );
         return;
