@@ -337,16 +337,52 @@
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
+        <sender>kcfg_OsdEnabled</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Options5</receiver>
+        <slot>osdEnabledChange(bool)</slot>
+    </connection>
+    <connection>
         <sender>kcfg_OsdUseCustomColors</sender>
         <signal>toggled(bool)</signal>
         <receiver>colorsBox</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
+        <sender>kcfg_OsdDrawShadow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Options5</receiver>
+        <slot>drawShadowToggled(bool)</slot>
+    </connection>
+    <connection>
         <sender>kcfg_OsdUseCustomColors</sender>
         <signal>toggled(bool)</signal>
         <receiver>Options5</receiver>
         <slot>useCustomColorsToggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdFont</sender>
+        <signal>fontSelected(const QFont&amp;)</signal>
+        <receiver>Options5</receiver>
+        <slot>fontChanged(const QFont&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdTextColor</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>Options5</receiver>
+        <slot>textColorChanged(const QColor&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdBackgroundColor</sender>
+        <signal>changed(const QColor&amp;)</signal>
+        <receiver>Options5</receiver>
+        <slot>backgroundColorChanged(const QColor&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_OsdScreen</sender>
+        <signal>activated(int)</signal>
+        <receiver>Options5</receiver>
+        <slot>screenChanged(int)</slot>
     </connection>
 </connections>
 <includes>
@@ -358,11 +394,14 @@
 <variables>
     <variable access="private">OSDPreviewWidget *m_pOSDPreview;</variable>
 </variables>
-<signals>
-    <signal>settingsChanged()</signal>
-</signals>
 <slots>
+    <slot access="protected">fontChanged( const QFont &amp; font )</slot>
+    <slot access="protected">textColorChanged( const QColor &amp; color )</slot>
+    <slot access="protected">backgroundColorChanged( const QColor &amp; color )</slot>
+    <slot access="protected">screenChanged( int screen )</slot>
+    <slot access="protected">drawShadowToggled( bool on )</slot>
     <slot access="protected">slotPositionChanged()</slot>
+    <slot access="protected">osdEnabledChange( bool on )</slot>
     <slot access="protected">useCustomColorsToggled( bool on )</slot>
 </slots>
 <functions>
