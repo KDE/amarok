@@ -138,11 +138,10 @@ bool MasEngine::canDecode( const KURL &url ) const
 
 bool MasEngine::load( const KURL& url, bool stream )
 {
+    DEBUG_BLOCK
     struct mas_package pkg;
     char pbuf[10240];
     int pos = 0;
-
-    DEBUG_BLOCK
 
     m_isStream = stream;
     debug() << "  m_url: " << m_url << endl;
@@ -179,8 +178,8 @@ bool MasEngine::load( const KURL& url, bool stream )
     mas_set( m_mp1a_source_device, (char*)"playlist", &pkg );
     masc_strike_package( &pkg );
 
-    //mas_dev_show_state (m_mp1a_source_device);
-    //mas_source_flush( m_codec );
+    mas_dev_show_state (m_mp1a_source_device);
+    mas_source_flush( m_codec );
 
     m_lastKnownPosition = 0;
     m_state = Engine::Idle;
@@ -191,13 +190,11 @@ bool MasEngine::load( const KURL& url, bool stream )
 
 bool MasEngine::play( unsigned int offset)
 {
+    DEBUG_BLOCK
     struct mas_package pkg;
     char pbuf[10240];
 
-    DEBUG_BLOCK
-
     debug() << "  param: offset " << offset << endl;
-
     if ( m_state != Engine::Playing ) {
         /* change the track */
         masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );
@@ -217,7 +214,6 @@ bool MasEngine::play( unsigned int offset)
 
     m_state = Engine::Playing;
     emit stateChanged( Engine::Playing );
-
 
     return true;
 }   // play
@@ -246,7 +242,6 @@ void MasEngine::playingTimeout() //SLOT
     mas_get( m_mp1a_source_device, (char *)"ctrack", NULL, &nugget );
     masc_pullk_int16( &nugget, (char *)"pos", &pos );
     masc_strike_package( &nugget );
-    //masc_log_message( 0, (char*)"after calling source ctrack: pos %d", pos);
 
     if ( pos == 0 ) {
         m_pPlayingTimer->stop();
@@ -308,16 +303,15 @@ void MasEngine::pause()
 // TODO depends on MAS support
 void MasEngine::seek( unsigned int ms )
 {
-//    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    //DEBUG_BLOCK
     AMAROK_NOTIMPLEMENTED
-    debug() << "  param: ms " << ms << endl;
-//    kdDebug() << "END " << k_funcinfo << endl;
+    //debug() << "  param: ms " << ms << endl;
 }   // seek
 
 
 void MasEngine::setVolumeSW( unsigned int percent )
 {
-    Debug::Block block( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
     debug() << "  Param: percent " << percent << endl;
 
 #ifdef USE_MIX_VOLUME_GENERIC
@@ -372,9 +366,9 @@ void MasEngine::timerEvent( QTimerEvent* )
 
 bool MasEngine::masinit()
 {
+    DEBUG_BLOCK
     int32 err;
 
-    DEBUG_BLOCK
     masc_log_verbosity( MAS_VERBLVL_DEBUG );
     masc_log_message( 0, (char*)"amarok/MASengine" );
     masc_log_message( 0, (char*)"tries to plays audio using MAS ;-)");
