@@ -135,7 +135,8 @@ main( int argc, char** argv )
             recv( sockfd, c, 16, 0 );
             std::string command( c );
 
-            if( command == "fullscreen" );
+			//TODO fix this next line
+            //if( command == "fullscreen" )
             if( command == "configure" ) wrap.configure();
         }
 
