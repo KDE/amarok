@@ -1,78 +1,111 @@
 # configure.in.bot
 # This file is used for printing important messages at the end of configure
 
+echo
 
 if test x$amarok_error_notaglib = xyes ; then
-    echo ""
-    echo "AMAROK ERROR:"
-    echo "You are missing TagLib, which is required by amaroK.  You can find TagLib at"
-    echo $TAGLIB_URL
+    echo "======================="
+    echo "=  amaroK - ERROR  ===================================="
+    echo "=                                                     ="
+    echo "=  amaroK cannot be built because you do not have     ="
+    echo "=  the TagLib library installed.                      ="
+    echo "=  TagLib can be obtained from: $TAGLIB_URL"
+    echo "=                                                  ===="
 fi
 
 if test x$amarok_error_taglibold = xyes; then
-    echo ""    
-    echo "AMAROK ERROR:"
-    echo "Your TagLib is too old to use with amaroK.  You can find a more recent TagLib at"
-    echo $TAGLIB_URL
+    echo "======================="
+    echo "=  amaroK - ERROR  ===================================="
+    echo "=                                                     ="
+    echo "=  amaroK cannot be built because your TagLib version ="
+    echo "=  is too old. Please obtain a more recent version    ="
+    echo "=  from: $TAGLIB_URL"
+    echo "=                                                  ===="
 fi
 
 if test "$PKGCONFIGFOUND" != "yes" ; then
-    echo ""    
-    echo "AMAROK WARNING:"
-    echo "*** The pkg-config script could not be found. Make sure it is"
-    echo "*** in your path, or set the PKG_CONFIG environment variable"
-    echo "*** to the full path to pkg-config."
-    echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+    echo "========================="
+    echo "=  amaroK - WARNING  =================================="
+    echo "=                                                     ="
+    echo "=  pkg-config could not be found, this means the      ="
+    echo "=  optional GStreamer-engine and Collection Browser   ="
+    echo "=  cannot be built.                                   =" 
+    echo "=  Ensure pkg-config is in your path, set the         ="
+    echo "=  PKG_CONFIG environment variable to the full path   ="
+    echo "=  to pkg-config, or download it from:                =" 
+    echo "=  http://www.freedesktop.org/software/pkgconfig      ="
+    echo "=                                                  ===="
 fi
 
-if test $have_sqlite = xno; then
-    echo ""
-    echo "AMAROK WARNING:"
-    echo "You do not have the SQLite (version >= 2.8) database library!"
-    echo "The Collection Browser (music database) will be deactivated."
-    echo "You can download SQLite from: http://www.sqlite.org"
-fi
-
-if test x$no_amarok = xyes; then
-    echo ""
-    echo "AMAROK WILL NOT BE BUILT."
-    echo "REASON:"
-    echo "THERE ARE MISSING DEPENDENCIES."
-    echo "PLEASE INSTALL THE MISSING PACKAGES FIRST!"
+if test x$have_sqlite = xno; then
+    echo "========================="
+    echo "=  amaroK - WARNING  =================================="
+    echo "=                                                     ="
+    echo "=  The Collection Browser (music database) will not   ="
+    echo "=  be built. To enjoy the benefits of having all your ="
+    echo "=  music categorised by tag, download SQLite from     ="
+    echo "=  http://www.sqlite.org/ - amaroK requires version   ="
+    echo "=  2.8.0 or higher.                                   ="
+    echo "=                                                  ===="
 fi
 
 if test "x$have_gst" = "xno"; then
-    echo ""
-    echo "GStreamer version >= $GST_REQ required to build the optional amaroK GStreamer engine."
+    echo "========================="
+    echo "=  amaroK - WARNING  =================================="
+    echo "=                                                     ="
+    echo "=  The amaroK GStreamer engine will not be built.     ="
+    echo "=  amaroK will still compile, providing another       ="
+    echo "=  engine is built (eg aRts, NMM). You can obtain     ="
+    echo "=  GStreamer from http://freedesktop.org/~gstreamer/  ="
+    echo "=  amaroK requires version $GST_REQ or higher.           ="
+    echo "=                                                  ===="
+
+fi
+
+if test x$no_amarok = xyes; then
+    echo "================================="
+    echo "=  AMAROK WILL NOT BE BUILT  =========================="
+    echo "=                                                     ="
+    echo "=  You are missing dependencies. Please install the   ="
+    echo "=  missing packages as detailed in amarok/README and  ="
+    echo "=  reconfigure.                                       ="
+    echo "=  Please note, you should still be able to build     ="
+    echo "=  the other modules in kdeextragear-1.               ="
+    echo "=                                                  ===="
 fi
 
 if test x$no_engine = xyes; then
-    echo ""
-    echo "AMAROK WILL NOT BE BUILT."
-    echo "REASON:"
-    echo "NO SUITABLE MULTIMEDIA FRAMEWORK WAS DETECTED."
-    echo "CANNOT COMPILE AMAROK WITHOUT AN AUDIO ENGINE."
+    echo "================================="
+    echo "=  AMAROK WILL NOT BE BUILT  =========================="
+    echo "=                                                     ="
+    echo "=  No suitable multimedia framework was detected.     ="
+    echo "=  Please examine the amaroK README, and install      ="
+    echo "=  one of the supported frameworks.                   =" 
+    echo "=  If you are thinking, \"but I have aRts!\", then      ="
+    echo "=  you probably need to install kdemultimedia-devel   ="
+    echo "=                                                  ===="
 fi
 
 if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-    echo "*****************************************************"
-    echo "*** amaroK will be built with the aRts-engine"
-    echo "*****************************************************"
+    echo "======================================================="    
+    echo "==== amaroK will be built with the aRts-engine     ===="
 fi
 
 if test x$have_gst = xyes; then
-    echo "*****************************************************"
-    echo "*** amaroK will be built with the GStreamer-engine"
-    echo "*****************************************************"
+    echo "======================================================="
+    echo "==== amaroK will be built with the GST-engine      ===="
 fi
 
-if test $build_nmm = xyes; then
-    echo "*****************************************************"
-    echo "*** amaroK will be built with the NMM-engine."
-    echo "*** Please ensure that the NMM libraries are in your"
-    echo "*** LD_PATH, or run: ./configure --with-nmm=no"
-    echo "*****************************************************"
+if test x$build_nmm = xyes; then
+    echo "======================================================="
+    echo "==== amaroK will be built with the NMM-engine      ===="
+    echo "======================================================="
+    echo "======================"
+    echo "=  amaroK - INFO  ====================================="
+    echo "=                                                     ="
+    echo "=  If the build fails, reconfigure --without-nmm,     ="
+    echo "=  or ask for help on #amarok (irc.freenode.net)      ="
+    echo "=                                                  ===="
 fi
-
     
-  
+echo "===================================================="
