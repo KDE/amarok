@@ -15,32 +15,15 @@
 #ifndef SPLASH_H
 #define SPLASH_H
 
-#include <qpixmap.h>
 #include <qwidget.h> //baseclass
 
-class QFont;
-class QString;
-class QStringList;
-class QTimer;
-
-class OSDWidget : public QWidget
+class Splash : public QWidget
 {
-    Q_OBJECT
+public:
+    Splash();
 
-      public:
-        OSDWidget();
-
-      public slots:
-        void showSplash(const QString& imagePath);
-
-      protected:
-        void paintEvent( QPaintEvent* );
-        void mousePressEvent( QMouseEvent* );
-
-        static const int SPLASH_DURATION = 25000;
-
-        QTimer      *timer;
-        QPixmap     osdBuffer;
+protected:
+    virtual void mousePressEvent( QMouseEvent* );
 };
 
 #endif

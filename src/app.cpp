@@ -51,6 +51,8 @@ email                : markey@web.de
 #include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
 
+#include <iostream>
+
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
 #include <qfile.h>
@@ -80,8 +82,7 @@ App::App()
     const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
 
     if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
-        //stop the splashscreen first, socket server is a temporary on purpose!
-        LoaderServer server( 0 );
+        std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
         firstRunWizard();
         amaroK::config()->writeEntry( "First Run", false );
         amaroK::config()->sync();
@@ -105,9 +106,8 @@ App::App()
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
 
-    //initializes Unix domain socket for loader communication, and hides the splash
-    //do here so splash is hidden just after amaroK's windows appear
-    (void) new LoaderServer( this );
+    //notify loader application that we have started
+    std::cout << "STARTUP\n" << std::flush;
 
     //after this point only analyzer and temporary pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );

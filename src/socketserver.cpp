@@ -2,36 +2,34 @@
 // Copyright: See COPYING file that comes with this distribution
 
 
-#include "config.h"           //XMMS_CONFIG_DIR
+#define DEBUG_PREFIX "SocketServer"
 
 #include "app.h"
+#include "config.h"           //XMMS_CONFIG_DIR
 #include "debug.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
 #include "fht.h"              //processing the scope
-#include "socketserver.h"
-
-#include <qdir.h>
-#include <qheader.h>          //Vis::Selector ctor
-#include <qtooltip.h>         //Vis::Selector ctor
-
 #include <klocale.h>
 #include <kpopupmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
 #include <kstandarddirs.h>
+#include <qdir.h>
+#include <qtooltip.h>         //Vis::Selector ctor
+#include "socketserver.h"
 
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
+extern "C"
+{
+    #include <sys/socket.h>
+    #include <sys/types.h>
+    #include <sys/un.h>
+    #include <unistd.h>
+}
 
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
-//TODO see if we need two socket servers
 //TODO allow transmission of visual data back to us here and allow that to be embedded in stuff
 //TODO decide whether to use 16 bit integers or 32 bit floats as data sent to analyzers
-//     remember that there may be 1024 operations on these data points up to 50 times every second!
-//TODO consider moving fht.* here
 //TODO allow visualisations to determine their own data sizes
 
 
@@ -41,13 +39,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 amaroK::SocketServer::SocketServer( const QString &socketname, QObject *parent )
-  : QServerSocket( parent )
+        : QServerSocket( parent )
 {
     m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
     if ( m_sockfd == -1 )
     {
-        kdWarning() << k_funcinfo << " socket() error\n";
+        warning() << "socket() error\n";
         return;
     }
 
@@ -59,15 +57,15 @@ amaroK::SocketServer::SocketServer( const QString &socketname, QObject *parent )
 
     if ( ::bind( m_sockfd, (sockaddr*) &local, sizeof(local) ) == -1 )
     {
-        kdWarning() << k_funcinfo << " bind() error\n";
+        warning() << "bind() error\n";
         ::close ( m_sockfd );
         m_sockfd = -1;
         return;
     }
     if ( ::listen( m_sockfd, 1 ) == -1 )
     {
-        kdWarning() << k_funcinfo << " listen() error\n";
-        ::close ( m_sockfd );
+        warning() << "listen() error\n";
+        ::close( m_sockfd );
         m_sockfd = -1;
         return;
     }
@@ -81,75 +79,13 @@ amaroK::SocketServer::~SocketServer()
 }
 
 
-
-////////////////////////////////////////////////////////////////////////////////
-// CLASS LoaderServer
-////////////////////////////////////////////////////////////////////////////////
-
-#include <kstartupinfo.h>
-
-LoaderServer::LoaderServer( QObject* parent )
-  : amaroK::SocketServer( "amarok.loader_socket", parent )
-{}
-
-void
-LoaderServer::newConnection( int sockfd )
-{
-    DEBUG_FUNC_INFO
-
-    char buf[1000];
-    const int nbytes = ::recv( sockfd, buf, sizeof(buf), 0 );
-
-    if( nbytes > 0 )
-    {
-        QString result( buf );
-
-        debug() << QString( "Received: %1 (%2 bytes)\n" ).arg( result ).arg( nbytes );
-
-        if( result != "STARTUP" )
-        {
-            QStringList args = QStringList::split( '|', result, true );
-
-            if( !args.isEmpty() )
-            {
-                //stop startup cursor animation - do not mess with this, it's carefully crafted
-                debug() << "DESKTOP_STARTUP_ID: " << args.first() << endl;
-                kapp->setStartupId( args.first().local8Bit() );
-                KStartupInfo::appStarted();
-                args.pop_front();
-
-                //divide argument line into single strings
-                const int argc = args.count();
-                char **argv = new char*[argc];
-
-                QStringList::ConstIterator it = args.constBegin(); //use an iterator for QValueLists
-                for ( int i = 0; i < argc; ++i, ++it )
-                {
-                    argv[i] = const_cast<char*>((*it).latin1());
-                    debug() << "Extracted: " << argv[i] << endl;
-                }
-
-                //re-initialize KCmdLineArgs with the new arguments
-                App::initCliArgs( argc, argv );
-                App::handleCliArgs();
-                delete[] argv;
-            }
-        }
-    }
-    else debug() << "recv() error\n";
-
-    ::close( sockfd );
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS Vis::SocketServer
 ////////////////////////////////////////////////////////////////////////////////
 
 
 Vis::SocketServer::SocketServer( QObject *parent )
-  : amaroK::SocketServer( "amarok.visualization_socket", parent )
+        : amaroK::SocketServer( "amarok.visualization_socket", parent )
 {}
 
 
@@ -202,7 +138,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
     } else {
 
-        debug() << "[Vis::Server] receive error, closing socket: " << sockfd << endl;
+        debug() << "recv() error, closing socket: " << sockfd << endl;
         ::close( sockfd );
         delete this;
     }
@@ -246,7 +182,7 @@ Vis::Selector::Selector( QWidget *parent )
     QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
     addColumn( QString() );
     addColumn( QString() );
-    header()->hide();
+    reinterpret_cast<QWidget*>(header())->hide();
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
@@ -344,16 +280,16 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 
         connect( m_proc, SIGNAL(processExited( KProcess* )), listView(), SLOT(processExited( KProcess* )) );
 
-        debug() << "[Vis::Selector] Starting visualization..\n";
+        debug() << "Starting visualization..\n";
 
         if( m_proc->start() ) break;
 
         //ELSE FALL_THROUGH
 
-        kdWarning() << "[Vis::Selector] Could not start amarok_xmmswrapper!\n";
+        warning() << "Could not start amarok_xmmswrapper!\n";
 
     case Off:
-        debug() << "[Vis::Selector] Stopping XMMS visualization\n";
+        debug() << "Stopping XMMS visualization\n";
 
         //m_proc->kill(); no point, will be done by delete, and crashes amaroK in some cases
         delete m_proc;

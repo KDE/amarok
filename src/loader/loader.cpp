@@ -15,318 +15,203 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cstdlib>
+#include <iostream>
 #include "loader.h"
-#include "splash.h"
-
-#include <qcstring.h>
-#include <qdir.h>
-#include <qfileinfo.h>
-
+#include <qfile.h>
 #include <qmessagebox.h>
 #include <qprocess.h>
 #include <qstring.h>
-#include <qurl.h>
+#include "splash.h"
 
-#include <iostream>
-#include <pwd.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-
-
-Loader::Loader( int& argc, char** argv )
-        : QApplication( argc, argv )
-        , m_pOsd ( 0 )
+extern "C"
 {
-    if( argc > 1 )
-    {
-        if( strcmp( argv[1], "--vis-socket-path" ) == 0 )
-        {
-            std::cout << socketPath( Vis ) << '\0';
-            ::exit( 0 );
-        }
-
-        //put all arguments into one string
-        //we transmit the startup_id, so amarokapp can stop the startup animation
-        QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
-
-        //TODO support compacted short options eg "-ne"
-
-        //these arguments require a running amaroK
-        //the rest should be done on a new instance (eg --help)
-        QStringList sockArgs;
-        sockArgs << "--next" << "--previous" << "--stop" << "--pause" << "--play" << "--play-pause"
-                 << "--enqueue" << "--append" << "--queue"
-                 << "--engine"
-                 << "-caption" << "-f" << "-r" << "-s" << "-p" << "-e" << "-a" << "-m" << "-t";
-
-        for ( int i = 0; i < argc; i++ )
-        {
-            QString arg = argv[ i ];
-
-            str += '|';
-
-            if ( sockArgs.contains( arg ) )
-            {
-                //pass this argument to amaroK
-                str += argv[i];
-
-            } else if ( arg[0] != '-' ) {
-
-                //pass this URL to amaroK
-                QFileInfo info( arg );
-
-                if ( info.exists() && info.isRelative() )
-                {
-                    str += QFile::encodeName( info.absFilePath() );
-                }
-                else str += argv[i];
-
-            } else {
-
-                //we don't need to pass any of these arguments to amaroK
-                //and if we did it KCmdLineArgs would make us exit!
-                //TODO add all arguments or something
-
-                QProcess proc( QString("amarokapp") );
-                proc.setCommunication( 0 );
-                proc.addArgument( arg );
-                proc.start();
-
-                while ( proc.isRunning() ) ::usleep( 100 );
-
-                //now exit as help only prints usage info
-                //no need to doExit(), as nothing is started
-                ::exit( 0 );
-            }
-        }
-
-        //lets see if amaroK is running
-        m_sockfd = tryConnect( true );
-
-        if ( m_sockfd != -1 )
-        {
-            ::send( m_sockfd, str, str.length() + 1, 0 ); //+1 = /0 termination
-
-            doExit();
-        }
-
-        //if it isn't running we need to show the splash and start a new instance
-        //we verified above that no arguments like --help are being passed
-    }
-    else m_sockfd = tryConnect( true );
-
-
-    if ( m_sockfd == -1 )
-    {
-        //no, amaroK is not running -> start new instance, show splash
-        std::cout << "[amaroK] Starting amarokapp..\n";
-        std::cout << "[amaroK] If you want a backtrace, run gdb against amarokapp, not amarok!\n";
-
-        QStringList args( "amarokapp" );
-        for ( int i = 1; i < argc; i++ ) args << argv[ i ]; //start at 1 to avoid appName
-
-        QProcess proc( args );
-        connect( &proc, SIGNAL( processExited() ), SLOT( doExit() ) );
-        proc.setCommunication( 0 ); //ouputs everything straight to stdout/err
-        proc.start();
-
-        //show splash after starting process so we don't cause a delay
-        //don't show splash on session restore
-        if ( !QApplication::isSessionRestored() && splashEnabled() ) showSplash();
-
-        //periodically check for amaroK startup completion
-        startTimer( TIMER_INTERVAL );
-    }
-    else {
-
-        //amarok is running, but no arguments were passed
-        //we need to show and raise amaroK
-
-        doExit();
-    }
+    #include <unistd.h> //usleep
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE METHODS
-////////////////////////////////////////////////////////////////////////////////
+int
+main( int argc, char *argv[] )
+{
+    //NOTE this list doesn't include argv[0] ("amarok")
+    QStringList args;
+    for( int i = 1; i < argc; i++ )
+        args += argv[i];
 
-bool Loader::splashEnabled() const
+    const bool isRunning = amarokIsRunning();
+
+    // first check the arguments, we don't need a splashscreen
+    // for arguments like --help, --version, etc.
+
+    if( !args.isEmpty() )
+    {
+        // These arguments cannot be passed to amaroK, or amaroK will exit
+        // after processing them. TODO handle -v short hand for version
+        QStringList longs; longs
+                << "-help" << "-help-qt" << "-help-kde" << "-help-all" << "-author" << "-version" << "-license";
+
+        // both --arg and -arg are valid
+        {
+            QStringList longlongs;
+            foreach( longs )
+                longlongs += QChar('-') + *it;
+
+            longs += longlongs;
+        }
+
+        foreach( args ) {
+            const QString arg = *it;
+            foreach( longs )
+                if( arg == *it ) {
+                    // this argument cannot be passed to the running amarokapp
+                    // or KCmdLineArgs would exit the application
+
+                    QProcess proc( QString("amarokapp") );
+                    proc.setCommunication( 0 ); //show everything
+                    proc.addArgument( arg );
+                    proc.start();
+
+                    while( proc.isRunning() )
+                        ::usleep( 100 );
+
+                    return 0; //exit success!
+                }
+        }
+
+        // these arguments are deemed safe for dcop, but if
+        // there is no amarokapp running, we'll start a new
+        // instance and the above checks were not necessary
+    }
+    else if( isRunning )
+        // we are running, but no arguments were passed
+        // show and raise amarok
+        args = "--toggle-playlist-window";
+
+    if ( isRunning ) {
+        QStringList dcop_args;
+        dcop_args << "dcop" << "amarok" << "player" << "transferCliArgs" << "[";
+        dcop_args += args;
+        dcop_args += "]";
+
+        QProcess proc( dcop_args );
+        proc.start();
+        while( proc.isRunning() )
+            ::usleep( 100 );
+
+        return 0;
+    }
+    else {
+        // no amarokapp is running, start one, show
+        // a splashscreen and pass it the arguments
+
+        // we transmit the startup_id, so amarokapp can stop the startup animation
+        //FIXME QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
+
+        return Loader( args ).exec();
+    }
+}
+
+bool
+amarokIsRunning()
+{
+    QProcess proc( QString( "dcop" ) );
+    proc.start();
+    while( proc.isRunning() )
+        ::usleep( 100 );
+
+    while( proc.canReadLineStdout() )
+        if ( proc.readLineStdout() == "amarok" )
+            return true;
+
+    return false;
+}
+
+
+
+static int _argc = 0;
+
+Loader::Loader( QStringList args )
+        : QApplication( _argc, 0 )
+        , m_counter( 0 )
+        , m_splash( 0 )
+{
+    // we transmit the startup_id, so amarokapp can stop the startup animation
+    //FIXME QCString str( ::getenv( "DESKTOP_STARTUP_ID" ) );
+
+     if( !QApplication::isSessionRestored() && isSplashEnabled() )
+        m_splash = new Splash;
+
+    args.prepend( "amarokapp" );
+
+    m_proc = new QProcess( args, this );
+    m_proc->setCommunication( QProcess::Stdout );
+
+    std::cout << "amaroK: [Loader] Starting amarokapp..\n";
+    std::cout << "amaroK: [Loader] Don't run gdb, valgrind, etc. against this binary! Use amarokapp.\n";
+
+    if( !m_proc->start() )
+    {
+        delete m_splash; // hide the splash
+
+        QMessageBox::critical( 0, "amaroK",
+                "amaroK could not be started!\n" //FIXME this needs to be translated
+                    "This may be because the amarokapp binary is not in your PATH.\n"
+                    "Try locating and running amarokapp from a terminal.",
+                QMessageBox::Ok, 0 );
+
+        std::exit( 1 ); //event-loop is not yet being processed
+    }
+
+    //FIXME this will crash the loader..
+    //insertChild( m_splash );
+
+    startTimer( INTERVAL );
+}
+
+void
+Loader::timerEvent( QTimerEvent* )
+{
+    if( m_proc->isRunning() )
+    {
+        if( ++m_counter == (30000 / INTERVAL) ) {
+            // 30 seconds have passed
+            std::cerr << "amaroK: [Loader] Timed out waiting for amaroK!\n";
+            QApplication::exit( 2 );
+        }
+
+        while( m_proc->canReadLineStdout() )
+            if( m_proc->readLineStdout() == "STARTUP" )
+                QApplication::exit( 0 );
+    }
+    else if( !m_proc->normalExit() ) {
+        // no reason to show messagebox, as amarokapp should start drkonqi
+        std::cerr << "amaroK: [Loader] amarokapp probably crashed!\n";
+
+        QApplication::exit( 3 );
+    }
+    else
+        QApplication::exit( 0 );
+}
+
+bool
+isSplashEnabled()
 {
     //determine whether splash-screen is enabled in amarokrc
 
-    // Use $KDEHOME for kde config path if available; otherwise use $HOME
     QString path( ::getenv( "KDEHOME" ) );
     if ( path.isEmpty() )
-        path = ::getenv( "HOME" ) + QString( "/.kde" );
+        path = ::getenv( "HOME" ) + QString("/.kde");
     path += "/share/config/amarokrc";
 
     QFile file( path );
-
     if ( file.open( IO_ReadOnly ) ) {
         QString line;
-
-        while ( file.readLine( line, 2000 ) != -1 )
+        while( file.readLine( line, 2000 ) != -1 )
             if ( line.contains( "Show Splashscreen" ) && line.contains( "false" ) )
                 return false;
+    }
 
-    } //if we fail to open it, just show the splash
+    //if we fail to open it, just show the splash
 
-    //default:
     return true;
 }
-
-
-//SLOT
-void Loader::showSplash()
-{
-    //get KDE prefix from kde-config
-    QProcess proc( QString( "kde-config" ) ); //"--install data" doesn't work! should do..
-    proc.addArgument( "--prefix" );
-    proc.start();
-
-    //wait until process has finished
-    while ( proc.isRunning() ) ::usleep( 100 );
-
-    //read output from kde-config
-    QString path = proc.readStdout();
-    path.remove( '\n' );
-    path += "/share/apps/amarok/images/logo_splash.png";
-
-    m_pOsd = new OSDWidget;
-    m_pOsd->showSplash( path );
-}
-
-
-QCString Loader::socketPath( SocketType type )
-{
-    static QCString path;
-
-    // find out current user's kde sockets location
-    // this is usually $KDEHOME/socket-$HOST/
-    // or $HOME/.kde/socket-$HOST/
-    // NOTE: /tmp/ksocket-$USER/ doesn't work because it may be located on a separate
-    // filesystem from user's home (think NFS).
-
-    // find out current user home dir
-    // (code bits from kdelibs/kinit/lnusertemp.c)
-
-    if( path.isEmpty() )
-    {
-        const int uid      = getuid();
-        QCString  home_dir = getenv( "HOME" );
-        QCString  kde_home = uid ? getenv( "KDEHOME" ) : getenv( "KDEROOTHOME" );
-        passwd   *pw_ent   = getpwuid( uid );
-
-        if ( !pw_ent ) qFatal( "Current user does not exist?!" );
-
-        if ( !kde_home || !kde_home[0] ) kde_home = "~/.kde";
-
-        if ( kde_home[0] == '~' )
-        {
-            if ( uid == 0 )
-                home_dir = pw_ent->pw_dir ? pw_ent->pw_dir : "/root";
-
-            if ( !home_dir || !home_dir[0] )
-                qFatal( "$HOME not set!" );
-
-            if ( home_dir.length() > ( PATH_MAX - 100 ) )
-                qFatal( "Home directory path is too long!" );
-
-            path = home_dir;
-            kde_home = kde_home.mid( 1 );
-        }
-
-        path += kde_home;
-        path += "/socket-";
-
-        char hostname[ 100 ];
-        if ( gethostname( &hostname[ 0 ], 100 ) != 0 )
-            qFatal( "Could not determine this computer's hostname." );
-
-        path += hostname;
-
-
-        QFileInfo inf( path );
-        if ( !inf.isDir() && !inf.isSymLink() )
-            qFatal( "Socket-path is not a link or a directory: %s\n", (const char*)path );
-    }
-
-    QCString retpath = path;
-    retpath += ((type == loader) ? "/amarok.loader_socket" : "/amarok.visualization_socket");
-
-    return retpath;
-}
-
-
-int Loader::tryConnect( bool verbose )
-{
-    //try to connect to the LoaderServer
-    int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
-    if ( fd == -1 ) {
-        qDebug( "[amaroK] socket() error" );
-        return -1;
-    }
-    sockaddr_un local;
-    local.sun_family = AF_UNIX;
-
-    QCString path = socketPath();
-
-    ::strcpy( &local.sun_path[ 0 ], path );
-
-    if ( verbose )
-        std::cerr << "[amaroK] Connecting to " << path << '\n';
-
-    if ( ::connect( fd, ( sockaddr* ) & local, sizeof( local ) ) == -1 ) {
-        ::close ( fd );
-        return -1;
-    }
-
-    return fd;
-}
-
-//SLOT
-void Loader::doExit()
-{
-    std::cout << "[amaroK] Exiting\n";
-
-    delete m_pOsd;
-
-    if ( m_sockfd != -1 )
-        ::close( m_sockfd );
-
-    ::exit( 0 );
-}
-
-
-void Loader::timerEvent( QTimerEvent* )
-{
-    static uint delay;
-
-    delay += TIMER_INTERVAL;
-    m_sockfd = tryConnect();
-
-    if ( m_sockfd != -1 ) {
-        killTimers();
-
-        std::cout << "[amaroK] Startup successful\n";
-        ::send( m_sockfd, "STARTUP", 8, 0 );
-        doExit();
-    } else if ( delay >= TIMEOUT * 1000 ) {
-        killTimers();
-        std::cout << "[amaroK] Timed out trying to contact amarokapp\n";
-
-        //NOTE these are untranslated.. nasty.
-
-        QMessageBox::critical( 0, "amaroK",
-            "amaroK could not be started, try typing \"amarok\" at "
-            "a command prompt, perhaps the output can help.",
-            QMessageBox::Ok, QMessageBox::NoButton );
-
-        doExit();
-    }
-}
-
-#include "loader.moc"

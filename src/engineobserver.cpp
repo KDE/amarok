@@ -15,10 +15,9 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include "engineobserver.h"
-
 #include <qptrlist.h>
-#include <kdebug.h>
 
 EngineObserver::EngineObserver()
     : m_subject( 0 )
@@ -46,6 +45,8 @@ EngineSubject::~EngineSubject()
 
 void EngineSubject::stateChangedNotify( Engine::State state )
 {
+    DEBUG_BLOCK
+
     QPtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )
@@ -58,6 +59,8 @@ void EngineSubject::stateChangedNotify( Engine::State state )
 
 void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChanged )
 {
+    DEBUG_BLOCK
+
     QPtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )

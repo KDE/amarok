@@ -2,8 +2,8 @@
                           loader.h  -  loader application for amaroK
                              -------------------
     begin                : 2004/02/19
-    copyright            : (C) 2004 by Mark Kretschmann
-    email                : markey@web.de
+    copyright            : (C) 2004 Mark Kretschmann <markey@web.de>
+                           (C) 2005 Max Howell
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,38 +18,30 @@
 #ifndef LOADER_H
 #define LOADER_H
 
-#include <qapplication.h>    //baseclass
+#include <qapplication.h>
 
-class OSDWidget;
-class QTimerEvent;
+class QProcess;
+class QStringList;
 
 class Loader : public QApplication
 {
-    Q_OBJECT
+public:
+    Loader( QStringList );
 
-    public:
-        Loader( int& argc, char** argv );
+private:
+    virtual void timerEvent( QTimerEvent* );
 
-    private slots:
-        void doExit();
+    QProcess *m_proc;
+    int       m_counter;
+    QObject  *m_splash;
 
-    private:
-        bool splashEnabled() const;
-        void showSplash();
-        int  tryConnect( bool verbose = false );
-        void timerEvent( QTimerEvent* );
-
-        enum SocketType { loader, Vis };
-
-        QCString socketPath( SocketType type = loader );
-
-// ATTRIBUTES ------
-        static const int TIMER_INTERVAL = 50;
-        static const int TIMEOUT = 60;
-
-        int        m_sockfd;
-        OSDWidget *m_pOsd;
+    static const int INTERVAL = 10; //ms
 };
 
+static bool isSplashEnabled();
+static bool amarokIsRunning();
+
+#define foreach( x ) \
+    for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
 #endif

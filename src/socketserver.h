@@ -28,18 +28,6 @@ protected:
 } //namespace amaroK
 
 
-
-class LoaderServer : public amaroK::SocketServer
-{
-    public:
-        LoaderServer( QObject* parent );
-
-    private:
-        void newConnection( int socket );
-};
-
-
-
 namespace Vis {
 
 class SocketServer : public amaroK::SocketServer
@@ -84,10 +72,10 @@ public:
     {
     public:
         Item( QListView *parent, const char *command, const QString &text, const QString &s2 )
-          : QCheckListItem( parent, text, QCheckListItem::CheckBox )
-          , m_proc( 0 )
-          , m_sockfd( -1 )
-          , m_command( command )
+                : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+                , m_proc( 0 )
+                , m_sockfd( -1 )
+                , m_command( command )
         {
             setText( 1, s2 );
         }
