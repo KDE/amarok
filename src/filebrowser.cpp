@@ -53,13 +53,10 @@ class MyDirLister : public KDirLister
     public:
         MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
     protected:
-        bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
-            if( item->isDir() ) return true;
-            return EngineController::canDecode( item->url().path() );
+        virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
+            return item->isDir() || EngineController::canDecode( item->url().path() );
         }
-
 };
-
 
 class MyDirOperator : public KDirOperator
 {
@@ -70,7 +67,6 @@ class MyDirOperator : public KDirOperator
 };
 
 
-
 QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 
 
@@ -78,6 +74,7 @@ QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 
 FileBrowser::FileBrowser( const char * name )
     : QVBox( 0, name )
+    , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
     setMargin( 5 );
@@ -108,7 +105,7 @@ FileBrowser::FileBrowser( const char * name )
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
 
     //insert our own actions at front of context menu
-    QPopupMenu* const menu = ((KActionMenu *)actionCollection()->action("popupMenu"))->popupMenu();
+    QPopupMenu* const menu = ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu();
     menu->clear();
     menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
     menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
@@ -123,14 +120,24 @@ FileBrowser::FileBrowser( const char * name )
     m_dir->setEnableDirHighlighting( true );
     m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
     m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
-    m_dir->actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
     m_dir->readConfig( config );
     m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
     setStretchFactor( m_dir, 2 );
 
-    KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection(), "bookmarks" );
-    acmBookmarks->setDelayed( false );
-    bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->popupMenu() );
+    {
+        KActionMenu *a;
+
+        a = (KActionMenu*)actionCollection()->action( "sorting menu" );
+        a->setIcon( "configure" );
+        a->setDelayed( false ); //TODO should be done by KDirOperator
+
+        actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
+
+        a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection(), "bookmarks" );
+        a->setDelayed( false );
+        KBookmarkHandler *bookmarkHandler = new KBookmarkHandler( this, a->popupMenu() );
+        connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
+    }
 
     { //<Search LineEdit>
         QHBox *hbox; KToolBarButton *button;
@@ -145,13 +152,10 @@ FileBrowser::FileBrowser( const char * name )
         QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
     } //</Search LineEdit>
 
-    m_timer = new QTimer( this );
-
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_filterEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
     connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )), SLOT(cmbPathReturnPressed( const QString& )) );
-    connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
     connect( m_dir, SIGNAL(viewChanged( KFileView* )), SLOT(slotViewChanged( KFileView* )) );
     connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activateThis( const KFileItem* )) );
 
@@ -181,20 +185,16 @@ QString FileBrowser::location() const
     return m_cmbPath->currentText();
 }
 
-
-void FileBrowser::setupToolbar()
+inline void
+FileBrowser::setupToolbar()
 {
     QStringList actions;
     actions << "up" << "back" << "forward" << "home" << "reload" << "short view"
             << "detailed view" << "sorting menu" << "bookmarks";
 
-    KAction *a;
     for( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
-    {
-        a = m_dir->actionCollection()->action( (*it).latin1() );
-        if ( *it == "sorting menu" ) a->setIcon( "configure" );
-        if ( a ) a->plug( m_toolbar );
-    }
+        if ( KAction *a = m_dir->actionCollection()->action( (*it).latin1() ) )
+            a->plug( m_toolbar );
 }
 
 //END Public Methods
