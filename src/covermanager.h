@@ -8,7 +8,6 @@
 #include <qptrlist.h>
 #include <kiconview.h>
 
-class KLineEdit;
 class KListView;
 class KPopupMenu;
 class KProgress;
@@ -23,6 +22,7 @@ class QStringList;
 class QTimer;
 class QToolButton;
 
+class ClickLineEdit;
 class CollectionDB;
 class CoverView;
 class CoverViewItem;
@@ -49,7 +49,6 @@ Q_OBJECT
         //filter
         void slotSetFilter();
         void slotSetFilterTimeout();
-        void clearFilter();
         void changeView( int id );
         //cover fetching
         void fetchMissingCovers();
@@ -67,7 +66,6 @@ Q_OBJECT
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
-        bool eventFilter( QObject*, QEvent* );
         void closeEvent( QCloseEvent* );
 
         CollectionDB *m_db;
@@ -75,7 +73,7 @@ Q_OBJECT
         KListView *m_artistView;
         CoverView *m_coverView;
         QHBox *m_searchBox;
-        KLineEdit *m_searchEdit;
+        ClickLineEdit *m_searchEdit;
         QToolButton *m_viewButton;
         KPopupMenu *m_viewMenu;
         KPushButton *m_fetchButton;

@@ -4,6 +4,7 @@
 #include "config.h"
 
 #include "amarokconfig.h"
+#include "clicklineedit.h"
 #include "collectiondb.h"
 #include "covermanager.h"
 
@@ -31,7 +32,6 @@
 #include <kdebug.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
-#include <klineedit.h>    //search filter
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>    //showCoverMenu()
@@ -52,6 +52,7 @@ CoverManager* instance = 0;
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
+    , m_timer( new QTimer( this ) )    //search filter timer
     , m_filter( 0 )
     , m_fetchCounter( 0 )
     , m_fetchingCovers( 0 )
@@ -99,8 +100,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     { //<Search LineEdit>
         m_searchBox = new QHBox( coverWidget );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, m_searchBox );
-        m_searchEdit = new KLineEdit( m_searchBox, "filter_edit" );
-        m_searchEdit->installEventFilter( this );
+        m_searchEdit = new ClickLineEdit( m_searchBox, i18n( "Filter here..." ), "filter_edit" );
 
         m_searchBox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
@@ -108,19 +108,12 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
         QColorGroup cg = QApplication::palette().active();
         cg.setColor( QColorGroup::Button, cg.background() );
         button->setPalette( QPalette(cg, cg, cg) );
-        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
+        connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter albums" ) );
         hbox->addWidget( m_searchBox );
     } //</Search LineEdit>
-
-    m_timer = new QTimer( this );    //search filter timer
-    {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_searchEdit, &e );
-    }
 
     //view tool button
     m_viewButton = new QToolButton( coverWidget );
@@ -540,18 +533,6 @@ void CoverManager::slotSetFilterTimeout() //SLOT
 }
 
 
-void CoverManager::clearFilter()
-{
-    m_searchEdit->clear();
-    m_timer->stop();
-    slotSetFilter();
-    if( !m_searchEdit->hasFocus() ) {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_searchEdit, &e);
-    }
-}
-
 void CoverManager::changeView( int id  ) //SLOT
 {
     if( m_currentView == id ) return;
@@ -763,43 +744,13 @@ void CoverManager::updateStatusBar()
     m_statusLabel->setText( text );
 }
 
-
-bool CoverManager::eventFilter( QObject *o, QEvent *e )
-{
-    if( o == m_searchEdit ) {
-        switch( e->type() ) {
-           case QEvent::FocusIn:
-               if( m_filter.isEmpty() ) {
-                   m_searchEdit->clear();
-                   m_timer->stop();
-                   m_searchEdit->setPaletteForegroundColor( colorGroup().text() );
-                   return FALSE;
-               }
-
-            case QEvent::FocusOut:
-                if( m_filter.isEmpty() ) {
-                    m_searchEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-                    m_searchEdit->setText( i18n("Search here...") );
-                    m_timer->stop();
-                    return FALSE;
-                }
-
-            default:
-                return FALSE;
-        };
-    }
-
-    return FALSE;
-}
-
 //////////////////////////////////////////////////////////////////////
 //    CLASS CoverView
 /////////////////////////////////////////////////////////////////////
 
 CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
     : KIconView( parent, name, f )
-{
-}
+{}
 
 
 QDragObject *CoverView::dragObject()
