@@ -31,7 +31,7 @@
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <krun.h>
-#include <kstandarddirs.h>
+#include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h> //ctor

@@ -698,7 +698,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
-    amaroK::OSD::instance()->showOSD( i18n("Volume: %1%").arg( newVolume ), QString::null , true );
+    amaroK::OSD::instance()->show( i18n("Volume: %1%").arg( newVolume ), QString::null , true );
 }
 
 void App::slotConfigEffects( bool show ) //SLOT

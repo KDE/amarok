@@ -38,9 +38,7 @@ class OSDWidget : public QWidget
         int y()         { return m_y; }
 
       public slots:
-        //TODO rename show, scrap removeOSD, just use hide() <- easier to learn
-        void showOSD( const QString&, const QString& = QString::null, bool preemptive = false );
-        void removeOSD() { hide(); } //inlined as is convenience function
+        void show( const QString&, const QString& = QString::null, bool preemptive = false );
         void show();
 
         void setDuration( int ms );
@@ -128,7 +126,7 @@ namespace amaroK
 
         public slots:
             void showTrack( const MetaBundle &bundle );
-            void showTrack() { showOSD( m_text, m_image ); }
+            void showTrack() { show( m_text, m_image ); }
 
             //this function is for the showOSD global shortcut, it should always work //FIXME sucks
             void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }

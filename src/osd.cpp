@@ -181,7 +181,7 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
 }
 
 
-void OSDWidget::showOSD( const QString &text, const QString &image, bool preemptive )
+void OSDWidget::show( const QString &text, const QString &image, bool preemptive )
 {
     if ( isEnabled() && !text.isEmpty() )
     {
