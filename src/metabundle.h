@@ -32,8 +32,8 @@ class MetaBundle
 public:
 
     //for the audioproperties
-    static const int Undetermined = -2; /// not yet obtained, @see readTags()
-    static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length with http streams
+    static const int Undetermined = -2; /// we haven't yet read the tags
+    static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length for http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
     /**
@@ -50,15 +50,15 @@ public:
      */
     explicit MetaBundle( const KURL&, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
 
-    //StreamProvider:
-    MetaBundle( const QString& title,
-                const QString& streamUrl,
-                const int      bitrate,
-                const QString& genre,
-                const QString& streamName,
-                const KURL&    url );
+    /** For the StreamProvider */
+    MetaBundle( const QString &title,
+            const QString &streamUrl,
+            const int bitrate,
+            const QString &genre,
+            const QString &streamName,
+            const KURL &url );
 
-    //PlaylistItems:
+    /** For PlaylistItems */
     MetaBundle( const PlaylistItem *item );
 
     /** Test for an empty metabundle */
@@ -103,7 +103,7 @@ public:
 
     // these are helpful statics, don't use these in preference
     // to the ones above!
-    static QString prettyBitrate( uint );
+    static QString prettyBitrate( int );
     static QString prettyLength( int ); //must be int, see Unavailable, etc. above
     static QString prettyTime( uint, bool showHours = true );
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
@@ -125,7 +125,7 @@ public:
     void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
 protected:
-    KURL    m_url;
+    KURL m_url;
     QString m_title;
     QString m_artist;
     QString m_album;
@@ -146,7 +146,7 @@ private:
 
     static inline QString prettyGeneric( const QString &s, const int i )
     {
-        return (i > 0) ? s.arg( i ) : (i == Undetermined) ? "?" : QString::null;
+        return (i > 0) ? s.arg( i ) : (i == Undetermined) ? "?" : "-";
     }
 
     void init( TagLib::AudioProperties *ap = 0 );

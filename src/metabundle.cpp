@@ -19,10 +19,6 @@
 #include <taglib/tstring.h>
 
 
-//the point here is to force sharing of these strings returned from prettyBitrate()
-static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "128 kbps", "160 kbps", "192 kbps", "224 kbps", "256 kbps" };
-
-
 MetaBundle::MetaBundle( const KURL &url, TagLib::AudioProperties::ReadStyle readStyle )
     : m_url( url )
     , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
@@ -223,13 +219,11 @@ MetaBundle::prettyTitle( QString filename ) //static
 QString
 MetaBundle::prettyLength( int seconds ) //static
 {
-    QString s;
+    if( seconds > 0 ) return prettyTime( seconds, false );
+    if( seconds == Undetermined ) return "?";
+    if( seconds == Irrelevant  ) return "-";
 
-    if( seconds > 0 ) s = prettyTime( seconds, false );
-    else if( seconds == Unavailable ) s = '?';
-    else if( seconds == Irrelevant  ) s = '-';
-
-    return s; //Undetermined = ""
+    return QString::null; //Unavailable = ""
 }
 
 QString
@@ -253,13 +247,20 @@ MetaBundle::prettyTime( uint seconds, bool showHours ) //static
 }
 
 QString
-MetaBundle::prettyBitrate( uint i )
+MetaBundle::prettyBitrate( int i )
 {
-    return ( i % 32 == 0 && i < 257 ) ? bitrateStore[ i / 32 ] : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
+    //the point here is to force sharing of these strings returned from prettyBitrate()
+    static const QString bitrateStore[9] = {
+            "?", "32 kbps", "64 kbps", "96 kbps", "128 kbps",
+            "160 kbps", "192 kbps", "224 kbps", "256 kbps" };
+
+    return (i >=0 && i <= 256 && i % 32 == 0)
+                ? bitrateStore[ i / 32 ]
+                : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
 }
 
 QStringList
-MetaBundle::genreList()    //static
+MetaBundle::genreList() //static
 {
     QStringList list;
 
