@@ -696,8 +696,8 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 {
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        debug() << coverItem->artist() << endl;
-        debug() << coverItem->album() << endl;
+//        debug() << coverItem->artist() << endl;
+//        debug() << coverItem->album() << endl;
         if ( artist == coverItem->artist() && album == coverItem->album() ) {
             coverItem->loadCover();
             return;
