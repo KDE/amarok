@@ -160,6 +160,7 @@ class PlaylistWidget : private KListView
         void customEvent( QCustomEvent* );
         bool eventFilter( QObject*, QEvent* );
         void setSorting( int, bool=true );
+        void setColumnWidth( int, int );
 
 // ATTRIBUTES ------
         PlaylistBrowser *m_browser;

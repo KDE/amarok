@@ -74,10 +74,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
-    setDefaultRenameAction( QListView::Reject ); //FIXME Qt says this is the default anyway!
-    //    setStaticBackground( true );
-    //    m_rootPixmap.setFadeEffect( 0.5, Qt::black );
-    //    m_rootPixmap.start();
+    //setDefaultRenameAction( QListView::Reject ); //FIXME Qt says this is the default anyway!
 
     //NOTE order is critical because we can't set indexes or ids
     addColumn( i18n( "Trackname" ),   0 );
@@ -172,22 +169,12 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
 
     m_GlowColor.setRgb( 0xff, 0x40, 0x40 ); //FIXME move into the planned derived QColorGroup
 
+    //TODO use timerEvent as is neater
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     m_GlowTimer->start( 70 );
 
-    // Read playlist columns layout
+    //read playlist columns layout
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
-
-/*
-    kdDebug() << "Sizeof QObject: " << sizeof( QObject ) << endl;
-    kdDebug() << "Sizeof QWidget: " << sizeof( QWidget ) << endl;
-    kdDebug() << "Sizeof QThread: " << sizeof( QThread ) << endl;
-    kdDebug() << "Sizeof QTimer: " << sizeof( QTimer ) << endl;
-    kdDebug() << "Sizeof KListViewItem: " << sizeof( KListViewItem ) << endl;
-    kdDebug() << "Sizeof QListViewItem: " << sizeof( QListViewItem ) << endl;
-    kdDebug() << "Sizeof QPtrList: " << sizeof( QPtrList<int> ) << endl;
-    kdDebug() << "Sizeof QValueList: " << sizeof( QValueList<int> ) << endl;
-*/
 }
 
 
@@ -644,6 +631,17 @@ void PlaylistWidget::setSorting( int col, bool b )
 }
 
 
+void PlaylistWidget::setColumnWidth( int col, int width )
+{
+    KListView::setColumnWidth( col, width );
+
+    //FIXME this is because Qt doesn't by default disable resizing width 0 columns. GRRR!
+    //NOTE  default column sizes are stored in default amarokrc so that restoreLayout() in ctor will
+    //      call this function. This is necessary because addColumn() doesn't call setColumnWidth() GRRR!
+    header()->setResizeEnabled( width != 0, col );
+}
+
+
 void PlaylistWidget::saveUndoState() //SLOT
 {
    if( saveState( m_undoList ) )
@@ -1047,10 +1045,9 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
         popup.setCheckable( true );
         popup.insertTitle( i18n( "Available Columns" ) );
 
-        //<mxcl> don't include Trackname yet as you can end up with "invisible" tracks
         for( int i = 0; i < columns(); ++i ) //columns() references a property
         {
-            popup.insertItem( columnText( i ), i, i );
+            popup.insertItem( columnText( i ), i, i + 1 );
             popup.setItemChecked( i, columnWidth( i ) != 0 );
         }
 
@@ -1058,6 +1055,7 @@ bool PlaylistWidget::eventFilter( QObject *o, QEvent *e )
 
         if( col != -1 )
         {
+            //TODO can result in massively wide column appearing!
             if( columnWidth( col ) == 0 ) adjustColumn( col );
             else hideColumn( col );
         }

@@ -37,8 +37,6 @@ SHORT-TERM (URGENT):
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
 
-    * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
-
 MID-TERM:
 
     * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing

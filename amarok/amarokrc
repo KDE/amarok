@@ -11,3 +11,7 @@ ggzmeta://mindx.dyndns.org:15691=true
 
 [PlaylistSideBar]
 CurrentPane=FileBrowser
+
+[PlaylistColumnsLayout]
+#see PlaylistWidget::setColumnWidth() for explanation for below
+ColumnWidths=0,200,100,100,0,0,0,0,0,80,0
