@@ -305,6 +305,8 @@ void PlaylistLoader::translate( QString &path, KFileItemList &list )
             }
          } //if( LSTAT )
       } //while
+
+      closedir( d );
    } //if( d )
 }
 
