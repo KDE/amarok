@@ -58,7 +58,7 @@ class PlaylistItem : public KListViewItem
         static QColor glowText;
         static QColor glowBase;
 
-	bool pixmapChanged;
+        static bool s_pixmapChanged;
 
         static const QString columnName(int n);
 
