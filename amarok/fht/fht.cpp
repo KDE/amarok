@@ -89,7 +89,7 @@ float* FHT::clear(float *d)
 
 void FHT::scale(float *p, float d)
 {
-	for (int i = 0; i < m_num; i++)
+	for (int i = 0; i < (m_num / 2); i++)
 		*p++ *= d;
 }
 
