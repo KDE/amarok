@@ -124,6 +124,11 @@ namespace amaroK
         return EngineController::instance()->bundle().title();
     }
 
+    QString DcopHandler::track()
+    {
+        return EngineController::instance()->bundle().track();
+    }
+
     QString DcopHandler::album()
     {
         return EngineController::instance()->bundle().album();

@@ -61,6 +61,7 @@ k_dcop:
    /* New player API */
    virtual QString artist() = 0;                            ///< Return the artist of the currently playing track.
    virtual QString title() = 0;                             ///< Return the title of the currently playing track.
+   virtual QString track() = 0;                                 ///< Return the track number.
    virtual QString album() = 0;                             ///< Return the album of the currently playing track.
    virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
    virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: DCOP call to return the track number.(BR 94825)
   FIX: GStreamer-engine provides better scope synchronisation.
   ADD: Save current track position and play queue on exit. (BR 90379)
   FIX: Fix Directory column on playlist, show absolute directory path

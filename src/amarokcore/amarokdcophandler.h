@@ -49,6 +49,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual QString nowPlaying();
       virtual QString artist();
       virtual QString title();
+      virtual QString track();
       virtual QString album();
       virtual QString totalTime();
       virtual QString currentTime();
