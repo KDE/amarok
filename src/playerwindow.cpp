@@ -782,7 +782,7 @@ void NavButton::drawButtonLabel( QPainter* p )
     if ( !isEnabled() )
         p->drawPixmap( x, y, m_pixmapDisabled );
     else if ( isOn() )
-        p->drawPixmap( x + 1, y + 1, *m_glowPixmaps.at( m_glowIndex ) );
+        p->drawPixmap( x + 2, y + 1, *m_glowPixmaps.at( m_glowIndex ) );
     else
         p->drawPixmap( x, y, m_pixmapOff );
 }
