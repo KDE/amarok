@@ -90,6 +90,12 @@ App::App()
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );
 
+    // Invoke first-run wizard if needed
+    if ( config()->readBoolEntry( "First Run", true ) ) {
+        firstrunWizard();
+        config()->writeEntry( "First Run", false );
+    }
+            
     // Create KConfigDialog
     KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
     connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
