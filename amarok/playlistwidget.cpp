@@ -82,12 +82,12 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     addColumn( i18n( "Title"     ), 200 );
     addColumn( i18n( "Artist"    ), 100 );
     addColumn( i18n( "Album"     ), 100 );
-    addColumn( i18n( "Year"      ),  40 );
-    addColumn( i18n( "Comment"   ),  80 );
-    addColumn( i18n( "Genre"     ),  80 );
-    addColumn( i18n( "Directory" ),  80 );
+    addColumn( i18n( "Year"      ),  0 ); //0 means hidden
+    addColumn( i18n( "Comment"   ),  0 );
+    addColumn( i18n( "Genre"     ),  0 );
+    addColumn( i18n( "Directory" ),  0 );
     addColumn( i18n( "Length"    ),  80 );
-    addColumn( i18n( "Bitrate"   ),  80 );
+    addColumn( i18n( "Bitrate"   ),  0 );
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),  this, SLOT( slotEraseMarker() ) );
     connect( this, SIGNAL( doubleClicked( QListViewItem* ) ), this, SLOT( activate( QListViewItem* ) ) );
