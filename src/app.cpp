@@ -277,6 +277,7 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
     aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
     aboutData.addCredit( "Markus A. Rykalski", "graphics", "exxult@exxult.de" );
     aboutData.addCredit( "Melchior Franz", "new FFT routine, bugfixes", "mfranz@kde.org" );
+    aboutData.addCredit( "Mike Diehl", "handbook", "madpenguin8@yahoo.com" );
     aboutData.addCredit( "Roman Becker", "graphics: amaroK logo", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
     aboutData.addCredit( "The Noatun Authors", "code and inspiration", 0, "http://noatun.kde.org" );
