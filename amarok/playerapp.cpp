@@ -705,6 +705,8 @@ void PlayerApp::play( const MetaBundle &bundle )
         if ( object ) {
             connect( object,    SIGNAL( destroyed   () ),
                      pProxy,      SLOT( deleteLater () ) );
+            connect( this,      SIGNAL( deleteProxy () ),
+                     pProxy,      SLOT( deleteLater () ) );
             connect( pProxy,    SIGNAL( error       () ),
                     this,         SLOT( proxyError  () ) );
             connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
@@ -742,6 +744,7 @@ void PlayerApp::proxyError()
 
     m_proxyError = true;
     m_pEngine->stop();
+    emit deleteProxy();
     slotPlay();
 }
 

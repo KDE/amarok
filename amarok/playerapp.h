@@ -117,7 +117,8 @@ class PlayerApp : public KApplication
         void orderCurrentTrack();
         void orderNextTrack();
         void currentTrack( const KURL& );
-
+        void deleteProxy();
+        
     private:
         void handleCliArgs();
         void initBrowserWin();
