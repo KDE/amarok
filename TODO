@@ -25,8 +25,6 @@ SHORT-TERM (URGENT):
   FIX 160 <markey> When feeding tracks to a running instance via cli (or mouseclick in konq), playback
                    doesn't start automatically.
 
-  FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
-
   FIX 134 <markey> Ctrl-C in Playlist (and other Ctrl shortcuts) for copying title doesn't work, because the
                    event gets eaten by another widget.
 
@@ -35,14 +33,10 @@ MID-TERM:
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
-  ADD 145 <markey> Function for removing dupes in playlist. Possibly with toolbar button and/or context item.
-
   ADD 143 <mxcl>   DCOP interface for ContextBrowser
 
   CHG 141 <markey> For critical errors, use warning dialogs instead of stderr output. (many distros build
                    with NDEBUG, and users are prone to missing debug messages).
-
-  ADD 137 <markey> Ability to abort playlist reading. Can take very long when you drop a folder by accident.
 
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
