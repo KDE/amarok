@@ -211,7 +211,11 @@ void ContextBrowser::collectionScanStarted()
 
 void ContextBrowser::collectionScanDone()
 {
-    if( CollectionDB().isEmpty() ) {
+  // take care of sql updates (schema changed errors)
+  delete m_db;
+  m_db = new CollectionDB();
+
+  if( CollectionDB().isEmpty() ) {
         showIntroduction();
         m_emptyDB = true;
     }
@@ -539,10 +543,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
 
     QStringList values;
-
-    // take care of sql updates (schema changed errors)
-    delete m_db;
-    m_db = new CollectionDB();
 
     uint artist_id = m_db->artistID( m_currentTrack->artist() );
     uint album_id  = m_db->albumID ( m_currentTrack->album() );
