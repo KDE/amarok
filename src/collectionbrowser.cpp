@@ -184,7 +184,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_category2 = config->readEntry( "Category2", i18n( "None" ) );
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
-        m_monitor = config->readBoolEntry( "Monitor Changes", false );
+        m_monitor = config->readBoolEntry( "Monitor Changes", true );
     //</READ CONFIG>
 
     //<OPEN DATABASE>
