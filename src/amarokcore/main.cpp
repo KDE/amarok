@@ -37,15 +37,13 @@ int main( int argc, char *argv[] )
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
-    aboutData.addCredit( "Alper Ayazoglu", I18N_NOOP( "graphics: buttons" ), "cubon@cubon.de", "http://cubon.de" );
     aboutData.addCredit( "Danny Allen", I18N_NOOP( "splash screen" ), "dannya40uk@yahoo.co.uk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "analyzers, king of openGL" ), "eros.kde@email.it" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
-    aboutData.addCredit( "Markus A. Rykalski", I18N_NOOP( "graphics" ), "exxult@exxult.de" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "new FFT routine, bugfixes" ), "mfranz@kde.org" );
     aboutData.addCredit( "Mike Diehl", I18N_NOOP( "handbook" ), "madpenguin8@yahoo.com" );
-    aboutData.addCredit( "Roman Becker", I18N_NOOP( "graphics: amaroK logo" ), "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addCredit( "Roman Becker", I18N_NOOP( "graphics: amaroK logo, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
     aboutData.addCredit( "The Noatun Authors", I18N_NOOP( "code and inspiration" ), 0, "http://noatun.kde.org" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
