@@ -852,8 +852,9 @@ Share::Share(QWidget *parent, const char *name)
 {
         QWidget *page = plainPage();
         QVBoxLayout *vbox;
-        QLabel *lstream, *luri, *lspeed, *llocation, *ltype, *lstyle, *lcategory;
+        QLabel *lwarning, *lstream, *luri, *lspeed, *llocation, *ltype, *lstyle, *lcategory;
 
+        lwarning = new QLabel( i18n( "<b>Warning</b>: Streams may take up to a week to appear in the listing!" ), this );
         lstream = new QLabel(i18n("Stream title"), this);
         lstyle = new QLabel(i18n("Style"), this);
         llocation = new QLabel(i18n("Location"), this);
@@ -874,6 +875,7 @@ Share::Share(QWidget *parent, const char *name)
         typebox->insertItem(i18n("Direct stream"));
 
         vbox = new QVBoxLayout(page, marginHint(), spacingHint());
+        vbox->add(lwarning);
         vbox->add(lstream);
         vbox->add(estream);
         vbox->add(lstyle);
