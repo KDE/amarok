@@ -128,21 +128,26 @@ namespace amaroK
 
             /// clean up
             bt.remove( "(no debugging symbols found)..." );
+            bt.remove( "(no debugging symbols found)\n" );
+            bt.replace( QRegExp("\n{2,}"), "\n" ); //clean up multiple \n characters
             bt.stripWhiteSpace();
 
             /// analyze usefulness
             const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
 
             if( fileCommandOutput.find( "not stripped", false ) == -1 )
-                subject += "[stripped]";
+                subject += "[___stripped]"; //same length as below
+            else
+                subject += "[NOTstripped]";
 
             if( !bt.isEmpty() ) {
-                const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ \\w* \\?\\?") );
-                const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+") );
+                const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in \\?\\?") );
+                const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in [^?]") );
                 const int totalFrames = invalidFrames + validFrames;
 
-                subject += QString("[validity: %1]").arg( double(validFrames) / totalFrames, 0, 'f', 2 );
-                subject += QString("[frames: %1]").arg( totalFrames );
+                if( totalFrames > 0 )
+                    subject += QString("[validity: %1]").arg( double(validFrames) / totalFrames, 0, 'f', 2 );
+                subject += QString("[frames: %1]").arg( totalFrames, 3 /*padding*/ );
 
                 if( bt.find( QRegExp(" at \\w*\\.cpp:\\d+\n") ) >= 0 )
                     subject += "[line numbers]";
