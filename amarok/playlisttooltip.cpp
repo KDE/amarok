@@ -27,7 +27,9 @@ void PlaylistToolTip::add( QWidget * widget, const MetaBundle & tags )
 
     QString tipBuf;
 
-    tipBuf += "<center><table>"; //style='font-face: Arial; font-size: 8px;'
+    //NOTE it seems to be necessary to <center> each element indivdually
+
+    tipBuf += "<center><b>amaroK</b></center><br><center><table>"; //style='font-face: Arial; font-size: 8px;'
     tipBuf += tr.arg( i18n( "Title" ),  tags.title() );
     tipBuf += tr.arg( i18n( "Artist" ), tags.artist() );
     tipBuf += tr.arg( i18n( "Length" ), tags.prettyLength() );
