@@ -53,7 +53,7 @@ pushd $folder
 cvs -d $cvsroot co -l kdeextragear-1
 cvs -z3 -d $cvsroot co kdeextragear-1/amarok
 cvs -z3 -d $cvsroot co -l kdeextragear-1/doc
-cvs -z3 -d $cvsroot co -l kdeextragear-1/doc/amarok
+cvs -z3 -d $cvsroot co kdeextragear-1/doc/amarok
 pushd kdeextragear-1
 
 cvs -z3 -d $cvsroot co admin
