@@ -213,10 +213,10 @@ CollectionReader::doJob()
         struct stat statBuf;
 
         values = m_parent->query( "SELECT dir, changedate FROM directories;" );
-    
+
         for ( uint i = 0; i < values.count(); i += 2 )
         {
-            if ( stat( values[i].local8Bit(), &statBuf ) == 0 )
+            if ( stat( QFile::encodeName( values[i] ), &statBuf ) == 0 )
             {
                 if ( QString::number( (long)statBuf.st_mtime ) != values[i + 1] )
                 {
@@ -239,14 +239,14 @@ CollectionReader::doJob()
     log << "=======================\n";
     log << i18n( "Last processed file is at the bottom. Report this file in case of crashes while building the Collection.\n\n\n" ).local8Bit();
 
-    
+
     if ( !m_folders.empty() )
     {
         // we need to create the temp tables before readDir gets called ( for the dir stats )
         m_parent->createTables( true );
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
     }
-  
+
     //iterate over all folders
     QStringList entries;
     for ( uint i = 0; i < m_folders.count(); i++ )
@@ -281,7 +281,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     struct stat statBuf;
 
     //update dir statistics for rescanning purposes
-    if ( stat( dir.local8Bit(), &statBuf ) == 0 )
+    if ( stat( QFile::encodeName( dir ), &statBuf ) == 0 )
         m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime, !m_incremental );
     else
     {

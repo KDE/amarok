@@ -848,7 +848,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">" + values[i + 2] + " - " + values[i + 1] + "</a>"
                    "</td>"
                    "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
-                   "<td width='1' title='Score'>"
+                   "<td width='1' title='" + i18n( "Score" ) + "'>"
                     "<div class='sbouter'>"
                      "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
                     "</div>"
@@ -888,7 +888,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">" + values[i] + "</a>"
                "</td>"
                "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
-               "<td width='1' title='Score'>"
+               "<td width='1' title='" + i18n( "Score" ) + "'>"
                 "<div class='sbouter'>"
                  "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                 "</div>"
@@ -1215,11 +1215,11 @@ void ContextBrowser::showScanning()
             "<div id='building_box' class='devel-box'>"
                 "<div id='building_box-header' class='devel-box-header'>"
                     "<span id='building_box-header-title' class='devel-box-header-title'>"
-                    + i18n( "Building Collection Database.." ) +
+                    + i18n( "Building Collection Database..." ) +
                     "</span>"
                 "</div>"
                 "<div id='building_box-body' class='devel-box-body'>"
-                    "<p>" + i18n( "Building Collection Database.." ) + "</p>"
+                    "<p>" + i18n( "Building Collection Database..." ) + "</p>"
                 "</div>"
             "</div>"
             "</html>"
@@ -1357,7 +1357,7 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics = m_lyrics.mid( m_lyrics.find( ">" ) );
         m_lyricSuggestions << m_lyrics.mid( 1, m_lyrics.find( "</a>" ) - 1 );
     }
-    m_lyrics = QString( "Lyrics for track not found, here are some suggestions:<br><br>" );
+    m_lyrics = i18n( "Lyrics for track not found, here are some suggestions:<br><br>" );
 
     for ( uint i=0; i < m_lyricHashes.count() - 1; ++i )
     {

@@ -74,7 +74,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QString defaultName, 
     //fields combo
     m_orderCombo = new KComboBox( orderBox );
     for ( QStringList::ConstIterator it = m_fields.begin(); it != m_fields.end(); ++it )
-        m_orderCombo->insertItem( i18n( (*it).latin1() ) );
+        m_orderCombo->insertItem( i18n( (*it).utf8() ) );
     //order type
     m_orderTypeCombo = new KComboBox( orderBox );
     m_orderTypeCombo->insertItem( i18n("Ascending") );
@@ -231,7 +231,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent )
 
     m_fieldCombo = new KComboBox( this );
     for ( QStringList::ConstIterator it = m_fields.begin(); it != m_fields.end(); ++it )
-        m_fieldCombo->insertItem( i18n( (*it).latin1() ) );
+        m_fieldCombo->insertItem( i18n( (*it).utf8() ) );
 
     m_criteriaCombo = new KComboBox( this );
 

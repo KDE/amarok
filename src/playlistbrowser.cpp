@@ -367,7 +367,7 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
     QString oldPath = item->url().path();
     QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
 
-    if ( rename( oldPath.latin1(), newPath.latin1() ) == -1 )
+    if ( rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
         KMessageBox::error( this, i18n("Error renaming the file.") );
     else
         item->setUrl( newPath );
@@ -696,7 +696,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     TagDialog* dialog = new TagDialog( item->url() );
                     dialog->show();
                 }
-                else KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
+                else KMessageBox::sorry( this, i18n( "This file does not exist: %1" ).arg( item->url().path() ) );
         }
         #undef item
    }

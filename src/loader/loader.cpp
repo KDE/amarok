@@ -79,7 +79,7 @@ Loader::Loader( int& argc, char** argv )
 
                 if ( info.exists() && info.isRelative() )
                 {
-                    str += info.absFilePath().local8Bit();
+                    str += QFile::encodeName( info.absFilePath() );
                 }
                 else str += argv[i];
 

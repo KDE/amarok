@@ -95,7 +95,7 @@ XineEngine::init()
    m_xine = xine_new();
 
    if( !m_xine ) {
-      KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
+      KMessageBox::error( 0, i18n("amaroK could not initialize xine.") );
       return false;
    }
 
@@ -169,7 +169,7 @@ XineEngine::load( const KURL &url, bool isStream )
        s_fader = new Fader( this );
     }
 
-    if( xine_open( m_stream, url.url().local8Bit() ) )
+    if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
     {
        #ifndef XINE_SAFE_MODE
        //we must ensure the scope is pruned of old buffers

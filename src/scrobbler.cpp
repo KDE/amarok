@@ -19,6 +19,7 @@
 #include <kio/jobclasses.h>
 #include <qdatetime.h>
 #include <unistd.h>
+#include <klocale.h>
 
 //some setups require this
 #undef PROTOCOL_VERSION
@@ -267,7 +268,7 @@ SubmitItem::SubmitItem( const QDomElement& element )
 bool SubmitItem::operator==( const SubmitItem& item )
 {
     bool result = true;
-    
+
     if ( m_artist != item.artist() ||
          m_album != item.album() ||
          m_title != item.title() ||
@@ -276,7 +277,7 @@ bool SubmitItem::operator==( const SubmitItem& item )
     {
         result = false;
     }
-    
+
     return result;
 }
 
@@ -286,32 +287,32 @@ QDomElement SubmitItem::toDomElement( QDomDocument& document ) const
     QDomElement item = document.createElement( "item" );
     // TODO: In the future, it might be good to store url too
     //item.setAttribute("url", item->url().url());
-    
+
     QDomElement artist = document.createElement( "artist" );
     QDomText artistText = document.createTextNode( m_artist );
     artist.appendChild( artistText );
     item.appendChild( artist );
-    
+
     QDomElement album = document.createElement( "album" );
     QDomText albumText = document.createTextNode( m_album );
     album.appendChild( albumText );
     item.appendChild( album );
-    
+
     QDomElement title = document.createElement( "title" );
     QDomText titleText = document.createTextNode( m_title );
     title.appendChild( titleText );
     item.appendChild( title );
-    
+
     QDomElement length = document.createElement( "length" );
     QDomText lengthText = document.createTextNode( QString::number( m_length ) );
     length.appendChild( lengthText );
     item.appendChild( length );
-    
+
     QDomElement playtime = document.createElement( "playtime" );
     QDomText playtimeText = document.createTextNode( QString::number( m_playStartTime ) );
     playtime.appendChild( playtimeText );
     item.appendChild( playtime );
-    
+
     return item;
 }
 
@@ -326,7 +327,7 @@ int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item 
     SubmitItem *sItem1 = (SubmitItem*) item1;
     SubmitItem *sItem2 = (SubmitItem*) item2;
     int result;
-    
+
     if ( sItem1 == sItem2 )
     {
         result = 0;
@@ -339,7 +340,7 @@ int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item 
     {
         result = -1;
     }
-    
+
     return result;
 }
 
@@ -372,7 +373,7 @@ ScrobblerSubmitter::ScrobblerSubmitter() :
 ScrobblerSubmitter::~ScrobblerSubmitter()
 {
     saveSubmitQueue();
-    
+
     m_ongoingSubmits.setAutoDelete( TRUE );
     m_ongoingSubmits.clear();
     m_submitQueue.setAutoDelete( TRUE );
@@ -515,14 +516,14 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
         // ...
         // a[n]=<artist n>&t[n]=<track n>&b[n]=<album n>&
         // m[n]=<mbid n>&l[n]=<length n>&i[n]=<time n>&
-        
-        
+
+
         data =
             "u=" + KURL::encode_string( m_username ) +
             "&s=" +
                 KURL::encode_string( KMD5( KMD5( m_password.utf8() ).hexDigest() +
                     m_challenge.utf8() ).hexDigest() );
-        
+
         m_submitQueue.first();
         for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
         {
@@ -611,7 +612,7 @@ void ScrobblerSubmitter::setPassword( const QString& password )
 void ScrobblerSubmitter::setEnabled( bool enabled )
 {
     m_scrobblerEnabled = enabled;
-    
+
     if ( !enabled )
     {
         // If submit is disabled, clear submitqueue.
@@ -848,7 +849,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
             << " - " << itemFromQueue->title() << " from submit queue" << endl;
         delete itemFromQueue;
     }
-    
+
     m_submitQueue.inSort( item );
 }
 
@@ -859,7 +860,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
 SubmitItem* ScrobblerSubmitter::dequeueItem()
 {
     SubmitItem* item = m_submitQueue.take();
-    
+
     return item;
 }
 
@@ -880,7 +881,7 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
         enqueueItem( item );
     }
     m_submitQueue.first();
-    
+
     announceSubmit( lastItem, counter, false );
 }
 
@@ -908,7 +909,7 @@ void ScrobblerSubmitter::finishJob( KIO::Job* job )
         m_submitQueue.remove( item );
     }
     m_submitQueue.first();
-    
+
     announceSubmit( firstItem, counter, true );
     delete firstItem;
 }
@@ -929,60 +930,41 @@ void ScrobblerSubmitter::announceSubmit(
     {
         if ( tracks == 1 )
         {
-            message = QString( "'%1' submitted" ).arg( item->title() );
+            message = i18n( "'%1' submitted" ).arg( item->title() );
         }
         else if ( tracks == 2 )
         {
-            message =
-                QString( "'%1' (and one other track) submitted" )
-                    .arg( item->title() );
+            message = i18n( "'%1' (and one other track) submitted" )
+                      .arg( item->title() );
         }
         else
         {
-            message =
-                QString( "'%1' (and %2 other tracks) submitted" )
-                    .arg( item->title() ).arg( tracks - 1 );
+            message = i18n( "'%1' (and %2 other tracks) submitted" )
+                      .arg( item->title() ).arg( tracks - 1 );
         }
-        if ( m_submitQueue.count() == 1 )
-        {
-            message += QString( ", 1 track still in queue" );
-        }
-        else if ( m_submitQueue.count() > 1 )
-        {
-            message +=
-                QString( ", %1 tracks still in queue" ).arg( m_submitQueue.count() );
-        }
+
+        message += i18n( ", 1 track still in queue", ", %n tracks still in queue", m_submitQueue.count() );
     }
     else
     {
         if ( tracks == 1 )
         {
-            message =
-                QString( "Failed to submit '%1'" ).arg( item->title() );
+            message = i18n( "Failed to submit '%1'" ).arg( item->title() );
         }
         else if ( tracks == 2)
         {
-            message =
-                QString( "Failed to submit '%1' (and one other track)" )
-                .arg( item->title() );
+            message = i18n( "Failed to submit '%1' (and one other track)" )
+                      .arg( item->title() );
         }
         else
         {
-            message =
-                QString( "Failed to submit '%1' (and %2 other tracks)" )
-                .arg( item->title() ).arg( tracks - 1 );
+            message = i18n( "Failed to submit '%1' (and %2 other tracks)" )
+                      .arg( item->title() ).arg( tracks - 1 );
         }
-        if ( m_submitQueue.count() == 1 )
-        {
-            message += QString( ", 1 track queued" );
-        }
-        else if ( m_submitQueue.count() > 1 )
-        {
-            message +=
-                QString( ", %1 tracks queued" ).arg( m_submitQueue.count() );
-        }
+
+        message += i18n( ", 1 track queued", ", %n tracks queued", m_submitQueue.count() );
     }
-    
+
     amaroK::StatusBar::instance()->messageTemporary( message );
 }
 
@@ -990,19 +972,19 @@ void ScrobblerSubmitter::announceSubmit(
 void ScrobblerSubmitter::saveSubmitQueue()
 {
     QFile file( m_savePath );
-    
+
     if( !file.open( IO_WriteOnly ) )
     {
         kdDebug() << "[AudioScrobbler] Couldn't write file: " << m_savePath << endl;
         return;
     }
-    
+
     QDomDocument newdoc;
     QDomElement submitQueue = newdoc.createElement( "submit" );
     submitQueue.setAttribute( "product", "amaroK" );
     submitQueue.setAttribute( "version", APP_VERSION );
     newdoc.appendChild( submitQueue );
-    
+
     m_submitQueue.first();
     SubmitItem *item;
     while ( ( item = dequeueItem() ) != 0 )
@@ -1010,7 +992,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
         QDomElement i = item->toDomElement( newdoc );
         submitQueue.appendChild( i );
     }
-    
+
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -1023,15 +1005,15 @@ void ScrobblerSubmitter::readSubmitQueue()
 {
     m_savePath = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "submit.xml";
     QFile file( m_savePath );
-    
+
     if ( !file.open( IO_ReadOnly ) )
     {
         kdDebug() << "[AudioScrobbler] Couldn't open file: " << m_savePath << endl;
         return;
     }
-    
+
     QTextStream stream( &file );
-    
+
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
@@ -1042,14 +1024,14 @@ void ScrobblerSubmitter::readSubmitQueue()
     }
 
     const QString ITEM( "item" ); //so we don't construct these QStrings all the time
-    
+
     for( QDomNode n = d.namedItem( "submit" ).firstChild();
             !n.isNull() && n.nodeName() == ITEM;
             n = n.nextSibling() )
     {
         enqueueItem( new SubmitItem( n.toElement() ) );
     }
-    
+
     m_submitQueue.first();
 }
 
