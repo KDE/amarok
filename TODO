@@ -3,10 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #123 being the highest available (take this one for your next bug and increase here)
+           #125 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 124 <muesli> Make CollectionBrowser independent of i18n.
+
+  FIX 123 <muesli> Pick the proper fonts and colors for both, Welcome- and ContextBrowser.
  
   FIX 122 <markey> Depend on GStreamer 0.8.1, since amaroK won't build with older versions any more.
 
@@ -23,9 +27,6 @@ SHORT-TERM (URGENT):
                    at bottom of pl, but has no icon on drag cursor.
  
   FIX     <mxcl>   Xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
-
-  ADD  88 <muesli> In CollectionBrowser's search, let the user decide, which fields are
-                   to be searched (like: songtitle, artist, songtitle or artist, album) -->muesli
 
 
 MID-TERM:
