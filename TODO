@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <tronical> amarok/src/playlist.cpp:1675: warning: enumeral mismatch in conditional expression:
+                     `QListViewItemIterator::IteratorFlag' vs `MyIterator::IteratorFlag'
+
           <markey> "REP" and "RAND" buttons show wrong state at startup.
 
           <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
