@@ -726,6 +726,8 @@ void App::slotConfigEffects( bool show )
 
 void App::slotConfigAmarok( int page )
 {
+    kdDebug() << k_funcinfo << endl;
+
     KConfigDialog* dialog = KConfigDialog::exists( "settings" );
 
     if( !dialog )
