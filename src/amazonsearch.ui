@@ -1,0 +1,126 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>AmazonSearch</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>AmazonSearch</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>353</width>
+            <height>144</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>amaroK</string>
+    </property>
+    <property name="icon">
+        <pixmap>image0</pixmap>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="resizeMode">
+            <enum>Fixed</enum>
+        </property>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout6</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&lt;h3&gt;No cover image found!&lt;/h3&gt;
+If you would like to search again, you can edit the search
+string below and press "OK".</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="0">
+                    <property name="name">
+                        <cstring>searchString</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout8</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer row="0" column="0">
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>170</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton" row="0" column="2">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<images>
+    <image name="image0">
+        <data format="PNG" length="747">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000002b249444154789c759341681c6514c77fbb9d25ef6ba7300329ce6816663188138366170feea1c80695b2206210417a323949f1e6c99b87e2c563eda5050fa5011173b0908ba48295088d3682361b8c301b8dec420333d298ef958c7e3d984848da07eff67ffff7fb3f7815e71c8fa9a7963778f7669f97b5b4a7db89599b4eb8660cdf02fffcaf72ce3daa9fb8babc7ba5f3d18f65f3dcac4ba73aaef3de2577f5b65bd9dd75af1dd63e6ad82caded7ed8bd78f7efceb919978e054e3c1c9eb8eefb97dcd2af6ed139f7f481be7a94db5a26bfbca56f04dbdf9c8c4509c652a224815259fee2136eaeac4d67396f0135e0b8416f8b56efb7ecb9d81b10d413d234a5f5ec04ed973a14c33ebdef1647ee0c79dbeef10a70c23b6ab0dacf9f3145760a3f27f4431045c6a709c6ba107c406f65816c78a1355f988f67a6a81d23c80b22ab199420027114d197267226a4f9ea1c82506c0f59dee285859fecf96304c3fb7aca948a2d95861f8084b063e8df832488113f446d4e368ce09e3e79cc4010674bc5882062c00b480250039a83f8015685e17a41186979384205a889e81e5ef09f9908512c18a09500c5002d0b0a350c7a3da62765e380a00a9cb0f7ad090d7f2131d1a812d71bb4a7528a1f94f91b6bd89f1708cf440c0a987b3d5a9c7d33be5cdddf5cb1d67aaa7a32f2f54ffcc68346da241d6f30dc5162c948758170e70e3698a011d0ebb68b1ba8fdbd7a185f77d43446e91b5f36d56ba09a93ad67641b1968867a06463b65ab9eaf06bedcc563cf031ce028f7a39479bf3bc9cafc2d6da0835a91ad926d65f4367ae4f11ccd31f3cbcc8be1677114dfa6c683831bfc6b4e1baba51661198e34eb83afb26da97ffab5391b975ac9ff50343c4f3cdedebc70562ec7f578697f319523ef5cb5d68a161a0cb607cf7fbfce3b8bab45534b194913d99ced84d727c6e3cfa9a107030f0164bc5b3aa8ab9cc50000000049454e44ae426082</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AmazonSearch</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>AmazonSearch</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+</includehints>
+</UI>

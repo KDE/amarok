@@ -75,8 +75,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Collection Folders..." ), m_view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Configure Cover Download" ), m_view->m_db, SLOT( setupCoverFetcher() ) );
-
+    
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 

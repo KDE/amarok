@@ -81,7 +81,6 @@ class CollectionDB : public QObject
         void coverFetched();
         
     public slots:
-        void setupCoverFetcher();
         void fetchCover( QObject* parent, const QString& key );
         void stopScan();
                 

@@ -44,7 +44,7 @@ amarokapp_SOURCES = \
     Options5.ui \
     actionclasses.cpp \
     amarokfilelist.cpp \
-    amazonsetup.ui \
+    amazonsearch.ui \
     app.cpp \
     browserbar.cpp \
     collectionbrowser.cpp \

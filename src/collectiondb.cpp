@@ -2,7 +2,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
-#include "amazonsetup.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "coverfetcher.h"
@@ -764,26 +763,11 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::setupCoverFetcher()  //SLOT
-{
-    AmazonDialog* dia = new AmazonDialog();
-    dia->kLineEdit1->setText( KGlobal::config()->readEntry( "Amazon License Key" ) );
-    dia->setModal( true );
-
-    if ( dia->exec() == QDialog::Accepted )
-        KGlobal::config()->writeEntry( "Amazon License Key", dia->kLineEdit1->text() );
-}
-
-
-void
 CollectionDB::fetchCover( QObject* parent, const QString& key ) //SLOT
 {
-    QString amazonLicense = KGlobal::config()->readEntry( "Amazon License Key" );
+    /* Static license Key. Thanks muesli ;-) */
+    QString amazonLicense = "D1URM11J3F2CEH";
     
-    //make sure we've got a license key
-    if ( amazonLicense.isEmpty() )
-        setupCoverFetcher();
-
     kdDebug() << "Querying amazon with keyword: " << key << endl;
     
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );

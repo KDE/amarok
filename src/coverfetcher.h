@@ -12,6 +12,7 @@ namespace KIO {
     class Job;
 }
 
+
 class CoverFetcher : public QObject
 {
     Q_OBJECT
@@ -38,10 +39,12 @@ class CoverFetcher : public QObject
     private:
         static const uint BUFFER_SIZE = 2000000; // 2mb
         
+	QString search;
         QString m_license;
         QString m_xmlDocument;
         QString m_keyword;
-        
+       
+       
         uchar* m_buffer;
         uint m_bufferIndex;
         QPixmap m_pixmap;

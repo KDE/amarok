@@ -2,16 +2,21 @@
 // See COPYING file for licensing information.
 
 #include "coverfetcher.h"
+#include "amazonsearch.h"
+#include "collectiondb.h"
 
 #include <qdom.h>
 #include <qvbox.h>
 
+#include <kconfig.h>
 #include <kdebug.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>   
+#include <kinputdialog.h>  
+#include <klineedit.h> 
 
 
 CoverFetcher::CoverFetcher( const QString& license, QObject* parent)
@@ -37,6 +42,11 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::getCover( const QString& keyword, QueryMode mode )
 {
+    /* reset all values (if search isn't started as new CoverFetcher) */
+    delete m_buffer;
+    m_bufferIndex = 0;
+    m_xmlDocument = "";
+    
     kdDebug() << k_funcinfo << endl;
     m_keyword = keyword;
         
@@ -119,11 +129,25 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
+    /* if no cover is found, open the amazon search dialogue */
     if ( job->error() != 0 ) {
-        KMessageBox::sorry( 0, i18n( "<h3>No cover images available for album</h3><p><i>%1</i></p>" )
-                               .arg( m_keyword ) );
-        deleteLater();
-        return;
+        
+        AmazonSearch* sdlg = new AmazonSearch();
+        sdlg->searchString->setText( m_keyword );
+        sdlg->setModal( true );
+
+        /* if the "OK" button is pressed, search again using the search string provided in AmazonSearch's lineedit */
+        if ( sdlg->exec() == QDialog::Accepted ) 
+        {    
+            search = sdlg->searchString->text();
+            getCover( search, CoverFetcher::heavy );
+            return;
+        }
+        else
+        {
+            deleteLater();
+            return;
+        }
     }
     m_pixmap.loadFromData( m_buffer, m_bufferIndex );
     
