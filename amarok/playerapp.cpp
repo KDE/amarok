@@ -1235,11 +1235,11 @@ void PlayerApp::slotNext()
 
 bool PlayerApp::playObjectConfigurable()
 {
-    if ( m_pPlayObject && !m_pPlayerWidget->m_pPlayObjConfigWidget )
+    if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
     {
         Arts::TraderQuery query;
         query.supports( "Interface", "Arts::GuiFactory" );
-        query.supports( "CanCreate", pApp->m_pPlayObject->object()._interfaceName() );
+        query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
 
         std::vector<Arts::TraderOffer> *queryResults = query.query();
         bool yes = queryResults->size();
