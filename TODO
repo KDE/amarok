@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
           <muesli> Sort albums by date, name in ContextBrowser.
 
-          <muesli> Don't show '0' as a date for an album in ContextBrowser.
-
           <tronical> amarok/src/playlist.cpp:1675: warning: enumeral mismatch in conditional expression:
                      `QListViewItemIterator::IteratorFlag' vs `MyIterator::IteratorFlag'
 
