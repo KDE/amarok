@@ -212,6 +212,29 @@ void ContextBrowser::openURLRequest( const KURL &url )
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
+{
+    //This is where percentages are calculated
+    //TODO statistics are not calculated when currentTrack doesn't exist
+
+    if ( m_currentTrack )
+    {
+        // sanity check
+        if ( finalPosition > trackLength )
+            finalPosition = trackLength;
+
+        int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
+
+        // increase song counter & calculate new statistics
+        float score = m_db->addSongPercentage( m_currentTrack->url().path(), pct );
+
+        // TODO reimplement playlist-update
+/*        if ( score )
+            m_currentTrack->setText( PlaylistItem::Score, QString::number( score ) );*/
+    }
+}
+
+
 void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     //prevents segfault when playing streams

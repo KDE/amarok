@@ -144,7 +144,6 @@ class Playlist : private KListView, public EngineObserver
         void showTagDialog( PlaylistItem* item );
 
         //engine observer functions
-        void engineTrackEnded( int finalPosition, int trackLength );
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State );
 

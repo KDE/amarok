@@ -590,28 +590,6 @@ Playlist::updateNextPrev()
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-Playlist::engineTrackEnded( int finalPosition, int trackLength )
-{
-    //This is where percentages are calculated
-    //TODO statistics are not calculated when currentTrack doesn't exist
-
-    if( m_currentTrack )
-    {
-        CollectionDB db;
-        // sanity check
-        if ( finalPosition > trackLength )
-            finalPosition = trackLength;
-
-        int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
-
-        // increase song counter & calculate new statistics
-        float score = db.addSongPercentage( m_currentTrack->url().path(), pct );
-        if ( score )
-            m_currentTrack->setText( PlaylistItem::Score, QString::number( score ) );
-    }
-}
-
-void
 Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
     if ( m_currentTrack && !trackChanged )
