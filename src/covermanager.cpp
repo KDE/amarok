@@ -311,7 +311,7 @@ void CoverManager::fetchCoversLoop() //SLOT
         //get artist and album from keyword
         const QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter], true );
 
-        if( values.count() >= 2 )
+        if( values.count() > 1 )
            CollectionDB::instance()->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
 
         m_fetchCounter++;

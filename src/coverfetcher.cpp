@@ -339,7 +339,8 @@ CoverFetcher::getUserQuery( QString explanation )
         startFetch();
         break;
     default:
-        deleteLater();
+        m_errors << i18n( "Aborted." );
+        finish();
         break;
     }
 }
@@ -403,7 +404,8 @@ CoverFetcher::showCover()
         attemptAnotherFetch();
         break;
     default:
-        deleteLater();
+        m_errors << i18n( "Aborted." );
+        finish();
         break;
     }
 }
