@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<!-- Author: Stanislav Karchebny, berk@upnet.ru -->
+<kcfg>
+  <kcfgfile name="amarokrc"/>
+
+  <include>qdir.h</include>
+<!--  <include>kapplication.h</include>
+  <include>kglobalsettings.h</include>
+  <include>config.h</include> -->
+  <group name="General Options">
+     <entry key="Version" type="String">
+        <label>Amarok Version</label>
+        <default></default>
+        <whatsthis>Amarok version string, used to restart aRts in new installations</whatsthis>
+     </entry>
+     <entry key="Current Directory" type="Path">
+        <label>Current BrowserWin directory</label>
+        <default code="true">QDir::home().path()</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Path History" type="StringList">
+        <label>History of items in browser path list</label>
+        <default></default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Player Pos" type="Point">
+        <label>Position of player window</label>
+        <default code="true">QPoint(0,0)</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Browser Win Pos" type="Point">
+        <label>Position of playlist window</label>
+        <default code="true">QPoint(0,0)</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Browser Win Size" type="Size">
+        <label>Size of playlist window</label>
+        <default code="true">QSize(600,450)</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Save Playlist" type="Bool">
+        <label>Whether to save playlist on quit</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Confirm Exit" type="Bool">
+        <label>Whether to confirm quitting amaroK</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Follow Symlinks" type="Bool">
+        <label>Whether to follow symlinks while adding items to playlist recursively</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Drop Mode" type="Enum">
+        <label>Playlist items drop mode</label>
+        <choices>
+           <choice name="Ask">
+              <label>Ask each time</label>
+           </choice>
+           <choice name="Recursively">
+              <label>Recursively</label>
+           </choice>
+           <choice name="NonRecursively">
+              <label>Non-recursively</label>
+           </choice>
+        </choices>
+        <default>Recursively</default>
+     </entry>
+     <entry key="Time Display Remaining" type="Bool">
+        <label>Whether to display remaining track time</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Repeat Track" type="Bool">
+        <label>Whether to play track repeatedly</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Repeat Playlist" type="Bool">
+        <label>Whether to play whole playlist again and again and again and again and...</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Random Mode" type="Bool">
+        <label>to Whether order in play random tracks</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Show Meta Info" type="Bool">
+        <label>Whether to show track metadata</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Show Tray Icon" type="Bool">
+        <label>Whether to show icon in system tray</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Crossfade" type="Bool">
+        <label>Whether to crossfade between tracks</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Crossfade Length" type="Int">
+        <label>Length of crossfade, in milliseconds</label>
+        <default>2500</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Track Delay Length" type="Int">
+        <label>Delay between tracks, in milliseconds</label>
+        <default>0</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Hide Playlist Window" type="Bool">
+        <label>Whether to hide playlist together with player window</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="BrowserWin Enabled" type="Bool">
+        <label>Whether the playlist window is visible</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Undo Levels" type="Int">
+        <label>Number of undo levels in playlist</label>
+        <default>30</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Software Mixer Only" type="Bool">
+        <label>Use engine's software mixer instead of mucking on /dev/mixer directly</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Current Analyzer" type="Int">
+        <label>Index of current visual analyzer</label>
+        <default>-1</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Browser Sorting Spec" type="Int">
+        <label>Sorting mode of filebrowser</label>
+        <default code="true">QDir::Name | QDir::DirsFirst</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Title Streaming" type="Bool">
+        <label>Read titles of shoutcast streams</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Sound System" type="String">
+        <label>Sound system to use</label>
+        <default>arts</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Master Volume" type="Int">
+        <label>Master volume</label>
+        <default>50</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="BrowserWin Splitter" type="IntList">
+        <label>Playlist window splitter positions</label>
+        <default>70,140</default>
+        <whatsthis></whatsthis>
+     </entry>
+  </group>
+  <group name="Fonts">
+     <entry key="Use Custom Fonts" type="Bool">
+        <label>Whether to use user-defined fonts</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Browser Window Font" type="Font">
+        <label>Font in playlist window</label>
+        <default code="true">QFont("Helvetica",9)</default>
+     </entry>
+     <entry key="Player Widget Font" type="Font">
+        <label>Font in player window</label>
+        <default code="true">QFont("Helvetica",9)</default>
+     </entry>
+     <entry key="Player Widget Scroll Font" type="Font">
+        <label>Font in player window title scroller</label>
+        <default code="true">QFont("Helvetica",9)</default>
+     </entry>
+  </group>
+  <group name="Colors">
+     <entry key="Browser Use Custom Colors" type="Bool">
+        <label>Whether to use user-defined colors in playlist window</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Browser Fg Color" type="Color">
+        <label>Playlist window foreground color</label>
+        <default>#80a0ff</default>
+     </entry>
+     <entry key="Browser Bg Color" type="Color">
+        <label>Playlist window background color</label>
+        <default>#000000</default>
+     </entry>
+  </group>
+  <group name="Session">
+     <entry key="Resume Playback" type="Bool">
+        <label>Resume playback of last played track on startup</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Resume Track" type="Path">
+        <label>Track URL to resume upon startup</label>
+        <default></default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Resume Time" type="Int">
+        <label>Time to resume at, in seconds</label>
+        <default>-1</default>
+        <whatsthis></whatsthis>
+     </entry>
+  </group>
+</kcfg>

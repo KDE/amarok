@@ -22,6 +22,8 @@
 #include "playlistwidget.h"
 #include "streambrowser.h"
 
+#include "amarokconfig.h"
+
 #include <qcolor.h>
 #include <qfile.h>
 #include <qlayout.h>
@@ -328,9 +330,9 @@ void BrowserWin::slotUpdateFonts()
 {
     QFont font;
 
-    if ( pApp->m_optUseCustomFonts )
+    if ( pApp->config()->useCustomFonts() )
     {
-      font = pApp->m_optBrowserWindowFont;
+      font = pApp->config()->browserWindowFont();
     }
 
     m_pBrowserWidget ->setFont( font );

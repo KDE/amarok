@@ -32,6 +32,8 @@ email                : markey@web.de
 #include "analyzers/xmasdrug.h"
 #include "amarokdcophandler.h"
 
+#include "amarokconfig.h"
+
 #include <qbitmap.h>
 #include <qevent.h>
 #include <qfont.h>
@@ -264,7 +266,7 @@ void PlayerWidget::initScroll()
     //m_pFrame->setFont( font );
 
     m_pixmapWidth  = 2000;
-    m_pixmapHeight = frameHeight; //m_optPlayerWidgetScrollFont
+    m_pixmapHeight = frameHeight; //config()->playerWidgetScrollFont
 
     m_pBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage().copy( m_pFrame->x(),
                                m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
@@ -502,37 +504,27 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
         }
 
-        m_pPopupMenu->setItemChecked( ID_REPEAT_TRACK, pApp->m_optRepeatTrack );
-        m_pPopupMenu->setItemChecked( ID_REPEAT_PLAYLIST, pApp->m_optRepeatPlaylist );
-        m_pPopupMenu->setItemChecked( ID_RANDOM_MODE, pApp->m_optRandomMode );
+        m_pPopupMenu->setItemChecked( ID_REPEAT_TRACK, pApp->config()->repeatTrack() );
+        m_pPopupMenu->setItemChecked( ID_REPEAT_PLAYLIST, pApp->config()->repeatPlaylist() );
+        m_pPopupMenu->setItemChecked( ID_RANDOM_MODE, pApp->config()->randomMode() );
 
         m_pPopupMenu->setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
 
 
-
         if( int id = m_pPopupMenu->exec( e->globalPos() ) )
         {
-            bool *ptr;
-
             //set various bool items if clicked
             switch( id )
             {
             case ID_REPEAT_TRACK:
-                ptr = &pApp->m_optRepeatTrack;
+                pApp->config()->setRepeatTrack( m_pPopupMenu->isItemChecked(id) );
                 break;
             case ID_REPEAT_PLAYLIST:
-                ptr = &pApp->m_optRepeatPlaylist;
+                pApp->config()->setRepeatPlaylist( m_pPopupMenu->isItemChecked(id) );
                 break;
             case ID_RANDOM_MODE:
-                ptr = &pApp->m_optRandomMode;
+                pApp->config()->setRandomMode( m_pPopupMenu->isItemChecked(id) );
                 break;
-            default:
-                ptr = 0;
-            }
-
-            if( ptr != 0 )
-            {
-                *ptr = !m_pPopupMenu->isItemChecked( id );
             }
         }
     }
@@ -542,7 +534,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
         if ( rect.contains( e->pos() ) )
         {
-            pApp->m_optTimeDisplayRemaining = !pApp->m_optTimeDisplayRemaining;
+            pApp->config()->setTimeDisplayRemaining( !pApp->config()->timeDisplayRemaining() );
             timeDisplay();
         }
     }
@@ -555,7 +547,7 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
     //pushed for the main widget -mxcl
     //of course since we haven't got an obvious quit button, this is not yet a perfect solution..
 
-    if( pApp->m_optShowTrayIcon )
+    if( pApp->config()->showTrayIcon() )
     {
         KMessageBox::information( this,
                                   i18n( "<qt>Closing the main window will keep amaroK running in the system tray. "
@@ -596,10 +588,10 @@ void PlayerWidget::createVis()
 {
     delete m_pVis;
 
-    pApp->m_optVisCurrent++;
+    pApp->config()->setCurrentAnalyzer( pApp->config()->currentAnalyzer() + 1 );
 
     //bit wierd this switch, but it fits our substandard methods ;-)
-    switch( pApp->m_optVisCurrent )
+    switch( pApp->config()->currentAnalyzer() )
     {
     case 1:
         m_pVis = new DistortAnalyzer( this );
@@ -624,11 +616,11 @@ void PlayerWidget::createVis()
     case 0:
     default: //so we don't have to remember how many vis's there are
         m_pVis = new BarAnalyzer( this );
-        pApp->m_optVisCurrent = 0;
+        pApp->config()->setCurrentAnalyzer( 0 );
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
-    if ( pApp->m_optVisCurrent == 1 )
+    if ( pApp->config()->currentAnalyzer() == 1 )
     {
         m_pVis->setFixedSize( 168, 70 );
         m_pVis->move( 119, 30 );

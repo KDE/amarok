@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options2</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>358</width>
-            <height>262</height>
+            <height>264</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -68,7 +68,7 @@
                         </property>
                         <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>choosePW</cstring>
+                                <cstring>kcfg_playerWidgetFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -131,7 +131,7 @@
                         </property>
                         <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>choosePWS</cstring>
+                                <cstring>kcfg_playerWidgetScrollFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -222,7 +222,7 @@
                         </widget>
                         <widget class="QPushButton" row="1" column="1">
                             <property name="name">
-                                <cstring>chooseBW</cstring>
+                                <cstring>kcfg_browserWindowFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>

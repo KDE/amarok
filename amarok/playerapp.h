@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.8.3"
+#define APP_VERSION "0.8.4"
 
 #include <kglobalaccel.h>
 #include <kuniqueapplication.h>
@@ -50,6 +50,8 @@ class MetaBundle;
 class PlayerApp;
 extern PlayerApp *pApp;
 
+class AmarokConfig;
+
 class PlayerApp : public KUniqueApplication
 {
         Q_OBJECT
@@ -67,6 +69,8 @@ class PlayerApp : public KUniqueApplication
         void setupColors();
         bool restorePlaylistSelection(const KURL& url);
 
+        AmarokConfig *config();
+
         // ATTRIBUTES ------
         EngineBase *m_pEngine;
         
@@ -79,39 +83,8 @@ class PlayerApp : public KUniqueApplication
         QColor m_bgColor;
         QColor m_fgColor;
 
-        // <option attributes>
-        bool m_optSavePlaylist;
-        bool m_optConfirmClear;
-        bool m_optConfirmExit;
-        bool m_optFollowSymlinks;
-        bool m_optTimeDisplayRemaining;
-        bool m_optReadMetaInfo;
-        bool m_optRepeatTrack;
-        bool m_optRepeatPlaylist;
-        bool m_optRandomMode;
-        bool m_optShowTrayIcon;
-        bool m_optHidePlaylistWindow;
-        bool m_optSoftwareMixerOnly;
-        bool m_optResumePlayback;
-        bool m_optUseCustomFonts;
-        QString m_optDropMode;
-        bool m_optXFade;
-        long m_optXFadeLength;
-        long m_optTrackDelay;
-        QFont m_optBrowserWindowFont;
-        QFont m_optPlayerWidgetFont;
-        QFont m_optPlayerWidgetScrollFont;
-        QColor m_optBrowserFgColor;
-        QColor m_optBrowserBgColor;
         QColor m_optBrowserBgAltColor;
         QColor m_optBrowserSelColor;
-        bool   m_optBrowserUseCustomColors;
-        uint m_optUndoLevels;
-        int m_optVisCurrent;
-        int m_optBrowserSortSpec;
-        bool m_optTitleStream;
-        QString m_optSoundSystem;
-        // </option attributes>
 
         int m_DelayTime;
         int m_Volume;

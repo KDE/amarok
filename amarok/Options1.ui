@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>341</width>
-            <height>318</height>
+            <height>320</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -54,7 +54,7 @@
                 </property>
                 <widget class="QCheckBox" row="3" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>checkBox5</cstring>
+                        <cstring>kcfg_hidePlaylist</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Hide playlist with main window</string>
@@ -65,23 +65,29 @@
                 </widget>
                 <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>checkBox3</cstring>
+                        <cstring>kcfg_showTrayIcon</cstring>
                     </property>
                     <property name="text">
                         <string>Show &amp;tray icon</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+T</string>
+                    </property>
                 </widget>
                 <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>checkBox4</cstring>
+                        <cstring>kcfg_showMetaInfo</cstring>
                     </property>
                     <property name="text">
                         <string>Show &amp;metadata in playlist</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
                 </widget>
                 <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>checkBox1</cstring>
+                        <cstring>kcfg_savePlaylist</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Save current playlist on exit</string>
@@ -113,10 +119,13 @@
                 </property>
                 <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>checkBox6</cstring>
+                        <cstring>kcfg_confirmExit</cstring>
                     </property>
                     <property name="text">
                         <string>Confirm e&amp;xiting the program</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+X</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="2" column="0">
@@ -147,7 +156,7 @@
                         </property>
                     </item>
                     <property name="name">
-                        <cstring>comboBox1</cstring>
+                        <cstring>kcfg_dropMode</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -160,10 +169,13 @@
                 </widget>
                 <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>checkBox7</cstring>
+                        <cstring>kcfg_confirmClear</cstring>
                     </property>
                     <property name="text">
                         <string>Confirm &amp;clearing the playlist</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                 </widget>
             </grid>

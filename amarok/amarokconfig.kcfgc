@@ -1,0 +1,6 @@
+# Code generation options for kconfig_compiler
+File=amarok.kcfg
+ClassName=AmarokConfig
+Singleton=true
+Mutators=true
+MemberVariables=private

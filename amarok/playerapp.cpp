@@ -20,7 +20,6 @@ email                : markey@web.de
 #include "amarokslider.h"
 #include "analyzers/analyzerbase.h"
 #include "browserwin.h"
-#include "configdlg.h"
 #include "effectwidget.h"
 #include "engine/enginebase.h"
 #include "metabundle.h" //play( const KURL& )
@@ -28,6 +27,12 @@ email                : markey@web.de
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "titleproxy/titleproxy.h"
+
+#include "amarokconfig.h"
+#include "Options1.h"
+#include "Options2.h"
+#include "Options3.h"
+#include "Options4.h"
 
 #include <vector>
 #include <string>
@@ -45,6 +50,7 @@ email                : markey@web.de
 #include <ktip.h>
 #include <kuniqueapplication.h>
 #include <kurl.h>
+#include <kconfigdialog.h>
 
 //FIXME remove these dependencies, we can implement saveConfig across objects and use a save() signal
 //      a little less neat, but boy would that help with compile times
@@ -88,8 +94,8 @@ PlayerApp::PlayerApp()
 
     readConfig();
     
-    m_pEngine = EngineBase::createEngine( m_optSoundSystem, m_artsNeedsRestart );
-    m_pEngine ->initMixer( m_optSoftwareMixerOnly );
+    m_pEngine = EngineBase::createEngine( config()->soundSystem(), m_artsNeedsRestart );
+    m_pEngine ->initMixer( config()->softwareMixerOnly() );
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -145,6 +151,10 @@ PlayerApp::~PlayerApp()
     delete m_pEngine;
 }
 
+AmarokConfig *PlayerApp::config()
+{
+   return AmarokConfig::self();
+}
 
 int PlayerApp::newInstance()
 {
@@ -197,15 +207,15 @@ void PlayerApp::initOSD()
     kdDebug() << "begin PlayerApp::initOSD()" << endl;
 
     // set font    
-    QFont font( "Tahoma" );
-    font.setBold( TRUE );
-    font.setPixelSize( 30 );
+    QFont font( "Impact" );
+    font.setBold( FALSE );
+    font.setPixelSize( 28 );
 
     // create osd widget    
     m_pOSD = new OSDWidget();
     m_pOSD->setEnabled( TRUE );
     m_pOSD->setFont( font );
-    m_pOSD->setColor( QColor( "green" )  );
+    m_pOSD->setColor( QColor( "yellow" )  );
     
     kdDebug() << "end PlayerApp::initOSD()" << endl;
 }
@@ -305,17 +315,14 @@ void PlayerApp::restoreSession()
    //here we restore the session
    //however, do note, this is always done, KDE session management is not involved
 
-   m_pConfig->setGroup( "Session" );
-   KURL url = m_pConfig->readEntry( "Track" );
-
-   if ( m_optResumePlayback )
+   if ( config()->resumePlayback() )
    {
       //see if we also saved the time
-      int seconds = m_pConfig->readNumEntry( "Time", -1 );
+      int seconds = config()->resumeTime();
 
       if ( seconds >= 0 )
       {
-         play( url );
+         play( config()->resumeTrack() );
 
          if ( seconds > 0 )
             m_pEngine->seek( seconds * 1000 );
@@ -333,55 +340,11 @@ void PlayerApp::restoreSession()
 
 void PlayerApp::saveConfig()
 {
-    m_pConfig->setGroup( "" );
-    m_pConfig->writeEntry ( "Version", APP_VERSION );
-
-    m_pConfig->setGroup( "General Options" );
-
-    m_pConfig->writeEntry( "Master Volume", m_Volume );
-    m_pConfig->writeEntry( "CurrentDirectory", m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
-#if KDE_IS_VERSION(3,1,3)
-    m_pConfig->writePathEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
-#else
-    m_pConfig->writeEntry( "PathHistory", m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
-#endif
-    m_pConfig->writeEntry( "PlayerPos", m_pPlayerWidget->pos() );
-    m_pConfig->writeEntry( "BrowserWinPos", m_pBrowserWin->pos() );
-    m_pConfig->writeEntry( "BrowserWinSize", m_pBrowserWin->size() );
-    m_pConfig->writeEntry( "BrowserWinSplitter", m_pBrowserWin->m_pSplitter->sizes() );
-    m_pConfig->writeEntry( "BrowserWin Enabled", m_pPlayerWidget->m_pButtonPl->isOn() );
-    m_pConfig->writeEntry( "Save Playlist", m_optSavePlaylist );
-    m_pConfig->writeEntry( "Confirm Clear", m_optConfirmClear );
-    m_pConfig->writeEntry( "Confirm Exit", m_optConfirmExit );
-    m_pConfig->writeEntry( "FollowSymlinks", m_optFollowSymlinks );
-    m_pConfig->writeEntry( "Drop Mode", m_optDropMode );
-    m_pConfig->writeEntry( "Time Display Remaining", m_optTimeDisplayRemaining );
-    m_pConfig->writeEntry( "Repeat Track", m_optRepeatTrack );
-    m_pConfig->writeEntry( "Repeat Playlist", m_optRepeatPlaylist );
-    m_pConfig->writeEntry( "Random Mode", m_optRandomMode );
-    m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
-    m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
-    m_pConfig->writeEntry( "Crossfade", m_optXFade );
-    m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
-    m_pConfig->writeEntry( "Track Delay Length", m_optTrackDelay );
-    m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
-    m_pConfig->writeEntry( "Use Custom Fonts", m_optUseCustomFonts );
-    m_pConfig->writeEntry( "Browser Window Font", m_optBrowserWindowFont );
-    m_pConfig->writeEntry( "Player Widget Font", m_optPlayerWidgetFont);
-    m_pConfig->writeEntry( "Player Widget Scroll Font", m_optPlayerWidgetScrollFont );
-    m_pConfig->writeEntry( "BrowserUseCustomColors", m_optBrowserUseCustomColors );
-    m_pConfig->writeEntry( "BrowserFgColor", m_optBrowserFgColor );
-    m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
-    m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
-    m_pConfig->writeEntry( "Software Mixer Only", m_optSoftwareMixerOnly );
-    m_pConfig->writeEntry( "Resume Playback", m_optResumePlayback );
-    m_pConfig->writeEntry( "Current Analyzer", m_optVisCurrent );
-    m_pConfig->writeEntry( "Browser Sorting Spec", m_optBrowserSortSpec );
-    m_pConfig->writeEntry( "Title Streaming", m_optTitleStream );
-    m_pConfig->writeEntry( "Sound System", m_optSoundSystem );
+    config()->writeConfig();
     
-    m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs() ->saveLocation(
-        "data", kapp->instanceName() + "/" ) + "current.m3u" );
+    if (config()->savePlaylist())
+       m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs()->saveLocation(
+          "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
 
 
@@ -389,83 +352,26 @@ void PlayerApp::readConfig()
 {
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
-    // FIXME: ok, the compiler warning is gone now. but the result is the same: those variables are
-    //        still temporary. so what have we gained? frankly, why does KConfig take a pointer here,
-    //        anyway? I've looked at KConfig sources, and it seems, it gets just dereferened once and
-    //        that's it. so &( QPoint( 0, 0 ) ); would have done the same. what do you guys think?
-    QPoint pointZero = QPoint( 0, 0 );
-    QSize arbitrarySize = QSize ( 600, 450 );
-    QFont defaultFont( "Helvetica", 9 );
-    QColor defaultColor( 0x80, 0xa0, 0xff );
-    QColor black( Qt::black );
-
-    m_pConfig->setGroup( "" );
     //we restart artsd after each version change, so that it picks up any plugin changes
-    m_artsNeedsRestart = m_pConfig->readEntry( "Version" ) != APP_VERSION;
+    m_artsNeedsRestart = config()->version() != APP_VERSION;
     
-    m_pConfig->setGroup( "General Options" );
+    m_pBrowserWin->m_pBrowserWidget->readDir( config()->currentDirectory() );
+    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( config()->pathHistory() );
+    
+    m_pPlayerWidget->move( config()->playerPos() );
+    m_pBrowserWin->move( config()->browserWinPos() );
+    m_pBrowserWin->resize( config()->browserWinSize() );
 
-    m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", QDir::home().path() ) );
-#if KDE_IS_VERSION(3,1,3)
-    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readPathListEntry( "PathHistory" ) );
-#else
-    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( m_pConfig->readListEntry( "PathHistory" ) );
-#endif
-    m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
-    m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
-    m_pBrowserWin->resize( m_pConfig->readSizeEntry( "BrowserWinSize", &arbitrarySize ) );
-    m_optSavePlaylist = m_pConfig->readBoolEntry( "Save Playlist", true );
-    m_optConfirmClear = m_pConfig->readBoolEntry( "Confirm Clear", false );
-    m_optConfirmExit = m_pConfig->readBoolEntry( "Confirm Exit", false );
-
-    m_optFollowSymlinks = m_pConfig->readBoolEntry( "FollowSymlinks", true ); //FIXME at some point add the space again if you like
-    m_optDropMode = m_pConfig->readEntry( "Drop Mode", "Recursively" );
-    m_optTimeDisplayRemaining = m_pConfig->readBoolEntry( "Time Display Remaining", false );
-    m_optRepeatTrack = m_pConfig->readBoolEntry( "Repeat Track", false );
-    m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
-    m_optRandomMode = m_pConfig->readBoolEntry( "Random Mode", false );
-    m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", true );
-    m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
-    m_optXFade = m_pConfig->readNumEntry( "Crossfade", true );
-    m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 2500 );
-    m_optTrackDelay = m_pConfig->readNumEntry( "Track Delay Length", 0 );
-    m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
-
-    if ( m_pConfig->readBoolEntry( "BrowserWin Enabled", true ) )
-       m_pPlayerWidget->m_pButtonPl->setOn( true );
-
-    m_optUseCustomFonts = m_pConfig->readBoolEntry( "Use Custom Fonts", false );
-    m_optBrowserWindowFont = m_pConfig->readFontEntry( "Browser Window Font", &defaultFont );
-    m_optPlayerWidgetFont = m_pConfig->readFontEntry( "Player Widget Font", &defaultFont );
-    m_optPlayerWidgetScrollFont = m_pConfig->readFontEntry( "Player Widget Scroll Font", &defaultFont );
+    m_pPlayerWidget->m_pButtonPl->setOn( config()->browserWinEnabled() );
 
     m_pBrowserWin->slotUpdateFonts();
 
-    m_optBrowserUseCustomColors = m_pConfig->readBoolEntry( "BrowserUseCustomColors", false );
-    m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &defaultColor );
-    m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &black );
     setupColors();
 
-    m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
-    m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", true );
-    m_optResumePlayback = m_pConfig->readBoolEntry( "Resume Playback", false );
-
-    //-1? See PlayerWidget::createVis() for revelations
-    // -1 is because the createVis code sucks a little, but this works _and_ it's commented!
-    m_optVisCurrent = m_pConfig->readUnsignedNumEntry( "Current Analyzer", 0 ) - 1;
     m_pPlayerWidget->createVis();
 
-    m_optBrowserSortSpec = m_pConfig->readNumEntry( "Browser Sorting Spec", QDir::Name | QDir::DirsFirst );
-    m_optTitleStream = m_pConfig->readBoolEntry( "Title Streaming", true );
-    m_optSoundSystem = m_pConfig->readEntry( "Sound System", "arts" );
-
-    m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
-    //FIXME 
-//    slotVolumeChanged( m_Volume );
-//     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
-
     QValueList<int> splitterList;
-    splitterList = m_pConfig->readIntListEntry( "BrowserWinSplitter" );
+    splitterList = config()->browserWinSplitter();
     if ( splitterList.count() != 2 )
     {
         splitterList.clear();
@@ -474,7 +380,7 @@ void PlayerApp::readConfig()
     }
     m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
-    m_pPlayerWidget->slotUpdateTrayIcon( m_optShowTrayIcon );
+    m_pPlayerWidget->slotUpdateTrayIcon( config()->showTrayIcon() );
 
 // Actions ==========
 
@@ -493,10 +399,10 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, CTRL + ALT + Key_Z, 0,
                             this, SLOT( slotPrev() ), true, true );
 
+    // FIXME <berkus> this needs some other way of handling with KConfig XT?!?
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( m_pConfig );
     m_pGlobalAccel->updateConnections();
-
 
     //FIXME use a global actionCollection (perhaps even at global scope)
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
@@ -508,7 +414,7 @@ void PlayerApp::readConfig()
 
 bool PlayerApp::queryClose()
 {
-    if ( m_optConfirmExit )
+    if ( config()->confirmExit() )
         if ( KMessageBox::questionYesNo( 0, i18n( "Really exit the program?" ) ) == KMessageBox::No )
             return false;
 
@@ -539,14 +445,14 @@ void PlayerApp::setupColors()
     // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
     int h, s, v;
 
-    m_optBrowserBgColor.hsv( &h, &s, &v );
+    config()->browserBgColor().hsv( &h, &s, &v );
     if ( v < 128 )
         v += 50;
     else
         v -= 50;
     m_optBrowserBgAltColor.setHsv( h, s, v );
 
-    m_optBrowserFgColor.hsv( &h, &s, &v );
+    config()->browserFgColor().hsv( &h, &s, &v );
     if ( v < 128 )
         v += 150;
     else
@@ -557,7 +463,7 @@ void PlayerApp::setupColors()
         v = 255;
     m_optBrowserSelColor.setHsv( h, s, v );
 
-    m_pBrowserWin->setPalettes( m_optBrowserFgColor, m_optBrowserBgColor, m_optBrowserBgAltColor );
+    m_pBrowserWin->setPalettes( config()->browserFgColor(), config()->browserBgColor(), m_optBrowserBgAltColor );
 }
 
 
@@ -717,7 +623,7 @@ void PlayerApp::slotSliderChanged( int value )
     {
         value /= 1000;    // ms -> sec
         
-        if ( m_optTimeDisplayRemaining )
+        if ( config()->timeDisplayRemaining() )
         {
             value = m_length / 1000 - value;
             m_pPlayerWidget->timeDisplay( true, value / 60 / 60 % 60, value / 60 % 60, value % 60 );
@@ -751,7 +657,7 @@ void PlayerApp::slotMainTimer()
     if ( m_pPlayerWidget->isVisible() )
     {
         int seconds;
-        if ( m_optTimeDisplayRemaining && !m_pEngine->isStream() )
+        if ( config()->timeDisplayRemaining() && !m_pEngine->isStream() )
         {
             seconds = ( m_length - m_pEngine->position() ) / 1000;
             m_pPlayerWidget->timeDisplay( true, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
@@ -865,7 +771,7 @@ void PlayerApp::slotVisTimer()
     }
 }
 
-
+// FIXME <berkus> unify this and the one below
 void PlayerApp::slotPlaylistShowHide()
 {
    if ( m_pBrowserWin->isHidden() )
@@ -912,9 +818,19 @@ void PlayerApp::slotEq( bool b )
 
 void PlayerApp::slotShowOptions()
 {
-    ConfigDlg *pDlg = new ConfigDlg();
-    connect( pDlg, SIGNAL( sigShowTrayIcon( bool ) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon( bool ) ) );
-    pDlg->show();
+   if( KConfigDialog::showDialog("settings") )
+     return;
+
+   KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
+
+   dialog->addPage( new Options1(0,"General"),  i18n("General"),  "misc",   i18n("Configure general options") );
+   dialog->addPage( new Options2(0,"Fonts"),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
+   dialog->addPage( new Options3(0,"Colors"),   i18n("Colors"),   "colors", i18n("Configure Colors") );
+   dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
+
+   connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( readConfig() ) );
+
+   dialog->show();
 }
 
 
@@ -940,7 +856,7 @@ void PlayerApp::slotHide()
 // <berkus> imo the reason it doesn't hide is that we pass some wrong flags upong creation of browserwin
 // (maybe toplevel is redundant or something)
 
-    if ( m_optHidePlaylistWindow )
+    if ( config()->hidePlaylistWindow() )
        m_pBrowserWin->hide();
 }
 

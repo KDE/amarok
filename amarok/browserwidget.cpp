@@ -19,6 +19,8 @@
 #include "browserwidget.h"
 #include "playerapp.h"
 
+#include "amarokconfig.h"
+
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qcursor.h>
@@ -141,7 +143,7 @@ void BrowserWidget::slotCompleted()
 {
     clear();
 
-    AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
+    AmarokFileList fileList( m_pDirLister->items(), pApp->config()->browserSortingSpec() );
     KFileItemListIterator it( fileList );
     FileBrowserItem *item;
 
@@ -190,22 +192,22 @@ void BrowserWidget::slotHeaderClicked( int )
     popup.insertTitle( i18n( "Sorted by" ) );
 
     int MENU_NAME = popup.insertItem( i18n( "Name" ) );
-    popup.setItemChecked( MENU_NAME, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Name );
+    popup.setItemChecked( MENU_NAME, ( pApp->config()->browserSortingSpec() & QDir::SortByMask ) == QDir::Name );
     int MENU_DATE = popup.insertItem( i18n( "Date" ) );
-    popup.setItemChecked( MENU_DATE, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Time );
+    popup.setItemChecked( MENU_DATE, ( pApp->config()->browserSortingSpec() & QDir::SortByMask ) == QDir::Time );
     int MENU_SIZE = popup.insertItem( i18n( "Size" ) );
-    popup.setItemChecked( MENU_SIZE, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Size );
+    popup.setItemChecked( MENU_SIZE, ( pApp->config()->browserSortingSpec() & QDir::SortByMask ) == QDir::Size );
     int MENU_UNSORTED = popup.insertItem( i18n( "Unsorted" ) );
-    popup.setItemChecked( MENU_UNSORTED, ( pApp->m_optBrowserSortSpec & QDir::SortByMask ) == QDir::Unsorted );
+    popup.setItemChecked( MENU_UNSORTED, ( pApp->config()->browserSortingSpec() & QDir::SortByMask ) == QDir::Unsorted );
 
     popup.insertSeparator();
 
     int MENU_REVERSE = popup.insertItem( i18n( "Reverse" ) );
-    popup.setItemChecked( MENU_REVERSE, pApp->m_optBrowserSortSpec & QDir::Reversed );
+    popup.setItemChecked( MENU_REVERSE, pApp->config()->browserSortingSpec() & QDir::Reversed );
     int MENU_DIRSFIRST = popup.insertItem( i18n( "Directories First" ) );
-    popup.setItemChecked( MENU_DIRSFIRST, pApp->m_optBrowserSortSpec & QDir::DirsFirst );
+    popup.setItemChecked( MENU_DIRSFIRST, pApp->config()->browserSortingSpec() & QDir::DirsFirst );
     int MENU_CASE = popup.insertItem( i18n( "Case Insensitive" ) );
-    popup.setItemChecked( MENU_CASE, pApp->m_optBrowserSortSpec & QDir::IgnoreCase );
+    popup.setItemChecked( MENU_CASE, pApp->config()->browserSortingSpec() & QDir::IgnoreCase );
 
     if ( popup.isItemChecked( MENU_UNSORTED ) )
     {
@@ -222,25 +224,22 @@ void BrowserWidget::slotHeaderClicked( int )
 
     if ( result == MENU_NAME )
     {
-        pApp->m_optBrowserSortSpec &= ~QDir::SortByMask;
-        pApp->m_optBrowserSortSpec |= QDir::Name;
+        pApp->config()->setBrowserSortingSpec((pApp->config()->browserSortingSpec() & ~QDir::SortByMask) | QDir::Name);
     }
 
     if ( result == MENU_DATE )
     {
-        pApp->m_optBrowserSortSpec &= ~QDir::SortByMask;
-        pApp->m_optBrowserSortSpec |= QDir::Time;
+        pApp->config()->setBrowserSortingSpec((pApp->config()->browserSortingSpec() & ~QDir::SortByMask) | QDir::Time);
     }
 
     if ( result == MENU_SIZE )
     {
-        pApp->m_optBrowserSortSpec &= ~QDir::SortByMask;
-        pApp->m_optBrowserSortSpec |= QDir::Size;
+        pApp->config()->setBrowserSortingSpec((pApp->config()->browserSortingSpec() & ~QDir::SortByMask) | QDir::Size);
     }
 
     if ( result == MENU_UNSORTED )
     {
-        pApp->m_optBrowserSortSpec = QDir::Unsorted;
+        pApp->config()->setBrowserSortingSpec(QDir::Unsorted);
     }
 
     if ( result == MENU_REVERSE )
@@ -248,25 +247,25 @@ void BrowserWidget::slotHeaderClicked( int )
         header()->setSortIndicator( 0, !popup.isItemChecked( MENU_REVERSE ) );
 
         if ( popup.isItemChecked( MENU_REVERSE ) )
-            pApp->m_optBrowserSortSpec &= ~QDir::Reversed;
+            pApp->config()->setBrowserSortingSpec(pApp->config()->browserSortingSpec() & ~QDir::Reversed);
         else
-            pApp->m_optBrowserSortSpec |= QDir::Reversed;
+            pApp->config()->setBrowserSortingSpec(pApp->config()->browserSortingSpec() | QDir::Reversed);
     }
 
     if ( result == MENU_DIRSFIRST )
     {
         if ( popup.isItemChecked( MENU_DIRSFIRST ) )
-            pApp->m_optBrowserSortSpec &= ~QDir::DirsFirst;
+            pApp->config()->setBrowserSortingSpec(pApp->config()->browserSortingSpec() & ~QDir::DirsFirst);
         else
-            pApp->m_optBrowserSortSpec |= QDir::DirsFirst;
+            pApp->config()->setBrowserSortingSpec(pApp->config()->browserSortingSpec() | QDir::DirsFirst);
     }
 
     if ( result == MENU_CASE )
     {
         if ( popup.isItemChecked( MENU_CASE ) )
-            pApp->m_optBrowserSortSpec &= ~QDir::IgnoreCase;
+            pApp->config()->setBrowserSortingSpec(pApp->config()->browserSortingSpec() & ~QDir::IgnoreCase);
         else
-            pApp->m_optBrowserSortSpec |= QDir::IgnoreCase;
+            pApp->config()->setBrowserSortingSpec(pApp->config()->browserSortingSpec() | QDir::IgnoreCase);
     }
 
     // update view

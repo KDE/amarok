@@ -19,6 +19,8 @@
 #include "playlistitem.h"
 #include "metabundle.h"
 
+#include "amarokconfig.h"
+
 #include <qcolor.h>
 #include <qlistview.h>
 #include <qmessagebox.h>
@@ -113,7 +115,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
 {
     // FIXME: alternative version
 //     QColorGroup colGroup( cg );
-//     colGroup.setColor( QColorGroup::Text, m_bIsGlowing ? m_glowCol : pApp->m_optBrowserFgColor );
+//     colGroup.setColor( QColorGroup::Text, m_bIsGlowing ? m_glowCol : pApp->config()->browserFgColor() );
 //
 //     KListViewItem::paintCell( p, colGroup, column, width, align );
 
@@ -131,7 +133,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
     }
     else
     {
-        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgColor );
+        pPainterBuf.setBackgroundColor( pApp->config()->browserBgColor() );
     }
 
     if ( this == PlaylistItem::GlowItem ) //static member
@@ -140,7 +142,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
     }
     else
     {
-        pPainterBuf.setPen( pApp->m_optBrowserFgColor );
+        pPainterBuf.setPen( pApp->config()->browserFgColor() );
     }
 
     if ( isSelected() )
