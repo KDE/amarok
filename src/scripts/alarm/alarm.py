@@ -20,7 +20,12 @@ import os.path
 import sys
 import threading
 from os import *
-from qt import *
+
+try:
+    from qt import *
+except:
+    popen( "kdialog --sorry 'PyQt (KDE bindings for Python) is required for this script.'" )
+    raise
 
 
 class ConfigDialog( QDialog ):

@@ -20,7 +20,12 @@ import Queue
 import sys
 import threading
 
-from qt import *
+try:
+    from qt import *
+except:
+    popen( "kdialog --sorry 'PyQt (KDE bindings for Python) is required for this script.'" )
+    raise
+
 
 # Replace with real name
 debug_prefix = "[Test Script]"
