@@ -453,8 +453,8 @@ SqlLoader::doJob()
     setProgressTotalSteps( values.count() );
 
     uint x = 0;
-    foreach( values ) {
-        setProgress( x * 11 );
+    for( for_iterators( QStringList, values ); it != end || isAborted(); ++it ) {
+        setProgress( ++x * 11 );
 
         MetaBundle b;
         b.setAlbum     (    *it );
@@ -471,13 +471,13 @@ SqlLoader::doJob()
 
         bundles += b;
 
-        if ( false && b.length() <= 0 ) {
+        if( false && b.length() <= 0 ) {
             // we try to read the tags, despite the slow-down
             debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
             b.readTags( TagLib::AudioProperties::Fast );
         }
 
-        if ( ++x % 30 == 0 ) {
+        if( bundles.count() == 30 || it == last ) {
             QApplication::postEvent( this, new TagsEvent( bundles ) );
             bundles.clear();
         }
