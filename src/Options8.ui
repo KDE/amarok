@@ -201,7 +201,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>&lt;qt&gt;If you submit the tracks you play to Audioscrobbler, the Context Browser can suggest new music that might interest you.</string>
+                        <string>&lt;qt&gt;Once registered, if you submit the tracks you play to Audioscrobbler, the Context Browser can suggest new music that might interest you.</string>
                     </property>
                     <property name="textFormat">
                         <enum>RichText</enum>
