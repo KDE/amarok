@@ -2,19 +2,18 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information
 
-
 #ifndef AMAROK_SCROBBLER_H
 #define AMAROK_SCROBBLER_H
 
-#include "amarokconfig.h"
 #include "engineobserver.h"
+#include <qobject.h>
 
-#include <kio/job.h>
-#include <kio/jobclasses.h>
+//some setups require this
+#undef PROTOCOL_VERSION
 
-#include <qobject.h>         //baseclass
-#include <qstringlist.h>
+namespace KIO { class Job; }
 
+class QStringList;
 class ScrobblerSubmitter;
 class SubmitItem;
 

@@ -2,25 +2,23 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
-#include "config.h"
-
-#include "enginecontroller.h"
-#include "scrobbler.h"
+#include "amarokconfig.h"
 #include "collectiondb.h"
-
+#include "config.h"
+#include "enginecontroller.h"
 #include <kapplication.h>
-#include <kconfig.h>
 #include <kdebug.h>
-#include <kglobal.h>
 #include <kmdcodec.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-
 #include <qdatetime.h>
-
+#include "scrobbler.h"
 #include <unistd.h>
+
+//some setups require this
+#undef PROTOCOL_VERSION
 
 
 
