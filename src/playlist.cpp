@@ -78,9 +78,9 @@ public:
         : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
     {}
 
-    enum IteratorFlag { 
+    enum IteratorFlag {
         Visible = QListViewItemIterator::Visible,
-        All = QListViewItemIterator::Invisible 
+        All = QListViewItemIterator::Invisible
     };
 
     PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
@@ -717,7 +717,7 @@ Playlist::containsUrl( const KURL& url )
         if ( item->url() == url )
             return true;
     }
-    
+
     return false;
 }
 
@@ -1817,7 +1817,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
         ? i18n("&Delete File")
         : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete );
-    popup.insertItem( SmallIconSet( "view_remove" ), i18n( "C&lear Playlist" ), this, SLOT( clear() ) );
 
     popup.insertSeparator();
 
