@@ -117,7 +117,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     delete m_opt7->dbSetupFrame->kcfg_MySqlPassword;
 #endif
     m_opt7->collectionFoldersBox->setColumns( 1 );
-    m_opt7->setMinimumHeight(600);
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
 
     // add pages
@@ -140,7 +139,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     for( QObject *label = list->first(); label; label = list->next() )
         static_cast<QLabel*>(label)->setMaximumWidth( 250 );
     delete list;
-    
+
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
@@ -213,7 +212,7 @@ void AmarokConfigDialog::updateSettings()
     if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "MySQL")
     {
         dbType = QString::number(DbConnection::mysql);
-    } 
+    }
     else if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "Postgresql")
     {
         dbType = QString::number(DbConnection::postgresql);
