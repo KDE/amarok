@@ -6,8 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> When you drag streams into the playlist, the entries appear grey.
-
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
 
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
