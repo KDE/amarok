@@ -47,6 +47,7 @@ class ContextBrowser : public QVBox, public EngineObserver
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
+        void coverFetched( const QString& keyword );
 
         void relatedArtistsFetched( QStringList& artists );
 

@@ -63,9 +63,9 @@ ContextBrowser::ContextBrowser( const char *name )
     m_toolbar->setFlat( true );
     m_toolbar->setIconSize( 16 );
     m_toolbar->setIconText( KToolBar::IconTextRight );
-    m_toolbar->insertButton( "gohome", Home, SIGNAL(clicked()), this, SLOT(showHome()), true, i18n("Home") );
-    m_toolbar->insertButton( "today", CurrentTrack, SIGNAL(clicked()), this, SLOT(showCurrentTrack()), true, i18n("Current Track") );
-    m_toolbar->insertButton( "document", Lyrics, SIGNAL(clicked()), this, SLOT(showLyrics()), true, i18n("Lyrics") );
+    m_toolbar->insertButton( "gohome", Home, SIGNAL( clicked() ), this, SLOT( showHome() ), true, i18n("Home") );
+    m_toolbar->insertButton( "today", CurrentTrack, SIGNAL( clicked() ), this, SLOT( showCurrentTrack() ), true, i18n("Current Track") );
+    m_toolbar->insertButton( "document", Lyrics, SIGNAL( clicked() ), this, SLOT( showLyrics() ), true, i18n("Lyrics") );
 
     browser = new KHTMLPart( this );
     browser->setDNDEnabled( true );
@@ -81,9 +81,9 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_scrobbler,                 SIGNAL( relatedArtistsFetched( QStringList& ) ),
              this,                          SLOT( relatedArtistsFetched( QStringList& ) ) );
 
-    connect( CollectionDB::emitter(), SIGNAL(scanStarted()), SLOT(collectionScanStarted()) );
-    connect( CollectionDB::emitter(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone()) );
-    connect( CollectionDB::emitter(), SIGNAL(coverFetched()), SLOT(showCurrentTrack()) );
+    connect( CollectionDB::emitter(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
+    connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString& ) ), SLOT( coverFetched( const QString& ) ) );
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
@@ -547,7 +547,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
     const uint artist_id = m_db->artistID( currentTrack.artist() );
     const uint album_id  = m_db->albumID ( currentTrack.album() );
 
-
     QStringList values = m_db->query( QString(
         "SELECT statistics.createdate, statistics.accessdate, "
         "statistics.playcounter, round( statistics.percentage + 0.4 ) "
@@ -1007,6 +1006,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     browser->end();
 }
 
+
 void
 ContextBrowser::showLyricSuggestions()
 {
@@ -1031,8 +1031,21 @@ ContextBrowser::showLyricSuggestions()
 
 }
 
+
 void
-ContextBrowser::relatedArtistsFetched( QStringList& artists ) {
+ContextBrowser::coverFetched( const QString& keyword )
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    QStringList values = QStringList::split( " - ", keyword );
+
+    if ( currentTrack.artist() == values[0] )
+        showCurrentTrack();
+}
+
+
+void
+ContextBrowser::relatedArtistsFetched( QStringList& artists )
+{
     kdDebug() << "artists retrieved" << endl;
     m_relatedArtists = artists;
 
