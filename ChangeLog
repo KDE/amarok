@@ -3,7 +3,8 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
-VERSION 0.8.0:  
+VERSION 0.8.0:
+  * chg: new layout has been adopted
   * add: added accepting files dropped onto systray icon
   * fix: significant reduction in memory consumption for PlaylistItems
   * fix: hardware mixer works again
@@ -56,7 +57,7 @@ VERSION 0.8.0:
          widgets, just click until it appears (though it looks the same as the original widget
          it just acts differently) - piggz (www.piggz.co.uk)
   * add: combo with history and completion for dir/file chooser
-  * add: in configure.in.in for checking the version of TagLib, if compiled from CVS, if not, 
+  * add: in configure.in.in for checking the version of TagLib, if compiled from CVS, if not,
          then show, that it uses bundled version of TagLib - Stormy
   * fix: font dialog sizing issues
   * add: resume playback option. Using this means your track starts up again where you left it
@@ -74,7 +75,7 @@ VERSION 0.7.0:
   * fix: tracks skipping randomly
   * change: "BrowserWin Enabled" on by default
   * change: "Save Playlist" on by default
-  * change: "Show Metainfo" on by default 
+  * change: "Show Metainfo" on by default
   * fix: make loading playlist not block UI
   * fix: on startup load playlist after UI is shown
   * change: "Software Mixer Only" on by default
@@ -192,29 +193,29 @@ VERSION 0.5.2 - 0.5.2-DEV6:
   * fixed: compile error on GCC 3.3.1 in visQueue.cpp. bugfix by thiago
   * added: completely rewrote drag-and-drop code. works recursively now (optionally).
     plus dragging stuff from other applications into amaroK also works now.
-  
+
 VERSION 0.5.1:
   * added a Tip of the Day at startup to explain the user interface a bit
-  * added restarting of artsd on first program start to make sure it registers 
+  * added restarting of artsd on first program start to make sure it registers
     the new mcopclasses
-  * fixed possible compile error in viswidget.cpp 
-  * amaroK uses much less CPU now than it used to. This was mainly achieved by 
+  * fixed possible compile error in viswidget.cpp
+  * amaroK uses much less CPU now than it used to. This was mainly achieved by
     using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin,
-    and modified slightly to my needs. Also some other optimizations were made, 
+    and modified slightly to my needs. Also some other optimizations were made,
     which	improved the standby performance, when no song is playing. I'm still
-    not satisfied with overall performance, tho, but it seems that most of the 
+    not satisfied with overall performance, tho, but it seems that most of the
     load is produced by the aRts code itself, so this will rather be difficult
-    to improve.  
+    to improve.
   * fixed crash when "next" or "previous" was pressed without a track
     loaded
-  * thanks to valgrind I was able to find and squish some serious bugs, 
-    most of which were related to pointers. to sum it up: pointers are evil. 
+  * thanks to valgrind I was able to find and squish some serious bugs,
+    most of which were related to pointers. to sum it up: pointers are evil.
     valgrind is great.
-  * lots of UI-changes in the main widget. uses a background pixmap now, a 
-    custom font and widget for the time-display, and generally looks better	
-  * fixed issues with the liquid skin. unfortunately, there seems to be no way 
+  * lots of UI-changes in the main widget. uses a background pixmap now, a
+    custom font and widget for the time-display, and generally looks better
+  * fixed issues with the liquid skin. unfortunately, there seems to be no way
     to display pushbuttons correctly with a black background under liquid. so,
-    until I find a solution for that, the expandbutton widget doesn't look quite 
+    until I find a solution for that, the expandbutton widget doesn't look quite
     as cool as it used to. maybe I should ask mosfet about this..
 
 VERSION 0.50:
@@ -224,27 +225,27 @@ VERSION 0.15:
   * playing streams now works! *yipeeee*
   * fixed tons of bugs in aRts playing code. i think i got it right now.
   * fixed loading and saving of playlists. can cope with all protocols now.
-  * fixed a bug in EffectWidget.cpp, that gave a compile error on some systems. 
+  * fixed a bug in EffectWidget.cpp, that gave a compile error on some systems.
   * Converting QString into std::string was not donecorrectly. Thanks to
-    Whitehawk Stormchaser for that one :)					
+    Whitehawk Stormchaser for that one :)
   * changed project name to "amaroK" and built new project-file
 
 VERSION 0.14 (internal):
-  * implemented use of arts-software-mixing, in case hardware-mixing 
+  * implemented use of arts-software-mixing, in case hardware-mixing
     (/dev/mixer) doesn't work
   * fixed crash when play was pressed without selecting a file
   * changed the direction of the volume-slider. maximum is now at the top
   * added automatic saving of current playlist on exit
-  * added previous/next track 
+  * added previous/next track
   * added two radiobuttons in the playerwidget for toggling the
-    playlist/equalizer on and off. admitted, the equalizer doesn't yet exist, so 
+    playlist/equalizer on and off. admitted, the equalizer doesn't yet exist, so
     it's just a dummy button :P
-  * added popup-menu for the playerwidget. opens on 
+  * added popup-menu for the playerwidget. opens on
     right mouse button. this menu finally replaces the ugly menubar.
   * added some icons (from noatun) for the player-buttons instead of text
   * added pause function
-  * changed most names in the source to comply with the 
-    (unofficial?) KDE c++ coding standard (using the prefix "m_" for member 
+  * changed most names in the source to comply with the
+    (unofficial?) KDE c++ coding standard (using the prefix "m_" for member
     attributes and so on). This was real slave-work :/
   * cleaned up code in several classes
   * fixed problem where subwidgets got keyboard focus and were drawn dark with

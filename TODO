@@ -2,17 +2,30 @@ TODO-list for amaroK
 ======================
 <nick>  == reported by
 -->nick == assigned to
-#x      == sequential bug number, 
-           #16 being the highest available (take this one for your next bug and increase here)
+#x      == sequential bug number,
+           #21 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-    * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
+    * fix: #20<muesli> remove beat detection into own analyzer (project "sun-down") -->muesli
+
+    * fix: #19<muesli> translate "description.png" into english
+              (text above the title scroller) -->muesli
+
+    * chk: #18<muesli> check how different color-sets behave with our layout
+              (esp. buttons on the bottom)
+
+    * fix: #17<muesli> add song length to the right of the title-scroller -->muesli
+
+    * fix: #16<muesli> with some songtitles, the quicksearch buffers seem to get
+              inconsistent. same for undo/redo -->muesli
+
+    * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
               is it possible to catch crash signals and do some cleanup?
-	      <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
+              <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
 
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
               <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
@@ -36,15 +49,15 @@ MID-TERM:
            <markey> replace with "add all media in current directory".
            basically just a shortcut for going up to the parent directory, and then dragging
            the directory. imagine you're in the root directory of some filesystem, and want to add all
-           files in it.. currently you'd have to select all files manually 
-           
+           files in it.. currently you'd have to select all files manually
+
     * fix: filebrowser does not display hidden directories; so they cannot be accessed, either
 
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
            we should disable the hand cursor since that means "single-click to activate me"
            maybe override KListView::mouseMoveEvent, or is there a better way?
-    
+
     * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
 
     * fix: honor KDE single/double-click setting in BrowserWin
@@ -52,11 +65,11 @@ MID-TERM:
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: "show playlist" to the right click menu, redundant but necessary
-    
+
     * add: <muesli> background chooser
 
     * add: <muesli> add OSD support (permanent display or just on events like a song switch)
-    
+
     * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
 
     * add: extend documentation
@@ -94,7 +107,7 @@ MID-TERM:
     * chg: <mxcl> use QApplication::setPalette to adjust application colours, as it propagates
            changes to all widgets and will hopefully deal with the selection colour issues in
            the browser/janus widgets (although we have to stop it setting browserWin colors)
-    
+
     * chg: can we make all buttons into actions? if we can, we could use setState(), a global
            actionCollection and save plenty of LOC. I see problems with the play/stop/etc
            buttons though.
@@ -106,7 +119,7 @@ MID-TERM:
            mean that people will lose their settings, oh well, best to do it for the 1.0 release.
 
     * chg: select tracks on mouseup, not mousedown (does this make sense?)
-                      
+
 
 LONG-TERM:
 
@@ -117,7 +130,7 @@ LONG-TERM:
     * add: make windows magnetic / sticking together (difficult)
 
     * add: generate text or html document from playlist entries
-    
+
     * add: <berkus> add smooth fade outs on stop
 
     * add: make PlayerWidget shadeable (like XMMS) [<mxcl> doesn't the systray provide this functionality
@@ -159,7 +172,7 @@ DISCUSSING:
     * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
            at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
            have limited screen width, like in console or kdevelop. pretty please with icing =)
-           
+
 DUMPED:
 
 

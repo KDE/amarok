@@ -3,10 +3,10 @@ amaroK VIS_PLAN  - Created: 22-11-2003
 Abstract
 ========
 
-In order to create a visualisation framework that is superior to anything 
-popular available for Linux today we should plan amaroK's thoroughly 
+In order to create a visualisation framework that is superior to anything
+popular available for Linux today we should plan amaroK's thoroughly
 before implementation. This document exists to map out our ideas and is
-available for anyone to edit, please, if you have some good suggestion, or 
+available for anyone to edit, please, if you have some good suggestion, or
 experience with this kind of work, add some comments! Thanks, Max Howell
 
 
@@ -51,8 +51,31 @@ If we make the visualisations not amaroK specific it may be possible to embed
 visualisations into the Kicker, onto the desktop, etc.
 
 MCOP seems to be the best way to get the audio data to the visuals. Problem with
-current FFT arts implementation is it seems to be stuck at 17 bands, can we 
+current FFT arts implementation is it seems to be stuck at 17 bands, can we
 improve this? Do we want more than an FFT of the audio data? Would other data
 be useful to visuals at all? Beat detection certainly would be a useful thing to
 offer the visualisations, and it would certainly stop every visual implementing
 its own detection.
+
+[muesli: FFT is all you need. 17 bands although is a bit few. 32 would be
+         desirable, after everything I read and know. Right now I'm expere-
+         menting with the vector our analyzer uses. Quite promising up to now. ]
+
+[Comment from muesli, to be integrated into the paragraphs above]
+
+imho, it would be cool to offer this service via sockets. udp would fit per-
+fectly, since it has to be realtime, anyways (better loose a packet and show
+nothing, instead of a out-of-sync beat). e.g., you would be able to have
+various of visualizations-clients connected to amarok, showing different
+animations, at the same time. this would also remove the DCOP-dependency-chains
+for the OpenGL clients.
+
+right now, i can imagine two implementation methods:
+
+A) transmit the frequency vector of the analyzer to the vis-client. beat-detection and
+all that stuff gets done by the vis-client.
+
+B) basic beat-detection and music analysis gets done by amarok itself. the
+results of that process are sent to the vis-clients.
+
+[/Comment by muesli]=======
