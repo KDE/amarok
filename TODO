@@ -3,12 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #73 being the highest available (take this one for your next bug and increase here)
+           #74 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * fix: #73 <markey> PlayerWidget in front of BrowserWin does funny things, like flash all the time
+               or hide when you click on it
 
+               
 MID-TERM:
 
     * fix: #72 <markey> get amaroK to play nice with valgrind
