@@ -80,7 +80,7 @@ class PluginManager
          * @param pointer     Pointer to plugin  
          * @return            KService, or 0 if not found
          */
-        static KService::Ptr getService( const Plugin* pointer );
+        static KService::Ptr getService( const Plugin* plugin );
 
         /** 
          * Dump properties from a service to stdout for debugging 
@@ -90,12 +90,14 @@ class PluginManager
                     
     private:
         struct StoreItem {
-            //attributes:
-                Plugin*       plugin;
-                KService::Ptr service;
+            Plugin*       plugin;
+            KService::Ptr service;
         };
        
-        static vector<StoreItem>         m_store;
+        static vector<StoreItem>::iterator lookupPlugin( const Plugin* plugin );
+
+    //attributes:        
+        static vector<StoreItem> m_store;
 };
 
 
