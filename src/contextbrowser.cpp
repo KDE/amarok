@@ -74,6 +74,9 @@ ContextBrowser *ContextBrowser::s_instance = 0;
 ContextBrowser::ContextBrowser( const char *name )
         : QTabWidget( 0, name )
         , EngineObserver( EngineController::instance() )
+        , m_dirtyHomePage( true )
+        , m_dirtyCurrentTrackPage( true )
+        , m_dirtyLyricsPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
@@ -102,8 +105,8 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ), i18n( "Current Track" ) );
     addTab( m_lyricsPage->view(), SmallIconSet( "document" ), i18n( "Lyrics" ) );
 
-    // Initialize tab states
-    engineStateChanged( Engine::Empty );
+    setTabEnabled( m_currentTrackPage->view(), false );
+    setTabEnabled( m_lyricsPage->view(), false );
 
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
