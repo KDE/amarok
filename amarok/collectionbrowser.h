@@ -16,6 +16,7 @@ class sqlite;
 class ThreadWeaver;
 
 class QCString;
+class QStringList;
 class QCustomEvent;
 class KDirLister;
 
@@ -30,7 +31,7 @@ class CollectionBrowser : public KIconView
     private:
         void readDir( const KURL& url );
         void customEvent( QCustomEvent* );
-        int execSql( const QCString& statement, void* callback );
+        bool execSql( const QCString& statement, QStringList* const values, QStringList* const names );
             
     //attributes:
         KURL::List m_dirs;

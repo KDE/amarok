@@ -46,7 +46,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         kdWarning() << k_funcinfo << "Could not open SQLite database\n";
     
     QCString command = "create table tags ( title varchar(100), artist varchar(100) );";
-    execSql( command, 0 );
+    execSql( command, 0, 0 );
                 
     KURL url;
     url.setPath( "/home/mark/mp3" );
@@ -102,30 +102,58 @@ void CollectionBrowser::customEvent( QCustomEvent *e )
             command += bundle->artist().latin1();
             command +=         "');";
             
-            execSql( command, 0 );
+            execSql( command, 0, 0 );
             delete bundle;
         }
     }
 }
 
 
-int CollectionBrowser::execSql( const QCString& statement, void* callback )
+bool CollectionBrowser::execSql( const QCString& statement, QStringList* const values, QStringList* const names )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
-        return SQLITE_ERROR;
+        return false;
     }
     
+    const char* tail;
+    sqlite_vm* vm;
     char* errorStr;
-    int error = sqlite_exec( m_db, statement, ( int (*)(void*,int,char**,char**) ) callback, 0, &errorStr );
+    int error;
     
+    error = sqlite_compile( m_db, statement, &tail, &vm, &errorStr );
+        
     if ( error != SQLITE_OK ) {
-        kdWarning() << k_funcinfo << "SQLite error while executing statement:\n";
+        kdWarning() << k_funcinfo << "sqlite_compile error:\n";
         kdWarning() << errorStr << endl;
+        sqlite_freemem( errorStr );
+        return false;
     }
-    free( errorStr );
     
-    return error;
+    int n;
+    const char** value;
+    const char** colName;
+    
+    while( true ) {
+        error = sqlite_step( vm, &n, &value, &colName );
+        
+        if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+            break; 
+        if ( values && value )
+            *values << *value;
+        if ( names && colName )
+            *names << *colName;
+    }
+    sqlite_finalize( vm, 0 );
+    
+    if ( error != SQLITE_DONE ) {
+        kdWarning() << k_funcinfo << "sqlite_step error.\n";
+        return "error";
+    }
+        
+    return true;
 }
 
 
