@@ -650,12 +650,12 @@ void ArtsEngine::timerEvent( QTimerEvent* )
         if ( m_xfadeValue <= 0.0 )
         {
             m_xfadeValue = 0.0;
-            if ( m_pPlayObjectXfade )
+/*            if ( m_pPlayObjectXfade )
             {
                 m_pPlayObjectXfade->halt();
                 delete m_pPlayObjectXfade;
                 m_pPlayObjectXfade = 0;
-            }
+            }*/
         }
         float value;
         if ( m_xfadeFadeout )
