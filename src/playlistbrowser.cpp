@@ -1,6 +1,8 @@
 // (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
+#include "amarok.h"            //for APP_VERSION
+#include "amarokconfig.h"
 #include "collectiondb.h"      //smart playlists
 #include "metabundle.h"        //paintCell()
 #include "playlist.h"
@@ -105,7 +107,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() + 2 );
 
-    loadPlaylists();    //load the playlists stats cache
+    // Check if user has installed a new version
+    if ( APP_VERSION != AmarokConfig::version() )
+        loadPlaylists( locate("data","amarok/data/playlistbrowser.m3u") );
+    else
+        loadPlaylists();    //load the playlists stats cache
 }
 
 
@@ -154,9 +160,15 @@ QString PlaylistBrowser::playlistCacheFile()
 }
 
 
-void PlaylistBrowser::loadPlaylists( )
+void PlaylistBrowser::loadPlaylists( const QString& path )
 {
-    QFile file( playlistCacheFile() );
+    QFile file;
+
+    if ( path.isEmpty() )
+        file.setName( playlistCacheFile() );
+    else
+        file.setName( path );
+
     //read playlists stats cache containing the number of tracks, the total length in secs and the last modified date
     if( file.open( IO_ReadOnly ) )
     {
