@@ -66,16 +66,27 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     // we don't want to show the cover if it is the generic one.
     if ( imageLocation.find( QString("nocover") ) == -1 && m_cover && !imageLocation.isEmpty())
         showCover = 1;
-     
+    
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
     //this should still be within the screen bounds
+    QImage image = QImage::QImage();
+    if ( showCover )
+    {
+        // does the file exist? if not, tell the osd where to shove it.
+        bool result = image.load( imageLocation );
+        if (result == false)
+            showCover = 0;
+        else
+            image = image.smoothScale( imageSize, imageSize );
+    }
+    
     if ( showCover )
     {
         if ( textRect.height() + titleRect.height() < 100 )
             // we don't want the image to be truncated at the bottom if we only have, for example - one line of text.
-            textRect.setHeight( 100 );
+            textRect.setHeight( imageSize + 20 );
         else
             textRect.addCoords( 0, 0, 0, titleRect.height() );
             
@@ -115,10 +126,6 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     // Paint the album cover if existant
     if ( showCover )
     {
-        QImage image = QImage::QImage();
-        image.load( imageLocation );
-        image = image.smoothScale( imageSize, imageSize );
-        
         if ( text.isRightToLeft() )
         {
             imagePosition = -10;
