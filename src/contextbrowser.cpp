@@ -201,7 +201,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" )
     {
-        const QString url = "http://www.musicbrainz.org/taglookup.html?artist='%1'&album='%2'";
+        const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2";
         kapp->invokeBrowser( url.arg( artist, album ) );
     }
 }
