@@ -62,6 +62,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
     
+    timer = new QTimer( this );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( slotSetFilter() ) );
+
     m_view = new CollectionView( this );
     //m_view->setMargin( 2 );
 
@@ -83,9 +86,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ) );
     m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ) );
 
-    timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( slotSetFilter() ) );
-
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ),
              this,           SLOT( slotSetFilterTimeout() ) );
 
@@ -95,7 +95,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
 
 void
-CollectionBrowser::slotSetFilterTimeout() //slot
+CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
     if ( timer->isActive() ) timer->stop();
     timer->start( 180, true );
@@ -103,7 +103,7 @@ CollectionBrowser::slotSetFilterTimeout() //slot
 
 
 void
-CollectionBrowser::slotSetFilter() //slot
+CollectionBrowser::slotSetFilter() //SLOT
 {
     m_view->setFilter( m_searchEdit->text() );
     m_view->renderView();
@@ -223,6 +223,9 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
+    kdDebug() << k_funcinfo << endl;
+
+    if ( m_parent->timer->isActive() ) m_parent->timer->stop();
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
     m_insertdb->scan( m_dirs, m_recursively );
 }
@@ -233,6 +236,7 @@ CollectionView::scanModifiedDirs()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
+    if ( m_parent->timer->isActive() ) m_parent->timer->stop();
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
     m_insertdb->scanModifiedDirs( m_recursively );
 }
@@ -278,6 +282,7 @@ CollectionView::scanDone( bool changed ) //SLOT
         renderView();
     
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
+    startTimer( MONITOR_INTERVAL );         
 }
 
 
