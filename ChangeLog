@@ -14,12 +14,13 @@ VERSION 1.2.2:
     * The contextbrowser now uses data:-URLs instead of temp image files, so
       they cannot be left on disk when amaroK terminates unexpectedly, and the
       Konqueror/Universal sidebar can show them when amaroK is not running.
-    * Append suggestions is now Dynamic-mode, icon in statusbar too.
+    * Append Suggestions now has an icon in the statusbar.
 
   BUGFIXES:
     * escape '&' char in contextmenu entry (BR 101276)
     * Track is set as a number in the database, so shouldn't be added rounded
       by quotes. (BR 101208)
+    * Rewrote the broken .pls playlist parser.
     * Handle delay gap between songs properly with aRts engine. (BR 90404)
     * Switched order of "Make playlist" and "Queue after current track" menus
       to avoid playlist destruction. (BR 96164 part 1)
@@ -34,7 +35,6 @@ VERSION 1.2.2:
       full metadata support. (BR 89821)
     * GStreamer-engine now uses the "decodebin" autoplugger, which fixes
       the lag issues that some users had during crossfading. (BR 99570)
-    * Rewrote the broken .pls playlist parser.
 
 
 VERSION 1.2.1:
