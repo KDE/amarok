@@ -25,9 +25,7 @@
 #include <qpushbutton.h>
 
 #include <dirent.h>
-#include <dirent.h>
 #include <stdlib.h>
-#include <sys/stat.h>
 #include <sys/stat.h>
 
 

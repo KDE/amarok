@@ -70,7 +70,8 @@ amarokapp_SOURCES = \
     streambrowser.cpp \
     systray.cpp \
     threadweaver.cpp \
-    tracktooltip.cpp
+    tracktooltip.cpp \
+    welcomebrowser.cpp
 
 amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \

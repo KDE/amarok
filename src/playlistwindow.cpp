@@ -21,6 +21,7 @@
 #include "browserbar.h"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
+#include "welcomebrowser.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "playlist.h"
@@ -51,7 +52,6 @@
 #include <ktoolbarbutton.h>   //createGUI()
 #include <kurlrequester.h>    //slotAddLocation()
 #include <kurlrequesterdlg.h> //slotAddLocation()
-#include <kwin.h>             //showHide()
 #include <kxmlguifactory.h>   //XMLGUI
 #include <kxmlguibuilder.h>   //XMLGUI
 
@@ -186,16 +186,9 @@ PlaylistWindow::init()
         } //</StreamBrowser>
 
         if( AmarokConfig::showWelcomeTab() )
-        { //<WelcomePage>
-            KHTMLPart *w = new KHTMLPart( (QWidget*)0 );
-            KURL url; url.setPath( locate("data", "amarok/data/welcome.html") );
-            w->widget()->setName( "WelcomePage" );
-            w->openURL( url );
-            m_browsers->addBrowser( w->widget(), i18n( "Welcome" ), "help" );
-
-           connect( w->browserExtension(), SIGNAL(openURLRequest( const KURL&, const KParts::URLArgs&) ),
-                    this,                    SLOT(welcomeURL( const KURL& )) );
-        } //</WelcomePage>
+        //<WelcomePage>
+            m_browsers->addBrowser( new WelcomeBrowser( this, "WelcomePage" ), i18n( "Welcome" ), "help" );
+        //</WelcomePage>
 
         connect( m_browsers, SIGNAL(  activated( const KURL& )),
                  m_playlist,   SLOT(appendMedia( const KURL& )) );
@@ -461,6 +454,7 @@ void PlaylistWindow::slotAddLocation() //SLOT
 }
 
 
+#include <kwin.h>
 void PlaylistWindow::showHide() //SLOT
 {
     //show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
@@ -479,12 +473,8 @@ void PlaylistWindow::showHide() //SLOT
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     const uint desktop = KWin::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
-    const bool isShaded =
-    #if KDE_IS_VERSION(3,2,1)
-    info.hasState( NET::Shaded );
-    #else
-    false;
-    #endif
+    const bool isShaded = info.hasState( NET::Shaded );
+
 
     if( isShaded )
     {
