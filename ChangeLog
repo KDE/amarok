@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  CHG: set better start directory for selecting custom cover file 
+       (like contextbrowser does)
   FIX: let the contextBrowser reload, after setting custom cover (BR 96548)
   FIX: Cover-Manager's full-screen view works with Bughira (brushed metal).
   ADD: Script-Manager can auto-run scripts on application startup.
