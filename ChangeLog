@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: Remove Duplicates now also removes dead entries from playlist.
   FIX: Accept album urls from the context browser. (BR 86020)
   FIX: Configure check was missing for the Konqueror Sidebar
        (depends on KDE-Base).

@@ -232,7 +232,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
-    new KAction( i18n( "Remove Duplicates" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
+    new KAction( i18n( "Remove Duplicates / Missing" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
@@ -1303,7 +1303,7 @@ Playlist::customEvent( QCustomEvent *e )
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
         refreshNextTracks( 0 );
-        
+
         //necessary usually
         m_totalLength = 0;
         int itemCount = 0;
@@ -1613,6 +1613,16 @@ Playlist::deleteSelectedFiles() //SLOT
 void
 Playlist::removeDuplicates() //SLOT
 {
+    // Remove dead entries:
+
+    for( QListViewItemIterator it( this ); it.current(); ++it ) {
+        PlaylistItem* item = static_cast<PlaylistItem*>( *it );
+        if ( item->url().isLocalFile() && !QFile::exists( item->url().path() ) )
+            delete item;
+    }
+
+    // Remove dupes:
+
     QSortedList<PlaylistItem> list;
     for( QListViewItemIterator it( this ); it.current(); ++it )
         list.prepend( (PlaylistItem*)it.current() );
@@ -2323,7 +2333,7 @@ TagWriter::doJob()
             case PlaylistItem::Track:
                 t->setTrack( m_newTagString.toInt() );
                 break;
-    
+
             default:
                 return true;
         }

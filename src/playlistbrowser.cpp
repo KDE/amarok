@@ -577,7 +577,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save" ), SAVE );
             menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear" ), CLEAR );
-            menu.insertItem( i18n( "Remove Duplicates" ), RMDUP );
+            menu.insertItem( i18n( "Remove Duplicates / Missing" ), RMDUP );
 
             menu.insertSeparator();
 
