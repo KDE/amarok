@@ -118,7 +118,7 @@
      <entry key="Playlist Follow Active" type="Bool">
         <label>Whether the playlist should scroll with the active playlist item</label>
         <default>false</default>
-        <whatsthis>Blahblahblah</whatsthis>
+        <whatsthis></whatsthis>
      </entry>
      <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
