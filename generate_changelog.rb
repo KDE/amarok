@@ -10,15 +10,15 @@ $input  = File.new( "ChangeLog",  File::RDONLY )
 $output = File.new( "ChangeLog.html", File::CREAT | File::RDWR | File::TRUNC )
 
 $changelog = $input.read
-$rx = /BR [0-9]*/
 
-allmatches = $changelog.scan( $rx )
 
+# Replace bug number with direct link to bugs.kde.org
+
+allmatches = $changelog.scan( /BR [0-9]*/ )
 
 for bug in allmatches
     bugnum = /[0-9].*/.match( bug )
 #     puts bugnum
-
     url = "<a href='http://bugs.kde.org/show_bug.cgi?id=#{bugnum}'>#{bug}</a>"
     $changelog = $changelog.gsub( bug, url )
 end
@@ -30,6 +30,6 @@ $changelog = $changelog.gsub( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</
 $changelog = $changelog.gsub( "\n", "</BR>\n" )
 
 
-puts $changelog
+# Write destination file
 $output.write( $changelog )
 
