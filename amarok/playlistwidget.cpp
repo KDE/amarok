@@ -13,7 +13,7 @@
 
 #include "amarokconfig.h"
 #include "metabundle.h"
-#include "playerapp.h" //restoreCurrentTrack(), removeSelectedItems(), restoreCurrentTrack() //FIXME remove!
+#include "playerapp.h" //restoreCurrentTrack(), removeSelectedItems() //FIXME remove!
 #include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
