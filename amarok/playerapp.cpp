@@ -643,11 +643,11 @@ void PlayerApp::play( const MetaBundle &bundle )
         m_pEngine->open( url );
 
     m_proxyError = false;
-    
+
     //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
     if ( m_pEngine->isStream() )
         emit metaData( bundle );
-    
+
     m_length = bundle.length() * 1000;
 
     kdDebug() << "[play()] " << url.prettyURL() << endl;
@@ -726,7 +726,14 @@ void PlayerApp::slotPlaylistShowHide()
     }
 
     //only do if shown so that it doesn't affect expected layout after restore from systray
-    if( m_pPlayerWidget->isShown() ) m_pPlayerWidget->m_pButtonPl->setOn( m_pBrowserWin->isShown() );
+    if( m_pPlayerWidget->isShown() )
+    {
+        IconButton *w = m_pPlayerWidget->m_pButtonPl;
+        w->blockSignals( true );
+        w->setOn( m_pBrowserWin->isShown() );
+        w->blockSignals( false );
+
+    }
 
 
 
