@@ -31,8 +31,7 @@ struct _GstEqualizer
     /* pads */
     GstPad *srcpad;
 
-    bool stopped;
-    long curoffset;
+    int band_count;
 
     // Properties
     glong blocksize; /* Bytes per read */
@@ -46,9 +45,20 @@ struct _GstEqualizerClass
     GstElementClass parent_class;
 
     /* signals */
-    void ( *timeout ) ( GstElement *element );
-    void ( *kio_resume ) ( GstElement *element );
 };
+
+
+static void gst_equalizer_set_property ( GObject * object, guint prop_id,
+                                         const GValue * value, GParamSpec * pspec );
+
+static void gst_equalizer_get_property ( GObject * object, guint prop_id,
+                                         GValue * value, GParamSpec * pspec );
+
+static GstElementStateReturn gst_equalizer_change_state (GstElement* element);
+
+static void clean_history();
+static void set_filters( GstEqualizer* obj, gint bands, gint sfreq );
+static GstData *gst_equalizer_chain ( GstPad* pad, GstData* data );
 
 GType gst_equalizer_get_type( void );
 GstEqualizer* gst_equalizer_new ();

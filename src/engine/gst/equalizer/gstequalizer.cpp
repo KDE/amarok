@@ -4,7 +4,11 @@
 // License: GPL V2
 
 #include "config.h"
+
 #include "gstequalizer.h"
+#include "iir_cf.h"         // IIR filter coefficients
+
+#include <string.h>
 
 #include <kdebug.h>
 
@@ -12,6 +16,7 @@
 GST_DEBUG_CATEGORY_STATIC ( gst_equalizer_debug );
 #define GST_CAT_DEFAULT gst_equalizer_debug
 
+#define BAND_NUM 15
 
 /* signals and args */
 enum {
@@ -31,23 +36,10 @@ GstElementDetails gst_equalizer_details =
 static guint gst_equalizer_signals[ LAST_SIGNAL ] = { 0 };
 
 #define _do_init(bla) \
-    GST_DEBUG_CATEGORY_INIT (gst_equalizer_debug, "streamsrc", 0, "streamsrc element");
+    GST_DEBUG_CATEGORY_INIT (gst_equalizer_debug, "equalizer", 0, "equalizer element");
 
 
 GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstElement, (GTypeFlags) GST_TYPE_ELEMENT, _do_init );
-
-
-// Forward declarations
-
-static void gst_equalizer_set_property ( GObject * object, guint prop_id,
-        const GValue * value, GParamSpec * pspec );
-
-static void gst_equalizer_get_property ( GObject * object, guint prop_id,
-        GValue * value, GParamSpec * pspec );
-
-static GstElementStateReturn gst_equalizer_change_state (GstElement* element);
-
-static GstData *gst_equalizer_chain ( GstPad* pad, GstData* data );
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -168,15 +160,69 @@ gst_equalizer_change_state (GstElement * element)
 }
 
 
-static GstData*
-gst_equalizer_chain ( GstPad* pad, GstData* data )
+static void clean_history()
 {
-    g_return_val_if_fail( pad != NULL, NULL );
-    GstEqualizer* obj = GST_EQUALIZER ( GST_OBJECT_PARENT ( pad ) );
+    /* Zero the history arrays */
+    bzero(data_history, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
+}
 
-__inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
+
+static void
+set_filters( GstEqualizer* obj, gint bands, gint sfreq )
 {
-    gint16 *data = (gint16 *) * d;
+    rate = sfreq;
+    switch(rate)
+    {
+        case 11025: iir_cf = iir_cf10_11k_11025;
+                    obj->band_count = 10;
+        break;
+        case 22050: iir_cf = iir_cf10_22k_22050;
+                    obj->band_count = 10;
+        break;
+        case 48000:
+            obj->band_count = BAND_NUM;
+            switch( bands )
+            {
+                case 31: iir_cf = iir_cf31_48000; break;
+                case 25: iir_cf = iir_cf25_48000; break;
+                case 15: iir_cf = iir_cf15_48000; break;
+                default:
+                         iir_cf = iir_cf10_48000;
+                break;
+            }
+        break;
+        default:
+            obj->band_count = BAND_NUM;
+            rate = 44100;
+            switch( bands )
+            {
+                case 31: iir_cf = iir_cf31_44100; break;
+                case 25: iir_cf = iir_cf25_44100; break;
+                case 15: iir_cf = iir_cf15_44100; break;
+                default:
+                         iir_cf = iir_cf10_44100;
+                break;
+            }
+        break;
+    }
+}
+
+
+static GstData*
+gst_equalizer_chain ( GstPad* pad, GstData* data_in )
+{
+//__inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
+
+    g_return_val_if_fail( pad != NULL, NULL );
+
+    GstEqualizer* obj = GST_EQUALIZER ( GST_OBJECT_PARENT ( pad ) );
+    GstBuffer* buf = GST_BUFFER( data_in );
+    gpointer* d = GST_BUFFER_DATA( buf );
+    gint length = GST_BUFFER_SIZE( buf );
+    gint srate = 41000;
+    gint nch = 2;
+
+    gint16 *data = (gint16 *) *d;
     /* Indexes for the history arrays
      * These have to be kept between calls to this function
      * hence they are static */
@@ -189,7 +235,7 @@ __inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
     // Load the correct filter table according to the sampling rate if needed
     if (srate != rate)
     {
-        set_filters(eqcfg.band_num, srate, eqcfg.use_xmms_original_freqs);
+        set_filters( obj, BAND_NUM, srate );
         clean_history();
     }
 
@@ -218,20 +264,20 @@ __inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
 
             out[channel] = 0.;
             /* For each band */
-            for (band = 0; band < *band_count; band++)
+            for (band = 0; band < obj->band_count; band++)
             {
                 /* Store Xi(n) */
                 data_history[band][channel].x[i] = pcm[channel];
                 /* Calculate and store Yi(n) */
                 data_history[band][channel].y[i] =
                     (
-                     /* 		= alpha * [x(n)-x(n-2)] */
-                     iir_cf[band].alpha * ( data_history[band][channel].x[i]
-                         -  data_history[band][channel].x[k])
-                     /* 		+ gamma * y(n-1) */
-                     + iir_cf[band].gamma * data_history[band][channel].y[j]
-                     /* 		- beta * y(n-2) */
-                     - iir_cf[band].beta * data_history[band][channel].y[k]
+                    /* = alpha * [x(n)-x(n-2)] */
+                    iir_cf[band].alpha * ( data_history[band][channel].x[i]
+                    -  data_history[band][channel].x[k])
+                    /* + gamma * y(n-1) */
+                    + iir_cf[band].gamma * data_history[band][channel].y[j]
+                    /* - beta * y(n-2) */
+                    - iir_cf[band].beta * data_history[band][channel].y[k]
                     );
                 /*
                  * The multiplication by 2.0 was 'moved' into the coefficients to save
@@ -249,15 +295,7 @@ __inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
             out[channel] += pcm[channel]*0.25;
 
             /* Round and convert to integer */
-#ifdef ARCH_PPC
-            tempgint = round_ppc(out[channel]);
-#else
-#ifdef ARCH_X86
-            tempgint = round_trick(out[channel]);
-#else
             tempgint = (int)out[channel];
-#endif
-#endif
 
             /* Limit the output */
             if (tempgint < -32768)
@@ -274,17 +312,14 @@ __inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
         if (i == 3) i = 0;
         else if (j == 3) j = 0;
         else k = 0;
-
-
     }/* For each pair of samples */
 
-    return length;
     gst_pad_push( obj->srcpad, GST_DATA( buf ) );
 }
 
 
 GstEqualizer*
-gst_equalizer_new ( char* buf, int* index, bool* stop, bool* buffering )
+gst_equalizer_new ()
 {
     GstEqualizer* obj = GST_EQUALIZER ( g_object_new ( GST_TYPE_EQUALIZER, NULL ) );
     gst_object_set_name( (GstObject*) obj, "Equalizer" );
