@@ -32,20 +32,23 @@
 #include <qtimer.h>
 #include <dcopclient.h> 
 #include <kmessagebox.h> 
+#include <qpushbutton.h> 
 
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
-	widget=new QVBox(widgetParent);
-	widget->show();
-	widget->resize(300,300);
+    widget=new QVBox(widgetParent);
+    widget->show();
+    widget->resize(300,300);
     browser = new KHTMLPart( widget );
     browser->setDNDEnabled( true );
-	updateBrowser(KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html");
-	amarokDCOP=new DCOPClient();
-	amarokDCOP->attach();
+    updateBrowser(KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html");
+    amarokDCOP=new DCOPClient();
+    amarokDCOP->attach();
+    QPushButton b_play(widget); b_play.setIconSet( QIconSet ( KGlobal::iconLoader()->loadIcon( "player_play", KIcon::FirstGroup, KIcon::SizeSmall ) ) );
 
-	QTimer *t = new QTimer( this );
+
+    QTimer *t = new QTimer( this );
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, FALSE );
 }
@@ -69,19 +72,19 @@ extern "C"
 
 extern "C" 
 {
-	bool add_konqsidebar_universalamarok(QString* fn, QString* param, QMap<QString,QString> *map) 
+    bool add_konqsidebar_universalamarok(QString* fn, QString* param, QMap<QString,QString> *map) 
         {
-		Q_UNUSED(param);
+        Q_UNUSED(param);
                 
-		map->insert ("Type", "Link");
-		map->insert ("URL", "");
-		map->insert ("Icon", "amarok");
-		map->insert ("Name", i18n ("Amarok"));
-		map->insert ("Open", "true");
-		map->insert ("X-KDE-KonqSidebarModule","konqsidebar_universalamarok");
-		fn->setLatin1 ("amarok.desktop");
-		return true;
-	}
+        map->insert ("Type", "Link");
+        map->insert ("URL", "");
+        map->insert ("Icon", "amarok");
+        map->insert ("Name", i18n ("Amarok"));
+        map->insert ("Open", "true");
+        map->insert ("X-KDE-KonqSidebarModule","konqsidebar_universalamarok");
+        fn->setLatin1 ("amarok.desktop");
+        return true;
+    }
 };
 
 
@@ -90,9 +93,9 @@ extern "C"
  */
 void UniversalAmarok::updateBrowser(const QString& file)
 {
-	browser->begin();
-	browser->openURL(file);
-	browser->end();
+    browser->begin();
+    browser->openURL(file);
+    browser->end();
 }
 
 
@@ -101,12 +104,12 @@ void UniversalAmarok::updateBrowser(const QString& file)
  */
 void UniversalAmarok::updateStatus()
 {
-	QString tempPlaying=getCurrentPlaying();
-	if( tempPlaying != amarokPlaying )
-	{
-		updateBrowser(KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html");
-		amarokPlaying=tempPlaying;
-	}
+    QString tempPlaying=getCurrentPlaying();
+    if( tempPlaying != amarokPlaying )
+    {
+        updateBrowser(KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html");
+        amarokPlaying=tempPlaying;
+    }
 }
 
 
@@ -115,13 +118,13 @@ void UniversalAmarok::updateStatus()
  */
 QString UniversalAmarok::getCurrentPlaying()
 {
-	QCString returnType;
-	QByteArray returnData;
-	QString result;
-	if(! amarokDCOP->call("amarok", "player", "nowPlaying()", NULL, returnType, returnData) ) return NULL;
-	if(returnType!="QString") return NULL;
-	QDataStream dataparsing(returnData, IO_ReadOnly);
-	dataparsing >> result;
-// 	KMessageBox::information(widget,result);
-	return result;
+    QCString returnType;
+    QByteArray returnData;
+    QString result;
+    if(! amarokDCOP->call("amarok", "player", "nowPlaying()", NULL, returnType, returnData) ) return NULL;
+    if(returnType!="QString") return NULL;
+    QDataStream dataparsing(returnData, IO_ReadOnly);
+    dataparsing >> result;
+//     KMessageBox::information(widget,result);
+    return result;
 }
