@@ -27,6 +27,7 @@ email                :
 #include "analyzers/distortanalyzer.h"
 #include "analyzers/turbine.h"
 #include "analyzers/spectralshine.h"
+#include "analyzers/xmasdrug.h"
 #include "amarokdcophandler.h"
 
 #include <qbitmap.h>
@@ -695,6 +696,9 @@ void PlayerWidget::createVis()
         break;
     case 4:
         m_pVis = new SpectralShineAnalyzer( this );
+        break;
+    case 5:
+        m_pVis = new XmasAnalyzer( this );
         break;
     default:
         //oh wise ones! Please forgive my use of the goto command!

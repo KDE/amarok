@@ -13,4 +13,5 @@ images_DATA = amaroKonlyHG_w320.jpg eq_active.png eq_inactive.png \
 	logo_new_active.png logo_new_inactive.png \
 	numbers_transp.png pl_active.png \
 	pl_inactive.png \
-	logo_web.png
+	logo_web.png \
+	bucky.png
