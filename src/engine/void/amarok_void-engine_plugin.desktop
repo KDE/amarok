@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Service
+Name=<no engine>
+X-KDE-Library=libamarok_void-engine_plugin
+Comment=Plugin for amaroK
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-name=void-engine
+X-KDE-amaroK-authors=Max Howell,Mark Kretschmann
+X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-rank=1
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=3
+

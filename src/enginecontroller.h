@@ -95,6 +95,7 @@ private:
     EngineController();
 
 private:
+    static bool s_initialised;
     static ExtensionCache s_extensionCache;
 
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
@@ -110,16 +111,5 @@ private:
     QGuardedPtr<amaroK::StreamProvider> m_stream;
 };
 
-
-inline EngineController*
-EngineController::instance()
-{
-    //will only be instantiated the first time this function is called
-    //will work with the inline directive
-    //TODO there may be issues on older GCC versions where an instance exists in every translation unit
-    static EngineController Instance;
-
-    return &Instance;
-}
 
 #endif

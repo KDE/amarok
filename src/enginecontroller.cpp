@@ -32,44 +32,32 @@ email                : fh@ez.no
 #include <kio/job.h>
 #include <kmessagebox.h>
 
+bool EngineController::s_initialised = false;
 
 ExtensionCache EngineController::s_extensionCache;
 
-class DummyEngine : public EngineBase
+
+inline EngineController*
+EngineController::instance()
 {
-    //Does nothing, just here to prevent crashes on startup
-    //and in case no engines are found
+    //will only be instantiated the first time this function is called
+    //will work with the inline directive
+    //TODO there may be issues on older GCC versions where an instance exists in every translation unit
+    static EngineController Instance;
 
-    virtual bool init() { return true; }
-    virtual bool canDecode( const KURL& ) const { return false; }
-    virtual uint position() const { return 0; }
-    virtual bool load( const KURL&, bool ) { return false; }
-    virtual bool play( uint ) { return false; }
-    virtual void stop() {}
-    virtual void pause() {}
-    virtual void setVolumeSW( uint ) {}
-    virtual void seek( uint ) {}
+    if ( !EngineController::s_initialised ) {
+        EngineController::s_initialised = true;
+        // Load void-engine
+        AmarokConfig::setSoundSystem( "void-engine" );
+        loadEngine();
+    }
 
-    virtual Engine::State state() const { return Engine::Empty; }
-
-public: DummyEngine() : EngineBase() {}
-};
-
-static EngineBase*
-dummyEngine()
-{
-    //use a function so it isn't created when --help is called
-    //for instance (and thus help output isn't clouded by
-    //Plugin::Plugin debug ouput)
-
-    static DummyEngine dummyEngine;
-
-    return &dummyEngine;
+    return &Instance;
 }
 
 
 EngineController::EngineController()
-    : m_engine( dummyEngine() )
+    : m_engine( 0 )
     , m_delayTime( 0 )
     , m_muteVolume( 0 )
     , m_xFadeThisTrack( false )
@@ -136,14 +124,14 @@ EngineBase *EngineController::loadEngine() //static
         //otherwise leave amaroK with the old engine loaded
 
         //set amaroK to stopped state
-        instance()->stop();
+        if ( engine ) instance()->stop();
 
         //new engine, new ext cache required
         extensionCache().clear();
 
         //assign new engine, unload old one. Order is thread-safe!
         instance()->m_engine = static_cast<EngineBase*>(plugin);
-        if( engine != dummyEngine() ) PluginManager::unload( engine );
+        if ( engine ) PluginManager::unload( engine );
 
         engine = static_cast<EngineBase*>(plugin);
 
@@ -162,8 +150,7 @@ EngineBase *EngineController::loadEngine() //static
         //       then the following message is shown
 
         KMessageBox::error( 0, i18n( "The new engine could not be loaded." ) );
-        if( engine != dummyEngine() )
-           AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
+        AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
 
         delete plugin;
      }

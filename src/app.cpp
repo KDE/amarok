@@ -61,6 +61,7 @@ email                : markey@web.de
 
 App::App()
         : KApplication()
+        , m_engineToLoad( AmarokConfig::soundSystem() )
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
@@ -438,8 +439,7 @@ void App::applySettings( bool firstTime )
     { //<Engine>
         EngineBase *engine = EngineController::engine();
 
-        //firstTime the engine is the DummyEngine, which isn't a plugin so it can't
-        //be queried by the Manager
+        if ( firstTime ) AmarokConfig::setSoundSystem( m_engineToLoad );
 
         if( firstTime || AmarokConfig::soundSystem() !=
                          PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )
