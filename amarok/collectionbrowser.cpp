@@ -504,8 +504,8 @@ CollectionView::execSql( const QString& statement,
             break;
         //iterate over columns
         for ( int i = 0; values && names && i < number; i++ ) {
-            *values << value [ i ];
-            *names << colName[ i ];
+            *values << QString::fromLocal8Bit( value [i] );
+            *names << QString::fromLocal8Bit( colName[i] );
         }
     }
     //deallocate vm ressources
@@ -540,8 +540,11 @@ CollectionView::startDrag() {
             QStringList names;
             execSql( command, &values, &names );
 
-            for ( uint i = 0; i < values.count(); i++ )
-                list << values[i];
+            for ( uint i = 0; i < values.count(); i++ ) {
+                KURL tmp;
+                tmp.setPath( values[i] );
+                list << tmp;
+            }
         }
         
     //second pass: category 1    
@@ -567,8 +570,11 @@ CollectionView::startDrag() {
                     QStringList names;
                     execSql( command, &values, &names );
         
-                    for ( uint i = 0; i < values.count(); i++ )
-                        list << values[i];
+                    for ( uint i = 0; i < values.count(); i++ ) {
+                        KURL tmp;
+                        tmp.setPath( values[i] );
+                        list << tmp;
+                    }
                 }
     }
                         
