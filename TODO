@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #156 being the highest available (take this one for your next bug and increase here)
+           #157 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
+
   FIX 155 <muesli> When deleting a cover, remove the (various) scaled versions, too.
 
   FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
