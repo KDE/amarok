@@ -4,6 +4,7 @@
 
 #include "collectionbrowser.h"
 #include "collectiondb.h"
+#include "covermanager.h"    //openCoverManager()
 #include "directorylist.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia()
@@ -75,7 +76,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Collection Folders..." ), m_view, SLOT( setupDirs() ) );
-    
+    m_actionsMenu->insertItem( i18n( "Cover Manager" ), this, SLOT(openCoverManager()) );
     m_actionsMenu->insertSeparator();
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
@@ -134,6 +135,13 @@ void
 CollectionBrowser::setupDirs()  //SLOT
 {
     m_view->setupDirs();
+}
+
+void
+CollectionBrowser::openCoverManager()    //SLOT
+{
+    CoverManager *coverManager = new CoverManager();
+    coverManager->show();
 }
 
 
