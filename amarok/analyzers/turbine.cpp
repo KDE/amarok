@@ -17,7 +17,6 @@ void TurbineAnalyzer::transform( Scope &scope ) //virtual
     m_fht.logSpectrum( front, &f[0] );
     m_fht.scale( front, 1.0 / 20 );
 
-    delete [] f;
     //scope.resize( m_fht.size()/2 ); //second half of values are rubbish
     delete [] f;
 }
