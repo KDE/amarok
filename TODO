@@ -205,6 +205,38 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+From Lauri 2004/11/30:
+
+#0  0x29c9a697 in poll () from /lib/libc.so.5
+#1  0x29c31e91 in poll () from /usr/lib/libpthread.so.1
+#2  0x2991a616 in _XWaitForWritable () from /usr/X11R6/lib/libX11.so.6
+#3  0x2991ac2c in _XFlushInt () from /usr/X11R6/lib/libX11.so.6
+#4  0x2991abb8 in _XFlush () from /usr/X11R6/lib/libX11.so.6
+#5  0x298feb8c in XCopyArea () from /usr/X11R6/lib/libX11.so.6
+#6  0x293ec2e5 in bitBlt () from /usr/X11R6/lib/libqt-mt.so.3
+#7  0x081549b6 in BlockAnalyzer::analyze (this=0x8429a00, s=@0xbfbfe0d0) at /cvs/kdeextragear-1/amarok/src/analyzers/blockanalyzer.cpp:129
+#8  0x0815e972 in Analyzer::Base<QWidget>::demo (this=0x8429a00) at /cvs/kdeextragear-1/amarok/src/analyzers/analyzerbase.cpp:144
+#9  0x0815e248 in Analyzer::Base<QWidget>::drawFrame (this=0x8429a00) at /cvs/kdeextragear-1/amarok/src/analyzers/analyzerbase.cpp:120
+#10 0x0815e046 in Analyzer::Base2D::draw (this=0x8429a00) at analyzerbase.h:77
+#11 0x0815dc1a in Analyzer::Base2D::qt_invoke (this=0x8429a00, _id=45, _o=0xbfbfe1e0) at analyzerbase.moc:82
+#12 0x29486ab6 in QObject::activate_signal () from /usr/X11R6/lib/libqt-mt.so.3
+#13 0x294869ca in QObject::activate_signal () from /usr/X11R6/lib/libqt-mt.so.3
+#14 0x29787602 in QTimer::timeout () from /usr/X11R6/lib/libqt-mt.so.3
+#15 0x294a6089 in QTimer::event () from /usr/X11R6/lib/libqt-mt.so.3
+#16 0x2942e0a9 in QApplication::internalNotify () from /usr/X11R6/lib/libqt-mt.so.3
+#17 0x2942d4d6 in QApplication::notify () from /usr/X11R6/lib/libqt-mt.so.3
+#18 0x28fce16e in KApplication::notify (this=0xbfbfe740, receiver=0x8429a74, event=0xbfbfe4f0) at /cvs/kdelibs/kdecore/kapplication.cpp:515
+#19 0x2941e447 in QEventLoop::activateTimers () from /usr/X11R6/lib/libqt-mt.so.3
+#20 0x293debb8 in QEventLoop::processEvents () from /usr/X11R6/lib/libqt-mt.so.3
+#21 0x2943f25b in QEventLoop::enterLoop () from /usr/X11R6/lib/libqt-mt.so.3
+#22 0x2943f1b4 in QEventLoop::exec () from /usr/X11R6/lib/libqt-mt.so.3
+#23 0x2942e200 in QApplication::exec () from /usr/X11R6/lib/libqt-mt.so.3
+#24 0x0813e9f2 in main (argc=1, argv=0xbfbfe890) at /cvs/kdeextragear-1/amarok/src/amarokcore/main.cpp:70
+
+
+
+From Xt:
+
 18:30 <xt> Program received signal SIGSEGV, Segmentation fault.
 18:30 <xt> [Switching to Thread 16384 (LWP 26659)]
 18:30 <xt> 0x0000002a989f3a66 in g_source_set_closure ()
