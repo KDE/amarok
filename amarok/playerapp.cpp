@@ -882,8 +882,11 @@ void PlayerApp::slotShowOptions()
 void PlayerApp::slotShowOSD( const MetaBundle& bundle )
 {
    // Strip HTML tags, expand basic HTML entities
-   QString text = QString( "%1 - %2" ).arg( bundle.prettyTitle(), bundle.prettyLength() );
-
+   QString text = QString( bundle.prettyTitle() );
+   
+   if ( bundle.length() )
+       text += " - " + bundle.prettyLength();
+                                                
    QString plaintext = text.copy();
    plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
    plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
@@ -921,11 +924,11 @@ void LoaderServer::newConnection( int sockfd )
         kdDebug() << "[LoaderServer::newConnection()] recv error" << endl;
     else
     {
-/*        buf[nbytes] = '\000';
+        buf[nbytes] = '\000';
         QCString result( buf );
         kdDebug() << result << endl;
 
-        emit loaderArgs( result );*/
+        emit loaderArgs( result );
     }
 
     ::close( sockfd );

@@ -53,13 +53,20 @@ public:
         init();
     }
 
-    //FIXME this needs to have an url, having a blank one will break some stuff
-    MetaBundle( const QString &title, const QString &genre, int bitrate = -2 )
-      : m_title     ( title )
+    //ctor used by TitleProxy
+    MetaBundle(     const QString& title,
+                    const QString& url,
+                    const int&     bitrate,
+                    const QString& genre,
+                    const QString& streamName,
+                    const QString& streamUrl )
+      
+      : m_url       ( streamUrl )
+      , m_title     ( url + title )      
       , m_genre     ( genre )
       , m_bitrate   ( bitrate )
-      , m_length    ( -2 )
-      , m_sampleRate( -2 )
+      , m_length    ( Undetermined )
+      , m_sampleRate( Undetermined )
     {}
 
     //TODO one without audioProps please
@@ -161,8 +168,8 @@ MetaBundle::prettyLength( int length ) //static
         if( sec < 10 ) s += '0';
         s += QString::number( sec );
     }
-    else if( length ==  0 ) s = '?';
-    else if( length == -1 ) s = '-';
+    else if( length == Unavailable ) s = '?';
+    else if( length == Irrelevant  ) s = '-';
 
     return s;
 }

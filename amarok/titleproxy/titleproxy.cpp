@@ -252,17 +252,13 @@ void Proxy::transmitData(const QString &data)
       "received new metadata: '" << data << "'" << endl;*/
 
     MetaBundle bundle( extractStr( data, "StreamTitle" ),
+                       extractStr( data, "StreamUrl" ),
+                       m_bitRate,
                        m_streamGenre,
-                       m_bitRate );
-    
+                       m_streamName,
+                       m_streamUrl );
+                           
     emit metaData( bundle );
-
-/*    packet.title       = extractStr( data, "StreamTitle" );
-    packet.url         = extractStr( data, "StreamUrl" );
-    packet.bitRate     = m_bitRate;
-    packet.streamGenre = m_streamGenre;
-    packet.streamName  = m_streamName;
-    packet.streamUrl   = m_streamUrl;*/
 }
 
 

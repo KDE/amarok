@@ -32,7 +32,7 @@ class Loader : public QApplication
         ~Loader();
         
     private slots:
-        void loaded();
+        void doExit();
         void stdoutActive();
         
     private:
@@ -44,6 +44,7 @@ class Loader : public QApplication
         int        m_argc;        
         char**     m_argv;
         
+        int        m_sockfd;
         QProcess*  m_pProc;
         OSDWidget* m_pOsd;
 };

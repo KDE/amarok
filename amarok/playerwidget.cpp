@@ -178,7 +178,7 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
     text += bundle.prettyLength();
 
     m_rateString = bundle.prettyBitrate();
-    if( !m_rateString.isEmpty() ) m_rateString += " / ";
+    if( !m_rateString.isEmpty() && !bundle.prettySampleRate().isEmpty() ) m_rateString += " / ";
     m_rateString += bundle.prettySampleRate();
     if( m_rateString == " / " ) m_rateString = QString::null; //FIXME
 

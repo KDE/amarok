@@ -30,19 +30,20 @@
 
 
 Loader::Loader( int& argc, char** argv )
-    : QApplication( argc, argv, QApplication::GuiServer )
-    , m_argc( argc )
-    , m_argv( argv )
-    , m_pOsd( NULL )
+    : QApplication( argc, argv )
+    , m_argc ( argc )
+    , m_argv ( argv )
+    , m_pProc( NULL )
+    , m_pOsd ( NULL )
 {
-    qDebug( "[Loader::Loader()]" );
+//     qDebug( "[Loader::Loader()]" );
 
-    int sockfd = tryConnect();
+    m_sockfd = tryConnect();
     
     //determine whether an amaroK instance is already running (LoaderServer)
-    if ( sockfd == -1 ) { 
+    if ( m_sockfd == -1 ) { 
         //no, amaroK is not running -> show splash, start new instance
-        qDebug( "[Loader::Loader()] LoaderServer (amaroK instance) not running." );
+        qDebug( "[amaroK loader] amaroK not running. Trying to start it..\n" );
         
         if ( splashEnabled() )
             showSplash();
@@ -54,22 +55,20 @@ Loader::Loader( int& argc, char** argv )
             m_pProc->addArgument( m_argv[i] );
         
         connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
-        connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( quit() ) );
+        connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( doExit() ) );
         m_pProc->setCommunication( QProcess::Stdout );
         m_pProc->start();
-        m_pProc->closeStdin();
         
         //wait until LoaderServer starts (== amaroK is up and running)
-        while( ( sockfd = tryConnect() ) == -1 ) {
+        while( ( m_sockfd = tryConnect() ) == -1 ) {
             processEvents();
             ::usleep( 200 * 1000 );    //== 200ms                    
         }
-        
-        loaded();
+        std::cout << "[amaroK loader] amaroK startup successful.\n";
     }
     else {
         //yes, amaroK is running -> transmit new command line args to the LoaderServer and exit
-        qDebug( "[Loader::Loader()] connected to LoaderServer!" );
+        std::cout << "[amaroK loader] amaroK is already running. Transmitting command line arguments..\n";
         
         //put all arguments into one string
         QCString str;
@@ -77,17 +76,15 @@ Loader::Loader( int& argc, char** argv )
             str.append( m_argv[i] );
             str.append( " " );
         }
-        ::send( sockfd, str, str.length(), 0 );
-        ::close(sockfd );
-        ::exit( 0 );
+        ::send( m_sockfd, str, str.length(), 0 );
     }
+
+    doExit();
 }
 
 
 Loader::~Loader()
-{
-    delete m_pOsd;
-}
+{}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +128,7 @@ void Loader::showSplash()
     QString path = proc->readStdout();
     path.remove( "\n" );
     path += "/share/apps/amarok/images/logo_splash.png";
-    qDebug( path.latin1() );
+//     qDebug( path.latin1() );
     
     m_pOsd = new OSDWidget;
     m_pOsd->showSplash( path );
@@ -142,8 +139,8 @@ void Loader::showSplash()
 int Loader::tryConnect()
 {
     //try to connect to the LoaderServer
-    int sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
-    if ( sockfd == -1 ) {
+    int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
+    if ( fd == -1 ) {
         qDebug( "[Loader::tryConnect()] socket() error" );
         return -1;
     }
@@ -155,21 +152,26 @@ int Loader::tryConnect()
     
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
     
-    if ( ::connect( sockfd, (struct sockaddr*) &local, len ) == -1 ) {
-        qDebug( "[Loader::tryConnect()] connect() failed" );
+    if ( ::connect( fd, (struct sockaddr*) &local, len ) == -1 ) {
+//         qDebug( "[Loader::tryConnect()] connect() failed" );
         return -1;
     }
 
-    return sockfd;
+    return fd;
 }
 
 //SLOT
-void Loader::loaded()
+void Loader::doExit()
 {
-    qDebug( "[Loader::loaded()]" );
+    std::cout << "[amaroK loader] Loader exiting.\n";
     
     delete m_pOsd;
-    m_pOsd = NULL;
+    delete m_pProc;
+    
+    if ( m_sockfd != -1 )
+        ::close( m_sockfd );
+    
+    ::exit( 0 );
 }
 
 //SLOT
@@ -178,7 +180,7 @@ void Loader::stdoutActive()
     qDebug( "[Loader::stdoutActive()]" );
     
     //hand amarokapp's stdout messages through to the cli
-    qDebug( m_pProc->readStdout() );
+    std::cout << m_pProc->readStdout() << "\n";
 }
 
 
