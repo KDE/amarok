@@ -42,6 +42,9 @@
 #include <kurlcompletion.h>
 
 
+namespace amaroK { extern KConfig *config( const QString& ); }
+
+
 QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 
 
@@ -53,8 +56,7 @@ FileBrowser::FileBrowser( const char * name )
     setSpacing( 4 );
     setMargin( 5 );
 
-    KConfig* const config = kapp->config();
-    config->setGroup( "Filebrowser" );
+    KConfig* const config = amaroK::config( "Filebrowser" );
 
     m_actionCollection = new KActionCollection( this );
 
@@ -134,8 +136,7 @@ FileBrowser::FileBrowser( const char * name )
 
 FileBrowser::~FileBrowser()
 {
-    KConfig* const c = kapp->config();
-    c->setGroup( "Filebrowser" );
+    KConfig* const c = amaroK::config( "Filebrowser" );
 
     dir->writeConfig( c ); //uses currently set group
 

@@ -51,6 +51,12 @@ protected:
     virtual void paused();
     virtual void demo();
 
+    void changeTimeout( uint newTimeout )
+    {
+        m_timer.changeInterval( newTimeout );
+        m_timeout = newTimeout;
+    }
+
 private:
     bool event( QEvent* );
 

@@ -3,16 +3,16 @@
 //
 
 #include "blockanalyzer.h"
-#include "fht.h"
-#include <kconfig.h>         //config object
+#include <kconfig.h>
 #include <kdebug.h>
-#include <kglobal.h>         //config object
 #include <kglobalsettings.h> //paletteChange()
 #include <klocale.h>         //mousePressEvent
 #include <kpopupmenu.h>      //mousePressEvent
-#include <math.h>
+#include <math.h>            //resizeEvent()
 #include <qevent.h>          //mousePressEvent
 
+
+namespace amaroK { extern KConfig *config( const QString& ); }
 
 static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];
 
@@ -20,11 +20,13 @@ static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
  : Analyzer::Base2D( parent, 20, 8 )
  , m_dark( WIDTH, HEIGHT )   //QPixmap
- , m_store( MAX_COLUMNS, 0 ) //vector<uint>
+ , m_store( 2 << 8, 0 )      //vector<uint>
  , m_scope( MIN_COLUMNS )    //Scope
  , m_columns( MIN_COLUMNS )  //uint
 {
     for( uint x = 0; x < MAX_ROWS; ++x ) m_glow[x].resize( WIDTH, HEIGHT );
+
+    changeTimeout( amaroK::config( "General" )->readNumEntry( "Timeout", 20 ) );
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumSize( MAX_COLUMNS*(WIDTH+1) -1, MAX_ROWS*(HEIGHT+1) -1 );
@@ -32,15 +34,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
 
 BlockAnalyzer::~BlockAnalyzer()
 {
-    //NOTE there is no point to use KConfig XT unless these options are added to the config dialog
-    //     which may be worthwhile, personally I think that is more trouble than it is worth.
-/*
-    KConfig *config = KGlobal::config();
-
-    config->setGroup( "ToolBarAnalyzer" );
-    config->writeEntry( "Timeout", timeout() );
-    //config->writeEntry( "FhtSize", m_fht.size() );
-*/
+    amaroK::config( "General" )->writeEntry( "Timeout", timeout() );
 }
 
 
@@ -166,34 +160,21 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         //the id of each menu item is the value of the attribute it represents,
         //so mapping is concise.
 
-        const uint ids[7] = { 40, 33, 20, 9, 8, 7, 6 };
+        const uint ids[4] = { 50, 33, 25, 20 };
 
         KPopupMenu menu;
-        QString body = i18n( "%1 fps" );
-        uint compare = timeout();
-
         menu.insertTitle( i18n( "Framerate" ) );
 
-        for( uint x = 0; x < 7; ++x )
+        for( uint x = 0; x < 4; ++x )
         {
             const uint v = ids[x];
 
-            if( x == 3 )
-            {
-                body = "%1";
-                compare = m_fht.sizeExp();
-                menu.insertTitle( i18n( "Spectrum Size" ) );
-            }
-
-            menu.insertItem( body.arg( x<3 ? 1000/v : 1<<(v-1) ), v );
-            menu.setItemChecked( v, v == compare );
+            menu.insertItem( i18n( "%1 fps" ).arg( 1000/v ), v );
+            menu.setItemChecked( v, v == timeout() );
         }
 
-
         const int id = menu.exec( e->globalPos() );
-
-        if( id >= 20 ) { m_timer.changeInterval( id ); m_timeout = id; }
-        //else if( id > 0 ) changeFhtSize( id ); //TODO
+        if( id >= 20 ) changeTimeout( id );
     }
 }
 

@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: ToolbarAnalyzer remembers it's framerate, allowed fps: {50, 40, 30, 20}
   ADD: Full streaming audio support for GStreamer engine.
   FIX: Don't allow user to get into a situation where there is no Menu.
   ADD: Using Welcome-page power-links you can switch between XMMS and amaroK mode.

@@ -29,24 +29,27 @@
 #define APP_VERSION "1.0-CVS"
 
 
+class KActionCollection;
+class KConfig;
+class KGlobalAccel;
+class QColor;
+class QCString;
+class QEvent;
+
 namespace amaroK {
     class OSD;
     class TrayIcon;
     class DcopHandler;
 
     static const int VOLUME_MAX = 100;
+
+    KConfig *config( const QString &group = "General" );
 }
 
 class MetaBundle;
 class PlayerWidget;
 class Playlist;
 class PlaylistWindow;
-
-class KActionCollection;
-class KGlobalAccel;
-class QColor;
-class QCString;
-class QEvent;
 
 
 class App : public KApplication, public EngineObserver

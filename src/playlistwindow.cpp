@@ -124,11 +124,11 @@ PlaylistWindow::init()
         QHBox *hbox; QToolButton *button;
 
         hbox       = new QHBox( m_browsers->container() );
-	button     = new QToolButton( hbox );
-	m_lineEdit = new KLineEdit( hbox );
+        button     = new QToolButton( hbox );
+        m_lineEdit = new KLineEdit( hbox );
 
-	hbox->setMargin( 4 );
-	button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
+        hbox->setMargin( 4 );
+        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
@@ -155,10 +155,9 @@ PlaylistWindow::init()
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
 
+
     //<XMLGUI>
-        KConfig* const config = kapp->config();
-        config->setGroup( "General" );
-        setXMLFile( config->readEntry( "XMLFile", "amarokui.rc" ) );
+        setXMLFile( amaroK::config()->readEntry( "XMLFile", "amarokui.rc" ) );
         createGUI(); //NOTE we implement this
     //</XMLGUI>
 
@@ -532,9 +531,7 @@ void PlaylistWindow::welcomeURL( const KURL &url )
     AmarokConfig::setShowStatusBar( !b );
     pApp->applySettings();
 
-    KConfig* const config = kapp->config();
-    config->setGroup( "General" );
-    config->writeEntry( "XMLFile", xml );
+    amaroK::config()->writeEntry( "XMLFile", xml );
 }
 
 #include "playlistwindow.moc"

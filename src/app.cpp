@@ -715,4 +715,15 @@ Playlist *App::playlist() const
     return m_pPlaylistWindow->playlist();
 }
 
+namespace amaroK
+{
+    KConfig *config( const QString &group )
+    {
+        //Slightly more useful config() that allows setting the group simultaneously
+
+        kapp->config()->setGroup( group );
+        return kapp->config();
+    }
+}
+
 #include "app.moc"

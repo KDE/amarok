@@ -72,6 +72,8 @@ public:
     bool isExternal() const { return !testWFlags( 0 ); }
 };
 
+extern KConfig *config( const QString& );
+
 }
 
 
@@ -146,8 +148,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 
 BrowserBar::~BrowserBar()
 {
-    KConfig *config = kapp->config();
-    config->setGroup( "PlaylistSideBar" );
+    KConfig* const config = amaroK::config( "PlaylistSideBar" );
 
     config->writeEntry( "Stay", m_overlapButton->isOn() );
     config->writeEntry( "CurrentPane", m_currentIndex != -1 ? currentBrowser()->name() : QString::null );
@@ -297,8 +298,7 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 
     m_browsers.push_back( widget );
 
-    KConfig *config = kapp->config();
-    config->setGroup( "PlaylistSideBar" );
+    KConfig* const config = amaroK::config( "PlaylistSideBar" );
     widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DEFAULT_HEIGHT );
     m_overlapButton->setOn( config->readBoolEntry( "Stay", true ) );
     if( config->readEntry( "CurrentPane" ) == name ) showHideBrowser( id );
