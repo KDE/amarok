@@ -247,13 +247,14 @@
     <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
     <choices>
+        <choice name="Free"/>
+        <choice name="Center"/>
         <choice name="TopCenter"/>
         <choice name="TopLeft" />
         <choice name="TopRight"/>
         <choice name="BottomCenter"/>
         <choice name="BottomLeft"/>
         <choice name="BottomRight"/>
-        <choice name="Center"/>
     </choices>
         <default>BottomCenter</default>
         <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>

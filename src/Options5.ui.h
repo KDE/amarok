@@ -70,7 +70,7 @@ void Options5::screenChanged( int screen )
 }
 
 
-void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, int xOffset, int yOffset )
+void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, int /*xOffset*/, int /*yOffset*/ )
 {
     // atomic
     kcfg_OsdScreen->blockSignals( true );

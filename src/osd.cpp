@@ -106,13 +106,11 @@ void OSDWidget::renderOSDText( const QString &text )
     bufferPainter.setFont( titleFont );
     bufferPainter.drawText( 10, 3, w, h, AlignLeft, m_appName );
 
-
     // Masking for transparency
     mask.fill( Qt::black );
     maskPainter.setBrush( Qt::white );
     maskPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
     setMask( mask );
-
 
     m_currentText = text;
     m_dirty = false;
@@ -280,6 +278,14 @@ void OSDWidget::rePosition()
 
     switch( m_position )
     {
+        case Free: 
+            break;
+        
+        case Center:
+            newPos.rx() = (screenRect.width()  - osdBuffer.width())  / 2;
+            newPos.ry() = (screenRect.height() - osdBuffer.height()) / 2;
+            break;
+        
         case TopCenter:
             newPos.rx() = (screenRect.width()  - osdBuffer.width())  / 2;
             break;
@@ -297,16 +303,10 @@ void OSDWidget::rePosition()
         case BottomRight:
             newPos.rx() = screenRect.width() - m_offset.x() - osdBuffer.width();
             if( m_position == TopRight ) break;
-
             //BottomRight FALLS_THROUGH
         
         case BottomLeft:
             newPos.ry() = screenRect.height() - m_offset.y() - osdBuffer.height();
-            break;
-
-        case Center:
-            newPos.rx() = (screenRect.width()  - osdBuffer.width())  / 2;
-            newPos.ry() = (screenRect.height() - osdBuffer.height()) / 2;
             break;
     }
 
@@ -349,37 +349,14 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
         // compute current Position && offset
         QDesktopWidget *desktop = QApplication::desktop();
         int currentScreen = desktop->screenNumber( pos() );
-        Position pos = Center;
-        if( currentScreen != -1 )
-        {
-            QRect screenRect = desktop->screenGeometry( currentScreen );
-            // figure out what quadrant we are in and the offset in that quadrant
-            int xoffset = 0, yoffset = 0;
-            bool left = false;
-            if( x() < screenRect.width() / 2 + screenRect.x() ) // left
-            {
-                left = true;
-                xoffset = x() - screenRect.x();
-            }
-            else
-            {
-                xoffset = screenRect.x() + screenRect.width() - x() - width();
-            }
-            if( y() < screenRect.height() / 2 + screenRect.y() ) // top
-            {
-                yoffset = y() - screenRect.y();
-                pos = left ? TopLeft : TopRight;
-            }
-            else
-            {
-                yoffset = screenRect.y() + screenRect.height() - y() - height();
-                pos = left ? BottomLeft : BottomRight;
-            }
+        
+        if( currentScreen != -1 ) {
             // set new data
-            m_offset = QPoint( xoffset, yoffset );
-            m_position = pos;
+            m_offset = QPoint( x(), y() );
+            m_position = Free;
             m_screen = currentScreen;
-            emit positionChanged( currentScreen, pos, xoffset, yoffset );
+            
+            emit positionChanged( m_screen, m_position, x(), y() );
         }
     }
 }
@@ -397,7 +374,6 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
             move( e->globalPos() - m_dragOffset );
     }
 }
-
 
 
 //////  amaroK::OSD below /////////////////////

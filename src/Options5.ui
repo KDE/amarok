@@ -326,6 +326,16 @@
                                 <widget class="KComboBox">
                                     <item>
                                         <property name="text">
+                                            <string>Free</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>Center</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
                                             <string>TopCenter</string>
                                         </property>
                                     </item>
@@ -352,11 +362,6 @@
                                     <item>
                                         <property name="text">
                                             <string>BottomRight</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Center</string>
                                         </property>
                                     </item>
                                     <property name="name">

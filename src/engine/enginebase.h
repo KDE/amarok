@@ -126,7 +126,7 @@ class EngineBase : public QObject, public amaroK::Plugin {
         
         virtual void seek( long ms ) = 0;
         virtual void configureDecoder() {}
-        virtual void newStreamData( char* data, int size ) {};
+        virtual void newStreamData( char* /*data*/, int /*size*/ ) {};
         
     protected:
         void closeMixerHW();

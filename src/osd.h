@@ -30,13 +30,14 @@ class OSDWidget : public QWidget
     Q_OBJECT
       public:
         enum Position {
+          Free,
+          Center,
           TopCenter,
           TopLeft,
           TopRight,
           BottomCenter,
           BottomLeft,
           BottomRight,
-          Center
         };
 
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
