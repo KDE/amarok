@@ -163,7 +163,7 @@ gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * val
 
         case ARG_PREAMP:
             for ( int chan = 0; chan < EQ_CHANNELS; chan++ )
-                obj->preamp[chan] = g_value_get_int(value) * 0.01;
+                obj->preamp[chan] = (float)g_value_get_int(value) * 0.01;
             break;
 
         case ARG_GAIN:
@@ -292,7 +292,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
         {
             pcm[channel] = data[index+channel];
             /* Preamp gain */
-//             pcm[channel] *= obj->preamp[channel];
+            pcm[channel] *= obj->preamp[channel];
 
             out[channel] = 0.;
             /* For each band */

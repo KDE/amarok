@@ -16,11 +16,12 @@
 #ifndef AMAROK_EQUALIZERSETUP_H
 #define AMAROK_EQUALIZERSETUP_H
 
-#include <qptrlist.h>  //stack alloc
-#include <qslider.h>
-#include <qwidget.h>   //baseclass
+#include "equalizersetupbase.h" //base class
 
-class EqualizerSetup : public QWidget
+#include <qptrlist.h>           //stack alloc
+#include <qslider.h>
+
+class EqualizerSetup : public EqualizerSetupBase
 {
     Q_OBJECT
 
@@ -32,13 +33,13 @@ class EqualizerSetup : public QWidget
 
     private slots:
         void activateEqualizer( bool );
-        void sliderChanged( int );
+        void preampChanged();
+        void bandChanged();
 
     private:
         static EqualizerSetup* s_instance;
-        static const int NUM_BANDS = 10;
 
-        QPtrList<QSlider> m_sliders;
+        QPtrList<QSlider> m_bandSliders;
 };
 
 

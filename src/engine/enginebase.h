@@ -6,11 +6,14 @@
 #define AMAROK_ENGINEBASE_H
 
 #include "plugin/plugin.h" //baseclass
-#include <qobject.h>       //baseclass
 
-#include <kurl.h>
 #include <sys/types.h>
 #include <vector>
+
+#include <qobject.h>       //baseclass
+#include <qvaluelist.h>    //stack alloc
+
+#include <kurl.h>
 
 
 // DEVELOPMENT NOTES
@@ -175,7 +178,7 @@ namespace Engine
         /** Set equalizer preamp value, range 0-100 */
         virtual void setEqualizerPreamp( int ) {};
         /** Set equalizer band gains, 10 values, range 0-100 */
-        virtual void setEqualizerGains( const std::vector<int>& ) {};
+        virtual void setEqualizerGains( const QValueList<int>& ) {};
 
     protected:
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0, bool hasEqualizer = false );

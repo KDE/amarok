@@ -445,13 +445,9 @@ void App::applySettings( bool firstTime )
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
         engine->setVolume( AmarokConfig::masterVolume() );
 
-        std::vector<int> gains( 10 );
-        for ( int i = 0; i < 10; i++ )
-            gains.push_back( *AmarokConfig::equalizerGains().at( i ) );
-
         engine->setEqualizerActive( AmarokConfig::useEqualizer() );
         engine->setEqualizerPreamp( AmarokConfig::equalizerPreamp() );
-        engine->setEqualizerGains( gains );
+        engine->setEqualizerGains( AmarokConfig::equalizerGains() );
     } //</Engine>
 
     /* delete unneeded cover images from cache */

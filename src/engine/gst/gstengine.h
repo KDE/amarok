@@ -75,7 +75,7 @@ class GstEngine : public Engine::Base
         /** Set equalizer preamp value, range 0-100 */
         void setEqualizerPreamp( int );
         /** Set equalizer band gains, 10 values, range 0-100 */
-        void setEqualizerGains( const std::vector<int>& );
+        void setEqualizerGains( const QValueList<int>& );
 
     protected:
         void setVolumeSW( uint percent );

@@ -23,7 +23,6 @@ email                : markey@web.de
 
 #include <math.h>
 #include <unistd.h>
-#include <vector>
 
 #include <qfile.h>
 #include <qtimer.h>
@@ -564,14 +563,14 @@ GstEngine::setEqualizerPreamp( int preamp ) //SLOT
 
 
 void
-GstEngine::setEqualizerGains( const std::vector<int>& gains ) //SLOT
+GstEngine::setEqualizerGains( const QValueList<int>& gains ) //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
-    m_equalizerGains.resize( gains.size() );
+    m_equalizerGains.resize( gains.count() );
 
-    for ( int i = 0; i < gains.size(); i++ )
-        m_equalizerGains[i] = gains[i];
+    for ( int i = 0; i < gains.count(); i++ )
+        m_equalizerGains[i] = *gains.at( i );
 
     gst_element_set( m_gst_equalizer, "gain", &m_equalizerGains, NULL );
 }

@@ -1,5 +1,5 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>Form1</class>
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>EqualizerSetupBase</class>
 <widget class="QWidget">
     <property name="name">
         <cstring>Form1</cstring>
@@ -56,6 +56,9 @@
                             <property name="name">
                                 <cstring>slider_preamp</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -96,6 +99,9 @@
                             <property name="name">
                                 <cstring>slider_band1</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -125,6 +131,9 @@
                             <property name="name">
                                 <cstring>slider_band2</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -150,6 +159,9 @@
                         <widget class="QSlider">
                             <property name="name">
                                 <cstring>slider_band3</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
                             </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
@@ -177,6 +189,9 @@
                             <property name="name">
                                 <cstring>slider_band4</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -202,6 +217,9 @@
                         <widget class="QSlider">
                             <property name="name">
                                 <cstring>slider_band5</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
                             </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
@@ -229,6 +247,9 @@
                             <property name="name">
                                 <cstring>slider_band6</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -254,6 +275,9 @@
                         <widget class="QSlider">
                             <property name="name">
                                 <cstring>slider_band7</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
                             </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
@@ -281,6 +305,9 @@
                             <property name="name">
                                 <cstring>slider_band8</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -307,6 +334,9 @@
                             <property name="name">
                                 <cstring>slider_band9</cstring>
                             </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
                             </property>
@@ -332,6 +362,9 @@
                         <widget class="QSlider">
                             <property name="name">
                                 <cstring>slider_band10</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
                             </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
