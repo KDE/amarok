@@ -64,8 +64,6 @@ signals:
     void orderPrevious();
     void orderCurrent();
 
-    void deleteProxy();    // proxy error stuff. Move to private class?
-
 private slots:
     void slotMainTimer();
     void newMetaData( const MetaBundle & );

@@ -19,18 +19,17 @@ email                : markey@web.de
 #include "metabundle.h"
 #include "titleproxy.h"
 
-#include <kapplication.h>
 #include <kdebug.h>
-#include <kurl.h>
 
-#include <qobject.h>
 #include <qstring.h>
+#include <qtimer.h>
 
 
 using namespace TitleProxy;
 
 static const uint MIN_PROXYPORT = 6700;
 static const uint MAX_PROXYPORT = 7777;
+static const int TIMEOUT = 6000; //msec
 static const int BUFSIZE = 16384;
 
 
@@ -71,7 +70,7 @@ Proxy::Proxy( KURL url, int streamingMode )
         connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
     }
     else
-        sendRequest();
+        connectToHost();
 }
 
 
@@ -82,6 +81,10 @@ Proxy::~Proxy()
     delete[] m_pBuf;
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC
+//////////////////////////////////////////////////////////////////////////////////////////
 
 KURL Proxy::proxyUrl()
 {
@@ -97,36 +100,46 @@ KURL Proxy::proxyUrl()
 }
 
 
-void Proxy::accept( int socket )
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void Proxy::accept( int socket ) //SLOT
 {
     m_sockProxy.setSocket( socket );
-    m_sockProxy.waitForMore( 5000 );
+    m_sockProxy.waitForMore( TIMEOUT );
 
-    sendRequest();    
+    connectToHost();    
 }
 
 
-void Proxy::sendRequest()
+void Proxy::connectToHost() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
   
     { //initialisations
+        m_connectSuccess = false;
         m_headerFinished = false;
         m_headerStr = QString();
     }
             
     { //connect to server
-        //FIXME this needs a timeout check    
+        connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
+        connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
+        connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
+        QTimer::singleShot( TIMEOUT, this, SLOT( connectError() ) );
+                
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
-        while ( m_sockRemote.state() != QSocket::Connected )
-            kapp->processEvents();
-        
-        if ( m_sockRemote.state() != QSocket::Connected ) {
-            kdWarning() << k_funcinfo << "Unable to connect to remote server. Aborting.\n";
-            return;
-        }
     }
     
+    kdDebug() << "END " << k_funcinfo << endl;
+}        
+
+
+void Proxy::sendRequest() //SLOT
+{
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+        
     { //send request                                 
         QString request = QString( "GET %1 HTTP/1.1\r\n" )
                                 .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
@@ -148,8 +161,9 @@ void Proxy::sendRequest()
 }
 
 
-void Proxy::readRemote()
+void Proxy::readRemote() //SLOT
 {
+    m_connectSuccess = true;
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
@@ -193,6 +207,22 @@ void Proxy::readRemote()
 }
 
 
+void Proxy::connectError() //SLOT
+{
+    if ( !m_connectSuccess ) {
+        kdWarning() << "TitleProxy error: Unable to connect to this stream server. Can't play the stream!\n";
+        
+        emit proxyError();
+        //Commit suicide
+        deleteLater();
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+//////////////////////////////////////////////////////////////////////////////////////////
+
 bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
     while ( index < bytesRead ) {
@@ -235,19 +265,6 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
 }
 
 
-void Proxy::error()
-{
-    kdDebug() <<  "TitleProxy error. Restarting stream in non-metadata mode.\n";
-    
-    m_sockRemote.close();
-    m_sockRemote.disconnect( SIGNAL( readyRead() ) );
-    m_icyMode = false;
-    
-    //open stream again,  but this time without metadata, please
-    sendRequest();
-}
-
-
 void Proxy::transmitData( const QString &data )
 {
     kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
@@ -268,6 +285,20 @@ void Proxy::transmitData( const QString &data )
 }
 
 
+void Proxy::error()
+{
+    kdDebug() <<  "TitleProxy error: Stream does not support shoutcast metadata. "
+                  "Restarting in non-metadata mode.\n";
+    
+    m_sockRemote.close();
+    m_sockRemote.disconnect( SIGNAL( readyRead() ) );
+    m_icyMode = false;
+    
+    //open stream again,  but this time without metadata, please
+    connectToHost();
+}
+
+
 QString Proxy::extractStr( const QString &str, const QString &key )
 {
     int index = str.find( key, 0, true );
@@ -282,4 +313,6 @@ QString Proxy::extractStr( const QString &str, const QString &key )
     }
 }
 
+
 #include "titleproxy.moc"
+

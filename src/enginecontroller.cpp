@@ -125,16 +125,17 @@ void EngineController::play( const MetaBundle &bundle )
             emit orderNext();
             return;
         }
-        m_pEngine->play( proxy->proxyUrl() );
-
-        connect( this,      SIGNAL( deleteProxy () ),
-                 proxy,       SLOT( deleteLater () ) );
-        connect( m_pEngine, SIGNAL( stopped () ),
-                 proxy,       SLOT( deleteLater() ) );
         connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
                  this,        SLOT( newMetaData( const MetaBundle& ) ) );
         connect( proxy,     SIGNAL( streamData( char*, int ) ),
                  m_pEngine,   SLOT( newStreamData( char*, int ) ) );
+        connect( proxy,     SIGNAL( proxyError() ),
+                 this,      SIGNAL( orderNext() ) );
+        
+        m_pEngine->play( proxy->proxyUrl() );
+
+        connect( m_pEngine, SIGNAL( stopped () ),
+                 proxy,       SLOT( deleteLater() ) );
     }
     else
         m_pEngine->play( url );

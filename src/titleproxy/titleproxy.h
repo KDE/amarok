@@ -15,10 +15,10 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
-#ifndef TITLEPROXY_H
-#define TITLEPROXY_H
+#ifndef AMAROK_TITLEPROXY_H
+#define AMAROK_TITLEPROXY_H
 
-#include <kurl.h>
+#include <kurl.h>             //stack allocated
 
 #include <qobject.h>
 #include <qserversocket.h>    //baseclass
@@ -60,22 +60,26 @@ namespace TitleProxy
         signals:
             void metaData( const MetaBundle& );
             void streamData( char*, int size );
-
+            void proxyError();
+            
         private slots:
-            void readRemote();
-            bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void accept( int socket );
+            void connectToHost();
             void sendRequest();
-
+            void readRemote();
+            void connectError();
+            
         private:
-            void error();
+            bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void transmitData( const QString &data );
+            void error();
             QString extractStr( const QString &str, const QString &key );
 
         //ATTRIBUTES:
             KURL m_url;
             int m_streamingMode;
             bool m_initSuccess;
+            bool m_connectSuccess;
             
             int m_metaInt;
             int m_bitRate;
@@ -117,4 +121,5 @@ namespace TitleProxy
 
 } //namespace TitleProxy
 
-#endif
+#endif /*AMAROK_TITLEPROXY_H*/
+

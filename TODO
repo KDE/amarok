@@ -10,9 +10,6 @@ SHORT-TERM (URGENT):
 
   FIX 129 <markey> Copy trackname to clipboard (ctrl-c) appears broken.
 
-  FIX 128 <mxcl>   TitleProxy uses 100% cpu and doesn't appear to time out for URLs it can't resolve,
-                   eg http://www.live365.com/play/298863 from BR77313, which is redirected (see BR).
-
   FIX 124 <muesli> Make CollectionBrowser independent of i18n.
 
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
