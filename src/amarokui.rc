@@ -1,20 +1,30 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="amarok" version="7">
+<kpartgui name="amarok" version="8">
 <ToolBar name="mainToolBar"><Text>Playlist Toolbar</Text>
- <Action name="playlist_clear"/>
- <Separator lineSeparator="true"/>
- <Action name="playlist_undo"/>
- <Action name="playlist_redo"/>
- <Separator lineSeparator="true"/>
- <Action name="toolbar_analyzer"/>
- <Separator lineSeparator="true"/>
- <Action name="toolbar_volume" />
- <Separator lineSeparator="true"/>
+
  <Action name="prev" />
  <Action name="play" />
  <Action name="pause" />
  <Action name="stop" />
  <Action name="next" />
+
+ <Separator lineSeparator="true"/>
+
+ <Action name="toolbar_volume" />
+
+ <Separator lineSeparator="true"/>
+
+ <Action name="toolbar_analyzer"/>
+
+ <Separator lineSeparator="true"/>
+
+ <Action name="playlist_undo"/>
+ <Action name="playlist_redo"/>
+
+ <Separator lineSeparator="true"/>
+
+ <Action name="playlist_clear"/>
+
 </ToolBar>
 
 </kpartgui>
