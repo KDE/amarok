@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
+           amaroK starts show a big warning saying "Gah!" and load a different one.
+
   <markey> In CoverManager, the album list on the left side doesn't work. Clicking on it does nothing.
 
   <markey> After rescanning the Collection, ContextBrowser still shows "Rebuilding Collection..."
