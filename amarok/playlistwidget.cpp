@@ -365,12 +365,14 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
       break;
 
    case 65433: //LoaderDoneEvent
-
-      static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
-      if( !m_tagReader->running() ) unsetCursor();
-      restoreCurrentTrack();
-      break;
-
+       
+       static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
+       //if( !m_tagReader->running() )
+           unsetCursor();
+       
+       restoreCurrentTrack();
+       break;
+   
    case 65434: //TagReaderEvent
 
       static_cast<TagReader::TagReaderEvent*>(e)->bindTags();
@@ -459,9 +461,9 @@ void PlaylistWidget::setCurrentTrack( QListViewItem *item )
 {
     PlaylistItem *tmp = PlaylistItem::GlowItem;
     PlaylistItem::GlowItem = (PlaylistItem*)item;
+    repaintItem( tmp ); //new glowItem will be repainted by glowTime::timeout()
     
-    repaintItem( tmp ); //new glowItem will be repainted when by glowTimer
-    
+    if( m_pCurrentTrack == NULL ) ensureItemVisible( item ); //this is a good thing (tm)
     m_pCurrentTrack = (PlaylistItem*)item;
 }
 
@@ -470,7 +472,7 @@ PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 {
    KURL url( pApp->m_playingURL );
 
-   if( !( m_pCurrentTrack && m_pCurrentTrack->url() == url ) )
+   if( !(m_pCurrentTrack && m_pCurrentTrack->url() == url) )
    {
       PlaylistItem* item;
 

@@ -3,15 +3,10 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #15 being the highest available (take this one for your next bug and increase here)
+           #14 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
-
-    * fix: #14<mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
-              relevant to amaroK since we are naughty and don't obey KDE's single click mode
-              we should disable the hand cursor since that means "single-click to activate me"
-              maybe override KListView::mouseMoveEvent, or is there a better way?
 
     * chg: #13<mxcl> use QApplication::setPalette to adjust application colours, as it propagates
               changes to all widgets and will hopefully deal with the selection colour issues in
@@ -70,6 +65,11 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
+           relevant to amaroK since we are naughty and don't obey KDE's single click mode
+           we should disable the hand cursor since that means "single-click to activate me"
+           maybe override KListView::mouseMoveEvent, or is there a better way?
+    
     * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
 
     * fix: honor KDE single/double-click setting in BrowserWin
