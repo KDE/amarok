@@ -11,6 +11,10 @@ VERSION 1.2.3:
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
+    * GStreamer-engine: Reduced the gap when switching to next track without
+      crossfading.
+    * GStreamer-engine: amaroK was swallowing the beginning of a track when
+      Fade-in was set to zero. (BR 94472)
     * Use a better highlight color in the "Configure Collection" dialog.
       (BR 102059)
     * "Remove Duplicates / Missing" fixed. Removes dead entries correctly.

@@ -515,19 +515,28 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         }
     }
 
-    // Link all elements. The link from decodebin to audioconvert will be done in the newPad-callback
+    // Link all elements. The link from decodebin to audioconvert will be made in the newPad-callback
     gst_element_link( input->src, input->decodebin );
     gst_element_link_many( input->audioconvert, input->audioscale, input->volume, NULL );
 
     // Prepare bin for playing
     gst_element_set_state( input->bin, GST_STATE_READY );
 
+    // Check if another track is already playing
     if ( m_currentInput ) {
-        m_currentInput->setState( InputPipeline::XFADE_OUT );
-        input->setState( InputPipeline::XFADE_IN );
+        if ( m_xfadeLength ) {
+            m_currentInput->setState( InputPipeline::XFADE_OUT );
+            input->setState( InputPipeline::XFADE_IN );
+            gst_element_set( input->volume, "volume", 0.0, NULL );
+        }
+        else
+            destroyInput( m_currentInput );
     }
     else
-        input->setState( InputPipeline::FADE_IN );
+        if ( GstConfig::fadeinDuration() ) {
+            input->setState( InputPipeline::FADE_IN );
+            gst_element_set( input->volume, "volume", 0.0, NULL );
+    }
 
     m_currentInput = input;
     m_inputs.append( input );
@@ -1149,9 +1158,6 @@ InputPipeline::InputPipeline()
     g_signal_connect( G_OBJECT( decodebin ), "eos", G_CALLBACK( GstEngine::eos_cb ), this );
     g_signal_connect( G_OBJECT( decodebin ), "new-decoded-pad", G_CALLBACK( GstEngine::newPad_cb ), this );
     g_signal_connect( G_OBJECT( decodebin ), "found-tag", G_CALLBACK( GstEngine::found_tag_cb ), 0 );
-
-    // Start silent
-    gst_element_set( volume, "volume", 0.0, NULL );
 
     return;
 
