@@ -25,7 +25,6 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kfiledialog.h>
-#include <kfileitem.h>
 #include <kiconloader.h>
 #include <klineedit.h>    //search filter
 #include <klistview.h>
@@ -264,7 +263,6 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_db->execSql(command, &values, &names);
 
     if( !values.isEmpty() ) {
-        QPtrList<KFileItem> fileList;
 
         for( uint i=0; i < values.count();  i+=2 )  {
             if( !values[allAlbums ? i+1 : i].isEmpty() ) {
@@ -273,13 +271,8 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                 m_coverItems.append( coverItem );
 
                 if( coverItem->hasCover() ) {
-                    KURL url( coverItem->albumPath() );
-                    KFileItem *file = new KFileItem( url, "image/png", 0 );
-
                     QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ], "" );
                     coverItem->updateCover( QPixmap( imgPath ) );
-
-                    fileList.append( file );
                 }
             }
         }
@@ -464,10 +457,6 @@ void CoverManager::coverFetched( const QString &key )
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( key == coverItem->artist() + " - " + coverItem->album() ) {
-            QPtrList<KFileItem> fileList;
-            KFileItem *file = new KFileItem( KURL( coverItem->albumPath() ), "image/png", 0 );
-            fileList.append( file );
-
             QString imgPath = m_db->getImageForAlbum( coverItem->artist(), coverItem->album(), "" );
             coverItem->updateCover( QPixmap( imgPath ) );
             return;
@@ -568,7 +557,7 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 QString CoverViewItem::albumPath()
 {
     QString fileName( QFile::encodeName( m_artist + " - " + m_album ) );
-    fileName.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
+    fileName.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
 
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/"+fileName.lower();
 }
@@ -577,7 +566,7 @@ QString CoverViewItem::albumPath()
 void CoverViewItem::calcRect( const QString& )
 {
     int thumbWidth = AmarokConfig::coverPreviewSize();
-    
+
     QFontMetrics fm = iconView()->fontMetrics();
     QRect itemPixmapRect( 5, 1, thumbWidth, thumbWidth );
     QRect itemRect = rect();

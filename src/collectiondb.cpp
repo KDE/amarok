@@ -46,7 +46,7 @@ CollectionDB::CollectionDB()
     if( !m_coverDir.exists( "albumcovers", false ) )
         m_coverDir.mkdir( "albumcovers", false );
     m_coverDir.cd( "albumcovers" );
-    
+
      // create image cache dir, if it doesn't exist.
     if( !m_cacheDir.exists( "albumcovers/cache", false ) )
         m_cacheDir.mkdir( "albumcovers/cache", false );
@@ -148,8 +148,8 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
 {
     QString widthKey = QString::number( width ) + "@";
     QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
-    
+    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+
     if ( m_cacheDir.exists( widthKey + key.lower() ) )
         return m_cacheDir.filePath( widthKey + key.lower() );
     else
@@ -167,7 +167,7 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
             else
                 return largeCoverDir.filePath( key.lower() );
     }
-    
+
     KURL url;
     url.setPath( getPathForAlbum( artist, album ) );
 
@@ -227,7 +227,7 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
                 return m_cacheDir.absPath() + "/" + filename.lower();
             }
         } else
-      
+
             return path + "/" + image;
     }
 
@@ -257,8 +257,8 @@ CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
 {
     QString widthKey = "*@";
     QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
-    
+    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
     if ( scaledList.count() > 0 )
@@ -294,7 +294,7 @@ CollectionDB::artistList()
 
     execSql( "SELECT name FROM artist "
                   "ORDER BY lower(name)", &values, &names );
-    
+
     return values;
 }
 
@@ -307,11 +307,11 @@ CollectionDB::albumList()
 
     execSql( "SELECT name FROM album "
                   "ORDER BY lower(name)", &values, &names );
-    
+
     return values;
 }
 
-        
+
 bool
 CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 {
@@ -332,7 +332,7 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
         bundle->m_comment = values[5];
         bundle->m_track = values[6];
         bundle->m_url = url;
-        
+
         return true;
     }
 
@@ -551,7 +551,7 @@ CollectionDB::createTables( bool temporary )
                         "name VARCHAR(100) );" )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
-    
+
     //create indexes
     execSql( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
@@ -651,9 +651,9 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
 {
     QStringList values;
     QStringList names;
-    
+
     QString command = "UPDATE tags SET ";
-    command += "title = '" + escapeString( bundle.title() ) + "', "; 
+    command += "title = '" + escapeString( bundle.title() ) + "', ";
     command += "artist = " + escapeString( QString::number( getValueID( "artist", bundle.artist(), true ) ) ) + ", ";
     command += "album = " + escapeString( QString::number( getValueID( "album", bundle.album(), true ) ) ) + ", ";
     command += "genre = " + escapeString( QString::number( getValueID( "genre", bundle.genre(), true ) ) ) + ", ";
@@ -662,11 +662,11 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
         command += "track = " + escapeString( bundle.track() ) + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
-    
+
     execSql( command, &values, &names );
-    
+
     CollectionView::instance()->renderView();
-    
+
 }
 
 
@@ -677,21 +677,21 @@ CollectionDB::updateTag( const QString &url, const QString &field, const QString
     QStringList names;
     QStringList idFields;
     idFields << "artist" << "album" << "genre" << "year";
-    
+
     QString command = "UPDATE tags "
                                    "SET " + field + " = ";
-    
+
     if( idFields.contains( field ) )
         command += escapeString( QString::number( getValueID( field, newTag, true ) ) ) + " ";
     else
         command += "'" + escapeString( newTag ) + "' ";
-        
+
     command += "WHERE url = '" + escapeString(url) + "';";
-    
+
     execSql( command, &values, &names );
-    
+
     CollectionView::instance()->renderView();
-    
+
 }
 
 
@@ -766,11 +766,11 @@ CollectionDB::getValueFromID( QString table, uint id )
 {
    QStringList values;
    QStringList names;
-   
+
    execSql( QString( "SELECT name FROM %1 WHERE id=%2;" )
                                    .arg( table )
                                    .arg( id ), &values, &names );
-    
+
     return values[0];
 }
 
@@ -928,7 +928,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     QString amazonLicense = "D1URM11J3F2CEH";
     QString keyword = artist + " - " + album;
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
-    
+
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
@@ -961,14 +961,14 @@ void
 CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     QImage img( pix.convertToImage() );
-    
+
     QString fileName( QFile::encodeName( keyword ) );
-    fileName.replace( " ", "_" ).replace( "?", "" ).append( ".png" );
-    
+    fileName.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+
     img.save( m_coverDir.filePath( fileName.lower() ), "PNG");
-    
+
     emit coverFetched( keyword );
     emit coverFetched();
 }
