@@ -658,9 +658,9 @@ void ContextBrowser::showHome() //SLOT
 
         m_HTMLSource.append(
                                 "</a></td>"
-                                "<td class='sbtext' width='1'>" + ( ( fave[i + 2].length() > 1 ) ? fave[i + 2] : "0" + fave[i + 2] ) + "</td>"
+                                "<td class='sbtext' width='30'>" + ( ( fave[i + 2].length() > 1 ) ? fave[i + 2] : "0" + fave[i + 2] ) + "</td>"
                                 "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                    "<div class='sbouter'>"
+                                    "<div class='sbouter' width='52'>"
                                         "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
                                     "</div>"
                                 "</td>"
@@ -707,9 +707,9 @@ void ContextBrowser::showHome() //SLOT
 
         m_HTMLSource.append(
                                 "</a></td>"
-                                "<td class='sbtext' width='1'>" + ( ( recent[i + 4].length() > 1 ) ? recent[i + 4] : "0" + recent[i + 4] ) + "</td>"
+                                "<td class='sbtext' width='30'>" + ( ( recent[i + 4].length() > 1 ) ? recent[i + 4] : "0" + recent[i + 4] ) + "</td>"
                                 "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                    "<div class='sbouter'>"
+                                    "<div class='sbouter' width='52'>"
                                         "<div class='sbinner' style='width: " + QString::number( recent[i + 4].toInt() / 2 ) + "px;'></div>"
                                     "</div>"
                                 "</td>"
@@ -760,9 +760,9 @@ void ContextBrowser::showHome() //SLOT
         m_HTMLSource.append(
                                 "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                                 "</a></td>"
-                                "<td class='sbtext' width='1'>" + ( ( least[i + 5].length() > 1 ) ? least[i + 5] : "0" + least[i + 5] ) + "</td>"
+                                "<td class='sbtext' width='30'>" + ( ( least[i + 5].length() > 1 ) ? least[i + 5] : "0" + least[i + 5] ) + "</td>"
                                 "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                    "<div class='sbouter'>"
+                                    "<div class='sbouter' width='52'>"
                                         "<div class='sbinner' style='width: " + QString::number( least[i + 5].toInt() / 2 ) + "px;'></div>"
                                     "</div>"
                                 "</td>"
