@@ -637,6 +637,10 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 QString
 CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 {
+    // Deactived because TagLib (1.3.1) crashes frequently with this stuff
+
+    #if 0
+
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
     QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
@@ -688,6 +692,8 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
             } // apic list is empty
         } // tag is empty
     } // caching
+
+    #endif
 
     return QString::null;
 }
@@ -753,7 +759,7 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 
     QString path = findImageByMetabundle( trackInformation, width );
     if ( path.isNull() )
-      path = findImageByArtistAlbum( trackInformation.artist(), trackInformation.album(), width );
+        path = findImageByArtistAlbum( trackInformation.artist(), trackInformation.album(), width );
 
     return path;
 }
