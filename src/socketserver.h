@@ -10,11 +10,11 @@
 
 #include <klistview.h>        //baseclass
 #include <qserversocket.h>    //baseclass
+#include <qsocketnotifier.h>
 #include <vector>             //stack allocated
 
 class QPoint;
 class KProcess;
-
 
 namespace Vis {
 
@@ -54,6 +54,18 @@ public slots:
 };
 
 
+class VisSocket : public QSocketNotifier
+{
+Q_OBJECT
+
+public:
+    VisSocket( int sockfd );
+    
+private slots:
+    void request( int );
+};
+
+
 class SocketServer : public QServerSocket
 {
 Q_OBJECT
@@ -64,12 +76,8 @@ public:
 
     static SocketServer* m_self;
 
-private slots:
-    void request( int );
-
 private:
     static bool m_ignoreState;
-
     int m_sockfd;
 };
 

@@ -10,7 +10,6 @@
 #include "socketserver.h"
 
 #include <qdir.h>
-#include <qsocketnotifier.h>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -79,10 +78,18 @@ void
 Vis::SocketServer::newConnection( int sockfd )
 {
     kdDebug() << "[Vis::Server] Connection requested: " << sockfd << endl;
+    VisSocket *sn = new VisSocket( sockfd );
+}
 
-    QSocketNotifier *sn = new QSocketNotifier( sockfd, QSocketNotifier::Read, this );
 
-    connect( sn, SIGNAL(activated( int )), SLOT(request( int )) );
+/////////////////////////////////////////////////////////////////////////////////////////
+// CLASS Vis::VisSocket
+/////////////////////////////////////////////////////////////////////////////////////////
+
+Vis::VisSocket::VisSocket( int sockfd )
+  : QSocketNotifier( sockfd, QSocketNotifier::Read, this )
+{
+    connect( this, SIGNAL(activated( int )), SLOT(request( int )) );
 }
 
 
@@ -91,7 +98,7 @@ Vis::SocketServer::newConnection( int sockfd )
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void
-Vis::SocketServer::request( int sockfd )
+Vis::VisSocket::request( int sockfd )
 {
     std::vector<float> *scope = EngineController::engine()->scope();
 
@@ -157,9 +164,9 @@ Vis::SocketServer::request( int sockfd )
 
         kdDebug() << "[Vis::Server] receive error, closing socket: " << sockfd << endl;
         ::close( sockfd );
+        delete this;
     }
 }
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
