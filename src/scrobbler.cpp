@@ -122,7 +122,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_similarArtistsBuffer += QString::fromUtf8( data );
+    m_similarArtistsBuffer += QString::fromUtf8( data, data.size() );
 }
 
 
