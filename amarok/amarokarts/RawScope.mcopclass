@@ -1,0 +1,4 @@
+Interface=Amarok::RawScope,Arts::StereoEffect,Arts::Object
+Language=C++
+Library=libamarokarts.la
+
