@@ -152,7 +152,7 @@ gst_adapter_peek (GstAdapter * adapter, guint size)
 
   cur = adapter->buflist->data;
   
-  // PATCH
+  /* PATCH */
   g_return_val_if_fail (GST_IS_BUFFER(cur), NULL);
   
   if (GST_BUFFER_SIZE (cur) >= size + adapter->skip)
@@ -203,7 +203,7 @@ gst_adapter_flush (GstAdapter * adapter, guint flush)
   adapter->assembled_len = 0;
   while (flush > 0) {
     cur = adapter->buflist->data;
-    // PATCH
+    /* PATCH */
     g_return_if_fail (GST_IS_BUFFER(cur));
     
     if (GST_BUFFER_SIZE (cur) <= flush + adapter->skip) {
