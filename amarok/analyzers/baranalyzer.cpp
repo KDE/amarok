@@ -76,17 +76,6 @@ void BarAnalyzer::init()
 }
 
 
-void BarAnalyzer::transform( Scope &s )
-{
-    float* const f = &(s.front());
-
-    m_fht.power2( f );
-    m_fht.scale( f, 1.0/64 );
-
-    //s.resize( 32 );
-}
-
-
 void BarAnalyzer::analyze( const Scope &s )
 {
     //start with a blank canvas
@@ -98,7 +87,7 @@ void BarAnalyzer::analyze( const Scope &s )
     for ( uint i = 0, x = 0, y2; i < BAND_COUNT; ++i, ++it, x+=COLUMN_WIDTH+1 )
     {
         //assign pre[log10]'d value
-        y2 = uint((*it) * 256); //256 will be optimised to a bitshift
+        y2 = uint((*it) * 256); //256 will be optimised to a bitshift //no, it's a float
         y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ]; //lvlMapper is array of ints with values 0 to height()
 
         int change = y2 - barVector[i];

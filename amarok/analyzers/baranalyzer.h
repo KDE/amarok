@@ -19,7 +19,7 @@ class BarAnalyzer : public Analyzer::Base2D
 
         void init();
         virtual void analyze( const Scope& );
-        virtual void transform( Scope& );
+        //virtual void transform( Scope& );
 
         static const uint BAND_COUNT = 32;
         static const uint ROOF_HOLD_TIME = 48;
