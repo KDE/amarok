@@ -73,7 +73,7 @@ PlaylistItem *PlaylistLoader::PlaylistEvent::makePlaylistItem( QListView *lv )
       //FIXME this seems to block the ui
 
       #if KDE_IS_VERSION(3,1,92)
-      if( KIO::NetAccess::download( m_url, path, this ) )
+      if( KIO::NetAccess::download( m_url, path, pApp->m_pBrowserWin->m_pPlaylistWidget ) )
       #else
       if( KIO::NetAccess::download( m_url, path ) )
       #endif
