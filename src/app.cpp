@@ -87,8 +87,6 @@ App::App()
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
 
-    setMainWidget( m_pPlaylistWindow );
-
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     initGlobalShortcuts();
 
@@ -155,7 +153,7 @@ App::~App()
     EngineController::instance()->endSession();
 
     //do even if trayicon is not shown, it is safe
-    amaroK::config()->writeEntry( "HiddenOnExit", mainWidget()->isHidden() );
+    amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
@@ -376,8 +374,6 @@ void App::applySettings( bool firstTime )
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
-
-            setMainWidget( m_pPlayerWindow );
         }
         else
             //this is called in the PlayerWindow ctor, hence the else
@@ -394,8 +390,6 @@ void App::applySettings( bool firstTime )
         //ensure that at least one Menu is plugged into an accessible UI element
         if( !AmarokConfig::showMenuBar() && !actionCollection()->action( "amarok_menu" )->isPlugged() )
            playlistWindow()->createGUI();
-
-        setMainWidget( m_pPlaylistWindow );
     }
 
 
@@ -422,7 +416,7 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
     {
-        mainWidget()->show();
+        mainWindow()->show();
 
         //takes longer but feels shorter. Crazy eh? :)
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
@@ -730,10 +724,7 @@ void App::slotConfigEffects( bool show ) //SLOT
 
 void App::slotConfigEqualizer() //SLOT
 {
-    EqualizerSetup::instance()->show();
     EqualizerSetup::instance()->raise();
-    // Get focus
-    EqualizerSetup::instance()->setActiveWindow();
 }
 
 
@@ -851,6 +842,10 @@ void App::pruneCoverImages()
 #endif
 }
 
+QWidget *App::mainWindow() const
+{
+   return AmarokConfig::showPlayerWindow() ? (QWidget*)m_pPlayerWindow : (QWidget*)m_pPlaylistWindow;
+}
 
 namespace amaroK
 {

@@ -37,8 +37,8 @@ class EqualizerSetup : public QVBox
        ~EqualizerSetup();
 
     private slots:
-        void enableEqualizer( bool );
-        void parametersChanged();
+        void setEqualizerEnabled( bool );
+        void setEqualizerParameters();
 
     private:
         static EqualizerSetup* s_instance;

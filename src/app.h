@@ -75,6 +75,9 @@ class App : public KApplication, public EngineObserver
         void initGlobalShortcuts();
         void applyColorScheme();
 
+        /** returns the leading window, either playerWindow or playlistWindow */
+        QWidget *mainWindow() const;
+
         /** Removes all covers images older than 90 days, to comply with amazon.com license */
         void pruneCoverImages();
 
