@@ -2274,6 +2274,24 @@ QueryBuilder::addMatch( int tables, const QString& match )
 
 
 void
+QueryBuilder::addMatch( int tables, int value, const QString& match )
+{
+    if ( !match.isEmpty() )
+    {
+        m_where += "AND ( 0 ";
+        m_where += QString( "OR %1.%2 LIKE '" ).arg( tableName( tables ) ).arg( valueName( value ) ) + CollectionDB::instance()->escapeString( match ) + "' ";
+
+        if ( ( value & valName ) && match == i18n( "Unknown" ) )
+            m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
+
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
 QueryBuilder::addMatches( int tables, const QStringList& match )
 {
     if ( !match.isEmpty() )
@@ -2393,15 +2411,18 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage )
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage || 
+         table & tabYear )
         b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
+    if ( table & tabYear ) m_sort += "(";
 
     m_sort += tableName( table ) + ".";
     m_sort += valueName( value );
 
+    if ( table & tabYear ) m_sort += "+0)";
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
 
@@ -2509,6 +2530,10 @@ QueryBuilder::valueName( int value )
     if ( value & valAccessDate )  values += "accessdate";
     if ( value & valCreateDate )  values += "createdate";
     if ( value & valPercentage )  values += "percentage";
+    if ( value & valArtistID )    values += "artist";
+    if ( value & valAlbumID )     values += "album";
+    if ( value & valGenreID )     values += "genre";
+    if ( value & valYearID )      values += "year";
 
     return values;
 }
