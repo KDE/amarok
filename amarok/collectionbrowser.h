@@ -88,7 +88,7 @@ class CollectionView : public KListView
          */
         void setupDirs();    
         
-        void scan();        
+        void scan();
         void dirDirty( const QString& path );
         
         /**
@@ -131,7 +131,7 @@ class CollectionView : public KListView
             
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 3;
+        static const int DATABASE_VERSION = 4;
         
         CollectionBrowser* m_parent;
         ThreadWeaver* m_weaver;

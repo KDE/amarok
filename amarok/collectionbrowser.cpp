@@ -166,12 +166,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
                  "id INTEGER PRIMARY KEY,"
                  "name varchar(100) );" );
 
-        //create indices
-        execSql( "CREATE INDEX album ON tags( album );" );
-        execSql( "CREATE INDEX artist ON tags( artist );" );
-        execSql( "CREATE INDEX genre ON tags( genre );" );
-        execSql( "CREATE INDEX year ON tags( year );" );
-
+        //create indexes
         execSql( "CREATE INDEX album_idx ON album( album );" );
         execSql( "CREATE INDEX artist_idx ON artist( artist );" );
         execSql( "CREATE INDEX genre_idx ON genre( genre );" );
@@ -246,9 +241,18 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
+    //drop indexes
+    execSql( "DROP INDEX album;" );
+    execSql( "DROP INDEX artist;" );
+    execSql( "DROP INDEX genre;" );
+    execSql( "DROP INDEX year;" );
+
     //remove all records
-    QString command = "DELETE FROM tags;";
-    execSql( command );
+    execSql( "DELETE FROM tags;" );
+    execSql( "DELETE FROM album;" );
+    execSql( "DELETE FROM artist;" );
+    execSql( "DELETE FROM genre;" );
+    execSql( "DELETE FROM year;" );
 
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
 
@@ -283,8 +287,9 @@ CollectionView::renderView( )  //SLOT
     QString filterToken = QString( "" );
     if ( m_filter != "" )
         filterToken = QString
-                      ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
-                      .arg( getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
+                      ( "AND ( %1 = %2 OR title LIKE '\%%3\%' )" )
+                      .arg( m_category1.lower() )
+                      .arg( getValueID( m_category1.lower(), QString( "%" ).append( m_filter ).append( "%" ), false ) )
                       .arg( escapeString( m_filter ) );
 
     QString command = QString
@@ -546,13 +551,13 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += escapeString( bundle->url().path() );
             command += "','";
             command += escapeString( bundle->url().directory() );
-            command += "','";
+            command += "',";
             command += escapeString( QString::number( getValueID( "album", bundle->album() ) ) );
-            command += "','";
+            command += ",";
             command += escapeString( QString::number( getValueID( "artist", bundle->artist() ) ) );
-            command += "','";
+            command += ",";
             command += escapeString( QString::number( getValueID( "genre", bundle->genre() ) ) );
-            command += "','";
+            command += ",'";
             command += escapeString( bundle->title() );
             command += "','";
             command += escapeString( QString::number( getValueID( "year", bundle->year() ) ) );
@@ -568,6 +573,12 @@ CollectionView::customEvent( QCustomEvent *e ) {
             if ( !(i % 10) ) kapp->processEvents();
         }
         execSql( "END TRANSACTION;" );
+        
+        //create indexes, now
+        execSql( "CREATE INDEX album ON tags( album );" );
+        execSql( "CREATE INDEX artist ON tags( artist );" );
+        execSql( "CREATE INDEX genre ON tags( genre );" );
+        execSql( "CREATE INDEX year ON tags( year );" );
 
         emit tagsReady();
     }
