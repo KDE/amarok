@@ -327,7 +327,7 @@ class QueryBuilder
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4, optRandomize = 8 };
         enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32, valComment = 64,
                                valBitrate = 128, valLength = 256, valSamplerate = 512, valPlayCounter = 1024,
-                               valCreateDate = 2048, valAccessDate = 4096 };
+                               valCreateDate = 2048, valAccessDate = 4096, valPercentage = 8192 };
 
         enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
 
@@ -350,10 +350,12 @@ class QueryBuilder
         void sortBy( int table, int value, bool descending = false );
         void setLimit( int startPos, int length );
 
+        void initSQLDrag();
         void buildQuery();
         QString query() { buildQuery(); return m_query; };
-        QStringList run();
         void clear();
+
+        QStringList run();
 
     private:
         void linkTables( int tables );

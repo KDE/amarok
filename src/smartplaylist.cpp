@@ -135,25 +135,14 @@ void SmartPlaylistView::removeSelectedPlaylists()
 void SmartPlaylistView::loadDefaultPlaylists()
 {
     const QStringList artists = CollectionDB::instance()->artistList();
-    QueryBuilder qb;
     QString sql;
     SmartPlaylist *item;
+    QueryBuilder qb;
 
     // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path
 
     /********** All Collection **************/
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-
+    qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -162,13 +151,11 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item->setKey( 1 );
 
     /********** Favorite Tracks **************/
-    sql = "SELECT tags.url "
-          "FROM tags, statistics "
-          "WHERE statistics.url = tags.url "
-          "ORDER BY statistics.percentage DESC "
-          "LIMIT 0,15;";
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( this, 0, i18n("Favorite Tracks"), sql );
+    item = new SmartPlaylist( this, 0, i18n("Favorite Tracks"), qb.query() );
     item->setKey( 2 );
     SmartPlaylist *childItem = 0;
     foreach( artists ) {
@@ -183,20 +170,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     }
 
     /********** Most Played **************/
-    qb.clear();
-
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-
+    qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
     qb.setLimit( 0, 15 );
 
@@ -213,11 +187,11 @@ void SmartPlaylistView::loadDefaultPlaylists()
     }
 
     /********** Newest Tracks **************/
-    sql = "SELECT url "
-          "FROM tags "
-          "ORDER BY tags.createdate DESC "
-          "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Newest Tracks"), sql );
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( this, 0, i18n("Newest Tracks"), qb.query() );
     item->setKey( 4 );
     childItem = 0;
     foreach( artists ) {
@@ -230,11 +204,11 @@ void SmartPlaylistView::loadDefaultPlaylists()
     }
 
     /********** Last Played **************/
-    sql = "SELECT url "
-          "FROM statistics "
-          "ORDER BY statistics.accessdate DESC "
-          "LIMIT 0,15;";
-    item = new SmartPlaylist( this, 0, i18n("Last Played"), sql );
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( this, 0, i18n("Last Played"), qb.query() );
     item->setKey( 5 );
 
     /********** Never Played **************/
@@ -263,11 +237,11 @@ void SmartPlaylistView::loadDefaultPlaylists()
     }
 
     /********** 100 Random Tracks **************/
-    sql = "SELECT tags.url "
-          "FROM tags "
-          "ORDER BY RAND() "
-          "LIMIT 0,100;";
-    item = new SmartPlaylist( this, 0, i18n("100 Random Tracks"), sql );
+    qb.initSQLDrag();
+    qb.setOptions( QueryBuilder::optRandomize );
+    qb.setLimit( 0, 100 );
+
+    item = new SmartPlaylist( this, 0, i18n("100 Random Tracks"), qb.query() );
     item->setKey( 8 );
 }
 

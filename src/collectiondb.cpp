@@ -2112,6 +2112,10 @@ QueryBuilder::addReturnValue( int table, int value )
     if ( value & valBitrate ) m_values += "bitrate";
     if ( value & valLength ) m_values += "length";
     if ( value & valSamplerate ) m_values += "samplerate";
+    if ( value & valPlayCounter ) m_values += "playcounter";
+    if ( value & valAccessDate ) m_values += "accessdate";
+    if ( value & valCreateDate ) m_values += "createdate";
+    if ( value & valPercentage ) m_values += "percentage";
 
     if ( table & tabStats && value & valScore ) m_values += " + 0.4 )";
 
@@ -2322,7 +2326,7 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate )
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage )
         b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
@@ -2348,6 +2352,7 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     if ( value & valPlayCounter ) m_sort += "playcounter";
     if ( value & valAccessDate ) m_sort += "accessdate";
     if ( value & valCreateDate ) m_sort += "createdate";
+    if ( value & valPercentage ) m_sort += "percentage";
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
@@ -2360,6 +2365,24 @@ void
 QueryBuilder::setLimit( int startPos, int length )
 {
     m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
+}
+
+
+void
+QueryBuilder::initSQLDrag()
+{
+    clear();
+    addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 }
 
 
