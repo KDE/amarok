@@ -643,6 +643,7 @@ void PlaylistWindow::savePlaylist() const //SLOT
 void PlaylistWindow::slotAddLocation() //SLOT
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
+    kapp->setTopWidget( &dlg );
     dlg.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
