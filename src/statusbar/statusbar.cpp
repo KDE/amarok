@@ -155,11 +155,10 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
         title = i18n( "Unknown track" );
 
 
-
-    title = "<b>" + title + "</b>";
-
-    if( !bundle.album().isEmpty() )
-       title += " on <b>" + bundle.album() + "</b>";
+    if ( bundle.album().isEmpty() )
+	title = "<b>" + title + "</b>";
+    else
+        title = i18n( "track on album", "%1 on <b>%2</b>" ).arg( title ).arg( bundle.album() );
 
     // don't show '-' or '?'
     if( length.length() > 1 ) {
@@ -181,7 +180,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength, int selCount, int 
     QString text;
 
     if ( selCount > 1 ) {
-        text = QString( i18n( "Selected %1 out of %2 Tracks" ) ).arg( selCount ).arg( newCount );
+        text = i18n( "Selected %1 out of %2 Tracks" ).arg( selCount ).arg( newCount );
         if ( selCount != 0 )
             text += QString( " - [%1 / %2]" )
                     .arg( MetaBundle::prettyTime( selLength ) )
