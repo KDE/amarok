@@ -1,1 +1,2 @@
-KDE_ICON = AUTO
+amarokicondir = $(kde_datadir)/amarok/icons
+amarokicon_ICON = AUTO
