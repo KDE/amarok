@@ -222,6 +222,10 @@ void App::handleLoaderArgs( QCString args ) //SLOT
     KCmdLineArgs::reset();
     initCliArgs( argc, argv );
     handleCliArgs();
+    
+    //clean up your room
+    for ( int i = 0; i < argc; i++ )
+        delete[] argv[i];
     delete[] argv;
 }
 
