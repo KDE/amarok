@@ -20,20 +20,29 @@
 
 #include <qwidget.h>     //baseclass
 
+class QPixmap;
+
 
 class EqualizerGraph : public QWidget
 {
     public:
         EqualizerGraph( QWidget* parent );
+        ~EqualizerGraph();
 
     protected:
+        void resizeEvent( QResizeEvent* );
         void paintEvent( QPaintEvent* );
 
     private:
         static const int NUM_BANDS = 10;
 
+        void drawBackground();
+
         void init_spline( float* x, float* y, int n, float* y2 );
         float eval_spline( float xa[], float ya[], float y2a[], int n, float x );
+
+        QPixmap* m_backgroundPixmap;
+        QPixmap* m_composePixmap;
 };
 
 

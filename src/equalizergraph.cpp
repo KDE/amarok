@@ -19,12 +19,26 @@
 #include "equalizergraph.h"
 
 #include <qpainter.h>
+#include <qpixmap.h>
 #include <qvaluelist.h>
 
+#include <kapplication.h>
 
-EqualizerGraph::EqualizerGraph( QWidget * parent )
-    : QWidget( parent )
-{}
+
+EqualizerGraph::EqualizerGraph( QWidget* parent )
+    : QWidget( parent, 0, Qt::WNoAutoErase )
+    , m_backgroundPixmap( new QPixmap() )
+    , m_composePixmap( new QPixmap() )
+{
+    drawBackground();
+}
+
+
+EqualizerGraph::~EqualizerGraph()
+{
+    delete m_backgroundPixmap;
+    delete m_composePixmap;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -32,9 +46,18 @@ EqualizerGraph::EqualizerGraph( QWidget * parent )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
+EqualizerGraph::resizeEvent( QResizeEvent* )
+{
+    drawBackground();
+}
+
+
+void
 EqualizerGraph::paintEvent( QPaintEvent* )
 {
-    QPainter p( this );
+    bitBlt( m_composePixmap, 0, 0, m_backgroundPixmap );
+
+    QPainter p( m_composePixmap );
     p.setPen( Qt::black );
 
 //     int cols[ 19 ];
@@ -44,7 +67,7 @@ EqualizerGraph::paintEvent( QPaintEvent* )
     float gains[NUM_BANDS];
 
     for ( int count = 0; count < NUM_BANDS; count++ )
-        gains[count] = (float) *AmarokConfig::equalizerGains().at( count ) * 0.1;
+        gains[count] = (float) *AmarokConfig::equalizerGains().at( count ) * 0.3;
 
     init_spline( x, gains, NUM_BANDS, yf );
 
@@ -69,12 +92,35 @@ EqualizerGraph::paintEvent( QPaintEvent* )
             p.drawPoint( i, y );
         }
     }
+
+    p.end();
+    bitBlt( this, 0, 0, m_composePixmap );
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 /////////////////////////////////////////////////////////////////////////////////////
+
+void
+EqualizerGraph::drawBackground()
+{
+    m_backgroundPixmap->resize( size() );
+    m_composePixmap->resize( size() );
+
+    m_backgroundPixmap->fill( kapp->palette().active().background() );
+    QPainter p( m_backgroundPixmap );
+
+    // Draw frame
+    p.setPen( kapp->palette().active().highlight() );
+    p.drawRect( 0, 0, width() - 1, height() - 1 );
+
+    // Draw middle line
+    QPen pen( kapp->palette().active().shadow(), 0, Qt::DotLine);
+    p.setPen( pen );
+    p.drawLine( 0, height() / 2 - 1, width() - 1, height() / 2 - 1 );
+}
+
 
 void
 EqualizerGraph::init_spline( float* x, float* y, int n, float* y2 )
