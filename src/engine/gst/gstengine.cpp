@@ -959,16 +959,18 @@ InputPipeline::~InputPipeline()
 
     if ( GST_IS_THREAD( thread ) )
     {
-//         gst_element_send_event( thread, gst_event_new( GST_EVENT_INTERRUPT ) );
+//         gst_element_send_event( thread, gst_event_new( GST_EVENT_FLUSH ) );
+//         gst_element_set_state( thread, GST_STATE_READY );
 
-        gst_element_set_state( thread, GST_STATE_READY );
+//         // Wait until queue is empty
+//         int filled = 1;
+//         while( filled ) {
+//             gst_element_get( queue, "current-level-buffers", &filled, NULL );
+//             ::usleep( 10000 ); // 10 msec
+//         }
 
-        // Wait until queue is empty
-        int filled = 1;
-        while( filled ) {
-            gst_element_get( queue, "current-level-buffers", &filled, NULL );
-            ::usleep( 10000 ); // 10 msec
-        }
+        if ( GstEngine::instance()->m_pipelineFilled )
+            gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
 
         if ( gst_element_get_state( thread ) != GST_STATE_NULL )
             gst_element_set_state( thread, GST_STATE_NULL );
