@@ -190,8 +190,9 @@ PlaylistWindow::init()
             m_browsers->addBrowser( new WelcomeBrowser( this, "WelcomePage" ), i18n( "Welcome" ), "help" );
         }
 
-        connect( m_browsers, SIGNAL(  activated( const KURL& )),
-                 m_playlist,   SLOT(appendMedia( const KURL& )) );
+//         //FIXME this signal does not exist
+//         connect( m_browsers, SIGNAL(  activated( const KURL& )),
+//                  m_playlist,   SLOT(appendMedia( const KURL& )) );
 
     //</Browsers>
 
