@@ -2267,7 +2267,8 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
         //edit multiple tracks in tag dialog
         KURL::List urls;
         for( QListViewItem *item = items.first(); item; item = items.next() )
-            urls << static_cast<PlaylistItem*>( item )->url();
+            if ( item->isVisible() )
+                urls << static_cast<PlaylistItem*>( item )->url();
 
         TagDialog( urls, instance() ).exec();
     }
