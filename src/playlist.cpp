@@ -1800,10 +1800,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
+    popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete );
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
         ? i18n("&Delete File")
-        : i18n("&Delete Selected Files"), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
+        : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete );
+    popup.insertItem( SmallIconSet( "view_remove" ), i18n( "C&lear Playlist" ), this, SLOT( clear() ) );
 
     popup.insertSeparator();
 
