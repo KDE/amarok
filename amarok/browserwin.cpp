@@ -55,7 +55,7 @@ static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
 
 PlaylistSideBar::PlaylistSideBar( QWidget *parent )
     : QHBox ( parent )
-    , m_savedSize( 150 )
+    , m_savedSize( 200 ) //basically this is the default value for the sidebar width
     , m_current( -1 )
     , m_MTB( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
     , m_mapper( new QSignalMapper( this ) )
@@ -88,7 +88,7 @@ QSize PlaylistSideBar::sizeHint() const
     return ( m_current != -1 ) ? QSize( m_savedSize, 100 ) : QHBox::sizeHint();
 }
 
-void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QString& icon )
+void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QString& icon, bool show )
 {
     //we need to get count this way, currently it's the only way to do it coz KMultiTabBar sux0rs
     int id = m_MTB->tabs()->count();
@@ -101,6 +101,7 @@ void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QStri
     
     m_widgets[ id ] = widget;
     widget->hide();
+    if( show ) showHide( id );
 }
 
 void PlaylistSideBar::showHide( int index )
@@ -188,8 +189,8 @@ BrowserWin::~BrowserWin()
     // this method is good as it saves duplicate pointer to the fileBrowser
     KDevFileSelector *fileBrowser = (KDevFileSelector *)m_pSideBar->page( "FileBrowser" );
     
-    if( fileBrowser != NULL ) { fileBrowser->writeConfig( kapp->sessionConfig(), "filebrowser" ); kdDebug() << "COOL!\n"; }
-    else kdDebug() << "NULL!\n";
+    //NOTE this doesn't seem to save anything yet..
+    if( fileBrowser != NULL ) fileBrowser->writeConfig( kapp->sessionConfig(), "filebrowser" );
 }
 
 
@@ -220,13 +221,13 @@ void BrowserWin::initChildren()
     { //</FileBrowser>
         KDevFileSelector *w = new KDevFileSelector( m_pSideBar, "FileBrowser" );
         w->readConfig( kapp->sessionConfig(), "filebrowser" );
-        m_pSideBar->addPage( w, "FileBrowser", "hdd_unmount" );
+        m_pSideBar->addPage( w, "FileBrowser", "hdd_unmount", true );
     } //</FileBrowser>
         
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( m_pSideBar );
-        QObject *sb = new StreamBrowser( vb, "StreamBrowser" );    
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
+        QObject *sb = new StreamBrowser( vb, "StreamBrowser" );    
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( hide() ) );
         m_pSideBar->addPage( vb, "StreamBrowser", "network" );

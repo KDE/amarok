@@ -71,7 +71,7 @@ public:
     PlaylistSideBar( QWidget *parent );
 
     void setPageFont( const QFont& );
-    void addPage( QWidget*, const QString&, const QString& );
+    void addPage( QWidget*, const QString&, const QString&, bool = false );
     QWidget *page( const QString& );
     virtual QSize sizeHint() const;
 
