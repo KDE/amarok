@@ -127,7 +127,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
     KURL::List urlList;
 
-    if ( e->source() == NULL )                     // dragging from inside amarok or outside?
+    if ( e->source() == NULL )                     // dragging from outside amarok
     {
         if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
             return ;
@@ -140,12 +140,19 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
     {
         PlaylistItem *srcItem, *newItem;
 
-        if ( e->source() ->parent() == this )
+        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
+
+        if ( !m_pDropCurrentItem )
+            m_pDropCurrentItem = ( PlaylistItem* ) 1;
+
+        if ( e->source()->parent() == this )
             srcItem = static_cast<PlaylistItem*>( firstChild() );
         else
             srcItem = static_cast<PlaylistItem*>( pApp->m_pBrowserWin->m_pBrowserWidget->firstChild() );
 
         bool containsDirs = false;
+
+        setUpdatesEnabled( false );
 
         while ( srcItem != NULL )
         {
@@ -158,7 +165,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
                 if ( srcItem->isDir() )
                     containsDirs = true;
                 // if drag is inside this widget, do a move operation
-                if ( e->source() ->parent() == this )
+                if ( e->source()->parent() == this )
                     delete srcItem;
             }
             srcItem = newItem;
@@ -169,13 +176,6 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
             popup.insertItem( i18n("Add Recursively"), this, SLOT( slotSetRecursive() ) );
             popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
         }
-
-        setUpdatesEnabled( false );
-
-        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
-
-        if ( !m_pDropCurrentItem )
-            m_pDropCurrentItem = ( PlaylistItem* ) 1;
 
         playlistDrop( urlList );
     }
