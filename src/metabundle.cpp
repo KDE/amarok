@@ -183,9 +183,10 @@ MetaBundle::prettyTitle() const
 
     QString &s = m_prettyTitleCache;
     #else
-    QString s = m_artist;
+    QString s;
     #endif
 
+    s = m_artist;
 
     //NOTE this gets regressed often, please be careful!
     //     whatever you do, handle the stream case, streams have no artist but have an excellent title
