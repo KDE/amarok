@@ -27,7 +27,7 @@
 //FIXME including playerapp.h sucks, we MUST MUST MUST make a separate header for options!
 //FIXME this is also very bad as you access data the GUI thread may access simultaneously (:o)
 //      what we need is an options struct/class and then I can pass a COPY in the thread ctor
-//#include <playerapp.h>
+#include <playerapp.h>
 //extern PlayerApp *pApp;
 
 
@@ -285,7 +285,7 @@ void PlaylistLoader::translate( QString &path, KURL::List &list ) //FIXME KURL i
       DIRENT *ent;
       struct STATSTRUCT statbuf;
 
-      while( ent = READDIR( d ) )
+      while( ( ent = READDIR( d ) ) )
       {
          QString file( ent->d_name );
 
