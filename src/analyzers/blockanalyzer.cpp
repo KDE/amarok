@@ -78,10 +78,13 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 void
 BlockAnalyzer::transform( Scope &s )
 {
+    for( uint x = 0; x < s.size(); ++x )
+        s[x] *= 2;
+
     float *front = static_cast<float*>( &s.front() );
 
     m_fht.spectrum( front );
-    m_fht.scale( front, 1.0 / 10 );
+    m_fht.scale( front, 1.0 / 20 );
 
     //the second half is pretty dull, so only show it if the user has a large analyzer
     //by setting to m_scope.size() if large we prevent interpolation of large analyzers, this is good!

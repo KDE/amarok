@@ -45,15 +45,14 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 
     switch( AmarokConfig::currentAnalyzer() )
     {
-    case 1:
+    case 2:
         analyzer = new Sonogram( parent );
         break;
-    case 2:
+    case 1:
         analyzer = new TurbineAnalyzer( parent );
         break;
     case 3:
-        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
-        static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
+        analyzer = new BarAnalyzer( parent );
         break;
 #ifdef HAVE_QGLWIDGET
     case 4:
@@ -69,8 +68,10 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 #else
     case 4:
 #endif
-        analyzer = new BarAnalyzer( parent );
-        break;
+        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
+        static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
+    break;
+
     default:
         AmarokConfig::setCurrentAnalyzer( 0 );
     case 0:

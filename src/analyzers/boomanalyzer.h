@@ -25,7 +25,7 @@ public slots:
     void changeK_barHeight( int );
     void changeF_peakSpeed( int );
 
-private:
+protected:
     static const uint COLUMN_WIDTH = 4;
     static const uint BAND_COUNT = 32;
 
