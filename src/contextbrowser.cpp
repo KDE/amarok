@@ -906,7 +906,10 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
-
+    
+    if ( m_lyrics.isEmpty() )
+        m_lyrics = i18n( "Lyrics not found" );
+    
     browser->write( "<html><div>" );
     browser->write( m_lyrics );
     browser->write( "</div></html>" );
