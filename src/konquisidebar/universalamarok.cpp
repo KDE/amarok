@@ -175,8 +175,6 @@ void UniversalAmarok::openURLRequest( const KURL &url )
 void UniversalAmarok::checkForAmarok()
 {
     if(amarokDCOP->isApplicationRegistered("amarok")) return;
-    QString amarokSVC;
-    int pid;
     KApplication::kdeinitExecWait("amarok");
 }
 
