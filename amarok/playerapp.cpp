@@ -327,12 +327,6 @@ void PlayerApp::restoreSession()
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include <klineedit.h>     //browserWin
-#include <kcombobox.h>     //browserWin::KComboHistory (file chooser lineEdit)
-#include "browserwidget.h" //anoyingly necessary //FIXME KConfig XT!
-#include <kdirlister.h>    //for browserwin component also
-
-
 AmarokConfig *PlayerApp::config()
 {
     return AmarokConfig::self();

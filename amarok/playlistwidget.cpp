@@ -679,27 +679,29 @@ void PlaylistWidget::clear( bool saveState )
 }
 
 
+#include <qpen.h>
 void PlaylistWidget::slotGlowTimer()
 {
-    if ( !isVisible() )
-        return ;
-
-    PlaylistItem *item = currentTrack();
-
-    if ( item != NULL )
+    if ( PlaylistItem *item = currentTrack() )
     {
         if ( m_GlowCount > 120 )
-        {
             m_GlowAdd = -m_GlowAdd;
-        }
+        
         if ( m_GlowCount < 90 )
-        {
             m_GlowAdd = -m_GlowAdd;
-        }
-	
-        PlaylistItem::GlowColor = m_GlowColor.light( m_GlowCount );
-        repaintItem( item );
+    
         m_GlowCount += m_GlowAdd;
+            
+        PlaylistItem::GlowColor = m_GlowColor.light( m_GlowCount );
+    
+        //draw glowing rectangle around current track, to indicate activity
+        if ( item->isVisible() ) {
+            QPainter p( viewport() );
+            p.setPen( PlaylistItem::GlowColor );
+            QRect rect = itemRect( item );
+            rect.setWidth( contentsWidth() );    //neccessary to draw on the complete width
+            p.drawRect( rect );        
+        }
     }
 }
 
@@ -707,11 +709,6 @@ void PlaylistWidget::slotGlowTimer()
 void PlaylistWidget::slotReturnPressed()
 {
     //TODO please move to keyPressEvent if possible
-
-    //FIXME: this can be done for 3.1 (looping e.g.), too.
-    //       i'm just too lazy now, but i want to have this
-    //       feature in the release for Qt >=3.2 at least
-    #if QT_VERSION >= 0x030200
     
     QListViewItemIterator it( this, QListViewItemIterator::Visible );
     if ( it.current() )
@@ -724,8 +721,6 @@ void PlaylistWidget::slotReturnPressed()
         
         ensureItemVisible( it.current() );
     }
-        
-    #endif // QT_VERSION
 }
 
 

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "browserwidget.h"
 #include "browserwin.h"
 #include "expandbutton.h"
 #include "playerapp.h"

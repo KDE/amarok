@@ -3,7 +3,7 @@
                            -------------------
   begin                : Die Dez 3 2002
   copyright            : (C) 2002 by Mark Kretschmann
-  email                :
+  email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -62,17 +62,14 @@ PlaylistItem::~PlaylistItem()
 {
     //FIXME this is hacky but necessary, it would be nice to tidy it up somewhat
     
-    if( listView() && QString( listView()->name() ) == "PlaylistWidget" )
-    {      
-       PlaylistWidget *parentView = static_cast<PlaylistWidget *>( listView() );
-
-       if( parentView->currentTrack() == this )
-       {
-           parentView->setCurrentTrack( NULL );
-       }
+    if ( listView() )
+    {
+        PlaylistWidget *parentView = static_cast<PlaylistWidget *>( listView() );
+    
+        if( parentView->currentTrack() == this )
+            parentView->setCurrentTrack( NULL );
     }
 }
-
 
 
 // METHODS -------------------------------------------------------
@@ -125,76 +122,21 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
 }
 
 
-void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int width, int align )
+void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    // FIXME: alternative version
-//     QColorGroup colGroup( cg );
-//     colGroup.setColor( QColorGroup::Text, m_bIsGlowing ? m_glowCol : pApp->config()->browserFgColor() );
-//
-//     KListViewItem::paintCell( p, colGroup, column, width, align );
-
-// ----------------------------------------------
-
-    int margin = 1;
-
-    QPixmap *pBufPixmap = new QPixmap( width, height() );
-    QPainter pPainterBuf( pBufPixmap, true );
-
-    if ( listView() && QString( listView()->name() ) == "PlaylistWidget" &&
-         isAlternate() )
-    {
-        pPainterBuf.setBackgroundColor( pApp->m_optBrowserBgAltColor );
-    }
-    else
-    {
-        pPainterBuf.setBackgroundColor( pApp->config()->browserBgColor() );
-    }
-
+    QColorGroup newCg = cg;
+    
     if ( this == PlaylistItem::GlowItem ) //static member
-    {
-        pPainterBuf.setPen( PlaylistItem::GlowColor );
-    }
-    else
-    {
-        pPainterBuf.setPen( pApp->config()->browserFgColor() );
-    }
+        newCg.setColor( QColorGroup::Text, PlaylistItem::GlowColor );
 
-    if ( isSelected() )
-    {
-        pPainterBuf.fillRect( 0, 0, width, height(), pApp->m_optBrowserSelColor );
-    }
-    else
-    {
-        pPainterBuf.eraseRect( 0, 0, width, height() );
-    }
+    KListViewItem::paintCell( p, newCg, column, width, align );   
 
-    if ( pixmap( 0 ) )
-    {
-        pPainterBuf.drawPixmap( margin, 0, *pixmap( 0 ) );
-        margin += pixmap( 0 ) ->width() + 1;
-    }
-
-    pPainterBuf.setFont( listView()->font() );
-    pPainterBuf.drawText( margin, 0, width - margin, height(), align, text( column ) );
-
-    // draw column separator line
-    if ( listView() && QString( listView()->name() ) == "PlaylistWidget" )
-    {
+    { //draw column separator line
         QPen linePen( Qt::darkGray, 0, Qt::DotLine );
-        pPainterBuf.setPen( linePen );
-        pPainterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
+        p->setPen( linePen );
+        p->drawLine( width - 1, 0, width - 1, height() - 1 );
     }
-
-    pPainterBuf.end();
-    p->drawPixmap( 0, 0, *pBufPixmap );
-
-    delete pBufPixmap;
 }
-
-
-// paintFocus is an empty dummy function to disable focus drawing
-void PlaylistItem::paintFocus( QPainter*, const QColorGroup&, const QRect& )
-{}
 
 
 const QString PlaylistItem::length( uint se ) const

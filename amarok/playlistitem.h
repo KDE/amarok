@@ -52,7 +52,6 @@ class PlaylistItem : public KListViewItem
 
     private:
         void paintCell( QPainter*, const QColorGroup&, int, int, int );
-        void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
         const KURL m_url;
 };
