@@ -106,6 +106,21 @@ namespace amaroK
 	return ret;
     }
 
+    bool DcopHandler::repeatTrackStatus()
+    {
+        return AmarokConfig::repeatTrack();
+    }
+
+    bool DcopHandler::repeatPlaylistStatus()
+    {
+        return AmarokConfig::repeatPlaylist();
+    }
+
+    bool DcopHandler::randomModeStatus()
+    {
+        return AmarokConfig::randomMode();
+    }
+
 // Now for the DCOP id3 output stuff
 
     QString DcopHandler::nowPlaying()

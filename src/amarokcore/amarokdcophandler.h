@@ -62,6 +62,9 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual QString coverImage();
       virtual bool isPlaying();
       virtual int  status();
+      virtual bool repeatTrackStatus();
+      virtual bool repeatPlaylistStatus();
+      virtual bool randomModeStatus();
       virtual void setVolume(int);
       virtual int  getVolume();
       virtual void volumeUp();

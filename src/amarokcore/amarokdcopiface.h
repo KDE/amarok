@@ -54,6 +54,9 @@ k_dcop:
 
    virtual bool isPlaying() = 0;                            ///< DEPRECATED Return true if something is playing now.
    virtual int  status() = 0;                               ///< Return playback status: 0 - stopped, 1 - paused, 2 - playing. < 0 - error
+   virtual bool repeatTrackStatus() = 0;                    ///< Return repeat track status.
+   virtual bool repeatPlaylistStatus() = 0;                 ///< Return repeat playlist status.
+   virtual bool randomModeStatus() = 0;                     ///< Return random mode status.
 
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
