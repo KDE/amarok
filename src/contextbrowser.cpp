@@ -602,7 +602,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 30 );
+    qb.setLimit( 0, 50 );
     QStringList fave = qb.run();
 
     qb.clear();
@@ -636,9 +636,9 @@ void ContextBrowser::showHome() //SLOT
                     "<span id='favorites_box-header-title' class='box-header-title'>"
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
-                "</div><iframe name='ftframe' frameborder='0' marginheight='0' marginwidth='0' height='204' width='100%'></iframe>"
+                "</div><iframe name='ftframe' topmargin='0' leftmargin='0' frameborder='0' marginheight='0' marginwidth='0' height='204' width='100%'></iframe>"
                 "<script language='JavaScript'>var w=frames['ftframe'].document; w.open();"
-                "w.writeln(\"<html><head><style type='text/css'>" + m_styleSheet + "</style></head><div id='favorites_box-body' class='box-body'>"
+                "w.writeln(\"<html><style type='text/css'>body { margin-left:0px; margin-right:0px; margin-top:0px; margin-bottom:0px }</style><div id='favorites_box-body' class='box-body'>"
                        );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
@@ -646,13 +646,14 @@ void ContextBrowser::showHome() //SLOT
         m_HTMLSource.append(
                     "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
+                            "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td><td>"
                             "<a href='file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "'>"
                             "<span class='song-title'>" + fave[i] + "</span> "
                             "<span class='song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
                             "<span class='song-artist'>" + fave[i+3] + "</span>"
                            );
 
-        if ( !fave[i+4].isEmpty() )
+        if ( !fave[i+4].isEmpty() ) //album
             m_HTMLSource.append(
                                 "<span class='song-separator'> - </span>"
                                 "<span class='song-album'>"+ fave[i+4] +"</span>"
@@ -660,6 +661,7 @@ void ContextBrowser::showHome() //SLOT
 
         m_HTMLSource.append(
                             "</a>"
+                            "</td></tr></table>"
                         "</div>"
                     "</div>"
                            );
@@ -758,6 +760,7 @@ void ContextBrowser::showHome() //SLOT
     m_dirtyHomePage = false;
     saveHtmlData(); // Send html code to file
 
+    m_homePage->findFrame( "ftframe" )->setUserStyleSheet( m_styleSheet );
     connect( m_homePage->findFrame( "ftframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                                                     SLOT( openURLRequest( const KURL & ) ) );
 }
@@ -1424,6 +1427,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".song-title { font-weight: bold; }" );
+    styleSheet += QString( ".song-place { font-size: %1px; font-weight: bold; }" ).arg( pxSize + 3 );
     styleSheet += QString( ".song-score { }" );
     styleSheet += QString( ".song-artist { }" );
     styleSheet += QString( ".song-album { }" );
