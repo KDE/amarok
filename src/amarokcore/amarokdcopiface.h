@@ -37,6 +37,7 @@ k_dcop:
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
+   virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
 
    /* These two methods are used by mediacontrol. DO NOT TOUCH! */

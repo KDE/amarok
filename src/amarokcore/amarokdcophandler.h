@@ -39,6 +39,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void prev();
       virtual void pause();
       virtual void seek(int s);
+      virtual void seekRelative(int s);
       virtual void enableRandomMode(bool enable);
       virtual int  trackTotalTime();
       virtual int  trackCurrentTime();

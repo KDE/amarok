@@ -222,6 +222,18 @@ namespace amaroK
         }
     }
 
+    void DcopHandler::seekRelative(int s)
+    {
+        EngineBase* const engine = EngineController::engine();
+        if ( engine->state() != Engine::Empty )
+        {
+         int newpos = s * 1000 + engine->position();
+	 if ( newpos < 0 )
+	     newpos = 0;
+	 engine->seek ( newpos );
+        }
+    }
+
     void DcopHandler::enableRandomMode(bool enable)
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( enable );
