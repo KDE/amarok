@@ -22,11 +22,8 @@
 #include "expandbutton.h"
 #include "playerapp.h"
 
-#include "debugareas.h"
-
 #include <vector>
 
-#include <qbitmap.h>
 #include <qcolor.h>
 #include <qfile.h>
 #include <qlayout.h>
@@ -141,21 +138,21 @@ void BrowserWin::initChildren()
     m_pSplitter = new QSplitter( this );
     m_pJanusWidget = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
     
-    //Traverse childrenlist of KJanusWidget to find and hide that darn QLabel and KSeparator
+    //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
     QObject *pHeader = m_pJanusWidget->child( "KJanusWidgetTitleLabel" );
     if ( pHeader )     static_cast<QWidget*>( pHeader )->hide();
     QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
     if ( pHeader )     static_cast<QWidget*>( pSeparator )->hide();
             
-    QVBox *pBrowserBox = m_pJanusWidget->addVBoxPage( QString( i18n( "files" ) ), QString::null,
-                         KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
-                         KIcon::SizeMedium ) );
-    QVBox *pStreamBox =  m_pJanusWidget->addVBoxPage( QString( i18n( "streams" ) ), QString::null,
-                         KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup,
-                         KIcon::SizeMedium ) );
-    QVBox *pVirtualBox = m_pJanusWidget->addVBoxPage( QString( i18n( "media" ) ), QString::null,
-                         KGlobal::iconLoader()->loadIcon( "folder_sound", KIcon::NoGroup,
-                         KIcon::SizeMedium ) );
+    QWidget *pBrowserBox = m_pJanusWidget->addPage( QString( i18n( "files" ) ), QString::null,
+                           KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
+                           KIcon::SizeMedium ) );
+/*  QWidget *pStreamBox =*/m_pJanusWidget->addPage( QString( i18n( "streams" ) ), QString::null,
+                           KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup,
+                           KIcon::SizeMedium ) );
+/*  QWidget *pMediaBox =*/ m_pJanusWidget->addPage( QString( i18n( "media" ) ), QString::null,
+                           KGlobal::iconLoader()->loadIcon( "folder_sound", KIcon::NoGroup,
+                           KIcon::SizeMedium ) );
 
     //<mxcl> MAKE_IT_CLEAN: move to browserWidget, also use a validator to make sure has trailing /
     m_pBrowserLineEdit = new KHistoryCombo( true, pBrowserBox );
@@ -190,9 +187,9 @@ void BrowserWin::initChildren()
     connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
              m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
 
-//     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserBox );
-//     layBrowserWidget->addWidget( m_pBrowserLineEdit );
-//     layBrowserWidget->addWidget( m_pBrowserWidget );
+    QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserBox );
+    layBrowserWidget->addWidget( m_pBrowserLineEdit );
+    layBrowserWidget->addWidget( m_pBrowserWidget );
 
     QBoxLayout *layPlaylistWidget = new QVBoxLayout( pPlaylistWidgetContainer );
     layPlaylistWidget->addWidget( m_pPlaylistLineEdit );

@@ -944,10 +944,15 @@ void PlayerApp::setupColors()
 
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-
-/*    m_pBrowserWin->m_pJanusWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
-    m_pBrowserWin->m_pJanusWidget->setPaletteForegroundColor( m_optBrowserFgColor );*/
     
+    //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
+    QObject *pIconBox = m_pBrowserWin->m_pJanusWidget->child( 0, "KListBox" );
+    if ( pIconBox )
+    {
+        static_cast<QWidget*>( pIconBox )->setPaletteBackgroundColor( m_optBrowserBgColor );
+        static_cast<QWidget*>( pIconBox )->setPaletteForegroundColor( m_optBrowserFgColor );
+    }
+             
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
 
