@@ -421,6 +421,7 @@ XineEngine::timerEvent( QTimerEvent* )
    m_currentVpts = (xine_get_status( m_stream ) == XINE_STATUS_PLAY)
       ? xine_get_current_vpts( m_stream )
       : LLONG_MAX; //if state is not playing OR paused, empty the list
+   //: std::numeric_limits<int64_t>::max(); //TODO don't support crappy gcc 2.95
 
    for( MyNode *prev = first_node, *node = first_node->next; node != list_end; node = node->next )
    {
