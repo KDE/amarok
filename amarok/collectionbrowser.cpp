@@ -193,7 +193,7 @@ void
 CollectionView::scan()  //SLOT
 {
     //remove all records
-    QCString command = "DELETE FROM tags;";
+    QString command = "DELETE FROM tags;";
     execSql( command );
 
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
@@ -209,9 +209,9 @@ CollectionView::dirDirty( const QString& path )
     kdDebug() << k_funcinfo << "Dirty: " << path << endl;
 
     //remove old records with the same dir as our dirty dir, to prevent dupes
-    QString command = "DELETE FROM tags WHERE dir = '";
-    command += path;
-    command += "';";
+    QString command = QString
+                      ( "DELETE FROM tags WHERE dir = '%1';" )
+                      .arg( path );
     execSql( command );
         
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false ) );
@@ -226,9 +226,9 @@ CollectionView::renderView()  //SLOT
     clear();
 
     //query database for all records with the specified category
-    QString command = "SELECT DISTINCT ";
-    command += m_category1.lower();
-    command += " FROM tags;";
+    QString command = QString
+                      ( "SELECT DISTINCT %1 FROM tags;" )
+                      .arg( m_category1.lower() );
     QStringList values;
     QStringList names;
     execSql( command, &values, &names );
@@ -260,13 +260,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString cat = ( m_category2 == "None" ) ? "title,url" : m_category2.lower()
                                                                            .append( "," )
                                                                            .append( m_category2.lower() );
-        QString command = "SELECT DISTINCT ";
-        command += cat;
-        command += " FROM tags WHERE ";
-        command += m_category1.lower();
-        command += " = '";
-        command += item->text( 0 );
-        command += "';";
+        
+        QString command = QString
+                          ( "SELECT DISTINCT %1 FROM tags WHERE %2 = '%3';" )
+                          .arg( cat )
+                          .arg( m_category1.lower() )
+                          .arg( item->text( 0 ) );
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
@@ -289,15 +288,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     }
     else {
         //Filter for category 2:
-        QString command = "SELECT title, url FROM tags WHERE ";
-        command += m_category1.lower();
-        command += " = '";
-        command += item->parent()->text( 0 );
-        command += "' AND ";
-        command += m_category2.lower();
-        command += " = '";
-        command += item->text( 0 );
-        command += "';";
+        QString command = QString
+                          ( "SELECT title,url FROM tags WHERE %1 = '%2' AND %3 = '%4';" )
+                         .arg( m_category1.lower() )
+                         .arg( item->parent()->text( 0 ) )
+                         .arg( m_category2.lower() )
+                         .arg( item->text( 0 ) );
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
@@ -420,14 +416,14 @@ CollectionView::customEvent( QCustomEvent *e ) {
 //                     kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
                 }
                     
-        MetaBundle* bundle;
         QString tag;
+        MetaBundle* bundle;
         kdDebug() << "Number of records to store in db: " << c->bundleList().count() << endl;
         execSql( "BEGIN TRANSACTION;" );
         
         for ( uint i = 0; i < c->bundleList().count(); i++ ) {
             bundle = c->bundleList().at( i );
-            
+ 
             QString command = "INSERT INTO tags "
                               "( url, dir,  album, artist, genre, title, year ) "
                               "VALUES('";
@@ -466,7 +462,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
             tag.remove( "'" );
             command += tag;
             command += "');";
-
+            
             execSql( command );
             delete bundle;
             //grant event loop some time for breathing
@@ -543,11 +539,10 @@ CollectionView::startDrag() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() ) {
             //query database for all tracks in our sub-category
-            QString command = "SELECT url FROM tags WHERE ";
-            command += m_category1.lower();
-            command += " = '";
-            command += item->text( 0 );
-            command += "';";
+            QString command = QString
+                              ( "SELECT url FROM tags WHERE %1 = '%2';" )
+                              .arg( m_category1.lower() )
+                              .arg( item->text( 0 ) );
             QStringList values;
             QStringList names;
             execSql( command, &values, &names );
@@ -568,15 +563,12 @@ CollectionView::startDrag() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() ) {
                     //query database for all tracks in our sub-category
-                    QString command = "SELECT DISTINCT url FROM tags WHERE ";
-                    command += m_category1.lower();
-                    command += " = '";
-                    command += item->text( 0 );
-                    command += "' AND ";
-                    command += m_category2.lower();
-                    command += " = '";
-                    command += child->text( 0 );
-                    command += "';";
+                    QString command = QString
+                                      ( "SELECT DISTINCT url FROM tags WHERE %1 = '%2' AND %3 = '%4';" )
+                                      .arg( m_category1.lower() )
+                                      .arg( item->text( 0 ) )
+                                      .arg( m_category2.lower() )
+                                      .arg( child->text( 0 ) );
                     QStringList values;
                     QStringList names;
                     execSql( command, &values, &names );
