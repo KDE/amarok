@@ -53,7 +53,6 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->addColumn( QString::null );
     m_view->setRootIsDecorated( true );
     reinterpret_cast<QWidget*>(m_view->header())->hide();
-    m_view->setResizeMode( QListView::LastColumn );
     new Item( m_view );
 
     setSpacing( 6 );
