@@ -231,6 +231,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_progressBox->hide();
     //<PROGRESS BAR>
 
+    connect( this,           SIGNAL( currentChanged( QListViewItem* ) ),
+             this,             SLOT( cacheItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
              this,             SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
@@ -296,9 +298,6 @@ CollectionView::scan()  //SLOT
     {
         m_isScanning = true;
 
-        //cache the last action
-        cacheItem( this->currentItem() );
-
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                                       AmarokConfig::importPlaylists() );
@@ -314,9 +313,6 @@ CollectionView::scanMonitor()  //SLOT
 {
     if ( !m_isScanning && AmarokConfig::monitorChanges() )
     {
-        //cache the last action
-        cacheItem( this->currentItem() );
-
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
     }

@@ -97,6 +97,7 @@ class CollectionView : public KListView
         void scanMonitor();
         void scanDone( bool changed = true );
 
+        void cacheItem( QListViewItem* item );
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );
         void cat1Menu( int id, bool rerender = true );
@@ -119,7 +120,6 @@ class CollectionView : public KListView
 
     private:
         void startDrag();
-        void cacheItem( QListViewItem* item );
         KURL::List listSelected();
 
         QString catForId( int id ) const;
