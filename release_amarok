@@ -8,7 +8,7 @@
 # TODO: * Adjust version number in amarok.lsm
 #       * Extract translations from CVS
 
-version=`kdialog --inputbox "amaroK version: "` 
+version=`kdialog --inputbox "amaroK version: "`
 cvsroot=`kdialog --inputbox "CVS root directory: "`
 
 folder=amarok-$version
@@ -17,7 +17,7 @@ pushd $folder
 cvs -d $cvsroot co -l kdeextragear-1
 pushd kdeextragear-1
 
-cvs -z3 co -r KDE_3_2_BRANCH admin 
+cvs -z3 co -r KDE_3_2_BRANCH admin
 cvs -z3 up amarok
 cvs -z3 up -l doc
 pushd doc
@@ -25,7 +25,7 @@ cvs -z3 up amarok
 popd
 
 # Remove CVS relevant files
-find -name "CVS" -exec rm -rf {} \;
+find -name "CVS" -exec rm -rf {} \; 2> /dev/null
 find -name ".cvsignore" -exec rm {} \;
 
 pushd amarok
@@ -40,7 +40,7 @@ mv README ..
 mv TODO ..
 
 pushd src
-cat amarok.h | sed -e "s/APP_VERSION \".*\"/APP_VERSION \"$version"\"/ > amarok.h
+cat amarok.h | sed -e "s/APP_VERSION \".*\"/APP_VERSION \"$version"\"/ | tee amarok.h > /dev/null
 popd
 
 rm -rf debian
