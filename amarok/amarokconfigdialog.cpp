@@ -94,7 +94,7 @@ void AmarokConfigDialog::previewOsd()
     m_pOsdPreview->setPosition( (OSDWidget::Position)m_pOpt5->kcfg_OsdAlignment->currentItem() );
     m_pOsdPreview->setScreen( m_pOpt5->kcfg_OsdScreen->currentItem() );
     m_pOsdPreview->setOffset( m_pOpt5->kcfg_OsdXOffset->value(), m_pOpt5->kcfg_OsdYOffset->value() );
-    m_pOsdPreview->showOSD( i18n("OSD preview" ) );
+    m_pOsdPreview->showOSD( i18n("OSD preview - The quick brown fox jumps over the lazy dog" ) );
 }
 
 #include "amarokconfigdialog.moc"
