@@ -2,6 +2,8 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
+  * add: TitleProxy searches for a free local port (added by Stefan Gehn)
   * chg: Random Mode now stores the recently played songs in a buffer, which prevents
          playing the same songs too often.
   * add: "Play Next" context menu option
