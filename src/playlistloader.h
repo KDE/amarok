@@ -13,6 +13,7 @@
 
 class QDomNode;
 class QListViewItem;
+class KDirLister;
 class PlaylistItem;
 
 namespace KIO { class Job; }
@@ -105,6 +106,7 @@ private:
     KURL::List m_badURLs;
     KURL::List m_URLs;
 
+    KDirLister   *m_dirLister;
     PlaylistItem *m_markerListViewItem;
 
     bool m_playFirstUrl;
