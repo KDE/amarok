@@ -1,11 +1,13 @@
 [Desktop Entry]
 Type=Service
 Name=GStreamer Engine
+Name[cs]=GStreamer
 Name[da]=GStreamer-motor
 Name[de]=Gstreamer Engine
 Name[es]=Motor GStreamer
 Name[et]=GStreamer mootor
 Name[fr]=Moteur GStreamer
+Name[it]=Motore GStreamer
 Name[pt]=Motor GStreamer
 Name[ru]=GStreamer
 Name[sl]=Pogon GStreamer
@@ -15,11 +17,13 @@ Name[uz]=GStreamer тизими
 Name[xx]=xxGStreamer Enginexx
 X-KDE-Library=libamarok_gstengine_plugin
 Comment=Plugin for amaroK
+Comment[cs]=Modul pro amaroK
 Comment[de]=Plugin für amaroK
 Comment[el]=Πρόσθετο για το amaroK
 Comment[es]=Plugin para amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=Module pour AmaroK
+Comment[it]=Plugin per amaroK
 Comment[nl]=Plugin voor amaroK
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in para o amaroK
@@ -32,9 +36,10 @@ Comment[xx]=xxPlugin for amaroKxx
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-name=gst-engine
 X-KDE-amaroK-authors=Mark Kretschmann
 X-KDE-amaroK-email=markey@web.de
+X-KDE-amaroK-rank=255
 X-KDE-amaroK-version=1
 X-KDE-amaroK-framework-version=2
-
 

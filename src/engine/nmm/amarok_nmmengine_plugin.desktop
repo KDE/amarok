@@ -1,9 +1,11 @@
 [Desktop Entry]
 Type=Service
 Name=NMM Engine
+Name[cs]=NMM
 Name[es]=Motor NMM
 Name[et]=NMM mootor
 Name[fr]=Moteur NMM
+Name[it]=Motore NMM
 Name[pt]=Motor NMM
 Name[ru]=NMM
 Name[sl]=Pogon NMM
@@ -13,10 +15,12 @@ Name[uz]=NMM тизими
 Name[xx]=xxNMM Enginexx
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=amaroK plugin
+Comment[cs]=amaroK modul
 Comment[da]=Plugin for amaroK
 Comment[es]=Plugin de amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=module AmaroK
+Comment[it]=Plugin amaroK
 Comment[nl]=amaroK-plugin
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in do amaroK
@@ -29,9 +33,10 @@ Comment[xx]=xxamaroK pluginxx
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-name=nmm-engine
 X-KDE-amaroK-authors=Max Howell
 X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-rank=1
 X-KDE-amaroK-version=1
 X-KDE-amaroK-framework-version=2
-
 
