@@ -64,6 +64,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     KStdAction::undo( m_pPlaylistWidget, SLOT( doUndo() ), m_pActionCollection );
     KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
+    KStdAction::copy( m_pPlaylistWidget, SLOT( copyAction() ), m_pActionCollection );
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );

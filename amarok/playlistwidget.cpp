@@ -516,6 +516,15 @@ void PlaylistWidget::setSorting( int i, bool b )
 
 // SLOTS ============================================
 
+#include <qclipboard.h>
+void PlaylistWidget::copyAction()
+{
+    if( currentTrack() != NULL )
+    {
+        QApplication::clipboard()->setText( currentTrack()->text( 0 ) );
+    }
+}
+
 void PlaylistWidget::activate( QListViewItem *item )
 {
    //NOTE  potentially dangerous down-casting
@@ -747,6 +756,7 @@ void PlaylistWidget::removeSelectedItems()
     //We use two loops as the code is neater and so we can select the item after
     //currentTrack if it is to be removed
     //FIXME when we implement a "play this track next" feature, you can scrap this selection method
+    //FIXME also if you delete the last track when set current the playlist repeats on track end
 
     QPtrList<PlaylistItem> list;
     

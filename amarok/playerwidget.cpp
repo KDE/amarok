@@ -31,7 +31,6 @@ email                :
 #include "amarokdcophandler.h"
 
 #include <qbitmap.h>
-#include <qclipboard.h>
 #include <qevent.h>
 #include <qfont.h>
 #include <qframe.h>
@@ -173,11 +172,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
                            )->setText( i18n( "Configure Global Shortcuts..." ) );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
-    KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                      "copy_clipboard" )->setText( i18n( "Copy Current Title to Clipboard" ) );
-
-    //     new KAction( "Copy Current Title to Clipboard", CTRL + Key_C,
-    //                  this, SLOT( slotCopyClipboard() ), m_pActionCollection, "copy_clipboard" );
 
 
     // amaroK background pixmap
@@ -738,22 +732,6 @@ void PlayerWidget::slotConfigShortcuts()
 void PlayerWidget::slotConfigGlobalShortcuts()
 {
     KKeyDialog::configure( pApp->m_pGlobalAccel, true, 0, true );
-}
-
-
-void PlayerWidget::slotCopyClipboard()
-{
-/*
-    //TODO <mxcl> if Max hasn't done this yet, bug him!
-    //FIXME move this to the playlist then requestClipboardData()
-    const PlaylistItem* currentTrack = pApp->m_pBrowserWin->m_pPlaylistWidget->currentTrack();
-
-    if ( currentTrack )
-    {
-        QClipboard * cb = QApplication::clipboard();
-        cb->setText( currentTrack->text( 0 ) );
-    }
-*/
 }
 
 

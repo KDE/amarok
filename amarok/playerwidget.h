@@ -84,7 +84,7 @@ class PlayerWidget : public QWidget
         PlayerWidget( QWidget *parent = 0, const char *name = 0 );
         ~PlayerWidget();
 
-        void setScroll( QString = "", const QString & = "?", const QString & = "?" );
+        void setScroll( QString = "", const QString& = "?", const QString& = "?" );
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
@@ -120,7 +120,6 @@ class PlayerWidget : public QWidget
     public slots:
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
-        void slotCopyClipboard();
         void slotConfigPlayObject();
         void slotUpdateTrayIcon( bool visible );
         void createVis();
