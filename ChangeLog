@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
+    * New DCOP call "collection: query(const QString& sql)".
     * New DCOP call "playlist: removeCurrentTrack()". (BR 92973)
 
   CHANGES:

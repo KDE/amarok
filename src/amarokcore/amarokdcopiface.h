@@ -42,7 +42,7 @@ k_dcop:
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
 
-   //TODO Move somewhere else
+   //TODO Move to Collection interface for 1.3
    virtual void scanCollection() = 0;                       ///< Scan the collection.
 
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
@@ -111,6 +111,15 @@ k_dcop:
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
    virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar.
+};
+
+
+class AmarokCollectionInterface : virtual public DCOPObject
+{
+   K_DCOP
+
+k_dcop:
+   virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
 };
 
 

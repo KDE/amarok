@@ -104,6 +104,18 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
 };
 
 
+class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInterface
+{
+   Q_OBJECT
+
+   public:
+       DcopCollectionHandler();
+
+   public /* DCOP */ slots:
+      virtual QStringList query(const QString& sql);
+};
+
+
 } // namespace amaroK
 
 #endif

@@ -346,6 +346,8 @@ namespace amaroK
         if (EqualizerSetup::isInstantiated())
             EqualizerSetup::instance()->updateSliders(preamp,gains);
     }
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler
 /////////////////////////////////////////////////////////////////////////////////////
@@ -420,6 +422,20 @@ namespace amaroK
         StatusBar::instance()->shortMessage( msg );
     }
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopCollectionHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopCollectionHandler::DcopCollectionHandler()
+        : DCOPObject( "collection" )
+        , QObject( kapp )
+    {}
+
+    QStringList DcopCollectionHandler::query( const QString& sql )
+    {
+        return CollectionDB::instance()->query( sql );
+    }
 
 
 } //namespace amaroK
