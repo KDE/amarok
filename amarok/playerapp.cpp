@@ -203,7 +203,7 @@ void PlayerApp::handleCliArgs()
 void PlayerApp::handleLoaderArgs( const QCString& args ) //SLOT
 {
     //divide argument line into single strings
-    QStringList strlist = QStringList::split( " ", args );
+    QStringList strlist = QStringList::split( "|", args );
 
     int argc = strlist.count();
     char* argv[argc];

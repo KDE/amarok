@@ -80,7 +80,7 @@ Loader::Loader( int& argc, char** argv )
         QCString str;
         for ( int i = 0; i < m_argc; i++ ) {
             str.append( m_argv[i] );
-            str.append( " " );
+            str.append( "|" );    //"|" cannot occur in unix filenames, so we use it as a separator
         }
         ::send( m_sockfd, str, str.length(), 0 );
     }
