@@ -68,12 +68,14 @@ class MyIterator : public QListViewItemIterator
 {
 public:
     MyIterator( QListViewItem *item, int flags = 0 )
-        : QListViewItemIterator( item, flags | flags == All ? 0 : Visible )
+        : QListViewItemIterator( item, flags | Visible )
     {}
 
     MyIterator( QListView *view, int flags = 0 )
-        : QListViewItemIterator( view, flags | flags == All ? 0 : Visible )
-    {}
+        : QListViewItemIterator( view, flags | Visible )
+    {
+        kdDebug() << flags << endl;
+    }
 
     //this gets OR'd with Visible, and thus everything is returned
     enum IteratorFlag { All = MyIterator::Invisible };
@@ -1552,11 +1554,18 @@ Playlist::removeSelectedItems() //SLOT
 void
 Playlist::deleteSelectedFiles() //SLOT
 {
+    KURL::List urls;
+
+    //assemble a list of what needs removing
+    for( MyIt it( this, MyIt::Selected );
+         it.current();
+         urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
+
     //NOTE we assume that currentItem is the main target
-    int count  = selectedItems().count();
+    int count  = urls.count();
     int button = KMessageBox::warningContinueCancel( this,
-                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." ).
-                        arg( count > 1 ?
+                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." )
+                        .arg( count > 1 ?
                             i18n( "1 file", "<u>%n files</u>", count ) : //we must use this form of i18n()
                             static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("<i>'").append("'</i>") ),
                     QString::null,
@@ -1564,17 +1573,6 @@ Playlist::deleteSelectedFiles() //SLOT
 
     if ( button == KMessageBox::Continue )
     {
-        setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
-
-        KURL::List urls;
-
-        //assemble a list of what needs removing
-        for( MyIterator it( this, MyIterator::Selected );
-             it.current();
-             urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
-
-        if ( urls.isEmpty() ) return;
-
         // TODO We need to check which files have been deleted successfully
         KIO::DeleteJob* job = KIO::del( urls );
         connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( removeSelectedItems() ) );
