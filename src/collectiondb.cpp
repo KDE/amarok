@@ -1491,7 +1491,6 @@ QueryBuilder::linkTables( int tables )
     if ( tables & tabGenre ) m_tables += ",genre";
     if ( tables & tabYear ) m_tables += ",year";
 
-    m_where += " AND 1 ";
     if ( tables & tabAlbum ) m_where += "AND album.id=tags.album ";
     if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
     if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
@@ -1614,11 +1613,10 @@ QueryBuilder::sortBy( int table, int value )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
-    if ( value & valID ) b = false;
-    if ( value & valTrack ) b = false;
+    if ( value & valID || value & valTrack) b = false;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
-    if ( b ) m_sort += "LOWER(";
+    if ( b ) m_sort += "LOWER( ";
 
     if ( table & tabAlbum ) m_sort += "album.";
     if ( table & tabArtist ) m_sort += "artist.";
@@ -1632,7 +1630,14 @@ QueryBuilder::sortBy( int table, int value )
     if ( value & valTitle ) m_sort += "title";
     if ( value & valTrack ) m_sort += "track";
 
-    if ( b ) m_sort += ")";
+    if ( b ) m_sort += " ) ";
+}
+
+
+void
+QueryBuilder::setLimit( int startPos, int length )
+{
+    m_limit = QString( "LIMIT %1, %2 " ).arg( startPos ).arg( length );
 }
 
 
@@ -1643,6 +1648,7 @@ QueryBuilder::run()
 
     QString cmd = "SELECT " + m_values + " FROM tags " + m_tables + " WHERE 1 " + m_where;
     if ( !m_sort.isEmpty() ) cmd += " ORDER BY " + m_sort;
+    cmd += m_limit;
 
     kdDebug() << cmd << endl;
 
@@ -1657,6 +1663,7 @@ QueryBuilder::clear()
     m_tables = "";
     m_where = "";
     m_sort = "";
+    m_limit = "";
 
     m_linkTables = 0;
     m_returnValues = 0;

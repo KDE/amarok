@@ -209,6 +209,7 @@ class QueryBuilder : public QObject
 
         void setOptions( int options );
         void sortBy( int table, int value );
+        void setLimit( int startPos, int length );
 
         QStringList run();
         void clear();
@@ -220,6 +221,7 @@ class QueryBuilder : public QObject
         QString m_tables;
         QString m_where;
         QString m_sort;
+        QString m_limit;
 
         int m_linkTables;
         uint m_returnValues;

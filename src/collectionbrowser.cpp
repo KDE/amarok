@@ -367,6 +367,7 @@ CollectionView::renderView( )  //SLOT
         qb.addReturnValue( m_cat1, QueryBuilder::valName );
         qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
         qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
+        qb.setLimit( 0, 1 );
         values = qb.run();
 
         if ( values.count() )
