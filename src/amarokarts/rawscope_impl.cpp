@@ -96,8 +96,6 @@ class RawScope_impl : public RawScope_skel, public StdSynthModule
         {
             delete [] mScope;
         }
-
-        AutoSuspendState autoSuspend() { return asSuspend; }
 };
 
 
