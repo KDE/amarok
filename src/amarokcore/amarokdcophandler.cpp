@@ -78,7 +78,6 @@ namespace amaroK
 
     bool DcopHandler::isPlaying()
     {
-        AMAROK_DEPRECATED
         return EngineController::engine()->state() == Engine::Playing;
     }
 
