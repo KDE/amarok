@@ -376,19 +376,21 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                 leftMargin = pixmap( column )->width();
             }
 
+            if( align != Qt::AlignCenter )
+               align = Qt::AlignVCenter;
+
             // Draw the text
-            int textHeight = p->fontMetrics().boundingRect( text( 0 ) ).height();
             paint.setPen( glowText );
             const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), width - 5 );
-            paint.drawText( leftMargin, height() / 2 - textHeight / 2 - 1, width, height(), align, _text );
+            paint.drawText( leftMargin, 0, width, height(), align, _text );
 
             paint.end();
         }
 
         p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
     }
-
-    else KListViewItem::paintCell( p, cg, column, width, align );
+    else
+        KListViewItem::paintCell( p, cg, column, width, align );
 
     //figure out if we are in the actual physical first column
     if( playNext && column == listView()->m_firstColumn )
