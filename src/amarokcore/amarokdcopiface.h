@@ -82,6 +82,7 @@ k_dcop:
 
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
    virtual int score() = 0;                                ///<Return the score of the currently playing track.
+   virtual void playMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
 };
 
 #endif

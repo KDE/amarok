@@ -70,6 +70,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void showOSD();
       virtual void togglePlaylist();
       virtual int score ();
+      virtual void playMedia(const KURL &);
    private:
 };
 

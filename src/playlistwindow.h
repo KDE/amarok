@@ -57,6 +57,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
         void recreateGUI();
+        BrowserBar* browserBar() { return m_browsers; }
 
         virtual bool eventFilter( QObject*, QEvent* );
 

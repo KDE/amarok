@@ -57,6 +57,7 @@ public slots:
     void updateBrowser(const QString&);
     void updateStatus();
     void sendControl();
+    void openURLRequest( const KURL &url );
 };
 
 #endif

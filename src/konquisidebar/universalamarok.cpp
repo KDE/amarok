@@ -81,6 +81,8 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     QTimer *t = new QTimer( this );
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, FALSE );
+        connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                          SLOT( openURLRequest( const KURL & ) ) );
 }
 
 
@@ -163,4 +165,16 @@ void UniversalAmarok::sendControl()
 {
     amarokDCOP->send("amarok", "player", QCString(sender()->name() ) + "()", "");
 //     KMessageBox(NULL,QString("amarok")+"player"+QCString(sender()->name() ) + "()");
+}
+
+
+/*!
+    \fn UniversalAmarok::openURLRequest( const KURL &url )
+ */
+void UniversalAmarok::openURLRequest( const KURL &url )
+{
+   QByteArray data;
+   QDataStream arg(data, IO_WriteOnly);
+   arg << url;
+   amarokDCOP->send("amarok", "player", "playMedia(KURL)", data);
 }

@@ -25,6 +25,8 @@
 #include "osd.h"
 #include "collectiondb.h"
 #include "equalizersetup.h"
+#include "browserbar.h"
+#include "contextbrowser.h"
 
 #include <dcopclient.h>
 
@@ -272,6 +274,11 @@ namespace amaroK
         const MetaBundle &bundle = EngineController::instance()->bundle();
         int score = CollectionDB().getSongPercentage( bundle.url().path() );
         return score;
+    }
+    void DcopHandler::playMedia(const KURL &url)
+    {
+        ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
+        m_contextBrowser->openURLRequest(url);
     }
 
 } //namespace amaroK
