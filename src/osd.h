@@ -30,13 +30,9 @@ class OSDWidget : public QWidget
       public:
         enum Position {
           Free,
+          Top,
           Center,
-          TopCenter,
-          TopLeft,
-          TopRight,
-          BottomCenter,
-          BottomLeft,
-          BottomRight,
+          Bottom,
         };
  
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
@@ -74,6 +70,8 @@ public slots:
         //called after most set*() calls to update the OSD
         void refresh();
 
+        static const int MARGIN = 35;
+        
         QString     m_appName;
         int         m_duration;
         QTimer      *timer;

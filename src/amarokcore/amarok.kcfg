@@ -248,15 +248,11 @@
         <label>Align OSD to</label>
     <choices>
         <choice name="Free"/>
+        <choice name="Top"/>
         <choice name="Center"/>
-        <choice name="TopCenter"/>
-        <choice name="TopLeft" />
-        <choice name="TopRight"/>
-        <choice name="BottomCenter"/>
-        <choice name="BottomLeft"/>
-        <choice name="BottomRight"/>
+        <choice name="Bottom"/>
     </choices>
-        <default>BottomCenter</default>
+        <default>Center</default>
         <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
     </entry>
     <entry key="Osd Horizontal Auto Center" type="Bool">

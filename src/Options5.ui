@@ -331,37 +331,17 @@
                                     </item>
                                     <item>
                                         <property name="text">
+                                            <string>Top</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
                                             <string>Center</string>
                                         </property>
                                     </item>
                                     <item>
                                         <property name="text">
-                                            <string>TopCenter</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>TopLeft</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>TopRight</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>BottomCenter</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>BottomLeft</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>BottomRight</string>
+                                            <string>Bottom</string>
                                         </property>
                                     </item>
                                     <property name="name">
