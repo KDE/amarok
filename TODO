@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 164 <markey> It's not possible to switch crossfading off. Togglebutton always jumps back.
-
   FIX 163 <markey> Application crashes on every exit. gdb yielded this:
                      #0  0x03a00e90 in ?? ()
                      #1  0x08082afd in __tcf_0 () at src/enginecontroller.h:120

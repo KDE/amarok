@@ -153,6 +153,9 @@ namespace Engine
          */
         void setVolume( uint value );
 
+        /** Set new crossfade length (msec) */
+        void setXfadeLength( int value ) { m_xfadeLength = value; }
+
     protected:
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );
 

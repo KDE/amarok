@@ -14,7 +14,6 @@
 
 Engine::Base::Base( StreamingMode mode, bool hasConfigure, bool hasXFade, Effects *effects )
     : amaroK::Plugin( hasConfigure )
-    , m_xfadeLength( 1500 ) //FIXME
     , m_streamingMode( mode )
     , m_hasXFade( hasXFade )
     , m_effects( effects )
@@ -86,7 +85,7 @@ Engine::Base::setHardwareMixer( bool useHardware )
 void Engine::Base::setVolume( uint value )
 {
     m_volume = value;
-    
+
     if( isMixerHW() )
         setVolumeHW( value );
     else
