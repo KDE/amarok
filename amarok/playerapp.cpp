@@ -636,6 +636,7 @@ void PlayerApp::readConfig()
     m_optResumePlayback = m_pConfig->readBoolEntry( "Resume Playback", false );
 
     //-1? See PlayerWidget::createVis() for revelations
+    // -1 is because the createVis code sucks a little, but this works _and_ it's commented!
     m_optVisCurrent = m_pConfig->readUnsignedNumEntry( "Current Analyzer", 0 ) - 1;
     m_pPlayerWidget->createVis();
 

@@ -501,14 +501,12 @@ void PlayerWidget::paintEvent( QPaintEvent * )
 //    pF.setPen( pApp->m_fgColor );
     pF.setPen( QColor( 255, 255, 255 ) );
 
-    /*
-        pF.drawText( 20, 40, m_bitrate );
-        pF.drawText( 70, 40, m_samplerate );
-    */
-    //<mxcl> was above, however this wasn't working for me as at 1280x1024 I have fonts with lots of pixels
-    //<mxcl> we can use QFontMetrics, however, we should decide on how to present these datas first!
-    //<mxcl> below is temporary solution
-    pF.drawText( 11, 62, m_bitrate + " / " + m_samplerate );
+    //this method avoids creation/destruction of temporaries (use +=)
+    //also it's visually appealing as it shows nothing if the rates aren't set
+    QString str = m_bitrate;
+    if( !(m_bitrate.isEmpty() || m_samplerate.isEmpty() ) ) str += " / ";
+    str += m_samplerate;
+    pF.drawText( 11, 62, str );
 }
 
 
@@ -661,11 +659,9 @@ void PlayerWidget::createVis()
 
     pApp->m_optVisCurrent++;
 
+    //bit wierd this switch, but it fits our substandard methods ;-)
     switch( pApp->m_optVisCurrent )
     {
-    case 0:
-        m_pVis = new BarAnalyzer( this );
-        break;
     case 1:
         m_pVis = new DistortAnalyzer( this );
         break;
@@ -686,18 +682,10 @@ void PlayerWidget::createVis()
     case 4:
         m_pVis = new BlockAnalyzer( this );
         break;
-    default:
-        //oh wise ones! Please forgive my use of the goto command!
-        //at first I just called createVis() again, which I felt was quite neat, but then I thought again,
-        //is this not a suitable place to use a goto? you're only not meant to use goto commands when a loop
-        //would suffice, and here I'm using one instead of pointless function recursion
-        //admittedly this is a little bit of a hack anyway.. but it can stay until we have a proper stack for
-        //viswidgets IMHO - <mxcl>
-
-        //this is so we don't have to remember how many viswidgets there are
+    case 0:
+    default: //so we don't have to remember how many vis's there are
         m_pVis = new BarAnalyzer( this );
         pApp->m_optVisCurrent = 0;
-    break;
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
