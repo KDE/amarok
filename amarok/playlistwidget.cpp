@@ -525,7 +525,9 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
     {
         QApplication::postEvent( this, new QCustomEvent( 65431 ) ); //see customEvent for explanation
 
-        loader->setOptions( ( AmarokConfig::dropMode() == AmarokConfig::EnumDropMode::Recursively ), AmarokConfig::followSymlinks(), AmarokConfig::browserSortingSpec() );
+        loader->setOptions( AmarokConfig::directoriesRecursively(),
+                            AmarokConfig::followSymlinks(),
+                            AmarokConfig::browserSortingSpec() );
         loader->start();
     }
     else kdDebug() << "[loader] Unable to create loader-thread!\n";

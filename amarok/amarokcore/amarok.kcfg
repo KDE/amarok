@@ -35,30 +35,10 @@
         <default>true</default>
         <whatsthis></whatsthis>
      </entry>
-     <entry key="Confirm Exit" type="Bool">
-        <label>Whether to confirm quitting amaroK</label>
-        <default>false</default>
-        <whatsthis></whatsthis>
-     </entry>
      <entry key="Follow Symlinks" type="Bool">
         <label>Whether to follow symlinks while adding items to playlist recursively</label>
         <default>true</default>
         <whatsthis></whatsthis>
-     </entry>
-     <entry key="Drop Mode" type="Enum">
-        <label>Playlist items drop mode</label>
-        <choices>
-           <choice name="Ask">
-              <label>Ask each time</label>
-           </choice>
-           <choice name="Recursively">
-              <label>Recursively</label>
-           </choice>
-           <choice name="NonRecursively">
-              <label>Non-recursively</label>
-           </choice>
-        </choices>
-        <default>Recursively</default>
      </entry>
      <entry key="Time Display Remaining" type="Bool">
         <label>Whether to display remaining track time</label>
@@ -87,6 +67,11 @@
      </entry>
      <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Directories Recursively" type="Bool">
+        <label>Whether to add directories to playlist recursively</label>
         <default>true</default>
         <whatsthis></whatsthis>
      </entry>

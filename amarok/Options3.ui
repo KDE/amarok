@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>356</width>
-            <height>373</height>
+            <height>375</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -27,22 +27,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup">
-            <property name="name">
-                <cstring>buttonGroup1_2</cstring>
-            </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>3</hsizetype>
-                    <vsizetype>3</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="title">
-                <string>Player</string>
-            </property>
-        </widget>
         <widget class="QButtonGroup">
             <property name="name">
                 <cstring>buttonGroup1</cstring>

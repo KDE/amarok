@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #40 being the highest available (take this one for your next bug and increase here)
+           #41 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #40 <markey> change "EQ" button to "FX", as it is more appropriate. 
 
     * fix: #38 <mxcl> saving edited-tags sometimes hangs the ui because it takes ages! Is this
                just a weak point in taglib or should we expect this and do something drastic like
@@ -64,8 +66,6 @@ MID-TERM:
 
     * fix: add dirs to combo history when user adds a track from that dir to the playlist
 
-    * fix: redirected URLs do not work (? - we need some testcase)
-
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
            we should disable the hand cursor since that means "single-click to activate me"
@@ -112,8 +112,6 @@ MID-TERM:
     * add: make blinking currentTrack optional
 
     * add: display type of media next to bitrate
-
-    * add: restore effects on startup (not possible with aRts currently. gst can do it)
 
     * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
 

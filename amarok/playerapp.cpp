@@ -206,9 +206,9 @@ void PlayerApp::initConfigDialog()
 
     dialog->addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure general options") );
     dialog->addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
-    dialog->addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure Colors") );
+    dialog->addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure colors") );
     dialog->addPage( pOpt4,                        i18n("Playback"), "kmix",   i18n("Configure playback") );
-    dialog->addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
+    dialog->addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure on-screen-display") );
 
     connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
 
