@@ -704,7 +704,7 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     
     QImage img( pix.convertToImage() );
     
-    img.smoothScale( 40, 40 );
+    img.smoothScale( COVER_SIZE, COVER_SIZE );
     img.save( m_coverDir.filePath( keyword + ".png" ), "PNG" );
 }
 

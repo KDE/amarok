@@ -17,6 +17,8 @@ class CollectionDB : public QObject
     Q_OBJECT
     
     public:
+        static const int COVER_SIZE = 70;
+        
         CollectionDB();
         ~CollectionDB();
 
@@ -26,7 +28,7 @@ class CollectionDB : public QObject
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getPathForAlbum( const QString artist_id, const QString album_id );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
-        QString getImageForPath( const QString path, const QString defaultImage, const uint width = 40 );
+        QString getImageForPath( const QString path, const QString defaultImage, const uint width = COVER_SIZE );
         
         void incSongCounter( const QString url );
         void updateDirStats( QString path, const long datetime );

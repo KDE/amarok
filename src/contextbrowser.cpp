@@ -341,13 +341,13 @@ void ContextBrowser::showCurrentTrack()
 
     if ( values.count() )
         browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                  "<span class='album'>%1 - %2</span><br>%3<br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%4'>"
+                                  "<span class='album'>%1 - %2</span><br>%3<br><br><img align='left' valign='center' hspace='2' width='70' height='70' src='%4'>"
                                   "<i>First play: %5<br>Last play: %6<br>Total plays: %7</i></td>"
                                   "</tr>" )
                         .arg( m_currentTrack->artist() )
                         .arg( m_currentTrack->title() )
                         .arg( m_currentTrack->album() )
-                        .arg( m_db->getImageForPath( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) )
+                        .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) )
                         .arg( values[2].left( values[2].length() - 3 ) )
                         .arg( values[3].left( values[3].length() - 3 ) )
                         .arg( values[4] ) );
@@ -452,12 +452,10 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-//         QString albumString = m_currentTrack->artist() + " - " + m_currentTrack->album();
-                    
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
+                                      "<img align='left' hspace='2' width='70' height='70' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
