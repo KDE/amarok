@@ -508,9 +508,9 @@ bool PlayerApp::initScope()
 
     m_Scope = Arts::DynamicCast( m_Server.createObject( "Amarok::WinSkinFFT" ) );
 
-    if ( ( m_Scope ).isNull() )
+    if ( m_Scope.isNull() )
     {
-        kdDebug() << "*m_Scope.isNull()!" << endl;
+        kdDebug() << "m_Scope.isNull()!" << endl;
         return false;
     }
 
@@ -990,12 +990,7 @@ void PlayerApp::slotPrev()
 
 void PlayerApp::slotPlay()
 {
-    // commenting this out prevents toggling the play button, which seems broken
-//     if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() )     //bit of a hack really
-//     {
-//         slotStop();
-//         return ;
-//     }
+    slotStop();
 
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
