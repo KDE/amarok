@@ -85,11 +85,14 @@ class PlayerWidget : public QWidget, public EngineObserver
         PlayerWidget( QWidget* = 0, const char* = 0, bool enablePlaylist = false );
         ~PlayerWidget();
 
-        /** Set modified amaroK palette **/
+        /** Set modified amaroK palette */
         void setModifiedPalette();
+        /** Call after some amaroK setting have changed */
+        void applySettings();
 
         virtual void startDrag();
 
+        /** Determines amaroK colours for current KDE scheme */
         static void determineAmarokColors();
 
     public slots:
@@ -116,10 +119,13 @@ class PlayerWidget : public QWidget, public EngineObserver
 
         virtual bool event( QEvent* );
         virtual bool eventFilter( QObject*, QEvent* );
+        //virtual bool x11Event( XEvent* );
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
         virtual void mouseMoveEvent( QMouseEvent* );
 
+        ///to make the code clearer to n00bies ;)
+        QWidget *playlistWindow() { return parentWidget(); }
 
         static const int SCROLL_RATE = 1;
         static const int ANIM_TIMER  = 30;

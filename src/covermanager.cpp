@@ -88,7 +88,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
     //search line edit
     m_searchEdit = new KLineEdit( coverWidget );
-    m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
+    m_searchEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
     m_searchEdit->setText( i18n( "Search here..." ) );
     m_searchEdit->installEventFilter( this );
     hbox->addWidget( m_searchEdit );
@@ -688,7 +688,7 @@ bool CoverManager::eventFilter( QObject *o, QEvent *e )
 
             case QEvent::FocusOut:
                 if( m_filter.isEmpty() ) {
-                    m_searchEdit->setPaletteForegroundColor( colorGroup().mid() );
+                    m_searchEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
                     m_searchEdit->setText( i18n("Search here...") );
                     m_timer->stop();
                     return FALSE;

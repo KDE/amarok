@@ -353,9 +353,6 @@ void App::applySettings( bool firstTime )
     //determine and apply colors first
     applyColorScheme();
 
-    //FIXME it is possible to achieve a state where you have all windows hidden and no way to get them back
-    //      eg hide systray while amarok is hidden (dumb, but possible)
-
     if( AmarokConfig::showPlayerWindow() )
     {
         if( !m_pPlayerWindow )
@@ -379,16 +376,10 @@ void App::applySettings( bool firstTime )
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
-
         }
-
-        QFont font = m_pPlayerWindow->font();
-        font.setFamily( AmarokConfig::useCustomFonts()
-                         ? AmarokConfig::playerWidgetFont().family()
-                         : QApplication::font().family() );
-        m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
-        m_pPlayerWindow->setModifiedPalette(); //do last for efficiency, forces scroller update
-        m_pPlayerWindow->update();
+        else
+            //this is called in the PlayerWindow ctor, hence the else
+            m_pPlayerWindow->applySettings();
 
     } else if( m_pPlayerWindow ) {
 
@@ -401,11 +392,8 @@ void App::applySettings( bool firstTime )
         //ensure that at least one Menu is plugged into an accessible UI element
         if( !actionCollection()->action( "amarok_menu" )->isPlugged() )
            playlistWindow()->createGUI();
-
-        //forgive user-stupidity
-        if( !AmarokConfig::showTrayIcon() )
-           playlistWindow()->show();
     }
+
 
     amaroK::OSD::instance()->applySettings();
 
@@ -417,6 +405,7 @@ void App::applySettings( bool firstTime )
             ? AmarokConfig::contextBrowserFont()
             : QApplication::font() );
 
+
     amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
@@ -427,7 +416,7 @@ void App::applySettings( bool firstTime )
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
-    if( firstTime && (!amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon()) )
+    if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
     {
         mainWindow()->show();
 
@@ -456,7 +445,6 @@ void App::applySettings( bool firstTime )
     } //</Engine>
 
     /* delete unneeded cover images from cache */
-    //TODO for the love of god! why do this here?!!!!!!!?
     QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
     QDir cacheDir = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "albumcovers/cache/";
     QStringList obsoleteCovers = cacheDir.entryList( "*" );
@@ -478,12 +466,20 @@ void App::applyColorScheme()
         QObjectList* const list = browserBar->queryList( "QWidget" );
         list->prepend( browserBar );
 
+        kdDebug() << "Discovered " << list->count() << " widgets in PlaylistWindow\n";
+
         for( QObject *o = list->first(); o; o = list->next() )
         {
             //We have to unset the palette due to BrowserWin::setColors() setting
             //some widgets' palettes, and thus they won't propagate the changes
 
             static_cast<QWidget*>(o)->unsetPalette();
+
+            //FIXME this is hack for our greyed out text search box thingies (eg FileBrowser)
+            if ( qstrcmp( o->name(), "filter_edit" ) == 0 ) {
+                QEvent e( QEvent::FocusOut );
+                App::sendEvent( o, &e );
+            }
 
             if( o->inherits( "KListView" ) )
             {
@@ -784,7 +780,8 @@ void App::slotConfigToolBars()
 
 void App::firstRunWizard()
 {
-    //show firstRunWizard
+    ///show firstRunWizard
+
     FirstRunWizard wizard;
 
     if( wizard.exec() != QDialog::Rejected )

@@ -94,10 +94,28 @@ FileBrowser::FileBrowser( const char * name )
     m_toolbar->setEnableContextMenu( false );
 
     QString currentLocation = config->readEntry( "Location" );
-    QDir currentDir( currentLocation );
-    if ( !currentDir.exists() )
+    if ( !QDir( currentLocation ).exists() )
         currentLocation = QDir::homeDirPath();
 
+    { //Search LineEdit
+        QHBox *hbox; KToolBarButton *button;
+
+        hbox         = new QHBox( this );
+        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
+        m_filterEdit = new KLineEdit( hbox, "filter_edit" );
+        m_filterEdit->installEventFilter( this );
+
+        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_filterEdit, i18n( "Space-separated terms will be used to filter the directory-listing" ) );
+    }
+
+    //The main widget with file listings and that
+    m_dir = new MyDirOperator( KURL(currentLocation), this );
+    connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+
+    //folder selection combo box
     m_cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
     m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
     m_cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
@@ -106,29 +124,11 @@ FileBrowser::FileBrowser( const char * name )
     m_cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
 
-    //spacer hack
-    QHBox *spbox;
-    spbox = new QHBox( this );
-    spbox->setMargin( 1 );
-
-    { //<Search LineEdit>
-        QHBox *hbox; KToolBarButton *button;
-
-        hbox         = new QHBox( this );
-        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_filterEdit = new KLineEdit( hbox, "filter_edit" );
-        m_filterEdit->setPaletteForegroundColor( colorGroup().mid() );
-        m_filterEdit->setText( i18n( "Quick Search..." ) );
-        m_filterEdit->installEventFilter( this );
-
-        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
-
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
-    } //</Search LineEdit>
-
-    m_dir = new MyDirOperator( KURL( currentLocation ), this );
-    connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+    {
+        //set the lineEdit to initial state
+        QEvent e( QEvent::FocusOut );
+        eventFilter( m_filterEdit, &e );
+    }
 
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu();
@@ -138,7 +138,7 @@ FileBrowser::FileBrowser( const char * name )
     menu->insertSeparator();
     //TODO this has no place in the context menu, make it a toolbar button instead
 
-    enum Ids { BURN_DATACD = 100, BURN_AUDIOCD };
+    enum { BURN_DATACD = 100, BURN_AUDIOCD };
     menu->insertItem( i18n("Burn to CD as data"), this, SLOT( burnDataCd() ), 0, BURN_DATACD );
     menu->setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
     menu->insertItem( i18n("Burn to CD as audio"), this, SLOT( burnAudioCd() ), 0, BURN_AUDIOCD );
@@ -227,38 +227,34 @@ KURL::List FileBrowser::selectedItems()
 {
     KURL::List list;
     for( KFileItemListIterator it( m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items() ); *it; ++it )
-    {
         list.append( (*it)->url() );
-    }
+
     return list;
 }
 
-bool FileBrowser::eventFilter( QObject *o, QEvent *e )
+bool FileBrowser::eventFilter( QObject*, QEvent *e )
 {
-    if( o == m_filterEdit ) {
-        switch( e->type() ) {
-           case QEvent::FocusIn:
-               if( m_dir->nameFilter().isEmpty() ) {
-                   m_filterEdit->clear();
-                   m_timer->stop();
-                   m_filterEdit->setPaletteForegroundColor( colorGroup().text() );
-                   return FALSE;
-               }
+    //we are the only ones who use this filter.. currently
 
-            case QEvent::FocusOut:
-                if( m_dir->nameFilter().isEmpty() ) {
-                    m_filterEdit->setPaletteForegroundColor( colorGroup().mid() );
-                    m_filterEdit->setText( i18n("Quick Search...") );
-                    m_timer->stop();
-                    return FALSE;
-                }
+    if ( !m_dir->nameFilter().isEmpty() )
+        return FALSE;
 
-            default:
-                return FALSE;
-        };
+    switch( e->type() ) {
+    case QEvent::FocusIn:
+        m_filterEdit->setPaletteForegroundColor( colorGroup().text() );
+        m_filterEdit->clear();
+        m_timer->stop();
+        return FALSE;
+
+    case QEvent::FocusOut:
+        m_filterEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
+        m_filterEdit->setText( i18n("Filter your files...") );
+        m_timer->stop();
+        return FALSE;
+
+    default:
+        return FALSE;
     }
-
-    return FALSE;
 }
 //END Private Methods
 
@@ -267,18 +263,20 @@ bool FileBrowser::eventFilter( QObject *o, QEvent *e )
 
 void FileBrowser::slotSetFilter( )
 {
-    QString text = m_filterEdit->text();
+    const QString text = m_filterEdit->text();
 
     if ( text.isEmpty() )
         m_dir->clearFilter();
     else {
         QString filter;
-        QStringList terms = QStringList::split( " ", text );
+        QStringList terms = QStringList::split( ' ', text );
 
-        for ( QStringList::Iterator it = terms.begin(); it != terms.end(); ++it )
-            filter += "*"+ *it;
+        for ( QStringList::Iterator it = terms.begin(); it != terms.end(); ++it ) {
+            filter += '*';
+            filter += *it;
+        }
 
-        filter += "*";
+        filter += '*';
         m_dir->setNameFilter( filter );
     }
 

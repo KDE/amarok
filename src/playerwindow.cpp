@@ -98,6 +98,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     if ( AmarokConfig::playerPos() != QPoint(-1,-1) )
         move( AmarokConfig::playerPos() );
 
+    setModifiedPalette();
     setFixedSize( 311, 140 );
     setCaption( "amaroK" );
     setAcceptDrops( true );
@@ -149,8 +150,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
         m_pScrollFrame = createWidget<QFrame>( QRect(6,18, 285,fontHeight), this );
         m_pScrollFrame->setFont( font );
-
-        m_scrollBuffer.fill( backgroundColor() );
     { //</Scroller>
 
     } //<TimeLabel>
@@ -162,9 +161,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         m_timeBuffer.resize( m_pTimeLabel->size() );
         m_timeBuffer.fill( backgroundColor() );
     } //<TimeLabel>
-
-
-    connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
 
 
     m_pButtonFx = new IconButton( this, "eq", SIGNAL(effectsWindowToggled( bool )) );
@@ -184,17 +180,23 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     m_pVolSign    ->setPixmap( getPNG( "vol_speaker" ) );
 
 
+    //do before we set the widget's state
+    applySettings();
+
     //set interface to correct state
     engineStateChanged( engine->state() );
-    if ( engine->state() == Engine::Playing )
-        engineNewMetaData( ec->bundle(), true );
+
     createAnalyzer( 0 );
 
+    //so we get circulation events to x11Event()
+    //XSelectInput( x11Display(), winId(), StructureNotifyMask );
 
     //Yagami mode!
     //KWin::setState( winId(), NET::KeepBelow | NET::SkipTaskbar | NET::SkipPager );
     //KWin::setType( winId(), NET::Override );
     //KWin::setOnAllDesktops( winId(), true );
+
+    connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -398,11 +400,10 @@ void PlayerWidget::determineAmarokColors() //static
 {
     int hue, s, v;
 
-    if ( AmarokConfig::schemeKDE() )
-        KGlobalSettings::highlightColor().getHsv( &hue, &s, &v );
-
-    if ( AmarokConfig::schemeCustom() )
-        AmarokConfig::playlistWindowBgColor().getHsv( &hue, &s, &v );
+    (!AmarokConfig::schemeKDE()
+        ? AmarokConfig::playlistWindowBgColor()
+        : KGlobalSettings::highlightColor()
+      ).getHsv( &hue, &s, &v );
 
     using namespace amaroK::ColorScheme;
 
@@ -418,8 +419,22 @@ void PlayerWidget::setModifiedPalette()
     cg.setColor( QColorGroup::Background, amaroK::ColorScheme::Base );
     cg.setColor( QColorGroup::Foreground, amaroK::ColorScheme::Text );
     setPalette( QPalette(cg, palette().disabled(), cg) );
+}
 
-    engineNewMetaData( EngineController::instance()->bundle(), false );
+void PlayerWidget::applySettings()
+{
+    //NOTE DON'T use unsetFont(), we use custom font sizes (for now)
+    QFont phont = font();
+    phont.setFamily( AmarokConfig::useCustomFonts()
+        ? AmarokConfig::playerWidgetFont().family()
+        : QApplication::font().family() );
+    setFont( phont );
+
+    setModifiedPalette();
+
+    //update the scroller if necessary
+    if( EngineController::engine()->state() != Engine::Empty )
+       engineNewMetaData( EngineController::instance()->bundle(), false );
 }
 
 
@@ -444,7 +459,7 @@ bool PlayerWidget::event( QEvent *e )
         if( AmarokConfig::schemeKDE() )
         {
             determineAmarokColors();
-            setModifiedPalette();
+            applySettings();
         }
         return TRUE;
 
@@ -465,6 +480,9 @@ bool PlayerWidget::event( QEvent *e )
         return FALSE; //don't eat event
 
     case QEvent::Show:
+
+        kdDebug() << "Qt::showEvent\n";
+
         m_pAnimTimer->start( ANIM_TIMER );
 
         if( AmarokConfig::hidePlaylistWindow() && m_pPlaylistButton->isOn() )
@@ -570,8 +588,20 @@ bool PlayerWidget::event( QEvent *e )
     }
 }
 
+// bool
+// PlayerWidget::x11Event( XEvent *e )
+// {
+//     if( e->type == ConfigureNotify )
+//     {
+//         kdDebug() << "CirculateNotify\n";
+//         XRaiseWindow( x11Display(), playlistWindow()->winId() );
+//     }
+//
+//     return false;
+// }
 
-bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
+bool
+PlayerWidget::eventFilter( QObject *o, QEvent *e )
 {
     //NOTE we only monitor for parent() - which is the PlaylistWindow
 

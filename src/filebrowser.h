@@ -105,8 +105,6 @@ private:
     KDirOperator      *m_dir;
     KLineEdit         *m_filterEdit;
     QTimer            *m_timer;
-
-    class KBookmarkHandler *bookmarkHandler;
 };
 
 #endif
