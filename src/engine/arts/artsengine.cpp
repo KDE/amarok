@@ -321,7 +321,7 @@ const Engine::Scope& ArtsEngine::scope()
     if ( in ) {
         // Convert float to int
         for ( int i = 0; i < m_scopeSize; i++ )
-            out[i] = (int16_t) ( in->at( i ) * sizeof( int16_t ) );
+            out[i] = (int16_t) ( in->at( i ) * (float) ( 1<<15 ) );
 
         delete in;
     }
