@@ -44,15 +44,18 @@ email                : markey@web.de
 #include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
+#include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
 
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
+#include <qobjectlist.h>         //setupColors()
+#include <qpalette.h>            //setupColors()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
 #include <qpopupmenu.h>          //genericEventHandler
 #include <qtooltip.h>            //default tooltip for trayicon
-#include <qpalette.h>            //setupColors()
-#include <qobjectlist.h>         //setupColors()
+#include <qwidgetfactory.h>      //firstrunWizard()
+#include <qwizard.h>             //firstrunWizard()
 
 App::App()
         : KApplication()
@@ -683,6 +686,16 @@ void App::slotConfigToolBars()
         playlistWindow()->reloadXML();
         playlistWindow()->createGUI();
     }
+}
+
+
+void App::firstrunWizard() //SLOT
+{
+    // Load wizard ui file dynamically and generate widget
+    QWizard* wizard = (QWizard*) QWidgetFactory::create( locate( "data","amarok/data/firstrun_wizard.ui" ) ); 
+    
+    wizard->exec();
+    delete wizard;
 }
 
 

@@ -93,7 +93,11 @@ Menu::Menu()
     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 
     insertSeparator();
-
+    
+    insertItem( i18n( "First-Run Wizard (testing)" ), pApp, SLOT( firstrunWizard() ) );
+    
+    insertSeparator();
+    
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ), 0, ID_SHOW_EFFECTS );
     setItemEnabled( ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
     safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );

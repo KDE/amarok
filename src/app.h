@@ -69,7 +69,8 @@ class App : public KApplication, public EngineObserver
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
         void slotConfigEffects( bool = true );
-
+        void firstrunWizard();
+        
     private slots:
         void applySettings( bool firstTime = false );
 

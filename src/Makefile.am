@@ -84,12 +84,12 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KJSEMBED) \
-    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ)
+    $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_MUSICBRAINZ) -lqui
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \
     $(KDE_RPATH)
-
+    
 METASOURCES = \
     AUTO
 
