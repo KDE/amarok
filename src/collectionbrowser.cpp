@@ -198,9 +198,8 @@ CollectionView::~CollectionView() {
     delete m_db;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////
-// private
+// private slots
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
@@ -271,6 +270,20 @@ CollectionView::renderView( )  //SLOT
         item->setText( 0, values[ i ] );
         item->setPixmap( 0, pixmap );
     }
+}
+
+
+void
+CollectionView::scanDone() //slot
+{
+    kdDebug() << k_funcinfo << endl;
+
+    // we need to reconnect to the db after every scan, since sqlite is not able to keep
+    // the tables synced for multiple threads.
+    delete m_db;
+    m_db = new CollectionDB();
+
+    renderView();
 }
 
 
@@ -369,20 +382,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 }
 
 
-QPixmap
-CollectionView::iconForCat( const QString& cat ) const
-{
-    QString icon;
-    if ( cat == i18n( "Album" ) ) icon = "cdrom_unmount";
-    if ( cat == i18n( "Artist" ) ) icon = "personal";
-    if ( cat == i18n( "Genre" ) ) icon = "kfm";
-    if ( cat == i18n( "Year" ) ) icon = "history";
-
-    KIconLoader iconLoader;
-    return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
-}
-
-
 void
 CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 {
@@ -430,52 +429,92 @@ CollectionView::cat2Menu( int id )  //SLOT
 }
 
 
-QString
-CollectionView::catForId( int id ) const
+void
+CollectionView::doubleClicked( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    switch ( id ) {
-        case CollectionBrowser::IdAlbum:
-            return i18n( "Album" );
-        case CollectionBrowser::IdArtist:
-            return i18n( "Artist" );
-        case CollectionBrowser::IdGenre:
-            return i18n( "Genre" );
-        case CollectionBrowser::IdYear:
-            return i18n( "Year" );
-        default:
-            break;
-    }
-
-    return i18n( "None" );
-}
-
-
-int
-CollectionView::idForCat( const QString& cat ) const
-{
-    if ( cat == i18n( "Album" ) ) return CollectionBrowser::IdAlbum;
-    if ( cat == i18n( "Artist" ) ) return CollectionBrowser::IdArtist;
-    if ( cat == i18n( "Genre" ) ) return CollectionBrowser::IdGenre;
-    if ( cat == i18n( "Year" ) ) return CollectionBrowser::IdYear;
-
-    //falltrough:
-    return CollectionBrowser::IdNone;
+    if ( !item )
+        return;
+    
+    item->setOpen( !item->isOpen() );
 }
 
 
 void
-CollectionView::scanDone()
+CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
+    if ( item ) {
+        KPopupMenu menu( this );
 
-    // we need to reconnect to the db after every scan, since sqlite is not able to keep
-    // the tables synced for multiple threads.
-    delete m_db;
-    m_db = new CollectionDB();
+        menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
+        menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
 
-    renderView();
+        if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
+            menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
+
+        menu.exec( point );
+    }
 }
 
+
+void
+CollectionView::makePlaylist() //slot
+{
+    pApp->actionCollection()->action( "playlist_clear" )->activate();
+    pApp->insertMedia( listSelected() );
+}
+
+
+void
+CollectionView::addToPlaylist() //slot
+{
+    pApp->insertMedia( listSelected() );
+}
+
+
+void
+CollectionView::showTrackInfo() //slot
+{
+    Item* item = static_cast<Item*>( currentItem() );
+    if ( !item ) return;
+
+    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
+        QString command = QString
+                          ( "SELECT DISTINCT artist.name, album.name, genre.name, year.name, comment FROM tags, artist, album, genre, year "
+                            "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
+                            .arg( m_db->escapeString( item->url().path() ) );
+
+        QStringList values;
+        QStringList names;
+        m_db->execSql( command, &values, &names );
+        if ( values.isEmpty() ) return;
+
+        QString str  = "<html><body><table width=\"100%\" border=\"1\">";
+        QString body = "<tr><td>%1</td><td>%2</td></tr>";
+
+        str += body.arg( i18n( "Title" ),  item->text( 0 ) );
+        str += body.arg( i18n( "Artist" ), values[0] );
+        str += body.arg( i18n( "Album" ),  values[1] );
+        str += body.arg( i18n( "Genre" ),  values[2] );
+        str += body.arg( i18n( "Year" ),  values[3] );
+        str += body.arg( i18n( "Comment" ),values[4] );
+    //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
+    //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
+    //     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
+
+        str.append( "</table></body></html>" );
+
+        QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
+                        0, 0, true, Qt::WStyle_DialogBorder );
+        box.setTextFormat( Qt::RichText );
+        box.exec();
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// private
+//////////////////////////////////////////////////////////////////////////////////////////
 
 void
 CollectionView::startDrag() {
@@ -578,88 +617,56 @@ CollectionView::listSelected() {
 }
 
 
-void
-CollectionView::doubleClicked( QListViewItem* item, const QPoint& point, int ) //SLOT
+QString
+CollectionView::catForId( int id ) const
 {
-    if ( !item )
-        return;
-    
-    item->setOpen( !item->isOpen() );
-}
-
-
-void
-CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
-{
-    if ( item ) {
-        KPopupMenu menu( this );
-
-        menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
-        menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
-
-        if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
-            menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
-
-        menu.exec( point );
+    switch ( id ) {
+        case CollectionBrowser::IdAlbum:
+            return i18n( "Album" );
+        case CollectionBrowser::IdArtist:
+            return i18n( "Artist" );
+        case CollectionBrowser::IdGenre:
+            return i18n( "Genre" );
+        case CollectionBrowser::IdYear:
+            return i18n( "Year" );
+        default:
+            break;
     }
+
+    return i18n( "None" );
 }
 
 
-void
-CollectionView::makePlaylist() //slot
+int
+CollectionView::idForCat( const QString& cat ) const
 {
-    pApp->actionCollection()->action( "playlist_clear" )->activate();
-    pApp->insertMedia( listSelected() );
+    if ( cat == i18n( "Album" ) ) return CollectionBrowser::IdAlbum;
+    if ( cat == i18n( "Artist" ) ) return CollectionBrowser::IdArtist;
+    if ( cat == i18n( "Genre" ) ) return CollectionBrowser::IdGenre;
+    if ( cat == i18n( "Year" ) ) return CollectionBrowser::IdYear;
+
+    //falltrough:
+    return CollectionBrowser::IdNone;
 }
 
 
-void
-CollectionView::addToPlaylist() //slot
+QPixmap
+CollectionView::iconForCat( const QString& cat ) const
 {
-    pApp->insertMedia( listSelected() );
+    QString icon;
+    if ( cat == i18n( "Album" ) ) icon = "cdrom_unmount";
+    if ( cat == i18n( "Artist" ) ) icon = "personal";
+    if ( cat == i18n( "Genre" ) ) icon = "kfm";
+    if ( cat == i18n( "Year" ) ) icon = "history";
+
+    KIconLoader iconLoader;
+    return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
 }
 
 
-void
-CollectionView::showTrackInfo() //slot
-{
-    Item* item = static_cast<Item*>( currentItem() );
-    if ( !item ) return;
-
-    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
-        QString command = QString
-                          ( "SELECT DISTINCT artist.name, album.name, genre.name, year.name, comment FROM tags, artist, album, genre, year "
-                            "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
-                            .arg( m_db->escapeString( item->url().path() ) );
-
-        QStringList values;
-        QStringList names;
-        m_db->execSql( command, &values, &names );
-        if ( values.isEmpty() ) return;
-
-        QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-        QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-        str += body.arg( i18n( "Title" ),  item->text( 0 ) );
-        str += body.arg( i18n( "Artist" ), values[0] );
-        str += body.arg( i18n( "Album" ),  values[1] );
-        str += body.arg( i18n( "Genre" ),  values[2] );
-        str += body.arg( i18n( "Year" ),  values[3] );
-        str += body.arg( i18n( "Comment" ),values[4] );
-    //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
-    //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
-    //     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-
-        str.append( "</table></body></html>" );
-
-        QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
-                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
-                        0, 0, true, Qt::WStyle_DialogBorder );
-        box.setTextFormat( Qt::RichText );
-        box.exec();
-    }
-}
-
+//////////////////////////////////////////////////////////////////////////////////////////
+// class Item
+//////////////////////////////////////////////////////////////////////////////////////////
 
 int
 CollectionView::Item::compare( QListViewItem* item, int col, bool ascending ) const
