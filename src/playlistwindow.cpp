@@ -489,7 +489,7 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
-    m_playlist->insertMedia( dlg.selectedURL() );
+    m_playlist->appendMedia( dlg.selectedURL() );
 }
 
 
