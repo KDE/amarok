@@ -30,6 +30,8 @@ SHORT-TERM:
 
 MID-TERM:
 
+    * change: move analyzers into separate dir. make parent pure virtual. 
+
     * add: "add item"-dialog should support multiple selections
 
     * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
@@ -49,7 +51,7 @@ MID-TERM:
 
     * add: seeking with mousewheel
 
-    * add: make windows magnetic / sticking together
+    * add: make windows magnetic / sticking together (difficult)
 
     * add: make blinking currentTrack optional
 
@@ -57,10 +59,10 @@ MID-TERM:
 
     * change: select tracks on mouseup, not mousedown
 
+    * add: title streaming (mp3PlayObject needs to be patched)
+    
 
 LONG-TERM:
-
-    * add: title streaming (mp3PlayObject needs to be patched)
 
     * add: generate text or html document from playlist entries
 
@@ -78,10 +80,6 @@ LONG-TERM:
 
     * add visualisations
 
-    * add bookmarks for filebrowser
-
-    * add bookmarks (inside of tracks) and nifty bookmark browser
-
     * add pitch-slider (?) (berkus: should be in separate "Effects Control"
       panel)
 
@@ -89,6 +87,12 @@ LONG-TERM:
     
 
 IDEAS:
+
+    * functionality for finding/browsing streams, smiliar to streamtuner
+      (http://www.nongnu.org/streamtuner). possibly map this to the filebrowser
+
+    * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
+    
     * resizable playerwidget, like in Winamp3. Maybe using SVG graphics, or
       scaled down bitmaps. Would look most cool when it could resize smoothly
       in realtime *drool*
@@ -99,4 +103,4 @@ IDEAS:
     * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
       see at first glance how the altogether playing time is divided into different albums, tunes and
       so on.
-      
+          
