@@ -323,12 +323,12 @@ CollectionDB::artistList( bool withUnknown, bool withCompilations )
 
     if ( withUnknown && withCompilations )
         execSql( "SELECT DISTINCT name FROM artist "
-                 "ORDER BY lower( artist.name );", &values, 0, true );
+                 "ORDER BY lower( name );", &values );
     else
         execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
-                ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
-                ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-                "ORDER BY lower( artist.name );", &values, 0, true );
+               ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
+               ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
+                 "ORDER BY lower( artist.name );", &values );
 
     return values;
 }
@@ -341,12 +341,12 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
 
     if ( withUnknown && withCompilations )
         execSql( "SELECT DISTINCT name FROM album "
-                 "ORDER BY lower( album.name );", &values, 0, true );
+                 "ORDER BY lower( name );", &values );
     else
         execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
-                ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
-                ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-                "ORDER BY lower( album.name );", &values, 0, true );
+               ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
+               ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
+                 "ORDER BY lower( album.name );", &values );
 
     return values;
 }
@@ -411,7 +411,7 @@ CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 }
 
 
-float
+uint
 CollectionDB::addSongPercentage( const QString url, const int percentage )
 {
     QStringList values, names;
@@ -430,7 +430,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
                     .arg( values[1] )
                     .arg( score )
                     .arg( values[0] + " + 1" ) );
-        return score;
+        return (uint)score;
     } else
     {
         // entry didnt exist yet, create a new one
@@ -443,16 +443,16 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
 }
 
 
-float
+uint
 CollectionDB::getSongPercentage( const QString url )
 {
     QStringList values;
 
-    execSql( QString( "SELECT percentage FROM statistics WHERE url = '%1';" )
+    execSql( QString( "SELECT round( percentage + 0.5 ) FROM statistics WHERE url = '%1';" )
                 .arg( escapeString( url ) ), &values );
 
     if( values.count() )
-        return values[0].toFloat();
+        return values[0].toInt();
 
     return 0;
 }

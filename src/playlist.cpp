@@ -158,8 +158,9 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     setRenameable( 6 );
     setRenameable( 7 );
     setColumnAlignment(  7, Qt::AlignCenter ); //track
-    setColumnAlignment(  9, Qt::AlignRight ); //length
+    setColumnAlignment(  9, Qt::AlignRight );  //length
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
+    setColumnAlignment( 11, Qt::AlignCenter ); //score
 
 
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),

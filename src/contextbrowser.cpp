@@ -316,7 +316,7 @@ void ContextBrowser::showHome() //SLOT
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.percentage, artist.name, album.name "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 ), artist.name, album.name "
                             "FROM tags, artist, album, statistics "
                             "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "
@@ -408,7 +408,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, statistics.percentage "
+    m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
+                            "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
@@ -422,9 +423,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<img hspace='2' src='%9'></a></td>"
                                     "<td valign='bottom' align='right' width='80%'>" +
                                     i18n( "Track played 1 time", "Track played %n times", values[4].toInt() ) + "<br>" +
-                                    "amaroKiness: %11" + "<br>" +
-                                    i18n( "Last play: %12" ) + "<br>" +
-                                    i18n( "First play: %13") + "</i></td></tr>" )
+                                    i18n( "Score:" ) + " %11" + "<br>" +
+                                    i18n( "Last play:" ) + " %12" + "<br>" +
+                                    i18n( "First play:" ) + " %13" + "</i></td></tr>" )
                          .args( QStringList()
                                 << escapeHTML( m_currentTrack->artist() )
                                 << escapeHTML( m_currentTrack->title() )
@@ -475,7 +476,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Current Track Information>
 
     // <Favourite Tracks Information>
-    m_db->execSql( QString( "SELECT tags.title, tags.url, statistics.percentage "
+    m_db->execSql( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.5 )"
                             "FROM tags, artist, statistics "
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "

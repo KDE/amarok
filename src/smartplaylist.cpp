@@ -130,14 +130,14 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item = new SmartPlaylist( this, 0, i18n("Favorite Tracks"), query );
     item->setKey( 2 );
     SmartPlaylist *childItem = 0;
-/*    for( uint i=0; i < artistList.count(); i++ ) {
+    for( uint i=0; i < artistList.count(); i++ ) {
         query = QString( "SELECT tags.url "
-                         "FROM tags, statistics "
-                         "WHERE statistics.url = tags.url AND tags.artist = %1 "
+                         "FROM tags, artist, statistics "
+                         "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY statistics.percentage DESC "
-                         "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) );
+                         "LIMIT 0,15;" ).arg( db->escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
-    }*/
+    }
 
     /********** Most Played **************/
     query = "SELECT tags.url "
@@ -148,14 +148,14 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item = new SmartPlaylist( this, 0, i18n("Most Played"), query );
     item->setKey( 3 );
     childItem = 0;
-/*    for( uint i=0; i < artistList.count(); i++ ) {
+    for( uint i=0; i < artistList.count(); i++ ) {
         query = QString( "SELECT tags.url "
-                         "FROM tags, statistics "
-                         "WHERE statistics.url = tags.url AND tags.artist = %1 "
+                         "FROM tags, artist, statistics "
+                         "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY statistics.playcounter DESC "
-                         "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) );
+                         "LIMIT 0,15;" ).arg( db->escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
-    }*/
+    }
 
     /********** Newest Tracks **************/
     query = "SELECT url "
@@ -165,14 +165,14 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item = new SmartPlaylist( this, 0, i18n("Newest Tracks"), query );
     item->setKey( 4 );
     childItem = 0;
-/*    for( uint i=0; i < artistList.count(); i++ ) {
+    for( uint i=0; i < artistList.count(); i++ ) {
         query = QString( "SELECT url "
-                         "FROM tags "
-                         "WHERE tags.artist = %1 "
+                         "FROM tags, artist "
+                         "WHERE tags.artist = artist.id AND artist.name = '%1' "
                          "ORDER BY tags.createdate DESC "
-                         "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) );
+                         "LIMIT 0,15;" ).arg( db->escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By ") + artistList[i], query );
-    }*/
+    }
 
     /********** Last Played **************/
     query = "SELECT url "
