@@ -4,6 +4,7 @@
 
 #include "config.h"
 
+#include "app.h"
 #include "amarokconfig.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
@@ -48,6 +49,9 @@ CollectionDB::CollectionDB()
 
     if (m_db)
     {
+        if (AmarokConfig::mySqlUser().isEmpty())
+            ((App*)kapp)->slotConfigAmarok(6);
+
         if (mysql::mysql_real_connect(m_db, AmarokConfig::mySqlHost().latin1(),
                                             AmarokConfig::mySqlUser().latin1(),
                                             AmarokConfig::mySqlPassword().latin1(),
