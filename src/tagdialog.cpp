@@ -168,10 +168,12 @@ void TagDialog::init()
 
     //get artist and album list from collection db
     QStringList artistList, albumList;
+    QString cover;
     {
         CollectionDB db;
         artistList = db.artistList();
         albumList  = db.albumList();
+	cover = db.getImageForAlbum( m_bundle.artist(), m_bundle.album(), 50 );
     }
 
     //enable auto-completion for artist, album and genre
@@ -211,8 +213,8 @@ void TagDialog::init()
 
     // draw an icon onto the open-in-konqui button
     pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
-    // draw the fancy amaroK logo on the dialog ;-)
-    pixmap_cover->setPixmap( QPixmap( locate( "data", QString( "amarok/images/amarok_cut.png" ) ), "PNG" ) );
+    // draw the album cover on the dialog
+    pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
 
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
