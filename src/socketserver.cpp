@@ -2,7 +2,7 @@
 // Copyright: See COPYING file that comes with this distribution
 
 
-#include "config.h" //XMMS_CONFIG_DIR
+#include "config.h"           //XMMS_CONFIG_DIR
 
 #include "app.h"
 #include "enginebase.h"       //to get the scope
@@ -12,7 +12,7 @@
 
 #include <qdir.h>
 #include <qheader.h>          //Vis::Selector ctor
-#include <qsocketnotifier.h>
+#include <qtooltip.h>         //Vis::Selector ctor
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -280,10 +280,12 @@ Vis::Selector::Selector( QWidget *parent )
 
     setSorting( 0 );
     setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
-    setResizeMode( QListView::LastColumn );
+    QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
     addColumn( i18n( "Name" ) );
     header()->hide();
-
+    // Set sensible default size
+    resize( 280, 200 );
+    
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
 

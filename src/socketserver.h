@@ -7,7 +7,7 @@
 
 #include <qlistview.h>        //baseclass
 #include <qserversocket.h>    //baseclass
-#include <qsocketnotifier.h>
+#include <qsocketnotifier.h>  //baseclass
 #include <vector>             //stack allocated
 
 class QPoint;
