@@ -992,12 +992,6 @@ void PlayerApp::slotPrev()
 
 void PlayerApp::slotPlay()
 {
-  /*
-   //uncomment to allow switching on/off of viseffect dynamics (for testing)
-   if( m_bIsPlaying )
-     m_pPlayerWidget->m_pVis->m_dynamics = !m_pPlayerWidget->m_pVis->m_dynamics;
-  */
-
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
     if ( item == NULL )
@@ -1352,6 +1346,7 @@ void PlayerApp::slotMainTimer()
     if ( ( m_optXFade ) &&
          ( !m_pPlayObject->stream() ) &&
          ( !m_XFadeRunning ) &&
+         ( m_length != 0 ) &&
          ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
     {
         startXFade();

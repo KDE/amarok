@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: tracks skipping randomly
   * change: "BrowserWin Enabled" on by default
   * change: "Save Playlist" on by default
   * change: "Show Metainfo" on by default 
