@@ -49,7 +49,7 @@ MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties )
         MetaBundle bundle;
         if ( db->getMetaBundleForUrl( u.path(), &bundle ) )
         {
-            //FIXME why don't we pass this to the above function?
+            //FIXME why don't we pass "this" to the above function?
             //      please comment your work!!!!
 
             m_title   = bundle.title();
@@ -67,8 +67,7 @@ MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties )
 
                 // Generate a seperate MetaBundle for the audio properties. The Collection got
                 // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
-                bundle = MetaBundle( u, true );
-                db->addAudioproperties( bundle );
+                bundle.readTags( true );
             }
 
             m_bitrate = bundle.bitrate();
@@ -121,7 +120,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         , m_track  ( item->exactText( 7 ) )
         , m_exists ( true ) //FIXME
 {
-    if( m_url.protocol() == "file" && audioPropertiesUndetermined() )
+    if( m_url.protocol() == "file" )
     {
         readTags( true );
     }
