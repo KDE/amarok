@@ -14,7 +14,8 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+// $Id$
+ 
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
 #include "amarokslider.h"
@@ -67,7 +68,7 @@ email                : markey@web.de
 #define VOLUME_MAX 100
 #define MAIN_TIMER 150
 #define ANIM_TIMER 30
-#define SCOPE_SIZE 64
+#define SCOPE_SIZE 6
 
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
@@ -83,7 +84,7 @@ PlayerApp::PlayerApp()
         , m_playRetryCounter( 0 )
         , m_pEffectWidget( NULL )
         , m_bChangingSlider( false )
-        , m_pFht( new FHT( 6 ) )
+        , m_pFht( new FHT( SCOPE_SIZE ) )
 {
     setName( "amaroK" );
     pApp = this; //global

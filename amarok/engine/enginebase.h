@@ -71,7 +71,7 @@ class EngineBase : public QObject
         //
         //@param system name of multimedia framework
         //@param restart signals sound deamon must be restarted due to plugin installation. applies only to arts
-        //@param scopeSize size of vector the scope delivers
+        //@param scopeSize size of vector the scope delivers, exponent to base 2
         static EngineBase*           createEngine( QString system, bool& restart, int scopeSize );
 
     protected:

@@ -109,7 +109,7 @@ GstEngine::GstEngine( int scopeSize )
 {
     pGstEngine = this;
     gst_init( NULL, NULL );
-    buffer( scopeSize );
+    buffer( 1 << scopeSize );
     
     /* create a new thread to hold the elements */
     m_pThread              = gst_thread_new          ( "thread" );

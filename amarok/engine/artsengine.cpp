@@ -51,7 +51,7 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
         , m_pPlayObject( NULL )
         , m_scopeId( 0 )
-        , m_scopeSize( scopeSize )
+        , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
         , m_proxyError( false )
 {
