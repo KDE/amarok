@@ -84,13 +84,6 @@ class ScriptManager : public KDialogBase, public EngineObserver
         /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
-        /**
-         * Removes a directory including its contents
-         * @param directory Directory that should be removed.
-         * @return True if all files could be removed.
-         */
-        bool rmRecursively( const QString& directory );
-
         /** Observer reimplementations **/
         void engineStateChanged( Engine::State state );
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ );

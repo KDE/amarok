@@ -38,6 +38,7 @@
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
+#include <kio/netaccess.h>
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -215,7 +216,9 @@ ScriptManager::slotInstallScript()
         KMessageBox::sorry( this, i18n( "<p>Script installation failed.</p>"
                                         "<p>The package did not contain an executable file. "
                                         "Please inform the package maintainer about this error.</p>" ) );
-        rmRecursively( scriptFolder );
+
+        // Delete directory recursively
+        KIO::NetAccess::del( KURL::fromPathOrURL( scriptFolder ), 0 );
     }
 }
 
@@ -258,7 +261,9 @@ ScriptManager::slotUninstallScript()
 
     const QString directory = m_scripts[name].url.directory();
 
-    if ( !rmRecursively( directory ) ) {
+    // Delete directory recursively
+    KURL url = KURL::fromPathOrURL( directory );
+    if ( !KIO::NetAccess::del( url, 0 ) ) {
         KMessageBox::sorry( this, i18n( "Could not uninstall this script. The ScriptManager can only uninstall scripts that were installed as packages." ) );
         return;
     }
@@ -452,30 +457,6 @@ ScriptManager::loadScript( const QString& path )
 
         slotCurrentChanged( m_base->listView->currentItem() );
     }
-}
-
-
-bool
-ScriptManager::rmRecursively( const QString& directory )
-{
-    DEBUG_BLOCK
-
-    QDir dir( directory );
-    QStringList files = dir.entryList();
-
-    // Remove all files
-    bool success = false;
-    QStringList::Iterator it;
-    for ( it = files.begin(); it != files.end(); ++it ) {
-        success |= dir.remove( *it );
-        debug() << "Removed file: " << *it << endl;
-    }
-
-    // Remove directory as well
-    dir.rmdir( directory );
-    debug() << "Removed directory: " << directory << endl;
-
-    return success;
 }
 
 
