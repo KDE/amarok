@@ -176,12 +176,12 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pVolSpeaker       = new QPixmap( locate( "data", "amarok/images/vol_speaker.png" ) );
     m_pDescriptionImage = new QPixmap( locate( "data", "amarok/images/description.png" ) );
 
-    m_pDescription = new QLabel (this );
+    m_pDescription = new QLabel ( this );
     m_pDescription->move( 4, 5 );
     m_pDescription->setFixedSize( 130, 10 );
     m_pDescription->setPixmap( *m_pDescriptionImage );
 
-    m_pTimeSign = new QLabel( this );
+    m_pTimeSign = new QLabel( this, 0, Qt::WRepaintNoErase );
     m_pTimeSign->move( 6, 40 );
     m_pTimeSign->setFixedSize( 10, 10 );
 
@@ -190,9 +190,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pVolSign->setFixedSize( 9, 8 );
     m_pVolSign->setPixmap( *m_pVolSpeaker );
 
-/*    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
-                                      locate( "data", "amarok/images/logo_new_inactive.png" ), false );
-    m_pButtonLogo->move( -100, -100 );*/
+    /*    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
+                                          locate( "data", "amarok/images/logo_new_inactive.png" ), false );
+        m_pButtonLogo->move( -100, -100 );*/
 
     m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_inactive2.png" ),
                                     locate( "data", "amarok/images/pl_active2.png" ), true );
@@ -241,7 +241,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
-//    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
+    //    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
 }
 
 
@@ -263,7 +263,8 @@ void PlayerWidget::initScroll()
     //int frameHeight = QFontMetrics( font ).height() + 5;
     int frameHeight = 16;
 
-    m_pFrame->setFixedSize( 252, frameHeight );
+    m_pFrame->setFixedSize( 286, frameHeight );
+    //    m_pFrame->setFixedSize( 252, frameHeight );
     m_pFrame->move( 3, 14 );
     //m_pFrame->setFont( font );
 
@@ -298,7 +299,7 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
         QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
         m_pDcopHandler->setNowPlaying( text ); //text = ""
         m_bitrate = m_samplerate = text; //better to use text than create a temporary QString
-                                         //looks better if these are clear
+        //looks better if these are clear
         text = i18n( "Welcome to amaroK" );
     }
     else
@@ -400,15 +401,14 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
 
 void PlayerWidget::paintEvent( QPaintEvent * )
 {
-    erase( 20, 40, 120, 50 );
     QPainter pF( this );
 
     QFont font( "Arial" );
-//    font.setStyleHint( QFont::Arial );
+    //    font.setStyleHint( QFont::Arial );
     font.setBold( TRUE );
     font.setPixelSize( 10 );
     pF.setFont( font );
-//    pF.setPen( pApp->m_fgColor );
+    //    pF.setPen( pApp->m_fgColor );
     pF.setPen( QColor( 255, 255, 255 ) );
 
     //this method avoids creation/destruction of temporaries (use +=)
@@ -575,17 +575,17 @@ void PlayerWidget::createVis()
     case 1:
         m_pVis = new DistortAnalyzer( this );
         break;
-/*    //FIXME deactivated piggz' analyzer for now, since it's too similar to #1 (confusing the user)
-    case 2:
-        m_pVis = new BarAnalyzer2( this );
-        break;*/
+        /*    //FIXME deactivated piggz' analyzer for now, since it's too similar to #1 (confusing the user)
+            case 2:
+                m_pVis = new BarAnalyzer2( this );
+                break;*/
     case 2:
         m_pVis = new TurbineAnalyzer( this );
         break;
-/*    // bitch's ditched for this release
-    case 3:
-        m_pVis = new SpectralShineAnalyzer( this );
-        break;*/
+        /*    // bitch's ditched for this release
+            case 3:
+                m_pVis = new SpectralShineAnalyzer( this );
+                break;*/
     case 3:
         m_pVis = new XmasAnalyzer( this );
         break;
@@ -599,16 +599,16 @@ void PlayerWidget::createVis()
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
-/*    if ( pApp->m_optVisCurrent == 1 )
-    {
-        m_pVis->setFixedSize( 168, 80 );
-        m_pVis->move( 113, 20 );
-    }
-    else
-    {*/
-        m_pVis->setFixedSize( 168, 50 );
-        m_pVis->move( 119, 45 );
-//    }
+    /*    if ( pApp->m_optVisCurrent == 1 )
+        {
+            m_pVis->setFixedSize( 168, 80 );
+            m_pVis->move( 113, 20 );
+        }
+        else
+        {*/
+    m_pVis->setFixedSize( 168, 50 );
+    m_pVis->move( 119, 45 );
+    //    }
 
     connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
 

@@ -47,17 +47,19 @@ int main( int argc, char *argv[] )
                           "http://amarok.sourceforge.net" );
 
     aboutData.addAuthor( "Mark Kretschmann", "Project founder, developer, maintainer", "markey@web.de" );
+    aboutData.addAuthor( "Christian Muehlhaeuser", "Developer", "chris@chris.de", "http://www.chris.de" );
     aboutData.addAuthor( "Max Howell", "Developer", "max.howell@methylblue.com" );
     aboutData.addAuthor( "Stanislav Karchebny", "Patches, improvements, visualizations, cleanups, i18n",
                          "berk@inbox.ru" );
-    
+
+    aboutData.addCredit( "Adam Pigg", "Analyzer, Patches", "adam@piggz.fsnet.co.uk" );
+    aboutData.addCredit( "Alper Ayazoglu", "Graphics: Buttons", "cubon@cubon.de", "http://cubon.de" );
+    aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator, Whipping", "grue@iki.fi" );
     aboutData.addCredit( "Markus A. Rykalski", "Graphics", "exxult@exxult.de" );
     aboutData.addCredit( "Roman Becker", "Graphics", "roman@formmorf.de", "http://www.formmorf.de" );
-    aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator, Whipping", "grue@iki.fi" );
-    aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
-    aboutData.addCredit( "Adam Pigg", "Analyzer, Patches", "adam@piggz.fsnet.co.uk" );
-    aboutData.addCredit( "Alper Ayazoglu", "Graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
+    aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
     aboutData.addCredit( "The Noatun Authors", "Code Inspiration", 0, "http://noatun.kde.org" );
+    aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
     KCmdLineArgs::addCmdLineOptions( options );   // Add our own options.
