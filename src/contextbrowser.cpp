@@ -960,41 +960,15 @@ void ContextBrowser::setStyleSheet()
     kdDebug() << k_funcinfo << endl;
 
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
-    if (AmarokConfig::contextBrowserStyleSheet().latin1())
-        if ( QFile::exists( KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/" + themeName + "/stylesheet.css" ) )
-            setStyleSheet_ExternalStyle( m_styleSheet, themeName );
-        else
-            setStyleSheet_default( m_styleSheet );
+    if ( QFile::exists( KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/" + themeName + "/stylesheet.css" ) )
+        setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
-            setStyleSheet_default( m_styleSheet );
+        setStyleSheet_Default( m_styleSheet );
     browser->setUserStyleSheet( m_styleSheet );
 }
 
-void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
+void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 {
-    //This is the reference style, "inherited" by all the other stylesheets.
-
-    //colorscheme/font dependant parameters
-    int pxSize = fontMetrics().height() - 4;
-    const QString text = colorGroup().text().name();
-    const QString fg   = colorGroup().highlightedText().name();
-    const QString bg   = colorGroup().highlight().name();
-    amaroK::Color gradient = colorGroup().highlight();
-
-    //we have to set the color for body due to a KHTML bug
-    //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; }" )
-            .arg( pxSize )
-            .arg( text )
-            .arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() );
-
-}
-
-void ContextBrowser::setStyleSheet_default( QString& styleSheet )
-{
-    // "INHERIT" Flat style
-    setStyleSheet_Flat( styleSheet );
-
     //colorscheme/font dependant parameters
     int pxSize = fontMetrics().height() - 4;
     const QString text = colorGroup().text().name();
@@ -1034,7 +1008,13 @@ void ContextBrowser::setStyleSheet_default( QString& styleSheet )
     imageS.save( m_shadowGradientImage->file(), "PNG" );
     m_shadowGradientImage->close();
 
-    styleSheet += QString( "body { background-image: url( %1 ); background-repeat: repeat-y; }" ).arg( m_bgGradientImage->name() );
+    //we have to set the color for body due to a KHTML bug
+    //KHTML sets the base color but not the text color
+    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
+            .arg( pxSize )
+            .arg( text )
+            .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
+            .arg( m_bgGradientImage->name() );
 
     //text attributes
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
@@ -1083,14 +1063,18 @@ void ContextBrowser::setStyleSheet_default( QString& styleSheet )
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
 {
-    // "INHERIT" Flat style
-    setStyleSheet_Flat( styleSheet );
-
     //colorscheme/font dependant parameters
     QString pxSize = QString::number( fontMetrics().height() - 4 );
     QString text = colorGroup().text().name();
     QString fg   = colorGroup().highlightedText().name();
     QString bg   = colorGroup().highlight().name();
+
+    //we have to set the color for body due to a KHTML bug
+    //KHTML sets the base color but not the text color
+    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; }" )
+            .arg( pxSize )
+            .arg( text )
+            .arg( bg );
 
     QString CSSLocation = KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "styles/" + themeName + "/";
 

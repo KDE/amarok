@@ -53,8 +53,7 @@ class ContextBrowser : public QVBox, public EngineObserver
 
     private:
         void setStyleSheet();
-        void setStyleSheet_Flat( QString& styleSheet );
-        void setStyleSheet_default( QString& styleSheet );
+        void setStyleSheet_Default( QString& styleSheet );
         void setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName );
         void showIntroduction();
         void saveHtmlData();
