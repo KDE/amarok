@@ -83,6 +83,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     url.setPath( i18n( "Current Playlist" ) );
     url.setProtocol( "cur" );
     lastPlaylist = new PlaylistBrowserItem( m_listview, 0, url );
+    currentItemChanged( lastPlaylist );
 
     m_smartlistview = new SmartPlaylistView( m_splitter );
 
@@ -440,10 +441,15 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     if( !item )
         goto enable_buttons;
 
-    else if( isPlaylist( item ) ) {
-        enable_remove = true;
-        enable_rename = true;
-        enable_delete = true;
+    else if( isPlaylist( item ) )
+    {
+        if ( static_cast<PlaylistBrowserItem*>( item )->url().protocol() == "cur" )
+            enable_rename = true;
+        else {
+            enable_remove = true;
+            enable_rename = true;
+            enable_delete = true;
+        }
     }
     else
         enable_remove = true;
@@ -1213,6 +1219,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
+    if ( m_url.protocol() == "cur" ) font.setItalic( true );
 
     int text_x = lv->treeStepSize() + 3;
     int text_y = fm.lineSpacing();
