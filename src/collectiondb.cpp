@@ -538,94 +538,70 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 
 
 QStringList
-CollectionDB::artistList( int options, const QString& filter, int flags )
+CollectionDB::artistList( bool withUnknowns, bool withCompilations )
 {
-    QString cmd;
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
-    // make sure artists is set in flags
-    flags |= tabArtist;
-    cmd = "SELECT DISTINCT artist.name FROM tags";
-    // link tables & add filter
-    cmd += qBuilderLinkTables( flags );
-    cmd += qBuilderAddFilter( flags, filter );
+    if ( !withUnknowns )
+        qb.excludeMatch( QueryBuilder::tabArtist, "Unknown" );
+    if ( !withCompilations )
+        qb.setOptions( QueryBuilder::optNoCompilations );
 
-    if ( options & optNoUnknowns )
-        cmd += qBuilderExcludeFilter( tabArtist, "Unknown" );
-
-    cmd += qBuilderSetOptions( options );
-    cmd += "ORDER BY lower(artist.name);";
-
-    kdDebug() << cmd << endl;
-    return query( cmd );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    return qb.run();
 }
 
 
 QStringList
-CollectionDB::albumList( int options, const QString& filter, int flags )
+CollectionDB::albumList( bool withUnknowns, bool withCompilations )
 {
-    QString cmd;
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
 
-    // make sure artists is set in flags
-    flags |= tabAlbum;
-    cmd = "SELECT DISTINCT album.name FROM tags";
-    // link tables & add filter
-    cmd += qBuilderLinkTables( flags );
-    cmd += qBuilderAddFilter( flags, filter );
+    if ( !withUnknowns )
+        qb.excludeMatch( QueryBuilder::tabAlbum, "Unknown" );
+    if ( !withCompilations )
+        qb.setOptions( QueryBuilder::optNoCompilations );
 
-    if ( options & optNoUnknowns )
-        cmd += qBuilderExcludeFilter( tabAlbum, "Unknown" );
-
-    cmd += qBuilderSetOptions( options );
-    cmd += "ORDER BY lower(album.name);";
-
-    kdDebug() << cmd << endl;
-    return query( cmd );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    return qb.run();
 }
 
 
 QStringList
-CollectionDB::genreList( int options, const QString& filter, int flags )
+CollectionDB::genreList( bool withUnknowns, bool withCompilations )
 {
-    QString cmd;
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
 
-    // make sure artists is set in flags
-    flags |= tabGenre;
-    cmd = "SELECT DISTINCT genre.name FROM tags";
-    // link tables & add filter
-    cmd += qBuilderLinkTables( flags );
-    cmd += qBuilderAddFilter( flags, filter );
+    if ( !withUnknowns )
+        qb.excludeMatch( QueryBuilder::tabGenre, "Unknown" );
+    if ( !withCompilations )
+        qb.setOptions( QueryBuilder::optNoCompilations );
 
-    if ( options & optNoUnknowns )
-        cmd += qBuilderExcludeFilter( tabGenre, "Unknown" );
-
-    cmd += qBuilderSetOptions( options );
-    cmd += "ORDER BY lower(genre.name);";
-
-    kdDebug() << cmd << endl;
-    return query( cmd );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.sortBy( QueryBuilder::tabGenre, QueryBuilder::valName );
+    return qb.run();
 }
 
 
 QStringList
-CollectionDB::yearList( int options, const QString& filter, int flags )
+CollectionDB::yearList( bool withUnknowns, bool withCompilations )
 {
-    QString cmd;
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
 
-    // make sure artists is set in flags
-    flags |= tabYear;
-    cmd = "SELECT DISTINCT year.name FROM tags";
-    // link tables & add filter
-    cmd += qBuilderLinkTables( flags );
-    cmd += qBuilderAddFilter( flags, filter );
+    if ( !withUnknowns )
+        qb.excludeMatch( QueryBuilder::tabYear, "Unknown" );
+    if ( !withCompilations )
+        qb.setOptions( QueryBuilder::optNoCompilations );
 
-    if ( options & optNoUnknowns )
-        cmd += qBuilderExcludeFilter( tabYear, "Unknown" );
-
-    cmd += qBuilderSetOptions( options );
-    cmd += "ORDER BY lower(year.name);";
-
-    kdDebug() << cmd << endl;
-    return query( cmd );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
+    return qb.run();
 }
 
 
@@ -1279,224 +1255,6 @@ CollectionDB::valueFromID( QString table, uint id )
 
 
 void
-CollectionDB::retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
-                                   QString filter, QStringList& values, QStringList& names )
-{
-    QString filterToken;
-
-    // apply special user-filter
-    if ( !filter.isEmpty() )
-    {
-        filter = escapeString( filter );
-        filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' ";
-        if ( !category2.isEmpty() ) {
-            filterToken.prepend( "AND tags." + category2.lower() + "=" + category2.lower() + ".id " );
-            filterToken += "OR " + category2.lower() + ".name LIKE '%" + filter + "%' ";
-            if ( !category3.isEmpty() ) {
-                filterToken.prepend( "AND tags." + category3.lower() + "=" + category3.lower() + ".id " );
-                filterToken += "OR " + category3.lower() + ".name LIKE '%" + filter + "%' ";
-            }
-        }
-        filterToken += "OR tags.title LIKE '%" + filter + "%' )";
-    }
-
-    QString command = "SELECT DISTINCT " + category1.lower() + ".name";
-    command += category1.lower() == "artist" ? ", tags.sampler " : ", '0' ";
-
-    command += "FROM tags, " + category1.lower();
-    if( !filter.isEmpty() ) {
-        if ( !category2.isEmpty() ) {
-            command += ", " + category2.lower();
-            if( !category3.isEmpty() )
-                command += ", " + category3.lower();
-        }
-    }
-
-    command += " WHERE " + category1.lower() + ".id=tags." + category1.lower();
-    command += " " + filterToken;
-    command += " ORDER BY lower(" + category1.lower() + ".name) DESC;";
-
-    values = query( command, names );
-}
-
-
-void
-CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2,
-                                   const QString& category3, QString filter, QStringList& values,
-                                   QStringList& names )
-{
-    QString filterToken;
-
-    // apply special user-filter
-    if ( !filter.isEmpty() )
-    {
-        filter = escapeString( filter );
-        filterToken = "AND " + category1.lower() + ".id=tags." + category1.lower();
-        filterToken += " AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' ";
-        if ( !category2.isEmpty() ) {
-            filterToken += "OR " + category2.lower() + ".name LIKE '%" + filter + "%' ";
-            if ( !category3.isEmpty() ) {
-                filterToken.prepend( "AND tags." + category3.lower() + "=" + category3.lower() + ".id " );
-                filterToken += "OR " + category3.lower() + ".name LIKE '%" + filter + "%' ";
-            }
-        }
-        filterToken += "OR tags.title LIKE '%" + filter + "%' )";
-    }
-
-    QString command;
-    if ( category2.isEmpty() )
-    {
-        QString sorting = category1.lower() == "album" ? "track" : "title";
-
-        command = "SELECT DISTINCT tags.title, tags.url FROM tags";
-        if( !filter.isEmpty() )
-            command += ", " + category1.lower();
-
-        command += " WHERE tags.";
-
-        if ( itemText == i18n( "Various Artists" ) )
-            command += "sampler = 1";
-        else {
-            QString id = QString::number( IDFromValue( category1.lower(), itemText, false ) );
-            command += category1.lower() + "=" + id;
-        }
-        command += " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
-    }
-    else
-    {
-        command = "SELECT DISTINCT " + category2.lower() + ".name, '0' ";
-        command += "FROM tags, " + category2.lower();
-        if( !filter.isEmpty() ) {
-            command += ", " + category1.lower();
-            if( !category3.isEmpty() )
-                command += ", " + category3.lower();
-        }
-        command += " WHERE tags." + category2.lower() + "=" + category2.lower() + ".id AND tags.";
-
-        if ( itemText == i18n( "Various Artists" ) )
-            command += "sampler = 1";
-        else {
-            QString id = QString::number( IDFromValue( category1.lower(), itemText, false ) );
-            command += category1.lower() + "=" + id;
-        }
-        command += " " + filterToken + " ORDER BY lower(" + category2.lower() + ".name) DESC;";
-    }
-
-    values = query( command, names );
-}
-
-
-void
-CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1,
-                                  const QString& category2, const QString& category3, QString filter,
-                                  QStringList& values, QStringList& names )
-{
-    QString filterToken;
-
-    // apply special user-filter
-    if ( !filter.isEmpty() )
-    {
-        filter = escapeString( filter );
-        filterToken = "AND " + category1.lower() + ".id=tags." + category1.lower();
-        filterToken += " AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
-        filterToken += "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' ";
-        filterToken += "OR " + category2.lower() + ".name LIKE '%" + filter + "%' ";
-        if ( !category3.isEmpty() )
-            filterToken += "OR " + category3.lower() + ".name LIKE '%" + filter + "%' ";
-        filterToken += "OR tags.title LIKE '%" + filter + "%' )";
-    }
-
-    QString command;
-    if( category3.isEmpty() ) {
-        QString sorting = category2.lower() == "album" ? "track" : "title";
-
-        QString id_sub = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
-        command = "SELECT DISTINCT tags.title, tags.url FROM tags";
-        if( !filter.isEmpty() )
-            command += ", " + category1.lower() + ", " + category2.lower();
-
-        command += " WHERE tags." + category2.lower() + " = " + id_sub
-                +  " AND tags.";
-
-        if ( itemText1 == i18n( "Various Artists" ) )
-            command += "sampler = 1 ";
-        else {
-            QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
-            command += category1.lower() + "=" + id;
-        }
-
-        command += " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
-    }
-    else {
-
-        QString sub_id = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
-        command = "SELECT DISTINCT " + category3.lower() + ".name, '0' FROM tags, " + category3.lower();
-        if( !filter.isEmpty() )
-            command += ", " + category1.lower() + ", " + category2.lower();
-        command += " WHERE tags." + category3.lower() + "=" + category3.lower() + ".id AND ";
-        command += "tags." + category2.lower() + "=" + sub_id + " AND tags.";
-
-        if ( itemText1 == i18n( "Various Artists" ) )
-            command += "sampler = 1";
-        else {
-            QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
-            command += category1.lower() + "=" + id;
-        }
-
-        command += " " + filterToken + " ORDER BY lower(" + category3.lower() + ".name) DESC;";
-    }
-
-    values = query( command, names );
-}
-
-
-void
-CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3,
-                                   const QString& category1, const QString& category2,
-                                   const QString& category3, QString filter,
-                                   QStringList& values, QStringList& names )
-{
-    QString filterToken;
-
-    // apply special user-filter
-    if ( !filter.isEmpty() )
-    {
-        filter = escapeString( filter );
-        filterToken = "AND " + category1.lower() + ".id=tags." + category1.lower();
-        filterToken += " AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
-        filterToken += "AND tags." + category3.lower() + "=" + category3.lower() + ".id ";
-        filterToken += "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' ";
-        filterToken += "OR " + category2.lower() + ".name LIKE '%" + filter + "%' ";
-        filterToken += "OR " + category3.lower() + ".name LIKE '%" + filter + "%' ";
-        filterToken += "OR tags.title LIKE '%" + filter + "%' )";
-    }
-
-    QString sorting = category3.lower() == "album" ? "track" : "title";
-
-    QString id_sub = QString::number( IDFromValue( category2.lower(), itemText2, false ) );
-    QString id_sub2 = QString::number( IDFromValue( category3.lower(), itemText3, false ) );
-
-    QString command = "SELECT DISTINCT tags.title, tags.url FROM tags";
-    if( !filter.isEmpty() )
-        command += ", " + category1.lower() + ", " + category2.lower() + ", " + category3.lower();
-
-    command += " WHERE tags." + category3.lower() + " = " + id_sub2
-                +  " AND tags." + category2.lower() + " = " + id_sub
-                +  " AND tags.";
-
-    if ( itemText1 == i18n( "Various Artists" ) )
-        command += "sampler = 1 ";
-    else {
-        QString id = QString::number( IDFromValue( category1.lower(), itemText1, false ) );
-        command += category1.lower() + "=" + id;
-    }
-
-    command += " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
-    values = query( command, names );
-}
-
-
-void
 CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString category2,
                                       const QString& category3, QString filter,
                                       QStringList& values, QStringList& names )
@@ -1638,74 +1396,6 @@ CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& i
 }
 
 
-QString
-CollectionDB::qBuilderLinkTables( int tables )
-{
-    QString s;
-
-    if ( tables & tabAlbum ) s += ",album";
-    if ( tables & tabArtist ) s += ",artist";
-    if ( tables & tabGenre ) s += ",genre";
-    if ( tables & tabYear ) s += ",year";
-    s += " WHERE 1 ";
-    if ( tables & tabAlbum ) s += "AND album.id=tags.album ";
-    if ( tables & tabArtist ) s += "AND artist.id=tags.artist ";
-    if ( tables & tabGenre ) s += "AND genre.id=tags.genre ";
-    if ( tables & tabYear ) s += "AND year.id=tags.year ";
-
-    return s;
-}
-
-
-QString
-CollectionDB::qBuilderAddFilter( int tables, const QString& filter )
-{
-    QString s;
-
-    if ( !filter.isEmpty() )
-    {
-        s += "AND ( 0 ";
-        if ( tables & tabAlbum ) s += "OR album.name LIKE '%" + filter + "%' ";
-        if ( tables & tabArtist ) s += "OR artist.name LIKE '%" + filter + "%' ";
-        if ( tables & tabGenre ) s += "OR genre.name LIKE '%" + filter + "%' ";
-        if ( tables & tabYear ) s += "OR year.name LIKE '%" + filter + "%' ";
-        s += " ) ";
-    }
-
-    return s;
-}
-
-
-QString
-CollectionDB::qBuilderExcludeFilter( int tables, const QString& filter )
-{
-    QString s;
-
-    if ( !filter.isEmpty() )
-    {
-        s += "AND ( 1 ";
-        if ( tables & tabAlbum ) s += "AND album.name <> '" + filter + "' ";
-        if ( tables & tabArtist ) s += "AND artist.name <> '" + filter + "' ";
-        if ( tables & tabGenre ) s += "AND genre.name <> '" + filter + "' ";
-        if ( tables & tabYear ) s += "AND year.name <> '" + filter + "' ";
-        s += " ) ";
-    }
-
-    return s;
-}
-
-
-QString
-CollectionDB::qBuilderSetOptions( int options )
-{
-    QString s;
-    if ( options & optNoCompilations ) s += "AND tags.sampler <> 1 ";
-    if ( options & optOnlyCompilations ) s += "AND tags.sampler = 1 ";
-
-    return s;
-}
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1799,6 +1489,7 @@ CollectionDB::customEvent( QCustomEvent *e )
     }
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionEmitter
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1825,6 +1516,191 @@ void CollectionEmitter::engineTrackEnded( int finalPosition, int trackLength )
 
     // increase song counter & calculate new statistics
     CollectionDB().addSongPercentage( url.path(), pct );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS QueryBuilder
+//////////////////////////////////////////////////////////////////////////////////////////
+
+QueryBuilder::QueryBuilder()
+{
+    clear();
+}
+
+
+void
+QueryBuilder::linkTables( int tables )
+{
+    if ( tables & tabAlbum ) m_tables += ",album";
+    if ( tables & tabArtist ) m_tables += ",artist";
+    if ( tables & tabGenre ) m_tables += ",genre";
+    if ( tables & tabYear ) m_tables += ",year";
+
+    m_where += " AND 1 ";
+    if ( tables & tabAlbum ) m_where += "AND album.id=tags.album ";
+    if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
+    if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
+    if ( tables & tabYear ) m_where += "AND year.id=tags.year ";
+}
+
+
+void
+QueryBuilder::addReturnValue( int table, int value )
+{
+    if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
+
+    if ( table & tabAlbum ) m_values += "album.";
+    if ( table & tabArtist ) m_values += "artist.";
+    if ( table & tabGenre ) m_values += "genre.";
+    if ( table & tabYear ) m_values += "year.";
+    if ( table & tabSong ) m_values += "tags.";
+
+    if ( value & valID ) m_values += "id";
+    if ( value & valName ) m_values += "name";
+    if ( value & valURL ) m_values += "url";
+    if ( value & valTitle ) m_values += "title";
+    if ( value & valTrack ) m_values += "track";
+
+    m_linkTables |= table;
+    m_returnValues++;
+}
+
+
+uint
+QueryBuilder::countReturnValues()
+{
+    return m_returnValues;
+}
+
+
+void
+QueryBuilder::addFilter( int tables, const QString& filter )
+{
+    if ( !filter.isEmpty() )
+    {
+        m_where += "AND ( 0 ";
+        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + filter + "%' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + filter + "%' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + filter + "%' ";
+        if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + filter + "%' ";
+        if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + filter + "%' ";
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
+QueryBuilder::addMatch( int tables, const QString& match )
+{
+    if ( !match.isEmpty() )
+    {
+        m_where += "AND ( 0 ";
+        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + match + "' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + match + "' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + match + "' ";
+        if ( tables & tabYear ) m_where += "OR year.name LIKE '" + match + "' ";
+        if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + match + "' ";
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
+QueryBuilder::excludeFilter( int tables, const QString& filter )
+{
+    if ( !filter.isEmpty() )
+    {
+        m_where += "AND ( 1 ";
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + filter + "%' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + filter + "%' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + filter + "%' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '%" + filter + "%' ";
+        if ( tables & tabSong ) m_where += "AND tags.title <> '%" + filter + "%' ";
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
+QueryBuilder::excludeMatch( int tables, const QString& match )
+{
+    if ( !match.isEmpty() )
+    {
+        m_where += "AND ( 1 ";
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '" + match + "' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '" + match + "' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '" + match + "' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '" + match + "' ";
+        if ( tables & tabSong ) m_where += "AND tags.title <> '" + match + "' ";
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
+QueryBuilder::setOptions( int options )
+{
+    if ( options & optNoCompilations ) m_where += "AND tags.sampler <> 1 ";
+    if ( options & optOnlyCompilations ) m_where += "AND tags.sampler = 1 ";
+    if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
+}
+
+
+void
+QueryBuilder::sortBy( int table, int value )
+{
+    if ( !m_sort.isEmpty() ) m_sort += ",";
+    m_sort += "LOWER(";
+
+    if ( table & tabAlbum ) m_sort += "album.";
+    if ( table & tabArtist ) m_sort += "artist.";
+    if ( table & tabGenre ) m_sort += "genre.";
+    if ( table & tabYear ) m_sort += "year.";
+    if ( table & tabSong ) m_sort += "tags.";
+
+    if ( value & valID ) m_sort += "id";
+    if ( value & valName ) m_sort += "name";
+    if ( value & valURL ) m_sort += "url";
+    if ( value & valTitle ) m_sort += "title";
+    if ( value & valTrack ) m_sort += "track";
+
+    m_sort += ")";
+}
+
+
+QStringList
+QueryBuilder::run()
+{
+    linkTables( m_linkTables );
+
+    QString cmd = "SELECT " + m_values + " FROM tags " + m_tables + " WHERE 1 " + m_where;
+    if ( !m_sort.isEmpty() ) cmd += " ORDER BY " + m_sort;
+
+    kdDebug() << cmd << endl;
+
+    return m_db.query( cmd );
+}
+
+
+void
+QueryBuilder::clear()
+{
+    m_values = "";
+    m_tables = "";
+    m_where = "";
+    m_sort = "";
+
+    m_linkTables = 0;
+    m_returnValues = 0;
 }
 
 

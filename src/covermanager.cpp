@@ -82,7 +82,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     item->setPixmap( 0, SmallIcon("cdrom_unmount") );
 
     //load artists from the collection db
-    QStringList artists = m_db->artistList( CollectionDB::optNoCompilations | CollectionDB::optNoUnknowns );
+    QStringList artists = m_db->artistList( false, false );
     if( !artists.isEmpty() ) {
         for( uint i=0; i < artists.count(); i++ )  {
             item = new KListViewItem( m_artistView, item, artists[i] );
@@ -304,7 +304,7 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
 
     if ( item == m_artistView->firstChild() )
         //All Artists
-        albums = m_db->albumList( CollectionDB::optNoUnknowns );
+        albums = m_db->albumList( false, true );
     else
         albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
 

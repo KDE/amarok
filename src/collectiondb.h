@@ -30,10 +30,6 @@ class CollectionDB : public QObject
     Q_OBJECT
 
     public:
-        //attributes:
-        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8 };
-        enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optNoUnknowns = 4 };
-
         CollectionDB();
         ~CollectionDB();
 
@@ -82,10 +78,10 @@ class CollectionDB : public QObject
         QString getPathForAlbum( const QString &artist, const QString &album );
 
         //list methods
-        QStringList artistList( int options = 0, const QString& filter = QString::null, int flags = 0 );
-        QStringList albumList( int options = 0, const QString& filter = QString::null, int flags = 0 );
-        QStringList genreList( int options = 0, const QString& filter = QString::null, int flags = 0 );
-        QStringList yearList( int options = 0, const QString& filter = QString::null, int flags = 0 );
+        QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
+        QStringList albumList( bool withUnknowns = true, bool withCompilations = true );
+        QStringList genreList( bool withUnknowns = true, bool withCompilations = true );
+        QStringList yearList( bool withUnknowns = true, bool withCompilations = true );
 
         QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
@@ -115,19 +111,6 @@ class CollectionDB : public QObject
         QString yearValue( uint id );
 
         //tree methods
-        void retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
-                                            QString filter, QStringList& values, QStringList& names );
-        void retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2, 
-                                                 const QString& category3, QString filter, 
-                                                 QStringList& values, QStringList& names );
-        void retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                             const QString& category2, const QString& category3, QString filter, 
-                                            QStringList& values, QStringList& names );
-        void retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
-                                               const QString& category1, const QString& category2, 
-                                               const QString& category3, QString filter, 
-                                               QStringList& values, QStringList& names );
-
         void retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString gcategory2, const QString& category3,
                                                     QString filter, QStringList& values, QStringList& names );
         void retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
@@ -157,11 +140,6 @@ class CollectionDB : public QObject
 
     private:
         void customEvent( QCustomEvent* );
-
-        QString qBuilderLinkTables( int tables );
-        QString qBuilderAddFilter( int tables, const QString& filter );
-        QString qBuilderExcludeFilter( int tables, const QString& filter );
-        QString qBuilderSetOptions( int options );
 
         uint IDFromValue( QString name, QString value, bool autocreate = true, bool useTempTables = false );
         QString valueFromID( QString table, uint id );
@@ -205,6 +183,48 @@ class CollectionEmitter : public QObject, public EngineObserver
         void coverFetched( const QString &keyword );
         void coverFetched();
         void coverFetcherError();
+};
+
+
+class QueryBuilder : public QObject
+{
+    Q_OBJECT
+
+    public:
+        //attributes:
+        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32 };
+        enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4 };
+        enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16 };
+
+        QueryBuilder();
+
+        void addReturnValue( int table, int value );
+        uint countReturnValues();
+
+        void addFilter( int tables, const QString& filter );
+        void excludeFilter( int tables, const QString& filter );
+
+        void addMatch( int tables, const QString& match );
+        void excludeMatch( int tables, const QString& match );
+
+        void setOptions( int options );
+        void sortBy( int table, int value );
+
+        QStringList run();
+        void clear();
+
+    private:
+        void linkTables( int tables );
+
+        QString m_values;
+        QString m_tables;
+        QString m_where;
+        QString m_sort;
+
+        int m_linkTables;
+        uint m_returnValues;
+
+        CollectionDB m_db;
 };
 
 

@@ -336,11 +336,16 @@ CollectionView::renderView( )  //SLOT
 
     //query database for all records with the specified category
     QStringList values;
+    QueryBuilder qb;
 
-    if ( m_category1 == i18n( "Artist" ) ) values = m_db->artistList( CollectionDB::optNoCompilations, m_filter, m_cat1 | m_cat2 | m_cat3 );
-    if ( m_category1 == i18n( "Album" ) )  values = m_db->albumList( 0, m_filter, m_cat1 | m_cat2 | m_cat3 );
-    if ( m_category1 == i18n( "Genre" ) )  values = m_db->genreList( 0, m_filter, m_cat1 | m_cat2 | m_cat3 );
-    if ( m_category1 == i18n( "Year" ) )   values = m_db->yearList( 0, m_filter, m_cat1 | m_cat2 | m_cat3 );
+    qb.addReturnValue( m_cat1, QueryBuilder::valName );
+    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+    qb.sortBy( m_cat1, QueryBuilder::valName );
+
+    if ( m_cat1 == QueryBuilder::tabArtist )
+        qb.setOptions( QueryBuilder::optNoCompilations | QueryBuilder::optRemoveDuplicates );
+
+    values = qb.run();
 
     for ( int i = values.count() - 1; i >= 0; --i )
     {
@@ -355,9 +360,14 @@ CollectionView::renderView( )  //SLOT
         item->setPixmap( 0, pixmap );
     }
 
-    if ( m_category1 == i18n( "Artist" ) )
+    if ( m_cat1 == QueryBuilder::tabArtist )
     {
-        values = m_db->artistList( CollectionDB::optOnlyCompilations, m_filter, m_cat1 | m_cat2 | m_cat3 );
+        qb.clear();
+        qb.addReturnValue( m_cat1, QueryBuilder::valName );
+        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+        qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
+        values = qb.run();
+
         if ( values.count() )
         {
             KListViewItem* item = new KListViewItem( this );
@@ -425,32 +435,75 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( !item ) return;
 
     QStringList values;
-    QStringList names;
+    QueryBuilder qb;
 
     QString category;
 
-    if( item->depth() == 0 ) {
-        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ),
-                                   tableForCat( m_category3 ), m_filter, values, names );
-        category = m_category2;
-    } else if( item->depth() == 1 ) {
-        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ),
-                                  tableForCat( m_category2 ), tableForCat( m_category3 ),
-                                  m_filter, values, names );
-        category = m_category3;
-    } else if( item->depth() == 2 ) {
-        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ),
-                                   item->text( 0 ),  tableForCat( m_category1 ), tableForCat( m_category2 ),
-                                   tableForCat( m_category3 ), m_filter, values, names );
-        category = i18n("None");
+    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+    switch ( item->depth() )
+    {
+        case 0:
+            qb.addMatch( m_cat1, item->text( 0 ) );
+
+            if ( m_cat2 == QueryBuilder::tabSong )
+            {
+                qb.addReturnValue( m_cat2, QueryBuilder::valTitle );
+                qb.addReturnValue( m_cat2, QueryBuilder::valURL );
+                qb.sortBy( m_cat2, QueryBuilder::valTrack );
+                qb.sortBy( m_cat2, QueryBuilder::valTitle );
+            }
+            else
+            {
+                qb.addReturnValue( m_cat2, QueryBuilder::valName );
+                qb.sortBy( m_cat2, QueryBuilder::valName );
+            }
+
+            category = m_category2;
+            break;
+
+        case 1:
+            qb.addMatch( m_cat1, item->parent()->text( 0 ) );
+            qb.addMatch( m_cat2, item->text( 0 ) );
+
+            if ( m_cat3 == QueryBuilder::tabSong )
+            {
+                qb.addReturnValue( m_cat3, QueryBuilder::valTitle );
+                qb.addReturnValue( m_cat3, QueryBuilder::valURL );
+                qb.sortBy( m_cat3, QueryBuilder::valTrack );
+                qb.sortBy( m_cat3, QueryBuilder::valTitle );
+            }
+            else
+            {
+                qb.addReturnValue( m_cat3, QueryBuilder::valName );
+                qb.sortBy( m_cat3, QueryBuilder::valName );
+            }
+
+            category = m_category3;
+            break;
+
+        case 2:
+            qb.addMatch( m_cat1, item->parent()->parent()->text( 0 ) );
+            qb.addMatch( m_cat2, item->parent()->text( 0 ) );
+            qb.addMatch( m_cat3, item->text( 0 ) );
+
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+
+            category = i18n( "None" );
+            break;
     }
+    values = qb.run();
 
     QPixmap pixmap;
     bool expandable = category != i18n( "None" );
     if ( expandable )
         pixmap = iconForCat( category );
 
-    for ( uint i = 0; i < values.count(); i += 2 )
+    for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
     {
         Item* child = new Item( item );
         child->setDragEnabled( true );
