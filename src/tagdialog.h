@@ -32,6 +32,7 @@ class TagDialog : public TagDialogBase
 
     private slots:
         void accept();
+        void cancelPressed();
         void openPressed();
         void previousTrack();
         void nextTrack();
