@@ -225,7 +225,7 @@ void PlaylistWidget::handleOrderCurrent() { handleOrder( Current ); } //SLOT
 
 void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
 {
-   PlaylistItem* item = (rt != Prev) ? m_nextTracks.at(0) : NULL;
+   PlaylistItem* item = (rt == Next) ? m_nextTracks.getFirst() : NULL;
 
    if( item == NULL )
    {
@@ -343,6 +343,8 @@ void PlaylistWidget::saveM3U( const QString &path ) const
 
 void PlaylistWidget::saveXML( const QString &path ) const
 {
+    //TODO save nextTrack queue
+
     QFile file( path );
 
     if( !file.open( IO_WriteOnly ) ) return;
@@ -370,26 +372,38 @@ void PlaylistWidget::saveXML( const QString &path ) const
 
 void PlaylistWidget::shuffle() //SLOT
 {
-    //TODO offer this out as an action in a custom kactioncollection?
+    QPtrList<QListViewItem> list;
+    KRandomSequence seq( (long)KApplication::random() );
+    seq.randomize( &list );
 
     setSorting( NO_SORT );
 
-    QPtrList<QListViewItem> list;
+    //first take nextTracks
+    for( PlaylistItem *item = m_nextTracks.first(); item; item = m_nextTracks.next() )
+    {
+        takeItem( item );
+    }
 
+    //remove rest
     while( QListViewItem *first = firstChild() )
     {
         list.append( first );
         takeItem( first );
     }
 
-    // initalize with seed
-    KRandomSequence seq( static_cast<long>( KApplication::random() ) );
-    seq.randomize( &list );
-
+    //shuffle the rest
     for( uint i = 0; i < list.count(); ++i )
     {
         insertItem( list.at( i ) );
     }
+
+    //now put nextTracks into playlist so they are first and from first to last
+    for( PlaylistItem *item = m_nextTracks.last(); item; item = m_nextTracks.prev() )
+    {
+        insertItem( item );
+    }
+
+    m_nextTracks.clear();
 }
 
 
@@ -423,7 +437,7 @@ void PlaylistWidget::clear() //SLOT
 bool PlaylistWidget::isTrackAfter() const
 {
     return AmarokConfig::repeatPlaylist() ||
-           m_nextTracks.count() ||
+           !m_nextTracks.isEmpty() ||
            m_currentTrack && m_currentTrack->itemBelow();
 }
 
@@ -893,7 +907,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         if( isQueued )
         {
             //if is Queued, remove the item
-            m_nextTracks.at( queueIndex ); //set current item
+            m_nextTracks.at( queueIndex ); //set current item, at() is quickest way
             m_nextTracks.remove(); //NOTE!! gets repainted due to the deselect above
         }
         else m_nextTracks.append( item ); //else append it on the end of the list
