@@ -171,6 +171,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
        void next();
        void prev();
        void pause();
+       QString nowPlaying();
 
     signals:
         void sigMinimized();
@@ -212,5 +213,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         int m_sy;
         int m_sxAdd;
         AmarokSystray *m_pTray;
+
+        QString m_nowPlaying; /* state for DCOP iface nowPlaying() */
 };
 #endif

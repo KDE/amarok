@@ -251,6 +251,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     setPaletteForegroundColor( pApp->m_fgColor );
     m_pPopupMenu = NULL;
     m_pPlayObjConfigWidget = NULL;
+    m_nowPlaying = "";
 
     m_pActionCollection = new KActionCollection( this );
 
@@ -437,6 +438,8 @@ void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate 
     /* Update tray tooltip */
     if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
     QToolTip::add( m_pTray, text );
+
+    m_nowPlaying = text;
 
     m_bitrate = bitrate;
     m_samplerate = samplerate;
@@ -786,6 +789,11 @@ void PlayerWidget::prev()
 void PlayerWidget::pause()
 {
    pApp->slotPause();
+}
+
+QString PlayerWidget::nowPlaying()
+{
+   return m_nowPlaying;
 }
 
 #include "playerwidget.moc"

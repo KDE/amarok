@@ -33,6 +33,8 @@ k_dcop:
    virtual void next() = 0;
    virtual void prev() = 0;
    virtual void pause() = 0;
+
+   virtual QString nowPlaying() = 0;
 };
 
 #endif
