@@ -2,14 +2,15 @@
 # BEGIN KDEMULTIMEDIA CHECK
 ###############################################################################
 
-KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
-
 if test x$build_arts = xyes; then
+    KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
+    
     if test x$have_kdemm = xyes; then
         AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
-        AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes])
     fi
 fi
+
+AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes])
     
 ###############################################################################
 # END KDEMULTIMEDIA CHECK
