@@ -79,10 +79,6 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void showOSD();
       virtual QString setContextStyle(const QString&);
       virtual void setEqualizer(int preamp, int band60, int band170, int band310, int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k);
-      virtual bool runScript(const QString&);
-      virtual bool stopScript(const QString&);
-      virtual QStringList listRunningScripts();
-
       virtual void transferCliArgs( QStringList args );
 };
 
@@ -120,6 +116,20 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
    public /* DCOP */ slots:
       virtual QStringList query(const QString& sql);
       virtual void scanCollection();
+};
+
+
+class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
+{
+   Q_OBJECT
+
+   public:
+       DcopScriptHandler();
+
+   public /* DCOP */ slots:
+      virtual bool runScript(const QString&);
+      virtual bool stopScript(const QString&);
+      virtual QStringList listRunningScripts();
 };
 
 

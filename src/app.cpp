@@ -80,6 +80,7 @@ App::App()
     new amaroK::DcopPlayerHandler(); // Must be created first
     new amaroK::DcopPlaylistHandler();
     new amaroK::DcopCollectionHandler();
+    new amaroK::DcopScriptHandler();
 
     // Remember old folder setup, so we can detect changes after the wizard was used
     const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();

@@ -365,21 +365,6 @@ namespace amaroK
             EqualizerSetup::instance()->updateSliders(preamp,gains);
     }
 
-    bool DcopPlayerHandler::runScript(const QString& name)
-    {
-        return ScriptManager::instance()->runScript(name);
-    }
-
-    bool DcopPlayerHandler::stopScript(const QString& name)
-    {
-        return ScriptManager::instance()->stopScript(name);
-    }
-
-    QStringList DcopPlayerHandler::listRunningScripts()
-    {
-        return ScriptManager::instance()->listRunningScripts();
-    }
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistHandler
@@ -473,6 +458,31 @@ namespace amaroK
     void DcopCollectionHandler::scanCollection()
     {
         CollectionDB::instance()->startScan();
+    }
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class DcopScriptHandler
+/////////////////////////////////////////////////////////////////////////////////////
+
+    DcopScriptHandler::DcopScriptHandler()
+        : DCOPObject( "script" )
+        , QObject( kapp )
+    {}
+
+    bool DcopScriptHandler::runScript(const QString& name)
+    {
+        return ScriptManager::instance()->runScript(name);
+    }
+
+    bool DcopScriptHandler::stopScript(const QString& name)
+    {
+        return ScriptManager::instance()->stopScript(name);
+    }
+
+    QStringList DcopScriptHandler::listRunningScripts()
+    {
+        return ScriptManager::instance()->listRunningScripts();
     }
 
 

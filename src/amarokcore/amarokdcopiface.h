@@ -89,11 +89,6 @@ k_dcop:
    virtual QString setContextStyle(const QString& ) =0;     ///< Set the CSS style for the context browser
    virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;      ///< Set the equalizer bands
 
-   // TODO Move to separate script interface?
-   virtual bool runScript(const QString& name) = 0;         ///< Starts the script with the given name. Returns true on success.
-   virtual bool stopScript(const QString& name) = 0;        ///< Stops the script with the given name. Returns true on success.
-   virtual QStringList listRunningScripts() = 0;            ///< Returns a list of all currently running scripts.
-
    virtual void transferCliArgs( QStringList args ) = 0;
 };
 
@@ -127,6 +122,17 @@ class AmarokCollectionInterface : virtual public DCOPObject
 k_dcop:
    virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
    virtual void scanCollection() = 0;                       ///< Scan the collection.
+};
+
+
+class AmarokScriptInterface : virtual public DCOPObject
+{
+   K_DCOP
+
+k_dcop:
+   virtual bool runScript(const QString& name) = 0;         ///< Starts the script with the given name. Returns true on success.
+   virtual bool stopScript(const QString& name) = 0;        ///< Stops the script with the given name. Returns true on success.
+   virtual QStringList listRunningScripts() = 0;            ///< Returns a list of all currently running scripts.
 };
 
 
