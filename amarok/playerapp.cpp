@@ -134,7 +134,7 @@ PlayerApp::PlayerApp() :
 
     m_pAnimTimer = new QTimer( this );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
-    m_pAnimTimer->start( 30 );
+    m_pAnimTimer->start( 25 );
 
     m_pPlayerWidget->show();
 
@@ -908,9 +908,11 @@ void PlayerApp::slotPrev()
 
 void PlayerApp::slotPlay()
 {
-   //mxcl: temporary measure so that people can turn the viseffect dynamics on and off to see the difference
+  /*
+   //uncomment to allow switching on/off of viseffect dynamics (for testing)
    if( m_bIsPlaying )
      m_pPlayerWidget->m_pVis->m_dynamics = !m_pPlayerWidget->m_pVis->m_dynamics;
+  */
 
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
