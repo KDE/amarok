@@ -169,17 +169,16 @@ void App::handleCliArgs() //static
     if ( args->count() > 0 )
     {
         KURL::List list;
-        bool notEnqueue = !args->isSet( "enqueue" );
 
         for ( int i = 0; i < args->count(); i++ )
             list << args->url( i );
 
         if ( args->isSet( "queue" ) )
-            Playlist::instance()->queueMedia( list );
-        else if( args->isSet( "append" ) )
-            Playlist::instance()->appendMedia( list );
+            Playlist::instance()->queueMedia( list, args->isSet( "play" ) );
+        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) )
+            Playlist::instance()->appendMedia( list, args->isSet( "play" ) );
         else
-            Playlist::instance()->replaceMedia( list );
+            Playlist::instance()->replaceMedia( list, true );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!

@@ -265,9 +265,9 @@ Playlist::appendMedia( KURL::List list, bool directPlay, bool preventDoubles )
 }
 
 void
-Playlist::queueMedia( const KURL::List &list )
+Playlist::queueMedia( const KURL::List &list, bool play )
 {
-    insertMediaInternal( list, currentTrack() );
+    insertMediaInternal( list, currentTrack(), play );
 }
 
 void
@@ -293,7 +293,10 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         else if( !QFileInfo( url.path() ).isDir() && EngineController::canDecode( url ) )
         {
             setSorting( NO_SORT );
-            (new PlaylistItem( url, this, after ))->setText( MetaBundle( url ) );
+            PlaylistItem *item = new PlaylistItem( url, this, after );
+            item->setText( MetaBundle( url ) );
+            if ( directPlay )
+                activate( item );
             return;
         }
         //else go via the loader as that will present an error dialog
@@ -302,7 +305,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     if( !list.isEmpty() )
     {
         setSorting( NO_SORT );
-        (new PlaylistLoader( list, this, after ))->start();
+        (new PlaylistLoader( list, this, after, directPlay ))->start();
     }
 
     return;
@@ -961,6 +964,10 @@ Playlist::customEvent( QCustomEvent *e )
         }
         break;
 
+    case PlaylistLoader::Play:
+        activate( (PlaylistItem*)e->data() );
+        break;
+
     case PlaylistLoader::Tags:
         #define e static_cast<PlaylistLoader::TagsEvent*>(e)
         e->item->setText( e->bundle );
@@ -1493,7 +1500,11 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
 
         kdDebug() << "[playlist] X11 Paste: " << path << endl;
 
-        insertMediaInternal( KURL::fromPathOrURL( path ), (PlaylistItem*)(after ? after : lastItem()) );
+        const KURL url = KURL::fromPathOrURL( path );
+
+        if ( EngineController::engine()->canDecode( url ) )
+            insertMediaInternal( url, (PlaylistItem*)(after ? after : lastItem()) );
+
         break;
     }
 

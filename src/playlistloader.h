@@ -16,13 +16,13 @@ class QListViewItem;
 class PlaylistLoader : public QThread
 {
 public:
-    PlaylistLoader( const KURL::List&, QListView*, QListViewItem* );
+    PlaylistLoader( const KURL::List&, QListView*, QListViewItem*, bool playFirstUrl = false );
     ~PlaylistLoader();
 
     enum Format { M3U, PLS, XML, UNKNOWN };
-    enum EventType { Started = 1010, Done, Item, Tags };
+    enum EventType { Started = 1010, Done, Play, Tags, Item };
 
-    static void stop() { if ( s_instance ) s_instance->m_stop = true; }
+    static void stop() { s_stop = true; }
     static void downloadPlaylist( const KURL&, QListView*, QListViewItem* );
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
@@ -67,18 +67,18 @@ protected:
 
 private:
     void recurse( QString );
-    void createPlaylistItem( const KURL& );
+    PlaylistItem *createPlaylistItem( const KURL& );
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
-    static PlaylistLoader* s_instance;
+    static bool s_stop;
 
     PlaylistItem *m_markey;
 
     const KURL::List m_URLs;
           KURL::List m_badURLs;
 
-    bool m_stop;
+    bool m_playFirstUrl;
 
     typedef QPair<KURL,PlaylistItem*> Pair;
     typedef QValueList<Pair> List;

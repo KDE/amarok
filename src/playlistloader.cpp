@@ -21,20 +21,18 @@
 
 #include "playlist.h"
 
-PlaylistLoader* PlaylistLoader::s_instance = 0;
+bool PlaylistLoader::s_stop = false;
 
-PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QListViewItem *after )
+PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QListViewItem *after, bool playFirstUrl )
     : QThread()
     , m_markey( parent ? new PlaylistItem( KURL(), parent, after ) : 0 )
     , m_URLs( urls )
-    , m_stop( false )
-{
-    s_instance = this;
-}
+    , m_playFirstUrl( playFirstUrl )
+{}
 
 PlaylistLoader::~PlaylistLoader()
 {
-    s_instance = 0;
+    s_stop = true;
 }
 
 void
@@ -47,7 +45,7 @@ PlaylistLoader::run()
 
     const KURL::List::ConstIterator end = m_URLs.end();
 
-    for( KURL::List::ConstIterator it = m_URLs.begin(); it != end && !m_stop; ++it )
+    for( KURL::List::ConstIterator it = m_URLs.begin(); it != end && !s_stop; ++it )
     {
         const KURL &url = *it;
 
@@ -79,7 +77,7 @@ PlaylistLoader::run()
     const float increment = 100.0 / m_pairs.count();
     const List::ConstIterator end2 = m_pairs.end();
     float progress = 0;
-    for( List::ConstIterator it = m_pairs.begin(); it != end2 && !m_stop; ++it )
+    for( List::ConstIterator it = m_pairs.begin(); it != end2 && !s_stop; ++it )
     {
         if ( (*it).first.isLocalFile() )
             QApplication::postEvent( Playlist::instance(), new TagsEvent( (*it).first, (*it).second ) );
@@ -92,16 +90,25 @@ PlaylistLoader::run()
     QApplication::postEvent( Playlist::instance(), new DoneEvent( this ) );
 }
 
-inline void
+PlaylistItem*
 PlaylistLoader::createPlaylistItem( const KURL &url )
 {
-    m_pairs.append( Pair(url, new PlaylistItem( url, m_markey )) );
+    PlaylistItem *item = new PlaylistItem( url, m_markey );
+
+    if ( m_playFirstUrl ) {
+        QApplication::postEvent( Playlist::instance(), new QCustomEvent( QEvent::Type(Play), item ) );
+        m_playFirstUrl = false;
+    }
+
+    m_pairs.append( Pair(url, item) );
+
+    return item;
 }
 
 void
 PlaylistLoader::createPlaylistItem( const KURL &url, const QString &title, const uint length )
 {
-    PlaylistItem *item = new PlaylistItem( url, m_markey );
+    PlaylistItem *item = createPlaylistItem( url );
 
     item->KListViewItem::setText( PlaylistItem::Title, title );
     item->KListViewItem::setText( PlaylistItem::Length, MetaBundle::prettyLength( length ) );
@@ -123,7 +130,7 @@ PlaylistLoader::recurse( QString path )
 
         if( !path.endsWith( "/" ) ) path += '/';
 
-        for( dirent *ent; ( ent = readdir( d ) ) && !m_stop; )
+        for( dirent *ent; ( ent = readdir( d ) ) && !s_stop; )
         {
             if ( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 ) continue;
 
@@ -196,7 +203,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
         QString str, title;
         int length = MetaBundle::Undetermined; // = -2
 
-        while( !( str = stream.readLine() ).isNull() && !m_stop )
+        while( !( str = stream.readLine() ).isNull() && !s_stop )
         {
             if ( str.startsWith( "#EXTINF" ) )
             {
@@ -222,7 +229,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
     }
     case PLS:
 
-        for( QString line = stream.readLine(); !line.isNull() && !m_stop; line = stream.readLine() )
+        for( QString line = stream.readLine(); !line.isNull() && !s_stop; line = stream.readLine() )
         {
             if( line.startsWith( "File" ) )
             {
@@ -257,7 +264,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
         const QString URL( "url" );
 
         for( QDomNode n = d.namedItem( "playlist" ).firstChild();
-             !n.isNull() && n.nodeName() == ITEM && !m_stop;
+             !n.isNull() && n.nodeName() == ITEM && !s_stop;
              n = n.nextSibling() )
         {
             const QDomElement e = n.toElement();
