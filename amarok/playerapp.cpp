@@ -623,7 +623,10 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     m_proxyError = false;
     
-    emit metaData( bundle ); //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
+    //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
+    if ( m_pEngine->isStream() )
+        emit metaData( bundle );
+    
     m_length = bundle.length() * 1000;
 
     kdDebug() << "[play()] " << url.prettyURL() << endl;
