@@ -98,6 +98,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
         execSql( "PRAGMA default_synchronous = OFF;" );        
+        execSql( "PRAGMA default_cache_size = 4000;" );        
             
         QCString command = "CREATE TABLE tags ("
                         "url varchar(100),"
