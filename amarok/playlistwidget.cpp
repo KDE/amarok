@@ -66,7 +66,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
     setShowSortIndicator( true );
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
-    setStaticBackground( true );
+//    setStaticBackground( true );
 
 //     m_rootPixmap.setFadeEffect( 0.5, Qt::black );
 //     m_rootPixmap.start();
