@@ -147,7 +147,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RandomAction( ac );
     new amaroK::VolumeAction( ac );
 
-    if( K3bExporter::isAvailable() )
+    if ( K3bExporter::isAvailable() )
         new amaroK::BurnMenuAction( ac );
 
     ac->readShortcutSettings( QString::null, kapp->config() );

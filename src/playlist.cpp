@@ -1359,8 +1359,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     #define item static_cast<PlaylistItem*>(item)
 
     enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
-                    BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
-                    BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
+              BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
+              BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
 
@@ -1397,19 +1397,20 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
-    if( K3bExporter::isAvailable() ) {
-        KPopupMenu *burnMenu = new KPopupMenu( this );
-        burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
-        burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
-        burnMenu->insertSeparator();
-        burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
-        burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
-        burnMenu->insertSeparator();
-        burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
-        burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
-        popup.insertItem( SmallIcon( "cdwriter_unmount" ), i18n("Burn"), burnMenu );
-        popup.insertSeparator();
-    }
+
+    KPopupMenu *burnMenu = new KPopupMenu( this );
+    burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
+    burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
+    burnMenu->insertSeparator();
+    burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
+    burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
+    burnMenu->insertSeparator();
+    burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
+    burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
+    popup.insertItem( SmallIcon( "cdwriter_unmount" ), i18n("Burn"), burnMenu, BURN_MENU );
+    popup.setItemEnabled( BURN_MENU, K3bExporter::isAvailable() );
+    popup.insertSeparator();
+
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
     popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
     popup.insertSeparator();

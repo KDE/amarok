@@ -545,10 +545,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                                  BURN_DATACD, BURN_AUDIOCD, COVER, INFO };
+                       BURN_DATACD, BURN_AUDIOCD, COVER, INFO };
         #else
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
-                                  BURN_DATACD, BURN_AUDIOCD, INFO };
+                       BURN_DATACD, BURN_AUDIOCD, INFO };
         #endif
 
 
@@ -556,16 +556,20 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
-        if( K3bExporter::isAvailable() ) {
-            if( category == i18n("Artist") )
-                menu.insertItem( i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
-            else if( category == i18n("Album") )
-                menu.insertItem( i18n("Burn This Album"), BURN_ALBUM );
-            else if( !item->isExpandable() ) {
-                menu.insertSeparator();
-                menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
-                menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
-            }
+        if( category == i18n("Artist") ) {
+            menu.insertItem( i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+        }
+        else if( category == i18n("Album") ) {
+            menu.insertItem( i18n("Burn This Album"), BURN_ALBUM );
+            menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
+        }
+        else if( !item->isExpandable() ) {
+            menu.insertSeparator();
+            menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+            menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
