@@ -1,9 +1,22 @@
 [Desktop Entry]
 Type=Application
+Version=0.9.4
+Encoding=UTF-8
 Name=amaroK
-Exec=amarok -caption "%c" %i %m %u
+#the following line seems undefined, what does it do? <mxcl>
+Name[xx]=xxamaroKxx
+GenericName=Media Player
+Exec=amarok -caption "%c" %i %U
 Comment=A new media player
-Icon=amarok
-MimeTypes=application/x-ogg;audio/x-vorbis;audio/basic;audio/x-mod;audio/x-mp3;audio/x-scpls;audio/x-sid;audio/x-wav
+Comment[sv]=En ny mediaspelare
+Icon=amarok.png
+MimeType=application/x-ogg;audio/x-vorbis;audio/basic;audio/x-mod;audio/x-mp3;audio/x-scpls;audio/x-sid;audio/x-wav;
 DocPath=amarok/index.html
 Terminal=false
+Categories=Audio;Player;KDE;
+Actions=Enqueue;
+
+[Desktop Action Enqueue]
+Exec=amarok -caption "%c" %i -e %U
+Name=Enqueue in amaroK
+
