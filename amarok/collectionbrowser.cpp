@@ -15,14 +15,14 @@
 
 #include <qcstring.h>
 #include <qptrlist.h>
-#include <qpushbutton.h>
 
 #include <kapplication.h>
-#include <kcombobox.h>
 #include <kdebug.h>
 #include <kdirlister.h>
 #include <kglobal.h>
 #include <klocale.h>
+#include <kmenubar.h>
+#include <kpopupmenu.h>
 #include <kstandarddirs.h>
 #include <kurldrag.h>    //dragObject()
 
@@ -31,23 +31,23 @@ CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
     QHBox* hbox = new QHBox( this );
-    QPushButton* button  = new QPushButton( i18n( "Folders" ), hbox );
-    QPushButton* button1 = new QPushButton( i18n( "Scan" ), hbox );
     
-    m_comboBox = new KComboBox( this );    
-    m_comboBox->insertItem( "Album" );
-    m_comboBox->insertItem( "Artist" );
-    m_comboBox->insertItem( "Genre" );
-    m_comboBox->insertItem( "Year" );
+    m_actionsMenu = new KPopupMenu( hbox );
+    m_catMenu = new KPopupMenu( hbox );
+    
+    KMenuBar* menu = new KMenuBar( this );
+    menu->insertItem( "Actions",    m_actionsMenu );
+    menu->insertItem( "Categories", m_catMenu );
     
     CollectionView* view = new CollectionView( this );
 
-    connect( button,     SIGNAL( clicked() ),
-             view,         SLOT( setupDirs() ) );
-    connect( button1,    SIGNAL( clicked() ),
-             view,         SLOT( scan() ) );
-    connect( m_comboBox, SIGNAL( activated( int ) ),
-             view,         SLOT( renderView() ) );
+    m_actionsMenu->insertItem( "Setup Folders", view, SLOT( setupDirs() ) );
+    m_actionsMenu->insertItem( "Scan Now",      view, SLOT( scan() ) );
+    
+    m_catMenu    ->insertItem( "Album",         view, SLOT( actionsMenu( int ) ), 0, IdAlbum  );
+    m_catMenu    ->insertItem( "Artist",        view, SLOT( actionsMenu( int ) ), 0, IdArtist );
+    m_catMenu    ->insertItem( "Genre",         view, SLOT( actionsMenu( int ) ), 0, IdGenre  );
+    m_catMenu    ->insertItem( "Year",          view, SLOT( actionsMenu( int ) ), 0, IdYear   );
 }  
 
 
@@ -63,10 +63,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 {
     kdDebug() << k_funcinfo << endl;
  
-    addColumn ( "Albums" );
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
+    setShowSortIndicator( true );
+    setFullWidth( true );
     
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                       + "collection.db" ).latin1(); 
@@ -89,10 +90,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     config->setGroup( "Collection Browser" );
     m_dirs = config->readListEntry( "Folders" );
     QString cat = config->readEntry( "Category" );
-    
-    for ( int i = 0; i < m_parent->m_comboBox->count(); i++ )
-        if ( m_parent->m_comboBox->text( i ) == cat )
-            m_parent->m_comboBox->setCurrentItem( i );
+    addColumn( cat );
     
     connect( this, SIGNAL( tagsReady() ),
              this,   SLOT( renderView() ) );
@@ -156,7 +154,6 @@ CollectionView::renderView() //SLOT
     clear();
 
     //query database for all records with the specified category
-    m_category = m_parent->m_comboBox->currentText();
     QCString command = "select ";
     command += m_category.lower().latin1();
     command += " from tags;";
@@ -186,9 +183,7 @@ CollectionView::slotExpanded( QListViewItem* item ) //SLOT
     if ( !item ) return;
     
     //query database for all tracks in our sub-category
-    QCString command = "select ";
-    command += m_category.lower().latin1();
-    command += " from tags where ";
+    QCString command = "select title from tags where ";
     command += m_category.lower().latin1();
     command += " = '";
     command += item->text( 0 ).latin1();
@@ -224,6 +219,32 @@ CollectionView::slotCollapsed( QListViewItem* item ) //SLOT
         child = child->nextSibling();
         delete childTmp;
     }
+}
+
+
+void 
+CollectionView::actionsMenu( int id ) //SLOT
+{
+    switch( id ) {
+    
+    case CollectionBrowser::IdAlbum:
+        m_category = "Album";
+        break;
+    case CollectionBrowser::IdArtist:
+        m_category = "Artist";
+        break;
+    case CollectionBrowser::IdGenre:
+        m_category = "Genre";
+        break;
+    case CollectionBrowser::IdYear:
+        m_category = "Year";
+        break;
+    default:
+        return;
+    }
+    
+    setColumnText( 0, m_category );
+    renderView();
 }
 
 

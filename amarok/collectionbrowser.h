@@ -21,9 +21,8 @@ class ThreadWeaver;
 class QCString;
 class QStringList;
 class QCustomEvent;
-class KComboBox;
 class KDirLister;
-
+class KPopupMenu;
 
 class CollectionBrowser: public QVBox 
 {
@@ -35,7 +34,10 @@ class CollectionBrowser: public QVBox
     
     private:
     //attributes:
-        KComboBox* m_comboBox;
+        enum actionsMenuIds { IdAlbum, IdArtist, IdGenre, IdYear };
+        
+        KPopupMenu* m_actionsMenu;
+        KPopupMenu* m_catMenu;
 };
 
 
@@ -57,6 +59,7 @@ class CollectionView : public KListView
         void renderView();
         void slotExpanded( QListViewItem* );
         void slotCollapsed( QListViewItem* );    
+        void actionsMenu( int );
         
     private:
         void readDir( const KURL& url );
@@ -79,7 +82,7 @@ class CollectionView : public KListView
         sqlite* m_db;                
         QStringList m_dirs;
         QString m_category;
-                
+        
 /*    class Item : public KIconViewItem
     {
         public:
