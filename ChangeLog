@@ -3,6 +3,9 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+VERSION 1.2-beta2:
+
+
 VERSION 1.2-beta1:
   ADD: Full support for Audioscrobbler, including submission of tracks.
   FIX: Arts engine resumes from position when session is restored.
