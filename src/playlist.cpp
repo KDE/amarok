@@ -1314,10 +1314,10 @@ void Playlist::slotTextChanged( const QString &query ) //SLOT
 
     while( (item = it.current()) )
     {
-        b = query.isEmpty(); //if query is empty skip the loops and show all items
         listed = true;
 
-        if ( !b )
+        //if query is empty skip the loops and show all items
+        if ( !query.isEmpty() )
         {
             for( uint x = 0; listed && x < v.count(); ++x ) //v.count() is constant time
             {
