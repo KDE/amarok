@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta2:
+  ADD: Genre and Favorite Tracks by Artist smart playlist in the Playlist Browser.
   FIX: Don't crossfade, if we're playing the very next tack of the same
        album. (BR 77766)
   ADD: IMMS-like rating system for songs.
