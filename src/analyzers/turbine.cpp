@@ -2,72 +2,75 @@
 // Amarok BarAnalyzer 3 - Jet Turbine: Symmetric version of analyzer 1
 //
 // Author: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
+//         Max Howell (I modified it to use boom analyzer code)
 //
 // Copyright: like rest of amaroK
 //
 
+#include <math.h>
+#include <qpainter.h>
 #include "turbine.h"
 
-void TurbineAnalyzer::analyze( const Scope &s )
+void TurbineAnalyzer::analyze( const Scope &scope )
 {
     eraseCanvas();
 
-//    Analyzer::interpolate( s, m_bands );
+    QPainter p( canvas() );
+    float h;
+    const uint hd2 = height() / 2;
+    const uint MAX_HEIGHT = hd2 - 1;
 
-    std::vector<float>::const_iterator it( s.begin() );
-    for ( uint i = 0, x = 10, y2; i < BAND_COUNT; ++i, ++it, x+=5 )
+    for( uint i = 0, x = 0, y; i < BAND_COUNT; ++i, x += COLUMN_WIDTH+1 )
     {
-        //assign pre[log10]'d value
-        y2 = uint((*it) * 255);
-        y2 = m_lvlMapper[ (y2 > 255) ? 255 : y2 ] / 2; //lvlMapper is array of ints from 0 to height()
+        h = log10( scope[i]*256.0 ) * F * 0.5;
 
-        int change = y2 - barVector[i];
+        if( h > MAX_HEIGHT )
+           h = MAX_HEIGHT;
 
-        //using the best of Markey's, piggz and Max's ideas on the way to shift the bars
-        //we have the following:
-        // 1. don't adjust shift when doing small up movements
-        // 2. shift large upwards with a bias towards last value
-        // 3. fall downwards at a constant pace
-
-        if ( change > 4 )
-           //add some dynamics - makes the value slightly closer to what it was last time
-           y2 = ( barVector[i] * 2 + y2 ) / 3;
-        else if( change < 0 )
-           y2 = barVector[i] - 1;
-
-
-        if ( (int)y2 > roofVector[i] )
+        if( h > bar_height[i] )
         {
-            roofVector[i] = (int)y2;
-            roofVelocityVector[i] = 1;
-        }
+            bar_height[i] = h;
 
-        //remember where we are
-        barVector[i] = y2;
-
-        //blt the coloured bar
-        bitBlt( canvas(), x, height()/2 - y2,
-                gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
-        bitBlt( canvas(), x, height()/2,
-                gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
-        //blt the roof bar
-        bitBlt( canvas(), x, height()/2 - roofVector[i] - 2, &m_pixRoof[0] );
-        bitBlt( canvas(), x, height()/2 + roofVector[i] + 2, &m_pixRoof[0] );
-
-        //set roof parameters for the NEXT draw
-        if ( roofVelocityVector[i] != 0 )
-        {
-            if ( roofVelocityVector[i] > ROOF_HOLD_TIME )
+            if( h > peak_height[i] )
             {
-               roofVector[i] -= roofVelocityVector[i] / ROOF_VELOCITY_REDUCTION_FACTOR;
+                peak_height[i] = h;
+                peak_speed[i]  = 0.01;
+            }
+            else goto peak_handling;
+        }
+        else
+        {
+            if( bar_height[i] > 0.0 )
+            {
+                bar_height[i] -= K_barHeight; //1.4
+                if( bar_height[i] < 0.0 ) bar_height[i] = 0.0;
             }
 
-            if ( roofVector[i] < 0 )
+        peak_handling:
+
+            if( peak_height[i] > 0.0 )
             {
-               roofVector[i] = 0; //not strictly necessary
-               roofVelocityVector[i] = 0;
+                peak_height[i] -= peak_speed[i];
+                peak_speed[i]  *= F_peakSpeed; //1.12
+
+                if( peak_height[i] < bar_height[i] ) peak_height[i] = bar_height[i];
+                if( peak_height[i] < 0.0 ) peak_height[i] = 0.0;
             }
-            else ++roofVelocityVector[i];
         }
+
+
+        y = hd2 - uint(bar_height[i]);
+        bitBlt( canvas(), x+1, y,   &barPixmap, 0, y );
+        bitBlt( canvas(), x+1, hd2, &barPixmap, 0, bar_height[i] );
+
+        p.setPen( amaroK::ColorScheme::Foreground );
+        p.drawRect( x, y, COLUMN_WIDTH, bar_height[i]*2 );
+
+        const uint x2 = x+COLUMN_WIDTH-1;
+        p.setPen( amaroK::ColorScheme::Text );
+        y = hd2 - uint(peak_height[i]);
+        p.drawLine( x, y, x2, y );
+        y = hd2 + uint(peak_height[i]);
+        p.drawLine( x, y, x2, y );
     }
 }

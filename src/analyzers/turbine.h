@@ -9,12 +9,12 @@
 #ifndef ANALYZER_TURBINE_H
 #define ANALYZER_TURBINE_H
 
-#include "baranalyzer.h"
+#include "boomanalyzer.h"
 
-class TurbineAnalyzer : public BarAnalyzer
+class TurbineAnalyzer : public BoomAnalyzer
 {
     public:
-        TurbineAnalyzer( QWidget *parent ) : BarAnalyzer( parent ) {}
+        TurbineAnalyzer( QWidget *parent ) : BoomAnalyzer( parent ) {}
 
         void analyze( const Scope& );
 };
