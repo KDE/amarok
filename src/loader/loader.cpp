@@ -149,11 +149,14 @@ Loader::Loader( int& argc, char** argv )
 bool Loader::splashEnabled() const
 {
     //determine whether splash-screen is enabled in amarokrc
-    //FIXME we need to use kde-config to get the path
-    QString path( ::getenv( "HOME" ) );
-    path += "/.kde/share/config/amarokrc";
 
-    QFile file( path ); //close() is called in the dtor
+    // Use $KDEHOME for kde config path if available; otherwise use $HOME
+    QString path( ::getenv( "KDEHOME" ) );
+    if ( path.isEmpty() )
+        path = ::getenv( "HOME" ) + QString( "/.kde" );
+    path += "/share/config/amarokrc";
+
+    QFile file( path );
 
     if ( file.open( IO_ReadOnly ) ) {
         QString line;
