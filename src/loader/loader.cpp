@@ -304,6 +304,7 @@ void Loader::timerEvent( QTimerEvent* )
         ::send( m_sockfd, "STARTUP", 8, 0 );
         doExit();
     } else if ( delay >= TIMEOUT * 1000 ) {
+        killTimers();
         std::cout << "[amaroK loader] timed out trying to contact amaroK.\n";
 
         //NOTE these are untranslated.. nasty.
