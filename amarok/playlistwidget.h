@@ -155,7 +155,6 @@ class PlaylistWidget : private KListView
 
         QStringList searchTokens;
         QPtrList<QListViewItem> searchPtrs;
-        QString lastSearch;
 
         TagReader* const m_tagReader;
 

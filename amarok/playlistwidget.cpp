@@ -753,46 +753,22 @@ void PlaylistWidget::slotTextChanged( const QString &str ) //SLOT
 {
     QListViewItem *pVisibleItem = NULL;
     unsigned int x = 0;
-    bool b;
 
-    if ( str.contains( lastSearch ) && !lastSearch.isEmpty() )
-        b = true;
-    else
-        b = false;
+    QStringList tokens = QStringList::split( " ", str.lower() );
 
-    lastSearch = str.lower();
-    QStringList tokens = QStringList::split( " ", lastSearch );
-
-    if (b)
+    for ( QStringList::Iterator it = searchTokens.begin(); it != searchTokens.end(); ++it )
     {
-        pVisibleItem = firstChild();
-        while ( pVisibleItem )
+        pVisibleItem = searchPtrs.at( x );
+
+        pVisibleItem->setVisible( true );
+        for ( uint y = 0; y < tokens.count(); ++y )
         {
-            for ( uint y = 0; y < tokens.count(); ++y )
-            {
-
-                if ( !pVisibleItem->text(0).lower().contains( tokens[y] ) )
-                    pVisibleItem->setVisible( false );
-            }
-
-            // iterate
-            pVisibleItem = pVisibleItem -> itemBelow();
+            if ( !(*it).lower().contains( tokens[y] ) )
+                pVisibleItem->setVisible( false );
         }
+
+        x++;
     }
-    else
-        for ( QStringList::Iterator it = searchTokens.begin(); it != searchTokens.end(); ++it )
-        {
-            pVisibleItem = searchPtrs.at( x );
-
-            pVisibleItem->setVisible( true );
-            for ( uint y = 0; y < tokens.count(); ++y )
-            {
-                if ( !(*it).lower().contains( tokens[y] ) )
-                    pVisibleItem->setVisible( false );
-            }
-
-            x++;
-        }
 
     clearSelection();
     triggerUpdate();
@@ -948,10 +924,13 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         if( PlaylistItem *item = static_cast<PlaylistLoader::LoaderEvent*>(e)->makePlaylistItem( this ) )
         {
-            if( AmarokConfig::showMetaInfo() ) m_tagReader->append( item );
-
-            searchTokens.append( item->text( 0 ) );
-            searchPtrs.append( item );
+            if( AmarokConfig::showMetaInfo() )
+                m_tagReader->append( item );
+            else
+            {
+                searchTokens.append( item->text( 0 ) );
+                searchPtrs.append( item );
+            }
         }
         break;
 

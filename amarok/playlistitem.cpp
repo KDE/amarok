@@ -123,6 +123,11 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
 
     setText(  9, length );
     setText( 10, QString::number( bundle.m_bitrate ) + "kbps" );
+    
+    // we need to add this item to the search-index
+    PlaylistWidget *parentView = static_cast<PlaylistWidget *>( listView() );
+    parentView->searchTokens.append( bundle.m_artist + " " + bundle.m_title + " " + this->trackName() );
+    parentView->searchPtrs.append( this );
 }
 
 
