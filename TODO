@@ -13,8 +13,6 @@ SHORT-TERM (URGENT):
     * fix: #59 global shortcuts should be disabled by default, eg CTRL_ALT_C is a KDevelop shortcut, one user
            was shocked to find the music stopped whenever he tried to bring up the class window!
 
-    * fix: #56 <markey> providing a non-existant file as command line argument -> instant crash
-
     * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
                 QPainter::begin: Cannot paint null pixmap
                 QPainter::setPen: Will be reset by begin()
