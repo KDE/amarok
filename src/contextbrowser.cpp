@@ -410,18 +410,18 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-        for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+        for ( uint i = 0; i < values.count(); i += 4 )
         {
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
                                       "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' width='80' height='80' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
                                       "</tr>" )
-                            .arg( values[i*3 + 3] ) // artist.id
-                            .arg( values[i*3 + 2] ) // album.id
-                            .arg( values[i*3 + 1] ) // artist.name
-                            .arg( values[i*3 + 0] ) // album.name
-                            .arg( m_db->getImageForAlbum( values[i*3 + 3], values[i*3 + 2], locate( "data", "amarok/images/sound.png" ) ) )
-                            .arg( values[i*3 + 0] ) // album.name
-                            .arg( m_db->albumSongCount( values[i*3 + 3], values[i*3 + 2] ) ) );
+                            .arg( values[i + 3] ) // artist.id
+                            .arg( values[i + 2] ) // album.id
+                            .arg( values[i + 1] ) // artist.name
+                            .arg( values[i + 0] ) // album.name
+                            .arg( m_db->getImageForAlbum( values[i + 3], values[i + 2], locate( "data", "amarok/images/sound.png" ) ) )
+                            .arg( values[i + 0] ) // album.name
+                            .arg( m_db->albumSongCount( values[i + 3], values[i + 2] ) ) );
         }
 
         browser->write( "</table></div>" );
