@@ -338,7 +338,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     m_ac->action( "prev" )->setEnabled( true );
     m_ac->action( "next" )->setEnabled( true );
 
-    if( list.count() == 1 )
+    /*if( list.count() == 1 )
     {
         //if safe just add it
 
@@ -367,7 +367,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
             return;
         }
         //else go via the loader as that will present an error dialog
-    }
+    }*/
 
     if( !list.isEmpty() )
     {
