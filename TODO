@@ -186,6 +186,89 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+From Arpu, on switching to gst-engine:
+
+amarok: [GstConfigDialog::GstConfigDialog(const GstEngine*)]
+amarok: [void App::slotConfigAmarok(int)]
+amarok: [virtual GstConfigDialog::~GstConfigDialog()]
+amarok: [virtual amaroK::PluginConfig* GstEngine::configure() const]
+amarok: [GstConfigDialog::GstConfigDialog(const GstEngine*)]
+amarok: [virtual void GstConfigDialog::save()]
+amarok: [Gst-Engine] Rebuilding output pipeline with new settings.
+amarok: Thread scheduling priority: 2
+amarok: Sound output method: alsasink
+amarok: CustomSoundDevice: false
+amarok: Sound Device:
+amarok: CustomOutputParams: false
+amarok: Output Params:
+amarok: [void gst_equalizer_base_init(void*)]
+amarok: [void gst_equalizer_class_init(GstEqualizerClass*)]
+amarok: [void gst_equalizer_init(GstEqualizer*)]
+[New Thread -1257116752 (LWP 15891)]
+[New Thread -1279992912 (LWP 15892)]
+
+Program received signal SIGFPE, Arithmetic exception.
+[Switching to Thread -1243098432 (LWP 15877)]
+0xb404ed2a in _snd_pcm_adpcm_open () from /usr/lib/libasound.so.2
+(gdb) bt
+#0  0xb404ed2a in _snd_pcm_adpcm_open () from /usr/lib/libasound.so.2
+#1  0xb4041081 in snd_pcm_hw_refine_slave () from /usr/lib/libasound.so.2
+#2  0xb404ee98 in _snd_pcm_adpcm_open () from /usr/lib/libasound.so.2
+#3  0xb4041338 in snd_pcm_hw_refine () from /usr/lib/libasound.so.2
+#4  0xb4041399 in snd_pcm_hw_refine () from /usr/lib/libasound.so.2
+#5  0xb4053389 in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
+#6  0xb40413da in snd_pcm_hw_refine () from /usr/lib/libasound.so.2
+#7  0xb4032981 in snd_pcm_hw_params () from /usr/lib/libasound.so.2
+#8  0xb5913dbe in gst_alsa_hw_params_dump () from /usr/lib/gstreamer-0.8/libgstalsa.so
+#9  0xb59146a0 in gst_alsa_hw_params_dump () from /usr/lib/gstreamer-0.8/libgstalsa.so
+#10 0xb59125f0 in gst_alsa_link () from /usr/lib/gstreamer-0.8/libgstalsa.so
+#11 0xb5919e30 in gst_alsa_mixer_get_type () from /usr/lib/gstreamer-0.8/libgstalsa.so
+#12 0xb5917bf1 in gst_alsa_sink_get_type () from /usr/lib/gstreamer-0.8/libgstalsa.so
+#13 0xb1802691 in gst_element_set_state () from /usr/lib/libgstreamer-0.8.so.1
+#14 0xb180230f in gst_element_set_state () from /usr/lib/libgstreamer-0.8.so.1
+#15 0xb17f2b7f in gst_bin_child_state_change () from /usr/lib/libgstreamer-0.8.so.1
+#16 0xb17f2a64 in gst_bin_child_state_change () from /usr/lib/libgstreamer-0.8.so.1
+#17 0xb17f2e9e in gst_bin_child_state_change () from /usr/lib/libgstreamer-0.8.so.1
+#18 0xb182e4a7 in gst_thread_get_current () from /usr/lib/libgstreamer-0.8.so.1
+#19 0xb1802691 in gst_element_set_state () from /usr/lib/libgstreamer-0.8.so.1
+#20 0xb17f30f7 in gst_bin_set_state () from /usr/lib/libgstreamer-0.8.so.1
+#21 0xb180230f in gst_element_set_state () from /usr/lib/libgstreamer-0.8.so.1
+#22 0xb190bf25 in GstEngine::createPipeline () from /usr/lib/kde3/libamarok_gstengine_plugin.so
+#23 0xb190b01d in GstEngine::configChanged () from /usr/lib/kde3/libamarok_gstengine_plugin.so
+#24 0xb190f85e in GstEngine::qt_invoke () from /usr/lib/kde3/libamarok_gstengine_plugin.so
+#25 0xb6f9452c in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#26 0xb6f94354 in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#27 0xb5a2045c in amaroK::PluginConfig::settingsSaved () from /usr/lib/kde3/libamarok_void-engine_plugin.so
+#28 0xb19031ce in GstConfigDialog::save () from /usr/lib/kde3/libamarok_gstengine_plugin.so
+#29 0x080aee5b in AmarokConfigDialog::updateSettings ()
+#30 0xb78e081b in KConfigDialog::qt_invoke () from /usr/lib/libkdeui.so.4
+#31 0x080af4f2 in AmarokConfigDialog::qt_invoke ()
+#32 0xb6f944a6 in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#33 0xb6f94354 in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#34 0xb783e2ce in KDialogBase::okClicked () from /usr/lib/libkdeui.so.4
+#35 0xb783c0d2 in KDialogBase::slotOk () from /usr/lib/libkdeui.so.4
+#36 0xb783e7f7 in KDialogBase::qt_invoke () from /usr/lib/libkdeui.so.4
+#37 0xb78e0883 in KConfigDialog::qt_invoke () from /usr/lib/libkdeui.so.4
+#38 0x080af4f2 in AmarokConfigDialog::qt_invoke ()
+#39 0xb6f9452c in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#40 0xb6f94354 in QObject::activate_signal () from /usr/lib/libqt-mt.so.3
+#41 0xb72d928e in QButton::clicked () from /usr/lib/libqt-mt.so.3
+#42 0xb702697a in QButton::mouseReleaseEvent () from /usr/lib/libqt-mt.so.3
+#43 0xb6fca697 in QWidget::event () from /usr/lib/libqt-mt.so.3
+#44 0xb6f37bcf in QApplication::internalNotify () from /usr/lib/libqt-mt.so.3
+#45 0xb6f372c4 in QApplication::notify () from /usr/lib/libqt-mt.so.3
+#46 0xb7512da3 in KApplication::notify () from /usr/lib/libkdecore.so.4
+#47 0xb6ecc640 in QETWidget::translateMouseEvent () from /usr/lib/libqt-mt.so.3
+#48 0xb6eca2ce in QApplication::x11ProcessEvent () from /usr/lib/libqt-mt.so.3
+#49 0xb6ee11a4 in QEventLoop::processEvents () from /usr/lib/libqt-mt.so.3
+#50 0xb6f49f28 in QEventLoop::enterLoop () from /usr/lib/libqt-mt.so.3
+#51 0xb6f49dd8 in QEventLoop::exec () from /usr/lib/libqt-mt.so.3
+#52 0xb6f37e21 in QApplication::exec () from /usr/lib/libqt-mt.so.3
+#53 0x0814e8d0 in main ()
+(gdb)
+
+
+
 
 From coolo:
 
