@@ -143,8 +143,6 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
         else if ( url.path().contains( "suggestLyric-" ) )
         {
             m_lyrics = QString::null;
-            m_lyricHashes.clear();
-            m_lyricSuggestions.clear();
             QString hash = url.path().mid( url.path().find( QString( "-" ) ) +1 );
             showLyrics( hash );
         }
@@ -1031,6 +1029,9 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 void
 ContextBrowser::showLyricSuggestions()
 {
+    m_lyricHashes.clear();
+    m_lyricSuggestions.clear();
+
     m_lyrics.replace( QString( "<font color='white'>" ), QString::null );
     m_lyrics.replace( QString( "</font>" ), QString::null );
     m_lyrics.replace( QString( "<br><br>" ), QString::null );
