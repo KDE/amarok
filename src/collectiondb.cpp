@@ -816,23 +816,23 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
 
 
 void
-CollectionDB::updateTags( const QString &url, const MetaBundle &bundle )
+CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, bool updateCB )
 {
     QString command = "UPDATE tags SET ";
     command += "title = '" + escapeString( bundle.title() ) + "', ";
     command += "artist = " + escapeString( QString::number( getValueID( "artist", bundle.artist(), true ) ) ) + ", ";
     command += "album = " + escapeString( QString::number( getValueID( "album", bundle.album(), true ) ) ) + ", ";
     command += "genre = " + escapeString( QString::number( getValueID( "genre", bundle.genre(), true ) ) ) + ", ";
-    command += "year = " + escapeString( QString::number( getValueID( "year", bundle.year(), true ) ) ) + ", ";
+    command += "year = " + QString::number( getValueID( "year", bundle.year(), true ) ) + ", ";
     if( !bundle.track().isEmpty() )
-        command += "track = " + escapeString( bundle.track() ) + ", ";
+        command += "track = " + bundle.track() + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
 
     execSql( command );
 
-    CollectionView::instance()->renderView();
-
+    if( updateCB )    //update the collection browser
+        CollectionView::instance()->renderView();
 }
 
 

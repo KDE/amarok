@@ -406,7 +406,7 @@ TagDialog::saveTags()
 
         QMap<QString, MetaBundle>::ConstIterator it;
         for( it = storedTags.begin(); it != storedTags.end(); ++it ) {
-            if( writeTag( it.data() ) )
+            if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
                 Playlist::instance()->updateMetaData( it.data() );
         }
     }
@@ -437,14 +437,14 @@ TagDialog::saveMultipleTracks()
         if( kIntSpinBox_year->value() )
             mb.setYear( QString::number( kIntSpinBox_year->value() ) );
 
-        if( writeTag( mb ) )
+        if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
             Playlist::instance()->updateMetaData( mb );
     }
 }
 
 
 bool
-TagDialog::writeTag( MetaBundle mb )
+TagDialog::writeTag( MetaBundle mb, bool updateCB )
 {
     QCString path = QFile::encodeName( mb.url().path() );
 
@@ -471,9 +471,8 @@ TagDialog::writeTag( MetaBundle mb )
 
         f.save();
 
-         //update the collection db
-        CollectionDB().updateTags( path, mb );
-
+        //update the collection db
+        CollectionDB().updateTags( path, mb, updateCB );
         QApplication::restoreOverrideCursor();
 
         return true;

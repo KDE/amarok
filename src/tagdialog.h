@@ -51,7 +51,7 @@ class TagDialog : public TagDialogBase
         void storeTags();
         void saveTags();
         void saveMultipleTracks();
-        bool writeTag( MetaBundle mb );
+        bool writeTag( MetaBundle mb, bool updateCB=true );
         bool equalString( const QString&, const QString& );
 
         MetaBundle m_bundle;

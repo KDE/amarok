@@ -81,7 +81,7 @@ class CollectionDB : public QObject
         void purgeDirCache();
         void scanModifiedDirs( bool recursively, bool importPlaylists );
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
-        void updateTags( const QString &url, const MetaBundle &bundle );
+        void updateTags( const QString &url, const MetaBundle &bundle, bool updateCB=true );
         void updateTag( const QString &url, const QString &field, const QString &newTag );
 
         void retrieveFirstLevel( QString category1, QString category2, QString category3,
