@@ -36,14 +36,14 @@ GstElementDetails gst_equalizer_details =
                           (gchar*) "Parametric Equalizer",
                           (gchar*) "Mark Kretschmann <markey@web.de>" );
 
-GstStaticPadTemplate sink_template = 
+GstStaticPadTemplate sink_template =
     GST_STATIC_PAD_TEMPLATE ( (gchar*) "sink",
     			       GST_PAD_SINK,
 			       GST_PAD_ALWAYS,
-			       GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS ) 
+			       GST_STATIC_CAPS ( GST_AUDIO_INT_PAD_TEMPLATE_CAPS )
 			    );
 
-GstStaticPadTemplate src_template = 
+GstStaticPadTemplate src_template =
     GST_STATIC_PAD_TEMPLATE (  (gchar*) "src",
     			       GST_PAD_SRC,
 			       GST_PAD_ALWAYS,
@@ -153,7 +153,7 @@ gst_equalizer_link (GstPad* pad, const GstCaps* caps)
     // Load the correct filter table according to the sampling rate
     set_filters( obj );
     /* Zero the history arrays */
-    bzero(obj->data_history, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
+    memset(obj->data_history, 0, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
 
     g_print ("Caps negotiation succeeded with %d Hz @ %d channels\n",
             obj->samplerate, obj->channels);
