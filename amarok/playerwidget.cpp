@@ -245,18 +245,28 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
     m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
     m_pButtonPrev->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunback.png" ) ) );
+    m_pButtonPrev->setFlat( true );
+
     m_pButtonPlay = new QPushButton( m_pFrameButtons );
     m_pButtonPlay->setFocusPolicy( QWidget::NoFocus );
     m_pButtonPlay->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunplay.png" ) ) );
+    m_pButtonPlay->setToggleButton( true );
+    m_pButtonPlay->setFlat( true );
+
     m_pButtonPause = new QPushButton( m_pFrameButtons );
     m_pButtonPause->setFocusPolicy( QWidget::NoFocus );
     m_pButtonPause->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunpause.png" ) ) );
+    m_pButtonPause->setFlat( true );
+
     m_pButtonStop = new QPushButton( m_pFrameButtons );
     m_pButtonStop->setFocusPolicy( QWidget::NoFocus );
     m_pButtonStop->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunstop.png" ) ) );
+    m_pButtonStop->setFlat( true );
+
     m_pButtonNext = new QPushButton( m_pFrameButtons );
     m_pButtonNext->setFocusPolicy( QWidget::NoFocus );
     m_pButtonNext->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunforward.png" ) ) );
+    m_pButtonNext->setFlat( true );
 
     QBoxLayout* lay = new QVBoxLayout( this );
     lay->addWidget( m_pFrame );
@@ -585,6 +595,13 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 
 void PlayerWidget::moveEvent( QMoveEvent *e )
 {
+
+/*
+ ** You can get the frame sizes like so (found in Qt sources while looking for something else):
+framew = geometry().x() - x();
+frameh = geometry().y() - y();
+*/
+
 /*!  Makes the the playlistwindow stick magnetically to the playerwindow */
 /*    if ( pApp->m_pBrowserWin->isVisible() )
     {

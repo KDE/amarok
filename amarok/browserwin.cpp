@@ -69,7 +69,7 @@ QWidget( parent, name, Qt::WPaintUnclipped )
     setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
     setFont ( QFont( "Arial", 9 ) );
 
-    setCaption( "amaroK Playlist" );
+    setCaption( "Playlist - amaroK" );
     setAcceptDrops( true );
 
     m_pActionCollection = new KActionCollection( this );
@@ -144,8 +144,9 @@ void BrowserWin::initChildren()
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pBrowserLineEdit->setFont ( QFont( "Arial", 9 ) );
-    KURLCompletion *compBrowser = new KURLCompletion();
-    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
+    KURLCompletion *compBrowser = new KURLCompletion( KURLCompletion::DirCompletion );
+//disabled because the popup combo is useful
+//    m_pBrowserLineEdit->setCompletionMode( KGlobalSettings::CompletionAuto );
     m_pBrowserLineEdit->setCompletionObject( compBrowser );
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
 

@@ -129,7 +129,7 @@ class PlayerWidget : public QWidget
         AmarokSlider *m_pSlider, *m_pSliderVol;
         QLabel *m_pTimeDisplayLabel;
         AmarokButton *m_pButtonPl, *m_pButtonEq, *m_pButtonLogo;
-        QPushButton *m_pButtonPrev, *m_pButtonPlay, *m_pButtonPause, *m_pButtonStop, *m_pButtonNext;
+        QPushButton *m_pButtonPrev,  *m_pButtonPlay , *m_pButtonPause, *m_pButtonStop, *m_pButtonNext;
         int m_IdRepeatTrack, m_IdRepeatPlaylist, m_IdConfPlayObject;
         ArtsConfigWidget *m_pPlayObjConfigWidget;
 
@@ -139,8 +139,6 @@ class PlayerWidget : public QWidget
         void slotCopyClipboard();
         void slotConfigPlayObject();
         void slotConfigWidgetDestroyed();
-
-    signals:
 
     private:
         void initScroll();

@@ -98,24 +98,25 @@
 #include <sys/wait.h>
 
 
-PlayerApp::PlayerApp() : KUniqueApplication( true, true, false )
+PlayerApp::PlayerApp() :
+   KUniqueApplication( true, true, false ),
+   m_bgColor( Qt::black ),
+   m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
+   m_pArtsDispatcher( NULL ),
+   m_Length( 0 ),
+   m_pPlayObject( NULL ),
+   m_playRetryCounter( 0 ),
+   m_bIsPlaying( false ),
+   m_bChangingSlider( false ),
+   m_pEffectWidget( NULL )
 {
     setName( "PlayerApp" );
-    pApp = this;
+
+    pApp = this; //global
 
     m_pConfig = kapp->config();
-    m_bgColor = Qt::black;
-    m_fgColor = QColor( 0x80, 0xa0, 0xff );
-    m_playRetryCounter = 0;
-    m_Length = 0;
 
     m_pGlobalAccel = new KGlobalAccel( this );
-
-    m_pPlayObject = NULL;
-    m_bIsPlaying = false;
-    m_bChangingSlider = false;
-    m_pArtsDispatcher = NULL;
-    m_pEffectWidget = NULL;
 
     initArts();
     if ( !initScope() )
@@ -140,6 +141,9 @@ PlayerApp::PlayerApp() : KUniqueApplication( true, true, false )
     m_pAnimTimer->start( 30 );
 
     m_pPlayerWidget->show();
+
+    //max added tmp
+    m_pBrowserWin->m_pPlaylistWidget->slotGlowTimer();
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
@@ -346,6 +350,7 @@ void PlayerApp::initPlayerWidget()
     m_pPlayerWidget->m_pSliderVol->setMinValue( 0 );
     m_pPlayerWidget->m_pSliderVol->setMaxValue( 100 );
     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
+
 
     connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderPressed() ),
         this, SLOT( slotSliderPressed() ) );
@@ -640,6 +645,16 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Repeat Playlist", m_optRepeatPlaylist );
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
 
+    //store current item
+    PlaylistItem *item = static_cast<PlaylistItem*>(m_pBrowserWin->m_pPlaylistWidget->currentTrack());
+    if( item != NULL )
+    {
+      if ( item->url().protocol() == "file" )
+        m_pConfig->writeEntry( "CurrentSelection", item->url().path() );
+      else
+        m_pConfig->writeEntry( "CurrentSelection", item->url().url() );
+    }
+
     saveM3u( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
 
@@ -685,10 +700,29 @@ void PlayerApp::readConfig()
         m_pPlayerWidget->m_pButtonPl->setOn( true );
         m_pBrowserWin->show();
     }
-    
+
     slotClearPlaylist();
     loadPlaylist( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
 //    loadM3u( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u" );
+
+    KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
+
+    kdDebug() << "Attempting to select: " << currentlyPlaying.path() << endl;
+
+    for( PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
+         item;
+         item = static_cast<PlaylistItem*>( item->nextSibling() ) )
+    {
+        if( item->url() == currentlyPlaying )
+        {
+          //FIXME: should think about making this all one call
+          m_pBrowserWin->m_pPlaylistWidget->setCurrentItem( item );
+          m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( item );
+          m_pBrowserWin->m_pPlaylistWidget->slotGlowTimer();
+          break;
+        }
+    }
+
 
     m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL+SHIFT+Key_A, 0, this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "play", "Play", 0, CTRL+SHIFT+Key_P, 0, this, SLOT( slotPlay() ), true, true );
@@ -814,10 +848,19 @@ void PlayerApp::slotPrev()
     }
 }
 
-
-
 void PlayerApp::slotPlay()
 {
+    //Markey: I moved this function above the item determination function below
+    // although I'm not 100% sure it was a good idea as I can't tell if it is necessary to setCurrentTrack()
+    // please check!
+
+    if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() ) //bit of a hack really
+    {
+        slotStop();
+        return;
+    }
+
+
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
     if ( item == NULL )
@@ -840,10 +883,7 @@ void PlayerApp::slotPlay()
 
     m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
 
-    if ( m_bIsPlaying )
-    {
-        slotStop();
-    }
+    m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
 
     m_Length = 0;
     KDE::PlayObjectFactory factory( m_Server );
@@ -931,6 +971,8 @@ void PlayerApp::slotStop()
 {
     if ( m_bIsPlaying )
     {
+        m_pPlayerWidget->m_pButtonPlay->setOn( false );
+
         if ( m_pPlayObject )
         {
             m_pPlayObject->halt();
