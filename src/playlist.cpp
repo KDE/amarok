@@ -1023,10 +1023,11 @@ Playlist::contentsDropEvent( QDropEvent *e )
         QCString subtype;
         QTextDrag::decode( e, data, subtype );
 
-        if ( subtype == "amarok-sql" )
-        {
+        if( subtype == "amarok-sql" ) {
+            setSorting( NO_SORT );
             ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
-        } else
+        }
+        else
             goto url;
     }
     else if( KURLDrag::canDecode( e ) ) {

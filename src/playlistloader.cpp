@@ -341,8 +341,11 @@ PlaylistFile::loadM3u( QTextStream &stream )
 
         else if( !line.startsWith( "#" ) )
         {
+            // NOTE This will not work with full URLs
+            // eg http://someplace.com/playlist.m3u
+            // we need a better check, what was wrong with:
             // if( KURL::isRelativeURL( line ) )
-            if ( !line.startsWith( "/" ) )
+            if( !line.startsWith( "/" ) )
                 b.setPath( directory + line );
             else
                 b.setUrl( KURL::fromPathOrURL( line ) );
@@ -442,6 +445,8 @@ SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
 bool
 SqlLoader::doJob()
 {
+    DEBUG_BLOCK
+
     BundleList bundles;
     QStringList values = CollectionDB::instance()->query( m_sql );
 
