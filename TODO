@@ -14,8 +14,8 @@ MID-TERM:
                clear   -> only clear the stuff that was searched for?
                shuffle -> stop the search and do normal shuffle?
            additionally what to do when user rearranges a set of items that are the search result?
-	   <larson>The playlist widget is _the_ main widget of the browserwin while the tabs are only
-		   optional tools. IMHO, toolbar buttons should always do actions related to the main widget.	
+	   <larson>No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
+		   the search, then clear should clear the search only, and visa versa.
 
     * fix: #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
 
