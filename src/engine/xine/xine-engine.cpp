@@ -26,7 +26,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 static inline kdbgstream
 debug()
 {
-    return kdbgstream( "[XineEngine] ", 0, 0 );
+    return kdbgstream( "[xine-engine] ", 0, 0 );
 }
 
 
@@ -46,92 +46,47 @@ XineEngine::~XineEngine()
     if (audioDriver) xine_close_audio_driver(xineEngine, audioDriver);
     if (xineEngine)  xine_exit(xineEngine);
 
-    debug() << "Xine closed\n";
+    debug() << "xine closed\n";
 }
 
 void
 XineEngine::init( bool&, int, bool )
 {
-    debug() << "Initialising Xine...\n";
+    debug() << "Initialising xine...\n";
 
     xineEngine = xine_new();
 
     if (!xineEngine)
     {
-        KMessageBox::error( 0, i18n("amaroK could not initialise Xine.") );
+        KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
         return;
     }
 
-    xine_config_load( xineEngine, (QDir::homeDirPath() + "/.kaffeine/config").local8Bit() );
+    QString
+    path  = QDir::homeDirPath();
+    path += "/.%1/config";
+    path  = QFile::exists( path.arg( "kaffeine" ) ) ? path.arg( "kaffeine" ) : path.arg( "xine" );
+
+    xine_config_load( xineEngine, path.local8Bit() );
+
     xine_init( xineEngine );
 
-
-    /** set xine parameters **/
-
-    const char* const* drivers = NULL;
-    char **audioChoices = new char*[15];
-    int i = 0;
-
-    drivers = xine_list_audio_output_plugins (xineEngine);
-
-    audioChoices[0] = new char[10];
-    audioChoices[0] = const_cast<char*>("auto");
-
-    for( i = 0; drivers[i]; ++i )
+    audioDriver = xine_open_audio_driver( xineEngine, "auto", NULL );
+    if( !audioDriver )
     {
-        audioChoices[i+1] = new char[10];
-        strcpy( audioChoices[i+1], (char*)drivers[i] );
-    }
-
-    audioChoices[i+1] = NULL;
-
-    char* audioInfo = new char[200];
-    strcpy( audioInfo, i18n("Audiodriver to use (default: auto)").utf8() );
-    i = xine_config_register_enum(xineEngine, "gui.audiodriver", 0, audioChoices, audioInfo, NULL, 10, &XineEngine::AudioDriverChangedCallback, this);
-
-    audioDriverName = audioChoices[i];
-
-
-    char* mixerInfo = new char[200];
-    strcpy( mixerInfo, i18n("Use software audio mixer").utf8() );
-    /*m_mixerHW = !(bool)*/xine_config_register_bool(xineEngine, "gui.audio_mixer_software", 1, mixerInfo, NULL, 10, &XineEngine::AudioMixerMethodChangedCallback, this);
-
-
-    debug() << "Init audio driver: " << audioDriverName << endl;
-
-    audioDriver = xine_open_audio_driver( xineEngine, audioDriverName.latin1(), NULL );
-
-    if (!audioDriver && audioDriverName != "auto")
-    {
-        debug() << "Driver init failed. Trying 'auto'...\n";
-        audioDriverName = "auto";
-        audioDriver = xine_open_audio_driver (xineEngine, audioDriverName.latin1(), NULL);
-    }
-
-    if (!audioDriver)
-    {
-        KMessageBox::error(0, i18n("Xine was unable to initialize any audio-drivers."));
+        KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
         return;
     }
-
-
-    debug() << "Open stream\n";
 
     xineStream  = xine_stream_new( xineEngine, audioDriver, 0 );
-    if (!xineStream)
+    if( !xineStream )
     {
-        KMessageBox::error( 0, i18n("amaroK could not create a new XineStream.") );
+        KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
         return;
     }
 
-
-    eventQueue = xine_event_new_queue(xineStream);
+    eventQueue = xine_event_new_queue( xineStream );
     xine_event_create_listener_thread( eventQueue, &XineEngine::XineEventListener, (void*)this );
-
-
-    debug() << "Xine successfully initialised\n";
-
-    return;
 }
 
 void
@@ -150,7 +105,8 @@ XineEngine::play()
         if( xine_play( xineStream, 0, 0 ) ) return;
     }
 
-    KMessageBox::sorry( 0, i18n( "<p>Xine could not open the media at: <i>%1</i>" ).arg( m_url.prettyURL() ) );
+    //we should get a ui message from the event listener
+    //KMessageBox::sorry( 0, i18n( "<p>xine could not open the media at: <i>%1</i>" ).arg( m_url.prettyURL() ) );
     emit stopped();
 }
 
@@ -200,17 +156,20 @@ XineEngine::seek( long ms )
     }
 }
 
+bool
+XineEngine::initMixer( bool hardware )
+{
+    //ensure that software mixer volume is back to normal
+    xine_set_param( xineStream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+
+    m_mixerHW = hardware ? 0 : -1;
+    return hardware;
+}
+
 void
 XineEngine::setVolume( int vol )
 {
-    if( m_mixerHW )
-    {
-        xine_set_param(xineStream, XINE_PARAM_AUDIO_AMP_LEVEL, -vol*2);
-    }
-    else
-    {
-        xine_set_param(xineStream, XINE_PARAM_AUDIO_VOLUME, -vol);
-    }
+    xine_set_param( xineStream, isMixerHardware() ? XINE_PARAM_AUDIO_VOLUME : XINE_PARAM_AUDIO_AMP_LEVEL, vol );
 }
 
 bool
@@ -234,7 +193,7 @@ XineEngine::customEvent( QCustomEvent *e )
 
     case 3001:
         #define message static_cast<QString*>(e->data())
-        KMessageBox::error( 0, *message );
+        KMessageBox::error( 0, (*message).arg( m_url.prettyURL() ) );
         delete message;
         #undef message
         break;
@@ -244,50 +203,12 @@ XineEngine::customEvent( QCustomEvent *e )
     }
 }
 
-
-#define xe static_cast<XineEngine*>(p)
-
-void
-XineEngine::AudioDriverChangedCallback( void* p, xine_cfg_entry_t* entry )
-{
-    if( p == NULL ) return;
-
-    debug() << "New audio driver: " << entry->enum_values[entry->num_value] << endl;
-
-    xine_close(xe->xineStream);
-    xine_event_dispose_queue(xe->eventQueue);
-    xine_dispose(xe->xineStream);
-    xine_close_audio_driver(xe->xineEngine, xe->audioDriver);
-
-    xe->audioDriver = 0;
-    xe->audioDriver = xine_open_audio_driver(xe->xineEngine, entry->enum_values[entry->num_value], NULL);
-
-    if (!xe->audioDriver)
-    {
-        xe->audioDriver = xine_open_audio_driver(xe->xineEngine, xe->audioDriverName.latin1(), NULL);
-    }
-    else
-    {
-        xe->audioDriverName = entry->enum_values[entry->num_value];
-    }
-
-    xe->xineStream = xine_stream_new( xe->xineEngine, xe->audioDriver, NULL );
-    xe->eventQueue = xine_event_new_queue (xe->xineStream);
-    xine_event_create_listener_thread(xe->eventQueue, &XineEngine::XineEventListener, p);
-
-    xe->play();
-}
-
-void
-XineEngine::AudioMixerMethodChangedCallback(void* p, xine_cfg_entry_t* entry)
-{
-    if( p ) xe->m_mixerHW = (bool)entry->num_value;
-}
-
 void
 XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 {
     if( !p ) return;
+
+    #define xe static_cast<XineEngine*>(p)
 
     switch( xineEvent->type )
     {
@@ -299,7 +220,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
     case XINE_EVENT_UI_MESSAGE:
     {
-        debug() << "Xine event: Xine message\n";
+        debug() << "xine message received\n";
 
         xine_ui_message_data_t *data = (xine_ui_message_data_t *)xineEvent->data;
         QString message;
@@ -339,14 +260,14 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
         case XINE_MSG_ENCRYPTED_SOURCE: break;
 
-        case XINE_MSG_UNKNOWN_HOST: message = i18n("The specified host is unknown."); goto param;
+        case XINE_MSG_UNKNOWN_HOST: message = i18n("The host is unknown for the url: <i>%1</i>"); goto param;
         case XINE_MSG_UNKNOWN_DEVICE: message = i18n("The device name you specified seems invalid."); goto param;
         case XINE_MSG_NETWORK_UNREACHABLE: message = i18n("The network appears unreachable."); goto param;
-        case XINE_MSG_AUDIO_OUT_UNAVAILABLE: message = i18n("Audio output unavailable. The device is busy."); goto param;
-        case XINE_MSG_CONNECTION_REFUSED: message = i18n("The connection was refused."); goto param;
-        case XINE_MSG_FILE_NOT_FOUND: message = i18n("The specified file or url was not found."); goto param;
-        case XINE_MSG_PERMISSION_ERROR: message = i18n("Permission to this source was denied."); goto param;
-        case XINE_MSG_READ_ERROR: message = i18n("The source cannot be read."); goto param;
+        case XINE_MSG_AUDIO_OUT_UNAVAILABLE: message = i18n("Audio output unavailable; the device is busy."); goto param;
+        case XINE_MSG_CONNECTION_REFUSED: message = i18n("The connection was refused for the url: <i>%1</i>"); goto param;
+        case XINE_MSG_FILE_NOT_FOUND: message = i18n("xine could not find the url: <i>%1</i>"); goto param;
+        case XINE_MSG_PERMISSION_ERROR: message = i18n("Access was denied for the url: <i>%1</i>"); goto param;
+        case XINE_MSG_READ_ERROR: message = i18n("The source cannot be read for the url: <i>%1</i>"); goto param;
         case XINE_MSG_LIBRARY_LOAD_ERROR: message = i18n("A problem occured while loading a library or decoder."); goto param;
 
         case XINE_MSG_GENERAL_WARNING: message = i18n("General Warning"); goto explain;
@@ -356,35 +277,35 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
         explain:
 
-            message.prepend( "<b>" );
-            message += "</b>:\n";
-
             if(data->explanation)
             {
+                message.prepend( "<b>" );
+                message += "</b>:<p>";
                 message += ((char *) data + data->explanation);
-                message += ' ';
             }
+            else break; ///if no explanation then why bother!
 
 
         param:
 
+            message.prepend( "<p>" );
+            message += "<p>";
+
             if(data->explanation)
             {
-                message += "<p>Xine Paramaters:\n<i>";
+                message += "xine parameters: <i>";
                 message += ((char *) data + data->parameters);
                 message += "</i>";
             }
-            else message += i18n("No information available");
-
-            message.prepend( "<p>" );
+            else message += i18n("No additional information is available.");
 
             QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3001), new QString(message)) );
         }
 
     } //case
     } //switch
-}
 
-#undef xe
+    #undef xe
+}
 
 #include "xine-engine.moc"

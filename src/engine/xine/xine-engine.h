@@ -19,7 +19,7 @@ public:
 
     void init( bool&, int, bool );
 
-    bool initMixer( bool hardware ) { return false; }
+    bool initMixer( bool );
     bool canDecode( const KURL&, mode_t, mode_t );
     long position() const;
     bool isStream() const { return false; }
@@ -35,18 +35,13 @@ public:
     void  setVolume( int );
 
 private:
-    static void XineEventListener(void* p, const xine_event_t*);
-    static void AudioDriverChangedCallback(void* p, xine_cfg_entry_t* entry);
-    static void AudioMixerMethodChangedCallback(void* p, xine_cfg_entry_t* entry);
-
+    static  void XineEventListener(void* p, const xine_event_t*);
     virtual void customEvent( QCustomEvent* );
 
     xine_t             *xineEngine;
     xine_stream_t      *xineStream;
     xine_audio_port_t  *audioDriver;
     xine_event_queue_t *eventQueue;
-
-    QString audioDriverName;
 
     KURL m_url;
 };
