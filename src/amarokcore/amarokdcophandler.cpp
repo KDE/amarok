@@ -170,13 +170,13 @@ namespace amaroK
     QString DcopHandler::coverImage()
     {
         CollectionDB db;
-        QString image = db.getImageForAlbum( QString::number( db.getValueID( "artist", EngineController::instance()->bundle().artist(), false ) ),
-                                             QString::number( db.getValueID( "album", EngineController::instance()->bundle().album(), false ) ),
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        QString image = db.getImageForAlbum( QString::number( db.getValueID( "artist", bundle.artist(), false ) ),
+                                             QString::number( db.getValueID( "album", bundle.album(), false ) ),
                                              "", 0 );
-
         return image;
     }
-    
+
     int DcopHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();
@@ -196,13 +196,9 @@ namespace amaroK
         }
     }
 
-    void DcopHandler::enableRandom(bool enable)
+    void DcopHandler::enableRandomMode(bool enable)
     {
-        const KActionCollection* const ac = amaroK::actionCollection();
-        KToggleAction* action = (KToggleAction*)ac->action( "random_mode" );
-        action->setChecked( enable );
-
-        AmarokConfig::setRandomMode(enable);
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( enable );
     }
 
     void DcopHandler::addMedia(const KURL &url)

@@ -97,8 +97,11 @@ namespace amaroK
 
             virtual void setChecked( bool b )
             {
+                const bool announce = b != isChecked();
+
                 m_function( b );
                 KToggleAction::setChecked( b );
+                if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
             }
 
         private:
