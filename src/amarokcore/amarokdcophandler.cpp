@@ -249,6 +249,13 @@ namespace amaroK
     {
         PlaylistWindow::self()->showHide();
     }
+    
+    int DcopHandler::score()
+    {
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        int score = CollectionDB().getSongPercentage( bundle.url().path() );
+        return score;
+    }
 
 } //namespace amaroK
 

@@ -77,6 +77,7 @@ k_dcop:
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
 
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
+   virtual int score() = 0;                       ///<Return the score of the currently playing track.
 };
 
 #endif
