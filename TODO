@@ -8,10 +8,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <markey> LibVisual windows are missing a caption with the current plugin name.
+          <mxcl>   StatusBar feedback for cover fetching pls
 
-          <mxcl>   Can we have a compile option not to prune images when you clear the collection?
-                   I hate redownloading all my covers
+          <mxcl>   Context Browser doesn't update images when you fetch them using the context browser
+
+          <markey> LibVisual windows are missing a caption with the current plugin name.
 
           <mxcl>   You can't add or drag albums from the context browser anymore
 
