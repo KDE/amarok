@@ -603,7 +603,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     "<tr>"
                                      "<td width='20%'>"
                                       "<a class='menu' href='fetchcover:%8 @@@ %9'>"
-                                       "<img align='left' valign='center' hspace='2' title='Album cover image. Click for information from amazon.com, right-click for menu.' src='%10'>"
+                                       "<img align='left' valign='center' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%10'>"
                                       "</a>"
                                      "</td>"
                                      "<td valign='bottom' align='right' width='80%'>"
@@ -641,7 +641,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                         "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
                                         "<td valign='top' align='right' width='10%'><a href='musicbrainz:%4 @@@ %5'>"
                                         "<img src='%6'></a></td></tr></table> <table width='100%'><tr><td width='20%'>"
-                                        "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' valign='center' hspace='2' src='%8'></a>"
+                                        "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' valign='center' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%8'></a>"
                                         "</td><td width='80%' valign='bottom' align='right'>"
                                         "<i>" + i18n( "Never played before" )  + "</i></td>"
                                         "</tr>" )
@@ -744,7 +744,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             browser->write( QStringx ( "<tr>"
                                         "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
-                                         "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' title='Album cover image. Click for information from amazon.com, right-click for menu.' src='%5'></a>"
+                                         "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%5'></a>"
                                          /* *** UGLY HACK ALERT ***
                                             Without the 2 <br> after %9, hover borks on mouseover.
                                             TODO: find out why + make it nice ;) */
