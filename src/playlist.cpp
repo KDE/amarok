@@ -315,7 +315,14 @@ Playlist::insertMedia( KURL::List list, int options )
                 }
             }
         } else {
-            after = lastItem(); //insert after the last item in the playlist.
+            PlaylistItem *item = currentTrack();
+
+            //insert after the current track. enables the click-n-reaction feeling
+            if ( item )
+                after = item;
+            else
+                after = lastItem();
+
             // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
             m_queueList = list;
             insertMediaInternal( addMe, after, directPlay );
