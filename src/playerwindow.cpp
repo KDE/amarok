@@ -701,17 +701,19 @@ void PlayerWidget::setEffectsWindowShown( bool on )
 NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
   : QPushButton( parent )
 {
-    QString up = "b_"; up += icon;
-
     QIconSet iconSet;
     KIconEffect ie;
+    
     // Tint icons blueish
-    QPixmap upPix   = ie.apply( getPNG( up ), KIconEffect::Colorize, 0.3, Qt::blue, false );
-    // Fade gamma value for "on" icon state
-    QPixmap downPix = ie.apply( upPix, KIconEffect::ToGray, 0.7, QColor(), false );
-
-    iconSet.setPixmap( upPix,   QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( downPix, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
+    QPixmap off = ie.apply( getPNG( "b_" + icon ), KIconEffect::Colorize, 0.3, Qt::blue, false );
+    // Tint gray for "on" icon state
+    QPixmap on = ie.apply( off, KIconEffect::ToGray, 0.7, QColor(), false );
+    // Fade gamma value and make pseudo-transparent for disabled state
+    QPixmap disabled = ie.apply( off, KIconEffect::ToGamma, 0.5, QColor(), true );
+    
+    iconSet.setPixmap( off, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( on, QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
+    iconSet.setPixmap( disabled, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
     setIconSet( iconSet );
 
     // System icons
