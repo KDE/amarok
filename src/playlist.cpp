@@ -1769,7 +1769,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( trackColumn
         ? i18n("&Iteratively Assign Track Numbers")
         : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
-    popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
+    popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Meta-String" ), 0, 0, CTRL+Key_C, COPY );
 
     popup.insertSeparator();
 
@@ -2249,7 +2249,7 @@ Playlist::addCustomColumn()
                 "<p>You can only run the command against local files for the time being. "
                 "The fullpath is inserted at the position <b>%f</b> in the string. "
                 "If you do not specify <b>%f</b> it is appended." ), this );
-            textLabel2 = new QLabel( i18n( "Column &Name:" ), this );
+            textLabel2 = new QLabel( i18n( "Column &name:" ), this );
             textLabel3 = new QLabel( i18n( "&Command:" ), this );
 
             lineEdit1  = new QLineEdit( this, "ColumnName" );

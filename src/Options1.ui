@@ -192,7 +192,7 @@
                 <cstring>groupBox2</cstring>
             </property>
             <property name="title">
-                <string>Playlist-window Options</string>
+                <string>Playlist-Window Options</string>
             </property>
             <vbox>
                 <property name="name">

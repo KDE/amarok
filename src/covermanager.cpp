@@ -130,8 +130,8 @@ CoverManager::CoverManager()
     // view menu
     m_viewMenu = new KPopupMenu( m_viewButton );
     m_viewMenu->insertItem( i18n("All Albums"), AllAlbums );
-    m_viewMenu->insertItem( i18n("Albums with Cover"), AlbumsWithCover );
-    m_viewMenu->insertItem( i18n("Albums without Cover"), AlbumsWithoutCover );
+    m_viewMenu->insertItem( i18n("Albums With Cover"), AlbumsWithCover );
+    m_viewMenu->insertItem( i18n("Albums Without Cover"), AlbumsWithoutCover );
     m_viewMenu->setItemChecked( AllAlbums, true );
     connect( m_viewMenu, SIGNAL( activated(int) ), SLOT( changeView(int) ) );
     m_viewButton->setPopup( m_viewMenu );
@@ -484,7 +484,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIconSet("viewmag"), i18n("&Show Fullsize"), SHOW );
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet("www"), i18n("&Fetch from amazon.%1").arg( AmarokConfig::amazonLocale() ), FETCH );
+        menu.insertItem( SmallIconSet("www"), i18n("&Fetch From amazon.%1").arg( AmarokConfig::amazonLocale() ), FETCH );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Custom Image"), CUSTOM );
         #else

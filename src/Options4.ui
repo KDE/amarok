@@ -64,7 +64,7 @@
                                 <cstring>radioButtonNormalPlayback</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;No Crossfading</string>
+                                <string>&amp;No crossfading</string>
                             </property>
                             <property name="checked">
                                 <bool>true</bool>

@@ -136,7 +136,7 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
     if( index == m_orderCombo->count()-1 ) {  // random order selected
         m_orderTypeCombo->clear();
         m_orderTypeCombo->insertItem( i18n("Completely Random") );
-        m_orderTypeCombo->insertItem( i18n("Score weighted") );
+        m_orderTypeCombo->insertItem( i18n("Score Weighted") );
     }
     else {  // ordinary order column selected
         m_orderTypeCombo->clear();

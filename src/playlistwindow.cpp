@@ -133,7 +133,7 @@ PlaylistWindow::PlaylistWindow()
 
     new KAction( i18n("Play Media..."), "fileopen", 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
-    new KAction( i18n("Scripts..."), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
+    new KAction( i18n("Scripts"), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
@@ -242,10 +242,10 @@ PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
-    m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
-    m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
+    m_toolsMenu->insertItem( i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );

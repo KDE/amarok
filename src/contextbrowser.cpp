@@ -683,7 +683,7 @@ void ContextBrowser::showHome() //SLOT
                                );
 
         m_HTMLSource.append(
-                            "<br /><span class='song-time'>" + i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
+                            "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                             "</a>"
                         "</div>"
                     "</div>"
@@ -883,8 +883,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     )
             .arg( i18n( "Track played once", "Track played %n times", playtimes ),
                   scoreBox.arg( score ).arg( score ).arg( score / 2 ),
-                  i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ),
-                  i18n( "First Played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
+                  i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ),
+                  i18n( "First played: %1" ).arg( verboseTimeSince( firstPlay ) ) ) );
    }
    else
         m_HTMLSource.append( i18n( "Never played before" ) );
@@ -911,7 +911,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         " you should add it to your Collection." ) +
                 "</p>"
                 "<a href='show:collectionSetup' class='button'>"
-                + i18n( "Change Collection setup" ) +
+                + i18n( "Change Collection Setup" ) +
                 "</a>"
             "</div>"
         "</div>"
