@@ -46,10 +46,6 @@ class PlayerApp;
 extern PlayerApp *pApp;
 
 
-/**
- *@author Max
- */
- 
 //In order to remember the size of the tabs when using a QSplitter it is
 //necessary to override sizeHint(). Hence this class.
 //Later it seemed convenient to move management of the widgets (pages)
@@ -78,13 +74,13 @@ public slots:
     void close();
     
 private:
-    int  m_savedSize;
     int  m_current;
     
     KMultiTabBar  *m_MTB;
     QSignalMapper *m_mapper;
     
     std::vector<QWidget *> m_widgets;
+    std::vector<int>       m_sizes;
 };
 
 

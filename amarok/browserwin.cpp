@@ -54,12 +54,12 @@ static void setPaletteRecursively( QWidget*, const QPalette&, const QColor& );
 
 
 PlaylistSideBar::PlaylistSideBar( QWidget *parent )
-    : QHBox ( parent )
-    , m_savedSize( 200 ) //basically this is the default value for the sidebar width
+    : QHBox( parent )
     , m_current( -1 )
     , m_MTB( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
     , m_mapper( new QSignalMapper( this ) )
     , m_widgets( 2, (QWidget*)0 )
+    , m_sizes( 2, 200 ) //basically this is the default value for the sidebar widths
 {
     m_MTB->setStyle( KMultiTabBar::VSNET );
     m_MTB->setPosition( KMultiTabBar::Left );
@@ -79,13 +79,15 @@ QWidget *PlaylistSideBar::page( const QString &widgetName )
 void PlaylistSideBar::setPageFont( const QFont &font )
 {
     //note - untested because font system was broken when I made this
-    for( uint i = 0; i <= m_widgets.size(); ++i ) if( m_widgets[i] ) m_widgets[i]->setFont( font );
+    for( uint i = 0; i <= m_widgets.size(); ++i )
+        if( m_widgets[i] )
+            m_widgets[i]->setFont( font );
 }
     
 QSize PlaylistSideBar::sizeHint() const
 {
-    //return a fake sizeHint because QHBox doesn't and QSplitter uses the sizeHint
-    return ( m_current != -1 ) ? QSize( m_savedSize, 100 ) : QHBox::sizeHint();
+    //return a sizeHint that will make the splitter space our pages as the user expects
+    return ( m_current != -1 ) ? QSize( m_sizes[ m_current ], 100 ) : m_MTB->sizeHint();
 }
 
 void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QString& icon, bool show )
@@ -106,19 +108,21 @@ void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QStri
 
 void PlaylistSideBar::showHide( int index )
 {
+    //FIXME please make me prettier!
+    
     if( m_current != -1 && m_current != index )
     {
+        m_sizes[ m_current ] = width();        
         m_widgets[ m_current ]->hide();
         m_MTB->tab( m_current )->setState( false );
-        m_savedSize = width();
     }
     
     QWidget  *w = m_widgets[ index ];
     bool isShut = w->isHidden();
     
     m_MTB->tab( index )->setState( isShut );
-    if( isShut ) { w->show(); m_current = index; }
-    else         { w->hide(); m_current = -1; m_savedSize = width(); }
+    if( isShut ) { w->show(); m_current = index; setMaximumWidth( 2000 ); }
+    else         { w->hide(); m_current = -1; m_sizes[ index ] = width(); setMaximumWidth( m_MTB->maximumWidth() ); }
 }
 
 void PlaylistSideBar::close()
