@@ -7,9 +7,9 @@
 #include <dlfcn.h>    //dlopen etc.
 #include <gtk/gtk.h>  //gtk_init(), gtk_rgb_init()
 #include <stdlib.h>
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
 #include <xmms/configfile.h> //visplugins use this stuff, see extern "C" block
