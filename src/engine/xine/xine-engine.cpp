@@ -444,7 +444,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         case XINE_MSG_READ_ERROR:
             message = i18n("The source cannot be read for the URL: <i>%1</i>"); goto param;
         case XINE_MSG_LIBRARY_LOAD_ERROR:
-            message = i18n("A problem occured while loading a library or decoder."); goto param;
+            message = i18n("A problem occurred while loading a library or decoder."); goto param;
 
         case XINE_MSG_GENERAL_WARNING:
             message = i18n("General Warning"); goto explain;
