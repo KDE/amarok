@@ -35,7 +35,7 @@ namespace LibVisual
     static VisVideo   *video;
     static VisPalette *pal;
     static VisBin     *bin;
-    static char       *plugin;
+    static const char *plugin;
     static bool        pluginIsGL = false;
     static int16_t     pcm_data[512];
 

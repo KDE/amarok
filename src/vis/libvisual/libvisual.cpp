@@ -30,7 +30,7 @@ main( int argc, char** argv )
             }
             #endif
 
-            char *plugin = NULL;
+            const char *plugin = NULL;
 
             while( plugin = visual_actor_get_next_by_name( plugin ) )
                 std::cout << plugin << '\n';
@@ -246,7 +246,7 @@ namespace SDL
                 morph:
                     SDL::lock();
                       visual_bin_set_morph_by_name( Vis::bin, "alphablend" );
-                      visual_bin_switch_actor_by_name( Vis::bin, Vis::plugin );
+                      visual_bin_switch_actor_by_name( Vis::bin, (char*)Vis::plugin );
                     SDL::unlock();
 
                     SDL_WM_SetCaption( Vis::plugin, NULL );
@@ -267,11 +267,11 @@ namespace SDL
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                visual_event_queue_add_mousebutton (vevent, event.button.button, VISUAL_MOUSE_DOWN);
+                visual_event_queue_add_mousebutton (vevent, event.button.button, VISUAL_MOUSE_DOWN, 0, 0);
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                visual_event_queue_add_mousebutton (vevent, event.button.button, VISUAL_MOUSE_UP);
+                visual_event_queue_add_mousebutton (vevent, event.button.button, VISUAL_MOUSE_UP, 0, 0);
                 break;
 
             case SDL_QUIT:
@@ -333,7 +333,7 @@ namespace LibVisual
 
         if( visual_bin_set_video( bin, video ) ) exit( "Cannot set video" );
 
-        visual_bin_connect_by_names( bin, plugin, NULL );
+        visual_bin_connect_by_names( bin, (char*)plugin, NULL );
 
         if( visual_bin_get_depth( bin ) == VISUAL_VIDEO_DEPTH_GL )
         {
