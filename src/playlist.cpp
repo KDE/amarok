@@ -573,7 +573,7 @@ Playlist::activate( QListViewItem *item )
 
         setCurrentTrack( 0 );
         EngineController::instance()->stop();
-        amaroK::OSD::instance()->show( i18n("Playlist finished") );
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Playlist finished") );
     }
 }
 
