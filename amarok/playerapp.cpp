@@ -554,7 +554,6 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 83, 86, 112 );
 
         group.setColor( QColorGroup::Text, Qt::white );
-        group.setColor( QColorGroup::Foreground, Qt::white );
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
 
@@ -570,7 +569,7 @@ void PlayerApp::setupColors()
 */
         int h,s,v;
         bgAlt.getHsv( &h, &s, &v );
-        group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) );
+        group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) ); //column separator in playlist
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
         m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
@@ -606,7 +605,6 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
         group.setColor( QColorGroup::Text, fg );
-        group.setColor( QColorGroup::Foreground, fg );
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );

@@ -53,29 +53,6 @@
 
 
 
-//Routine for setting palette recursively in a widget and all its childen
-//TODO make available globally sometime, maybe through an extern in PlayerApp.h
-void setPaletteRecursively( QObjectList *list, const QPalette &pal, const QColor& bgAlt )
-{
-    for( QObject *obj = list->first(); obj; obj = list->next() )
-    {
-        static_cast<QWidget*>(obj)->setPalette( pal );
-
-        if( obj->inherits( "KListView" ) )
-        {
-            KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
-            if( lv ) lv->setAlternateBackground( bgAlt );
-        }
-    }
-}
-
-inline void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
-{
-    setPaletteRecursively( widget->queryList( "QWidget" ), pal, bgAlt );
-}
-
-
-
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
    , KXMLGUIClient()
@@ -237,10 +214,24 @@ bool BrowserWin::isAnotherTrack() const
 
 void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
 {
-    //these widgets are actually children of splitter now
-    //list.append( m_lineEdit );
-    //list.append( m_playlist ); //we are friend
-    setPaletteRecursively( m_browsers->queryList( "QWidget" ), pal, bgAlt );
+    //this updates all children's palettes recursively (thanks Qt!)
+    m_browsers->setPalette( pal );
+
+    const bool changeMenuBar = !AmarokConfig::schemeKDE();
+    QObjectList *list = m_browsers->queryList( "QWidget" );
+
+    for( QObject *obj = list->first(); obj; obj = list->next() )
+    {
+        if( changeMenuBar && obj->inherits("QMenuBar") )
+        {
+            static_cast<QWidget*>(obj)->setPalette( QApplication::palette() );
+        }
+        else if( obj->inherits("KListView") )
+        {
+            KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
+            if( lv ) lv->setAlternateBackground( bgAlt );
+        }
+    }
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     KDevFileSelector::altBgColor = bgAlt;
