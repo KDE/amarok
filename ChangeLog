@@ -9,6 +9,7 @@ VERSION 1.2.3:
     * New DCOP call "playlist: removeCurrentTrack()". (BR 92973)
 
   CHANGES:
+    * Show "Artist - Title" for compilation discs in CollectionBrowser.
     * Upgraded internal SQLite database to 3.2.0.
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 

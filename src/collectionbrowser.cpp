@@ -463,6 +463,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     int category = 0;
     QStringList values;
     QueryBuilder qb;
+    bool c = false;
 
     switch ( item->depth() )
     {
@@ -471,17 +472,22 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             if ( item->text( 0 ) != i18n( "Various Artists" ) )
                 qb.addMatch( m_cat1, item->text( 0 ) );
             else
+            {
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
+                c = true;
+            }
 
             if ( m_cat2 == QueryBuilder::tabSong )
             {
                 qb.addReturnValue( m_cat2, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat2, QueryBuilder::valURL );
+                if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
                 qb.sortBy( m_cat2, QueryBuilder::valTrack );
                 qb.sortBy( m_cat2, QueryBuilder::valURL );
             }
             else
             {
+                c = false;
                 qb.addReturnValue( m_cat2, QueryBuilder::valName );
                 qb.sortBy( m_cat2, QueryBuilder::valName );
             }
@@ -494,7 +500,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             if ( item->parent()->text( 0 ) != i18n( "Various Artists" ) )
                 qb.addMatch( m_cat1, item->parent()->text( 0 ) );
             else
+            {
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
+                c = true;
+            }
 
             qb.addMatch( m_cat2, item->text( 0 ) );
 
@@ -502,11 +511,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 qb.addReturnValue( m_cat3, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat3, QueryBuilder::valURL );
+                if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+
                 qb.sortBy( m_cat3, QueryBuilder::valTrack );
                 qb.sortBy( m_cat3, QueryBuilder::valURL );
             }
             else
             {
+                c = false;
                 qb.addReturnValue( m_cat3, QueryBuilder::valName );
                 qb.sortBy( m_cat3, QueryBuilder::valName );
             }
@@ -519,13 +531,18 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             if ( item->parent()->parent()->text( 0 ) != i18n( "Various Artists" ) )
                 qb.addMatch( m_cat1, item->parent()->parent()->text( 0 ) );
             else
+            {
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
+                c = true;
+            }
 
             qb.addMatch( m_cat2, item->parent()->text( 0 ) );
             qb.addMatch( m_cat3, item->text( 0 ) );
 
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            if ( c ) qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
@@ -544,10 +561,16 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
     {
+        QString text;
+
+        //show "artist - title" for compilations
+        if ( c ) text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + " - ";
+        text += values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ];
+
         Item* child = new Item( item );
         child->setDragEnabled( true );
         child->setDropEnabled( false );
-        child->setText( 0, values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ] );
+        child->setText( 0, text );
         if ( expandable )
             child->setPixmap( 0, pixmap );
         else
