@@ -155,7 +155,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
             //TODO if we do move the configuration to the main configdialog change this,
             //     otherwise we need a better solution
             QObject *o = parent()->child( "CollectionBrowser" );
-            if( o ) static_cast<CollectionBrowser*>(o)->setupDirs();
+            if ( CollectionView::instance() )
+                connect( CollectionView::instance(), SIGNAL( sigScanDone() ), SLOT( showHome() ) );
+            if ( o ) static_cast<CollectionBrowser*>( o )->setupDirs();
         }
     }
 
@@ -211,15 +213,19 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
-    if ( !m_db->isEmpty() )
+    if ( m_db->isEmpty() || !m_db->isDbValid() )
+        showIntroduction();
+    else
         showCurrentTrack();
 }
 
 
 void ContextBrowser::engineStateChanged( Engine::State state )
 {
-    if ( m_db->isEmpty() )
+    if ( m_db->isEmpty() || !m_db->isDbValid() ) {
+        showIntroduction();
         return;
+    }
 
     switch( state )
     {
@@ -248,6 +254,11 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::showHome() //SLOT
 {
+    if ( m_db->isEmpty() || !m_db->isDbValid() ) {
+        showIntroduction();
+        return;
+    }
+
     QStringList values;
     QStringList names;
 

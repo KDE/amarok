@@ -88,8 +88,5 @@ FirstRunWizard::interface()
 void
 FirstRunWizard::writeCollectionConfig()
 {
-    KConfig *config = amaroK::config( "Collection Browser" );
-    config->writeEntry( "Folders", m_folderSetup->dirs() );
-    config->writeEntry( "Scan Recursively", m_folderSetup->recursive() );
-    config->writeEntry( "Monitor Changes", m_folderSetup->monitor() );
+    m_folderSetup->writeConfig();
 }

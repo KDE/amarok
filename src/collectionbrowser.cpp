@@ -6,7 +6,7 @@
 
 #include "collectionbrowser.h"
 #include "collectiondb.h"
-#include "covermanager.h"    //openCoverManager()
+#include "covermanager.h"   //openCoverManager()
 #include "directorylist.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia()
@@ -25,6 +25,7 @@
 #include <qtooltip.h>       //QToolTip::add()
 
 #include <kactioncollection.h>
+#include <kapplication.h>   //kapp
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kiconloader.h>    //renderView()
@@ -99,8 +100,10 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ), false );
     m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ), true );
 
-    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ),
-             this,           SLOT( slotSetFilterTimeout() ) );
+    connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+
+    // This is used when the collection folders were changed in the first-run wizard
+    connect( kapp, SIGNAL( sigScanCollection() ), SLOT( scan() ) );
 
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
@@ -128,8 +131,7 @@ CollectionBrowser::slotCheckFolders() // SLOT
     KConfig* config = amaroK::config( "Collection Browser" );
     QStringList m_dirs = config->readListEntry( "Folders" );
 
-    if ( m_dirs.isEmpty() )
-        m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
+    m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, !m_dirs.isEmpty() );
 }
 
 void
@@ -150,9 +152,9 @@ CollectionBrowser::openCoverManager()    //SLOT
 // CLASS CollectionView
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionView* CollectionView::m_instance;
-CollectionDB* CollectionView::m_db;
-CollectionDB* CollectionView::m_insertdb;
+CollectionView* CollectionView::m_instance = 0;
+CollectionDB* CollectionView::m_db = 0;
+CollectionDB* CollectionView::m_insertdb = 0;
 
 
 CollectionView::CollectionView( CollectionBrowser* parent )
@@ -257,9 +259,6 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-//    DirectoryList list( m_dirs, m_recursively, m_monitor, parentWidget() );
-//    DirectoryList::Result result = list.exec();
-
     CollectionSetup::s_dirs = m_dirs;
 
     KDialogBase dialog( this, 0, false, i18n("Configure Collection") );
@@ -274,11 +273,7 @@ CollectionView::setupDirs()  //SLOT
         m_recursively = setup->recursive();
         m_monitor = setup->monitor();
 
-        /* Write this here so we can check it in slotCheckFolders() -- cartman */
-        KConfig* const config = amaroK::config( "Collection Browser" );
-        config->writeEntry( "Folders", m_dirs );
-        config->sync();
-
+        setup->writeConfig();
         scan();
     }
 }
@@ -361,6 +356,8 @@ CollectionView::scanDone( bool changed ) //SLOT
 
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
+
+    emit sigScanDone();
 }
 
 

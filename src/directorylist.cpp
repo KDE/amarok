@@ -3,8 +3,8 @@
                             -------------------
    begin                : Tue Feb 4 2003
    copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
-                          (C) 2004 Max Howell <max.howell@methylblue.com>
-                          (C) 2004 Mark Kretschmann <markey@web.de>
+                        : (C) 2004 Max Howell <max.howell@methylblue.com>
+                        : (C) 2004 Mark Kretschmann <markey@web.de>
 ***************************************************************************/
 
 /***************************************************************************
@@ -20,6 +20,7 @@
 
 #include <qlabel.h>
 
+#include <kapplication.h>   //config()
 #include <kfileitem.h>
 #include <klocale.h>
 
@@ -52,6 +53,20 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     new Item( m_view );
 
     setSpacing( 6 );
+}
+
+
+void
+CollectionSetup::writeConfig()
+{
+    KConfig *config = kapp->config();
+    config->setGroup( "Collection Browser" );
+
+    config->writeEntry( "Folders", dirs() );
+    config->writeEntry( "Scan Recursively", recursive() );
+    config->writeEntry( "Monitor Changes", monitor() );
+
+    config->sync();
 }
 
 
@@ -145,7 +160,7 @@ Item::stateChange( bool b )
     if ( isOn() ) {
         if ( it == CollectionSetup::s_dirs.end() )
             CollectionSetup::s_dirs << m_url.path();
-            
+
     }
     else
         CollectionSetup::s_dirs.erase( it );

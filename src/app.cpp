@@ -70,11 +70,15 @@ App::App()
     //needs to be created before the wizard
     m_pDcopHandler    = new amaroK::DcopHandler();
 
+    // Remember old folder setup, so we can detect changes after the wizard was used
+    const QStringList oldCollectionFolders = amaroK::config( "Collection Browser" )->readListEntry( "Folders" );
+
     if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         //stop the splashscreen first, socket server is a temporary on purpose!
         LoaderServer server( 0 );
         firstRunWizard();
         amaroK::config()->writeEntry( "First Run", false );
+        amaroK::config()->sync();
     }
 
     m_pGlobalAccel    = new KGlobalAccel( this );
@@ -122,6 +126,10 @@ App::App()
 
     // Remove amazon cover images older than 90 days, to comply with licensing terms
     pruneCoverImages();
+
+    // Trigger collection scan if folder setup was changed by wizard
+    if ( amaroK::config( "Collection Browser" )->readListEntry( "Folders" ) != oldCollectionFolders )
+        emit sigScanCollection();
 
     handleCliArgs();
 }
@@ -776,13 +784,13 @@ void App::firstRunWizard()
             break;
         }
 
+        const QStringList oldCollectionFolders = amaroK::config( "Collection Browser" )->readListEntry( "Folders" );
         wizard.writeCollectionConfig();
 
-        //TODO perform a scan
-        //     since we do this before amaroK "exists" the scan thingy needs to be ok with that
-        //     or we need to let collection browser know it needs to scan now,
-        //     suggestion = write a key to its config and then recognise that in browser init and
-        //     then delete the key afterwards
+        // If wizard is invoked at runtime, rescan collection if folder setup has changed
+        if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
+             oldCollectionFolders != amaroK::config( "Collection Browser" )->readListEntry( "Folders" ) )
+            emit sigScanCollection();
     }
 }
 

@@ -33,7 +33,7 @@ class CollectionBrowser: public QVBox
     public:
         CollectionBrowser( const char* name );
         void setupDirs();
-    
+
     public slots:
         void openCoverManager();
 
@@ -59,6 +59,9 @@ class CollectionView : public KListView
 {
     Q_OBJECT
     friend class CollectionBrowser;
+
+    signals:
+        void sigScanDone();
 
     public:
         class Item : public KListViewItem {
@@ -88,7 +91,7 @@ class CollectionView : public KListView
     private slots:
         void setupDirs();
         void scan();
-        void scanMonitor();        
+        void scanMonitor();
         void scanDone( bool changed = true );
 
         void slotExpand( QListViewItem* );
@@ -103,7 +106,7 @@ class CollectionView : public KListView
         /** Shows dialog with information on selected track */
         void showTrackInfo();
 
-    protected:    
+    protected:
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
         /** Processes progress events from CollectionReader */
@@ -125,7 +128,7 @@ class CollectionView : public KListView
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;
         static CollectionView* m_instance;
-        
+
         CollectionBrowser* m_parent;
         QString m_filter;
         QStringList m_dirs;
