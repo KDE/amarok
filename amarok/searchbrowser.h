@@ -56,6 +56,8 @@ class SearchBrowser : public QVBox
         protected:
             void run();
     };
+
+    friend class SearchThread;
 };
 
 #endif /* AMAROK_SEARCHBROWSER_H */
