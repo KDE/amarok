@@ -328,6 +328,8 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
 
 void ContextBrowser::engineStateChanged( Engine::State state )
 {
+    DEBUG_BLOCK
+
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
@@ -575,6 +577,8 @@ verboseTimeSince( const QDateTime &datetime )
 
 void ContextBrowser::showHome() //SLOT
 {
+    DEBUG_BLOCK
+
     if ( currentPage() != m_homePage->view() )
     {
         blockSignals( true );
@@ -759,6 +763,8 @@ void ContextBrowser::showHome() //SLOT
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
+    DEBUG_BLOCK
+
     if ( currentPage() != m_currentTrackPage->view() )
     {
         blockSignals( true );
@@ -1525,6 +1531,8 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
 
 void ContextBrowser::showIntroduction()
 {
+    DEBUG_BLOCK
+
     if ( currentPage() != m_homePage->view() )
     {
         blockSignals( true );
