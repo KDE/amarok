@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones.
+
   <muesli> Resuming the playback on startup shows the current track as a normal-sized entry instead of a
            double-height one.
 
