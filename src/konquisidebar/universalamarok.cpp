@@ -37,6 +37,8 @@
 #include <qdatetime.h> 
 #include <qfileinfo.h> 
 #include <ktoolbar.h> 
+#include <stdlib.h>
+
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "contextbrowser.html"
 
@@ -45,7 +47,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 {
     widget=new QVBox(widgetParent);
     widget->show();
-    widget->resize(300,300);
+    widget->resize(380,300);
     browser = new KHTMLPart( widget );
     browser->setDNDEnabled( true );
     updateBrowser(HTML_FILE);
@@ -148,8 +150,19 @@ QString UniversalAmarok::getCurrentPlaying()
  */
 void UniversalAmarok::openURLRequest( const KURL &url )
 {
+   checkForAmarok();
    QByteArray data;
    QDataStream arg(data, IO_WriteOnly);
    arg << url;
    amarokDCOP->send("amarok", "player", "playMedia(KURL)", data);
+}
+
+
+/*!
+    \fn UniversalAmarok::checkForAmarok()
+ */
+void UniversalAmarok::checkForAmarok()
+{
+    if(amarokDCOP->isApplicationRegistered("amarok")) return;
+    system("amarok");
 }
