@@ -474,6 +474,8 @@ void App::applyColorScheme()
 
         delete list;
 
+        PlayerWidget::determineAmarokColors();
+
         return;
     }
 

@@ -96,12 +96,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     setFixedSize( 311, 140 );
     setCaption( "amaroK" );
     setAcceptDrops( true );
-
-    //set colours
-    {
-        QEvent e( QEvent::ApplicationPaletteChange );
-        QApplication::sendEvent( this, &e );
-    }
+    setPaletteBackgroundColor( amaroK::ColorScheme::Base );
+    setPaletteForegroundColor( amaroK::ColorScheme::Text );
 
     //another quit shortcut because the other window has all the accels
     QAccel *accel = new QAccel( this );
@@ -386,12 +382,6 @@ void PlayerWidget::timeDisplay( int ms )
 }
 
 
-// EVENTS -----------------------------------------------------------------
-
-static bool dontChangeButtonState = false; //FIXME I hate this hack
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
 static QColor comodulate( QColor deviant )
 {
     ///this function is only used by paletteChange()
@@ -401,6 +391,23 @@ static QColor comodulate( QColor deviant )
     deviant.getHsv( h2, s, v );
     return QColor( h, s, v, QColor::Hsv );
 }
+
+void PlayerWidget::determineAmarokColors()
+{
+    using namespace amaroK::ColorScheme;
+
+    Base       = comodulate( amaroK::blue );
+    Text       = Qt::white;
+    Background = comodulate( 0x002090 );
+    Foreground = comodulate( 0x80A0FF );
+}
+
+
+// EVENTS -----------------------------------------------------------------
+
+static bool dontChangeButtonState = false; //FIXME I hate this hack
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
 bool PlayerWidget::event( QEvent *e )
 {
@@ -418,14 +425,10 @@ bool PlayerWidget::event( QEvent *e )
 
         if( AmarokConfig::schemeKDE() )
         {
-            using namespace amaroK::ColorScheme;
-            Base       = comodulate( amaroK::blue );
-            Text       = Qt::white;
-            Background = comodulate( 0x002090 );
-            Foreground = comodulate( 0x80A0FF );
+            determineAmarokColors();
 
-            setPaletteBackgroundColor( Base );
-            setPaletteForegroundColor( Text );
+            setPaletteBackgroundColor( amaroK::ColorScheme::Base );
+            setPaletteForegroundColor( amaroK::ColorScheme::Text );
 
             //ensure the timeDisplay is updated etc.
             engineNewMetaData( EngineController::instance()->bundle(), false );

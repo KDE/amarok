@@ -90,6 +90,8 @@ class PlayerWidget : public QWidget, public EngineObserver
 
         virtual void startDrag();
 
+        static void determineAmarokColors();
+
     public slots:
         void createAnalyzer( int = 0 );
         void setEffectsWindowShown( bool );
