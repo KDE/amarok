@@ -1049,7 +1049,8 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
     if( e ) KListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
 
     if ( m_marker ) {
-        QPainter( viewport() ).fillRect(
+        QPainter p( viewport() );
+        p.fillRect(
                 drawDropVisualizer( 0, 0, m_marker ),
                 QBrush( colorGroup().highlight().dark(), QBrush::Dense4Pattern ) );
     }
