@@ -17,6 +17,7 @@ VERSION 1.2.2:
     * Append suggestions is now Dynamic-mode, icon in statusbar too.
 
   BUGFIXES:
+    * escape '&' char in contextmenu entry (BR 101276)
     * Track is set as a number in the database, so shouldn't be added rounded
       by quotes. (BR 101208)
     * Handle delay gap between songs properly with aRts engine. (BR 90404)
