@@ -19,6 +19,7 @@
 
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kstdguiitem.h>
 #include "progressBar.h"
 #include <qlabel.h>
 
