@@ -17,14 +17,14 @@ class CollectionDB : public QObject
     Q_OBJECT
     
     public:
-        CollectionDB( bool monitor );
+        CollectionDB();
         ~CollectionDB();
 
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
         void incSongCounter( const QString url );
-        void updateDirStats( const QString path, const long datetime );
+        void updateDirStats( QString path, const long datetime );
         void removeSongsInDir( QString path );
         bool isDirInCollection( QString path );
         void removeDirFromCollection( QString path );
@@ -53,6 +53,7 @@ class CollectionDB : public QObject
         void purgeDirCache();
         void scanModifiedDirs( bool recursively );
         void scan( const QStringList& folders, bool recursively );
+        void addCollectionToWatcher( const QStringList &folders, bool recursively );
       
     signals:
         void scanDone();
@@ -62,7 +63,6 @@ class CollectionDB : public QObject
 
     private:
         void customEvent( QCustomEvent* );
-        void addCollectionToWatcher();
 
         sqlite* m_db;
         ThreadWeaver* m_weaver;

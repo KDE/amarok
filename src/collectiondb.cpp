@@ -22,24 +22,17 @@
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionDB::CollectionDB( bool monitor )
+CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
         , m_dirWatch( new KDirWatch( this ) )
-        , m_monitor( monitor )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
     m_db = sqlite_open( path, 0, 0 );
-    
-    if ( m_monitor )
-    {
-        connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
-                this,       SLOT( dirDirty( const QString& ) ) );
 
-        addCollectionToWatcher();
-        m_dirWatch->startScan();
-    }
+    connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
+             this,         SLOT( dirDirty( const QString& ) ) );
 }
 
 
@@ -135,8 +128,11 @@ CollectionDB::incSongCounter( const QString url )
 
 
 void
-CollectionDB::updateDirStats( const QString path, const long datetime )
+CollectionDB::updateDirStats( QString path, const long datetime )
 {
+    if ( path.endsWith( "/" ) ) 
+        path = path.left( path.length() - 1 );
+
     execSql( QString( "REPLACE INTO directories ( dir, changedate ) VALUES ( '%1', %2 );" )
              .arg( escapeString( path ) )
              .arg( datetime ) );
@@ -454,35 +450,22 @@ CollectionDB::customEvent( QCustomEvent *e )
     if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
     {
         kdDebug() << k_funcinfo << endl;
-        
-        // reset KDirWatcher
-        if ( m_monitor )
-        {
-            delete m_dirWatch;
-            m_dirWatch = new KDirWatch( this );
-    
-            connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
-                    this,       SLOT( dirDirty( const QString& ) ) );
-    
-            addCollectionToWatcher();
-            m_dirWatch->startScan();
-        }
-    
         emit scanDone();
     }
 }
 
 
 void
-CollectionDB::addCollectionToWatcher()
+CollectionDB::addCollectionToWatcher( const QStringList &folders, bool recursively )
 {
-    QStringList values;
-    QStringList names;
-    
-    execSql( "SELECT dir FROM directories;", &values, &names );
-    
-    for ( uint i = 0; i < values.count(); i++ )
-        m_dirWatch->addDir( values[i], true );
+    if ( !folders.empty() )
+    {
+        for ( uint i = 0; i < folders.count(); i++ )
+            if ( !m_dirWatch->contains( folders[i] ) )
+                m_dirWatch->addDir( folders[i], true, recursively );
+
+        m_dirWatch->startScan();
+    }
 }
 
 

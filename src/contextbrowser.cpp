@@ -258,7 +258,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
 void ContextBrowser::sqlInit()
 {
-    m_db = new CollectionDB( false );
+    m_db = new CollectionDB();
 }
 
 

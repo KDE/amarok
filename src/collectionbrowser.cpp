@@ -142,7 +142,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //</read config>
 
     //<open database>
-        m_db = new CollectionDB( false );
+        m_db = new CollectionDB();
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
 
@@ -155,13 +155,16 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         {
             m_db->dropTables();
             m_db->createTables();
-            m_insertdb = new CollectionDB( m_monitor );
+            m_insertdb = new CollectionDB();
             m_insertdb->scan( m_dirs, m_recursively );
         } else
         {
-            m_insertdb = new CollectionDB( m_monitor );
+            m_insertdb = new CollectionDB();
             m_insertdb->scanModifiedDirs( m_recursively );
         }
+
+        if ( m_monitor )
+            m_insertdb->addCollectionToWatcher( m_dirs, m_recursively );
 
     //</open database>
 
@@ -211,7 +214,10 @@ CollectionView::setupDirs()  //SLOT
     m_dirs = result.dirs;
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
-    
+
+    if ( m_monitor )
+        m_insertdb->addCollectionToWatcher( m_dirs, m_recursively );
+
     scan();
 }
 
@@ -460,10 +466,12 @@ CollectionView::idForCat( const QString& cat ) const
 void
 CollectionView::scanDone()
 {
+    kdDebug() << k_funcinfo << endl;
+
     // we need to reconnect to the db after every scan, since sqlite is not able to keep
     // the tables synced for multiple threads.
     delete m_db;
-    m_db = new CollectionDB( false );
+    m_db = new CollectionDB();
 
     renderView();
 }
