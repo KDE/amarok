@@ -114,3 +114,5 @@ bool AmarokButton::isOn()
     return m_on;
 }
 
+
+#include "amarokbutton.moc"

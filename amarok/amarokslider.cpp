@@ -147,3 +147,5 @@ void AmarokSlider::paintEvent( QPaintEvent * )
     delete pBufPixmap;
 }
 
+
+#include "amarokslider.moc"
