@@ -1,4 +1,4 @@
-// Author:    Max Howell <max.howell@methylblue.com>, (C) 2003
+// Author:    Max Howell <max.howell@methylblue.com>, (C) 2003-4
 // Copyright: See COPYING file that comes with this distribution
 //
 
@@ -13,7 +13,7 @@
 #include <qpainter.h>        //paletteChange()
 
 
-static inline uint limit( uint val, uint max, uint min ) { return val < min ? min : val > max ? max : val; }
+static inline uint myMax( uint v1, uint v2 ) { return v1 > v2 ? v1 : v2; }
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
@@ -47,10 +47,8 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
    //all is explained in analyze()..
    //+1 to counter -1 in maxSizes, trust me we need this!
-   m_columns = limit( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS, MIN_COLUMNS );
-
-   uint rows = uint( double(height()+1) / (HEIGHT+1) );
-   m_rows    = QMAX( rows, MIN_ROWS );
+   m_columns = myMax( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS );
+   m_rows    = uint(double(height()+1) / (HEIGHT+1));
 
    kdDebug() << "BLOCK ANALYZER RESIZE: " << m_rows << ", " << m_columns << endl;
 
@@ -118,27 +116,30 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
    //m_yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
    //if it contains 6 elements there are 5 rows in the analyzer
 
+
    bitBlt( canvas(), 0, 0, background() );
 
    Analyzer::interpolate( s, m_scope );
 
-   for( uint z, x = 0; x < m_scope.size(); ++x )
+   for( uint y, x = 0; x < m_scope.size(); ++x )
    {
-      for( z = 0; m_scope[x] < m_yscale[z]; ++z );
+      //determine y
+      for( y = 0; m_scope[x] < m_yscale[y]; ++y )
+          ;
 
       //too high is not fatal
       //higher than stored value means we are falling
       //fall gradually
       //m_store is twice size of regular units so falling is slower
-      if( z * 2 > m_store[x] )
-         z = ++m_store[x] / 2 ;
+      if( y * 2 > m_store[x] )
+         y = ++m_store[x] / 2 ;
       else
-         m_store[x] = z * 2;
+         m_store[x] = y * 2;
 
       //we start bltting from the top and go down
       //so blt blanks first, then blt glow blocks
-      //REMEMBER: z is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-      bitBlt( canvas(), x*(WIDTH+1), z*(HEIGHT+1), glow(), 0, z*(HEIGHT+1) );
+      //REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
+      bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1), glow(), 0, y*(HEIGHT+1) );
    }
 }
 
