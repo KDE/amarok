@@ -27,9 +27,6 @@ class QPushButton;
 
 class KComboBox;
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
 /**
  *@author mark
  */

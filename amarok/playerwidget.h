@@ -46,9 +46,6 @@ class AmarokButton;
 class AnalyzerBase;
 class ArtsConfigWidget;
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
 class AmarokDcopHandler;
 class AmarokSlider;
 class AmarokSystray;

@@ -44,10 +44,6 @@ class QEvent;
 class MetaBundle;
 class TagReader;
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
-
 #define COL_TRACKNAME 0
 #define COL_TITLE   1
 #define COL_ARTIST  2

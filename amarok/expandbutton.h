@@ -27,9 +27,6 @@ class QMouseEvent;
 class QPixmap;
 class QTimer;
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
 class ExpandButton : public QPushButton
 {
     Q_OBJECT

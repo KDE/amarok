@@ -17,6 +17,8 @@ email                : markey@web.de
 
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
+#include "amarokconfig.h"
+#include "amarokconfigdialog.h"
 #include "amarokslider.h"
 #include "analyzers/analyzerbase.h"
 #include "browserwin.h"
@@ -28,20 +30,12 @@ email                : markey@web.de
 #include "playerapp.h"
 #include "playerwidget.h"
 
-#include "amarokconfig.h"
-#include "Options1.h"    //FIXME can't we compress these includes somehow
-#include "Options2.h"
-#include "Options3.h"
-#include "Options4.h"
-#include "Options5.h"
-
 #include <vector>
 #include <string>
 
 #include <kaction.h>
 #include <kapp.h>
 #include <kcmdlineargs.h>
-#include <qcombobox.h>
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
@@ -58,6 +52,7 @@ email                : markey@web.de
 //      a little less neat, but boy would that help with compile times
 #include "playlistwidget.h"
 
+#include <qcombobox.h>
 #include <qdir.h>
 #include <qpoint.h>
 #include <qsize.h>
@@ -66,9 +61,11 @@ email                : markey@web.de
 #include <qvaluelist.h>
 #include <qpushbutton.h> //initPlayerWidget()
 
+//statics
+EngineBase* PlayerApp::m_pEngine = 0;
+
 PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
-        , m_pEngine( NULL )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_sliderIsPressed( false )
         , m_pMainTimer( new QTimer( this ) )
@@ -84,9 +81,12 @@ PlayerApp::PlayerApp()
 
     initPlayerWidget();
     initBrowserWin();
-    initConfigDialog();
-
+    
     readConfig();
+    
+    KConfigDialog *dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
+    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
+
     applySettings();
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -192,30 +192,6 @@ int PlayerApp::newInstance()
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-void PlayerApp::initConfigDialog()
-{
-    KConfigDialog *dialog = new KConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
-
-    Options4* pOpt4 = new Options4( 0,"Playback" );
-
-    //we must handle the "Sound Setting" QComboBox manually, since KConfigDialog can't manage dynamic itemLists
-    //(at least I don't know how to do it)
-    m_pSoundSystem = pOpt4->sound_system;
-    m_pSoundSystem->insertStringList( m_pEngine->listEngines() );
-    m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
-
-    dialog->addPage( new Options1( 0,"General" ),  i18n("General"),  "misc",   i18n("Configure general options") );
-    dialog->addPage( new Options2( 0,"Fonts" ),    i18n("Fonts"),    "fonts",  i18n("Configure fonts") );
-    dialog->addPage( new Options3( 0,"Colors" ),   i18n("Colors"),   "colors", i18n("Configure colors") );
-    dialog->addPage( pOpt4,                        i18n("Playback"), "kmix",   i18n("Configure playback") );
-    dialog->addPage( new Options5( 0,"OSD" ),      i18n("OSD" ),     "tv",     i18n("Configure on-screen-display") );
-
-    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
-
-    dialog->setInitialSize( QSize( 460, 390 ) );
-}
-
-
 void PlayerApp::initPlayerWidget()
 {
     kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
@@ -308,12 +284,16 @@ void PlayerApp::restoreSession()
 
 void PlayerApp::applySettings()
 {
-    if ( m_pSoundSystem->currentText() != AmarokConfig::soundSystem() )
+    if ( AmarokConfig::soundSystem() != m_pEngine->name() )
     {
         delete m_pEngine;
-        AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
         m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
-                                              m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
+                                              m_artsNeedsRestart,
+                                              SCOPE_SIZE,
+                                              AmarokConfig::rememberEffects() );
+        
+        m_pEngine->setVolume( AmarokConfig::masterVolume() );                                          
+                                              
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
@@ -366,8 +346,11 @@ void PlayerApp::readConfig()
 
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
+    
     m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
-                                          m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
+                                          m_artsNeedsRestart,
+                                          SCOPE_SIZE,
+                                          AmarokConfig::rememberEffects() );
         
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pPlayerWidget->m_pSliderVol->setValue( VOLUME_MAX - AmarokConfig::masterVolume() );

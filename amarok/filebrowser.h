@@ -37,9 +37,6 @@ class KDirOperator;
 class KURLComboBox;
 class KHistoryCombo;
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
 /*
     The KDev file selector presents a directory view, in which the default action is
     to open the activated file.

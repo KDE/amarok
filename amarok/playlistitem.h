@@ -28,10 +28,6 @@ class QPainter;
 class QString;
 class MetaBundle;
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
-
 class PlaylistItem : public KListViewItem
 {
     public:

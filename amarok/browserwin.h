@@ -18,10 +18,6 @@
 #ifndef BROWSERWIN_H
 #define BROWSERWIN_H
 
-class PlayerApp;
-extern PlayerApp *pApp;
-
-
 
 // CLASS PlaylistSideBar ==============================================================
 

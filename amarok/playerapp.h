@@ -22,16 +22,11 @@
 #include <config.h>
 #endif
 
-#define ANIM_TIMER 30
-#define APP_VERSION "0.8.4"
-#define MAIN_TIMER 150
-#define SCOPE_SIZE 7
-#define VOLUME_MAX 100
-
 #include <kuniqueapplication.h>
 #include <kurl.h>
-
 #include <vector>
+
+#define APP_VERSION "0.8.4"
 
 class QColor;
 class QListView;
@@ -42,7 +37,6 @@ class QTimer;
 class KGlobalAccel;
 
 class BrowserWin;
-class QComboBox;
 class EffectWidget;
 class EngineBase;
 class FHT;
@@ -50,9 +44,6 @@ class MetaBundle;
 class OSDWidget;
 class PlayerWidget;
 class PlaylistItem;
-
-class PlayerApp;
-extern PlayerApp *pApp;
 
 class PlayerApp : public KUniqueApplication
 {
@@ -71,8 +62,14 @@ class PlayerApp : public KUniqueApplication
         bool restorePlaylistSelection(const KURL& url);
         void insertMedia( const KURL::List& );
 
-        // ATTRIBUTES ------
-        EngineBase *m_pEngine;
+        // STATICS 
+        static const int     ANIM_TIMER  = 30;
+        static const int     MAIN_TIMER  = 150;
+        static const int     SCOPE_SIZE  = 7;
+        static const int     VOLUME_MAX  = 100;
+        
+        // ATTRIBUTES
+        static EngineBase *m_pEngine;
 
         KGlobalAccel *m_pGlobalAccel;
 
@@ -86,7 +83,7 @@ class PlayerApp : public KUniqueApplication
         bool m_artsNeedsRestart;
 
         KURL m_playingURL; ///< The URL of the currently playing item
-
+      
     public slots:
         void slotPrev() const;
         void slotNext() const;
@@ -105,11 +102,11 @@ class PlayerApp : public KUniqueApplication
         void slotPlaylistIsHidden();
         void slotPlaylistShowHide();
         void slotEq( bool b );
-        void slotShowOptions();
         void slotConfigEffects();
         void slotHide();
         void slotShow();
-
+        void slotShowOptions();
+        
     private slots:
         void applySettings();
         void receiveStreamMeta( QString title, QString url, QString kbps );
@@ -140,10 +137,9 @@ class PlayerApp : public KUniqueApplication
         EffectWidget *m_pEffectWidget;
         FHT *m_pFht;
         OSDWidget *m_pOSD;
-        QComboBox* m_pSoundSystem;
+};
 
-//         int m_beatCounter;
-//         float m_lastPeak;
-//         float m_beatEnergy[63];
-    };
+        
 #endif                                            // AMAROK_PLAYERAPP_H
+
+extern PlayerApp* pApp;
