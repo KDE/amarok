@@ -3,6 +3,7 @@ bin_PROGRAMS = \
 
 INCLUDES = \
     $(xmms_cflags) \
+    $(gtk_cflags ) \
     $(all_includes)
 
 amarok_xmmswrapper_SOURCES = \
@@ -13,6 +14,9 @@ amarok_xmmswrapper_LDADD = \
     $(LIB_KDECORE)
     
 amarok_xmmswrapper_LDFLAGS = \
-    $(all_libraries) $(KDE_RPATH) \
-    $(xmms_libs)
-
+    $(xmms_libs) \
+    $(gtk_libs) \
+    $(KDE_RPATH) \
+    $(all_libraries) 
+    
+    

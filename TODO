@@ -16,15 +16,13 @@ SHORT-TERM (URGENT):
 
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
+
+MID-TERM:
+
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
                    distros offer them as a separate package.
-
-  FIX     <mxcl>   XMMSwrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
-
-
-MID-TERM:
 
   FIX 131 <mxcl>   Grue reports with aRtsengine, amarok *, only loads 15-17 entries in dir with ~100,
                    media type is unimportant (happened for oggs, mp3s and flacs, mixed and otherwise)

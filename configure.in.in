@@ -274,12 +274,26 @@ if test x$XMMS_CONFIG = xyes; then
     xmms_cflags=`xmms-config --cflags`    
     xmms_libs=`xmms-config --libs`    
 fi
-        
-AM_CONDITIONAL(with_xmmswrapper, test x$XMMS_CONFIG = xyes)
 
 AC_DEFINE_UNQUOTED(XMMS_PLUGIN_PATH, "$xmms_plugin_path", [Define the path to XMMS plugins])
 AC_SUBST(xmms_cflags)
 AC_SUBST(xmms_libs)
+
+## XMMSwrapper depends on gtk/gdk headers        
+AC_CHECK_PROG(GTK_CONFIG, gtk-config, yes)
+
+if test x$XMMS_CONFIG = xyes -a x$GTK_CONFIG = xyes; then
+    gtk_cflags=`gtk-config --cflags`    
+    gtk_libs=`gtk-config --libs`    
+    build_xmmswrapper=yes
+else
+    build_xmmswrapper=no
+fi
+
+AC_SUBST(gtk_cflags)
+AC_SUBST(gtk_libs)
+
+AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 
 ###############################################################################
 # END XMMS CHECK

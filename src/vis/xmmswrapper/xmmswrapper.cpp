@@ -3,16 +3,18 @@
 
 #include "config.h"
 
+#include <gtk/gtk.h>         //gtk_init(), gtk_rgb_init()
+#include <xmms/configfile.h> //visplugins use this stuff, see extern "C" block
+
 #include <dirent.h>
-#include <dlfcn.h>    //dlopen etc.
-#include <gtk/gtk.h>  //gtk_init(), gtk_rgb_init()
+#include <dlfcn.h>           //dlopen etc.
 #include <stdlib.h>
-#include <sys/types.h> //this must be before sys/socket on freebsd (which suggests freebsd needs to sort itself out)
+#include <sys/types.h>       //this must be _before_ sys/socket on freebsd (which suggests freebsd needs to sort itself out)
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include <xmms/configfile.h> //visplugins use this stuff, see extern "C" block
+
 #include "xmmswrapper.h"
 
 #include <iostream>
@@ -20,7 +22,6 @@
 #include <vector>
 
 #define SHARED_LIB_EXT ".so"
-
 
 #include "fft.c"
 #include "fullscreen.c"
