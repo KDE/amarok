@@ -132,7 +132,7 @@ void
 CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     if ( job->error() ) {
-        error( i18n("There was an error communicating with amazon."), job );
+        error( i18n("There was an error communicating with Amazon."), job );
         return;
     }
 
