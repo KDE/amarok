@@ -171,7 +171,11 @@ void AmarokConfigDialog::soundSystemChanged()
          * Find index of current item, but only if the selected system
          * is the current one (otherwise it doesn't make much sense).
          */
-        if ( m_pSoundSystem->currentText() == AmarokConfig::soundSystem() )
+        KTrader::OfferList offers = PluginManager::query( QString( "[X-KDE-amaroK-plugintype] == 'engine' and "
+                                                                   "[X-KDE-amaroK-name] == '%1'" )
+                                                                   .arg( AmarokConfig::soundSystem() ) );
+        
+        if ( m_pSoundSystem->currentText() == offers[0]->name() )
             for ( uint i = 0; i < outputs.count(); i++ )
                 if ( outputs[ i ] == AmarokConfig::soundOutput() ) {
                     m_pSoundOutput->setCurrentItem( i );
