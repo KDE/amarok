@@ -55,6 +55,7 @@ private:
 	float energy;
 	float dEnergy;
 	float meanBand;
+	float rotDegrees;
 	bool silence;
     } frame;
 

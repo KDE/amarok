@@ -53,6 +53,7 @@ void GLAnalyzer2::init()
     show.paused = true;
     show.pauseTimer = 0.0;
     show.rotDegrees = 0.0;
+    frame.rotDegrees = 0.0;
 }
 
 void GLAnalyzer2::initializeGL()
@@ -169,7 +170,9 @@ void GLAnalyzer2::paintGL()
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, w2Texture );
-    setTextureMatrix( show.rotDegrees / 2.0, 0.707 );
+    float alphaN = 1.0 <? (frame.energy / 10.0),
+	  alphaP = 0.2 >? (1 - frame.energy / 20.0);
+    setTextureMatrix( show.rotDegrees, 0.707*alphaP );
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
     glBegin( GL_TRIANGLE_STRIP );
      glTexCoord2f( 1.0, 1.0 );
@@ -182,9 +185,8 @@ void GLAnalyzer2::paintGL()
      glVertex2f( -10.0f, -10.0f );
     glEnd();
     glBindTexture( GL_TEXTURE_2D, w1Texture );
-    setTextureMatrix( -show.rotDegrees, 0.707 );
-    float alpha = 0.1 >? (1.0 - frame.energy / 10.0);
-    glColor4f( 1.0f, 1.0f, 1.0f, alpha );
+    setTextureMatrix( -show.rotDegrees * 2, 0.707 );
+    glColor4f( 1.0f, 1.0f, 1.0f, alphaN );
     glBegin( GL_TRIANGLE_STRIP );
      glTexCoord2f( 1.0, 1.0 );
      glVertex2f( 10.0f, 10.0f );
@@ -202,6 +204,7 @@ void GLAnalyzer2::paintGL()
     // Here begins the real draw loop
     // some updates to the show
     show.rotDegrees += 40.0 * show.dT;
+    frame.rotDegrees += 80.0 * show.dT;
     
     // handle the 'pause' status 
     if ( show.paused )
@@ -221,20 +224,19 @@ void GLAnalyzer2::paintGL()
     } else
 	glDisable( GL_TEXTURE_2D );
 
+    glLoadIdentity();
+    glRotatef( -frame.rotDegrees, 0,0,1 );
     glBegin( GL_QUADS );
 //     Particle * particle = particleList.first();
 //     for (; particle; particle = particleList.next())
     {
 
 	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-	drawDot( 0, 0, 10 >? (20.0 * frame.energy) );
-	drawDot( 0, 0, 10 >? (20.0 * frame.energy) );
+	drawDot( 0, 0, 10 >? (10.0 * frame.energy) );
 	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-	drawDot( 5, 0, 10 >? (10.0 * frame.energy) );
-	drawDot( 5, 0, 10 >? (10.0 * frame.energy) );
+	drawDot( 5, 0, 10 >? (5.0 * frame.energy) );
 	glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
-	drawDot( -5, 0, 10 >? (10.0 * frame.energy) );
-	drawDot( -5, 0, 10 >? (10.0 * frame.energy) );
+	drawDot( -5, 0, 10 >? (5.0 * frame.energy) );
     }
     glEnd();
 }
@@ -279,9 +281,9 @@ void GLAnalyzer2::drawFullDot( float r, float g, float b, float a )
 void GLAnalyzer2::setTextureMatrix( float rot, float scale )
 {
     glMatrixMode( GL_TEXTURE);
-    if ( rot == 0.0 && scale == 0.0 )
-	glLoadIdentity();
-    else {
+    glLoadIdentity();
+    if ( rot != 0.0 || scale != 0.0 )
+    {
 	glTranslatef( 0.5f, 0.5f, 0.0f );
 	glRotatef( rot, 0.0f, 0.0f, 1.0f );
 	glScalef( scale, scale, 1.0f );
