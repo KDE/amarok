@@ -162,10 +162,15 @@ Loader::Loader( QStringList args )
         std::exit( 1 ); //event-loop is not yet being processed
     }
 
-    //FIXME this will crash the loader..
-    //insertChild( m_splash );
-
     startTimer( INTERVAL );
+}
+
+Loader::~Loader()
+{
+    // must be deleted before QApplication closes our Xserver connection
+    // thus we cannot make it a child of the QApplication and must
+    // delete it manually
+    delete m_splash;
 }
 
 void
@@ -188,6 +193,9 @@ Loader::timerEvent( QTimerEvent* )
         QApplication::exit( 3 );
     }
     else
+        // if we get here, then either we didn't receive STARTUP through
+        // the pipe, or amarokapp exited normally before the STARTUP was
+        // written to stdout (possibly possible)
         QApplication::exit( 0 );
 }
 

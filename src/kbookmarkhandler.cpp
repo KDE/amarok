@@ -19,9 +19,9 @@
 
 // $Id$
 
-#include "debug.h"
 #include "kbookmarkhandler.h"
 #include <kbookmarkimporter.h>
+#include <kbookmarkmenu.h>
 #include <kdiroperator.h>
 #include <kstandarddirs.h>
 

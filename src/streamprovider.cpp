@@ -185,7 +185,7 @@ StreamProvider::readRemote() //SLOT
         }
         // Are we in a metadata interval?
         else if ( m_metaLen ) {
-            uint length = ( m_metaLen > bytesRead - index ) ? ( bytesRead - index ) : ( m_metaLen );
+            uint length = ( (Q_LONG)m_metaLen > bytesRead - index ) ? ( bytesRead - index ) : ( m_metaLen );
             m_metaData.append( QString::fromAscii( m_pBuf + index, length ) );
             index += length;
             m_metaLen -= length;

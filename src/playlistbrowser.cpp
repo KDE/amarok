@@ -1155,7 +1155,7 @@ void PlaylistBrowserItem::removeTrack( QListViewItem *item )
 
 void PlaylistBrowserItem::customEvent( QCustomEvent *e )
 {
-    if( e->type() == PlaylistReader::JobFinishedEvent )
+    if( e->type() == (int)PlaylistReader::JobFinishedEvent )
     {
         foreachType( BundleList, static_cast<PlaylistReader*>(e)->bundles ) {
            const MetaBundle &b = *it;

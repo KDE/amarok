@@ -195,6 +195,8 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 void
 CoverFetcher::receivedImageData( KIO::Job *job, const QByteArray& data ) //SLOT
 {
+    Q_UNUSED( job );
+
     if ( m_bufferIndex + (uint) data.size() >= BUFFER_SIZE ) {
         error( i18n("The image Amazon has sent is too large, please report this error to the amaroK-devel@lists.sf.net.") );
         //TODO delete the KIO job?

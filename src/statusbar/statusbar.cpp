@@ -90,7 +90,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     slotItemCountChanged( 0, 0, 0, 0 );
 
     //session stuff
-    setShown( AmarokConfig::showStatusBar() );
+    //setShown( AmarokConfig::showStatusBar() );
 }
 
 void

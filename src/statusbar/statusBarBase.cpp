@@ -201,10 +201,10 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long )
 }
 
 void
-StatusBar::longMessage( const QString &text, int type )
+StatusBar::longMessage( const QString &text, int /*type*/ )
 {
     PopupMessage * message;
-    message = new PopupMessage( this, m_mainTextLabel, "popupLabel" );
+    message = new PopupMessage( this, m_mainTextLabel );
     message->setText( text );
 
     if ( m_messageQueue.isEmpty() )
@@ -221,7 +221,7 @@ StatusBar::longMessage( const QString &text, int type )
 }
 
 void
-StatusBar::longMessageThreadSafe( const QString &text, int type )
+StatusBar::longMessageThreadSafe( const QString &text, int /*type*/ )
 {
     QCustomEvent * e = new QCustomEvent( 1000 );
     e->setData( new QString( text ) );

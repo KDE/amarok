@@ -21,9 +21,8 @@
 #define _KBOOKMARKHANDLER_H_
 
 #include <kbookmarkmanager.h>
-#include <kbookmarkmenu.h>
+#include <qobject.h>
 
-class QTextStream;
 class KDirOperator;
 class KPopupMenu;
 

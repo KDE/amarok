@@ -58,8 +58,10 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
-#include <unistd.h>          //usleep()
-#include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
+extern "C"
+{
+    #include <unistd.h>      //usleep()
+}
 
 
 /**
@@ -168,10 +170,8 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_undoCounter( 0 )
     , m_stopAfterCurrent( false )
     , m_showHelp( true )
-    , m_editOldTag( 0 )
-    , m_ac( ac ) //REMOVE
-    , m_columnFraction( 13, 0 )
     , m_lockStack( 0 )
+    , m_columnFraction( 13, 0 )
 {
     s_instance = this;
 
@@ -696,9 +696,9 @@ Playlist::isTrackBefore() const
 void
 Playlist::updateNextPrev()
 {
-    m_ac->action( "play" )->setEnabled( !isEmpty() );
-    m_ac->action( "prev" )->setEnabled( isTrackBefore() );
-    m_ac->action( "next" )->setEnabled( isTrackAfter() );
+    amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
+    amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
 }
 
 
@@ -735,9 +735,9 @@ Playlist::engineStateChanged( Engine::State state )
     switch( state )
     {
     case Engine::Playing:
-        m_ac->action( "pause" )->setEnabled( true );
-        m_ac->action( "stop" )->setEnabled( true );
-        m_ac->action( "playlist_show" )->setEnabled( true );
+        amaroK::actionCollection()->action( "pause" )->setEnabled( true );
+        amaroK::actionCollection()->action( "stop" )->setEnabled( true );
+        amaroK::actionCollection()->action( "playlist_show" )->setEnabled( true );
 
         Glow::startTimer();
 
@@ -750,9 +750,9 @@ Playlist::engineStateChanged( Engine::State state )
         break;
 
     case Engine::Paused:
-        m_ac->action( "pause" )->setEnabled( true );
-        m_ac->action( "stop" )->setEnabled( true );
-        m_ac->action( "playlist_show" )->setEnabled( true );
+        amaroK::actionCollection()->action( "pause" )->setEnabled( true );
+        amaroK::actionCollection()->action( "stop" )->setEnabled( true );
+        amaroK::actionCollection()->action( "playlist_show" )->setEnabled( true );
 
         Glow::startTimer();
 
@@ -766,9 +766,9 @@ Playlist::engineStateChanged( Engine::State state )
 
     case Engine::Empty:
         //TODO do this with setState() in PlaylistWindow?
-        m_ac->action( "pause" )->setEnabled( false );
-        m_ac->action( "stop" )->setEnabled( false );
-        m_ac->action( "playlist_show" )->setEnabled( false );
+        amaroK::actionCollection()->action( "pause" )->setEnabled( false );
+        amaroK::actionCollection()->action( "stop" )->setEnabled( false );
+        amaroK::actionCollection()->action( "playlist_show" )->setEnabled( false );
 
         //leave the glow state at full colour
         Glow::reset();
@@ -824,9 +824,9 @@ Playlist::clear() //SLOT
     m_totalLength = 0;
 
     // Update player button states
-    m_ac->action( "play" )->setEnabled( false );
-    m_ac->action( "prev" )->setEnabled( false );
-    m_ac->action( "next" )->setEnabled( false );
+    amaroK::actionCollection()->action( "play" )->setEnabled( false );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( false );
+    amaroK::actionCollection()->action( "next" )->setEnabled( false );
 
     ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
 
@@ -972,8 +972,7 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     if( !e->isAccepted() ) return;
 
-    //TODO decide, use this or what was here before? still have to include the Xlib header..
-    const bool ctrlPressed= KApplication::keyboardModifiers() & ControlMask;
+    const bool ctrlPressed = KApplication::keyboardMouseState() & Qt::ControlButton;
 
     //Get the closest item _before_ the cursor
     const QPoint p = contentsToViewport( e->pos() );

@@ -113,7 +113,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     //closeButton->setFixedSize( buttonSize );
     //m_overlapButton->setFixedSize( buttonSize );
 
-    QVBoxLayout *mainLayout = new QVBoxLayout( m_browserHolder, 0 );
+    /*QVBoxLayout *mainLayout = */new QVBoxLayout( m_browserHolder, 0 );
     //QHBoxLayout *tinyLayout = new QHBoxLayout();
 #ifdef BROWSER_BAR_LEFT
     //tinyLayout->setAlignment( Qt::AlignRight );

@@ -27,6 +27,7 @@ class Loader : public QApplication
 {
 public:
     Loader( QStringList );
+   ~Loader();
 
 private:
     virtual void timerEvent( QTimerEvent* );

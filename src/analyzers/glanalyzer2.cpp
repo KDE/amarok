@@ -113,7 +113,7 @@ void GLAnalyzer2::analyze( const Scope &s )
         int bands = s.size(),
             lowbands = bands / 4,
             hibands = bands / 3,
-            midbands = bands - lowbands - hibands;
+            midbands = bands - lowbands - hibands; Q_UNUSED( midbands );
         float currentEnergy = 0,
               currentMeanBand = 0,
               maxValue = 0;
@@ -146,7 +146,7 @@ void GLAnalyzer2::paintGL()
     // Compute the dT since the last call to paintGL and update timings
     timeval tv;
     gettimeofday( &tv, NULL );
-    double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0; 
+    double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0;
     show.dT = currentTime - show.timeStamp;
     show.timeStamp = currentTime;
 

@@ -637,6 +637,9 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 QString
 CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 {
+    Q_UNUSED( trackInformation );
+    Q_UNUSED( width );
+
     // Deactived because TagLib (1.3.1) crashes frequently with this stuff
 
     #if 0
@@ -1624,7 +1627,7 @@ CollectionDB::scanModifiedDirs()
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == CollectionReader::JobFinishedEvent )
+    if ( e->type() == (int)CollectionReader::JobFinishedEvent )
         emit scanDone( static_cast<ThreadWeaver::Job*>(e)->wasSuccessful() );
 }
 
@@ -2144,7 +2147,7 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 
 
 void
-QueryBuilder::addFilter( int tables, const QString& filter, int mode )
+QueryBuilder::addFilter( int tables, const QString& filter, int /*mode*/ )
 {
     if ( !filter.isEmpty() )
     {

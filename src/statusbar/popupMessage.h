@@ -39,7 +39,7 @@ namespace KDE
         Q_OBJECT
 
     public:
-        PopupMessage( StatusBar *statusbar, QWidget *anchor, const char *name = 0 )
+        PopupMessage( StatusBar *statusbar, QWidget *anchor )
                 : OverlayWidget( statusbar, anchor )
                 , m_statusBar( statusbar )
                 , m_offset( 0 )

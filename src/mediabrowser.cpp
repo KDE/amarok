@@ -288,7 +288,7 @@ MediaDeviceList::contentsDropEvent( QDropEvent *e )
 
 
 void
-MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* e )
+MediaDeviceList::contentsDragMoveEvent( QDragMoveEvent* /*e*/ )
 {
 //    const QPoint p = contentsToViewport( e->pos() );
 //    QListViewItem *item = itemAt( p );

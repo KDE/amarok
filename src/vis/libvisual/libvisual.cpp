@@ -232,7 +232,7 @@ namespace SDL
 
                 morph:
                     SDL::lock();
-                      visual_bin_set_morph_by_name( Vis::bin, "alphablend" );
+                      visual_bin_set_morph_by_name( Vis::bin, (char*)"alphablend" );
                       visual_bin_switch_actor_by_name( Vis::bin, (char*)Vis::plugin );
                     SDL::unlock();
 

@@ -31,11 +31,12 @@ namespace amaroK
         /// Called when a decoder reaches end of file
         virtual void eofEvent()
         {
-            QApplication::postEvent( m_engine, new QCustomEvent( 3001) );
+            QApplication::postEvent( m_engine, new QCustomEvent( 3001 ) );
         }
 
         /// Called when a decoder encounters a fatal error
-        //virtual void errorEvent() {}
+        virtual void errorEvent()
+        {}
 
     public:
         Manager( AkodeEngine *engine ) : m_engine( engine ) {}
@@ -71,7 +72,7 @@ AkodeEngine::load( const KURL &url, bool isStream )
 }
 
 bool
-AkodeEngine::play( uint offset )
+AkodeEngine::play( uint /*offset*/ )
 {
     //m_player->decoder()->seek( offset );
     m_player->play();

@@ -462,7 +462,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     DEBUG_FUNC_INFO
     if ( !item ) return;
 
-    int category;
+    int category = 0;
     QStringList values;
     QueryBuilder qb;
 
@@ -1176,7 +1176,7 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
 
 
 void
-CollectionView::viewportResizeEvent( QResizeEvent *e )
+CollectionView::viewportResizeEvent( QResizeEvent* )
 {
     // Needed for correct redraw of bubble help
     triggerUpdate();

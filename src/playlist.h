@@ -230,8 +230,6 @@ class Playlist : private KListView, public EngineObserver
         //text before inline editing ( the new tag is written only if it's changed )
         QString m_editOldTag;
 
-        KActionCollection* const m_ac;
-
         std::vector<double> m_columnFraction;
 };
 

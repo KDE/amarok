@@ -186,7 +186,7 @@ tryConnect( const char *path )
 }
 
 std::string
-getPlugin( int argc, char **argv )
+getPlugin( int /*argc*/, char **argv )
 {
     std::string
     plugin  = "lib";
