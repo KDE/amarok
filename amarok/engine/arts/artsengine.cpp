@@ -96,8 +96,9 @@ ArtsEngine::~ ArtsEngine()
 
 void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
 {
-    m_mixerHW = -1;           //initialize
     m_scopeSize = 1 << scopeSize;
+    m_restoreEffects = restoreEffects;
+    m_mixerHW = -1;   //initialize
 
     // We must restart artsd whenever we installed new mcopclasses
     if ( restart )
