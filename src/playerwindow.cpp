@@ -816,7 +816,10 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     }
     // And the the same reversed
     for ( int i = NUMPIXMAPS - 1; i > 0; i-- )
-        m_glowPixmaps.append( m_glowPixmaps[i] );
+    {
+        QPixmap temp =  m_glowPixmaps[i];
+        m_glowPixmaps.append(temp);
+    }
 
     // This is just for initialization
     QIconSet iconSet;
