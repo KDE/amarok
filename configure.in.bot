@@ -24,6 +24,16 @@ if test x$amarok_error_taglibold = xyes; then
     echo " ="
 fi
 
+if test x$amarok_warning_xineold = xyes; then
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = amaroK requires xine version: $xine_version_min."
+    echo " = amaroK will still be built, but you must use another sound-engine."
+    echo " ="
+fi
+
 if test x$PKGCONFIGFOUND != xyes; then
     echo " =========================="
     echo " ===  amaroK - WARNING  ========================================================"
@@ -87,18 +97,6 @@ if test x$included_sqlite = xno; then
   fi
 fi
 
-if test x$no_amarok = xyes; then
-    echo " =================================="
-    echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
-    echo " =================================="
-    echo " ="
-    echo " = Some mandatory dependencies are either not installed or not installed"
-    echo " = correctly. See the amaroK README for help with this issue. Further assistance"
-    echo " = can be found at http://amarok.kde.org or in amarok on irc.freenode.net."
-    echo " = You will still be able to build other modules from kde-extragear1."
-    echo " ="
-fi
-
 if test x$no_engine = xyes; then
     echo " =================================="
     echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
@@ -111,14 +109,24 @@ if test x$no_engine = xyes; then
     echo " ="
 fi
 
-if test x$no_amarok != xyes; then
-
-    echo " ======================="
-    echo " ===  amaroK - INFO  ==========================================================="
-    echo " ======================="
+if test x$no_amarok = xyes; then
+    echo " =================================="
+    echo " ===  AMAROK WILL NOT BE BUILT  ================================================"
+    echo " =================================="
     echo " ="
-    echo " = amaroK will be built with the following engine plugins:"
+    echo " = Some mandatory dependencies are either not installed or not installed"
+    echo " = correctly. See the amaroK README for help with this issue. Further assistance"
+    echo " = can be found at http://amarok.kde.org or in amarok on irc.freenode.net."
+    echo " = You will still be able to build other modules from kde-extragear1."
+    echo " ="
 
+else
+
+    echo " =========================="
+    echo " ===  amaroK - PLUGINS  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = The following plugins will be built:"
 
     if test x$build_arts = xyes -a x$have_kdemm = xyes; then
         echo " =   + aRts-engine"
@@ -129,11 +137,15 @@ if test x$no_amarok != xyes; then
     fi
 
     if test x$build_xine = xyes; then
-        echo " =   + Xine-engine"
+        echo " =   + Xine-engine (note: at least libxine 1.0.0 rc4 may be required)"
     fi
 
     if test x$build_nmm = xyes; then
         echo " =   + NMM-engine (note: unmaintained)"
+    fi
+
+    if test x$build_xmmswrapper = xyes; then
+        echo " =   + XMMS Visualisation Wrapper"
     fi
 
     echo " ="

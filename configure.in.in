@@ -184,6 +184,20 @@ if test "$build_xine" != "no"; then
         AC_DEFINE(HAVE_XINE, 1, [have Xine])
         CFLAGS_XINE=[`xine-config --cflags`]
         LIBS_XINE=[`xine-config --libs`]
+
+        xine_version=`xine-config --version`
+        xine_version_min="1.0.0"
+
+        AC_MSG_CHECKING([for libxine version >= $xine_version_min])
+
+        if test VERSION_TO_NUMBER(echo $xine_version) -lt VERSION_TO_NUMBER(echo $xine_version_min); then
+            amarok_warning_xineold=yes
+            build_xine=no
+
+            echo "no"
+        else
+            echo "yes"
+        fi
     else
         build_xine=no
     fi
