@@ -489,7 +489,7 @@ void CoverManager::fetchSelectedCovers()
         m_db->fetchCover( this, selected.first()->artist(), selected.first()->album(), false );
     else
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
-                m_fetchCovers += item->artist() + " - " + item->album();
+                m_fetchCovers += item->artist() + " @@@ " + item->album();
 
     if( !m_fetchCounter )    //loop isn't started yet
         fetchCoversLoop();
