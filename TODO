@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #155 being the highest available (take this one for your next bug and increase here)
+           #156 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 155 <muesli> When deleting a cover, remove the (various) scaled versions, too.
+  
   FIX 154 <markey> When track-length is 0 (e.g. stream), disable position slider, but make the time display
                    show the current position.
 
