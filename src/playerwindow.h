@@ -88,7 +88,7 @@ class PlayerWidget : public QWidget, public EngineObserver
         PlayerWidget( QWidget* = 0, const char* = 0, bool enablePlaylist = false );
         ~PlayerWidget();
 
-        void startDrag();
+        virtual void startDrag();
 
     public slots:
         void createAnalyzer( int = 0 );

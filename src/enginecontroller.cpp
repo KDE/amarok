@@ -80,13 +80,6 @@ EngineController::EngineController()
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
 
-EngineController::~EngineController()
-{
-    //TODO don't if we resume session normally
-    if ( m_bundle.length() > 0 )
-        trackEnded( m_engine->position(), m_bundle.length() * 1000 );
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
@@ -208,6 +201,12 @@ void EngineController::restoreSession()
     }
 }
 
+
+void EngineController::endSession()
+{
+    if ( m_bundle.length() > 0 )
+        trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS

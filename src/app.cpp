@@ -145,6 +145,9 @@ App::~App()
         else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
     }
 
+    //records final statistics
+    EngineController::instance()->endSession();
+
     //do even if trayicon is not shown, it is safe
     amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
@@ -370,8 +373,6 @@ void App::applySettings( bool firstTime )
                              ? AmarokConfig::playerWidgetFont().family()
                              : QApplication::font().family() );
             m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
-            m_pPlayerWindow->setPaletteForegroundColor( amaroK::ColorScheme::Text );
-            m_pPlayerWindow->setPaletteBackgroundColor( amaroK::ColorScheme::Base );
             m_pPlayerWindow->update(); //FIXME doesn't update the scroller
         }
 
@@ -445,17 +446,6 @@ void App::applySettings( bool firstTime )
 }
 
 
-static QColor
-comodulate( QColor deviant )
-{
-    ///this function is only used by determineAmarokColors()
-
-    int h,h2,s,v;
-    KGlobalSettings::highlightColor().getHsv( h, s, v );
-    deviant.getHsv( h2, s, v );
-    return QColor( h, s, v, QColor::Hsv );
-}
-
 void App::applyColorScheme()
 {
     //TODO shorter, better placement etc.
@@ -483,12 +473,6 @@ void App::applyColorScheme()
         }
 
         delete list;
-
-        using namespace amaroK::ColorScheme;
-        Base       = comodulate( amaroK::blue );
-        Text       = Qt::white;
-        Background = comodulate( 0x002090 );
-        Foreground = comodulate( 0x80A0FF );
 
         return;
     }

@@ -90,13 +90,18 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     ec->attach( this );
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
+    //if this is the first time we have ever been run we let KWin place us
     if( AmarokConfig::playerPos() != QPoint(-1,-1) ) move( AmarokConfig::playerPos() );
+
     setFixedSize( 311, 140 );
-    //setFocusPolicy( NoFocus );
     setCaption( "amaroK" );
     setAcceptDrops( true );
-    setPaletteForegroundColor( amaroK::ColorScheme::Text );
-    setPaletteBackgroundColor( amaroK::ColorScheme::Base );
+
+    //set colours
+    {
+        QEvent e( QEvent::ApplicationPaletteChange );
+        QApplication::sendEvent( this, &e );
+    }
 
     //another quit shortcut because the other window has all the accels
     QAccel *accel = new QAccel( this );
@@ -208,28 +213,6 @@ PlayerWidget::~PlayerWidget()
 
 void PlayerWidget::setScroll( const QStringList &list )
 {
-//all you infidels should accept that this looks better! :-p
-// static const char* const separator_xpm[]={
-// "5 5 2 1",
-// "# c #80a0ff",
-// ". c none",
-// "#####",
-// "#...#",
-// "#...#",
-// "#...#",
-// "#####"};
-
-    static const char* const separator_xpm[]=
-    {
-        "4 4 1 1",
-        "# c #80a0ff",
-        "####",
-        "####",
-        "####",
-        "####"
-    };
-    static const QPixmap separator( const_cast< const char** >(separator_xpm) );
-
     QString text;
     QStringList list2( list );
 
@@ -266,7 +249,6 @@ void PlayerWidget::setScroll( const QStringList &list )
     {
         p.drawText( x, baseline, *it );
         x += fm.width( *it );
-        //p.drawPixmap( x, separatorYPos, separator );
         p.fillRect( x + 8, separatorYPos, 4, 4, amaroK::ColorScheme::Foreground );
         x += separatorWidth;
     }
@@ -410,6 +392,16 @@ static bool dontChangeButtonState = false; //FIXME I hate this hack
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+static QColor comodulate( QColor deviant )
+{
+    ///this function is only used by paletteChange()
+
+    int h,h2,s,v;
+    KGlobalSettings::highlightColor().getHsv( h, s, v );
+    deviant.getHsv( h2, s, v );
+    return QColor( h, s, v, QColor::Hsv );
+}
+
 bool PlayerWidget::event( QEvent *e )
 {
     switch( e->type() )
@@ -421,6 +413,26 @@ bool PlayerWidget::event( QEvent *e )
 
         amaroK::genericEventHandler( this, e );
         return TRUE; //we handled it
+
+    case QEvent::ApplicationPaletteChange:
+
+        if( AmarokConfig::schemeKDE() )
+        {
+            using namespace amaroK::ColorScheme;
+            Base       = comodulate( amaroK::blue );
+            Text       = Qt::white;
+            Background = comodulate( 0x002090 );
+            Foreground = comodulate( 0x80A0FF );
+
+            setPaletteBackgroundColor( Base );
+            setPaletteForegroundColor( Text );
+
+            //ensure the timeDisplay is updated etc.
+            engineNewMetaData( EngineController::instance()->bundle() );
+
+            return TRUE; //we handled it
+        }
+        return FALSE;
 
     case 6/*QEvent::KeyPress*/:
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D/* && (m_pAnalyzer->inherits("QGLWidget")*/)
