@@ -1,10 +1,10 @@
 /***************************************************************************
-                          playerapp.h  -  description
-                             -------------------
-    begin                : Mit Okt 23 14:35:18 CEST 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                         playerapp.h  -  description
+                            -------------------
+   begin                : Mit Okt 23 14:35:18 CEST 2002
+   copyright            : (C) 2002 by Mark Kretschmann
+   email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -50,7 +50,7 @@ extern PlayerApp *pApp;
 
 class PlayerApp : public KUniqueApplication
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         PlayerApp();
@@ -63,7 +63,7 @@ class PlayerApp : public KUniqueApplication
 
         void restore();
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         KGlobalAccel *m_pGlobalAccel;
 
         PlayerWidget *m_pPlayerWidget;
@@ -72,10 +72,19 @@ class PlayerApp : public KUniqueApplication
         QColor m_bgColor;
         QColor m_fgColor;
 
-        bool m_optSavePlaylist, m_optConfirmClear, m_optConfirmExit, m_optFollowSymlinks;
-        bool m_optTimeDisplayRemaining, m_optReadMetaInfo, m_optRepeatTrack, m_optRepeatPlaylist;
+        // <option attributes>
+        bool m_optSavePlaylist;
+        bool m_optConfirmClear;
+        bool m_optConfirmExit;
+        bool m_optFollowSymlinks;
+        bool m_optTimeDisplayRemaining;
+        bool m_optReadMetaInfo;
+        bool m_optRepeatTrack;
+        bool m_optRepeatPlaylist;
+        bool m_optRandomMode;
         bool m_optShowTrayIcon;
         QString m_optDropMode;
+        // </option attributes>
 
         int m_Volume;
         bool m_bSliderIsPressed;
@@ -127,7 +136,7 @@ class PlayerApp : public KUniqueApplication
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
-        void sigShowTrayIcon(bool);
+        void sigShowTrayIcon( bool );
 
     private:
         void initArts();
@@ -143,7 +152,7 @@ class PlayerApp : public KUniqueApplication
 
         QString convertDigit( const long &digit );
 
-// ATTRIBUTES ------
+        // ATTRIBUTES ------
         KArtsDispatcher *m_pArtsDispatcher;
         bool m_usingMixerHW;
         KConfig *m_pConfig;

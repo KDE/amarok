@@ -1,10 +1,10 @@
 /***************************************************************************
-                          playerapp.cpp  -  description
-                             -------------------
-    begin                : Mit Okt 23 14:35:18 CEST 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                       playerapp.cpp  -  description
+                          -------------------
+ begin                : Mit Okt 23 14:35:18 CEST 2002
+ copyright            : (C) 2002 by Mark Kretschmann
+ email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -99,30 +99,29 @@
 
 
 PlayerApp::PlayerApp() :
-   KUniqueApplication( true, true, false ),
-   m_bgColor( Qt::black ),
-   m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
-   m_pPlayObject( NULL ),
-   m_pArtsDispatcher( NULL ),
-   m_Length( 0 ),
-   m_playRetryCounter( 0 ),
-   m_pEffectWidget( NULL ),
-   m_bIsPlaying( false ),
-   m_bChangingSlider( false )
+        KUniqueApplication( true, true, false ),
+        m_bgColor( Qt::black ),
+        m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
+        m_pPlayObject( NULL ),
+        m_pArtsDispatcher( NULL ),
+        m_Length( 0 ),
+        m_playRetryCounter( 0 ),
+        m_pEffectWidget( NULL ),
+        m_bIsPlaying( false ),
+        m_bChangingSlider( false )
 {
     setName( "amarok" );
 
     pApp = this; //global
 
     m_pConfig = kapp->config();
-
     m_pGlobalAccel = new KGlobalAccel( this );
 
     initArts();
     if ( !initScope() )
     {
-        KMessageBox::error( 0, i18n("Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting.."), i18n("Fatal Error") );
-        return;
+        KMessageBox::error( 0, i18n( "Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting.." ), i18n( "Fatal Error" ) );
+        return ;
     }
     initPlayerWidget();
     initMixer();
@@ -132,7 +131,7 @@ PlayerApp::PlayerApp() :
 
     connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
-    connect( this, SIGNAL( sigShowTrayIcon(bool) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon(bool) ) );
+    connect( this, SIGNAL( sigShowTrayIcon( bool ) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon( bool ) ) );
 
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -147,7 +146,6 @@ PlayerApp::PlayerApp() :
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
-
 
 
 PlayerApp::~PlayerApp()
@@ -173,11 +171,11 @@ PlayerApp::~PlayerApp()
 
 int PlayerApp::newInstance()
 {
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    KCmdLineArgs * args = KCmdLineArgs::parsedArgs();
 
     QCString playlistUrl = args->getOption( "playlist" );
 
-    if ( !playlistUrl.isEmpty() )         //playlist
+    if ( !playlistUrl.isEmpty() )            //playlist
     {
         slotClearPlaylist();
         loadPlaylist( KCmdLineArgs::makeURL( playlistUrl ).path(), 0 );
@@ -185,14 +183,14 @@ int PlayerApp::newInstance()
 
     if ( args->count() > 0 )
     {
-        if ( args->isSet( "e" ) )         //enqueue
+        if ( args->isSet( "e" ) )            //enqueue
         {
             for ( int i = 0; i < args->count(); i++ )
             {
                 if ( !loadPlaylist( args->url( i ), m_pBrowserWin->m_pPlaylistWidget->lastItem() ) )
                 {
                     if ( m_pBrowserWin->isFileValid( args->url( i ) ) )
-                        m_pBrowserWin->m_pPlaylistWidget->addItem( (PlaylistItem*) 1, args->url( i ) );
+                        m_pBrowserWin->m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, args->url( i ) );
                 }
             }
         }
@@ -212,13 +210,13 @@ int PlayerApp::newInstance()
         }
     }
 
-    if ( args->isSet( "r" ) )             //rewind
+    if ( args->isSet( "r" ) )                //rewind
         pApp->slotPrev();
-    if ( args->isSet( "f" ) )             //forward
+    if ( args->isSet( "f" ) )                //forward
         pApp->slotNext();
-    if ( args->isSet( "p" ) )             //play
+    if ( args->isSet( "p" ) )                //play
         pApp->slotPlay();
-    if ( args->isSet( "s" ) )             //stop
+    if ( args->isSet( "s" ) )                //stop
         pApp->slotStop();
 
     return KUniqueApplication::newInstance();
@@ -227,53 +225,53 @@ int PlayerApp::newInstance()
 
 void PlayerApp::restore()
 {
-      //attempt to restore previous session
-      KConfig *config = sessionConfig();
+    //attempt to restore previous session
+    KConfig * config = sessionConfig();
 
-      KURL url    = config->readEntry( "track" );
-      int seconds = config->readNumEntry( "position" );
+    KURL url = config->readEntry( "track" );
+    int seconds = config->readNumEntry( "position" );
 
-      //FIXME this is duplicated in slotAddLocation, reduce LOC
+    //FIXME this is duplicated in slotAddLocation, reduce LOC
 
-      if( !url.isEmpty() && url.isValid() )
-      {
-        if( m_pBrowserWin->isFileValid( url ) )
+    if ( !url.isEmpty() && url.isValid() )
+    {
+        if ( m_pBrowserWin->isFileValid( url ) )
         {
-          PlaylistItem *item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
+            PlaylistItem * item = new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
 
-          m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-          slotPlay();
+            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+            slotPlay();
 
-          //FIXME I just copied this code, do I need all these properties?
-          Arts::poTime time;
-          time.ms = 0;
-          time.seconds = seconds;
-          time.custom = 0;
-          time.customUnit = std::string();
+            //FIXME I just copied this code, do I need all these properties?
+            Arts::poTime time;
+            time.ms = 0;
+            time.seconds = seconds;
+            time.custom = 0;
+            time.customUnit = std::string();
 
-          m_pPlayObject->seek( time );
+            m_pPlayObject->seek( time );
         }
-      }
+    }
 }
+
 
 //session management
 void PlayerApp::saveSessionState()
 {
-  KConfig *config = sessionConfig();
+    KConfig * config = sessionConfig();
 
-  Arts::poTime timeC( m_pPlayObject->currentTime() );
+    Arts::poTime timeC( m_pPlayObject->currentTime() );
 
-  config->writeEntry( "track",  static_cast<PlaylistItem*>(m_pBrowserWin->m_pPlaylistWidget->currentTrack())->url().url() );
-  config->writeEntry( "position", timeC.seconds );
+    config->writeEntry( "track", static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() ) ->url().url() );
+    config->writeEntry( "position", timeC.seconds );
 }
-
 
 
 // INIT -------------------------------------------------------------------------
 
 void PlayerApp::initArts()
 {
-// We must restart artsd after first installation, because we install new mcopctypes
+    // We must restart artsd after first installation, because we install new mcopctypes
 
     m_pConfig->setGroup( "" );
 
@@ -290,70 +288,71 @@ void PlayerApp::initArts()
     }
     m_pArtsDispatcher = new KArtsDispatcher();
 
-// *** most of the following code was taken from noatun's engine.cpp
+    // *** most of the following code was taken from noatun's engine.cpp
 
-    m_Server = Arts::Reference("global:Arts_SoundServerV2");
-    if( m_Server.isNull() || m_Server.error() )
+    m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
+    if ( m_Server.isNull() || m_Server.error() )
     {
         qDebug( "aRtsd not running.. trying to start" );
-// aRts seems not to be running, let's try to run it
-// First, let's read the configuration as in kcmarts
-        KConfig config("kcmartsrc");
+        // aRts seems not to be running, let's try to run it
+        // First, let's read the configuration as in kcmarts
+        KConfig config( "kcmartsrc" );
         QCString cmdline;
 
-        config.setGroup("Arts");
+        config.setGroup( "Arts" );
 
-        bool rt = config.readBoolEntry("StartRealtime",false);
-        bool x11Comm = config.readBoolEntry("X11GlobalComm",false);
+        bool rt = config.readBoolEntry( "StartRealtime", false );
+        bool x11Comm = config.readBoolEntry( "X11GlobalComm", false );
 
-// put the value of x11Comm into .mcoprc
+        // put the value of x11Comm into .mcoprc
         {
-            KConfig X11CommConfig(QDir::homeDirPath()+"/.mcoprc");
+            KConfig X11CommConfig( QDir::homeDirPath() + "/.mcoprc" );
 
-            if(x11Comm)
-                X11CommConfig.writeEntry("GlobalComm", "Arts::X11GlobalComm");
+            if ( x11Comm )
+                X11CommConfig.writeEntry( "GlobalComm", "Arts::X11GlobalComm" );
             else
-                X11CommConfig.writeEntry("GlobalComm", "Arts::TmpGlobalComm");
+                X11CommConfig.writeEntry( "GlobalComm", "Arts::TmpGlobalComm" );
 
             X11CommConfig.sync();
         }
 
-        cmdline = QFile::encodeName(KStandardDirs::findExe(QString::fromLatin1("kdeinit_wrapper")));
+        cmdline = QFile::encodeName( KStandardDirs::findExe( QString::fromLatin1( "kdeinit_wrapper" ) ) );
         cmdline += " ";
 
-        if (rt)
-            cmdline += QFile::encodeName(KStandardDirs::findExe(
-                QString::fromLatin1("artswrapper")));
+        if ( rt )
+            cmdline += QFile::encodeName( KStandardDirs::findExe(
+                                              QString::fromLatin1( "artswrapper" ) ) );
         else
-            cmdline += QFile::encodeName(KStandardDirs::findExe(
-                QString::fromLatin1("artsd")));
+            cmdline += QFile::encodeName( KStandardDirs::findExe(
+                                              QString::fromLatin1( "artsd" ) ) );
 
         cmdline += " ";
-        cmdline += config.readEntry("Arguments","-F 10 -S 4096 -s 60 -m artsmessage -l 3 -f -n").utf8();
+        cmdline += config.readEntry( "Arguments", "-F 10 -S 4096 -s 60 -m artsmessage -l 3 -f -n" ).utf8();
 
-        int status=::system(cmdline);
+        int status = ::system( cmdline );
 
-        if ( status!=-1 && WIFEXITED(status) )
+        if ( status != -1 && WIFEXITED( status ) )
         {
-// We could have a race-condition here.
-// The correct way to do it is to make artsd fork-and-exit
-// after starting to listen to connections (and running artsd
-// directly instead of using kdeinit), but this is better
-// than nothing.
+            // We could have a race-condition here.
+            // The correct way to do it is to make artsd fork-and-exit
+            // after starting to listen to connections (and running artsd
+            // directly instead of using kdeinit), but this is better
+            // than nothing.
             int time = 0;
             do
             {
-// every time it fails, we should wait a little longer
-// between tries
-                ::sleep(1+time/2);
-                m_Server = Arts::Reference("global:Arts_SoundServerV2");
-            } while(++time < 5 && (m_Server.isNull()));
+                // every time it fails, we should wait a little longer
+                // between tries
+                ::sleep( 1 + time / 2 );
+                m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
+            }
+            while ( ++time < 5 && ( m_Server.isNull() ) );
         }
     }
 
     if ( m_Server.isNull() )
     {
-        KMessageBox::error( 0, i18n("Cannot start aRts! Exiting."), i18n("Fatal Error") );
+        KMessageBox::error( 0, i18n( "Cannot start aRts! Exiting." ), i18n( "Fatal Error" ) );
         exit( 1 );
     }
 
@@ -370,18 +369,17 @@ void PlayerApp::initArts()
     m_effectStack.start();
     long id = m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
 
-// *** until here
+    // *** until here
 }
-
 
 
 void PlayerApp::initPlayerWidget()
 {
-//TEST
+    //TEST
     kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
 
     m_pPlayerWidget = new PlayerWidget();
-//    setCentralWidget(m_pPlayerWidget);
+    //    setCentralWidget(m_pPlayerWidget);
 
     m_bSliderIsPressed = false;
 
@@ -395,53 +393,49 @@ void PlayerApp::initPlayerWidget()
 
 
     connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderPressed() ),
-        this, SLOT( slotSliderPressed() ) );
+             this, SLOT( slotSliderPressed() ) );
 
     connect( m_pPlayerWidget->m_pSlider, SIGNAL( sliderReleased() ),
-        this, SLOT( slotSliderReleased() ) );
+             this, SLOT( slotSliderReleased() ) );
 
     connect( m_pPlayerWidget->m_pSlider, SIGNAL( valueChanged( int ) ),
-        this, SLOT( slotSliderChanged( int ) ) );
+             this, SLOT( slotSliderChanged( int ) ) );
 
     connect( m_pPlayerWidget->m_pSliderVol, SIGNAL( valueChanged( int ) ),
-        this, SLOT( slotVolumeChanged( int ) ) );
+             this, SLOT( slotVolumeChanged( int ) ) );
 
     connect( m_pPlayerWidget->m_pButtonPrev, SIGNAL( clicked() ),
-        this, SLOT( slotPrev() ) );
+             this, SLOT( slotPrev() ) );
 
     connect( m_pPlayerWidget->m_pButtonPlay, SIGNAL( clicked() ),
-        this, SLOT( slotPlay() ) );
+             this, SLOT( slotPlay() ) );
 
     connect( m_pPlayerWidget->m_pButtonPause, SIGNAL( clicked() ),
-        this, SLOT( slotPause() ) );
+             this, SLOT( slotPause() ) );
 
     connect( m_pPlayerWidget->m_pButtonStop, SIGNAL( clicked() ),
-        this, SLOT( slotStop() ) );
+             this, SLOT( slotStop() ) );
 
     connect( m_pPlayerWidget->m_pButtonNext, SIGNAL( clicked() ),
-        this, SLOT( slotNext() ) );
+             this, SLOT( slotNext() ) );
 
     connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
-        this, SLOT( slotPlaylistToggle( bool ) ) );
+             this, SLOT( slotPlaylistToggle( bool ) ) );
 
     connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( toggled( bool ) ),
-        this, SLOT( slotEq( bool ) ) );
+             this, SLOT( slotEq( bool ) ) );
 
     connect( m_pPlayerWidget->m_pButtonLogo, SIGNAL( clicked() ),
-        this, SLOT( slotShowAbout() ) );
+             this, SLOT( slotShowAbout() ) );
 
-//	connect( m_pPlayerWidget, SIGNAL( signalLogoClicked() ),
-//					 this, SLOT( slotShowAbout() ) );
-
-//TEST
+    //TEST
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
 
 
-
 void PlayerApp::initMixer()
 {
-//TEST
+    //TEST
     kdDebug() << "begin PlayerApp::initMixer()" << endl;
 
     if ( initMixerHW() )
@@ -451,7 +445,7 @@ void PlayerApp::initMixer()
 
     else
     {
-// Hardware mixer doesn't work --> use arts software-mixing
+        // Hardware mixer doesn't work --> use arts software-mixing
         kdDebug() << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
 
         m_volumeControl = Arts::DynamicCast( m_Server.createObject( "Arts::StereoVolumeControl" ) );
@@ -459,18 +453,17 @@ void PlayerApp::initMixer()
         if ( m_volumeControl.isNull() )
         {
             kdDebug() << "Initialising arts softwaremixing failed!" << endl;
-            return;
+            return ;
         }
 
         m_usingMixerHW = false;
         m_volumeControl.start();
         long id = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
 
-//TEST
+        //TEST
         kdDebug() << "end PlayerApp::initMixer()" << endl;
     }
 }
-
 
 
 bool PlayerApp::initMixerHW()
@@ -489,15 +482,14 @@ bool PlayerApp::initMixerHW()
 }
 
 
-
 bool PlayerApp::initScope()
 {
-//TEST
+    //TEST
     kdDebug() << "begin PlayerApp::initScope()" << endl;
 
     m_Scope = Arts::DynamicCast( m_Server.createObject( "Amarok::WinSkinFFT" ) );
 
-    if ( (m_Scope).isNull() )
+    if ( ( m_Scope ).isNull() )
     {
         kdDebug() << "*m_Scope.isNull()!" << endl;
         return false;
@@ -506,60 +498,58 @@ bool PlayerApp::initScope()
     m_scopeActive = false;
     long id = m_globalEffectStack.insertBottom( m_Scope, "Analyzer" );
 
-//TEST
+    //TEST
     kdDebug() << "end PlayerApp::initScope()" << endl;
     return true;
 }
 
 
-
 void PlayerApp::initBrowserWin()
 {
-//TEST
+    //TEST
     kdDebug() << "begin PlayerApp::initBrowserWin()" << endl;
 
     m_pBrowserWin = new BrowserWin();
 
     connect( m_pBrowserWin->m_pButtonAdd, SIGNAL( clicked() ),
-        this, SLOT( slotAddLocation() ) );
+             this, SLOT( slotAddLocation() ) );
 
     connect( m_pBrowserWin->m_pButtonSave, SIGNAL( clicked() ),
-        this, SLOT( slotSavePlaylist() ) );
+             this, SLOT( slotSavePlaylist() ) );
 
     connect( m_pBrowserWin->m_pButtonClear, SIGNAL( clicked() ),
-        this, SLOT( slotClearPlaylistAsk() ) );
+             this, SLOT( slotClearPlaylistAsk() ) );
 
     connect( m_pBrowserWin->m_pButtonUndo, SIGNAL( clicked() ),
-        this, SLOT( slotUndoPlaylist() ) );
+             this, SLOT( slotUndoPlaylist() ) );
 
     connect( m_pBrowserWin->m_pButtonRedo, SIGNAL( clicked() ),
-        this, SLOT( slotRedoPlaylist() ) );
+             this, SLOT( slotRedoPlaylist() ) );
 
     connect( m_pBrowserWin->m_pButtonPlay, SIGNAL( clicked() ),
-        this, SLOT( slotPlay() ) );
+             this, SLOT( slotPlay() ) );
 
     connect( m_pBrowserWin->m_pButtonPause, SIGNAL( clicked() ),
-        this, SLOT( slotPause() ) );
+             this, SLOT( slotPause() ) );
 
     connect( m_pBrowserWin->m_pButtonStop, SIGNAL( clicked() ),
-        this, SLOT( slotStop() ) );
+             this, SLOT( slotStop() ) );
 
     connect( m_pBrowserWin->m_pButtonNext, SIGNAL( clicked() ),
-        this, SLOT( slotNext() ) );
+             this, SLOT( slotNext() ) );
 
     connect( m_pBrowserWin->m_pButtonPrev, SIGNAL( clicked() ),
-        this, SLOT( slotPrev() ) );
+             this, SLOT( slotPrev() ) );
 
     connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
-        this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
+             this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
 
     connect( m_pBrowserWin, SIGNAL( signalHide() ),
-        this, SLOT( slotPlaylistHide() ) );
+             this, SLOT( slotPlaylistHide() ) );
 
-//TEST
+    //TEST
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
-
 
 
 // METHODS --------------------------------------------------------------------------
@@ -625,19 +615,18 @@ bool PlayerApp::loadPlaylist( KURL url, QListViewItem *destination )
 }
 
 
-
 void PlayerApp::saveM3u( QString fileName )
 {
     QFile file( fileName );
 
     if ( !file.open( IO_WriteOnly ) )
-        return;
+        return ;
 
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
     QTextStream stream( &file );
     stream << "#EXTM3U\n";
 
-    while( item != NULL )
+    while ( item != NULL )
     {
         if ( item->url().protocol() == "file" )
             stream << item->url().path();
@@ -650,7 +639,6 @@ void PlayerApp::saveM3u( QString fileName )
 
     file.close();
 }
-
 
 
 QString PlayerApp::convertDigit( const long &digit )
@@ -666,7 +654,6 @@ QString PlayerApp::convertDigit( const long &digit )
     str1 = "0" + str;
     return str1;
 }
-
 
 
 void PlayerApp::saveConfig()
@@ -691,31 +678,35 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Time Display Remaining", m_optTimeDisplayRemaining );
     m_pConfig->writeEntry( "Repeat Track", m_optRepeatTrack );
     m_pConfig->writeEntry( "Repeat Playlist", m_optRepeatPlaylist );
+    m_pConfig->writeEntry( "Random Mode", m_optRandomMode );
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
     m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
 
     //store current item
-    PlaylistItem *item = static_cast<PlaylistItem*>(m_pBrowserWin->m_pPlaylistWidget->currentTrack());
-    if( item != NULL )
+    PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
+    if ( item != NULL )
     {
-      if ( item->url().protocol() == "file" )
-        m_pConfig->writeEntry( "CurrentSelection", item->url().path() );
-      else
-        m_pConfig->writeEntry( "CurrentSelection", item->url().url() );
+        if ( item->url().protocol() == "file" )
+            m_pConfig->writeEntry( "CurrentSelection", item->url().path() );
+        else
+            m_pConfig->writeEntry( "CurrentSelection", item->url().url() );
     }
 
-    saveM3u( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u" );
+    saveM3u( kapp->dirs() ->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
-
 
 
 void PlayerApp::readConfig()
 {
-//TEST
+    //TEST
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
-    QPoint  pointZero     = QPoint( 0, 0 );
-    QSize   arbitrarySize = QSize ( 600, 450 );
+    // FIXME: ok, the compiler warning is gone now. but the result is the same: those variables are
+    //        still temporary. so what have we gained? frankly, why does KConfig take a pointer here,
+    //        anyway? I've looked at KConfig sources, and it seems, it gets just dereferened once and
+    //        that's it. so &( QPoint( 0, 0 ) ); would have done the same. what do you guys think?
+    QPoint pointZero = QPoint( 0, 0 );
+    QSize arbitrarySize = QSize ( 600, 450 );
 
     m_pConfig->setGroup( "General Options" );
 
@@ -755,71 +746,69 @@ void PlayerApp::readConfig()
     }
 
     slotClearPlaylist();
-    loadPlaylist( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
-//    loadM3u( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u" );
+    loadPlaylist( kapp->dirs() ->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
 
     KURL currentlyPlaying = m_pConfig->readEntry( "CurrentSelection" );
 
     kdDebug() << "Attempting to select: " << currentlyPlaying.path() << endl;
 
-    for( PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
-         item;
-         item = static_cast<PlaylistItem*>( item->nextSibling() ) )
+    for ( PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
+            item;
+            item = static_cast<PlaylistItem*>( item->nextSibling() ) )
     {
-        if( item->url() == currentlyPlaying )
+        if ( item->url() == currentlyPlaying )
         {
-          //FIXME: should think about making this all one call
-          m_pBrowserWin->m_pPlaylistWidget->setCurrentItem( item );
-          m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( item );
-          m_pBrowserWin->m_pPlaylistWidget->slotGlowTimer();
-          break;
+            //FIXME: should think about making this all one call
+            m_pBrowserWin->m_pPlaylistWidget->setCurrentItem( item );
+            m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( item );
+            m_pBrowserWin->m_pPlaylistWidget->slotGlowTimer();
+            break;
         }
     }
 
 
-    m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL+SHIFT+Key_A, 0, this, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "play", "Play", 0, CTRL+SHIFT+Key_P, 0, this, SLOT( slotPlay() ), true, true );
-    m_pGlobalAccel->insert( "stop", "Stop", 0, CTRL+SHIFT+Key_S, 0, this, SLOT( slotStop() ), true, true );
-    m_pGlobalAccel->insert( "next", "Next Track", 0, CTRL+SHIFT+Key_N, 0, this, SLOT( slotNext() ), true, true );
-    m_pGlobalAccel->insert( "prev", "Previous Track", 0, CTRL+SHIFT+Key_R, 0, this, SLOT( slotPrev() ), true, true );
+    m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL + SHIFT + Key_A, 0, this, SLOT( slotAddLocation() ), true, true );
+    m_pGlobalAccel->insert( "play", "Play", 0, CTRL + SHIFT + Key_P, 0, this, SLOT( slotPlay() ), true, true );
+    m_pGlobalAccel->insert( "stop", "Stop", 0, CTRL + SHIFT + Key_S, 0, this, SLOT( slotStop() ), true, true );
+    m_pGlobalAccel->insert( "next", "Next Track", 0, CTRL + SHIFT + Key_N, 0, this, SLOT( slotNext() ), true, true );
+    m_pGlobalAccel->insert( "prev", "Previous Track", 0, CTRL + SHIFT + Key_R, 0, this, SLOT( slotPrev() ), true, true );
     m_pGlobalAccel->readSettings( m_pConfig );
     m_pGlobalAccel->updateConnections();
 
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
-    new KAction( "Copy Current Title to Clipboard", CTRL+Key_C, m_pPlayerWidget, SLOT( slotCopyClipboard() ), m_pPlayerWidget->m_pActionCollection, "copy_clipboard" );
+
+    new KAction( "Copy Current Title to Clipboard", CTRL + Key_C, m_pPlayerWidget, SLOT( slotCopyClipboard() ), m_pPlayerWidget->m_pActionCollection, "copy_clipboard" );
 
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     new KAction( "Go one item up", Key_Up, m_pBrowserWin, SLOT( slotKeyUp() ), m_pBrowserWin->m_pActionCollection, "up" );
     new KAction( "Go one item down", Key_Down, m_pBrowserWin, SLOT( slotKeyDown() ), m_pBrowserWin->m_pActionCollection, "down" );
     new KAction( "Go one page up", Key_PageUp, m_pBrowserWin, SLOT( slotKeyPageUp() ), m_pBrowserWin->m_pActionCollection, "page_up" );
     new KAction( "Go one page down", Key_PageDown, m_pBrowserWin, SLOT( slotKeyPageDown() ), m_pBrowserWin->m_pActionCollection, "page_down" );
-    new KAction( "Enter item", SHIFT+Key_Return, m_pBrowserWin, SLOT( slotKeyEnter() ), m_pBrowserWin->m_pActionCollection, "enter" );
-    new KAction( "Delete item", SHIFT+Key_Delete, m_pBrowserWin, SLOT( slotKeyDelete() ), m_pBrowserWin->m_pActionCollection, "delete" );
-        
-//TEST
+    new KAction( "Enter item", SHIFT + Key_Return, m_pBrowserWin, SLOT( slotKeyEnter() ), m_pBrowserWin->m_pActionCollection, "enter" );
+    new KAction( "Delete item", SHIFT + Key_Delete, m_pBrowserWin, SLOT( slotKeyDelete() ), m_pBrowserWin->m_pActionCollection, "delete" );
+
+    //TEST
     kdDebug() << "end PlayerApp::readConfig()" << endl;
 }
-
 
 
 bool PlayerApp::queryClose()
 {
     if ( m_optConfirmExit )
-        if ( KMessageBox::questionYesNo( 0, i18n("Really exit the program?") ) == KMessageBox::No )
+        if ( KMessageBox::questionYesNo( 0, i18n( "Really exit the program?" ) ) == KMessageBox::No )
             return false;
 
     return true;
 }
 
 
-
 void PlayerApp::getTrackLength()
 {
-    PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
+    PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
     if ( item == NULL )
-        return;
-                                                  // let aRts calculate length
+        return ;
+    // let aRts calculate length
     Arts::poTime timeO( m_pPlayObject->overallTime() );
     m_Length = timeO.seconds;
     m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( timeO.seconds ) );
@@ -830,13 +819,13 @@ void PlayerApp::getTrackLength()
     {
         QString str, strNum;
         if ( metaInfo.item( "Artist" ).string() == "---" ||
-            metaInfo.item( "Title" ).string() == "---" )
+                metaInfo.item( "Title" ).string() == "---" )
         {
             str.append( item->text( 0 ) + " (" );
         }
         else
         {
-            str.append( metaInfo.item( "Artist" ).string() + " - ");
+            str.append( metaInfo.item( "Artist" ).string() + " - " );
             str.append( metaInfo.item( "Title" ).string() + " (" );
         }
 
@@ -854,8 +843,8 @@ void PlayerApp::getTrackLength()
         str.append( convertDigit( totSeconds ) + ")" );
 
         m_pPlayerWidget->setScroll( str,
-            metaInfo.item( "Bitrate" ).string(),
-            metaInfo.item( "Sample Rate" ).string() );
+                                    metaInfo.item( "Bitrate" ).string(),
+                                    metaInfo.item( "Sample Rate" ).string() );
     }
     else
     {
@@ -869,22 +858,21 @@ void PlayerApp::getTrackLength()
 }
 
 
-
 // SLOTS -----------------------------------------------------------------
 
 void PlayerApp::slotPrev()
 {
-// do nothing when list is empty
+    // do nothing when list is empty
     if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 )
     {
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( NULL );
-        return;
+        return ;
     }
 
     QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
 
     if ( pItem == NULL )
-        return;
+        return ;
 
     pItem = pItem->itemAbove();
 
@@ -901,16 +889,17 @@ void PlayerApp::slotPrev()
     }
 }
 
+
 void PlayerApp::slotPlay()
 {
     //Markey: I moved this function above the item determination function below
     // although I'm not 100% sure it was a good idea as I can't tell if it is necessary to setCurrentTrack()
     // please check!
 
-    if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() ) //bit of a hack really
+    if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() )    //bit of a hack really
     {
         slotStop();
-        return;
+        return ;
     }
 
 
@@ -922,7 +911,7 @@ void PlayerApp::slotPlay()
         PlaylistItem *tmpItem = item;
 
         if ( !tmpItem )
-            return;
+            return ;
 
         while ( tmpItem )
         {
@@ -930,7 +919,7 @@ void PlayerApp::slotPlay()
                 break;
             tmpItem = static_cast<PlaylistItem*>( tmpItem->nextSibling() );
         }
-        if ( tmpItem )                            //skip to the first selected item
+        if ( tmpItem )                               //skip to the first selected item
             item = tmpItem;
     }
 
@@ -942,7 +931,7 @@ void PlayerApp::slotPlay()
     KDE::PlayObjectFactory factory( m_Server );
     factory.setAllowStreaming( true );
     m_pPlayObject = NULL;
-                                                  //second parameter: create BUS(true/false)
+    //second parameter: create BUS(true/false)
     m_pPlayObject = factory.createPlayObject( item->url(), false );
     m_bIsPlaying = true;
 
@@ -950,7 +939,7 @@ void PlayerApp::slotPlay()
     {
         kdDebug() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
         slotNext();
-        return;
+        return ;
     }
     if ( m_pPlayObject->isNull() )
     {
@@ -958,7 +947,7 @@ void PlayerApp::slotPlay()
         delete m_pPlayObject;
         m_pPlayObject = NULL;
         slotNext();
-        return;
+        return ;
     }
 
     if ( m_pPlayObject->object().isNull() )
@@ -977,7 +966,7 @@ void PlayerApp::slotPlay()
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
         m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
-        m_pPlayerWidget->setScroll( i18n("Stream from: ") + item->text( 0 ), "--", "--" );
+        m_pPlayerWidget->setScroll( i18n( "Stream from: " ) + item->text( 0 ), "--", "--" );
     }
 
     m_pPlayerWidget->m_pSlider->setValue( 0 );
@@ -992,7 +981,7 @@ void PlayerApp::slotConnectPlayObj()
 {
     if ( !m_pPlayObject->object().isNull() )
     {
-        m_pPlayObject->object()._node()->start();
+        m_pPlayObject->object()._node() ->start();
 
         Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
         Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );
@@ -1019,7 +1008,6 @@ void PlayerApp::slotPause()
 }
 
 
-
 void PlayerApp::slotStop()
 {
     if ( m_bIsPlaying )
@@ -1032,7 +1020,7 @@ void PlayerApp::slotStop()
 
             Arts::disconnect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
             Arts::disconnect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );
-            m_pPlayObject->object()._node()->stop();
+            m_pPlayObject->object()._node() ->stop();
 
             delete m_pPlayObject;
             m_pPlayObject = NULL;
@@ -1044,7 +1032,7 @@ void PlayerApp::slotStop()
         m_pPlayerWidget->m_pSlider->setValue( 0 );
         m_pPlayerWidget->m_pSlider->setMinValue( 0 );
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-        m_pPlayerWidget->setScroll( i18n("no file loaded"), " ", " " );
+        m_pPlayerWidget->setScroll( i18n( "no file loaded" ), " ", " " );
         m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
         delete m_pPlayerWidget->m_pPlayObjConfigWidget;
@@ -1053,19 +1041,23 @@ void PlayerApp::slotStop()
 }
 
 
-
 void PlayerApp::slotNext()
 {
-   QListViewItem *pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
+    QListViewItem * pItem = m_pBrowserWin->m_pPlaylistWidget->currentTrack();
 
     if ( pItem == NULL )
     {
         slotStop();
-        return;
+        return ;
     }
 
     if ( !m_optRepeatTrack )
+    {
         pItem = pItem->nextSibling();
+    }
+    //     else if ( m_optRandomMode )
+    //     {
+    //     }
 
     if ( pItem == NULL )
     {
@@ -1073,7 +1065,7 @@ void PlayerApp::slotNext()
         if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || !m_optRepeatPlaylist )
         {
             m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( NULL );
-            return;
+            return ;
         }
         else
         {
@@ -1095,14 +1087,13 @@ void PlayerApp::slotNext()
 }
 
 
-
 void PlayerApp::slotLoadPlaylist()
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( makeStdCaption( i18n("Enter file or URL") ) );
+    dlg.setCaption( makeStdCaption( i18n( "Enter file or URL" ) ) );
     dlg.setIcon( icon() );
-    dlg.fileDialog()->setFilter( "*.m3u *.pls *.M3U *.PLS|Playlist Files" );
-    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
+    dlg.fileDialog() ->setFilter( "*.m3u *.pls *.M3U *.PLS|Playlist Files" );
+    dlg.urlRequester() ->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
     KURL url = dlg.selectedURL();
@@ -1113,7 +1104,6 @@ void PlayerApp::slotLoadPlaylist()
         loadPlaylist( url, 0 );
     }
 }
-
 
 
 void PlayerApp::slotSavePlaylist()
@@ -1130,7 +1120,6 @@ void PlayerApp::slotSavePlaylist()
 }
 
 
-
 void PlayerApp::slotClearPlaylist()
 {
     m_pBrowserWin->m_pPlaylistWidget->clear();
@@ -1139,40 +1128,38 @@ void PlayerApp::slotClearPlaylist()
 }
 
 
-
 void PlayerApp::slotClearPlaylistAsk()
 {
     if ( m_optConfirmClear )
     {
-        if ( KMessageBox::questionYesNo( 0, i18n("Really clear playlist?") ) == KMessageBox::No )
-            return;
+        if ( KMessageBox::questionYesNo( 0, i18n( "Really clear playlist?" ) ) == KMessageBox::No )
+            return ;
     }
 
     slotClearPlaylist();
 }
 
 
-
 void PlayerApp::slotUndoPlaylist()
 {
     kdDebug() << "PlayerApp::slotUndoPlaylist()" << endl;
+    KMessageBox::sorry( 0, "Not yet implemented. /me gives user a chocolate cookie." );
 }
-
 
 
 void PlayerApp::slotRedoPlaylist()
 {
     kdDebug() << "PlayerApp::slotRedoPlaylist()" << endl;
+    KMessageBox::sorry( 0, "Not yet implemented. /me gives user a chocolate cookie." );
 }
-
 
 
 void PlayerApp::slotAddLocation()
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( makeStdCaption( i18n("Enter file or URL") ) );
+    dlg.setCaption( makeStdCaption( i18n( "Enter file or URL" ) ) );
     dlg.setIcon( icon() );
-    dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
+    dlg.urlRequester() ->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
     KURL url = dlg.selectedURL();
@@ -1188,12 +1175,10 @@ void PlayerApp::slotAddLocation()
 }
 
 
-
 void PlayerApp::slotSliderPressed()
 {
     m_bSliderIsPressed = true;
 }
-
 
 
 void PlayerApp::slotSliderReleased()
@@ -1206,12 +1191,11 @@ void PlayerApp::slotSliderReleased()
         time.seconds = static_cast<long>( m_pPlayerWidget->m_pSlider->value() );
         time.custom = 0;
         time.customUnit = std::string();
-        m_pPlayObject->seek(time);
+        m_pPlayObject->seek( time );
     }
 
     m_bSliderIsPressed = false;
 }
-
 
 
 void PlayerApp::slotSliderChanged( int value )
@@ -1231,7 +1215,6 @@ void PlayerApp::slotSliderChanged( int value )
 }
 
 
-
 void PlayerApp::slotVolumeChanged( int value )
 {
     m_Volume = value;
@@ -1245,11 +1228,10 @@ void PlayerApp::slotVolumeChanged( int value )
 
     else
     {
-                                                  //convert percent to factor
+        //convert percent to factor
         m_volumeControl.scaleFactor( 0.01 * static_cast<float>( value ) );
     }
 }
-
 
 
 void PlayerApp::slotMainTimer()
@@ -1276,22 +1258,22 @@ void PlayerApp::slotMainTimer()
             m_scopeActive = false;
         }
 
-        return;
+        return ;
     }
 
     if ( ( m_Length == 0 ) && ( !m_pPlayObject->stream() ) )
         getTrackLength();
 
     if ( m_bSliderIsPressed )
-        return;
+        return ;
     if ( !m_bIsPlaying )
-        return;
+        return ;
 
-// check if track has ended
+    // check if track has ended
     if ( m_pPlayObject->state() == Arts::posIdle )
     {
         slotNext();
-        return;
+        return ;
     }
 
     if ( m_pPlayObject->state() == Arts::posPlaying )
@@ -1311,10 +1293,9 @@ void PlayerApp::slotMainTimer()
         }
     }
 
-    Arts::poTime timeC(m_pPlayObject->currentTime() );
+    Arts::poTime timeC( m_pPlayObject->currentTime() );
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 }
-
 
 
 void PlayerApp::slotAnimTimer()
@@ -1338,7 +1319,6 @@ void PlayerApp::slotAnimTimer()
 }
 
 
-
 void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 {
     m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
@@ -1346,13 +1326,11 @@ void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 }
 
 
-
 void PlayerApp::slotShowAbout()
 {
     KAboutApplication dia;
     dia.exec();
 }
-
 
 
 void PlayerApp::slotPlaylistToggle( bool b )
@@ -1368,7 +1346,6 @@ void PlayerApp::slotPlaylistToggle( bool b )
 }
 
 
-
 void PlayerApp::slotPlaylistHide()
 {
     m_pPlayerWidget->m_pButtonPl->setOn( false );
@@ -1380,23 +1357,22 @@ void PlayerApp::slotEq( bool b )
 {
     if ( b )
     {
-        KMessageBox::sorry( 0, i18n("Equalizer is not yet implemented.") );
+        KMessageBox::sorry( 0, i18n( "Equalizer is not yet implemented." ) );
         m_pPlayerWidget->m_pButtonEq->setOn( false );
     }
 }
 
 
-
 void PlayerApp::slotShowOptions()
 {
-    KDialogBase *pDia = new KDialogBase( KDialogBase::IconList, i18n("Options"),
-        KDialogBase::Ok | KDialogBase::Cancel, KDialogBase::Ok );
+    KDialogBase * pDia = new KDialogBase( KDialogBase::IconList, i18n( "Options" ),
+                                          KDialogBase::Ok | KDialogBase::Cancel, KDialogBase::Ok );
 
     QFrame *frame;
     KIconLoader iconLoader;
 
-    frame = pDia->addPage( i18n("General") , i18n("Configure general options"),
-        iconLoader.loadIcon( "misc", KIcon::NoGroup, KIcon::SizeMedium ) );
+    frame = pDia->addPage( i18n( "General" ) , i18n( "Configure general options" ),
+                           iconLoader.loadIcon( "misc", KIcon::NoGroup, KIcon::SizeMedium ) );
 
     Options1 *opt1 = new Options1( frame );
     opt1->checkBox1->setChecked( m_optSavePlaylist );
@@ -1412,8 +1388,8 @@ void PlayerApp::slotShowOptions()
     if ( m_optDropMode == "NonRecursively" )
         opt1->comboBox1->setCurrentItem( 2 );
 
-//  frame = pDia->addVBoxPage( QString( "Sound" ) , QString( "Configure sound options" ),
-//                             iconLoader.loadIcon( "sound", KIcon::NoGroup, KIcon::SizeMedium ) );
+    //  frame = pDia->addVBoxPage( QString( "Sound" ) , QString( "Configure sound options" ),
+    //                             iconLoader.loadIcon( "sound", KIcon::NoGroup, KIcon::SizeMedium ) );
 
     pDia->resize( 500, 390 );
 
@@ -1456,32 +1432,29 @@ void PlayerApp::slotShowOptions()
                 m_optDropMode = "NonRecursively";
                 break;
         }
-        emit sigShowTrayIcon(m_optShowTrayIcon);
+        emit sigShowTrayIcon( m_optShowTrayIcon );
     }
     delete pDia;
 }
 
 
-
 void PlayerApp::slotConfigEffects()
 {
-// we never destroy the EffectWidget, just hide it, since destroying would delete the EffectListItems
+    // we never destroy the EffectWidget, just hide it, since destroying would delete the EffectListItems
     if ( m_pEffectWidget == NULL )
     {
         m_pEffectWidget = new EffectWidget( m_pPlayerWidget );
     }
 
     m_pEffectWidget->show();
-    return;
+    return ;
 }
-
 
 
 void PlayerApp::slotShowTip()
 {
     KTipDialog::showTip( "amarok/data/startupTip.txt", true );
 }
-
 
 
 void PlayerApp::slotSetRepeatTrack()
@@ -1502,7 +1475,6 @@ void PlayerApp::slotSetRepeatTrack()
 }
 
 
-
 void PlayerApp::slotSetRepeatPlaylist()
 {
     int id = m_pPlayerWidget->m_IdRepeatPlaylist;
@@ -1519,7 +1491,6 @@ void PlayerApp::slotSetRepeatPlaylist()
         m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, true );
     }
 }
-
 
 
 void PlayerApp::slotShowHelp()
