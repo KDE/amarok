@@ -1408,7 +1408,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     burnMenu->insertItem( SmallIcon( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
     burnMenu->insertItem( SmallIcon( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
     popup.insertItem( SmallIcon( "cdwriter_unmount" ), i18n("Burn"), burnMenu, BURN_MENU );
-    popup.setItemEnabled( BURN_MENU, K3bExporter::isAvailable() );
+    popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.insertSeparator();
 
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
