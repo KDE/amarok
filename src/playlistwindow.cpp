@@ -643,8 +643,9 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
-
-    m_playlist->appendMedia( dlg.selectedURL() );
+    
+    if ( !dlg.selectedURL().isEmpty() )
+        m_playlist->appendMedia( dlg.selectedURL() );
 }
 
 
