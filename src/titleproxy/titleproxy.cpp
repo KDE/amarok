@@ -20,6 +20,7 @@ email                : markey@web.de
 #include "titleproxy.h"
 
 #include <kdebug.h>
+#include <kmdcodec.h>
 
 #include <qstring.h>
 #include <qtimer.h>
@@ -143,6 +144,8 @@ void Proxy::sendRequest() //SLOT
     { //send request
         QString request = QString( "GET %1 HTTP/1.1\r\n" )
                                 .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
+      QCString username = m_url.user().utf8();
+      QCString password = m_url.pass().utf8();
         //request metadata
         if ( m_icyMode ) request += "Icy-MetaData:1\r\n";
 
@@ -151,7 +154,10 @@ void Proxy::sendRequest() //SLOT
                 "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
                 "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
                 "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
-                "Accept-Language: de, en\r\n\r\n";
+                "Accept-Language: de, en\r\n"
+                "Authorization: Basic " +
+                KCodecs::base64Encode(username + ":" + password) +
+                "\r\n\r\n";
 
         connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
         m_sockRemote.writeBlock( request.latin1(), request.length() );
