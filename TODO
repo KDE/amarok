@@ -37,6 +37,10 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * add: <muesli>length and bitrate to the playlist as optional columns. -->muesli or mxcl
+
+    * fix: add dirs to combo history when user adds a track from that dir to the playlist
+
     * fix: redirected URLs do not work (? - we need some testcase)
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
