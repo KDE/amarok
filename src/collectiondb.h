@@ -263,6 +263,7 @@ class QueryBuilder : public QObject
         uint countReturnValues();
 
         void addFilter( int tables, const QString& filter, int mode = modeNormal );
+        void addFilters( int tables, const QStringList& filter );
         void excludeFilter( int tables, const QString& filter );
 
         void addMatch( int tables, const QString& match );

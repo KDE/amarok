@@ -305,7 +305,7 @@ CollectionView::renderView( )  //SLOT
         qb.sortBy( m_cat1, QueryBuilder::valName );
         if ( m_cat2 != CollectionBrowser::IdNone ) qb.sortBy( m_cat2, QueryBuilder::valName );
         if ( m_cat3 != CollectionBrowser::IdNone ) qb.sortBy( m_cat3, QueryBuilder::valName );
-        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter, QueryBuilder::modeNormal );
+        qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         values = qb.run();
@@ -330,7 +330,7 @@ CollectionView::renderView( )  //SLOT
     if ( m_viewMode == modeTreeView )
     {
         qb.addReturnValue( m_cat1, QueryBuilder::valName );
-        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+        qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
         qb.sortBy( m_cat1, QueryBuilder::valName );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
@@ -358,7 +358,7 @@ CollectionView::renderView( )  //SLOT
         {
             qb.clear();
             qb.addReturnValue( m_cat1, QueryBuilder::valName );
-            qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
+            qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
             qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
             qb.setLimit( 0, 1 );
             values = qb.run();
@@ -534,7 +534,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             break;
     }
 
-    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+    qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
 

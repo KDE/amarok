@@ -1906,28 +1906,36 @@ QueryBuilder::addFilter( int tables, const QString& filter, int mode )
     {
         m_where += "AND ( 0 ";
 
-#ifdef USE_MYSQL
-        if ( mode == modeFuzzy )
-        {
-            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabSong ) m_where += "OR MATCH ( tags.title ) AGAINST ( '" + CollectionDB::instance()->escapeString( filter ) + "' ) ";
-        }
-        else
-        {
-#endif
-
         if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
         if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
         if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
         if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
         if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
 
-#ifdef USE_MYSQL
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tables;
+}
+
+
+void
+QueryBuilder::addFilters( int tables, const QStringList& filter )
+{
+    if ( !filter.isEmpty() )
+    {
+        m_where += "AND ( 1 ";
+
+        for ( uint i = 0; i < filter.count(); i++ )
+        {
+            m_where += " AND ( 0 ";
+            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            m_where += " ) ";            
         }
-#endif
 
         m_where += " ) ";
     }
