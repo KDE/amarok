@@ -224,7 +224,7 @@ int Loader::tryConnect()
 
     // checks
     result = lstat(kde_tmp_dir, &stat_buf);
-    if ((result == -1) || (!S_ISLNK(stat_buf.st_mode)))
+    if (result == -1)
     {
         qFatal("Error: \"%s\" is not a link or a directory.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
         return -1;
@@ -236,8 +236,9 @@ int Loader::tryConnect()
         qFatal("Error: \"%s\" could not be read.\nThis SHOULD NOT happen, please report!\n", kde_tmp_dir);
         return -1;
     }
+    tmp_buf[result] = '\0';
 
-    QCString path(kde_tmp_dir);
+    QCString path(tmp_buf);
     path += "/amarok.loader_socket";
     ::strcpy( &local.sun_path[0], path );
 
