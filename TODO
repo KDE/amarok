@@ -3,10 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #138 being the highest available (take this one for your next bug and increase here)
+           #139 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 138 <markey> Don't blindly accept mp3/ogg files in the playlist, by ignoring canDecode().
+                   This is already causing trauble on distros like fedora which don't support mp3.
+                   We can't rely on support for these formats.
 
   FIX 135 <markey> Improve support for desktop environments other than KDE. GNOME users report, 
                    once you hide amaroK, there's no way to bring the application back into view,
