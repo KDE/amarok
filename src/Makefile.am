@@ -37,7 +37,6 @@ amarokapp_SOURCES = \
     Options7.ui \
     actionclasses.cpp \
     amarokfilelist.cpp \
-    amazonsearch.cpp \
     app.cpp \
     browserbar.cpp \
     clicklineedit.cpp \

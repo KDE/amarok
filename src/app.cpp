@@ -33,12 +33,12 @@ email                : markey@web.de
 #include "playlistwindow.h"
 #include "pluginmanager.h"
 #include "socketserver.h"
-
 #include "statusbar.h"
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kcmdlineargs.h>        //initCliArgs()
+#include <kcursor.h>             //amaroK::OverrideCursor
 #include <kdebug.h>
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()
@@ -849,6 +849,8 @@ QWidget *App::mainWindow() const
 
 namespace amaroK
 {
+    //declarations are in amarok.h
+
     QWidget *mainWindow()
     {
         return pApp->playlistWindow();
@@ -873,6 +875,16 @@ namespace amaroK
         QColor Text; //Qt::white
         QColor Background; //brighter blue
         QColor Foreground; //lighter blue
+    }
+
+    OverrideCursor::OverrideCursor( Qt::CursorShape cursor )
+    {
+        QApplication::setOverrideCursor( cursor == Qt::WaitCursor ? KCursor::waitCursor() : KCursor::workingCursor() );
+    }
+
+    OverrideCursor::~OverrideCursor()
+    {
+        QApplication::restoreOverrideCursor();
     }
 }
 

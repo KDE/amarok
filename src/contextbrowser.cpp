@@ -168,8 +168,8 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
 
     /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" ) {
-        const QString command = "kfmclient openURL 'http://www.musicbrainz.org/taglookup.html?artist=''%1''&album=''%2'''";
-        KRun::runCommand( command.arg( info[0] ).arg( info[1] ), "kfmclient", "konqueror" );
+        const QString url = "http://www.musicbrainz.org/taglookup.html?artist='%1'&album='%2'";
+        kapp->invokeBrowser( url.arg( info[0], info[1] ) );
     }
 }
 
@@ -280,11 +280,11 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIconSet( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon." )+AmarokConfig::amazonLocale(), FETCH );
-        menu.insertItem( SmallIconSet( "folder_image" ), i18n( "Add &Custom Cover" ), CUSTOM );
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon.%1" ).arg(AmarokConfig::amazonLocale()), FETCH );
+        menu.insertItem( SmallIconSet( "folder_image" ), i18n( "Set &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n("&Delete Image File"), DELETE );
+        menu.insertItem( SmallIconSet( "editdelete" ), i18n("&Unset Cover"), DELETE );
         menu.insertSeparator();
         menu.insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "Cover Manager" ), MANAGER );
 
@@ -327,9 +327,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     case DELETE:
     {
         const int button = KMessageBox::warningContinueCancel( this,
-            i18n( "This cover will be permanently deleted." ),
+            i18n( "Are you sure you want to remove this cover from the Collection?" ),
             QString::null,
-            i18n("&Delete") );
+            i18n("&Remove") );
 
         if ( button == KMessageBox::Continue ) {
             m_db->removeAlbumImage( info[0], info[1] );
@@ -793,10 +793,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             QStringList albumValues = m_db->query( QString(
                 "SELECT tags.title, tags.url, tags.track, year.name "
                 "FROM tags, year "
-                "WHERE tags.album = " + values[ i+1 ] +  " AND "
-                "( tags.sampler = 1 OR tags.artist = " + QString::number( artist_id ) +  " ) "
+                "WHERE tags.album = %1 AND "
+                "( tags.sampler = 1 OR tags.artist = %2 ) "
                 "AND year.id = tags.year "
-                "ORDER BY tags.track;" ) );
+                "ORDER BY tags.track;" ).arg( values[ i+1 ] ).arg( artist_id ) );
 
             QString albumYear;
             if ( !albumValues.isEmpty() )

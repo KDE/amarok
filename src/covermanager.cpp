@@ -382,7 +382,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //insert the covers first because the list view is soooo paint-happy
     //this is the slowest step in the bit that we can't process events
     for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it )
-        new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *++it );
+        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *++it ) );
 
     QApplication::restoreOverrideCursor();
 
@@ -416,7 +416,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Selected Covers" ), FETCH );
         #endif
-        menu.insertItem( SmallIconSet("editdelete"), i18n("&Remove Selected Covers From Database"), DELETE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("&Unset Selected Covers"), DELETE );
 
     }
     else {
@@ -430,7 +430,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Cover Image"), CUSTOM );
         #endif
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("editdelete"), i18n("&Remove From Database"), DELETE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("&Unset Cover Image"), DELETE );
 
         menu.setItemEnabled( SHOW, item->hasCover() );
         menu.setItemEnabled( DELETE, item->hasCover() );
@@ -561,7 +561,6 @@ void CoverManager::changeView( int id  ) //SLOT
 
 void CoverManager::changeLocale( int id ) //SLOT
 {
-    CoverFetcher* fetcher;
     switch ( id )
     {
         case International:
@@ -653,11 +652,11 @@ void CoverManager::deleteSelectedCovers()
     QPtrList<CoverViewItem> selected = selectedItems();
 
     int button = KMessageBox::warningContinueCancel( this,
-                            i18n( "Are you sure you want to delete this cover?",
-                                  "Are you sure you want to delete these %n covers?",
+                            i18n( "Are you sure you want to remove this cover from the Collection?",
+                                  "Are you sure you want to delete these %n covers from the Collection?",
                                   selected.count() ),
                             QString::null,
-                            i18n("&Delete Confirmation") );
+                            i18n("&Remove") );
 
     if ( button == KMessageBox::Continue ) {
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {

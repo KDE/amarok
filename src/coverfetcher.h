@@ -5,14 +5,11 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include <qobject.h>     //baseclass
-#include <qimage.h>     //baseclass
-#include <qstring.h>     //stack alloc
-#include <kdebug.h>
+#include <qimage.h>   //stack allocated
+#include <qobject.h>  //baseclass
+#include <qstring.h>  //stack allocated
 
-namespace KIO {
-    class Job;
-}
+namespace KIO { class Job; }
 
 
 class CoverFetcher : public QObject
@@ -22,8 +19,8 @@ class CoverFetcher : public QObject
     public:
         enum QueryMode { lite, heavy };
 
-        CoverFetcher( const QString& license, QObject* parent = 0 );
-        ~CoverFetcher();
+        CoverFetcher( QWidget* parent, const QString& license );
+       ~CoverFetcher();
 
         void setLicense( const QString& license ) { m_license = license; }
         void getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
@@ -37,7 +34,7 @@ class CoverFetcher : public QObject
         void xmlResult( KIO::Job* job );
         void imageData( KIO::Job* job, const QByteArray& data );
         void imageResult( KIO::Job* job );
-        void editSearch();
+        void editSearch( QString text = QString::null );
         void saveCover();
         void saveCover( const QImage& image );
 
@@ -50,7 +47,6 @@ class CoverFetcher : public QObject
         QString m_artist;
         QString m_album;
         QString m_saveas;
-        QString m_text;
         QString m_amazonUrl;
         QString m_imageUrl;
 

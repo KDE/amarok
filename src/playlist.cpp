@@ -55,6 +55,14 @@
 #include <qsortedlist.h>
 
 
+
+/**
+ * Iterator class that by default encourages you to only edit the visible items!
+ * It is here because we have had many nasty bugs related to editing invisible items
+ * because normal methods for iteration also iterate over invisible items (due to filtration)
+ * Also it does conversion to PlaylistItem* for you, saving you the cast.
+ */
+
 class MyIterator : public QListViewItemIterator
 {
 public:
@@ -70,6 +78,7 @@ public:
 };
 
 typedef MyIterator MyIt;
+
 
 namespace Glow
 {
@@ -278,6 +287,7 @@ Playlist::insertMedia( KURL::List list, int options )
 
     if( options & Replace )
        clear();
+
     else if( options & Queue )
     {
         KURL::List addMe = list;
@@ -324,17 +334,9 @@ Playlist::insertMedia( KURL::List list, int options )
 void
 Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
-    //TODO directPlay handling
-    m_ac->action( "play" )->setEnabled( true );
-    m_ac->action( "prev" )->setEnabled( true );
-    m_ac->action( "next" )->setEnabled( true );
-
     if( list.count() == 1 )
     {
-        //if safe just add it
-
         const KURL &url = list.front();
-
         if( PlaylistLoader::isPlaylist( url ) )
         {
             if( !url.isLocalFile() )
@@ -342,7 +344,6 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
                 PlaylistLoader::downloadPlaylist( url, this, after, directPlay );
                 return;
             }
-            //else use the normal loader route
         }
     }
 
@@ -757,19 +758,12 @@ void
 Playlist::appendMedia( const QString &path )
 {
     appendMedia( KURL::fromPathOrURL( path ) );
-    m_ac->action( "prev" )->setEnabled( true );
-    m_ac->action( "next" )->setEnabled( true );
-    m_ac->action( "play" )->setEnabled( true );
 }
 
 void
 Playlist::appendMedia( const KURL &url )
 {
     insertMedia( KURL::List( url ) );
-    m_ac->action( "prev" )->setEnabled( true );
-    m_ac->action( "next" )->setEnabled( true );
-    m_ac->action( "play" )->setEnabled( true );
-
 }
 
 void
@@ -1336,6 +1330,8 @@ Playlist::customEvent( QCustomEvent *e )
     default:
         ;
     }
+
+    updateNextPrev();
 }
 
 
@@ -1675,11 +1671,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    enum Id { PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
-              BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
-              BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
+    enum { PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
+        BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
+        BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
-    if( item == NULL ) return; //technically we should show "Remove" but this is far neater
+    if( item == 0 ) return; //technically we should show "Remove" but this is far neater
 
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
@@ -1695,10 +1691,14 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     KPopupMenu popup( this );
 
     popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 50 ) );
-    popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
-    if( !isQueued ) { //not in nextTracks queue
-        QString nextText = isCurrent ? i18n("Play This Track &Again") : i18n( "&Queue After Current Track" );
+    popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
+        ? i18n( "&Restart" )
+        : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+
+    if ( !isQueued ) {
+        //not in nextTracks queue
+        QString nextText = i18n("&Queue Track" );
 
         const uint nextIndex = m_nextTracks.count() + 1;
         if ( nextIndex > 1 )
@@ -1717,34 +1717,44 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
 
     popup.insertSeparator();
-    popup.insertItem( SmallIconSet( "edit" ), i18n( "&Edit '%1' For Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
+
+    popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
+        ? i18n( "&Edit Tag '%1'" )
+        : i18n( "&Edit '%1' Tag For Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
     popup.insertItem( trackColumn
-      ? i18n("&Iteratively Assign Track Numbers")
-      : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
+        ? i18n("&Iteratively Assign Track Numbers")
+        : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
+
     popup.insertSeparator();
 
-    KPopupMenu *burnMenu = new KPopupMenu( this );
-    burnMenu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
-    burnMenu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
-    burnMenu->insertSeparator();
-    burnMenu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
-    burnMenu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
-    burnMenu->insertSeparator();
-    burnMenu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
-    burnMenu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
-    popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), burnMenu, BURN_MENU );
-    popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
+    KPopupMenu burnMenu;
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
+    burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
+    burnMenu.insertSeparator();
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
+    burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
+    burnMenu.insertSeparator();
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
+    burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
+
+    popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
+
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
-    popup.insertItem( SmallIconSet( "editdelete" ), i18n("&Delete File", "&Delete %n Selected Files", itemCount ), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
+    popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
+        ? i18n("&Delete File")
+        : i18n("&Delete Selected Files"), this, SLOT(deleteSelectedFiles()), SHIFT+Key_Delete );
+
     popup.insertSeparator();
+
     popup.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
 
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename && itemCount > 1 );
+    popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
 
 
     switch( popup.exec( p ) )

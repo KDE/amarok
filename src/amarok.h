@@ -3,6 +3,7 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
+#include <qnamespace.h>
 #include <qstring.h>
 
 class KActionCollection;
@@ -64,13 +65,20 @@ namespace amaroK
      */
     QPixmap getJPG( const QString& /*fileName*/ ); //defined in app.cpp
 
-     /**
+    /**
      * The mainWindow is the playlistWindow
      */
-    QWidget*
-    mainWindow(); //defined in app.cpp
-}
+    QWidget *mainWindow(); //defined in app.cpp
 
+    /**
+     * Allocate one on the stack, and it'll set the busy cursor for you until it is destroyed
+     */
+    class OverrideCursor { //defined in app.cpp
+    public:
+        OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
+       ~OverrideCursor();
+    };
+}
 
 #define APP_VERSION "1.2-CVS"
 

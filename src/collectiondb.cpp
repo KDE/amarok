@@ -4,7 +4,7 @@
 
 #include "config.h"
 
-#include "app.h"
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
@@ -358,6 +358,9 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, const 
 bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl )
 {
+    //show a wait cursor for the duration
+    amaroK::OverrideCursor keep;
+
     // remove existing album covers
     removeAlbumImage( artist, album );
 
@@ -1245,7 +1248,7 @@ CollectionDB::md5sum( const QString& artist, const QString& album )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
+CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
 {
 #ifdef AMAZON_SUPPORT
     /* Static license Key. Thanks muesli ;-) */
@@ -1253,7 +1256,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
     QString keyword = artist + " - " + album;
 
-    CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
+    CoverFetcher* fetcher = new CoverFetcher( parent, amazonLicense );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
              this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
     connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
@@ -1388,7 +1391,7 @@ QueryBuilder::addReturnValue( int table, int value )
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
     if ( table & tabStats && value & valScore ) m_values += "round(";
-    
+
     if ( table & tabAlbum ) m_values += "album.";
     if ( table & tabArtist ) m_values += "artist.";
     if ( table & tabGenre ) m_values += "genre.";
@@ -1467,7 +1470,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
     if ( !match.isEmpty() )
     {
         m_where += "AND ( 0 ";
-        
+
         for ( uint i = 0; i < match.count(); i++ )
         {
             if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + m_db.escapeString( match[i] ) + "' ";
@@ -1521,7 +1524,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
         if ( tables & tabGenre ) m_where += "AND genre.name <> '" + m_db.escapeString( match ) + "' ";
         if ( tables & tabYear ) m_where += "AND year.name <> '" + m_db.escapeString( match ) + "' ";
         if ( tables & tabSong ) m_where += "AND tags.title <> '" + m_db.escapeString( match ) + "' ";
-        
+
         if ( match == i18n( "Unknown" ) )
         {
             if ( tables & tabAlbum ) m_where += "AND album.name <> '' ";

@@ -122,7 +122,7 @@ class CollectionDB : public QObject
         QCString md5sum( const QString& artist, const QString& album );
 
     public slots:
-        void fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit );
+        void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit );
         void stopScan();
 
     private slots:
