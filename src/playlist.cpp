@@ -787,12 +787,15 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
 
         //don't leave currentTrack in undefined glow state
         Glow::counter = 63;
+        currentTrack()->m_playing = false;
+        currentTrack()->invalidateHeight();
         slotGlowTimer();
 
         //FALL THROUGH
 
     case EngineBase::Paused:
         m_glowTimer->stop();
+        repaintItem( currentTrack() );
         break;
 
     default:
@@ -841,18 +844,17 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
     }
 
     m_currentTrack = item;
+    m_cachedTrack  = 0; //invalidate cached pointer
+    
     if( item ) {
-        item->setPixmap( mapToLogicalColumn( 0 ), SmallIcon("artsbuilderexecute") );
-        item->setHeight( static_cast<int>( fontMetrics().height() * 1.8 ) );
-    }
+        item->m_playing = true;
+        item->setHeight( fontMetrics().height() * 2 );
+    }    
     if( prev && item != prev ) {
-        //remove pixmap in all columns
-        for ( int i = 0; i < header()->count(); i++ )
-            prev->setPixmap( i, QPixmap() );
+        prev->m_playing = false;
         prev->invalidateHeight();
     }
-    m_cachedTrack  = 0; //invalidate cached pointer
-
+        
     repaintItem( prev );
     repaintItem( item );
 
@@ -1096,7 +1098,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
             // special handling for track column
             bool isNumber;
-            int trackNo;
+            int trackNo = 0;
             if ( col == 7 )
             {
                 trackNo = newTag.toInt( &isNumber );

@@ -38,6 +38,7 @@ class PlaylistItem : public KListViewItem
         const KURL &url() const { return m_url; }
         QString seconds() const;
 
+        bool m_playing;
         static QColor glowText;
         static QColor glowBase;
 

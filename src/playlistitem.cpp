@@ -15,12 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "metabundle.h"
+#include "amarokconfig.h"
 #include "app.h"
+#include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"
-
-#include "amarokconfig.h"
 
 #include <qcolor.h>
 #include <qheader.h>
@@ -32,6 +31,7 @@
 #include <qstring.h>
 
 #include <kdebug.h>
+#include <kiconloader.h>
 #include <kurl.h>
 
 
@@ -117,6 +117,7 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
   : KListViewItem( parent, lvi, trackName( u ) )
 #ifdef CORRUPT_FILE
+  , m_playing( false )
   , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
 #endif
   , m_url( u )
@@ -383,6 +384,14 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     if( this == listView()->currentTrack() )
     {
+        if ( m_playing && column == firstCol )
+            //display "Play" icon
+            setPixmap( column, SmallIcon( "artsbuilderexecute" ) );
+        else
+            //hide "Play" icon
+            setPixmap( column, QPixmap() );
+                    
+        setHeight( listView()->fontMetrics().height() * 2 );
         QColorGroup glowCg = cg; //shallow copy
 
         glowCg.setColor( QColorGroup::Base, glowBase );
@@ -391,9 +400,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( &painterBuf, glowCg, column, width, align );
     }
-    else
+    else {
+        //hide "Play" icon
+        setPixmap( column, QPixmap() );
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
-
+    }
+        
     //figure out if we are in the actual physical first column
     if( playNext && column == firstCol )
     {
