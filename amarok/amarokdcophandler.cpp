@@ -95,9 +95,7 @@ void AmarokDcopHandler::addMedia(const KURL &url)
 
 void AmarokDcopHandler::addMediaList(const KURL::List &urls)
 {
-   KURL::List::ConstIterator it;
-   for ( it = urls.begin(); it != urls.end(); it++ )
-      addMedia( (*it) );
+   pApp->m_pBrowserWin->m_pPlaylistWidget->insertMedia(urls);
 }
 
 
