@@ -32,7 +32,6 @@
 
 PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
     : ThreadWeaver::DependentJob( dependent, "PlaylistLoader" )
-    , m_dirLister( new KDirLister( false ) )
     , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
     , m_playFirstUrl( playFirstUrl )
     , m_block( "PlaylistLoader" )
@@ -47,10 +46,6 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
             .setTotalSteps( 100 );
 
     m_markerListViewItem->setText( 0, "IF YOU CAN SEE THIS THERE IS A BUG" );
-
-    m_dirLister->setAutoUpdate( false );
-    m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
-
 
     for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
@@ -93,10 +88,7 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
 
 
 PlaylistLoader::~PlaylistLoader()
-{
-    delete m_dirLister;
-}
-
+{}
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -335,15 +327,18 @@ PlaylistLoader::recurse( const KURL &url )
 {
     KURL::List urls;
 
-    m_dirLister->openURL( url );
-    while( !m_dirLister->isFinished() )
+    KDirLister lister( false );
+    lister.setAutoUpdate( false );
+    lister.setAutoErrorHandlingEnabled( false, 0 );
+    lister.openURL( url );
+
+    while( !lister.isFinished() )
         //FIXME this is a crash waiting to happen
         kapp->processEvents( 100 );
 
     //returns QPtrList, so we MUST only do it once!
-    KFileItemList items = m_dirLister->items();
+    KFileItemList items = lister.items();
     for( KFileItem *item = items.first(); item; item = items.next() ) {
-        if( item->name() == "." || item->name() == ".." ) continue;
         if( item->isFile() ) { urls += item->url(); continue; }
         if( item->isDir() ) urls += recurse( item->url() );
     }
