@@ -1,0 +1,49 @@
+SCRIPT-WRITING HOWTO
+====================
+
+INTRODUCTION
+------------
+
+Scripting allows to extend amaroK without changing the main codebase. Scripts
+are comparable to plugins, but instead of a dedicated plugin API they use
+amaroK's DCOP interface for communication. This makes it possible to write
+scripts in almost any programming language, like python, ruby or C. Additionally
+amaroK can notify the scripts on special events and make them react accordingly.
+
+
+CONTROLLING AMAROK WITH DCOP
+----------------------------
+
+Scripts can control amaroK by calling some of its dcop functions. The easiest
+way to invoke a dcop function is by using the "dcop" command line utility, which
+is part of every KDE distribution. Here is an example for increasing the master
+volume:
+
+  "dcop amarok player volumeUp"
+
+
+
+NOTIFICATIONS
+-------------
+
+amaroK sends notifications to scripts by writing to each script processes STDIN
+channel. The script should therefore constantly monitor STDIN, and react
+accordingly to each of the possible events. Scripts may also choose to ignore
+any event they don't have a use for.
+
+These notifications are sent by amaroK:
+
+
+ * configure
+
+       Tells the script to show its configuration dialog.
+
+ * engineStateChange: {empty|idle|paused|playing}
+
+       Signals a change in the engine's state.
+
+ * trackChange
+
+       Signals the start of a new track.
+
+
