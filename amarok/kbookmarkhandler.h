@@ -28,6 +28,9 @@ class KPopupMenu;
 class KActionMenu;
 class KDevFileSelector;
 
+//we do this in case we need to substitute in code at some point from the original sources
+#define KDevFileSelector FileBrowser
+
 class KBookmarkHandler : public QObject, public KBookmarkOwner
 {
     Q_OBJECT

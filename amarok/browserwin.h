@@ -18,7 +18,6 @@
 #ifndef BROWSERWIN_H
 #define BROWSERWIN_H
 
-
 #include <qwidget.h>        //baseclass
 #include <kurl.h>           //KURL::List
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
@@ -32,6 +31,7 @@ class PlaylistWidget;
 class QColor;
 class QCloseEvent;
 class QCustomEvent;
+class QFocusEvent;
 class QFont;
 class QListViewItem;
 class QPalette;

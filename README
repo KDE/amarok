@@ -91,7 +91,8 @@ A: It can! Chances are you're using Fedora/RedHat linux, they don't ship with
        ALT-F2, gg:redhat mp3 decoder howto, ENTER
 
 Q: Where is the Collection Browser?
-A: You need to install sqlite, reconfigure and rebuild.
+A: You need to install sqlite, reconfigure and rebuild. Check your PKG_CONFIG_PATH
+   is set correctly if there are problems detecting sqlite!
        
 Q: The amaroK analyzers are really unresponsive!
 A: You are probably using the aRts engine, either use the GST or NMM engines, or

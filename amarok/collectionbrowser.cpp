@@ -53,8 +53,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_view = new CollectionView( this );
 
-    setFocusProxy( m_view ); //default object to get focus
-
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
 
@@ -75,6 +73,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     connect( m_searchEdit, SIGNAL( returnPressed() ),
              this,           SLOT( slotSetFilter() ) );
+
+    setFocusProxy( m_view ); //default object to get focus
+    setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
 

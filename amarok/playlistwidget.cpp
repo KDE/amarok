@@ -155,6 +155,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "playlist_clear" );
 
+    ac->action( "playlist_show" )->setEnabled( false ); //FIXME instead get the engineController to set state on registration!
+
 
     header()->installEventFilter( this );
 
@@ -243,17 +245,17 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 
         //FIXME since 1.172 changes prevTracks is never empty so repeatPlaylist
         //      backwards never occurs
-        
+
         //FIXME pre 1.172 we didn't need to store the currentTrack in the prevTracks list,
         //      which made the code simpler
-    
+
         if( m_prevTracks.isEmpty() )
         {
             item = (PlaylistItem *)item->itemAbove();
 
             if( !item && AmarokConfig::repeatPlaylist() ) item = lastItem();
         }
-        else 
+        else
         {
             // if enough songs in buffer, jump to the previous one,
             // otherwise restart the current song
@@ -293,7 +295,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
                 uint visCount = 0;
                 for ( QListViewItemIterator it( this, QListViewItemIterator::Visible ); it.current(); ++it )
                     ++visCount;
-                
+
                 uint x = 0;
                 uint rnd = KApplication::random() % visCount;
                 kdDebug() << rnd << endl;
@@ -309,7 +311,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
                         {
                             // song was already played, let's cycle through the list to find an unplayed one
                             item = (PlaylistItem*)item->itemBelow();
-                            
+
                             if ( !item )  // end of list, jump to the beginning
                                 item = firstChild();
 
@@ -560,7 +562,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, PlaylistItem *
 
         loader->setOptions( AmarokConfig::directoriesRecursively(),
                             directPlay,
-                            AmarokConfig::browserSortingSpec() );
+                            0 ); //no longer used
         loader->start();
     }
     else kdDebug() << "[playlist] Unable to create loader-thread!\n";
@@ -587,7 +589,7 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
 
         //ensure the playlist doesn't start at the beginning after the track that's playing ends
         //we don't need to do that in random mode, it's getting randomly selected anyways
-        if( m_nextTracks.isEmpty() && !AmarokConfig::randomMode() )  
+        if( m_nextTracks.isEmpty() && !AmarokConfig::randomMode() )
         {
             PlaylistItem *nextItem = item->nextSibling();
             m_nextTracks.append( nextItem );
@@ -696,6 +698,9 @@ void PlaylistWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChan
 
 void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
 {
+    //TODO define states in the ui.rc file and override setEnabled() for prev and next so they auto check
+    //     isTrackBefore/After (you could make them engineObservers but that's more overhead)
+
     switch( state )
     {
     case EngineBase::Playing:
@@ -706,6 +711,7 @@ void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "prev" )->setEnabled( isTrackBefore() ); //FIXME you also do this in setCurrenTrack
         m_ac->action( "next" )->setEnabled( isTrackAfter() );  //FIXME you also do this in setCurrenTrack
+        m_ac->action( "playlist_show" )->setEnabled( true );
         break;
 
     case EngineBase::Empty:
@@ -714,6 +720,7 @@ void PlaylistWidget::engineStateChanged( EngineBase::EngineState state )
         m_ac->action( "stop" )->setEnabled( false );
         m_ac->action( "prev" )->setEnabled( false );
         m_ac->action( "next" )->setEnabled( false );
+        m_ac->action( "playlist_show" )->setEnabled( false );
 
         repaintItem( m_currentTrack );
 
@@ -930,7 +937,7 @@ void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, c
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
     #define item static_cast<PlaylistItem*>(item)
-    
+
     enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE };
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
@@ -1089,7 +1096,7 @@ void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
 {
     //TODO allow a slight delay before searching
     //TODO if we provided the lineEdit m_lastSearch would be unecessary
-    
+
     const QString loweredQuery = query.lower();
     const QStringList v = QStringList::split( ' ', loweredQuery );
     QListViewItem *item = 0;
@@ -1099,7 +1106,7 @@ void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
     while( item = it.current() )
     {
         b = query.isEmpty(); //if query is empty skip the loops and show all items
-        
+
         for( uint x = 0; !b && x < v.count(); ++x ) //v.count() is constant time
             for( uint y = 0; !b && y < 4; ++y ) // search in Trackname, Artist, Songtitle, Album
                 b = static_cast<PlaylistItem*>(item)->exactText( y ).lower().contains( v[x] );
@@ -1108,8 +1115,8 @@ void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
         ++it;
     }
 
-    m_lastSearch = loweredQuery;    
-    
+    m_lastSearch = loweredQuery;
+
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
     clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution

@@ -24,175 +24,83 @@
 //BEGIN Includes
 #include "amarokconfig.h"
 #include "filebrowser.h"
-//#include "kactionselector.h"
 #include "kbookmarkhandler.h"
 
-#include <qapplication.h>
-#include <qcheckbox.h>
-#include <qdockarea.h>
-#include <qgroupbox.h>
 #include <qhbox.h>
 #include <qlabel.h>
-#include <qlistbox.h>
-#include <qregexp.h>
-#include <qscrollbar.h>
-#include <qspinbox.h>
-#include <qstrlist.h>
-#include <qtimer.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
-#include <qvbox.h>
-#include <qwhatsthis.h>
 
 #include <kaction.h>
 #include <kapplication.h>
 #include <kdebug.h>
 #include <kiconloader.h>
-#include <kio/netaccess.h>
 #include <klocale.h>
-#include <kmessagebox.h>
 #include <kpopupmenu.h>
-#include <kprotocolinfo.h>
-#include <ktoolbarbutton.h>
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
-#include <qtoolbar.h>
 //END Includes
 
-// from kfiledialog.cpp - avoid qt warning in STDERR (~/.xsessionerrors)
-static void silenceQToolBar(QtMsgType, const char *)
-{}
 
+QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 
-KDevFileSelectorToolBar::KDevFileSelectorToolBar(QWidget *parent)
-        : KToolBar( parent, "KDev FileSelector Toolbar", true )
-{
-    setMinimumWidth(10);
-}
-
-KDevFileSelectorToolBar::~KDevFileSelectorToolBar()
-{}
-
-void KDevFileSelectorToolBar::setMovingEnabled( bool)
-{
-    KToolBar::setMovingEnabled(false);
-}
-
-
-KDevFileSelectorToolBarParent::KDevFileSelectorToolBarParent(QWidget *parent)
-        :QFrame(parent),m_tb(0)
-{}
-
-KDevFileSelectorToolBarParent::~KDevFileSelectorToolBarParent()
-{}
-
-void KDevFileSelectorToolBarParent::setToolBar(KDevFileSelectorToolBar *tb)
-{
-    m_tb=tb;
-}
-
-void KDevFileSelectorToolBarParent::resizeEvent ( QResizeEvent * )
-{
-    if (m_tb)
-    {
-        setMinimumHeight(m_tb->sizeHint().height());
-        m_tb->resize(width(),height());
-    }
-}
+//#include "amarokfileview.cpp" //FIXME
 
 
 //BEGIN Constructor/destructor
-QColor KDevFileSelector::altBgColor;
 
-
-KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
-        : QWidget(parent, name)
+FileBrowser::FileBrowser( QWidget * parent, const char * name )
+  : QVBox( parent, name )
 {
-    KConfig *config = kapp->config();
-    config->setGroup( "FileBrowser" );
+    KConfig* const config = kapp->config();
+    config->setGroup( "Filebrowser" );
 
-    mActionCollection = new KActionCollection( this );
-    QVBoxLayout* lo = new QVBoxLayout(this);
-    QtMsgHandler oldHandler = qInstallMsgHandler( silenceQToolBar );
+    m_actionCollection = new KActionCollection( this );
 
-    KDevFileSelectorToolBarParent *tbp=new KDevFileSelectorToolBarParent(this);
-    toolbar = new KDevFileSelectorToolBar(tbp);
-    tbp->setToolBar(toolbar);
-    lo->addWidget(tbp);
+    toolbar = new KDevFileSelectorToolBar( this );
     toolbar->setMovingEnabled(false);
     toolbar->setFlat(true);
-    qInstallMsgHandler( oldHandler );
-
-    cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
-    cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-    KURLCompletion* cmpl = new KURLCompletion(KURLCompletion::DirCompletion);
-    cmbPath->setCompletionObject( cmpl );
-    lo->addWidget(cmbPath);
-    cmbPath->listBox()->installEventFilter( this );
-
-    dir = new KDevDirOperator( KURL(), this, "operator" );
-    dir->readConfig( config );
-    dir->setView( KFile::Default ); //will set userconfigured view
-    dir->setMode( KFile::Files );
-    dir->setEnableDirHighlighting( true );
-
-    KActionCollection *coll = dir->actionCollection();
-    // some shortcuts of diroperator that clashes with KDev
-    coll->action( "delete" )->setShortcut( KShortcut( ALT + Key_Delete ) );
-    coll->action( "reload" )->setShortcut( KShortcut( ALT + Key_F5 ) );
-    coll->action( "back" )->setShortcut( KShortcut( ALT + SHIFT + Key_Left ) );
-    coll->action( "forward" )->setShortcut( KShortcut( ALT + SHIFT + Key_Right ) );
-    // some consistency - reset up for dir too
-    coll->action( "up" )->setShortcut( KShortcut( ALT + SHIFT + Key_Up ) );
-    coll->action( "home" )->setShortcut( KShortcut( CTRL + ALT + Key_Home ) );
-
-    lo->addWidget(dir);
-    lo->setStretchFactor(dir, 2);
-
-    // bookmarks action!
-    KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark",
-                                mActionCollection, "bookmarks" );
-    acmBookmarks->setDelayed( false );
-
-    bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->popupMenu() );
-
-    QHBox* filterBox = new QHBox(this);
-
-    btnFilter = new QToolButton( filterBox );
-    btnFilter->setIconSet( SmallIconSet("filter" ) );
-    btnFilter->setToggleButton( true );
-    filter = new KHistoryCombo( true, filterBox, "filter");
-    filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-    filterBox->setStretchFactor(filter, 2);
-    connect( btnFilter, SIGNAL( clicked() ), this, SLOT( btnFilterClick() ) );
-    lo->addWidget(filterBox);
-
-    connect( filter, SIGNAL( activated(const QString&) ),
-             SLOT( slotFilterChange(const QString&) ) );
-    connect( filter, SIGNAL( returnPressed(const QString&) ),
-             filter, SLOT( addToHistory(const QString&) ) );
-
     toolbar->setIconText( KToolBar::IconOnly );
     toolbar->setIconSize( 16 );
     toolbar->setEnableContextMenu( false );
 
-    connect( cmbPath, SIGNAL( urlActivated( const KURL&  )),
-             this,  SLOT( cmbPathActivated( const KURL& ) ));
-    connect( cmbPath, SIGNAL( returnPressed( const QString&  )),
-             this,  SLOT( cmbPathReturnPressed( const QString& ) ));
-    connect(dir, SIGNAL(urlEntered(const KURL&)),
-            this, SLOT(dirUrlEntered(const KURL&)) );
+    cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
+    cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+    cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+    setFocusProxy( cmbPath ); //so the dirOperator is focussed when we get focus events
 
-    connect(dir, SIGNAL(finishedLoading()),
-            this, SLOT(dirFinishedLoading()) );
+    dir = new KDevDirOperator( KURL(), this, "operator" );
+    dir->readConfig( config );
+    dir->setView( KFile::Default ); //will set userconfigured view
+    //dir->setView( new amaroK::FileView( dir ) );
+    dir->setEnableDirHighlighting( true );
+    dir->actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
+    setStretchFactor( dir, 2 );
 
-    // Connect the bookmark handler
-    connect( bookmarkHandler, SIGNAL( openURL( const QString& )),
-             this, SLOT( setDir( const QString& ) ) );
+    KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark", m_actionCollection, "bookmarks" );
+    acmBookmarks->setDelayed( false );
+    bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->popupMenu() );
 
-    waitingUrl = QString::null;
+    QHBox *filterBox = new QHBox( this );
+    btnFilter = new QToolButton( filterBox );
+    btnFilter->setIconSet( SmallIconSet( "filter" ) );
+    btnFilter->setToggleButton( true );
+    filter = new KHistoryCombo( true, filterBox, "filter");
+    filter->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+    filterBox->setStretchFactor( filter, 2 );
 
-    // whatsthis help
+    connect( btnFilter, SIGNAL(clicked()), this, SLOT(btnFilterClick()) );
+    connect( filter, SIGNAL( activated(const QString&) ), SLOT( slotFilterChange(const QString&) ) );
+    connect( filter, SIGNAL( returnPressed(const QString&) ), filter, SLOT( addToHistory(const QString&) ) );
+    connect( cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
+    connect( cmbPath, SIGNAL( returnPressed( const QString&  )), SLOT(cmbPathReturnPressed( const QString& )) );
+    connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+    connect( bookmarkHandler, SIGNAL( openURL( const QString& )), SLOT( setDir( const QString& ) ) );
+
+/*
+    //NOTE why bother? this just increases the binary size and we don't have whatsthis tips anywhere else
+    //     also our users know how to use a file dialog so this is similar enough IMO
+
     QWhatsThis::add
         ( cmbPath,
                 i18n("<p>Here you can enter a path for a directory to display."
@@ -208,116 +116,109 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
         ( btnFilter,
                 i18n("<p>This button clears the name filter when toggled off, or "
                      "reapplies the last filter used when toggled on.") );
-
+*/
     readConfig();
+
+    setMinimumWidth( toolbar->sizeHint().width() ); //the toolbar minWidth is 0!
 }
 
-KDevFileSelector::~KDevFileSelector()
+FileBrowser::~FileBrowser()
 {
-    dir->writeConfig( kapp->config(), "FileBrowser" );
+    KConfig* const c = kapp->config();
+    c->setGroup( "Filebrowser" );
+
+    dir->writeConfig( c ); //uses currently set group
+
+    //c->writeEntry( "Set Path Combo History Len", cmbPath->maxItems() );
+
+    QStringList l;
+    for( int i = 0; i < cmbPath->count(); ++i )
+        l.append( cmbPath->text( i ) );
+    c->writeEntry( "Dir History", l ); //NOTE KURLComboBox::urls() may suffice
+
+    c->writeEntry( "Location", cmbPath->currentText() );
+    //c->writeEntry( "Filter History Len", filter->maxCount() );
+    c->writeEntry( "Filter History", filter->historyItems() );
+    c->writeEntry( "Current Filter", filter->currentText() );
+    c->writeEntry( "Last Filter", lastFilter );
 }
 //END Constructor/Destructor
 
 
 //BEGIN Public Methods
-QString KDevFileSelector::location() const
+QString FileBrowser::location() const
 {
     return cmbPath->currentText();
 }
 
 
-void KDevFileSelector::readConfig()
+void FileBrowser::readConfig()
 {
-    // set up the toolbar
     setupToolbar();
 
-    //FIXME it is pointless using KConfig XT here
-    //1. These settings are not used globally, they are used locally
-    //2. It means that you have to spend more time adding new settings for this class than using KConfig
-    //3. it means you have to go to the hassle of calling browserWin->writeConfig which calls
-    //   FileBrowser->writeConfig when you could just let the dtor save the settings
+    KConfig* const config = kapp->config();
+    config->setGroup( "Filebrowser" );
 
-    //Also putting them in a separate funciton to the ctor limits their usefulness as they may be needed
-    //for instantiation of members
+    cmbPath->setMaxItems( /*config->readNumEntry( "Pathcombo History Len", */ 9 /*)*/ );
+    cmbPath->setURLs( config->readListEntry( "Dir History" ) );
 
-    cmbPath->setMaxItems( AmarokConfig::pathcomboHistoryLen() );
-    cmbPath->setURLs( AmarokConfig::dirHistory() );
+    const QString configLocation = config->readEntry( "Location" );
 
-    // if we restore history
-    if ( AmarokConfig::restoreLocation() && !AmarokConfig::location().isEmpty() ) {
-        setDir( AmarokConfig::location() );
-        cmbPath->setURL( KURL(AmarokConfig::location()) );
-    }
+/*    if( config->readBoolEntry( "Restore Location", true ) && !configLocation.isEmpty() )
+    {*/
+        setDir( configLocation );
+        cmbPath->setURL( KURL( configLocation ) ); //FIXME should we use setPath() here?
+//    }
 
-    filter->setMaxCount( AmarokConfig::filterHistoryLen() );
-    filter->setHistoryItems( AmarokConfig::filterHistory(), true );
-    lastFilter = AmarokConfig::lastFilter();
+    filter->setMaxCount( /*config->readNumEntry( "Filter History Len", */ 9 /*)*/ );
+    filter->setHistoryItems( config->readListEntry( "Filter History" ), true );
+    lastFilter = config->readEntry( "Last Filter" );
 
-    QString flt("");
-    if ( AmarokConfig::restoreLastFilter() || kapp->isRestored() )
-        flt = AmarokConfig::currentFilter();
+/*    QString flt;
+    if ( config->readBoolEntry( "Restore Last Filter", true ) || kapp->isRestored() )
+        flt = config->readEntry( "Current Filter" )*/
+
+    const QString flt = config->readEntry( "Current Filter" );
     filter->lineEdit()->setText( flt );
     slotFilterChange( flt );
-
-    autoSyncEvents = ( AmarokConfig::autoSyncEvents() );
 }
 
 
-void KDevFileSelector::setupToolbar()
+void FileBrowser::setupToolbar()
 {
-    toolbar->clear();
+    //toolbar->clear();
 
     QStringList tbactions;
-    tbactions << "up" << "back" << "forward" << "home" << "short view" << "detailed view";
+    tbactions << "up" << "back" << "forward" << "home" << "reload" << "short view" << "detailed view";
 
     KAction *ac;
-    for ( QStringList::Iterator it=tbactions.begin(); it != tbactions.end(); ++it )
+    for ( QStringList::ConstIterator it = tbactions.constBegin(); it != tbactions.constEnd(); ++it )
     {
         ac = dir->actionCollection()->action( (*it).latin1() );
         if( ac ) ac->plug( toolbar );
     }
-    mActionCollection->action( "bookmarks" )->plug( toolbar );
+    m_actionCollection->action( "bookmarks" )->plug( toolbar );
 }
 
-
-void KDevFileSelector::writeConfig()
-{
-    AmarokConfig::setPathcomboHistoryLen( cmbPath->maxItems() );
-
-    QStringList l;
-    for (int i = 0; i < cmbPath->count(); i++)
-        l.append( cmbPath->text( i ) );
-    AmarokConfig::setDirHistory( l );
-
-    AmarokConfig::setLocation( cmbPath->currentText() );
-    AmarokConfig::setFilterHistoryLen( filter->maxCount() );
-    AmarokConfig::setFilterHistory( filter->historyItems() );
-    AmarokConfig::setCurrentFilter( filter->currentText() );
-    AmarokConfig::setLastFilter( lastFilter );
-    AmarokConfig::setAutoSyncEvents( autoSyncEvents );
-}
 //END Public Methods
 
 
 //BEGIN Public Slots
-void KDevFileSelector::slotFilterChange( const QString & nf )
+void FileBrowser::slotFilterChange( const QString & nf )
 {
-    QString f = nf.stripWhiteSpace();
-    bool empty = f.isEmpty() || f == "*";
+    const QString f = nf.stripWhiteSpace();
+    const bool empty = f.isEmpty() || f == "*";
     if ( empty )
     {
         dir->clearFilter();
         filter->lineEdit()->setText( QString::null );
-        QToolTip::add
-            ( btnFilter,
-                    QString( i18n("Apply last filter (\"%1\")") ).arg( lastFilter ) );
+        QToolTip::add( btnFilter, QString( i18n("Apply last filter (\"%1\")") ).arg( lastFilter ) );
     }
     else
     {
         dir->setNameFilter( f );
         lastFilter = f;
-        QToolTip::add
-            ( btnFilter, i18n("Clear filter") );
+        QToolTip::add( btnFilter, i18n("Clear filter") );
     }
     btnFilter->setOn( !empty );
     dir->updateDir();
@@ -327,7 +228,7 @@ void KDevFileSelector::slotFilterChange( const QString & nf )
 }
 
 
-void KDevFileSelector::setDir( KURL u )
+void FileBrowser::setDir( KURL u )
 {
     dir->setURL(u, true);
 }
@@ -336,13 +237,13 @@ void KDevFileSelector::setDir( KURL u )
 
 
 //BEGIN Private Slots
-void KDevFileSelector::cmbPathActivated( const KURL& u )
+void FileBrowser::cmbPathActivated( const KURL& u )
 {
     cmbPathReturnPressed( u.url() );
 }
 
 
-void KDevFileSelector::cmbPathReturnPressed( const QString& u )
+void FileBrowser::cmbPathReturnPressed( const QString& u )
 {
     QStringList urls = cmbPath->urls();
     urls.remove( u );
@@ -353,14 +254,10 @@ void KDevFileSelector::cmbPathReturnPressed( const QString& u )
 }
 
 
-void KDevFileSelector::dirUrlEntered( const KURL& u )
+void FileBrowser::dirUrlEntered( const KURL& u )
 {
     cmbPath->setURL( u );
 }
-
-
-void KDevFileSelector::dirFinishedLoading()
-{}
 
 
 /*
@@ -370,7 +267,7 @@ void KDevFileSelector::dirFinishedLoading()
    If on:
    Set last filter.
 */
-void KDevFileSelector::btnFilterClick()
+void FileBrowser::btnFilterClick()
 {
     if ( !btnFilter->isOn() )
     {
@@ -384,122 +281,17 @@ void KDevFileSelector::btnFilterClick()
 }
 //END Private Slots
 
-
-//BEGIN Protected
-void KDevFileSelector::focusInEvent( QFocusEvent * )
-{
-    dir->setFocus();
-}
-
-
-void KDevFileSelector::showEvent( QShowEvent * )
-{
-    // sync if we should
-    if ( autoSyncEvents & GotVisible )
-    {
-        kdDebug()<<"syncing fs on show"<<endl;
-        waitingUrl = QString::null;
-    }
-    // else, if we have a waiting URL set it
-    else if ( ! waitingUrl.isEmpty() )
-    {
-        setDir( waitingUrl );
-        waitingUrl = QString::null;
-    }
-}
-
-
-bool KDevFileSelector::eventFilter( QObject* o, QEvent *e )
-{
-    /*
-        This is rather unfortunate, but:
-        QComboBox does not support setting the size of the listbox to something
-        resonable. Even using listbox->setVariableWidth() does not yeld a
-        satisfying result, something is wrong with the handling of the sizehint.
-        And the popup is rather useless, if the paths are only partly visible.
-    */
-    QListBox *lb = cmbPath->listBox();
-    if ( o == lb && e->type() == QEvent::Show )
-    {
-        int add
-            = lb->height() < lb->contentsHeight() ? lb->verticalScrollBar()->width() : 0;
-        //FIXME
-        int w = QMIN( 200, lb->contentsWidth() + add );
-        //         int w = QMIN( mainwin->main()->width(), lb->contentsWidth() + add );
-        lb->resize( w, lb->height() );
-        /// @todo - move the listbox to a suitable place if nessecary
-        /// @todo - decide if it is worth caching the size while untill the contents
-        ///        are changed.
-    }
-    /// @todo - same thing for the completion popup?
-    return QWidget::eventFilter( o, e );
-}
-//END Protected
-
-
-//BEGIN ACtionLBItem
-/*
-   QListboxItem that can store and return a string,
-   used for the toolbar action selector.
-*/
-class ActionLBItem : public QListBoxPixmap
-{
-    public:
-        ActionLBItem( QListBox *lb=0,
-                      const QPixmap &pm = QPixmap(),
-                      const QString &text=QString::null,
-                      const QString &str=QString::null ) :
-                QListBoxPixmap( lb, pm, text ),
-                _str(str)
-        {}
-        ;
-        QString idstring()
-        {
-            return _str;
-        };
-    private:
-        QString _str;
-};
-
-//END ActionLBItem
-
-
-//BEGIN KDevDirOperator
-void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
-{
-    setupMenu();
-    updateSelectionDependentActions();
-
-    KActionMenu * am = dynamic_cast<KActionMenu*>(actionCollection()->action("popupMenu"));
-    if (!am)
-        return;
-    KPopupMenu *popup = am->popupMenu();
-
-    if (fi)
-    {
-        /*        FileContext context( KURL::List(fi->url()));
-                if ( (m_part) && (m_part->core()))
-                    m_part->core()->fillContextMenu(popup, &context);*/
-    }
-
-    popup->popup(pos);
-}
-
 //we override this method, so that we can set the alternateBackgroundColor
 #include <klistview.h>
 #include <kfileview.h>
-KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView view )
+KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView viewType )
 {
-    kdDebug() << "[KDevDirOperator::createView()]" << endl;
+    KFileView *view = KDirOperator::createView( parent, viewType );
 
-    KFileView *pView = KDirOperator::createView( parent, view );
+    if( view && view->widget()->inherits( "KListView" ) )
+        static_cast<KListView*>(view->widget())->setAlternateBackground( FileBrowser::altBgColor );
 
-    if ( dynamic_cast<QObject*>( pView )->inherits( "KListView" ) )
-        dynamic_cast<KListView*>( pView )->setAlternateBackground( KDevFileSelector::altBgColor );
-
-    return pView;
+    return view;
 }
-//END KDevDirOperator
-
 
 #include "filebrowser.moc"

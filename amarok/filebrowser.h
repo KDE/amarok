@@ -23,19 +23,20 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include <qwidget.h>
-#include <kfile.h>
-#include <kurl.h>
-#include <ktoolbar.h>
 #include <kdiroperator.h>
-
-class QColor;
+#include <ktoolbar.h>
+#include <kurl.h>
+#include <qvbox.h>
 
 class KActionCollection;
 class KActionSelector;
 class KDirOperator;
 class KURLComboBox;
 class KHistoryCombo;
+class QColor;
+
+
+//Hi! I think we ripped this from Kate, since then it's been modified somewhat
 
 /*
     The KDev file selector presents a directory view, in which the default action is
@@ -45,70 +46,51 @@ class KHistoryCombo;
     allowing to filter the displayed files using a name filter.
 */
 
-/* I think this fix for not moving toolbars is better */
+
 class KDevFileSelectorToolBar: public KToolBar
 {
-    Q_OBJECT
 public:
-    KDevFileSelectorToolBar(QWidget *parent);
-    virtual ~KDevFileSelectorToolBar();
+    KDevFileSelectorToolBar( QWidget *parent )
+      : KToolBar( parent, 0, true )
+    {
+        setMinimumWidth(10);
+    }
 
-    virtual void setMovingEnabled( bool b );
+    virtual void KDevFileSelectorToolBar::setMovingEnabled( bool )
+    {
+        KToolBar::setMovingEnabled( false );
+    }
 };
 
-class KDevFileSelectorToolBarParent: public QFrame
-{
-    Q_OBJECT
-public:
-    KDevFileSelectorToolBarParent(QWidget *parent);
-    ~KDevFileSelectorToolBarParent();
-    void setToolBar(KDevFileSelectorToolBar *tb);
-
-private:
-    KDevFileSelectorToolBar *m_tb;
-
-protected:
-    virtual void resizeEvent ( QResizeEvent * );
-};
 
 class KDevDirOperator: public KDirOperator
 {
-    Q_OBJECT
 public:
-    KDevDirOperator( const KURL &urlName=KURL(), QWidget *parent=0, const char *name=0 )
-        :KDirOperator(urlName, parent, name)
-    {
-    }
+    KDevDirOperator( const KURL &urlName, QWidget *parent=0, const char *name=0 )
+      : KDirOperator(urlName, parent, name)
+    {}
 
 protected:
-    KFileView* createView( QWidget*, KFile::FileView );
-
-protected slots:
-    virtual void activatedMenu (const KFileItem *fi, const QPoint &pos);
-
-private:
+    virtual KFileView* createView( QWidget*, KFile::FileView );
 };
 
 
-class KDevFileSelector : public QWidget
+class FileBrowser : public QVBox
 {
     Q_OBJECT
 
 public:
-    /* When to sync to current document directory */
-    enum AutoSyncEvent { DocumentChanged=1, DocumentOpened=2, GotVisible=4 };
-
-    KDevFileSelector( QWidget * parent = 0, const char * name = 0 );
-    ~KDevFileSelector();
+    FileBrowser( QWidget * parent = 0, const char * name = 0 );
+    ~FileBrowser();
 
     void readConfig();
-    void writeConfig();
     void setupToolbar();
     KDevDirOperator *dirOperator(){ return dir; }
-    KActionCollection *actionCollection() { return mActionCollection; };
+    KActionCollection *actionCollection() { return m_actionCollection; };
     QString location() const;
-    static QColor altBgColor;
     QSize sizeHint() const { return QSize( 220, 50 ); } //default embedded sidebar width
+
+    static QColor altBgColor;
 
 public slots:
     void slotFilterChange(const QString&);
@@ -119,28 +101,18 @@ private slots:
     void cmbPathActivated( const KURL& u );
     void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KURL& u );
-    void dirFinishedLoading();
     void btnFilterClick();
-
-protected:
-    void focusInEvent( QFocusEvent * );
-    void showEvent( QShowEvent * );
-    bool eventFilter( QObject *, QEvent * );
 
 private:
     class KDevFileSelectorToolBar *toolbar;
-    KActionCollection *mActionCollection;
+    KActionCollection *m_actionCollection;
     class KBookmarkHandler *bookmarkHandler;
     KURLComboBox *cmbPath;
-    KDevDirOperator * dir;
-    class KAction *acSyncDir;
+    KDevDirOperator *dir;
     KHistoryCombo * filter;
     class QToolButton *btnFilter;
 
     QString lastFilter;
-    int autoSyncEvents; // enabled autosync events
-    QString waitingUrl; // maybe display when we gets visible
-    QString waitingDir;
 };
 
 /*  @todo anders

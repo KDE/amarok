@@ -274,7 +274,7 @@ BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon 
     widget->reparent( m_pageHolder, QPoint(), false ); //we need to own this widget for it to layout properly
     m_pageHolder->layout()->add( widget );
     widget->hide();
-    if( widget->minimumWidth() < 20 ) widget->setMinimumWidth( 20 );
+    if( widget->minimumWidth() < 30 ) widget->setMinimumWidth( 30 );
 
     m_tabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_tabBar->tab( id );
@@ -342,7 +342,7 @@ BrowserBar::showHidePage( int index )
         m_pageHolder->show();
     }
 
-    kdDebug() << m_pos << ", " << width() << endl;
+    //kdDebug() << m_pos << ", " << width() << endl;
 
     adjustSize(); //m_pos has changed, we need to update geometries
 }
@@ -366,7 +366,7 @@ BrowserBar::setFont( const QFont & )
     //I can't decide, should we use the custom font or not?
 }
 
-inline void
+void
 BrowserBar::autoClosePages() //SLOT
 {
     if( !m_overlapButton->isOn() && m_currentPage )

@@ -123,7 +123,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 
     //<FileBrowser>
-        m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
+        m_browsers->addPage( new FileBrowser( 0, "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
     //</FileBrowser>
 
     //<SearchBrowser>
@@ -131,7 +131,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</SearchBrowser>
 
     //<PlaylistBrowser>
-        //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
+        //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist" ), "midi" );
     //</PlaylistBrowser>
 
 #ifdef HAVE_SQLITE
@@ -157,9 +157,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              statusbar,    SLOT(slotItemCountChanged(int)) );
     connect( m_playlist, SIGNAL( aboutToClear() ),
              m_lineEdit,   SLOT( clear() ) );
-    //FIXME you need to detect focus out from the sideBar and connect to that..
-    connect( m_playlist, SIGNAL( clicked( QListViewItem * ) ),
-             m_browsers,   SLOT( autoClosePages() ) );
     connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ),
              m_playlist,   SLOT( slotTextChanged( const QString& ) ) );
 
@@ -185,9 +182,7 @@ void BrowserWin::createGUI()
     //KToolBarButton::modeChange() causes that button to set its mode to that of its parent KToolBar
     //KToolBar::setIconText() calls modeChange() for children, unless 2nd param is false
 
-    typedef QValueList<QCString> QCStringList;
-
-    QCStringList list;
+    QStringList list;
     list << "toolbutton_playlist_add"
 //         << "toolbutton_playlist_clear"
 //         << "toolbutton_playlist_shuffle"
@@ -196,12 +191,12 @@ void BrowserWin::createGUI()
 
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want some buttons to have text on right
 
-    const QCStringList::ConstIterator last = list.fromLast();
-    const QCStringList::ConstIterator end  = list.constEnd();
+    const QStringList::ConstIterator last = list.fromLast();
+    const QStringList::ConstIterator end  = list.constEnd();
 
-    for( QCStringList::ConstIterator it = list.constBegin(); it != end; )
+    for( QStringList::ConstIterator it = list.constBegin(); it != end; )
     {
-        KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( *it );
+        KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( (*it).latin1() );
         if( button ) button->modeChange();
 
         if( ++it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
@@ -252,9 +247,8 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
         }
         else if( schemeKDE )
         {
-            if( obj->inherits("QLabel") )
+            if( obj->inherits("QLabel") || obj->inherits("QToolBar") )
             {
-                static_cast<QLabel*>(obj)->setPalette( pal );
                 static_cast<QLabel*>(obj)->setPaletteForegroundColor( Qt::white );
             }
             else if( obj->inherits("QMenuBar") )
@@ -265,7 +259,7 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
     }
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
-    KDevFileSelector::altBgColor = bgAlt;
+    FileBrowser::altBgColor = bgAlt;
 }
 
 
@@ -277,18 +271,8 @@ void BrowserWin::setFont( const QFont &newFont )
 
 
 void BrowserWin::saveConfig()
-{
-    //FIXME sucks a little to get ptr this way
-    //FIXME instead force the widgets to derive from SideBarWidget or something
-    // this method is good as it saves having duplicate pointers to the fileBrowser
-    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_browsers->page( "FileBrowser" );
-    fileBrowser->writeConfig();
-}
+{}
 
-
-
-
-//////// private interface
 
 bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 {
@@ -297,6 +281,10 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 
     switch( e->type() )
     {
+    case QEvent::FocusIn:
+        m_browsers->autoClosePages();
+        break;
+
     case QEvent::KeyPress:
 
         //there are a few keypresses that we override
@@ -369,7 +357,7 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 void BrowserWin::savePlaylist() const //SLOT
 {
     QWidget *fb = m_browsers->page( "FileBrowser" );
-    QString path = fb ? static_cast<KDevFileSelector *>(fb)->location() : "~";
+    QString path = fb ? static_cast<FileBrowser *>(fb)->location() : "~";
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );
 
