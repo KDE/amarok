@@ -10,46 +10,54 @@
 //
 //
 
-#define HEIGHT 2
-#define WIDTH  4
-#define ROWS   7
-
 #include "blockanalyzer.h"
 #include "fht.h"
 #include <math.h>
 
-#include <kdebug.h>
 
-//static const float lvlMapper[ROWS] = { 0.155, 0.456, 0.632, 0.757, 0.854, 0.933, 10.0 };
-static float lvlMapper[ROWS+1];// = { 0.080, 0.140, 0.200, 0.300, 0.500, 0.700, 100 };
+static float lvlMapper[BlockAnalyzer::ROWS+1];// = { 0.080, 0.140, 0.200, 0.300, 0.500, 0.700, 100 };
+
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
- : Analyzer::Base2D( parent, 20, 7 ) //more data in interesting region please
- , m_glow( WIDTH, HEIGHT )
+ : Analyzer::Base2D( parent, 20 )
  , m_dark( WIDTH, HEIGHT )
  , m_store( 16, 0 )
 {
-    m_glow.fill( QColor( 32, 32, 82 ) ); //amaroK blue
-    m_dark.fill( backgroundColor().dark( 150 ) );
+    QColor darkColor( backgroundColor().dark( 150 ) );
+
+    m_dark.fill( darkColor );
+
+    double dr = 3*double(darkColor.red()   - 32) / (ROWS*4);
+    double dg = 3*double(darkColor.green() - 32) / (ROWS*4);
+    double db = 3*double(darkColor.blue()  - 82) / (ROWS*4);
+
+    for( uint x = 0; x < ROWS; ++x )
+    {
+        m_glow[x].resize( WIDTH, HEIGHT );
+        m_glow[x].fill( QColor( 32+dr*x, 32+dg*x, 82+db*x ) ); //amaroK blue, graduated
+    }
 }
 
 void
 BlockAnalyzer::init()
 {
+    //FIXME adjust height so we fit to smaller toolbars
+
     const uint bands = (double)width() / (WIDTH+1);
     if( bands < 16 ) m_store.resize( 16 );
     else             m_store.resize( bands );
 
     std::fill( m_store.begin(), m_store.end(), 0 );
 
+
+    //make a set of discrete values from 0-1 that the scope amplitude must exceed for that block
+    //to be rendered
+    //last value is huge to ensure we don't crash by referencing beyond array size
     for( uint x = 2; x < ROWS+2; ++x )
     {
         lvlMapper[ROWS+2-x] = 1-(log10(x) / log10(ROWS+2));
-
-        kdDebug() << ROWS+2-x << ": " << lvlMapper[ROWS+2-x] << endl;
     }
-
-    lvlMapper[ROWS] = 10000;
+    lvlMapper[ROWS] = 100;
 
     setMinimumWidth( (m_store.size() + 2) * (WIDTH+1) ); //+2 is 2 blocks margin either side
 }
@@ -89,7 +97,6 @@ BlockAnalyzer::analyze( const Scope &s )
     for( uint x = 0; x < m_store.size(); ++x )
     {
         uint z = 0;
-
         for( ; v[x+7] > lvlMapper[z]; ++z );
         z = ROWS - 1 - z;
 
@@ -109,7 +116,7 @@ BlockAnalyzer::analyze( const Scope &s )
         for( uint y = 1; y <= ROWS; ++y )
         {
             if( y > z ) //greater than z means we blt bottom, ie glow blocks
-                bitBlt( canvas(), (x+2) * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_glow ); //x+1 = margin
+                bitBlt( canvas(), (x+2) * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_glow[y-1] ); //x+1 = margin
             else
                 bitBlt( canvas(), (x+2) * (WIDTH + 1), y * (HEIGHT + 1) + offset, &m_dark );
         }

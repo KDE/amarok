@@ -12,10 +12,6 @@
 
 void TurbineAnalyzer::analyze( const Scope &s )
 {
-    static std::vector<uint> barVector( BAND_COUNT, 0 );
-    static std::vector<int>  roofVector( BAND_COUNT, 0 );
-    static std::vector<uint> roofVelocityVector( BAND_COUNT, 0 );
-
     eraseCanvas();
 
     Analyzer::interpolate( s, m_bands );
