@@ -135,8 +135,8 @@ void FHT::pattern(float *p, bool rect = false)
 /**
   * Logarithmic audio spectrum. Maps semi-logarithmic spectrum
   * to logarithmic frequency scale, interpolates missing values.
-  * @d is the input array, @out is the spcectrum.
-  * @d: raw input, @a: spectrum output
+  * A logarithmic index map is calculated at the first run only.
+  * @p is the input array, @out is the spcectrum.
   */
 void FHT::logSpectrum(float *out, float *p)
 {
