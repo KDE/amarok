@@ -95,7 +95,7 @@ amaroK::Vis::Base<T>::fetchPCM()
     if( m_socketFD != -1 )
     {
         ::send( m_socketFD, "PCM", 4, 0 );
-        nbytes = ::recv( m_socketFD, sink, 512, 0 );
+        nbytes = ::recv( m_socketFD, sink, 512*sizeof(float), 0 );
         //::close( m_socketFD );
     }
 
