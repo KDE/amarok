@@ -1094,8 +1094,14 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                     if ( (*jt).url().path() == (*it) ) {
                         bundles += *jt;
                         buns50.remove( jt );
-                        break;
+                        goto success;
                     }
+
+                // if we get here, we didn't find an entry
+                warning() << "No bundle recovered for: " << *it << endl;
+                bundles += MetaBundle::null;
+
+            success: ;
             }
 
             paths.clear();
