@@ -567,7 +567,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addReturnValue( m_cat2, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat2, QueryBuilder::valURL );
                 qb.sortBy( m_cat2, QueryBuilder::valTrack );
-                qb.sortBy( m_cat2, QueryBuilder::valTitle );
+                qb.sortBy( m_cat2, QueryBuilder::valURL );
             }
             else
             {
@@ -592,7 +592,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addReturnValue( m_cat3, QueryBuilder::valTitle );
                 qb.addReturnValue( m_cat3, QueryBuilder::valURL );
                 qb.sortBy( m_cat3, QueryBuilder::valTrack );
-                qb.sortBy( m_cat3, QueryBuilder::valTitle );
+                qb.sortBy( m_cat3, QueryBuilder::valURL );
             }
             else
             {
@@ -616,7 +616,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             category = CollectionBrowser::IdNone;
             break;
@@ -1063,7 +1063,7 @@ CollectionView::listSelected()
             if ( m_cat2 != QueryBuilder::tabSong ) qb.sortBy( m_cat2, QueryBuilder::valName );
             if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
             values = qb.run();
@@ -1105,7 +1105,7 @@ CollectionView::listSelected()
                     qb.sortBy( m_cat2, QueryBuilder::valName );
                     if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
                     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-                    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
                     qb.setOptions( QueryBuilder::optRemoveDuplicates );
                     values = qb.run();
@@ -1159,7 +1159,7 @@ CollectionView::listSelected()
                         qb.sortBy( m_cat2, QueryBuilder::valName );
                         qb.sortBy( m_cat3, QueryBuilder::valName );
                         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-                        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
                         qb.setOptions( QueryBuilder::optRemoveDuplicates );
                         values = qb.run();
