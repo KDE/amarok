@@ -465,18 +465,7 @@ void PlayerWidget::createAnalyzer( int increment )
     delete m_pAnalyzer;
 
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
-
-    if ( AmarokConfig::currentAnalyzer() == 1 ) //FIXME
-    {
-        const uint y = m_pScrollFrame->geometry().bottom();
-        const uint h = m_pSlider->geometry().top() - y;
-
-        m_pAnalyzer->setGeometry( 119,y, 168,h );
-    }
-    else
-    {
-        m_pAnalyzer->setGeometry( 119,40, 168,56 );
-    }
+    m_pAnalyzer->setGeometry( 119,40, 168,56 );
     m_pAnalyzer->show();
 }
 
