@@ -259,8 +259,6 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-    CollectionSetup::s_dirs = m_dirs;
-
     KDialogBase dialog( this, 0, false, i18n("Configure Collection") );
     CollectionSetup *setup = new CollectionSetup( &dialog );
     dialog.setMainWidget( setup );
@@ -269,12 +267,16 @@ CollectionView::setupDirs()  //SLOT
 
     if ( dialog.exec() != QDialog::Rejected )
     {
+        const bool rescan = ( m_dirs != setup->dirs() );
+
         m_dirs = setup->dirs();
         m_recursively = setup->recursive();
         m_monitor = setup->monitor();
 
         setup->writeConfig();
-        scan();
+
+        if ( rescan )
+            scan();
     }
 }
 
@@ -502,7 +504,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
 
         switch( menu.exec( point ) ) {
-            
+
             case APPEND:
                 Playlist::instance()->appendMedia( listSelected() );
                 break;

@@ -28,8 +28,6 @@ using namespace amaroK;
 void
 FirstRunWizard::init()
 {
-    CollectionSetup::s_dirs = config( "Collection Browser" )->readListEntry( "Folders" );
-
     //aesthetics
     cancelButton()->setFixedWidth( cancelButton()->width() );
 

@@ -26,25 +26,29 @@
 
 using Collection::Item;
 
-QStringList CollectionSetup::s_dirs;
-QCheckBox  *CollectionSetup::s_recursive = 0;
-QCheckBox  *CollectionSetup::s_monitor = 0;
+
+CollectionSetup* CollectionSetup::s_instance;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
     : QVBox( parent )
 {
+    s_instance = this;
+
     (new QLabel( i18n(
         "These folders will be scanned for "
         "media to make up your collection."), this ))->setAlignment( Qt::WordBreak );
 
     m_view = new QListView( this );
+    m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
+    m_monitor   = new QCheckBox( i18n("&Monitor changes"), this );
 
-    s_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
-    s_monitor   = new QCheckBox( i18n("&Monitor changes"), this );
-
-    s_recursive->setChecked( true );
-    s_monitor->setChecked( true );
+    KConfig *config = kapp->config();
+    config->setGroup( "Collection Browser" );
+    // Read config values
+    m_dirs = config->readPathListEntry( "Folders" );
+    m_recursive->setChecked( config->readBoolEntry( "Scan Recursively" ) );
+    m_monitor->setChecked( config->readBoolEntry( "Monitor Changes" ) );
 
     m_view->addColumn( QString::null );
     m_view->setRootIsDecorated( true );
@@ -62,30 +66,11 @@ CollectionSetup::writeConfig()
     KConfig *config = kapp->config();
     config->setGroup( "Collection Browser" );
 
-    config->writeEntry( "Folders", dirs() );
+    config->writeEntry( "Folders", m_dirs );
     config->writeEntry( "Scan Recursively", recursive() );
     config->writeEntry( "Monitor Changes", monitor() );
 
     config->sync();
-}
-
-
-QStringList
-CollectionSetup::dirs() const
-{
-    QStringList list;
-
-    for( QListViewItem *item = m_view->firstChild(); item; item = item->itemBelow() )
-    {
-        #define item static_cast<Item*>(item)
-        if( !item->isOn() || item->isDisabled() )
-           continue;
-
-        list += item->fullPath();
-        #undef item
-    }
-
-    return list;
 }
 
 
@@ -151,19 +136,19 @@ Item::setOpen( bool b )
 void
 Item::stateChange( bool b )
 {
-    if( CollectionSetup::recursive() )
+    if( CollectionSetup::instance()->recursive() )
         for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
             static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
 
     // Update folder list
-    QStringList::Iterator it = CollectionSetup::s_dirs.find( m_url.path() );
+    QStringList::Iterator it = CollectionSetup::instance()->m_dirs.find( m_url.path() );
     if ( isOn() ) {
-        if ( it == CollectionSetup::s_dirs.end() )
-            CollectionSetup::s_dirs << m_url.path();
+        if ( it == CollectionSetup::instance()->m_dirs.end() )
+            CollectionSetup::instance()->m_dirs << m_url.path();
 
     }
     else
-        CollectionSetup::s_dirs.erase( it );
+        CollectionSetup::instance()->m_dirs.erase( it );
 
     // Redraw parent items
     listView()->triggerUpdate();
@@ -185,7 +170,9 @@ Item::newItems( const KFileItemList &list ) //SLOT
     {
         Item *item = new Item( this, (*it)->url() );
 
-        item->setOn( CollectionSetup::recursive() && isOn() || CollectionSetup::s_dirs.contains( item->fullPath() ) );
+        item->setOn( CollectionSetup::instance()->recursive() && isOn() ||
+                     CollectionSetup::instance()->m_dirs.contains( item->fullPath() ) );
+
         item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );
     }
 }
@@ -197,8 +184,8 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
     bool dirty = false;
 
     // Figure out if a child folder is activated
-    for ( uint i = 0; i < CollectionSetup::s_dirs.count(); i++ )
-        if ( CollectionSetup::s_dirs[i].startsWith( m_url.path() ) )
+    for ( uint i = 0; i < CollectionSetup::instance()->m_dirs.count(); i++ )
+        if ( CollectionSetup::instance()->m_dirs[i].startsWith( m_url.path() ) )
             dirty = true;
 
     // Use a different color if this folder has an activated child folder

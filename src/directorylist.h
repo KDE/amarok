@@ -27,23 +27,30 @@
 #include <kurl.h>       //stack allocated
 
 
+namespace Collection { class Item; }
+
+
 class CollectionSetup : public QVBox
 {
-public:
-    CollectionSetup( QWidget* );
+    friend class Collection::Item;
 
+public:
+    static CollectionSetup* instance() { return s_instance; }
+
+    CollectionSetup( QWidget* );
     void writeConfig();
 
-    QStringList dirs() const;
-    static bool recursive() { return s_recursive->isChecked(); }
-    static bool monitor()   { return s_monitor->isChecked(); }
-
-    static QStringList s_dirs;
+    QStringList dirs() const { return m_dirs; }
+    bool recursive() const { return m_recursive->isChecked(); }
+    bool monitor() const { return m_monitor->isChecked(); }
 
 private:
+    static CollectionSetup* s_instance;
+
     QListView *m_view;
-    static QCheckBox *s_recursive;
-    static QCheckBox *s_monitor;
+    QStringList m_dirs;
+    QCheckBox *m_recursive;
+    QCheckBox *m_monitor;
 };
 
 
@@ -57,7 +64,7 @@ public:
     Item( QListViewItem *parent, const KURL &url );
 
     QCheckListItem *parent() const { return (QCheckListItem*)QListViewItem::parent(); }
-    bool isDisabled() const { return CollectionSetup::recursive() && parent() && parent()->isOn(); }
+    bool isDisabled() const { return CollectionSetup::instance()->recursive() && parent() && parent()->isOn(); }
     QString fullPath() const;
 
     void setOpen( bool b ); // reimpl.
