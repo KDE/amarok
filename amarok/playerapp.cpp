@@ -774,14 +774,16 @@ void PlayerApp::slotVisTimer()
 // FIXME <berkus> unify this and the one below
 void PlayerApp::slotPlaylistShowHide()
 {
-   if ( m_pBrowserWin->isHidden() )
-   {
-      m_pBrowserWin->show();
-   }
-   else
-   {
-      m_pBrowserWin->hide();
-   }
+    if ( m_pBrowserWin->isHidden() )
+    {
+        m_pPlayerWidget->m_pButtonPl->setOn(true);
+        m_pBrowserWin->show();
+    }
+    else
+    {
+        m_pPlayerWidget->m_pButtonPl->setOn(false);
+        m_pBrowserWin->hide();
+    }
 }
 
 
