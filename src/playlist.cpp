@@ -1771,8 +1771,11 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
     if( items.count() == 1 ) {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
-        TagDialog *dialog = new TagDialog( item->metaBundle(), item, instance() );
-        dialog->show();
+        if( QFile::exists( item->url().path() ) ) {
+            TagDialog *dialog = new TagDialog( item->metaBundle(), item, instance() );
+            dialog->show();
+        }
+        else KMessageBox::sorry( this, i18n("This file does not exist") );
     }
     else {
         //edit multiple tracks in tag dialog

@@ -128,13 +128,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
+    // Add default streams playlist as the next item under "Current Playlist"
+    addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
+
     // Load the playlists stats cache
     loadPlaylists();
-
-    // Add default streams playlist as the next item under "Current Playlist"
-    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->firstChild() );
-    addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
-    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->lastItem() );
 }
 
 
@@ -658,7 +656,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         enum Actions { MAKE, APPEND, QUEUE, BURN_DATACD, BURN_AUDIOCD, REMOVE, INFO };
 
-        menu.insertItem( i18n( "&Append to Playlist" ), APPEND ); //TODO say Append to Playlist
+        menu.insertItem( i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
@@ -693,8 +691,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 removeSelectedItems();
                 break;
             case INFO:
-                TagDialog* dialog = new TagDialog( item->url() );
-                dialog->show();
+                if( QFile::exists( item->url().path() ) ) {
+                    TagDialog* dialog = new TagDialog( item->url() );
+                    dialog->show();
+                }
+                else KMessageBox::sorry( this, i18n("This file does not exist") );
         }
         #undef item
    }
