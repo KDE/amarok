@@ -244,7 +244,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     m_pSliderVol->setTracking( true );
     m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
 
-    QString pathStr( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
+    QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
 
     if ( pathStr == QString::null )
         KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget make install?" ),
