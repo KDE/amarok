@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #158 being the highest available (take this one for your next bug and increase here)
+           #159 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 158 <worf>   Playlist-loader progressbar & stop button do not appear on some systems.
+
   FIX 157 <markey> Visualization selector freezes the app.
 
   FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
