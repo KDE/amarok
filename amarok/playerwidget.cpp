@@ -24,6 +24,7 @@ email                :
 #include "analyzers/baranalyzer.h"
 #include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
+#include "analyzers/turbine.h"
 
 #include "debugareas.h"
 
@@ -664,14 +665,17 @@ void PlayerWidget::createVis()
     {
     case 0:
     firstcase:
-        m_pVis = new BarAnalyser( this );
+        m_pVis = new BarAnalyzer( this );
         break;
     case 1:
         m_pVis = new DistortAnalyzer( this );
         break;
     case 2:
-        m_pVis = new BarAnalyser2( this );
+        m_pVis = new BarAnalyzer2( this );
         break;
+    case 3:
+	m_pVis = new TurbineAnalyzer( this );
+	break;
     default:
         //oh wise ones! Please forgive my use of the goto command!
         //at first I just called createVis() again, which I felt was quite neat, but then I thought again,
