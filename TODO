@@ -52,8 +52,6 @@ MID-TERM:
     * add: #28<muesli> add an option "clean playlist on startup"
               <mxcl> do you mean remove duplicates or dead entries etc. ? Cool.
 
-    * add: #27<markey> playlist column for tracknumber (requested by several users)
-
     * add: <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
            Of course, there would still be the up to 150ms gap, but we can fix that some other
            time..
@@ -116,10 +114,6 @@ MID-TERM:
 
     * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
 
-    * chg: <mxcl> use QApplication::setPalette to adjust application colours, as it propagates
-           changes to all widgets and will hopefully deal with the selection colour issues in
-           the browser/janus widgets (although we have to stop it setting browserWin colors)
-
     * chg: can we make all buttons into actions? if we can, we could use setState(), a global
            actionCollection and save plenty of LOC. I see problems with the play/stop/etc
            buttons though.
@@ -167,6 +161,7 @@ IDEAS:
          and the user has no chance of noticing what's wrong.
          is it possible to catch crash signals and do some cleanup?
          <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
+         <mxcl> perhaps KCrash can help us
     
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
