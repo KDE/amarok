@@ -581,6 +581,7 @@ void ContextBrowser::showHome() //SLOT
     // Do we have to rebuild the page?
     if ( !m_dirtyHomePage ) return;
 
+    QString ftBox;
     m_homePage->begin();
     m_HTMLSource="";
     m_homePage->setUserStyleSheet( m_styleSheet );
@@ -605,12 +606,16 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div id='favorites_box-body' class='box-body'>"
+                "<iframe name='ftframe' height='200' width='100%'></iframe>"
                        );
+
+    ftBox.append(
+                "<html><style type='text/css'>body { margin-left:0px; margin-right:0px; margin-top:0px; margin-bottom:0px }</style><div id='favorites_box-body' class='box-body'>"
+                );
 
     if ( fave.count() == 0 )
     {
-        m_HTMLSource.append(
+        ftBox.append(
                     "<div class='info'><p>" +
                     i18n( "A list of your favorite tracks will appear here, once you've played a few of your songs." ) +
                     "</p></div>"
@@ -619,7 +624,7 @@ void ContextBrowser::showHome() //SLOT
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
     {
-        m_HTMLSource.append(
+        ftBox.append(
                     "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
                         "<div class='song'>"
                             "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -629,20 +634,23 @@ void ContextBrowser::showHome() //SLOT
                            );
 
         if ( !fave[i+4].isEmpty() )
-            m_HTMLSource.append(
+            ftBox.append(
                                 "<span class='song-separator'> - </span>"
                                 "<span class='song-album'>"+ fave[i+4] +"</span>"
                                );
 
-        m_HTMLSource.append(
+        ftBox.append(
                             "</a>"
                         "</div>"
                     "</div>"
-                           );
+                    );
     }
 
+    ftBox.append(
+                "</div></html>"
+                );
+
     m_HTMLSource.append(
-                "</div>"
             "</div>"
 
     // </Favorite Tracks Information>
@@ -759,6 +767,12 @@ void ContextBrowser::showHome() //SLOT
 
     m_homePage->write( m_HTMLSource );
     m_homePage->end();
+
+    m_homePage->findFrame( "ftframe" )->begin();
+    m_homePage->findFrame( "ftframe" )->setUserStyleSheet( m_styleSheet );
+    m_homePage->findFrame( "ftframe" )->write( ftBox );
+    m_homePage->findFrame( "ftframe" )->end();
+
     m_dirtyHomePage = false;
     saveHtmlData(); // Send html code to file
 }
