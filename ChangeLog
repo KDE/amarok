@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  ADD: Collection-Browser shows a help message in flat-mode when filter is
+       empty. (BR 97000)
   CHG: It is possible to select the Database Engine (SQLite, MySQL) runtime,
        without amaroK restart. New Database Engines can be added, they need
        to inherit DbConnection and implement its' virtual methods (see

@@ -22,6 +22,9 @@
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
+#include <qfont.h>
+#include <qlabel.h>
+#include <qlayout.h>
 #include <qptrlist.h>
 #include <qpushbutton.h>
 #include <qtimer.h>
@@ -184,6 +187,7 @@ CollectionView* CollectionView::m_instance = 0;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
+        , m_flatViewMessage( 0 )
 {
     DEBUG_FUNC_INFO
     m_instance = this;
@@ -265,7 +269,7 @@ CollectionView::setupDirs()  //SLOT
 
 
 void
-CollectionView::renderView( )  //SLOT
+CollectionView::renderView()  //SLOT
 {
     DEBUG_FUNC_INFO
 
@@ -285,7 +289,16 @@ CollectionView::renderView( )  //SLOT
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
-        if ( m_filter.length() < 3 ) return;
+        if ( m_filter.length() < 3 )
+        {
+            // Superimpose usage help widget if filter is empty
+            if ( !m_flatViewMessage )
+                showFlatViewMessage();
+
+            return;
+        }
+
+        hideFlatViewMessage();
 
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -320,6 +333,8 @@ CollectionView::renderView( )  //SLOT
     // MODE TREEVIEW
     if ( m_viewMode == modeTreeView )
     {
+        hideFlatViewMessage();
+
         qb.addReturnValue( m_cat1, QueryBuilder::valName );
         qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
         qb.sortBy( m_cat1, QueryBuilder::valName );
@@ -1129,6 +1144,37 @@ CollectionView::captionForCategory( const int cat ) const
     }
 
     return QString::null;
+}
+
+
+/** Shows a QLabel with usage information for Flat-View mode */
+void
+CollectionView::showFlatViewMessage()
+{
+    m_flatViewMessage = new QLabel( i18n( "Enter filter items to activate." ), viewport() );
+    QFont font;
+    font.setPointSize( font.pointSize() + 1 );
+    m_flatViewMessage->setFont( font );
+    m_flatViewMessage->setAlignment( Qt::AlignCenter );
+    m_flatViewMessage->setLineWidth( 2 );
+    m_flatViewMessage->setMinimumHeight( 40 );
+    m_flatViewMessage->setFrameStyle( QFrame::Box | QFrame::Plain );
+    m_flatViewMessage->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+    m_flatViewMessageLayout = new QVBoxLayout( viewport() );
+    m_flatViewMessageLayout->addWidget( m_flatViewMessage );
+    m_flatViewMessageLayout->addItem( new QSpacerItem( 1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+
+    m_flatViewMessage->show();
+}
+
+
+/** Removes the usage information label */
+void
+CollectionView::hideFlatViewMessage()
+{
+    delete m_flatViewMessage;
+    delete m_flatViewMessageLayout;
+    m_flatViewMessage = 0;
 }
 
 

@@ -17,8 +17,10 @@ class ClickLineEdit;
 class CollectionDB;
 class sqlite;
 
+class QBoxLayout;
 class QCString;
 class QDragObject;
+class QLabel;
 class QPixmap;
 class QPoint;
 class QStringList;
@@ -129,6 +131,9 @@ class CollectionView : public KListView
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
 
+        void showFlatViewMessage();
+        void hideFlatViewMessage();
+
     //attributes:
         static CollectionView* m_instance;
 
@@ -138,6 +143,9 @@ class CollectionView : public KListView
         int m_cat2;
         int m_cat3;
         int m_viewMode;
+
+        QBoxLayout* m_flatViewMessageLayout;
+        QLabel*     m_flatViewMessage;
 
         QStringList m_cacheItem;
 };
