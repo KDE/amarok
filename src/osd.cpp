@@ -15,7 +15,6 @@
 #include "collectiondb.h"    //for albumCover location
 #include "debug.h"
 #include <kapplication.h>
-#include <kglobalsettings.h> //system font preference
 #include <kpixmap.h>
 #include <kpixmapeffect.h>
 #include "osd.h"
