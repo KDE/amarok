@@ -1439,6 +1439,14 @@ QueryBuilder::addMatch( int tables, const QString& match )
         if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + m_db.escapeString( match ) + "' ";
         if ( tables & tabYear ) m_where += "OR year.name LIKE '" + m_db.escapeString( match ) + "' ";
         if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + m_db.escapeString( match ) + "' ";
+
+        if ( match == i18n( "Unknown" ) )
+        {
+            if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
+            if ( tables & tabYear ) m_where += "OR year.name = '' ";
+        }
         m_where += " ) ";
     }
 
@@ -1475,6 +1483,14 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
         if ( tables & tabGenre ) m_where += "AND genre.name <> '" + m_db.escapeString( match ) + "' ";
         if ( tables & tabYear ) m_where += "AND year.name <> '" + m_db.escapeString( match ) + "' ";
         if ( tables & tabSong ) m_where += "AND tags.title <> '" + m_db.escapeString( match ) + "' ";
+        
+        if ( match == i18n( "Unknown" ) )
+        {
+            if ( tables & tabAlbum ) m_where += "AND album.name <> '' ";
+            if ( tables & tabArtist ) m_where += "AND artist.name <> '' ";
+            if ( tables & tabGenre ) m_where += "AND genre.name <> '' ";
+            if ( tables & tabYear ) m_where += "AND year.name <> '' ";
+        }
         m_where += " ) ";
     }
 
