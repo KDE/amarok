@@ -1504,7 +1504,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     QString tmpCSS = eCSSts.read();
     ExternalCSS.close();
 
-    tmpCSS.replace( "./", KURL::fromPathOrURL( CSSLocation ).directory( false ), false );
+    tmpCSS.replace( "./", KURL::fromPathOrURL( CSSLocation ).directory( false ) );
     tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
