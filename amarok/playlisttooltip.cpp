@@ -27,11 +27,11 @@ PlaylistToolTip::PlaylistToolTip( QWidget * parent )
 
 void PlaylistToolTip::add( QWidget * widget, const KURL url, const MetaBundle & tags )
 {
-    QString tipBuf =  "<table style='font-face: Arial; font-size: 8px;'><tr><td>Title: </td><td colspan='2' align='right'>" + tags.m_title + "</td></tr>" +
-                      "<tr><td>Artist: </td><td colspan='2' align='right'>" + tags.m_artist + "</td></tr>" +
-                      "<tr><td>Length: </td><td colspan='2' align='right'>" + QString::number( tags.m_length ) + "</td></tr>" +
-                      "<tr><td>Bitrate: </td><td colspan='2' align='right'>" + QString::number( tags.m_bitrate ) + "</td></tr>" +
-                      "<tr><td>Samplerate: </td><td colspan='2' align='right'>" + QString::number( tags.m_sampleRate ) + "<br></td></tr><tr>";
+    QString tipBuf =  "<center><table style='font-face: Arial; font-size: 8px;'><tr><td width='70'>Title: </td><td align='left'>" + tags.m_title + "</td></tr>" +
+                      "<tr><td width='70'>Artist: </td><td align='left'>" + tags.m_artist + "</td></tr>" +
+                      "<tr><td width='70'>Length: </td><td align='left'>" + QString::number( tags.m_length ) + "</td></tr>" +
+                      "<tr><td width='70'>Bitrate: </td><td align='left'>" + QString::number( tags.m_bitrate ) + "</td></tr>" +
+                      "<tr><td width='70'>Samplerate: </td><td align='left'>" + QString::number( tags.m_sampleRate ) + "<br></td></tr></table>";
 
     int rowcnt = 0;
     QString curAlign;
@@ -43,17 +43,14 @@ void PlaylistToolTip::add( QWidget * widget, const KURL url, const MetaBundle & 
         {
             QString file( ent->d_name );
 
-            if ( file == "." || file == ".." ) continue;
             if ( file.contains( ".jpg", FALSE ) || file.contains( ".png", FALSE ) ||
                  file.contains( ".gif", FALSE ) )
             {
-                switch ( rowcnt )
-                {
-                    case 2: curAlign = "right"; break;
-                    case 1: curAlign = "center"; break;
-                    case 0: curAlign = "left"; break;
-                }
-                tipBuf += "<td width='104' align='" + curAlign + "'><img width='100' src='" + url.directory( FALSE, FALSE ) + "/" + file + "'></td>";
+                // we found an image, let's add it to the tooltip
+                if ( rowcnt == 0 )
+                    tipBuf += "<table><tr>";
+
+                tipBuf += "<td width='104' align='center'><img width='100' src='" + url.directory( FALSE, FALSE ) + "/" + file + "'></td>";
 
                 rowcnt++;
                 if ( rowcnt == 3)
@@ -66,6 +63,9 @@ void PlaylistToolTip::add( QWidget * widget, const KURL url, const MetaBundle & 
         }
     }
 
-    tipBuf += "</tr></table>";
+    if ( rowcnt > 0 )
+        tipBuf += "</tr></table>";
+    tipBuf += "</center>";
+
     QToolTip::add( widget, tipBuf );    
 }
