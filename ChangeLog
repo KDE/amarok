@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  FIX: coverfetcher: do not crash, when no cover found. (BR 99942)
   ADD: Support for amazon.co.jp.
   CHG: Toolbar items reordered for optimal usability, as suggested by
        Aaron "Tom Green" Seigo.

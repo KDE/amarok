@@ -109,6 +109,11 @@ CoverFetcher::startFetch()
     m_xml = QString::null;
     m_size = 2;
 
+    if ( m_queries.isEmpty() ) {
+        debug() << "m_queries is empty" << endl;
+        finishWithError( i18n("No cover found") );
+        return;
+    }
     QString query = m_queries.front();
     m_queries.pop_front();
 
