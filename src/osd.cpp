@@ -194,7 +194,7 @@ void OSDWidget::setAlignment( Alignment a )
 void OSDWidget::setScreen( uint screen )
 {
     const int n = QApplication::desktop()->numScreens();
-    m_screen = (screen >= n) ? n-1 : screen;
+    m_screen = (screen >= n) ? n-1 : (int)screen;
     reposition();
 }
 
@@ -212,13 +212,14 @@ bool OSDWidget::event( QEvent *e )
             unsetColors();
         return TRUE;
 
-    case QEvent::MouseButtonPress:
-        hide();
-        return TRUE;
-
     default:
-        return FALSE;
+        return QWidget::event( e );
     }
+}
+
+void OSDWidget::mousePressEvent( QMouseEvent* )
+{
+    hide();
 }
 
 void OSDWidget::show()
