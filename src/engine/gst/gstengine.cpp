@@ -127,7 +127,7 @@ GstEngine::kio_resume_cb()
 {
     if ( instance()->m_transferJob && instance()->m_transferJob->isSuspended() ) {
         instance()->m_transferJob->resume();
-        kdDebug() << "Gst-Engine: RESUMING kio transfer\n";
+        kdDebug() << "Gst-Engine: RESUMING kio transfer.\n";
     }
 }
 
@@ -367,7 +367,7 @@ GstEngine::play( const KURL& url )  //SLOT
             connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
                               this,   SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
             connect( m_transferJob, SIGNAL( result( KIO::Job* ) ),
-                              this,   SLOT( stopAtEnd() ) );
+                              this,   SLOT( kioFinished() ) );
         }
     }
     play();
@@ -465,28 +465,6 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 }
 
 
-void
-GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
-{
-    int size = array.size();
-    
-    if ( m_streamBufIndex >= STREAMBUF_MAX ) {
-        kdDebug() << "Gst-Engine: SUSPENDING kio transfer\n";
-        m_transferJob->suspend();
-    }
-            
-    if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
-        m_streamBufIndex = 0;
-        kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
-    }
-
-    // Copy data into stream buffer
-    memcpy( m_streamBuf + m_streamBufIndex, array.data(), size );
-    // Adjust index
-    m_streamBufIndex += size;
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
@@ -508,8 +486,39 @@ GstEngine::stopAtEnd()  //SLOT
     gst_element_set_state ( m_thread, GST_STATE_READY );
     
     m_transferJob = 0;
-    
     emit endOfTrack();
+}
+
+
+void
+GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
+{
+    int size = array.size();
+    
+    if ( m_streamBufIndex >= STREAMBUF_MAX ) {
+        kdDebug() << "Gst-Engine: SUSPENDING kio transfer.\n";
+        m_transferJob->suspend();
+    }
+            
+    if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
+        m_streamBufIndex = 0;
+        kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
+    }
+
+    // Copy data into stream buffer
+    memcpy( m_streamBuf + m_streamBufIndex, array.data(), size );
+    // Adjust index
+    m_streamBufIndex += size;
+}
+
+
+void
+GstEngine::kioFinished()  //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    // KIO::Job deletes itself when finished, so we need to zero the pointer
+    m_transferJob = 0;
 }
 
 

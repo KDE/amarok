@@ -63,6 +63,7 @@ class GstEngine : public EngineBase
     private slots:
         void                                     handleError();
         void                                     stopAtEnd();
+        void                                     kioFinished();
         void                                     newKioData( KIO::Job*, const QByteArray& array );
         
     private:
