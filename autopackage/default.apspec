@@ -2,7 +2,7 @@
 
 [Meta]
 RootName: @kde.org/amarok:$SOFTWAREVERSION
-DisplayName: amaroK
+DisplayName: amaroK - audio player
 ShortName: amarok
 Maintainer: The amaroK Developers - http://amarok.kde.org
 Packager: Mark Kretschmann <markey@web.de>
@@ -30,7 +30,7 @@ for the next-generation GStreamer multimedia framework.
 amaroK is smart, it's sexy, it's clever. Try it out today!
 
 [BuildPrepare]
-prepareBuild
+prepareBuild --disable-debug
 
 [BuildUnprepare]
 unprepareBuild
@@ -44,7 +44,8 @@ requireAtLeastVersion @kde.org/kdelibs 3.2
 #requireAtLeastVersion @kde.org/taglib 1.0
 
 [Install]
-# Put your installation script here
+# This is our cheat, until KDE is relocatable
+$prefix=`kde-config --prefix`
 installExe bin/*
 installDesktop "Qt/KDE/AudioVideo" ./share/applications/kde/amarok.desktop
 
