@@ -243,7 +243,7 @@ CollectionDB::artistList()
     QStringList names;
 
     execSql( "SELECT name FROM artist "
-                  "ORDER BY name", &values, &names );
+                  "ORDER BY lower(name)", &values, &names );
     
     return values;
 }
@@ -256,7 +256,7 @@ CollectionDB::albumList()
     QStringList names;
 
     execSql( "SELECT name FROM album "
-                  "ORDER BY name", &values, &names );
+                  "ORDER BY lower(name)", &values, &names );
     
     return values;
 }
@@ -743,7 +743,7 @@ CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString 
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
 
     command += filterToken;
-    command += " ORDER BY " + category1.lower() + ".name DESC;";
+    command += " ORDER BY lower(" + category1.lower() + ".name) DESC;";
 
     execSql( command, values, names );
 }
@@ -774,8 +774,8 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
         command = "SELECT DISTINCT " + category2.lower() + ".name, '0' FROM tags, " + category2.lower()
                 + ", " + category1.lower() + " WHERE tags." + category2.lower() + "=" + category2.lower()
-                + ".id AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY "
-                + category2.lower() + ".name DESC;";
+                + ".id AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY lower("
+                + category2.lower() + ".name) DESC;";
     }
 
     execSql( command, values, names );
