@@ -68,9 +68,9 @@ App::App()
     m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
-    (void)              new ScriptManager::Manager( this );
         
     #ifdef HAVE_KJSEMBED
+    (void)              new ScriptManager::Manager( this );
     // Export symbols to KJSEmbed
     ScriptManager::Manager::instance()->addObject( this );
     ScriptManager::Manager::instance()->addObject( m_pDcopHandler );
