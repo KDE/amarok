@@ -258,7 +258,7 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
     KURL url( urlString );
-    
+
     if ( url.protocol() == "fetchcover" )
     {
         QStringList info = QStringList::split( " @@@ ", url.path() );
@@ -266,14 +266,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Cover Image" ) );
-        menu.insertItem( SmallIcon( "viewmag" ), i18n( "Show fullsize" ), SHOW );
+        menu.insertItem( SmallIcon( "viewmag" ), i18n( "Show Fullsize" ), SHOW );
         menu.setItemEnabled( SHOW, !m_db->getImageForAlbum( info[0], info[1], 0 ).contains( "nocover" ) );
-        menu.insertItem( SmallIcon( "www" ), i18n( "Fetch from amazon.com" ), FETCH );
+        menu.insertItem( SmallIcon( "www" ), i18n( "Fetch From amazon.com" ), FETCH );
     #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
     #endif
         menu.insertSeparator();
-        menu.insertItem( SmallIcon( "editdelete" ), i18n("Delete"), DELETE );
+        menu.insertItem( SmallIcon( "editdelete" ), i18n("Delete Image File"), DELETE );
         int id = menu.exec( point );
 
         switch ( id )
@@ -317,18 +317,17 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Track" ) );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
         //menu.setItemEnabled( APPEND );
-        menu.insertItem( SmallIcon( "next" ), i18n( "Queue after Current Track" ), ASNEXT );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make playlist" ), MAKE );
+        menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
         if( K3bExporter::isAvailable() ) {
             menu.insertSeparator();
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn to CD as data" ), BURN_DATACD );
-            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "Burn to CD as audio" ), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
         }
-        int id = menu.exec( point );
 
-        switch ( id )
+        switch ( menu.exec( point ) )
         {
             case APPEND:
                 Playlist::instance()->appendMedia( url, false, true );
@@ -354,29 +353,28 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
     if ( url.protocol() == "album" )
     {
-        enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };    
-    
+        enum menuIds { APPEND, ASNEXT, MAKE, BURN_DATACD, BURN_AUDIOCD };
+
         KPopupMenu menu( this );
         menu.insertTitle( i18n( "Album" ) );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIcon( "next" ), i18n( "Queue after Current Track" ), ASNEXT );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make playlist" ), MAKE );
-        if( K3bExporter::isAvailable() ) 
-        {
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        if( K3bExporter::isAvailable() ) {
             menu.insertSeparator();
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn to CD as data" ), BURN_DATACD );
-            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "Burn to CD as audio" ), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
+            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
         }
-        int id = menu.exec( point );    
-                
+         int id = menu.exec( point );
+
         QStringList list = QStringList::split( " @@@ ", url.path() );
         QStringList values;
         QStringList names;
-        
+
         m_db->execSql( QString( "select distinct url from tags where artist = '%1' and album = '%2' order by track;" )
                        .arg( list[0] )
                        .arg( list[1] ), &values, &names );
-             
+
         switch ( id )
         {
             case APPEND:
@@ -398,12 +396,12 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                     KURL tmp;
                     tmp.setPath( values[i] );
                     if( EngineController::canDecode( tmp ) ) Playlist::instance()->queueMedia( tmp );
-                } 
+                }
             break;
 
             case MAKE:
                 Playlist::instance()->clear();
-                
+
                 for ( uint i = 0; i < values.count(); i++ )
                 {
                     if ( values[i].isEmpty() ) continue;
@@ -729,7 +727,7 @@ void ContextBrowser::viewImage( const QString& path )
 {
     /* if a cover exists, open a widget with the image on click */
     QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-    widget->setCaption( i18n( "Cover Viewer" ) + " - amaroK" );
+    widget->setCaption( kapp->makeStdCaption( i18n( "Cover Viewer" ) ) );
     QPixmap pixmap( path );
     widget->setPaletteBackgroundPixmap( pixmap );
     widget->setMinimumSize( pixmap.size() );
@@ -764,7 +762,7 @@ void ContextBrowser::setStyleSheet()
                     .arg( colorGroup().highlightedText().name() ).arg( pxSize + 2 ).arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcurrent { color: %1; border: solid %2 1px; }" )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".rbalbum { color: %1; border: solid %2 1px; }; " )
+    m_styleSheet += QString( ".rbalbum A { color: %1; border: solid %2 1px; }; " )
                     .arg( colorGroup().text().name() ).arg( colorGroup().base().name() );
     m_styleSheet += QString( ".rbalbum:hover { color: %1; cursor: default; background-color: %2; border: solid %3 1px; }" )
                     .arg( colorGroup().highlightedText().name() ).arg( colorGroup().highlight().name() ).arg( colorGroup().text().name() );
