@@ -44,8 +44,8 @@ class TimeLabel : public QLabel
 public:
     TimeLabel( QWidget *parent ) : QLabel( " 0:00:00 ", parent )
     {
-        setFixedSize( sizeHint() );
         setFont( KGlobalSettings::fixedFont() );
+        setFixedSize( sizeHint() );
     }
 
     virtual void mouseDoubleClickEvent( QMouseEvent* )
