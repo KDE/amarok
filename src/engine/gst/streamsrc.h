@@ -31,7 +31,6 @@ struct _GstStreamSrc
     GstPad *srcpad;
 
     char* streamBuf;
-    int streamBufSize;
     int* streamBufIndex;
         
     gulong curoffset; /* current offset in file */

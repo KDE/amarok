@@ -45,7 +45,7 @@ static const int
 SCOPEBUF_SIZE = 40000;
 
 static const int
-STREAMBUF_SIZE = 40000;
+STREAMBUF_SIZE = 60000;
 
 GError*
 GstEngine::error_msg;
@@ -141,7 +141,7 @@ GstEngine::GstEngine()
         , m_thread( NULL )
         , m_scopeBufIndex( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
-        , m_streamBufIn( 0 )
+        , m_streamBufIndex( 0 )
         , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -319,7 +319,7 @@ GstEngine::play( const KURL& url )             //SLOT
         g_object_set( G_OBJECT( m_filesrc ), "location",
                       static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     } else {
-        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, STREAMBUF_SIZE, &m_streamBufIn ) );
+        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
 //         g_object_set( G_OBJECT( m_filesrc ), "sizetype", 2, NULL );
         //         g_object_set( G_OBJECT( m_filesrc ), "sizemax", 2048, NULL );
     }
@@ -432,11 +432,15 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    for ( int i = 0; i < size; ) {
-        if ( m_streamBufIn == STREAMBUF_SIZE - 1 )
-            break;
-        m_streamBuf[ m_streamBufIn++ ] = buf[ i++ ];
+    if ( m_streamBufIndex + size > STREAMBUF_SIZE ) {
+        size = STREAMBUF_SIZE - m_streamBufIndex;    
+        kdWarning() << "Stream buffer overflow!" << endl;
     }
+            
+    // Copy data into stream buffer
+    memcpy( m_streamBuf + m_streamBufIndex, buf, size );
+    // Adjust index
+    m_streamBufIndex += size;
     
     if ( m_playFlag ) {
         play();

@@ -176,11 +176,12 @@ gst_streamsrc_get ( GstPad * pad )
     
     // Copy stream buffer content into gst buffer
     memcpy( data, src->streamBuf, *src->streamBufIndex );
-   
-    *src->streamBufIndex = 0;
     
 //     GST_BUFFER_SIZE ( buf ) = *src->streamBufIndex;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
+    
+    // Reset index
+    *src->streamBufIndex = 0;
         
     return GST_DATA ( buf );
 }
@@ -217,13 +218,12 @@ gst_streamsrc_get ( GstPad * pad )
 
 
 GstStreamSrc*
-gst_streamsrc_new ( char* buf, int size, int* index )
+gst_streamsrc_new ( char* buf, int* index )
 {
     GstStreamSrc * object = GST_STREAMSRC ( g_object_new ( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
     
     object->streamBuf = buf;
-    object->streamBufSize = size;
     object->streamBufIndex = index;
     
     return object;
