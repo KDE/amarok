@@ -284,7 +284,11 @@ CollectionView::renderView()  //SLOT
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
-        if ( m_filter.length() < 3 ) return;
+        if ( m_filter.length() < 3 ) {
+            // Redraw bubble help
+            triggerUpdate();
+            return;
+        }
 
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -1160,8 +1164,16 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
 
         p.setBrush( colorGroup().background() );
         p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
-        t.draw( &p, wd3, y, e->rect(), colorGroup() );
+        t.draw( &p, wd3, y, QRect( 0, 0, viewport()->width(), viewport()->height() ), colorGroup() );
     }
+}
+
+
+void
+CollectionView::viewportResizeEvent( QResizeEvent *e )
+{
+    // Needed for correct redraw of bubble help
+    triggerUpdate();
 }
 
 
