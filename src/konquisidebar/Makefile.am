@@ -9,6 +9,14 @@ konqsidebar_universalamarok_la_LIBADD = $(LIB_KHTML) $(LIB_KPARTS) $(LIB_KFILE)
 
 
 
-universalamarok_entry_DATA = amarok.desktop
-universalamarok_entrydir = $(kde_datadir)/konqsidebartng/add
+universalamarok_add_DATA = amarok.desktop
+universalamarok_adddir = $(kde_datadir)/konqsidebartng/add 
+
+universalamarok_kickerentries_DATA = amarok.desktop
+
+universalamarok_kickerentriesdir = $(kde_datadir)/konqsidebartng/kicker_entries
+
+universalamarok_entries_DATA = amarok.desktop
+universalamarok_entriesdir = $(kde_datadir)/konqsidebartng/entries
+
 noinst_HEADERS = universalamarok.h
