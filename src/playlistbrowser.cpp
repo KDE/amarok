@@ -6,6 +6,7 @@
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"    //PlaylistBrowserItem::load()
+#include "tagdialog.h"
 #include "threadweaver.h"      //PlaylistFoundEvent
 
 #include <qevent.h>            //customEvent()
@@ -469,7 +470,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 PlaylistBrowser::instance()->removeSelectedItems();
                 break;
             case INFO:
-                Playlist::instance()->showTrackInfo( item->url() );
+                TagDialog* dialog = new TagDialog( item->url() );
+                dialog->show();
         }
         #undef item
    }

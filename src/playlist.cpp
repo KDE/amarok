@@ -1264,20 +1264,6 @@ void Playlist::startEditTag( QListViewItem *item, int column )
 }
 
 
-void Playlist::showTrackInfo( const KURL& url ) //STATIC
-{
-    TagDialog* dialog = new TagDialog( MetaBundle( url ), instance() );
-    dialog->show();
-}
-
-
-void Playlist::showTrackInfo( PlaylistItem* item ) //STATIC
-{
-    TagDialog* dialog = new TagDialog( item->metaBundle(), instance() );
-    dialog->show();
-}
-
-
 void Playlist::paletteChange( const QPalette &p )
 {
     using namespace Glow;
@@ -1413,6 +1399,13 @@ void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLO
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
     if( below && below->isSelected() ) { rename( below, col ); }
+}
+
+
+void Playlist::showTrackInfo( PlaylistItem* item )
+{
+    TagDialog* dialog = new TagDialog( item->metaBundle(), instance() );
+    dialog->show();
 }
 
 

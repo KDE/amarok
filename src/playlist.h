@@ -84,8 +84,6 @@ class Playlist : private KListView, public EngineObserver
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
-        static void showTrackInfo( const KURL& url );
-        static void showTrackInfo( PlaylistItem* item );
         static QMap<QString, bool> s_extensionCache;
 
         static Playlist *instance() { return s_instance; }
@@ -146,6 +144,7 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
         void startEditTag( QListViewItem *, int );    //start inline tag editing with auto-completion
+        void showTrackInfo( PlaylistItem* item );
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );

@@ -8,13 +8,16 @@
 
 #ifdef HAVE_MUSICBRAINZ
 #include "musicbrainzquery.h"
-#else
+#endif
+
+#ifndef HAVE_MUSICBRAINZ
 // Dummy MusicbrainzQuery::TrackList class for queryDone argument.
 namespace MusicBrainzQuery {
     class TrackList {};
 }
 #endif
 
+#include <kurl.h>             //stack alloc
 #include "tagdialogbase.h"    //baseclass
 
 class MetaBundle;
@@ -25,6 +28,7 @@ class TagDialog : public TagDialogBase
     Q_OBJECT
 
     public:    
+        TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, QWidget* parent = 0 );
     
     private slots:
@@ -35,6 +39,8 @@ class TagDialog : public TagDialogBase
         void queryDone( const MusicBrainzQuery::TrackList& tracklist );
     
     private:
+        void init();
+        
         MetaBundle m_metaBundle;
         QString m_buttonMbText;
 };

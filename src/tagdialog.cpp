@@ -19,47 +19,19 @@
 #include <knuminput.h>
 
 
+TagDialog::TagDialog( const KURL& url, QWidget* parent )
+    : TagDialogBase( parent )
+    , m_metaBundle( MetaBundle( url ) )
+{
+    init();
+}
+
+
 TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     : TagDialogBase( parent )
     , m_metaBundle( mb )
 {
-    kLineEdit_title->setText( mb.title() );
-    kLineEdit_artist->setText( mb.artist() );
-    kLineEdit_album->setText( mb.album() );
-    kComboBox_genre->insertStringList( MetaBundle::genreList() );
-    kComboBox_genre->setCurrentText( mb.genre() );
-    kIntSpinBox_track->setValue( mb.track().toInt() );
-    kIntSpinBox_year->setValue( mb.year().toInt() );
-    kLineEdit_comment->setText( mb.comment() );
-    kLineEdit_length->setText( mb.prettyLength() );
-    kLineEdit_bitrate->setText( mb.prettyBitrate() );
-    kLineEdit_samplerate->setText( mb.prettySampleRate() );
-    kLineEdit_location->setText( mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
-
-    // Connects for modification check
-    connect( kLineEdit_title, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kLineEdit_artist, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kLineEdit_album, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kComboBox_genre, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
-    connect( kComboBox_genre, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    connect( kIntSpinBox_track, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
-    connect( kIntSpinBox_year, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
-    connect( kLineEdit_comment, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
-    
-    // Remember original button text
-    m_buttonMbText = pushButton_musicbrainz->text();
-    
-    connect( pushButton_cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
-    connect( pushButton_ok, SIGNAL( clicked() ), this, SLOT( okPressed() ) );
-    pushButton_ok->setEnabled( false );
-    
-#ifdef HAVE_MUSICBRAINZ
-    connect( pushButton_musicbrainz, SIGNAL( clicked() ), this, SLOT( musicbrainzQuery() ) );
-#else
-    pushButton_musicbrainz->setEnabled( false );
-#endif
-    
-    adjustSize();
+    init();
 }
 
 
@@ -151,6 +123,50 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 ////////////////////////////////////////////////////////////////////////////////
+
+void
+TagDialog::init()
+{
+    setWFlags( getWFlags() | Qt::WDestructiveClose );
+    
+    kLineEdit_title->setText( m_metaBundle.title() );
+    kLineEdit_artist->setText( m_metaBundle.artist() );
+    kLineEdit_album->setText( m_metaBundle.album() );
+    kComboBox_genre->insertStringList( MetaBundle::genreList() );
+    kComboBox_genre->setCurrentText( m_metaBundle.genre() );
+    kIntSpinBox_track->setValue( m_metaBundle.track().toInt() );
+    kIntSpinBox_year->setValue( m_metaBundle.year().toInt() );
+    kLineEdit_comment->setText( m_metaBundle.comment() );
+    kLineEdit_length->setText( m_metaBundle.prettyLength() );
+    kLineEdit_bitrate->setText( m_metaBundle.prettyBitrate() );
+    kLineEdit_samplerate->setText( m_metaBundle.prettySampleRate() );
+    kLineEdit_location->setText( m_metaBundle.url().isLocalFile() ? m_metaBundle.url().path() : m_metaBundle.url().url() );
+
+    // Connects for modification check
+    connect( kLineEdit_title, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kLineEdit_artist, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kLineEdit_album, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_genre, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_genre, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kIntSpinBox_track, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
+    connect( kIntSpinBox_year, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
+    connect( kLineEdit_comment, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    
+    // Remember original button text
+    m_buttonMbText = pushButton_musicbrainz->text();
+    
+    connect( pushButton_cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
+    connect( pushButton_ok, SIGNAL( clicked() ), this, SLOT( okPressed() ) );
+    pushButton_ok->setEnabled( false );
+    
+#ifdef HAVE_MUSICBRAINZ
+    connect( pushButton_musicbrainz, SIGNAL( clicked() ), this, SLOT( musicbrainzQuery() ) );
+#else
+    pushButton_musicbrainz->setEnabled( false );
+#endif
+    
+    adjustSize();
+}
 
 
 #include "tagdialog.moc"

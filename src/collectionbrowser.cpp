@@ -6,8 +6,9 @@
 #include "collectiondb.h"
 #include "directorylist.h"
 #include "metabundle.h"
-#include "playlist.h"       //insertMedia(), showTrackInfo()
+#include "playlist.h"       //insertMedia()
 #include "statusbar.h"
+#include "tagdialog.h"
 #include "threadweaver.h"
 
 #include <unistd.h>         //CollectionView ctor
@@ -486,8 +487,10 @@ CollectionView::showTrackInfo() //SLOT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
 
-    if ( m_category2 == i18n( "None" ) || item->depth() == 2 )
-        Playlist::showTrackInfo( item->url() );
+    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
+        TagDialog* dialog = new TagDialog( item->url() );
+        dialog->show();
+    }
 }
 
 
