@@ -277,14 +277,23 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
-    DIR * d = opendir( QFile::encodeName( dir ) );
-    if ( !d ) return ;
-    dirent *ent;
     struct stat statBuf;
 
     //update dir statistics for rescanning purposes
-    stat( dir.local8Bit(), &statBuf );
-    m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime );
+    if ( stat( dir.local8Bit(), &statBuf ) == 0 )
+        m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime );
+    else
+    {
+        if ( m_incremental )
+        {
+            m_parent->removeSongsInDir( dir );
+            m_parent->removeDirFromCollection( dir );
+        }
+        return;
+    }
+
+    DIR * d = opendir( QFile::encodeName( dir ) );
+    dirent *ent;
 
     while ( ( ent = readdir( d ) ) ) {
         QCString entry = ent->d_name;
@@ -302,12 +311,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                         readDir( QFile::decodeName( entry ), entries );
             } else if ( S_ISREG( statBuf.st_mode ) )
                 entries << QString::fromLocal8Bit( entry );
-
-        } else if ( m_incremental )
-        {
-            m_parent->removeSongsInDir( entry );
-            m_parent->removeDirFromCollection( entry );
         }
+
     }
     closedir( d );
 }
