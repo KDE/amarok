@@ -66,9 +66,10 @@ PlaylistFile::format( const QString &fileName )
     const QString ext = fileName.right( 4 ).lower();
 
     if( ext == ".m3u" ) return M3U;
-    else if( ext == ".pls" ) return PLS;
-    else if( ext == ".xml" ) return XML;
-    else return Unknown;
+    if( ext == ".pls" ) return PLS;
+    if( ext == ".xml" ) return XML;
+
+    return Unknown;
 }
 
 
@@ -144,10 +145,11 @@ class RemotePlaylistFetcher : public QObject
     const KURL m_source;
     KURL m_destination;
     QListViewItem *m_after;
+    bool m_playFirstUrl;
     class KTempFile *m_temp;
 
 public:
-    RemotePlaylistFetcher( const KURL &source, QListViewItem *after, QObject *playlist );
+    RemotePlaylistFetcher( const KURL &source, QListViewItem *after, bool playFirstUrl );
    ~RemotePlaylistFetcher();
 
 private slots:

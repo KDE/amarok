@@ -6,7 +6,7 @@
 ///For pls and m3u specifications see:
 ///http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
 
-#define DEBUG_PREFIX "UrlLoader"
+#define DEBUG_PREFIX "PlaylistLoader"
 
 #include "amarok.h"
 #include "collectiondb.h"
@@ -42,7 +42,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 
     amaroK::OverrideCursor cursor;
 
-    setDescription( i18n("Populating playlist") ); //TODO better wording
+    setDescription( i18n("Populating playlist") );
 
     amaroK::StatusBar::instance()->newProgressOperation( this )
             .setDescription( m_description )
@@ -63,8 +63,10 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
                 m_URLs += url;
         }
 
-        else if( PlaylistFile::isPlaylistFile( url ) )
-            new RemotePlaylistFetcher( url, after, dependent() );
+        else if( PlaylistFile::isPlaylistFile( url ) ) {
+            new RemotePlaylistFetcher( url, after, m_playFirstUrl );
+            m_playFirstUrl = false;
+        }
 
         else if( protocol == "fetchcover" )
             continue;
@@ -184,8 +186,11 @@ UrlLoader::customEvent( QCustomEvent *e )
         const NodeList::ConstIterator end = e->nodes.end();
         foreachType( NodeList, e->nodes )
         {
+            if( (*it).isNull() ) //safety
+                continue;
+
             const QDomElement element = QDomNode( *it ).toElement(); //we check it is an element in loadPlaylist
-            PlaylistItem* const item = new PlaylistItem( (*it), m_markerListViewItem );
+            PlaylistItem* const item = new PlaylistItem( *it, m_markerListViewItem );
 
             //TODO scrollbar position
             //TODO previous tracks queue
@@ -406,14 +411,14 @@ PlaylistFile::loadPls( QTextStream &stream )
 #include <kio/job.h>
 #include <klocale.h>
 
-RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, QObject *playlist )
-        : QObject( playlist )
+RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, bool playFirstUrl )
+        : QObject( (QObject*)Playlist::instance() )
         , m_source( source )
         , m_after( after )
-        , m_temp( 0 )
+        , m_playFirstUrl( playFirstUrl )
 {
     //We keep the extension so the UrlLoader knows what file type it is
-    QString path = source.path();
+    const QString path = source.path();
     m_temp = new KTempFile( QString::null /*use default prefix*/, path.mid( path.findRev( '.' ) ) );
     m_temp->setAutoDelete( true );
 
@@ -429,30 +434,36 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem 
             .setDescription( i18n("Retrieving Playlist") );
 
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(result( KIO::Job* )) );
-    connect( playlist, SIGNAL(aboutToClear()), SLOT(abort()) );
+
+    Playlist::instance()->lock();
 }
 
 RemotePlaylistFetcher::~RemotePlaylistFetcher()
 {
+    Playlist::instance()->unlock();
+
     delete m_temp;
 }
 
 void
 RemotePlaylistFetcher::result( KIO::Job *job )
 {
-    if ( job->error() )
-        return;
+    if( job->error() ) {
+        error() << "Couldn't download remote playlist\n";
+        deleteLater();
+    }
 
-    debug() << "Playlist was downloaded successfully\n";
+    else {
+        debug() << "Playlist was downloaded successfully\n";
 
-    const KURL url = static_cast<KIO::FileCopyJob*>(job)->destURL();
-    UrlLoader *loader = new UrlLoader( url, m_after );
-    ThreadWeaver::instance()->queueJob( loader );
+        UrlLoader *loader = new UrlLoader( m_destination, m_after, m_playFirstUrl );
+        ThreadWeaver::instance()->queueJob( loader );
 
-    // we mustn't get deletd until the loader is finished
-    // or the temporary file we downloaded the playlist to
-    // will be deleted before it can be parsed!
-    loader->insertChild( this );
+        // we mustn't get deleted until the loader is finished
+        // or the playlist we downloaded will be deleted before
+        // it can be parsed!
+        loader->insertChild( this );
+    }
 }
 
 
