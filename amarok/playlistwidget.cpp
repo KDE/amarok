@@ -169,6 +169,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     // Read playlist columns layout
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
+/*
     kdDebug() << "Sizeof QObject: " << sizeof( QObject ) << endl;
     kdDebug() << "Sizeof QWidget: " << sizeof( QWidget ) << endl;
     kdDebug() << "Sizeof QThread: " << sizeof( QThread ) << endl;
@@ -177,6 +178,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     kdDebug() << "Sizeof QListViewItem: " << sizeof( QListViewItem ) << endl;
     kdDebug() << "Sizeof QPtrList: " << sizeof( QPtrList<int> ) << endl;
     kdDebug() << "Sizeof QValueList: " << sizeof( QValueList<int> ) << endl;
+*/
 }
 
 
