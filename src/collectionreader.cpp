@@ -237,7 +237,7 @@ CollectionReader::readTags( const QStringList& entries )
         const QString dir = amaroK::directory( *it );
 
         // Append path to logfile
-        log << url.path().local8Bit() << "\n";
+        log << path.local8Bit() << "\n";
         log.flush();
 
         // Tests reveal the following:
@@ -255,9 +255,9 @@ CollectionReader::readTags( const QStringList& entries )
         bundle.readTags( TagLib::AudioProperties::Fast );
 
         if( validImages.contains( ext ) )
-          images += url.path();
-        else
-        if( bundle.isValidMedia() )
+           images += path;
+
+        else if( bundle.isValidMedia() )
         {
             CoverBundle cover( bundle.artist(), bundle.album() );
 

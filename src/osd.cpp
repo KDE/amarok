@@ -368,60 +368,38 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 void
 amaroK::OSD::show( const MetaBundle &bundle ) //slot
 {
-    // set text to the value in the config file.
     QString text = AmarokConfig::osdText();
+    QStringList tags, tokens;
 
-    // Use reg exps to remove anything within braces if the tag element is empty.
-    // eg: text.replace( QRegExp( "\\{[^}]*%album[^}]*\\}" ), QString::null );
-    // OSD: {Album: %album }
-    // will not display if bundle.album() is empty.
+    // we special case prettyTitle and put it first
+    // so that we handle things like streams better
+    tokens << i18n("%artist - %title")
+           << i18n("%artist") << i18n("%album") << i18n("%title")  << i18n("%genre")
+           << i18n("%year")   << i18n("%track") << i18n("%length") << i18n("%bitrate");
 
-    QString replaceMe = "\\{[^}]*%1[^}]*\\}";
-    QStringList elements, identifiers;
-    QString length, bitrate;
+    tags   << bundle.prettyTitle()
+           << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
+           << bundle.year() << bundle.track() << bundle.prettyLength() << bundle.prettyBitrate();
 
-    if( bundle.length())
-       length = QString ("%1").arg(bundle.prettyLength());
-    if( bundle.bitrate() )
-       bitrate = QString ("%1").arg(bundle.prettyBitrate());
-
-    // NOTE: Order is important, the items will be evaluated first. Thus, prettyTitle must be last.
-    elements    << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
-                << bundle.year() << bundle.track()<< length << bitrate << bundle.prettyTitle();
-
-    identifiers << i18n("%artist") << i18n("%album") << i18n("%title") << i18n("%genre")
-                << i18n("%year") << i18n("%track") << i18n( "%length" ) << i18n( "%bitrate" ) << i18n( "%artist - %title" );
-
-    // This loop will go through the two lists and replace each identifier by the appropriate bundle
-    // information.
-
-    for( QStringList::ConstIterator id = identifiers.begin(), end = identifiers.end(), el = elements.begin(); id != end; ++id, ++el )
+    for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
     {
-        QString element = *el;
-        QString identifier = *id;
+        if( (*tag).isEmpty() )
+            // remove the token from "text"
+            text.replace( QRegExp( QString("\\{[^}]*%1[^{]*\\}").arg( *tok ) ), QString::null );
 
-        if ( !element.isEmpty() )
-            text.replace( identifier, element, FALSE );
         else
-        {
-            text.replace( QRegExp (replaceMe.arg( identifier ) ), element );
-            text.replace( identifier, QString::null, FALSE );
-        }
+            // replace the token directly, this will leave the {braces}
+            text.replace( *tok, *tag );
     }
 
-    // If we end up replacing many lines with QString::null, we could get blank lines.  lets remove them.
-    text.replace( QRegExp( "\n+" ) , "\n" );
-    text.replace( QRegExp( "\n +\n" ) , "\n" );
+    // remove any remaining braces.
+    text.replace( '{', QString::null );
+    text.replace( '}', QString::null );
 
-    // remove the braces.
-    text.replace( "{", QString::null );
-    text.replace( "}", QString::null );
-
-    text.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString::null );
+    // replace some common HTML type stuff
     text.replace( "&lt;",  "<" );
     text.replace( "&gt;",  ">" );
     text.replace( "&amp;", "&" );
-    text.replace( "\\n", "\n" );
 
     m_text = text.stripWhiteSpace();
 
@@ -560,5 +538,9 @@ namespace ShadowEngine
         return alphaShadow;
     }
 }
+
+#ifdef NDEBUG
+#warning Please, please compile with --enable-debug=full!
+#endif
 
 #include "osd.moc"

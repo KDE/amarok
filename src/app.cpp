@@ -135,7 +135,9 @@ App::App()
 
     handleCliArgs();
 
-    insertChild( amaroK::OSD::instance() );
+    //FIXME if the OSD is deleted before the KApplication
+    //it causes a crash, we don't know why yet
+    //insertChild( amaroK::OSD::instance() );
 }
 
 App::~App()
