@@ -458,23 +458,6 @@ AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes)
 
 
 ###############################################################################
-# BEGIN KJSEMBED CHECK
-###############################################################################
-
-KDE_CHECK_HEADER(kjsembed/kjsembedpart.h, have_kjsembed=yes, have_kjsembed=no)
-
-if test x$have_kjsembed = xyes; then
-    AC_SUBST(LIB_KJSEMBED, "-lkjsembed")
-    AC_DEFINE(HAVE_KJSEMBED, 1, [have KJSEMBED])
-fi
-
-###############################################################################
-# END KJSEMBED CHECK
-###############################################################################
-
-
-
-###############################################################################
 # BEGIN MUSICBRAINZ CHECK
 ###############################################################################
 

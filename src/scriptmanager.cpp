@@ -1,20 +1,15 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
-#include "config.h"
-#ifdef HAVE_KJSEMBED
 
 #include "scriptmanager.h"
 
 #include <qdir.h>
 
 #include <kdebug.h>
-#include <kjsembed/jsconsolewidget.h>
-#include <kjsembed/kjsembedpart.h>
 #include <ktextedit.h>
 #include <kurl.h>
 
-using namespace KJSEmbed;
 
 ////////////////////////////////////////////////////////////////////////////////
 // public
@@ -28,10 +23,6 @@ ScriptManager::Manager::Manager( QObject* object )
         : QObject( object, "ScriptManager" )
 {
     s_instance = this;
-
-    //KJSEmbed
-    m_kjs = new KJSEmbedPart( this );
-    m_kjs->addObject( this );
 }
 
 
@@ -59,15 +50,13 @@ ScriptManager::Manager::showSelector()
 void
 ScriptManager::Manager::showConsole()
 {
-    JSConsoleWidget* console = m_kjs->view();
-    console->show();
 }
 
 
 void
 ScriptManager::Manager::addObject( QObject* object )
 {
-    m_kjs->addObject( object );
+//     m_kjs->addObject( object );
 }
 
 
@@ -94,13 +83,13 @@ ScriptManager::Manager::slotRun( const QString& path )
 {
     kdDebug() << k_funcinfo << endl;
 
-    KURL url;
+/*    KURL url;
     url.setPath( path );
     QDir::setCurrent( url.directory() );
 
     kdDebug() << "Running script: " << path << endl;
     QString script = m_kjs->loadFile( path );
-    m_kjs->view()->execute( script );
+    m_kjs->view()->execute( script );*/
 }
 
 
@@ -129,4 +118,3 @@ ScriptManager::Manager::slotConfigure( const QString& path )
 
 #include "scriptmanager.moc"
 
-#endif /*HAVE_KJSEMBED*/

@@ -98,9 +98,8 @@ Menu::Menu()
     insertItem( i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
 
-//     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
-//     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
-//     insertSeparator();
+    insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
+    insertSeparator();
 
     safePlug( ac, KStdAction::name(KStdAction::ShowMenubar), this );
 
@@ -123,11 +122,6 @@ Menu::Menu()
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
-
-    #ifndef HAVE_KJSEMBED
-    setItemEnabled( ID_SHOW_SCRIPT_SELECTOR, false );
-    setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
-    #endif
 
     setItemEnabled( ID_SHOW_VIS_SELECTOR, false );
     #ifdef HAVE_XMMS
