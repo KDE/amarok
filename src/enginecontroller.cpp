@@ -327,10 +327,15 @@ void EngineController::play( const MetaBundle &bundle )
     }
     else
     some_kind_of_failure:
+        //NOTE now we don't do next() at all
+        // say the user has a 4000 item playlist with all URLs in that playlist
+        // being bad, amaroK will appear to freeze. We need to either stat files in
+        // the background or not call next() more than 5 times in a row
         //don't do for repeatPlaylist() as it can produce a freeze
         //FIXME -> mxcl
-        if ( !AmarokConfig::repeatPlaylist() )
-            next();
+        //if ( !AmarokConfig::repeatPlaylist() )
+        //    next()
+                ;
 }
 
 
