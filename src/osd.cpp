@@ -495,11 +495,26 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     // set text to the value in the config file.
     QString text = AmarokConfig::osdText();
 
-    // Use reg exps to remove anything within braces if the tag is empty.
+    // Use reg exps to remove anything within braces if the tag element is empty.
     // eg: text.replace( QRegExp( "\\{[^}]*%album[^}]*\\}" ), QString::null );
     // OSD: {Album: %album }
     // will not display if bundle.album() is empty.
 
+    QString replaceMe = "\\{[^}]*%1[^}]*\\}";
+    QStringList element, identifier;
+    
+    QString length, bitrate = QString::null;
+    
+    if( bundle.length())
+        length = QString ("%1").arg(bundle.prettyLength());
+    if( bundle.bitrate() )
+        bitrate = QString ("%1").arg(bundle.prettyBitrate());
+    
+    element    << bundle.album() << bundle.track() << bundle.genre() << bundle.year()
+               << bundle.track()<< length << bitrate;
+    identifier << i18n("%album") << i18n("%track") << i18n("%genre") << i18n("%year")
+               << i18n("%number") << i18n( "%length" ) << i18n( "%bitrate" );
+        
     if ( bundle.artist().isEmpty() ) {
         text.replace( "%artist", bundle.prettyTitle( bundle.url().fileName() ), FALSE );
         text.replace( "%track", QString::null , FALSE);
@@ -508,57 +523,23 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
         text.replace( "%track", bundle.title() , FALSE );
     }
 
-    if ( !bundle.album().isEmpty() ) {
-        text.replace( "%album", bundle.album() , FALSE );
-    } else {
-        text.replace( QRegExp( "\\{[^}]*%album[^}]*\\}" ), QString::null );
-        text.replace( "%album", QString::null , FALSE );
-    }
-
-    if ( !bundle.track().isEmpty() ) {
-        text.replace( "%number", bundle.track() , FALSE );
-    } else {
-        text.replace( QRegExp( "\\{[^}]*%number[^}]*\\}" ), QString::null );
-        text.replace( "%number", QString::null , FALSE );
-    }
-
-    if ( bundle.length() )
-    {
-        text.replace( "%length", bundle.prettyLength() , FALSE );
-    } else {
-        text.replace( QRegExp( "\\{[^}]*%length[^}]*\\}" ), QString::null );
-        text.replace( "%length", QString::null , FALSE );
-    }
-
-    if ( bundle.bitrate() )
-    {
-        text.replace( "%bitrate", bundle.prettyBitrate() , FALSE );
-    } else {
-        text.replace( "\\{[^}]*%bitrate[^}]*\\}", QString::null , FALSE );
-        text.replace( "%bitrate", QString::null , FALSE );
-    }
-
-    if ( !bundle.genre().isEmpty() )
-    {
-        text.replace( "%genre", bundle.genre() , FALSE );
-    } else {
-        text.replace( "\\{[^}]*%genre[^}]*\\}", QString::null , FALSE );
-        text.replace( "%genre", QString::null , FALSE );
-    }
-
-    if ( !bundle.year().isEmpty() )
-    {
-        text.replace( "%year", bundle.year() , FALSE );
-    } else {
-        text.replace( QRegExp( "\\{[^}]*%year[^}]*\\}" ), QString::null );
-        text.replace( "%year", QString::null , FALSE );
-    }
-
     // Lets get the location of the cover image
     QString image = CollectionDB().albumImage( bundle.artist(), bundle.album() );
 
+    for ( uint x = 0; x < identifier.count(); ++x )
+    {
+        if ( !element[x].isEmpty() )
+            text.replace( identifier[x], element[x], FALSE );
+        else
+        {
+            text.replace( QRegExp (replaceMe.arg( identifier[x] ) ), element[x] );
+            text.replace( identifier[x], QString::null, FALSE );
+        }
+    }
+    
     // If we end up replacing many lines with QString::null, we could get blank lines.  lets remove them.
     text.replace( QRegExp( "\n+" ) , "\n" );
+    text.replace( QRegExp( "\n +\n" ) , "\n" );
 
     // remove the braces.
     text.replace( "{", QString::null );
