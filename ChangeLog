@@ -3,6 +3,9 @@ amaroK Changelog
 (c) 2002-2004 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+VERSION 0.8.3:
+  * fix: build issue
+
 VERSION 0.8.2:
   * add: added Hide/Show Playlist global shortcut (thanks gogo)
   * chg: mousewheel over trayicon behaviour changed

@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.8.2"
+#define APP_VERSION "0.8.3"
 
 #include "amarokarts/amarokarts.h"
 
