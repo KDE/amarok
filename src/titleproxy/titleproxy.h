@@ -43,7 +43,6 @@ namespace TitleProxy
             KURL proxyUrl();
 
         signals:
-            void error();
             void metaData( const MetaBundle& );
             void streamData( char*, int size );
             
@@ -53,9 +52,10 @@ namespace TitleProxy
             void readRemote();
             bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void accept( int socket );
-            void sendRequest();
+            void sendRequest( bool meta );
 
         private:
+            void error();
             void transmitData( const QString &data );
             QString extractStr( const QString &str, const QString &key );
 

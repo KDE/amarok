@@ -60,8 +60,6 @@ Proxy::Proxy( KURL url, int streamingMode )
         , m_usedPort( 0 )
         , m_pBuf( 0 )
 {
-    connect( this, SIGNAL( error() ), this, SLOT( deleteLater() ) );    //delete yourself in case of error
-
     kdDebug() << k_funcinfo << endl;
 
     //FIXME this needs a timeout check    
@@ -72,7 +70,7 @@ Proxy::Proxy( KURL url, int streamingMode )
     kdDebug() << k_funcinfo << "sock.connectToHost() state: " << m_sockRemote.state() << endl;
     
     if ( m_sockRemote.state() != QSocket::Connected ) {
-        emit error();
+        error();
         return ;
     }
 
@@ -99,7 +97,7 @@ Proxy::Proxy( KURL url, int streamingMode )
     }
     else {    
         m_initSuccess = true;
-        sendRequest();
+        sendRequest( true );
     }
 }
 
@@ -131,49 +129,29 @@ void Proxy::accept( int socket )
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     
     m_sockProxy.setSocket( socket );
-
     m_sockProxy.waitForMore( 5000 );
-    int bytesRead = m_sockProxy.readBlock( m_pBuf, BUFSIZE );
-    kdDebug() << k_funcinfo << "m_sockProxy bytesRead = " << bytesRead << endl;
 
-    QString artsRequest = QString::fromAscii( m_pBuf, BUFSIZE );
-    kdDebug() << "artsRequest:\n" << artsRequest << endl;
-        
-    QCString str( m_pBuf, bytesRead );
-    int index1 = str.find( "GET / HTTP/1.1" );
-    int index2 = str.find( "\n", index1 ) + 1;
-    m_sockRemote.writeBlock( m_pBuf, index1 );
-    
-    //This is our new, modified request, containing the correct path to the stream
-    QString request = QString( "GET %1 HTTP/1.1\r\nIcy-MetaData:1\r\n" )
-                      .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
-    
-    kdDebug() << "request: " << request << endl;
-    
-    m_sockRemote.writeBlock( request.latin1(), request.length() );
-    m_sockRemote.writeBlock( m_pBuf + index2, bytesRead - index2 );
-    
-    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
+    sendRequest( true );    
     
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
-void Proxy::sendRequest()
+void Proxy::sendRequest( bool meta )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
   
-    QString request = QString( "GET %1 HTTP/1.1\r\n" 
-                               "Icy-MetaData:1\r\n"
-                               "Connection: Keep-Alive\r\n"
-                               "User-Agent: aRts/1.2.2\r\n"
-                               "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
-                               "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
-                               "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
-                               "Accept-Language: de, en\r\n\r\n" )
-                      .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
-
-//     Host: localhost:6666
+    QString request = QString( "GET %1 HTTP/1.1\r\n" )
+                             .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
+    
+    if ( meta ) request += "Icy-MetaData:1\r\n";
+ 
+    request += "Connection: Keep-Alive\r\n"
+               "User-Agent: aRts/1.2.2\r\n"
+               "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
+               "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
+               "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
+               "Accept-Language: de, en\r\n\r\n";
                               
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     m_sockRemote.writeBlock( request.latin1(), request.length() );
@@ -218,7 +196,7 @@ void Proxy::readRemote()
             else 
                 emit streamData( m_pBuf + index, bytesWrite );
             
-            if ( bytesWrite == -1 ) { emit error(); return; }
+            if ( bytesWrite == -1 ) { error(); return; }
             
             index += bytesWrite;
             m_byteCount += bytesWrite;
@@ -259,13 +237,20 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
             m_headerFinished = true;
 
             if ( !m_metaInt ) {
-                emit error();
+                error();
                 return false;
             }
             return true;
         }
     }
     return false;
+}
+
+
+void Proxy::error()
+{
+    //open stream again,  but this time without metadata, please
+    sendRequest( false );
 }
 
 

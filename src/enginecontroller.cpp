@@ -37,7 +37,6 @@ EngineController *EngineController::instance()
 
 EngineController::EngineController()
     : m_pEngine( 0 )
-    , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
     , m_length( 0 )
     , m_delayTime( 0 )
@@ -98,7 +97,6 @@ void EngineController::play( const MetaBundle &bundle )
     
     if ( AmarokConfig::titleStreaming() &&
          url.protocol() == "http" &&
-         !m_proxyError &&
          !url.path().endsWith( ".ogg" ) )
     {
         TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, EngineController::engine()->streamingMode() );
@@ -106,8 +104,6 @@ void EngineController::play( const MetaBundle &bundle )
 
         connect( this,                     SIGNAL( deleteProxy () ),
                  proxy,                      SLOT( deleteLater () ) );
-        connect( proxy,                    SIGNAL( error       () ),
-                 this,                       SLOT( proxyError  () ) );
         connect( proxy,                    SIGNAL( metaData( const MetaBundle& ) ),
                  this,                       SLOT( newMetaData( const MetaBundle& ) ) );
         connect( proxy,                    SIGNAL( streamData( char*, int ) ),
@@ -116,8 +112,6 @@ void EngineController::play( const MetaBundle &bundle )
         if ( object )
             connect( object, SIGNAL( destroyed () ),
                      proxy,    SLOT( deleteLater() ) );
-        else
-            proxyError();
     }
     else
         m_pEngine->play( url );
@@ -127,7 +121,6 @@ void EngineController::play( const MetaBundle &bundle )
     
     stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( bundle, true /* track change */ );
-    m_proxyError = false;
 
     //when TagLib can't get us the track length, we ask the engine as fallback
 //    m_determineLength = ( engine->isStream() || bundle.length() ) ? false : true;
@@ -172,15 +165,6 @@ int EngineController::setVolume( int percent )
     return m_pEngine->volume();
 }
 
-void EngineController::proxyError()
-{
-    kdWarning() << k_funcinfo << " TitleProxy error! Switching to normal playback.." << endl;
-
-    m_proxyError = true;
-    stop();
-    emit deleteProxy();
-    play();
-}
 
 void EngineController::newMetaData( const MetaBundle &bundle )
 {

@@ -57,8 +57,6 @@ public slots:
 
     int setVolume( int percent );
 
-    void proxyError();     // proxy error stuff. Move to private class?
-
 signals:
     void orderNext();
     void orderPrevious();
@@ -81,7 +79,6 @@ private:
     //something even if configuration is corrupt or engine is not compiled into new amaroK etc.
     EngineBase *m_pEngine;
     KURL m_playingURL;
-    bool m_proxyError;
     QTimer *m_pMainTimer;
     long m_length; ///< Current track length in milliseconds
     long m_delayTime;
