@@ -37,7 +37,7 @@ if test "$PKGCONFIGFOUND" != "yes" ; then
     echo "=                                                  ===="
 fi
 
-if test "x$have_gst" = "xno"; then
+if test x$have_gst = xno; then
     echo "========================="
     echo "=  amaroK - WARNING  =================================="
     echo "=                                                     ="
@@ -46,6 +46,18 @@ if test "x$have_gst" = "xno"; then
     echo "=  engine is built (eg aRts, NMM). You can obtain     ="
     echo "=  GStreamer from http://freedesktop.org/~gstreamer/  ="
     echo "=  amaroK requires version $GST_REQ or higher.           ="
+    echo "=                                                  ===="
+
+fi
+
+if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
+    echo "========================="
+    echo "=  amaroK - WARNING  =================================="
+    echo "=                                                     ="
+    echo "=  The amaroK GStreamer engine will be built, but no  ="
+    echo "=  GStreamer plugins were detected! You should        ="
+    echo "=  install at least the plugins for MP3 and a sink,   ="
+    echo "=  (eg. ALSA) from http://freedesktop.org/~gstreamer/ ="
     echo "=                                                  ===="
 
 fi

@@ -139,10 +139,11 @@ if test "$build_gstreamer" != "no"; then
         GST_MAJORMINOR=0.8
         GST_REQ=0.8.1
         
-        KDE_PKG_CHECK_MODULES(GST, \
-            gstreamer-$GST_MAJORMINOR >= $GST_REQ \
-            gstreamer-plugins-$GST_MAJORMINOR >= $GST_REQ,
+        KDE_PKG_CHECK_MODULES(GST, gstreamer-$GST_MAJORMINOR >= $GST_REQ, 
             have_gst=yes,have_gst=no)
+        
+        KDE_PKG_CHECK_MODULES(GST_PLUGINS, gstreamer-plugins-$GST_MAJORMINOR >= $GST_REQ, \
+            have_gst_plugins=yes,have_gst_plugins=no)
     
         dnl Give error if we don't have gstreamer
         if test "x$have_gst" = "xno"; then

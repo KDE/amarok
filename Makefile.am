@@ -3,8 +3,8 @@ EXTRA_DIST = amarok.kdevprj admin AUTHORS COPYING ChangeLog INSTALL README TODO 
 AUTOMAKE_OPTIONS = foreign
 
 install-data-local:
-	@echo " ***********************"
-	@echo ""
+	@echo " *************************************************"
 	@echo "  Type amarok to start!"
 	@echo ""
-	@echo " ***********************"
+	@echo "  If you have problems, please consult the README"
+	@echo " *************************************************"
