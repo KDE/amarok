@@ -254,7 +254,7 @@ PlaylistWindow::init()
     actionCollection()->action("playlist_select_all")->plug( playlistMenu );
     //END Playlist menu
 
-    //BEGIN Window menu
+    //BEGIN Tools menu
     KPopupMenu *toolsMenu = new KPopupMenu( m_menubar );
     toolsMenu->insertItem( i18n("&Player-window") );
     toolsMenu->insertItem( i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
@@ -288,7 +288,7 @@ PlaylistWindow::init()
 
     m_menubar->insertItem( "&Play", fileMenu );
     m_menubar->insertItem( "&Playlist", playlistMenu );
-    m_menubar->insertItem( "&Windows", toolsMenu );
+    m_menubar->insertItem( "&Tools", toolsMenu );
     m_menubar->insertItem( "&Settings", m_settingsMenu );
     m_menubar->insertItem( "&Help",  amaroK::Menu::helpMenu() );
 
