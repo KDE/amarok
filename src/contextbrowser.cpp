@@ -455,7 +455,7 @@ void ContextBrowser::showCurrentTrack()
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                      "<img align='left' hspace='2' width='40' height='40' src='%3'><b>%4</b><br>%5 Tracks</td>"
+                                      "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
                                       "</tr>" )
                             .arg( values[i*3 + 2] )
                             .arg( values[i*3 + 1] )
