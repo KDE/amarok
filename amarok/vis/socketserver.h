@@ -6,7 +6,7 @@
 #define VIS_SOCKETSERVER_H
 
 //uncomment below to activate this stuff
-#define AMK_NEW_VIS_SYSTEM
+//#define AMK_NEW_VIS_SYSTEM
 
 #include <qserversocket.h>
 
