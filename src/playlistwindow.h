@@ -1,9 +1,9 @@
 /***************************************************************************
-                         browserwin.h  -  description
-                            -------------------
-   begin                : Fre Nov 15 2002
-   copyright            : (C) 2002 by Mark Kretschmann
-   email                : markey@web.de
+                       browserwin.h  -  description
+                          -------------------
+ begin                : Fre Nov 15 2002
+ copyright            : (C) 2002 by Mark Kretschmann
+ email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -19,18 +19,22 @@
 #define AMAROK_PLAYLISTWINDOW_H
 
 #include <qwidget.h>        //baseclass
+#include <ktoolbar.h>       //baseclass
 #include <kurl.h>           //KURL::List
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
+namespace amaroK {
+    class ToolBar;
+}
 class BrowserBar;
 class ContextBrowser;
-class KLineEdit;
 class KActionCollection;
+class KLineEdit;
 class KToolBar;
-class PlaylistLoader;
 class Playlist;
-class QColor;
+class PlaylistLoader;
 class QCloseEvent;
+class QColor;
 class QCustomEvent;
 class QFocusEvent;
 class QFont;
@@ -73,9 +77,9 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     private:
         BrowserBar *m_browsers;
-        Playlist   *m_playlist;
-        KLineEdit  *m_lineEdit;
-        KToolBar   *m_toolbar;
+        Playlist *m_playlist;
+        KLineEdit *m_lineEdit;
+        amaroK::ToolBar *m_toolbar;
 };
 
 
@@ -88,10 +92,31 @@ void PlaylistWindow::insertMedia( const QString &path )
 inline
 void PlaylistWindow::insertMedia( const KURL &url )
 {
-    if( !url.isEmpty() )
-    {
+    if ( !url.isEmpty() ) {
         insertMedia( KURL::List( url ) );
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// amaroK::ToolBar
+//////////////////////////////////////////////////////////////////////////////////////////
+namespace amaroK
+{
+    class ToolBar : public KToolBar
+    {
+            Q_OBJECT
+
+        public:
+            ToolBar( QWidget* parent, const char* name = 0 )
+                : KToolBar( parent, name ) {};
+               
+        signals:
+            void wheelMoved( int delta );    
+    
+        private: 
+            void wheelEvent( QWheelEvent* e )
+                { emit wheelMoved( e->delta() ); }        
+    };
 }
 
 

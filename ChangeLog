@@ -2,7 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
-  FIX: Wheel-scrolling toolbar's volume slider doesn't change volume.
+
+  ADD: Allow changing volume by using the mousewheel anywhere on the toolbar.
+  FIX: Wheel-scrolling toolbar's volume slider doesn't change volume (BR 81155).
   FIX: ContextBrowser is now shown in proper colors for every scheme.
   CHG: Added track's physical location to the Meta Information dialog.
   FIX: Show last playtime in localtime instead of UTC.

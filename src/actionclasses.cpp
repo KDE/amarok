@@ -3,9 +3,10 @@
 
 #include "actionclasses.h"
 #include "amarokconfig.h"
-#include "app.h"    //actionCollection() and a SLOT
+#include "app.h"                //actionCollection() and a SLOT
 #include "enginecontroller.h"
-#include "socketserver.h" //Vis::Selector::showInstance()
+#include "playlistwindow.h"     //need amaroK::ToolBar
+#include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -220,7 +221,7 @@ VolumeAction::VolumeAction( KActionCollection *ac )
 int
 VolumeAction::plug( QWidget *w, int index )
 {
-    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+    amaroK::ToolBar *bar = dynamic_cast<amaroK::ToolBar*>( w );
 
     if( bar && kapp->authorizeKAction( name() ) )
     {
@@ -236,9 +237,11 @@ VolumeAction::plug( QWidget *w, int index )
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
         connect( m_slider, SIGNAL( valueChanged( int ) ),
                  this,       SLOT( sliderMoved( int ) ) );
+        connect( bar,      SIGNAL( wheelMoved( int ) ),
+                 this,       SLOT( wheelMoved( int ) ) );
 
         bar->insertWidget( id, 0, m_slider, index );
-        
+                
         return containerCount() - 1;
     }
     else return -1;
@@ -251,10 +254,17 @@ VolumeAction::engineVolumeChanged( int value )
 }
 
 void
-VolumeAction::sliderMoved( int value )
+VolumeAction::sliderMoved( int value ) //SLOT
 {
     EngineController::instance()->setVolume( amaroK::VOLUME_MAX - value );
 }
+
+void
+VolumeAction::wheelMoved( int delta ) //SLOT
+{
+    m_slider->setValue( m_slider->value() - delta / 18 );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // RandomAction

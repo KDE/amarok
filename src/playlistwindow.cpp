@@ -124,7 +124,7 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
     KStatusBar *statusbar;
 
-    m_toolbar  = new KToolBar( this, "playlist_toolbar" );
+    m_toolbar  = new amaroK::ToolBar( this, "playlist_toolbar" );
     statusbar  = new amaroK::StatusBar( this );
     m_playlist = new Playlist( m_browsers->container(), ac );
 
@@ -236,10 +236,15 @@ void PlaylistWindow::createGUI()
         if( it == last ) m_toolbar->setIconText( KToolBar::TextOnly, false );
 
         KToolBarButton* const button = (KToolBarButton*)m_toolbar->child( (*it).latin1() );
-        if( button ) button->modeChange();
+        if( button ) {
+            button->modeChange();
+            button->setFocusPolicy( QWidget::NoFocus );
+        }
     }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
+    //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
+    m_toolbar->setFocusPolicy( QWidget::WheelFocus );
 
     conserveMemory();
 

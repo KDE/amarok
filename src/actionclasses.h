@@ -76,6 +76,7 @@ namespace amaroK
 
         private slots:
             void sliderMoved( int value );
+            void wheelMoved( int delta );
 
         private:
             void engineVolumeChanged( int value );
