@@ -665,7 +665,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 
 void PlaylistWindow::playAudioCD() //SLOT
 {
-    m_browsers->showBrowser( 4 ); //show the file browser
+    m_browsers->showBrowser( 5 ); //show the file browser
     FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
     fb->setDir( KURL("audiocd:/") );
 }
