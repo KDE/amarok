@@ -193,9 +193,11 @@ void StatusBar::customEvent( QCustomEvent *e )
             case CollectionReader::ProgressEvent::Start:
                 m_pProgress->setProgress( 0 );
                 m_pProgress->show();
+                if( isHidden() ) show();
                 break;
             case CollectionReader::ProgressEvent::Stop:
                 m_pProgress->hide();
+                if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 1000, this, SLOT(hide()) );
                 break;
             case CollectionReader::ProgressEvent::Total:
                 m_pProgress->setTotalSteps( p->value() );
