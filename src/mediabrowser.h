@@ -141,6 +141,7 @@ class MediaDevice : public QObject
         void syncIPod();
 
     private:
+        void openIPod();
         bool fileExists( const MetaBundle& bundle );
         KURL::List m_transferURLs;
 

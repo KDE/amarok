@@ -35,6 +35,7 @@
 #include <kpopupmenu.h>
 #include <kprogress.h>
 #include <krun.h>
+#include <kmountpoint.h>
 #include <kstandarddirs.h> //locate file
 #include <ktabbar.h>
 #include <ktempfile.h>
@@ -428,9 +429,36 @@ MediaDevice::MediaDevice( MediaDeviceView* parent )
     s_instance = this;
 
     m_ipod = new IPod::IPod();
-    m_ipod->open( "/mnt/ipod" );
+
+    openIPod();
 }
 
+void
+MediaDevice::openIPod()
+{
+
+    if ( !m_ipod->isOpen() )
+	m_ipod->open( "/mnt/ipod" );
+    if ( !m_ipod->isOpen() )
+	m_ipod->open( "/media/iPod" ); // default path on SuSE 9.3
+
+    if ( !m_ipod->isOpen() ) {
+	// try to find a mounted ipod
+	KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
+	KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
+	for(; mountiter != currentmountpoints.end(); ++mountiter) {
+	    QString mountpoint = (*mountiter)->mountPoint();
+	    QString device = (*mountiter)->mountedFrom();
+	
+	    // only care about scsi devices (/dev/sd at the beginning or scsi somewhere in its name)
+	    if (device.find("/dev/sd") != 0 && device.find("scsi") < 0)
+	        continue;
+	
+	    if (m_ipod->open(mountpoint)) 
+	        break;
+	}
+    }
+};
 
 MediaDevice::~MediaDevice()
 {
@@ -756,7 +784,7 @@ MediaDevice::syncIPod()  //SLOT
     delete m_ipod;
 
     m_ipod = new IPod::IPod();
-    m_ipod->open( "/mnt/ipod" );
+    openIPod();
 
     m_parent->m_deviceList->renderView( 0 );
 }
