@@ -12,6 +12,7 @@
 #include <qvbox.h>
 
 #include <kapplication.h>
+#include <kcursor.h> //waiting cursor
 #include <kdebug.h>
 #include <kinputdialog.h>
 #include <kio/job.h>
@@ -27,12 +28,14 @@ CoverFetcher::CoverFetcher( const QString& license, QObject* parent)
     , m_license( license )
     , m_buffer( 0 )
 {
+    QApplication::setOverrideCursor( KCursor::workingCursor() );
     kdDebug() << k_funcinfo << endl;
 }
 
 
 CoverFetcher::~CoverFetcher()
 {
+    QApplication::restoreOverrideCursor();
     delete[] m_buffer;
 }
 
@@ -236,7 +239,7 @@ CoverFetcher::editSearch() //SLOT
     sdlg->searchString->setText( m_saveas );
     sdlg->setModal( true );
     connect( sdlg, SIGNAL( imageReady( QPixmap ) ), this, SLOT( saveCover( QPixmap ) ) );
-    
+
     if ( sdlg->exec() == QDialog::Accepted )
     {
         m_album = sdlg->searchString->text();
