@@ -260,6 +260,9 @@ PlaylistWindow::init()
     toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    #ifndef HAVE_XMMS
+    toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
+    #endif
     connect( toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END
 
