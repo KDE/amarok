@@ -746,7 +746,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write( QStringx ( "<tr>"
                                         "<td class='rbalbum' onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top'>"
                                          "<a href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a>"
-                                         "<a href='album:%6 @@@ %7'><b>%8</b><br>%9</a>"
+                                         "<a href='album:%6 @@@ %7'><b>%8</b><br>%9<br><br></a>"
                                         "</td>"
                                        "</tr>" )
                             .args( QStringList()
