@@ -55,8 +55,7 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL( clicked() ), this, SLOT( musicbrainzQuery() ) );
-#endif
-#ifndef HAVE_MUSICBRAINZ
+#else
     pushButton_musicbrainz->setEnabled( false );
 #endif
     

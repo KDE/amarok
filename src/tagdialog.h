@@ -8,19 +8,17 @@
 
 #ifdef HAVE_MUSICBRAINZ
 #include "musicbrainzquery.h"
+#else
+// Dummy MusicbrainzQuery::TrackList class for queryDone argument.
+namespace MusicBrainzQuery {
+    class TrackList {};
+}
 #endif
 
 #include "tagdialogbase.h"    //baseclass
 
 class MetaBundle;
 
-#ifndef HAVE_MUSICBRAINZ
-// Dummy MusicbrainzQuery::TrackList class for queryDone argument.
-namespace MusicBrainzQuery
-{
-    class TrackList {};
-}
-#endif
 
 class TagDialog : public TagDialogBase
 {

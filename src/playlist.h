@@ -85,7 +85,7 @@ class Playlist : private KListView, public EngineObserver
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
         static void showTrackInfo( const KURL& url );
-        static void showTrackInfo( const MetaBundle& bundle );
+        static void showTrackInfo( PlaylistItem* item );
         static QMap<QString, bool> s_extensionCache;
 
         static Playlist *instance() { return s_instance; }

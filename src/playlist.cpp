@@ -1177,7 +1177,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
         break;
 
     case VIEW:
-        showTrackInfo( MetaBundle( item ) );
+        showTrackInfo( item );
         break;
 
     case EDIT:
@@ -1265,13 +1265,14 @@ void Playlist::startEditTag( QListViewItem *item, int column )
 
 void Playlist::showTrackInfo( const KURL& url ) //STATIC
 {
-    showTrackInfo( MetaBundle( url ) );
+    TagDialog* dialog = new TagDialog( MetaBundle( url ), instance() );
+    dialog->show();
 }
 
 
-void Playlist::showTrackInfo( const MetaBundle& mb ) //STATIC
+void Playlist::showTrackInfo( PlaylistItem* item ) //STATIC
 {
-    TagDialog* dialog = new TagDialog( mb, instance() );
+    TagDialog* dialog = new TagDialog( item->metaBundle(), instance() );
     dialog->show();
 }
 
