@@ -1,4 +1,4 @@
-    // (c) Pierpaolo Di Panfilo 2004
+// (c) Pierpaolo Di Panfilo 2004
 // See COPYING file for licensing information
 
 #include "config.h"
@@ -61,6 +61,8 @@ CoverManager::CoverManager()
     , m_coversFetched( 0 )
     , m_coverErrors( 0 )
 {
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     instance = this;
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
@@ -230,6 +232,8 @@ CoverManager::CoverManager()
 
 CoverManager::~CoverManager()
 {
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     //save window size
     KConfig *config = kapp->config();
     config->setGroup( "Cover Manager" );
@@ -241,6 +245,8 @@ CoverManager::~CoverManager()
 
 void CoverManager::init()
 {
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     QListViewItem *item = 0;
 
     if ( !artistToSelectInInitFunction.isEmpty() )
@@ -270,6 +276,8 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
 void CoverManager::fetchMissingCovers() //SLOT
 {
     #ifdef AMAZON_SUPPORT
+
+    Debug::Block block( __PRETTY_FUNCTION__ );
 
     for ( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
@@ -656,6 +664,8 @@ void CoverManager::coverFetcherError()
 
 void CoverManager::stopFetching()
 {
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     m_fetchCovers.clear();
     m_fetchCounter = 0;
 
@@ -667,8 +677,6 @@ void CoverManager::stopFetching()
     delete list;
 
     m_fetchingCovers = 0;
-    m_coversFetched = 0;
-    m_coverErrors = 0;
     updateStatusBar();
 }
 
@@ -678,8 +686,8 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 {
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        kdDebug() << coverItem->artist() << endl;
-        kdDebug() << coverItem->album() << endl;
+        debug() << coverItem->artist() << endl;
+        debug() << coverItem->album() << endl;
         if ( artist == coverItem->artist() && album == coverItem->album() ) {
             coverItem->loadCover();
             return;
@@ -778,6 +786,9 @@ void CoverManager::updateStatusBar()
         }
     }
     else {
+        m_coversFetched = 0;
+        m_coverErrors = 0;
+
         uint totalCounter = 0, missingCounter = 0;
 
         if( m_progressBox->isShown() )
@@ -816,6 +827,8 @@ void CoverManager::updateStatusBar()
 CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
     : KIconView( parent, name, f )
 {
+    Debug::Block block( __PRETTY_FUNCTION__ );
+
     setArrangement( QIconView::LeftToRight );
     setResizeMode( QIconView::Adjust );
     setSelectionMode( QIconView::Extended );
