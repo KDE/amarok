@@ -50,11 +50,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_actionsMenu = new KPopupMenu( this );
     m_cat1Menu = new KPopupMenu( this );
     m_cat2Menu = new KPopupMenu( this );
+    m_cat3Menu = new KPopupMenu( this );
 
     KMenuBar* menu = new KMenuBar( this );
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
-    menu->insertItem( i18n( "Primary" ), m_cat1Menu );
-    menu->insertItem( i18n( "Secondary" ), m_cat2Menu );
+    menu->insertItem( i18n( "First" ), m_cat1Menu );
+    menu->insertItem( i18n( "Second" ), m_cat2Menu );
+    menu->insertItem( i18n( "Third" ), m_cat3Menu );
 
     { //<Search LineEdit>
         QHBox *hbox; KToolBarButton *button;
@@ -96,8 +98,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
     m_cat2Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
+    m_cat3Menu ->insertItem( i18n( "None" ), m_view, SLOT( cat3Menu( int ) ), 0, IdNone );
+    m_cat3Menu ->insertSeparator();
+    m_cat3Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat3Menu( int ) ), 0, IdAlbum );
+    m_cat3Menu ->insertItem( i18n( "Artist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
+    m_cat3Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
+    m_cat3Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
+
     m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ), false );
-    m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ), true );
+    m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ), false );
+    m_view->cat3Menu( m_view->idForCat( m_view->m_category3 ), true );
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
 
@@ -177,6 +187,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         KConfig* config = amaroK::config( "Collection Browser" );
         m_category1 = config->readEntry( "Category1", i18n( "Artist" ) );
         m_category2 = config->readEntry( "Category2", i18n( "None" ) );
+        m_category3 = config->readEntry( "Category3", i18n( "None" ) );
+
         addColumn( m_category1 );
     //</READ CONFIG>
 
@@ -236,6 +248,7 @@ CollectionView::~CollectionView() {
     KConfig* const config = amaroK::config( "Collection Browser" );
     config->writeEntry( "Category1", m_category1 );
     config->writeEntry( "Category2", m_category2 );
+    config->writeEntry( "Category3", m_category3 );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
@@ -313,7 +326,7 @@ CollectionView::renderView( )  //SLOT
     {
         if ( values[i].isEmpty() ) continue;
 
-        if ( values[i + 1] == "1" )
+        if ( m_category1.lower() == "artist" && values[i + 1] == "1" )
         {
             if ( addedVA ) continue;
 
@@ -355,40 +368,38 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return;
 
-    if  ( item->depth() == 0 )
-    {
-        QStringList values;
-        QStringList names;
+    QStringList values;
+    QStringList names;
+
+    QString category;
+
+    if( item->depth() == 0 ) {
         m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
-
-        QPixmap pixmap = iconForCat( m_category2 );
-
-        for ( uint i = 0; i < values.count(); i += 2 )
-        {
-            Item* child = new Item( item );
-            child->setDragEnabled( true );
-            child->setDropEnabled( false );
-            child->setText( 0, values[ i + 0 ] );
-            if ( m_category2 != i18n( "None" ) )
-                child->setPixmap( 0, pixmap );
-            child->setUrl( values[ i + 1 ] );
-            child->setExpandable( m_category2 != i18n( "None" ) );
-        }
+        category = m_category2;
+    } else if( item->depth() == 1 ) {
+        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+        category = m_category3;
+    } else {
+        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ), item->text(0),  tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+        category = i18n("None");
     }
-    else
-    {
-        QStringList values;
-        QStringList names;
-        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
 
-        for ( uint i = 0; i < values.count(); i += 2 )
-        {
-            Item* child = new Item( item );
-            child->setDragEnabled( true );
-            child->setDropEnabled( false );
-            child->setText( 0, values[ i + 0 ] );
+    QPixmap pixmap;
+    bool expandable = category != i18n( "None" );
+    if ( expandable )
+        pixmap = iconForCat( category );
+
+    for ( uint i = 0; i < values.count(); i += 2 )
+    {
+        Item* child = new Item( item );
+        child->setDragEnabled( true );
+        child->setDropEnabled( false );
+        child->setText( 0, values[ i + 0 ] );
+        if ( expandable )
+            child->setPixmap( 0, pixmap );
+        else
             child->setUrl( values[ i + 1 ] );
-        }
+        child->setExpandable( expandable );
     }
 }
 
@@ -420,12 +431,21 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 
     //prevent choosing the same category in both menus
     m_parent->m_cat2Menu->setItemEnabled( id , false );
+    m_parent->m_cat3Menu->setItemEnabled( id , false );
+    //m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category2 ) , false );
 
-    //if this item is checked in secondary, uncheck it
+    //if this item is checked in second menu, uncheck it
     if ( m_parent->m_cat2Menu->isItemChecked( id ) ) {
         m_parent->m_cat2Menu->setItemChecked( id, false );
         m_parent->m_cat2Menu->setItemChecked( CollectionBrowser::IdNone, true );
         m_category2 = catForId( CollectionBrowser::IdNone );
+        enableCat3Menu( false );
+    }
+    //if this item is checked in third menu, uncheck it
+    if ( m_parent->m_cat3Menu->isItemChecked( id ) ) {
+        m_parent->m_cat3Menu->setItemChecked( id, false );
+        m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
+        m_category3 = catForId( CollectionBrowser::IdNone );
     }
 
     if ( rerender )
@@ -437,11 +457,52 @@ void
 CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 {
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
+    m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category3 ), true );  //enable old item
     m_category2 = catForId( id );
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
 
+    enableCat3Menu(  id != CollectionBrowser::IdNone );
+
+    //prevent choosing the same category in both menus
+    m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category1 ) , false );
+    if( id != CollectionBrowser::IdNone )
+        m_parent->m_cat3Menu->setItemEnabled( id , false );
+
+    //if this item is checked in third menu, uncheck it
+    if ( m_parent->m_cat3Menu->isItemChecked( id ) ) {
+        m_parent->m_cat3Menu->setItemChecked( id, false );
+        enableCat3Menu( false );
+    }
+
     if ( rerender )
         renderView();
+}
+
+
+void
+CollectionView::cat3Menu( int id, bool rerender )  //SLOT
+{
+    m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), false ); //uncheck old item
+    m_category3 = catForId( id );
+    m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), true );
+
+    if ( rerender )
+        renderView();
+}
+
+
+void
+CollectionView::enableCat3Menu( bool enable )
+{
+    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdAlbum, enable );
+    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdArtist, enable );
+    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdGenre, enable );
+    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdYear, enable );
+    if( !enable ) {
+        m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), false );
+        m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
+        m_category3 = catForId( CollectionBrowser::IdNone );
+    }
 }
 
 
@@ -645,8 +706,46 @@ CollectionView::listSelected() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
             for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
-                if ( grandChild->isSelected() && !child->parent()->isSelected() && !child->isSelected() )
+                if ( grandChild->isSelected() && !grandChild->isExpandable() && !child->parent()->isSelected() && !child->isSelected() )
                     list << static_cast<Item*>( grandChild ) ->url();
+
+    //category 3
+    if ( m_category3 == i18n( "None" ) )
+    {
+        for ( item = firstChild(); item; item = item->nextSibling() )
+            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+                    for ( QListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
+                        if ( grandChild2->isSelected() && !child->parent()->isSelected() && !child->isSelected() && !grandChild->isSelected() )
+                            list << static_cast<Item*>( grandChild2 ) ->url();
+    }
+    else {
+
+        for ( item = firstChild(); item; item = item->nextSibling() )
+            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+                    if ( grandChild->isSelected() && !grandChild->parent()->isSelected() )
+                    {
+                        values.clear();
+                        names.clear();
+
+                        m_db->retrieveThirdLevelURLs( item->text( 0 ), child->text( 0 ), grandChild->text(0), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ),  m_filter, &values, &names );
+                        for ( uint i = 0; i < values.count(); i++ )
+                        {
+                            KURL tmp;
+                            tmp.setPath( values[i] );
+                            list << tmp;
+                        }
+                    }
+    }
+
+    //category 3
+    for ( item = firstChild(); item; item = item->nextSibling() )
+            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+                    for ( QListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
+                        if ( grandChild2->isSelected() && !child->parent()->isSelected() && !child->isSelected() && !grandChild->isSelected() )
+                            list << static_cast<Item*>( grandChild2 ) ->url();
 
     return list;
 }

@@ -295,34 +295,30 @@ CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
 
 
 bool
-CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
+CollectionDB::removeImageFromAlbum( const QStringList artists, const QStringList albums )
 {
-    QString widthKey = "*@";
-    QString key( QFile::encodeName( artist + " - " + album ) );
-    key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+    KURL::List urls;
 
-    // remove scaled versions of images
-    QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
-    if ( scaledList.count() > 0 )
-    {
-        for ( uint i = 0; i < scaledList.count(); i++ )
-        {
-            KURL url( m_cacheDir.filePath( scaledList[ i ] ) );
-            KIO::DeleteJob* job = KIO::del( url );
-            if ( job->error() )
-                return false;
-        }
+    for ( uint i=0; i < artists.count(); i++ ) {
+        QString widthKey = "*@";
+        QString key( QFile::encodeName( artists[i] + " - " + albums[i] ) );
+        key.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
+
+        // remove scaled versions of images
+        QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
+        if ( scaledList.count() > 0 )
+            for ( uint i = 0; i < scaledList.count(); i++ )
+                urls += KURL( m_cacheDir.filePath( scaledList[ i ] ) );
+
+        // remove large, original images
+        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
+        if ( largeCoverDir.exists( key.lower() ) )
+            urls += KURL( largeCoverDir.filePath( key.lower() ) );
+
     }
 
-    // remove large, original images
-    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
-    if ( largeCoverDir.exists( key.lower() ) )
-    {
-        KURL url( largeCoverDir.filePath( key.lower() ) );
-        KIO::DeleteJob* job = KIO::del( url );
-        if ( job->error() )
-            return false;
-    }
+    // TODO We need to check which files have been deleted successfully
+    KIO::DeleteJob *job = KIO::del( urls );
 
     return true;
 }
@@ -1008,7 +1004,7 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
 
 
 void
-CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names )
+CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
 {
     QString filterToken;
     if ( filter != "" )
@@ -1018,17 +1014,77 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
         filterToken += category2.lower() + ".name LIKE '%" + filter + "%' OR ";
         filterToken += "tags.title LIKE '%" + filter + "%' )";
     }
-    QString sorting = category2.lower() == "album" ? "track" : "title";
+    QString command;
+    if( category3 == 0 ) {
+        QString sorting = category2.lower() == "album" ? "track" : "title";
+        QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+        QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+
+        command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category2.lower();
+        if ( itemText1 != i18n( "Various Artists" ) || filter != "" )
+            command += ", " + category1.lower();
+
+        command += " WHERE tags." + category2.lower() + " = " + id_sub
+                +  " AND tags." + category2.lower() + " = " + category2.lower() + ".id"
+                +  " AND tags.";
+
+        if ( itemText1 == i18n( "Various Artists" ) )
+            command += "sampler = 1 ";
+        else
+            command += category1.lower() + "=" + id;
+
+        if ( filter != "" )
+            command += " AND tags." + category1.lower() + " = " + category1.lower() + ".id ";
+
+        command += filterToken + " ORDER BY tags." + sorting + " DESC;";
+    }
+    else {
+        if ( filter != "" )
+            filterToken = "AND ( " + category1.lower() + ".id = tags." + category1.lower() + " AND " + category1.lower() + ".name LIKE '%" + filter + "%' OR " + category2.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+
+        QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+        QString sub_id = QString::number( getValueID( category2.lower(), itemText2, false ) );
+        command = "SELECT DISTINCT " + category3.lower() + ".name, '0' FROM tags, " + category3.lower()
+                + ", " + category2.lower() + ", " + category1.lower() + " WHERE "
+                + "tags." + category3.lower() + "=" + category3.lower() + ".id AND "
+                + "tags." + category2.lower() + "=" + sub_id + " AND tags.";
+
+        if ( itemText1 == i18n( "Various Artists" ) )
+            command += "sampler = 1";
+        else
+            command += category1.lower() + "=" + id;
+
+        command += " " + filterToken + " ORDER BY lower(" + category3.lower() + ".name) DESC;";
+    }
+
+    execSql( command, values, names );
+}
+
+
+void
+CollectionDB::retrieveFourthLevel( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+    {
+        filter = escapeString( filter );
+        filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR ";
+        filterToken += category2.lower() + ".name LIKE '%" + filter + "%' OR ";
+        filterToken += "tags.title LIKE '%" + filter + "%' )";
+    }
+    QString sorting = category3.lower() == "album" ? "track" : "title";
     QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
     QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+    QString id_sub2 = QString::number( getValueID( category3.lower(), itemText3, false ) );
 
-    QString command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category2.lower();
+    QString command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category3.lower()
+                            + ", " + category2.lower();
     if ( itemText1 != i18n( "Various Artists" ) || filter != "" )
         command += ", " + category1.lower();
 
-    command += " WHERE tags." + category2.lower() + " = " + id_sub
-            +  " AND tags." + category2.lower() + " = " + category2.lower() + ".id"
-            +  " AND tags.";
+    command += " WHERE tags." + category3.lower() + " = " + id_sub2
+                +  " AND tags." + category2.lower() + " = " + id_sub
+                +  " AND tags.";
 
     if ( itemText1 == i18n( "Various Artists" ) )
         command += "sampler = 1 ";
@@ -1039,7 +1095,6 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
         command += " AND tags." + category1.lower() + " = " + category1.lower() + ".id ";
 
     command += filterToken + " ORDER BY tags." + sorting + " DESC;";
-
     execSql( command, values, names );
 }
 
@@ -1108,6 +1163,36 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
         command += category1.lower() + "=" + id;
 
     command += " " + filterToken + " ORDER BY tags." + category2.lower() + ", tags.track;";
+
+    execSql( command, values, names );
+}
+
+
+void
+CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+{
+    QString filterToken;
+    if ( filter != "" )
+    {
+        filter = escapeString( filter );
+        filterToken = "AND ( " + category2.lower() + ".name LIKE '%" + filter + "%' OR " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
+    }
+
+    QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
+    QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
+    QString id_sub2 = QString::number( getValueID( category3.lower(), itemText3, false ) );
+
+    QString command = "SELECT DISTINCT tags.url FROM tags, "
+                            + category1.lower()  + ", " + category2.lower() + ", " + category3.lower();
+    command += " WHERE tags." + category3.lower() + "=" + id_sub2 + " AND"
+             + " tags." + category2.lower() + "=" + id_sub + " AND tags.";
+
+    if ( itemText1 == i18n( "Various Artists" ) )
+        command += "sampler = 1 ";
+    else
+        command += category1.lower() + "=" + id;
+
+    command += " " + filterToken + " ORDER BY tags." + category3.lower() + ", tags.track;";
 
     execSql( command, values, names );
 }

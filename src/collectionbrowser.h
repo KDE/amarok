@@ -49,6 +49,7 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_actionsMenu;
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
+        KPopupMenu* m_cat3Menu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
         QTimer* timer;
@@ -98,6 +99,8 @@ class CollectionView : public KListView
         void slotCollapse( QListViewItem* );
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
+        void cat3Menu( int id, bool rerender = true );
+        void enableCat3Menu( bool );
         void doubleClicked( QListViewItem*, const QPoint&, int );
         void rmbPressed( QListViewItem*, const QPoint&, int );
 
@@ -133,6 +136,8 @@ class CollectionView : public KListView
         QString m_filter;
         QString m_category1;
         QString m_category2;
+        QString m_category3;
+
         bool m_isScanning;
         QHBox* m_progressBox;
         KProgress* m_progress;

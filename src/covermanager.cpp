@@ -319,22 +319,30 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
         case DELETE: {
 
+            QPtrList<CoverViewItem> selectedItems;
+            for ( item = m_coverView->firstItem(); item; item = item->nextItem() )
+                    if ( item->isSelected() )
+                        selectedItems.append( item );
+
             int button = KMessageBox::warningContinueCancel(
                             this,
                             i18n( "Are you sure you want to delete this cover?",
                                   "Are you sure you want to delete these covers?",
-                                  m_coverView->count() ),
+                                  selectedItems.count() ),
                             QString::null,
                             i18n("&Delete Confirmation") );
 
             if ( button == KMessageBox::Continue )
             {
-                #undef item
+                QStringList artists, albums;
+                for ( item = selectedItems.first(); item; item = selectedItems.next() ) {
+                    artists.append( item->artist() );
+                    albums.append( item->album() );
+                }
 
-                for ( item = m_coverView->firstItem(); item; item = item->nextItem() )
-                    if ( static_cast<CoverViewItem*>(item)->isSelected() )
-                        if ( m_db->removeImageFromAlbum( static_cast<CoverViewItem*>(item)->artist(), static_cast<CoverViewItem*>(item)->album() ) )
-                            static_cast<CoverViewItem*>(item)->updateCover( QPixmap() );
+                if ( m_db->removeImageFromAlbum( artists, albums ) )
+                    for ( item = selectedItems.first(); item; item = selectedItems.next() )
+                        item->updateCover( QPixmap() );
             }
             break;
         }
@@ -549,7 +557,8 @@ void CoverViewItem::updateCover( const QPixmap &cover )
 
 QString CoverViewItem::albumPath()
 {
-    QString fileName( m_artist + " - " + m_album + ".png" );
+    QString fileName( m_artist + " - " + m_album );
+    fileName.replace( " ", "_" ).replace( "?", "" ).replace( "/", "_" ).append( ".png" );
 
     return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) + "albumcovers/large/" + fileName.lower();
 }

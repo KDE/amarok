@@ -33,7 +33,7 @@ class CollectionDB : public QObject
         QString getImageForAlbum( const uint artist_id, const uint album_id, const uint width = AmarokConfig::coverPreviewSize() );
         QString getImageForAlbum( const QString artist, const QString album, const uint width = AmarokConfig::coverPreviewSize() );
         bool removeImageFromAlbum( const uint artist_id, const uint album_id );
-        bool removeImageFromAlbum( const QString artist, const QString album );
+        bool removeImageFromAlbum( const QStringList artists, const QStringList albums );
 
         QString getImageForPath( const QString path, uint width = AmarokConfig::coverPreviewSize() );
         void addImageToPath( const QString path, const QString image, bool temporary );
@@ -85,10 +85,12 @@ class CollectionDB : public QObject
 
         void retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveFourthLevel( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names );
 
         void retrieveFirstLevelURLs( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
         void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveThirdLevelURLs( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names );
 
         QString m_amazonLicense;
 
