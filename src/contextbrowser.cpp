@@ -293,7 +293,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
-    if ( values.count() )
+    if ( !values.isEmpty() )
         browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
                                   "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='80' height='80' src='%6'></a>"
                                   "<i>First play: %7<br>Last play: %8<br>Total plays: %9</i></td>"
@@ -341,7 +341,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "LIMIT 0,5;" )
                    .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
-    if ( values.count() )
+    if ( !values.isEmpty() )
     {
         browser->write( "<br><div class='rbcontent'>" );
         browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
@@ -371,7 +371,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                       .arg( m_db->escapeString( m_currentTrack->album() ) )
                       .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
-        if ( values.count() )
+        if ( !values.isEmpty() )
         {
             browser->write( "<br><div class='rbcontent'>" );
             browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
@@ -395,13 +395,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Tracks on this album>
 
     // <Albums by this artist>
-    m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
+    m_db->execSql( QString( "SELECT DISTINCT album.name, artist.name, album.id, artist.id "
                             "FROM album, tags, artist "
                             "WHERE album.id = tags.album AND tags.artist = artist.id AND album.name <> '' AND artist.name LIKE '%1' "
                             "ORDER BY album.name;" )
                    .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
-    if ( values.count() )
+    if ( !values.isEmpty() )
     {
         browser->write( "<br><div class='rbcontent'>" );
         browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
@@ -415,13 +415,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
                                       "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' width='80' height='80' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
                                       "</tr>" )
-                            .arg( values[i*3 + 2] )
-                            .arg( values[i*3 + 1] )
-                            .arg( m_currentTrack->album() )
-                            .arg( m_currentTrack->artist() )
-                            .arg( m_db->getImageForAlbum( values[i*3 + 2], values[i*3 + 1], locate( "data", "amarok/images/sound.png" ) ) )
-                            .arg( values[i*3] )
-                            .arg( m_db->albumSongCount( values[i*3 + 2], values[i*3 + 1] ) ) );
+                            .arg( values[i*3 + 3] ) // artist.id
+                            .arg( values[i*3 + 2] ) // album.id
+                            .arg( values[i*3 + 1] ) // artist.name
+                            .arg( values[i*3 + 0] ) // album.name
+                            .arg( m_db->getImageForAlbum( values[i*3 + 3], values[i*3 + 2], locate( "data", "amarok/images/sound.png" ) ) )
+                            .arg( values[i*3 + 0] ) // album.name
+                            .arg( m_db->albumSongCount( values[i*3 + 3], values[i*3 + 2] ) ) );
         }
 
         browser->write( "</table></div>" );
