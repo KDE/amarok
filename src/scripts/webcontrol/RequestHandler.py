@@ -14,6 +14,7 @@
 import SimpleHTTPServer
 import BaseHTTPServer
 from Playlist import Playlist
+import Globals
 
 # for system call
 import os
@@ -21,16 +22,12 @@ import os
 # necessary for <= python2.2 that cannot handle "infds" in var
 import string
 
-# the port number to listen to
-PORT = 4774
-
 PLIST = None
 
 # keep track of request ids in order to not repeat
 # requests if user refreshes his browser
 REQ_ID = 0
 
-EXEC_PATH = None
 
 #
 # Use simple popen call in order not to depend on dcop python lib
@@ -226,12 +223,11 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         return status
         
     def _sendFile(self, path):
-        global EXEC_PATH
         # only allow doc root dir access
         elem = self.path.split("/")
         if len(elem):
             path = elem[-1]
-            f = open(EXEC_PATH + "/" + path, 'r')
+            f = open(Globals.EXEC_PATH + "/" + path, 'r')
             self.copyfile(f, self.wfile)
 
     def do_HEAD(self):
@@ -270,8 +266,12 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header("Cache-Control","no-cache")
             self.end_headers()
             self._sendFile(self.path)
-        elif (string.find(self.path, ".js") >= 0) or (string.find(self.path, ".css") >= 0):
+        elif string.find(self.path, ".js") >= 0:
             self.send_header("content-type","text/plain")
+            self.end_headers()
+            self._sendFile(self.path)
+        elif string.find(self.path, ".css") >= 0:
+            self.send_header("content-type","text/css")
             self.end_headers()
             self._sendFile(self.path)
         else:
@@ -289,7 +289,7 @@ def main():
     """main is the starting-point for our script."""
     global PLIST
     PLIST = Playlist()
-    srv = BaseHTTPServer.HTTPServer(('',PORT),RequestHandler)
+    srv = BaseHTTPServer.HTTPServer(('',Globals.PORT),RequestHandler)
     srv.serve_forever()
 
 

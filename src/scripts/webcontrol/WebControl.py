@@ -24,6 +24,7 @@ import os
 import sys
 import threading
 
+import Globals
 from Playlist import Playlist
 import RequestHandler
 import BaseHTTPServer
@@ -120,7 +121,7 @@ class WebControl( QApplication ):
 
         RequestHandler.PLIST = Playlist()
 
-        self.srv = BaseHTTPServer.HTTPServer(('',RequestHandler.PORT),RequestHandler.RequestHandler)
+        self.srv = BaseHTTPServer.HTTPServer(('',Globals.PORT),RequestHandler.RequestHandler)
 
         self.snsrv = QSocketNotifier(self.srv.fileno(), QSocketNotifier.Read)
         self.snsrv.connect( self.snsrv, SIGNAL('activated(int)'), self.readSocket )
@@ -235,7 +236,7 @@ def debug( message ):
 
 def main( args ):
 
-    RequestHandler.EXEC_PATH = os.path.abspath(sys.path[0])
+    Globals.EXEC_PATH = os.path.abspath(sys.path[0])
 
     app = WebControl( args )
     app.exec_loop()

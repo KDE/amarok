@@ -108,9 +108,9 @@ function anim(direction)
 			cid2 = count - (ci-1);	
 		}
 		colorAnimScripts[ci] = 
-			"setBackgroundColor(" + Math.floor(18.0 * (cid*mult/100.0) + 80.0) + "," 
-			+ Math.floor(18.0 * (cid*mult/100.0) + 80.0) + "," 
-			+ Math.floor(18.0 * (cid*mult/100.0) + 120.0) + ", '" + animid + "');";
+			"setBackgroundColor(" + Math.floor(13.0 * (cid*mult/100.0) + 100.0) + "," 
+			+ Math.floor(13.0 * (cid*mult/100.0) + 100.0) + "," 
+			+ Math.floor(13.0 * (cid*mult/100.0) + 140.0) + ", '" + animid + "');";
 	}
 
 	setColor(255,255,0, "nowplaying");

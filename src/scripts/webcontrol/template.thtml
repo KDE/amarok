@@ -1,0 +1,34 @@
+global code
+global tblhead
+code = [''] * 6
+code[0]=""" <html>\n
+            <head>\n
+            <meta http-equiv="Expires" content="0" />\n
+            <meta http-equiv="Pragma" content="no-cache" />\n
+            <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />\n
+            <link rel="stylesheet" href="main.css" type="text/css" />\n
+            <script type="text/javascript" src="main.js"></script>\n
+            </head>\n
+            <title>AmaroK playlist</title>\n
+            <body onload="anim(1);"""
+            
+code[1] = """;setHeaders();" id="mybody">\n
+            <div class='topfixed'>\n
+	    <table class="topnavi" width="100%" cellpadding="0" cellspacing="0" border="0">\n
+     	      <tr><td valign="top" nowrap="nowrap"><div style="text-align:left;font-size:10">\n"""
+code[2] = """</div>\n
+            </td><td align="right">\n
+            <div style="text-align:right;font-size:16pt;" >current
+            <a id="amaroklink" href="http://amarok.kde.org" title="visit amarok hompage">amarok</a>
+            playlist of """
+code[3] = """</div>\n
+            </td></tr></table>\n"""
+
+code[4] = """</div><div class='topspace'>&nbsp</div>"""
+code[5] = """</body>\n
+        	</html>\n
+ 	     """
+tblhead = """<table class="%s" width="100%%" cellpadding="5px" cellspacing="2">
+        <!--<colgroup> <col width="150"> <col width="330"> <col width="150">
+        <col width="10"> <col width="30"> <col width="10"> </colgroup>-->
+        %s</table>"""

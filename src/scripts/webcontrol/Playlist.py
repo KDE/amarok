@@ -12,6 +12,10 @@ import os
 from xml.dom import minidom
 import time
 
+import string
+
+import Globals
+
 # the current.xml file
 PLAYLISTFILE = "%s/.kde/share/apps/amarok/current.xml"%(user.home)
 
@@ -21,6 +25,8 @@ FIELDS = ("Artist", "Title", "Album", "TrackNo", "Length", "Genre",  "Score" )
 class Track(object):
     """Class that holds the information of one track in the current playlist"""
     __slots__ = FIELDS
+
+    max_field_value_lengths = [(0,"")] * len(FIELDS)
 
     def __init__(self, **kwargs):
         for key,value in kwargs.iteritems():
@@ -40,6 +46,12 @@ class Track(object):
         
         tmp = [ '<td>' + astart + i + aend +'</td>' for i in [getattr(self,f) for f in self.__slots__ ] ]
 
+        index = 0
+        for i in [getattr(self,f) for f in self.__slots__ ]:
+            if len(string.strip(i)) > Track.max_field_value_lengths[index][0]:
+                Track.max_field_value_lengths[index] = (len(string.strip(i)),i)
+            index += 1
+        
         tr_style = ''        
         tr_id = ''
         
@@ -64,37 +76,26 @@ class Playlist:
     def __init__(self):
         """The Constructor takes no arguments."""
         self.tracks = []
-        self.code1=""" <html>\n
-                    <head>\n
-                    <meta http-equiv="Expires" content="0" />\n
-                    <meta http-equiv="Pragma" content="no-cache" />\n
-                    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />\n
-                    <link rel="stylesheet" href="main.css" type="text/css" />\n
-                    <script type="text/javascript" src="main.js"></script>\n
-                    </head>\n
-                    <title>AmaroK playlist</title>\n
-                    <body onload="anim(1);"""
-                    
-        self.code2 = """;setHeaders();" id="mybody">\n
-                    <table class="topnavi" width="100%" cellpadding="0" cellspacing="0" border="0">\n
-                    <tr><td valign="top" nowrap="nowrap"><div style="text-align:left;font-size:10">\n"""
-        self.code3 = """</div>\n
-                    </td><td align="right">\n
-                    <div style="text-align:right;font-size:16pt;" >current
-                    <a id="amaroklink" href="http://amarok.kde.org" title="visit amarok hompage">amarok</a>
-                    playlist of """
-        self.code4 = """</div>\n
-                    </td></tr></table><div class'topspace'>&nbsp</div>\n"""
-        self.code5 = """</body>\n
-                </html>\n
-              """
-        self.encoding = "ISO-8859-15"
+        self.encoding = "UTF-8"
+        #"ISO-8859-15"
         self.fullPage = ""
+        self.templateFilename = "template.thtml"
+        self.templateLastChanged = -1
+        self.templateLastChanged = self._loadHtmlTemplate()
 
-
-
+    def _loadHtmlTemplate(self):
+        ep = Globals.EXEC_PATH
+        st = os.stat(ep + "/" + self.templateFilename)[8]
+        print str(self.templateLastChanged) + " " + str(st) + " " + ep
+        if self.templateLastChanged != st:
+            tmp = open(ep + "/" + self.templateFilename).read()
+            a = compile(tmp, "<string>", 'exec')
+            eval(a)
+        return st
+            
     def toHtml(self, status):
         """Returns a html representation of the whole Playlist"""
+        self.templateLastChanged = self._loadHtmlTemplate()
         self.sync()
         self.tracks = []
         self.mtime = self._getMtime()
@@ -104,7 +105,7 @@ class Playlist:
 
 
     def _createButton(self, name, action, reqid):
-        return "<a href='?action=" + action + reqid + "'><img src='b_" + name + ".png'></a>"
+        return "<a href='?action=" + action + reqid + "'><img src='player_" + name + ".png'></a>"
     
     def _createVolume(self, vol_val, reqid):
         volume = '<table width="100" class="volume">'
@@ -135,10 +136,10 @@ class Playlist:
         if status.isPlaying():
             playpause = self._createButton("pause", "pause", reqid) 
 
-        buttons = (self._createButton("prev", "prev", reqid) + "&nbsp;" +
-                   playpause + "&nbsp;" +
+        buttons = (playpause + "&nbsp;" +
                    self._createButton("stop", "stop", reqid) + "&nbsp;" +
-                   self._createButton("next", "next", reqid))
+                   self._createButton("start", "prev", reqid) + "&nbsp;" +
+                   self._createButton("end", "next", reqid))
 
         vol_val = int(float(status.getVolume()) / 10.0 + 0.5)
         volume = self._createVolume(vol_val, reqid)
@@ -170,21 +171,23 @@ class Playlist:
                    buttons +
                    "</td><td><img width='9' height='8' src='vol_speaker.png'></td>" +
                    "<td>" + volume + "</td>" +
-                   "<td width='16'>Time:<td><td id='countdown'>" + time_left +
+                   "<td width='16'>" + ("&nbsp;" * 6) + "Time:<td><td id='countdown'>" + time_left +
                    "</td></tr></table>")
         return actions
     
     def _setFullPage(self, status):
-        self.fullPage = self.code1
+        self.fullPage = code[0]
         if status.playState == status.EnginePlay:
             self.fullPage += "countdown(" + str(status.timeLeft()) + ");"
-        self.fullPage += self.code2
-        self.fullPage += self._createActions(status).encode(self.encoding)
-        self.fullPage += self.code3
+        self.fullPage += code[1]
+        self.fullPage += self._createActions(status).encode(self.encoding,'replace')
+        self.fullPage += code[2]
         self.fullPage += os.environ['LOGNAME']
-        self.fullPage += self.code4
-        self.fullPage += self._createTable(status).encode(self.encoding)
-        self.fullPage += self.code5
+        self.fullPage += code[3]
+        tracktable = self._createTable(status)
+        self.fullPage += code[4]
+        self.fullPage += tracktable.encode(self.encoding,'replace')
+        self.fullPage += code[5]
         
     def _getMtime(self):
         """gets the mtime from the current.xml file, to check if the current.xml
@@ -216,15 +219,11 @@ class Playlist:
 
     def _createTable(self, status):
         """Returns the HTML-Table"""
-
-        tbl = """<div class="trackshmove"></div>
-        <table class="tracks" width="100%%" cellpadding="5px" cellspacing="2">
-        <!--<colgroup> <col width="150"> <col width="330"> <col width="150">
-        <col width="10"> <col width="30"> <col width="10"> </colgroup>-->
-        %s%s</table>"""
+        tbl = tblhead
         rows = self._createRows(status) 
-        thead = "".join(['<th id="%sfield">%s</th>'%(i,i) for i in FIELDS])
-        return tbl%("<tr id='trackheader'>"+thead+"</tr>","".join(rows))            
+        thead = "<tr id='trackheader'>" + "".join(['<td>%s</td>'%(i) for i in FIELDS]) + "</tr>"
+        rowsstr = "".join(rows)
+        return tbl%("tracks", "<thead>" + thead + "</thead><tbody>" + rowsstr + "</tbody>") 
 
     def _createRows(self, status):
         """Returns the table rows"""
