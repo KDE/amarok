@@ -16,7 +16,7 @@
         <string>GStreamer Engine Configuration - amaroK</string>
     </property>
     <property name="toolTip" stdset="0">
-        <string>Time for smooth fade-out at trackend</string>
+        <string></string>
     </property>
     <vbox>
         <property name="name">
