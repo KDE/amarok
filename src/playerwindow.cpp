@@ -58,7 +58,7 @@ static inline QPixmap getPNG( const QString &filename )
 //fairly pointless template which was designed to make the ctor clearer,
 //but probably achieves the opposite.
 template<class W> static inline W*
-createWidget( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
+createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags f = 0 )
 {
     W *w = new W( parent, name, f );
     w->setGeometry( r );
@@ -67,7 +67,7 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WF
 
 
 
-PlayerWidget::PlayerWidget( QWidget *parent, const char *name, WFlags f )
+PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     : QWidget( parent, name, f )
     , m_pAnimTimer( new QTimer( this ) )
     , m_pAnalyzer( 0 )

@@ -16,22 +16,22 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "amarokconfig.h"
-#include "configdialog.h"
 #include "amarokdcophandler.h"
-#include "systray.h"
-#include "playlistwindow.h"
+#include "app.h"
+#include "configdialog.h"
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "osd.h"
-#include "app.h"
 #include "playerwindow.h"
-#include "tracktooltip.h"     //engineNewMetaData()
+#include "playlistwindow.h"
 #include "plugin.h"
 #include "pluginmanager.h"
-#include "threadweaver.h"        //restoreSession()
 #include "socketserver.h"
+#include "systray.h"
+#include "threadweaver.h"        //restoreSession()
+#include "tracktooltip.h"        //engineNewMetaData()
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -50,9 +50,7 @@ email                : markey@web.de
 #include <kurl.h>
 #include <kwin.h>                //eventFilter()
 
-#include <qcstring.h>            //initIpc()
 #include <qfile.h>               //initEngine()
-#include <qpixmap.h>             //QPixmap::setDefaultOptimization()
 #include <qserversocket.h>       //initIpc()
 #include <qsocketnotifier.h>     //initIpc()
 #include <qtooltip.h>            //adding tooltip to systray
@@ -417,7 +415,7 @@ void App::applySettings()
     {
         if( !m_pPlayerWidget )
         {
-            m_pPlayerWidget = new PlayerWidget( m_pPlaylistWindow, "PlayerWidget", Qt::WType_Dialog );
+            m_pPlayerWidget = new PlayerWidget( m_pPlaylistWindow, "PlayerWidget", Qt::WType_TopLevel );
 
             m_pPlayerWidget->move( AmarokConfig::playerPos() );
             m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
@@ -465,6 +463,7 @@ void App::saveConfig()
     AmarokConfig::setMasterVolume( EngineController::engine()->volume() ); //engineController should set when volume is changed
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::setPlaylistWindowEnabled( m_showPlaylistWindow ); //TODO should be set when toggled no?
+    if ( m_pPlayerWidget ) AmarokConfig::setPlayerPos( m_pPlayerWidget->pos() );
 
     AmarokConfig::writeConfig();
 }
