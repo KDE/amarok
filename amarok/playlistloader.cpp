@@ -431,13 +431,14 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
     //and we are blocking the event loop right now!
     //however KIO::NetAccess processes the event loop, so do any m_thread dereferencing before the KIO call
 
+    bool playFirstItem = m_thread->options.playFirstItem;
+    m_thread->options.playFirstItem = false; //FIXME what if KIO fails?
+
     //KIO::NetAccess can make it's own tempfile
     //but we need to add .pls/.m3u extension or the Loader will fail
     QString path = m_url.filename();
-    int i = path.findRev( '.' );
-    //FIXME KTempFile should default to the suffix "tmp", not "", thus allowing you to have no prefix
-    //      if you so desire. Bad design needs you to fix it!
-    KTempFile tmpfile( QString::null, path.right( i ) ); //default prefix
+    //FIXME KTempfile doesn't allow no prefix AND requires you to add the '.'! whattapileofcrap!
+    KTempFile tmpfile( QString::null, path.right( path.findRev( '.' ) ) ); //use default suffix
     path = tmpfile.name();
 
     kdDebug() << "[PLSloader] Trying to download: " << m_url.prettyURL() << endl;
@@ -456,9 +457,8 @@ PlaylistLoader::DownloadPlaylistEvent::makePlaylistItem( PlaylistWidget *lv )
 
         //the item is treated as a placeholder with this ctor
         PlaylistLoader *loader = new PlaylistLoader( list, newItem );
-        //pass on the playFirstItem flag to te next loader and stop it being used here
-        loader->options.playFirstItem = m_thread->options.playFirstItem;
-        m_thread->options.playFirstItem = false;
+        //pass on the playFirstItem flag to the new loader
+        loader->options.playFirstItem = playFirstItem;
 
         loader->start();
 

@@ -1106,7 +1106,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     case PlaylistLoader::PlaylistFound:
 
         #define e static_cast<PlaylistLoader::PlaylistFoundEvent*>(e)
-        m_weaver->append( new PLStats( m_browser, e->url(), e->contents() ) );
+        //m_weaver->append( new PLStats( m_browser, e->url(), e->contents() ) );
         #undef e
         break;
 
