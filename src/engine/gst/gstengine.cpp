@@ -424,6 +424,8 @@ GstEngine::play( uint )  //SLOT
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
+    gst_element_set_state( m_gst_queue, GST_STATE_PLAYING );
+
     // Put input bin into input thread
     gst_bin_add( GST_BIN( m_gst_inputThread ), m_currentInput->bin );
     // Link elements
@@ -431,8 +433,6 @@ GstEngine::play( uint )  //SLOT
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
-
-    gst_element_set_state( m_gst_queue, GST_STATE_PLAYING );
 
     emit stateChanged( Engine::Playing );
     return true;
@@ -843,7 +843,7 @@ GstEngine::createPipeline()
     if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_outputThread, "audioconvert" ) ) ) { return false; }
 
     // More buffers means less dropouts and higher latency
-    gst_element_set( m_gst_queue, "max-size-buffers", 150, NULL );
+    gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_outputThread );
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( error_cb ), m_gst_outputThread );
@@ -986,6 +986,8 @@ InputPipeline::~InputPipeline()
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
+    gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
+
     gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
     // Destroy bin
     gst_element_set_state( bin, GST_STATE_NULL );
@@ -993,8 +995,6 @@ InputPipeline::~InputPipeline()
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
-
-    gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
