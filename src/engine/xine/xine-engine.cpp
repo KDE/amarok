@@ -235,7 +235,7 @@ XineEngine::seek( uint ms )
 {
     if( m_url.path().endsWith( ".flac", false ) )
     {
-        emit statusText( i18n("xine cannot seek in flac media currently, sorry") );
+        emit statusText( i18n("xine cannot currently seek in flac media") );
         return;
     }
 

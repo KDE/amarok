@@ -498,7 +498,7 @@ TagWriter::completeJob()
 {
     if( m_failed )
     {
-       amaroK::StatusBar::instance()->message( i18n( "Sorry, the tag could not be changed!" ) );
+       amaroK::StatusBar::instance()->message( i18n( "The tag could not be changed." ) );
        //FIXME this hack is explained in PlaylistItem::setText()
        m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " :  m_oldTagString );
     }
