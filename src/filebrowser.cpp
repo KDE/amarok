@@ -53,7 +53,7 @@ QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 //BEGIN Constructor/destructor
 
 FileBrowser::FileBrowser( const char * name )
-  : QVBox( 0, name )
+    : QVBox( 0, name )
 {
     setSpacing( 4 );
     setMargin( 5 );
@@ -86,11 +86,18 @@ FileBrowser::FileBrowser( const char * name )
     connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
 
     //insert our own actions at front of context menu
-    QPopupMenu* const menu = ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu();
-    menu->insertSeparator( 0 );
-    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0, -1, 0 );
-    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 0, -1, 1 );
-    menu->insertItem( i18n( "&Select all Files" ), this, SLOT(selectAllFiles()), 0, -1, 2 );
+    KActionCollection *ac = dir->actionCollection();
+    QPopupMenu* const menu = ((KActionMenu *)ac->action("popupMenu"))->popupMenu();
+    menu->clear();
+    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()) );
+    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()) );
+    menu->insertSeparator();
+    //TODO this has no place in the context menu, make it a toolbar button instead
+    menu->insertItem( i18n( "&Select all Files" ), this, SLOT(selectAllFiles()) );
+    menu->insertSeparator();
+    ac->action( "delete" )->plug( menu );
+    menu->insertSeparator();
+    ac->action( "properties" )->plug( menu );
 
     dir->setEnableDirHighlighting( true );
     dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
@@ -125,9 +132,9 @@ FileBrowser::FileBrowser( const char * name )
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
     } //</Search LineEdit>
-    
+
     m_timer = new QTimer( this );
-    
+
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_filterEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
@@ -166,13 +173,13 @@ QString FileBrowser::location() const
 void FileBrowser::setupToolbar()
 {
     QStringList actions;
-    actions << "up" << "back" << "forward" << "home" << "reload" << "short view" << "detailed view";
+    actions << "up" << "back" << "forward" << "home" << "reload" << "short view" << "detailed view" << "sorting menu";
 
-    KAction *ac;
+    KAction *a;
     for( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
     {
-        ac = dir->actionCollection()->action( (*it).latin1() );
-        if( ac ) ac->plug( m_toolbar );
+        a = dir->actionCollection()->action( (*it).latin1() );
+        if( a ) a->plug( m_toolbar );
     }
     m_actionCollection->action( "bookmarks" )->plug( m_toolbar );
 }
@@ -200,20 +207,20 @@ KURL::List FileBrowser::selectedItems()
 void FileBrowser::slotSetFilter( )
 {
     QString text = m_filterEdit->text();
-    
-    if ( text.isEmpty() )    
-        dir->clearFilter();     
+
+    if ( text.isEmpty() )
+        dir->clearFilter();
     else {
         QString filter;
         QStringList terms = QStringList::split( " ", text );
-        
+
         for ( QStringList::Iterator it = terms.begin(); it != terms.end(); ++it )
             filter += "*"+ *it;
-        
+
         filter += "*";
         dir->setNameFilter( filter );
     }
-    
+
     dir->updateDir();
 }
 
@@ -285,7 +292,7 @@ inline void FileBrowser::addToPlaylist()
 inline void FileBrowser::selectAllFiles()
 {
     KFileItemList list( *dir->view()->items() );
-    
+
     // Select all items which represent files
     for ( KFileItem* item = list.first(); item; item = list.next() )
         dir->view()->setSelected( item, item->isFile() );
