@@ -38,14 +38,14 @@
                         <string>Engine:</string>
                     </property>
                 </widget>
-                <widget class="QComboBox">
+                <widget class="KComboBox">
                     <item>
                         <property name="text">
                             <string>SQLite</string>
                         </property>
                     </item>
                     <property name="name">
-                        <cstring>kcfg_DatabaseEngine</cstring>
+                        <cstring>databaseEngine</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>

@@ -17,48 +17,32 @@
 void DbSetup::init()
 {
 #ifdef USE_MYSQL
-    kcfg_DatabaseEngine->insertItem( "MySQL", -1 );
+    databaseEngine->insertItem( "MySQL", -1 );
+    if (AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql))
+    {
+        databaseEngine->setCurrentItem("MySQL");
+    }
+    mysqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql));
 #else 
     mysqlConfig->hide();
 #endif
-    int mysqlItem = kcfg_DatabaseEngine->count()-1;
 
 #ifdef USE_POSTGRESQL
-    kcfg_DatabaseEngine->insertItem( "Postgresql", -1 );
+    databaseEngine->insertItem( "Postgresql", -1 );
+    if (AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql))
+    {
+        databaseEngine->setCurrentItem("Postgresql");
+    }
+    postgresqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql));
 #else
     postgresqlConfig->hide();
 #endif
-    int postgresqlItem = kcfg_DatabaseEngine->count()-1;
-
-    connect(kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
-    mysqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql));
-    postgresqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql));
-
-    if (AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql))
-    {
-        kcfg_DatabaseEngine->setCurrentItem(mysqlItem);
-    }
-    else if (AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql))
-    {
-        kcfg_DatabaseEngine->setCurrentItem(postgresqlItem);
-    }
+   
+    connect(databaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
 }
 
 void DbSetup::databaseEngineChanged()
 {
-    if (kcfg_DatabaseEngine->currentText() == "SQLite") 
-    {
-        AmarokConfig::setDatabaseEngine(QString::number(DbConnection::sqlite));
-    }
-    else if (kcfg_DatabaseEngine->currentText() == "MySQL")
-    {
-        AmarokConfig::setDatabaseEngine(QString::number(DbConnection::mysql));
-    }
-    else if (kcfg_DatabaseEngine->currentText() == "Postgresql")
-    {
-        AmarokConfig::setDatabaseEngine(QString::number(DbConnection::postgresql));
-    }
-
-    mysqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql));
-    postgresqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql));
+    mysqlConfig->setEnabled(databaseEngine->currentText() == "MySQL");
+    postgresqlConfig->setEnabled(databaseEngine->currentText() == "Postgresql");
 }

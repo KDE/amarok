@@ -207,6 +207,20 @@ void AmarokConfigDialog::updateSettings()
         AmarokConfig::setContextBrowserStyleSheet( m_opt2->styleComboBox->currentText() );
         ContextBrowser::instance()->setStyleSheet();
     }
+
+    // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
+    QString dbType = QString::number(DbConnection::sqlite);
+    if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "MySQL")
+    {
+        dbType = QString::number(DbConnection::mysql);
+    } 
+    else if (m_opt7->dbSetupFrame->databaseEngine->currentText() == "Postgresql")
+    {
+        dbType = QString::number(DbConnection::postgresql);
+    }
+    if ( dbType != AmarokConfig::databaseEngine() ) {
+        AmarokConfig::setDatabaseEngine( dbType );
+    }
 }
 
 
