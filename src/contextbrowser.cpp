@@ -2,7 +2,7 @@
 // See COPYING file for licensing information
 
 
-#include "config.h"
+#include "config.h"        //for AMAZON_SUPPORT
 
 #include "amarokconfig.h"
 #include "collectionbrowser.h"
@@ -14,12 +14,8 @@
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
-#include "playlistitem.h"  //statistics stuff
 #include "qstringx.h"
 #include "scrobbler.h"
-#ifndef USE_MYSQL
-#include "sqlite/sqlite3.h"
-#endif
 
 #include <qdatetime.h>
 #include <qimage.h>
@@ -660,7 +656,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
         qb.setLimit( 0, 5 );
         values = qb.run();
-        
+
         // not enough items returned, let's fill the list with score-less tracks
         if ( values.count() < 5 * qb.countReturnValues() )
         {
@@ -692,7 +688,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                   "</table>"
                   "<table width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-                  
+
             for ( uint i = 0; i < values.count(); i += 4 )
                 browser->write(
                   "<tr>"
@@ -707,7 +703,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "</div>"
                   "</td>"
                   "</tr>" );
-    
+
             browser->write(
                 "</table>"
                 "</div>" );
