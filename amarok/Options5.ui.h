@@ -106,7 +106,7 @@ void Options5::preview( bool on )
         m_pOSDPreview->setPosition( (OSDWidget::Position)kcfg_OsdAlignment->currentItem() );
         m_pOSDPreview->setScreen( kcfg_OsdScreen->currentItem() );
         m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), kcfg_OsdYOffset->value() );
-        m_pOSDPreview->showOSD( i18n("OSD preview - The quick brown fox jumps over the lazy dog" ) );
+        m_pOSDPreview->showOSD( i18n("OSD preview - Drag to reposition" ) );
     }
     else
     {

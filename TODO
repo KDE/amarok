@@ -20,6 +20,7 @@ MID-TERM:
                <larson> I wondered about what cursor to use myself. KWin uses the square arrow thing, 
                but kruler uses the hand. KRuler is borderless, so I chose the hand. Label in front of
                the preview button with info about dragging?
+               <larson>OSD preview now reads: OSD Preview - Drag to reposition.
 
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
