@@ -49,13 +49,7 @@ public:
         connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
 
         setChecked( isChecked() );
-
-        QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
-        tip += action->isChecked() ? i18n("%2: on") : i18n("%2: off");
-        tip += "&nbsp;";
-        const QString path = KGlobal::iconLoader()->iconPath( action->icon(), -KIcon::SizeHuge );
-
-        QToolTip::add( this, tip.arg( path ).arg( action->text().remove('&') ) );
+        setToolTip();
     }
 
     inline bool isChecked() const { return m_action->isChecked(); }
@@ -79,7 +73,21 @@ public slots:
     void setChecked( bool on )
     {
         setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
+        setToolTip();
     }
+
+private:
+    void setToolTip()
+    {
+        QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
+        tip += m_action->isChecked() ? i18n("%2: on") : i18n("%2: off");
+        tip += "&nbsp;";
+        const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
+
+        QToolTip::remove( this );
+        QToolTip::add( this, tip.arg( path ).arg( m_action->text().remove('&') ) );
+    }
+
 };
 
 #endif
