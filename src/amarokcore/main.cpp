@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
-    aboutData.addCredit( "Dan Leinir Jensen", I18N_NOOP( "first-run wizard" ), "admin@removeleinir.dk" );
+    aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "first-run wizard" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "analyzers, king of openGL" ), "eros.kde@email.it" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Josef Spillner", I18N_NOOP( "KDE RadioStation code" ), "spillner@kde.org" );
