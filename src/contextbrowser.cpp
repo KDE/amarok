@@ -634,7 +634,7 @@ void ContextBrowser::showHome() //SLOT
     {
         m_HTMLSource.append(
                 "<div class='info'><p>" +
-                i18n( "A list of your favorite tracks will appear here, once you've played a few of your songs." ) +
+                i18n( "A list of your favorite tracks will appear here, once you have played a few of your songs." ) +
                 "</p></div>"
                            );
     }
@@ -737,7 +737,7 @@ void ContextBrowser::showHome() //SLOT
     {
         m_HTMLSource.append(
                     "<div class='info'><p>" +
-                    i18n( "A list of songs, which you didn't play for a long time, will show up here." ) +
+                    i18n( "A list of songs, which you have not played for a long time, will appear here." ) +
                     "</p></div>"
                            );
     }
@@ -1706,7 +1706,7 @@ void ContextBrowser::showScanning()
                     "</span>"
                 "</div>"
                 "<div id='building_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar!" ) + "</p></div>"
+                    "<div class='info'><p>" + i18n( "Please be patient while amaroK scans your music collection. You can watch the progress of this activity in the statusbar." ) + "</p></div>"
                 "</div>"
             "</div>"
             "</html>"
