@@ -92,6 +92,7 @@ amarokapp_SOURCES = \
     systray.cpp \
     tagdialog.cpp \
     tagdialogbase.ui \
+    tagselectdialog.ui \
     threadweaver.cpp \
     tracktooltip.cpp
 

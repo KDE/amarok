@@ -151,41 +151,54 @@ TagDialog::musicbrainzQuery() //SLOT
 #endif
 }
 
-
 void
 TagDialog::queryDone( KTRMResultList results ) //SLOT
 {
-#ifdef HAVE_MUSICBRAINZ
-    kdDebug() << k_funcinfo << endl;
-    QApplication::restoreOverrideCursor();
-
-    pushButton_musicbrainz->setEnabled( true );
-    pushButton_musicbrainz->setText( m_buttonMbText );
-
+#ifdef HAVE_MUSICBRAINZ    
+    
     if ( !results.isEmpty() )
     {
-        if ( m_bundle.url().path() == m_mbTrack ) {
-            if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
-            if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
-            if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
-            if ( results[0].track() != 0 )          kIntSpinBox_track->setValue( results[0].track() );
-            if ( results[0].year() != 0 )           kIntSpinBox_year->setValue( results[0].year() );
-        }
-        else {
-            MetaBundle mb;
-            mb.setPath( m_mbTrack );
-            if ( !results[0].title().isEmpty() )    mb.setTitle( results[0].title() );
-            if ( !results[0].artist().isEmpty() )   mb.setArtist( results[0].artist() );
-            if ( !results[0].album().isEmpty() )    mb.setAlbum( results[0].album() );
-            if ( results[0].track() != 0 )          mb.setTrack( QString::number( results[0].track() ) );
-            if ( results[0].year() != 0 )           mb.setYear( QString::number( results[0].year() ) );
-
-            storedTags.insert( m_mbTrack, mb );
-        }
-
+        TagSelect* t = new TagSelect(results, this);        
+//        t->adjustSize();
+        t->show();
     }
-    else
+    else  
         KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
+    
+    QApplication::restoreOverrideCursor();        
+    pushButton_musicbrainz->setEnabled( true );
+    pushButton_musicbrainz->setText( m_buttonMbText );
+    
+#endif
+}
+
+void
+TagDialog::fillSelected( KTRMResult selected ) //SLOT
+{
+#ifdef HAVE_MUSICBRAINZ
+    kdDebug() << k_funcinfo << endl;
+
+    
+    if ( m_bundle.url().path() == m_mbTrack ) {
+        if ( !selected.title().isEmpty() )    kLineEdit_title->setText( selected.title() );
+        if ( !selected.artist().isEmpty() )   kComboBox_artist->setCurrentText( selected.artist() );
+        if ( !selected.album().isEmpty() )    kComboBox_album->setCurrentText( selected.album() );
+        if ( selected.track() != 0 )          kIntSpinBox_track->setValue( selected.track() );
+        if ( selected.year() != 0 )           kIntSpinBox_year->setValue( selected.year() );
+    } else {
+        MetaBundle mb;
+        mb.setPath( m_mbTrack );
+        if ( !selected.title().isEmpty() )    mb.setTitle( selected.title() );
+        if ( !selected.artist().isEmpty() )   mb.setArtist( selected.artist() );
+        if ( !selected.album().isEmpty() )    mb.setAlbum( selected.album() );
+        if ( selected.track() != 0 )          mb.setTrack( QString::number( selected.track() ) );
+        if ( selected.year() != 0 )           mb.setYear( QString::number( selected.year() ) );
+
+        storedTags.insert( m_mbTrack, mb );
+    }
+
+    
+    
 #endif
 }
 
@@ -483,5 +496,69 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
     else return false;
 }
 
+
+#include <qtable.h>
+#include <qstringx.h>
+
+
+TagSelect::TagSelect( KTRMResultList results, QWidget* parent )
+    : TagSelectDialog( parent )
+{
+    DEBUG_BLOCK
+//     KTRMResultList results = *resAd; 
+    int cellheight = 0;
+    int headerheight = 0;
+    setCaption( i18n("MusicBrainz results:") );
+    this->results = results;
+    resultTable->insertRows(0,results.size());
+    
+    //Get rid of the row headers and margin
+    resultTable->verticalHeader()->hide();
+    resultTable->setLeftMargin( 0 );
+    
+    for(uint i = 0; i < results.size(); i++) {
+
+        if ( !results[i].title().isEmpty() )    resultTable->setText( i,0,results[i].title() );     
+        if ( !results[i].artist().isEmpty() )   resultTable->setText( i,1,results[i].artist() );
+        if ( !results[i].album().isEmpty() )    resultTable->setText( i,2,results[i].album() );
+        if ( results[i].track() != 0 )  resultTable->setText(i,3, QString::number(results[i].track(),10));
+        if ( results[i].year() != 0 )   resultTable->setText( i, 4, QString::number(results[i].year(),10) );
+        resultTable->setRowStretchable(i,true);
+    }
+    for(int j = 0; j < 5; j++) {
+        resultTable->adjustColumn(j);
+        //resultTable->setColumnStretchable(j,true);
+        
+    }
+    resultTable->setColumnStretchable(4,true);
+  
+    
+    if(results.size() > 0)  cellheight = resultTable->item(0,0)->sizeHint().height();
+    headerheight = resultTable->horizontalHeader()->height();    
+    resultTable->setMaximumHeight( cellheight * (results.size()+1) + headerheight);
+    adjustSize();
+    connect(buttonOk, SIGNAL ( clicked() ), SLOT( accept() ) );
+    connect(buttonCancel, SIGNAL ( clicked() ), SLOT( reject() ) );
+    connect(this, SIGNAL( sigSelectionMade( KTRMResult ) ), parent, SLOT( fillSelected( KTRMResult ) ) );
+    connect(resultTable, SIGNAL ( doubleClicked ( int, int, int, const QPoint& ) ), SLOT( accept() ) );
+}
+
+void
+TagSelect::accept()
+{
+    DEBUG_BLOCK
+    
+    KTRMResult selection = results[resultTable->currentRow()];
+    emit sigSelectionMade( selection );
+    
+    QDialog::accept();
+}
+void
+TagSelect::reject()
+{
+    
+    QDialog::reject();
+
+}
 
 #include "tagdialog.moc"
