@@ -9,6 +9,7 @@ Name[es]=Motor MAS
 Name[et]=MAS mootor
 Name[fr]=Moteur MAS
 Name[ga]=Inneall MAS
+Name[hi]=एमएएस इंजिन
 Name[hu]=MAS
 Name[is]=MAS vél
 Name[it]=Motore MAS
@@ -33,6 +34,7 @@ Comment[el]=Πρόσθετο για το amaroK
 Comment[es]=Plugin para amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=Module pour AmaroK
+Comment[hi]=अमारोक के लिए प्लगइन
 Comment[hu]=Bővítőmodul az amaroKhoz
 Comment[is]=Íforrit fyrir amaroK
 Comment[it]=Plugin per amaroK
@@ -61,6 +63,6 @@ X-KDE-amaroK-authors=Roland Gigler
 X-KDE-amaroK-email=rolandg@web.de
 X-KDE-amaroK-rank=100
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=4
+X-KDE-amaroK-framework-version=5
 
 

@@ -9,6 +9,7 @@ Name[es]=Motor KDEMM
 Name[et]=KDEMM mootor
 Name[fr]=Moteur KDEMM
 Name[ga]=Inneall KDEMM
+Name[hi]=केडीईएमएम इंजिन
 Name[hu]=KDEMM
 Name[is]=KDEMM vél
 Name[it]=Motore KDEMM
@@ -32,6 +33,7 @@ Comment[el]=Πρόσθετο για το amaroK
 Comment[es]=Plugin para amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=Module pour AmaroK
+Comment[hi]=अमारोक के लिए प्लगइन
 Comment[hu]=Bővítőmodul az amaroKhoz
 Comment[is]=Íforrit fyrir amaroK
 Comment[it]=Plugin per amaroK
@@ -60,6 +62,6 @@ X-KDE-amaroK-authors=Roland Gigler
 X-KDE-amaroK-email=rolandg@web.de
 X-KDE-amaroK-rank=100
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=4
+X-KDE-amaroK-framework-version=5
 
 
