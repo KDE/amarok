@@ -429,7 +429,7 @@
         <entry key="RetrieveSimilarArtists" type="Bool">
             <label>RetrieveSimilarArtists</label>
             <whatsthis>Whether similar songs are retrieved from Audioscrobbler</whatsthis>
-            <default>false</default>
+            <default>true</default>
         </entry>
 </group>
 
