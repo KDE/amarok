@@ -1,0 +1,34 @@
+if test x$amarok_error_nokdemm = xyes; then
+    echo ""
+    echo "You are missing KDEMULTIMEDIA, which is required by amaroK."
+    echo "Please install the packages KDEMULTIMEDIA and KDEMULTIMEDIA-DEVEL."
+    
+    no_amarok=yes
+fi
+
+
+if test x$amarok_error_notaglib = xyes ; then
+    echo ""
+    echo "You are missing TagLib, which is required by amaroK.  You can find TagLib at"
+    echo $TAGLIB_URL
+    
+    no_amarok=yes
+fi
+    
+    
+if test x$amarok_error_taglibold = xyes; then
+    echo ""    
+    echo "Your TagLib is too old to use with amaroK.  You can find a more recent TagLib at"
+    echo $TAGLIB_URL
+    
+    no_amarok=yes
+fi
+
+
+if test x$no_amarok = xyes; then
+    echo ""
+    echo "AMAROK WILL NOT BE BUILT. THERE ARE MISSING DEPENDENCIES."
+    echo "PLEASE INSTALL THE MISSING PACKAGES FIRST!"
+fi
+
+

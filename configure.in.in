@@ -2,14 +2,13 @@
 # BEGIN KDEMULTIMEDIA CHECK 
 ###############################################################################
 
-KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=true, have_kdemm=false)
+KDE_CHECK_HEADER(arts/artsmodules.h, amarok_error_nokdemm=no, amarok_error_nokdemm=yes)
 
-if test "x$have_kdemm" = "xfalse"; then
-    AC_MSG_ERROR([
-                  You are missing KDEMULTIMEDIA, which is required by amaroK.
-                  Please install the packages KDEMULTIMEDIA and KDEMULTIMEDIA-DEVEL.
-                 ])
+if test x$amarok_error_nokdemm = xyes; then
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 fi
+
+
 
 ###############################################################################
 # END KDEMULTIMEDIA CHECK 
@@ -28,10 +27,8 @@ AC_DEFUN(VERSION_TO_NUMBER, [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]
 AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
 
 if test "x$TAGLIB_CONFIG" = "xno" ; then
-    AC_MSG_ERROR([
-                  You are missing TagLib, which is required by amaroK.  You can find TagLib at
-                  $TAGLIB_URL
-                 ])
+    amarok_error_notaglib=yes
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 else
     AC_DEFINE(HAVE_TAGLIB, 1, [have TagLib])
     taglib_includes=[`$TAGLIB_CONFIG --cflags`]
@@ -39,10 +36,8 @@ else
     taglib_version=[`$TAGLIB_CONFIG --version`]
 
     if test VERSION_TO_NUMBER(echo $taglib_version) -lt VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
-        AC_MSG_ERROR([
-                      Your TagLib is too old to use with amaroK.  You can find a more recent TagLib at
-                      $TAGLIB_URL
-                     ])
+        amarok_error_taglibold=yes
+        DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
     fi
 fi
 
@@ -111,7 +106,7 @@ AC_DEFUN(KDE_PKG_CHECK_MODULES, [
   if test $succeeded = yes; then
      ifelse([$3], , :, [$3])
   else
-     ifelse([$4], , AC_MSG_ERROR([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
+     ifelse([$4], , AC_MSG_WARN([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
   fi
 ])
 #</pkg-config>
