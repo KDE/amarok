@@ -340,8 +340,8 @@ AmarokConfig *PlayerApp::config()
 void PlayerApp::saveConfig()
 {
     config()->setMasterVolume( m_Volume );
-    config()->setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
-    config()->setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
+//     config()->setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
+//     config()->setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
     config()->setPlayerPos( m_pPlayerWidget->pos() );
     config()->setBrowserWinPos( m_pBrowserWin->pos() );
     config()->setBrowserWinSize( m_pBrowserWin->size() );
@@ -363,8 +363,8 @@ void PlayerApp::readConfig()
     //we restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = config()->version() != APP_VERSION;
     
-    m_pBrowserWin->m_pBrowserWidget->readDir( config()->currentDirectory() );
-    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( config()->pathHistory() );
+/*    m_pBrowserWin->m_pBrowserWidget->readDir( config()->currentDirectory() );
+    m_pBrowserWin->m_pBrowserLineEdit->setHistoryItems( config()->pathHistory() );*/
     
     m_pPlayerWidget->move( config()->playerPos() );
     m_pBrowserWin->move( config()->browserWinPos() );

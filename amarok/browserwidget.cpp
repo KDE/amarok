@@ -123,9 +123,9 @@ void BrowserWidget::keyPressEvent( QKeyEvent *e )
    case Key_A: case Key_B: case Key_C: case Key_D: case Key_E: case Key_F: case Key_G: case Key_H: case Key_I: case Key_J: case Key_K: case Key_L: case Key_M: case Key_N: case Key_O: case Key_P: case Key_Q: case Key_R: case Key_S: case Key_T: case Key_U: case Key_V: case Key_W: case Key_X: case Key_Y: case Key_Z:
      {
       //by ignoring these key presses we propagate them to the LineEdit
-      QLineEdit *le = pApp->m_pBrowserWin->m_pBrowserLineEdit->lineEdit();
+/*      QLineEdit *le = pApp->m_pBrowserWin->m_pBrowserLineEdit->lineEdit();
       le->setFocus();
-      QApplication::sendEvent( le, e );
+      QApplication::sendEvent( le, e );*/
       break;
      }
    default:

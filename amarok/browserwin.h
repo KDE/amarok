@@ -23,8 +23,8 @@
 
 #include <kaction.h>
 
-class BrowserWidget;
 class ExpandButton;
+class KDevFileSelector;
 class PlaylistItem;
 class PlaylistWidget;
 class StreamBrowser;
@@ -83,12 +83,11 @@ class BrowserWin : public QWidget
         ExpandButton *m_pButtonNext;
         ExpandButton *m_pButtonPrev;
 
-        BrowserWidget *m_pBrowserWidget;
         PlaylistWidget *m_pPlaylistWidget;
         StreamBrowser *m_pStreamBrowser;
+        KDevFileSelector *m_pFileBrowser;
         
         QSplitter *m_pSplitter;
-        KHistoryCombo *m_pBrowserLineEdit;
         KLineEdit *m_pPlaylistLineEdit;
         KMultiTabBar *m_pMultiTabBar;
 
@@ -114,9 +113,10 @@ class BrowserWin : public QWidget
         void keyPressEvent( QKeyEvent * );
 
         // ATTRIBUTES ------
-        QWidget *m_pBrowserBox;
-        QVBox   *m_pStreamBox;
-        int     m_boxSize;
+        QVBox  *m_pBrowserBox;
+        QVBox  *m_pStreamBox;
+        QVBox  *m_pFileBox;
+        int    m_boxSize;
         
         //QColor m_TextColor;
         //QPixmap m_bgPixmap;

@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "browserwidget.h"
 #include "browserwin.h"
 #include "expandbutton.h"
+#include "filebrowser.h"
 #include "playerapp.h"
 #include "playlistwidget.h"
 #include "streambrowser.h"
@@ -68,15 +68,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
     KStdAction::copy( m_pPlaylistWidget, SLOT( copyAction() ), m_pActionCollection );
 
-    connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
-             this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
-    connect( m_pBrowserWidget, SIGNAL( returnPressed( QListViewItem* ) ),
-             this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
-    connect( m_pBrowserWidget, SIGNAL( browserDrop() ),
-             m_pPlaylistWidget, SLOT( removeSelectedItems() ) );
-    connect( m_pBrowserWidget, SIGNAL( directoryChanged( const KURL& ) ),
-             this, SLOT( setBrowserURL( const KURL& ) ) );
-
     connect( m_pPlaylistWidget, SIGNAL( sigUndoState( bool ) ),
              m_pButtonUndo, SLOT( setEnabled( bool ) ) );
     connect( m_pPlaylistWidget, SIGNAL( sigRedoState( bool ) ),
@@ -103,7 +94,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     connect( m_pButtonRedo, SIGNAL( clicked() ),
              m_pPlaylistWidget, SLOT( doRedo() ) );
-
 }
 
 
@@ -154,27 +144,16 @@ void BrowserWin::initChildren()
     connect( m_pMultiTabBar->tab( BROWSERBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonBrowserClicked() ) );
     connect( m_pMultiTabBar->tab( STREAMBOX_ID ), SIGNAL( clicked() ), this, SLOT( buttonStreamClicked() ) );
    
-    m_pBrowserBox = new QWidget( m_pSplitter );
-    m_pStreamBox  = new QVBox  ( m_pSplitter );
-    m_pStreamBox->hide();
-    
-    //<Browser>
-    //<mxcl> MAKE_IT_CLEAN: move to browserWidget, also use a validator to make sure has trailing /
-    m_pBrowserLineEdit = new KHistoryCombo( true, m_pBrowserBox );
-    m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
-    m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
-    m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
-    m_pBrowserLineEdit->setDuplicatesEnabled( false );
-    m_pBrowserLineEdit->setMinimumWidth( 1 );
-
-    m_pBrowserWidget = new BrowserWidget( m_pBrowserBox, "FileBrowser" );
-    m_pBrowserWidget->setAcceptDrops( true );
-    m_pBrowserWidget->setSorting( -1 );
-    m_pBrowserWidget->setSelectionMode( QListView::Extended );
+    m_pBrowserBox = new QVBox( m_pSplitter );
+    m_pStreamBox  = new QVBox( m_pSplitter );
+    m_pStreamBox ->hide();
 
     QPushButton *button = new QPushButton( "&Fetch Stream Information", m_pStreamBox );
     m_pStreamBrowser    = new StreamBrowser( m_pStreamBox, "StreamBrowser" );
 
+    m_pFileBrowser = new KDevFileSelector( m_pBrowserBox );
+    m_pFileBrowser->readConfig( kapp->sessionConfig(), "filebrowser" );
+    
     connect( button, SIGNAL( clicked() ), m_pStreamBrowser, SLOT( slotUpdateStations() ) );
     connect( button, SIGNAL( clicked() ), button, SLOT( hide() ) );
     //</Browser>
@@ -189,19 +168,10 @@ void BrowserWin::initChildren()
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     //</Playlist>
 
-    connect( m_pBrowserLineEdit, SIGNAL( activated( const QString& ) ),
-             m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
-    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
-             m_pBrowserLineEdit, SLOT( addToHistory( const QString& ) ) );
-
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
              m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
     connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
              m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
-
-    QBoxLayout *layBrowserWidget = new QVBoxLayout( m_pBrowserBox );
-    layBrowserWidget->addWidget( m_pBrowserLineEdit );
-    layBrowserWidget->addWidget( m_pBrowserWidget );
 
     QBoxLayout *layPlaylistWidget = new QVBoxLayout( pPlaylistWidgetContainer );
     layPlaylistWidget->addWidget( m_pPlaylistLineEdit );
@@ -220,7 +190,6 @@ void BrowserWin::initChildren()
     layH->addWidget( m_pButtonRedo );
     layH->addWidget( m_pButtonPlay );
 
-    QToolTip::add( m_pBrowserLineEdit, i18n( "Enter directory/URL" ) );
     QToolTip::add( m_pPlaylistLineEdit, i18n( "Enter Filter String" ) );
 }
 
@@ -256,12 +225,13 @@ void BrowserWin::paintEvent( QPaintEvent * )
 //<mxcl> MAKE_IT_CLEAN: move to browserWidget
 void BrowserWin::setBrowserURL( const KURL& url )
 {
-   m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
+//    m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
 }
+
 
 void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
-    if ( pItem )
+/*    if ( pItem )
     {
         FileBrowserItem *pBrowserItem = static_cast<FileBrowserItem *>( pItem );
         KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pBrowserItem->url() );
@@ -278,7 +248,7 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
         }
 
         else m_pPlaylistWidget->insertMedia( fileItem.url() );
-    }
+    }*/
 }
 
 
@@ -338,7 +308,7 @@ void BrowserWin::slotUpdateFonts()
       font = pApp->config()->browserWindowFont();
     }
 
-    m_pBrowserWidget ->setFont( font );
+    m_pFileBrowser   ->setFont( font );
     m_pStreamBrowser ->setFont( font );
     m_pPlaylistWidget->setFont( font );
 }
@@ -350,7 +320,7 @@ void BrowserWin::slotUpdateFonts()
 
 void BrowserWin::savePlaylist()
 {
-    QString path = KFileDialog::getSaveFileName( m_pBrowserWidget->m_pDirLister->url().path(), "*.m3u" );
+/*    QString path = KFileDialog::getSaveFileName( m_pBrowserWidget->m_pDirLister->url().path(), "*.m3u" );
 
     if ( !path.isEmpty() )
     {
@@ -358,7 +328,7 @@ void BrowserWin::savePlaylist()
             path += ".m3u";
 
         m_pPlaylistWidget->saveM3u( path );
-    }
+    }*/
 }
 
 
@@ -375,10 +345,6 @@ void BrowserWin::slotAddLocation()
 
 void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &altbg )
 {
-    m_pBrowserWidget->setPaletteBackgroundColor( bg );
-    m_pBrowserWidget->setPaletteForegroundColor( fg );
-    m_pBrowserWidget->setAlternateBackground( altbg );
-    
     m_pPlaylistWidget->setPaletteBackgroundColor( bg );
     m_pPlaylistWidget->setPaletteForegroundColor( fg );
     
@@ -386,17 +352,14 @@ void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &
     m_pStreamBrowser->setPaletteForegroundColor( fg );
     m_pStreamBrowser->setAlternateBackground( altbg );
 
-    m_pBrowserLineEdit->setPaletteBackgroundColor( bg );
-    m_pBrowserLineEdit->setPaletteForegroundColor( fg );
-
     m_pPlaylistLineEdit->setPaletteBackgroundColor( bg );
     m_pPlaylistLineEdit->setPaletteForegroundColor( fg );
 
-/*    m_pMultiTabBar->setPaletteBackgroundColor( bg );
-    m_pMultiTabBar->setPaletteForegroundColor( fg );*/
+/*    m_pFileBrowser->setPaletteBackgroundColor( bg );
+    m_pFileBrowser->setPaletteForegroundColor( fg );*/
     
     update();
-    m_pBrowserWidget->triggerUpdate();
+    m_pFileBrowser->update();
     m_pPlaylistWidget->triggerUpdate();
 }
 

@@ -11,14 +11,14 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp amarokconfig.kcfgc Options1.ui Options2.ui Options3.ui Options4.ui amarokslider.cpp amaroksystray.cpp osd.cpp
+amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp browserwidget.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp amarokconfig.kcfgc Options1.ui Options2.ui Options3.ui Options4.ui amarokslider.cpp amaroksystray.cpp osd.cpp filebrowser.cpp kactionselector.cpp  kbookmarkhandler.cpp
 
 amarok_LDADD = ./engine/libengine.a ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)
 
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokdcophandler.h playlistloader.h amarokslider.h metabundle.h amaroksystray.h osd.h amarokconfig.h
+noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokdcophandler.h playlistloader.h amarokslider.h metabundle.h amaroksystray.h osd.h amarokconfig.h filebrowser.h kactionselector.h kbookmarkhandler.h
 
 KDE_ICON = AUTO
 
