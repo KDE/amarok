@@ -8,6 +8,7 @@
     <group name="Gst-Engine">
         <entry key="Sound Output" type="String">
             <label>Sound output method to use</label>
+            <default>osssink</default>
             <whatsthis>Select the sound output plugin ("sink"). Their availability depends on the system configuration.</whatsthis>
         </entry>
         <entry key="Use Custom Sound Device" type="Bool">
