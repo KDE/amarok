@@ -461,16 +461,18 @@ void App::applySettings( bool firstTime )
         CollectionView::instance()->renderView();
     } //</Collection>
 
-    /* delete unneeded cover images from cache */
-    QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
-    QDir cacheDir = amaroK::saveLocation( "albumcovers/cache/" );
-    QStringList obsoleteCovers = cacheDir.entryList( "*" );
-    for( QStringList::Iterator it = obsoleteCovers.begin(); it != obsoleteCovers.end(); ++it )
-        if ( !( *it ).startsWith( size  ) && !( *it ).startsWith( "50@" ) )
-            QFile( cacheDir.filePath( *it ) ).remove();
+    {   // delete unneeded cover images from cache
+        const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
+        const QDir cacheDir = amaroK::saveLocation( "albumcovers/cache/" );
+        const QStringList obsoleteCovers = cacheDir.entryList( "*" );
+        foreach( obsoleteCovers )
+            if ( !(*it).startsWith( size  ) && !(*it).startsWith( "50@" ) )
+                QFile( cacheDir.filePath( *it ) ).remove();
+    }
 
-    // we crash, often, we admit this
-    AmarokConfig::writeConfig();
+    if ( !firstTime )
+        // we crash, often, we admit this ;-)
+        AmarokConfig::writeConfig();
 
     DEBUG_END
 }
@@ -818,7 +820,7 @@ void App::pruneCoverImages()
 #ifdef AMAZON_SUPPORT
     // TODO Offer the option to refresh the images, instead of deleting
 
-    const int MAX_DAYS = 90;
+    static const int MAX_DAYS = 90;
 
     QDir covers( amaroK::saveLocation( "albumcovers/" ) );
     QDir coverCache( amaroK::saveLocation( "albumcovers/cache/" ) );
@@ -835,13 +837,17 @@ void App::pruneCoverImages()
     uint pruneCount = 0;
     const QDate currentDate = QDate::currentDate();
     for ( uint i = 0; i < list.count(); ++i, ++count )
-        if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS )
-        {
+        if ( list.at( i )->created().date().daysTo( currentDate ) > MAX_DAYS ) {
             pruneCount++;
             QFile::remove( list.at( i )->absFilePath() );
         }
 
-    debug() << "Pruned " << pruneCount << " of " << count << " amazon cover images.\n";
+    if ( pruneCount )
+        amaroK::StatusBar::instance()->longMessage( i18n(
+                "amaroK has had to delete some of the images that you downloaded from Amazon. "
+                "Amazon's licensing policy require us to remove content within 90 days of its download. "
+                "You can read more about Amazon's policies "
+                "<a href='http://www.amazon.com/webservices'>here</a>." ) );
 #endif
 }
 
