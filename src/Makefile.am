@@ -8,10 +8,6 @@ if with_included_sqlite
     sqlite_includes = -I$(top_srcdir)/amarok/src/sqlite
 endif
 
-if with_musicbrainz
-    LIB_MUSICBRAINZ = -lmusicbrainz
-endif
-
 bin_PROGRAMS = amarokapp
 
 SUBDIRS = \
