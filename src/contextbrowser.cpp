@@ -478,7 +478,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
               "</table>"
              "</div>" );
 
-        if ( m_metadataHistory.count() > 1 ) {
+        if ( m_metadataHistory.count() > 2 ) {
             browser->write(
                     "<br/>"
                     "<div class='rbcontent'>"
@@ -488,8 +488,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
             QStringList::const_iterator it;
-            // Neglect first item, which is stale data from the PlaylistItem
-            for ( it = m_metadataHistory.at( 1 ); it != m_metadataHistory.end(); ++it ) {
+            // Ignore first two items, as they don't belong in the history
+            for ( it = m_metadataHistory.at( 2 ); it != m_metadataHistory.end(); ++it ) {
                 browser->write( QStringx(
                     "<tr>"
                         "%1"
