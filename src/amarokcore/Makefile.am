@@ -18,7 +18,7 @@ libamarokcore_la_SOURCES = \
     amarokdcopiface.skel \
     amarokdcophandler.cpp \
     amarokconfig.kcfgc \
-	 crashhandler.cpp
+    crashhandler.cpp
 
 METASOURCES = \
     AUTO
