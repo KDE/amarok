@@ -417,6 +417,8 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     if( !(m_bitrate.isEmpty() || m_samplerate.isEmpty() ) ) str += " / ";
     str += m_samplerate;
     pF.drawText( 6, 68, str );
+
+    drawScroll();    // necessary for pause mode
 }
 
 
