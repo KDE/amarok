@@ -187,6 +187,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_flatViewMessage( 0 )
+        , m_flatViewMessageLayout( 0 )
 {
     DEBUG_FUNC_INFO
     m_instance = this;
@@ -1171,6 +1172,7 @@ CollectionView::hideFlatViewMessage()
     delete m_flatViewMessage;
     delete m_flatViewMessageLayout;
     m_flatViewMessage = 0;
+    m_flatViewMessageLayout = 0;
 }
 
 

@@ -144,8 +144,8 @@ class CollectionView : public KListView
         int m_cat3;
         int m_viewMode;
 
-        QBoxLayout* m_flatViewMessageLayout;
         QLabel*     m_flatViewMessage;
+        QBoxLayout* m_flatViewMessageLayout;
 
         QStringList m_cacheItem;
 };
