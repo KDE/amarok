@@ -77,6 +77,9 @@ class ArtsEngine : public EngineBase
         void                                     startXfade();
         void                                     timerEvent( QTimerEvent* );
 
+        void                                     loadEffects();
+        void                                     saveEffects();
+        
         class ArtsConfigWidget : public QWidget
         {
             public:

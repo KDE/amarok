@@ -56,7 +56,7 @@ EffectListItem::EffectListItem( QListView *parent, const QString &label ) :
 
 EffectListItem::~EffectListItem()
 {
-    pApp->m_pEngine->removeEffect( m_Id );
+//     pApp->m_pEngine->removeEffect( m_Id );
 }
 
 

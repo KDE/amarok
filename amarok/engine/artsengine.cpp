@@ -201,12 +201,13 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
 ArtsEngine::~ ArtsEngine()
 {
+    kdDebug() << "ArtsEngine dtor" << endl;
+        
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
-    
-    for ( QMap<long, EffectContainer>::Iterator it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
-        removeEffect( it.key() );
-    
+
+    saveEffects();
+        
     m_scope             = Amarok::RawScope::null();
     m_xfade             = Amarok::Synth_STEREO_XFADE::null();
     m_volumeControl     = Arts::StereoVolumeControl::null();
@@ -585,6 +586,45 @@ void ArtsEngine::timerEvent( QTimerEvent* )
         
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
         kdDebug() << "[timerEvent] percentage: " << m_xfade.percentage() << endl;
+    }
+}
+
+
+void ArtsEngine::loadEffects()
+{
+}
+
+
+void ArtsEngine::saveEffects()
+{
+    for ( QMap<long, EffectContainer>::Iterator it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
+    {
+        Arts::InterfaceDef def = (*it.data().effect)._queryInterface( (*it.data().effect)._interfaceName() );
+        kdDebug() << "----------------------------------------" << endl;
+        kdDebug() << "Querying interface: " << (*it.data().effect)._interfaceName().c_str() << endl;
+
+        for ( int i = 0; i < def.attributes.size(); i++ )
+        {
+            kdDebug() << "attribute: " << def.attributes[i].name.c_str() << endl;
+            
+            Arts::DynamicRequest req( *it.data().effect );
+            req.method( "_get_" + def.attributes[i].name );
+            Arts::Any result;
+            result.type = def.attributes[i].type;
+            
+            if ( req.invoke( result ) )
+            {            
+                Arts::Buffer buf;
+                result.writeType( buf );
+//                std::string str;
+//                 buf.toString( str );
+                kdDebug() <<  buf.toString("value:").c_str() << endl;
+            }
+            else 
+                kdDebug() << "request failed :(" << endl;
+        }
+                        
+        removeEffect( it.key() );
     }
 }
 
