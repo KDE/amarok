@@ -125,8 +125,7 @@ GstEngine::~GstEngine()
 
     kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
     
-    stop();
-    cleanPipeline();
+    stopNow();
     delete[] m_streamBuf;
     g_object_unref( G_OBJECT( m_gst_adapter ) );
 
@@ -661,7 +660,6 @@ void
 GstEngine::cleanPipeline()
 {
     if ( m_pipelineFilled ) {
-        gst_element_set_state ( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         gst_adapter_clear( m_gst_adapter );
         m_pipelineFilled = false;
