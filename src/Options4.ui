@@ -20,6 +20,9 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
+    <property name="caption">
+        <string>Options4</string>
+    </property>
     <property name="whatsThis" stdset="0">
         <string>Select the sound system to use for playback.</string>
     </property>
@@ -30,6 +33,74 @@
         <property name="spacing">
             <number>16</number>
         </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Sound System</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>sound_system</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>180</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the sound system to use for playback.</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButton_aboutEngine</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>&amp;About</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </hbox>
+        </widget>
         <widget class="QButtonGroup">
             <property name="name">
                 <cstring>opt_crossfade</cstring>
@@ -212,74 +283,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>groupBox1</cstring>
-            </property>
-            <property name="title">
-                <string>Sound System</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout5</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QComboBox">
-                            <property name="name">
-                                <cstring>sound_system</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>180</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Select the sound system to use for playback.</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>pushButton_aboutEngine</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>true</bool>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>&amp;About</string>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout9</cstring>
@@ -294,6 +297,9 @@
                     </property>
                     <property name="text">
                         <string>&amp;Resume playback on start</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK will resume playback from where you left it the previous session -- just like a tape-player.</string>
@@ -327,6 +333,9 @@
                     </property>
                     <property name="text">
                         <string>Remember &amp;effects</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+E</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK remembers the audio effects set through the effects window between sessions.</string>
