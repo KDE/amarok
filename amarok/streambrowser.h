@@ -52,10 +52,14 @@ class StreamBrowser : public KListView
 
     private:
         void doconnection(QString query);
-        void doupdate(QString query, QString uri);
-        void process(QString content);
-        void processlocal(QString content);
+        void doupdate( QString, QString );
+        void process( QString );
+        void processlocal( QString );
+        void processicecast( QString );
         void startDrag();
+
+        void savecache();
+        void loadcache();
 
         QString m_host;
         int m_port;
@@ -64,7 +68,7 @@ class StreamBrowser : public KListView
         QString m_metaquery;
         QString m_curquery;
         QString m_update;
-        QStringList metaservers;
+        QStringList m_metaservers;
         int m_synchronized;
 };
 

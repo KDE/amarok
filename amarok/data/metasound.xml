@@ -61,8 +61,6 @@
 		<connection version="0.1" style="Raggae" speed="32k" location="New York City/USA" stream="RnC Radio" type="playlist">http://streamola.com/pls/roots_n_culture.pls</connection>
 		<connection version="0.1" style="Jazz" speed="128k" location="USA" stream="(unknown)" type="stream">http://164.76.121.201:8000</connection>
 
-		<!-- unavailable: Latex Radio, barbuzz.net, THRN, einslive, France Inter, Fip, Club 977, MaevaFM, KEXP90.3, mukulcast.com,  -->
-
 		<!-- Radio Paradise -->
 		<connection version="0.1" style="Rock" speed="128k" location="Canada" stream="Radio Paradise" type="playlist">http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=866&amp;file=filename.pls</connection>
 		<connection version="0.1" style="Rock" speed="64k" location="Canada" stream="Radio Paradise" type="playlist">http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=6717&amp;file=filename.pls</connection>
@@ -92,8 +90,8 @@
 		<connection version="0.1" style="(unknown)" speed="32k" location="New Jersey/USA" stream="WFMU" type="playlist">http://www.wfmu.org/wfmu32.m3u</connection>
 
 		<!-- wpsu.psu.edu -->
-		<connection version="0.1" style="(unknown)" speed="32k" location="Pennsylvania/USA" stream="WPSU fm (PennState)" type="playlist">http://146.186.143.2:8002/listen.pls</connection>
-		<connection version="0.1" style="(unknown)" speed="128k" location="Pennsylvania/USA" stream="WPSU fm (PennState)" type="playlist">http://146.186.143.2:8000/listen.pls</connection>
+		<connection version="0.1" style="NPR Classics and News" speed="24k" location="Pennsylvania/USA" stream="WPSU fm (PennState)" type="playlist">http://146.186.143.2:8002/listen.pls</connection>
+		<connection version="0.1" style="NPR Classics and News" speed="96k" location="Pennsylvania/USA" stream="WPSU fm (PennState)" type="playlist">http://146.186.143.2:8000/listen.pls</connection>
 
 		<!-- indymedia.org -->
 		<connection version="0.1" style="Politics" speed="16k" location="Genève/Suisse" stream="Indymedia" type="playlist">http://ch.indymedia.org/radio/geneve.pls</connection>
@@ -106,7 +104,15 @@
 		<!-- Deutsche Radiostationen -->
 		<connection version="0.1" style="Classic" speed="32k" location="Leipzig/Deutschland" stream="DR Eins" type="playlist">http://yp.shoutcast.com/sbin/shoutcast-playlist.pls?rn=704200&amp;addr=62.157.113.86:8000&amp;file=filename.pls</connection>
 		<connection version="0.1" style="Mainstream" speed="32k" location="Nürnberg/Deutschland" stream="N1 HitMusic" type="playlist">http://212.34.174.107:8030/listen.pls</connection>
-		<connection version="0.1" style="Techno" speed="56k" location="Dortmund/Deutschland" stream="Jenny.fm" type="playlist">http://www.ascii-project.org/jennyfm_v1/listengermany.pls</connection>
+		<connection version="0.1" style="Techno" speed="56k" location="Dortmund/Deutschland" stream="Jenny.fm MP3" type="playlist">http://www.ascii-project.org/jennyfm_v1/listengermany.pls</connection>
+		<connection version="0.1" style="Techno" speed="75k" location="Dortmund/Deutschland" stream="Jenny.fm Ogg" type="playlist">http://www.ascii-project.org/jennyfm_v1/listenogg.pls</connection>
+		<connection version="0.1" style="Hacker Politics" speed="24k" location="Darmstadt/Deutschland" stream="C-RaDaR (CCC)" type="playlist">http://www.c-radar.de/livestream/c-radar.pls</connection>
+
+		<!-- Schweden -->
+		<connection version="0.1" style="Electronica/Industrial" speed="128k" location="Sverige" stream="SDX Radio" type="playlist">http://blofeld.qbranch.se:8000/listen.pls</connection>
+
+		<!-- Österreich -->
+		<connection version="0.1" style="(unknown)" speed="40k" location="Österreich" stream="FM 4" type="stream">http://listen.fm4.amd.co.at:31337/fm4-lq.ogg</connection>
 
 		<!-- Brasilianische Radiostationen -->
 		<connection version="0.1" style="Rap/Hip Hop" speed="32k" location="São Paulo/Brasil" stream="Rádio Muda" type="stream">http://radio.uk1.indymedia.org:8100/muda</connection>
@@ -122,14 +128,18 @@
 		<connection version="0.1" style="Rock" speed="128k" location="Portugal" stream="Cibermusica/Rádio Rock" type="playlist">http://broadcast.madinfo.pt:6090/listen.pls</connection>
 		<connection version="0.1" style="Culture" speed="128k" location="Portugal" stream="Cibermusica/Rádio PT" type="playlist">http://broadcast.madinfo.pt:7090/listen.pls</connection>
 
+		<!-- Spanien -->
+		<connection version="0.1" style="(various)" speed="24k" location="Mallorca/Spain" stream="Ona Mallorca" type="stream">http://www.onamallorca.net:8000/ona.ogg</connection>
+
 		<!-- Slowenien -->
 		<connection version="0.1" style="(various)" speed="128k" location="Ljubljana/Slovenija" stream="Radio Student" type="playlist">http://www.radiostudent.si/stream/radio_studentHQ.m3u</connection>
 		<connection version="0.1" style="(various)" speed="56k" location="Ljubljana/Slovenija" stream="Radio Student" type="playlist">http://www.radiostudent.si/stream/radio_studentMQ.m3u</connection>
 		<connection version="0.1" style="(various)" speed="24k" location="Ljubljana/Slovenija" stream="Radio Student" type="playlist">http://www.radiostudent.si/stream/radio_studentLQ.m3u</connection>
 
 		<!-- Metaserver -->
-		<meta version="0.1" preference="100">ggzmeta://mindx.dyndns.org:15689</meta>
-		<meta version="0.1" preference="20">ggzmeta://mindx.dyndns.org:15689</meta>
+		<meta version="0.1" preference="50" name="mindx.dyndns.org Selected Streams">ggzmeta://mindx.dyndns.org:15690</meta>
+		<meta version="0.1" preference="50" name="mindx.dyndns.org Contributed Streams" writeable="true">ggzmeta://mindx.dyndns.org:15691</meta>
+		<meta version="0.1" preference="100" name="Xiph.org Icecast Directory">http://dir.xiph.org/cgi-bin/dir.py?xml=1</meta>
 
 	</entrylist>
 </metaserver>

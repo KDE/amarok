@@ -1,7 +1,11 @@
 [identifiers]
-ggzmeta://mindx.dyndns.org:15690=Selected stations
-ggzmeta://mindx.dyndns.org:15691=Contributed stations
+ggzmeta://mindx.dyndns.org:15690=mindx.dyndns.org Selected Streams
+ggzmeta://mindx.dyndns.org:15691=mindx.dyndns.org Contributed Streams
+http://dir.xiph.org/cgi-bin/dir.py?xml%3d1=Xiph.org Icecast Directory
 
 [meta]
-metaservers[$e]=ggzmeta://mindx.dyndns.org:15690,ggzmeta://mindx.dyndns.org:15691,file:$(kde-config --prefix)/share/apps/amarok/data/metasound.xml
+metaservers[$e]=ggzmeta://mindx.dyndns.org:15690,ggzmeta://mindx.dyndns.org:15691,http://dir.xiph.org/cgi-bin/dir.py?xml=1,file:$(kde-config --prefix)/share/apps/amarok/data/metasound.xml
+
+[contributions]
+ggzmeta://mindx.dyndns.org:15691=true
 

@@ -296,12 +296,12 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
             title  = str.section( ",", 1 );
         }
 
-        else if ( !str.startsWith( "#" ) )
+        else if ( !str.startsWith( "#" ) && !str.isEmpty() )
         {
             if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
-            QApplication::postEvent( m_parent, new LoaderEvent( this, KURL( str ), ( length != 0 ) ? new MetaBundle( title, length ) : 0 ) );
+            QApplication::postEvent( m_parent, new LoaderEvent( this, KURL::fromPathOrURL( str ), ( length != 0 ) ? new MetaBundle( title, length ) : 0 ) );
 
             length = 0;
         }

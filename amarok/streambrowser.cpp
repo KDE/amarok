@@ -39,6 +39,8 @@
 #include <qregexp.h>
 #include <qtimer.h>
 
+#include <ctime>  //::time()
+
 StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
         : KListView( parent, name )
 {
@@ -52,8 +54,6 @@ StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
     addColumn(i18n("Location"));
     addColumn(i18n("URI"));
     addColumn(i18n("Type"));
-
-    setCaption(i18n("StreamBrowser (drag streams to playlist)"));
 
     m_query = "<?xml version=\"1.0\"><query class=\"metasound\" type=\"connection\">0.1</query>\n";
     m_metaquery = "<?xml version=\"1.0\"><query class=\"metasound\" type=\"meta\">0.1</query>\n";
@@ -69,11 +69,9 @@ StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
     m_update += "<option name=\"type\">%8</option>";
     m_update += "</update>\n";
 
-    //connect(view, SIGNAL(executed(QListViewItem *)), SLOT(slotActivate(QListViewItem *)));
-
     config = kapp->config();
     config->setGroup("meta");
-    metaservers = config->readListEntry("metaservers");
+    m_metaservers = config->readListEntry("metaservers");
 
     //        config->setGroup("settings");
     //        sync = config->readEntry("synchronization", "startup");
@@ -94,12 +92,11 @@ void StreamBrowser::startDrag()
     if( item )
     {
         KURLDrag *d = new KURLDrag( KURL::List( KURL( item->text(4) ) ), this, "DragObject" );
-
-        kdDebug() << item->text(4) << endl;
-        //QDragObject *d = new QTextDrag( myHighlightedText(), this );
         d->dragCopy();
     }
 }
+
+#include <kcursor.h>
 
 void StreamBrowser::slotUpdateMetaservers()
 {
@@ -109,89 +106,123 @@ void StreamBrowser::slotUpdateMetaservers()
 
 void StreamBrowser::slotUpdateStations()
 {
+    QApplication::setOverrideCursor( KCursor::waitCursor() );    
     doconnection(m_query);
+    QApplication::restoreOverrideCursor(); 
 }
 
 
 void StreamBrowser::doconnection(QString query)
 {
-    QStringList::iterator it;
-    bool ret;
-    int size;
-    QString buf, tmpbuf, tmpname;
-    QStringList tmpservers;
-    KConfig *config;
-    QString alias;
-    QTimer timer;
+        QStringList::iterator it;
+        bool ret;
+        int size;
+        QString tmpbuf, tmpname;
+        QStringList tmpservers;
+        KConfig *config;
+        QString alias, cleanurl;
+        QTimer timer;
+        time_t time;
+        int oldtime;
 
-    connect(&timer, SIGNAL(timeout()), SLOT(slotTimeout()));
+        connect(&timer, SIGNAL(timeout()), SLOT(slotTimeout()));
 
-    m_curquery = query;
+        m_curquery = query;
 
-    config = new KConfig( "/opt/kde3/share/config/kderadiostationrc" );
+        config = kapp->config();
 
-    for(QStringList::iterator it = metaservers.begin(); it != metaservers.end(); it++)
-    {
-        config->setGroup("identifiers");
-        alias = config->readEntry((*it));
-        if(alias.isNull()) alias = (*it);
-        config->setGroup("meta");
-        if(config->readNumEntry(alias) != 1) tmpservers += (*it);
-    }
-
-    for(it = tmpservers.begin(); it != tmpservers.end(); it++)
-    {
-        QString tmp = (*it);
-        kdDebug() << "META: " << tmp << endl;
-        if(tmp.startsWith("ggzmeta://"))
+        for(QStringList::iterator it = m_metaservers.begin(); it != m_metaservers.end(); it++)
         {
-            KURL url(tmp);
-            m_host = url.host();
-            m_port = url.port();
-            if(!m_port) m_port = 15689;
-            kdDebug() << "metaserver: '" << m_host << "' '" << m_port << "'" << endl;
-
-            m_synchronized = 0;
-
-            sock = new QSocket();
-            connect(sock, SIGNAL(connected()), SLOT(slotConnected()));
-            connect(sock, SIGNAL(readyRead()), SLOT(slotRead()));
-            connect(sock, SIGNAL(error(int)), SLOT(slotError(int)));
-            sock->connectToHost(m_host, m_port);
-
-            timer.start(10000, true);
-            while(!m_synchronized)
-                kapp->processEvents();
-            timer.stop();
+                config->setGroup("identifiers");
+                cleanurl = (*it);
+                alias = config->readEntry(cleanurl.replace("=", "%3d"));
+                if(alias.isNull()) alias = (*it);
+                config->setGroup("meta");
+                if(config->readNumEntry(alias) != 1) tmpservers += (*it);
         }
-        else if(query != m_metaquery)
-        {
-            KURL uri(tmp);
-#if KDE_IS_VERSION(3,1,92)
-            ret = KIO::NetAccess::download(uri, tmpname, this);
-#else
-            ret = KIO::NetAccess::download(uri, tmpname);
-#endif
 
-            if(ret)
-            {
-                QFile f(tmpname);
-                f.open(IO_ReadOnly);
-                while((size = f.readLine(tmpbuf, 1024)) != -1)
+//	if(query != m_metaquery)
+//		clear(); // FIXME: add/remove protocol
+
+        for(it = tmpservers.begin(); it != tmpservers.end(); it++)
+        {
+                QString buf;
+                QString tmp = (*it);
+                kdDebug() << "Synchronize resource: " << tmp << endl;
+
+                if(tmp.startsWith("ggzmeta://"))
                 {
-                    buf += tmpbuf;
+                        KURL url(tmp);
+                        m_host = url.host();
+                        m_port = url.port();
+                        if(!m_port) m_port = 15689;
+
+                        config = kapp->config();
+                        config->setGroup("deltas");
+                        oldtime = config->readNumEntry(tmp);
+                        if(query == m_query)
+                                m_curquery = query.arg(oldtime);
+                        else
+                                m_curquery = query;
+                        time = ::time(NULL);
+                        config->writeEntry(tmp, time);
+                        config->sync();
+
+                        m_synchronized = 0;
+
+                        sock = new QSocket();
+                        connect(sock, SIGNAL(connected()), SLOT(slotConnected()));
+                        connect(sock, SIGNAL(readyRead()), SLOT(slotRead()));
+                        connect(sock, SIGNAL(error(int)), SLOT(slotError(int)));
+                        sock->connectToHost(m_host, m_port);
+
+                        timer.start(10000, true);
+                        while(!m_synchronized)
+                                kapp->processEvents();
+                        timer.stop();
                 }
-                f.close();
+                else if(query != m_metaquery)
+                {
+                        KURL uri(tmp);
+                        ret = KIO::NetAccess::download( uri, tmpname, this );
+                        if(ret)
+                        {
+                                QFile f(tmpname);
+                                f.open(IO_ReadOnly);
+                                while((size = f.readLine(tmpbuf, 1024)) != -1)
+                                {
+                                        buf += tmpbuf;
+                                }
+                                f.close();
 
-                QRegExp exp("\\<\\!\\-\\-([^>])*\\>");
-                buf.replace(exp, "");
-                //??                                buf = QString::fromUtf8(buf);
-                processlocal(buf);
-                kdDebug() << buf << endl;
+                                QRegExp exp("\\<\\!\\-\\-([^>])*\\>");
+                                buf.replace(exp, "");
+                                //buf = QString::fromUtf8(buf);
 
-            }
+                                QRegExp icecast("\\<entry_list\\>");
+                                QRegExp ggzmeta("\\<resultset referer=\"([^\"])*\"\\>");
+                                QRegExp metaservlocal("\\<metaserver\\>");
+
+                                if(icecast.search(buf, 0, QRegExp::CaretAtZero) >= 0)
+                                {
+                                        kdDebug() << "## detected format: icascast" << endl;
+                                        processicecast(buf);
+                                }
+                                else if(ggzmeta.search(buf, 0, QRegExp::CaretAtZero) >= 0)
+                                {
+                                        kdDebug() << "## detected format: ggzmeta" << endl;
+                                        kdDebug() << "## shouldn't happen, not handled yet" << endl;
+                                }
+                                else if(metaservlocal.search(buf, 0, QRegExp::CaretAtZero) >= 0)
+                                {
+                                        kdDebug() << "## detected format: metaservlocal" << endl;
+                                        processlocal(buf);
+                                }
+                                else kdDebug() << "## format not recognized" << endl;
+                        }
+                }
         }
-    }
+
 }
 
 void StreamBrowser::doupdate(QString update, QString uri)
@@ -249,6 +280,7 @@ void StreamBrowser::processlocal(QString content)
                 {
                     tmp = "<result preference=\"0\">";
                     value = child.text();
+                    value.replace("&amp", "&;");
                     value.replace("&", "&amp;");
                     tmp += "<uri>" + value + "</uri>";
                     map = child.attributes();
@@ -285,120 +317,246 @@ void StreamBrowser::process(QString content)
     QDomElement element, child;
     QString style, stream, speed, uri, location, type;
     QString name;
-    QString grouping;
+    QString grouping, cache;
     KListViewItem *tmp;
-    QListViewItem *qtmp;
+    QListViewItem *qtmp, *qtmp2;
     KStandardDirs d;
     KConfig *config;
     QString response;
     QStringList::iterator it;
     bool has_metaserver = false;
     bool has_stations = false;
+    bool consideration;
+    bool writeable;
+    QString cleanurl;
 
     config = kapp->config();
     config->setGroup("settings");
-    grouping = config->readEntry("grouping");
+    grouping = config->readEntry("grouping", "flat");
+    cache = config->readEntry("cache", "yes");
 
     if(grouping == "flat")
-        setRootIsDecorated(false);
+            setRootIsDecorated(false);
     else
-        setRootIsDecorated(true);
+            setRootIsDecorated(true);
 
     dom.setContent(content);
     node = dom.documentElement().firstChild();
 
     if(!node.isNull())
     {
-        element = dom.documentElement();
-        kdDebug() << "we're at " << element.tagName() << endl;
-        if(element.attribute("referer") == "update")
-        {
-            child = element.firstChild().toElement();
-            response = child.text();
-            KMessageBox::information(this, i18n("Server response was: %1").arg(response), i18n("Update"));
-            return;
-        }
+            element = dom.documentElement();
+            kdDebug() << "we're at " << element.tagName() << endl;
+            if(element.attribute("referer") == "update")
+            {
+                    child = element.firstChild().toElement();
+                    response = child.text();
+                    KMessageBox::information(this, i18n("Server response was: %1").arg(response), i18n("Update"));
+                    return;
+            }
     }
 
     while(!node.isNull())
     {
-        stream = QString::null;
-        speed = QString::null;
-        style = QString::null;
-        uri = QString::null;
-        location = QString::null;
-        type = QString::null;
-        name = QString::null;
+            stream = "???";
+            speed = "???";
+            style = "???";
+            uri = "???";
+            location = "???";
+            type = "???";
 
-        element = node.toElement();
-        child = element.firstChild().toElement();
-        while(!child.isNull())
-        {
-            if(child.tagName() == "stream") stream = child.text();
-            else if(child.tagName() == "speed") speed = child.text();
-            else if(child.tagName() == "style") style = child.text();
-            else if(child.tagName() == "uri") uri = child.text();
-            else if(child.tagName() == "location") location = child.text();
-            else if(child.tagName() == "type") type = child.text();
-            else if(child.tagName() == "name") name = child.text();
-            child = child.nextSibling().toElement();
-        }
-        if(uri.startsWith("ggzmeta://"))
-        {
-            for(it = metaservers.begin(); it != metaservers.end(); it++)
-                if((*it) == uri) uri = QString::null;
-            if(!uri.isNull())
+            name = QString::null;
+            writeable = false;
+
+            element = node.toElement();
+            child = element.firstChild().toElement();
+            while(!child.isNull())
             {
-                metaservers << uri;
-                emit signalNewMetaserver(uri);
-
-                config->setGroup("meta");
-                config->writeEntry("metaservers", metaservers);
-                config->setGroup("identifiers");
-                config->writeEntry(uri, name);
-                config->sync();
+                    if(child.tagName() == "stream") stream = child.text();
+                    else if(child.tagName() == "speed") speed = child.text();
+                    else if(child.tagName() == "style") style = child.text();
+                    else if(child.tagName() == "uri") uri = child.text();
+                    else if(child.tagName() == "location") location = child.text();
+                    else if(child.tagName() == "type") type = child.text();
+                    else if(child.tagName() == "name") name = child.text();
+                    else if(child.tagName() == "writeable")
+                    {
+                            if(child.text() == "true") writeable = true;
+                            else writeable = false;
+                    }
+                    child = child.nextSibling().toElement();
             }
-            has_metaserver = true;
-        }
-        else
-        {
-            if(!has_stations)
+            if(uri.startsWith("ggzmeta://"))
             {
-                clear();
-                has_stations = true;
-            }
+                    for(it = m_metaservers.begin(); it != m_metaservers.end(); it++)
+                            //if((*it) == uri) uri = QString::null;
+                            if((*it) == uri) it = m_metaservers.remove(it);
+                    if(!uri.isNull())
+                    {
+                            m_metaservers << uri;
+                            emit signalNewMetaserver(uri);
 
-            if(grouping == "bandwidth")
-            {
-                qtmp = findItem(speed, 0);
-                if(!qtmp) qtmp = new KListViewItem(this, speed);
-                tmp = new KListViewItem(qtmp, stream, speed, style, location, uri, type);
-            }
-            else if(grouping == "style")
-            {
-                qtmp = findItem(style, 0);
-                if(!qtmp) qtmp = new KListViewItem(this, style);
-                tmp = new KListViewItem(qtmp, stream, speed, style, location, uri, type);
-
+                            config->setGroup("meta");
+                            config->writeEntry("m_metaservers", m_metaservers);
+                            config->setGroup("identifiers");
+                            cleanurl = uri;
+                            config->writeEntry(cleanurl.replace("=", "%3d"), name);
+                            config->setGroup("contributions");
+                            config->writeEntry(uri, writeable);
+                            config->sync();
+                    }
+                    has_metaserver = true;
             }
             else
-                tmp = new KListViewItem(this, stream, speed, style, location, uri, type);
-            tmp->setPixmap(0, QPixmap(d.findResource("data", "kderadiostation/kderadio16.png")));
-        }
-        node = node.nextSibling();
+            {
+                    if(!has_stations)
+                    {
+                            /*clear();*/
+                            has_stations = true;
+                    }
+
+                    consideration = true;
+                    qtmp = firstChild();
+
+                    if(grouping == "bandwidth")
+                    {
+                            qtmp2 = findItem(speed, 0);
+                            if(qtmp2) qtmp = qtmp2->firstChild();
+                    }
+                    if(grouping == "style")
+                    {
+                            qtmp2 = findItem(style, 0);
+                            if(qtmp2) qtmp = qtmp2->firstChild();
+                    }
+
+                    while(qtmp)
+                    {
+                            if((qtmp->text(0) == stream) && (qtmp->text(1) == speed) && (qtmp->text(2) == style))
+                                    if((qtmp->text(3) == location) && (qtmp->text(4) == uri) && (qtmp->text(5)) == type)
+                                            consideration = false;
+                            qtmp = qtmp->nextSibling();
+                    }
+
+                    if(consideration)
+                    {
+                            if(grouping == "bandwidth")
+                            {
+                                    qtmp = findItem(speed, 0);
+                                    if(!qtmp) qtmp = new KListViewItem( this, speed );
+                                    tmp = new KListViewItem(qtmp, stream, speed, style, location, uri, type);
+                            }
+                            else if(grouping == "style")
+                            {
+                                    qtmp = findItem(style, 0);
+                                    if(!qtmp) qtmp = new KListViewItem( this, style );
+                                    tmp = new KListViewItem(qtmp, stream, speed, style, location, uri, type);
+
+                            }
+                            else
+                                    tmp = new KListViewItem( this, stream, speed, style, location, uri, type );
+                            tmp->setPixmap(0, QPixmap(d.findResource("data", "kderadiostation/kderadio16.png")));
+                    }
+            }
+            node = node.nextSibling();
     }
 
     if(has_metaserver)
     {
-        emit signalNewMetaserver(QString::null);
+            emit signalNewMetaserver(QString::null);
     }
     if(has_stations)
     {
-        emit signalStations();
+            emit signalStations();
+            if(cache == "yes")
+                    savecache();
     }
 
     kdDebug() << "process is ready" << endl;
 }
+
+
+void StreamBrowser::processicecast( QString content )
+{
+    QDomDocument dom;
+    QDomNode node;
+    QDomElement element, child, streamchild;
+    QString buf, tmp, value, key;
+
+    dom.setContent(content);
+    node = dom.documentElement().firstChild();
+
+    if(!node.isNull())
+    {
+            element = dom.documentElement();
+    }
+
+    buf = "<resultset referer=\"\">";
+
+    while(!node.isNull())
+    {
+        element = node.toElement();
+        if((element.tagName() == "entry") && (!element.attribute("name").isNull()))
+        {
+            child = element.firstChild().toElement();
+            while(!child.isNull())
+            {
+                if(child.tagName() == "stream")
+                {
+                    streamchild = child.firstChild().toElement();
+
+                    tmp = "<result preference=\"0\">";
+                    while(!streamchild.isNull())
+                    {
+                        key = streamchild.tagName();
+                        value = streamchild.text();
+                        if(key == "listen_url")
+                        {
+                            tmp += "<uri>" + value + "</uri>";
+                        }
+                        else if(key == "stream_type")
+                        {
+                            if(value == "Ogg Vorbis")
+                                tmp += "<type>stream</type>";
+                            else if(value == "MP3 audio")
+                                tmp += "<type>stream</type>";
+                            else
+                                tmp += "<type>unknown</type>";
+                        }
+                        else if(key == "stream_description")
+                        {
+                            tmp += "<stream>" + value + "</stream>";
+                        }
+                        else if(key == "current_song")
+                        {
+                            // ignore
+                        }
+                        else if(key == "genre")
+                        {
+                            tmp += "<style>" + value + "</style>";
+                        }
+                        else if(key == "audio_info")
+                        {
+                            tmp += "<speed>" + value + "</speed>";
+                        }
+                        streamchild = streamchild.nextSibling().toElement();
+                    }
+                    tmp += "</result>";
+
+                    buf += tmp;
+                }
+
+                child = child.nextSibling().toElement();
+            }
+        }
+        node = node.nextSibling();
+    }
+
+    buf += "</resultset>";
+
+    kdDebug() << "processicecast delegates to process(" << buf << ")" << endl;
+    process(buf);
+}
+
 
 void StreamBrowser::slotRead()
 {
@@ -414,8 +572,9 @@ void StreamBrowser::slotRead()
         rtmp += cs;
         sock->waitForMore(100);
     }
-    //??        rdata = QString::fromUtf8(rtmp);
-    kdDebug() << rdata << endl;
+    //rdata = QString::fromUtf8(rtmp);
+    rdata = rtmp;
+    //kdDebug() << rdata << endl;
 
     rdata.truncate(rdata.length() - 1);
 
@@ -432,61 +591,47 @@ void StreamBrowser::slotActivate(QListViewItem *item)
     bool success;
     bool cache = true;
     QString tmp, normalized;
-    KProcess *proc;
-    KConfig *config = kapp->config();
     QString output;
+    QTimer timer;
 
     if(item->text(1).isNull()) return;
 
     success = true;
     if(item->text(5) == "playlist")
     {
-        if(cache)
-        {
-            //KMD5 md5(item->text(4));
-            //normalized = QString("kderadiostation-") + QString(md5.hexDigest());
-            normalized = QString("kderadiostation-") + item->text(4);
-            normalized.replace("/", "_");
-            tmp = locateLocal("tmp", normalized);
-        }
-        else
-        {
-            KTempFile t(QString::null, ".pls");
-            tmp = t.name();
-        }
-        if(!cache || !QFile::exists(tmp))
-        {
-#if KDE_IS_VERSION(3,1,92)
-            if(KIO::NetAccess::download(item->text(4), tmp, this))
-#else
-            if(KIO::NetAccess::download(item->text(4), tmp))
-#endif
-                success = true;
+            if(cache)
+            {
+                    //KMD5 md5(item->text(4));
+                    //normalized = QString("kderadiostation-") + QString(md5.hexDigest());
+                    normalized = QString("kderadiostation-") + item->text(4);
+                    normalized.replace("/", "_");
+                    tmp = locateLocal("tmp", normalized);
+            }
             else
             {
-                KMessageBox::error(this, i18n("The playlist could not be downloaded."), i18n("Failure"));
-                success = false;
+                    KTempFile t(QString::null, ".pls");
+                    tmp = t.name();
             }
-        }
+            if(!cache || !QFile::exists(tmp))
+            {
+                    if(KIO::NetAccess::download(item->text(4), tmp, this ))
+                            success = true;
+                    else
+                    {
+                            KMessageBox::error(this, i18n("The playlist could not be downloaded."), i18n("Failure"));
+                            success = false;
+                    }
+            }
     }
     else if(item->text(5) == "stream")
     {
-        tmp = item->text(4).latin1();
-        success = true;
+            tmp = item->text(4).latin1();
+            success = true;
     }
     else
     {
-        KMessageBox::error(this, i18n("Unknown type of audio stream."), i18n("Failure"));
-        success = false;
-    }
-
-    if(success)
-    {
-        config->setGroup("settings");
-        output = config->readEntry("output", "xmms");
-        proc = new KProcess();
-        *proc << output.latin1() << tmp.latin1();
-        proc->start();
+            KMessageBox::error(this, i18n("Unknown type of audio stream."), i18n("Failure"));
+            success = false;
     }
 }
 
@@ -497,6 +642,102 @@ void StreamBrowser::slotTimeout()
     m_synchronized = 1;
     sock->close();
     //delete sock;
+}
+
+
+void StreamBrowser::savecache()
+{
+    QListViewItem *qtmp;
+    QString file;
+
+    file = locateLocal("data", "kderadiostation/cache");
+    QFile f(file);
+    if(!f.open(IO_WriteOnly)) return;
+    QTextStream stream(&f);
+
+    qtmp = firstChild();
+    while(qtmp)
+    {
+            while(qtmp->firstChild())
+            {
+                    for(int i = 0; i < qtmp->depth(); i++)
+                            stream << " ";
+                    stream << qtmp->text(0) << "\n";
+                    qtmp = qtmp->firstChild();
+            }
+            //kdDebug() << "<|||> " << qtmp->text(0) << endl;
+            for(int i = 0; i < qtmp->depth(); i++)
+                    stream << " ";
+            for(int i = 0; !qtmp->text(i).isNull(); i++)
+                    stream << qtmp->text(i) << ":::";
+            stream << "\n";
+            if(qtmp->nextSibling()) qtmp = qtmp->nextSibling();
+            else
+            {
+                    qtmp = qtmp->parent();
+                    if(qtmp) qtmp = qtmp->nextSibling();
+            }
+    }
+
+    f.close();
+}
+
+
+void StreamBrowser::loadcache()
+{
+    QListViewItem *qtmp, *qtmp2;
+    QString file, line;
+    QStringList list;
+    int i, depth;
+    KStandardDirs d;
+
+    file = locateLocal("data", "kderadiostation/cache");
+    QFile f(file);
+    if(!f.open(IO_ReadOnly)) return;
+    QTextStream stream(&f);
+
+    qtmp = NULL;
+
+    while(!stream.eof())
+    {
+            line = stream.readLine();
+            depth = 0;
+            while(line.startsWith(" "))
+            {
+                    line = line.right(line.length() - 1);
+                    depth++;
+            }
+            list = QStringList::split(":::", line);
+
+            while((qtmp) && (depth > qtmp->depth() + 1))
+                    qtmp = qtmp->firstChild();
+            while((qtmp) && (depth < qtmp->depth() + 1))
+                    qtmp = qtmp->parent();
+            /*if((!qtmp) && (depth > 0))
+            {
+                    setRootIsDecorated(true);
+                    kdDebug() << "yay for " << line << endl;
+                    qtmp = firstChild();
+                    kdDebug() << "depth: " << qtmp->depth() << endl;
+            }*/
+
+            if(qtmp)
+            {
+                    qtmp2 = new KListViewItem(qtmp);
+                    setRootIsDecorated(true);
+            }
+            else
+            {
+                    qtmp2 = new KListViewItem( this );
+                    qtmp = qtmp2;
+                    qtmp2->setPixmap(0, QPixmap(d.findResource("data", "kderadiostation/kderadio16.png")));
+            }
+            i = 0;
+            for(QStringList::iterator it = list.begin(); it != list.end(); it++, i++)
+                    qtmp2->setText(i, (*it));
+    }
+
+    f.close();
 }
 
 #include "streambrowser.moc"
