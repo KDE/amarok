@@ -24,6 +24,7 @@
 class PlaylistItem;
 
 class QColor;
+class QDragLeaveEvent;
 class QDragMoveEvent;
 class QDropEvent;
 class QFocusEvent;
@@ -51,6 +52,7 @@ class PlaylistWidget : public KListView
         void unglowItems();
         void triggerSignalPlay();
         PlaylistItem* addItem( PlaylistItem *after, KURL url );
+        void eraseMarker();
 
         void contentsDropEvent( QDropEvent* e);
 
@@ -67,7 +69,8 @@ class PlaylistWidget : public KListView
         void signalPlay();
 
     private:
-        void contentsDragMoveEvent( QDragMoveEvent* e);
+        void contentsDragMoveEvent( QDragMoveEvent* e );
+        void contentsDragLeaveEvent( QDragLeaveEvent* );
         void focusInEvent( QFocusEvent *e );
 
         void playlistDrop( KURL::List urlList );
@@ -82,8 +85,11 @@ class PlaylistWidget : public KListView
 
         QTimer* m_GlowTimer;
         QTimer* m_pTagTimer;
-        int m_GlowCount, m_GlowAdd;
+        int m_GlowCount;
+        int m_GlowAdd;
         QColor m_GlowColor;
-        QListViewItem* m_pCurrentTrack;
+        QListViewItem *m_pCurrentTrack;
+        PlaylistItem *m_pMarkerItem;
+        PlaylistItem *m_pMarkerItemPrev;
 };
 #endif

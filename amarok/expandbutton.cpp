@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "browserwidget.h"
+#include "browserwin.h"
 #include "expandbutton.h"
 #include "playerapp.h"
-#include "browserwin.h"
 #include "playlistwidget.h"
-#include "browserwidget.h"
 
-#include <qobject.h>
-#include <qwidget.h>
-#include <qobjectlist.h>
 #include <qbitmap.h>
-#include <qpixmap.h>
-#include <qstring.h>
-#include <qptrlist.h>
-#include <qtimer.h>
 #include <qevent.h>
+#include <qobject.h>
+#include <qobjectlist.h>
 #include <qpaintdevice.h>
 #include <qpainter.h>
+#include <qpalette.h>
+#include <qpixmap.h>
 #include <qpoint.h>
 #include <qpointarray.h>
 #include <qptrlist.h>
-#include <qpalette.h>
+#include <qptrlist.h>
+#include <qstring.h>
+#include <qtimer.h>
+#include <qwidget.h>
 
 #include <kdebug.h>
 #include <kglobal.h>
@@ -54,7 +54,6 @@ QPushButton( text, parent )
 }
 
 
-
 ExpandButton::ExpandButton( const QString &text, ExpandButton *parent ) :
 QPushButton( text, parent->parentWidget() )
 {
@@ -70,7 +69,6 @@ QPushButton( text, parent->parentWidget() )
 ExpandButton::~ExpandButton()
 {
 }
-
 
 
 // METHODS ----------------------------------------------------
@@ -95,7 +93,6 @@ void ExpandButton::mouseReleaseEvent( QMouseEvent *e )
 }
 
 
-
 void ExpandButton::mouseMoveEvent( QMouseEvent *e )
 {
     for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
@@ -111,7 +108,6 @@ void ExpandButton::mouseMoveEvent( QMouseEvent *e )
         }
     }
 }
-
 
 
 // SLOTS ------------------------------------------------------
@@ -160,7 +156,6 @@ void ExpandButton::slotStartExpand()
     connect( m_pTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     m_pTimer->start( 20, false );
 }
-
 
 
 void ExpandButton::slotAnimTimer()
@@ -228,7 +223,7 @@ void ExpandButton::slotAnimTimer()
 
 void ExpandButton::drawButtonLabel( QPainter *p )
 {
-   QPushButton::drawButtonLabel(p);
+   QPushButton::drawButtonLabel( p );
 
    if ( !m_ButtonList.isEmpty() )
    {

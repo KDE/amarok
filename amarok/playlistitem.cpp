@@ -79,6 +79,7 @@ void PlaylistItem::init()
     m_hasMetaInfo = false;
     m_isDir = false;
     m_bIsGlowing = false;
+    m_isMarker = false;
     setDragEnabled( true );
     setDropEnabled( true );
 }
@@ -195,6 +196,15 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, 
 
     pPainterBuf.drawText( margin, 0, width - margin, height(), align, text( column ) );
 
+    // draw drop indicator line
+    if ( m_isMarker )
+    {
+        QPen linePen( Qt::red, 0, Qt::DashLine );
+        pPainterBuf.setPen( linePen );
+        pPainterBuf.drawLine( 0, height() - 1, width - 1, height() - 1 );
+    }
+
+    // draw column separator line
     if ( listView() && QString( listView()->name() ) == "PlaylistWidget" )
     {
         QPen linePen( Qt::darkGray, 0, Qt::DotLine );

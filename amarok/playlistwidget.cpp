@@ -47,7 +47,12 @@
 
 // CLASS PlaylistWidget --------------------------------------------------------
 
-PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView( parent, name )
+PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
+        KListView( parent, name ),
+        m_GlowCount( 100 ),
+        m_GlowAdd( 5 ),
+        m_pMarkerItem( NULL ),
+        m_pMarkerItemPrev( NULL )
 {
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
@@ -67,9 +72,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView(
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
     setCurrentTrack( NULL );
-
-    m_GlowCount = 100;
-    m_GlowAdd = 5;
     m_GlowColor.setRgb( 0xff, 0x40, 0x40 );
 
     m_GlowTimer = new QTimer( this );
@@ -81,7 +83,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView(
 }
 
 
-
 PlaylistWidget::~PlaylistWidget()
 {}
 
@@ -91,11 +92,32 @@ PlaylistWidget::~PlaylistWidget()
 void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     e->acceptAction();
+    m_pMarkerItem = static_cast<PlaylistItem*>( itemAt( e->pos() ) );
+
+    if ( m_pMarkerItem != m_pMarkerItemPrev )
+    {
+        eraseMarker();
+
+        if ( m_pMarkerItem != NULL )
+        {
+            m_pMarkerItem->setMarker( true );
+            repaintItem( m_pMarkerItem );
+        }
+
+        m_pMarkerItemPrev = m_pMarkerItem;
+    }
+}
+
+
+void PlaylistWidget::contentsDragLeaveEvent( QDragLeaveEvent* )
+{
+    eraseMarker();
 }
 
 
 void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 {
+    eraseMarker();
     m_dropRecursionCounter = 0;
 
     if ( pApp->m_optDropMode == "Recursively" )
@@ -289,6 +311,16 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
     }
 
     return pNewItem;
+}
+
+
+void PlaylistWidget::eraseMarker()
+{
+    if ( m_pMarkerItemPrev != NULL )
+    {
+        m_pMarkerItemPrev->setMarker( false );
+        repaintItem( m_pMarkerItemPrev  );
+    }
 }
 
 
