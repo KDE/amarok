@@ -1673,7 +1673,8 @@ Playlist::removeDuplicates() //SLOT
 
     for( QListViewItemIterator it( this ); it.current(); ) {
         PlaylistItem* item = static_cast<PlaylistItem*>( *it );
-        if ( !item->exists() ) {
+        const KURL url = item->url();
+        if ( url.isLocalFile() && !QFile::exists( url.path() ) ) {
             removeItem( item );
             ++it;
             delete item;
