@@ -8,6 +8,7 @@
 <!--  <include>kapplication.h</include>
   <include>kglobalsettings.h</include>
   <include>config.h</include> -->
+ 
   <group name="General Options">
      <entry key="Version" type="String">
         <label>Amarok Version</label>
@@ -178,6 +179,7 @@
         <default>#ffff00</default>
      </entry>
   </group>
+  
   <group name="Fonts">
      <entry key="Use Custom Fonts" type="Bool">
         <label>Whether to use user-defined fonts</label>
@@ -197,6 +199,7 @@
         <default code="true">QFont("Helvetica",9)</default>
      </entry>
   </group>
+  
   <group name="Colors">
      <entry key="Scheme Amarok" type="Bool">
         <label>Whether to use amaroK standard colors in playlist window</label>
@@ -222,6 +225,7 @@
         <default>#000000</default>
      </entry>
   </group>
+  
   <group name="Session">
      <entry key="Resume Playback" type="Bool">
         <label>Resume playback of last played track on startup</label>

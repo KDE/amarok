@@ -69,7 +69,6 @@ PlayerApp::PlayerApp()
         : KUniqueApplication( true, true, false )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_sliderIsPressed( false )
-        , m_playingURL( KURL() )
         , m_pMainTimer( new QTimer( this ) )
         , m_pAnimTimer( new QTimer( this ) )
         , m_length( 0 )
@@ -293,15 +292,16 @@ void PlayerApp::saveConfig()
 {
     //     AmarokConfig::setCurrentDirectory( m_pBrowserWin->m_pBrowserWidget->m_pDirLister->url().path() );
     //     AmarokConfig::setPathHistory( m_pBrowserWin->m_pBrowserLineEdit->historyItems() );
-    AmarokConfig::setPlayerPos( m_pPlayerWidget->pos() );
-    AmarokConfig::setBrowserWinPos( m_pBrowserWin->pos() );
-    AmarokConfig::setBrowserWinSize( m_pBrowserWin->size() );
+    AmarokConfig::setBrowserWinPos     ( m_pBrowserWin->pos() );
+    AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
+    AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
     AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
-    AmarokConfig::setBrowserWinEnabled( m_pPlayerWidget->m_pButtonPl->isOn() );
-
+    AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
+    AmarokConfig::setVersion           ( APP_VERSION );
+    
     AmarokConfig::writeConfig();
 
-    if (AmarokConfig::savePlaylist())
+    if ( AmarokConfig::savePlaylist() )
         m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs()->saveLocation(
                     "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
@@ -531,7 +531,6 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
     m_playingURL = url;
 
     m_pPlayerWidget->m_pSlider->setValue    ( 0 );
-    m_pPlayerWidget->m_pSlider->setMinValue ( 0 );
     m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
 
     //interface consistency
@@ -664,9 +663,10 @@ void PlayerApp::slotMainTimer()
     // <Crossfading>
     if ( ( AmarokConfig::crossfade() ) &&
          ( !m_pEngine->isStream() ) &&
+         ( m_length ) &&
          ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
     {
-        m_pEngine->startXFade();
+        slotNext();
         return;
     }
             
