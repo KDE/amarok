@@ -23,6 +23,8 @@ VERSION 1.2.3:
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
+    * When doing Musicbrainz lookup from the Context browser, search for the
+      real track, not the whole album
     * Memleak when a radio stream stalled. (BR 102047)
     * The Collection Scan finally checks for the right file modification time.
     * Adding a compilation disc from ContextBrowser was broken.
@@ -36,8 +38,6 @@ VERSION 1.2.3:
     * Fix units for samplerate. (BR 101528)
     * amaroK using 100% CPU on some systems. (BR 101524)
       (a KHTML bug which got exposed by code in amaroK 1.2.2)
-    * When doing Musicbrainz lookup from the Context browser, search for the
-      real track, not the whole album
 
 
 VERSION 1.2.2:
