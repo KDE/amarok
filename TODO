@@ -4,6 +4,9 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: doubleclicking in the playlist's free space (after last mp3 in list)
+           causes amarok to start playing first item.
+
     * fix: inserting items into playlist is buggy. items sometimes misplaced
 
     * fix: app freezing when renaming the file that's currently playing
