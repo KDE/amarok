@@ -62,7 +62,7 @@ CollectionDB::CollectionDB()
         , m_cacheDir( amaroK::saveLocation() )
         , m_coverDir( amaroK::saveLocation() )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BLOCK
 
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
