@@ -1372,7 +1372,9 @@ void ContextBrowser::setStyleSheet()
     DEBUG_FUNC_INFO
 
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
-    if ( QFile::exists( amaroK::saveLocation( "themes/" + themeName + '/' ) + "stylesheet.css" ) )
+    const QString file = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
+
+    if ( QFile::exists( file ) )
         setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
         setStyleSheet_Default( m_styleSheet );
@@ -1492,9 +1494,9 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
             .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
             .arg( fontFamily );
 
-    QString CSSLocation = amaroK::saveLocation( "themes/" + themeName + '/' );
+    const QString CSSLocation = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
 
-    QFile ExternalCSS( CSSLocation + "stylesheet.css" );
+    QFile ExternalCSS( CSSLocation );
     if ( !ExternalCSS.open( IO_ReadOnly ) )
         return;
 
@@ -1502,7 +1504,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     QString tmpCSS = eCSSts.read();
     ExternalCSS.close();
 
-    tmpCSS.replace( "./", CSSLocation );
+    tmpCSS.replace( "./", KURL::fromPathOrURL( CSSLocation ).directory(), false );
     tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
     tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
