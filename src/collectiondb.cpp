@@ -1061,30 +1061,33 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
     KURL::List::ConstIterator it;
     for ( it = urls.begin(); it != urls.end(); ++it )
-        qb.addURLFilter( (*it).path() );
+        values << (*it).path();
+
+    qb.addURLFilters( values );
 
 //    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
 
-    for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
-    {
-        MetaBundle b;
+    if ( values.count() )
+        for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
+        {
+            MetaBundle b;
 
-        b.setAlbum     ( values[ i + 0 ] );
-        b.setArtist    ( values[ i + 1 ] );
-        b.setGenre     ( values[ i + 2 ] );
-        b.setTitle     ( values[ i + 3 ] );
-        b.setYear      ( values[ i + 4 ] );
-        b.setComment   ( values[ i + 5 ] );
-        b.setTrack     ( values[ i + 6 ] );
-        b.setBitrate   ( values[ i + 7 ].toInt() );
-        b.setLength    ( values[ i + 8 ].toInt() );
-        b.setSampleRate( values[ i + 9 ].toInt() );
-        b.setUrl       ( values[ i + 10 ] );
+            b.setAlbum     ( values[ i + 0 ] );
+            b.setArtist    ( values[ i + 1 ] );
+            b.setGenre     ( values[ i + 2 ] );
+            b.setTitle     ( values[ i + 3 ] );
+            b.setYear      ( values[ i + 4 ] );
+            b.setComment   ( values[ i + 5 ] );
+            b.setTrack     ( values[ i + 6 ] );
+            b.setBitrate   ( values[ i + 7 ].toInt() );
+            b.setLength    ( values[ i + 8 ].toInt() );
+            b.setSampleRate( values[ i + 9 ].toInt() );
+            b.setUrl       ( values[ i + 10 ] );
 
-        bundles.append( b );
-    }
+            bundles.append( b );
+        }
 
     return bundles;
 }
@@ -2086,14 +2089,21 @@ QueryBuilder::countReturnValues()
 
 
 void
-QueryBuilder::addURLFilter( const QString& filter )
+QueryBuilder::addURLFilters( const QStringList& filter )
 {
-  if ( !filter.isEmpty() )
-  {
-    m_where += "OR tags.url = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-  }
+    if ( !filter.isEmpty() )
+    {
+        m_where += "AND ( 0 ";
 
-  m_linkTables |= tabSong;
+        for ( uint i = 0; i < filter.count(); i++ )
+        {
+                m_where += "OR tags.url = '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+        }
+
+        m_where += " ) ";
+    }
+
+    m_linkTables |= tabSong;
 }
 
 

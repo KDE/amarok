@@ -332,7 +332,7 @@ class QueryBuilder : public QObject
         void addReturnValue( int table, int value );
         uint countReturnValues();
 
-        void addURLFilter( const QString& filter );
+        void addURLFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter, int mode = modeNormal );
         void addFilters( int tables, const QStringList& filter );
