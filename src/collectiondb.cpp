@@ -1378,7 +1378,9 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 void
 CollectionDB::updateURL( const QString &url, const bool updateView )
 {
-    const MetaBundle bundle = MetaBundle( url );
+    KURL u;
+    u.setPath( url );
+    const MetaBundle bundle( u );
     updateTags( url, bundle, updateView );
 }
 

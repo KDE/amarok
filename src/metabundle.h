@@ -82,7 +82,7 @@ public:
     const QString &streamName() const { return m_streamName; }
     const QString &streamUrl()  const { return m_streamUrl; }
 
-    void setUrl( QString url ) { m_url = url; }
+    void setUrl( QString url ) { m_url.setPath( url ); }
     void setTitle( QString title ) { m_title = title; }
     void setArtist( QString artist ) { m_artist = artist; }
     void setAlbum( QString album ) { m_album = album; }

@@ -125,7 +125,7 @@ Q_OBJECT
         void restore();
 
         const KURL &url() const { return m_url; }
-        void setUrl( const QString &u ) { m_url = KURL(u); }
+        void setUrl( const QString &u ) { m_url.setPath( u ); }
         int trackCount() { return m_trackCount; }
         int length() { return m_length; }
         bool isModified() { return m_modified; }
