@@ -184,9 +184,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString &) ),
-                SLOT( coverFetched(const QString &) ) );
-    connect( m_db, SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetched(const QString &) ), SLOT( coverFetched(const QString &) ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
     #endif
 
     m_currentView = AllAlbums;

@@ -263,8 +263,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         }
 
         m_insertdb = new CollectionDB();
-        connect( m_insertdb,     SIGNAL( scanDone( bool ) ),
-                 this,             SLOT( scanDone( bool ) ) );
+        connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ),
+                 this,                      SLOT( scanDone( bool ) ) );
 
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
             scan();

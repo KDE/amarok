@@ -11,8 +11,9 @@
 #include <qdir.h>            //stack allocated
 #include "sqlite/sqlite3.h"
 
-class ThreadWeaver;
+class CollectionEmitter;
 class MetaBundle;
+class ThreadWeaver;
 
 class CollectionDB : public QObject
 {
@@ -21,6 +22,8 @@ class CollectionDB : public QObject
     public:
         CollectionDB();
         ~CollectionDB();
+
+        static CollectionEmitter* emitter() { return s_emitter; }
 
         //sql helper methods
         QStringList query( const QString& statement, QStringList* const names = 0, bool debug = false );
@@ -110,12 +113,6 @@ class CollectionDB : public QObject
         QStringList m_values;
         QStringList m_names;
 
-    signals:
-        void scanDone( bool changed );
-        void coverFetched( const QString &keyword );
-        void coverFetched();
-        void coverFetcherError();
-
     public slots:
         void fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit );
         void stopScan();
@@ -130,6 +127,7 @@ class CollectionDB : public QObject
         uint IDFromValue( QString name, QString value, bool autocreate = true, bool useTempTables = false );
         QString valueFromID( QString table, uint id );
 
+        static CollectionEmitter* s_emitter;
         sqlite3* m_db;
         ThreadWeaver* m_weaver;
         bool m_monitor;
@@ -140,6 +138,20 @@ class CollectionDB : public QObject
         uint m_cacheArtistID;
         QString m_cacheAlbum;
         uint m_cacheAlbumID;
+};
+
+
+class CollectionEmitter : public QObject
+{
+    Q_OBJECT
+
+    friend class CollectionDB;
+
+    signals:
+        void scanDone( bool changed );
+        void coverFetched( const QString &keyword );
+        void coverFetched();
+        void coverFetcherError();
 };
 
 

@@ -32,6 +32,9 @@
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
 
+CollectionEmitter* CollectionDB::s_emitter = 0;
+
+
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
         , m_cacheDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
@@ -71,6 +74,8 @@ CollectionDB::CollectionDB()
     if( !m_cacheDir.exists( "albumcovers/cache", false ) )
         m_cacheDir.mkdir( "albumcovers/cache", false );
     m_cacheDir.cd( "albumcovers/cache" );
+
+    if ( !s_emitter ) s_emitter = new CollectionEmitter();
 }
 
 
@@ -338,7 +343,7 @@ CollectionDB::getImageForAlbum( const uint artist_id, const uint album_id, const
                     "WHERE artist.id = %1 AND album.id = %2;" )
                     .arg( artist_id ).arg( album_id ) );
 
-    return getImageForAlbum( m_values.first(), m_values[1], width );
+    return getImageForAlbum( m_values[0], m_values[1], width );
 }
 
 
@@ -407,7 +412,7 @@ CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
                     .arg( artist_id ) );
 
     if ( !m_values.isEmpty() )
-        return removeImageFromAlbum( m_values.first(), m_values[1] );
+        return removeImageFromAlbum( m_values[0], m_values[1] );
     else
         return false;
 }
@@ -827,7 +832,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
         m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
                                                 recursively, importPlaylists, false ) );
     else
-        emit scanDone( false );
+        emit s_emitter->scanDone( false );
 }
 
 
@@ -905,7 +910,7 @@ CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
         m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
                                                 recursively, importPlaylists, true ) );
     else
-        emit scanDone( false );
+        emit s_emitter->scanDone( false );
 }
 
 
@@ -1442,8 +1447,8 @@ CollectionDB::saveCover( const QString& keyword, const QString& url, const QImag
     QStringList values = QStringList::split( " - ", keyword );
     setImageForAlbum( values[ 0 ], values[ 1 ], url, img );
 
-    emit coverFetched( keyword );
-    emit coverFetched();
+    emit s_emitter->coverFetched( keyword );
+    emit s_emitter->coverFetched();
 }
 
 
@@ -1451,7 +1456,7 @@ void
 CollectionDB::fetcherError()
 {
     //this is called when there is an error with a coverfetcher
-    emit coverFetcherError();
+    emit s_emitter->coverFetcherError();
 }
 
 
@@ -1465,7 +1470,7 @@ CollectionDB::customEvent( QCustomEvent *e )
     if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
     {
         kdDebug() << k_funcinfo << endl;
-        emit scanDone( true );
+        emit s_emitter->scanDone( true );
     }
 }
 

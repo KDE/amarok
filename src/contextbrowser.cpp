@@ -474,7 +474,7 @@ void ContextBrowser::showHome() //SLOT
 
     // Triggers redisplay when new cover image is downloaded
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
     #endif
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
@@ -550,7 +550,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     uint album_id  = m_db->albumID ( m_currentTrack->album() );
 
     // Triggers redisplay when new cover image is downloaded
-    connect( m_db, SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetched() ), this, SLOT( showCurrentTrack() ) );
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
