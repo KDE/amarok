@@ -136,7 +136,6 @@ void BrowserWin::initChildren()
     QWidget *pPlaylistWidgetContainer = new QWidget( m_pSplitter );
     m_pPlaylistWidget = new PlaylistWidget( pPlaylistWidgetContainer );
     m_pPlaylistWidget->setAcceptDrops( true );
-    m_pPlaylistWidget->setSorting( -1 );
     m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
     m_pBrowserLineEdit = new KLineEdit( pBrowserWidgetContainer );

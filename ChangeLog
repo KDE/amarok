@@ -4,10 +4,12 @@ amaroK Changelog
 
 
 VERSION HEAD:
-  * fixed: rewrote directory reading code in BrowserWidget.cpp.
+  * add: column "directory" in PlaylistWidget (for Grue:)
+  * add: sorting by clicking on column headers in PlaylistWidget
+  * fix: rewrote directory reading code in BrowserWidget.cpp.
     code is now much more readable, and it also fixes a bug.
-  * added: additional columns in playlist for tags
-  * fixed: made metainfo reading algorithm faster
+  * add: additional columns in playlist for tags
+  * fix: made metainfo reading algorithm faster
   * change: switched to TagLib for metainfo reading
   * add: button "play" in PlayerWidget.cpp is now a toggleButton
 
@@ -90,12 +92,12 @@ VERSION 0.5.2 - 0.5.2-DEV6:
 VERSION 0.5.1:
   * added a Tip of the Day at startup to explain the user interface a bit
   * added restarting of artsd on first program start to make sure it registers 
-    the new mcopclasses  
+    the new mcopclasses
   * fixed possible compile error in viswidget.cpp 
   * amaroK uses much less CPU now than it used to. This was mainly achieved by 
     using a new FFT-analyzer module, which I took from Noatuns "Winskin"-plugin,
     and modified slightly to my needs. Also some other optimizations were made, 
-    which	improved the standby performance, when no song is playing. I'm still 
+    which	improved the standby performance, when no song is playing. I'm still
     not satisfied with overall performance, tho, but it seems that most of the 
     load is produced by the aRts code itself, so this will rather be difficult
     to improve.  
@@ -130,7 +132,7 @@ VERSION 0.14 (internal):
   * changed the direction of the volume-slider. maximum is now at the top
   * added automatic saving of current playlist on exit
   * added previous/next track 
-  * added two radiobuttons in the playerwidget for toggling the 
+  * added two radiobuttons in the playerwidget for toggling the
     playlist/equalizer on and off. admitted, the equalizer doesn't yet exist, so 
     it's just a dummy button :P
   * added popup-menu for the playerwidget. opens on 

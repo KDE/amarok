@@ -8,8 +8,7 @@ SHORT-TERM:
 
     * fix: sample looping @ end of track or pause
 
-    * fix: some URLs seem not to work (redirection), e.g.:
-      http://robotron.ton.tut.fi:80
+    * fix: redirected URLs do not work
 
     * add: extend keyboard shortcuts
 
@@ -24,8 +23,6 @@ MID-TERM:
     * add: display warning when artsd is run w/o realtime
 
     * fix: small redrawing bugs for ExpandButton
-
-    * fix: go to the last played track on startup
 
     * add: background "transparency" for playlist window
 
@@ -42,8 +39,6 @@ MID-TERM:
 
     * fix: try to make title-scrolling smoother / debug scrolling code
 
-    * add: show play button pressed down while playing
-
     * add: function "add current dir"
 
     * add: seeking with mousewheel
@@ -52,7 +47,7 @@ MID-TERM:
 
     * add: option to show dirs sorted alphabetically
 
-    * add: make blinking currenttrack optional
+    * add: make blinking currentTrack optional
 
     * add: display type of media next to bitrate
 

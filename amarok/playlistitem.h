@@ -49,6 +49,7 @@ class PlaylistItem : public QListViewItem
         QString m_tagYear;
         QString m_tagComment;
         QString m_tagGenre;
+        QString m_tagDirectory;
 
         KURL url() const { return m_url; }
         void readMetaInfo();
@@ -64,7 +65,7 @@ class PlaylistItem : public QListViewItem
         QString nameForUrl( const KURL &url ) const;
         void init();
         void paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align );
-        void paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r );
+        void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
         bool m_hasMetaInfo;
         KURL m_url;

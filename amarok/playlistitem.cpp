@@ -44,7 +44,6 @@ PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
 }
 
 
-
 PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url ) :
         QListViewItem( parent, after )
 {
@@ -113,6 +112,7 @@ void PlaylistItem::readMetaInfo()
             m_tagYear = QString().setNum( tag->year() );
             m_tagComment = QString( tag->comment().toCString() );
             m_tagGenre = QString( tag->genre().toCString() );
+            m_tagDirectory = QString( url().directory().section( '/', -1 ) );
         }
     }
 }
@@ -134,6 +134,7 @@ void PlaylistItem::setMetaTitle()
     setText( 3, m_tagYear );
     setText( 4, m_tagComment );
     setText( 5, m_tagGenre );
+    setText( 6, m_tagDirectory );
 }
 
 
@@ -192,5 +193,5 @@ void PlaylistItem::paintCell( QPainter * p, const QColorGroup & cg, int column, 
 
 
 // paintFocus is an empty dummy function to disable focus drawing
-void PlaylistItem::paintFocus( QPainter* /*p*/, const QColorGroup& /*cg*/, const QRect& /*r*/ )
+void PlaylistItem::paintFocus( QPainter*, const QColorGroup&, const QRect& )
 {}
