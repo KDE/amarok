@@ -24,10 +24,11 @@
 
 #include <kapplication.h>
 #include <kaction.h>
-#include <kcursor.h>      //setOverrideCursor()
+#include <kcursor.h>         //setOverrideCursor()
 #include <kdebug.h>
-#include <kiconloader.h>  //slotShowContextMenu()
-#include <klineedit.h>    //setCurrentTrack()
+#include <kiconloader.h>     //slotShowContextMenu()
+#include <kio/job.h>         //deleteSelectedPhysically()
+#include <klineedit.h>       //setCurrentTrack()
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kmessagebox.h>
@@ -37,16 +38,16 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
-#include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
+#include <qclipboard.h>      //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
 #include <qevent.h>
-#include <qfile.h>   //undo system
-#include <qheader.h> //eventFilter()
+#include <qfile.h>           //undo system
+#include <qheader.h>         //eventFilter()
 #include <qpainter.h>
-#include <qpen.h>    //slotGlowTimer()
+#include <qpen.h>            //slotGlowTimer()
 #include <qtimer.h>
 
-#include <X11/Xlib.h> //ControlMask in contentsDragMoveEvent()
+#include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
 
 
 Playlist *Playlist::s_instance = 0;
@@ -595,6 +596,32 @@ void Playlist::removeSelectedItems() //SLOT
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
 }
 
+
+void Playlist::deleteSelectedPhysically() //SLOT
+{
+    if ( KMessageBox::warningContinueCancel( this, i18n( "<h3>Delete selected files physically?</h3>"
+                                                         "<p>Warning: This process will be <u>irreversible!</u></p><br/>" ) )
+       == KMessageBox::Cancel ) return;
+
+    setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
+
+    //assemble a list of what needs removing
+    QPtrList<QListViewItem> list;
+    KURL::List urls;
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected );
+         it.current();
+         list.prepend( it.current() ),
+         urls << static_cast<PlaylistItem*>( it.current() )->url(),
+          ++it );
+
+    if( list.isEmpty() ) return;
+
+    // TODO We need to check which files have been deleted successfully
+    KIO::DeleteJob* job = KIO::del( urls );
+    connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( removeSelectedItems() ) );
+}
+
+
 /*
 void Playlist::summary( QPopupMenu &popup ) const
 {
@@ -1125,6 +1152,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Track Name" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove Selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    popup.insertItem( SmallIcon( "editdelete" ), i18n( "&Delete Selected Physically" ), this, SLOT( deleteSelectedPhysically() ), SHIFT+Key_Delete );
 
     //only enable for columns that have editable tags
     popup.setItemEnabled( EDIT, canRename );
