@@ -24,7 +24,7 @@
 //BEGIN Includes
 #include "amarokconfig.h"
 #include "filebrowser.h"
-#include "kactionselector.h"
+//#include "kactionselector.h"
 #include "kbookmarkhandler.h"
 
 #include <qapplication.h>
@@ -131,7 +131,7 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     dir->setView( KFile::Detail );
     dir->setMode( KFile::Files );
     dir->setEnableDirHighlighting( true );
-   
+
     KActionCollection *coll = dir->actionCollection();
     // some shortcuts of diroperator that clashes with KDev
     coll->action( "delete" )->setShortcut( KShortcut( ALT + Key_Delete ) );
@@ -233,7 +233,7 @@ void KDevFileSelector::readConfig()
         setDir( AmarokConfig::location() );
         cmbPath->setURL( AmarokConfig::location() );
     }
-        
+
     filter->setMaxCount( AmarokConfig::filterHistoryLen() );
     filter->setHistoryItems( AmarokConfig::filterHistory(), true );
     lastFilter = AmarokConfig::lastFilter();
