@@ -35,7 +35,9 @@ using namespace amaroK;
 
 StatusBar* StatusBar::m_self;
 
-StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, name )
+StatusBar::StatusBar( QWidget *parent, const char *name )
+    : KStatusBar( parent, name )
+    , m_sliderPressed( false )
 {
     m_self = this;
     EngineController::instance()->attach( this );
@@ -69,8 +71,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, 
 
     // position slider
     addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 0, true );
+    m_pSlider->setTracking( false );
     m_pSlider->setMinimumWidth( 70 );
     m_pSlider->setMaximumHeight( fontMetrics().height() );
+    connect( m_pSlider, SIGNAL( sliderPressed() ), this, SLOT( sliderPressed() ) );
     connect( m_pSlider, SIGNAL( sliderReleased() ), this, SLOT( sliderReleased() ) );
     connect( m_pSlider, SIGNAL( sliderMoved( int ) ), this, SLOT( sliderMoved( int ) ) );
     
@@ -123,6 +127,15 @@ void StatusBar::slotItemCountChanged(int newCount)
 
 void StatusBar::engineTrackPositionChanged( long position )
 {
+    if ( !m_sliderPressed ) {
+        drawTimeDisplay( position );
+        // adjust position slider
+        m_pSlider->setValue( position );
+    }
+}
+
+void StatusBar::drawTimeDisplay( long position )
+{    
     // TODO: Don't duplicate code
     int seconds = position / 1000;
     const uint songLength = EngineController::instance()->trackLength() / 1000;
@@ -139,9 +152,6 @@ void StatusBar::engineTrackPositionChanged( long position )
     str.prepend( ' ' );
 
     m_pTimeLabel->setText( str );
-
-    // adjust position slider
-    m_pSlider->setValue( position );
 }
 
 void StatusBar::slotToggleTime()
@@ -173,18 +183,23 @@ void StatusBar::customEvent( QCustomEvent *e )
     }
 }
 
+void StatusBar::sliderPressed()
+{
+    m_sliderPressed = true;
+}
+
 void StatusBar::sliderReleased()
 {
-    EngineBase *engine = EngineController::instance()->engine();
-    if ( engine->state() == EngineBase::Playing )
-    {
-        engine->seek( m_pSlider->value() );
+    m_sliderPressed = false;
+    
+    if ( EngineController::engine()->state() == EngineBase::Playing ) {
+        EngineController::engine()->seek( m_pSlider->value() );
     }
 }
 
 void StatusBar::sliderMoved( int value )
 {
-    engineTrackPositionChanged( static_cast<long>( value ) );    
+    drawTimeDisplay( static_cast<long>( value ) );    
 }
 
 

@@ -50,11 +50,13 @@ protected: /* reimpl from engineobserver */
 
 private slots:
     void slotToggleTime();
+    void sliderPressed();
     void sliderReleased();
     void sliderMoved( int value );
         
 private:
     void customEvent( QCustomEvent* e );
+    void drawTimeDisplay( long position );
 
     static StatusBar* m_self;
     static const int ID_STATUS = 1;
@@ -62,6 +64,7 @@ private:
     ToggleLabel *m_pTimeLabel;
     KProgress* m_progress;
     QSlider* m_pSlider;
+    bool m_sliderPressed;
 };
 
 
