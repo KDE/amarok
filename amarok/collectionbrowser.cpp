@@ -88,9 +88,10 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     KConfig* config = KGlobal::config();
     config->setGroup( "Collection Browser" );
+    
     m_dirs = config->readListEntry( "Folders" );
-    QString cat = config->readEntry( "Category" );
-    addColumn( cat );
+    m_category = config->readEntry( "Category", "Album" );
+    addColumn( m_category );
     
     connect( this, SIGNAL( tagsReady() ),
              this,   SLOT( renderView() ) );
