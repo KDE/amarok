@@ -313,12 +313,16 @@ void EngineController::play( const MetaBundle &bundle )
 
         if( m_engine->play() )
         {
+            // Ask engine for track length, if available. It's more reliable than TagLib.
+            const uint trackLength = m_engine->length();
+            if ( trackLength ) m_bundle.setLength( trackLength / 1000 );
+
             m_xFadeThisTrack = AmarokConfig::crossfade() &&
                                m_engine->hasPluginProperty( "HasCrossfade" ) &&
                               !m_engine->isStream() &&
                                m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
 
-            newMetaDataNotify( bundle, true /* track change */ );
+            newMetaDataNotify( m_bundle, true /* track change */ );
         }
         else goto some_kind_of_failure;
     }

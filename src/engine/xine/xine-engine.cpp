@@ -306,6 +306,18 @@ XineEngine::position() const
     return time;
 }
 
+uint
+XineEngine::length() const
+{
+    int pos;
+    int time;
+    int length = 0;
+
+    xine_get_pos_length( m_stream, &pos, &time, &length );
+
+    return length;
+}
+
 void
 XineEngine::seek( uint ms )
 {

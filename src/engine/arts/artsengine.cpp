@@ -287,11 +287,23 @@ bool ArtsEngine::canDecode( const KURL &url ) const
 
 uint ArtsEngine::position() const
 {
-    if ( m_pPlayObject )
-        return m_pPlayObject->currentTime().seconds * 1000 +
-               m_pPlayObject->currentTime().ms;
-    else
-        return 0;
+    if ( m_pPlayObject ) {
+        const Arts::poTime time = m_pPlayObject->currentTime();
+        return time.seconds * 1000 + time.ms;
+    }
+
+    return 0;
+}
+
+
+uint ArtsEngine::length() const
+{
+    if ( m_pPlayObject ) {
+        const Arts::poTime time = m_pPlayObject->overallTime();
+        return time.seconds * 1000 + time.ms;
+    }
+
+    return 0;
 }
 
 

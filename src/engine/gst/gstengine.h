@@ -57,6 +57,7 @@ class GstEngine : public Engine::Base
 
         bool canDecode( const KURL &url ) const;
         uint position() const;
+        uint length() const;
         Engine::State state() const;
         const Engine::Scope& scope();
 

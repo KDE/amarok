@@ -320,7 +320,23 @@ GstEngine::position() const
     gint64 value = 0;
     gst_element_query( m_currentInput->spider, GST_QUERY_POSITION, &fmt, &value );
 
-    return static_cast<long>( ( value / GST_MSECOND ) ); // nanosec -> msec
+    return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
+}
+
+
+uint
+GstEngine::length() const
+{
+    DEBUG_BLOCK
+
+    if ( !m_currentInput ) return 0;
+
+    GstFormat fmt = GST_FORMAT_TIME;
+    // Value will hold the current time position in nanoseconds. Must be initialized!
+    gint64 value = 0;
+    gst_element_query( m_currentInput->spider, GST_QUERY_TOTAL, &fmt, &value );
+
+    return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
 
 

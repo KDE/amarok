@@ -33,6 +33,7 @@ public:
     virtual void stop();
     virtual void pause();
     virtual uint position() const;
+    virtual uint length() const;
     virtual void seek( uint );
 
     virtual Engine::State state() const;

@@ -155,8 +155,11 @@ namespace Engine
          */
         virtual State state() const = 0;
 
-        /** Get Time position (msec). */
+        /** Get time position (msec). */
         virtual uint position() const = 0;
+
+        /** Get track length (msec). */
+        virtual uint length() const { return 0; }
 
         /**
          * Jump to new time position.
