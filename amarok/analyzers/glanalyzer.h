@@ -50,6 +50,7 @@ private:
   void drawFrame();
   void drawBar(float xPos, float height);
   void drawPeak(float xPos, float ypos);
+  void drawFloor();
 
   GLfloat x, y;
 public:
