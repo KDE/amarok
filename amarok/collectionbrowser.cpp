@@ -1,9 +1,11 @@
-// (c) 2004 Mark Kretschmann <markey@web.de>, Christian Muehlhaeuser <chris@chris.de>
+// (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
 #include "collectionbrowser.h"
 #include "directorylist.h"
 #include "metabundle.h"
+#include "playerapp.h"      //makePlaylist()
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -15,7 +17,7 @@
 #include <qmessagebox.h>
 #include <qptrlist.h>
 
-#include <kapplication.h>
+#include <kactioncollection.h>
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kdirwatch.h>
@@ -653,6 +655,13 @@ CollectionView::customEvent( QCustomEvent *e )
 
 void
 CollectionView::startDrag() {
+    KURLDrag* d = new KURLDrag( listSelected(), this );
+    d->dragCopy();
+}
+
+        
+KURL::List
+CollectionView::listSelected() {
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
     //and another one for the children.
 
@@ -731,21 +740,31 @@ CollectionView::startDrag() {
                 if ( grandChild->isSelected() )
                     list << static_cast<Item*>( grandChild ) ->url();
 
-    KURLDrag* d = new KURLDrag( list, this );
-    d->dragCopy();
+    return list;
 }
 
 
 void
 CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    if ( !item ) return;
-
-    if ( m_category2 == "None" || item->depth() == 2 ) {
+    if ( item ) {
         KPopupMenu menu( this );
-        menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
+        
+        menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
+        
+        if ( m_category2 == "None" || item->depth() == 2 )
+            menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
+        
         menu.exec( point );
     }
+}
+
+
+void
+CollectionView::makePlaylist() //slot
+{
+    pApp->actionCollection()->action( "playlist_clear" )->activate();
+    pApp->insertMedia( listSelected() );
 }
 
 

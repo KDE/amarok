@@ -1,4 +1,5 @@
-// (c) 2004 Mark Kretschmann <markey@web.de>, Christian Muehlhaeuser <chris@chris.de>
+// (c) 2004 Mark Kretschmann <markey@web.de>
+// (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONBROWSER_H
@@ -132,12 +133,14 @@ class CollectionView : public KListView
         void cat1Menu( int );
         void cat2Menu( int );
         void rmbPressed( QListViewItem*, const QPoint&, int );
+        void makePlaylist();
         void showTrackInfo();
-        
+                
     private:
         void customEvent( QCustomEvent* );
         void startDrag();
-       
+        KURL::List listSelected();
+               
         QString catForId( int id ) const;
         int idForCat( const QString& cat ) const;
         QPixmap iconForCat( const QString& cat ) const;
