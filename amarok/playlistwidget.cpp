@@ -270,14 +270,13 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
             {
                 //TODO this isn't terribly efficient AT ALL!
 
-		const uint count = childCount();
+                const uint count = childCount();
                 item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
 
                 while( m_prevTracks.contains( item ) )
-		{
+                {
                      item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
-		    kdDebug() << "[DBG] pick[2] item " << item << endl;
-		}
+                }
             }
             else if( item )
             {
@@ -322,38 +321,40 @@ void PlaylistWidget::saveM3U( const QString &path ) const
 void PlaylistWidget::saveXML( const QString &path ) const
 {
     //TODO save nextTrack queue
-    //TODO do the write in one go rather than gradually?
-    //  <berkus>: you can generate dom tree and then let it write down
-    //            (also saves you from making stupid mistakes with raw xml =)
-
     QFile file( path );
+    QDomDocument newdoc;
 
     if( !file.open( IO_WriteOnly ) ) return;
-
     QTextStream stream( &file );
-    const QString body  = "<%1>%2</%1>\n";
-    const QString open1 = "<item url=\"", open2 = "\">\n";
-    const QString close = "</item>\n";
+    stream.setEncoding(QTextStream::UnicodeUTF8);
 
     stream << "<?xml version=\"1.0\" encoding=\"utf8\"?>\n";
-    stream << "<playlist product=\"amaroK\" version=\"1\">\n";
+
+    QDomElement playlist = newdoc.createElement("playlist");
+    playlist.setAttribute("product", "amaroK");
+    playlist.setAttribute("version", "1");
+    newdoc.appendChild(playlist);
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
-        stream << open1 << item->url().url() << open2;
-
-        //TODO speed up, cache columnNames (if would help), etc.
-        //NOTE we don't bother storing TrackName as this is based on the URL anyway
+        QDomElement i = newdoc.createElement("item");
+        i.setAttribute("url", item->url().url());
 
         for( int x = 1; x < columns(); ++x )
         {
             if( !item->exactText(x).isEmpty() )
-                stream << body.arg( columnText(x), item->exactText(x).replace( '&', "&amp;" ).replace( '<', "&lt;" ) );
+            {
+                QDomElement attr = newdoc.createElement( columnText(x) );
+                QDomText t = newdoc.createTextNode( item->exactText(x) );
+                attr.appendChild( t );
+                i.appendChild( attr );
+            }
         }
-        stream << close;
+
+        playlist.appendChild(i);
     }
 
-    stream << "</playlist>\n";
+    stream << newdoc.toString();
     file.close();
 }
 
@@ -608,8 +609,6 @@ void PlaylistWidget::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
         //when the engine calls newMetaDataNotify we are expecting it
         m_cachedTrack = item;
-
-	kdDebug() << "[DBG] item=" << item << endl;
 
         //tell the engine to play the new track
         EngineController::instance()->play( item->metaBundle() );
@@ -1273,7 +1272,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
             if( AmarokConfig::showMetaInfo() ) m_weaver->append( new TagReader( this, item ) );
 
-	    emit itemCountChanged( childCount() );
+            emit itemCountChanged( childCount() );
         }
         #undef e
         break;
@@ -1294,7 +1293,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
-	emit itemCountChanged( childCount() ); // final touch (also helps with default pls)
+        emit itemCountChanged( childCount() ); // final touch (also helps with default pls)
         break;
 
 
