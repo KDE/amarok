@@ -94,7 +94,7 @@ void
 PlaylistLoader::run()
 {
     amaroK::StatusBar::startProgress();
-    QApplication::postEvent( Playlist::instance(), new StartedEvent( m_afterItem ) );
+    QApplication::postEvent( Playlist::instance(), new StartedEvent( m_afterItem, m_playFirstUrl ) );
 
     KURL::List::ConstIterator end = m_fileURLs.end();
     KURL::List::ConstIterator it;
@@ -125,6 +125,8 @@ PlaylistLoader::run()
         progress += increment;
         amaroK::StatusBar::showProgress( uint(progress) );
 
+        // Allow GUI thread some time to breathe
+        msleep( 5 );
    }
    // END
 

@@ -1240,8 +1240,10 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
-    //FIXME Remove this hack
-    static QListViewItem* afterItem = 0;
+    static QListViewItem* afterItem;
+    static bool directPlay;
+
+    PlaylistItem* item;
 
     //the threads send their results here for completion that is GUI-safe
     switch( e->type() )
@@ -1250,6 +1252,7 @@ Playlist::customEvent( QCustomEvent *e )
         #define e static_cast<PlaylistLoader::StartedEvent*>(e)
         afterItem = new QListViewItem( this, e->afterItem );
         afterItem->setVisible( false );
+        directPlay = e->directPlay;
         #undef e
 
         m_clearButton->setEnabled( false );
@@ -1306,27 +1309,26 @@ Playlist::customEvent( QCustomEvent *e )
         }
         break;
     }
-    case PlaylistLoader::Play:
-        activate( (PlaylistItem*)e->data() );
-        break;
 
     case PlaylistLoader::Item:
         #define e static_cast<PlaylistLoader::ItemEvent*>(e)
-         new PlaylistItem( e->bundle.url(), afterItem, e->bundle );
+        item = new PlaylistItem( e->bundle.url(), afterItem, e->bundle );
         #undef e
+        if ( directPlay ) {
+            activate( item );
+            directPlay = false;
+        }
         break;
 
     case PlaylistLoader::DomItem:
         #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
-        new PlaylistItem( e->url, afterItem, e->node );
+        item = new PlaylistItem( e->url, afterItem, e->node );
         #undef e
+        if ( directPlay ) {
+            activate( item );
+            directPlay = false;
+        }
         break;
-
-//     case PlaylistLoader::Playlist:
-//         #define e static_cast<PlaylistLoader::PlaylistEvent*>(e)
-//         insertMediaInternal( e->url, lastItem() );
-//         #undef e
-//         break;
 
     case ThreadWeaver::Started:
 

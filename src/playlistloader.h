@@ -25,7 +25,7 @@ public:
     ~PlaylistLoader();
 
     enum Format { M3U, PLS, XML, UNKNOWN };
-    enum EventType { Started = 1010, Done, Play, Item, DomItem };
+    enum EventType { Started = 1010, Done, Item, DomItem };
 
     static void stop() { s_stop = true; }
     static void downloadPlaylist( const KURL&, QListView*, QListViewItem*, bool directPlay = false );
@@ -35,12 +35,14 @@ public:
     class StartedEvent : public QCustomEvent
     {
     public:
-        StartedEvent( QListViewItem* item )
+        StartedEvent( QListViewItem* item, bool _directPlay )
             : QCustomEvent( Started )
             , afterItem( item )
+            , directPlay( _directPlay )
         {}
 
         QListViewItem* const afterItem;
+        bool directPlay;
     };
 
     class ItemEvent : public QCustomEvent
