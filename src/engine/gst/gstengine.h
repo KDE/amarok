@@ -129,8 +129,8 @@ class GstEngine : public Engine::Base
         static GstEngine* s_instance;
 
         // Input thread
-        GstElement* m_gst_adder;
         GstElement* m_gst_inputThread;
+        GstElement* m_gst_adder;
 
         // Output thread
         GstElement* m_gst_outputThread;
@@ -157,6 +157,7 @@ class GstEngine : public Engine::Base
 
         bool m_pipelineFilled;
         float m_fadeValue;
+        int m_binCount;
 
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
