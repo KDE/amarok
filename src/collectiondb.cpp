@@ -796,11 +796,11 @@ CollectionDB::makeWidthKey( uint width )
     return QString::number( width ).local8Bit() + "@";
 }
 
-
+// get image from path
 QString
 CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uint width )
 {
-    if ( !width ) width = AmarokConfig::coverPreviewSize();
+    if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
     QCString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( album.isEmpty() )
@@ -828,13 +828,27 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
         }
 
         QCString key = md5sum( artist, album, image );
-        if ( !m_cacheDir.exists( widthKey + key ) )
-        {
-            QImage img = QImage( image );
-            img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
-        }
 
-        return m_cacheDir.filePath( widthKey + key );
+        if ( width > 0 )
+        {
+            if ( !m_cacheDir.exists( widthKey + key ) )
+            {
+                QImage img = QImage( image );
+                img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
+            }
+
+            return m_cacheDir.filePath( widthKey + key );
+        }
+        else //large image
+        {
+            QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
+            if ( !largeCoverDir.exists( widthKey + key ) )
+            {
+                QImage img = QImage( image );
+                img.save( largeCoverDir.filePath( widthKey + key ), "PNG" );
+            }
+            return largeCoverDir.filePath( widthKey + key );
+        }
     }
 
     return notAvailCover( width );
