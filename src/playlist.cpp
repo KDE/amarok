@@ -653,10 +653,6 @@ Playlist::setCurrentTrack( PlaylistItem *item )
         prev->setPixmap( m_firstColumn, QPixmap() );
     }
 
-    //aesthetics and usability
-    if ( item && currentItem() == item )
-        setCurrentItem( item->itemBelow() );
-
     updateNextPrev();
 
     Glow::reset();
@@ -2134,7 +2130,7 @@ Playlist::slotSelectionChanged() //SLOT
 void
 Playlist::slotGlowTimer() //SLOT
 {
-    if( !currentTrack() ) return;
+    if( !currentTrack() || currentTrack()->isSelected() ) return;
 
     using namespace Glow;
 

@@ -293,7 +293,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     static paintCacheItem paintCache[NUM_COLUMNS];
 
-    if( this == listView()->currentTrack() )
+    if( this == listView()->currentTrack() && !isSelected() )
     {
         // Convert QColor to string for use as key in QMap
         const QString colorKey =
