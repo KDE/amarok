@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Bug where fill-down would cause lots of extra tags to be written when a search is
+       in progress (BR 79482).
   FIX: Defect in plugin framework code, leading to a crash on some systems
        during engine plugin initialization.
   FIX: Restoring current playlist on startup (BR 79436, BR 79439).
