@@ -76,10 +76,14 @@ namespace amaroK
         return EngineController::engine()->state() == EngineBase::Playing;
     }
 
-// Now for the DCOP output stuff
-// I renamed _all_ id3 tag output DCOP calls to "current....." for consistency reasons.
-// Also, I replaced the prettyTitle with 2 calls, one for the artist and one for the title (more flexible)
+// Now for the DCOP id3 output stuff
    
+    QString DcopHandler::PrettyTitle()
+    {
+        return EngineController::instance()->bundle().prettyTitle();
+    }
+
+// Added own calls for Artist/Album/Title for flexibility reasons
     QString DcopHandler::Artist()
     {
         return EngineController::instance()->bundle().artist();
@@ -95,7 +99,7 @@ namespace amaroK
         return EngineController::instance()->bundle().album();
     }
     
-// Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;-)
+// Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;)
 // prettyLength also adds an "0" when sec < 10
     
     QString DcopHandler::PrettyTitle()
@@ -113,7 +117,7 @@ namespace amaroK
         return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
     }
 
-// Some additional DCOP output, very useful e.g. for IRC-scripts
+// Some additional DCOP id3 tag output, very useful e.g. for annoying IRC-scripts ;)
 
     QString DcopHandler::Genre()
     {
