@@ -56,19 +56,18 @@ CollectionBrowser::CollectionBrowser( const char* name )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 CollectionView::CollectionView( CollectionBrowser* parent )
-    : KIconView( parent )
+    : KListView( parent )
     , m_parent( parent )
     , m_weaver( new ThreadWeaver( this ) )
     , m_dirLister( new KDirLister() )
 {
     kdDebug() << k_funcinfo << endl;
  
-    setGridX( 150 );
-    setGridY(  35 );
-               
-    setSelectionMode( QIconView::Extended );
+    addColumn ( "Albums" );
+    setSelectionMode( QListView::Extended );
     setItemsMovable( false );
-
+    setRootIsDecorated( true );
+    
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                       + "collection.db" ).latin1(); 
     
@@ -97,7 +96,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     
     connect( this, SIGNAL( tagsReady() ),
              this,   SLOT( renderView() ) );
-
+    connect( this, SIGNAL( expanded( QListViewItem* ) ),
+             this,   SLOT( slotExpanded( QListViewItem* ) ) );
+    connect( this, SIGNAL( collapsed( QListViewItem* ) ),
+             this,   SLOT( slotCollapsed( QListViewItem* ) ) );
+             
     renderView();
 }
 
@@ -164,11 +167,63 @@ CollectionView::renderView() //SLOT
     execSql( command, &values, &names );
     
     for ( uint i = 0; i < values.count(); i++ ) {
-        KIconViewItem* item = new KIconViewItem( this );    
-        item->setText( values[i] );
+        if ( values[i].isEmpty() ) continue;
+        
+        KListViewItem* item = new KListViewItem( this );    
+        item->setExpandable( true );
+        item->setDragEnabled( true );
+        item->setText( 0, values[i] );
     }    
         
     kdDebug() << values << endl;
+}
+
+
+void 
+CollectionView::slotExpanded( QListViewItem* item ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    if ( !item ) return;
+    
+    //query database for all tracks in our sub-category
+    QCString command = "select ";
+    command += m_category.lower().latin1();
+    command += " from tags where ";
+    command += m_category.lower().latin1();
+    command += " = '";
+    command += item->text( 0 ).latin1();
+    command += "';";
+    
+    QStringList values;
+    QStringList names;
+    
+    execSql( command, &values, &names );
+    
+    for ( uint i = 0; i < values.count(); i++ ) {
+        if ( values[i].isEmpty() ) continue;
+        
+        KListViewItem* child = new KListViewItem( item );    
+        child->setDragEnabled( true );
+        child->setText( 0, values[i] );
+    }    
+        
+    kdDebug() << values << endl;
+}
+
+
+void 
+CollectionView::slotCollapsed( QListViewItem* item ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    QListViewItem* child = item->firstChild();
+    QListViewItem* childTmp;
+    //delete all children
+    while ( child ) {
+        childTmp = child;
+        child = child->nextSibling();
+        delete childTmp;
+    }
 }
 
 

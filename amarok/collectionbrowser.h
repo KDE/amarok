@@ -11,7 +11,7 @@
 
 #include <qvbox.h>           //baseclass
 
-#include <kiconview.h>       //baseclass
+#include <klistview.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
@@ -39,7 +39,7 @@ class CollectionBrowser: public QVBox
 };
 
 
-class CollectionView : public KIconView
+class CollectionView : public KListView
 {
     Q_OBJECT
     friend class CollectionBrowser;
@@ -55,7 +55,9 @@ class CollectionView : public KIconView
         void setupDirs();    
         void scan();        
         void renderView();
-            
+        void slotExpanded( QListViewItem* );
+        void slotCollapsed( QListViewItem* );    
+        
     private:
         void readDir( const KURL& url );
         void dumpDb();
