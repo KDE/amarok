@@ -2,7 +2,7 @@
 // Copyright: See COPYING file that comes with this distribution
 
 
-#include "config.h"
+#include "config.h" //XMMS_CONFIG_DIR
 
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
@@ -183,7 +183,7 @@ Vis::Selector::Selector()
     resize( 250, 250 );
     
     
-    QString dirname = "/usr/lib/xmms/Visualization";
+    QString dirname = XMMS_PLUGIN_PATH;
     dirname.append( "/" );
     QString filepath;
     DIR *dir;
@@ -214,7 +214,7 @@ Vis::Selector::processExited( KProcess *proc )
 {
     for( Item *item = (Item*)firstChild(); item; item = (Item*)item->nextSibling() )
     {
-        if( item->m_proc == proc ) item->setOn( false ); //will delete m_proc for us
+        if( item->m_proc == proc ) item->setOn( false ); //will delete m_proc via stateChange( bool )
     }
     
     kdDebug() << "done\n";
