@@ -328,8 +328,6 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
 
 void ContextBrowser::engineStateChanged( Engine::State state )
 {
-    DEBUG_BLOCK
-
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
@@ -364,7 +362,7 @@ void ContextBrowser::saveHtmlData()
     QTextStream stream( &exportedDocument );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << m_HTMLSource // the pure html data..
-        .replace("<html>", QString("<html><head><style type='text/css'>%1</style></head>").arg( m_styleSheet ) ); // and the stylesheet code
+        .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg(m_styleSheet) ); // and the stylesheet code
     exportedDocument.close();
 }
 
@@ -535,39 +533,41 @@ verboseTimeSince( const QDateTime &datetime )
     if( datediff >= 6*7 /*six weeks*/ ) {  // return difference in months or years
         const int yeardiff = now.date().year() - datetime.date().year();
         const int monthdiff = yeardiff * 12 + now.date().month() - datetime.date().month();
+
         if( !yeardiff || monthdiff < 6 )  // return difference in months
             return i18n( "Last month", "%n months ago", monthdiff );
+
         return i18n( "Last year", "%n years ago", yeardiff );
         /* FIXME Replace above line with this when string freeze is over
-        return yeardiff == 1 ? i1_8n( "Last year" ) : i1_8n( "One year ago", "%n years ago", (monthdiff+6)/12 );*/
+         *         return yeardiff == 1 ? i1_8n( "Last year" ) : i1_8n( "One year ago", "%n years ago", (monthdiff+6)/12 );*/
     }
 
     if( datediff >= 7 )  // return difference in weeks
         return i18n( "Last week", "%n weeks ago", (datediff+3)/7 );
-        /* FIXME Replace above line with this when string freeze is over
-        return i1_8n( "One week ago", "%n weeks ago", (datediff+3)/7 );*/
+    /* FIXME Replace above line with this when string freeze is over
+     *         return i1_8n( "One week ago", "%n weeks ago", (datediff+3)/7 );*/
 
     const int timediff = datetime.secsTo( now );
 
     if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
         return i18n( "Yesterday", "%n days ago", (timediff+12*60*60)/(24*60*60) );
-        /* FIXME Replace above line with this when string freeze is over
-        return datediff == 1 ?
-                i1_8n( "Yesterday" ) :
-                i1_8n( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );*/
+    /* FIXME Replace above line with this when string freeze is over
+     *         return datediff == 1 ?
+     *                         i1_8n( "Yesterday" ) :
+     *                                         i1_8n( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );*/
 
     if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
         return i18n( "Within the last hour", "%n hours ago", (timediff+30*60)/(60*60) );
-        /* FIXME Replace above line with this when string freeze is over. We don't need "One hour ago", but
-                 some languages might have special translations for two, three, ... hours
-        return i1_8n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) ); */
+    /* FIXME Replace above line with this when string freeze is over. We don't need "One hour ago", but
+     *                  some languages might have special translations for two, three, ... hours
+     *                          return i1_8n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) ); */
 
     if( timediff > 0 )  // return difference in minutes
         return i18n( "Within the last minute", "%n minutes ago", timediff/60 == 0 ? 1 : timediff/60 );
-        /* FIXME Replace above line with this when string freeze is over
-        return timediff/60 ?
-                i1_8n( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
-                i1_8n( "Within the last minute" );*/
+    /* FIXME Replace above line with this when string freeze is over
+     *         return timediff/60 ?
+     *                         i1_8n( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
+     *                                         i1_8n( "Within the last minute" );*/
 
     return i18n( "The future" );
 }
@@ -575,8 +575,6 @@ verboseTimeSince( const QDateTime &datetime )
 
 void ContextBrowser::showHome() //SLOT
 {
-    DEBUG_BLOCK
-
     if ( currentPage() != m_homePage->view() )
     {
         blockSignals( true );
@@ -602,7 +600,7 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 50 );
+    qb.setLimit( 0, 10 );
     QStringList fave = qb.run();
 
     qb.clear();
@@ -610,9 +608,8 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-    qb.setLimit( 0, 20 );
+    qb.setLimit( 0, 5 );
     QStringList recent = qb.run();
 
     qb.clear();
@@ -621,9 +618,8 @@ void ContextBrowser::showHome() //SLOT
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.setLimit( 0, 20 );
+    qb.setLimit( 0, 5 );
     QStringList least = qb.run();
 
     m_homePage->begin();
@@ -639,43 +635,33 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Favorite Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div style='height: 195px; width: 100%; overflow: auto;'>"
-                    "<div id='favourites_box-body' class='box-body'>"
+                "<div id='favorites_box-body' class='box-body'>"
                        );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
     {
         m_HTMLSource.append(
-                        "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
-                            "<div class='song'>"
-                                "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr><td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
-                                "<td><a href='file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "'>"
-                                "<span class='song-title'>" + fave[i] + "</span><br />"
-                                "<span class='song-artist'>" + fave[i + 3] + "</span>"
+                    "<div class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
+                            "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='song-title'>" + fave[i] + "</span> "
+                            "<span class='song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
+                            "<span class='song-artist'>" + fave[i+3] + "</span>"
                            );
 
-        if ( !fave[i + 4].isEmpty() ) //album
+        if ( !fave[i+4].isEmpty() )
             m_HTMLSource.append(
                                 "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>"+ fave[i + 4] +"</span>"
+                                "<span class='song-album'>"+ fave[i+4] +"</span>"
                                );
 
         m_HTMLSource.append(
-                                "</a></td>"
-                                "<td width='15' class='sbtext'>" + ( ( fave[i + 2].length() > 1 ) ? fave[i + 2] : "0" + fave[i + 2] ) + "</td>"
-                                "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                    "<div class='sbouter'>"
-                                        "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
-                                    "</div>"
-                                "</td>"
-                                "<td width='3'></td>"
-                                "</tr></table>"
-                            "</div>"
+                            "</a>"
                         "</div>"
+                    "</div>"
                            );
     }
     m_HTMLSource.append(
-                    "</div>"
                 "</div>"
             "</div>"
 
@@ -689,43 +675,32 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div style='height: 195px; width: 100%; overflow: auto;'>"
-                    "<div id='newest_box-body' class='box-body'>" );
+                "<div id='newest_box-body' class='box-body'>" );
 
-    for( uint i = 0; i < recent.count(); i = i + 5 )
+    for( uint i = 0; i < recent.count(); i = i + 4 )
     {
         m_HTMLSource.append(
-                        "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                            "<div class='song'>"
-                                "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr>"
-                                "<td><a href=\"file:" + recent[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                                "<span class='song-title'>" + recent[i] + "</span><br />"
-                                "<span class='song-artist'>" + recent[i + 2] + "</span>"
+                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
+                            "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='song-title'>" + recent[i] + "</span><br />"
+                            "<span class='song-artist'>" + recent[i+2] + "</span>"
                            );
 
-        if ( !recent[i + 3].isEmpty() )
+        if ( !recent[i+3].isEmpty() )
             m_HTMLSource.append(
                                 "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>" + recent[i + 3] + "</span>"
+                                "<span class='song-album'>" + recent[i+3] + "</span>"
                                );
 
         m_HTMLSource.append(
-                                "</a></td>"
-                                "<td width='15' class='sbtext'>" + ( ( recent[i + 4].length() > 1 ) ? recent[i + 4] : "0" + recent[i + 4] ) + "</td>"
-                                "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                    "<div class='sbouter'>"
-                                        "<div class='sbinner' style='width: " + QString::number( recent[i + 4].toInt() / 2 ) + "px;'></div>"
-                                    "</div>"
-                                "</td>"
-                                "<td width='3'></td>"
-                                "</tr></table>"
-                            "</div>"
+                            "</a>"
                         "</div>"
+                    "</div>"
                            );
     }
 
     m_HTMLSource.append(
-                    "</div>"
                 "</div>"
             "</div>"
 
@@ -739,46 +714,35 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Least Played Tracks" ) +
                     "</span>"
                 "</div>"
-                "<div style='height: 195px; width: 100%; overflow: auto;'>"
-                    "<div id='least_box-body' class='box-body'>" );
+                "<div id='least_box-body' class='box-body'>" );
 
     QDateTime lastPlay = QDateTime();
-    for( uint i = 0; i < least.count(); i = i + 6 )
+    for( uint i = 0; i < least.count(); i = i + 5 )
     {
-        lastPlay.setTime_t( least[i + 4].toUInt() );
+        lastPlay.setTime_t( least[i+4].toUInt() );
         m_HTMLSource.append(
-                        "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                            "<div class='song'>"
-                                "<table border='0' cellspacing='0' cellpadding='0' width='100%'><tr>"
-                                "<td><a href=\"file:" + least[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                                "<span class='song-title'>" + least[i] + "</span><br />"
-                                "<span class='song-artist'>" + least[i + 2] + "</span>"
+                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
+                            "<a href=\"file:" + least[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='song-title'>" + least[i] + "</span><br />"
+                            "<span class='song-artist'>" + least[i+2] + "</span>"
                            );
 
-        if ( !least[i + 3].isEmpty() )
+        if ( !least[i+3].isEmpty() )
             m_HTMLSource.append(
                                 "<span class='song-separator'> - </span>"
-                                "<span class='song-album'>" + least[i + 3] + "</span>"
+                                "<span class='song-album'>" + least[i+3] + "</span>"
                                );
 
         m_HTMLSource.append(
-                                "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
-                                "</a></td>"
-                                "<td width='15' class='sbtext'>" + ( ( least[i + 5].length() > 1 ) ? least[i + 5] : "0" + least[i + 5] ) + "</td>"
-                                "<td width='1' title='" + i18n( "Score" ) + "'>"
-                                    "<div class='sbouter'>"
-                                        "<div class='sbinner' style='width: " + QString::number( least[i + 5].toInt() / 2 ) + "px;'></div>"
-                                    "</div>"
-                                "</td>"
-                                "<td width='3'></td>"
-                                "</tr></table>"
-                            "</div>"
+                            "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
+                            "</a>"
                         "</div>"
+                    "</div>"
                            );
     }
 
     m_HTMLSource.append(
-                    "</div>"
                 "</div>"
             "</div>"
             "</html>"
@@ -795,8 +759,6 @@ void ContextBrowser::showHome() //SLOT
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
-    DEBUG_BLOCK
-
     if ( currentPage() != m_currentTrackPage->view() )
     {
         blockSignals( true );
@@ -969,7 +931,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 "<div class='sbinner' style='width: %3px;'></div>"
                             "</div>"
                         "</td>"
-                        "<td width='2'></td>"
                     "</tr>"
                 "</table>";
 
@@ -1080,13 +1041,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='1'>" + ( ( values[i + 3].length() > 1 ) ? values[i + 3] : "0" + values[i + 3] ) + "</td>"
+                        "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
-                        "<td width='3'></td>"
                     "</tr>"
                                    );
 
@@ -1130,13 +1090,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
-                    "<td class='sbtext' width='1'>" + ( ( values[i + 2].length() > 1 ) ? values[i + 2] : "0" + values[i + 2] ) + "</td>"
+                    "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                         "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                         "</div>"
                     "</td>"
-                    "<td width='3'></td>"
                 "</tr>"
                                );
 
@@ -1459,7 +1418,6 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".song-title { font-weight: bold; }" );
-    styleSheet += QString( ".song-place { font-size: %1px; font-weight: bold; }" ).arg( pxSize + 3 );
     styleSheet += QString( ".song-score { }" );
     styleSheet += QString( ".song-artist { }" );
     styleSheet += QString( ".song-album { }" );
@@ -1649,8 +1607,6 @@ void ContextBrowser::showScanning()
 
 void ContextBrowser::showLyrics( const QString &hash )
 {
-    DEBUG_BLOCK
-
     if ( currentPage() != m_lyricsPage->view() )
     {
         blockSignals( true );
