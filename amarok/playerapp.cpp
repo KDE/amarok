@@ -151,7 +151,8 @@ PlayerApp::~PlayerApp()
     delete m_pPlayerWidget;
 
     m_XFade = Amarok::Synth_STEREO_XFADE::null();
-    m_Scope = Amarok::WinSkinFFT::null();
+    m_Scope = Arts::StereoFFTScope::null();
+//    m_Scope = Amarok::WinSkinFFT::null();
     m_volumeControl = Arts::StereoVolumeControl::null();
     m_effectStack = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
@@ -496,7 +497,8 @@ bool PlayerApp::initScope()
     //TEST
     kdDebug(DA_COMMON) << "begin PlayerApp::initScope()" << endl;
 
-    m_Scope = Arts::DynamicCast( m_Server.createObject( "Amarok::WinSkinFFT" ) );
+//    m_Scope = Arts::DynamicCast( m_Server.createObject( "Amarok::WinSkinFFT" ) );
+    m_Scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
 
     if ( m_Scope.isNull() )
     {

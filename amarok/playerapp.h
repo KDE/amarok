@@ -101,7 +101,8 @@ class PlayerApp : public KUniqueApplication
         KDE::PlayObject *m_pPlayObject;
         KDE::PlayObject *m_pPlayObjectXFade;
         Arts::SoundServerV2 m_Server;
-        Amarok::WinSkinFFT m_Scope;
+//        Amarok::WinSkinFFT m_Scope;
+        Arts::StereoFFTScope m_Scope;
         Arts::StereoEffectStack m_globalEffectStack;
         Arts::StereoEffectStack m_effectStack;
         Arts::StereoVolumeControl m_volumeControl;
