@@ -58,7 +58,7 @@ class BrowserWin : public QWidget, public KXMLGUIClient
         void setColors( const QPalette&, const QColor& );
         void saveConfig();
 
-        KToolBar *createGUI(); //should be private but PlayerApp::slowConfigToolbars requires it
+        void createGUI(); //should be private but PlayerApp::slowConfigToolbars requires it
 
         PlaylistWidget *playlist() const { return m_playlist; }
 
@@ -72,6 +72,7 @@ class BrowserWin : public QWidget, public KXMLGUIClient
         BrowserBar     *m_browsers;
         PlaylistWidget *m_playlist;
         KLineEdit      *m_lineEdit;
+        KToolBar       *m_toolbar;
 };
 
 

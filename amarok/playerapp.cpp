@@ -67,11 +67,11 @@ email                : markey@web.de
 
 PlayerApp::PlayerApp()
         : KApplication()
+        , m_pActionCollection( 0 )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
         , m_pDcopHandler( new amaroK::DcopHandler )
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
-        , m_pActionCollection( new KActionCollection( 0, this ) )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
 {
@@ -82,27 +82,10 @@ PlayerApp::PlayerApp()
     setName( "amarok" );
     pApp = this; //global
 
-    KActionCollection* const ac = actionCollection();
-    const EngineController* const ec = EngineController::instance();
-
-    KStdAction::configureToolbars( this, SLOT( slotConfigToolBars() ), ac );
-    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), ac );
-    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
-    KStdAction::preferences( this, SLOT( slotShowOptions() ), ac );
-    KStdAction::quit( this, SLOT( quit() ), ac );
-
-    ac->action( "options_configure_globals" )->setText( i18n( "Configure Global Shortcuts..." ) );
-
-    new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
-    new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
-    new KAction( i18n( "Stop" ), "player_stop", 0, ec, SLOT( stop() ), ac, "stop" );
-    new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
-    new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
-
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
+    initBrowserWin(); //must go first as it creates the action collection
     initPlayerWidget();
-    initBrowserWin();
 
     //we monitor for close, hide and show events
     m_pBrowserWin  ->installEventFilter( this );
@@ -139,7 +122,6 @@ PlayerApp::PlayerApp()
     #endif
 }
 
-
 PlayerApp::~PlayerApp()
 {
     kdDebug() << k_funcinfo << endl;
@@ -152,7 +134,7 @@ PlayerApp::~PlayerApp()
     //and we may in the future start to use read and saveConfig() in other situations
     //    kapp->config()->setGroup( "Session" );
 
-    EngineBase *engine = EngineController::instance()->engine();
+    EngineBase *engine = EngineController::engine();
 
     //TODO why are these configXT'd? We hardly need to accesss these globally.
     //     and it means they're a pain to extend
@@ -382,29 +364,19 @@ void PlayerApp::initIpc()
 
 void PlayerApp::initBrowserWin()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
-    m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
-
+    m_pBrowserWin     = new BrowserWin( 0, "BrowserWin" );
     m_pPlaylistWidget = m_pBrowserWin->playlist();
-
-    connect( m_pPlayerWidget, SIGNAL( playlistToggled( bool ) ),
-             this,              SLOT( slotPlaylistShowHide() ) );
-
-    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
 void PlayerApp::initPlayerWidget()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
+    connect( m_pPlayerWidget, SIGNAL( playlistToggled( bool ) ),
+             this,              SLOT( slotPlaylistShowHide() ) );
     connect( m_pPlayerWidget, SIGNAL( effectsWindowActivated() ),
              this,              SLOT( showEffectWidget() ) );
-
-    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 

@@ -68,8 +68,11 @@ class PlayerApp : public KApplication, public EngineObserver
 
         PlaylistWidget *playlist() const { return m_pPlaylistWidget; }
 
+        // ATTRIBUTES
+        KActionCollection *m_pActionCollection;
+
         // STATICS
-        static const int SCOPE_SIZE  = 7;
+        static const int SCOPE_SIZE = 7;
 
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( EngineBase::EngineState state );
@@ -114,7 +117,6 @@ class PlayerApp : public KApplication, public EngineObserver
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
         amaroK::OSD         *m_pOSD;
-        KActionCollection   *m_pActionCollection;
 
         long      m_length; //DEPRECATE
         int       m_sockfd;

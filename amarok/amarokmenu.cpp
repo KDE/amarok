@@ -10,32 +10,30 @@
 #include <khelpmenu.h>
 #include <klocale.h>
 
+
 using namespace amaroK;
+
 
 //static member
 KHelpMenu *Menu::HelpMenu = 0;
 
 
-static bool plug( KActionCollection *ac, const char *name, QWidget *w )
+static void
+safePlug( KActionCollection *ac, const char *name, QWidget *w )
 {
     if( ac )
     {
         KAction *a = ac->action( name );
-
-        if( a )
-        {
-            a->plug( w );
-            return true;
-        }
+        if( a ) a->plug( w );
     }
-
-    return false;
 }
 
 
-Menu::Menu( QWidget *parent, KActionCollection *ac )
+Menu::Menu( QWidget *parent )
   : QPopupMenu( parent )
 {
+    KActionCollection *ac = pApp->actionCollection();
+
     setCheckable( true );
 
     insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
@@ -49,10 +47,10 @@ Menu::Menu( QWidget *parent, KActionCollection *ac )
 
     insertSeparator();
 
-    plug( ac, "options_configure_toolbars", this );
-    plug( ac, "options_configure_keybinding", this );
-    plug( ac, "options_configure_globals", this );
-    plug( ac, "options_configure", this );
+    safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
+    safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );
+    safePlug( ac, "options_configure_globals", this ); //we created this one
+    safePlug( ac, KStdAction::name(KStdAction::Preferences), this );
 
     insertSeparator();
 
@@ -60,7 +58,7 @@ Menu::Menu( QWidget *parent, KActionCollection *ac )
 
     insertSeparator();
 
-    plug( ac, "file_quit", this );
+    safePlug( ac, KStdAction::name(KStdAction::Quit), this );
 
     connect( this, SIGNAL( aboutToShow() ), SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
@@ -75,8 +73,8 @@ Menu::helpMenu( QWidget *parent ) //STATIC
     return HelpMenu->menu();
 }
 
-
-void Menu::slotAboutToShow()
+void
+Menu::slotAboutToShow()
 {
     setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
     setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
@@ -84,8 +82,8 @@ void Menu::slotAboutToShow()
     setItemEnabled( ID_CONF_DECODER,    EngineController::instance()->engine()->decoderConfigurable() );
 }
 
-
-void Menu::slotActivated( int index )
+void
+Menu::slotActivated( int index )
 {
     switch( index ) {
     case ID_REPEAT_TRACK:
@@ -98,10 +96,11 @@ void Menu::slotActivated( int index )
         AmarokConfig::setRandomMode( !isItemChecked(ID_RANDOM_MODE) );
         break;
     case ID_CONF_DECODER:
-        EngineController::instance()->engine()->configureDecoder();
+        EngineController::engine()->configureDecoder();
         break;
     }
 }
+
 
 
 #include <ktoolbar.h>
@@ -116,29 +115,29 @@ MenuAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( !bar || !kapp->authorizeKAction(name()) ) return -1;
+    if( bar && kapp->authorizeKAction( name() ) )
+    {
+        const int id = KAction::getToolButtonID();
 
-    const int id = KAction::getToolButtonID();
+        addContainer( w, id );
+        connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-    //TODO create menu on demand
-    //TODO create menu above and aligned within window
-    //TODO make the arrow point upwards!
-    bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
-    bar->alignItemRight( id );
+        //TODO create menu on demand
+        //TODO create menu above and aligned within window
+        //TODO make the arrow point upwards!
+        bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
+        bar->alignItemRight( id );
 
-    KToolBarButton *button = bar->getButton( id );
-    button->setPopup( new Menu( bar, parentCollection() ) );
-    button->setName( "toolbutton_amarok_menu" );
+        KToolBarButton *button = bar->getButton( id );
+        button->setPopup( new amaroK::Menu( bar ) );
+        button->setName( "toolbutton_amarok_menu" );
 
-    addContainer( bar, id );
-    connect( bar, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
-
-    return containerCount() - 1;
+        return containerCount() - 1;
+    }
+    else return -1;
 }
 
 
-#include "enginecontroller.h"
-#include <kdebug.h>
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
   : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
@@ -155,14 +154,42 @@ PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
     switch( state )
     {
     case EngineBase::Playing:
-        kdDebug() << "played\n";
         setIcon( "player_pause" );
         break;
     default:
-        kdDebug() << "paused\n";
         setIcon( "player_play" );
         break;
     }
+}
+
+
+
+#include "blockanalyzer.h"
+
+AnalyzerAction::AnalyzerAction( KActionCollection *ac )
+  : KAction( i18n( "Analyzer" ), 0, ac, "toolbar_analyzer" )
+{}
+
+int
+AnalyzerAction::plug( QWidget *w, int index )
+{
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+
+    if( bar && kapp->authorizeKAction( name() ) )
+    {
+        const int id = KAction::getToolButtonID();
+
+        addContainer( w, id );
+        connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+
+        QWidget *block = new BlockAnalyzer( w );
+        block->setBackgroundColor( w->backgroundColor().dark( 110 ) );
+
+        bar->insertWidget( id, 0, block, index );
+
+        return containerCount() - 1;
+    }
+    else return -1;
 }
 
 #include "amarokmenu.moc"

@@ -80,6 +80,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     , m_plusPixmap( getPNG( "time_plus" ) )
     , m_minusPixmap( getPNG( "time_minus" ) )
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+
     setCaption( kapp->makeStdCaption( i18n("Player") ) );
     setFixedSize( 311, 140 );
     setAcceptDrops( true );
@@ -166,6 +168,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     //KWin::setState( winId(), NET::KeepBelow | NET::SkipTaskbar | NET::SkipPager );
     //KWin::setType( winId(), NET::Override );
     //KWin::setOnAllDesktops( winId(), true );
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 // METHODS ----------------------------------------------------------------
@@ -474,7 +478,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
     {
-        amaroK::Menu popup( this, pApp->actionCollection() );
+        amaroK::Menu popup( this );
         popup.exec( e->globalPos() );
     }
     else //other buttons

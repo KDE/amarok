@@ -27,7 +27,7 @@ public:
     static const int ID_RANDOM_MODE     = 102;
     static const int ID_CONF_DECODER    = 103;
 
-    Menu( QWidget *parent, KActionCollection* );
+    Menu( QWidget *parent );
 
     static KPopupMenu *helpMenu( QWidget *parent = 0 );
 
@@ -39,29 +39,31 @@ private:
     static KHelpMenu *HelpMenu;
 };
 
-//TODO try removing the QObject macro
+
 class MenuAction : public KAction
 {
-Q_OBJECT
-
 public:
     MenuAction( KActionCollection* );
 
     virtual int plug( QWidget*, int index = -1 );
-/*
-protected:
-    virtual void virtual_hook( int id, void* data ) { KAction::virtual_hook( id, data ); }
-*/
 };
+
 
 class PlayPauseAction : public KAction, public EngineObserver
 {
-Q_OBJECT
-
 public:
     PlayPauseAction( KActionCollection* );
 
     virtual void engineStateChanged( EngineBase::EngineState );
+};
+
+
+class AnalyzerAction : public KAction
+{
+public:
+    AnalyzerAction( KActionCollection* );
+
+    virtual int plug( QWidget *, int index = -1 );
 };
 
 }

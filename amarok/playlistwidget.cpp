@@ -70,7 +70,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
 {
-    kdDebug() << "PlaylistWidget::PlaylistWidget()\n";
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     // we want to receive engine updates
     EngineController::instance()->attach( this );
@@ -195,6 +195,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
 
     insertItem( fred );
     */
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -434,6 +436,9 @@ void PlaylistWidget::shuffle() //SLOT
     }
 
     m_nextTracks.clear();
+
+    pApp->actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
+    pApp->actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
 }
 
 
@@ -1182,6 +1187,8 @@ void PlaylistWidget::contentsDropEvent( QDropEvent *e )
     {
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
+
+        //FIXME if the current Item was moved we need to update whether next/prev are enabled/disabled
     }
     else
     {

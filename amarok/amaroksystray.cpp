@@ -82,11 +82,14 @@ amaroK::TrayIcon::event( QEvent *e )
     case QEvent::MouseButtonPress:
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
-            bool isPlaying = EngineController::instance()->engine() ? EngineController::instance()->engine()->loaded() : false;
-            if( isPlaying ) EngineController::instance()->pause();
-            else EngineController::instance()->play();
+            EngineController* const ec = EngineController::instance();
+            const bool isPlaying = (ec->engine()->state() == EngineBase::Playing);
+
+            if( isPlaying ) ec->pause(); else ec->play();
+
             return TRUE;
         }
+
     default:
         return KSystemTray::event( e );
     }
