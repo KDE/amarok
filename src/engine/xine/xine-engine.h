@@ -6,11 +6,14 @@
 
 #include "engine/enginebase.h"
 #include <qthread.h>
+#include <sys/types.h>
 #include <xine.h>
 
 class XineEngine : public Engine::Base
 {
-Q_OBJECT
+    Q_OBJECT
+
+    friend class Fader;
 
 public:
     XineEngine();
@@ -41,11 +44,15 @@ private:
     virtual void customEvent( QCustomEvent* );
     virtual void timerEvent( QTimerEvent* );
 
+    bool makeNewStream();
+
     xine_t             *m_xine;
     xine_stream_t      *m_stream;
     xine_audio_port_t  *m_audioPort;
     xine_event_queue_t *m_eventQueue;
     xine_post_t        *m_post;
+
+    int64_t             m_currentVpts;
 };
 
 class Fader : public QObject, public QThread
@@ -54,8 +61,9 @@ class Fader : public QObject, public QThread
     xine_stream_t      *m_decrease;
     xine_stream_t      *m_increase;
     xine_audio_port_t  *m_port;
+    xine_post_t        *m_post;
 public:
-    Fader( xine_t*, xine_stream_t*, xine_stream_t*, xine_audio_port_t* );
+    Fader( XineEngine* );
    ~Fader();
     virtual void run();
 };

@@ -26,7 +26,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 
 //define this to use xine in a more standard way
-#define XINE_SAFE_MODE
+//#define XINE_SAFE_MODE
 
 
 ///some logging static globals
@@ -49,8 +49,6 @@ XineEngine::XineEngine()
   , m_eventQueue( 0 )
   , m_post( 0 )
 {
-    myList->next = myList; //init the buffer list
-
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
     addPluginProperty( "HasEqualizer", "true" );
@@ -109,6 +107,19 @@ XineEngine::init()
 
    xine_init( m_xine );
 
+   if( !makeNewStream() )
+      return false;
+
+   #ifndef XINE_SAFE_MODE
+   startTimer( 200 ); //prunes the scope
+   #endif
+
+   return true;
+}
+
+bool
+XineEngine::makeNewStream()
+{
    m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
    if( !m_audioPort ) {
       KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
@@ -121,23 +132,24 @@ XineEngine::init()
       return false;
    }
 
+   if( m_eventQueue )
+      xine_event_dispose_queue( m_eventQueue );
+
    xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
                                       &XineEngine::XineEventListener,
                                       (void*)this );
 
    #ifndef XINE_SAFE_MODE
-
    //implemented in xine-scope.h
    m_post = scope_plugin_new( m_xine, m_audioPort );
 
    xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
    xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
-
-   startTimer( 200 ); //prunes the scope
    #endif
 
    return true;
 }
+
 
 static Fader *s_fader = 0;
 
@@ -152,22 +164,9 @@ XineEngine::load( const KURL &url, bool isStream )
 
     Engine::Base::load( url, isStream || url.protocol() == "http" );
 
-    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
-
-       //TODO not paused
-
-       xine_stream_t *oldstream = m_stream;
-       xine_audio_port_t *oldport = m_audioPort;
-
-       m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
-       m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
-
-       s_fader = new Fader( m_xine, oldstream, m_stream, oldport );
-
-       xine_event_dispose_queue( m_eventQueue );
-       xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
-          &XineEngine::XineEventListener,
-          (void*)this );
+    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    {
+       s_fader = new Fader( this );
     }
 
     if( xine_open( m_stream, url.url().local8Bit() ) )
@@ -183,6 +182,8 @@ XineEngine::load( const KURL &url, bool isStream )
 
        return true;
     }
+
+    delete s_fader;
 
     return false;
 }
@@ -332,15 +333,17 @@ XineEngine::canDecode( const KURL &url ) const
     return ext != "txt" && list.contains( ext );
 }
 
-static int64_t current_vpts;
-
 const Engine::Scope&
 XineEngine::scope()
 {
-    if( xine_get_status( m_stream ) != XINE_STATUS_PLAY )
+    if( !m_post || xine_get_status( m_stream ) != XINE_STATUS_PLAY )
        return m_scope;
 
-    //prune the buffer list and update the current_vpts timestamp
+    MyNode *myList         = scope_plugin_list( m_post );
+    metronom_t *myMetronom = scope_plugin_metronom( m_post );
+    int myChannels         = scope_plugin_channels( m_post );
+
+    //prune the buffer list and update m_currentVpts
     timerEvent( 0 );
 
     for( int frame = 0; frame < 512; )
@@ -348,14 +351,14 @@ XineEngine::scope()
         MyNode *best_node = 0;
 
         for( MyNode *node = myList->next; node != myList; node = node->next, Log::bufferCount++ )
-            if( node->vpts <= current_vpts && (!best_node || node->vpts > best_node->vpts) )
+            if( node->vpts <= m_currentVpts && (!best_node || node->vpts > best_node->vpts) )
                best_node = node;
 
-        if( !best_node || best_node->vpts_end < current_vpts ) {
+        if( !best_node || best_node->vpts_end < m_currentVpts ) {
            Log::noSuitableBuffer++; break; }
 
         int64_t
-        diff  = current_vpts;
+        diff  = m_currentVpts;
         diff -= best_node->vpts;
         diff *= 1<<16;
         diff /= myMetronom->pts_per_smpls;
@@ -380,8 +383,8 @@ XineEngine::scope()
             m_scope[frame] = a;
         }
 
-        current_vpts = best_node->vpts_end;
-        current_vpts++; //FIXME needs to be done for some reason, or you get situations where it uses same buffer again and again
+        m_currentVpts = best_node->vpts_end;
+        m_currentVpts++; //FIXME needs to be done for some reason, or you get situations where it uses same buffer again and again
     }
 
     Log::scopeCallCount++;
@@ -394,11 +397,13 @@ XineEngine::timerEvent( QTimerEvent* )
 {
    //here we prune the buffer list regularly
 
+   MyNode *myList = scope_plugin_list( m_post );
+
    //we operate on a subset of the list for thread-safety
    MyNode * const first_node = myList->next;
    MyNode const * const list_end = myList;
 
-   current_vpts = (xine_get_status( m_stream ) == XINE_STATUS_PLAY)
+   m_currentVpts = (xine_get_status( m_stream ) == XINE_STATUS_PLAY)
       ? xine_get_current_vpts( m_stream )
       : std::numeric_limits<int64_t>::max(); //if state is not playing OR paused, empty the list
 
@@ -406,7 +411,7 @@ XineEngine::timerEvent( QTimerEvent* )
    {
       //we never delete first_node
       //this maintains thread-safety
-      if( node->vpts_end < current_vpts ) {
+      if( node->vpts_end < m_currentVpts ) {
          prev->next = node->next;
 
          free( node->mem );
@@ -570,16 +575,22 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 /// class Fader
 //////////////////
 
-Fader::Fader( xine_t *xine, xine_stream_t *decrease, xine_stream_t *increase, xine_audio_port_t *port )
-   : QObject()
+Fader::Fader( XineEngine *engine )
+   : QObject( engine )
    , QThread()
-   , m_xine( xine )
-   , m_decrease( decrease )
-   , m_increase( increase )
-   , m_port( port )
+   , m_xine( engine->m_xine )
+   , m_decrease( engine->m_stream )
+   , m_increase( 0 )
+   , m_port( engine->m_audioPort )
+   , m_post( engine->m_post )
 {
-    xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
-    xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
+    if( engine->makeNewStream() )
+    {
+        m_increase = engine->m_stream;
+
+        xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+        xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
+    }
 }
 
 Fader::~Fader()
@@ -591,6 +602,7 @@ Fader::~Fader()
      xine_close( m_decrease );
      xine_dispose( m_decrease );
      xine_close_audio_driver( m_xine, m_port );
+     if( m_post ) xine_post_dispose( m_xine, m_post );
 }
 
 struct fade_s {
@@ -665,14 +677,10 @@ Fader::run()
     {
         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
 
-        int sleep = (*it).sleep;
-
-        if( sleep < 0 ) {
+        if( (*it).sleep < 0 )
             kdDebug() << "sleep < 0 for " << ((*it).stream == m_increase ? "increasing stream" : "decreasing stream") << " at volume=" << (*it).volume << endl;
-            sleep = 0;
-        }
-
-            QThread::usleep( sleep );
+        else
+            QThread::usleep( (*it).sleep );
 
         xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, (*it).volume );
     }

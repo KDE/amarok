@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <xine/metronom.h>
 
+typedef struct xine_post_s xine_post_t;
 typedef struct my_node_s MyNode;
 
 struct my_node_s
@@ -24,15 +25,20 @@ struct my_node_s
     int64_t  vpts_end;
 };
 
-extern metronom_t *myMetronom;
-extern int myChannels;
-extern MyNode* const myList;
-
 #ifdef __cplusplus
 extern "C"
 {
     xine_post_t*
     scope_plugin_new( xine_t*, xine_audio_port_t* );
+
+    MyNode*
+    scope_plugin_list( xine_post_t* );
+
+    int
+    scope_plugin_channels( xine_post_t* );
+
+    metronom_t*
+    scope_plugin_metronom( xine_post_t* );
 }
 #endif
 

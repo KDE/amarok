@@ -13,14 +13,16 @@
 #include <xine/post.h>
 #include <xine/xine_internal.h>
 
+typedef struct scope_plugin_s scope_plugin_t;
 
-static MyNode     theList;
-static metronom_t theMetronom;
+struct scope_plugin_s
+{
+    post_plugin_t post;
 
-MyNode* const myList   = &theList;
-metronom_t *myMetronom = &theMetronom;
-int         myChannels = 2;
-
+    metronom_t metronom;
+    int        channels;
+    MyNode    *list;
+};
 
 /*************************
  * post plugin functions *
@@ -30,6 +32,7 @@ static int
 scope_port_open( xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bits, uint32_t rate, int mode )
 {
     #define port ((post_audio_port_t*)port_gen)
+    #define this ((scope_plugin_t*)((post_audio_port_t*)port_gen)->post)
 
     _x_post_rewire( (post_plugin_t*)port->post );
     _x_post_inc_usage( port );
@@ -39,7 +42,7 @@ scope_port_open( xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bi
     port->rate = rate;
     port->mode = mode;
 
-    myChannels = _x_ao_mode2channels( mode );
+    this->channels = _x_ao_mode2channels( mode );
 
     return port->original_port->open( port->original_port, stream, bits, rate, mode );
 }
@@ -48,34 +51,32 @@ static void
 scope_port_close( xine_audio_port_t *port_gen, xine_stream_t *stream )
 {
     MyNode *node;
-    
-    /* ensure the buffers are deleted during the next XineEngine::timerEvent() */   
-    for( node = myList->next; node != myList; node = node->next ) {
-        node->vpts = -1;
-        node->vpts_end = -1;
-    }
+
+    /* ensure the buffers are deleted during the next XineEngine::timerEvent() */
+    for( node = this->list->next; node != this->list; node = node->next )
+        node->vpts = node->vpts_end = -1;
 
     port->stream = NULL;
     port->original_port->close( port->original_port, stream );
-    
+
     _x_post_dec_usage( port );
 }
 
 static void
 scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream )
 {
+    const int num_samples = buf->num_frames * this->channels;
+    metronom_t *myMetronom = &this->metronom;
     MyNode *new_node;
-    const int num_samples = buf->num_frames * myChannels;
 
-    /*FIXME both these please*/
     if( port->bits == 8 ) {
        printf( "You dare tempt me with 8 bits?!\n" ); return; }
     if( buf->stream == 0 ) {
        port->original_port->put_buffer( port->original_port, buf, stream );
-       /*printf( "stream == 0! what does that mean?!\n" );*/ return; }
+       printf( "stream == 0! what does that mean?!\n" ); return; }
 
     /* I keep my own metronom because xine wouldn't for some reason */
-    memcpy( myMetronom, stream->metronom, sizeof(metronom_t) );
+    memcpy( &this->metronom, stream->metronom, sizeof(metronom_t) );
 
     new_node             = malloc( sizeof(MyNode) );
     new_node->vpts       = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
@@ -93,20 +94,30 @@ scope_port_put_buffer( xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
         new_node->vpts_end = K;
     }
 
-    /* pass data to original port - TODO is this necessary? */
     port->original_port->put_buffer( port->original_port, buf, stream );
 
     /* finally we should append the current buffer to the list
-     * NOTE this is thread-safe due to the way we handle the list in the GUI thread */
-    new_node->next = myList->next;
-    myList->next   = new_node;
+     * this is thread-safe due to the way we handle the list in the GUI thread */
+    new_node->next   = this->list->next;
+    this->list->next = new_node;
 
     #undef port
+    #undef this
 }
 
 static void
 scope_dispose( post_plugin_t *this )
 {
+    MyNode *list = ((scope_plugin_t*)this)->list;
+    MyNode *prev, *node;
+
+    for( node = list; node != list; node = prev ) {
+        prev = node->next;
+
+        free( node->mem );
+        free( node );
+    }
+
     free( this );
 }
 
@@ -118,25 +129,25 @@ scope_dispose( post_plugin_t *this )
 xine_post_t*
 scope_plugin_new( xine_t *xine, xine_audio_port_t *audio_target )
 {
-    post_plugin_t *post_plugin = xine_xmalloc( sizeof(post_plugin_t) );
+    scope_plugin_t *scope_plugin = xine_xmalloc( sizeof(scope_plugin_t) );
+    post_plugin_t  *post_plugin  = (post_plugin_t*)scope_plugin;
 
     {
-        post_plugin_t     *this = post_plugin;
         post_in_t         *input;
         post_out_t        *output;
         post_audio_port_t *port;
 
-        _x_post_init( this, 1, 0 );
+        _x_post_init( post_plugin, 1, 0 );
 
-        port = _x_post_intercept_audio_port( this, audio_target, &input, &output );
+        port = _x_post_intercept_audio_port( post_plugin, audio_target, &input, &output );
         port->new_port.open       = scope_port_open;
         port->new_port.close      = scope_port_close;
         port->new_port.put_buffer = scope_port_put_buffer;
 
-        this->xine_post.audio_input[0] = &port->new_port;
-        this->xine_post.type = PLUGIN_POST;
+        post_plugin->xine_post.audio_input[0] = &port->new_port;
+        post_plugin->xine_post.type = PLUGIN_POST;
 
-        this->dispose = scope_dispose;
+        post_plugin->dispose = scope_dispose;
     }
 
     /* code is straight from xine_init_post()
@@ -145,18 +156,28 @@ scope_plugin_new( xine_t *xine, xine_audio_port_t *audio_target )
 
     post_plugin->running_ticket = xine->port_ticket;
     post_plugin->xine = xine;
-  /*post_plugin->node = NULL;*/
 
-    /*
-    xine_post_in_t *input = xine_list_first_content( post_plugin->input );
-
-    post_plugin->input_ids    = malloc( sizeof(char*) * 2 );
-    post_plugin->input_ids[0] = input->name;
-    post_plugin->input_ids[1] = NULL;
-
-    post_plugin->output_ids    = malloc( sizeof(char*) );
-    post_plugin->output_ids[0] = NULL;
-    */
+    /* scope_plugin_t init */
+    scope_plugin->list = xine_xmalloc( sizeof(MyNode) );
+    scope_plugin->list->next = scope_plugin->list;
 
     return &post_plugin->xine_post;
+}
+
+MyNode*
+scope_plugin_list( post_plugin_t *post )
+{
+    return ((scope_plugin_t*)post)->list;
+}
+
+int
+scope_plugin_channels( post_plugin_t *post )
+{
+    return ((scope_plugin_t*)post)->channels;
+}
+
+metronom_t*
+scope_plugin_metronom( post_plugin_t *post )
+{
+    return &((scope_plugin_t*)post)->metronom;
 }
