@@ -112,7 +112,7 @@ EngineBase *EngineController::loadEngine() //static
         QString oldEngine = PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString();
 
         KMessageBox::error( 0,
-            i18n( "amaroK could not initialise the '%1', instead we will revert to the '%2'" )
+            i18n( "amaroK could not initialize the '%1', instead we will revert to the '%2'" )
                 .arg( AmarokConfig::soundSystem(), oldEngine ) );
 
         AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
@@ -137,7 +137,7 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
 
        /*
          for ( uint i = 0; i < offers.count(); i++ )
-             kdDebug() << "  - offers[" << i << "].name: " << offers[i]->name() 
+             kdDebug() << "  - offers[" << i << "].name: " << offers[i]->name()
              << "; rank:" << offers[i]->property( "X-KDE-amaroK-rank" ).toInt() << endl;
        */
        while( !plugin && !offers.isEmpty() ) {
