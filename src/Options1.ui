@@ -74,7 +74,7 @@
                         <cstring>kcfg_ShowPlayerWindow</cstring>
                     </property>
                     <property name="text">
-                        <string>Show Player Window (like XMMS)</string>
+                        <string>Show player window (like XMMS)</string>
                     </property>
                 </widget>
             </vbox>

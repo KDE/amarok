@@ -52,7 +52,7 @@ class OSDWidget : public QWidget
         void setText(const QString &text) { m_currentText = text; refresh(); }
 
         void unsetColors();
-
+     
       public slots:
         void showOSD(const QString&, bool preemptive=false );
         void removeOSD() { hide(); } //inlined as is convenience function
@@ -86,7 +86,6 @@ class OSDWidget : public QWidget
         QPoint m_offset;
         Position m_position;
         int m_screen;
-        bool m_horizontalAutoCenter;
         
         bool m_dirty; //if dirty we will be re-rendered before we are shown
 };
@@ -122,6 +121,8 @@ class OSD : public OSDWidget
 Q_OBJECT
 public:
     OSD() : OSDWidget( "amaroK" ) {}
+
+    static bool m_horizontalAutoCenter;
 
 public slots:
     void showTrack( const MetaBundle &bundle );

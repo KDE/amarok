@@ -21,8 +21,13 @@
 #include <qpixmap.h>
 #include <qtimer.h>
 
-#include <kcursor.h> //previewWidget
+#include <kcursor.h>         //previewWidget
+#include <kdebug.h>
 #include <kglobalsettings.h> //activeTitleColor()
+
+//STATIC
+bool amaroK::OSD::m_horizontalAutoCenter;
+
 
 OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name )
     : QWidget( parent, name,
@@ -72,12 +77,6 @@ void OSDWidget::renderOSDText( const QString &text )
     mask.resize( textRect.size() );
     resize( textRect.size() );
     rePosition();
-
-    // Be nice and center the text, if the user wishes so
-    if ( m_horizontalAutoCenter ) {
-        const QRect screenRect = QApplication::desktop()->screenGeometry( m_screen );
-        move( screenRect.width() / 2 - textRect.width() / 2, y() );
-    }
         
     // Start painting!
     QPainter bufferPainter( &osdBuffer );
@@ -214,7 +213,7 @@ void OSDWidget::setScreen(uint screen)
 
 void OSDWidget::setHorizontalAutoCenter(bool center)
 {
-    m_horizontalAutoCenter = center;
+    amaroK::OSD::m_horizontalAutoCenter = center;
     rePosition();
 }
 
@@ -314,6 +313,10 @@ void OSDWidget::rePosition()
     // correct for screen position
     newPos += screenRect.topLeft();
 
+    // Be nice and center the text, if the user wishes so
+    if ( amaroK::OSD::m_horizontalAutoCenter )
+        newPos.setX( screenRect.width() / 2 - osdBuffer.width() / 2 );
+    
     // TODO: check for sanity?
     move( newPos ); //no need to check if pos() == newPos, Qt does that too
 }
@@ -385,13 +388,19 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
     if( m_dragging && this == mouseGrabber() )
     {
-        move( e->globalPos() - m_dragOffset );
+        // Be nice and center the text, if the user wishes so
+        if ( amaroK::OSD::m_horizontalAutoCenter ) {
+            const QRect screenRect = QApplication::desktop()->screenGeometry( m_screen );
+            move( screenRect.width() / 2 - osdBuffer.width() / 2, ( e->globalPos() - m_dragOffset ).y() );
+        }
+        else
+            move( e->globalPos() - m_dragOffset );
     }
 }
 
 
 
-//////  amK::OSD below /////////////////////
+//////  amaroK::OSD below /////////////////////
 
 #include "enginecontroller.h"
 #include "metabundle.h"
