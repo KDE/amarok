@@ -24,13 +24,14 @@ using Analyzer::Scope;
 
 class Sonogram : public Analyzer::Base2D
 {
-    public:
-        Sonogram( QWidget* );
-        ~Sonogram();
+public:
+	Sonogram(QWidget*);
+	~Sonogram();
 
-        void init();
-        void analyze( const Scope& );
-        void transform( Scope& );
+	void init();
+	void analyze(const Scope&);
+	void transform(Scope&);
+	void demo();
 };
 
 #endif
