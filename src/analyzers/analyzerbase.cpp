@@ -39,8 +39,10 @@
 
 //TODO for 2D use setErasePixmap Qt function insetead of m_background
 
-// make the linker happy
+// make the linker happy only for gcc < 4.0
+#if !( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 0 ) )
 template class Analyzer::Base<QWidget>;
+#endif
 
 
 template<class W>

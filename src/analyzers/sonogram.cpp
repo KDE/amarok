@@ -37,7 +37,10 @@ void Sonogram::resizeEvent(QResizeEvent *e)
 	canvas()->resize(size());
 	background()->resize(size());
 
+//only for gcc < 4.0
+#if !( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 0 ) )
 	resizeForBands(height());
+#endif
 
 	background()->fill(backgroundColor());
 	bitBlt(canvas(), 0, 0, background());
