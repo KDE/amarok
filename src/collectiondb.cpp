@@ -380,7 +380,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, uint widt
 {
     // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
     if ( width == 1) width = AmarokConfig::coverPreviewSize();
-    
+
     QCString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( artist.isEmpty() && album.isEmpty() )
@@ -574,7 +574,7 @@ CollectionDB::getMetaBundleForUrl( const QString &url , MetaBundle *bundle )
 {
     query( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate "
                     "FROM tags, album, artist, genre, year "
-                    "WHERE album.id = tags.album AND artist.id = tags.artist AND genre.id = tags.genre AND year.id = tags.year AND url = '%1';" )
+                    "WHERE album.id = tags.album AND artist.id = tags.artist AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
                     .arg( escapeString( url ) ) );
 
     if ( !m_values.isEmpty() )

@@ -809,7 +809,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     , m_artist( artist )
     , m_album( album )
     , m_coverImagePath( CollectionDB().albumImage( m_artist, m_album, 0 ) )
-    , m_hasCover( QFile::exists( m_coverImagePath ) )
+    , m_hasCover( QFile::exists( m_coverImagePath ) && !m_coverImagePath.endsWith( "nocover.png" ) )
     , m_coverPix( 0 )
 {
     setDragEnabled( hasCover() );
