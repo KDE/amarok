@@ -12,6 +12,7 @@
 #include <qvbox.h>           //baseclass
 
 #include <klistview.h>       //baseclass
+#include <klineedit.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 
@@ -35,7 +36,10 @@ class CollectionBrowser: public QVBox
     
     public:
         CollectionBrowser( const char* name );
-    
+
+    private slots:
+        void slotSetFilter();
+
     private:
     //attributes:
         enum CatMenuId { IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
@@ -43,6 +47,8 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_actionsMenu;
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
+        KLineEdit* m_searchEdit;
+        CollectionView* m_view;
 };
 
 
@@ -69,6 +75,8 @@ class CollectionView : public KListView
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
         
+        void setFilter( QString filter ) { m_filter = filter; }
+        QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
     signals:
@@ -120,6 +128,7 @@ class CollectionView : public KListView
         ThreadWeaver* m_weaver;
         KDirWatch* m_dirWatch;
         sqlite* m_db;                
+        QString m_filter;
         QStringList m_dirs;
         QString m_category1;
         QString m_category2;

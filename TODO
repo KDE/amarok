@@ -3,12 +3,23 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #87 being the highest available (take this one for your next bug and increase here)
+           #89 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-    * add: #85 <muesli> make searchbrowser search the collection, too -->muesli
+    * add: #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are 
+                        to be searched (like: songtitle, artist, songtitle or artist, album)
+                        -->muesli
+
+    * fix: #87 <muesli> don't rely on KDE timeouts to see whether a file is accessible or not,
+                        since this really sucks for disconnected network shares. XMMS handles
+                        this way better and it really is a problem in userland. maybe a thread
+                        helps, which simply tries to fopen() the file. if this task hasn't been
+                        finished in (let's say) 3 seconds, jump to the next song. XMMS even
+                        remembers such files and their folders, so that it's not going to open 
+                        another file from that folder for the next few minutes. what about hdd
+                        sleep-timeouts? opinions?
 
     
 MID-TERM:

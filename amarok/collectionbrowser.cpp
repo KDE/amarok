@@ -46,26 +46,44 @@ CollectionBrowser::CollectionBrowser( const char* name )
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
     menu->insertItem( i18n( "Primary" ), m_cat1Menu );
     menu->insertItem( i18n( "Secondary" ), m_cat2Menu );
-    
-    CollectionView* view = new CollectionView( this );
-    
-    m_actionsMenu->insertItem( i18n( "Configure Folders" ), view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Start Scan" ), view, SLOT( scan() ) );
-    
-    m_cat1Menu ->insertItem( "Album", view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
-    m_cat1Menu ->insertItem( "Artist", view, SLOT( cat1Menu( int ) ), 0, IdArtist );
-    m_cat1Menu ->insertItem( "Genre", view, SLOT( cat1Menu( int ) ), 0, IdGenre );
-    m_cat1Menu ->insertItem( "Year", view, SLOT( cat1Menu( int ) ), 0, IdYear );
 
-    m_cat2Menu ->insertItem( "None", view, SLOT( cat2Menu( int ) ), 0, IdNone );
+    QHBox * hbox2 = new QHBox( this );
+    hbox2->setSpacing( 4 );
+    hbox2->setMargin( 4 );
+    QLabel * label1 = new QLabel( "Search for", hbox2 );
+    m_searchEdit = new KLineEdit( hbox2 );
+
+    m_view = new CollectionView( this );
+    
+    m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
+    m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
+    
+    m_cat1Menu ->insertItem( "Album", m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
+    m_cat1Menu ->insertItem( "Artist", m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
+    m_cat1Menu ->insertItem( "Genre", m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
+    m_cat1Menu ->insertItem( "Year", m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
+
+    m_cat2Menu ->insertItem( "None", m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
     m_cat2Menu ->insertSeparator();
-    m_cat2Menu ->insertItem( "Album", view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
-    m_cat2Menu ->insertItem( "Artist", view, SLOT( cat2Menu( int ) ), 0, IdArtist );
-    m_cat2Menu ->insertItem( "Genre", view, SLOT( cat2Menu( int ) ), 0, IdGenre );
-    m_cat2Menu ->insertItem( "Year", view, SLOT( cat2Menu( int ) ), 0, IdYear );
+    m_cat2Menu ->insertItem( "Album", m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
+    m_cat2Menu ->insertItem( "Artist", m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
+    m_cat2Menu ->insertItem( "Genre", m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
+    m_cat2Menu ->insertItem( "Year", m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
-    m_cat1Menu->setItemChecked( view->idForCat( view->m_category1 ), true );
-    m_cat2Menu->setItemChecked( view->idForCat( view->m_category2 ), true );
+    m_cat1Menu->setItemChecked( m_view->idForCat( m_view->m_category1 ), true );
+    m_cat2Menu->setItemChecked( m_view->idForCat( m_view->m_category2 ), true );
+
+    connect( m_searchEdit, SIGNAL( returnPressed() ),
+             this,           SLOT( slotSetFilter() ) );
+}
+
+
+void
+CollectionBrowser::slotSetFilter() //slot
+{
+    kdDebug() << "setting filter: " << m_searchEdit->text() << endl;
+    m_view->setFilter( m_searchEdit->text() );
+    m_view->renderView();
 }
 
 
@@ -224,16 +242,24 @@ CollectionView::dirDirty( const QString& path )
 
 
 void
-CollectionView::renderView()  //SLOT
+CollectionView::renderView( )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
     clear();
 
     //query database for all records with the specified category
+    QString filterToken = QString( "" );
+    if ( m_filter != "" )
+        filterToken = QString
+                      ( "WHERE title LIKE '\%%1\%' OR artist LIKE '\%%2\%'" )
+                      .arg( escapeString( m_filter ) )
+                      .arg( escapeString( m_filter ) );
+
     QString command = QString
-                      ( "SELECT DISTINCT %1 FROM tags;" )
-                      .arg( m_category1.lower() );
+                      ( "SELECT DISTINCT %1 FROM tags %2;" )
+                      .arg( m_category1.lower() )
+                      .arg( filterToken );
     QStringList values;
     QStringList names;
     execSql( command, &values, &names );
