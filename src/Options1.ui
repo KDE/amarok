@@ -99,10 +99,10 @@
                         <string>Default size for cover previews:</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Size of the cover image in the context viewer in pixel.</string>
+                        <string>Size of the cover image in the context viewer in pixels.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Size of the cover image in the context viewer in pixel.</string>
+                        <string>Size of the cover image in the context viewer in pixels.</string>
                     </property>
                 </widget>
                 <widget class="QSpinBox" row="4" column="1">
@@ -119,10 +119,10 @@
                         <number>100</number>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Size of the cover images in the context viewer in pixel.</string>
+                        <string>Size of the cover images in the context viewer in pixels.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Size of the cover images in the context viewer in pixel.</string>
+                        <string>Size of the cover images in the context viewer in pixels.</string>
                     </property>
                 </widget>
                 <spacer row="4" column="2">
@@ -205,10 +205,10 @@
                         <string>Add &amp;directories recursively</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories etc.&lt;br&gt;</string>
+                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories, etc.&lt;br&gt;</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories etc.</string>
+                        <string>If checked, adding a directory to the playlist also adds sub directories, sub-sub directories, etc.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">

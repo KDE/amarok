@@ -157,7 +157,7 @@
                                         <cstring>kcfg_PlaylistWindowFgColor</cstring>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>Selects the color to use as foreground color  in the playlist.</string>
+                                        <string>Selects the color to use as foreground color in the playlist.</string>
                                     </property>
                                 </widget>
                                 <widget class="KColorButton" row="0" column="1">
