@@ -23,7 +23,7 @@ ScriptManager::Selector* ScriptManager::Selector::instance = 0;
 
 ScriptManager::Selector::Selector( const QStringList &directories, QWidget *parent, const char *name )
         : KDialogBase( parent, name, true, 0, Ok | Cancel, Ok, true )
-//         , m_dirList( directories )
+        , m_dirList( directories )
 {
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
