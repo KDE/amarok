@@ -7,6 +7,7 @@
 
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
+#include <taglib/tfile.h>
 #include <taglib/tstring.h>
 
 #include <qfile.h>
@@ -47,10 +48,10 @@ TagDialog::okPressed() //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     
-    if ( hasChanged() ) {
-        writeTag();
-        if ( m_playlistItem ) syncItemText();
-    }    
+    if ( hasChanged() )
+        if ( writeTag() )
+            if ( m_playlistItem )
+                syncItemText();
        
     deleteLater();
 }
@@ -168,10 +169,17 @@ TagDialog::hasChanged()
 }    
 
 
-void
+bool
 TagDialog::writeTag()
 {    
-    TagLib::FileRef f( QFile::encodeName( m_metaBundle.url().path() ), false );
+    QCString path( QFile::encodeName( m_metaBundle.url().path() ) );
+    
+    if ( !TagLib::File::isWritable( path ) ) {
+        KMessageBox::error( 0, i18n( "File is not writable." ) );
+        return false;
+    }
+    
+    TagLib::FileRef f( path, false );
     
     if ( !f.isNull() ) {
         TagLib::Tag * t = f.tag();
@@ -185,6 +193,7 @@ TagDialog::writeTag()
         
         f.save();
     }
+    return true;
 }        
 
 

@@ -42,7 +42,7 @@ class TagDialog : public TagDialogBase
     private:
         void init();
         bool hasChanged();
-        void writeTag();
+        bool writeTag();
         void syncItemText();        
         
         MetaBundle m_metaBundle;
