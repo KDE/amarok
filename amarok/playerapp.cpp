@@ -17,6 +17,7 @@ email                : markey@web.de
 
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
+#include "amarokdcophandler.h"
 #include "amarokslider.h" //FIXME
 #include "browserwin.h"
 #include "effectwidget.h"
@@ -490,6 +491,10 @@ void PlayerApp::readConfig()
                             this, SLOT( slotPrev() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             this, SLOT( slotShowOSD() ), true, true );
+    m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
+                            this, SLOT( slotIncreaseVolume() ), true, true );
+    m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
+                            this, SLOT( slotDecreaseVolume() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
@@ -823,8 +828,12 @@ void PlayerApp::slotSliderChanged( int value )
 
 void PlayerApp::slotVolumeChanged( int value )
 {
+    if (value < 0)   value = 0;     // FIXME: I think this belongs to Engine?
+    if (value > 100) value = 100;
+    
     AmarokConfig::setMasterVolume( value );
     m_pEngine->setVolume( value );
+    m_pPlayerWidget->m_pVolSlider->setValue( value ); // FIXME: slider should reflect actual value, thats why its updated here
 }
 
 
@@ -943,6 +952,18 @@ void PlayerApp::slotShowOSD()
       m_pOSD->showOSD( m_textForOSD );
 }
 
+
+void PlayerApp::slotIncreaseVolume()
+{
+    m_pPlayerWidget->m_pDcopHandler->volumeUp();
+    m_pOSD->showOSD( QString("Volume %1%").arg( m_pEngine->volume() ) );
+}
+
+void PlayerApp::slotDecreaseVolume()
+{
+    m_pPlayerWidget->m_pDcopHandler->volumeDown();
+    m_pOSD->showOSD( QString("Volume %1%").arg( m_pEngine->volume() ) );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS LoaderServer

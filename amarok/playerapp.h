@@ -99,6 +99,8 @@ class PlayerApp : public KApplication
         void slotMainTimer();
         void slotShowOptions();
         void slotShowOSD();
+	void slotIncreaseVolume();
+	void slotDecreaseVolume();
         void setOsdEnabled(bool enable);
 
     private slots:

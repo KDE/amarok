@@ -359,15 +359,7 @@ void PlayerWidget::wheelEvent( QWheelEvent *e )
 
     default:
 
-        AmarokConfig::setMasterVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
-
-        if ( AmarokConfig::masterVolume() < 0 )
-            AmarokConfig::setMasterVolume( 0 );
-        if ( AmarokConfig::masterVolume() > VOLUME_MAX )
-            AmarokConfig::setMasterVolume( VOLUME_MAX );
-
-        pApp->slotVolumeChanged( AmarokConfig::masterVolume() );
-        m_pVolSlider->setValue( AmarokConfig::masterVolume() );
+        pApp->slotVolumeChanged( AmarokConfig::masterVolume() + e->delta() / 18 );
     }
 }
 

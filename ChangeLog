@@ -4,6 +4,9 @@ amaroK ChangeLog
 
 
 VERSION 0.9-beta3:
+  * add: Global shortcuts to display OSD and increase/decrease volume.
+         (Win+o and Win+KP_Add/KP_Subtract by default, respectively)
+  * add: DCOP calls to control OSD and playback volume
   * add: ported config-GUI for audio decoders to new engine (works currently with
          modplug_artsplugin)
   * fix: show correct track-length when playing .mod or .sid with aRts-engine
