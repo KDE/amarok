@@ -393,6 +393,8 @@ GstEngine::stop()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
     
+    emit stopped();
+    
     // Is a fade running?
     if ( m_fadeValue == 0.0 ) {   
         // Not fading --> start fade now
@@ -402,7 +404,6 @@ GstEngine::stop()  //SLOT
         // Already fading --> stop now
         m_fadeValue = 0.0;
         cleanPipeline();
-        emit stopped();
         
         if ( m_transferJob ) {
             m_transferJob->kill();
@@ -491,7 +492,6 @@ void GstEngine::timerEvent( QTimerEvent* )
             kdDebug() << "FADEOUT finished." << endl;
             m_fadeValue = 0.0;
             cleanPipeline();
-            emit stopped();
             
             if ( m_transferJob ) {
                 m_transferJob->kill();
