@@ -2,6 +2,7 @@
 Type=Service
 Name=NMM Engine
 Name[cs]=NMM
+Name[de]=NMM-Treiber
 Name[es]=Motor NMM
 Name[et]=NMM mootor
 Name[fr]=Moteur NMM
@@ -21,6 +22,7 @@ X-KDE-Library=libamarok_nmmengine_plugin
 Comment=amaroK plugin
 Comment[cs]=amaroK modul
 Comment[da]=Plugin for amaroK
+Comment[de]=amaroK-Plugin
 Comment[es]=Plugin de amaroK
 Comment[et]=AmaroKi plugin
 Comment[fr]=module AmaroK
