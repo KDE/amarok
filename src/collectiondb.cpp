@@ -121,9 +121,8 @@ CollectionDB::getPathForAlbum( const QString artist, const QString album )
     QStringList names;
 
     execSql( QString( "SELECT tags.url FROM tags, album, artist WHERE tags.album = album.id AND album.name = '%1' AND tags.artist = artist.id AND artist.name = '%2';" )
-             .arg( album )
-             .arg( artist ), &values, &names );
-
+                   .arg( escapeString( album ) )
+                   .arg( escapeString( artist ) ), &values, &names );
     return values[0];
 }
 
