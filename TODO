@@ -3,14 +3,17 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #100 being the highest available (take this one for your next bug and increase here)
+           #102 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+  FIX #101 <mxcl> we need to update the tooltip for 1.0, especially the drag back to FileBrowser bit
+
   FIX #99 <markey> With KDE color scheme some widgets inside of the browsers become black,
           when color scheme is switched at runtime.
-  
+          <mxcl> switch the KControl colour scheme? Or amaroK config color scheme?
+
   ADD #97 <mxcl> if you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
                  at bottom of pl, but has no icon on drag cursor.
 
@@ -30,6 +33,11 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  ADD #100 <mxcl> we have several areas where we ask for paths, it would be good to make it so these
+                  always reflect the most recent path the user has used, eg looking in /my/music/bands
+                  in the FileBrowser means when you open the SearchBrowser this is the search path
+                  would be easy with a KConfig XT key. May be nice to do this with the URL histories too
 
   ADD #98 <mxcl> use the collection browser to add KCompletion to inline tag editing
 
@@ -74,21 +82,15 @@ MID-TERM:
 
   ADD <mxcl> option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
       Of course, there would still be the up to 150ms gap, but we can fix that some other
-      time.. <markey> please clarify: is this the same as BR #75388 ?
+      time..
+      <markey> please clarify: is this the same as BR #75388 ?
+      <mxcl> no, this is just to make crossfading not ruin album transitions
 
   FIX Add dirs to combo history when user adds a track from that dir to the playlist
-
-  FIX <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
-      relevant to amaroK since we are naughty and don't obey KDE's single click mode
-      we should disable the hand cursor since that means "single-click to activate me"
-      maybe override KListView::mouseMoveEvent, or is there a better way?
-      <markey> I think the hand cursor looks appropriate here. FWIW, the hand is not only in column(0)
 
   ADD "Show playlist" to the right click menu, redundant but necessary
 
   ADD More KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
-
-  ADD Reduce arts buffer to ~20ms for much better analyzers etc.
 
   ADD History to add dialog, or implement better system for adding urls etc.
 
@@ -108,17 +110,6 @@ MID-TERM:
       basically just a shortcut for going up to the parent directory, and then dragging
       the directory. imagine you're in the root directory of some filesystem, and want to add all
       files in it.. currently you'd have to select all files manually
-
-  CHG Can we make all buttons into actions? if we can, we could use setState(), a global
-      actionCollection and save plenty of LOC. I see problems with the play/stop/etc
-      buttons though.
-
-  CHG Pre 1.0, big cleanup to reduce mem consumption (I dunno if we use a lot or not, but
-      this is a good goal anyway!)
-
-  CHG Pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
-      mean that people will lose their settings, oh well, best to do it for the 1.0 release.
-
 
 LONG-TERM:
 

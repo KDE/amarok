@@ -81,7 +81,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 
     m_overlapButton = new TinyButton( m_pageHolder, const_cast< const char** >(not_close_xpm), i18n( "Overlap" ) );
     m_overlapButton->setToggleButton( true );
-    connect( m_overlapButton, SIGNAL( clicked() ), SLOT( adjustSize() ) );
+    connect( m_overlapButton, SIGNAL( toggled( bool ) ), SLOT( toggleOverlap( bool ) ) );
 
     QPushButton *closeButton = new TinyButton( m_pageHolder, style().stylePixmap( QStyle::SP_TitleBarCloseButton ), i18n( "Close" ) );
     connect( closeButton, SIGNAL( clicked() ), SLOT( close() ) );
@@ -109,8 +109,8 @@ BrowserBar::BrowserBar( QWidget *parent )
     connect( m_mapper, SIGNAL( mapped( int ) ), SLOT( showHidePage( int ) ) );
 
     m_divider->setFrameStyle( QFrame::Panel | QFrame::Raised );
-    m_divider->setCursor( QCursor(sizeHorCursor) );
     m_divider->installEventFilter( this );
+    m_divider->setCursor( QCursor(SizeHorCursor) );
 }
 
 BrowserBar::~BrowserBar()
@@ -373,6 +373,15 @@ BrowserBar::autoClosePages() //SLOT
     {
         showHidePage();
     }
+}
+
+void
+BrowserBar::toggleOverlap( bool on ) //SLOT
+{
+    //cursor for divider should be qsplitter style when overlapped and resize like when not
+    m_divider->setCursor( QCursor( on ? SplitHCursor : SizeHorCursor ) );
+
+    adjustSize();
 }
 
 

@@ -1,18 +1,19 @@
 // (c) Max Howell 2004
 // See COPYING file for licensing information
 
-#if 0
+#ifdef PLAYLIST_BROWSER
 
 #include "playlistbrowser.h"
 #include "metabundle.h"   //prettyLength()
 #include "threadweaver.h" //PLStats Job
 
-#include <qevent.h>      //customEvent()
-#include <qfontmetrics.h>//paintItem()
-#include <qpainter.h>    //paintItem()
-#include <kiconloader.h> //smallIcon
-#include <klocale.h>
-#include <kurldrag.h>    //dragObject()
+#include <qevent.h>       //customEvent()
+#include <qfontmetrics.h> //paintItem()
+#include <qpainter.h>     //paintItem()
+#include <kdebug.h>
+#include <kiconloader.h>  //smallIcon
+#include <klocale.h >
+#include <kurldrag.h>     //dragObject()
 
 
 
@@ -26,14 +27,16 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 }
 
 PlaylistBrowser::~PlaylistBrowser()
-{}
+{
+    //TODO save info in a QDom
+}
 
 QDragObject*
 PlaylistBrowser::dragObject()
 {
     return new KURLDrag( currentItem()->url(), this );
 }
-#include <kdebug.h>
+
 void
 PlaylistBrowser::resizeEvent( QResizeEvent *e )
 {
@@ -67,7 +70,7 @@ PlaylistBrowser::Item::Item( QIconView *parent, const KURL &u, const KURL::List 
     setDragEnabled( true );
     setPixmap( findCoverArt(list.first()) ); //causes calcRect()
 }
-#include <kdebug.h>
+
 void
 PlaylistBrowser::Item::paintItem( QPainter *p, const QColorGroup &cg )
 {

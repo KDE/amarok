@@ -72,13 +72,21 @@ FileBrowser::FileBrowser( const char * name )
     dir = new KDirOperator( KURL( config->readEntry( "Location" ) ), this );
     connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
     dir->setEnableDirHighlighting( true );
-    dir->setMode( KFile::Files ); //enables multi selection mode
+    dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
     dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
     dir->actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
     dir->readConfig( config );
     dir->setView( KFile::Default ); //will set userconfigured view, will load URL
     //dir->setView( new amaroK::FileView( dir ) );
     setStretchFactor( dir, 2 );
+
+    //TODO enable drag from playlist, then give a konqi like popupmenu allowing copy/move/link and cancel
+    //TODO if dragged to tab it should open, so you need to make tabs accept drops if browser author wants it
+    //     and auto-expand if they are shut
+    //dir->setAcceptDrops( true ); FIXME I think the KDirOperator won't translate from KURL to KFileItem. BAH!
+    //dir->setDropOptions( KFileView::AutoOpenDirs );
+
+
 
     KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark", m_actionCollection, "bookmarks" );
     acmBookmarks->setDelayed( false );

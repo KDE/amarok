@@ -234,14 +234,20 @@ bool BrowserWin::isAnotherTrack() const
 
 void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
 {
+    //TODO optimise bearing in mind ownPalette property and unsetPalette()
+
     //this updates all children's palettes recursively (thanks Qt!)
     m_browsers->setPalette( pal );
 
     const bool schemeKDE = !AmarokConfig::schemeKDE();
-    QObjectList *list = m_browsers->queryList( "QWidget" );
+    QObjectList* const list = m_browsers->queryList( "QWidget" );
 
+    //now we need to search for KListViews so we can set the alternative colours
+    //also amaroK's colour scheme has a few issues
     for( QObject *obj = list->first(); obj; obj = list->next() )
     {
+        #define widget static_cast<QWidget*>(obj)
+
         if( obj->inherits("KListView") )
         {
             KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
@@ -251,13 +257,17 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
         {
             if( obj->inherits("QLabel") || obj->inherits("QToolBar") )
             {
-                static_cast<QLabel*>(obj)->setPaletteForegroundColor( Qt::white );
+                widget->setPaletteForegroundColor( Qt::white );
             }
-            else if( obj->inherits("QMenuBar") )
+            else if( obj->inherits("QMenuBar") || obj->parent()->isA("QSplitter") )
             {
-                static_cast<QWidget*>(obj)->setPalette( QApplication::palette() );
+                //I don't understand the QSplitter one, I got it to work by trial and error
+
+                widget->setPalette( QApplication::palette() );
             }
         }
+
+        #undef widget
     }
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)

@@ -4,22 +4,21 @@
 
 #include "searchbrowser.h"
 
-#include <kapplication.h> //kapp->config()
+#include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
 #include <klocale.h>
+#include <kcursor.h>      //waitCursor()
 #include <kdebug.h>
 #include <klineedit.h>
-#include <kmessagebox.h>
 #include <kurl.h>
 #include <kurlcombobox.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <qhbox.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qsplitter.h>
-//#include <qcheckbox.h>
+#include <qtextstream.h>
 #include <kurlcompletion.h>
 #include <kurldrag.h>
 #include "threadweaver.h"
@@ -56,11 +55,12 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
     urlEdit->setURLs( config->readListEntry( "History" ) );
     urlEdit->lineEdit()->setText( config->readEntry( "Location", "/" ) );
 
-    QSplitter *vb1 = new QSplitter( Vertical, this );
-    //vb1->setSpacing( 2 );
-    //vb1->setMargin( 2 );
-    resultView  = new SearchListView( vb1 );
-    historyView = new KListView( vb1 );
+    splitter    = new QSplitter( Vertical, this );
+    resultView  = new SearchListView( splitter );
+    historyView = new KListView( splitter );
+    QString str = config->readEntry( "Splitter Stream" );
+    QTextStream stream( &str, IO_ReadOnly );
+    stream >> *splitter; //this sets the splitters position
 
     resultView->setDragEnabled( TRUE );
     resultView->addColumn( i18n( "Filename" ) );
@@ -91,6 +91,11 @@ SearchBrowser::~SearchBrowser()
     config->setGroup( "SearchBrowser" );
     config->writeEntry( "Location", urlEdit->lineEdit()->text() );
     config->writeEntry( "History", urlEdit->urls() );
+
+    QString str; QTextStream stream( &str, IO_WriteOnly );
+    stream << *splitter;
+
+    config->writeEntry( "Splitter Stream", str );
 }
 
 
@@ -98,7 +103,7 @@ void SearchBrowser::slotStartSearch()
 {
     QString path = urlEdit->currentText();
 
-    if( !path.isEmpty() ) //isEmpty() is guarenteed O(1), length() can be O(n)
+    if ( !path.isEmpty() ) //isEmpty() is guarenteed O(1), length() can be O(n)
     {
         urlEdit->insertItem( path );
 
@@ -113,7 +118,7 @@ void SearchBrowser::slotStartSearch()
         delete url;
 
         kdDebug() << path << endl;
-        if ( searchEdit->text().length() )
+        if ( !searchEdit->text().isEmpty() )
         {
             // Create a new item for the HistoryView and pass it to the searching thread
             KListViewItem *item;
@@ -129,15 +134,18 @@ void SearchBrowser::slotStartSearch()
 }
 
 
-void SearchBrowser::SearchListView::startDrag()
+QDragObject *SearchBrowser::SearchListView::dragObject()
 {
-    QListViewItem *item = currentItem();
+    KURL::List list;
+    KURL url;
 
-    if( item )
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected); *it; ++it )
     {
-        KURLDrag *d = new KURLDrag( KURL::List( KURL( item->text( 2 ) ) ), this, "DragObject" );
-        d->dragCopy();
+        url.setPath( (*it)->text( 2 ) );
+        list += url;
     }
+
+    return new KURLDrag( list, this );
 }
 
 void SearchBrowser::customEvent( QCustomEvent *e )
@@ -150,11 +158,13 @@ void SearchBrowser::customEvent( QCustomEvent *e )
         switch ( p->state() ) {
             case SearchModule::ProgressEvent::Start:
                 p->item()->setText( 2, "Started" );
+                QApplication::setOverrideCursor( KCursor::workingCursor() );
                 resultView->clear();
                 break;
 
             case SearchModule::ProgressEvent::Stop:
                 p->item()->setText( 2, "Done" );
+                QApplication::restoreOverrideCursor();
                 break;
 
             case SearchModule::ProgressEvent::Progress:

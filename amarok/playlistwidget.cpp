@@ -53,8 +53,9 @@
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
-//    , m_browser( /*new PlaylistBrowser( "PlaylistBrowser" )*/ 0 )
-//    , m_glowCount( 100 )
+#ifdef PLAYLIST_BROWSER
+    , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
+#endif
     , m_glowAdd( 5 )
     , m_glowTimer( new QTimer( this ) )
     , m_currentTrack( 0 )
@@ -1091,7 +1092,7 @@ void PlaylistWidget::slotGlowTimer() //SLOT
 
         //rect.setTop   ( rect.top()      );
         //rect.setBottom( rect.bottom()   );
-        //rect.setWidth ( contentsWidth() );    //neccessary to draw on the complete width
+        rect.setWidth ( contentsWidth() ); //without this the glow rectangle is wrong
 
         p.drawRect( rect );
     }
@@ -1111,7 +1112,7 @@ void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
     QListViewItemIterator it( this, loweredQuery.startsWith( m_lastSearch ) ? QListViewItemIterator::Visible : 0 );
     bool b;
 
-    while( item = it.current() )
+    while( (item = it.current()) )
     {
         b = query.isEmpty(); //if query is empty skip the loops and show all items
 
@@ -1222,13 +1223,24 @@ void PlaylistWidget::contentsDropEvent( QDropEvent *e )
     }
     else
     {
-        KURL::List urlList;
-        if( KURLDrag::decode( e, urlList ) )
+        KURL::List list;
+        if( KURLDrag::decode( e, list ) )
         {
-            insertMediaInternal( urlList, (PlaylistItem*)after );
+            insertMediaInternal( list, (PlaylistItem*)after );
         }
         else e->ignore();
     }
+}
+
+
+QDragObject* PlaylistWidget::dragObject()
+{
+    KURL::List list;
+
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); *it; ++it )
+        list += static_cast<PlaylistItem*>(*it)->url();
+
+    return new KURLDrag( list, viewport() );
 }
 
 

@@ -87,7 +87,11 @@ class PlaylistWidget : private KListView, public EngineObserver
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
 
-        //QWidget *browser() const;
+        #ifdef PLAYLIST_BROWSER
+        QWidget *browser() const;
+        #endif
+
+        class QDragObject *dragObject();
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
@@ -163,7 +167,9 @@ class PlaylistWidget : private KListView, public EngineObserver
         PlaylistItem *lastItem() const { return (PlaylistItem*)KListView::lastItem(); }
 
 // ATTRIBUTES ------
-        //PlaylistBrowser *m_browser;
+        #ifdef PLAYLIST_BROWSER
+        PlaylistBrowser *m_browser;
+        #endif
 
         int m_glowCount;
         int m_glowAdd;

@@ -70,6 +70,9 @@ public slots:
     void autoClosePages();
     void adjustSize();
 
+private slots:
+    void toggleOverlap( bool );
+
 private:
     static const int DEFAULT_HEIGHT = 50;
 

@@ -23,7 +23,7 @@ class SearchBrowser : public QVBox
             SearchListView( QWidget *parent=0, const char *name=0 );
 
         protected:
-            virtual void startDrag();
+            virtual class QDragObject *dragObject();
     };
 
     public:
@@ -41,6 +41,7 @@ class SearchBrowser : public QVBox
         KListView *historyView;
         KLineEdit *searchEdit;
         KURLComboBox *urlEdit;
+        class QSplitter *splitter;
 };
 
 #endif /* AMAROK_SEARCHBROWSER_H */
