@@ -42,9 +42,6 @@
                     <property name="text">
                         <string>&amp;MusicBrainz</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+M</string>
-                    </property>
                     <property name="autoDefault">
                         <bool>false</bool>
                     </property>

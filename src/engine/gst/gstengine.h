@@ -155,6 +155,7 @@ class GstEngine : public Engine::Base
         KIO::TransferJob* m_transferJob;
         QMutex m_mutexScope;
 
+        bool m_pipelineFilled;
         float m_fadeValue;
 
         bool m_shutdown;
