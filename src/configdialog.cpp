@@ -35,6 +35,7 @@ email                : markey@web.de
 #include <qspinbox.h>
 #include <qtextcodec.h>
 #include <qvbox.h>
+#include <qtooltip.h>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -62,7 +63,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     groupBox            = new QGroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
     m_engineConfigFrame = new QGroupBox( 1, Qt::Horizontal, opt6 );
     m_soundSystem       = new QComboBox( false, groupBox );
+    QToolTip::add( m_soundSystem, i18n("Click to select the sound system to use for playback.") );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
+    QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
