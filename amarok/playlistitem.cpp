@@ -34,6 +34,36 @@
 #include <kurl.h>
 
 
+
+static inline QColor
+mixColors( const QColor &c1, const QColor &c2, uint f1 = 1, uint f2 = 1 )
+{
+    const uint denominator = f1 + f2;
+
+    return QColor( (c1.red()*f1   + c2.red()*f2)   / denominator,
+                   (c1.green()*f1 + c2.green()*f2) / denominator,
+                   (c1.blue()*f1  + c2.blue()*f2)  / denominator );
+}
+
+static inline QColor
+changeContrast( const QColor &c, int contrast )
+{
+    //you get contrast by changing the saturation and value parameters
+
+    int h,s,v; c.getHsv( &h, &s, &v );
+
+    s += contrast;
+
+    if( s > 255 )    { int d = 255 - s; v += d; s = 255; }
+    else if( s < 0 ) { v += s; s = 0; }
+
+    //if v is out of range then leave it, no additional contrast is possible
+
+    return QColor( h,s,v, QColor::Hsv );
+}
+
+
+
 //statics
 QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
@@ -46,11 +76,10 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
       , m_url( u )
 {
     setDragEnabled( true );
-    //setDropEnabled( true );
 
     KListViewItem::setText( 1, title );
     KListViewItem::setText( 8, u.directory().section( '/', -1 ) );
-    KListViewItem::setText( 9, MetaBundle::prettyLength( length ) );
+    setText( 9, MetaBundle::prettyLength( length ) );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -79,11 +108,10 @@ MetaBundle PlaylistItem::metaBundle()
         setText( 10, bundle.prettyBitrate() );
 
         return bundle;
-    }
-    else {
-        MetaBundle bundle( this, 0 );
 
-        return bundle;
+    } else {
+
+        return MetaBundle( this, 0 );
     }
 }
 
@@ -101,6 +129,23 @@ QString PlaylistItem::text( int column ) const
     return KListViewItem::text( column );
 }
 
+QString
+PlaylistItem::seconds() const
+{
+    QString length = exactText( Length );
+
+    if( length == "?" ) return QString();
+    if( length == "-" ) length += '1';
+    else if( !length.isEmpty() )
+    {
+        int m = length.section( ':', 0, 0 ).toInt();
+        int s = length.section( ':', 1, 1 ).toInt();
+
+        length.setNum( m * 60 + s );
+    }
+
+    return length;
+}
 
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
@@ -127,17 +172,15 @@ void PlaylistItem::setText( int column, const QString &newText )
         //these are good candidates for the stringStore
         //NOTE title is not a good candidate, it probably will never repeat in the playlist
 
-        if ( ( column == 7 ) || ( column == 9 ) || ( column == 10 ) )
-            KListViewItem::setText( column, attemptStore( newText ) + " " );
-        else
-            KListViewItem::setText( column, attemptStore( newText ) );
-        break;
+        KListViewItem::setText( column, attemptStore( newText ) );
 
     case 1:
     case 9:
     case 10:
         if( newText.isEmpty() )
         {
+            //FIXME this is an awful hack, do something about it
+
             //don't overwrite old text with nothing
             //we do this because there are several stages to setting text when items are inserted into the
             //playlist, and not all of them have text set.
@@ -148,17 +191,14 @@ void PlaylistItem::setText( int column, const QString &newText )
             //FIXME that needs fixing because it means the scrolling title has a space! dang.
 
             //NOTE if you don't setText() it crashes amaroK!
-            KListViewItem::setText( column, text( column ) );
+            KListViewItem::setText( column, KListViewItem::text( column ) );
 
             break;
         }
         //else do default -->
 
     default:
-        if ( ( column == 7 ) || ( column == 9 ) || ( column == 10 ) )
-            KListViewItem::setText( column, newText + " " );
-        else
-            KListViewItem::setText( column, newText );
+        KListViewItem::setText( column, (column > 8) ? newText + ' ' : newText );
     }
 }
 
@@ -172,27 +212,40 @@ int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 
     switch( col )  //we cannot sort numbers lexically, so we must special case those columns
     {
-        case 4:    //year
-            a =    text( 4 ).toFloat();
-            b = i->text( 4 ).toFloat();
+        case Track:
+        case Year:
+            a =    text( col ).toFloat();
+            b = i->text( col ).toFloat();
             break;
 
-        case 7:    //track
-            a =    text( 7 ).toFloat();
-            b = i->text( 7 ).toFloat();
+        case Length:
+            a =    text( Length ).replace( ':', '.' ).toFloat();
+            b = i->text( Length ).replace( ':', '.' ).toFloat();
             break;
 
-        case 9:    //length
-            a =    text( 9 ).replace( ":", "." ).toFloat();
-            b = i->text( 9 ).replace( ":", "." ).toFloat();
+        case Bitrate:
+            a =    text( Bitrate ).left( 3 ).toFloat(); //should work for 10 through 999 kbps
+            b = i->text( Bitrate ).left( 3 ).toFloat(); //made this change due to setText space paddings
             break;
 
-        case 10:   //bitrate
-            a =    text( 10 ).remove( "kbps" ).toFloat();
-            b = i->text( 10 ).remove( "kbps" ).toFloat();
-            break;
+        case Artist:
+            if( text( Artist ) == i->text( Artist ) ) //if same artist, try to sort by album
+            {
+                return this->compare( i, Album, ascending );
+            }
+            else goto lexical;
 
-        default:   //ordinary string -> sort lexically
+        case Album:
+            if( text( Album ) == i->text( Album ) ) //if same album, try to sort by track
+            {
+                return this->compare( i, Track, true ); //only sort in ascending order //FIXME don't work
+            }
+
+            //else FALL_THROUGH..
+
+        lexical:
+        default:
+            //is an ordinary string -> sort lexically
             return KListViewItem::compare( i, col, ascending );
     }
 
@@ -205,61 +258,63 @@ int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
+    //TODO add spacing on either side of items
+    //p->translate( 2, 0 ); width -= 3;
+
     if( column == 9 && text( 9 ).isEmpty() ) listView()->readAudioProperties( this );
 
     if( this == listView()->currentTrack() )
     {
         const QColor glowText( cg.brightText() );
+        const QColor glowBase( mixColors( cg.base(), changeContrast( glowText, -50 ), 5, 2 ) );
         QColorGroup glowCg = cg; //shallow copy
-        int h, s, v;
-
-        glowText.getHsv( &h, &s, &v );
-        QColor glowBase( h, ( s > 50 ) ? s - 50 : s + 50, v, QColor::Hsv );
-        QColor normBase( cg.base() );
-        glowBase.setRgb( (normBase.red()*5   + glowBase.red()*2) /7,
-                         (normBase.green()*5 + glowBase.green()*2) /7,
-                         (normBase.blue()*5  + glowBase.blue()*2) /7 );
 
         glowCg.setColor( QColorGroup::Text, glowText );
         glowCg.setColor( QColorGroup::Base, glowBase );
 
+        if( isSelected() )
+        {
+            glowCg.setColor( QColorGroup::Highlight, mixColors( glowText, cg.highlight(), 2 ) );
+            glowCg.setColor( QColorGroup::HighlightedText, mixColors( glowText, cg.highlightedText() ) );
+        }
+
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
+
+        return; //don't draw separator
 
     } else if( this == listView()->m_nextTrack ) {
 
         QColorGroup glowCg = cg; //shallow copy
         int h, s, v;
         cg.brightText().getHsv( &h, &s, &v );
-        h -= 60;
+        h += 60;
         const QColor glowText( h,s,v, QColor::Hsv );
-        const QColor normBase( cg.base() );
-
-        QColor glowBase( h + 120, ( s > 50 ) ? s - 50 : s + 50, v, QColor::Hsv );
-
-        glowBase.setRgb( (normBase.red()*5   + glowBase.red()*2) /7,
-                         (normBase.green()*5 + glowBase.green()*2) /7,
-                         (normBase.blue()*5  + glowBase.blue()*2) /7 );
+        const QColor glowBase( mixColors( cg.base(), changeContrast( glowText, -50 ), 5, 2 ) );
 
         glowCg.setColor( QColorGroup::Text, glowText );
         glowCg.setColor( QColorGroup::Base, glowBase );
 
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
+
+        return; //don't draw separator
     }
 #ifdef CORRUPT_FILE
     else if( corruptFile ) {
 
         QColorGroup corruptCg = cg;
-        QColor corruptColor( 0xcc, 0xcc, 0xcc );
-        corruptCg.setColor( QColorGroup::Text, corruptColor );
+        corruptCg.setColor( QColorGroup::Text, QColor( 0xcc, 0xcc, 0xcc ) );
         KListViewItem::paintCell( p, corruptCg, column, width, align );
     }
 #endif
     else KListViewItem::paintCell( p, cg, column, width, align );
 
-    p->setPen( QPen( cg.dark(), 0, Qt::DotLine ) );
-    p->drawLine( width - 1, 0, width - 1, height() - 1 );
+    if( !isSelected() )
+    {
+        p->setPen( QPen( cg.midlight()/* cg.dark()*/, 0, Qt::DotLine ) ); //FIXME midlight with kde scheme is bad
+        p->drawLine( width - 1, 0, width - 1, height() - 1 );
+    }
 }
 
 
@@ -273,12 +328,9 @@ const QString &PlaylistItem::attemptStore( const QString &candidate )
 
     uchar hash = candidate[0].unicode() % STRING_STORE_SIZE;
 
-    if( stringStore[hash] == candidate )
+
+    if( stringStore[hash] != candidate ) //then replace
     {
-        kdDebug() << "[StringStore] Collision[" << int(hash) << "]: " << candidate << endl;
-
-    } else { //replace
-
         stringStore[hash] = candidate;
     }
 

@@ -78,6 +78,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
+    //setItemMargin( 3 ); adds margin to ALL sides, not just left and right. DAMN!
     //setDefaultRenameAction( QListView::Reject ); //FIXME Qt says this is the default anyway!
 
     //NOTE order is critical because we can't set indexes or ids
@@ -101,7 +102,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     setRenameable( 5 );
     setRenameable( 6 );
     setRenameable( 7 );
-    setColumnAlignment(  7, Qt::AlignRight ); //track
+    setColumnAlignment(  7, Qt::AlignCenter ); //track
     setColumnAlignment(  9, Qt::AlignRight ); //length
     setColumnAlignment( 10, Qt::AlignRight ); //bitrate
 
@@ -320,44 +321,19 @@ void PlaylistWidget::saveM3U( const QString &path ) const
 
     if( file.open( IO_WriteOnly ) )
     {
-        KURL url;
         QTextStream stream( &file );
         stream << "#EXTM3U\n";
 
         for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
         {
-            url = item->url();
+            const KURL url = item->url();
 
-            if ( url.protocol() == "file" )
-            {
-                stream << "#EXTINF:";
-                {
-                    QString length = item->text( 9 );
-
-                    if( length == "?" ) length = QString();
-                    else if( length == "-" ) length += '1';
-                    else if( !length.isEmpty() )
-                    {
-                        //TODO if you ever decide to store length as an int in the playlistItem, scrap this!
-                        int m = length.section( ':', 0, 0 ).toInt();
-                        int s = length.section( ':', 1, 1 ).toInt();
-
-                        length.setNum( m * 60 + s );
-                    }
-
-                    stream << length;
-                }
-                stream << ',';
-                stream << item->title();
-                stream << '\n';
-                stream << url.path();
-            }
-            else
-            {
-                stream << QString( "#EXTINF:-1,%1\n" ).arg( item->title() );
-                stream << url.url();
-            }
-
+            stream << "#EXTINF:";
+            stream << item->seconds();
+            stream << ',';
+            stream << item->title();
+            stream << '\n';
+            stream << (url.protocol() == "file" ? url.path() : url.url());
             stream << "\n";
         }
         file.close();
@@ -852,7 +828,10 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         activate( item );
         break;
     case PLAY_NEXT:
+        repaintItem( m_nextTrack );
         m_nextTrack = (PlaylistItem*)item;
+        item->setSelected( false );
+        repaintItem( m_nextTrack );
         break;
     case VIEW:
         showTrackInfo( static_cast<PlaylistItem *>(item) );
@@ -864,7 +843,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         //Spreadsheet like fill-down
         //TODO for track, increment obviously
         {
-            QString newTag = item->text( col );
+            QString newTag = static_cast<PlaylistItem*>(item)->exactText( col );
             QListViewItemIterator it( item );
 
             for( ++it; it.current(); ++it )
@@ -915,7 +894,7 @@ void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
     {
         //FIXME this is wrong, see above if statement
         str += body.arg( i18n( "Stream" ), pItem->url().prettyURL() );
-        str += body.arg( i18n( "Title" ),  pItem->text( 0 ) );
+        str += body.arg( i18n( "Title" ),  pItem->trackName() );
     }
 
     str.append( "</table></body></html>" );

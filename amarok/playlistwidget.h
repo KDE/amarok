@@ -102,17 +102,6 @@ class PlaylistWidget : private KListView
         static QString defaultPlaylistPath();
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
-        enum ColumnType  { Trackname = 0,
-                           Title = 1,
-                           Artist = 2,
-                           Album = 3,
-                           Year = 4,
-                           Comment = 5,
-                           Genre = 6,
-                           Track = 7,
-                           Directory = 8,
-                           Length = 9,
-                           Bitrate = 10 };
 
         friend class PlaylistItem;
         friend class PlaylistLoader;

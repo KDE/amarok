@@ -82,7 +82,7 @@ PlayerApp::PlayerApp()
         , m_proxyError( false )
         , m_sockfd( -1 )
         , m_showBrowserWin( false )
-        , m_pActionCollection( new KActionCollection( this ) )
+        , m_pActionCollection( new KActionCollection( 0, this ) )
 {
     //TODO readConfig and applySettings first
     //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
@@ -177,7 +177,7 @@ PlayerApp::~PlayerApp()
     delete m_pPlayerWidget;
     delete m_pBrowserWin;
     delete m_pOSD;
-    
+
     PluginManager::unload( m_pEngine );
 }
 
@@ -311,23 +311,24 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 void PlayerApp::initEngine()
 {
     Plugin* plugin = PluginManager::createFromQuery
-                         ( "[X-KDE-amaroK-plugintype] == 'engine' and "    
-                           "Name                      == '" + AmarokConfig::soundSystem() + "'" );                            
-    
+                         ( "[X-KDE-amaroK-plugintype] == 'engine' and "
+                           "Name                      == '" + AmarokConfig::soundSystem() + "'" );
+
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";
-        
+
         //when the engine specified in our config does not exist/work, try to invoke _any_ engine plugin
         plugin = PluginManager::createFromQuery
                      ( "[X-KDE-amaroK-plugintype] == 'engine'" );
-                         
+
         if ( !plugin )
+            //this will call abort(), but this causes amarok to crash anyway!
             kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
-            
+
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
-    
+
     m_pEngine = static_cast<EngineBase*>( plugin );
     m_pEngine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
 
@@ -579,6 +580,7 @@ void PlayerApp::setupColors()
         //TODO this sucks a bit, perhaps just iterate over all children calling "unsetPalette"?
         QColorGroup group = QApplication::palette().active();
         group.setColor( QColorGroup::BrightText, group.highlight() ); //GlowColor
+        group.setColor( QColorGroup::Midlight, group.mid() ); //column separator
         m_pBrowserWin->setColors( QPalette( group, group, group ), KGlobalSettings::alternateBackgroundColor() );
 
     }
@@ -594,21 +596,23 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 74, 81, 107 );
         //bgAlt.setRgb( 83, 86, 112 );
 
-        //QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
-
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
-        //group.setColor( QColorGroup::Button, QColor( 0, 112, 255 ) );
 
         group.setColor( QColorGroup::Highlight, Qt::white );
         group.setColor( QColorGroup::HighlightedText, bg );
         group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
-
-        group.setColor( QColorGroup::Light,    Qt::white );
-        group.setColor( QColorGroup::Midlight, group.background() );
-        group.setColor( QColorGroup::Dark,     Qt::darkGray );
-        group.setColor( QColorGroup::Mid,      Qt::blue );
+/*
+        group.setColor( QColorGroup::Light,    Qt::red );
+        group.setColor( QColorGroup::Midlight, Qt::red );
+        group.setColor( QColorGroup::Mid,      Qt::red );
+        group.setColor( QColorGroup::Dark,     Qt::red );
+        group.setColor( QColorGroup::Shadow,   Qt::red );
+*/
+        int h,s,v;
+        bgAlt.getHsv( &h, &s, &v );
+        group.setColor( QColorGroup::Midlight, QColor( h, s/3, v * 1.2, QColor::Hsv ) );
 
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
         m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );

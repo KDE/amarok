@@ -74,12 +74,12 @@ public:
     MetaBundle( const PlaylistItem *item, TagLib::AudioProperties *ap )
       : m_url(     item->url() )
       , m_title(   item->title() ) //because you override text()
-      , m_artist(  item->text( 2 ) )
-      , m_album(   item->text( 3 ) )
-      , m_year(    item->text( 4 ) )
-      , m_comment( item->text( 5 ) )
-      , m_genre(   item->text( 6 ) )
-      , m_track(   item->text( 7 ) )
+      , m_artist(  item->exactText( 2 ) )
+      , m_album(   item->exactText( 3 ) )
+      , m_year(    item->exactText( 4 ) )
+      , m_comment( item->exactText( 5 ) )
+      , m_genre(   item->exactText( 6 ) )
+      , m_track(   item->exactText( 7 ) )
     {
         init( ap );
     }

@@ -181,7 +181,7 @@ BrowserBar::event( QEvent* e )
   switch( e->type() )
   {
   case QEvent::LayoutHint:
-      kdDebug() << "LAYOUT_HINT!\n";
+      //kdDebug() << "LAYOUT_HINT!\n";
       setMinimumWidth( m_multiTabBar->minimumSize().width() + m_playlist->minimumSize().width() + 4 );
       break;
 
@@ -261,7 +261,7 @@ BrowserBar::showHidePage( int replaceIndex )
         //TODO don't resize if m_stayButton->isOn();
 
         if( isHidden ) { replace->show(); m_pageHolder->show();
-                         m_pos = replace->baseSize().width() + m_multiTabBar->width(); }
+                         if( !current || !m_stayButton->isOn() ) m_pos = replace->baseSize().width() + m_multiTabBar->width(); }
         else           { m_pages.last(); m_pages.next(); //sets "current" to NULL
                          replace->hide(); m_pageHolder->hide();
                          m_pos = m_multiTabBar->width(); }

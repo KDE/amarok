@@ -32,7 +32,6 @@ class PlaylistItem : public KListViewItem
     public:
         PlaylistItem( PlaylistWidget*, QListViewItem*, const KURL&, const QString& = "", const int length = 0 );
 
-        QString text( int column ) const;
         QString exactText( int col ) const { return KListViewItem::text( col ); }
         void setText( const MetaBundle& );
         void setText( int, const QString& );
@@ -41,16 +40,32 @@ class PlaylistItem : public KListViewItem
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
 
         MetaBundle metaBundle();
-        const QString trackName() const { return KListViewItem::text( 0 ); }
-        const QString title() const { return KListViewItem::text( 1 ); }
+        QString trackName() const { return KListViewItem::text( 0 ); }
+        QString title() const { return KListViewItem::text( 1 ); }
         const KURL &url() const { return m_url; }
+        QString seconds() const;
+
+
 #ifdef CORRUPT_FILE
         bool corruptFile;
 #endif
 
+        enum Column  { Trackname = 0,
+                       Title = 1,
+                       Artist = 2,
+                       Album = 3,
+                       Year = 4,
+                       Comment = 5,
+                       Genre = 6,
+                       Track = 7,
+                       Directory = 8,
+                       Length = 9,
+                       Bitrate = 10 };
+
     private:
-        int  compare( QListViewItem*, int, bool ) const;
-        void paintCell( QPainter*, const QColorGroup&, int, int, int );
+        QString text( int column ) const;
+        int     compare( QListViewItem*, int, bool ) const;
+        void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
 
