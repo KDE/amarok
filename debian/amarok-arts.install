@@ -1,0 +1,6 @@
+debian/tmp/usr/share/services/amarok_artsengine_plugin.desktop
+debian/tmp/usr/lib/libamarokarts.so
+debian/tmp/usr/lib/libamarokarts.la
+debian/tmp/usr/lib/mcop/*
+debian/tmp/usr/lib/kde3/libamarok_artsengine_plugin.so
+debian/tmp/usr/lib/kde3/libamarok_artsengine_plugin.la

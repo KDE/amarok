@@ -1,3 +1,21 @@
+amarok (1.0.0-1) unstable; urgency=low
+
+  * Build official 1.0.0 release.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Wed, 16 Jun 2004 23:48:52 +0200
+
+amarok (1.0-pre1-2) unstable; urgency=low
+
+  * Fix amarok-arts package, was missing mcop files. Duh.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Wed, 16 Jun 2004 23:25:29 +0200
+
+amarok (1.0-pre1-1) unstable; urgency=low
+
+  * First 1.0.0 prerelease.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Wed, 16 Jun 2004 10:18:31 +0200
+
 amarok (1.0-beta4-2) unstable; urgency=low
 
   * Patch to final beta4 version.

@@ -1,1 +1,8 @@
-debian/tmp/*
+debian/tmp/usr/share/apps/amarok/*
+debian/tmp/usr/share/icons/*
+debian/tmp/usr/share/config.kcfg/amarok.kcfg
+debian/tmp/usr/share/servicetypes/amarok_plugin.desktop
+debian/tmp/usr/share/applications/kde/amarok.desktop
+debian/tmp/usr/share/doc/*
+debian/tmp/usr/bin/*
+debian/tmp/etc/*
