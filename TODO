@@ -7,6 +7,7 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
 
   <mxcl>   Inline editing of tags frequently crashes, muesli is this due to that bug from before?
+	   muesli: "Only" for the current song. No other crashes experienced here, anyways.
 
   <mxcl>   CollectionBrowser Toolbar is too wide for some users' usage patterns.
 
@@ -26,10 +27,6 @@ SHORT-TERM (URGENT):
   <muesli> Enabling "stop playing after current track" and enqueueing a song at the same time confuses amarok.
 
   <mxcl>   If you inline set the title tag to "", prettyTitle gets inserted as the title tag.
-
-  <muesli> Same for storing / looking for a compilation-cover on the local hdd.
-
-  <muesli> When we're searching a cover for a compilation, cut off the artist's name, it doesn't help.
 
   <mxcl>   loadEngine can call statusbar::message() at the void-engine stage and crash because the statusbar
            is not yet created.
