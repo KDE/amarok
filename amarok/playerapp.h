@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.8.0"
+#define APP_VERSION "0.8.3"
 
 #include <kglobalaccel.h>
 #include <kuniqueapplication.h>
