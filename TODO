@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #10 being the highest available (take this one for your next bug and increase here)
+           #11 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
@@ -95,7 +95,7 @@ MID-TERM:
 
     * add: background pseudo-transparency for playlist window
 
-    * add: better cleanup at program exit; delete all new'ed objects
+    * add: better cleanup at program exit; delete all new'd objects
 
     * add: function for adding all files in current dir to playlist
 
@@ -107,6 +107,8 @@ MID-TERM:
 
     * add: save/load arts effects on close/startup automatically
 
+    * chg: #10 replace QSlider with custom slider class, modelled after muesli's design proposal -->markey
+    
     * chg: can we make all buttons into actions? if we can, we could use setState(), a global
            actionCollection and save plenty of LOC. I see problems with the play/stop/etc
            buttons though.
