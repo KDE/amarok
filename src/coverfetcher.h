@@ -5,9 +5,9 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include <qimage.h>   //stack allocated
-#include <qobject.h>  //baseclass
-#include <qstring.h>  //stack allocated
+#include <qimage.h>       //stack allocated
+#include <qobject.h>      //baseclass
+#include <qstringlist.h>  //stack allocated
 
 namespace KIO { class Job; }
 
@@ -54,9 +54,10 @@ private slots:
 private:
     const QString m_artist;
     const QString m_album;
+    QStringList   m_queries;
 
     bool    m_userCanEditQuery;
-    QString m_query;
+    QString m_userQuery;
     QString m_fetchedXML;
     QImage  m_image;
 

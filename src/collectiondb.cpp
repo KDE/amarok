@@ -363,13 +363,15 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, const 
 bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl )
 {
+    kdDebug() << "[CollectionDB] Saving cover for: " << artist << " - " << album << endl;
+
     //show a wait cursor for the duration
     amaroK::OverrideCursor keep;
 
     // remove existing album covers
     removeAlbumImage( artist, album );
 
-    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", "amarok/albumcovers/large/" ) );
     QCString key = md5sum( artist, album );
 
     // Save Amazon product page URL as embedded string, for later retreival
@@ -1283,11 +1285,10 @@ void
 CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    const QString keyword = artist + " - " + album;
+    kdDebug() << "[CollectionDB] Fetching cover for " << artist << " - " << album << endl;
+
     CoverFetcher* fetcher = new CoverFetcher( parent, artist, album );
-
     connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
-
     fetcher->setUserCanEditQuery( !noedit );
     fetcher->startFetch();
     #endif
@@ -1317,13 +1318,12 @@ CollectionDB::dirDirty( const QString& path )
 void
 CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
-    if ( fetcher->error() )
+    if ( fetcher->error() ) {
+        kdError() << fetcher->errorMessage() << endl;
         emit s_emitter->coverFetcherError( fetcher->errorMessage() );
-
+    }
     else {
-        kdDebug() << "[CollectionDB] Saving cover for: " << fetcher->album() << endl;
         setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL() );
-
         emit s_emitter->coverFetched( fetcher->artist(), fetcher->album() );
     }
 }

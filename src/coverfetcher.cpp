@@ -51,7 +51,22 @@ CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
         album.remove( regexp );
     }
 
-    m_query = artist + " - " + album;
+    //TODO try queries that remove anything in album after a " - " eg Les Mis. - Excerpts
+
+    //search on our modified term, then the original
+    m_queries += artist + " - " + album;
+    m_queries += artist + " - " + m_album;
+    m_queries += album;
+    m_queries += m_album;
+
+    //don't do the same searches twice in a row
+    if( m_album == album )  {
+       m_queries.pop_front();
+       m_queries.pop_back();
+    }
+
+    //query used by queryEditor
+    m_userQuery = m_queries.front();
 
     QApplication::setOverrideCursor( KCursor::workingCursor() );
 }
@@ -66,23 +81,31 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::startFetch()
 {
-   /* Static license Key. Thanks muesli ;-) */
-   const QString LICENSE = "D1URM11J3F2CEH";
+    /* Static license Key. Thanks muesli ;-) */
+    const QString LICENSE = "D1URM11J3F2CEH";
 
-   // reset all values (if search isn't started as new CoverFetcher)
-   delete[] m_buffer;
-   m_bufferIndex = 0;
-   m_fetchedXML = QString::null;
+    // reset all values (if search isn't started as new CoverFetcher)
+    delete[] m_buffer;
+    m_bufferIndex = 0;
+    m_fetchedXML = QString::null;
 
-   QString url = "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml";
-   url = url.arg( AmarokConfig::amazonLocale(), LICENSE, m_query, "heavy" );
+    QString query;
+    if ( !m_queries.isEmpty() ) {
+        query = m_queries.front();
+        m_queries.pop_front();
+    }
+    else
+        query = m_userQuery;
 
-   kdDebug() << "[CoverFetcher] " << url << endl;
+    QString url = "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml";
+    url = url.arg( AmarokConfig::amazonLocale(), LICENSE, query, "heavy" );
 
-   KIO::TransferJob* job = KIO::get( url, false, false );
+    kdDebug() << "[CoverFetcher] " << url << endl;
 
-   connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
-   connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedXmlData( KIO::Job*, const QByteArray& )) );
+    KIO::TransferJob* job = KIO::get( url, false, false );
+
+    connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
+    connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedXmlData( KIO::Job*, const QByteArray& )) );
 }
 
 
@@ -137,7 +160,7 @@ void
 CoverFetcher::receivedImageData( KIO::Job *job, const QByteArray& data ) //SLOT
 {
     if ( m_bufferIndex + (uint) data.size() >= BUFFER_SIZE ) {
-        error( i18n("The Image amazon have sent is too large, please report this error to the amaroK development team.") );
+        error( i18n("The Image amazon have sent is too large, please report this error to the amaroK-devel@lists.sf.net.") );
         //TODO delete the KIO job?
         return;
     }
@@ -151,71 +174,81 @@ CoverFetcher::receivedImageData( KIO::Job *job, const QByteArray& data ) //SLOT
 void
 CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
 {
-    /* Okay, this next thing may appear a bit weird ;) Short explanation:
-       If there's no result for the search string (artist - album), search for the album tag only.
-       If there's no (large) cover is found, try the next smaller image (medium) etc. If no covers, open editSearch.
-       If we fetch all covers (covermanager), do not show any errors/previews, just save (m_noedit).  */
-
-    if ( job->error() )
-    {
+    if ( job->error() ) {
         kdDebug() << "[CoverFetcher] Could not fetch image data, KIO errno: " << job->error() << endl;
 
-        if ( m_query != m_album ) {
-            kdDebug() << "[CoverFetcher] Trying album-only query.\n";
-            m_query = m_album;
+        if ( !m_queries.isEmpty() )
             startFetch();
-        }
         else if ( m_userCanEditQuery )
-            showQueryEditor( i18n("The cover was not found in the Amazon database. You may have better luck if you refine the search:") );
-
+            showQueryEditor( i18n("amaroK could not find the cover in Amazon's database. You can refine the search below:") );
         else
-            error( i18n("The requested image could not be obtained from Amazon."), job );
+            error( i18n("Amazon has no covers available for the requested album."), job );
 
         return;
     }
 
     m_image.loadFromData( m_buffer, m_bufferIndex );
 
-    if ( m_image.width() <= 1 )
-    {
-        //I think amazon gives 1px square images when it has nothing that size to offer
-
+    if ( m_image.width() <= 1 ) {
+        //Amazon has nothing to offer us for the requested image size
         if ( m_size > 0 ) {
             //we need to fetch the image again, but this time requesting a size smaller
             m_size--;
             finishedXmlFetch( job );
         }
         else if( m_userCanEditQuery )
-            showQueryEditor( i18n("A suitable cover was found, <b>but with no associated images</b>. You can refine the search below:") );
+            showQueryEditor( i18n("Amazon has a record for this album, <b>but with no associated images</b>. You can refine the search below:") );
         else
             error( i18n("Amazon has a record for this album, but can offer no cover images.") );
     }
-    else if( m_userCanEditQuery ) {
-        KDialog dialog( (QWidget*)parent() );
+    else if( m_userCanEditQuery )
+    {
+        class CoverFoundDialog : public KDialog {
+        public:
+            CoverFoundDialog( QWidget *parent, const QString &caption, const QImage &cover )
+                    : KDialog( parent )
+            {
+                (new QVBoxLayout( this ))->setAutoAdd( true );
+                (new QLabel( this ))->setPixmap( cover );
+                QHBox* buttons         = new QHBox( this );
+                KPushButton* save      = new KPushButton( KStdGuiItem::save(), buttons );
+                KPushButton* newsearch = new KPushButton( i18n( "New &Search" ), buttons, "NewSearch" );
+                KPushButton* cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
+                save->setDefault( true );
 
-        (new QVBoxLayout( &dialog ))->setAutoAdd( true );
+                connect( save,      SIGNAL(clicked()), SLOT(accept()) );
+                connect( newsearch, SIGNAL(clicked()), SLOT(accept()) );
+                connect( cancel,    SIGNAL(clicked()), SLOT(reject()) );
 
-        QLabel* label = new QLabel( &dialog );
-        label->setPixmap( m_image );
+                setFixedSize( sizeHint() );
+                setCaption( caption );
+            }
 
-        QHBox* buttons         = new QHBox( &dialog );
-        KPushButton* save      = new KPushButton( KStdGuiItem::save(), buttons );
-        KPushButton* newsearch = new KPushButton( i18n( "Search &Again" ), buttons );
-        KPushButton* cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
+            virtual void accept()
+            {
+                if ( qstrcmp( sender()->name(), "NewSearch" ) == 0 )
+                    done( 1000 );
+                else
+                    QDialog::accept();
+            }
+        };
 
-        save->setDefault( true );
+        CoverFoundDialog dialog( (QWidget*)parent(), m_album, m_image );
 
-        connect( cancel, SIGNAL(clicked()), SLOT(deleteLater()) );
-        connect( newsearch, SIGNAL(clicked()), SLOT(showQueryEditor()) );
-        connect( save, SIGNAL(clicked()), SLOT(finish()) );
-
-        connect( cancel, SIGNAL(clicked()), &dialog, SLOT(reject()) );
-        connect( newsearch, SIGNAL(clicked()), &dialog, SLOT(accept()) );
-        connect( save, SIGNAL(clicked()), &dialog, SLOT(accept()) );
-
-        dialog.setFixedSize( dialog.sizeHint() );
-        dialog.setCaption( m_album );
-        dialog.exec();
+        switch( dialog.exec() ) {
+        case KDialog::Accepted:
+            kdDebug() << "SAVE\n";
+            finish();
+            break;
+        case 1000:
+            kdDebug() << "1000\n";
+            showQueryEditor();
+            break;
+        default:
+            kdDebug() << "CANCEL\n";
+            deleteLater();
+            break;
+        }
     }
     else
         //image loaded successfully yay!
@@ -237,36 +270,40 @@ CoverFetcher::showQueryEditor( QString text ) //SLOT
             QHBoxLayout *hbox = new QHBoxLayout( 8 );
 
             KPushButton* cancelButton = new KPushButton( KStdGuiItem::cancel(), this );
-            KPushButton* okButton     = new KPushButton( i18n("Search"), this );
+            KPushButton* searchButton = new KPushButton( i18n("Search"), this );
 
             hbox->addItem( new QSpacerItem( 80, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-            hbox->addWidget( okButton );
+            hbox->addWidget( searchButton );
             hbox->addWidget( cancelButton );
 
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
             vbox->addWidget( new KLineEdit( keyword, this, "Query" ) );
             vbox->addLayout( hbox );
 
-            okButton->setDefault( true );
+            searchButton->setDefault( true );
 
             adjustSize();
             setFixedHeight( height() );
 
-            connect( okButton, SIGNAL(clicked()), SLOT(accept()) );
+            connect( searchButton, SIGNAL(clicked()), SLOT(accept()) );
             connect( cancelButton, SIGNAL(clicked()), SLOT(reject()) );
         }
 
         QString query() { return static_cast<KLineEdit*>(child( "Query" ))->text(); }
     };
 
+    //use the user query, not stuff from in here
+    //HACK this sucks, improve the api
+    m_queries.clear();
+
     if ( text.isEmpty() )
         text = i18n("Search Amazon's cover database with this query:");
 
-    EditSearchDialog dialog( (QWidget*)parent(), text, m_query );
+    EditSearchDialog dialog( (QWidget*)parent(), text, m_userQuery );
 
     switch( dialog.exec() ) {
     case QDialog::Accepted:
-        m_query = dialog.query();
+        m_userQuery = dialog.query();
         startFetch();
         break;
     default:

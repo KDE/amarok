@@ -386,6 +386,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
         if ( !file.isEmpty() )
         {
+            //TODO processEvents is dangerous in this context
             qApp->processEvents();    //it may takes a while so process pending events
             m_db->setAlbumImage( info[0], info[1], file );
             showCurrentTrack();
@@ -621,7 +622,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 + QString::number( score / 2 ) +
                 "px;'></div></div></td></tr></table>";
 
-        browser->write( QStringx("%1<br>%2%3<br>%4<br>")    
+        browser->write( QStringx("%1<br>%2%3<br>%4<br>")
             .args( QStringList()
                 << i18n( "Track played once", "Track played %n times", playtimes )
                 << scoreBox
