@@ -89,8 +89,8 @@ A: It can! Chances are you're using Fedora/RedHat linux, they don't ship with
 Q: The sound stutters, how can I improve it?
 A: You can either use the GStreamer engine (it's great!), or tweak aRts. Open
    the Control Center, go to "Sound and Multimedia", then "Sound System". Enable
-   "Run with highest possible priority", and increase the size of the sound buffer,
-   but beware the consequences of a high aRts sound buffer (next FAQ).
+   "Run with highest possible priority", and increase the size of the sound
+   buffer, but beware the consequences of a high aRts sound buffer (next FAQ).
 
 Q: The amaroK analyzers are really unresponsive!
 A: You are probably using the aRts engine, either use the GST or NMM engines, or
@@ -98,6 +98,18 @@ A: You are probably using the aRts engine, either use the GST or NMM engines, or
    lower the buffer the more responsive the visuals. Yes this is a bug! Please
    help us fix it!
 
+Q: I have the right version of GStreamer installed but amaroK configure still
+   can't find it!
+A: Here's an extract from the PKG-CONFIG man page:
+
+     pkg-config retrieves information about packages from  special metadata
+     files. These files are named after the package, with the extension
+     .pc. By default, pkg-config looks in the directory prefix/lib/pkgconfig
+     for these  files;  it will  also  look in the colon-separated list of 
+     directories specified by the PKG_CONFIG_PATH environment variable.
+     
+   So, do export PKG_CONFIG_PATH="/path/to/gstreamer-0.x.y.pc" and reconfigure.
+   
 Q: Can amaroK output directly to OSS/ALSA?
 A: Yes, but not yet. One reason we use aRts/GStreamer and NMM is for codecs.
    To output directly to ALSA, etc. someone needs to write an amaroK engine
@@ -119,12 +131,12 @@ A: The aRts engine is the slowest to load, using an alternative will help.
    important here).
 
 Q: Do you accept patches!
-A: Happily! Your best course of action is to let us know what you plan to do before
-   you do any work so we can discuss it, but don't fret we haven't turned down a
-   patch yet! Discussion is mostly to help you patch the correct bits of amaroK.
-   Then either submit a patch to the mailing list, or commit if you have cvs access.
-   However, please let us know before you commit new features to cvs! If you have
-   a bug fix then just go ahead, this is open source afterall :)
+A: Happily! Your best course of action is to let us know what you plan to do
+   before you do any work so we can discuss it, but don't fret we haven't turned
+   down a patch yet! Discussion is mostly to help you patch the correct bits of
+   amaroK. Then either submit a patch to the mailing list, or commit if you have
+   cvs access. However, please let us know before you commit new features to
+   cvs! If you have a bug fix then just commit, this is open source afterall:)
 
 
 --------------------------------------------------------------------------------
@@ -139,7 +151,7 @@ get instant notification of commits to the CVS.
 
 --------------------------------------------------------------------------------
 
-WWW : http://amarok.sf.net
+WWW : http://amarok.kde.org
 IRC : irc.freenode.net, #amarok
 MAIL: amarok-devel@lists.sourceforge.net
 WIKI: http://wiki.kdenews.org/tiki-index.php?page=amaroK
