@@ -27,6 +27,7 @@ class QMouseEvent;
 class QWidget;
 
 #define SINVEC_SIZE 6000
+#undef DRAW_GRID  //disable the grid
 
 /**
  *@author mark
@@ -58,7 +59,7 @@ class AnalyzerBase : public QFrame
         void interpolate( std::vector<float> *, std::vector<float> & ) const;
         void initSin( std::vector<float> & ) const;
 
-        virtual void init();
+        virtual void init() = 0;
         virtual void mouseReleaseEvent( QMouseEvent* );
 
     private:

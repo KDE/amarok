@@ -74,8 +74,8 @@ void TurbineAnalyzer::drawAnalyzer( std::vector<float> *s )
         bitBlt( m_pComposePixmap, x, height()/2,
                 m_pSrcPixmap, y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
         //blt the roof bar
-        bitBlt( m_pComposePixmap, x, height()/2 - roofVector[i] - 2, m_pRoofPixmap );
-        bitBlt( m_pComposePixmap, x, height()/2 + roofVector[i] + 2, m_pRoofPixmap );
+        bitBlt( m_pComposePixmap, x, height()/2 - roofVector[i] - 2, &m_roofPixmap );
+        bitBlt( m_pComposePixmap, x, height()/2 + roofVector[i] + 2, &m_roofPixmap );
 
         //set roof parameters for the NEXT draw
         if ( roofVelocityVector[i] != 0 )

@@ -56,15 +56,12 @@ void AnalyzerBase::polish()
 }
 
 
-void AnalyzerBase::init()
-{}
-
-
 void AnalyzerBase::initGrid()
 {
     m_grid.resize( width(), height() );
     bitBlt( &m_grid, 0, 0, parentWidget()->paletteBackgroundPixmap(), x(), y(), width(), height() );
 
+  #if DRAW_GRID
     QPainter painterGrid( &m_grid );
     painterGrid.setPen( QPen( QColor( 0x20, 0x20, 0x50 ) ) );
 
@@ -81,6 +78,7 @@ void AnalyzerBase::initGrid()
     {
         painterGrid.drawLine( 0, y, w, y );
     }
+  #endif    
 }
 
 

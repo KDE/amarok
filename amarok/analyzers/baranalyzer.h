@@ -15,9 +15,8 @@
 #define BARANALYZER_H
 
 #include "analyzerbase.h"
+#include <qpixmap.h>
 
-
-class QPixmap;
 
 /**
 @author Mark Kretschmann
@@ -35,10 +34,9 @@ class BarAnalyzer : public AnalyzerBase
         virtual void drawAnalyzer( std::vector<float> * );
 
     protected:
-        QPixmap *m_pBgPixmap;
         QPixmap *m_pSrcPixmap;
         QPixmap *m_pComposePixmap;
-        QPixmap *m_pRoofPixmap;
+        QPixmap  m_roofPixmap;
 
         uint m_lvlMapper[256];
 };
