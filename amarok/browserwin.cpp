@@ -139,13 +139,20 @@ void BrowserWin::initChildren()
     m_pButtonPrev  = new ExpandButton( i18n( "Previous" ), m_pButtonPlay );
 
     m_pSplitter = new QSplitter( this );
-
     m_pJanusWidget = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
     
+    //Traverse childrenlist of KJanusWidget to find and hide that darn QLabel and KSeparator
+    QObject *pHeader = m_pJanusWidget->child( "KJanusWidgetTitleLabel" );
+    if ( pHeader )     static_cast<QWidget*>( pHeader )->hide();
+    QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
+    if ( pHeader )     static_cast<QWidget*>( pSeparator )->hide();
+            
     QVBox *pBrowserBox = m_pJanusWidget->addVBoxPage( QString( "Filebrowser" ), QString::null,
-                         KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup, KIcon::SizeMedium ) );
+                         KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
+                         KIcon::SizeMedium ) );
     QVBox *pStreamBox =  m_pJanusWidget->addVBoxPage( QString( "Streambrowser" ), QString::null,
-                         KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup, KIcon::SizeMedium ) );
+                         KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup,
+                         KIcon::SizeMedium ) );
     QVBox *pVirtualBox = m_pJanusWidget->addVBoxPage( QString( "Virtual Folders" ), QString::null,
                          KGlobal::iconLoader()->loadIcon( "folder_sound", KIcon::NoGroup,
                          KIcon::SizeMedium ) );
