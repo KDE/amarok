@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #139 being the highest available (take this one for your next bug and increase here)
+           #140 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 139 <markey> Find out why collection scan won't work with samba shares.
+                   (fix or at least show error message)
 
   FIX 138 <markey> Don't blindly accept mp3/ogg files in the playlist, by ignoring canDecode().
                    This is already causing trauble on distros like fedora which don't support mp3.
