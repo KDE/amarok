@@ -134,6 +134,12 @@ namespace amaroK
             AppendSuggestionsAction( KActionCollection *ac );
     };
 
+    class DynamicAction : public ToggleAction
+    {
+        public:
+            DynamicAction( KActionCollection *ac );
+    };
+
     class BurnMenu : public KPopupMenu
     {
             Q_OBJECT

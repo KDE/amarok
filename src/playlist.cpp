@@ -433,7 +433,6 @@ Playlist::playNextTrack()
     if( isEmpty() )
         return;
 
-    PlaylistItem *prev = currentTrack();
     PlaylistItem *item = currentTrack();
 
     if ( m_stopAfterCurrent )
@@ -512,11 +511,14 @@ Playlist::playNextTrack()
             QueryBuilder qb;
             qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addMatches( QueryBuilder::tabArtist, suggestions );
-            qb.setLimit( 0, 1 );
-            QStringList urls = qb.run();
 
-            insertMedia( KURL::List( urls ), Playlist::Unique );
+            if ( !suggestions.isEmpty() ) //if we have no suggestions, we wont get any results
+                qb.addMatches( QueryBuilder::tabArtist, suggestions );
+
+            qb.setLimit( 0, 1 );
+            QStringList url = qb.run();
+
+            insertMedia( KURL::List( url ), Playlist::Unique );
         }
 
         if ( !item && AmarokConfig::repeatPlaylist() )

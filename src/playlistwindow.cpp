@@ -139,6 +139,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RepeatPlaylistAction( ac );
     new amaroK::RandomAction( ac );
     new amaroK::AppendSuggestionsAction( ac );
+    new amaroK::DynamicAction( ac );
     new amaroK::VolumeAction( ac );
 
     if( K3bExporter::isAvailable() )
@@ -267,6 +268,7 @@ PlaylistWindow::init()
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
     actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
+    actionCollection()->action("dynamic_mode")->plug( m_settingsMenu );
     actionCollection()->action("append_suggestions")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
     m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
