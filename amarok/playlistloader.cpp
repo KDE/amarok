@@ -438,7 +438,8 @@ void TagReader::append( PlaylistItem *item )
       if( !running() )
       {
           start( QThread::LowestPriority );
-          m_parent->setCursor( KCursor::workingCursor() );
+          //m_parent->setCursor( KCursor::workingCursor() );
+          QApplication::setOverrideCursor( KCursor::workingCursor() );
       }
    }
 }
