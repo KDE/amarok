@@ -2,16 +2,23 @@
 # BEGIN KDEMULTIMEDIA CHECK
 ###############################################################################
 
+KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
+
+AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes -a x$build_arts = xyes])
+
 if test x$build_arts = xyes; then
-    KDE_CHECK_HEADER(arts/artsmodules.h, have_kdemm=yes, have_kdemm=no)
-    
     if test x$have_kdemm = xyes; then
         AC_DEFINE(HAVE_ARTS, 1, [have aRts and kdemultimedia])
+        arts_libs="-lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules"
+
+        echo "*****************************************************"
+        echo "*** amaroK will be built with the aRts-engine"
+        echo "*****************************************************"
     fi
 fi
 
-AM_CONDITIONAL(with_arts, [test x$have_kdemm = xyes])
-    
+AC_SUBST(arts_libs)
+
 ###############################################################################
 # END KDEMULTIMEDIA CHECK
 ###############################################################################
@@ -203,27 +210,25 @@ if test "$build_nmm" != "no"; then
   #currently NMM libs must by in LD_PATH
 
   echo "*****************************************************"
-  echo "*** amaroK will be built with the NMM-engine, please"
-  echo "*** ensure that the NMM libraries are in LD_PATH, or"
-  echo "*** run: ./configure --with-nmm=no"
+  echo "*** amaroK will be built with the NMM-engine."
+  echo "*** Please ensure that the NMM libraries are in your"
+  echo "*** LD_PATH, or run: ./configure --with-nmm=no"
   echo "*****************************************************"
 
   CFLAGS_NMM="-I$nmm_cflags"
-  LIB_NMM="-lnmmbase -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmfile -lnmmoggvorbis"
+  nmm_libs="-lnmmbase -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmfile -lnmmoggvorbis"
   AC_DEFINE(HAVE_NMM, 1, [have NMM])
-  have_nmm=yes
 
 else
 
   #no warning, what's the point?
   CFLAGS_NMM=""
   LIB_NMM=""
-  have_nmm=no
 
 fi
 
-AM_CONDITIONAL(link_lib_NMM, test x$have_nmm = xyes)
-AC_SUBST(LIB_NMM)
+AM_CONDITIONAL(with_nmm, test x$build_nmm = xyes)
+AC_SUBST(nmm_libs)
 AC_SUBST(CFLAGS_NMM)
 
 ###############################################################################

@@ -43,7 +43,7 @@
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <krandomsequence.h>
-#include <kstandarddirs.h>
+#include <kstandarddirs.h> //KGlobal::dirs()
 #include <kstdaction.h>
 #include <kurl.h>
 #include <kurldrag.h>
@@ -160,7 +160,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
         m_redoButton->setEnabled( false );
     //</init undo/redo>
 
-    KStdAction::copy( this, SLOT( copyAction() ), ac );
+    KStdAction::copy( this, SLOT( copyToClipboard() ), ac );
     new KAction( i18n( "Save Playlist" ), "filesaveas", CTRL+Key_S, this, SLOT( saveM3u() ), ac, "save_playlist" );
     new KAction( i18n( "Shuffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "shuffle_playlist" );
     new KAction( i18n( "Show Current Track" ), "2uparrow", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
@@ -196,6 +196,12 @@ PlaylistWidget::~PlaylistWidget()
 
 QWidget *PlaylistWidget::browser() const { return m_browser; }
 void PlaylistWidget::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLOT
+
+
+QString PlaylistWidget::defaultPlaylistPath() const
+{
+    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u";
+}
 
 
 void PlaylistWidget::insertMedia( const KURL::List &list, bool directPlay )
@@ -304,7 +310,7 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
 
 void PlaylistWidget::saveM3u( const QString &fileName ) const
 {
-    QFile file( fileName );
+    QFile file( fileName.isEmpty() ? defaultPlaylistPath() : fileName );
 
     if( file.open( IO_WriteOnly ) )
     {
@@ -548,7 +554,7 @@ void PlaylistWidget::setCurrentTrack( const KURL &u ) //SLOT
     }
 
     setCurrentTrack( m_cachedTrack );
-    m_cachedTrack = 0;
+    m_cachedTrack = m_nextTrack = 0; //invalidate cached pointers
 }
 
 

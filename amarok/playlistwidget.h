@@ -85,10 +85,10 @@ class PlaylistWidget : private KListView
         ~PlaylistWidget();
 
         void insertMedia( const KURL::List&, bool directPlay = false );
-        void saveM3u( const QString& ) const;
         bool isEmpty() const { return childCount() == 0; }
         bool isAnotherTrack() const;
         QWidget *browser() const;
+        QString defaultPlaylistPath() const;
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
@@ -130,6 +130,7 @@ class PlaylistWidget : private KListView
         void setCurrentTrack( const KURL& );
         void undo();
         void redo();
+        void saveM3u(const QString& = QString::null ) const;
 
     private slots:
         void slotGlowTimer();

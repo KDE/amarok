@@ -50,8 +50,8 @@ class BrowserWin : public QWidget
         void insertMedia( const QString& );
         void insertMedia( const KURL& );
         void insertMedia( const KURL::List&, bool clearList = false, bool directPlay = false );
+        void restoreSessionPlaylist();
         bool isAnotherTrack() const;
-        QString defaultPlaylistPath() const;
 
         void setFont( const QFont& );
         void setColors( const QPalette&, const QColor& );

@@ -42,7 +42,6 @@
 #include <kiconloader.h>   //multiTabBar icons
 #include <klineedit.h>     //m_lineEdit
 #include <klocale.h>
-#include <kstandarddirs.h> //KGlobal::dirs()
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 #include <kurldrag.h>      //eventFilter()
@@ -191,7 +190,7 @@ BrowserWin::~BrowserWin()
     //TODO save at regular intervals, (use the QWidget built in timer as they have less overhead)
 
     if( AmarokConfig::savePlaylist() )
-        m_playlist->saveM3u( defaultPlaylistPath() );
+        m_playlist->saveM3u( m_playlist->defaultPlaylistPath() );
 }
 
 
@@ -203,6 +202,11 @@ void BrowserWin::insertMedia( const KURL::List &list, bool clearList, bool direc
     if( clearList ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
 
     m_playlist->insertMedia( list, directPlay );
+}
+
+void BrowserWin::restoreSessionPlaylist()
+{
+    insertMedia( m_playlist->defaultPlaylistPath() );
 }
 
 
@@ -242,11 +246,6 @@ void BrowserWin::saveConfig()
     fileBrowser->writeConfig();
 }
 
-
-QString BrowserWin::defaultPlaylistPath() const
-{
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u";
-}
 
 
 

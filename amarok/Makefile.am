@@ -1,7 +1,8 @@
 if with_arts
     AMAROKARTS_BUILD = amarokarts
+    AMAROKARTS_LA = $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la
 endif
-    
+
 SUBDIRS = amarokcore $(AMAROKARTS_BUILD) analyzers titleproxy engine images data loader
 
 bin_PROGRAMS = amarokapp
@@ -49,10 +50,10 @@ amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/engine/libengine.a \
         $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
         $(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
-        $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
-        -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde \
-        -lartsgui -lartsgui_kde -lartsmodules $(LIB_KUTILS) $(LIB_KFILE) \
-        $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST) $(LIB_NMM) $(gl_libs)
+        $(AMAROKARTS_LA) \
+        $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
+        $(taglib_libs) $(arts_libs) $(LIB_GST) $(nmm_libs) $(gl_libs)
+
 
 amarokapp_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 

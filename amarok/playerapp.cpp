@@ -147,7 +147,7 @@ PlayerApp::~PlayerApp()
     }
     else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
 
-    slotStop();
+    m_pEngine->stop(); //slotStop() does this plus visual stuff we don't need to do on exit
 
     //killTimers(); doesn't kill QTimers only QObject::startTimer() timers
 
@@ -204,12 +204,12 @@ void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
     QCString startup_env = args.left( index );
     args.remove( 0, index + 1 );
     kdDebug() << k_funcinfo << "DESKTOP_STARTUP_ID: " << startup_env << endl;
-        
+
     //stop startup cursor animation
     KStartupInfoId id;
     id.initId( startup_env );
     KStartupInfo::sendFinish( id );
-    
+
     //divide argument line into single strings
     QStringList strlist = QStringList::split( "|", args );
 
@@ -366,7 +366,7 @@ void PlayerApp::restoreSession()
 
     //load previous playlist
     if ( AmarokConfig::savePlaylist() )
-        m_pBrowserWin->insertMedia( m_pBrowserWin->defaultPlaylistPath() );
+        m_pBrowserWin->restoreSessionPlaylist();
 
     if ( AmarokConfig::resumePlayback() && !AmarokConfig::resumeTrack().isEmpty() )
     {
@@ -653,15 +653,16 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
         //TODO this is broke again if playlist is minimized
         //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
 
-        if( AmarokConfig::hidePlaylistWindow() && m_pPlayerWidget->m_pButtonPl->isOn() && e->spontaneous())
+        if( AmarokConfig::hidePlaylistWindow() && m_pPlayerWidget->m_pButtonPl->isOn() && e->spontaneous()/*)
         {
             //this is to battle a kwin bug that affects xinerama users
             //FIXME I commented this out for now because spontaneous show events are sent to widgets
             //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
             //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
             m_pBrowserWin->show();
+            eatActivateEvent = true;
         }
-        else if( m_pPlayerWidget->m_pButtonPl->isOn() )
+        else if( */ || m_pPlayerWidget->m_pButtonPl->isOn() )
         {
             //if minimized the taskbar entry for browserwin is shown
             m_pBrowserWin->show();
@@ -677,6 +678,10 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
             w->setOn( true );
             w->blockSignals( false );
         }
+    }
+    else if( e->type() == QEvent::WindowActivate )
+    {
+        (o == m_pPlayerWidget ? (QWidget*)m_pBrowserWin : (QWidget*)m_pPlayerWidget)->raise();
     }
 
     return FALSE;
