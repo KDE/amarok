@@ -172,7 +172,7 @@ namespace Engine
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );
 
         /** shows the amaroK configuration dialog at the engine page */
-        void showEngineConfigDialog() { emit showConfigDialog( 4 ); }
+        void showEngineConfigDialog() { emit showConfigDialog( 5 ); }
 
         virtual void setVolumeSW( uint percent ) = 0;
         void setVolumeHW( uint percent );

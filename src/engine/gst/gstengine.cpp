@@ -806,7 +806,7 @@ GstEngine::createPipeline()
         destroyPipeline();
 
     if ( GstConfig::soundOutput().isEmpty() ) {
-        errorNoOutput();
+        QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
     kdDebug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;

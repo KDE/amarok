@@ -504,7 +504,7 @@ void App::applyColorScheme()
         PlayerWidget::determineAmarokColors();
     }
 
-    if( AmarokConfig::schemeAmarok() )
+    else if( AmarokConfig::schemeAmarok() )
     {
         QColorGroup group = QApplication::palette().active();
         const QColor bg( amaroK::blue );
@@ -540,7 +540,7 @@ void App::applyColorScheme()
         Foreground = 0x80A0FF;
     }
 
-    if( AmarokConfig::schemeCustom() )
+    else if( AmarokConfig::schemeCustom() )
     {
         // we try to be smart: this code figures out contrasting colors for
         // selection and alternate background rows
@@ -753,8 +753,13 @@ void App::slotConfigAmarok( int page )
         connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
     }
 
-    dialog->showPage( page );
     dialog->show();
+
+    //so that if the engine page is needed to be shown it works
+    kapp->processEvents();
+
+    dialog->showPage( page );
+
 }
 
 void App::slotConfigShortcuts()
