@@ -15,7 +15,7 @@ SHORT-TERM (URGENT):
 
     * chg: #13<mxcl> use QApplication::setPalette to adjust application colours, as it propagates
               changes to all widgets and will hopefully deal with the selection colour issues in
-              the browser/janus widgets
+              the browser/janus widgets (although we have to stop it setting browserWin colors)
 
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,

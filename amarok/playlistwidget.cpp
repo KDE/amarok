@@ -732,20 +732,20 @@ void PlaylistWidget::removeSelectedItems()
   //      you need to somehow make it so creation and deletion of playlistItems handle the search
   //      tokens and pointers (and removal from tagReader queue!)
 
-    writeUndo();
+    bool b = true;
+    QListViewItem *item = firstChild();
+    PlaylistItem  *playlistItem;
 
-    QListViewItem *item;
-    PlaylistItem  *item1;
-    item = firstChild();
-
-    while ( item != NULL )
+    while( item != NULL )
     {
-        item1 = static_cast<PlaylistItem *>(item);
-        item = item->nextSibling();
-
-        if ( item1->isSelected() )
-        {
-           int x = searchPtrs.find( item1 );
+        playlistItem = static_cast<PlaylistItem *>(item);
+        item = item->nextSibling();        
+        
+        if( playlistItem->isSelected() )
+        {           
+           if( b ) { writeUndo(); b = false; } //save state once only
+           
+           int x = searchPtrs.find( playlistItem );
 
            if ( x >= 0 )
            {
@@ -753,14 +753,14 @@ void PlaylistWidget::removeSelectedItems()
               searchPtrs.remove( searchPtrs.at( x ) );
            }
 
-           if( m_pCurrentTrack == item1 ) m_pCurrentTrack = NULL;
+           if( m_pCurrentTrack == playlistItem ) m_pCurrentTrack = NULL;
            
            if( m_tagReader->running() )
            {
-               m_tagReader->remove( static_cast<PlaylistItem *>(item) );
-               item1->setVisible( false );
+               playlistItem->setVisible( false );               
+               m_tagReader->remove( playlistItem );
            }
-           else { delete item1; }
+           else { delete playlistItem; }
            
            //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
         }
