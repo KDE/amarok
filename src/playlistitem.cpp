@@ -100,7 +100,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 {
     setDragEnabled( true );
 
-    setText( Directory, u.directory() );
+    setText( Directory, u.directory().section( '/', -1 ) );
 }
 
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
@@ -208,6 +208,14 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setText( Comment, bundle.comment() );
     setText( Genre,   bundle.genre() );
     setText( Track,   bundle.track() );
+    QString directory = bundle.prettyURL();
+    if ( bundle.url().isLocalFile() )
+    {
+        int firstIndex = bundle.prettyURL().find( '/' );
+        int lastIndex = bundle.prettyURL().findRev( '/', -1 );
+        directory = bundle.prettyURL().mid( firstIndex, lastIndex - firstIndex );
+    }
+    setText( Directory, directory );
     setText( Length,  bundle.prettyLength() );
     setText( Bitrate, bundle.prettyBitrate() );
 
