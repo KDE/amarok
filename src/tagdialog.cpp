@@ -469,13 +469,14 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
         t->setComment( QStringToTString( mb.comment() ) );
         t->setGenre( QStringToTString( mb.genre() ) );
 
-        f.save();
-
-        //update the collection db
-        CollectionDB().updateTags( path, mb, updateCB );
+        bool result = f.save();
+        if( result )
+            //update the collection db
+            CollectionDB().updateTags( path, mb, updateCB );
+        
         QApplication::restoreOverrideCursor();
 
-        return true;
+        return result;
     }
     else return false;
 }
