@@ -29,7 +29,7 @@ int main(void)
 	
 	float *s1 = new float[num];	// start values
 	float *s2 = new float[num];	// Hartley coefficients
-	float *s3 = new float[num];	// Fourier power spektrum
+	float *s3 = new float[num];	// Fourier power spectrum
 
 	for (i = 0; i < num; i++)
 		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0);

@@ -23,10 +23,11 @@
 #include "fht.h"
 
 
-FHT::FHT(int e)
+FHT::FHT(int e) :
+	m_buf(0),
+	m_tab(0)
 {
 	if (e < 3) {
-		m_buf = m_tab = 0;
 		m_num = 0;
 		m_exp2 = -1;
 		return;
