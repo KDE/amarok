@@ -379,18 +379,18 @@ CollectionView::renderView( )  //SLOT
         qb.sortBy( m_cat1, QueryBuilder::valName );
         if ( m_cat2 != CollectionBrowser::IdNone ) qb.sortBy( m_cat2, QueryBuilder::valName );
         if ( m_cat3 != CollectionBrowser::IdNone ) qb.sortBy( m_cat3, QueryBuilder::valName );
-        
+
         qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter, QueryBuilder::modeNormal );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         values = qb.run();
-    
+
         //add items to the view
         for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
         {
             if ( values[i].stripWhiteSpace().isEmpty() )
                 values[i] = i18n( "Unknown" );
-    
+
             Item* item = new Item( this );
             item->setDragEnabled( true );
             item->setDropEnabled( false );
@@ -408,18 +408,18 @@ CollectionView::renderView( )  //SLOT
         qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
         qb.sortBy( m_cat1, QueryBuilder::valName );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    
+
         if ( m_cat1 == QueryBuilder::tabArtist )
             qb.setOptions( QueryBuilder::optNoCompilations );
-    
+
         values = qb.run();
-    
+
         //add items to the view
         for ( int i = values.count() - 1; i >= 0; --i )
         {
             if ( values[i].stripWhiteSpace().isEmpty() )
                 values[i] = i18n( "Unknown" );
-    
+
             KListViewItem* item = new KListViewItem( this );
             item->setExpandable( true );
             item->setDragEnabled( true );
@@ -427,7 +427,7 @@ CollectionView::renderView( )  //SLOT
             item->setText( 0, values[ i ] );
             item->setPixmap( 0, pixmap );
         }
-    
+
         //check if we need to add a Various Artists node
         if ( m_cat1 == QueryBuilder::tabArtist )
         {
@@ -437,7 +437,7 @@ CollectionView::renderView( )  //SLOT
             qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
             qb.setLimit( 0, 1 );
             values = qb.run();
-    
+
             if ( values.count() )
             {
                 KListViewItem* item = new KListViewItem( this );
@@ -448,7 +448,7 @@ CollectionView::renderView( )  //SLOT
                 item->setPixmap( 0, pixmap );
             }
         }
-    
+
         //open up tree that contains the previous currentItem
         QListViewItem *item = firstChild();
         for( QStringList::ConstIterator it = currentItemPath.begin(); item && it != currentItemPath.end(); )
