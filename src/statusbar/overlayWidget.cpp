@@ -39,6 +39,7 @@ OverlayWidget::OverlayWidget( KDE::StatusBar *statusbar, QWidget *anchor, const 
 void
 OverlayWidget::reposition()
 {
+    setMaximumSize( parentWidget()->size() );
     adjustSize();
 
     // p is in the alignWidget's coordinates
