@@ -436,7 +436,13 @@ Playlist::playPrevTrack()
 void
 Playlist::playCurrentTrack()
 {
-    activate( currentTrack() ? currentTrack() : *MyIt( this ) );
+    if ( !currentTrack() )
+        playNextTrack();
+
+    //we must do this even if the above is correct
+    //since the engine is not loaded the first time the user presses play
+    //then calling the next() function wont play it
+    activate( currentTrack() );
 }
 
 void
