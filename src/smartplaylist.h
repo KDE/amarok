@@ -35,7 +35,7 @@ Q_OBJECT
         virtual void paintEmptyArea( QPainter *p, const QRect &r );
 
     private slots:
-        void loadPlaylistSlot( QListViewItem* );
+        void makePlaylist( QListViewItem* );
         void showContextMenu( QListViewItem *item, const QPoint &p, int );
         void collectionScanDone();
 

@@ -66,7 +66,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
 
     connect( CollectionDB::instance(), SIGNAL(scanDone( bool )), SLOT(collectionScanDone()) );
 
-    connect( this, SIGNAL( doubleClicked(QListViewItem*) ), SLOT( loadPlaylistSlot(QListViewItem*) ) );
+    connect( this, SIGNAL(doubleClicked( QListViewItem* )), SLOT(makePlaylist( QListViewItem* )) );
     connect( this, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
                      SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
 }
@@ -318,12 +318,12 @@ void SmartPlaylistView::paintEmptyArea( QPainter *p, const QRect &r )
 }
 
 
-void SmartPlaylistView::loadPlaylistSlot( QListViewItem *item ) //SLOT
+void SmartPlaylistView::makePlaylist( QListViewItem *item ) //SLOT
 {
     if( !item )
         return;
 
-    Playlist::instance()->insertMedia( static_cast<SmartPlaylist*>(item)->urls(), Playlist::Clear );
+//    Playlist::instance()->insertMedia( static_cast<SmartPlaylist*>(item)->urls(), Playlist::Clear );
 }
 
 
