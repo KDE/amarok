@@ -132,7 +132,8 @@ CoverManager::CoverManager()
     toolBar->setFrameShape( QFrame::NoFrame );
     toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
     #ifdef AMAZON_SUPPORT
-    toolBar->insertButton( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
+    const QString babelfish = locate( "data", QString( "amarok/images/babelfish.png" ) );
+    toolBar->insertButton( babelfish, 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
 
     QString locale = AmarokConfig::amazonLocale();
 
