@@ -370,7 +370,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
     if( !list.isEmpty() )
     {
         setSorting( NO_SORT );
-        (new PlaylistLoader( list, this, after, directPlay ))->start();
+        (new PlaylistLoader( list, this, after, directPlay ))->start( QThread::IdlePriority );
     }
 
     return;
@@ -395,7 +395,7 @@ Playlist::restoreSession()
 
     KURL url;
     url.setPath( path );
-    (new PlaylistLoader( url, this, 0 ))->start();
+    (new PlaylistLoader( url, this, 0 ))->start( QThread::IdlePriority );
 }
 
 
@@ -1240,16 +1240,26 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
+    //FIXME Remove this hack
+    static QListViewItem* afterItem = 0;
+
     //the threads send their results here for completion that is GUI-safe
     switch( e->type() )
     {
     case PlaylistLoader::Started:
+        #define e static_cast<PlaylistLoader::StartedEvent*>(e)
+        afterItem = new QListViewItem( this, e->afterItem );
+        afterItem->setVisible( false );
+        #undef e
+
         m_clearButton->setEnabled( false );
         m_undoButton->setEnabled( false );
         m_redoButton->setEnabled( false );
         break;
 
     case PlaylistLoader::Done: {
+        delete afterItem;
+
         m_clearButton->setEnabled( true );
         m_undoButton->setEnabled( !m_undoList.isEmpty() );
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
@@ -1300,9 +1310,15 @@ Playlist::customEvent( QCustomEvent *e )
         activate( (PlaylistItem*)e->data() );
         break;
 
-    case PlaylistLoader::Tags:
-        #define e static_cast<PlaylistLoader::TagsEvent*>(e)
-        e->item->setText( e->bundle );
+    case PlaylistLoader::Item:
+        #define e static_cast<PlaylistLoader::ItemEvent*>(e)
+         new PlaylistItem( e->bundle.url(), afterItem, e->bundle );
+        #undef e
+        break;
+
+    case PlaylistLoader::DomItem:
+        #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
+        new PlaylistItem( e->url, afterItem, e->node );
         #undef e
         break;
 

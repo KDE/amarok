@@ -1019,7 +1019,7 @@ public:
         QApplication::postEvent( m_recipient, new DoneEvent( this ) );
     }
 
-    virtual void createPlaylistItem( const KURL &url, const QString &title, const uint length )
+    virtual void postItem( const KURL &url, const QString &title, const uint length )
     {
         QApplication::postEvent( m_recipient, new ItemEvent( url, title, length ) );
     }

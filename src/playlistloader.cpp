@@ -1,4 +1,5 @@
 // Author: Max Howell (C) Copyright 2003
+// Author: Mark Kretschmann (C) Copyright 2004
 // Copyright: See COPYING file that comes with this distribution
 //
 
@@ -9,12 +10,10 @@
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"
-#include "playlistitem.h"
 #include "playlistloader.h"
 #include "statusbar.h"
 
 #include <qapplication.h>
-#include <qdom.h>
 #include <qfile.h>       //::loadPlaylist()
 #include <qfileinfo.h>
 #include <qlistview.h>
@@ -30,7 +29,7 @@ bool PlaylistLoader::s_stop = false;
 PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QListViewItem *after, bool playFirstUrl )
     : QThread()
     , m_URLs( urls )
-    , m_marker( parent ? new PlaylistItem( KURL(), parent, after ) : 0 )
+    , m_afterItem( after )
     , m_playFirstUrl( playFirstUrl )
     , m_db( new CollectionDB )
     , m_dirLister( new KDirLister() )
@@ -39,6 +38,7 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QList
     m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
 }
 
+
 PlaylistLoader::~PlaylistLoader()
 {
     s_stop = false;
@@ -46,158 +46,112 @@ PlaylistLoader::~PlaylistLoader()
     delete m_dirLister;
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC
+/////////////////////////////////////////////////////////////////////////////////////
+
+#include <ktempfile.h>
+#include <kio/netaccess.h>
+#include <kcursor.h>
+#include <kmessagebox.h>
+#include <klocale.h>
+void
+PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListViewItem *item, bool directPlay )
+{
+    //KIO::NetAccess can make it's own tempfile
+    //but we need to add .pls/.m3u extension or the Loader will fail
+    QString path = url.filename();
+    KTempFile tmpfile( QString::null, path.mid( path.findRev( '.' ) ) ); //use default prefix
+    path = tmpfile.name();
+
+    amaroK::StatusBar::instance()->message( i18n("Retrieving playlist...") );
+    QApplication::setOverrideCursor( KCursor::waitCursor() );
+        const bool succeeded = KIO::NetAccess::download( url, path, listView );
+    QApplication::restoreOverrideCursor();
+    amaroK::StatusBar::instance()->clear();
+
+    if( succeeded )
+    {
+        //TODO delete the tempfile
+        KURL url;
+        url.setPath( path );
+
+        (new PlaylistLoader( KURL::List( url ), listView, item, directPlay ))->start( QThread::IdlePriority );
+
+    } else {
+
+        KMessageBox::sorry( listView, i18n( "<p>The playlist, <i>'%1'</i>, could not be downloaded." ).arg( url.prettyURL() ) );
+        tmpfile.unlink();
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// PROTECTED
+/////////////////////////////////////////////////////////////////////////////////////
+
 void
 PlaylistLoader::run()
 {
-    m_marker->setVisible( false );
-
-    float increment, progress;
-    PlaylistItem* item = 0;
-    m_needSecondPass = false;
     amaroK::StatusBar::startProgress();
-    QApplication::postEvent( Playlist::instance(), new QCustomEvent( Started ) );
+    QApplication::postEvent( Playlist::instance(), new StartedEvent( m_afterItem ) );
 
-    //BEGIN first pass
-    increment = 100.0 / m_URLs.count();
-    progress = 0;
-    const KURL::List::ConstIterator end = m_URLs.end();
+    KURL::List::ConstIterator end = m_fileURLs.end();
+    KURL::List::ConstIterator it;
 
-    for( KURL::List::ConstIterator it = m_URLs.begin(); it != end && !s_stop; ++it )
+    // BEGIN Read folders recursively
+    end = m_URLs.end();
+    for( it = m_URLs.begin(); it != end && !s_stop; ++it )
+        if ( !recurse( *it ) )
+            m_fileURLs.append( *it );
+    // END
+
+
+    // BEGIN: Read tags, post bundles to Playlist
+    float increment = 100.0 / m_fileURLs.count();
+    float progress = 0;
+
+    end = m_fileURLs.end();
+    for ( it = m_fileURLs.begin(); it != end && !s_stop; ++it )
     {
         const KURL &url = *it;
-
-        if( recurse( url ) )
-            continue;
 
         if( url.isLocalFile() && loadPlaylist( url.path() ) )
             continue;
 
-        if( EngineController::canDecode( url ) )
-            item = createPlaylistItem( url );
-        else
-            addBadURL( url );
+        if ( EngineController::canDecode( url ) )
+            postItem( url );
 
-        if ( item ) m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
         progress += increment;
         amaroK::StatusBar::showProgress( uint(progress) );
-    }
-    //END first pass
 
-    //TODO dialog for failed entries
+   }
+   // END
 
-    delete m_marker;
-
-    //BEGIN second pass
-    if ( m_needSecondPass )
-    {
-        increment = 100.0 / m_pairs.count();
-        progress = 0;
-        const List::ConstIterator end2 = m_pairs.end();
-        for( List::ConstIterator it = m_pairs.begin(); it != end2 && !s_stop; ++it )
-        {
-            if ( (*it).first.isLocalFile() )
-            {
-                if ( (*it).second->inCollection() )
-                {
-                    if ( !(*it).second->hasAudioproperties() )
-                    {
-                        // Store audioproperties in database if not yet stored
-                        TagsEvent* e = new TagsEvent( (*it).first, (*it).second );
-                        m_db->addAudioproperties( e->bundle );
-                        QApplication::postEvent( Playlist::instance(), e );
-                    }
-                }
-                else
-                    QApplication::postEvent( Playlist::instance(), new TagsEvent( (*it).first, (*it).second ) );
-            }
-
-            progress += increment;
-            amaroK::StatusBar::showProgress( uint(progress) );
-        }
-    }
-    //END second pass
-
+    delete m_afterItem;
     amaroK::StatusBar::stopProgress();
     QApplication::postEvent( Playlist::instance(), new DoneEvent( this ) );
 }
 
-PlaylistItem*
-PlaylistLoader::createPlaylistItem( const KURL &url )
-{
-    MetaBundle bundle;
-    PlaylistItem* item;
-
-    // Get MetaBundle from Collection if it's already stored, otherwise read from disk
-    if ( m_db->getMetaBundleForUrl( url.path(), &bundle ) )
-        item = new PlaylistItem( url, m_marker, bundle );
-    else
-        item = new PlaylistItem( url, m_marker );
-
-    if ( m_playFirstUrl ) {
-        QApplication::postEvent( Playlist::instance(), new QCustomEvent( QEvent::Type(Play), item ) );
-        m_playFirstUrl = false;
-    }
-
-    m_pairs.append( Pair(url, item) );
-
-    return item;
-}
 
 void
-PlaylistLoader::createPlaylistItem( const KURL &url, const QString &title, const uint length )
+PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
 {
-    PlaylistItem *item = createPlaylistItem( url );
+    MetaBundle bundle;
 
-    item->KListViewItem::setText( PlaylistItem::Title, title );
-    item->KListViewItem::setText( PlaylistItem::Length, MetaBundle::prettyLength( length ) );
+    // Get MetaBundle from Collection if it's already stored, else read tags and store
+    if ( !m_db->getMetaBundleForUrl( url.path(), &bundle ) ) {
+        bundle = MetaBundle( url );
+        m_db->addAudioproperties( bundle );
+    }
 
-    m_pairs.append( Pair(url, item) );
+    bundle.setTitle( title );
+    bundle.setLength( length );
+
+    QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
 }
 
-bool
-PlaylistLoader::recurse( const KURL &url, bool recursing )
-{
-        static bool success;
-        if ( !recursing ) success = false;
-
-        typedef QMap<QString, KURL> FileMap;
-
-        KURL::List dirs;
-        FileMap files;
-
-        m_dirLister->openURL( url );
-
-        while ( !m_dirLister->isFinished() )
-            msleep( 100 );
-
-        KFileItem* item;
-        KFileItemList items = m_dirLister->items();
-
-        success |= !items.isEmpty();
-
-        for ( item = items.first(); item; item = items.next() ) {
-            if ( item->url().fileName() == "." || item->url().fileName() == ".." )
-                continue;
-            if ( item->isFile() )
-                files[item->url().fileName()] = item->url();
-            if ( item->isDir() )
-                dirs << item->url();
-        }
-
-        // Post files to the playlist
-        const FileMap::ConstIterator end1 = files.end();
-        for ( FileMap::ConstIterator it = files.begin(); it != end1; ++it ) {
-            PlaylistItem* item = createPlaylistItem( it.data() );
-            m_needSecondPass |= !item->inCollection() || !item->hasAudioproperties();
-        }
-
-        // Recurse folders
-        const KURL::List::Iterator end2 = dirs.end();
-        for ( KURL::List::Iterator it = dirs.begin(); it != end2; ++it )
-            recurse( *it, true );
-
-        return success;
-}
 
 #include <kdebug.h>
 bool
@@ -235,7 +189,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
                 if ( !( str[ 0 ] == '/' || str.contains( ':' ) ) )
                     str.prepend( dir );
 
-                createPlaylistItem( KURL::fromPathOrURL( str ), title, length );
+                postItem( KURL::fromPathOrURL( str ), title, length );
 
                 length = MetaBundle::Undetermined;
                 title = QString();
@@ -264,7 +218,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
                 if ( line.startsWith( "Length" ) )
                     length = line.section( "=", -1 ).toInt();
 
-                createPlaylistItem( url, title, length );
+                postItem( url, title, length );
             }
         }
         break;
@@ -286,7 +240,7 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
             const QDomElement e = n.toElement();
 
             if ( !e.isNull() )
-                new PlaylistItem( KURL(e.attribute( URL )), m_marker, n );
+                QApplication::postEvent( Playlist::instance(), new DomItemEvent( KURL(e.attribute( URL ) ), n ) );
         }
     }
     default:
@@ -296,37 +250,67 @@ PlaylistLoader::loadPlaylist( const QString &path, Format type )
     return true;
 }
 
-#include <ktempfile.h>
-#include <kio/netaccess.h>
-#include <kcursor.h>
-#include <kmessagebox.h>
-#include <klocale.h>
-void
-PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListViewItem *item, bool directPlay )
+
+/////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+/////////////////////////////////////////////////////////////////////////////////////
+
+bool
+PlaylistLoader::recurse( const KURL &url, bool recursing )
 {
-    //KIO::NetAccess can make it's own tempfile
-    //but we need to add .pls/.m3u extension or the Loader will fail
-    QString path = url.filename();
-    KTempFile tmpfile( QString::null, path.mid( path.findRev( '.' ) ) ); //use default prefix
-    path = tmpfile.name();
+        static bool success;
+        if ( !recursing ) success = false;
 
-    amaroK::StatusBar::instance()->message( i18n("Retrieving playlist...") );
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
-        const bool succeeded = KIO::NetAccess::download( url, path, listView );
-    QApplication::restoreOverrideCursor();
-    amaroK::StatusBar::instance()->clear();
+        typedef QMap<QString, KURL> FileMap;
 
-    if( succeeded )
-    {
-        //TODO delete the tempfile
-        KURL url;
-        url.setPath( path );
+        KURL::List dirs;
+        FileMap files;
 
-        (new PlaylistLoader( KURL::List( url ), listView, item, directPlay ))->start();
+        m_dirLister->openURL( url );
 
-    } else {
+        while ( !m_dirLister->isFinished() )
+            msleep( 20 );
 
-        KMessageBox::sorry( listView, i18n( "<p>The playlist, <i>'%1'</i>, could not be downloaded." ).arg( url.prettyURL() ) );
-        tmpfile.unlink();
-    }
+        KFileItem* item;
+        KFileItemList items = m_dirLister->items();
+
+        success |= !items.isEmpty();
+
+        for ( item = items.first(); item; item = items.next() ) {
+            if ( item->url().fileName() == "." || item->url().fileName() == ".." )
+                continue;
+            if ( item->isFile() )
+                files[item->url().fileName()] = item->url();
+            if ( item->isDir() )
+                dirs << item->url();
+        }
+
+        // Add files to URL list
+        const FileMap::ConstIterator end1 = files.end();
+        for ( FileMap::ConstIterator it = files.begin(); it != end1; ++it )
+            m_fileURLs.append( it.data() );
+
+        // Recurse folders
+        const KURL::List::Iterator end2 = dirs.end();
+        for ( KURL::List::Iterator it = dirs.begin(); it != end2; ++it )
+            recurse( *it, true );
+
+        return success;
 }
+
+
+void
+PlaylistLoader::postItem( const KURL &url )
+{
+    MetaBundle bundle;
+
+    // Get MetaBundle from Collection if it's already stored, else read tags and store
+    if ( !m_db->getMetaBundleForUrl( url.path(), &bundle ) ) {
+        bundle = MetaBundle( url );
+        m_db->addAudioproperties( bundle );
+    }
+
+    QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
+}
+
+

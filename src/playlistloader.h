@@ -1,4 +1,5 @@
 // Author: Max Howell (C) Copyright 2003
+// Author: Mark Kretschmann (C) Copyright 2004
 // Copyright: See COPYING file that comes with this distribution
 //
 
@@ -7,6 +8,7 @@
 
 #include "metabundle.h"   //TagsEvent
 
+#include <qdom.h>         //stack alloc
 #include <qevent.h>       //baseclass
 #include <qthread.h>      //baseclass
 #include <kurl.h>         //KURL::List
@@ -23,24 +25,46 @@ public:
     ~PlaylistLoader();
 
     enum Format { M3U, PLS, XML, UNKNOWN };
-    enum EventType { Started = 1010, Done, Play, Tags, Item };
+    enum EventType { Started = 1010, Done, Play, Item, DomItem };
 
     static void stop() { s_stop = true; }
     static void downloadPlaylist( const KURL&, QListView*, QListViewItem*, bool directPlay = false );
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
 
-    class TagsEvent : public QCustomEvent
+    class StartedEvent : public QCustomEvent
     {
     public:
-        TagsEvent( const KURL &url, PlaylistItem *item )
-            : QCustomEvent( Tags )
-            , item( item )
-            , bundle( url )
+        StartedEvent( QListViewItem* item )
+            : QCustomEvent( Started )
+            , afterItem( item )
         {}
 
-        PlaylistItem* const item;
+        QListViewItem* const afterItem;
+    };
+
+    class ItemEvent : public QCustomEvent
+    {
+    public:
+        ItemEvent( const MetaBundle &bundle )
+            : QCustomEvent( Item )
+            , bundle( bundle )
+        {}
+
         MetaBundle bundle;
+    };
+
+    class DomItemEvent : public QCustomEvent
+    {
+    public:
+        DomItemEvent( const KURL& _url, const QDomNode& _node )
+            : QCustomEvent( DomItem )
+            , url( _url )
+            , node( _node )
+        {}
+
+        KURL url;
+        QDomNode node;
     };
 
     class DoneEvent : public QCustomEvent
@@ -62,15 +86,15 @@ public:
     friend class DoneEvent;
 
 protected:
-    virtual void createPlaylistItem( const KURL&, const QString&, const uint );
     virtual void run();
+    virtual void postItem( const KURL&, const QString&, const uint );
 
     bool loadPlaylist( const QString& ); //inlined
     bool loadPlaylist( const QString&, Format );
 
 private:
     bool recurse( const KURL&, bool recursing = false );
-    PlaylistItem *createPlaylistItem( const KURL& );
+    void postItem( const KURL& );
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
@@ -79,15 +103,12 @@ private:
     const KURL::List m_URLs;
           KURL::List m_badURLs;
 
-    PlaylistItem *m_marker;
+    KURL::List m_fileURLs;
+
+    QListViewItem *m_afterItem;
     bool m_playFirstUrl;
     CollectionDB* m_db;
-    bool m_needSecondPass;
     KDirLister* m_dirLister;
-
-    typedef QPair<KURL,PlaylistItem*> Pair;
-    typedef QValueList<Pair> List;
-    List m_pairs;
 
 protected:
     PlaylistLoader( const PlaylistLoader& ); //undefined
