@@ -87,6 +87,16 @@ const QString PlaylistItem::columnName(int col) //static
 QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 
+PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
+      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
+      , m_url( u )
+{
+    setDragEnabled( true );
+
+    setText( Directory, u.directory().section( '/', -1 ) );
+}
+
+
 PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
       : KListViewItem( lv, lvi, trackName( u ) )
       , m_url( u )
@@ -96,13 +106,14 @@ PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
     setText( Directory, u.directory().section( '/', -1 ) );
 }
 
-PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
+
+PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
 {
     setDragEnabled( true );
 
-    setText( Directory, u.directory().section( '/', -1 ) );
+    setText( bundle );
 }
 
 

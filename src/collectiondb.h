@@ -32,7 +32,7 @@ class CollectionDB : public QObject
         QString escapeString( QString string );
 
         //table management methods
-        bool isDbValid();
+        bool isValid();
         bool isEmpty();
         void createTables( const bool temporary = false );
         void dropTables( const bool temporary = false );
@@ -109,6 +109,7 @@ class CollectionDB : public QObject
                                                      QString category2, QString category3, QString filter,
                                                      QStringList* const values, QStringList* const names );
 
+        //member variables
         QString m_amazonLicense;
 
         QStringList m_values;

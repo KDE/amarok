@@ -5,21 +5,24 @@
 ///For pls and m3u specifications see:
 ///http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
 
-#include <dirent.h>      //::recurse()
+#include "collectiondb.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
+#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
+#include "statusbar.h"
+
 #include <qapplication.h>
 #include <qdom.h>
 #include <qfile.h>       //::loadPlaylist()
 #include <qfileinfo.h>
 #include <qlistview.h>
 #include <qtextstream.h> //::loadPlaylist()
-#include "statusbar.h"
+
+#include <dirent.h>      //::recurse()
 #include <sys/stat.h>
 
-#include "playlist.h"
 
 bool PlaylistLoader::s_stop = false;
 
@@ -28,11 +31,13 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QList
     , m_markey( parent ? new PlaylistItem( KURL(), parent, after ) : 0 )
     , m_URLs( urls )
     , m_playFirstUrl( playFirstUrl )
+    , m_db( new CollectionDB )
 {}
 
 PlaylistLoader::~PlaylistLoader()
 {
     s_stop = false;
+    delete m_db;
 }
 
 void
@@ -93,7 +98,14 @@ PlaylistLoader::run()
 PlaylistItem*
 PlaylistLoader::createPlaylistItem( const KURL &url )
 {
-    PlaylistItem *item = new PlaylistItem( url, m_markey );
+    MetaBundle bundle;
+    PlaylistItem* item;
+
+    // Get MetaBundle from Collection if it's already stored, otherwise read from disk
+    if ( m_db->getMetaBundleForUrl( url.path(), &bundle ) )
+        item = new PlaylistItem( url, m_markey, bundle );
+    else
+        item = new PlaylistItem( url, m_markey );
 
     if ( m_playFirstUrl ) {
         QApplication::postEvent( Playlist::instance(), new QCustomEvent( QEvent::Type(Play), item ) );

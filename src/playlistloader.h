@@ -5,11 +5,13 @@
 #ifndef PLAYLISTLOADER_H
 #define PLAYLISTLOADER_H
 
-#include <kurl.h>         //KURL::List
 #include "metabundle.h"   //TagsEvent
+
 #include <qevent.h>       //baseclass
 #include <qthread.h>      //baseclass
+#include <kurl.h>         //KURL::List
 
+class CollectionDB;
 class QListView;
 class QListViewItem;
 
@@ -79,6 +81,7 @@ private:
           KURL::List m_badURLs;
 
     bool m_playFirstUrl;
+    CollectionDB* m_db;
 
     typedef QPair<KURL,PlaylistItem*> Pair;
     typedef QValueList<Pair> List;

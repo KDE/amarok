@@ -99,7 +99,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::emitter(),     SIGNAL( scanDone( bool ) ),
                                             SLOT( collectionScanDone() ) );
 
-    if ( m_db->isEmpty() || !m_db->isDbValid() )
+    if ( m_db->isEmpty() || !m_db->isValid() )
     {
         showIntroduction();
         m_emptyDB = true;
@@ -274,7 +274,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
     delete m_currentTrack;
     m_currentTrack = new MetaBundle( bundle );
 
-    if ( m_db->isEmpty() || !m_db->isDbValid() )
+    if ( m_db->isEmpty() || !m_db->isValid() )
         showIntroduction();
     else
         if ( EngineController::engine()->isStream() )

@@ -211,7 +211,7 @@ CollectionDB::escapeString( QString string )
 
 
 bool
-CollectionDB::isDbValid()
+CollectionDB::isValid()
 {
     QStringList values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
     QStringList values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" );
@@ -687,15 +687,15 @@ CollectionDB::createTables( bool temporary )
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
-                    "url VARCHAR(100),"
-                    "dir VARCHAR(100),"
+                    "url VARCHAR(256),"
+                    "dir VARCHAR(256),"
                     "createdate INTEGER,"
                     "album INTEGER,"
                     "artist INTEGER,"
                     "genre INTEGER,"
-                    "title VARCHAR(100),"
+                    "title VARCHAR(256),"
                     "year INTEGER,"
-                    "comment VARCHAR(100),"
+                    "comment VARCHAR(256),"
                     "track NUMBER(4),"
                     "sampler BOOLEAN );" )
                     .arg( temporary ? "TEMPORARY" : "" )
@@ -704,35 +704,35 @@ CollectionDB::createTables( bool temporary )
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(100) );" )
+                    "name VARCHAR(256) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(100) );" )
+                    "name VARCHAR(256) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(100) );" )
+                    "name VARCHAR(256) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(100) );" )
+                    "name VARCHAR(256) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
-                    "path VARCHAR(100),"
-                    "name VARCHAR(100) );" )
+                    "path VARCHAR(256),"
+                    "name VARCHAR(256) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -748,6 +748,7 @@ CollectionDB::createTables( bool temporary )
 
     if ( !temporary )
     {
+        query( "CREATE INDEX url_tag ON tags( url );" );
         query( "CREATE INDEX album_tag ON tags( album );" );
         query( "CREATE INDEX artist_tag ON tags( artist );" );
         query( "CREATE INDEX genre_tag ON tags( genre );" );
@@ -756,7 +757,7 @@ CollectionDB::createTables( bool temporary )
 
         // create directory statistics database
         query( QString( "CREATE TABLE directories ("
-                        "dir VARCHAR(100) UNIQUE,"
+                        "dir VARCHAR(256) UNIQUE,"
                         "changedate INTEGER );" ) );
     }
 }
@@ -795,7 +796,7 @@ CollectionDB::createStatsTable()
 
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
-                    "url VARCHAR(100) UNIQUE,"
+                    "url VARCHAR(256) UNIQUE,"
                     "createdate INTEGER,"
                     "accessdate INTEGER,"
                     "percentage FLOAT,"

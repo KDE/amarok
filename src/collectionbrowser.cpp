@@ -249,13 +249,13 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_db->query( "PRAGMA default_synchronous = OFF;" );
 
         //remove database file if version is incompatible
-        if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isDbValid() ) )
+        if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isValid() ) )
         {
             kdDebug() << "Rebuilding database!" << endl;
             m_db->dropTables();
             m_db->createTables();
         }
-        if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !m_db->isDbValid() ) )
+        if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !m_db->isValid() ) )
         {
             kdDebug() << "Rebuilding stats-database!" << endl;
             m_db->dropStatsTable();

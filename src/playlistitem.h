@@ -23,8 +23,9 @@ class PlaylistItem : public KListViewItem
 {
     public:
         PlaylistItem( const KURL&, QListViewItem* );
-        PlaylistItem( const KURL&, QListViewItem*, const QDomNode& );
         PlaylistItem( const KURL&, QListView*, QListViewItem* );
+        PlaylistItem( const KURL&, QListViewItem*, const MetaBundle& );
+        PlaylistItem( const KURL&, QListViewItem*, const QDomNode& );
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
         void setText( const MetaBundle& );
