@@ -223,7 +223,6 @@ GstEngine::GstEngine()
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
         , m_shutdown( false )
-        , m_eos( false )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -357,11 +356,8 @@ GstEngine::state() const
 {
     if ( !m_pipelineFilled )
         return Engine::Empty;
-    if ( m_eos )
-        return Engine::Idle;
     if ( !m_currentInput )
-        return Engine::Empty;
-
+        return Engine::Idle;
 
     switch ( gst_element_get_state( m_currentInput->bin ) )
     {
@@ -457,7 +453,6 @@ bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
     Engine::Base::load( url, stream );
-    m_eos = false;
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
@@ -557,7 +552,6 @@ void
 GstEngine::stop()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    m_eos = false;
     emit stateChanged( Engine::Empty );
 
     if ( !m_currentInput ) return;
@@ -812,7 +806,6 @@ GstEngine::handleInputError()  //SLOT
         if ( input->m_error ) {
             kdError() << "An input bin has signaled an error condition, destroying.\n";
             destroyInput( input );
-            m_eos = true;
             emit trackEnded();
         }
     }
@@ -839,7 +832,6 @@ GstEngine::endOfStreamReached()  //SLOT
                                 input->state() == InputPipeline::XFADE_OUT;
 
             destroyInput( input );
-            m_eos = true;
 
             if ( !fading ) emit trackEnded();
         }

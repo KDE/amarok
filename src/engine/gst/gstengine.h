@@ -172,9 +172,6 @@ class GstEngine : public Engine::Base
 
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
-
-        /** Set when an input pipeline has reached EndOfStream */
-        bool m_eos;
 };
 
 
