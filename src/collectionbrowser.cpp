@@ -304,27 +304,27 @@ CollectionView::renderView()  //SLOT
             qb.setOptions( QueryBuilder::optNoCompilations );
 
         values = qb.run();
-        if ( !values.count() ) return;
 
         //add items to the view
-        for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
-        {
-            if ( (*it).stripWhiteSpace().isEmpty() )
-                (*it) = i18n( "Unknown" );
+        if ( values.count() )
+            for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
+            {
+                if ( (*it).stripWhiteSpace().isEmpty() )
+                    (*it) = i18n( "Unknown" );
 
-            //if ( (*it).startsWith( "the ", false ) )
-            //    (*it) = (*it).mid( 4 );
+                //if ( (*it).startsWith( "the ", false ) )
+                //    (*it) = (*it).mid( 4 );
 
-            KListViewItem* item = new KListViewItem( this );
-            item->setExpandable( true );
-            item->setDragEnabled( true );
-            item->setDropEnabled( false );
-            item->setText( 0, *it );
-            item->setPixmap( 0, pixmap );
+                KListViewItem* item = new KListViewItem( this );
+                item->setExpandable( true );
+                item->setDragEnabled( true );
+                item->setDropEnabled( false );
+                item->setText( 0, *it );
+                item->setPixmap( 0, pixmap );
 
-            if ( it == begin )
-                break;
-        }
+                if ( it == begin )
+                    break;
+            }
 
         //check if we need to add a Various Artists node
         if ( m_cat1 == QueryBuilder::tabArtist )
