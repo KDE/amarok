@@ -29,6 +29,18 @@
 
 namespace Collection { class Item; }
 
+class QFixedListView : public QListView
+// Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
+{
+public:
+    QFixedListView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 )
+                   :QListView(parent, name, f) {};
+    QSize sizeHint() const
+    {
+        return QSize(400, 100);
+    }
+
+};
 
 class CollectionSetup : public QVBox
 {
@@ -48,7 +60,7 @@ public:
 private:
     static CollectionSetup* s_instance;
 
-    QListView *m_view;
+    QFixedListView *m_view;
     QStringList m_dirs;
     QCheckBox *m_recursive;
     QCheckBox *m_monitor;

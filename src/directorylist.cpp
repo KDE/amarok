@@ -40,7 +40,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
         "These folders will be scanned for "
         "media to make up your collection."), this ))->setAlignment( Qt::WordBreak );
 
-    m_view = new QListView( this );
+    m_view = new QFixedListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_playlists = new QCheckBox( i18n("&Import playlists"), this );
