@@ -18,7 +18,7 @@
 #include <kdebug.h>
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
-    : Analyzer::Base2D( parent, 12, 6 )
+    : Analyzer::Base2D( parent, 12, 8 )
     //, m_bands( BAND_COUNT )
     //, barVector( BAND_COUNT, 0 )
     //, roofVector( BAND_COUNT, 50 )
@@ -124,11 +124,11 @@ void BarAnalyzer::analyze( const Scope &s )
         // 2. shift large upwards with a bias towards last value
         // 3. fall downwards at a constant pace
 
-        if ( change > MAX_UP ) //anything too much greater than 2 gives "jitter"
+        /*if ( change > MAX_UP ) //anything too much greater than 2 gives "jitter"
            //add some dynamics - makes the value slightly closer to what it was last time
            y2 = ( barVector[i] + MAX_UP );
            //y2 = ( barVector[i] * 2 + y2 ) / 3;
-        else if ( change < MAX_DOWN )
+        else*/ if ( change < MAX_DOWN )
            y2 = barVector[i] + MAX_DOWN;
 
 
