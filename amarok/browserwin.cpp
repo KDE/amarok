@@ -123,7 +123,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 
     //<FileBrowser>
-        m_browsers->addPage( new FileBrowser( 0, "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
+        m_browsers->addPage( new FileBrowser( "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
     //</FileBrowser>
 
     //<SearchBrowser>

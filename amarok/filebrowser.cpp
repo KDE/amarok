@@ -49,8 +49,8 @@ QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 
 //BEGIN Constructor/destructor
 
-FileBrowser::FileBrowser( QWidget * parent, const char * name )
-  : QVBox( parent, name )
+FileBrowser::FileBrowser( const char * name )
+  : QVBox( 0, name )
 {
     KConfig* const config = kapp->config();
     config->setGroup( "Filebrowser" );

@@ -80,7 +80,7 @@ class FileBrowser : public QVBox
     Q_OBJECT
 
 public:
-    FileBrowser( QWidget * parent = 0, const char * name = 0 );
+    FileBrowser( const char * name = 0 );
     ~FileBrowser();
 
     void readConfig();
