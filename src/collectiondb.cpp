@@ -763,9 +763,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
   
         if ( tag )
         {
-            TagLib::ID3v2::FrameList l = f.ID3v2Tag()->frameListMap()["APIC"];
-            kdDebug() << "got an ID3v2 Tag " << endl;
-
+            TagLib::ID3v2::FrameList l = f.ID3v2Tag()->frameListMap()[ "APIC" ];
             if ( !l.isEmpty() )
             {
                 kdDebug() << "Found APIC frame(s)" << endl;
