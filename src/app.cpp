@@ -36,6 +36,7 @@ email                : markey@web.de
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
+#include <kactivelabel.h>        //firstrunWizard()
 #include <kcmdlineargs.h>        //initCliArgs()
 #include <kdebug.h>
 #include <kedittoolbar.h>        //slotConfigToolbars()
@@ -694,8 +695,21 @@ void App::firstrunWizard() //SLOT
     // Load wizard ui file dynamically and generate widget
     QWizard* wizard = (QWizard*) QWidgetFactory::create( locate( "data","amarok/data/firstrun_wizard.ui" ) ); 
     
+    // Connection for invoking amaroK handbook
+    KActiveLabel* label = (KActiveLabel*) wizard->child( "lblText4" );
+    // By default KActiveLabel opens konq when clicking link. Let's prevent this
+    label->disconnect( SIGNAL( linkClicked( const QString& ) ), label, SLOT( openLink( const QString& ) ) );
+    connect( label, SIGNAL( linkClicked( const QString& ) ), SLOT( invokeHandbook() ) ); 
+           
     wizard->exec();
     delete wizard;
+}
+
+
+void App::invokeHandbook() //SLOT
+{
+    // Show handbook
+    invokeHelp( QString::null, QString::null, 0 );
 }
 
 

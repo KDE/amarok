@@ -70,6 +70,7 @@ class App : public KApplication, public EngineObserver
         void slotConfigToolBars();
         void slotConfigEffects( bool = true );
         void firstrunWizard();
+        void invokeHandbook();
         
     private slots:
         void applySettings( bool firstTime = false );
