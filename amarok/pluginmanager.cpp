@@ -143,18 +143,20 @@ void
         kdDebug() << "PluginManager Service DUMP:\n";
         kdDebug() << "---------------------------\n";
         
-        kdDebug() << "name                : "
-                  << service->name()                                        << endl;
-        kdDebug() << "type                : "
-                  << service->type()                                        << endl;
-        kdDebug() << "library             : "
-                  << service->library()                                     << endl;
-        kdDebug() << "desktopEntryPath    : "
-                  << service->desktopEntryPath()                            << endl;
-        kdDebug() << "X-KDE-amaroK-authors: "
-                  << service->property( "X-KDE-amaroK-authors" ).asString() << endl;
-        kdDebug() << "X-KDE-amaroK-version: "
-                  << service->property( "X-KDE-amaroK-version" ).asString() << endl;
+        kdDebug() << "name                          : "
+                  << service->name()                                                  << endl;
+        kdDebug() << "library                       : "
+                  << service->library()                                               << endl;
+        kdDebug() << "desktopEntryPath              : "
+                  << service->desktopEntryPath()                                      << endl;
+        kdDebug() << "X-KDE-plugintype              : "
+                  << service->property( "X-KDE-amaroK-plugintype" ).toString()        << endl;
+        kdDebug() << "X-KDE-amaroK-authors          : "
+                  << service->property( "X-KDE-amaroK-authors" ).toStringList()       << endl;
+        kdDebug() << "X-KDE-amaroK-version          : "
+                  << service->property( "X-KDE-amaroK-version" ).toString()           << endl;
+        kdDebug() << "X-KDE-amaroK-framework-version: "
+                  << service->property( "X-KDE-amaroK-framework-version" ).toString() << endl;
         
         kdDebug() << endl;
     }    
