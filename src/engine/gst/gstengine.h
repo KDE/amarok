@@ -70,6 +70,13 @@ class GstEngine : public Engine::Base
         void seek( uint ms );
         void newStreamData( char* data, int size );
 
+        /** Set whether equalizer is active */
+        void setEqualizerActive( bool );
+        /** Set equalizer preamp value */
+        void setEqualizerPreamp( float );
+        /** Set equalizer band gains, 10 floats */
+        void setEqualizerGains( std::vector<float>* );
+
     protected:
         void setVolumeSW( uint percent );
         void timerEvent( QTimerEvent* );

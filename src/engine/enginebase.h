@@ -168,8 +168,15 @@ namespace Engine
         /** Set new crossfade length (msec) */
         void setXfadeLength( int value ) { m_xfadeLength = value; }
 
+        /** Set whether equalizer is active */
+        virtual void setEqualizerActive( bool ) {};
+        /** Set equalizer preamp value */
+        virtual void setEqualizerPreamp( float ) {};
+        /** Set equalizer band gains, 10 floats */
+        virtual void setEqualizerGains( std::vector<float>* ) {};
+
     protected:
-        Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );
+        Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0, bool hasEqualizer = false );
 
         /** shows the amaroK configuration dialog at the engine page */
         void showEngineConfigDialog() { emit showConfigDialog( 5 ); }
@@ -189,6 +196,7 @@ namespace Engine
         StreamingMode m_streamingMode;
         bool          m_hasXFade;
         Effects      *m_effects;
+        bool          m_hasEqualizer;
         int           m_mixer;
 
     protected:

@@ -66,7 +66,7 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
     gobject_class = G_OBJECT_CLASS( klass );
 
-    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ACTIVE, g_param_spec_boolean ("active", "active", "active", TRUE, (GParamFlags)G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ACTIVE, g_param_spec_boolean ("active", "active", "active", false, (GParamFlags)G_PARAM_READWRITE));
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PREAMP, g_param_spec_int ("preamp", "preamp", "preamp", 0.0, 1.0, 0.0, (GParamFlags)G_PARAM_READWRITE));
     g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GAIN, g_param_spec_pointer ("gain", "gain", "gain", (GParamFlags)G_PARAM_WRITABLE));
 
@@ -92,7 +92,7 @@ gst_equalizer_init ( GstEqualizer* obj )
     gst_pad_set_chain_function ( obj->sinkpad, gst_equalizer_chain );
 
     // Properties
-    obj->active = true;
+    obj->active = false;
 }
 
 
@@ -258,6 +258,10 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
     gint16 *data = (gint16*) GST_BUFFER_DATA( inbuf );
     gint length = GST_BUFFER_SIZE( inbuf );
 
+    if ( !obj->active ) {
+        gst_pad_push( obj->srcpad, GST_DATA( inbuf ) );
+        return;
+    }
     /* Indexes for the history arrays
      * These have to be kept between calls to this function
      * hence they are static */

@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 
-Engine::Base::Base( StreamingMode mode, bool hasConfigure, bool hasXFade, Effects *effects )
+Engine::Base::Base( StreamingMode mode, bool hasConfigure, bool hasXFade, Effects *effects, bool /*hasEqualizer*/ )
     : amaroK::Plugin( hasConfigure )
     , m_streamingMode( mode )
     , m_hasXFade( hasXFade )
