@@ -362,7 +362,7 @@ namespace amaroK
 
     void DcopPlaylistHandler::playByIndex(int index)
     {
-        Playlist::instance()->activate( index );
+        Playlist::instance()->activateByIndex( index );
     }
 
     int  DcopPlaylistHandler::getActiveIndex()

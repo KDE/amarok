@@ -509,15 +509,6 @@ Playlist::playNextTrack()
         setCurrentTrack( item );
 }
 
-void 
-Playlist::activate(int index)
-{
-  QListViewItem * item = itemAtIndex(index);
-
-  if (item)
-    activate(item);
-}
-
 void
 Playlist::playPrevTrack()
 {
@@ -624,6 +615,15 @@ Playlist::activate( QListViewItem *item )
 }
 
 void
+Playlist::activateByIndex( int index )
+{
+    QListViewItem* item = itemAtIndex( index );
+
+    if ( item )
+        activate(item);
+}
+
+void
 Playlist::setCurrentTrack( PlaylistItem *item )
 {
     ///mark item as the current track, it makes it glow and everything
@@ -677,16 +677,17 @@ Playlist::setCurrentTrack( PlaylistItem *item )
     slotGlowTimer();
 }
 
-int 
+int
 Playlist::currentTrackIndex()
 {
     int index = 0;
     for( MyIt it( this, MyIt::Visible ); *it; ++it )
     {
-      if ( *it == m_currentTrack ) 
-	return index;
-      ++index;
+        if ( *it == m_currentTrack )
+            return index;
+        ++index;
     }
+
     return -1;
 }
 
@@ -1470,7 +1471,7 @@ Playlist::saveM3U( const QString &path, bool relativePath ) const
                 if ( relativePath ) {
                   const QFileInfo fi(file);
                   stream << KURL::relativePath(fi.dirPath(), url.path());
-                } else 
+                } else
                   stream << url.path();
             } else {
                 stream << url.url();

@@ -142,7 +142,7 @@ class Playlist : private KListView, public EngineObserver
         void undo();
         void redo();
         void selectAll() { QListView::selectAll( true ); }
-        void activate(int);
+        void activateByIndex(int);
         void playPrevTrack();
         void playCurrentTrack();
         void playNextTrack();
