@@ -102,11 +102,6 @@
         <whatsthis>Delay between tracks, in milliseconds.</whatsthis>
         <default>0</default>
     </entry>
-    <entry key="Hide Playlist Window" type="Bool">
-        <label>Whether to hide playlist together with player window</label>
-        <whatsthis>If set, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not set, the player window and the playlist hide totally independent of each other.</whatsthis>
-        <default>true</default>
-    </entry>
     <entry key="Playlist Window Enabled" type="Bool">
         <label>Whether the playlist window is visible</label>
         <whatsthis>Enable/Disable the playlist window. Equal to clicking the PL button in the player window.</whatsthis>

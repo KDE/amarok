@@ -65,7 +65,7 @@ App::App()
         : KApplication()
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" )  || args->isSet( "enqueue" );
@@ -136,13 +136,11 @@ App::App()
     handleCliArgs();
 
     insertChild( amaroK::OSD::instance() );
-
-    DEBUG_END
 }
 
 App::~App()
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     // Hiding the OSD before exit prevents crash
     amaroK::OSD::instance()->hide();
@@ -172,8 +170,6 @@ App::~App()
 
     //need to unload the engine before the kapplication is destroyed
     PluginManager::unload( engine );
-
-    DEBUG_END
 }
 
 
@@ -356,7 +352,7 @@ void App::applySettings( bool firstTime )
 {
     ///Called when the configDialog is closed with OK or Apply
 
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     //determine and apply colors first
     applyColorScheme();
@@ -403,21 +399,10 @@ void App::applySettings( bool firstTime )
     }
 
 
-    amaroK::OSD::instance()->applySettings();
-
-    CollectionDB::instance()->applySettings();
-
+    playlistWindow()->applySettings();
     Scrobbler::instance()->applySettings();
-
-    playlistWindow()->setFont(
-        AmarokConfig::useCustomFonts()
-            ? AmarokConfig::playlistWindowFont()
-            : QApplication::font(),
-        AmarokConfig::useCustomFonts()
-            ? AmarokConfig::contextBrowserFont()
-            : QApplication::font() );
-
-
+    amaroK::OSD::instance()->applySettings();
+    CollectionDB::instance()->applySettings();
     amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
@@ -473,34 +458,38 @@ void App::applySettings( bool firstTime )
     if ( !firstTime )
         // we crash, often, we admit this ;-)
         AmarokConfig::writeConfig();
-
-    DEBUG_END
 }
 
-
-void App::applyColorScheme()
+void
+App::applyColorScheme()
 {
-    //TODO shorter, better placement etc.
+    DEBUG_BLOCK
+
+    QColorGroup group;
+    using amaroK::ColorScheme::AltBase;
+    int h, s, v;
 
     if( AmarokConfig::schemeKDE() )
     {
-        m_pPlaylistWindow->setColors( QApplication::palette(), KGlobalSettings::alternateBackgroundColor() );
+        AltBase = KGlobalSettings::alternateBackgroundColor();
+
+        playlistWindow()->unsetPalette();
 
         PlayerWidget::determineAmarokColors();
     }
 
     else if( AmarokConfig::schemeAmarok() )
     {
-        QColorGroup group = QApplication::palette().active();
+        group = QApplication::palette().active();
         const QColor bg( amaroK::blue );
-        const QColor bgAlt( 57, 64, 98 );
+        AltBase.setRgb( 57, 64, 98 );
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Foreground, 0xd7d7ef );
-        group.setColor( QColorGroup::Background, bgAlt );
+        group.setColor( QColorGroup::Background, AltBase );
 
-        group.setColor( QColorGroup::Button, bgAlt );
+        group.setColor( QColorGroup::Button, AltBase );
         group.setColor( QColorGroup::ButtonText, 0xd7d7ef );
 
 //         group.setColor( QColorGroup::Light,    Qt::cyan   /*lighter than Button color*/ );
@@ -513,37 +502,36 @@ void App::applyColorScheme()
         group.setColor( QColorGroup::HighlightedText, bg );
         //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
-        int h,s,v;
-        bgAlt.getHsv( &h, &s, &v );
+        AltBase.getHsv( &h, &s, &v );
         group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) ); //column separator in playlist
 
         //TODO set all colours, even button colours, that way we can change the dark,
         //light, etc. colours and amaroK scheme will look much better
-
-        m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
 
         using namespace amaroK::ColorScheme;
         Base       = amaroK::blue;
         Text       = Qt::white;
         Background = 0x002090;
         Foreground = 0x80A0FF;
+
+        //all children() derive their palette from this
+        playlistWindow()->setPalette( QPalette( group, group, group ) );
     }
 
     else if( AmarokConfig::schemeCustom() )
     {
         // we try to be smart: this code figures out contrasting colors for
         // selection and alternate background rows
-        QColorGroup group = QApplication::palette().active();
+        group = QApplication::palette().active();
         const QColor fg( AmarokConfig::playlistWindowFgColor() );
         const QColor bg( AmarokConfig::playlistWindowBgColor() );
-        int h, s, v;
 
         //TODO use the ensureContrast function you devised in BlockAnalyzer
 
         bg.hsv( &h, &s, &v );
         v += (v < 128) ? +50 : -50;
         v &= 255; //ensures 0 <= v < 256
-        QColor bgAlt( h, s, v, QColor::Hsv );
+        AltBase.setHsv( h, s, v );
 
         fg.hsv( &h, &s, &v );
         v += (v < 128) ? +150 : -150;
@@ -556,12 +544,20 @@ void App::applyColorScheme()
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
-        //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
-
-        m_pPlaylistWindow->setColors( QPalette( group, group, group ), bgAlt );
 
         PlayerWidget::determineAmarokColors();
+
+        // we only colour the middle section since we only
+        // allow the user to choose two colours
+        QWidget *middleBit = (QWidget*)playlistWindow()->child( "BrowserBar" );
+        middleBit->setPalette( QPalette( group, group, group ) );
     }
+
+    // set the KListView alternate colours
+    QObjectList* const list = playlistWindow()->queryList( "KListView" );
+    for( QObject *o = list->first(); o; o = list->next() )
+        static_cast<KListView*>(o)->setAlternateBackground( AltBase );
+    delete list; //heap allocated!
 }
 
 
@@ -676,12 +672,12 @@ void App::engineStateChanged( Engine::State state )
 {
     switch( state )
     {
-        case Engine::Empty:
-            QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
-            break;
+    case Engine::Empty:
+        QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
+        break;
 
-        default:
-            break;
+    default:
+        ;
     }
 }
 
@@ -820,7 +816,7 @@ void App::pruneCoverImages()
 #ifdef AMAZON_SUPPORT
     // TODO Offer the option to refresh the images, instead of deleting
 
-    static const int MAX_DAYS = 90;
+    const int MAX_DAYS = 90;
 
     QDir covers( amaroK::saveLocation( "albumcovers/" ) );
     QDir coverCache( amaroK::saveLocation( "albumcovers/cache/" ) );
@@ -858,7 +854,7 @@ QWidget *App::mainWindow() const
 
 namespace amaroK
 {
-    //declarations are in amarok.h
+    /// @see amarok.h
 
     QWidget *mainWindow()
     {
@@ -880,10 +876,11 @@ namespace amaroK
 
     namespace ColorScheme
     {
-        QColor Base; //amaroK::blue
-        QColor Text; //Qt::white
-        QColor Background; //brighter blue
-        QColor Foreground; //lighter blue
+        QColor Base;
+        QColor Text;
+        QColor Background;
+        QColor Foreground;
+        QColor AltBase;
     }
 
     OverrideCursor::OverrideCursor( Qt::CursorShape cursor )
@@ -904,6 +901,8 @@ namespace amaroK
 
 namespace Debug
 {
+    /// @see debug.h
+
     QCString indent; //declared in debug.h
 }
 

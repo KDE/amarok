@@ -2324,12 +2324,7 @@ TagWriter::doJob()
                 return true;
         }
 
-        if( f.save() )
-        {
-            // Update the collection db.
-            CollectionDB::instance()->updateURL( path, m_updateView );
-            m_failed = false;
-        }
+        m_failed = f.save();
     }
 
     return true;
@@ -2338,11 +2333,18 @@ TagWriter::doJob()
 void
 TagWriter::completeJob()
 {
-    if ( m_failed ) {
+    switch( m_failed ) {
+    case true:
+        // we write a space for some reason I cannot recall
         m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
-        amaroK::StatusBar::instance()->longMessage( i18n( "The tag could not be changed." ) );
+        amaroK::StatusBar::instance()->longMessage( i18n(
+                "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ) );
+        break;
+
+    case false:
+        m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
+        CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
     }
-    m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
 }
 
 #include "playlist.moc"

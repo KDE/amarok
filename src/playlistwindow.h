@@ -47,12 +47,11 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
     public:
         PlaylistWindow();
-        ~PlaylistWindow();
+       ~PlaylistWindow();
 
         void init();
 
-        void setFont( const QFont&, const QFont& );
-        void setColors( const QPalette&, const QColor& );
+        void applySettings();
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
         void recreateGUI();

@@ -35,7 +35,7 @@ class Color : public QColor
 public:
     Color( const QColor &c ) : QColor( c )
     {
-        DEBUG_BEGIN
+        DEBUG_BLOCK
 
         int h,s1,s,v1,v;
         getHsv( &h, &s1, &v1 );
@@ -72,8 +72,6 @@ public:
         setHsv( h, s, v );
 
         debug() << "Final Colour Properties: s:" << s << " v:" << v << endl;
-
-        DEBUG_END
     }
 };
 

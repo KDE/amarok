@@ -3,8 +3,8 @@
 //
 
 #include "blockanalyzer.h"
+#include "debug.h"
 #include <kconfig.h>
-#include <kdebug.h>
 #include <kglobalsettings.h> //paletteChange()
 #include <klocale.h>         //mousePressEvent
 #include <kpopupmenu.h>      //mousePressEvent
@@ -19,12 +19,13 @@ namespace amaroK { extern KConfig *config( const QString& ); }
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
-   : Analyzer::Base2D( parent, 20, 9 )
-   , m_glow( 1, 1 )
-   , m_store( 1 << 8, 0 )      //vector<uint>
-   , m_scope( MIN_COLUMNS )    //Scope
-   , m_columns( 0 )            //uint
-   , m_rows( 0 )               //uint
+        : Analyzer::Base2D( parent, 20, 9 )
+        , m_columns( 0 )         //uint
+        , m_rows( 0 )            //uint
+        , m_y( 0 )               //uint
+        , m_glow( 1, 1 )
+        , m_scope( MIN_COLUMNS ) //Scope
+        , m_store( 1 << 8, 0 )   //vector<uint>
 {
     changeTimeout( amaroK::config( "General" )->readNumEntry( "Timeout", 9 ) );
 
@@ -52,6 +53,9 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
    m_columns = myMax( uint(double(width()+1) / (WIDTH+1)), MAX_COLUMNS );
    m_rows    = uint(double(height()+1) / (HEIGHT+1));
 
+   //this is the y-offset for drawing from the top of the widget
+   m_y = (height() - (m_rows * (HEIGHT+1))) / 2;
+
    m_scope.resize( m_columns );
 
    if( m_rows != oldRows ) {
@@ -67,21 +71,10 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
       paletteChange( palette() );
    }
-   else if( width() > e->oldSize().width() || height() > e->oldSize().height() ) {
-      //FIXME this block duplicated in paletteChange()
+   else if( width() > e->oldSize().width() || height() > e->oldSize().height() )
+      drawBackground();
 
-      background()->fill( backgroundColor() );
-
-      const QColor bg = backgroundColor().dark( 112 );
-      QPainter p( background() );
-      for( int x = 0; (uint)x < m_columns; ++x )
-         for( int y = 0; (uint)y < m_rows; ++y )
-            p.fillRect( x*(WIDTH+1), y*(HEIGHT+1), WIDTH, HEIGHT, bg );
-
-      bitBlt( canvas(), 0, 0, background() );
-   }
-
-   bitBlt( this, 0, 0, background() );
+   analyze( m_scope );
 }
 
 void
@@ -113,8 +106,8 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
    // z represents the number of blanks
    // z starts from the top and increases in units of blocks
 
-   //m_yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
-   //if it contains 6 elements there are 5 rows in the analyzer
+   // m_yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
+   // if it contains 6 elements there are 5 rows in the analyzer
 
 
    bitBlt( canvas(), 0, 0, background() );
@@ -195,37 +188,40 @@ ensureContrast( const QColor &c1, const QColor &c2, uint amount = 150 )
 void
 BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 {
-   //Qt calls this function when the palette is changed
-
-   const QColor bg = backgroundColor().dark( 112 );
+   // for some reason the palette for this widget is not changed when
+   // its parent is! I don't understand this at all
+   const QColor bg = parentWidget()->palette().active().background();
    const QColor fg = ensureContrast( KGlobalSettings::activeTitleColor(), bg );
 
-   {
-      const double dr = 15*double(bg.red()   - fg.red())   / (m_rows*16);
-      const double dg = 15*double(bg.green() - fg.green()) / (m_rows*16);
-      const double db = 15*double(bg.blue()  - fg.blue())  / (m_rows*16);
-      const int r = fg.red(), g = fg.green(), b = fg.blue();
+   const double dr = 15*double(bg.red()   - fg.red())   / (m_rows*16);
+   const double dg = 15*double(bg.green() - fg.green()) / (m_rows*16);
+   const double db = 15*double(bg.blue()  - fg.blue())  / (m_rows*16);
+   const int r = fg.red(), g = fg.green(), b = fg.blue();
 
-      glow()->fill( backgroundColor() );
+   glow()->fill( bg );
 
-      QPainter p( glow() );
-      for( int y = 0; (uint)y < m_rows; ++y )
-         //graduate the fg color
-         p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
-   }
+   QPainter p( glow() );
+   for( int y = 0; (uint)y < m_rows; ++y )
+      //graduate the fg color
+      p.fillRect( 0, y*(HEIGHT+1) + m_y, WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
 
-   {
-      background()->fill( backgroundColor() );
+   drawBackground();
+}
 
-      QPainter p( background() );
-      for( int x = 0; (uint)x < m_columns; ++x )
-         for( int y = 0; (uint)y < m_rows; ++y )
-            p.fillRect( x*(WIDTH+1), y*(HEIGHT+1), WIDTH, HEIGHT, bg );
+void
+BlockAnalyzer::drawBackground()
+{
+    const QColor bg = parentWidget()->palette().active().background();
+    const QColor bgdark = bg.dark( 112 );
 
-      setErasePixmap( *background() );
-   }
+    background()->fill( bg );
 
-   bitBlt( canvas(), 0, 0, background() );
+    QPainter p( background() );
+    for( int x = 0; (uint)x < m_columns; ++x )
+        for( int y = 0; (uint)y < m_rows; ++y )
+            p.fillRect( x*(WIDTH+1), y*(HEIGHT+1) + m_y, WIDTH, HEIGHT, bgdark );
+
+    setErasePixmap( *background() );
 }
 
 void

@@ -500,7 +500,7 @@ bool PlayerWidget::event( QEvent *e )
 
         m_pAnimTimer->start( ANIM_TIMER );
 
-        if( AmarokConfig::hidePlaylistWindow() && m_pPlaylistButton->isOn() )
+        if( m_pPlaylistButton->isOn() )
         {
             //IMPORTANT! If the PlaylistButton is on then we MUST be shown
             //we leave the PlaylistButton "on" to signify that we should restore it here
@@ -558,7 +558,6 @@ bool PlayerWidget::event( QEvent *e )
     case QEvent::Hide:
         m_pAnimTimer->stop();
 
-        if( AmarokConfig::hidePlaylistWindow() )
         {
             //this prevents the PlaylistButton being set to off (see the eventFilter)
             //by leaving it on we ensure that we show the Playlist Window again when

@@ -166,6 +166,8 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     if( AmarokConfig::osdUseFakeTranslucency() )
        bitBlt( this, 0, 0, &m_screenshot );
+    //else
+    //    fill background with plain colour
 
     QPainter p;
     QRect rect = this->rect();
@@ -205,7 +207,7 @@ OSDWidget::paintEvent( QPaintEvent* )
         int h,s,v;
         foregroundColor().getHsv( &h, &s, &v );
 
-        shadow = ShadowEngine::makeShadow( pixmap, h < 128 ? Qt::black : Qt::white );
+        shadow = ShadowEngine::makeShadow( pixmap, v > 128 ? Qt::black : Qt::white );
     }
 
     p.begin( this );
@@ -218,7 +220,7 @@ OSDWidget::paintEvent( QPaintEvent* )
     }
 
     p.drawText( rect, align | WordBreak, m_text );
-    p.setPen( backgroundColor() );
+    p.setPen( backgroundColor().dark() );
     p.drawRect( this->rect() );
     p.end();
 }

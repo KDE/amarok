@@ -213,7 +213,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 void
 CollectionReader::readTags( const QStringList& entries )
 {
-    Debug::Timer timer( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     typedef QPair<QString, QString> CoverBundle;
 

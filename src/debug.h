@@ -18,27 +18,27 @@
  *
  *     void function()
  *     {
- *        DEBUG_BEGIN
+ *        Debug::Block myBlock( __PRETTY_FUNCTION__ );
+ *
  *        debug() << "output1" << endl;
  *        debug() << "output2" << endl;
- *        DEBUG_END
  *     }
  *
  * Will output:
  *
- * app: BEGIN: [void function()]
+ * app: BEGIN: void function()
  * app:   [Blah] output1
  * app:   [Blah] output2
- * app: END: [void function()]
+ * app: END: void function(): Took 0.1s
  *
  * @see Block
  * @see CrashHelper
- * @see Timer
+ * @see ListStream
  */
 
 namespace Debug
 {
-    /// this is used by DEBUG_BEGIN and DEBUG_END (defined in app.cpp, enginebase.cpp)
+    /// this is defined in app.cpp
     extern QCString indent;
 
     #ifdef NDEBUG
@@ -47,7 +47,7 @@ namespace Debug
         static inline kndbgstream error()   { return kndbgstream(); }
         static inline kndbgstream fatal()   { return kndbgstream(); }
 
-        typedef kndbgstream debugstream;
+        typedef kndbgstream DebugStream;
     #else
         #ifndef DEBUG_PREFIX
         #define AMK_PREFIX ""
@@ -68,29 +68,28 @@ namespace Debug
         static inline kdbgstream error()   { return kdbgstream( indent, 0, KDEBUG_ERROR ) << AMK_PREFIX; }
         static inline kdbgstream fatal()   { return kdbgstream( indent, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
 
-        typedef kdbgstream debugstream;
+        typedef kdbgstream DebugStream;
 
         #undef AMK_PREFIX
     #endif
+
+    typedef kndbgstream NoDebugStream;
 }
 
 using Debug::debug;
 using Debug::warning;
 using Debug::error;
 using Debug::fatal;
-using Debug::debugstream;
+using Debug::DebugStream;
 
 /// Standard function announcer
 #define DEBUG_FUNC_INFO kdDebug() << Debug::indent << k_funcinfo << endl;
 
+/// Convenience macro for making a standard Debug::Block
+#define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __FUNCTION__ );
+
 #define DEBUG_INDENT Debug::indent += "  ";
 #define DEBUG_UNINDENT Debug::indent.truncate( Debug::indent.length() - 2 );
-
-/// Use this to introduce a function
-#define DEBUG_BEGIN kdDebug() << Debug::indent << "BEGIN: " << __PRETTY_FUNCTION__ << endl; DEBUG_INDENT
-
-/// Use this to extroduce a function
-#define DEBUG_END   DEBUG_UNINDENT kdDebug() << Debug::indent << "END: " << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to remind yourself to finish the implementation of a function
 #define AMAROK_NOTIMPLEMENTED kdWarning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
@@ -108,7 +107,7 @@ namespace Debug
      *
      *     void function()
      *     {
-     *         Debug::Block s( "section" );
+     *         Debug::Block myBlock( "section" );
      *
      *         debug() << "output1" << endl;
      *         debug() << "output2" << endl;
@@ -117,43 +116,35 @@ namespace Debug
      * Will output:
      *
      *     app: BEGIN: section
-     *     app:  output1
-     *     app:  output2
-     *     app: END: section
-     *
-     * Generally this is the easiest way to highlight a block of code.
-     * Also it is worth noting that it is the only way to highlight blocks
-     * like these:
-     *
-     *     {
-     *       DEBUG_BEGIN
-     *       return someFunction();
-     *       DEBUG_END
-     *     }
-     *
-     * DEBUG_END is never processed.
+     *     app:  [prefix] output1
+     *     app:  [prefix] output2
+     *     app: END: section - Took 0.1s
      *
      */
 
     class Block
     {
+        std::clock_t m_start;
+        const char  *m_label;
+
     public:
-        Block( const char *label ) : m_label( label )
+        Block( const char *label )
+                : m_start( std::clock() )
+                , m_label( label )
         {
-            kdDebug() << indent << "BEGIN: " << m_label << endl;
+            kdDebug() << indent << "BEGIN: " << label << "\n";
             DEBUG_INDENT
         }
 
-        ~Block()
+       ~Block()
         {
+            std::clock_t finish = std::clock();
+            const double duration = (double) (finish - m_start) / CLOCKS_PER_SEC;
+
             DEBUG_UNINDENT
-            kdDebug() << indent << "END: " << m_label << endl;
+            kdDebug() << indent << "END: " << m_label << " - Took " << duration << "s\n";
         }
-
-    protected:
-        const char *m_label;
     };
-
 
     /**
      * @class Debug::CrashHelper
@@ -176,39 +167,77 @@ namespace Debug
      *     app: BEGIN: Crash Test
      *     app:   [section] 1
      *     app:   [section] 2
-     *     app: END: Crash Test
      *
      */
 
     class CrashHelper : public Block
     {
         int m_counter;
-        const char *m_label;
 
     public:
-        CrashHelper( const char *label = 0 ) : Block( label ), m_counter( 0 )
-        {}
+        CrashHelper( const char *label = 0 ) : Block( label ), m_counter( 0 ) {}
 
         inline void stamp()
         {
             debug() <<  ": " << ++m_counter << endl;
         }
     };
+}
 
 
+#include <qvariant.h>
+
+namespace Debug
+{
     /**
-     * @class Debug::Timer
-     * @short When destroyed it will output the time in seconds since it was created
+     * @class Debug::ListStream
+     * @short You can pass anything to this and it will output it as a list
+     *
+     * You can't allocate one, instead use debug::list(). Usage:
+     *
+     *     {
+     *         Debug::list( "My list of stuff" )
+     *                 << anInt        //5
+     *                 << aString      //"moo"
+     *                 << aQStringList //{"baa","neigh","woof"}
+     *                 << aDouble;     //3.141
+     *     }
+     *
+     * Will output:
+     *
+     *     app: BEGIN: My list of stuff
+     *     app:   5
+     *     app:   moo
+     *     app:   { baa, neigh, woof }
+     *     app:   3.141
+     *     app: END: My list of stuff - Took 0.3s
+     *
+     * Note, don't end the sequence with endl, I couldn't get
+     * that to parse. Sorry.
      */
 
-    class Timer
+    class ListStream : private Debug::Block
     {
-        std::clock_t m_start;
+        friend ListStream list();
 
-    public:
-        Timer( const char *label );
-       ~Timer();
+        ListStream( const char *header = "List" ) : Block( header ), d( 0, 0 ) {}
+
+        DebugStream d;
+
+        public:
+            ~ListStream() {}
+
+            inline ListStream &operator<<( const QVariant &variant )
+            {
+                d << Debug::indent;
+                d << variant.toString();
+                d << endl;
+
+                return *this;
+            }
     };
+
+    inline ListStream list() { return ListStream(); }
 }
 
 #endif

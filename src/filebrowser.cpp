@@ -21,6 +21,7 @@
    Boston, MA 02111-1307, USA.
 */
 
+#include "amarok.h"
 #include "clicklineedit.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
@@ -75,9 +76,6 @@ class MyDirOperator : public KDirOperator
             setDirLister( new MyDirLister( true ) );
         }
 };
-
-
-QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 
 
 //BEGIN Constructor/destructor
@@ -332,7 +330,9 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
 {
     if( view->widget()->inherits( "KListView" ) )
     {
-        static_cast<KListView*>(view->widget())->setAlternateBackground( FileBrowser::altBgColor );
+        using namespace amaroK::ColorScheme;
+
+        static_cast<KListView*>(view->widget())->setAlternateBackground( AltBase );
     }
 }
 

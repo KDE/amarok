@@ -28,19 +28,22 @@ public:
     static const uint MAX_COLUMNS = 256; //must be 2**n
 
 protected:
-    void transform( Scope& );
-    void analyze( const Scope& );
-    void resizeEvent( QResizeEvent* );
-    void mousePressEvent( QMouseEvent* );
-    void paletteChange( const QPalette& );
+    virtual void transform( Scope& );
+    virtual void analyze( const Scope& );
+    virtual void resizeEvent( QResizeEvent* );
+    virtual void mousePressEvent( QMouseEvent* );
+    virtual void paletteChange( const QPalette& );
+
+    void drawBackground();
 
 private:
     QPixmap* const glow() { return &m_glow; }
 
-    QPixmap m_glow;
-    std::vector<uint> m_store; //store previous values
-    Scope m_scope;             //so we don't create a vector every frame
     uint m_columns, m_rows;    //current size values
+    uint m_y;                  //y-offset
+    QPixmap m_glow;
+    Scope m_scope;             //so we don't create a vector every frame
+    std::vector<uint> m_store; //store previous values
     std::vector<float> m_yscale;
 };
 

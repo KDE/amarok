@@ -63,8 +63,6 @@ public:
     KActionCollection *actionCollection() { return m_dir->actionCollection(); };
     QString location() const;
 
-    static QColor altBgColor;
-
 public slots:
     void slotSetFilter();
     void setDir( const KURL& );

@@ -124,7 +124,7 @@ StreamProvider::accept( int socket ) //SLOT
 void
 StreamProvider::connectToHost() //SLOT
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     { //initialisations
         m_connectSuccess = false;
@@ -136,15 +136,13 @@ StreamProvider::connectToHost() //SLOT
         QTimer::singleShot( KProtocolManager::connectTimeout() * 1000, this, SLOT( connectError() ) );
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
     }
-
-    DEBUG_END
 }
 
 
 void
 StreamProvider::sendRequest() //SLOT
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     QCString username = m_url.user().utf8();
     QCString password = m_url.pass().utf8();
@@ -164,8 +162,6 @@ StreamProvider::sendRequest() //SLOT
 
     kdDebug() << "StreamProvider sending request:\n" << request << endl;
     m_sockRemote.writeBlock( request.latin1(), request.length() );
-
-    DEBUG_END
 }
 
 

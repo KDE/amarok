@@ -29,6 +29,8 @@ namespace amaroK
         extern QColor Background; //brighter blue
         ///eg. outline of slider widgets in Player-window
         extern QColor Foreground; //lighter blue
+        ///eg. KListView alternative row color
+        extern QColor AltBase; //grey toned base
     }
 
     /**

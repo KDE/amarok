@@ -335,11 +335,13 @@ XineEngine::canDecode( const KURL &url ) const
     //TODO should free the file_extensions char*
     static QStringList list = QStringList::split( ' ', xine_get_file_extensions( m_xine ) );
 
-    //TODO proper mimetype checking
-
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
-    return ext != "txt" && list.contains( ext );
+
+    //HACK we also check for m4a because xine plays them but
+    //     for some reason doesn't return the extension
+
+    return ext != "txt" && (list.contains( ext ) || ext =="m4a");
 }
 
 const Engine::Scope&

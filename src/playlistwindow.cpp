@@ -98,29 +98,10 @@ namespace amaroK
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
 
-namespace Debug
-{
-    Timer::Timer( const char *label )
-            : m_start( std::clock() )
-    {
-        kdDebug() << indent << "BEGIN: " << label << endl;
-        DEBUG_INDENT
-    }
-
-    Timer::~Timer()
-    {
-        std::clock_t finish = std::clock();
-        const double duration = (double) (finish - m_start) / CLOCKS_PER_SEC;
-
-        DEBUG_UNINDENT
-        kdDebug() << indent << "END: Took " << duration << "s\n";
-    }
-}
-
 template <class B> void
 PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
 {
-    Debug::Timer timer( name );
+    Debug::Block timer( name );
 
     m_browsers->addBrowser( new B( name ), title, icon );
 }
@@ -444,25 +425,19 @@ void PlaylistWindow::createGUI()
 }
 
 
-void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
+void PlaylistWindow::applySettings()
 {
-    setPalette( pal ); //this updates all children's palettes recursively (thanks Qt!)
-
-    QObjectList* const list = queryList( "KListView" );
-    for( QObject *o = list->first(); o; o = list->next() )
-        static_cast<KListView*>(o)->setAlternateBackground( bgAlt );
-    delete list; //heap allocated!
-
-    //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
-    FileBrowser::altBgColor = bgAlt;
-}
-
-
-void PlaylistWindow::setFont( const QFont &font, const QFont &contextfont )
-{
-    //m_browsers->setFont( font );
-    m_playlist->setFont( font );
-    m_browsers->browser( "ContextBrowser" )->setFont( contextfont ); //virtual so works without cast
+    switch( AmarokConfig::useCustomFonts() )
+    {
+    case true:
+        m_playlist->setFont( AmarokConfig::playlistWindowFont() );
+        m_browsers->browser( "ContextBrowser" )->setFont( AmarokConfig::contextBrowserFont() );
+        break;
+    case false:
+        m_playlist->unsetFont();
+        m_browsers->browser( "ContextBrowser" )->unsetFont();
+        break;
+    }
 }
 
 

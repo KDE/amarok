@@ -15,15 +15,39 @@
 
 #include <kurl.h>
 
-// DEVELOPMENT NOTES
-// * You must handle your own media, do not rely on amaroK to call stop() before play() etc.
-// * Generally at this time, emitting stateChanged( Engine::Idle ) is not necessary
-// * You must return Idle from state() when the track has finished playback but you are still loaded
-//   or track transitions will not occur
-// * Basically, reimplement everything virtual and ensure you emit stateChanged() correctly,
-//   try not to block in any function that is called by amaroK, try to keep the user informed
-//   with statusText()s
-
+/**
+ * @class Engine::Base
+ * @author Mark Kretshmann
+ * @author Max Howell
+ *
+ * This is an abstract base class that you need to derive when making your own backends.
+ * It is typdefed to EngineBase for your conveniece.
+ *
+ * The only key thing to get right is what to return from state(), as some amaroK
+ * behaviour is dependent on you returning the right state at the right time.
+ *
+ *   Empty   = No URL loaded and ready to play
+ *   Idle    = URL ready for play, but not playing, so before AND after playback
+ *   Playing = Playing a stream
+ *   Paused  = Stream playback is paused
+ *
+ * Not returning idle when you have reached End-Of-Stream but amaroK has not told you
+ * to stop would be bad because some components behave differently when the engine is
+ * Empty or not. You are Idle because you still have a URL assigned.
+ *
+ * load( KURL ) is a key function because after this point your engine is loaded, and
+ * amaroK will expect you to be able to play the URL until stop() or another load() is
+ * called.
+ *
+ * You must handle your own media, do not rely on amaroK to call stop() before play() etc.
+ *
+ * At this time, emitting stateChanged( Engine::Idle ) is not necessary, otherwise you should
+ * let amaroK know of state changes so it updates the UI correctly.
+ *
+ * Basically, reimplement everything virtual and ensure you emit stateChanged() correctly,
+ * try not to block in any function that is called by amaroK, try to keep the user informed
+ * with emit statusText()
+ */
 
 namespace Engine
 {

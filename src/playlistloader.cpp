@@ -38,7 +38,7 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
     , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
     , m_playFirstUrl( playFirstUrl )
 {
-    Debug::Timer timer( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     setDescription( i18n("Loading media") ); //TODO better wording
 
@@ -147,7 +147,7 @@ public:
 bool
 PlaylistLoader::doJob()
 {
-    Debug::Timer timer( __PRETTY_FUNCTION__ );
+    Debug::Block timer( __PRETTY_FUNCTION__ );
 
     ItemList items;
 

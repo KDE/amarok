@@ -75,7 +75,7 @@ EngineController::~EngineController()
 
 EngineBase *EngineController::loadEngine() //static
 {
-    DEBUG_BEGIN
+    DEBUG_BLOCK
 
     Engine::Base   *engine = instance()->m_engine;
     amaroK::Plugin *plugin = loadEngine( AmarokConfig::soundSystem() );
@@ -142,9 +142,7 @@ EngineBase *EngineController::loadEngine() //static
         delete plugin;
      }
 
-    DEBUG_END
-
-    return engine;
+     return engine;
 }
 
 

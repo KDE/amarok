@@ -26,7 +26,7 @@ ThreadWeaver::~ThreadWeaver()
     Debug::Block block( __PRETTY_FUNCTION__ );
 
     for( ThreadList::Iterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it ) {
-        debugstream d = debug() << "Waiting on thread...";
+        DebugStream d = debug() << "Waiting on thread...";
         (*it)->wait();
         d << "finished\n";
     }
@@ -130,7 +130,7 @@ ThreadWeaver::event( QEvent *e )
     {
     case JobEvent: {
         Job *job = (Job*)e;
-        debugstream d = debug() << "Job ";
+        DebugStream d = debug() << "Job ";
         const QCString name = job->name();
         Thread *thread = job->m_thread;
 

@@ -3,21 +3,16 @@
 
 #include "plugin.h"
 
-#include <kdebug.h>
 
-using namespace amaroK;
+namespace amaroK {
 
 
 Plugin::Plugin()
-{
-    kdDebug() << k_funcinfo << endl;
-}
+{}
 
 
 Plugin::~Plugin()
-{
-    kdDebug() << k_funcinfo << endl;
-}
+{}
 
 
 void
@@ -43,3 +38,4 @@ Plugin::hasPluginProperty( const QString& key )
     return m_properties.find( key.lower() ) != m_properties.end();
 }
 
+}

@@ -90,6 +90,7 @@ class Playlist : private KListView, public EngineObserver
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
+        void unsetFont() { KListView::unsetFont(); }
 
         /** Converts physical PlaylistItem column position to logical */
         int mapToLogicalColumn( int physical );
