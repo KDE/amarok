@@ -304,7 +304,6 @@ Playlist::insertMedia( KURL::List list, int options )
         } else {
             after = lastItem();
             // wait until Playlist loader has finished its process, then go to customEvent() to queue.
-            m_queue = 1;
             m_queueList = list;
             insertMediaInternal( addMe, after, directPlay );
         }
@@ -1279,7 +1278,7 @@ Playlist::customEvent( QCustomEvent *e )
         }
         emit itemCountChanged( itemCount, m_totalLength );
 
-        if ( m_queue ) {
+        if ( !m_queueList.isEmpty() ) {
             KURL::List::Iterator jt;
             for (MyIt it( this, 0 ); *it; ++it ) {
                 jt = m_queueList.find( (*it)->url() );
@@ -1289,7 +1288,6 @@ Playlist::customEvent( QCustomEvent *e )
                     m_queueList.remove( jt );
                 }
             }
-            m_queue = 0;
             m_queueList.clear();
         }
         

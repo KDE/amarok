@@ -206,7 +206,6 @@ class Playlist : private KListView, public EngineObserver
         QStringList  m_redoList;
         uint         m_undoCounter;
 
-        int          m_queue;
         KURL::List   m_queueList;
         
         //text before inline editing ( the new tag is written only if it's changed )
