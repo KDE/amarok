@@ -60,7 +60,7 @@
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
-        QWidget( parent, name, Qt::WType_TopLevel | Qt::WStyle_Dialog | Qt::WPaintUnclipped ),
+        QWidget( parent, name, Qt::WType_TopLevel | Qt::WType_Dialog | Qt::WPaintUnclipped ),
         m_pActionCollection( new KActionCollection( this ) )
 {
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
