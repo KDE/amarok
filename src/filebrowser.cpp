@@ -30,7 +30,6 @@
 #include <qdir.h>
 #include <qlabel.h>
 #include <qtimer.h>
-#include <qtoolbutton.h>
 #include <qtooltip.h>
 
 #include <kaction.h>
@@ -41,6 +40,7 @@
 #include <klineedit.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <ktoolbarbutton.h> //ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
 
@@ -133,13 +133,12 @@ FileBrowser::FileBrowser( const char * name )
     bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->popupMenu() );
 
     { //<Search LineEdit>
-        QHBox *hbox; QToolButton *button;
+        QHBox *hbox; KToolBarButton *button;
 
-        hbox       = new QHBox( this );
-        button     = new QToolButton( hbox );
+        hbox         = new QHBox( this );
+        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
         m_filterEdit = new KLineEdit( hbox );
 
-        button->setIconSet( SmallIconSet( QApplication::reverseLayout() ? "clear_left" : "locationbar_erase" ) );
         connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
