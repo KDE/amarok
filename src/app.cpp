@@ -703,8 +703,6 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 
 void App::engineStateChanged( Engine::State state )
 {
-    DEBUG_BLOCK
-
     switch( state )
     {
     case Engine::Empty:
