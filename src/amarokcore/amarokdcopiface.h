@@ -35,12 +35,32 @@ k_dcop:
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
-   virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
-   virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
+
+   /* These two methods are used by mediacontrol. DO NOT TOUCH! */
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
-   virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
+
+   /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
+      track lengths and positions in seconds. DO NOT TOUCH! */
+   virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
+   virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
+
    virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
+
+   /* Compatibility method (use by mediacontrol as well). DO NOT TOUCH! */
+   virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
+
+   /* New player API */
+   virtual QString Artist() = 0;                            ///< Return the artist of the currently playing track
+   virtual QString Title() = 0;                             ///< Return the title of the currently playing track
+   virtual QString Album() = 0;                             ///< Return the album of the currently playing track
+   virtual QString TotalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format)
+   virtual QString Position() = 0;                          ///< Return the position of the currently playing track ([h:]mm:ss format)
+   virtual QString Genre() = 0;                             ///< Return the genre of the currently playing track
+   virtual QString Year() = 0;                              ///< Return the year of the currently playing track
+   virtual QString Comment() = 0;                           ///< Return the comment of the currently playing track
+   virtual QString Bitrate() = 0;                           ///< Return the bitrate of the currently playing track
+
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual void volumeUp() = 0;                             ///< Increase volume by a reasonable step.
    virtual void volumeDown() = 0;                           ///< Decrease volume by a reasonable step.
