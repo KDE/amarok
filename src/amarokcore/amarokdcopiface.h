@@ -37,6 +37,7 @@ k_dcop:
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
+   virtual void enableRandom(bool enable) = 0;              ///< Switch Random Mode on or off.
 
    /* These two methods are used by mediacontrol. DO NOT TOUCH! */
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.

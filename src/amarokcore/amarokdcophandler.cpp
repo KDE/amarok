@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engine/enginebase.h"
@@ -27,6 +28,7 @@
 
 #include <kapplication.h> //kapp pointer
 #include <kdebug.h> // for kdWarning()
+#include <kactioncollection.h>
 
 namespace amaroK
 {
@@ -192,6 +194,15 @@ namespace amaroK
         {
             engine ->seek( s * 1000 );
         }
+    }
+
+    void DcopHandler::enableRandom(bool enable)
+    {
+        const KActionCollection* const ac = amaroK::actionCollection();
+        KToggleAction* action = (KToggleAction*)ac->action( "random_mode" );
+        action->setChecked( enable );
+
+        AmarokConfig::setRandomMode(enable);
     }
 
     void DcopHandler::addMedia(const KURL &url)
