@@ -18,9 +18,7 @@
 #ifndef AMAROK_DCOPIFACE_H
 #define AMAROK_DCOPIFACE_H
 
-//#include <qobject.h>
-//#include <qstringlist.h>
-
+#include <kurl.h>
 #include <dcopobject.h>
 
 class AmarokIface : virtual public DCOPObject
@@ -28,14 +26,18 @@ class AmarokIface : virtual public DCOPObject
    K_DCOP
 
 k_dcop:
-   virtual void play() = 0;
-   virtual void stop() = 0;
-   virtual void next() = 0;
-   virtual void prev() = 0;
-   virtual void pause() = 0;
-
-   virtual QString nowPlaying() = 0;
-   virtual bool isPlaying() = 0;
+   virtual void play() = 0;                                 ///< Equivalent to pressing "Play" button.
+   virtual void stop() = 0;                                 ///< Equivalent to pressing "Stop" button.
+   virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
+   virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
+   virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
+   virtual void seek(int ms) = 0;                           ///< Seek track to milliseconds position.
+   virtual int  trackTotalTime() = 0;                       ///< Return track length in milliseconds.
+   virtual int  trackCurrentTime() = 0;                     ///< Return current play position in milliseconds.
+   virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
+   virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
+   virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
+   virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
 };
 
 #endif

@@ -51,6 +51,9 @@ class AnalyzerBase;
 class PlayerApp;
 extern PlayerApp *pApp;
 
+class PlayerWidget;
+
+class AmarokDcopHandler;
 
 /**
  *@author mark
@@ -82,8 +85,6 @@ class AmarokSlider : public QSlider
 
 // CLASS AmarokSystray ------------------------------------------------------------
 
-class PlayerWidget;
-
 class AmarokSystray : public KSystemTray
 {
    public:
@@ -98,7 +99,7 @@ class AmarokSystray : public KSystemTray
 
 // CLASS PlayerWidget ------------------------------------------------------------
 
-class PlayerWidget : public QWidget, virtual public AmarokIface
+class PlayerWidget : public QWidget
 {
         Q_OBJECT
 
@@ -153,17 +154,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void slotUpdateTrayIcon( bool visible );
         void createVis();
         void slotReportBug();
-        
-    public /* DCOP */ slots:
-       /* FIXME: move dcop iface to a separate impl class */
-       void play();
-       void stop();
-       void next();
-       void prev();
-       void pause();
-       QString nowPlaying();
-       bool isPlaying();
-       
+
     signals:
         void sigAboutToHide();
         void sigAboutToShow();
@@ -206,7 +197,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         int m_sy;
         int m_sxAdd;
         AmarokSystray *m_pTray;
-
-        QString m_nowPlaying; /* state for DCOP iface nowPlaying() */
+        AmarokDcopHandler *m_pDcopHandler;
 };
+
 #endif

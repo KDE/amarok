@@ -25,6 +25,7 @@ email                :
 #include "analyzers/baranalyzer2.h"
 #include "analyzers/distortanalyzer.h"
 #include "analyzers/turbine.h"
+#include "amarokdcophandler.h"
 
 #include <qbitmap.h>
 #include <qclipboard.h>
@@ -61,9 +62,6 @@ email                :
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
 #include <kmessagebox.h>
-
-#include <dcopclient.h>
-
 
 // CLASS AmarokSlider ------------------------------------------------------------
 
@@ -177,14 +175,13 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name )
-        , DCOPObject( "player" )
-        , m_pActionCollection( new KActionCollection( this ) )
-        , m_pPopupMenu( NULL )
-        , m_pVis( NULL )
-        , m_pPlayObjConfigWidget( NULL )
-        , m_visTimer( new QTimer( this ) )
-        , m_nowPlaying( "" )
+        : QWidget( parent, name ),
+        m_pActionCollection( new KActionCollection( this ) ),
+        m_pPopupMenu( NULL ),
+        m_pVis( NULL ),
+        m_pPlayObjConfigWidget( NULL ),
+        m_visTimer( new QTimer( this ) ),
+        m_pDcopHandler( new AmarokDcopHandler )
 {
     setCaption( "amaroK" );
     setPaletteForegroundColor( pApp->m_fgColor );
@@ -360,13 +357,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     // connect vistimer
     connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
-
-    // Register with DCOP
-    if ( !kapp->dcopClient() ->isRegistered() )
-    {
-        kapp->dcopClient() ->registerAs( "amarok" );
-        kapp->dcopClient() ->setDefaultObject( objId() );
-    }
 }
 
 
@@ -434,7 +424,7 @@ void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate 
     if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
     QToolTip::add( m_pTray, text );
 
-    m_nowPlaying = text;
+    m_pDcopHandler->setNowPlaying( text );
 
     m_bitrate = bitrate;
     m_samplerate = samplerate;
@@ -808,49 +798,5 @@ void PlayerWidget::hide()
 
     QWidget::hide();
 }
-
-
-/* DCOP signals - first try at it */
-
-void PlayerWidget::play()
-{
-    pApp->slotPlay();
-}
-
-
-void PlayerWidget::stop()
-{
-    pApp->slotStop();
-}
-
-
-void PlayerWidget::next()
-{
-    pApp->slotNext();
-}
-
-
-void PlayerWidget::prev()
-{
-    pApp->slotPrev();
-}
-
-
-void PlayerWidget::pause()
-{
-    pApp->slotPause();
-}
-
-
-QString PlayerWidget::nowPlaying()
-{
-    return m_nowPlaying;
-}
-
-bool PlayerWidget::isPlaying()
-{
-    return pApp->isPlaying();
-}
-
 
 #include "playerwidget.moc"
