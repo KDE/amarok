@@ -340,7 +340,7 @@ GstEngine::position() const
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
     gint64 value = 0;
-    gst_element_query( m_gst_audiosink, GST_QUERY_POSITION, &fmt, &value );
+    gst_element_query( m_currentInput->decodebin, GST_QUERY_POSITION, &fmt, &value );
 
     return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
@@ -356,7 +356,7 @@ GstEngine::length() const
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
     gint64 value = 0;
-    gst_element_query( m_gst_audiosink, GST_QUERY_TOTAL, &fmt, &value );
+    gst_element_query( m_currentInput->decodebin, GST_QUERY_TOTAL, &fmt, &value );
 
     return static_cast<uint>( ( value / GST_MSECOND ) ); // nanosec -> msec
 }
