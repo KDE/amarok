@@ -22,8 +22,8 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
  , m_dark( WIDTH, HEIGHT )   //QPixmap
  , m_store( 2 << 8, 0 )      //vector<uint>
  , m_scope( MIN_COLUMNS )    //Scope
- , m_columns( MIN_COLUMNS )  //uint
- , m_rows( MIN_ROWS )        //uint
+ , m_columns( 0 )            //uint
+ , m_rows( 0 )               //uint
 {
     for( uint x = 0; x < MAX_ROWS; ++x ) m_glow[x].resize( WIDTH, HEIGHT );
 

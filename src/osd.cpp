@@ -146,7 +146,7 @@ void OSDWidget::setDuration( int ms )
     if( !m_duration ) timer.stop();
 }
 
-void OSDWidget::setFont( QFont newFont )
+void OSDWidget::setFont(const QFont &newFont )
 {
     QWidget::setFont( newFont );
     refresh();
@@ -191,10 +191,10 @@ void OSDWidget::setAlignment( Alignment a )
     reposition();
 }
 
-void OSDWidget::setScreen( uint screen )
+void OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
-    m_screen = (screen >= n) ? n-1 : (int)screen;
+    m_screen = (screen >= n) ? n-1 : screen;
     reposition();
 }
 
@@ -209,7 +209,7 @@ bool OSDWidget::event( QEvent *e )
 
     case QEvent::ApplicationPaletteChange:
         if ( !AmarokConfig::osdUseCustomColors() ) //FIXME not portable!
-            unsetColors();
+            unsetColors(); //updates colors for new palette
         return TRUE;
 
     default:

@@ -19,8 +19,6 @@
 #include <qtimer.h>  //stack allocated
 #include <qwidget.h> //baseclass
 
-class QFont;
-class QString;
 class QStringList;
 class QTimer;
 class MetaBundle;
@@ -33,13 +31,13 @@ class OSDWidget : public QWidget
 
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
         void setDuration(int ms);
-        void setFont(QFont newfont);
+        void setFont(const QFont &newfont);
         void setShadow(bool shadow);
         void setTextColor(const QColor &newcolor);
         void setBackgroundColor(const QColor &newColor);
         void setOffset( int x, int y );
         void setAlignment(Alignment);
-        void setScreen(uint screen);
+        void setScreen(int screen);
         void setText(const QString &text) { m_currentText = text; refresh(); }
 
         void unsetColors();
@@ -52,6 +50,7 @@ class OSDWidget : public QWidget
         //TODO rename show, scrap removeOSD, just use hide() <- easier to learn
         void showOSD(const QString&, bool preemptive=false );
         void removeOSD() { hide(); } //inlined as is convenience function
+        void show();
 
       protected slots:
         void minReached();
@@ -61,8 +60,6 @@ class OSDWidget : public QWidget
         void renderOSDText(const QString &text);
         void mousePressEvent( QMouseEvent* );
         bool event(QEvent*);
-
-        void show();
 
         /* call to reposition a new OSD text or when position attributes change */
         void reposition( QSize newSize = QSize() );
@@ -114,27 +111,26 @@ private:
 
 
 
-namespace amaroK {
-
-class OSD : public OSDWidget
+namespace amaroK
 {
-Q_OBJECT
-public:
-    static OSD *instance();
+    class OSD : public OSDWidget
+    {
+    Q_OBJECT
+    public:
+        static OSD *instance();
 
-public slots:
-    void showTrack( const MetaBundle &bundle );
-    void showTrack() { showOSD( m_text ); }
+    public slots:
+        void showTrack( const MetaBundle &bundle );
+        void showTrack() { showOSD( m_text ); }
 
-    //this function is for the showOSD global shortcut, it should always work //FIXME sucks
-    void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
+        //this function is for the showOSD global shortcut, it should always work //FIXME sucks
+        void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
 
-private:
-    OSD() : OSDWidget( "amaroK" ) {}
+    private:
+        OSD() : OSDWidget( "amaroK" ) {}
 
-    QString m_text;
-};
-
+        QString m_text;
+    };
 }
 
 #endif /*AMAROK_OSD_H*/
