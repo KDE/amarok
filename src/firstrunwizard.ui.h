@@ -33,7 +33,7 @@ FirstRunWizard::init()
     helpButton()->hide();
 
     //would be better as a KConfigXT key now
-    if ( amaroK::config()->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
+    if ( amaroK::config( "General" )->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
         option_xmms->setChecked( true );
         picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
     }
