@@ -114,9 +114,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
 {
     m_url = url;
 
+    QStringList info = QStringList::split( " @@@ ", url.path() );
+
     if ( url.protocol() == "album" )
     {
-        QStringList info = QStringList::split( "/", url.path() );
         QStringList values;
         QStringList names;
 
@@ -152,12 +153,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
     }
     
-    QStringList info = QStringList::split( " - ", url.path() );
-    m_artist = info[0];
-    m_album = info[1];
-
     if ( m_url.protocol() == "fetchcover" )
-        m_db->fetchCover( this, m_artist, m_album, false );
+        m_db->fetchCover( this, info[0], info[1], false );
 }
 
 
@@ -333,7 +330,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !values.isEmpty() )
          browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                    "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
+                                    "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 @@@ %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
                                     "<i>First play: %7<br>Last play: %8<br>Total plays: %9</i></td>"
                                     "</tr>" )
                          .args( QStringList()
@@ -362,7 +359,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             imageurl = locate( "data", "amarok/images/sound.png" );
 
              browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                        "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
+                                        "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 @@@ %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
                                         "<i>Never played before</i></td>"
                                         "</tr>" )
                              .args( QStringList()
@@ -460,8 +457,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         for ( uint i = 0; i < values.count(); i += 4 )
         {
-             browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
-                                        "<a class='menu' href='fetchcover:%3 - %4'><img align='left' hspace='2' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
+             browser->write( QStringx ( "<tr><td onClick='window.location.href=\"album:%1 @@@ %2\"' height='42' valign='top' class='rbalbum'>"
+                                        "<a class='menu' href='fetchcover:%3 @@@ %4'><img align='left' hspace='2' src='%5'></a><span class='album'>%6</span><br>%7 Tracks</td>"
                                         "</tr>" )
                              .args( QStringList()
                                     << values[i + 3].replace( "\"", "%22" ) // artist.id

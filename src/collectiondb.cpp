@@ -847,7 +847,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
              this,      SLOT( saveCover( const QString&, const QPixmap& ) ) );
-    
+
     fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, edit, 2, false );
 }
 
@@ -882,7 +882,6 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     fileName.replace( " ", "_" ).append( ".png" );
     
     img.save( m_coverDir.filePath( "large/"+fileName.lower() ), "PNG");
-    
     
     emit coverFetched( keyword );
     emit coverFetched();
