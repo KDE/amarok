@@ -23,16 +23,12 @@
 
 #include <qcolor.h>
 #include <qlistview.h>
-#include <qmessagebox.h>
 #include <qpainter.h>
-#include <qpalette.h>
 #include <qpen.h>
 #include <qpixmap.h>
-#include <qpoint.h>
 #include <qrect.h>
 #include <qstring.h>
 
-#include <klistview.h> //baseclass
 #include <kdebug.h>
 #include <kurl.h>
 
@@ -42,6 +38,7 @@ QColor PlaylistItem::GlowColor = Qt::white;
 PlaylistItem *PlaylistItem::GlowItem  = 0;
 
 //no reason to make this a member function
+//FIXME make it a static member function
 static const QString zeroPad( long );
 
 
@@ -52,6 +49,8 @@ PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, co
 {
     setDragEnabled( true );
     setDropEnabled( true );
+    
+    setText( 8, u.directory().section( '/', -1 ) );
     
     if( t ) setMeta( *t );
 }
@@ -89,36 +88,83 @@ const MetaBundle *PlaylistItem::metaBundle() const
                            text( 5 ),
                            text( 6 ),
                            text( 7 ),
-                           QString( "" ),//text( 8 ), //TODO track #
                            ( f.isNull() ) ? 0 : f.audioProperties() );
 }
 
 
 void PlaylistItem::setMeta( const MetaBundle &bundle )
 {
-    int m_hours, m_minutes, m_seconds;
     QString str;
     
-    if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be set by playlists, so the check is worthwhile
+    if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be already set by playlist files
     setText( 2, bundle.m_artist );
     setText( 3, bundle.m_album );
     setText( 4, bundle.m_year );
     setText( 5, bundle.m_comment );
     setText( 6, bundle.m_genre );
-    setText( 7, bundle.m_directory );
+    setText( 7, bundle.m_track );
     
-    m_minutes = bundle.m_length / 60 % 60;
-    m_seconds = bundle.m_length % 60;
+    if( bundle.m_length != -1 )
+    {
+        int m_minutes, m_seconds;    
     
-    if ( m_minutes < 10 ) str += "0";
-    str += QString::number( m_minutes );
-    str += ":";
+        m_minutes = bundle.m_length / 60 % 60;
+        m_seconds = bundle.m_length % 60;
+    
+        str += zeroPad( m_minutes );
+        str += ":";
+        str += zeroPad( m_seconds );
+    }
+    else str = "-";
+    
+    setText( 9, str );
+    setText( 10, QString::number( bundle.m_bitrate ) + "kbps" );
+}
 
-    if ( m_seconds < 10 ) str += "0";
-    str += QString::number( m_seconds );
 
-    setText( 8, str );
-    setText( 9, QString::number( bundle.m_bitrate ) + "kbps" );
+#include <taglib/tag.h>
+#include <taglib/tstring.h>
+
+void PlaylistItem::writeTag( const QString &newtag, int col )
+{
+    TagLib::FileRef f( m_url.path().local8Bit(), false );
+    
+    if( !f.isNull() )
+    {
+        TagLib::Tag *t = f.tag(); //it is my impression from looking at the source that tag() never returns 0
+        TagLib::String s = QStringToTString( newtag );
+    
+        switch( col ) {
+        case 1:
+            t->setTitle( s );
+            break;
+        case 2:
+            t->setArtist( s );
+            break;
+        case 3:
+            t->setAlbum( s );
+            break;
+        case 4:
+            t->setYear( newtag.toInt() );
+            break;
+        case 5:
+            //FIXME how does this work for vorbis files?
+            //Are we likely to overwrite some other comments?
+            //Vorbis can have multiple comment fields..
+            t->setComment( s );
+            break;
+        case 6:
+            t->setGenre( s );
+            break;
+        case 7:
+            t->setTrack( newtag.toInt() );
+            break;
+        default:
+            return;
+        }
+        
+        f.save();
+    }
 }
 
 

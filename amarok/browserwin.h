@@ -56,6 +56,7 @@ extern PlayerApp *pApp;
 
 class KMultiTabBar;
 class QSignalMapper;
+class QResizeEvent;
 
 class PlaylistSideBar : public QHBox
 {
@@ -68,6 +69,7 @@ public:
     void addPage( QWidget*, const QString&, const QString&, bool = false );
     QWidget *page( const QString& );
     virtual QSize sizeHint() const;
+    virtual void  resizeEvent( QResizeEvent * );
 
 public slots:
     void showHide( int );

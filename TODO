@@ -39,9 +39,13 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * chg: instead of show file info why not use standard KDE properties? This has much more power
+           than anything we could whip up and with taglib installed shows meta info and allows
+           editing of it.
+
     * add: tabbed playlists.
            For: it's convenient to have several playlists
-	   Against: the playlist is getting cluttered enough as it is!
+           Against: the playlist is getting cluttered enough as it is!
 
     * add: #32<markey> icecast metadata support (uses UDP channel) -->markey
 

@@ -21,7 +21,6 @@
 #include <qdir.h>
 #include <qstringlist.h>    // <markey> forward declaration of QStringList does not work with some compilers
 #include <klistview.h>
-//#include <krootpixmap.h>
 #include <kurl.h>
 
 #include "playlistitem.h" //friend
@@ -43,20 +42,33 @@ class QTimer;
 class QEvent;
 
 class MetaBundle;
-
 class TagReader;
+
 class PlayerApp;
 extern PlayerApp *pApp;
 
 
-//FIXME <mxcl> I really want this to be protected inheritance but 1 in 3 people have compile issues:
+#define COL_TRACKNAME 0
+#define COL_TITLE   1
+#define COL_ARTIST  2
+#define COL_ALBUM   3
+#define COL_YEAR    4
+#define COL_COMMENT 5
+#define COL_GENRE   6
+#define COL_TRACK   7
+#define COL_DIR     8
+#define COL_LENGTH  9
+#define COL_BITRATE 10
+
+
+//FIXME <mxcl> I would very much like to make this inherit KListView privately as it scares me having multiple threads and public access!
 //amarok/playerapp.cpp: In member function `void PlayerApp::initBrowserWin()':
 //amarok/playerapp.cpp:479: `QObject' is an inaccessible base of `PlaylistWidget'
 //make: *** [../amarok/amarok/playerapp.o] Fehler 1
 //FIXME 479: connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle * ) ), this, SLOT( play( const KURL&, const MetaBundle * ) ) );
 //FIXME the protected/private inheritance is necessary as NO other classes can have access to QListViewItems!!
 
-class PlaylistWidget : public KListView //: protected KListView
+class PlaylistWidget : public KListView //: private KListView
 {
     Q_OBJECT
     public:
@@ -103,6 +115,7 @@ class PlaylistWidget : public KListView //: protected KListView
         void slotReturnPressed();
         void showContextMenu( QListViewItem *, const QPoint & );
         void activate( QListViewItem * );
+        void writeTag( QListViewItem *, const QString &, int );
 
     signals:
         void activated( const KURL&, const MetaBundle* = 0 );

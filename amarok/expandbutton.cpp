@@ -15,10 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "browserwin.h"
 #include "expandbutton.h"
-#include "playerapp.h"
-#include "playlistwidget.h"
 
 #include <qbitmap.h>
 #include <qevent.h>

@@ -47,9 +47,6 @@
 #include <kcursor.h>
 
 
-//TODO give UNDO action standard icon too
-//TODO need to add tooltip to undo/redo buttons
-//TODO make undo/redo KActions
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     : KListView( parent, name )
@@ -69,7 +66,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     setShowSortIndicator( true );
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
-    //setItemsRenameable( true ); //TODO enable inline tag editing
+    setItemsRenameable( true );
     setSorting( 200 );
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
@@ -78,6 +75,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     //    m_rootPixmap.setFadeEffect( 0.5, Qt::black );
     //    m_rootPixmap.start();
 
+    //NOTE order is critical because we can't set indexes
     addColumn( i18n( "Trackname" ), 280 );
     addColumn( i18n( "Title"     ), 200 );
     addColumn( i18n( "Artist"    ), 100 );
@@ -85,15 +83,27 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     addColumn( i18n( "Year"      ),  0 ); //0 means hidden
     addColumn( i18n( "Comment"   ),  0 );
     addColumn( i18n( "Genre"     ),  0 );
+    addColumn( i18n( "Track"     ),  0 );    
     addColumn( i18n( "Directory" ),  0 );
     addColumn( i18n( "Length"    ),  80 );
     addColumn( i18n( "Bitrate"   ),  0 );
+    
+    setRenameable( 0 );
+    setRenameable( 1 );
+    setRenameable( 2 );
+    setRenameable( 3 );
+    setRenameable( 4 );
+    setRenameable( 5 );
+    setRenameable( 6 );
+    setRenameable( 7 );
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),  this, SLOT( slotEraseMarker() ) );
     connect( this, SIGNAL( doubleClicked( QListViewItem* ) ), this, SLOT( activate( QListViewItem* ) ) );
     connect( this, SIGNAL( returnPressed( QListViewItem* ) ), this, SLOT( activate( QListViewItem* ) ) );
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this, SLOT( showContextMenu( QListViewItem*, const QPoint& ) ) );
+    connect( this, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
+                   SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
 
     //install header eventFilter
     header()->installEventFilter( this );
@@ -541,14 +551,14 @@ PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 
 void PlaylistWidget::setSorting( int i, bool b )
 {
-  //TODO consider removing this if and relying on the fact you always call setSorting to write the undo (?)
+  //TODO consider removing this IF (relying on the fact you always call setSorting to write the undo)
 
   //we overide so we can always write an undo
   if( i < 200 ) //FIXME 200 is arbituray, use sensible number like sizeof(short)
   {
     writeUndo();
   }
-
+  
   KListView::setSorting( i, b );
   
   //this is one of the rare cases that we ensure the currentTrack is visible
@@ -599,7 +609,9 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p )
     popup.insertItem( SmallIcon("player_play"), i18n( "&Play track" ), 0 );    
     popup.insertItem( SmallIcon("info"), i18n( "&Show track information" ), 1 );
     popup.insertItem( i18n( "&Copy trackname to clipboard" ), 2 ); //FIXME use KAction
-    popup.insertItem( SmallIcon("editdelete"), i18n( "&Remove selected items" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    //TODO new icon for remove, we can't use the delete one as it is for DELETE!
+    //     we don't want people thinking they'll delete the track from their hard-discs!
+    popup.insertItem( /*SmallIcon("editdelete"),*/ i18n( "&Remove selected items" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 
     // only enable when file is selected
     popup.setItemEnabled( 0, ( item != NULL ) );
@@ -815,8 +827,12 @@ void PlaylistWidget::removeSelectedItems()
   //      you need to somehow make it so creation and deletion of playlistItems handle the search
   //      tokens and pointers (and removal from tagReader queue!)
   
-    //We use two loops as the code is neater and so we can select the item after
-    //currentTrack if it is to be removed
+    //two loops because:
+    //1)the code is neater
+    //2)If we remove m_currentTrack we select the next track because when m_currentTrack == NULL
+    //  we play the first selected item. In order to be sure what we select won't be removed by
+    //  this function, we use two loops
+    
     //FIXME when we implement a "play this track next" feature, you can scrap this selection method
     //FIXME also if you delete the last track when set current the playlist repeats on track end
 
@@ -861,6 +877,11 @@ void PlaylistWidget::removeSelectedItems()
     }
 }
 
+
+void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col )
+{
+    static_cast<PlaylistItem*>(lvi)->writeTag( tag, col );
+}
 
 
 // UNDO SYSTEM ==========================================================

@@ -74,6 +74,8 @@ QWidget *PlaylistSideBar::page( const QString &widgetName )
         if( m_widgets[i] )
             if( widgetName == m_widgets[i]->name() )
                 return m_widgets[i];
+    
+    return 0;
 }
 
 void PlaylistSideBar::setPageFont( const QFont &font )
@@ -88,6 +90,14 @@ QSize PlaylistSideBar::sizeHint() const
 {
     //return a sizeHint that will make the splitter space our pages as the user expects
     return ( m_current != -1 ) ? QSize( m_sizes[ m_current ], 100 ) : m_MTB->sizeHint();
+}
+
+void PlaylistSideBar::resizeEvent( QResizeEvent *e )
+{
+    if( m_current != -1 )
+    {
+        m_sizes[ m_current ] = e->size().width();
+    }
 }
 
 void PlaylistSideBar::addPage( QWidget *widget, const QString& text, const QString& icon, bool show )
@@ -112,7 +122,7 @@ void PlaylistSideBar::showHide( int index )
     
     if( m_current != -1 && m_current != index )
     {
-        m_sizes[ m_current ] = width();        
+        //we need to close the open page
         m_widgets[ m_current ]->hide();
         m_MTB->tab( m_current )->setState( false );
     }
@@ -122,7 +132,7 @@ void PlaylistSideBar::showHide( int index )
     
     m_MTB->tab( index )->setState( isShut );
     if( isShut ) { w->show(); m_current = index; setMaximumWidth( 2000 ); }
-    else         { w->hide(); m_current = -1; m_sizes[ index ] = width(); setMaximumWidth( m_MTB->maximumWidth() ); }
+    else         { w->hide(); m_current = -1;    setMaximumWidth( m_MTB->width() ); } //FIXME maximumWidth() seems more sensible, BUT that returns 32000!
 }
 
 void PlaylistSideBar::close()

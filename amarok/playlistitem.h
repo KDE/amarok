@@ -41,17 +41,19 @@ class PlaylistItem : public KListViewItem
 
         const MetaBundle *metaBundle() const;
         void setMeta( const MetaBundle& );
+        void writeTag( const QString&, int );
         
         const QString trackName() const { return text( 0 ); }
         const QString length( uint = 0 ) const; //Return track length as mm:ss
         const KURL    &url() const { return m_url; }
+        
         
         //save memory, use a single static to represent these properties
         static QColor GlowColor;
         static PlaylistItem *GlowItem;
 
     private:
-        void paintCell( QPainter*, const QColorGroup&, int, int, int );
+        virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL m_url;
 };

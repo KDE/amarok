@@ -483,9 +483,10 @@ MetaBundle *TagReader::readTags( const KURL &url )
    //audioproperties are read on demand
    TagLib::FileRef f( url.path().local8Bit(), true );
 
-   if ( !f.isNull() && f.tag() ) //FIXME I'm thinking that calling f.tag() here is possibly not nice, must check!
+   if ( !f.isNull() )
    {
-      TagLib::Tag *tag = f.tag();
+      //it is my impression from looking at the source that tag() never returns 0
+      const TagLib::Tag *tag = f.tag();
 
       tags = new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
                        TStringToQString( tag->artist() ).stripWhiteSpace(),
@@ -493,7 +494,6 @@ MetaBundle *TagReader::readTags( const KURL &url )
                        QString::number( tag->year() ),
                        TStringToQString( tag->comment() ).stripWhiteSpace(),
                        TStringToQString( tag->genre() ).stripWhiteSpace(),
-                       QString( url.directory().section( '/', -1 ) ),
                        QString::number( tag->track() ),
                        f.audioProperties() );
    }
