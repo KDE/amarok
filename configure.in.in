@@ -67,6 +67,7 @@ AC_DEFUN(AC_NO_TAGLIB,
 AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
 if test "x$TAGLIB_CONFIG" = "xno" ; then
 	AC_NO_TAGLIB
+	DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
 else
 	AC_HAVE_TAGLIB
 fi
