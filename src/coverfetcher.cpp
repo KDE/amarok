@@ -57,7 +57,7 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
     QStringList albumExtension;
-    albumExtension << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" );
+    albumExtension << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" )
                    << QString( "disc" ) << QString( "disk" ) << QString( "remaster" ) << QString( "cd" ) << QString( "single" );
 
     for ( uint x = 0; x < albumExtension.count(); ++x )
