@@ -285,6 +285,7 @@ public:
 
 private:
     friend DependentJob::DependentJob( QObject*, const char* );
+    friend Thread::~Thread();
 
     void registerDependent( QObject*, const char* );
 
