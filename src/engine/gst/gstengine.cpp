@@ -268,12 +268,12 @@ GstEngine::scope()
     gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, bytes );
     if ( !data ) return m_scope;
     
-    for ( ulong i = 0; i < 512; i += channels ) {
+    for ( ulong i = 0; i < 512; i++, data += channels ) {
         long temp = 0;
         
         for ( int chan = 0; chan < channels; chan++ ) {
             // Add all channels together so we effectively get a mono scope
-            temp += data[i+chan];
+            temp += data[chan];
         }
         m_scope[i] = temp;
     }
