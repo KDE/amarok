@@ -2,8 +2,8 @@
 Type=Application
 Name=amaroK
 Exec=amarok -caption "%c" %i %m %u
-Comment=
-Comment[xx]=xxxx
+Comment=A new media player
+Comment[ru]=Новый медиа-проигрыватель
 Icon=amarok
 MimeTypes=application/x-ogg;audio/x-vorbis;audio/basic;audio/x-mod;audio/x-mp3;audio/x-scpls;audio/x-sid;audio/x-wav
 DocPath=amarok/index.html
