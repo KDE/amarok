@@ -109,6 +109,7 @@ class PlaylistWidget : private KListView, public EngineObserver
         void itemCountChanged(int newCount);
 
     public slots:
+        void insertMedia( const KURL &u ) { insertMedia( KURL::List(u), false ); }
         void handleOrderPrev(); //DEPRECATE
         void handleOrderCurrent(); //DEPRECATE
         void handleOrder( PlaylistWidget::RequestType = Next ); //DEPRECATE

@@ -123,7 +123,9 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 
     //<FileBrowser>
-        m_browsers->addPage( new FileBrowser( "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
+        QWidget *fb = new FileBrowser( "FileBrowser" );
+        m_browsers->addPage( fb, i18n( "Files" ), "hdd_unmount" );
+        connect( fb, SIGNAL(activated( const KURL& )), m_playlist, SLOT(insertMedia( const KURL& )) );
     //</FileBrowser>
 
     //<SearchBrowser>
@@ -152,13 +154,13 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         m_browsers->addPage( vb, i18n( "Streams" ), "network" );
     } //</StreamBrowser>
 
+    connect( m_playlist, SIGNAL(itemCountChanged( int )),
+             statusbar,    SLOT(slotItemCountChanged( int )) );
+    connect( m_playlist, SIGNAL(aboutToClear()),
+             m_lineEdit,   SLOT(clear()) );
+    connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
+             m_playlist,   SLOT(slotTextChanged( const QString& )) );
 
-    connect( m_playlist, SIGNAL(itemCountChanged(int)),
-             statusbar,    SLOT(slotItemCountChanged(int)) );
-    connect( m_playlist, SIGNAL( aboutToClear() ),
-             m_lineEdit,   SLOT( clear() ) );
-    connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ),
-             m_playlist,   SLOT( slotTextChanged( const QString& ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }

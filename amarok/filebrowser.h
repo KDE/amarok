@@ -29,8 +29,9 @@
 #include <qvbox.h>
 
 class KActionCollection;
-class KActionSelector;
 class KDirOperator;
+class KFileItem;
+class KFileView;
 class KURLComboBox;
 class KHistoryCombo;
 class QColor;
@@ -47,34 +48,6 @@ class QColor;
 */
 
 
-class KDevFileSelectorToolBar: public KToolBar
-{
-public:
-    KDevFileSelectorToolBar( QWidget *parent )
-      : KToolBar( parent, 0, true )
-    {
-        setMinimumWidth(10);
-    }
-
-    virtual void KDevFileSelectorToolBar::setMovingEnabled( bool )
-    {
-        KToolBar::setMovingEnabled( false );
-    }
-};
-
-
-class KDevDirOperator: public KDirOperator
-{
-public:
-    KDevDirOperator( const KURL &urlName, QWidget *parent=0, const char *name=0 )
-      : KDirOperator(urlName, parent, name)
-    {}
-
-protected:
-    virtual KFileView* createView( QWidget*, KFile::FileView );
-};
-
-
 class FileBrowser : public QVBox
 {
     Q_OBJECT
@@ -83,36 +56,54 @@ public:
     FileBrowser( const char * name = 0 );
     ~FileBrowser();
 
-    void readConfig();
     void setupToolbar();
-    KDevDirOperator *dirOperator(){ return dir; }
+    KDirOperator *dirOperator() { return dir; }
     KActionCollection *actionCollection() { return m_actionCollection; };
     QString location() const;
-    QSize sizeHint() const { return QSize( 220, 50 ); } //default embedded sidebar width
 
     static QColor altBgColor;
 
+signals:
+    void activated( const KURL& );
+
 public slots:
-    void slotFilterChange(const QString&);
-    void setDir(KURL);
-    void setDir( const QString& url ) { setDir( KURL( url ) ); };
+    void slotFilterChange( const QString& );
+    void setDir( const KURL& );
+    void setDir( const QString& url ) { setDir( KURL( url ) ); }
 
 private slots:
-    void cmbPathActivated( const KURL& u );
+    void cmbPathActivated( const KURL& u ) { cmbPathReturnPressed( u.url() ); }
     void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KURL& u );
     void btnFilterClick();
+    void slotViewChanged( KFileView* );
+    void activateThis( const KFileItem* );
 
 private:
-    class KDevFileSelectorToolBar *toolbar;
-    KActionCollection *m_actionCollection;
-    class KBookmarkHandler *bookmarkHandler;
-    KURLComboBox *cmbPath;
-    KDevDirOperator *dir;
-    KHistoryCombo * filter;
-    class QToolButton *btnFilter;
+    class ToolBar;
 
-    QString lastFilter;
+    ToolBar           *m_toolbar;
+    KActionCollection *m_actionCollection;
+    KURLComboBox      *cmbPath;
+    KDirOperator      *dir;
+    KHistoryCombo     *filter;
+    class QToolButton *btnFilter;
+    QString            lastFilter;
+
+    class KBookmarkHandler *bookmarkHandler;
+
+    class ToolBar: public KToolBar
+    {
+    public:
+        ToolBar( QWidget *parent )
+          : KToolBar( parent, 0, true )
+        {}
+
+        virtual void setMovingEnabled( bool )
+        {
+            KToolBar::setMovingEnabled( false ); //TODO find out why we need this!
+        }
+    };
 };
 
 /*  @todo anders

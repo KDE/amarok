@@ -318,7 +318,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
                             // did we cycle around completely? if so, every song was already played once.
                             // fallback to random output, then
                             if ( item == tItem )
-                                // we only pick another song, if playlist repeating 
+                                // we only pick another song, if playlist repeating
                                 // is enabled, otherwise we're done
                                 if ( AmarokConfig::repeatPlaylist() )
                                 {
@@ -327,7 +327,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
                                         item = (PlaylistItem*)item->itemBelow();
                                     if ( !item )
                                       item = firstChild();
-    
+
                                     break;
                                 }
                                 else
@@ -1089,9 +1089,9 @@ void PlaylistWidget::slotGlowTimer() //SLOT
         QPainter p( viewport() );
         p.setPen( colorGroup().brightText().light( m_glowCount ) );
 
-        rect.setTop   ( rect.top()      );
-        rect.setBottom( rect.bottom()   );
-        rect.setWidth ( contentsWidth() );    //neccessary to draw on the complete width
+        //rect.setTop   ( rect.top()      );
+        //rect.setBottom( rect.bottom()   );
+        //rect.setWidth ( contentsWidth() );    //neccessary to draw on the complete width
 
         p.drawRect( rect );
     }
