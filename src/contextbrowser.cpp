@@ -77,12 +77,12 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyHomePage( true )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
-        , m_suggestionsOpen( true )
-        , m_favouritesOpen( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
+        , m_suggestionsOpen( true )
+        , m_favouritesOpen( true )
 {
     s_instance = this;
 
