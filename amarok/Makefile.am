@@ -9,10 +9,10 @@ SUBDIRS = \
     $(AMAROKARTS_BUILD) \
     analyzers \
     data \
+    plugin \
     engine \
     images \
     loader \
-    plugin \
     sqlite \
     titleproxy \
     vis
