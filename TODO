@@ -8,12 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #69 <markey> volume OSD display does not work correctly. won't get updated while
-               changing volume and displays bogus values
-
-    * fix: #67 <mikmak> sometimes the aRts effects-saver writes an empty <effectname> tag. leads to
-               crash on startup when restoring effects
-
     * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
                <mxcl> can you be more specific? WORKSFORME
 
@@ -25,9 +19,6 @@ SHORT-TERM (URGENT):
                (RFC: is this still appropriate or would it be misleading?)
 
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
-
-    * fix: #52 <markey> got this today, possibly from new PlayerWidget code (app was freezing):
-                QPainter::begin: Cannot paint null pixmap
 
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
