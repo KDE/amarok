@@ -47,7 +47,7 @@ class CollectionBrowser: public QVBox
     private:
         //attributes:
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
-                         IdArtistAlbum = 64, IdGenreArtistAlbum = 128 };
+                         IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256 };
 
         KAction* m_configureAction;
         KAction* m_scanAction;

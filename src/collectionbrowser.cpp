@@ -94,26 +94,23 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_categoryMenu = tagfilterMenuButton->popupMenu();
 
     toolbar->setIconText( KToolBar::IconTextRight, false );
-    m_scanAction->plug( toolbar );
+    tagfilterMenuButton->plug( toolbar );
     toolbar->insertLineSeparator();
-    m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
 
     toolbar->setIconText( KToolBar::IconOnly, false );
     m_treeViewAction->plug( toolbar );
     m_flatViewAction->plug( toolbar );
     toolbar->insertLineSeparator();
 
-    toolbar->setIconText( KToolBar::IconTextRight, false );
-    tagfilterMenuButton->plug( toolbar );
-
-    toolbar->insertLineSeparator();
-
     toolbar->setIconText( KToolBar::IconOnly, false );
+    m_scanAction->plug( toolbar );
+    m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
     m_configureAction->plug( toolbar );
 
     m_categoryMenu->insertItem( i18n( "Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtist );
-    m_categoryMenu->insertItem( i18n( "Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdAlbum );
     m_categoryMenu->insertItem( i18n( "Artist / Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtistAlbum );
+    m_categoryMenu->insertItem( i18n( "Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdAlbum );
+    m_categoryMenu->insertItem( i18n( "Genre / Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdGenreArtist );
     m_categoryMenu->insertItem( i18n( "Genre / Artist / Album" ), m_view, SLOT( presetMenu( int ) ), 0, IdGenreArtistAlbum );
 
     m_categoryMenu->insertSeparator();
@@ -601,6 +598,11 @@ CollectionView::presetMenu( int id )  //SLOT
         case CollectionBrowser::IdArtistAlbum:
             cat1Menu( CollectionBrowser::IdArtist, false );
             cat2Menu( CollectionBrowser::IdAlbum, false );
+            cat3Menu( CollectionBrowser::IdNone, false );
+            break;
+        case CollectionBrowser::IdGenreArtist:
+            cat1Menu( CollectionBrowser::IdGenre, false );
+            cat2Menu( CollectionBrowser::IdArtist, false );
             cat3Menu( CollectionBrowser::IdNone, false );
             break;
         case CollectionBrowser::IdGenreArtistAlbum:
