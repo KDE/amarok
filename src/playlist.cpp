@@ -154,6 +154,7 @@ Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
+    , EngineObserver( EngineController::instance() )
     , m_currentTrack( 0 )
     , m_marker( 0 )
     , m_firstColumn( 0 )
@@ -170,7 +171,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     s_instance = this;
 
     EngineController* const ec = EngineController::instance();
-    ec->attach( this );
     connect( ec, SIGNAL(orderPrevious()), SLOT(playPrevTrack()) );
     connect( ec, SIGNAL(orderNext()),     SLOT(playNextTrack()) );
     connect( ec, SIGNAL(orderCurrent()),  SLOT(playCurrentTrack()) );
@@ -269,8 +269,6 @@ Playlist::~Playlist()
     saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
     if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
-
-    EngineController::instance()->detach( this );
 
     //clean undo directory
     QStringList list = m_undoDir.entryList();

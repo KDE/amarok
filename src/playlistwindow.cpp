@@ -101,7 +101,7 @@ PlaylistWindow *PlaylistWindow::s_instance = 0;
 template <class B> void
 PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
 {
-    debug() << "BROWSER: " << name << endl;
+    debug() << "BEGIN: " << name << endl;
 
     DEBUG_INDENT
         clock_t start  = clock();
@@ -111,12 +111,13 @@ PlaylistWindow::addBrowser( const char *name, const QString &title, const QStrin
         const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
     DEBUG_UNDENT
 
-    debug() << "BROWSER: Initialization time: " << duration << "s\n";
+    debug() << "END: Time: " << duration << "s\n";
 }
 
 
 PlaylistWindow::PlaylistWindow()
    : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
+   , EngineObserver( EngineController::instance() )
    , KXMLGUIClient()
    , m_lastBrowser( 0 )
 {
@@ -127,8 +128,8 @@ PlaylistWindow::PlaylistWindow()
 
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
-    EngineController::instance()->attach( this );
-    ( void ) new K3bExporter();
+
+    new K3bExporter();
 
     KStdAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
     KStdAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
@@ -327,7 +328,7 @@ PlaylistWindow::init()
 
 
     //<Browsers>
-        debug() << "Browser Initialisation:\n";
+        debug() << "Initialising browsers, please report long start times!\n";
         DEBUG_INDENT
 
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );

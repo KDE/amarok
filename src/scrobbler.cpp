@@ -40,13 +40,12 @@ Scrobbler* Scrobbler::instance()
 
 
 Scrobbler::Scrobbler() :
+    EngineObserver( EngineController::instance() ),
     m_prevPos( 0 ),
     m_validForSending( true ),
     m_submitter( new ScrobblerSubmitter() ),
     m_item( NULL )
-{
-    EngineController::instance()->attach( this );
-}
+{}
 
 
 Scrobbler::~Scrobbler()
@@ -54,8 +53,6 @@ Scrobbler::~Scrobbler()
     delete m_submitter;
     if ( m_item != NULL )
         delete m_item;
-
-    EngineController::instance()->detach( this );
 }
 
 

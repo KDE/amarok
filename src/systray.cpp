@@ -32,6 +32,7 @@ namespace amaroK
 
 amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
   : KSystemTray( playerWidget )
+  , EngineObserver( EngineController::instance() )
   , trackLength( 0 )
   , mergeLevel( -1 )
   , overlay( 0 )
@@ -60,14 +61,6 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     overlayVisible = false;
     //paintIcon();
     setPixmap( baseIcon );
-
-    // attach to get notified about engine events
-    EngineController::instance()->attach( this );
-}
-
-amaroK::TrayIcon::~TrayIcon( )
-{
-    EngineController::instance()->detach( this );
 }
 
 bool

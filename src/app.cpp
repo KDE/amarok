@@ -155,8 +155,8 @@ App::~App()
         else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
     }
 
-    //records final statistics
-    EngineController::instance()->endSession();
+    EngineController::instance()->endSession(); //records final statistics
+    EngineController::instance()->detach( this );
 
     //do even if trayicon is not shown, it is safe
     amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );

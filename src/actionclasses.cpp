@@ -183,18 +183,11 @@ Menu::slotActivated( int index )
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
   : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
+  , EngineObserver( EngineController::instance() )
 {
-    EngineController* const ec = EngineController::instance();
-
     engineStateChanged( EngineController::engine()->state() );
 
-    ec->attach( this );
-    connect( this, SIGNAL( activated() ), ec, SLOT( playPause() ) );
-}
-
-PlayPauseAction::~PlayPauseAction()
-{
-    EngineController::instance()->detach( this );
+    connect( this, SIGNAL(activated()), EngineController::instance(), SLOT(playPause()) );
 }
 
 void
@@ -269,15 +262,9 @@ AnalyzerAction::plug( QWidget *w, int index )
 
 VolumeAction::VolumeAction( KActionCollection *ac )
   : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
+  , EngineObserver( EngineController::instance() )
   , m_slider( 0 ) //is QGuardedPtr
-{
-    EngineController::instance()->attach( this );
-}
-
-VolumeAction::~VolumeAction()
-{
-    EngineController::instance()->detach( this );
-}
+{}
 
 int
 VolumeAction::plug( QWidget *w, int index )

@@ -60,6 +60,11 @@ EngineController::EngineController()
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
 
+EngineController::~EngineController()
+{
+    DEBUG_FUNC_INFO //we like to know when singletons are destroyed
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC

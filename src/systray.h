@@ -19,7 +19,6 @@ class TrayIcon : public KSystemTray, public EngineObserver
 {
 public:
     TrayIcon( QWidget* );
-    ~TrayIcon( );
 
 protected:
     // reimpl from engineobserver

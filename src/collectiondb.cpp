@@ -57,12 +57,11 @@ CollectionDB* CollectionDB::instance()
 
 
 CollectionDB::CollectionDB()
-        : m_cacheDir( amaroK::saveLocation() )
+        : EngineObserver( EngineController::instance() )
+        , m_cacheDir( amaroK::saveLocation() )
         , m_coverDir( amaroK::saveLocation() )
 {
     DEBUG_FUNC_INFO
-
-    EngineController::instance()->attach( this );
 
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )

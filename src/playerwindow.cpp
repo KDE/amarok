@@ -77,6 +77,7 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlaylist )
     : QWidget( parent, name, Qt::WType_TopLevel )
+    , EngineObserver( EngineController::instance() )
     , m_pAnimTimer( new QTimer( this ) )
     , m_scrollBuffer( 291, 16 )
     , m_plusPixmap( getPNG( "time_plus" ) )
@@ -89,10 +90,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
 
-    EngineController* const ec = EngineController::instance();
-    EngineBase* const engine   = EngineController::engine();
-
-    ec->attach( this );
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
     //if this is the first time we have ever been run we let KWin place us
@@ -139,6 +136,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         m_pVolSlider->setGeometry( 294,18, 12,79 );
         m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
+        EngineController* const ec = EngineController::instance();
         connect( m_pSlider, SIGNAL(sliderReleased( int )), ec, SLOT(seek( int )) );
         connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(timeDisplay( int )) );
         connect( m_pVolSlider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
@@ -185,7 +183,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     applySettings();
 
     //set interface to correct state
-    engineStateChanged( engine->state() );
+    engineStateChanged( EngineController::engine()->state() );
 
     createAnalyzer( 0 );
 
@@ -203,8 +201,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
 PlayerWidget::~PlayerWidget()
 {
-    EngineController::instance()->detach( this );
-
     AmarokConfig::setPlayerPos( pos() );
     AmarokConfig::setPlaylistWindowEnabled( m_pPlaylistButton->isOn() );
 }

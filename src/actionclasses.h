@@ -62,7 +62,6 @@ namespace amaroK
     {
         public:
             PlayPauseAction( KActionCollection* );
-            ~PlayPauseAction();
             virtual void engineStateChanged( Engine::State );
     };
 
@@ -79,13 +78,9 @@ namespace amaroK
     {
         public:
             VolumeAction( KActionCollection* );
-            ~VolumeAction();
-
             virtual int plug( QWidget *, int index = -1 );
-
         private:
             void engineVolumeChanged( int value );
-
             QGuardedPtr<amaroK::Slider> m_slider;
     };
 
@@ -131,7 +126,7 @@ namespace amaroK
         public:
             RepeatPlaylistAction( KActionCollection *ac );
     };
-    
+
     class AppendSuggestionsAction : public ToggleAction
     {
         public:

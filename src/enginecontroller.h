@@ -100,6 +100,7 @@ private slots:
 
 private:
     EngineController();
+   ~EngineController();
 
 private:
     static ExtensionCache s_extensionCache;

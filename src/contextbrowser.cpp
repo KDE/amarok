@@ -69,12 +69,11 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 
 ContextBrowser::ContextBrowser( const char *name )
    : QTabWidget( 0, name )
+   , EngineObserver( EngineController::instance() )
    , m_bgGradientImage( 0 )
    , m_headerGradientImage( 0 )
    , m_shadowGradientImage( 0 )
 {
-    EngineController::instance()->attach( this );
-
     m_homePage = new KHTMLPart( this, "home_page" );
     m_homePage->setDNDEnabled( true );
     m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
@@ -130,8 +129,6 @@ ContextBrowser::~ContextBrowser()
       m_headerGradientImage->unlink();
     if( m_shadowGradientImage )
       m_shadowGradientImage->unlink();
-
-    EngineController::instance()->detach( this );
 }
 
 
