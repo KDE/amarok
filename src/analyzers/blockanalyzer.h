@@ -36,12 +36,19 @@ protected:
     void paletteChange( const QPalette& );
 
 private:
-    QPixmap m_glow[MAX_ROWS];
+    QPixmap m_glow;
     QPixmap m_dark;
+
+    QPixmap* const glow() { return &m_glow; }
+    QPixmap* const dark() { return &m_dark; }
 
     std::vector<uint> m_store; //store previous values
     Scope m_scope;             //so we don't create a vector every frame
     uint m_columns, m_rows;    //current size values
+
+    float yscale[MAX_ROWS+1];
+
+    uint oy;
 };
 
 #endif

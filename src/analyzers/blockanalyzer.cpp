@@ -10,23 +10,24 @@
 #include <kpopupmenu.h>      //mousePressEvent
 #include <math.h>            //resizeEvent()
 #include <qevent.h>          //mousePressEvent
+#include <qpainter.h>        //paletteChange()
 
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
-static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];
+static inline uint limit( uint val, uint max, uint min ) { return val < min ? min : val > max ? max : val; }
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
  : Analyzer::Base2D( parent, 20, 8 )
- , m_dark( WIDTH, HEIGHT )   //QPixmap
+ , m_glow( WIDTH, (HEIGHT+1)*MAX_ROWS ) //QPixmap
+ , m_dark( WIDTH, (HEIGHT+1)*MAX_ROWS ) //QPixmap
  , m_store( 2 << 8, 0 )      //vector<uint>
  , m_scope( MIN_COLUMNS )    //Scope
  , m_columns( 0 )            //uint
  , m_rows( 0 )               //uint
+ , oy( 0 )                   //uint
 {
-    for( uint x = 0; x < MAX_ROWS; ++x ) m_glow[x].resize( WIDTH, HEIGHT );
-
     changeTimeout( amaroK::config( "General" )->readNumEntry( "Timeout", 20 ) );
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
@@ -43,11 +44,6 @@ BlockAnalyzer::~BlockAnalyzer()
 {
     amaroK::config( "General" )->writeEntry( "Timeout", timeout() );
 }
-
-
-static inline uint limit( uint val, uint max, uint min ) { return val < min ? min : val > max ? max : val; }
-
-uint /*ox,*/ oy;
 
 void
 BlockAnalyzer::resizeEvent( QResizeEvent *e )
@@ -69,17 +65,13 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
         const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
         for( uint z = 0; z < m_rows; ++z )
         {
-            lvlMapper[z] = 1-(log10(PRE+z) / log10(PRE+m_rows+PRO));
+            yscale[z] = 1-(log10(PRE+z) / log10(PRE+m_rows+PRO));
         }
-        lvlMapper[m_rows] = 0;
-
-        //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << endl;
-
+        yscale[m_rows] = 0;
 
         paletteChange( palette() );
 
-        //ox = uint(((width()%(WIDTH+1))-1)/2); //TODO make member // -1 due to margin on right in draw routine
-        oy = height()%(HEIGHT+1); //TODO make member
+        oy = height()%(HEIGHT+1);
     }
 }
 
@@ -99,8 +91,6 @@ BlockAnalyzer::transform( Scope &s )
 void
 BlockAnalyzer::analyze( const Scope &s )
 {
-    //static float max = 0;
-
     // z = 2 3 2 1 0 2
     //     . . . . # .
     //     . . . # # .
@@ -111,20 +101,14 @@ BlockAnalyzer::analyze( const Scope &s )
     // z represents the number of blanks
     // z starts from the top and increases in units of blocks
 
-    //lvlMapper looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
+    //yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
     //if it contains 6 elements there are 5 rows in the analyzer
 
-    Scope &v = m_scope;
-    uint z;
+    Analyzer::interpolate( s, m_scope );
 
-    Analyzer::interpolate( s, v );
-
-    for( uint x = 0; x < v.size(); ++x )
+    for( uint z, x = 0; x < m_scope.size(); ++x )
     {
-        for( z = 0; v[x] < lvlMapper[z]; ++z );
-
-        //this is debug stuff
-        //if( v[x] > max ) { max = v[x]; kdDebug() << max << endl; }
+        for( z = 0; m_scope[x] < yscale[z]; ++z );
 
         //too high is not fatal
         //higher than stored value means we are falling
@@ -136,26 +120,11 @@ BlockAnalyzer::analyze( const Scope &s )
         }
         else m_store[x] = z * 2;
 
-        //TODO try just drawing blocks with Qt, then X functions
-        //     I reckon that will be quicker coz Qt's bitBlt is an OGRE of a function!
-
-        //NOTE actually, tests show that all the cpu being used is for the FHT, these blts are insiginificant
-        //     still it would be trivial to only blt changes, so do that.
-
-        //FIXME less blits is better, so store the whole bar as one pixmap and blt however much you need
-        //FIXME the background pixmap should be the all the dark squares
-
         //we start bltting from the top and go down
         //so blt blanks first, then blt glow blocks
         //REMEMBER: z is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-        for( uint y = 0; y < m_rows; ++y ) //TODO only blt the bits that have changed
-        {
-            if( y >= z ) //greater than z means we blt bottom, ie glow blocks
-                bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1) + oy, &m_glow[y] ); //x+1 = margin
-            else
-                bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1) + oy, &m_dark );
-        }
-
+        bitBlt( canvas(), x*(WIDTH+1), oy, dark() );
+        bitBlt( canvas(), x*(WIDTH+1), oy + z*(HEIGHT+1), glow(), 0, z*(HEIGHT+1) );
     }
 }
 
@@ -237,7 +206,7 @@ ensureContrast( const QColor &c1, const QColor &c2, uint amount = 150 )
 }
 
 void
-BlockAnalyzer::paletteChange( const QPalette &p ) //virtual
+BlockAnalyzer::paletteChange( const QPalette &palette ) //virtual
 {
     //Qt calls this function when the palette is changed
 
@@ -250,12 +219,23 @@ BlockAnalyzer::paletteChange( const QPalette &p ) //virtual
 
     const int r = fg.red(), g = fg.green(), b = fg.blue();
 
-    for( int x = 0; (uint)x < m_rows; ++x )
+
+    m_glow.fill( backgroundColor() );
+    m_dark.fill( backgroundColor() );
+
+    QPainter p( &m_glow );
+    for( int y = 0; (uint)y < m_rows; ++y )
     {
-        m_glow[x].fill( QColor( r+int(dr*x), g+int(dg*x), b+int(db*x) ) ); //graduate the fg color
+        //graduate the fg color
+        p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
+    }
+    p.end();
+
+    p.begin( dark() );
+    for( int y = 0; (uint)y < m_rows; ++y )
+    {
+        p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, bg );
     }
 
-    m_dark.fill( bg );
-
-    Base2D::paletteChange( p );
+    Base2D::paletteChange( palette );
 }
