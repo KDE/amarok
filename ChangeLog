@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * New DCOP call "player: enableRepeatPlaylist" sets repeat
+      playlist on or off. (BR 102754)
     * Add Score widget into the tag editor. (BR 100084)
 
   CHANGES:
