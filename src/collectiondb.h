@@ -107,7 +107,7 @@ class CollectionDB : public QObject
 
     signals:
         void scanDone( bool changed );
-        void coverFetched( const QString &artist, const QString &album );
+        void coverFetched( const QString &keyword );
         void coverFetched();
         void coverFetcherError();
 
@@ -117,7 +117,7 @@ class CollectionDB : public QObject
 
     private slots:
         void dirDirty( const QString& path );
-        void saveCover( const QString& artist, const QString& album, const QString& url, const QImage& image );
+        void saveCover( const QString& keyword, const QString& url, const QImage& image );
         void fetcherError();
 
     private:

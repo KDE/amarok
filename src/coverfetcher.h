@@ -25,10 +25,10 @@ class CoverFetcher : public QObject
         ~CoverFetcher();
 
         void setLicense( const QString& license ) { m_license = license; }
-        void getCover( const QString& artist, const QString& album, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
+        void getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
 
     signals:
-        void imageReady( const QString& artist, const QString &album, const QString& url, const QImage& image );
+        void imageReady( const QString& keyword, const QString& url, const QImage& image );
         void error();
 
     private slots:
@@ -47,6 +47,7 @@ class CoverFetcher : public QObject
         QString m_keyword;
         QString m_artist;
         QString m_album;
+        QString m_saveas;
         QString m_text;
         QString m_url;
         QString m_imageUrl;

@@ -1344,13 +1344,14 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
+    QString keyword = album + " - " + artist;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
     connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QString&, const QImage& ) ),
              this,      SLOT( saveCover( const QString&, const QString&, const QString&, const QImage& ) ) );
     connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
 
-    fetcher->getCover( artist, album, CoverFetcher::heavy, noedit, 2, false );
+    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, noedit, 2, false );
 
     #endif
 }
@@ -1376,13 +1377,14 @@ CollectionDB::dirDirty( const QString& path )
 
 
 void
-CollectionDB::saveCover( const QString& artist, const QString& album, const QString& url, const QImage& img )
+CollectionDB::saveCover( const QString& keyword, const QString& url, const QImage& img )
 {
     kdDebug() << k_funcinfo << endl;
 
-    setImageForAlbum( artist, album, url, img );
+    QStringList values = QStringList::split( " - ", keyword );  
+    setImageForAlbum( values[ 0 ], values[ 1 ], url, img );
 
-    emit coverFetched( artist, album );
+    emit coverFetched( keyword );
     emit coverFetched();
 }
 
