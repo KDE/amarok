@@ -9,6 +9,8 @@
 #include "iir_cf.h"         // IIR filter coefficients
 
 #include <string.h>
+#include <vector>
+
 #include <kdebug.h>
 
 
@@ -21,7 +23,10 @@ enum {
 };
 
 enum {
-    ARG_0
+    ARG_0,
+    ARG_ACTIVE,
+    ARG_PREAMP,
+    ARG_GAIN
 };
 
 GstElementDetails gst_equalizer_details =
@@ -61,10 +66,9 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
     gobject_class = G_OBJECT_CLASS( klass );
 
-//     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
-//                                       g_param_spec_ulong ( "blocksize", "Block size",
-//                                                            "Size in bytes to read per buffer", 1, G_MAXULONG, DEFAULT_BLOCKSIZE,
-//                                                            ( GParamFlags ) G_PARAM_READWRITE ) );
+    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ACTIVE, g_param_spec_boolean ("active", "active", "active", TRUE, (GParamFlags)G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PREAMP, g_param_spec_int ("preamp", "preamp", "preamp", 0.0, 1.0, 0.0, (GParamFlags)G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GAIN, g_param_spec_pointer ("gain", "gain", "gain", (GParamFlags)G_PARAM_WRITABLE));
 
     gobject_class->set_property = gst_equalizer_set_property;
     gobject_class->get_property = gst_equalizer_get_property;
@@ -88,7 +92,7 @@ gst_equalizer_init ( GstEqualizer* obj )
     gst_pad_set_chain_function ( obj->sinkpad, gst_equalizer_chain );
 
     // Properties
-//     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
+    obj->active = true;
 }
 
 
@@ -149,9 +153,26 @@ gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * val
     g_return_if_fail ( GST_IS_EQUALIZER ( object ) );
 
     GstEqualizer* obj = GST_EQUALIZER ( object );
+    std::vector<float>* gains;
 
     switch ( prop_id )
     {
+        case ARG_ACTIVE:
+            obj->active = g_value_get_boolean (value);
+            break;
+
+        case ARG_PREAMP:
+            for ( int chan = 0; chan < EQ_CHANNELS; chan++ )
+                obj->preamp[chan] = g_value_get_float (value);
+            break;
+
+        case ARG_GAIN:
+            gains = (std::vector<float>*) g_value_get_pointer (value);
+            for ( int band = 0; band < BAND_NUM; band++ )
+                for ( int chan = 0; chan < EQ_CHANNELS; chan++ )
+                    obj->gain[band][chan] = gains->at( band );
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
             break;
@@ -169,9 +190,14 @@ gst_equalizer_get_property ( GObject * object, guint prop_id, GValue * value, GP
 
     switch ( prop_id )
     {
-/*        case ARG_BLOCKSIZE:
-            g_value_set_ulong ( value, obj->blocksize );
-            break;*/
+        case ARG_ACTIVE:
+            g_value_set_boolean (value, obj->active);
+            break;
+
+        case ARG_PREAMP:
+            g_value_set_float (value, obj->preamp[0]);
+            break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
             break;
@@ -201,6 +227,25 @@ set_filters( GstEqualizer* obj )
             break;
     }
 }
+
+
+#ifdef ARCH_X86
+/* Round function provided by Frank Klemm which saves around 100K
+ * CPU cycles in my PIII for each call to the IIR function with 4K samples
+ */
+__inline__ static int round_trick(float floatvalue_to_round)
+{
+    float   floattmp;
+    int     rounded_value;
+
+    floattmp      = (int) 0x00FD8000L + (floatvalue_to_round);
+    rounded_value = *(int*)(&floattmp) - (int)0x4B7D8000L;
+
+    if ( rounded_value != (short) rounded_value )
+        rounded_value = ( rounded_value >> 31 ) ^ 0x7FFF;
+    return rounded_value;
+}
+#endif
 
 
 void
@@ -279,8 +324,11 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
             out[channel] += pcm[channel]*0.25;
 
             /* Round and convert to integer */
+#ifdef ARCH_X86
+            tempgint = round_trick(out[channel]);
+#else
             tempgint = (int)out[channel];
-
+#endif
             /* Limit the output */
             if (tempgint < -32768)
                 data[index+channel] = -32768;
@@ -308,9 +356,6 @@ gst_equalizer_new ()
     GstEqualizer* obj = GST_EQUALIZER ( g_object_new ( GST_TYPE_EQUALIZER, NULL ) );
     gst_object_set_name( (GstObject*) obj, "Equalizer" );
 
-//     object->m_buffering = buffering;
-
     return obj;
 }
-
 

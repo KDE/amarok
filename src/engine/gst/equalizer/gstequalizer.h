@@ -56,13 +56,10 @@ struct _GstEqualizer
     int channels;
 
     // Properties
-    glong blocksize; /* Bytes per read */
-    guint64 timeout;  /* Read timeout, in nanoseconds */
-
+    bool active;
     // Gain for each band
     // values should be between -0.2 and 1.0
     float gain[EQ_MAX_BANDS][EQ_CHANNELS] __attribute__((aligned));
-
     // Volume gain
     // values should be between 0.0 and 1.0
     float preamp[EQ_CHANNELS] __attribute__((aligned));
