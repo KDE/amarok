@@ -455,53 +455,65 @@ void ContextBrowser::showHome() //SLOT
     browser->begin();
     m_HTMLSource="";
     browser->setUserStyleSheet( m_styleSheet );
-    m_HTMLSource.append( "<html>" );
 
     // <Favorite Tracks Information>
     m_HTMLSource.append(
-        "<div class='box'>"
-         "<div class='box-header'>" + i18n( "Your Favorite Tracks" ) + "</div>"
-         "<table class='box-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+            "<html>"
+            "<div id='favorites_box' class='devel-box'>"
+                "<div id='favorites_box-header' class='devel-box-header'>"
+                    "<span id='favorites_box-header-title' class='devel-box-header-title'>"
+                    + i18n( "Your Favorite Tracks" ) +
+                    "</span>"
+                "</div>"
+                "<div id='favorites_box-body' class='devel-box-body'>"
+                       );
 
     for( uint i = 0; i < fave.count(); i = i + 5 )
         m_HTMLSource.append(
-            "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
-             "<td class='song'>"
-              "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-               "<b>" + fave[i] + "</b> "
-               "(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")<br>" +
-               fave[i+3] + " - " + fave[i+4] +
-              "</a>"
-             "</td>"
-            "</tr>" );
-
+                    "<div class='" + QString( (i % 10) ? "devel-box-row-alt" : "devel-box-row" ) + "'>"
+                        "<div class='devel-song'>"
+                            "<a href=\"file:" + fave[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='devel-song-title'>" + fave[i] + "</span> "
+                            "<span class='devel-song-score'>(" + i18n( "Score: %1" ).arg( fave[i+2] ) + ")</span><br />"
+                            "<span class='devel-song-artist'>" + fave[i+3] + "</span>"
+                            " - "
+                            "<span class='devel-song-album'>"+ fave[i+4] +"</span>"
+                            "</a>"
+                        "</div>"
+                    "</div>"
+                           );
     m_HTMLSource.append(
-         "</table>"
-        "</div>"
-        "<br>"
+                "</div>"
+            "</div>"
 
     // </Favorite Tracks Information>
 
     // <Recent Tracks Information>
 
-        "<div class='box'>"
-         "<div class='box-header'>" + i18n( "Your Newest Tracks" ) + "</div>"
-         "<table class='box-body' width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+            "<div id='newest_box' class='devel-box'>"
+                "<div id='newest_box-header' class='devel-box-header'>"
+                    "<span id='newest_box-header-title' class='devel-box-header-title'>"
+                    + i18n( "Your Newest Tracks" ) +
+                    "</span>"
+                "</div>"
+                "<div id='newest_box-body' class='devel-box-body'>" );
 
     for( uint i = 0; i < recent.count(); i = i + 4 )
         m_HTMLSource.append(
-            "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-             "<td class='song'>"
-              "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
-               "<b>" + recent[i] + "</b><br>" +
-               recent[i+2] + " - " + recent[i+3] +
-              "</a>"
-             "</td>"
-            "</tr>" );
+                    "<div class='" + QString( (i % 8) ? "devel-box-row-alt" : "devel-box-row" ) + "'>"
+                        "<div class='devel-song'>"
+                            "<a href=\"file:" + recent[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='devel-song-title'>" + recent[i] + "</span><br />"
+                            "<span class='devel-song-artist'>" + recent[i+2] + "</span>"
+                            " - "
+                            "<span class='devel-song-album'>" + recent[i+3] + "</span>"
+                            "</a>"
+                        "</div>"
+                    "</div>" );
 
     m_HTMLSource.append(
-         "</table>"
-        "</div>" );
+            "</div>"
+                       );
 
     // </Recent Tracks Information>
 
@@ -1037,7 +1049,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
             .arg( m_headerGradientImage->name() );
     styleSheet += QString( ".box-header:hover {}" );
 
-    styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3}" )
+    styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3px; }" )
             .arg( colorGroup().base().name() )
             .arg( m_shadowGradientImage->name() )
             .arg( pxSize );
@@ -1061,16 +1073,22 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".default { font-size: %1px }" ).arg( pxSize );
 
     // IN DEVELOPMENT(contact xatax for info): using these classes/id's while taking amarok over to the new div based layout
-    styleSheet += QString( ".devel-box { border: solid %1 1px; text-align: left; }" ).arg( bg );
+    styleSheet += QString( ".devel-box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
     styleSheet += QString( ".devel-box-header { color: %1; background-color: %2; background-image: url( %4 ); background-repeat: repeat-x; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
             .arg( fg )
             .arg( bg )
             .arg( pxSize + 2 )
             .arg( m_headerGradientImage->name() );
-    styleSheet += QString( ".devel-box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3}" )
+    styleSheet += QString( ".devel-box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3px; }" )
             .arg( colorGroup().base().name() )
             .arg( m_shadowGradientImage->name() )
             .arg( pxSize );
+    styleSheet += QString( ".devel-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
+    styleSheet += QString( ".devel-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
+    styleSheet += QString( ".devel-song-title { font-weight: bold; }" );
+    styleSheet += QString( ".devel-song-score { }" );
+    styleSheet += QString( ".devel-song-artist { }" );
+    styleSheet += QString( ".devel-song-album { }" );
 }
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
