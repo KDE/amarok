@@ -19,6 +19,7 @@ email                : markey@web.de
 #include <assert.h>
 #include <vector>
 
+#include <qfile.h>
 #include <qstring.h>
 
 #include <kdebug.h>
@@ -65,7 +66,8 @@ PluginManager::createFromService( const KService::Ptr service )
     //get the library loader instance
     KLibLoader *loader = KLibLoader::self();
     //try to load the specified library
-    KLibrary *lib = loader->globalLibrary( service->library().latin1() );
+    KLibrary *lib = loader->globalLibrary( QFile::encodeName( service->library() ) );
+//     KLibrary *lib = loader->globalLibrary( service->library().latin1() );
 
     if ( !lib ) {
         kdWarning() << k_funcinfo << "lib == NULL\n";

@@ -26,8 +26,6 @@
 
 #include "kioreceiver.h"
 
-#ifdef  AMAROK_WITH_GSTKIOSRC
-
 #include <string.h>
 #include <kio/scheduler.h>
 
@@ -334,5 +332,4 @@ void KioReceiver::slotTotalSize( KIO::Job *, KIO::filesize_t size )
 
 #include "kioreceiver.moc"
 
-#endif /* AMAROK_WITH_GSTKIOSRC */
 

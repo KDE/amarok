@@ -23,9 +23,6 @@
  * doesnt.
  */
 
-//uncomment to activate code
-#define AMAROK_WITH_GSTKIOSRC
- 
 
 #ifndef GST_KIORECEIVER_H
 #define GST_KIORECEIVER_H
@@ -161,4 +158,6 @@ class KioReceiver : public QObject
         bool read( void *&ptr, int &size );
 };
 
-#endif
+
+#endif  //GST_KIORECEIVER_H
+
