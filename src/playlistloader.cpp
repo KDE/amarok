@@ -145,6 +145,8 @@ public:
 bool
 PlaylistLoader::doJob()
 {
+    Debug::Timer timer( __PRETTY_FUNCTION__ );
+
     ItemList items;
 
     setProgressTotalSteps( m_URLs.count() * 2 );
@@ -195,8 +197,6 @@ PlaylistLoader::doJob()
             for( uint x = 0; x < 100 && it != end; ++x, ++it, ++bu )
             {
                 incrementProgress();
-
-                debug() << (*it)->url() << ": " << (*bu).url() << endl;
 
                 items   += *it;
                 bundles += *bu;
