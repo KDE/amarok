@@ -275,8 +275,18 @@ void ContextBrowser::engineStateChanged( Engine::State state )
         default:
             ;
     }
+
 }
 
+void ContextBrowser::saveHtmlData()
+{
+    QFile exportedDocument(KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "contextbrowser.html");
+    exportedDocument.open(IO_WriteOnly);
+    QTextStream stream( &exportedDocument );
+    stream << browser->document().toString().string() // the pure html data..
+        .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg(m_styleSheet) ); // and the stylesheet code
+    exportedDocument.close();
+}
 
 void ContextBrowser::paletteChange( const QPalette& pal )
 {

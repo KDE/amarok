@@ -57,6 +57,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void setStyleSheet_default( QString& styleSheet );
         void setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName );
         void showIntroduction();
+        void saveHtmlData();
         void showScanning();
 
         KHTMLPart    *browser;
