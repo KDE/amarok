@@ -32,6 +32,7 @@ VERSION 1.2.2:
       full metadata support. (BR 89821)
     * GStreamer-engine now uses the "decodebin" autoplugger, which fixes
       the lag issues that some users had during crossfading. (BR 99570)
+    * Rewrote the broken .pls playlist parser.
 
 
 VERSION 1.2.1:
