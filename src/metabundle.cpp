@@ -74,6 +74,7 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
                 m_length     = info.item( "Length" ).value().toInt();
                 m_sampleRate = info.item( "Sample Rate" ).value().toInt();
             }
+            else init( 0 );
         }
         else init( f.audioProperties() );
 
