@@ -7,6 +7,7 @@
 #include "config.h"
 #include <kdebug.h>
 
+#define DEBUG_PREFIX "[StreamSrc] "
 #define DEFAULT_BLOCKSIZE 4096
 
 GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
@@ -137,16 +138,16 @@ gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * val
     src = GST_STREAMSRC ( object );
 
     switch ( prop_id ) {
-    case ARG_BLOCKSIZE:
-        src->blocksize = g_value_get_ulong ( value );
-        break;
-    case ARG_BUFFER_MIN:
-        src->buffer_min = g_value_get_uint ( value );
-        src->buffer_resume = src->buffer_min + 100000;
-        break;
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
-        break;
+        case ARG_BLOCKSIZE:
+            src->blocksize = g_value_get_ulong ( value );
+            break;
+        case ARG_BUFFER_MIN:
+            src->buffer_min = g_value_get_uint ( value );
+            src->buffer_resume = src->buffer_min + 100000;
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
+            break;
     }
 }
 
@@ -154,7 +155,7 @@ gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * val
 static void
 gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GParamSpec * pspec )
 {
-    GstStreamSrc * src;
+    GstStreamSrc* src;
 
     /* it's not null if we got it, but it might not be ours */
     g_return_if_fail ( GST_IS_STREAMSRC ( object ) );
@@ -162,15 +163,15 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
     src = GST_STREAMSRC ( object );
 
     switch ( prop_id ) {
-    case ARG_BLOCKSIZE:
-        g_value_set_ulong ( value, src->blocksize );
-        break;
-    case ARG_BUFFER_MIN:
-        g_value_set_uint ( value, src->buffer_min );
-        break;
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
-        break;
+        case ARG_BLOCKSIZE:
+            g_value_set_ulong ( value, src->blocksize );
+            break;
+        case ARG_BUFFER_MIN:
+            g_value_set_uint ( value, src->buffer_min );
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
+            break;
     }
 }
 
@@ -180,23 +181,23 @@ gst_streamsrc_change_state (GstElement * element)
 {
 //   GstStreamSrc *src = GST_STREAMSRC (element);
 
-  switch (GST_STATE_TRANSITION (element)) {
-    case GST_STATE_NULL_TO_READY:
-      break;
-    case GST_STATE_READY_TO_NULL:
-      break;
-    case GST_STATE_READY_TO_PAUSED:
-      break;
-    case GST_STATE_PAUSED_TO_READY:
-      break;
-    default:
-      break;
-  }
+    switch (GST_STATE_TRANSITION (element)) {
+        case GST_STATE_NULL_TO_READY:
+            break;
+        case GST_STATE_READY_TO_NULL:
+            break;
+        case GST_STATE_READY_TO_PAUSED:
+            break;
+        case GST_STATE_PAUSED_TO_READY:
+            break;
+        default:
+            break;
+    }
 
-  if (GST_ELEMENT_CLASS (parent_class)->change_state)
-    return GST_ELEMENT_CLASS (parent_class)->change_state (element);
+    if (GST_ELEMENT_CLASS (parent_class)->change_state)
+        return GST_ELEMENT_CLASS (parent_class)->change_state (element);
 
-  return GST_STATE_SUCCESS;
+    return GST_STATE_SUCCESS;
 }
 
 
@@ -225,7 +226,8 @@ gst_streamsrc_get ( GstPad* pad )
         return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
 
     // When buffer is empty, return filler-event and start rebuffering
-    else if ( !*src->m_buffering && *src->m_bufIndex < src->blocksize ) {
+    else if ( !*src->m_buffering && *src->m_bufIndex == 0 ) {
+        kdDebug() << DEBUG_PREFIX << "Buffer underflow. Rebuffering.\n";
         *src->m_buffering = true;
         return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
     }

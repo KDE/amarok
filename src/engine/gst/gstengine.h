@@ -78,6 +78,8 @@ class GstEngine : public Engine::Base
         void stop();
         void pause();
         void seek( uint ms );
+
+        /** Copies incoming radio stream data from StreamProvider into StreamSrc's buffer */
         void newStreamData( char* data, int size );
 
         /** Set whether equalizer is enabled */
@@ -94,7 +96,10 @@ class GstEngine : public Engine::Base
         void handleInputError();
         void endOfStreamReached();
         void kioFinished();
+
+        /** Copies incoming data from KIO into StreamSrc's buffer */
         void newKioData( KIO::Job*, const QByteArray& array );
+
         void errorNoOutput();
         void configChanged();
         void newMetaData();
@@ -106,7 +111,7 @@ class GstEngine : public Engine::Base
         static const uint SCOPEBUF_SIZE  = 1000*KB;
         static const int  SCOPE_VALUES   = 512;
         static const int  STREAMBUF_SIZE = 600*KB;
-        static const uint STREAMBUF_MIN  = 50*KB;
+        static const uint STREAMBUF_MIN  = 100*KB;
         static const int  STREAMBUF_MAX  = STREAMBUF_SIZE - 50*KB;
         #undef KB
 
