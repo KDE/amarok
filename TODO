@@ -18,7 +18,7 @@ SHORT-TERM (URGENT):
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
-                   distros offer them as a sperate package.
+                   distros offer them as a separate package.
 
   FIX     <mxcl>   XMMSwrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
 
