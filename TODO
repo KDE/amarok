@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> In the settings dialog the "Apply" button is broken (always enabled).
+
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
 
   <muesli> Updating tags doesn't update the Collection anymore.
