@@ -3,10 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #52 being the highest available (take this one for your next bug and increase here)
+           #53 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
+                QPainter::begin: Cannot paint null pixmap
+                QPainter::setPen: Will be reset by begin()
+                QPainter::setFont: Will be reset by begin()
 
     * fix: #51 <markey> undo/redo broken (at least sometimes) 
 
