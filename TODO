@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #170 being the highest available (take this one for your next bug and increase here)
+           #171 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 170 <markey> Pasting URLs into playlist with mid-click is broken.
 
   FIX 169 <markey> Context-Browser ignores streams.
 
