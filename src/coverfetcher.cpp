@@ -40,6 +40,8 @@ CoverFetcher::getCover( const QString& keyword )
                            .arg( m_license )
                            .arg( keyword );
     
+    kdDebug() << "Using this url: " << url << endl;
+                           
     KIO::TransferJob* job = KIO::get( url, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( xmlResult( KIO::Job* ) ) ); 
