@@ -78,4 +78,10 @@ all that stuff gets done by the vis-client.
 B) basic beat-detection and music analysis gets done by amarok itself. the
 results of that process are sent to the vis-clients.
 
+<mxcl> IMO it would be good to offer services like beat detection. This
+way vis-writers have less to do and are more likely to write a vis since
+beat-detection is already done, also it means beat-detection is likely to be better
+as we will over time offer a really good implementation, and it means that if the user
+has many visuals running, the beat-detection is only done once for all visualisations.
+
 [/Comment by muesli]=======
