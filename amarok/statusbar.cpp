@@ -7,6 +7,7 @@
 #include <qapplication.h>
 
 #include <kactionclasses.h>
+#include <kglobalsettings.h>
 
 #include <enginecontroller.h>
 
@@ -14,7 +15,7 @@ amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( 
 {
     EngineController::instance()->attach( this );
     // message
-    insertItem("", ID_STATUS, 10 );
+    insertItem( QString::null, ID_STATUS, 10 );
 
     // random
     ToggleLabel *rand = new ToggleLabel( i18n( "RAND" ), this );
@@ -34,6 +35,7 @@ amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( 
 
     addWidget( (m_pTimeLabel = new ToggleLabel( "", this )), 0, true );
     m_pTimeLabel->setColorToggle( false );
+    m_pTimeLabel->setFont( KGlobalSettings::fixedFont() );
     connect( m_pTimeLabel, SIGNAL( toggled( bool ) ), this, SLOT( slotToggleTime() ) );
 
     setItemAlignment( ID_STATUS, AlignLeft|AlignVCenter );
@@ -55,9 +57,9 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
         case EngineBase::Idle:
         case EngineBase::Empty:
             engineTrackPositionChanged( 0 );
-            changeItem("", ID_STATUS);
+            changeItem( QString::null, ID_STATUS );
             break;
-        case EngineBase::Playing: // gcc silense
+        case EngineBase::Playing: // gcc silence
         case EngineBase::Paused:
             break;
     }
@@ -66,25 +68,26 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
 
 void amaroK::StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-//    message( bundle.prettyTitle() + "  (" + bundle.prettyLength() + ")" );
-    changeItem( bundle.prettyTitle() + "  (" + bundle.prettyLength() + ")", ID_STATUS);
+    changeItem( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ), ID_STATUS );
 }
 
 void amaroK::StatusBar::engineTrackPositionChanged( long position )
 {
     // TODO: Don't duplicate code
     int seconds = position / 1000;
-    int songLength = EngineController::instance()->trackLength() / 1000;
-    bool remaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
+    const uint songLength = EngineController::instance()->trackLength() / 1000;
+    const bool remaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
 
     if( remaining ) seconds = songLength - seconds;
 
-    QString
-    str  = zeroPad( seconds /60/60%60 );
-    str += ':';
-    str += zeroPad( seconds /60%60 );
-    str += ':';
-    str += zeroPad( seconds %60 );
+    QString str( ":" );
+    str += zeroPad( seconds % 60 );
+    str += ' ';
+    str.prepend( zeroPad( seconds /= 60 ) );
+    str.prepend( ':' );
+    str.prepend( zeroPad( seconds / 60 ) );
+    str.prepend( ' ' );
+
     m_pTimeLabel->setText( str );
 }
 
@@ -109,7 +112,7 @@ amaroK::ToggleLabel::~ToggleLabel()
 void amaroK::ToggleLabel::setColorToggle( bool on )
 {
     m_ColorToggle = on;
-    QColorGroup group = QApplication::palette().active();
+    QColorGroup group = palette().active();
     setPaletteForegroundColor( group.text() );
 }
 
@@ -118,11 +121,8 @@ void amaroK::ToggleLabel::mouseDoubleClickEvent ( QMouseEvent */*e*/ )
     m_State = !m_State;
     if( m_ColorToggle )
     {
-        QColorGroup group = QApplication::palette().active();
-        if( m_State )
-            setPaletteForegroundColor( group.text() );
-        else
-            setPaletteForegroundColor( group.mid() );
+        QColorGroup group = palette().active();
+        setPaletteForegroundColor( m_State ? group.text() : group.mid() );
     }
     emit toggled( m_State );
 }
@@ -131,12 +131,8 @@ void amaroK::ToggleLabel::setOn( bool on )
 {
     if( m_ColorToggle )
     {
-        QColorGroup group = QApplication::palette().active();
-        if( on )
-            setPaletteForegroundColor( group.text() );
-        else
-            setPaletteForegroundColor( group.mid() );
-
+        QColorGroup group = palette().active();
+        setPaletteForegroundColor( on ? group.text() : group.mid() );
     }
 
     m_State = on;
