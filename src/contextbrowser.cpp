@@ -309,7 +309,7 @@ void ContextBrowser::showCurrentTrack()
                         .arg( m_currentTrack->artist() )
                         .arg( m_currentTrack->title() )
                         .arg( m_currentTrack->album() )
-                        .arg( m_db->getImageForAlbum( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) )
+                        .arg( m_db->getImageForPath( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) )
                         .arg( values[2] )
                         .arg( values[3] )
                         .arg( values[4] ) );
@@ -328,7 +328,7 @@ void ContextBrowser::showCurrentTrack()
                             .arg( m_currentTrack->artist() )
                             .arg( m_currentTrack->title() )
                             .arg( m_currentTrack->album() )
-                            .arg( m_db->getImageForAlbum( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) ) );
+                            .arg( m_db->getImageForPath( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) ) );
     }
 
     values.clear();

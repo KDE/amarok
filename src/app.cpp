@@ -629,7 +629,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     m_pOSD->showTrack( bundle );
 
-    PlaylistToolTip::add( m_pTray, bundle );
+    TrackToolTip::add( m_pTray, bundle );
 }
 
 

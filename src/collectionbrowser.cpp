@@ -472,8 +472,8 @@ CollectionView::fetchCover() //SLOT
         setupCoverFetcher();
 
     QString command = QString
-                        ( "SELECT DISTINCT artist.name, album.name FROM tags, artist, album, genre, year "
-                        "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
+                        ( "SELECT DISTINCT artist.name, album.name FROM artist, tags, album "
+                        "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = '%1';" )
                         .arg( m_db->escapeString( item->url().path() ) );
 
     QStringList values;

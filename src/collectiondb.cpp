@@ -15,6 +15,7 @@
 #include <kurl.h>
 
 #include <qcstring.h>
+#include <qimage.h>
 
 #include <sys/stat.h>
 
@@ -25,11 +26,17 @@
 
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
+        , m_cacheDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
     m_db = sqlite_open( path, 0, 0 );
+
+    // create image cache dir, if it doesn't exist.
+    if( !m_cacheDir.exists( "cache", false ) )
+        m_cacheDir.mkdir( "cache", false );
+    m_cacheDir.cd( "cache" );
 }
 
 
@@ -97,30 +104,45 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     KURL url;
     url.setPath( values[0] ); 
 
-    return getImageForAlbum( url.directory(), defaultImage );
+    return getImageForPath( url.directory(), defaultImage );
 }
 
 
 QString
-CollectionDB::getImageForAlbum( const QString path, const QString defaultImage )
+CollectionDB::getImageForPath( const QString path, const QString defaultImage, const uint width )
 {
     QStringList values;
     QStringList names;
 
+    QString escapedPath( QString::number( width ) + "@" + path );
+    escapedPath.replace( "/", "_" );
+    escapedPath.replace( "'", "_" );
+
+    if ( m_cacheDir.exists( escapedPath ) )
+        return m_cacheDir.absPath() + "/" + escapedPath;
+
     execSql( QString( "SELECT name FROM images WHERE path = '%1';" )
              .arg( escapeString( path ) ), &values, &names );
 
-    if ( values.isEmpty() )
-        return defaultImage;
-
-    QString image( values[0] );
-    for ( uint i = 0; i < values.count(); i++ )
+    if ( values.count() )
     {
-        if ( values[i].contains( "front", false ) )
-            image = values[i];
+        QString image( values[0] );
+        for ( uint i = 0; i < values.count(); i++ )
+        {
+            if ( values[i].contains( "front", false ) )
+                image = values[i];
+        }
+    
+        QImage img( path + "/" + image );
+        QPixmap pix;
+        if( pix.convertFromImage( img.smoothScale( width, width ) ) )
+        {
+            pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
+            return m_cacheDir.absPath() + "/" + escapedPath;
+        }
     }
 
-    return path + "/" + image;
+    return defaultImage;
 }
 
 

@@ -6,19 +6,19 @@
 */
 
 /*
-  playlisttooltip.h  -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
+  tracktooltip.h  -  Provides an interface to a plain QWidget, which is independent of KDE (bypassed to X11)
   begin:     Tue 10 Feb 2004
   copyright: (C) 2004 by Christian Muehlhaeuser
   email:     chris@chris.de
 */
 
-#ifndef PLAYlISTTOOLTIP_H
-#define PLAYlISTTOOLTIP_H
+#ifndef TRACKTOOLTIP_H
+#define TRACKTOOLTIP_H
 
 class MetaBundle;
 class QWidget;
 
-namespace PlaylistToolTip
+namespace TrackToolTip
 {
     void add( QWidget * widget, const MetaBundle & tags );
 }

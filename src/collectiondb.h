@@ -7,6 +7,7 @@
 
 #include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
+#include <qdir.h>     //stack allocated
 
 class sqlite;
 class ThreadWeaver;
@@ -23,7 +24,7 @@ class CollectionDB : public QObject
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
-        QString getImageForAlbum( const QString path, const QString defaultImage );
+        QString getImageForPath( const QString path, const QString defaultImage, const uint width = 40 );
         
         void incSongCounter( const QString url );
         void updateDirStats( QString path, const long datetime );
@@ -77,6 +78,7 @@ class CollectionDB : public QObject
         sqlite* m_db;
         ThreadWeaver* m_weaver;
         bool m_monitor;
+        QDir m_cacheDir;
 };
 
 

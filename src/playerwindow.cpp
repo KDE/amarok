@@ -360,7 +360,7 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     setScroll( list );
 
     //update image tooltip
-    PlaylistToolTip::add( m_pScrollFrame, bundle );
+    TrackToolTip::add( m_pScrollFrame, bundle );
 
     update(); //we need to update rateString
 }
