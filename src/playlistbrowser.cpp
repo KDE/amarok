@@ -1014,10 +1014,12 @@ public:
         , m_path( path )
     {}
 
-    virtual void run()
+    virtual bool doJob()
     {
         loadPlaylist( m_path );
         QApplication::postEvent( m_recipient, new DoneEvent( this ) );
+
+        return true;
     }
 
     virtual void postItem( const KURL &url, const QString &title, const uint length )
