@@ -17,6 +17,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "browserbar.h"
+#include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "enginecontroller.h" //for actions in ctor
@@ -44,7 +45,6 @@
 #include <kglobal.h>
 #include <khtml_part.h>       //Welcome Tab
 #include <kiconloader.h>      //ClearFilter button
-#include <klineedit.h>        //m_lineEdit
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
@@ -186,7 +186,7 @@ PlaylistWindow::init()
 
         box          = new QHBox( m_browsers->container() );
         button       = new KToolBarButton( "locationbar_erase", 1, box );
-        m_lineEdit   = new KLineEdit( box );
+        m_lineEdit   = new ClickLineEdit( box, i18n( "Filter here..." ) );
         searchButton = new KToolBarButton( SmallIcon("find"), 0, box);
 
         box->setMargin( 4 );
@@ -209,13 +209,7 @@ PlaylistWindow::init()
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
         m_timer = new QTimer( this );
 
-	{
-        //set the lineEdit to initial state
-		QEvent e( QEvent::FocusOut );
-		eventFilter( m_lineEdit, &e );
-	}
-
-        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
+        connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
@@ -487,34 +481,6 @@ void PlaylistWindow::setFont( const QFont &font, const QFont &contextfont )
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
-    if( o == m_lineEdit )
-    {
-        switch( e->type() )
-        {
-           case QEvent::FocusIn:
-               if( m_lineEdit->text() == i18n( "Filter here..." ) )
-	       {
-                   m_lineEdit->clear();
-                   m_timer->stop();
-                   m_lineEdit->setPaletteForegroundColor( colorGroup().text() );
-                   return FALSE;
-               }
-
-            case QEvent::FocusOut:
-                if( m_lineEdit->text().isEmpty() )
-		{
-                    m_lineEdit->setPalette( palette() );
-                    m_lineEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-                    m_lineEdit->setText( i18n( "Filter here..." ) );
-                    m_timer->stop();
-                    return FALSE;
-                }
-
-            default:
-                break;
-        }
-    }
-
     //here we filter some events for the Playlist Search LineEdit and the Playlist
     //this makes life easier since we have more useful functions available from this class
 
@@ -603,9 +569,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
         {
             m_lineEdit->setFocus();
-            if ( m_lineEdit->text() == i18n( "Filter here..." ) )
-                m_lineEdit->clear();
-
             QApplication::sendEvent( m_lineEdit, e );
             return TRUE;
         }
@@ -690,19 +653,6 @@ void PlaylistWindow::playAudioCD() //SLOT
 void PlaylistWindow::slotSetFilter()
 {
     m_playlist->setSearchFilter( m_lineEdit->text(), m_searchField );
-}
-
-
-void PlaylistWindow::clearFilter() //SLOT
-{
-    m_lineEdit->clear();
-    m_timer->stop();
-    slotSetFilter();
-    if( !m_lineEdit->hasFocus() ) {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_lineEdit, &e);
-    }
 }
 
 

@@ -23,22 +23,23 @@
 #include <kxmlguiclient.h>     //baseclass (for XMLGUI)
 
 
-namespace amaroK
-{
+namespace amaroK {
     class ToolBar;
 }
 
 using amaroK::ToolBar;
 
 class BrowserBar;
-class ContextBrowser;
+class ClickLineEdit;
 class CollectionBrowser;
-class KLineEdit;
+class ContextBrowser;
+class Playlist;
+
+class QTimer;
+
 class KMenuBar;
 class KPopupMenu;
 class KStatusBar;
-class Playlist;
-class QTimer;
 
 
 class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserver
@@ -71,7 +72,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void slotAddLocation();
         void playAudioCD();
         void slotSetFilter();
-        void clearFilter();
         void slotSetFilterTimeout();
         void setSearchField( int );
         void slotMenuActivated( int );
@@ -86,16 +86,17 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
         enum MenuId { ID_SHOW_MENUBAR = 2000, ID_SHOW_TOOLBAR, ID_SHOW_PLAYERWINDOW };
 
-        KMenuBar *m_menubar;
-        KPopupMenu *m_toolsMenu;
-        KPopupMenu *m_settingsMenu;
-        BrowserBar *m_browsers;
-        Playlist   *m_playlist;
-        KPopupMenu *m_searchMenu;
-        KLineEdit  *m_lineEdit;
-        KStatusBar *m_statusbar;
-        ToolBar    *m_toolbar;
-        QTimer *m_timer;  //search filter timer
+        KMenuBar      *m_menubar;
+        KPopupMenu    *m_toolsMenu;
+        KPopupMenu    *m_settingsMenu;
+        BrowserBar    *m_browsers;
+        Playlist      *m_playlist;
+        KPopupMenu    *m_searchMenu;
+        ClickLineEdit *m_lineEdit;
+        KStatusBar    *m_statusbar;
+        ToolBar       *m_toolbar;
+        QTimer        *m_timer;  //search filter timer
+
         int m_lastBrowser;
         int m_searchField;
 
