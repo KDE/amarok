@@ -36,6 +36,9 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+  CHG     <markey> Consider following the system tray spec on http://www.freedesktop.org/Standards/systemtray-spec.
+                   Apparently this makes it possible to make the tray KDE and GNOME compatible.
+
           <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
 
   CHG     <markey> Make CollectionDB a singleton. Why do we create a fucking object for each db access?
