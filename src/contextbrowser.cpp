@@ -334,6 +334,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     bool newMetaData = false;
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
+    m_dirtyLyricsPage = true;
 
     // Prepend stream metadata history item to list
     if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
