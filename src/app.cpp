@@ -340,20 +340,27 @@ void App::initGlobalShortcuts()
 //this class is only used in this module, so I figured I may as well define it
 //here and save creating another header/source file combination
 
-class ID3v1StringHandler : public TagLib::ID3v1::StringHandler {
+class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
+{
     QTextCodec *m_codec;
-public:
-    ID3v1StringHandler( int codecIndex )
-            : m_codec( QTextCodec::codecForIndex( codecIndex ) )
-    {}
+
     virtual TagLib::String parse( const TagLib::ByteVector &data ) const
     {
         return QStringToTString( m_codec->toUnicode( data.data(), data.size() ) );
     }
+
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
     {
         const QCString qcs = m_codec->fromUnicode( TStringToQString( ts ) );
         return TagLib::ByteVector( qcs, qcs.length() );
+    }
+
+public:
+    ID3v1StringHandler( int codecIndex )
+            : m_codec( QTextCodec::codecForIndex( codecIndex ) )
+    {
+        debug() << "codec: " << m_codec << endl;
+        debug() << "codec-name: " << m_codec->name() << endl;
     }
 };
 
@@ -416,7 +423,10 @@ void App::applySettings( bool firstTime )
     amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
-    if ( AmarokConfig::recodeID3v1Tags() )
+
+    // we check > 0 because textCodecForIndex( 0 ) crashes amaroK for unknown
+    // reasons, also now we assign index 0 to "" in the config combobox
+    if( AmarokConfig::recodeID3v1Tags() && AmarokConfig::recodeEncoding() > 0 )
         TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::recodeEncoding() ) );
 
 

@@ -84,17 +84,19 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
-    for ( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it ) {
+    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it ) {
         m_soundSystem->insertItem( (*it)->name() );
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-amaroK-name" ).toString()] = (*it)->name();
     }
 
-    // ID3v1 recoding locales
-    m_opt1->kcfg_RecodeEncoding->insertItem( QString::null );
+    // KConfigXT doesn't like Comboboxes, still, 2 versions after
+    // it was created. How shit. Hence we can't make recodeEncoding
+    // a string (which we need to because by index is not consistent)
     QTextCodec *codec;
-    for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
+    m_opt1->kcfg_RecodeEncoding->insertItem( QString::null );
+    for( int i = 1; (codec = QTextCodec::codecForIndex( i )); i++ )
         m_opt1->kcfg_RecodeEncoding->insertItem( codec->name() );
 
     // Collection
