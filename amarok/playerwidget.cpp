@@ -242,7 +242,7 @@ class AmarokSystray : public KSystemTray
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
    : QWidget( parent, name )
-   , DCOPObject("AmarokIface")
+   , DCOPObject("amarok")
 {
     setName( "PlayerWidget " );
     setCaption( "amaroK" );
