@@ -21,6 +21,7 @@ SUBDIRS = \
     ipod \
     images \
     loader \
+    scripts \
     vis \
     $(KONQSIDEBAR_SUBDIR) \
     statusbar
