@@ -25,14 +25,14 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
     //, roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
 {
     //roof pixmaps don't depend on size() so we do in the ctor
-    bg = parent->paletteBackgroundColor();
+    m_bg = parent->paletteBackgroundColor();
 
     QColor fg( 0xff, 0x50, 0x70 );
-    #define bg backgroundColor()
+    #define m_bg backgroundColor()
 
-    double dr = double(bg.red()   - fg.red())   / (NUM_ROOFS-1); //-1 because we start loop below at 0
-    double dg = double(bg.green() - fg.green()) / (NUM_ROOFS-1);
-    double db = double(bg.blue()  - fg.blue())  / (NUM_ROOFS-1);
+    double dr = double(m_bg.red()   - fg.red())   / (NUM_ROOFS-1); //-1 because we start loop below at 0
+    double dg = double(m_bg.green() - fg.green()) / (NUM_ROOFS-1);
+    double db = double(m_bg.blue()  - fg.blue())  / (NUM_ROOFS-1);
 
     for ( uint i = 0; i < NUM_ROOFS; ++i )
     {
@@ -40,7 +40,7 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
         m_pixRoof[i].fill( QColor( fg.red()+int(dr*i), fg.green()+int(dg*i), fg.blue()+int(db*i) ) );
     }
 
-    #undef bg
+    #undef m_bg
 }
 
 void BarAnalyzer::resizeEvent( QResizeEvent * e )
@@ -57,7 +57,7 @@ void BarAnalyzer::init()
     const double MAX_AMPLITUDE = 1.0;
     const double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE );
 
-    setPaletteBackgroundColor(bg);
+    setPaletteBackgroundColor(m_bg);
 
     BAND_COUNT = width() / 5;
     MAX_DOWN = int(0 -((height() / 50)));

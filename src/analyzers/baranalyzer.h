@@ -1,5 +1,5 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>
-// Authors:    Mark Kretcshmann & Max Howell (C) 2003-4
+// Authors:    Mark Kretschmann & Max Howell (C) 2003-4
 // Copyright:  See COPYING file that comes with this distribution
 //
 
@@ -20,7 +20,12 @@ class BarAnalyzer : public Analyzer::Base2D
         void init();
         virtual void analyze( const Scope& );
         //virtual void transform( Scope& );
-        void   resizeEvent( QResizeEvent * e);
+
+		/**
+		 * Resizes the widget to a new geometry according to @p e
+		 * @param e The resize-event
+		 */
+        void resizeEvent( QResizeEvent * e);
 
         uint BAND_COUNT;
         int MAX_DOWN;
@@ -47,7 +52,7 @@ class BarAnalyzer : public Analyzer::Base2D
         QPixmap m_pixBarGradient;
         QPixmap m_pixCompose;
         Scope m_scope;             //so we don't create a vector every frame
-        QColor bg;
+        QColor m_bg;
 };
 
 #endif
