@@ -68,11 +68,11 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 
 
 ContextBrowser::ContextBrowser( const char *name )
-   : QTabWidget( 0, name )
-   , EngineObserver( EngineController::instance() )
-   , m_bgGradientImage( 0 )
-   , m_headerGradientImage( 0 )
-   , m_shadowGradientImage( 0 )
+        : QTabWidget( 0, name )
+        , EngineObserver( EngineController::instance() )
+        , m_bgGradientImage( 0 )
+        , m_headerGradientImage( 0 )
+        , m_shadowGradientImage( 0 )
 {
     m_homePage = new KHTMLPart( this, "home_page" );
     m_homePage->setDNDEnabled( true );
@@ -128,12 +128,9 @@ ContextBrowser::ContextBrowser( const char *name )
 
 ContextBrowser::~ContextBrowser()
 {
-    if( m_bgGradientImage )
-      m_bgGradientImage->unlink();
-    if( m_headerGradientImage )
-      m_headerGradientImage->unlink();
-    if( m_shadowGradientImage )
-      m_shadowGradientImage->unlink();
+    delete m_bgGradientImage;
+    delete m_headerGradientImage;
+    delete m_shadowGradientImage;
 }
 
 
@@ -533,7 +530,13 @@ verboseTimeSince( const QDateTime &datetime )
             return i18n( "Last week", "%n weeks ago", days / 7 );
     }
 
-    return i18n( "Last year", "%n years ago", now.year() - date.year() );
+    // it was played last year, but that could still be yesterday
+    //TODO it could still be yesterday, this whole function needs adaption
+
+    if( now.year() - date.year() == 1 && QABS(now.month() - date.month()) < 7 )
+        return i18n( "Last month", "%n months ago", now.month() - date.month() );
+    else
+        return i18n( "Last year", "%n years ago", now.year() - date.year() );
 }
 
 
@@ -1187,35 +1190,29 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     const QColor bgColor = colorGroup().highlight();
     const amaroK::Color gradientColor = bgColor;
 
-    //writing temp background gradient image
-    if ( m_bgGradientImage ) {
-        m_bgGradientImage->unlink();
-        delete m_bgGradientImage;
-    }
+    delete m_bgGradientImage;
+    delete m_headerGradientImage;
+    delete m_shadowGradientImage;
+
     m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
     image.save( m_bgGradientImage->file(), "PNG" );
     m_bgGradientImage->close();
 
-    //writing temp top shining gradient
-    if ( m_headerGradientImage ) {
-        m_headerGradientImage->unlink();
-        delete m_headerGradientImage;
-    }
     m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
     QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
     imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
     m_headerGradientImage->close();
 
-    //writing temp gradient image (only an 'upper linear shadow')
-    if ( m_shadowGradientImage ) {
-        m_shadowGradientImage->unlink();
-        delete m_shadowGradientImage;
-    }
     m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
     QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
     imageS.save( m_shadowGradientImage->file(), "PNG" );
     m_shadowGradientImage->close();
+
+    //unlink the files for us on deletion
+    m_bgGradientImage->setAutoDelete( true );
+    m_headerGradientImage->setAutoDelete( true );
+    m_shadowGradientImage->setAutoDelete( true );
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color

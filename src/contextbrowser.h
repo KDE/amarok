@@ -25,7 +25,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 
     public:
         ContextBrowser( const char *name );
-        ~ContextBrowser();
+       ~ContextBrowser();
 
         virtual void setFont( const QFont& );
 
@@ -61,7 +61,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
-        
+
         KHTMLPart    *m_homePage;
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
@@ -70,7 +70,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         bool          m_dirtyHomePage;
         bool          m_dirtyCurrentTrackPage;
         bool          m_dirtyLyricsPage;
-        
+
         QString       m_styleSheet;
         bool          m_emptyDB;
         QString       m_lyrics;
