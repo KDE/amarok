@@ -733,18 +733,19 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "<br />"
                 "<span id='current_box-header-album' class='box-header-title'>%3</span>"
             "</div>"
-            "<table id='current_box-table' class='box-body' width='100%'>"
+            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                 "<tr>"
                     "<td id='current_box-largecover-td'>"
                         "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
-                            "<img id='current_box-largecover-image' hspace='2' src='%6' title='%7'>"
+                            "<img id='current_box-largecover-image' src='%6' title='%7'>"
                         "</a>"
                     "</td>"
                     "<td id='current_box-information-td' align='right'>"
-                        "<a id='current_box-musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10'>"
-                            "<img id='current_box-musicbrainz-image' src='%11' />"
-                        "</a>"
-                        "<br />"
+                        "<div id='musicbrainz-div'>"
+                            "<a id='musicbrainz-a' title='%8' href='musicbrainz:%9 @@@ %10'>"
+                            "<img id='musicbrainz-image' src='%11' />"
+                            "</a>"
+                        "</div>"
                                  )
         .args( QStringList()
             << escapeHTML( currentTrack.title() )
@@ -870,9 +871,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='song-title'>"+ values[i + 2] + "</span>"
+                            "<span class='album-song-title'>"+ values[i + 2] + "</span>"
                             "<span class='song-separator'> - </span>"
-                            "<span class='song-artist'>" + values[i + 1] + "</span>"
+                            "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
                         "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
@@ -916,7 +917,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
                     "<td class='song'>"
                         "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                        "<span class='song-title'>" + values[i] + "</span>"
+                        "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
                     "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
@@ -1166,23 +1167,23 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
     styleSheet += QString( ".album-title { font-weight: bold; }" );
     styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
+    styleSheet += QString( ".album-image { padding-right: 4px; }" );
     styleSheet += QString( ".album-year { }" );
     styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".album-song-trackno { text-align: right; width: 2em; display: block; float: left;}" );
     styleSheet += QString( ".album-song-title { } " );
-    styleSheet += QString( ".album-song-time { } " );
+    styleSheet += QString( ".album-song-time { float: right; } " );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
-    styleSheet += QString( ".default { font-size: %1px }" ).arg( pxSize );
 
     styleSheet += QString( "#current_box-header-album { font-weight: normal; }" );
-    styleSheet += QString( "#current_box-information-td { text-align: right; }" );
-    styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 2px; }" );
-    styleSheet += QString( "#current_box-musicbrainz-image { width: 38px; height: 22px; }" );
+    styleSheet += QString( "#current_box-information-td { text-align: right; vertical-align: bottom; padding: 3px; }" );
+    styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 0; vertical-align: bottom; }" );
+    styleSheet += QString( "#current_box-largecover-image { padding: 4px; vertical-align: bottom; }" );
 }
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
