@@ -803,7 +803,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << QString::number( artist_id )
                     << values[ i+1 ] //album.id
                     << escapeHTML( values[ i ] )
-                    << ( albumYear.isEmpty() ? "" : albumYear )
+                    << albumYear
                     << ( i ? "none" : "block" )
                     << values[ i+1 ] ) );
 
