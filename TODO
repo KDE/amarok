@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #152 being the highest available (take this one for your next bug and increase here)
+           #153 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -21,6 +21,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+ 
+ ADD 152<madpenguin8> Make "Playlists" area in Playlist Browser inherit color scheme i.e. "amaroK" scheme.
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
