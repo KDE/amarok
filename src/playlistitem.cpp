@@ -201,9 +201,10 @@ void PlaylistItem::setText( const MetaBundle &bundle )
 
     QString directory = bundle.prettyURL();
     if ( bundle.url().isLocalFile() ) {
+        // The url is like: file:///path/to/file.mp3
         const int firstIndex = bundle.prettyURL().find( '/' );
         const int lastIndex = bundle.prettyURL().findRev( '/', -1 );
-        directory = bundle.prettyURL().mid( firstIndex, lastIndex - firstIndex );
+        directory = bundle.prettyURL().mid( firstIndex + 2, lastIndex - firstIndex );
     }
     setText( Directory, directory );
     setText( Length,  bundle.prettyLength() );
