@@ -58,7 +58,6 @@ void Sonogram::drawAnalyzer(std::vector<float> *s)
 
 		p.setPen(c);
 		p.drawPoint(x, y--);
-		p.drawPoint(x, y--);
 	}
 	bitBlt(this, 0, 0, m_pPixmap);
 }

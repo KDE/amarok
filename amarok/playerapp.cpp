@@ -706,8 +706,16 @@ void PlayerApp::slotVisTimer()
             if (!front)
                 return;
 
-            m_pFht->power( front );
-            m_pFht->scale( front, 1.0 / 64 );
+            if ( config()->currentAnalyzer() == 6) { // sonogram
+                m_pFht->power( front );
+                m_pFht->scale( front, 1.0 / 64 );
+            } else {
+                float *f = new float[ m_pFht->size() ];
+                m_pFht->copy( f, front );
+                m_pFht->logSpectrum( front, f );
+                m_pFht->scale( front, 1.0 / 20 );
+                delete[] f;
+            }
             pScopeVector->resize( pScopeVector->size() / 2 );
                         
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
