@@ -173,7 +173,7 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
         }
         else {
             MetaBundle mb;
-            mb.setUrl( m_mbTrack );
+            mb.setPath( m_mbTrack );
             if ( !results[0].title().isEmpty() )    mb.setTitle( results[0].title() );
             if ( !results[0].artist().isEmpty() )   mb.setArtist( results[0].artist() );
             if ( !results[0].album().isEmpty() )    mb.setAlbum( results[0].album() );
@@ -379,7 +379,7 @@ TagDialog::storeTags()
     MetaBundle mb;
     QString url = m_bundle.url().path();
 
-    mb.setUrl( url );
+    mb.setPath( url );
     mb.setTitle( kLineEdit_title->text() );
     mb.setArtist( kComboBox_artist->currentText() );
     mb.setAlbum( kComboBox_album->currentText() );
