@@ -42,10 +42,12 @@ XineEngine::XineEngine()
   , m_stream( 0 )
   , m_audioPort( 0 )
   , m_eventQueue( 0 )
+  , m_post( 0 )
 {}
 
 XineEngine::~XineEngine()
 {
+    //if (m_post)       xine_post_dispose(m_xine, m_post);
     if (m_stream)     xine_close(m_stream);
     if (m_eventQueue) xine_event_dispose_queue(m_eventQueue);
     if (m_stream)     xine_dispose(m_stream);
@@ -68,7 +70,7 @@ XineEngine::init( bool&, int, bool )
         return;
     }
 
-    xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
+    //xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
 
 
     QString
@@ -180,13 +182,16 @@ XineEngine::state() const
 std::vector<float>*
 XineEngine::scope()
 {
-    extern short myBuffer[512][6];
+    extern short myBuffer[6][512];
 
-    std::vector<float> *v = new std::vector<float>( 512 );
+    std::vector<float> &v = *(new std::vector<float>( 512 ));
 
-    for( uint x = 0; x < 513; ++x ) (*v)[x] = (double)myBuffer[x][0]/double(2<<15);
+    for( uint x = 0; x < 513; ++x )
+    {
+        v[x] = double(myBuffer[0][x]+myBuffer[1][x])/double(2<<15);
+    }
 
-    return v;
+    return &v;
 }
 
 long

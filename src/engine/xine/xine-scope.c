@@ -42,7 +42,7 @@ struct post_plugin_scope_s
 static int
 scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bits, uint32_t rate, int mode)
 {
-  post_audio_port_t    *port = (post_audio_port_t *)port_gen;
+  post_audio_port_t   *port = (post_audio_port_t *)port_gen;
   post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
 
   printf( "port_open!\n" );
@@ -80,7 +80,7 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 static void
 scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_stream_t *stream)
 {
-    post_audio_port_t    *port = (post_audio_port_t *)port_gen;
+    post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
 
     int samples_used = 0;
@@ -91,6 +91,8 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
         this->buf.mem = (int16_t*)realloc(this->buf.mem, buf->mem_size);
         this->buf.mem_size = buf->mem_size;
     }
+
+    if( buf->num_frames > 512 ) printf( "Samples: %d", buf->num_frames );
 
     memcpy( this->buf.mem, buf->mem, buf->num_frames * this->channels * ((port->bits == 8)?1:2) ); /*TODO bitshift instead of branch*/
     this->buf.num_frames = buf->num_frames;
