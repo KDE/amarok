@@ -53,6 +53,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator", "grue@iki.fi" );
     aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
     aboutData.addCredit( "Stanislav Karchebny", "Patches here and there, i18n", "berkus@users.sourceforge.net" );
+    aboutData.addCredit( "Max Howell", "Developer", "max.howell@methylblue.com" );
     aboutData.addCredit( "The Noatun Authors", "Code Inspiration", 0, "http://noatun.kde.org" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );
