@@ -234,7 +234,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
 void ContextBrowser::collectionScanStarted()
 {
-    if( m_emptyDB )
+    if( m_emptyDB && !AmarokConfig::collectionFolders().isEmpty() )
        showScanning();
 }
 
@@ -473,7 +473,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             startPath = url.directory();
         }
 
-        KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
+        KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n("Select Cover Image File") );
         if ( !file.isEmpty() ) {
             CollectionDB::instance()->setAlbumImage( artist, album, file );
             m_dirtyCurrentTrackPage = true;
@@ -547,6 +547,11 @@ void ContextBrowser::showHome() //SLOT
         blockSignals( true );
         showPage( m_homePage->view() );
         blockSignals( false );
+    }
+
+    if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() ) {
+        showIntroduction();
+        return;
     }
 
     // Do we have to rebuild the page?
