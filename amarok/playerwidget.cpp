@@ -54,18 +54,13 @@ static inline QPixmap getPNG( const QString &filename )
     return QPixmap( locate( "data", QString( "amarok/images/%1.png" ).arg( filename ) ), "PNG" );
 }
 
-//these two template functions are designed to reduce LOC
-//and hopefully will be compiled such that the final binary is smaller too
+
+//fairly pointless template which was designed to make the ctor clearer,
+//but probably achieves the opposite.
 template<class W> static inline W*
-wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
+createWidget( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
 {
     W *w = new W( parent, name, f );
-    w->setGeometry( r );
-    return w;
-}
-template<class W> static inline W*
-placeWidget( W *w, const QRect &r )
-{
     w->setGeometry( r );
     return w;
 }
@@ -80,6 +75,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     , m_plusPixmap( getPNG( "time_plus" ) )
     , m_minusPixmap( getPNG( "time_minus" ) )
 {
+    //the createWidget template function is used here
+    //createWidget just creates a widget which has it's geometry set too
+
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     setCaption( kapp->makeStdCaption( i18n("Player") ) );
@@ -98,25 +96,29 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         //TODO Plastik paints the small spaces inbetween buttons with ButtonColor and
         //     not backgroundColor. Report as bug.
 
-        m_pFrameButtons = wrapper<QHBox>( QRect(0, 118, 311, 22), this );
+        m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
+
+        EngineController* const ec = EngineController::instance();
+
+        // In case you are wondering, the PLAY and PAUSE buttons are created here!
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
-        new NavButton( m_pFrameButtons, "prev",
-                       EngineController::instance(), SLOT( previous()  ) );
-        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play",
-                                        EngineController::instance(), SLOT( play()  ) );
-        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", EngineController::instance(),
-                                        SLOT( pause() ) );
-        new NavButton( m_pFrameButtons, "stop",  EngineController::instance(), SLOT( stop()  ) );
-        new NavButton( m_pFrameButtons, "next",  EngineController::instance(), SLOT( next()  ) );
+        new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous()  ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT(play()) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT(pause()) );
+        new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop()  ) );
+        new NavButton( m_pFrameButtons, "next", ec, SLOT( next()  ) );
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
     } //</NavButtons>
 
     { //<Sliders>
-        m_pSlider    = placeWidget( new amaroK::Slider( this, Qt::Horizontal ), QRect(4,103, 303,12) );
-        m_pVolSlider = placeWidget( new amaroK::Slider( this, Qt::Vertical ), QRect(294,18, 12,79) );
+        m_pSlider    = new amaroK::Slider( this, Qt::Horizontal );
+        m_pVolSlider = new amaroK::Slider( this, Qt::Vertical );
+
+        m_pSlider->setGeometry( 4,103, 303,12 );
+        m_pVolSlider->setGeometry( 294,18, 12,79 );
 
         m_pVolSlider->setMaxValue( VOLUME_MAX );
 
@@ -130,9 +132,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 
     { //<Scroller>
         font.setPixelSize( 11 );
-        int fontHeight = QFontMetrics( font ).height(); //the real height is more like 13px
+        const int fontHeight = QFontMetrics( font ).height(); //the real height is more like 13px
 
-        m_pScrollFrame = wrapper<QFrame>( QRect(6,18, 285,fontHeight), this );
+        m_pScrollFrame = createWidget<QFrame>( QRect(6,18, 285,fontHeight), this );
         m_pScrollFrame->setFont( font );
 
         m_scrollBuffer.fill( backgroundColor() );
@@ -141,23 +143,29 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     } //<TimeLabel>
         font.setPixelSize( 18 );
 
-        m_pTimeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,18), this, 0, Qt::WRepaintNoErase );
+        m_pTimeLabel = createWidget<QLabel>( QRect(16,36, 9*12+2,18), this, 0, Qt::WRepaintNoErase );
         m_pTimeLabel->setFont( font );
 
         m_timeBuffer.resize( m_pTimeLabel->size() );
         m_timeBuffer.fill( backgroundColor() );
     } //<TimeLabel>
 
+
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( drawScroll() ) );
-    m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
+
+
+    m_pButtonEq = new IconButton( this, "eq" );
+    m_pButtonEq->setGeometry( 34,85, 28,13 );
     connect( m_pButtonEq, SIGNAL( released() ), this, SIGNAL( effectsWindowActivated() ) );
-    m_pButtonPl = placeWidget( new IconButton( this, "pl" ), QRect( 5,85, 28,13) );
+
+    m_pButtonPl = new IconButton( this, "pl" );
+    m_pButtonPl->setGeometry( 5,85, 28,13 );
     connect( m_pButtonPl, SIGNAL( toggled( bool ) ), this, SIGNAL( playlistToggled( bool ) ) );
 
 
-    m_pDescription = wrapper<QLabel>( QRect(4,6, 130,10), this );
-    m_pTimeSign    = wrapper<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
-    m_pVolSign     = wrapper<QLabel>( QRect(295,7, 9,8),  this );
+    m_pDescription = createWidget<QLabel>( QRect(4,6, 130,10), this );
+    m_pTimeSign    = createWidget<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
+    m_pVolSign     = createWidget<QLabel>( QRect(295,7, 9,8),  this );
 
     m_pDescription->setPixmap( getPNG( "description" ) );
     m_pVolSign    ->setPixmap( getPNG( "vol_speaker" ) );
@@ -178,7 +186,8 @@ void PlayerWidget::defaultScroll()
 {
     m_rateString = QString::null;
     setScroll( i18n( "Welcome to amaroK" ) );
-    m_pTimeLabel->hide(); m_pTimeSign->hide();
+    m_pTimeLabel->hide();
+    m_pTimeSign->hide();
 }
 
 
@@ -248,7 +257,7 @@ static const char* const separator_xpm[]={
 
     //FIXME WORKAROUND prevents crash
     if ( text.isEmpty() )
-        text = "FIXME: EMPTY STRING -> NULL PIXMAP -> CRASH!";
+        text = "This message should not be displayed! Please report it to amarok-devel@lists.sf.net, thanks!";
 
     QFont font( m_pScrollFrame->font() );
     QFontMetrics fm( font );
