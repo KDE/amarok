@@ -118,7 +118,7 @@ EqualizerSetup::bandChanged() //SLOT
 {
     QValueList<int> gains;
 
-    for ( int i = 0; i < m_bandSliders.count(); i++ )
+    for ( uint i = 0; i < m_bandSliders.count(); i++ )
         gains.push_back( m_bandSliders.at( i )->value() );
 
     EngineController::engine()->setEqualizerGains( gains );
