@@ -365,6 +365,12 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         if ( !createPipeline() )
             return false;
 
+    // If paused, unpause
+    if ( GST_STATE( m_gst_outputThread ) == GST_STATE_PAUSED ) {
+        gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
+        gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING );
+    }
+
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
         delete input;
@@ -385,8 +391,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
 
+    gst_element_link_many( input->src, input->spider, input->volume, 0 );
     // Prepare bin for playing
-    gst_element_set_state( input->bin, GST_STATE_PAUSED );
+    gst_element_set_state( input->bin, GST_STATE_READY );
 
     if ( m_currentInput ) {
         m_currentInput->setState( InputPipeline::XFADE_OUT );
@@ -432,7 +439,7 @@ GstEngine::play( uint )  //SLOT
     // Put input bin into input thread
     gst_bin_add( GST_BIN( m_gst_inputThread ), m_currentInput->bin );
     // Link elements
-    gst_element_link_many( m_currentInput->src, m_currentInput->spider, m_currentInput->volume, m_gst_adder, 0 );
+    gst_element_link( m_currentInput->volume, m_gst_adder );
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
@@ -465,10 +472,14 @@ GstEngine::pause()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
 
-    if ( state() == Engine::Paused )
-        gst_element_set_state( m_currentInput->bin, GST_STATE_PLAYING );
-    else
-        gst_element_set_state( m_currentInput->bin, GST_STATE_PAUSED );
+    if ( GST_STATE( m_gst_outputThread ) == GST_STATE_PAUSED ) {
+        gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
+        gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING );
+    }
+    else {
+        gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED );
+        gst_element_set_state( m_gst_outputThread, GST_STATE_PAUSED );
+    }
 
     emit stateChanged( state() );
 }
@@ -998,6 +1009,7 @@ InputPipeline::~InputPipeline()
         gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
 
         gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
+
         // Destroy bin
         gst_element_set_state( bin, GST_STATE_NULL );
         gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
