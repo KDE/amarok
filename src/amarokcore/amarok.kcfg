@@ -325,6 +325,7 @@
     <entry key="Recode Encoding" type="Int">
         <label>Recode encoding</label>
         <whatsthis>The charset with which to decode the above string data.</whatsthis>
+	<default>59</default>
     </entry>
 </group>
 
