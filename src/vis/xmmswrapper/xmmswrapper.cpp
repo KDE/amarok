@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include "xmmswrapper.h"
 
