@@ -49,6 +49,9 @@ SCOPEBUF_SIZE = 40000;
 static const int
 STREAMBUF_SIZE = 1000000; // == 1MB
 
+static const int
+STREAMBUF_MAX = STREAMBUF_SIZE - 100000;
+
 GError*
 GstEngine::error_msg;
 
@@ -116,6 +119,16 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* /*
     kdDebug() << k_funcinfo << endl;
 
     QTimer::singleShot( 0, instance(), SLOT( handleError() ) );
+}
+
+
+void
+GstEngine::kio_resume_cb()
+{
+    if ( instance()->m_transferJob && instance()->m_transferJob->isSuspended() ) {
+        instance()->m_transferJob->resume();
+        kdDebug() << "Gst-Engine: RESUMING kio transfer\n";
+    }
 }
 
 
@@ -280,6 +293,11 @@ GstEngine::scope()
 void
 GstEngine::play( const KURL& url )  //SLOT
 {
+    kdDebug() << "Gst-Engine: url.path()     == " << url.path()     << endl;
+    kdDebug() << "Gst-Engine: url.protocol() == " << url.protocol() << endl;
+    kdDebug() << "Gst-Engine: url.host()     == " << url.host()     << endl;
+    kdDebug() << "Gst-Engine: url.port()     == " << url.port()     << endl;
+    
     bool isUade = false;
     if ( url.fileName().endsWith( UADE_EXT ) ) isUade = true;
     
@@ -320,6 +338,7 @@ GstEngine::play( const KURL& url )  //SLOT
         // Create our custom streamsrc element, which transports data into the pipeline
         m_srcelement = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
         gst_bin_add ( GST_BIN ( m_thread ), m_srcelement );
+        g_signal_connect( G_OBJECT( m_srcelement ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_thread );
     }
     
     //TODO HACK
@@ -451,6 +470,11 @@ GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 {
     int size = array.size();
     
+    if ( m_streamBufIndex >= STREAMBUF_MAX ) {
+        kdDebug() << "Gst-Engine: SUSPENDING kio transfer\n";
+        m_transferJob->suspend();
+    }
+            
     if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
         m_streamBufIndex = 0;
         kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
@@ -483,7 +507,6 @@ GstEngine::stopAtEnd()  //SLOT
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_READY );
     
-    delete m_transferJob;
     m_transferJob = 0;
     
     emit endOfTrack();

@@ -347,6 +347,11 @@ std::vector<float>* ArtsEngine::scope()
 
 void ArtsEngine::play( const KURL& url )
 {
+    kdDebug() << "aRts-Engine: url.path()     == " << url.path()     << endl;
+    kdDebug() << "aRts-Engine: url.protocol() == " << url.protocol() << endl;
+    kdDebug() << "aRts-Engine: url.host()     == " << url.host()     << endl;
+    kdDebug() << "aRts-Engine: url.port()     == " << url.port()     << endl;
+    
     m_xfadeFadeout = false;
     startXfade();
 

@@ -43,6 +43,7 @@ struct _GstStreamSrcClass
 
     /* signals */
     void ( *timeout ) ( GstElement *element );
+    void ( *kio_resume ) ( GstElement *element );
 };
 
 GType gst_streamsrc_get_type( void );

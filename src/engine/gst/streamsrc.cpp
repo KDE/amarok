@@ -16,6 +16,7 @@ GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
 /* signals and args */
 enum {
     SIGNAL_TIMEOUT,
+    SIGNAL_KIO_RESUME,
     LAST_SIGNAL
 };
 
@@ -49,7 +50,10 @@ static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
 static GstData *gst_streamsrc_get ( GstPad * pad );
 
 // Minimum buffer fill until we start playing
-static const int BUFFER_MIN = 200000;
+static const int BUFFER_MIN = 100000;
+
+// Resume KIO transfer at this point
+static const int BUFFER_RESUME = BUFFER_MIN + 100000;
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -78,11 +82,16 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
                                       g_param_spec_uint64 ( "timeout", "Timeout", "Read timeout in nanoseconds",
                                                             0, G_MAXUINT64, 0, ( GParamFlags ) G_PARAM_READWRITE ) );
 
-    gst_streamsrc_signals[ SIGNAL_TIMEOUT ] =
+    gst_streamsrc_signals[SIGNAL_TIMEOUT] =
         g_signal_new ( "timeout", G_TYPE_FROM_CLASS ( klass ), G_SIGNAL_RUN_LAST,
                        G_STRUCT_OFFSET ( GstStreamSrcClass, timeout ), NULL, NULL,
                        g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0 );
 
+    gst_streamsrc_signals[SIGNAL_KIO_RESUME] =
+        g_signal_new ( "kio_resume", G_TYPE_FROM_CLASS ( klass ), G_SIGNAL_RUN_LAST,
+                       G_STRUCT_OFFSET ( GstStreamSrcClass, kio_resume ), NULL, NULL,
+                       g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0 );
+    
     gobject_class->set_property = gst_streamsrc_set_property;
     gobject_class->get_property = gst_streamsrc_get_property;
 }
@@ -160,8 +169,12 @@ gst_streamsrc_get ( GstPad * pad )
 {
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
     
+    // Signal KIO to resume transfer when buffer reaches our low limit
+    if ( *src->streamBufIndex < BUFFER_RESUME ) 
+        g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
+    
     // Return when buffer is not filled
-    if ( *src->streamBufIndex < BUFFER_MIN )
+    if ( *src->streamBufIndex < BUFFER_MIN ) 
         return GST_DATA( gst_event_new( GST_EVENT_DISCONTINUOUS ) );
             
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );

@@ -22,7 +22,6 @@ email                : markey@web.de
 
 #include <vector>
 
-#include <qguardedptr.h>
 #include <qstringlist.h>
 #include <kio/jobclasses.h>
 
@@ -74,6 +73,7 @@ class GstEngine : public EngineBase
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
         
         static void                              error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
+        static void                              kio_resume_cb();
 
         /** Get a list of available plugins from a specified Class */
         QStringList                              getPluginList( const QCString& classname );
@@ -103,7 +103,7 @@ class GstEngine : public EngineBase
        
         char*                                    m_streamBuf;
         int                                      m_streamBufIndex;
-        QGuardedPtr<KIO::TransferJob>            m_transferJob;
+        KIO::TransferJob*                        m_transferJob;
         
         bool                                     m_pipelineFilled;
 };
