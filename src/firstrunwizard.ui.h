@@ -34,7 +34,7 @@ FirstRunWizard::init()
     cancelButton()->setFixedWidth( cancelButton()->width() );
 
     //would be better as a KConfigXT key now
-    if ( amaroK::config()->readEntry( "XMLFile", QString::null ) == "amarokui.rc" )
+    if ( amaroK::config()->readEntry( "XMLFile", QString::null ) != "amarokui.rc" )
         option_xmms->setChecked( true );
     else
         option_compact->setChecked( true );
