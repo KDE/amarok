@@ -102,7 +102,6 @@ void KDevFileSelectorToolBarParent::resizeEvent ( QResizeEvent * )
 
 
 //BEGIN Constructor/destructor
-
 QColor KDevFileSelector::altBgColor;
 
 
@@ -169,9 +168,6 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     connect( filter, SIGNAL( returnPressed(const QString&) ),
              filter, SLOT( addToHistory(const QString&) ) );
 
-    // kaction for the dir sync method
-    acSyncDir = new KAction( i18n("Current Document Directory"), "dirsynch", 0,
-                             this, SLOT( setActiveDocumentDir() ), mActionCollection, "sync_dir" );
     toolbar->setIconText( KToolBar::IconOnly );
     toolbar->setIconSize( 16 );
     toolbar->setEnableContextMenu( false );
@@ -216,8 +212,8 @@ KDevFileSelector::~KDevFileSelector()
 {}
 //END Constructor/Destructor
 
-//BEGIN Public Methods
 
+//BEGIN Public Methods
 QString KDevFileSelector::location() const
 {
     return cmbPath->currentText();
@@ -233,9 +229,11 @@ void KDevFileSelector::readConfig()
     cmbPath->setURLs( AmarokConfig::dirHistory() );
 
     // if we restore history
-    if ( AmarokConfig::restoreLocation() && !AmarokConfig::location().isEmpty() )
+    if ( AmarokConfig::restoreLocation() && !AmarokConfig::location().isEmpty() ) {
         setDir( AmarokConfig::location() );
-
+        cmbPath->setURL( AmarokConfig::location() );
+    }
+        
     filter->setMaxCount( AmarokConfig::filterHistoryLen() );
     filter->setHistoryItems( AmarokConfig::filterHistory(), true );
     lastFilter = AmarokConfig::lastFilter();
@@ -271,6 +269,7 @@ void KDevFileSelector::setupToolbar()
     }
 }
 
+
 void KDevFileSelector::writeConfig()
 {
     AmarokConfig::setPathcomboHistoryLen( cmbPath->maxItems() );
@@ -287,12 +286,10 @@ void KDevFileSelector::writeConfig()
     AmarokConfig::setLastFilter( lastFilter );
     AmarokConfig::setAutoSyncEvents( autoSyncEvents );
 }
-
-
 //END Public Methods
 
-//BEGIN Public Slots
 
+//BEGIN Public Slots
 void KDevFileSelector::slotFilterChange( const QString & nf )
 {
     QString f = nf.stripWhiteSpace();
@@ -318,6 +315,8 @@ void KDevFileSelector::slotFilterChange( const QString & nf )
     btnFilter->setEnabled( !( empty && lastFilter.isEmpty() ) );
 
 }
+
+
 void KDevFileSelector::setDir( KURL u )
 {
     dir->setURL(u, true);
@@ -325,12 +324,13 @@ void KDevFileSelector::setDir( KURL u )
 
 //END Public Slots
 
-//BEGIN Private Slots
 
+//BEGIN Private Slots
 void KDevFileSelector::cmbPathActivated( const KURL& u )
 {
     cmbPathReturnPressed( u.url() );
 }
+
 
 void KDevFileSelector::cmbPathReturnPressed( const QString& u )
 {
@@ -342,10 +342,12 @@ void KDevFileSelector::cmbPathReturnPressed( const QString& u )
     dir->setURL( KURL(u), true );
 }
 
+
 void KDevFileSelector::dirUrlEntered( const KURL& u )
 {
     cmbPath->setURL( u );
 }
+
 
 void KDevFileSelector::dirFinishedLoading()
 {}
@@ -370,51 +372,15 @@ void KDevFileSelector::btnFilterClick()
         slotFilterChange( lastFilter );
     }
 }
-
-
-void KDevFileSelector::autoSync()
-{
-    kdDebug()<<"KDevFileSelector::autoSync()"<<endl;
-    // if visible, sync
-    if ( isVisible() )
-    {
-        setActiveDocumentDir();
-        waitingUrl = QString::null;
-    }
-    // else set waiting url
-    else
-    {
-        KURL u = activeDocumentUrl();
-        if (!u.isEmpty())
-            waitingUrl = u.directory();
-    }
-}
-
-
-/// \FIXME crash on shutdown
-void KDevFileSelector::setActiveDocumentDir()
-{
-    //kdDebug()<<"KDevFileSelector::setActiveDocumentDir()"<<endl;
-    KURL u = activeDocumentUrl();
-    if (!u.isEmpty())
-        setDir( u.upURL() );
-}
-
-void KDevFileSelector::viewChanged()
-{
-    /// @todo make sure the button is disabled if the directory is unreadable, eg
-    ///       the document URL has protocol http
-    acSyncDir->setEnabled( ! activeDocumentUrl().directory().isEmpty() );
-}
-
 //END Private Slots
 
-//BEGIN Protected
 
+//BEGIN Protected
 void KDevFileSelector::focusInEvent( QFocusEvent * )
 {
     dir->setFocus();
 }
+
 
 void KDevFileSelector::showEvent( QShowEvent * )
 {
@@ -422,7 +388,6 @@ void KDevFileSelector::showEvent( QShowEvent * )
     if ( autoSyncEvents & GotVisible )
     {
         kdDebug()<<"syncing fs on show"<<endl;
-        setActiveDocumentDir();
         waitingUrl = QString::null;
     }
     // else, if we have a waiting URL set it
@@ -432,6 +397,7 @@ void KDevFileSelector::showEvent( QShowEvent * )
         waitingUrl = QString::null;
     }
 }
+
 
 bool KDevFileSelector::eventFilter( QObject* o, QEvent *e )
 {
@@ -458,8 +424,8 @@ bool KDevFileSelector::eventFilter( QObject* o, QEvent *e )
     /// @todo - same thing for the completion popup?
     return QWidget::eventFilter( o, e );
 }
-
 //END Protected
+
 
 //BEGIN ACtionLBItem
 /*
@@ -485,19 +451,10 @@ class ActionLBItem : public QListBoxPixmap
         QString _str;
 };
 
-KURL KDevFileSelector::activeDocumentUrl( )
-{
-    /*    KTextEditor::Document* doc = dynamic_cast<KTextEditor::Document*>( partController->activePart() );
-        if( doc )
-            return doc->url();*/
-
-    return KURL();
-}
 //END ActionLBItem
 
 
 //BEGIN KDevDirOperator
-
 void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
 {
     setupMenu();
@@ -532,7 +489,6 @@ KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView view )
 
     return pView;
 }
-
 //END KDevDirOperator
 
 

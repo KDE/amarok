@@ -120,16 +120,12 @@ private slots:
     void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KURL& u );
     void dirFinishedLoading();
-    void setActiveDocumentDir();
-    void viewChanged();
     void btnFilterClick();
-    void autoSync();
 
 protected:
     void focusInEvent( QFocusEvent * );
     void showEvent( QShowEvent * );
     bool eventFilter( QObject *, QEvent * );
-    KURL activeDocumentUrl();
 
 private:
     class KDevFileSelectorToolBar *toolbar;
