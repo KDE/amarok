@@ -387,8 +387,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     // Prepare bin for playing
     gst_element_set_state( input->bin, GST_STATE_READY );
 
-    if ( m_currentInput )
-    {
+    if ( m_currentInput ) {
         m_currentInput->setState( InputPipeline::XFADE_OUT );
         input->setState( InputPipeline::XFADE_IN );
     }
@@ -437,6 +436,7 @@ GstEngine::play( uint )  //SLOT
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
 
+    m_currentInput->setReady();
     emit stateChanged( Engine::Playing );
     return true;
 }
@@ -561,7 +561,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 }
                 else {
                     // Set new value for fadeout volume element
-                    double value = 1.0 - input->m_fade;
+                    double value = 1.0 - log10( input->m_fade * 9.0 + 1.0 );
 //                     kdDebug() << "XFADE_IN: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
@@ -951,6 +951,7 @@ GstEngine::sendBufferStatus()
 InputPipeline::InputPipeline()
     : m_state( NO_FADE )
     , m_fade( 0.0 )
+    , m_ready( false )
     , m_error( false )
     , m_eos( false )
 {
@@ -984,20 +985,26 @@ InputPipeline::~InputPipeline()
 
     kdDebug() << "Unreffing input bin.\n";
 
-    gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
+    if ( m_ready ) {
+        gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
 
-    if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
-        kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
+        if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
+            kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
-    gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
+        gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
 
-    gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
-    // Destroy bin
-    gst_element_set_state( bin, GST_STATE_NULL );
-    gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
+        gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
+        // Destroy bin
+        gst_element_set_state( bin, GST_STATE_NULL );
+        gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
 
-    if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
-        kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
+        if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
+            kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
+    }
+    else {
+        gst_element_set_state( bin, GST_STATE_NULL );
+        gst_object_unref( GST_OBJECT( bin ) );
+    }
 
     kdDebug() << "END " << k_funcinfo << endl;
 }

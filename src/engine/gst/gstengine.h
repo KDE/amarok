@@ -175,15 +175,18 @@ class InputPipeline
 
         void prepareToDie();
 
-        State state() { return m_state; }
+        void setReady() { m_ready = true; }
+
+        State state() const { return m_state; }
         void setState( State newState );
 
-        float fade() { return m_fade; }
+        float fade() const { return m_fade; }
         void setFade( float newFade) { m_fade = newFade; }
 
         State m_state;
         float m_fade;
 
+        bool m_ready;
         bool m_error;
         bool m_eos;
 
