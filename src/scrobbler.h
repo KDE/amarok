@@ -30,11 +30,11 @@ class Scrobbler : public QObject, public EngineObserver
 
     signals:
         void relatedArtistsFetched( const QString& artist, const QStringList& suggestions );
-    
+
     protected:
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*state*/ );
         void engineTrackPositionChanged( long /*position*/ );
-    
+
     private slots:
         void audioScrobblerSimilarArtistsResult( KIO::Job* /*job*/ );
         void audioScrobblerSimilarArtistsData(
@@ -54,33 +54,32 @@ class Scrobbler : public QObject, public EngineObserver
 class ScrobblerSubmitter : public QObject
 {
     Q_OBJECT
-    
+
     public:
         static QString PROTOCOL_VERSION;
         static QString CLIENT_ID;
         static QString CLIENT_VERSION;
         static QString HANDSHAKE_URL;
-        
+
         ScrobblerSubmitter();
-        ~ScrobblerSubmitter();
-        
+
         void handshake();
         void submitItem( SubmitItem* /* item */ );
-        
+
         const QString username() const { return m_username; }
         const QString password() const { return m_password; }
         const bool enabled() const { return m_scrobblerEnabled; }
-        
+
         void setUsername( const QString& /*username*/ );
         void setPassword( const QString& /* password*/ );
         void setEnabled( bool /*enabled*/ );
-        
+
     private slots:
         void audioScrobblerHandshakeResult( KIO::Job* /*job*/ );
         void audioScrobblerSubmitResult( KIO::Job* /*job*/ );
         void audioScrobblerSubmitData(
             KIO::Job* /*job*/, const QByteArray& /*data*/ );
-    
+
     private:
         bool canSubmit() const;
         QString m_submitResultBuffer;
@@ -91,10 +90,10 @@ class ScrobblerSubmitter : public QObject
         bool m_scrobblerEnabled;
         uint m_prevSubmitTime;
         uint m_interval;
-        
+
         SubmitItem* m_item; // TODO: buffer these
 };
-        
+
 
 class SubmitItem
 {
@@ -104,14 +103,13 @@ class SubmitItem
             const QString& /*album*/,
             const QString& /*title*/,
             int /*length*/ );
-        ~SubmitItem();
-        
+
         const QString artist() const { return m_artist; }
         const QString album() const { return m_album; }
         const QString title() const { return m_title; }
         const int length() const { return m_length; }
         const uint playStartTime() const { return m_playStartTime; }
-        
+
     private:
         QString m_artist;
         QString m_album;

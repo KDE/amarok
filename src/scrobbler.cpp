@@ -134,7 +134,7 @@ void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& d
 void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ )
 {
     m_prevPos = 0;
-    
+
     // Plugins must not submit tracks played from online radio stations, even
     // if they appear to be providing correct metadata.
     if ( bundle.streamUrl() != NULL )
@@ -176,7 +176,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
     {
         return;
     }
-    
+
     long posChange = position - m_prevPos;
     // If this is not the first position changed signal for this song.
     if ( m_prevPos != 0 )
@@ -191,7 +191,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
             m_validForSending = false;
         }
     }
-    
+
     // Each track must be posted to the server when it is 50% or 240
     // seconds complete, whichever comes first.
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
@@ -200,7 +200,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
         m_item = NULL;
         m_validForSending = false;
     }
-    
+
     m_prevPos = position;
 }
 
@@ -210,7 +210,7 @@ void Scrobbler::applySettings()
     m_submitter->setEnabled( AmarokConfig::submitPlayedSongs() );
     m_submitter->setUsername( AmarokConfig::scrobblerUsername() );
     m_submitter->setPassword( AmarokConfig::scrobblerPassword() );
-    
+
     m_submitter->handshake();
 }
 
@@ -236,13 +236,7 @@ ScrobblerSubmitter::ScrobblerSubmitter() :
     m_prevSubmitTime( 0 ),
     m_interval( 0 ),
     m_item( NULL )
-{
-}
-
-
-ScrobblerSubmitter::~ScrobblerSubmitter()
-{
-}
+{}
 
 
 void ScrobblerSubmitter::handshake()
@@ -251,10 +245,10 @@ void ScrobblerSubmitter::handshake()
     {
         return;
     }
-    
+
     QString handshakeUrl = QString::null;
     uint currentTime = QDateTime::currentDateTime().toTime_t();
-    
+
     if ( PROTOCOL_VERSION == "1.1" )
     {
         // Audioscrobbler protocol 1.1 (current)
@@ -275,7 +269,7 @@ void ScrobblerSubmitter::handshake()
                 .arg( CLIENT_VERSION )
                 .arg( m_username );
     }
-    
+
     else if ( PROTOCOL_VERSION == "1.2" )
     {
         // Audioscrobbler protocol 1.2 (RFC)
@@ -303,7 +297,7 @@ void ScrobblerSubmitter::handshake()
                 .arg( KMD5( KMD5( m_password.utf8() ).hexDigest() +
                     currentTime ).hexDigest() );
     }
-    
+
     else
     {
         kdDebug()
@@ -311,12 +305,12 @@ void ScrobblerSubmitter::handshake()
             << PROTOCOL_VERSION << endl;
         return;
     }
-    
+
     kdDebug() << "[AudioScrobbler] Handshake url: " << handshakeUrl << endl;
-    
+
     m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
-    
+
     KIO::TransferJob* job = KIO::get( handshakeUrl, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( audioScrobblerHandshakeResult( KIO::Job* ) ) );
@@ -331,10 +325,10 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
     {
         return;
     }
-    
+
     QString data = QString::null;
     uint currentTime = QDateTime::currentDateTime().toTime_t();
-    
+
     if ( PROTOCOL_VERSION == "1.1" )
     {
         // Audioscrobbler protocol 1.1 (current)
@@ -363,7 +357,7 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             "&i[0]=" + KURL::encode_string(
                 playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
     }
-    
+
     else
     {
         kdDebug()
@@ -371,12 +365,12 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             << PROTOCOL_VERSION << endl;
         return;
     }
-    
+
     kdDebug() << "[AudioScrobbler] Submit data: " << data << endl;
-    
+
     m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
-    
+
     KIO::TransferJob* job =
         KIO::http_post( m_submitUrl, data.utf8(), false );
     job->addMetaData(
@@ -414,11 +408,11 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
             << "[AudioScrobbler] KIO error! errno: " << job->error() << endl;
         return;
     }
-    
+
 //     kdDebug()
 //         << "[AudioScrobbler] Handshake result received: "
 //         << endl << m_submitResultBuffer << endl;
-    
+
     // UPTODATE
     // <md5 challenge>
     // <url to submit script>
@@ -486,7 +480,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     {
         kdWarning() << "[AudioScrobbler] Unknown handshake response" << endl;
     }
-    
+
     kdDebug()
         << "[AudioScrobbler] Handshake result parsed: challenge=" << m_challenge
         << ", submitUrl=" << m_submitUrl << endl;
@@ -501,11 +495,11 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
             << "[AudioScrobbler] KIO error! errno: " << job->error() << endl;
         return;
     }
-    
+
 //     kdDebug()
 //         << "[AudioScrobbler] Submit result received: "
 //         << endl << m_submitResultBuffer << endl;
-    
+
     // OK
     // INTERVAL n (protocol 1.1)
     if (m_submitResultBuffer.startsWith( "OK" ) )
@@ -554,7 +548,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     {
         kdWarning() << "[AudioScrobbler] Unknown submit response" << endl;
     }
-    
+
     delete m_item;
     m_item = NULL;
 }
@@ -574,7 +568,7 @@ bool ScrobblerSubmitter::canSubmit() const
     {
         return false;
     }
-    
+
     if ( m_interval != 0 )
     {
         uint currentTime = QDateTime::currentDateTime().toTime_t();
@@ -584,7 +578,7 @@ bool ScrobblerSubmitter::canSubmit() const
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -605,11 +599,6 @@ SubmitItem::SubmitItem(
     m_title = title;
     m_length = length;
     m_playStartTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
-}
-
-
-SubmitItem::~SubmitItem()
-{
 }
 
 
