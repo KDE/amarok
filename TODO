@@ -8,6 +8,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+ < buff> hmm: one question: I have QT installes without OpenGL, aRrts is available and configure is run with
+              "--without-gstreamer": after compiling I have an amaroK _without_ aRts and _with_ gstreamer compiled in
+ < buff> 0.9-beta2 btw
+    
     * fix: OSD settings dialog duration option missing "ms"
 
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser. 
