@@ -456,32 +456,14 @@ fi
 # BEGIN MUSICBRAINZ CHECK
 ###############################################################################
 
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
-AC_MSG_CHECKING(for tunepimp)
-AC_TRY_COMPILE([
-#include <tunepimp/tp_c.h>
-], [
-  tunepimp_t m_pimp;
-  tp_AddFile(m_pimp, "myfile");
-  return 0;
-],
-[
-  AC_MSG_RESULT(yes)
-  have_musicbrainz=yes
-],
-[
-  AC_MSG_RESULT(no)
-  have_musicbrainz=no
-])
-AC_LANG_RESTORE
-
-if test x$have_musicbrainz = xyes; then
-    AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
-    LIB_MUSICBRAINZ="-ltunepimp"
-else
-    LIB_MUSICBRAINZ=""
-fi
+KDE_CHECK_HEADER(tunepimp/tp_c.h,
+    [
+      AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
+      LIB_MUSICBRAINZ="-ltunepimp"
+    ],
+    [
+      LIB_MUSICBRAINZ=""
+    ])
 
 AC_SUBST(LIB_MUSICBRAINZ)
 
