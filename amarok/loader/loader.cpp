@@ -24,10 +24,12 @@
 #include <qstring.h>
 
 #include <iostream>
+#include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+// #include <unistd.h>
 
 Loader::Loader( int& argc, char** argv )
         : QApplication( argc, argv )
@@ -36,12 +38,12 @@ Loader::Loader( int& argc, char** argv )
         , m_pProc( NULL )
         , m_pOsd ( NULL )
 {
-    m_sockfd = tryConnect();
+    m_sockfd = tryConnect( true );
 
     //determine whether an amaroK instance is already running (LoaderServer)
     if ( m_sockfd == -1 ) {
         //no, amaroK is not running -> show splash, start new instance
-        qDebug( "[amaroK loader] amaroK not running. Trying to start it..\n" );
+        std::cout << "[amaroK loader] amaroK not running. Trying to start it..\n";
 
         if ( splashEnabled() )
             showSplash();
@@ -68,7 +70,7 @@ Loader::Loader( int& argc, char** argv )
         }
         QCString str = "STARTUP";
         ::send( m_sockfd, str, str.length(), 0 );
-        std::cout << "[amaroK loader] amaroK startup successful.\n";
+        std::cout << "\n[amaroK loader] amaroK startup successful.\n";
     } else {
         //yes, amaroK is running -> transmit new command line args to the LoaderServer and exit
         std::cout << "[amaroK loader] amaroK is already running. Transmitting command line arguments..\n";
@@ -143,11 +145,8 @@ void Loader::showSplash()
     processEvents();
 }
 
-// getpwuid/getuid/gethostname/lstat/readlink
-#include <pwd.h>
-#include <unistd.h>
 
-int Loader::tryConnect()
+int Loader::tryConnect( bool verbose )
 {
     //try to connect to the LoaderServer
     int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
@@ -172,36 +171,31 @@ int Loader::tryConnect()
     QCString path;
 
     struct passwd *pw_ent = getpwuid( uid );
-    if ( !pw_ent ) {
-        qFatal( "[Loader::tryConnect()] Current user does not exist?!?" );
-        return -1;
-    }
+    if ( !pw_ent )
+        qFatal( "[Loader::tryConnect()] Current user does not exist?!" );
 
     if ( !kde_home || !kde_home[ 0 ] )
         kde_home = "~/.kde/";
 
     if ( kde_home[ 0 ] == '~' ) {
-        if ( uid == 0 ) {
+        if ( uid == 0 )
             home_dir = pw_ent->pw_dir ? pw_ent->pw_dir : "/root";
-        }
-        if ( !home_dir || !home_dir[ 0 ] ) {
+        
+        if ( !home_dir || !home_dir[ 0 ] )
             qFatal( "Aborting. $HOME not set!" );
-            return -1;
-        }
-        if ( home_dir.length() > ( PATH_MAX - 100 ) ) {
+        
+        if ( home_dir.length() > ( PATH_MAX - 100 ) )
             qFatal( "Aborting. Home directory path too long!" );
-            return -1;
-        }
+        
         path = home_dir;
     }
     path += kde_home;
     path += "/socket-";
 
     char hostname[100];
-    if ( gethostname( &hostname[0], 100 ) != 0 ) {
+    if ( gethostname( &hostname[0], 100 ) != 0 )
         qFatal( "Aborting. Could not determine hostname." );
-        return -1;
-    }
+    
     path += QCString( &hostname[0] );
     
     QFileInfo inf( path );
@@ -213,11 +207,12 @@ int Loader::tryConnect()
     path += "/amarok.loader_socket";
     ::strcpy( &local.sun_path[ 0 ], path );
 
-    std::cerr << "[Loader::tryConnect()] connecting to " << local.sun_path << '\n';
+    if ( verbose )
+        std::cerr << "[Loader::tryConnect()] connecting to " << local.sun_path << '\n';
+    
     int len = sizeof( local );
 
     if ( ::connect( fd, ( struct sockaddr* ) & local, len ) == -1 ) {
-        //         qDebug( "[Loader::tryConnect()] connect() failed" );
         ::close ( fd );
         return -1;
     }
@@ -229,6 +224,7 @@ int Loader::tryConnect()
 void Loader::doExit()
 {
     std::cout << "[amaroK loader] Loader exiting.\n";
+    std::cout << "\n";
 
     delete m_pOsd;
     delete m_pProc;

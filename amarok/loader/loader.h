@@ -38,7 +38,7 @@ class Loader : public QApplication
     private:
         bool splashEnabled() const;
         void showSplash();
-        int  tryConnect();
+        int  tryConnect( bool verbose = false );
 
 // ATTRIBUTES ------
         int        m_argc;        
