@@ -13,16 +13,14 @@ $changelog = $input.read
 
 
 # Replace bug number with direct link to bugs.kde.org
-
 allmatches = $changelog.scan( /BR [0-9]*/ )
-
 for bug in allmatches
     bugnum = /[0-9].*/.match( bug )
-#     puts bugnum
     url = "<a href='http://bugs.kde.org/show_bug.cgi?id=#{bugnum}'>#{bug}</a>"
-    $changelog = $changelog.gsub( bug, url )
+    $changelog.gsub!( bug, url )
 end
-#make bullets
+
+# Make bullets
 newOldArray = $changelog.split("VERSION 1.2.1:")
 a=newOldArray[0].split('*')
 a.shift
@@ -30,8 +28,10 @@ a.each{|s|
     $changelog.sub!("*#{s}","<li>#{s}</li>")
 }
 
+# Beautify heading
 $changelog = $changelog.gsub( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</h2>" )
-#makes an extra </ul>... meh
+
+# makes an extra </ul>... meh
 ['FEATURES','CHANGES','BUGFIXES'].each{ |header|
     $changelog = $changelog.gsub( "#{header}:\n", "</ul><h4>#{header.capitalize!}</h4><ul>" )
 }
