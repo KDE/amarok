@@ -151,6 +151,7 @@ GstEngine::shutdown_cb() //static
 GstEngine::GstEngine()
         : Engine::Base( /*StreamingMode*/ Engine::Signal, /*hasConfigure*/ true, /*hasXFade*/ true )
         , m_currentInput( 0 )
+        , m_gst_adapter( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
         , m_pipelineFilled( false )
@@ -180,9 +181,8 @@ GstEngine::~GstEngine()
 
     delete[] m_streamBuf;
 
-    m_mutexScope.lock();
+    // Destroy scope adapter
     g_object_unref( G_OBJECT( m_gst_adapter ) );
-    m_mutexScope.unlock();
 
     // Save configuration
     GstConfig::writeConfig();
@@ -211,6 +211,8 @@ GstEngine::init()
         return false;
     }
 
+    m_gst_adapter = gst_adapter_new();
+
     // Check if registry exists
     GstElement* dummy = gst_element_factory_make ( "fakesink", "fakesink" );
     if ( !dummy || !gst_scheduler_factory_make( NULL, GST_ELEMENT ( dummy ) ) ) {
@@ -221,11 +223,10 @@ GstEngine::init()
         return false;
     }
 
-    m_gst_adapter = gst_adapter_new();
-    startTimer( TIMER_INTERVAL );
-
     if ( !createPipeline() )
         kdError() << "[Gst-Engine] createPipeline() failed.\n";
+
+    startTimer( TIMER_INTERVAL );
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
