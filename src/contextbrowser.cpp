@@ -75,7 +75,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( CollectionDB::emitter(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
-    connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString& ) ), SLOT( coverFetched( const QString& ) ) );
+    connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString&, const QString& ) ), SLOT( coverFetched( const QString& ) ) );
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
@@ -171,7 +171,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
 
         if ( amazonUrl.isEmpty() )
-            KMessageBox::information( this, i18n( "<p>There is no product information available for this image.</p><p>Right-click on image for menu.</p>" ) );
+            KMessageBox::information( this, i18n( "<p>There is no product information available for this image.<p>Right-click on image for menu." ) );
         else
             kapp->invokeBrowser( amazonUrl );
     }
@@ -376,25 +376,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case FETCH:
     #ifdef AMAZON_SUPPORT
-        /* fetch covers from amazon on click */
         m_db->fetchCover( this, info[0], info[1], false );
-        break;
-    #else
-        if ( m_db->getImageForAlbum( info[0], info[1], 0 ) == locate( "data", "amarok/images/nocover.png" ) )
-        {
-            /* if no cover exists, open a file dialog to add a cover */
-            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
-            if ( !file.isEmpty() )
-            {
-                QImage img( file.directory() + '/' + file.fileName() );
-                QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
-                filename.replace( ' ', '_' ).append( ".png" );
-                img.save( KGlobal::dirs()->saveLocation( "data", "amarok/albumcovers/" ) + filename.lower(), "PNG" );
-                showCurrentTrack();
-            }
-        }
-        else
-            CoverManager::viewCover( info[0], info[1], this );
         break;
     #endif
 
@@ -1133,12 +1115,11 @@ ContextBrowser::showLyricSuggestions()
 
 
 void
-ContextBrowser::coverFetched( const QString& keyword )
+ContextBrowser::coverFetched( const QString &artist )
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    QStringList values = QStringList::split( " - ", keyword );
 
-    if ( currentTrack.artist() == values[0] )
+    if ( currentTrack.artist() == artist )
         showCurrentTrack();
 }
 

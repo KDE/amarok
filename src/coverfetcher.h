@@ -11,51 +11,68 @@
 
 namespace KIO { class Job; }
 
-
 class CoverFetcher : public QObject
 {
-    Q_OBJECT
+   Q_OBJECT
 
-    public:
-        enum QueryMode { lite, heavy };
+   static const uint BUFFER_SIZE = 2000000; // 2mb
 
-        CoverFetcher( QWidget* parent, const QString& license );
-       ~CoverFetcher();
+public:
+   CoverFetcher( QWidget *parent, QString artist, QString album );
+  ~CoverFetcher();
 
-        void setLicense( const QString& license ) { m_license = license; }
-        void getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
+   /// allow the user to edit the query?
+   void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
 
-    signals:
-        void imageReady( const QString& keyword, const QString& url, const QImage& image );
-        void error();
+   /// starts the fetch
+   void startFetch();
 
-    private slots:
-        void xmlData( KIO::Job* job, const QByteArray& data );
-        void xmlResult( KIO::Job* job );
-        void imageData( KIO::Job* job, const QByteArray& data );
-        void imageResult( KIO::Job* job );
-        void editSearch( QString text = QString::null );
-        void saveCover();
-        void saveCover( const QImage& image );
+   /// @param the text to show in the dialog, there is a default text
+   void showQueryEditor( QString text = QString::null );
 
-    private:
-        static const uint BUFFER_SIZE = 2000000; // 2mb
+public:
+    QString artist() const { return m_artist; }
+    QString album() const { return m_album; }
+    QString amazonURL() const { return m_amazonURL; }
+    QImage image() const { return m_image; }
 
-        QString m_license;
-        QString m_xmlDocument;
-        QString m_keyword;
-        QString m_artist;
-        QString m_album;
-        QString m_saveas;
-        QString m_amazonUrl;
-        QString m_imageUrl;
+    bool error() const { return !m_errorMessage.isEmpty(); }
+    QString errorMessage() const { return m_errorMessage; }
 
-        uchar* m_buffer;
-        int m_size;
-        uint m_bufferIndex;
-        QImage m_image;
-        bool m_noedit;
-        bool m_albumonly;
+signals:
+    /// The CollectionDB can get the cover information using the pointer
+    void result( CoverFetcher* );
+
+private slots:
+    void receivedXmlData( KIO::Job* job, const QByteArray& data );
+    void finishedXmlFetch( KIO::Job* job );
+    void receivedImageData( KIO::Job* job, const QByteArray& data );
+    void finishedImageFetch( KIO::Job* job );
+
+    void finish();
+
+private:
+    const QString m_artist;
+    const QString m_album;
+
+    bool    m_userCanEditQuery;
+    QString m_query;
+    QString m_fetchedXML;
+    QImage  m_image;
+
+    QString m_amazonURL;
+    QString m_imageURL;
+
+    uchar  *m_buffer;
+    uint    m_bufferIndex;
+
+    int     m_size;
+
+    QString m_errorMessage;
+
+private:
+    /// the fetch failed, exit with error message
+    void error( const QString &message, KIO::Job *job = 0 );
 };
 
 #endif /* AMAROK_COVERFETCHER_H */

@@ -22,6 +22,7 @@ namespace mysql
 #endif
 
 class CollectionEmitter;
+class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
 class ThreadWeaver;
@@ -56,7 +57,7 @@ class CollectionDB : public QObject
         //general management methods
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void scanModifiedDirs( bool recursively, bool importPlaylists );
-        
+
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url  );
         void removeDirFromCollection( QString path );
@@ -134,8 +135,7 @@ class CollectionDB : public QObject
 
     private slots:
         void dirDirty( const QString& path );
-        void saveCover( const QString& keyword, const QString& url, const QImage& image );
-        void fetcherError();
+        void coverFetcherResult( CoverFetcher* );
         void relatedArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     private:
@@ -182,9 +182,8 @@ class CollectionEmitter : public QObject, public EngineObserver
 
         void scoreChanged( const QString &url, int score );
 
-        void coverFetched( const QString &keyword );
-        void coverFetched();
-        void coverFetcherError();
+        void coverFetched( const QString &artist, const QString &album );
+        void coverFetcherError( const QString &error );
 };
 
 

@@ -25,69 +25,64 @@
 
 
 
-CoverFetcher::CoverFetcher( QWidget *parent, const QString& license )
+CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
     : QObject( parent, "CoverFetcher" )
-    , m_license( license )
+    , m_artist( artist )
+    , m_album( album )
     , m_buffer( 0 )
+    , m_bufferIndex( 0 )
+    , m_size( 2 )
 {
+    #define foreach( list ) \
+        for( QStringList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it )
+
+    QStringList extensions;
+    extensions << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" )
+               << "disc" << "disk" << "remaster" << "cd" << "single" << "cds" /*cd single*/;
+
+    //remove all matches to the album filter.
+    //TODO remove endings like "album - disk1"
+    //OLD ONE = const QString removeTemplate = " \\([^}]*%1[^}]*\\)";
+
+    const QString template1 = " ?-? ?[(^{]* ?%1 ?\\d*[)^}\\]]* *$"; //eg album - [disk 1] -> album
+    foreach( extensions ) {
+        QRegExp regexp( template1.arg( *it ) );
+        regexp.setCaseSensitive( false );
+        album.remove( regexp );
+    }
+
+    m_query = artist + " - " + album;
+
     QApplication::setOverrideCursor( KCursor::workingCursor() );
 }
 
 CoverFetcher::~CoverFetcher()
 {
     QApplication::restoreOverrideCursor();
+
     delete[] m_buffer;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// PUBLIC
-//////////////////////////////////////////////////////////////////////////////////////////
-
 void
-CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
+CoverFetcher::startFetch()
 {
-    kdDebug() << k_funcinfo << endl << artist << ", " << album << ": " << saveas << endl;
+   /* Static license Key. Thanks muesli ;-) */
+   const QString LICENSE = "D1URM11J3F2CEH";
 
-    m_artist = artist;
-    m_album = album;
+   // reset all values (if search isn't started as new CoverFetcher)
+   delete[] m_buffer;
+   m_bufferIndex = 0;
+   m_fetchedXML = QString::null;
 
-    //remove all matches to the album filter.
-    const QString replaceMe = " \\([^}]*%1[^}]*\\)";
+   QString url = "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml";
+   url = url.arg( AmarokConfig::amazonLocale(), LICENSE, m_query, "heavy" );
 
-    QStringList albumExtension;
-    albumExtension << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" )
-                   << "disc" << "disk" << "remaster" << "cd" << "single" << "cds" /*cd single*/;
+   kdDebug() << "[CoverFetcher] " << url << endl;
 
-    //### we could use something like this globally, but how to make it clear "it" is for use?
-    #define foreach( list ) \
-        for( QStringList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it )
+   KIO::TransferJob* job = KIO::get( url, false, false );
 
-    foreach( albumExtension ) {
-        QRegExp re = replaceMe.arg( *it );
-        re.setCaseSensitive( false );
-        m_album.remove( re );
-    }
-
-    m_keyword = (artist == m_album) ? m_album : artist + " - " + m_album;
-
-    m_saveas = saveas;
-    m_noedit = noedit;
-    m_size   = size;
-    m_albumonly = albumonly;
-
-    /* reset all values (if search isn't started as new CoverFetcher) */
-    delete m_buffer;
-    m_bufferIndex = 0;
-    m_xmlDocument = "";
-
-    QString url = "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml";
-    url = url.arg( AmarokConfig::amazonLocale() ).arg( m_license ).arg( m_keyword ).arg( mode == lite ? "lite" : "heavy" );
-
-    kdDebug() << "Using this url: " << url << endl;
-
-    KIO::TransferJob* job = KIO::get( url, false, false );
-    connect( job, SIGNAL(result( KIO::Job* )), SLOT(xmlResult( KIO::Job* )) );
-    connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(xmlData( KIO::Job*, const QByteArray& )) );
+   connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
+   connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedXmlData( KIO::Job*, const QByteArray& )) );
 }
 
 
@@ -96,28 +91,26 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::xmlData( KIO::Job*, const QByteArray& data ) //SLOT
+CoverFetcher::receivedXmlData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_xmlDocument += QString( data );
+    m_fetchedXML += QString( data );
 }
 
 
 void
-CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
+CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
-    if ( !job->error() == 0 ) {
-        kdWarning() << "[CoverFetcher] Could not fetch XML data, KIO errno: " << job->error() << endl;
-        emit error();
-        deleteLater();
+    if ( job->error() ) {
+        error( i18n("There was an error communicating with amazon."), job );
         return;
     }
 
     QDomDocument doc;
-    doc.setContent( m_xmlDocument );
+    doc.setContent( m_fetchedXML );
 
     // Fetch url for product info page
-    m_amazonUrl = doc.documentElement()
+    m_amazonURL = doc.documentElement()
         .namedItem( "Details" )
         .attributes()
         .namedItem( "url" ).toAttr().value();
@@ -127,28 +120,25 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
         ? "ImageUrlMedium"
         : "ImageUrlLarge";
 
-    m_imageUrl = doc.documentElement()
+    m_imageURL = doc.documentElement()
         .namedItem( "Details" )
         .namedItem( size )
         .firstChild().toText().nodeValue();
 
     m_buffer = new uchar[BUFFER_SIZE];
 
-    KIO::TransferJob* imageJob = KIO::get( m_imageUrl, false, false );
-    connect( imageJob, SIGNAL( result( KIO::Job* ) ),
-             this,       SLOT( imageResult( KIO::Job* ) ) );
-    connect( imageJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-             this,       SLOT( imageData( KIO::Job*, const QByteArray& ) ) );
+    KIO::TransferJob* imageJob = KIO::get( m_imageURL, false, false );
+    connect( imageJob, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
+    connect( imageJob, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedImageData( KIO::Job*, const QByteArray& )) );
 }
 
 
 void
-CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
+CoverFetcher::receivedImageData( KIO::Job *job, const QByteArray& data ) //SLOT
 {
     if ( m_bufferIndex + (uint) data.size() >= BUFFER_SIZE ) {
-        emit error();
-        KMessageBox::error( 0, i18n( "CoverFetcher buffer overflow. Image is larger than <i>%1B</i>. Aborting." ).arg( BUFFER_SIZE ) );
-        deleteLater();
+        error( i18n("The Image amazon have sent is too large, please report this error to the amaroK development team.") );
+        //TODO delete the KIO job?
         return;
     }
 
@@ -159,10 +149,8 @@ CoverFetcher::imageData( KIO::Job*, const QByteArray& data ) //SLOT
 
 
 void
-CoverFetcher::imageResult( KIO::Job* job ) //SLOT
+CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-
     /* Okay, this next thing may appear a bit weird ;) Short explanation:
        If there's no result for the search string (artist - album), search for the album tag only.
        If there's no (large) cover is found, try the next smaller image (medium) etc. If no covers, open editSearch.
@@ -172,84 +160,70 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
     {
         kdDebug() << "[CoverFetcher] Could not fetch image data, KIO errno: " << job->error() << endl;
 
-
-        if ( !m_albumonly )
-            getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, 1, true );
-
-        else if ( !m_noedit )
-            editSearch( i18n("The cover was not found in the Amazon database. You may have better luck if you refine the search:") );
-
-        else {
-            kdDebug() << "[CoverFetcher] Image not found in amazon.com database.\n";
-            emit error();
-            deleteLater();
-            return;
+        if ( m_query != m_album ) {
+            kdDebug() << "[CoverFetcher] Trying album-only query.\n";
+            m_query = m_album;
+            startFetch();
         }
+        else if ( m_userCanEditQuery )
+            showQueryEditor( i18n("The cover was not found in the Amazon database. You may have better luck if you refine the search:") );
+
+        else
+            error( i18n("The requested image could not be obtained from Amazon."), job );
+
+        return;
+    }
+
+    m_image.loadFromData( m_buffer, m_bufferIndex );
+
+    if ( m_image.width() <= 1 )
+    {
+        //I think amazon gives 1px square images when it has nothing that size to offer
+
+        if ( m_size > 0 ) {
+            //we need to fetch the image again, but this time requesting a size smaller
+            m_size--;
+            finishedXmlFetch( job );
+        }
+        else if( m_userCanEditQuery )
+            showQueryEditor( i18n("A suitable cover was found, <b>but with no associated images</b>. You can refine the search below:") );
+        else
+            error( i18n("Amazon has a record for this album, but can offer no cover images.") );
+    }
+    else if( m_userCanEditQuery ) {
+        KDialog dialog( (QWidget*)parent() );
+
+        (new QVBoxLayout( &dialog ))->setAutoAdd( true );
+
+        QLabel* label = new QLabel( &dialog );
+        label->setPixmap( m_image );
+
+        QHBox* buttons         = new QHBox( &dialog );
+        KPushButton* save      = new KPushButton( KStdGuiItem::save(), buttons );
+        KPushButton* newsearch = new KPushButton( i18n( "Search &Again" ), buttons );
+        KPushButton* cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
+
+        save->setDefault( true );
+
+        connect( cancel, SIGNAL(clicked()), SLOT(deleteLater()) );
+        connect( newsearch, SIGNAL(clicked()), SLOT(showQueryEditor()) );
+        connect( save, SIGNAL(clicked()), SLOT(finish()) );
+
+        connect( cancel, SIGNAL(clicked()), &dialog, SLOT(reject()) );
+        connect( newsearch, SIGNAL(clicked()), &dialog, SLOT(accept()) );
+        connect( save, SIGNAL(clicked()), &dialog, SLOT(accept()) );
+
+        dialog.setFixedSize( dialog.sizeHint() );
+        dialog.setCaption( m_album );
+        dialog.exec();
     }
     else
-    {
-        m_image.loadFromData( m_buffer, m_bufferIndex );
-
-        if ( m_image.width() == 1 )
-        {
-            if ( m_size ) {
-                if ( m_albumonly ) getCover( m_album, m_album, m_saveas, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
-                else getCover( m_artist, m_album, m_saveas, CoverFetcher::heavy, m_noedit, m_size-1, m_albumonly );
-            }
-            else if ( !m_noedit )
-                editSearch( i18n("A suitable cover was found, <b>but with no associated images</b>. You may have better luck if you refine the search:") );
-
-            else
-            {
-                kdDebug() << "[CoverFetcher] Image is invalid." << endl;
-                emit error();
-                deleteLater();
-                return;
-            }
-        }
-        else if ( !m_noedit )
-        {
-            KDialog dialog( (QWidget*)parent() );
-
-            (new QVBoxLayout( &dialog ))->setAutoAdd( true );
-
-            QLabel* label = new QLabel( &dialog );
-            label->setPixmap( m_image );
-
-            QHBox* buttons         = new QHBox( &dialog );
-            KPushButton* save      = new KPushButton( KStdGuiItem::save(), buttons );
-            KPushButton* newsearch = new KPushButton( i18n( "Search &Again" ), buttons );
-            KPushButton* cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
-
-            save->setDefault( true );
-
-            connect( cancel, SIGNAL(clicked()), SLOT(deleteLater()) );
-            connect( newsearch, SIGNAL(clicked()), SLOT(editSearch()) );
-            connect( save, SIGNAL(clicked()), SLOT(saveCover()) );
-
-            connect( cancel, SIGNAL(clicked()), &dialog, SLOT(reject()) );
-            connect( newsearch, SIGNAL(clicked()), &dialog, SLOT(accept()) );
-            connect( save, SIGNAL(clicked()), &dialog, SLOT(accept()) );
-
-            dialog.setFixedSize( dialog.sizeHint() );
-            dialog.setCaption( m_album );
-            dialog.exec();
-        }
-        else
-        {
-            if ( !m_image.loadFromData( m_buffer, m_bufferIndex ) ) {
-                kdDebug() << "[CoverFetcher] Image is invalid." << endl;
-                emit error();
-                deleteLater();
-                return;
-            }
-            saveCover();
-        }
-    }
+        //image loaded successfully yay!
+        finish();
 }
 
 void
-CoverFetcher::editSearch( QString text ) //SLOT
+CoverFetcher::showQueryEditor( QString text ) //SLOT
 {
     class EditSearchDialog : public KDialog
     {
@@ -270,7 +244,7 @@ CoverFetcher::editSearch( QString text ) //SLOT
             hbox->addWidget( cancelButton );
 
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
-            vbox->addWidget( new KLineEdit( keyword, this, "Keyword" ) );
+            vbox->addWidget( new KLineEdit( keyword, this, "Query" ) );
             vbox->addLayout( hbox );
 
             okButton->setDefault( true );
@@ -282,17 +256,18 @@ CoverFetcher::editSearch( QString text ) //SLOT
             connect( cancelButton, SIGNAL(clicked()), SLOT(reject()) );
         }
 
-        QString keyword() { return static_cast<KLineEdit*>(child( "Keyword" ))->text(); }
+        QString query() { return static_cast<KLineEdit*>(child( "Query" ))->text(); }
     };
 
     if ( text.isEmpty() )
         text = i18n("Search Amazon's cover database with this query:");
 
-    EditSearchDialog dialog( (QWidget*)parent(), text, m_saveas );
+    EditSearchDialog dialog( (QWidget*)parent(), text, m_query );
 
     switch( dialog.exec() ) {
     case QDialog::Accepted:
-        getCover( dialog.keyword(), dialog.keyword(), m_saveas, CoverFetcher::heavy );
+        m_query = dialog.query();
+        startFetch();
         break;
     default:
         deleteLater();
@@ -301,17 +276,23 @@ CoverFetcher::editSearch( QString text ) //SLOT
 }
 
 void
-CoverFetcher::saveCover() //SLOT
+CoverFetcher::finish() //SLOT
 {
-    saveCover( m_image );
-}
+    emit result( this );
 
-void
-CoverFetcher::saveCover( const QImage& image ) //SLOT
-{
-    emit imageReady( m_saveas, m_amazonUrl, image );
     deleteLater();
 }
 
+void
+CoverFetcher::error( const QString &message, KIO::Job *job )
+{
+    kdWarning() << "[CoverFetcher] " << message << " KIO::error(): " << (job ? job->errorText() : "none") << endl;
+
+    m_errorMessage = message;
+
+    emit result( this );
+
+    deleteLater();
+}
 
 #include "coverfetcher.moc"

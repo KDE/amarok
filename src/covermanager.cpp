@@ -201,9 +201,10 @@ CoverManager::CoverManager()
                 SLOT( coverItemExecuted( QIconViewItem * ) ) );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+
     #ifdef AMAZON_SUPPORT
-    connect( CollectionDB::emitter(), SIGNAL( coverFetched(const QString &) ), SLOT( coverFetched(const QString &) ) );
-    connect( CollectionDB::emitter(), SIGNAL( coverFetcherError() ), SLOT( coverFetcherError() ) );
+    connect( CollectionDB::emitter(), SIGNAL(coverFetched( const QString&, const QString& )), SLOT(coverFetched( const QString&, const QString& )) );
+    connect( CollectionDB::emitter(), SIGNAL(coverFetcherError( const QString& )), SLOT(coverFetcherError()) );
     #endif
 
     m_currentView = AllAlbums;
@@ -396,8 +397,11 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //insert the covers first because the list view is soooo paint-happy
     //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
-    for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it )
-        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *(++it) ) );
+    for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it ) {
+        //gcc 3.3 can't handle this in one line, so we need to do it long-hand
+        const QString artist = *it; const QString album = *(++it);
+        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
+    }
 
     QApplication::restoreOverrideCursor();
 
@@ -597,10 +601,9 @@ void CoverManager::changeLocale( int id ) //SLOT
 }
 
 
-void CoverManager::coverFetched( const QString &keyword )
+void CoverManager::coverFetched( const QString &artist, const QString &album )
 {
-    QStringList values = QStringList::split( " - ", keyword );
-    loadCover( values[0], values[1] );
+    loadCover( artist, album );
     m_coversFetched++;
     updateStatusBar();
 }
@@ -639,7 +642,7 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 {
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( artist == coverItem->artist() && album == coverItem->album() ) {
+        if ( artist == coverItem->artist() && album == coverItem->album() ) {
             coverItem->loadCover();
             return;
         }
@@ -800,7 +803,7 @@ QDragObject *CoverView::dragObject()
     QString imagePath = db.albumImage( item->artist(), item->album(), 0 );
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
-    drag->addDragObject( new QIconDrag( 0 ) );
+    drag->addDragObject( new QIconDrag( this ) );
     drag->addDragObject( new QImageDrag( QImage( imagePath ) ) );
     drag->addDragObject( new KURLDrag( urls ) );
 
@@ -818,7 +821,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     , m_coverImagePath( CollectionDB().albumImage( m_artist, m_album, 0 ) )
     , m_coverPix( 0 )
 {
-    setDragEnabled( hasCover() );
+    setDragEnabled( true );
     setDropEnabled( true );
     calcRect();
 }
@@ -830,7 +833,8 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
-    m_coverPix = QPixmap( CollectionDB().albumImage( m_artist, m_album ) );  //create the scaled cover
+    m_coverImagePath = CollectionDB().albumImage( m_artist, m_album );
+    m_coverPix = QPixmap( m_coverImagePath );  //create the scaled cover
 
     repaint();
 }

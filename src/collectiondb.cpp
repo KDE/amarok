@@ -814,21 +814,21 @@ CollectionDB::isFileInCollection( const QString &url  )
     return !m_values.isEmpty();
 }
 
-        
+
 QStringList
 CollectionDB::relatedArtists( const QString &artist, uint count )
 {
     Scrobbler *sc = Scrobbler::instance();
-    
+
     query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
     if ( m_values.isEmpty() )
     {
         connect( sc,   SIGNAL( relatedArtistsFetched( const QString&, const QStringList& ) ),
                  this,   SLOT( relatedArtistsFetched( const QString&, const QStringList& ) ) );
-    
+
         sc->similarArtists( artist );
     }
-    
+
     return m_values;
 }
 
@@ -1282,19 +1282,15 @@ CollectionDB::md5sum( const QString& artist, const QString& album )
 void
 CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
 {
-#ifdef AMAZON_SUPPORT
-    /* Static license Key. Thanks muesli ;-) */
-    QString amazonLicense = "D1URM11J3F2CEH";
-    kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
-    QString keyword = artist + " - " + album;
+    #ifdef AMAZON_SUPPORT
+    const QString keyword = artist + " - " + album;
+    CoverFetcher* fetcher = new CoverFetcher( parent, artist, album );
 
-    CoverFetcher* fetcher = new CoverFetcher( parent, amazonLicense );
-    connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
-             this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
-    connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
+    connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
 
-    fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, noedit, 2, false );
-#endif
+    fetcher->setUserCanEditQuery( !noedit );
+    fetcher->startFetch();
+    #endif
 }
 
 
@@ -1319,23 +1315,17 @@ CollectionDB::dirDirty( const QString& path )
 
 
 void
-CollectionDB::saveCover( const QString& keyword, const QString& amazonUrl, const QImage& img )
+CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
-    kdDebug() << k_funcinfo << endl;
+    if ( fetcher->error() )
+        emit s_emitter->coverFetcherError( fetcher->errorMessage() );
 
-    QStringList values = QStringList::split( " - ", keyword );
-    setAlbumImage( values[ 0 ], values[ 1 ], img, amazonUrl );
+    else {
+        kdDebug() << "[CollectionDB] Saving cover for: " << fetcher->album() << endl;
+        setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL() );
 
-    emit s_emitter->coverFetched( keyword );
-    emit s_emitter->coverFetched();
-}
-
-
-void
-CollectionDB::fetcherError()
-{
-    //this is called when there is an error with a coverfetcher
-    emit s_emitter->coverFetcherError();
+        emit s_emitter->coverFetched( fetcher->artist(), fetcher->album() );
+    }
 }
 
 
