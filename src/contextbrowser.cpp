@@ -13,6 +13,7 @@
 #include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"     //appendMedia()
+#include "playlistitem.h"     //appendMedia()
 #include "qstringx.h"
 #include "sqlite/sqlite3.h"
 
@@ -212,9 +213,17 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
         // increase song counter & calculate new statistics
         float score = m_db->addSongPercentage( m_currentTrack->url().path(), pct );
 
-        // TODO reimplement playlist-update
-/*        if ( score )
-            m_currentTrack->setText( PlaylistItem::Score, QString::number( score ) );*/
+        // TODO speedtest
+        if ( score )
+        {
+            QListViewItemIterator it( Playlist::instance() );
+            for( ; it.current(); ++it )
+            {
+                PlaylistItem *item = static_cast<PlaylistItem*>(*it);
+                if ( item->url() == m_currentTrack->url() )
+                    item->setText( PlaylistItem::Score, QString::number( score ) );
+            }
+        }
     }
 }
 

@@ -20,6 +20,7 @@
 
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
+#include "contextbrowser.h"  //friend
 
 #include <qstringlist.h>     //stack allocated
 #include <qptrlist.h>        //stack allocated
@@ -93,6 +94,7 @@ class Playlist : private KListView, public EngineObserver
 
         friend class PlaylistItem;
         friend class PlaylistLoader;
+        friend class ContextBrowser;
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 

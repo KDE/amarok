@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <muesli> Update score column in playlist after recalculating percentage (done, speed-test)
+
           <markey> Check TagLib autoconf and makefile stuff. I have a feeling the problem with picking
                    up old versions could be on our side.
 
