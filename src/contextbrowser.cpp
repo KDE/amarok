@@ -305,156 +305,116 @@ void ContextBrowser::paletteChange( const QPalette& pal ) {
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point ) {
+void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
+{
+    enum { SHOW, FETCH, DELETE, APPEND, ASNEXT, MAKE, MANAGER, TITLE };
+
+    if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) )
+       return;
+
+    KPopupMenu menu;
     KURL url( urlString );
+    KURL::List urls( url );
+    const QStringList info = QStringList::split( " @@@ ", url.path() );
 
     if ( url.protocol() == "fetchcover" ) {
-        QStringList info = QStringList::split( " @@@ ", url.path() );
-        enum menuIds { SHOW, FETCH, DELETE, MANAGER };
-
-        KPopupMenu menu( this );
         menu.insertTitle( i18n( "Cover Image" ) );
-        menu.insertItem( SmallIcon( "viewmag" ), i18n( "Show Fullsize" ), SHOW );
-        menu.setItemEnabled( SHOW, !m_db->albumImage( info[0], info[1], 0 ).contains( "nocover" ) );
-        menu.insertItem( SmallIcon( "www" ), i18n( "Fetch From amazon.com" ), FETCH );
-        #ifndef AMAZON_SUPPORT
 
+        menu.insertItem( SmallIcon( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
+        menu.insertItem( i18n( "&Fetch From amazon.com" ), FETCH );
+        menu.insertSeparator();
+
+        menu.insertItem( SmallIcon( "editdelete" ), i18n("&Delete Image File"), DELETE );
+        menu.insertSeparator();
+        menu.insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "Cover Manager" ), MANAGER );
+
+        #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
         #endif
+        menu.setItemEnabled( SHOW, !m_db->albumImage( info[0], info[1], 0 ).contains( "nocover" ) );
+    }
+    else {
+        //TODO it would be handy and more usable to have this menu under the cover one too
 
-        menu.insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "Cover Manager" ), MANAGER );
-        menu.insertSeparator();
-        menu.insertItem( SmallIcon( "editdelete" ), i18n("Delete Image File"), DELETE );
-        int id = menu.exec( point );
+        menu.insertTitle( i18n("Track"), TITLE );
 
-        CoverManager *coverManager; // Forward declaration
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
+        menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
-        switch ( id ) {
-        case SHOW:
-            /* open an image view widget */
-            CoverManager::viewCover( info[0], info[1], this );
-            break;
+        if ( url.protocol() == "album" ) {
+            QString sql = "select distinct url from tags where artist = '%1' and album = '%2' order by track;";
+            QStringList values = m_db->query( sql.arg( info[0] ).arg( info[1] ) );
 
-        case FETCH:
-            #ifdef AMAZON_SUPPORT
-            /* fetch covers from amazon on click */
-            m_db->fetchCover( this, info[0], info[1], false );
-            #else
-
-            if( m_db->getImageForAlbum( info[0], info[1], 0 ) != locate( "data", "amarok/images/nocover.png" ) )
-                CoverManager::viewCover( info[0], info[1], this );
-            else {
-                /* if no cover exists, open a file dialog to add a cover */
-                KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-                if ( !file.isEmpty() ) {
-                    QImage img( file.directory() + "/" + file.fileName() );
-                    QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
-                    filename.replace( " ", "_" ).append( ".png" );
-                    img.save( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() )+"/albumcovers/"+filename.lower(), "PNG" );
-                    showCurrentTrack();
-                }
+            urls.clear(); //remove urlString
+            KURL url;
+            for( QStringList::ConstIterator it = values.begin(); it != values.end(); ++it ) {
+                url.setPath( *it );
+                urls.append( url );
             }
-            #endif
-            break;
 
-        case MANAGER:
-            coverManager = new CoverManager();
-            coverManager->show();
-            break;
+            menu.changeTitle( TITLE, i18n("Album") );
+        }
+    }
 
-        case DELETE:
-            int button = KMessageBox::warningContinueCancel( this,
-                         i18n( "Are you sure you want to delete this cover?" ),
-                         QString::null,
-                         i18n("&Delete Confirmation") );
+    //Not all these are used in the menu, it depends on the context
+    switch( menu.exec( point ) )
+    {
+    case SHOW:
+        CoverManager::viewCover( info[0], info[1], this );
+        break;
 
-            if ( button == KMessageBox::Continue ) {
-                m_db->removeAlbumImage( info[0], info[1] );
+    case DELETE:
+    {
+        const int button = KMessageBox::warningContinueCancel( this,
+            i18n( "Are you sure you want to delete this cover?" ),
+            QString::null,
+            i18n("&Delete Confirmation") );
+
+        if ( button == KMessageBox::Continue ) {
+            m_db->removeAlbumImage( info[0], info[1] );
+            showCurrentTrack();
+        }
+        break;
+    }
+
+    case ASNEXT:
+        Playlist::instance()->queueMedia( urls );
+        break;
+
+    case MAKE:
+        Playlist::instance()->clear();
+
+        //FALL_THROUGH
+
+    case APPEND:
+        Playlist::instance()->appendMedia( urls, false, true );
+        break;
+
+    case FETCH:
+    #ifdef AMAZON_SUPPORT
+        /* fetch covers from amazon on click */
+        m_db->fetchCover( this, info[0], info[1], false );
+        break;
+    #else
+        if ( m_db->getImageForAlbum( info[0], info[1], 0 ) == locate( "data", "amarok/images/nocover.png" ) ) {
+            /* if no cover exists, open a file dialog to add a cover */
+            KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
+            if ( !file.isEmpty() ) {
+                QImage img( file.directory() + '/' + file.fileName() );
+                QString filename( QFile::encodeName( info[0] + " - " + info[1] ) );
+                filename.replace( ' ', '_' ).append( ".png" );
+                img.save( KGlobal::dirs()->saveLocation( "data", "amarok/albumcovers/"+filename.lower(), "PNG" );
                 showCurrentTrack();
             }
         }
-    }
+        else CoverManager::viewCover( info[0], info[1], this );
+        break;
+    #endif
 
-    if ( url.protocol() == "file" ) {
-        enum menuIds { APPEND, ASNEXT, MAKE };
-
-        KPopupMenu menu( this );
-        menu.insertTitle( i18n( "Track" ) );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
-        //menu.setItemEnabled( APPEND );
-        menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-
-        switch ( menu.exec( point ) ) {
-        case APPEND:
-            Playlist::instance()->appendMedia( url, false, true );
-            break;
-
-        case ASNEXT:
-            Playlist::instance()->queueMedia( url );
-            break;
-
-        case MAKE:
-            Playlist::instance()->clear();
-            Playlist::instance()->appendMedia( url, true, true );
-            break;
-
-        }
-    }
-    if ( url.protocol() == "album" ) {
-        enum menuIds { APPEND, ASNEXT, MAKE };
-
-        KPopupMenu menu( this );
-        menu.insertTitle( i18n( "Album" ) );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
-        menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
-        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-
-        int id = menu.exec( point );
-
-        QStringList list = QStringList::split( " @@@ ", url.path() );
-        QStringList values;
-
-        values = m_db->query( QString( "select distinct url from tags where artist = '%1' and album = '%2' order by track;" )
-                              .arg( list[0] )
-                              .arg( list[1] ) );
-
-        switch ( id ) {
-        case APPEND:
-            for ( uint i = 0; i < values.count(); i++ ) {
-                if ( values[i].isEmpty() )
-                    continue;
-
-                KURL tmp;
-                tmp.setPath( values[i] );
-                Playlist::instance()->appendMedia( tmp, false, true );
-            }
-            break;
-
-        case ASNEXT:
-            for ( uint i = 0; i < values.count(); i++ ) {
-                if ( values[i].isEmpty() )
-                    continue;
-
-                KURL tmp;
-                tmp.setPath( values[i] );
-                Playlist::instance()->queueMedia( tmp );
-            }
-            break;
-
-        case MAKE:
-            Playlist::instance()->clear();
-
-            for ( uint i = 0; i < values.count(); i++ ) {
-                if ( values[i].isEmpty() )
-                    continue;
-
-                KURL tmp;
-                tmp.setPath( values[i] );
-                Playlist::instance()->appendMedia( tmp, false, true );
-            }
-            break;
-        }
+    case MANAGER:
+        (new CoverManager())->show();
+        break;
     }
 }
 
