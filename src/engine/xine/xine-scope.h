@@ -13,7 +13,6 @@
 #include <sys/types.h>
 #include <xine/metronom.h>
 
-typedef struct xine_post_s xine_post_t;
 typedef struct my_node_s MyNode;
 
 struct my_node_s
@@ -28,17 +27,22 @@ struct my_node_s
 #ifdef __cplusplus
 extern "C"
 {
+#endif
     xine_post_t*
     scope_plugin_new( xine_t*, xine_audio_port_t* );
 
+    //we sacrifice type-safety here because some GCCs appear broken
+    //and choke on redefining the xine_post_t typedef
+
     MyNode*
-    scope_plugin_list( xine_post_t* );
+    scope_plugin_list( void* );
 
     int
-    scope_plugin_channels( xine_post_t* );
+    scope_plugin_channels( void* );
 
     metronom_t*
-    scope_plugin_metronom( xine_post_t* );
+    scope_plugin_metronom( void* );
+#ifdef __cplusplus
 }
 #endif
 

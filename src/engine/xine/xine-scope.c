@@ -165,19 +165,19 @@ scope_plugin_new( xine_t *xine, xine_audio_port_t *audio_target )
 }
 
 MyNode*
-scope_plugin_list( post_plugin_t *post )
+scope_plugin_list( void *post )
 {
     return ((scope_plugin_t*)post)->list;
 }
 
 int
-scope_plugin_channels( post_plugin_t *post )
+scope_plugin_channels( void *post )
 {
     return ((scope_plugin_t*)post)->channels;
 }
 
 metronom_t*
-scope_plugin_metronom( post_plugin_t *post )
+scope_plugin_metronom( void *post )
 {
     return &((scope_plugin_t*)post)->metronom;
 }
