@@ -37,11 +37,21 @@ TagDialog::TagDialog( const MetaBundle& mb, QWidget* parent )
     kLineEdit_samplerate->setText( mb.prettySampleRate() );
     kLineEdit_location->setText( mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
 
+    // Connects for modification check
+    connect( kLineEdit_title, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kLineEdit_artist, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kLineEdit_album, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kComboBox_genre, SIGNAL( activated( int ) ), this, SLOT( checkModified() ) );
+    connect( kIntSpinBox_year, SIGNAL( valueChanged( int ) ), this, SLOT( checkModified() ) );
+    connect( kLineEdit_comment, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkModified() ) );
+    connect( kTimeWidget_length, SIGNAL( valueChanged( const QTime& ) ), this, SLOT( checkModified() ) );
+    
     // Remember original button text
     m_buttonMbText = pushButton_musicbrainz->text();
     
     connect( pushButton_cancel, SIGNAL( clicked() ), this, SLOT( deleteLater() ) );
     connect( pushButton_ok, SIGNAL( clicked() ), this, SLOT( okPressed() ) );
+    pushButton_ok->setEnabled( false );
     
 #ifdef HAVE_MUSICBRAINZ
     connect( pushButton_musicbrainz, SIGNAL( clicked() ), this, SLOT( musicbrainzQuery() ) );
@@ -80,6 +90,22 @@ TagDialog::okPressed() //SLOT
     }
             
     deleteLater();
+}
+
+
+void
+TagDialog::checkModified() //SLOT
+{
+    bool modified = false;
+    
+    modified |= ( kLineEdit_title->text()        != m_metaBundle.title() );
+    modified |= ( kLineEdit_artist->text()       != m_metaBundle.artist() );
+    modified |= ( kLineEdit_album->text()        != m_metaBundle.album() );
+    modified |= ( kComboBox_genre->currentText() != m_metaBundle.genre() );
+    modified |= ( kIntSpinBox_year->value()      != m_metaBundle.year().toInt() );
+    modified |= ( kLineEdit_comment->text()      != m_metaBundle.comment() );
+    
+    pushButton_ok->setEnabled( modified );
 }
 
 

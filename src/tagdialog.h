@@ -24,7 +24,8 @@ class TagDialog : public TagDialogBase
     
     private slots:
         void okPressed();
-
+        void checkModified();
+        
 #ifdef HAVE_MUSICBRAINZ
         void musicbrainzQuery();
         void queryDone( const MusicBrainzQuery::TrackList& tracklist );
