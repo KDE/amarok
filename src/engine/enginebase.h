@@ -114,7 +114,7 @@ class EngineBase : public QObject, public amaroK::Plugin {
         virtual void setThreadPriority( int priority ) { m_threadPriority = priority; }
         
     public slots:
-        virtual void play( const KURL& ) = 0;
+        virtual void play( const KURL&, bool stream = false ) = 0;
         virtual void play() = 0;
         virtual void stop() = 0;
         virtual void pause() = 0;

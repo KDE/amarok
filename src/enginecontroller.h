@@ -25,6 +25,10 @@ email                : fh@ez.no
 class EngineBase;
 class QTimer;
 
+namespace KIO {
+    class Job;
+}
+
 /**
  * This class captures amaroK specific behaviour for some common features.
  * Accessing the engine directly is perfectly legal but on your own risk.
@@ -67,6 +71,7 @@ signals:
     void orderCurrent();
 
 private slots:
+    void playRemote( KIO::Job* );
     void slotMainTimer();
     void slotEndOfTrack();
     void newMetaData( const MetaBundle & );

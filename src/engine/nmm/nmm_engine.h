@@ -31,7 +31,7 @@ public:
     EngineBase::EngineState state() const;
 
 public slots: //FIXME make these slots in enginebase?
-    void  play( const KURL& );
+    void  play( const KURL&, bool stream );
     void  play();
     void  stop();
     void  pause();

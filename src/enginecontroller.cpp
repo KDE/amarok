@@ -23,6 +23,8 @@ email                : fh@ez.no
 #include "titleproxy.h"
 
 #include <kdebug.h>
+#include <kio/global.h>
+#include <kio/job.h>
 #include <kmessagebox.h>
 
 #include <qtimer.h>
@@ -41,7 +43,7 @@ class DummyEngine : public EngineBase
     virtual long position() const { return 0; }
     virtual EngineState state() const { return EngineBase::Empty; }
     virtual bool isStream() const { return false; }
-    virtual void play( const KURL& ) {}
+    virtual void play( const KURL&, bool ) {}
     virtual void play() {}
     virtual void stop() {}
     virtual void pause() {}
@@ -122,9 +124,38 @@ void EngineController::play( const MetaBundle &bundle )
 
     kdDebug() << "[engine] Playing: " << url.filename() << endl;
 
-    if ( AmarokConfig::titleStreaming() &&
-         m_pEngine->streamingMode() != EngineBase::NoStreaming &&
-         url.protocol() == "http" )
+    if ( url.protocol() == "http" ) {
+        // Detect filesize of remote file
+        KIO::StatJob* statjob = KIO::stat( url, false );
+        connect( statjob, SIGNAL( result( KIO::Job* ) ), this, SLOT( playRemote( KIO::Job* ) ) );
+        return;
+    }
+                        
+    m_pEngine->play( url );
+
+    stateChangedNotify( EngineBase::Playing );
+    newMetaDataNotify( bundle, true /* track change */ );
+}
+
+
+void EngineController::playRemote( KIO::Job* job ) //SLOT
+{
+    KIO::StatJob* statjob = (KIO::StatJob*) job;
+    const KURL &url = m_bundle.url();
+    
+    long size = 0;
+    // find size entry in UDS entry list
+    for ( uint i = 0; i < statjob->statResult().size(); i++ )
+        if ( statjob->statResult()[i].m_uds == KIO::UDS_SIZE ) {
+            size = statjob->statResult()[i].m_long;
+            break;
+    }                
+    kdDebug() << "FILESIZE (remote) detected: " << size << endl;
+    const bool stream = ( size == 0 );               
+         
+    if ( stream &&
+         AmarokConfig::titleStreaming() &&
+         m_pEngine->streamingMode() != EngineBase::NoStreaming )
     {
         TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, m_pEngine->streamingMode() );
         if ( !proxy->initSuccess() ) {
@@ -133,7 +164,7 @@ void EngineController::play( const MetaBundle &bundle )
             return;
         }
         m_pEngine->stop(); //hack, prevents artsengine killing the proxy when stopped() is emitted
-        m_pEngine->play( proxy->proxyUrl() );
+        m_pEngine->play( proxy->proxyUrl(), stream );
 
         connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
                  this,        SLOT( newMetaData( const MetaBundle& ) ) );
@@ -145,12 +176,12 @@ void EngineController::play( const MetaBundle &bundle )
                  proxy,       SLOT( deleteLater() ) );
     }
     else
-        m_pEngine->play( url );
+        m_pEngine->play( url, stream );
 
     kdDebug() << "[engine] Playing: " << url.filename() << endl;
 
     stateChangedNotify( EngineBase::Playing );
-    newMetaDataNotify( bundle, true /* track change */ );
+    newMetaDataNotify( m_bundle, true /* track change */ );
 }
 
 

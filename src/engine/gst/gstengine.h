@@ -52,7 +52,7 @@ class GstEngine : public EngineBase
         std::vector<float>*                      scope();
 
     public slots:
-        void                                     play( const KURL& );
+        void                                     play( const KURL&, bool stream );
         void                                     play();
         void                                     stop();
         void                                     pause();

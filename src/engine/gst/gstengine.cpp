@@ -291,7 +291,7 @@ GstEngine::scope()
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::play( const KURL& url )  //SLOT
+GstEngine::play( const KURL& url, bool stream )  //SLOT
 {
     kdDebug() << "Gst-Engine: url.path()     == " << url.path()     << endl;
     kdDebug() << "Gst-Engine: url.protocol() == " << url.protocol() << endl;
@@ -362,7 +362,7 @@ GstEngine::play( const KURL& url )  //SLOT
         m_streamBufIndex = 0;
         m_streamBufStop = false;  
         
-        if ( url.protocol() != "http" ) {
+        if ( !stream ) {
             // Use KIO for non-local files, except http, which is handled by TitleProxy
             m_transferJob = KIO::get( url, false, false );
             connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),

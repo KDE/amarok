@@ -345,7 +345,7 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-void ArtsEngine::play( const KURL& url )
+void ArtsEngine::play( const KURL& url, bool /*stream*/ )
 {
     kdDebug() << "aRts-Engine: url.path()     == " << url.path()     << endl;
     kdDebug() << "aRts-Engine: url.protocol() == " << url.protocol() << endl;

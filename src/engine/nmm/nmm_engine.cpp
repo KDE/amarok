@@ -71,7 +71,7 @@ NmmEngine::state() const
 
 
 void
-NmmEngine::play( const KURL& url )
+NmmEngine::play( const KURL& url, bool /*stream*/ )
 {
     if( !url.isLocalFile() ) return 0; //FIXME
 

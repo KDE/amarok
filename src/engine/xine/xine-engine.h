@@ -28,7 +28,7 @@ public:
 
     EngineBase::EngineState state() const;
 
-    void  play( const KURL &url ) { m_url = url; play(); }
+    void  play( const KURL &url, bool /*stream*/ ) { m_url = url; play(); }
     void  play();
     void  stop();
     void  pause();
