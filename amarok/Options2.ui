@@ -25,7 +25,7 @@
     </property>
     <widget class="QButtonGroup">
         <property name="name">
-            <cstring>ChkBoxUseCustomFonts</cstring>
+            <cstring>kcfg_UseCustomFonts</cstring>
         </property>
         <property name="geometry">
             <rect>
