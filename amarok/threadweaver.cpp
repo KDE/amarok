@@ -218,7 +218,7 @@ CollectionReader::doJob() {
     if ( entries.empty() )
         return false;        
         
-    QApplication::postEvent( m_statusBar, new ProgressEvent( 0, entries.count() ) );
+    QApplication::postEvent( m_statusBar, new ProgressEvent( -1, entries.count() ) );
     readTags( entries );
     QApplication::postEvent( m_statusBar, new ProgressEvent( -1 ) );
     

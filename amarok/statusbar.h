@@ -16,16 +16,16 @@
  ***************************************************************************/
 
 
-#ifndef STATUSBAR_H
-#define STATUSBAR_H
+#ifndef AMAROK_STATUSBAR_H
+#define AMAROK_STATUSBAR_H
 
-#include <ktoolbar.h>
 #include <kstatusbar.h>
-
-#include <qevent.h>
 #include <qlabel.h>
 
 #include "engine/engineobserver.h"
+
+class QCustomEvent;
+class KProgress;
 
 namespace amaroK {
 class ToggleLabel;
@@ -54,9 +54,8 @@ private:
     static StatusBar* m_self;
     static const int ID_STATUS = 1;
     ToggleLabel *m_pTimeLabel;
+    KProgress* m_progress;
 };
-
-
 
 
 class ToggleLabel : public QLabel
@@ -82,5 +81,10 @@ private:
     bool m_ColorToggle;
 };
 
-}
-#endif // STATUSBAR_H
+} //namespace amaroK
+
+
+#endif //AMAROK_STATUSBAR_H
+
+
+

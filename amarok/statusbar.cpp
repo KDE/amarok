@@ -6,6 +6,7 @@
 
 #include <qapplication.h>
 #include <qcolor.h>
+#include <qevent.h>
 
 #include <kactionclasses.h>
 #include <kdebug.h>
@@ -25,9 +26,9 @@ amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( 
     // message
     insertItem( QString::null, ID_STATUS, 10 );
 
-    KProgress* progress = new KProgress( this );
-    addWidget( progress, 0, true );
-//     progress->hide();
+    m_progress = new KProgress( this );
+    addWidget( m_progress, 0, true );
+    m_progress->hide();
     
     // random
     ToggleLabel *rand = new ToggleLabel( i18n( "RAND" ), this );
@@ -110,10 +111,23 @@ void amaroK::StatusBar::slotToggleTime()
 
 void amaroK::StatusBar::customEvent( QCustomEvent *e )
 {
-    kdDebug() << k_funcinfo << endl;
-
     if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
-        kdDebug() << k_funcinfo << "Received ProgressEvent\n";
+//         kdDebug() << k_funcinfo << "Received ProgressEvent\n";
+
+        CollectionReader::ProgressEvent* p =
+            static_cast<CollectionReader::ProgressEvent*>( e );        
+        
+        if ( p->totalSteps() < 0 && p->progress() < 0 ) {
+            m_progress->hide();
+        }
+        else if ( p->totalSteps() > 0 ) {
+            m_progress->setTotalSteps( p->totalSteps() );
+            m_progress->setProgress( 0 );
+            m_progress->show();
+        }
+        else if ( p->progress() > 0 ) {
+            m_progress->setProgress( p->progress() );
+        }
     }
 }
     
