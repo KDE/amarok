@@ -102,13 +102,13 @@ k_dcop:
 
    virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
    virtual void shufflePlaylist() = 0;                      ///< Shuffles the playlist.
-   virtual void saveCurrentPlaylist() = 0;                  ///< Saves the current playlist to current.xml
-   virtual void playByIndex(int) = 0;                       ///< Starts playing the track at the specified index. 
+   virtual void saveCurrentPlaylist() = 0;                  ///< Saves the current playlist to current.xml.
+   virtual void playByIndex(int) = 0;                       ///< Starts playing the track at the specified index.
    virtual int  getActiveIndex() = 0;                       ///< Return the index of the currently active track. -1 if none.
-
-   virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
+   virtual void setStopAfterCurrent( bool ) = 0;            ///< Enables/disables the "Stop After Current Track" feature.
+   virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
-   virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar
+   virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar.
 };
 
 

@@ -90,8 +90,8 @@ class Playlist : private KListView, public EngineObserver
         void saveM3U( const QString&, bool relativePath = FALSE ) const;
         void saveXML( const QString& );
 
-	// Used by DCOP call
-	int currentTrackIndex();
+        // Used by DCOP call
+        int currentTrackIndex();
 
         void burnPlaylist( int projectType=-1 );
         void burnSelectedTracks( int projectType=-1 );
@@ -146,6 +146,7 @@ class Playlist : private KListView, public EngineObserver
         void playPrevTrack();
         void playCurrentTrack();
         void playNextTrack();
+        void setStopAfterCurrent( bool on ) { m_stopAfterCurrent = on; }
         void updateMetaData( const MetaBundle& );
         void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );

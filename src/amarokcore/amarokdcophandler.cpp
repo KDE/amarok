@@ -370,6 +370,11 @@ namespace amaroK
         return Playlist::instance()->currentTrackIndex();
     }
 
+    void DcopPlaylistHandler::setStopAfterCurrent( bool on )
+    {
+        Playlist::instance()->setStopAfterCurrent( on );
+    }
+
     void DcopPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();
