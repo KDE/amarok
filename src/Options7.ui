@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>426</width>
-            <height>433</height>
+            <width>404</width>
+            <height>215</height>
         </rect>
     </property>
     <property name="caption">
@@ -18,6 +18,9 @@
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
         </property>
         <widget class="QGroupBox">
             <property name="name">
@@ -34,19 +37,16 @@
             <property name="title">
                 <string>Collection Database</string>
             </property>
-            <widget class="DbSetup">
+            <vbox>
                 <property name="name">
-                    <cstring>dbSetupFrame</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>20</y>
-                        <width>380</width>
-                        <height>165</height>
-                    </rect>
-                </property>
-            </widget>
+                <widget class="DbSetup">
+                    <property name="name">
+                        <cstring>dbSetupFrame</cstring>
+                    </property>
+                </widget>
+            </vbox>
         </widget>
         <spacer>
             <property name="name">

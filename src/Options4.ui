@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>381</width>
-            <height>379</height>
+            <width>337</width>
+            <height>247</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,6 +23,9 @@
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
         </property>
         <property name="spacing">
             <number>12</number>

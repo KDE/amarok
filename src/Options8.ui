@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>510</width>
-            <height>753</height>
+            <width>425</width>
+            <height>557</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -22,8 +22,11 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
         <property name="spacing">
-            <number>8</number>
+            <number>12</number>
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -265,6 +268,8 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kactivelabel.h</includehint>
