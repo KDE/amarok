@@ -6,8 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> Import "babelfish" icon into CVS (it's not in kdelibs).
-
   <mxcl>   Just before we load any engine plugin, write to a file, and it we don't succeed the next time
            amaroK starts show a big warning saying "Gah!" and load a different one.
 
@@ -19,9 +17,6 @@ SHORT-TERM (URGENT):
            whatever is selected there. Nice!
 
   <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones.
-
-  <muesli> Resuming the playback on startup shows the current track as a normal-sized entry instead of a
-           double-height one.
 
   <mxcl>   If you drag and drop the cool-streams playlist without expanding it first, it doesn't work properly
 
