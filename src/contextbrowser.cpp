@@ -4,6 +4,7 @@
 
 #include "app.h"
 #include "amarokconfig.h"
+#include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
 #include "enginecontroller.h"
@@ -103,10 +104,15 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         if ( m_url.path() == "home" )
             showHome();
-        if ( m_url.path() == "context" )
+        else if ( m_url.path() == "context" )
             showCurrentTrack();
-           //FIXME
-//         if ( m_url.path() == "collectionSetup" )
+        else if ( m_url.path() == "collectionSetup" )
+        {
+            //TODO if we do move the configuration to the main configdialog change this,
+            //     otherwise we need a better solution
+            QObject *o = pApp->playlistWindow()->child( "CollectionBrowser" );
+            if( o ) static_cast<CollectionBrowser*>(o)->setupDirs();
+        }
     }
 }
 
@@ -370,7 +376,7 @@ void ContextBrowser::showCurrentTrack()
                                 "ORDER BY tags.track;" )
                       .arg( m_db->escapeString( m_currentTrack->album() ) )
                       .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
-    
+
         if ( values.count() )
         {
             browser->write( "<br><div class='rbcontent'>" );
@@ -379,16 +385,16 @@ void ContextBrowser::showCurrentTrack()
             browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
             browser->write( "</table>" );
             browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-    
+
             for ( uint i = 0; i < ( values.count() / 3 ); i++ )
             {
                 QString tmp = values[i*3 + 2] == "" ? "" : values[i*3 + 2] + ". ";
                 browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + tmp + values[i*3] + "</a></td></tr>" ) );
             }
-    
+
             values.clear();
             names.clear();
-    
+
             browser->write( "</table></div>" );
         }
     }
