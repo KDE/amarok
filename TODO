@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #182 being the highest available (take this one for your next bug and increase here)
+           #183 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  ADD 182 <till>   When kdemultimedia isn't installed, the "Current Track"-Play icon in the playlist is missing
+                   (artsbuilderexecute.png). Need to import this one.
 
   ADD 181 <markey> Filebrowser toolbar needs an icon for "Sort".
 
