@@ -11,7 +11,7 @@ noinst_HEADERS = \
 	blockanalyzer.h \
 	baranalyzer.h \
 	baranalyzer2.h \
-	distortanalyzer.h \ 
+	distortanalyzer.h \
 	sonogram.h \
 	turbine.h \
 	xmasdrug.h \
@@ -20,8 +20,8 @@ noinst_HEADERS = \
 libanalyzers_a_SOURCES = \
 	analyzerbase.cpp \
 	analyzerfactory.cpp \
-	blockanalyzer.cpp \ 
-	baranalyzer.cpp \ 
+	blockanalyzer.cpp \
+	baranalyzer.cpp \
 	distortanalyzer.cpp \
 	sonogram.cpp \
 	turbine.cpp \
