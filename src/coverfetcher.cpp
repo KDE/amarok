@@ -10,6 +10,7 @@
 #include <qcombobox.h>
 #include <qdom.h>
 #include <qlabel.h>
+#include <qregexp.h>
 #include <qvbox.h>
 
 #include <kapplication.h>
@@ -49,14 +50,28 @@ void
 CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
-
     m_artist = artist;
-    m_album = album;
+    QString t_album = album;
+    //remove all matches to the album filter.
+    //NOTE: make a temp variable since removing the const from the param ripples throughout the codebase.
+    //NOTE: use i18n'd and english equivalents since they are very common int'lly.
+    QString replaceMe = " \\([^}]*%1[^}]*\\)";
+    QStringList albumExtension;
+    albumExtension << i18n( "disc" ) << i18n( "disk" ) << i18n( "remaster" ) << i18n( "cd" ) << i18n( "single" );
+                   << QString( "disc" ) << QString( "disk" ) << QString( "remaster" ) << QString( "cd" ) << QString( "single" );
+
+    for ( uint x = 0; x < albumExtension.count(); ++x )
+    {
+        QRegExp re = replaceMe.arg( albumExtension[x] );
+        re.setCaseSensitive( false );
+        t_album.replace( re, QString::null );
+    }
+    m_album = t_album;
 
     if ( artist == album )
-        m_keyword = album;
+        m_keyword = t_album;
     else
-        m_keyword = artist + " - " + album;
+        m_keyword = artist + " - " + t_album;
 
     m_saveas = saveas;
     m_noedit = noedit;
