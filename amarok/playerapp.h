@@ -107,7 +107,7 @@ class PlayerApp : public KApplication
         void slotConfigGlobalShortcuts();
 
     private slots:
-        void handleLoaderArgs( const QCString& args );
+        void handleLoaderArgs( QCString args );
         void applySettings();
         void proxyError();
         void showEffectWidget();
@@ -160,7 +160,7 @@ class LoaderServer : public QServerSocket
         LoaderServer( QObject* parent );
 
     signals:
-        void loaderArgs( const QCString& );
+        void loaderArgs( QCString );
 
     private :
         void newConnection( int socket );

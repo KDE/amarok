@@ -41,6 +41,7 @@ email                : markey@web.de
 #include <kmessagebox.h>         //applySettings()
 #include <kshortcut.h>
 #include <kstandarddirs.h>
+#include <kstartupinfo.h>        //handleLoaderArgs()
 #include <ktip.h>
 #include <kurl.h>
 #include <kconfigdialog.h>
@@ -196,8 +197,19 @@ void PlayerApp::handleCliArgs()
 
 
 //this method processes the cli arguments sent by the loader process
-void PlayerApp::handleLoaderArgs( const QCString& args ) //SLOT
+void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
 {
+    //extract startup_env part
+    int index = args.find( "|" );
+    QCString startup_env = args.left( index );
+    args.remove( 0, index + 1 );
+    kdDebug() << k_funcinfo << "DESKTOP_STARTUP_ID: " << startup_env << endl;
+        
+    //stop startup cursor animation
+    KStartupInfoId id;
+    id.initId( startup_env );
+    KStartupInfo::sendFinish( id );
+    
     //divide argument line into single strings
     QStringList strlist = QStringList::split( "|", args );
 
@@ -313,8 +325,8 @@ void PlayerApp::initIpc()
     LoaderServer* server = new LoaderServer( this );
     server->setSocket( m_sockfd );
 
-    connect( server, SIGNAL( loaderArgs( const QCString& ) ),
-             this,     SLOT( handleLoaderArgs( const QCString& ) ) );
+    connect( server, SIGNAL( loaderArgs( QCString ) ),
+             this,     SLOT( handleLoaderArgs( QCString ) ) );
 }
 
 

@@ -36,8 +36,6 @@ Loader::Loader( int& argc, char** argv )
     , m_pProc( NULL )
     , m_pOsd ( NULL )
 {
-//     qDebug( "[Loader::Loader()]" );
-
     m_sockfd = tryConnect();
 
     //determine whether an amaroK instance is already running (LoaderServer)
@@ -78,6 +76,11 @@ Loader::Loader( int& argc, char** argv )
 
         //put all arguments into one string
         QCString str;
+        
+        //we transmit the startup_id, so amarokapp can stop the startup animation
+        str.append( getenv( "DESKTOP_STARTUP_ID" ) );
+        str.append( "|" );
+                
         for ( int i = 0; i < m_argc; i++ ) {
             str.append( m_argv[i] );
             str.append( "|" );    //"|" cannot occur in unix filenames, so we use it as a separator
