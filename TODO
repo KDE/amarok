@@ -3,10 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #28 being the highest available (take this one for your next bug and increase here)
+           #30 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * add: #29<muesli> configure script should fail, if taglib check failed
+
+    * add: #28<muesli> add an option "clean playlist on startup"
 
     * chg: #24<muesli> random mode needs to remember (at least) the last 10 songs, so you could
               go back in history, if you want to repeat a song. -->muesli
