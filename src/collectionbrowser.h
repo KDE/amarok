@@ -39,7 +39,7 @@ class CollectionBrowser: public QVBox
 
     private:
     //attributes:
-        enum CatMenuId { IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
+        enum CatMenuId { IdScan, IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
         
         KPopupMenu* m_actionsMenu;
         KPopupMenu* m_cat1Menu;
@@ -82,7 +82,8 @@ class CollectionView : public KListView
         void setupDirs();    
         
         void scan();
-        
+        void scanModifiedDirs();
+
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
         void scanDone();

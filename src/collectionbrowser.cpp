@@ -65,7 +65,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
-    m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
+    m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ), 0, IdScan );
 
     m_cat1Menu ->insertItem( i18n( "Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "Artist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -157,11 +157,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             m_db->dropTables();
             m_db->createTables();
             m_insertdb = new CollectionDB();
-            m_insertdb->scan( m_dirs, m_recursively );
+            scan();
         } else
         {
             m_insertdb = new CollectionDB();
-            m_insertdb->scanModifiedDirs( m_recursively );
+            scanModifiedDirs();
         }
 
         if ( m_monitor )
@@ -224,7 +224,16 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
+    m_parent->m_actionsMenu->setItemEnabled( m_parent->IdScan, false );
     m_insertdb->scan( m_dirs, m_recursively );
+}
+
+
+void
+CollectionView::scanModifiedDirs()  //SLOT
+{
+    m_parent->m_actionsMenu->setItemEnabled( m_parent->IdScan, false );
+    m_insertdb->scanModifiedDirs( m_recursively );
 }
 
 
@@ -277,6 +286,8 @@ CollectionView::scanDone() //slot
     
     if ( m_monitor )
         m_insertdb->addCollectionToWatcher();
+
+    m_parent->m_actionsMenu->setItemEnabled( m_parent->IdScan, true );
 }
 
 
