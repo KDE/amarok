@@ -59,6 +59,7 @@ EngineController::EngineController()
     , m_delayTime( 0 )
     , m_muteVolume( 0 )
     , m_xFadeThisTrack( false )
+    , m_stream( 0 )
 {
     connect( &m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
@@ -139,25 +140,22 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
          AmarokConfig::titleStreaming() &&
          m_pEngine->streamingMode() != Engine::NoStreaming )
     {
-        StreamProvider* stream = new StreamProvider( url, m_pEngine->streamingMode() );
-        if ( !stream->initSuccess() ) {
-            delete stream;
+        m_stream = new amaroK::StreamProvider( url, m_pEngine->streamingMode() );
+        if ( !m_stream->initSuccess() ) {
+            delete m_stream;
+            m_stream = 0;
             emit orderNext();
             return;
         }
 
-        //FIXME
-        m_pEngine->stop(); //hack, prevents artsengine killing the proxy when stopped() is emitted
-        m_pEngine->play( stream->proxyUrl(), isStream );
+        m_pEngine->play( m_stream->proxyUrl(), isStream );
 
-        connect( stream,    SIGNAL( metaData( const MetaBundle& ) ),
-                 this,        SLOT( newMetaData( const MetaBundle& ) ) );
-        connect( stream,    SIGNAL( streamData( char*, int ) ),
-                 m_pEngine,   SLOT( newStreamData( char*, int ) ) );
-        connect( stream,    SIGNAL( sigError() ),
-                 this,      SIGNAL( orderNext() ) );
-        connect( m_pEngine, SIGNAL( stopped() ),
-                 stream,      SLOT( deleteLater() ) );
+        connect( m_stream,   SIGNAL( metaData( const MetaBundle& ) ),
+                 this,         SLOT( slotNewMetaData( const MetaBundle& ) ) );
+        connect( m_stream,   SIGNAL( streamData( char*, int ) ),
+                 m_pEngine,    SLOT( newStreamData( char*, int ) ) );
+        connect( m_stream,   SIGNAL( sigError() ),
+                 this,       SIGNAL( orderNext() ) );
     }
     else
         m_pEngine->play( url, isStream );
@@ -315,8 +313,8 @@ void EngineController::slotStateChanged( Engine::State newState )
 
         m_bundle = MetaBundle();
 
-//         delete m_pProxy;
-//         m_pProxy = 0;
+        delete m_stream;
+        m_stream = 0;
 
         //FALL THROUGH...
 

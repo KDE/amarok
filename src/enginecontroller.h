@@ -25,9 +25,9 @@ email                : fh@ez.no
 #include <qobject.h>
 #include <qtimer.h>
 
-namespace KIO {
-    class Job;
-}
+
+namespace amaroK { class StreamProvider; }
+namespace KIO { class Job; }
 
 /**
  * This class captures amaroK specific behaviour for some common features.
@@ -88,13 +88,15 @@ private:
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
 
-    EngineBase* m_pEngine;
-    MetaBundle  m_bundle;
-    QTimer*     m_pMainTimer;
-    long        m_delayTime;
-    int         m_muteVolume;
-    bool        m_xFadeThisTrack;
-    QTimer      m_timer;
+    EngineBase*     m_pEngine;
+    MetaBundle      m_bundle;
+    QTimer*         m_pMainTimer;
+    long            m_delayTime;
+    int             m_muteVolume;
+    bool            m_xFadeThisTrack;
+    QTimer          m_timer;
+    
+    amaroK::StreamProvider* m_stream;
 };
 
 
