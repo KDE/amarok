@@ -49,7 +49,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         systems << (*it)->name();
 
     m_pSoundSystem->insertStringList( systems );
-    m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
                
     connect( m_pSoundSystem, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
     connect( m_pSoundOutput, SIGNAL( activated( int ) ), this, SLOT( settingsChangedSlot() ) );
@@ -110,6 +109,12 @@ void AmarokConfigDialog::updateSettings()
     AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
     AmarokConfig::setSoundOutput( m_pSoundOutput->currentText() );
     emit settingsChanged();
+}
+
+
+void AmarokConfigDialog::updateWidgets()
+{
+    m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
 }
 
 #include "configdialog.moc"

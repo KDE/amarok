@@ -38,6 +38,7 @@ class AmarokConfigDialog : public KConfigDialog
 
     private slots:
         void updateSettings();
+        void updateWidgets();
     
     private:
         bool hasChanged();
