@@ -88,7 +88,6 @@ AC_SUBST(arts_libs)
 ###############################################################################
 
 TAGLIB_REQ_VERSION="0.95";
-TAGLIB_URL="http://ktown.kde.org/~wheeler/taglib/";
 AC_DEFUN([VERSION_TO_NUMBER], [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
 
 AC_PATH_PROG(TAGLIB_CONFIG, taglib-config, no)
@@ -123,8 +122,9 @@ AC_SUBST(taglib_libs)
 # BEGIN GSTREAMER CHECK
 ###############################################################################
 
+
 AC_ARG_WITH(gstreamer,
-    AC_HELP_STRING([--without-gstreamer],[build without GStreamer [default=yes]]),
+    AC_HELP_STRING([--without-gstreamer],[build amaroK without GStreamer [default=no]]),
     [build_gstreamer=$withval],
     [build_gstreamer=yes]
 )
@@ -167,19 +167,50 @@ AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 ###############################################################################
 
 
+###############################################################################
+# BEGIN XINE CHECK
+###############################################################################
+
+AC_ARG_WITH(xine,
+    AC_HELP_STRING([--without-xine],[build amaroK without Xine [default=no]]),
+    [build_xine=$withval],
+    [build_xine=yes]
+)
+
+if test "$build_xine" != "no"; then
+
+    AC_CHECK_PROG(XINE_CONFIG, xine-config, yes)
+
+    if test x$XINE_CONFIG = xyes ; then
+        AC_DEFINE(HAVE_XINE, 1, [have Xine])
+        CFLAGS_XINE=[`xine-config --cflags`]
+        LIBS_XINE=[`xine-config --libs`]
+    else
+        build_xine=no
+    fi
+fi
+
+AM_CONDITIONAL(with_xine, test x$build_xine = xyes)
+AC_SUBST(CFLAGS_XINE)
+AC_SUBST(LIBS_XINE)
+
+###############################################################################
+# END XINE CHECK
+###############################################################################
+
 
 ###############################################################################
 # BEGIN NMM CHECK
 ###############################################################################
 
 AC_ARG_WITH(nmm,
-    AC_HELP_STRING([--with-nmm],[build the amaroK NMM-engine [default=no]]),
+    AC_HELP_STRING([--with-nmm],[build amaroK with NMM support [default=no]]),
     [build_nmm=$withval],
     [build_nmm=no]
 )
 
 AC_ARG_WITH(nmm,
-    AC_HELP_STRING([--with-nmm-includes],[where the libraries for NMM are installed [default=/usr/local/include]]),
+    AC_HELP_STRING([--with-nmm-includes],[path to the NMM includes [default=/usr/local/include]]),
     [nmm_cflags=$withval],
     [nmm_cflags=/usr/local/include]
 )
@@ -189,12 +220,6 @@ if test "$build_nmm" != "no"; then
     #currently NMM libs must by in LD_PATH
     CFLAGS_NMM="-I$nmm_cflags"
     AC_DEFINE(HAVE_NMM, 1, [have NMM])
-
-else
-
-    #no warning, what's the point?
-    CFLAGS_NMM=""
-
 fi
 
 AM_CONDITIONAL(with_nmm, test x$build_nmm = xyes)
@@ -211,7 +236,7 @@ AC_SUBST(CFLAGS_NMM)
 ###############################################################################
 
 AC_ARG_WITH(opengl,
-    AC_HELP_STRING([--without-opengl],[build without OpenGL [default=yes]]),
+    AC_HELP_STRING([--without-opengl],[build amaroK without OpenGL [default=no]]),
     [build_opengl=$withval],
     [build_opengl=yes]
 )
@@ -269,7 +294,7 @@ fi
 LIB_SQLITE=""
 
 AC_ARG_WITH(included-sqlite,
-    AC_HELP_STRING([--without-included-sqlite],[don't use the included sqlite sources [default=yes]]),
+    AC_HELP_STRING([--without-included-sqlite],[don't use the included sqlite sources [default=no]]),
     [included_sqlite=$withval],
     [included_sqlite=yes]
 )
@@ -343,12 +368,12 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 ###############################################################################
 
 KDE_CHECK_HEADER(kjsembed/kjsembedpart.h, have_kjsembed=yes, have_kjsembed=no)
- 
+
 if test x$have_kjsembed = xyes; then
     AC_SUBST(LIB_KJSEMBED, "-lkjsembed")
     AC_DEFINE(HAVE_KJSEMBED, 1, [have KJSEMBED])
 fi
-    
+
 ###############################################################################
 # END KJSEMBED CHECK
 ###############################################################################

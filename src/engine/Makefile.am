@@ -17,6 +17,10 @@ if with_nmm
     NMMENGINE_BUILD = nmm
 endif
 
+if with_xine
+    XINEENGINE_BUILD = xine
+endif
+
 libengine_la_SOURCES = \
     enginebase.cpp
 
@@ -26,6 +30,6 @@ noinst_HEADERS = \
 METASOURCES = \
     AUTO
 
-SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) $(NMMENGINE_BUILD)
+SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) $(NMMENGINE_BUILD) $(XINEENGINE_BUILD)
 
 

@@ -287,12 +287,14 @@ XineEngine::AudioMixerMethodChangedCallback(void* p, xine_cfg_entry_t* entry)
 void
 XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 {
+    if( !p ) return;
+
     switch( xineEvent->type )
     {
     case XINE_EVENT_UI_PLAYBACK_FINISHED:
 
         //emit signal from GUI thread
-        if( p ) QApplication::postEvent( xe, new QCustomEvent(3000) );
+        QApplication::postEvent( xe, new QCustomEvent(3000) );
         break;
 
     case XINE_EVENT_UI_MESSAGE:

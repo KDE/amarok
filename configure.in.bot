@@ -4,7 +4,7 @@
 echo ""
 
 if test x$amarok_error_notaglib = xyes; then
-    echo "================================================================================"
+    echo "======================="
     echo "=  amaroK - ERROR  ============================================================="
     echo "================================================================================"
     echo "=                                                                              ="
@@ -15,7 +15,7 @@ if test x$amarok_error_notaglib = xyes; then
 fi
 
 if test x$amarok_error_taglibold = xyes; then
-    echo "================================================================================"
+    echo "======================="
     echo "=  amaroK - ERROR  ============================================================="
     echo "================================================================================"
     echo "=                                                                              ="
@@ -25,14 +25,14 @@ if test x$amarok_error_taglibold = xyes; then
 fi
 
 if test x$PKGCONFIGFOUND != xyes; then
-    echo "================================================================================"
+    echo "========================="
     echo "=  amaroK - WARNING  ==========================================================="
     echo "================================================================================"
     echo "=                                                                              ="
     echo "=  pkg-config could not be found, this means some optional components (the     ="
-    echo "=  GStreamer-engine and Collection Browser) cannot be built.                   =" 
+    echo "=  GStreamer-engine and Collection Browser) cannot be built.                   ="
     echo "=  Either ensure pkg-config is in your path, set the PKG_CONFIG environment    ="
-    echo "=  variable to the full path to pkg-config, or download it from:               =" 
+    echo "=  variable to the full path to pkg-config, or download it from:               ="
     echo "=  http://www.freedesktop.org/software/pkgconfig                               ="
     echo "=                                                                           ===="
 fi
@@ -113,27 +113,30 @@ if test x$no_engine = xyes; then
 fi
 
 if test x$no_amarok != xyes; then
+
+    echo "======================="
+    echo "===  amaroK - INFO  ============================================================"
+    echo "================================================================================"
+    echo "=                                                                              ="
+    echo "=  amaroK will be built with the following engine plugins:                     ="
+
+
     if test x$build_arts = xyes -a x$have_kdemm = xyes; then
-        echo "================================================================================"    
-        echo "==== amaroK will be built with the aRts-engine                              ===="
+        echo "=   * aRts-engine                                                           ===="
     fi
-    
+
     if test x$have_gst = xyes; then
-        echo "================================================================================"
-        echo "==== amaroK will be built with the GStreamer-engine                         ===="
+        echo "=   * GStreamer-engine                                                      ===="
     fi
-    
+
+    if test x$build_xine = xyes; then
+        echo "=   * Xine-engine                                                           ===="
+    fi
+
     if test x$build_nmm = xyes; then
-        echo "================================================================================"
-        echo "==== amaroK will be built with the NMM-engine                               ===="
-        echo "================================================================================"
-        echo "=  amaroK - INFO  =============================================================="
-        echo "=                                                                              ="
-        echo "=  If the build fails, reconfigure --without-nmm, or ask for help on #amarok   ="
-        echo "=  (irc.freenode.net)                                                          ="
-        echo "=                                                                           ===="
+        echo "=   * NMM-engine (note: unmaintained)                                       ===="
     fi
-fi    
+fi
 
 echo "================================================================================"
 
