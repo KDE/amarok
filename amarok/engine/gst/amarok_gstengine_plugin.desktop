@@ -1,8 +1,16 @@
 [Desktop Entry]
 Type=Service
 Name=GstEngine
+Name[et]=Gst mootor
+Name[pt]=Motor GST
+Name[pt_BR]=Motor GST
+Name[sv]=Gst-gränssnitt
 X-KDE-Library=libamarok_gstengine_plugin
 Comment=Plugin for amaroK
+Comment[et]=AmaroKi plugin
+Comment[pt]='Plugin' para o amaroK
+Comment[pt_BR]='Plugin' para o amaroK
+Comment[sv]=Insticksprogram för amaroK
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine

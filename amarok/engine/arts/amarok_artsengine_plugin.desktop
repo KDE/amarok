@@ -1,8 +1,16 @@
 [Desktop Entry]
 Type=Service
 Name=ArtsEngine
+Name[et]=Arts mootor
+Name[pt]=Motor ARTS
+Name[pt_BR]=Motor ARTS
+Name[sv]=aRts-gränssnitt
 X-KDE-Library=libamarok_artsengine_plugin
 Comment=Plugin for amaroK
+Comment[et]=AmaroKi plugin
+Comment[pt]='Plugin' para o amaroK
+Comment[pt_BR]='Plugin' para o amaroK
+Comment[sv]=Insticksprogram för amaroK
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine
