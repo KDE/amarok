@@ -468,12 +468,14 @@ App::applyColorScheme()
     QColorGroup group;
     using amaroK::ColorScheme::AltBase;
     int h, s, v;
+    QWidget* const browserBar = (QWidget*)playlistWindow()->child( "BrowserBar" );
 
     if( AmarokConfig::schemeKDE() )
     {
         AltBase = KGlobalSettings::alternateBackgroundColor();
 
         playlistWindow()->unsetPalette();
+        browserBar->unsetPalette();
 
         PlayerWidget::determineAmarokColors();
     }
@@ -516,6 +518,7 @@ App::applyColorScheme()
 
         //all children() derive their palette from this
         playlistWindow()->setPalette( QPalette( group, group, group ) );
+        browserBar->unsetPalette();
     }
 
     else if( AmarokConfig::schemeCustom() )
@@ -549,8 +552,8 @@ App::applyColorScheme()
 
         // we only colour the middle section since we only
         // allow the user to choose two colours
-        QWidget *middleBit = (QWidget*)playlistWindow()->child( "BrowserBar" );
-        middleBit->setPalette( QPalette( group, group, group ) );
+        browserBar->setPalette( QPalette( group, group, group ) );
+        playlistWindow()->unsetPalette();
     }
 
     // set the KListView alternate colours

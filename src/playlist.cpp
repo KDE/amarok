@@ -2324,7 +2324,7 @@ TagWriter::doJob()
                 return true;
         }
 
-        m_failed = f.save();
+        m_failed = !f.save();
     }
 
     return true;
