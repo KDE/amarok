@@ -197,8 +197,10 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionReader::CollectionReader( QObject* o, const QStringList& folders, bool recursively )
-   : Job( o, Job::CollectionReader )
+CollectionReader::CollectionReader( QObject* parent, QObject* statusBar,
+                                    const QStringList& folders, bool recursively )
+   : Job( parent, Job::CollectionReader )
+   , m_statusBar( statusBar )
    , m_folders( folders )
    , m_recursively( recursively )
 {}
@@ -208,10 +210,18 @@ CollectionReader::~CollectionReader()
 
 bool
 CollectionReader::doJob() {
+    QStringList entries;
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
-        readDir( m_folders[i] );
+        readDir( m_folders[i], entries );
+         
+    if ( entries.empty() )
+        return false;        
         
+    QApplication::postEvent( m_statusBar, new ProgressEvent( 0, entries.count() ) );
+    readTags( entries );
+    QApplication::postEvent( m_statusBar, new ProgressEvent( -1 ) );
+    
     //don't post event if no tags have been read
     if ( m_metaList.isEmpty() )
         return false;
@@ -220,10 +230,9 @@ CollectionReader::doJob() {
 }
 
 void
-CollectionReader::readDir( const QString& path ) {
-    QStringList entries;
-    m_dirList << path;
-    DIR* d = opendir( path.local8Bit() );
+CollectionReader::readDir( const QString& dir, QStringList& entries ) {
+    m_dirList << dir;
+    DIR* d = opendir( dir.local8Bit() );
     dirent *ent;
     struct stat statBuf;
 
@@ -232,7 +241,7 @@ CollectionReader::readDir( const QString& path ) {
         
         if ( entry == "." || entry == ".." )
             continue;
-        entry.prepend( path.endsWith( "/" ) ? path : path + "/" );
+        entry.prepend( dir.endsWith( "/" ) ? dir : dir + "/" );
         
 //         kdDebug() << entry << endl;
         stat( entry.local8Bit(), &statBuf );
@@ -240,15 +249,12 @@ CollectionReader::readDir( const QString& path ) {
         if ( S_ISDIR( statBuf.st_mode ) ) {
             if ( m_recursively )
                 //call ourself recursively for each subdir
-                readDir( entry );
+                readDir( entry, entries );
         }
         else if ( S_ISREG( statBuf.st_mode ) )
             entries << entry;
     }
     closedir( d );
-
-    if ( !entries.isEmpty() )
-        readTags( entries );
 }
 
 void
@@ -256,6 +262,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     KURL url;
         
     for ( uint i = 0; i < entries.count(); i++ ) {   
+        QApplication::postEvent( m_statusBar, new ProgressEvent( i ) );
         url.setPath( entries[i] );
         
         if ( url.isValid() && url.isLocalFile() ) {        

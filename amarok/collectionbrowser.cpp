@@ -9,6 +9,7 @@
 #include "collectionbrowser.h"
 #include "directorylist.h"
 #include "metabundle.h"
+#include "statusbar.h"
 #include "threadweaver.h"
 
 #include <sqlite.h>
@@ -179,7 +180,7 @@ CollectionView::scan()  //SLOT
     QCString command = "DELETE FROM tags;";
     execSql( command );
 
-    m_weaver->append( new CollectionReader( this, m_dirs, m_recursively ) );
+    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
 
     if ( m_monitor )
         m_dirWatch->startScan();
@@ -197,7 +198,7 @@ CollectionView::dirDirty( const QString& path )
     command += "';";
     execSql( command );
         
-    m_weaver->append( new CollectionReader( this, path, false ) );
+    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false ) );
 }
 
 

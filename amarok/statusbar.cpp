@@ -2,21 +2,33 @@
 #include "amarokconfig.h"
 #include "metabundle.h"
 #include "playerapp.h"
+#include "threadweaver.h"
 
-#include <qcolor.h>
 #include <qapplication.h>
+#include <qcolor.h>
 
 #include <kactionclasses.h>
+#include <kdebug.h>
 #include <kglobalsettings.h>
+#include <kprogress.h>
 
 #include <enginecontroller.h>
 
+
+amaroK::StatusBar* amaroK::StatusBar::m_self;
+
 amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, name )
 {
+    m_self = this;
+    
     EngineController::instance()->attach( this );
     // message
     insertItem( QString::null, ID_STATUS, 10 );
 
+    KProgress* progress = new KProgress( this );
+    addWidget( progress, 0, true );
+//     progress->hide();
+    
     // random
     ToggleLabel *rand = new ToggleLabel( i18n( "RAND" ), this );
     addWidget( rand, 0, true );
@@ -95,6 +107,16 @@ void amaroK::StatusBar::slotToggleTime()
 {
     AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 }
+
+void amaroK::StatusBar::customEvent( QCustomEvent *e )
+{
+    kdDebug() << k_funcinfo << endl;
+
+    if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
+        kdDebug() << k_funcinfo << "Received ProgressEvent\n";
+    }
+}
+    
 
 /********** ToggleLabel ****************/
 

@@ -127,7 +127,22 @@ private:
 class CollectionReader : public ThreadWeaver::Job
 {
 public:
-    CollectionReader( QObject*, const QStringList& folders, bool recursively );
+   static const int ProgressEventType = 8889;
+   class ProgressEvent : public QCustomEvent
+   {
+       public:
+           ProgressEvent( int progress, int totalSteps = -1 ) 
+           : QCustomEvent( ProgressEventType )
+           , m_progress( progress )
+           , m_totalSteps( totalSteps ) {}
+           int totalSteps() { return m_totalSteps; }
+           int progress() { return m_progress; }
+       private:
+           int m_progress;
+           int m_totalSteps;
+   };
+    
+    CollectionReader( QObject* parent, QObject* statusBar, const QStringList& folders, bool recursively );
     ~CollectionReader();
 
     bool doJob();
@@ -135,10 +150,11 @@ public:
     QStringList dirList() { return m_dirList; }
     
 private:
-    void readDir( const QString& path );
+    void readDir( const QString& path, QStringList& entries );
     void readTags( const QStringList& entries );
     
     QPtrList<MetaBundle> m_metaList;
+    QObject* m_statusBar;
     QStringList m_folders;
     QStringList m_dirList;
     bool m_recursively;

@@ -22,6 +22,7 @@
 #include <ktoolbar.h>
 #include <kstatusbar.h>
 
+#include <qevent.h>
 #include <qlabel.h>
 
 #include "engine/engineobserver.h"
@@ -36,6 +37,8 @@ public:
     StatusBar( QWidget *parent = 0, const char *name = 0 );
     virtual ~StatusBar();
 
+    static StatusBar* self() { return m_self; }
+    
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( EngineBase::EngineState state );
     virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
@@ -44,8 +47,11 @@ protected: /* reimpl from engineobserver */
 
 private slots:
     void slotToggleTime();
-
+    
 private:
+    void customEvent( QCustomEvent* e );
+    
+    static StatusBar* m_self;
     static const int ID_STATUS = 1;
     ToggleLabel *m_pTimeLabel;
 };
