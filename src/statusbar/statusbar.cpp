@@ -85,7 +85,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // for great justice!
     connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
-    connect( EngineController::instance(), SIGNAL(statusText( const QString& )), SLOT(message( const QString& )) );
 
     slotItemCountChanged( 0, 0, 0, 0 );
 

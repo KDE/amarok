@@ -323,7 +323,6 @@ StatusBar::setProgress( int steps )
 void
 StatusBar::setProgress( KIO::Job *job, unsigned long percent )
 {
-    kdDebug() << k_funcinfo << endl;
     setProgress( ( QObject* ) job, percent );
 }
 
@@ -375,6 +374,9 @@ StatusBar::updateTotalProgress()
             progress += (*it)->progress();
         }
     }
+
+    if ( totalSteps == 0 && progress == 0 )
+        return;
 
     m_mainProgressBar->setTotalSteps( totalSteps );
     m_mainProgressBar->setProgress( progress );
