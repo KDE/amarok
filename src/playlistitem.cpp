@@ -196,12 +196,11 @@ MetaBundle PlaylistItem::metaBundle()
 
 QString PlaylistItem::text( int column ) const
 {
-    //if trackname (column 0) is hidden, then show trackname text in title column if there
-    //is no text set for the title (column 1)
+    //if there is no text set for the title, return a pretty version of the track name
 
-    if( column == Title && listView()->columnWidth( TrackName ) == 0 && KListViewItem::text( Title ).isEmpty() )
+    if( column == Title && KListViewItem::text( Title ).isEmpty() )
     {
-            return KListViewItem::text( TrackName );
+        return MetaBundle::prettyTitle( KListViewItem::text( TrackName ) );
     }
 
     return KListViewItem::text( column );

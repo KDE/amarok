@@ -65,6 +65,7 @@ public:
 
     static /*inline */QString prettyBitrate( int );
     static QString prettyLength( int );
+    static QString prettyTitle( QString );
 
 private:
     const KURL    m_url;

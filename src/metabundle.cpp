@@ -87,21 +87,20 @@ MetaBundle::init( TagLib::AudioProperties *ap )
 QString
 MetaBundle::prettyTitle() const
 {
-    QString s = m_title, fileName = m_url.fileName();
+    if( m_artist.isEmpty() )
+        return m_title;
+    else
+        return m_artist + " - " + m_title;
+}
 
-    if( s.isEmpty() || s == fileName ) // no title tag
-    {
-        //derive a prettyTitle from the filename
+QString
+MetaBundle::prettyTitle( QString fileName ) //static
+{
+    QString s;
 
-        //remove file extension and tidy
-        s = fileName;
-        s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
-        s = KURL::decode_string(s);
-
-    } else if( !m_artist.isEmpty() ) {
-
-        s = m_artist + " - " + s;
-    }
+    //remove file extension, s/_/ /g and decode %2f-like sequences
+    s = fileName.left( s.findRev( '.' ) ).replace( '_', ' ' );
+    s = KURL::decode_string(s);
 
     return s;
 }
