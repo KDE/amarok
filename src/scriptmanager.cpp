@@ -13,6 +13,7 @@
 #include <kiconloader.h>
 #include <klistview.h>
 #include <klocale.h>
+#include <kprocess.h>
 #include <kpushbutton.h>
 #include <krun.h>
 #include <ktextedit.h>
@@ -151,9 +152,11 @@ ScriptManager::slotRunScript()
     QDir::setCurrent( url.directory() );
     kdDebug() << "Running script: " << url.path() << endl;
 
-    KRun* script = new KRun( url );
+    KProcess* script = new KProcess( this );
+    *script << url.path();
+    script->start();
     m_scripts[name].process = script;
-    connect( script, SIGNAL( finished() ), SLOT( scriptFinished() ) );
+    connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
 }
 
 
@@ -168,8 +171,10 @@ ScriptManager::slotStopScript()
     QString name = li->text( 0 );
 
     // Kill script process
-    if ( m_scripts[name].process )
-        m_scripts[name].process->abort();
+    if ( m_scripts[name].process ) {
+        delete m_scripts[name].process;
+        m_scripts[name].process = 0;
+    }
 
     li->setPixmap( 0, SmallIcon( "stop" ) );
 }
@@ -196,14 +201,18 @@ ScriptManager::slotConfigureScript()
 
 
 void
-ScriptManager::scriptFinished() //SLOT
+ScriptManager::scriptFinished( KProcess* process ) //SLOT
 {
     DEBUG_FUNC_INFO
 
-    ScriptMap::ConstIterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
-        if ( !it.data().process )
-            it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
+        if ( it.data().process == process ) {
+                delete it.data().process;
+                it.data().process = 0;
+                it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
+        }
+    }
 }
 
 
