@@ -306,7 +306,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         case DELETE: {
             
             int button = KMessageBox::warningContinueCancel( this, 
-                                i18n("Are you sure do you want to delete this cover?" ),
+                                i18n("Are you sure you want to delete this cover?" ),
                                 QString::null,
                                 i18n("&Delete Cover") );
 
