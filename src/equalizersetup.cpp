@@ -67,6 +67,15 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN Band Sliders
     const char *bandLabels[] = { "60", "170", "310", "600", "1k", "3k", "6k", "12k", "14k", "16k" };
+
+    int minWidth = 0;
+    QFontMetrics fm = fontMetrics(); //apparently it's an expensive call
+    for ( int i = 0; i < 10; i++ ) {
+         int w = fm.width( bandLabels[i] );
+         if ( w > minWidth )
+             minWidth = w;
+    }
+
     for ( int i = 0; i < 10; i++ ) {
         QVBox  *box    = new QVBox( groupBox_sliders );
         Slider *slider = new Slider( Qt::Vertical, box );
@@ -75,6 +84,7 @@ EqualizerSetup::EqualizerSetup()
         slider->setMinValue( -100 );
         slider->setMaxValue( +100 );
         slider->setValue( AmarokConfig::equalizerGains()[i] );
+        slider->setMinimumWidth( minWidth );
         m_bandSliders.append( slider );
 
         connect( slider, SIGNAL( valueChanged( int ) ), SLOT( setEqualizerParameters() ) );
