@@ -82,8 +82,12 @@ DirectoryList::Result DirectoryList::exec() {
 ////////////////////////////////////////////////////////////////////////////////
 
 void DirectoryList::slotAddDirectory() {
-    QString dir = KFileDialog::getExistingDirectory();
+    KFileDialog dia( QString::null, QString::null, 0, 0, true );
+    dia.setMode( KFile::Directory | KFile::ExistingOnly );
+    dia.setCaption( "Select Folder" );
+    dia.exec();
     
+    QString dir = dia.selectedURL().path();
     if ( !dir.isEmpty() && m_dirList.find( dir ) == m_dirList.end() ) {
         m_dirList.append( dir );
         new KListViewItem( m_base->directoryListView, dir );
