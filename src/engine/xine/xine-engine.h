@@ -24,6 +24,8 @@ public:
     long position() const;
     bool isStream() const { return false; }
 
+    std::vector<float>* scope();
+
     EngineBase::EngineState state() const;
 
     void  play( const KURL &url ) { m_url = url; play(); }
@@ -38,12 +40,21 @@ private:
     static  void XineEventListener(void* p, const xine_event_t*);
     virtual void customEvent( QCustomEvent* );
 
-    xine_t             *xineEngine;
-    xine_stream_t      *xineStream;
-    xine_audio_port_t  *audioDriver;
-    xine_event_queue_t *eventQueue;
+    xine_t             *m_xine;
+    xine_stream_t      *m_stream;
+    xine_audio_port_t  *m_audioPort;
+    xine_event_queue_t *m_eventQueue;
+    xine_post_t        *m_post;
 
     KURL m_url;
 };
+
+typedef struct post_class_s post_class_t;
+
+extern "C"
+{
+    post_class_t*
+    scope_init_plugin( xine_t* );
+}
 
 #endif

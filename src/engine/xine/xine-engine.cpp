@@ -22,6 +22,12 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <qdir.h>
 #include <xine/xineutils.h>
 
+#define this this_
+#define XINE_ENGINE_INTERNAL
+    #include <xine/xine_internal.h> //for port_ticket from struct xine_t
+    #include <xine/post.h>
+#undef this
+
 
 static inline kdbgstream
 debug()
@@ -32,19 +38,19 @@ debug()
 
 XineEngine::XineEngine()
   : EngineBase()
-  , xineEngine( 0 )
-  , xineStream( 0 )
-  , audioDriver( 0 )
-  , eventQueue( 0 )
+  , m_xine( 0 )
+  , m_stream( 0 )
+  , m_audioPort( 0 )
+  , m_eventQueue( 0 )
 {}
 
 XineEngine::~XineEngine()
 {
-    if (xineStream)  xine_close(xineStream);
-    if (eventQueue)  xine_event_dispose_queue(eventQueue);
-    if (xineStream)  xine_dispose(xineStream);
-    if (audioDriver) xine_close_audio_driver(xineEngine, audioDriver);
-    if (xineEngine)  xine_exit(xineEngine);
+    if (m_stream)     xine_close(m_stream);
+    if (m_eventQueue) xine_event_dispose_queue(m_eventQueue);
+    if (m_stream)     xine_dispose(m_stream);
+    if (m_audioPort)  xine_close_audio_driver(m_xine, m_audioPort);
+    if (m_xine)       xine_exit(m_xine);
 
     debug() << "xine closed\n";
 }
@@ -52,86 +58,135 @@ XineEngine::~XineEngine()
 void
 XineEngine::init( bool&, int, bool )
 {
-    debug() << "Initialising xine...\n";
+    debug() << "Enjoy the xine-engine. Please report bugs to amarok-devel@lists.sourceforge.net\n";
 
-    xineEngine = xine_new();
+    m_xine = xine_new();
 
-    if (!xineEngine)
+    if (!m_xine)
     {
         KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
         return;
     }
+
+    xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
+
 
     QString
     path  = QDir::homeDirPath();
     path += "/.%1/config";
     path  = QFile::exists( path.arg( "kaffeine" ) ) ? path.arg( "kaffeine" ) : path.arg( "xine" );
 
-    xine_config_load( xineEngine, path.local8Bit() );
+    xine_config_load( m_xine, path.local8Bit() );
 
-    xine_init( xineEngine );
+    xine_init( m_xine );
 
-    audioDriver = xine_open_audio_driver( xineEngine, "auto", NULL );
-    if( !audioDriver )
+    m_audioPort = xine_open_audio_driver( m_xine, "auto", NULL );
+    if( !m_audioPort )
     {
         KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
         return;
     }
 
-    xineStream  = xine_stream_new( xineEngine, audioDriver, 0 );
-    if( !xineStream )
+    m_stream  = xine_stream_new( m_xine, m_audioPort, 0 );
+    if( !m_stream )
     {
         KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
         return;
     }
 
-    eventQueue = xine_event_new_queue( xineStream );
-    xine_event_create_listener_thread( eventQueue, &XineEngine::XineEventListener, (void*)this );
+    m_eventQueue = xine_event_new_queue( m_stream );
+    xine_event_create_listener_thread( m_eventQueue, &XineEngine::XineEventListener, (void*)this );
+
+
+    //create scope post plugin
+    //it syphons off audio buffers into our scope data structure
+
+    post_class_t  *post_class  = scope_init_plugin( m_xine );
+    post_plugin_t *post_plugin = post_class->open_plugin( post_class, 1, &m_audioPort, NULL );
+
+    //code is straight from xine_init_post()
+    //can't use that function as it only dlopens the plugins and our plugin is statically linked in
+
+    post_plugin->running_ticket = m_xine->port_ticket;
+    post_plugin->xine = m_xine;
+    post_plugin->node = NULL;
+
+    post_plugin->input_ids = (const char**)malloc(sizeof(char *)*2);
+    xine_post_in_t *input = (xine_post_in_t *)xine_list_first_content( post_plugin->input );
+    post_plugin->input_ids[0] = input->name; //"audio in";
+    post_plugin->input_ids[1] = NULL;
+
+    post_plugin->xine_post.type = PLUGIN_POST;
+
+    post_plugin->output_ids = (const char**)malloc(sizeof(char *));
+    post_plugin->output_ids[0] = NULL;
+
+    m_post = &post_plugin->xine_post;
 }
 
 void
 XineEngine::play()
 {
-    if( xine_get_status( xineStream ) == XINE_STATUS_PLAY && !xine_get_param( xineStream, XINE_PARAM_SPEED ) )
+    if( xine_get_status( m_stream ) == XINE_STATUS_PLAY && !xine_get_param( m_stream, XINE_PARAM_SPEED ) )
     {
-        xine_set_param(xineStream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+        xine_set_param(m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
         return;
     }
 
-    xine_close( xineStream );
+    xine_close( m_stream );
 
-    if( xine_open( xineStream, m_url.url().local8Bit() ) )
+    if( xine_open( m_stream, m_url.url().local8Bit() ) )
     {
-        if( xine_play( xineStream, 0, 0 ) ) return;
+        if( xine_play( m_stream, 0, 0 ) )
+        {
+            xine_post_out_t *source = xine_get_audio_source( m_stream );
+            xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
+
+            xine_post_wire( source, target );
+
+            return;
+        }
     }
 
     //we should get a ui message from the event listener
-    //KMessageBox::sorry( 0, i18n( "<p>xine could not open the media at: <i>%1</i>" ).arg( m_url.prettyURL() ) );
+    //KMessageBox::sorry( 0, i18n( "<p>m_xine could not open the media at: <i>%1</i>" ).arg( m_url.prettyURL() ) );
     emit stopped();
 }
 
 void
 XineEngine::stop()
 {
-    xine_stop( xineStream );
+    xine_stop( m_stream );
 }
 
 void
 XineEngine::pause()
 {
-    xine_set_param(xineStream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE);
+    xine_set_param(m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE);
 }
 
 EngineBase::EngineState
 XineEngine::state() const
 {
-    switch( xine_get_status( xineStream ) )
+    switch( xine_get_status( m_stream ) )
     {
-    case XINE_STATUS_PLAY: return xine_get_param(xineStream, XINE_PARAM_SPEED) ? EngineBase::Playing : EngineBase::Paused;
+    case XINE_STATUS_PLAY: return xine_get_param(m_stream, XINE_PARAM_SPEED) ? EngineBase::Playing : EngineBase::Paused;
     case XINE_STATUS_IDLE: return EngineBase::Idle;
     case XINE_STATUS_STOP:
     default:               return EngineBase::Empty;
     }
+}
+
+std::vector<float>*
+XineEngine::scope()
+{
+    extern short myBuffer[512][6];
+
+    std::vector<float> *v = new std::vector<float>( 512 );
+
+    for( uint x = 0; x < 513; ++x ) (*v)[x] = (double)myBuffer[x][0]/double(2<<15);
+
+    return v;
 }
 
 long
@@ -141,7 +196,7 @@ XineEngine::position() const
     int time = 0;
     int length;
 
-    xine_get_pos_length( xineStream, &pos, &time, &length );
+    xine_get_pos_length( m_stream, &pos, &time, &length );
 
     return time;
 }
@@ -149,14 +204,14 @@ XineEngine::position() const
 void
 XineEngine::seek( long ms )
 {
-    xine_play( xineStream, 0, ms );
+    xine_play( m_stream, 0, ms );
 }
 
 bool
 XineEngine::initMixer( bool hardware )
 {
     //ensure that software mixer volume is back to normal
-    xine_set_param( xineStream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+    xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
 
     m_mixerHW = hardware ? 0 : -1;
     return hardware;
@@ -165,7 +220,7 @@ XineEngine::initMixer( bool hardware )
 void
 XineEngine::setVolume( int vol )
 {
-    xine_set_param( xineStream, isMixerHardware() ? XINE_PARAM_AUDIO_VOLUME : XINE_PARAM_AUDIO_AMP_LEVEL, vol );
+    xine_set_param( m_stream, isMixerHardware() ? XINE_PARAM_AUDIO_VOLUME : XINE_PARAM_AUDIO_AMP_LEVEL, vol );
     m_volume = vol;
 }
 
@@ -176,7 +231,7 @@ XineEngine::canDecode( const KURL &url, mode_t, mode_t )
 
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 );
-    return QStringList::split( ' ', xine_get_file_extensions( xineEngine ) ).contains( ext ) && ext != "txt";
+    return QStringList::split( ' ', xine_get_file_extensions( m_xine ) ).contains( ext ) && ext != "txt";
 }
 
 void
@@ -222,7 +277,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         xine_ui_message_data_t *data = (xine_ui_message_data_t *)xineEvent->data;
         QString message;
 
-        /* some code taken from the xine-ui - Copyright (C) 2000-2003 the xine project */
+        /* some code taken from the m_xine-ui - Copyright (C) 2000-2003 the m_xine project */
         switch( data->type )
         {
         case XINE_MSG_NO_ERROR:

@@ -9,7 +9,7 @@ libamarok_xine_engine_la_LIBADD = \
     $(LIB_KDECORE) $(LIB_KDEUI) \
     $(LIBS_XINE)
 
-libamarok_xine_engine_la_SOURCES = xine-engine.cpp
+libamarok_xine_engine_la_SOURCES = xine-scope.c xine-engine.cpp
 libamarok_xine_engine_la_LDFLAGS = -module $(KDE_PLUGIN) $(all_libraries)
 
 METASOURCES  = AUTO
