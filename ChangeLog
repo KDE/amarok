@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 
+  * fix: made stream playback with TitleProxy more stable (by using an unbuffered socket)
   * add: show stream metadata in on-screen-display
   * chg: transformed "EQ" button into a togglebutton, which can also hide the effect browser
   * add: new OpenGL analyzer, contributed by Enrico Ros <eros.kde@email.it>
