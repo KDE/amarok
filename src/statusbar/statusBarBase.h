@@ -40,9 +40,38 @@ namespace KDE
 
     /**
      * @class KDE::StatusBar
+     * @short advanced statusBar
+     *
+     * Like a normal QStatusBar, but add widgets directly:
+     *
+     *    new QLabel( text, statusbar );
+     *
+     * The statusbar has some handy progress monitoring behaviour, use like so:
+     *
+     *    statusbar->newProgressOperation( myObject )
+     *          .setDescription( i18n("MyProgressOperation") )
+     *          .setStatus( i18n("Stage1") )
+     *          .setAbortSlot( myObject, SLOT(abort()) )
+     *          .setTotalSteps( 100 );
+     *
+     * The newProgressOperation function returns a KDE::ProgressBar, which is
+     * a QProgressBar with some additional functions that return ProgressBar&,
+     * so you can chain the mutators like above. @see KDE::ProgressBar
+     *
+     * After this point you can use setProgress( QObject*, int steps ) to update
+     * the progress for this progress operation. Only one progress operation per
+     * QObject!
+     *
+     * You can also follow KIO::Jobs, with built in error handling, and
+     * ThreadWeaver::Jobs have built in thread-safe progress handling.
+     *
+     * You can show long status/error messages using longMessage(), these are
+     * meant to be instead of showing an irritating, interuptory KMessageBox.
      *
      * Caveats:
-     *   This only looks sensible if the statusbar is at the bottom of the screen
+     * This only looks sensible if the statusbar is at the bottom of the screen
+     *
+     * @see KDE::ProgressBar
      */
 
     class StatusBar : public QFrame
@@ -56,8 +85,13 @@ namespace KDE
         enum MessageType { Information, Question, Sorry, Warning, Error, ShowAgainCheckBox };
 
         /**
-         * Start a progress operation, with @param owner
-         * if owner is 0, the return value is undefined, the application will prolly crash
+         * Start a progress operation, if owner is 0, the return value is
+         * undefined - the application will probably crash.
+         * @param owner controls progress for this operation
+         * @return the progressBar so you can configure its parameters
+         * @see setProgress( QObject*, int )
+         * @see incrementProgress( QObject* )
+         * @see setProgressStatus( const QObject*, const QString& )
          */
         ProgressBar &newProgressOperation( QObject *owner );
 
@@ -68,7 +102,6 @@ namespace KDE
 
         void setProgress( const QObject *owner, int steps );
         void incrementProgress( const QObject *owner );
-
         void setProgressStatus( const QObject *owner, const QString &text );
 
     public slots:
