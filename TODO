@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> OSD doesn't show on top of other widgets with Fluxbox and other window managers.
+
   <markey> Make the "Add Playlist" button in the Playlist-Browser show a Enter-Location dialog, just like
            in Konqueror. This way you will be able to open remote stream playlists with it.
 
