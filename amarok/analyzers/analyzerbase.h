@@ -36,7 +36,7 @@ public:
 protected:
     AnalyzerBase( uint );
 
-    void interpolate( std::vector<float>*, std::vector<float>& ) const;
+    void interpolate( std::vector<float> *inVec, std::vector<float> &outVec ) const;
     void initSin( std::vector<float> & ) const;
 
     virtual void init() = 0;

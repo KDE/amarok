@@ -184,6 +184,10 @@ else
 #  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
 fi
 
+
+
+dnl ---------- QT OPENGL CHECK ----------
+
 AC_MSG_CHECKING(for Qt with OpenGL support)
 AC_CACHE_VAL(ac_cv_kde_qt_has_opengl,
 [
@@ -216,4 +220,11 @@ AC_MSG_RESULT($ac_cv_kde_qt_has_opengl)
 
 if test x$ac_cv_kde_qt_has_opengl = xyes; then
   AC_DEFINE(HAVE_QGLWIDGET, 1, [have Qt with OpenGL support])
+  gl_libs="-lGL"
+else
+  gl_libs=""
 fi
+
+AC_SUBST(gl_libs)
+
+dnl ---------- END QT OPENGL CHECK ----------

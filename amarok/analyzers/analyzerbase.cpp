@@ -27,39 +27,33 @@ AnalyzerBase::AnalyzerBase( uint timeout )
 AnalyzerBase::~AnalyzerBase()
 {}
 
+
 void
-AnalyzerBase::interpolate( std::vector<float> *oldVec, std::vector<float> &newVec ) const
+AnalyzerBase::interpolate( std::vector<float> *inVec, std::vector<float> &outVec ) const
 {
-    if ( oldVec->size() )
+    double pos = 0.0;
+    double step = static_cast<double>( inVec->size() ) / outVec.size();
+
+    for ( uint i = 0; i < outVec.size(); ++i, pos += step )
     {
-        uint newSize = newVec.size(); //vector::size() is O(1)
+        double error = pos - floor( pos );
+        unsigned long offset = static_cast<unsigned long>( pos );
 
-        //necessary? code bloat if not
-        if( newSize == oldVec->size() ) { newVec = *oldVec; return; }
+        unsigned long indexLeft = offset + 0;
 
-        double pos = 0.0;
-        double step = static_cast<double>( oldVec->size() ) / newSize;
+        if ( indexLeft >= inVec->size() )
+            indexLeft = inVec->size() - 1;
 
-        for ( uint i = 0; i < newSize; ++i, pos += step )
-        {
-            double error = pos - floor( pos );
-            unsigned long offset = static_cast<unsigned long>( pos );
+        unsigned long indexRight = offset + 1;
 
-            unsigned long indexLeft = offset + 0;
+        if ( indexRight >= inVec->size() )
+            indexRight = inVec->size() - 1;
 
-            if ( indexLeft >= oldVec->size() )
-                indexLeft = oldVec->size() - 1;
-
-            unsigned long indexRight = offset + 1;
-
-            if ( indexRight >= oldVec->size() )
-                indexRight = oldVec->size() - 1;
-
-            newVec[i] = (*oldVec)[indexLeft] * ( 1.0 - error ) +
-                        (*oldVec)[indexRight] * error;
-        }
+        outVec[i] = (*inVec)[indexLeft ] * ( 1.0 - error ) +
+                    (*inVec)[indexRight] * error;
     }
 }
+
 
 void
 AnalyzerBase::initSin( std::vector<float> &v ) const

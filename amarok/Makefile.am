@@ -24,7 +24,7 @@ amarok_LDADD = \
         $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
         -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde \
         -lartsgui -lartsgui_kde -lartsmodules $(LIB_KUTILS) $(LIB_KFILE) \
-        $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)
+        $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST) $(gl_libs)
 
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
