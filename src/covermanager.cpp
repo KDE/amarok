@@ -34,7 +34,6 @@
 #include <kpushbutton.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kurl.h>
-#include <kio/job.h>
 
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
@@ -343,16 +342,9 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
                 #undef item
 
                 for ( item = m_coverView->firstItem(); item; item = item->nextItem() )
-                {
                     if ( static_cast<CoverViewItem*>(item)->isSelected() )
-                    {
-                        KURL url( static_cast<CoverViewItem*>(item)->albumPath() );
-                        /*KIO::DeleteJob* job = */KIO::del( url );
-                        static_cast<CoverViewItem*>(item)->updateCover( QPixmap() );
-
-                        //connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( slotCoverDeleted() ) );
-                    }
-                }
+                        if ( m_db->removeImageFromAlbum( static_cast<CoverViewItem*>(item)->artist(), static_cast<CoverViewItem*>(item)->album() ) )
+                            static_cast<CoverViewItem*>(item)->updateCover( QPixmap() );
             }
             break;
         }
