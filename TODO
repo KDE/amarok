@@ -186,5 +186,53 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+BT from samppa 09.01.2004: Huge playlist > 14000 items, hangs at startup
 
+#0  0x4118bc3e in QListViewItem::sortChildItems ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#1  0x4118c39a in QListViewItem::enforceSortOrder ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#2  0x4119043d in QListView::buildDrawableList ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#3  0x411902ce in QListView::drawContentsOffset ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#4  0x411c422e in QScrollView::viewportPaintEvent ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#5  0x409a9f1c in KListView::viewportPaintEvent ()
+   from /usr/kde/3.3/lib/libkdeui.so.4
+#6  0x080bea3e in Playlist::viewportPaintEvent (this=0x82d1ed0, e=0x2)
+    at playlist.cpp:885
+#7  0x411c3c42 in QScrollView::eventFilter () from /usr/qt/3/lib/libqt-mt.so.3
+#8  0x41192488 in QListView::eventFilter () from /usr/qt/3/lib/libqt-mt.so.3
+#9  0x080beb55 in Playlist::eventFilter (this=0xbfffe3b0, o=0x415115f8,
+    e=0x82d1ed0) at playlist.cpp:954
+#10 0x410aca2e in QObject::activate_filters () from /usr/qt/3/lib/libqt-mt.so.3
+#11 0x410ac95c in QObject::event () from /usr/qt/3/lib/libqt-mt.so.3
+#12 0x410e50ef in QWidget::event () from /usr/qt/3/lib/libqt-mt.so.3
+#13 0x41052cbf in QApplication::internalNotify ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#14 0x41052025 in QApplication::notify () from /usr/qt/3/lib/libqt-mt.so.3
+#15 0x40c044aa in KApplication::notify () from /usr/kde/3.3/lib/libkdecore.so.4
+#16 0x4101c4dd in QWidget::repaint () from /usr/qt/3/lib/libqt-mt.so.3
+#17 0x410e6341 in QWidget::repaint () from /usr/qt/3/lib/libqt-mt.so.3
+#18 0x411915c1 in QListView::updateContents () from /usr/qt/3/lib/libqt-mt.so.3
+#19 0x414011d7 in QListView::qt_invoke () from /usr/qt/3/lib/libqt-mt.so.3
+#20 0x409adb3b in KListView::qt_invoke () from /usr/kde/3.3/lib/libkdeui.so.4
+#21 0x080c222a in Playlist::qt_invoke (this=0xbfffe3b0, _id=1095833080,
+    _o=0x82d3224) at playlist.moc:225
+#22 0x410af0fc in QObject::activate_signal () from /usr/qt/3/lib/libqt-mt.so.3
+#23 0x410aef24 in QObject::activate_signal () from /usr/qt/3/lib/libqt-mt.so.3
+#24 0x413eff7b in QTimer::timeout () from /usr/qt/3/lib/libqt-mt.so.3
+#25 0x410d08d2 in QTimer::event () from /usr/qt/3/lib/libqt-mt.so.3
+#26 0x41052cbf in QApplication::internalNotify ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#27 0x41052025 in QApplication::notify () from /usr/qt/3/lib/libqt-mt.so.3
+#28 0x40c044aa in KApplication::notify () from /usr/kde/3.3/lib/libkdecore.so.4
+#29 0x41042305 in QEventLoop::activateTimers ()
+   from /usr/qt/3/lib/libqt-mt.so.3
+#30 0x40ffcbbb in QEventLoop::processEvents () from /usr/qt/3/lib/libqt-mt.so.3
+#31 0x0807c6b0 in App::applySettings (this=0xbfffee70, firstTime=true)
+    at app.cpp:433
+#32 0x0807a485 in App (this=0xbfffee70) at app.cpp:106
+#33 0x080febb9 in main (argc=2, argv=0xbffff004) at main.cpp:62
 
