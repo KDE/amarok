@@ -942,7 +942,7 @@ void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
 
     //"Albums by ..." related styles
     styleSheet += QString( ".album-header {}" );
-    styleSheet += QString( ".album-header:hover { background-color: %1; cursor: pointer; }" ).arg( bg );
+    styleSheet += QString( ".album-header:hover { color: %1; background-color: %1; cursor: pointer; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
 
     //boxes used to display score (sb: score box)
