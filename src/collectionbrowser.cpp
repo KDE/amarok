@@ -887,11 +887,28 @@ CollectionView::showTrackInfo() //SLOT
 void
 CollectionView::updateColumnHeader()
 {
-    setColumnText( 0, captionForCategory( m_cat1 ) );
+    if ( m_viewMode == modeFlatView )
+    {
+        // remove all columns
+        for ( int i = columns() - 1; i >= 0 ; --i )
+            removeColumn( i );
+
+        addColumn( i18n( "Title" ) );
+        addColumn( captionForCategory( m_cat1 ) );
+        if( m_cat2 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat2 ) );
+        if( m_cat3 != CollectionBrowser::IdNone ) addColumn( captionForCategory( m_cat3 ) );
+
+        setResizeMode( QListView::AllColumns );
+    }
+    else
+    {
+        setColumnText( 0, captionForCategory( m_cat1 ) );
         int catArr[2] = {m_cat2, m_cat3};
-    for(int i = 0; i < 2; i++) {
-        if (catArr[i] != CollectionBrowser::IdNone ) {
-            setColumnText( 0, columnText(0) + " / " + captionForCategory( catArr[i] ) ); 
+
+        for(int i = 0; i < 2; i++) {
+            if (catArr[i] != CollectionBrowser::IdNone ) {
+                setColumnText( 0, columnText(0) + " / " + captionForCategory( catArr[i] ) ); 
+            }
         }
     }
 }
