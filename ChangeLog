@@ -3,6 +3,8 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * chg: exchanged old player icons with new ones made by
+         Alper Ayazoglu a.k.a. cubon <cubon@cubon.de>
   * add: clicking on EQ button activates effect selection widget 
   * add: KJanusWidget as a sidebar for filebrowser mode selection
   * add: a stream browser, can only DnD, separate window, not great yet

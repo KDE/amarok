@@ -31,6 +31,7 @@ email                :
 #include <qevent.h>
 #include <qfont.h>
 #include <qframe.h>
+#include <qiconset.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
@@ -110,20 +111,26 @@ AmarokSystray::AmarokSystray( PlayerWidget *child, KActionCollection *ac ) : KSy
     // switch amaroK off by pushing rmb on tray icon and then suddenly lmb on the
     // bottom item. 2) if you do like in case 1) the most frequent operation is to
     // change to next track, so it must be at bottom. [usability]
-    contextMenu() ->clear();
-    contextMenu() ->insertTitle( kapp->miniIcon(), kapp->caption() );
+    contextMenu()->clear();
+    contextMenu()->insertTitle( kapp->miniIcon(), kapp->caption() );
 
     ac->action( "options_configure" )->plug( contextMenu() );
-    contextMenu() ->insertItem( i18n( "&Help" ), ( new KHelpMenu( this, KGlobal::instance() ->aboutData() ) ) ->menu() );
+    contextMenu()->insertItem( i18n( "&Help" ), ( new KHelpMenu(
+                   this, KGlobal::instance()->aboutData() ) )->menu() );
     ac->action( "file_quit" )->plug( contextMenu() );
 
-    contextMenu() ->insertSeparator();
+    contextMenu()->insertSeparator();
 
-    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunback.png" ) ), i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
-    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunplay.png" ) ), i18n( "[&X] Play" ), kapp, SLOT( slotPlay() ) );
-    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunpause.png" ) ), i18n( "[&C] Pause" ), kapp, SLOT( slotPause() ) );
-    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunstop.png" ) ), i18n( "[&V] Stop" ), kapp, SLOT( slotStop() ) );
-    contextMenu() ->insertItem( QIconSet( locate( "data", "amarok/images/hi16-action-noatunforward.png" ) ), i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
+    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_prev.png" ) ),
+                               i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
+    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_play.png" ) ),
+                               i18n( "[&X] Play" ), kapp, SLOT( slotPlay() ) );
+    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_pause.png" ) ),
+                               i18n( "[&C] Pause" ), kapp, SLOT( slotPause() ) );
+    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_stop.png" ) ),
+                               i18n( "[&V] Stop" ), kapp, SLOT( slotStop() ) );
+    contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_next.png" ) ), 
+                               i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
 
     // don't love them just yet
     setAcceptDrops( false );
@@ -170,14 +177,14 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name ),
-        DCOPObject( "player" ),
-        m_pActionCollection( new KActionCollection( this ) ),
-        m_pPopupMenu( NULL ),
-        m_pVis( NULL ),
-        m_pPlayObjConfigWidget( NULL ),
-        m_visTimer( new QTimer( this ) ),
-        m_nowPlaying( "" )
+        : QWidget( parent, name )
+        , DCOPObject( "player" )
+        , m_pActionCollection( new KActionCollection( this ) )
+        , m_pPopupMenu( NULL )
+        , m_pVis( NULL )
+        , m_pPlayObjConfigWidget( NULL )
+        , m_visTimer( new QTimer( this ) )
+        , m_nowPlaying( "" )
 {
     setCaption( "amaroK" );
     setPaletteForegroundColor( pApp->m_fgColor );
@@ -189,7 +196,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     KStdAction::reportBug( this, SLOT( slotReportBug() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                             "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
+                             "options_configure_global_keybinding" )->
+    setText( i18n( "Configure Global Shortcuts" ) );
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
     KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
@@ -232,33 +240,58 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     QString pathStr( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
 
     if ( pathStr == QString::null )
-        KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget make install?" ), i18n( "amaroK Error" ) );
+        KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget make install?" ),
+                            i18n( "amaroK Error" ) );
+
+    //<Player Buttons>
+    QIconSet iconSet;
 
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_prev.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_prev_down.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
+    m_pButtonPrev->setIconSet( iconSet );
     m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPrev->setPixmap( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
     m_pButtonPrev->setFlat( true );
 
     m_pButtonPlay = new QPushButton( m_pFrameButtons );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_play.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_play_down.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
+    m_pButtonPlay->setIconSet( iconSet );
     m_pButtonPlay->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPlay->setPixmap( locate( "data", "amarok/images/hi16-action-noatunplay.png" ) );
     m_pButtonPlay->setToggleButton( true );
     m_pButtonPlay->setFlat( true );
 
     m_pButtonPause = new QPushButton( m_pFrameButtons );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_pause.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_pause_down.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
+    m_pButtonPause->setIconSet( iconSet );
     m_pButtonPause->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPause->setPixmap( locate( "data", "amarok/images/hi16-action-noatunpause.png" ) );
     m_pButtonPause->setFlat( true );
 
     m_pButtonStop = new QPushButton( m_pFrameButtons );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_stop.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_stop_down.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
+    m_pButtonStop->setIconSet( iconSet );
     m_pButtonStop->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonStop->setPixmap( locate( "data", "amarok/images/hi16-action-noatunstop.png" ) );
     m_pButtonStop->setFlat( true );
 
     m_pButtonNext = new QPushButton( m_pFrameButtons );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_next.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( locate( "data", "amarok/images/b_next_down.png" ),
+                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
+    m_pButtonNext->setIconSet( iconSet );
     m_pButtonNext->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonNext->setPixmap( locate( "data", "amarok/images/hi16-action-noatunforward.png" ) );
     m_pButtonNext->setFlat( true );
+    //</Player Buttons>
 
     QBoxLayout* lay = new QVBoxLayout( this );
     lay->addWidget( m_pFrame );

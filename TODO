@@ -93,8 +93,6 @@ MID-TERM:
 
     * add: save/load arts effects on close/startup automatically
 
-    * chg: get rid of ugly noatun button-gfx (play, forward, etc.) and get some better ones 
-        
     * chg: can we make all buttons into actions? if we can, we could use setState(), a global
            actionCollection and save plenty of LOC. I see problems with the play/stop/etc
            buttons though.
