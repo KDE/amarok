@@ -337,7 +337,7 @@ void PlayerWidget::setScroll( const TitleProxy::metaPacket &packet )
     kdDebug() << "bitRate    : " << packet.bitRate     << endl;
     kdDebug() << "title      : " << packet.title       << endl;
     kdDebug() << "url        : " << packet.url         << endl;
-    
+
     setScroll( QString( "%1 - %2" ).arg( packet.streamName, packet.title ) );
 
     m_bitrate    = packet.bitRate + " kpbs";
@@ -599,6 +599,7 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 
     //NOTE we must accept() here or the info box below appears on quit()
     //Don't ask me why.. *shrug*
+
     e->accept();
 
     if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
@@ -718,11 +719,4 @@ void PlayerWidget::startDrag()
     // do NOT delete d.
 }
 
-/*
-void PlayerWidget::slotReportBug()
-{
-    KBugReport report;
-    report.exec();
-}
-*/
 #include "playerwidget.moc"

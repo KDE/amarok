@@ -460,6 +460,7 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 {
     //put the o == test last as these events are fairly rare
     //TODO is using a switch better here?
+
     if( e->type() == QEvent::Close && o == m_pBrowserWin )
     {
         m_pPlayerWidget->m_pButtonPl->setOn( false );
@@ -468,13 +469,9 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     {
         m_pBrowserWin->hide();
     }
-    else if( (e->type() == QEvent::Show || e->type() == QEvent::ShowNormal) && o == m_pPlayerWidget && !e->spontaneous() )
+    else if( e->type() == QEvent::Show && o == m_pPlayerWidget && m_pPlayerWidget->m_pButtonPl->isOn() )
     {
         m_pBrowserWin->show();
-    }
-    else if( e->type() == QEvent::ShowMinimized && o == m_pPlayerWidget )
-    {
-        m_pBrowserWin->hide();
     }
 
     return FALSE;

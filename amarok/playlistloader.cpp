@@ -669,7 +669,7 @@ AudioPropertiesReader::doJob()
     int y  = m_item->itemPos(); //const //FIXME slow function!
     int h  = m_item->height();  //const
     int y2 = m_listView->contentsY(); //TODO find out the performance of this function
-    if( y >= y2 && y <= ( y2 + m_listView->visibleHeight() - h ) )
+    if( (y + h) >= y2 && y <= (y2 + m_listView->visibleHeight()) )
     {
         //This is a quick scan
         //A more accurate scan is done when the track is played, and those properties are recorded with the track
