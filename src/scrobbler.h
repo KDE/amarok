@@ -35,6 +35,9 @@ class Scrobbler : public QObject, public EngineObserver
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     protected:
+        Scrobbler();
+        ~Scrobbler();
+
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*state*/ );
         void engineTrackPositionChanged( long /*position*/ );
 
@@ -44,8 +47,6 @@ class Scrobbler : public QObject, public EngineObserver
             KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
-        Scrobbler();
-        ~Scrobbler();
         void appendSimilar( SubmitItem* item ) const;
         QString m_similarArtistsBuffer;
         QString m_artist;

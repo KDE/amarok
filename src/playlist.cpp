@@ -1030,6 +1030,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
         QCString subtype;
         QTextDrag::decode( e, data, subtype );
 
+        debug() << subtype << endl;
+
         if( subtype == "amarok-sql" ) {
             setSorting( NO_SORT );
             ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );

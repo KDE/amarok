@@ -263,6 +263,9 @@ class CollectionDB : public QObject, public EngineObserver
         void applySettings();
 
     protected:
+        CollectionDB();
+        ~CollectionDB();
+
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength );
         /** Manages regular folder monitoring scan */
@@ -286,8 +289,6 @@ class CollectionDB : public QObject, public EngineObserver
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
 
-        CollectionDB();
-        ~CollectionDB();
         void initialize();
         void destroy();
         //general management methods

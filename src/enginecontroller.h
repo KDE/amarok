@@ -98,7 +98,7 @@ private slots:
     void slotStateChanged( Engine::State );
     void streamError();
 
-private:
+protected:
     EngineController();
    ~EngineController();
 
