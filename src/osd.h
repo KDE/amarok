@@ -30,8 +30,10 @@ class OSDWidget : public QWidget
     Q_OBJECT
       public:
         enum Position {
+          TopCenter,
           TopLeft,
           TopRight,
+          BottomCenter,
           BottomLeft,
           BottomRight,
           Center
@@ -46,6 +48,7 @@ class OSDWidget : public QWidget
         void setOffset(int x, int y);
         void setPosition(Position pos);
         void setScreen(uint screen);
+        void setHorizontalAutoCenter(bool center);
         void setText(const QString &text) { m_currentText = text; refresh(); }
 
         void unsetColors();
@@ -83,7 +86,8 @@ class OSDWidget : public QWidget
         QPoint m_offset;
         Position m_position;
         int m_screen;
-
+        bool m_horizontalAutoCenter;
+        
         bool m_dirty; //if dirty we will be re-rendered before we are shown
 };
 

@@ -379,8 +379,8 @@ void App::applySettings()
     m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
     m_pOSD->setScreen( AmarokConfig::osdScreen() );
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
-
-
+    m_pOSD->setHorizontalAutoCenter( AmarokConfig::osdHorizontalAutoCenter() );
+    
     playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
     reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
 

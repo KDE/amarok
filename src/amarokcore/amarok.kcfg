@@ -2,327 +2,332 @@
 <!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
 <!-- Author: Stanislav Karchebny, berk@upnet.ru -->
 <kcfg>
-  <kcfgfile name="amarokrc"/>
+<kcfgfile name="amarokrc"/>
 
-  <include>qdir.h</include>
+<include>qdir.h</include>
 <!--  <include>kapplication.h</include>
-  <include>kglobalsettings.h</include>
-  <include>config.h</include> -->
+<include>kglobalsettings.h</include>
+<include>config.h</include> -->
 
-  <group name="General Options">
-     <entry key="Version" type="String">
+<group name="General Options">
+    <entry key="Version" type="String">
         <label>Amarok Version</label>
         <default></default>
         <whatsthis>Amarok version string, used to restart aRts in new installations.</whatsthis>
-     </entry>
-     <entry key="Player Pos" type="Point">
+    </entry>
+    <entry key="Player Pos" type="Point">
         <label>Position of player window</label>
         <default code="true">QPoint(0,0)</default>
         <whatsthis>The position of the amaroK main window when amaroK is started.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Pos" type="Point">
+    </entry>
+    <entry key="Playlist Window Pos" type="Point">
         <label>Position of playlist window</label>
         <default code="true">QPoint(0,0)</default>
         <whatsthis>The position of the playlist window when amaroK is started.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Size" type="Size">
+    </entry>
+    <entry key="Playlist Window Size" type="Size">
         <label>Size of playlist window</label>
         <default code="true">QSize(600,450)</default>
         <whatsthis>The size of the playlist window when amaroK is started.</whatsthis>
-     </entry>
-     <entry key="Save Playlist" type="Bool">
+    </entry>
+    <entry key="Save Playlist" type="Bool">
         <label>Whether to save playlist on quit</label>
         <default>true</default>
         <whatsthis>If set, amaroK saves the current playlist on quit and restores it when restarted.</whatsthis>
-     </entry>
-     <entry key="Follow Symlinks" type="Bool">
+    </entry>
+    <entry key="Follow Symlinks" type="Bool">
         <label>Whether to follow symlinks while adding items to playlist recursively</label>
         <default>true</default>
         <whatsthis>If set, amarok follows symlinks when adding files or directories to the playlist.</whatsthis>
-     </entry>
-     <entry key="Time Display Remaining" type="Bool">
+    </entry>
+    <entry key="Time Display Remaining" type="Bool">
         <label>Whether to display remaining track time</label>
         <default>false</default>
         <whatsthis>Set this to display remaining track time instead of past track time in the player window.</whatsthis>
-     </entry>
-     <entry key="Repeat Track" type="Bool">
+    </entry>
+    <entry key="Repeat Track" type="Bool">
         <label>Whether to play track repeatedly</label>
         <default>false</default>
         <whatsthis>If set, amaroK repeats the current track indefinitely.</whatsthis>
-     </entry>
-     <entry key="Repeat Playlist" type="Bool">
+    </entry>
+    <entry key="Repeat Playlist" type="Bool">
         <label>Whether to play whole playlist repeatedly</label>
         <default>false</default>
         <whatsthis>If set, amaroK repeats the playlist indefinitely.</whatsthis>
-     </entry>
-     <entry key="Random Mode" type="Bool">
+    </entry>
+    <entry key="Random Mode" type="Bool">
         <label>Whether to play tracks in random order</label>
         <default>false</default>
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
-     </entry>
-     <entry key="Show Meta Info" type="Bool">
+    </entry>
+    <entry key="Show Meta Info" type="Bool">
         <label>Whether to show track metadata</label>
         <default>true</default>
         <whatsthis>Enable/Disable metadata display like ID3 tags in the playlist.</whatsthis>
-     </entry>
-     <entry key="Show Tray Icon" type="Bool">
+    </entry>
+    <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <default>true</default>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>
-     </entry>
-     <entry key="Show Player Window" type="Bool">
+    </entry>
+    <entry key="Show Player Window" type="Bool">
         <label>Whether to show player window</label>
         <default>true</default>
         <whatsthis>Makes amaroK more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
-     </entry>
-     <entry key="Show Status Bar" type="Bool">
+    </entry>
+    <entry key="Show Status Bar" type="Bool">
         <label>Whether to show the Playlist Statusbar</label>
         <default>false</default>
         <whatsthis>View some status information on the playlist.</whatsthis>
-     </entry>
-     <entry key="Directories Recursively" type="Bool">
+    </entry>
+    <entry key="Directories Recursively" type="Bool">
         <label>Whether to add directories to playlist recursively</label>
         <default>true</default>
         <whatsthis>Enable/Disable recursive directory adding to the playlist.</whatsthis>
-     </entry>
-     <entry key="Track Delay Length" type="Int">
+    </entry>
+    <entry key="Track Delay Length" type="Int">
         <label>Delay between tracks, in milliseconds</label>
         <default>0</default>
         <whatsthis>Delay between tracks, in milliseconds.</whatsthis>
-     </entry>
-     <entry key="Hide Playlist Window" type="Bool">
+    </entry>
+    <entry key="Hide Playlist Window" type="Bool">
         <label>Whether to hide playlist together with player window</label>
         <default>false</default>
         <whatsthis>If set, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not set, the player window and the playlist hide totally independent of each other.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Enabled" type="Bool">
+    </entry>
+    <entry key="Playlist Window Enabled" type="Bool">
         <label>Whether the playlist window is visible</label>
         <default>true</default>
         <whatsthis>Enable/Disable the playlist window. Equal to clicking the PL button in the player window.</whatsthis>
-     </entry>
-     <entry key="Undo Levels" type="Int">
+    </entry>
+    <entry key="Undo Levels" type="Int">
         <label>Number of undo levels in playlist</label>
         <default>30</default>
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
-     </entry>
-     <entry key="Current Analyzer" type="Int">
+    </entry>
+    <entry key="Current Analyzer" type="Int">
         <label>Index of current visual analyzer</label>
         <default>-1</default>
         <whatsthis>The ID of the visual analyzer to display.</whatsthis>
-     </entry>
-     <entry key="Remember Effects" type="Bool">
+    </entry>
+    <entry key="Remember Effects" type="Bool">
         <label>Persistent audio effects</label>
         <default>true</default>
         <whatsthis>If set, amaroK remembers the audio effects set through the effects window.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Splitter" type="IntList">
+    </entry>
+    <entry key="Playlist Window Splitter" type="IntList">
         <label>Playlist window splitter positions</label>
         <default>70,140</default>
         <whatsthis>Currently unused</whatsthis>
-     </entry>
-     <entry key="Playlist Follow Active" type="Bool">
+    </entry>
+    <entry key="Playlist Follow Active" type="Bool">
         <label>Whether the playlist should scroll with the active playlist item</label>
         <default>false</default>
         <whatsthis>If set, the playlist scrolls on song change to make the currently playing item visible. Measures are taken not to scroll if inappropriate.</whatsthis>
-     </entry>
-     <entry key="Show Splashscreen" type="Bool">
+    </entry>
+    <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
         <default>true</default>
-	<whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>
-     </entry>
-  </group>
+    <whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>
+    </entry>
+</group>
 
-  <group name="Playback">
-     <entry key="Master Volume" type="Int">
+<group name="Playback">
+    <entry key="Master Volume" type="Int">
         <label>Master volume</label>
         <default>50</default>
         <min>0</min>
         <max>100</max>
         <whatsthis>The amaroK master volume, a value between 0 (muted) and 100.</whatsthis>
-     </entry>
-     <entry key="Hardware Mixer" type="Bool">
+    </entry>
+    <entry key="Hardware Mixer" type="Bool">
         <label>Use soundcard hardware mixer for volume</label>
         <default>false</default>
         <whatsthis>Enable/Disable soundcard hardware mixer. If set, the volume slider sets the master volume on the soundcard which affects the whole system. If not set, the volume slider only affects the amaroK output.</whatsthis>
-     </entry>
-     <entry key="Crossfade" type="Bool">
+    </entry>
+    <entry key="Crossfade" type="Bool">
         <label>Whether to crossfade between tracks</label>
         <default>true</default>
         <whatsthis>Enable/Disable crossfading between track changes.</whatsthis>
-     </entry>
-     <entry key="Crossfade Length" type="Int">
+    </entry>
+    <entry key="Crossfade Length" type="Int">
         <label>Length of crossfade, in milliseconds</label>
         <default>2200</default>
         <whatsthis>The length of the crossfade between tracks in milliseconds.</whatsthis>
-     </entry>
-     <entry key="Sound System" type="String">
+    </entry>
+    <entry key="Sound System" type="String">
         <label>Sound system to use</label>
         <default>aRts Engine</default>
         <whatsthis>Select the sound system used to play media. amaroK currently support "aRts", "GStreamer" and "NMM", however their availability depends on the configuration used at compile time.</whatsthis>
-     </entry>
-     <entry key="Sound Output" type="String">
+    </entry>
+    <entry key="Sound Output" type="String">
         <label>Sound output method to use</label>
         <default>Alsa</default>
         <whatsthis>Select the sound output system. amaroK currently support "Alsa" and "OSS", however their availability depends on the system configuration.</whatsthis>
-     </entry>
-     <entry key="Sound Device" type="String">
+    </entry>
+    <entry key="Sound Device" type="String">
         <label>Sound output device to use</label>
         <default></default>
         <whatsthis>Select the sound output device. this is useful for gstreamer engine sinks</whatsthis>
-     </entry>
-     <entry key="Custom Sound Device" type="Bool">
+    </entry>
+    <entry key="Custom Sound Device" type="Bool">
         <label>Don't use the autodetected audiosink sound device</label>
         <default>false</default>
         <whatsthis>When enabled, uses user-specified sound device for audiosink.</whatsthis>
-     </entry>
-     <entry key="Title Streaming" type="Bool">
+    </entry>
+    <entry key="Title Streaming" type="Bool">
         <label>Read titles of shoutcast streams</label>
         <default>true</default>
         <whatsthis>Enable/Disable shoutcast metadata fetching. If set, amaroK displays metadata also for shoutcast streams.</whatsthis>
-     </entry>
-  </group>
+    </entry>
+</group>
 
-  <group name="OSD">
-     <entry key="Osd Enabled" type="Bool">
+<group name="OSD">
+    <entry key="Osd Enabled" type="Bool">
         <label>Use On-Screen Display</label>
         <default>true</default>
         <whatsthis>Enable/Disable the On-Screen Display.</whatsthis>
-     </entry>
-      <entry key="Osd Font" type="Font">
+    </entry>
+    <entry key="Osd Font" type="Font">
         <label>Font for On-Screen Display</label>
         <default code="true">QFont("Arial",20)</default>
-	<whatsthis>The font to use for the On-Screen Display.</whatsthis>
-     </entry>
-     <entry key="Osd Draw Shadow" type="Bool">
+    <whatsthis>The font to use for the On-Screen Display.</whatsthis>
+    </entry>
+    <entry key="Osd Draw Shadow" type="Bool">
         <label>Draw a shadow around the text.</label>
         <default>true</default>
-	<whatsthis>Draws a shadow around the OSD-text.</whatsthis>
-     </entry>
-     <entry key="Osd Use Custom Colors" type="Bool">
+    <whatsthis>Draws a shadow around the OSD-text.</whatsthis>
+    </entry>
+    <entry key="Osd Use Custom Colors" type="Bool">
         <label>Whether to use custom colors for the OSD</label>
         <default>false</default>
-	<whatsthis>You can use custom colors for the OSD if you set this true.</whatsthis>
-     </entry>
-     <entry key="Osd Text Color" type="Color">
+    <whatsthis>You can use custom colors for the OSD if you set this true.</whatsthis>
+    </entry>
+    <entry key="Osd Text Color" type="Color">
         <label>Font Color for On-Screen Display</label>
         <default>#ffff00</default>
-	<whatsthis>The color of the OSD text. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
-     </entry>
-     <entry key="Osd Background Color" type="Color">
+    <whatsthis>The color of the OSD text. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+    </entry>
+    <entry key="Osd Background Color" type="Color">
         <label>Background Color for On-Screen Display</label>
         <default>#1500a0</default>
-	<whatsthis>The color of the OSD background. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
-     </entry>
-     <entry key="Osd Duration" type="Int">
+    <whatsthis>The color of the OSD background. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+    </entry>
+    <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed</label>
         <min>500</min>
         <max>10000</max>
         <default>5000</default>
-	<whatsthis>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms. The default is 5000 ms.</whatsthis>
-     </entry>
-     <entry key="Osd X Offset" type="Int">
+    <whatsthis>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms. The default is 5000 ms.</whatsthis>
+    </entry>
+    <entry key="Osd X Offset" type="Int">
         <label>X position offset</label>
         <min>0</min>
         <max>10000</max>
         <default>30</default>
-	<whatsthis>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</whatsthis>
-     </entry>
-     <entry key="Osd Y Offset" type="Int">
+    <whatsthis>The X position of the OSD relative to the chosen screen and OSD alignment. If Left alignment is chosen the X offset is the space between the leftmost part of the OSD and the left border of the screen. If Right alignment is chosen the X offset is the space between the rightmost part of the OSD and the right border of the screen.</whatsthis>
+    </entry>
+    <entry key="Osd Y Offset" type="Int">
         <label>Y position offset</label>
         <min>0</min>
         <max>10000</max>
         <default>30</default>
-	<whatsthis>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</whatsthis>
-     </entry>
-     <entry key="Osd Screen" type="Int">
+    <whatsthis>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</whatsthis>
+    </entry>
+    <entry key="Osd Screen" type="Int">
         <label>OSD screen</label>
         <default>0</default>
-	<whatsthis>The screen that should display the OSD. For single-headed environments this setting should be 0.</whatsthis>
-     </entry>
-     <entry key="Osd Alignment" type="Enum">
+    <whatsthis>The screen that should display the OSD. For single-headed environments this setting should be 0.</whatsthis>
+    </entry>
+    <entry key="Osd Alignment" type="Enum">
         <label>Align OSD to</label>
-	<choices>
-          <choice name="TopLeft">
-	    <label>Top left</label>
-	  </choice>
-          <choice name="TopRight"/>
-          <choice name="BottomLeft"/>
-          <choice name="BottomRight"/>
-          <choice name="Center"/>
-        </choices>
-        <default>TopLeft</default>
-	<whatsthis>The relative position of the OSD. Possible choiced are TopLeft, TopRight, BottomLeft, BottomRight, and Center.</whatsthis>
+    <choices>
+        <choice name="TopCenter"/>
+        <choice name="TopLeft" />
+        <choice name="TopRight"/>
+        <choice name="BottomCenter"/>
+        <choice name="BottomLeft"/>
+        <choice name="BottomRight"/>
+        <choice name="Center"/>
+    </choices>
+        <default>BottomCenter</default>
+        <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
+    </entry>
+    <entry key="Osd Horizontal Auto Center" type="Bool">
+        <label>Whether the OSD should automatically center horizontally.</label>
+        <default>false</default>
+        <whatsthis>You can make the OSD center automatically when you set this to true. Helps to prevent text clipping.</whatsthis>
     </entry>
 
-  </group>
+</group>
 
-  <group name="Fonts">
-     <entry key="Use Custom Fonts" type="Bool">
+<group name="Fonts">
+    <entry key="Use Custom Fonts" type="Bool">
         <label>Whether to use user-defined fonts</label>
         <default>false</default>
         <whatsthis>Enabled/Disables custom fonts.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Font" type="Font">
+    </entry>
+    <entry key="Playlist Window Font" type="Font">
         <label>Font in playlist window</label>
         <default code="true">QFont("Helvetica",9)</default>
-	<whatsthis>The font to use in the playlist window.</whatsthis>
-     </entry>
-     <entry key="Player Widget Font" type="Font">
+    <whatsthis>The font to use in the playlist window.</whatsthis>
+    </entry>
+    <entry key="Player Widget Font" type="Font">
         <label>Font in player window</label>
         <default code="true">QFont("Helvetica",9)</default>
-	<whatsthis>The font to use in the player window.</whatsthis>
-     </entry>
-     <entry key="Player Widget Scroll Font" type="Font">
+    <whatsthis>The font to use in the player window.</whatsthis>
+    </entry>
+    <entry key="Player Widget Scroll Font" type="Font">
         <label>Font in player window title scroller</label>
         <default code="true">QFont("Helvetica",9)</default>
-	<whatsthis>The font to use in the player window title scroller.</whatsthis>
-     </entry>
-  </group>
+    <whatsthis>The font to use in the player window title scroller.</whatsthis>
+    </entry>
+</group>
 
-  <group name="Colors">
-     <entry key="Scheme Amarok" type="Bool">
+<group name="Colors">
+    <entry key="Scheme Amarok" type="Bool">
         <label>Whether to use amaroK standard colors in the playlist window</label>
         <default>true</default>
         <whatsthis>If set, amaroK uses the amaroK standard colors in the playlist.</whatsthis>
-     </entry>
-     <entry key="Scheme KDE" type="Bool">
+    </entry>
+    <entry key="Scheme KDE" type="Bool">
         <label>Whether to use global KDE colors in the playlist window</label>
         <default>false</default>
         <whatsthis>If set, amaroK uses the KDE standard colors in the playlist.</whatsthis>
-     </entry>
-     <entry key="Scheme Custom" type="Bool">
+    </entry>
+    <entry key="Scheme Custom" type="Bool">
         <label>Whether to use user-defined colors in the playlist window</label>
         <default>false</default>
         <whatsthis>If set, amaroK uses the user-defined colors in the playlist.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Fg Color" type="Color">
+    </entry>
+    <entry key="Playlist Window Fg Color" type="Color">
         <label>Playlist window foreground color</label>
         <default>#80a0ff</default>
-	<whatsthis>The color to use as foreground color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
-     </entry>
-     <entry key="Playlist Window Bg Color" type="Color">
+    <whatsthis>The color to use as foreground color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+    </entry>
+    <entry key="Playlist Window Bg Color" type="Color">
         <label>Playlist window background color</label>
         <default>#000000</default>
-	<whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
-     </entry>
-  </group>
+    <whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma separated list containing three integers between 0 and 255.</whatsthis>
+    </entry>
+</group>
 
-  <group name="Session">
-     <entry key="Resume Playback" type="Bool">
+<group name="Session">
+    <entry key="Resume Playback" type="Bool">
         <label>Resume playback of last played track on startup</label>
         <default>false</default>
         <whatsthis>If set, amaroK resumes playback of the last played track on startup.</whatsthis>
-     </entry>
-     <entry key="Resume Track" type="Path">
+    </entry>
+    <entry key="Resume Track" type="Path">
         <label>Track URL to resume upon startup</label>
         <default></default>
         <whatsthis>Internal: URL of the track to resume on startup.</whatsthis>
-     </entry>
-     <entry key="Resume Time" type="Int">
+    </entry>
+    <entry key="Resume Time" type="Int">
         <label>Time to resume at, in seconds</label>
         <default>-1</default>
         <whatsthis>Internal: Playback position in the track to resume on startup.</whatsthis>
-     </entry>
-  </group>
+    </entry>
+</group>
 
 </kcfg>

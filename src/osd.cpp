@@ -68,13 +68,17 @@ void OSDWidget::renderOSDText( const QString &text )
     //this should by within the screen bounds, there is a change the height is too much though
     textRect.addCoords( 0, 0, 20, titleRect.height() );
 
-
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
     resize( textRect.size() );
     rePosition();
 
-
+    // Be nice and center the text, if the user wishes so
+    if ( m_horizontalAutoCenter ) {
+        const QRect screenRect = QApplication::desktop()->screenGeometry( m_screen );
+        move( screenRect.width() / 2 - textRect.width() / 2, y() );
+    }
+        
     // Start painting!
     QPainter bufferPainter( &osdBuffer );
     QPainter maskPainter( &mask );
@@ -208,6 +212,12 @@ void OSDWidget::setScreen(uint screen)
     rePosition();
 }
 
+void OSDWidget::setHorizontalAutoCenter(bool center)
+{
+    m_horizontalAutoCenter = center;
+    rePosition();
+}
+
 void OSDWidget::refresh()
 {
     if( isVisible() )
@@ -271,17 +281,26 @@ void OSDWidget::rePosition()
 
     switch( m_position )
     {
+        case TopCenter:
+            newPos.rx() = (screenRect.width()  - osdBuffer.width())  / 2;
+            break;
+        
         case TopLeft:
             //nothing to do here, it is already set to m_offset above
             break;
 
+        case BottomCenter:
+            newPos.rx() = (screenRect.width()  - osdBuffer.width())  / 2;
+            newPos.ry() = screenRect.height() - m_offset.y() - osdBuffer.height();
+            break;
+        
         case TopRight:
         case BottomRight:
             newPos.rx() = screenRect.width() - m_offset.x() - osdBuffer.width();
             if( m_position == TopRight ) break;
 
             //BottomRight FALLS_THROUGH
-
+        
         case BottomLeft:
             newPos.ry() = screenRect.height() - m_offset.y() - osdBuffer.height();
             break;

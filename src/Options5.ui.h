@@ -70,35 +70,17 @@ void Options5::screenChanged( int screen )
 }
 
 
-void Options5::xOffsetChanged( int offset )
-{
-    m_pOSDPreview->setOffset( offset, kcfg_OsdYOffset->value() );
-}
-
-
-void Options5::yOffsetChanged( int offset )
-{
-    m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), offset );
-}
-
-
 void Options5::osdPositionChanged( int screen, OSDWidget::Position alignment, int xOffset, int yOffset )
 {
     // atomic
     kcfg_OsdScreen->blockSignals( true );
     kcfg_OsdAlignment->blockSignals( true );
-    kcfg_OsdXOffset->blockSignals( true );
-    kcfg_OsdYOffset->blockSignals( true );
 
     kcfg_OsdScreen->setCurrentItem( screen );
     kcfg_OsdAlignment->setCurrentItem( alignment );
-    kcfg_OsdXOffset->setValue( xOffset );
-    kcfg_OsdYOffset->setValue( yOffset );
 
     kcfg_OsdScreen->blockSignals( false );
     kcfg_OsdAlignment->blockSignals( false );
-    kcfg_OsdXOffset->blockSignals( false );
-    kcfg_OsdYOffset->blockSignals( false );
 }
 
 
@@ -115,7 +97,6 @@ void Options5::showEvent( QShowEvent * )
     m_pOSDPreview->setFont( kcfg_OsdFont->font() );
     m_pOSDPreview->setPosition( (OSDWidget::Position)kcfg_OsdAlignment->currentItem() );
     m_pOSDPreview->setScreen( kcfg_OsdScreen->currentItem() );
-    m_pOSDPreview->setOffset( kcfg_OsdXOffset->value(), kcfg_OsdYOffset->value() );
     m_pOSDPreview->setShown( kcfg_OsdEnabled->isChecked() );
 }
 
