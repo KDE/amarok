@@ -8,7 +8,6 @@
 #include "metabundle.h"
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
-#include "threadweaver.h"
 
 #include <unistd.h>         //CollectionView ctor
 
@@ -23,12 +22,10 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kdirwatch.h>
-#include <kglobal.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
-#include <kstandarddirs.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -123,7 +120,6 @@ CollectionDB* CollectionView::m_insertdb;
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
-        , m_weaver( new ThreadWeaver( this ) )
         , m_dirWatch( new KDirWatch( this ) )
 {
     kdDebug() << k_funcinfo << endl;
@@ -148,10 +144,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //</read config>
 
     //<open database>
-        m_databasePath = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                       + "collection.db" ).local8Bit();
-
-        m_db = new CollectionDB( m_databasePath );
+        m_db = new CollectionDB();
+        m_insertdb = new CollectionDB();
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
         {
@@ -161,9 +155,12 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
+
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
+        
+        m_insertdb->scanModifiedDirs();
     //</open database>
 
     connect( this,       SIGNAL( tagsReady() ),
@@ -174,15 +171,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,         SLOT( slotCollapse( QListViewItem* ) ) );
     connect( this,       SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,         SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
-    connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
-             this,         SLOT( dirDirty( const QString& ) ) );
 
     renderView();
-
-    if ( m_monitor ) {
-        m_dirWatch->startScan();
-        scan();
-    }
 }
 
 
@@ -238,27 +228,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scan()  //SLOT
 {
-    m_insertdb = new CollectionDB( m_databasePath );
-
-    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), m_dirs, m_recursively ) );
-
-    if ( m_monitor )
-        m_dirWatch->startScan();
-}
-
-
-void
-CollectionView::dirDirty( const QString& path )
-{
-    kdDebug() << k_funcinfo << "Dirty: " << path << endl;
-
-    //remove old records with the same dir as our dirty dir, to prevent dupes
-    QString command = QString
-                      ( "DELETE FROM tags WHERE dir = '%1';" )
-                      .arg( m_db->escapeString( path ) );
-    m_db->execSql( command );
-
-    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false ) );
+    m_insertdb->scan( m_dirs, m_recursively );
 }
 
 
@@ -270,7 +240,7 @@ CollectionView::renderView( )  //SLOT
     clear();
 
     //query database for all records with the specified category
-    QString filterToken = QString( "" );
+    QString filterToken;
     if ( m_filter != "" )
         filterToken = QString
                       ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
@@ -499,26 +469,12 @@ CollectionView::idForCat( const QString& cat ) const
 void
 CollectionView::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader ) {
-        kdDebug() << k_funcinfo << endl;
+    // we need to reconnect to the db after every scan, since sqlite is not able to keep
+    // the tables synced for multiple threads.
+    delete m_db;
+    m_db = new CollectionDB();
 
-        CollectionReader * c = static_cast<CollectionReader*>( e );
-        //CollectionReader provides a list of all subdirs, which we feed into KDirWatch
-        if ( m_monitor )
-            for ( uint i = 0; i < c->dirList().count(); i++ )
-                if ( !m_dirWatch->contains( c->dirList()[i] ) ) {
-                    m_dirWatch->addDir( c->dirList()[i], true );
-                        //kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
-                }
-
-        // we need to reconnect to the db after every scan, since sqlite is not able to keep
-        // the tables synced for multiple threads.
-        delete m_db;
-        delete m_insertdb;
-        m_db = new CollectionDB( m_databasePath );
-
-        emit tagsReady();
-    }
+    emit tagsReady();
 }
 
 

@@ -9,19 +9,22 @@
 #include <qstringlist.h>     //stack allocated
 
 class sqlite;
+class ThreadWeaver;
 
 class CollectionDB : public QObject
 {
     Q_OBJECT
     
     public:
-        CollectionDB( QCString path );
+        CollectionDB();
         ~CollectionDB();
 
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
         void incSongCounter( const QString url );
+        void updateDirStats( const QString path, const long datetime );
+        void removeSongsInDir( QString path );
 
         /**
          * Executes an SQL statement on the already opened database
@@ -39,13 +42,16 @@ class CollectionDB : public QObject
         int sqlInsertID();
         QString escapeString( QString string );
 
-        uint getValueID( QString name, QString value, bool autocreate = true );
+        uint getValueID( QString name, QString value, bool autocreate = true, bool useTempTables = false );
         void createTables( const bool temporary = false );
         void dropTables( const bool temporary = false );
         void moveTempTables();
+        void scanModifiedDirs();
+        void scan( const QStringList& folders, bool recursively );
       
     private:
         sqlite* m_db;
+        ThreadWeaver* m_weaver;
 };
 
 

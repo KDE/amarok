@@ -15,7 +15,6 @@
 #include <kurl.h>            //stack allocated
 
 class sqlite;
-class ThreadWeaver;
 
 class QCString;
 class QCustomEvent;
@@ -80,8 +79,6 @@ class CollectionView : public KListView
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
         
-        static CollectionDB* m_insertdb;
-        
     signals:
         void tagsReady();    
         
@@ -90,7 +87,6 @@ class CollectionView : public KListView
         void setupDirs();    
         
         void scan();
-        void dirDirty( const QString& path );
         
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
@@ -114,12 +110,11 @@ class CollectionView : public KListView
         
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 6;
+        static const int DATABASE_VERSION = 7;
         static CollectionDB* m_db;
-        QCString m_databasePath;
+        static CollectionDB* m_insertdb;
         
         CollectionBrowser* m_parent;
-        ThreadWeaver* m_weaver;
         KDirWatch* m_dirWatch;
         QString m_filter;
         QStringList m_dirs;

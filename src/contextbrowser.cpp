@@ -206,9 +206,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
 void ContextBrowser::sqlInit()
 {
-    QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                  + "collection.db" ).local8Bit();
-    m_db = new CollectionDB( path );
+    m_db = new CollectionDB();
 }
 
 

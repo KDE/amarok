@@ -3,19 +3,30 @@
 // See COPYING file for licensing information.
 
 #include "collectiondb.h"
-
+#include "threadweaver.h"
 #include "sqlite/sqlite.h"
+#include "app.h"
+#include "statusbar.h"
+
 #include <kdebug.h>
 #include <kurl.h>
+#include <kglobal.h>
+#include <kstandarddirs.h>
 #include <qcstring.h>
+
+#include <sys/stat.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionDB::CollectionDB( const QCString path )
+CollectionDB::CollectionDB()
+        : m_weaver( new ThreadWeaver( this ) )
 {
+    QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                  + "collection.db" ).local8Bit();
+
     m_db = sqlite_open( path, 0, 0 );
 }
 
@@ -108,6 +119,26 @@ CollectionDB::incSongCounter( const QString url )
         execSql( QString( "INSERT INTO statistics ( url, accessdate, playcounter ) VALUES ( '%1', strftime('%s', 'now'), 1 );" )
                 .arg( escapeString( url ) ) );
     }
+}
+
+
+void
+CollectionDB::updateDirStats( const QString path, const long datetime )
+{
+    execSql( QString( "REPLACE INTO directories ( dir, changedate ) VALUES ( '%1', %2 );" )
+             .arg( escapeString( path ) )
+             .arg( datetime ) );
+}
+
+
+void
+CollectionDB::removeSongsInDir( QString path )
+{
+    if ( path.endsWith( "/" ) ) 
+        path = path.left( path.length() - 1 );
+
+    execSql( QString( "DELETE FROM tags WHERE dir = '%1';" )
+             .arg( escapeString( path ) ) );
 }
 
 
@@ -245,6 +276,11 @@ CollectionDB::createTables( bool temporary )
         execSql( "CREATE INDEX genre_tag ON tags( genre );" );
         execSql( "CREATE INDEX year_tag ON tags( year );" );
         
+        // create directory statistics database
+        execSql( QString( "CREATE TABLE directories ("
+                            "dir VARCHAR(100) UNIQUE,"
+                            "changedate INTEGER );" ) );
+
         // create music statistics database
         execSql( QString( "CREATE TABLE statistics ("
                             "url VARCHAR(100) UNIQUE,"
@@ -280,11 +316,48 @@ CollectionDB::moveTempTables()
 }
 
 
-uint
-CollectionDB::getValueID( QString name, QString value, bool autocreate )
+void
+CollectionDB::scan( const QStringList& folders, bool recursively )
+{
+    m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
+}
+
+
+void
+CollectionDB::scanModifiedDirs()
 {
     QStringList values;
     QStringList names;
+    QStringList folders;
+    struct stat statBuf;
+
+    QString command = QString( "SELECT dir, changedate FROM directories;" );
+    execSql( command, &values, &names );
+    
+    for ( uint i = 0; i < values.count() / 2; i++ )
+    {
+        stat( values[i*2].local8Bit(), &statBuf );
+        
+        if ( QString::number( (long)statBuf.st_mtime ) != values[i*2 + 1] )
+        {
+            folders << values[i*2];
+            kdDebug() << "Collection dir changed: " << values[i*2] << endl;
+        }
+    }
+    
+    if ( !folders.isEmpty() )
+        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, false, true ) );
+}
+
+
+uint
+CollectionDB::getValueID( QString name, QString value, bool autocreate, bool useTempTables )
+{
+    QStringList values;
+    QStringList names;
+
+    if ( useTempTables )
+        name.append( "_temp" );
 
     QString command = QString( "SELECT id FROM %1 WHERE name LIKE '%2';" )
                       .arg( name )

@@ -4,7 +4,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "collectionbrowser.h"    //needed for execSql()
+#include "collectiondb.h"    //needed for execSql()
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "threadweaver.h"
@@ -28,7 +28,7 @@ static inline const TagLib::String LocaleAwareTString( const QString &s )
 }
 
 
-ThreadWeaver::ThreadWeaver( QWidget *w )
+ThreadWeaver::ThreadWeaver( QObject *w )
   : m_parent( w )
   , m_bool( true )
   , m_currentJob( 0 )
@@ -231,9 +231,6 @@ void SearchModule::searchDir( QString path )
         closedir( d );
         free( ent );
     }
-
-//    if ( item->text( 3 ) == path )
-//        item->setText( 2, "Done" );
 }
 
 
@@ -241,12 +238,14 @@ void SearchModule::searchDir( QString path )
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionReader::CollectionReader( QObject* parent, QObject* statusBar,
-                                    const QStringList& folders, bool recursively )
+CollectionReader::CollectionReader( CollectionDB* parent, QObject* statusBar,
+                                    const QStringList& folders, bool recursively, bool incremental )
    : Job( parent, Job::CollectionReader )
+   , m_parent( parent )
    , m_statusBar( statusBar )
    , m_folders( folders )
    , m_recursively( recursively )
+   , m_incremental( incremental )
 {}
 
 CollectionReader::~CollectionReader()
@@ -278,7 +277,11 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
     if ( !d ) return;
     dirent *ent;
     struct stat statBuf;
-
+                
+    //update dir statistics for rescanning purposes
+    stat( dir.local8Bit(), &statBuf );
+    m_parent->updateDirStats( dir, (long)statBuf.st_mtime );
+    
     while ( (ent = readdir( d )) ) {
         QCString entry = ent->d_name;
 
@@ -286,13 +289,14 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
             continue;
         entry.prepend( QFile::encodeName( dir.endsWith( "/" ) ? dir : dir + "/" ) );
 
-//         kdDebug() << entry << endl;
         stat( entry, &statBuf );
 
         if ( S_ISDIR( statBuf.st_mode ) ) {
             if ( m_recursively )
+            {
                 //call ourself recursively for each subdir
                 readDir( entry, entries );
+            }
         }
         else if ( S_ISREG( statBuf.st_mode ) )
             entries << QString::fromLocal8Bit( entry );
@@ -305,8 +309,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     KURL url;
-    CollectionDB* const insertdb = CollectionView::m_insertdb;
-    insertdb->createTables( true );
+    m_parent->createTables( true );
 
     for ( uint i = 0; i < entries.count(); i++ ) {
         if ( !( i % 20 ) ) //don't post events too often since this blocks amaroK
@@ -322,44 +325,49 @@ CollectionReader::readTags( const QStringList& entries ) {
                                 "( url, dir, album, artist, genre, title, year, comment, track ) "
                                 "VALUES('";
 
-            command += insertdb->escapeString( bundle->url().path() ) + "','";
-            command += insertdb->escapeString( bundle->url().directory() ) + "',";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "album_temp", bundle->album() ) ) ) + ",";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "artist_temp", bundle->artist() ) ) ) + ",";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "genre_temp", bundle->genre() ) ) ) + ",'";
-            command += insertdb->escapeString( bundle->title() ) + "','";
-            command += insertdb->escapeString( QString::number( insertdb->getValueID( "year_temp", bundle->year() ) ) ) + "','";
-            command += insertdb->escapeString( bundle->comment() ) + "','";
-            command += insertdb->escapeString( bundle->track() ) + "');";
+            command += m_parent->escapeString( bundle->url().path() ) + "','";
+            command += m_parent->escapeString( bundle->url().directory() ) + "',";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "album", bundle->album(), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "artist", bundle->artist(), true, !m_incremental ) ) ) + ",";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "genre", bundle->genre(), true, !m_incremental ) ) ) + ",'";
+            command += m_parent->escapeString( bundle->title() ) + "','";
+            command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle->year(), true, !m_incremental ) ) ) + "','";
+            command += m_parent->escapeString( bundle->comment() ) + "','";
+            command += m_parent->escapeString( bundle->track() ) + "');";
 
-            insertdb->execSql( command );
+            m_parent->execSql( command );
             delete bundle;
         } else
         {
-            // is it an image?
+            // Add images to the cover database
             QStringList validExtensions;
             validExtensions << "jpg" << "png" << "gif" << "jpeg";
 
             if ( validExtensions.contains( url.filename().mid( url.filename().findRev('.')+1 ) ) )
-            {
-                insertdb->addImageToPath( url.directory(), url.filename(), true );
-            }
+                m_parent->addImageToPath( url.directory(), url.filename(), true );
         }
     }
     // let's lock the database (will block other threads)
-    insertdb->execSql( "BEGIN TRANSACTION;" );
+    m_parent->execSql( "BEGIN TRANSACTION;" );
 
     // remove tables and recreate them (quicker than DELETE FROM)
-    insertdb->dropTables();
-    insertdb->createTables();
+    if ( !m_incremental )
+    {
+        m_parent->dropTables();
+        m_parent->createTables();
+    } else
+    {
+        // remove old entries from database, only
+        for ( uint i = 0; i < m_folders.count(); i++ )
+          m_parent->removeSongsInDir( m_folders[i] );
+    }
 
     // rename tables
-    insertdb->moveTempTables();
+    m_parent->moveTempTables();
 
-    // remove temp tables
-    insertdb->dropTables( true );
-    // unlock database
-    insertdb->execSql( "END TRANSACTION;" );
+    // remove temp tables and unlock database
+    m_parent->dropTables( true );
+    m_parent->execSql( "END TRANSACTION;" );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }

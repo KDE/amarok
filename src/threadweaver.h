@@ -17,6 +17,7 @@
 
 class MetaBundle;
 class PlaylistItem;
+class CollectionDB;
 class KListView;
 class KListViewItem;
 class QListView;
@@ -57,7 +58,7 @@ class QWidget;
 class ThreadWeaver : public QThread
 {
 public:
-   ThreadWeaver( QWidget* );
+   ThreadWeaver( QObject* );
 
    class Job;
 
@@ -103,7 +104,7 @@ public:
 private:
    void run();
 
-   QWidget* const m_parent; //TODO can const this?
+   QObject* const m_parent; //TODO can const this?
    bool           m_bool;
    QPtrList<Job>  m_Q;
    Job           *m_currentJob;
@@ -204,7 +205,7 @@ public:
            int m_value;
    };
 
-    CollectionReader( QObject* parent, QObject* statusBar, const QStringList& folders, bool recursively );
+    CollectionReader( CollectionDB* parent, QObject* statusBar, const QStringList& folders, bool recursively, bool incremental );
     ~CollectionReader();
 
     bool doJob();
@@ -214,10 +215,12 @@ private:
     void readDir( const QString& dir, QStringList& entries );
     void readTags( const QStringList& entries );
 
+    CollectionDB* m_parent;
     QObject* m_statusBar;
     QStringList m_folders;
     QStringList m_dirList;
     bool m_recursively;
+    bool m_incremental;
 };
 
 
