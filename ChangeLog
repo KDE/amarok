@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  CHG: Run incremental scanning once a minute instead of every 30 seconds.
   FIX: When collection scanning was interrupted with Cancel, incremental
        scanning didn't work any longer.
   CHG: Handle incremental file scanning in a thread. Now the GUI doesn't
