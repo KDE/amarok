@@ -314,7 +314,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
                       .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
-        if ( values.count() )
+        if ( !values.isEmpty() )
             browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
                                       "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 - %5'><img align='left' valign='center' hspace='2' width='80' height='80' src='%6'></a>"
                                       "<i>Never played before</i></td>"
@@ -324,9 +324,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             .arg( m_currentTrack->album() )
                             .arg( m_currentTrack->artist() )
                             .arg( m_currentTrack->album() )
-                            .arg( m_db->getImageForPath( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) ) );
+                            .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) ) );
     }
-
     values.clear();
     names.clear();
 
@@ -350,8 +349,8 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-        for ( uint i = 0; i < ( values.count() / 3 ); i++ )
-            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i*3 + 1].replace( "\"", QCString( "%22" ) ) + "\">" + values[i*3] + " <i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
+        for ( uint i = 0; i < values.count(); i += 3 )
+            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + values[i] + " <i>(" + values[i + 2] + ")</i></a></td></tr>" ) );
 
         values.clear();
         names.clear();
@@ -380,10 +379,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             browser->write( "</table>" );
             browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-            for ( uint i = 0; i < ( values.count() / 3 ); i++ )
+            for ( uint i = 0; i < values.count(); i += 3 )
             {
-                QString tmp = values[i*3 + 2] == "" ? "" : values[i*3 + 2] + ". ";
-                browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i*3 + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i*3] + "</a></td></tr>" ) );
+                QString tmp = values[i + 2] == "" ? "" : values[i + 2] + ". ";
+                browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i*3] + "</a></td></tr>" ) );
             }
 
             values.clear();

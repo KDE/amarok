@@ -128,20 +128,20 @@ CollectionDB::getPathForAlbum( const QString artist_id, const QString album_id )
 QString
 CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage )
 {
-    KURL url;
-    url.setPath( getPathForAlbum( artist_id, album_id ) );
-
     QStringList values;
     execSql( QString( "SELECT DISTINCT artist.name, album.name FROM artist, album "
                       "WHERE artist.id = %1 AND album.id = %2;" )
                       .arg( artist_id ).arg( album_id ), &values );
                  
-    QString coverName = values[0] + " - " + values[1] + ".png";
-    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( coverName ) << endl;
+    QString key = values[0] + " - " + values[1] + ".png";
+    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( key ) << endl;
     
-    if ( m_coverDir.exists( coverName ) )
-        return m_coverDir.filePath( coverName );
-             
+    if ( m_coverDir.exists( key ) )
+        return m_coverDir.filePath( key );
+    
+    KURL url;
+    url.setPath( getPathForAlbum( artist_id, album_id ) );
+
     return getImageForPath( url.directory(), defaultImage );
 }
 
