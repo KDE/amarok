@@ -50,10 +50,11 @@ void
 CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
+
     m_artist = artist;
-    QString t_album = album;
+    m_album = album;
+
     //remove all matches to the album filter.
-    //NOTE: make a temp variable since removing the const from the param ripples throughout the codebase.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
     QStringList albumExtension;
@@ -64,14 +65,13 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
     {
         QRegExp re = replaceMe.arg( albumExtension[x] );
         re.setCaseSensitive( false );
-        t_album.replace( re, QString::null );
+        m_album.remove( re );
     }
-    m_album = t_album;
 
-    if ( artist == album )
-        m_keyword = t_album;
+    if ( artist == m_album )
+        m_keyword = m_album;
     else
-        m_keyword = artist + " - " + t_album;
+        m_keyword = artist + " - " + m_album;
 
     m_saveas = saveas;
     m_noedit = noedit;
