@@ -43,6 +43,8 @@ amaroK::Menu::Menu( QWidget *parent )
     insertSeparator();
 
     ac->action( "file_quit" )->plug( this );
+    connect( this, SIGNAL( aboutToShow() ), SLOT( slotAboutToShow() ) );
+    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
 }
 
 KPopupMenu*
@@ -54,16 +56,18 @@ amaroK::Menu::helpMenu( QWidget *parent ) //STATIC
     return HelpMenu->menu();
 }
 
-int
-amaroK::Menu::exec( const QPoint &p, int indexAtPoint ) //NOTE non virtual! :(
+
+void amaroK::Menu::slotAboutToShow()
 {
     setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
     setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
     setItemChecked( ID_RANDOM_MODE,     AmarokConfig::randomMode() );
     setItemEnabled( ID_CONF_DECODER,    EngineController::instance()->engine()->decoderConfigurable() );
+}
 
-    int index = QPopupMenu::exec( p, indexAtPoint );
 
+void amaroK::Menu::slotActivated( int index )
+{
     switch( index ) {
     case ID_REPEAT_TRACK:
         AmarokConfig::setRepeatTrack( !isItemChecked(ID_REPEAT_TRACK) );
@@ -78,6 +82,4 @@ amaroK::Menu::exec( const QPoint &p, int indexAtPoint ) //NOTE non virtual! :(
         EngineController::instance()->engine()->configureDecoder();
         break;
     }
-
-    return index;
 }

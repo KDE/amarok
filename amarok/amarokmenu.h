@@ -14,6 +14,7 @@ class KHelpMenu;
 namespace amaroK {
 
 class Menu : public QPopupMenu {
+    Q_OBJECT
 public:
 
     static const int ID_REPEAT_TRACK    = 100;
@@ -22,9 +23,12 @@ public:
     static const int ID_CONF_DECODER    = 103;
 
     Menu( QWidget *parent );
-    int exec( const QPoint&, int indexAtPoint = -1 );
 
     static KPopupMenu *helpMenu( QWidget *parent = 0 );
+
+private slots:
+    void slotAboutToShow();
+    void slotActivated( int index );
 
 private:
     static KHelpMenu *HelpMenu;
