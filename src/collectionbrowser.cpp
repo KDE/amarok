@@ -124,6 +124,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view->cat3Menu( m_view->m_cat3, true );
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
+    connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     // This is used when the collection folders were changed in the first-run wizard
     connect( kapp, SIGNAL( sigScanCollection() ), m_view, SLOT( scan() ) );
@@ -136,12 +137,14 @@ void
 CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
     if ( m_timer->isActive() ) m_timer->stop();
-    m_timer->start( 180, true );
+    m_timer->start( 280, true );
 }
 
 void
 CollectionBrowser::slotSetFilter() //SLOT
 {
+    if ( m_timer->isActive() ) m_timer->stop();
+
     m_view->setFilter( m_searchEdit->text() );
     m_view->renderView();
 }
