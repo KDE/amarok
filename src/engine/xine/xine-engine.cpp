@@ -24,6 +24,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 #define this this_
 #define XINE_ENGINE_INTERNAL
+#define METRONOM_INTERNAL
     #include <xine/xine_internal.h> //for port_ticket from struct xine_t
     #include <xine/post.h>
 #undef this
@@ -190,56 +191,66 @@ XineEngine::scope()
 {
     extern xine_list_t *myList;
     extern int myChannels;
+    extern metronom_t *myMetronom;
 
     std::vector<float> &v = *(new std::vector<float>( 512 ));
-
-    if( xine_list_is_empty( myList ) ) return &v;
-
-
     int64_t current_vpts = m_xine->clock->get_current_time( m_xine->clock );//m_stream->metronom->audio_vpts;
+    uint x = 0;
 
     audio_buffer_t *best_buf = 0;
-    audio_buffer_t *last_buf = (audio_buffer_t*)xine_list_last_content( myList );
     audio_buffer_t *buf      = (audio_buffer_t*)xine_list_first_content( myList );
 
-    //uint x = 0;
 
     while( buf )
     {
-        int vd = buf->vpts;
+        if( buf->stream != 0 )
+        {
+            buf->vpts = myMetronom->got_audio_samples( myMetronom, buf->vpts, buf->num_frames );
+            buf->stream = 0;
+        }
 
         if( buf->vpts < current_vpts )
         {
             free( buf->mem );
             free( buf );
             xine_list_delete_current( myList );
+
+            //xinelibs are gay, provide no get current list item function
+            buf = (audio_buffer_t*)xine_list_prev_content( myList );
         }
         else if( !best_buf || buf->vpts < best_buf->vpts ) best_buf = buf;
 
-        //++x;
-
-        if( buf == last_buf ) break;
+        ++x;
 
         buf = (audio_buffer_t*)xine_list_next_content( myList );
     }
 
-    //debug() << "chosen: " << best_buf->vpts << "| now: " << current_vpts << "| list size: " << x << endl;
-
     if( best_buf )
     {
-            int16_t *data16 = best_buf->mem;
+        uint
+        diff  = best_buf->vpts - current_vpts;
+        diff *= myMetronom->audio_samples;
+        diff /= myMetronom->pts_per_smpls;
 
-            //TODO we assume there are enough buffers. There may not be...
+        debug() << "chosen: " << best_buf->vpts << "| diff: " << best_buf->vpts - current_vpts << "buffer_offset: " << diff << "| list size: " << x << endl;
 
-            for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
-            {
-                for( a = 0, c = 0; c < myChannels; ++c ) a += data16[c];
 
-                v[i] = (double)a / (1<<15);
-            }
+        if( diff+512 > best_buf->num_frames ) { debug() << "Not enough frames in this buffer!\n"; return &v; }
 
-            return &v;
+
+        const int16_t *data16 = best_buf->mem;
+        data16 += diff*2;
+
+        //TODO we assume there are enough buffers. There may not be...
+
+        for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
+        {
+            for( a = 0, c = 0; c < myChannels; ++c ) a += data16[c];
+
+            v[i] = (double)a / (1<<15);
+        }
     }
+    else debug() << "No best_buf found!\n";
 
     return &v;
 }

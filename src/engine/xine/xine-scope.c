@@ -20,6 +20,7 @@ typedef struct post_class_scope_s post_class_scope_t;
 
 xine_list_t *myList;
 int          myChannels;
+metronom_t  *myMetronom;
 
 
 
@@ -59,7 +60,10 @@ scope_port_open(xine_audio_port_t *port_gen, xine_stream_t *stream, uint32_t bit
   this->channels = _x_ao_mode2channels(mode);
   if( this->channels > MAXCHANNELS ) this->channels = MAXCHANNELS;
 
-  this->metronom->set_master(this->metronom, stream->metronom);
+
+  /* MY GOD! Why do I have to do this!?
+   * You see if I don't the metronom doesn't make the timestamps accurate! */
+  memcpy( this->metronom, stream->metronom, sizeof( metronom_t ) );
 
 
   myChannels = this->channels;
@@ -73,22 +77,20 @@ scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 {
     post_audio_port_t   *port = (post_audio_port_t *)port_gen;
     post_plugin_scope_t *this = (post_plugin_scope_t *)port->post;
+    audio_buffer_t *buf;
+
 
     printf( "[xine-engine] post-plugin port_close()\n" );
 
     port->stream = NULL;
-
     port->original_port->close(port->original_port, stream );
-
     this->metronom->set_master(this->metronom, NULL);
 
-
-    audio_buffer_t *buf;
-    for( buf = xine_list_first_content( myList ); buf; buf = xine_list_next_content( myList ) )
+    for( ; !xine_list_is_empty( myList ); xine_list_delete_current( myList ) )
     {
+        buf = xine_list_first_content( myList );
         free( buf->mem );
         free( buf );
-        xine_list_delete_current( myList );
     }
 
     _x_post_dec_usage(port);
@@ -103,17 +105,11 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
 
     if( buf->num_frames < 512 || (port->bits == 8) ) { printf( "doh" ); return; }
 
-
     audio_buffer_t *new_buf = malloc( sizeof(audio_buffer_t) );
 
     memcpy( new_buf, buf, sizeof(audio_buffer_t) );
 
-    /* MY GOD! Why do I have to do this!?
-     * You see if I don't the metronom doesn't make the timestamps accurate! */
-    memcpy( this->metronom, stream->metronom, sizeof( metronom_t ) );
-
     new_buf->mem  = malloc( buf->num_frames * this->channels * 2 );
-    new_buf->vpts = this->metronom->got_audio_samples( this->metronom, buf->vpts, buf->num_frames );
 
     memcpy( new_buf->mem, buf->mem, buf->num_frames * this->channels * 2 );
 
@@ -156,6 +152,7 @@ scope_open_plugin( post_class_t *class_gen, int inputs, xine_audio_port_t **audi
   _x_post_init( &this->post, 1, 0 );
 
   this->metronom = _x_metronom_init( 0, 1, class->xine );
+  myMetronom = this->metronom;
 
   port = _x_post_intercept_audio_port( &this->post, audio_target[0], &input, &output );
   port->new_port.open       = scope_port_open;
