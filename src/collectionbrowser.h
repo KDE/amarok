@@ -86,7 +86,7 @@ class CollectionView : public KListView
 
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
-        void scanDone();
+        void scanDone( bool changed = true );
         
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );    

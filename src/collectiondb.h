@@ -61,7 +61,7 @@ class CollectionDB : public QObject
         void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
 
     signals:
-        void scanDone();
+        void scanDone( bool changed = true );
 
     private slots:
         void dirDirty( const QString& path );

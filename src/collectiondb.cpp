@@ -373,6 +373,7 @@ CollectionDB::scanModifiedDirs( bool recursively )
     QStringList names;
     QStringList folders;
     struct stat statBuf;
+    bool removedFiles = false;
 
     QString command = QString( "SELECT dir, changedate FROM directories;" );
     execSql( command, &values, &names );
@@ -390,6 +391,7 @@ CollectionDB::scanModifiedDirs( bool recursively )
         else
         {
             // this folder has been removed
+            removedFiles = true;
             removeSongsInDir( values[i*2] );
             removeDirFromCollection( values[i*2] );
             kdDebug() << "Collection dir removed: " << values[i*2] << endl;    
@@ -398,6 +400,8 @@ CollectionDB::scanModifiedDirs( bool recursively )
     
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, true ) );
+    else
+        emit scanDone( removedFiles );
 }
 
 

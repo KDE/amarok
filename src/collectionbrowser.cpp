@@ -167,8 +167,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //</open database>
 
-    connect( m_insertdb, SIGNAL( scanDone() ),
-             this,         SLOT( scanDone() ) );
+    connect( m_insertdb, SIGNAL( scanDone( bool ) ),
+             this,         SLOT( scanDone( bool ) ) );
     connect( this,       SIGNAL( expanded( QListViewItem* ) ),
              this,         SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,       SIGNAL( collapsed( QListViewItem* ) ),
@@ -265,7 +265,7 @@ CollectionView::renderView( )  //SLOT
 
 
 void
-CollectionView::scanDone() //SLOT
+CollectionView::scanDone( bool changed ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -274,7 +274,8 @@ CollectionView::scanDone() //SLOT
     delete m_db;
     m_db = new CollectionDB();
 
-    renderView();
+    if ( changed )
+        renderView();
     
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
 }
