@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> When handing media to a running amarokapp instance with the loader, the Desktop Startup ID is not
+           transferred any longer, so the stupid cursor animation stays. Max, why did you disable that?
+
   <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
            in the directories above it and you end up with duplicate URLs all over the place.
            <markey> Many users have an m3u in the _same_ directory as the files are.
