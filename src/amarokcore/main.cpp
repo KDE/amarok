@@ -20,6 +20,8 @@
 #include "crashhandler.h"
 #include <kaboutdata.h>
 
+//#define AMAROK_USE_DRKONQI
+
 
 KAboutData aboutData( "amarok",
     I18N_NOOP( "amaroK" ), APP_VERSION,
@@ -39,7 +41,6 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Pierpaolo 'Spaghetti Coder' Di Panfilo", I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berk@upnet.ru" );
-    aboutData.addAuthor( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Geeeeza (Bochi)" ), "bochi@online.ms" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
@@ -57,6 +58,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "OSD improvements, patches, testing" ), "seb100@optusnet.com.au" );
+    aboutData.addCredit( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Geeeeza (Bochi)" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
 
 
@@ -69,7 +71,9 @@ int main( int argc, char *argv[] )
     App::initCliArgs( argc, argv );
     App app;
 
+    #ifndef AMAROK_USE_DRKONQI
     KCrash::setCrashHandler( amaroK::Crash::crashHandler );
+    #endif
 
     return app.exec();
 }
