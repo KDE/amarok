@@ -447,8 +447,10 @@ CollectionView::renderView( )  //SLOT
     QStringList values;
     QStringList names;
 
-    while ( !m_db->execSql( command, &values, &names ) )
-    {}
+    // FIXME: i'm too ugly, since i'm a hotfix. this needs discussion before implementation
+    int x = 0;
+    while ( x < 5 && !m_db->execSql( command, &values, &names ) )
+    { ++x; }
 
     QPixmap pixmap = iconForCat( m_category1 );
 
@@ -472,34 +474,42 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( !item ) return ;
 
     kdDebug() << "item depth: " << item->depth() << endl;
-
     QString filterToken = QString( "" );
     if ( m_filter != "" )
         filterToken = QString
-                      ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
-                      .arg( m_db->getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
+                      ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
+                      .arg( m_category1.lower() )
+                      .arg( m_db->escapeString( m_filter ) )
                       .arg( m_db->escapeString( m_filter ) );
 
     if  ( item->depth() == 0 ) {
-        //Filter for category 1:
-        QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
-
         QString command;
         if ( m_category2 == "None" ) {
             command = QString
-                      ( "SELECT DISTINCT title,url FROM tags WHERE %1 = %2 %3 ORDER BY track;" )
+                      ( "SELECT DISTINCT tags.title, tags.url FROM tags, %1 WHERE tags.%3=%4.id %5 ORDER BY track;" )
                       .arg( m_category1.lower() )
-                      .arg( id )
+                      .arg( m_category1.lower() )
+                      .arg( m_category1.lower() )
+                      .arg( m_category1.lower() )
                       .arg( filterToken );
         }
         else {
-            QString cat = m_category2.lower();
+            filterToken = QString
+                          ( "AND ( %1.id = tags.%2 AND %3.name LIKE '\%%4\%' OR tags.title LIKE '\%%5\%' )" )
+                          .arg( m_category1.lower() )
+                          .arg( m_category1.lower() )
+                          .arg( m_category1.lower() )
+                          .arg( m_db->escapeString( m_filter ) )
+                          .arg( m_db->escapeString( m_filter ) );
+            QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
+
             command = QString
-                      ( "SELECT DISTINCT %1.name, '0' FROM tags, %2 WHERE %3.id = tags.%4 AND %5 = %6 %7;" )
-                      .arg( cat )
-                      .arg( cat )
-                      .arg( cat )
-                      .arg( cat )
+                      ( "SELECT DISTINCT %1.name, '0' FROM tags, %2, %3 WHERE tags.%4=%5.id AND tags.%6=%7 %8 ORDER BY track;" )
+                      .arg( m_category2.lower() )
+                      .arg( m_category2.lower() )
+                      .arg( m_category1.lower() )
+                      .arg( m_category2.lower() )
+                      .arg( m_category2.lower() )
                       .arg( m_category1.lower() )
                       .arg( id )
                       .arg( filterToken );
@@ -524,18 +534,21 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         }
     }
     else {
-        //Filter for category 2:
         QString id = QString::number( m_db->getValueID( m_category1.lower(), item->parent()->text( 0 ), false ) );
         QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), item->text( 0 ), false ) );
 
         QString command = QString
-                      ( "SELECT title,url FROM tags WHERE %1 = %2 AND %3 = %4 %5 ORDER BY track;" )
-                      .arg( m_category1.lower() )
-                      .arg( id )
-                      .arg( m_category2.lower() )
-                      .arg( id_sub )
-                      .arg( filterToken );
+                          ( "SELECT tags.title, tags.url FROM tags, %1 WHERE tags.%2 = %3 AND tags.%4 = %5 AND tags.%6 = %7.id %8 ORDER BY track;" )
+                          .arg( m_category1.lower() )
+                          .arg( m_category1.lower() )
+                          .arg( id )
+                          .arg( m_category2.lower() )
+                          .arg( id_sub )
+                          .arg( m_category1.lower() )
+                          .arg( m_category1.lower() )
+                          .arg( filterToken );
 
+           kdDebug() << command << endl;
         QStringList values;
         QStringList names;
         m_db->execSql( command, &values, &names );
@@ -672,24 +685,28 @@ CollectionView::listSelected() {
     KURL::List list;
     QListViewItem* item;
 
-    QString filterToken = QString( "" );
-    if ( m_filter != "" )
-        filterToken = QString
-                      ( "AND ( artist = %1 OR title LIKE '\%%2\%' )" )
-                      .arg( m_db->getValueID( "artist", QString( "\%" ).append( m_filter ).append( "\%" ), false ) )
-                      .arg( m_db->escapeString( m_filter ) );
-
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() ) {
+            QString filterToken;
+            if ( m_filter != "" )
+                filterToken = QString
+                      ( "AND ( %1.name LIKE '\%%2\%' OR tags.title LIKE '\%%3\%' )" )
+                      .arg( m_category1.lower() )
+                      .arg( m_db->escapeString( m_filter ) )
+                      .arg( m_db->escapeString( m_filter ) );
+
+
             //query database for all tracks in our sub-category
             QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
             QString command = QString
-                              ( "SELECT url FROM tags WHERE %1 = %2 %3 ORDER BY track;" )
+                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 %4" )
+                              .arg( m_category1.lower() )
                               .arg( m_category1.lower() )
                               .arg( id )
                               .arg( filterToken );
 
+                    kdDebug() << command << endl;
             QStringList values;
             QStringList names;
             m_db->execSql( command, &values, &names );
@@ -712,18 +729,25 @@ CollectionView::listSelected() {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() ) {
-                    //query database for all tracks in our sub-category
+                    QString filterToken;
+                    filterToken = QString
+                                  ( "AND ( %1.id = tags.%2 AND %3.name LIKE '\%%4\%' OR tags.title LIKE '\%%5\%' )" )
+                                  .arg( m_category1.lower() )
+                                  .arg( m_category1.lower() )
+                                  .arg( m_category1.lower() )
+                                  .arg( m_db->escapeString( m_filter ) )
+                                  .arg( m_db->escapeString( m_filter ) );
                     QString id = QString::number( m_db->getValueID( m_category1.lower(), item->text( 0 ), false ) );
                     QString id_sub = QString::number( m_db->getValueID( m_category2.lower(), child->text( 0 ), false ) );
 
                     QString command = QString
-                                      ( "SELECT DISTINCT url FROM tags WHERE %1 = %2 AND %3 = %4 %5"
-                                        "ORDER BY track;" )
-                                      .arg( m_category1.lower() )
-                                      .arg( id )
-                                      .arg( m_category2.lower() )
-                                      .arg( id_sub )
-                                      .arg( filterToken );
+                              ( "SELECT DISTINCT tags.url FROM tags, %1 WHERE tags.%2=%3 AND tags.%4=%5 %6 ORDER BY track;" )
+                              .arg( m_category1.lower() )
+                              .arg( m_category2.lower() )
+                              .arg( id_sub )
+                              .arg( m_category1.lower() )
+                              .arg( id )
+                              .arg( filterToken );
 
                     QStringList values;
                     QStringList names;
