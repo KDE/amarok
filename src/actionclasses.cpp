@@ -15,6 +15,7 @@
 
 #include <qpixmap.h>
 #include <qtooltip.h>
+#include <qaccel.h>
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -102,7 +103,13 @@ Menu::Menu()
 //     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 //     insertSeparator();
 
-    insertItem( i18n( "&Show Menubar" ), ID_SHOW_MENUBAR );
+    insertItem( i18n( "&Show Menubar" ), pApp->playlistWindow(), SLOT ( slotToggleMenu() ) );
+
+    //make CTRL M show the menu again, this is a ugly workaround
+    QAccel *menu_accel = new QAccel( pApp->playlistWindow() );
+    menu_accel->connectItem( menu_accel->insertItem(Key_M+CTRL),   
+			     pApp->playlistWindow(), 
+			     SLOT( slotToggleMenu() ) ); 
 
     insertSeparator();
 
@@ -179,16 +186,8 @@ Menu::slotActivated( int index )
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
-    case ID_SHOW_MENUBAR:
-        AmarokConfig::setShowMenuBar( true );
-        PlaylistWindow::self()->showMenuBar( true );
-
-        if( amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
-            amaroK::actionCollection()->action( "amarok_menu" )->unplugAll();
-        break;
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PlayPauseAction

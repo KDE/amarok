@@ -269,7 +269,7 @@ PlaylistWindow::init()
     //BEGIN Settings menu
     m_settingsMenu = new KPopupMenu( m_menubar );
     //TODO use KStdAction or KMainWindow
-    m_settingsMenu->insertItem( i18n( "Hide Menubar" ), ID_SHOW_MENUBAR );
+    m_settingsMenu->insertItem( i18n( "Hide Menubar" ), this , SLOT ( slotToggleMenu() ), CTRL+Key_M  );
     m_settingsMenu->insertItem( i18n( "Hide Toolbar" ), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
@@ -284,7 +284,6 @@ PlaylistWindow::init()
     actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::Preferences))->plug( m_settingsMenu );
 
-    m_settingsMenu->setAccel( CTRL+Key_M, ID_SHOW_MENUBAR );
     m_settingsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
 
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
@@ -400,7 +399,7 @@ void PlaylistWindow::createGUI()
     if ( AmarokConfig::showMenuBar() ) {
         if( actionCollection()->action( "amarok_menu" )->isPlugged() )
             actionCollection()->action( "amarok_menu" )->unplugAll();
-    }
+    } 
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     conserveMemory();
@@ -653,6 +652,22 @@ void PlaylistWindow::playAudioCD() //SLOT
 }
 
 
+void PlaylistWindow::slotToggleMenu()
+{
+  if ( AmarokConfig::showMenuBar() ) {
+    AmarokConfig::setShowMenuBar( false );
+    m_menubar->setShown( false );
+    recreateGUI();
+  } else {
+    AmarokConfig::setShowMenuBar( true );
+    m_menubar->setShown( true );
+
+    if( amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
+      amaroK::actionCollection()->action( "amarok_menu" )->unplugAll();
+  }
+ 
+}
+
 void PlaylistWindow::slotMenuActivated( int index ) //SLOT
 {
     switch( index )
@@ -660,11 +675,6 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     default:
         //saves duplicating the code and header requirements
         amaroK::Menu::instance()->slotActivated( index );
-        break;
-    case ID_SHOW_MENUBAR:
-        AmarokConfig::setShowMenuBar( false );
-        m_menubar->setShown( false );
-        recreateGUI();
         break;
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
