@@ -64,12 +64,32 @@ SearchBrowser::~SearchBrowser()
 
 void SearchBrowser::slotStartSearch()
 {
-    KListViewItem *item;
-    item = new KListViewItem( historyView, searchEdit->text() );
-    item->setText( 1, "0" );
-    item->setText( 3, urlEdit->currentText() );
+    QString path = urlEdit->currentText();
+    if ( path.length() )
+    {
+        // Verify the slash and let KURL parse it
+        if ( !path.endsWith( "/" ) )
+            path += "/";
     
-    m_weaver->append( new SearchModule( this, urlEdit->currentText(), searchEdit->text(), resultView, item ) );
+        kdDebug() << path << endl;
+        KURL *url;
+        url = new KURL( path );
+        path = url->directory( FALSE, TRUE );
+        delete url;
+        
+        kdDebug() << path << endl;
+        if ( searchEdit->text().length() )
+        {
+            // Create a new item for the HistoryView and pass it to the searching thread
+            KListViewItem *item;
+            item = new KListViewItem( historyView, searchEdit->text() );
+            item->setText( 1, "0" );
+            item->setText( 2, "Waiting for other thread" );
+            item->setText( 3, path );
+    
+            m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, item ) );
+        }
+    }
 }
 
 
@@ -91,16 +111,28 @@ void SearchBrowser::customEvent( QCustomEvent *e )
         SearchModule::ProgressEvent* p =
             static_cast<SearchModule::ProgressEvent*>( e );
 
-        kdDebug() << "********************************\n";
-        kdDebug() << "SearchModuleEvent arrived, found item: " << p->curPath() << p->curFile() << "\n";
-        kdDebug() << "********************************\n";
-        
-          p->item()->setText( 1, QString::number( p->count() ) );
-          p->item()->setText( 2, p->curPath() );
-
-          KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
-          resItem->setText( 1, p->curPath() );
-          resItem->setText( 2, p->curPath() + p->curFile() );
+        switch ( p->state() ) {
+            case SearchModule::ProgressEvent::Start:
+                p->item()->setText( 2, "Started" );
+                resultView->clear();
+                break;
+                
+            case SearchModule::ProgressEvent::Stop:
+                p->item()->setText( 2, "Done" );
+                break;
+                
+            case SearchModule::ProgressEvent::Progress:
+                // kdDebug() << "********************************\n";
+                // kdDebug() << "SearchModuleEvent arrived, found item: " << p->curPath() << p->curFile() << "\n";
+                // kdDebug() << "********************************\n";
+              
+                p->item()->setText( 1, QString::number( p->count() ) );
+                p->item()->setText( 2, p->curPath() );
+      
+                KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
+                resItem->setText( 1, p->curPath() );
+                resItem->setText( 2, p->curPath() + p->curFile() );
+        }
     }
 }
 
