@@ -1674,6 +1674,25 @@ void ContextBrowser::showLyrics( const QString &hash )
 
     if ( !m_dirtyLyricsPage ) return;
 
+    m_lyricsPage->begin();
+    m_lyricsPage->setUserStyleSheet( m_styleSheet );
+    m_HTMLSource = QString (
+        "<html>"
+        "<div id='lyrics_box' class='box'>"
+            "<div id='lyrics_box-header' class='box-header'>"
+                "<span id='lyrics_box-header-title' class='box-header-title'>"
+                + i18n( "Fetching Lyrics" ) +
+                "</span>"
+            "</div>"
+            "<div id='lyrics_box-body' class='box-body'>"
+                + i18n( "Fetching Lyrics" ) +
+            " ...</div>"
+        "</div>"
+        "</html>"
+                           );
+    m_lyricsPage->write( m_HTMLSource );
+    m_lyricsPage->end();
+
     //remove all matches to the regExp and the song production type.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
