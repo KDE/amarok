@@ -153,7 +153,7 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
         return m_coverDir.filePath( widthKey + key.lower() );
     else
     {
-        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
+        QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
 
         if ( largeCoverDir.exists( key.lower() ) )
             if ( width > 0 )
