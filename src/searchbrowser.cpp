@@ -70,7 +70,7 @@ SearchBrowser::SearchBrowser( const char *name )
     resultView->setSelectionMode( QListView::Extended );
     resultView->setAllColumnsShowFocus( true );
 
-    historyView->addColumn( i18n( "Search Token" ) );
+    historyView->addColumn( i18n( "Search" ) );
     historyView->addColumn( i18n( "Results" ) );
     historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
