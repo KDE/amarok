@@ -251,11 +251,7 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 
 void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
 {
-    DOM::Node node = browser->nodeUnderMouse();
-    kdDebug() << "Node Name: " << node.nodeName() << endl;
-    kdDebug() << "url: " << url << endl;
-
-    if ( node.nodeName() == "img" )
+    if ( url.startsWith( "fetchcover:" ) )
     {
         QStringList info = QStringList::split( " @@@ ", url );
         enum menuIds { SHOW, FETCH, DELETE };
