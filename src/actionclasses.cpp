@@ -294,7 +294,7 @@ VolumeAction::plug( QWidget *w, int index )
     m_slider = new amaroK::Slider( Qt::Vertical, w, amaroK::VOLUME_MAX );
     m_slider->setName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
-    m_slider->setMinimumSize( 35 );
+    m_slider->setMinimumHeight( 35 );
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 
     QToolTip::add( m_slider, i18n( "Volume Control" ) );
