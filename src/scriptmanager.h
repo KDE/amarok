@@ -28,6 +28,7 @@
 #include <kdialogbase.h>      //baseclass
 #include <kurl.h>
 
+class MetaBundle;
 class ScriptManagerBase;
 class QListViewItem;
 class KProcess;
@@ -40,7 +41,8 @@ class KProcess;
  *
  * Script notifications, sent to stdin:
  *   configure
- *   EngineStateChange: {empty|idle|paused|playing}
+ *   engineStateChange: {empty|idle|paused|playing}
+ *   trackChange
  *
  */
 class ScriptManager : public KDialogBase, public EngineObserver
@@ -76,6 +78,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         /** Observer reimplementations **/
         void engineStateChanged( Engine::State state );
+        void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ );
 
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_base;

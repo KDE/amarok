@@ -110,18 +110,20 @@ class Test( QApplication ):
             if string.contains( "configure" ):
                 self.configure()
 
-            if string.contains( "EngineStateChange: play" ):
+            if string.contains( "engineStateChange: play" ):
                 self.engineStatePlay()
 
-            if string.contains( "EngineStateChange: idle" ):
+            if string.contains( "engineStateChange: idle" ):
                 self.engineStateIdle()
 
-            if string.contains( "EngineStateChange: pause" ):
+            if string.contains( "engineStateChange: pause" ):
                 self.engineStatePause()
 
-            if string.contains( "EngineStateChange: empty" ):
+            if string.contains( "engineStateChange: empty" ):
                 self.engineStatePause()
 
+            if string.contains( "trackChange" ):
+                self.trackChange()
 
 # Notification callbacks. Implement these functions to react to specific notification
 # events from amaroK:
@@ -147,6 +149,10 @@ class Test( QApplication ):
 
     def engineStateEmpty( self ):
     """ Called when Engine state changes to Empty """
+        pass
+
+    def trackChange( self ):
+    """ Called when a new track starts """
         pass
 
 

@@ -22,6 +22,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "metabundle.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
@@ -338,6 +339,13 @@ ScriptManager::engineStateChanged( Engine::State state )
             notifyScripts( "EngineStateChange: playing" );
             break;
     }
+}
+
+
+void
+ScriptManager::engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ )
+{
+    notifyScripts( "trackChange" );
 }
 
 
