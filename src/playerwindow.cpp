@@ -15,18 +15,19 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "actionclasses.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h" //FIXME
-#include "actionclasses.h"
-#include "sliderwidget.h"
 #include "analyzerbase.h"
-#include "metabundle.h"      //setScroll()
 #include "app.h"
-#include "playerwindow.h"
-#include "tracktooltip.h" //setScroll()
 #include "enginecontroller.h"
+#include "metabundle.h"      //setScroll()
+#include "playerwindow.h"
+#include "sliderwidget.h"
+#include "tracktooltip.h"    //setScroll()
 
 #include <qdragobject.h>
+#include <qevent.h>          //various events
 #include <qfont.h>
 #include <qhbox.h>
 #include <qpainter.h>
@@ -38,14 +39,13 @@ email                : markey@web.de
 
 #include <kaction.h>
 #include <kdebug.h>
-#include <qevent.h> //various events
+#include <kiconloader.h>     //NavButton::NavButton()
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
-#include <kmessagebox.h>
 #include <kurldrag.h>
 //#include <kwin.h> Yagami mode, most cool, try it!
-
 
 
 //simple function for fetching amarok images
@@ -105,11 +105,16 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         // In case you are wondering, the PLAY and PAUSE buttons are created here!
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
-        new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous()  ) );
-        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT(play()) );
-        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT(pause()) );
-        new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop()  ) );
-        new NavButton( m_pFrameButtons, "next", ec, SLOT( next()  ) );
+                         new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
+                         new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
+                         new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
+//         new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous()  ) );
+//         m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT(play()) );
+//         m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT(pause()) );
+//         new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop()  ) );
+//         new NavButton( m_pFrameButtons, "next", ec, SLOT( next()  ) );
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
@@ -601,14 +606,16 @@ void PlayerWidget::startDrag()
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
   : QPushButton( parent )
 {
-    QString up = QString( "b_%1" ).arg( icon );
-    QString down = QString( "b_%1_down" ).arg( icon );
-
-    QIconSet iconSet;
-    iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( getPNG( down ), QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
-
-    setIconSet( iconSet );
+//     QString up = QString( "b_%1" ).arg( icon );
+//     QString down = QString( "b_%1_down" ).arg( icon );
+// 
+//     QIconSet iconSet;
+//     iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+//     iconSet.setPixmap( getPNG( down ), QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
+    
+    KIconLoader iconLoader;
+    setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
+    
     setFocusPolicy( QWidget::NoFocus );
     setFlat( true );
 
