@@ -388,24 +388,26 @@ void PlayerWidget::polish()
 }
 
 
-void PlayerWidget::setScroll( QString text, const QString &bitrate, const QString &samplerate )
+void PlayerWidget::setScroll( QString text, const QString &bitrate, const QString &sampleRate )
 {
     //Update tray tooltip
     if ( QToolTip::textFor( m_pTray ) != QString::null ) QToolTip::remove( m_pTray );
     if ( text.isEmpty() )
     {
-       QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
-       m_pDcopHandler->setNowPlaying( text ); //text = ""
-       text = i18n( "Welcome to amaroK" );
+        QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
+        m_pDcopHandler->setNowPlaying( text ); //text = ""
+        m_bitrate = m_samplerate = text; //better to use text than create a temporary QString
+                                         //looks better if these are clear        
+        text = i18n( "Welcome to amaroK" );
     }
     else
     {
-       QToolTip::add( m_pTray, text );
-       m_pDcopHandler->setNowPlaying( text );
+        QToolTip::add( m_pTray, text );
+        m_pDcopHandler->setNowPlaying( text );
+        m_bitrate = bitrate;
+        m_samplerate = sampleRate;       
     }
 
-    m_bitrate = bitrate;
-    m_samplerate = samplerate;
     text.prepend( "   ***   " );
 
     m_pScrollMask->fill( Qt::color0 );
