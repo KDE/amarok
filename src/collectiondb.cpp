@@ -355,7 +355,7 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
                           "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
                     .arg( escapeString( url ) )
                     .arg( values[1] )
-                    .arg( ( percentage + values[2].toDouble() ) / ( values[0].toInt() + 1 ) )
+                    .arg( ( ( percentage * values[0].toInt() ) + values[2].toDouble() ) / ( values[0].toInt() + 1 ) )
                     .arg( values[0] + " + 1" ) );
     } else
     {

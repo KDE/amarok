@@ -208,7 +208,7 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength )
     // sanity check
     if ( finalPosition > trackLength ) finalPosition = trackLength;
     
-    int pct = (int)( (double)finalPosition / (double)trackLength ) * 100;
+    int pct = ( (double)finalPosition / (double)trackLength ) * 100;
     kdDebug() << "percentage played: " << pct << endl;
 
     // increase song counter & calculate new statistics
