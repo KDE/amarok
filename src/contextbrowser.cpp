@@ -22,6 +22,7 @@
 #include <khtml_part.h>
 #include <klineedit.h>
 #include <klocale.h>
+#include <krun.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <kurlcombobox.h>
@@ -157,7 +158,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
     }
 
-#ifdef AMAZON_SUPPORT
+#ifdef AMAZON
     
     /* fetch covers from amazon on click */
     if ( m_url.protocol() == "fetchcover" ) m_db->fetchCover( this, info[0], info[1], false );
@@ -188,6 +189,13 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
      }
 #endif            
+
+    if ( url.protocol() == "musicbrainz" )
+    {
+        const QString command = "kfmclient openURL 'http://www.musicbrainz.org/taglookup.html?artist=''%1''&album=''%2'''";
+        KRun::runCommand( command.arg( info[0] ).arg( info[1] ), "kfmclient", "konqueror" );
+    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +257,7 @@ void ContextBrowser::showHome() //SLOT
     delete m_db;
     m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
-    #ifdef AMAZON_SUPPORT
+    #ifdef AMAZON
     connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
     #endif
     browser->begin();
@@ -362,20 +370,27 @@ void ContextBrowser::showCurrentTrack() //SLOT
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
     if ( !values.isEmpty() )
-         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                    "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 @@@ %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
-                                    "<i>First play: %7<br>Last play: %8<br>Total plays: %9</i></td>"
+         /* making 2 tables is most probably not the cleanest way to do it, but it works. */
+         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
+                                    "<span class='album'><b>%1 - %2</b></span><br>%3</td><td valign='top' align='right' width='10%'>"
+                                    "<a href='musicbrainz:%4 @@@ %5'><img src='%6'></a></td></tr></table>"
+                                    "<table width='100%'><tr><td width='20%'><a class='menu' href='fetchcover:%7 @@@ %8'>"
+                                    "<img hspace='2' src='%9'></a></td>"
+                                    "<td valign='bottom' align='right' width='80%'><i>Track played %10 times<br>Last play: %11<br>First play: %12</i></td>"
                                     "</tr>" )
                          .args( QStringList()
                                 << escapeHTML( m_currentTrack->artist() )
                                 << escapeHTML( m_currentTrack->title() )
                                 << escapeHTML( m_currentTrack->album() )
+                                << escapeHTML( m_currentTrack->artist() )
+                                << escapeHTML( m_currentTrack->album() )
+                                << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
-                                << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) )
+                                << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound80.png" ) ) )
+                                << values[4] 
                                 << values[2].left( values[2].length() - 3 )
                                 << values[3].left( values[3].length() - 3 )
-                                << values[4] 
                                 )
                          );
     else
@@ -387,18 +402,25 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         QString imageurl;
         if ( !values.isEmpty() )
-            imageurl = m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) );
+            imageurl = m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound80.png" ) );
         else
-            imageurl = locate( "data", "amarok/images/sound.png" );
+            imageurl = locate( "data", "amarok/images/sound80.png" );
 
-             browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                        "<span class='album'>%1 - %2</span><br>%3<br><br><a class='menu' href='fetchcover:%4 @@@ %5'><img align='left' valign='center' hspace='2' src='%6'></a>"
+             browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
+                                        "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
+                                        "<td valign='top' align='right' width='10%'><a href='musicbrainz:%4 @@@ %5'>"
+                                        "<img src='%6'></a></td></tr></table> <table width='100%'><tr><td width='20%'>"
+                                        "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' valign='center' hspace='2' src='%8'></a>"
+                                        "</td><td width='80%' valign='bottom' align='right'>"
                                         "<i>Never played before</i></td>"
                                         "</tr>" )
                              .args( QStringList()
                                     << escapeHTML( m_currentTrack->artist() )
                                     << escapeHTML( m_currentTrack->title() )
                                     << escapeHTML( m_currentTrack->album() )
+                                    << escapeHTML( m_currentTrack->artist() )
+                                    << escapeHTML( m_currentTrack->album() )
+                                    << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                     << escapeHTMLAttr( m_currentTrack->artist() )
                                     << escapeHTMLAttr( m_currentTrack->album() )
                                     << escapeHTMLAttr( imageurl )
@@ -429,7 +451,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + values[i] + " <i>(" + values[i + 2] + ")</i></a></td></tr>" ) );
+            browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + values[i] + " <i>(played " + values[i + 2] + " times)</i></a></td></tr>" ) );
 
         values.clear();
         names.clear();
@@ -461,7 +483,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             for ( uint i = 0; i < values.count(); i += 3 )
             {
                 QString tmp = values[i + 2] == "" ? "" : values[i + 2] + ". ";
-                browser->write( QString ( "<tr><td class='song'><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
+                browser->write( QString ( "<tr><td class='song'></td><td><a class='song' href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
             }
 
             values.clear();
@@ -498,7 +520,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                     << values[i + 2].replace( "\"", "%22" ) // album.id
                                     << escapeHTMLAttr( values[i + 1] ) // artist.name
                                     << escapeHTMLAttr( values[i + 0] ) // album.name
-                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound.png" ), 40 ) )
+                                    << escapeHTMLAttr( m_db->getImageForAlbum( values[i + 1], values[i + 0], locate( "data", "amarok/images/sound50.png" ), 50 ) )
                                     << escapeHTML( values[i + 0] ) // album.name
                                     << m_db->albumSongCount( values[i + 3], values[i + 2] )
                                     )
