@@ -457,7 +457,7 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
 }
 
 
-inline
+//inline //gcc sometimes compiles this away so linking fails!
 void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
     PlaylistItem *tmp = PlaylistItem::GlowItem;
