@@ -289,6 +289,10 @@ void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
 }
 
 
+//FIXME we don't want to have to include these :)
+#include "browserwin.h"
+#include <klineedit.h>
+
 void PlaylistWidget::keyPressEvent( QKeyEvent *e )
 {
    kdDebug() << "PlaylistWidget::keyPressEvent()\n";
@@ -301,12 +305,14 @@ void PlaylistWidget::keyPressEvent( QKeyEvent *e )
       break;
 
    //trust me, I wish there was a better way to do this!
-   //FIXME ignore numbers too
+   case Key_0: case Key_1: case Key_2: case Key_3: case Key_4: case Key_5: case Key_6: case Key_7: case Key_8: case Key_9:
    case Key_A: case Key_B: case Key_C: case Key_D: case Key_E: case Key_F: case Key_G: case Key_H: case Key_I: case Key_J: case Key_K: case Key_L: case Key_M: case Key_N: case Key_O: case Key_P: case Key_Q: case Key_R: case Key_S: case Key_T: case Key_U: case Key_V: case Key_W: case Key_X: case Key_Y: case Key_Z:
-      //by ignoring these key presses we propagate them to the searchLineEdit
-      e->ignore();
+     {
+      KLineEdit *le = pApp->m_pBrowserWin->m_pPlaylistLineEdit;
+      le->setFocus();
+      QApplication::sendEvent( le, e );
       break;
-
+     }
    default:
       KListView::keyPressEvent( e );
       //the base handler will set accept() or ignore()
@@ -323,10 +329,11 @@ void PlaylistWidget::startLoader( const KURL::List &list, QListViewItem *after )
    //FIXME lastItem() has to go through entire list to find lastItem! Not scalable!
    PlaylistLoader *loader = new PlaylistLoader( list, this, ( after == 0 ) ? lastItem() : after );
 
-   if( loader )
+   if( loader ) {
+      loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks, pApp->m_optReadMetaInfo );
       loader->start();
-   else
-      kdDebug() << "[LOADER] Unable to creater loader-thread!\n";
+   } else
+      kdDebug() << "[loader] Unable to create loader-thread!\n";
 }
 
 
@@ -339,8 +346,8 @@ QListViewItem* PlaylistWidget::currentTrack() const
 //FIXME deprecate
 void PlaylistWidget::setCurrentTrack( QListViewItem *item )
 {
-    unglowItems();
-    ensureItemVisible( item );
+    unglowItems(); //FIXME this iterates over all playlist items! very bad.
+    //ensureItemVisible( item ); //can't think of any instance where this is necessary!
     m_pCurrentTrack = item;
 }
 

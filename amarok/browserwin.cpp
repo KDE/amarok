@@ -72,6 +72,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
+    connect( m_pBrowserWidget, SIGNAL( returnPressed( QListViewItem* ) ),
+             this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
     connect( m_pBrowserWidget, SIGNAL( browserDrop() ),
              m_pPlaylistWidget, SLOT( removeSelectedItems() ) );
     connect( m_pBrowserWidget, SIGNAL( directoryChanged( const KURL& ) ),
@@ -152,7 +154,7 @@ void BrowserWin::initChildren()
     m_pBrowserLineEdit->setDuplicatesEnabled( false );
     m_pBrowserLineEdit->setMinimumWidth( 1 );
                             
-    m_pBrowserWidget = new BrowserWidget( pBrowserBox );
+    m_pBrowserWidget = new BrowserWidget( pBrowserBox, "FileBrowser" );
     m_pBrowserWidget->setAcceptDrops( true );
     m_pBrowserWidget->setSorting( -1 );
     m_pBrowserWidget->setSelectionMode( QListView::Extended );
@@ -342,10 +344,10 @@ void BrowserWin::keyPressEvent( QKeyEvent *e )
   case Qt::Key_Down:
   case Qt::Key_Left:
   case Qt::Key_Right:
-  case Qt::Key_Prior: //don't work
-  case Qt::Key_Next:  //don't work
-  case Qt::Key_Return:
-  case Qt::Key_Enter:
+  case Qt::Key_Prior:
+  case Qt::Key_Next:
+//  case Qt::Key_Return:
+//  case Qt::Key_Enter:
   case Qt::Key_Delete:
      if( !m_pPlaylistWidget->hasFocus() )
      {
@@ -354,7 +356,8 @@ void BrowserWin::keyPressEvent( QKeyEvent *e )
         QApplication::sendEvent( m_pPlaylistWidget, e );
      }
      break;
-
+/*
+  //removed as risky, although useful
   default:
      if( !m_pPlaylistLineEdit->hasFocus() )
      {
@@ -362,9 +365,10 @@ void BrowserWin::keyPressEvent( QKeyEvent *e )
         m_pPlaylistLineEdit->setFocus();
         QApplication::sendEvent( m_pPlaylistLineEdit, e );
      }
+*/
   }
 
-  e->accept(); //consume the event
+  e->accept(); //consume the event, ALERT! keypresses won't propagate to parent (good thing)
 }
 
 

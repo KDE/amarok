@@ -23,7 +23,7 @@
 class QWidget;
 class QDropEvent;
 class QDragMoveEvent;
-class QFocusEvent;
+class QKeyEvent;
 
 class KDirLister;
 class KURL;
@@ -51,13 +51,12 @@ class BrowserWidget : public KListView
 
     signals:
         void directoryChanged( const KURL & );
-        void focusIn();
         void browserDrop();
 
     private:
         void contentsDropEvent( QDropEvent* e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
-        void focusInEvent( QFocusEvent *e );
+        void keyPressEvent( QKeyEvent *e );
         QDragObject *dragObject();
 
 // ATTRIBUTES ------

@@ -19,11 +19,10 @@
 #define PLAYLISTWIDGET_H
 
 #include <qdir.h>
-//#include <qptrlist.h>
-
 #include <klistview.h>
 //#include <krootpixmap.h>
 #include <kurl.h>
+#include <vector>
 
 class QDragLeaveEvent;
 class QDragMoveEvent;

@@ -22,6 +22,7 @@
 #include "playlistitem.h"
 #include "playlistwidget.h"
 
+#include <qapplication.h>
 #include <qcstring.h>
 #include <qcursor.h>
 #include <qdir.h>
@@ -45,16 +46,16 @@
 
 
 BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
-   : KListView( parent,name ),
-     m_pDirLister( new KDirLister() ),
-     m_Count( 0 )
+   : KListView( parent,name )
+   , m_pDirLister( new KDirLister() )
+   , m_Count( 0 )
 {
     setFocusPolicy( QWidget::ClickFocus );
 
     addColumn( i18n( "Filebrowser" ) );
     setAcceptDrops( true );
     setDragEnabled( true ); //NEW
-    
+
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
     m_pDirLister->setAutoUpdate( true );
@@ -119,15 +120,28 @@ void BrowserWidget::contentsDropEvent( QDropEvent* e)
     emit browserDrop();
 }
 
+#include <kcombobox.h>
 
-void BrowserWidget::focusInEvent( QFocusEvent *e )
+void BrowserWidget::keyPressEvent( QKeyEvent *e )
 {
-//    pApp->m_pBrowserWin->m_pBrowserLineEdit->setFocus();
-    emit focusIn();
-
-    //TODO: figure out if this is good or bad
-    KListView::focusInEvent( e );
+   switch( e->key() )
+   {
+   case Key_Backspace: case Key_Colon: case Key_Semicolon: case Key_Slash:
+   case Key_A: case Key_B: case Key_C: case Key_D: case Key_E: case Key_F: case Key_G: case Key_H: case Key_I: case Key_J: case Key_K: case Key_L: case Key_M: case Key_N: case Key_O: case Key_P: case Key_Q: case Key_R: case Key_S: case Key_T: case Key_U: case Key_V: case Key_W: case Key_X: case Key_Y: case Key_Z:
+     {
+      //by ignoring these key presses we propagate them to the LineEdit
+      QLineEdit *le = pApp->m_pBrowserWin->m_pBrowserLineEdit->lineEdit();
+      le->setFocus();
+      QApplication::sendEvent( le, e );
+      break;
+     }
+   default:
+      KListView::keyPressEvent( e );
+      //the base handler will set accept() or ignore()
+      //TODO if ignored by above pass to LineEdit too?
+   }
 }
+
 
 
 // SLOTS ------------------------------------------------------------------
