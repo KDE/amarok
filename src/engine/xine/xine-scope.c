@@ -138,16 +138,18 @@ scope_plugin_new( xine_t *xine, xine_audio_port_t *audio_target )
 
     post_plugin->running_ticket = xine->port_ticket;
     post_plugin->xine = xine;
-    post_plugin->node = NULL;
+  /*post_plugin->node = NULL;*/
 
+    /*
     xine_post_in_t *input = xine_list_first_content( post_plugin->input );
 
     post_plugin->input_ids    = malloc( sizeof(char*) * 2 );
-    post_plugin->input_ids[0] = input->name; /*"audio in"*/
+    post_plugin->input_ids[0] = input->name;
     post_plugin->input_ids[1] = NULL;
 
     post_plugin->output_ids    = malloc( sizeof(char*) );
     post_plugin->output_ids[0] = NULL;
+    */
 
     return &post_plugin->xine_post;
 }

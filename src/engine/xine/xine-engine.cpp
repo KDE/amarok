@@ -100,7 +100,7 @@ XineEngine::init()
         return false;
     }
 
-    m_stream = xine_stream_new( m_xine, m_audioPort, 0 );
+    m_stream = xine_stream_new( m_xine, m_audioPort, NULL );
     if( !m_stream )
     {
         KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
@@ -113,6 +113,7 @@ XineEngine::init()
 
     //less buffering, faster seeking.. TODO test
     xine_set_param( m_stream, XINE_PARAM_METRONOM_PREBUFFER, 6000 );
+    xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
     //xine_trick_mode( m_stream, XINE_TRICK_MODE_SEEK_TO_TIME, 1 );
 
     xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
@@ -152,12 +153,26 @@ XineEngine::play( uint offset )
         return true;
     }
 
-    xine_close( m_stream );
     emit stateChanged( Engine::Empty );
 
-    debug() << "Playback failed! Error code: " << xine_get_error( m_stream ) << endl;
+    switch( xine_get_error( m_stream ) )
+    {
+    case XINE_ERROR_NO_INPUT_PLUGIN:
+        KMessageBox::error( 0, i18n("No input plugin available; check your installation.") );
+        break;
+    case XINE_ERROR_NO_DEMUX_PLUGIN:
+        KMessageBox::error( 0, i18n("No demux plugin available; check your installation.") );
+        break;
+    case XINE_ERROR_DEMUX_FAILED:
+        KMessageBox::error( 0, i18n("Demuxing failed; check your installation.") );
+        break;
+    default:
+        KMessageBox::error( 0, i18n("Internal error; check your installation.") );
+        break;
+    }
 
-    //Xine will show a message via EventListener if there were problems
+    xine_close( m_stream );
+
     return false;
 }
 
@@ -169,6 +184,8 @@ XineEngine::stop()
     std::fill( m_scope.begin(), m_scope.end(), 0 );
 
     xine_stop( m_stream );
+    xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
+
     emit stateChanged( Engine::Empty );
 }
 
@@ -178,6 +195,7 @@ XineEngine::pause()
     if( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
     {
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
+        xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
         emit stateChanged( Engine::Paused );
 
     } else {
@@ -226,6 +244,7 @@ XineEngine::setVolumeSW( uint vol )
 bool
 XineEngine::canDecode( const KURL &url ) const
 {
+    //TODO should free the file_extensions char*
     static QStringList list = QStringList::split( ' ', xine_get_file_extensions( m_xine ) );
 
     //TODO proper mimetype checking
