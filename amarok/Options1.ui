@@ -51,7 +51,7 @@
                         <cstring>checkBox5</cstring>
                     </property>
                     <property name="text">
-                        <string>(&amp;&amp;)Hide pla(!)&amp;ylist with main window</string>
+                        <string>&amp;Hide playlist with main window</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
@@ -59,7 +59,7 @@
                         <cstring>checkBox3</cstring>
                     </property>
                     <property name="text">
-                        <string>Show (&amp;&amp;)tray (!)&amp;icon</string>
+                        <string>Show &amp;tray icon</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="1" column="0" rowspan="1" colspan="2">
@@ -75,7 +75,7 @@
                         <cstring>checkBoxXFade</cstring>
                     </property>
                     <property name="text">
-                        <string>Cross(&amp;&amp;)fade songs (continuous playbac(!)&amp;k)</string>
+                        <string>Cross&amp;fade songs (continuous playback)</string>
                     </property>
                 </widget>
                 <widget class="QSpinBox" row="5" column="1">
@@ -108,7 +108,10 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Crossfade length:</string>
+                        <string>Crossfade &amp;length:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>crossfadeLength</cstring>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="2">
@@ -116,7 +119,10 @@
                         <cstring>checkBox1</cstring>
                     </property>
                     <property name="text">
-                        <string>(&amp;&amp;)Sa(!)&amp;ve current playlist on exit</string>
+                        <string>&amp;Save current playlist on exit</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
                     </property>
                 </widget>
             </grid>
