@@ -109,7 +109,12 @@ EngineBase *EngineController::loadEngine() //static
         //       gst-engine says "argh you haven't run gst-register"
         //       then the following message is shown
 
-        KMessageBox::error( 0, i18n( "The new engine could not be loaded." ) );
+        QString oldEngine = PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString();
+
+        KMessageBox::error( 0,
+            i18n( "amaroK could not initialise the '%1', instead we will revert to the '%2'" )
+                .arg( AmarokConfig::soundSystem(), oldEngine ) );
+
         AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
 
         delete plugin;
