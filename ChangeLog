@@ -2,6 +2,11 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+  
+  ADD: Context menu item "Make Playlist" in Collection Browser generates new
+       playlists on the fly, without the need for drag-and-drop.  
+  CHG: Renamed several files and folders in the source code tree, resulting in
+       improved code accessibility. 
  
 VERSION 1.0-beta2:
   FIX: Crash on AMD64 due to assumption about pointer size.
