@@ -37,7 +37,6 @@
 #include <qstringlist.h>
 #include <qtimer.h>
 
-
 #include <kdebug.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -50,6 +49,7 @@
 #include <kcursor.h>
 
 
+static const int NO_SORT = 200;
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ const char *name )
     : KListView( parent, name )
@@ -73,7 +73,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
     setDropVisualizer( false );   //we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
     setItemsRenameable( true );
-    KListView::setSorting( 200 ); //use base so we don't saveUndoState() too
+    KListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
@@ -357,11 +357,10 @@ void PlaylistWidget::shuffle() //SLOT
 {
     //TODO offer this out as an action in a custom kactioncollection?
 
-    saveUndoState();
-
-    // not evil, but corrrrect :)
+    setSorting( NO_SORT );
+    
     QPtrList<QListViewItem> list;
-
+    
     while( QListViewItem *first = firstChild() )
     {
         list.append( first );
@@ -490,7 +489,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 
     if( loader )
     {
-        setSorting( 200 ); //disable sorting and saveState()
+        setSorting( NO_SORT ); //disable sorting and saveState()
 
         QApplication::postEvent( this, new QCustomEvent( PlaylistLoader::Started ) ); //see customEvent for explanation
 
@@ -929,7 +928,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent *e )
 
     if( e->source() == viewport() )
     {
-        setSorting( 200 ); //disableSorting and saveState()
+        setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
     }
     else
