@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.2.3:
   FEATURES:
+    * New DCOP call playlist: QString currentPlaylist(). saveCurrentPlaylist()
+      is now deprecated.
 
   CHANGES:
 

@@ -29,6 +29,8 @@
 #include "playlist.h"
 #include "statusbar.h"
 
+#include <qfile.h>
+
 #include <dcopclient.h>
 #include <kactioncollection.h>
 #include <kstartupinfo.h>
@@ -372,7 +374,15 @@ namespace amaroK
         Playlist::instance()->shuffle();
     }
 
-    void DcopPlaylistHandler::saveCurrentPlaylist()
+    QString DcopPlaylistHandler::currentPlaylist()
+    {
+        Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
+        QFile file( Playlist::defaultPlaylistPath() );
+        file.open( IO_ReadOnly );
+        return file.readAll();
+    }
+
+    void DcopPlaylistHandler::saveCurrentPlaylist() //deprecated
     {
         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
     }
