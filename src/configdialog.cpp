@@ -91,6 +91,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     }
 
     // ID3v1 recoding locales
+    m_opt1->kcfg_RecodeEncoding->insertItem( QString::null );
     QTextCodec *codec;
     for ( int i = 0; ( codec = QTextCodec::codecForIndex( i ) ); i++ )
         m_opt1->kcfg_RecodeEncoding->insertItem( codec->name() );
@@ -100,12 +101,19 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     m_opt7->kcfg_DatabaseEngine->insertItem( "MySQL", 1 );
 #else
     m_opt7->databaseBox->hide();
+
+    //FIXME we do this because this widget breaks the Apply button (always enabled).
+    //It breaks because it is set to type="password" in the .kcfg file. Setting to
+    //type="string" also fixes this bug, but means the password is stored in plain
+    //text. This is a temporary fix so that the majority of users get a fixed Apply
+    //button.
+    delete m_opt7->kcfg_MySqlPassword;
 #endif
     m_opt7->collectionFoldersBox->setColumns( 1 );
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
 
     // add pages
-    addPage( m_opt1,   i18n( "General" ), "misc", i18n( "Configure General Options" ) );
+    addPage( m_opt1, i18n( "General" ), "misc", i18n( "Configure General Options" ) );
     addPage( opt2,   i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
@@ -125,10 +133,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         static_cast<QLabel*>(label)->setMaximumWidth( 250 );
     delete list;
 
-    connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
-    connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );
-    connect( opt5, SIGNAL( settingsChanged() ), SLOT( updateButtons() ) ); //see options5.ui.h
-    connect( m_opt7->kcfg_DatabaseEngine, SIGNAL( activated( int ) ), SLOT( databaseEngineChanged() ) );
+    connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
+    connect( aboutEngineButton, SIGNAL(clicked()), this, SLOT(aboutEngine()) );
+    connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
+    connect( m_opt7->kcfg_DatabaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
 }
 
 AmarokConfigDialog::~AmarokConfigDialog()
@@ -189,16 +197,13 @@ void AmarokConfigDialog::updateSettings()
 
 
 /**
- * Update the dialog based on the settings.
+ * Update the configuration-widgets in the dialog based on amaroK's current settings.
  * Example use: Initialisation of dialog.
  * Example use: User clicks Reset button in a configure dialog.
  * REIMPLEMENTED
  */
 void AmarokConfigDialog::updateWidgets()
 {
-    //FIXME doesn't work because KConfigXT thinks it knows better..
-    m_opt1->kcfg_RecodeEncoding->setCurrentText( QTextCodec::codecForLocale()->name() );
-
     m_soundSystem->setCurrentText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
 
     soundSystemChanged();
@@ -207,14 +212,12 @@ void AmarokConfigDialog::updateWidgets()
 
 
 /**
- * Update the dialog based on the default settings.
+ * Update the configuration-widgets in the dialog based on the default values for amaroK's settings.
  * Example use: User clicks Defaults button in a configure dialog.
  * REIMPLEMENTED
  */
 void AmarokConfigDialog::updateWidgetsDefault()
 {
-    m_opt1->kcfg_RecodeEncoding->setCurrentText( QTextCodec::codecForLocale()->name() );
-
     m_soundSystem->setCurrentItem( 0 );
 }
 
@@ -223,17 +226,19 @@ void AmarokConfigDialog::updateWidgetsDefault()
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** REIMPLEMENTED */
+/**
+ * @return true if any configuration items we are managing changed from amaroK's stored settings
+ * We manage the engine combo box and some of the OSD settings
+ * REIMPLEMENTED
+ */
 bool AmarokConfigDialog::hasChanged()
 {
     OSDPreviewWidget *osd = (OSDPreviewWidget*) child( "osdpreview" );
 
-    bool engineChanged = m_engineConfig ? m_engineConfig->hasChanged() : false;
-
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
-            osd->alignment()             != AmarokConfig::osdAlignment() ||
-            osd->y()                     != AmarokConfig::osdYOffset() ||
-            engineChanged;
+            osd->alignment() != AmarokConfig::osdAlignment() ||
+            osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
+            m_engineConfig && m_engineConfig->hasChanged();
 }
 
 
@@ -241,6 +246,8 @@ bool AmarokConfigDialog::hasChanged()
 bool AmarokConfigDialog::isDefault()
 {
     AMAROK_NOTIMPLEMENTED
+
+    //TODO hard to implement - what are default settings for OSD etc?
 
     return false;
 }
@@ -258,9 +265,7 @@ void AmarokConfigDialog::aboutEngine() //SLOT
 
 void AmarokConfigDialog::databaseEngineChanged() // SLOT
 {
-    const bool dbConfigEnabled = m_opt7->kcfg_DatabaseEngine->currentItem() != 0;
-
-    m_opt7->mysqlConfig->setEnabled( dbConfigEnabled );
+    m_opt7->mysqlConfig->setEnabled( m_opt7->kcfg_DatabaseEngine->currentItem() != 0 );
 }
 
 
@@ -272,9 +277,6 @@ void AmarokConfigDialog::soundSystemChanged()
 {
     ///A new sound system has been LOADED
     ///If only the sound system widget has been changed don't call this!
-
-    //TODO fix it not working with apply!
-    //TODO enable/disable crossfading
 
     // remove old engine config widget
     // will delete the view if implementation is done correctly
