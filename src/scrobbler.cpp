@@ -8,6 +8,7 @@
 #include "config.h"
 #include "enginecontroller.h"
 #include "scrobbler.h"
+#include "statusbar.h"
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -879,12 +880,44 @@ void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
 void ScrobblerSubmitter::finishJob( KIO::Job* job )
 {
     SubmitItem* item;
+    int counter = 0;
+    QString firstTitle;
     while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
     {
+        counter++;
+        if ( firstTitle == QString::null )
+        {
+            firstTitle = item->title();
+        }
         m_submitQueue.remove( item );
         delete item;
     }
     m_submitQueue.first();
+    
+    QString message;
+    if ( counter == 1 )
+    {
+        message =
+            QString( "'%1' submitted to Audioscrobbler" ).arg( firstTitle );
+    }
+    else
+    {
+        message =
+            QString(
+                "'%1'... (total of %2 tracks) submitted to Audioscrobbler" )
+                .arg( firstTitle ).arg( counter );
+    }
+    if ( m_submitQueue.count() == 1 )
+    {
+        message += QString( ", 1 track still in queue" );
+    }
+    else if ( m_submitQueue.count() > 1 )
+    {
+        message +=
+            QString( ", %1 tracks still in queue" ).arg( m_submitQueue.count() );
+    }
+    
+    amaroK::StatusBar::instance()->messageTemporary( message );
 }
 
 
