@@ -10,10 +10,16 @@
 #include <unistd.h>
 #include "base.hpp"
 
+// getpwuid/getuid
+#include <sys/types.h>
+#include <pwd.h>
+
 using namespace amaroK;
 using Vis::Scope;
 using std::string;
 
+//#include <kinstance.h>
+//KInstance inst("amarokvis");
 
 Vis::Base::Base( /*const string &name,*/ DataType dt, bool notify, uint fps )
   : m_dataType( dt )
@@ -22,7 +28,16 @@ Vis::Base::Base( /*const string &name,*/ DataType dt, bool notify, uint fps )
   , m_left( 512, 0 )
   , m_right( 512, 0 )
 {
-    std::string path = ::locate( "socket", QString( "amarok/visualization_socket" ) ).local8Bit();
+    // find out current user name
+    struct passwd *p = getpwuid( getuid() );
+    if (!p) {
+        std::cerr << "[Loader::tryConnect()] Current user has no /etc/passwd entry?!?\n";
+        return;
+    }
+
+    std::string path = "/tmp/ksocket-";
+    path += p->pw_name;
+    path += "/amarok.visualization_socket";
 
     if( openConnection( path ) ) //do exception on failure
     {
