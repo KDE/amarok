@@ -37,7 +37,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void paletteChange( const QPalette& );
 
     private slots:
-        void slotContextMenu( const QString& url, const QPoint& point );
+        void slotContextMenu( const QString& urlString, const QPoint& point );
         void showHome();
         void showCurrentTrack();
 

@@ -249,11 +249,13 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
+void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    if ( url.startsWith( "fetchcover:" ) )
+    KURL url( urlString );
+
+    if ( url.protocol() == "fetchcover" )
     {
-        QStringList info = QStringList::split( " @@@ ", QString( url ).remove( "fetchcover:" ) );
+        QStringList info = QStringList::split( " @@@ ", url.path() );
         enum menuIds { SHOW, FETCH, DELETE };
 
         KPopupMenu menu( this );
@@ -302,11 +304,9 @@ void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
                 break;
         }
     }
-    
-    if ( url.startsWith( "file" ) )
+
+    if ( url.protocol() == "file" )
     {
-        KURL path = url;
-    
         enum menuIds { APPEND, ASNEXT, MAKE };
 
         KPopupMenu menu( this );
@@ -320,16 +320,16 @@ void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
         switch ( id )
         {
             case APPEND:
-                Playlist::instance()->appendMedia( path, false, true );
+                Playlist::instance()->appendMedia( url, false, true );
             break;
-            
+
             case ASNEXT:
-                Playlist::instance()->queueMedia( path );
+                Playlist::instance()->queueMedia( url );
             break;
-            
+
             case MAKE:
                 Playlist::instance()->clear();
-                Playlist::instance()->appendMedia( path, true, true );
+                Playlist::instance()->appendMedia( url, true, true );
             break;
         }
      }
