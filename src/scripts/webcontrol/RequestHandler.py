@@ -285,8 +285,6 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             status.reqid = newreqid
             self.wfile.write(PLIST.toHtml(status))
 
-        self.wfile.close()
-
 def main():
     """main is the starting-point for our script."""
     global PLIST
