@@ -146,12 +146,10 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
 
     case Engine::Playing:
         overlay = &playOverlay;
-        blinkTimerID = startTimer( 1500 );  // start 'blink' timer
         break;
 
     default: // idle/stopped case
         overlay = &stopOverlay;
-        blinkTimerID = startTimer( 2500 );  // start 'hide' timer
         paintIcon( -1, true );
     }
 }
