@@ -32,7 +32,6 @@ void Options5::init()
     m_pOSDPreview = new OSDPreviewWidget( "amaroK", this ); //must be child!!!
     m_pOSDPreview->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
     m_pOSDPreview->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
-    m_pOSDPreview->setText( AmarokConfig::osdText() );
 
     connect( m_pOSDPreview, SIGNAL(positionChanged()), SLOT(slotPositionChanged()) );
 
