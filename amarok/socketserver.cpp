@@ -2,7 +2,9 @@
 // Copyright: See COPYING file that comes with this distribution
 
 
-#include "enginebase.h" //to get the scope
+#include "config.h"
+
+#include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
 #include "fht.h"              //processing the scope
 #include "socketserver.h"
@@ -12,8 +14,11 @@
 #include <qsocketnotifier.h>
 
 #include <kdebug.h>
+#include <klocale.h>
 
+#include <dirent.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
@@ -74,27 +79,45 @@ Vis::SocketServer::SocketServer( QObject *parent )
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC interface
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
 void
 Vis::SocketServer::showSelector() //SLOT
 {
     if ( !lv ) {
         lv = new QListView( 0, 0, Qt::WDestructiveClose );
-        lv->setCaption( "Visualizations - amaroK" );
+        lv->setCaption( i18n( "Visualizations - amaroK" ) );
     
-        lv->addColumn( "Name" );
-        lv->addColumn( "Description" );
+        lv->addColumn( i18n( "Name" ) );
+        lv->addColumn( i18n( "Description" ) );
         lv->show();
+    
+        QString dirname = XMMS_PLUGIN_PATH;
+        dirname.append( "/" );
+        QString filepath;
+        DIR *dir;
+        struct dirent *ent;
+        struct stat statbuf;
+
+        dir = opendir( dirname.local8Bit() );
+        if ( !dir ) return;
+
+        while ( ent = readdir( dir ) ) {
+            QString filename = QString::fromLocal8Bit( ent->d_name );
+            filepath = dirname + filename;
+            if ( filename.endsWith( ".so" ) )
+                if ( !stat( filepath.local8Bit(), &statbuf ) && S_ISREG( statbuf.st_mode ) )
+                    new QListViewItem( lv, filename );
+        }
     }
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE interface
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
 void
 Vis::SocketServer::newConnection( int sockfd )

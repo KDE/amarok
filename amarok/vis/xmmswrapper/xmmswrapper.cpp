@@ -68,9 +68,8 @@ main( int argc, char** argv ) {
 
         dir = opendir( dirname.c_str() );
         if ( !dir ) { std::cerr << "Please edit the PLUGIN_PATH in xmmswrapper.cpp\n"; exit( 1 ); }
-        std::cout << "checkpoint 1\n";
 
-        while ( ( ent = readdir( dir ) ) != NULL ) {
+        while ( ent = readdir( dir ) ) {
             std::string filename = ent->d_name;
             int index = filename.find_last_of( '.' );
             if ( index == std::string::npos ) continue;
