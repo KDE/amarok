@@ -155,6 +155,9 @@ class GstEngine : public Engine::Base
         bool m_pipelineFilled;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
+
+        /** Set when an input pipeline has reached EndOfStream */
+        bool m_eos;
 };
 
 
@@ -162,7 +165,7 @@ class GstEngine : public Engine::Base
 class InputPipeline : public QObject
 {
     public:
-        enum State { PLAYING, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
+        enum State { NO_FADE, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
 
         InputPipeline();
         ~InputPipeline();

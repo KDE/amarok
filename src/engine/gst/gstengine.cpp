@@ -144,13 +144,13 @@ GstEngine::shutdown_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base( /*StreamingMode*/ Engine::Signal, /*hasConfigure*/ true, /*hasXFade*/ true )
-        , m_gst_thread( 0 )
         , m_currentInput( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
         , m_fadeValue( 0.0 )
         , m_pipelineFilled( false )
         , m_shutdown( false )
+        , m_eos( false )
 {
     kdDebug() << k_funcinfo << endl;
 
@@ -277,7 +277,12 @@ GstEngine::position() const
 Engine::State
 GstEngine::state() const
 {
-    if ( !m_currentInput ) return Engine::Idle;
+    if ( !m_pipelineFilled )
+        return Engine::Empty;
+    if ( m_eos )
+        return Engine::Idle;
+    if ( !m_currentInput )
+        return Engine::Empty;
 
     switch ( gst_element_get_state( m_currentInput->thread ) )
     {
@@ -345,11 +350,13 @@ bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
     Engine::Base::load( url, stream );
+    m_eos = false;
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
-    // Make sure we have an output pipeline
-    if ( !m_pipelineFilled )
-        if ( !createPipeline() ) return false;
+    // Make sure we have a functional output pipeline
+    if ( !( m_pipelineFilled && gst_element_get_state( m_gst_thread ) == GST_STATE_PLAYING ) )
+        if ( !createPipeline() )
+            return false;
 
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
@@ -433,7 +440,11 @@ GstEngine::stop()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
 
-    m_currentInput->setState( InputPipeline::FADE_OUT );
+    // When engine is in pause mode, don't fade but destroy right away
+    if ( state() == Engine::Paused )
+        destroyInput( m_currentInput );
+    else
+        m_currentInput->setState( InputPipeline::FADE_OUT );
 
     emit stateChanged( Engine::Empty );
 }
@@ -513,7 +524,7 @@ void GstEngine::timerEvent( QTimerEvent* )
 
         switch ( input->state() )
         {
-            case InputPipeline::PLAYING:
+            case InputPipeline::NO_FADE:
                 break;
 
             case InputPipeline::FADE_IN:
@@ -523,7 +534,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 if ( input->m_fade < 0.0 ) {
                     // Fade transition has finished, stop playback
                     kdDebug() << "[Gst-Engine] Fade-in finished.\n";
-                    input->setState( InputPipeline::PLAYING );
+                    input->setState( InputPipeline::NO_FADE );
                 }
                 else {
                     // Set new value for fadeout volume element
@@ -564,7 +575,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                 if ( input->m_fade < 0.0 ) {
                     // Fade transition has finished, stop playback
                     kdDebug() << "[Gst-Engine] XFade-in finished.\n";
-                    input->setState( InputPipeline::PLAYING );
+                    input->setState( InputPipeline::NO_FADE );
                 }
                 else {
                     // Set new value for fadeout volume element
@@ -627,10 +638,13 @@ GstEngine::endOfStreamReached()  //SLOT
     for ( uint i = 0; i < m_inputs.count(); i++ ) {
         input = m_inputs.at( i );
         if ( input->m_eos ) {
-            kdDebug() << "eosElement found, destroying.\n";
-            if ( input->state() == InputPipeline::PLAYING )
-                emit trackEnded();
+            kdDebug() << "An input pipeline has reached EOS, destroying.\n";
+
             destroyInput( input );
+            m_eos = true;
+
+            if ( input->state() != InputPipeline::FADE_OUT && input->state() != InputPipeline::XFADE_OUT )
+                emit trackEnded();
         }
     }
 }
@@ -807,7 +821,6 @@ GstEngine::createPipeline()
 
     /* link elements */
     gst_element_link_many( m_gst_adder, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
-    m_pipelineFilled = true;
 
     if ( !gst_element_set_state( m_gst_thread, GST_STATE_READY ) ) {
         kdError() << "Could not set threadOutput to state READY!\n";
@@ -822,6 +835,7 @@ GstEngine::createPipeline()
 
     setVolume( m_volume );
 
+    m_pipelineFilled = true;
     return true;
 }
 
@@ -866,8 +880,6 @@ GstEngine::destroyInput( InputPipeline* input )
 
         // Destroy the pipeline
         m_inputs.remove( input );
-
-        gst_adapter_clear( m_gst_adapter );
     }
 
     // Destroy KIO transmission job
@@ -951,7 +963,7 @@ InputPipeline::setState( State newState )
 
     switch ( newState )
     {
-        case PLAYING:
+        case NO_FADE:
             g_object_set( G_OBJECT( volume ), "volume", 1.0, NULL );
             m_fade = 0.0;
             break;
