@@ -134,7 +134,7 @@ namespace amaroK {
 
         public:
             StreamProxy( Q_UINT16 port, QObject* parent )
-                : QServerSocket( port, 1, parent ) {};
+                : QServerSocket( 0x7f000001 /* 127.0.0.1 */, port, 1, parent ) {};
 
         signals:
             void connected( int socket );
