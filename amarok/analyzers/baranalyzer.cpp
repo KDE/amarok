@@ -120,7 +120,7 @@ void BarAnalyzer::analyze( const Scope &s )
         //blt last n roofs, a.k.a motion blur
         for ( uint c = 0; c < m_roofMem[i].size(); ++c )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
-            bitBlt( canvas(), x, m_roofMem[i].at( c ), &m_pixRoof[ NUM_ROOFS - 1 - c ] );
+            bitBlt( canvas(), x, m_roofMem[i][c], &m_pixRoof[ NUM_ROOFS - 1 - c ] );
 
         //blt the bar
         bitBlt( canvas(), x, height() - y2,

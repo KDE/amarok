@@ -35,8 +35,8 @@ EngineController *EngineController::instance()
     return Instance;
 }
 
-EngineController::EngineController() :
-    , m_pEngine( 0 )
+EngineController::EngineController()
+    : m_pEngine( 0 )
     , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
     , m_length( 0 )
