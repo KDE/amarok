@@ -812,7 +812,7 @@ void PlayerApp::play( const KURL &url, const Tags *tags )
 
     KDE::PlayObjectFactory factory( m_Server );
 
-    if ( m_optTitleStream && !m_proxyError )
+    if ( m_optTitleStream && !m_proxyError && !url.isLocalFile()  )
     {
         TitleProxy *pProxy = new TitleProxy( url );
         m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
@@ -828,7 +828,7 @@ void PlayerApp::play( const KURL &url, const Tags *tags )
         m_pPlayObject = factory.createPlayObject( url, false ); //second parameter:
                                                                 //create BUS(true/false)
     }
-
+    
     m_proxyError = false;
 
     if ( m_pPlayObject == NULL )
