@@ -28,7 +28,7 @@ email                :
 #include <qstring.h>
 
 #define PROXYPORT 6666     //FIXME port should not be hardcoded. what to do if it's in use?
-#define BUFSIZE 5000
+#define BUFSIZE 8192
 
 // Some info on the shoutcast metadata protocol can be found at:
 // http://www.smackfu.com/stuff/programming/shoutcast.html
@@ -58,7 +58,10 @@ TitleProxy::TitleProxy( KURL url ) :
 {
     m_urlRemote = url;
 
-    m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::bufferedSocket );
+    m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket |
+                                 KExtendedSocket::bufferedSocket |
+                                 KExtendedSocket::streamSocket );
+    
     m_sockRemote.setAddress( url.host(), url.port() );
 
     int connectResult = m_sockRemote.connect();
@@ -127,7 +130,7 @@ void TitleProxy::accept()
     index++;
 
     m_sockRemote.setBlockingMode( false );
-    m_sockRemote.setBufferSize( BUFSIZE );
+    m_sockRemote.setBufferSize( 128 * 1024 );
     m_sockRemote.enableRead( true );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     m_sockRemote.writeBlock( m_pBufIn, index );
@@ -177,8 +180,7 @@ void TitleProxy::readRemote()
         {
             if ( m_byteCount == m_metaInt )
             {
-                m_metaLen = m_pBufIn[ indexMp3++ ];
-                m_metaLen &= 0xff;
+                m_metaLen = (unsigned char) m_pBufIn[ indexMp3++ ];
                 m_metaLen *= 16;
 
                 if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
