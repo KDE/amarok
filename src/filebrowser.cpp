@@ -20,7 +20,8 @@
    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 */
-#include "amarokconfig.h"
+
+#include "clicklineedit.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -28,18 +29,16 @@
 #include "playlist.h"
 #include "playlistloader.h"
 
-#include <qhbox.h>
 #include <qdir.h>
+#include <qhbox.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qtooltip.h>
 
 #include <kaction.h>
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kiconloader.h>
 #include <klistview.h>   //slotViewChanged()
-#include <klineedit.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <ktoolbarbutton.h> //ctor
@@ -103,10 +102,9 @@ FileBrowser::FileBrowser( const char * name )
 
         hbox         = new QHBox( this );
         button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_filterEdit = new KLineEdit( hbox, "filter_edit" );
-        m_filterEdit->installEventFilter( this );
+        m_filterEdit = new ClickLineEdit( hbox, i18n( "Filter here..." ), "filter_edit" );
 
-        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
+        connect( button, SIGNAL( clicked() ), m_filterEdit, SLOT( clear() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_filterEdit, i18n( "Space-separated terms will be used to filter the directory-listing" ) );
@@ -124,12 +122,6 @@ FileBrowser::FileBrowser( const char * name )
     m_cmbPath->setURLs( config->readListEntry( "Dir History" ) );
     m_cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
-
-    {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_filterEdit, &e );
-    }
 
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu();
@@ -233,31 +225,6 @@ KURL::List FileBrowser::selectedItems()
     return list;
 }
 
-bool FileBrowser::eventFilter( QObject*, QEvent *e )
-{
-    //we are the only ones who use this filter.. currently
-
-    if ( !m_dir->nameFilter().isEmpty() )
-        return FALSE;
-
-    switch( e->type() ) {
-    case QEvent::FocusIn:
-        m_filterEdit->setPaletteForegroundColor( colorGroup().text() );
-        m_filterEdit->clear();
-        m_timer->stop();
-        return FALSE;
-
-    case QEvent::FocusOut:
-        m_filterEdit->setPalette( palette() );
-        m_filterEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-        m_filterEdit->setText( i18n("Filter here...") );
-        m_timer->stop();
-        return FALSE;
-
-    default:
-        return FALSE;
-    }
-}
 //END Private Methods
 
 
@@ -319,19 +286,6 @@ inline void FileBrowser::slotSetFilterTimeout()
 {
     if ( m_timer->isActive() ) m_timer->stop();
     m_timer->start( 180, true );
-}
-
-
-inline void FileBrowser::clearFilter()
-{
-    m_filterEdit->clear();
-    m_timer->stop();
-    slotSetFilter();
-    if( !m_filterEdit->hasFocus() ) {
-        //set the lineEdit to initial state
-        QEvent e( QEvent::FocusOut );
-        eventFilter( m_filterEdit, &e);
-    }
 }
 
 

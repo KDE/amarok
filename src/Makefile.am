@@ -39,6 +39,7 @@ amarokapp_SOURCES = \
     amazonsearch.cpp \
     app.cpp \
     browserbar.cpp \
+    clicklineedit.cpp \
     collectionbrowser.cpp \
     collectiondb.cpp \
     configdialog.cpp \

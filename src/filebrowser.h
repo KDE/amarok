@@ -24,19 +24,20 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
+#include <qvbox.h>
+
 #include <kdiroperator.h>
 #include <ktoolbar.h>
 #include <kurl.h>
-#include <qvbox.h>
 
+class ClickLineEdit;
+class QColor;
+class QTimer;
 class KActionCollection;
 class KDirOperator;
 class KFileItem;
 class KFileView;
 class KURLComboBox;
-class KLineEdit;
-class QColor;
-class QTimer;
 
 
 //Hi! I think we ripped this from Kate, since then it's been modified somewhat
@@ -74,7 +75,6 @@ private slots:
     void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KURL& u );
     void slotSetFilterTimeout();
-    void clearFilter();
     void slotViewChanged( KFileView* );
     void activateThis( const KFileItem* );
     void makePlaylist();
@@ -86,7 +86,6 @@ private slots:
 private:
     void setupToolbar();
     KURL::List selectedItems();
-    bool eventFilter( QObject*, QEvent* );
 
     class ToolBar: public KToolBar
     {
@@ -104,7 +103,7 @@ private:
     ToolBar           *m_toolbar;
     KURLComboBox      *m_cmbPath;
     KDirOperator      *m_dir;
-    KLineEdit         *m_filterEdit;
+    ClickLineEdit     *m_filterEdit;
     QTimer            *m_timer;
 };
 
