@@ -21,6 +21,7 @@
 #include "statusbar.h"
 #include "streamprovider.h"
 
+#include <qfile.h>
 #include <qtimer.h>
 
 #include <kapplication.h>
@@ -306,6 +307,14 @@ void EngineController::play( const MetaBundle &bundle )
         return; //don't do notify
     }
 
+    if ( url.isLocalFile() ) {
+        // does the file really exist? the playlist entry might be old
+        if ( ! QFile::exists( url.path()) ) {
+            //debug() << "  file >" << url.path() << "< does not exist!" << endl;
+            amaroK::StatusBar::instance()->shortMessage( i18n("local file does not exist.") );
+            goto some_kind_of_failure;
+        }
+    }
 
     if( m_engine->load( url ) )
     {
