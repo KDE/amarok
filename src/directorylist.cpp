@@ -190,7 +190,7 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
 
     // Use a different color if this folder has an activated child folder
     QColorGroup _cg = cg;
-    if ( dirty ) _cg.setColor( QColorGroup::Text, listView()->colorGroup().highlight() );
+    if ( dirty ) _cg.setColor( QColorGroup::Text, listView()->colorGroup().link() );
 
     QCheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
 }
