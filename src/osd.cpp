@@ -190,6 +190,7 @@ void OSDWidget::unsetColors()
 void OSDWidget::setOffset(int x, int y)
 {
     m_offset = QPoint( x, y );
+    m_position = Free;
     rePosition();
 }
 
@@ -355,7 +356,7 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
         
         if( currentScreen != -1 ) {
             // set new data
-            m_previewOffset = QPoint( x(), y() );
+            m_previewOffset = pos();
             m_position = Free;
             m_screen = currentScreen;
             
