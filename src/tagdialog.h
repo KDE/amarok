@@ -14,6 +14,13 @@
 
 class MetaBundle;
 
+#ifndef HAVE_MUSICBRAINZ
+// Dummy MusicbrainzQuery::TrackList class for queryDone argument.
+namespace MusicBrainzQuery
+{
+    class TrackList {};
+}
+#endif
 
 class TagDialog : public TagDialogBase
 {
@@ -26,10 +33,8 @@ class TagDialog : public TagDialogBase
         void okPressed();
         void checkModified();
         
-#ifdef HAVE_MUSICBRAINZ
         void musicbrainzQuery();
         void queryDone( const MusicBrainzQuery::TrackList& tracklist );
-#endif
     
     private:
         MetaBundle m_metaBundle;

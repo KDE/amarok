@@ -110,10 +110,10 @@ TagDialog::checkModified() //SLOT
 }
 
 
-#ifdef HAVE_MUSICBRAINZ
 void
 TagDialog::musicbrainzQuery() //SLOT
 {
+#ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
     
     MusicBrainzQuery* query = new MusicBrainzQuery( MusicBrainzQuery::File, m_metaBundle.url().path() );
@@ -124,12 +124,14 @@ TagDialog::musicbrainzQuery() //SLOT
 
     pushButton_musicbrainz->setEnabled( false );
     pushButton_musicbrainz->setText( i18n( "Working.." ) );
+#endif
 }
 
 
 void
 TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
 {
+#ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
     
     pushButton_musicbrainz->setEnabled( true );
@@ -143,8 +145,8 @@ TagDialog::queryDone( const MusicBrainzQuery::TrackList& tracklist ) //SLOT
     if ( !tracklist[0].name.isEmpty() )     kLineEdit_title->setText( tracklist[0].name );
     if ( !tracklist[0].artist.isEmpty() )   kLineEdit_artist->setText( tracklist[0].artist );
     if ( !tracklist[0].album.isEmpty() )    kLineEdit_album->setText( tracklist[0].album );
-}
 #endif
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
