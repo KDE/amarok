@@ -387,27 +387,24 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
     for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
     {
-        if( (*tag).isEmpty() )
-            // remove the token from "text"
-            text.replace( QRegExp( QString("\\{[^}]*%1[^{]*\\}").arg( *tok ) ), QString::null );
+        if( (*tag).isEmpty() ) {
+            text.remove( QRegExp(QString("\\{[^}]*%1[^{]*\\}").arg( *tok )) );
+            text.remove( *tok ); //above only works if {} surround the token
+        }
         else
-            // replace the token directly, this will leave the {braces}
+            //NOTE leaves the {} braces
             text.replace( *tok, *tag );
     }
 
-    // remove any remaining braces.
-    text.replace( '{', QString::null );
-    text.replace( '}', QString::null );
-
-    // replace some common HTML type stuff
+    text.remove( '{' );
+    text.remove( '}' );
+    text.replace( QRegExp("\n{2,}"), "\n" ); //multiple \n characters may remain
     text.replace( "&lt;",  "<" );
     text.replace( "&gt;",  ">" );
-    text.replace( "&amp;", "&" );
+    text.replace( "&amp;", "&" ); //replace some common HTML type stuff
 
     // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
     text.replace( "\\n", "\n" );
-
-    m_text = text.stripWhiteSpace();
 
     if ( AmarokConfig::osdCover() ) {
         //avoid showing the generic cover.  we can overwrite this by passing an arg.
@@ -419,6 +416,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         else
             setImage( location );
     }
+
+    m_text = text.stripWhiteSpace();
 
     OSDWidget::show( m_text );
 }
