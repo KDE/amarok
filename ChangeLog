@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  ADD: Alarm script, starts playing music at specified alarm time.
   ADD: Script-Manager for DCOP script extensions is now functional.
   ADD: Collection-Browser shows a help message in flat-mode when filter is
        empty. (BR 97000)
