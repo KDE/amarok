@@ -16,8 +16,7 @@ import BaseHTTPServer
 from Playlist import Playlist
 import Globals
 
-# for system call
-import os
+import time
 
 # necessary for <= python2.2 that cannot handle "infds" in var
 import string
@@ -26,70 +25,7 @@ PLIST = None
 
 # keep track of request ids in order to not repeat
 # requests if user refreshes his browser
-REQ_ID = 0
-
-
-#
-# Use simple popen call in order not to depend on dcop python lib
-# (since it does currently not work on my computer :)
-#
-def _initDcopCallPlayer(call):
-    return os.popen("dcop amarok player %s"%call)
-
-def _dcopCallPlayer(call):
-    return _initDcopCallPlayer(call)
-
-def _initDcopCallPlayerArg(call, val):
-    return os.popen("dcop amarok player %s %s"%(call,val))
-
-def _dcopCallPlayerArg(call, val):
-    return _initDcopCallPlayerArg(call, val).read()
-
-def _initDcopCallPlaylist(call):
-    return os.popen("dcop amarok playlist %s"%call)
-
-def _initDcopCallPlaylistArg(call, val):
-    return os.popen("dcop amarok playlist %s %s"%(call,val))
-
-def _dcopCallPlaylistArg(call, val):
-    return _initDcopCallPlaylistArg(call, val).read()
-
-class DelayedDcop:
-    def __init__(self, initcall, initcallarg, command, val = None):
-        self.initcall = initcall
-        self.initcallarg = initcallarg
-        self.value = None
-        self.fd = None
-        self.arg = val
-        self.command = command
-        
-    def init(self):
-        if not (self.value is None and self.fd is None):
-            return
-        if self.arg is None:
-            self.fd = self.initcall(self.command)
-        else:
-            self.fd = self.initcallarg(self.command, self.arg)
-
-    def result(self):
-        self.init()
-        if self.value is None:
-            self.value = self.fd.read()
-        return self.value
-    
-class PlayerDcop ( DelayedDcop ):
-    __super_init = DelayedDcop.__init__
-    def __init__(self, command, val = None):
-        self.__super_init(_initDcopCallPlayer,
-                          _initDcopCallPlayerArg,
-                          command, val)
-        
-class PlaylistDcop ( DelayedDcop ):
-    __super_init = DelayedDcop.__init__
-    def __init__(self, command, val = None):
-        self.__super_init(_initDcopCallPlaylist,
-                          _initDcopCallPlaylistArg,
-                          command, val)
+REQ_IDS = {}
 
 #
 # Holding current AmarokStatus. A bunch of init_XXX functions in
@@ -116,11 +52,11 @@ class AmarokStatus:
         self.controls_enabled = 0
         self.time_left = None
 
-        self.dcop_isplaying = PlayerDcop("isPlaying")
-        self.dcop_volume = PlayerDcop("getVolume")
-        self.dcop_trackcurrentindex = PlaylistDcop("getActiveIndex")
-        self.dcop_trackcurrenttime = PlayerDcop("trackCurrentTime")
-        self.dcop_tracktotaltime = PlayerDcop("trackTotalTime")
+        self.dcop_isplaying = Globals.PlayerDcop("isPlaying")
+        self.dcop_volume = Globals.PlayerDcop("getVolume")
+        self.dcop_trackcurrentindex = Globals.PlaylistDcop("getActiveIndex")
+        self.dcop_trackcurrenttime = Globals.PlayerDcop("trackCurrentTime")
+        self.dcop_tracktotaltime = Globals.PlayerDcop("trackTotalTime")
         
     def isPlaying(self):
         if self.playState != -1:
@@ -154,50 +90,60 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     
     def _amarokPlay(self):
         AmarokStatus.playState = AmarokStatus.EnginePlay
-        _dcopCallPlayer("play")
+        Globals._dcopCallPlayer("play")
 
     def _amarokPause(self):
         AmarokStatus.playState = AmarokStatus.EnginePause
-        _dcopCallPlayer("pause")
+        Globals._dcopCallPlayer("pause")
 
     def _amarokNext(self):
-        _dcopCallPlayer("next")
+        Globals._dcopCallPlayer("next")
 
     def _amarokGoto(self,index):
         AmarokStatus.playState = AmarokStatus.EnginePlay
         AmarokStatus.currentTrackIndex = int(index)
-        _dcopCallPlaylistArg("playByIndex",index)
+        Globals._dcopCallPlaylistArg("playByIndex",index)
 
     def _amarokPrev(self):
-        _dcopCallPlayer("prev")
+        Globals._dcopCallPlayer("prev")
 
     def _amarokStop(self):
-        _dcopCallPlayer("stop")
+        Globals._dcopCallPlayer("stop")
         AmarokStatus.playState = AmarokStatus.EngineStop
         
     def _amarokSetVolume(self, val):
-        _dcopCallPlayerArg("setVolume",val)
+        Globals._dcopCallPlayerArg("setVolume",val)
 
-    def _handleAction(self):
-        global REQ_ID
-
+    def _parseQueryVars(self):
         querystr = self.path.split("?")
 
+        qmap = {}
+
         if len(querystr) <= 1:
-            return
+            return qmap
 
         queries = querystr[-1].split("&");
 
-        qmap = {}
         for query in queries:
             var = query.split("=")
             if len(var) != 2:
                 continue
             qmap[var[0]] = var[1]
 
+        return qmap
+
+    def _handleAction(self, qmap):
+        global REQ_IDS
+
+        # get the sessions last reqid
+        try:
+            req_id = REQ_IDS[qmap["sesid"]]
+        except:
+            return 0
+        
         # abort a request that has already been completed
         # probably a refresh from the users browser
-        if qmap.has_key("reqid") and REQ_ID == int(qmap["reqid"]):
+        if qmap.has_key("reqid") and req_id == int(qmap["reqid"]):
             return 0
 
         if qmap.has_key("action"):
@@ -241,6 +187,22 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         f = self.send_head()
         if f:
             f.close()
+
+    def _getSessionInfo(self, qmap):
+        # get the sessions last reqid
+        last_req_id = 0
+        session_id = None
+        if qmap.has_key("sesid"):
+            session_id = qmap["sesid"]
+            if REQ_IDS.has_key(session_id):
+                last_req_id = REQ_IDS[session_id]
+            else:
+                REQ_IDS[session_id] = last_req_id
+        else:
+            # Create a session 
+            session_id = str(time.time())
+            REQ_IDS[session_id] = last_req_id
+        return session_id, last_req_id
    
     def do_GET(self):
         """Overwrite the do_GET-method of the super class."""
@@ -251,11 +213,16 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             '.css': 'text/plain'
             })
 
-        global REQ_ID
-        if AmarokStatus.allowControl and self._handleAction():
-            REQ_ID = REQ_ID + 1
+        global REQ_IDS
 
-        newreqid = REQ_ID + 1
+        qmap = self._parseQueryVars()
+        session_id, last_req_id = self._getSessionInfo(qmap)
+            
+        if AmarokStatus.allowControl and self._handleAction(qmap):
+            last_req_id = last_req_id + 1
+            REQ_IDS[session_id] = last_req_id
+        
+        newreqid = last_req_id + 1
         
         #
         # Surely there must be a better way that this:)
@@ -263,7 +230,6 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         self.send_response(200)
         if string.find(self.path, ".png") >= 0:
             self.send_header("content-type","image/png")
-            self.send_header("Cache-Control","no-cache")
             self.end_headers()
             self._sendFile(self.path)
         elif string.find(self.path, ".js") >= 0:
@@ -283,6 +249,7 @@ class RequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header("Cache-Control","no-cache")
             self.end_headers()
             status.reqid = newreqid
+            status.sesid = session_id
             self.wfile.write(PLIST.toHtml(status))
 
 def main():

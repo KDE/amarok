@@ -33,7 +33,7 @@ class Track(object):
             setattr(self, key, value)
 
 
-    def toRow(self, style='', id=None, trackno=None, reqid=None):
+    def toRow(self, style='', id=None, trackno=None, reqid=None, sesid = None):
         """Returns the a html-table-row with member values of this class"""
         
         trno = str(trackno)
@@ -41,7 +41,7 @@ class Track(object):
         if id:
             astart += "name='nowplaying' "
         # append "#nowplaying" if we want to jump to current song.
-        astart += "class='track' href='?action=goto&value=" + trno + "&" + reqid + "'>"
+        astart += "class='track' href='?action=goto&value=" + trno + "&" + reqid + "&" + sesid + "'>"
         aend = "</a>"
         
         tmp = [ '<td>' + astart + i + aend +'</td>' for i in [getattr(self,f) for f in self.__slots__ ] ]
@@ -66,9 +66,6 @@ class Track(object):
         
         return '<tr %s %s>%s</tr>'%(tr_style, tr_id, ''.join(tmp))        
 
-    def getTitle(self):
-        return getattr(self,"Title")
-
 class Playlist:
     """The Playlist class represents the Playlist as one object. It holds all
     needed information and does most of the work"""
@@ -84,6 +81,9 @@ class Playlist:
         self.templateLastChanged = self._loadHtmlTemplate()
 
     def _loadHtmlTemplate(self):
+        """Loads the global string template variables that are used for
+        rendering the page. The template can be changed by setting
+        self.templateFilename to a template file."""
         ep = Globals.EXEC_PATH
         st = os.stat(ep + "/" + self.templateFilename)[8]
 
@@ -100,50 +100,33 @@ class Playlist:
         self.tracks = []
         self.mtime = self._getMtime()
         self._buildDoc()
-        self._setFullPage(status)
+        self._setFullPage(status) 
         return self.fullPage    
 
 
-    def _createButton(self, name, action, reqid):
-        return "<a href='?action=" + action + reqid + "'><img src='player_" + name + ".png'></a>"
+    def _createButton(self, name, action, reqid, sesid):
+        """Return a button to be used as an action"""
+        return "<a href='?action=" + action + reqid + sesid + "'><img src='player_" + name + ".png'></a>"
     
-    def _createVolume(self, vol_val, reqid):
+    def _createVolume(self, vol_val, reqid, sesid):
+        """Return a HTML volume seletor."""
+        
         volume = '<table width="100" class="volume">'
         volume += "<tr>";
 
         for i in range(1,vol_val+1):
             volume += """<td class='volumeset'>
-            <a href='?action=setvolume&value=""" + str(i*10) + reqid + "'>&nbsp;</a></td>"
+            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'>&nbsp;</a></td>"
 
         for i in range(vol_val+1, 11):
             volume += """<td class='volumeunset'>
-            <a href='?action=setvolume&value=""" + str(i*10) + reqid + "'>&nbsp;</a></td>"
+            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'>&nbsp;</a></td>"
 
         volume += "</tr></table>"
         return volume
     
-    def _createActions(self, status):
-
-
-        if not status.controlsEnabled():
-            return ""
-        
-
-        reqid = "&reqid=" + str(status.reqid)
-
-        playpause = self._createButton("play", "play", reqid)
-
-        if status.isPlaying():
-            playpause = self._createButton("pause", "pause", reqid) 
-
-        buttons = (playpause + "&nbsp;" +
-                   self._createButton("stop", "stop", reqid) + "&nbsp;" +
-                   self._createButton("start", "prev", reqid) + "&nbsp;" +
-                   self._createButton("end", "next", reqid))
-
-        vol_val = int(float(status.getVolume()) / 10.0 + 0.5)
-        volume = self._createVolume(vol_val, reqid)
-        
+    def _createTimeStr(self, status):
+        """Returns the string representation of the the remaining time of the current song."""
 
         _gmtime = time.gmtime(status.timeLeft())
 
@@ -165,29 +148,42 @@ class Playlist:
         if secs < 10:
             secs_str = "0" + secs_str
 
-        time_left = hours_str + mins_str + secs_str
+        return hours_str + mins_str + secs_str
+        
+    def _createActions(self, status):
+        """Returns HTML for allactions that can be performed and for the time counter""" 
 
-        actions = ("<table><tr><td>" +
-                   buttons +
-                   "</td><td><img width='9' height='8' src='vol_speaker.png'></td>" +
-                   "<td>" + volume + "</td>" +
-                   "<td width='16'>" + ("&nbsp;" * 6) + "Time:<td><td id='countdown'>" + time_left +
-                   "</td></tr></table>")
-        return actions
+        if not status.controlsEnabled():
+            return ""
+
+        reqid = "&reqid=" + str(status.reqid)
+        sesid = "&sesid=" + str(status.sesid)
+
+        playpause = self._createButton("play", "play", reqid, sesid)
+
+        if status.isPlaying():
+            playpause = self._createButton("pause", "pause", reqid, sesid) 
+
+        buttons = (playpause + "&nbsp;" +
+                   self._createButton("stop", "stop", reqid, sesid) + "&nbsp;" +
+                   self._createButton("start", "prev", reqid, sesid) + "&nbsp;" +
+                   self._createButton("end", "next", reqid, sesid))
+
+        vol_val = int(float(status.getVolume()) / 10.0 + 0.5)
+        volume = self._createVolume(vol_val, reqid, sesid)
+        
+        return actions % ( buttons, volume, self._createTimeStr(status) )
     
     def _setFullPage(self, status):
-        self.fullPage = code[0]
+        """Renders the fullpage into the varialbe self.fullPage"""
+        counter = ""
         if status.playState == status.EnginePlay:
-            self.fullPage += "countdown(" + str(status.timeLeft()) + ");"
-        self.fullPage += code[1]
-        self.fullPage += self._createActions(status).encode(self.encoding,'replace')
-        self.fullPage += code[2]
-        self.fullPage += os.environ['LOGNAME']
-        self.fullPage += code[3]
-        tracktable = self._createTable(status)
-        self.fullPage += code[4]
-        self.fullPage += tracktable.encode(self.encoding,'replace')
-        self.fullPage += code[5]
+            counter = "countdown(" + str(status.timeLeft()) + ");"
+
+        self.fullPage = code % ( counter,
+                                 self._createActions(status).encode(self.encoding,'replace'),
+                                 os.environ['LOGNAME'],
+                                 self._createTable(status).encode(self.encoding,'replace') )
         
     def _getMtime(self):
         """gets the mtime from the current.xml file, to check if the current.xml
@@ -230,6 +226,7 @@ class Playlist:
         retval = []
         i = 1
         reqid = "&reqid=" + str(status.reqid)
+        sesid = "&sesid=" + str(status.sesid)
         curindex = status.getActiveIndex()
         id = None
         for track in self.tracks:
@@ -238,7 +235,7 @@ class Playlist:
                 style = 'tr_two'
             if curindex == (i-1):
                 id = "nowplaying"
-            retval.append(track.toRow(style=style, id=id, trackno=i-1, reqid=reqid))
+            retval.append(track.toRow(style=style, id=id, trackno=i-1, reqid=reqid, sesid=sesid))
             i = i+1
         return retval
     

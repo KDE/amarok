@@ -136,9 +136,7 @@ class WebControl( QApplication ):
         config.read( "webcontrolrc" )
 
         try:
-
             RequestHandler.AmarokStatus.allowControl = string.find(config.get( "General", "allowcontrol" ), "True") >= 0
-
         except:
             debug( "No config file found, using defaults." )
 
@@ -199,9 +197,9 @@ class WebControl( QApplication ):
 
     def engineStatePlay( self ):
         """ Called when Engine state changes to Play """
-        RequestHandler.AmarokStatus.dcop_trackcurrenttime = RequestHandler.PlayerDcop("trackCurrentTime")
+        RequestHandler.AmarokStatus.dcop_trackcurrenttime = Globals.PlayerDcop("trackCurrentTime")
         RequestHandler.AmarokStatus.dcop_trackcurrenttime.result()
-        RequestHandler.AmarokStatus.dcop_tracktotaltime = RequestHandler.PlayerDcop("trackTotalTime")
+        RequestHandler.AmarokStatus.dcop_tracktotaltime = Globals.PlayerDcop("trackTotalTime")
         RequestHandler.AmarokStatus.dcop_tracktotaltime.result()
         RequestHandler.AmarokStatus.playState = RequestHandler.AmarokStatus.EnginePlay
 
@@ -219,11 +217,11 @@ class WebControl( QApplication ):
 
     def trackChange( self ):
         """ Called when a new track starts """
-        RequestHandler.AmarokStatus.dcop_trackcurrentindex = RequestHandler.PlaylistDcop("getActiveIndex")
+        RequestHandler.AmarokStatus.dcop_trackcurrentindex = Globals.PlaylistDcop("getActiveIndex")
         RequestHandler.AmarokStatus.dcop_trackcurrentindex.result()
-        RequestHandler.AmarokStatus.dcop_trackcurrenttime = RequestHandler.PlayerDcop("trackCurrentTime")
+        RequestHandler.AmarokStatus.dcop_trackcurrenttime = Globals.PlayerDcop("trackCurrentTime")
         RequestHandler.AmarokStatus.dcop_trackcurrenttime.result()
-        RequestHandler.AmarokStatus.dcop_tracktotaltime = RequestHandler.PlayerDcop("trackTotalTime")
+        RequestHandler.AmarokStatus.dcop_tracktotaltime = Globals.PlayerDcop("trackTotalTime")
         RequestHandler.AmarokStatus.dcop_tracktotaltime.result()
 
 
