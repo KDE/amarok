@@ -89,8 +89,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( i18n( "Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
     m_cat2Menu ->insertItem( i18n( "Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
-    m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ) );
-    m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ) );
+    m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ), false );
+    m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ), true );
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ),
              this,           SLOT( slotSetFilterTimeout() ) );
@@ -204,7 +204,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( m_coverFetcher, SIGNAL( imageReady( const QPixmap& ) ),
              this,             SLOT( gotCover( const QPixmap& ) ) );
 
-    renderView();
     startTimer( MONITOR_INTERVAL );
 }
 
@@ -387,7 +386,7 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 
 
 void
-CollectionView::cat1Menu( int id )  //SLOT
+CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 {
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), false ); //uncheck old item
     m_parent->m_cat2Menu->setItemEnabled( idForCat( m_category1 ), true );  //enable old item
@@ -398,12 +397,13 @@ CollectionView::cat1Menu( int id )  //SLOT
     //prevent choosing the same category in both menus
     m_parent->m_cat2Menu->setItemEnabled( id , false );
 
-    renderView();
+    if ( rerender )
+        renderView();
 }
 
 
 void
-CollectionView::cat2Menu( int id )  //SLOT
+CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 {
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
     m_parent->m_cat1Menu->setItemEnabled( idForCat( m_category2 ), true );  //enable old item
@@ -413,7 +413,8 @@ CollectionView::cat2Menu( int id )  //SLOT
     //prevent choosing the same category in both menus
     m_parent->m_cat1Menu->setItemEnabled( id , false );
 
-    renderView();
+    if ( rerender )
+        renderView();
 }
 
 

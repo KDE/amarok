@@ -91,8 +91,8 @@ class CollectionView : public KListView
         
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );    
-        void cat1Menu( int );
-        void cat2Menu( int );
+        void cat1Menu( int id, bool rerender = true );
+        void cat2Menu( int id, bool rerender = true );
         void doubleClicked( QListViewItem*, const QPoint&, int );
         void rmbPressed( QListViewItem*, const QPoint&, int );
         
