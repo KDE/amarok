@@ -74,6 +74,7 @@ class PlayerApp : public KUniqueApplication
 
         bool m_optSavePlaylist, m_optConfirmClear, m_optConfirmExit, m_optFollowSymlinks;
         bool m_optTimeDisplayRemaining, m_optReadMetaInfo, m_optRepeatTrack, m_optRepeatPlaylist;
+        bool m_optShowTrayIcon;
         QString m_optDropMode;
 
         int m_Volume;
@@ -126,6 +127,7 @@ class PlayerApp : public KUniqueApplication
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
+        void sigShowTrayIcon(bool);
 
     private:
         void initArts();

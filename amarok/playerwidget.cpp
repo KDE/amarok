@@ -183,7 +183,7 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
         newVal = static_cast<float>( e->x() ) / static_cast<float>( width() ) * maxValue();
     else
         newVal = static_cast<float>( e->x() ) / static_cast<float>( height() ) * maxValue();
-            
+
     int intVal = static_cast<int>( newVal );
             
     if ( ( intVal < value() - 10 ) || ( intVal > value() + 10 ) )
@@ -700,5 +700,19 @@ bool PlayerWidget::playObjectConfigurable()
 
     return false;
 }
+
+
+void PlayerWidget::slotUpdateTrayIcon( bool visible )
+{
+    if ( visible )
+    {
+        m_pTray->show();
+    }
+    else
+    {
+        m_pTray->hide();
+    }
+}
+
 
 #include "playerwidget.moc"

@@ -60,7 +60,7 @@ class AmarokButton : public QLabel
 
         void setOn( bool enable );
         bool isOn();
-        
+
 // ATTRIBUTES ------
 
     public slots:
@@ -101,7 +101,7 @@ class AmarokSlider : public QSlider
 
     private:
         void mousePressEvent( QMouseEvent *e );
-        
+
 // ATTRIBUTES ------
 };
 
@@ -123,7 +123,7 @@ class PlayerWidget : public QWidget
 
 // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
-        
+
         QPopupMenu *m_pPopupMenu;
         VisWidget *m_pVis;
         QFrame *m_pFrame, *m_pFrameButtons;
@@ -140,6 +140,7 @@ class PlayerWidget : public QWidget
         void slotCopyClipboard();
         void slotConfigPlayObject();
         void slotConfigWidgetDestroyed();
+        void slotUpdateTrayIcon( bool visible );
 
     private:
         void initScroll();
@@ -164,6 +165,6 @@ class PlayerWidget : public QWidget
         int m_timeDisplayX, m_timeDisplayY, m_timeDisplayW;
         int m_pixmapWidth, m_pixmapHeight, m_scrollWidth;
         int m_sx, m_sy, m_sxAdd;
-	KSystemTray *m_pTray;
+        KSystemTray *m_pTray;
 };
 #endif

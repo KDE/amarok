@@ -102,13 +102,13 @@ PlayerApp::PlayerApp() :
    KUniqueApplication( true, true, false ),
    m_bgColor( Qt::black ),
    m_fgColor( QColor( 0x80, 0xa0, 0xff ) ),
+   m_pPlayObject( NULL ),
    m_pArtsDispatcher( NULL ),
    m_Length( 0 ),
-   m_pPlayObject( NULL ),
    m_playRetryCounter( 0 ),
+   m_pEffectWidget( NULL ),
    m_bIsPlaying( false ),
-   m_bChangingSlider( false ),
-   m_pEffectWidget( NULL )
+   m_bChangingSlider( false )
 {
     setName( "amarok" );
 
@@ -121,7 +121,7 @@ PlayerApp::PlayerApp() :
     initArts();
     if ( !initScope() )
     {
-        KMessageBox::error( 0, "Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting..", "Fatal Error" );
+        KMessageBox::error( 0, i18n("Cannot find libamarokarts! Maybe installed in the wrong directory? Aborting.."), i18n("Fatal Error") );
         return;
     }
     initPlayerWidget();
@@ -132,6 +132,7 @@ PlayerApp::PlayerApp() :
 
     connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
+    connect( this, SIGNAL( sigShowTrayIcon(bool) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon(bool) ) );
 
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
@@ -352,7 +353,7 @@ void PlayerApp::initArts()
 
     if ( m_Server.isNull() )
     {
-        KMessageBox::error( 0, "Fatal Error", "Cannot start aRts! Exiting." );
+        KMessageBox::error( 0, i18n("Cannot start aRts! Exiting."), i18n("Fatal Error") );
         exit( 1 );
     }
 
@@ -691,6 +692,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Repeat Track", m_optRepeatTrack );
     m_pConfig->writeEntry( "Repeat Playlist", m_optRepeatPlaylist );
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
+    m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
 
     //store current item
     PlaylistItem *item = static_cast<PlaylistItem*>(m_pBrowserWin->m_pPlaylistWidget->currentTrack());
@@ -712,12 +714,15 @@ void PlayerApp::readConfig()
 //TEST
     kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
+    QPoint  pointZero     = QPoint( 0, 0 );
+    QSize   arbitrarySize = QSize ( 600, 450 );
+
     m_pConfig->setGroup( "General Options" );
 
     m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", "/" ) );
-    m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &(QPoint( 0, 0 ) ) ) );
-    m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &(QPoint( 0, 0 ) ) ) );
-    m_pBrowserWin->resize( m_pConfig->readSizeEntry( "BrowserWinSize", &(QSize( 600, 450 ) ) ) );
+    m_pPlayerWidget->move( m_pConfig->readPointEntry( "PlayerPos", &pointZero ) );
+    m_pBrowserWin->move( m_pConfig->readPointEntry( "BrowserWinPos", &pointZero ) );
+    m_pBrowserWin->resize( m_pConfig->readSizeEntry( "BrowserWinSize", &arbitrarySize ) );
     m_optSavePlaylist = m_pConfig->readBoolEntry( "Save Playlist", false );
     m_optConfirmClear = m_pConfig->readBoolEntry( "Confirm Clear", false );
     m_optConfirmExit = m_pConfig->readBoolEntry( "Confirm Exit", false );
@@ -727,6 +732,7 @@ void PlayerApp::readConfig()
     m_optRepeatTrack = m_pConfig->readBoolEntry( "Repeat Track", false );
     m_optRepeatPlaylist = m_pConfig->readBoolEntry( "Repeat Playlist", false );
     m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
+    m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
@@ -781,7 +787,7 @@ void PlayerApp::readConfig()
 
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     new KAction( "Copy Current Title to Clipboard", CTRL+Key_C, m_pPlayerWidget, SLOT( slotCopyClipboard() ), m_pPlayerWidget->m_pActionCollection, "copy_clipboard" );
-    
+
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     new KAction( "Go one item up", Key_Up, m_pBrowserWin, SLOT( slotKeyUp() ), m_pBrowserWin->m_pActionCollection, "up" );
     new KAction( "Go one item down", Key_Down, m_pBrowserWin, SLOT( slotKeyDown() ), m_pBrowserWin->m_pActionCollection, "down" );
@@ -799,7 +805,7 @@ void PlayerApp::readConfig()
 bool PlayerApp::queryClose()
 {
     if ( m_optConfirmExit )
-        if ( KMessageBox::questionYesNo( 0, "Really exit the program?" ) == KMessageBox::No )
+        if ( KMessageBox::questionYesNo( 0, i18n("Really exit the program?") ) == KMessageBox::No )
             return false;
 
     return true;
@@ -971,7 +977,7 @@ void PlayerApp::slotPlay()
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
         m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
-        m_pPlayerWidget->setScroll( "Stream from: " + item->text( 0 ), "--", "--" );
+        m_pPlayerWidget->setScroll( i18n("Stream from: ") + item->text( 0 ), "--", "--" );
     }
 
     m_pPlayerWidget->m_pSlider->setValue( 0 );
@@ -987,7 +993,7 @@ void PlayerApp::slotConnectPlayObj()
     if ( !m_pPlayObject->object().isNull() )
     {
         m_pPlayObject->object()._node()->start();
-        
+
         Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
         Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );
     }
@@ -1038,7 +1044,7 @@ void PlayerApp::slotStop()
         m_pPlayerWidget->m_pSlider->setValue( 0 );
         m_pPlayerWidget->m_pSlider->setMinValue( 0 );
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-        m_pPlayerWidget->setScroll( "no file loaded", " ", " " );
+        m_pPlayerWidget->setScroll( i18n("no file loaded"), " ", " " );
         m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
 
         delete m_pPlayerWidget->m_pPlayObjConfigWidget;
@@ -1093,7 +1099,7 @@ void PlayerApp::slotNext()
 void PlayerApp::slotLoadPlaylist()
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( makeStdCaption( "Enter file or URL" ) );
+    dlg.setCaption( makeStdCaption( i18n("Enter file or URL") ) );
     dlg.setIcon( icon() );
     dlg.fileDialog()->setFilter( "*.m3u *.pls *.M3U *.PLS|Playlist Files" );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
@@ -1138,7 +1144,7 @@ void PlayerApp::slotClearPlaylistAsk()
 {
     if ( m_optConfirmClear )
     {
-        if ( KMessageBox::questionYesNo( 0, "Really clear playlist?" ) == KMessageBox::No )
+        if ( KMessageBox::questionYesNo( 0, i18n("Really clear playlist?") ) == KMessageBox::No )
             return;
     }
 
@@ -1164,7 +1170,7 @@ void PlayerApp::slotRedoPlaylist()
 void PlayerApp::slotAddLocation()
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( makeStdCaption( "Enter file or URL" ) );
+    dlg.setCaption( makeStdCaption( i18n("Enter file or URL") ) );
     dlg.setIcon( icon() );
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
@@ -1320,7 +1326,7 @@ void PlayerApp::slotAnimTimer()
         if ( m_scopeActive )
         {
             std::vector<float> *pScopeVector = m_Scope.scope();
-            
+
             if ( pScopeVector->size() != 0 )
                 m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
             else
@@ -1374,7 +1380,7 @@ void PlayerApp::slotEq( bool b )
 {
     if ( b )
     {
-        KMessageBox::sorry( 0, "Equalizer is not yet implemented." );
+        KMessageBox::sorry( 0, i18n("Equalizer is not yet implemented.") );
         m_pPlayerWidget->m_pButtonEq->setOn( false );
     }
 }
@@ -1383,13 +1389,13 @@ void PlayerApp::slotEq( bool b )
 
 void PlayerApp::slotShowOptions()
 {
-    KDialogBase *pDia = new KDialogBase( KDialogBase::IconList, "Options",
+    KDialogBase *pDia = new KDialogBase( KDialogBase::IconList, i18n("Options"),
         KDialogBase::Ok | KDialogBase::Cancel, KDialogBase::Ok );
 
     QFrame *frame;
     KIconLoader iconLoader;
 
-    frame = pDia->addPage( QString( "General" ) , QString( "Configure general options" ),
+    frame = pDia->addPage( i18n("General") , i18n("Configure general options"),
         iconLoader.loadIcon( "misc", KIcon::NoGroup, KIcon::SizeMedium ) );
 
     Options1 *opt1 = new Options1( frame );
@@ -1397,6 +1403,7 @@ void PlayerApp::slotShowOptions()
     opt1->checkBox7->setChecked( m_optConfirmClear );
     opt1->checkBox6->setChecked( m_optConfirmExit );
     opt1->checkBox4->setChecked( m_optReadMetaInfo );
+    opt1->checkBox3->setChecked( m_optShowTrayIcon );
 
     if ( m_optDropMode == "Ask" )
         opt1->comboBox1->setCurrentItem( 0 );
@@ -1432,6 +1439,11 @@ void PlayerApp::slotShowOptions()
         else
             m_optReadMetaInfo = false;
 
+        if ( opt1->checkBox3->isChecked() )
+            m_optShowTrayIcon = true;
+        else
+            m_optShowTrayIcon = false;
+
         switch ( opt1->comboBox1->currentItem() )
         {
             case 0:
@@ -1444,6 +1456,7 @@ void PlayerApp::slotShowOptions()
                 m_optDropMode = "NonRecursively";
                 break;
         }
+        emit sigShowTrayIcon(m_optShowTrayIcon);
     }
     delete pDia;
 }
@@ -1513,6 +1526,5 @@ void PlayerApp::slotShowHelp()
 {
     KApplication::KApp->invokeHelp( QString::null, "amarok" );
 }
-
 
 #include "playerapp.moc"
