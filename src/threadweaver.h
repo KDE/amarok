@@ -138,6 +138,7 @@ private:
     {
     public:
         Thread( const char* );
+        ~Thread();
 
         virtual void run();
 
@@ -159,8 +160,6 @@ private:
 
     private:
         friend void ThreadWeaver::customEvent( QCustomEvent* );
-
-        ~Thread();
     };
 
 
