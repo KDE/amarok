@@ -140,13 +140,13 @@ PlayerApp::PlayerApp() :
         m_pBrowserWin->show();
     }
 
-    //restore last playlist
-    //<mxcl> Really long playlists will stall loading unless we show the widgets first
-    //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so the playlist seems to be loaded when the browserWindow appears
-    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
-    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-
     kapp->processEvents();
+    
+    //restore last playlist
+    //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so the playlist seems to be loaded when the browserWindow appears
+    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation
+                                                  ( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
+    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
