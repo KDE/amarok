@@ -323,6 +323,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
     //if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
 
+    //Allocate buffer pixmap, for flicker-free drawing 
+    QPixmap* buffer = new QPixmap( width, height() );
+    QPainter painterBuf( buffer, true );
+    
     int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
     if( this == listView()->currentTrack() )
@@ -333,10 +337,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         glowCg.setColor( QColorGroup::Text, glowText );
 
         //KListViewItem enforces alternate color, so we use QListViewItem
-        QListViewItem::paintCell( p, glowCg, column, width, align );
+        QListViewItem::paintCell( &painterBuf, glowCg, column, width, align );
     }
     else
-        KListViewItem::paintCell( p, cg, column, width, align );
+        KListViewItem::paintCell( &painterBuf, cg, column, width, align );
 
     if( playNext && column == Title )
     {
@@ -347,12 +351,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         const uint w  = 16; //keep this even
         const uint h  = height() - 2;
 
-        p->setBrush( cg.highlight() );
-        p->setPen( cg.highlight().dark() ); //TODO blend with background color
-        p->drawEllipse( width - fw - w/2, 1, w, h );
-        p->drawRect( width - fw, 1, fw, h );
-        p->setPen( cg.highlight() );
-        p->drawLine( width - fw, 2, width - fw, h - 1 );
+        painterBuf.setBrush( cg.highlight() );
+        painterBuf.setPen( cg.highlight().dark() ); //TODO blend with background color
+        painterBuf.drawEllipse( width - fw - w/2, 1, w, h );
+        painterBuf.drawRect( width - fw, 1, fw, h );
+        painterBuf.setPen( cg.highlight() );
+        painterBuf.drawLine( width - fw, 2, width - fw, h - 1 );
 
         //draw the shadowed inner text
         //NOTE we can't set an arbituary font size or family, these settings are already optional
@@ -364,15 +368,19 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //p->setPen( cg.highlightedText().dark() );
         //p->drawText( width - w + 2, 3, w, h-1, Qt::AlignCenter, str );
         fw += 2; //add some more padding
-        p->setPen( cg.highlightedText() );
-        p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
+        painterBuf.setPen( cg.highlightedText() );
+        painterBuf.drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
     }
 
     if( !isSelected() )
     {
-        p->setPen( QPen( cg.midlight()/* cg.dark()*/, 0, Qt::SolidLine ) ); //FIXME midlight with kde scheme is bad
-        p->drawLine( width - 1, 0, width - 1, height() - 1 );
+        painterBuf.setPen( QPen( cg.dark(), 0, Qt::SolidLine ) );
+        painterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
     }
+    
+    painterBuf.end();
+    p->drawPixmap( 0, 0, *buffer );
+    delete buffer;
 }
 
 
