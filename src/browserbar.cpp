@@ -122,7 +122,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     tinyLayout->addWidget( closeButton );
     tinyLayout->addWidget( m_overlapButton );
 #endif
-    mainLayout->addLayout( tinyLayout );
+    //mainLayout->addLayout( tinyLayout );
 
 
     connect( m_mapper, SIGNAL( mapped( int ) ), SLOT( showHideBrowser( int ) ) );
