@@ -14,8 +14,6 @@ SHORT-TERM (URGENT):
           <markey> I've added many sanity checks to the gst engine. If you still encounter problems,
                    please attach a backtrace.
 
-  FIX 129 <markey> Copy trackname to clipboard (ctrl-c) appears broken.
-
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
