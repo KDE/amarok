@@ -1047,7 +1047,7 @@ ContextBrowser::lyricsData( KIO::Job*, const QByteArray& data ) //SLOT
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
-    if ( !( m_tabBar->keyboardFocusTab() == m_tabLyrics ) )
+    if ( m_tabBar->keyboardFocusTab() == m_tabLyrics )
         return;
 
     if ( !job->error() == 0 )
