@@ -188,6 +188,7 @@ int Loader::tryConnect( bool verbose )
             qFatal( "Aborting. Home directory path too long!" );
         
         path = home_dir;
+        kde_home = kde_home.mid(1);
     }
     path += kde_home;
     path += "/socket-";
