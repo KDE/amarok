@@ -428,17 +428,17 @@ CollectionDB::isSamplerAlbum( const QString album )
     QStringList names_artist;
     QStringList names_dir;
 
-    const uint album_id = getValueID( "album", album, FALSE, TRUE );
-    execSql( QString( "SELECT DISTINCT artist_temp.name FROM artist_temp, tags_temp WHERE tags_temp.artist = artist_temp.id AND tags_temp.album = '%1';" )
+    const uint album_id = getValueID( "album", album, FALSE, FALSE );
+    execSql( QString( "SELECT DISTINCT artist.name FROM artist, tags WHERE tags.artist = artist.id AND tags.album = '%1';" )
                 .arg( album_id ), &values_artist, &names_artist );
-    execSql( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
+    execSql( QString( "SELECT DISTINCT dir FROM tags WHERE album = '%1';" )
                 .arg( album_id ), &values_dir, &names_dir );
 
     if ( values_artist.count() > values_dir.count() )
     {
 
-//        execSql( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
-//                    .arg( album_id ) );
+        execSql( QString( "UPDATE tags SET sampler = 1 WHERE album = '%1';" )
+                    .arg( album_id ) );
         return true;
     }
     

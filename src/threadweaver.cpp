@@ -343,12 +343,7 @@ CollectionReader::readTags( const QStringList& entries )
             command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
             command += m_parent->escapeString( QString::number( m_parent->getValueID( "year", bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
             command += m_parent->escapeString( bundle.comment() ) + "','";
-            command += m_parent->escapeString( bundle.track() ) + "',";
-
-            if ( m_parent->isSamplerAlbum( bundle.album() ) )
-                command += "1);";
-            else
-                command += "0);";
+            command += m_parent->escapeString( bundle.track() ) + "', 0);";
 
             m_parent->execSql( command );
         }
@@ -400,6 +395,11 @@ CollectionReader::readTags( const QStringList& entries )
     // remove temp tables and unlock database
     m_parent->dropTables( true );
     m_parent->execSql( "END TRANSACTION;" );
+
+    QStringList albums;
+    albums = m_parent->albumList();
+    for ( uint i = 0; i < albums.count(); i++ )
+        m_parent->isSamplerAlbum( albums[i] );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
