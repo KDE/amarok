@@ -45,6 +45,7 @@ email                : markey@web.de
 
 #include <kapplication.h> //kapp
 #include <kiconloader.h>
+#include <klineedit.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 
