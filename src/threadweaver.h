@@ -226,13 +226,16 @@ private:
 class TagWriter : public ThreadWeaver::Job
 {
 public:
-    TagWriter( QObject*, PlaylistItem*, const QString&, const int );
+    TagWriter( QObject*, PlaylistItem*, const QString &newTag, const int );
     bool doJob();
     void completeJob();
 private:
     PlaylistItem* const m_item;
-    const QString m_tagString;
-    const int     m_tagType;
+    bool m_failed;
+
+    QString m_oldTagString;
+    QString m_newTagString;
+    int     m_tagType;
 };
 
 
