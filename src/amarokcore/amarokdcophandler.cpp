@@ -28,8 +28,8 @@
 namespace amaroK
 {
 
-    DcopHandler::DcopHandler( QObject *parent )
-        : DCOPObject( parent )
+    DcopHandler::DcopHandler()
+        : DCOPObject( "player" )
     {
         // Register with DCOP
         if ( !kapp->dcopClient() ->isRegistered() ) {

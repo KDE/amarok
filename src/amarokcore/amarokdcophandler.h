@@ -29,7 +29,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       Q_OBJECT
 
    public:
-      DcopHandler( QObject* = 0 );
+      DcopHandler();
 
    public /* DCOP */ slots:
       virtual void play();
