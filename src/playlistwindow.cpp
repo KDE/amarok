@@ -31,7 +31,6 @@
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
-#include "searchbrowser.h"
 #include "statusbar.h"
 
 #include <qcolor.h>           //setPalettes()
@@ -335,7 +334,6 @@ PlaylistWindow::init()
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
         addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" );
-        addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
         if ( MediaBrowser::isAvailable() )
             addBrowser<MediaBrowser>( "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
@@ -585,7 +583,7 @@ void PlaylistWindow::engineStateChanged( Engine::State state )
 void PlaylistWindow::savePlaylist() const //SLOT
 {
     FileBrowser *fb = (FileBrowser*)m_browsers->browser( "FileBrowser" );
-    QString path = fb ? fb->location() : "~";
+    QString path = fb ? fb->url().path() : "~";
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );
 

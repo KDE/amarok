@@ -24,14 +24,11 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include <qvbox.h>
-
-#include <kdiroperator.h>
-#include <ktoolbar.h>
-#include <kurl.h>
+#include <qvbox.h>    //baseclass
+#include <ktoolbar.h> //baseclass
+#include <kurl.h>     //stack allocated
 
 class ClickLineEdit;
-class QColor;
 class QTimer;
 class KActionCollection;
 class KDirOperator;
@@ -60,8 +57,8 @@ public:
    ~FileBrowser();
 
     KDirOperator *dirOperator() { return m_dir; }
-    KActionCollection *actionCollection() { return m_dir->actionCollection(); };
-    QString location() const;
+//    KActionCollection *actionCollection() { return m_dir->actionCollection(); };
+    KURL url() const;
 
 public slots:
     void slotSetFilter();
@@ -81,10 +78,6 @@ private slots:
     void burnDataCd();
     void burnAudioCd();
 
-    void toggleSearchWidget( bool );
-    void searchChanged( const QString& );
-    void searchItems( const KFileItemList& );
-
 private:
     void setupToolbar();
     KURL::List selectedItems();
@@ -92,9 +85,7 @@ private:
     class ToolBar: public KToolBar
     {
     public:
-        ToolBar( QWidget *parent )
-            : KToolBar( parent, 0, true )
-        {}
+        ToolBar( QWidget *parent ) : KToolBar( parent, 0, true ) {}
 
         virtual void setMovingEnabled( bool )
         {
@@ -107,6 +98,42 @@ private:
     KDirOperator      *m_dir;
     ClickLineEdit     *m_filterEdit;
     QTimer            *m_timer;
+};
+
+
+
+#include <kfileitem.h> //KFileItemList
+#include <qregexp.h>
+
+class KDirLister;
+class KListView;
+class QLineEdit;
+
+///@author Max Howell
+///@short Widget for recursive searching of current FileBrowser location
+
+class SearchPane : public QVBox
+{
+    Q_OBJECT
+
+public:
+    SearchPane( FileBrowser *parent );
+
+private slots:
+    void toggle( bool );
+    void searchTextChanged( const QString &text );
+    void searchMatches( const KFileItemList& );
+    void searchComplete();
+    void _searchComplete();
+
+private:
+    KURL searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
+
+    QLineEdit  *m_lineEdit;
+    KListView  *m_listView;
+    KDirLister *m_lister;
+    QRegExp     m_filter;
+    KURL::List  m_dirs;
 };
 
 #endif

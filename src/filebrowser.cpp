@@ -26,55 +26,50 @@
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
+#include <kaction.h>
+#include <kapplication.h>
 #include "kbookmarkhandler.h"
+#include <kdiroperator.h>
+#include <kiconloader.h>
+#include <klistview.h>
+#include <klocale.h>
+#include <kpopupmenu.h>
+#include <kpushbutton.h>     ///@see SearchPane
+#include <ktoolbarbutton.h>  ///@see ctor
+#include <kurlcombobox.h>
+#include <kurlcompletion.h>
 #include "playlist.h"
 #include "playlistloader.h"
-
 #include <qdir.h>
 #include <qhbox.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qtooltip.h>
 
-#include <kaction.h>
-#include <kapplication.h>
-#include <kiconloader.h>
-#include <klistview.h>   //slotViewChanged()
-#include <klocale.h>
-#include <kpopupmenu.h>
-#include <kpushbutton.h>    //searchWidget button
-#include <ktoolbarbutton.h> //ctor
-#include <kurlcombobox.h>
-#include <kurlcompletion.h>
-
 
 //TODO wait for lister to finish, if there are no files shown, but there are
 //     media files in that directory show a longMessage (preferably one that disappears when given a signal)
 
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+class MyDirLister : public KDirLister {
+public:
+    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) {}
 
-
-class MyDirLister : public KDirLister
-{
-    public:
-        MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
-    protected:
-        virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
-            return
-                item->isDir() ||
-                EngineController::canDecode( item->url().path() ) ||
-                item->url().protocol() == "audiocd" ||
-                PlaylistLoader::isPlaylist( item->url() );
-        }
+protected:
+    virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
+        return
+            item->isDir() ||
+            EngineController::canDecode( item->url().path() ) ||
+            item->url().protocol() == "audiocd" ||
+            PlaylistLoader::isPlaylist( item->url() );
+    }
 };
 
-class MyDirOperator : public KDirOperator
-{
-    public:
-        MyDirOperator( const KURL &url, QWidget *parent ) : KDirOperator( url, parent ) {
-            setDirLister( new MyDirLister( true ) );
-        }
+class MyDirOperator : public KDirOperator {
+public:
+    MyDirOperator( const KURL &url, QWidget *parent ) : KDirOperator( url, parent ) {
+        setDirLister( new MyDirLister( true ) );
+    }
 };
 
 
@@ -100,7 +95,7 @@ FileBrowser::FileBrowser( const char * name )
     if ( !QDir( currentLocation ).exists() )
         currentLocation = QDir::homeDirPath();
 
-    { //Search LineEdit
+    { //Filter LineEdit
         KToolBarButton *button;
         KToolBar* searchToolBar = new KToolBar( this );
         searchToolBar->setMovingEnabled(false);
@@ -155,22 +150,16 @@ FileBrowser::FileBrowser( const char * name )
         setStretchFactor( container, 2 );
     }
 
-    {
-        QVBox *box = new QVBox( this, "SearchWidget" );
-        KPushButton *search = new KPushButton( KGuiItem( i18n("Perform Search..."), "find" ), this );
-        search->setToggleButton( true );
-        box->hide();
-        box->setFrameStyle( QFrame::Plain | QFrame::Box );
-        connect( search, SIGNAL(toggled( bool )), SLOT(toggleSearchWidget( bool )) );
-    }
+    KActionCollection *actionCollection = m_dir->actionCollection();
+
+    new SearchPane( this );
 
     //insert our own actions at front of context menu
-    QPopupMenu* const menu = ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu();
+    QPopupMenu* const menu = ((KActionMenu*)actionCollection->action("popupMenu"))->popupMenu();
     menu->clear();
     menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
     menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
     menu->insertSeparator();
-    //TODO this has no place in the context menu, make it a toolbar button instead
 
     enum { BURN_DATACD = 100, BURN_AUDIOCD };
     menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), this, SLOT( burnDataCd() ), 0, BURN_DATACD );
@@ -181,20 +170,20 @@ FileBrowser::FileBrowser( const char * name )
     menu->insertSeparator();
     menu->insertItem( i18n( "&Select All Files" ), this, SLOT(selectAllFiles()) );
     menu->insertSeparator();
-    actionCollection()->action( "delete" )->plug( menu );
+    actionCollection->action( "delete" )->plug( menu );
     menu->insertSeparator();
-    actionCollection()->action( "properties" )->plug( menu );
+    actionCollection->action( "properties" )->plug( menu );
 
     {
         KActionMenu *a;
 
-        a = (KActionMenu*)actionCollection()->action( "sorting menu" );
+        a = (KActionMenu*)actionCollection->action( "sorting menu" );
         a->setIcon( "configure" );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
-        actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
+        actionCollection->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
 
-        a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection(), "bookmarks" );
+        a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection, "bookmarks" );
         a->setDelayed( false );
         KBookmarkHandler *bookmarkHandler = new KBookmarkHandler( this, a->popupMenu() );
         connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
@@ -229,9 +218,9 @@ FileBrowser::~FileBrowser()
 
 //BEGIN Public Methods
 
-QString FileBrowser::location() const
+KURL FileBrowser::url() const
 {
-    return m_cmbPath->currentText();
+    return m_dir->url();
 }
 
 inline void
@@ -376,80 +365,136 @@ inline void FileBrowser::burnAudioCd() // SLOT
     K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::AudioCD );
 }
 
-KListView *listView = 0;
+//END Private Slots
 
-void
-FileBrowser::toggleSearchWidget( bool toggled )
+
+
+#include <kurldrag.h>
+
+class KURLView : public KListView
 {
-    static bool b = true;
+public:
+    KURLView( QWidget *parent ) : KListView( parent )
+    {
+        reinterpret_cast<QWidget*>(header())->hide();
+        addColumn( QString() );
+        setResizeMode( KListView::LastColumn );
+        setDragEnabled( true );
+        setSelectionMode( QListView::Extended );
+    }
 
-    QFrame *container = (QFrame*)child( "SearchWidget" );
+    class Item : public KListViewItem {
+    public:
+        Item( const KURL &url, KURLView *parent ) : KListViewItem( parent, url.fileName() ), m_url( url ) {}
+        KURL m_url;
+    };
 
-    if ( b ) {
-        QHBox *box;
+    virtual QDragObject *dragObject()
+    {
+        QPtrList<QListViewItem> items = selectedItems();
+        KURL::List urls;
 
-        box = new QHBox( container );
+        for( Item *item = (Item*)items.first(); item; item = (Item*)items.next() )
+            urls += item->m_url;
+
+        return new KURLDrag( urls, this );
+    }
+};
+
+
+
+SearchPane::SearchPane( FileBrowser *parent )
+        : QVBox( parent )
+        , m_lineEdit( 0 )
+        , m_listView( 0 )
+        , m_lister( 0 )
+{
+    QFrame *container = new QVBox( this, "container" );
+    container->hide();
+
+    {
+        QFrame *box = new QHBox( container );
         box->setMargin( 5 );
         box->setBackgroundMode( Qt::PaletteBase );
 
-        QLineEdit *lineEdit = new ClickLineEdit( i18n("Search here..."), box );
-        listView = new KListView( container );
+        m_lineEdit = new ClickLineEdit( i18n("Search here..."), box );
+        connect( m_lineEdit, SIGNAL(textChanged( const QString& )), SLOT(searchTextChanged( const QString& )) );
 
-        container->setFrameStyle( listView->frameStyle() );
+        m_listView = new KURLView( container );
+
+        container->setFrameStyle( m_listView->frameStyle() );
         container->setMargin( 5 );
         container->setBackgroundMode( Qt::PaletteBase );
 
-        listView->setFrameStyle( QFrame::NoFrame );
-        reinterpret_cast<QWidget*>(listView->header())->hide();
-        listView->addColumn( QString() );
-        listView->setResizeMode( KListView::LastColumn );
+        m_listView->setFrameStyle( QFrame::NoFrame );
 
-        connect( lineEdit, SIGNAL(textChanged( const QString& )), SLOT(searchChanged( const QString& )) );
-
-        b = false;
     }
 
-    container->setShown( toggled );
+    KPushButton *button = new KPushButton( KGuiItem( i18n("Perform Search..."), "find" ), this );
+    button->setToggleButton( true );
+    connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+
+    m_lister = new MyDirLister( true /*delay mimetypes*/ );
+    insertChild( m_lister );
+    connect( m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(searchMatches( const KFileItemList& )) );
+    connect( m_lister, SIGNAL(completed()), SLOT(listingComplete()) );
 }
 
 void
-FileBrowser::searchChanged( const QString &text )
+SearchPane::toggle( bool toggled )
 {
-    static KDirLister *lister = 0;
+    if ( toggled )
+        m_lineEdit->setFocus();
 
-    if ( !lister ) {
-        lister = new KDirLister( true /*delay mimetypes*/ );
+    static_cast<QWidget*>(child("container"))->setShown( toggled );
+}
 
-        connect( lister, SIGNAL(newItems( const KFileItemList& )), SLOT(searchItems( const KFileItemList& )) );
-    }
+void
+SearchPane::searchTextChanged( const QString &text )
+{
+    //TODO if user changes search directory then we need to update the search too
 
-    listView->clear();
+    m_lister->stop();
+    m_listView->clear();
+    m_dirs.clear();
 
-    if ( text.isEmpty() ) {
-        lister->stop();
+    if ( text.isEmpty() )
         return;
-    }
 
-    lister->stop();
+    m_filter = QRegExp( text.contains( "*" ) ? text : '*'+text+'*', false, true );
 
-    if ( !text.contains( "*" ) )
-        lister->setNameFilter( '*' + text + '*' );
-    else
-        lister->setNameFilter( text );
-
-    KURL url; url.setPath( location() );
-
-    lister->openURL( url );
+    m_lister->openURL( searchURL() );
 }
 
 void
-FileBrowser::searchItems( const KFileItemList &list )
+SearchPane::searchMatches( const KFileItemList &list )
 {
-    for( KFileItemList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it )
-        new KListViewItem( listView, (*it)->name() );
+    for( KFileItemList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it ) {
+        if( (*it)->isDir() )
+            m_dirs += (*it)->url();
+        else if( m_filter.exactMatch( (*it)->name() ) )
+            new KURLView::Item( (*it)->url(), (KURLView*)m_listView );
+    }
 }
 
+void
+SearchPane::searchComplete()
+{
+    //KDirLister crashes if you call openURL() from a slot
+    //connected to KDirLister::complete()
+    //TODO fix crappy KDElibs
 
-//END Private Slots
+    QTimer::singleShot( 0, this, SLOT(_searchComplete()) );
+}
+
+void
+SearchPane::_searchComplete()
+{
+    if ( !m_dirs.isEmpty() ) {
+        KURL url = m_dirs.first();
+        m_dirs.pop_front();
+        m_lister->openURL( url );
+    }
+}
 
 #include "filebrowser.moc"
