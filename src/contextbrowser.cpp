@@ -48,6 +48,8 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( browser->browserExtension(),
              SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
              SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );   
+    
+    setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
 }
 
 
