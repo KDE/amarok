@@ -230,7 +230,7 @@
         <label>Y position offset</label>
         <min>0</min>
         <max>10000</max>
-        <default>30</default>
+        <default>50</default>
     <whatsthis>The Y position of the OSD relative to the chosen screen and  OSD alignment. If Top alignment is chosen the Y offset is the space between the upper part of the OSD and the top  of the screen. If Bottom alignment is chosen the Y offset is the space between the bottom part of the OSD and the bottom of the screen.</whatsthis>
     </entry>
     <entry key="Osd Screen" type="Int">
@@ -246,7 +246,7 @@
         <choice name="Center"/>
         <choice name="Right"/>
     </choices>
-        <default>Center</default>
+        <default>Left</default>
         <whatsthis>The relative position of the OSD. Possible choiced are TopCenter, TopLeft, TopRight, BottomCenter, BottomLeft, BottomRight, and Center.</whatsthis>
     </entry>
 
