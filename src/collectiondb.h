@@ -83,14 +83,24 @@ class CollectionDB : public QObject
         void updateTags( const QString &url, const MetaBundle &bundle );
         void updateTag( const QString &url, const QString &field, const QString &newTag );
 
-        void retrieveFirstLevel( QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveFourthLevel( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveFirstLevel( QString category1, QString category2, QString category3,
+                                            QString filter, QStringList* const values, QStringList* const names );
+        void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString category3,
+                                                 QString filter, QStringList* const values, QStringList* const names );
+        void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2,
+                                             QString category3, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveFourthLevel( QString itemText1, QString itemText2, QString itemText3, QString category1,
+                                               QString category2, QString category3, QString filter,
+                                               QStringList* const values, QStringList* const names );
 
-        void retrieveFirstLevelURLs( QString itemText, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveThirdLevelURLs( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names );
+        void retrieveFirstLevelURLs( QString itemText, QString category1, QString category2, QString category3,
+                                                    QString filter, QStringList* const values, QStringList* const names );
+        void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2,
+                                                         QString category3, QString filter,
+                                                         QStringList* const values, QStringList* const names );
+        void retrieveThirdLevelURLs( QString itemText1, QString itemText2, QString itemText3, QString category1,
+                                                     QString category2, QString category3, QString filter,
+                                                     QStringList* const values, QStringList* const names );
 
         QString m_amazonLicense;
 

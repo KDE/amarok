@@ -323,7 +323,7 @@ CollectionView::renderView( )  //SLOT
     QStringList values;
     QStringList names;
     bool addedVA = false;
-    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
+    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
 
     for ( uint i = 0; i < values.count(); i += 2 )
     {
@@ -377,7 +377,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     QString category;
 
     if( item->depth() == 0 ) {
-        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
+        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
         category = m_category2;
     } else if( item->depth() == 1 ) {
         m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
@@ -572,7 +572,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
         menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
-        menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
+        menu.setItemEnabled( INFO, !item->isExpandable()  );
 
         switch( menu.exec( point ) ) {
 
@@ -629,7 +629,7 @@ CollectionView::showTrackInfo() //SLOT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
 
-    if ( m_category2 == i18n( "None" ) || item->depth() == 2 ) {
+    if ( !item->isExpandable() ) {
         TagDialog* dialog = new TagDialog( item->url() );
         dialog->show();
     }
@@ -704,7 +704,8 @@ CollectionView::listSelected() {
             values.clear();
             names.clear();
 
-            m_db->retrieveFirstLevelURLs( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
+            m_db->retrieveFirstLevelURLs( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ),
+                                                            tableForCat( m_category3 ), m_filter, &values, &names );
             for ( uint i = 0; i < values.count(); i++ )
             {
                 KURL tmp;
@@ -729,7 +730,7 @@ CollectionView::listSelected() {
                     values.clear();
                     names.clear();
 
-                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), m_filter, &values, &names );
+                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
                     for ( uint i = 0; i < values.count(); i++ )
                     {
                         KURL tmp;
