@@ -25,8 +25,8 @@ streams from all over the Internet. amaroK has an unintrusive, lightning-fast
 database that is compiled on the fly to allow you to easily find and sort
 your music. It compiles statistics as you play, giving you easy drag and drop
 access to your favorite tracks. amaroK also sports the best support in KDE
-for the next-generation GStreamer multimedia framework. 
- 
+for the next-generation GStreamer multimedia framework.
+
 amaroK is smart, it's sexy, it's clever. Try it out today!
 
 [BuildPrepare]
@@ -45,7 +45,7 @@ requireAtLeastVersion @kde.org/kdelibs 3.2
 
 [Install]
 # This is our cheat, until KDE is relocatable
-$prefix=`kde-config --prefix`
+prefix=`kde-config --prefix`
 installExe bin/*
 installDesktop "Qt/KDE/AudioVideo" ./share/applications/kde/amarok.desktop
 
