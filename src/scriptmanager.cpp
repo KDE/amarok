@@ -5,6 +5,7 @@
 
 #define DEBUG_PREFIX "ScriptManager"
 
+#include "amarok.h"
 #include "debug.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
@@ -17,6 +18,7 @@
 #include <kprocess.h>
 #include <kpushbutton.h>
 #include <krun.h>
+#include <kstandarddirs.h>
 #include <ktextedit.h>
 
 
@@ -77,7 +79,7 @@ ScriptManager::~ScriptManager()
 void
 ScriptManager::slotAddScript()
 {
-    KFileDialog dia( QString::null, "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
+    KFileDialog dia( locate( "data","amarok/scripts/" ), "*.*|" + i18n("amaroK Scripts" ), 0, 0, true );
     kapp->setTopWidget( &dia );
     dia.setCaption( kapp->makeStdCaption( i18n( "Select Script" ) ) );
     dia.setMode( KFile::File | KFile::ExistingOnly );
@@ -158,7 +160,7 @@ ScriptManager::slotRunScript()
 
     KProcess* script = new KProcess( this );
     *script << url.path();
-    script->setWorkingDirectory( url.directory() );
+    script->setWorkingDirectory( amaroK::saveLocation( "scripts/" ) );
     script->start( KProcess::NotifyOnExit, KProcess::Stdin );
     m_scripts[name].process = script;
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );

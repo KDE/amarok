@@ -1,4 +1,4 @@
-amarokdatadir = $(kde_datadir)/amarok/scripts/alarm
+alarmdir = $(kde_datadir)/amarok/scripts/alarm
 
-amarokdata_DATA = alarm.py
+alarm_SCRIPTS = alarm.py
 
