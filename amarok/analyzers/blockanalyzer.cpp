@@ -12,9 +12,11 @@
 
 #include "blockanalyzer.h"
 #include "fht.h"
-#include <kconfig.h> //config object
+#include <kconfig.h>    //config object
 #include <kdebug.h>
-#include <kglobal.h> //config object
+#include <kglobal.h>    //config object
+#include <klocale.h>    //mousePressEvent
+#include <kpopupmenu.h> //mousePressEvent
 #include <math.h>
 #include <qevent.h>
 
@@ -173,12 +175,6 @@ BlockAnalyzer::analyze( const Scope &s )
 
     }
 }
-
-
-#include <klocale.h>
-#include <kpopupmenu.h>
-#include <math.h>
-#include <qevent.h>
 
 void
 BlockAnalyzer::mousePressEvent( QMouseEvent *e )
