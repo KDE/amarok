@@ -74,14 +74,12 @@ namespace amaroK
 
     protected:
         virtual void
-        mousePressEvent( QMouseEvent *e )
-        {
+        mousePressEvent( QMouseEvent *e ) {
             if( e->button() == RightButton ) amaroK::Menu::instance()->popup( e->globalPos() );
         }
 
         virtual void
-        wheelEvent( QWheelEvent *e )
-        {
+        wheelEvent( QWheelEvent *e ) {
             EngineController::instance()->increaseVolume( e->delta() / 18 );
         }
     };
@@ -157,8 +155,10 @@ PlaylistWindow::PlaylistWindow()
 
 
     //if first run let KWin place us
-    if( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) ) move( AmarokConfig::playlistWindowPos() );
-    resize( AmarokConfig::playlistWindowSize() );
+    if( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) ) {
+       move( AmarokConfig::playlistWindowPos() );
+       resize( AmarokConfig::playlistWindowSize() );
+    }
 }
 
 PlaylistWindow::~PlaylistWindow()
@@ -224,7 +224,7 @@ PlaylistWindow::init()
     } //</Search LineEdit>
 
     m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
-    m_toolbar   = new amaroK::ToolBar( this, "playlist_toolbar" );
+    m_toolbar   = new amaroK::ToolBar( m_browsers->container(), "playlist_toolbar" );
     m_statusbar = new amaroK::StatusBar( this );
 
 
@@ -264,10 +264,10 @@ PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
-    m_toolsMenu->insertItem( i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
-    m_toolsMenu->insertItem( i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
+    m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     #ifndef HAVE_XMMS
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
     #endif
