@@ -62,6 +62,11 @@
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Append Suggestions" type="Bool">
+        <label>Whether to automatically add suggestions to playlist</label>
+        <whatsthis>If set, amaroK adds suggestions to playlist, thus automatically generating playlist as you play tracks.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>

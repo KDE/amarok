@@ -155,6 +155,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RepeatTrackAction( ac );
     new amaroK::RepeatPlaylistAction( ac );
     new amaroK::RandomAction( ac );
+    new amaroK::AppendSuggestionsAction( ac );
     new amaroK::VolumeAction( ac );
 
     if ( K3bExporter::isAvailable() )
@@ -187,10 +188,6 @@ PlaylistWindow::init()
     //this function is necessary because amaroK::actionCollection() returns our actionCollection
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-
-    // Make sure that CollectionDB has initialized DbConnectionPool, before anyone else
-    // tries to make queries (as it is singleton).
-    CollectionDB::instance();
 
     m_browsers = new BrowserBar( this );
 
@@ -285,6 +282,7 @@ PlaylistWindow::init()
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
     actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
+    actionCollection()->action("append_suggestions")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
     m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );

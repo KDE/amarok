@@ -131,6 +131,12 @@ namespace amaroK
         public:
             RepeatPlaylistAction( KActionCollection *ac );
     };
+    
+    class AppendSuggestionsAction : public ToggleAction
+    {
+        public:
+            AppendSuggestionsAction( KActionCollection *ac );
+    };
 
     class BurnMenu : public KPopupMenu
     {

@@ -202,9 +202,8 @@ void Scrobbler::engineTrackPositionChanged( long position )
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
     {
         m_submitter->submitItem( m_item );
-        // TODO: Make menu entry for automatically adding suggestions to playlist.
-        // TODO: This causes weird crash.
-        //appendSimilar( m_item );
+        if ( AmarokConfig::appendSuggestions() )
+            appendSimilar( m_item );
         m_item = NULL;
         m_validForSending = false;
     }
@@ -231,20 +230,21 @@ void Scrobbler::applySettings()
  */
 void Scrobbler::appendSimilar( SubmitItem* item ) const
 {
-    QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 3 );
+    QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 16 );
     QueryBuilder qb;
-    qb.setOptions( QueryBuilder::optRandomize );
+    qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addMatches( QueryBuilder::tabArtist, suggestions );
-    qb.setLimit( 0, 5 );
+    qb.setLimit( 0, 2 );
     QStringList values = qb.run();
+    QStringList urls;
 
-    for ( uint i = 0; i < values.count(); i++ )
+    for ( uint i = 0; i < values.count(); i = i + 2 )
     {
-        kdDebug() << "SUGGESTION: " + values[i] << endl;
-        Playlist::instance()->appendMedia( values[i] );
+        urls.append( values[i] );
     }
+    Playlist::instance()->insertMedia( KURL::List( urls ) );
 }
 
 
