@@ -22,7 +22,7 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.6.90"
+#define APP_VERSION "0.6.91"
 
 #include "amarokarts/amarokarts.h"
 
@@ -97,12 +97,9 @@ class PlayerApp : public KUniqueApplication
         Amarok::WinSkinFFT m_Scope;
         Arts::StereoEffectStack m_globalEffectStack;
         Arts::StereoEffectStack m_effectStack;
-        Arts::StereoEffect *freeverb;
         Arts::StereoVolumeControl m_volumeControl;
         Arts::Synth_AMAN_PLAY m_amanPlay;
-        Arts::Synth_DATA m_synthData;
-        Arts::Synth_XFADE m_XFadeL;
-        Arts::Synth_XFADE m_XFadeR;
+        Amarok::Synth_STEREO_XFADE m_XFade;
 
     public slots:
         void slotPrev();
@@ -111,7 +108,6 @@ class PlayerApp : public KUniqueApplication
         void slotPause();
         void slotStop();
         void slotNext();
-        void slotLoadPlaylist();
         void slotSavePlaylist();
         void slotClearPlaylist();
         void slotClearPlaylistAsk();

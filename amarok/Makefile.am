@@ -1,6 +1,6 @@
 SUBDIRS = images amarokarts data
 
-INCLUDES= $(all_includes) -I$(kde_includes)/taglib
+INCLUDES= $(all_includes) -I$(kde_includes)/taglib -I$(kde_includes)/arts
 METASOURCES = AUTO
 
 EXTRA_DIST = browserwidget.h browserwin.h \

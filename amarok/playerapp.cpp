@@ -153,9 +153,7 @@ PlayerApp::~PlayerApp()
     delete m_pEffectWidget;
     delete m_pPlayerWidget;
 
-    m_XFadeL = Arts::Synth_XFADE::null();
-    m_XFadeR = Arts::Synth_XFADE::null();
-    m_synthData = Arts::Synth_DATA::null();
+    m_XFade = Amarok::Synth_STEREO_XFADE::null();
     m_Scope = Amarok::WinSkinFFT::null();
     m_volumeControl = Arts::StereoVolumeControl::null();
     m_effectStack = Arts::StereoEffectStack::null();
@@ -361,14 +359,9 @@ void PlayerApp::initArts()
     m_amanPlay.autoRestoreID( "amarok" );
     m_amanPlay.start();
 
-    m_synthData = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_DATA" ) );
-    m_synthData.value( m_XFadeValue );
-    m_synthData.start();
-
-    m_XFadeL = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_XFADE" ) );
-    m_XFadeR = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_XFADE" ) );
-    m_XFadeL.start();
-    m_XFadeR.start();
+    m_XFade = Arts::DynamicCast( m_Server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
+    m_XFade.percentage( m_XFadeValue );
+    m_XFade.start();
 
     m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
@@ -377,11 +370,8 @@ void PlayerApp::initArts()
     m_effectStack.start();
     long id = m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
 
-    Arts::connect( m_synthData, std::string( "outvalue" ), m_XFadeL, std::string( "percentage" ) );
-    Arts::connect( m_synthData, std::string( "outvalue" ), m_XFadeR, std::string( "percentage" ) );
-
-    Arts::connect( m_XFadeL, std::string( "outvalue" ), m_globalEffectStack, std::string( "inleft" ) );
-    Arts::connect( m_XFadeR, std::string( "outvalue" ), m_globalEffectStack, std::string( "inright" ) );
+    Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
+    Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
 
     Arts::connect( m_globalEffectStack, m_amanPlay );
 }
@@ -1050,11 +1040,8 @@ void PlayerApp::slotConnectPlayObj()
     {
         m_pPlayObject->object()._node()->start();
 
-        Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_XFadeL, m_XFadeCurrent.latin1() );
-        Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_XFadeR, m_XFadeCurrent.latin1() );
-
-/*        Arts::connect( m_pPlayObject->object(), std::string( "left" ), m_globalEffectStack, std::string( "inleft" ) );
-        Arts::connect( m_pPlayObject->object(), std::string( "right" ), m_globalEffectStack, std::string( "inright" ) );*/
+        Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
+        Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
 }
 
@@ -1080,40 +1067,37 @@ void PlayerApp::slotPause()
 
 void PlayerApp::slotStop()
 {
-    if ( m_bIsPlaying )
+    m_pPlayerWidget->m_pButtonPlay->setOn( false );
+
+    if ( m_pPlayObject != NULL )
     {
-        m_pPlayerWidget->m_pButtonPlay->setOn( false );
+        m_pPlayObject->halt();
+        m_pPlayObject->object()._node() ->stop();
 
-        if ( m_pPlayObject != NULL )
-        {
-            m_pPlayObject->halt();
-            m_pPlayObject->object()._node() ->stop();
-
-            delete m_pPlayObject;
-            m_pPlayObject = NULL;
-        }
-
-        if ( m_pPlayObjectXFade != NULL )
-        {
-            m_pPlayObjectXFade->halt();
-            m_pPlayObjectXFade->object()._node() ->stop();
-
-            delete m_pPlayObjectXFade;
-            m_pPlayObjectXFade = NULL;
-        }
-
-        m_bIsPlaying = false;
-        m_length = 0;
-        m_pPlayerWidget->m_pButtonPause->setDown( false );
-        m_pPlayerWidget->m_pSlider->setValue( 0 );
-        m_pPlayerWidget->m_pSlider->setMinValue( 0 );
-        m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-        m_pPlayerWidget->setScroll( i18n( "no file loaded" ), " ", " " );
-        m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
-
-        delete m_pPlayerWidget->m_pPlayObjConfigWidget;
-        m_pPlayerWidget->m_pPlayObjConfigWidget = NULL;
+        delete m_pPlayObject;
+        m_pPlayObject = NULL;
     }
+
+    if ( m_pPlayObjectXFade != NULL )
+    {
+        m_pPlayObjectXFade->halt();
+        m_pPlayObjectXFade->object()._node() ->stop();
+
+        delete m_pPlayObjectXFade;
+        m_pPlayObjectXFade = NULL;
+    }
+
+    m_bIsPlaying = false;
+    m_length = 0;
+    m_pPlayerWidget->m_pButtonPause->setDown( false );
+    m_pPlayerWidget->m_pSlider->setValue( 0 );
+    m_pPlayerWidget->m_pSlider->setMinValue( 0 );
+    m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
+    m_pPlayerWidget->setScroll( i18n( "no file loaded" ), " ", " " );
+    m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
+
+    delete m_pPlayerWidget->m_pPlayObjConfigWidget;
+    m_pPlayerWidget->m_pPlayObjConfigWidget = NULL;
 }
 
 
@@ -1159,25 +1143,6 @@ void PlayerApp::slotNext()
         {
             slotPlay();
         }
-    }
-}
-
-
-void PlayerApp::slotLoadPlaylist()
-{
-    KURLRequesterDlg dlg( QString::null, 0, 0 );
-    dlg.setCaption( makeStdCaption( i18n( "Enter file or URL" ) ) );
-    dlg.setIcon( icon() );
-    dlg.fileDialog() ->setFilter( "*.m3u *.pls *.M3U *.PLS|Playlist Files" );
-    dlg.urlRequester() ->setMode( KFile::File | KFile::ExistingOnly );
-    dlg.exec();
-
-    KURL url = dlg.selectedURL();
-
-    if ( !url.isEmpty() && url.isValid() )
-    {
-        slotClearPlaylist();
-        loadPlaylist( url, 0 );
     }
 }
 
@@ -1349,7 +1314,7 @@ void PlayerApp::slotMainTimer()
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 
     // <Crossfading>
-    if ( m_optXFade and m_length - timeC.seconds < 4 and not m_XFadeRunning )
+    if ( m_optXFade and not m_pPlayObject->stream() and m_length - timeC.seconds < 4 and not m_XFadeRunning )
     {
         startXFade();
     }
@@ -1372,7 +1337,7 @@ void PlayerApp::slotMainTimer()
                 m_XFadeValue = 1.0;
             }
 
-        m_synthData.value( m_XFadeValue );
+        m_XFade.percentage( m_XFadeValue );
     }
     // </Crossfading>
 
@@ -1497,7 +1462,7 @@ void PlayerApp::slotShowOptions()
     //  frame = pDia->addVBoxPage( QString( "Sound" ) , QString( "Configure sound options" ),
     //                             iconLoader.loadIcon( "sound", KIcon::NoGroup, KIcon::SizeMedium ) );
 
-    pDia->resize( 500, 390 );
+    pDia->resize( 520, 430 );
 
     if ( pDia->exec() == QDialog::Accepted )
     {
