@@ -15,8 +15,8 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include <assert.h> 
- 
+#include <assert.h>
+
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
 #include "amarokdcophandler.h"
@@ -82,23 +82,22 @@ PlayerApp::PlayerApp()
     setName( "amarok" );
     pApp = this; //global
 
-    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), actionCollection() );
-    KStdAction::preferences( this, SLOT( slotShowOptions() ), actionCollection() );
-    KStdAction::quit( this, SLOT( quit() ), actionCollection() );
-    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ),
-                             actionCollection(), "options_configure_global_keybinding" );
-    actionCollection()->action( "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts..." ) );
+    KActionCollection* const ac = actionCollection();
+    const EngineController* const ec = EngineController::instance();
 
-    new KAction( i18n( "Previous Track" ), "player_start", 0, EngineController::instance(),
-                 SLOT( previous() ), actionCollection(), "prev" );
-    new KAction( i18n( "Play" ), "player_play", 0, EngineController::instance(),
-                 SLOT( play() ), actionCollection(), "play" );
-    new KAction( i18n( "Stop" ), "player_stop", 0, EngineController::instance(),
-                 SLOT( stop() ), actionCollection(), "stop" );
-    new KAction( i18n( "Pause" ), "player_pause", 0, EngineController::instance(),
-                 SLOT( pause() ), actionCollection(), "pause" );
-    new KAction( i18n( "Next Track" ), "player_end", 0,
-                 EngineController::instance(), SLOT( next() ), actionCollection(), "next" );
+    KStdAction::configureToolbars( this, SLOT( slotConfigToolBars() ), ac );
+    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), ac );
+    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
+    KStdAction::preferences( this, SLOT( slotShowOptions() ), ac );
+    KStdAction::quit( this, SLOT( quit() ), ac );
+
+    ac->action( "options_configure_globals" )->setText( i18n( "Configure Global Shortcuts..." ) );
+
+    new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
+    new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
+    new KAction( i18n( "Stop" ), "player_stop", 0, ec, SLOT( stop() ), ac, "stop" );
+    new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
+    new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -313,7 +312,7 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 void PlayerApp::initEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     Plugin* plugin = PluginManager::createFromQuery
                          ( "[X-KDE-amaroK-plugintype] == 'engine' and "
                            "Name                      == '" + AmarokConfig::soundSystem() + '\'' );
@@ -336,7 +335,7 @@ void PlayerApp::initEngine()
     EngineController::setEngine( static_cast<EngineBase*>( plugin ) );
     assert( EngineController::engine() );
     EngineController::engine()->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -386,6 +385,8 @@ void PlayerApp::initBrowserWin()
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
+
+    m_pPlaylistWidget = m_pBrowserWin->playlist();
 
     connect( m_pPlayerWidget, SIGNAL( playlistToggled( bool ) ),
              this,              SLOT( slotPlaylistShowHide() ) );
@@ -440,14 +441,14 @@ void PlayerApp::restoreSession()
 void PlayerApp::applySettings()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
         PluginManager::unload( EngineController::engine() );
         initEngine();
 
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
-    
+
     if ( AmarokConfig::hardwareMixer() != EngineController::engine()->isMixerHardware() )
         AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
 
@@ -479,7 +480,7 @@ void PlayerApp::applySettings()
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -850,6 +851,18 @@ void PlayerApp::slotConfigShortcuts()
 void PlayerApp::slotConfigGlobalShortcuts()
 {
     KKeyDialog::configure( m_pGlobalAccel, true, 0, true );
+}
+
+#include <kedittoolbar.h>
+void PlayerApp::slotConfigToolBars()
+{
+    KEditToolbar dialog( m_pBrowserWin->actionCollection() );
+
+    if( dialog.exec() )
+    {
+        m_pBrowserWin->reloadXML();
+        m_pBrowserWin->createGUI();
+    }
 }
 
 

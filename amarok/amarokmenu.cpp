@@ -32,8 +32,9 @@ amaroK::Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
+    ac->action( "options_configure_toolbars" )->plug( this );
     ac->action( "options_configure_keybinding" )->plug( this );
-    ac->action( "options_configure_global_keybinding" )->plug( this );
+    ac->action( "options_configure_globals" )->plug( this );
     ac->action( "options_configure" )->plug( this );
 
     insertSeparator();
@@ -43,6 +44,7 @@ amaroK::Menu::Menu( QWidget *parent )
     insertSeparator();
 
     ac->action( "file_quit" )->plug( this );
+
     connect( this, SIGNAL( aboutToShow() ), SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
 }
@@ -80,6 +82,68 @@ void amaroK::Menu::slotActivated( int index )
         break;
     case ID_CONF_DECODER:
         EngineController::instance()->engine()->configureDecoder();
+        break;
+    }
+}
+
+
+#include <ktoolbar.h>
+#include <ktoolbarbutton.h>
+
+amaroK::MenuAction::MenuAction( KActionCollection *ac )
+  : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
+{}
+
+int
+amaroK::MenuAction::plug( QWidget *w, int index )
+{
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+
+    if( !w || kapp && !kapp->authorizeKAction( name() ) ) return -1;
+
+    const int id = KAction::getToolButtonID();
+
+    //TODO create menu on demand
+    //TODO create menu above and aligned within window
+    //TODO make the arrow point upwards!
+    bar->insertButton( QString::null, id, true, i18n( "Menu" ) );
+    bar->alignItemRight( id );
+
+    KToolBarButton *button = bar->getButton( id );
+    button->setPopup( new amaroK::Menu( bar ) );
+    button->setName( "toolbutton_amarok_menu" );
+
+    addContainer( bar, id );
+    connect( bar, SIGNAL( destroyed() ), this, SLOT( slotDestroyed() ) );
+
+    return containerCount() - 1;
+}
+
+
+#include "enginecontroller.h"
+#include <kdebug.h>
+
+amaroK::PlayPauseAction::PlayPauseAction( KActionCollection *ac )
+  : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
+{
+    EngineController* const ec = EngineController::instance();
+
+    ec->attach( this );
+    connect( this, SIGNAL( activated() ), ec, SLOT( pause() ) );
+}
+
+void
+amaroK::PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
+{
+    switch( state )
+    {
+    case EngineBase::Playing:
+        kdDebug() << "played\n";
+        setIcon( "player_pause" );
+        break;
+    default:
+        kdDebug() << "paused\n";
+        setIcon( "player_play" );
         break;
     }
 }

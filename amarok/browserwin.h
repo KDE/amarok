@@ -26,6 +26,7 @@
 class BrowserBar;
 class KLineEdit;
 class KActionCollection;
+class KToolBar;
 class PlaylistLoader;
 class PlaylistWidget;
 class QColor;
@@ -39,7 +40,7 @@ class QPushButton;
 class QSplitter;
 class QString;
 
-class BrowserWin : public QWidget//, public KXMLGuiClient
+class BrowserWin : public QWidget, public KXMLGUIClient
 {
         Q_OBJECT
 
@@ -57,7 +58,9 @@ class BrowserWin : public QWidget//, public KXMLGuiClient
         void setColors( const QPalette&, const QColor& );
         void saveConfig();
 
-        KActionCollection *actionCollection() const { return m_pActionCollection; }
+        KToolBar *createGUI(); //should be private but PlayerApp::slowConfigToolbars requires it
+
+        PlaylistWidget *playlist() const { return m_playlist; }
 
         virtual bool eventFilter( QObject*, QEvent* );
 
@@ -69,8 +72,6 @@ class BrowserWin : public QWidget//, public KXMLGuiClient
         BrowserBar     *m_browsers;
         PlaylistWidget *m_playlist;
         KLineEdit      *m_lineEdit;
-
-        KActionCollection *m_pActionCollection;
 };
 
 

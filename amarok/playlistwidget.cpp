@@ -64,8 +64,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     , m_cachedTrack( 0 )
     , m_marker( 0 )
     , m_weaver( new ThreadWeaver( this ) )
-    , m_undoButton(  KStdAction::undo(  this, SLOT( undo() ),  ac ) )
-    , m_redoButton(  KStdAction::redo(  this, SLOT( redo() ),  ac ) )
+    , m_undoButton( KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" ) )
+    , m_redoButton( KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" ) )
     , m_clearButton( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
@@ -165,13 +165,14 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
         m_redoButton->setEnabled( false );
     //</init undo/redo>
 
+    //TODO move declarations to BrowserWin ctor? perhaps easier
+
     KAction *action;
-    KStdAction::copy( this, SLOT( copyToClipboard() ), ac );
-//    new KStdAction::save( i18n( "&Save Playlist" ), "filesaveas", CTRL+Key_S, this, SLOT( saveM3U() ), ac, "save_playlist" );
-    new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "shuffle_playlist" );
-    m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "clear_playlist" );
-    action = new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
-    action->setToolTip( i18n( "Ensure the currently playing track is visible" ) ); //FIXME doesn't show in toolbar!
+    KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
+    new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
+    m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "playlist_clear" );
+    action = new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
+    action->setToolTip( i18n( "Ensure the currently playing track is visible in the playlist" ) ); //FIXME doesn't show in toolbar!
 
     header()->installEventFilter( this );
 
@@ -807,16 +808,12 @@ void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
 void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
-    //FIXME this is because loaders can't be cancelled, so you disable clear to indicate
-    //it's not safe to clear
-    if( !m_clearButton->isEnabled() ) return;
-
     //switch to a previously saved state, remember current state
     KURL url; url.setPath( loadFromMe.last() );
     KURL::List playlist( url );
     loadFromMe.pop_back();
 
-    //save current state to: to
+    //save current state
     saveState( saveToMe );
 
     //blockSignals so that we don't cause a saveUndoState()
@@ -1288,6 +1285,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( false );
+        m_undoButton->setEnabled( false );
+        m_redoButton->setEnabled( false );
         QApplication::setOverrideCursor( KCursor::workingCursor() );
         break;
 
@@ -1320,6 +1319,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( true );
+        m_undoButton->setEnabled( true );
+        m_redoButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
         break;

@@ -272,9 +272,8 @@ AudioPropertiesReader::doJob()
 void
 AudioPropertiesReader::completeJob()
 {
-    //TODO do in playlistItem class or at least enum these numbers!
-    m_item->setText(  9, m_length  );
-    m_item->setText( 10, m_bitrate );
+    m_item->setText( PlaylistItem::Length,  m_length  );
+    m_item->setText( PlaylistItem::Bitrate, m_bitrate );
 }
 
 
@@ -289,7 +288,6 @@ TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int 
   , m_tagType( col )
 {
     //TODO deepcopy?
-    //TODO leave a temp message in the listview item until this completes
     //TODO use a enum for TagType
     pi->setText( col, i18n( "Writing tag..." ) );
 }
@@ -306,28 +304,28 @@ TagWriter::doJob()
         const TagLib::String s = LocaleAwareTString( m_tagString );
 
         switch( m_tagType ) {
-        case 1:
+        case PlaylistItem::Title:
             t->setTitle( s );
             break;
-        case 2:
+        case PlaylistItem::Artist:
             t->setArtist( s );
             break;
-        case 3:
+        case PlaylistItem::Album:
             t->setAlbum( s );
             break;
-        case 4:
+        case PlaylistItem::Year:
             t->setYear( m_tagString.toInt() );
             break;
-        case 5:
+        case PlaylistItem::Comment:
             //FIXME how does this work for vorbis files?
             //Are we likely to overwrite some other comments?
             //Vorbis can have multiple comment fields..
             t->setComment( s );
             break;
-        case 6:
+        case PlaylistItem::Genre:
             t->setGenre( s );
             break;
-        case 7:
+        case PlaylistItem::Track:
             t->setTrack( m_tagString.toInt() );
             break;
         default:

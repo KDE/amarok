@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
-#include "config.h"
+
+#include <config.h>        //for HAVE_SQLITE check
 
 #include "amarokconfig.h"
 #include "amarokmenu.h"    //see toolbar construction
@@ -76,90 +76,58 @@ inline void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
 }
 
 
-
+#include <qobjectlist.h>
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
-   , m_pActionCollection( new KActionCollection( this ) )
+   , KXMLGUIClient()
+//   , m_pActionCollection( new KActionCollection( this ) )
 {
     setCaption( "amaroK" );
 
-
-    KToolBar* toolbar = new KToolBar( this );
-    toolbar->setEnableContextMenu( true );
-
     m_browsers = new BrowserBar( this );
+
+    QVBox *vbox = m_browsers->container(); //m_browsers provides the layout for the playlist
+
+    m_lineEdit = new KLineEdit( vbox );
+    m_playlist = new PlaylistWidget( vbox, actionCollection() ); //FIXME some actions are created in here
+
+    KStdAction::open( this, SLOT(slotAddLocation()), actionCollection(), "playlist_add" )->setText( i18n("&Add Media") );
+    KStdAction::save( this, SLOT(savePlaylist()), actionCollection(), "playlist_save" )->setText( i18n("&Save Playlist") );
+
+    new amaroK::MenuAction( actionCollection() );
+    new amaroK::PlayPauseAction( actionCollection() );
+
+    actionCollection()->addDocCollection( pApp->actionCollection() ); //FIXME this sucks
+
+    //<XMLGUI>
+        setXMLFile( "amarokui.rc" );
+        KToolBar *toolbar = createGUI(); //NOTE we implement this
+    //</XMLGUI>
 
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_browsers );
     layV->addWidget( toolbar );
 
-    QVBox *vbox = m_browsers->container(); //m_browsers provides the layout for the playlist
 
-    m_lineEdit = new KLineEdit( vbox );
-    m_playlist = new PlaylistWidget( vbox, m_pActionCollection );
+//         toolbar->insertWidget( 102, 32*4, new BlockAnalyzer( toolbar ) );
+//         toolbar->getWidget( 102 )->setBackgroundColor( backgroundColor().dark( 120 ) );
 
-    {//<ToolBar>
+//         toolbar->insertButton( QString::null, 101, true, i18n( "Menu" ) );
+//         menuItem = toolbar->getButton( 101 );
+//         menuItem->setPopup( new amaroK::Menu( this ) );
+//         toolbar->alignItemRight( 101 );
 
-        KToolBarButton *addItem, *menuItem;
-        KActionCollection *ac = actionCollection();
-
-        toolbar->insertButton( "fileopen", 100, true, i18n( "Add Item" ) );
-        addItem = toolbar->getButton( 100 );
-        connect( addItem, SIGNAL( clicked() ), this, SLOT( slotAddLocation() ) );
-
-        KAction *savePlaylist = KStdAction::save( this, SLOT( savePlaylist() ), ac, "save_playlist" );
-        savePlaylist->setText( i18n("&Save Playlist") );
-        savePlaylist->plug( toolbar );
-        ac->action( "shuffle_playlist" )->plug( toolbar );
-        m_playlist->m_clearButton->plug( toolbar );
-        ac->action( "show_current_track" )->plug( toolbar );
-
-        toolbar->insertLineSeparator();
-
-        toolbar->insertWidget( 102, 32*4, new BlockAnalyzer( toolbar ) );
-        toolbar->getWidget( 102 )->setBackgroundColor( backgroundColor().dark( 120 ) );
-
-        toolbar->insertLineSeparator();
-
-        m_playlist->m_undoButton->plug( toolbar );
-        m_playlist->m_redoButton->plug( toolbar );
-
-        toolbar->insertLineSeparator();
-
-        ac = pApp->actionCollection();
-        ac->action( "prev"  )->plug( toolbar );
-        ac->action( "play"  )->plug( toolbar );
-        ac->action( "pause" )->plug( toolbar );
-        ac->action( "stop"  )->plug( toolbar );
-        ac->action( "next"  )->plug( toolbar );
-
-        toolbar->insertButton( QString::null, 101, true, i18n( "Menu" ) );
-        menuItem = toolbar->getButton( 101 );
-        menuItem->setPopup( new amaroK::Menu( this ) );
-        toolbar->alignItemRight( 101 );
-
-        //TEXT ON RIGHT HACK
-        //KToolBarButtons have independent settings for their appearance.
-        //However these properties are set in modeChange() to follow the parent KToolBar settings
-        //passing false to setIconText prevents modeChange() being called for all buttons
-        toolbar->setIconText( KToolBar::IconTextRight, false );
-            addItem->modeChange();
-            toolbar->getButton( toolbar->idAt( 2 ) )->modeChange();
-            toolbar->getButton( toolbar->idAt( 3 ) )->modeChange();
-            toolbar->getButton( toolbar->idAt( 4 ) )->modeChange();
-        toolbar->setIconText( KToolBar::TextOnly, false );
-            menuItem->modeChange();
-        toolbar->setIconText( KToolBar::IconOnly, false );
-
-    }//</ToolBar>
-
+    //TEXT ON RIGHT HACK
+    //KToolBarButtons have independent settings for their appearance.
+    //However these properties are set in modeChange() to follow the parent KToolBar settings
+    //passing false to setIconText prevents modeChange() being called for all buttons
 
     //<FileBrowser>
         m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
     //</FileBrowser>
 
     { //<SearchBrowser>
-        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "find" );
+        m_browsers->addPage( new SearchBrowser( 0, "SearchBrowser" ), i18n( "Search Browser" ), "SearchBrowser" );
     } //</SearchBrowser>
 
     //<PlaylistBrowser>
@@ -182,10 +150,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     } //</StreamBrowser>
 
 
-    //we intercept keyEvents to the playlist
-    m_playlist->installEventFilter( this );
-    //we intercept keyEvents to the lineEdit
-    m_lineEdit->installEventFilter( this );
+    m_playlist->installEventFilter( this ); //we intercept keyEvents
+    m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
 
     connect( m_playlist, SIGNAL( aboutToClear() ),
@@ -201,12 +167,48 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 ///////// public interface
 
+KToolBar *BrowserWin::createGUI()
+{
+    //if we have been called from the toolBarEdit Dialog
+    //we need to clear the toolbar first
+    //otherwise we haven't created the toolbar yet
+    //NOTE KXMLGUI is not very flexible, we'd happily create the toolbar ourselves, it's less code if we did!
+
+    //TODO create toolbar ourselves
+
+    KToolBar *toolbar = (KToolBar*)child( "playlist_toolbar" );
+    if( toolbar ) toolbar->clear();
+
+    KXMLGUIBuilder builder( this );
+    KXMLGUIFactory factory( &builder, this );
+
+    //build Toolbar, plug actions
+    factory.addClient( this );
+
+    if( !toolbar ) toolbar = (KToolBar*)child( "playlist_toolbar" );
+
+    //TODO will crash if we can't find these
+    toolbar->setIconText( KToolBar::IconTextRight, false );
+        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_add" ))->modeChange();
+        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_clear" ))->modeChange();
+        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_shuffle" ))->modeChange();
+        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_playlist_show" ))->modeChange();
+    toolbar->setIconText( KToolBar::TextOnly, false );
+        static_cast<KToolBarButton*>(toolbar->child( "toolbutton_amarok_menu" ))->modeChange();
+    toolbar->setIconText( KToolBar::IconOnly, false );
+
+    return toolbar;
+    //TODO conserve memory? (delete XML QDom)
+}
+
+
 void BrowserWin::insertMedia( const KURL::List &list, bool clearList, bool directPlay )
 {
     if( clearList ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
 
     m_playlist->insertMedia( list, directPlay );
 }
+
 
 void BrowserWin::restoreSessionPlaylist()
 {

@@ -24,14 +24,27 @@ class QStringList;
 class QWidget;
 
 
-//@ Create a weaver wherever you need one, they can be created on the stack as they are not QObjects
-//  Derive Job classes and append them to the weaver and the weaver will start the job for you
-//  It can handle however many Jobs you like at two priorities (immediate and queued)
-//  cancel() will stop execution immediately, with a caveat since it can not disable any dispatched events you
-//  have to handle any number of events from the weaver. See PlaylistWidget::clear() for a good solution
-//  halt() is permanant. Only use this to ensure the thread dies before you exit the application
-//  The class is designed to be in use for the durationof the application. It will not delete jobs in the queue
-//  on exit etc. As such it is incomplete, but also in this way it is lightweight and still useful.
+//  Weavers allow you to use a single QThread for a variety of computationally expensive tasks.
+//
+//  Weavers process ThreadWeaver::Jobs. Derive from one and reimplement doJob(). The weaver will process
+//  all the jobs append()ed to its queue in order. Jobs are processed in FIFO order unless you set the
+//  priority to immediate (see append()).
+//
+//  When a job has completed and returned true from doJob(), it is dispatched to the specified target object
+//  which can recieve the Job itself as an event in its QCustomEvent().
+//
+//  cancel() will prevent any further Jobs being dispatched and will clear the queue. However almost
+//  certainly some Jobs will already be in Qt's event queue on there way to the target. The user has to ensure
+//  this situation is safe. See PlaylistWidget::clear() for a good solution.
+//
+//  halt() will permanantly stop the thread, it should be used in conjunction with Qthread::wait() when the
+//  program is exiting.
+//
+//  The parent of the thread also gets two other events, ThreadWeaver::Started and ThreadWeaver::Done,
+//  you may want to set the application overrideCursor based on these events for instance.
+//
+//  The class is not complete in that it has a few obvious flaws, feel free to improve!
+
 class ThreadWeaver : public QThread
 {
 public:
@@ -47,19 +60,24 @@ public:
    enum EventType { Started = 2000, Done = 2001 };
 
 
-   //@ Derive a job to perform a computationaly expensive task that will not block the UI
+   //  Derive a job to perform a computationaly expensive task that will not block the UI
    //  Implement doJob() to perform the task.
-   //  Specify m_target and reimplement customEvent() in that QObject to receive the results
-   //  GenericJob is the default and you should reimplement completeJob() to wind-up the task
+   //  @param QObject *
+   //    The Job isa QEvent, and will be posted to this object if you return true from your implementation
+   //    of doJob()
+   //  @param JobType
+   //    This QEvent type, so you can distinguish this event when you recieve the event. Generic Job is
+   //    the default value, and using this is covienient if you plan to just reimplement completeJob(),
+   //    thus preventing casting at the target customEvent()
    class Job : public QCustomEvent
    {
    public:
       friend class ThreadWeaver;
       enum JobType { GenericJob = 3000, TagReader, PLStats, CollectionReader };
 
-      Job( QObject*, JobType = GenericJob );
+      Job( QObject *, JobType = GenericJob );
       virtual ~Job() {}
-      virtual void completeJob() {} //called for GenericJobs
+      virtual void completeJob() {} //should be called in QObject::CustomEvent
 
    protected:
       Job();

@@ -40,6 +40,7 @@ class AmarokDcopHandler;
 class BrowserWin;
 class MetaBundle;
 class PlayerWidget;
+class PlaylistWidget;
 
 class QColor;
 class QCString;
@@ -65,6 +66,8 @@ class PlayerApp : public KApplication, public EngineObserver
         KActionCollection *actionCollection() { return m_pActionCollection; }
         const KActionCollection *actionCollection() const { return m_pActionCollection; }
 
+        PlaylistWidget *playlist() const { return m_pPlaylistWidget; }
+
         // STATICS
         static const int SCOPE_SIZE  = 7;
 
@@ -79,6 +82,7 @@ class PlayerApp : public KApplication, public EngineObserver
         void slotDecreaseVolume();
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
+        void slotConfigToolBars();
         void setOsdEnabled( bool );
         void slotShowVolumeOSD();
 
@@ -106,6 +110,7 @@ class PlayerApp : public KApplication, public EngineObserver
         KGlobalAccel      *m_pGlobalAccel;
         PlayerWidget      *m_pPlayerWidget;
         BrowserWin        *m_pBrowserWin;
+        PlaylistWidget    *m_pPlaylistWidget;
         AmarokDcopHandler *m_pDcopHandler;
         amaroK::TrayIcon  *m_pTray;
         amaroK::OSD       *m_pOSD;
