@@ -31,6 +31,17 @@ public:
 
     void run();
 
+    struct Options
+    {
+      bool recurse;
+      bool symlink;
+      bool meta;
+    } options;
+
+    void setOptions( bool b1, bool b2, bool b3 ) { options.recurse = b1;
+                                                   options.symlink = b2;
+                                                   options.meta    = b3; }
+
     class PlaylistEvent : public QCustomEvent
     {
     public:
@@ -53,7 +64,7 @@ private:
     void process( KURL::List &, bool = true );
 
     bool isValidMedia( const KURL & );
-    void translate( const KURL &, KURL::List & );
+    void translate( QString &, KURL::List & );
     int  isPlaylist( const QString & );
     void loadLocalPlaylist( const QString &, int );
     void loadM3u( QTextStream &, const QString & );

@@ -27,8 +27,8 @@
 //FIXME including playerapp.h sucks, we MUST MUST MUST make a separate header for options!
 //FIXME this is also very bad as you access data the GUI thread may access simultaneously (:o)
 //      what we need is an options struct/class and then I can pass a COPY in the thread ctor
-#include <playerapp.h>
-extern PlayerApp *pApp;
+//#include <playerapp.h>
+//extern PlayerApp *pApp;
 
 
 ///// ctor and dtor are basic and in header
@@ -59,7 +59,7 @@ extern PlayerApp *pApp;
 //TODO rethink recursion options <mxcl> IMHO they suck big chunks, always do it recursively, why drop/add a
 //     directory if you don't want its contents?
 //     you can always open the dir and select the files. Stupid option and PITA to implement.
-//     <markey> non-recursive adding should get replaced by "add all media files in current directory" 
+//     <markey> non-recursive adding should get replaced by "add all media files in current directory"
 //TODO reimplement ask recursive in PlaylistWidget::insertMedia()
 
 PlaylistItem *PlaylistLoader::PlaylistEvent::makePlaylistItem( QListView *lv )
@@ -130,11 +130,13 @@ void PlaylistLoader::run()
 #ifndef __USE_LARGEFILE64 //see dirent.h
  #define DIRENT dirent
  #define SCANDIR scandir
+ #define READDIR readdir
  #define STATSTRUCT stat
  #define LSTAT lstat
 #else
  #define DIRENT dirent64
  #define SCANDIR scandir64
+ #define READDIR readdir64
  #define STATSTRUCT stat64
  #define LSTAT lstat64
 #endif
@@ -153,12 +155,11 @@ void PlaylistLoader::process( KURL::List &list, bool bTranslate )
 
          if( S_ISDIR( statbuf.st_mode ) )
          {
-            if( pApp->m_optDropMode != "Recursively" || ( !pApp->m_optFollowSymlinks && S_ISLNK
-              ( statbuf.st_mode ) && list.count() > 1 ) ) continue; //FIXME depth check too
+            if( !options.recurse || ( !options.symlink && S_ISLNK( statbuf.st_mode ) && list.count() > 1 ) ) continue; //FIXME depth check too
 
             KURL::List list2;
-            translate( *it, list2 );
-            process( list2, false ); //FIXME inefficient as doubles # of stats (KFileItem uses stat)
+            translate( path, list2 );
+            process( list2, false ); //false will prevent checking for dir, etc.
             continue;
          }
       }
@@ -180,7 +181,7 @@ void PlaylistLoader::process( KURL::List &list, bool bTranslate )
       {
          Tags *meta = 0;
 
-         if( pApp->m_optReadMetaInfo )
+         if( options.meta )
          {
             //TODO can we use filerefs instead of stating above? may shave a few ms
 
@@ -254,7 +255,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url )
 {
     bool b = true;
 
-    if( url.isLocalFile() )
+    if( url.protocol() != "http" )
     {
        //FIXME we already gather this, so don't waste cycles
        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url );
@@ -274,79 +275,64 @@ bool PlaylistLoader::isValidMedia( const KURL &url )
 }
 
 
-
-
-
-static int selector( struct DIRENT const *ent )
+void PlaylistLoader::translate( QString &path, KURL::List &list ) //FIXME KURL is pointless, pass a QString
 {
-  //add more types?
-  //could do an explicit arts check, (yuk! performance issues or what!)
-  if( strcmp( ent->d_name, "." ) == 0 || strcmp( ent->d_name, ".." ) == 0 )
-    return 0;
+   DIR *d = opendir( path );
+   if( !path.endsWith( "/" ) ) path += '/';
 
-  return 1;
-}
+   if( d )
+   {
+      DIRENT *ent;
+      struct STATSTRUCT statbuf;
 
-void PlaylistLoader::translate( const KURL &dir, KURL::List &list ) //FIXME KURL is pointless, pass a QString
-{
-/*
-   //TODO KDirListerCache isn't thread safe, so I've had to go lower level and use GNU stat
-   //     currently this doesn't matter as we only officially support file: and http: however
-   //     eventually we'll need the ability to gather other protocol directory listings and
-   //     this will need to be solved. Original KDirLister code follows:
-
-   KDirLister dirlister( true );
-   dirlister.openURL( dir, false, false ); // URL; keep = true, reload = true
-   while ( !dirlister.isFinished() );
-
-   QPtrList<KFileItem> fileList( dirlister.items() );
-   KURL::List *urlList = new KURL::List;
-
-   for( KFileItem *item = fileList.first(); item; item = fileList.next() )
-      *urlList << item->url();
-
-   return urlList;
-*/
-
-  QString path = dir.path();
-  kdDebug() << "[loader] Translating: " << path << endl;
-
-  if( !path.endsWith( "/" ) ) path += '/';
-
-  struct DIRENT **eps;
-  int n = SCANDIR( path, &eps, selector, /*alphasort*/ NULL );
-
-  if( n > 0 )
-  {
-    struct STATSTRUCT statbuf;
-
-    //loop over array of dirents
-    for( int cnt = 0; cnt < n; ++cnt )
-    {
-      QString new_path = path + eps[cnt]->d_name;
-
-      //get file information
-      if( LSTAT( new_path, &statbuf ) == 0 )
+      while( ent = READDIR( d ) )
       {
-        if( S_ISLNK(  statbuf.st_mode ) || //FIXME, we have an option for links
-          S_ISCHR(  statbuf.st_mode ) ||
-          S_ISBLK(  statbuf.st_mode ) ||
-          S_ISFIFO( statbuf.st_mode ) ||
-          S_ISSOCK( statbuf.st_mode ) )
-        {
-          continue;
-        }
+         QString file( ent->d_name );
 
-        if( S_ISREG( statbuf.st_mode ) )  //file
-          list << KURL( new_path );
+         if( file == "." || file == ".." ) continue;
 
-        if( S_ISDIR( statbuf.st_mode ) )  //directory
-        {
-          translate( KURL( new_path ), list );
-        }
-      }
-    }
-  }
+         QString newpath = path + ent->d_name;
+
+         //get file information
+         if( LSTAT( newpath, &statbuf ) == 0 )
+         {
+            if( ( S_ISLNK( statbuf.st_mode ) && S_ISDIR( statbuf.st_mode ) && !options.symlink ) ||
+               S_ISCHR(  statbuf.st_mode ) ||
+               S_ISBLK(  statbuf.st_mode ) ||
+               S_ISFIFO( statbuf.st_mode ) ||
+               S_ISSOCK( statbuf.st_mode ) )
+            {
+               continue;
+            }
+
+            if( S_ISDIR( statbuf.st_mode ) )  //directory
+            {
+               translate( newpath, list );
+            }
+
+            if( S_ISREG( statbuf.st_mode ) )  //file
+            {
+               file = file.right( 4 );
+               file = file.lower();
+
+               //listed in order of liklihood of encounter to avoid logic checks
+               bool b = ( file == ".mp3" || file == ".ogg" || file == ".m3u" || file == ".pls" || file == ".mod" ||  file == ".wav" );
+
+               KURL url( newpath );
+
+               if( !b )
+               {
+                  b = isValidMedia( url );
+               }
+
+               if( b )
+               {
+                  list << url;
+               }
+            }
+         } //if( LSTAT )
+      } //while
+   } //if( d )
 }
 
 
