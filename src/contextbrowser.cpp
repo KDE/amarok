@@ -189,7 +189,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
      }
 #endif            
-
+    /* open konqueror with musicbrainz search result for artist-album */
     if ( url.protocol() == "musicbrainz" )
     {
         const QString command = "kfmclient openURL 'http://www.musicbrainz.org/taglookup.html?artist=''%1''&album=''%2'''";
