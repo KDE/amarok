@@ -3,9 +3,12 @@
 # Shell script for generating amaroK tarball releases from CVS
 #
 # (c) 2004 Mark Kretschmann <markey@web.de>
+# Some parts of this code taken from cvs2dist
 # License: GPL V2
 #
 # TODO: * Adjust version number in amarok.lsm
+#       * Extract doc translations from CVS
+
 
 version=`kdialog --inputbox "amaroK version: "`
 cvsroot=`kdialog --inputbox "CVS root directory: "`
