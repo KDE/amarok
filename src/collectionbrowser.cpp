@@ -191,7 +191,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setShowSortIndicator( true );
-    setFullWidth( true );
     setAcceptDrops( false );
     setSorting( -1 );
 
@@ -802,6 +801,7 @@ CollectionView::setViewMode( int mode, bool rerender )
         addColumn( captionForCategory( m_cat1 ) );
         setResizeMode( QListView::NoColumn );
         setRootIsDecorated( true );
+        setFullWidth( true );
     }
     else
     {
