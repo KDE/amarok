@@ -3,6 +3,7 @@
 // License: GPL V2. See COPYING file for information.
 
 #include "collectiondb.h"      //smart playlists
+#include "k3bexporter.h"
 #include "metabundle.h"        //paintCell()
 #include "playlist.h"
 #include "playlistbrowser.h"
@@ -566,11 +567,16 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     if( isPlaylist( item ) ) {
         if ( isCurrentPlaylist( item ) ) {
         //************* Current Playlist menu ***********
-            enum Id { SAVE, CLEAR, RMDUP };
+            enum Id { SAVE, CLEAR, RMDUP, BURN_DATACD, BURN_AUDIOCD };
 
             menu.insertItem( i18n( "&Save" ), SAVE );
             menu.insertItem( i18n( "&Clear" ), CLEAR );
             menu.insertItem( i18n( "Remove Duplicates" ), RMDUP );
+            if( K3bExporter::isAvailable() ) {
+                menu.insertSeparator();
+                menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+                menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+            }
 
             switch( menu.exec( p ) )
             {
@@ -581,6 +587,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     Playlist::instance()->clear();
                 case RMDUP:
                     Playlist::instance()->removeDuplicates();
+                    break;
+                case BURN_DATACD:
+                    K3bExporter::instance()->exportCurrentPlaylist( K3bExporter::DataCD );
+                    break;
+                case BURN_AUDIOCD:
+                    K3bExporter::instance()->exportCurrentPlaylist( K3bExporter::AudioCD );
                     break;
             }
         }
@@ -636,11 +648,16 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     //******** track menu ***********
         #define item static_cast<PlaylistTrackItem*>(item)
 
-        enum Actions { MAKE, APPEND, QUEUE, REMOVE, INFO };
+        enum Actions { MAKE, APPEND, QUEUE, BURN_DATACD, BURN_AUDIOCD, REMOVE, INFO };
 
         menu.insertItem( i18n( "&Append to Playlist" ), APPEND ); //TODO say Append to Playlist
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
+        if( K3bExporter::isAvailable() && item->url().isLocalFile() ) {
+            menu.insertSeparator();
+            menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+            menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+        }
         menu.insertSeparator();
         menu.insertItem( SmallIcon("edittrash"), i18n( "&Remove" ), REMOVE );
         menu.insertItem( SmallIcon("info"), i18n( "&Track Information" ), INFO );
@@ -654,6 +671,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case QUEUE:
                 Playlist::instance()->queueMedia( item->url() );
                 break;
+            case BURN_DATACD:
+                 K3bExporter::instance()->exportTracks( item->url(), K3bExporter::DataCD );
+                 break;
+            case BURN_AUDIOCD:
+                 K3bExporter::instance()->exportTracks( item->url(), K3bExporter::AudioCD );
+                 break;
             case REMOVE:
                 removeSelectedItems();
                 break;
