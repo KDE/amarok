@@ -383,10 +383,14 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     gst_element_link_many( input->src, input->spider, input->volume, 0 );
 
     // Prepare for playing
-    if ( !gst_element_set_state( input->bin, GST_STATE_READY ) )
+    if ( !gst_element_set_state( input->bin, GST_STATE_READY ) ) {
         kdWarning() << "[Gst-Engine] Could not set bin to READY.\n";
-    if ( !gst_element_set_state( input->bin, GST_STATE_PAUSED ) )
+        return false;
+    }
+    if ( !gst_element_set_state( input->bin, GST_STATE_PAUSED ) ) {
         kdWarning() << "[Gst-Engine] Could not set bin to PAUSED.\n";
+        return false;
+    }
 
     if ( m_currentInput )
     {
