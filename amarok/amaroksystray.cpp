@@ -47,7 +47,7 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSy
 
     QPopupMenu &p = *contextMenu();
     QStringList shortcuts; shortcuts << "" << "Z" << "X" << "C" << "V" << "B";
-    QString body = "[&%1] %2";
+    QString body = "|&%1| %2";
 
     for( uint index = 1; index < 6; ++index )
     {
