@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: XMMS visualization plugins can be configured with their GUI.
   FIX: Collection filtering had some regressions
   FIX: Loader on some systems not able to start amaroK.
   FIX: Switching engines at runtime breaking volume control.
