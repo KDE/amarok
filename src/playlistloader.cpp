@@ -154,6 +154,8 @@ PlaylistLoader::doJob()
 
     for ( it = m_fileURLs.begin(); it != end && !isAborted(); ++it )
     {
+        incrementProgress();
+
         const KURL &url = *it;
 
         if ( url.isLocalFile() && isPlaylist( url ) ) {
@@ -169,8 +171,6 @@ PlaylistLoader::doJob()
             postItem( url );
         else
             m_badURLs += url;
-
-        incrementProgress();
 
         // Allow GUI thread some time to breathe
         msleep( 2 );
