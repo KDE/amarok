@@ -227,15 +227,11 @@ void KDevFileSelector::readConfig()
 
     // if we restore history
     if ( AmarokConfig::restoreLocation() || kapp->isRestored() )
-    {
-        QString loc( AmarokConfig::location() );
-        if ( ! loc.isEmpty() )
-        {
-            waitingDir = loc;
-            QTimer::singleShot(0, this, SLOT(initialDirChangeHack()));
-        }
+    {    
+        if ( ! AmarokConfig::location().isEmpty() )
+            setDir( AmarokConfig::location() );
     }
-
+            
     // else is automatic, as cmpPath->setURL is called when a location is entered.
 
     filter->setMaxCount( AmarokConfig::filterHistoryLen() );
@@ -251,10 +247,6 @@ void KDevFileSelector::readConfig()
     autoSyncEvents = ( AmarokConfig::autoSyncEvents() );
 }
 
-void KDevFileSelector::initialDirChangeHack()
-{
-    setDir( waitingDir );
-}
 
 void KDevFileSelector::setupToolbar()
 {
