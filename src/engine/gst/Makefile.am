@@ -16,6 +16,7 @@ libamarok_gstengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/engine/gst/uade/libgstuade.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
+    $(LIB_KFILE) \
     $(LIB_KDECORE) \
     $(LIB_KDEUI) \
     $(LIB_GST)

@@ -27,6 +27,7 @@ email                : markey@web.de
 #include <qtimer.h>
 
 #include <kdebug.h>
+#include <kio/job.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kurl.h>
@@ -46,7 +47,7 @@ static const int
 SCOPEBUF_SIZE = 40000;
 
 static const int
-STREAMBUF_SIZE = 400000;
+STREAMBUF_SIZE = 1000000; // == 1MB
 
 GError*
 GstEngine::error_msg;
@@ -126,7 +127,8 @@ GstEngine::GstEngine()
         : EngineBase()
         , m_thread( NULL )
         , m_scopeBufIndex( 0 )
-        , m_streamBuf( new char[ STREAMBUF_SIZE ] )
+        , m_streamBuf( new char[STREAMBUF_SIZE] )
+        , m_transferJob( 0 )
         , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -233,10 +235,7 @@ GstEngine::position() const
 EngineBase::EngineState
 GstEngine::state() const
 {
-    if ( !m_pipelineFilled )
-        return Empty;
-    if ( m_playWhenReady )
-        return Playing;
+    if ( !m_pipelineFilled ) return Empty;
 
     switch ( gst_element_get_state( m_thread ) )
     {
@@ -301,18 +300,6 @@ GstEngine::play( const KURL& url )  //SLOT
     if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
         g_object_set( G_OBJECT ( m_audiosink ), "device", m_soundDevice.latin1(), NULL );
 
-    /* create source */
-    if ( url.isLocalFile() ) {
-        if ( !( m_filesrc = createElement( m_thread, "filesrc", "disk_source" ) ) ) { goto error; }
-        //load track into filesrc
-        g_object_set( G_OBJECT( m_filesrc ), "location",
-                      static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
-    }
-    else {
-        m_filesrc = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
-        gst_bin_add ( GST_BIN ( m_thread ), m_filesrc );
-    }
-
     if ( !( m_identity = createElement( m_thread, "identity", "rawscope" ) ) ) { goto error; }
     if ( !( m_volumeElement = createElement( m_thread, "volume", "volume" ) ) ) { goto error; }
     if ( !( m_audioconvert = createElement( m_thread, "audioconvert", "audioconvert" ) ) ) { goto error; }
@@ -322,6 +309,19 @@ GstEngine::play( const KURL& url )  //SLOT
     g_signal_connect( G_OBJECT( m_audiosink ), "eos", G_CALLBACK( eos_cb ), m_thread );
 //     g_signal_connect ( G_OBJECT( m_thread ), "error", G_CALLBACK ( error_cb ), m_thread );
 
+    if ( url.isLocalFile() ) {
+        // Use gst's filesrc element for local files, cause it's less overhead than KIO
+        if ( !( m_srcelement = createElement( m_thread, "filesrc", "filesrc" ) ) ) { goto error; }
+        // Set file path
+        g_object_set( G_OBJECT( m_srcelement ), "location",
+                      static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
+    }
+    else {
+        // Create our custom streamsrc element, which transports data into the pipeline
+        m_srcelement = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex ) );
+        gst_bin_add ( GST_BIN ( m_thread ), m_srcelement );
+    }
+    
     //TODO HACK
     if ( isUade ) {
         m_uadesrc = GST_ELEMENT( gst_uade_new() );
@@ -331,22 +331,27 @@ GstEngine::play( const KURL& url )  //SLOT
     }
     else {
         if ( !( m_spider = createElement( m_thread, "spider", "spider" ) ) ) { goto error; }
-        gst_element_link_many( m_filesrc, m_spider, m_identity, m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, 0 );
+        /* link all elements */
+        gst_element_link_many( m_srcelement, m_spider, m_identity, m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, 0 );
     }
-        
-    /* link all elements */
+    
     gst_element_set_state( m_thread, GST_STATE_READY );
-
     m_pipelineFilled = true;
     setVolume( volume() );
-
-    if ( url.protocol() == "http" ) {
+    
+    if ( !url.isLocalFile()  ) {
         m_streamBufIndex = 0;
-        m_playWhenReady = true;
-    } else {
-        play();
-        m_playWhenReady = false;
+          
+        if ( url.protocol() != "http" ) {
+            // Use KIO for non-local files, except http, which is handled by TitleProxy
+            m_transferJob = KIO::get( url, false, false );
+            connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+                              this,   SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
+            connect( m_transferJob, SIGNAL( result( KIO::Job* ) ),
+                              this,   SLOT( stopAtEnd() ) );
+        }
     }
+    play();
     return;
 
 error:
@@ -374,6 +379,9 @@ GstEngine::stop()  //SLOT
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_NULL );
 
+    delete m_transferJob;
+    m_transferJob = 0;
+    
     emit stopped();
 }
 
@@ -426,21 +434,32 @@ GstEngine::setVolume( int percent )  //SLOT
 void
 GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
-    if ( m_streamBufIndex + size > STREAMBUF_SIZE ) {
-        size = STREAMBUF_SIZE - m_streamBufIndex;
-        kdDebug() << "Stream buffer overflow!" << endl;
+    if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
+        m_streamBufIndex = 0;
+        kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, buf, size );
     // Adjust index
     m_streamBufIndex += size;
+}
 
-    // Wait until buffer is partly filled, then start playback
-    if ( m_playWhenReady && m_streamBufIndex > STREAMBUF_SIZE / 2 ) {
-        play();
-        m_playWhenReady = false;
+
+void
+GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
+{
+    int size = array.size();
+    
+    if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
+        m_streamBufIndex = 0;
+        kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
+
+    // Copy data into stream buffer
+    memcpy( m_streamBuf + m_streamBufIndex, array.data(), size );
+    // Adjust index
+    m_streamBufIndex += size;
 }
 
 
@@ -463,7 +482,10 @@ GstEngine::stopAtEnd()  //SLOT
 
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_READY );
-
+    
+    delete m_transferJob;
+    m_transferJob = 0;
+    
     emit endOfTrack();
 }
 

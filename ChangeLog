@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: KIO support for GStreamer engine. Allows playing media via all
+       protocols supported by KIO (ftp, audiocd, fish, etc). 
   ADD: SearchBrowser operation can now be aborted.
   ADD: XineEngine plugin, audio only
   ADD: Progressbar in CollectionBrowser informs about scan progress, and a

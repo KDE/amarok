@@ -239,7 +239,9 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
     //FIXME determine if the thing at the end of this is a stream! Can arts do this?
     //      currently we always return true as we can't check
     //FIXME I don't actually understand what checks can be done, etc.
-    if ( url.protocol() == "http" ) return true;
+    
+    // Accept non-local files, since we can't test them for validity at this point
+    if ( !url.isLocalFile() ) return true;
 
     //TODO  if the playback fails, do some tests and tell the user why - we want to be the best!
 

@@ -22,8 +22,9 @@ email                : markey@web.de
 
 #include <vector>
 
-#include <qobject.h>
+#include <qguardedptr.h>
 #include <qstringlist.h>
+#include <kio/jobclasses.h>
 
 #include <gst/gst.h>
 
@@ -63,6 +64,7 @@ class GstEngine : public EngineBase
     private slots:
         void                                     handleError();
         void                                     stopAtEnd();
+        void                                     newKioData( KIO::Job*, const QByteArray& array );
         
     private:
         static GstEngine*                        instance() { return s_instance; }
@@ -86,10 +88,10 @@ class GstEngine : public EngineBase
         static GstEngine*                        s_instance;
         
         GstElement*                              m_thread;
+        GstElement*                              m_srcelement;
         GstElement*                              m_audiosink;
         GstElement*                              m_spider;
         GstElement*                              m_uadesrc;
-        GstElement*                              m_filesrc;
         GstElement*                              m_identity;
         GstElement*                              m_volumeElement;
         GstElement*                              m_audioconvert;
@@ -101,9 +103,7 @@ class GstEngine : public EngineBase
        
         char*                                    m_streamBuf;
         int                                      m_streamBufIndex;
-        
-        /** Used for delayed starting of the pipeline (for streaming) */
-        bool                                     m_playWhenReady;
+        QGuardedPtr<KIO::TransferJob>            m_transferJob;
         
         bool                                     m_pipelineFilled;
 };

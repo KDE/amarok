@@ -43,13 +43,13 @@ GST_BOILERPLATE_FULL ( GstStreamSrc, gst_streamsrc, GstElement, (GTypeFlags) GST
 static void gst_streamsrc_set_property ( GObject * object, guint prop_id,
         const GValue * value, GParamSpec * pspec );
 
-
 static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
         GValue * value, GParamSpec * pspec );
 
-
 static GstData *gst_streamsrc_get ( GstPad * pad );
 
+// Minimum buffer fill until we start playing
+static const int BUFFER_MIN = 200000;
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -159,6 +159,11 @@ static GstData*
 gst_streamsrc_get ( GstPad * pad )
 {
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
+    
+    // Return when buffer is not filled
+    if ( *src->streamBufIndex < BUFFER_MIN )
+        return GST_DATA( gst_event_new( GST_EVENT_DISCONTINUOUS ) );
+            
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
     int readBytes = *src->streamBufIndex;
