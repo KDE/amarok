@@ -995,6 +995,8 @@ Playlist::contentsDragLeaveEvent( QDragLeaveEvent* )
 void
 Playlist::contentsDropEvent( QDropEvent *e )
 {
+    DEBUG_FUNC_INFO
+
     //NOTE parent is always 0 currently, but we support it in case we start using trees
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
@@ -1003,27 +1005,43 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
     slotEraseMarker();
 
-    if( e->source() == viewport() )
-    {
+    if ( e->source() == viewport() ) {
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
+    }
+    else if( QTextDrag::canDecode( e ) ) {
 
-        updateNextPrev();
+        debug() << "QTextDrag::canDecode" << endl;
 
-    } else {
+        QString text;
+        QCString subtype;
+        QTextDrag::decode( e, text, subtype );
+
+        Debug::list() << text << subtype;
+
+        if ( subtype == "amarok-sql" )
+            debug() << "YAY some amarok-sql!\n";
+        else goto url;
+    }
+    else if( KURLDrag::canDecode( e ) ) {
+    url:
+        debug() << "KURLDrag::canDecode" << endl;
 
         KURL::List list;
-        if( KURLDrag::decode( e, list ) )
-        {
-            insertMediaInternal( list, (PlaylistItem*)after );
-        }
-        else e->ignore();
+        KURLDrag::decode( e, list );
+        insertMediaInternal( list, (PlaylistItem*)after );
     }
+    else
+        e->ignore();
+
+    updateNextPrev();
 }
 
 QDragObject*
 Playlist::dragObject()
 {
+    DEBUG_FUNC_INFO
+
     //TODO use of the map is pointless
     //just use another list in same order as kurl::list
 

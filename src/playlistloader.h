@@ -6,16 +6,12 @@
 #ifndef PLAYLISTLOADER_H
 #define PLAYLISTLOADER_H
 
+#include "debug.h"        //stack allocated
 #include <kurl.h>         //KURL::List
 #include "metabundle.h"   //stack allocated
-#include <qdom.h>         //stack allocated
-#include <qevent.h>       //baseclass
 #include "threadweaver.h" //baseclass
 
-class CollectionDB;
-class QListView;
 class QListViewItem;
-class KDirLister;
 class PlaylistItem;
 
 namespace KIO { class Job; }
@@ -49,10 +45,11 @@ private:
     KURL::List m_badURLs;
     KURL::List m_URLs;
 
-    KDirLister   *m_dirLister;
     PlaylistItem *m_markerListViewItem;
 
     bool m_playFirstUrl;
+
+    Debug::Block m_block;
 
 protected:
     PlaylistLoader( const PlaylistLoader& ); //undefined

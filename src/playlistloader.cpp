@@ -12,21 +12,19 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include <kapplication.h>
+#include <kdirlister.h>
+#include <kurl.h>
 #include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
-#include "statusbar.h"
-
 #include <qfile.h>       //::loadPlaylist()
 #include <qfileinfo.h>
 #include <qlistview.h>
 #include <qmap.h>        //::recurse()
 #include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
-
-#include <kapplication.h>
-#include <kdirlister.h>
-#include <kurl.h>
+#include "statusbar.h"
 
 
 //TODO playlists within playlists, local or remote are legal entries in m3u and pls
@@ -34,12 +32,10 @@
 
 PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
     : ThreadWeaver::DependentJob( dependent, "PlaylistLoader" )
-    , m_dirLister( new KDirLister() )
     , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
     , m_playFirstUrl( playFirstUrl )
+    , m_block( "PlaylistLoader" )
 {
-    DEBUG_BLOCK
-
     setDescription( i18n("Loading media") ); //TODO better wording
 
     amaroK::StatusBar::instance()->newProgressOperation( this )
@@ -48,9 +44,6 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
             .setTotalSteps( 100 );
 
     m_markerListViewItem->setText( 0, "IF YOU CAN SEE THIS THERE IS A BUG" );
-
-    m_dirLister->setAutoUpdate( false );
-    m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
 
     // BEGIN Read folders recursively
     amaroK::OverrideCursor cursor;
@@ -99,8 +92,6 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
         else if ( !recurse( url ) )
             m_URLs.append( url );
     }
-
-    delete m_dirLister;
 }
 
 
@@ -147,8 +138,6 @@ public:
 bool
 PlaylistLoader::doJob()
 {
-    Debug::Block timer( __PRETTY_FUNCTION__ );
-
     ItemList items;
 
     setProgressTotalSteps( m_URLs.count() * 2 );
@@ -414,6 +403,8 @@ PlaylistLoader::postItem( const KURL &url, const QString &title, const uint leng
 bool
 PlaylistLoader::recurse( const KURL &url, bool recursing )
 {
+    //FIXME indent
+        //FIXME possibly will be buggy
         static bool success;
         if ( !recursing ) success = false;
 
@@ -421,15 +412,18 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
 
         KURL::List dirs;
         FileMap files;
+        KDirLister lister( false );
 
-        m_dirLister->openURL( url );
+        lister.setAutoUpdate( false );
+        lister.setAutoErrorHandlingEnabled( false, 0 );
+        lister.openURL( url );
 
-        while ( !m_dirLister->isFinished() )
+        while ( !lister.isFinished() )
             //FIXME this is a crash waiting to happen
             kapp->processEvents( 100 );
 
         KFileItem* item;
-        KFileItemList items = m_dirLister->items();
+        KFileItemList items = lister.items();
 
         success |= !items.isEmpty();
 

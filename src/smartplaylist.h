@@ -8,6 +8,7 @@
 #include <kurl.h>
 #include <qvbox.h>
 
+class SmartPlaylist;
 class QPainter;
 class QRect;
 
@@ -44,6 +45,9 @@ Q_OBJECT
         KURL::List loadSmartPlaylist( QListViewItem *item );    //query the database and returns a list of url
         QString customPlaylistsFile();
 
+        /// convenience function
+        SmartPlaylist *currentItem() { return (SmartPlaylist*)currentItem(); }
+
         bool m_loaded;
 };
 
@@ -51,18 +55,36 @@ Q_OBJECT
 class SmartPlaylist : public KListViewItem
 {
     public:
-        SmartPlaylist( KListView *parent, KListViewItem *after, QString name,
-                       QString query = QString::null, QString icon = QString::null,
-                       bool custom = false );
-        SmartPlaylist( SmartPlaylist *parent, KListViewItem *after, QString name,
-                       QString query = QString::null, QString icon = QString::null,
-                       bool custom = false );
+        SmartPlaylist(
+                KListView *parent,
+                KListViewItem *after,
+                const QString &name,
+                const QString &query = QString::null,
+                const QString &icon = QString::null,
+                bool custom = false );
+
+        SmartPlaylist(
+                SmartPlaylist *parent,
+                KListViewItem *after,
+                const QString &name,
+                const QString &query = QString::null,
+                const QString &icon = QString::null,
+                bool custom = false );
 
         void setQuery( const QString &query ) { m_query = query; };
         const QString &query() { return m_query; }
         bool isCustom() { return m_custom; }
         void setKey( int pos ) { m_key = pos; }
         QString key( int c, bool ) const;
+
+        /// returns the URLs for this playlist
+        KURL::List urls() const; ///DEPRECATE this!
+
+        /// returns the SQL to get this playlist's URLs
+        QString sqlForUrls() const { return QString(); }
+
+        /// returns the SQL to get this playlist's URLs + tags
+        QString sqlForTags() const { return QString(); }
 
     private:
         QString m_query;
