@@ -39,7 +39,6 @@
 #include <ktoolbarbutton.h> //ctor
 #include <kurl.h>
 #include <kurlcombobox.h>
-#include <ktempfile.h> // gradient backgroud image
 #include <kimageeffect.h> // gradient backgroud image
 
 #include <qfile.h>
@@ -116,7 +115,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
 ContextBrowser::~ContextBrowser() {
     delete m_currentTrack;
-
+    temp_img->unlink();
     EngineController::instance()->detach( this );
 }
 
@@ -835,16 +834,16 @@ void ContextBrowser::setStyleSheet() {
     amaroK::Color gradient = colorGroup().highlight();
 
     //writing temp gradient image
-    KTempFile temp_img(locateLocal("tmp", "gradient"), ".png", 0600);
+    temp_img = new KTempFile(locateLocal("tmp", "gradient"), ".png", 0600);
     QImage grad = KImageEffect::gradient(QSize(600,1), gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3);
-    grad.save( temp_img.file(), "PNG" );
-    temp_img.close();
+    grad.save( temp_img->file(), "PNG" );
+    temp_img->close();
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); backgroud-repeat: repeat-y; }" )
                     .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
-                    .arg( temp_img.name() );
+                    .arg( temp_img->name() );
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
 
     m_styleSheet += QString( ".menu { color: %1; background-color: %2; margin: 0.4em 0.0em; font-weight: bold; }" ).arg( fg ).arg( bg );

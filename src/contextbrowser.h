@@ -10,6 +10,7 @@
 #include <klistview.h>
 #include <kparts/browserextension.h>
 #include <kurl.h>
+#include <ktempfile.h>
 
 class CollectionDB;
 class MetaBundle;
@@ -70,6 +71,8 @@ class ContextBrowser : public QVBox, public EngineObserver
         QStringList m_relatedArtists;
 
         QString m_HTMLSource;
+
+	KTempFile* temp_img;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */
