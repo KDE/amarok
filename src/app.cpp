@@ -390,7 +390,7 @@ void App::applySettings( bool firstTime )
         //m_pPlaylistWindow->show(); //must be shown //we do below now
 
         //ensure that at least one Menu is plugged into an accessible UI element
-        if( !actionCollection()->action( "amarok_menu" )->isPlugged() )
+        if( !AmarokConfig::showMenuBar() && !actionCollection()->action( "amarok_menu" )->isPlugged() )
            playlistWindow()->createGUI();
     }
 

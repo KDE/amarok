@@ -161,8 +161,6 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
-    amaroK::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
-
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
 }
@@ -221,7 +219,7 @@ PlaylistWindow::init()
 
 
     m_menubar = new KMenuBar( this );
-    //m_menubar->setShown( amaroK::config( "PlaylistWindow" )->readBoolEntry( "showMenuBar", true ) );
+    m_menubar->setShown( AmarokConfig::showMenuBar() );
 
     //BEGIN Play menu
     KPopupMenu *fileMenu = new KPopupMenu( m_menubar );
@@ -390,7 +388,7 @@ void PlaylistWindow::createGUI()
         if ( it == last ) {
             //if the user has no PlayerWindow, he MUST have the menu action plugged
             //NOTE this is not saved to the local XMLFile, which is what the user will want
-            if ( !AmarokConfig::showPlayerWindow() && !button )
+            if ( !AmarokConfig::showPlayerWindow() && !AmarokConfig::showMenuBar() && !button )
                 actionCollection()->action( "amarok_menu" )->plug( m_toolbar );
         }
 
@@ -400,10 +398,13 @@ void PlaylistWindow::createGUI()
         }
     }
 
+    if ( AmarokConfig::showMenuBar() ) {
+        if( actionCollection()->action( "amarok_menu" )->isPlugged() )
+            actionCollection()->action( "amarok_menu" )->unplugAll();
+    }
+
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
-
     conserveMemory();
-
     setUpdatesEnabled( true );
 }
 
@@ -666,7 +667,9 @@ void PlaylistWindow::slotMenuActivated( int index )
         amaroK::Menu::instance()->slotActivated( index );
         break;
     case ID_SHOW_MENUBAR:
-        m_menubar->setShown( !m_menubar->isShown() );
+        AmarokConfig::setShowMenuBar( false );
+        m_menubar->setShown( false );
+        recreateGUI();
         break;
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );

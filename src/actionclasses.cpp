@@ -185,7 +185,11 @@ Menu::slotActivated( int index )
         break;
     #endif
     case ID_SHOW_MENUBAR:
+        AmarokConfig::setShowMenuBar( true );
         PlaylistWindow::self()->showMenuBar( true );
+
+        if( amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
+            amaroK::actionCollection()->action( "amarok_menu" )->unplugAll();
         break;
     }
 }

@@ -145,6 +145,11 @@
         <default>true</default>
         <whatsthis>Automatically switches to ContextBrowser when playback is started.</whatsthis>
     </entry>
+    <entry key="Show Menu Bar" type="Bool">
+        <label>Whether Menubar is shown</label>
+        <default>true</default>
+        <whatsthis>If set, amaroK displays a menubar on top of the application.</whatsthis>
+    </entry>
 </group>
 
 <group name="Playback">
