@@ -135,7 +135,7 @@ CollectionDB::incSongCounter( const QString url )
     if ( values.count() )
     {
         // entry exists, increment playcounter and update accesstime
-        execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, playcounter ) VALUES ( '%1', %2, strftime('%s', 'now'), %3 );" )
+        execSql( QString( "REPLACE INTO statistics ( url, createdate, accessdate, playcounter ) VALUES ( '%1', '%2', strftime('%s', 'now'), %3 );" )
                 .arg( escapeString( url ) )
                 .arg( values[1] )
                 .arg( values[0] + " + 1" ) );
