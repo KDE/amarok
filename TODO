@@ -8,7 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 128 <markey> Make aRts engine work for mxcl and madpenguin.
+  FIX 128 <mxcl>   TitleProxy uses 100% cpu and doesn't appear to time out for URLs it can't resolve,
+                   eg http://www.live365.com/play/298863 from BR77313, which is redirected (see BR).
 
   FIX 124 <muesli> Make CollectionBrowser independent of i18n.
 
@@ -21,7 +22,7 @@ SHORT-TERM (URGENT):
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
                    distros offer them as a sperate package.
 
-  FIX     <mxcl>   Xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
+  FIX     <mxcl>   XMMSwrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
 
 
 MID-TERM:
