@@ -126,7 +126,9 @@ App::App()
     }
 
     // Remove amazon cover images older than 90 days, to comply with licensing terms
+    #ifdef AMAZON_SUPPORT
     pruneCoverImages();
+    #endif
 
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
@@ -819,6 +821,7 @@ void App::firstRunWizard()
 
 void App::pruneCoverImages()
 {
+#ifdef AMAZON_SUPPORT
     // TODO Offer the option to refresh the images, instead of deleting
 
     const int MAX_DAYS = 90;
@@ -845,6 +848,7 @@ void App::pruneCoverImages()
         }
 
     kdDebug() << "[App] Pruned " << pruneCount << " of " << count << " amazon cover images.\n";
+#endif
 }
 
 
