@@ -3,10 +3,23 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #108 being the highest available (take this one for your next bug and increase here)
+           #112 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 111 <dato>   clearing list while playing ==> infinite calls to EC::slotMainTimer()
+                   mxcl, can you read the post at the mailing list and comment about the
+                   (uncommited) change to Playlist::handleOrder()? thx. --> dato
+
+  FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
+                   Changing the Spectrum Size of toolbar's analyzer does not work. It's fixed at 128.
+
+  FIX 109 <dato>   Directories with non-ascii chars don't get added to the Collection Browser
+                   at scan time. I'll investigate this. --> dato
+
+  FIX 108 <dato>   Scrolling with wheel in toolbar's volume marker changes position but does not
+                   change volume.
 
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
