@@ -7,9 +7,10 @@ VERSION 1.2-beta2:
   ADD: CollectionBrowser now offers two operation modes:
        The classical TreeView and a new FlatView (like the WinAmp Library).
   FIX: Caching of local cover images was broken for non-unique filenames.
+       (BR 94068)
   FIX: "Visualizations" menu entry was always disabled.
   FIX: Play button was sometimes stuck in disabled state.
-  FIX: OSD was showing %artist - %track by default, now shows %title.
+  FIX: OSD was showing "%artist - %track" instead of "%artist - %title".
   FIX: Forward command line option --engine to amarokapp.
 
 VERSION 1.2-beta1:
