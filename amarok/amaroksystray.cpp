@@ -10,7 +10,7 @@
 #include "playerapp.h"
 #include "playerwidget.h"
 
-#include <kactioncollection.h>
+#include <kaction.h>
 #include <kapplication.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
