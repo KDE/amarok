@@ -18,7 +18,6 @@
 #include <kaction.h>
 #include <kactioncollection.h>
 #include <kapplication.h>    //customPlaylistsFile()
-#include <kdebug.h>
 #include <kguiitem.h>
 #include <kiconloader.h>
 #include <klocale.h>
@@ -275,7 +274,6 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
     KURL::List list;
     CollectionDB db;
     QStringList values = db.query( item->query() );
-    kdDebug() << "LALALAL: " << item->query() << endl;
 
     if ( !values.isEmpty() )
     {
