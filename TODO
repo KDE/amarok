@@ -5,7 +5,7 @@ TODO-list for amaroK
 #x      == sequential bug number, 
            #16 being the highest available (take this one for your next bug and increase here)
 
-                      
+
 SHORT-TERM (URGENT):
 
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
@@ -17,25 +17,12 @@ SHORT-TERM (URGENT):
               <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
               PlaylistItem::metaBundle(). If it's still doing it wrong we should consider setting it
               to Accurate.
-    
-    * fix: #7<mxcl> Still with KDE 3.2, the playlist doesn't raise/minimise/shade with the main
-             widget. KWin handles this if playlist is WType_Dialog, but this has other problems.
-             To see how important dual raise is, raise another window above amarok's windows and
-             click the systray icon - only the mainWidget is raised.
-             [kwin_iii does it ok for me, in reality, it first _hides_ amarok and then re raises
-             it with both windows on top, play and playlist. there's other problem - to bring the 
-             playlist window on top when you focus the play window. but that can be solved via
-             signals.]
-             <mxcl> try it, it's not easy to resolve this with signals, there are too many
-             possible behaviors. It needs to be handled at a lower level, i.e. the WM.
-             <mxcl> also it is _not_ kwin that shows both windows, we force the playlist window to be
-             shown ourselves. kwin_iii handles none of this behavior unless we set WType_Dialog as
-             it was before.
-             <mxcl> it also had the added effect of making amaroK one taskbar entry, which I thought
-             was right, but I'm not sure if that's to everyone's taste. I think you should be able to
-             click on a single taskbar entry and have both widgets raised. Rather than have to click on
-             both.
-             <mxcl> let's not worry about this until the next release.. :-)
+
+    * fix: #7<mxcl> originally reported all this, <berkus> summarized
+             * The playwidget and playlistwidget should display as single entry on taskbar.
+	     * Clicking on either or on tray icon should bring both up/down.
+	     * Setting WType_Dialog on playlist doesn't help, because then playlist always
+	       overlays the playwidget.
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
@@ -72,8 +59,6 @@ MID-TERM:
 
     * add: <muesli> add OSD support (permanent display or just on events like a song switch)
     
-    * add: show not only total track length but also remaining time in playerwidget
-    
     * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
 
     * add: extend documentation
@@ -87,6 +72,8 @@ MID-TERM:
     * add: option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
 
     * add: <muesli> reading metadata on the fly (read for displayed playlist-items or onClick)
+           <berkus> this means that metadata is read only for visible now items or the items
+	   you click. (see winamp)
 
     * add: "add item"-dialog should support multiple selections
 
@@ -95,8 +82,6 @@ MID-TERM:
     * add: display warning when artsd is run w/o realtime
 
     * add: background pseudo-transparency for playlist window
-
-    * add: better cleanup at program exit; delete all new'd objects
 
     * add: function for adding all files in current dir to playlist
 
@@ -139,8 +124,6 @@ LONG-TERM:
     * add: display some information about current track in browserwin
 
     * add: support for compressed archives / tarballs
-
-    * add visualisations
 
     * add: <mxcl> implement beat detection (thread?), interface should glow/move to
            the beat, visualisations have access to beat/bpm info
