@@ -764,6 +764,7 @@ GstEngine::getPluginList( const QCString& classname ) const
     GList* registries = NULL;
     GList* plugins = NULL;
     GList* features = NULL;
+    QString name;
     QStringList results;
 
     pool_registries = gst_registry_pool_list ();
@@ -783,8 +784,10 @@ GstEngine::getPluginList( const QCString& classname ) const
                 if ( GST_IS_ELEMENT_FACTORY ( feature ) ) {
                     GstElementFactory * factory = GST_ELEMENT_FACTORY ( feature );
 
-                    if ( g_strrstr ( factory->details.klass, classname ) )
-                        results << g_strdup ( GST_OBJECT_NAME ( factory ) );
+                    if ( g_strrstr ( factory->details.klass, classname ) ) {
+                        name = g_strdup ( GST_OBJECT_NAME ( factory ) );
+                        if ( name != "artsdsink" ) results << name;
+                    }
                 }
                 features = g_list_next ( features );
             }
