@@ -244,7 +244,7 @@ void UniversalAmarok::showIntroduction()
                 "<div id='introduction_box-body' class='box-body'>"
                     "<p>" +
                     i18n( "This is the Context Browser: "
-                          "it shows you contextual information about the currently playing track."
+                          "it shows you contextual information about the currently playing track. "
                           "In order to use this feature of amaroK, you need to build a Collection."
                         ) +
                     "</p>"
