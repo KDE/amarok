@@ -6,8 +6,8 @@ amaroK ChangeLog
 VERSION 1.2.2:
   FIX: GStreamer-engine can now play vorbis radio streams properly, with
        full metadata support. (BR 89821)
-  FIX: GStreamer-engine now uses the modern "decodebin" autoplugger, which
-       fixes the lag issues that some users had during crossfading.
+  FIX: GStreamer-engine now uses the "decodebin" autoplugger, which fixes
+       the lag issues that some users had during crossfading. (BR 99570)
 
 VERSION 1.2.1:
   FIX: Made the Tag-Editor only operate on visible items. (BR 100268)
