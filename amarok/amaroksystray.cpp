@@ -69,13 +69,13 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
     switch ( e->state() )
     {
     case ShiftButton:
-        static_cast<PlayerApp *>( kapp ) ->m_pPlayerWidget->wheelEvent( e );
-        break;
-    default:
         if ( e->delta() > 0 )
             static_cast<PlayerApp *>( kapp ) ->slotNext();
         else
             static_cast<PlayerApp *>( kapp ) ->slotPrev();
+        break;
+    default:
+        static_cast<PlayerApp *>( kapp ) ->m_pPlayerWidget->wheelEvent( e );
         break;
     }
 
