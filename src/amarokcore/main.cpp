@@ -53,7 +53,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
-    aboutDate.addCredit( "Seb Ruiz", I18N_NOOP( "OSD improvements, patches, testing" ), "seb100@optusnet.com.au" );
+    aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "OSD improvements, patches, testing" ), "seb100@optusnet.com.au" );
 
 
     KApplication::disableAutoDcopRegistration();
