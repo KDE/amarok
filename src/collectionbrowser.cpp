@@ -481,13 +481,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu menu( this );
 
         #ifdef AMAZON_SUPPORT
-        enum Actions { MAKE, APPEND, QUEUE, COVER, INFO };
+        enum Actions { APPEND, MAKE, QUEUE, COVER, INFO };
         #else
-        enum Actions { MAKE, APPEND, QUEUE, INFO };
+        enum Actions { APPEND, MAKE, QUEUE, INFO };
         #endif
 
-        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Append to the Playlist" ), APPEND );
+        menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
         menu.insertSeparator();
@@ -502,11 +502,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.setItemEnabled( INFO, ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 );
 
         switch( menu.exec( point ) ) {
-            case MAKE:
-                Playlist::instance()->clear(); //FALL THROUGH
+            
             case APPEND:
                 Playlist::instance()->appendMedia( listSelected() );
                 break;
+            case MAKE:
+                Playlist::instance()->clear(); //FALL THROUGH
             case QUEUE:
                 Playlist::instance()->queueMedia( listSelected() );
                 break;
