@@ -33,6 +33,8 @@ class KActionCollection;
 class MetaBundle;
 class PlaylistItem;
 class PlaylistLoader;
+class QBoxLayout;
+class QLabel;
 class QTimer;
 
 
@@ -159,6 +161,8 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
         void showTagDialog( QPtrList<QListViewItem> items );
+        void showUsageMessage();
+        void hideUsageMessage();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
@@ -216,6 +220,9 @@ class Playlist : private KListView, public EngineObserver
         KActionCollection* const m_ac;
 
         std::vector<double> m_columnFraction;
+
+        QLabel *m_usageMessage;
+        QBoxLayout *m_usageMessageLayout;
 };
 
 #endif //AMAROK_PLAYLIST_H

@@ -97,6 +97,7 @@ PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , m_missing( false )
 {
     setDragEnabled( true );
 
@@ -106,6 +107,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( bundle.url() ) )
       , m_url( bundle.url() )
+      , m_missing( false )
 {
     setDragEnabled( true );
 
@@ -115,9 +117,9 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , m_missing( false )
 {
     setDragEnabled( true );
-
     const uint ncol = listView()->columns();
 
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
@@ -214,6 +216,8 @@ void PlaylistItem::setText( const MetaBundle &bundle )
         int firstIndex = bundle.prettyURL().find( '/' );
         int lastIndex = bundle.prettyURL().findRev( '/', -1 );
         directory = bundle.prettyURL().mid( firstIndex, lastIndex - firstIndex );
+
+        m_missing = !QFile::exists( bundle.url().path() );
     }
     setText( Directory, directory );
     setText( Length,  bundle.prettyLength() );
@@ -404,9 +408,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         p->drawPixmap( 0, 0, paintCache[column].map[colorKey] );
     }
-    else
-        KListViewItem::paintCell( p, cg, column, width, align );
-
+    else {
+        QColorGroup _cg = cg;
+        if( m_missing ) //this file doesn't exist
+            _cg.setColor( QColorGroup::Text, cg.mid() );
+        KListViewItem::paintCell( p, _cg, column, width, align );
+    }
 
     // Here we draw the "Play as next" symbol:
 

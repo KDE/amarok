@@ -106,6 +106,7 @@ class PlaylistItem : public KListViewItem
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
         const KURL m_url;
+        bool m_missing;
 
         static bool s_pixmapChanged;
         static const uint STRING_STORE_SIZE = 80;
