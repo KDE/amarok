@@ -126,7 +126,8 @@ TagDialog::musicbrainzQuery() //SLOT
 #ifdef HAVE_MUSICBRAINZ
     kdDebug() << k_funcinfo << endl;
 
-    KTRMLookup* ktrm = new KTRMLookup( m_bundle.url().path(), true );
+    mbTrack = m_bundle.url().path();
+    KTRMLookup* ktrm = new KTRMLookup( mbTrack, true );
     connect( ktrm, SIGNAL( sigResult( KTRMResultList ) ), SLOT( queryDone( KTRMResultList ) ) );
 
     pushButton_musicbrainz->setEnabled( false );
@@ -148,11 +149,24 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
 
     if ( !results.isEmpty() )
     {
-        if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
-        if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
-        if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
-        if ( results[0].track() != 0 )          kIntSpinBox_track->setValue( results[0].track() );
-        if ( results[0].year() != 0 )           kIntSpinBox_year->setValue( results[0].year() );
+        if ( m_bundle.url().path() == mbTrack ) {
+            if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
+            if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
+            if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
+            if ( results[0].track() != 0 )          kIntSpinBox_track->setValue( results[0].track() );
+            if ( results[0].year() != 0 )           kIntSpinBox_year->setValue( results[0].year() );
+        }
+        else {
+            MetaBundle mb( KURL( mbTrack ) );
+            if ( !results[0].title().isEmpty() )    mb.setTitle( results[0].title() );
+            if ( !results[0].artist().isEmpty() )  mb.setArtist( results[0].artist() );
+            if ( !results[0].album().isEmpty() ) mb.setAlbum( results[0].album() );
+            if ( results[0].track() != 0 )           mb.setTrack( QString::number( results[0].track() ) );
+            if ( results[0].year() != 0 )            mb.setYear( QString::number( results[0].year() ) );
+
+            storedTags.insert( mbTrack, mb );
+        }
+
     }
     else
         KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
