@@ -97,7 +97,7 @@ KURL Proxy::proxyUrl()
     if ( m_initSuccess ) {
         KURL url;
         url.setPort( m_usedPort );
-        url.setHost( "localhost" );
+        url.setHost( "127.0.0.1" );
         url.setProtocol( "http" );
         return url;
 
