@@ -101,7 +101,13 @@ public:
     QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength() const { return prettyLength( m_length ); }
-    QString prettySampleRate( bool shortened = false ) const { return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), shortened ? m_sampleRate / 1000 : m_sampleRate ); }
+    QString prettySampleRate( bool shortened = false ) const
+    {
+        if ( shortened )
+            return prettyGeneric( i18n( "SampleRate", "%1 kHz" ), m_sampleRate / 1000 );
+        else
+            return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate );
+    }
 
 
     // these are helpful statics, don't use these in preference
