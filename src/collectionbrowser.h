@@ -70,7 +70,6 @@ class CollectionView : public KListView
     friend class CollectionBrowser;
 
     public:
-        enum SortMode  { sortTracktag, sortFilename };
         enum ViewMode  { modeTreeView, modeFlatView };
 
         class Item : public KListViewItem {
@@ -98,7 +97,6 @@ class CollectionView : public KListView
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
 
     public slots:
-        void setSortMode( int mode, bool rerender = true );
         void setTreeMode() { setViewMode( modeTreeView ); };
         void setFlatMode() { setViewMode( modeFlatView ); };
         
@@ -147,14 +145,11 @@ class CollectionView : public KListView
         static CollectionDB* m_insertdb;
         static CollectionView* m_instance;
 
-        QueryBuilder::qBuilderValues m_qbSortBy;
-
         CollectionBrowser* m_parent;
         QString m_filter;
         int m_cat1;
         int m_cat2;
         int m_cat3;
-        int m_sortMode;
         int m_viewMode;
 
         bool m_isScanning;
