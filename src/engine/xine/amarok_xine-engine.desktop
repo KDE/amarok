@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=xine Engine
+Name[bg]=Система Xine
+Name[br]=Keflusker xine
 Name[cs]=xine
 Name[de]=xine-Treiber
 Name[es]=Motor xine
@@ -17,6 +19,7 @@ Name[sr]=xine програм
 Name[sv]=Xine-gränssnitt
 Name[ta]=xine என்ஜின்
 Name[tg]=Муҳандиси Xine
+Name[uk]=xine
 Name[uz]=xine тизими
 Name[xx]=xxxine Enginexx
 Name[zh_CN]=xine 引擎
@@ -40,6 +43,7 @@ Comment[sr]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК
+Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件

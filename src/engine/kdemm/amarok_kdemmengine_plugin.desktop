@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=KDEMM Engine
+Name[bg]=Система KDEMM
+Name[br]=Keflusker KDEMM
 Name[da]=KDEMM-motor
 Name[de]=KDEMM-Treiber
 Name[et]=KDEMM mootor
@@ -11,7 +13,9 @@ Name[pt_BR]=Motor KDEMM
 Name[ru]=KDEMM
 Name[sv]=KDEMM-gränssnitt
 Name[ta]=KDEMM என்ஜின்
+Name[uk]=KDEMM
 Name[uz]=KDEMM тизими
+Name[zh_CN]=KDEMM 引擎
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
 Comment[cs]=Modul pro amaroK
@@ -31,6 +35,7 @@ Comment[sr]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК
+Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件

@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=GStreamer Engine
+Name[bg]=Система GStreamer
+Name[br]=Keflusker GStreamer
 Name[cs]=GStreamer
 Name[da]=GStreamer-motor
 Name[de]=Gstreamer-Treiber
@@ -16,6 +18,7 @@ Name[sr]=GStreamer програм
 Name[sv]=Gstreamer-gränssnitt
 Name[ta]=G தாரை பொறி
 Name[tg]=GТасмаи дарози муҳандис
+Name[uk]=GStreamer
 Name[uz]=GStreamer тизими
 Name[xx]=xxGStreamer Enginexx
 Name[zh_CN]=GStreamer 引擎
@@ -39,6 +42,7 @@ Comment[sr]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК
+Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件

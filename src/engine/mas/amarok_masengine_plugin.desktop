@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=MAS Engine
+Name[bg]=Система MAS
+Name[br]=Keflusker MAS
 Name[da]=MAS-motor
 Name[de]=NAS-Treiber
 Name[es]=Motor MAS
@@ -13,7 +15,9 @@ Name[ru]=MAS
 Name[sv]=MAS-gränssnitt
 Name[ta]=MAS என்ஜின்
 Name[tg]=MAS муҳандис
+Name[uk]=MAS
 Name[uz]=MAS тизими
+Name[zh_CN]=MAS 引擎
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
 Comment[cs]=Modul pro amaroK
@@ -33,6 +37,7 @@ Comment[sr]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК
+Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件
