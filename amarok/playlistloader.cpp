@@ -367,7 +367,7 @@ KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
     KURL::List urls;
 
     QString str, title;
-    int length = 0;
+    int length = MetaBundle::Undetermined; // = -2
 
     while( !(str = stream.readLine()).isNull() )
     {
@@ -376,6 +376,8 @@ KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
             QString extinf = str.section( ':', 1, 1 );
             length = extinf.section( ',', 0, 0 ).toInt();
             title  = extinf.section( ',', 1, 1 );
+
+            if( length == 0 ) length = MetaBundle::Undetermined;
         }
 
         else if( !str.startsWith( "#" ) && !str.isEmpty() )
@@ -388,7 +390,7 @@ KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
 
             postBundle( url, title, length );
 
-            length = 0;
+            length = MetaBundle::Undetermined;
             title = QString();
         }
     }
@@ -651,6 +653,7 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
    : Job( o, Job::AudioPropertiesReader )
    , m_item( pi )
+   , m_listView( static_cast<QListViewItem *>(pi)->listView() )
    , m_url( pi->url() )
 {
     //TODO derive this from TagReader?
@@ -659,18 +662,35 @@ AudioPropertiesReader::AudioPropertiesReader( QObject *o, PlaylistItem *pi )
 bool
 AudioPropertiesReader::doJob()
 {
-    //This is a quick scan
-    //A more accurate scan is done when the track is played, and those properties are recorded with the track
-   TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
+    //TODO it is probably safer to record the itemPos in the ctor and check here with listview->itemAt()
+    //TODO it is probably more efficient to do this with less specifity, i.e. when view scrolls put a job
+    //     in to read tags for visible items, and then get this function to get the visible items for that moment
 
-    if( f.tag() )
+    int y  = m_item->itemPos(); //const //FIXME slow function!
+    int h  = m_item->height();  //const
+    int y2 = m_listView->contentsY(); //TODO find out the performance of this function
+    if( y >= y2 && y <= ( y2 + m_listView->visibleHeight() - h ) )
     {
-        TagLib::AudioProperties *ap = f.audioProperties();
-        m_length  = MetaBundle::prettyLength( ap->length() );
-        m_bitRate = MetaBundle::prettyBitrate( ap->bitrate() );
+        //This is a quick scan
+        //A more accurate scan is done when the track is played, and those properties are recorded with the track
+        TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
+        int length  = MetaBundle::Unavailable;
+        int bitrate = MetaBundle::Unavailable;
+
+        if( !f.isNull() && f.tag() )
+        {
+            TagLib::AudioProperties *ap = f.audioProperties();
+            length  = ap->length();
+            bitrate = ap->bitrate();
+        }
+
+        m_length  = MetaBundle::prettyLength( length );
+        m_bitrate = MetaBundle::prettyBitrate( bitrate );
+
         return true;
     }
-    else return false;
+
+    return false;
 }
 
 void
@@ -678,7 +698,7 @@ AudioPropertiesReader::bindTags()
 {
     //TODO do in playlistItem class
     m_item->setText(  9, m_length );
-    m_item->setText( 10, m_bitRate );
+    m_item->setText( 10, m_bitrate );
 }
 
 
@@ -686,10 +706,10 @@ AudioPropertiesReader::bindTags()
 //TODO leave a temp message in the listview item until this completes
 //TODO use a enum for TagType
 TagWriter::TagWriter( QObject *o, PlaylistItem *pi, const QString &s, const int col )
-: Job( o, Job::TagWriter )
-, m_item( pi )
-, m_tagString( s )
-, m_tagType( col )
+  : Job( o, Job::TagWriter )
+  , m_item( pi )
+  , m_tagString( s )
+  , m_tagType( col )
 {
     pi->setText( col, i18n( "Writing tag..." ) );
 }

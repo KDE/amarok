@@ -213,9 +213,10 @@ public:
     void bindTags();
 private:
     PlaylistItem* const m_item;
+    QListView*    const m_listView;
     const KURL m_url;
     QString    m_length;
-    QString    m_bitRate;
+    QString    m_bitrate;
 };
 
 

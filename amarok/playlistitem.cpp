@@ -118,11 +118,13 @@ void PlaylistItem::setText( int column, const QString &newText )
     case 10:
         if( newText.isEmpty() )
         {
-            //FIXME unfortunately when you delete a tag it doesn't get updated here due to this!
-            //if you don't setText() it crashes amaroK!
+            //FIXME removing a tag with inline edit doesn't get updated here, but
+            //      you've hacked TagWriter so it sets a space as the new text
+            //NOTE if you don't setText() it crashes amaroK!
             KListViewItem::setText( column, text( column ) );
             break;
         }
+        //else do default -->
     default:
         KListViewItem::setText( column, newText );
     }
@@ -171,6 +173,8 @@ int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
+    if( column == 9 && text( 9 ).isEmpty() ) listView()->readAudioProperties( this );
+
     if ( this == PlaylistItem::GlowItem )
     {
         const QColor GlowText( 0xff, 0x40, 0x40 ); //FIXME extend QColorGroup and add this member

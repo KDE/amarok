@@ -316,9 +316,9 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
                 {
                     QString length = item->text( 9 );
 
-                    if( length.isEmpty() || length == "?" ); //do nothing
+                    if( length == "?" ) length = QString();
                     else if( length == "-" ) length += '1';
-                    else
+                    else if( !length.isEmpty() )
                     {
                         //TODO if you ever decide to store length as an int in the playlistItem, scrap this!
                         int m = length.section( ':', 0, 0 ).toInt();
