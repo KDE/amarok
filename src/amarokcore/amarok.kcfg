@@ -148,7 +148,7 @@
     </entry>
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
-        <whatsthis>If set, amaroK manually saved playlists will contain a relative path to the tracksa , not absolute.</whatsthis>
+        <whatsthis>If set, amaroK manually saved playlists will contain a relative path to the tracks, not absolute.</whatsthis>
         <default>false</default>
     </entry>
 </group>

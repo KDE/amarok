@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>465</width>
-            <height>667</height>
+            <height>573</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -214,6 +214,20 @@
                 </widget>
                 <widget class="QCheckBox">
                     <property name="name">
+                        <cstring>kcfg_RelativePlaylist</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Manually saved playlists use relative path</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
                         <cstring>kcfg_PlaylistFollowActive</cstring>
                     </property>
                     <property name="text">
@@ -252,33 +266,6 @@
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Switch to the context browser, when playing a track.</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>groupBox3</cstring>
-            </property>
-            <property name="title">
-                <string>Playlist Options</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_RelativePlaylist</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Manually saved playlists use relative path</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, amaroK uses a relative path for the tracks of manually saved playlists</string>
                     </property>
                 </widget>
             </vbox>
