@@ -170,14 +170,14 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
         {
             if (mysql::mysql_field_count(&m_db) != 0)
             {
-                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n";
+                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
                 return false;
             }
         }
     }
     else
     {
-        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n";
+        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
         return false;
     }
 #else
@@ -628,12 +628,12 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
 
         query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
 #ifdef __USE_MYSQL
-                        "VALUES ( '%1', '%2', %5, %3, %4 );" )
+                        "VALUES ( '%1', %2, %3, %4, %5 );" )
                         .arg( escapeString( url ) )
                         .arg( m_values[1] )
+                        .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
                         .arg( score )
-                        .arg( m_values[0] + " + 1" )
-                        .arg( QDateTime::currentDateTime().toTime_t() ) ); //TODO: maybe this could be used for sqlite too?
+                        .arg( m_values[0] + " + 1" ) );
 #else
                         "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
                         .arg( escapeString( url ) )
@@ -649,10 +649,11 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
 
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
 #ifdef __USE_MYSQL
-                        "VALUES ( '%1', %3, %3, %2, 1 );" )
+                        "VALUES ( '%1', %2, %3, %4, 1 );" )
                         .arg( escapeString( url ) )
-                        .arg( score )
-                        .arg( QDateTime::currentDateTime().toTime_t() ) ); //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() )
+                        .arg( score ) );
 #else
                         "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
                         .arg( escapeString( url ) )
@@ -704,10 +705,11 @@ CollectionDB::setSongPercentage( const QString url, int percentage )
     {
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
 #ifdef __USE_MYSQL
-                        "VALUES ( '%1', %3, %3, %2, 0 );" )
+                        "VALUES ( '%1', %2, %3, %4, 0 );" )
                         .arg( escapeString( url ) )
-                        .arg( percentage )
-                        .arg( QDateTime::currentDateTime().toTime_t() ) ); //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() ) //TODO: maybe this could be used for sqlite too?
+                        .arg( QDateTime::currentDateTime().toTime_t() )
+                        .arg( percentage ) );
 #else
                         "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 0 );" )
                         .arg( escapeString( url ) )

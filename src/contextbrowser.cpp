@@ -542,13 +542,12 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
 
     QStringList values = m_db->query( QString(
-        "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
-            "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), "
-            "statistics.playcounter, round( statistics.percentage + 0.4 ) "
+        "SELECT statistics.createdate, statistics.accessdate, "
+        "statistics.playcounter, round( statistics.percentage + 0.4 ) "
         "FROM  statistics "
         "WHERE url = '%1';" )
             .arg( m_db->escapeString( currentTrack.url().path() ) ) );
-
+    
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     browser->write( QStringx(
         "<tr>"
@@ -588,14 +587,18 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !values.isEmpty() )
     {
-        QDate firstPlay = QDate::fromString( values[ 0 ].left( values[ 0 ].length() - 3 ), Qt::ISODate );
-        QDate lastPlay = QDate::fromString( values[ 1 ].left( values[ 1 ].length() - 3 ), Qt::ISODate );
+        QDateTime firstPlay = QDateTime();
+        firstPlay.setTime_t( values[0].toUInt() );
+        QDateTime lastPlay = QDateTime();
+        lastPlay.setTime_t( values[1].toUInt() );
+        const uint playtimes = values[2].toInt();
+        const uint score = values[3].toInt();
         browser->write( QStringx("%1<br>%2<br>%3<br>%4<br>")
             .args( QStringList()
                 << i18n( "Track played once", "Track played %n times", values[2].toInt() )
                 << i18n( "Score: %1" ).arg( values[3] )
-                << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDate( lastPlay, true /* short */ ) )
-                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDate( firstPlay, true /* short */ ) ) 
+                << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDateTime( lastPlay, true /* short */ ) )
+                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDateTime( firstPlay, true /* short */ ) ) 
                        ) );
    }
    else
