@@ -184,6 +184,33 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
+From Lauri on FreeBSD:
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 10 (LWP 100183)]
+0x0815202f in balance_nonroot (pPage=0x868d448) at /cvs/kdeextragear-1/amarok/src/sqlite/btree.c:2902
+2902    static int balance_nonroot(MemPage *pPage){
+Current language:  auto; currently c
+(gdb) bt
+#0  0x0815202f in balance_nonroot (pPage=0x868d448) at /cvs/kdeextragear-1/amarok/src/sqlite/btree.c:2902
+#1  0x081534fa in balance_deeper (pPage=0x86859d8) at /cvs/kdeextragear-1/amarok/src/sqlite/btree.c:3422
+#2  0x08153547 in balance (pPage=0x86859d8) at /cvs/kdeextragear-1/amarok/src/sqlite/btree.c:3435
+#3  0x08153a1f in sqlite3BtreeInsert (pCur=0x8661540, pKey=0x0, nKey=17, pData=0x865d370, nData=51) at /cvs/kdeextragear-1/amarok/src/sqlite/btree.c:3545
+#4  0x081793c9 in sqlite3VdbeExec (p=0x8685e00) at /cvs/kdeextragear-1/amarok/src/sqlite/vdbe.c:3026
+#5  0x08143938 in sqlite3_step (pStmt=0x8685e00) at /cvs/kdeextragear-1/amarok/src/sqlite/vdbeapi.c:159
+#6  0x08093f65 in CollectionDB::execSql (this=0x8388768, statement=@0xbfa69c28, values=0x0, names=0x0, debug=false) at /cvs/kdeextragear-1/amarok/src/collectiondb.cpp:596
+#7  0x080934c2 in CollectionDB::updateDirStats (this=0x8388768, path=
+      {static null = {static null = <same as static member of an already seen type>, d = 0x81fa1e8, static shared_null = 0x81fa1e8}, d = 0x865e9e0, static shared_null = 0x81fa1e8}, datetime=1095275009) at /cvs/kdeextragear-1/amarok/src/collectiondb.cpp:477
+#8  0x081027dd in CollectionReader::readDir (this=0x8655b00, dir=@0xbfa69d78, entries=@0xbfa69f38) at /cvs/kdeextragear-1/amarok/src/threadweaver.cpp:242
+#9  0x08102c62 in CollectionReader::readDir (this=0x8655b00, dir=@0xbfa69e58, entries=@0xbfa69f38) at /cvs/kdeextragear-1/amarok/src/threadweaver.cpp:284
+#10 0x08102c62 in CollectionReader::readDir (this=0x8655b00, dir=@0x82d5980, entries=@0xbfa69f38) at /cvs/kdeextragear-1/amarok/src/threadweaver.cpp:284
+#11 0x08102671 in CollectionReader::doJob (this=0x8655b00) at /cvs/kdeextragear-1/amarok/src/threadweaver.cpp:222
+#12 0x08101d84 in ThreadWeaver::run (this=0x83887e8) at /cvs/kdeextragear-1/amarok/src/threadweaver.cpp:105
+#13 0x29291313 in QThreadInstance::start () from /usr/X11R6/lib/libqt-mt.so.3
+#14 0x299ff9d5 in pthread_create () from /usr/lib/libpthread.so.1
+#15 0x29b09def in _ctx_start () from /lib/libc.so.5
+
+
 From Markus:
 
 Program received signal SIGSEGV, Segmentation fault.
