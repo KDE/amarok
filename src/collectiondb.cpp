@@ -439,6 +439,8 @@ CollectionDB::scan( const QStringList& folders, bool recursively )
 
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, false ) );
+    else
+        emit scanDone( false );
 }
 
 
