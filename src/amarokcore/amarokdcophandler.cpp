@@ -71,21 +71,67 @@ namespace amaroK
         EngineController::instance()->pause();
     }
 
-    QString DcopHandler::nowPlaying()
-    {
-        return EngineController::instance()->bundle().prettyTitle();
-    }
-
     bool DcopHandler::isPlaying()
     {
         return EngineController::engine()->state() == EngineBase::Playing;
     }
 
-    int DcopHandler::trackTotalTime()
+// Now for the DCOP output stuff
+// I renamed _all_ id3 tag output DCOP calls to "current....." for consistency reasons.
+// Also, I replaced the prettyTitle with 2 calls, one for the artist and one for the title (more flexible)
+   
+    QString DcopHandler::currentArtist()
     {
-        return EngineController::instance()->bundle().length();
+        return EngineController::instance()->bundle().artist();
+    }
+    
+    QString DcopHandler::currentTitle()
+    {
+        return EngineController::instance()->bundle().title();
+    }
+    
+    QString DcopHandler::currentAlbum()
+    {
+        return EngineController::instance()->bundle().album();
+    }
+    
+// Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;-)
+// prettyLength also adds an "0" when sec < 10
+    
+    QString DcopHandler::currentTotalTime()
+    {
+        return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
     }
 
+    QString DcopHandler::currentPosition()
+    {
+        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
+    }
+
+// Some additional DCOP output, very useful e.g. for IRC-scripts
+
+    QString DcopHandler::currentGenre()
+    {
+        return EngineController::instance()->bundle().genre();
+    }
+
+    QString DcopHandler::currentYear()
+    {
+        return EngineController::instance()->bundle().year();
+    }
+        
+    QString DcopHandler::currentComment()
+    {
+        return EngineController::instance()->bundle().comment();
+    }
+
+    QString DcopHandler::currentBitrate()
+    {
+        return EngineController::instance()->bundle().prettyBitrate();
+    }
+
+// Ok, that should be enough, have fun :-)
+    
     void DcopHandler::seek(int s)
     {
         EngineBase* const engine = EngineController::engine();
@@ -93,12 +139,6 @@ namespace amaroK
         {
             engine ->seek( s * 1000 );
         }
-    }
-
-    int DcopHandler::trackCurrentTime()
-    {
-        //return time in seconds
-        return EngineController::engine() ->position() / 1000;
     }
 
     void DcopHandler::addMedia(const KURL &url)
