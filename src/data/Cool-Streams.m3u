@@ -5,3 +5,15 @@ http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=374&file=filename.pls
 http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls
 #EXTINF:-1,X T C Radio
 http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=7873&file=filename.pls
+#EXTINF:-1,Philosomatika
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=9411&file=filename.pls
+#EXTINF:-1,mth.House
+http://stream.mth-house.de:8500/listen.pls
+#EXTINF:-1,Pure DJ
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=833&file=filename.pls
+#EXTINF:-1,Groove Salad
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=801&file=filename.pls
+#EXTINF:-1,Radio Paradise
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2671&file=filename.pls
+#EXTINF:-1,Bassdrive
+http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=354239&file=filename.pls
