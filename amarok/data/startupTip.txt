@@ -12,8 +12,19 @@ Use Drag-and-Drop to transfer files from the filebrowser to the playlist. To
 remove files, just drag them back from the playlist into the filebrowser. 
 </p>
 <p>
-There are submenus under the buttons in the playlist window. Just keep the 
-buttons pushed down to reveal more functions!
+Use the FX button on the player to choose your available effects.
+</p>
+<p>
+Click the analyzer to choose from the multiple analyzer styles.
+</p>
+<p>
+Media can be dragged from Konqueror and dropped into the playlist.
+</p>
+<p>
+You can use your XMMS visualizations with amaroK, right click the player and choose Visualizations...
+</p>
+<p>
+You can adjust amaroK's volume using your mousewheel over the amaroK trayicon.
 </p>
 <p>
 Click on the player window with the right mouse Button to display the options 
@@ -23,3 +34,4 @@ menu.
 Have fun :)
 </p>
 </html>
+
