@@ -147,37 +147,37 @@ XineEngine::init()
     //xine_trick_mode( m_stream, XINE_TRICK_MODE_SEEK_TO_TIME, 1 );
 
 
-    m_eventQueue = xine_event_new_queue( m_stream );
-    xine_event_create_listener_thread( m_eventQueue, &XineEngine::XineEventListener, (void*)this );
+    xine_event_create_listener_thread( m_eventQueue = xine_event_new_queue( m_stream ),
+                                       &XineEngine::XineEventListener,
+                                       (void*)this );
 
+    {
+        //create scope post plugin
+        //it syphons off audio buffers into our scope data structure
 
-    //create scope post plugin
-    //it syphons off audio buffers into our scope data structure
+        post_class_t  *post_class  = scope_init_plugin( m_xine );
+        post_plugin_t *post_plugin = post_class->open_plugin( post_class, 1, &m_audioPort, NULL );
 
-    post_class_t  *post_class  = scope_init_plugin( m_xine );
-    post_plugin_t *post_plugin = post_class->open_plugin( post_class, 1, &m_audioPort, NULL );
+        post_class->dispose( post_class );
 
-    //code is straight from xine_init_post()
-    //can't use that function as it only dlopens the plugins and our plugin is statically linked in
+        //code is straight from xine_init_post()
+        //can't use that function as it only dlopens the plugins and our plugin is statically linked in
 
-    post_plugin->running_ticket = m_xine->port_ticket;
-    post_plugin->xine = m_xine;
-    post_plugin->node = NULL;
+        post_plugin->running_ticket = m_xine->port_ticket;
+        post_plugin->xine = m_xine;
+        post_plugin->node = NULL;
 
-    post_plugin->input_ids = (const char**)malloc(sizeof(char *)*2);
-    xine_post_in_t *input = (xine_post_in_t *)xine_list_first_content( post_plugin->input );
-    post_plugin->input_ids[0] = input->name; //"audio in";
-    post_plugin->input_ids[1] = NULL;
+        xine_post_in_t *input = (xine_post_in_t *)xine_list_first_content( post_plugin->input );
 
-    post_plugin->xine_post.type = PLUGIN_POST;
+        post_plugin->input_ids = (const char**)malloc(sizeof(char *)*2);
+        post_plugin->input_ids[0] = input->name; //"audio in";
+        post_plugin->input_ids[1] = NULL;
 
-    post_plugin->output_ids = (const char**)malloc(sizeof(char *));
-    post_plugin->output_ids[0] = NULL;
+        post_plugin->output_ids = (const char**)malloc(sizeof(char *));
+        post_plugin->output_ids[0] = NULL;
 
-    m_post = &post_plugin->xine_post;
-
-    post_class->dispose( post_class );
-
+        m_post = &post_plugin->xine_post;
+    }
 
     startTimer( 200 ); //prunes the scope
 
@@ -187,9 +187,7 @@ XineEngine::init()
 bool
 XineEngine::load( const KURL &url, bool stream )
 {
-    Engine::Base::load( url, stream );
-
-    xine_close( m_stream );
+    Engine::Base::load( url, stream || url.protocol() == "http" );
 
     return xine_open( m_stream, url.url().local8Bit() );
 }
@@ -209,7 +207,10 @@ XineEngine::play( uint offset )
         return true;
     }
 
+    xine_close( m_stream );
     emit stateChanged( Engine::Empty );
+
+    debug() << "Playback failed! Error code: " << xine_get_error( m_stream ) << endl;
 
     //Xine will show a message via EventListener if there were problems
     return false;
@@ -219,6 +220,8 @@ void
 XineEngine::stop()
 {
     emptyMyList();
+
+    m_url = KURL(); //to ensure we return Empty from state()
 
     xine_stop( m_stream );
     emit stateChanged( Engine::Empty );
@@ -244,10 +247,10 @@ XineEngine::state() const
 {
     switch( xine_get_status( m_stream ) )
     {
-    case XINE_STATUS_PLAY: return xine_get_param(m_stream, XINE_PARAM_SPEED) ? Engine::Playing : Engine::Paused;
-    case XINE_STATUS_IDLE: return Engine::Idle;
+    case XINE_STATUS_PLAY: return xine_get_param( m_stream, XINE_PARAM_SPEED ) ? Engine::Playing : Engine::Paused;
+    case XINE_STATUS_IDLE: return Engine::Empty;
     case XINE_STATUS_STOP:
-    default:               return Engine::Empty;
+    default:               return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
     }
 }
 
@@ -321,9 +324,13 @@ XineEngine::scope()
             const int16_t *data16 = best_buf->mem;
             data16 += diff * myChannels;
 
-            for( int c, i = 0; i < 512; ++i, data16 += myChannels )
-                for( m_scope[i] = 0, c = 0; c < myChannels; ++c )
-                    m_scope[i] += data16[c];
+            for( int a, c, i = 0; i < 512; ++i, data16 += myChannels ) {
+                for( a = c = 0; c < myChannels; ++c )
+                    a += data16[c];
+
+                a /= myChannels;
+                m_scope[i] = a;
+            }
         }
         else { Log::buffTooSmall++; }
     }
@@ -393,11 +400,9 @@ XineEngine::customEvent( QCustomEvent *e )
         #define message static_cast<QString*>(e->data())
         KMessageBox::error( 0, (*message).arg( m_url.prettyURL() ) );
         delete message;
-        #undef message
         break;
 
     case 3002:
-        #define message static_cast<QString*>(e->data())
         emit statusText( *message );
         delete message;
         #undef message
@@ -503,6 +508,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             }
             else break; //if no explanation then why bother!
 
+            //FALL THROUGH
 
         param:
 

@@ -14,7 +14,10 @@
 
 
 // DEVELOPMENT NOTES
-// You must handle your own media, do not rely on amaroK to call stop() before play() etc.
+// * You must handle your own media, do not rely on amaroK to call stop() before play() etc.
+// * Generally at this time, emitting stateChanged( Engine::Idle ) is not necessary
+// * You must return Idle from state() when the track has finished playback but you are still loaded
+//   or track transitions will not occur
 
 
 namespace Engine
@@ -34,10 +37,10 @@ namespace Engine
     signals:
         /** Emitted when end of current track is reached. */
         void trackEnded();
-        
+
         /** Transmits status message. */
         void statusText( const QString& );
-        
+
         /** Signals a change in the engine's state. */
         void stateChanged( Engine::State );
 
@@ -63,7 +66,7 @@ namespace Engine
          */
         inline bool isStream() { return m_isStream; }
 
-        /** 
+        /**
          * Load new track for playing.
          * @param url URL to be played.
          * @param stream True if URL is a stream.
@@ -71,7 +74,7 @@ namespace Engine
          */
         virtual bool load( const KURL &url, bool stream = false );
 
-        /** 
+        /**
          * Load new track and start Playback. Convenience function for amaroK to use.
          * @param url URL to be played.
          * @param stream True if URL is a stream.
@@ -79,7 +82,7 @@ namespace Engine
          */
         bool play( const KURL &u, bool stream = false ) { return load( u, stream ) && play(); }
 
-        /** 
+        /**
          * Start playback.
          * @param offset Start playing at @p msec position.
          * @return True for success.
@@ -97,7 +100,7 @@ namespace Engine
 
         /** Get Time position (msec). */
         virtual uint position() const = 0;
-        
+
         /**
          * Jump to new time position.
          * @param ms New position.
@@ -106,38 +109,38 @@ namespace Engine
 
         /** Returns whether we are using the hardware volume mixer */
         inline bool isMixerHW() const { return m_mixer != -1; }
-        
+
         /**
          * Determines whether media is currently loaded.
          * @return True if media is loaded, system is ready to play.
          */
         inline bool loaded() const { return state() != Empty; }
-        
+
         inline uint volume() const { return m_volume; }
         inline bool hasEffects() const { return m_effects; }
-        
+
         /**
          * Determines whether the engine supports crossfading.
          * @return True if crossfading is supported.
          */
         inline bool hasXFade() const { return m_hasXFade; }
-        
+
         /**
          * Determines how streaming is handled with this engine.
          * @return The supported streaming mode.
          */
         StreamingMode streamingMode() const { return m_streamingMode; }
-        
+
         Effects& effects() const { return *m_effects; } //WARNING! calling when there are none will crash amaroK!
 
         /**
          * Fetch the current audio sample buffer.
-         * @return Audio sample buffer. 
+         * @return Audio sample buffer.
          */
         virtual const Scope &scope() { return m_scope; };
 
         bool setHardwareMixer( bool );
-        
+
         /**
          * Set new volume value.
          * @param value Volume in range 0 to 100.

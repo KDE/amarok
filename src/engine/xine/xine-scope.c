@@ -48,12 +48,11 @@ static void
 scope_port_close(xine_audio_port_t *port_gen, xine_stream_t *stream )
 {
     post_audio_port_t *port = (post_audio_port_t*)port_gen;
-    MyNode *next, *node;
 
     port->stream = NULL;
     port->original_port->close(port->original_port, stream );
 
-    _x_post_dec_usage(port);
+    _x_post_dec_usage( port );
 }
 
 static void
@@ -110,16 +109,11 @@ scope_class_open_plugin( post_class_t *class, int inputs, xine_audio_port_t **au
   port->new_port.put_buffer = scope_port_put_buffer;
 
   this->xine_post.audio_input[0] = &port->new_port;
+  this->xine_post.type = PLUGIN_POST;
 
   this->dispose = scope_dispose;
 
   return this;
-}
-
-static char*
-scope_class_get_description( post_class_t *class_gen )
-{
-  return "amaroK xine-engine Scope";
 }
 
 static void
@@ -139,8 +133,8 @@ scope_init_plugin( xine_t *xine )
     post_class_t *class = malloc( sizeof(post_class_t) );
 
     class->open_plugin     = scope_class_open_plugin;
-    class->get_identifier  = scope_class_get_description;
-    class->get_description = scope_class_get_description;
+    class->get_identifier  = NULL;
+    class->get_description = NULL;
     class->dispose         = scope_class_dispose;
 
     return class;
