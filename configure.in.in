@@ -73,7 +73,7 @@ AC_LANG_RESTORE
 ### END Check for KDE >= 3.4-beta2
 ###################################
 
-AM_CONDITIONAL( with_akode, test x$have_akode = xyes -a x$have_kde34 = xyes )
+AM_CONDITIONAL(with_akode, test x$have_akode = xyes -a x$have_kde34 = xyes)
 
 ###############################################################################
 # END AKODE CHECK
