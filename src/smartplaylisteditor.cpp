@@ -436,9 +436,14 @@ void CriteriaEditor::loadEditWidgets()
     int valueType = getValueType( m_fieldCombo->currentItem() );
 
     if( m_currentValueType == valueType && !(
-        m_criteriaCombo->currentText() == i18n("is between") ||
-        m_criteriaCombo->currentText() == i18n("is in the last" ) ) )
+        m_criteriaCombo->currentText() == i18n( "is between" ) ||
+        m_criteriaCombo->currentText() == i18n( "is in the last" ) ||
+        m_lastCriteria == i18n( "is between" ) ||
+        m_lastCriteria == i18n( "is in the last" ) ) )
         return;
+
+    /* Store lastCriteria. This information is used above to decide whether it's necessary to change the Widgets */
+    m_lastCriteria = m_criteriaCombo->currentText();
 
     QObjectList* list = m_editBox->queryList( "QWidget" );
     for( QObject *obj = list->first(); obj; obj = list->next()  )

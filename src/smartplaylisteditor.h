@@ -83,6 +83,7 @@ Q_OBJECT
 
         SmartPlaylistEditor *m_playlistEditor;
         int m_currentValueType;
+        QString m_lastCriteria;
 
         KComboBox *m_fieldCombo;
         KComboBox *m_criteriaCombo;
