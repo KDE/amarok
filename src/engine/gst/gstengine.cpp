@@ -803,7 +803,7 @@ GstEngine::createPipeline()
 
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
-//     g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
+    g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
 
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
@@ -932,6 +932,9 @@ InputPipeline::InputPipeline()
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
 
     g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), thread );
+
+    // Set thread priority for less dropouts
+    g_object_set( G_OBJECT( thread ), "priority", GstConfig::threadPriority(), NULL );
 
     // More buffers means less dropouts and higher latency
     g_object_set( G_OBJECT( queue ), "max-size-buffers", 500, NULL );
