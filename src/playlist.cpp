@@ -78,7 +78,10 @@ public:
         : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
     {}
 
-    enum IteratorFlag { All = MyIterator::Invisible };
+    enum IteratorFlag { 
+        Visible = QListViewItemIterator::Visible,
+        All = QListViewItemIterator::Invisible 
+    };
 
     PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
 
