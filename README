@@ -59,13 +59,17 @@ optional
       (multimedia framework)
       http://www.kde.org
 
-    * xine 1.0.0
+    * MAS 0.6.3
       (multimedia framework)
-      http://xine.sourceforge.net
+      http://www.mediaapplicationserver.net
 
     * NMM 0.4.4
       (multimedia framework)
       http://www.networkmultimedia.org
+
+    * xine 1.0.0
+      (multimedia framework)
+      http://xine.sourceforge.net
 
     * OpenGL accelerated X-Server
       (visualization rendering)
