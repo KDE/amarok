@@ -296,7 +296,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
             if ( m_recursively )
                 //call ourself recursively for each subdir
                 if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
-                    readDir( entry, entries );
+                    readDir( QFile::decodeName( entry ), entries );
         }
         else if ( S_ISREG( statBuf.st_mode ) )
             entries << QString::fromLocal8Bit( entry );

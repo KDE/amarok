@@ -21,13 +21,6 @@ SHORT-TERM (URGENT):
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
                    Changing the Spectrum Size of toolbar's analyzer does not work. It's fixed at 128.
 
-  FIX 109 <dato>   Directories with non-ascii chars don't get added to the Collection Browser
-                   at scan time. I'll investigate this. --> dato
-          <markey> I thought this was fixed some time ago?
-          <muesli> Some more tests would be nice, but it seems it catches all my stuff, here.
-          <dato>   It was fixed for files. Directories still give problems (which multibyte locales).
-                   I'll try to test this weekend (been busy, sorry).
-
   ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
                    since arts itself contains these crappy decoders and ppl come complain about bad sound.
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
