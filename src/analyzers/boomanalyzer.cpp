@@ -61,13 +61,15 @@ BoomAnalyzer::changeF_peakSpeed( int newValue )
 void
 BoomAnalyzer::init()
 {
-    F = double(height() - 2)/ (log10( 256 ) * 1.1 /*<- max. amplitude*/);
+    const uint HEIGHT = height() - 2;
+    const double h = 1.2 / HEIGHT;
 
-    barPixmap.resize( COLUMN_WIDTH-2, height() );
+    F = double(HEIGHT) / (log10( 256 ) * 1.1 /*<- max. amplitude*/);
+
+    barPixmap.resize( COLUMN_WIDTH-2, HEIGHT );
 
     QPainter p( &barPixmap );
-    const double h = 1.2 / height();
-    for( uint y = 0; (int)y < height(); ++y )
+    for( uint y = 0; y < HEIGHT; ++y )
     {
         const double F = (double)y * h;
 
@@ -90,7 +92,7 @@ BoomAnalyzer::transform( Scope &s )
 
     for( uint j, i = 0; i < 32; i++ )
         for( j = xscale[i]; j < xscale[i + 1]; j++ )
-            if( s[j] > scope[i] )
+            if ( s[j] > scope[i] )
                 scope[i] = s[j];
 
     s = scope;
@@ -103,13 +105,14 @@ BoomAnalyzer::analyze( const Scope &scope )
 
     QPainter p( canvas() );
     float h;
+    const uint MAX_HEIGHT = height() - 1;
 
     for( uint i = 0, x = 0, y; i < BAND_COUNT; ++i, x += COLUMN_WIDTH+1 )
     {
-        //y = uint(*it * 256); //256 might get some optimisation?
-        //h = log_table[ (y > 255) ? 255 : y ];
-
         h = log10( scope[i]*256.0 ) * F;
+
+        if( h > MAX_HEIGHT )
+           h = MAX_HEIGHT;
 
         if( h > bar_height[i] )
         {
@@ -142,13 +145,13 @@ BoomAnalyzer::analyze( const Scope &scope )
             }
         }
 
-        y = uint(bar_height[i]);
-
-        bitBlt( canvas(), x+1, height() - y, &barPixmap, 0, height() - y );
-
+        y = height() - uint(bar_height[i]);
+        bitBlt( canvas(), x+1, y, &barPixmap, 0, y );
         p.setPen( 0x80a0ff );
-        p.drawRect( x, height() - y, COLUMN_WIDTH, y );
+        p.drawRect( x, y, COLUMN_WIDTH, height() - y );
+
+        y = height() - uint(peak_height[i]);
         p.setPen( Qt::white );
-        p.drawRect( x, height() - uint(peak_height[i]), COLUMN_WIDTH, 1 );
+        p.drawLine( x, y, x+COLUMN_WIDTH-1, y );
     }
 }

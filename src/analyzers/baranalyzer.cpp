@@ -26,7 +26,7 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
 {
     //roof pixmaps don't depend on size() so we do in the ctor
     bg = parent->paletteBackgroundColor();
-    
+
     QColor fg( 0xff, 0x50, 0x70 );
     #define bg backgroundColor()
 
@@ -56,13 +56,13 @@ void BarAnalyzer::init()
 {
     const double MAX_AMPLITUDE = 1.0;
     const double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE );
-    
+
     setPaletteBackgroundColor(bg);
-    
+
     BAND_COUNT = width() / 5;
     MAX_DOWN = int(0 -((height() / 50)));
     MAX_UP = int((height() / 25));
-    
+
     kdDebug() << "BAND_COUNT = " << BAND_COUNT << " MAX_UP = " << MAX_UP << "MAX_DOWN = " << MAX_DOWN << endl;
 
     barVector.resize( BAND_COUNT, 0 );
@@ -70,7 +70,7 @@ void BarAnalyzer::init()
     roofVelocityVector.resize( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR );
     m_roofMem.resize(BAND_COUNT);
     m_scope.resize(BAND_COUNT);
-    
+
     //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
     for ( uint x = 0; x < 256; ++x )
     {
@@ -81,7 +81,7 @@ void BarAnalyzer::init()
     m_pixCompose.resize( size() );
 
     QPainter p( &m_pixBarGradient );
-    for ( uint x=0, r=0x40, g=0x30, b=0xff, r2=255-r;
+    for ( int x=0, r=0x40, g=0x30, b=0xff, r2=255-r;
           x < height(); ++x )
     {
         for ( int y = x; y > 0; --y )
@@ -94,7 +94,7 @@ void BarAnalyzer::init()
         }
     }
 
-    
+
     setMinimumSize( QSize( BAND_COUNT * COLUMN_WIDTH, 10 ) );
 }
 
@@ -108,7 +108,7 @@ void BarAnalyzer::analyze( const Scope &s )
 
     Scope &v = m_scope;
     Analyzer::interpolate( s, v );
-    
+
     Scope::const_iterator it( v.begin() );
     for ( uint i = 0, x = 0, y2; i < BAND_COUNT; ++i, ++it, x+=COLUMN_WIDTH+1 )
     {
