@@ -336,9 +336,8 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
             if ( button == KMessageBox::Continue )
             {
-                KURL url( item->albumPath() );
-                KIO::DeleteJob* job = KIO::del( url );
-                connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( slotCoverDeleted() ) );
+                if ( m_db->removeImageFromAlbum( item->artist(), item->album() ) )
+                    item->updateCover( QPixmap() );
             }
             break;
         }
@@ -460,15 +459,6 @@ void CoverManager::coverFetched( const QString &key )
         }
     }
     #endif
-}
-
-
-void CoverManager::slotCoverDeleted()
-{
-    CoverViewItem *item = static_cast<CoverViewItem*>(m_coverView->currentItem());
-    if( !item ) return;
-
-    item->updateCover( QPixmap() );
 }
 
 

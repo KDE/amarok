@@ -32,9 +32,12 @@ class CollectionDB : public QObject
 
         QString getImageForAlbum( const uint artist_id, const uint album_id, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
         QString getImageForAlbum( const QString artist, const QString album, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
-        
+        bool removeImageFromAlbum( const uint artist_id, const uint album_id );
+        bool removeImageFromAlbum( const QString artist, const QString album );
+
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = AmarokConfig::coverPreviewSize() );
         void addImageToPath( const QString path, const QString image, bool temporary );
+
 
         QStringList artistList();
         QStringList albumList();

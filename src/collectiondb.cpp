@@ -21,6 +21,7 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
+#include <kio/job.h>
 
 #include <qimage.h>
 
@@ -231,6 +232,57 @@ CollectionDB::getImageForPath( const QString path, const QString defaultImage, c
     }
 
     return defaultImage;
+}
+
+
+bool
+CollectionDB::removeImageFromAlbum( const uint artist_id, const uint album_id )
+{
+    QStringList values;
+    QStringList names;
+
+    execSql( QString( "SELECT url FROM tags WHERE album = %1 AND artist = %2;" )
+             .arg( album_id )
+             .arg( artist_id ), &values, &names );
+
+    if ( !values.isEmpty() )
+        return removeImageFromAlbum( values[0], values[1] );
+    else
+        return false;
+}
+
+
+bool
+CollectionDB::removeImageFromAlbum( const QString artist, const QString album )
+{
+    QString widthKey = "*@";
+    QString key( QFile::encodeName( artist + " - " + album ) );
+    key.replace( " ", "_" ).append( ".png" );
+    
+    // remove scaled versions of images
+    QStringList scaledList = m_cacheDir.entryList( widthKey + key.lower() );
+    if ( scaledList.count() > 0 )
+    {
+        for ( uint i = 0; i < scaledList.count(); i++ )
+        {
+            KURL url( m_cacheDir.filePath( scaledList[ i ] ) );
+            KIO::DeleteJob* job = KIO::del( url );
+            if ( job->error() )
+                return false;
+        }
+    }
+
+    // remove large, original images
+    QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
+    if ( largeCoverDir.exists( key.lower() ) )
+    {
+        KURL url( largeCoverDir.filePath( key.lower() ) );
+        KIO::DeleteJob* job = KIO::del( url );
+        if ( job->error() )
+            return false;
+    }
+
+    return true;
 }
 
 

@@ -6,7 +6,6 @@
 
 #include <qdialog.h>
 #include <kiconview.h>
-#include <kio/job.h>
 #include <qptrlist.h>
 
 class KLineEdit;
@@ -44,7 +43,6 @@ Q_OBJECT
         void slotSetFilterTimeout();
         void changeView( int id );
         void coverFetched( const QString & );
-        void slotCoverDeleted();
         void fetchMissingCovers();
         void fetchMissingCoversLoop();
                 
