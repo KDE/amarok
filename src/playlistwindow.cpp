@@ -332,7 +332,7 @@ PlaylistWindow::init()
         if( MediaBrowser::isAvailable() )
             addBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" )
 
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "hdd_unmount" )
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
 
         #undef addBrowserMacro
         DEBUG_UNINDENT
