@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  ADD: Audioscrobbler submit queue stored in disk. Tracks that are listened
+       when offline will be available for submitting later.
   CHG: "Start Scan" button was removed, as well as "Monitor Changes"
        option. Collection is now always monitored.
   FIX: Lyrics parsing failed for certain songs. (BR 94269)
