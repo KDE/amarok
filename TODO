@@ -8,7 +8,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 111 <dato>   clearing list while playing ==> infinite calls to EC::slotMainTimer()
+  FIX 111 <dato>   Clearing list while playing ==> infinite calls to EC::slotMainTimer().
                    mxcl, can you read the post at the mailing list and comment about the
                    (uncommited) change to Playlist::handleOrder()? thx. --> dato
 
@@ -141,7 +141,7 @@ LONG-TERM:
           <muesli> What's seeking with mousewheel? <markey> dunno, but several users requested it
           <berkus> Seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
 
-  FIX 44  <markey> Use kdWarning() instead of kdDebug() where appropriate.
+  FIX  44 <markey> Use kdWarning() instead of kdDebug() where appropriate.
 
   ADD              Make windows magnetic / sticking together (difficult).
 
@@ -167,50 +167,46 @@ LONG-TERM:
 
 
 IDEAS:
-  * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
-    such zombies can lead to very weird behaviour on next amarok start and eat ressources,
-    and the user has no chance of noticing what's wrong.
-    is it possible to catch crash signals and do some cleanup?
-    <mxcl> I just read that KApplication tries to prevent zombies, so something is amiss
-    <mxcl> perhaps KCrash can help us
+  
+  ADD  12 <markey> Prevent zombie processes after amarok has exited (proper exit or crashing).
+                   such zombies can lead to very weird behaviour on next amarok start and eat ressources,
+                   and the user has no chance of noticing what's wrong.
+                   Is it possible to catch crash signals and do some cleanup?
+          <mxcl>   I just read that KApplication tries to prevent zombies, so something is amiss.
+          <mxcl>   Perhaps KCrash can help us
 
-  * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
+  ADD              Bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
-  * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
-    see at first glance how the altogether playing time is divided into different albums, tunes and
-    so on.
+  ADD              Using filelight (as a kpart maybe) for a graphical representation of the playlist. so
+                   you could see at first glance how the altogether playing time is divided into different
+                   albums, tunes and so on.
 
 
 DISCUSSING:
 
-  * <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
-    at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
-    have limited screen width, like in console or kdevelop. pretty please with icing =)
-    <mxcl> I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
-    Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
+          <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
+                   at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when
+                   you only have limited screen width, like in console or kdevelop. pretty please with icing =)
+          <mxcl>   I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
+                   Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
 
 DO-NOT-IMPLEMENT:
 
-  FIX #61 <markey> allow removing of playlist items by dragging back into browser.
-      <larson> I think this is really weird. When I drag something I expect that someting to be
-      ADDed or opened in the target. Not removed from the sender.
-      (RFC: is this still appropriate or would it be misleading?)
-      <muesli> imho, it's misleading and not hid-compatible. i would rather
-      expect that file to be copied to the browser's current directory.
+  FIX  61 <markey> Allow removing of playlist items by dragging back into browser.
+          <larson> I think this is really weird. When I drag something I expect that someting to be
+                   ADDed or opened in the target. Not removed from the sender.
+                   (RFC: is this still appropriate or would it be misleading?)
+          <muesli> imho, it's misleading and not hid-compatible. i would rather
+                   expect that file to be copied to the browser's current directory.
 
-  ADD "Hide playlist when main widget is not active" option (?? comments please: )
-      <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
-      if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
-      <mxcl> hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
-      anyway.. dunno if I like the sound of it anymore either.
-
-
-
-BACKTRACE
+  ADD              "Hide playlist when main widget is not active" option (?? comments please: )
+          <berkus> Noo, we have it hiding into tray, thats enough (imagine how much flashing will be
+                   if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
+          <mxcl>   Hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
+                   anyway.. dunno if I like the sound of it anymore either.
 
 
-////////////////
-
+BACKTRACE/DEBUG
 
 
 
