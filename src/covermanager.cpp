@@ -34,6 +34,7 @@
 #include <kpushbutton.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kurl.h>
+#include <kio/job.h>
 
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
@@ -267,7 +268,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
                 if( coverItem->hasCover() ) {
                     KURL url( coverItem->albumPath() );
                     KFileItem *file = new KFileItem( url, "image/png", 0 );
-                    
+
                     QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), values[ allAlbums ? i+1 : i ], "", 80 );
                     coverItem->updateCover( QPixmap( imgPath ) );
 
@@ -329,15 +330,29 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
         case DELETE: {
 
-            int button = KMessageBox::warningContinueCancel( this,
-                                i18n("Are you sure you want to delete this cover?" ),
-                                QString::null,
-                                i18n("&Delete Cover") );
+            int button = KMessageBox::warningContinueCancel(
+                            this,
+                            i18n( "Are you sure you want to delete this cover?",
+                                  "Are you sure you want to delete these covers?",
+                                  m_coverView->count() ),
+                            QString::null,
+                            i18n("&Delete Confirmation") );
 
             if ( button == KMessageBox::Continue )
             {
-                if ( m_db->removeImageFromAlbum( item->artist(), item->album() ) )
-                    item->updateCover( QPixmap() );
+                #undef item
+
+                for ( item = m_coverView->firstItem(); item; item = item->nextItem() )
+                {
+                    if ( static_cast<CoverViewItem*>(item)->isSelected() )
+                    {
+                        KURL url( static_cast<CoverViewItem*>(item)->albumPath() );
+                        /*KIO::DeleteJob* job = */KIO::del( url );
+                        static_cast<CoverViewItem*>(item)->updateCover( QPixmap() );
+
+                        //connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( slotCoverDeleted() ) );
+                    }
+                }
             }
             break;
         }
@@ -465,6 +480,7 @@ void CoverManager::coverFetched( const QString &key )
 void CoverManager::updateCounter()
 {
     int totalCounter = 0, missingCounter = 0;
+
     for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         totalCounter++;
         if( !((CoverViewItem*)item)->hasCover() )
