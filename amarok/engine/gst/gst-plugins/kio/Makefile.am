@@ -24,9 +24,6 @@ libgstkio_la_LIBADD = \
     $(LIB_KIO) \
     $(LIB_KDECORE)
 
-libgstkio_la_CXXFLAGS = \
-    $(GST_CFLAGS)
-
 AM_CXXFLAGS = \
     $(CFLAGS_GST) 
 
