@@ -82,6 +82,19 @@ FileBrowser::FileBrowser( const char * name )
 
     KConfig* const config = amaroK::config( "Filebrowser" );
 
+    { //<Search LineEdit>
+        QHBox *hbox; KToolBarButton *button;
+
+        hbox         = new QHBox( this );
+        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
+        m_filterEdit = new KLineEdit( hbox );
+
+        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
+    } //</Search LineEdit>
+
     m_toolbar = new FileBrowser::ToolBar( this );
     m_toolbar->setMovingEnabled(false);
     m_toolbar->setFlat(true);
@@ -101,19 +114,6 @@ FileBrowser::FileBrowser( const char * name )
     m_cmbPath->setURLs( config->readListEntry( "Dir History" ) );
     m_cmbPath->lineEdit()->setText( currentLocation );
     setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
-
-    { //<Search LineEdit>
-        QHBox *hbox; KToolBarButton *button;
-
-        hbox         = new QHBox( this );
-        button       = new KToolBarButton( "locationbar_erase", 0, hbox );
-        m_filterEdit = new KLineEdit( hbox );
-
-        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
-
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_filterEdit, i18n( "Enter space-separated terms to filter files" ) );
-    } //</Search LineEdit>
 
     m_dir = new MyDirOperator( KURL( currentLocation ), this );
     connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
