@@ -868,15 +868,8 @@ void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, c
 
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
-    #define PLAY       0
-    #define PLAY_NEXT  1
-    #define VIEW       2
-    #define EDIT       3
-    #define FILL_DOWN  4
-    #define COPY       5
-    #define REMOVE     6
-
     #define item static_cast<PlaylistItem*>(item)
+    enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE };
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
 
@@ -972,14 +965,6 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     }
 
     #undef item
-
-    #undef PLAY
-    #undef PLAY_NEXT
-    #undef PROPERTIES
-    #undef VIEW
-    #undef FILL_DOWN
-    #undef COPY
-    #undef REMOVE
 }
 
 
