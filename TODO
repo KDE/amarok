@@ -60,8 +60,6 @@ MID-TERM:
                    in the FileBrowser means when you open the SearchBrowser this is the search path
                    would be easy with a KConfig XT key. May be nice to do this with the URL histories too.
 
-  ADD  98 <mxcl>   Use the collection browser to add KCompletion to inline tag editing.
-
   ADD  96 <mxcl>   User asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
                    of a track. I'll see if I can do it with tiny amount of code -->mxcl
 
