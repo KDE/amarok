@@ -233,7 +233,7 @@ MetaBundle::prettyLength( int seconds ) //static
 }
 
 QString
-MetaBundle::prettyTime( int seconds, bool showHours ) //static
+MetaBundle::prettyTime( uint seconds, bool showHours ) //static
 {
     QString s = QChar( ':' );
     s.append( zeroPad( seconds % 60 ) ); //seconds
@@ -253,9 +253,9 @@ MetaBundle::prettyTime( int seconds, bool showHours ) //static
 }
 
 QString
-MetaBundle::prettyBitrate( int i )
+MetaBundle::prettyBitrate( uint i )
 {
-    return ( i % 32 == 0 && i < 257 ) ? bitrateStore[ i /32 ] : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
+    return ( i % 32 == 0 && i < 257 ) ? bitrateStore[ i / 32 ] : prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i );
 }
 
 QStringList
