@@ -86,6 +86,7 @@ class PlayerApp : public KUniqueApplication
         bool m_optHidePlaylistWindow;
         QString m_optDropMode;
         bool m_optXFade;
+        long m_optXFadeLength;
         // </option attributes>
 
         int m_Volume;

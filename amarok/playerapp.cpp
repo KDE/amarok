@@ -79,12 +79,14 @@ email                :
 #include <qstring.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
+#include <qspinbox.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 #include <sys/wait.h>
 
+#define MAIN_TIMER 150
 
 PlayerApp::PlayerApp() :
         KUniqueApplication( true, true, false ),
@@ -131,7 +133,7 @@ PlayerApp::PlayerApp() :
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
 
-    m_pMainTimer->start( 150 );
+    m_pMainTimer->start( MAIN_TIMER );
 
     m_pAnimTimer = new QTimer( this );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -691,6 +693,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Show MetaInfo", m_optReadMetaInfo );
     m_pConfig->writeEntry( "Show Tray Icon", m_optShowTrayIcon );
     m_pConfig->writeEntry( "Crossfading", m_optXFade );
+    m_pConfig->writeEntry( "Crossfade Length", m_optXFadeLength );
     m_pConfig->writeEntry( "Hide Playlist Window", m_optHidePlaylistWindow );
 
     //store current item
@@ -737,6 +740,7 @@ void PlayerApp::readConfig()
     m_optReadMetaInfo = m_pConfig->readBoolEntry( "Show MetaInfo", false );
     m_optShowTrayIcon = m_pConfig->readBoolEntry( "Show Tray Icon", true );
     m_optXFade = m_pConfig->readBoolEntry( "Crossfading", true );
+    m_optXFadeLength = m_pConfig->readNumEntry( "Crossfade Length", 3000 );
     m_optHidePlaylistWindow = m_pConfig->readBoolEntry( "Hide Playlist Window", true );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
@@ -1325,22 +1329,32 @@ void PlayerApp::slotMainTimer()
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 
     // <Crossfading>
-    if ( ( m_optXFade ) && ( !m_pPlayObject->stream() ) && ( !m_XFadeRunning ) && ( m_length - timeC.seconds < 3 )  )
+    if ( ( m_optXFade ) &&
+         ( !m_pPlayObject->stream() ) &&
+         ( !m_XFadeRunning ) &&
+         ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
     {
         startXFade();
         return ;
     }
     if ( m_XFadeRunning )
     {
-        if ( m_XFadeCurrent == "invalue2" )
-            m_XFadeValue -= 0.08;
-        else
-            m_XFadeValue += 0.08;
+        float xfadeStep = 1.0 / m_optXFadeLength * MAIN_TIMER;
 
-        if ( m_XFadeValue < 0.0 or m_XFadeValue > 1.0 )
-            stopXFade();
+        if ( m_XFadeCurrent == "invalue2" )
+            m_XFadeValue -= xfadeStep;
+        else
+            m_XFadeValue += xfadeStep;
+
+        if ( m_XFadeValue < 0.0 )
+            m_XFadeValue = 0.0;
+        else if ( m_XFadeValue > 1.0 )
+            m_XFadeValue = 1.0;
 
         m_XFade.percentage( m_XFadeValue );
+
+        if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )
+            stopXFade();
     }
     // </Crossfading>
 
@@ -1454,6 +1468,7 @@ void PlayerApp::slotShowOptions()
     opt1->checkBox3->setChecked( m_optShowTrayIcon );
     opt1->checkBox5->setChecked( m_optHidePlaylistWindow );
     opt1->checkBoxXFade->setChecked( m_optXFade );
+    opt1->crossfadeLength->setValue( m_optXFadeLength );
 
     if ( m_optDropMode == "Ask" )
         opt1->comboBox1->setCurrentItem( 0 );
@@ -1503,6 +1518,8 @@ void PlayerApp::slotShowOptions()
             m_optXFade = true;
         else
             m_optXFade = false;
+
+        m_optXFadeLength = opt1->crossfadeLength->value();
 
         switch ( opt1->comboBox1->currentItem() )
         {
