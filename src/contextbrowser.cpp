@@ -296,22 +296,23 @@ void ContextBrowser::showCurrentTrack()
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT album.id, artist.id, datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter "
+    m_db->execSql( QString( "SELECT album.id, artist.id, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
     if ( values.count() )
         browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                  "<span class='album'>%1 - %2</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%3'>"
-                                  "%4<br><i>Last play: %5<br>Total plays: %6</i></td>"
+                                  "<span class='album'>%1 - %2</span><br>%3<br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%4'>"
+                                  "<i>First play: %5<br>Last play: %6<br>Total plays: %7</i></td>"
                                   "</tr>" )
                         .arg( m_currentTrack->artist() )
                         .arg( m_currentTrack->title() )
-                        .arg( m_db->getImageForAlbum( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) )
                         .arg( m_currentTrack->album() )
+                        .arg( m_db->getImageForAlbum( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) )
                         .arg( values[2] )
-                        .arg( values[3] ) );
+                        .arg( values[3] )
+                        .arg( values[4] ) );
     else
     {
         m_db->execSql( QString( "SELECT album.id, artist.id "
@@ -321,13 +322,13 @@ void ContextBrowser::showCurrentTrack()
 
         if ( values.count() )
             browser->write( QString ( "<tr><td height='42' valign='top' class='rbcurrent'>"
-                                      "<span class='album'>%1 - %2</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%3'>"
-                                      "%4<br><i>Never played before</i></td>"
+                                      "<span class='album'>%1 - %2</span><br>%3<br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%4'>"
+                                      "<i>Never played before</i></td>"
                                       "</tr>" )
                             .arg( m_currentTrack->artist() )
                             .arg( m_currentTrack->title() )
-                            .arg( m_db->getImageForAlbum( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) )
-                            .arg( m_currentTrack->album() ) );
+                            .arg( m_currentTrack->album() )
+                            .arg( m_db->getImageForAlbum( m_currentTrack->url().directory(), locate( "data", "amarok/images/sound.png" ) ) ) );
     }
 
     values.clear();
