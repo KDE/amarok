@@ -2,34 +2,34 @@
 // See COPYING file for licensing information
 
 
+#include "app.h"
+#include "collectiondb.h"
 #include "contextbrowser.h"
 #include "enginecontroller.h"
-#include "threadweaver.h"
-#include "collectiondb.h"
 #include "metabundle.h"
 #include "playlist.h"     //insertMedia()
 #include "sqlite/sqlite.h"
+#include "threadweaver.h"
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
 #include <kconfig.h>      //config object
-#include <klocale.h>
 #include <kcursor.h>      //waitCursor()
 #include <kdebug.h>
-#include <klineedit.h>
-#include <kurl.h>
 #include <kglobal.h>
+#include <khtml_part.h>
+#include <klineedit.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
 #include <kurlcombobox.h>
-#include <stdlib.h>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <qpushbutton.h>
+
 #include <qlabel.h>
-#include <khtml_part.h>
+#include <qpushbutton.h>
+
 #include <dirent.h>
+#include <dirent.h>
+#include <stdlib.h>
 #include <sys/stat.h>
-#include <kurl.h>
-#include "app.h"
+#include <sys/stat.h>
 
 
 ContextBrowser::ContextBrowser( const char *name )
@@ -49,15 +49,14 @@ ContextBrowser::ContextBrowser( const char *name )
     browser = new KHTMLPart( hb1 );
     setStyleSheet();
 
+    connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                          SLOT( openURLRequest( const KURL &, const KParts::URLArgs & ) ) );
+
     if ( m_db->isEmpty() )
         showIntroduction();
     else
         showHome();
-
-    connect( browser->browserExtension(),
-             SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
-             SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );
-
+    
     setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
 }
 
@@ -71,6 +70,88 @@ ContextBrowser::~ContextBrowser()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
+{
+    m_url = url;
+    
+    if ( url.protocol() == "album" )
+    {
+        QStringList info = QStringList::split( "/", url.path() );
+        QStringList values;
+        QStringList names;
+
+        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track DESC;" )
+                       .arg( info[0] )
+                       .arg( info[1] ), &values, &names );
+
+        for ( uint i = 0; i < values.count(); i++ )
+        {
+            if ( values[i].isEmpty() ) continue;
+
+            KURL tmp;
+            tmp.setPath( values[i] );
+            pApp->playlist()->appendMedia( tmp, false, true );
+        }
+    }
+
+    if ( url.protocol() == "file" )
+        pApp->playlist()->appendMedia( url, true, true );
+
+    render();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PROTECTED
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+{
+    //prevents segfault when playing streams
+    if ( !bundle.url().isLocalFile() ) return;
+
+    delete m_currentTrack;
+    m_currentTrack = TagReader::readTags( bundle.url(), true ); //we have to delete this
+    showCurrentTrack();
+
+    // increase song counter
+    m_db->incSongCounter( m_currentTrack->url().path() );
+}
+
+
+void ContextBrowser::paletteChange( const QPalette& pal )
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    QVBox::paletteChange( pal );    
+    
+    setStyleSheet();
+    render();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void ContextBrowser::render()
+{    
+    if ( m_url.protocol() == "show" )
+    {
+        if ( m_url.path() == "home" )
+            showHome();
+        if ( m_url.path() == "context" )
+            showCurrentTrack();
+//         if ( m_url.path() == "collectionSetup" )
+            ; //FIXME
+    }
+}
+
+    
 void ContextBrowser::setStyleSheet()
 {
     m_styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
@@ -101,56 +182,6 @@ void ContextBrowser::setStyleSheet()
 }
 
 
-void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
-{
-    if ( url.protocol() == "album" )
-    {
-        QStringList info = QStringList::split( "/", url.path() );
-        QStringList values;
-        QStringList names;
-
-        m_db->execSql( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track DESC;" )
-                       .arg( info[0] )
-                       .arg( info[1] ), &values, &names );
-
-        for ( uint i = 0; i < values.count(); i++ )
-        {
-            if ( values[i].isEmpty() ) continue;
-
-            KURL tmp;
-            tmp.setPath( values[i] );
-            pApp->playlist()->appendMedia( tmp, false, true );
-        }
-    }
-
-    if ( url.protocol() == "file" )
-        pApp->playlist()->appendMedia( url, true, true );
-
-    if ( url.protocol() == "show" )
-    {
-        if ( url.path() == "home" )
-            showHome();
-        if ( url.path() == "context" )
-            showCurrentTrack();
-        if ( url.path() == "collectionSetup" )
-            ; //FIXME
-    }
-}
-
-void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
-{
-    //prevents segfault when playing streams
-    if ( !bundle.url().isLocalFile() ) return;
-
-    delete m_currentTrack;
-    m_currentTrack = TagReader::readTags( bundle.url(), true ); //we have to delete this
-    showCurrentTrack();
-
-    // increase song counter
-    m_db->incSongCounter( m_currentTrack->url().path() );
-}
-
-
 void ContextBrowser::showIntroduction()
 {
     browser->begin();
@@ -162,6 +193,8 @@ void ContextBrowser::showIntroduction()
                     + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." )
                     + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one." ) + "</a>" );
     browser->write( "</div></html>");
+
+    browser->end();
 }
 
 
@@ -252,7 +285,6 @@ void ContextBrowser::showCurrentTrack()
     m_db = new CollectionDB();
 
     browser->begin();
-    setStyleSheet();
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Current Track Information>

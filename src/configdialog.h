@@ -38,17 +38,19 @@ class AmarokConfigDialog : public KConfigDialog
         QLineEdit* m_pSoundDevice;
         QCheckBox* m_pCustomSoundDevice;
         
-    private slots:
+    protected slots:
         void updateSettings();
         void updateWidgets();
         void updateWidgetsDefault();
 
+    private slots:
         void soundSystemChanged();
     
-    private:
+    protected:
         bool hasChanged();
         bool isDefault();
 
+    private:
         Options4* m_opt4;
 };
 
