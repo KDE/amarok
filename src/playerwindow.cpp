@@ -117,7 +117,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
         connect( m_pSlider, SIGNAL(sliderReleased( int )), ec, SLOT(seek( int )) );
-        connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(timeDisplay( int )) );
+        connect( m_pSlider, SIGNAL(sliderMoved( int )), SLOT(timeDisplay( int )) );
         connect( m_pVolSlider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
         connect( m_pVolSlider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
     } //<Sliders>
@@ -316,7 +316,6 @@ void PlayerWidget::engineStateChanged( Engine::State state )
             m_pTimeSign->show();
             m_pButtonPlay->setOn( true );
             m_pButtonPause->setOn( false );
-             m_pSlider->setEnabled( true );
             break;
 
         case Engine::Paused:
@@ -338,6 +337,7 @@ void PlayerWidget::engineVolumeChanged( int percent )
 void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
     m_pSlider->setMaxValue( bundle.length() * 1000 );
+    m_pSlider->setEnabled( bundle.length() > 0 );
 
     m_rateString     = bundle.prettyBitrate();
     const QString Hz = bundle.prettySampleRate();
@@ -361,7 +361,10 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 
 void PlayerWidget::engineTrackPositionChanged( long position )
 {
-    m_pSlider->setValue( position );
+    if ( !m_pSlider->sliding() ) {
+        m_pSlider->setValue( position );
+        timeDisplay( position );
+    }
 }
 
 

@@ -43,45 +43,37 @@ class KURL;
 namespace KDE { class PlayObject; }
 
 
-class ArtsEngine : public EngineBase
+class ArtsEngine : public Engine::Base
 {
     Q_OBJECT
 
     public:
-                                                 ArtsEngine( );
+                                                 ArtsEngine();
                                                  ~ArtsEngine();
                                         
-        bool                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
+        bool                                     init(); 
                                                                                                   
         bool                                     initMixer( bool hardware );
-        bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
+        bool                                     canDecode( const KURL &url ) const;
         StreamingMode                            streamingMode() { return Socket; }
-        long                                     position() const;
-        EngineBase::EngineState                  state() const;
+        uint                                     position() const;
+        Enginee::State                           state() const;
+        const Engine::Scope&                     scope();
 
-        std::vector<float>*                      scope();
-
-        QStringList                              availableEffects() const;
-        std::vector<long>                        activeEffects() const;
-        QString                                  effectNameForId( long id ) const;
-        bool                                     effectConfigurable( long id ) const;
-        long                                     createEffect( const QString& name );
-        void                                     removeEffect( long id );
-        void                                     configureEffect( long id );
-       
         bool                                     decoderConfigurable();
-        bool                                     supportsXFade() const     { return true; }
          
     public slots:
-        void                                     play( const KURL&, bool stream );
-        void                                     play();
+        bool                                     load( const KURL&, bool stream );
+        bool                                     play( uint );
         void                                     stop();
         void                                     pause();
 
-        void                                     seek( long ms );
-        void                                     setVolume( int percent );
+        void                                     seek( uint ms );
         void                                     configureDecoder();                                                   
 
+    protected:        
+        void                                     setVolumeSW( uint percent );
+    
     private slots:
         void                                     connectPlayObject();
         void                                     connectTimeout();
@@ -92,22 +84,6 @@ class ArtsEngine : public EngineBase
 
         void                                     loadEffects();
         void                                     saveEffects();
-
-        class ArtsConfigWidget : public QWidget
-        {
-            public:
-                                                 ArtsConfigWidget( Arts::Object object );
-                                                 ~ArtsConfigWidget();
-            private:
-                Arts::Widget                     m_gui;
-                KArtsWidget                      *m_pArtsWidget;
-        };
-
-        struct EffectContainer
-        {
-            Arts::StereoEffect*                  effect;
-            QGuardedPtr<ArtsConfigWidget>        widget;
-        };
 
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
@@ -137,6 +113,7 @@ class ArtsEngine : public EngineBase
         QGuardedPtr<ArtsConfigWidget>            m_pDecoderConfigWidget;
         QTimer*                                  m_pConnectTimer;
 };
+
 
 #endif
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                     streamprovider.cpp  -  description
+                     streamprovider.cpp - shoutcast streaming client
                         -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
@@ -183,7 +183,7 @@ StreamProvider::readRemote() //SLOT
     if ( !m_headerFinished )
         if ( !processHeader( index, bytesRead ) ) return;
 
-    //This is the main loop which processes the stream data
+    // This is the main loop which processes the stream data
     while ( index < bytesRead ) {
         if ( m_icyMode && m_metaInt && ( m_byteCount == m_metaInt ) ) {
             m_byteCount = 0;
@@ -288,8 +288,7 @@ StreamProvider::transmitData( const QString &data )
 {
     kdDebug() << k_funcinfo << " received new metadata: '" << data << "'" << endl;
 
-    //prevent metadata spam by ignoring repeated identical data
-    //(some servers repeat it every 10 seconds)
+    // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
     if ( data == m_lastMetadata ) return;
     m_lastMetadata = data;
 
@@ -313,7 +312,7 @@ StreamProvider::error()
     m_sockRemote.close();
     m_icyMode = false;
 
-    //open stream again,  but this time without metadata, please
+    // Open stream again,  but this time without metadata, please
     connectToHost();
 }
 
@@ -322,10 +321,13 @@ QString
 StreamProvider::extractStr( const QString &str, const QString &key )
 {
     int index = str.find( key, 0, true );
+    
     if ( index == -1 ) {
         return QString::null;
-
+    
     } else {
+    
+        //FIXME This breaks when the substring contains '    
         index = str.find( "'", index ) + 1;
         int indexEnd = str.find( "'", index );
         return str.mid( index, indexEnd - index );

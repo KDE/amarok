@@ -36,12 +36,15 @@ namespace amaroK
             //current needs fine
             int value() const { return adjustValue( QSlider::value() ); }
 
+            /** Return whether the slider is being dragged */
+            bool sliding() { return m_sliding; }
+            
         signals:
             //we emit this when the user has specifically changed the slider
             //so connect to it if valueChanged() is too generic
             //Qt also emits valueChanged( int )
             void sliderReleased( int );
-
+            
         protected:
             virtual void wheelEvent( QWheelEvent* );
             virtual void mouseMoveEvent( QMouseEvent* );

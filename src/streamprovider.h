@@ -1,9 +1,9 @@
 /***************************************************************************
-                     streamprovider.h  -  description
+                     streamprovider.h - shoutcast streaming client
                         -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
-email                :
+email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -29,7 +29,7 @@ class MetaBundle;
 
 namespace amaroK {
     /**
-     * Stream radio handler. 
+     * Stream radio client, receives shoutcast streams and extracts metadata. 
      *
      * Provider Concept:
      * 1. Connect to streamserver
@@ -88,6 +88,13 @@ namespace amaroK {
             bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void transmitData( const QString &data );
             void error();
+            
+            /** 
+             * Find key/value pair in string and return value.
+             * @param str String to search through.
+             * @param key Key to find.
+             * @return The value, QString:null if key not found.
+             */
             QString extractStr( const QString &str, const QString &key );
 
         //ATTRIBUTES:

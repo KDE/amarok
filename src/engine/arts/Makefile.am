@@ -20,6 +20,7 @@ libamarok_artsengine_plugin_la_LIBADD = \
     $(arts_libs)
 
 libamarok_artsengine_plugin_la_SOURCES = \
+    artseffects.cpp \
     artsengine.cpp
 
 libamarok_artsengine_plugin_la_LDFLAGS = \

@@ -23,6 +23,7 @@ email                : markey@web.de
 
 #include <vector>
 
+#include <qmutex.h>
 #include <qstringlist.h>
 #include <kio/jobclasses.h>
 
@@ -50,7 +51,7 @@ class GstEngine : public Engine::Base
 
         bool init();
 
-        bool canDecode( const KURL &url );
+        bool canDecode( const KURL &url ) const;
         uint position() const;
         Engine::State state() const;
         const Engine::Scope& scope();
@@ -63,10 +64,10 @@ class GstEngine : public Engine::Base
         void stop();
         void pause();
         void seek( uint ms );
-        void setVolumeSW( uint percent );
         void newStreamData( char* data, int size );
 
     protected:
+        void setVolumeSW( uint percent );
         void timerEvent( QTimerEvent* );
 
     private slots:
@@ -75,7 +76,6 @@ class GstEngine : public Engine::Base
         void kioFinished();
         void newKioData( KIO::Job*, const QByteArray& array );
         void errorNoOutput() const;
-        void handleScopeData( GstBuffer* buf );
         
     private:
         static GstEngine* instance() { return s_instance; }
@@ -94,9 +94,17 @@ class GstEngine : public Engine::Base
         /** Get a list of available plugins from a specified Class */
         QStringList getPluginList( const QCString& classname ) const; 
 
+        /**
+         * Creates a GStreamer element and puts it into pipeline. 
+         * @param factoryName Name of the element class to create.
+         * @param bin Container into which the element is put.
+         * @param name Identifier for the element.
+         * @return Pointer to the created element, or NULL for failure.
+         */
         GstElement* createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 ) const;
-        void stopNow();
-        void cleanPipeline();
+        
+        /** Stops playback, deletes the current pipeline and frees ressources */
+        void destroyPipeline();
 
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
@@ -121,7 +129,8 @@ class GstEngine : public Engine::Base
         int m_streamBufIndex;
         bool m_streamBufStop;
         KIO::TransferJob* m_transferJob;
-
+        QMutex m_mutexScope;
+        
         float m_fadeValue;
 
         bool m_pipelineFilled;

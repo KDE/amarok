@@ -151,7 +151,6 @@ gst_adapter_peek (GstAdapter * adapter, guint size)
     return adapter->assembled_data;
 
   cur = adapter->buflist->data;
- 
   if (GST_BUFFER_SIZE (cur) >= size + adapter->skip)
     return GST_BUFFER_DATA (cur) + adapter->skip;
 
@@ -200,7 +199,6 @@ gst_adapter_flush (GstAdapter * adapter, guint flush)
   adapter->assembled_len = 0;
   while (flush > 0) {
     cur = adapter->buflist->data;
-    
     if (GST_BUFFER_SIZE (cur) <= flush + adapter->skip) {
       /* can skip whole buffer */
       flush -= GST_BUFFER_SIZE (cur) - adapter->skip;

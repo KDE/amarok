@@ -9,9 +9,6 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
  
   FIX 155 <muesli> When deleting a cover, remove the (various) scaled versions, too.
-  
-  FIX 154 <markey> When track-length is 0 (e.g. stream), disable position slider, but make the time display
-                   show the current position.
 
   FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
 
@@ -31,9 +28,6 @@ MID-TERM:
   ADD 145 <markey> Function for removing dupes in playlist. Possibly with toolbar button and/or context item.
 
   ADD 143 <mxcl>   DCOP interface for ContextBrowser
-
-  ADD 142 <markey> Add "custom" field for gst output sink properties in settings gui. See gstreamer-gconf
-                   code in gst-plugins/gst-libs/gst/gconf.
 
   CHG 141 <markey> For critical errors, use warning dialogs instead of stderr output. (many distros build
                    with NDEBUG, and users are prone to missing debug messages).
@@ -116,11 +110,6 @@ MID-TERM:
   ADD              "Add item"-dialog should support multiple selections.
 
   ADD     <berkus> Playmode indication button in main widget (repeat track/pl/shuffle), clickable.
-
-  ADD              Function for adding all files in current dir to playlist.
-                   basically just a shortcut for going up to the parent directory, and then dragging
-                   the directory. imagine you're in the root directory of some filesystem, and want to add all
-                   files in it.. currently you'd have to select all files manually.
 
 
 LONG-TERM:

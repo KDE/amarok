@@ -1,5 +1,5 @@
 ********************************************
-amaroK File List (last updated: 22-Jul-2004)
+amaroK File List (last updated: 06-Aug-2004)
 ********************************************
 
 The files are listed in alphabetical order, which isn't useful for priority ordering. The important files
@@ -7,54 +7,54 @@ are app.cpp, playlist.cpp and playerwindow.cpp.
 
 SRC
   ACTIONCLASSES.CPP
-    provides a QPopupMenu which lists amaroK configuration options, quit and provides a KHelpMenu for
+    Provides a QPopupMenu which lists amaroK configuration options, quit and provides a KHelpMenu for
     amaroK to save instantiating many helpmenus.
   AMAROKCONFIG.CPP
     KConfig-XT
   AMAROKFILELIST.CPP
-    not currently used. Will sort KFileLists.
+    Not currently used. Will sort KFileLists.
   APP.CPP
-    this is the kapplication derived class, it is parent to many objects that are fundamental to the
+    This is the kapplication derived class, it is parent to many objects that are fundamental to the
     running of amaroK, eg engine, dcop, systray, top-level widgets, etc.
   BROWSERBAR.CPP
-    this handles the browsers, the KMultiTabBar widget and the custom splitter
+    This handles the browsers, the KMultiTabBar widget and the custom splitter
   BROWSERWIN.CPP
-    this is just a container widget for the playlist, toolbar and browserbar, eventually it may be even less
+    This is just a container widget for the playlist, toolbar and browserbar, eventually it may be even less
   COLLECTIONBROWSER.CPP
-    in construtuction, media library type thing.
+    Database powered media library.
   EFFECTWIDGET.CPP
-    widget for engine effect configuration
+    Widget for engine effect configuration
   ENGINECONTROLLER.CPP
-    interface between amaroK and the engine
+    Interface between amaroK and the engine, implementing the controller/observer design pattern.
   FHT.CPP
     amaroK's sophisticated and flexible FHT (basically FFT) routine for spectrum analysis
   FILEBROWSER.CPP
     The FileBrowser.
   KBOOKMARKHANDLER.CPP
-    used by FileBrowser
+    Used by FileBrowser
   OSD.CPP
-    a very nice On-Screen Display class, not amaroK specific, very flexible.  
+    A very nice On-Screen Display class, not amaroK specific, very flexible.  
   PLAYERWINDOW.CPP
-    this is the small widget with the scrolling text, analyzer and play/pause/etc. buttons
+    This is the small widget with the scrolling text, analyzer and play/pause/etc. buttons
   PLAYLIST.CPP
-    big class that is the playlistwidget
+    Big class that is the playlistwidget
   PLAYLISTBROWSER.CPP
     The PlaylistBrowser.
   PLAYLISTITEM.CPP
     derived from KListViewItem, playlist items
   PLAYLISTLOADER.CPP
-    will recursively load directories, KURLs and playlist files into the PlaylistWidget. Threaded to work
+    Will recursively load directories, KURLs and playlist files into the PlaylistWidget. Threaded to work
     in the background. Will ask engine to confirm whether it can play unknown filetypes.
   PLUGINMANAGER.CPP
-    handles the amaroK plugin system
+    Handles the amaroK plugin system.
   SLIDERWIDGET.CPP
-    the custom Slider widget used by the PlayerWidget. Candidate for refactoring by deriving from QSlider.
-  STREAMBROWSER.CPP
-    widget that shows stream listings downloaded from metaservers.
+    The custom Slider widget used by the PlayerWidget. Candidate for refactoring by deriving from QSlider.
+  STREAMPOVIDER.CPP
+    Client for receiving net radio streams. Also handles metadata.
   SYSTRAY.CPP
     amaroK's systray. Small, compact.
   THREADWEAVER.CPP 
-    flexible class that will queue, process, and dispatch results for "Jobs" in a separate thread. Used by
+    Flexible class that will queue, process, and dispatch results for "Jobs" in a separate thread. Used by
     a variety of amaroK components
   TRACKTOOLTIP.CPP
     Used by PlayerWidget to show some info on the currently playing track.

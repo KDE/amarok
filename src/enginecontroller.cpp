@@ -43,7 +43,7 @@ class DummyEngine : public EngineBase
     //and in case no engines are found
 
     virtual bool init() { return true; }
-    virtual bool canDecode( const KURL& ) { return false; }
+    virtual bool canDecode( const KURL& ) const { return false; }
     virtual uint position() const { return 0; }
     virtual bool load( const KURL&, bool ) { return false; }
     virtual bool play( uint ) { return false; }

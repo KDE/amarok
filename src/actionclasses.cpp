@@ -94,7 +94,8 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
+    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ), 0, ID_SHOW_EFFECTS );
+    setItemEnabled( ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
     safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
     safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );
     safePlug( ac, "options_configure_globals", this ); //we created this one

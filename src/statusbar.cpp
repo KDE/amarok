@@ -24,16 +24,19 @@
 
 #include <qapplication.h> //startProgress() etc.
 #include <qcolor.h>
+#include <qcursor.h>
+#include <qhbox.h>
 #include <qpushbutton.h>
 #include <qtimer.h>
 #include <qtooltip.h> //toggle labels
-#include <qhbox.h>
 
 #include <kactionclasses.h>
 #include <kcursor.h> //setOverrideCursor()
 #include <kdebug.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
+#include <klocale.h>
+#include <kpopupmenu.h>
 #include <kprogress.h>
 #include <ksqueezedtextlabel.h>
 
@@ -49,9 +52,36 @@ public:
         setFixedSize( sizeHint() );
     }
 
-    virtual void mouseDoubleClickEvent( QMouseEvent* )
+    virtual void mousePressEvent( QMouseEvent* e )
     {
-        AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
+        if ( e->button() == Qt::LeftButton )
+            AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
+        
+        if ( e->button() == Qt::RightButton ) {
+            enum Items { NORMAL, REMAIN, LENGTH };
+            
+            KPopupMenu menu( this );
+            menu.setCheckable( true );
+            menu.insertTitle( i18n( "Time Display" ) );
+            menu.insertItem( i18n( "Normal" ), NORMAL );
+            menu.insertItem( i18n( "Remaining" ), REMAIN );
+            menu.insertItem( i18n( "Length" ), LENGTH );
+            menu.setItemChecked( NORMAL, !AmarokConfig::timeDisplayRemaining() );
+            menu.setItemChecked( REMAIN, AmarokConfig::timeDisplayRemaining() );
+            menu.setItemEnabled( LENGTH, false );
+            int result = menu.exec( QCursor::pos() );
+
+            switch ( result ) {
+                case NORMAL:
+                    AmarokConfig::setTimeDisplayRemaining( false );
+                    break;
+                case REMAIN:
+                    AmarokConfig::setTimeDisplayRemaining( true );
+                    break;
+                case LENGTH:
+                    break;
+            }  
+        }        
     }
 };
 
@@ -94,7 +124,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // position slider (stretches at 1/4 the rate of the squeezedTextKLabel)
     addWidget( m_pSlider = new amaroK::Slider( Qt::Horizontal, this ), 1, true );
     connect( m_pSlider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
-    connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
+    connect( m_pSlider, SIGNAL(sliderMoved( int )), SLOT(drawTimeDisplay( int )) );
 
     // time display
     addWidget( m_pTimeLabel = new TimeLabel( this ), 0, true );
@@ -142,7 +172,6 @@ void StatusBar::engineStateChanged( Engine::State state )
             break;
 
         case Engine::Playing:
-            m_pSlider->setEnabled( true );
             m_pPauseTimer->stop();
             clear(); // clear TEMPORARY pause message
             break;
@@ -157,6 +186,7 @@ void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged
 {
     m_pTitle->setText( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ) );
     m_pSlider->setMaxValue( bundle.length() * 1000 );
+    m_pSlider->setEnabled( bundle.length() > 0 );
 }
 
 void StatusBar::slotItemCountChanged(int newCount)
@@ -166,7 +196,10 @@ void StatusBar::slotItemCountChanged(int newCount)
 
 void StatusBar::engineTrackPositionChanged( long position )
 {
-    m_pSlider->setValue( position );
+    if ( !m_pSlider->sliding() ) {
+        m_pSlider->setValue( position );
+        drawTimeDisplay( position );
+    }
 }
 
 void StatusBar::drawTimeDisplay( int ms ) //SLOT

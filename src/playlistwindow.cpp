@@ -1,6 +1,4 @@
 /***************************************************************************
-                        playlistwindow.cpp  -  description
-                           -------------------
   begin                : Fre Nov 15 2002
   copyright            : (C) Mark Kretschmann <markey@web.de>
                        : (C) Max Howell <max.howell@methylblue.com>

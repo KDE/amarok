@@ -199,12 +199,15 @@ void AmarokConfigDialog::soundSystemChanged()
         m_enginePage = addVBoxPage( i18n( "Engine" ),
                                     i18n( "Configure " ) + PluginManager::getService( EngineController::engine() )->name(),
                                     DesktopIcon( "amarok" ) );
-
+        
         m_engineConfig = EngineController::engine()->configure();
         m_engineConfig->view()->reparent( m_enginePage, QPoint() );
-
+        
         connect( m_engineConfig, SIGNAL( settingsChanged() ), this, SLOT( settingsChangedSlot() ) );
     }
 }
 
+
 #include "configdialog.moc"
+
+

@@ -5,6 +5,7 @@
 #include "enginebase.h"
 
 #include <fcntl.h>
+#include <math.h>
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 #include <sys/wait.h>
@@ -80,6 +81,19 @@ Engine::Base::setHardwareMixer( bool useHardware )
 
     return false;
 }
+
+
+void Engine::Base::setVolume( uint value )
+{
+    m_volume = value;
+    
+    if( isMixerHW() )
+        setVolumeHW( value );
+    else
+        // We're using a logarithmic function to make the volume ramp more natural.
+        setVolumeSW( static_cast<uint>( 100 - 100.0 * log10( ( 100 - value ) * 0.09 + 1.0 ) ) );
+}
+
 
 void
 Engine::Base::setVolumeHW( uint percent )

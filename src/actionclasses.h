@@ -40,7 +40,8 @@ namespace amaroK
                 ID_CONF_DECODER,
                 ID_SHOW_VIS_SELECTOR,
                 ID_SHOW_SCRIPT_SELECTOR,
-                ID_SHOW_SCRIPT_CONSOLE
+                ID_SHOW_SCRIPT_CONSOLE,
+                ID_SHOW_EFFECTS
             };
 
             static KHelpMenu  *s_helpMenu;

@@ -78,7 +78,8 @@ private slots:
     void activateThis( const KFileItem* );
     void makePlaylist();
     void addToPlaylist();
-
+    void selectAllFiles();
+    
 private:
     class ToolBar;
 

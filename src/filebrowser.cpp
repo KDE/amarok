@@ -88,8 +88,9 @@ FileBrowser::FileBrowser( const char * name )
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu *)dir->actionCollection()->action("popupMenu"))->popupMenu();
     menu->insertSeparator( 0 );
-    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0, -1, /*index*/0 );
-    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 0, -1, /*index*/0 );
+    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()) );
+    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()) );
+    menu->insertItem( i18n( "&Select all Files" ), this, SLOT(selectAllFiles()) );
 
     dir->setEnableDirHighlighting( true );
     dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
@@ -106,8 +107,6 @@ FileBrowser::FileBrowser( const char * name )
     //     and auto-expand if they are shut
     //dir->setAcceptDrops( true ); FIXME I think the KDirOperator won't translate from KURL to KFileItem. BAH!
     //dir->setDropOptions( KFileView::AutoOpenDirs );
-
-
 
     KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark", m_actionCollection, "bookmarks" );
     acmBookmarks->setDelayed( false );
@@ -264,6 +263,12 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
 }
 
 
+inline void FileBrowser::activateThis( const KFileItem *item )
+{
+    Playlist::instance()->appendMedia( item->url() );
+}
+
+
 inline void FileBrowser::makePlaylist()
 {
     Playlist::instance()->clear();
@@ -277,10 +282,15 @@ inline void FileBrowser::addToPlaylist()
 }
 
 
-inline void FileBrowser::activateThis( const KFileItem *item )
+inline void FileBrowser::selectAllFiles()
 {
-    Playlist::instance()->appendMedia( item->url() );
+    KFileItemList list( *dir->view()->items() );
+    
+    // Select all items which represent files
+    for ( KFileItem* item = list.first(); item; item = list.next() )
+        dir->view()->setSelected( item, item->isFile() );
 }
+
 
 //END Private Slots
 

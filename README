@@ -38,11 +38,11 @@ recommended
     * GStreamer-0.8.1 + Gst-Plugins-0.8.1
       http://gstreamer.net
 
-    * OpenGL accelerated X-Server
-
 optional
     * aRts 1.2 + KDEMultimedia 3.2
       http://www.kde.org
+
+    * OpenGL accelerated X-Server
 
     * Libvisual 0.1.6 + SDL 1.2
       http://libvisual.sf.net

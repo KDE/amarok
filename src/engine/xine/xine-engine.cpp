@@ -364,7 +364,7 @@ XineEngine::setVolumeSW( uint vol )
 }
 
 bool
-XineEngine::canDecode( const KURL &url )
+XineEngine::canDecode( const KURL &url ) const
 {
     static QStringList list = QStringList::split( ' ', xine_get_file_extensions( m_xine ) );
 

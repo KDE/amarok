@@ -58,7 +58,7 @@ namespace Engine
          * @param url The URL of the file/stream.
          * @return True if we can play the URL.
          */
-        virtual bool canDecode( const KURL &url ) = 0;
+        virtual bool canDecode( const KURL &url ) const = 0;
 
         /**
          * Determines if current track is a stream.
@@ -145,7 +145,7 @@ namespace Engine
          * Set new volume value.
          * @param value Volume in range 0 to 100.
          */
-        void setVolume( uint value ) { m_volume = value; if( isMixerHW() ) setVolumeHW( value ); else setVolumeSW( value ); }
+        void setVolume( uint value );
 
     protected:
         Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );

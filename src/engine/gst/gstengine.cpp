@@ -76,7 +76,13 @@ GstEngine::eos_cb( GstElement*, GstElement* ) //static
 void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
-    emit instance()->sigScopeData( gst_buffer_copy( buf ) );
+    instance()->m_mutexScope.lock();
+    
+    gst_buffer_ref( buf );
+    // Push buffer into adapter, where it's chopped into chunks
+    gst_adapter_push( instance()->m_gst_adapter, buf );
+
+    instance()->m_mutexScope.unlock();
 }
 
 
@@ -132,15 +138,18 @@ GstEngine::~GstEngine()
     
     if ( m_pipelineFilled ) {
         g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
-        stopNow();
+        destroyPipeline();
         // Wait for pipeline to shut down properly
         while ( !m_shutdown ) ::usleep( 20000 ); // 20 msec
     }
     else    
-        stopNow();
+        destroyPipeline();
     
     delete[] m_streamBuf;
+    
+    m_mutexScope.lock();
     g_object_unref( G_OBJECT( m_gst_adapter ) );
+    m_mutexScope.unlock();
 
     // Save configuration
     GstConfig::writeConfig();
@@ -182,7 +191,6 @@ GstEngine::init()
     m_gst_adapter = gst_adapter_new();
     startTimer( TIMER_INTERVAL );
     connect( this, SIGNAL( sigGstError( GError*, gchar* ) ), SLOT( handleGstError( GError*, gchar* ) ) );
-    connect( this, SIGNAL( sigScopeData( GstBuffer* ) ), SLOT( handleScopeData( GstBuffer* ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
     return true;
@@ -190,7 +198,7 @@ GstEngine::init()
 
 
 bool
-GstEngine::canDecode( const KURL &url )
+GstEngine::canDecode( const KURL &url ) const
 {
     if ( GstConfig::soundOutput().isEmpty() ) {
         QTimer::singleShot( 0, instance(), SLOT( errorNoOutput() ) );
@@ -265,30 +273,34 @@ GstEngine::state() const
 const Engine::Scope&
 GstEngine::scope()
 {
+    m_mutexScope.lock();
+    
     int channels = 2;
     uint bytes = 512 * channels * sizeof( gint16 );
     
     gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, bytes );
-    if ( !data ) return m_scope;
     
-    for ( ulong i = 0; i < 512; i++, data += channels ) {
-        long temp = 0;
-        
-        for ( int chan = 0; chan < channels; chan++ ) {
-            // Add all channels together so we effectively get a mono scope
-            temp += data[chan];
+    if ( data )
+    {
+        for ( ulong i = 0; i < 512; i++, data += channels ) {
+            long temp = 0;
+            
+            for ( int chan = 0; chan < channels; chan++ ) {
+                // Add all channels together so we effectively get a mono scope
+                temp += data[chan];
+            }
+            m_scope[i] = temp / channels;
         }
-        m_scope[i] = temp / channels;
+            
+        // Check for buffer overflow
+        uint available = gst_adapter_available( m_gst_adapter ); 
+        if ( available > SCOPEBUF_SIZE )    
+            gst_adapter_flush( m_gst_adapter, available - 10000 );
+        else
+            gst_adapter_flush( m_gst_adapter, bytes );
     }
-        
-    uint available = gst_adapter_available( m_gst_adapter ); 
-    
-    // Check for buffer overflow
-    if ( available > SCOPEBUF_SIZE )    
-        gst_adapter_flush( m_gst_adapter, available - 10000 );
-    else
-        gst_adapter_flush( m_gst_adapter, bytes );
-    
+                
+    m_mutexScope.unlock();
     return m_scope;
 }
 
@@ -308,7 +320,7 @@ GstEngine::configure() const
 bool
 GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
-    stopNow();
+    destroyPipeline();
     Engine::Base::load( url, stream );
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
     
@@ -372,7 +384,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     m_pipelineFilled = true;
     
     if ( !gst_element_set_state( m_gst_thread, GST_STATE_READY ) ) {
-        stopNow();
+        destroyPipeline();
         return false;
     }
     setVolume( m_volume );
@@ -422,7 +434,7 @@ GstEngine::stop()  //SLOT
     }
     else
         // Fading --> stop playback
-        stopNow();        
+        destroyPipeline();        
         
     emit stateChanged( Engine::Empty );
 }
@@ -459,16 +471,6 @@ GstEngine::seek( uint ms )  //SLOT
 
 
 void
-GstEngine::setVolumeSW( uint percent )  //SLOT
-{
-    if ( m_pipelineFilled )
-        // We're using a logarithmic function to make the volume ramp more natural
-        g_object_set( G_OBJECT( m_gst_volume ), "volume",
-                     (double) 1.0 - log10( ( 100 - percent ) * 0.09 + 1.0 ), NULL );
-}
-
-
-void
 GstEngine::newStreamData( char* buf, int size )  //SLOT
 {
     if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
@@ -487,6 +489,14 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 // PROTECTED
 /////////////////////////////////////////////////////////////////////////////////////
 
+void
+GstEngine::setVolumeSW( uint percent )  //SLOT
+{
+    if ( m_pipelineFilled )
+        g_object_set( G_OBJECT( m_gst_volume ), "volume", (double) percent * 0.01, NULL );
+}
+
+
 void GstEngine::timerEvent( QTimerEvent* )
 {
    // In this timer-event we handle the volume fading transition
@@ -500,13 +510,7 @@ void GstEngine::timerEvent( QTimerEvent* )
         if ( m_fadeValue <= 0.0 ) {
             // Fade transition has finished, stop playback
             kdDebug() << "[Gst-Engine] Fade-out finished.\n";
-            m_fadeValue = 0.0;
-            cleanPipeline();
-            
-            if ( m_transferJob ) {
-                m_transferJob->kill();
-                m_transferJob = 0;
-            }
+            destroyPipeline();
         }
         
         if ( m_pipelineFilled ) {
@@ -590,7 +594,10 @@ GstEngine::errorNoOutput() const //SLOT
     
     // Show engine settings dialog
     KConfigDialog* dialog = KConfigDialog::exists( "settings" );
+    
+    //FIXME Switching to engine page does not work
     dialog->showPage( 5 );
+    
     dialog->show();
 }
 
@@ -662,40 +669,27 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
 
 
 void
-GstEngine::stopNow()
+GstEngine::destroyPipeline()
 {    
     kdDebug() << k_funcinfo << endl;
     
     m_fadeValue = 0.0;
-    cleanPipeline();
     
-    if ( m_transferJob ) {
-        m_transferJob->kill();
-        m_transferJob = 0;
-    }
-}
-
-
-void
-GstEngine::cleanPipeline()
-{
     if ( m_pipelineFilled ) {
         kdDebug() << "[Gst-Engine] Destroying pipeline.\n";
         
+        // Destroy the pipeline
         gst_element_set_state( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         gst_adapter_clear( m_gst_adapter );
         m_pipelineFilled = false;
     }
-}
-
-
-void
-GstEngine::handleScopeData( GstBuffer* buf ) //SLOT
-{
-    // Push buffer into adapter, where it's chopped into chunks
-    if ( GST_IS_BUFFER( buf ) )
-        gst_adapter_push( m_gst_adapter, buf );
+    
+    // Destroy KIO transmission job
+    if ( m_transferJob ) {
+        m_transferJob->kill();
+        m_transferJob = 0;
+    }
 }
 
                   

@@ -17,7 +17,6 @@ email                : markey@web.de
 #include "pluginmanager.h"
 
 #include <vector>
-#include <assert.h>
 
 #include <qfile.h>
 #include <qstring.h>
@@ -34,7 +33,7 @@ using amaroK::Plugin;
 static inline kdbgstream
 debug()
 {
-    return kdbgstream( "[pluginManager] ", 0, 0 );
+    return kdbgstream( "[PluginManager] ", 0, 0 );
 }
 
 vector<PluginManager::StoreItem>
@@ -173,9 +172,8 @@ PluginManager::showAbout( const QString &constraint )
     
     str += body.arg( "Name",                s->name() );
     str += body.arg( "Library",             s->library() );
-    str += body.arg( "Desktop-Entry Path",  s->desktopEntryPath() );
-    str += body.arg( "Plugin Type",         s->property( "X-KDE-amaroK-plugintype" ).toString() );
-    str += body.arg( "Authors",             s->property( "X-KDE-amaroK-authors" ).toString() );
+    str += body.arg( "Authors",             s->property( "X-KDE-amaroK-authors" ).toStringList().join( "\n" ) );
+    str += body.arg( "Email",               s->property( "X-KDE-amaroK-email" ).toStringList().join( "\n" ) );
     str += body.arg( "Version",             s->property( "X-KDE-amaroK-version" ).toString() );
     str += body.arg( "Framework Version",   s->property( "X-KDE-amaroK-framework-version" ).toString() );
     
@@ -188,12 +186,10 @@ PluginManager::showAbout( const QString &constraint )
 void
 PluginManager::dump( const KService::Ptr service )
 {
-    assert( service.data() );
-
     kdbgstream d( 0, 0 );
 
     d << endl
-      << "PluginManager Service DUMP:\n"
+      << "PluginManager Service Info:\n"
       << "---------------------------\n"
       << "name                          : " << service->name() << endl
       << "library                       : " << service->library() << endl
