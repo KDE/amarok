@@ -137,26 +137,25 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
                       .arg( artist_id ).arg( album_id ), &values );
     
     QString widthKey = QString::number( width ) + "@";
-    QString key = values[0] + " - " + values[1] + ".png";
-    key.replace( "/", "_" ).replace( "'", "_" );
-
-    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( widthKey + key ) << endl;
+    QString key( QFile::encodeName( values[0] + " - " + values[1] ) );
+    key.replace( " ", "_" ).append( ".png" );
+    kdDebug() << "Looking for cover image: " << m_coverDir.filePath( widthKey + key.lower() ) << endl;
     
-    if ( m_coverDir.exists( widthKey + key ) )
-        return m_coverDir.filePath( widthKey + key );
+    if ( m_coverDir.exists( widthKey + key.lower() ) )
+        return m_coverDir.filePath( widthKey + key.lower() );
     else
     {
         QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
 
-        kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key ) << endl;
-        if ( largeCoverDir.exists( key ) )
+        kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key.lower() ) << endl;
+        if ( largeCoverDir.exists( key.lower() ) )
         {
-            kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key ) << endl;
-            QImage img( largeCoverDir.filePath( key ) );
+            kdDebug() << "Looking for cover image: " << largeCoverDir.filePath( key.lower() ) << endl;
+            QImage img( largeCoverDir.filePath( key.lower() ) );
             img.smoothScale( width, width )
-               .save( m_coverDir.filePath( widthKey + key ), "PNG" );
+               .save( m_coverDir.filePath( widthKey + key.lower() ), "PNG" );
 
-            return m_coverDir.filePath( widthKey + key );
+            return m_coverDir.filePath( widthKey + key.lower() );
         }
     }
     
@@ -879,10 +878,10 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     
     QImage img( pix.convertToImage() );
     
-    QString fileName( keyword );
-    fileName.replace( "/", "_" ).replace( "'", "_" ).append( ".png" );
+    QString fileName( QFile::encodeName( keyword ) );
+    fileName.replace( " ", "_" ).append( ".png" );
     
-    img.save( m_coverDir.filePath( "large/"+fileName ), "PNG");
+    img.save( m_coverDir.filePath( "large/"+fileName.lower() ), "PNG");
     
     
     emit coverFetched( keyword );
