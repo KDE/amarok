@@ -23,6 +23,7 @@
 #include "amarokconfig.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
+#include "k3bexporter.h"
 #include "kbookmarkhandler.h"
 #include "playlist.h"
 
@@ -111,6 +112,14 @@ FileBrowser::FileBrowser( const char * name )
     menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
     menu->insertSeparator();
     //TODO this has no place in the context menu, make it a toolbar button instead
+
+    enum Ids { BURN_DATACD = 100, BURN_AUDIOCD };
+    menu->insertItem( i18n("Burn to CD as data"), this, SLOT( burnDataCd() ), 0, BURN_DATACD );
+    menu->setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+    menu->insertItem( i18n("Burn to CD as audio"), this, SLOT( burnAudioCd() ), 0, BURN_AUDIOCD );
+    menu->setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+
+    menu->insertSeparator();
     menu->insertItem( i18n( "&Select All Files" ), this, SLOT(selectAllFiles()) );
     menu->insertSeparator();
     actionCollection()->action( "delete" )->plug( menu );
@@ -309,6 +318,16 @@ inline void FileBrowser::selectAllFiles()
     // Select all items which represent files
     for ( KFileItem* item = list.first(); item; item = list.next() )
         m_dir->view()->setSelected( item, item->isFile() );
+}
+
+
+void FileBrowser::burnDataCd() // SLOT
+{
+}
+
+
+void FileBrowser::burnAudioCd() // SLOT
+{
 }
 
 

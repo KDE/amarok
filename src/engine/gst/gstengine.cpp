@@ -385,7 +385,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     }
 
     // Prepare bin for playing
-    gst_element_set_state( input->bin, GST_STATE_READY );
+    gst_element_set_state( input->bin, GST_STATE_PAUSED );
 
     if ( m_currentInput ) {
         m_currentInput->setState( InputPipeline::XFADE_OUT );

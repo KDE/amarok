@@ -572,11 +572,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( i18n( "&Save" ), SAVE );
             menu.insertItem( i18n( "&Clear" ), CLEAR );
             menu.insertItem( i18n( "Remove Duplicates" ), RMDUP );
-            if( K3bExporter::isAvailable() ) {
-                menu.insertSeparator();
-                menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
-                menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
-            }
+
+            menu.insertSeparator();
+
+            menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+            menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
 
             switch( menu.exec( p ) )
             {
@@ -653,12 +655,16 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( i18n( "&Append to Playlist" ), APPEND ); //TODO say Append to Playlist
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
-        if( K3bExporter::isAvailable() && item->url().isLocalFile() ) {
-            menu.insertSeparator();
-            menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
-            menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
-        }
+
         menu.insertSeparator();
+
+        menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() && item->url().isLocalFile() );
+        menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() && item->url().isLocalFile() );
+
+        menu.insertSeparator();
+
         menu.insertItem( SmallIcon("edittrash"), i18n( "&Remove" ), REMOVE );
         menu.insertItem( SmallIcon("info"), i18n( "&Track Information" ), INFO );
 

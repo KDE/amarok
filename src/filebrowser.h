@@ -79,6 +79,8 @@ private slots:
     void makePlaylist();
     void addToPlaylist();
     void selectAllFiles();
+    void burnDataCd();
+    void burnAudioCd();
 
 private:
     void setupToolbar();
