@@ -59,10 +59,10 @@ class OSDWidget : public QWidget
 
     protected:
         /** determine new size and position */
-        void determineMetrics();
+        QRect determineMetrics();
 
         /** call to reposition a new OSD text or when position attributes change */
-        void reposition( QSize newSize = QSize() );
+        QPoint reposition( QSize newSize = QSize() );
 
         /** reimplemented */
         virtual void mousePressEvent( QMouseEvent* );

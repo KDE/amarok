@@ -63,27 +63,46 @@ OSDWidget::show() //virtual
         return;
 
     const QRect oldGeometry = QRect( pos(), size() );
-
-    determineMetrics();
-
-    const QRect newGeometry = QRect( pos(), size() );
+    const QRect newGeometry = determineMetrics();
 
     //TODO handle case when already shown properly
-    if( !isShown() ) {
+    if( !isShown() || !newGeometry.intersects( oldGeometry ) ) {
         // obtain snapshot of the screen where we are about to appear
         Grabber g( newGeometry, backgroundColor() );
         m_screenshot = g.screen;
 
+        setGeometry( newGeometry );
+
         QWidget::show();
     }
-    else
+    else {
+        const QRect unite = oldGeometry.unite( newGeometry );
+        QPoint p;
+
+        debug() << endl << oldGeometry << endl;
+        debug() << newGeometry << endl;
+        debug() << unite << endl;
+
+        Grabber g( unite, backgroundColor() );
+
+        p = oldGeometry.topLeft() - unite.topLeft();
+        bitBlt( &g.screen, p, &m_screenshot );
+
+        m_screenshot.resize( newGeometry.size() );
+
+        p = newGeometry.topLeft() - unite.topLeft();
+        bitBlt( &m_screenshot, 0, 0, &g.screen, p.x(), p.y() );
+
+        setGeometry( newGeometry );
+
         paintEvent( 0 );
+    }
 
     if( m_duration ) //duration 0 -> stay forever
        m_timer->start( m_duration, true ); //calls hide()
 }
 
-void
+QRect
 OSDWidget::determineMetrics()
 {
     static const uint HMARGIN = 20;
@@ -116,10 +135,11 @@ OSDWidget::determineMetrics()
 
     // size and move us
     rect.addCoords( -HMARGIN, -VMARGIN, HMARGIN, VMARGIN );
-    reposition( rect.size() );
+
+    return QRect( reposition( rect.size() ), rect.size() );
 }
 
-void
+QPoint
 OSDWidget::reposition( QSize newSize )
 {
     if( !newSize.isValid() ) newSize = size();
@@ -155,8 +175,7 @@ OSDWidget::reposition( QSize newSize )
     // correct for screen position
     newPos += screen.topLeft();
 
-    resize( newSize );
-    move( newPos );
+    return newPos;
 }
 
 void
@@ -267,7 +286,7 @@ OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
     m_screen = (screen >= n) ? n-1 : screen;
-    reposition();
+    move( reposition() );
 }
 
 
