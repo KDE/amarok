@@ -70,6 +70,7 @@ namespace amaroK
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void slideEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* );
 
         private:
             PrettySlider( const PrettySlider& ); //undefined

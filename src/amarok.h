@@ -3,11 +3,11 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include <qcolor.h>
 #include <qstring.h>
 
 class KActionCollection;
 class KConfig;
+class QColor;
 class QEvent;
 class QWidget;
 

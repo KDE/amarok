@@ -119,11 +119,26 @@ amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, QWidget *parent
 }
 
 void
+amaroK::PrettySlider::mousePressEvent( QMouseEvent *e )
+{
+    amaroK::Slider::mousePressEvent( e );
+
+    slideEvent( e );
+}
+
+void
 amaroK::PrettySlider::slideEvent( QMouseEvent *e )
 {
     QSlider::setValue( orientation() == Horizontal
         ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
         : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+}
+
+namespace amaroK {
+    namespace ColorScheme {
+        extern QColor Background;
+        extern QColor Foreground;
+    }
 }
 
 void
@@ -145,8 +160,8 @@ amaroK::PrettySlider::paintEvent( QPaintEvent* )
     }
 
     p.translate( 0, MARGIN );
-      p.setPen( 0x80a0ff );
-      p.fillRect( 0, 0, pos, h, QColor( 0x002090 ) );
+      p.setPen( amaroK::ColorScheme::Foreground );
+      p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
       p.drawRect( 0, 0, w, h );
     p.translate( 0, -MARGIN );
 
