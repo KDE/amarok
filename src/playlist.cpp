@@ -1881,10 +1881,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case PLAY_NEXT:
-        if( itemCount > 1 )
+        //NOTE: This forbids dequeuing of multiple tracks
+       // if( itemCount > 1 )
             // we need to dequeue everything that is already queued when
             // the user is queueing a selection, otherwise it feels wrong
-            m_nextTracks.clear();
+            // m_nextTracks.clear();
 
         for( MyIt it( this, MyIt::Selected ); *it; ++it )
             queue( *it );
