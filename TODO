@@ -8,8 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
  
-  FIX 154 <markey> When track-length is 0 (e.g. stream), disable position slider, but make it show the
-                   current position.
+  FIX 154 <markey> When track-length is 0 (e.g. stream), disable position slider, but make the time display
+                   show the current position.
 
   FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
 
