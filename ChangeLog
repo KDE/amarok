@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  * fix: FileBrowser remembers that state of its view between sessions
   * chg: made amaroK aRts-independent. with the --without-arts configure switch
          it's possible to build the app without aRts support, using only NMM or GST
   * add: Shift drag appends items to the end of the playlist.

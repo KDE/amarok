@@ -108,6 +108,9 @@ QColor KDevFileSelector::altBgColor;
 KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
         : QWidget(parent, name)
 {
+    KConfig *config = kapp->config();
+    config->setGroup( "FileBrowser" );
+
     mActionCollection = new KActionCollection( this );
     QVBoxLayout* lo = new QVBoxLayout(this);
     QtMsgHandler oldHandler = qInstallMsgHandler( silenceQToolBar );
@@ -128,7 +131,8 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     cmbPath->listBox()->installEventFilter( this );
 
     dir = new KDevDirOperator( QString::null, this, "operator" );
-    dir->setView( KFile::Detail );
+    dir->readConfig( config );
+    dir->setView( KFile::Default ); //will set userconfigured view
     dir->setMode( KFile::Files );
     dir->setEnableDirHighlighting( true );
 
@@ -209,7 +213,9 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
 }
 
 KDevFileSelector::~KDevFileSelector()
-{}
+{
+    dir->writeConfig( kapp->config(), "FileBrowser" );
+}
 //END Constructor/Destructor
 
 
@@ -224,6 +230,15 @@ void KDevFileSelector::readConfig()
 {
     // set up the toolbar
     setupToolbar();
+
+    //FIXME it is pointless using KConfig XT here
+    //1. These settings are not used globally, they are used locally
+    //2. It means that you have to spend more time adding new settings for this class than using KConfig
+    //3. it means you have to go to the hassle of calling browserWin->writeConfig which calls
+    //   FileBrowser->writeConfig when you could just let the dtor save the settings
+
+    //Also putting them in a separate funciton to the ctor limits their usefulness as they may be needed
+    //for instantiation of members
 
     cmbPath->setMaxItems( AmarokConfig::pathcomboHistoryLen() );
     cmbPath->setURLs( AmarokConfig::dirHistory() );
@@ -253,20 +268,15 @@ void KDevFileSelector::setupToolbar()
     toolbar->clear();
 
     QStringList tbactions;
-    // resonable collection for default toolbar
-    tbactions << "up" << "back" << "forward" << "home"
-              << "short view" << "detailed view" << "bookmarks";
+    tbactions << "up" << "back" << "forward" << "home" << "short view" << "detailed view";
 
     KAction *ac;
     for ( QStringList::Iterator it=tbactions.begin(); it != tbactions.end(); ++it )
     {
-        if ( *it == "bookmarks" || *it == "sync_dir" )
-            ac = mActionCollection->action( (*it).latin1() );
-        else
-            ac = dir->actionCollection()->action( (*it).latin1() );
-        if ( ac )
-            ac->plug( toolbar );
+        ac = dir->actionCollection()->action( (*it).latin1() );
+        if( ac ) ac->plug( toolbar );
     }
+    mActionCollection->action( "bookmarks" )->plug( toolbar );
 }
 
 
