@@ -471,11 +471,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
         m_db->execSql( QString( "SELECT tags.title, tags.url, tags.track "
                                 "FROM tags, artist, album "
                                 "WHERE tags.album = album.id AND album.name LIKE '%1' AND "
-                                      "tags.artist = artist.id AND artist.name LIKE '%2' "
+                                      "tags.artist = artist.id AND "
+                                      "( artist.name LIKE '%2' OR tags.dir = '%3' ) "
                                 "ORDER BY tags.track;" )
-                      .arg( m_db->escapeString( m_currentTrack->album() ) )
-                      .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
-
+                       .arg( m_db->escapeString( m_currentTrack->album() ) )
+                       .arg( m_db->escapeString( m_currentTrack->artist() ) )
+                       .arg( m_db->escapeString( m_currentTrack->url().directory( true, false ) ) ), &values, &names );
+                      
         if ( !values.isEmpty() )
         {
             browser->write( "<br><div class='rbcontent'>" );

@@ -73,7 +73,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
         }
     }
 
-
     QWidget *coverWidget = new QWidget( splitter );
     QVBoxLayout *viewBox = new QVBoxLayout( coverWidget );
     viewBox->setMargin(4);
