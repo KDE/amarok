@@ -462,7 +462,7 @@ void BrowserWin::insertMedia( const KURL::List &list, bool clearList, bool direc
 
 bool BrowserWin::isAnotherTrack() const
 {
-    return m_playlist->isAnotherTrack();
+    return m_playlist->isAnotherTrack() || AmarokConfig::repeatPlaylist();
 }
 
 

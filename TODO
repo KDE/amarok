@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
     * fix: #66 <Grue_> seems that the latest taglib from cvs is not compatible with amarok
 
-    * fix: #65 <markey> option "Repeat Playlist" not honored when skipping broken track @ end of PL
-
     * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
                the first track automagically
 
