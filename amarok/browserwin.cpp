@@ -393,7 +393,8 @@ void BrowserWin::slotUpdateFonts()
       font = pApp->m_optBrowserWindowFont;
     }
 
-    m_pBrowserWidget->setFont( font );
+    m_pBrowserWidget ->setFont( font );
+    m_pStreamBrowser ->setFont( font );
     m_pPlaylistWidget->setFont( font );
 }
 

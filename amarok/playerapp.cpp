@@ -316,7 +316,7 @@ void PlayerApp::initArts()
     if ( m_Server.isNull() )
     {
         KMessageBox::error( 0, i18n( "Cannot start aRts! Exiting." ), i18n( "Fatal Error" ) );
-        exit( 1 );
+        ::exit( 1 );
     }
     // </most of this code was taken from noatun's engine.cpp>
 
@@ -334,8 +334,7 @@ void PlayerApp::initArts()
                                    wrong prefix. Please install again using: ./configure \
                                    --prefix=`kde-config --prefix`" ),
                             i18n( "Fatal Error" ) );
-        //FIXME exit() does not work with KUniqueApplication. it simply continues. what to do?
-        exit( 1 );
+        ::exit( 1 );
     }
             
     m_XFade.percentage( m_XFadeValue );
