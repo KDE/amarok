@@ -26,10 +26,12 @@ public:
 	Sonogram(QWidget*);
 	~Sonogram();
 
+protected:
 	void init();
 	void analyze(const Scope&);
 	void transform(Scope&);
 	void demo();
+	void resizeEvent(QResizeEvent*);
 };
 
 #endif

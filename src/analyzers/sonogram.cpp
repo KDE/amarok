@@ -31,6 +31,20 @@ void Sonogram::init()
 }
 
 
+void Sonogram::resizeEvent(QResizeEvent *e)
+{
+	QWidget::resizeEvent(e);
+	canvas()->resize(size());
+	background()->resize(size());
+
+	resizeForBands(height());
+
+	background()->fill(backgroundColor());
+	bitBlt(canvas(), 0, 0, background());
+	bitBlt(this, 0, 0, background());
+}
+
+
 void Sonogram::analyze(const Scope &s)
 {
 	int x = width() - 1;
