@@ -2,17 +2,19 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
+#define DEBUG_PREFIX "Scroblaaaah!"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "config.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "playlist.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kmdcodec.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
@@ -65,7 +67,7 @@ void Scrobbler::similarArtists( const QString & artist )
     QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
                      .arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ) );
 
-    kdDebug() << "[AudioScrobbler] Similar artists: " << url << endl;
+    debug() << "Similar artists: " << url << endl;
 
     m_similarArtistsBuffer = "";
     m_artist = artist;
@@ -88,7 +90,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 
     if ( job->error() )
     {
-        kdWarning() << "[AudioScrobbler] KIO error! errno: " << job->error() << endl;
+        warning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
 
@@ -105,13 +107,13 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
         artist = m_similarArtistsBuffer.mid( m_similarArtistsBuffer.find( "/similar/" ) + 9 );
         artist = KURL::decode_string( artist.mid( 0, artist.find( "\" title" ) ) );
 
-        //kdDebug() << artist << endl;
+        //debug() << artist << endl;
         if ( !artist.isEmpty() ) suggestions << artist.replace( "+", " " );
 
         m_similarArtistsBuffer = m_similarArtistsBuffer.mid( m_similarArtistsBuffer.find( "</td>" ) );
     }
 
-    kdDebug() << "[AudioScrobbler] Suggestions retrieved (" << suggestions.count() << ")" << endl;
+    debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
     if ( suggestions.count() > 0 )
         emit similarArtistsFetched( m_artist, suggestions );
 }
@@ -445,11 +447,11 @@ void ScrobblerSubmitter::handshake()
 
     else
     {
-        kdDebug() << "[AudioScrobbler] Handshake not implemented for protocol version: " << PROTOCOL_VERSION << endl;
+        debug() << "Handshake not implemented for protocol version: " << PROTOCOL_VERSION << endl;
         return;
     }
 
-    kdDebug() << "[AudioScrobbler] Handshake url: " << handshakeUrl << endl;
+    debug() << "Handshake url: " << handshakeUrl << endl;
 
     m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
@@ -545,11 +547,11 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
     else
     {
-        kdDebug() << "[AudioScrobbler] Submit not implemented for protocol version: " << PROTOCOL_VERSION << endl;
+        debug() << "Submit not implemented for protocol version: " << PROTOCOL_VERSION << endl;
         return;
     }
 
-    kdDebug() << "[AudioScrobbler] Submit data: " << data << endl;
+    debug() << "Submit data: " << data << endl;
 
     m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
@@ -616,12 +618,12 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 {
     if ( job->error() )
     {
-        kdWarning() << "[AudioScrobbler] KIO error! errno: " << job->error() << endl;
+        warning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
 
-//     kdDebug()
-//         << "[AudioScrobbler] Handshake result received: "
+//     debug()
+//         << "Handshake result received: "
 //         << endl << m_submitResultBuffer << endl;
 
     // UPTODATE
@@ -643,7 +645,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "UPDATE" ) )
     {
-        kdWarning() << "[AudioScrobbler] A new version of amaroK is available" << endl;
+        warning() << "A new version of amaroK is available" << endl;
 
         m_challenge = m_submitResultBuffer.section( "\n", 1, 1 );
         m_submitUrl = m_submitResultBuffer.section( "\n", 2, 2 );
@@ -659,7 +661,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).stripWhiteSpace();
 
-        kdWarning() << "[AudioScrobbler] Handshake failed (" << reason << ")" << endl;
+        warning() << "Handshake failed (" << reason << ")" << endl;
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
@@ -669,15 +671,15 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     else if ( m_submitResultBuffer.startsWith( "BADUSER" ) ||
               m_submitResultBuffer.startsWith( "BADAUTH" ) )
     {
-        kdWarning() << "[AudioScrobbler] Handshake failed (Authentication failed)" << endl;
+        warning() << "Handshake failed (Authentication failed)" << endl;
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
     }
     else
-        kdWarning() << "[AudioScrobbler] Unknown handshake response" << endl;
+        warning() << "Unknown handshake response" << endl;
 
-    kdDebug() << "[AudioScrobbler] Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl << endl;
+    debug() << "Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl << endl;
 }
 
 
@@ -688,20 +690,20 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
 {
     if ( job->error() )
     {
-        kdWarning() << "[AudioScrobbler] KIO error! errno: " << job->error() << endl;
+        warning() << "KIO error! errno: " << job->error() << endl;
         enqueueJob( job );
         return;
     }
 
-//     kdDebug()
-//         << "[AudioScrobbler] Submit result received: "
+//     debug()
+//         << "Submit result received: "
 //         << endl << m_submitResultBuffer << endl;
 
     // OK
     // INTERVAL n (protocol 1.1)
     if (m_submitResultBuffer.startsWith( "OK" ) )
     {
-        kdDebug() << "[AudioScrobbler] Submit successful" << endl;
+        debug() << "Submit successful" << endl;
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
             m_interval = interval.mid( 9 ).toUInt();
@@ -716,7 +718,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).stripWhiteSpace();
 
-        kdWarning() << "[AudioScrobbler] Submit failed (" << reason << ")" << endl;
+        warning() << "Submit failed (" << reason << ")" << endl;
 
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
@@ -728,7 +730,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     // INTERVAL n (protocol 1.1)
     else if ( m_submitResultBuffer.startsWith( "BADAUTH" ) )
     {
-        kdWarning() << "[AudioScrobbler] Submit failed (Authentication failed)" << endl;
+        warning() << "Submit failed (Authentication failed)" << endl;
 
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
         if ( interval.startsWith( "INTERVAL" ) )
@@ -739,7 +741,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     }
     else
     {
-        kdWarning() << "[AudioScrobbler] Unknown submit response" << endl;
+        warning() << "Unknown submit response" << endl;
         enqueueJob( job );
     }
 }
@@ -788,7 +790,7 @@ void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
     {
         SubmitItem* itemFromQueue = m_submitQueue.getFirst();
         m_submitQueue.removeFirst();
-        kdDebug() << "[AudioScrobbler] Dropping " << itemFromQueue->artist()
+        debug() << "Dropping " << itemFromQueue->artist()
                   << " - " << itemFromQueue->title() << " from submit queue" << endl;
 
         delete itemFromQueue;
@@ -912,7 +914,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 
     if( !file.open( IO_WriteOnly ) )
     {
-        kdDebug() << "[AudioScrobbler] Couldn't write file: " << m_savePath << endl;
+        debug() << "Couldn't write file: " << m_savePath << endl;
         return;
     }
 
@@ -945,7 +947,7 @@ void ScrobblerSubmitter::readSubmitQueue()
 
     if ( !file.open( IO_ReadOnly ) )
     {
-        kdDebug() << "[AudioScrobbler] Couldn't open file: " << m_savePath << endl;
+        debug() << "Couldn't open file: " << m_savePath << endl;
         return;
     }
 
@@ -955,7 +957,7 @@ void ScrobblerSubmitter::readSubmitQueue()
     QDomDocument d;
     if( !d.setContent( stream.read() ) )
     {
-        kdDebug() << "[AudioScrobbler] Couldn't read file: " << m_savePath << endl;
+        debug() << "Couldn't read file: " << m_savePath << endl;
         return;
     }
 

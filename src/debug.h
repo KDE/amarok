@@ -3,17 +3,32 @@
 #define AMAROK_DEBUG_H
 
 #include <kdebug.h>
+#include <qcstring.h>
 
 /**
- * Main reason for these is so you can define a DEBUG_PREFIX
- * that appears before your output. Just do:
+ * @namespace Debug
+ * @short kdebug with indentation functionality and convenience macros
+ * @author Max Howell <max.howell@methylblue.com>
  *
- * #define DEBUG_PREFIX "Blah"
- * #include "debug.h"
+ * Usage:
  *
- * add you debug output will appear like so:
+ *     #define DEBUG_PREFIX "Blah"
+ *     #include "debug.h"
  *
- * amaroK: [Blah] output
+ *     void function()
+ *     {
+ *        DEBUG_BEGIN
+ *        debug() << "output1" << endl;
+ *        debug() << "output2" << endl;
+ *        DEBUG_END
+ *     }
+ *
+ * Will output:
+ *
+ * app: BEGIN: [void function()]
+ * app:   [Blah] output1
+ * app:   [Blah] output2
+ * app: END: [void function()]
  */
 
 namespace Debug

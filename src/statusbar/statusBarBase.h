@@ -41,6 +41,7 @@ namespace KDE
     /**
      * @class KDE::StatusBar
      * @short advanced statusBar
+     * @author Max Howell <max.howell@methylblue.com>
      *
      * Like a normal QStatusBar, but add widgets directly:
      *
