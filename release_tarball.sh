@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Shell script for generating amaroK tarball releases from CVS
+#
+# (c) 2004 Mark Kretschmann <markey@web.de>
+# License: GPL V2
+
+
 version=`kdialog --inputbox "amaroK version: "` 
 cvsroot=`kdialog --inputbox "CVS root directory: "`
 
@@ -11,7 +17,10 @@ pushd kdeextragear-1
 
 cvs -z3 co -r KDE_3_2_BRANCH admin 
 cvs -z3 up amarok
-cvs -z3 up doc/amarok
+cvs -z3 up -l doc
+pushd doc
+cvs -z3 up amarok
+popd
 
 # Remove CVS relevant files
 find -name "CVS" -exec rm -rf {} \;
@@ -54,10 +63,13 @@ bzip2 $folder.tar
 rm -rf $folder
 
 echo
-md5sum $folder.tar.bz2
-
-echo
+echo "====================================================="
 echo "Congratulations :) amaroK $version tarball generated."
 echo "Now drink a few pints, have some fun on #amarok"
 echo
+echo MD5 checksum:
+md5sum $folder.tar.bz2
+echo
+echo
+
 
