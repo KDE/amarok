@@ -587,13 +587,18 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << i18n( "Click for information from amazon.com, right-click for menu." ) ) );
 
     if ( !values.isEmpty() )
+    {
+        QDate firstPlay = QDate::fromString( values[ 0 ].left( values[ 0 ].length() - 3 ), Qt::ISODate );
+        QDate lastPlay = QDate::fromString( values[ 1 ].left( values[ 1 ].length() - 3 ), Qt::ISODate );
         browser->write( QStringx("%1<br>%2<br>%3<br>%4<br>")
             .args( QStringList()
                 << i18n( "Track played once", "Track played %n times", values[2].toInt() )
                 << i18n( "Score: %1" ).arg( values[3] )
-                << i18n( "Last play: %1" ).arg( values[1].left( values[1].length() - 3 ) )
-                << i18n( "First play: %1" ).arg( values[0].left( values[0].length() - 3 ) ) ) );
-    else
+                << i18n( "Last play: %1" ).arg( KGlobal::locale()->formatDate( lastPlay, true /* short */ ) )
+                << i18n( "First play: %1" ).arg( KGlobal::locale()->formatDate( firstPlay, true /* short */ ) ) 
+                       ) );
+   }
+   else
         browser->write( "<i>" + i18n( "Never played before" )  + "</i>" );
 
     browser->write(
