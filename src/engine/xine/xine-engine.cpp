@@ -88,13 +88,7 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init()
 {
-   debug() <<
-      "Build stamp: " << __DATE__ << ' ' << __TIME__ << endl <<
-      #ifdef XINE_SAFE_MODE
-      "Running in safe-mode\n"
-      #endif
-      "Please report bugs to http://bugs.kde.org\n"
-      "Please test bugs against the newest available xine-lib\n";
+   debug() << "xine-engine; bringing joy to small mexican gerbils a few weeks at a time.";
 
    m_xine = xine_new();
 
