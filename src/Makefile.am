@@ -30,9 +30,55 @@ INCLUDES = \
     $(taglib_includes) \
     $(all_includes)
 
-amarokapp_SOURCES = Options1.ui     Options2.ui     Options3.ui     Options4.ui     Options5.ui     configdialog.cpp     amarokfilelist.cpp     actionclasses.cpp     sliderwidget.cpp     systray.cpp     browserbar.cpp     playlistwindow.cpp     collectionbrowser.cpp     directorylist.cpp     directorylistbase.ui     effectwidget.cpp     enginecontroller.cpp     engineobserver.cpp     fht.cpp     filebrowser.cpp     kbookmarkhandler.cpp     metabundle.cpp     osd.cpp     app.cpp     playerwindow.cpp     playlistbrowser.cpp     playlistitem.cpp     playlistloader.cpp     tracktooltip.cpp     playlist.cpp     pluginmanager.cpp     searchbrowser.cpp     socketserver.cpp     statusbar.cpp     streambrowser.cpp     threadweaver.cpp contextbrowser.cpp collectiondb.cpp
+amarokapp_SOURCES = \
+    Options1.ui \
+    Options2.ui \
+    Options3.ui \
+    Options4.ui \
+    Options5.ui \
+    actionclasses.cpp \
+    amarokfilelist.cpp \
+    app.cpp \
+    browserbar.cpp \
+    collectionbrowser.cpp \
+    collectiondb.cpp \
+    configdialog.cpp \
+    contextbrowser.cpp \
+    directorylist.cpp \
+    directorylistbase.ui \
+    effectwidget.cpp \
+    enginecontroller.cpp \
+    engineobserver.cpp \
+    fht.cpp \
+    filebrowser.cpp \
+    kbookmarkhandler.cpp \
+    metabundle.cpp \
+    osd.cpp \
+    playerwindow.cpp \
+    playlist.cpp \
+    playlistbrowser.cpp \
+    playlistitem.cpp \
+    playlistloader.cpp \
+    playlistwindow.cpp \
+    pluginmanager.cpp \
+    searchbrowser.cpp \
+    sliderwidget.cpp \
+    socketserver.cpp \
+    statusbar.cpp \
+    streambrowser.cpp \
+    systray.cpp \
+    threadweaver.cpp \
+    tracktooltip.cpp
 
-amarokapp_LDADD = $(top_builddir)/amarok/src/amarokcore/libamarokcore.la $(top_builddir)/amarok/src/analyzers/libanalyzers.la $(top_builddir)/amarok/src/engine/libengine.la $(top_builddir)/amarok/src/plugin/libplugin.la $(top_builddir)/amarok/src/sqlite/libsqlite.la $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la $(LIB_KHTML) $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(gl_libs)
+amarokapp_LDADD = \
+    $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
+    $(top_builddir)/amarok/src/analyzers/libanalyzers.la \
+    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/plugin/libplugin.la \
+    $(top_builddir)/amarok/src/sqlite/libsqlite.la \
+    $(top_builddir)/amarok/src/titleproxy/libtitleproxy.la \
+    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
+    $(taglib_libs) $(gl_libs)
 
 amarokapp_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
@@ -64,4 +110,3 @@ messages: rc.cpp
         $(XGETTEXT) $$LIST -o $(podir)/amarok.pot; \
     fi
 
-noinst_HEADERS =  contextbrowser.h collectiondb.h
