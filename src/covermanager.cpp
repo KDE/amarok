@@ -33,6 +33,7 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>    //showCoverMenu()
+#include <kmultipledrag.h>
 #include <kpopupmenu.h>    //showCoverMenu()
 #include <kprogress.h>
 #include <kpushbutton.h>
@@ -41,6 +42,7 @@
 #include <kstatusbar.h>
 #include <ktoolbarbutton.h>    //clear filter button
 #include <kurl.h>
+#include <kurldrag.h>
 
 
 QPixmap *nocover = 0;
@@ -142,7 +144,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     nocover = new QPixmap( m_db->getImageForAlbum( QString::null, QString::null, 50 ) );
 
     //cover view
-    m_coverView = new KIconView( coverWidget );
+    m_coverView = new CoverView( coverWidget );
     m_coverView->setArrangement( QIconView::LeftToRight );
     m_coverView->setResizeMode( QIconView::Adjust );
     m_coverView->setSelectionMode( QIconView::Extended );
@@ -756,7 +758,31 @@ bool CoverManager::eventFilter( QObject *o, QEvent *e )
     return FALSE;
 }
 
+//////////////////////////////////////////////////////////////////////
+//    CLASS CoverView
+/////////////////////////////////////////////////////////////////////
 
+CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
+    : KIconView( parent, name, f )
+{
+}
+
+
+QDragObject *CoverView::dragObject()
+{
+    CoverViewItem *item = static_cast<CoverViewItem *>( currentItem() );
+    if( !item )
+        return 0;
+
+    KMultipleDrag *drag = new KMultipleDrag( this );
+    drag->setPixmap( item->coverPixmap() );
+    drag->addDragObject( new QIconDrag( 0 ) );
+    QString imagePath = CollectionDB().getImageForAlbum( item->artist(), item->album(), 0 );
+    drag->addDragObject( new QImageDrag( QImage( imagePath ) ) );
+    drag->addDragObject( new KURLDrag( KURL( imagePath ) ) );
+
+    return drag;
+}
 
 //////////////////////////////////////////////////////////////////////
 //    CLASS CoverViewItem
@@ -770,7 +796,8 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     , m_hasCover( QFile::exists( m_coverImagePath ) )
     , m_coverPix( 0 )
 {
-    setDragEnabled( false );
+    setDragEnabled( hasCover() );
+    setDropEnabled( true );
     calcRect();
 
     kdDebug() << m_coverImagePath << endl;
@@ -779,6 +806,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
 
 void CoverViewItem::loadCover()
 {
+    // m_coverImagePath = CollectionDB().getImageForAlbum( m_artist, m_album ); 
     m_hasCover = QFile::exists( m_coverImagePath );
 
     if( m_hasCover ) {
@@ -857,4 +885,35 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
 }
 
 
+void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
+{
+    if( QImageDrag::canDecode( e ) ) {
+       if( hasCover() ) {
+           int button = KMessageBox::warningContinueCancel( iconView(),
+                            i18n( "Are you sure you want to overwrite this cover?"),
+                            QString::null,
+                            i18n("&Overwrite Confirmation") );
+           if( button == KMessageBox::Cancel )
+               return;
+       }
+       
+       QImage img;
+       QImageDrag::decode( e, img );
+       CollectionDB().setImageForAlbum( artist(), album(), QString(), img ); 
+       loadCover();
+    }
+}
+
+
+void CoverViewItem::dragEntered()
+{
+    setSelected( true );
+}
+
+
+void CoverViewItem::dragLeft()
+{
+    setSelected( false );
+}
+ 
 #include "covermanager.moc"

@@ -5,8 +5,8 @@
 #define COVERMANAGER_H
 
 #include <qdialog.h>
-#include <kiconview.h>
 #include <qptrlist.h>
+#include <kiconview.h>
 
 class KLineEdit;
 class KListView;
@@ -24,6 +24,7 @@ class QTimer;
 class QToolButton;
 
 class CollectionDB;
+class CoverView;
 class CoverViewItem;
 
 class CoverManager : public QWidget
@@ -69,7 +70,7 @@ Q_OBJECT
         CollectionDB *m_db;
 
         KListView *m_artistView;
-        KIconView *m_coverView;
+        CoverView *m_coverView;
         QHBox *m_searchBox;
         KLineEdit *m_searchEdit;
         QToolButton *m_viewButton;
@@ -100,20 +101,34 @@ Q_OBJECT
         int m_coverErrors;
 };
 
+class CoverView : public KIconView
+{
+Q_OBJECT
+        
+    public:
+        CoverView( QWidget *parent = 0, const char *name = 0, WFlags f = 0 );
 
+    protected:
+        QDragObject *dragObject();
+};
+		  
 class CoverViewItem : public KIconViewItem
 {
     public:
         CoverViewItem( QIconView *parent, QIconViewItem *after, QString artist, QString album );
 
         void loadCover();
-        bool hasCover() { return m_hasCover; }
-        const QString artist() { return m_artist; }
-        const QString album() { return m_album; }
+        bool hasCover() const { return m_hasCover; }
+        QString artist() const { return m_artist; }
+        QString album() const { return m_album; }
+        QPixmap coverPixmap() const { return m_coverPix; }
 
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
         void paintFocus(QPainter *, const QColorGroup &) { }
+        void dropped( QDropEvent *, const QValueList<QIconDragItem> & );
+        void dragEntered();
+        void dragLeft();
         void calcRect( const QString& text_=QString::null );
 
     private:
