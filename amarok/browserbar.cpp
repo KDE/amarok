@@ -140,18 +140,23 @@ BrowserBar::adjustSize() //SLOT
 bool
 BrowserBar::eventFilter( QObject*, QEvent *e )
 {
-    #define e static_cast<QMouseEvent*>(e)
-    const uint currentPos = m_pos;
+    if( !m_pages.current() ) return false;
 
     switch( e->type() )
     {
-    case QEvent::MouseMove:
     case QEvent::MouseButtonRelease:
-    {
-        if( !m_pages.current() ) break; //no pages open, don't allow resizing //TODO don't show resize cursor
 
-        const uint newPos   = mapFromGlobal( e->globalPos() ).x();
-        const uint minWidth = m_multiTabBar->width() + m_pages.current()->minimumWidth();
+        m_pages.current()->setBaseSize( m_pages.current()->size() );
+
+        //FALL THROUGH
+
+    case QEvent::MouseMove:
+    {
+        #define e static_cast<QMouseEvent*>(e)
+
+        const uint currentPos = m_pos;
+        const uint newPos     = mapFromGlobal( e->globalPos() ).x();
+        const uint minWidth   = m_multiTabBar->width() + m_pages.current()->minimumWidth();
 
         if( newPos < minWidth ) m_pos = minWidth;
         else if( newPos < width() * 0.90 ) m_pos = newPos; //TODO allow for widget maximumWidth
@@ -165,18 +170,19 @@ BrowserBar::eventFilter( QObject*, QEvent *e )
         //m_divider->repaint( false );
 
         return true;
+
+        #undef e
     }
+
     default:
         break;
     }
-
-    #undef e
 
     return false;
 }
 
 bool
-BrowserBar::event( QEvent* e )
+BrowserBar::event( QEvent *e )
 {
   switch( e->type() )
   {
@@ -206,10 +212,10 @@ BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon 
     int id = m_multiTabBar->tabs()->count();
     QString name( widget->name() );
 
-    widget->reparent( m_pageHolder, QPoint(), false );
+    widget->reparent( m_pageHolder, QPoint(), false ); //we need to own this widget for it to layout properly
     m_pageHolder->layout()->add( widget );
     widget->hide();
-    widget->setMinimumWidth( 20 );
+    if( widget->minimumWidth < 20 ) widget->setMinimumWidth( 20 );
 
     m_multiTabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_multiTabBar->tab( id );
@@ -221,7 +227,7 @@ BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon 
 
     KConfig *config = kapp->config();
     config->setGroup( "BrowserBar" );
-    widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() + m_multiTabBar->width() ), DefaultHeight );
+    widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DefaultHeight );
     {
         //FIXME what if there's no correlation between QPtrList index and multiTabBar id?
         //we need some kind of sensible behavior that doesn't require much code
