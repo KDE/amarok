@@ -9,33 +9,32 @@
 #include "collectiondb.h"
 #include "collectionreader.h"
 #include "debug.h"
+#include <kapplication.h>
+#include <kglobal.h>
+#include <klocale.h>
+#include <iostream>
 #include "metabundle.h"
 #include "playlistbrowser.h"
 #include "statusbar.h"
 
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
-
-#include <kapplication.h>
-#include <kglobal.h>
-#include <klocale.h>
-
-#include <dirent.h>    //stat
-#include <errno.h>
-#include <iostream>
-#include <sys/types.h> //stat
-#include <sys/stat.h>  //stat
-#include <unistd.h>    //stat
+extern "C"
+{
+    #include <dirent.h>    //stat
+    #include <errno.h>
+    #include <sys/types.h> //stat
+    #include <sys/stat.h>  //stat
+    #include <unistd.h>    //stat
+}
 
 
 CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )
-    : DependentJob( parent, "CollectionReader" )
-    , m_db( CollectionDB::instance()->getStaticDbConnection() )
-    , m_folders( folders )
-    , m_recursively( AmarokConfig::scanRecursively() )
-    , m_importPlaylists( AmarokConfig::importPlaylists() )
-    , m_incremental( false )
-    , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
+        : DependentJob( parent, "CollectionReader" )
+        , m_db( CollectionDB::instance()->getStaticDbConnection() )
+        , m_folders( folders )
+        , m_recursively( AmarokConfig::scanRecursively() )
+        , m_importPlaylists( AmarokConfig::importPlaylists() )
+        , m_incremental( false )
+        , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
 {
     setDescription( i18n( "Building collection" ) );
 }
@@ -49,7 +48,7 @@ CollectionReader::~CollectionReader()
 
 
 IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
-    : CollectionReader( parent, QStringList() )
+        : CollectionReader( parent, QStringList() )
 {
     m_importPlaylists = false;
     m_incremental     = true;
@@ -155,6 +154,10 @@ CollectionReader::doJob()
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries )
 {
+    // linux specific, but this fits the 90% rule
+    if ( dir == "/dev" || dir == "/sys" || dir == "/proc" )
+        return;
+
     QCString dir8Bit = QFile::encodeName( dir );
 
     if ( m_processedDirs.contains( dir ) ) {
@@ -185,8 +188,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     }
 
 
-    for( dirent *ent; (ent = readdir( d )) && !isAborted(); )
-    {
+    for( dirent *ent; (ent = readdir( d )) && !isAborted(); ) {
         QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
@@ -197,24 +199,22 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         if ( stat( entry, &statBuf ) != 0 )
             continue;
 
-        if ( S_ISDIR( statBuf.st_mode ) ) {
-            if ( m_recursively )
-            {
-                const QString file = QFile::decodeName( entry );
-                // Check for symlink recursion
-                QFileInfo info( file );
-                if ( info.isSymLink() && m_processedDirs.contains( info.readLink() ) ) {
-                    warning() << "Skipping, recursive symlink: " << dir << endl;
-                    continue;
-                }
+        if ( S_ISDIR( statBuf.st_mode ) && m_recursively )
+        {
+            const QString file = QFile::decodeName( entry );
+            const QFileInfo info( file );
+            const QString readLink = info.readLink();
 
-                if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
-                    // we MUST add a '/' after the dirname
-                    readDir( file + '/', entries );
-            }
+            if ( readLink == "/" || info.isSymLink() && m_processedDirs.contains( readLink ) )
+                warning() << "Skipping symlink which points to: " << readLink << endl;
+
+            else if( !m_incremental || !CollectionDB::instance()->isDirInCollection( file ) )
+                // we MUST add a '/' after the dirname
+                readDir( file + '/', entries );
         }
-        else if ( S_ISREG( statBuf.st_mode ) ) {
-            //if a playlist is found it will send a PlaylistFoundEvent to PlaylistBrowser
+
+        else if( S_ISREG( statBuf.st_mode ) )
+        {
             const QString file = QFile::decodeName( entry );
 
             if ( m_importPlaylists ) {
@@ -223,7 +223,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                     QApplication::postEvent( PlaylistBrowser::instance(), new PlaylistFoundEvent( file ) );
             }
 
-            entries << file;
+            entries += file;
         }
     }
 
@@ -257,7 +257,7 @@ CollectionReader::readTags( const QStringList& entries )
         const QString dir = amaroK::directory( *it );
 
         // Append path to logfile
-        log << path.local8Bit() << "\n";
+        log << path.local8Bit() << std::endl;
         log.flush();
 
         // Tests reveal the following:
