@@ -224,7 +224,6 @@ CoverFetcher::editSearch() //SLOT
 {
     AmazonSearch* sdlg = new AmazonSearch();
     sdlg->textLabel->setText( m_text );
-    sdlg->sizeCombo->setCurrentItem( AmarokConfig::coverSize() );
     sdlg->searchString->setText( m_keyword );
     sdlg->setModal( true );
             
