@@ -1055,6 +1055,13 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
 void
 Playlist::columnResizeEvent( int col, int oldw, int neww )
 {
+    //prevent recursion
+    header()->blockSignals( true );
+
+    //qlistview is stupid sometimes
+    if ( neww < 0 )
+        setColumnWidth( col, 0 );
+
     if ( neww == 0 ) {
         //the column in question has been hidden
         //we need to adjust the other columns to fit
@@ -1062,7 +1069,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         const double W = (double)width() - negativeWidth;
 
         for( uint c = 0; c < m_columnFraction.size(); ++c ) {
-            if( c == col )
+            if( c == (uint)col )
                continue;
             switch( c ) {
             case PlaylistItem::Track:
@@ -1076,7 +1083,6 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
                    setColumnWidth( c, int(W * m_columnFraction[c]) );
             }
         }
-
     }
 
     else if( oldw != 0 ) {
@@ -1088,16 +1094,15 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             if ( header()->sectionSize( section ) ) {
                 int newSize = header()->sectionSize( section ) + oldw - neww;
                 if ( newSize > 5 ) {
-                    header()->blockSignals( true );
                     setColumnWidth( section, newSize );
-                    header()->blockSignals( false );
-
                     //we only want to adjust one column!
                     break;
                 }
             }
         }
     }
+
+    header()->blockSignals( false );
 
     negativeWidth = 0;
     uint w = 0;
@@ -1124,6 +1129,13 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
 
     //negative width is an important property, honest!
     negativeWidth -= w;
+
+    //we have to do this after we have established negativeWidth and set the columnFractions
+    if( neww == 0 || oldw == 0 ) {
+        //then this column has been inserted or removed, we need to update all the column widths
+        QResizeEvent e( size(), QSize() );
+        viewportResizeEvent( &e );
+    }
 }
 
 bool
