@@ -23,7 +23,7 @@
 #include <kdirlister.h>
 
 
-bool PlaylistLoader::s_stop = false;
+bool PlaylistLoader::s_stop;
 
 PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QListViewItem *after, bool playFirstUrl )
     : QThread()
@@ -33,16 +33,27 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListView *parent, QList
     , m_db( new CollectionDB )
     , m_dirLister( new KDirLister() )
 {
+    s_stop = false;
+
     m_dirLister->setAutoUpdate( false );
     m_dirLister->setAutoErrorHandlingEnabled( false, 0 );
+
+    // BEGIN Read folders recursively
+    KURL::List::ConstIterator it;
+    KURL::List::ConstIterator end = m_URLs.end();
+
+    for( it = m_URLs.begin(); it != end && !s_stop; ++it )
+        if ( !recurse( *it ) )
+            m_fileURLs.append( *it );
+    // END
+
+    delete m_dirLister;
 }
 
 
 PlaylistLoader::~PlaylistLoader()
 {
-    s_stop = false;
     delete m_db;
-    delete m_dirLister;
 }
 
 
@@ -96,22 +107,13 @@ PlaylistLoader::run()
     amaroK::StatusBar::startProgress();
     QApplication::postEvent( Playlist::instance(), new StartedEvent( m_afterItem, m_playFirstUrl ) );
 
-    KURL::List::ConstIterator end = m_fileURLs.end();
-    KURL::List::ConstIterator it;
-
-    // BEGIN Read folders recursively
-    end = m_URLs.end();
-    for( it = m_URLs.begin(); it != end && !s_stop; ++it )
-        if ( !recurse( *it ) )
-            m_fileURLs.append( *it );
-    // END
-
-
-    // BEGIN: Read tags, post bundles to Playlist
+    // BEGIN Read tags, post bundles to Playlist
     float increment = 100.0 / m_fileURLs.count();
     float progress = 0;
 
-    end = m_fileURLs.end();
+    KURL::List::ConstIterator it;
+    KURL::List::ConstIterator end = m_fileURLs.end();
+
     for ( it = m_fileURLs.begin(); it != end && !s_stop; ++it )
     {
         const KURL &url = *it;
@@ -263,7 +265,7 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
         m_dirLister->openURL( url );
 
         while ( !m_dirLister->isFinished() )
-            msleep( 20 );
+            kapp->processEvents( 100 );
 
         KFileItem* item;
         KFileItemList items = m_dirLister->items();
