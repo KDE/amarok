@@ -493,6 +493,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.setItemEnabled(COVER, ( item->depth() == 0 && m_category1 == i18n( "Album" )) ||
+                                   ( item->depth() == 1 && m_category2 == i18n( "Album" )));
         #endif
         menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
@@ -518,24 +520,19 @@ CollectionView::fetchCover() //SLOT
     #ifdef AMAZON_SUPPORT
     Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
-    if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;
 
-    KURL::List urls( listSelected() );
+    QString album = item->text(0);
+    QStringList values;
+    QStringList names;
+    QString command = QString ( "SELECT DISTINCT artist.name FROM artist, album, tags "
+                                "WHERE artist.id = tags.artist AND tags.album = album.id "
+                                "AND album.name = '%1';" ).arg(album);
 
-    for ( uint i = 0; i < urls.count(); i++ ) {
-        QString command = QString
-                            ( "SELECT DISTINCT artist.name, album.name FROM artist, tags, album "
-                            "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = '%1';" )
-                            .arg( m_db->escapeString( urls[i].path() ) );
-        QStringList values;
-        QStringList names;
-        m_db->execSql( command, &values, &names );
-        if ( values.isEmpty() ) continue;
-        QString artist = values[0];
-        QString album = values[1];
+    // find the first artist's name
+    m_db->execSql( command, &values, &names );
 
-        m_db->fetchCover( this, artist, album, false );
-    }
+    if ( !values.isEmpty() )
+        m_db->fetchCover( this, values[0], album, false );
     #endif
 }
 
