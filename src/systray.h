@@ -9,8 +9,9 @@
 #ifndef AMAROKSYSTRAY_H
 #define AMAROKSYSTRAY_H
 
-#include <ksystemtray.h>
 #include "engineobserver.h" //baseclass
+#include <ksystemtray.h>
+#include <qpixmap.h>
 
 namespace amaroK {
 
@@ -30,15 +31,15 @@ protected:
 
 private:
     bool event( QEvent* );
-    
+
     // repaints trayIcon showing progress (and overlay if present)
     void paintIcon( int mergePixels = -1, bool force = false );
     // blend an overlay icon over 'sourcePixmap' and repaint trayIcon
-    void blendOverlay( QPixmap * sourcePixmap );
+    void blendOverlay( QPixmap &sourcePixmap );
 
     long trackLength, mergeLevel;
-    QPixmap *baseIcon, *grayedIcon, *alternateIcon;
-    QPixmap *playOverlay, *pauseOverlay, *stopOverlay;
+    QPixmap baseIcon, grayedIcon, alternateIcon;
+    QPixmap playOverlay, pauseOverlay, stopOverlay;
     QPixmap *overlay;   // the current overlay (may be NULL)
     int blinkTimerID;   // timer ID returned by QObject::startTimer()
     bool overlayVisible;// used for blinking / hiding overlay

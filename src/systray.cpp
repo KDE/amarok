@@ -1,7 +1,8 @@
 //
 // AmarokSystray
 //
-// Author: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
+// Contributors: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
+//               berkus, mxcl, eros
 //
 // Copyright: like rest of amaroK
 //
@@ -12,7 +13,6 @@
 
 #include <qevent.h>
 #include <qimage.h>
-#include <qtimer.h>
 #include <kaction.h>
 #include <kapplication.h>
 #include <kpopupmenu.h>
@@ -21,18 +21,19 @@
 
 namespace amaroK
 {
-    static QPixmap *
-    loadOverlay( const char * iconName )
+    static QPixmap
+    loadOverlay( const char *iconName )
     {
-        QPixmap icon( locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" );
-        return new QPixmap( icon.convertToImage().smoothScale( 12, 12 ) );
+        return QImage( locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" ).smoothScale( 12, 12 );
     }
 }
 
 
 amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
-  : KSystemTray( playerWidget ), trackLength( 0 ), mergeLevel( -1 ),
-  grayedIcon( 0 ), alternateIcon( 0 ), blinkTimerID( 0 )
+  : KSystemTray( playerWidget )
+  , trackLength( 0 )
+  , mergeLevel( -1 )
+  , overlay( 0 )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
@@ -59,13 +60,13 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     quit->disconnect();
     connect( quit, SIGNAL( activated() ), kapp, SLOT( quit() ) );
 
-    baseIcon = new QPixmap( KSystemTray::loadIcon("amarok") );
-    playOverlay =  amaroK::loadOverlay( "play" );
+    baseIcon     = KSystemTray::loadIcon( "amarok" );
+    playOverlay  = amaroK::loadOverlay( "play" );
     pauseOverlay = amaroK::loadOverlay( "pause" );
-    stopOverlay =  amaroK::loadOverlay( "stop" );
-    overlay = 0;
+    stopOverlay  = amaroK::loadOverlay( "stop" );
     overlayVisible = false;
-    paintIcon();
+    //paintIcon();
+    setPixmap( baseIcon );
 
     // attach to get notified about engine events
     EngineController::instance()->attach( this );
@@ -74,13 +75,6 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
 amaroK::TrayIcon::~TrayIcon( )
 {
     EngineController::instance()->detach( this );
-    killTimer( blinkTimerID );
-    delete baseIcon;
-    delete grayedIcon;
-    delete alternateIcon;
-    delete playOverlay;
-    delete pauseOverlay;
-    delete stopOverlay;
 }
 
 bool
@@ -98,14 +92,14 @@ amaroK::TrayIcon::event( QEvent *e )
             return KSystemTray::event( e );
 
         // if we're playing, blink icon
-        if ( overlay == playOverlay )
+        if ( overlay == &playOverlay )
         {
             overlayVisible = !overlayVisible;
             paintIcon( mergeLevel, true );
         }
 
         // if we're stopped return to default state after the first tick
-        else if ( overlay == stopOverlay )
+        else if ( overlay == &stopOverlay )
         {
             killTimer( blinkTimerID );
             blinkTimerID = 0;
@@ -146,17 +140,17 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
     switch( state )
     {
     case Engine::Paused:
-        overlay = pauseOverlay;
+        overlay = &pauseOverlay;
         paintIcon( mergeLevel, true );
         break;
 
     case Engine::Playing:
-        overlay = playOverlay;
+        overlay = &playOverlay;
         blinkTimerID = startTimer( 1500 );  // start 'blink' timer
         break;
 
     default: // idle/stopped case
-        overlay = stopOverlay;
+        overlay = &stopOverlay;
         blinkTimerID = startTimer( 2500 );  // start 'hide' timer
         paintIcon( -1, true );
     }
@@ -171,18 +165,17 @@ amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChang
 void
 amaroK::TrayIcon::engineTrackPositionChanged( long position )
 {
-    mergeLevel = trackLength ? ((baseIcon->height() + 1) * position) / trackLength : -1;
+    mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
     paintIcon( mergeLevel );
 }
 
 void
 amaroK::TrayIcon::paletteChange( const QPalette & op )
 {
-    if ( palette().active().highlight() == op.active().highlight() || !alternateIcon )
+    if ( palette().active().highlight() == op.active().highlight() || alternateIcon.isNull() )
         return;
 
-    delete alternateIcon;
-    alternateIcon = 0;
+    alternateIcon.resize( 0, 0 );
     paintIcon( mergeLevel, true );
 }
 
@@ -197,21 +190,21 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
 
     if ( mergePixels < 0 )
         return blendOverlay( baseIcon );
-        
+
     // make up the grayed icon
-    if ( !grayedIcon )
+    if ( grayedIcon.isNull() )
     {
-        QImage tmpTrayIcon = baseIcon->convertToImage();
+        QImage tmpTrayIcon = baseIcon.convertToImage();
         KIconEffect::semiTransparent( tmpTrayIcon );
-        grayedIcon = new QPixmap( tmpTrayIcon );
+        grayedIcon = tmpTrayIcon;
     }
     if ( mergePixels == 0 )
         return blendOverlay( grayedIcon );
-    
+
     // make up the alternate icon (use hilight color but more saturated)
-    if ( !alternateIcon )
+    if ( alternateIcon.isNull() )
     {
-        QImage tmpTrayIcon = baseIcon->convertToImage();
+        QImage tmpTrayIcon = baseIcon.convertToImage();
         // eros: this looks cool with dark red blue or green but sucks with
         // other colors (such as kde default's pale pink..). maybe the effect
         // or the blended color has to be changed..
@@ -220,44 +213,44 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
         saturatedColor.getHsv( &hue, &sat, &value );
         saturatedColor.setHsv( hue, (sat + 510) / 3, value );
         KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
-        alternateIcon = new QPixmap( tmpTrayIcon );
+        alternateIcon = tmpTrayIcon;
     }
-    if ( mergePixels >= alternateIcon->height() )
+    if ( mergePixels >= alternateIcon.height() )
         return blendOverlay( alternateIcon );
 
     // mix [ grayed <-> colored ] icons
-    QPixmap tmpTrayPixmap( *alternateIcon );
-    copyBlt( &tmpTrayPixmap, 0,0, grayedIcon, 0,0,
-            alternateIcon->width(), alternateIcon->height() - mergePixels );
-    blendOverlay( &tmpTrayPixmap );
+    QPixmap tmpTrayPixmap = alternateIcon;
+    copyBlt( &tmpTrayPixmap, 0,0, &grayedIcon, 0,0,
+            alternateIcon.width(), alternateIcon.height() - mergePixels );
+    blendOverlay( tmpTrayPixmap );
 }
 
 void
-amaroK::TrayIcon::blendOverlay( QPixmap * sourcePixmap )
+amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 {
     if ( !overlayVisible || !overlay || overlay->isNull() )
-        return setPixmap( *sourcePixmap ); // @since 3.2
-    
+        return setPixmap( sourcePixmap ); // @since 3.2
+
     // here comes the tricky part.. no kdefx functions are helping here.. :-(
     // we have to blend pixmaps with different sizes (blending will be done in
     // the bottom-left corner of source pixmap with a smaller overlay pixmap)
     int opW = overlay->width(),
         opH = overlay->height(),
         opX = 1,
-        opY = sourcePixmap->height() - opH;
+        opY = sourcePixmap.height() - opH;
 
-    // get the rectangle where blending will take place 
-    QPixmap sourceCropped( opW, opH, sourcePixmap->depth() );
-    copyBlt( &sourceCropped, 0,0, sourcePixmap, opX,opY, opW,opH );
+    // get the rectangle where blending will take place
+    QPixmap sourceCropped( opW, opH, sourcePixmap.depth() );
+    copyBlt( &sourceCropped, 0,0, &sourcePixmap, opX,opY, opW,opH );
 
     // blend the overlay image over the cropped rectangle
     QImage blendedImage = sourceCropped.convertToImage();
     QImage overlayImage = overlay->convertToImage();
     KIconEffect::overlay( blendedImage, overlayImage );
     sourceCropped.convertFromImage( blendedImage );
-    
+
     // put back the blended rectangle to the original image
-    QPixmap sourcePixmapCopy = *sourcePixmap;
+    QPixmap sourcePixmapCopy = sourcePixmap;
     copyBlt( &sourcePixmapCopy, opX,opY, &sourceCropped, 0,0, opW,opH );
 
     setPixmap( sourcePixmapCopy ); // @since 3.2
