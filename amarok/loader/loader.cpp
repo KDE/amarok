@@ -51,7 +51,7 @@ Loader::Loader( int& argc, char** argv )
         m_pProc = new QProcess( this );
         m_pProc->addArgument( "amarokapp" );
         //hand arguments through to amaroK
-        for ( int i = 1; i < m_argc; i++ )
+        for ( int i = 0; i < m_argc; i++ )
             m_pProc->addArgument( m_argv[i] );
         
         connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
@@ -74,7 +74,7 @@ Loader::Loader( int& argc, char** argv )
         
         //put all arguments into one string
         QCString str;
-        for ( int i = 1; i < m_argc; i++ ) {
+        for ( int i = 0; i < m_argc; i++ ) {
             str.append( m_argv[i] );
             str.append( " " );
         }

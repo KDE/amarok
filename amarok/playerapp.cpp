@@ -29,8 +29,8 @@ email                : markey@web.de
 #include "playlisttooltip.h"
 #include "titleproxy.h"
 
+#include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
-#include <kapp.h>
 #include <kcmdlineargs.h>
 #include <kconfig.h>
 #include <kdebug.h>
@@ -56,8 +56,8 @@ email                : markey@web.de
 #include <unistd.h>              //initIpc()
 #include <sys/socket.h>          //initIpc()
 #include <sys/un.h>              //initIpc()
-
-
+   
+    
 //statics
 EngineBase* PlayerApp::m_pEngine = 0;
 
@@ -116,7 +116,7 @@ PlayerApp::PlayerApp()
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), this, SLOT( slotShowOSD( const MetaBundle& ) ) );
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 
-    handleCliArgs( KCmdLineArgs::parsedArgs() );
+    handleCliArgs();
 }
 
 
@@ -163,8 +163,10 @@ PlayerApp::~PlayerApp()
 }
 
 
-void PlayerApp::handleCliArgs( KCmdLineArgs* args )
+void PlayerApp::handleCliArgs()
 {
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+    
     if ( args->count() > 0 )
     {
         KURL::List list;
@@ -176,13 +178,11 @@ void PlayerApp::handleCliArgs( KCmdLineArgs* args )
         //add to the playlist with the correct arguments ( bool clear, bool play )
         m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args->isSet( "play" ) );
     }
-
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
     //thus pause is the least destructive, followed by stop as brakes are the most important bit of a car(!)
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
-
     else if ( args->isSet( "pause" ) )
         pApp->slotPause();
     else if ( args->isSet( "stop" ) )
@@ -197,38 +197,84 @@ void PlayerApp::handleCliArgs( KCmdLineArgs* args )
     args->clear();    //free up memory
 }
 
-//SLOT
-void PlayerApp::handleLoaderArgs( const QCString& args )
+
+//this method processes the cli arguments sent by the loader process
+void PlayerApp::handleLoaderArgs( const QCString& args ) //SLOT
 {
-    //Unfortunately, we must do some ugly string parsing here, since there is (apparently) no way
-    //to re-initialize KCmdLineArgs --> FIXME
-
+    //divide argument line into single strings
     QStringList strlist = QStringList::split( " ", args );
-    KURL::List list;
-
-    kdDebug() << "[PlayerApp::handleLoaderArgs] feeding insertMedia() with this list: \n";
-    kdDebug() << strlist << endl;
-
-    for ( QStringList::Iterator it = strlist.begin(); it != strlist.end(); ++it )
-        list << KCmdLineArgs::makeURL( (*it).latin1() );
-
-    bool notEnqueue = !args.contains( "-e" );
-    //add to the playlist with the correct arguments ( bool clear, bool play )
-    m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args.contains( "-p" ) );
-
-    if ( args.contains( "-s" ) )
-        pApp->slotStop();
-    if ( args.contains( "-p" ) ) //will restart if we are playing
-        pApp->slotPlay();
-    if ( args.contains( "-f" ) )
-        pApp->slotNext();
-    if ( args.contains( "-r" ) )
-        pApp->slotPrev();
+    
+    int argc = strlist.count();
+    char* argv[argc];
+    
+    for ( int i = 0; i < argc; i++ ) {
+        argv[i] = const_cast<char*>( strlist[i].latin1() );
+        kdDebug() << "[PlayerApp::handleLoaderArgs()] extracted string: " << argv[i] << endl;
+    }
+            
+    //re-initialize KCmdLineArgs with the new arguments
+    KCmdLineArgs::reset();
+    initCliArgs( argc, argv );
+    handleCliArgs();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
+
+void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
+{
+    static const char *description = I18N_NOOP( "An audio player for KDE" );
+    
+    static KCmdLineOptions options[] =
+        {
+            { "+[URL(s)]", I18N_NOOP( "Files/URLs to Open" ), 0 },
+            { "r", 0, 0 },
+            { "previous", I18N_NOOP( "Skip backwards in playlist" ), 0 },
+            { "p", 0, 0 },
+            { "play", I18N_NOOP( "Start playing current playlist" ), 0 },
+            { "s", 0, 0 },
+            { "stop", I18N_NOOP( "Stop playback" ), 0 },
+            { "pause", I18N_NOOP( "Pause playback" ), 0 },
+            { "f", 0, 0 },
+            { "next", I18N_NOOP( "Skip forwards in playlist" ), 0 },
+            { ":", I18N_NOOP("Additional options:"), 0 },
+            { "e", 0, 0 },
+            { "enqueue", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
+            { 0, 0, 0 }
+        };
+
+    static KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
+                          APP_VERSION, description, KAboutData::License_GPL,
+                          I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ),
+                          I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\n"
+                                     "Feedback:\namarok-devel@lists.sourceforge.net" ),
+                          I18N_NOOP( "http://amarok.sourceforge.net" ) );
+
+    aboutData.addAuthor( "Christian Muehlhaeuser", "developer", "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Mark Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
+    aboutData.addAuthor( "Max Howell", "developer", "max.howell@methylblue.com" );
+    aboutData.addAuthor( "Stanislav Karchebny", "patches, improvements, visualizations, cleanups, i18n",
+                         "berk@upnet.ru" );
+
+    aboutData.addCredit( "Adam Pigg", "analyzer, patches", "adam@piggz.fsnet.co.uk" );
+    aboutData.addCredit( "Alper Ayazoglu", "graphics: buttons", "cubon@cubon.de", "http://cubon.de" );
+    aboutData.addCredit( "Enrico Ros", "analyzer", "eros.kde@email.it" );
+    aboutData.addCredit( "Frederik Holljen", "OSD improvement, patches", "fh@ez.no" );
+    aboutData.addCredit( "Jarkko Lehti", "tester, IRC channel operator, whipping", "grue@iki.fi" );
+    aboutData.addCredit( "Josef Spillner", "KDE RadioStation code", "spillner@kde.org" );
+    aboutData.addCredit( "Markus A. Rykalski", "graphics", "exxult@exxult.de" );
+    aboutData.addCredit( "Melchior Franz", "new FFT routine, bugfixes", "mfranz@kde.org" );
+    aboutData.addCredit( "Roman Becker", "graphics: amaroK logo", "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
+    aboutData.addCredit( "The Noatun Authors", "code inspiration", 0, "http://noatun.kde.org" );
+    aboutData.addCredit( "Whitehawk Stormchaser", "tester, patches", "zerokode@gmx.net" );
+
+    KCmdLineArgs::init( argc, argv, &aboutData );
+    KCmdLineArgs::addCmdLineOptions( options );   // Add our own options.
+    PlayerApp::addCmdLineOptions();
+}
+
 
 void PlayerApp::initEngine()
 {
