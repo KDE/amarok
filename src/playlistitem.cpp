@@ -90,6 +90,7 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -100,6 +101,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
       : KListViewItem( lv, lvi, trackName( u ) )
       , m_url( u )
+      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -110,6 +112,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -120,6 +123,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle&
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , pixmapChanged(false)
 {
     setDragEnabled( true );
 
@@ -236,12 +240,12 @@ void PlaylistItem::setText( int column, const QString &newText )
         //TODO consider making this a dynamically generated string
         KListViewItem::setText( Length, newText.isEmpty() ? newText : newText + ' ' ); //padding makes it neater
         break;
-    
+
     case Track:
     case Year:
         KListViewItem::setText( column, newText == "0" ? QString::null : newText );
         break;
-    
+
     default:
         KListViewItem::setText( column, newText );
         break;
@@ -336,11 +340,16 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             paintCache[column].width == width &&
             paintCache[column].height == height() &&
             paintCache[column].text == text( column ) &&
-            paintCache[column].font == p->font();
+            paintCache[column].font == p->font() &&
+	    !pixmapChanged;
 
         // If any parameter changed, we must regenerate all pixmaps
         if ( !cacheValid )
+	{
             paintCache[column].map.clear();
+	    /* So we don't regenerate all pixmap without really having to do it. */
+	    pixmapChanged = false;
+	}
 
         // Determine if we need to repaint the pixmap, or paint from cache
         if ( paintCache[column].map.find( colorKey ) == paintCache[column].map.end() )
