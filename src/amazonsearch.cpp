@@ -27,7 +27,7 @@ AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlag
 
 {
     if ( !name ) setName( "AmazonSearch" );
-    
+
     textLabel = new QLabel( this, "textLabel" );
     searchString = new KLineEdit( this, "searchString" );
     fileButton = new QPushButton( this, "fileButton" );
@@ -36,14 +36,14 @@ AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlag
     spacer3 = new QSpacerItem( 16, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     searchSite = new QComboBox( FALSE, this, "searchSite" );
 
-       
+
     cancelButton->setAutoDefault( FALSE );
     fileButton->setAutoDefault( FALSE );
     fileButton->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
-    
-    AmazonSearchLayout = new QGridLayout( this, 1, 1, 11, 6, "AmazonSearchLayout"); 
+
+    AmazonSearchLayout = new QGridLayout( this, 1, 1, 11, 6, "AmazonSearchLayout");
     AmazonSearchLayout->setResizeMode( QLayout::Fixed );
-    
+
     AmazonSearchLayout->addMultiCellWidget( searchString, 1, 1, 0, 3 );
     AmazonSearchLayout->addWidget( searchSite, 2, 1 );
     AmazonSearchLayout->addItem( spacer3, 2, 2 );
@@ -55,7 +55,7 @@ AmazonSearch::AmazonSearch( QWidget* parent, const char* name, bool modal, WFlag
 
     resize( QSize(363, 92).expandedTo(minimumSizeHint()) );
     clearWState( WState_Polished );
-   
+
     searchSite->clear();
     searchSite->insertItem( i18n( "Amazon USA" ) );
     searchSite->insertItem( i18n( "Amazon EU" ) );
@@ -76,10 +76,13 @@ void AmazonSearch::openFile()
 {
     KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
     const QPixmap& pixmap( file.directory() + "/" + file.fileName() );
-    
+
     if( !pixmap.isNull() )
     {
         emit imageReady( pixmap );
         close();
     }
 }
+
+
+#include "amazonsearch.moc"
