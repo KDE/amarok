@@ -311,7 +311,7 @@ void EngineController::play( const MetaBundle &bundle )
         // does the file really exist? the playlist entry might be old
         if ( ! QFile::exists( url.path()) ) {
             //debug() << "  file >" << url.path() << "< does not exist!" << endl;
-            amaroK::StatusBar::instance()->shortMessage( i18n("local file does not exist.") );
+            amaroK::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
             goto some_kind_of_failure;
         }
     }
