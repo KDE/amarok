@@ -15,56 +15,41 @@ namespace NMM { class MP3ReadNode; }
 
 class NmmEngine : public EngineBase
 {
-    Q_OBJECT
+Q_OBJECT
 
-    public:
+public:
+    NmmEngine();
+    ~NmmEngine();
 
-        //this is the receiver for progress events
-        NMM::Result setProgress( u_int64_t&, u_int64_t& );
-        NMM::Result endTrack();
+    void init( bool&, int, bool ) {}
 
-                                                 NmmEngine();
-                                                 ~NmmEngine();
+    bool initMixer( bool hardware );
+    bool canDecode( const KURL&, mode_t, mode_t );
+    long length() const;
+    long position() const;
+    bool isStream() const;
 
-        bool                                     initMixer( bool hardware );
-        bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
-        long                                     length() const;
-        long                                     position() const;
-        EngineBase::EngineState                  state() const;
-        bool                                     isStream() const;
+    EngineBase::EngineState state() const;
 
-        std::vector<float>*                      scope();
+public slots: //FIXME make these slots in enginebase?
+    const QObject* play( const KURL& );
+    void  play();
+    void  stop();
+    void  pause();
 
-        QStringList                              availableEffects() const;
-        std::vector<long>                        activeEffects() const;
-        QString                                  effectNameForId( long id ) const;
-        bool                                     effectConfigurable( long id ) const;
-        long                                     createEffect( const QString& name );
-        void                                     removeEffect( long id );
-        void                                     configureEffect( long id );
+    void  seek( long );
+    void  setVolume( int );
 
-        bool                                     decoderConfigurable();
+private:
+    double m_progress;
+    bool   m_firstTime; //FIXME I HATE BOOLS LIKE THESE!
+    long   m_lastKnownPosition;
 
-    public slots:
-        const QObject*                           play( const KURL& );
-        void                                     play();
-        void                                     stop();
-        void                                     pause();
+    EngineBase::EngineState m_state;
 
-        void                                     seek( long ms );
-        void                                     setVolume( int percent );
-        void                                     configureDecoder();
-
-    private:
-        void                                     startXfade();
-        void                                     timerEvent( QTimerEvent* );
-
-        void                                     loadEffects();
-        void                                     saveEffects();
-
-        double m_progress;
-        bool   m_firstTime; //FIXME I HATE BOOLS LIKE THESE!
-        EngineBase::EngineState m_state;
+    //these are receivers for progress events
+    NMM::Result setProgress( u_int64_t&, u_int64_t& );
+    NMM::Result endTrack();
 };
 
 #endif

@@ -10,9 +10,9 @@ if with_gst
     GSTENGINE_BUILD = gst
 endif
 
-#if with_nmm
-#    NMMENGINE_BUILD = nmm
-#endif
+if with_nmm
+    NMMENGINE_BUILD = nmm
+endif
 
 libengine_a_SOURCES = \
     enginebase.cpp
@@ -24,5 +24,5 @@ METASOURCES = AUTO
 
 noinst_LIBRARIES = libengine.a
 
-SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) # $(NMMENGINE_BUILD)
+SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) $(NMMENGINE_BUILD)
 

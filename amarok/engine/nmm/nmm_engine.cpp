@@ -5,6 +5,8 @@
 #include "nmm_engine.h"
 #ifdef HAVE_NMM
 
+#include "playerapp.h" //FIXME bah!
+
 #include <nmm/base/connect.hpp>
 #include <nmm/base/EDObject.hpp> //for the badass TEDObject template
 #include <nmm/plugins/file/GenericReadNode.hpp>
@@ -18,7 +20,7 @@
 
 #include <iostream>
 #include <kurl.h>
-#include <qstringlist.h>
+
 
 
 //TODO make members
@@ -28,25 +30,9 @@ NMM::PlaybackNode         *playback = 0;
 
 
 
-NMM::Result NmmEngine::setProgress( u_int64_t& numerator, u_int64_t& denominator )
+extern "C" void* create_plugin()
 {
-    std::cout << numerator << ", " << denominator << endl;
-
-    //m_progress = (double)numerator / denominator;
-
-    return NMM::SUCCESS;
-}
-
-NMM::Result NmmEngine::endTrack()
-{
-    std::cout << "Track ended!\n";
-
-    //NOTE calling stop() here cause amaroK to crash. Why? Who knows..
-    //NMM docs certainly wouldn't be able to tell you!
-
-    m_state = EngineBase::Idle;
-
-    return NMM::SUCCESS;
+    return new NmmEngine();
 }
 
 
@@ -55,6 +41,7 @@ NmmEngine::NmmEngine()
   : EngineBase()
   , m_firstTime( TRUE )
   , m_state( EngineBase::Empty )
+  , m_lastKnownPosition( 0 )
 {
     //NamedObject::getGlobalInstance().setErrorStream(NULL, NamedObject::ALL_LEVELS);
     NMM::NamedObject::getGlobalInstance().setDebugStream(NULL, NMM::NamedObject::ALL_LEVELS);
@@ -67,6 +54,8 @@ NmmEngine::NmmEngine()
 
 NmmEngine::~NmmEngine()
 {
+    stop();
+
     delete readfile;
     delete decode;
     delete playback;
@@ -126,7 +115,7 @@ NmmEngine::play( const KURL& url )
         }
 
         //TODO you don't have to create a new plyaback object but you tried to do it with deinitOutput() etc.
-        //     but it just crashed, and crashed and crashed and crashed and you gave up. Sod NMM.
+        //     but it just crashed, and crashed and crashed and crashed and you gave up.
         playback = new NMM::PlaybackNode("PLAYBACK", NMM::StreamQueue::MODE_SUSPEND, 1); //FIXME what do these parameters mean?!
 
         readfile->init();
@@ -138,7 +127,6 @@ NmmEngine::play( const KURL& url )
         //get it to send us progress events periodically
         if( progress ) progress->sendProgressInformation( true );
         //register an event listener on the readfile interface, the listener is setProgress //FIXME rename
-        //SIDENOTE: this is such a fricking ridiculously large amount of crap to have on one line!
         playback->getEventDispatcher().
                 registerEventListener( NMM::IProgressListener::setProgress_event,
                                         new NMM::TEDObject2<NmmEngine, u_int64_t, u_int64_t>( this, &NmmEngine::setProgress ) );
@@ -213,29 +201,24 @@ NmmEngine::stop()
 
         m_state = EngineBase::Empty;
     }
+
+    m_lastKnownPosition = 0;
 }
 
 void
 NmmEngine::pause()
 {
     stop();
+
+    m_state = EngineBase::Paused;
 }
 
 void
 NmmEngine::seek( long ms )
 {
-    uint s  = ms / 1000;
-    uint ns = (ms % 1000) * 1000000; //nanoseconds!
-
-    NMM::Time time( s, ns );
     NMM::ISeekable *iseek = readfile->getCheckedInterface<NMM::ISeekable>();
 
-    if( !iseek->hasTimeSeek() )
-        std::cerr << "No time seek. Sigh\n";
-
-    std::cout << "seek request: " << time.sec << endl;
-
-    if( iseek ) iseek->seekTimeTo( time );
+    //if( iseek ) iseek->seekPercentTo( NMM::Rational(ms, pApp->trackLength()) );
 
 }
 
@@ -247,15 +230,13 @@ NmmEngine::length() const
 
 long
 NmmEngine::position() const
-{ return 0; }
+{
+    return m_lastKnownPosition;
+}
 
 bool
 NmmEngine::isStream() const
 { return false; }
-
-std::vector<float>*
-NmmEngine::scope()
-{ return new std::vector<float>; }
 
 
 bool
@@ -264,69 +245,40 @@ NmmEngine::initMixer( bool hardware )
 
 bool
 NmmEngine::canDecode( const KURL &url, mode_t mode, mode_t permissions )
-{ return true; }
+{ return false; }
 
 
 void
 NmmEngine::setVolume( int percent )
 {
     m_volume = percent;
-    EngineBase::setVolumeHW( percent );
+    if( playback ) playback->setLineInVolume( 0x5050 * percent / 100 );
 }
 
 
 
+NMM::Result
+NmmEngine::setProgress( u_int64_t& numerator, u_int64_t& denominator )
+{
+    std::cout << numerator << ", " << denominator << endl;
 
+    //m_lastKnownPosition = pApp->trackLength() * (double)numerator / denominator;
 
-QStringList
-NmmEngine::availableEffects() const
-{ return QStringList(); }
+    return NMM::SUCCESS;
+}
 
-std::vector<long>
-NmmEngine::activeEffects() const
-{ return std::vector<long>( 1, 0 ); }
+NMM::Result
+NmmEngine::endTrack()
+{
+    std::cout << "Track ended!\n";
 
-QString
-NmmEngine::effectNameForId( long id ) const
-{ return QString::null; }
+    //NOTE calling stop() here cause amaroK to crash. Why? Who knows..
+    //NMM docs certainly wouldn't be able to tell you!
 
-bool
-NmmEngine::effectConfigurable( long id ) const
-{ return false; }
+    m_state = EngineBase::Idle;
 
-long
-NmmEngine::createEffect( const QString& name )
-{ return 0; }
-
-void
-NmmEngine::removeEffect( long id )
-{}
-
-void
-NmmEngine::configureEffect( long id )
-{}
-
-bool
-NmmEngine::decoderConfigurable()
-{ return false; }
-
-void
-NmmEngine::configureDecoder() //SLOT
-{}
-
-void NmmEngine::startXfade()
-{}
-
-void NmmEngine::timerEvent( QTimerEvent* )
-{}
-
-void
-NmmEngine::loadEffects()
-{}
-
-void
-NmmEngine::saveEffects()
-{}
+    return NMM::SUCCESS;
+}
 
 #include "nmm_engine.moc"
 

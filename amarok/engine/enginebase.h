@@ -22,14 +22,13 @@ email                : markey@web.de
 
 #include <vector>
 #include <qobject.h>
-#include <kurl.h>
+#include <qstringlist.h>
 
 #ifdef __FreeBSD__
     #include <sys/types.h>
 #endif
 
-class QString;
-class QStringList;
+class KURL;
 
 class EngineBase : public QObject, public Plugin
 {
@@ -37,22 +36,23 @@ class EngineBase : public QObject, public Plugin
 
     signals:
         void                         endOfTrack();
-            
+
     public:
         enum                         EngineState { Empty, Idle, Playing, Paused };
 
+                                     EngineBase() : QObject() {}
         virtual                      ~EngineBase();
-        
+
         virtual void                 init( bool& restart,
-                                           int scopeSize,
-                                           bool restoreEffects )                       = 0; 
+                                           int   scopeSize,
+                                           bool  restoreEffects )                      = 0;
         /**
          * Initialize mixer
          * @param hardware    true for soundcard hardware mixing
          * @return            true if using hardware mixing
          */
         virtual bool                 initMixer( bool hardware )                        = 0;
-       
+
         virtual bool                 canDecode( const KURL &url,
                                                 mode_t mode, mode_t permissions )      = 0;
 
@@ -61,12 +61,12 @@ class EngineBase : public QObject, public Plugin
          * @return            time length in ms
          */
         virtual long                 length() const                                    = 0;
-        
+
         /**
          * @return            time position in ms
          */
         virtual long                 position() const                                  = 0;
-        
+
         virtual EngineState          state() const                                     = 0;
 
         /**
@@ -76,13 +76,13 @@ class EngineBase : public QObject, public Plugin
 
         /**
          * Sets the master volume
-         * @return            volume in range 0 to 100            
+         * @return            volume in range 0 to 100
          */
         inline  int                  volume() const { return m_volume; }
 
         /**
          * Sets the master volume
-         * @return            true if using hardware mixer            
+         * @return            true if using hardware mixer
          */
                 bool                 isMixerHardware() const { return m_mixerHW != -1; }
 
@@ -90,29 +90,27 @@ class EngineBase : public QObject, public Plugin
 
         /**
          * Fetches the current audio sample buffer
-         * @return            pointer to result of FFT calculation. must be deleted after use            
+         * @return            pointer to result of FFT calculation. must be deleted after use
          */
-        virtual std::vector<float>*  scope()                                           = 0;
+        virtual std::vector<float>*  scope() { return new std::vector<float>(); }
 
-                void                 setRestoreEffects( bool yes )
-                                     { m_restoreEffects = yes; }
-        virtual QStringList          availableEffects() const                          = 0; 
-        virtual std::vector<long>    activeEffects() const                             = 0;
-        virtual QString              effectNameForId( long id ) const                  = 0;
-        virtual bool                 effectConfigurable( long id ) const               = 0;        
-        virtual long                 createEffect( const QString& name )               = 0;
-        virtual void                 removeEffect( long id )                           = 0;
-        virtual void                 configureEffect( long id )                        = 0;
-               
-        virtual bool                 decoderConfigurable()                             = 0;
-        
+                void                 setRestoreEffects( bool yes )    { m_restoreEffects = yes; }
+        virtual QStringList          availableEffects() const         { return QStringList(); }
+        virtual std::vector<long>    activeEffects() const            { return std::vector<long>(); }
+        virtual QString              effectNameForId( long ) const    { return QString::null; }
+        virtual bool                 effectConfigurable( long ) const { return false; }
+        virtual long                 createEffect( const QString& )   { return -1; }
+        virtual void                 removeEffect( long )             { }
+        virtual void                 configureEffect( long )          { }
+        virtual bool                 decoderConfigurable() const      { return false; }
+
         virtual const QObject*       play( const KURL& )                               = 0;
         virtual void                 play()                                            = 0;
         virtual void                 stop()                                            = 0;
         virtual void                 pause()                                           = 0;
 
         virtual void                 seek( long ms )                                   = 0;
-        
+
         /**
          * @param percent     set volume in range 0 to 100
          */
@@ -120,8 +118,8 @@ class EngineBase : public QObject, public Plugin
                 void                 setXfadeLength( int ms );
 
     public slots:
-        virtual void                 configureDecoder()                                = 0;                                                   
-                                                   
+        virtual void                 configureDecoder() {}
+
     protected:
         void                         closeMixerHW();
         bool                         initMixerHW();
@@ -133,6 +131,9 @@ class EngineBase : public QObject, public Plugin
         int                          m_volume;
         int                          m_xfadeLength;
         bool                         m_restoreEffects;
+
+        EngineBase( const EngineBase& ); //disable
+        const EngineBase &operator=( const EngineBase& ); //disable
 };
 
 #endif
