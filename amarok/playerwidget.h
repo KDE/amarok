@@ -18,8 +18,6 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
-#include "amarokslider.h"
-
 #include <qguardedptr.h>
 #include <qlabel.h>
 #include <qwidget.h>
@@ -53,6 +51,7 @@ class PlayerApp;
 extern PlayerApp *pApp;
 
 class AmarokDcopHandler;
+class AmarokSlider;
 class AmarokSystray;
 class PlayerWidget;
 

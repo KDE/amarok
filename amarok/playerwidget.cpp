@@ -16,25 +16,15 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "amarokbutton.h"
+#include "amarokconfig.h"
+#include "amarokdcophandler.h"
 #include "amarokslider.h"
 #include "amaroksystray.h"
-#include "browserwin.h"
-#include "effectwidget.h"
+#include "analyzers/analyzerbase.h"
+#include "browserwin.h"    //for action collection only
+#include "effectwidget.h"  //in the popupmenu
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "playlistwidget.h"
-#include "analyzers/blockanalyzer.h"
-#include "analyzers/baranalyzer.h"
-#include "analyzers/baranalyzer2.h"
-#include "analyzers/distortanalyzer.h"
-#include "analyzers/sonogram.h"
-#include "analyzers/turbine.h"
-//#include "analyzers/spectralshine.h"
-#include "analyzers/xmasdrug.h"
-#include "analyzers/glanalyzer.h"
-#include "amarokdcophandler.h"
-
-#include "amarokconfig.h"
 
 #include <qbitmap.h>
 #include <qevent.h>
@@ -81,8 +71,9 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
 {
     setCaption( "amaroK" );
     setPaletteForegroundColor( 0x80a0ff );
-    
+
     //actions
+    //FIXME declare these in PlayerApp.cpp and have globall action collection
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
                              "options_configure_global_keybinding"
@@ -298,8 +289,7 @@ void PlayerWidget::setScroll( QString text, const QString &bitrate, const QStrin
     {
         QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
         m_pDcopHandler->setNowPlaying( text ); //text = ""
-        m_bitrate = m_samplerate = text; //better to use text than create a temporary QString
-        //looks better if these are clear
+        m_bitrate = m_samplerate = text; //text = "" - better to not create a temporary QString
         text = i18n( "Welcome to amaroK" );
     }
     else
@@ -405,14 +395,14 @@ void PlayerWidget::timeDisplay()
     QFont timeFont( "Arial" );
     timeFont.setBold( TRUE );
     timeFont.setPixelSize( 18 );
-        
+
     QPainter p( m_pTimeDisplayLabelBuf );
-    p.drawPixmap( 0, 0, *paletteBackgroundPixmap() );    
-    p.setPen( QColor( 255, 255, 255 ) );    
+    p.drawPixmap( 0, 0, *paletteBackgroundPixmap() );
+    p.setPen( QColor( 255, 255, 255 ) );
     p.setFont( timeFont );
-    p.drawText( 0, 16, str );       
+    p.drawText( 0, 16, str );
     bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );    // FIXME ugly hack for flickerfixing*/
-    
+
     if ( !m_remaining )
         m_pTimeSign->setPixmap( *m_pTimePlusPixmap );
     else
@@ -596,41 +586,10 @@ void PlayerWidget::createVis()
 {
     delete m_pVis;
 
-    //bit wierd this switch, but it fits our substandard methods ;-)
-    switch( AmarokConfig::currentAnalyzer() )
-    {
-    case 1:
-        m_pVis = new DistortAnalyzer( this );
-        break;
-    case 2:
-        m_pVis = new TurbineAnalyzer( this );
-        break;
-        /*    // bitch's ditched for this release
-            case 3:
-                m_pVis = new SpectralShineAnalyzer( this );
-                break;*/
-    case 3:
-        m_pVis = new XmasAnalyzer( this );
-        break;
-    case 4:
-        m_pVis = new BlockAnalyzer( this );
-        break;
-    case 5:
-    	m_pVis = new BarAnalyzer2( this );
-	break;
-    case 6:
-        m_pVis = new Sonogram( this );
-        break;
-    case 7:
-        m_pVis = new GLAnalyzer( this );
-        break;
-    case 0:
-    default: //so we don't have to remember how many vis's there are
-        m_pVis = new BarAnalyzer( this );
-        AmarokConfig::setCurrentAnalyzer( 0 );
-    }
+    m_pVis = AnalyzerBase::AnalyzerFactory::createAnalyzer( this );
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
+    //FIXME implement virtual minimumSizeHint()
     if ( AmarokConfig::currentAnalyzer() == 1 )
     {
         dynamic_cast<QWidget*>(m_pVis)->setFixedSize( 168, 70 );
