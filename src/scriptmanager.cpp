@@ -26,6 +26,9 @@
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qtimer.h>
@@ -52,7 +55,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
         , EngineObserver( EngineController::instance() )
         , m_base( new ScriptManagerBase( this ) )
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BLOCK
 
     s_instance = this;
 
@@ -83,7 +86,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 ScriptManager::~ScriptManager()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     debug() << "Killing running scripts.\n";
     ScriptMap::Iterator it;
@@ -102,7 +105,7 @@ ScriptManager::~ScriptManager()
 void
 ScriptManager::findScripts() //SLOT
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QStringList allFiles = kapp->dirs()->findAllResources( "data", "amarok/scripts/*", true );
 
@@ -134,7 +137,7 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
 void
 ScriptManager::slotInstallScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Script packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
     kapp->setTopWidget( &dia );
@@ -149,18 +152,42 @@ ScriptManager::slotInstallScript()
         return;
     }
 
-    const QString destination = amaroK::saveLocation( "scripts/" );
+    QString destination = amaroK::saveLocation( "scripts/" );
     const KArchiveDirectory* archiveDir = archive.directory();
     archiveDir->copyTo( destination );
+    destination += archiveDir->name() + "/";
+
+    recurseInstall( archiveDir, destination );
 
     KMessageBox::information( 0, i18n( "Script successfully installed." ) );
+}
+
+
+/** Copies the file permissions from the tarball */
+void
+ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
+{
+    QStringList entries = archiveDir->entries();
+
+    QStringList::Iterator it;
+    for ( it = entries.begin(); it != entries.end(); ++it ) {
+        const QString entry = *it;
+        const KArchiveEntry* archEntry = archiveDir->entry( entry );
+
+        ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
+
+        if ( archEntry->isDirectory() ) {
+            KArchiveDirectory* dir = (KArchiveDirectory*) archEntry;
+            recurseInstall( dir, destination + entry + "/" );
+        }
+    }
 }
 
 
 void
 ScriptManager::slotUninstallScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QString name = m_base->directoryListView->currentItem()->text( 0 );
 
@@ -200,7 +227,7 @@ ScriptManager::slotUninstallScript()
 void
 ScriptManager::slotEditScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     KTextEdit* editor = new KTextEdit();
     kapp->setTopWidget( editor );
@@ -228,7 +255,7 @@ ScriptManager::slotEditScript()
 void
 ScriptManager::slotRunScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QListViewItem* li = m_base->directoryListView->currentItem();
     QString name = li->text( 0 );
@@ -259,7 +286,7 @@ ScriptManager::slotRunScript()
 void
 ScriptManager::slotStopScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QListViewItem* li = m_base->directoryListView->currentItem();
     QString name = li->text( 0 );
@@ -275,7 +302,7 @@ ScriptManager::slotStopScript()
 void
 ScriptManager::slotConfigureScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QString name = m_base->directoryListView->currentItem()->text( 0 );
     if ( !m_scripts[name].process ) return;
@@ -293,7 +320,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::slotAboutScript()
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     QString name = m_base->directoryListView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.directory( false ) + "README" );
@@ -320,7 +347,7 @@ ScriptManager::slotAboutScript()
 void
 ScriptManager::scriptFinished( KProcess* process ) //SLOT
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
@@ -340,7 +367,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 void
 ScriptManager::notifyScripts( const QString& message )
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     // Append EOL
     QString msg = message;
@@ -356,7 +383,7 @@ ScriptManager::notifyScripts( const QString& message )
 void
 ScriptManager::loadScript( const QString& path )
 {
-    Debug::Block b( __PRETTY_FUNCTION__ );
+    DEBUG_BLOCK
 
     if ( !path.isEmpty() ) {
         KURL url;

@@ -31,6 +31,7 @@
 class MetaBundle;
 class ScriptManagerBase;
 class QListViewItem;
+class KArchiveDirectory;
 class KProcess;
 
 
@@ -76,6 +77,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void notifyScripts( const QString& message );
 
         void loadScript( const QString& path );
+        void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
         /** Observer reimplementations **/
         void engineStateChanged( Engine::State state );
