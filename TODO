@@ -18,8 +18,6 @@ SHORT-TERM (URGENT):
 
   FIX 156 <markey> Fix suppression of compile warnings for sqlite etc. -w -Wall is the problem.
 
-  FIX 155 <muesli> When deleting a cover, remove the (various) scaled versions, too.
-
   FIX 153 <markey> PlaylistLoader appears to accept any filetype into the playlist, ignoring canDecode().
 
   FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
