@@ -395,10 +395,10 @@
                                 </sizepolicy>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>XXX</string>
+                                <string></string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>XXX</string>
+                                <string>If ID3v1 or Shoutcast metadata is checked, it will decode them using this character encoding.</string>
                             </property>
                         </widget>
                     </hbox>
