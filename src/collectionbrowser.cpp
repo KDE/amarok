@@ -119,9 +119,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
     m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
 
-    m_view->cat1Menu( m_view->idForCat( m_view->m_category1 ), false );
-    m_view->cat2Menu( m_view->idForCat( m_view->m_category2 ), false );
-    m_view->cat3Menu( m_view->idForCat( m_view->m_category3 ), true );
+    m_view->cat1Menu( m_view->m_cat1, false );
+    m_view->cat2Menu( m_view->m_cat2, false );
+    m_view->cat3Menu( m_view->m_cat3, true );
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
 
@@ -190,11 +190,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
-        m_category1 = config->readEntry( "Category1", i18n( "Artist" ) );
-        m_category2 = config->readEntry( "Category2", i18n( "Album" ) );
-        m_category3 = config->readEntry( "Category3", i18n( "None" ) );
+        m_cat1 = config->readNumEntry( "Category1", CollectionBrowser::IdArtist );
+        m_cat2 = config->readNumEntry( "Category2", CollectionBrowser::IdAlbum );
+        m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
 
-        addColumn( m_category1 );
+        addColumn( captionForCategory( m_cat1 ) );
     //</READ CONFIG>
 
     //<OPEN DATABASE>
@@ -259,9 +259,9 @@ CollectionView::~CollectionView() {
     kdDebug() << k_funcinfo << endl;
 
     KConfig* const config = amaroK::config( "Collection Browser" );
-    config->writeEntry( "Category1", m_category1 );
-    config->writeEntry( "Category2", m_category2 );
-    config->writeEntry( "Category3", m_category3 );
+    config->writeEntry( "Category1", m_cat1 );
+    config->writeEntry( "Category2", m_cat2 );
+    config->writeEntry( "Category3", m_cat3 );
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 }
@@ -332,7 +332,7 @@ CollectionView::renderView( )  //SLOT
     kdDebug() << k_funcinfo << endl;
 
     clear();
-    QPixmap pixmap = iconForCat( m_category1 );
+    QPixmap pixmap = iconForCategory( m_cat1 );
 
     //query database for all records with the specified category
     QStringList values;
@@ -436,7 +436,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return;
 
-    QString category;
+    int category;
     QStringList values;
     QueryBuilder qb;
 
@@ -458,7 +458,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.sortBy( m_cat2, QueryBuilder::valName );
             }
 
-            category = m_category2;
+            category = m_cat2;
             break;
 
         case 1:
@@ -478,7 +478,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.sortBy( m_cat3, QueryBuilder::valName );
             }
 
-            category = m_category3;
+            category = m_cat3;
             break;
 
         case 2:
@@ -491,7 +491,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
-            category = i18n( "None" );
+            category = CollectionBrowser::IdNone;
             break;
     }
 
@@ -500,9 +500,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     values = qb.run();
 
     QPixmap pixmap;
-    bool expandable = category != i18n( "None" );
+    bool expandable = category != CollectionBrowser::IdNone;
     if ( expandable )
-        pixmap = iconForCat( category );
+        pixmap = iconForCategory( category );
 
     for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
     {
@@ -538,30 +538,28 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 void
 CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 {
-    m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), false ); //uncheck old item
-    m_parent->m_cat2Menu->setItemEnabled( idForCat( m_category1 ), true );  //enable old item
-    m_category1 = catForId( id );
+    m_parent->m_cat1Menu->setItemChecked( m_cat1, false ); //uncheck old item
+    m_parent->m_cat2Menu->setItemEnabled( m_cat1, true );  //enable old item
     m_cat1 = id;
-    setColumnText( 0, m_category1 );
-    m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
+    setColumnText( 0, captionForCategory( m_cat1 ) );
+    m_parent->m_cat1Menu->setItemChecked( m_cat1, true );
 
     //prevent choosing the same category in both menus
     m_parent->m_cat2Menu->setItemEnabled( id , false );
     m_parent->m_cat3Menu->setItemEnabled( id , false );
-    //m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category2 ) , false );
 
     //if this item is checked in second menu, uncheck it
     if ( m_parent->m_cat2Menu->isItemChecked( id ) ) {
         m_parent->m_cat2Menu->setItemChecked( id, false );
         m_parent->m_cat2Menu->setItemChecked( CollectionBrowser::IdNone, true );
-        m_category2 = catForId( CollectionBrowser::IdNone );
+        m_cat2 = CollectionBrowser::IdNone;
         enableCat3Menu( false );
     }
     //if this item is checked in third menu, uncheck it
     if ( m_parent->m_cat3Menu->isItemChecked( id ) ) {
         m_parent->m_cat3Menu->setItemChecked( id, false );
         m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
-        m_category3 = catForId( CollectionBrowser::IdNone );
+        m_cat3 = CollectionBrowser::IdNone;
     }
 
     if ( rerender )
@@ -572,16 +570,15 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
 void
 CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 {
-    m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
-    m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category3 ), true );  //enable old item
-    m_category2 = catForId( id );
+    m_parent->m_cat2Menu->setItemChecked( m_cat2, false ); //uncheck old item
+    m_parent->m_cat3Menu->setItemEnabled( m_cat3, true );  //enable old item
     m_cat2 = id;
-    m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
+    m_parent->m_cat2Menu->setItemChecked( m_cat2, true );
 
-    enableCat3Menu(  id != CollectionBrowser::IdNone );
+    enableCat3Menu( id != CollectionBrowser::IdNone );
 
     //prevent choosing the same category in both menus
-    m_parent->m_cat3Menu->setItemEnabled( idForCat( m_category1 ) , false );
+    m_parent->m_cat3Menu->setItemEnabled( m_cat1 , false );
     if( id != CollectionBrowser::IdNone )
         m_parent->m_cat3Menu->setItemEnabled( id , false );
 
@@ -599,10 +596,9 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 void
 CollectionView::cat3Menu( int id, bool rerender )  //SLOT
 {
-    m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), false ); //uncheck old item
-    m_category3 = catForId( id );
+    m_parent->m_cat3Menu->setItemChecked( m_cat3, false ); //uncheck old item
     m_cat3 = id;
-    m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), true );
+    m_parent->m_cat3Menu->setItemChecked( m_cat3, true );
 
     if ( rerender )
         renderView();
@@ -616,10 +612,11 @@ CollectionView::enableCat3Menu( bool enable )
     m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdArtist, enable );
     m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdGenre, enable );
     m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdYear, enable );
+
     if( !enable ) {
-        m_parent->m_cat3Menu->setItemChecked( idForCat( m_category3 ), false );
+        m_parent->m_cat3Menu->setItemChecked( m_cat3, false );
         m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
-        m_category3 = catForId( CollectionBrowser::IdNone );
+        m_cat3 = CollectionBrowser::IdNone;
     }
 }
 
@@ -645,13 +642,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
-        QString category;
+        int cat;
         if( item->depth() == 0 )
-            category = m_category1;
+            cat = m_cat1;
         else if( item->depth() == 1 )
-            category = m_category2;
+            cat = m_cat2;
         else if( item->depth() == 2 )
-            category = m_category3;
+            cat = m_cat3;
 
         #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
@@ -668,11 +665,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertSeparator();
 
-        if( category == i18n("Artist") ) {
+        if( cat == CollectionBrowser::IdArtist ) {
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
-        else if( category == i18n("Album") ) {
+        else if( cat == CollectionBrowser::IdAlbum ) {
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
@@ -687,7 +684,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.setItemEnabled(COVER, category == i18n("Album") );
+        menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
         #endif
         menu.insertItem( SmallIconSet( "info" ), i18n( "View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
@@ -865,7 +862,7 @@ CollectionView::listSelected() {
         }
 
     //second pass: category 1
-    if ( m_category2 == i18n( "None" ) )
+    if ( m_cat2 == CollectionBrowser::IdNone )
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
@@ -903,7 +900,7 @@ CollectionView::listSelected() {
                     list << static_cast<Item*>( grandChild ) ->url();
 
     //category 3
-    if ( m_category3 == i18n( "None" ) )
+    if ( m_cat3 == CollectionBrowser::IdNone )
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
@@ -950,47 +947,28 @@ CollectionView::listSelected() {
 }
 
 
-QString
-CollectionView::catForId( int id ) const
-{
-    switch ( id ) {
-        case CollectionBrowser::IdAlbum:
-            return i18n( "Album" );
-        case CollectionBrowser::IdArtist:
-            return i18n( "Artist" );
-        case CollectionBrowser::IdGenre:
-            return i18n( "Genre" );
-        case CollectionBrowser::IdYear:
-            return i18n( "Year" );
-        default:
-            break;
-    }
-
-    return i18n( "None" );
-}
-
-
-int
-CollectionView::idForCat( const QString& cat ) const
-{
-    if ( cat == i18n( "Album" ) ) return CollectionBrowser::IdAlbum;
-    if ( cat == i18n( "Artist" ) ) return CollectionBrowser::IdArtist;
-    if ( cat == i18n( "Genre" ) ) return CollectionBrowser::IdGenre;
-    if ( cat == i18n( "Year" ) ) return CollectionBrowser::IdYear;
-
-    //falltrough:
-    return CollectionBrowser::IdNone;
-}
-
-
 QPixmap
-CollectionView::iconForCat( const QString& cat ) const
+CollectionView::iconForCategory( const int cat ) const
 {
     QString icon;
-    if ( cat == i18n( "Album" ) ) icon = "cdrom_unmount";
-    if ( cat == i18n( "Artist" ) ) icon = "personal";
-    if ( cat == i18n( "Genre" ) ) icon = "kfm";
-    if ( cat == i18n( "Year" ) ) icon = "history";
+    switch( cat )
+    {
+        case CollectionBrowser::IdAlbum:
+            icon = "cdrom_unmount";
+            break;
+
+        case CollectionBrowser::IdArtist:
+            icon = "personal";
+            break;
+
+        case CollectionBrowser::IdGenre:
+            icon = "kfm";
+            break;
+
+        case CollectionBrowser::IdYear:
+            icon = "history";
+            break;
+    }
 
     KIconLoader iconLoader;
     return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
@@ -998,15 +976,28 @@ CollectionView::iconForCat( const QString& cat ) const
 
 
 QString
-CollectionView::tableForCat( const QString& cat ) const
+CollectionView::captionForCategory( const int cat ) const
 {
-    if ( cat == i18n( "Album" ) ) return "album";
-    if ( cat == i18n( "Artist" ) ) return "artist";
-    if ( cat == i18n( "Genre" ) ) return "genre";
-    if ( cat == i18n( "Year" ) ) return "year";
+    switch( cat )
+    {
+        case CollectionBrowser::IdAlbum:
+            return i18n( "Album" );
+            break;
 
-    //falltrough:
-    return 0;
+        case CollectionBrowser::IdArtist:
+            return i18n( "Artist" );
+            break;
+
+        case CollectionBrowser::IdGenre:
+            return i18n( "Genre" );
+            break;
+
+        case CollectionBrowser::IdYear:
+            return i18n( "Year" );
+            break;
+    }
+
+    return QString::null;
 }
 
 

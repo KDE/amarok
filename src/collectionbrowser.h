@@ -120,10 +120,8 @@ class CollectionView : public KListView
         void startDrag();
         KURL::List listSelected();
 
-        QString catForId( int id ) const;
-        int idForCat( const QString& cat ) const;
-        QPixmap iconForCat( const QString& cat ) const;
-        QString tableForCat( const QString& cat ) const;
+        QPixmap iconForCategory( const int cat ) const;
+        QString captionForCategory( const int cat ) const;
 
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
@@ -138,9 +136,6 @@ class CollectionView : public KListView
         int m_cat1;
         int m_cat2;
         int m_cat3;
-        QString m_category1;
-        QString m_category2;
-        QString m_category3;
 
         bool m_isScanning;
         QHBox* m_progressBox;
