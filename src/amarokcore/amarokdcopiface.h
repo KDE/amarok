@@ -51,15 +51,15 @@ k_dcop:
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
 
    /* New player API */
-   virtual QString Artist() = 0;                            ///< Return the artist of the currently playing track
-   virtual QString Title() = 0;                             ///< Return the title of the currently playing track
-   virtual QString Album() = 0;                             ///< Return the album of the currently playing track
-   virtual QString TotalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format)
-   virtual QString CurrentTime() = 0;                          ///< Return the position of the currently playing track ([h:]mm:ss format)
-   virtual QString Genre() = 0;                             ///< Return the genre of the currently playing track
-   virtual QString Year() = 0;                              ///< Return the year of the currently playing track
-   virtual QString Comment() = 0;                           ///< Return the comment of the currently playing track
-   virtual QString Bitrate() = 0;                           ///< Return the bitrate of the currently playing track
+   virtual QString artist() = 0;                            ///< Return the artist of the currently playing track.
+   virtual QString title() = 0;                             ///< Return the title of the currently playing track.
+   virtual QString album() = 0;                             ///< Return the album of the currently playing track.
+   virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
+   virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
+   virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
+   virtual QString year() = 0;                              ///< Return the year of the currently playing track.
+   virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
+   virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual void volumeUp() = 0;                             ///< Increase volume by a reasonable step.

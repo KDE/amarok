@@ -84,17 +84,17 @@ namespace amaroK
     }
 
 // Added own calls for Artist/Album/Title for flexibility reasons
-    QString DcopHandler::Artist()
+    QString DcopHandler::artist()
     {
         return EngineController::instance()->bundle().artist();
     }
     
-    QString DcopHandler::Title()
+    QString DcopHandler::title()
     {
         return EngineController::instance()->bundle().title();
     }
     
-    QString DcopHandler::Album()
+    QString DcopHandler::album()
     {
         return EngineController::instance()->bundle().album();
     }
@@ -102,34 +102,34 @@ namespace amaroK
 // Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;)
 // prettyLength also adds an "0" when sec < 10
     
-    QString DcopHandler::TotalTime()
+    QString DcopHandler::totalTime()
     {
         return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
     }
 
-    QString DcopHandler::CurrentTime()
+    QString DcopHandler::currentTime()
     {
         return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 );
     }
 
 // Some additional DCOP id3 tag output, very useful e.g. for annoying IRC-scripts ;)
 
-    QString DcopHandler::Genre()
+    QString DcopHandler::genre()
     {
         return EngineController::instance()->bundle().genre();
     }
 
-    QString DcopHandler::Year()
+    QString DcopHandler::year()
     {
         return EngineController::instance()->bundle().year();
     }
         
-    QString DcopHandler::Comment()
+    QString DcopHandler::comment()
     {
         return EngineController::instance()->bundle().comment();
     }
 
-    QString DcopHandler::Bitrate()
+    QString DcopHandler::bitrate()
     {
         return EngineController::instance()->bundle().prettyBitrate();
     }
