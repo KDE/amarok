@@ -42,10 +42,7 @@ rc_DATA = amarokui.rc
 configdir = $(kde_confdir)
 config_DATA = amarokrc
 
-# FIXME KDE 3.2 uses the new freedesktop.org standard. we must replace the applnk target with:
-#       xdg_apps_DATA = amarok.desktop
-applnk_DATA =  amarok.desktop
-applnkdir = $(kde_appsdir)/Multimedia
+xdg_apps_DATA = amarok.desktop
 
 messages: rc.cpp
         LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
