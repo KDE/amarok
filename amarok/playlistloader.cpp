@@ -13,28 +13,40 @@
 #include <qfile.h>
 
 #include <kapplication.h>
-#include <kfileitem.h>
 #include <kurl.h>
 #include <kdebug.h>
 #include <ktempfile.h>
 #include <kio/netaccess.h>
 
+//file stat
+#include <dirent.h>
+#include <sys/stat.h>
+
+//some GNU systems don't support big files for some reason
+#ifndef __USE_LARGEFILE64 //see dirent.h
+ #define DIRENT dirent
+ #define SCANDIR scandir
+ #define READDIR readdir
+ #define STATSTRUCT stat
+ #define LSTAT stat
+#else
+ #define DIRENT dirent64
+ #define SCANDIR scandir64
+ #define READDIR readdir64
+ #define STATSTRUCT stat64
+ #define LSTAT stat64
+#endif
+
 //taglib
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
-#include <taglib/audioproperties.h>
 
 /*
  * For pls and m3u specifications see: http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
  */
 
 //URGENT
-//TODO store threads in a stack that can be emptied on premature program exit
-//TODO get setCurrentTrack to insert an item if it's not found, document that it is done after all thread
-//     operations are complete
-//     also you can get the customEvent function to check if new items are current if current request is
-//     sitting there
-//TODO loaders with one directory with no entries seem to not delete themselves
+//TODO store threads in a stack that can be emptied on premature program exit, or use one thread and a KURL::List stack
 //TODO don't delete m_first, it may already have been removed! either make it unremovable or do something more intelligent
 
 //FIXME CRASH with URL::List iterator in process
@@ -126,7 +138,6 @@
 //     perhaps a static method that accepts a ListView pointer and loads playlists only would help speed
 //     up undo/redo
 //TODO stop blocking on netaccess::download()
-//TODO delete temporary playlist files
 //TODO recursion limits
 //TODO either remove the option or always read metatags (also remove extra columns if you keep the option)
 //TODO extract and bundle extra info from playlists (especially important for streams) (bundle it with
@@ -147,6 +158,7 @@ PlaylistLoader::PlaylistLoader( const KURL::List &ul, QWidget *w, PlaylistItem *
    , m_first( b ? pi : 0 )
 {}
 
+
 PlaylistLoader::~PlaylistLoader()
 {
     if( NULL != m_first )
@@ -161,31 +173,13 @@ PlaylistLoader::~PlaylistLoader()
 
 void PlaylistLoader::run()
 {
-       kdDebug() << "[loader] Start..\n";
+       kdDebug() << "[loader] Started..\n";
 
        process( m_list );
 
        QApplication::postEvent( m_parent, new LoaderDoneEvent( this ) );
 }
 
-
-#include <dirent.h>   //dirent
-#include <sys/stat.h> //lstat()
-
-//some GNU systems don't support big files for some reason
-#ifndef __USE_LARGEFILE64 //see dirent.h
- #define DIRENT dirent
- #define SCANDIR scandir
- #define READDIR readdir
- #define STATSTRUCT stat
- #define LSTAT stat
-#else
- #define DIRENT dirent64
- #define SCANDIR scandir64
- #define READDIR readdir64
- #define STATSTRUCT stat64
- #define LSTAT stat64
-#endif
 
 void PlaylistLoader::process( KURL::List &list, bool validate )
 {
@@ -292,14 +286,14 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
        KFileItem fileItem( mode, permissions, url, false ); //false = determineMimeType straight away
        KMimeType::Ptr mimeTypePtr = fileItem.determineMimeType();
 
-       kdDebug() << fileItem.mimetype() << endl;
-
        Arts::TraderQuery query;
        query.supports( "Interface", "Arts::PlayObject" );
        query.supports( "MimeType", mimeTypePtr->name().latin1() );
        std::vector<Arts::TraderOffer> *offers = query.query();
 
        b = !offers->empty();
+       
+       if( !b ) kdDebug() << "Rejected mimetype \"" << fileItem.mimetype() << "\" for: " << url.prettyURL() << endl;
 
        delete offers;
     }
@@ -308,7 +302,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 }
 
 
-void PlaylistLoader::translate( QString &path, KURL::List &list ) //FIXME KURL is pointless, pass a QString
+void PlaylistLoader::translate( QString &path, KURL::List &list )
 {
    DIR *d = opendir( path.local8Bit() );
    if( !path.endsWith( "/" ) ) path += '/';
@@ -429,9 +423,9 @@ void PlaylistLoader::loadPls( QTextStream &stream )
 
 PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 {
-   //construct a PlaylistItem and update the after pointer
-   //hint: never call from inside the loader thread!
-   //access from the GUI thread must be serialised
+   //Construct a PlaylistItem and update the after pointer
+   //This function is only called by the GUI thread and thus access to m_after is serialised
+   
    PlaylistItem *newItem = new PlaylistItem( lv, m_thread->m_after, m_url, m_tags );
 
    if( m_kio )
@@ -451,6 +445,8 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
       //FIXME <markey> NetAccess::download will create tempfile automagically, if given an empty string
       //      <mxcl> true, but "amarok4857895.tmp" looked bad in the playlist, so I used KTempFile
+      
+      //we delete the tempfile in the new thread's dtor
       #if KDE_IS_VERSION(3,1,92)
       if( KIO::NetAccess::download( m_url, path, m_thread->m_parent ) ) //should be thread-safe as we are only reading it no?
       #else
@@ -460,9 +456,6 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
          //we set true to ensure the place-holder (newItem) is deleted after processing
          PlaylistLoader *loader = new PlaylistLoader( KURL::List( KURL( path ) ), lv, newItem, true );
          loader->start();
-         //KIO::NetAccess::removeTempFile( path );
-         //FIXME <markey> why deactivated?
-         //FIXME <mxcl> it can't be deleted until the thread has read it. Implementation is required..
       }
       else
       {
@@ -480,13 +473,7 @@ PlaylistItem *PlaylistLoader::LoaderEvent::makePlaylistItem( QListView *lv )
 
 // TagReader ===============
 
-//URGENT!
 //TODO read threading notes in Qt assistant to check you haven't made some silly error
-
-//NORMAL
-//TODO in cases where some tags are already set, keep them if there is no replacement
-//TODO read audio tags on demand only?
-//TODO audioproperties stuff
 
 void TagReader::append( PlaylistItem *item )
 {
@@ -497,13 +484,13 @@ void TagReader::append( PlaylistItem *item )
    if( item->url().protocol() == "file" )
    {
       //QDeepCopy<QString> url = item->url().path();
-      Bundle bundle( item, item->url(), 0 );
+      Bundle bundle( item, item->url() );
 
       mutex.lock();
       m_Q.push_back( bundle );
       mutex.unlock();
 
-      if( !running() ) start( QThread::LowestPriority ); //FIXME QThread::priority not present in Qt prior to 3.2
+      if( !running() ) start( QThread::LowestPriority );
    }
 }
 
@@ -517,12 +504,12 @@ void TagReader::run()
 
     while( m_bool )
     {
-        mutex.lock(); //lock first to prevent queue changes while we query it
+        mutex.lock();
         if( m_Q.empty() ) { mutex.unlock(); break; }
         Bundle bundle( m_Q.front() );
         mutex.unlock();
 
-        tags = readTags( bundle.url, tags );
+        tags = readTags( bundle.url );
 
         //we need to check the item is still there, if the playlistItem was removed, it will no longer be in
         //the queue
@@ -539,14 +526,16 @@ void TagReader::run()
 }
 
 
-MetaBundle *TagReader::readTags( const KURL &url, MetaBundle *tags )
+MetaBundle *TagReader::readTags( const KURL &url )
 {
+   MetaBundle *tags = 0;
+
    //audioproperties are read on demand
    TagLib::FileRef f( url.path().local8Bit(), false );
 
    if ( !f.isNull() && f.tag() ) //FIXME I'm thinking that calling f.tag() here is possibly not nice, must check!
    {
-      TagLib::Tag * tag = f.tag();
+      TagLib::Tag *tag = f.tag();
 
       tags = new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
                        TStringToQString( tag->artist() ).stripWhiteSpace(),
@@ -558,7 +547,6 @@ MetaBundle *TagReader::readTags( const KURL &url, MetaBundle *tags )
                        QString::number( tag->track() ),
                        f.audioProperties() );
    }
-   else tags = 0;
 
    return tags;
 }
@@ -566,12 +554,14 @@ MetaBundle *TagReader::readTags( const KURL &url, MetaBundle *tags )
 
 void TagReader::cancel()
 {
-   //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
-   //      you've "solved" this by processing events after calling this in PlaylistWidget
-
    mutex.lock();
    m_Q.clear();
    mutex.unlock();
+   
+   //this is because currently, tagreader 98% of the time has sent events for playlistitems to be deleted
+   //by processing events you process these playlistItem events and then after this function thery are deleted
+   //FIXME delay deletion of the items instead (use an event to do it instead)
+   kapp->processEvents();
 }
 
 
@@ -579,15 +569,11 @@ void TagReader::remove( PlaylistItem *pi )
 {
    //thread safe removal of above item, called when above item no longer needs tags, ie is about to be deleted
 
-   //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
-   //      you've "solved" this by processing events after calling this in PlaylistWidget
-
    mutex.lock();
-   kdDebug() << "[reader] Removing item " << pi->url() << endl;
-   uint n = m_Q.remove( Bundle(pi, "", 0) );
-   kdDebug() << "[reader] Removed " << n << " items\n";
+   m_Q.remove( Bundle( pi, KURL() ) );
    mutex.unlock();
 }
+
 
 
 TagReader::TagReaderEvent::~TagReaderEvent()
@@ -599,10 +585,8 @@ void TagReader::TagReaderEvent::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
-   kdDebug() << "TagReader::TagReaderEvent::bindTags(): m_item=" << m_item << endl;
    if( m_tags )
    {
        m_item->setMeta( *m_tags );
-       kdDebug() << "TagReader::TagReaderEvent::bindTags(): setMeta() passed" << endl;
    }
 }

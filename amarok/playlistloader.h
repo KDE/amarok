@@ -29,24 +29,30 @@ public:
     PlaylistLoader( const KURL::List &, QWidget *, PlaylistItem *, bool =false );
     ~PlaylistLoader();
 
-    struct Options
-    {
-      bool recurse;
-      bool symlink;
-      bool meta;
+    struct Options {
+        bool recurse;
+        bool symlink;
     } options;
 
-    void setOptions( bool b1, bool b2, bool b3 ) { options.recurse = b1;
-                                                   options.symlink = b2;
-                                                   options.meta    = b3; }
+    void setOptions( bool b1, bool b2 ) { options.recurse = b1; options.symlink = b2; }
 
     class LoaderEvent : public QCustomEvent
     {
     public:
-       LoaderEvent( PlaylistLoader *pl, const KURL &u, MetaBundle* const mb ) : QCustomEvent( 65432 ), m_thread( pl ), m_url( u ), m_tags( mb ), m_kio( false ) {}
-       LoaderEvent( PlaylistLoader *pl, const KURL &u ) : QCustomEvent( 65432 ), m_thread( pl ), m_url( u ), m_tags( 0 ), m_kio( true ) {}
+       LoaderEvent( PlaylistLoader *pl, const KURL &u, MetaBundle* const mb )
+         : QCustomEvent( 65432 )
+         , m_thread( pl )
+         , m_url( u )
+         , m_tags( mb )
+         , m_kio( false ) {}
 
-       //TODO attempt to more clearly define the downloading version of this event
+       //TODO attempt to more clearly define the downloading version of this event                
+       LoaderEvent( PlaylistLoader *pl, const KURL &u )
+         : QCustomEvent( 65432 )
+         , m_thread( pl )
+         , m_url( u )
+         , m_tags( 0 )
+         , m_kio( true ) {}
 
        const KURL &url() const { return m_url; }
        PlaylistItem *makePlaylistItem( QListView *lv );
@@ -61,22 +67,24 @@ public:
     class LoaderDoneEvent : public QCustomEvent
     {
     public:
-       LoaderDoneEvent( PlaylistLoader *t ) : QCustomEvent( 65433 ), m_thread( t ) {}
+       LoaderDoneEvent( PlaylistLoader *t )
+         : QCustomEvent( 65433 )
+         , m_thread( t ) {}
+         
        void dispose() { if( m_thread->running() ) m_thread->wait(); delete m_thread; } //FIXME will stall UI
 
     private:
        PlaylistLoader *m_thread;
     };
 
-    friend class PlaylistEvent;
     friend class LoaderEvent;
 
 private:
-    void run();
+    virtual void run();
     void process( KURL::List &, bool = true );
 
     bool isValidMedia( const KURL &, mode_t = KFileItem::Unknown, mode_t = KFileItem::Unknown );
-    void translate( QString &, KURL::List & );
+    void translate( QString &, KURL::List & ); //turns a directory into a KURL::List
     int  isPlaylist( const QString & );
     void loadLocalPlaylist( const QString &, int );
     void loadM3u( QTextStream &, const QString & );
@@ -118,33 +126,31 @@ public:
    };
 
 private:
-   void run();
-   MetaBundle *readTags( const KURL &url, MetaBundle *tags );
+   virtual void run();
+   MetaBundle *readTags( const KURL &url );
 
    // should qualify for a QValueList value (i.e. have a. copy ctor, b. default ctor, c. assignment operator)
    struct Bundle
    {
-      Bundle() : item(0), url(), tags(0) {}
-      //FIXME you want const data members, but then you can't do assignment, and std::remove() needs assignment!
-      //      try copy constructor
-      Bundle( PlaylistItem *pi, const KURL &u, MetaBundle* mb ) : item( pi ), url( u ), tags( mb ) {}
+      Bundle() : item(0), url() {}
+      Bundle( PlaylistItem *pi, const KURL &u ) : item( pi ), url( u ) {}
+      Bundle( const Bundle &b ) : item( b.item ), url( b.url ) {}
 
       Bundle& operator=( const Bundle &b )
       {
-         if (&b != this)
-         {
-            this->item = b.item;
-            this->url = b.url;
-            this->tags = b.tags;
-         }
-         return *this;
+          if (&b != this)
+          {
+              //nothing to delete: never delete the PlaylistItem! GUI thread only can do that
+              this->item = b.item;
+              this->url = b.url;
+          }
+          return *this;
       }
       bool operator==( const Bundle &b ) const { return ( item == b.item ); }
       bool operator==( const PlaylistItem* const pi ) const { return ( item == pi ); }
 
       PlaylistItem* item;
       KURL url;
-      MetaBundle* tags;
    };
 
    QWidget *m_parent;

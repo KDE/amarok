@@ -436,7 +436,7 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
 
    //FIXME remove meta option if that is the way things go
    if( loader ) {
-      loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks, pApp->m_optReadMetaInfo );
+      loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks );
       loader->start();
    } else
       kdDebug() << "[loader] Unable to create loader-thread!\n";
@@ -585,7 +585,6 @@ void PlaylistWidget::clear( bool full )
     if( m_tagReader->running() )
     {
        m_tagReader->cancel(); //will clear the work queue
-       kapp->processEvents(); //will be events for the items to process, lets not crash!
     }
     
     if( full )
@@ -724,12 +723,13 @@ void PlaylistWidget::removeSelectedItems()
 
     writeUndo();
 
-    QListViewItem *item, *item1;
+    QListViewItem *item;
+    PlaylistItem  *item1;
     item = firstChild();
 
     while ( item != NULL )
     {
-        item1 = item;
+        item1 = static_cast<PlaylistItem *>(item);
         item = item->nextSibling();
 
         if ( item1->isSelected() )
@@ -742,15 +742,16 @@ void PlaylistWidget::removeSelectedItems()
               searchPtrs.remove( searchPtrs.at( x ) );
            }
 
-           m_tagReader->remove( static_cast<PlaylistItem *>(item) ); //FIXME slow, nasty, not scalable
-
-	   if( m_pCurrentTrack == item1 ) m_pCurrentTrack = NULL;
-	   
-           //there is a small chance events were dispatched to the tobe deleted items by the reader thread
-           //this should ensure they are processed before deletion
-           kapp->processEvents();
+           if( m_pCurrentTrack == item1 ) m_pCurrentTrack = NULL;
            
-           delete item1;
+           if( m_tagReader->running() )
+           {
+               m_tagReader->remove( static_cast<PlaylistItem *>(item) );
+               item1->setVisible( false );
+           }
+           else { delete item1; }
+           
+           //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
         }
     }
 }
