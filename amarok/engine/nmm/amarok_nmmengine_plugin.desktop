@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Service
-Name=NmmEngine
+Name=NMM Engine
 X-KDE-Library=libamarok_nmmengine_plugin
-Comment=Plugin for amaroK
+Comment=amaroK plugin
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine

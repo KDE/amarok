@@ -8,7 +8,7 @@
 #include <config.h>
 #ifdef HAVE_NMM
 
-#include "enginebase.h"
+#include "engine/enginebase.h"
 #include <nmm/NMMTypes.hpp>
 
 namespace NMM { class MP3ReadNode; }

@@ -5,7 +5,8 @@
 #include "nmm_engine.h"
 #ifdef HAVE_NMM
 
-#include "playerapp.h" //FIXME bah!
+//#include "playerapp.h" //FIXME bah!
+#include "plugin/plugin.h"
 
 #include <nmm/base/connect.hpp>
 #include <nmm/base/EDObject.hpp> //for the badass TEDObject template
