@@ -53,6 +53,9 @@ class ExpandButton : public QPushButton
         void slotStartExpand();
         void slotAnimTimer();
 
+    protected:
+        void drawButtonLabel( QPainter * );
+
     private:
         enum AnimPhase { ANIM_IDLE, ANIM_EXPAND, ANIM_SHOW, ANIM_SHRINK };
         AnimPhase m_animFlag;

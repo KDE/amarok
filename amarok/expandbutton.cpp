@@ -31,11 +31,14 @@
 #include <qtimer.h>
 #include <qevent.h>
 #include <qpaintdevice.h>
+#include <qpainter.h>
 #include <qpoint.h>
+#include <qpointarray.h>
 #include <qptrlist.h>
 #include <qpalette.h>
 
 #include <kdebug.h>
+#include <kglobal.h>
 
 ExpandButton::ExpandButton( const QString &text, QWidget *parent ) :
 QPushButton( text, parent )
@@ -221,5 +224,27 @@ void ExpandButton::slotAnimTimer()
     }
     bitBlt( parentWidget(), x(), y() - m_pComposePixmap->height(), m_pComposePixmap );
 }
+
+
+void ExpandButton::drawButtonLabel( QPainter *p )
+{
+   QPushButton::drawButtonLabel(p);
+
+   if ( !m_ButtonList.isEmpty() )
+   {
+      QCOORD size = KMIN( width(), height() ) / 3;
+      QCOORD minadj = KMAX( size/3, 5 );
+
+      QPointArray pa( 3 );
+      pa.setPoint( 0, width()-minadj-size, minadj      );
+      pa.setPoint( 1, width()-minadj,      minadj      );
+      pa.setPoint( 2, width()-minadj,      minadj+size );
+
+      p->setPen( Qt::black );
+      p->setBrush( Qt::black );
+      p->drawConvexPolygon( pa );
+   }
+}
+
 
 #include "expandbutton.moc"
