@@ -375,19 +375,25 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
     m_hours = hours;
     m_minutes = minutes;
     m_seconds = seconds;
-    
+
+    timeDisplay();
+}
+
+
+void PlayerWidget::timeDisplay()
+{
     QString str;
 
-    if ( hours < 10 ) str += "0";
-    str += QString::number( hours );
+    if ( m_hours < 10 ) str += "0";
+    str += QString::number( m_hours );
     str += ":";
 
-    if ( minutes < 10 ) str += "0";
-    str += QString::number( minutes );
+    if ( m_minutes < 10 ) str += "0";
+    str += QString::number( m_minutes );
     str += ":";
 
-    if ( seconds < 10 ) str += "0";
-    str += QString::number( seconds );
+    if ( m_seconds < 10 ) str += "0";
+    str += QString::number( m_seconds );
 
 /*    m_pTimeDisplayLabel ->setFont( timeFont );
     m_pTimeDisplayLabel ->setPaletteForegroundColor( QColor( 255, 255, 255 ) );*/
@@ -402,7 +408,7 @@ void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seco
     p.drawText( 0, 16, str );       
     bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );    // FIXME ugly hack for flickerfixing*/
     
-    if (!remaining)
+    if ( !m_remaining )
         m_pTimeSign->setPixmap( *m_pTimePlusPixmap );
     else
         m_pTimeSign->setPixmap( *m_pTimeMinusPixmap );
@@ -439,16 +445,6 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     drawScroll();    // necessary for pause mode
 
     timeDisplay( m_remaining, m_hours, m_minutes, m_seconds );
-}
-
-
-void PlayerWidget::mouseReleaseEvent( QMouseEvent *e )
-{
-    if ( m_pTimeDisplayLabel->geometry().contains( e->pos() ) ||
-         m_pTimeSign        ->geometry().contains( e->pos() ) )
-    {
-        pApp->m_optTimeDisplayRemaining = !pApp->m_optTimeDisplayRemaining;
-    }
 }
 
 
@@ -538,6 +534,16 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             {
                 *ptr = !m_pPopupMenu->isItemChecked( id );
             }
+        }
+    }
+    else //other buttons
+    {
+        QRect rect( m_pTimeDisplayLabel->geometry() | m_pTimeSign->geometry() );
+
+        if ( rect.contains( e->pos() ) )
+        {
+            pApp->m_optTimeDisplayRemaining = !pApp->m_optTimeDisplayRemaining;
+            timeDisplay();
         }
     }
 }

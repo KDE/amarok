@@ -66,6 +66,7 @@ class PlayerWidget : public QWidget
 
         void setScroll( QString = "", const QString& = "?", const QString& = "?", const QString& = "00:00" );
         void drawScroll();
+        void timeDisplay();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
         const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
 
@@ -116,7 +117,6 @@ class PlayerWidget : public QWidget
         void polish();
 
         void paintEvent( QPaintEvent *e );
-        void mouseReleaseEvent( QMouseEvent *e );
         void mousePressEvent( QMouseEvent *e );
         void queryClose();
         void closeEvent( QCloseEvent *e );

@@ -60,7 +60,7 @@ class AnalyzerBase : public QFrame
         void initSin( std::vector<float> & ) const;
 
         virtual void init() = 0;
-        virtual void mouseReleaseEvent( QMouseEvent* );
+        virtual void mousePressEvent( QMouseEvent* );
 
     private:
         void initGrid();

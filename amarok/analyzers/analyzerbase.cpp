@@ -95,9 +95,11 @@ void AnalyzerBase::initSin( std::vector<float> &v ) const
 }
 
 
-void AnalyzerBase::mouseReleaseEvent( QMouseEvent * )
+void AnalyzerBase::mousePressEvent( QMouseEvent *e )
 {
     emit clicked();
+    
+    e->accept(); //don't propagate to PlayerWidget!
 }
 
 
