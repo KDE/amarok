@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #181 being the highest available (take this one for your next bug and increase here)
+           #182 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  ADD 181 <markey> Filebrowser toolbar needs an icon for "Sort".
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
