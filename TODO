@@ -6,7 +6,7 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <markey> Show status-message while updating the Collection (incremental scan).
+  <markey> When rescanning the Collection, the Progress-bar sometimes won't appear!
 
   <mxcl>   Hitting the DEL key in the playlist activates the file-browser delete shortcut, offering to trash
            whatever is selected there. Nice!
