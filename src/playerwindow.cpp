@@ -560,7 +560,11 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
     if( o == m_pAnalyzer )
     {
         //delete analyzer, create same one back in Player Window
-        if( e->type() == QEvent::Close ) createAnalyzer( 0 );
+        if( e->type() == QEvent::Close )
+        {
+            createAnalyzer( 0 );
+            return TRUE;
+        }
         return FALSE;
     }
 
@@ -602,7 +606,7 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
 
         if( isShown() )
         {
-            //only when shown means that using the global Show/Hide Playlist shortcut
+            //only when shown means thaman:mkreiserfst using the global Show/Hide Playlist shortcut
             //when in the tray doesn't effect the state of the PlaylistButton
             //this is a good thing, but we have to set the state correctly when we are shown
 
