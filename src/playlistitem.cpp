@@ -90,6 +90,7 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , m_inCollection( false )
 {
     setDragEnabled( true );
 
@@ -100,6 +101,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
       : KListViewItem( lv, lvi, trackName( u ) )
       , m_url( u )
+      , m_inCollection( false )
 {
     setDragEnabled( true );
 
@@ -110,6 +112,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , m_inCollection( true )
 {
     setDragEnabled( true );
 
@@ -120,6 +123,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle&
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n )
       : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
       , m_url( u )
+      , m_inCollection( false )
 {
     setDragEnabled( true );
 

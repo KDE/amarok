@@ -85,7 +85,20 @@ PlaylistLoader::run()
     for( List::ConstIterator it = m_pairs.begin(); it != end2 && !s_stop; ++it )
     {
         if ( (*it).first.isLocalFile() )
-            QApplication::postEvent( Playlist::instance(), new TagsEvent( (*it).first, (*it).second ) );
+        {
+            if ( (*it).second->inCollection() )
+            {
+                if ( !(*it).second->hasAudioproperties() )
+                {
+                    // Store audioproperties in database if not yet stored
+                    TagsEvent* e = new TagsEvent( (*it).first, (*it).second );
+                    m_db->addAudioproperties( e->bundle );
+                    QApplication::postEvent( Playlist::instance(), e );
+                }
+            }
+            else
+                QApplication::postEvent( Playlist::instance(), new TagsEvent( (*it).first, (*it).second ) );
+        }
 
         progress += increment;
         amaroK::StatusBar::showProgress( uint(progress) );

@@ -494,26 +494,41 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 bool
 CollectionDB::getMetaBundleForUrl( const QString url, MetaBundle *bundle )
 {
-    query( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.createdate, tags.dir "
+    query( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate "
                     "FROM tags, album, artist, genre, year "
                     "WHERE album.id = tags.album AND artist.id = tags.artist AND genre.id = tags.genre AND year.id = tags.year AND url = '%1';" )
                     .arg( escapeString( url ) ) );
 
     if ( !m_values.isEmpty() )
     {
-        bundle->m_album = m_values[0];
-        bundle->m_artist = m_values[1];
-        bundle->m_genre = m_values[2];
-        bundle->m_title = m_values[3];
-        bundle->m_year = m_values[4];
-        bundle->m_comment = m_values[5];
-        bundle->m_track = m_values[6];
-        bundle->m_url = url;
+        bundle->setAlbum( m_values[0] );
+        bundle->setArtist( m_values[1] );
+        bundle->setGenre( m_values[2] );
+        bundle->setTitle( m_values[3] );
+        bundle->setYear( m_values[4] );
+        bundle->setComment( m_values[5] );
+        bundle->setTrack( m_values[6] );
+        bundle->setBitrate( m_values[7].toInt() );
+        bundle->setLength( m_values[8].toInt() );
+        bundle->setSampleRate( m_values[9].toInt() );
+
+        bundle->setUrl( url );
 
         return true;
     }
 
     return false;
+}
+
+
+void
+CollectionDB::addAudioproperties( const MetaBundle& bundle )
+{
+    query( QString( "REPLACE INTO tags ( bitrate, length, samplerate ) WHERE url = '%1' VALUES ( '%2', '%3', '%4' );" )
+                    .arg( escapeString( bundle.url().path() ) )
+                    .arg( bundle.bitrate() )
+                    .arg( bundle.length() )
+                    .arg( bundle.sampleRate() ) );
 }
 
 
@@ -697,6 +712,9 @@ CollectionDB::createTables( bool temporary )
                     "year INTEGER,"
                     "comment VARCHAR(256),"
                     "track NUMBER(4),"
+                    "bitrate INTEGER,"
+                    "length INTEGER,"
+                    "samplerate INTEGER,"
                     "sampler BOOLEAN );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
@@ -725,7 +743,7 @@ CollectionDB::createTables( bool temporary )
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(256) );" )
+                    "name VARCHAR(4) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 

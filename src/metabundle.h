@@ -104,8 +104,6 @@ public:
     static QString prettyTitle( QString );
     static QStringList genreList();
 
-    friend class CollectionDB;
-
 private:
     KURL    m_url;
     QString m_title;

@@ -55,6 +55,7 @@ class CollectionDB : public QObject
 
         //song methods
         bool getMetaBundleForUrl( const QString url, MetaBundle *bundle );
+        void addAudioproperties( const MetaBundle& bundle );
         uint addSongPercentage( const QString url, const int percentage );
         uint getSongPercentage( const QString url );
         void setSongPercentage( const QString url, int percentage );
