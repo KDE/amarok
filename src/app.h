@@ -59,15 +59,13 @@ class App : public KApplication, public EngineObserver
         void engineVolumeChanged( int );
 
     public slots:
+        void applySettings( bool firstTime = false );
         void slotConfigAmarok( int page = 0 );
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
         void slotConfigEffects( bool = true );
         void firstRunWizard();
-
-    private slots:
-        void applySettings( bool firstTime = false );
 
     private:
         void initGlobalShortcuts();

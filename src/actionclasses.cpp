@@ -4,8 +4,10 @@
 #include "actionclasses.h"
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "app.h"
 #include "config.h"             //HAVE_XMMS definition
 #include "enginecontroller.h"
+#include "playlistwindow.h"
 #include "scriptmanager.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
@@ -94,7 +96,7 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( i18n( "First-run Wizard" ), kapp, SLOT( firstRunWizard() ) );
+    insertItem( i18n( "First-run Wizard" ), ID_SHOW_WIZARD );
 
     insertSeparator();
 
@@ -157,6 +159,12 @@ Menu::slotActivated( int index )
     {
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
+        break;
+    case ID_SHOW_WIZARD:
+        pApp->firstRunWizard();
+        pApp->applySettings();
+        pApp->playlistWindow()->reloadXML();
+        pApp->playlistWindow()->createGUI();
         break;
     #ifdef HAVE_KJSEMBED
     case ID_SHOW_SCRIPT_SELECTOR:
