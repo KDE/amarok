@@ -302,7 +302,7 @@ void App::initGlobalShortcuts()
     //TODO fix kde accel system so that kactions find appropriate global shortcuts
     //     and there is only one configure shortcuts dialog
 
-    KActionCollection* const ac = actionCollection();
+    KActionCollection* const ac = amaroK::actionCollection();
     KAccelShortcutList list( m_pGlobalAccel );
 
     for( uint i = 0; i < list.count(); ++i )
@@ -396,7 +396,7 @@ void App::applySettings( bool firstTime )
         //m_pPlaylistWindow->show(); //must be shown //we do below now
 
         //ensure that at least one Menu is plugged into an accessible UI element
-        if( !AmarokConfig::showMenuBar() && !actionCollection()->action( "amarok_menu" )->isPlugged() )
+        if( !AmarokConfig::showMenuBar() && !amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
            playlistWindow()->createGUI();
     }
 
@@ -757,7 +757,7 @@ void App::slotConfigAmarok( const QCString& page )
 
 void App::slotConfigShortcuts()
 {
-    KKeyDialog::configure( actionCollection(), m_pPlaylistWindow );
+    KKeyDialog::configure( amaroK::actionCollection(), m_pPlaylistWindow );
 }
 
 void App::slotConfigGlobalShortcuts()

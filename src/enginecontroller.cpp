@@ -133,7 +133,7 @@ EngineBase *EngineController::loadEngine() //static
 
         QString oldEngine = PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString();
 
-        StatusBar::instance()->longMessage(
+        amaroK::StatusBar::instance()->longMessage(
             i18n( "amaroK could not initialize the '%1', instead we will revert to the '%2'" )
                 .arg( AmarokConfig::soundSystem(), oldEngine ),
             KDE::StatusBar::Error );
@@ -153,47 +153,47 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
     amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( engineName ) );
 
     if( !plugin ) {
-       query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
-       KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
+        query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
+        KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
 
-       while( !plugin && !offers.isEmpty() ) {
-          // prioritise highest rank for left engines
-          int rank = 0;
-          uint current = 0;
-          for ( uint i = 0; i < offers.count(); i++ ) {
-            if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > rank ) {
-             current = i;
-             rank = offers[i]->property( "X-KDE-amaroK-rank" ).toInt();
-            }
-          }
-          plugin = PluginManager::createFromService( offers[current] );
-          offers.remove(offers[current]);
-       }
+        while( !plugin && !offers.isEmpty() ) {
+            // prioritise highest rank for left engines
+            uint current = 0;
+            for( uint i = 0, rank = 0; i < offers.count(); i++ )
+                if ( offers[i]->property( "X-KDE-amaroK-rank" ).toInt() > (int)rank ) {
+                    current = i;
+                    rank = offers[i]->property( "X-KDE-amaroK-rank" ).toInt();
+                }
 
-       if( !plugin ) {
-          KRun::runCommand( "kbuildsycoca" );
+            plugin = PluginManager::createFromService( offers[current] );
+            offers.remove( offers[current] );
+        }
 
-          KMessageBox::error( 0, i18n(
-            "<p>amaroK could not find any sound-engine plugins. "
-            "amaroK is now updating the KDE configuration database. Please wait a couple of minutes, then restart amaroK.</p>"
-            "<p>If this does not help, "
-            "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
-            "$ cd /path/to/amarok/source-code/<br>"
-            "$ su -c \"make uninstall\"<br>"
-            "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
-            "$ kbuildsycoca<br>"
-            "$ amarok</pre>"
-            "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
+        if ( !plugin ) {
+            KRun::runCommand( "kbuildsycoca" );
 
-          ::exit( EXIT_SUCCESS );
-       }
+            KMessageBox::error( 0, i18n(
+                "<p>amaroK could not find any sound-engine plugins. "
+                "amaroK is now updating the KDE configuration database. Please wait a couple of minutes, then restart amaroK.</p>"
+                "<p>If this does not help, "
+                "it is likely that amaroK is installed under the wrong prefix, please fix your installation using:<pre>"
+                "$ cd /path/to/amarok/source-code/<br>"
+                "$ su -c \"make uninstall\"<br>"
+                "$ ./configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>"
+                "$ kbuildsycoca<br>"
+                "$ amarok</pre>"
+                "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
 
-       AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
+            ::exit( EXIT_SUCCESS );
+        }
 
-       StatusBar::instance()->longMessage( i18n( "Sorry, the requested engine could not be loaded" ), KDE::StatusBar::Sorry );
-   }
+        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
 
-   return plugin;
+        amaroK::StatusBar::instance()->longMessage(
+                i18n( "Sorry, the requested engine could not be loaded" ), KDE::StatusBar::Sorry );
+    }
+
+    return plugin;
 }
 
 
@@ -303,7 +303,7 @@ void EngineController::play( const MetaBundle &bundle )
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
-        StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
+        amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
         return; //don't do notify
     }
 

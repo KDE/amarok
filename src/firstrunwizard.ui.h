@@ -23,17 +23,18 @@ namespace amaroK
 
     extern KConfig *config( const QString& );
 }
-using namespace amaroK;
 
 void
 FirstRunWizard::init()
 {
+    using namespace amaroK;
+
     //aesthetics
     cancelButton()->setFixedWidth( cancelButton()->width() );
     helpButton()->hide();
 
     //would be better as a KConfigXT key now
-    if ( amaroK::config( "General" )->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
+    if ( config( "General" )->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
         option_xmms->setChecked( true );
         picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
     }
@@ -72,6 +73,8 @@ FirstRunWizard::invokeHandbook() //SLOT
 inline void
 FirstRunWizard::xmmsModeToggled( bool on ) //SLOT
 {
+    using namespace amaroK;
+
     if ( on )
         picture_modePreview->setPixmap( getPNG( "wizard_xmms" ) );
     else

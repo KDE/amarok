@@ -104,7 +104,7 @@ LoaderServer::newConnection( int sockfd )
     {
         QString result( buf );
 
-        kdDebug() << QString( "Received: %1 (%2 bytes)\n" ).arg( result ).arg( nbytes );
+        debug() << QString( "Received: %1 (%2 bytes)\n" ).arg( result ).arg( nbytes );
 
         if( result != "STARTUP" )
         {
@@ -113,7 +113,7 @@ LoaderServer::newConnection( int sockfd )
             if( !args.isEmpty() )
             {
                 //stop startup cursor animation - do not mess with this, it's carefully crafted
-                kdDebug() << "DESKTOP_STARTUP_ID: " << args.first() << endl;
+                debug() << "DESKTOP_STARTUP_ID: " << args.first() << endl;
                 kapp->setStartupId( args.first().local8Bit() );
                 KStartupInfo::appStarted();
                 args.pop_front();
@@ -126,7 +126,7 @@ LoaderServer::newConnection( int sockfd )
                 for ( int i = 0; i < argc; ++i, ++it )
                 {
                     argv[i] = const_cast<char*>((*it).latin1());
-                    kdDebug() << "Extracted: " << argv[i] << endl;
+                    debug() << "Extracted: " << argv[i] << endl;
                 }
 
                 //re-initialize KCmdLineArgs with the new arguments
@@ -136,7 +136,7 @@ LoaderServer::newConnection( int sockfd )
             }
         }
     }
-    else kdDebug() << "recv() error\n";
+    else debug() << "recv() error\n";
 
     ::close( sockfd );
 }
@@ -160,7 +160,7 @@ Vis::SocketServer::SocketServer( QObject *parent )
 void
 Vis::SocketServer::newConnection( int sockfd )
 {
-    kdDebug() << "[Vis::Server] Connection requested: " << sockfd << endl;
+    debug() << "[Vis::Server] Connection requested: " << sockfd << endl;
     new SocketNotifier( sockfd );
 }
 
@@ -189,7 +189,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         {
             pid_t *pid = (pid_t*)(buf + 4);
 
-            kdDebug() << "Registration pid: " << *pid << endl;
+            debug() << "Registration pid: " << *pid << endl;
 
             Vis::Selector::instance()->mapPID( *pid, sockfd );
         }
@@ -202,7 +202,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
     } else {
 
-        kdDebug() << "[Vis::Server] receive error, closing socket: " << sockfd << endl;
+        debug() << "[Vis::Server] receive error, closing socket: " << sockfd << endl;
         ::close( sockfd );
         delete this;
     }
@@ -257,7 +257,7 @@ Vis::Selector::Selector( QWidget *parent )
     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
-    QStringList entries = QStringList::split( '\n', str );
+    QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
 
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
         new Item( this, "amarok_xmmswrapper2", *it, "xmms" );
@@ -266,7 +266,7 @@ Vis::Selector::Selector( QWidget *parent )
     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
-    entries = QStringList::split( '\n', str );
+    entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
 
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
         new Item( this, "amarok_libvisual", *it, "libvisual" );
@@ -294,7 +294,7 @@ Vis::Selector::mapPID( int pid, int sockfd )
         if( item->m_proc && item->m_proc->pid() == pid ) { item->m_sockfd = sockfd; return; }
     }
 
-    kdDebug() << "No matching pid in the Vis::Selector!\n";
+    debug() << "No matching pid in the Vis::Selector!\n";
 }
 
 void
@@ -344,7 +344,7 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 
         connect( m_proc, SIGNAL(processExited( KProcess* )), listView(), SLOT(processExited( KProcess* )) );
 
-        kdDebug() << "[Vis::Selector] Starting visualization..\n";
+        debug() << "[Vis::Selector] Starting visualization..\n";
 
         if( m_proc->start() ) break;
 
@@ -353,7 +353,7 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
         kdWarning() << "[Vis::Selector] Could not start amarok_xmmswrapper!\n";
 
     case Off:
-        kdDebug() << "[Vis::Selector] Stopping XMMS visualization\n";
+        debug() << "[Vis::Selector] Stopping XMMS visualization\n";
 
         //m_proc->kill(); no point, will be done by delete, and crashes amaroK in some cases
         delete m_proc;

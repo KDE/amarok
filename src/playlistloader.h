@@ -12,12 +12,14 @@
 #include <qevent.h>       //baseclass
 #include "threadweaver.h" //baseclass
 
-
 class CollectionDB;
 class QListView;
 class QListViewItem;
 class KDirLister;
 class PlaylistItem;
+
+namespace KIO { class Job; }
+
 
 class PlaylistLoader : public ThreadWeaver::DependentJob
 {

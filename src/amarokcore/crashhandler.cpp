@@ -2,22 +2,27 @@
 //Licensed as described in the COPYING accompanying this distribution
 //
 
+#include "debug.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
-#include "debug.h"
-#include <kapplication.h>
+#include <cstdio>         //popen, fread
+#include <kapplication.h> //invokeMailer()
 #include <kdeversion.h>
 #include <klocale.h>
+#include <kstartupinfo.h>
+#include <ktempfile.h>
 #include <qfile.h>
 #include <qtextstream.h>
 
-namespace std
+extern "C"
 {
-    #include <stdlib.h>
-    #include <unistd.h>
-    #include <execinfo.h>
+    #include <sys/types.h> //pid_t
+    #include <sys/wait.h>  //waitpid
+    #include <unistd.h>    //write, getpid
 }
+
 
 namespace amaroK
 {
@@ -31,12 +36,16 @@ namespace amaroK
     void
     Crash::crashHandler( int /*signal*/ )
     {
-        debug() << "amaroK is crashing...\n";
+        // we need to fork to be able to get a
+        // semi-decent bt - I dunno why
+        const pid_t pid = ::fork();
 
+        if( pid <= 0 )
         {
-            #define LINES 256
+            // we are the child process (the result of the fork)
+            debug() << "amaroK is crashing...\n";
 
-            QString backtrace = "Due to b0rkage, the crash-function gets shown like: [0xffffe420]\n\n";
+            QString bt;
             QString path = amaroK::saveLocation() + "backtrace";
             QString body = i18n(
                     "amaroK has crashed! We're terribly sorry about this :(\n\n"
@@ -45,33 +54,50 @@ namespace amaroK
                     "or if you have time, write a brief description of how the crash happened first.\n\n"
                     "Many thanks.\n\n" );
 
-            body += "Engine       %1\n"
-                    "Build date:  " __DATE__ "\n"
+            body += "Engine      %1\n"
+                    "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
-                    "KDElibs:     " KDE_VERSION_STRING "\n";
+                    "KDElibs:    " KDE_VERSION_STRING "\n";
 
-            {   /// obtain backtrace
-                void *array[ LINES ];
-                size_t size = std::backtrace( array, LINES );
 
-                if ( size ) {
-                    char **strings = std::backtrace_symbols( array, size );
+            /// obtain the backtrace with gdb
 
-                    for( size_t i = 0; i < size; i++ ) {
-                        backtrace += QString::number( i ) + ": ";
-                        backtrace += QString::fromLatin1( strings[i] );
-                        backtrace += '\n'; }
+            const QString GDB = "gdb";
 
-                    std::free( strings );
-                }
-                else
-                    backtrace = "No backtrace available :(";
-            }
+//             if ( KStandardDirs::findExe( GDB ).isEmpty() ) {
+//                 KMessageBox::error( 0, i18n("Could not generate a backtrace because 'gdb' was not found.") );
+//                 std::_exit( 235 );
+//             }
+
+            KTempFile temp;
+            temp.setAutoDelete( true );
+
+            const int handle = temp.handle();
+
+            ::write( handle, "bt\n", 3 );
+            ::fsync( handle );
+
+            QCString
+            gdb  = "gdb --nw -n --batch -x ";
+            gdb += temp.name().latin1();
+            gdb += " amarokapp ";
+            gdb += QCString().setNum( ::getppid() );
+
+            debug() << gdb << endl;
+
+            const uint SIZE = 40960; //40 KiB
+            char stdout[ SIZE ];
+            FILE *process = ::popen( gdb, "r" );
+            stdout[ std::fread( (void*)stdout, sizeof(char), SIZE, process ) ] = '\0';
+            ::pclose( process );
+
+            bt = QString::fromLocal8Bit( stdout );
+
 
             {   /// write a file to contain the backtrace
                 QFile file( path );
                 file.open( IO_WriteOnly );
-                QTextStream( &file ) << backtrace;
+                QTextStream( &file ) << "GDB output:\n\n" << bt << "\n\nkdBacktrace():\n\n" << kdBacktrace();
             }
 
             //TODO startup notification
@@ -83,14 +109,25 @@ namespace amaroK
                     /*body*/        body.arg( AmarokConfig::soundSystem() ),
                     /*messageFile*/ QString(),
                     /*attachURLs*/  QStringList( path ),
-                    /*startup_id*/  "" );
+                    /*startup_id*/  KStartupInfo::createNewStartupId() );
+
+            //_exit() exits immediately, otherwise this
+            //function is called repeatedly ad finitum
+            ::_exit( 255 );
         }
 
-        //_exit() exits immediately, otherwise this
-        //function is called repeatedly ad finitum
-        std::_exit( 255 );
+        else {
+            // we are the process that crashed
+
+            ::alarm( 0 );
+
+            // wait for child to exit
+            ::waitpid( pid, NULL, 0 );
+            ::_exit( 253 );
+        }
     }
 }
+
 
 #if 0
 

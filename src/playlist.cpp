@@ -1704,7 +1704,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     KPopupMenu popup( this );
 
-    popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 50 ) );
+    popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ) );
 
     popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
         ? i18n( "&Restart" )
@@ -2127,25 +2127,21 @@ Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SL
 
 void Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
-    if( items.count() == 1 )
-    {
+    if ( items.count() == 1 ) {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
-        if( QFile::exists( item->url().path() ) )
-        {
-            TagDialog *dialog = new TagDialog( item->metaBundle(), item, instance() );
-            dialog->show();
-        }
-        else KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->metaBundle().url().path() );
+
+        if ( QFile::exists( item->url().path() ) )
+            (new TagDialog( MetaBundle( item ), item, instance() ))->show();
+        else
+            KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
     }
-    else
-    {
+    else {
         //edit multiple tracks in tag dialog
         KURL::List urls;
         for( QListViewItem *item = items.first(); item; item = items.next() )
             urls << static_cast<PlaylistItem*>( item )->url();
 
-        TagDialog *dialog = new TagDialog( urls, instance() );
-        dialog->show();
+        (new TagDialog( urls, instance() ))->show();
     }
 }
 

@@ -21,9 +21,6 @@ email                : markey@web.de
 #include <kservice.h>
 #include <ktrader.h>
 
-using namespace std;
-using namespace amaroK;
-
 namespace amaroK { class Plugin; }
 class KLibrary;
 
@@ -65,27 +62,27 @@ class PluginManager
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static Plugin* createFromQuery( const QString& constraint = QString::null );
+        static amaroK::Plugin* createFromQuery( const QString& constraint = QString::null );
 
         /**
          * Load and instantiate plugin from service
          * @param service     Pointer to KService
          * @return            Pointer to Plugin, or NULL if error
          */
-        static Plugin* createFromService( const KService::Ptr service );
+        static amaroK::Plugin* createFromService( const KService::Ptr service );
 
         /**
          * Remove library and delete plugin
          * @param plugin      Pointer to plugin
          */
-        static void unload( Plugin* plugin );
+        static void unload( amaroK::Plugin* plugin );
 
         /**
          * Look up service for loaded plugin from store
          * @param pointer     Pointer to plugin
          * @return            KService, or 0 if not found
          */
-        static KService::Ptr getService( const Plugin* plugin );
+        static KService::Ptr getService( const amaroK::Plugin* plugin );
 
         /**
          * Dump properties from a service to stdout for debugging
@@ -98,18 +95,18 @@ class PluginManager
          * @param constraint  A constraint to limit the choices returned
          */
         static void showAbout( const QString& constraint );
-        
+
     private:
         struct StoreItem {
-            Plugin* plugin;
+            amaroK::Plugin* plugin;
             KLibrary* library;
             KService::Ptr service;
         };
 
-        static vector<StoreItem>::iterator lookupPlugin( const Plugin* plugin );
+        static std::vector<StoreItem>::iterator lookupPlugin( const amaroK::Plugin* plugin );
 
     //attributes:
-        static vector<StoreItem> m_store;
+        static std::vector<StoreItem> m_store;
 };
 
 

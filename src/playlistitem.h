@@ -79,9 +79,6 @@ class PlaylistItem : public KListViewItem
         QString artist() const { return KListViewItem::text( Artist ); }
         QString album() const { return KListViewItem::text( Album ); }
 
-        /// convenience function
-        MetaBundle metaBundle() { return MetaBundle( this ); }
-
         /// @return the length of the PlaylistItem in seconds
         QString seconds() const;
 

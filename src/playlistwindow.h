@@ -16,29 +16,19 @@
 #ifndef AMAROK_PLAYLISTWINDOW_H
 #define AMAROK_PLAYLISTWINDOW_H
 
-#include <enginecontroller.h>  //baseclass
-
-#include <qwidget.h>           //baseclass
-#include <ktoolbar.h>          //baseclass
-#include <kxmlguiclient.h>     //baseclass (for XMLGUI)
-
-
-namespace amaroK {
-    class ToolBar;
-}
-
-using amaroK::ToolBar;
+#include "engineobserver.h" //baseclass
+#include <qwidget.h>        //baseclass
+#include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 class BrowserBar;
 class ClickLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
-class Playlist;
-
-class QTimer;
-
 class KMenuBar;
 class KPopupMenu;
+class KToolBar;
+class Playlist;
+class QTimer;
 
 
 class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserver
@@ -91,7 +81,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         Playlist      *m_playlist;
         KPopupMenu    *m_searchMenu;
         ClickLineEdit *m_lineEdit;
-        ToolBar       *m_toolbar;
+        KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
 
         int m_lastBrowser;

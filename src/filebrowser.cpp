@@ -487,8 +487,6 @@ SearchPane::searchComplete()
     //connected to KDirLister::complete()
     //TODO fix crappy KDElibs
 
-    m_listView->setText( i18n("No results found") ); //only displayed if the listview is empty
-
     QTimer::singleShot( 0, this, SLOT(_searchComplete()) );
 }
 
@@ -500,6 +498,8 @@ SearchPane::_searchComplete()
         m_dirs.pop_front();
         m_lister->openURL( url );
     }
+    else
+        m_listView->setText( i18n("No results found") ); //only displayed if the listview is empty
 }
 
 void

@@ -105,7 +105,7 @@ TagDialog::previousTrack()
     m_playlistItem = (PlaylistItem *)m_playlistItem->itemAbove();
     QMap<QString, MetaBundle>::ConstIterator it;
     it = storedTags.find( m_playlistItem->url().path() );
-    m_bundle = it != storedTags.end() ? it.data() : m_playlistItem->metaBundle();
+    m_bundle = it != storedTags.end() ? it.data() : MetaBundle( m_playlistItem );
 
     readTags();
 }
@@ -122,7 +122,7 @@ TagDialog::nextTrack()
     m_playlistItem = (PlaylistItem *)m_playlistItem->itemBelow();
     QMap<QString, MetaBundle>::ConstIterator it;
     it = storedTags.find( m_playlistItem->url().path() );
-    m_bundle = it != storedTags.end() ? it.data() : m_playlistItem->metaBundle();
+    m_bundle = it != storedTags.end() ? it.data() : MetaBundle( m_playlistItem );
 
     readTags();
 }

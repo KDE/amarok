@@ -19,14 +19,18 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #define DEBUG_PREFIX "xine-engine"
 #define indent xine_indent
 
+#include <climits>
+#include <cmath>
 #include "debug.h"
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <limits.h>
-#include <math.h>
 #include <qapplication.h>
 #include <qdir.h>
-#include "unistd.h"
+
+extern "C"
+{
+    #include <unistd.h>
+}
 
 #ifndef LLONG_MAX
 #define LLONG_MAX 9223372036854775807LL

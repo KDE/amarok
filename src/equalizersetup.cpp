@@ -19,6 +19,7 @@
 #include "enginecontroller.h"
 #include "equalizergraph.h"
 #include "equalizersetup.h"
+#include "sliderwidget.h"
 
 #include <qcheckbox.h>
 #include <qgroupbox.h>
@@ -39,6 +40,8 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 EqualizerSetup::EqualizerSetup()
         : QVBox( amaroK::mainWindow(), 0, Qt::WType_Dialog | Qt::WDestructiveClose )
 {
+    using amaroK::Slider;
+
     s_instance = this;
 
     setMargin( 8 );
