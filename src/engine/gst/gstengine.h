@@ -153,7 +153,6 @@ class GstEngine : public Engine::Base
 
         float m_fadeValue;
 
-        bool m_pipelineFilled;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
 

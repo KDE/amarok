@@ -151,7 +151,6 @@ GstEngine::GstEngine()
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
         , m_fadeValue( 0.0 )
-        , m_pipelineFilled( false )
         , m_shutdown( false )
         , m_eos( false )
 {
@@ -166,7 +165,7 @@ GstEngine::~GstEngine()
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
-    if ( m_pipelineFilled ) {
+    if ( GST_IS_THREAD( m_gst_thread ) ) {
         g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
         destroyPipeline();
         // Wait for pipeline to shut down properly
@@ -280,7 +279,7 @@ GstEngine::position() const
 Engine::State
 GstEngine::state() const
 {
-    if ( !m_pipelineFilled )
+    if ( !GST_IS_THREAD( m_gst_thread ) )
         return Engine::Empty;
     if ( m_eos )
         return Engine::Idle;
@@ -359,12 +358,12 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
-    if ( !( m_pipelineFilled ) )
+    if ( !GST_IS_THREAD( m_gst_thread ) )
         if ( !createPipeline() )
             return false;
 
     // Set output pipeline to PLAYING if it's not already in this state
-    if ( gst_element_get_state( m_gst_thread ) != GST_STATE_PLAYING ) {
+    if ( GST_STATE( m_gst_thread ) != GST_STATE_PLAYING ) {
         if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) ) {
             kdError() << "Could not set output pipeline to state PLAYING!\n";
             destroyPipeline();
@@ -488,7 +487,7 @@ GstEngine::pause()  //SLOT
 void
 GstEngine::seek( uint ms )  //SLOT
 {
-    if ( !m_pipelineFilled ) return;
+    if ( !GST_IS_THREAD( m_gst_thread ) ) return;
 
     if ( ms > 0 )
     {
@@ -525,7 +524,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 void
 GstEngine::setVolumeSW( uint percent )  //SLOT
 {
-    if ( !m_pipelineFilled ) return;
+    if ( !GST_IS_THREAD( m_gst_thread ) ) return;
 
     gst_element_set( m_gst_volume, "volume", (double) percent * 0.01, NULL );
 }
@@ -860,7 +859,6 @@ GstEngine::createPipeline()
 
     setVolume( m_volume );
 
-    m_pipelineFilled = true;
     return true;
 }
 
@@ -878,15 +876,14 @@ GstEngine::destroyPipeline()
     // Clear the scope adapter
     gst_adapter_clear( m_gst_adapter );
 
-    if ( m_pipelineFilled ) {
+    if ( GST_IS_THREAD( m_gst_thread ) ) {
         kdDebug() << "[Gst-Engine] Destroying output pipeline.\n";
 
         // Destroy the pipeline
-        if ( gst_element_get_state( m_gst_thread ) != GST_STATE_NULL )
+        if ( GST_STATE( m_gst_thread ) != GST_STATE_NULL )
             gst_element_set_state( m_gst_thread, GST_STATE_NULL );
 
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
-        m_pipelineFilled = false;
     }
 
     // Destroy KIO transmission job
@@ -908,10 +905,10 @@ GstEngine::destroyInput( InputPipeline* input )
         // Destroy the pipeline
         m_inputs.remove( input );
 
-        if ( m_pipelineFilled && m_inputs.isEmpty() ) {
+        if ( GST_IS_THREAD( m_gst_thread ) && m_inputs.isEmpty() ) {
             kdDebug() << "Inputs now empty. Stopping output pipeline.\n";
 
-            if ( gst_element_get_state( m_gst_thread ) != GST_STATE_READY )
+            if ( GST_STATE( m_gst_thread ) != GST_STATE_READY )
                 gst_element_set_state( m_gst_thread, GST_STATE_READY );
         }
     }
@@ -1015,7 +1012,7 @@ void InputPipeline::prepareToDie()
         if ( !count )
             kdDebug() << k_funcinfo << "Count reached 0\n";
 
-        if ( GstEngine::instance()->m_pipelineFilled )
+        if ( GST_IS_THREAD( GstEngine::instance()->m_gst_thread ) )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
     }
 
