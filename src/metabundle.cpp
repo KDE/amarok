@@ -4,15 +4,17 @@
 
 #define DEBUG_PREFIX "MetaBundle"
 
+#include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
 #include "metabundle.h"
 #include "playlistitem.h"
-#include <qfile.h>
+#include <qfile.h> //decodePath()
 #include <taglib/fileref.h>
-#include <taglib/id3v1genres.h>    //used to load genre list
+#include <taglib/id3v1genres.h> //used to load genre list
+#include <taglib/mpegfile.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
@@ -145,16 +147,23 @@ MetaBundle::init( const KFileMetaInfo& info )
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 {
-    if( m_url.protocol() != "file" ) return;
+    if( m_url.protocol() != "file" )
+        return;
 
-    TagLib::FileRef f(
-            QFile::encodeName( m_url.path() ),
-            true,
-            readStyle );
+    TagLib::FileRef f( QFile::encodeName( m_url.path() ), true, readStyle );
 
     if( !f.isNull() && f.tag() )
     {
-        TagLib::Tag* const tag = f.tag();
+        TagLib::Tag *tag = 0;
+
+        if( AmarokConfig::recodeID3v1Tags() && m_url.path().endsWith( ".mp3", false ) ) {
+            // we prefer ID3v1 over ID3v2 if recoding tags because
+            // apparently this is what people who ignore ID3 standards want
+            TagLib::MPEG::File &mp3 = (TagLib::MPEG::File&)f;
+            tag = mp3.ID3v1Tag() ? (TagLib::Tag*)mp3.ID3v1Tag() : (TagLib::Tag*)mp3.ID3v2Tag();
+        }
+        else
+            tag = f.tag();
 
         #define bing( x ) TStringToQString( x ).stripWhiteSpace()
         m_title   = bing( tag->title() );
