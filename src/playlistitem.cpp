@@ -172,24 +172,16 @@ PlaylistItem::seconds() const
 
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
-    setText( Title,   bundle.title() );
-    setText( Artist,  bundle.artist() );
-    setText( Album,   bundle.album() );
-    setText( Year,    bundle.year() );
-    setText( Comment, bundle.comment() );
-    setText( Genre,   bundle.genre() );
-    setText( Track,   bundle.track() );
-
-    QString directory = bundle.prettyURL();
-    if ( bundle.url().isLocalFile() ) {
-        // The url is like: file:///path/to/file.mp3
-        const int firstIndex = bundle.prettyURL().find( '/' );
-        const int lastIndex = bundle.prettyURL().findRev( '/', -1 );
-        directory = bundle.prettyURL().mid( firstIndex + 2, lastIndex - firstIndex );
-    }
-    setText( Directory, directory );
-    setText( Length,  bundle.prettyLength() );
-    setText( Bitrate, bundle.prettyBitrate() );
+    setText( Title,     bundle.title() );
+    setText( Artist,    bundle.artist() );
+    setText( Album,     bundle.album() );
+    setText( Year,      bundle.year() );
+    setText( Comment,   bundle.comment() );
+    setText( Genre,     bundle.genre() );
+    setText( Track,     bundle.track() );
+    setText( Directory, bundle.url().isLocalFile() ? bundle.url().directory() : bundle.prettyURL() );
+    setText( Length,    bundle.prettyLength() );
+    setText( Bitrate,   bundle.prettyBitrate() );
 
     m_missing = !bundle.exists();
 
