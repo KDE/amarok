@@ -16,6 +16,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
+#include "collectionbrowser.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
@@ -1615,10 +1616,14 @@ Playlist::removeSelectedItems() //SLOT
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
+        PlaylistItem* plitem = (PlaylistItem*)item;
+        CollectionDB::instance()->removeSong( plitem->url().path() );
+
         removeItem( (PlaylistItem*)item );
         delete item;
     }
 
+    QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     updateNextPrev();
 
     //NOTE no need to emit childCountChanged(), removeItem() does that for us

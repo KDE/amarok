@@ -4,10 +4,12 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  CHG: When you delete a song within amaroK, it gets removed from
+       the Collection automatically.
   FIX: Directory column in the playlist was eating the first letter.
   ADD: New DCOP call "playlist: setStopAfterCurrent(bool)". (BR 99944)
   FIX: Coverfetcher: Do not crash when no cover was found. (BR 99942)
-  ADD: Support for amazon.co.jp.
+  FIX: Support for amazon.co.jp was broken.
   CHG: Toolbar items reordered for optimal usability, as suggested by
        Aaron "Tom Green" Seigo.
   FIX: Show covers for albums containing chars '#' or '?'. (BR 96971 99780)

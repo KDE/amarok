@@ -1317,6 +1317,14 @@ CollectionDB::isFileInCollection( const QString &url  )
 }
 
 
+void
+CollectionDB::removeSong( const QString &url )
+{
+    query( QString( "DELETE FROM tags WHERE url = '%1';" )
+        .arg( escapeString( url ) ) );
+}
+
+
 QStringList
 CollectionDB::similarArtists( const QString &artist, uint count )
 {

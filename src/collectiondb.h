@@ -202,6 +202,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool isFileInCollection( const QString &url );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
+        void removeSong( const QString &url );
         void updateDirStats( QString path, const long datetime, DbConnection *conn = NULL );
 
         //song methods
