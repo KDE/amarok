@@ -52,14 +52,14 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 2:
         analyzer = new Sonogram( parent );
         break;
-#ifdef HAVE_QGLWIDGET
     case 3:
+        analyzer = new TurbineAnalyzer( parent );
+        break;
+#ifdef HAVE_QGLWIDGET
+    case 4:
         analyzer = new GLAnalyzer( parent );
         break;
 #endif
-    case 4:
-        analyzer = new TurbineAnalyzer( parent );
-        break;
 #ifndef AMAROK_RELEASE
     case 5:
         analyzer = new XmasAnalyzer( parent );
