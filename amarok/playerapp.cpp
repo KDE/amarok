@@ -126,12 +126,12 @@ PlayerApp::~PlayerApp()
 
     if ( !url.isEmpty() )
     {
-//       m_pConfig->writeEntry( "Track", url.url() );
+       config()->setResumeTrack( url.url() );
        
-//       if ( m_pEngine->state() != EngineBase::Empty )
-//           m_pConfig->writeEntry( "Time", m_pEngine->position() / 1000 );
-//       else
-//           m_pConfig->deleteEntry( "Time" );
+       if ( m_pEngine->state() != EngineBase::Empty )
+           config()->setResumeTime( m_pEngine->position() / 1000 );
+       else
+           config()->setResumeTime( -1 );
     }
 
     slotStop();
