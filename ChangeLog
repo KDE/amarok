@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
   CHG: If you remove the current song from the playlist, we don't define the next 
-       song anymore, but let it be randomly selected.
+       song anymore, but let it be randomly selected (only when random mode is on!)
   CHG: Random Mode now respects the playlist filter and only picks items, which are
        currently visible in the playlist. Also removed a crash situation.
   CHG: Removed the search-token index. Searching now iterates through the playlist,
