@@ -1,8 +1,5 @@
-//
 // Author: Mark Kretschmann (C) Copyright 2004
-//
 // Copyright: See COPYING file that comes with this distribution
-//
 
 #ifndef AMAROK_PLUGIN_H
 #define AMAROK_PLUGIN_H
@@ -16,14 +13,25 @@
          amaroK::Plugin* create_plugin() { return new classname; } \
     } 
     
-namespace amaroK {
     
-class Plugin
+namespace amaroK
 {
-    public:
-        Plugin();
-        virtual ~Plugin();
-};
+    class PluginConfig;
+    
+    class Plugin
+    {
+        public:
+            virtual ~Plugin();
+    
+            bool hasConfigure() const { return m_hasConfigure; }
+            virtual PluginConfig* configure() const { return 0; }
+    
+        protected:    
+            Plugin( bool hasConfigure = false );
+    
+        private:        
+            bool m_hasConfigure;
+    };
 
 } //namespace amaroK
 

@@ -51,12 +51,12 @@ StreamProvider::StreamProvider( KURL url, int streamingMode )
     m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
     // If no port is specified, use default shoutcast port
     if ( !m_url.port() ) m_url.setPort( 80 );
-    
+
     connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
     connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
-    
-    if ( streamingMode == EngineBase::Socket ) {
+
+    if ( streamingMode == Engine::Socket ) {
         uint i;
         StreamProxy* server;
         for ( i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++ ) {
@@ -147,12 +147,12 @@ void
 StreamProvider::sendRequest() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-                
+
     QCString username = m_url.user().utf8();
     QCString password = m_url.pass().utf8();
     QString authString = KCodecs::base64Encode( username + ":" + password );
     bool auth = !( username.isEmpty() && password.isEmpty() );
-                                
+
     QString request = QString( "GET %1 HTTP/1.0\r\n"
                                "Host: %2\r\n"
                                "User-Agent: amaroK/1.1\r\n"
@@ -208,7 +208,7 @@ StreamProvider::readRemote() //SLOT
             if ( m_icyMode && bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
 
-            if ( m_streamingMode == EngineBase::Socket )
+            if ( m_streamingMode == Engine::Socket )
                 bytesWrite = m_sockProxy.writeBlock( m_pBuf + index, bytesWrite );
             else
                 emit streamData( m_pBuf + index, bytesWrite );
@@ -243,7 +243,7 @@ bool
 StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     while ( index < bytesRead ) {
         m_headerStr.append( m_pBuf[ index++ ] );
         if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
@@ -259,18 +259,18 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 m_sockRemote.close();
                 connectToHost();
                 return false;
-            }        
+            }
             m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
             m_bitRate = m_headerStr.section( "icy-br:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 ).toInt();
             m_streamName = m_headerStr.section( "icy-name:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             m_streamUrl = m_headerStr.section( "icy-url:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
-            
+
             if ( m_streamUrl.startsWith( "www.", true ) )
                 m_streamUrl.prepend( "http://" );
-            if ( m_streamingMode == EngineBase::Socket )
+            if ( m_streamingMode == Engine::Socket )
                 m_sockProxy.writeBlock( m_headerStr.latin1(), m_headerStr.length() );
-            
+
             m_headerFinished = true;
 
             if ( m_icyMode && !m_metaInt ) {

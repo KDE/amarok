@@ -98,21 +98,19 @@ Analyzer::Base<W>::drawFrame()
     
     switch( engine->state() )
     {
-    case EngineBase::Playing:
+    case Engine::Playing:
     {
-        Scope *scope = engine->scope();
+        const Engine::Scope &thescope = engine->scope();
+        static Analyzer::Scope scope( 512 );
 
-        if( !scope->empty() )
-        {
-            transform( *scope );
-            analyze( *scope );
-        }
+        for( uint x = 0; x < thescope.size(); ++x ) scope[x] = double(thescope[x]) / double(2<<15);
 
-        delete scope;
+        transform( scope );
+        analyze( scope );
 
         break;
     }
-    case EngineBase::Paused:
+    case Engine::Paused:
         paused();
         break;
 

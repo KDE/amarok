@@ -47,7 +47,7 @@ public slots:
     void slotItemCountChanged(int newCount);
 
 protected: /* reimpl from engineobserver */
-    virtual void engineStateChanged( EngineBase::EngineState state );
+    virtual void engineStateChanged( Engine::State state );
     virtual void engineTrackPositionChanged( long position );
     virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
@@ -56,6 +56,8 @@ private slots:
     void drawTimeDisplay( int position );
     void stopPlaylistLoader();
     
+    void engineMessage( const QString &s ) { message( s, 2000 ); } //NOTE leave inlined!
+
 private:
     virtual void customEvent( QCustomEvent* e );
 

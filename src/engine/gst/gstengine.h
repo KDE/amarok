@@ -18,6 +18,7 @@ email                : markey@web.de
 #ifndef AMAROK_GSTENGINE_H
 #define AMAROK_GSTENGINE_H
 
+#include "gstconfigdialog.h"
 #include "enginebase.h"
 
 #include <vector>
@@ -32,32 +33,32 @@ using std::vector;
 class QTimerEvent;
 class KURL;
 
-class GstEngine : public EngineBase
+class GstEngine : public Engine::Base
 {
+        friend class GstConfigDialog;        
+        
         Q_OBJECT
 
     public:
                                                  GstEngine();
                                                  ~GstEngine();
 
-        bool                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
+        bool                                     init(); 
                                                                                                   
-        bool                                     initMixer( bool hardware );
-        bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
-        StreamingMode                            streamingMode() { return Signal; }
-        QStringList                              getOutputsList() { return getPluginList( "Sink/Audio" ); }
+        bool                                     canDecode( const KURL &url );
+        uint                                     position() const;
+        Engine::State                            state() const;
+        const Engine::Scope&                     scope();
 
-        long                                     position() const;
-        EngineState                              state() const;
-        std::vector<float>*                      scope();
-
+        amaroK::PluginConfig*                    configure() const;
+        
     public slots:
-        void                                     play( const KURL&, bool stream );
-        void                                     play();
+        bool                                     load( const KURL&, bool stream );
+        bool                                     play( uint offset );
         void                                     stop();
         void                                     pause();
-        void                                     seek( long ms );
-        void                                     setVolume( int percent );
+        void                                     seek( uint ms );
+        void                                     setVolumeSW( uint percent );
         void                                     newStreamData( char* data, int size );
 
     protected:
@@ -71,6 +72,9 @@ class GstEngine : public EngineBase
         
     private:
         static GstEngine*                        instance() { return s_instance; }
+        
+        QStringList                              getOutputsList() { return getPluginList( "Sink/Audio" ); }
+        
         /** Called at end of track */
         static void                              eos_cb( GstElement*, GstElement* );
         /** Duplicates audio data for application side processing */
@@ -84,7 +88,7 @@ class GstEngine : public EngineBase
         
         GstElement*                              createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
         void                                     cleanPipeline();
-        void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
+        void                                     interpolate( const Engine::Scope& inVec, Engine::Scope& outVec );
     
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
@@ -104,9 +108,8 @@ class GstEngine : public EngineBase
         GstElement*                              m_gst_audioconvert;
         GstElement*                              m_gst_audioscale;
 
-        vector<float>                            m_scopeBuf;
+        Engine::Scope                            m_scopeBuf;
         uint                                     m_scopeBufIndex;
-        uint                                     m_scopeSize;
        
         char*                                    m_streamBuf;
         int                                      m_streamBufIndex;

@@ -178,12 +178,12 @@ Vis::SocketNotifier::SocketNotifier( int sockfd )
 void
 Vis::SocketNotifier::request( int sockfd ) //slot
 {
-    char buf[16]; //TODO docs should state request commands can only be 4 bytes
+    char buf[16]; //TODO docs should state request commands can only be 16 bytes
     int nbytes = recv( sockfd, buf, 16, 0 );
 
     if( nbytes > 0 )
     {
-        std::vector<float> *scope = EngineController::engine()->scope();
+        const Engine::Scope &scope = EngineController::engine()->scope();
 
         //buf[nbytes] = '\000';
         QString result( buf );
@@ -198,14 +198,12 @@ Vis::SocketNotifier::request( int sockfd ) //slot
         }
         else if( result == "PCM" )
         {
-            if( scope->empty() ) kdDebug() << "empty scope!\n";
-            if( scope->size() < 512 ) kdDebug() << "scope too small!\n";
+            if( scope.empty() ) kdDebug() << "empty scope!\n";
+            if( scope.size() < 512 ) kdDebug() << "scope too small!\n";
 
-            float data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
+            //int16_t data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
 
-            ::send( sockfd, data, 512*sizeof(float), 0 );
-
-            delete scope;
+            ::send( sockfd, &scope[0], 512*sizeof(int16_t), 0 );
         }
         #if 0 //TODO renenable as required
         else if( result == "FFT" )

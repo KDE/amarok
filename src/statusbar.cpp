@@ -107,11 +107,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_pSlider->setFixedHeight( h );
 
     // set up us the bomb
-    engineStateChanged( EngineBase::Empty );
+    engineStateChanged( Engine::Empty );
     slotItemCountChanged( 0 );
 
     // for great justice!
     connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
+    connect( EngineController::instance(), SIGNAL(statusText(const QString& )), SLOT(engineMessage( const QString& )) );
 }
 
 
@@ -121,28 +122,28 @@ StatusBar::~StatusBar()
 }
 
 
-void StatusBar::engineStateChanged( EngineBase::EngineState state )
+void StatusBar::engineStateChanged( Engine::State state )
 {
     switch( state )
     {
-        case EngineBase::Empty:
+        case Engine::Empty:
             m_pTimeLabel->clear();
             m_pTitle->clear();
             m_pSlider->setEnabled( false );
             break;
 
-        case EngineBase::Paused:
+        case Engine::Paused:
             //message( i18n( "amaroK is paused" ) ); // display TEMPORARY message
             m_pPauseTimer->start( 300 );
             break;
 
-        case EngineBase::Playing:
+        case Engine::Playing:
             m_pSlider->setEnabled( true );
             m_pPauseTimer->stop();
             //clear(); // clear TEMPORARY message
             break;
 
-        case EngineBase::Idle:
+        case Engine::Idle:
             ; //just do nothing, idle is temporary and a limbo state
     }
 }

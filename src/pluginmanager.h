@@ -32,7 +32,7 @@ class PluginManager
     public:
         /** Bump this number whenever the plugin framework gets incompatible with older versions */
         static const int FrameworkVersion = 2;
-        
+
         /**
          * It will return a list of services that match your
          * specifications.  The only required parameter is the service
@@ -50,59 +50,65 @@ class PluginManager
          * The keys used in the query (Type, ServiceType, Exec) are all
          * fields found in the .desktop files.
          *
-         * @param constraint  A constraint to limit the choices returned, QString::null to 
+         * @param constraint  A constraint to limit the choices returned, QString::null to
          *                    get all services of the given @p servicetype
          *
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
         static KTrader::OfferList query( const QString& constraint = QString::null );
-        
+
         /**
-         * Load and instantiate plugin from query 
-         * @param constraint  A constraint to limit the choices returned, QString::null to 
+         * Load and instantiate plugin from query
+         * @param constraint  A constraint to limit the choices returned, QString::null to
          *                    get all services of the given @p servicetype
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
         static Plugin* createFromQuery( const QString& constraint = QString::null );
-        
+
         /**
          * Load and instantiate plugin from service
-         * @param service     Pointer to KService  
+         * @param service     Pointer to KService
          * @return            Pointer to Plugin, or NULL if error
          */
         static Plugin* createFromService( const KService::Ptr service );
-        
+
         /**
-         * Remove library and delete plugin 
-         * @param plugin      Pointer to plugin  
+         * Remove library and delete plugin
+         * @param plugin      Pointer to plugin
          */
         static void unload( Plugin* plugin );
 
-        /** 
-         * Look up service for loaded plugin from store 
-         * @param pointer     Pointer to plugin  
+        /**
+         * Look up service for loaded plugin from store
+         * @param pointer     Pointer to plugin
          * @return            KService, or 0 if not found
          */
         static KService::Ptr getService( const Plugin* plugin );
 
-        /** 
-         * Dump properties from a service to stdout for debugging 
-         * @param service     Pointer to KService  
+        /**
+         * Dump properties from a service to stdout for debugging
+         * @param service     Pointer to KService
          */
         static void dump( const KService::Ptr service );
-                    
+
+       /**
+         * Show modal info dialog about plugin
+         * @param constraint  A constraint to limit the choices returned
+         */
+        static void showAbout( const QString& constraint );
+        
     private:
         struct StoreItem {
             Plugin* plugin;
             KLibrary* library;
             KService::Ptr service;
         };
-       
+
         static vector<StoreItem>::iterator lookupPlugin( const Plugin* plugin );
 
-    //attributes:        
+    //attributes:
         static vector<StoreItem> m_store;
 };
 

@@ -74,7 +74,7 @@ class App : public KApplication, public EngineObserver
         friend class PlaylistWindow; //requires access to applySettings()
 
     protected: /* for OSD, tray, and dcop */
-        void engineStateChanged( EngineBase::EngineState state );
+        void engineStateChanged( Engine::State state );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
         void engineVolumeChanged( int );
 

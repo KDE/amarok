@@ -30,15 +30,6 @@ class OSDWidget : public QWidget
         enum Alignment { Left, Middle, Center, Right };
 
         OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
-        void setDuration(int ms);
-        void setFont(const QFont &newfont);
-        void setShadow(bool shadow);
-        void setTextColor(const QColor &newcolor);
-        void setBackgroundColor(const QColor &newColor);
-        void setOffset( int x, int y );
-        void setAlignment(Alignment);
-        void setScreen(int screen);
-        void setText(const QString &text) { m_currentText = text; refresh(); }
 
         void unsetColors();
 
@@ -51,6 +42,16 @@ class OSDWidget : public QWidget
         void showOSD(const QString&, bool preemptive=false );
         void removeOSD() { hide(); } //inlined as is convenience function
         void show();
+
+        void setDuration(int ms);
+        void setFont(const QFont &newfont);
+        void setShadow(bool shadow);
+        void setTextColor(const QColor &newcolor);
+        void setBackgroundColor(const QColor &newColor);
+        void setOffset( int x, int y );
+        void setAlignment(Alignment);
+        void setScreen(int screen);
+        void setText(const QString &text) { m_currentText = text; refresh(); }
 
       protected slots:
         void minReached();
@@ -118,6 +119,8 @@ namespace amaroK
     Q_OBJECT
     public:
         static OSD *instance();
+
+        void applySettings();
 
     public slots:
         void showTrack( const MetaBundle &bundle );

@@ -175,14 +175,14 @@ void ContextBrowser::engineNewMetaData( const MetaBundle &bundle, bool /*trackCh
 }
 
 
-void ContextBrowser::engineStateChanged( EngineBase::EngineState state )
+void ContextBrowser::engineStateChanged( Engine::State state )
 {
     if ( m_db->isEmpty() )
         return;
 
     switch( state )
     {
-        case EngineBase::Empty:
+        case Engine::Empty:
             showHome();
         default:
             break;

@@ -41,7 +41,7 @@ QRect         EffectWidget::saveGeometry;
 
 
 EffectWidget::EffectWidget( QWidget* parent )
-        : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects")), User1, User1, false, KStdGuiItem::close() )
+        : KDialogBase( parent, "EffectWidget", false, i18n("Effects"), User1, User1, false, KStdGuiItem::close() )
 {
     if( saveGeometry.isValid() )
     {
@@ -49,8 +49,7 @@ EffectWidget::EffectWidget( QWidget* parent )
     }
     else resize( 300, 400 );
 
-
-    EngineBase *engine = EngineController::engine();
+    Engine::Effects &effects = EngineController::engine()->effects();
     setWFlags( Qt::WDestructiveClose );
 
     QVBox *pFrame = makeVBoxMainWidget();
@@ -65,7 +64,7 @@ EffectWidget::EffectWidget( QWidget* parent )
     pFrame->setStretchFactor( box2, 10 );
 
     m_pComboBox = new KComboBox( box1 );
-    m_pComboBox->insertStringList( engine->availableEffects() );
+    m_pComboBox->insertStringList( effects.availableEffects() );
 
     w = new KPushButton( KGuiItem( "", "down" ), box1 );
     w->setSizePolicy( policy );
@@ -81,7 +80,7 @@ EffectWidget::EffectWidget( QWidget* parent )
 
     box3 = new QVBox( box2 );
 
-    w = new KPushButton( KGuiItem( "", "configure" ), box3 );
+    w = new KPushButton( KGuiItem( QString::null, "configure" ), box3 );
     w->setSizePolicy( policy );
     w->setEnabled( false );
     QToolTip::add( w, i18n( "Configure" ) );
@@ -89,7 +88,7 @@ EffectWidget::EffectWidget( QWidget* parent )
 
     m_pConfigureButton = w;
 
-    w = new KPushButton( KGuiItem( "", "editdelete" ), box3 );
+    w = new KPushButton( KGuiItem( QString::null, "editdelete" ), box3 );
     w->setSizePolicy( policy );
     QToolTip::add( w, i18n("Remove") );
     connect( w, SIGNAL( clicked() ), SLOT( slotRemove() ) );
@@ -97,9 +96,9 @@ EffectWidget::EffectWidget( QWidget* parent )
     box3->layout()->addItem( new QSpacerItem( 0, 10 ) );
 
     { //fill listview with restored effect entries
-        std::vector<long> vec = engine->activeEffects();
+        std::vector<long> vec = effects.activeEffects();
         for ( uint i = 0; i < vec.size(); i++ )
-                new EffectListItem( m_pListView, engine->effectNameForId( vec[i] ), vec[i] );
+                new EffectListItem( m_pListView, effects.effectNameForId( vec[i] ), vec[i] );
     }
 
     connect( this, SIGNAL( user1Clicked() ), this, SLOT( accept() ) );
@@ -136,7 +135,7 @@ void EffectWidget::slotRemove()
 {
     if ( EffectListItem *item = (EffectListItem*)m_pListView->currentItem() )
     {
-        EngineController::engine()->removeEffect( item->m_id );
+        EngineController::engine()->effects().removeEffect( item->m_id );
         delete item;
     }
 }
@@ -145,7 +144,7 @@ void EffectWidget::slotRemove()
 void EffectWidget::slotChanged( QListViewItem *selectedItem ) //SLOT
 {
     const EffectListItem* const item = (EffectListItem*)selectedItem;
-    const bool enabled = item && EngineController::engine()->effectConfigurable( item->m_id );
+    const bool enabled = item && EngineController::engine()->effects().effectConfigurable( item->m_id );
 
     m_pConfigureButton->setEnabled( enabled );
 }
@@ -158,13 +157,13 @@ void EffectWidget::slotChanged( QListViewItem *selectedItem ) //SLOT
 
 EffectListItem::EffectListItem( KListView *parent, const QString &label, long id )
         : KListViewItem( parent, label )
-        , m_id( id != -1 ? id : EngineController::engine()->createEffect( label ) )
+        , m_id( id != -1 ? id : EngineController::engine()->effects().createEffect( label ) )
 {}
 
 
 void EffectListItem::configure()
 {
-    EngineController::engine()->configureEffect( m_id );
+    EngineController::engine()->effects().configureEffect( m_id );
 }
 
 

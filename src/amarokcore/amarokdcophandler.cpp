@@ -76,7 +76,7 @@ namespace amaroK
     bool DcopHandler::isPlaying()
     {
 	kdWarning() << k_funcinfo << " is DEPRECATED!" << endl;
-        return EngineController::engine()->state() == EngineBase::Playing;
+        return EngineController::engine()->state() == Engine::Playing;
     }
 
     int  DcopHandler::status()
@@ -85,14 +85,14 @@ namespace amaroK
 	int ret = -1;
 	switch( EngineController::engine()->state() )
 	{
-	    case EngineBase::Playing:
+	    case Engine::Playing:
 		ret = 2;
 		break;
-	    case EngineBase::Paused:
+	    case Engine::Paused:
 		ret = 1;
 		break;
-	    case EngineBase::Empty:
-	    case EngineBase::Idle:
+	    case Engine::Empty:
+	    case Engine::Idle:
 		ret = 0;
 		break;
 	}
@@ -177,7 +177,7 @@ namespace amaroK
     void DcopHandler::seek(int s)
     {
         EngineBase* const engine = EngineController::engine();
-        if ( s > 0 && engine->state() != EngineBase::Empty )
+        if ( s > 0 && engine->state() != Engine::Empty )
         {
             engine ->seek( s * 1000 );
         }

@@ -60,7 +60,7 @@ namespace amaroK
         public:
             PlayPauseAction( KActionCollection* );
             ~PlayPauseAction();
-            virtual void engineStateChanged( EngineBase::EngineState );
+            virtual void engineStateChanged( Engine::State );
     };
 
 

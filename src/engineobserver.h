@@ -31,7 +31,7 @@ class EngineObserver
 public:
     EngineObserver();
     virtual ~EngineObserver();
-    virtual void engineStateChanged( EngineBase::EngineState /*state*/ ) {}
+    virtual void engineStateChanged( Engine::State /*state*/ ) {}
     virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
     virtual void engineTrackPositionChanged( long /*position*/ ) {}
@@ -51,7 +51,7 @@ public:
 protected:
     EngineSubject();
     virtual ~EngineSubject();
-    void stateChangedNotify( EngineBase::EngineState /*state*/ );
+    void stateChangedNotify( Engine::State /*state*/ );
     void newMetaDataNotify( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
     void volumeChangedNotify( int /*percent*/ );
     void trackPositionChangedNotify( long /*position*/ );

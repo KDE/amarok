@@ -97,7 +97,7 @@ App::App()
     EngineController::instance()->attach( this );
 
     //set a default interface
-    engineStateChanged( EngineBase::Empty );
+    engineStateChanged( Engine::Empty );
 
     if( AmarokConfig::resumePlayback() && bRestoreSession && !args->isSet( "stop" ) )
     {
@@ -118,7 +118,7 @@ App::~App()
 
     if( AmarokConfig::resumePlayback() )
     {
-        if( engine->state() != EngineBase::Empty )
+        if( engine->state() != Engine::Empty )
         {
             AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().url() );
             AmarokConfig::setResumeTime( engine->position() / 1000 );
@@ -271,15 +271,8 @@ void App::restoreSession()
 
     if( !AmarokConfig::resumeTrack().isEmpty() )
     {
-        MetaBundle bundle( AmarokConfig::resumeTrack() );
-
-        EngineBase* const engine = EngineController::engine();
-        int vol = engine->volume();
-
-        engine->setVolume( 0 );
-        EngineController::instance()->play( bundle );
-        engine->seek( AmarokConfig::resumeTime() * 1000 );
-        engine->setVolume( vol );
+        EngineController::engine()->load( AmarokConfig::resumeTrack() );
+        EngineController::engine()->play( AmarokConfig::resumeTime()*1000 );
     }
 }
 
@@ -342,22 +335,10 @@ void App::applySettings( bool firstTime )
     }
 
 
-    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
-    m_pOSD->setFont( AmarokConfig::osdFont() );
-    m_pOSD->setShadow( AmarokConfig::osdDrawShadow() );
-    if( AmarokConfig::osdUseCustomColors() )
-    {
-        m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
-        m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
-    }
-    else m_pOSD->unsetColors();
-    m_pOSD->setDuration( AmarokConfig::osdDuration() );
-    m_pOSD->setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
-    m_pOSD->setScreen( AmarokConfig::osdScreen() );
-    m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
-
+    m_pOSD->applySettings();
 
     playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+
     reinterpret_cast<QWidget*>(playlistWindow()->statusBar())->setShown( AmarokConfig::showStatusBar() );
 
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
@@ -385,23 +366,15 @@ void App::applySettings( bool firstTime )
         if( firstTime || AmarokConfig::soundSystem() !=
                          PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() )
         {
+            //will unload engine for us first if necessary
             engine = EngineController::loadEngine();
             // Invalidate extension cache
             Playlist::s_extensionCache.clear();
-
-            goto setMixer;
         }
-        else if( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
-            setMixer: AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
-         engine->setSoundOutput( AmarokConfig::soundOutput() );
-         engine->setSoundDevice( AmarokConfig::soundDevice() );
-         engine->setDefaultSoundDevice( !AmarokConfig::customSoundDevice() );
-         engine->setRestoreEffects( AmarokConfig::rememberEffects() );
+         AmarokConfig::setHardwareMixer( engine->setHardwareMixer( AmarokConfig::hardwareMixer() ) );
+
          engine->setVolume( AmarokConfig::masterVolume() );
-         engine->setThreadPriority( AmarokConfig::threadPriority() );
-         //TODO deprecate/improve
-         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
     } //</Engine>
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -526,7 +499,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             const bool b = EngineController::engine()->loaded();
 
             popup.insertItem( i18n( "&Append to Playlist" ), 101 );
-            popup.insertItem( i18n( "Append && &play" ), 102 );
+            popup.insertItem( i18n( "Append && &Play" ), 102 );
             if( b ) popup.insertItem( i18n( "&Queue After Current Track" ), 103 );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
@@ -605,11 +578,11 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
 }
 
 
-void App::engineStateChanged( EngineBase::EngineState state )
+void App::engineStateChanged( Engine::State state )
 {
     switch( state )
     {
-        case EngineBase::Empty:
+        case Engine::Empty:
             QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
             break;
 

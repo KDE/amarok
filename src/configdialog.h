@@ -19,9 +19,11 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 
 class QComboBox;
-class QLineEdit;
-class QCheckBox;
-class Options4;
+class QVBox;
+
+namespace amaroK {
+    class PluginConfig;
+}
 
 class AmarokConfigDialog : public KConfigDialog
 {
@@ -29,29 +31,25 @@ class AmarokConfigDialog : public KConfigDialog
 
     public:
         AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config );
-        void triggerChanged();
-        
-    private:
-        QComboBox* m_pSoundSystem;
-        QComboBox* m_pSoundOutput;
-        QLineEdit* m_pSoundDevice;
-        QCheckBox* m_pCustomSoundDevice;
-        
+
     protected slots:
         void updateSettings();
         void updateWidgets();
         void updateWidgetsDefault();
 
-    private slots:
-        void soundSystemChanged();
-    
+    private slots:        
+        void aboutEngine();
+            
     protected:
         bool hasChanged();
         bool isDefault();
-
+    
     private:
-        Options4* m_opt4;
-        bool m_changed;
+        void soundSystemChanged();
+
+        QComboBox* m_pSoundSystem;
+        amaroK::PluginConfig* m_engineConfig;
+        QVBox* m_enginePage;
 };
 
 

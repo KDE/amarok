@@ -148,7 +148,7 @@ class Playlist : private KListView, public EngineObserver
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
-        void engineStateChanged( EngineBase::EngineState );
+        void engineStateChanged( Engine::State );
 
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );
@@ -170,7 +170,6 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *lastItem() const { return (PlaylistItem*)KListView::lastItem(); }
 
 // ATTRIBUTES ------
-
         PlaylistItem  *m_currentTrack; //the track that is playing
         PlaylistItem  *m_cachedTrack;  //we expect this to be activated next //FIXME mutable
         QListViewItem *m_marker;       //track that has the drag/drop marker under it

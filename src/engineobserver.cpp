@@ -41,7 +41,7 @@ EngineSubject::~EngineSubject()
 }
 
 
-void EngineSubject::stateChangedNotify( EngineBase::EngineState state )
+void EngineSubject::stateChangedNotify( Engine::State state )
 {
     QPtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;

@@ -2,10 +2,12 @@ kde_module_LTLIBRARIES = \
     libamarok_gstengine_plugin.la
 
 SUBDIRS = \
+    config \
     uade
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_srcdir)/amarok/src/engine/gst/config \
     -I$(top_srcdir)/amarok/src/engine/gst/uade \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src \
@@ -14,6 +16,7 @@ INCLUDES = \
 
 libamarok_gstengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/engine/gst/config/libgstconfig.la \
     $(top_builddir)/amarok/src/engine/gst/uade/libgstuade.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KFILE) \
@@ -22,6 +25,8 @@ libamarok_gstengine_plugin_la_LIBADD = \
     $(LIB_GST)
 
 libamarok_gstengine_plugin_la_SOURCES = \
+    gstconfigdialog.cpp \
+    gstconfigdialogbase.ui \
     gstengine.cpp \
     streamsrc.cpp
     
@@ -36,6 +41,5 @@ METASOURCES = \
 
 kde_services_DATA = \
     amarok_gstengine_plugin.desktop
-
 
   

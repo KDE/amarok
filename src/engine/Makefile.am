@@ -6,19 +6,19 @@ INCLUDES = \
     $(all_includes)
 
 if with_arts
-    ARTSENGINE_BUILD = arts
+    ARTS_ENGINE_SUBDIR = arts
 endif
 
 if with_gst
-    GSTENGINE_BUILD = gst
+    GST_ENGINE_SUBDIR = gst
 endif
 
 if with_nmm
-    NMMENGINE_BUILD = nmm
+    NMM_ENGINE_SUBDIR = nmm
 endif
 
 if with_xine
-    XINEENGINE_BUILD = xine
+    XINE_ENGINE_SUBDIR = xine
 endif
 
 libengine_la_SOURCES = \
@@ -30,6 +30,6 @@ noinst_HEADERS = \
 METASOURCES = \
     AUTO
 
-SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) $(NMMENGINE_BUILD) $(XINEENGINE_BUILD)
+SUBDIRS = . $(GST_ENGINE_SUBDIR)
 
 

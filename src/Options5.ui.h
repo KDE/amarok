@@ -74,7 +74,7 @@ void Options5::slotPositionChanged()
     kcfg_OsdScreen->blockSignals( false );
 
     AmarokConfigDialog* conf = (AmarokConfigDialog*)KConfigDialog::exists( "settings" );
-    if ( conf ) conf->triggerChanged();
+//     if ( conf ) conf->triggerChanged();
 }
 
 

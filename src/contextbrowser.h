@@ -31,7 +31,7 @@ class ContextBrowser : public QVBox, public EngineObserver
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
-        void engineStateChanged( EngineBase::EngineState );
+        void engineStateChanged( Engine::State );
         void paletteChange( const QPalette& );
 
     private slots:

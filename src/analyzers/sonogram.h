@@ -16,8 +16,6 @@
 
 #include "analyzerbase.h"
 
-using Analyzer::Scope;
-
 /**
 @author Melchior FRANZ
 */

@@ -437,7 +437,7 @@ void PlaylistWindow::closeEvent( QCloseEvent *e )
 }
 
 
-void PlaylistWindow::engineStateChanged( EngineBase::EngineState state )
+void PlaylistWindow::engineStateChanged( Engine::State state )
 {
     if ( !AmarokConfig::autoShowContextBrowser() ) return;
 
@@ -445,19 +445,19 @@ void PlaylistWindow::engineStateChanged( EngineBase::EngineState state )
 
     switch ( state )
     {
-        case EngineBase::Playing:
+        case Engine::Playing:
             m_lastBrowser = m_browsers->currentIndex();
             m_browsers->showBrowser( context );
             break;
 
-        case EngineBase::Empty:
+        case Engine::Empty:
             m_browsers->showBrowser( m_lastBrowser );
             break;
 
-        case EngineBase::Idle:
+        case Engine::Idle:
             break;
 
-        case EngineBase::Paused:
+        case Engine::Paused:
             break;
     }
 }

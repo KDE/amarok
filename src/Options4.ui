@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options4</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>389</width>
-            <height>352</height>
+            <width>348</width>
+            <height>347</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options4</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Select the sound system to use for playback.</string>
@@ -66,6 +69,9 @@
                             <property name="text">
                                 <string>&amp;Crossfade</string>
                             </property>
+                            <property name="accel">
+                                <string>Alt+C</string>
+                            </property>
                             <property name="checked">
                                 <bool>false</bool>
                             </property>
@@ -82,7 +88,7 @@
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
-                                    <hsizetype>5</hsizetype>
+                                    <hsizetype>7</hsizetype>
                                     <vsizetype>0</vsizetype>
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
@@ -116,7 +122,7 @@
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
-                                    <hsizetype>5</hsizetype>
+                                    <hsizetype>7</hsizetype>
                                     <vsizetype>0</vsizetype>
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
@@ -210,28 +216,14 @@
                         </widget>
                     </grid>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>70</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QGroupBox">
             <property name="name">
-                <cstring>layout3</cstring>
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Sound System</string>
             </property>
             <hbox>
                 <property name="name">
@@ -239,19 +231,19 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout8</cstring>
+                        <cstring>layout5</cstring>
                     </property>
-                    <grid>
+                    <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QComboBox" row="0" column="1">
+                        <widget class="QComboBox">
                             <property name="name">
                                 <cstring>sound_system</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
-                                    <hsizetype>4</hsizetype>
+                                    <hsizetype>7</hsizetype>
                                     <vsizetype>0</vsizetype>
                                     <horstretch>0</horstretch>
                                     <verstretch>0</verstretch>
@@ -273,147 +265,28 @@
                                 <string>Select the sound system to use for playback.</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="0" column="0">
+                        <widget class="QPushButton">
                             <property name="name">
-                                <cstring>textLabel1</cstring>
+                                <cstring>pushButton_aboutEngine</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Sound system:</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Select the sound system to use for playback.</string>
-                            </property>
-                        </widget>
-                        <widget class="QComboBox" row="1" column="1">
-                            <property name="name">
-                                <cstring>sound_output</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>180</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Select the sound system to use for playback.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>sound_device</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>180</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="2" column="0">
-                            <property name="name">
-                                <cstring>kcfg_CustomSoundDevice</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Use custom device:</string>
-                            </property>
-                            <property name="checked">
+                            <property name="enabled">
                                 <bool>true</bool>
                             </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>outputLabel</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
+                            <property name="maximumSize">
                                 <size>
-                                    <width>0</width>
-                                    <height>0</height>
+                                    <width>32767</width>
+                                    <height>32767</height>
                                 </size>
                             </property>
                             <property name="text">
-                                <string>Output to:</string>
+                                <string>&amp;About</string>
                             </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Select the sound system to use for playback.</string>
+                            <property name="accel">
+                                <string>Alt+A</string>
                             </property>
                         </widget>
-                    </grid>
+                    </hbox>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>70</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </hbox>
         </widget>
         <widget class="QLayoutWidget">
@@ -441,6 +314,9 @@
                     </property>
                     <property name="text">
                         <string>Use &amp;hardware volume mixer</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+H</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
@@ -470,6 +346,23 @@
                 </widget>
             </vbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>31</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
     </vbox>
 </widget>
 <connections>
@@ -483,12 +376,6 @@
         <sender>kcfg_Crossfade</sender>
         <signal>toggled(bool)</signal>
         <receiver>kcfg_CrossfadeLength</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_CustomSoundDevice</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>sound_device</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>

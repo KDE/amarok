@@ -411,4 +411,23 @@ amaroK::OSD::showTrack( const MetaBundle &bundle ) //slot
     showTrack();
 }
 
+void
+amaroK::OSD::applySettings()
+{
+    setAlignment( (OSDWidget::Alignment)AmarokConfig::osdAlignment() );
+    setDuration( AmarokConfig::osdDuration() );
+    setEnabled( AmarokConfig::osdEnabled() );
+    setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
+    setScreen( AmarokConfig::osdScreen() );
+    setShadow( AmarokConfig::osdDrawShadow() );
+    setFont( AmarokConfig::osdFont() );
+
+    if( AmarokConfig::osdUseCustomColors() )
+    {
+        setTextColor( AmarokConfig::osdTextColor() );
+        setBackgroundColor( AmarokConfig::osdBackgroundColor() );
+    }
+    else unsetColors();
+}
+
 #include "osd.moc"

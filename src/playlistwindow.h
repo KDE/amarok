@@ -69,7 +69,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
     protected:
         virtual void closeEvent( QCloseEvent* );
-        void engineStateChanged( EngineBase::EngineState );
+        void engineStateChanged( Engine::State );
 
     private:
         BrowserBar *m_browsers;

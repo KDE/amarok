@@ -9,7 +9,6 @@
 #include "analyzerbase.h"
 
 
-using Analyzer::Scope;
 using std::vector;
 typedef vector<uint> aroofMemVec;
 
@@ -22,7 +21,7 @@ class BarAnalyzer : public Analyzer::Base2D
         virtual void analyze( const Scope& );
         //virtual void transform( Scope& );
         void   resizeEvent( QResizeEvent * e);
-        
+
         uint BAND_COUNT;
         int MAX_DOWN;
         int MAX_UP;

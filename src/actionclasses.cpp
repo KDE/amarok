@@ -100,7 +100,7 @@ Menu::Menu()
     insertSeparator();
 
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
-    insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
+    insertItem( i18n( "Configure &Decoder..." ), EngineController::engine(), SLOT( configure() ) );
 
     insertSeparator();
 
@@ -146,7 +146,7 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 void
 Menu::slotAboutToShow()
 {
-    setItemEnabled( ID_CONF_DECODER, EngineController::engine()->decoderConfigurable() );
+    setItemEnabled( ID_CONF_DECODER, EngineController::engine()->hasConfigure() );
 }
 
 void
@@ -154,9 +154,6 @@ Menu::slotActivated( int index )
 {
     switch( index )
     {
-    case ID_CONF_DECODER:
-        EngineController::engine()->configureDecoder();
-        break;
     case ID_SHOW_VIS_SELECTOR:
         Vis::Selector::instance()->show(); //doing it here means we delay creation of the widget
         break;
@@ -193,11 +190,11 @@ PlayPauseAction::~PlayPauseAction()
 }
 
 void
-PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
+PlayPauseAction::engineStateChanged( Engine::State state )
 {
     switch( state )
     {
-    case EngineBase::Playing:
+    case Engine::Playing:
         setIcon( "player_pause" );
         break;
     default:

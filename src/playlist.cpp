@@ -827,21 +827,21 @@ void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 }
 
 
-void Playlist::engineStateChanged( EngineBase::EngineState state )
+void Playlist::engineStateChanged( Engine::State state )
 {
     //TODO define states in the ui.rc file and override setEnabled() for prev and next so they auto check
     //     isTrackBefore/After (you could make them engineObservers but that's more overhead)
 
     switch( state )
     {
-    case EngineBase::Playing:
+    case Engine::Playing:
         m_glowTimer->start( 40 );
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "playlist_show" )->setEnabled( true );
         break;
 
-    case EngineBase::Empty:
+    case Engine::Empty:
         //TODO do this with setState() in PlaylistWindow?
         m_ac->action( "pause" )->setEnabled( false );
         m_ac->action( "stop" )->setEnabled( false );
@@ -856,7 +856,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
 
         //FALL THROUGH
 
-    case EngineBase::Paused:
+    case Engine::Paused:
         m_glowTimer->stop();
         repaintItem( currentTrack() );
         break;
@@ -1069,8 +1069,9 @@ void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         const PlaylistItem* playlistItem = static_cast<const PlaylistItem*>( item );
 
         QString text = MetaBundle( playlistItem ).prettyTitle();
-        // For streams add the location too. TODO make prettyTitle do this
-        if ( playlistItem->url().protocol() == "http" ) text.append( " :: " + playlistItem->trackName() );
+        // For streams add the streamtitle too
+        //TODO make prettyTitle do this
+        if ( playlistItem->url().protocol() == "http" ) text.prepend( playlistItem->title() + " :: " );
 
         // Copy both to clipboard and X11-selection
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
@@ -1118,7 +1119,7 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
     const bool canRename  = isRenameable( col );
     const bool isCurrent  = (item == m_currentTrack);
-    const bool isPlaying  = EngineController::engine()->state() == EngineBase::Playing;
+    const bool isPlaying  = EngineController::engine()->state() == Engine::Playing;
     const int  queueIndex = m_nextTracks.findRef( item );
     const bool isQueued   = queueIndex != -1;
     const uint itemCount  = selectedItems().count();

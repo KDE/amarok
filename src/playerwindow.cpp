@@ -168,7 +168,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     //set interface to correct state
     engineStateChanged( engine->state() );
-    if( engine->state() == EngineBase::Playing ) engineNewMetaData( ec->bundle(), true );
+    if( engine->state() == Engine::Playing ) engineNewMetaData( ec->bundle(), true );
     createAnalyzer( 0 );
 
 
@@ -297,11 +297,11 @@ void PlayerWidget::drawScroll()
 }
 
 
-void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
+void PlayerWidget::engineStateChanged( Engine::State state )
 {
     switch( state )
     {
-        case EngineBase::Empty:
+        case Engine::Empty:
             m_pButtonPlay->setOn( false );
             m_pButtonPause->setOn( false );
             m_pSlider->setValue( 0 );
@@ -314,7 +314,7 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
             update();
             break;
 
-        case EngineBase::Playing:
+        case Engine::Playing:
             m_pTimeLabel->show();
             m_pTimeSign->show();
             m_pButtonPlay->setOn( true );
@@ -322,11 +322,11 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
              m_pSlider->setEnabled( true );
             break;
 
-        case EngineBase::Paused:
+        case Engine::Paused:
             m_pButtonPause->setOn( true );
             break;
 
-        case EngineBase::Idle: //don't really want to do anything when idle
+        case Engine::Idle: //don't really want to do anything when idle
             break;
     }
 }

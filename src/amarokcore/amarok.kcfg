@@ -170,32 +170,10 @@
         <default>aRts Engine</default>
         <whatsthis>Select the sound system used to play media. amaroK currently support "aRts", "GStreamer" and "NMM", however their availability depends on the configuration used at compile time.</whatsthis>
     </entry>
-    <entry key="Sound Output" type="String">
-        <label>Sound output method to use</label>
-        <default>Alsa</default>
-        <whatsthis>Select the sound output system. amaroK currently support "Alsa" and "OSS", however their availability depends on the system configuration.</whatsthis>
-    </entry>
-    <entry key="Sound Device" type="String">
-        <label>Sound output device to use</label>
-        <default></default>
-        <whatsthis>Select the sound output device. this is useful for gstreamer engine sinks</whatsthis>
-    </entry>
-    <entry key="Custom Sound Device" type="Bool">
-        <label>Don't use the autodetected audiosink sound device</label>
-        <default>false</default>
-        <whatsthis>When enabled, uses user-specified sound device for audiosink.</whatsthis>
-    </entry>
     <entry key="Title Streaming" type="Bool">
         <label>Read titles of shoutcast streams</label>
         <default>true</default>
         <whatsthis>Enable/Disable shoutcast metadata fetching. If set, amaroK displays metadata also for shoutcast streams.</whatsthis>
-    </entry>
-    <entry key="Thread Priority" type="Int">
-        <label>Priority of GStreamer pipeline thread</label>
-        <default>2</default>
-        <min>0</min>
-        <max>3</max>
-        <whatsthis>The priority of the thread for GStreamer, a value between 0 (low) and 3 (high).</whatsthis>
     </entry>
 </group>
 

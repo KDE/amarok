@@ -281,7 +281,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
             return Playlist::s_extensionCache[ ext ];
         }
     }
-    bool valid = EngineController::engine() ->canDecode( url, mode, permissions );
+    bool valid = EngineController::engine() ->canDecode( url );
     // Cache this result for the next lookup
     if ( !ext.isEmpty() )
         Playlist::s_extensionCache.insert( ext, valid );

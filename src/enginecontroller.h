@@ -3,6 +3,7 @@
                          -------------------
 begin                : Mar 15 2004
 copyright            : (C) 2004 by Frederik Holljen
+                       (C) 2004 by Max Howell
 email                : fh@ez.no
 ***************************************************************************/
 
@@ -18,12 +19,11 @@ email                : fh@ez.no
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include <qobject.h>
 #include "engineobserver.h" // move me
 #include "metabundle.h"
 
-class EngineBase;
-class QTimer;
+#include <qobject.h>
+#include <qtimer.h>
 
 namespace KIO {
     class Job;
@@ -34,6 +34,7 @@ namespace KIO {
  * Accessing the engine directly is perfectly legal but on your own risk.
  * TODO: Hide proxy stuff!
  */
+
 class EngineController : public QObject, public EngineSubject
 {
     Q_OBJECT
@@ -41,10 +42,12 @@ public:
     // plugins have their own static space, so calling instance from a plugin won't do any good.
     // you'll only get a new (empty) instance.
     static EngineController *instance();
+    static EngineController *self() { return instance(); }
 
     static EngineBase *engine() { return instance()->m_pEngine; }
     static EngineBase *loadEngine();
-    long trackLength() const { return m_bundle.length() * 1000; }
+
+    long  trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const { return m_bundle; }
     const KURL &playingURL() const { return m_bundle.url(); }
 
@@ -69,25 +72,41 @@ signals:
     void orderNext();
     void orderPrevious();
     void orderCurrent();
+    void statusText( const QString& );
 
 private slots:
     void playRemote( KIO::Job* );
     void slotMainTimer();
-    void slotEndOfTrack();
-    void slotStopped();
-    void newMetaData( const MetaBundle & );
+    void slotTrackEnded();
+    void slotStateChanged( Engine::State );
+    void slotNewMetaData( const MetaBundle& );
 
 private:
     EngineController();
 
 private:
-    static const int MAIN_TIMER  = 150;
+    //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
+    static const int MAIN_TIMER = 300;
 
-    EngineBase *m_pEngine;
-    MetaBundle m_bundle;
-    QTimer *m_pMainTimer;
-    long m_delayTime;
-    int m_muteVolume;
+    EngineBase* m_pEngine;
+    MetaBundle  m_bundle;
+    QTimer*     m_pMainTimer;
+    long        m_delayTime;
+    int         m_muteVolume;
+    bool        m_xFadeThisTrack;
+    QTimer      m_timer;
 };
+
+
+inline EngineController*
+EngineController::instance()
+{
+    //will only be instantiated the first time this function is called
+    //will work with the inline directive
+    //TODO there may be issues on older GCC versions where an instance exists in every translation unit
+    static EngineController Instance;
+
+    return &Instance;
+}
 
 #endif

@@ -1,224 +1,140 @@
-/***************************************************************************
-                     enginebase.h  -  audio engine base class
-                        -------------------
-begin                : Dec 31 2003
-copyright            : (C) 2003 by Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+//Copyright: (C) 2003 Mark Kretschmann
+//           (C) 2004 Max Howell, <max.howell@methylblue.com>
+//License:   See COPYING
 
 #ifndef AMAROK_ENGINEBASE_H
 #define AMAROK_ENGINEBASE_H
 
-#include "plugin/plugin.h"
+#include "plugin/plugin.h" //baseclass
+#include <qobject.h>       //baseclass
 
-#include <vector>           //stack allocated
+#include <kurl.h>
+#include <sys/types.h>
+#include <vector>
 
-#include <qobject.h>        //baseclass
-#include <qstringlist.h>    //stack allocated
 
-#ifdef __FreeBSD__
- #include <sys/types.h>
-#endif
+// DEVELOPMENT NOTES
+// You must handle your own media, do not rely on amaroK to call stop() before play() etc.
 
-class KURL;
 
-class EngineBase : public QObject, public amaroK::Plugin {
-        Q_OBJECT
 
-    signals:
-        /** Emitted when end of current track is reached. */
-        void endOfTrack();
-        
-        /** Emitted when current track was stopped explicitly. */
-        void stopped();
-        
+namespace Engine
+{
+    typedef std::vector<int16_t> Scope;
+
+    class Effects;
+
+    enum State { Empty, Idle, Playing, Paused };
+    enum StreamingMode { Socket, Signal, NoStreaming };
+
+
+    class Base : public QObject, public amaroK::Plugin
+    {
+    Q_OBJECT
+
     public:
-        enum EngineState { Empty, Idle, Playing, Paused };
-        enum StreamingMode { Socket, Signal, NoStreaming };
-        
-        EngineBase();
-        virtual ~EngineBase();
-        
-        /**
-         * Initializes the engine. Must be called after the engine was loaded.
-         * @param restart True if artsd must be restarted (aRts-Engine only).
-         * @param scopeSize Size of buffer for visualization data (in bytes).
-         * @param restoreEffects True if last effect configuration should be restored.
-         * @return True if initialization was successful.
-         */
-        virtual bool init( bool& restart, int scopeSize, bool restoreEffects ) = 0;
+        virtual ~Base();
 
-        /**
-         * Initialize mixer.
-         * @param hardware True for soundcard hardware mixing.
-         * @return True if using hardware mixing.
-         */
-        virtual bool initMixer( bool hardware ) = 0;
+        //return false and the engine will not be used
+        virtual bool init() = 0;
 
-        /**
-         * Determines if the engine is able to play a given URL.
-         * @param url The URL of the file/stream.
-         * @param mode Determined in PlaylistLoader.
-         * @param permissions Determined in PlaylistLoader.
-         * @return True if we can play the URL.
-         */
-        virtual bool canDecode( const KURL &url, mode_t mode, mode_t permissions ) = 0;
-        
-        /**
-         * Determines how streaming is handled with this engine.
-         * @return The supported streaming mode.
-         */
-        virtual StreamingMode streamingMode() { return NoStreaming; }       
-        
-        /** Get list of available output plugins */
-        virtual QStringList getOutputsList() { return QStringList(); }
+        //can you decode this media? make this function fast!
+        virtual bool canDecode( const KURL &url ) = 0;
 
-        /** Get Time position (msec). */
-        virtual long position() const = 0;
+        //are you streaming the currently playing media?
+        //TODO instead make a method that can say, no, most of this stuff is not available.
+        // <markey> The engine does not determine this. EngineController does.
+        inline bool isStream() { return m_isStream; }
 
-        /** Get current engine status. */
-        virtual EngineState state() const = 0;
+        //prepare the engine to play url, note that play(KURL) calls load(KURL) then play()
+        //the very minimum thing you must do here is call the base implementation
+        //ensure you return false if you fail to prepare the engine for url
+        virtual bool load( const KURL &url, bool stream = false );
 
-        /**
-         * Determines whether media is currently loaded.
-         * @return True if media is loaded, system is ready to play.
-         */
-        bool loaded() { return state() != Empty; }
+        //convenience function for amaroK to use
+        bool play( const KURL &u, bool stream = false ) { return load( u, stream ) && play(); }
 
-        /**
-         * Sets the master volume.
-         * @return Volume in range 0 to 100.
-         */
-        inline int volume() const { return m_volume; }
+        //return success as a bool, emit stateChanged
+        //do not unpause in this function, _always_ restart the media at m_url
+        //start the playback at offset milliseconds
+        //you should play m_url
+        virtual bool play( uint offset = 0 ) = 0;
 
-        /**
-         * Sets the master volume.
-         * @return True if using hardware mixer.
-         */
-        bool isMixerHardware() const { return m_mixerHW != -1; }
-
-        /**
-         * Determines if current track is a stream.
-         * @return True if track is a stream.
-         */
-        bool isStream() const { return m_stream; }
-
-        /**
-         * Determines whether the engine supports crossfading.
-         * @return True if crossfading is supported.
-         */
-        virtual bool supportsXFade() const { return false; }
-
-        /**
-         * Fetches the current audio sample buffer.
-         * @return Pointer to result of FFT calculation. Must be deleted after use.
-         */
-        virtual std::vector<float>* scope() { return new std::vector<float>(); }
-
-        /** Sets whether effects configuration should be remembered */
-        void setRestoreEffects( bool yes ) { m_restoreEffects = yes; }
-        
-        /** Gets the list of currently available effects */
-        virtual QStringList availableEffects() const { return QStringList(); }
-        
-        /** Gets the list of currently active effects */
-        virtual std::vector<long> activeEffects() const { return std::vector<long>(); }
-        
-        /** Gets the ID for a given effect */
-        virtual QString effectNameForId( long ) const { return QString::null; }
-        
-        /** Reports whether effect is configurable */
-        virtual bool effectConfigurable( long ) const { return false; }
-        
-        /** Instantiates new effect */
-        virtual long createEffect( const QString& ) { return -1; }
-        
-        /** Removes effect */
-        virtual void removeEffect( long ) { }
-        
-        /** Configures effect */
-        virtual void configureEffect( long ) { }
-        
-        /** Determine whether decoder for current track is GUI-configurable */
-        virtual bool decoderConfigurable() const { return false; }
-
-        /** Sets length of Crossfade transition (in msec) */
-        virtual void setXfadeLength( int msec );
-        
-        /** Sets sound output plugin (GST-Engine only). */
-        virtual void setSoundOutput( const QString& output );
-        
-        /** Sets sound device of output plugin (GST-Engine only). */
-        virtual void setSoundDevice( const QString& device ) { m_soundDevice = device; }
-        
-        /** Sets whether default sound device should be used (GST-Engine only). */
-        virtual void setDefaultSoundDevice( bool isDefault ) { m_defaultSoundDevice = isDefault; }
-        
-        /** Sets the threading priority (GST-Engine only). */
-        virtual void setThreadPriority( int priority ) { m_threadPriority = priority; }
-        
-    public slots:
-        /** 
-         * Sets new URL for playing.
-         * @param url URL to be played.
-         * @param stream True if URL is a stream.
-         */
-        virtual void play( const KURL& url, bool stream = false ) = 0;
-        
-        /** Starts playback */
-        virtual void play() = 0;
-        
-        /** Stops playback */
+        //you must emit stateChanged()
+        // <markey> stop() also unloads the current track.
         virtual void stop() = 0;
-        
-        /** Pauses playback */
+
+        //this must toggle the pause state
+        //emit stateChanged
         virtual void pause() = 0;
 
-        /**
-         * @param percent Set volume in range 0 to 100.
-         */
-        virtual void setVolume( int percent ) = 0;
-        
-        /**
-         * Jump to new time position.
-         * @param ms New position.
-         */
-        virtual void seek( long ms ) = 0;
-        
-        /** Show configuration GUI for current decoder */
-        virtual void configureDecoder() {}
-        
-        /** Called when new streaming data should be processed. */
-        virtual void newStreamData( char* /*data*/, int /*size*/ ) {};
-        
+        //Some important points
+        // If you are Playing, Paused or Idle (ie loaded), you will handle play/pause/stop gracefully
+        // You will not be expected to handle these functions if Empty
+        virtual State state() const = 0;
+
+        virtual uint position() const = 0;
+        virtual void seek( uint ms ) = 0;
+
+        inline bool   isMixerHW()      const { return m_mixer != -1; }
+        inline bool   loaded()         const { return state() != Empty; }
+        inline uint   volume()         const { return m_volume; }
+        inline bool   hasEffects()     const { return m_effects; }
+        inline bool   hasXFade()       const { return m_hasXFade; }
+        StreamingMode streamingMode()  const { return m_streamingMode; }
+        Effects&      effects()        const { return *m_effects; } //WARNING! calling when there are none will crash amaroK!
+
+        virtual const Scope &scope() { return m_scope; };
+
+        bool setHardwareMixer( bool );
+        void setVolume( uint pc ) { m_volume = pc; if( isMixerHW() ) setVolumeHW( pc ); else setVolumeSW( pc ); }
+
+    signals:
+        void trackEnded();
+        void statusText( const QString& );
+        void stateChanged( Engine::State );
+
     protected:
-        void closeMixerHW();
-        bool initMixerHW();
-        void setVolumeHW( int percent );
-        /////////////////////////////////////////////////////////////////////////////////////
-        // ATTRIBUTES
-        /////////////////////////////////////////////////////////////////////////////////////
-        int m_mixerHW;
-        int m_volume;
-        int m_xfadeLength;
-        bool m_restoreEffects;
-        QString m_soundOutput;
-        QString m_soundDevice;
-        bool m_defaultSoundDevice;
-        int m_threadPriority;
-        bool m_stream;
-        
-        EngineBase( const EngineBase& ); //disable copy constructor
-        const EngineBase &operator=( const EngineBase& ); //disable copy constructor
-};
+        Base( StreamingMode = NoStreaming, bool hasConfigure = false, bool hasXFade = false, Effects* = 0 );
+
+        virtual void setVolumeSW( uint percent ) = 0;
+        void setVolumeHW( uint percent );
+
+        void setEffects( Effects *e ) { m_effects = e; }
+        void setStreamingMode( StreamingMode m ) { m_streamingMode = m; }
+
+        Base( const Base& ); //disable
+        const Base &operator=( const Base& ); //disable
+
+        int           m_xfadeLength;
+
+    private:
+        StreamingMode m_streamingMode;
+        bool          m_hasXFade;
+        Effects      *m_effects;
+        int           m_mixer;
+
+    protected:
+        uint  m_volume;
+        KURL  m_url;
+        Scope m_scope;
+        bool  m_isStream;
+    };
+
+
+    class Effects
+    {
+    public:
+        virtual QStringList availableEffects() const = 0;
+        virtual std::vector<long> activeEffects() const = 0;
+        virtual QString effectNameForId( long ) const = 0;
+        virtual bool effectConfigurable( long ) const = 0;
+        virtual long createEffect( const QString& ) = 0;
+        virtual void removeEffect( long ) = 0;
+        virtual void configureEffect( long ) = 0;
+    };
+}
+
+typedef Engine::Base EngineBase;
 
 #endif

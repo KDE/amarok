@@ -1,19 +1,6 @@
-/***************************************************************************
-                      enginebase.cpp  -  audio engine base class
-                         -------------------
-begin                : Dec 31 2003
-copyright            : (C) 2003 by Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+//Copyright: (C) 2003 Mark Kretschmann
+//           (C) 2004 Max Howell, <max.howell@methylblue.com>
+//License:   See COPYING
 
 #include "enginebase.h"
 
@@ -23,79 +10,85 @@ email                : markey@web.de
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include <qstringlist.h>
-#include <kdebug.h>
 
-
-EngineBase::EngineBase()
-    : amaroK::Plugin()
-    , m_mixerHW( -1 )
+Engine::Base::Base( StreamingMode mode, bool hasConfigure, bool hasXFade, Effects *effects )
+    : amaroK::Plugin( hasConfigure )
+    , m_xfadeLength( 1500 ) //FIXME
+    , m_streamingMode( mode )
+    , m_hasXFade( hasXFade )
+    , m_effects( effects )
+    , m_mixer( -1 )
     , m_volume( 50 )
-    , m_xfadeLength( 0 )
-    , m_restoreEffects( false )
-    , m_defaultSoundDevice( true )
+    , m_scope( 512 )
 {}
 
-
-EngineBase::~EngineBase()
+Engine::Base::~Base()
 {
-    kdDebug() << k_funcinfo << endl;
+    setHardwareMixer( false );
 
-    closeMixerHW();
+    delete m_effects;
 }
 
 //////////////////////////////////////////////////////////////////////
 
-bool EngineBase::initMixerHW()
+
+bool
+Engine::Base::load( const KURL &url, bool stream )
 {
-    if ( ( m_mixerHW = ::open( "/dev/mixer", O_RDWR ) ) < 0 )
-        return false;  //failed
-    else
-    {
-        int devmask, recmask, i_recsrc, stereodevs;
-        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) return false;
-        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) return false;
-        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_RECSRC, &i_recsrc )       == -1 ) return false;
-        if ( ioctl( m_mixerHW, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) return false;
-        if ( !devmask )                                                           return false;
-    }
+    m_url = url;
+    m_isStream = stream;
 
     return true;
 }
 
 
-void EngineBase::closeMixerHW()
+bool
+Engine::Base::setHardwareMixer( bool useHardware )
 {
-    if ( m_mixerHW != -1 )
+    //TODO optimise the applySettings section too
+
+    if ( useHardware )
     {
-        ::close( m_mixerHW );   //close /dev/mixer device
-        m_mixerHW = -1;
+        if ( isMixerHW() ) return true;
+
+        m_mixer = ::open( "/dev/mixer", O_RDWR );
+
+        if ( m_mixer >= 0 )
+        {
+            int devmask, recmask, i_recsrc, stereodevs;
+            if ( ioctl( m_mixer, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) goto failure;
+            if ( ioctl( m_mixer, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) goto failure;
+            if ( ioctl( m_mixer, SOUND_MIXER_READ_RECSRC, &i_recsrc )       == -1 ) goto failure;
+            if ( ioctl( m_mixer, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) goto failure;
+            if ( !devmask )                                                         goto failure;
+
+            setVolumeSW( 100 ); //seems sensible
+
+            return true;
+        }
     }
+
+    //otherwise lets close the mixer
+
+    if ( isMixerHW() )
+    {
+        ::close( m_mixer );   //close /dev/mixer device
+
+    failure:
+        m_mixer = -1;
+    }
+
+    return false;
 }
 
-
-void EngineBase::setVolumeHW( int percent )
+void
+Engine::Base::setVolumeHW( uint percent )
 {
-    if ( m_mixerHW != -1 )
+    if ( isMixerHW() )
     {
         percent = percent + ( percent << 8 );
-        ioctl( m_mixerHW, MIXER_WRITE( 4 ), &percent );
+        ioctl( m_mixer, MIXER_WRITE( 4 ), &percent );
     }
 }
-
-
-void EngineBase::setXfadeLength( int ms )
-{
-    m_xfadeLength = ms;
-}
-
-
-void EngineBase::setSoundOutput( const QString& output )
-{
-    kdDebug() << "Setting sound output to: " << output << endl;
-
-    m_soundOutput = output;
-}
-
 
 #include "enginebase.moc"

@@ -15,6 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "config/gst-config.h"
 #include "enginebase.h"
 #include "gstengine.h"
 #include "gstuade.h"
@@ -132,8 +133,9 @@ GstEngine::kio_resume_cb()
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstEngine::GstEngine()
-        : EngineBase()
+        : Engine::Base( Engine::Signal, true )
         , m_gst_thread( 0 )
+        , m_scopeBuf( SCOPEBUF_SIZE )
         , m_scopeBufIndex( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
@@ -152,6 +154,9 @@ GstEngine::~GstEngine()
     cleanPipeline();
     delete[] m_streamBuf;
 
+    // Save configuration
+    GstConfig::writeConfig();
+    
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -161,16 +166,12 @@ GstEngine::~GstEngine()
 /////////////////////////////////////////////////////////////////////////////////////
 
 bool
-GstEngine::init( bool&, int scopeSize, bool )
+GstEngine::init()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-
+    
     s_instance = this;
-    m_mixerHW = -1;            //initialize
-
-    m_scopeBuf.resize( SCOPEBUF_SIZE );
-    m_scopeSize = 1 << scopeSize;
-
+    
     // GStreamer initilization
     if ( !gst_init_check( NULL, NULL ) ) {
         KMessageBox::error( 0,
@@ -198,19 +199,7 @@ GstEngine::init( bool&, int scopeSize, bool )
 
 
 bool
-GstEngine::initMixer( bool hardware )
-{
-    closeMixerHW();
-
-    if ( hardware )
-        hardware = initMixerHW();
-
-    return hardware;
-}
-
-
-bool
-GstEngine::canDecode( const KURL &url, mode_t, mode_t )
+GstEngine::canDecode( const KURL &url )
 {
     //TODO HACK
     if ( url.fileName().endsWith( UADE_EXT ) ) return true;
@@ -223,11 +212,11 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     if ( !( spider = createElement( "spider", pipeline ) ) ) return false;
     if ( !( audioconvert = createElement( "audioconvert", pipeline ) ) ) return false;
     if ( !( audioscale = createElement( "audioscale", pipeline ) ) ) return false;
-    if ( !( audiosink = createElement( m_soundOutput.latin1(), pipeline ) ) ) return false;
+    if ( !( audiosink = createElement( GstConfig::soundOutput().latin1(), pipeline ) ) ) return false;
 
     /* setting device property for AudioSink*/
-    if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
-        g_object_set( G_OBJECT ( audiosink ), "device", m_soundDevice.latin1(), NULL );
+    if ( GstConfig::customSoundDevice() && !GstConfig::soundDevice().isEmpty() )
+        g_object_set( G_OBJECT ( audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
 
     g_object_set( G_OBJECT( filesrc ), "location", (const char*) QFile::encodeName( url.path() ), NULL );
 
@@ -245,7 +234,7 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 }
 
 
-long
+uint
 GstEngine::position() const
 {
     if ( !m_pipelineFilled ) return 0;
@@ -259,48 +248,54 @@ GstEngine::position() const
 }
 
 
-EngineBase::EngineState
+Engine::State
 GstEngine::state() const
 {
-    if ( !m_pipelineFilled ) return Empty;
+    if ( !m_pipelineFilled ) return Engine::Empty;
 
     switch ( gst_element_get_state( m_gst_thread ) )
     {
         case GST_STATE_NULL:
-            return Empty;
+            return Engine::Empty;
         case GST_STATE_READY:
-            return Idle;
+            return Engine::Idle;
         case GST_STATE_PLAYING:
-            return Playing;
+            return Engine::Playing;
         case GST_STATE_PAUSED:
-            return Paused;
+            return Engine::Paused;
 
         default:
-            return Empty;
+            return Engine::Empty;
     }
 }
 
 
-vector<float>*
+const Engine::Scope&
 GstEngine::scope()
 {
-    vector<float>* scope = new vector<float>( m_scopeSize );
-
-    interpolate( m_scopeBuf, *scope );
+    interpolate( m_scopeBuf, m_scope );
     m_scopeBufIndex = 0;
 
-    return scope;
+    return m_scope;
 }
 
+
+amaroK::PluginConfig*
+GstEngine::configure() const
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    return new GstConfigDialog( instance() );
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void
-GstEngine::play( const KURL& url, bool stream )  //SLOT
+bool
+GstEngine::load( const KURL& url, bool stream )  //SLOT
 {
-    m_stream = stream;
+    Engine::Base::load( url, stream );
     kdDebug() << "Gst-Engine: url.url() == " << url.url() << endl;
     
     bool isUade = false;
@@ -309,19 +304,19 @@ GstEngine::play( const KURL& url, bool stream )  //SLOT
     m_fadeValue = 0.0;
     if ( m_pipelineFilled ) cleanPipeline();
 
-    kdDebug() << "Thread scheduling priority: " << m_threadPriority << endl;
-    kdDebug() << "Sound output method: " << m_soundOutput << endl;
-    kdDebug() << "DefaultSoundDevice: " << ( m_defaultSoundDevice ? "true" : "false" ) << endl;
-    kdDebug() << "Sound Device:       " << m_soundDevice << endl;
+    kdDebug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
+    kdDebug() << "Sound output method: " << GstConfig::soundOutput() << endl;
+    kdDebug() << "CustomSoundDevice: " << ( GstConfig::customSoundDevice() ? "true" : "false" ) << endl;
+    kdDebug() << "Sound Device:       " << GstConfig::soundDevice() << endl;
     
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { goto error; }
-    g_object_set( G_OBJECT( m_gst_thread ), "priority", m_threadPriority, NULL );
-    if ( !( m_gst_audiosink = createElement( m_soundOutput.latin1(), m_gst_thread ) ) ) { goto error; }
+    g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
+    if ( !( m_gst_audiosink = createElement( GstConfig::soundOutput().latin1(), m_gst_thread ) ) ) { goto error; }
     
     /* setting device property for AudioSink*/
-    if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
-        g_object_set( G_OBJECT ( m_gst_audiosink ), "device", m_soundDevice.latin1(), NULL );
+    if ( GstConfig::customSoundDevice() && !GstConfig::soundDevice().isEmpty() )
+        g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
 
     if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { goto error; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { goto error; }
@@ -377,22 +372,25 @@ GstEngine::play( const KURL& url, bool stream )  //SLOT
                               this,   SLOT( kioFinished() ) );
         }
     }
-    play();
-    return;
+    emit stateChanged( Engine::Idle );
+    return true;
 
 error:
-    emit stopped();    
+    return false;
 }
 
 
-void
-GstEngine::play()  //SLOT
+bool
+GstEngine::play( uint )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    if ( !m_pipelineFilled ) return ;
+    if ( !m_pipelineFilled ) return false;
 
     /* start playing */
     gst_element_set_state( m_gst_thread, GST_STATE_PLAYING );
+    
+    emit stateChanged( Engine::Playing );
+    return true;
 }
 
 
@@ -401,8 +399,6 @@ GstEngine::stop()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
-    
-    emit stopped();
     
     // Is a fade running?
     if ( m_fadeValue == 0.0 ) {   
@@ -419,6 +415,8 @@ GstEngine::stop()  //SLOT
             m_transferJob = 0;
         }
     }    
+    
+    emit stateChanged( Engine::Empty );
 }
 
 
@@ -428,21 +426,24 @@ GstEngine::pause()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
-    gst_element_set_state( m_gst_thread, GST_STATE_PAUSED );
+    if ( state() == Engine::Paused )
+        gst_element_set_state( m_gst_thread, GST_STATE_PLAYING );
+    else
+        gst_element_set_state( m_gst_thread, GST_STATE_PAUSED );
+    
+    emit stateChanged( state() );
 }
 
 
 void
-GstEngine::seek( long ms )  //SLOT
+GstEngine::seek( uint ms )  //SLOT
 {
     if ( !m_pipelineFilled ) return ;
 
     if ( ms > 0 )
     {
-        GstEvent * event = gst_event_new_seek( ( GstSeekType ) ( GST_FORMAT_TIME |
-                                               GST_SEEK_METHOD_SET |
-                                               GST_SEEK_FLAG_FLUSH ),
-                                               ms * GST_MSECOND );
+        GstEvent* event = gst_event_new_seek( ( GstSeekType ) ( GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH ),
+                                              ms * GST_MSECOND );
 
         gst_element_send_event( m_gst_audiosink, event );
     }
@@ -450,20 +451,12 @@ GstEngine::seek( long ms )  //SLOT
 
 
 void
-GstEngine::setVolume( int percent )  //SLOT
+GstEngine::setVolumeSW( uint percent )  //SLOT
 {
-    m_volume = percent;
-
-    if ( isMixerHardware() ) {
-        EngineBase::setVolumeHW( percent );
-        if ( m_pipelineFilled )
-            g_object_set( G_OBJECT( m_gst_volume ), "volume", 1.0, NULL );
-    } else {
-        if ( m_pipelineFilled )
-            // We're using a logarithmic function to make the volume ramp more natural
-            g_object_set( G_OBJECT( m_gst_volume ), "volume",
-                          ( double ) 1.0 - log10( ( 100 - percent ) * 0.09 + 1.0 ), NULL );
-    }
+    if ( m_pipelineFilled )
+        // We're using a logarithmic function to make the volume ramp more natural
+        g_object_set( G_OBJECT( m_gst_volume ), "volume",
+                     (double) 1.0 - log10( ( 100 - percent ) * 0.09 + 1.0 ), NULL );
 }
 
 
@@ -540,7 +533,7 @@ GstEngine::stopAtEnd()  //SLOT
     cleanPipeline();
     m_transferJob = 0;
     
-    emit endOfTrack();
+    emit trackEnded();
 }
 
 
@@ -657,18 +650,18 @@ GstEngine::cleanPipeline()
 
 
 void
-GstEngine::interpolate( const vector<float> &inVec, vector<float> &outVec )
+GstEngine::interpolate( const Engine::Scope& inVec, Engine::Scope& outVec )
 {
     double pos = 0.0;
-    const double step = ( double ) m_scopeBufIndex / outVec.size();
+    const double step = (double) m_scopeBufIndex / outVec.size();
 
     for ( uint i = 0; i < outVec.size(); ++i, pos += step ) {
-        unsigned long index = ( unsigned long ) pos;
+        unsigned long index = (unsigned long) pos;
 
         if ( index >= m_scopeBufIndex )
             index = m_scopeBufIndex - 1;
 
-        outVec[ i ] = inVec[ index ];
+        outVec[i] = inVec[index];
     }
 }
 
