@@ -24,6 +24,9 @@ class Scrobbler : public QObject, public EngineObserver
     public:
         static Scrobbler *instance();
 
+        Scrobbler();
+        ~Scrobbler();
+
         void similarArtists( QString /*artist*/ );
         void applySettings();
 
@@ -40,8 +43,6 @@ class Scrobbler : public QObject, public EngineObserver
             KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
-        Scrobbler();
-        ~Scrobbler();
         QString m_similarArtistsBuffer;
         QString m_artist;
         long m_prevPos;
