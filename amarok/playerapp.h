@@ -107,7 +107,8 @@ class PlayerApp : public KUniqueApplication
 
     private slots:
         void applySettings();
-
+        void proxyError();
+        
     signals:
         //void sigScope( std::vector<float> *s );
         //void sigPlay();
@@ -140,6 +141,7 @@ class PlayerApp : public KUniqueApplication
         EffectWidget *m_pEffectWidget;
         FHT *m_pFht;
         OSDWidget *m_pOSD;
+        bool m_proxyError;
 };
 
 

@@ -66,9 +66,11 @@ TitleProxy::TitleProxy(KURL url) : QObject(),
 
     int connectResult = m_sockRemote.connect();
     kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;
-    if ( connectResult != 0 )
+    if ( connectResult != 0 ) {        
+        emit error();
         return;
-
+    }
+        
     int listenResult = -1;
     unsigned int i = 0;
     for(i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++)
@@ -86,8 +88,10 @@ TitleProxy::TitleProxy(KURL url) : QObject(),
     }
 
     kdDebug() << k_funcinfo << "final listen() result: " << listenResult << endl;
-    if ( listenResult != 0 )
+    if ( listenResult != 0 ) {
+        emit error();
         return;
+    }
     m_usedPort = i;
 
     m_pBuf = new char[ BUFSIZE ];
@@ -225,6 +229,9 @@ void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
                 m_streamUrl.prepend("http://");
             m_pSockProxy->writeBlock(m_headerStr.latin1(), m_headerStr.length());
             m_headerFinished = true;
+            
+            if ( !m_metaInt )
+                emit error();
             break;
 
         }

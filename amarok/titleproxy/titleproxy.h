@@ -50,6 +50,7 @@ class TitleProxy : public QObject
         };
         
     signals:
+        void error();
         void metaData( const TitleProxy::metaPacket& );
 
     public slots:

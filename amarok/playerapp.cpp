@@ -75,6 +75,7 @@ PlayerApp::PlayerApp()
         , m_pEffectWidget( NULL )
         , m_pFht( new FHT( SCOPE_SIZE ) )
         , m_pOSD( new OSDWidget() )
+        , m_proxyError( false )
 {
     setName( "amaroK" );
     pApp = this; //global
@@ -493,20 +494,23 @@ void PlayerApp::play( const MetaBundle &bundle )
 {
     const KURL &url = bundle.m_url;
 
-    if ( AmarokConfig::titleStreaming() && !url.isLocalFile() )
+    if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
     {
         TitleProxy *pProxy = new TitleProxy( url );
         m_pEngine->open( pProxy->proxyUrl() );
 
-        connect( pProxy,    SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ),
-                 this,      SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ) );
         connect( m_pEngine, SIGNAL( endOfTrack  () ),
                  pProxy,    SLOT  ( deleteLater () ) );
+        connect( pProxy,    SIGNAL( error       () ),
+                 this,      SLOT  ( proxyError  () ) );
+        connect( pProxy,    SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ),
+                 this,      SIGNAL( metaData    ( const TitleProxy::metaPacket& ) ) );
     }
     else
         m_pEngine->open( url );
 
-
+    m_proxyError = false;
+        
     m_pPlayerWidget->setScroll( bundle );
     m_pOSD->showOSD( bundle );
 
@@ -529,6 +533,15 @@ void PlayerApp::play( const MetaBundle &bundle )
     m_pPlayerWidget->m_pButtonPause->setDown( false );
 
     emit currentTrack( url );
+}
+
+
+void PlayerApp::proxyError()
+{
+    kdWarning() << "[PlayerApp::proxyError()] TitleProxy error! Switching to normal playback.." << endl;
+    
+    m_proxyError = true;
+    slotPlay();
 }
 
 
