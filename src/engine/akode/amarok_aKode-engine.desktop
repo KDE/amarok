@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Service
+Name=aKode Engine
+ServiceTypes=amaroK/Plugin
+X-KDE-Library=libamarok_aKode-engine
+Comment=Audio-engine plugin for amaroK
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-name=akode-engine
+X-KDE-amaroK-authors=Max Howell
+X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-rank=250
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=3
