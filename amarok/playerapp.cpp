@@ -149,10 +149,6 @@ PlayerApp::~PlayerApp()
     delete m_pEngine;
 }
 
-AmarokConfig *PlayerApp::config()
-{
-   return AmarokConfig::self();
-}
 
 int PlayerApp::newInstance()
 {
@@ -335,6 +331,13 @@ void PlayerApp::restoreSession()
 #include <kcombobox.h>     //browserWin::KComboHistory (file chooser lineEdit)
 #include "browserwidget.h" //anoyingly necessary //FIXME KConfig XT!
 #include <kdirlister.h>    //for browserwin component also
+
+
+AmarokConfig *PlayerApp::config()
+{
+    return AmarokConfig::self();
+}
+
 
 void PlayerApp::saveConfig()
 {
@@ -529,8 +532,6 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
     
-    //set track length stuff
-
     m_playingURL = url;
 
     m_pPlayerWidget->m_pSlider->setValue   ( 0 );
