@@ -117,7 +117,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
         connect( m_pSlider, SIGNAL(sliderReleased( int )), ec, SLOT(seek( int )) );
-        connect( m_pSlider, SIGNAL(sliderMoved( int )), SLOT(timeDisplay( int )) );
+        connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(timeDisplay( int )) );
         connect( m_pVolSlider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
         connect( m_pVolSlider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
     } //<Sliders>
@@ -361,10 +361,7 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 
 void PlayerWidget::engineTrackPositionChanged( long position )
 {
-    if ( !m_pSlider->sliding() ) {
-        m_pSlider->setValue( position );
-        timeDisplay( position );
-    }
+    m_pSlider->setValue( position );
 }
 
 

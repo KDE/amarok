@@ -56,10 +56,10 @@ public:
     {
         if ( e->button() == Qt::LeftButton )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
-        
+
         if ( e->button() == Qt::RightButton ) {
             enum Items { NORMAL, REMAIN, LENGTH };
-            
+
             KPopupMenu menu( this );
             menu.setCheckable( true );
             menu.insertTitle( i18n( "Time Display" ) );
@@ -80,8 +80,8 @@ public:
                     break;
                 case LENGTH:
                     break;
-            }  
-        }        
+            }
+        }
     }
 };
 
@@ -124,7 +124,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // position slider (stretches at 1/4 the rate of the squeezedTextKLabel)
     addWidget( m_pSlider = new amaroK::Slider( Qt::Horizontal, this ), 1, true );
     connect( m_pSlider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
-    connect( m_pSlider, SIGNAL(sliderMoved( int )), SLOT(drawTimeDisplay( int )) );
+    connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
     // time display
     addWidget( m_pTimeLabel = new TimeLabel( this ), 0, true );
@@ -196,10 +196,7 @@ void StatusBar::slotItemCountChanged(int newCount)
 
 void StatusBar::engineTrackPositionChanged( long position )
 {
-    if ( !m_pSlider->sliding() ) {
-        m_pSlider->setValue( position );
-        drawTimeDisplay( position );
-    }
+    m_pSlider->setValue( position );
 }
 
 void StatusBar::drawTimeDisplay( int ms ) //SLOT

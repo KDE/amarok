@@ -27,6 +27,8 @@
 amaroK::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
         : QSlider( orientation, parent )
         , m_sliding( false )
+        , m_outside( false )
+        , m_prevValue( 0 )
 {
     setRange( 0, max );
 }
@@ -46,6 +48,15 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 {
     if ( m_sliding )
     {
+        if( !rect().contains( e->pos() ) )
+        {
+            QSlider::setValue( m_prevValue );
+            m_outside = true;
+            return;
+        }
+        else m_outside = false;
+
+        //MAKE this virtual and then you needed reimplement so much in prettySlider
         QSlider::setValue( orientation() == Horizontal
           ? QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2, width() - sliderRect().width() )
           : QRangeControl::valueFromPosition( e->pos().y() - sliderRect().height()/2, height() - sliderRect().height() ) );
@@ -58,7 +69,8 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 amaroK::Slider::mousePressEvent( QMouseEvent *e )
 {
-    m_sliding = true;
+    m_sliding   = true;
+    m_prevValue = QSlider::value();
 
     if ( !sliderRect().contains( e->pos() ) )
         mouseMoveEvent( e );
@@ -69,14 +81,18 @@ amaroK::Slider::mouseReleaseEvent( QMouseEvent* )
 {
     m_sliding = false;
 
-    emit sliderReleased( value() );
+    if( !m_outside ) emit sliderReleased( value() );
+
+    m_outside = false;
 }
 
 void
 amaroK::Slider::setValue( int newValue )
 {
-    if ( !m_sliding )
-         QSlider::setValue( adjustValue( newValue ) );
+    if ( !m_sliding || m_outside )
+        QSlider::setValue( adjustValue( newValue ) );
+    else
+        m_prevValue = newValue;
 
     //don't adjust the slider while the user is dragging it!
 }
