@@ -26,6 +26,7 @@
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
 
+#include <qdir.h>
 #include <qfileinfo.h>
 #include <qtimer.h>
 
@@ -159,9 +160,23 @@ ScriptManager::slotInstallScript()
 void
 ScriptManager::slotUninstallScript()
 {
-    AMAROK_NOTIMPLEMENTED
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
-    KMessageBox::sorry( 0, i18n( "This function is not yet implemented." ) );
+    QString name = m_base->directoryListView->currentItem()->text( 0 );
+
+    if ( KMessageBox::warningYesNo( 0, i18n( "Are you sure you want to uninstall the script %1?" ).arg( name ) ) == KMessageBox::No )
+        return;
+
+    QDir dir( m_scripts[name].url.directory() );
+    QStringList files = dir.entryList();
+
+    // Remove all files
+    QStringList::Iterator it;
+    for ( it = files.begin(); it != files.end(); ++it )
+        dir.remove( *it );
+
+    // Remove directory as well
+    dir.rmdir( m_scripts[name].url.directory() );
 }
 
 
