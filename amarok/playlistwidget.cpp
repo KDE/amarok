@@ -703,7 +703,7 @@ void PlaylistWidget::slotTextChanged( const QString &str )
         pVisibleItem = firstChild();
         while ( pVisibleItem )
         {
-            for ( int y = 0; y < tokens.count(); ++y )
+            for ( uint y = 0; y < tokens.count(); ++y )
             {
                 if ( !pVisibleItem->text(0).lower().contains( tokens[y] ) )
                     pVisibleItem->setVisible( false );
@@ -719,7 +719,7 @@ void PlaylistWidget::slotTextChanged( const QString &str )
             pVisibleItem = searchPtrs.at( x );
 
             pVisibleItem->setVisible( true );
-            for ( int y = 0; y < tokens.count(); ++y )
+            for ( uint y = 0; y < tokens.count(); ++y )
             {
                 if ( !(*it).lower().contains( tokens[y] ) )
                     pVisibleItem->setVisible( false );
