@@ -36,13 +36,13 @@ amarokapp_SOURCES = \
     Options3.ui \
     Options4.ui \
     Options5.ui \
-    amarokconfigdialog.cpp \
+    configdialog.cpp \
     amarokfilelist.cpp \
-    amarokmenu.cpp \
-    amarokslider.cpp \
-    amaroksystray.cpp \
+    actionclasses.cpp \
+    slider.cpp \
+    systray.cpp \
     browserbar.cpp \
-    browserwin.cpp \
+    playlistwindow.cpp \
     collectionbrowser.cpp \
     directorylist.cpp \
     directorylistbase.ui \
@@ -54,13 +54,13 @@ amarokapp_SOURCES = \
     kbookmarkhandler.cpp \
     metabundle.cpp \
     osd.cpp \
-    playerapp.cpp \
-    playerwidget.cpp \
+    app.cpp \
+    playerwindow.cpp \
     playlistbrowser.cpp \
     playlistitem.cpp \
     playlistloader.cpp \
-    playlisttooltip.cpp \
-    playlistwidget.cpp \
+    tracktooltip.cpp \
+    playlist.cpp \
     pluginmanager.cpp \
     searchbrowser.cpp \
     socketserver.cpp \
