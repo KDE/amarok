@@ -1338,7 +1338,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, BURN_DATACD, BURN_AUDIOCD, REMOVE };
+    enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE,
+                    BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
+                    BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
 
@@ -1376,8 +1378,16 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
     if( K3bExporter::isAvailable() ) {
-        popup.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
-        popup.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+        KPopupMenu *burnMenu = new KPopupMenu( this );
+        burnMenu->insertItem( i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
+        burnMenu->insertItem( i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
+        burnMenu->insertSeparator();
+        burnMenu->insertItem( i18n("This Album as Data CD"), BURN_ALBUM_DATA );
+        burnMenu->insertItem( i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
+        burnMenu->insertSeparator();
+        burnMenu->insertItem( i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
+        burnMenu->insertItem( i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
+        popup.insertItem( i18n("Burn"), burnMenu );
         popup.insertSeparator();
     }
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT(removeSelectedItems()), Key_Delete );
@@ -1457,12 +1467,28 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         copyToClipboard( item );
         break;
 
-    case BURN_DATACD:
+    case BURN_SELECTION_DATA:
         burnSelectedTracks( K3bExporter::DataCD );
         break;
 
-    case BURN_AUDIOCD:
+    case BURN_SELECTION_AUDIO:
         burnSelectedTracks( K3bExporter::AudioCD );
+        break;
+
+    case BURN_ALBUM_DATA:
+        K3bExporter::instance()->exportAlbum( item->metaBundle().album(), K3bExporter::DataCD );
+        break;
+
+    case BURN_ALBUM_AUDIO:
+        K3bExporter::instance()->exportAlbum( item->metaBundle().album(), K3bExporter::AudioCD );
+        break;
+
+    case BURN_ARTIST_DATA:
+        K3bExporter::instance()->exportArtist( item->metaBundle().artist(), K3bExporter::DataCD );
+        break;
+
+    case BURN_ARTIST_AUDIO:
+        K3bExporter::instance()->exportArtist( item->metaBundle().artist(), K3bExporter::AudioCD );
         break;
     }
 

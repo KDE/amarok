@@ -37,6 +37,8 @@ public:
 
     void exportCurrentPlaylist( int openmode=-1 );    //export current playlist to k3b
     void exportSelectedTracks( int openmode=-1 );    //export selected tracks in playlist to k3b
+    void exportAlbum( const QString &album, int openmode=-1 );    //export complete album to k3b
+    void exportArtist( const QString &artist, int openmode=-1 );    //export all tracks by artist to k3b
 
     static K3bExporter *instance() { return s_instance; }
 

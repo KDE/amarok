@@ -8,6 +8,7 @@
 #include "collectiondb.h"
 #include "covermanager.h"   //openCoverManager()
 #include "directorylist.h"
+#include "k3bexporter.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia()
 #include "statusbar.h"
@@ -530,22 +531,44 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
     if ( item ) {
         KPopupMenu menu( this );
 
+        QString category;
+        if( item->depth() == 0 )
+            category = m_category1;
+        else if( item->depth() == 1 )
+            category = m_category2;
+        else if( item->depth() == 2 )
+            category = m_category3;
+
         #ifdef AMAZON_SUPPORT
-        enum Actions { APPEND, MAKE, QUEUE, COVER, INFO };
+        enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
+                                  BURN_DATACD, BURN_AUDIOCD, COVER, INFO };
         #else
-        enum Actions { APPEND, MAKE, QUEUE, INFO };
+        enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
+                                  BURN_DATACD, BURN_AUDIOCD, INFO };
         #endif
+
 
         menu.insertItem( i18n( "&Append to the Playlist" ), APPEND );
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
 
+        if( K3bExporter::isAvailable() ) {
+            if( category == i18n("Artist") )
+                menu.insertItem( i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            else if( category == i18n("Album") )
+                menu.insertItem( i18n("Burn This Album"), BURN_ALBUM );
+            else if( !item->isExpandable() ) {
+                menu.insertSeparator();
+                menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+                menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+            }
+        }
+
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
         menu.insertItem( i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.setItemEnabled(COVER, ( item->depth() == 0 && m_category1 == i18n( "Album" )) ||
-                                   ( item->depth() == 1 && m_category2 == i18n( "Album" )));
+        menu.setItemEnabled(COVER, category == i18n("Album") );
         #endif
         menu.insertItem( i18n( "Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
 
@@ -560,6 +583,18 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 Playlist::instance()->clear(); //FALL THROUGH
             case QUEUE:
                 Playlist::instance()->queueMedia( listSelected() );
+                break;
+            case BURN_ARTIST:
+                K3bExporter::instance()->exportArtist( item->text(0) );
+                break;
+            case BURN_ALBUM:
+                K3bExporter::instance()->exportAlbum( item->text(0) );
+                break;
+            case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( listSelected(), K3bExporter::DataCD );
+                break;
+            case BURN_AUDIOCD:
+                K3bExporter::instance()->exportTracks( listSelected(), K3bExporter::AudioCD );
                 break;
         }
     }

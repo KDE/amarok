@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "collectiondb.h"
 #include "k3bexporter.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -24,6 +25,7 @@
 #include <kstandarddirs.h>
 
 #include <qcstring.h>
+#include <qstringlist.h>
 
 #include <dcopref.h>
 #include <dcopclient.h>
@@ -70,6 +72,44 @@ void K3bExporter::exportCurrentPlaylist( int openmode )
 void K3bExporter::exportSelectedTracks( int openmode )
 {
     Playlist::instance()->burnSelectedTracks( openmode );
+}
+
+void K3bExporter::exportAlbum( const QString &album, int openmode )
+{
+    CollectionDB db;
+    QStringList values;
+
+    QString albumId = QString::number( db.getValueID( "album", album, false ) );
+    db.execSql( "SELECT url FROM tags "
+                       "WHERE album = " + albumId, &values );
+
+    if( values.count() ) {
+        KURL::List urls;
+
+        for( uint i=0; i < values.count(); i++ )
+            urls << KURL( values[i] );
+
+        exportTracks( urls, openmode );
+    }
+}
+
+void K3bExporter::exportArtist( const QString &artist, int openmode )
+{
+    CollectionDB db;
+    QStringList values;
+
+    QString artistId = QString::number( db.getValueID( "artist", artist, false ) );
+    db.execSql( "SELECT url FROM tags "
+                       "WHERE artist = " + artistId, &values );
+
+    if( values.count() ) {
+        KURL::List urls;
+
+        for( uint i=0; i < values.count(); i++ )
+            urls << KURL( values[i] );
+
+        exportTracks( urls, openmode );
+    }
 }
 
 void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
@@ -179,5 +219,3 @@ K3bExporter::K3bOpenMode K3bExporter::openMode()
     return Abort;
 }
 
-
-//#include "k3bexporter.moc"
