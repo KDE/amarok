@@ -6,6 +6,8 @@ Name[es]=Motor aRts
 Name[et]=aRts mootor
 Name[fr]=Moteur aRts
 Name[pt]=Motor aRts
+Name[ru]=aRts
+Name[sl]=Pogon aRts
 Name[sv]=aRts-gränssnitt
 Name[ta]=aRts  பொறி
 Name[xx]=xxaRts Enginexx
@@ -19,6 +21,8 @@ Comment[fr]=Module pour AmaroK
 Comment[nl]=Plugin voor amaroK
 Comment[pt]='Plugin' para o amaroK
 Comment[pt_BR]=Plug-in para o amaroK
+Comment[ru]=Модуль amaroK
+Comment[sl]=Vstavek za amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[xx]=xxPlugin for amaroKxx
@@ -28,6 +32,6 @@ X-KDE-amaroK-plugintype=engine
 X-KDE-amaroK-authors=Mark Kretschmann
 X-KDE-amaroK-email=markey@web.de
 X-KDE-amaroK-version=1
-X-KDE-amaroK-framework-version=1
+X-KDE-amaroK-framework-version=2
 
 

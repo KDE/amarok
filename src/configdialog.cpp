@@ -29,7 +29,6 @@ email                : markey@web.de
 #include <qlabel.h>
 #include <qcheckbox.h>
 
-#include <kdebug.h>
 #include <klocale.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -94,8 +93,6 @@ void AmarokConfigDialog::triggerChanged()
  */
 void AmarokConfigDialog::updateSettings()
 {
-    kdDebug() << k_funcinfo << endl;
-
     AmarokConfig::setSoundSystem( m_pSoundSystem->currentText() );
     AmarokConfig::setSoundDevice( m_pSoundDevice->text() );
     if ( !m_pSoundOutput->currentText().isEmpty() )
@@ -119,8 +116,6 @@ void AmarokConfigDialog::updateSettings()
  */
 void AmarokConfigDialog::updateWidgets()
 {
-    kdDebug() << k_funcinfo << endl;
-
     m_pSoundSystem->setCurrentText( AmarokConfig::soundSystem() );
     m_pSoundDevice->setText( AmarokConfig::soundDevice() );
 
@@ -135,8 +130,6 @@ void AmarokConfigDialog::updateWidgets()
  */
 void AmarokConfigDialog::updateWidgetsDefault()
 {
-    kdDebug() << k_funcinfo << endl;
-
     m_pSoundSystem->setCurrentText( "aRts Engine" );
     soundSystemChanged();
 }
@@ -190,8 +183,6 @@ void AmarokConfigDialog::soundSystemChanged()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::hasChanged()
 {
-    kdDebug() << k_funcinfo << endl;
-
     bool changed =
         m_pSoundSystem->currentText()            != AmarokConfig::soundSystem();
 
@@ -208,8 +199,6 @@ bool AmarokConfigDialog::hasChanged()
 /** REIMPLEMENTED */
 bool AmarokConfigDialog::isDefault()
 {
-    kdDebug() << k_funcinfo << endl;
-
     return ( m_pSoundSystem->currentText() == "aRts Engine" );
 }
 

@@ -40,15 +40,21 @@ PluginManager::m_store;
 KTrader::OfferList     
 PluginManager::query( const QString& constraint )
 {    
-    return KTrader::self()->query( "amaroK/Plugin", constraint );
+    // Add versioning constraint
+    QString str = QString( "[X-KDE-amaroK-framework-version] >= %1 and " )
+                     .arg( FrameworkVersion );
+    
+    kdDebug() << k_funcinfo << endl
+              << "Plugin trader constraint: " << str + constraint << endl;
+    
+    return KTrader::self()->query( "amaroK/Plugin", str + constraint );
 }    
     
     
 Plugin*
 PluginManager::createFromQuery( const QString& constraint )
 {
-    kdDebug() << k_funcinfo << "constraint string: " << constraint << endl;
-    KTrader::OfferList offers = KTrader::self()->query( "amaroK/Plugin", constraint );
+    KTrader::OfferList offers = query( constraint );
 
     if ( offers.isEmpty() ) {
         kdWarning() << k_funcinfo << "No matching plugin found.\n";                                          

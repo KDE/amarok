@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.0:
+  FIX: Plugin versions are validated. Prevents crashes with ancient plugins.
   FIX: Configure now checks for gtk/gdk headers for the XMMSwrapper.
   REM: Removed cover download feature for this release.
   FIX: Do not crash if an unreadable dir is added to the collection.
