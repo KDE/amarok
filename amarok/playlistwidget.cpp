@@ -630,7 +630,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     if( !isCurrent && isPlaying )
     {
         //FIXME consider allowing people to play the current track next also
-        popup.insertItem( SmallIcon( "player_play" ), i18n( "&Play Next" ), PLAY_NEXT );
+        popup.insertItem( i18n( "&Play Next" ), PLAY_NEXT );
     }
     popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
@@ -954,7 +954,10 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
     case TagReader::SomeTags:
 
-        static_cast<TagReader::TagReaderEvent*>(e)->bindTags();
+        #define e static_cast<TagReader::TagReaderEvent*>(e)
+        e->bindTags();
+        e->addSearchTokens( searchTokens, searchPtrs );
+        #undef e
         break;
 
     case TagReader::Done:

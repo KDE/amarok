@@ -213,10 +213,6 @@ void PlayerApp::initPlayerWidget()
              this,                               SLOT  ( slotPlaylistToggle( bool ) ) );
     connect( m_pPlayerWidget->m_pButtonEq,       SIGNAL( clicked() ),
              this,                               SLOT  ( slotConfigEffects() ) );
-    connect( m_pPlayerWidget,                    SIGNAL( sigAboutToHide() ),
-             this,                               SLOT  ( slotHide() ) );
-    connect( m_pPlayerWidget,                    SIGNAL( sigAboutToShow() ),
-             this,                               SLOT  ( slotShow() ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }

@@ -135,10 +135,11 @@ public:
       ~TagReaderEvent();
 
       void bindTags();
+      void addSearchTokens( QStringList&, QPtrList<QListViewItem>& );
 
    private:
       PlaylistItem* const m_item;
-      MetaBundle* const m_tags;
+      MetaBundle*   const m_tags;
    };
 
 private:

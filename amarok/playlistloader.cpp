@@ -560,9 +560,13 @@ void TagReader::remove( PlaylistItem *pi )
 
 
 
-TagReader::TagReaderEvent::~TagReaderEvent() { delete m_tags; }
+TagReader::TagReaderEvent::~TagReaderEvent()
+{
+    delete m_tags;
+}
 
-void TagReader::TagReaderEvent::bindTags()
+void
+TagReader::TagReaderEvent::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
@@ -570,4 +574,20 @@ void TagReader::TagReaderEvent::bindTags()
    {
        m_item->setMeta( *m_tags );
    }
+}
+
+void
+TagReader::TagReaderEvent::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
+{
+    //for GUI access only
+    //we need to add this item to the search-index
+    QString
+    s  = m_tags->m_artist;
+    s += ' ';
+    s += m_tags->m_title;
+    s += ' ';
+    s += m_item->trackName();
+
+    tokens.append( s );
+    ptrs.append( m_item );
 }
