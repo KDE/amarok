@@ -67,10 +67,5 @@ void Sonogram::transform(Scope &scope)
 void Sonogram::demo()
 {
 	analyze(Scope(m_fht.size(), 0));
-//	Scope s(m_fht.size());
-//	m_fht.pattern((float *)&s[0], true);
-//	m_fht.power2((float *)&s[0]);
-//	m_fht.scale((float *)&s[0], 1.0 / 8192);
-//	analyze(s);
 }
 
