@@ -13,6 +13,9 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "PluginManager"
+
+#include "debug.h"
 #include "plugin.h"
 #include "pluginmanager.h"
 
@@ -21,20 +24,13 @@ email                : markey@web.de
 #include <qfile.h>
 #include <qstring.h>
 
-#include <kdebug.h>
 #include <klibloader.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 
-using namespace std;
+using std::vector;
 using amaroK::Plugin;
 
-
-static inline kdbgstream
-pluginmanager_debug()
-{
-    return kdbgstream( "[PluginManager] ", 0, 0 );
-}
 
 vector<PluginManager::StoreItem>
 PluginManager::m_store;
@@ -56,7 +52,7 @@ PluginManager::query( const QString& constraint )
     str += " and ";
     str += "[X-KDE-amaroK-rank] > 0";
 
-    pluginmanager_debug() << "Plugin trader constraint: " << str << endl;
+    debug() << "Plugin trader constraint: " << str << endl;
 
     return KTrader::self()->query( "amaroK/Plugin", str );
 }
@@ -65,10 +61,12 @@ PluginManager::query( const QString& constraint )
 Plugin*
 PluginManager::createFromQuery( const QString &constraint )
 {
+    DEBUG_BEGIN
+
     KTrader::OfferList offers = query( constraint );
 
     if ( offers.isEmpty() ) {
-        kdWarning() << k_funcinfo << "No matching plugin found.\n";
+        warning() << k_funcinfo << "No matching plugin found.\n";
         return 0;
     }
 
@@ -80,14 +78,18 @@ PluginManager::createFromQuery( const QString &constraint )
             current = i;
     }
 
-    return createFromService( offers[current] );
+    Plugin *plugin = createFromService( offers[current] );
+
+    DEBUG_END
+
+    return plugin;
 }
 
 
 Plugin*
 PluginManager::createFromService( const KService::Ptr service )
 {
-    pluginmanager_debug() << "Trying to load: " << service->library() << endl;
+    debug() << "Trying to load: " << service->library() << endl;
 
     //get the library loader instance
     KLibLoader *loader = KLibLoader::self();
@@ -105,7 +107,7 @@ PluginManager::createFromService( const KService::Ptr service )
     Plugin* (*create_plugin)() = ( Plugin* (*)() ) lib->symbol( "create_plugin" );
 
     if ( !create_plugin ) {
-        kdWarning() << k_funcinfo << "create_plugin == NULL\n";
+        warning() << k_funcinfo << "create_plugin == NULL\n";
         return 0;
     }
     //create plugin on the heap
@@ -126,19 +128,19 @@ PluginManager::createFromService( const KService::Ptr service )
 void
 PluginManager::unload( Plugin* plugin )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     vector<StoreItem>::iterator iter = lookupPlugin( plugin );
 
     if ( iter != m_store.end() ) {
         delete (*iter).plugin;
-        pluginmanager_debug() << "Unloading library: "<< (*iter).service->library() << endl;
+        debug() << "Unloading library: "<< (*iter).service->library() << endl;
         (*iter).library->unload();
 
         m_store.erase( iter );
     }
     else
-        kdWarning() << k_funcinfo << "Could not unload plugin (not found in store).\n";
+        warning() << k_funcinfo << "Could not unload plugin (not found in store).\n";
 }
 
 
@@ -146,7 +148,7 @@ KService::Ptr
 PluginManager::getService( const Plugin* plugin )
 {
     if ( !plugin ) {
-        kdWarning() << k_funcinfo << "pointer == NULL\n";
+        warning() << k_funcinfo << "pointer == NULL\n";
         return 0;
     }
 
@@ -154,7 +156,7 @@ PluginManager::getService( const Plugin* plugin )
     vector<StoreItem>::const_iterator iter = lookupPlugin( plugin );
 
     if ( iter == m_store.end() )
-        kdWarning() << k_funcinfo << "Plugin not found in store.\n";
+        warning() << k_funcinfo << "Plugin not found in store.\n";
 
     return (*iter).service;
 }
@@ -186,21 +188,24 @@ PluginManager::showAbout( const QString &constraint )
 void
 PluginManager::dump( const KService::Ptr service )
 {
-    kdbgstream d( 0, 0 );
+    #define ENDLI endl << Debug::__indent
 
-    d << endl
-      << "PluginManager Service Info:\n"
-      << "---------------------------\n"
-      << "name                          : " << service->name() << endl
-      << "library                       : " << service->library() << endl
-      << "desktopEntryPath              : " << service->desktopEntryPath() << endl
-      << "X-KDE-amaroK-plugintype       : " << service->property( "X-KDE-amaroK-plugintype" ).toString() << endl
-      << "X-KDE-amaroK-name             : " << service->property( "X-KDE-amaroK-name" ).toString() << endl
-      << "X-KDE-amaroK-authors          : " << service->property( "X-KDE-amaroK-authors" ).toStringList() << endl
-      << "X-KDE-amaroK-rank             : " << service->property( "X-KDE-amaroK-rank" ).toString() << endl
-      << "X-KDE-amaroK-version          : " << service->property( "X-KDE-amaroK-version" ).toString() << endl
-      << "X-KDE-amaroK-framework-version: " << service->property( "X-KDE-amaroK-framework-version" ).toString() << endl
+    kdDebug()
+      << ENDLI
+      << "PluginManager Service Info:" << ENDLI
+      << "---------------------------" << ENDLI
+      << "name                          : " << service->name() << ENDLI
+      << "library                       : " << service->library() << ENDLI
+      << "desktopEntryPath              : " << service->desktopEntryPath() << ENDLI
+      << "X-KDE-amaroK-plugintype       : " << service->property( "X-KDE-amaroK-plugintype" ).toString() << ENDLI
+      << "X-KDE-amaroK-name             : " << service->property( "X-KDE-amaroK-name" ).toString() << ENDLI
+      << "X-KDE-amaroK-authors          : " << service->property( "X-KDE-amaroK-authors" ).toStringList() << ENDLI
+      << "X-KDE-amaroK-rank             : " << service->property( "X-KDE-amaroK-rank" ).toString() << ENDLI
+      << "X-KDE-amaroK-version          : " << service->property( "X-KDE-amaroK-version" ).toString() << ENDLI
+      << "X-KDE-amaroK-framework-version: " << service->property( "X-KDE-amaroK-framework-version" ).toString()
       << endl;
+
+    #undef ENDLI
 }
 
 
