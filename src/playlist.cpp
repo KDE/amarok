@@ -1821,8 +1821,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             break;
         }
     }
-    uint nextIndex = m_nextTracks.count() + 1;
-
     if ( itemCount == 1 )
     {
         if ( !firstQueued )
