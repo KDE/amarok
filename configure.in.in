@@ -185,6 +185,8 @@ if test "$build_gstreamer" != "no"; then
     AC_MSG_WARN([No pkg-config found, required to build optional amaroK GStreamer engine])
     #  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
     fi
+
+    AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 fi
 
 ###############################################################################

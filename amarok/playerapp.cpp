@@ -26,6 +26,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
+#include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
 #include "playlisttooltip.h"
 #include "titleproxy.h"
@@ -48,13 +49,14 @@ email                : markey@web.de
 #include <kwin.h>                //eventFilter()
 
 #include <qcstring.h>            //initIpc()
+#include <qfile.h>               //initEngine()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
+#include <qregexp.h>
 #include <qsize.h>
 #include <qserversocket.h>       //initIpc()
 #include <qsocketnotifier.h>     //initIpc()
 #include <qstring.h>
 #include <qtimer.h>
-#include <qregexp.h>
 
 #include <unistd.h>              //initIpc()
 #include <sys/socket.h>          //initIpc()
@@ -155,7 +157,7 @@ PlayerApp::~PlayerApp()
 
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
     delete m_pOSD;
-    delete m_pEngine;
+    PluginManager::unload( m_pEngine );
 }
 
 
@@ -215,7 +217,8 @@ void PlayerApp::handleLoaderArgs( QCString args ) //SLOT
     int argc = strlist.count();
     char* argv[argc];
 
-    for ( int i = 0; i < argc; i++ ) {
+    for ( int i = 0; i < argc; i++ )
+    {
         argv[i] = const_cast<char*>( strlist[i].latin1() );
         kdDebug() << k_funcinfo << " extracted string: " << argv[i] << endl;
     }
@@ -253,11 +256,11 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
         };
 
     static KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
-                          APP_VERSION, description, KAboutData::License_GPL,
-                          I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ),
-                          I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\n"
-                                     "Feedback:\namarok-devel@lists.sourceforge.net" ),
-                          I18N_NOOP( "http://amarok.sourceforge.net" ) );
+                                 APP_VERSION, description, KAboutData::License_GPL,
+                                 I18N_NOOP( "(c) 2002-2003, Mark Kretschmann\n(c) 2003-2004, the amaroK developers" ),
+                                 I18N_NOOP( "IRC:\nserver: irc.freenode.net / channel: #amarok\n\n"
+                                            "Feedback:\namarok-devel@lists.sourceforge.net" ),
+                                 I18N_NOOP( "http://amarok.sourceforge.net" ) );
 
     aboutData.addAuthor( "Christian Muehlhaeuser", "developer", "chris@chris.de", "http://www.chris.de" );
     aboutData.addAuthor( "Mark Kretschmann", "project founder, developer, maintainer", "markey@web.de" );
@@ -286,10 +289,25 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 
 void PlayerApp::initEngine()
 {
-    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
-                                          m_artsNeedsRestart,
-                                          SCOPE_SIZE,
-                                          AmarokConfig::rememberEffects() );
+    m_pEngine = static_cast<EngineBase*>( PluginManager::load( AmarokConfig::soundSystem() ) );
+    
+    //when the engine that was specified in our config does not exist/work, try to invoke _any_ engine plugin
+    if ( !m_pEngine ) {
+        QStringList list = PluginManager::available( "engine" );
+        
+        if ( list.isEmpty() )
+            kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
+                   
+        AmarokConfig::setSoundSystem( list[0] );
+        
+        kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
+        m_pEngine = static_cast<EngineBase*>( PluginManager::load( AmarokConfig::soundSystem() ) );
+    
+        if ( !m_pEngine )
+            kdFatal() << k_funcinfo << "m_pEngine == NULL\n";
+    }
+    
+    m_pEngine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
 
     //called from PlayerWidget's popup-menu
     connect( m_pPlayerWidget, SIGNAL( configureDecoder() ), m_pEngine, SLOT( configureDecoder() ) );
@@ -299,7 +317,8 @@ void PlayerApp::initEngine()
 void PlayerApp::initIpc()
 {
     int m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
-    if ( m_sockfd == -1 ) {
+    if ( m_sockfd == -1 )
+    {
         kdWarning() << k_funcinfo << " socket() error\n";
         return;
     }
@@ -312,11 +331,13 @@ void PlayerApp::initIpc()
 
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
 
-    if ( ::bind( m_sockfd, (struct sockaddr*) &local, len ) == -1 ) {
+    if ( ::bind( m_sockfd, (struct sockaddr*) &local, len ) == -1 )
+    {
         kdWarning() << k_funcinfo << " bind() error\n";
         return;
     }
-    if ( ::listen( m_sockfd, 1 ) == -1 ) {
+    if ( ::listen( m_sockfd, 1 ) == -1 )
+    {
         kdWarning() << k_funcinfo << " listen() error\n";
         return;
     }
@@ -390,13 +411,14 @@ void PlayerApp::restoreSession()
 //SLOT
 void PlayerApp::applySettings()
 {
-    if ( AmarokConfig::soundSystem() != m_pEngine->name() )
+    if ( AmarokConfig::soundSystem() != PluginManager::getInfo( m_pEngine ).filename )
     {
-        if ( AmarokConfig::soundSystem() == "gstreamer" )
+        if ( AmarokConfig::soundSystem() == "gstengine" )
             KMessageBox::information( 0, i18n( "GStreamer support is still experimental. Some features "
                                                "(like effects and visualizations) might not work properly." ) );
 
-        delete m_pEngine;
+        PluginManager::unload( m_pEngine );
+        m_pEngine = NULL;
         initEngine();
 
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
@@ -435,8 +457,8 @@ void PlayerApp::applySettings()
 
 void PlayerApp::setOsdEnabled(bool enable)
 {
-   AmarokConfig::setOsdEnabled(enable);
-   m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
+    AmarokConfig::setOsdEnabled(enable);
+    m_pOSD->setEnabled ( AmarokConfig::osdEnabled() );
 }
 
 
@@ -532,7 +554,9 @@ void PlayerApp::setupColors()
         group.setColor( QColorGroup::BrightText, group.highlight() ); //GlowColor
         m_pBrowserWin->setColors( QPalette( group, group, group ), KGlobalSettings::alternateBackgroundColor() );
 
-    } else if( AmarokConfig::schemeAmarok() ) {
+    }
+    else if( AmarokConfig::schemeAmarok() )
+    {
 
         QColorGroup group = QApplication::palette().active();
         const QColor bg( 32, 32, 80 );
@@ -543,7 +567,7 @@ void PlayerApp::setupColors()
         //bgAlt.setRgb( 74, 81, 107 );
         //bgAlt.setRgb( 83, 86, 112 );
 
-//QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
+        //QColor highlight( (bg.red() + bgAlt.red())/2, (bg.green() + bgAlt.green())/2, (bg.blue() + bgAlt.blue())/2 );
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
@@ -562,7 +586,9 @@ void PlayerApp::setupColors()
         //FIXME QColorGroup member "disabled" looks very bad (eg for buttons)
         m_pBrowserWin->setColors( QPalette( group, group, group ), bgAlt );
 
-    } else {
+    }
+    else
+    {
         // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
         QColorGroup group = QApplication::palette().active();
         const QColor fg( AmarokConfig::browserFgColor() );
@@ -653,15 +679,15 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
         //when fixing you have to make sure that changing desktop doesn't un minimise the playlist
 
         if( AmarokConfig::hidePlaylistWindow() && m_pPlayerWidget->m_pButtonPl->isOn() && e->spontaneous()/*)
-        {
-            //this is to battle a kwin bug that affects xinerama users
-            //FIXME I commented this out for now because spontaneous show events are sent to widgets
-            //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
-            //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
-            m_pBrowserWin->show();
-            eatActivateEvent = true;
-        }
-        else if( */ || m_pPlayerWidget->m_pButtonPl->isOn() )
+                        {
+                            //this is to battle a kwin bug that affects xinerama users
+                            //FIXME I commented this out for now because spontaneous show events are sent to widgets
+                            //when you switch desktops, so this would cause the playlist to deiconify when switching desktop!
+                            //KWin::deIconifyWindow( m_pBrowserWin->winId(), false );
+                            m_pBrowserWin->show();
+                            eatActivateEvent = true;
+                        }
+                        else if( */ || m_pPlayerWidget->m_pButtonPl->isOn() )
         {
             //if minimized the taskbar entry for browserwin is shown
             m_pBrowserWin->show();
@@ -703,7 +729,8 @@ void PlayerApp::slotPlay()
         slotPause();
         m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
         m_pPlayerWidget->m_pButtonPlay->setOn( TRUE );
-    } else
+    }
+    else
         emit orderCurrentTrack();
 }
 
@@ -718,24 +745,26 @@ void PlayerApp::play( const MetaBundle &bundle )
     emit currentTrack( url );
 
     if ( AmarokConfig::titleStreaming() &&
-         !m_proxyError &&
-         !url.isLocalFile() &&
-         !url.path().endsWith( ".ogg" ) )
+            !m_proxyError &&
+            !url.isLocalFile() &&
+            !url.path().endsWith( ".ogg" ) )
     {
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
         const QObject* object = m_pEngine->play( pProxy->proxyUrl() );
 
-        if ( object ) {
+        if ( object )
+        {
             connect( object,    SIGNAL( destroyed   () ),
                      pProxy,      SLOT( deleteLater () ) );
             connect( this,      SIGNAL( deleteProxy () ),
                      pProxy,      SLOT( deleteLater () ) );
             connect( pProxy,    SIGNAL( error       () ),
-                    this,         SLOT( proxyError  () ) );
+                     this,         SLOT( proxyError  () ) );
             connect( pProxy,    SIGNAL( metaData    ( const MetaBundle& ) ),
-                    this,       SIGNAL( metaData    ( const MetaBundle& ) ) );
+                     this,       SIGNAL( metaData    ( const MetaBundle& ) ) );
         }
-        else {
+        else
+        {
             delete pProxy;
             proxyError();
             return;
@@ -882,8 +911,10 @@ void PlayerApp::slotMainTimer()
         return;
 
     //try to get track length from engine when TagLib fails
-    if ( m_determineLength ) {
-        if ( (m_length = m_pEngine->length()) ) {
+    if ( m_determineLength )
+    {
+        if ( (m_length = m_pEngine->length()) )
+        {
             m_pPlayerWidget->m_pSlider->setMaxValue ( m_length );
             m_determineLength = false;
         }
@@ -900,9 +931,9 @@ void PlayerApp::slotMainTimer()
 
     // <Crossfading>
     if ( ( AmarokConfig::crossfade() ) &&
-         ( !m_pEngine->isStream() ) &&
-         ( m_length ) &&
-         ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
+            ( !m_pEngine->isStream() ) &&
+            ( m_length ) &&
+            ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
     {
         slotNext();
         return;
@@ -910,7 +941,7 @@ void PlayerApp::slotMainTimer()
 
     // check if track has ended or is broken
     if ( m_pEngine->state() == EngineBase::Empty ||
-         m_pEngine->state() == EngineBase::Idle )
+            m_pEngine->state() == EngineBase::Idle )
     {
         kdDebug() << k_funcinfo " Idle detected. Skipping track.\n";
 
@@ -969,26 +1000,26 @@ void PlayerApp::slotShowOptions()
 // going to remove OSDWidget::showOSD(const MetaBundle&)
 void PlayerApp::slotShowOSD( const MetaBundle& bundle )
 {
-   // Strip HTML tags, expand basic HTML entities
-   QString text = QString( bundle.prettyTitle() );
+    // Strip HTML tags, expand basic HTML entities
+    QString text = QString( bundle.prettyTitle() );
 
-   if ( bundle.length() )
-       text += " - " + bundle.prettyLength();
+    if ( bundle.length() )
+        text += " - " + bundle.prettyLength();
 
-   QString plaintext = text.copy();
-   plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
-   plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
-   plaintext.replace( QRegExp( "&gt;" ), QString( ">" ) );
-   plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
+    QString plaintext = text.copy();
+    plaintext.replace( QRegExp( "</?(?:font|a|b|i)\\b[^>]*>" ), QString( "" ) );
+    plaintext.replace( QRegExp( "&lt;" ), QString( "<" ) );
+    plaintext.replace( QRegExp( "&gt;" ), QString( ">" ) );
+    plaintext.replace( QRegExp( "&amp;" ), QString( "&" ) );
 
-   m_textForOSD = plaintext;
-   slotShowOSD();
+    m_textForOSD = plaintext;
+    slotShowOSD();
 }
 
 void PlayerApp::slotShowOSD()
 {
-   if (!m_textForOSD.isEmpty())
-      m_pOSD->showOSD( m_textForOSD );
+    if (!m_textForOSD.isEmpty())
+        m_pOSD->showOSD( m_textForOSD );
 }
 
 void PlayerApp::slotShowVolumeOSD()
@@ -1029,7 +1060,7 @@ void PlayerApp::slotConfigGlobalShortcuts()
 ////////////////////////////////////////////////////////////////////////////////
 
 LoaderServer::LoaderServer( QObject* parent )
-    : QServerSocket( parent )
+        : QServerSocket( parent )
 {}
 
 

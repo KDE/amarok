@@ -40,32 +40,56 @@ class EngineBase : public QObject
         enum                         EngineState { Empty, Idle, Playing, Paused };
 
         virtual                      ~EngineBase();
-
-        //@param hardware true for soundcard hardware mixing
-        //@return true if using hardware mixing
-        virtual bool                 initMixer( bool hardware )                        = 0;
         
+        virtual void                 init( bool& restart,
+                                           int scopeSize,
+                                           bool restoreEffects )                       = 0; 
+        /**
+         * Initialize mixer
+         * @param hardware    true for soundcard hardware mixing
+         * @return            true if using hardware mixing
+         */
+        virtual bool                 initMixer( bool hardware )                        = 0;
+       
         virtual bool                 canDecode( const KURL &url,
                                                 mode_t mode, mode_t permissions )      = 0;
 
-        //@return time length in ms
+        /**
+         * Determines track length
+         * @return            time length in ms
+         */
         virtual long                 length() const                                    = 0;
-        //@return time position in ms
+        
+        /**
+         * @return            time position in ms
+         */
         virtual long                 position() const                                  = 0;
+        
         virtual EngineState          state() const                                     = 0;
 
-        //@return true if media is loaded, system is ready to play
+        /**
+         * @return            true if media is loaded, system is ready to play
+         */
                 bool                 loaded() { return state() != Empty; }
 
-        //@return volume in range 0 to 99
+        /**
+         * Sets the master volume
+         * @return            volume in range 0 to 100            
+         */
         inline  int                  volume() const { return m_volume; }
 
-        //@return true if using hardware mixer
+        /**
+         * Sets the master volume
+         * @return            true if using hardware mixer            
+         */
                 bool                 isMixerHardware() const { return m_mixerHW != -1; }
 
         virtual bool                 isStream() const                                  = 0;
 
-        //@return pointer to result of FFT calculation. must be deleted after use.
+        /**
+         * Fetches the current audio sample buffer
+         * @return            pointer to result of FFT calculation. must be deleted after use            
+         */
         virtual std::vector<float>*  scope()                                           = 0;
 
                 void                 setRestoreEffects( bool yes )
@@ -86,17 +110,12 @@ class EngineBase : public QObject
         virtual void                 pause()                                           = 0;
 
         virtual void                 seek( long ms )                                   = 0;
-        //@param percent set volume in range 0 to 99
+        
+        /**
+         * @param percent     set volume in range 0 to 100
+         */
         virtual void                 setVolume( int percent )                          = 0;
                 void                 setXfadeLength( int ms );
-
-        QStringList                  listEngines();
-
-        //@param system name of multimedia framework
-        //@param restart signals sound deamon must be restarted due to plugin installation. applies only to arts
-        //@param scopeSize size of vector the scope delivers, exponent to base 2
-        static EngineBase*           createEngine( QString system, bool& restart,
-                                                   int scopeSize, bool restoreEffects );
 
     public slots:
         virtual void                 configureDecoder()                                = 0;                                                   
@@ -111,7 +130,7 @@ class EngineBase : public QObject
         int                          m_mixerHW;
         int                          m_volume;
         int                          m_xfadeLength;
-        static bool                  m_restoreEffects;
+        bool                         m_restoreEffects;
 };
 
 #endif

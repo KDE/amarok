@@ -15,10 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "artsengine.h"
 #include "enginebase.h"
-#include "gstengine.h"
-#include "nmm_engine.h"
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -28,8 +25,6 @@ email                : markey@web.de
 
 #include "qstringlist.h"
 
-
-bool EngineBase::m_restoreEffects;
 
 
 EngineBase::~EngineBase()
@@ -80,55 +75,6 @@ void EngineBase::setVolumeHW( int percent )
 void EngineBase::setXfadeLength( int ms )
 {
     m_xfadeLength = ms;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// STATIC METHODS
-//////////////////////////////////////////////////////////////////////////////
-
-EngineBase* EngineBase::createEngine( QString system, bool& restart, int scopeSize, bool restoreEffects = true )
-{
-    m_restoreEffects = restoreEffects;
-
-    //TODO capitalise the engine names in the right places, this causes an issue with the configdialog engine
-    //selector however
-
-#ifdef HAVE_ARTS
-    if ( system == "arts" )
-        return new ArtsEngine( restart, scopeSize );
-#endif
-
-#ifdef HAVE_GSTREAMER
-    if ( system == "gstreamer" )
-        return new GstEngine( scopeSize );
-#endif
-
-#ifdef HAVE_NMM
-    if ( system == "NMM" )
-        return new NmmEngine();
-#endif
-
-    return 0;
-}
-
-
-QStringList EngineBase::listEngines()
-{
-    QStringList list;
-
-#ifdef HAVE_ARTS
-    list.append( "arts" );
-#endif
-
-#ifdef HAVE_GSTREAMER
-    list.append( "gstreamer" );
-#endif
-
-#ifdef HAVE_NMM
-    list.append( "NMM" );
-#endif
-
-    return list;
 }
 
 

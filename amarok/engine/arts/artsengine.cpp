@@ -15,11 +15,9 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
-#ifdef HAVE_ARTS
- 
 #include "amarokarts.h"
 #include "artsengine.h"
+#include "enginebase.h"
 
 #include <math.h>            //setVolume(), timerEvent()
 #include <string>
@@ -59,20 +57,48 @@ email                : markey@web.de
 #include <sys/wait.h>
 
 
-ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
+extern "C" void* create_plugin()
+{
+    bool restart = false;
+    return new ArtsEngine();
+}
+
+
+ArtsEngine::ArtsEngine()
         : EngineBase()
         , m_pPlayObject( 0 )
         , m_pPlayObjectXfade( 0 )
         , m_scopeId( 0 )
-        , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
         , m_xfadeFadeout( false )
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue2" )
         , m_pConnectTimer( new QTimer( this ) )
 {
-    setName( "arts" );  //name is used for RTTI
-    m_mixerHW = -1;     //initialize
+}
+
+
+ArtsEngine::~ ArtsEngine()
+{
+    m_pConnectTimer->stop();
+    delete m_pPlayObject;
+    delete m_pPlayObjectXfade;
+    saveEffects();
+
+    m_scope             = Amarok::RawScope::null();
+    m_xfade             = Amarok::Synth_STEREO_XFADE::null();
+    m_volumeControl     = Arts::StereoVolumeControl::null();
+    m_effectStack       = Arts::StereoEffectStack::null();
+    m_globalEffectStack = Arts::StereoEffectStack::null();
+    m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
+    m_server            = Arts::SoundServerV2::null();
+}
+
+
+void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
+{
+    m_mixerHW = -1;           //initialize
+    m_scopeSize = 1 << scopeSize;
 
     // We must restart artsd whenever we installed new mcopclasses
     if ( restart )
@@ -212,23 +238,6 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
     connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
-}
-
-
-ArtsEngine::~ ArtsEngine()
-{
-    m_pConnectTimer->stop();
-    delete m_pPlayObject;
-    delete m_pPlayObjectXfade;
-    saveEffects();
-
-    m_scope             = Amarok::RawScope::null();
-    m_xfade             = Amarok::Synth_STEREO_XFADE::null();
-    m_volumeControl     = Arts::StereoVolumeControl::null();
-    m_effectStack       = Arts::StereoEffectStack::null();
-    m_globalEffectStack = Arts::StereoEffectStack::null();
-    m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
-    m_server            = Arts::SoundServerV2::null();
 }
 
 
@@ -822,6 +831,4 @@ ArtsEngine::ArtsConfigWidget::~ArtsConfigWidget()
 
 
 #include "artsengine.moc"
-
-#endif /*HAVE_ARTS*/
 

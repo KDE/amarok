@@ -15,9 +15,6 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
-#ifdef HAVE_ARTS
-
 #ifndef AMAROK_ARTSENGINE_H
 #define AMAROK_ARTSENGINE_H
 
@@ -49,9 +46,11 @@ class ArtsEngine : public EngineBase
     Q_OBJECT
 
     public:
-                                                 ArtsEngine( bool& restart, int scopeSize );
+                                                 ArtsEngine();
                                                  ~ArtsEngine();
-
+                                        
+        void                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
+                                                                                                  
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
         long                                     length() const;
@@ -139,4 +138,3 @@ class ArtsEngine : public EngineBase
 
 #endif
 
-#endif /*HAVE_ARTS*/

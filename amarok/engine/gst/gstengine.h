@@ -15,9 +15,6 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include <config.h>
-#ifdef HAVE_GSTREAMER
-
 #ifndef AMAROK_GSTENGINE_H
 #define AMAROK_GSTENGINE_H
 
@@ -37,9 +34,11 @@ class GstEngine : public EngineBase
         Q_OBJECT
 
     public:
-                                                 GstEngine( int scopeSize );
+                                                 GstEngine();
                                                  ~GstEngine();
 
+        void                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
+                                                                                                  
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
 
@@ -93,6 +92,4 @@ class GstEngine : public EngineBase
 static GstEngine* pGstEngine;
 
 #endif /*AMAROK_GSTENGINE_H*/
-
-#endif /*HAVE_GSTREAMER*/
 

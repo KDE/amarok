@@ -22,6 +22,7 @@ email                : markey@web.de
 #include "Options4.h"
 #include "Options5.h"
 #include "playerapp.h"
+#include "pluginmanager.h"
 
 #include <qcombobox.h>
 
@@ -35,7 +36,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     //manage dynamic itemLists (at least I don't know how to do it)
     Options4* pOpt4 = new Options4( 0,"Playback" );
     m_pSoundSystem = pOpt4->sound_system;
-    m_pSoundSystem->insertStringList( PlayerApp::m_pEngine->listEngines() );
+    m_pSoundSystem->insertStringList( PluginManager::available( "engine" ) );
+//     m_pSoundSystem->insertStringList( PlayerApp::m_pEngine->listEngines() );
     m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
 
     // add screens

@@ -1,36 +1,27 @@
 INCLUDES = \
-    -I$(top_builddir)/amarok/amarok/amarokarts \
-    -I$(kde_includes)/arts \
-    $(CFLAGS_GST) \
-    $(CFLAGS_NMM) \
     $(all_includes)
 
+if with_arts
+    ARTSENGINE_BUILD = arts
+endif
 
-#####################
-# NMM_engine stuff
-#####################
-#if link_lib_NMM
+if with_gst
+    GSTENGINE_BUILD = gst
+endif
 
-#PLEASE FIXME!!
-#this if construct doesn't work, I don't understand why! :-(
-#NMM requries exceptions to compile..
-
-KDE_CXXFLAGS = $(USE_EXCEPTIONS)
+#if with_nmm
+#    NMMENGINE_BUILD = nmm
 #endif
-#####################
 
 libengine_a_SOURCES = \
-    enginebase.cpp \
-    artsengine.cpp \
-    gstengine.cpp \
-    nmm_engine.cpp
+    enginebase.cpp
 
 noinst_HEADERS = \
-    enginebase.h \
-    artsengine.h \
-    gstengine.h \
-    nmm_engine.h
+    enginebase.h
 
 METASOURCES = AUTO
 
-noinst_LIBRARIES =  libengine.a
+noinst_LIBRARIES = libengine.a
+
+SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) # $(NMMENGINE_BUILD)
+
