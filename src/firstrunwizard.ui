@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>509</width>
+            <width>469</width>
             <height>414</height>
         </rect>
     </property>
@@ -122,7 +122,7 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>Separate player and playlist-window
+                            <string>Separate player and playlist-windows
 (like XMMS)</string>
                         </property>
                         <property name="checked">
@@ -142,8 +142,8 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>Playlist-window with toolbar at bottom
-(like JuK)</string>
+                            <string>Single window with player and playlist 
+functionality combined (like JuK)</string>
                         </property>
                     </widget>
                 </vbox>
@@ -172,7 +172,7 @@
                             <enum>Manual</enum>
                         </property>
                         <property name="text">
-                            <string>&lt;p&gt;With amaroK you can use the interface that you find most comfortable. The choices are listed below. You can change these settings at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
+                            <string>&lt;p&gt;With amaroK you can use the interface that you find most comfortable. The choices are listed below and an example screenshot is shown on their right. You can change these settings at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
                         </property>
                         <property name="wrapPolicy">
                             <enum>AtWordBoundary</enum>
@@ -203,8 +203,8 @@
                 </property>
                 <property name="sizePolicy">
                     <sizepolicy>
-                        <hsizetype>1</hsizetype>
-                        <vsizetype>1</vsizetype>
+                        <hsizetype>4</hsizetype>
+                        <vsizetype>4</vsizetype>
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                     </sizepolicy>

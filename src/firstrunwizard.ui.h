@@ -30,6 +30,7 @@ FirstRunWizard::init()
 {
     //aesthetics
     cancelButton()->setFixedWidth( cancelButton()->width() );
+    helpButton()->hide();
 
     //would be better as a KConfigXT key now
     if ( amaroK::config()->readEntry( "XMLFile", QString::null ) != "amarokui.rc" ) {
@@ -54,21 +55,21 @@ FirstRunWizard::init()
 }
 
 void
-FirstRunWizard::showPage( QWidget *w )
+FirstRunWizard::showPage( QWidget *w ) //virtual
 {
     QWizard::showPage( w );
 
     cancelButton()->setText( w == WizardPage ? i18n("&Skip") : i18n("&Cancel") );
 }
 
-void
+inline void
 FirstRunWizard::invokeHandbook() //SLOT
 {
     // Show handbook
     kapp->invokeHelp( QString::null, QString::null, 0 );
 }
 
-void
+inline void
 FirstRunWizard::xmmsModeToggled( bool on ) //SLOT
 {
     if ( on )
