@@ -40,7 +40,7 @@ CoverFetcher::getCover( const QString& keyword )
                            .arg( m_license )
                            .arg( keyword );
     
-    KIO::TransferJob* job = KIO::get( url );
+    KIO::TransferJob* job = KIO::get( url, false, false );
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( xmlResult( KIO::Job* ) ) ); 
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -77,7 +77,7 @@ CoverFetcher::xmlResult( KIO::Job* job ) //SLOT
     QString imageUrl = m_xmlDocument.mid( index1, index2 - index1 );
     kdDebug() << "imageUrl: " << imageUrl << endl;
 
-    KIO::TransferJob* imageJob = KIO::get( imageUrl );
+    KIO::TransferJob* imageJob = KIO::get( imageUrl, false, false );
     connect( imageJob, SIGNAL( result( KIO::Job* ) ),
              this,       SLOT( imageResult( KIO::Job* ) ) ); 
     connect( imageJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
