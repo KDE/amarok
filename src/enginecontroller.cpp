@@ -271,9 +271,9 @@ void EngineController::previous() //SLOT
 }
 
 
-void EngineController::next() //SLOT
+void EngineController::next( bool forceNext ) //SLOT
 {
-    emit orderNext();
+    emit orderNext(forceNext);
 }
 
 
@@ -545,7 +545,7 @@ void EngineController::slotMainTimer() //SLOT
          ( m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() ) )
     {
         debug() << "Crossfading to next track...\n";
-        next();
+        next(false);
     }
 }
 
@@ -556,7 +556,7 @@ void EngineController::slotTrackEnded() //SLOT
         //FIXME not perfect
         QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(next()) );
     }
-    else next();
+    else next(false);
 }
 
 void EngineController::slotStateChanged( Engine::State newState ) //SLOT

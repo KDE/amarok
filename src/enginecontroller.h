@@ -64,7 +64,9 @@ public:
 
 public slots:
     void previous();
-    void next();
+    // forceNext make we go to next track even if Repeat Track is on
+    //NOTE If the track ended normally, call next(false) !
+    void next( const bool forceNext = true );
     void play();
     void play( const MetaBundle& );
     void pause();
@@ -85,7 +87,7 @@ public slots:
 signals:
     void orderPrevious();
     void orderCurrent();
-    void orderNext();
+    void orderNext( const bool );
     void statusText( const QString& );
 
 private slots:

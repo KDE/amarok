@@ -183,7 +183,7 @@ Playlist::Playlist( QWidget *parent )
 
     EngineController* const ec = EngineController::instance();
     connect( ec, SIGNAL(orderPrevious()), SLOT(playPrevTrack()) );
-    connect( ec, SIGNAL(orderNext()),     SLOT(playNextTrack()) );
+    connect( ec, SIGNAL(orderNext( const bool )),     SLOT(playNextTrack( const bool )) );
     connect( ec, SIGNAL(orderCurrent()),  SLOT(playCurrentTrack()) );
 
 
@@ -428,7 +428,7 @@ Playlist::restoreSession()
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-Playlist::playNextTrack()
+Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
@@ -464,7 +464,7 @@ Playlist::playNextTrack()
         return;
     }
 
-    if( !AmarokConfig::repeatTrack() )
+    if( !AmarokConfig::repeatTrack() || forceNext )
     {
         if( !m_nextTracks.isEmpty() )
         {
@@ -569,7 +569,7 @@ void
 Playlist::playCurrentTrack()
 {
     if ( !currentTrack() )
-        playNextTrack();
+        playNextTrack(false);
 
     //we must do this even if the above is correct
     //since the engine is not loaded the first time the user presses play
