@@ -737,6 +737,9 @@ void App::slotConfigEffects( bool show ) //SLOT
 void App::slotConfigEqualizer() //SLOT
 {
     EqualizerSetup::instance()->show();
+    EqualizerSetup::instance()->raise();
+    // Get focus
+    EqualizerSetup::instance()->setActiveWindow();
 }
 
 
