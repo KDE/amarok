@@ -51,7 +51,11 @@ Proxy::Proxy( KURL url, int streamingMode )
     // Don't try to get metdata for ogg streams (different protocol)
     m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
     // If no port is specified, use default shoutcast port
-    if ( !m_url.port() ) m_url.setPort( 8000 );
+    if ( !m_url.port() ) m_url.setPort( 80 );
+    
+    connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
+    connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
+    connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     
     if ( streamingMode == EngineBase::Socket ) {
         uint i;
@@ -123,15 +127,11 @@ void Proxy::connectToHost() //SLOT
     { //initialisations
         m_connectSuccess = false;
         m_headerFinished = false;
-        m_headerStr = QString();
+        m_headerStr = "";
     }
 
     { //connect to server
-        connect( &m_sockRemote, SIGNAL( connected() ), this, SLOT( sendRequest() ) );
-        connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
-        connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
         QTimer::singleShot( KProtocolManager::connectTimeout() * 1000, this, SLOT( connectError() ) );
-
         m_sockRemote.connectToHost( m_url.host(), m_url.port() );
     }
 
@@ -142,28 +142,25 @@ void Proxy::connectToHost() //SLOT
 void Proxy::sendRequest() //SLOT
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
+                
+    QCString username = m_url.user().utf8();
+    QCString password = m_url.pass().utf8();
+    QString authString = KCodecs::base64Encode( username + ":" + password );
+    bool auth = !( username.isEmpty() && password.isEmpty() );
+                                
+    QString request = QString( "GET %1 HTTP/1.0\r\n"
+                                "Host: %2\r\n"
+                                "User-Agent: amaroK/1.1\r\n"
+                                "%3"
+                                "%4"
+                                "\r\n" )
+                                .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) )
+                                .arg( m_url.host() )
+                                .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
+                                .arg( auth ? "Authorization: Basic " + authString : "" ); 
 
-    { //send request
-        QString request = QString( "GET %1 HTTP/1.1\r\n" )
-                                .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) );
-      QCString username = m_url.user().utf8();
-      QCString password = m_url.pass().utf8();
-        //request metadata
-        if ( m_icyMode ) request += "Icy-MetaData:1\r\n";
-
-        request += "Connection: Keep-Alive\r\n"
-                "User-Agent: aRts/1.2.2\r\n"
-                "Accept: audio/x-mp3, video/mpeg, application/ogg\r\n"
-                "Accept-Encoding: x-gzip, x-deflate, gzip, deflate\r\n"
-                "Accept-Charset: iso-8859-15, utf-8;q=0.5, *;q=0.5\r\n"
-                "Accept-Language: de, en\r\n"
-                "Authorization: Basic " +
-                KCodecs::base64Encode(username + ":" + password) +
-                "\r\n\r\n";
-
-        connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
-        m_sockRemote.writeBlock( request.latin1(), request.length() );
-    }
+//     kdDebug() << "TitleProxy sending request:\n" << request << endl; 
+    m_sockRemote.writeBlock( request.latin1(), request.length() );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -240,15 +237,14 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
         if ( m_headerStr.endsWith( "\r\n\r\n" ) ) {
             kdDebug() << k_funcinfo << "Got shoutcast header: '" << m_headerStr << "'" << endl;
             // Handle redirection
-            int index = m_headerStr.find( "Location" );
+            QString loc( "Location: " );
+            int index = m_headerStr.find( loc );
             if ( index >= 0 ) {
-                int start = m_headerStr.find( "h", index );
+                int start = index + loc.length();
                 int end = m_headerStr.find( "\n", index );
-                m_url = m_headerStr.mid( start, end - start );
+                m_url = m_headerStr.mid( start, end - start - 1 );
                 kdDebug() << "Stream redirected to: " << m_url << endl;
-                
                 m_sockRemote.close();
-                m_sockRemote.disconnect( SIGNAL( readyRead() ) );
                 connectToHost();
                 return false;
             }        
@@ -269,6 +265,7 @@ bool Proxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
                 error();
                 return false;
             }
+            connect( &m_sockRemote, SIGNAL( connectionClosed() ), this, SLOT( connectError() ) );
             return true;
         }
     }
@@ -302,7 +299,6 @@ void Proxy::error()
                   "Restarting in non-metadata mode.\n";
 
     m_sockRemote.close();
-    m_sockRemote.disconnect( SIGNAL( readyRead() ) );
     m_icyMode = false;
 
     //open stream again,  but this time without metadata, please
