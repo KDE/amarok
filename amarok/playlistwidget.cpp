@@ -583,6 +583,8 @@ void PlaylistWidget::activate( QListViewItem *item ) //SLOT
         m_cachedTrack = playItem;
         EngineController::instance()->play( playItem->metaBundle() );
     }
+    else // NULL, stop the player
+        EngineController::instance()->stop();
 }
 
 

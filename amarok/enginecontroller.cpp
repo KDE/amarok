@@ -212,10 +212,8 @@ void EngineController::slotMainTimer()
                 next();
             }
         }
-        else/* if( m_pBrowserWin->isAnotherTrack() ) */
+        else
             next();
-// TODO:        else  Should be done by  signal receiver.
-//            EngineController::instance()->stop();
     }
 }
 
