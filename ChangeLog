@@ -4,9 +4,10 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
-  FIX: The first track to play is now random for random-mode
-  FIX: Show systray on startup
-  FIX: Let xine recognise tracks that have non lower-case extensions
+  ADD: Popup-menu for cover images in Context-Browser.
+  FIX: The first track to play is now random for random-mode.
+  FIX: Show systray on startup.
+  FIX: Let xine recognise tracks that have non lower-case extensions.
 
 VERSION 1.1-beta2:
   ADD: K3B integration for burning CDs. (BR 88052)
