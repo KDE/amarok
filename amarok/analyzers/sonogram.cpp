@@ -1,6 +1,6 @@
 //
 //
-// C++ Implementation: Sonograph
+// C++ Implementation: Sonogram
 //
 // Description: 
 //
@@ -14,22 +14,22 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <vector>
-#include "sonograph.h"
+#include "sonogram.h"
 
-Sonograph::Sonograph(QWidget *parent, const char *name) :
+Sonogram::Sonogram(QWidget *parent, const char *name) :
 	AnalyzerBase(16, parent, name),
 	m_pPixmap(0)
 {
 }
 
 
-Sonograph::~Sonograph()
+Sonogram::~Sonogram()
 {
 	delete m_pPixmap;
 }
 
 
-void Sonograph::init()
+void Sonogram::init()
 {
 	m_pPixmap = new QPixmap(width(), height());
 	QPainter p(m_pPixmap);
@@ -38,7 +38,7 @@ void Sonograph::init()
 }
 
 
-void Sonograph::drawAnalyzer(std::vector<float> *s)
+void Sonogram::drawAnalyzer(std::vector<float> *s)
 {
 	int x = width() - 1;
 	QColor c;
@@ -63,4 +63,4 @@ void Sonograph::drawAnalyzer(std::vector<float> *s)
 	bitBlt(this, 0, 0, m_pPixmap);
 }
 
-#include "sonograph.moc"
+#include "sonogram.moc"

@@ -1,6 +1,6 @@
 //
 //
-// C++ Interface: Sonograph
+// C++ Interface: Sonogram
 //
 // Description: 
 //
@@ -11,8 +11,8 @@
 //
 //
 
-#ifndef SONOGRAPH_H
-#define SONOGRAPH_H
+#ifndef SONOGRAM_H
+#define SONOGRAM_H
 
 #include "analyzerbase.h"
 
@@ -21,13 +21,13 @@
 @author Melchior FRANZ
 */
 
-class Sonograph : public AnalyzerBase
+class Sonogram : public AnalyzerBase
 {
     Q_OBJECT
 
     public:
-	Sonograph( QWidget *parent=0, const char *name=0 );
-	virtual ~Sonograph();
+	Sonogram( QWidget *parent=0, const char *name=0 );
+	virtual ~Sonogram();
 
 	virtual void init();
 	virtual void drawAnalyzer( std::vector<float> * );
