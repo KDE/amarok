@@ -26,6 +26,7 @@ class FHT {
 	int		m_num;
 	float		*m_buf;
 	float		*m_tab;
+	int		*m_log;
 
 	void		makeCasTable();
 	void 		_transform(float *, int, int);

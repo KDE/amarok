@@ -30,7 +30,8 @@
   */
 FHT::FHT(int n) :
 	m_buf(0),
-	m_tab(0)
+	m_tab(0),
+	m_log(0)
 {
 	if (n < 3) {
 		m_num = 0;
@@ -51,6 +52,7 @@ FHT::~FHT()
 {
 	delete[] m_buf;
 	delete[] m_tab;
+	delete[] m_log;
 }
 
 
@@ -131,34 +133,40 @@ void FHT::pattern(float *p, bool rect = false)
 
 
 /**
-  * Logarithmic Audio spectrum. @d is the input array, @a is the spcectrum.
+  * Logarithmic audio spectrum. Maps semi-logarithmic spectrum
+  * to logarithmic frequency scale, interpolates missing values.
+  * @d is the input array, @out is the spcectrum.
   * @d: raw input, @a: spectrum output
   */
-void FHT::logSpectrum(float *a, float *d)
+void FHT::logSpectrum(float *out, float *p)
 {
-	int n = m_num / 2, i, j, k, l;
-	float f = n / log10(n), *p, e;
-	power2(d);
-	for (i = 0, p = d; i < n; i++, p++) {
-		e = 10.0 * log10(sqrt(*p * .5));
-		*p = e < 0.0 ? 0 : e;
+	int n = m_num / 2, i, j, k, l, *r;
+	if (!m_log) {
+		m_log = new int[n];
+		float f = n / log10(n);
+		r = m_log;
+		*r++ = 0;
+		for (i = 1; i < n; i++)
+			*r++ = int(log10(i) * f);
 	}
-	for (i = k = l = 0; i < n; i++) {
-		j = i ? int(log10(i) * f) : 0;
-		for (l = k; k < j; k++)
-			*a++ = d[l] + (d[j] - d[l]) * (k - l) / (j - l);
-	}
+	semiLogSpectrum(p);
+	for (i = k = l = 0, r = m_log; i < n; i++, r++)
+		for (l = k, j = *r; k < j; k++)
+			*out++ = p[l] + (p[j] - p[l]) * (k - l) / (j - l);
 }
 
 
 /**
-  * Semi-logarithmic Audio spectrum.
+  * Semi-logarithmic audio spectrum.
   */
 void FHT::semiLogSpectrum(float *p)
 {
+	float e;
 	power2(p);
-	for (int i = 0; i < (m_num / 2); i++, p++)
-		*p = 10.0 * log10(sqrt(*p * .5));
+	for (int i = 0; i < (m_num / 2); i++, p++) {
+		e = 10.0 * log10(sqrt(*p * .5));
+		*p = e < 0 ? 0 : e;
+	}
 }
 
 
