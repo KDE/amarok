@@ -513,6 +513,8 @@ GstEngine::play( uint offset )  //SLOT
     m_eosReached = false;
     if ( !m_currentInput ) return false;
 
+    // We must pause the queue before changing the state of the input thread, else the scheduler
+    // freaks out
     gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
 
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED ) )
@@ -760,12 +762,12 @@ GstEngine::handleOutputError()  //SLOT
     }
 
     m_gst_error = QString();
+    emit statusText( text );
+    error() << text << endl;
 
     // Destroy all pipelines
     destroyPipeline();
 
-    error() << text << endl;
-    emit statusText( text );
     emit trackEnded();
 }
 
