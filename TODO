@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX #103 <markey> Using the CollectionBrowser while scanning leads to nasty crashes and other oddities!
-
   CHG #102 <muesli> make sure collectionbrowser gets updated after scanning. keep secondary
            database connection open while scanning, only.
 
@@ -24,7 +22,8 @@ SHORT-TERM (URGENT):
                  at bottom of pl, but has no icon on drag cursor.
 
   CHG #90 <markey> We need some fresh artwork, at least some new player buttons before 1.0.
-
+                   Update: Roman will probably contribute some new player icons for 1.0.
+  
   CHG #91 <markey> I'd like to get a new website up before 1.0 release.
 
   FIX <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
