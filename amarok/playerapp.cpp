@@ -30,6 +30,7 @@ email                : markey@web.de
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "playlistloader.h" //restoreSession()
+#include "playlisttooltip.h"
 #include "titleproxy/titleproxy.h"
 
 #include <vector>
@@ -58,11 +59,6 @@ email                : markey@web.de
 #include <qtimer.h>
 #include <qvaluelist.h>
 #include <qpushbutton.h> //initPlayerWidget()
-#include <qtooltip.h>
-
-//file stat
-#include <dirent.h>        //play()
-#include <sys/stat.h>      //play()
 
 //statics
 EngineBase* PlayerApp::m_pEngine = 0;
@@ -572,34 +568,8 @@ void PlayerApp::play( const KURL &url, const MetaBundle &tags )
     }
 
     // update image tooltip
-    QString tipBuf =  "<table><tr><td>Title: " + tags.m_title + "</td></tr>" +
-                      "<tr><td>Artist: " + tags.m_artist + "</td></tr>" +
-                      "<tr><td>Length: " + QString::number( m_length ) + "</td></tr>" +
-                      "<tr><td>Bitrate: " + QString::number( tags.m_bitrate ) + "</td></tr>" +
-                      "<tr><td>Samplerate: " + QString::number( tags.m_sampleRate ) + "</td></tr><tr>";
-
-
-    DIR *d = opendir( url.directory( FALSE, FALSE ).local8Bit() );
-    if ( d )
-    {
-        dirent *ent;
-        while ( ( ent = readdir( d ) ) )
-        {
-            QString file( ent->d_name );
-
-            if ( file == "." || file == ".." ) continue;
-            if ( file.contains( ".jpg", FALSE ) || file.contains( ".png", FALSE ) ||
-                 file.contains( ".gif", FALSE ) )
-            {
-                tipBuf += "<td><img width='80' src='" + url.directory( FALSE, FALSE ) + "/" + file + "'></td>";
-            }
-
-        }
-    }
-
-    tipBuf += "</tr></table>";
-    QToolTip::add( m_pPlayerWidget->m_pFrame, tipBuf );
-
+    PlaylistToolTip::add( m_pPlayerWidget->m_pFrame, url, tags );
+    
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
 

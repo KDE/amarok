@@ -9,7 +9,7 @@ INCLUDES = \
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = playlistwidget.cpp playlistloader.cpp playlistitem.cpp playlistbrowser.cpp \
+amarok_SOURCES = playlistwidget.cpp playlisttooltip.cpp playlistloader.cpp playlistitem.cpp playlistbrowser.cpp \
                  browserwin.cpp streambrowser.cpp expandbutton.cpp \
                  filebrowser.cpp kactionselector.cpp kbookmarkhandler.cpp amarokfilelist.cpp \
                  playerwidget.cpp osd.cpp effectwidget.cpp amarokbutton.cpp amarokslider.cpp amaroksystray.cpp \

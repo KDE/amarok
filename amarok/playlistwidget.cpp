@@ -240,7 +240,7 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
       //first before going to the previous one (most players do this), so let's not do it!
 
       // choose right order in random-mode
-      if( AmarokConfig::randomMode() && recentPtrs.count() > 1 )
+      if( recentPtrs.count() > 1 )
       {
           item = (PlaylistItem*)recentPtrs.at( recentPtrs.count() - 2 );
           recentPtrs.remove( recentPtrs.at( recentPtrs.count() - 1 ) );
@@ -273,7 +273,7 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
               //FIXME: max. size of recent-buffer is set "manually" to 50 in the next lines.
               //       should be configurable or at least #define'd...
               recentPtrs.append( item );
-              while ( ( recentPtrs.count() > ( childCount() / 2 ) ) || ( recentPtrs.count() > 50 ) )
+              while ( ( recentPtrs.count() > (uint)( childCount() / 2 ) ) || ( recentPtrs.count() > 50 ) )
                   recentPtrs.remove( recentPtrs.at( 0 ) );
           }
           else

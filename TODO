@@ -116,6 +116,7 @@ MID-TERM:
            files in it.. currently you'd have to select all files manually
 
     * add: seeking with mousewheel
+           <muesli> what's seeking with mousewheel?
 
     * add: make blinking currentTrack optional
 
