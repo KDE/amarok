@@ -312,6 +312,7 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
             m_pTimeSign->hide();
             m_rateString = QString::null;
             setScroll( i18n( "Welcome to amaroK" ) );
+            update();
             break;
 
         case EngineBase::Playing:
