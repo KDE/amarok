@@ -142,6 +142,16 @@
         <whatsthis>Automatically switches to ContextBrowser when playback is started.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="ContextBrowser StyleSheet" type="Enum">
+        <label>Set CSS stylesheet used to customize ContextBrowser's rendering</label>
+        <whatsthis>Choose between one of those rendering styles.</whatsthis>
+        <choices>
+            <choice name="Flat"/>
+            <choice name="Gradient1"/>
+            <choice name="OtherStyle"/>
+        </choices>
+        <default>Gradient1</default>
+    </entry>
     <entry key="Show Menu Bar" type="Bool">
         <label>Whether Menubar is shown</label>
         <whatsthis>If set, amaroK displays a menubar on top of the application.</whatsthis>

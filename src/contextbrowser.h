@@ -53,6 +53,8 @@ class ContextBrowser : public QVBox, public EngineObserver
 
     private:
         void setStyleSheet();
+        void setStyleSheet_Flat( QString& styleSheet );
+        void setStyleSheet_Gradient1( QString& styleSheet );
         void showIntroduction();
         void showScanning();
 
@@ -73,7 +75,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;
         KTempFile    *m_shadowGradientImage;
-        KTempFile    *m_albumGradientImage;
         QStringList   m_metadataHistory;
 };
 

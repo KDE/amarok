@@ -52,7 +52,6 @@ ContextBrowser::ContextBrowser( const char *name )
    , m_bgGradientImage( 0 )
    , m_headerGradientImage( 0 )
    , m_shadowGradientImage( 0 )
-   , m_albumGradientImage( 0 )
 {
     EngineController::instance()->attach( this );
 
@@ -93,8 +92,6 @@ ContextBrowser::~ContextBrowser()
       m_headerGradientImage->unlink();
     if( m_shadowGradientImage )
       m_shadowGradientImage->unlink();
-    if( m_albumGradientImage )
-      m_albumGradientImage->unlink();
 
     EngineController::instance()->detach( this );
 }
@@ -810,7 +807,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr>"
                      "<td width='1'><a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
-                     "<td valign='middle' align='left'><div style='float:right;'>%6</div>"
+                     "<td valign='middle' align='left'><div style='float:right; padding-right:4px;'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
                      "<br><i>%10</i></td>"
                     "</tr>"
@@ -861,83 +858,119 @@ void ContextBrowser::setStyleSheet()
 {
     kdDebug() << k_funcinfo << endl;
 
+    //colorscheme/font dependant parameters
     int pxSize = fontMetrics().height() - 4;
-
     const QString text = colorGroup().text().name();
     const QString fg   = colorGroup().highlightedText().name();
     const QString bg   = colorGroup().highlight().name();
-
     amaroK::Color gradient = colorGroup().highlight();
 
     //writing temp gradient image
+    if ( m_bgGradientImage )
+        delete m_bgGradientImage;
     m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
     QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient );
     image.save( m_bgGradientImage->file(), "PNG" );
     m_bgGradientImage->close();
-    //writing temp top shining gradient
-    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
-    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), colorGroup().highlight(), gradient.light(), KImageEffect::VerticalGradient, 100, -100 );
-    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
-    m_headerGradientImage->close();
-    //writing temp gradient image (only an 'upper linear shadow')
-    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
-    QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), colorGroup().base(), Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
-    imageS.save( m_shadowGradientImage->file(), "PNG" );
-    m_shadowGradientImage->close();
-    //writing temp album gradient image (album-header height is less than 60 px)
-    m_albumGradientImage = new KTempFile( locateLocal( "tmp", "gradient_album" ), ".png", 0600 );
-    QImage imageHig = KImageEffect::unbalancedGradient( QSize( 1, 10 ), gradient.light(), gradient, KImageEffect::VerticalGradient, 100, -100 );
-    QImage imageLow = KImageEffect::unbalancedGradient( QSize( 1, 14 ), gradient.light(), Qt::gray, KImageEffect::VerticalGradient, 100, 80 );
-    QImage imageV( 1, 60, 32 );
-    imageV.fill( gradient.light().pixel() );
-    bitBlt( &imageV, 0, 0, &imageHig, 0, 0, 1, 10 );
-    bitBlt( &imageV, 0, 46, &imageLow, 0, 0, 1, 14 );
-    imageV.save( m_albumGradientImage->file(), "PNG" );
-    m_albumGradientImage->close();
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
-                    .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
-                    .arg( m_bgGradientImage->name() );
+    m_styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
+                   .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
+                   .arg( m_bgGradientImage->name() );
 
-    //text attributes
-    m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
-    m_styleSheet += QString( ".song a { display: block; padding: 1px 2px; }" );
-    m_styleSheet += QString( ".song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
-    m_styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" ).arg( pxSize ).arg( bg );
-
-    //box: the base container for every block (border hilighted on hover, 'A' without underlining)
-    m_styleSheet += QString( ".box { border: solid %1 1px; text-align: left; }" ).arg( bg );
-    m_styleSheet += QString( ".box a { text-decoration: none; }" );
-    m_styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
-
-    //box contents: header, body, rows and alternate-rows
-    m_styleSheet += QString( ".box-header { color: %1; font-size: %2px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" ).arg( fg ).arg( pxSize + 2 );
-    m_styleSheet += QString( ".box-header { background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( bg ).arg( m_headerGradientImage->name() );
-    m_styleSheet += QString( ".box-header:hover {}" );
-
-    m_styleSheet += QString( ".box-body { background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( colorGroup().base().name() ).arg( m_shadowGradientImage->name() );
-    m_styleSheet += QString( ".box-body:hover {}" );
-
-    m_styleSheet += QString( ".box-row {}" );
-    m_styleSheet += QString( ".box-row:hover {}" );
-    m_styleSheet += QString( ".box-row-alt {}" );
-    m_styleSheet += QString( ".box-row-alt:hover {}" );
-
-    //"Albums by ..." related styles
-    m_styleSheet += QString( ".album-header {}" );
-    m_styleSheet += QString( ".album-header:hover { cursor: pointer; background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_albumGradientImage->name() );
-    m_styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
-
-    //boxes used to display score (sb: score box)
-    m_styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
-    m_styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
-    m_styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
+    //'Body' is the only common entity, for other definitions use the selected style
+    switch( AmarokConfig::contextBrowserStyleSheet() )
+    {
+        case AmarokConfig::EnumContextBrowserStyleSheet::Flat:
+            setStyleSheet_Flat( m_styleSheet );
+            break;
+        case AmarokConfig::EnumContextBrowserStyleSheet::Gradient1:
+            setStyleSheet_Gradient1( m_styleSheet );
+            break;
+        case AmarokConfig::EnumContextBrowserStyleSheet::OtherStyle:
+            break;
+    };
 
     browser->setUserStyleSheet( m_styleSheet );
 }
 
+void ContextBrowser::setStyleSheet_Flat( QString& styleSheet )
+{
+    //This is the reference style, "inherited" by most of the other stylesheets.
+    //Empty definition must not be removed, they're useful as reference.
+
+    //colorscheme/font dependant parameters
+    int pxSize = fontMetrics().height() - 4;
+    const QString text = colorGroup().text().name();
+    const QString fg   = colorGroup().highlightedText().name();
+    const QString bg   = colorGroup().highlight().name();
+
+    //text attributes
+    styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
+    styleSheet += QString( ".song a { display: block; padding: 1px 2px; }" );
+    styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
+    styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; padding: 1em 0.5em 2em 0.5em; }" ).arg( pxSize ).arg( bg );
+
+    //box: the base container for every block (border hilighted on hover, 'A' without underlining)
+    styleSheet += QString( ".box { border: solid %1 1px; text-align: left; }" ).arg( bg );
+    styleSheet += QString( ".box a { text-decoration: none; }" );
+    styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
+
+    //box contents: header, body, rows and alternate-rows
+    styleSheet += QString( ".box-header { color: %1; background-color: %2; font-size: %3px; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid #000; }" ).arg( fg ).arg( bg ).arg( pxSize + 2 );
+    styleSheet += QString( ".box-header:hover {}" );
+
+    styleSheet += QString( ".box-body { background-color: %1; }" ).arg( colorGroup().base().name() );
+    styleSheet += QString( ".box-body:hover {}" );
+
+    styleSheet += QString( ".box-row {}" );
+    styleSheet += QString( ".box-row:hover {}" );
+    styleSheet += QString( ".box-row-alt {}" );
+    styleSheet += QString( ".box-row-alt:hover {}" );
+
+    //"Albums by ..." related styles
+    styleSheet += QString( ".album-header {}" );
+    styleSheet += QString( ".album-header:hover { background-color: %1; cursor: pointer; }" ).arg( bg );
+    styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
+
+    //boxes used to display score (sb: score box)
+    styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
+    styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: #E0E0E0; border: solid #808080 1px; }" );
+    styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
+}
+
+void ContextBrowser::setStyleSheet_Gradient1( QString& styleSheet )
+{
+    // "INHERIT" Flat style
+    setStyleSheet_Flat( styleSheet );
+
+    //colorscheme/font dependant parameters
+    int pxSize = fontMetrics().height() - 4;
+    const QColor baseColor = colorGroup().base();
+    const QColor bgColor = colorGroup().highlight();
+    amaroK::Color gradientColor = bgColor;
+
+    //writing temp top shining gradient
+    if ( m_headerGradientImage )
+        delete m_headerGradientImage;
+    m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
+    QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light(), KImageEffect::VerticalGradient, 100, -100 );
+    imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
+    m_headerGradientImage->close();
+
+    //writing temp gradient image (only an 'upper linear shadow')
+    if ( m_shadowGradientImage )
+        delete m_shadowGradientImage;
+    m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
+    QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
+    imageS.save( m_shadowGradientImage->file(), "PNG" );
+    m_shadowGradientImage->close();
+
+    //style: apply gradients
+    styleSheet += QString( ".box-header { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_headerGradientImage->name() );
+    styleSheet += QString( ".box-body { background-image: url( %2 ); background-repeat: repeat-x; }" ).arg( m_shadowGradientImage->name() );
+}
 
 void ContextBrowser::showIntroduction()
 {
