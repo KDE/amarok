@@ -20,7 +20,7 @@ email                : fh@ez.no
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "pluginmanager.h"
-#include "titleproxy.h"
+#include "streamprovider.h"
 
 #include <kdebug.h>
 #include <kio/global.h>

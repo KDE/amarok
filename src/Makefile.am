@@ -1,7 +1,3 @@
-if with_arts
-    AMAROKARTS_SUBDIR = amarokarts
-endif
-
 if with_included_sqlite
     SQLITE_SUBDIR = sqlite
     LIB_SQLITE_LOCAL = $(top_builddir)/amarok/src/sqlite/libsqlite.la
@@ -12,7 +8,6 @@ bin_PROGRAMS = amarokapp
 
 SUBDIRS = \
     amarokcore \
-    $(AMAROKARTS_SUBDIR) \
     $(SQLITE_SUBDIR) \
     analyzers \
     data \
@@ -20,11 +15,9 @@ SUBDIRS = \
     engine \
     images \
     loader \
-    titleproxy \
     vis
 
 INCLUDES = \
-    -I$(top_builddir)/amarok/src/amarokarts \
     -I$(top_builddir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/analyzers \
@@ -77,6 +70,7 @@ amarokapp_SOURCES = \
     sliderwidget.cpp \
     socketserver.cpp \
     statusbar.cpp \
+    streamprovider.cpp \
     systray.cpp \
     tagdialog.cpp \
     tagdialogbase.ui \

@@ -1,8 +1,11 @@
 kde_module_LTLIBRARIES = \
     libamarok_artsengine_plugin.la
 
+SUBDIRS = \
+    amarokarts
+    
 INCLUDES = \
-    -I$(top_builddir)/amarok/src/amarokarts \
+    -I$(top_builddir)/amarok/src/engine/arts/amarokarts \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src \
@@ -10,7 +13,7 @@ INCLUDES = \
     $(all_includes)
 
 libamarok_artsengine_plugin_la_LIBADD = \
-    $(top_builddir)/amarok/src/amarokarts/libamarokarts.la \
+    $(top_builddir)/amarok/src/engine/arts/amarokarts/libamarokarts.la \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \

@@ -1,5 +1,5 @@
 /***************************************************************************
-                     Proxy.cpp  -  description
+                     streamprovider.cpp  -  description
                         -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
@@ -17,7 +17,7 @@ email                : markey@web.de
 
 #include "enginebase.h"
 #include "metabundle.h"
-#include "titleproxy.h"
+#include "streamprovider.h"
 
 #include <kdebug.h>
 #include <kmdcodec.h>
@@ -336,5 +336,5 @@ StreamProvider::extractStr( const QString &str, const QString &key )
 }
 
 
-#include "titleproxy.moc"
+#include "streamprovider.moc"
 

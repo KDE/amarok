@@ -1,5 +1,5 @@
 /***************************************************************************
-                     titleproxy.h  -  description
+                     streamprovider.h  -  description
                         -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
