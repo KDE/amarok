@@ -551,6 +551,3 @@ void KTRMLookup::finished()
 #endif
 }
 
-
-#include "ktrm.moc"
-
