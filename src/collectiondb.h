@@ -140,6 +140,18 @@ class DbConnectionPool : QPtrQueue<DbConnection>
         DbConnection *getDbConnection();
         void putDbConnection( const DbConnection* /* conn */ );
 
+        QString escapeString( QString string )
+        {
+            return
+                #ifdef USE_MYSQL
+                    // We have to escape "\" for mysql, but can't do so for sqlite
+                    (m_dbConnType == DbConnection::mysql)
+                            ? string.replace("\\", "\\\\").replace( '\'', "''" )
+                            :
+                #endif
+                    string.replace( '\'', "''" );
+        }
+
     private:
         static const int POOL_SIZE = 5;
         QSemaphore m_semaphore;
@@ -168,7 +180,7 @@ class CollectionDB : public QObject, public EngineObserver
     public:
         static CollectionDB *instance();
 
-        static QString escapeString( QString string ) { return string.replace( '\'', "''" ); }
+        QString escapeString( QString string ) { return m_dbConnPool->escapeString(string); }
 
         /**
          * This method returns a static DbConnection for components that want to use
@@ -249,7 +261,7 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList albumTracks( const QString &artist_id, const QString &album_id );
 
         //cover management methods
-        /** Returns the image from a given URL, network-transparently. 
+        /** Returns the image from a given URL, network-transparently.
          * You must run KIO::NetAccess::removeTempFile( tmpFile ) when you are finished using the image;
          **/
         static QImage fetchImage(const KURL& url, QString &tmpFile);
