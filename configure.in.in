@@ -1,4 +1,7 @@
 TAGLIB_TAGLIB_H=yes;
+TAGLIB_REQ_VERSION="0.95";
+TAGLIB_CONFIG="taglib-config";
+
 KDE_CHECK_HEADER(taglib/taglib.h,TAGLIB_TAGLIB_H=yes,TAGLIB_TAGLIB_H=no)
 
 dnl -- check for the artsgui library
@@ -14,7 +17,7 @@ for dir in $artsgui_libdirs; do
         try="ls -1 $dir/libartsgui*"
                 if test=`eval $try 2> /dev/null`; then artsgui_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
 done
-
+ 
 ac_artsgui_libraries="$artsgui_libdir"
 
 
@@ -30,13 +33,52 @@ eval "$ac_cv_have_artsgui"
 
 AC_PATH_LIBARTSGUI
 
-if test "$ac_artsgui_libraries" = NO; then
+taglib_bindirs="/usr/bin /usr/local/bin /usr/local/kde3/bin $prefix/bin $exec_prefix/bin "
+
+taglib_bindir=NONE
+for tag_dir in $taglib_bindirs; do
+        tag_try="ls -1 $tag_dir/$TAGLIB_CONFIG"
+                if test=`eval $tag_try 2> /dev/null`; then taglib_bindir=$tag_dir; break; else echo "tried $tag_dir" >&AC_FD_CC ; fi
+done
+
+AC_DEFUN(VERSION_TO_NUMBER,
+[`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
+ 
+if test -x "$taglib_bindir/$TAGLIB_CONFIG"; then
+	vers=VERSION_TO_NUMBER($taglib_bindir/$TAGLIB_CONFIG --version);
+	if test "$vers" -ge VERSION_TO_NUMBER(echo $TAGLIB_REQ_VERSION); then
+		TAGLIB_VERSION_OK="yes"
+	else
+		TAGLIB_VERSION_OK="no"
+	fi
+else
+	TAGLIB_VERSION_OK="missing"
+fi
+
+if test "$ac_artsgui_libraries" = NO; 
+then
         AC_MSG_RESULT([not found.  amaroK build will be disabled.])
 else
         AC_MSG_RESULT([found in $ac_artsgui_libraries])
-        if test "$TAGLIB_TAGLIB_H" = "no"; then
-                AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
-                DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-        fi
+	if test -d "taglib/"; then
+		AC_MSG_CHECKING(for TagLib);
+		AC_MSG_RESULT(bundled);
+	else
+		if test "$TAGLIB_TAGLIB_H" = "no"; then
+			AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
+			DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+		else
+			AC_SUBST(TAGLIB_REQ_VERSION)
+			AC_MSG_CHECKING(for TagLib libraries >= $TAGLIB_REQ_VERSION)
+			if test "$TAGLIB_VERSION_OK" = "no"; then 
+				AC_MSG_RESULT(found old... Please check http://ktown.kde.org/~wheeler/taglib/ for newer version);
+				DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+			elif test "$TAGLIB_VERSION_OK" = "missing"; then
+				AC_MSG_RESULT(not found... Please check http://ktown.kde.org/~wheeler/taglib/ for source code...)
+				DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+			else
+				AC_MSG_RESULT(good);
+			fi
+		fi
+	fi
 fi
-
