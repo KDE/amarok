@@ -2,6 +2,8 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+  ADD: clicking shuffle will sort the playlist by the nextQueue first, and
+       randomise the rest
   ADD: Play Next can now handle several songs through a queue. The queue can be
        manipulated by using the context menu or by CTRL+right clicking. 
   ADD: much improved gstreamer engine, now working with visualizations
