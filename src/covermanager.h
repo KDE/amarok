@@ -34,7 +34,7 @@ Q_OBJECT
     public:
         CoverManager( QWidget *parent=0, const char *name=0 );
         ~CoverManager();
-        static void viewCover( const QString artist, const QString album, QWidget *parent=0 );
+        static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
 
     private slots:
         void expandItem( QListViewItem * );

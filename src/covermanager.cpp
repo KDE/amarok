@@ -212,7 +212,7 @@ CoverManager::~CoverManager()
 }
 
 
-void CoverManager::viewCover( const QString artist, const QString album, QWidget *parent ) //static
+void CoverManager::viewCover( const QString& artist, const QString& album, QWidget *parent ) //static
 {
     //QDialog means "escape" works as expected
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
