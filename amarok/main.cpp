@@ -1,10 +1,10 @@
 /***************************************************************************
-                          main.cpp  -  description
-                             -------------------
-    begin                : Mit Okt 23 14:35:18 CEST 2002
-    copyright            : (C) 2002 by Mark Kretschmann
-    email                :
- ***************************************************************************/
+                         main.cpp  -  description
+                            -------------------
+   begin                : Mit Okt 23 14:35:18 CEST 2002
+   copyright            : (C) 2002 by Mark Kretschmann
+   email                :
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -32,22 +32,22 @@ PlayerApp *pApp;
 static const char *description = I18N_NOOP( "A media player for KDE" );
 
 static KCmdLineOptions options[] =
-{
-    { "+[URL]", I18N_NOOP( "Files/URLs to Open" ), 0 },
-    { "e", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
-    { "s", I18N_NOOP( "Stop current song" ), 0 },
-    { "p", I18N_NOOP( "Start playing current playlist" ), 0 },
-    { "r", I18N_NOOP( "Skip backwards in playlist" ), 0 },
-    { "f", I18N_NOOP( "Skip forward in playlist" ), 0 },
-    { "playlist <file>", I18N_NOOP( "Open a Playlist" ), 0 },
-    { 0, 0, 0 }
-};
+    {
+        { "+[URL]", I18N_NOOP( "Files/URLs to Open" ), 0 },
+        { "e", I18N_NOOP( "Enqueue Files/URLs" ), 0 },
+        { "s", I18N_NOOP( "Stop current song" ), 0 },
+        { "p", I18N_NOOP( "Start playing current playlist" ), 0 },
+        { "r", I18N_NOOP( "Skip backwards in playlist" ), 0 },
+        { "f", I18N_NOOP( "Skip forward in playlist" ), 0 },
+        { "playlist <file>", I18N_NOOP( "Open a Playlist" ), 0 },
+        { 0, 0, 0 }
+    };
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
-	KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
-		APP_VERSION, description, KAboutData::License_GPL,
-		"(c) 2002-2003, Mark Kretschmann", 0, "http://amarok.sourceforge.net", "");
+    KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
+                          APP_VERSION, description, KAboutData::License_GPL,
+                          "(c) 2002-2003, Mark Kretschmann", 0, "http://amarok.sourceforge.net", "" );
 
     aboutData.addAuthor( "Mark Kretschmann", "Developer, Maintainer", "markey@web.de" );
     aboutData.addCredit( "Markus A. Rykalski", "Graphics", "exxult@exxult.de" );
@@ -62,16 +62,16 @@ int main(int argc, char *argv[])
 
     PlayerApp app;
 
-//     if (app.isRestored())
-//     {
-//         RESTORE(PlayerApp);
-//     }
-//     else
-//     {
-//        PlayerApp *pPlayerApp = new PlayerApp();
-//        app.setMainWidget( pPlayerApp );
-//        pPlayerApp->show();
-//     }
+    //     if (app.isRestored())
+    //     {
+    //         RESTORE(PlayerApp);
+    //     }
+    //     else
+    //     {
+    //        PlayerApp *pPlayerApp = new PlayerApp();
+    //        app.setMainWidget( pPlayerApp );
+    //        pPlayerApp->show();
+    //     }
 
     return app.exec();
 }

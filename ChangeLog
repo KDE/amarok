@@ -4,6 +4,8 @@ amaroK Changelog
 
 
 VERSION 0.6.0-PRE5:
+  * added: documentation
+  * fixed: cleaned up Makefile.am a bit
   * fixed: defined new APP_VERSION macro, since the old approach did not work
     with CVS
   * changed: put amarok into KDE CVS (KDENONBETA)

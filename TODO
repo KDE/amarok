@@ -21,7 +21,7 @@ SHORT-TERM:
 
     * add: extend keyboard shortcuts
 
-    * add: documentation
+    * add: extend documentation
 
 
 
@@ -31,7 +31,7 @@ MID-TERM:
 
     * add: better cleanup at program exit; delete all new'ed objects ( calling DTORS )
 
-    * add: title streaming
+    * add: title streaming ( mp3PlayObject needs to be patched )
 
     * change: ability to get currently playing title to clipboard, or writing info in some file or
       some other easy way to get this info..
@@ -45,8 +45,6 @@ MID-TERM:
     * add: show play button pressed down while playing
 
     * add: function "add current dir"
-
-    * add: playlist-only mode (stakker's idea)
 
     * add: seeking with mousewheel
 
@@ -64,9 +62,6 @@ MID-TERM:
       at the top or bottom?
 
     * change: select tracks on mouseup, not mousedown
-
-    * fix: if you click on the image, and then you drag off of it, and then release it
-      somewhere way out of amarok, then the action still executes
 
 
 
