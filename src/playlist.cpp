@@ -847,7 +847,7 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
     }
     if( prev && item != prev ) {
         //remove pixmap in all columns
-        for ( uint i = 0; i < header()->count(); i++ )
+        for ( int i = 0; i < header()->count(); i++ )
             prev->setPixmap( i, QPixmap() );
         prev->invalidateHeight();
     }
