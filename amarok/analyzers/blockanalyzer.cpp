@@ -47,7 +47,7 @@ void BlockAnalyzer::drawAnalyzer( std::vector<float> *s )
     if ( s ) interpolate( s, v );
 
     QPixmap m_pix( v.size() * (WIDTH + 1), (HEIGHT + 1) * ROWS );
-    m_pix.fill( QColor( 32, 32, 82 ) ); //FIXME get from settings struct.
+    m_pix.fill( QColor( 31, 32, 82 ) ); //FIXME get from settings struct.
 
     for ( uint x = 0; x < v.size(); ++x )
     {
@@ -67,3 +67,5 @@ void BlockAnalyzer::drawAnalyzer( std::vector<float> *s )
     
     bitBlt( this, 0, height() - m_pix.height(), &m_pix ); 
 }
+
+#include "blockanalyzer.moc"

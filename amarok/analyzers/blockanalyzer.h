@@ -20,6 +20,8 @@
 
 class BlockAnalyzer : public AnalyzerBase
 {
+Q_OBJECT
+
 public:
     BlockAnalyzer( QWidget * = 0, const char * = 0 );
     ~BlockAnalyzer();
