@@ -371,7 +371,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             if ( paintCache[column].map[colorKey].isNull() ) return;
 
             QPainter paint( &paintCache[column].map[colorKey], true );
-            paint.setFont( p->font() );
 
             // Here we draw the shaded background
             int h, s, v;
@@ -395,6 +394,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
                align |= Qt::AlignVCenter;
 
             // Draw the text
+            QFont font( p->font() );
+            font.setItalic( true );
+            paint.setFont( font );
             paint.setPen( glowText );
             const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), width - 5 );
             paint.drawText( leftMargin, 0, width, height(), align, _text );
