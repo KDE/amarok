@@ -158,7 +158,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
     }
 
-#ifdef AMAZON
+#ifdef AMAZON_SUPPORT
     
     /* fetch covers from amazon on click */
     if ( m_url.protocol() == "fetchcover" ) m_db->fetchCover( this, info[0], info[1], false );
@@ -257,7 +257,7 @@ void ContextBrowser::showHome() //SLOT
     delete m_db;
     m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
-    #ifdef AMAZON
+    #ifdef AMAZON_SUPPORT
     connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
     #endif
     browser->begin();
