@@ -42,7 +42,7 @@ class StreamBrowser : public QWidget {
 Q_OBJECT
 
 public:
-        StreamBrowser( QWidget *parent=0, char *name=0 );
+        StreamBrowser( QWidget *parent=0, const char *name=0 );
         ~StreamBrowser();
 
 signals:

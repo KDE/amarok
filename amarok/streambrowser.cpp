@@ -39,7 +39,7 @@
 #include <qregexp.h>
 #include <qtimer.h>
 
-StreamBrowser::StreamBrowser( QWidget *parent, char *name )
+StreamBrowser::StreamBrowser( QWidget *parent, const char *name )
       : QWidget( parent, name, Qt::WType_TopLevel )
 {
         QVBoxLayout *vbox;
@@ -177,7 +177,12 @@ void StreamBrowser::doconnection(QString query)
                 else if(query != m_metaquery)
                 {
                         KURL uri(tmp);
+#if KDE_IS_VERSION(3,1,92)
+                        ret = KIO::NetAccess::download(uri, tmpname, this);
+#else
                         ret = KIO::NetAccess::download(uri, tmpname);
+#endif
+
                         if(ret)
                         {
                                 QFile f(tmpname);
@@ -190,7 +195,7 @@ void StreamBrowser::doconnection(QString query)
 
                                 QRegExp exp("\\<\\!\\-\\-([^>])*\\>");
                                 buf.replace(exp, "");
-                                buf = QString::fromUtf8(buf);
+//??                                buf = QString::fromUtf8(buf);
                                 processlocal(buf);
 kdDebug() << buf << endl;
 
@@ -214,7 +219,7 @@ void StreamBrowser::doupdate(QString update, QString uri)
 
 void StreamBrowser::slotConnected()
 {
-        sock->writeBlock(m_curquery, m_curquery.length());
+        sock->writeBlock(m_curquery.latin1(), m_curquery.length());
         sock->flush();
 }
 
@@ -419,7 +424,7 @@ void StreamBrowser::slotRead()
                 rtmp += cs;
                 sock->waitForMore(100);
         }
-        rdata = QString::fromUtf8(rtmp);
+//??        rdata = QString::fromUtf8(rtmp);
 kdDebug() << rdata << endl;
 
         rdata.truncate(rdata.length() - 1);
@@ -461,7 +466,11 @@ void StreamBrowser::slotActivate(QListViewItem *item)
                 }
                 if(!cache || !QFile::exists(tmp))
                 {
+#if KDE_IS_VERSION(3,1,92)
+                        if(KIO::NetAccess::download(item->text(4), tmp, this))
+#else
                         if(KIO::NetAccess::download(item->text(4), tmp))
+#endif
                                 success = true;
                         else
                         {
