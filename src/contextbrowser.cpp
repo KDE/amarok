@@ -302,8 +302,38 @@ void ContextBrowser::slotContextMenu( const QString& url, const QPoint& point )
                 break;
         }
     }
-}
+    
+    if ( url.startsWith( "file" ) )
+    {
+        KURL path = url;
+    
+        enum menuIds { APPEND, ASNEXT, MAKE };
 
+        KPopupMenu menu( this );
+        menu.insertTitle( i18n( "Track/Album" ) );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Append to playlist" ), APPEND );
+        //menu.setItemEnabled( APPEND );
+        menu.insertItem( SmallIcon( "next" ), i18n( "Queue after current track" ), ASNEXT );
+        menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "Make playlist" ), MAKE );
+        int id = menu.exec( point );
+
+        switch ( id )
+        {
+            case APPEND:
+                Playlist::instance()->appendMedia( path, false, true );
+            break;
+            
+            case ASNEXT:
+                Playlist::instance()->queueMedia( path );
+            break;
+            
+            case MAKE:
+                Playlist::instance()->clear();
+                Playlist::instance()->appendMedia( path, true, true );
+            break;
+        }
+     }
+}
 
 void ContextBrowser::showHome() //SLOT
 {
