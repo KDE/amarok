@@ -202,7 +202,7 @@ CollectionView::slotExpanded( QListViewItem* item )  //SLOT
         child->setDragEnabled( true );
         child->setDropEnabled( false );
         child->setText( 0, values[ i + 0 ] );
-        kdDebug() << "url: " << values[ i + 1 ] << endl;
+//         kdDebug() << "url: " << values[ i + 1 ] << endl;
         child->setUrl( values[ i + 1 ] );
     }
 
@@ -263,10 +263,9 @@ CollectionView::customEvent( QCustomEvent *e ) {
         kdDebug() << "********************************\n";
         kdDebug() << "CollectionEvent arrived.\n";
         kdDebug() << "********************************\n";
-        kdDebug() << "Number of bundles: " << c->list().count() << endl;
+        kdDebug() << "Number of records to store in db: " << c->list().count() << endl;
 
         MetaBundle* bundle;
-        kdDebug() << "Number of records to store in db: " << c->list().count() << endl;
         
         execSql( "BEGIN TRANSACTION;" );
         for ( uint i = 0; i < c->list().count(); i++ ) {

@@ -152,7 +152,7 @@
      </entry>
      <entry key="Sound System" type="String">
         <label>Sound system to use</label>
-        <default>arts</default>
+        <default>ArtsEngine</default>
         <whatsthis>This setting selects the sound system to use. The currently supported sound systems are "arts" and "gstreamer". However, the availability of these systems depend on the compile time configuration options.</whatsthis>
      </entry>
      <entry key="Title Streaming" type="Bool">
