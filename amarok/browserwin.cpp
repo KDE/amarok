@@ -17,7 +17,6 @@
 
 #include "amarokconfig.h"
 #include "browserwin.h"
-#include "expandbutton.h"
 #include "filebrowser.h"
 #include "playerapp.h"
 #include "playlistsidebar.h"
@@ -110,39 +109,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     /* Here because we need m_playlist initialized. */
     QPushButton *showCurrentTrack = new QPushButton( boxH );
     showCurrentTrack->setPixmap( KGlobal::iconLoader()->loadIcon( "2uparrow", KIcon::NoGroup, KIcon::SizeSmall ) );
-//     showCurrentTrack->setPixmap( locate( "data", "amarok/images/ensure_visible.png" ) );
     QToolTip::add( showCurrentTrack, i18n( "Scroll to currently playing item" ) );
-//    showCurrentTrack->resize(24,24);
     connect( showCurrentTrack, SIGNAL( clicked() ), m_playlist, SLOT(showCurrentTrack()) );
-
-    {/*
-        ExpandButton *add =
-        new ExpandButton( i18n( "&Add Item..." ), this, this, SLOT( slotAddLocation() ) );
-
-        ExpandButton *play =
-        new ExpandButton( i18n( "&Play" ),    this, pApp, SLOT( slotPlay() ) );
-        new ExpandButton( i18n( "Next" ),     play, pApp, SLOT( slotNext() ) );
-        new ExpandButton( i18n( "Stop" ),     play, pApp, SLOT( slotStop() ) );
-        new ExpandButton( i18n( "Pause" ),    play, pApp, SLOT( slotPause() ) );
-        new ExpandButton( i18n( "Previous" ), play, pApp, SLOT( slotPrev() ) );
-
-        ExpandButton *playlist =
-        new ExpandButton( i18n( "Play&list Actions" ), this, m_playlist, SLOT( showCurrentTrack() ) );
-        new ExpandButton( i18n( "Shuffle" ), playlist, m_playlist, SLOT( shuffle() ) );
-        new ExpandButton( i18n( "Save Playlist..." ), playlist, this, SLOT( savePlaylist() ) );
-
-        m_playlist->m_clearButton = new ExpandButton( i18n( "Clear" ), playlist, m_playlist, SLOT( clear() ) );
-
-        QPushButton *undo = new ExpandButton( i18n( "Undo" ), this, m_playlist, SLOT( undo() ) );
-        QPushButton *redo = new ExpandButton( i18n( "Redo" ), this, m_playlist, SLOT( redo() ) );
-
-        QBoxLayout *layH = new QHBoxLayout( layV );
-        layH->addWidget( add );
-        layH->addWidget( playlist );
-        layH->addWidget( undo );
-        layH->addWidget( redo );
-        layH->addWidget( play );
-  */}
 
     {//<ToolBar>
         QPopupMenu* actions_popup = new QPopupMenu( this );
