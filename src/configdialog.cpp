@@ -17,7 +17,6 @@ email                : markey@web.de
 
 #include "Options1.h"
 #include "Options2.h"
-#include "Options3.h"
 #include "Options4.h"
 #include "Options5.h"
 #ifdef USE_MYSQL
@@ -37,6 +36,7 @@ email                : markey@web.de
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+#include <qobjectlist.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
@@ -61,7 +61,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 {
     setWFlags( WDestructiveClose );
 
-    Options2 *opt2 = new Options2( 0, "Fonts" );
+    Options2 *opt2 = new Options2( 0, "Appearance" );
             m_opt4 = new Options4( 0, "Playback" );
     Options5 *opt5 = new Options5( 0, "OSD" );
     QVBox    *opt6 = new QVBox;
@@ -69,9 +69,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     Options7 *opt7 = new Options7( 0, "MySql" );
 #endif
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
-
-    // Show information labels
-    static_cast<QLabel*>(opt8->child( "infoPixmap" ))->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );
 
     // Sound System
     opt6->setSpacing( 12 );
@@ -101,15 +98,26 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // add pages
     addPage( new Options1( 0, "General" ), i18n( "General" ), "misc", i18n( "Configure General Options" ) );
-    addPage( opt2, i18n( "Fonts" ), "fonts", i18n( "Configure Fonts" ) );
-    addPage( new Options3( 0, "Colors" ), i18n( "Colors" ), "colors", i18n( "Configure Colors" ) );
+    addPage( opt2,   i18n( "Appearance" ), "colors", i18n( "Configure amaroK's Appearance" ) );
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
-    addPage( opt5, i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
-    addPage( opt6, i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
+    addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
+    addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
 #ifdef USE_MYSQL
-    addPage( opt7, i18n( "MySql" ), "connect_creating", i18n( "Configure MySql" ) );
+    addPage( opt7,   i18n( "MySql" ), "connect_creating", i18n( "Configure MySql" ) );
 #endif
-    addPage( opt8, i18n( "Scrobbler" ), locate( "data", "amarok/images/audioscrobbler.png" ), i18n( "Configure Audioscrobbler" ) );
+    addPage( opt8,   i18n( "Scrobbler" ), locate( "data", "amarok/images/audioscrobbler.png" ), i18n( "Configure Audioscrobbler" ) );
+
+    // Show information labels (must be done after insertions)
+    QObjectList *list = queryList( "QLabel", "infoPixmap" );
+    for( QObject *label = list->first(); label; label = list->next() )
+        static_cast<QLabel*>(label)->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );
+    delete list;
+
+    //stop KFont Requesters getting stupidly large
+    list = queryList( "QLabel", "m_sampleLabel" );
+    for( QObject *label = list->first(); label; label = list->next() )
+        static_cast<QLabel*>(label)->setMaximumWidth( 250 );
+    delete list;
 
     connect( m_soundSystem, SIGNAL( activated( int ) ), SLOT( updateButtons() ) );
     connect( aboutEngineButton, SIGNAL( clicked() ), this, SLOT( aboutEngine() ) );

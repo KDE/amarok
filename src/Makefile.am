@@ -31,7 +31,6 @@ INCLUDES = \
 amarokapp_SOURCES = \
     Options1.ui \
     Options2.ui \
-    Options3.ui \
     Options4.ui \
     Options5.ui \
     Options7.ui \
