@@ -3,12 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number, 
-           #3 being the highest available (take this one for your next bug and increase here)
+           #5 being the highest available (take this one for your next bug and increase here)
 
                       
 SHORT-TERM (URGENT):
 
-    * fix: crash when pressing cancel in "Add item" dialog
+    * fix: #4<markey> re-add "report bug" menu entry
+
+    * fix: #3<markey> crash when pressing cancel in "Add item" dialog
 
     * fix: clicking tray icon to hide does not work (KDE 3.2 Nov 29 HEAD). Either KDE or amaroK
            fault (see #1 also, might be related) #2
