@@ -279,8 +279,8 @@ Playlist::insertMedia( KURL::List list, int options )
     {
         KURL::List addMe = list;
         KURL::List::Iterator jt;
-
-//         add any songs not in the playlist to it.
+        
+        // add any songs not in the playlist to it.
         for( MyIt it( this, 0 ); *it; ++it ) {
             jt = addMe.find( (*it)->url() );
 

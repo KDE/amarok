@@ -78,8 +78,8 @@ class CollectionDB : public QObject
         /** Saves images obtained from CoverFetcher */
         bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null );
 
-        QString albumImage( const uint artist_id, const uint album_id, const uint width = 0 );
-        QString albumImage( const QString artist, const QString album, const uint width = 0 );
+        QString albumImage( const uint artist_id, const uint album_id, const uint width = 1 );
+        QString albumImage( const QString artist, const QString album, const uint width = 1 );
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString artist, const QString album );

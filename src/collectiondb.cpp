@@ -304,7 +304,9 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 QString
 CollectionDB::albumImage( const QString artist, const QString album, uint width )
 {
-    if ( !width ) width = AmarokConfig::coverPreviewSize();
+    // we aren't going to need a 1x1 size image. this is just a quick hack to be able to show full size images.
+    if ( width == 1) width = AmarokConfig::coverPreviewSize();
+    
     QCString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( artist.isEmpty() && album.isEmpty() )
@@ -331,7 +333,7 @@ CollectionDB::albumImage( const QString artist, const QString album, uint width 
             // we need to create a scaled version of this cover
             QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/large/" ) );
             if ( largeCoverDir.exists( key ) )
-                if ( width > 0 )
+                if ( width > 1 )
                 {
                     QImage img( largeCoverDir.filePath( key ) );
                     img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );

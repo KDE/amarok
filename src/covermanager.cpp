@@ -222,7 +222,7 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
     //QDialog means "escape" works as expected
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
     dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
-    QPixmap pixmap( CollectionDB().albumImage( artist, album, 0 ) );
+    QPixmap pixmap( CollectionDB().albumImage( artist, album, 0) );
     dialog->setPaletteBackgroundPixmap( pixmap );
     dialog->setFixedSize( pixmap.size() );
     dialog->show();
