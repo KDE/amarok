@@ -26,7 +26,7 @@ email                :
 #include "playerwidget.h"
 #include "playlistitem.h"
 #include "playlistwidget.h"
-#include "viswidget.h"
+#include "analyzers/analyzerbase.h"
 
 #include "debugareas.h"
 
@@ -83,6 +83,7 @@ email                :
 #define ANIM_TIMER 30
 
 
+
 PlayerApp::PlayerApp() :
         KUniqueApplication( true, true, false ),
         m_pGlobalAccel( new KGlobalAccel( this ) ),
@@ -104,7 +105,7 @@ PlayerApp::PlayerApp() :
         m_XFadeCurrent( "invalue1" ),
 	m_DelayTime( 0 )
 {
-    setName( "amarok" );
+    setName( "amaroK" );
 
     pApp = this; //global
 
@@ -124,8 +125,8 @@ PlayerApp::PlayerApp() :
 //    connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
 
-    connect( m_pPlayerWidget, SIGNAL( sigMinimized() ), this, SLOT( slotWidgetMinimized() ) );
-    connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotWidgetRestored() ) );
+    connect( m_pPlayerWidget, SIGNAL( sigAboutToHide() ), this, SLOT( slotHide() ) );
+    connect( m_pPlayerWidget, SIGNAL( sigAboutToShow() ), this, SLOT( slotShow() ) );
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -135,7 +136,7 @@ PlayerApp::PlayerApp() :
     m_pPlayerWidget->show(); //browserwin will be shown automatically if the playlistButton is setOn( true )
 
     kapp->processEvents();
-    
+
     //restore last playlist
     //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so the playlist seems to be loaded when the browserWindow appears
     m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation
@@ -157,8 +158,7 @@ PlayerApp::~PlayerApp()
     saveConfig();
 
     delete m_pEffectWidget;
-    delete m_pBrowserWin;
-    delete m_pPlayerWidget;
+    delete m_pPlayerWidget; //deletes browserWin
 
     m_XFade = Amarok::Synth_STEREO_XFADE::null();
     m_Scope = Arts::StereoFFTScope::null();
@@ -529,7 +529,7 @@ void PlayerApp::initBrowserWin()
 {
     kdDebug(DA_COMMON) << "begin PlayerApp::initBrowserWin()" << endl;
 
-    m_pBrowserWin = new BrowserWin( 0, "BrowserWin" );
+    m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
     connect( m_pBrowserWin->m_pButtonAdd, SIGNAL( clicked() ),
              this, SLOT( slotAddLocation() ) );
@@ -564,10 +564,8 @@ void PlayerApp::initBrowserWin()
     connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
 
-    // disabled signalHide() connect, since with KDE 3.1.92 it gets emitted when virtual desktops
-    // are switched  (which is prolly broken behaviour)
-//     connect( m_pBrowserWin, SIGNAL( signalHide() ),
-//              this, SLOT( slotPlaylistIsHidden() ) );
+    connect( m_pBrowserWin, SIGNAL( signalHide() ),
+             this, SLOT( slotPlaylistIsHidden() ) );
 
     //TEST
     kdDebug(DA_COMMON) << "end PlayerApp::initBrowserWin()" << endl;
@@ -713,6 +711,7 @@ void PlayerApp::readConfig()
     m_optBrowserWindowFont = m_pConfig->readFontEntry( "Browser Window Font", &defaultFont );
     m_optPlayerWidgetFont = m_pConfig->readFontEntry( "Player Widget Font", &defaultFont );
     m_optPlayerWidgetScrollFont = m_pConfig->readFontEntry( "Player Widget Scroll Font", &defaultFont );
+
     m_pBrowserWin->slotUpdateFonts();
 
     m_optBrowserUseCustomColors = m_pConfig->readBoolEntry( "BrowserUseCustomColors", false );
@@ -723,7 +722,8 @@ void PlayerApp::readConfig()
     m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
     m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", true );
 
-    m_optVisCurrent = m_pConfig->readUnsignedNumEntry( "Current Analyzer", 0 );
+    //-1? See PlayerWidget::createVis() for revelations
+    m_optVisCurrent = m_pConfig->readUnsignedNumEntry( "Current Analyzer", 0 ) - 1;
     m_pPlayerWidget->createVis();
 
     m_optBrowserSortSpec = m_pConfig->readNumEntry( "Browser Sorting Spec", QDir::Name | QDir::DirsFirst );
@@ -1168,9 +1168,10 @@ void PlayerApp::slotNext()
         if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || ( !m_optRepeatPlaylist && m_bIsPlaying ) )
         {
             slotStop();
+            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() ) );
             return ;
         }
-        else
+        else //select first item in playlist again
         {
             pItem = m_pBrowserWin->m_pPlaylistWidget->firstChild();
         }
@@ -1430,10 +1431,17 @@ void PlayerApp::slotMainTimer()
 
 void PlayerApp::slotAnimTimer()
 {
-    if ( m_pPlayerWidget->isVisible() )
+    if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
     {
         m_pPlayerWidget->drawScroll();
+    }
+}
 
+
+void PlayerApp::slotVisTimer()
+{
+    if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
+    {
         if ( m_scopeActive )
         {
             std::vector<float> *pScopeVector = m_Scope.scope();
@@ -1452,7 +1460,7 @@ void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
    {
         if ( m_optXFade )
             startXFade();
-                    
+
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
         slotPlay();
    }
@@ -1472,7 +1480,7 @@ void PlayerApp::slotPlaylistToggle( bool b )
 {
     if ( b )
     {
-        m_pBrowserWin->showNormal();
+        m_pBrowserWin->show();
     }
     else
     {
@@ -1483,8 +1491,8 @@ void PlayerApp::slotPlaylistToggle( bool b )
 
 void PlayerApp::slotPlaylistIsHidden()
 {
-    kdDebug(DA_COMMON) << "void PlayerApp::slotPlaylistIsHidden()" << endl;
-    
+    //only called when playlist is closed()
+
     m_pPlayerWidget->m_pButtonPl->setOn( false );
 }
 
@@ -1586,34 +1594,20 @@ void PlayerApp::slotShowHelp()
 }
 
 
-void PlayerApp::slotWidgetMinimized()
+void PlayerApp::slotHide()
 {
-  //do not minimise the browserWindow as this will break slotWidgetRestored()
-  //also this way the taskbar is less cluttered
-  //!isMinimised() because hiding the widget clears it's minimisation status, and undesired behavior
-  //HOWEVER when using SysTray to hide, one expects it all to hide, hmmm I dunno what to do here
+//FIXME: as browserWin is now a child widget of playerWidget, it should, technically hide browserWin
+//       for us when we hide playerWidget, find out why it doesn't! We shouldn't have to map out this
+//       functionality!
 
-    if ( m_optHidePlaylistWindow && !m_pBrowserWin->isMinimized() )
-    {
-        m_pBrowserWin->hide();
-    }
+    m_pBrowserWin->hide();
 }
 
-void PlayerApp::slotWidgetRestored()
+void PlayerApp::slotShow()
 {
-    //we don't restore the playlist if it was minimized; the user minimized it, that's where s/he wants it!
-
-    if ( m_optHidePlaylistWindow && !m_pBrowserWin->isMinimized() )
+    if ( m_pPlayerWidget->m_pButtonPl->isOn() )
     {
-        if ( m_pPlayerWidget->m_pButtonPl->isOn() )
-        {
-            //do this always; there are strange circumstances when this is necessary - trust me :)
-            m_pBrowserWin->show();
-        }
-            
-        //we need to raise the playlist when the browserWindow is raised
-        //if both widgets are obscured by other window, you want both widgets to be raised
-        m_pBrowserWin->raise();
+        m_pBrowserWin->show();
     }
 }
 

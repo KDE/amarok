@@ -59,9 +59,8 @@
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
-        QWidget( parent, name, Qt::WPaintUnclipped )
+        QWidget( parent, name, Qt::WType_TopLevel | Qt::WStyle_Dialog | Qt::WPaintUnclipped )
 {
-    //setName( "BrowserWin" ); set this when you create it
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
     setAcceptDrops( true );
 
@@ -188,8 +187,6 @@ void BrowserWin::initChildren()
     layH->addWidget( m_pButtonUndo );
     layH->addWidget( m_pButtonRedo );
     layH->addWidget( m_pButtonPlay );
-
-    m_pBrowserWidget->show();
 }
 
 
@@ -202,12 +199,6 @@ void BrowserWin::closeEvent( QCloseEvent *e )
     emit signalHide();
 }
 
-void BrowserWin::hideEvent( QHideEvent * )
-{
-    //only do this when the user explicitly requests hiding, eg. minimisation
-    if( isMinimized() )
-       emit signalHide();
-}
 
 void BrowserWin::moveEvent( QMoveEvent * )
 {

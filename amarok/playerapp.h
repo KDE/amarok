@@ -102,7 +102,7 @@ class PlayerApp : public KUniqueApplication
         QColor m_optBrowserSelColor;
         bool   m_optBrowserUseCustomColors;
         unsigned int m_optUndoLevels;
-        unsigned int m_optVisCurrent;
+        int m_optVisCurrent;
         int m_optBrowserSortSpec;
 	int m_optTrackDelay;
         // </option attributes>
@@ -138,6 +138,7 @@ class PlayerApp : public KUniqueApplication
         void slotVolumeChanged( int value );
         void slotMainTimer();
         void slotAnimTimer();
+        void slotVisTimer();
         void slotItemDoubleClicked( QListViewItem *item );
         void slotShowAbout();
         void slotPlaylistToggle( bool b );
@@ -150,8 +151,8 @@ class PlayerApp : public KUniqueApplication
         void slotSetRepeatPlaylist();
         void slotSetRandomMode();
         void slotShowHelp();
-        void slotWidgetMinimized();
-        void slotWidgetRestored();
+        void slotHide();
+        void slotShow();
 
     private slots:
         void saveSessionState();

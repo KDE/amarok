@@ -21,9 +21,9 @@ email                :
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "playlistwidget.h"
-#include "visdistortwidget.h"
-#include "viswidget.h"
-#include "viswidgetv2.h"
+#include "analyzers/baranalyzer.h"
+#include "analyzers/baranalyzer2.h"
+#include "analyzers/distortanalyzer.h"
 
 #include "debugareas.h"
 
@@ -48,6 +48,7 @@ email                :
 #include <qtoolbutton.h>
 #include <qtooltip.h>
 #include <qwidget.h>
+#include <qtimer.h>
 
 #include <kaction.h>
 #include <kdebug.h>
@@ -63,7 +64,6 @@ email                :
 
 #include <dcopclient.h>
 
-#define VIS_COUNT 3
 
 // CLASS AmarokSlider ------------------------------------------------------------
 
@@ -171,42 +171,47 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
 // CLASS PlayerWidget ------------------------------------------------------------
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-    : QWidget( parent, name ),
-    DCOPObject( "player" ),
-    m_pActionCollection( new KActionCollection( this ) ),
-    m_pPopupMenu( NULL ),
-    m_pPlayObjConfigWidget( NULL ),
-    m_nowPlaying( "" )
+      : QWidget( parent, name ),
+        DCOPObject( "player" ),
+        m_pActionCollection( new KActionCollection( this ) ),
+        m_pPopupMenu( NULL ),
+        m_pPlayObjConfigWidget( NULL ),
+        m_pVis( 0 ),
+        m_visTimer( new QTimer( this ) ),
+        m_nowPlaying( "" )
 {
-  //setName( "PlayerWidget " );
-  setCaption( "amaroK" );
-  setFixedSize( 310, 155 );
-  setPaletteForegroundColor( pApp->m_fgColor );
+    setCaption( "amaroK" );
+    setPaletteForegroundColor( pApp->m_fgColor );
 
-  KStdAction::aboutApp( pApp, SLOT( slotShowAbout() ), m_pActionCollection );
-  KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
-  KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
-  KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
-  KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                           "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
-  KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
-  KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
-  KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
-                    "copy_clipboard" )->setText( i18n( "Copy Current Title to Clipboard" ) );
+    //actions
+    KStdAction::aboutApp( pApp, SLOT( slotShowAbout() ), m_pActionCollection );
+    KStdAction::helpContents( pApp, SLOT( slotShowHelp() ), m_pActionCollection );
+    KStdAction::tipOfDay( pApp, SLOT( slotShowTip() ), m_pActionCollection );
+    KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
+    KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
+                "options_configure_global_keybinding" )->setText( i18n( "Configure Global Shortcuts" ) );
+    KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
+    KStdAction::quit( pApp, SLOT( quit() ), m_pActionCollection );
+    KStdAction::copy( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
+                "copy_clipboard" )->setText( i18n( "Copy Current Title to Clipboard" ) );
 
   //     new KAction( "Copy Current Title to Clipboard", CTRL + Key_C,
   //                  this, SLOT( slotCopyClipboard() ), m_pActionCollection, "copy_clipboard" );
 
+
+  // amaroK background pixmap
   m_oldBgPixmap.resize( size() );
 
   if ( paletteBackgroundPixmap() )
-    m_oldBgPixmap = *paletteBackgroundPixmap();
+     m_oldBgPixmap = *paletteBackgroundPixmap();
   else
-    m_oldBgPixmap.fill( pApp->m_bgColor );
+     m_oldBgPixmap.fill( pApp->m_bgColor );
 
   setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/amaroKonlyHG_w320.jpg" ) ) );
 
   m_pFrame = new QFrame( this );
+
+  //layout, widgets, assembly
   m_pFrameButtons = new QFrame( this );
   m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
 
@@ -310,24 +315,27 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
   lay5->setResizeMode( QLayout::FreeResize );
   lay7->setResizeMode( QLayout::FreeResize );
 
-  m_pFrame->setFixedSize( width(), 25 );
-  m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
+    // some sizing details
+    initScroll(); //requires m_pFrame to be created
+    setFixedSize( 310, 130 + m_pFrame->height() ); //was 155
+    initTimeDisplay();
+    m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 12 + 2 );
+    timeDisplay( false, 0, 0, 0 );
 
-  // set up system tray
-  m_pTray = new AmarokSystray( this, m_pActionCollection );
-  m_pTray->show();
-  QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
+    // set up system tray
+    m_pTray = new AmarokSystray( this, m_pActionCollection );
+    m_pTray->show();
+    QToolTip::add( m_pTray, i18n( "amaroK media player" ) );
 
-  initTimeDisplay();
-  initScroll();
-  timeDisplay( false, 0, 0, 0 );
+    // connect vistimer
+    connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
 
-  // Register with DCOP
-  if ( !kapp->dcopClient() ->isRegistered() )
-  {
-    kapp->dcopClient() ->registerAs( "amarok" );
-    kapp->dcopClient() ->setDefaultObject( objId() );
-  }
+    // Register with DCOP
+    if ( !kapp->dcopClient() ->isRegistered() )
+    {
+        kapp->dcopClient() ->registerAs( "amarok" );
+        kapp->dcopClient() ->setDefaultObject( objId() );
+    }
 }
 
 
@@ -339,8 +347,21 @@ PlayerWidget::~PlayerWidget()
 
 void PlayerWidget::initScroll()
 {
-  m_pixmapWidth = 800;
-  m_pixmapHeight = 20;
+  //so, the font selection in the options doesn't work, but since we offer font selection there
+  //here we should show the font the user has already chosen, ie the KDE default font.
+  //FIXME get the font selection working
+  //      I feel this should wait until we implement KConfig XT since that will make life easier
+
+  //QFont font( "Helvetica", 10 );
+  //font.setStyleHint( QFont::Helvetica );
+  //int frameHeight = QFontMetrics( font ).height() + 5;
+  int frameHeight = fontMetrics().height() + 5;
+
+  m_pFrame->setFixedSize( width(), frameHeight );
+  //m_pFrame->setFont( font );
+
+  m_pixmapWidth  = 800;
+  m_pixmapHeight = frameHeight; //m_optPlayerWidgetScrollFont
 
   m_pBgPixmap = new QPixmap( paletteBackgroundPixmap() ->convertToImage().copy( m_pFrame->x(),
                              m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
@@ -395,13 +416,8 @@ void PlayerWidget::setScroll( QString text, QString bitrate, QString samplerate 
   painterPix.setPen( pApp->m_fgColor );
   painterMask.setPen( Qt::color1 );
 
-  QFont font;
-  font.setStyleHint( QFont::Helvetica );
-  font.setFamily( "Helvetica" );
-  font.setPointSize( 10 );
-  //  font.setBold( true );
-  painterPix.setFont( font );
-  painterMask.setFont( font );
+  painterPix.setFont( m_pFrame->font() );
+  painterMask.setFont( m_pFrame->font() );
 
   painterPix.eraseRect( 0, 0, m_pixmapWidth, m_pixmapHeight );
   painterPix.drawText( 0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
@@ -499,19 +515,17 @@ void PlayerWidget::paintEvent( QPaintEvent * )
   erase( 20, 40, 120, 50 );
   QPainter pF( this );
 
-  QFont font;
+  QFont font( "Helvetica", 8 );
   font.setStyleHint( QFont::Helvetica );
-  font.setFamily( "Helvetica" );
-  font.setPointSize( 8 );
   pF.setFont( font );
-
   pF.setPen( pApp->m_fgColor );
+
   /*
       pF.drawText( 20, 40, m_bitrate );
       pF.drawText( 70, 40, m_samplerate );
   */
   //<mxcl> was above, however this wasn't working for me as at 1280x1024 I have fonts with lots of pixels
-  //<mxcl> we can use QFontMetrics however, we should decide on how to present these datas first!
+  //<mxcl> we can use QFontMetrics, however, we should decide on how to present these datas first!
   //<mxcl> below is temporary solution
   pF.drawText( 20, 40, m_bitrate + "  " + m_samplerate );
 }
@@ -521,10 +535,7 @@ void PlayerWidget::mouseReleaseEvent( QMouseEvent *e )
 {
   if ( m_pTimeDisplayLabel->geometry().contains( e->pos() ) )
   {
-    if ( pApp->m_optTimeDisplayRemaining )
-      pApp->m_optTimeDisplayRemaining = false;
-    else
-      pApp->m_optTimeDisplayRemaining = true;
+     pApp->m_optTimeDisplayRemaining = !pApp->m_optTimeDisplayRemaining;
   }
 }
 
@@ -583,10 +594,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
     m_pPopupMenu->setItemChecked( m_IdRepeatPlaylist, pApp->m_optRepeatPlaylist );
     m_pPopupMenu->setItemChecked( m_IdRandomMode, pApp->m_optRandomMode );
 
-    if ( pApp->playObjectConfigurable() )
-      m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, true );
-    else
-      m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, false );
+    m_pPopupMenu->setItemEnabled( m_IdConfPlayObject, pApp->playObjectConfigurable() );
 
     m_pPopupMenu->exec( e->globalPos() );
   }
@@ -634,35 +642,46 @@ void PlayerWidget::moveEvent( QMoveEvent * )
 }
 
 
+// SLOTS ---------------------------------------------------------------------
+
 void PlayerWidget::createVis()
-{
-  if ( pApp->m_optVisCurrent == 0 )
-    m_pVis = new VisWidget( this );
-  else if ( pApp->m_optVisCurrent == 1 )
-    m_pVis = new VisDistortWidget( this );
-  else
-    m_pVis = new VisWidgetV2( this );
-
-  m_pVis->setFixedSize( 168, 50 );
-  m_pLay6->addWidget( m_pVis );
-  connect( m_pVis, SIGNAL( clicked() ), this, SLOT( visClicked() ) );
-
-  m_pVis->show();
-}
-
-
-void PlayerWidget::visClicked()
 {
   delete m_pVis;
 
   pApp->m_optVisCurrent++;
-  pApp->m_optVisCurrent %= VIS_COUNT;
 
-  createVis();
+  switch( pApp->m_optVisCurrent ) {
+  case 0:
+  firstcase:
+     m_pVis = new BarAnalyser( this );
+     break;
+  case 1:
+     m_pVis = new DistortAnalyzer( this );
+     break;
+  case 2:
+     m_pVis = new BarAnalyser2( this );
+     break;
+  default:
+     //oh wise ones! Please forgive my use of the goto command!
+     //at first I just called createVis() again, which I felt was quite neat, but then I thought again,
+     //is this not a suitable place to use a goto? you're only not meant to use goto commands when a loop
+     //would suffice, and here I'm using one instead of pointless function recursion
+     //admittedly this is a little bit of a hack anyway.. but it can stay until we have a proper stack for
+     //viswidgets IMHO - <mxcl>
+
+     //this is so we don't have to remember how many viswidgets there are
+     pApp->m_optVisCurrent = 0;
+     goto firstcase;
+  }
+
+  m_pVis->setFixedSize( 168, 50 );
+  m_pLay6->addWidget( m_pVis );
+  connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
+
+  m_visTimer->start( m_pVis->timeout() );
+  m_pVis->show();
 }
 
-
-// SLOTS ---------------------------------------------------------------------
 
 void PlayerWidget::slotConfigShortcuts()
 {
@@ -724,16 +743,6 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
 }
 
 
-void PlayerWidget::windowActivationChange( bool oldActive )
-{
-  //FIXME show() emits AboutToShow, and then causes the widget to be activated, which again emits AboutToShow
-
-  if( !oldActive )
-    emit sigAboutToShow();
-
-  //QWidget::windowActivationChange( oldActive );
-}
-
 void PlayerWidget::show()
 {
   //this is done in show() rather than showEvent() because
@@ -743,10 +752,11 @@ void PlayerWidget::show()
   QWidget::show();
 }
 
-
-void PlayerWidget::hideEvent( QHideEvent * )
+void PlayerWidget::hide()
 {
-  emit sigMinimized();
+    emit sigAboutToHide();
+
+    QWidget::hide();
 }
 
 

@@ -1,24 +1,28 @@
-SUBDIRS = images amarokarts data
+SUBDIRS = images amarokarts analyzers data
 
-INCLUDES= $(all_includes) -I$(kde_includes)/taglib -I$(kde_includes)/arts
+INCLUDES = $(all_includes) -I$(kde_includes)/taglib -I$(kde_includes)/arts
 METASOURCES = AUTO
 
 EXTRA_DIST = browserwidget.h browserwin.h \
 	effectwidget.h expandbutton.h \
 	Options1.ui Options2.ui Options3.ui Options4.ui playerapp.h \
 	playerwidget.h playlistitem.h \
-	playlistwidget.h viswidget.h
+	playlistwidget.h
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp viswidget.cpp playlistwidget.cpp playlistitem.cpp playerwidget.cpp playerapp.cpp Options1.ui Options2.ui Options3.ui expandbutton.cpp effectwidget.cpp browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp Options4.ui visdistortwidget.cpp amarokbutton.cpp amarokfilelist.cpp viswidgetv2.cpp
-amarok_LDADD = ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl \
-	-lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde \
-	-lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
+amarok_SOURCES = main.cpp playlistwidget.cpp playlistitem.cpp playerwidget.cpp playerapp.cpp Options1.ui Options2.ui Options3.ui expandbutton.cpp effectwidget.cpp browserwin.cpp browserwidget.cpp amarokdcopiface.skel configdlg.cpp Options4.ui amarokbutton.cpp amarokfilelist.cpp
+
+
+
+amarok_LDADD = ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h Options2.h Options3.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h viswidget.h configdlg.h visdistortwidget.h amarokbutton.h amarokfilelist.h viswidgetv2.h
+noinst_HEADERS = Options1.h Options1.h Options1.h Options2.h Options3.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h Options2.h Options3.h Options3.ui.h Options4.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h Options2.h Options3.h Options3.ui.h Options4.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h
+
+
+
 
 install-data-local:
 	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/

@@ -95,7 +95,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
 
     m_GlowTimer = new QTimer( this );
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
-    m_GlowTimer->start( 50 );
+    m_GlowTimer->start( 70 );
 
     m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( false );

@@ -46,7 +46,7 @@ class KSystemTray;
 
 class AmarokButton;
 class ArtsConfigWidget;
-class VisWidget;
+class AnalyzerBase;
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -109,15 +109,15 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void setScroll( QString text, QString bitrate, QString samplerate );
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
-        void createVis();
 
         void show();
+        void hide();
 
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 
         QPopupMenu *m_pPopupMenu;
-        VisWidget *m_pVis;
+        AnalyzerBase *m_pVis;
         QFrame *m_pFrame;
         QFrame *m_pFrameButtons;
         AmarokSlider *m_pSlider;
@@ -151,6 +151,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void slotConfigPlayObject();
         void slotConfigWidgetDestroyed();
         void slotUpdateTrayIcon( bool visible );
+        void createVis();
 
     public /* DCOP */ slots:
        /* FIXME: move dcop iface to a separate impl class */
@@ -163,19 +164,13 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
        bool isPlaying();
 
     signals:
-        void sigMinimized();
+        void sigAboutToHide();
         void sigAboutToShow();
-
-    private slots:
-        void visClicked();
 
     private:
         void initScroll();
         void initTimeDisplay();
         void polish();
-
-        virtual void windowActivationChange( bool );
-        virtual void hideEvent( QHideEvent * );
 
         void paintEvent( QPaintEvent *e );
         void mouseReleaseEvent( QMouseEvent *e );
@@ -187,6 +182,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         // ATTRIBUTES ------
         QString m_bitrate, m_samplerate;
         QTimer *scrollTimer;
+        QTimer *m_visTimer;
         QBoxLayout *m_pLay6;
 
         QPixmap m_oldBgPixmap;

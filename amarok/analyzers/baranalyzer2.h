@@ -1,0 +1,66 @@
+/***************************************************************************
+                          baranalyzer2.h  -  description
+                             -------------------
+    begin                : Die Jan 7 2003
+    copyright            : (C) 2003 by Adam Pigg
+    email                :
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef VISWIDGETV2_H
+#define VISWIDGETV2_H
+
+#include "analyzerbase.h"
+
+#include <vector>
+
+class QMouseEvent;
+class QPixmap;
+class QWidget;
+
+#define BAND_COUNT 31
+
+/**
+ *@author piggz
+ */
+
+typedef struct
+{
+  unsigned char level;
+  unsigned char delay;
+}
+peak_t;
+
+class BarAnalyser2 : public AnalyzerBase
+{
+  Q_OBJECT
+
+public:
+  BarAnalyser2(QWidget *parent=0, const char *name=0);
+  virtual ~BarAnalyser2();
+
+  virtual void drawAnalyzer( std::vector<float> * );
+
+protected:
+  virtual void init();
+  std::vector<float> demoData();
+
+  QPixmap *m_pBgPixmap;
+  QPixmap *m_pSrcPixmap;
+  QPixmap *m_pComposePixmap;
+  QPixmap *m_pRoofPixmap;
+
+  // ATTRIBUTES:
+  peak_t peakArray[BAND_COUNT];
+  uint barArray[BAND_COUNT];
+
+};
+#endif

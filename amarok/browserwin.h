@@ -105,7 +105,6 @@ class BrowserWin : public QWidget
     private:
         void initChildren();
         void closeEvent( QCloseEvent * );
-        void hideEvent( QHideEvent * );
         void moveEvent( QMoveEvent * );
         void paintEvent( QPaintEvent * );
 
