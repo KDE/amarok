@@ -37,7 +37,7 @@ class CoverFetcher : public QObject
         void imageResult( KIO::Job* job );        
         void editSearch();
         void saveCover();
-                
+        void saveCover( QPixmap pixmap );        
     private:
         static const uint BUFFER_SIZE = 2000000; // 2mb
         

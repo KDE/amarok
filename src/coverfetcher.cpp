@@ -235,7 +235,8 @@ CoverFetcher::editSearch() //SLOT
     sdlg->textLabel->setText( m_text );
     sdlg->searchString->setText( m_saveas );
     sdlg->setModal( true );
-
+    connect( sdlg, SIGNAL( imageReady( QPixmap ) ), this, SLOT( saveCover( QPixmap ) ) );
+    
     if ( sdlg->exec() == QDialog::Accepted )
     {
         m_album = sdlg->searchString->text();
@@ -255,6 +256,15 @@ CoverFetcher::saveCover() //SLOT
     kdDebug() << k_funcinfo << endl;
 
     emit imageReady( m_saveas, m_pixmap );
+    deleteLater();
+}
+
+void
+CoverFetcher::saveCover( QPixmap pixmap ) //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    emit imageReady( m_saveas, pixmap );
     deleteLater();
 }
 

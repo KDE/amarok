@@ -31,7 +31,7 @@ public:
     QLabel* textLabel;
 
 signals:
-        void imageReady( const QPixmap& image );        
+        void imageReady( QPixmap image );        
 
 public slots:
     virtual void openFile();
