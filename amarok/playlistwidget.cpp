@@ -62,6 +62,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         m_rootPixmap( viewport() ),
         m_GlowCount( 100 ),
         m_GlowAdd( 5 ),
+        m_GlowTimer( new QTimer( this ) ),
         m_undoCounter( 0 )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;
@@ -71,6 +72,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
     setShowSortIndicator( true );
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
+    setItemsRenameable( true );
     //    setStaticBackground( true );
     //     m_rootPixmap.setFadeEffect( 0.5, Qt::black );
     //     m_rootPixmap.start();
@@ -84,14 +86,12 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
     addColumn( i18n( "Genre"     ),  80 );
     addColumn( i18n( "Directory" ),  80 );
 
-    setSorting( -1 );
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
     connect( this, SIGNAL( contentsMoving( int, int ) ), this, SLOT( slotEraseMarker() ) );
 
     setCurrentTrack( NULL );
     m_GlowColor.setRgb( 0xff, 0x40, 0x40 );
 
-    m_GlowTimer = new QTimer( this );
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     m_GlowTimer->start( 70 );
 
@@ -99,6 +99,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
     m_pDirLister->setAutoUpdate( false );
 
     initUndo();
+
+    setSorting( -1 );
 }
 
 
@@ -155,7 +157,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
         KURL::List urlList;
 
-        if ( e->source() == NULL )                       // dragging from outside amarok
+        if ( e->source() != pApp->m_pBrowserWin->m_pBrowserWidget )                       // dragging from outside amarok
         {
             kdDebug() << "dropped item from outside amaroK" << endl;
 
@@ -169,6 +171,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
         }
         else
         {
+        //wrongly assumes will be file:/ from browserwidget
             PlaylistItem *srcItem, *newItem;
             m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
 
@@ -327,6 +330,16 @@ void PlaylistWidget::focusInEvent( QFocusEvent *e )
 PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 {
     PlaylistItem * pNewItem;
+
+    //FIXME seems to be different slots for adding playlists, etc. try to find an appropriate root for adding new stuff
+    //FIXME sorting can really muck up your playlists innit. hence the undo function I spose. Need to add the icon to that button badly
+
+    //FIXME check Qt sources to see if we should do some logic first
+    //FIXME need to save sorting operations to the undo buffer
+    //FIXME need to start with a disabled UNDO button
+    //FIXME need to add tooltip to undo/redo buttons
+
+    setSorting( -1 ); //disable sorting or will not be inserted where we expect
 
     // we're abusing *after as a flag. value 1 == append to list
     if ( ( unsigned long ) after == 1 )
@@ -574,6 +587,18 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 
 void PlaylistWidget::slotHeaderClicked( int section )
 {
+  //FIXME check that all routes go via addItem(), perhaps clean this class a little
+  //FIXME KListView is a broken mess! It's probably up to us to fix it. What do we say?
+  //FIXME KListView has a fair amount of functionality (like save column that was sorted, etc. ) - are we taking advantage?
+  //FIXME DAMN! Doesn't work for double clicks, you need to set sorting to > # of columns instead then and let framework handle it (unless you want to use a timer! which you don't)
+
+  if ( columnSorted() == -1 )
+  {
+     setSorting( section, true );
+     sort();
+  }
+
+/*
     KPopupMenu popup( this );
 
     popup.insertTitle( i18n( "Sort by " ) + header()->label( section ) );
@@ -590,14 +615,15 @@ void PlaylistWidget::slotHeaderClicked( int section )
     {
         setSorting( section, true );
         sort();
-        setSorting( -1 );
+        //setSorting( -1 );
     }
     if ( result == MENU_DESCENDING )
     {
         setSorting( section, false );
         sort();
-        setSorting( -1 );
+        //setSorting( -1 );
     }
+*/
 }
 
 
