@@ -161,8 +161,6 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
         void showTagDialog( QPtrList<QListViewItem> items );
-        void showUsageMessage();
-        void hideUsageMessage();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
@@ -197,10 +195,10 @@ class Playlist : private KListView, public EngineObserver
         QPtrList<PlaylistItem> m_prevTracks; //the previous history
         QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
 
-        int           m_firstColumn;
-        int           m_totalLength;
-        int           m_selectCounter;
-        int           m_selectLength;
+        int m_firstColumn;
+        int m_totalLength;
+        int m_selectCounter;
+        int m_selectLength;
 
         KAction *m_undoButton;
         KAction *m_redoButton;
@@ -220,9 +218,6 @@ class Playlist : private KListView, public EngineObserver
         KActionCollection* const m_ac;
 
         std::vector<double> m_columnFraction;
-
-        QLabel *m_usageMessage;
-        QBoxLayout *m_usageMessageLayout;
 };
 
 #endif //AMAROK_PLAYLIST_H

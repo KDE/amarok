@@ -186,8 +186,10 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
-    //setItemMargin( 3 ); adds margin to ALL sides, not just left and right. DAMN!
-    //setDefaultRenameAction( QListView::Reject ); //FIXME Qt says this is the default anyway!
+
+    #if KDE_IS_VERSION( 3, 3, 91 )
+    setShadeSortColumn( true );
+    #endif
 
     //NOTE order is critical because we can't set indexes or ids
     addColumn( i18n( "Track Name" ),   0 );
@@ -264,8 +266,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     header()->installEventFilter( this );
-
-    showUsageMessage();
 }
 
 Playlist::~Playlist()
@@ -833,9 +833,6 @@ Playlist::clear() //SLOT
     }
     QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
 
-    if ( !m_usageMessage )
-        showUsageMessage();
-
     emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
 }
 
@@ -1045,15 +1042,38 @@ Playlist::dragObject()
     return new KURLDrag( list, map, viewport() );
 }
 
+#include <qsimplerichtext.h>
 void
 Playlist::viewportPaintEvent( QPaintEvent *e )
 {
     if( e ) KListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
 
-    if( m_marker )
-    {
-        QPainter painter( viewport() );
-        painter.fillRect( drawDropVisualizer( 0, 0, m_marker ), QBrush( colorGroup().highlight(), QBrush::Dense4Pattern ) );
+    if ( m_marker ) {
+        QPainter( viewport() ).fillRect(
+                drawDropVisualizer( 0, 0, m_marker ),
+                QBrush( colorGroup().highlight().dark(), QBrush::Dense4Pattern ) );
+    }
+    else if( isEmpty() ) {
+        QPainter p( viewport() );
+        QSimpleRichText t( i18n(
+                "<div align=center>"
+                  "<h3>The Playlist</h3>"
+                    "This is the playlist, to create a listing, "
+                    "drag tracks from the browser-panels on the left and drop them here, "
+                    "and then click double-click them to start them playing!"
+                  "<h3>The Browsers</h3>"
+                    "The browsers are the source of all your music."
+                "</div>" ), QApplication::font() );
+
+        const int wd3 = viewport()->width() / 3;
+
+        t.setWidth( wd3 );
+
+        const int y = (viewport()->height() - t.height()) / 2;
+
+        p.setBrush( alternateBackground() );
+        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30 );
+        t.draw( &p, wd3, y, QRect(), colorGroup()  );
     }
 }
 
@@ -1277,8 +1297,6 @@ Playlist::customEvent( QCustomEvent *e )
         m_clearButton->setEnabled( false );
         m_undoButton->setEnabled( false );
         m_redoButton->setEnabled( false );
-        if( m_usageMessage )
-            hideUsageMessage();
         break;
 
     case PlaylistLoader::JobFinishedEvent: {
@@ -1314,9 +1332,6 @@ Playlist::customEvent( QCustomEvent *e )
 
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
-
-        if( !itemCount && !m_usageMessage )
-            showUsageMessage();
 
         break; }
 
@@ -2118,31 +2133,6 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
     }
 }
 
-/** Shows a QLabel with usage information when the playlist is clear */
-void Playlist::showUsageMessage()
-{
-    m_usageMessage = new QLabel( i18n( "Drag tracks here and click 'Play' to start playing." ), viewport() );
-    m_usageMessage->setAlignment( Qt::AlignCenter | Qt::WordBreak );
-    m_usageMessage->setLineWidth( 1 );
-    m_usageMessage->setMinimumHeight( 40 );
-    m_usageMessage->setFrameStyle( QFrame::Box | QFrame::Plain );
-    m_usageMessage->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    m_usageMessageLayout = new QVBoxLayout( viewport() );
-    m_usageMessageLayout->addWidget( m_usageMessage );
-    m_usageMessageLayout->addItem( new QSpacerItem( 1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
-
-    m_usageMessage->show();
-}
-
-
-/** Removes the usage information label */
-void Playlist::hideUsageMessage()
-{
-    delete m_usageMessage;
-    delete m_usageMessageLayout;
-    m_usageMessage = 0;
-    m_usageMessageLayout = 0;
-}
 
 #include <kactivelabel.h>
 #include <kdialog.h>
