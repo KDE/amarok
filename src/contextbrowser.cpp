@@ -361,13 +361,10 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 {
     enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, MANAGER, TITLE };
 
-    if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) )
-       return;
-
-    KURL url( urlString );
-    if( url.path().contains( "lyric", FALSE ) )
+    if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) || urlString.startsWith( "lyricspage" ) )
         return;
 
+    KURL url( urlString );
     KPopupMenu menu;
     KURL::List urls( url );
     QString artist, album;

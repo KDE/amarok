@@ -2,7 +2,7 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // See COPYING file for licensing information.
 
-#define DEBUG_PREFIX "Scroblaaaah!"
+#define DEBUG_PREFIX "Scrobbler"
 
 #include "amarok.h"
 #include "amarokconfig.h"
