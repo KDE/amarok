@@ -16,4 +16,7 @@ This is a list of possible dcop scripts for amaroK. Add your ideas here.
   Announces trackchanges with text-to-speech software. Accessibility aid for the blind.
   Implementation detail: Requires communication amaroK -> Script.
 
+* Theme Selector
+  Manages and installs (downloads?) Context-Browser themes.
+
 
