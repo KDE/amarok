@@ -178,6 +178,13 @@ OSDWidget::paintEvent( QPaintEvent* )
     QImage shadow;
     QFontMetrics metrics = fontMetrics();
     Qt::AlignmentFlags align;
+    QColor shadowColor;
+
+    {
+        int h,s,v;
+        foregroundColor().getHsv( &h, &s, &v );
+        shadowColor = v > 128 ? Qt::black : Qt::white;
+    }
 
     switch( m_alignment ) {
         case Left:  align = Qt::AlignLeft; break;
@@ -187,7 +194,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     rect.addCoords( 20, 10, -20, -10 );
 
-    if( m_drawShadow )
+    if( false && m_drawShadow )
     {
         QRect r = rect;
         QPixmap pixmap( size() );
@@ -200,29 +207,26 @@ OSDWidget::paintEvent( QPaintEvent* )
         p.setPen( Qt::white );
         p.setBrush( Qt::white );
 
-        if( !m_image.isNull() ) {
-            p.drawRect( 20, 10, m_image.width(), m_image.height() );
+        if( !m_image.isNull() )
             r.rLeft() += m_image.width() + 10;
-        }
 
         p.drawText( r, align | WordBreak, m_text );
         p.end();
 
-        int h,s,v;
-        foregroundColor().getHsv( &h, &s, &v );
-
-        shadow = ShadowEngine::makeShadow( pixmap, v > 128 ? Qt::black : Qt::white );
+        shadow = ShadowEngine::makeShadow( pixmap, shadowColor );
     }
 
     p.begin( this );
     p.drawImage( 0, 0, shadow );
-    p.setPen( foregroundColor() );
 
     if( !m_image.isNull() ) {
         p.drawImage( 20, 10, m_image );
+        p.setPen( shadowColor );
+        p.drawRect( QRect(QPoint(19,9), m_image.size() + QSize(2,2)) );
         rect.rLeft() += m_image.width() + 10;
     }
 
+    p.setPen( foregroundColor() );
     p.drawText( rect, align | WordBreak, m_text );
     p.setPen( backgroundColor().dark() );
     p.drawRect( this->rect() );
@@ -378,12 +382,13 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
     // we special case prettyTitle and put it first
     // so that we handle things like streams better
     tokens << i18n("%artist - %title")
-           << i18n("%artist") << i18n("%album") << i18n("%title")  << i18n("%genre")
-           << i18n("%year")   << i18n("%track") << i18n("%length") << i18n("%bitrate");
+           << i18n("%artist") << i18n("%album") << i18n("%title")   << i18n("%genre")
+           << i18n("%year")   << i18n("%track") << i18n("%bitrate") << i18n("%length");
 
     tags   << bundle.prettyTitle()
            << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
-           << bundle.year() << bundle.track() << bundle.prettyLength() << bundle.prettyBitrate();
+           << bundle.year() << bundle.track() << bundle.prettyBitrate()
+           << (bundle.length() > 0 ? bundle.prettyLength() : QString::null); //ignore '-' or '?'
 
     for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
     {
