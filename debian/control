@@ -63,10 +63,11 @@ Description: GStreamer engine for the amaroK audio player
  don't.
  .
  The default audiosink that will be installed this package is OSS, but
- amaroK works with any other audiosinks (e.g., ALSA); there is an option
+ amaroK works with most other audiosinks (e.g., ALSA); there is an option
  in the configuration dialog to select the preferred sink and device.
  .
- For use with aRts, amarok-arts is preferred over gstreamer arts output.
+ For use with aRts, however, amarok-arts is your only choice, since this
+ GStreamer engine will not allow artssink to be used.
 
 Package: amarok-xine
 Architecture: any
