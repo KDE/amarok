@@ -1808,22 +1808,40 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             ? i18n( "&Restart" )
             : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
+    // Begin queue context entry logic
     popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
-    if( itemCount == 1 ) {
-        // show a more specific text
-        const int queueIndex = m_nextTracks.findRef( item );
-        if( queueIndex == -1 ) {
-            // this item is not already queued
-            const uint nextIndex = m_nextTracks.count() + 1;
-            if( nextIndex > 1 )
-                popup.changeItem( PLAY_NEXT, i18n( "&Queue Track (%1)" ).arg( nextIndex ) );
-            else
-                popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
+    bool queueToggle = false;
+    MyIt it( this, MyIt::Selected );
+    bool firstQueued = ( m_nextTracks.findRef( *it ) != -1 );
+
+    for( ++it ; *it; ++it ) {
+        if ( ( m_nextTracks.findRef( *it ) != -1 ) != firstQueued ) {
+            queueToggle = true;
+            break;
         }
-        else
-            popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue (%1)").arg( queueIndex + 1 ) );
     }
+    uint nextIndex = m_nextTracks.count() + 1;
+
+    if ( itemCount == 1 )
+    {
+        if ( !firstQueued )
+            popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
+        else
+            popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
+    } else {
+        if ( queueToggle )
+            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (%1 tracks)" ).arg( itemCount ) );
+        else
+            // remember, queueToggled only gets set to false if there are items queued and not queued.
+            // so, if queueToggled is false, all items have the same queue status as the first item.
+            if ( !firstQueued )
+                popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
+            else
+                popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Selected Tracks") );
+    }
+
+    // End queue entry logic
 
     if( isCurrent ) {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );

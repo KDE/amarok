@@ -26,6 +26,8 @@ VERSION 1.2.3:
     * DCOP call saveCurrentPlaylist() now returns the path to current.xml.
 
   BUGFIXES:
+    * Appropriate context menu entry for changing queue status for multiple
+      playlist items.
     * Fix regression preventing dequeuing multiple selected tracks.
     * 'Show Toolbar' remembers its settings between sessions. (BR 98662)
     * When doing Musicbrainz lookup from the Context browser, search for the
