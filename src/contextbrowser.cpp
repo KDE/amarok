@@ -212,7 +212,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     // Add stream metadata history item to list
     if ( !m_metadataHistory.last().contains( bundle.prettyTitle() ) ) {
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
-        m_metadataHistory << QString( "<td valign='top'><i>" + timeString + "</i>&nbsp;</td><td>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
+        m_metadataHistory << QString( "<td valign='top'><i>" + timeString + "</i>&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
 
     switch( m_db->isEmpty() || !m_db->isValid() ) {
@@ -462,7 +462,21 @@ void ContextBrowser::showCurrentTrack() //SLOT
         browser->write( QStringx(
                "<tr>"
                 "<td height='42' valign='top' class='rbcurrent' width='90%'>"
-                 "<span class='stream'><b>%1</b><br/><br/><i>%2</i><br/><br/>%3<br/>%4<br/>%5<br/>%6</span>"
+                 "<span class='stream'>"
+                  "<b>%1</b>"
+                  "<br/>"
+                  "<br/>"
+                  "<i>%2</i>"
+                  "<br/>"
+                  "<br/>"
+                  "%3"
+                  "<br/>"
+                  "%4"
+                  "<br/>"
+                  "%5"
+                  "<br/>"
+                  "%6"
+                 "</span>"
                 "</td>"
                 "<td valign='top' align='right' width='10%'></td>"
                "</tr>" )
