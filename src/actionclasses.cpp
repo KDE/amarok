@@ -74,7 +74,7 @@ MenuAction::plug( QWidget *w, int index )
         KToolBarButton* button = bar->getButton( id );
         button->setPopup( amaroK::Menu::instance() );
         button->setName( "toolbutton_amarok_menu" );
-        button->setIcon( "configure" );
+        button->setIcon( "amarok" );
 
         return containerCount() - 1;
     }
