@@ -122,14 +122,16 @@ CoverFetcher::startFetch()
     QString musicMode = AmarokConfig::amazonLocale() == "fr" ? "music-fr" : "music";
     //Amazon Japan isn't on xml.amazon.com
     QString tld = "com";
+    int mibenum = 4;  // latin1
     if (AmarokConfig::amazonLocale() == "jp") {
         musicMode = "music-jp";
         tld = "co.jp";
+        mibenum = 106;  // utf-8
     }
     QString url;
     url = "http://xml.amazon." + tld 
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE 
-        + "&KeywordSearch=" + KURL::encode_string_no_slash( query ) 
+        + "&KeywordSearch=" + KURL::encode_string_no_slash( query, mibenum ) 
         + "&mode=" + musicMode 
         + "&type=heavy&locale=" + AmarokConfig::amazonLocale() 
         + "&page=1&f=xml";
