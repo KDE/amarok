@@ -215,8 +215,8 @@ PlaylistWindow::init()
     //<Browsers>
         kdDebug() << "[browserBar] Initialisation statistics:\n";
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
-        addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist" );
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
+        addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist" );
         addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
     //</Browsers>
