@@ -68,7 +68,9 @@ void
 amaroK::Slider::slideEvent( QMouseEvent *e )
 {
     QSlider::setValue( orientation() == Horizontal
-        ? QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() )
+        ? ((QApplication::reverseLayout())
+          ? QRangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
+          : QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
         : QRangeControl::valueFromPosition( e->pos().y() - sliderRect().height()/2, height() - sliderRect().height() ) );
 }
 
