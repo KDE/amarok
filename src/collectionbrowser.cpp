@@ -655,7 +655,6 @@ CollectionView::setSortMode( int mode, bool rerender )
     if ( m_sortMode == sortTracktag )
         m_qbSortBy = QueryBuilder::valTrack;
     else
-    if ( m_sortMode == sortFilename )
         m_qbSortBy = QueryBuilder::valURL;
 
     if ( rerender )
