@@ -147,7 +147,7 @@ TagReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
    //audioproperties are read on demand
    TagLib::FileRef f( url.path().local8Bit(), readAudioProps ); //this is the slow step
 
-   return f.isNull()? 0 : new MetaBundle( url, f.tag() );
+   return f.isNull()? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
 }
 
 void
