@@ -2,10 +2,10 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information.
 
+#include "app.h"            //makePlaylist()
 #include "collectionbrowser.h"
 #include "directorylist.h"
 #include "metabundle.h"
-#include "app.h"      //makePlaylist()
 #include "sqlite/sqlite.h"
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -17,6 +17,7 @@
 #include <qmessagebox.h>
 #include <qptrlist.h>
 #include <qtimer.h>
+#include <qtooltip.h>       //QToolTip::add()
 
 #include <kactioncollection.h>
 #include <kconfig.h>
@@ -28,6 +29,7 @@
 #include <kmenubar.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>
+#include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
 
@@ -45,12 +47,24 @@ CollectionBrowser::CollectionBrowser( const char* name )
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
     menu->insertItem( i18n( "Primary" ), m_cat1Menu );
     menu->insertItem( i18n( "Secondary" ), m_cat2Menu );
+    
+    { //<Search LineEdit>
+        QHBox *hbox; QToolButton *button;
 
-    QHBox * hbox2 = new QHBox( this );
-    hbox2->setSpacing( 4 );
-    new QLabel( i18n( "Search for:" ), hbox2 );
-    m_searchEdit = new KLineEdit( hbox2 );
+        hbox         = new QHBox( this );
+//                        new QLabel( i18n( "Search for:" ), hbox );
+        button       = new QToolButton( hbox );
+        m_searchEdit = new KLineEdit( hbox );
 
+        hbox->setMargin( 4 );
+        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
+        m_searchEdit->setFrame( QFrame::Sunken );
+        connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
+    } //</Search LineEdit>
+    
     m_view = new CollectionView( this );
     //m_view->setMargin( 2 );
 
