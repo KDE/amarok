@@ -532,6 +532,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
     #define escapeHTML(s)     QString(s).replace( "<", "&lt;" ).replace( ">", "&gt;" )
     #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" )
 
+    if ( EngineController::engine()->isStream() )
+        showCurrentStream();
+
     if ( !m_currentTrack )
         return;
 
@@ -640,11 +643,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
     {
-        browser->write( "<div style='padding: 1em 0.5em 2em 0.5em'>");
+        browser->write( "<div class='warning' style='padding: 1em 0.5em 2em 0.5em'>");
         browser->write(   i18n("If you would like to see contextual information about this track, "
                                "you must add it to your Collection.") );
         browser->write(  "&nbsp;"
-                         "<a href='show:collectionSetup'>" );
+                         "<a class='warning' href='show:collectionSetup'>" );
         browser->write(    i18n( "Click here to change your Collection setup" ) );
         browser->write(  "</a>."
                         "</div>" );
@@ -786,13 +789,15 @@ void ContextBrowser::setStyleSheet()
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
-                       .arg( pxSize ).arg( text ).arg( colorGroup().highlightedText().name() ).arg( locate( "data", "amarok/images/fadein.png" ) );
+                       .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? colorGroup().highlightedText().name() : colorGroup().highlight().name() )
+                       .arg( locate( "data", "amarok/images/fadein.png" ) );
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
 
     m_styleSheet += QString( ".menu { color: %1; background-color: %2; margin: 0.4em 0.0em; font-weight: bold; }" ).arg( fg ).arg( bg );
 
     //used in the currentlyPlaying block
-    //m_styleSheet += QString( ".album { font-weight: bold; }" );
+    m_styleSheet += QString( ".stream { font-size: %1px; }" ).arg( pxSize );
+    m_styleSheet += QString( ".warning { font-size: %1px; color: %2; font-weight: bold; }" ).arg( pxSize ).arg( bg );
 
     //set background for all tables
     m_styleSheet += QString( "table { background-color: %1; }" ).arg( colorGroup().base().name() );
@@ -866,7 +871,7 @@ void ContextBrowser::showCurrentStream()
     if ( m_currentTrack )
     {
         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='album'><b>%1</b></span><br/>%2<br/>%3<br/>%4</td>"
+                                   "<span class='stream'><b>%1</b><br/>%2<br/>%3<br/>%4</span></td>"
                                    "<td valign='top' align='right' width='10%'> </td></tr></table>" )
                         .args( QStringList()
                             << escapeHTML( m_currentTrack->prettyTitle() )
@@ -879,7 +884,7 @@ void ContextBrowser::showCurrentStream()
     else
     {
         browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='album'><b>%1</b></span></td>"
+                                   "<span class='stream'><b>%1</b></span></td>"
                                    "<td valign='top' align='right' width='10%'></td></tr></table>" )
                         .args( QStringList()
                             << escapeHTML( m_url.path() )

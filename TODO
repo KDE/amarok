@@ -8,6 +8,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+          <muesli> Take care of KToolbars in Context/Collection for palette changes
+
           <markey> The splash screen needs to be updated for 1.1.1.
 
           <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
