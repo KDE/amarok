@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  * fix: amaroK showing the "X" icon instead of the correct one
+
 VERSION 0.9:
   * chg: playlistBrowser removed until next release
   * fix: playerWidget font is now configurable, you need to start new track for the
