@@ -70,7 +70,7 @@ App::App()
     DEBUG_BLOCK
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    bool restoreSession = args->count() == 0 || args->isSet( "append" )  || args->isSet( "enqueue" );
+    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" );
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
@@ -172,8 +172,6 @@ App::~App()
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
-    delete m_pDcopPlayerHandler;
-    delete m_pDcopPlaylistHandler;
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,

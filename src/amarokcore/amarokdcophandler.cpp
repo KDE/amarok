@@ -42,6 +42,7 @@ namespace amaroK
 
     DcopPlayerHandler::DcopPlayerHandler()
         : DCOPObject( "player" )
+        , QObject( kapp )
     {
         // Register with DCOP
         if ( !kapp->dcopClient()->isRegistered() ) {
@@ -288,7 +289,7 @@ namespace amaroK
         //NOTE I have no idea why we need to do this, I never get startup notification from
         //the amarok binary anyway --mxcl
         debug() << "Startup ID: " << args.first() << endl;
-        kapp->setStartupId( args.first().latin1() ); //we encoded it from latin1 in the loader
+        kapp->setStartupId( args.first().local8Bit() ); //we encoded it from latin1 in the loader
         KStartupInfo::appStarted();
         args.pop_front();
 
@@ -297,7 +298,7 @@ namespace amaroK
 
         QStringList::ConstIterator it = args.constBegin();
         for( int i = 1; i < argc; ++i, ++it ) {
-            argv[i] = const_cast<char*>((*it).latin1());
+            argv[i] = qstrdup((*it).local8Bit());
             debug() << "Extracted: " << argv[i] << endl;
         }
 
@@ -325,6 +326,7 @@ namespace amaroK
 
     DcopPlaylistHandler::DcopPlaylistHandler()
         : DCOPObject( "playlist" )
+        , QObject( kapp )
     {}
 
     void DcopPlaylistHandler::addMedia(const KURL &url)
