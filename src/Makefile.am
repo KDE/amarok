@@ -11,7 +11,7 @@ endif
 
 bin_PROGRAMS = amarokapp
 
-KDE_OPTION = nofinal
+KDE_OPTIONS = nofinal
 
 SUBDIRS = \
     amarokcore \
