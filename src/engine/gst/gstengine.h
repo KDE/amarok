@@ -84,6 +84,8 @@ class GstEngine : public EngineBase
         GstElement*                              m_pFilesrc;
         GstElement*                              m_pIdentity;
         GstElement*                              m_pVolume;
+        GstElement*                              m_pAudioconvert;
+        GstElement*                              m_pAudioscale;
 
         vector<float>                            m_scopeBuf;
         uint                                     m_scopeBufIndex;

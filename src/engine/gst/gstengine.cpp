@@ -349,6 +349,9 @@ GstEngine::play( const KURL& url )           //SLOT
     m_pIdentity = gst_element_factory_make( "identity", "rawscope" );
     m_pVolume = gst_element_factory_make( "volume", "volume" );
 
+    m_pAudioconvert = gst_element_factory_make( "audioconvert", "audioconvert" );
+    m_pAudioscale   = gst_element_factory_make( "audioscale", "audioscale" );
+
     g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
                        G_CALLBACK( handoff_cb ), m_pThread );
     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
@@ -356,9 +359,10 @@ GstEngine::play( const KURL& url )           //SLOT
 
     /* add objects to the main pipeline */
     gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,
-                      m_pVolume, m_pAudiosink, NULL );
+                      m_pVolume, m_pAudioconvert, m_pAudioscale, m_pAudiosink, NULL );
     /* link src to sink */
-    gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity, m_pVolume, m_pAudiosink, NULL );
+    gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity,
+                           m_pVolume, m_pAudioconvert, m_pAudioscale, m_pAudiosink, NULL );
 
     setVolume( volume() );
     m_pipelineFilled = true;
