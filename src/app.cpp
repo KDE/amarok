@@ -25,6 +25,7 @@ email                : markey@web.de
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
+#include "equalizersetup.h"
 #include "firstrunwizard.h"
 #include "metabundle.h"
 #include "osd.h"
@@ -711,7 +712,7 @@ void App::engineVolumeChanged( int newVolume )
     amaroK::OSD::instance()->showOSD( i18n("Volume: %1%").arg( newVolume ), true );
 }
 
-void App::slotConfigEffects( bool show )
+void App::slotConfigEffects( bool show ) //SLOT
 {
     if( show )
     {
@@ -730,6 +731,12 @@ void App::slotConfigEffects( bool show )
         delete EffectWidget::self; //will set self = 0 in its dtor
 
     if( m_pPlayerWindow ) m_pPlayerWindow->setEffectsWindowShown( show );
+}
+
+
+void App::slotConfigEqualizer() //SLOT
+{
+    EqualizerSetup::instance()->show();
 }
 
 

@@ -35,6 +35,7 @@ namespace amaroK
                 ID_SHOW_SCRIPT_SELECTOR,
                 ID_SHOW_SCRIPT_CONSOLE,
                 ID_SHOW_EFFECTS,
+                ID_CONFIGURE_EQUALIZER,
                 ID_SHOW_WIZARD,
                 ID_SHOW_MENUBAR
             };

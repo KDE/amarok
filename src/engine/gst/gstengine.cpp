@@ -568,7 +568,12 @@ GstEngine::setEqualizerGains( std::vector<float>* gains ) //SLOT
 {
     if ( !m_pipelineFilled ) return;
 
-    gst_element_set( m_gst_equalizer, "gain", gains, NULL );
+    m_equalizerGains.resize( gains->size() );
+
+    for ( int i = 0; i < gains->size(); i++ )
+        m_equalizerGains[i] = gains->at( i );
+
+    gst_element_set( m_gst_equalizer, "gain", &m_equalizerGains, NULL );
 }
 
 

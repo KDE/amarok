@@ -107,6 +107,7 @@ Menu::Menu()
     insertSeparator();
 
     insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, ID_SHOW_EFFECTS );
+    insertItem( i18n( "Configure E&qualizer..." ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     setItemEnabled( ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
     safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
     safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );

@@ -49,6 +49,7 @@ amarokapp_SOURCES = \
     effectwidget.cpp \
     enginecontroller.cpp \
     engineobserver.cpp \
+    equalizersetup.cpp \
     fht.cpp \
     filebrowser.cpp \
     firstrunwizard.ui \

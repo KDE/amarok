@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: 10-band IIR equalizer for GStreamer-engine.
   FIX: The background gradient effect in Context-Browser is now much
        faster. The gradient also looks nicer. (BR 91276)
   FIX: Password-protected streams did not work correctly. (BR 91184).

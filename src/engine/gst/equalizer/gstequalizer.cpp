@@ -315,8 +315,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
                  * The multiplication by 2.0 was 'moved' into the coefficients to save
                  * CPU cycles here */
                 /* Apply the gain  */
-                out[channel] +=  obj->data_history[band][channel].y[i]*0.0; // * 2.0;
-//                 out[channel] +=  obj->data_history[band][channel].y[i]*obj->gain[band][channel]; // * 2.0;
+                out[channel] +=  obj->data_history[band][channel].y[i]*obj->gain[band][channel]; // * 2.0;
             } /* For each band */
 
             /* Volume stuff
