@@ -27,6 +27,7 @@ extern "C"
 #include <qfile.h>
 #include <qregexp.h>
 #include <qtextstream.h>
+#include <taglib/taglib.h>
 
 
 namespace amaroK
@@ -66,7 +67,7 @@ namespace amaroK
             debug() << "amaroK is crashing...\n";
 
             QString path = amaroK::saveLocation() + "backtrace";
-            QString subject = APP_VERSION;
+            QString subject = APP_VERSION " ";
             QString body = i18n(
                     "amaroK has crashed! We're terribly sorry about this :(\n\n"
                     "But, all is not lost! You could potentially help us fix the crash. "
@@ -77,7 +78,13 @@ namespace amaroK
             body += "Engine:     %1\n"
                     "Build date: " __DATE__ "\n"
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
-                    "KDElibs:    " KDE_VERSION_STRING "\n";
+                    "KDElibs:    " KDE_VERSION_STRING "\n"
+                    "TagLib:     %2.%3.%4\n";
+
+            body = body.arg( AmarokConfig::soundSystem() )
+                    .arg( TAGLIB_MAJOR_VERSION )
+                    .arg( TAGLIB_MINOR_VERSION )
+                    .arg( TAGLIB_PATCH_VERSION );
 
             #ifdef NDEBUG
             body += "NDEBUG:     true";
@@ -126,24 +133,26 @@ namespace amaroK
             /// analyze usefulness
             const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
 
-            if( fileCommandOutput.findRev( "not stripped", false ) < 0 )
-                subject += " [stripped]";
+            if( fileCommandOutput.find( "not stripped", false ) == -1 )
+                subject += "[stripped]";
 
             if( !bt.isEmpty() ) {
                 const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ \\w* \\?\\?") );
                 const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+") );
+                const int totalFrames = invalidFrames + validFrames;
 
-                if( invalidFrames > 0 && validFrames / invalidFrames < 2 )
-                    subject += " [likely invalid]";
+                subject += QString("[validity: %1]").arg( double(validFrames) / totalFrames, 0, 'f', 2 );
+                subject += QString("[frames: %1]").arg( totalFrames );
 
-                if( validFrames < 5 )
-                    subject += " [short]";
-
-                if( bt.contains( QRegExp("at \\w*\\.cpp:\\d+\n") ) >= 0 )
-                    subject += " [good]";
+                if( bt.find( QRegExp(" at \\w*\\.cpp:\\d+\n") ) >= 0 )
+                    subject += "[line numbers]";
             }
             else
                 subject += "[empty]";
+
+            subject += QString("[%1]").arg( AmarokConfig::soundSystem().remove( QRegExp("-?engine") ) );
+
+            debug() << subject << endl;
 
 
             //TODO -fomit-frame-pointer buggers up the backtrace, so detect it
@@ -166,7 +175,7 @@ namespace amaroK
                     /*cc*/          QString(),
                     /*bcc*/         QString(),
                     /*subject*/     subject,
-                    /*body*/        body.arg( AmarokConfig::soundSystem() ),
+                    /*body*/        body,
                     /*messageFile*/ QString(),
                     /*attachURLs*/  QStringList( path ),
                     /*startup_id*/  "" );
