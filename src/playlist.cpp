@@ -276,7 +276,36 @@ Playlist::insertMedia( KURL::List list, int options )
     if( options & Replace )
        clear();
     else if( options & Queue )
-       after = currentTrack();
+    {
+        KURL::List addMe = list;
+        KURL::List::Iterator jt;
+        
+//         add any songs not in the playlist to it.
+        for( MyIt it( this, 0 ); *it; ++it ) {
+            jt = addMe.find( (*it)->url() );
+
+            if ( jt != addMe.end() ) {
+                addMe.remove( jt ); //dont want to add a track which is already present in the playlist
+            }
+        }
+        after = lastItem();
+        insertMediaInternal( addMe, after, directPlay );
+        
+        // find the songs and queue them.
+        for (MyIt it( this, 0 ); *it; ++it ) {
+            jt = list.find( (*it)->url() );
+            
+            if ( jt != list.end() )
+            {
+                queue( *it );
+                list.remove( jt );
+            }
+        }
+        refreshNextTracks();
+        return;
+        
+    }
+
     else
        //we do this by default, even if we were passed some stupid flag combination
        after = lastItem();
@@ -362,7 +391,6 @@ Playlist::restoreSession()
 void
 Playlist::playNextTrack()
 {
-        
     PlaylistItem *item = currentTrack();
 
     if( !AmarokConfig::repeatTrack() )
@@ -372,6 +400,7 @@ Playlist::playNextTrack()
             item = m_nextTracks.first();
             m_nextTracks.remove();
         }
+        
         else if( AmarokConfig::randomMode() )
         {
             QValueVector<PlaylistItem*> tracks;
@@ -397,12 +426,12 @@ Playlist::playNextTrack()
                     while( m_prevTracks.count() > 40 )
                         m_prevTracks.remove(); //removes current item
                 }
-		
-		if( AmarokConfig::repeatPlaylist() )
-		{
-			playNextTrack();
-			return;
-		}
+
+                if( AmarokConfig::repeatPlaylist() )
+                {
+                    playNextTrack();
+                    return;
+                }
                 //else we stop via activate( 0 ) below
             }
             else item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
@@ -457,6 +486,30 @@ Playlist::playCurrentTrack()
     //since the engine is not loaded the first time the user presses play
     //then calling the next() function wont play it
     activate( currentTrack() );
+}
+
+void
+Playlist::queue( QListViewItem *item )
+{
+    #define item static_cast<PlaylistItem*>(item)
+    
+    const int  queueIndex  = m_nextTracks.findRef( item );
+    const bool isQueued    = queueIndex != -1;    
+
+    item->setSelected( false ); //for prettiness
+    
+    if( isQueued )
+    {
+        //remove the item, this is better way than remove( item )
+        m_nextTracks.remove( queueIndex ); //sets current() to next item
+        refreshNextTracks(); //from current()
+    }
+    else m_nextTracks.append( item );
+
+    //NOTE "item" is repainted due to the setSelected() call
+
+    updateNextPrev();
+    #undef item
 }
 
 void
@@ -1685,19 +1738,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case PLAY_NEXT:
-        item->setSelected( false ); //for prettiness
-
-        if( isQueued )
-        {
-            //remove the item, this is better way than remove( item )
-            m_nextTracks.remove( queueIndex ); //sets current() to next item
-            refreshNextTracks(); //from current()
-        }
-        else m_nextTracks.append( item );
-
-        //NOTE "item" is repainted due to the setSelected() call
-
-        updateNextPrev();
+        queue( item );
         break;
 
     case VIEW:

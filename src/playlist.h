@@ -140,6 +140,7 @@ class Playlist : private KListView, public EngineObserver
         void saveUndoState();
         void columnOrderChanged();
         void updateNextPrev();
+        void queue( QListViewItem* );
         void activate( QListViewItem* );
         void columnResizeEvent( int, int, int );
 
