@@ -177,7 +177,7 @@ gst_streamsrc_get ( GstPad * pad )
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
     
     if ( src->stopped )
-        return GST_DATA( gst_event_new( GST_EVENT_EMPTY ) );
+        return GST_DATA( gst_event_new( GST_EVENT_FLUSH ) );
     
     // Signal KIO to resume transfer when buffer reaches our low limit
     if ( *src->streamBufIndex < BUFFER_RESUME ) 
@@ -193,7 +193,7 @@ gst_streamsrc_get ( GstPad * pad )
     }
     // Return when buffer is not filled
     else if ( *src->streamBufIndex < BUFFER_MIN ) 
-        return GST_DATA( gst_event_new( GST_EVENT_EMPTY ) );
+        return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
             
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
