@@ -617,12 +617,13 @@ CollectionView::startDrag() {
 void
 CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    if ( !item || item->depth() != 2 ) return;
-    
-    KPopupMenu menu( this );
-    menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
-
-    menu.exec( point );
+    if ( !item ) return;
+        
+    if ( m_category2 == "None" || item->depth() == 2 ) {
+        KPopupMenu menu( this );
+        menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
+        menu.exec( point );
+    }
 }
 
 
@@ -630,38 +631,40 @@ void
 CollectionView::showTrackInfo() //slot
 {
     Item* item = static_cast<Item*>( currentItem() );    
-    if ( !item || item->depth() != 2 ) return;
-
-    QString command = QString
-                        ( "SELECT DISTINCT artist, album, genre, year, comment FROM tags "
-                          "WHERE url = '%1';" )
-                        .arg( item->url().path() );
+    if ( !item ) return;
     
-    QStringList values;
-    QStringList names;
-    execSql( command, &values, &names );
-    if ( values.isEmpty() ) return;
+    if ( m_category2 == "None" || item->depth() == 2 ) {
+        QString command = QString
+                          ( "SELECT DISTINCT artist, album, genre, year, comment FROM tags "
+                            "WHERE url = '%1';" )
+                            .arg( item->url().path() );
+        
+        QStringList values;
+        QStringList names;
+        execSql( command, &values, &names );
+        if ( values.isEmpty() ) return;
+        
+        QString str  = "<html><body><table width=\"100%\" border=\"1\">";
+        QString body = "<tr><td>%1</td><td>%2</td></tr>";
     
-    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
-    QString body = "<tr><td>%1</td><td>%2</td></tr>";
-
-    str += body.arg( i18n( "Title" ),  item->text( 0 ) );
-    str += body.arg( i18n( "Artist" ), values[0] );
-    str += body.arg( i18n( "Album" ),  values[1] );
-    str += body.arg( i18n( "Genre" ),  values[2] );
-    str += body.arg( i18n( "Year" ),   values[3] );
-    str += body.arg( i18n( "Comment" ),values[4] );
-//     str += body.arg( i18n( "Length" ), mb.prettyLength() );
-//     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
-//     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-
-    str.append( "</table></body></html>" );
-
-    QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
-                     QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
-                     0, 0, true, Qt::WStyle_DialogBorder );
-    box.setTextFormat( Qt::RichText );
-    box.exec();
+        str += body.arg( i18n( "Title" ),  item->text( 0 ) );
+        str += body.arg( i18n( "Artist" ), values[0] );
+        str += body.arg( i18n( "Album" ),  values[1] );
+        str += body.arg( i18n( "Genre" ),  values[2] );
+        str += body.arg( i18n( "Year" ),   values[3] );
+        str += body.arg( i18n( "Comment" ),values[4] );
+    //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
+    //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
+    //     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
+    
+        str.append( "</table></body></html>" );
+    
+        QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
+                        QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
+                        0, 0, true, Qt::WStyle_DialogBorder );
+        box.setTextFormat( Qt::RichText );
+        box.exec();
+    }
 }
 
 
