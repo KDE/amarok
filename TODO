@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <markey> When "Repeat Track" is enabled, turn the play icon in CurrentTrack into a
-                   "recycle" style icon, as feedback.
-
           <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
                    so show the artist or album that is right clicked.
 
@@ -46,7 +43,11 @@ SHORT-TERM (URGENT):
 
   FIX 134 <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
+
 MID-TERM:
+
+          <markey> When "Repeat Track" is enabled, turn the play icon in CurrentTrack into a
+                   "recycle" style icon, as feedback.
 
   ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
