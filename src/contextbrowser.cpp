@@ -1520,10 +1520,6 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".song-title { font-weight: bold; }" );
     styleSheet += QString( ".song-place { font-size: %1px; font-weight: bold; }" ).arg( pxSize + 3 );
-    styleSheet += QString( ".song-score { }" );
-    styleSheet += QString( ".song-artist { }" );
-    styleSheet += QString( ".song-album { }" );
-    styleSheet += QString( ".song-time { } " );
 
     //box: the base container for every block (border hilighted on hover, 'A' without underlining)
     styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
@@ -1536,33 +1532,21 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
             .arg( bg )
             .arg( pxSize + 2 )
             .arg( headerGradientImage );
-    styleSheet += QString( ".box-header:hover {}" );
 
     styleSheet += QString( ".box-body { padding: 2px; background-color: %1; background-image: url( %2 ); background-repeat: repeat-x; font-size:%3px; }" )
             .arg( colorGroup().base().name() )
             .arg( shadowGradientImage )
             .arg( pxSize );
-    styleSheet += QString( ".box-body:hover {}" );
-
-    styleSheet += QString( ".box-row {}" );
-    styleSheet += QString( ".box-row:hover {}" );
-    styleSheet += QString( ".box-row-alt {}" );
-    styleSheet += QString( ".box-row-alt:hover {}" );
 
     //"Albums by ..." related styles
-    styleSheet += QString( ".album-header {}" );
     styleSheet += QString( ".album-header:hover { color: %1; background-color: %2; cursor: pointer; }" ).arg( fg ).arg( bg );
     styleSheet += QString( ".album-header:hover a { color: %1; }" ).arg( fg );
     styleSheet += QString( ".album-body { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
     styleSheet += QString( ".album-title { font-weight: bold; }" );
     styleSheet += QString( ".album-info { float:right; padding-right:4px; font-size: %1px }" ).arg( pxSize );
     styleSheet += QString( ".album-image { padding-right: 4px; }" );
-    styleSheet += QString( ".album-year { }" );
     styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
-    styleSheet += QString( ".album-song-trackno { }" );
-    styleSheet += QString( ".album-song-title { } " );
-    styleSheet += QString( ".album-song-time { } " );
 
     styleSheet += QString( ".button { text-align: center; margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( text ).arg( colorGroup().base().name() );
     styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( text ).arg( bg ).arg( colorGroup().base().name() );
