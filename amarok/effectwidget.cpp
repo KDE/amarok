@@ -18,7 +18,7 @@
 #include "effectwidget.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
-#include "playerwidget.h"
+//#include "playerwidget.h"
 
 #include <string>
 #include <vector>

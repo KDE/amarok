@@ -18,6 +18,7 @@
 #define METABUNDLE_H
 
 #include <qstring.h>
+#include <klocale.h>
 #include <taglib/audioproperties.h>
 
 
@@ -48,6 +49,10 @@ class MetaBundle
    MetaBundle( const QString &title, uint length ) : m_title( title ), m_bitrate( 0 ), m_length( length ), m_sampleRate( 0 ) {}
    MetaBundle() : m_bitrate( 0 ), m_length( 0 ), m_sampleRate( 0 ) {}
 
+   QString prettyLength() const;
+   QString prettyBitRate() const;
+
+//private:
    const QString m_title;
    const QString m_artist;
    const QString m_album;
@@ -60,5 +65,35 @@ class MetaBundle
    int  m_length; //-1 no established length, eg streams
    uint m_sampleRate;
 };
+
+
+inline QString
+MetaBundle::prettyLength() const
+{
+    //TODO don't inline! (code bloat)
+
+    QString s;
+
+    if( m_length == -1 ) s = "-";
+    else if( m_length > 0 )
+    {
+        //we don't do hours, people aren't interested in them
+        int min = m_length / 60 % 60;
+        int sec = m_length % 60;
+
+        //don't zeroPad the minutes
+        s.setNum( min ).append( ':' );
+        if( sec < 10 ) s += '0';
+        s += QString::number( sec );
+    }
+
+    return s;
+}
+
+inline QString
+MetaBundle::prettyBitRate() const
+{
+    return ( m_bitrate == 0 ) ? QString() : i18n( "Bitrate = %1", "%1 kbps" ).arg( m_bitrate );
+}
 
 #endif

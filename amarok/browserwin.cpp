@@ -392,7 +392,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //</FileBrowser>
 
     //</PlaylistBrowser>
-        //m_sideBar->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
+        m_sideBar->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
     //</PlaylistBrowser>
 
     { //<StreamBrowser>

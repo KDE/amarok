@@ -588,7 +588,7 @@ TagReader::readTags( const KURL &url, bool readAudioProps ) //STATIC
 {
    //audioproperties are read on demand (TODO make this so!)
    //TODO read only the audioproperties that are visible
-   TagLib::FileRef f( url.path().local8Bit(), /*readAudioProps*/ true );
+   TagLib::FileRef f( url.path().local8Bit(), readAudioProps );
 
    if( !f.isNull() )
    {

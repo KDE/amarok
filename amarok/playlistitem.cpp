@@ -78,17 +78,16 @@ PlaylistItem::~PlaylistItem()
 #include <taglib/fileref.h>
 #include <taglib/audioproperties.h>
 
-MetaBundle PlaylistItem::metaBundle() const
+MetaBundle PlaylistItem::metaBundle()
 {
-    //FIXME only do once!
-    //Here we do an accurate scan before every bundle is requested because:
-    //1) they are only ever requested individually
-    //2) we REQUIRE this data to get the song length right!
+    //Do this everytime to save cost of storing int for length/samplerate/bitrate
+    //This function isn't called often (on play request), but playlists can contain
+    //thousands of items. So favor saving memory over CPU.
     TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Accurate );
 
     //FIXME hold a small cache of metabundles?
     //then return by reference
-    return MetaBundle( text( 1 ),
+    MetaBundle bundle( text( 1 ),
                        text( 2 ),
                        text( 3 ),
                        text( 4 ),
@@ -96,13 +95,16 @@ MetaBundle PlaylistItem::metaBundle() const
                        text( 6 ),
                        text( 7 ),
                        ( f.isNull() ) ? 0 : f.audioProperties() );
+
+    if( text(  9 ).isEmpty() ) setText(  9, bundle.prettyLength()  );
+    if( text( 10 ).isEmpty() ) setText( 10, bundle.prettyBitRate() );
+
+    return bundle;
 }
 
 
 void PlaylistItem::setMeta( const MetaBundle &bundle )
 {
-    QString length( "-" );
-
     if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be already set by playlist files
     setText( 2, bundle.m_artist );
     setText( 3, bundle.m_album );
@@ -111,45 +113,11 @@ void PlaylistItem::setMeta( const MetaBundle &bundle )
     setText( 6, bundle.m_genre );
     setText( 7, bundle.m_track );
 
-    if( bundle.m_length != -1 )
-    {
-        int min = bundle.m_length / 60 % 60;
-        int sec = bundle.m_length % 60;
-
-        length  = QString::number( min ); //don't zeroPad, instead we rightAlign the column
-        length += QChar( ':' );
-        length += zeroPad( sec );
-    }
-
-    setText(  9, length );
-    setText( 10, QString::number( bundle.m_bitrate ) + "kbps" );
+    //FIXME don't overwrite the playlist bitrate/lengths with nothing!
+    setText( 9, bundle.prettyLength() );
+    setText( 10, bundle.prettyBitRate() );
 }
 
-
-const QString PlaylistItem::length( uint se ) const
-{
-   //FIXME, we rely on arts. This function is silly currently
-   //FIXME  store length in the playlistItem or use taglib everytime, or always use arts BUT move this function!
-
-   int s = se;
-   int m = s / 60;
-   int h = m / 60;
-
-   if ( h )
-      return QString("%1:%2:%3").arg(h).arg(zeroPad(m % 60)).arg(zeroPad(s % 60));
-   else
-      return QString("%1:%2").arg(zeroPad(m)).arg(zeroPad(s % 60));
-}
-
-
-//non-member
-static const QString zeroPad( const long digit )
-{
-    QString str;
-    str.setNum( digit );
-
-    return ( digit > 9 ) ? str : str.prepend( '0' );
-}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
