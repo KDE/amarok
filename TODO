@@ -7,12 +7,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
-
-  FIX 140 <dato>   The playlist toolbar analizer doesn't work if the volume slider is not included.
-                   (bug#83671) I think we should fix this in the 1.0 branch.
-
-          <markey> One user reports that adding the volume slider does not fix the problem for him.
-                   So we must be careful to fix the cause of the bug, not just the symptom.
                    
   FIX 139 <markey> Find out why collection scan won't work with samba shares. Currently the scan just gets
                    stuck, hogging CPU and doing nothing meaningful.
