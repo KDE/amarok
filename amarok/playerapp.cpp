@@ -711,6 +711,8 @@ void PlayerApp::readConfig()
             "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
     m_pBrowserWin->m_pPlaylistWidget->writeUndo();
 
+    m_pPlayerWidget->slotUpdateTrayIcon( m_optShowTrayIcon );
+
     // Read playlist columns layout
     m_pBrowserWin->m_pPlaylistWidget->restoreLayout(m_pConfig, "PlaylistColumnsLayout");
     
@@ -731,7 +733,6 @@ void PlayerApp::readConfig()
             break;
         }
     }
-
 
     m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL + SHIFT + Key_A, 0, this, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "play", "Play", 0, CTRL + SHIFT + Key_P, 0, this, SLOT( slotPlay() ), true, true );
