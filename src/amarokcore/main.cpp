@@ -30,16 +30,15 @@ KAboutData aboutData( "amarok",
 
 int main( int argc, char *argv[] )
 {
-    aboutData.addAuthor( "Christian 'Babe-Magnet' Muehlhaeuser", I18N_NOOP( "developer, stud" ), "chris@chris.de", "http://www.chris.de" );
-    aboutData.addAuthor( "Frederik 'Ich bin kein Deustcher!' Holljen", I18N_NOOP( "developer, 733t code, OSD improvement, patches" ), "fh@ez.no" );
-    aboutData.addAuthor( "Mark 'It's good, but it's not Irssi' Kretschmann", I18N_NOOP( "project founder, developer, maintainer" ), "markey@web.de" );
-    aboutData.addAuthor( "Max 'Turtle-Power' Howell", I18N_NOOP( "developer, knight of the regression round-table" ), "max.howell@methylblue.com", "http://www.methylblue.com" );
+    aboutData.addAuthor( "Christian 'Babe-Magnet' Muehlhaeuser", I18N_NOOP( "Stud (muesli)" ), "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Frederik 'Ich bin kein Deustcher!' Holljen", I18N_NOOP( "733t code, OSD improvement, patches (Larson)" ), "fh@ez.no" );
+    aboutData.addAuthor( "Mark 'It's good, but it's not Irssi' Kretschmann", I18N_NOOP( "Project founder" ), "markey@web.de" );
+    aboutData.addAuthor( "Max 'Turtle-Power' Howell", I18N_NOOP( "Knight of the regression round-table (mxcl)" ), "max.howell@methylblue.com", "http://www.methyblue.com" );
     aboutData.addAuthor( "Mike 'Purple is not girly!' Diehl", I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer" ), "madpenguin8@yahoo.com" );
-    aboutData.addAuthor( "Pierpaolo 'Spaghetti Coder' Di Panfilo", I18N_NOOP( "developer, playlist-browser" ), "pippo_dp@libero.it" );
-    aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "graphics: amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
-    aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "developer, DCOP, improvements, cleanups, i18n" ), "berk@upnet.ru" );
-
-    aboutData.addAuthor( "Stefan 'Monk-Buddy' Bogner", I18N_NOOP( "butt-monkey, arse-munger!" ), "bochi@online.ms" );
+    aboutData.addAuthor( "Pierpaolo 'Spaghetti Coder' Di Panfilo", I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
+    aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "DCOP, improvements, cleanups, i18n" ), "berk@upnet.ru" );
+    aboutData.addAuthor( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Geeeeza" ), "bochi@online.ms" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "patches" ), "asp16@alu.ua.es" );
