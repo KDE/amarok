@@ -19,9 +19,11 @@ class sqlite;
 class ThreadWeaver;
 
 class QCString;
-class QDragObject;
-class QStringList;
 class QCustomEvent;
+class QDragObject;
+class QPixmap;
+class QStringList;
+
 class KDirWatch;
 class KPopupMenu;
 
@@ -35,10 +37,11 @@ class CollectionBrowser: public QVBox
     
     private:
     //attributes:
-        enum actionsMenuIds { IdAlbum, IdArtist, IdGenre, IdYear };
+        enum actionsMenuIds { IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
         
         KPopupMenu* m_actionsMenu;
-        KPopupMenu* m_catMenu;
+        KPopupMenu* m_cat1Menu;
+        KPopupMenu* m_cat2Menu;
 };
 
 
@@ -85,11 +88,14 @@ class CollectionView : public KListView
         
         void slotExpanded( QListViewItem* );
         void slotCollapsed( QListViewItem* );    
-        void actionsMenu( int );
+        void cat1Menu( int );
+        void cat2Menu( int );
         
     private:
         void customEvent( QCustomEvent* );
         void startDrag();
+        QString catForId( int id );
+        QPixmap iconForCat( const QString& cat );
         
         /**
          * Executes an SQL statement on the already opened database
@@ -109,7 +115,8 @@ class CollectionView : public KListView
         KDirWatch* m_dirWatch;
         sqlite* m_db;                
         QStringList m_dirs;
-        QString m_category;
+        QString m_category1;
+        QString m_category2;
         bool m_recursively;
         bool m_monitor;
 };
