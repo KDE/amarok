@@ -3,12 +3,18 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #78 being the highest available (take this one for your next bug and increase here)
+           #79 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
 MID-TERM:
+
+    * chg: #78 determine some behavior for the clear/shuffle/etc. buttons when a search is in action
+               clear   -> only clear the stuff that was searched for?
+               shuffle -> stop the search and do normal shuffle?
+           additionally what to do when user rearranges a set of items that are the search result?
+
     * fix: #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
 
     * add: #75 Toolbar button in FileBrowser for switching recursive directory reading
