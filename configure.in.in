@@ -398,6 +398,10 @@ if test x$PKGCONFIGFOUND = xyes; then
 
     AC_SUBST(LIBVISUAL_LIBS)
     AC_SUBST(LIBVISUAL_CFLAGS)
+
+    if test x$build_libvisual = xyes; then
+        AC_DEFINE(HAVE_LIBVISUAL, 1, [have LIBVISUAL])
+    fi
 fi
 
 AM_CONDITIONAL(with_libvisual, test x$build_libvisual = xyes)

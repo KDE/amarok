@@ -32,3 +32,4 @@ images_DATA = \
 KDE_ICON = \
     AUTO
 
+

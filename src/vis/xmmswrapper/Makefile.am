@@ -1,15 +1,15 @@
 bin_PROGRAMS = \
-    amarok_xmmswrapper
+    amarok_xmmswrapper2
 
 INCLUDES = \
     $(xmms_cflags) \
     $(gtk_cflags ) \
     $(all_includes)
 
-amarok_xmmswrapper_SOURCES = \
+amarok_xmmswrapper2_SOURCES = \
     xmmswrapper.cpp
 
-amarok_xmmswrapper_LDFLAGS = \
+amarok_xmmswrapper2_LDFLAGS = \
     $(xmms_libs) \
     $(gtk_libs)
 

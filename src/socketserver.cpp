@@ -250,7 +250,7 @@ Vis::Selector::Selector( QWidget *parent )
 
     //can I get a pointer to the data section of a QCString?
     char str[4096];
-    FILE *vis = popen( "amarok_xmmswrapper --list", "r" );
+    FILE *vis = popen( "amarok_xmmswrapper2 --list", "r" );
     str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
