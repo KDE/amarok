@@ -52,8 +52,6 @@ static void gst_streamsrc_get_property ( GObject * object, guint prop_id,
 
 static GstData *gst_streamsrc_get ( GstPad * pad );
 
-static void gst_streamsrc_dispose ( GObject* );
-
 
 /////////////////////////////////////////////////////////////////////////////////////
 // INIT
@@ -102,7 +100,6 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 
     gobject_class->set_property = gst_streamsrc_set_property;
     gobject_class->get_property = gst_streamsrc_get_property;
-    gobject_class->dispose = gst_streamsrc_dispose;
 }
 
 
@@ -245,12 +242,4 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop )
 
     return object;
 }
-
-
-static void
-gst_streamsrc_dispose( GObject* object )
-{
-    G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
 

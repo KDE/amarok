@@ -384,6 +384,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
 
+    // Prepare bin for playing
+    gst_element_set_state( input->bin, GST_STATE_READY );
+
     if ( m_currentInput )
     {
         m_currentInput->setState( InputPipeline::XFADE_OUT );

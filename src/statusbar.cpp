@@ -156,7 +156,7 @@ StatusBar::~StatusBar()
 
 void StatusBar::message( const QString& message ) //SLOT
 {
-    m_oldMessage = m_pTitle->text();
+    m_oldMessage = message;
     m_pTitle->setText( message );
 }
 
@@ -182,8 +182,8 @@ void StatusBar::restore() //SLOT
 
 void StatusBar::clear() //SLOT
 {
-    m_pTitle->clear();
     m_oldMessage = "";
+    m_pTitle->clear();
 }
 
 
