@@ -8,9 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  FIX 136 <markey> Don't use kdFatal() when no engine plugin is found, cause it always makes the 
-                   crashhandler show up. Use exit() instead.
-
   FIX 135 <markey> Improve support for desktop environments other than KDE. GNOME users report, 
                    once you hide amaroK, there's no way to bring the application back into view,
                    due to missing systray icon. If you switch the systray icon off, the app crashes.
