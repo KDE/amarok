@@ -1,0 +1,18 @@
+ALARM-SCRIPT
+============
+
+ABOUT
+-----
+Makes amaroK play music at a given time. Can be used as an alarm clock for waking up.
+
+
+DEPENDENCIES
+------------
+Python 2.2
+PyQt Bindings
+
+
+AUTHOR
+------
+Mark Kretschmann <markey@web.de>
+
