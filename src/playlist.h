@@ -111,7 +111,7 @@ class Playlist : private KListView, public EngineObserver
         void clear();
         void shuffle();
         void removeSelectedItems();
-        void deleteSelectedPhysically();
+        void deleteSelectedFiles();
         void copyToClipboard( const QListViewItem* = 0 ) const;
         void showCurrentTrack();
         void undo();
@@ -146,7 +146,7 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         void refreshNextTracks( int=-1 );
         void startEditTag( QListViewItem *, int );    //start inline tag editing with auto-completion
-        
+
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( EngineBase::EngineState );
@@ -196,7 +196,7 @@ class Playlist : private KListView, public EngineObserver
 
         //text before inline editing ( the new tag is written only if it's changed )
         QString m_editText;
-        
+
         KActionCollection* const m_ac;
 };
 

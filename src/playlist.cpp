@@ -28,7 +28,7 @@
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdebug.h>
 #include <kiconloader.h>     //slotShowContextMenu()
-#include <kio/job.h>         //deleteSelectedPhysically()
+#include <kio/job.h>         //deleteSelectedFiles()
 #include <klineedit.h>       //setCurrentTrack()
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -609,45 +609,33 @@ void Playlist::removeSelectedItems() //SLOT
 }
 
 
-void Playlist::deleteSelectedPhysically() //SLOT
+void Playlist::deleteSelectedFiles() //SLOT
 {
-    if ( KMessageBox::warningContinueCancel( this, i18n( "<h3>Delete selected files physically?</h3>"
-                                                         "<p>Warning: This process will be <u>irreversible.</u></p><br/>" ) )
-       == KMessageBox::Cancel ) return;
+    int button = KMessageBox::warningContinueCancel( this, i18n(
+                    "<p>You have selected %1 to be <b>irreversibly</b> "
+                    "deleted." ).arg( i18n("1 file", "<u>%n files</u>", selectedItems().count()) ),
+                    QString::null,
+                    i18n("&Delete Selected Files") );
 
-    setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
+    if ( button == KMessageBox::Continue )
+    {
+        setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
 
-    //assemble a list of what needs removing
-    QPtrList<QListViewItem> list;
-    KURL::List urls;
-    for( QListViewItemIterator it( this, QListViewItemIterator::Selected );
-         it.current();
-         list.prepend( it.current() ),
-         urls << static_cast<PlaylistItem*>( it.current() )->url(),
-          ++it );
+        KURL::List urls;
 
-    if( list.isEmpty() ) return;
+        //assemble a list of what needs removing
+        for( QListViewItemIterator it( this, QListViewItemIterator::Visible | QListViewItemIterator::Selected );
+             it.current();
+             urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
 
-    // TODO We need to check which files have been deleted successfully
-    KIO::DeleteJob* job = KIO::del( urls );
-    connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( removeSelectedItems() ) );
+        if ( urls.isEmpty() ) return;
+
+        // TODO We need to check which files have been deleted successfully
+        KIO::DeleteJob* job = KIO::del( urls );
+        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( removeSelectedItems() ) );
+    }
 }
 
-
-/*
-void Playlist::summary( QPopupMenu &popup ) const
-{
-    QStringList summary( currentTrack()->text( 0 ) );
-
-    //TODO easier to return a popupmenu with slots connected :)
-
-    //FIXME use const Iterators if poss
-    for( QListViewItemIterator it( currentTrack() ); it.current(); --it )
-        summary.prepend( (*it)->text( 0 ) );
-    for( QListViewItemIterator it( currentTrack() ); it.current(); ++it )
-        summary.append( (*it)->text( 0 ) );
-}
-*/
 
 int Playlist::mapToLogicalColumn( int physical )
 {
@@ -1129,7 +1117,9 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     const bool isPlaying  = EngineController::engine()->state() == EngineBase::Playing;
     const int  queueIndex = m_nextTracks.findRef( item );
     const bool isQueued   = queueIndex != -1;
-
+    const uint itemCount  = selectedItems().count();
+    const QString tag     = columnText( col );
+    const QListViewItem *below = item->itemBelow();
     //Markey, sorry for the lengths of these lines! -mxcl
 
     KPopupMenu popup( this );
@@ -1146,31 +1136,22 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
         popup.insertItem( SmallIcon( "2rightarrow" ), nextText, PLAY_NEXT );
     }
-    else popup.insertItem( i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
+    else popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information" ), VIEW ); //TODO rename properties
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), 0, 0, Key_F2, EDIT );
-    if( canRename )
-    {
-        //FIXME does below() operate only on visible members?
-
-        const QListViewItem *below = item->itemBelow();
-        if( below && below->isSelected() && item->exactText( col ) != i18n( "Writing tag..." ) )
-        {
-            //we disable Fill-Down when the current cell is having it's tag written
-            //because it fills-down "Writing-Tag..." instead
-            //but it's a hack that needs to be improved
-
-            popup.insertItem( i18n( "Spreadsheet-style fill-down", "&Fill-Down Tag" ), FILL_DOWN );
-        }
-    }
-    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Track Name" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove Selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
-    popup.insertItem( SmallIcon( "editdelete" ), i18n( "&Delete Selected Physically" ), this, SLOT( deleteSelectedPhysically() ), SHIFT+Key_Delete );
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( tag ), 0, 0, Key_F2, EDIT );
+    popup.insertItem( i18n( "Spreadsheet-like", "&Fill-down Tag: '%1'" ).arg( tag ), FILL_DOWN );
+    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
+    popup.insertSeparator();
+    popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete );
+    popup.insertItem( SmallIcon( "editdelete" ), i18n("&Delete File", "&Delete Selected Files", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete );
+    popup.insertSeparator();
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
 
-    //only enable for columns that have editable tags
-    popup.setItemEnabled( EDIT, canRename );
+
+    popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
+    popup.setItemEnabled( FILL_DOWN, canRename && below && below->isSelected() );
+
 
     switch( popup.exec( p ) )
     {
@@ -1209,25 +1190,25 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
             QListViewItemIterator it( item, QListViewItemIterator::Visible | QListViewItemIterator::Selected );
 
             // special handling for track column
-            bool isNumber;
-            int trackNo = 0;
-            if ( col == 7 )
-            {
-                trackNo = newTag.toInt( &isNumber );
-                // first row has no valid number, let's start with 1
-                if ( !isNumber )
-                {
-                    m_weaver->append( new TagWriter( this, item, "1", col ), true );
-                    trackNo = 1;
-                }
-            }
+            uint trackNo = newTag.toInt(); //returns 0 if it is not a number
 
-            while( ++it, *it )
+            //if it is the track column and there is no track, then we write to the first item too
+            if( !( col == PlaylistItem::Track && newTag.isEmpty() ) ) ++it;
+
+            //NOTE since this has been changed to use the iterator,
+            //     it now will change all selected item tags, which may be undesirable
+
+            while( *it )
             {
                 // special handling for track column
-                if ( col == 7 )
+                if ( col == PlaylistItem::Track )
                     newTag = QString::number( ++trackNo );
-                m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
+
+                //FIXME fix this hack!
+                if ( static_cast<PlaylistItem*>(*it)->exactText( col ) != i18n("Writing tag...") )
+                    m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
+
+                ++it;
             }
         }
         break;
@@ -1244,27 +1225,27 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 void Playlist::startEditTag( QListViewItem *item, int column )
 {
     KLineEdit *edit = renameLineEdit();
-    
+
     QStringList values;
     QStringList names;
     CollectionDB *db = new CollectionDB();
-    
+
     switch( column )
     {
-        case PlaylistItem::Artist: 
+        case PlaylistItem::Artist:
             db->execSql( "SELECT name FROM artist;", &values, &names );
             edit->completionObject()->setItems( values );
             break;
-            
+
         case PlaylistItem::Album:
             db->execSql( "SELECT name FROM album;", &values, &names );
             edit->completionObject()->setItems( values );
             break;
-            
+
         case PlaylistItem::Genre:
             edit->completionObject()->setItems( MetaBundle::genreList() );
             break;
-            
+
         default:
             edit->completionObject()->clear();
             break;
@@ -1273,7 +1254,7 @@ void Playlist::startEditTag( QListViewItem *item, int column )
     values.clear();
     names.clear();
     delete db;
-    
+
     m_editText = ((PlaylistItem *)item)->exactText( column );
     kdDebug() << "isempty "<< m_editText.isEmpty()<<endl;
     rename( item, column );
