@@ -99,8 +99,14 @@ bool AmarokConfigDialog::hasChanged()
 
 bool AmarokConfigDialog::isDefault()
 {
-    return ( m_pSoundSystem->currentText() == "aRts Engine" ) &&
-           ( m_pSoundOutput->currentText() == "Alsa" );   
+    return ( m_pSoundSystem->currentText() == "aRts Engine" );
+}
+
+
+void AmarokConfigDialog::updateWidgetsDefault()
+{
+    m_pSoundSystem->setCurrentText( "aRts Engine" );
+    // this->soundSystemChanged(); // Will exist later
 }
 
 
