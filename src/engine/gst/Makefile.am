@@ -20,7 +20,9 @@ libamarok_gstengine_plugin_la_LIBADD = \
     $(LIB_KDECORE)
 
 libamarok_gstengine_plugin_la_LDFLAGS = \
-    $(LIB_GST)
+    $(LIB_GST) \
+    $(KDE_PLUGIN) \
+    $(all_libraries)
 
 libamarok_gstengine_plugin_la_SOURCES = \
     adapter.c \
@@ -28,10 +30,6 @@ libamarok_gstengine_plugin_la_SOURCES = \
     gstconfigdialogbase.ui \
     gstengine.cpp \
     streamsrc.cpp
-
-libamarok_gstengine_plugin_la_LDFLAGS = \
-    $(KDE_PLUGIN) \
-    $(all_libraries)
 
 METASOURCES = \
     AUTO
