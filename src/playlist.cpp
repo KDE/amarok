@@ -397,6 +397,12 @@ Playlist::playNextTrack()
                     while( m_prevTracks.count() > 40 )
                         m_prevTracks.remove(); //removes current item
                 }
+		
+		if( AmarokConfig::repeatPlaylist() )
+		{
+			playNextTrack();
+			return;
+		}
                 //else we stop via activate( 0 ) below
             }
             else item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
