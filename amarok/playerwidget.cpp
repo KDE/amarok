@@ -26,8 +26,6 @@ email                :
 #include "analyzers/distortanalyzer.h"
 #include "analyzers/turbine.h"
 
-#include "debugareas.h"
-
 #include <qbitmap.h>
 #include <qclipboard.h>
 #include <qevent.h>
@@ -36,7 +34,6 @@ email                :
 #include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qpalette.h>
 #include <qpixmap.h>
@@ -235,9 +232,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     QString pathStr( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
 
     if ( pathStr == QString::null )
-        QMessageBox::warning( this, i18n( "amaroK Error" ),
-                              i18n( "Error: Could not find icons. Did you forget make install?" ),
-                              QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+        KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget make install?" ), i18n( "amaroK Error" ) );
 
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
     m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
@@ -581,7 +576,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu->insertSeparator();
 
             m_pPopupMenu->insertItem( i18n( "Effects" ), pApp, SLOT( slotConfigEffects() ) );
-            
+
             m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n( "Configure PlayObject" ),
                                  this, SLOT( slotConfigPlayObject() ) );
 
@@ -589,10 +584,10 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
             m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n( "Repeat Track" ),
                               pApp, SLOT( slotSetRepeatTrack() ) );
-            
+
             m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n( "Repeat Playlist" ),
                                  pApp, SLOT( slotSetRepeatPlaylist() ) );
-            
+
             m_IdRandomMode = m_pPopupMenu->insertItem( i18n( "Random Mode" ),
                              pApp, SLOT( slotSetRandomMode() ) );
 
@@ -674,8 +669,8 @@ void PlayerWidget::createVis()
         m_pVis = new BarAnalyzer2( this );
         break;
     case 3:
-	m_pVis = new TurbineAnalyzer( this );
-	break;
+        m_pVis = new TurbineAnalyzer( this );
+        break;
     default:
         //oh wise ones! Please forgive my use of the goto command!
         //at first I just called createVis() again, which I felt was quite neat, but then I thought again,
@@ -702,8 +697,8 @@ void PlayerWidget::slotConfigShortcuts()
 {
     KKeyDialog keyDialog( true );
 
-    keyDialog.insert( m_pActionCollection, "Player Window" );
-    keyDialog.insert( pApp->m_pBrowserWin->m_pActionCollection, "Playlist Window" );
+    keyDialog.insert( m_pActionCollection, i18n( "Player Window" ) );
+    keyDialog.insert( pApp->m_pBrowserWin->m_pActionCollection, i18n( "Playlist Window" ) );
 
     keyDialog.configure();
 }

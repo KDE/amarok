@@ -44,7 +44,6 @@
 PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
         KListViewItem( parent, nameForUrl( url ) )
 {
-
     m_url = url;
     init();
 }
@@ -108,7 +107,7 @@ void PlaylistItem::readMetaInfo()
 
         if ( !f.isNull() && f.tag() )
         {
-           m_hasMetaInfo = true;
+            m_hasMetaInfo = true;
             TagLib::Tag * tag = f.tag();
 
             m_tagTitle = TStringToQString( tag->title() ).stripWhiteSpace();
@@ -117,15 +116,15 @@ void PlaylistItem::readMetaInfo()
             m_tagGenre = TStringToQString( tag->genre() ).stripWhiteSpace();
             m_tagComment = TStringToQString( tag->comment() ).stripWhiteSpace();
             m_tagYear = QString::number( tag->year() );
-       m_tagTrack = QString::number( tag->track() );
+            m_tagTrack = QString::number( tag->track() );
             m_tagDirectory = QString( url().directory().section( '/', -1 ) );
 
-       if ( f.audioProperties() )
-       {
-      m_tagBitrate = f.audioProperties()->bitrate();
-      m_tagSeconds = f.audioProperties()->length();
-      m_tagSamplerate = f.audioProperties()->sampleRate();
-       }
+            if ( f.audioProperties() )
+            {
+               m_tagBitrate = f.audioProperties()->bitrate();
+               m_tagSeconds = f.audioProperties()->length();
+               m_tagSamplerate = f.audioProperties()->sampleRate();
+            }
         }
     }
 }

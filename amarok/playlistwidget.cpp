@@ -22,8 +22,6 @@
 #include "playlistitem.h"
 #include "playlistwidget.h"
 
-#include "debugareas.h"
-
 #include <qbrush.h>
 #include <qcolor.h>
 #include <qcursor.h>
@@ -66,7 +64,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         m_GlowAdd( 5 ),
         m_undoCounter( 0 )
 {
-    kdDebug( DA_PLAYLIST ) << "PlaylistWidget::PlaylistWidget()" << endl;
+    kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;
 
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
@@ -78,13 +76,13 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
     //     m_rootPixmap.start();
 
     addColumn( i18n( "Trackname" ), 280 );
-    addColumn( i18n( "Title" ), 200 );
-    addColumn( i18n( "Artist" ), 100 );
-    addColumn( i18n( "Album" ), 100 );
-    addColumn( i18n( "Year" ), 40 );
-    addColumn( i18n( "Comment" ), 80 );
-    addColumn( i18n( "Genre" ), 80 );
-    addColumn( i18n( "Directory" ), 80 );
+    addColumn( i18n( "Title"     ), 200 );
+    addColumn( i18n( "Artist"    ), 100 );
+    addColumn( i18n( "Album"     ), 100 );
+    addColumn( i18n( "Year"      ),  40 );
+    addColumn( i18n( "Comment"   ),  80 );
+    addColumn( i18n( "Genre"     ),  80 );
+    addColumn( i18n( "Directory" ),  80 );
 
     setSorting( -1 );
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
@@ -159,12 +157,12 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
         if ( e->source() == NULL )                       // dragging from outside amarok
         {
-            kdDebug( DA_PLAYLIST ) << "dropped item from outside amaroK" << endl;
+            kdDebug() << "dropped item from outside amaroK" << endl;
 
             if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
                 return ;
 
-            kdDebug( DA_PLAYLIST ) << "dropped item KURL parsed ok" << endl;
+            kdDebug() << "dropped item KURL parsed ok" << endl;
 
             m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
             playlistDrop( urlList );
@@ -200,7 +198,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
             playlistDrop( urlList );
         }
     }
-    
+
     // highlight currently played track, if any
     if ( !pApp->m_playingURL.isEmpty() )
        pApp->restorePlaylistSelection( pApp->m_playingURL );
@@ -215,16 +213,11 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
 
     for ( KURL::List::Iterator it = urlList.begin(); it != urlList.end(); it++ )
     {
-        //         kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist" << endl;
-
         m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
         while ( !m_pDirLister->isFinished() )
             kapp->processEvents( 300 );
 
         KFileItem *fileItem = m_pDirLister->findByURL( *it );
-
-        if ( !fileItem )
-            kdDebug( DA_PLAYLIST ) << "fileItem is 0!" << endl;
 
         if ( fileItem && fileItem->isDir() )
         {
@@ -256,7 +249,6 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
         }
         else
         {
-            // kdDebug(DA_PLAYLIST) << "dropping item " << (*it).prettyURL() << " to playlist [2]" << endl;
             if ( pApp->isFileValid( *it ) )
             {
                 m_pDropCurrentItem = addItem( m_pDropCurrentItem, *it );
@@ -374,23 +366,23 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
 #endif
 
     QFile file( tmpFile );
-    
+
     if ( success = file.open( IO_ReadOnly ) )
-    {    
+    {
         QTextStream stream( &file );
         QString dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
-                
+
         if ( url.path().lower().endsWith( ".m3u" ) )
             loadM3u( stream, pCurr, dir );
         else
-            loadPls( stream, pCurr, dir );        
+            loadPls( stream, pCurr, dir );
     }
     file.close();
 
-    // Mark currently playing song in playlist, if its there    
+    // Mark currently playing song in playlist, if its there
     if ( success && !pApp->m_playingURL.isEmpty() )
        pApp->restorePlaylistSelection( pApp->m_playingURL );
-            
+
     KIO::NetAccess::removeTempFile( tmpFile );
     return success;
 }
@@ -407,14 +399,14 @@ void PlaylistWidget::loadM3u( QTextStream &stream, PlaylistItem *destItem, QStri
         {
             extStr = str.section( ",", 1 );
         }
-            
+
         if ( !str.startsWith( "#" ) )
         {
             if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
-            
+
             destItem = addItem( destItem, str );
-            
+
             if ( !extStr.isEmpty() )
             {
                 destItem->setText( 0, extStr );
@@ -468,7 +460,7 @@ void PlaylistWidget::saveM3u( QString fileName )
             stream << "#EXTINF:-1," + item->text( 0 ) + "\n";
             stream << item->url().url();
         }
-            
+
         stream << "\n";
         item = static_cast<PlaylistItem*>( item->nextSibling() );
     }
@@ -519,7 +511,7 @@ void PlaylistWidget::slotGlowTimer()
 void PlaylistWidget::slotSetRecursive()
 {
     m_dropRecursively = true;
-    kdDebug( DA_PLAYLIST ) << "slotSetRecursive()" << endl;
+    kdDebug() << "slotSetRecursive()" << endl;
 }
 
 

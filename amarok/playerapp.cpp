@@ -29,8 +29,6 @@ email                :
 #include "playlistwidget.h"
 #include "titleproxy/titleproxy.h"
 
-#include "debugareas.h"
-
 #include <vector>
 #include <string>
 
@@ -219,7 +217,7 @@ bool PlayerApp::restorePlaylistSelection(const KURL& url)
 
 PlayerApp::~PlayerApp()
 {
-    kdDebug(DA_COMMON) << "PlayerApp:~PlayerApp()" << endl;
+    kdDebug() << "PlayerApp:~PlayerApp()" << endl;
 
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
@@ -599,20 +597,6 @@ void PlayerApp::initBrowserWin()
 
 // METHODS --------------------------------------------------------------------------
 
-QString PlayerApp::convertDigit( const long digit )
-{
-    QString str;
-    str.setNum( digit );
-
-    if ( digit > 9 )
-    {
-        return str;
-    }
-
-    str.prepend("0");
-    return str;
-}
-
 
 bool PlayerApp::isFileValid( const KURL &url )
 {
@@ -688,8 +672,7 @@ void PlayerApp::saveConfig()
 
 void PlayerApp::readConfig()
 {
-    //TEST
-    kdDebug(DA_COMMON) << "begin PlayerApp::readConfig()" << endl;
+    kdDebug() << "begin PlayerApp::readConfig()" << endl;
 
     // FIXME: ok, the compiler warning is gone now. but the result is the same: those variables are
     //        still temporary. so what have we gained? frankly, why does KConfig take a pointer here,
@@ -770,15 +753,15 @@ void PlayerApp::readConfig()
 
 
 // Actions ==========
-    m_pGlobalAccel->insert( "add", "Add Location", 0, CTRL + ALT + Key_A, 0,
+    m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
                             this, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "play", "Play", 0, CTRL + ALT + Key_P, 0,
+    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, CTRL + ALT + Key_P, 0,
                             this, SLOT( slotPlay() ), true, true );
-    m_pGlobalAccel->insert( "stop", "Stop", 0, CTRL + ALT + Key_S, 0,
+    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, CTRL + ALT + Key_S, 0,
                             this, SLOT( slotStop() ), true, true );
-    m_pGlobalAccel->insert( "next", "Next Track", 0, CTRL + ALT + Key_N, 0,
+    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, CTRL + ALT + Key_N, 0,
                             this, SLOT( slotNext() ), true, true );
-    m_pGlobalAccel->insert( "prev", "Previous Track", 0, CTRL + ALT + Key_R, 0,
+    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, CTRL + ALT + Key_R, 0,
                             this, SLOT( slotPrev() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
@@ -786,12 +769,10 @@ void PlayerApp::readConfig()
     m_pGlobalAccel->updateConnections();
 
 
-
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, m_pConfig );
 
-    //TEST
-    kdDebug(DA_COMMON) << "end PlayerApp::readConfig()" << endl;
+    kdDebug() << "end PlayerApp::readConfig()" << endl;
 }
 
 
@@ -825,31 +806,19 @@ void PlayerApp::setupScrolltext()
     {
         if ( item->hasMetaInfo() )
         {
-            QString str, strNum;
+            QString str;
             if ( item->artist() == "" ||
                     item->title() == "" )
             {
-                str.append( item->text( 0 ) + " (" );
+                str.append( item->text( 0 ) + " " );
             }
             else
-            {
-                str.append( item->artist() + " - " );
-                str.append( item->title() + " (" );
+            { // FIXME <berkus> user tunable title format!
+                str.append( item->artist() + " - " + item->title() + " " );
             }
 
-       int length = item->seconds() ? item->seconds() : m_length;
-            int totSeconds, totMinutes, totHours;
-            totSeconds = ( length % 60 );
-            totMinutes = ( length / 60 % 60 );
-            totHours = ( length / 60 / 60 % 60 );
-            if ( totHours )
-            {
-                strNum.setNum( totHours );
-                str.append( strNum + ":" );
-            }
-            strNum.setNum( totMinutes );
-            str.append( strNum + ":" );
-            str.append( convertDigit( totSeconds ) + ")" );
+            if ( !item->seconds() ) item->m_tagSeconds = m_length; // *SIGH* Break me, shake me, FIXME
+            str.append( "(" + item->length() + ")" );
 
             m_pPlayerWidget->setScroll( str,
                                         QString::number(item->bitrate()) + "kbps",
@@ -875,7 +844,7 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
     if ( url.isEmpty() )
     {
         if ( item == NULL )
-            m_pPlayerWidget->setScroll( title + " (stream)", "--", "--" );
+            m_pPlayerWidget->setScroll( title + i18n( " (stream)" ), "--", "--" );
         else
             m_pPlayerWidget->setScroll( title + " (" + item->text( 0 ) + ")", kbps + "kbps", "--" );
     }
@@ -886,7 +855,7 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 
 void PlayerApp::startXFade()
 {
-    kdDebug(DA_COMMON) << "void PlayerApp::startXFade()" << endl;
+    kdDebug() << "void PlayerApp::startXFade()" << endl;
 
     if ( !m_XFadeRunning )
     {
@@ -905,7 +874,7 @@ void PlayerApp::startXFade()
 
 void PlayerApp::stopXFade()
 {
-    kdDebug(DA_COMMON) << "void PlayerApp::stopXFade()" << endl;
+    kdDebug() << "void PlayerApp::stopXFade()" << endl;
 
     m_XFadeRunning = false;
 
@@ -1067,13 +1036,13 @@ void PlayerApp::slotPlay()
 
     if ( m_pPlayObject == NULL )
     {
-        kdDebug(DA_COMMON) << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
+        kdDebug() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
         slotNext();
         return ;
     }
     if ( m_pPlayObject->isNull() )
     {
-        kdDebug(DA_COMMON) << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
+        kdDebug() << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
         delete m_pPlayObject;
         m_pPlayObject = NULL;
         slotNext();
@@ -1255,7 +1224,7 @@ void PlayerApp::slotSavePlaylist()
 
     if ( !path.isEmpty() )
     {
-        if ( path.right( 4 ) != ".m3u" ) // <berkus> fixme: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
+        if ( path.right( 4 ) != ".m3u" ) // <berkus> FIXME: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
             path += ".m3u";
 
         m_pBrowserWin->m_pPlaylistWidget->saveM3u( path );
@@ -1434,8 +1403,8 @@ void PlayerApp::slotMainTimer()
         if ( m_optTrackDelay > 0 ) //this can occur syncronously to XFade and it wouldn't be fatal
         {
                 //delay before start of next track, without freezing the app
-                m_DelayTime+=MAIN_TIMER;
-                if (m_DelayTime >= (m_optTrackDelay * 1000))
+                m_DelayTime += MAIN_TIMER;
+                if ( m_DelayTime >= (m_optTrackDelay * 1000) )
                 {
                         m_DelayTime = 0;
                         slotNext();
@@ -1447,7 +1416,7 @@ void PlayerApp::slotMainTimer()
                 slotNext();
                 return;
         }
-}
+    }
 
     if ( m_pPlayObject->state() == Arts::posPlaying )
     {
@@ -1563,7 +1532,6 @@ void PlayerApp::slotConfigEffects()
     }
 
     m_pEffectWidget->show();
-    return ;
 }
 
 
@@ -1582,7 +1550,6 @@ void PlayerApp::slotSetRepeatTrack()
         m_optRepeatTrack = false;
         m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
     }
-
     else
     {
         m_optRepeatTrack = true;
@@ -1600,7 +1567,6 @@ void PlayerApp::slotSetRepeatPlaylist()
         m_optRepeatPlaylist = false;
         m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
     }
-
     else
     {
         m_optRepeatPlaylist = true;
@@ -1618,7 +1584,6 @@ void PlayerApp::slotSetRandomMode()
         m_optRandomMode = false;
         m_pPlayerWidget->m_pPopupMenu->setItemChecked( id, false );
     }
-
     else
     {
         m_optRandomMode = true;
@@ -1641,6 +1606,9 @@ void PlayerApp::slotHide()
 
 //But conveniently this allows us to keep the hidePlaylistWindowWithMainWidget option
 //But I think this option should be removed and amaroK's behavior should be to hide everything
+
+// <berkus> imo the reason it doesn't hide is that we pass some wrong flags upong creation of browserwin
+// (maybe toplevel is redundant or something)
 
     if ( m_optHidePlaylistWindow )
        m_pBrowserWin->hide();

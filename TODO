@@ -37,10 +37,6 @@ SHORT-TERM:
 
     * add: <mxcl> more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.)
     
-    * add: a "hide playlist when main widget is not active" option (?? comments please: )
-           <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
-           if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
-
     * add: "show playlist" to the right click menu, redundant but necessary
 
     * add: <muesli> background chooser
@@ -103,8 +99,6 @@ LONG-TERM:
 
     * add: make windows magnetic / sticking together (difficult)
 
-    * fix: polish and finish i18n() stuff
-
     * add: generate text or html document from playlist entries
     
     * add: <berkus> add smooth fade outs on stop
@@ -142,3 +136,12 @@ IDEAS:
     * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
       see at first glance how the altogether playing time is divided into different albums, tunes and
       so on.
+
+DISCUSSING:
+
+    * add: a "hide playlist when main widget is not active" option (?? comments please: )
+           <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
+           if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
+
+DUMPED:
+

@@ -185,8 +185,6 @@ class PlayerApp : public KUniqueApplication
         void startXFade();
         void stopXFade();
 
-        QString convertDigit( const long digit );
-
         // ATTRIBUTES ------
         KArtsDispatcher *m_pArtsDispatcher;
         bool m_usingMixerHW;
