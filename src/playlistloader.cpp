@@ -1,6 +1,7 @@
 // Author: Max Howell (C) Copyright 2003-4
 // Author: Mark Kretschmann (C) Copyright 2004
 // .ram file support from Kaffeine 0.5, Copyright (C) 2004 by Jürgen Kofler (GPL 2 or later)
+// .pls parser (C) Copyright 2005 by Michael Buesch <mbuesch@freenet.de>
 // Copyright: See COPYING file that comes with this distribution
 //
 
@@ -21,6 +22,7 @@
 #include "playlistloader.h"
 #include <qfile.h>       //::loadPlaylist()
 #include <qlistview.h>
+#include <qregexp.h>
 #include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
 #include "statusbar.h"
@@ -390,30 +392,133 @@ PlaylistFile::loadM3u( QTextStream &stream )
 bool
 PlaylistFile::loadPls( QTextStream &stream )
 {
-    for( QString line; !stream.atEnd(); )
-    {
-        line = stream.readLine();
+    // Counted number of "File#=" lines.
+    unsigned int entryCnt = 0;
+    // Value of the "NumberOfEntries=#" line.
+    unsigned int numberOfEntries = 0;
+    // Does the file have a "[playlist]" section? (as it's required by the standard)
+    bool havePlaylistSection = false;
+    QString tmp;
+    QStringList lines;
 
-        if( line.startsWith( "File" ) ) {
-            MetaBundle b;
+    const QRegExp regExp_NumberOfEntries("^NumberOfEntries\\s*=\\s*\\d+$");
+    const QRegExp regExp_File("^File\\d+\\s*=");
+    const QRegExp regExp_Title("^Title\\d+\\s*=");
+    const QRegExp regExp_Length("^Length\\d+\\s*=\\s*\\d+$");
+    const QRegExp regExp_Version("^Version\\s*=\\s*\\d+$");
+    const QString section_playlist("[playlist]");
 
-            b.setUrl( KURL::fromPathOrURL( line.section( "=", -1 ) ) );
-            line = stream.readLine();
+    /* Preprocess the input data.
+     * Read the lines into a buffer; Cleanup the line strings;
+     * Count the entries manually and read "NumberOfEntries".
+     */
+    while (!stream.atEnd()) {
+        tmp = stream.readLine();
+        tmp = tmp.stripWhiteSpace();
+        if (tmp.isEmpty())
+            continue;
+        lines.append(tmp);
 
-            if( line.startsWith( "Title" ) ) {
-                b.setTitle( line.section( "=", -1 ) );
-                line = stream.readLine();
-            }
-
-            if( line.startsWith( "Length" ) )
-                b.setLength( line.section( "=", -1 ).toInt() );
-
-            m_bundles += b;
+        if (tmp.contains(regExp_File)) {
+            entryCnt++;
+            continue;
+        }
+        if (tmp == section_playlist) {
+            havePlaylistSection = true;
+            continue;
+        }
+        if (tmp.contains(regExp_NumberOfEntries)) {
+            numberOfEntries = tmp.section('=', -1).stripWhiteSpace().toUInt();
+            continue;
         }
     }
+    if (numberOfEntries != entryCnt) {
+        warning() << ".pls playlist: Invalid \"NumberOfEntries\" value.  "
+                  << "NumberOfEntries=" << numberOfEntries << "  counted="
+                  << entryCnt << endl;
+        /* Corrupt file. The "NumberOfEntries" value is
+         * not correct. Fix it by setting it to the manually
+         * counted number and go on parsing.
+         */
+        numberOfEntries = entryCnt;
+    }
+    if (!numberOfEntries)
+        return true;
 
+    unsigned int index;
+    bool ok = false;
+    bool inPlaylistSection = false;
+
+    Q_ASSERT(m_bundles.isEmpty());
+    m_bundles.insert(m_bundles.begin(), numberOfEntries, MetaBundle());
+    /* Now iterate through all beautified lines in the buffer
+     * and parse the playlist data.
+     */
+    QStringList::const_iterator i = lines.begin(), end = lines.end();
+    for ( ; i != end; ++i) {
+        if (!inPlaylistSection && havePlaylistSection) {
+            /* The playlist begins with the "[playlist]" tag.
+             * Skip everything before this.
+             */
+            if ((*i) == section_playlist)
+                inPlaylistSection = true;
+            continue;
+        }
+        if ((*i).contains(regExp_File)) {
+            // Have a "File#=XYZ" line.
+            tmp = (*i).section('=', 0, 0);
+            tmp.remove(0, 4);
+            index = tmp.stripWhiteSpace().toUInt(&ok);
+            Q_ASSERT(ok);
+            if (index > numberOfEntries || index == 0)
+                continue;
+            tmp = (*i).section('=', -1).stripWhiteSpace();
+            m_bundles[index - 1].setUrl(KURL::fromPathOrURL(tmp));
+            continue;
+        }
+        if ((*i).contains(regExp_Title)) {
+            // Have a "Title#=XYZ" line.
+            tmp = (*i).section('=', 0, 0);
+            tmp.remove(0, 5);
+            index = tmp.stripWhiteSpace().toUInt(&ok);
+            Q_ASSERT(ok);
+            if (index > numberOfEntries || index == 0)
+                continue;
+            tmp = (*i).section('=', -1).stripWhiteSpace();
+            m_bundles[index - 1].setTitle(tmp);
+            continue;
+        }
+        if ((*i).contains(regExp_Length)) {
+            // Have a "Length#=XYZ" line.
+            tmp = (*i).section('=', 0, 0);
+            tmp.remove(0, 6);
+            index = tmp.stripWhiteSpace().toUInt(&ok);
+            Q_ASSERT(ok);
+            if (index > numberOfEntries || index == 0)
+                continue;
+            tmp = (*i).section('=', -1).stripWhiteSpace();
+            m_bundles[index - 1].setLength(tmp.toInt(&ok));
+            Q_ASSERT(ok);
+            continue;
+        }
+        if ((*i).contains(regExp_NumberOfEntries)) {
+            // Have the "NumberOfEntries=#" line.
+            continue;
+        }
+        if ((*i).contains(regExp_Version)) {
+            // Have the "Version=#" line.
+            tmp = (*i).section('=', -1).stripWhiteSpace();
+            // We only support Version=2
+            if (tmp.toUInt(&ok) != 2)
+                warning() << ".pls playlist: Unsupported version." << endl;
+            Q_ASSERT(ok);
+            continue;
+        }
+        warning() << ".pls playlist: Unrecognized line: \"" << *i << "\"" << endl;
+    }
     return true;
 }
+
 bool
 PlaylistFile::loadRealAudioRam( QTextStream &stream )
 {
