@@ -49,27 +49,16 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 void
 OSDWidget::show() //virtual
 {
-    class Grabber : public QWidget {
-    public:
-        Grabber( const QRect &r, const QColor &color ) : QWidget( 0, 0 ) {
-            move( 0, 0 );
-            screen = QPixmap::grabWindow( winId(), r.x(), r.y(), r.width(), r.height() );
-            KPixmapEffect::fade( screen, 0.80, color );
-        }
-        KPixmap screen;
-    };
-
     if ( !isEnabled() )
         return;
 
     const QRect oldGeometry = QRect( pos(), size() );
     const QRect newGeometry = determineMetrics();
 
-    //TODO handle case when already shown properly
-    if( !isShown() || !newGeometry.intersects( oldGeometry ) ) {
-        // obtain snapshot of the screen where we are about to appear
-        Grabber g( newGeometry, backgroundColor() );
-        m_screenshot = g.screen;
+    if( !isShown() || !newGeometry.intersects( oldGeometry ) )
+    {
+        m_screenshot = QPixmap::grabWindow( qt_xrootwin(), newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height() );
+        KPixmapEffect::fade( m_screenshot, 0.80, backgroundColor() );
 
         setGeometry( newGeometry );
 
@@ -83,15 +72,16 @@ OSDWidget::show() //virtual
         debug() << newGeometry << endl;
         debug() << unite << endl;
 
-        Grabber g( unite, backgroundColor() );
+        KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height() );
+        KPixmapEffect::fade( m_screenshot, 0.80, backgroundColor() );
 
         p = oldGeometry.topLeft() - unite.topLeft();
-        bitBlt( &g.screen, p, &m_screenshot );
+        bitBlt( &pix, p, &m_screenshot );
 
         m_screenshot.resize( newGeometry.size() );
 
         p = newGeometry.topLeft() - unite.topLeft();
-        bitBlt( &m_screenshot, 0, 0, &g.screen, p.x(), p.y() );
+        bitBlt( &m_screenshot, 0, 0, &pix, p.x(), p.y() );
 
         setGeometry( newGeometry );
 
