@@ -42,7 +42,8 @@ class ContextBrowser : public QVBox, public EngineObserver
         void slotContextMenu( const QString& urlString, const QPoint& point );
         void showHome();
         void showCurrentTrack();
-        void showLyrics();
+        void showLyrics( const QString& hash = QString::null );
+        void showLyricSuggestions();
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
@@ -64,6 +65,8 @@ class ContextBrowser : public QVBox, public EngineObserver
         QString       m_styleSheet;
         bool          m_emptyDB;
         QString       m_lyrics;
+        QStringList   m_lyricSuggestions;
+        QStringList   m_lyricHashes;
         QStringList   m_relatedArtists;
         QString       m_HTMLSource;
         KTempFile    *m_gradientImage;

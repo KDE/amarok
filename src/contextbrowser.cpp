@@ -144,6 +144,14 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
             showHome();
         else if ( url.path() == "context" || url.path() == "stream" )
             showCurrentTrack();
+        else if ( url.path().contains( "suggestLyric-" ) )
+        {
+            m_lyrics = QString::null;
+            m_lyricHashes.clear();
+            m_lyricSuggestions.clear();
+            QString hash = url.path().mid( url.path().find( QString( "-" ) ) +1 );
+            showLyrics( hash );
+        }
         else if ( url.path() == "lyrics" )
             showLyrics();
         else if ( url.path() == "collectionSetup" ) {
@@ -263,7 +271,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertItem( SmallIconSet( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch From amazon." )+AmarokConfig::amazonLocale(), FETCH );
-        menu.insertItem( SmallIconSet("folder_image"), i18n( "Add &Custom Cover" ), CUSTOM );
+        menu.insertItem( SmallIconSet( "folder_image" ), i18n( "Add &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( "editdelete" ), i18n("&Delete Image File"), DELETE );
@@ -275,7 +283,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #endif
         menu.setItemEnabled( SHOW, !m_db->albumImage( info[0], info[1], 0 ).contains( "nocover" ) );
     }
-    else {
+    else if ( !( url.path().contains("lyric") ) ) {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
         menu.insertTitle( i18n("Track"), TITLE );
@@ -889,19 +897,23 @@ void ContextBrowser::showScanning() {
 
 
 // THE FOLLOWING CODE IS COPYRIGHT BY
-// Christian Muehlhaeuser
-// <chris at chris.de>
+// Christian Muehlhaeuser, Seb Ruiz
+// <chris at chris.de>, <seb100 at optusnet.com.au>
 // If I'm violating any copyright or such
 // please contact / sue me. Thanks.
 
-void ContextBrowser::showLyrics()
+void ContextBrowser::showLyrics( const QString &hash )
 {
     //remove all matches to the regExp and the song production type.
-    QString replaceMe = "\\([^}]*%1[^}]*\\)";
+    //NOTE: use i18n'd and english equivalents since they are very common int'lly.
+    QString replaceMe = " \\([^}]*%1[^}]*\\)";
     QStringList production;
     production << i18n( "live" ) << i18n( "acoustic" ) << i18n( "cover" ) << i18n( "mix" )
-               << i18n( "edit" ) << i18n( "medley" );
-    QString title = EngineController::instance()->bundle().title();
+               << i18n( "edit" ) << i18n( "medley" )
+               << QString( "live" ) << QString( "acoustic" ) << QString( "cover" ) << QString( "mix" )
+               << QString( "edit" ) << QString( "medley" );
+
+    QString title  = EngineController::instance()->bundle().title();
 
     for ( uint x = 0; x < production.count(); ++x )
     {
@@ -910,9 +922,15 @@ void ContextBrowser::showLyrics()
         title.replace( re, QString::null );
     }
 
-    QString url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
+    QString url;
+    if ( !hash.isEmpty() )
+        url = QString( "http://lyrc.com.ar/en/tema1en.php?hash=%1" )
+                  .arg( hash );
+    else
+        url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
                   .arg( EngineController::instance()->bundle().artist() )
                   .arg( title );
+
 
     kdDebug() << "Using this url: " << url << endl;
 
@@ -943,17 +961,24 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         return;
     }
 
-    m_lyrics = m_lyrics.mid( m_lyrics.find( "<font size='2'>" ) );
-    if ( m_lyrics.find( "<p><hr" ) )
-        m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
+    if ( m_lyrics.find( "<font size='2'>" ) != -1 )
+    {
+        m_lyrics = m_lyrics.mid( m_lyrics.find( "<font size='2'>" ) );
+        if ( m_lyrics.find( "<p><hr" ) )
+            m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
+        else
+            m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br><br>" ) );
+    }
+    else if ( m_lyrics.find( "Suggestions : " ) != -1 )
+    {
+        m_lyrics = m_lyrics.mid( m_lyrics.find( "Suggestions : " ), m_lyrics.find( "<br><br>" ) );
+        showLyricSuggestions();
+    }
     else
-        m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br><br>" ) );
+        m_lyrics = i18n( "Lyrics not found." );
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
-
-    if ( m_lyrics.isEmpty() )
-        m_lyrics = i18n( "Lyrics not found" );
 
     browser->write( "<html><div>" );
     browser->write( m_lyrics );
@@ -961,6 +986,29 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     browser->end();
 }
 
+void
+ContextBrowser::showLyricSuggestions()
+{
+    m_lyrics.replace( QString( "<font color='white'>" ), QString::null );
+    m_lyrics.replace( QString( "</font>" ), QString::null );
+    m_lyrics.replace( QString( "<br><br>" ), QString::null );
+
+    while ( !m_lyrics.isEmpty() )
+    {
+        m_lyrics = m_lyrics.mid( m_lyrics.find( "hash=" ) );
+        m_lyricHashes << m_lyrics.mid( 5, m_lyrics.find( ">" ) - 6 );
+        m_lyrics = m_lyrics.mid( m_lyrics.find( ">" ) );
+        m_lyricSuggestions << m_lyrics.mid( 1, m_lyrics.find( "</a>" ) - 1 );
+    }
+    m_lyrics = QString( "Lyrics for track not found, here are some suggestions:<br><br>" );
+
+    for ( uint i=0; i < m_lyricHashes.count() - 1; ++i )
+    {
+        m_lyrics += QString( "<a href='show:suggestLyric-%1'>").arg( m_lyricHashes[i] );
+        m_lyrics += QString( "%1</a><br>" ).arg( m_lyricSuggestions[i] );
+    }
+
+}
 
 void
 ContextBrowser::relatedArtistsFetched( QStringList& artists ) {

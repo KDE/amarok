@@ -379,10 +379,7 @@ void OSDWidget::loadImage( QString &location )
 
 QPixmap OSDWidget::createGradient( QSize size )
 {
-    amaroK::Color gradient = colorGroup().highlight();
-
-    if ( AmarokConfig::osdUseCustomColors() )
-        gradient = backgroundColor();
+    amaroK::Color gradient = paletteBackgroundColor();
 
     QImage image = KImageEffect::gradient( size , gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
 

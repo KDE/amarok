@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta1:
+  ADD: Cover image and lyric fetchers include filters for common
+       extensions, sich as (Disc 1). (BR 90630)
   ADD: Ability to choose from four different Amazon locales. (BR 90664)
   ADD: OSD now draws gradient instead of solid colour.
   ADD: 'Stop after current song' functionality. (BR 88652)

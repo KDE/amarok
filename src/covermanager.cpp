@@ -157,8 +157,6 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     else if ( locale == "de" ) m_currentLocale = Germany;
     else if ( locale == "co.uk" ) m_currentLocale = UK;
     else m_currentLocale = -1;
-    kdDebug() << "Amazon Locale: " << locale << endl;
-    kdDebug() << "Amazon Current Locale: " << m_currentLocale << endl;
     m_amazonLocaleMenu->setItemChecked( m_currentLocale , true );
 
     //fetch missing covers button
