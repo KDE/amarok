@@ -3,10 +3,11 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #141 being the highest available (take this one for your next bug and increase here)
+           #142 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
   FIX 140 <dato>   The playlist toolbar analizer doesn't work if the volume slider is not included.
                    (bug#83671) I think we should fix this in the 1.0 branch.
 
@@ -32,6 +33,9 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+  CHG 141 <markey> For critical errors, use warning dialogs instead of stderr output. (many distros build
+                   with NDEBUG, and users are prone to missing debug messages).
 
   ADD 137 <markey> Ability to abort playlist reading. Can take very long when you drop a folder by accident.
 
