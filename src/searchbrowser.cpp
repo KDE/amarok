@@ -21,10 +21,16 @@
 #include <qtextstream.h>
 #include <kurlcompletion.h>
 #include <kurldrag.h>
+
 #include "threadweaver.h"
 
 
 SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name )
+        : KListView ( parent, name )
+{}
+
+
+SearchBrowser::HistoryListView::HistoryListView( QWidget *parent, const char *name )
         : KListView ( parent, name )
 {}
 
@@ -58,7 +64,7 @@ SearchBrowser::SearchBrowser( const char *name )
 
     splitter    = new QSplitter( Vertical, this );
     resultView  = new SearchListView( splitter );
-    historyView = new KListView( splitter );
+    historyView = new HistoryListView( splitter );
     QString str = config->readEntry( "Splitter Stream" );
     QTextStream stream( &str, IO_ReadOnly );
     stream >> *splitter; //this sets the splitters position
@@ -69,18 +75,22 @@ SearchBrowser::SearchBrowser( const char *name )
     resultView->setResizeMode( QListView::AllColumns );
     resultView->setSelectionMode( QListView::Extended );
     resultView->setAllColumnsShowFocus( true );
-
+    
+    historyView->setDragEnabled( TRUE );
     historyView->addColumn( i18n( "Search" ) );
     historyView->addColumn( i18n( "Results" ) );
     historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
     historyView->setResizeMode( QListView::AllColumns );
+    historyView->setSelectionMode( QListView::Extended );
+    historyView->setSorting( -1 );
     historyView->setAllColumnsShowFocus( true );
-
+    
     connect( searchEdit,     SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
     connect( urlEdit,        SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
     connect( m_searchButton, SIGNAL( clicked() ),       SLOT( slotStartSearch() ) );
-
+    connect( historyView, SIGNAL( selectionChanged() ), SLOT( historySelectionChanged() ) );    
+             
     setFocusProxy( searchEdit ); //so focus is given to a sensible widget when the tab is opened
 }
 
@@ -120,18 +130,20 @@ void SearchBrowser::slotStartSearch()
         kdDebug() << path << endl;
         if ( !searchEdit->text().isEmpty() )
         {
-            // Create a new item for the HistoryView and pass it to the searching thread
-            KListViewItem *item;
-            item = new KListViewItem( historyView, searchEdit->text() );
-            item->setText( 1, "0" );
-            item->setText( 2, i18n( "Waiting for other thread" ) );
-            item->setText( 3, path );
-            historyView->setSelected( item, true );
+            // Create a new item for the HistoryView and pass it to the searching thread 
+            HistoryListView::Item *historyItem = new HistoryListView::Item( historyView, searchEdit->text() );
+            historyItem->setText( 1, "0" );
+            historyItem->setText( 2, i18n( "Waiting for other thread" ) );
+            historyItem->setText( 3, path );
+            historyView->setCurrentItem( historyItem );
+            historyView->selectAll( false );
+            historyView->setSelected( historyItem, true );
+            
             // Switch button for cancelling
             m_searchButton->setText( i18n( "&Abort" ) );
             disconnect( m_searchButton, SIGNAL( clicked() ), this, SLOT( slotStartSearch() ) );
             connect( m_searchButton, SIGNAL( clicked() ), this, SLOT( stopSearch() ) );
-            m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, item ) );
+            m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, historyItem ) );
         }
     }
 }
@@ -150,6 +162,37 @@ QDragObject *SearchBrowser::SearchListView::dragObject()
 
     return new KURLDrag( list, this );
 }
+
+
+QDragObject *SearchBrowser::HistoryListView::dragObject()
+{
+    KURL::List list;
+    
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it ) {
+        list += static_cast<HistoryListView::Item*>( it.current() )->urlList();
+    }
+    
+    return new KURLDrag( list, viewport() );
+}
+
+
+void SearchBrowser::showResults( KURL::List list )
+{
+    resultView->clear();
+    
+    const KURL::List::ConstIterator end = list.end();
+    for ( KURL::List::ConstIterator it = list.begin(); it != end; ++it ) {
+        QString path = (*it).path();
+        QString fileName = path.right( path.length() - path.findRev( '/' ) - 1 );
+        QString dirPath = path.left( path.findRev( '/' )+1 );
+        
+        KListViewItem *resItem = new KListViewItem( resultView, fileName );
+        resItem->setText( 1, dirPath );
+        resItem->setText( 2, path );
+    }
+}
+
 
 void SearchBrowser::customEvent( QCustomEvent *e )
 {
@@ -184,10 +227,13 @@ void SearchBrowser::customEvent( QCustomEvent *e )
 
                 p->item()->setText( 1, QString::number( p->count() ) );
                 p->item()->setText( 2, curToken );
-
-                KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
-                resItem->setText( 1, p->curPath() );
-                resItem->setText( 2, p->curPath() + p->curFile() );
+                static_cast<HistoryListView::Item*>(p->item())->addUrl( KURL( p->curPath()+p->curFile() ) );
+                
+                if( p->item()->isSelected() ) { //add this result to the listview only if it is the current history item
+                    KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
+                    resItem->setText( 1, p->curPath() );
+                    resItem->setText( 2, p->curPath() + p->curFile() );
+                }
         }
     }
 }
@@ -197,6 +243,20 @@ void SearchBrowser::stopSearch()
 {
     // Signal SearchModule job to abort instantly
     SearchModule::stop();
+}
+
+
+void SearchBrowser::historySelectionChanged()
+{
+    KURL::List list;
+    
+    historyView->setSelected( historyView->currentItem(), true );
+    QListViewItemIterator it( historyView, QListViewItemIterator::Selected );
+    for(  ; it.current(); ++it ) {
+        list += static_cast<HistoryListView::Item*>(*it)->urlList();
+    }
+    
+    showResults( list );
 }
 
 
