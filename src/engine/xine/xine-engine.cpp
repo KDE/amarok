@@ -60,10 +60,12 @@ XineEngine::XineEngine()
 
 XineEngine::~XineEngine()
 {
-    if( xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
-       for( int v = 100; v > 0; v-- ) {
+    if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
+       for( int v = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL ) - 1; v >= 0; v-- ) {
           xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
-          ::usleep( 15000 * (-log10( v ) + 2) );
+          int sleep = 13000 * (-log10( v + 1 ) + 2);
+
+          ::usleep( sleep );
        }
        xine_stop( m_stream );
     }
@@ -152,6 +154,12 @@ XineEngine::init()
 bool
 XineEngine::load( const KURL &url, bool stream )
 {
+    if( XINE_VERSION == "1-rc6a" && url.protocol() == "http" ) {
+       KMessageBox::sorry( 0, i18n( "Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7" ) );
+       return false;
+    }
+
+
     Engine::Base::load( url, stream || url.protocol() == "http" );
 
     if( xine_open( m_stream, url.url().local8Bit() ) )
@@ -257,12 +265,6 @@ XineEngine::position() const
 void
 XineEngine::seek( uint ms )
 {
-    if( m_url.path().endsWith( ".flac", false ) )
-    {
-        emit statusText( i18n("xine cannot currently seek in flac media") );
-        return;
-    }
-
     xine_play( m_stream, 0, (int)ms );
 }
 
