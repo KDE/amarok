@@ -185,7 +185,17 @@
      </entry>
   </group>
   <group name="Colors">
-     <entry key="Browser Use Custom Colors" type="Bool">
+     <entry key="Scheme Amarok" type="Bool">
+        <label>Whether to use amaroK standard colors in playlist window</label>
+        <default>true</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Scheme KDE" type="Bool">
+        <label>Whether to use global KDE colors in playlist window</label>
+        <default>false</default>
+        <whatsthis></whatsthis>
+     </entry>
+     <entry key="Scheme Custom" type="Bool">
         <label>Whether to use user-defined colors in playlist window</label>
         <default>false</default>
         <whatsthis></whatsthis>

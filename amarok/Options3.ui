@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>304</width>
-            <height>270</height>
+            <height>272</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -64,7 +64,7 @@
                 </property>
                 <widget class="QRadioButton">
                     <property name="name">
-                        <cstring>kcfg_schemeAmarok</cstring>
+                        <cstring>kcfg_SchemeAmarok</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;amaroK default color scheme</string>
@@ -75,7 +75,7 @@
                 </widget>
                 <widget class="QRadioButton">
                     <property name="name">
-                        <cstring>kcfg_schemeKDE</cstring>
+                        <cstring>kcfg_SchemeKDE</cstring>
                     </property>
                     <property name="text">
                         <string>Current &amp;KDE color scheme</string>
@@ -86,7 +86,7 @@
                 </widget>
                 <widget class="QRadioButton">
                     <property name="name">
-                        <cstring>kcfg_schemeCustom</cstring>
+                        <cstring>kcfg_SchemeCustom</cstring>
                     </property>
                     <property name="text">
                         <string>&amp;Custom color scheme</string>
