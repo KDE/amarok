@@ -1,0 +1,21 @@
+Title : amaroK : Next Generation Audio Player Hits 1.1
+
+Before amaroK was born, most KDE users were stuck with XMMS and others would even run console-based
+audio players. Now those days are over. amaroK, written for KDE desktop environment with its slick GUI and
+engine independent audio capabilities is coming to a computer near you.
+
+amaroK is the first KDE application to use the Gstreamer Media Framework without any dependency on external bindings. amaroK also integrates with xine so you have the freedom of choosing your own flavour. With version 1.1 there are many exciting changes that make using amaroK even more fun. Here are some of the features that will make you simply love it : 
+
+- Fully Integrated With KDE : Play from your samba share with smb:/ , or use the fish kioslave to play from a remote host.
+- Simple and Elegant : Collection-based system where you can choose songs from a variety of criteria, including artist, most played, never played, etc.
+- Stream Support : Listening to online radio has never been easier. Just load the playlist file and it starts playing.
+- Engine Independence : Ability to use Gstreamer or xine. (There is also aRts engine but it is not ported to the new engine architecture yet).
+- Inline tag editing : Tag your music while you play it.
+- Musicbrainz support for tag editing : No vooodo needed for tagging your music, just click musicbrainz button and it gets the song info from the Musicbrainz database.
+- Album cover support : amaroK can download album covers from Internet - better yet, if you have album covers in your music directory it will automatically load them!
+- Multimedia Keyboard Friendly : If you happen to have extra multimedia buttons on your keyboard, using amaroK is even more fun. Just use KHotkeys to map those special buttons to amaroK's dcop functions (like play/pause/volume up/volume down and many more)!
+- On Screen Display : amaroK can optionally use an on screen display to announce the currently playing song.
+
+So give amaroK a spin today!*. You won't be disappointed and that is guaranteed. So fire up amaroK, start playing your favourite songs, and visit the amaroK development squad @ irc.kde.org #amarok. Tell us why you just love amaroK, or your killer new idea for it. We are waiting for you!
+
+* Amarok tarballs and latest cvs snapshots are available from amaroK website @ http://amarok.kde.org
