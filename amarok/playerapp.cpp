@@ -3,7 +3,7 @@
                          -------------------
 begin                : Mit Okt 23 14:35:18 CEST 2002
 copyright            : (C) 2002 by Mark Kretschmann
-email                :
+email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -14,7 +14,7 @@ email                :
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+ 
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
 #include "amarokslider.h"
@@ -22,10 +22,12 @@ email                :
 #include "browserwin.h"
 #include "configdlg.h"
 #include "effectwidget.h"
+#include "engine/enginebase.h"
+#include "metabundle.h" //play( const KURL& )
+#include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "titleproxy/titleproxy.h"
-#include "metabundle.h" //play( const KURL& )
 
 #include <vector>
 #include <string>
@@ -37,29 +39,16 @@ email                :
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <klocale.h>
-#include <kmessagebox.h> //initArts()
+#include <kmessagebox.h>
 #include <kshortcut.h>
-#include <kstandarddirs.h> //ctor
+#include <kstandarddirs.h>
 #include <ktip.h>
 #include <kuniqueapplication.h>
 #include <kurl.h>
 
-
 //FIXME remove these dependencies, we can implement saveConfig across objects and use a save() signal
 //      a little less neat, but boy would that help with compile times
 #include "playlistwidget.h"
-
-
-#include <arts/artsflow.h>
-#include <arts/artskde.h>
-#include <arts/artsmodules.h>
-#include <arts/connect.h>
-#include <arts/dynamicrequest.h>
-#include <arts/flowsystem.h>
-#include <arts/kartsdispatcher.h>
-#include <arts/kmedia2.h>
-#include <arts/kplayobjectfactory.h>
-#include <arts/soundserver.h>
 
 #include <qdir.h>
 #include <qpoint.h>
@@ -68,11 +57,6 @@ email                :
 #include <qtimer.h>
 #include <qvaluelist.h>
 #include <qpushbutton.h> //initPlayerWidget()
-
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/soundcard.h>
-#include <sys/wait.h>
 
 #define MAIN_TIMER 150
 #define ANIM_TIMER 30
@@ -85,33 +69,26 @@ PlayerApp::PlayerApp()
         , m_fgColor( QColor( 0x80, 0xa0, 0xff ) )
         , m_DelayTime( 0 )
         , m_playingURL( KURL() )
-        , m_pPlayObject( NULL )
-        , m_pPlayObjectXFade( NULL )
-        , m_pArtsDispatcher( NULL )
         , m_pConfig( kapp->config() )
         , m_pMainTimer( new QTimer( this ) )
         , m_pAnimTimer( new QTimer( this ) )
-        , m_scopeId( 0 )
         , m_length( 0 )
         , m_playRetryCounter( 0 )
         , m_pEffectWidget( NULL )
-        , m_bIsPlaying( false )
         , m_bChangingSlider( false )
         , m_proxyError( false )
-        , m_XFadeRunning( false )
-        , m_XFadeValue( 1.0 )
-        , m_XFadeCurrent( "invalue1" )
 {
     setName( "amaroK" );
     pApp = this; //global
-
-    initArts();
+    
     initOSD();
     initPlayerWidget();
     initBrowserWin();
 
     readConfig();
-    initMixer();          //initMixer() depends on a config value, so it must be executed after readConfig()
+    
+    m_pEngine = EngineBase::createEngine( m_optSoundSystem, m_artsNeedsRestart );
+    m_pEngine ->initMixer( m_optSoftwareMixerOnly );
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -143,17 +120,16 @@ PlayerApp::~PlayerApp()
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
     m_pConfig->setGroup( "Session" );
-    KURL url( m_bIsPlaying ? m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
+    KURL url( m_pEngine->loaded() ?  m_playingURL : m_pBrowserWin->m_pPlaylistWidget->currentTrackURL() );
 
     if ( !url.isEmpty() )
     {
        m_pConfig->writeEntry( "Track", url.url() );
-       if ( m_bIsPlaying )
-       {
-          Arts::poTime timeC( m_pPlayObject->currentTime() );
-          m_pConfig->writeEntry( "Time", timeC.seconds );
-       }
-       else m_pConfig->deleteEntry( "Time" );
+       
+       if ( m_pEngine->state() != EngineBase::Empty )
+           m_pConfig->writeEntry( "Time", m_pEngine->position() / 1000 );
+       else
+           m_pConfig->deleteEntry( "Time" );
     }
 
     slotStop();
@@ -166,15 +142,7 @@ PlayerApp::~PlayerApp()
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
     delete m_pOSD;
 
-    m_XFade             = Amarok::Synth_STEREO_XFADE::null();
-    m_scope             = Arts::StereoFFTScope::null();
-    m_volumeControl     = Arts::StereoVolumeControl::null();
-    m_effectStack       = Arts::StereoEffectStack::null();
-    m_globalEffectStack = Arts::StereoEffectStack::null();
-    m_amanPlay          = Arts::Synth_AMAN_PLAY::null();
-    m_Server            = Arts::SoundServerV2::null();
-
-    delete m_pArtsDispatcher;
+    delete m_pEngine;
 }
 
 
@@ -223,129 +191,6 @@ int PlayerApp::newInstance()
 
 
 // INIT -------------------------------------------------------------------------
-
-void PlayerApp::initArts()
-{
-    // We must restart artsd after first installation, because we install new mcoptypes
-
-    m_pConfig->setGroup( "" );
-
-    if ( m_pConfig->readEntry( "Version" ) != APP_VERSION )
-    {
-        QCString kill_cmdline;
-        kill_cmdline = "killall artsd";
-
-        int kill_status = ::system( kill_cmdline );
-        if ( kill_status != -1 && WIFEXITED( kill_status ) )
-        {
-            kdDebug() << "killall artsd succeeded." << endl;
-        }
-    }
-    m_pArtsDispatcher = new KArtsDispatcher();
-
-    // <most of this code was taken from noatun's engine.cpp>
-    m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
-    if ( m_Server.isNull() || m_Server.error() )
-    {
-        kdDebug() << "aRtsd not running.. trying to start" << endl;
-        // aRts seems not to be running, let's try to run it
-        // First, let's read the configuration as in kcmarts
-        KConfig config( "kcmartsrc" );
-        QCString cmdline;
-
-        config.setGroup( "Arts" );
-
-        bool rt = config.readBoolEntry( "StartRealtime", false );
-        bool x11Comm = config.readBoolEntry( "X11GlobalComm", false );
-
-        // put the value of x11Comm into .mcoprc
-        {
-            KConfig X11CommConfig( QDir::homeDirPath() + "/.mcoprc" );
-
-            if ( x11Comm )
-                X11CommConfig.writeEntry( "GlobalComm", "Arts::X11GlobalComm" );
-            else
-                X11CommConfig.writeEntry( "GlobalComm", "Arts::TmpGlobalComm" );
-
-            X11CommConfig.sync();
-        }
-
-        cmdline = QFile::encodeName( KStandardDirs::findExe( QString::fromLatin1( "kdeinit_wrapper" ) ) );
-        cmdline += " ";
-
-        if ( rt )
-            cmdline += QFile::encodeName( KStandardDirs::findExe(
-                                              QString::fromLatin1( "artswrapper" ) ) );
-        else
-            cmdline += QFile::encodeName( KStandardDirs::findExe(
-                                              QString::fromLatin1( "artsd" ) ) );
-
-        cmdline += " ";
-        cmdline += config.readEntry( "Arguments", "-F 10 -S 4096 -s 60 -m artsmessage -l 3 -f -n" ).utf8();
-
-        int status = ::system( cmdline );
-
-        if ( status != -1 && WIFEXITED( status ) )
-        {
-            // We could have a race-condition here.
-            // The correct way to do it is to make artsd fork-and-exit
-            // after starting to listen to connections (and running artsd
-            // directly instead of using kdeinit), but this is better
-            // than nothing.
-            int time = 0;
-            do
-            {
-                // every time it fails, we should wait a little longer
-                // between tries
-                ::sleep( 1 + time / 2 );
-                m_Server = Arts::Reference( "global:Arts_SoundServerV2" );
-            }
-            while ( ++time < 5 && ( m_Server.isNull() ) );
-        }
-    }
-
-    if ( m_Server.isNull() )
-    {
-        KMessageBox::error( 0, i18n( "Cannot start aRts! Exiting." ), i18n( "Fatal Error" ) );
-        ::exit( 1 );
-    }
-    // </most of this code was taken from noatun's engine.cpp>
-
-    m_amanPlay = Arts::DynamicCast( m_Server.createObject( "Arts::Synth_AMAN_PLAY" ) );
-    m_amanPlay.title( "amarok" );
-    m_amanPlay.autoRestoreID( "amarok" );
-    m_amanPlay.start();
-
-    m_XFade = Arts::DynamicCast( m_Server.createObject( "Amarok::Synth_STEREO_XFADE" ) );
-
-    if ( m_XFade.isNull() )
-    {
-        KMessageBox::error( 0,
-                            i18n( "Cannot find libamarokarts! Probably amaroK was installed with the \
-                                   wrong prefix. Please install again using: ./configure \
-                                   --prefix=`kde-config --prefix`" ),
-                            i18n( "Fatal Error" ) );
-        ::exit( 1 );
-    }
-
-    m_XFade.percentage( m_XFadeValue );
-    m_XFade.start();
-
-    m_scope = Arts::DynamicCast( m_Server.createObject( "Arts::StereoFFTScope" ) );
-
-    m_globalEffectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
-    m_globalEffectStack.start();
-
-    m_effectStack = Arts::DynamicCast( m_Server.createObject( "Arts::StereoEffectStack" ) );
-    m_effectStack.start();
-    m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
-
-    Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
-    Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
-
-    Arts::connect( m_globalEffectStack, m_amanPlay );
-}
-
 
 void PlayerApp::initOSD()
 {
@@ -422,52 +267,6 @@ void PlayerApp::initPlayerWidget()
 }
 
 
-void PlayerApp::initMixer()
-{
-    kdDebug() << "begin PlayerApp::initMixer()" << endl;
-
-    if ( !m_optSoftwareMixerOnly && initMixerHW() )
-    {
-        m_usingMixerHW = true;
-    }
-    else
-    {
-        // Hardware mixer doesn't work --> use arts software-mixing
-        kdDebug() << "Cannot initialise Hardware mixer. Switching to software mixing." << endl;
-
-        m_volumeControl = Arts::DynamicCast( m_Server.createObject( "Arts::StereoVolumeControl" ) );
-
-        if ( m_volumeControl.isNull() )
-        {
-            kdDebug() << "Initialising arts softwaremixing failed!" << endl;
-            return ;
-        }
-
-        m_usingMixerHW = false;
-        m_volumeControl.start();
-        m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
-
-        kdDebug() << "end PlayerApp::initMixer()" << endl;
-    }
-}
-
-
-bool PlayerApp::initMixerHW()
-{
-    if ( ( m_Mixer = ::open( "/dev/mixer", O_RDWR ) ) < 0 )
-        return false;
-
-    int devmask, recmask, i_recsrc, stereodevs;
-    if ( ioctl( m_Mixer, SOUND_MIXER_READ_DEVMASK, &devmask ) == -1 ) return false;
-    if ( ioctl( m_Mixer, SOUND_MIXER_READ_RECMASK, &recmask ) == -1 ) return false;
-    if ( ioctl( m_Mixer, SOUND_MIXER_READ_RECSRC, &i_recsrc ) == -1 ) return false;
-    if ( ioctl( m_Mixer, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) return false;
-    if ( !devmask ) return false;
-
-    return true;
-}
-
-
 void PlayerApp::initBrowserWin()
 {
     kdDebug() << "begin PlayerApp::initBrowserWin()" << endl;
@@ -518,21 +317,11 @@ void PlayerApp::restoreSession()
       {
          play( url );
 
-         if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
-         {
-            //FIXME I just copied this code, do I need all these properties?
-            Arts::poTime time;
-            time.ms = 0;
-            time.seconds = seconds;
-            time.custom = 0;
-            time.customUnit = std::string();
-
-            m_pPlayObject->seek( time );
-         }
+         if ( seconds > 0 )
+            m_pEngine->seek( seconds * 1000 );
       }
    }
 }
-
 
 
 // METHODS --------------------------------------------------------------------------
@@ -589,7 +378,8 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "Current Analyzer", m_optVisCurrent );
     m_pConfig->writeEntry( "Browser Sorting Spec", m_optBrowserSortSpec );
     m_pConfig->writeEntry( "Title Streaming", m_optTitleStream );
-
+    m_pConfig->writeEntry( "Sound System", m_optSoundSystem );
+    
     m_pBrowserWin->m_pPlaylistWidget->saveM3u( kapp->dirs() ->saveLocation(
         "data", kapp->instanceName() + "/" ) + "current.m3u" );
 }
@@ -609,6 +399,10 @@ void PlayerApp::readConfig()
     QColor defaultColor( 0x80, 0xa0, 0xff );
     QColor black( Qt::black );
 
+    m_pConfig->setGroup( "" );
+    //we restart artsd after each version change, so that it picks up any plugin changes
+    m_artsNeedsRestart = m_pConfig->readEntry( "Version" ) != APP_VERSION;
+    
     m_pConfig->setGroup( "General Options" );
 
     m_pBrowserWin->m_pBrowserWidget->readDir( m_pConfig->readPathEntry( "CurrentDirectory", QDir::home().path() ) );
@@ -663,10 +457,12 @@ void PlayerApp::readConfig()
 
     m_optBrowserSortSpec = m_pConfig->readNumEntry( "Browser Sorting Spec", QDir::Name | QDir::DirsFirst );
     m_optTitleStream = m_pConfig->readBoolEntry( "Title Streaming", true );
+    m_optSoundSystem = m_pConfig->readEntry( "Sound System", "arts" );
 
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
-    slotVolumeChanged( m_Volume );
-    m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
+    //FIXME 
+//    slotVolumeChanged( m_Volume );
+//     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
 
     QValueList<int> splitterList;
     splitterList = m_pConfig->readIntListEntry( "BrowserWinSplitter" );
@@ -720,22 +516,6 @@ bool PlayerApp::queryClose()
 }
 
 
-void PlayerApp::setupTrackLength()
-{
-    if ( m_pPlayObject != NULL )
-    {
-        Arts::poTime timeO( m_pPlayObject->overallTime() );
-
-        m_length = timeO.seconds;
-        m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( timeO.seconds ) );
-    }
-    else
-    {
-       m_length = 0;
-    }
-}
-
-
 //FIXME use const & QStrings!!
 void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 {
@@ -751,43 +531,6 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
         //FIXME show bitrate? this was how it was before so I am leaving it as is.. <mxcl>
         m_pPlayerWidget->setScroll( QString( "%1 (%2)" ).arg( title ).arg( url ), "--", "--" );
 
-}
-
-
-void PlayerApp::startXFade()
-{
-    kdDebug() << "void PlayerApp::startXFade()" << endl;
-
-    if ( m_XFadeRunning )
-        stopXFade();
-
-    m_XFadeRunning = true;
-
-    m_pPlayObjectXFade = m_pPlayObject;
-    m_pPlayObject = NULL;
-}
-
-
-void PlayerApp::stopXFade()
-{
-    kdDebug() << "void PlayerApp::stopXFade()" << endl;
-
-    m_XFadeRunning = false;
-
-    if ( m_XFadeCurrent == "invalue2" )
-        m_XFadeValue = 0.0;
-    else
-        m_XFadeValue = 1.0;
-
-    m_XFade.percentage( m_XFadeValue );
-
-    if ( m_pPlayObjectXFade != NULL )
-    {
-        m_pPlayObjectXFade->halt();
-
-        delete m_pPlayObjectXFade;
-        m_pPlayObjectXFade = NULL;
-    }
 }
 
 
@@ -820,8 +563,8 @@ void PlayerApp::setupColors()
 
 // SLOTS -----------------------------------------------------------------
 
-void PlayerApp::slotPrev() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Prev, m_bIsPlaying ); }
-void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_bIsPlaying ); }
+void PlayerApp::slotPrev() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Prev, m_pEngine->loaded() ); }
+void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_pEngine->loaded() ); }
 void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Current ); }
 
 
@@ -829,54 +572,8 @@ void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 
 void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
-    if ( m_optXFade && m_bIsPlaying && url != m_playingURL )
-        startXFade();
-
-    else if ( m_pPlayObject != NULL )
-        slotStopCurrent();
-
-    KDE::PlayObjectFactory factory( m_Server );
-
-    if ( m_optTitleStream && !m_proxyError && !url.isLocalFile()  )
-    {
-        TitleProxy *pProxy = new TitleProxy( url );
-        m_pPlayObject = factory.createPlayObject( pProxy->proxyUrl(), false );
-
-        connect( m_pPlayObject, SIGNAL( destroyed() ),
-                 pProxy, SLOT( deleteLater() ) );
-        connect( pProxy, SIGNAL( metaData( QString, QString, QString ) ),
-                 this, SLOT( receiveStreamMeta( QString, QString, QString ) ) );
-        connect( pProxy, SIGNAL( error() ), this, SLOT( proxyError() ) );
-    }
-    else
-    {
-        m_pPlayObject = factory.createPlayObject( url, false ); //second parameter:
-                                                                //create BUS(true/false)
-    }
-
-    m_proxyError = false;
-
-    if ( m_pPlayObject == NULL )
-    {
-        kdDebug() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
-        slotNext();
-        return;
-    }
-    if ( m_pPlayObject->isNull() )
-    {
-        kdDebug() << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-        slotNext();
-        return;
-    }
-
-    if ( m_pPlayObject->object().isNull() )
-        connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( slotConnectPlayObj() ) );
-    else
-        slotConnectPlayObj();
-
-
+    m_pEngine->open( url );
+    
     if ( tags )
     {
        QString text, bps, Hz, length;
@@ -918,77 +615,50 @@ void PlayerApp::play( const KURL &url, const MetaBundle *tags )
        m_pPlayerWidget->setScroll( url.fileName() );
     }
 
-
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
+    m_pEngine->play();
     
-    m_pPlayObject->play();
-    m_bIsPlaying = true;
-
     //set track length stuff
-    if ( m_pPlayObject->stream() )
+    if ( m_pEngine->isStream() )
     {
         m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
         m_pPlayerWidget->setScroll( i18n( "Stream from: %1" ).arg( url.prettyURL() ), "?", "--" );
     }
 
-    m_length = 0; //length will be established when arts knows after a few timer iterations
+    m_length = tags->m_length * 1000;      // sec -> ms
     m_playingURL = url;
 
-    m_pPlayerWidget->m_pSlider->setValue( 0 );
+    m_pPlayerWidget->m_pSlider->setValue   ( 0 );
     m_pPlayerWidget->m_pSlider->setMinValue( 0 );
+    m_pPlayerWidget->m_pSlider->setMaxValue( m_length );
 
     //interface consistency
-    m_pPlayerWidget->m_pButtonPlay->setOn( true );
+    m_pPlayerWidget->m_pButtonPlay ->setOn  ( true );
     m_pPlayerWidget->m_pButtonPause->setDown( false );
-}
-
-
-void PlayerApp::slotConnectPlayObj()
-{
-    if ( !m_pPlayObject->object().isNull() )
-    {
-        m_pPlayObject->object()._node()->start();
-
-        if ( m_XFadeCurrent == "invalue1" )
-            m_XFadeCurrent = "invalue2";
-        else
-            m_XFadeCurrent = "invalue1";
-
-        if ( !m_XFadeRunning )
-        {
-            if ( m_XFadeCurrent == "invalue2" )
-                m_XFade.percentage( m_XFadeValue = 0.0 );
-            else
-                m_XFade.percentage( m_XFadeValue = 1.0 );
-        }
-
-        Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
-        Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
-    }
 }
 
 
 void PlayerApp::proxyError()
 {
-    m_proxyError = true;
+/*    m_proxyError = true;
 
-    slotStopCurrent(); //FIXME play() does this for us (?)
-    slotPlay();
+    slotStop; //FIXME play() does this for us (?)
+    slotPlay();*/
 }
 
 
 void PlayerApp::slotPause()
 {
-    if ( m_bIsPlaying && m_pPlayObject != NULL )
+    if ( m_pEngine->loaded() )
     {
-        if ( m_pPlayObject->state() == Arts::posPaused )
+        if ( m_pEngine->state() == EngineBase::Paused )
         {
-            m_pPlayObject->play();
+            m_pEngine->play();
             m_pPlayerWidget->m_pButtonPause->setDown( false );
         }
         else
         {
-            m_pPlayObject->pause();
+            m_pEngine->pause();
             m_pPlayerWidget->m_pButtonPause->setDown( true );
         }
     }
@@ -997,50 +667,28 @@ void PlayerApp::slotPause()
 
 void PlayerApp::slotStop()
 {
-     stopXFade();
-     slotStopCurrent();
+    m_pEngine->stop();     
 
-     m_pPlayerWidget->m_pButtonPlay->setOn( false );
-     m_pPlayerWidget->m_pButtonPause->setDown( false );
-     m_pPlayerWidget->setScroll();
-}
-
-
-void PlayerApp::slotStopCurrent()
-{
-     if ( m_pPlayObject != NULL )
-     {
-         m_pPlayObject->halt();
-
-         delete m_pPlayObject;
-         m_pPlayObject = NULL;
-     }
-
-     m_bIsPlaying = false;
-     m_length = 0;
-
-     //FIXME would be nice to do this in slotStop at some point (when we no longer delay determination of length)
-     m_pPlayerWidget->m_pSlider->setValue( 0 );
-     m_pPlayerWidget->m_pSlider->setMinValue( 0 ); //FIXME disable it and setvalue(0) instead (?)
-     m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
+    m_pPlayerWidget->m_pButtonPlay->setOn( false );
+    m_pPlayerWidget->m_pButtonPause->setDown( false );
+    m_pPlayerWidget->setScroll();
 }
 
 
 bool PlayerApp::playObjectConfigurable()
 {
-    if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
-    {
-        Arts::TraderQuery query;
-        query.supports( "Interface", "Arts::GuiFactory" );
-        query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
-
-        std::vector<Arts::TraderOffer> *queryResults = query.query();
-        bool yes = queryResults->size();
-        delete queryResults;
-
-        return yes;
-    }
+//     if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pPlayerWidget->m_pPlayObjConfigWidget )
+//     {
+//         Arts::TraderQuery query;
+//         query.supports( "Interface", "Arts::GuiFactory" );
+//         query.supports( "CanCreate", m_pPlayObject->object()._interfaceName() );
+// 
+//         std::vector<Arts::TraderOffer> *queryResults = query.query();
+//         bool yes = queryResults->size();
+//         delete queryResults;
+// 
+//         return yes;
+//     }
 
     return false;
 }
@@ -1054,16 +702,11 @@ void PlayerApp::slotSliderPressed()
 
 void PlayerApp::slotSliderReleased()
 {
-    if ( m_bIsPlaying && m_pPlayObject != NULL )
+    if ( m_pEngine->state() == EngineBase::Playing )
     {
-        Arts::poTime time;
-        time.ms = 0;
-        time.seconds = static_cast<long>( m_pPlayerWidget->m_pSlider->value() );
-        time.custom = 0;
-        time.customUnit = std::string();
-        m_pPlayObject->seek( time );
+        m_pEngine->seek( m_pPlayerWidget->m_pSlider->value() );
     }
-
+        
     m_bSliderIsPressed = false;
 }
 
@@ -1072,9 +715,11 @@ void PlayerApp::slotSliderChanged( int value )
 {
     if ( m_bSliderIsPressed )
     {
+        value /= 1000;    // ms -> sec
+        
         if ( m_optTimeDisplayRemaining )
         {
-            value = m_length - value;
+            value = m_length / 1000 - value;
             m_pPlayerWidget->timeDisplay( true, value / 60 / 60 % 60, value / 60 % 60, value % 60 );
         }
         else
@@ -1090,137 +735,42 @@ void PlayerApp::slotVolumeChanged( int value )
     m_Volume = value;
     value = 100 - value;
 
-    if ( m_usingMixerHW )
-    {
-        value = value + ( value << 8 );
-        ioctl( m_Mixer, MIXER_WRITE( 4 ), &value );
-    }
-    else
-    {
-        //convert percent to factor
-        m_volumeControl.scaleFactor( 0.01 * static_cast<float>( value ) );
-    }
+    m_pEngine->setVolume( value );
+   
 }
 
 
 void PlayerApp::slotMainTimer()
 {
-    if ( m_pPlayObject == NULL || m_pPlayObject->isNull() )
-    {
-        disableScope();
-        return;
-    }
-
-    if ( ( m_length == 0 ) && !m_pPlayObject->stream() )
-    {
-       Arts::poTime timeO( m_pPlayObject->overallTime() );
-
-       m_length = timeO.seconds;
-       m_pPlayerWidget->m_pSlider->setMaxValue( static_cast<int>( m_length ) );
-
-       kdDebug() << "length: " << m_length << endl;
-    }
-
-    if ( m_bSliderIsPressed || !m_bIsPlaying )
+    if ( m_bSliderIsPressed || ( m_pEngine->state() == EngineBase::Empty ) )
         return;
 
-    //only enable scope when needed, so we save some cpu
-    if ( m_pPlayObject->state() == Arts::posPlaying )
-        enableScope();
-    else
-        disableScope();
-
-    Arts::poTime timeC( m_pPlayObject->currentTime() );
-    m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
-
+    m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
+    
     // <Draw TimeDisplay>
     if ( m_pPlayerWidget->isVisible() )
     {
         int seconds;
-        if ( m_optTimeDisplayRemaining && !m_pPlayObject->stream() )
+        if ( m_optTimeDisplayRemaining && !m_pEngine->isStream() )
         {
-            seconds = m_length - timeC.seconds;
+            seconds = ( m_length - m_pEngine->position() ) / 1000;
             m_pPlayerWidget->timeDisplay( true, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
         }
         else
         {
-            seconds = timeC.seconds;
+            seconds = m_pEngine->position() / 1000;
             m_pPlayerWidget->timeDisplay( false, seconds / 60 / 60 % 60, seconds / 60 % 60, seconds % 60 );
         }
     }
     // </Draw TimeDisplay>
 
-    // <Crossfading>
-    if ( ( !m_XFadeRunning ) && //this logic order is probably most efficient
-         ( m_optXFade ) &&
-         ( !m_optRepeatTrack ) &&
-         ( !m_pPlayObject->stream() ) &&
-         ( m_length ) &&
-         ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
-    {
-        slotNext();
-        return;
-    }
-    if ( m_XFadeRunning )
-    {
-        float xfadeStep = 1.0 / m_optXFadeLength * MAIN_TIMER;
-
-        if ( m_XFadeCurrent == "invalue2" )
-            m_XFadeValue -= xfadeStep;
-        else
-            m_XFadeValue += xfadeStep;
-
-        if ( m_XFadeValue < 0.0 )
-            m_XFadeValue = 0.0;
-        else if ( m_XFadeValue > 1.0 )
-            m_XFadeValue = 1.0;
-
-//         kdDebug() << "[slotMainTimer] m_XFadeValue: " << m_XFadeValue << endl;
-        m_XFade.percentage( m_XFadeValue );
-
-        if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )
-            stopXFade();
-    }
-    // </Crossfading>
-
     // check if track has ended
-    if ( m_pPlayObject->state() == Arts::posIdle )
+    if ( m_pEngine->state() == EngineBase::Idle )
     {
-        if ( m_optTrackDelay > 0 ) //this can occur syncronously to XFade and not be fatal
-        {
-            //delay before start of next track, without freezing the app
-            m_DelayTime += MAIN_TIMER;
-            if ( m_DelayTime >= (m_optTrackDelay * 1000) )
-            {
-                m_DelayTime = 0;
-                slotNext();
-            }
-        }
-        else if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_bIsPlaying ) )
+        if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, true ) )
         {
             slotStop();
         }
-    }
-}
-
-
-void PlayerApp::enableScope()
-{
-    if ( !m_scopeId )
-    {
-        m_scope.start();
-        m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
-    }
-}
-
-
-void PlayerApp::disableScope()
-{
-    if ( m_scopeId )
-    {
-        m_scope.stop();
-        m_globalEffectStack.remove( m_scopeId );
-        m_scopeId = 0;
     }
 }
 
@@ -1240,9 +790,10 @@ void PlayerApp::slotVisTimer()
 
     if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
     {
-        if ( m_scopeId )
+        if ( true )    // FIXME
+//         if ( m_scopeId )
         {
-            std::vector<float> *pScopeVector = m_scope.scope();
+            std::vector<float> *pScopeVector = m_pEngine->scope();
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
 
 /*
@@ -1314,6 +865,7 @@ void PlayerApp::slotVisTimer()
     }
 }
 
+
 void PlayerApp::slotPlaylistShowHide()
 {
    if ( m_pBrowserWin->isHidden() )
@@ -1325,6 +877,7 @@ void PlayerApp::slotPlaylistShowHide()
       m_pBrowserWin->hide();
    }
 }
+
 
 void PlayerApp::slotPlaylistToggle( bool b )
 {
@@ -1391,12 +944,11 @@ void PlayerApp::slotHide()
        m_pBrowserWin->hide();
 }
 
+
 void PlayerApp::slotShow()
 {
     if ( m_pPlayerWidget->m_pButtonPl->isOn() )
-    {
         m_pBrowserWin->show();
-    }
 }
 
 

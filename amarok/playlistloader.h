@@ -14,6 +14,9 @@
 #include <kurl.h>      //need KURL::List
 #include <kfileitem.h> //need the enum
 
+class PlayerApp;
+extern PlayerApp *pApp;
+
 class QListView;
 class QListViewItem;
 class QWidget;

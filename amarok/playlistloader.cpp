@@ -4,10 +4,12 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "playlistloader.h"
-#include "metabundle.h"
-#include "playlistitem.h"
 #include "amarokfilelist.h"            
+#include "engine/enginebase.h"
+#include "metabundle.h"
+#include "playerapp.h"
+#include "playlistitem.h"
+#include "playlistloader.h"
 
 #include <qapplication.h>
 #include <qtextstream.h>
@@ -315,7 +317,6 @@ void PlaylistLoader::loadLocalPlaylist( const QString &path, int type )
 }
 
 
-#include <arts/soundserver.h>
 bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissions )
 {
    QString ext = url.path().right( 4 ).lower();
@@ -325,22 +326,9 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
 
    if( !b && url.protocol() != "http" )
    {
-       //FIXME KMimetype doesn't seem to like http files, so here we are assuming if
-       //      it's extension is not common, it can't be read. Not perfect
-
-       KFileItem fileItem( mode, permissions, url, false ); //false = determineMimeType straight away
-       KMimeType::Ptr mimeTypePtr = fileItem.determineMimeType();
-
-       Arts::TraderQuery query;
-       query.supports( "Interface", "Arts::PlayObject" );
-       query.supports( "MimeType", mimeTypePtr->name().latin1() );
-       std::vector<Arts::TraderOffer> *offers = query.query();
-
-       b = !offers->empty();
+       b = pApp->m_pEngine->canDecode( url );
        
-       if( !b ) kdDebug() << "Rejected mimetype \"" << fileItem.mimetype() << "\" for: " << url.prettyURL() << endl;
-
-       delete offers;
+//        if( !b ) kdDebug() << "Rejected mimetype \"" << fileItem.mimetype() << "\" for: " << url.prettyURL() << endl;
     }
 
     return b;

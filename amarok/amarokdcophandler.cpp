@@ -1,9 +1,10 @@
+#include "amarokdcophandler.h"
 #include "amarokslider.h"
-#include "playerapp.h"
 #include "browserwin.h"
+#include "engine/enginebase.h"
+#include "playerapp.h"
 #include "playerwidget.h"
 #include "playlistwidget.h"
-#include "amarokdcophandler.h"
 
 #include <dcopclient.h>
 
@@ -72,15 +73,9 @@ int AmarokDcopHandler::trackTotalTime()
 
 void AmarokDcopHandler::seek(int s)
 {
-   if ( (s > 0) && pApp->m_pPlayObject && !pApp->m_pPlayObject->isNull() )
+   if ( (s > 0) && ( pApp->m_pEngine->state() != EngineBase::Empty ) )
    {
-      Arts::poTime time;
-      time.ms = 0;
-      time.seconds = s;
-      time.custom = 0;
-      time.customUnit = std::string();
-
-      pApp->m_pPlayObject->seek( time );
+      pApp->m_pEngine->seek( s * 1000 );
    }
 }
 

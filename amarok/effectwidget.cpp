@@ -1,9 +1,9 @@
 /***************************************************************************
                           effectwidget.cpp  -  description
                              -------------------
-    begin                : Don Mär 6 2003
+    begin                : Mar 6 2003
     copyright            : (C) 2003 by Mark Kretschmann
-    email                :
+    email                : markey@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "effectwidget.h"
+#include "engine/enginebase.h"
 #include "playerapp.h"
 #include "playerwidget.h"
 
@@ -34,7 +35,6 @@
 #include <qpushbutton.h>
 #include <qsizepolicy.h>
 #include <qstring.h>
-#include <qstrlist.h>
 #include <qtooltip.h>
 #include <qvbox.h>
 
@@ -44,22 +44,12 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-#include <arts/artsgui.h>
-#include <arts/connect.h>
-#include <arts/dynamicrequest.h>
-#include <arts/flowsystem.h>
-#include <arts/kartsdispatcher.h>
-#include <arts/kartswidget.h>
-#include <arts/kmedia2.h>
-#include <arts/kplayobjectfactory.h>
-#include <arts/soundserver.h>
-
 // CLASS EffectListItem --------------------------------------------------------
 
 EffectListItem::EffectListItem( QListView *parent, const QString &label ) :
         QListViewItem( parent, label )
 {
-    m_pFX = new Arts::StereoEffect;
+/*    m_pFX = new Arts::StereoEffect;
     *m_pFX = Arts::DynamicCast( pApp->m_Server.createObject( std::string( label.ascii() ) ) );
     m_pFX->start();
 
@@ -70,73 +60,57 @@ EffectListItem::EffectListItem( QListView *parent, const QString &label ) :
         kdDebug() << "insertBottom failed" << endl;
         m_pFX->stop();
         return;
-    }
+    }*/
 }
 
 
 EffectListItem::~EffectListItem()
 {
-    m_pFX->stop();
+/*    m_pFX->stop();
     pApp->m_effectStack.remove( m_ID );
 
-    delete m_pFX;
+    delete m_pFX;*/
+}
+
+
+void EffectListItem::configure()
+{
+/*    ArtsConfigWidget *pWidget = new ArtsConfigWidget( *m_pFX, pApp->m_pPlayerWidget );
+    pWidget->show();*/
 }
 
 
 // CLASS EffectConfigWidget --------------------------------------------------------
 
-ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent )
-        : QWidget( parent, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
-{
-    setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
-
-    Arts::GenericGuiFactory factory;
-    m_gui = factory.createGui( object );
-
-    if ( m_gui.isNull() )
-    {
-        kdDebug() << "Arts::Widget gui == NULL! Returning.." << endl;
-        return;
-    }
-
-    else
-    {
-        m_pArtsWidget = new KArtsWidget( m_gui, this );
-
-        QBoxLayout *lay = new QHBoxLayout( this );
-        lay->add( m_pArtsWidget );
-    }
-}
-
-
-ArtsConfigWidget::~ArtsConfigWidget()
-{
-    delete m_pArtsWidget;
-    m_gui = Arts::Widget::null();
-}
-
-
-// METHODS -------------------------------------------------------------------------
-
-void EffectListItem::configure()
-{
-    ArtsConfigWidget *pWidget = new ArtsConfigWidget( *m_pFX, pApp->m_pPlayerWidget );
-    pWidget->show();
-}
-
-
-bool EffectListItem::configurable() const
-{
-    Arts::TraderQuery query;
-    query.supports( "Interface", "Arts::GuiFactory" );
-    query.supports( "CanCreate", m_pFX->_interfaceName() );
-
-    std::vector<Arts::TraderOffer> *queryResults = query.query();
-    bool yes = queryResults->size();
-    delete queryResults;
-
-    return yes;
-}
+// ArtsConfigWidget::ArtsConfigWidget( Arts::Object object, QWidget *parent )
+//         : QWidget( parent, 0, Qt::WType_TopLevel | Qt::WDestructiveClose )
+// {
+//     setCaption( kapp->makeStdCaption( QString( object._interfaceName().c_str() ) ) );
+// 
+//     Arts::GenericGuiFactory factory;
+//     m_gui = factory.createGui( object );
+// 
+//     if ( m_gui.isNull() )
+//     {
+//         kdDebug() << "Arts::Widget gui == NULL! Returning.." << endl;
+//         return;
+//     }
+// 
+//     else
+//     {
+//         m_pArtsWidget = new KArtsWidget( m_gui, this );
+// 
+//         QBoxLayout *lay = new QHBoxLayout( this );
+//         lay->add( m_pArtsWidget );
+//     }
+// }
+// 
+// 
+// ArtsConfigWidget::~ArtsConfigWidget()
+// {
+//     delete m_pArtsWidget;
+//     m_gui = Arts::Widget::null();
+// }
 
 
 // CLASS EffectWidget -----------------------------------------------------------
@@ -161,7 +135,7 @@ EffectWidget::EffectWidget()
     pFrame->setStretchFactor( m_pGroupBoxBot, 10 );
 
     m_pComboBox = new KComboBox( m_pGroupBoxTop );
-    m_pComboBox->insertStrList( queryEffects() );
+    m_pComboBox->insertStringList( pApp->m_pEngine->availableEffects() );
 
     m_pButtonTopDown = new QPushButton( iconLoader.loadIconSet( "down", KIcon::Toolbar, KIcon::SizeSmall ),
                                         0, m_pGroupBoxTop );
@@ -205,27 +179,6 @@ EffectWidget::~EffectWidget()
 {}
 
 
-// METHODS ------------------------------------------------------------------------
-
-QStrList EffectWidget::queryEffects() const
-{
-    QStrList val;
-    Arts::TraderQuery query;
-    query.supports( "Interface", "Arts::StereoEffect" );
-    query.supports( "Interface", "Arts::SynthModule" );
-    std::vector<Arts::TraderOffer> *offers = query.query();
-
-    for ( std::vector<Arts::TraderOffer>::iterator i = offers->begin(); i != offers->end(); i++ )
-    {
-        Arts::TraderOffer &offer = *i;
-        QCString name = offer.interfaceName().c_str();
-        val.append( name );
-    }
-    delete offers;
-    return val;
-}
-
-
 // SLOTS ----------------------------------------------------------------------------
 
 void EffectWidget::slotButtonTop()
@@ -253,7 +206,7 @@ void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )
     if ( pCurrentItem )
     {
         EffectListItem *pEffect = static_cast<EffectListItem *>( pCurrentItem );
-        m_pButtonBotConf->setEnabled( pEffect->configurable() );
+        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable( pEffect->text( 0 ) ) );
     }
 
     else

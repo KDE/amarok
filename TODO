@@ -151,6 +151,8 @@ LONG-TERM:
 
     * add: audio system info widget, showing all available codecs and maybe more
 
+    * chg: use namespaces 
+    
     * chg: resizable playerwidget, like in Winamp3.
 
 

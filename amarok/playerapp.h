@@ -3,7 +3,7 @@
                             -------------------
    begin                : Mit Okt 23 14:35:18 CEST 2002
    copyright            : (C) 2002 by Mark Kretschmann
-   email                :
+   email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -22,20 +22,13 @@
 #include <config.h>
 #endif
 
-#define APP_VERSION "0.8.3"
-
-#include "amarokarts/amarokarts.h"
+#define APP_VERSION "0.8.0"
 
 #include <kglobalaccel.h>
 #include <kuniqueapplication.h>
-
+#include <kurl.h>
+    
 #include <vector>
-
-#include <arts/artsmodules.h>
-#include <arts/kartsdispatcher.h>
-#include <arts/kplayobjectfactory.h>
-
-#include "osd.h"
 
 class QColor;
 class QListView;
@@ -44,13 +37,14 @@ class QString;
 class QTimer;
 
 class KConfig;
-class KURL;
 
 class BrowserWin;
 class EffectWidget;
+class OSDWidget;
 class PlaylistItem;
 class PlayerWidget;
 
+class EngineBase;
 class MetaBundle;
 
 class PlayerApp;
@@ -74,11 +68,13 @@ class PlayerApp : public KUniqueApplication
         bool restorePlaylistSelection(const KURL& url);
 
         // ATTRIBUTES ------
+        EngineBase *m_pEngine;
+        
         KGlobalAccel *m_pGlobalAccel;
 
         PlayerWidget *m_pPlayerWidget;
-        BrowserWin   *m_pBrowserWin;
-        OSDWidget    *m_pOSD;
+        BrowserWin *m_pBrowserWin;
+        OSDWidget *m_pOSD;
 
         QColor m_bgColor;
         QColor m_fgColor;
@@ -114,35 +110,23 @@ class PlayerApp : public KUniqueApplication
         int m_optVisCurrent;
         int m_optBrowserSortSpec;
         bool m_optTitleStream;
+        QString m_optSoundSystem;
         // </option attributes>
 
         int m_DelayTime;
         int m_Volume;
         bool m_bSliderIsPressed;
+        bool m_artsNeedsRestart;
 
         KURL m_playingURL; ///< The URL of the currently playing item
 
-        // <aRts>
-        KDE::PlayObject *m_pPlayObject;
-        KDE::PlayObject *m_pPlayObjectXFade;
-        Arts::SoundServerV2 m_Server;
-        Arts::StereoFFTScope m_scope;
-        Arts::StereoEffectStack m_globalEffectStack;
-        Arts::StereoEffectStack m_effectStack;
-        Arts::StereoVolumeControl m_volumeControl;
-        Arts::Synth_AMAN_PLAY m_amanPlay;
-        Amarok::Synth_STEREO_XFADE m_XFade;
-        // </aRts>
-
     public slots:
         void slotPrev() const;
-	void slotNext() const;
+        void slotNext() const;
         void slotPlay() const;
         void play( const KURL&, const MetaBundle * = 0 );
-        void slotConnectPlayObj();
         void slotPause();
         void slotStop();
-        void slotStopCurrent();
         void slotSliderPressed();
         void slotSliderReleased();
         void slotSliderChanged( int );
@@ -150,15 +134,15 @@ class PlayerApp : public KUniqueApplication
         void slotMainTimer();
         void slotAnimTimer();
         void slotVisTimer();
-        void slotPlaylistShowHide();
         void slotPlaylistToggle( bool b );
         void slotPlaylistIsHidden();
+        void slotPlaylistShowHide();
         void slotEq( bool b );
         void slotShowOptions();
         void slotConfigEffects();
         void slotHide();
         void slotShow();
-
+        
     private slots:
         void receiveStreamMeta( QString title, QString url, QString kbps );
         void proxyError();
@@ -167,9 +151,8 @@ class PlayerApp : public KUniqueApplication
         void sigScope( std::vector<float> *s );
         void sigPlay();
         /*         void sigUpdateFonts(); */
-
+    
     private:
-        void initArts();
         void initOSD();
         void initPlayerWidget();
         void initMixer();
@@ -181,21 +164,13 @@ class PlayerApp : public KUniqueApplication
         void saveConfig();
         void readConfig();
 
-        void setupTrackLength();
         void setupScrolltext();
-        void startXFade();
-        void stopXFade();
-
-        void enableScope();
-        void disableScope();
 
         // ATTRIBUTES ------
-        KArtsDispatcher *m_pArtsDispatcher;
         bool m_usingMixerHW;
         KConfig *m_pConfig;
         QTimer *m_pMainTimer;
         QTimer *m_pAnimTimer;
-        long m_scopeId;
         long m_length;
         int m_Mixer;
         int m_playRetryCounter;
@@ -207,9 +182,9 @@ class PlayerApp : public KUniqueApplication
         bool m_XFadeRunning;
         float m_XFadeValue;
         QString m_XFadeCurrent;
-
-/*        int m_beatCounter;
-        double m_lastPeak[18];
-        double m_beatEnergy[18][43];*/
-};
+    
+//         int m_beatCounter;
+//         float m_lastPeak;
+//         float m_beatEnergy[63];
+    };
 #endif                                            // AMAROK_PLAYERAPP_H

@@ -42,6 +42,7 @@ else
 	AC_MSG_RESULT([found in $ac_artsgui_libraries])
 fi
 
+
 dnl ---------- TAGLIB CHECK ----------
 
 AC_DEFUN(VERSION_TO_NUMBER, [`$1 | awk 'BEGIN { FS = "."; } { printf "%d",  ([$]1* 1000 + [$]2) * 1000 + [$]3;}'`])
@@ -76,3 +77,109 @@ AC_SUBST(taglib_includes)
 AC_SUBST(taglib_libs)
 
 dnl ---------- END TAGLIB CHECK ----------
+
+
+dnl KDE_PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
+dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
+dnl also defines GSTUFF_PKG_ERRORS on error
+AC_DEFUN(KDE_PKG_CHECK_MODULES, [
+  succeeded=no
+
+  if test -z "$PKG_CONFIG"; then
+    AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+  fi
+
+  if test "$PKG_CONFIG" = "no" ; then
+     echo "*** The pkg-config script could not be found. Make sure it is"
+     echo "*** in your path, or set the PKG_CONFIG environment variable"
+     echo "*** to the full path to pkg-config."
+     echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+  else
+     PKG_CONFIG_MIN_VERSION=0.9.0
+     if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then
+        AC_MSG_CHECKING(for $2)
+
+        if $PKG_CONFIG --exists "$2" ; then
+            AC_MSG_RESULT(yes)
+            succeeded=yes
+
+            AC_MSG_CHECKING($1_CFLAGS)
+            $1_CFLAGS=`$PKG_CONFIG --cflags "$2"`
+            AC_MSG_RESULT($$1_CFLAGS)
+
+            AC_MSG_CHECKING($1_LIBS)
+            $1_LIBS=`$PKG_CONFIG --libs "$2"`
+            AC_MSG_RESULT($$1_LIBS)
+        else
+            $1_CFLAGS=""
+            $1_LIBS=""
+            ## If we have a custom action on failure, don't print errors, but 
+            ## do set a variable so people can do so.
+            $1_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
+            ifelse([$4], ,echo $$1_PKG_ERRORS,)
+        fi
+
+        AC_SUBST($1_CFLAGS)
+        AC_SUBST($1_LIBS)
+     else
+        echo "*** Your version of pkg-config is too old. You need version $PKG_CONFIG_MIN_VERSION or newer."
+        echo "*** See http://www.freedesktop.org/software/pkgconfig"
+     fi
+  fi
+
+  if test $succeeded = yes; then
+     ifelse([$3], , :, [$3])
+  else
+     ifelse([$4], , AC_MSG_ERROR([Library requirements ($2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.]), [$4])
+  fi
+])
+
+
+
+# check for pkg-config
+AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
+AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
+
+if test "$PKGCONFIGFOUND" = "yes" ; then
+# check for GStreamer
+  dnl Now we're ready to ask for gstreamer libs and cflags
+  dnl And we can also ask for the right version of gstreamer
+  HAVE_GST=no
+
+  dnl start with 0.6
+  GST_MAJORMINOR=0.6
+  GST_REQ=0.6.0
+  KDE_PKG_CHECK_MODULES(GST, \
+    gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+    gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
+    gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
+    HAVE_GST=yes,HAVE_GST=no)
+
+  dnl fail back to 0.7
+  if test "x$HAVE_GST" = "xno"; then
+    GST_MAJORMINOR=0.7
+    KDE_PKG_CHECK_MODULES(GST, \
+      gstreamer-$GST_MAJORMINOR >= $GST_REQ \
+      gstreamer-control-$GST_MAJORMINOR >= $GST_REQ \
+      gstreamer-libs-$GST_MAJORMINOR >= $GST_REQ,
+      HAVE_GST=yes,HAVE_GST=no)
+  fi
+
+  dnl Give error if we don't have gstreamer
+  if test "x$HAVE_GST" = "xno"; then
+    LIB_GST=""
+    CFLAGS_GST=""
+#    DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
+    AC_MSG_WARN([GStreamer version >= $GST_REQ required.])
+  else
+    LIB_GST=$GST_LIBS
+    CFLAGS_GST=$GST_CFLAGS
+    AC_SUBST(LIB_GST)
+    AC_SUBST(CFLAGS_GST)
+    AC_MSG_NOTICE([GStreamer version >= $GST_REQ found.])
+    AC_DEFINE(HAVE_GSTREAMER, 1, [have GStreamer])
+  fi
+else
+  AC_MSG_WARN([No pkg-config found, required for GStreamer])
+#  DO_NOT_COMPILE="$DO_NOT_COMPILE gst"
+fi

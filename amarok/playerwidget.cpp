@@ -665,13 +665,13 @@ void PlayerWidget::slotConfigGlobalShortcuts()
 
 void PlayerWidget::slotConfigPlayObject()
 {
-    if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
+/*    if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
     {
         m_pPlayObjConfigWidget = new ArtsConfigWidget( pApp->m_pPlayObject->object(), this );
         connect( pApp->m_pPlayObject, SIGNAL( destroyed() ), m_pPlayObjConfigWidget, SLOT( deleteLater() ) );
 
         m_pPlayObjConfigWidget->show();
-    }
+    }*/
 }
 
 

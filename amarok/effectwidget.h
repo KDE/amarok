@@ -1,9 +1,9 @@
 /***************************************************************************
                           effectwidget.h  -  description
                              -------------------
-    begin                : Don Mär 6 2003
+    begin                : Mar 6 2003
     copyright            : (C) 2003 by Mark Kretschmann
-    email                :
+    email                : markey@web.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -63,18 +63,18 @@ class EffectListItem : public QListViewItem
 
 // CLASS ArtsConfigWidget --------------------------------------------------------
 
-class ArtsConfigWidget : public QWidget
-{
-    Q_OBJECT
-
-    public:
-        ArtsConfigWidget( Arts::Object object, QWidget *parent );
-        ~ArtsConfigWidget();
-
-    private:
-        Arts::Widget m_gui;
-        KArtsWidget *m_pArtsWidget;
-};
+// class ArtsConfigWidget : public QWidget
+// {
+//     Q_OBJECT
+// 
+//     public:
+//         ArtsConfigWidget( Arts::Object object, QWidget *parent );
+//         ~ArtsConfigWidget();
+// 
+//     private:
+//         Arts::Widget m_gui;
+//         KArtsWidget *m_pArtsWidget;
+// };
 
 
 // CLASS EffectWidget ----------------------------------------------------------
@@ -94,8 +94,6 @@ class EffectWidget : public KDialogBase
         void slotItemClicked( QListViewItem *pCurrentItem );
 
     private:
-        QStrList queryEffects() const;
-
 // ATTRIBUTES ------
         KComboBox   *m_pComboBox;
         QListView *m_pListView;
