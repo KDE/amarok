@@ -24,8 +24,6 @@ SHORT-TERM (URGENT):
                need for another font, or make it configurable (preferably we should detect this, it may be that
                we should just use the default system font, there is a reason users can choose a default font!)
 
-    * fix: #47 <markey> sorting playlist by bitrate broken
-
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
 

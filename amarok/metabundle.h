@@ -101,7 +101,7 @@ public:
     QString prettyLength()  const { return prettyLength( m_length ); }
     QString prettySampleRate() const { return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate ); }
 
-    static QString prettyBitrate( int i ) { return prettyGeneric( i18n( "Bitrate", "%1 kpbs" ), i ); }
+    static QString prettyBitrate( int i ) { return prettyGeneric( i18n( "Bitrate", "%1 kbps" ), i ); }
     static QString prettyLength( int );
 
     const KURL    m_url;

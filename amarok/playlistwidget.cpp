@@ -1136,19 +1136,17 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 }
 
 
-void PlaylistWidget::handleStreamMeta( const MetaBundle& /*bundle*/ )
+void PlaylistWidget::handleStreamMeta( const MetaBundle& bundle )
 {
-/*
-    FIXME this did work when it was done for streams only, but now it buggers the title column
-    if ( QListViewItem* pItem = m_currentTrack )
-    {
+    //FIXME this did work when it was done for streams only, but now it buggers the title column
+    
+    if ( QListViewItem* pItem = m_currentTrack ) {
         pItem->setText(  0, bundle.prettyURL()     );
         pItem->setText(  1, bundle.prettyTitle()   );
         pItem->setText(  2, bundle.m_artist        );    //this should not get saved with the playlist
         pItem->setText(  6, bundle.m_genre         );
         pItem->setText( 10, bundle.prettyBitrate() );
     }
-*/
 }
 
 

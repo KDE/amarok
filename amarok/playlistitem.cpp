@@ -160,8 +160,8 @@ int PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
             break;
 
         case 10:   //bitrate
-            a =    text( 10 ).section( "kbps", 0, 0 ).toFloat();
-            b = i->text( 10 ).section( "kbps", 0, 0 ).toFloat();
+            a =    text( 10 ).remove( "kbps" ).toFloat();
+            b = i->text( 10 ).remove( "kbps" ).toFloat();
             break;
 
         default:   //ordinary string -> sort lexically
