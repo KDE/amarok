@@ -203,28 +203,19 @@ void PlayerApp::handleLoaderArgs( const QCString& args )
     //Unfortunately, we must do some ugly string parsing here, since there is (apparently) no way
     //to re-initialize KCmdLineArgs --> FIXME
 
-    QString data = args;
-    KURL::List list;
-    bool notEnqueue = !data.contains( "-e" );
-    QString str;
+    KURL::List list( QStringList::split( " ", args ) );
+    bool notEnqueue = !args.contains( "-e" );
 
-    for ( int i = 0;; ++i ) {
-        str = data.section( " ", i, i );
-        if ( str.isEmpty() )
-            break;
-        if ( !str.startsWith( "-" ) )
-            list << str;
-    }
     //add to the playlist with the correct arguments ( bool clear, bool play )
-    m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || data.contains( "-p" ) );
+    m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args.contains( "-p" ) );
 
-    if ( data.contains( "-s" ) )
+    if ( args.contains( "-s" ) )
         pApp->slotStop();
-    if ( data.contains( "-p" ) ) //will restart if we are playing
+    if ( args.contains( "-p" ) ) //will restart if we are playing
         pApp->slotPlay();
-    if ( data.contains( "-f" ) )
+    if ( args.contains( "-f" ) )
         pApp->slotNext();
-    if ( data.contains( "-r" ) )
+    if ( args.contains( "-r" ) )
         pApp->slotPrev();
 }
 
@@ -926,7 +917,7 @@ void LoaderServer::newConnection( int sockfd )
     {
         buf[nbytes] = '\000';
         QCString result( buf );
-        kdDebug() << result << endl;
+        kdDebug() << "[LoaderServer::newConnection()] received: \n" << result << endl;
 
         if ( !result.contains( "STARTUP" ) )
             emit loaderArgs( result );
