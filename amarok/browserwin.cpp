@@ -253,6 +253,8 @@ void BrowserWin::slotShufflePlaylist()
     {
         m_pPlaylistWidget->insertItem( list.at( i ) );
     }
+
+    m_pPlaylistWidget->writeUndo();
 }
 
 

@@ -3,6 +3,9 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: write undo for Shuffle <berkus>
+  * fix: the expandbutton doesn't fire events when it has had its stack expanded
+         (behaviour a-la Winamp Classic) <berkus>
   * fix: crash when pressing right mouse button while stream is connecting
   * add: show bitrate for streams with icecast support
   * fix: save stream names as #EXTINF in m3u files

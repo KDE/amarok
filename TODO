@@ -4,6 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: sample looping (annoying noise) @ end of track or pause (fixed? <berkus> NOT FIXED!)
+
     * fix: playobject config GUI seems totally b0rked on 3.2
     
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
@@ -13,6 +15,7 @@ SHORT-TERM:
 
     * fix: <mxcl>when you clear and undo it loses selection and then stops, need a search
             for current item in playlist function
+           <berkus> no matter what you do, when you undo it, it loses all tracks
 
     * fix: <mxcl>pause vis/anim timers when hide/show main widget as a courtesy to our users
 
@@ -30,12 +33,7 @@ SHORT-TERM:
 
     * fix: opening hidden directories is impossible in filebrowser
 
-    * fix: <berkus> make sure the expandbutton doesn't fire events when
-           it has had its stack expanded (behaviour a-la Winamp Classic) (?)
-
     * fix: app freezing when renaming the file that's currently playing
-
-    * fix: sample looping (annoying noise) @ end of track or pause (fixed?)
 
     * fix: redirected URLs do not work
                     
@@ -44,6 +42,8 @@ SHORT-TERM:
     * add: <mxcl> more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.)
     
     * add: a "hide playlist when main widget is not active" option (?? comments please: )
+           <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
+           if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
 
     * add: "show playlist" to the right click menu, redundant but necessary
 
@@ -67,7 +67,7 @@ MID-TERM:
 
     * add: "add item"-dialog should support multiple selections
 
-    * add: playmode indication button in main widget (repeat track/pl/shuffle), clickable
+    * add: <berkus> playmode indication button in main widget (repeat track/pl/shuffle), clickable
 
     * add: display warning when artsd is run w/o realtime
 
@@ -78,8 +78,6 @@ MID-TERM:
     * add: function for adding all files in current dir to playlist
 
     * add: seeking with mousewheel
-
-    * add: make windows magnetic / sticking together (difficult)
 
     * add: make blinking currentTrack optional
 
@@ -106,6 +104,8 @@ MID-TERM:
                       
 
 LONG-TERM:
+
+    * add: make windows magnetic / sticking together (difficult)
 
     * fix: polish and finish i18n() stuff
 

@@ -33,7 +33,8 @@ extern PlayerApp *pApp;
 class ExpandButton : public QPushButton
 {
     Q_OBJECT
-        public:
+
+    public:
         ExpandButton( const QString &text, QWidget *parent=0 );
         ExpandButton( const QString &text, ExpandButton *parent=0 );
 
@@ -56,6 +57,7 @@ class ExpandButton : public QPushButton
     private:
         enum AnimPhase { ANIM_IDLE, ANIM_EXPAND, ANIM_SHOW, ANIM_SHRINK };
         AnimPhase m_animFlag;
+        bool m_expanded;
 
         int m_animHeight;
         float m_animAdd, m_animSpeed;

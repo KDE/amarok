@@ -1258,7 +1258,7 @@ void PlayerApp::slotSavePlaylist()
 
     if ( !path.isEmpty() )
     {
-        if ( path.right( 4 ) != ".m3u" )
+        if ( path.right( 4 ) != ".m3u" ) // <berkus> fixme: 3.2 KFileDialog has a [x] Append file extension automagically, so we should obey the user choice
             path += ".m3u";
 
         m_pBrowserWin->m_pPlaylistWidget->saveM3u( path );

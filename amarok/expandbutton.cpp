@@ -42,13 +42,14 @@
 #include <kglobal.h>
 
 
-ExpandButton::ExpandButton( const QString &text, QWidget *parent ) :
-    QPushButton( text, parent )
+ExpandButton::ExpandButton( const QString &text, QWidget *parent )
+    : QPushButton( text, parent )
+    , m_animFlag( ANIM_IDLE )
+    , m_expanded( false )
 {
     setName( "ExpandButton" );
     setFocusPolicy( QWidget::NoFocus );
 
-    m_animFlag = ANIM_IDLE;
     m_ButtonList = QPtrList<ExpandButton>();
     connect( this, SIGNAL( pressed() ), this, SLOT( slotDelayExpand() ) );
 
@@ -56,8 +57,10 @@ ExpandButton::ExpandButton( const QString &text, QWidget *parent ) :
 }
 
 
-ExpandButton::ExpandButton( const QString &text, ExpandButton *parent ) :
-    QPushButton( text, parent->parentWidget() )
+ExpandButton::ExpandButton( const QString &text, ExpandButton *parent )
+    : QPushButton( text, parent->parentWidget() )
+    , m_animFlag( ANIM_IDLE )
+    , m_expanded( false )
 {
     setName( "expandButton_child" );
     setFocusPolicy( QWidget::NoFocus );
@@ -65,6 +68,7 @@ ExpandButton::ExpandButton( const QString &text, ExpandButton *parent ) :
     parent->m_ButtonList.append( this );
     hide();
 
+    if ( QToolTip::textFor( parent ) != QString::null ) QToolTip::remove( parent );
     QToolTip::add( parent, i18n( "Keep button pressed for sub-menu" ) );
 }
 
@@ -84,7 +88,7 @@ void ExpandButton::mouseReleaseEvent( QMouseEvent *e )
         m_animFlag = ANIM_SHRINK;
         m_animAdd = 0;
 
-        if ( hitButton( e->pos() ) )
+        if ( hitButton( e->pos() ) && !m_expanded )
             emit clicked();
 
         for ( unsigned int i = 0; i < m_ButtonList.count(); i++ )
@@ -128,6 +132,7 @@ void ExpandButton::slotDelayExpand()
 
 void ExpandButton::slotStartExpand()
 {
+    m_expanded = true;
     m_animSpeed = 0.3;
 
     m_pSavePixmap = new QPixmap( QPixmap::grabWindow( parentWidget()->winId(),
@@ -194,6 +199,7 @@ void ExpandButton::slotAnimTimer()
                                                   // Restore painted areas
             bitBlt( parentWidget(), x(), y() - m_pComposePixmap->height(), m_pSavePixmap );
 
+            m_expanded = false;
             setDown( false );
             delete m_pTimer;
             m_pTimer = NULL;
@@ -239,13 +245,13 @@ void ExpandButton::drawButtonLabel( QPainter *p )
 
    if ( !m_ButtonList.isEmpty() )
    {
-      QCOORD size = KMIN( width(), height() ) / 4;
-      QCOORD minadj = KMAX( size/3, 5 );
+      QCOORD size      = KMIN( width(), height() ) / 4;
+      QCOORD minAdjust = KMAX( size / 3, 5 );
 
       QPointArray pa( 3 );
-      pa.setPoint( 0, width()-minadj-size, minadj      );
-      pa.setPoint( 1, width()-minadj,      minadj      );
-      pa.setPoint( 2, width()-minadj,      minadj+size );
+      pa.setPoint( 0, width() - minAdjust - size, minAdjust        );
+      pa.setPoint( 1, width() - minAdjust,        minAdjust        );
+      pa.setPoint( 2, width() - minAdjust,        minAdjust + size );
 
       p->setPen( Qt::black );
       p->setBrush( Qt::black );
