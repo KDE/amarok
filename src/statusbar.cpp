@@ -26,8 +26,8 @@
 #include <qcolor.h>
 #include <qcursor.h>
 #include <qhbox.h>
-#include <qpushbutton.h>
 #include <qtimer.h>
+#include <qtoolbutton.h>
 #include <qtooltip.h> //toggle labels
 
 #include <kactionclasses.h>
@@ -106,9 +106,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // progress
     addWidget( m_pProgressBox = new QHBox( this ), 0, true );
-    QObject *pb = new QPushButton( SmallIcon( "cancel" ), QString::null, m_pProgressBox );
+    QToolButton *stopButton = new QToolButton( m_pProgressBox );
+    stopButton->setIconSet( SmallIcon( "cancel" ) );
     m_pProgress = new KProgress( m_pProgressBox );
-    connect( pb, SIGNAL(clicked()), SLOT(stopPlaylistLoader()) );
+    connect( stopButton, SIGNAL(clicked()), SLOT(stopPlaylistLoader()) );
     m_pProgressBox->hide();
 
     // total songs count
