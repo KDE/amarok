@@ -9,10 +9,10 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
                    
   FIX 139 <markey> Find out why collection scan won't work with samba shares. Currently the scan just gets
-                   stuck, hogging CPU and doing nothing meaningful.
+                   stuck, hogging CPU and doing nothing useful.
 
   FIX 138 <markey> Don't blindly accept mp3/ogg files in the playlist, by ignoring canDecode().
-                   This is already causing trauble on distros like fedora which don't support mp3.
+                   This is already causing trouble on distros like fedora which don't support mp3.
                    We can't rely on support for these formats.
 
   FIX 135 <markey> Improve support for desktop environments other than KDE. GNOME users report, 
