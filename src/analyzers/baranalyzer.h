@@ -21,10 +21,10 @@ class BarAnalyzer : public Analyzer::Base2D
         virtual void analyze( const Scope& );
         //virtual void transform( Scope& );
 
-		/**
-		 * Resizes the widget to a new geometry according to @p e
-		 * @param e The resize-event
-		 */
+        /**
+         * Resizes the widget to a new geometry according to @p e
+         * @param e The resize-event
+         */
         void resizeEvent( QResizeEvent * e);
 
         uint BAND_COUNT;

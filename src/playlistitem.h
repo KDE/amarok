@@ -32,11 +32,11 @@ class PlaylistItem : public KListViewItem
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
 
-		/**
-		 * Sets the information like the title, artist and album of the PlaylistItem
-		 * according to the MetaBundle @p bundle. If the PlaylistItem has a score
-		 * it will also be set.
-		 */
+        /**
+         * Sets the information like the title, artist and album of the PlaylistItem
+         * according to the MetaBundle @p bundle. If the PlaylistItem has a score
+         * it will also be set.
+         */
         void setText( const MetaBundle& bundle);
         void setText( int, const QString& );
 
@@ -50,9 +50,9 @@ class PlaylistItem : public KListViewItem
         QString title() const { return KListViewItem::text( Title ); }
         const KURL &url() const { return m_url; }
 
-		/**
-		 * @return the length of the PlaylistItem in seconds
-		 */
+        /**
+         * @return the length of the PlaylistItem in seconds
+         */
         QString seconds() const;
 
         static QColor glowText;
@@ -88,13 +88,13 @@ class PlaylistItem : public KListViewItem
 
         static const int NUM_COLUMNS = 12;
 
-		/**
-		 * @return The text of the column @p column. If there is no text set for 
-		 * the title this method returns a pretty version of the track name
-		 */
+        /**
+        * @return The text of the column @p column. If there is no text set for
+        * the title this method returns a pretty version of the track name
+        */
         QString text( int column ) const;
-        
-		int     compare( QListViewItem*, int, bool ) const;
+
+        int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }

@@ -33,48 +33,48 @@ public:
     K3bExporter();
     ~K3bExporter() {}
 
-	/**
-	 * @return true if the executable of K3B is found
-	 */
+    /**
+    * @return true if the executable of K3B is found
+    */
     static bool isAvailable();
-    
-	
-	/**
-	 * Exports the list of urls @urls via DCOP to K3B. The mode @p openmode will be used
-	 * @param urls The list of urls to export
-	 * @param openmode The mode of the album
-	 */
-	void exportTracks( const KURL::List &urls, int openmode=-1 );
 
-	/**
-	 * Exports the current playlist to K3B. The mode @p openmode will be used
-	 * @param openmode The mode of the album
-	 */
+
+    /**
+    * Exports the list of urls @urls via DCOP to K3B. The mode @p openmode will be used
+    * @param urls The list of urls to export
+    * @param openmode The mode of the album
+    */
+    void exportTracks( const KURL::List &urls, int openmode=-1 );
+
+    /**
+    * Exports the current playlist to K3B. The mode @p openmode will be used
+    * @param openmode The mode of the album
+    */
     void exportCurrentPlaylist( int openmode=-1 );
 
-	/**
-	 * Exports the selected tracks to K3B. The mode @p openmode will be used
-	 * @param openmode The mode of the tracks
-	 */
+    /**
+    * Exports the selected tracks to K3B. The mode @p openmode will be used
+    * @param openmode The mode of the tracks
+    */
     void exportSelectedTracks( int openmode=-1 );
 
-	/**
-	 * Exports the album @p album to K3B. The mode @p openmode will be used
-	 * @param openmode The mode of the album
-	 * @param album The album to export
-	 */
-    void exportAlbum( const QString &album, int openmode=-1 ); 
-	
-	/**
-	 * Exports all tracks of the artist @p artist to K3B. The mode @p openmode will be used
-	 * @param openmode The mode of the album
-	 * @param artist The artists which tracks to export
-	 */
+    /**
+    * Exports the album @p album to K3B. The mode @p openmode will be used
+    * @param openmode The mode of the album
+    * @param album The album to export
+    */
+    void exportAlbum( const QString &album, int openmode=-1 );
+
+    /**
+    * Exports all tracks of the artist @p artist to K3B. The mode @p openmode will be used
+    * @param openmode The mode of the album
+    * @param artist The artists which tracks to export
+    */
     void exportArtist( const QString &artist, int openmode=-1 );
 
-	/**
-	 * @return the static instance of K3bExporter
-	 */
+    /**
+    * @return the static instance of K3bExporter
+    */
     static K3bExporter *instance() { return s_instance; }
 
 private:
