@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
 
-  <muesli> Updating tags doesn't update the Collection anymore.
-
   <mxcl>   Hitting the DEL key in the playlist activates the file-browser delete shortcut, offering to trash
            whatever is selected there. Nice!
 
@@ -19,8 +17,6 @@ SHORT-TERM (URGENT):
 
   <muesli> Resuming the playback on startup shows the current track as a normal-sized entry instead of a
            double-height one.
-
-  <muesli> Renaming tagless files doesn't update the Collection properly.
 
   <markey> Try to make amarokapp _not_ link to libengine. It's nonsense really, but currently needed
            cause the linker complains about unresolved symbols.
