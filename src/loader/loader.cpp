@@ -120,7 +120,8 @@ Loader::Loader( int& argc, char** argv )
     if ( m_sockfd == -1 )
     {
         //no, amaroK is not running -> start new instance, show splash
-        std::cout << "[amaroK loader] amaroK not running. Trying to start it..\n";
+        std::cout << "[amaroK] Starting amarokapp..\n";
+        std::cout << "[amaroK] If you want a backtrace, run gdb against amarokapp, not amarok!\n";
 
         QStringList args( "amarokapp" );
         for ( int i = 1; i < argc; i++ ) args << argv[ i ]; //start at 1 to avoid appName
@@ -259,7 +260,7 @@ int Loader::tryConnect( bool verbose )
     //try to connect to the LoaderServer
     int fd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
     if ( fd == -1 ) {
-        qDebug( "[amaroK loader] socket() error" );
+        qDebug( "[amaroK] socket() error" );
         return -1;
     }
     sockaddr_un local;
@@ -270,7 +271,7 @@ int Loader::tryConnect( bool verbose )
     ::strcpy( &local.sun_path[ 0 ], path );
 
     if ( verbose )
-        std::cerr << "[amaroK loader] connecting to " << path << '\n';
+        std::cerr << "[amaroK] Connecting to " << path << '\n';
 
     if ( ::connect( fd, ( sockaddr* ) & local, sizeof( local ) ) == -1 ) {
         ::close ( fd );
@@ -283,7 +284,7 @@ int Loader::tryConnect( bool verbose )
 //SLOT
 void Loader::doExit()
 {
-    std::cout << "[amaroK loader] exiting.\n";
+    std::cout << "[amaroK] Exiting\n";
 
     delete m_pOsd;
 
@@ -304,12 +305,12 @@ void Loader::timerEvent( QTimerEvent* )
     if ( m_sockfd != -1 ) {
         killTimers();
 
-        std::cout << "[amaroK loader] startup successful.\n";
+        std::cout << "[amaroK] Startup successful\n";
         ::send( m_sockfd, "STARTUP", 8, 0 );
         doExit();
     } else if ( delay >= TIMEOUT * 1000 ) {
         killTimers();
-        std::cout << "[amaroK loader] timed out trying to contact amaroK.\n";
+        std::cout << "[amaroK] Timed out trying to contact amaroK\n";
 
         //NOTE these are untranslated.. nasty.
 
