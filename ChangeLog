@@ -3,8 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
-
 VERSION 0.9-beta2:
+  * chg: some look-and-feel polishing in the main player window
   * add: option to turn off analyzers
   * add: splash-screen shown during program startup (optional)
   * fix: made stream playback with TitleProxy more stable (by using an unbuffered socket)
