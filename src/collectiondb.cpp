@@ -40,8 +40,22 @@ CollectionDB::CollectionDB()
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
-    if ( sqlite3_open( path, &m_db ) != SQLITE_OK ) {
-        kdWarning() << "Database file corrupt. Removing and rebuilding database.\n";
+    bool failOpen = false;
+    QFile file( path );
+    if ( file.open( IO_ReadOnly ) ) {
+        QString format;
+        file.readLine( format, 50 );
+        if ( !format.startsWith( "SQLite format 3" ) ) {
+            kdWarning() << "Database versions incompatible. Removing and rebuilding database.\n";
+            failOpen = true;
+        }
+        else if ( sqlite3_open( path, &m_db ) != SQLITE_OK ) {
+            kdWarning() << "Database file corrupt. Removing and rebuilding database.\n";
+            failOpen = true;
+        }
+    }
+    if ( failOpen ) {
+        // Remove old db file; create new
         sqlite3_close( m_db );
         QFile::remove( path );
         sqlite3_open( path, &m_db );
@@ -1137,7 +1151,7 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     QImage img( pix.convertToImage() );
 
     QString fileName( keyword + ".png" );
-    
+
     img.save( m_coverDir.filePath( fileName ), "PNG");
 
     emit coverFetched( keyword );

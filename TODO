@@ -12,9 +12,7 @@ SHORT-TERM (URGENT):
 
   ADD 179 <muesli> CoverManager startup takes too long.
 
-  ADD 178 <muesli> Detecting old sqlite2 collection.db doesn't work.
-
-  ADD 177 <muesli> Option to remove smart playlists.
+  ADD 177 <muesli> Facility for removing smart playlists.
 
   FIX 176 <muesli> Context sometimes still shows "Build a collection", just after the scan
                    finished.
