@@ -382,7 +382,11 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //insert the covers first because the list view is soooo paint-happy
     //this is the slowest step in the bit that we can't process events
     for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it )
-        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *++it ) );
+    {
+        QString artist = *it;
+        QString album  = *++it;
+        m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
+    }
 
     QApplication::restoreOverrideCursor();
 
