@@ -149,8 +149,8 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
     QString key( QFile::encodeName( artist + " - " + album ) );
     key.replace( " ", "_" ).append( ".png" );
     
-    if ( m_coverDir.exists( widthKey + key.lower() ) )
-        return m_coverDir.filePath( widthKey + key.lower() );
+    if ( m_cacheDir.exists( widthKey + key.lower() ) )
+        return m_cacheDir.filePath( widthKey + key.lower() );
     else
     {
         QDir largeCoverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/albumcovers/" ) );
@@ -158,11 +158,8 @@ CollectionDB::getImageForAlbum( const QString artist, const QString album, const
         if ( largeCoverDir.exists( key.lower() ) )
             if ( width > 0 )
             {
-                if ( !m_cacheDir.exists( widthKey + key.lower() ) )
-                {
-                    QImage img( largeCoverDir.filePath( key.lower() ) );
-                    img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key.lower() ), "PNG" );
-                }
+                QImage img( largeCoverDir.filePath( key.lower() ) );
+                img.smoothScale( width, width ).save( m_cacheDir.filePath( widthKey + key.lower() ), "PNG" );
 
                 return m_cacheDir.filePath( widthKey + key.lower() );
             }
