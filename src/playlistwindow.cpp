@@ -121,17 +121,14 @@ PlaylistWindow::init()
 
 
     { //<Search LineEdit>
-        QHBox *hbox; QToolButton *button; QLabel *label;
+        QHBox *hbox; QToolButton *button;
 
         hbox       = new QHBox( m_browsers->container() );
 	button     = new QToolButton( hbox );
-	label      = new QLabel( i18n("&Search:"), hbox );
 	m_lineEdit = new KLineEdit( hbox );
 
-	label->setBuddy( m_lineEdit );
-        hbox->setMargin( 4 );
-	hbox->setSpacing( 5 );
-        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
+	hbox->setMargin( 4 );
+	button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
