@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>314</width>
-            <height>380</height>
+            <width>339</width>
+            <height>402</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options1</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Check to enable splashscreen during amaroK startup.</string>
@@ -99,14 +102,6 @@
                     </property>
                     <property name="text">
                         <string>Show statusbar</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowWelcomeTab</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show Welcome-page tab (restart required)</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
