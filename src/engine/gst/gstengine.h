@@ -23,7 +23,6 @@ email                : markey@web.de
 
 #include <vector>
 
-#include <qguardedptr.h>
 #include <qmutex.h>
 #include <qptrlist.h>
 #include <qstringlist.h>
@@ -140,7 +139,7 @@ class GstEngine : public Engine::Base
         GstElement* m_gst_audiosink;
 
         QPtrList<InputPipeline> m_inputs;
-        QGuardedPtr<InputPipeline> m_currentInput;
+        InputPipeline* m_currentInput;
 
         GstAdapter* m_gst_adapter;
 
@@ -161,8 +160,7 @@ class GstEngine : public Engine::Base
 };
 
 
-// NOTE: This class must derive from QObject in order to work with QGuardedPtr!
-class InputPipeline : public QObject
+class InputPipeline
 {
     public:
         enum State { NO_FADE, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
