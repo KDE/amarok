@@ -117,11 +117,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
-    // Load default streams list
-    addPlaylist( locate("data","amarok/data/Cool-Streams.m3u"), false );
-
-    //load the playlists stats cache
+    // Load the playlists stats cache
     loadPlaylists();
+
+    // Add default streams playlist as the next item under "Current Playlist"
+    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->firstChild() );
+    addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
+    lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->lastItem() );
 }
 
 
@@ -1240,12 +1242,8 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     }
 
     QPainter pBuf( &buffer, true );
-
-    if ( m_url.protocol() == "cur" )
-        pBuf.fillRect( buffer.rect(), cg.mid() );
-    else
-        // use alternate background
-        pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+    // use alternate background
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
 
     if( detailedView ) {
         // draw a line at the top
@@ -1279,7 +1277,10 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
-    if ( m_url.protocol() == "cur" ) font.setItalic( true );
+
+    // Use underlined font for "Current Playlist"
+    if ( m_url.protocol() == "cur" )
+        font.setUnderline( true );
 
     int text_x = lv->treeStepSize() + 3;
     int textHeight = detailedView ? fm.lineSpacing() + lv->itemMargin() + 1 : height();
