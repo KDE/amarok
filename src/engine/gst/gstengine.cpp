@@ -640,8 +640,8 @@ GstEngine::handleGstError()  //SLOT
 
     m_gst_error = QString();
 
-    // Stop playback and rebuild output pipeline
-    createPipeline();
+    // Destroy all pipelines
+    destroyPipeline();
 
     kdError() << text << endl;
     emit statusText( text );
