@@ -420,7 +420,7 @@ CollectionDB::getImageForAlbum( const QString& album, uint width )
     QString widthKey = QString::number( width ) + "@";
 
     if ( album.isEmpty() )
-        return notAvailCover();
+        return notAvailCover( width );
 
     query( QString( "SELECT path FROM images WHERE album LIKE '%1' ORDER BY path;" )
               .arg( escapeString( album ) ) );
@@ -442,7 +442,7 @@ CollectionDB::getImageForAlbum( const QString& album, uint width )
         return m_cacheDir.absPath() + "/" + u.fileName().lower();
     }
 
-    return notAvailCover();
+    return notAvailCover( width );
 }
 
 
