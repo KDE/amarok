@@ -73,13 +73,13 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
     KStdAction::next( this, SLOT( slotKeyPageDown() ), m_pActionCollection );
 
-    new KAction( "Go one item up", Key_Up,
+    new KAction( i18n( "Go one item up" ), Key_Up,
                  this, SLOT( slotKeyUp() ), m_pActionCollection, "up" );
-    new KAction( "Go one item down", Key_Down,
+    new KAction( i18n( "Go one item down" ), Key_Down,
                  this, SLOT( slotKeyDown() ), m_pActionCollection, "down" );
-    new KAction( "Enter directory / Play Track", ALT + Key_Return,
+    new KAction( i18n( "Enter directory / Play Track" ), /*ALT + */Key_Return,
                  this, SLOT( slotKeyEnter() ), m_pActionCollection, "enter" );
-    new KAction( "Remove item", ALT + Key_Delete,
+    new KAction( i18n( "Remove item" ), ALT + Key_Delete,
                  this, SLOT( slotKeyDelete() ), m_pActionCollection, "delete" );
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
@@ -96,8 +96,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
              m_pPlaylistLineEdit, SLOT( clear() ) );
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
-//    connect( pApp, SIGNAL( sigUpdateFonts() ),
-//             this, SLOT( slotUpdateFonts() ) );
 }
 
 
@@ -296,7 +294,7 @@ void BrowserWin::slotShowInfo()
 {
     PlaylistItem * pItem = static_cast<PlaylistItem*>( m_pPlaylistWidget->currentItem() );
 
-    // FIXME KMessageBoxize
+    // FIXME KMessageBoxize?
     QMessageBox *box = new QMessageBox( "Track Information", 0,
                                         QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton,
                                         QMessageBox::NoButton, 0, "Track Information", true,
@@ -304,32 +302,22 @@ void BrowserWin::slotShowInfo()
 
     QString str( "<html><body><table border=""1"">" );
 
-    if ( pItem->url().protocol() == "file" )
+    if ( pItem->hasMetaInfo() )
     {
-        KFileMetaInfo metaInfo( pItem->url().path(), QString::null, KFileMetaInfo::Everything );
-        //    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pItem->url() );
-        //    KFileMetaInfo metaInfo = fileItem.metaInfo();
-        if ( metaInfo.isValid() && !metaInfo.isEmpty() )
-        {
-            str += "<tr><td>Title   </td><td>" + metaInfo.item( "Title" ).string() + "</td></tr>";
-            str += "<tr><td>Artist  </td><td>" + metaInfo.item( "Artist" ).string() + "</td></tr>";
-            str += "<tr><td>Album   </td><td>" + metaInfo.item( "Album" ).string() + "</td></tr>";
-            str += "<tr><td>Genre   </td><td>" + metaInfo.item( "Genre" ).string() + "</td></tr>";
-            str += "<tr><td>Date    </td><td>" + metaInfo.item( "Date" ).string() + "</td></tr>";
-            str += "<tr><td>Comment </td><td>" + metaInfo.item( "Comment" ).string() + "</td></tr>";
-            str += "<tr><td>Length  </td><td>" + metaInfo.item( "Length" ).string() + "</td></tr>";
-            str += "<tr><td>Bitrate </td><td>" + metaInfo.item( "Bitrate" ).string() + "</td></tr>";
-            str += "<tr><td>Samplerate  </td><td>" + metaInfo.item( "Sample Rate" ).string() + "</td></tr>";
-        }
-        else
-        {
-            str += "<tr><td>Error    </td><td>No metaInfo found    </td></tr>";
-        }
+         str += "<tr><td>" + i18n( "Title"   ) + "</td><td>" + pItem->title()   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Artist"  ) + "</td><td>" + pItem->artist()  + "</td></tr>";
+         str += "<tr><td>" + i18n( "Album"   ) + "</td><td>" + pItem->album()   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Genre"   ) + "</td><td>" + pItem->genre()   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Year"    ) + "</td><td>" + pItem->year()    + "</td></tr>";
+         str += "<tr><td>" + i18n( "Comment" ) + "</td><td>" + pItem->comment() + "</td></tr>";
+         str += "<tr><td>" + i18n( "Length"  ) + "</td><td>" + pItem->length()  + "</td></tr>";
+         str += "<tr><td>" + i18n( "Bitrate" ) + "</td><td>" + QString::number(pItem->bitrate()) + " kbps</td></tr>";
+         str += "<tr><td>" + i18n( "Samplerate" ) + "</td><td>" + QString::number(pItem->samplerate()) + " Hz</td></tr>";
     }
     else
     {
-        str += "<tr><td>Stream   </td><td>" + pItem->url().url() + "</td></tr>";
-        str += "<tr><td>Title    </td><td>" + pItem->text( 0 ) + "</td></tr>";
+        str += "<tr><td>" + i18n( "Stream" ) + "</td><td>" + pItem->url().prettyURL() + "</td></tr>";
+        str += "<tr><td>" + i18n( "Title"  ) + "</td><td>" + pItem->text( 0 ) + "</td></tr>";
     }
 
     str.append( "</table></body></html>" );

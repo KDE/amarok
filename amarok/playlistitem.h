@@ -49,6 +49,7 @@ class PlaylistItem : public KListViewItem
         QString year()    { return m_tagYear; }
         QString track()   { return m_tagTrack; }
         int     seconds() { return m_tagSeconds; }
+        QString length(); ///< Return track length as mm:ss
         int     bitrate() { return m_tagBitrate; }
         int  samplerate() { return m_tagSamplerate; }
         // These are still here but will be declared private since 0.7

@@ -108,7 +108,7 @@ void PlaylistItem::readMetaInfo()
 
         if ( !f.isNull() && f.tag() )
         {
-    	    m_hasMetaInfo = true;
+           m_hasMetaInfo = true;
             TagLib::Tag * tag = f.tag();
 
             m_tagTitle = TStringToQString( tag->title() ).stripWhiteSpace();
@@ -117,15 +117,15 @@ void PlaylistItem::readMetaInfo()
             m_tagGenre = TStringToQString( tag->genre() ).stripWhiteSpace();
             m_tagComment = TStringToQString( tag->comment() ).stripWhiteSpace();
             m_tagYear = QString::number( tag->year() );
-	    m_tagTrack = QString::number( tag->track() );
+       m_tagTrack = QString::number( tag->track() );
             m_tagDirectory = QString( url().directory().section( '/', -1 ) );
-	    
-	    if ( f.audioProperties() )
-	    {
-		m_tagBitrate = f.audioProperties()->bitrate();
-		m_tagSeconds = f.audioProperties()->length();
-		m_tagSamplerate = f.audioProperties()->sampleRate();
-	    }
+
+       if ( f.audioProperties() )
+       {
+      m_tagBitrate = f.audioProperties()->bitrate();
+      m_tagSeconds = f.audioProperties()->length();
+      m_tagSamplerate = f.audioProperties()->sampleRate();
+       }
         }
     }
 }
@@ -231,3 +231,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &, int column, int 
 // paintFocus is an empty dummy function to disable focus drawing
 void PlaylistItem::paintFocus( QPainter*, const QColorGroup&, const QRect& )
 {}
+
+QString PlaylistItem::length()
+{
+   int s = seconds();
+   int m = s / 60;
+   int h = m / 60;
+
+   if (h)
+      return QString("%1:%2:%3").arg(h).arg(m % 60,2).arg(s % 60,2);
+   else
+      return QString("%1:%2").arg(m,2).arg(s % 60,2);
+}
