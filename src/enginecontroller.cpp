@@ -354,7 +354,6 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
         if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
             delete m_stream;
-            m_stream = 0;
             next();
             return; //don't notify
         }
@@ -413,7 +412,6 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
     case Engine::Empty:
 
         delete m_stream;
-        m_stream = 0;
 
         //FALL THROUGH...
 

@@ -43,7 +43,7 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 
 
 static const uint
-SCOPEBUF_SIZE = 250000; // 250kb
+SCOPEBUF_SIZE = 260000; // 260kb
 
 static const int
 STREAMBUF_SIZE = 1000000; // 1MB
