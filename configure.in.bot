@@ -4,8 +4,9 @@
 echo
 
 if test x$amarok_error_notaglib = xyes ; then
-    echo "======================="
+    echo "================================================================================"
     echo "=  amaroK - ERROR  ============================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  amaroK cannot be built because, either the TagLib library is not installed  ="
     echo "=  or, if relevant, the taglib-devel package is not installed.                 ="
@@ -14,8 +15,9 @@ if test x$amarok_error_notaglib = xyes ; then
 fi
 
 if test x$amarok_error_taglibold = xyes; then
-    echo "======================="
+    echo "================================================================================"
     echo "=  amaroK - ERROR  ============================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  amaroK cannot be built because your TagLib version is too old. Please       ="
     echo "=  obtain a more recent version from: http://ktown.kde.org/~wheeler/taglib/    ="
@@ -23,8 +25,9 @@ if test x$amarok_error_taglibold = xyes; then
 fi
 
 if test "$PKGCONFIGFOUND" != "yes" ; then
-    echo "========================="
+    echo "================================================================================"
     echo "=  amaroK - WARNING  ==========================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  pkg-config could not be found, this means some optional components (the     ="
     echo "=  GStreamer-engine and Collection Browser) cannot be built.                   =" 
@@ -35,12 +38,13 @@ if test "$PKGCONFIGFOUND" != "yes" ; then
 fi
 
 if test x$have_gst = xno; then
-    echo "========================="
+    echo "================================================================================"
     echo "=  amaroK - WARNING  ==========================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  The optional GStreamer-engine will not be built. If you want to use the     ="
     echo "=  powerful GStreamer multimedia framework with amaroK, please download        ="
-    echo "=  version $GST_REQ or higher from http://freedesktop.org/~gstreamer/.            ="
+    echo "=  version $GST_REQ or higher from http://freedesktop.org/~gstreamer/.         ="
     echo "=  If you are sure GStreamer is already installed then there is most likely a  ="
     echo "=  problem with your pkg-config setup, check: man pkg-config.                  ="
     echo "=                                                                           ===="
@@ -48,8 +52,9 @@ if test x$have_gst = xno; then
 fi
 
 if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
-    echo "========================="
+    echo "================================================================================"
     echo "=  amaroK - WARNING  ==========================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  The amaroK GStreamer-engine will be built, but no GStreamer plugins were    ="
     echo "=  detected! If you have no plugins you will not be able to play any media     ="
@@ -60,8 +65,9 @@ if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
 fi
 
 if test x$no_amarok = xyes; then
-    echo "================================="
+    echo "================================================================================"
     echo "=  AMAROK WILL NOT BE BUILT  ==================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  Some mandatory dependencies are either not installed or not installed       ="
     echo "=  correctly. Please refer to the amaroK README. Further assistance can be     ="
@@ -71,8 +77,9 @@ if test x$no_amarok = xyes; then
 fi
 
 if test x$no_engine = xyes; then
-    echo "================================="
+    echo "================================================================================"
     echo "=  AMAROK WILL NOT BE BUILT  ==================================================="
+    echo "================================================================================"
     echo "=                                                                              ="
     echo "=  No suitable multimedia framework was detected. You need to install at least ="
     echo "=  one of the supported frameworks as detailed in the amaroK README.           ="
@@ -95,7 +102,6 @@ if test x$build_nmm = xyes; then
     echo "================================================================================"
     echo "==== amaroK will be built with the NMM-engine                               ===="
     echo "================================================================================"
-    echo "======================"
     echo "=  amaroK - INFO  =============================================================="
     echo "=                                                                              ="
     echo "=  If the build fails, reconfigure --without-nmm, or ask for help on #amarok   ="
