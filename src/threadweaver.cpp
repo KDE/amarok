@@ -260,14 +260,14 @@ CollectionReader::doJob() {
     for ( uint i = 0; i < m_folders.count(); i++ )
         readDir( m_folders[i], entries );
 
-    if ( entries.empty() )
-        return false;
-
-    QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
-    readTags( entries );
+    if ( !entries.empty() )
+    {
+        QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
+        readTags( entries );
+    }
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Stop ) );
 
-    return true;
+    return !entries.empty();
 }
 
 void
@@ -282,7 +282,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
     stat( dir.local8Bit(), &statBuf );
     m_parent->updateDirStats( dir, (long)statBuf.st_mtime );
     
-    while ( (ent = readdir( d )) ) {
+    while ( (ent = readdir( d )) )
+    {
         QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
@@ -291,12 +292,12 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 
         stat( entry, &statBuf );
 
-        if ( S_ISDIR( statBuf.st_mode ) ) {
+        if ( S_ISDIR( statBuf.st_mode ) )
+        {
             if ( m_recursively )
-            {
                 //call ourself recursively for each subdir
-                readDir( entry, entries );
-            }
+                if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
+                    readDir( entry, entries );
         }
         else if ( S_ISREG( statBuf.st_mode ) )
             entries << QString::fromLocal8Bit( entry );

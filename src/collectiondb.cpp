@@ -84,7 +84,7 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
              
     values.clear();
     names.clear();
-    execSql( QString( "SELECT name FROM images WHERE path = '%1'" )
+    execSql( QString( "SELECT name FROM images WHERE path = '%1';" )
              .arg( escapeString( url.directory() ) ), &values, &names );
 
     if ( values.isEmpty() )
@@ -138,6 +138,33 @@ CollectionDB::removeSongsInDir( QString path )
         path = path.left( path.length() - 1 );
 
     execSql( QString( "DELETE FROM tags WHERE dir = '%1';" )
+             .arg( escapeString( path ) ) );
+}
+
+
+bool
+CollectionDB::isDirInCollection( QString path )
+{
+    QStringList values;
+    QStringList names;
+    
+    if ( path.endsWith( "/" ) ) 
+        path = path.left( path.length() - 1 );
+
+    execSql( QString( "SELECT changedate FROM directories WHERE dir = '%1';" )
+             .arg( escapeString( path ) ), &values, &names );
+             
+    return !values.isEmpty();
+}
+
+
+void
+CollectionDB::removeDirFromCollection( QString path )
+{
+    if ( path.endsWith( "/" ) ) 
+        path = path.left( path.length() - 1 );
+
+    execSql( QString( "DELETE FROM directories WHERE dir = '%1';" )
              .arg( escapeString( path ) ) );
 }
 
@@ -333,7 +360,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively )
 
 
 void
-CollectionDB::scanModifiedDirs()
+CollectionDB::scanModifiedDirs( bool recursively )
 {
     QStringList values;
     QStringList names;
@@ -345,17 +372,28 @@ CollectionDB::scanModifiedDirs()
     
     for ( uint i = 0; i < values.count() / 2; i++ )
     {
-        stat( values[i*2].local8Bit(), &statBuf );
-        
-        if ( QString::number( (long)statBuf.st_mtime ) != values[i*2 + 1] )
+        if ( stat( values[i*2].local8Bit(), &statBuf ) == 0 )
         {
-            folders << values[i*2];
-            kdDebug() << "Collection dir changed: " << values[i*2] << endl;
+            if ( QString::number( (long)statBuf.st_mtime ) != values[i*2 + 1] )
+            {
+                folders << values[i*2];
+                kdDebug() << "Collection dir changed: " << values[i*2] << endl;    
+            }
         }
+        else
+        {
+            // this folder has been removed
+            removeSongsInDir( values[i*2] );
+            removeDirFromCollection( values[i*2] );
+            kdDebug() << "Collection dir removed: " << values[i*2] << endl;    
+        }
+        
     }
     
     if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, false, true ) );
+        m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), folders, recursively, true ) );
+    else
+        emit scanDone();
 }
 
 

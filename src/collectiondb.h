@@ -25,6 +25,8 @@ class CollectionDB : public QObject
         void incSongCounter( const QString url );
         void updateDirStats( const QString path, const long datetime );
         void removeSongsInDir( QString path );
+        bool isDirInCollection( QString path );
+        void removeDirFromCollection( QString path );
 
         /**
          * Executes an SQL statement on the already opened database
@@ -48,7 +50,7 @@ class CollectionDB : public QObject
         void moveTempTables();
 
         void purgeDirCache();
-        void scanModifiedDirs();
+        void scanModifiedDirs( bool recursively );
         void scan( const QStringList& folders, bool recursively );
       
     signals:

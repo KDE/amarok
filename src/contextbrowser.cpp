@@ -129,25 +129,27 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     browser->write( "</table>" );
     browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    m_db->execSql( QString( "SELECT tags.title, album.id, artist.id, album.name, datetime( datetime(statistics.accessdate, 'unixepoch'), 'localtime' ), statistics.playcounter "
+    m_db->execSql( QString( "SELECT album.id, artist.id, datetime( datetime(statistics.accessdate, 'unixepoch'), 'localtime' ), statistics.playcounter "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
                    .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names );
 
     if ( !values.count() )
     {
+        values << "0";
+        values << "0";
         values << i18n( "Never" );
         values << "0";
     }
     browser->write( QString ( "<tr><td height='42' valign='top' class='rbalbum'>"
-                              "<span class='album'>%2</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%1'>"
-                              "%4<br>Last play: %5<br>Total plays: %3</td>"
+                              "<span class='album'>%1</span><br><br><img align='left' valign='center' hspace='2' width='40' height='40' src='%2'>"
+                              "%3<br>Last play: %4<br>Total plays: %5</td>"
                               "</tr>" )
-                    .arg( m_db->getImageForAlbum( values[2], values[1], locate( "data", "amarok/images/sound.png" ) ) )
-                    .arg( values[0] )
-                    .arg( values[5] )
-                    .arg( values[3] )
-                    .arg( values[4] ) );
+                    .arg( bundle.title() )
+                    .arg( m_db->getImageForAlbum( values[1], values[0], locate( "data", "amarok/images/sound.png" ) ) )
+                    .arg( bundle.album() )
+                    .arg( values[2] )
+                    .arg( values[3] ) );
 
     values.clear();
     names.clear();
@@ -228,8 +230,9 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     m_db->execSql( QString( "SELECT DISTINCT album.name, album.id, artist.id "
                             "FROM album, tags, artist "
-                            "WHERE album.id = tags.album AND tags.artist = artist.id AND artist.name LIKE '%1' "
+                            "WHERE album.id = tags.album AND album.name <> '%1' AND tags.artist = artist.id AND artist.name LIKE '%2' "
                             "ORDER BY album.name;" )
+                   .arg( m_db->escapeString( bundle.album() ) )
                    .arg( m_db->escapeString( bundle.artist() ) ), &values, &names );
 
     for ( uint i = 0; i < ( values.count() / 3 ); i++ )

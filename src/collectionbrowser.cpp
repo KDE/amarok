@@ -162,7 +162,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         } else
         {
             m_insertdb = new CollectionDB();
-            m_insertdb->scanModifiedDirs();
+            m_insertdb->scanModifiedDirs( m_recursively );
         }
 
     //</open database>
