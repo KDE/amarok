@@ -31,8 +31,8 @@ void PlaylistToolTip::add( QWidget * widget, const MetaBundle & tags )
 {
     const KURL &url = tags.m_url;
 
-    QString s = "<tr><td width='70'>%1:</td><td align='left'>%2</td></tr>";
     QString tipBuf = "<center><table style='font-face: Arial; font-size: 8px;'>";
+    QString s = "<tr><td width='70'>%1:</td><td align='left'>%2</td></tr>";
     tipBuf += s.arg( i18n( "Title" ),  tags.m_title );
     tipBuf += s.arg( i18n( "Artist" ), tags.m_artist );
     tipBuf += s.arg( i18n( "Length" ), tags.prettyLength() );
