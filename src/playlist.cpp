@@ -429,6 +429,9 @@ Playlist::restoreSession()
 void
 Playlist::playNextTrack()
 {
+    if( isEmpty() )
+        return;
+
     PlaylistItem *item = currentTrack();
 
     if ( m_stopAfterCurrent )
