@@ -18,11 +18,11 @@
 **
 ** $Id$
 */
+#include "sqliteInt.h"
 #include <ctype.h>
 #include <math.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "sqliteInt.h"
 #include "vdbeInt.h"
 #include "os.h"
 
@@ -347,10 +347,11 @@ static const struct compareInfo likeInfo = { '%', '_',   0, 1 };
 **
 **         abc[*]xyz        Matches "abc*xyz" only
 */
-int patternCompare(
+static int patternCompare(
   const u8 *zPattern,              /* The glob pattern */
   const u8 *zString,               /* The string to compare against the glob */
-  const struct compareInfo *pInfo  /* Information about how to do the compare */
+  const struct compareInfo *pInfo, /* Information about how to do the compare */
+  const int esc                    /* The escape character */
 ){
   register int c;
   int invert;
@@ -360,9 +361,10 @@ int patternCompare(
   u8 matchAll = pInfo->matchAll;
   u8 matchSet = pInfo->matchSet;
   u8 noCase = pInfo->noCase; 
+  int prevEscape = 0;     /* True if the previous character was 'escape' */
 
   while( (c = *zPattern)!=0 ){
-    if( c==matchAll ){
+    if( !prevEscape && c==matchAll ){
       while( (c=zPattern[1]) == matchAll || c == matchOne ){
         if( c==matchOne ){
           if( *zString==0 ) return 0;
@@ -370,9 +372,15 @@ int patternCompare(
         }
         zPattern++;
       }
+      if( c && esc && sqlite3ReadUtf8(&zPattern[1])==esc ){
+        u8 const *zTemp = &zPattern[1];
+        sqliteNextChar(zTemp);
+        c = *zTemp;
+      }
       if( c==0 ) return 1;
       if( c==matchSet ){
-        while( *zString && patternCompare(&zPattern[1],zString,pInfo)==0 ){
+        assert( esc==0 );   /* This is GLOB, not LIKE */
+        while( *zString && patternCompare(&zPattern[1],zString,pInfo,esc)==0 ){
           sqliteNextChar(zString);
         }
         return *zString!=0;
@@ -386,17 +394,18 @@ int patternCompare(
             while( c2 != 0 && c2 != c ){ c2 = *++zString; }
           }
           if( c2==0 ) return 0;
-          if( patternCompare(&zPattern[1],zString,pInfo) ) return 1;
+          if( patternCompare(&zPattern[1],zString,pInfo,esc) ) return 1;
           sqliteNextChar(zString);
         }
         return 0;
       }
-    }else if( c==matchOne ){
+    }else if( !prevEscape && c==matchOne ){
       if( *zString==0 ) return 0;
       sqliteNextChar(zString);
       zPattern++;
     }else if( c==matchSet ){
       int prior_c = 0;
+      assert( esc==0 );    /* This only occurs for GLOB, not LIKE */
       seen = 0;
       invert = 0;
       c = sqliteCharVal(zString);
@@ -424,6 +433,9 @@ int patternCompare(
       if( c2==0 || (seen ^ invert)==0 ) return 0;
       sqliteNextChar(zString);
       zPattern++;
+    }else if( esc && !prevEscape && sqlite3ReadUtf8(zPattern)==esc){
+      prevEscape = 1;
+      sqliteNextChar(zPattern);
     }else{
       if( noCase ){
         if( sqlite3UpperToLower[c] != sqlite3UpperToLower[*zString] ) return 0;
@@ -432,6 +444,7 @@ int patternCompare(
       }
       zPattern++;
       zString++;
+      prevEscape = 0;
     }
   }
   return *zString==0;
@@ -457,8 +470,21 @@ static void likeFunc(
 ){
   const unsigned char *zA = sqlite3_value_text(argv[0]);
   const unsigned char *zB = sqlite3_value_text(argv[1]);
+  int escape = 0;
+  if( argc==3 ){
+    /* The escape character string must consist of a single UTF-8 character.
+    ** Otherwise, return an error.
+    */
+    const unsigned char *zEsc = sqlite3_value_text(argv[2]);
+    if( sqlite3utf8CharLen(zEsc, -1)!=1 ){
+      sqlite3_result_error(context, 
+          "ESCAPE expression must be a single character", -1);
+      return;
+    }
+    escape = sqlite3ReadUtf8(zEsc);
+  }
   if( zA && zB ){
-    sqlite3_result_int(context, patternCompare(zA, zB, &likeInfo));
+    sqlite3_result_int(context, patternCompare(zA, zB, &likeInfo, escape));
   }
 }
 
@@ -469,13 +495,13 @@ static void likeFunc(
 **
 **       A GLOB B
 **
-** is implemented as glob(A,B).
+** is implemented as glob(B,A).
 */
 static void globFunc(sqlite3_context *context, int arg, sqlite3_value **argv){
   const unsigned char *zA = sqlite3_value_text(argv[0]);
   const unsigned char *zB = sqlite3_value_text(argv[1]);
   if( zA && zB ){
-    sqlite3_result_int(context, patternCompare(zA, zB, &globInfo));
+    sqlite3_result_int(context, patternCompare(zA, zB, &globInfo, 0));
   }
 }
 
@@ -506,6 +532,131 @@ static void versionFunc(
 ){
   sqlite3_result_text(context, sqlite3_version, -1, SQLITE_STATIC);
 }
+
+#ifndef SQLITE_OMIT_ALTERTABLE
+/*
+** This function is used by SQL generated to implement the 
+** ALTER TABLE command. The first argument is the text of a CREATE TABLE or
+** CREATE INDEX command. The second is a table name. The table name in 
+** the CREATE TABLE or CREATE INDEX statement is replaced with the second
+** argument and the result returned. Examples:
+**
+** sqlite_alter_table('CREATE TABLE abc(a, b, c)', 'def')
+**     -> 'CREATE TABLE def(a, b, c)'
+**
+** sqlite_alter_table('CREATE INDEX i ON abc(a)', 'def')
+**     -> 'CREATE INDEX i ON def(a, b, c)'
+*/
+static void altertableFunc(
+  sqlite3_context *context,
+  int argc,
+  sqlite3_value **argv
+){
+  unsigned char const *zSql = sqlite3_value_text(argv[0]);
+  unsigned char const *zTableName = sqlite3_value_text(argv[1]);
+
+  int token;
+  Token tname;
+  char const *zCsr = zSql;
+  int len = 0;
+  char *zRet;
+
+  /* The principle used to locate the table name in the CREATE TABLE 
+  ** statement is that the table name is the first token that is immediatedly
+  ** followed by a left parenthesis - TK_LP.
+  */
+  if( zSql ){
+    do {
+      /* Store the token that zCsr points to in tname. */
+      tname.z = zCsr;
+      tname.n = len;
+
+      /* Advance zCsr to the next token. Store that token type in 'token',
+      ** and it's length in 'len' (to be used next iteration of this loop).
+      */
+      do {
+        zCsr += len;
+        len = sqlite3GetToken(zCsr, &token);
+      } while( token==TK_SPACE );
+      assert( len>0 );
+    } while( token!=TK_LP );
+
+    zRet = sqlite3MPrintf("%.*s%Q%s", tname.z - zSql, zSql, 
+       zTableName, tname.z+tname.n);
+    sqlite3_result_text(context, zRet, -1, sqlite3FreeX);
+  }
+}
+#endif
+
+#ifndef SQLITE_OMIT_ALTERTABLE
+#ifndef SQLITE_OMIT_TRIGGER
+/* This function is used by SQL generated to implement the ALTER TABLE
+** ALTER TABLE command. The first argument is the text of a CREATE TRIGGER 
+** statement. The second is a table name. The table name in the CREATE 
+** TRIGGER statement is replaced with the second argument and the result 
+** returned. This is analagous to altertableFunc() above, except for CREATE
+** TRIGGER, not CREATE INDEX and CREATE TABLE.
+*/
+static void altertriggerFunc(
+  sqlite3_context *context,
+  int argc,
+  sqlite3_value **argv
+){
+  unsigned char const *zSql = sqlite3_value_text(argv[0]);
+  unsigned char const *zTableName = sqlite3_value_text(argv[1]);
+
+  int token;
+  Token tname;
+  int dist = 3;
+  char const *zCsr = zSql;
+  int len = 0;
+  char *zRet;
+
+  /* The principle used to locate the table name in the CREATE TRIGGER 
+  ** statement is that the table name is the first token that is immediatedly
+  ** preceded by either TK_ON or TK_DOT and immediatedly followed by one
+  ** of TK_WHEN, TK_BEGIN or TK_FOR.
+  */
+  if( zSql ){
+    do {
+      /* Store the token that zCsr points to in tname. */
+      tname.z = zCsr;
+      tname.n = len;
+
+      /* Advance zCsr to the next token. Store that token type in 'token',
+      ** and it's length in 'len' (to be used next iteration of this loop).
+      */
+      do {
+        zCsr += len;
+        len = sqlite3GetToken(zCsr, &token);
+      }while( token==TK_SPACE );
+      assert( len>0 );
+
+      /* Variable 'dist' stores the number of tokens read since the most
+      ** recent TK_DOT or TK_ON. This means that when a WHEN, FOR or BEGIN 
+      ** token is read and 'dist' equals 2, the condition stated above
+      ** to be met.
+      **
+      ** Note that ON cannot be a database, table or column name, so
+      ** there is no need to worry about syntax like 
+      ** "CREATE TRIGGER ... ON ON.ON BEGIN ..." etc.
+      */
+      dist++;
+      if( token==TK_DOT || token==TK_ON ){
+        dist = 0;
+      }
+    } while( dist!=2 || (token!=TK_WHEN && token!=TK_FOR && token!=TK_BEGIN) );
+
+    /* Variable tname now contains the token that is the old table-name
+    ** in the CREATE TRIGGER statement.
+    */
+    zRet = sqlite3MPrintf("%.*s%Q%s", tname.z - zSql, zSql, 
+       zTableName, tname.z+tname.n);
+    sqlite3_result_text(context, zRet, -1, sqlite3FreeX);
+  }
+}
+#endif   /* !SQLITE_OMIT_TRIGGER */
+#endif   /* !SQLITE_OMIT_ALTERTABLE */
 
 /*
 ** EXPERIMENTAL - This is not an official function.  The interface may
@@ -704,10 +855,12 @@ static void test_destructor(
   memcpy(zVal, sqlite3ValueText(argv[0], db->enc), len);
   if( db->enc==SQLITE_UTF8 ){
     sqlite3_result_text(pCtx, zVal, -1, destructor);
+#ifndef SQLITE_OMIT_UTF16
   }else if( db->enc==SQLITE_UTF16LE ){
     sqlite3_result_text16le(pCtx, zVal, -1, destructor);
   }else{
     sqlite3_result_text16be(pCtx, zVal, -1, destructor);
+#endif /* SQLITE_OMIT_UTF16 */
   }
 }
 static void test_destructor_count(
@@ -759,6 +912,20 @@ static void test_auxdata(
     }
   }
   sqlite3_result_text(pCtx, zRet, 2*nArg-1, free_test_auxdata);
+}
+#endif /* SQLITE_TEST */
+
+#ifdef SQLITE_TEST
+/*
+** A function to test error reporting from user functions. This function
+** returns a copy of it's first argument as an error.
+*/
+static void test_error(
+  sqlite3_context *pCtx, 
+  int nArg,
+  sqlite3_value **argv
+){
+  sqlite3_result_error(pCtx, sqlite3_value_text(argv[0]), 0);
 }
 #endif /* SQLITE_TEST */
 
@@ -933,7 +1100,9 @@ void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
     { "typeof",             1, 0, SQLITE_UTF8,    0, typeofFunc },
     { "length",             1, 0, SQLITE_UTF8,    0, lengthFunc },
     { "substr",             3, 0, SQLITE_UTF8,    0, substrFunc },
+#ifndef SQLITE_OMIT_UTF16
     { "substr",             3, 0, SQLITE_UTF16LE, 0, sqlite3utf16Substr },
+#endif
     { "abs",                1, 0, SQLITE_UTF8,    0, absFunc    },
     { "round",              1, 0, SQLITE_UTF8,    0, roundFunc  },
     { "round",              2, 0, SQLITE_UTF8,    0, roundFunc  },
@@ -945,6 +1114,7 @@ void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
     { "ifnull",             2, 0, SQLITE_UTF8,    1, ifnullFunc },
     { "random",            -1, 0, SQLITE_UTF8,    0, randomFunc },
     { "like",               2, 0, SQLITE_UTF8,    0, likeFunc   },
+    { "like",               3, 0, SQLITE_UTF8,    0, likeFunc   },
     { "glob",               2, 0, SQLITE_UTF8,    0, globFunc   },
     { "nullif",             2, 0, SQLITE_UTF8,    1, nullifFunc },
     { "sqlite_version",     0, 0, SQLITE_UTF8,    0, versionFunc},
@@ -952,6 +1122,12 @@ void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
     { "last_insert_rowid",  0, 1, SQLITE_UTF8,    0, last_insert_rowid },
     { "changes",            0, 1, SQLITE_UTF8,    0, changes    },
     { "total_changes",      0, 1, SQLITE_UTF8,    0, total_changes },
+#ifndef SQLITE_OMIT_ALTERTABLE
+    { "sqlite_alter_table", 2, 0, SQLITE_UTF8,    0, altertableFunc},
+#ifndef SQLITE_OMIT_TRIGGER
+    { "sqlite_alter_trigger", 2, 0, SQLITE_UTF8,  0, altertriggerFunc},
+#endif
+#endif
 #ifdef SQLITE_SOUNDEX
     { "soundex",            1, 0, SQLITE_UTF8, 0, soundexFunc},
 #endif
@@ -960,6 +1136,7 @@ void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
     { "test_destructor",       1, 1, SQLITE_UTF8, 0, test_destructor},
     { "test_destructor_count", 0, 0, SQLITE_UTF8, 0, test_destructor_count},
     { "test_auxdata",         -1, 0, SQLITE_UTF8, 0, test_auxdata},
+    { "test_error",            1, 0, SQLITE_UTF8, 0, test_error},
 #endif
   };
   static const struct {

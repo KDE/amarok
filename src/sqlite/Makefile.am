@@ -18,7 +18,6 @@ libsqlite_la_SOURCES = \
     build.c \
     date.c \
     delete.c \
-    encode.c \
     expr.c \
     func.c \
     hash.c \
@@ -26,7 +25,6 @@ libsqlite_la_SOURCES = \
     legacy.c \
     main.c \
     opcodes.c \
-    os_mac.c \
     os_unix.c \
     os_win.c \
     pager.c \
