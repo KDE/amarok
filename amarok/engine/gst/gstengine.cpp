@@ -50,7 +50,7 @@ GstEngine::pObject;
 void
 GstEngine::eos_cb( GstElement*, GstElement* )
 {
-    kdDebug() << "GstEngine::eos_cb" << endl;
+    kdDebug() << k_funcinfo << endl;
 
     gst_element_set_state( GST_ELEMENT( pObject->m_pThread ), GST_STATE_READY );
     //     pObject->emit endOfTrack();
@@ -132,15 +132,15 @@ GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstEle
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstEngine::GstEngine()
-        : EngineBase()
-        , m_pThread( NULL )
+    : EngineBase()
+    , m_pThread( NULL )
 {}
 
 
 GstEngine::~GstEngine()
 {
     stop();
-    gst_object_unref      (GST_OBJECT  (m_pThread));
+    gst_object_unref( GST_OBJECT( m_pThread ) );
 }
 
 
@@ -240,16 +240,12 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 long
 GstEngine::position() const
 {
-    if ( ( gst_element_get_state( GST_ELEMENT (m_pThread) ) == GST_STATE_PLAYING ) ||
-            ( gst_element_get_state( GST_ELEMENT (m_pThread) ) == GST_STATE_PAUSED ) )
-    {
-        GstClock *clock;
-        clock = gst_bin_get_clock ( GST_BIN ( m_pThread ) );
-
-        return (long) ( gst_clock_get_time ( clock ) / GST_MSECOND );
-    }
-    else
-        return 0;
+    GstFormat fmt = GST_FORMAT_TIME;
+    //value will hold the current time position in nanoseconds
+    gint64 value;
+    gst_element_query( m_pAudiosink, GST_QUERY_POSITION, &fmt, &value );
+    
+    return (long) ( value / GST_MSECOND ); // ns -> ms
 }
 
 
@@ -261,7 +257,7 @@ GstEngine::state() const
         case GST_STATE_NULL:
             return Empty;
         case GST_STATE_READY:
-            return Playing;
+            return Idle;
         case GST_STATE_PLAYING:
             return Playing;
         case GST_STATE_PAUSED:
@@ -319,6 +315,7 @@ GstEngine::play()
 void 
 GstEngine::stop()
 {
+    kdDebug() << k_funcinfo << endl;
     /* stop the thread */
     gst_element_set_state (GST_ELEMENT( m_pThread ), GST_STATE_NULL );
 }
@@ -327,6 +324,8 @@ GstEngine::stop()
 void 
 GstEngine::pause()
 {
+    kdDebug() << k_funcinfo << endl;
+    
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PAUSED );
 }
 
