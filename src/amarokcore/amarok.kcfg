@@ -414,7 +414,7 @@
         <entry key="SubmitPlayedSongs" type="Bool">
             <label>SubmitPlayedSongs</label>
             <whatsthis>Whether played songs are submitted to Audioscrobbler</whatsthis>
-            <default/>
+            <default>false</default>
         </entry>
         <entry key="ScrobblerUsername" type="String">
             <label>Username</label>
