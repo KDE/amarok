@@ -953,7 +953,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
-                      "( url, dir, createdate, album, artist, genre, year, title, comment, track, sampler, length ) "
+                      "( url, dir, createdate, album, artist, genre, year, title, comment, track, sampler, length, bitrate, samplerate ) "
                       "VALUES ('";
 
     QString artist = bundle->artist();
@@ -988,7 +988,10 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     command += escapeString( bundle->comment() ) + "','";
     command += escapeString( bundle->track() ) + "', ";
     command += artist == i18n( "Various Artists" ) ? "1" : "0";
-    command += ", 0);";
+
+    command += ", 0";       // length
+    command += ", 0";       // bitrate
+    command += ", 0);";     // samplerate
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
