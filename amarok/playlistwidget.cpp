@@ -19,6 +19,7 @@
 #include "playerapp.h" //FIXME remove the need for this please!
 #include "playlistitem.h"
 #include "playlistloader.h"
+#include "metabundle.h"
 
 #include <qcolor.h>
 #include <qevent.h>
@@ -54,7 +55,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     , m_GlowAdd( 5 )
     , m_pCurrentTrack( 0 )    
     , m_undoCounter( 0 )
-    , m_tagReader( new TagReader( this ) ) //QThreads crash when not heap allocated
+    , m_tagReader( new TagReader( this ) )
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;
 
@@ -128,7 +129,7 @@ void PlaylistWidget::insertMedia( const KURL &url )
 {
    if( !url.isEmpty() )
    {
-      insertMedia( KURL::List( url ), (QListViewItem *)0 );
+      insertMedia( KURL::List( url ), (PlaylistItem *)0 );
    }
 }
 
@@ -139,11 +140,11 @@ void PlaylistWidget::insertMedia( const KURL::List &list, bool doclear )
      if( doclear )
         clear( false );
 
-     insertMedia( list, (QListViewItem *)0 );
+     insertMedia( list, (PlaylistItem *)0 );
   }
 }
 
-void PlaylistWidget::insertMedia( const KURL::List &list, QListViewItem *after )
+void PlaylistWidget::insertMedia( const KURL::List &list, PlaylistItem *after )
 {
    kdDebug() << "PlaylistWidget::insertMedia()\n";
 
@@ -334,7 +335,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
              //FIXME inform thread of user-decision
           }
 */
-          insertMedia( urlList, after );
+          insertMedia( urlList, (PlaylistItem *)after );
        }
     }
 
@@ -427,10 +428,11 @@ void PlaylistWidget::keyPressEvent( QKeyEvent *e )
 
 // PRIVATE METHODS ===============================================
 
-void PlaylistWidget::startLoader( const KURL::List &list, QListViewItem *after )
+void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
 {
    //FIXME lastItem() has to go through entire list to find lastItem! Not scalable!
-   PlaylistLoader *loader = new PlaylistLoader( list, this, ( after == 0 ) ? lastItem() : after );
+   if( after == 0 ) after = static_cast<PlaylistItem *>(lastItem());
+   PlaylistLoader *loader = new PlaylistLoader( list, this, after );
 
    //FIXME remove meta option if that is the way things go
    if( loader ) {
@@ -493,7 +495,7 @@ void PlaylistWidget::setSorting( int i, bool b )
 
 void PlaylistWidget::activate( QListViewItem *item )
 {
-   //FIXME potentially dangerous casting
+   //NOTE  potentially dangerous down-casting
    //FIXME consider adding a hidden "empty" playlistitem that would be useful in these situations perhaps
    //FIXME handle when reaches end of playlist and track, should reset to beginning of list
    //FIXME get audiodata on demand for tracks
@@ -503,8 +505,12 @@ void PlaylistWidget::activate( QListViewItem *item )
    setCurrentTrack( _item );
    
    if( _item != NULL )
-   {
-      emit activated( _item->url(), _item->tags() );
+   {         
+      const MetaBundle *meta = _item->metaBundle();
+          
+      emit activated( _item->url(), meta );
+      
+      delete meta;
    }
 }
 
@@ -543,19 +549,23 @@ void PlaylistWidget::showTrackInfo( const PlaylistItem *pItem )
                                         QMessageBox::NoButton, 0, "Track Information", true,
                                         Qt::WDestructiveClose | Qt::WStyle_DialogBorder );
 
-    QString str( "<html><body><table border=""1"">" );
+    QString str( "<html><body><table border=\"1\">" );
 
-    if ( pItem->hasMetaInfo() )
+    if ( pApp->m_optReadMetaInfo )
     {
-         str += "<tr><td>" + i18n( "Title"   ) + "</td><td>" + pItem->title()   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Artist"  ) + "</td><td>" + pItem->artist()  + "</td></tr>";
-         str += "<tr><td>" + i18n( "Album"   ) + "</td><td>" + pItem->album()   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Genre"   ) + "</td><td>" + pItem->genre()   + "</td></tr>";
-         str += "<tr><td>" + i18n( "Year"    ) + "</td><td>" + pItem->year()    + "</td></tr>";
-         str += "<tr><td>" + i18n( "Comment" ) + "</td><td>" + pItem->comment() + "</td></tr>";
-         str += "<tr><td>" + i18n( "Length"  ) + "</td><td>" + pItem->length()  + "</td></tr>";
-         str += "<tr><td>" + i18n( "Bitrate" ) + "</td><td>" + QString::number(pItem->bitrate()) + " kbps</td></tr>";
-         str += "<tr><td>" + i18n( "Samplerate" ) + "</td><td>" + QString::number(pItem->sampleRate()) + " Hz</td></tr>";
+         const MetaBundle *mb = pItem->metaBundle();
+    
+         str += "<tr><td>" + i18n( "Title"   ) + "</td><td>" + mb->m_title   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Artist"  ) + "</td><td>" + mb->m_artist  + "</td></tr>";
+         str += "<tr><td>" + i18n( "Album"   ) + "</td><td>" + mb->m_album   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Genre"   ) + "</td><td>" + mb->m_genre   + "</td></tr>";
+         str += "<tr><td>" + i18n( "Year"    ) + "</td><td>" + mb->m_year    + "</td></tr>";
+         str += "<tr><td>" + i18n( "Comment" ) + "</td><td>" + mb->m_comment + "</td></tr>";
+         str += "<tr><td>" + i18n( "Length"  ) + "</td><td>" + QString::number( mb->m_length ) + "</td></tr>";
+         str += "<tr><td>" + i18n( "Bitrate" ) + "</td><td>" + QString::number( mb->m_bitrate ) + " kbps</td></tr>";
+         str += "<tr><td>" + i18n( "Samplerate" ) + "</td><td>" + QString::number( mb->m_sampleRate ) + " Hz</td></tr>";
+         
+         delete mb;
     }
     else
     {

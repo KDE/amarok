@@ -4,8 +4,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "playlistitem.h" //for Tags struct
 #include "playlistloader.h"
+#include "metabundle.h"
+#include "playlistitem.h"
 
 #include <qapplication.h>
 #include <qtextstream.h>
@@ -14,7 +15,7 @@
 #include <kapplication.h>
 #include <kfileitem.h>
 #include <kurl.h>
-#include <kdebug.h> //remove when you can
+#include <kdebug.h>
 #include <ktempfile.h>
 #include <kio/netaccess.h>
 
@@ -23,15 +24,8 @@
 #include <taglib/tag.h>
 #include <taglib/audioproperties.h>
 
-
-
-
-
-///// ctor and dtor are basic and in header
-
 /*
  * For pls and m3u specifications see: http://forums.winamp.com/showthread.php?s=dbec47f3a05d10a3a77959f17926d39c&threadid=65772
- *
  */
 
 //URGENT
@@ -146,9 +140,28 @@
 //TODO make translate work like process(), ie process isn't called afterwards AND it posts its own events whenever a valid file is found
 
 
+PlaylistLoader::PlaylistLoader( const KURL::List &ul, QWidget *w, PlaylistItem *pi, bool b )
+   : m_list( ul )
+   , m_parent( w )
+   , m_after( pi )
+   , m_first( b ? pi : 0 )
+{}
+
+PlaylistLoader::~PlaylistLoader()
+{
+    if( NULL != m_first )
+    {
+        KIO::NetAccess::removeTempFile( m_first->url().path() );
+        delete m_first; //FIXME deleting m_first is dangerous as user may have done it for us!
+    }
+    
+    kdDebug() << "[loader] Done!\n";
+}
+
+
 void PlaylistLoader::run()
 {
-       kdDebug() << "[loader] Starting thread..\n";
+       kdDebug() << "[loader] Start..\n";
 
        process( m_list );
 
@@ -215,29 +228,6 @@ void PlaylistLoader::process( KURL::List &list, bool validate )
       {
          if( validate && !isValidMedia( *it ) ) continue; //TODO retain stat info if done above, which does happen
 
-/*
-         if( options.meta )
-         {
-            //TODO can we use filerefs instead of stating above? may shave a few ms
-
-            TagLib::FileRef f( path, false ); //false = don't read audioproperties
-
-            if ( !f.isNull() && f.tag() )
-            {
-               TagLib::Tag * tag = f.tag();
-
-               meta = new Tags( TStringToQString( tag->title() ).stripWhiteSpace(),
-                                TStringToQString( tag->artist() ).stripWhiteSpace(),
-                                TStringToQString( tag->album() ).stripWhiteSpace(),
-                                TStringToQString( tag->genre() ).stripWhiteSpace(),
-                                TStringToQString( tag->comment() ).stripWhiteSpace(),
-                                QString::number( tag->year() ),
-                                QString::number( tag->track() ),
-                                QString( (*it).directory().section( '/', -1 ) ),
-                                f.audioProperties() );
-            }
-         }
-*/
          //don't use the 2 parameter ctor of LoaderEvent
          QApplication::postEvent( m_parent, new LoaderEvent( this, *it, 0 ) );
       }
@@ -385,7 +375,7 @@ void PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
             if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
-            QApplication::postEvent( m_parent, new LoaderEvent( this, KURL( str ), ( length != 0 ) ? new Tags( title, length ) : 0 ) );
+            QApplication::postEvent( m_parent, new LoaderEvent( this, KURL( str ), ( length != 0 ) ? new MetaBundle( title, length ) : 0 ) );
 
             length = 0;
         }
@@ -408,11 +398,11 @@ void PlaylistLoader::loadPls( QTextStream &stream )
         {
            if( !posted )
            {
-              Tags *tags = 0;
+              MetaBundle *tags = 0;
 
               if( length > 0 || title != "" )
               {
-                 tags = new Tags( title, length );
+                 tags = new MetaBundle( title, length );
               }
 
               QApplication::postEvent( m_parent, new LoaderEvent( this, url, tags ) );
@@ -507,7 +497,7 @@ void TagReader::append( PlaylistItem *item )
    if( item->url().protocol() == "file" )
    {
       //QDeepCopy<QString> url = item->url().path();
-      Bundle bundle( item, item->url(), ( item->m_tags == 0 ) ? 0 : new Tags( *item->m_tags ) );
+      Bundle bundle( item, item->url(), 0 );
 
       mutex.lock();
       m_Q.push_back( bundle );
@@ -519,7 +509,7 @@ void TagReader::append( PlaylistItem *item )
 
 void TagReader::run()
 {
-    Tags *tags;
+    MetaBundle *tags;
     
     msleep( 200 ); //this is an attempt to encourage the queue to be filled with more than 1 item before we
                    //start processing, and thus prevent unecessary stopping and starting of the thread
@@ -532,7 +522,7 @@ void TagReader::run()
         Bundle bundle( m_Q.front() );
         mutex.unlock();
 
-        tags = readTags( bundle.url, bundle.tags );
+        tags = readTags( bundle.url, tags );
 
         //we need to check the item is still there, if the playlistItem was removed, it will no longer be in
         //the queue
@@ -548,26 +538,24 @@ void TagReader::run()
     kdDebug() << "[reader] Done!\n";
 }
 
-Tags *TagReader::readTags( const KURL &url, Tags *tags )
+
+MetaBundle *TagReader::readTags( const KURL &url, MetaBundle *tags )
 {
-   //TODO use old tags if available
-   delete tags;
+   //audioproperties are read on demand
+   TagLib::FileRef f( url.path().local8Bit(), false ); 
 
-   //TODO read audioproperties on demand
-   TagLib::FileRef f( url.path().local8Bit(), true/*, AudioProperties::ReadStyle::Fast*/ ); //bool = read audioproperties
-
-   if ( !f.isNull() && f.tag() )
+   if ( !f.isNull() && f.tag() ) //FIXME I'm thinking that calling f.tag() here is possibly not nice, must check!
    {
       TagLib::Tag * tag = f.tag();
 
-      tags = new Tags( TStringToQString( tag->title() ).stripWhiteSpace(),
+      tags = new MetaBundle( TStringToQString( tag->title() ).stripWhiteSpace(),
                        TStringToQString( tag->artist() ).stripWhiteSpace(),
                        TStringToQString( tag->album() ).stripWhiteSpace(),
-                       TStringToQString( tag->genre() ).stripWhiteSpace(),
+                       QString::number( tag->year() ),                       
                        TStringToQString( tag->comment() ).stripWhiteSpace(),
-                       QString::number( tag->year() ),
-                       QString::number( tag->track() ),
+                       TStringToQString( tag->genre() ).stripWhiteSpace(),                       
                        QString( url.directory().section( '/', -1 ) ),
+                       QString::number( tag->track() ),                       
                        f.audioProperties() );
    }
    else tags = 0;
@@ -575,21 +563,25 @@ Tags *TagReader::readTags( const KURL &url, Tags *tags )
    return tags;
 }
 
+
 void TagReader::cancel()
 {
-   //FIXME if an event was just sent amaroK will crash
-
+   //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
+   //      you've "solved" this by processing events after calling this in PlaylistWidget
+   
    mutex.lock();
    m_Q.clear();
    mutex.unlock();
 }
 
+
 void TagReader::remove( PlaylistItem *pi )
 {
-   //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
-   //FIXME slow, but works
    //thread safe removal of above item, called when above item no longer needs tags, ie is about to be deleted
-
+   
+   //FIXME if an event was just sent for any of these items then amaroK will crash (when they are deleted)
+   //      you've "solved" this by processing events after calling this in PlaylistWidget
+   
    mutex.lock();
    m_Q.erase( std::remove( m_Q.begin(), m_Q.end(), pi ), m_Q.end() );
    mutex.unlock();
@@ -598,11 +590,17 @@ void TagReader::remove( PlaylistItem *pi )
 
 
 
+TagReader::TagReaderEvent::~TagReaderEvent()
+{
+    delete m_tags;
+}
+      
 void TagReader::TagReaderEvent::bindTags()
 {
    //for GUI access only
    //we're a friend of PlaylistItem
-   //if( NULL != m_item->m_tags ) delete m_item->m_tags;
-   m_item->m_tags = this->m_tags;
-   m_item->setMetaTitle();
+   if( m_tags )
+   {   
+       m_item->setMeta( *m_tags );
+   }
 }

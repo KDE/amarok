@@ -49,7 +49,7 @@ class EffectWidget;
 class PlaylistItem;
 class PlayerWidget;
 
-struct Tags;
+class MetaBundle;
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -135,7 +135,7 @@ class PlayerApp : public KUniqueApplication
         void slotPrev() const;
 	void slotNext() const;
         void slotPlay() const;
-        void play( const KURL&, const Tags * = 0 );
+        void play( const KURL&, const MetaBundle * = 0 );
         void slotConnectPlayObj();
         void slotPause();
         void slotStop();

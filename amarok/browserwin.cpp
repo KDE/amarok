@@ -253,22 +253,20 @@ void BrowserWin::setBrowserURL( const KURL& url )
    m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
 }
 
-#include "playlistitem.h" //FIXME create a listitem for browserwidget
-//<mxcl> MAKE_IT_CLEAN: some should be in playlistWidget some in browserWidget
 void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
     if ( pItem )
     {
-        PlaylistItem *pPlayItem = static_cast<PlaylistItem*>( pItem );
-        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pPlayItem->url() );
+        FileBrowserItem *pBrowserItem = static_cast<FileBrowserItem *>( pItem );
+        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, pBrowserItem->url() );
 
-        if ( pPlayItem->text( 0 ) == ".." )
+        if ( pBrowserItem->text( 0 ) == ".." )
         {
             m_pBrowserWidget->cachedPath = m_pBrowserWidget->m_pDirLister->url().fileName(true);
             m_pBrowserWidget->readDir( m_pBrowserWidget->m_pDirLister->url().upURL() );
         }
 
-        else if ( pPlayItem->isDir() )
+        else if ( pBrowserItem->isDir() )
         {
             m_pBrowserWidget->readDir( fileItem.url() );
         }
@@ -373,6 +371,7 @@ void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &
 {
     m_pBrowserWidget->setPaletteBackgroundColor( bg );
     m_pBrowserWidget->setPaletteForegroundColor( fg );
+    m_pBrowserWidget->setAlternateBackground( altbg );
     
     m_pPlaylistWidget->setPaletteBackgroundColor( bg );
     m_pPlaylistWidget->setPaletteForegroundColor( fg );

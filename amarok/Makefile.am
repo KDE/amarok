@@ -7,7 +7,7 @@ EXTRA_DIST = browserwidget.h browserwin.h \
 	effectwidget.h expandbutton.h \
 	Options1.ui Options2.ui Options3.ui Options4.ui playerapp.h \
 	playerwidget.h playlistitem.h \
-	playlistwidget.h amarokdcophandler.h
+	playlistwidget.h amarokdcophandler.h metabundle.h
 
 bin_PROGRAMS = amarok
 
@@ -18,7 +18,7 @@ amarok_LDADD = ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amaroka
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
-noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokdcophandler.h playlistloader.h amarokslider.h
+noinst_HEADERS = Options1.h Options2.h Options3.h Options4.h browserwidget.h browserwin.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h configdlg.h amarokbutton.h amarokfilelist.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokbutton.h amarokdcopiface.h amarokfilelist.h browserwidget.h browserwin.h configdlg.h debugareas.h effectwidget.h expandbutton.h playerapp.h playerwidget.h playlistitem.h playlistwidget.h amarokdcophandler.h playlistloader.h amarokslider.h metabundle.h
 
 KDE_ICON = AUTO
 

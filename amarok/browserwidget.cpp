@@ -17,10 +17,7 @@
 
 #include "amarokfilelist.h"
 #include "browserwidget.h"
-#include "browserwin.h"
 #include "playerapp.h"
-#include "playlistitem.h"
-//#include "playlistwidget.h"
 
 #include <qapplication.h>
 #include <qcstring.h>
@@ -48,7 +45,6 @@
 BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
    : KListView( parent,name )
    , m_pDirLister( new KDirLister() )
-   , m_Count( 0 )
 {
     addColumn( i18n( "Filebrowser" ) );
 
@@ -89,9 +85,9 @@ QDragObject *BrowserWidget::dragObject()
 {
   KURL::List::List list;
 
-  for( PlaylistItem *item = (PlaylistItem *)firstChild(); item != NULL; item = (PlaylistItem *)item->nextSibling() )
+  for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
     if( item->isSelected() )
-      list.append( item->url() );
+      list.append( static_cast<FileBrowserItem *>(item)->url() );
 
   return new KURLDrag( list, this, "FileBrowserDragObject" );
 }
@@ -99,16 +95,6 @@ QDragObject *BrowserWidget::dragObject()
 
 void BrowserWidget::contentsDropEvent( QDropEvent* e)
 {
-/*
-    //<mxcl>I disabled this because it doesn't seem necessary, if they dropped it on the wrong thing then they should have been more careful!
-    //but the main reason I disabled it was because I wanted the contentsDropEvent to be private
-
-    if ( e->source() == NULL )                    // dragging from inside amarok or outside?
-    {
-        pApp->m_pBrowserWin->m_pPlaylistWidget->contentsDropEvent( e ); // from outside -> append URLs to playlist
-        return;
-    }
-*/
     if ( e->source()->parent() == this ) // reject drop if source is this widget
         return;
 
@@ -119,8 +105,9 @@ void BrowserWidget::contentsDropEvent( QDropEvent* e)
     emit browserDrop();
 }
 
-#include <kcombobox.h>
 
+#include <kcombobox.h>
+#include "browserwin.h"
 void BrowserWidget::keyPressEvent( QKeyEvent *e )
 {
    switch( e->key() )
@@ -151,11 +138,11 @@ void BrowserWidget::slotCompleted()
 
     AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
     KFileItemListIterator it( fileList );
-    PlaylistItem *item;
+    FileBrowserItem *item;
 
     while ( *it )
     {
-        item = new PlaylistItem( this, lastChild(), (*it)->url(), 0, (*it)->isDir() );
+        item = new FileBrowserItem( this, lastChild(), (*it)->url(), (*it)->isDir() );
 
         QString iconName( (*it)->determineMimeType()->icon( QString::null, true ) );
         item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
@@ -163,7 +150,7 @@ void BrowserWidget::slotCompleted()
     }
 
     if ( m_pDirLister->url().path() != "/" )
-        new PlaylistItem( this, 0, ".." );
+        new FileBrowserItem( this );
 
     clearSelection();
 

@@ -25,6 +25,7 @@ email                :
 #include "playerapp.h"
 #include "playerwidget.h"
 #include "titleproxy/titleproxy.h"
+#include "metabundle.h" //play( const KURL& )
 
 #include <vector>
 #include <string>
@@ -46,7 +47,6 @@ email                :
 
 //FIXME remove these dependencies, we can implement saveConfig across objects and use a save() signal
 //      a little less neat, but boy would that help with compile times
-#include "playlistitem.h"   //for Tags only //FIXME separate Tags into its own header
 #include "playlistwidget.h"  
 
 
@@ -473,9 +473,8 @@ void PlayerApp::initBrowserWin()
              this, SLOT( slotPlaylistIsHidden() ) );
 
     //make sure playlist is linked to playback
-    //FIXME move Tags struct implementation to separate header
-    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const Tags * ) ),
-             this, SLOT( play( const KURL&, const Tags * ) ) );
+    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle* ) ),
+             this, SLOT( play( const KURL&, const MetaBundle* ) ) );
  
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
@@ -794,7 +793,7 @@ void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( Pl
 void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Current ); }
 
 
-void PlayerApp::play( const KURL &url, const Tags *tags )
+void PlayerApp::play( const KURL &url, const MetaBundle *tags )
 {
     if ( m_optXFade && m_bIsPlaying && url != m_playingURL )
     {

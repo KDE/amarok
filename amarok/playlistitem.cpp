@@ -17,10 +17,7 @@
 
 #include "playerapp.h"
 #include "playlistitem.h"
-#include "playlistwidget.h"
-//#include "playlistloader.h"
-
-#include <string.h>
+#include "metabundle.h"
 
 #include <qcolor.h>
 #include <qlistview.h>
@@ -33,12 +30,9 @@
 #include <qrect.h>
 #include <qstring.h>
 
+#include <klistview.h> //baseclass
 #include <kdebug.h>
-#include <klistview.h>
 #include <kurl.h>
-
-#include <fileref.h>
-#include <tag.h>
 
 
 //statics
@@ -50,18 +44,18 @@ static const QString zeroPad( long );
 
 
 
-PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, Tags *t, bool b )
+PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, const MetaBundle *t )
       : KListViewItem( lv, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
       , m_url( u )
-      , m_isDir( b )      
-      , m_tags( t )
 {
     setDragEnabled( true );
     setDropEnabled( true );
-    setMetaTitle();
+    
+    if( t ) setMeta( *t );
 }
 
 
+#include "playlistwidget.h"
 PlaylistItem::~PlaylistItem()
 {
     //FIXME this is hacky but necessary, it would be nice to tidy it up somewhat
@@ -75,26 +69,46 @@ PlaylistItem::~PlaylistItem()
            parentView->setCurrentTrack( NULL );
        }
     }
-    
-    delete m_tags;
 }
 
 
 
 // METHODS -------------------------------------------------------
 
-void PlaylistItem::setMetaTitle()
+#include <taglib/fileref.h>
+#include <taglib/audioproperties.h>
+
+const MetaBundle *PlaylistItem::metaBundle() const
 {
-   if( hasMetaInfo() )
-   {
-      setText( 1, m_tags->m_title );
-      setText( 2, m_tags->m_artist );
-      setText( 3, m_tags->m_album );
-      setText( 4, m_tags->m_year );
-      setText( 5, m_tags->m_comment );
-      setText( 6, m_tags->m_genre );
-      setText( 7, m_tags->m_directory );
-   }
+    //FIXME only do once!
+    TagLib::FileRef f( m_url.path().local8Bit(), true, TagLib::AudioProperties::Fast );
+    
+    if( !f.isNull() && f.audioProperties() )
+    {
+        kdDebug() << "AudioProps Read!\n";
+    }
+    
+    return new MetaBundle( text( 1 ),
+                           text( 2 ),
+                           text( 3 ),
+                           text( 4 ), 
+                           text( 5 ),
+                           text( 6 ),
+                           text( 7 ),
+                           QString( "" ),//text( 8 ), //TODO track #
+                           ( f.isNull() ) ? 0 : f.audioProperties() );
+}
+
+
+void PlaylistItem::setMeta( const MetaBundle &bundle )
+{
+    if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be set by playlists, so the check is worthwhile
+    setText( 2, bundle.m_artist );
+    setText( 3, bundle.m_album );
+    setText( 4, bundle.m_year );
+    setText( 5, bundle.m_comment );
+    setText( 6, bundle.m_genre );
+    setText( 7, bundle.m_directory );
 }
 
 
@@ -172,12 +186,10 @@ void PlaylistItem::paintFocus( QPainter*, const QColorGroup&, const QRect& )
 
 const QString PlaylistItem::length( uint se ) const
 {
-   //FIXME the uint is because mostly taglib doesn't return the track length, probably because we need
-   //      to do an extended audioProperties scan, so do that, but can we do it lazily, ie on demand?
+   //FIXME, we rely on arts. This function is silly currently
+   //FIXME  store length in the playlistItem or use taglib everytime, or always use arts BUT move this function!
 
-   if( seconds() == -1 ) return "--"; //-1 is set for streams by pls files and means "display no length info"
-
-   int s = ( seconds() == 0 ) ? se : seconds();
+   int s = se;
    int m = s / 60;
    int h = m / 60;
    
@@ -189,7 +201,7 @@ const QString PlaylistItem::length( uint se ) const
 
 
 //non-member
-const QString zeroPad( const long digit )
+static const QString zeroPad( const long digit )
 {
     QString str;
     str.setNum( digit );

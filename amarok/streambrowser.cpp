@@ -499,5 +499,5 @@ void StreamBrowser::slotTimeout()
     //delete sock;
 }
 
-
+#include "streambrowser.moc"
 

@@ -20,17 +20,42 @@
 
 #include <klistview.h>
 
+class PlayerApp;
+extern PlayerApp *pApp;
+
 class QWidget;
 class QDropEvent;
 class QDragMoveEvent;
 class QKeyEvent;
-
+class QListView;
+class QListViewItem;
 class KDirLister;
-class KURL;
-class QString;
 
-class PlayerApp;
-extern PlayerApp *pApp;
+
+//TODO move #includes and impl to browserwidget.cpp
+#include <kurl.h>
+#include <qstring.h>
+class FileBrowserItem : public KListViewItem
+{
+    public:
+        FileBrowserItem( QListView *lv )
+           : KListViewItem( lv, 0, QString( ".." ) )
+           , m_isDir( true )
+        {}
+        FileBrowserItem( QListView *lv, QListViewItem *lvi, const KURL &u, bool b = false )
+           : KListViewItem( lv, lvi, u.fileName() )
+           , m_url( u )
+           , m_isDir( b )
+        {}
+
+        const KURL &url()   const { return m_url; }
+        const bool &isDir() const { return m_isDir; }        
+
+    private:
+        const KURL m_url;
+        const bool m_isDir;
+};
+
 
 class BrowserWidget : public KListView
 {
@@ -59,8 +84,5 @@ class BrowserWidget : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void keyPressEvent( QKeyEvent *e );
         QDragObject *dragObject();
-
-// ATTRIBUTES ------
-        int m_Count;
 };
 #endif

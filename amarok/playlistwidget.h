@@ -40,7 +40,7 @@ class QStringList;
 class QColor;
 class QTimer;
 
-struct Tags;
+class MetaBundle;
 
 class TagReader;
 class PlayerApp;
@@ -51,7 +51,7 @@ extern PlayerApp *pApp;
 //amarok/playerapp.cpp: In member function `void PlayerApp::initBrowserWin()':
 //amarok/playerapp.cpp:479: `QObject' is an inaccessible base of `PlaylistWidget'
 //make: *** [../amarok/amarok/playerapp.o] Fehler 1
-//FIXME 479: connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const Tags * ) ), this, SLOT( play( const KURL&, const Tags * ) ) );
+//FIXME 479: connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( activated( const KURL&, const MetaBundle * ) ), this, SLOT( play( const KURL&, const MetaBundle * ) ) );
 //FIXME the protected inheritance is necessary as NO other classes can have access to QListViewItems!!
 
 class PlaylistWidget : public KListView //: protected KListView
@@ -70,7 +70,6 @@ class PlaylistWidget : public KListView //: protected KListView
         void insertMedia( const QString & );
         void insertMedia( const KURL & );
         void insertMedia( const KURL::List &, bool=false );
-        void insertMedia( const KURL::List &, QListViewItem * );
 
         void saveM3u( QString fileName );
 
@@ -102,12 +101,14 @@ class PlaylistWidget : public KListView //: protected KListView
         void activate( QListViewItem * );
 
     signals:
-        void activated( const KURL&, const Tags * );
+        void activated( const KURL&, const MetaBundle* = 0 );
         void cleared();
         void sigUndoState( bool );
         void sigRedoState( bool );
 
     private:
+        void insertMedia( const KURL::List &, PlaylistItem * );        
+        
         PlaylistItem *restoreCurrentTrack();
         PlaylistItem *currentTrack() const { return m_pCurrentTrack; }        
         void setCurrentTrack( QListViewItem * );
@@ -126,7 +127,7 @@ class PlaylistWidget : public KListView //: protected KListView
         bool canUndo();
         bool canRedo();
 
-        void startLoader( const KURL::List &, QListViewItem * );
+        void startLoader( const KURL::List &, PlaylistItem * );
         
         void setSorting( int, bool=true );
 
