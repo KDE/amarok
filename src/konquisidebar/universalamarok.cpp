@@ -82,6 +82,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 //browser=new KHTMLPart(widget);
 kdDebug() << "parentPart() << " << browser->parentPart() << endl;
     browser->setDNDEnabled( true );
+    browser->setEncoding("utf8", true);
     updateBrowser(HTML_FILE);
 browser->view()->installEventFilter(widget);
     amarokDCOP=new DCOPClient();
@@ -153,10 +154,7 @@ extern "C"
  */
 void UniversalAmarok::updateBrowser(const QString& file)
 {
-    browser->begin();
     browser->openURL(file);
-    browser->end();
-    browser->setEncoding(KGlobal::locale()->encoding(), true);
 }
 
 
