@@ -33,11 +33,8 @@
 #include "scriptmanager.h"
 #include "statusbar.h"
 
-#include <qcolor.h>           //setPalettes()
 #include <qevent.h>           //eventFilter()
 #include <qlayout.h>
-#include <qobjectlist.h>      //setPaletteRecursively()
-#include <qpalette.h>         //setPalettes()
 #include <qtimer.h>           //search filter timer
 #include <qtooltip.h>         //QToolTip::add()
 #include <qvbox.h>            //contains the playlist
@@ -107,10 +104,10 @@ PlaylistWindow::addBrowser( const char *name, const QString &title, const QStrin
 
 
 PlaylistWindow::PlaylistWindow()
-   : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
-   , KXMLGUIClient()
-   , EngineObserver( EngineController::instance() )
-   , m_lastBrowser( 0 )
+        : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
+        , KXMLGUIClient()
+        , EngineObserver( EngineController::instance() )
+        , m_lastBrowser( 0 )
 {
     s_instance = this;
 
@@ -163,8 +160,7 @@ PlaylistWindow::PlaylistWindow()
         move( AmarokConfig::playlistWindowPos() );
 
     // On first ever run, use sizeHint
-    // TODO sizeHint is stupid currently
-    //if ( AmarokConfig::playlistWindowSize() != QSize(-1,-1) )
+    if ( AmarokConfig::playlistWindowSize() != QSize(-1,-1) )
         resize( AmarokConfig::playlistWindowSize() );
 }
 
@@ -308,7 +304,6 @@ PlaylistWindow::init()
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( QWidget::WheelFocus );
-    m_toolbar->setMovingEnabled( false ); //removes the ugly frame
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
 
@@ -419,6 +414,8 @@ void PlaylistWindow::createGUI()
     }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
+    m_toolbar->setFlat( true );
+    m_toolbar->setMovingEnabled( false ); //removes the ugly frame
     conserveMemory();
     setUpdatesEnabled( true );
 }
@@ -557,29 +554,33 @@ void PlaylistWindow::closeEvent( QCloseEvent *e )
 
 void PlaylistWindow::engineStateChanged( Engine::State state )
 {
-    if ( !AmarokConfig::autoShowContextBrowser() ) return;
+    if( !AmarokConfig::autoShowContextBrowser() ) return;
 
-    const int context = 0;
+    const int CONTEXT_INDEX = 0;
 
-    switch ( state )
+    switch( state )
     {
         case Engine::Playing:
             m_lastBrowser = m_browsers->currentIndex();
-            m_browsers->showBrowser( context );
+            m_browsers->showBrowser( CONTEXT_INDEX );
             break;
 
         case Engine::Empty:
-            m_browsers->showBrowser( m_lastBrowser );
+            if( m_browsers->currentIndex() == CONTEXT_INDEX )
+                m_browsers->showBrowser( m_lastBrowser );
             break;
 
         case Engine::Idle:
-            break;
-
         case Engine::Paused:
             break;
     }
 }
 
+#include <qdesktopwidget.h>
+QSize PlaylistWindow::sizeHint() const
+{
+    return QApplication::desktop()->screenGeometry( (QWidget*)this ).size() / 1.5;
+}
 
 void PlaylistWindow::savePlaylist() const //SLOT
 {

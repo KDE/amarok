@@ -67,7 +67,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
     protected:
         virtual void closeEvent( QCloseEvent* );
-        void engineStateChanged( Engine::State );
+        virtual void engineStateChanged( Engine::State );
+        virtual QSize sizeHint() const;
 
     private:
         template <class B> void addBrowser( const char*, const QString&, const QString& );
