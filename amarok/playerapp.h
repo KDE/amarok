@@ -152,7 +152,7 @@ class PlayerApp : public KApplication
         int       m_sockfd;
         QString   m_textForOSD;
         bool      m_determineLength;
-
+        bool      m_showBrowserWin;
         KActionCollection *m_pActionCollection;
 };
 
