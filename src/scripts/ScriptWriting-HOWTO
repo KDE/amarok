@@ -3,11 +3,16 @@ SCRIPT-WRITING HOWTO
 
 INTRODUCTION
 ------------
-Scripting allows to extend amaroK without changing the main codebase. Scripts
-are comparable to plugins, but instead of a dedicated plugin API they use
+Scripting allows to extend amaroK easily without changing the main codebase.
+Scripts are similar to plugins, but instead of a dedicated plugin API they use
 amaroK's DCOP interface for communication. This makes it possible to write
 scripts in almost any programming language, like python, ruby or C. Additionally
 amaroK can notify the scripts on special events and make them react accordingly.
+
+It is possible to write simple scripts that do not need user interaction, and
+it's also possible to make scripts with comfortable GUIs that act like little
+applications of their own. For GUI programming one of the many bindings which KDE
+provides can be used, for instance PyQt, a Qt library binding for Python.
 
 
 
@@ -29,6 +34,9 @@ is part of every KDE distribution. Here is an example for increasing the master
 volume:
 
   "dcop amarok player volumeUp"
+
+Most scripting languages allow to execute external programs, with a function like
+exec(). This way the "dcop" utility can be invoked easily.
 
 
 
