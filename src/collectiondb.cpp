@@ -898,6 +898,12 @@ CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
 uint
 CollectionDB::getValueID( QString name, QString value, bool autocreate, bool useTempTables )
 {
+    // lookup cache
+    if ( name.lower() == "artist" && m_cacheArtist == value )
+        return m_cacheArtistID;
+    if ( name.lower() == "album" && m_cacheAlbum == value )
+        return m_cacheAlbumID;
+
     QStringList values;
     QStringList names;
 
@@ -909,6 +915,7 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
                       .arg( escapeString( value ) );
     execSql( command, &values, &names );
 
+    uint id;
     //check if item exists. if not, should we autocreate it?
     if ( values.isEmpty() && autocreate )
     {
@@ -917,25 +924,61 @@ CollectionDB::getValueID( QString name, QString value, bool autocreate, bool use
                   .arg( escapeString( value ) );
 
         execSql( command );
-        int id = sqlInsertID();
+        id = sqlInsertID();
+
         return id;
     }
 
     if ( values.isEmpty() )
         return 0;
 
-    return values[0].toUInt();
+    id = values[0].toUInt();
+
+    // cache values
+    if ( name.lower() == "artist" )
+    {
+        m_cacheArtist = value;
+        m_cacheArtistID = id;
+    }
+    if ( name.lower() == "album" )
+    {
+        m_cacheAlbum = value;
+        m_cacheAlbumID = id;
+    }
+
+    return id;
 }
 
 
 QString
 CollectionDB::getValueFromID( QString table, uint id )
 {
-   QStringList values;
+    // lookup cache
+    if ( table.lower() == "artist" && m_cacheArtistID == id )
+        return m_cacheArtist;
+    if ( table.lower() == "album" && m_cacheAlbumID == id )
+        return m_cacheAlbum;
 
-   execSql( QString( "SELECT name FROM %1 WHERE id=%2;" )
+    QStringList values;
+
+    execSql( QString( "SELECT name FROM %1 WHERE id=%2;" )
                                    .arg( table )
                                    .arg( id ), &values );
+
+    if ( values.isEmpty() )
+        return 0;
+
+    // cache values
+    if ( table.lower() == "artist" )
+    {
+        m_cacheArtist = values[0];
+        m_cacheArtistID = id;
+    }
+    if ( table.lower() == "album" )
+    {
+        m_cacheAlbum = values[0];
+        m_cacheAlbumID = id;
+    }
 
     return values[0];
 }

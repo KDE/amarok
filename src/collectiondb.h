@@ -128,6 +128,11 @@ class CollectionDB : public QObject
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;
+
+        QString m_cacheArtist;
+        uint m_cacheArtistID;
+        QString m_cacheAlbum;
+        uint m_cacheAlbumID;
 };
 
 
