@@ -323,64 +323,20 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
     //if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
 
-    bool hideSeparator = false;
     int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
     if( this == listView()->currentTrack() )
     {
         QColorGroup glowCg = cg; //shallow copy
-
-        if( AmarokConfig::schemeAmarok() )
-        {
-            const QColor glowText( cg.brightText() );
-            const QColor glowBase( mixColors( cg.base(), changeContrast( glowText, -50 ), 5, 2 ) );
-
-            glowCg.setColor( QColorGroup::Text, glowText );
-            glowCg.setColor( QColorGroup::Base, glowBase );
-
-            if( isSelected() )
-            {
-                glowCg.setColor( QColorGroup::Highlight, mixColors( glowText, cg.highlight(), 2 ) );
-                glowCg.setColor( QColorGroup::HighlightedText, mixColors( glowText, cg.highlightedText() ) );
-            }
-
-        } else {
-
-            glowCg.setColor( QColorGroup::Base, glowBase );
-            glowCg.setColor( QColorGroup::Text, glowText );
-        }
-
-        //KListViewItem enforces alternate color, so we use QListViewItem
-        QListViewItem::paintCell( p, glowCg, column, width, align );
-
-        hideSeparator = true; //don't draw separator
-
-    } else if( playNext && AmarokConfig::schemeAmarok() ) {
-
-        QColorGroup glowCg = cg; //shallow copy
-        int h, s, v;
-        cg.brightText().getHsv( &h, &s, &v );
-        h += 60;
-        const QColor glowText( h,s,v, QColor::Hsv );
-        const QColor glowBase( mixColors( cg.base(), changeContrast( glowText, -50 ), 5, 2 ) );
-
-        glowCg.setColor( QColorGroup::Text, glowText );
+        
         glowCg.setColor( QColorGroup::Base, glowBase );
+        glowCg.setColor( QColorGroup::Text, glowText );
 
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( p, glowCg, column, width, align );
-
-        hideSeparator = true; //don't draw separator
     }
-#ifdef CORRUPT_FILE
-    else if( corruptFile ) {
-
-        QColorGroup corruptCg = cg;
-        corruptCg.setColor( QColorGroup::Text, QColor( 0xcc, 0xcc, 0xcc ) );
-        KListViewItem::paintCell( p, corruptCg, column, width, align );
-    }
-#endif
-    else KListViewItem::paintCell( p, cg, column, width, align );
+    else
+        KListViewItem::paintCell( p, cg, column, width, align );
 
     if( playNext && column == Title )
     {
@@ -412,9 +368,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
     }
 
-    if( !isSelected() && !hideSeparator )
+    if( !isSelected() )
     {
-        p->setPen( QPen( cg.midlight()/* cg.dark()*/, 0, Qt::DotLine ) ); //FIXME midlight with kde scheme is bad
+        p->setPen( QPen( cg.midlight()/* cg.dark()*/, 0, Qt::SolidLine ) ); //FIXME midlight with kde scheme is bad
         p->drawLine( width - 1, 0, width - 1, height() - 1 );
     }
 }

@@ -742,7 +742,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
     {
     case EngineBase::Playing:
         //TODO make it fade in and out of the backgroundColor()
-        m_glowTimer->start( AmarokConfig::schemeAmarok() ? 150 : 30 );
+        m_glowTimer->start( 30 );
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "prev" )->setEnabled( isTrackBefore() ); //FIXME you also do this in setCurrenTrack
@@ -1176,54 +1176,27 @@ void Playlist::paletteChange( const QPalette &p )
 void Playlist::slotGlowTimer() //SLOT
 {
     if( !currentTrack() ) return;
+        
+    using namespace Glow;
 
-    if( AmarokConfig::schemeAmarok() )
+    if( counter > 63-(STEPS*2) )
     {
-        using Glow::counter;
+        const double d = (counter > 63-STEPS) ? STEPS-(counter-(63-STEPS)) : counter-(63-STEPS*2);
 
-        static int add = 5;
-
-        if( counter >= 35 ) add = -5;
-        if( counter <= 0  ) add = +5;
-
-        //draw glowing rectangle around current track, to indicate activity
-        QRect rect = itemRect( currentTrack() ); //FIXME slow function!
-
-        if( rect.isValid() )
         {
-            QPainter p( viewport() );
-            p.setPen( colorGroup().brightText().light( 100 + counter ) ); //brightText is set in PlayerApp::setupColors()
-
-            rect.setWidth( contentsWidth() ); //without this the glow rectangle is wrong
-
-            p.drawRect( rect );
+            using namespace Base;
+            PlaylistItem::glowBase = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
         }
 
-        counter += add;
-
-    } else {
-
-        using namespace Glow;
-
-        if( counter > 63-(STEPS*2) )
         {
-            const double d = (counter > 63-STEPS) ? STEPS-(counter-(63-STEPS)) : counter-(63-STEPS*2);
-
-            {
-                using namespace Base;
-                PlaylistItem::glowBase = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
-            }
-
-            {
-                using namespace Text;
-                PlaylistItem::glowText = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
-            }
-
-            repaintItem( currentTrack() );
+            using namespace Text;
+            PlaylistItem::glowText = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
         }
 
-        ++counter &= 63; //built in bounds checking with &=
+        repaintItem( currentTrack() );
     }
+
+    ++counter &= 63; //built in bounds checking with &=
 }
 
 
