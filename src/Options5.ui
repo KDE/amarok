@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options5</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,9 +11,6 @@
             <width>329</width>
             <height>537</height>
         </rect>
-    </property>
-    <property name="caption">
-        <string>Options5</string>
     </property>
     <vbox>
         <property name="name">
@@ -28,9 +25,6 @@
             </property>
             <property name="text">
                 <string>&amp;Use On-screen-display</string>
-            </property>
-            <property name="accel">
-                <string>Alt+U</string>
             </property>
             <property name="checked">
                 <bool>true</bool>
@@ -134,9 +128,6 @@
                         </property>
                         <property name="text">
                             <string>Use &amp;custom colors</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+C</string>
                         </property>
                     </widget>
                     <widget class="QGroupBox">
