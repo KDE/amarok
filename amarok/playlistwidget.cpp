@@ -203,7 +203,9 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
 
     for ( KURL::List::Iterator it = urlList.begin(); it != urlList.end(); it++ )
     {
-        m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
+        if ( (*it).protocol() != "http" )                //don't try to list parent dir with http
+            m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
+        
         while ( !m_pDirLister->isFinished() )
             kapp->processEvents( 300 );
 
@@ -214,8 +216,8 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
             if ( fileItem->isLink() && !pApp->m_optFollowSymlinks && m_dropRecursionCounter >= 2 )
                 continue;
 
-            if ( m_dropRecursionCounter >= 50 )        //no infinite loops, please //FIXME log inodes instead, or can QDir do this for us?
-                continue;
+            if ( m_dropRecursionCounter >= 50 )        //no infinite loops, please
+                continue;                              //FIXME log inodes instead
 
             if ( !m_dropRecursively && m_dropRecursionCounter >= 2 )
                 continue;
