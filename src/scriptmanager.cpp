@@ -114,7 +114,6 @@ ScriptManager::~ScriptManager()
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
 
-
 void
 ScriptManager::findScripts() //SLOT
 {
@@ -122,14 +121,12 @@ ScriptManager::findScripts() //SLOT
 
     const QStringList allFiles = kapp->dirs()->findAllResources( "data", "amarok/scripts/*", true );
 
-    //TODO Make this faster
+    // Add found scripts to listview:
 
     QStringList::ConstIterator it;
     for ( it = allFiles.begin(); it != allFiles.end(); ++it )
         if ( QFileInfo( *it ).isExecutable() )
             loadScript( *it );
-
-    slotCurrentChanged( m_base->listView->currentItem() );
 
     // Handle auto-run:
 
@@ -138,8 +135,20 @@ ScriptManager::findScripts() //SLOT
     m_base->checkBox_autoRun->setChecked( autoRun );
 
     if ( autoRun ) {
-        debug() << "Auto-run not implemented." << endl;
+        const QStringList runningScripts = config->readListEntry( "Running Scripts" );
+
+        QStringList::ConstIterator it;
+        for ( it = runningScripts.begin(); it != runningScripts.end(); ++it ) {
+            if ( m_scripts.contains( *it ) ) {
+                debug() << "Auto-running script: " << *it << endl;
+                m_base->listView->setCurrentItem( m_scripts[*it].li );
+                slotRunScript();
+            }
+        }
     }
+
+    m_base->listView->setCurrentItem( m_base->listView->firstChild() );
+    slotCurrentChanged( m_base->listView->currentItem() );
 }
 
 
@@ -436,6 +445,7 @@ ScriptManager::loadScript( const QString& path )
         item.li = li;
 
         m_scripts[url.fileName()] = item;
+        debug() << "Loaded: " << url.fileName() << endl;
 
         slotCurrentChanged( m_base->listView->currentItem() );
     }

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
+  ADD: Script-Manager can auto-run scripts on application startup.
   ADD: aKode engine, depends on KDE 3.4. No configure check yet.
   FIX: Don't add non-audio files to the Collection.
   CHG: We now use the SqlLoader, which greatly improves the performance of
