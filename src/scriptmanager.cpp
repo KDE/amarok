@@ -10,6 +10,7 @@
 #include <kapplication.h>
 #include <kdebug.h>
 #include <kfiledialog.h>
+#include <kiconloader.h>
 #include <klistview.h>
 #include <klocale.h>
 #include <kpushbutton.h>
@@ -82,11 +83,13 @@ ScriptManager::slotAddScript()
         KURL url;
         url.setPath( path );
 
-        new KListViewItem( m_base->directoryListView, url.fileName() );
+        KListViewItem* li = new KListViewItem( m_base->directoryListView, url.fileName() );
+        li->setPixmap( 0, SmallIcon( "stop" ) );
 
         ScriptItem item;
         item.url = url;
         item.process = 0;
+        item.li = li;
 
         m_scripts[url.fileName()] = item;
     }
@@ -136,21 +139,39 @@ ScriptManager::slotRunScript()
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
-    QString name = m_base->directoryListView->selectedItem()->text( 0 );
+    QListViewItem* li = m_base->directoryListView->selectedItem();
+    QString name = li->text( 0 );
+
+    // Return when this script is already running
+    if ( m_scripts[name].process ) return;
+
     KURL url = m_scripts[name].url;
 
+    li->setPixmap( 0, SmallIcon( "player_play" ) );
     QDir::setCurrent( url.directory() );
     kdDebug() << "Running script: " << url.path() << endl;
 
     KRun* script = new KRun( url );
     m_scripts[name].process = script;
+    connect( script, SIGNAL( finished() ), SLOT( scriptFinished() ) );
 }
 
 
 void
 ScriptManager::slotStopScript()
 {
+    kdDebug() << k_funcinfo << endl;
+
     if ( !m_base->directoryListView->selectedItem() ) return ;
+
+    QListViewItem* li = m_base->directoryListView->selectedItem();
+    QString name = li->text( 0 );
+
+    // Kill script process
+    if ( m_scripts[name].process )
+        m_scripts[name].process->abort();
+
+    li->setPixmap( 0, SmallIcon( "stop" ) );
 }
 
 
@@ -171,6 +192,18 @@ ScriptManager::slotConfigureScript()
 
     kdDebug() << "Running config script: " << configPath << endl;
     KRun* script = new KRun( url );
+}
+
+
+void
+ScriptManager::scriptFinished() //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+
+    ScriptMap::ConstIterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( !it.data().process )
+            it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
 }
 
 

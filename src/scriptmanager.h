@@ -5,12 +5,14 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
+#include <qguardedptr.h>
 #include <qmap.h>
 
 #include <kdialogbase.h>    //baseclass
 #include <kurl.h>
 
 class ScriptManagerBase;
+class QListViewItem;
 class KRun;
 
 class ScriptManager : public KDialogBase
@@ -32,6 +34,7 @@ class ScriptManager : public KDialogBase
         void slotRunScript();
         void slotStopScript();
         void slotConfigureScript();
+        void scriptFinished();
 
     private:
         static ScriptManager* s_instance;
@@ -40,7 +43,8 @@ class ScriptManager : public KDialogBase
 
         struct ScriptItem {
             KURL url;
-            KRun* process;
+            QGuardedPtr<KRun> process;
+            QListViewItem* li;
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;
