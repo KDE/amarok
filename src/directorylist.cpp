@@ -1,10 +1,10 @@
 /***************************************************************************
-                         directorylist.cpp  -  description
+                         directorylist.cpp
                             -------------------
    begin                : Tue Feb 4 2003
-   copyright            : (C) 2003 by Scott Wheeler
-                          (C) 2004 Max Howell
-   email                : wheeler@kde.org
+   copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
+                          (C) 2004 Max Howell <max.howell@methylblue.com>
+                          (C) 2004 Mark Kretschmann <markey@web.de>
 ***************************************************************************/
 
 /***************************************************************************
@@ -17,16 +17,17 @@
  ***************************************************************************/
 
 #include "directorylist.h"
+
+#include <qlabel.h>
+
 #include <kfileitem.h>
 #include <klocale.h>
-#include <qlabel.h>
-#include <qlistview.h>
+
+using Collection::Item;
 
 QStringList CollectionSetup::s_dirs;
 QCheckBox  *CollectionSetup::s_recursive = 0;
 QCheckBox  *CollectionSetup::s_monitor = 0;
-
-using Collection::Item;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
@@ -54,26 +55,38 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 }
 
 
-QStringList
-CollectionSetup::dirs() const
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS Item
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Item::Item( QListView *parent )
+    : QCheckListItem( parent, "/", QCheckListItem::CheckBox  )
+    , m_lister( true )
+    , m_url( "file:/" )
+    , m_listed( false )
 {
-    QStringList list;
-
-    for( QListViewItem *item = m_view->firstChild(); item; item = item->itemBelow() )
-    {
-        #define item static_cast<Item*>(item)
-        if( !item->isOn() || item->isDisabled() )
-           continue;
-
-        list += item->fullPath();
-        #undef item
-    }
-
-    return list;
+    m_lister.setDirOnlyMode( true );
+    connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
+    setOpen( true );
+    setVisible( true );
 }
 
 
-inline QString
+Item::Item( QListViewItem *parent, const KURL &url )
+    : QCheckListItem( parent, url.fileName(), QCheckListItem::CheckBox  )
+    , m_lister( true )
+    , m_url( url )
+    , m_listed( false )
+{
+    m_lister.setDirOnlyMode( true );
+    setExpandable( true );
+    connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
+    connect( &m_lister, SIGNAL(completed()), SLOT(completed()) );
+    connect( &m_lister, SIGNAL(canceled()), SLOT(completed()) );
+}
+
+
+QString
 Item::fullPath() const
 {
     QString path;
@@ -87,8 +100,51 @@ Item::fullPath() const
     return path;
 }
 
-inline void
-Item::newItems( const KFileItemList &list )
+
+void
+Item::setOpen( bool b )
+{
+    if ( !m_listed )
+    {
+        m_lister.openURL( m_url, true );
+        m_listed = true;
+    }
+
+    QListViewItem::setOpen( b );
+}
+
+
+void
+Item::stateChange( bool b )
+{
+    if( CollectionSetup::recursive() )
+        for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
+            static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
+
+    // Update folder list
+    QStringList::Iterator it = CollectionSetup::s_dirs.find( m_url.path() );
+    if ( isOn() ) {
+        if ( it == CollectionSetup::s_dirs.end() )
+            CollectionSetup::s_dirs << m_url.path();
+    }
+    else
+        CollectionSetup::s_dirs.erase( it );
+
+    // Redraw parent items
+    listView()->triggerUpdate();
+}
+
+
+void
+Item::activate()
+{
+    if( !isDisabled() )
+        QCheckListItem::activate();
+}
+
+
+void
+Item::newItems( const KFileItemList &list ) //SLOT
 {
     for( KFileItemListIterator it( list ); *it; ++it )
     {
@@ -100,10 +156,10 @@ Item::newItems( const KFileItemList &list )
 }
 
 
-inline void
+void
 Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
-    bool dirty = isOn();
+    bool dirty = false;
 
     // Figure out if a child folder is activated
     for ( uint i = 0; i < CollectionSetup::s_dirs.count(); i++ )

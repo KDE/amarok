@@ -1,9 +1,10 @@
 /***************************************************************************
-                         directorylist.h  -  description
+                         directorylist.h
                             -------------------
    begin                : Tue Feb 4 2003
-   copyright            : (C) 2003 by Scott Wheeler
-   email                : wheeler@kde.org
+   copyright            : (C) 2003 Scott Wheeler <wheeler@kde.org>
+                          (C) 2004 Max Howell <max.howell@methylblue.com>
+                          (C) 2004 Mark Kretschmann <markey@web.de>
 ***************************************************************************/
 
 /***************************************************************************
@@ -18,11 +19,12 @@
 #ifndef AMAROK_DIRECTORYLIST_H
 #define AMAROK_DIRECTORYLIST_H
 
-#include <kdirlister.h> //stack allocated
-#include <kurl.h>       //stack allocated
-#include <qvbox.h>      //baseclass
 #include <qcheckbox.h>  //inlined functions
 #include <qlistview.h>  //baseclass
+#include <qvbox.h>      //baseclass
+
+#include <kdirlister.h> //stack allocated
+#include <kurl.h>       //stack allocated
 
 
 class CollectionSetup : public QVBox
@@ -30,7 +32,7 @@ class CollectionSetup : public QVBox
 public:
     CollectionSetup( QWidget* );
 
-    QStringList dirs() const;
+    QStringList dirs() const { return s_dirs; }
     static bool recursive() { return s_recursive->isChecked(); }
     static bool monitor()   { return s_monitor->isChecked(); }
 
@@ -49,67 +51,21 @@ class Item : public QObject, public QCheckListItem
 {
 Q_OBJECT
 public:
-    Item( QListView *parent )
-        : QCheckListItem( parent, "/", QCheckListItem::CheckBox  )
-        , m_lister( true )
-        , m_url( "file:/" )
-        , m_listed( false )
-    {
-        m_lister.setDirOnlyMode( true );
-        connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
-        setOpen( true );
-        setVisible( true );
-    }
-
-    Item( QListViewItem *parent, const KURL &url )
-        : QCheckListItem( parent, url.fileName(), QCheckListItem::CheckBox  )
-        , m_lister( true )
-        , m_url( url )
-        , m_listed( false )
-    {
-        m_lister.setDirOnlyMode( true );
-        setExpandable( true );
-        connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
-        connect( &m_lister, SIGNAL(completed()), SLOT(completed()) );
-        connect( &m_lister, SIGNAL(canceled()), SLOT(completed()) );
-    }
+    Item( QListView *parent );
+    Item( QListViewItem *parent, const KURL &url );
 
     QCheckListItem *parent() const { return (QCheckListItem*)QListViewItem::parent(); }
     bool isDisabled() const { return CollectionSetup::recursive() && parent() && parent()->isOn(); }
     QString fullPath() const;
 
-    virtual void setOpen( bool b )
-    {
-        if ( !m_listed )
-        {
-            m_lister.openURL( m_url, true );
-            m_listed = true;
-        }
-
-        QListViewItem::setOpen( b );
-    }
-
-    virtual void stateChange( bool b )
-    {
-        if( CollectionSetup::recursive() )
-            for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
-                static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
-    }
-
-    virtual void activate()
-    {
-        if( !isDisabled() )
-           QCheckListItem::activate();
-    }
-
-    virtual void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align );
+    void setOpen( bool b ); // reimpl.
+    void stateChange( bool ); // reimpl.
+    void activate(); // reimpl.
+    void paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align ); // reimpl.
 
 public slots:
     void newItems( const KFileItemList& );
-    void completed()
-    {
-        if( childCount() == 0 ) { setExpandable( false ); repaint(); }
-    }
+    void completed() { if( childCount() == 0 ) { setExpandable( false ); repaint(); } }
 
 private:
     KDirLister m_lister;
