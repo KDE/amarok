@@ -404,9 +404,6 @@ void ArtsEngine::stop()
    
     m_xfadeRunning = true;
     
-    //switch xfade channels
-    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
-    
     if ( m_pPlayObjectXfade )
     {
         //set mute to prevent sound glitch
@@ -415,6 +412,9 @@ void ArtsEngine::stop()
         
         delete m_pPlayObjectXfade;
     }
+    
+    //switch xfade channels
+    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
             
     m_pPlayObjectXfade = m_pPlayObject;
     m_pPlayObject = 0;
