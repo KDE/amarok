@@ -175,12 +175,18 @@ bool EngineController::canDecode( const KURL &url ) //static
     //TODO engine refactor branch has to be KURL aware for this function
     //TODO a KFileItem version?
 
-    // Accept non-local files, since we can't test them for validity at this point
-    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
-    if ( !url.isLocalFile() && url.protocol() != "fetchcover" && url.protocol() != "musicbrainz" ) return true;
     const QString fileName = url.fileName();
     const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
 
+    if ( ext == "m3u" || ext == "pls" ) return false;
+
+    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
+    if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;
+
+    // Accept non-local files, since we can't test them for validity at this point
+    if ( !url.isLocalFile() ) return true;
+
+    // If extension is already in the cache, return cache result
     if ( extensionCache().contains( ext ) )
         return s_extensionCache[ext];
 
