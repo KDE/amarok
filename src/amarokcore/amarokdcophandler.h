@@ -80,9 +80,9 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void togglePlaylist();
       virtual int score ();
       virtual void playMedia(const KURL &);
-   private:
+      virtual void shortStatusMessage(const QString&);
 };
 
-}
+} // namespace amaroK
 
 #endif

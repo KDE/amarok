@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta4:
+  ADD: DCOP function "shortStatusMessage", shows a temporary message
+       on the application's statusbar.
   FIX: Frequent crashes when writing tags. (BR 95344)
   FIX: CoverManager updates its status display correctly.
   FIX: "isPlaying" DCOP function now works correctly. (BR 90894)

@@ -6,9 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <eean>   I just had a good idea for DCOP. Make a function call so scripts can make status messages the same way
-           AudioScrobbler does when it submits info.  -->markey
-
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
 
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks

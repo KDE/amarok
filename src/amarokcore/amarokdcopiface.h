@@ -25,6 +25,9 @@
 // WARNING! Please ask on #amarok before modifying the DCOP interface!
 ///////////////////////////////////////////////////////////////////////
 
+// TODO Split this interface up for amaroK 2.0
+
+
 class AmarokIface : virtual public DCOPObject
 {
    K_DCOP
@@ -92,6 +95,7 @@ k_dcop:
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window
    virtual int  score() = 0;                                ///< Return the score of the currently playing track.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
+   virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar
 };
 
 #endif

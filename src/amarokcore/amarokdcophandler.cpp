@@ -28,6 +28,7 @@
 #include "osd.h"
 #include "playlist.h"
 #include "playlistwindow.h"
+#include "statusbar.h"
 
 #include <dcopclient.h>
 
@@ -304,10 +305,16 @@ namespace amaroK
         int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
+
     void DcopHandler::playMedia(const KURL &url)
     {
         ContextBrowser* m_contextBrowser=(ContextBrowser*) (PlaylistWindow::self()->browserBar()->browser( "ContextBrowser" ) );
         m_contextBrowser->openURLRequest(url);
+    }
+
+    void DcopHandler::shortStatusMessage(const QString& msg)
+    {
+        StatusBar::instance()->shortMessage( msg );
     }
 
 } //namespace amaroK
