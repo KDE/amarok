@@ -133,7 +133,12 @@
     <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
         <default>true</default>
-    <whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>
+        <whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>
+    </entry>
+    <entry key="Auto Show ContextBrowser" type="Bool">
+        <label>Whether ContextBrowser should be activated when starting playback</label>
+        <default>true</default>
+        <whatsthis>Automatically switches to ContextBrowser when playback is started.</whatsthis>
     </entry>
 </group>
 

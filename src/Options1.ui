@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>332</width>
-            <height>362</height>
+            <width>313</width>
+            <height>344</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options1</string>
     </property>
     <property name="whatsThis" stdset="0">
         <string>Check to enable splashscreen during amaroK startup.</string>
@@ -88,6 +91,9 @@
                     <property name="text">
                         <string>&amp;Remember current playlist on exit</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
+                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK saves the current playlist on quit and restores it when restarted.</string>
                     </property>
@@ -109,6 +115,9 @@
                     </property>
                     <property name="text">
                         <string>&amp;Hide playlist with main window</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+H</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not checked, the player window and the playlist hide totally independent of each other.</string>
@@ -150,6 +159,14 @@
                     </property>
                     <property name="text">
                         <string>Show Welcome-page tab (restart required)</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_AutoShowContextBrowser</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Auto show Context-Browser</string>
                     </property>
                 </widget>
             </vbox>

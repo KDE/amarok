@@ -1,9 +1,9 @@
 /***************************************************************************
-                        browserwin.cpp  -  description
+                        playlistwindow.cpp  -  description
                            -------------------
   begin                : Fre Nov 15 2002
-  copyright            : (C) 2002 by Mark Kretschmann
-  email                : markey@web.de
+  copyright            : (C) Mark Kretschmann <markey@web.de>
+                       : (C) Max Howell <max.howell@methylblue.com>
 ***************************************************************************/
 
 /***************************************************************************
@@ -65,7 +65,8 @@ PlaylistWindow::PlaylistWindow()
 
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
-
+    EngineController::instance()->attach( this );
+    
     KStdAction::configureToolbars( pApp, SLOT( slotConfigToolBars() ), ac );
     KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), ac );
     KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
@@ -417,6 +418,26 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 void PlaylistWindow::closeEvent( QCloseEvent *e )
 {
     pApp->genericEventHandler( this, e );
+}
+
+
+void PlaylistWindow::engineStateChanged( EngineBase::EngineState state )
+{
+    if ( !AmarokConfig::autoShowContextBrowser() ) return;
+    
+    const int context = 2;
+    
+    switch ( state )
+    {
+        case EngineBase::Playing:
+            m_lastBrowser = m_browsers->currentIndex();
+            m_browsers->showBrowser( context );
+            break;
+                            
+        case EngineBase::Empty:
+            m_browsers->showBrowser( m_lastBrowser );
+            break;
+    }
 }
 
 

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: Option for automatically switching to Context when playback is started.
   CHG: Stream timeout value is now determined from KDE user settings.
   ADD: Support for password-protected streams, by wef <javapojken@yahoo.se>. 
   FIX: GStreamer engine must not allow non-audio filetypes in playlist.

@@ -1,9 +1,9 @@
 /***************************************************************************
-                       browserwin.h  -  description
-                          -------------------
- begin                : Fre Nov 15 2002
- copyright            : (C) 2002 by Mark Kretschmann
- email                : markey@web.de
+                        playlistwindow.h  -  description
+                           -------------------
+  begin                : Fre Nov 15 2002
+  copyright            : (C) Mark Kretschmann <markey@web.de>
+                       : (C) Max Howell <max.howell@methylblue.com>
 ***************************************************************************/
 
 /***************************************************************************
@@ -18,9 +18,11 @@
 #ifndef AMAROK_PLAYLISTWINDOW_H
 #define AMAROK_PLAYLISTWINDOW_H
 
-#include <qwidget.h>        //baseclass
-#include <ktoolbar.h>       //baseclass
-#include <kxmlguiclient.h>  //baseclass (for XMLGUI)
+#include <enginecontroller.h>  //baseclass
+
+#include <qwidget.h>           //baseclass
+#include <ktoolbar.h>          //baseclass
+#include <kxmlguiclient.h>     //baseclass (for XMLGUI)
 
 
 namespace amaroK
@@ -53,7 +55,7 @@ class KStatusBar;
 class Playlist;
 
 
-class PlaylistWindow : public QWidget, public KXMLGUIClient
+class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserver
 {
         Q_OBJECT
 
@@ -82,6 +84,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     protected:
         virtual void closeEvent( QCloseEvent* );
+        void engineStateChanged( EngineBase::EngineState );
 
     private:
         BrowserBar *m_browsers;
@@ -89,6 +92,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         KLineEdit  *m_lineEdit;
         KStatusBar *m_statusbar;
         amaroK::ToolBar *m_toolbar;
+        int m_lastBrowser;
 };
 
 
