@@ -98,11 +98,7 @@ base directory of the amaroK distribution:
                 % make install
 
 
-Using enable-final will usually give a much faster compile, but it may cause
-compile failure. See the file INSTALL for more information.
-
-
-                % ./configure --enable-final --prefix=`kde-config --prefix`
+Note: --enable-final is not supported.
 
 
 Packages for popular distributions are available at http://amarok.kde.org

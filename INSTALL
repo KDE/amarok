@@ -10,14 +10,8 @@ base directory of the amaroK distribution:
                 % make install
 
 
-For a much faster compile we recommend configuring with --enable-final:
+Note: --enable-final is not supported.
 
-
-                % ./configure --enable-final --prefix=`kde-config --prefix`
-
-
-However it is probably not advisable to compile --enable-final if your computer
-resorts to swap easily.
 
 The GNU installation instructions follow.
 
