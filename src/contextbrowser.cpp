@@ -104,9 +104,9 @@ ContextBrowser::ContextBrowser( const char *name )
 //     m_currentTrackPage->view()->setFrameStyle( QFrame::NoFrame );
 //     m_lyricsPage->view()->setFrameStyle( QFrame::NoFrame );
 
-    addTab( m_homePage->view(),  SmallIconSet( "gohome" ), i18n( "Home" ) );
-    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ), i18n( "Current Track" ) );
-    addTab( m_lyricsPage->view(), SmallIconSet( "document" ), i18n( "Lyrics" ) );
+    addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
+    addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current Track" ) );
+    addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
@@ -664,7 +664,7 @@ void ContextBrowser::showHome() //SLOT
             ftBox.append(
                                 "</a>"
                             "</td>"
-                            "<td class='sbtext' width='1'>" + ( ( fave[i + 2].length() > 1 ) ? fave[i + 2] : "0" + fave[i + 2] ) + "</td>"
+                            "<td class='sbtext' width='25'>" + fave[i + 2] + "</td>"
                             "<td width='1' title='" + i18n( "Score" ) + "'>"
                                 "<div class='sbouter'>"
                                     "<div class='sbinner' style='width: " + QString::number( fave[i + 2].toInt() / 2 ) + "px;'></div>"
@@ -790,13 +790,24 @@ void ContextBrowser::showHome() //SLOT
     // fill frames
     if ( !ftBox.isEmpty() )
     {
+        connect( m_homePage->findFrame( "ftframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+                 this,                                                     SLOT( openURLRequest( const KURL & ) ) );
+        connect( m_homePage->findFrame( "ftframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+                 this,                                 SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
         m_homePage->findFrame( "ftframe" )->begin();
         m_homePage->findFrame( "ftframe" )->setUserStyleSheet( m_styleSheet );
         m_homePage->findFrame( "ftframe" )->write( ftBox );
         m_homePage->findFrame( "ftframe" )->end();
+
     }
     if ( !ltBox.isEmpty() )
     {
+        connect( m_homePage->findFrame( "ltframe" )->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+                 this,                                                     SLOT( openURLRequest( const KURL & ) ) );
+        connect( m_homePage->findFrame( "ltframe" ), SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+                 this,                                 SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
         m_homePage->findFrame( "ltframe" )->begin();
         m_homePage->findFrame( "ltframe" )->setUserStyleSheet( m_styleSheet );
         m_homePage->findFrame( "ltframe" )->write( ltBox );
@@ -1095,12 +1106,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "<span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
-                        "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
+                        "<td class='sbtext' width='25'>" + values[i + 3] + "</td>"
                         "<td width='1' title='" + i18n( "Score" ) + "'>"
                             "<div class='sbouter'>"
                                 "<div class='sbinner' style='width: " + QString::number( values[i + 3].toInt() / 2 ) + "px;'></div>"
                             "</div>"
                         "</td>"
+                        "<td width='3'></td>"
                     "</tr>"
                                    );
 
@@ -1144,12 +1156,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                         "<span class='album-song-title'>" + values[i] + "</span>"
                         "</a>"
                     "</td>"
-                    "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
+                    "<td class='sbtext' width='25'>" + values[i + 2] + "</td>"
                     "<td width='1' title='" + i18n( "Score" ) + "'>"
                         "<div class='sbouter'>"
                             "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
                         "</div>"
                     "</td>"
+                    "<td width='3'></td>"
                 "</tr>"
                                );
 
@@ -1523,7 +1536,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( text ).arg( bg ).arg( colorGroup().base().name() );
 
     //boxes used to display score (sb: score box)
-    styleSheet += QString( ".sbtext { padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
+    styleSheet += QString( ".sbtext { text-align: center; padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
     styleSheet += QString( ".sbouter { width: 52px; height: 10px; background-color: %1; border: solid %2 1px; }" ).arg( colorGroup().base().dark( 120 ).name() ).arg( bg );
     styleSheet += QString( ".sbinner { height: 8px; background-color: %1; border: solid %2 1px; }" ).arg( bg ).arg( fg );
 
