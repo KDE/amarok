@@ -156,6 +156,8 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         const int id = menu.exec( e->globalPos() );
         if( id >= 20 ) changeTimeout( id );
     }
+    else
+        e-> ignore();
 }
 
 static QColor

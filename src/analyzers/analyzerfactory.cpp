@@ -24,6 +24,7 @@
 #include "boomanalyzer.h"
 #include "sonogram.h"
 #include "turbine.h"
+#include "blockanalyzer.h"
 
 #ifdef HAVE_QGLWIDGET
 #include "glanalyzer.h"
@@ -54,19 +55,22 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
     case 3:
         analyzer = new BarAnalyzer( parent );
         break;
-#ifdef HAVE_QGLWIDGET
     case 4:
+        analyzer = new BlockAnalyzer( parent );
+        break;
+#ifdef HAVE_QGLWIDGET
+    case 5:
         analyzer = new GLAnalyzer( parent );
         break;
-    case 5:
+    case 6:
         analyzer = new GLAnalyzer2( parent );
         break;
-    case 6:
+    case 7:
         analyzer = new GLAnalyzer3( parent );
         break;
-    case 7:
+    case 8:
 #else
-    case 4:
+    case 5:
 #endif
         analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
         static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
