@@ -7,7 +7,9 @@
 #ifndef THREADWEAVER_H
 #define THREADWEAVER_H
 
+#include <kfileitem.h>    //stack allocated
 #include <kurl.h>         //stack allocated
+
 #include <qevent.h>       //baseclass
 #include <qmutex.h>       //stack allocated
 #include <qthread.h>      //baseclass
@@ -107,16 +109,15 @@ private:
 class CollectionReader : public ThreadWeaver::Job
 {
 public:
-    CollectionReader( QObject*, const KURL& url );
+    CollectionReader( QObject*, const KFileItemList& list );
     ~CollectionReader();
 
     bool doJob();
-    static MetaBundle* readTags( const KURL& );
-    MetaBundle* bundle() { return m_bundle; }
+    QPtrList<MetaBundle> list() { return m_metaList; }
 
 private:
-    MetaBundle* m_bundle;
-    const KURL  m_url;
+    QPtrList<MetaBundle> m_metaList;
+    KFileItemList m_itemList;
 };
 
 

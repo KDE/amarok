@@ -11,9 +11,11 @@
 #include <kiconview.h>
 #include <kurl.h>
 
+class sqlite;
 class ThreadWeaver;
-class QCustomEvent;
 
+class QCustomEvent;
+class KDirLister;
 
 class CollectionBrowser : public KIconView
 {
@@ -24,12 +26,15 @@ class CollectionBrowser : public KIconView
         ~CollectionBrowser();
         
     private:
+        void readDir( const KURL& url );
         void customEvent( QCustomEvent* );
     
     //attributes:
         KURL::List m_dirs;
         ThreadWeaver* m_weaver;
-                
+        KDirLister* m_dirLister;
+        sqlite* m_db;                
+        
 /*    class Item : public KIconViewItem
     {
         public:
