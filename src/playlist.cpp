@@ -668,9 +668,7 @@ Playlist::isTrackBefore() const
 void
 Playlist::updateNextPrev()
 {
-    if ( !childCount() )
-        m_ac->action( "play" )->setEnabled( false );
-
+    m_ac->action( "play" )->setEnabled( !isEmpty() );
     m_ac->action( "prev" )->setEnabled( isTrackBefore() );
     m_ac->action( "next" )->setEnabled( isTrackAfter() );
 }

@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: Play button was sometimes stuck in disabled state.
   FIX: OSD was showing %artist - %track by default, now shows %title.
   FIX: Forward command line option --engine to amarokapp.
 
