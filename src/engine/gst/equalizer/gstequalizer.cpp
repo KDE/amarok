@@ -26,7 +26,7 @@ enum {
 
 GstElementDetails gst_equalizer_details =
     GST_ELEMENT_DETAILS ( (gchar*) "Equalizer",
-                          (gchar*) "Source",
+                          (gchar*) "Filter/Effect/Audio",
                           (gchar*) "Parametric Equalizer",
                           (gchar*) "Mark Kretschmann <markey@web.de>" );
 
@@ -68,8 +68,6 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
 
     gobject_class->set_property = gst_equalizer_set_property;
     gobject_class->get_property = gst_equalizer_get_property;
-
-    gstelement_class->change_state = gst_equalizer_change_state;
 }
 
 
@@ -84,6 +82,9 @@ gst_equalizer_init ( GstEqualizer* obj )
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->srcpad );
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->sinkpad );
 
+    gst_pad_set_link_function ( obj->srcpad, gst_equalizer_link);
+    gst_pad_set_link_function ( obj->sinkpad, gst_equalizer_link);
+
     gst_pad_set_chain_function ( obj->sinkpad, gst_equalizer_chain );
 
     // Properties
@@ -94,6 +95,51 @@ gst_equalizer_init ( GstEqualizer* obj )
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
+
+static GstPadLinkReturn
+gst_equalizer_link (GstPad* pad, const GstCaps* caps)
+{
+    kdDebug() << k_funcinfo << endl;
+
+    GstStructure* structure = gst_caps_get_structure (caps, 0);
+    GstEqualizer* obj = GST_EQUALIZER (gst_pad_get_parent (pad));
+    GstPad *otherpad = (pad == obj->srcpad) ? obj->sinkpad : obj->srcpad;
+    GstPadLinkReturn ret;
+    const gchar *mime;
+
+    /* Since we're an audio filter, we want to handle raw audio
+    * and from that audio type, we need to get the samplerate and
+    * number of channels. */
+    mime = gst_structure_get_name (structure);
+    if (strcmp (mime, "audio/x-raw-int") != 0) {
+        GST_WARNING ("Wrong mimetype %s provided, we only support %s",
+                    mime, "audio/x-raw-int");
+        return GST_PAD_LINK_REFUSED;
+    }
+
+    /* we're a filter and don't touch the properties of the data.
+    * That means we can set the given caps unmodified on the next
+    * element, and use that negotiation return value as ours. */
+    ret = gst_pad_try_set_caps (otherpad, gst_caps_copy (caps));
+    if (GST_PAD_LINK_FAILED (ret))
+        return ret;
+
+    /* Capsnego succeeded, get the stream properties for internal
+    * usage and return success. */
+    gst_structure_get_int (structure, "rate", &obj->samplerate);
+    gst_structure_get_int (structure, "channels", &obj->channels);
+
+    // Load the correct filter table according to the sampling rate
+    set_filters( obj );
+    /* Zero the history arrays */
+    bzero(obj->data_history, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
+
+    g_print ("Caps negotiation succeeded with %d Hz @ %d channels\n",
+            obj->samplerate, obj->channels);
+
+    return ret;
+}
+
 
 static void
 gst_equalizer_set_property ( GObject * object, guint prop_id, const GValue * value,
@@ -133,76 +179,26 @@ gst_equalizer_get_property ( GObject * object, guint prop_id, GValue * value, GP
 }
 
 
-static GstElementStateReturn
-gst_equalizer_change_state (GstElement * element)
-{
-//   GstEqualizer *src = GST_EQUALIZER (element);
-
-    switch (GST_STATE_TRANSITION (element))
-    {
-        case GST_STATE_NULL_TO_READY:
-            break;
-        case GST_STATE_READY_TO_NULL:
-            break;
-        case GST_STATE_READY_TO_PAUSED:
-            break;
-        case GST_STATE_PAUSED_TO_READY:
-            break;
-        default:
-            break;
-    }
-
-    if (GST_ELEMENT_CLASS (parent_class)->change_state)
-        return GST_ELEMENT_CLASS (parent_class)->change_state (element);
-
-    return GST_STATE_SUCCESS;
-}
-
-
-static void clean_history( GstEqualizer* obj )
-{
-    /* Zero the history arrays */
-    bzero(obj->data_history, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
-}
-
-
 static void
-set_filters( GstEqualizer* obj, gint bands, gint sfreq )
+set_filters( GstEqualizer* obj )
 {
-    obj->rate = sfreq;
-    switch(obj->rate)
+    switch(obj->samplerate)
     {
-        case 11025: obj->iir_cf = iir_cf10_11k_11025;
-                    obj->band_count = 10;
-        break;
-        case 22050: obj->iir_cf = iir_cf10_22k_22050;
-                    obj->band_count = 10;
-        break;
+        case 11025:
+            obj->iir_cf = iir_cf10_11k_11025;
+            break;
+
+        case 22050:
+            obj->iir_cf = iir_cf10_22k_22050;
+            break;
+
         case 48000:
-            obj->band_count = BAND_NUM;
-            switch( bands )
-            {
-                case 31: obj->iir_cf = iir_cf31_48000; break;
-                case 25: obj->iir_cf = iir_cf25_48000; break;
-                case 15: obj->iir_cf = iir_cf15_48000; break;
-                default:
-                         obj->iir_cf = iir_cf10_48000;
-                break;
-            }
-        break;
+            obj->iir_cf = iir_cf10_48000;
+            break;
+
         default:
-            obj->band_count = BAND_NUM;
-            obj->rate = 44100;
-            switch( bands )
-            {
-                case 31: obj->iir_cf = iir_cf31_44100; break;
-                case 25: obj->iir_cf = iir_cf25_44100; break;
-                case 15: obj->iir_cf = iir_cf15_44100; break;
-                default:
-                         obj->iir_cf = iir_cf10_44100;
-                break;
-            }
-        break;
+            obj->iir_cf = iir_cf10_44100;
+            break;
     }
 }
 
@@ -210,16 +206,12 @@ set_filters( GstEqualizer* obj, gint bands, gint sfreq )
 void
 gst_equalizer_chain ( GstPad* pad, GstData* data_in )
 {
-//__inline__ int iir(gpointer * d, gint length, gint srate, gint nch)
-
     g_return_if_fail( pad != NULL );
 
     GstEqualizer* obj = GST_EQUALIZER ( GST_OBJECT_PARENT ( pad ) );
     GstBuffer* inbuf = GST_BUFFER( data_in );
     gint16 *data = (gint16*) GST_BUFFER_DATA( inbuf );
     gint length = GST_BUFFER_SIZE( inbuf );
-    gint srate = 41000;
-    gint nch = 2;
 
     /* Indexes for the history arrays
      * These have to be kept between calls to this function
@@ -229,13 +221,6 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
     gint index, band, channel;
     gint tempgint, halflength;
     float out[EQ_CHANNELS], pcm[EQ_CHANNELS];
-
-    // Load the correct filter table according to the sampling rate if needed
-    if (srate != obj->rate)
-    {
-        set_filters( obj, BAND_NUM, srate );
-        clean_history( obj );
-    }
 
     /**
      * IIR filter equation is
@@ -254,7 +239,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
     for (index = 0; index < halflength; index+=2)
     {
         /* For each channel */
-        for (channel = 0; channel < nch; channel++)
+        for (channel = 0; channel < obj->channels; channel++)
         {
             pcm[channel] = data[index+channel];
             /* Preamp gain */
@@ -262,7 +247,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
 
             out[channel] = 0.;
             /* For each band */
-            for (band = 0; band < obj->band_count; band++)
+            for (band = 0; band < BAND_NUM; band++)
             {
                 /* Store Xi(n) */
                 obj->data_history[band][channel].x[i] = pcm[channel];
