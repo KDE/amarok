@@ -634,8 +634,8 @@ CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
         title = bundle.url().fileName();
         if ( bundle.url().fileName().find( '-' ) > 0 )
         {
-            if ( artist.isEmpty() ) artist = bundle.url().fileName().left( bundle.url().fileName().find( '-' ) ).stripWhiteSpace();
-            title = bundle.url().fileName().mid( bundle.url().fileName().find( '-' ) + 1 );
+            if ( artist.isEmpty() ) artist = bundle.url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
+            title = bundle.url().fileName().section( '-', 1 ).stripWhiteSpace();
             title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
         }
     }
