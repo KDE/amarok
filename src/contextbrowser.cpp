@@ -1311,7 +1311,7 @@ bool CurrentTrackJob::doJob()
     }
     // </Albums by this artist>
 
-    // <Compilations by this artist>
+    // <Compilations with this artist>
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
@@ -1346,6 +1346,7 @@ bool CurrentTrackJob::doJob()
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optOnlyCompilations );
@@ -1355,7 +1356,7 @@ bool CurrentTrackJob::doJob()
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += 5 )
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
@@ -1397,7 +1398,7 @@ bool CurrentTrackJob::doJob()
                     << values[ i + 1 ] ) );
 
             if ( !albumValues.isEmpty() )
-                for ( uint j = 0; j < albumValues.count(); j += 5 )
+                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 {
                     QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
                     if( track.length() > 0 ) {
@@ -1414,7 +1415,7 @@ bool CurrentTrackJob::doJob()
                         "<div class='album-song'>"
                             "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
                             + track +
-                            "<span class='album-song-title'>" + albumValues[j] + "</span>&nbsp;"
+                            "<span class='album-song-title'>" + albumValues[j + 5] + " - " + albumValues[j] + "</span>&nbsp;"
                             + length +
                             "</a>"
                         "</div>" );
@@ -1429,7 +1430,7 @@ bool CurrentTrackJob::doJob()
                "</table>"
               "</div>" );
     }
-    // </Compilations by this artist>
+    // </Compilations with this artist>
 
     m_HTMLSource.append( "</html>" );
 
