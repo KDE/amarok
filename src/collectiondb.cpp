@@ -48,6 +48,8 @@ CollectionDB::CollectionDB()
     if( !m_coverDir.exists( "albumcovers", false ) )
         m_coverDir.mkdir( "albumcovers", false );
     m_coverDir.cd( "albumcovers" );
+    if( !m_coverDir.exists( "large", false ) )
+        m_coverDir.mkdir( "large", false );
 }
 
 
@@ -822,10 +824,11 @@ CollectionDB::saveCover( const QString& keyword, const QPixmap& pix )
     QString fileName( keyword );
     fileName.replace( "/", "_" ).append( ".png" );
     
+    img.save( m_coverDir.filePath( "large/"+fileName ), "PNG");
     img.smoothScale( COVER_SIZE, COVER_SIZE )
        .save( m_coverDir.filePath( fileName ), "PNG" );
 
-    emit coverFetched();
+    emit coverFetched( keyword );
 }
 
 

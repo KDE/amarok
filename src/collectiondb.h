@@ -79,7 +79,7 @@ class CollectionDB : public QObject
     
     signals:
         void scanDone( bool changed );
-        void coverFetched();
+        void coverFetched( const QString &key );
         
     public slots:
         void fetchCover( QObject* parent, const QString& key );
