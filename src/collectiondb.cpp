@@ -1486,7 +1486,7 @@ CollectionDB::initialize()
     else
     {
         //remove database file if version is incompatible
-        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
         {
             kdDebug() << "Rebuilding database!" << endl;
             dropTables();
