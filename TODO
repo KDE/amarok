@@ -8,9 +8,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-          <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
+          <markey> Check TagLib autoconf and makefile stuff. I have a feeling the problem with picking
+                   up old versions could be on our side.
 
-          <markey> "New Search" for cover images is broken. Does not save the image.
+          <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
 
           <markey> LibVisual windows are missing a caption with the current plugin name.
 
