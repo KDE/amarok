@@ -476,7 +476,9 @@ void BrowserWin::setPalettes( const QPalette &pal, const QColor &bgAlt )
     setPaletteRecursively( m_pPlaylistWidget,   pal, bgAlt );
     setPaletteRecursively( m_pPlaylistLineEdit, pal, bgAlt );
     setPaletteRecursively( m_pSideBar,          pal, bgAlt );
-
+    
+    KDevFileSelector::altBgColor = bgAlt;
+    
     update();
     m_pPlaylistWidget->triggerUpdate();
 }

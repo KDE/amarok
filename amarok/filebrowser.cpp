@@ -33,7 +33,6 @@
 #include <qgroupbox.h>
 #include <qhbox.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qlistbox.h>
 #include <qregexp.h>
 #include <qscrollbar.h>
@@ -47,13 +46,10 @@
 
 #include <kaction.h>
 #include <kapplication.h>
-#include <kcombobox.h>
 #include <kdebug.h>
-#include <kdialog.h>
 #include <kiconloader.h>
 #include <kio/netaccess.h>
 #include <klocale.h>
-#include <kmainwindow.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kprotocolinfo.h>
@@ -107,13 +103,14 @@ void KDevFileSelectorToolBarParent::resizeEvent ( QResizeEvent * )
 
 //BEGIN Constructor/destructor
 
+QColor KDevFileSelector::altBgColor;
+
+
 KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
         : QWidget(parent, name)
 {
     mActionCollection = new KActionCollection( this );
-
     QVBoxLayout* lo = new QVBoxLayout(this);
-
     QtMsgHandler oldHandler = qInstallMsgHandler( silenceQToolBar );
 
     KDevFileSelectorToolBarParent *tbp=new KDevFileSelectorToolBarParent(this);
@@ -132,7 +129,7 @@ KDevFileSelector::KDevFileSelector( QWidget * parent, const char * name )
     cmbPath->listBox()->installEventFilter( this );
 
     dir = new KDevDirOperator( QString::null, this, "operator" );
-    setView(KFile::/*Simple*/Detail);
+    dir->setView(KFile::/*Simple*/Detail);
 
     KActionCollection *coll = dir->actionCollection();
     // some shortcuts of diroperator that clashes with KDev
@@ -297,11 +294,6 @@ void KDevFileSelector::writeConfig()
     AmarokConfig::setAutoSyncEvents( autoSyncEvents );
 }
 
-void KDevFileSelector::setView(KFile::FileView view)
-{
-    dir->setView(view);
-    dir->view()->setSelectionMode( KFile::Extended );
-}
 
 //END Public Methods
 
@@ -419,8 +411,6 @@ void KDevFileSelector::viewChanged()
     /// @todo make sure the button is disabled if the directory is unreadable, eg
     ///       the document URL has protocol http
     acSyncDir->setEnabled( ! activeDocumentUrl().directory().isEmpty() );
-
-    kdDebug() << "[KDevFileSelector::viewChanged()]" << endl;
 }
 
 //END Private Slots
@@ -532,6 +522,23 @@ void KDevDirOperator::activatedMenu( const KFileItem *fi, const QPoint & pos )
     }
 
     popup->popup(pos);
+}
+
+//we override this method, so that we can modify the newly created KFileView
+#include <klistview.h>
+#include <kfileview.h>
+KFileView* KDevDirOperator::createView( QWidget *parent, KFile::FileView view )
+{
+    kdDebug() << "[KDevDirOperator::createView()]" << endl;
+    
+    KFileView *pView = KDirOperator::createView( parent, view );
+    
+    pView->setSelectionMode( KFile::Extended );
+    
+    if ( dynamic_cast<QObject*>( pView )->inherits( "KListView" ) )
+        dynamic_cast<KListView*>( pView )->setAlternateBackground( KDevFileSelector::altBgColor );
+    
+    return pView;
 }
 
 //END KDevDirOperator

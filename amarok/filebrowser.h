@@ -29,6 +29,8 @@
 #include <ktoolbar.h>
 #include <kdiroperator.h>
 
+class QColor;
+
 class KActionCollection;
 class KActionSelector;
 class KDirOperator;
@@ -81,17 +83,19 @@ public:
     {
     }
 
+protected:
+    KFileView* createView( QWidget*, KFile::FileView ); 
+
 protected slots:
     virtual void activatedMenu (const KFileItem *fi, const QPoint &pos);
 
 private:
 };
 
+
 class KDevFileSelector : public QWidget
 {
     Q_OBJECT
-
-    friend class KFSConfigPage;
 
 public:
     /* When to sync to current document directory */
@@ -103,10 +107,10 @@ public:
     void readConfig();
     void writeConfig();
     void setupToolbar();
-    void setView( KFile::FileView );
     KDevDirOperator *dirOperator(){ return dir; }
     KActionCollection *actionCollection() { return mActionCollection; };
-
+    static QColor altBgColor;
+    
 public slots:
     void slotFilterChange(const QString&);
     void setDir(KURL);
