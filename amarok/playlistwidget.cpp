@@ -228,10 +228,20 @@ void PlaylistWidget::handleOrder( RequestType rt ) //SLOT
    case Prev:
       //I've talked on a few channels, people hate it when media players restart the current track
       //first before going to the previous one (most players do this), so let's not do it!
-      item = (PlaylistItem*)item->itemAbove();
+      
+      // choose right order in random-mode
+      if( AmarokConfig::randomMode() && recentPtrs.count() > 1 )
+      {
+          item = (PlaylistItem*)recentPtrs.at( recentPtrs.count() - 2 );
+          recentPtrs.remove( recentPtrs.at( recentPtrs.count() - 1 ) );
+      }
+      else
+      {
+          item = (PlaylistItem*)item->itemAbove();
 
-      if( item == NULL && AmarokConfig::repeatPlaylist() )
-         item = (PlaylistItem*)lastItem();
+          if( item == NULL && AmarokConfig::repeatPlaylist() )
+             item = (PlaylistItem*)lastItem();
+      }
 
       break;
 
