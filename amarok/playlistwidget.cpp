@@ -205,7 +205,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
     {
         if ( (*it).protocol() != "http" )                //don't try to list parent dir with http
             m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
-        
+
         while ( !m_pDirLister->isFinished() )
             kapp->processEvents( 300 );
 
@@ -355,7 +355,9 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 void PlaylistWidget::removeItem( PlaylistItem *item )
 {
     int x;
-    if ((x = searchPtrs.find(item)))
+    x = searchPtrs.find(item);
+
+    if (x >= 0)
     {
         searchTokens.remove(searchTokens.at(x));
         searchPtrs.remove(searchPtrs.at(x));
