@@ -19,7 +19,7 @@
 #define PLAYLISTWIDGET_H
 
 #include <qdir.h>
-#include <qstringlist.h>
+#include <qstringlist.h>    // <markey> forward declaration of QStringList does not work with some compilers
 #include <klistview.h>
 //#include <krootpixmap.h>
 #include <kurl.h>
