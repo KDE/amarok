@@ -29,6 +29,7 @@ amarokapp_SOURCES = \
         amarokmenu.cpp \
         amarokslider.cpp \
         amaroksystray.cpp \
+        browserbar.cpp \
         browserwin.cpp \
         effectwidget.cpp \
         fht.cpp \
@@ -40,7 +41,6 @@ amarokapp_SOURCES = \
         playlistbrowser.cpp \
         playlistitem.cpp \
         playlistloader.cpp \
-        playlistsidebar.cpp \
         playlisttooltip.cpp \
         playlistwidget.cpp \
         pluginmanager.cpp \

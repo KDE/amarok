@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: browserTabs float over the playlist when in set to not overlap
   FIX: communication loader<-->amarok failing on FreeBSD
   FIX: loader forgetting to close socket descriptors
   FIX: FileBrowser remembers that state of its view between sessions

@@ -18,9 +18,9 @@
 #include "amarokconfig.h"
 #include "amarokmenu.h" //see toolbar construction
 #include "browserwin.h"
+#include "browserbar.h"
 #include "filebrowser.h"
 #include "playerapp.h"
-#include "playlistsidebar.h"
 #include "playlistwidget.h"
 #include "streambrowser.h"
 
@@ -29,39 +29,31 @@
 #include <qlayout.h>
 #include <qobjectlist.h>   //setPaletteRecursively()
 #include <qpalette.h>      //setPalettes()
-#include <qpopupmenu.h>    //BrowserWin ctor
-#include <qsplitter.h>     //m_splitter
 #include <qtooltip.h>      //QToolTip::add()
 #include <qvbox.h>         //contains the playlist
 
 #include <kaction.h>       //m_actionCollection
 #include <kapplication.h>  //kapp
-#include <kcursor.h>       //customEvent()
 #include <kdebug.h>
 #include <kglobal.h>
 #include <kfiledialog.h>   //savePlaylist()
-#include <kiconloader.h>   //multiTabBar icons
 #include <klineedit.h>     //m_lineEdit
 #include <klocale.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
-#include <kurldrag.h>      //eventFilter()
 #include <kurlrequester.h>    //slotAddLocation()
 #include <kurlrequesterdlg.h> //slotAddLocation()
+#include <kxmlguifactory.h> //XMLGUI
+#include <kxmlguibuilder.h> //XMLGUI
 
 
-#include <ktoolbarbutton.h>
-#include <qiconset.h> //FIXME
-#include <blockanalyzer.h> //FIXME TMP
+#include <blockanalyzer.h> //FIXME make an action or someting like that
 
 
 //Routine for setting palette recursively in a widget and all its childen
-//NOTE I didn't make this a member as there was no need and we may like to move it at some point
-static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
+//TODO make available globally sometime, maybe through an extern in PlayerApp.h
+void setPaletteRecursively( QObjectList *list, const QPalette &pal, const QColor& bgAlt )
 {
-    QObjectList *list = widget->queryList( "QWidget" );
-    list->append( widget );
-
     for( QObject *obj = list->first(); obj; obj = list->next() )
     {
         static_cast<QWidget*>(obj)->setPalette( pal );
@@ -74,45 +66,33 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
     }
 }
 
+inline void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
+{
+    setPaletteRecursively( widget->queryList( "QWidget" ), pal, bgAlt );
+}
+
+
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
-   , m_splitter( new QSplitter( this ) )
-   , m_sideBar( new PlaylistSideBar( m_splitter ) )
-   , m_playlist( 0 )
-   , m_lineEdit( 0 )
    , m_pActionCollection( new KActionCollection( this ) )
 {
     setCaption( "amaroK" );
 
-    KToolBar* toolbar = new KToolBar( this, "TOOLBAR" );
+
+    KToolBar* toolbar = new KToolBar( this );
     toolbar->setEnableContextMenu( true );
 
+    m_browsers = new BrowserBar( this );
+
     QBoxLayout *layV = new QVBoxLayout( this );
-    layV->addWidget( m_splitter );
+    layV->addWidget( m_browsers );
     layV->addWidget( toolbar );
 
-    QVBox *vbox = new QVBox( m_splitter );
-    QHBox *hbox = new QHBox( vbox );
-    m_lineEdit  = new KLineEdit( hbox );
-    QToolButton *menuButton = new QToolButton( hbox ); //would use KToolBarButton but you have to use a KToolBar! Baa!
-    menuButton->setPopup( new AmarokMenu( this ) );
-    menuButton->setPopupDelay( 1 ); //setting it to 0 makes Qt draw ugly stuff
-    menuButton->setTextLabel( i18n( "&Menu" ) );
-    menuButton->setUsesTextLabel( true );
+    QVBox *vbox = m_browsers->container(); //m_browsers provides the layout for the playlist
 
+    m_lineEdit = new KLineEdit( vbox );
     m_playlist = new PlaylistWidget( vbox, m_pActionCollection );
-    m_splitter->setResizeMode( m_sideBar, QSplitter::FollowSizeHint );
-    m_splitter->setResizeMode( vbox,      QSplitter::Auto );
-    m_sideBar->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
-
-    /*
-    //Here because we need m_playlist initialized.
-    QPushButton *showCurrentTrack = new QPushButton( boxH );
-    showCurrentTrack->setPixmap( KGlobal::iconLoader()->loadIcon( "2uparrow", KIcon::NoGroup, KIcon::SizeSmall ) );
-    QToolTip::add( showCurrentTrack, i18n( "Scroll to currently playing item" ) );
-    connect( showCurrentTrack, SIGNAL( clicked() ), m_playlist, SLOT(showCurrentTrack()) );
-    */
 
     {//<ToolBar>
 
@@ -171,11 +151,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
 
     //</FileBrowser>
-        m_sideBar->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
+        m_browsers->addPage( new KDevFileSelector( 0, "FileBrowser" ), i18n( "File Browser" ), "hdd_unmount" );
     //</FileBrowser>
 
     //</PlaylistBrowser>
-    //    m_sideBar->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
+        //m_browsers->addPage( m_playlist->browser(), i18n( "Playlist Browser" ), "midi" );
     //</PlaylistBrowser>
 
     { //<StreamBrowser>
@@ -184,7 +164,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
         QObject *sb = new StreamBrowser( vb );
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
-        m_sideBar->addPage( vb, i18n( "Stream Browser" ), "network" );
+        m_browsers->addPage( vb, i18n( "Stream Browser" ), "network" );
     } //</StreamBrowser>
 
 
@@ -198,7 +178,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
              m_lineEdit,   SLOT( clear() ) );
     //FIXME you need to detect focus out from the sideBar and connect to that..
     connect( m_playlist, SIGNAL( clicked( QListViewItem * ) ),
-             m_sideBar,    SLOT( autoClosePages() ) );
+             m_browsers,   SLOT( autoClosePages() ) );
     connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ),
              m_playlist,   SLOT( slotTextChanged( const QString& ) ) );
 
@@ -239,12 +219,10 @@ bool BrowserWin::isAnotherTrack() const
 
 void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
 {
-    m_lineEdit->setPalette( pal );
-    m_playlist->setColors( pal, bgAlt ); //due to private inheritance nasty
-    setPaletteRecursively( m_sideBar, pal, bgAlt );
-
-    //update()
-    //m_playlist->triggerUpdate();
+    //these widgets are actually children of splitter now
+    //list.append( m_lineEdit );
+    //list.append( m_playlist ); //we are friend
+    setPaletteRecursively( m_browsers->queryList( "QWidget" ), pal, bgAlt );
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     KDevFileSelector::altBgColor = bgAlt;
@@ -253,7 +231,7 @@ void BrowserWin::setColors( const QPalette &pal, const QColor &bgAlt )
 
 void BrowserWin::setFont( const QFont &newFont )
 {
-    m_sideBar ->setFont( newFont );
+    m_browsers->setFont( newFont );
     m_playlist->setFont( newFont );
 }
 
@@ -263,7 +241,7 @@ void BrowserWin::saveConfig()
     //FIXME sucks a little to get ptr this way
     //FIXME instead force the widgets to derive from SideBarWidget or something
     // this method is good as it saves having duplicate pointers to the fileBrowser
-    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_sideBar->page( "FileBrowser" );
+    KDevFileSelector *fileBrowser = (KDevFileSelector *)m_browsers->page( "FileBrowser" );
     fileBrowser->writeConfig();
 }
 
@@ -345,7 +323,7 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
 
 void BrowserWin::savePlaylist() const //SLOT
 {
-    QWidget *fb = m_sideBar->page( "FileBrowser" );
+    QWidget *fb = m_browsers->page( "FileBrowser" );
     QString path = fb ? static_cast<KDevFileSelector *>(fb)->location() : "~";
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );

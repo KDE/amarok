@@ -19,14 +19,15 @@
 #define BROWSERWIN_H
 
 
-#include <qwidget.h>     //baseclass
-#include <kurl.h>        //KUL::List
+#include <qwidget.h>        //baseclass
+#include <kurl.h>           //KUL::List
+#include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
-class PlaylistLoader;
-class PlaylistSideBar;
-class PlaylistWidget;
+class BrowserBar;
 class KLineEdit;
 class KActionCollection;
+class PlaylistLoader;
+class PlaylistWidget;
 class QColor;
 class QCloseEvent;
 class QCustomEvent;
@@ -38,7 +39,7 @@ class QPushButton;
 class QSplitter;
 class QString;
 
-class BrowserWin : public QWidget
+class BrowserWin : public QWidget//, public KXMLGuiClient
 {
         Q_OBJECT
 
@@ -66,10 +67,9 @@ class BrowserWin : public QWidget
     private:
         bool eventFilter( QObject*, QEvent* );
 
-        QSplitter       *m_splitter;
-        PlaylistSideBar *m_sideBar;
-        PlaylistWidget  *m_playlist;
-        KLineEdit       *m_lineEdit;
+        BrowserBar     *m_browsers;
+        PlaylistWidget *m_playlist;
+        KLineEdit      *m_lineEdit;
 
         KActionCollection *m_pActionCollection;
 };

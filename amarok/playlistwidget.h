@@ -26,6 +26,7 @@
 #include <kurl.h>        //KURL::List
 #include <qdir.h>        //stack allocated
 
+class QColor;
 class QCustomEvent;
 class QDragEnterEvent;
 class QDragLeaveEvent;
@@ -35,6 +36,7 @@ class QEvent;
 class QFocusEvent;
 class QKeyEvent;
 class QListViewItem;
+class QPalette;
 class QPaintEvent;
 class QPoint;
 class QRect;
@@ -95,7 +97,6 @@ class PlaylistWidget : private KListView
 
         //made public for convenience
         void setFont( const QFont &f ) { KListView::setFont( f ); }
-        void setColors( const QPalette &p, const QColor &c ) { setPalette( p ); setAlternateBackground( c ); }
 
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
@@ -117,7 +118,6 @@ class PlaylistWidget : private KListView
         friend class PlaylistLoader;
         friend BrowserWin::BrowserWin( QWidget*, const char* );   //setting up connections etc.
         friend bool BrowserWin::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
-
     signals:
         void playRequest( const MetaBundle& );
         void aboutToClear();
