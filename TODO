@@ -45,7 +45,7 @@ MID-TERM:
 
     * fix: #73 <mxcl> can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
 
-    * fix: #72 <markey> get amaroK to play nice with valgrind
+    * fix: #72 <markey> get amaroK to play nice with valgrind. update: user reporting success with valgrind 2.1.1.
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
     * add: display type of media next to bitrate (<berkus> i moved it here, seems its the
@@ -118,8 +118,6 @@ MID-TERM:
 
     * chg: pre 1.0, plan, cleanup and future-proof settings file keys. Will almost certainly
            mean that people will lose their settings, oh well, best to do it for the 1.0 release.
-
-    * chg: select tracks on mouseup, not mousedown (does this make sense?)
 
 
 LONG-TERM:
