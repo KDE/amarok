@@ -59,16 +59,14 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
     QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignLeft, m_appName );
     // The osd cannot be larger than the screen
     QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignLeft | WordBreak, text );
-    
     int showCover = 0;
-    
     // determine appropriate image size based on size of screen
     int imageSize = QApplication::desktop()->screen( m_screen )->width() / 16;
     
     // we don't want to show the cover if it is the generic one.
     if ( imageLocation.find( QString("nocover") ) == -1 && m_cover && !imageLocation.isEmpty())
         showCover = 1;
-    
+        
     if ( textRect.width() < titleRect.width() )
         textRect.setWidth( titleRect.width() );
 
@@ -83,25 +81,24 @@ void OSDWidget::renderOSDText( const QString &text , const QString &imageLocatio
         else
             image = image.smoothScale( imageSize, imageSize );
     }
-    
+    //dimensions
     if ( showCover )
     {
-        if ( textRect.height() + titleRect.height() < 100 )
-            // we don't want the image to be truncated at the bottom if we only have, for example - one line of text.
+        if ( textRect.height() + titleRect.height() < (imageSize + 20) )
             textRect.setHeight( imageSize + 20 );
         else
-            textRect.addCoords( 0, 0, 0, titleRect.height() );
+            textRect.setBottom( titleRect.height() + textRect.height() );
             
         // we add pixels to the width because of the image size, and 40 for padding;
         // 10px before image, 10px after image, 20px after text
         textRect.addCoords( 0, 0, imageSize + 40, 0);
     }
     else
+    {
         // add 20 pixels to the width (so the text isn't on the border), and add the height of the titleRect
         // so we can see the last line!
         textRect.addCoords( 0, 0, 20, titleRect.height() );
-
-
+    }
     osdBuffer.resize( textRect.size() );
     mask.resize( textRect.size() );
 
