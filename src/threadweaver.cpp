@@ -252,8 +252,10 @@ CollectionReader::~CollectionReader()
 {}
 
 bool
-CollectionReader::doJob() {
+CollectionReader::doJob()
+{
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Start ) );
+    m_parent->purgeDirCache();
 
     QStringList entries;
     //iterate over all folders
@@ -271,7 +273,8 @@ CollectionReader::doJob() {
 }
 
 void
-CollectionReader::readDir( const QString& dir, QStringList& entries ) {
+CollectionReader::readDir( const QString& dir, QStringList& entries )
+{
     DIR* d = opendir( QFile::encodeName( dir ) );
     if ( !d ) return;
     dirent *ent;
@@ -305,7 +308,8 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
 }
 
 void
-CollectionReader::readTags( const QStringList& entries ) {
+CollectionReader::readTags( const QStringList& entries )
+{
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     KURL url;
