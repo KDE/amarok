@@ -334,8 +334,10 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
             QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
 
         url.setPath( entries[ i ] );
+
         // Append path to logfile
         log << url.path().local8Bit() << "\n";
+        log.flush();
 
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
