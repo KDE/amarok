@@ -38,6 +38,7 @@ OSDWidget::OSDWidget( const QString &appName )
       , m_screen( 0 )
 {
     setFocusPolicy( NoFocus );
+    setBackgroundMode( NoBackground );
     timer = new QTimer( this );
     timerMin = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( removeOSD() ) );
