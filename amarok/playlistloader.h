@@ -22,7 +22,7 @@ class PlaylistItem;
 //TODO this is a temporary measure until the new FileBrowser is a bit more finished
 //I'm doing it because I miss fast directory entry, but simply omit the definition
 //to restore sorting, I think it sorts alphabetically only by default currently
-//#define FAST_TRANSLATE
+#define FAST_TRANSLATE
 
 class PlaylistLoader : public QThread
 {
