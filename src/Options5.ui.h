@@ -46,22 +46,24 @@ void Options5::fontChanged(const QFont &font )
     m_pOSDPreview->setFont( font );
 }
 
-
 void Options5::textColorChanged( const QColor &color )
 {
     m_pOSDPreview->setTextColor( color );
 }
-
 
 void Options5::backgroundColorChanged( const QColor &color )
 {
     m_pOSDPreview->setBackgroundColor( color );
 }
 
-
 void Options5::screenChanged( int screen )
 {
     m_pOSDPreview->setScreen( screen );
+}
+
+void Options5::drawShadowToggled( bool on )
+{
+    m_pOSDPreview->setShadow( on );
 }
 
 
@@ -106,10 +108,4 @@ void Options5::useCustomColorsToggled( bool on )
         m_pOSDPreview->setBackgroundColor( kcfg_OsdBackgroundColor->color() );
     }
     else m_pOSDPreview->unsetColors();
-}
-
-
-void Options5::drawShadowToggled( bool on )
-{
-    m_pOSDPreview->setShadow( on );
 }

@@ -353,6 +353,12 @@
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
+        <sender>kcfg_OsdDrawShadow</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>Options5</receiver>
+        <slot>drawShadowToggled(bool)</slot>
+    </connection>
+    <connection>
         <sender>kcfg_OsdUseCustomColors</sender>
         <signal>toggled(bool)</signal>
         <receiver>Options5</receiver>

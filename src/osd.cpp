@@ -323,12 +323,12 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
     if ( m_dragging && this == mouseGrabber() )
     {
-        const QRect screen  = QApplication::desktop()->screenGeometry( m_screen );
+        const QRect screen      = QApplication::desktop()->screenGeometry( m_screen );
         const uint  hcenter     = screen.width() / 2;
-        const uint  eGlobalPosX = e->globalPos().x();
+        const uint  eGlobalPosX = e->globalPos().x() - screen.left();
         const uint  snapZone    = screen.width() / 16;
 
-        QPoint newPos = e->globalPos() - m_dragOffset - screen.topLeft();
+        QPoint newPos = e->globalPos() - m_dragOffset;
         int maxY = screen.height()-height()-MARGIN;
         if( newPos.y() < MARGIN ) newPos.ry() = MARGIN;
         if( newPos.y() > maxY ) newPos.ry() = maxY;
@@ -346,7 +346,7 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         }
         else
         {
-            const uint eGlobalPosY = e->globalPos().y();
+            const uint eGlobalPosY = e->globalPos().y() - screen.top();
             const uint vcenter     = screen.height()/2;
 
             destination.rx() = hcenter - width()/2;
