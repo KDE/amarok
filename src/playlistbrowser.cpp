@@ -121,9 +121,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     // Check if user has installed a new version
     if ( APP_VERSION != AmarokConfig::version() )
-        loadPlaylists( locate("data","amarok/data/playlistbrowser.m3u") );
-    else
-        loadPlaylists();    //load the playlists stats cache
+        addPlaylist( locate("data","amarok/data/playlistbrowser.m3u") );
+
+    loadPlaylists();    //load the playlists stats cache
 }
 
 
@@ -174,14 +174,9 @@ QString PlaylistBrowser::playlistCacheFile()
 }
 
 
-void PlaylistBrowser::loadPlaylists( const QString& path )
+void PlaylistBrowser::loadPlaylists()
 {
-    QFile file;
-
-    if ( path.isEmpty() )
-        file.setName( playlistCacheFile() );
-    else
-        file.setName( path );
+    QFile file( playlistCacheFile() );
 
     //read playlists stats cache containing the number of tracks, the total length in secs and the last modified date
     if( file.open( IO_ReadOnly ) )
@@ -1397,8 +1392,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    : KListView( parent, name )
 {
     CollectionDB *db = new CollectionDB();
-    QStringList values;
-    QStringList names;
+    QStringList artistList = db->artistList();
 
     addColumn(i18n("Smart Playlists"));
     setSelectionMode(QListView::Single);
@@ -1427,20 +1421,17 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
     lastItem->setDragEnabled(true);
 
-    db->execSql( "SELECT DISTINCT name FROM artist ORDER BY name", &values, &names );
     SmartPlaylist *item = 0;
-    for( uint i=0; i < values.count(); i++ ) {
-        item = new SmartPlaylist( lastItem, item, i18n("By ") + values[i] );
+    for( uint i=0; i < artistList.count(); i++ ) {
+        item = new SmartPlaylist( lastItem, item, i18n("By ") + artistList[i] );
         item->setQuery( QString( "SELECT tags.url "
                         "FROM tags, statistics "
                         "WHERE statistics.url = tags.url AND tags.artist = %1 "
                         "ORDER BY statistics.percentage DESC "
-                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", values[i], false ) ) );
+                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) ) );
         item->setPixmap( 0, SmallIcon("player_playlist") );
         item->setDragEnabled(true);
     }
-    values.clear();
-    names.clear();
 
     /********** Most Played **************/
     lastItem = new SmartPlaylist(this, lastItem, i18n("Most Played") );
@@ -1452,34 +1443,42 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
     lastItem->setDragEnabled(true);
 
-    db->execSql( "SELECT DISTINCT name FROM artist ORDER BY name", &values, &names );
     item = 0;
-    for( uint i=0; i < values.count(); i++ ) {
-        item = new SmartPlaylist( lastItem, item, i18n("By ") + values[i] );
+    for( uint i=0; i < artistList.count(); i++ ) {
+        item = new SmartPlaylist( lastItem, item, i18n("By ") + artistList[i] );
         item->setQuery( QString( "SELECT tags.url "
                         "FROM tags, statistics "
                         "WHERE statistics.url = tags.url AND tags.artist = %1 "
                         "ORDER BY statistics.playcounter DESC "
-                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", values[i], false ) ) );
+                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) ) );
         item->setPixmap( 0, SmallIcon("player_playlist") );
         item->setDragEnabled(true);
     }
-    values.clear();
-    names.clear();
 
     /********** Newest Tracks **************/
     lastItem =  new SmartPlaylist(this, lastItem, i18n("Newest Tracks") );
-    lastItem->setQuery( "SELECT  tags.url "
-                        "FROM tags, artist, album "
-                        "WHERE artist.id = tags.artist AND album.id = tags.album "
+    lastItem->setQuery( "SELECT url "
+                        "FROM tags "
                         "ORDER BY tags.createdate DESC "
                         "LIMIT 0,15;" );
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
     lastItem->setDragEnabled(true);
 
+    item = 0;
+    for( uint i=0; i < artistList.count(); i++ ) {
+        item = new SmartPlaylist( lastItem, item, i18n("By ") + artistList[i] );
+        item->setQuery( QString( "SELECT url "
+                        "FROM tags "
+                        "WHERE tags.artist = %1 "
+                        "ORDER BY tags.createdate DESC "
+                        "LIMIT 0,15;" ).arg( db->getValueID( "artist", artistList[i], false ) ) );
+        item->setPixmap( 0, SmallIcon("player_playlist") );
+        item->setDragEnabled(true);
+    }
+
     /********** Last Played **************/
     lastItem =  new SmartPlaylist(this, lastItem, i18n("Last Played") );
-    lastItem->setQuery( "SELECT  tags.url "
+    lastItem->setQuery( "SELECT tags.url "
                         "FROM tags, statistics "
                         "WHERE statistics.url = tags.url "
                         "ORDER BY statistics.accessdate DESC "
@@ -1499,6 +1498,8 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     lastItem = new SmartPlaylist( this, lastItem, i18n("Genres") );
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
 
+    QStringList values;
+    QStringList names;
     db->execSql( "SELECT DISTINCT name FROM genre ORDER BY name", &values, &names );
     item = 0;
     for( uint i=0; i < values.count(); i++ ) {
