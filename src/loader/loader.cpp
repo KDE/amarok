@@ -59,7 +59,8 @@ Loader::Loader( int& argc, char** argv )
         proc.start();
 
         //show splash after starting process so we don't cause a delay
-        if ( splashEnabled() ) showSplash();
+        //don't show splash on session restore
+        if ( !QApplication::isSessionRestored() && splashEnabled() ) showSplash();
 
         //periodically check for amaroK startup completion
         startTimer( TIMEOUT );
@@ -84,17 +85,17 @@ Loader::Loader( int& argc, char** argv )
 
             str += '|';
 
-            if( sockArgs.contains( arg ) )
+            if ( sockArgs.contains( arg ) )
             {
                 //pass this argument to amaroK
                 str += argv[i];
 
-            } else if( arg[0] != '-' ) {
+            } else if ( arg[0] != '-' ) {
 
                 //pass this URL to amaroK
                 QFileInfo info( arg );
 
-                if( info.exists() && info.isRelative() )
+                if ( info.exists() && info.isRelative() )
                 {
                     str += info.absFilePath().local8Bit();
                 }
@@ -114,7 +115,7 @@ Loader::Loader( int& argc, char** argv )
                 while ( proc.isRunning() ) ::usleep( 100 );
 
                 //now exit as help only prints usage info
-                //no need to doExit, nothing started
+                //no need to doExit(), as nothing is started
                 ::exit( 0 );
             }
         }
