@@ -59,8 +59,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     
     m_ac = new KActionCollection( this );
     KAction *open = new KAction( "Add playlist", "fileopen", 0, this, SLOT( openPlaylist() ), m_ac, "Open" );
-    removeButton = new KAction( "Remove", "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     renameButton = new KAction( "Rename", "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
+    removeButton = new KAction( "Remove", "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     deleteButton = new KAction( "Delete", "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
     
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
@@ -68,11 +68,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     
     m_toolbar->insertLineSeparator();
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
-    removeButton->plug( m_toolbar );
     renameButton->plug( m_toolbar);
+    removeButton->plug( m_toolbar );
     deleteButton->plug( m_toolbar);
-    removeButton->setEnabled( false );
     renameButton->setEnabled( false );
+    removeButton->setEnabled( false );
     deleteButton->setEnabled( false );
     
     m_splitter = new QSplitter( Vertical, this );
