@@ -443,7 +443,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     switch ( item->depth() )
     {
         case 0:
-            qb.addMatch( m_cat1, item->text( 0 ) );
+            // check for compilations
+            if ( item->text( 0 ) != i18n( "Various Artists" ) )
+                qb.addMatch( m_cat1, item->text( 0 ) );
+            else
+                qb.setOptions( QueryBuilder::optOnlyCompilations );
 
             if ( m_cat2 == QueryBuilder::tabSong )
             {
@@ -462,7 +466,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             break;
 
         case 1:
-            qb.addMatch( m_cat1, item->parent()->text( 0 ) );
+            // check for compilations
+            if ( item->parent()->text( 0 ) != i18n( "Various Artists" ) )
+                qb.addMatch( m_cat1, item->parent()->text( 0 ) );
+            else
+                qb.setOptions( QueryBuilder::optOnlyCompilations );
+
             qb.addMatch( m_cat2, item->text( 0 ) );
 
             if ( m_cat3 == QueryBuilder::tabSong )
@@ -482,7 +491,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             break;
 
         case 2:
-            qb.addMatch( m_cat1, item->parent()->parent()->text( 0 ) );
+            // check for compilations
+            if ( item->parent()->parent()->text( 0 ) != i18n( "Various Artists" ) )
+                qb.addMatch( m_cat1, item->parent()->parent()->text( 0 ) );
+            else
+                qb.setOptions( QueryBuilder::optOnlyCompilations );
+
             qb.addMatch( m_cat2, item->parent()->text( 0 ) );
             qb.addMatch( m_cat3, item->text( 0 ) );
 
@@ -846,12 +860,18 @@ CollectionView::listSelected() {
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
         {
+            bool sampler = item->text( 0 ) == i18n( "Various Artists" );
             qb.clear();
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addMatch( m_cat1, item->text( 0 ) );
+
+            if ( !sampler )
+                qb.addMatch( m_cat1, item->text( 0 ) );
+            else
+                qb.setOptions( QueryBuilder::optOnlyCompilations );
+
             qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
 
-            qb.sortBy( m_cat1, QueryBuilder::valName );
+            if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
             if ( m_cat2 != QueryBuilder::tabSong ) qb.sortBy( m_cat2, QueryBuilder::valName );
             if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
@@ -880,13 +900,19 @@ CollectionView::listSelected() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() && !child->parent()->isSelected() )
                 {
+                    bool sampler = item->text( 0 ) == i18n( "Various Artists" );
                     qb.clear();
                     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-                    qb.addMatch( m_cat1, item->text( 0 ) );
+
+                    if ( !sampler )
+                        qb.addMatch( m_cat1, item->text( 0 ) );
+                    else
+                        qb.setOptions( QueryBuilder::optOnlyCompilations );
+
                     qb.addMatch( m_cat2, child->text( 0 ) );
                     qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
 
-                    qb.sortBy( m_cat1, QueryBuilder::valName );
+                    if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                     qb.sortBy( m_cat2, QueryBuilder::valName );
                     if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
                     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
@@ -927,14 +953,20 @@ CollectionView::listSelected() {
                 for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                     if ( grandChild->isSelected() && !grandChild->parent()->isSelected() )
                     {
+                        bool sampler = item->text( 0 ) == i18n( "Various Artists" );
                         qb.clear();
                         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-                        qb.addMatch( m_cat1, item->text( 0 ) );
+
+                        if ( !sampler )
+                            qb.addMatch( m_cat1, item->text( 0 ) );
+                        else
+                            qb.setOptions( QueryBuilder::optOnlyCompilations );
+
                         qb.addMatch( m_cat2, child->text( 0 ) );
                         qb.addMatch( m_cat3, grandChild->text( 0 ) );
                         qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
 
-                        qb.sortBy( m_cat1, QueryBuilder::valName );
+                        if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                         qb.sortBy( m_cat2, QueryBuilder::valName );
                         qb.sortBy( m_cat3, QueryBuilder::valName );
                         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );

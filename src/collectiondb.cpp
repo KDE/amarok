@@ -1391,11 +1391,11 @@ QueryBuilder::addFilter( int tables, const QString& filter )
     if ( !filter.isEmpty() )
     {
         m_where += "AND ( 0 ";
-        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + filter + "%' ";
-        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + filter + "%' ";
-        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + filter + "%' ";
-        if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + filter + "%' ";
-        if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + filter + "%' ";
+        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + m_db.escapeString( filter ) + "%' ";
         m_where += " ) ";
     }
 
@@ -1409,11 +1409,11 @@ QueryBuilder::addMatch( int tables, const QString& match )
     if ( !match.isEmpty() )
     {
         m_where += "AND ( 0 ";
-        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + match + "' ";
-        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + match + "' ";
-        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + match + "' ";
-        if ( tables & tabYear ) m_where += "OR year.name LIKE '" + match + "' ";
-        if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + match + "' ";
+        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabYear ) m_where += "OR year.name LIKE '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + m_db.escapeString( match ) + "' ";
         m_where += " ) ";
     }
 
@@ -1427,11 +1427,11 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
     if ( !filter.isEmpty() )
     {
         m_where += "AND ( 1 ";
-        if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + filter + "%' ";
-        if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + filter + "%' ";
-        if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + filter + "%' ";
-        if ( tables & tabYear ) m_where += "AND year.name <> '%" + filter + "%' ";
-        if ( tables & tabSong ) m_where += "AND tags.title <> '%" + filter + "%' ";
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '%" + m_db.escapeString( filter ) + "%' ";
+        if ( tables & tabSong ) m_where += "AND tags.title <> '%" + m_db.escapeString( filter ) + "%' ";
         m_where += " ) ";
     }
 
@@ -1445,11 +1445,11 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
     if ( !match.isEmpty() )
     {
         m_where += "AND ( 1 ";
-        if ( tables & tabAlbum ) m_where += "AND album.name <> '" + match + "' ";
-        if ( tables & tabArtist ) m_where += "AND artist.name <> '" + match + "' ";
-        if ( tables & tabGenre ) m_where += "AND genre.name <> '" + match + "' ";
-        if ( tables & tabYear ) m_where += "AND year.name <> '" + match + "' ";
-        if ( tables & tabSong ) m_where += "AND tags.title <> '" + match + "' ";
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '" + m_db.escapeString( match ) + "' ";
+        if ( tables & tabSong ) m_where += "AND tags.title <> '" + m_db.escapeString( match ) + "' ";
         m_where += " ) ";
     }
 
