@@ -672,6 +672,8 @@ GstEngine::configChanged() //SLOT
     // Stop playback and rebuild output pipeline, in order to apply new settings
     destroyPipeline();
     createPipeline();
+
+    emit stateChanged( Engine::Empty );
 }
 
 
@@ -826,7 +828,6 @@ GstEngine::destroyPipeline()
         gst_element_set_state( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         m_pipelineFilled = false;
-        emit stateChanged( Engine::Empty );
     }
 
     // Destroy KIO transmission job
@@ -890,7 +891,7 @@ InputPipeline::InputPipeline()
     if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
 
     // More buffers means less dropouts and higher latency
-    g_object_set( G_OBJECT( queue ), "max-size-buffers", 120, NULL );
+    g_object_set( G_OBJECT( queue ), "max-size-buffers", 150, NULL );
 
     // Start silent
     g_object_set( G_OBJECT( volume ), "volume", 0.0, NULL );
