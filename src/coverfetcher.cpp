@@ -210,13 +210,13 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
                 container->setFixedSize( container->size() );
                 container->show();
             }
-          }
         }
-        else
-        {
-            m_pixmap.loadFromData( m_buffer, m_bufferIndex );
-            saveCover();
-        }
+    }
+    else
+    {
+        m_pixmap.loadFromData( m_buffer, m_bufferIndex );
+        saveCover();
+    }
 }
 
 void 
@@ -224,6 +224,7 @@ CoverFetcher::editSearch() //SLOT
 {
     AmazonSearch* sdlg = new AmazonSearch();
     sdlg->textLabel->setText( m_text );
+    sdlg->sizeCombo->setCurrentItem( AmarokConfig::coverSize() );
     sdlg->searchString->setText( m_keyword );
     sdlg->setModal( true );
             
