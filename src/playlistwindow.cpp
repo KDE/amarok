@@ -324,11 +324,11 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
     switch( e->type() )
     {
-    case QEvent::FocusIn:
+    case 8/*QEvent::FocusIn*/:
         m_browsers->autoCloseBrowsers();
         break;
 
-    case QEvent::KeyPress:
+    case 6/*QEvent::KeyPress*/:
 
         //there are a few keypresses that we intercept
 
