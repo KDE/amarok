@@ -210,7 +210,6 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
 
-    kdDebug() << "canDecode() result: " << success << endl;
     return success;
 
 error:
