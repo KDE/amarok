@@ -34,7 +34,6 @@ extern "C"
 
 extern "C" void* create_plugin()
 {
-    bool restart = false;
     return new GstEngine();
 }
 

@@ -59,7 +59,6 @@ email                : markey@web.de
 
 extern "C" void* create_plugin()
 {
-    bool restart = false;
     return new ArtsEngine();
 }
 
