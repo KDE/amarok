@@ -197,15 +197,29 @@ DO-NOT-IMPLEMENT:
 
 BACKTRACE/DEBUG
 
-When playing vorbis streams, after new track has started:
-
-amarok: [static void GstEngine::found_tag_cb(GstElement*, GstElement*, GstTagList*, void*)]
-INFO  (0x8582548 - 305938:20:50.888636000) GST_ELEMENT_PADS( 7985) gstelement.c(1121):gst_element_add_pad:<oggdemux0> addingpad 'serial_951087702'
-INFO  (0x8582548 - 305938:20:51.074880000)       GST_EVENT( 7985) gstevent.c(171):gst_event_new: creating new event type 12:0x84c94b8
-INFO  (0x8582548 - 305938:20:51.075259000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<sink_ident:sink> Sending event 0x84c94b8 to all internally linked pads
-INFO  (0x8582548 - 305938:20:51.075768000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<oggdemux0:sink> Sending event 0x84c94b8 to all internally linked pads
-INFO  (0x8582548 - 305938:20:51.076188000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<vorbisdec0:sink> Sending event 0x84c94b8 to all internally linked pads
-INFO  (0x8582548 - 305938:20:51.076575000)        GST_PADS( 7985) gstpad.c(3953):gst_pad_event_default_dispatch:<src_0:sink>
+18:30 <xt> Program received signal SIGSEGV, Segmentation fault.
+18:30 <xt> [Switching to Thread 16384 (LWP 26659)]
+18:30 <xt> 0x0000002a989f3a66 in g_source_set_closure ()
+18:30 <xt>    from /usr/lib/libgobject-2.0.so.0
+18:30 <xt> (gdb) bt
+18:30 <xt> #0  0x0000002a989f3a66 in g_source_set_closure ()
+18:30 <xt>    from /usr/lib/libgobject-2.0.so.0
+18:30 <xt> #1  0x0000002a989f7a2c in g_type_register_static ()
+18:30 <xt>    from /usr/lib/libgobject-2.0.so.0
+18:30 <xt> #2  0x0000002a98698e73 in gst_equalizer_get_type ()
+18:30 <xt>    from /usr/kde/3.3/lib/kde3/libamarok_gstengine_plugin.so
+18:30 <xt> #3  0x0000002a98699786 in gst_equalizer_new ()
+18:30 <xt>    from /usr/kde/3.3/lib/kde3/libamarok_gstengine_plugin.so
+18:30 <xt> #4  0x0000002a98692439 in GstEngine::createPipeline ()
+18:30 <xt>    from /usr/kde/3.3/lib/kde3/libamarok_gstengine_plugin.so
+18:30 <xt> #5  0x0000002a98692a1a in GstEngine::init ()
+18:30 <xt>    from /usr/kde/3.3/lib/kde3/libamarok_gstengine_plugin.so
+18:30 <xt> #6  0x00000000004871a5 in QValueListPrivate<QString>::contains ()
+18:30 <xt> #7  0x0000000000449082 in QPtrList<KFileItem>::deleteItem ()
+18:30 <xt> #8  0x000000000044a46c in QPtrList<KFileItem>::deleteItem ()
+18:30 <xt> #9  0x00000000004fb4ea in QWizard::setFinish ()
+18:30 <xt> #10 0x0000002a95d94e31 in __libc_start_main () from /lib/libc.so.6
+18:30 <xt> #11 0x000000000044269a in ?? ()
 
 
 
