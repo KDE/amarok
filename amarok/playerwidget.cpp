@@ -102,7 +102,7 @@ void AmarokSlider::mousePressEvent( QMouseEvent *e )
 // FIXME Move implementation to separate sourcefile
 AmarokSystray::AmarokSystray( PlayerWidget *child, KActionCollection *ac ) : KSystemTray( child )
 {
-    setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
+//    setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
 
     // berkus: Since it doesn't come to you well, i'll explain it here:
