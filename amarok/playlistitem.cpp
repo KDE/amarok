@@ -37,11 +37,6 @@
 //statics
 PlaylistItem *PlaylistItem::GlowItem  = 0;
 
-//no reason to make this a member function
-//FIXME make it a static member function
-static const QString zeroPad( long );
-
-
 
 PlaylistItem::PlaylistItem( QListView* lv, QListViewItem *lvi, const KURL &u, const MetaBundle *t )
       : KListViewItem( lv, lvi, ( u.protocol() == "file" ) ? u.fileName() : u.prettyURL() )
@@ -96,8 +91,9 @@ MetaBundle PlaylistItem::metaBundle()
                        text( 7 ),
                        ( f.isNull() ) ? 0 : f.audioProperties() );
 
-    if( text(  9 ).isEmpty() ) setText(  9, bundle.prettyLength()  );
-    if( text( 10 ).isEmpty() ) setText( 10, bundle.prettyBitRate() );
+    //just set it as we just did an accurate pass
+    setText(  9, bundle.prettyLength()  );
+    setText( 10, bundle.prettyBitRate() );
 
     return bundle;
 }
@@ -105,19 +101,31 @@ MetaBundle PlaylistItem::metaBundle()
 
 void PlaylistItem::setMeta( const MetaBundle &bundle )
 {
-    if( !bundle.m_title.isEmpty() ) setText( 1, bundle.m_title ); //can be already set by playlist files
-    setText( 2, bundle.m_artist );
-    setText( 3, bundle.m_album );
-    setText( 4, bundle.m_year );
-    setText( 5, bundle.m_comment );
-    setText( 6, bundle.m_genre );
-    setText( 7, bundle.m_track );
-
-    //FIXME don't overwrite the playlist bitrate/lengths with nothing!
-    setText( 9, bundle.prettyLength() );
+    setText( 1,  bundle.m_title );
+    setText( 2,  bundle.m_artist );
+    setText( 3,  bundle.m_album );
+    setText( 4,  bundle.m_year );
+    setText( 5,  bundle.m_comment );
+    setText( 6,  bundle.m_genre );
+    setText( 7,  bundle.m_track );
+    setText( 9,  bundle.prettyLength() );
     setText( 10, bundle.prettyBitRate() );
 }
 
+
+void PlaylistItem::setText( int column, const QString &newText )
+{
+    switch( column ) {
+    case 1:
+    case 9:
+    case 10:
+        //FIXME apparently if you don't set something it hangs the UI!s
+        if( newText.isEmpty() ) { KListViewItem::setText( column, text( column ) ); break; }
+        //else kdDebug() << newText << endl;
+    default:
+        KListViewItem::setText( column, newText );
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS

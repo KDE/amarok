@@ -167,6 +167,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, /*KActionCollection *ac,*/ cons
 
     //TODO remove this in a few versions
     if( columnWidth( 0 ) == 0 ) setColumnWidth( 0, 100 );
+
+    kdDebug() << "KListViewItem: " << sizeof( KListViewItem ) << endl;
+    kdDebug() << "QListViewItem: " << sizeof( QListViewItem ) << endl;
 }
 
 
@@ -306,10 +309,35 @@ void PlaylistWidget::saveM3u( const QString &fileName ) const
             url = static_cast<const PlaylistItem *>(item)->url();
 
             if ( url.protocol() == "file" )
+            {
+                stream << "#EXTINF:";
+                {
+                    QString length = item->text( 9 );
+
+                    if( length.isEmpty() ); //do nothing
+                    else if( length == "-" ) length += '1';
+                    else
+                    {
+                        //TODO if you ever decide to store length as an int in the playlistItem, scrap this!
+                        int m = length.section( ':', 0, 0 ).toInt();
+                        int s = length.section( ':', 1, 1 ).toInt();
+
+                        kdDebug() << m << endl;
+                        kdDebug() << s << endl;
+
+                        length.setNum( m * 60 + s );
+                    }
+
+                    stream << length;
+                }
+                stream << ',';
+                stream << item->text( 1 );
+                stream << '\n';
                 stream << url.path();
+            }
             else
             {
-                stream << "#EXTINF:-1," + item->text( 0 ) + "\n";
+                stream << QString( "#EXTINF:-1,%1\n" ).arg( item->text( 1 ) );
                 stream << url.url();
             }
 
@@ -704,7 +732,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
             {
                 if( it.current()->isSelected() )
                 {
-                    m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ) );
+                    m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
                 }
                 else break;
             }
@@ -725,7 +753,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
 }
 
 
-void PlaylistWidget::showTrackInfo( const PlaylistItem *pItem ) const //SLOT
+void PlaylistWidget::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 {
     QString str( "<html><body><table border=\"1\">" );
 
@@ -828,12 +856,13 @@ void PlaylistWidget::slotEraseMarker() //SLOT
 
 void PlaylistWidget::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
 {
-    m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ) );
+    m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ), true );
 
     QListViewItem *below = lvi->itemBelow();
     //FIXME will result in nesting of this function?
     if( below && below->isSelected() ) { rename( below, col ); }
 }
+
 
 void PlaylistWidget::undo() { switchState( m_undoList, m_redoList ); } //SLOT
 void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT

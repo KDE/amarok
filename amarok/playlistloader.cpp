@@ -337,18 +337,18 @@ KURL::List PlaylistLoader::loadM3u( QTextStream &stream, const QString &dir )
     QString str, title;
     int length = 0;
 
-    while ( !( str = stream.readLine() ).isNull() )
+    while( !(str = stream.readLine()).isNull() )
     {
-        if ( str.startsWith( "#EXTINF" ) )
+        if( str.startsWith( "#EXTINF" ) )
         {
-            length = str.find( ':' );
-            length = str.mid( length, str.find( ',' ) - length ).toInt();
-            title  = str.section( ",", 1 );
+            QString extinf = str.section( ':', 1, 1 );
+            length = extinf.section( ',', 0, 0 ).toInt();
+            title  = extinf.section( ',', 1, 1 );
         }
 
-        else if ( !str.startsWith( "#" ) && !str.isEmpty() )
+        else if( !str.startsWith( "#" ) && !str.isEmpty() )
         {
-            if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
+            if( !( str[0] == '/' || str.startsWith( "http://" ) ) )
                 str.prepend( dir );
 
             KURL url = KURL::fromPathOrURL( str );
@@ -477,12 +477,15 @@ PlaylistItem *PlaylistLoader::SomeUrlEvent::makePlaylistItem( QListView *lv )
 // ThreadWeaver ===============
 
 void
-ThreadWeaver::append( Job* const job )
+ThreadWeaver::append( Job* const job, bool priorityJob )
 {
    //for GUI access only
 
     mutex.lock();
-    m_Q.append( job );
+    if( priorityJob )
+        m_Q.prepend( job );
+    else
+        m_Q.append( job );
     mutex.unlock();
 
     if( !running() )

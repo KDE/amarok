@@ -135,7 +135,7 @@ public:
 
    class Job;
 
-   void append( Job* const );
+   void append( Job* const, bool = false );
    bool remove( Job* const ); //TODO implement virtual operator== ?
    void cancel();
    void halt() { m_bool = false; } //thread-safe, permanant shutdown

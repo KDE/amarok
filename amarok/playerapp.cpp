@@ -245,7 +245,7 @@ void PlayerApp::restoreSession()
 
         if ( seconds >= 0 )
         {
-            MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack() );
+            MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
 
             //TODO make a static syncronous readTags function
             play( AmarokConfig::resumeTrack(), *bundle );
@@ -561,7 +561,7 @@ void PlayerApp::play( const KURL &url, const MetaBundle &tags )
                       "<tr><td>Bitrate: " + QString::number( tags.m_bitrate ) + "</td></tr>" +
                       "<tr><td>Samplerate: " + QString::number( tags.m_sampleRate ) + "</td></tr><tr>";
 
-                      
+
     DIR *d = opendir( url.directory( FALSE, FALSE ).local8Bit() );
     if ( d )
     {
@@ -576,13 +576,13 @@ void PlayerApp::play( const KURL &url, const MetaBundle &tags )
             {
                 tipBuf += "<td><img width='80' src='" + url.directory( FALSE, FALSE ) + "/" + file + "'></td>";
             }
-            
+
         }
     }
 
     tipBuf += "</tr></table>";
     QToolTip::add( m_pPlayerWidget->m_pFrame, tipBuf );
-    
+
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
 
@@ -768,7 +768,7 @@ void PlayerApp::slotVisTimer()
 
     if ( !m_pPlayerWidget->isVisible() )
         return;
-        
+
     static int t = 1;
 
     if ( m_pEngine->state() == EngineBase::Playing )

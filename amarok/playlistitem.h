@@ -31,16 +31,16 @@ class MetaBundle;
 class PlaylistItem : public KListViewItem
 {
     public:
-        PlaylistItem( QListView *, QListViewItem *, const KURL &, const MetaBundle * = 0 );
+        PlaylistItem( QListView*, QListViewItem*, const KURL&, const MetaBundle* = 0 );
         ~PlaylistItem();
 
-        MetaBundle metaBundle() const;
         void setMeta( const MetaBundle& );
+        void setText( int, const QString& );
         void writeTag( const QString&, int );
 
+        MetaBundle metaBundle();
         const QString trackName() const { return text( 0 ); }
-        const QString length( uint = 0 ) const; //Return track length as mm:ss
-        const KURL    &url() const { return m_url; }
+        const KURL &url() const { return m_url; }
 
         //FIXME move to PlaylistWidget?
         static PlaylistItem *GlowItem;

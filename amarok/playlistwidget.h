@@ -141,7 +141,7 @@ class PlaylistWidget : private KListView
         PlaylistItem *restoreCurrentTrack();
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         void setCurrentTrack( PlaylistItem* );
-        void showTrackInfo( const PlaylistItem* ) const;
+        void showTrackInfo( PlaylistItem* ) const;
         void insertMediaInternal( const KURL::List&, QListViewItem* );
         bool saveState( QStringList& );
         void switchState( QStringList&, QStringList& );
