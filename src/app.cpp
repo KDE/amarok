@@ -65,6 +65,8 @@ App::App()
         : KApplication()
         , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
+    DEBUG_BEGIN
+
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" )  || args->isSet( "enqueue" );
 
@@ -132,6 +134,8 @@ App::App()
         CollectionDB::instance()->startScan();
 
     handleCliArgs();
+
+    DEBUG_END
 }
 
 App::~App()
@@ -830,7 +834,7 @@ void App::pruneCoverImages()
             QFile::remove( list.at( i )->absFilePath() );
         }
 
-    kdDebug() << "[App] Pruned " << pruneCount << " of " << count << " amazon cover images.\n";
+    debug() << "Pruned " << pruneCount << " of " << count << " amazon cover images.\n";
 #endif
 }
 
@@ -878,6 +882,11 @@ namespace amaroK
     {
         QApplication::restoreOverrideCursor();
     }
+}
+
+namespace Debug
+{
+    QCString __indent; //declared in debug.h
 }
 
 #include "app.moc"

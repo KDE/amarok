@@ -156,8 +156,14 @@ PlaylistLoader::doJob()
     {
         const KURL &url = *it;
 
-        if( url.isLocalFile() && isPlaylist( url ) && loadPlaylist( url.path() ) )
-            continue;
+        if ( url.isLocalFile() && isPlaylist( url ) ) {
+            if ( loadPlaylist( url.path() ) )
+                continue;
+            else
+                amaroK::StatusBar::instance()->longMessageThreadSafe(
+                        i18n( "The playlist located at '%1' could not be loaded. "
+                              "Sorry, for the lack of detail, I'll improve this code soon!" ) );
+        }
 
         if ( EngineController::canDecode( url ) )
             postItem( url );
@@ -182,13 +188,14 @@ PlaylistLoader::completeJob()
 
     if ( !list.isEmpty() ) {
         amaroK::StatusBar::instance()->shortLongMessage(
-                i18n("Some URLs could not be loaded."),
-        i18n("These URLs could not be loaded into the playlist: " ) ); //TODO
+                i18n("Some URLs were not suitable for the playlist."),
+                i18n("These URLs could not be loaded into the playlist: " ) ); //TODO
 
         for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
             kdDebug() << *it << endl;
     }
 
+    //syncronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
 
@@ -212,12 +219,7 @@ bool
 PlaylistLoader::loadPlaylist( const QString &path, Format type )
 {
     QFile file( path );
-    if ( !file.open( IO_ReadOnly ) ) {
-        amaroK::StatusBar::instance()->longMessageThreadSafe(
-                i18n( "The playlist file '%1', could not be opened" ),
-                KDE::StatusBar::Sorry );
-        return false;
-    }
+    if( !file.open( IO_ReadOnly ) ) return false;
     QTextStream stream( &file );
 
     switch( type ) {

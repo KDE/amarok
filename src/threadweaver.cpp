@@ -8,7 +8,6 @@
 
 #include "debug.h"
 #include <kcursor.h>
-#include <kdebug.h>
 #include <qapplication.h>
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -61,8 +60,6 @@ ThreadWeaver::queueJob( Job *job )
 {
     const QCString name = job->name();
     Thread *thread = findThread( name );
-
-    debug() << "Queuing: " << name << endl;
 
     if ( !thread ) {
         thread = new Thread( job->name() );
@@ -159,14 +156,12 @@ ThreadWeaver::registerDependent( QObject *dependent, const char *name )
 void
 ThreadWeaver::dependentAboutToBeDestroyed()
 {
-    debug() << k_funcinfo << ": " <<  sender()->name() << " destroyed\n";
+    debug() << "Dependent: " <<  sender()->name() << " destroyed\n";
 }
 
 void
 ThreadWeaver::customEvent( QCustomEvent *e )
 {
-    DEBUG_FUNC_INFO
-
     switch( e->type() )
     {
     case DeleteThreadEvent:
@@ -208,15 +203,11 @@ ThreadWeaver::Thread::Thread( const char *_name )
     : QThread()
     , name( _name )
 {
-    debug() << "Thread::Thread: " << QCString(_name) << endl;
-
     QApplication::postEvent( ThreadWeaver::instance(), new QCustomEvent( ThreadWeaver::OverrideCursorEvent ) );
 }
 
 ThreadWeaver::Thread::~Thread()
 {
-    debug() << "Thread::~Thread: " << QCString(name) << endl;
-
     //if we were aborted, this has already occurred
     ThreadWeaver::instance()->m_threads.remove( this );
 
@@ -257,11 +248,9 @@ ThreadWeaver::Thread::run()
 
     Job *job = runningJob;
 
-    debug() << "Running Job: " << QCString(job->name()) << endl;
-
     job->m_aborted |= !job->doJob();
 
-    debug() << "Job Done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
+    debug() << "Job done: " << QCString(job->name()) << ". Aborted? " << job->m_aborted << endl;
 
     QApplication::postEvent( ThreadWeaver::instance(), job );
 }
@@ -288,15 +277,11 @@ ThreadWeaver::Job::Job( const char *name )
     , m_percentDone( 0 )
     , m_progressDone( 0 )
     , m_totalSteps( 0 )
-{
-    debug() << "Job::Job: " << QCString(m_name) << endl;
-}
+{}
 
 
 ThreadWeaver::Job::~Job()
-{
-    debug() << "Job::~Job: " << QCString(m_name) << endl;
-}
+{}
 
 void
 ThreadWeaver::Job::setProgressTotalSteps( uint steps )

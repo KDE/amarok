@@ -1276,6 +1276,8 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 void
 Playlist::customEvent( QCustomEvent *e )
 {
+    //TODO do as much of this as possible inside playlistLoader, it is a friend after all
+
     //the threads send their results here for completion that is GUI-safe
     switch( e->type() )
     {

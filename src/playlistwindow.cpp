@@ -22,6 +22,7 @@
 #include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
+#include "debug.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -44,7 +45,6 @@
 
 #include <kaction.h>          //m_actionCollection
 #include <kapplication.h>     //kapp
-#include <kdebug.h>
 #include <kfiledialog.h>      //savePlaylist()
 #include <kglobal.h>
 #include <khtml_part.h>       //Welcome Tab
@@ -101,15 +101,17 @@ PlaylistWindow *PlaylistWindow::s_instance = 0;
 template <class B> void
 PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
 {
-    kdDebug() << "  Init: " << name << endl;
+    debug() << "BROWSER: " << name << endl;
 
-    clock_t start  = clock();
-        m_browsers->addBrowser( new B( name ), title, icon );
-    clock_t finish = clock();
+    DEBUG_INDENT
+        clock_t start  = clock();
+            m_browsers->addBrowser( new B( name ), title, icon );
+        clock_t finish = clock();
 
-    const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
+        const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
+    DEBUG_UNDENT
 
-    kdDebug() << "    Time: " << duration << "s\n";
+    debug() << "BROWSER: Initialization time: " << duration << "s\n";
 }
 
 
@@ -325,7 +327,9 @@ PlaylistWindow::init()
 
 
     //<Browsers>
-        kdDebug() << "[browserBar] Initialisation statistics:\n";
+        debug() << "Browser Initialisation:\n";
+        DEBUG_INDENT
+
         addBrowser<ContextBrowser>( "ContextBrowser", i18n( "Context" ), "info" );
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
         addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" );
@@ -333,6 +337,8 @@ PlaylistWindow::init()
         if ( MediaBrowser::isAvailable() )
             addBrowser<MediaBrowser>( "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
+
+        DEBUG_UNDENT
     //</Browsers>
 
 

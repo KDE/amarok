@@ -131,7 +131,7 @@ QStringList
 CollectionDB::query( const QString& statement, DbConnection *conn )
 {
     if ( DEBUG )
-        kdDebug() << "query-start: " << statement << endl;
+        debug() << "Query-start: " << statement << endl;
 
     clock_t start = clock();
 
@@ -156,7 +156,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
     {
         clock_t finish = clock();
         const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
-        kdDebug() << "[CollectionDB] SQL-query (" << duration << "s): " << statement << endl;
+        debug() << "SQL-query (" << duration << "s): " << statement << endl;
     }
     return values;
 }
@@ -171,7 +171,7 @@ int
 CollectionDB::insert( const QString& statement, DbConnection *conn )
 {
     if ( DEBUG )
-        kdDebug() << "insert-start: " << statement << endl;
+        debug() << "insert-start: " << statement << endl;
 
     clock_t start = clock();
 
@@ -196,7 +196,7 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
     {
         clock_t finish = clock();
         const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
-        kdDebug() << "[CollectionDB] SQL-insert (" << duration << "s): " << statement << endl;
+        debug() << "SQL-insert (" << duration << "s): " << statement << endl;
     }
     return id;
 }
@@ -602,7 +602,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
         if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
             continue;
 
-        kdDebug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
+        debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
         insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%1', '%2', '%3' );" )
          .arg( conn ? "_temp" : "" )
          .arg( escapeString( image ) )
@@ -623,7 +623,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, const 
 bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl )
 {
-    kdDebug() << "[CollectionDB] Saving cover for: " << artist << " - " << album << endl;
+    debug() << "Saving cover for: " << artist << " - " << album << endl;
 
     //show a wait cursor for the duration
     amaroK::OverrideCursor keep;
@@ -665,12 +665,12 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
             TagLib::ID3v2::FrameList l = f.ID3v2Tag()->frameListMap()[ "APIC" ];
             if ( !l.isEmpty() )
             {
-                kdDebug() << "Found APIC frame(s)" << endl;
+                debug() << "Found APIC frame(s)" << endl;
                 TagLib::ID3v2::Frame *f = l.front();
                 TagLib::ID3v2::AttachedPictureFrame *ap = (TagLib::ID3v2::AttachedPictureFrame*)f;
 
                 const TagLib::ByteVector &imgVector = ap->picture();
-                kdDebug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
+                debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
 
                 QByteArray imgData;
                 const char *tempCString = imgVector.data();
@@ -1231,7 +1231,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary, DbCo
 
         if ( artists.count() > dirs.count() )
         {
-            kdDebug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
+            debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
             query( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
                       .arg( album_id ), conn );
         }
@@ -1268,7 +1268,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 
     if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
-        kdDebug() << "Current song edited, updating widgets: " << bundle.title() << endl;
+        debug() << "Current song edited, updating widgets: " << bundle.title() << endl;
         EngineController::instance()->currentTrackMetaDataChanged( bundle );
     }
 
@@ -1323,8 +1323,8 @@ CollectionDB::applySettings()
     }
     if ( recreateConnections )
     {
-        kdDebug()
-            << "[CollectionDB] Database engine settings changed: "
+        debug()
+            << "Database engine settings changed: "
             << "recreating DbConnections" << endl;
         // If Database engine was changed, recreate DbConnections.
         destroy();
@@ -1343,7 +1343,7 @@ QCString
 CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
     KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() + file.local8Bit() );
-//     kdDebug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
+//     debug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }
 
@@ -1386,7 +1386,7 @@ void
 CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    kdDebug() << "[CollectionDB] Fetching cover for " << artist << " - " << album << endl;
+    debug() << "Fetching cover for " << artist << " - " << album << endl;
 
     CoverFetcher* fetcher = new CoverFetcher( parent, artist, album );
     connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
@@ -1429,7 +1429,7 @@ CollectionDB::stopScan() //SLOT
 void
 CollectionDB::dirDirty( const QString& path )
 {
-    kdDebug() << k_funcinfo << "Dirty: " << path << endl;
+    debug() << k_funcinfo << "Dirty: " << path << endl;
 
     ThreadWeaver::instance()->queueJob( new CollectionReader( this, path ) );
 }
@@ -1439,7 +1439,7 @@ void
 CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
     if ( fetcher->error() ) {
-        kdError() << fetcher->errorMessage() << endl;
+        error() << fetcher->errorMessage() << endl;
         emit coverFetcherError( fetcher->errorMessage() );
     }
     else {
@@ -1452,7 +1452,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 void
 CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& suggestions )
 {
-    kdDebug() << "Similar artists received" << endl;
+    debug() << "Similar artists received" << endl;
     query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
 
     for ( uint i = 0; i < suggestions.count(); i++ )
@@ -1488,13 +1488,13 @@ CollectionDB::initialize()
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
         {
-            kdDebug() << "Rebuilding database!" << endl;
+            debug() << "Rebuilding database!" << endl;
             dropTables();
             createTables();
         }
         if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
         {
-            kdDebug() << "Rebuilding stats-database!" << endl;
+            debug() << "Rebuilding stats-database!" << endl;
             dropStatsTable();
             createStatsTable();
         }
@@ -1574,11 +1574,11 @@ SqliteConnection::SqliteConnection( SqliteConfig* config )
         file.readLine( format, 50 );
         if ( !format.startsWith( "SQLite format 3" ) )
         {
-            kdWarning() << "Database versions incompatible. Removing and rebuilding database.\n";
+            warning() << "Database versions incompatible. Removing and rebuilding database.\n";
         }
         else if ( sqlite3_open( path, &m_db ) != SQLITE_OK )
         {
-            kdWarning() << "Database file corrupt. Removing and rebuilding database.\n";
+            warning() << "Database file corrupt. Removing and rebuilding database.\n";
             sqlite3_close( m_db );
         }
         else
@@ -1623,9 +1623,9 @@ QStringList SqliteConnection::query( const QString& statement )
 
     if ( error != SQLITE_OK )
     {
-        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
-        kdError() << sqlite3_errmsg( m_db ) << endl;
-        kdError() << "on query: " << statement << endl;
+        Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
+        Debug::error() << sqlite3_errmsg( m_db ) << endl;
+        Debug::error() << "on query: " << statement << endl;
         values = QStringList();
     }
     else
@@ -1640,14 +1640,14 @@ QStringList SqliteConnection::query( const QString& statement )
             if ( error == SQLITE_BUSY )
             {
                 if ( busyCnt++ > 20 ) {
-                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
+                    Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
                     break;
                 }
                 ::usleep( 100000 ); // Sleep 100 msec
-                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
+                debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
             }
             if ( error == SQLITE_MISUSE )
-                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
+                debug() << "sqlite3_step: MISUSE" << endl;
             if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                 break;
 
@@ -1662,9 +1662,9 @@ QStringList SqliteConnection::query( const QString& statement )
 
         if ( error != SQLITE_DONE )
         {
-            kdError() << k_funcinfo << "sqlite_step error.\n";
-            kdError() << sqlite3_errmsg( m_db ) << endl;
-            kdError() << "on query: " << statement << endl;
+            Debug::error() << k_funcinfo << "sqlite_step error.\n";
+            Debug::error() << sqlite3_errmsg( m_db ) << endl;
+            Debug::error() << "on query: " << statement << endl;
             values = QStringList();
         }
     }
@@ -1684,9 +1684,9 @@ int SqliteConnection::insert( const QString& statement )
 
     if ( error != SQLITE_OK )
     {
-        kdError() << k_funcinfo << "[CollectionDB] sqlite3_compile error:" << endl;
-        kdError() << sqlite3_errmsg( m_db ) << endl;
-        kdError() << "on insert: " << statement << endl;
+        Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
+        Debug::error() << sqlite3_errmsg( m_db ) << endl;
+        Debug::error() << "on insert: " << statement << endl;
     }
     else
     {
@@ -1699,14 +1699,14 @@ int SqliteConnection::insert( const QString& statement )
             if ( error == SQLITE_BUSY )
             {
                 if ( busyCnt++ > 20 ) {
-                    kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
+                    Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
                     break;
                 }
                 ::usleep( 100000 ); // Sleep 100 msec
-                kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
+                debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
             }
             if ( error == SQLITE_MISUSE )
-                kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
+                debug() << "sqlite3_step: MISUSE" << endl;
             if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                 break;
         }
@@ -1715,9 +1715,9 @@ int SqliteConnection::insert( const QString& statement )
 
         if ( error != SQLITE_DONE )
         {
-            kdError() << k_funcinfo << "sqlite_step error.\n";
-            kdError() << sqlite3_errmsg( m_db ) << endl;
-            kdError() << "on insert: " << statement << endl;
+            Debug::error() << k_funcinfo << "sqlite_step error.\n";
+            Debug::error() << sqlite3_errmsg( m_db ) << endl;
+            Debug::error() << "on insert: " << statement << endl;
         }
     }
     return sqlite3_last_insert_rowid( m_db );
@@ -1783,12 +1783,12 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                 if ( !mysql::mysql_query(
                         m_db,
                         QString( "CREATE DATABASE " + config->database() ).latin1() ) )
-                    kdError() << "Failed to create database " << config->database() << "\n";
+                    error() << "Failed to create database " << config->database() << "\n";
             }
         }
     }
     else
-        kdError() << "Failed to allocate/initialize MySql struct\n";
+        error() << "Failed to allocate/initialize MySql struct\n";
 }
 
 
@@ -1822,14 +1822,14 @@ QStringList MySqlConnection::query( const QString& statement )
         {
             if ( mysql::mysql_field_count( m_db ) != 0 )
             {
-                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+                debug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
                 values = QStringList();
             }
         }
     }
     else
     {
-        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        debug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         values = QStringList();
     }
 
@@ -1913,7 +1913,7 @@ DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
 
     enqueue( dbConn );
     m_semaphore--;
-    kdDebug() << "available db connections: " << m_semaphore.available() << endl;
+    debug() << "Available db connections: " << m_semaphore.available() << endl;
 }
 
 
@@ -1945,7 +1945,7 @@ void DbConnectionPool::createDbConnections()
         enqueue( dbConn );
         m_semaphore--;
     }
-    kdDebug() << "available db connections: " << m_semaphore.available() << endl;
+    debug() << "Available db connections: " << m_semaphore.available() << endl;
 }
 
 
@@ -2247,7 +2247,7 @@ QueryBuilder::run()
     if ( !m_sort.isEmpty() ) cmd += " ORDER BY " + m_sort;
     cmd += m_limit;
 
-    kdDebug() << cmd << endl;
+    debug() << cmd << endl;
 
     return CollectionDB::instance()->query( cmd );
 }
