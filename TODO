@@ -3,10 +3,15 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #150 being the highest available (take this one for your next bug and increase here)
+           #151 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+ 
+  FIX 150 <gjehle> Is it a known bug that amarok has problems with streamtitles where there's a >> ' << in the name ?
+                   Should be: The DJ Formerly Known As Arnie - Can't Usually Notice Tuesdays - LIVE from Almere, The Netherlands
+                   It is:
+                   http://jungletrain.net/ -- The DJ Formerly Known As Arnie - Can
 
   FIX 149<chimaera>If you select a different sink and then check/uncheck custom audio device, the sink jumps back
                    to the last selected.
