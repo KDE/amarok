@@ -23,8 +23,7 @@ enum {
 enum {
     ARG_0,
     ARG_BLOCKSIZE,
-    ARG_TIMEOUT,
-    ARG_BUFFER_MIN
+    ARG_BUFFER_MIN,
 };
 
 GstElementDetails gst_streamsrc_details =
@@ -83,10 +82,6 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
                                                            "Size in bytes to read per buffer", 1, G_MAXULONG, DEFAULT_BLOCKSIZE,
                                                            ( GParamFlags ) G_PARAM_READWRITE ) );
 
-    g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_TIMEOUT,
-                                      g_param_spec_uint64 ( "timeout", "Timeout", "Read timeout in nanoseconds",
-                                                            0, G_MAXUINT64, 0, ( GParamFlags ) G_PARAM_READWRITE ) );
-
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BUFFER_MIN,
                                       g_param_spec_uint ( "buffer_min", "Buffer_Min", "Minimum buffer fill until playback starts",
                                                             0, G_MAXUINT, 50000, ( GParamFlags ) G_PARAM_READWRITE ) );
@@ -118,13 +113,11 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
     gst_pad_set_get_function ( streamsrc->srcpad, gst_streamsrc_get );
     gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
 
-    streamsrc->playing = false;
     streamsrc->stopped = false;
     streamsrc->curoffset = 0;
 
     // Properties
     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
-    streamsrc->timeout = 0;
 }
 
 
@@ -146,9 +139,6 @@ gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * val
     switch ( prop_id ) {
     case ARG_BLOCKSIZE:
         src->blocksize = g_value_get_ulong ( value );
-        break;
-    case ARG_TIMEOUT:
-        src->timeout = g_value_get_uint64 ( value );
         break;
     case ARG_BUFFER_MIN:
         src->buffer_min = g_value_get_uint ( value );
@@ -175,9 +165,6 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
     case ARG_BLOCKSIZE:
         g_value_set_ulong ( value, src->blocksize );
         break;
-    case ARG_TIMEOUT:
-        g_value_set_uint64 ( value, src->timeout );
-        break;
     case ARG_BUFFER_MIN:
         g_value_set_uint ( value, src->buffer_min );
         break;
@@ -191,9 +178,7 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 static GstElementStateReturn
 gst_streamsrc_change_state (GstElement * element)
 {
-  kdDebug() << k_funcinfo << endl;
-
-  GstStreamSrc *src = GST_STREAMSRC (element);
+//   GstStreamSrc *src = GST_STREAMSRC (element);
 
   switch (GST_STATE_TRANSITION (element)) {
     case GST_STATE_NULL_TO_READY:
@@ -225,36 +210,41 @@ gst_streamsrc_get ( GstPad* pad )
         return GST_DATA( gst_event_new( GST_EVENT_FLUSH ) );
 
     // Signal KIO to resume transfer when buffer reaches our low limit
-    if ( *src->streamBufIndex < src->buffer_resume )
+    if ( *src->m_bufIndex < src->buffer_resume )
         g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
 
-    if ( *src->streamBufStop ) {
+    if ( *src->m_bufStop ) {
         // Send EOS event when buffer is empty
-        if ( *src->streamBufIndex == 0 ) {
+        if ( *src->m_bufIndex == 0 ) {
             kdDebug() << "Streamsrc EOS\n";
             src->stopped = true;
             gst_element_set_eos (GST_ELEMENT( src ) );
             return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
         }
     }
-    // Return filler-event when buffer index is below minimum level
-    else if ( ( !src->playing && *src->streamBufIndex < src->buffer_min ) ||
-              (  src->playing && *src->streamBufIndex < src->blocksize ) )
+    // When buffering, return filler-event when buffer index is below minimum level
+    else if ( *src->m_buffering && *src->m_bufIndex < src->buffer_min )
         return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
 
-    src->playing = true;
-    int readBytes = MIN( *src->streamBufIndex, src->blocksize );
+    // When buffer is empty, return filler-event and start rebuffering
+    else if ( !*src->m_buffering && *src->m_bufIndex < src->blocksize ) {
+        *src->m_buffering = true;
+        return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
+    }
+
+    *src->m_buffering = false;
+    int readBytes = MIN( *src->m_bufIndex, src->blocksize );
 
     GstBuffer* buf = gst_buffer_new_and_alloc( readBytes );
     guint8* data = GST_BUFFER_DATA( buf );
 
     // Copy stream buffer content into gst buffer
-    memcpy( data, src->streamBuf, readBytes );
+    memcpy( data, src->m_buf, readBytes );
     // Move stream buffer content to beginning
-    memmove( src->streamBuf, src->streamBuf + readBytes, *src->streamBufIndex );
+    memmove( src->m_buf, src->m_buf + readBytes, *src->m_bufIndex );
 
     // Adjust buffer index
-    *src->streamBufIndex -= readBytes;
+    *src->m_bufIndex -= readBytes;
 
     GST_BUFFER_OFFSET ( buf ) = src->curoffset;
     GST_BUFFER_OFFSET_END ( buf ) = src->curoffset + readBytes;
@@ -265,14 +255,15 @@ gst_streamsrc_get ( GstPad* pad )
 
 
 GstStreamSrc*
-gst_streamsrc_new ( char* buf, int* index, bool* stop )
+gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 {
     GstStreamSrc * object = GST_STREAMSRC ( g_object_new ( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
 
-    object->streamBuf = buf;
-    object->streamBufIndex = index;
-    object->streamBufStop = stop;
+    object->m_buf = buf;
+    object->m_bufIndex = index;
+    object->m_bufStop = stop;
+    object->m_buffering = buffering;
 
     return object;
 }

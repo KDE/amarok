@@ -409,7 +409,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     }
     else {
         // Create our custom streamsrc element, which transports data into the pipeline
-        input->src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop ) );
+        m_streamBuffering = true;
+        input->src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop, &m_streamBuffering ) );
         gst_element_set( input->src, "buffer_min", STREAMBUF_MIN, NULL );
         gst_bin_add ( GST_BIN ( input->bin ), input->src );
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
@@ -1013,13 +1014,12 @@ GstEngine::destroyInput( InputPipeline* input )
 void
 GstEngine::sendBufferStatus()
 {
-    int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );
+    if ( m_streamBuffering )
+    {
+        int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 105.0 );
 
-    if ( percent >= 100 && percent < 120 )
-        percent = 100;
-
-    if ( percent <= 100 )
-        emit statusText( i18n( "Buffering.. %1%" ).arg( percent ) );
+        emit statusText( i18n( "Buffering.. %1%" ).arg( MIN( percent, 100 ) ) );
+    }
 }
 
 

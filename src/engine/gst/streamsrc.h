@@ -30,20 +30,20 @@ struct _GstStreamSrc
     /* pads */
     GstPad *srcpad;
 
-    bool playing;
     bool stopped;
     long curoffset;
-    
+
     // Properties
     glong blocksize; /* Bytes per read */
     guint64 timeout;  /* Read timeout, in nanoseconds */
     guint buffer_min; /* Minimum buffer fill */
     guint buffer_resume; /*Resume KIO transfer at this point*/
-    
+
     // Pointers to member variables of GstEngine
-    char* streamBuf;
-    int* streamBufIndex;
-    bool* streamBufStop;
+    char* m_buf;
+    int* m_bufIndex;
+    bool* m_bufStop;
+    bool* m_buffering;
 };
 
 struct _GstStreamSrcClass
@@ -56,7 +56,7 @@ struct _GstStreamSrcClass
 };
 
 GType gst_streamsrc_get_type( void );
-GstStreamSrc* gst_streamsrc_new ( char* buf, int* index, bool* stop );
+GstStreamSrc* gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering );
 
 G_END_DECLS
 

@@ -152,6 +152,7 @@ class GstEngine : public Engine::Base
         char* m_streamBuf;
         int m_streamBufIndex;
         bool m_streamBufStop;
+        bool m_streamBuffering;
         KIO::TransferJob* m_transferJob;
         QMutex m_mutexScope;
 
