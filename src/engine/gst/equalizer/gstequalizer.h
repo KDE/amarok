@@ -48,6 +48,7 @@ struct _GstEqualizer
 {
     GstElement element;
     GstPad *srcpad;
+    GstPad *sinkpad;
 
     int band_count;
     int rate;

@@ -16,6 +16,7 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "config/gstconfig.h"
+#include "equalizer/gstequalizer.h"
 #include "enginebase.h"
 #include "gstengine.h"
 #include "streamsrc.h"
@@ -917,6 +918,10 @@ GstEngine::createPipeline()
         gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
 
     if ( !( m_gst_queue = createElement( "queue", m_gst_outputThread ) ) ) { return false; }
+    if ( GstConfig::useEqualizer() ) {
+        m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
+        gst_bin_add( GST_BIN( m_gst_outputThread ), m_gst_equalizer );
+    }
     if ( !( m_gst_identity = createElement( "identity", m_gst_outputThread ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_outputThread ) ) ) { return false; }
 
@@ -930,7 +935,10 @@ GstEngine::createPipeline()
     g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( outputError_cb ), 0 );
 
     /* link elements */
-    gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
+    if ( GstConfig::useEqualizer() )
+        gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_equalizer, m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
+    else
+        gst_element_link_many( m_gst_adder, m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
 
     setVolume( m_volume );
 

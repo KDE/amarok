@@ -79,9 +79,12 @@ gst_equalizer_init ( GstEqualizer* obj )
     kdDebug() << k_funcinfo << endl;
 
     obj->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
+    obj->sinkpad = gst_pad_new ( "sink", GST_PAD_SINK );
 
-    gst_pad_set_chain_function ( obj->srcpad, gst_equalizer_chain );
     gst_element_add_pad ( GST_ELEMENT ( obj ), obj->srcpad );
+    gst_element_add_pad ( GST_ELEMENT ( obj ), obj->sinkpad );
+
+    gst_pad_set_chain_function ( obj->sinkpad, gst_equalizer_chain );
 
     // Properties
 //     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
@@ -212,13 +215,12 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
     g_return_if_fail( pad != NULL );
 
     GstEqualizer* obj = GST_EQUALIZER ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* buf = GST_BUFFER( data_in );
-    guint8* d = GST_BUFFER_DATA( buf );
-    gint length = GST_BUFFER_SIZE( buf );
+    GstBuffer* inbuf = GST_BUFFER( data_in );
+    gint16 *data = (gint16*) GST_BUFFER_DATA( inbuf );
+    gint length = GST_BUFFER_SIZE( inbuf );
     gint srate = 41000;
     gint nch = 2;
 
-    gint16 *data = (gint16*) *d;
     /* Indexes for the history arrays
      * These have to be kept between calls to this function
      * hence they are static */
@@ -256,7 +258,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
         {
             pcm[channel] = data[index+channel];
             /* Preamp gain */
-            pcm[channel] *= obj->preamp[channel];
+//             pcm[channel] *= obj->preamp[channel];
 
             out[channel] = 0.;
             /* For each band */
@@ -279,7 +281,8 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
                  * The multiplication by 2.0 was 'moved' into the coefficients to save
                  * CPU cycles here */
                 /* Apply the gain  */
-                out[channel] +=  obj->data_history[band][channel].y[i]*obj->gain[band][channel]; // * 2.0;
+                out[channel] +=  obj->data_history[band][channel].y[i]*0.0; // * 2.0;
+//                 out[channel] +=  obj->data_history[band][channel].y[i]*obj->gain[band][channel]; // * 2.0;
             } /* For each band */
 
             /* Volume stuff
@@ -310,7 +313,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
         else k = 0;
     }/* For each pair of samples */
 
-    gst_pad_push( obj->srcpad, GST_DATA( buf ) );
+    gst_pad_push( obj->srcpad, GST_DATA( inbuf ) );
 }
 
 

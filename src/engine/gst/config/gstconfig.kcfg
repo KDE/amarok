@@ -46,6 +46,11 @@
             <min>0</min>
             <max>10000</max>
         </entry>
+        <entry key="Use Equalizer" type="Bool">
+            <label>Enables the equalizer plugin</label>
+            <whatsthis>When enabled, an equalizer plugin filters the audio stream.</whatsthis>
+            <default>false</default>
+        </entry>
     </group>
 
 </kcfg>

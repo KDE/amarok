@@ -138,6 +138,7 @@ class GstEngine : public Engine::Base
         // Output thread
         GstElement* m_gst_outputThread;
         GstElement* m_gst_queue;
+        GstElement* m_gst_equalizer;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
         GstElement* m_gst_audiosink;

@@ -16,6 +16,7 @@ INCLUDES = \
 libamarok_gstengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/libengine.la \
     $(top_builddir)/amarok/src/engine/gst/config/libgstconfig.la \
+    $(top_builddir)/amarok/src/engine/gst/equalizer/libgstequalizer.la \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(LIB_KFILE) \
     $(LIB_KDECORE)
