@@ -499,7 +499,7 @@ void PlaylistWindow::savePlaylist() const //SLOT
     {
         m_playlist->saveM3U( path );
         //add the saved playlist to playlist browser
-        PlaylistBrowser *pb = (PlaylistBrowser *)m_browsers->browser( "Playlists" );
+        PlaylistBrowser *pb = (PlaylistBrowser*)m_browsers->browser( "PlaylistBrowser" );
         pb->addPlaylist( path, true );
     }
 }
