@@ -45,7 +45,9 @@ class KProcess;
  *   engineStateChange: {empty|idle|paused|playing}
  *   trackChange
  *
+ * @see http://amarok.kde.org/wiki/index.php/Script-Writing_HowTo
  */
+
 class ScriptManager : public KDialogBase, public EngineObserver
 {
         Q_OBJECT
@@ -76,8 +78,18 @@ class ScriptManager : public KDialogBase, public EngineObserver
         /** Sends a string message to all running scripts */
         void notifyScripts( const QString& message );
 
+        /** Adds a script to the listview */
         void loadScript( const QString& path );
+
+        /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
+
+        /**
+         * Removes a directory including its contents
+         * @param directory Directory that should be removed.
+         * @return True if all files could be removed.
+         */
+        bool rmRecursively( const QString& directory );
 
         /** Observer reimplementations **/
         void engineStateChanged( Engine::State state );

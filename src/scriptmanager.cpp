@@ -195,22 +195,31 @@ ScriptManager::slotInstallScript()
 
     QString destination = amaroK::saveLocation( "scripts/" );
     const KArchiveDirectory* archiveDir = archive.directory();
-    archiveDir->copyTo( destination );
-    destination += archiveDir->name() + "/";
 
+    // Prevent installing a script that's already installed
+    const QString scriptFolder = destination + archiveDir->entries().first();
+    if ( QFile::exists( scriptFolder ) ) {
+        KMessageBox::error( this, i18n( "A script with the name '%1' is already installed. "
+                                        "Please uninstall it first." ).arg( archiveDir->entries().first() ) );
+        return;
+    }
+
+    archiveDir->copyTo( destination );
     m_installSuccess = false;
     recurseInstall( archiveDir, destination );
 
     if ( m_installSuccess )
         KMessageBox::information( this, i18n( "Script successfully installed." ) );
-    else
+
+    else {
         KMessageBox::sorry( this, i18n( "<p>Script installation failed.</p>"
                                         "<p>The package did not contain an executable file. "
                                         "Please inform the package maintainer about this error.</p>" ) );
+        rmRecursively( scriptFolder );
+    }
 }
 
 
-/** Copies the file permissions from the tarball */
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
 {
@@ -248,22 +257,11 @@ ScriptManager::slotUninstallScript()
         return;
 
     const QString directory = m_scripts[name].url.directory();
-    QDir dir( directory );
-    QStringList files = dir.entryList();
 
-    // Remove all files
-    bool rmSuccess = false;
-    QStringList::Iterator it;
-    for ( it = files.begin(); it != files.end(); ++it )
-        rmSuccess |= dir.remove( *it );
-
-    if ( !rmSuccess ) {
+    if ( !rmRecursively( directory ) ) {
         KMessageBox::sorry( this, i18n( "Could not uninstall this script. The ScriptManager can only uninstall scripts that were installed as packages." ) );
         return;
     }
-
-    // Remove directory as well
-    dir.rmdir( directory );
 
     // Remove all scripts from internal list that were in the uninstalled directory
     ScriptMap::Iterator itScripts;
@@ -449,6 +447,25 @@ ScriptManager::loadScript( const QString& path )
 
         slotCurrentChanged( m_base->listView->currentItem() );
     }
+}
+
+
+bool
+ScriptManager::rmRecursively( const QString& directory )
+{
+    QDir dir( directory );
+    QStringList files = dir.entryList();
+
+    // Remove all files
+    bool success = false;
+    QStringList::Iterator it;
+    for ( it = files.begin(); it != files.end(); ++it )
+        success |= dir.remove( *it );
+
+    // Remove directory as well
+    dir.rmdir( directory );
+
+    return success;
 }
 
 
