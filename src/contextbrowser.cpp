@@ -93,10 +93,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_currentTrackPage->setJScriptEnabled( true );
     m_currentTrackPage->setDNDEnabled( true );
     m_lyricsPage = new KHTMLPart( this, "lyrics_page" );
-    m_lyricsPage->setJScriptEnabled( false );
     m_lyricsPage->setJavaEnabled( false );
     m_lyricsPage->setPluginsEnabled( false );
-    m_lyricsPage->setOnlyLocalReferences( true );
     m_lyricsPage->setDNDEnabled( true );
 
     //aesthetics - no double frame
@@ -1765,9 +1763,9 @@ void ContextBrowser::showLyrics( const QString &hash )
             KURL::encode_string_no_slash( title ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().year() ) );
-    m_lyricSearchUrl = QString( "externalurl://www.google.com/search?ie=UTF-8&q=lyrics \"%1\" \"%2\"" )
-        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist(), 106 /*utf-8*/ ),
-              KURL::encode_string_no_slash( title, 106 /*utf-8*/ ) );
+    m_lyricSearchUrl = QString( "externalurl://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
+        .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
+              KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
     KIO::TransferJob* job = KIO::get( url, false, false );
 
