@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: New Playlist Browser, organizes multiple playlists, and offers smart
+       playlist functionality.
   ADD: Support for redirected streams and streams with no specified port.
   ADD: KIO support for GStreamer engine. Allows playing media via all
        protocols supported by KIO (ftp, audiocd, fish, etc). 
