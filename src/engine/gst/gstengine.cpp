@@ -1005,12 +1005,14 @@ void InputPipeline::prepareToDie()
 
         // Wait until queue is empty
         int filled = 1;
-        int count = 25;
+        int count = 100;
         while( filled && count ) {
             gst_element_get( queue, "current-level-buffers", &filled, NULL );
             ::usleep( 20000 ); // 20 msec
             count--;
         }
+        if ( !count )
+            kdDebug() << k_funcinfo << "Count reached 0\n";
 
         gst_element_set_state( thread, GST_STATE_READY );
 
