@@ -531,7 +531,7 @@ CollectionView::customEvent( QCustomEvent *e )
 {
     CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
     
-    if ( p ) {
+    if ( p && m_progress ) {
         switch ( p->state() ) {
         case CollectionReader::ProgressEvent::Start:
             m_progress->setProgress( 0 );
