@@ -251,8 +251,9 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         }
 
         const int id = menu.exec( e->globalPos() );
-
-        changeTimeout( id );
+	
+	if ( id != -1 )
+            changeTimeout( id );
     }
     else
         e->ignore();
