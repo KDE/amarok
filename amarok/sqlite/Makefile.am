@@ -3,10 +3,13 @@ noinst_LTLIBRARIES = \
 
 INCLUDES = \
     $(all_includes)
+    
+KDE_CFLAGS = \
+    -w
 
 libsqlite_la_LDFLAGS = \
     -lpthread
-
+  
 libsqlite_la_SOURCES = \
     attach.c \
     auth.c \
