@@ -577,7 +577,7 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     sqlite3_stmt* stmt;
 
     //compile SQL program to virtual machine
-    error = sqlite3_prepare( m_db, statement.local8Bit(), statement.length(), &stmt, &tail );
+    error = sqlite3_prepare( m_db, statement.utf8(), statement.length(), &stmt, &tail );
 
     if ( error != SQLITE_OK )
     {
