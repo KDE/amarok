@@ -119,6 +119,8 @@ CollectionDB::CollectionDB()
         // Remove old db file; create new
         QFile::remove( path );
         sqlite3_open( path, &m_db );
+        createTables();
+        createStatsTable();
     }
 #endif
 
