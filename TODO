@@ -8,7 +8,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #35 playlist: when you sort stuff, ensure currenttrack is visible afterwards -->mxcl
+    * fix: #35 <mxcl>restore quick tag loading when users don't have bitrate/length columns
+               in playlist -->mxcl
+
     * fix: #34 playlist: hidden columns can be resized back into sight! -->mxcl
 
     * fix: #33<markey> invoking handbook broken. problem seems to be the name: amaroK vs. amarok
@@ -23,10 +25,6 @@ SHORT-TERM (URGENT):
     
     * chg: #24<muesli> random mode needs to remember (at least) the last 10 songs, so you could
               go back in history, if you want to repeat a song. -->muesli
-
-    * fix: #13<mxcl> when starting amarok for the first time, the playlist is really small (the
-              listview not the browsers), so small one user couldn't see it (!) and couldn't figure
-              out how to use amaroK.. <markey> I can't reproduce that
 
     * fix: #11<markey> bitrate display often shows bogus values (especially with VBR, it seems)
               <mxcl> currently taglib is scanning files in Fast mode and on demand, the code is in
@@ -89,12 +87,11 @@ MID-TERM:
     * add: <muesli> add OSD support (permanent display or just on events like a song switch)
 
     * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
+           reduce arts buffer to ~20ms for much better analyzers etc. 
 
     * add: extend documentation
 
     * add: history to add dialog, or implement better system for adding urls etc.
-
-    * add: column "length" in playlist
 
     * add: option to automatically adjust column widths
 
