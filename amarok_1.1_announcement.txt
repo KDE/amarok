@@ -4,12 +4,14 @@ Before amaroK was born, most KDE users were stuck with XMMS; others would even r
 audio players. Now those days are over. amaroK, written for the KDE desktop environment with its slick GUI and
 plugable, engine-independent audio capabilities is coming to a computer near you!
 
-amaroK is the first KDE application to use the GStreamer Multimedia Framework without any dependency on external bindings. amaroK can also integrate with xine so you have the freedom of choosing your own flavour. With version 1.1-beta1 there are many exciting changes that make using amaroK even more fun. Here are some of the features that you will simply love :
+amaroK is the first KDE application to use the GStreamer Multimedia Framework without any dependency on external bindings. amaroK can also integrate with xine so you have the freedom of choosing your own flavour. 
+With version 1.1 there are many exciting changes that make using amaroK even more fun. Here are some of the features that you will simply love :
 
 - Fully Integrated with KDE : Play from your Samba share with smb:/, or use the fish KIOSlave to play from a remote host.
 - Simple and Elegant : Collection-based system where you can choose songs from a variety of criteria, including artist, most played, never played, etc.
 - Stream Support : Listening to online radio has never been easier. Just load the playlist file and it starts playing.
 - Engine Independence : Ability to use GStreamer or xine. (There is also aRts engine but it is not ported to the new engine architecture yet).
+- Improved Crossfade : Crossfading with customizable fade-in/fade-out durations now works for GStreamer engine too
 - Inline tag editing : Tag your music while you play it.
 - MusicBrainz support for tag editing : No voodoo needed for tagging your music, just click the MusicBrainz button and it will get the song information from the online database.
 - Album cover support : If you have album covers in your music directory amaroK will automatically load them - better yet, amaroK can automatically download album covers from the Internet!
