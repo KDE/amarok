@@ -13,8 +13,17 @@ Please do the following:
 11. test for default configure, --enable-final, separate build directory
 12. get some other people to test
 
+ONCE HAPPY WITH THE TARBALL:
+
 13. upload to ftp://upload.sf.net/incoming
 14. release via sourceforge
 15. wait for berkus to appear (can take days) and get him to update kde-apps.org
 16. send a release email to kde-announce
 17. drink a few pints, have some fun on #amarok
+
+If you must change anything about the tarball you need to email
+binner@kde.org in case the md5sum changing would break Konstruct.
+
+TODO
+    MD5sum procedure
+    automate some of this with a dist target?
