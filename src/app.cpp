@@ -72,6 +72,7 @@ App::App()
         //stop the splashscreen first, socket server is a temporary on purpose!
         LoaderServer server( 0 );
         firstRunWizard();
+        amaroK::config()->writeEntry( "First Run", false );
     }
 
     m_pGlobalAccel    = new KGlobalAccel( this );
@@ -179,6 +180,8 @@ void App::handleCliArgs() //static
         EngineController::instance()->pause();
     else if ( args->isSet( "stop" ) )
         EngineController::instance()->stop();
+    else if ( args->isSet( "play-pause" ) )
+        EngineController::instance()->playPause();
     else if ( args->isSet( "play" ) ) //will restart if we are playing
         EngineController::instance()->play();
     else if ( args->isSet( "next" ) )
@@ -205,9 +208,11 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "previous", I18N_NOOP( "Skip backwards in playlist" ), 0 },
             { "p", 0, 0 },
             { "play", I18N_NOOP( "Start playing current playlist" ), 0 },
+            { "t", 0, 0 },
+            { "play-pause", I18N_NOOP( "Play if stopped, pause if playing" ), 0 },
+            { "pause", I18N_NOOP( "Pause playback" ), 0 },
             { "s", 0, 0 },
             { "stop", I18N_NOOP( "Stop playback" ), 0 },
-            { "pause", I18N_NOOP( "Pause playback" ), 0 },
             { "f", 0, 0 },
             { "next", I18N_NOOP( "Skip forwards in playlist" ), 0 },
             { ":", I18N_NOOP("Additional options:"), 0 },
@@ -734,8 +739,6 @@ void App::firstRunWizard()
         //     suggestion = write a key to its config and then recognise that in browser init and
         //     then delete the key afterwards
     }
-
-    amaroK::config()->writeEntry( "First Run", false );
 }
 
 
