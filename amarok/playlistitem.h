@@ -22,6 +22,9 @@
 #include <kurl.h> //KURL::List
 #include <taglib/audioproperties.h>  //Tags
 
+#include "playlistloader.h" //friendships
+
+
 struct Tags
 {
    Tags( const QString &t1, const QString &t2, const QString &t3, const QString &t4, const QString &t5, const QString &t6, const QString &t7, const QString &t8, const TagLib::AudioProperties *ap )
@@ -35,6 +38,7 @@ struct Tags
          m_sampleRate = ap->sampleRate();
       }
    }
+   Tags( const QString &title, uint length ) : m_title( title ), m_bitrate( 0 ), m_length( length ), m_sampleRate( 0 ) {}
 
    QString m_title;
    QString m_artist;
@@ -46,7 +50,7 @@ struct Tags
    QString m_directory;
 
    uint m_bitrate;
-   uint m_length;
+   int  m_length; //-1 no established length, eg streams
    uint m_sampleRate;
 };
 
@@ -63,10 +67,9 @@ extern PlayerApp *pApp;
 
 class PlaylistItem : public KListViewItem
 {
-
     public:
-        PlaylistItem( QListView* parent, const KURL &url );
-        PlaylistItem( QListView* parent, QListViewItem* after, const KURL &url, Tags *tags = 0 );
+        PlaylistItem( QListView *, const KURL & );
+        PlaylistItem( QListView *, QListViewItem *, const KURL &, Tags * = 0 );
         ~PlaylistItem();
 
         // These accessor methods obsolete public fields in next release
@@ -77,7 +80,7 @@ class PlaylistItem : public KListViewItem
         QString comment() { return m_tags->m_comment; }
         QString year()    { return m_tags->m_year; }
         QString track()   { return m_tags->m_track; }
-        uint    seconds() { return m_tags->m_length; }
+        int     seconds() { return m_tags->m_length; } //can be -1
         uint    bitrate() { return m_tags->m_bitrate; }
         uint samplerate() { return m_tags->m_sampleRate; }
 
@@ -93,6 +96,11 @@ class PlaylistItem : public KListViewItem
         void setGlowing( bool b ) { m_bIsGlowing = b; }
         void setGlowCol( QColor col ) { m_glowCol = col; }
 
+
+        friend void TagReader::append( PlaylistItem * );
+        friend void TagReader::TagReaderEvent::bindTags();
+
+
     private:
         QString zeroPad( const long digit );
         QString nameForUrl( const KURL &url ) const;
@@ -100,7 +108,6 @@ class PlaylistItem : public KListViewItem
         void paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align );
         void paintFocus( QPainter*, const QColorGroup&, const QRect& );
 
-        bool m_hasMetaInfo;
         KURL m_url;
         bool m_bIsGlowing;
         bool m_isDir;

@@ -44,7 +44,6 @@
 
 PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
         KListViewItem( parent, nameForUrl( url ) ),
-        m_hasMetaInfo( false ),
         m_url( url ),
         m_tags( 0 )
 {
@@ -53,15 +52,11 @@ PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
 
 
 PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url, Tags *tags )
-      : KListViewItem( parent, after )
-      , m_hasMetaInfo( (tags != NULL ) )
+      : KListViewItem( parent, after, nameForUrl( url ) )
       , m_url( url )
       , m_tags( tags )
 {
     init();
-
-    setText( 0, nameForUrl( url ) );
-    if( m_hasMetaInfo ) setMetaTitle();
 }
 
 
@@ -90,16 +85,14 @@ void PlaylistItem::init()
     m_bIsGlowing = false;
     setDragEnabled( true );
     setDropEnabled( true );
+    setMetaTitle();
 }
 
 
 QString PlaylistItem::nameForUrl( const KURL &url ) const
 {
-    // only files have a filename.. for all other protocols the url itself is used as the name
-    if ( url.protocol() == "file" )
-        return url.fileName();
-    else
-        return url.prettyURL();
+    //only files have a filename.. for all other protocols the url itself is used as the name
+    return ( url.protocol() == "file" ) ? url.fileName() : url.prettyURL();
 }
 
 
@@ -109,19 +102,22 @@ QString PlaylistItem::nameForUrl( const KURL &url ) const
 
 bool PlaylistItem::hasMetaInfo()
 {
-    return m_hasMetaInfo;
+    return m_tags != 0;
 }
 
 
 void PlaylistItem::setMetaTitle()
 {
-    setText( 1, m_tags->m_title );
-    setText( 2, m_tags->m_artist );
-    setText( 3, m_tags->m_album );
-    setText( 4, m_tags->m_year );
-    setText( 5, m_tags->m_comment );
-    setText( 6, m_tags->m_genre );
-    setText( 7, m_tags->m_directory );
+   if( hasMetaInfo() )
+   {
+      setText( 1, m_tags->m_title );
+      setText( 2, m_tags->m_artist );
+      setText( 3, m_tags->m_album );
+      setText( 4, m_tags->m_year );
+      setText( 5, m_tags->m_comment );
+      setText( 6, m_tags->m_genre );
+      setText( 7, m_tags->m_directory );
+   }
 }
 
 
@@ -226,6 +222,8 @@ QString PlaylistItem::length( uint se )
 {
    //FIXME the uint is because mostly taglib doesn't return the track length, probably because we need
    //      to do an extended audioProperties scan, so do that, but can we do it lazily, ie on demand?
+
+   if( seconds() == -1 ) return QString( "" ); //-1 is set for streams by pls files and means "display no length info"
 
    int s = ( seconds() == 0 ) ? se : seconds();
    int m = s / 60;

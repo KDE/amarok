@@ -39,6 +39,7 @@
 #include <kmessagebox.h>
 #include <krandomsequence.h>
 #include <kurldrag.h>
+#include <kcursor.h>
 
 
 //TODO give UNDO action standard icon too
@@ -53,6 +54,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     , m_GlowCount( 100 )
     , m_GlowAdd( 5 )
     , m_undoCounter( 0 )
+    , m_tagReader( new TagReader( this ) ) //QThreads crash when not heap allocated
 {
     kdDebug() << "PlaylistWidget::PlaylistWidget()" << endl;
 
@@ -89,7 +91,9 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
 
 
 PlaylistWidget::~PlaylistWidget()
-{}
+{
+   delete m_tagReader;
+}
 
 
 
@@ -102,33 +106,44 @@ void PlaylistWidget::insertMedia( const QString &path )
 
 void PlaylistWidget::insertMedia( const KURL &url )
 {
-   insertMedia( KURL::List( url ), (QListViewItem *)0 );
+   if( !url.isEmpty() )
+   {
+      insertMedia( KURL::List( url ), (QListViewItem *)0 );
+   }
 }
 
-void PlaylistWidget::insertMedia( const KURL::List &list, bool clear )
+void PlaylistWidget::insertMedia( const KURL::List &list, bool doclear )
 {
-   writeUndo();
+  if( !list.isEmpty() )
+  {
+     if( doclear )
+        clear( false );
 
-   if ( clear )
-      KListView::clear();
-
-   insertMedia( list, (QListViewItem *)0 );
+     insertMedia( list, (QListViewItem *)0 );
+  }
 }
 
 void PlaylistWidget::insertMedia( const KURL::List &list, QListViewItem *after )
 {
    kdDebug() << "PlaylistWidget::insertMedia()\n";
 
-   writeUndo();       //remember current state
-   setSorting( 200 ); //disable sorting or will not be inserted where we expect
+   if( !list.isEmpty() )
+   {
+      writeUndo();       //remember current state
+      setSorting( 200 ); //disable sorting or will not be inserted where we expect
 
-   startLoader( list, after );
+      startLoader( list, after );
+      QApplication::setOverrideCursor( KCursor::workingCursor() );
+   }
 }
 
 
 bool PlaylistWidget::restoreCurrentTrack()
 {
-   return setCurrentTrack( pApp->m_playingURL );
+   if( m_pCurrentTrack && static_cast<PlaylistItem *>(m_pCurrentTrack)->url() == pApp->m_playingURL )
+      return true;
+   else
+     return setCurrentTrack( pApp->m_playingURL );
 }
 
 
@@ -258,17 +273,33 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 
 void PlaylistWidget::customEvent( QCustomEvent *e )
 {
-   if ( e->type() == 65432 )
+   switch( e->type() )
    {
-      //TODO this doesn't guarentee exact order, you need to create a stack and store previous item for each thread, tis only way. Oh well
-      PlaylistLoader::PlaylistEvent* pe = (PlaylistLoader::PlaylistEvent*)e;
-      PlaylistItem *item = pe->makePlaylistItem( this ); //this is thread-safe
+   case 65432: //LoaderEvent
 
-      if( item ) //nonlocal downloads can fail
+      if( PlaylistItem *item = static_cast<PlaylistLoader::LoaderEvent*>(e)->makePlaylistItem( this ) ) //this is thread-safe
       {
-        searchTokens.append( item->text( 0 ) );
-        searchPtrs.append( item );
+         m_tagReader->append( item );
+
+         //nonlocal downloads can fail
+         searchTokens.append( item->text( 0 ) );
+         searchPtrs.append( item );
       }
+      break;
+
+   case 65433: //LoaderDoneEvent
+
+      static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
+      QApplication::restoreOverrideCursor();
+      break;
+
+   case 65434: //TagReaderEvent
+
+      static_cast<TagReader::TagReaderEvent*>(e)->bindTags();
+      break;
+
+   default: ;
+
    }
 }
 
@@ -329,6 +360,7 @@ void PlaylistWidget::startLoader( const KURL::List &list, QListViewItem *after )
    //FIXME lastItem() has to go through entire list to find lastItem! Not scalable!
    PlaylistLoader *loader = new PlaylistLoader( list, this, ( after == 0 ) ? lastItem() : after );
 
+   //FIXME remove meta option if that is the way things go
    if( loader ) {
       loader->setOptions( ( pApp->m_optDropMode == "Recursively" ), pApp->m_optFollowSymlinks, pApp->m_optReadMetaInfo );
       loader->start();
@@ -337,7 +369,7 @@ void PlaylistWidget::startLoader( const KURL::List &list, QListViewItem *after )
 }
 
 
-//FIXME deprecate
+//FIXME deprecate, or maybe not.. can't decide
 QListViewItem* PlaylistWidget::currentTrack() const
 {
     return m_pCurrentTrack;
@@ -373,14 +405,18 @@ void PlaylistWidget::unglowItems()
 
 // SLOTS ----------------------------------------------
 
-void PlaylistWidget::clear()
+void PlaylistWidget::clear( bool full )
 {
-    //FIXME this is unecessary now we have undo functionality!
-    if ( pApp->m_optConfirmClear && KMessageBox::questionYesNo( 0, i18n( "Really clear playlist?" ) ) == KMessageBox::No )
-       return;
+    if( full )
+    {
+       //FIXME this is unecessary now we have undo functionality!
+       if ( pApp->m_optConfirmClear && KMessageBox::questionYesNo( 0, i18n( "Really clear playlist?" ) ) == KMessageBox::No )
+          return;
 
-    writeUndo();
+       writeUndo();
+    }
 
+    m_tagReader->cancel(); //stop tag reading (very important!)
     searchTokens.clear();
     searchPtrs.clear();
     KListView::clear();
@@ -518,7 +554,7 @@ void PlaylistWidget::removeSelectedItems()
 {
   //FIXME this is the only method with which the user can remove items, however to properly future proof
   //      you need to somehow make it so creation and deletion of playlistItems handle the search
-  //      tokens and pointers
+  //      tokens and pointers (and removal from tagReader queue!)
 
     writeUndo();
 
@@ -539,6 +575,8 @@ void PlaylistWidget::removeSelectedItems()
               searchTokens.remove( searchTokens.at( x ) );
               searchPtrs.remove( searchPtrs.at( x ) );
            }
+
+           m_tagReader->remove( static_cast<PlaylistItem *>(item) ); //FIXME slow, nasty, not scalable
 
            delete item1;
         }
@@ -633,7 +671,7 @@ void PlaylistWidget::doUndo()
         KURL::List playlist( KURL( m_undoList.last() ) );
         m_undoList.pop_back();   //pop one of undo stack
         saveState( m_redoList ); //save currentState to redo stack
-        KListView::clear();
+        clear( false );
         setSorting( 200 );
         startLoader( playlist, 0 );
 
@@ -654,7 +692,7 @@ void PlaylistWidget::doRedo()
         KURL::List playlist( KURL( m_redoList.last() ) );
         m_redoList.pop_back();
         saveState( m_undoList );
-        KListView::clear();
+        clear( false );
         setSorting( 200 );
         startLoader( playlist, 0 );
 

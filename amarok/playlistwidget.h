@@ -22,7 +22,6 @@
 #include <klistview.h>
 //#include <krootpixmap.h>
 #include <kurl.h>
-#include <vector>
 
 class QDragLeaveEvent;
 class QDragMoveEvent;
@@ -39,6 +38,7 @@ class QStringList;
 class QColor;
 class QTimer;
 
+class TagReader;
 class PlayerApp;
 extern PlayerApp *pApp;
 
@@ -71,7 +71,7 @@ class PlaylistWidget : public KListView
         //KRootPixmap m_rootPixmap;
 
     public slots:
-        void clear();
+        void clear( bool = true );
         void shuffle();
         void removeSelectedItems();
         void doUndo();
@@ -122,5 +122,7 @@ class PlaylistWidget : public KListView
         QStringList searchTokens;
         QPtrList<QListViewItem> searchPtrs;
         QString lastSearch;
+
+        TagReader *m_tagReader;
 };
 #endif
