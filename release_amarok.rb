@@ -135,14 +135,11 @@ Dir.chdir( "amarok" )
 `mv TODO ..`
 
 Dir.chdir( "src" )
-# `cat amarok.h | sed -e "s/APP_VERSION \".*\"/APP_VERSION \"#{version}"\"/ | tee amarok.h > /dev/null`
-#                 sed -e 's/APP_VERSION \".*\"/APP_VERSION \"#{version}\"/'
 
+# Exchange APP_VERSION string with new version
 `cat amarok.h | sed -e 's/APP_VERSION \".*\"/APP_VERSION \"#{version}\"/' | tee amarok.h > /dev/null`
 
-
 Dir.chdir( ".." ) # amarok
-
 `rm -rf debian`
 
 
