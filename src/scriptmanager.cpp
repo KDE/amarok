@@ -75,7 +75,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 ScriptManager::~ScriptManager()
 {
-    DEBUG_BEGIN
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     saveScripts();
 
@@ -85,8 +85,6 @@ ScriptManager::~ScriptManager()
         delete it.data().process;
 
     s_instance = 0;
-
-    DEBUG_END
 }
 
 
@@ -97,7 +95,7 @@ ScriptManager::~ScriptManager()
 void
 ScriptManager::slotAddScript()
 {
-    DEBUG_BEGIN
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     //FIXME How to get the resource folder from KStandardDirs?
     QString folder( getenv( "KDEDIR" ) );
@@ -111,8 +109,6 @@ ScriptManager::slotAddScript()
     dia.exec();
 
     loadScript( dia.selectedURL().path() );
-
-    DEBUG_END
 }
 
 
@@ -131,7 +127,7 @@ ScriptManager::slotRemoveScript()
 void
 ScriptManager::slotEditScript()
 {
-    DEBUG_FUNC_INFO
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -171,14 +167,20 @@ ScriptManager::slotRunScript()
     if ( m_scripts[name].process ) return;
 
     KURL url = m_scripts[name].url;
+    KProcess* script = new KProcess( this );
+    *script << url.path();
+    script->setWorkingDirectory( amaroK::saveLocation( "scripts/" ) );
+
+    if ( !script->start( KProcess::NotifyOnExit, KProcess::Stdin ) ) {
+        KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
+                                     "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
+        delete script;
+        return;
+    }
 
     li->setPixmap( 0, SmallIcon( "player_play" ) );
     debug() << "Running script: " << url.path() << endl;
 
-    KProcess* script = new KProcess( this );
-    *script << url.path();
-    script->setWorkingDirectory( amaroK::saveLocation( "scripts/" ) );
-    script->start( KProcess::NotifyOnExit, KProcess::Stdin );
     m_scripts[name].process = script;
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
 }
@@ -187,7 +189,7 @@ ScriptManager::slotRunScript()
 void
 ScriptManager::slotStopScript()
 {
-    DEBUG_FUNC_INFO
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     if ( !m_base->directoryListView->selectedItem() ) return ;
 
@@ -227,7 +229,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::scriptFinished( KProcess* process ) //SLOT
 {
-    DEBUG_FUNC_INFO
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     ScriptMap::Iterator it;
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
@@ -247,6 +249,8 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 void
 ScriptManager::notifyScripts( const QString& message )
 {
+    Debug::Block b( __PRETTY_FUNCTION__ );
+
     // Append EOL
     QString msg = message;
     msg.append( "\n" );
@@ -261,6 +265,8 @@ ScriptManager::notifyScripts( const QString& message )
 void
 ScriptManager::loadScript( const QString& path )
 {
+    Debug::Block b( __PRETTY_FUNCTION__ );
+
     if ( !path.isEmpty() ) {
         KURL url;
         url.setPath( path );
@@ -281,7 +287,7 @@ ScriptManager::loadScript( const QString& path )
 void
 ScriptManager::saveScripts()
 {
-    DEBUG_BEGIN
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     QStringList paths;
     ScriptMap::Iterator it;
@@ -291,15 +297,13 @@ ScriptManager::saveScripts()
     KConfig* config = kapp->config();
     config->setGroup( "ScriptManager" );
     config->writePathEntry( "Scripts", paths );
-
-    DEBUG_END
 }
 
 
 void
 ScriptManager::restoreScripts()
 {
-    DEBUG_BEGIN
+    Debug::Block b( __PRETTY_FUNCTION__ );
 
     KConfig* config = kapp->config();
     config->setGroup( "ScriptManager" );
@@ -308,8 +312,6 @@ ScriptManager::restoreScripts()
     QStringList::Iterator it;
     for ( it = paths.begin(); it != paths.end(); ++it )
         loadScript( *it );
-
-    DEBUG_END
 }
 
 
