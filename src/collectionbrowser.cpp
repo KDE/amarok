@@ -1162,14 +1162,14 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
                     "To enable the Flat-View mode, please enter search terms in the filter line above."
                 "</div>" ), QApplication::font() );
 
-        const int wd3 = viewport()->width() / 3;
-        t.setWidth( wd3 );
+        t.setWidth( width() - 50 );
 
-        const int y = (viewport()->height() - t.height()) / 2;
+        const uint w = t.width() + 20;
+        const uint h = t.height() + 20;
 
         p.setBrush( colorGroup().background() );
-        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, (8*200)/(t.width()+30), (8*200)/(t.height()+30) );
-        t.draw( &p, wd3, y, QRect( 0, 0, viewport()->width(), viewport()->height() ), colorGroup() );
+        p.drawRoundRect( 15, 15, w, h, (8*200)/w, (8*200)/h );
+        t.draw( &p, 20, 20, QRect(), colorGroup() );
     }
 }
 

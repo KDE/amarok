@@ -1124,14 +1124,16 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
                     "The file-browser shows a file-selector which you can use to access any music on your computer. "
                 "</div>" ), QApplication::font() );
 
-        const int wd3 = viewport()->width() / 3;
+        const uint wd3 = viewport()->width() / 3;
 
         t.setWidth( wd3 );
 
-        const int y = (viewport()->height() - t.height()) / 2;
+        const uint w = t.width() + 30;
+        const uint h = t.height() + 30;
+        const uint y = (viewport()->height() - h) / 2;
 
         p.setBrush( colorGroup().background() );
-        p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, (8*200)/(t.width()+30), (8*200)/(t.height()+30) );
+        p.drawRoundRect( wd3-15, y-15, w, h, (8*200)/w, (8*200)/h );
         t.draw( &p, wd3, y, QRect(), colorGroup() );
     }
 }
@@ -2429,11 +2431,11 @@ TagWriter::completeJob()
         m_item->setText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
         amaroK::StatusBar::instance()->longMessage( i18n(
                 "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ) );
+        CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
         break;
 
     case false:
         m_item->setText( m_tagType, m_newTagString.isEmpty() ? " " : m_newTagString );
-        CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
     }
 }
 

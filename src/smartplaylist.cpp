@@ -330,9 +330,12 @@ void SmartPlaylistView::viewportPaintEvent( QPaintEvent *e )
 
         t.setWidth( width() - 50 );
 
+        const uint w = t.width() + 20;
+        const uint h = t.height() + 20;
+
         QPainter p( viewport() );
         p.setBrush( colorGroup().background() );
-        p.drawRect( 15, 15, t.width() + 20, t.height() + 20 );
+        p.drawRoundRect( 15, 15, w, h, (8*200)/w, (8*200)/h );
         t.draw( &p, 20, 20, QRect(), colorGroup() );
     }
 }

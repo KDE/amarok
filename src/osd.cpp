@@ -170,13 +170,16 @@ OSDWidget::reposition( QSize newSize )
     return newPos;
 }
 
+#include <qfontmetrics.h>
 void
 OSDWidget::paintEvent( QPaintEvent* )
 {
     //TODO double buffer? but is slow...
 
-    const uint xround = (20 * 200) / width();
-    const uint yround = (20 * 200) / height();
+    const uint M = fontMetrics().width( 'x' ) / 2; // round the corners based on the font size
+
+    const uint xround = (M * 200) / width();
+    const uint yround = (M * 200) / height();
 
     debug() << xround << endl;
     debug() << yround << endl;
