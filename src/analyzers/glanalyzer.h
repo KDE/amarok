@@ -51,7 +51,7 @@ public:
   GLAnalyzer(QWidget *);
   ~GLAnalyzer();
   void analyze( const Scope & );
-
+  
 protected:
   void initializeGL();
   void resizeGL( int w, int h );

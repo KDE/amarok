@@ -39,7 +39,7 @@ GLAnalyzer::~GLAnalyzer()
 void GLAnalyzer::analyze( const Scope &s )
 {
 	//kdDebug() << "Scope Size: " << s.size() << endl;
-        Scope t(32);
+        /* Scope t(32);
 	if (s.size() != 32)
 	{
 		Analyzer::interpolate(s, t);
@@ -47,17 +47,25 @@ void GLAnalyzer::analyze( const Scope &s )
 	else
 	{
 		t = s;
-	}
+	}*/
+        uint offset = 0;
+        if (s.size() == 64)
+        {
+            offset=8;
+        }
+                
 	glRotatef(0.25f, 0.0f, 1.0f, 0.5f); //Rotate the scene
 	drawFloor();	
 	for ( uint i = 0; i < 32; i++ )
 	{
-		//kdDebug() << "Scope item " << i << " value: " << s[i] << endl;
+		
+                //kdDebug() << "Scope item " << i << " value: " << s[i] << endl;
+                
                 // Calculate new horizontal position (x) depending on number of samples
 		x = -16.0f + i;
 
 		// Calculating new vertical position (y) depending on the data passed by amarok
-		y = float(t[i] * 30.0f); //Should multiply by 20 but it looks crappy
+		y = float(s[i+offset] * 30.0f); //Should multiply by 20 but it looks crappy
 		
 		//Some basic bounds checking
 		if (y > 30)
