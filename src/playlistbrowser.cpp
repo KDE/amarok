@@ -2,6 +2,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // License: GPL V2. See COPYING file for information.
 
+#include "amarok.h"            //actionCollection()
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
 #include "k3bexporter.h"
@@ -573,11 +574,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     if( isPlaylist( item ) ) {
         if ( isCurrentPlaylist( item ) ) {
         //************* Current Playlist menu ***********
-            enum Id { SAVE, CLEAR, RMDUP, BURN_DATACD, BURN_AUDIOCD };
+            enum Id { SAVE, CLEAR, BURN_DATACD, BURN_AUDIOCD };
 
             menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save" ), SAVE );
             menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear" ), CLEAR );
-            menu.insertItem( i18n( "Remove Duplicates / Missing" ), RMDUP );
+            amaroK::actionCollection()->action( "playlist_remove_duplicates" )->plug( &menu );
 
             menu.insertSeparator();
 
@@ -593,9 +594,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     break;
                 case CLEAR:
                     Playlist::instance()->clear();
-                case RMDUP:
-                    Playlist::instance()->removeDuplicates();
-                    break;
                 case BURN_DATACD:
                     K3bExporter::instance()->exportCurrentPlaylist( K3bExporter::DataCD );
                     break;
