@@ -15,8 +15,8 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
-#include "artsmodules.h"
-#include "stdsynthmodule.h"
+//#include "artsmodules.h"
+#include <stdsynthmodule.h>
 #include "amarokarts.h"
 
 using namespace Arts;
