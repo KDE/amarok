@@ -3,27 +3,26 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #99 being the highest available (take this one for your next bug and increase here)
+           #100 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+  FIX #99 <markey> With KDE color scheme, some widgets are black (inside of the browsers).
+  
   ADD #97 <mxcl> if you hold CTRL when dropping to pl it has a plus sign but drops at cursor, but shift drops
                  at bottom of pl, but has no icon on drag cursor.
-
-  09:21 < samppa> hey markey: i tested your loader changes, seems that there is some bug in the new code, since i get now this:
-  09:21 < samppa> /home/samppa~/.kde//socket-epsilon.ton.tut.fi
 
   CHG #95 <muesli> Add some kind of index caching system to collection browser and
       create the database indices _after_ scanning -->muesli
 
-  CHG #90 <markey>We need some fresh artwork, at least some new player buttons before 1.0.
+  CHG #90 <markey> We need some fresh artwork, at least some new player buttons before 1.0.
 
-  CHG #91 <markey>I'd like to get a new website up before 1.0 release.
+  CHG #91 <markey> I'd like to get a new website up before 1.0 release.
 
   FIX <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build  fails :(
 
-  ADD <markey>Extend documentation - we cannot honestly go 1.0 with such lackluster docs.
+  ADD <markey> Extend documentation - we cannot honestly go 1.0 with such lackluster docs.
 
   ADD #88 <muesli> In CollectionBrowser's search, let the user decide, which fields are
       to be searched (like: songtitle, artist, songtitle or artist, album) -->muesli
