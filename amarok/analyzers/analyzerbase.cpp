@@ -52,14 +52,14 @@ void AnalyzerBase::interpolate( std::vector<float> *oldVec, std::vector<float> &
         for ( uint i = 0; i < newSize; ++i, pos += step )
         {
             double error = pos - floor( pos );
-            ulong offset = static_cast<unsigned long>( pos );
+            unsigned long offset = static_cast<unsigned long>( pos );
     
-            ulong indexLeft = offset + 0;
+            unsigned long indexLeft = offset + 0;
     
             if ( indexLeft >= oldVec->size() )
                 indexLeft = oldVec->size() - 1;
     
-            ulong indexRight = offset + 1;
+            unsigned long indexRight = offset + 1;
     
             if ( indexRight >= oldVec->size() )
                 indexRight = oldVec->size() - 1;
