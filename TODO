@@ -4,17 +4,26 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: filebrowser: type a path, press enter and it cd's to a directory
-           one level above from what you typed.
-	   
+    * fix: <mxcl> reimplement ask recursively on drop operations to playlist
+
+    * fix: <mxcl> you can't move playlist entries around with sorting on (you need to disable it on drag drop or something)
+
+    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do some #ifdefs to surround that code and hope nobody gets too pissed about it
+
+    * fix: crash when pressing RMB on player while proxy is connecting
+
+    * fix: sample looping (annoying noise) @ end of track or pause (fixed? <berkus> NOT FIXED!)
+
     * fix: playobject config GUI seems totally b0rked on 3.2
-    
+
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
            some #ifdefs to surround that code and hope nobody gets too pissed about it
-    
+
     * fix: writePathEntry is a KDE 3.1.3 function, which is perhaps too recent for the 0.7.1 release
 
     * fix: <mxcl>pause vis/anim timers when hide/show main widget as a courtesy to our users
+
+    * add: a "hide playlist when main widget is not active" option (?? comments please: )
 
     * fix: <mxcl>dialog boxes show behind the playlist (KDE 3.1), with no amarok.rc, playlist
             covers main widget on first start! <markey> that sometimes also happens with 3.2
@@ -33,17 +42,17 @@ SHORT-TERM:
     * fix: app freezing when renaming the file that's currently playing
 
     * fix: redirected URLs do not work
-                    
+
     * add: history to add dialog, or implement better system for adding urls etc.
 
     * add: <mxcl> more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.)
-    
+
     * add: "show playlist" to the right click menu, redundant but necessary
 
     * add: <muesli> background chooser
 
     * add: <muesli> add OSD support (permanent display or just on events like a song switch)
-    
+
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: extend documentation

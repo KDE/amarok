@@ -36,7 +36,6 @@
 #include <kfileitem.h>
 #include <kglobal.h>
 #include <kiconloader.h>
-#include <kcombobox.h> //FIXME: we shouldn't have to include this, instead make signals that can connect with this when required
 #include <klistview.h>
 #include <klocale.h>
 #include <kmimetype.h>
@@ -72,7 +71,7 @@ BrowserWidget::~BrowserWidget()
 
 // METHODS ------------------------------------------------------------------
 
-void BrowserWidget::readDir( KURL url )
+void BrowserWidget::readDir( const KURL &url )
 {
     m_pDirLister->openURL( url );
 }
@@ -114,8 +113,10 @@ void BrowserWidget::contentsDropEvent( QDropEvent* e)
 
 void BrowserWidget::focusInEvent( QFocusEvent *e )
 {
-    pApp->m_pBrowserWin->m_pBrowserLineEdit->setFocus();
+//    pApp->m_pBrowserWin->m_pBrowserLineEdit->setFocus();
+    emit focusIn();
 
+    //TODO: figure out if this is good or bad
     KListView::focusInEvent( e );
 }
 
@@ -125,7 +126,6 @@ void BrowserWidget::focusInEvent( QFocusEvent *e )
 void BrowserWidget::slotCompleted()
 {
     clear();
-    pApp->m_pBrowserWin->m_pBrowserLineEdit->setEditURL( m_pDirLister->url() );
 
     AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
     KFileItemListIterator it( fileList );
@@ -150,6 +150,8 @@ void BrowserWidget::slotCompleted()
     setCurrentItem( firstChild() );
     setSelected( firstChild(), true );
     triggerUpdate();
+
+    emit directoryChanged( m_pDirLister->url() );
 }
 
 

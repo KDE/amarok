@@ -39,7 +39,7 @@ class BrowserWidget : public KListView
         BrowserWidget( QWidget *parent=0, const char *name = 0 );
         ~BrowserWidget();
 
-        void readDir( KURL url );
+        void readDir( const KURL &url );
 
 // ATTRIBUTES ------
         KDirLister *m_pDirLister;
@@ -50,8 +50,10 @@ class BrowserWidget : public KListView
         void slotHeaderClicked( int section );
 
     signals:
+        void directoryChanged( const KURL & );
+        void focusIn();
         void browserDrop();
-        void signalJump();
+        //void signalJump();
 
     private:
         void contentsDropEvent( QDropEvent* e );

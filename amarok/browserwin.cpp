@@ -72,6 +72,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
     KStdAction::next( this, SLOT( slotKeyPageDown() ), m_pActionCollection );
 
+    //These slots are EVIL!
+    //FIXME: rely on widgets themselves handle these events when they are in focus - unless really necessary!
+    //       the reason I say this as I just spent an hour hunting for the cause of a bug that caused
+    //       enter to make the browser go up a directory, and the cause was the ENTER KAction below
+    //Question is do we really need to always catch the delete key? Personally I don't see why <mxcl>
     new KAction( i18n( "Go one item up" ), Key_Up,
                  this, SLOT( slotKeyUp() ), m_pActionCollection, "up" );
     new KAction( i18n( "Go one item down" ), Key_Down,
@@ -85,6 +90,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
     connect( m_pBrowserWidget, SIGNAL( browserDrop() ),
              this, SLOT( slotBrowserDrop() ) );
+    connect( m_pBrowserWidget, SIGNAL( directoryChanged( const KURL& ) ),
+             this, SLOT( setBrowserURL( const KURL& ) ) );
+    connect( m_pBrowserWidget, SIGNAL( focusIn() ),
+             m_pBrowserLineEdit, SLOT( setFocus() ) );
+
     connect( m_pPlaylistWidget, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this, SLOT( slotPlaylistRightButton( QListViewItem*, const QPoint& ) ) );
     connect( m_pPlaylistWidget, SIGNAL( sigUndoState( bool ) ),
@@ -93,6 +103,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
              m_pButtonRedo, SLOT( setEnabled( bool ) ) );
     connect( m_pPlaylistWidget, SIGNAL( cleared() ),
              m_pPlaylistLineEdit, SLOT( clear() ) );
+
+    //FIXME <mxcl> MAKE_IT_CLEAN: kaction-ify
     connect( m_pButtonShuffle, SIGNAL( clicked() ),
              this, SLOT( slotShufflePlaylist() ) );
 }
@@ -135,6 +147,7 @@ void BrowserWin::initChildren()
     m_pPlaylistWidget->setAcceptDrops( true );
     m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
+    //<mxcl> MAKE_IT_CLEAN: move to browserWidget, also use a validator to make sure has trailing /
     m_pBrowserLineEdit = new KHistoryCombo( true, pBrowserWidgetContainer );
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
@@ -146,6 +159,7 @@ void BrowserWin::initChildren()
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
              m_pBrowserLineEdit, SLOT( addToHistory( const QString& ) ) );
 
+   //<mxcl> MAKE_IT_CLEAN: move to playlistWidget implementation
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
@@ -208,6 +222,13 @@ void BrowserWin::paintEvent( QPaintEvent * )
 
 // SLOTS --------------------------------------------------------------------
 
+//<mxcl> MAKE_IT_CLEAN: move to browserWidget
+void BrowserWin::setBrowserURL( const KURL& url )
+{
+   m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
+}
+
+//<mxcl> MAKE_IT_CLEAN: some should be in playlistWidget some in browserWidget
 void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
     if ( pItem )
@@ -230,7 +251,7 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
     }
 }
 
-
+//<mxcl> MAKE_IT_CLEAN: playlistWidget can shuffle itself
 void BrowserWin::slotShufflePlaylist()
 {
     // not evil, but corrrrect :)
@@ -255,6 +276,7 @@ void BrowserWin::slotShufflePlaylist()
 }
 
 
+//<mxcl> MAKE_IT_CLEAN: move to playlistWidget, perhaps use QDragObject (not much point though)
 void BrowserWin::slotBrowserDrop()
 {
     QListViewItem * item, *item1;
@@ -272,7 +294,7 @@ void BrowserWin::slotBrowserDrop()
     m_pPlaylistWidget->writeUndo();
 }
 
-
+//<mxcl> MAKE_IT_CLEAN: playlist can do this itself
 void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoint &rPoint )
 {
     QPopupMenu popup( this );
@@ -288,7 +310,7 @@ void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoin
     popup.exec( rPoint );
 }
 
-
+//<mxcl> MAKE_IT_CLEAN: playlist can do this itself
 void BrowserWin::slotShowInfo()
 {
     PlaylistItem * pItem = static_cast<PlaylistItem*>( m_pPlaylistWidget->currentItem() );
@@ -450,6 +472,11 @@ void BrowserWin::slotKeyEnter()
             pApp->slotPlay();
         }
     }
+/*
+
+    FIXME: this means that pushing enter in the BrowserLineEdit activates the lineEdit AND the listView!
+    FIXME: don't repair this code until we move the lineEdit and listview into a single (layout derived) widget class
+    FIXME: and even then, why are we taking this kind of event out of the widgets themselves and doing it at this level, this is just asking for bugs isn't it?
 
     if ( m_pBrowserLineEdit->hasFocus() )
     {
@@ -458,6 +485,7 @@ void BrowserWin::slotKeyEnter()
             slotBrowserDoubleClicked( m_pBrowserWidget->currentItem() );
         }
     }
+*/
 }
 
 

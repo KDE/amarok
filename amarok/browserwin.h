@@ -100,6 +100,8 @@ class BrowserWin : public QWidget
         void slotKeyEnter();
         void slotKeyDelete();
 
+        void setBrowserURL( const KURL& ); //sets browser line edit to KURL
+
     signals:
         void signalHide();
 
