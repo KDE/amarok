@@ -434,8 +434,6 @@ CollectionDB::isSamplerAlbum( const QString album )
     execSql( QString( "SELECT DISTINCT dir FROM tags_temp WHERE album = '%1';" )
                 .arg( album_id ), &values_dir, &names_dir );
 
-    kdDebug() << values_artist.count() << endl;
-    kdDebug() << values_dir.count() << endl;
     if ( values_artist.count() > values_dir.count() )
     {
 
