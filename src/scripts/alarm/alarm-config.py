@@ -17,8 +17,6 @@
 from ConfigParser import *
 import sys
 import os.path
-from kdecore import *
-from kdeui import *
 from qt import *
 
 
@@ -71,7 +69,7 @@ class Config( QDialog ):
 ############################################################################
 
 def main( args ):
-    app = KApplication( args )
+    app = QApplication( args )
 
     widget = Config()
     widget.show()
