@@ -90,6 +90,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
 
+    m_emptyDB = CollectionDB::instance()->isEmpty();
+
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
     connect( m_homePage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
@@ -328,14 +330,14 @@ void ContextBrowser::paletteChange( const QPalette& pal )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void ContextBrowser::tabChanged( QWidget *page )
-{ 
+{
     setFocusProxy( page ); //so focus is given to a sensible widget when the tab is opened
     if ( m_dirtyHomePage && ( page == m_homePage->view() ) )
         showHome();
     else if ( m_dirtyHomePage && ( page == m_currentTrackPage->view() ) )
         showCurrentTrack();
     else if ( m_dirtyLyricsPage && ( page == m_lyricsPage->view() ) )
-        showLyrics();    
+        showLyrics();
 }
 
 
@@ -868,10 +870,22 @@ void ContextBrowser::showCurrentTrack() //SLOT
     if ( !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
     {
         m_HTMLSource.append(
-                "<div class='warning'>"
-                    + i18n("If you would like to see contextual information about this track, you should add it to your Collection.") +
-                    "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>."
-                "</div>"
+        "<div id='notindb_box' class='box'>"
+            "<div id='notindb_box-header' class='box-header'>"
+                "<span id='notindb_box-header-title' class='box-header-title'>"
+                + i18n( "This file is not in your Collection!" ) +
+                "</span>"
+            "</div>"
+            "<div id='notindb_box-body' class='box-body'>"
+                "<p>"
+                + i18n( "If you would like to see contextual information about this track,"
+                        " you should add it to your Collection." ) +
+                "</p>"
+                "<a href='show:collectionSetup'>"
+                + i18n( "Click here to change your Collection setup" ) +
+                "</a>."
+            "</div>"
+        "</div>"
                            );
     }
 
@@ -1327,12 +1341,12 @@ void ContextBrowser::showIntroduction()
                 "</div>"
                 "<div id='introduction_box-body' class='box-body'>"
                     "<p>" +
-                    i18n(
-                    "This is the Context Browser: it shows you contextual information about the currently playing track."
-                    "In order to use this feature of amaroK, you need to build a collection."
-                        )
-                    + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to build one..." ) + "</a>"
+                    i18n( "This is the Context Browser: "
+                          "it shows you contextual information about the currently playing track."
+                          "In order to use this feature of amaroK, you need to build a collection."
+                        ) +
                     "</p>"
+                    "<a href='show:collectionSetup'>" + i18n( "Click here to build one..." ) + "</a>"
                 "</div>"
             "</div>"
             "</html>"
