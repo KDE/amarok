@@ -249,17 +249,15 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     if( !values.isEmpty() ) {
 
         for( uint i=0; i < values.count();  allAlbums ? i+=2 : i++)  {
-            if( !values[allAlbums ? i+1 : i].isEmpty() ) {
+            if( !values[allAlbums ? i+1 : i].isEmpty() ) 
+            {
                 CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
                                                               allAlbums ? values[i] : item->text(0), 
                                                               values[ allAlbums ? i+1 : i ] );
                 m_coverItems.append( coverItem );
-
-                if( coverItem->hasCover() ) {
-                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), 
-                                                              values[ allAlbums ? i+1 : i ] );
-                    coverItem->updateCover( QPixmap( imgPath ) );
-                }
+                QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), 
+                                                          values[ allAlbums ? i+1 : i ] );
+                coverItem->updateCover( QPixmap( imgPath ) );
             }
         }
 
