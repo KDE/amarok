@@ -16,7 +16,6 @@ email                : markey@web.de
 #include "plugin.h"
 #include "pluginmanager.h"
 
-#include <assert.h>
 #include <vector>
 
 #include <qfile.h>
@@ -46,8 +45,7 @@ PluginManager::query( const QString& constraint )
     QString str = QString( "[X-KDE-amaroK-framework-version] >= %1 and " )
                      .arg( FrameworkVersion );
     
-    kdDebug() << k_funcinfo << endl
-              << "Plugin trader constraint: " << str + constraint << endl;
+//     kdDebug() << "Plugin trader constraint: " << str + constraint << endl;
     
     return KTrader::self()->query( "amaroK/Plugin", str + constraint );
 }    
@@ -136,8 +134,6 @@ PluginManager::unload( Plugin* plugin )
 KService::Ptr
 PluginManager::getService( const Plugin* plugin )
 {
-    kdDebug() << k_funcinfo << endl;
-    
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "pointer == NULL\n";   
         return 0;
@@ -156,12 +152,10 @@ PluginManager::getService( const Plugin* plugin )
 void    
 PluginManager::dump( const KService::Ptr service )
 {
-    assert( service.data() );
-    
     kdDebug() << endl;
     
-    kdDebug() << "PluginManager Service DUMP:\n";
-    kdDebug() << "---------------------------\n";
+    kdDebug() << "PluginManager: Service Information\n";
+    kdDebug() << "----------------------------------\n";
     kdDebug() << "name                          : "
               << service->name()                                                  << endl;
     kdDebug() << "library                       : "
