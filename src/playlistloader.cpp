@@ -114,8 +114,8 @@ public:
     TagsEvent() : QCustomEvent( 1001 ) {}
     TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
-            /// @see MetaBundle for explanation of length < 0
-            if( (*it).length() <= 0 )
+            /// @see MetaBundle for explanation of audioproperties < 0
+            if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
                 (*it).readTags( TagLib::AudioProperties::Fast );
     }
 
