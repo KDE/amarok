@@ -147,8 +147,6 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
 
     for ( uint i = 0; i < ( values.count() / 3 ); i++ )
     {
-        if ( values[i].isEmpty() ) continue;
-        
         browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3</a></td></tr>" )
                         .arg( values[i*3 + 1] )
                         .arg( ( values[i*3 + 2] == "" ) ? "" : values[i*3 + 2] + ". " )
