@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kdirselectdialog.h>
 #include <kfiledialog.h>
 #include <klocale.h>
 #include <klistview.h>
@@ -61,15 +60,16 @@ DirectoryList::DirectoryList( const QStringList &directories, bool scanRecursive
 }
 
 
-DirectoryList::~DirectoryList() {
-}
+DirectoryList::~DirectoryList()
+{}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // public slots
 ////////////////////////////////////////////////////////////////////////////////
 
-DirectoryList::Result DirectoryList::exec() {
+DirectoryList::Result DirectoryList::exec()
+{
     m_result.status = static_cast<DialogCode>( KDialogBase::exec() );
     m_result.scanRecursively = m_base->scanRecursivelyCheckBox->isChecked();
     m_result.monitorChanges = m_base->monitorChangesCheckBox->isChecked();
@@ -82,18 +82,14 @@ DirectoryList::Result DirectoryList::exec() {
 // private slots
 ////////////////////////////////////////////////////////////////////////////////
 
-void DirectoryList::slotAddDirectory() {
+void DirectoryList::slotAddDirectory()
+{
+    KFileDialog dia( QString::null, QString::null, 0, 0, true );
+    dia.setMode( KFile::Directory | KFile::ExistingOnly );
+    dia.setCaption( i18n( "Select Folder" ) );
+    dia.exec();
 
-    KURL url = KDirSelectDialog::selectDirectory( QString::null, true, parentWidget(), i18n( "Select Folder" ) );
-
-    //KFileDialog dia( QString::null, QString::null, 0, 0, true );
-    //dia.setMode( KFile::Directory | KFile::ExistingOnly );
-    //dia.setCaption( i18n( "Select Folder" ) );
-    //dia.exec();
-
-    //QString dir = dia.selectedURL().path();
-
-    QString dir = url.path();
+    QString dir = dia.selectedURL().path();
 
     if ( !dir.isEmpty() && m_dirList.find( dir ) == m_dirList.end() ) {
         m_dirList.append( dir );
@@ -103,7 +99,8 @@ void DirectoryList::slotAddDirectory() {
 }
 
 
-void DirectoryList::slotRemoveDirectory() {
+void DirectoryList::slotRemoveDirectory()
+{
     if ( !m_base->directoryListView->selectedItem() )
         return ;
 
