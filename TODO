@@ -3,14 +3,14 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #86 being the highest available (take this one for your next bug and increase here)
+           #87 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
-    * add: #85 <muesli> make searchbrowser search the collection, too -->muesli
+    * fix: #86 <markey> with "amarok default color scheme" some elements of the searchbrowser are invisible
 
-    * fix: #84 <muesli> fix the broken SQLite check (doesnt work @berkus,muesli)
+    * add: #85 <muesli> make searchbrowser search the collection, too -->muesli
 
     
 MID-TERM:
