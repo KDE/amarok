@@ -19,6 +19,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <kdebug.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <math.h>
 #include <qapplication.h>
 #include <qdir.h>
 
@@ -56,6 +57,14 @@ XineEngine::XineEngine()
 
 XineEngine::~XineEngine()
 {
+    if( xine_get_status( m_stream ) == XINE_STATUS_PLAY ) {
+       for( int v = 100; v > 0; v-- ) {
+          xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
+          ::usleep( 15000 * (-log10( v ) + 2) );
+       }
+       xine_stop( m_stream );
+    }
+
     if (m_stream)     xine_close(m_stream);
     if (m_eventQueue) xine_event_dispose_queue(m_eventQueue);
     if (m_stream)     xine_dispose(m_stream);
