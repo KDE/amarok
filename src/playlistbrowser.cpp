@@ -1339,6 +1339,10 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     if ( m_url.protocol() == "cur" )
         font.setUnderline( true );
 
+    // Use italic font for "Cool-Streams"
+    if ( text( 0 ) == "Cool-Streams" )
+        font.setItalic( true );
+
     int text_x = lv->treeStepSize() + 3;
     int textHeight = detailedView ? fm.lineSpacing() + lv->itemMargin() + 1 : height();
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
