@@ -57,8 +57,8 @@ email                : markey@web.de
 #include <unistd.h>              //initIpc()
 #include <sys/socket.h>          //initIpc()
 #include <sys/un.h>              //initIpc()
-   
-    
+
+
 //statics
 EngineBase* PlayerApp::m_pEngine = 0;
 
@@ -167,7 +167,7 @@ PlayerApp::~PlayerApp()
 void PlayerApp::handleCliArgs()
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    
+
     if ( args->count() > 0 )
     {
         KURL::List list;
@@ -204,15 +204,15 @@ void PlayerApp::handleLoaderArgs( const QCString& args ) //SLOT
 {
     //divide argument line into single strings
     QStringList strlist = QStringList::split( " ", args );
-    
+
     int argc = strlist.count();
     char* argv[argc];
-    
+
     for ( int i = 0; i < argc; i++ ) {
         argv[i] = const_cast<char*>( strlist[i].latin1() );
         kdDebug() << "[PlayerApp::handleLoaderArgs()] extracted string: " << argv[i] << endl;
     }
-            
+
     //re-initialize KCmdLineArgs with the new arguments
     KCmdLineArgs::reset();
     initCliArgs( argc, argv );
@@ -226,7 +226,7 @@ void PlayerApp::handleLoaderArgs( const QCString& args ) //SLOT
 void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 {
     static const char *description = I18N_NOOP( "An audio player for KDE" );
-    
+
     static KCmdLineOptions options[] =
         {
             { "+[URL(s)]", I18N_NOOP( "Files/URLs to Open" ), 0 },
@@ -363,13 +363,16 @@ void PlayerApp::restoreSession()
     if ( AmarokConfig::resumePlayback() && !AmarokConfig::resumeTrack().isEmpty() )
     {
         MetaBundle *bundle = TagReader::readTags( AmarokConfig::resumeTrack(), true );
-        play( *bundle );
-        delete bundle;
 
-        //see if we also saved the time
-        int seconds = AmarokConfig::resumeTime();
-        if ( seconds > 0 )
-            m_pEngine->seek( seconds * 1000 );
+        if( bundle )
+        {
+            play( *bundle );
+            delete bundle;
+
+            //see if we also saved the time
+            int seconds = AmarokConfig::resumeTime();
+            if ( seconds > 0 ) m_pEngine->seek( seconds * 1000 );
+        }
     }
 }
 
@@ -830,7 +833,7 @@ void PlayerApp::slotVolumeChanged( int value )
 {
     if (value < 0)   value = 0;     // FIXME: I think this belongs to Engine?
     if (value > 100) value = 100;
-    
+
     AmarokConfig::setMasterVolume( value );
     m_pEngine->setVolume( value );
     m_pPlayerWidget->m_pVolSlider->setValue( value ); // FIXME: slider should reflect actual value, thats why its updated here
