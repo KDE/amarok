@@ -49,10 +49,12 @@ Loader::Loader( int& argc, char** argv )
             showSplash();
 
         m_pProc = new QProcess( this );
-        m_pProc->addArgument( "amarokapp" );
+        
+        QString path = argv[0];
+        path.replace( "amarok", "amarokapp" );        
+        m_pProc->addArgument( path );
+        
         //hand arguments through to amaroK
-        //NOTE the first argument is /path/to/amarok but this is not /path/to/amarokapp so we ignore it
-        //FIXME it should be converted to /path/top/amarokapp instead, I think, or there might be new bugs
         for ( int i = 1; i < m_argc; i++ )
             m_pProc->addArgument( m_argv[i] );
 
@@ -190,16 +192,4 @@ void Loader::stdoutActive()
 
 #include "loader.moc"
 
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-// TODO
-////////////////////////////////////////////////////////////////////////////////
-
-//* IPC. When amaroK is already loaded, find the instance and send the command args to it, without
-//  loading a new instance (much faster). This way we can also get rid of KUniqueApplication
-//* For a challenge, make this work without Qt! This would reduce loading time even more, especially
-//  when Qt is not already in memory
-//* Eventually rename loader to "amarok", and amaroK to "amarok-app"
 

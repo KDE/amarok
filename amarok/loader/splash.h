@@ -38,7 +38,7 @@ class OSDWidget : public QWidget
         void paintEvent(QPaintEvent*);
         void mousePressEvent( QMouseEvent* );
         
-        static const int SPLASH_DURATION = 15000; 
+        static const int SPLASH_DURATION = 25000; 
         
         QTimer      *timer;
         QPixmap     osdBuffer;
