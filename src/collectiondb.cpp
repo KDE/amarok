@@ -1111,7 +1111,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
                 // if we get here, we didn't find an entry
                 warning() << "No bundle recovered for: " << *it << endl;
-                bundles += MetaBundle();
+                b.setPath( *it );
+                bundles += b;
 
             success: ;
             }

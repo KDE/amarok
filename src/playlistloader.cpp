@@ -196,7 +196,7 @@ PlaylistLoader::doJob()
 
                 if ( (*bu).length() <= 0 ) {
                     // we try to read the tags, despite the slow-down
-                    debug() << "Audioproperties not know for: " << (*bu).url().fileName() << endl;
+                    debug() << "Audioproperties not known for: " << (*bu).url().fileName() << endl;
                     (*bu).readTags( TagLib::AudioProperties::Fast );
                 }
 
