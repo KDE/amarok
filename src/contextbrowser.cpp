@@ -22,6 +22,7 @@
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <khtml_part.h>
+#include <khtmlview.h>
 #include <kiconloader.h>
 #include <klineedit.h>
 #include <klocale.h>
@@ -56,6 +57,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
     browser = new KHTMLPart( hb1 );
     browser->setDNDEnabled( true );
+    browser->view()->setMarginWidth( 4 );
+    browser->view()->setMarginHeight( 4 );
     setStyleSheet();
 
     connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
