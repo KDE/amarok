@@ -1326,8 +1326,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( true );
-        m_undoButton->setEnabled( true );
-        m_redoButton->setEnabled( true );
+        m_undoButton->setEnabled( !m_undoList.isEmpty() );
+        m_redoButton->setEnabled( !m_redoList.isEmpty() );
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
         break;

@@ -8,10 +8,16 @@
 #define PLAYLISTSIDEBAR_H
 
 #include <qhbox.h>       //baseclass
-#include <qptrlist.h>    //stack allocated
+//#include <qptrlist.h>    //stack allocated
+//#include <qvaluelist.h>  //stack allocated
+#include <qvaluevector.h>  //stack allocated
 #include <qpushbutton.h> //baseclass
 
+typedef QValueVector<QWidget*> PageList;
+typedef QValueVector<QWidget*>::ConstIterator PageIterator;
+
 class KMultiTabBar;
+class KMultiTabBarTab;
 class QEvent;
 class QObject;
 class QObjectList;
@@ -59,19 +65,21 @@ public:
     QWidget *page( const QString& );
 
 public slots:
-    void showHidePage( int );
-    void close();
+    void showHidePage( int = -1 );
+    void close() { showHidePage(); }
     void autoClosePages();
     void adjustSize();
 
 private:
-    static const int DefaultHeight = 50;
+    static const int DEFAULT_HEIGHT = 50;
 
-    KMultiTabBar     *m_multiTabBar;
-    QWidget          *m_pageHolder;
-    QPushButton      *m_stayButton;
-    QSignalMapper    *m_mapper;
-    QPtrList<QWidget> m_pages;
+    KMultiTabBar    *m_tabBar;
+    QWidget         *m_pageHolder;
+    QPushButton     *m_overlapButton;
+    QSignalMapper   *m_mapper;
+    PageList         m_pages;
+    QWidget         *m_currentPage;
+    KMultiTabBarTab *m_currentTab;
 
     class TinyButton : public QPushButton
     {

@@ -57,7 +57,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
     }
     lvlMapper[m_rows] = 0;
 
-    for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lvlMapper[x] << "\n";
+    //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << lvlMapper[x] << "\n";
 
 
     QColor darkColor( backgroundColor().dark( 150 ) );
@@ -93,7 +93,7 @@ BlockAnalyzer::transform( Scope &s )
 void
 BlockAnalyzer::analyze( const Scope &s )
 {
-    static float max = 0;
+    //static float max = 0;
 
     // z = 2 3 2 1 0 2
     //     . . . . # .
@@ -118,7 +118,7 @@ BlockAnalyzer::analyze( const Scope &s )
         for( z = 0; v[x] < lvlMapper[z]; ++z );
 
         //this is debug stuff
-        if( v[x] > max ) { max = v[x]; kdDebug() << max << endl; }
+        //if( v[x] > max ) { max = v[x]; kdDebug() << max << endl; }
 
         //too high is not fatal
         //higher than stored value means we are falling

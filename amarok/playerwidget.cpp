@@ -178,6 +178,7 @@ void PlayerWidget::defaultScroll()
 {
     m_rateString = QString::null;
     setScroll( i18n( "Welcome to amaroK" ) );
+    m_pTimeLabel->hide(); m_pTimeSign->hide();
 }
 
 
@@ -275,6 +276,7 @@ static const char* const separator_xpm[]={
         x += separatorWidth;
     }
 
+     m_pTimeLabel->show(); m_pTimeSign->show();
     drawScroll();
     update(); //we need to update rateString
 }
