@@ -81,8 +81,7 @@ class CollectionView : public KListView
         /** Shows the folder selection widget. */
         void setupDirs();    
         
-        void scan();
-        void scanModifiedDirs();
+        void scan( bool modifiedOnly = false );
 
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView();
@@ -126,6 +125,7 @@ class CollectionView : public KListView
         QString m_category2;
         bool m_recursively;
         bool m_monitor;
+        bool m_isScanning;
 };
 
 

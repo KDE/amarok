@@ -123,6 +123,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 {
     kdDebug() << k_funcinfo << endl;
 
+    m_isScanning = false;
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
@@ -158,11 +159,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
             m_db->dropTables();
             m_db->createTables();
             m_insertdb = new CollectionDB();
-            scan();
+            scan( false );
         } else
         {
             m_insertdb = new CollectionDB();
-            scanModifiedDirs();
+            scan( true );
         }
 
     //</open database>
@@ -221,24 +222,20 @@ CollectionView::setupDirs()  //SLOT
 
 
 void
-CollectionView::scan()  //SLOT
+CollectionView::scan( bool modifiedOnly )  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
 
-    if ( m_parent->timer->isActive() ) m_parent->timer->stop();
-    m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-    m_insertdb->scan( m_dirs, m_recursively );
-}
-
-
-void
-CollectionView::scanModifiedDirs()  //SLOT
-{
-    kdDebug() << k_funcinfo << endl;
-    
-    if ( m_parent->timer->isActive() ) m_parent->timer->stop();
-    m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-    m_insertdb->scanModifiedDirs( m_recursively );
+    if ( !m_isScanning )
+    {
+        m_isScanning = true;
+        m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
+        
+        if ( modifiedOnly )
+            m_insertdb->scanModifiedDirs( m_recursively );
+        else
+            m_insertdb->scan( m_dirs, m_recursively );
+    }
 }
 
 
@@ -282,7 +279,7 @@ CollectionView::scanDone( bool changed ) //SLOT
         renderView();
     
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
-    startTimer( MONITOR_INTERVAL );         
+    m_isScanning = false;
 }
 
 
@@ -464,7 +461,7 @@ void
 CollectionView::timerEvent( QTimerEvent* )
 {
     if ( m_monitor )
-        scanModifiedDirs();
+        scan( true );
 }
 
 
