@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  FIX: Lyrics parsing failed for certain songs. (BR 94269)
   ADD: xine-engine saves config, and implements crossfade, bug fixed too
   ADD: Player-Window can also show the BlockAnalyzer.
   CHG: Run incremental scanning once a minute instead of every 30 seconds.
