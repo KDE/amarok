@@ -62,16 +62,16 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_timeLabel = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
-    QHBox *hbox = new QHBox( this );
-    hbox->setSpacing( 2 );
-    QFont font; font.setPointSize( font.pointSize() - 1 );
-    hbox->setFont( font );
-
     // TODO Both labels need tooltips (string freeze?)
-    QLabel* rndLabel = new QLabel( hbox );
-    rndLabel->setPixmap( SmallIcon( "roll", KGlobal::instance() ) );
-    QLabel* repLabel = new QLabel( hbox );
-    repLabel->setPixmap( SmallIcon( "rotate", KGlobal::instance() ) ); // Are these icons in KDElibs?
+    QLabel *rndLabel, *repLabel;
+    QWidget *hbox = new QWidget( this );
+    QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
+    layout->addSpacing( 3 );
+    layout->addWidget( rndLabel = new QLabel( hbox ) );
+    layout->addWidget( repLabel = new QLabel( hbox ) );
+    layout->addSpacing( 3 );
+    rndLabel->setPixmap( SmallIcon( "random" ) );
+    repLabel->setPixmap( SmallIcon( "repeat_playlist" ) ); // Are these icons in KDElibs?
 
     //TODO reimplement insertChild() instead
     addWidget( m_itemCountLabel );
