@@ -656,11 +656,11 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
-    bool options = Playlist::Append;
-    if ( directPlay ) options |= Playlist::DirectPlay;
-
-    if ( !dlg.selectedURL().isEmpty() )
+    if ( !dlg.selectedURL().isEmpty() ) {
+        int options = Playlist::Append;
+        if ( directPlay ) options |= Playlist::DirectPlay;
         m_playlist->insertMedia( dlg.selectedURL(), options );
+    }
 }
 
 
