@@ -38,8 +38,6 @@ SHORT-TERM (URGENT):
              * Setting WType_Dialog on playlist doesn't help, because then playlist always
                obscures the playwidget.
 
-    * chg: <mxcl> make the color and font groupboxes checkable again for next version (requires qt 3.2)
-
 
 MID-TERM:
 
