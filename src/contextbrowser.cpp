@@ -47,6 +47,32 @@ ContextBrowser::ContextBrowser( const char *name )
     hb1->setSpacing( 4 );
 
     browser = new KHTMLPart( hb1 );
+    setStyleSheet();
+
+    if ( m_db->isEmpty() )
+        showIntroduction();
+    else
+        showHome();
+
+    connect( browser->browserExtension(),
+             SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
+             SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );
+
+    setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
+}
+
+
+ContextBrowser::~ContextBrowser()
+{
+    delete m_db;
+    delete m_currentTrack;
+
+    EngineController::instance()->detach( this );
+}
+
+
+void ContextBrowser::setStyleSheet()
+{
     m_styleSheet =  QString( "div { color: %1; font-size: 8px; text-decoration: none; }" )
                     .arg( colorGroup().text().name() );
     m_styleSheet += QString( "td { color: %1; font-size: 8px; text-decoration: none; }" )
@@ -72,26 +98,6 @@ ContextBrowser::ContextBrowser( const char *name )
                     .arg( colorGroup().highlight().name() );
     m_styleSheet += QString( ".rbcontent:hover { border: solid %1 1px; }" )
                     .arg( colorGroup().text().name() );
-
-    if ( m_db->isEmpty() )
-        showIntroduction();
-    else
-        showHome();
-
-    connect( browser->browserExtension(),
-             SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
-             SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );
-
-    setFocusProxy( hb1 ); //so focus is given to a sensible widget when the tab is opened
-}
-
-
-ContextBrowser::~ContextBrowser()
-{
-    delete m_db;
-    delete m_currentTrack;
-
-    EngineController::instance()->detach( this );
 }
 
 
@@ -246,6 +252,7 @@ void ContextBrowser::showCurrentTrack()
     m_db = new CollectionDB();
 
     browser->begin();
+    setStyleSheet();
     browser->setUserStyleSheet( m_styleSheet );
 
     // <Current Track Information>

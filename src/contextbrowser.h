@@ -30,6 +30,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void engineNewMetaData( const MetaBundle&, bool );
 
     private:
+        void setStyleSheet();
         void showIntroduction();
         void showHome();
         void showCurrentTrack();
