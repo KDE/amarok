@@ -64,9 +64,6 @@ MID-TERM:
                    another file from that folder for the next few minutes. what about hdd
                    sleep-timeouts? opinions?
 
-  ADD  89 <muesli> Mostly / recently played song statistics tab. this will enhance the
-                   collection database. we'll be ready to compete with winamp's media library, then ;-)
-
   CHG  78 <unknown>Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
                    clear   -> only clear the stuff that was searched for?
                    shuffle -> stop the search and do normal shuffle?
