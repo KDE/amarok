@@ -45,7 +45,8 @@ MediaDevice *MediaDevice::s_instance = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
-    return !KStandardDirs::findExe( "gnupod_addsong.pl" ).isNull();
+    return !KStandardDirs::findExe( "gnupod_addsong.pl" ).isNull()
+           || !KStandardDirs::findExe( "gnupod_addsong" ).isNull();
 }
 
 
