@@ -1673,9 +1673,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertTitle( KStringHandler::rsqueeze( item->metaBundle().prettyTitle(), 50 ) );
     popup.insertItem( SmallIcon( "player_play" ), isCurrent && isPlaying ? i18n( "&Restart" ) : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
-    if( !isQueued ) //not in nextTracks queue
-    {
-        QString nextText = i18n( "Play as &Next" );
+    if( !isQueued ) { //not in nextTracks queue
+        QString nextText = isCurrent ? i18n("Play This Track &Again") : i18n( "Play As &Next" );
 
         const uint nextIndex = m_nextTracks.count() + 1;
         if ( nextIndex > 1 )
@@ -1683,11 +1682,15 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
         popup.insertItem( SmallIcon( "2rightarrow" ), nextText, PLAY_NEXT );
     }
-    else popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
+    else
+        popup.insertItem( SmallIcon( "2leftarrow" ), i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
+
+    if( isCurrent )
+       amaroK::actionCollection()->action( "pause" )->plug( &popup );
 
     popup.insertSeparator();
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1' for Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
-    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' for Selected Tracks").
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit '%1' For Selected Tracks" ).arg( tagName ), 0, 0, Key_F2, EDIT );
+    popup.insertItem( trackColumn ? i18n("&Iteratively Assign Track Numbers") : i18n("Write '%1' For Selected Tracks").
                       arg( KStringHandler::rsqueeze( tag, 30 ) ), FILL_DOWN );
     popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Meta-string" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
