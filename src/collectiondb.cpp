@@ -1347,8 +1347,8 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     QString keyword = album + " - " + artist;
 
     CoverFetcher* fetcher = new CoverFetcher( amazonLicense, parent );
-    connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QString&, const QImage& ) ),
-             this,      SLOT( saveCover( const QString&, const QString&, const QString&, const QImage& ) ) );
+    connect( fetcher, SIGNAL( imageReady( const QString&, const QString&, const QImage& ) ),
+             this,      SLOT( saveCover( const QString&, const QString&, const QImage& ) ) );
     connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
 
     fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, noedit, 2, false );
@@ -1381,7 +1381,7 @@ CollectionDB::saveCover( const QString& keyword, const QString& url, const QImag
 {
     kdDebug() << k_funcinfo << endl;
 
-    QStringList values = QStringList::split( " - ", keyword );  
+    QStringList values = QStringList::split( " - ", keyword );
     setImageForAlbum( values[ 0 ], values[ 1 ], url, img );
 
     emit coverFetched( keyword );
