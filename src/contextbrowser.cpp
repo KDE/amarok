@@ -261,8 +261,11 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) )
        return;
 
-    KPopupMenu menu;
     KURL url( urlString );
+    if( url.path().contains( "lyric", FALSE ) )
+        return;
+
+    KPopupMenu menu;
     KURL::List urls( url );
     const QStringList info = QStringList::split( " @@@ ", url.path() );
 
@@ -283,7 +286,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #endif
         menu.setItemEnabled( SHOW, !m_db->albumImage( info[0], info[1], 0 ).contains( "nocover" ) );
     }
-    else if ( !( url.path().contains("lyric") ) ) {
+    else {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
         menu.insertTitle( i18n("Track"), TITLE );
