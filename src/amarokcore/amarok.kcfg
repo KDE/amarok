@@ -97,7 +97,7 @@
     </entry>
     <entry key="Hide Playlist Window" type="Bool">
         <label>Whether to hide playlist together with player window</label>
-        <default>false</default>
+        <default>true</default>
         <whatsthis>If set, amaroK takes appropriate action to hide the playlist when the player window is hidden. If not set, the player window and the playlist hide totally independent of each other.</whatsthis>
     </entry>
     <entry key="Playlist Window Enabled" type="Bool">
