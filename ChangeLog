@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+VERSION 1.0-beta4:
   ADD: CollectionDB now caches and rescales images. This binds cover art usage
        in amaroK to the collection, but offers greatly improved speed for cover
        retrieval and uses less memory.
