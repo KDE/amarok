@@ -432,6 +432,52 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
 }
 
+
+static QString
+verboseTimeSince( const QDateTime &datetime )
+{
+    const QDate date = datetime.date();
+    const QDate now  = QDate::currentDate();
+    if( date > now )
+        return i18n( "The future" );
+
+    if( date.year() == now.year() ) {
+        if( date.month() == now.month() ) {
+            if( date.day() == now.day() ) {
+                //the date is today, let's get more resolution
+                const QTime time = datetime.time();
+                const QTime now  = QTime::currentTime();
+                if( time > now )
+                    return i18n( "The future" );
+
+                int
+                minutes  = now.hour() - time.hour();
+                minutes *= 60;
+                minutes += QABS(now.minute() - time.minute());
+
+                if( minutes < 90 )
+                    return i18n( "Within the last minute", "%n minutes ago", minutes );
+                else
+                    return i18n( "Within the last hour", "%n hours ago", now.hour() - time.hour() );
+            }
+            else
+                /*continue to days calculation section*/;
+        }
+
+        const int days = date.daysTo( now );
+
+        if ( days > 28 )
+            return i18n( "Last month", "%n months ago", now.month() - date.month() );
+        else if( days < 7 )
+            return i18n( "Yesterday", "%n days ago", days );
+        else
+            return i18n( "Last week", "%n weeks ago", days );
+    }
+
+    return i18n( "Last year", "%n years ago", now.year() - date.year() );
+}
+
+
 void ContextBrowser::showHome() //SLOT
 {
     m_tabBar->blockSignals( true );
@@ -450,7 +496,14 @@ void ContextBrowser::showHome() //SLOT
         "FROM tags, artist, album "
         "WHERE artist.id = tags.artist AND album.id = tags.album "
         "ORDER BY tags.createdate DESC "
-        "LIMIT 0,10;" );
+        "LIMIT 0,5;" );
+
+    QStringList least = m_db->query(
+        "SELECT tags.title, tags.url, artist.name, album.name, statistics.accessdate "
+        "FROM tags, artist, album, statistics "
+        "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = statistics.url "
+        "ORDER BY statistics.accessdate "
+        "LIMIT 0,5;" );
 
     browser->begin();
     m_HTMLSource="";
@@ -512,10 +565,44 @@ void ContextBrowser::showHome() //SLOT
                     "</div>" );
 
     m_HTMLSource.append(
+                "</div>"
+            "</div>"
+
+    // </Recent Tracks Information>
+
+    // <Songs least listened Information>
+
+            "<div id='newest_box' class='devel-box'>"
+                "<div id='newest_box-header' class='devel-box-header'>"
+                    "<span id='newest_box-header-title' class='devel-box-header-title'>"
+                    + i18n( "Least listened songs" ) +
+                    "</span>"
+                "</div>"
+                "<div id='newest_box-body' class='devel-box-body'>" );
+
+    QDateTime lastPlay = QDateTime();
+    for( uint i = 0; i < least.count(); i = i + 5 )
+    {
+        lastPlay.setTime_t( least[i+4].toUInt() );
+        m_HTMLSource.append(
+                    "<div class='" + QString( (i % 8) ? "devel-box-row-alt" : "devel-box-row" ) + "'>"
+                        "<div class='devel-song'>"
+                            "<a href=\"file:" + least[i+1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='devel-song-title'>" + least[i] + "</span><br />"
+                            "<span class='devel-song-artist'>" + least[i+2] + "</span>"
+                            " - "
+                            "<span class='devel-song-album'>" + least[i+3] + "</span><br />"
+                            "<span class='devel-song-time'>" + i18n( "Last Played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
+                            "</a>"
+                        "</div>"
+                    "</div>" );
+    }
+
+    m_HTMLSource.append(
             "</div>"
                        );
 
-    // </Recent Tracks Information>
+    // </Songs least listened Information>
 
     m_HTMLSource.append( "</html>" );
     browser->write( m_HTMLSource );
@@ -523,49 +610,6 @@ void ContextBrowser::showHome() //SLOT
     saveHtmlData(); // Send html code to file
 }
 
-static QString
-verboseTimeSince( const QDateTime &datetime )
-{
-    const QDate date = datetime.date();
-    const QDate now  = QDate::currentDate();
-    if( date > now )
-        return i18n( "The future" );
-
-    if( date.year() == now.year() ) {
-        if( date.month() == now.month() ) {
-            if( date.day() == now.day() ) {
-                //the date is today, let's get more resolution
-                const QTime time = datetime.time();
-                const QTime now  = QTime::currentTime();
-                if( time > now )
-                    return i18n( "The future" );
-
-                int
-                minutes  = now.hour() - time.hour();
-                minutes *= 60;
-                minutes += QABS(now.minute() - time.minute());
-
-                if( minutes < 90 )
-                    return i18n( "Within the last minute", "%n minutes ago", minutes );
-                else
-                    return i18n( "Within the last hour", "%n hours ago", now.hour() - time.hour() );
-            }
-            else
-                /*continue to days calculation section*/;
-        }
-
-        const int days = date.daysTo( now );
-
-        if ( days > 28 )
-            return i18n( "Last month", "%n months ago", now.month() - date.month() );
-        else if( days < 7 )
-            return i18n( "Yesterday", "%n days ago", days );
-        else
-            return i18n( "Last week", "%n weeks ago", days );
-    }
-
-    return i18n( "Last year", "%n years ago", now.year() - date.year() );
-}
 
 void ContextBrowser::showCurrentTrack() //SLOT
 {
@@ -1089,6 +1133,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".devel-song-score { }" );
     styleSheet += QString( ".devel-song-artist { }" );
     styleSheet += QString( ".devel-song-album { }" );
+    styleSheet += QString( ".devel-song-time { }" );
 }
 
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
