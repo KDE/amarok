@@ -72,6 +72,7 @@ class PlayerApp : public KUniqueApplication
         int  trackLength() { return m_length; }
         void setupColors();
         bool restorePlaylistSelection(const KURL& url);
+        void insertMedia( const KURL::List& );
 
         AmarokConfig *config();
 

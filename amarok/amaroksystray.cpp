@@ -19,10 +19,6 @@
 
 #include <kurldrag.h>
 
-// this is crap - you have to include those two only for the sake of one line
-// of code: amarok APIs suck
-#include "browserwin.h"
-#include "playlistwidget.h"
 
 AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
@@ -107,7 +103,7 @@ void AmarokSystray::dropEvent( QDropEvent *e )
 {
    KURL::List list;
    if (KURLDrag::decode(e, list))
-      pApp->m_pBrowserWin->m_pPlaylistWidget->insertMedia(list);
+      pApp->insertMedia(list);
 }
 
 

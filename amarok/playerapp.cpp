@@ -383,14 +383,15 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->createVis();
 
     QValueList<int> splitterList;
+    
+    //FIXME this is no longer particular relevant, instead record playlistSideBar's savedSize
+    //      implement a setConfig() function
     splitterList = config()->browserWinSplitter();
-    if ( splitterList.count() != 4 )
+    if ( splitterList.count() != 2 )
     {
         splitterList.clear();
         splitterList.append( 70 );
         splitterList.append( 140 );
-        splitterList.append( 140 );
-        splitterList.append( 340 );
     }
     m_pBrowserWin->m_pSplitter->setSizes( splitterList );
 
@@ -478,9 +479,16 @@ void PlayerApp::setupColors()
     m_pBrowserWin->setPalettes( config()->browserFgColor(), config()->browserBgColor(), m_optBrowserBgAltColor );
 }
 
+void PlayerApp::insertMedia( const KURL::List &list )
+{
+    m_pBrowserWin->m_pPlaylistWidget->insertMedia( list );
+}
+
 
 // SLOTS -----------------------------------------------------------------
 
+//these functions ask the playlist to change the track, if it can change track it notifies us again via a SIGNAL
+//the SIGNAL is connected to ::play() below
 void PlayerApp::slotPrev() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Prev, m_pEngine->loaded() ); }
 void PlayerApp::slotNext() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_pEngine->loaded() ); }
 void PlayerApp::slotPlay() const { m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Current ); }
