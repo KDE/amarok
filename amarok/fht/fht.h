@@ -21,8 +21,8 @@
 class FHT {
 	int		m_exp2;
 	int		m_num;
-	double		*m_buf;
-	double		*m_tab;
+	float		*m_buf;
+	float		*m_tab;
 
 	void		makeCasTable();
 
@@ -31,15 +31,15 @@ public:
 	~FHT();
 	inline int	sizeExp() const { return m_exp2; }
 	inline int	size() const { return m_num; }
-	void 		__transform(double *, int, int);
-	inline void	transform8(double *);
-	void		transform(double *);
-	inline double	_transform(double *);
-	void		power(double *);
-	double		_power(double *);
-	double		*copy(double *, double *);
-	double		*clear(double *);
-	inline void	scale(double *, double);
+	void 		__transform(float *, int, int);
+	inline void	transform8(float *);
+	void		transform(float *);
+	inline float	_transform(float *);
+	void		power(float *);
+	float		_power(float *);
+	float		*copy(float *, float *);
+	float		*clear(float *);
+	inline void	scale(float *, float);
 };
 
 

@@ -27,9 +27,9 @@ int main(void)
 	FHT f(5);  // 2^5 input values  =>  2^4 spectrum values
 	int num = f.size(), i;
 	
-	double *s1 = new double[num];	// start values
-	double *s2 = new double[num];	// Hartley coefficients
-	double *s3 = new double[num];	// Fourier power spektrum
+	float *s1 = new float[num];	// start values
+	float *s2 = new float[num];	// Hartley coefficients
+	float *s3 = new float[num];	// Fourier power spektrum
 
 	for (i = 0; i < num; i++)
 		s1[i] = 100.0 * rand() / (RAND_MAX + 1.0);

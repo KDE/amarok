@@ -34,8 +34,8 @@ FHT::FHT(int e)
 	m_exp2 = e;
 	m_num = 1 << e;
 	if (e > 3) {
-		m_buf = new double[m_num];
-		m_tab = new double[m_num * 2];
+		m_buf = new float[m_num];
+		m_tab = new float[m_num * 2];
 		makeCasTable();
 	}
 }
@@ -50,7 +50,7 @@ FHT::~FHT()
 
 void FHT::makeCasTable(void)
 {
-	double d, *costab, *sintab;
+	float d, *costab, *sintab;
 	int ul, ndiv2 = m_num / 2;
 
 	for (costab = m_tab, sintab = m_tab + m_num / 2 + 1, ul = 0; ul < m_num; ul++) {
@@ -64,26 +64,26 @@ void FHT::makeCasTable(void)
 }
 
 
-double* FHT::copy(double *d, double *s)
+float* FHT::copy(float *d, float *s)
 {
-	return (double *)memcpy(d, s, m_num * sizeof(double));
+	return (float *)memcpy(d, s, m_num * sizeof(float));
 }
 
 
-double* FHT::clear(double *d)
+float* FHT::clear(float *d)
 {
-	return (double *)memset(d, 0, m_num * sizeof(double));
+	return (float *)memset(d, 0, m_num * sizeof(float));
 }
 
 
-inline void FHT::scale(double *p, double d)
+inline void FHT::scale(float *p, float d)
 {
 	for (int i = 0; i < m_num; i++)
 		*p++ *= d;
 }
 
 
-void FHT::transform(double *p)
+void FHT::transform(float *p)
 {
 	if (m_num == 8)
 		transform8(p);
@@ -93,10 +93,10 @@ void FHT::transform(double *p)
 }
 
 
-inline void FHT::transform8(double *p)
+inline void FHT::transform8(float *p)
 {
-	double a, b, c, d, e, f, g, h, b_f2, d_h2;
-	double a_c_eg, a_ce_g, ac_e_g, aceg, b_df_h, bdfh;
+	float a, b, c, d, e, f, g, h, b_f2, d_h2;
+	float a_c_eg, a_ce_g, ac_e_g, aceg, b_df_h, bdfh;
 
 	a = *p++, b = *p++, c = *p++, d = *p++;
 	e = *p++, f = *p++, g = *p++, h = *p;
@@ -122,14 +122,14 @@ inline void FHT::transform8(double *p)
 }
 
 
-inline double FHT::_transform(double *p)
+inline float FHT::_transform(float *p)
 {
 	__transform(p, m_num, 0);
 	return 0.0;
 }
 
 
-void FHT::power(double *p)
+void FHT::power(float *p)
 {
 	_power(p);
 
@@ -138,10 +138,10 @@ void FHT::power(double *p)
 }
 
 
-double FHT::_power(double *p)
+float FHT::_power(float *p)
 {
 	int i;
-	double *q;
+	float *q;
 	_transform(p);
 
 	*p = (*p * *p), *p += *p, p++;
@@ -153,7 +153,7 @@ double FHT::_power(double *p)
 }
 
 
-void FHT::__transform(double *p, int n, int k)
+void FHT::__transform(float *p, int n, int k)
 {
 	if (n == 8) {
 		transform8(p + k);
@@ -161,12 +161,12 @@ void FHT::__transform(double *p, int n, int k)
 	}
 
 	int i, j, ndiv2 = n / 2;
-	double a, *t1, *t2, *t3, *t4, *ptab, *pp;
+	float a, *t1, *t2, *t3, *t4, *ptab, *pp;
 
 	for (i = 0, t1 = m_buf, t2 = m_buf + ndiv2, pp = &p[k]; i < ndiv2; i++)
 		*t1++ = *pp++, *t2++ = *pp++;
 
-	memcpy(p + k, m_buf, sizeof(double) * n);
+	memcpy(p + k, m_buf, sizeof(float) * n);
 
 	__transform(p, ndiv2, k);
 	__transform(p, ndiv2, k + ndiv2);
@@ -192,7 +192,7 @@ void FHT::__transform(double *p, int n, int k)
 		*t1++ = *pp + a;
 		*t2++ = *pp++ - a;
 	}
-	memcpy(p + k, m_buf, sizeof(double) * n);
+	memcpy(p + k, m_buf, sizeof(float) * n);
 }
 
 
