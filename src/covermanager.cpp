@@ -621,10 +621,11 @@ void CoverViewItem::loadCover()
     if( m_hasCover ) {
         QString imgPath = CollectionDB().getImageForAlbum( m_artist, m_album );
         m_coverPix = QPixmap( imgPath );
-        repaint();
     }
     else if( !m_coverPix.isNull() )
         m_coverPix.resize( 0, 0 );    //make it a null pixmap
+
+    repaint();
 }
 
 
