@@ -170,7 +170,7 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
         m_base->editButton->setEnabled( true );
         m_base->runButton->setEnabled( !m_scripts[name].process );
         m_base->stopButton->setEnabled( m_scripts[name].process );
-        m_base->configureButton->setEnabled( true );
+        m_base->configureButton->setEnabled( m_scripts[name].process );
         m_base->aboutButton->setEnabled( true );
     }
 }
