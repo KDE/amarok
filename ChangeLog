@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: DCOP call to scan your collection. (BR 84621)
   FIX: When an engine fails to load, respect the rank while choosing
        the next engine.
 

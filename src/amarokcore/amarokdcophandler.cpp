@@ -212,6 +212,11 @@ namespace amaroK
         Playlist::instance()->insertMedia(urls);
     }
 
+    void DcopHandler::scanCollection()
+    {
+        CollectionDB::instance()->startScan();
+    }
+
     void DcopHandler::clearPlaylist()
     {
         Playlist::instance()->clear();

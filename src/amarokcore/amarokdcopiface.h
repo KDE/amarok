@@ -43,6 +43,8 @@ k_dcop:
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
 
+   virtual void scanCollection() = 0;                       ///< Scan the collection.
+   
    virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
 
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
