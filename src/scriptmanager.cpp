@@ -4,6 +4,7 @@
 
 
 #define DEBUG_PREFIX "ScriptManager"
+
 #include "debug.h"
 #include "scriptmanager.h"
 #include "scriptmanagerbase.h"
@@ -47,10 +48,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_base->stopButton, SIGNAL( clicked() ), SLOT( slotStopScript() ) );
     connect( m_base->configureScriptButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
 
-    ScriptMap::ConstIterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
-        new KListViewItem( m_base->directoryListView, it.key() );
-
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
     resize( sizeHint() );
@@ -59,9 +56,17 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 ScriptManager::~ScriptManager()
 {
-    DEBUG_FUNC_INFO
+    DEBUG_BEGIN
 
     s_instance = 0;
+
+    debug() << "Killing running scripts.\n";
+
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        delete it.data().process;
+
+    DEBUG_END
 }
 
 

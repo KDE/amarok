@@ -53,6 +53,9 @@ class ConfigDialog( QDialog ):
 
         self.adjustSize()
 
+    def __del__( self ):
+        print "ConfigDialog dtor"
+
     def save( self ):
         wakeTime = str( self.timeEdit.time().toString() )
         print wakeTime
@@ -83,6 +86,9 @@ class Alarm( QApplication ):
         self.connect( self.alarmTimer, SIGNAL( "timeout()" ), self.wakeup )
 
         self.readSettings()
+
+    def __del__( self ):
+        print "Alarm dtor"
 
     def wakeup( self ):
         popen( "dcop amarok player play" )

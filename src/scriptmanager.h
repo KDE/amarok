@@ -5,6 +5,8 @@
 #ifndef AMAROK_SCRIPTMANAGER_H
 #define AMAROK_SCRIPTMANAGER_H
 
+#include "playlistwindow.h"
+
 #include <qmap.h>
 
 #include <kdialogbase.h>    //baseclass
@@ -22,7 +24,7 @@ class ScriptManager : public KDialogBase
         ScriptManager( QWidget *parent = 0, const char *name = 0 );
         virtual ~ScriptManager();
 
-        static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager(); }
+        static ScriptManager* instance() { return s_instance ? s_instance : new ScriptManager( PlaylistWindow::self() ); }
 
     public slots:
 
@@ -41,8 +43,8 @@ class ScriptManager : public KDialogBase
         ScriptManagerBase* m_base;
 
         struct ScriptItem {
-            KURL url;
-            KProcess* process;
+            KURL           url;
+            KProcess*      process;
             QListViewItem* li;
         };
 
