@@ -18,7 +18,8 @@
 #include "playerapp.h"
 #include "playlistitem.h"
 #include "playlistwidget.h"
-#include "browserwin.h"
+//#include "browserwin.h"
+#include "playlistloader.h"
 
 #include <string.h>
 
@@ -42,20 +43,25 @@
 
 
 PlaylistItem::PlaylistItem( QListView* parent, const KURL &url ) :
-        KListViewItem( parent, nameForUrl( url ) )
+        KListViewItem( parent, nameForUrl( url ) ),
+        m_hasMetaInfo( false ),
+        m_url( url ),
+        m_tags( 0 )
 {
-    m_url = url;
     init();
 }
 
 
-PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url ) :
-        KListViewItem( parent, after )
+PlaylistItem::PlaylistItem( QListView* parent, QListViewItem *after, const KURL &url, Tags *tags ) :
+        KListViewItem( parent, after ),
+        m_hasMetaInfo( true ),
+        m_url( url ),
+        m_tags( tags )
 {
-    m_url = url;
     init();
 
     setText( 0, nameForUrl( url ) );
+    if( m_tags ) setMetaTitle();
 }
 
 
@@ -73,12 +79,13 @@ PlaylistItem::~PlaylistItem()
             }
         }
     }
+
+    delete m_tags;
 }
 
 
 void PlaylistItem::init()
 {
-    m_hasMetaInfo = false;
     m_isDir = false;
     m_bIsGlowing = false;
     setDragEnabled( true );
@@ -96,39 +103,9 @@ QString PlaylistItem::nameForUrl( const KURL &url ) const
 }
 
 
+
+
 // METHODS -------------------------------------------------------
-
-void PlaylistItem::readMetaInfo()
-{
-    if ( m_url.protocol() == "file" )
-    {
-        TagLib::String str( QStringToTString( m_url.path() ) );
-        TagLib::FileRef f( str.toCString() );
-
-        if ( !f.isNull() && f.tag() )
-        {
-            m_hasMetaInfo = true;
-            TagLib::Tag * tag = f.tag();
-
-            m_tagTitle = TStringToQString( tag->title() ).stripWhiteSpace();
-            m_tagArtist = TStringToQString( tag->artist() ).stripWhiteSpace();
-            m_tagAlbum = TStringToQString( tag->album() ).stripWhiteSpace();
-            m_tagGenre = TStringToQString( tag->genre() ).stripWhiteSpace();
-            m_tagComment = TStringToQString( tag->comment() ).stripWhiteSpace();
-            m_tagYear = QString::number( tag->year() );
-            m_tagTrack = QString::number( tag->track() );
-            m_tagDirectory = QString( url().directory().section( '/', -1 ) );
-
-            if ( f.audioProperties() )
-            {
-               m_tagBitrate = f.audioProperties()->bitrate();
-               m_tagSeconds = f.audioProperties()->length();
-               m_tagSamplerate = f.audioProperties()->sampleRate();
-            }
-        }
-    }
-}
-
 
 bool PlaylistItem::hasMetaInfo()
 {
@@ -138,13 +115,13 @@ bool PlaylistItem::hasMetaInfo()
 
 void PlaylistItem::setMetaTitle()
 {
-    setText( 1, m_tagTitle );
-    setText( 2, m_tagArtist );
-    setText( 3, m_tagAlbum );
-    setText( 4, m_tagYear );
-    setText( 5, m_tagComment );
-    setText( 6, m_tagGenre );
-    setText( 7, m_tagDirectory );
+    setText( 1, m_tags->m_title );
+    setText( 2, m_tags->m_artist );
+    setText( 3, m_tags->m_album );
+    setText( 4, m_tags->m_year );
+    setText( 5, m_tags->m_comment );
+    setText( 6, m_tags->m_genre );
+    setText( 7, m_tags->m_directory );
 }
 
 
@@ -245,9 +222,12 @@ QString PlaylistItem::zeroPad( const long digit )
     return str;
 }
 
-QString PlaylistItem::length()
+QString PlaylistItem::length( uint se )
 {
-   int s = seconds();
+   //FIXME the uint is because mostly taglib doesn't return the track length, probably because we need
+   //      to do an extended audioProperties scan, so do that, but can we do it lazily, ie on demand?
+
+   int s = ( seconds() == 0 ) ? se : seconds();
    int m = s / 60;
    int h = m / 60;
 

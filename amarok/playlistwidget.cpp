@@ -15,51 +15,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokfilelist.h"
-#include "browserwidget.h"
-#include "browserwin.h"
-#include "playerapp.h"
-#include "playlistitem.h"
 #include "playlistwidget.h"
+#include "playerapp.h" //FIXME remove the need for this please!
+#include "playlistitem.h"
+#include "playlistloader.h"
 
-#include <qbrush.h>
 #include <qcolor.h>
-#include <qcursor.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qheader.h>
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qpoint.h>
 #include <qrect.h>
 #include <qstringlist.h>
-#include <qptrlist.h>
 #include <qtimer.h>
-#include <qvaluelist.h>
-#include <qwidget.h>
 
-#include <kaccel.h>
-#include <kaction.h>
-#include <kapplication.h>
 #include <kdebug.h>
-#include <kdirlister.h>
-#include <kfileitem.h>
-#include <klineedit.h>
 #include <klistview.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
-#include <krootpixmap.h>
+//#include <krootpixmap.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
+#include <kmessagebox.h>
+#include <krandomsequence.h>
 #include <kurldrag.h>
 
-#include <kio/netaccess.h>
 
-// CLASS PlaylistWidget --------------------------------------------------------
+//TODO give UNDO action standard icon too
+//TODO need to add tooltip to undo/redo buttons
+//TODO move undo system to browserWin eventually
+
 
 PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     : KListView( parent, name )
-    , m_rootPixmap( viewport() )
+//    , m_rootPixmap( viewport()
     , m_GlowTimer( new QTimer( this ) )
     , m_GlowCount( 100 )
     , m_GlowAdd( 5 )
@@ -73,9 +62,10 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     setDropVisualizer( false );      // we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
     setItemsRenameable( true );
+    setSorting( 200 );
     //    setStaticBackground( true );
-    //     m_rootPixmap.setFadeEffect( 0.5, Qt::black );
-    //     m_rootPixmap.start();
+    //    m_rootPixmap.setFadeEffect( 0.5, Qt::black );
+    //    m_rootPixmap.start();
 
     addColumn( i18n( "Trackname" ), 280 );
     addColumn( i18n( "Title"     ), 200 );
@@ -86,7 +76,6 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     addColumn( i18n( "Genre"     ),  80 );
     addColumn( i18n( "Directory" ),  80 );
 
-    connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
     connect( this, SIGNAL( contentsMoving( int, int ) ), this, SLOT( slotEraseMarker() ) );
 
     setCurrentTrack( NULL );
@@ -95,12 +84,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     connect( m_GlowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
     m_GlowTimer->start( 70 );
 
-    m_pDirLister = new KDirLister();
-    m_pDirLister->setAutoUpdate( false );
-
     initUndo();
-
-    setSorting( -1 );
 }
 
 
@@ -108,355 +92,58 @@ PlaylistWidget::~PlaylistWidget()
 {}
 
 
-// METHODS -----------------------------------------------------------------
 
-void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
+//PUBLIC INTERFACE -----------------------------------------------------------------
+
+void PlaylistWidget::insertMedia( const QString &path )
 {
-    e->acceptAction();
+   insertMedia( KURL( path ) );
+}
 
-    QListViewItem *parent;
-    QListViewItem *after;
-    findDrop( e->pos(), parent, after );
+void PlaylistWidget::insertMedia( const KURL &url )
+{
+   insertMedia( KURL::List( url ), (QListViewItem *)0 );
+}
 
-    QRect tmpRect = drawDropVisualizer( 0, parent, after );
+void PlaylistWidget::insertMedia( const KURL::List &list, bool clear )
+{
+   writeUndo();
 
-    if ( tmpRect != m_marker )
-    {
-        slotEraseMarker();
-        m_marker = tmpRect;
-        viewport() ->repaint( tmpRect );
-    }
+   if ( clear )
+      KListView::clear();
+
+   insertMedia( list, (QListViewItem *)0 );
+}
+
+void PlaylistWidget::insertMedia( const KURL::List &list, QListViewItem *after )
+{
+   kdDebug() << "PlaylistWidget::insertMedia()\n";
+
+   writeUndo();       //remember current state
+   setSorting( 200 ); //disable sorting or will not be inserted where we expect
+
+   startLoader( list, after );
 }
 
 
-void PlaylistWidget::contentsDragLeaveEvent( QDragLeaveEvent* )
+bool PlaylistWidget::restoreCurrentTrack()
 {
-    slotEraseMarker();
+   return setCurrentTrack( pApp->m_playingURL );
 }
 
 
-void PlaylistWidget::contentsDropEvent( QDropEvent* e )
+bool PlaylistWidget::setCurrentTrack( const KURL &url )
 {
-    slotEraseMarker();
+   PlaylistItem* item;
 
-    QListViewItem *parent, *after;
-    findDrop( e->pos(), parent, after );
+   for( item = static_cast<PlaylistItem*>( firstChild() );
+        item && item->url() != url;
+        item = static_cast<PlaylistItem*>( item->nextSibling() ) )
+   {}
 
-    if ( e->source() == viewport() )
-    {
-        setSorting( -1 );
-        movableDropEvent( parent, after );
-    }
-    else
-    {
-       KURL::List urlList;
+   setCurrentTrack( item ); //set even if == NULL; we don't want to be pointing to something that isn't playing!
 
-       if ( KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
-       {
-          kdDebug() << "dropped item KURL parsed ok" << endl;
-
-          m_dropRecursionCounter = 0;
-          if ( pApp->m_optDropMode == "Recursively" )
-             m_dropRecursively = true;
-          else
-             m_dropRecursively = false;
-
-          //FIXME reimplement the ask recusive popup
-
-          m_pDropCurrentItem = (PlaylistItem*)after;
-
-          playlistDrop( urlList );
-       }
-       else
-          return; //so it doesn't writeUndo, FIXME better solution exists
-    }
-
-    if ( !pApp->m_playingURL.isEmpty() )
-       pApp->restorePlaylistSelection( pApp->m_playingURL );
-
-    writeUndo();
-
-/*
-//FIXME this needs to be reimplemented
-
-            bool containsDirs = false;
-
-            if ( srcItem->isDir() )
-               containsDirs = true;
-
-            if ( containsDirs && pApp->m_optDropMode == "Ask" )
-            {
-                QPopupMenu popup( this );
-                popup.insertItem( i18n( "Add Recursively" ), this, SLOT( slotSetRecursive() ) );
-                popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
-            }
-
-*/
-
-
-}
-
-
-void PlaylistWidget::playlistDrop( KURL::List urlList )
-{
-    ++m_dropRecursionCounter;
-
-    for ( KURL::List::Iterator it = urlList.begin(); it != urlList.end(); it++ )
-    {
-        if ( (*it).protocol() != "http" )                //don't try to list parent dir with http
-            m_pDirLister->openURL( ( *it ).upURL(), false, false );   // URL; keep = true, reload = true
-
-        while ( !m_pDirLister->isFinished() )
-            kapp->processEvents( 300 );
-
-        KFileItem *fileItem = m_pDirLister->findByURL( *it );
-
-        if ( fileItem && fileItem->isDir() )
-        {
-            if ( fileItem->isLink() && !pApp->m_optFollowSymlinks && m_dropRecursionCounter >= 2 )
-                continue;
-
-            if ( m_dropRecursionCounter >= 50 )        //no infinite loops, please
-                continue;                              //FIXME log inodes instead
-
-            if ( !m_dropRecursively && m_dropRecursionCounter >= 2 )
-                continue;
-
-            m_pDirLister->openURL( *it, false, false );  // URL; keep = false, reload = true
-            while ( !m_pDirLister->isFinished() )
-                kapp->processEvents( 300 );
-
-            KURL::List dirList;
-            AmarokFileList fileList( m_pDirLister->items(), pApp->m_optBrowserSortSpec );
-            KFileItemListIterator itSorted( fileList );
-
-            while ( *itSorted )
-            {
-                if ( ( (*itSorted)->url().path() != "." ) && ( (*itSorted)->url().path() != ".." ) )
-                    dirList.append( (*itSorted)->url() );
-                ++itSorted;
-            }
-
-            playlistDrop( dirList );
-        }
-        else
-        {
-            if ( pApp->isFileValid( *it ) )
-            {
-                m_pDropCurrentItem = addItem( m_pDropCurrentItem, *it );
-            }
-            else
-            {
-                if ( m_dropRecursionCounter <= 1 )
-                    loadPlaylist( *it, m_pDropCurrentItem );
-            }
-        }
-    }
-    --m_dropRecursionCounter;
-}
-
-
-void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
-{
-    QListView::viewportPaintEvent( e );
-
-    if ( m_marker.isValid() && e->rect().intersects( m_marker ) )
-    {
-        QPainter painter( viewport() );
-        QBrush brush( QBrush::Dense4Pattern );
-        brush.setColor( Qt::red );
-
-        // This is where we actually draw the drop-visualizer
-        painter.fillRect( m_marker, brush );
-    }
-}
-
-
-QListViewItem* PlaylistWidget::currentTrack()
-{
-    return m_pCurrentTrack;
-}
-
-
-void PlaylistWidget::setCurrentTrack( QListViewItem *item )
-{
-    m_pCurrentTrack = item;
-}
-
-
-void PlaylistWidget::unglowItems()
-{
-    PlaylistItem * item = static_cast<PlaylistItem*>( firstChild() );
-
-    while ( item != NULL )
-    {
-        if ( item->isGlowing() )
-        {
-            item->setGlowing( false );
-            repaintItem( item );
-        }
-
-        item = static_cast<PlaylistItem*>( item->nextSibling() );
-    }
-}
-
-
-void PlaylistWidget::triggerSignalPlay()
-{
-    // FIXME reset play position to start
-    pApp->slotPlay();
-}
-
-
-void PlaylistWidget::focusInEvent( QFocusEvent *e )
-{
-    pApp->m_pBrowserWin->m_pPlaylistLineEdit->setFocus();
-
-    KListView::focusInEvent( e );
-}
-
-
-PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
-{
-    PlaylistItem * pNewItem;
-
-    //FIXME seems to be different slots for adding playlists, etc. try to find an appropriate root for adding new stuff
-    //FIXME sorting can really muck up your playlists innit. hence the undo function I spose. Need to add the icon to that button badly
-
-    //FIXME check Qt sources to see if we should do some logic first
-    //FIXME need to save sorting operations to the undo buffer
-    //FIXME need to start with a disabled UNDO button
-    //FIXME need to add tooltip to undo/redo buttons
-
-    setSorting( -1 ); //disable sorting or will not be inserted where we expect
-
-    // we're abusing *after as a flag. value 1 == append to list
-    if ( ( unsigned long ) after == 1 )
-    {
-        pNewItem = new PlaylistItem( this, lastItem(), url );
-    }
-    else
-    {
-        pNewItem = new PlaylistItem( this, after, url );
-    }
-
-    if ( pApp->m_optReadMetaInfo )
-    {
-        pNewItem->readMetaInfo();
-        pNewItem->setMetaTitle();
-    }
-
-    searchTokens.append( pNewItem->text(0) );
-    searchPtrs.append( pNewItem );
-    return pNewItem;
-}
-
-
-void PlaylistWidget::removeItem( PlaylistItem *item )
-{
-    int x;
-    x = searchPtrs.find(item);
-
-    if (x >= 0)
-    {
-        searchTokens.remove(searchTokens.at(x));
-        searchPtrs.remove(searchPtrs.at(x));
-    }
-
-    delete item;
-}
-
-
-bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
-{
-    bool success = false;
-    QString tmpFile;
-    PlaylistItem *pCurr = static_cast<PlaylistItem*>( destination );
-
-    if ( url.url().lower().endsWith( ".m3u" ) || url.url().lower().endsWith( ".pls" ) )
-    {
-        if ( url.isLocalFile() )
-            tmpFile = url.path();
-        else
-    #if KDE_IS_VERSION(3,1,92)
-            KIO::NetAccess::download( url, tmpFile, this );
-    #else
-            KIO::NetAccess::download( url, tmpFile );
-    #endif
-    
-        QFile file( tmpFile );
-    
-        if ( success = file.open( IO_ReadOnly ) )
-        {
-            QTextStream stream( &file );
-            QString dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
-    
-            if ( url.path().lower().endsWith( ".m3u" ) )
-                loadM3u( stream, pCurr, dir );
-            else
-                loadPls( stream, pCurr, dir );
-        }
-        file.close();
-    
-        // Mark currently playing song in playlist, if its there
-        if ( success && !pApp->m_playingURL.isEmpty() )
-        pApp->restorePlaylistSelection( pApp->m_playingURL );
-    
-        KIO::NetAccess::removeTempFile( tmpFile );
-    }
-    return success;
-}
-
-
-void PlaylistWidget::loadM3u( QTextStream &stream, PlaylistItem *destItem, QString dir )
-{
-    uint n = 0;
-    QString str, extStr;
-
-    while ( !( str = stream.readLine() ).isNull() )
-    {
-        if ( str.startsWith( "#EXTINF" ) )
-        {
-            extStr = str.section( ",", 1 );
-        }
-
-        if ( !str.startsWith( "#" ) )
-        {
-            if ( !( str[0] == '/' || str.startsWith( "http://" ) ) )
-                str.prepend( dir );
-
-            destItem = addItem( destItem, str );
-
-            if ( !extStr.isEmpty() )
-            {
-                destItem->setText( 0, extStr );
-                extStr = "";
-            }
-        }
-        //give UI time to breathe :)
-        if ( !( n++ % 60 ) )  kapp->processEvents();
-    }
-}
-
-
-void PlaylistWidget::loadPls( QTextStream &stream, PlaylistItem *destItem, QString )
-{
-    uint n = 0;
-    QString str;
-
-    while ( !( str = stream.readLine() ).isNull() )
-    {
-        if ( str.startsWith( "File" ) )
-        {
-            destItem = addItem( destItem, str.section( "=", -1 ) );
-            str = stream.readLine();
-
-            if ( str.startsWith( "Title" ) )
-                destItem->setText( 0, str.section( "=", -1 ) );
-        }
-        //give UI time to breathe :)
-        if ( !( n++ % 60 ) )  kapp->processEvents();
-    }
+   return ( item != NULL );
 }
 
 
@@ -489,10 +176,204 @@ void PlaylistWidget::saveM3u( QString fileName )
 }
 
 
+
+
+// EVENTS -----------------------------------------------------------------
+
+void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
+{
+    e->acceptAction();
+
+    QListViewItem *parent;
+    QListViewItem *after;
+    findDrop( e->pos(), parent, after );
+
+    QRect tmpRect = drawDropVisualizer( 0, parent, after );
+
+    if ( tmpRect != m_marker )
+    {
+        slotEraseMarker();
+        m_marker = tmpRect;
+        viewport() ->repaint( tmpRect );
+    }
+}
+
+
+void PlaylistWidget::contentsDragLeaveEvent( QDragLeaveEvent* )
+{
+    slotEraseMarker();
+}
+
+
+void PlaylistWidget::contentsDropEvent( QDropEvent* e )
+{
+    slotEraseMarker();
+
+    //FIXME perhaps we should drop where the marker was rather than drop point is as if there
+    //is an inconsistency we should give the user at least visual coherency
+
+    //FIXME do we need to accept this event?
+
+    QListViewItem *parent, *after;
+    findDrop( e->pos(), parent, after );
+
+    if ( e->source() == viewport() )
+    {
+        setSorting( 200 );
+        writeUndo();
+        movableDropEvent( parent, after );
+    }
+    else
+    {
+       KURL::List urlList;
+
+       if ( KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
+       {
+/*
+          if ( pApp->m_optDropMode == "Ask" )
+          {
+             for ( KURL::List::Iterator url = media.begin(); url != media.end(); ++url )
+             {
+                KFileItem file( KFileItem::Unknown, KFileItem::Unknown, *url, true );
+                if( file->isDir() ) break;
+             }
+
+             if ( url != media.end() )
+             {
+                QPopupMenu popup( this );
+                popup.insertItem( i18n( "Add Recursively" ), this, 0, 1 ) );
+                if( popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
+             }
+
+             //FIXME inform thread of user-decision
+          }
+*/
+          insertMedia( urlList, after );
+       }
+    }
+
+    restoreCurrentTrack();
+}
+
+
+void PlaylistWidget::customEvent( QCustomEvent *e )
+{
+   if ( e->type() == 65432 )
+   {
+      //TODO this doesn't guarentee exact order, you need to create a stack and store previous item for each thread, tis only way. Oh well
+      PlaylistLoader::PlaylistEvent* pe = (PlaylistLoader::PlaylistEvent*)e;
+      PlaylistItem *item = pe->makePlaylistItem( this ); //this is thread-safe
+
+      if( item ) //nonlocal downloads can fail
+      {
+        searchTokens.append( item->text( 0 ) );
+        searchPtrs.append( item );
+      }
+   }
+}
+
+
+void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
+{
+    QListView::viewportPaintEvent( e );
+
+    if ( m_marker.isValid() && e->rect().intersects( m_marker ) )
+    {
+        QPainter painter( viewport() );
+        QBrush brush( QBrush::Dense4Pattern );
+        brush.setColor( Qt::red );
+
+        // This is where we actually draw the drop-visualizer
+        painter.fillRect( m_marker, brush );
+    }
+}
+
+
+void PlaylistWidget::keyPressEvent( QKeyEvent *e )
+{
+   kdDebug() << "PlaylistWidget::keyPressEvent()\n";
+
+   switch ( e->key() )
+   {
+   case Qt::Key_Delete:
+      removeSelectedItems();
+      e->accept();
+      break;
+
+   //trust me, I wish there was a better way to do this!
+   //FIXME ignore numbers too
+   case Key_A: case Key_B: case Key_C: case Key_D: case Key_E: case Key_F: case Key_G: case Key_H: case Key_I: case Key_J: case Key_K: case Key_L: case Key_M: case Key_N: case Key_O: case Key_P: case Key_Q: case Key_R: case Key_S: case Key_T: case Key_U: case Key_V: case Key_W: case Key_X: case Key_Y: case Key_Z:
+      //by ignoring these key presses we propagate them to the searchLineEdit
+      e->ignore();
+      break;
+
+   default:
+      KListView::keyPressEvent( e );
+      //the base handler will set accept() or ignore()
+   }
+}
+
+
+
+
+// PRIVATE METHODS -----------------------------------------------------------------
+
+void PlaylistWidget::startLoader( const KURL::List &list, QListViewItem *after )
+{
+   //FIXME lastItem() has to go through entire list to find lastItem! Not scalable!
+   PlaylistLoader *loader = new PlaylistLoader( list, this, ( after == 0 ) ? lastItem() : after );
+
+   if( loader )
+      loader->start();
+   else
+      kdDebug() << "[LOADER] Unable to creater loader-thread!\n";
+}
+
+
+//FIXME deprecate
+QListViewItem* PlaylistWidget::currentTrack() const
+{
+    return m_pCurrentTrack;
+}
+
+//FIXME deprecate
+void PlaylistWidget::setCurrentTrack( QListViewItem *item )
+{
+    unglowItems();
+    ensureItemVisible( item );
+    m_pCurrentTrack = item;
+}
+
+
+void PlaylistWidget::unglowItems()
+{
+    PlaylistItem * item = static_cast<PlaylistItem*>( firstChild() );
+
+    while ( item != NULL )
+    {
+        if ( item->isGlowing() )
+        {
+            item->setGlowing( false );
+            repaintItem( item );
+        }
+
+        item = static_cast<PlaylistItem*>( item->nextSibling() );
+    }
+}
+
+
+
+
 // SLOTS ----------------------------------------------
 
 void PlaylistWidget::clear()
 {
+    //FIXME this is unecessary now we have undo functionality!
+    if ( pApp->m_optConfirmClear && KMessageBox::questionYesNo( 0, i18n( "Really clear playlist?" ) ) == KMessageBox::No )
+       return;
+
+    writeUndo();
+
     searchTokens.clear();
     searchPtrs.clear();
     KListView::clear();
@@ -525,21 +406,6 @@ void PlaylistWidget::slotGlowTimer()
         repaintItem( item );
         m_GlowCount += m_GlowAdd;
     }
-}
-
-
-void PlaylistWidget::slotSetRecursive()
-{
-    m_dropRecursively = true;
-    kdDebug() << "slotSetRecursive()" << endl;
-}
-
-
-void PlaylistWidget::slotReturnPressed()
-{
-/*    QListViewItemIterator it( this, QListViewItemIterator::Visible );
-    if ( it.current() )
-        pApp->slotItemDoubleClicked( it.current() );*/
 }
 
 
@@ -592,45 +458,17 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 }
 
 
-void PlaylistWidget::slotHeaderClicked( int section )
+void PlaylistWidget::setSorting( int i, bool b )
 {
-  //FIXME check that all routes go via addItem(), perhaps clean this class a little
-  //FIXME KListView is a broken mess! It's probably up to us to fix it. What do we say?
-  //FIXME KListView has a fair amount of functionality (like save column that was sorted, etc. ) - are we taking advantage?
-  //FIXME DAMN! Doesn't work for double clicks, you need to set sorting to > # of columns instead then and let framework handle it (unless you want to use a timer! which you don't)
+  //TODO consider removing this if and relying on the fact you always call setSorting to write the undo (?)
 
-  if ( columnSorted() == -1 )
+  //we overide so we can always write an undo
+  if( i < 200 ) //FIXME 200 is arbituray, use sensible number like sizeof(short)
   {
-     setSorting( section, true );
-     sort();
+    writeUndo();
   }
 
-/*
-    KPopupMenu popup( this );
-
-    popup.insertTitle( i18n( "Sort by " ) + header()->label( section ) );
-    int MENU_ASCENDING = popup.insertItem( i18n( "Ascending" ) );
-    int MENU_DESCENDING = popup.insertItem( i18n( "Descending" ) );
-
-    QPoint menuPos = QCursor::pos();
-    menuPos.setX( menuPos.x() - 20 );
-    menuPos.setY( menuPos.y() + 10 );
-
-    int result = popup.exec( menuPos );
-
-    if ( result == MENU_ASCENDING )
-    {
-        setSorting( section, true );
-        sort();
-        //setSorting( -1 );
-    }
-    if ( result == MENU_DESCENDING )
-    {
-        setSorting( section, false );
-        sort();
-        //setSorting( -1 );
-    }
-*/
+  KListView::setSorting( i, b );
 }
 
 
@@ -645,7 +483,64 @@ void PlaylistWidget::slotEraseMarker()
 }
 
 
-// UNDO ==========================================================
+void PlaylistWidget::shuffle()
+{
+    writeUndo();
+
+    // not evil, but corrrrect :)
+    QPtrList<QListViewItem> list;
+
+    while ( childCount() )
+    {
+        list.append( firstChild() );
+        takeItem( firstChild() );
+    }
+
+    // initalize with seed
+    KRandomSequence seq( static_cast<long>( KApplication::random() ) );
+    seq.randomize( &list );
+
+    for ( unsigned int i = 0; i < list.count(); i++ )
+    {
+        insertItem( list.at( i ) );
+    }
+}
+
+
+void PlaylistWidget::removeSelectedItems()
+{
+  //FIXME this is the only method with which the user can remove items, however to properly future proof
+  //      you need to somehow make it so creation and deletion of playlistItems handle the search
+  //      tokens and pointers
+
+    writeUndo();
+
+    QListViewItem *item, *item1;
+    item = firstChild();
+
+    while ( item != NULL )
+    {
+        item1 = item;
+        item = item->nextSibling();
+
+        if ( item1->isSelected() )
+        {
+           int x = searchPtrs.find( item1 );
+
+           if ( x >= 0 )
+           {
+              searchTokens.remove( searchTokens.at( x ) );
+              searchPtrs.remove( searchPtrs.at( x ) );
+           }
+
+           delete item1;
+        }
+    }
+}
+
+
+
+// UNDO SYSTEM ==========================================================
 
 void PlaylistWidget::initUndo()
 {
@@ -666,55 +561,77 @@ void PlaylistWidget::initUndo()
 
 void PlaylistWidget::writeUndo()
 {
-    QString fileName;
-    m_undoCounter %= pApp->m_optUndoLevels;
-    fileName.setNum( m_undoCounter++ );
-    fileName.prepend( m_undoDir.absPath() + "/" );
-    fileName += ".m3u";
+   if ( saveState( m_undoList ) )
+   {
+      m_redoList.clear();
 
-    if ( m_undoList.count() >= pApp->m_optUndoLevels )
-    {
-        m_undoDir.remove( m_undoList.first() );
-        m_undoList.pop_front();
-    }
-
-    saveM3u( fileName );
-    m_undoList.append( fileName );
-    m_redoList.clear();
-
-    emit sigUndoState( true );
-    emit sigRedoState( false );
+      emit sigUndoState( true );
+      emit sigRedoState( false );
+   }
 }
 
 
+bool PlaylistWidget::saveState( QStringList &list )
+{
+   //don't store blank intermediates in the undo/redo sets, perhaps a little inconsistent, but
+   //probably desired by the user, if you disagree comment this out as it's debatable <mxcl>
+   if ( childCount() > 0 )
+   {
+      QString fileName;
+      m_undoCounter %= pApp->m_optUndoLevels;
+      fileName.setNum( m_undoCounter++ );
+      fileName.prepend( m_undoDir.absPath() + "/" );
+      fileName += ".m3u";
 
+      if ( list.count() >= pApp->m_optUndoLevels )
+      {
+         m_undoDir.remove( list.first() );
+         list.pop_front();
+      }
+
+      saveM3u( fileName );
+      list.append( fileName );
+
+      kdDebug() << "Saved state: " << fileName << endl;
+
+      return true;
+   }
+
+   return false;
+}
+
+
+//inline
 bool PlaylistWidget::canUndo()
 {
-    if ( m_undoList.isEmpty() )
-        return false;
-    else
-        return true;
+    return !m_undoList.isEmpty();
 }
 
 
+//inline
 bool PlaylistWidget::canRedo()
 {
-    if ( m_redoList.isEmpty() )
-        return false;
-    else
-        return true;
+    return !m_redoList.isEmpty();
 }
 
 
+//TODO replace these two functions with one undoRedo( int ) and use a QSignalMapper
 void PlaylistWidget::doUndo()
 {
     if ( canUndo() )
     {
-        m_redoList.append( m_undoList.last() );
-        m_undoList.pop_back();
+        //restore previous playlist
+        kdDebug() << "loading state: " << m_undoList.last() << endl;
 
-        clear();
-        loadPlaylist( m_undoList.last(), 0 );
+        KURL::List playlist( KURL( m_undoList.last() ) );
+        m_undoList.pop_back();   //pop one of undo stack
+        saveState( m_redoList ); //save currentState to redo stack
+        KListView::clear();
+        setSorting( 200 );
+        startLoader( playlist, 0 );
+
+        restoreCurrentTrack();
+        //triggerUpdate();
     }
 
     emit sigUndoState( canUndo() );
@@ -726,11 +643,16 @@ void PlaylistWidget::doRedo()
 {
     if ( canRedo() )
     {
-        m_undoList.append( m_redoList.last() );
+        //restore previous playlist
+        KURL::List playlist( KURL( m_redoList.last() ) );
         m_redoList.pop_back();
+        saveState( m_undoList );
+        KListView::clear();
+        setSorting( 200 );
+        startLoader( playlist, 0 );
 
-        clear();
-        loadPlaylist( m_undoList.last(), 0 );
+        restoreCurrentTrack();
+        //triggerUpdate();
     }
 
     emit sigUndoState( canUndo() );

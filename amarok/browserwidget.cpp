@@ -80,6 +80,8 @@ void BrowserWidget::readDir( const KURL &url )
 
 void BrowserWidget::contentsDragMoveEvent( QDragMoveEvent* e)
 {
+    //FIXME, I guess we need to derive our own mimetype and do this properly at some point
+    //       and only accept drags from the playlist
     e->acceptAction();
 }
 
@@ -88,6 +90,7 @@ QDragObject *BrowserWidget::dragObject()
 {
   KURL::List::List list;
 
+  //FIXME dont cast to PlaylistItem as this is illegal!
   for( PlaylistItem *item = (PlaylistItem *)firstChild(); item != NULL; item = (PlaylistItem *)item->nextSibling() )
     if( item->isSelected() )
       list.append( item->url() );
@@ -98,14 +101,21 @@ QDragObject *BrowserWidget::dragObject()
 
 void BrowserWidget::contentsDropEvent( QDropEvent* e)
 {
+/*
+    //<mxcl>I disabled this because it doesn't seem necessary, if they dropped it on the wrong thing then they should have been more careful!
+    //but the main reason I disabled it was because I wanted the contentsDropEvent to be private
+
     if ( e->source() == NULL )                    // dragging from inside amarok or outside?
     {
         pApp->m_pBrowserWin->m_pPlaylistWidget->contentsDropEvent( e ); // from outside -> append URLs to playlist
         return;
     }
-
-    if ( e->source()->parent() == this )          // reject drop if source is this widget
+*/
+    if ( e->source()->parent() == this ) // reject drop if source is this widget
         return;
+
+    //FIXME, I guess we need to derive our own mimetype and do this properly at some point
+    //       and only accept drags from the playlist
 
     e->acceptAction();
     emit browserDrop();

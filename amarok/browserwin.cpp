@@ -48,7 +48,6 @@
 #include <klocale.h>
 #include <klineedit.h>
 #include <klistview.h>
-#include <krandomsequence.h>
 #include <kstandarddirs.h>
 #include <ktip.h>
 #include <kurl.h>
@@ -70,27 +69,11 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
 
     KStdAction::undo( m_pPlaylistWidget, SLOT( doUndo() ), m_pActionCollection );
     KStdAction::redo( m_pPlaylistWidget, SLOT( doRedo() ), m_pActionCollection );
-    KStdAction::prior( this, SLOT( slotKeyPageUp() ), m_pActionCollection );
-    KStdAction::next( this, SLOT( slotKeyPageDown() ), m_pActionCollection );
-
-    //These slots are EVIL!
-    //FIXME: rely on widgets themselves handle these events when they are in focus - unless really necessary!
-    //       the reason I say this as I just spent an hour hunting for the cause of a bug that caused
-    //       enter to make the browser go up a directory, and the cause was the ENTER KAction below
-    //Question is do we really need to always catch the delete key? Personally I don't see why <mxcl>
-    new KAction( i18n( "Go one item up" ), Key_Up,
-                 this, SLOT( slotKeyUp() ), m_pActionCollection, "up" );
-    new KAction( i18n( "Go one item down" ), Key_Down,
-                 this, SLOT( slotKeyDown() ), m_pActionCollection, "down" );
-    new KAction( i18n( "Enter directory / Play Track" ), /*ALT + */Key_Return,
-                 this, SLOT( slotKeyEnter() ), m_pActionCollection, "enter" );
-    new KAction( i18n( "Remove item" ), ALT + Key_Delete,
-                 this, SLOT( slotKeyDelete() ), m_pActionCollection, "delete" );
 
     connect( m_pBrowserWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotBrowserDoubleClicked( QListViewItem* ) ) );
     connect( m_pBrowserWidget, SIGNAL( browserDrop() ),
-             this, SLOT( slotBrowserDrop() ) );
+             m_pPlaylistWidget, SLOT( removeSelectedItems() ) );
     connect( m_pBrowserWidget, SIGNAL( directoryChanged( const KURL& ) ),
              this, SLOT( setBrowserURL( const KURL& ) ) );
     connect( m_pBrowserWidget, SIGNAL( focusIn() ),
@@ -105,9 +88,12 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     connect( m_pPlaylistWidget, SIGNAL( cleared() ),
              m_pPlaylistLineEdit, SLOT( clear() ) );
 
+    connect( m_pButtonClear, SIGNAL( clicked() ),
+             m_pPlaylistWidget, SLOT( clear() ) );
+
     //FIXME <mxcl> MAKE_IT_CLEAN: kaction-ify
-    connect( m_pButtonShuffle, SIGNAL( clicked() ),
-             this, SLOT( slotShufflePlaylist() ) );
+    connect( m_pButtonShuffle,  SIGNAL( clicked() ),
+             m_pPlaylistWidget, SLOT( shuffle() ) );
 }
 
 
@@ -125,9 +111,10 @@ void BrowserWin::initChildren()
     m_pButtonShuffle = new ExpandButton( i18n( "Shuffle" ), m_pButtonClear );
     m_pButtonSave    = new ExpandButton( i18n( "Save Playlist" ), m_pButtonClear );
 
-    m_pButtonUndo    = new ExpandButton( i18n( "Undo" ), this );
-
-    m_pButtonRedo    = new ExpandButton( i18n( "Redo" ), this );
+    m_pButtonUndo = new ExpandButton( i18n( "Undo" ), this );
+    m_pButtonRedo = new ExpandButton( i18n( "Redo" ), this );
+    m_pButtonUndo->setEnabled( false );
+    m_pButtonRedo->setEnabled( false );
 
     m_pButtonPlay    = new ExpandButton( i18n( "Play" ), this );
     m_pButtonPause   = new ExpandButton( i18n( "Pause" ), m_pButtonPlay );
@@ -139,6 +126,7 @@ void BrowserWin::initChildren()
     m_pJanusWidget   = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
     
     //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
+    //<mxcl> heh, this is so cheeky, take that encapsulation! Nice one Markey ;-)
     QObject *pIconBox = m_pJanusWidget->child( 0, "KListBox" );
     if ( pIconBox )    static_cast<QWidget*>( pIconBox )->setFocusPolicy( QWidget::NoFocus );
     QObject *pHeader = m_pJanusWidget->child( "KJanusWidgetTitleLabel" );
@@ -186,8 +174,8 @@ void BrowserWin::initChildren()
 
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
              m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
-    connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
-             m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
+//    connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
+//             m_pPlaylistWidget, SIGNAL( returnPressed() ) );
 
     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserBox );
     layBrowserWidget->addWidget( m_pBrowserLineEdit );
@@ -228,6 +216,7 @@ void BrowserWin::closeEvent( QCloseEvent *e )
 void BrowserWin::moveEvent( QMoveEvent * )
 {
     // FIXME: needed for PlaylistWidget transparency
+    // TODO:  wait for damage extension and new xserver?
     /*    m_pPlaylistWidget->repaint();
         m_pPlaylistWidget->viewport()->repaint();*/
 }
@@ -248,6 +237,7 @@ void BrowserWin::setBrowserURL( const KURL& url )
    m_pBrowserLineEdit->setEditURL( url.prettyURL( 1 ) );
 }
 
+
 //<mxcl> MAKE_IT_CLEAN: some should be in playlistWidget some in browserWidget
 void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
 {
@@ -266,56 +256,10 @@ void BrowserWin::slotBrowserDoubleClicked( QListViewItem* pItem )
             m_pBrowserWidget->readDir( fileItem.url() );
         }
 
-        else if ( pApp->isFileValid( fileItem.url() ) )
-            m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, fileItem.url() );
+        else m_pPlaylistWidget->insertMedia( fileItem.url() );
     }
 }
 
-//<mxcl> MAKE_IT_CLEAN: playlistWidget can shuffle itself
-void BrowserWin::slotShufflePlaylist()
-{
-    // not evil, but corrrrect :)
-    QPtrList<QListViewItem> list;
-
-    while ( m_pPlaylistWidget->childCount() )
-    {
-        list.append( m_pPlaylistWidget->firstChild() );
-        m_pPlaylistWidget->takeItem( m_pPlaylistWidget->firstChild() );
-    }
-
-    // initalize with seed
-    KRandomSequence seq( static_cast<long>( KApplication::random() ) );
-    seq.randomize( &list );
-
-    for ( unsigned int i = 0; i < list.count(); i++ )
-    {
-        m_pPlaylistWidget->insertItem( list.at( i ) );
-    }
-
-    m_pPlaylistWidget->writeUndo();
-}
-
-
-//<mxcl> MAKE_IT_CLEAN: move to playlistWidget, perhaps use QDragObject (not much point though)
-void BrowserWin::slotBrowserDrop()
-{
-    QListViewItem * item, *item1;
-    item = m_pPlaylistWidget->firstChild();
-
-    while ( item != NULL )
-    {
-        item1 = item;
-        item = item->nextSibling();
-
-        if ( item1->isSelected() )
-        {
-            PlaylistItem *pItem = static_cast<PlaylistItem*>( item1 );
-            m_pPlaylistWidget->removeItem(pItem);
-        }
-    }
-
-    m_pPlaylistWidget->writeUndo();
-}
 
 //<mxcl> MAKE_IT_CLEAN: playlist can do this itself
 void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoint &rPoint )
@@ -328,10 +272,11 @@ void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoin
         popup.setItemEnabled( item1, false );
 
     popup.insertItem( i18n( "Play Track" ), this, SLOT( slotMenuPlay() ) );
-    popup.insertItem( i18n( "Remove Selected" ), this, SLOT( slotBrowserDrop() ) );
+    popup.insertItem( i18n( "Remove Selected" ), m_pPlaylistWidget, SLOT( removeSelectedItems() ) );
 
     popup.exec( rPoint );
 }
+
 
 //<mxcl> MAKE_IT_CLEAN: playlist can do this itself
 void BrowserWin::slotShowInfo()
@@ -378,149 +323,48 @@ void BrowserWin::slotMenuPlay()
 }
 
 
-void BrowserWin::slotKeyUp()
+void BrowserWin::keyPressEvent( QKeyEvent *e )
 {
-    KListView * pListView = 0L;
+  //if the keypress is given to this widget then nothing is in focus
+  //if the keypress was passed here from a childWidget that couldn't handle it then
+  //we should note what is in focus and not send it back!
 
-    if ( m_pPlaylistLineEdit->hasFocus() )
-        pListView = m_pPlaylistWidget;
+  //FIXME WARNING! there is a substantial risk of infinite looping here if the event is ignored by child event
+  //               handlers it will be passed back to this function!
 
-    if ( m_pBrowserLineEdit->hasFocus() )
-        pListView = m_pBrowserWidget;
+  //FIXME, you managed an infinite loop here. Damn (using filebrowserlineedit)
 
-    QListViewItem *item = pListView->currentItem();
+  kdDebug() << "BrowserWin::keyPressEvent()\n";
 
-    if ( item->itemAbove() )
-    {
-        item = item->itemAbove();
+  switch( e->key() )
+  {
+  case Qt::Key_Up:
+  case Qt::Key_Down:
+  case Qt::Key_Left:
+  case Qt::Key_Right:
+  case Qt::Key_Prior: //don't work
+  case Qt::Key_Next:  //don't work
+  case Qt::Key_Return:
+  case Qt::Key_Enter:
+  case Qt::Key_Delete:
+     if( !m_pPlaylistWidget->hasFocus() )
+     {
+        //if hasFocus() then this event came from there, and we don't want to risk an infinite loop!
+        m_pPlaylistWidget->setFocus();
+        QApplication::sendEvent( m_pPlaylistWidget, e );
+     }
+     break;
 
-        pListView->setSelected( pListView->currentItem(), false );
-        pListView->ensureItemVisible( item );
-        pListView->setSelected( item, true );
-        pListView->setCurrentItem( item );
-    }
-}
+  default:
+     if( !m_pPlaylistLineEdit->hasFocus() )
+     {
+        //if hasFocus() then this event came from there (99% sure)
+        m_pPlaylistLineEdit->setFocus();
+        QApplication::sendEvent( m_pPlaylistLineEdit, e );
+     }
+  }
 
-
-void BrowserWin::slotKeyDown()
-{
-    KListView * pListView = 0L;
-
-    if ( m_pPlaylistLineEdit->hasFocus() )
-        pListView = m_pPlaylistWidget;
-
-    if ( m_pBrowserLineEdit->hasFocus() )
-        pListView = m_pBrowserWidget;
-
-    QListViewItem *item = pListView->currentItem();
-
-    if ( item->itemBelow() )
-    {
-        item = item->itemBelow();
-
-        pListView->setSelected( pListView->currentItem(), false );
-        pListView->ensureItemVisible( item );
-        pListView->setSelected( item, true );
-        pListView->setCurrentItem( item );
-    }
-}
-
-
-void BrowserWin::slotKeyPageUp()
-{
-    KListView * pListView = 0L;
-
-    if ( m_pPlaylistLineEdit->hasFocus() )
-        pListView = m_pPlaylistWidget;
-
-    if ( m_pBrowserLineEdit->hasFocus() )
-        pListView = m_pBrowserWidget;
-
-    QListViewItem *item = pListView->currentItem();
-
-    for ( int i = 1; i < pListView->visibleHeight() / item->height(); i++ )
-    {
-        if ( item->itemAbove() == NULL )
-            break;
-        item = item->itemAbove();
-    }
-
-    if ( item )
-    {
-        pListView->setSelected( pListView->currentItem(), false );
-        pListView->ensureItemVisible( item );
-        pListView->setSelected( item, true );
-        pListView->setCurrentItem( item );
-    }
-}
-
-
-void BrowserWin::slotKeyPageDown()
-{
-    KListView * pListView = 0L;
-
-    if ( m_pPlaylistLineEdit->hasFocus() )
-        pListView = m_pPlaylistWidget;
-
-    if ( m_pBrowserLineEdit->hasFocus() )
-        pListView = m_pBrowserWidget;
-
-    QListViewItem *item = pListView->currentItem();
-
-    for ( int i = 1; i < pListView->visibleHeight() / item->height(); i++ )
-    {
-        if ( item->itemBelow() == NULL )
-            break;
-        item = item->itemBelow();
-    }
-
-    if ( item )
-    {
-        pListView->setSelected( pListView->currentItem(), false );
-        pListView->ensureItemVisible( item );
-        pListView->setSelected( item, true );
-        pListView->setCurrentItem( item );
-    }
-}
-
-
-void BrowserWin::slotKeyEnter()
-{
-    if ( m_pPlaylistLineEdit->hasFocus() )
-    {
-        if ( m_pPlaylistWidget->currentItem() )
-        {
-            pApp->slotStop();
-            m_pPlaylistWidget->setCurrentTrack( m_pPlaylistWidget->currentItem() );
-            pApp->slotPlay();
-        }
-    }
-/*
-
-    FIXME: this means that pushing enter in the BrowserLineEdit activates the lineEdit AND the listView!
-    FIXME: don't repair this code until we move the lineEdit and listview into a single (layout derived) widget class
-    FIXME: and even then, why are we taking this kind of event out of the widgets themselves and doing it at this level, this is just asking for bugs isn't it?
-
-    if ( m_pBrowserLineEdit->hasFocus() )
-    {
-        if ( m_pBrowserWidget->currentItem() )
-        {
-            slotBrowserDoubleClicked( m_pBrowserWidget->currentItem() );
-        }
-    }
-*/
-}
-
-
-void BrowserWin::slotKeyDelete()
-{
-    if ( m_pPlaylistLineEdit->hasFocus() )
-    {
-        slotBrowserDrop();
-    }
-
-    if ( m_pBrowserLineEdit->hasFocus() )
-    {}
+  e->accept(); //consume the event
 }
 
 

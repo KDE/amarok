@@ -62,7 +62,6 @@ class PlayerApp : public KUniqueApplication
 
         virtual int newInstance();
 
-        bool isFileValid( const KURL &url );
         bool queryClose();
         bool playObjectConfigurable();
         bool isPlaying() { return m_bIsPlaying; }
@@ -137,7 +136,6 @@ class PlayerApp : public KUniqueApplication
         void slotStopCurrent();
         void slotNext();
         void slotSavePlaylist();
-        void slotClearPlaylistAsk();
         void slotAddLocation();
         void slotSliderPressed();
         void slotSliderReleased();

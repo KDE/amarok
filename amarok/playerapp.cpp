@@ -143,15 +143,14 @@ PlayerApp::PlayerApp() :
 
     //restore last playlist
     //<mxcl> At some point it'd be nice to start loading of the playlist before we initialise arts so the playlist seems to be loaded when the browserWindow appears
-    m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation
-                                                  ( "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
-    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
+    m_pBrowserWin->m_pPlaylistWidget->insertMedia( kapp->dirs()->saveLocation
+                                                 ( "data", kapp->instanceName() + "/" ) + "current.m3u" );
+
+    restoreSession();
 
     //FIXME slow to load, make playerWidget own this
     QWidget *w = new StreamBrowser( m_pBrowserWin, "StreamBrowser" );
     w->show();
-
-    restoreSession();
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
@@ -206,41 +205,28 @@ int PlayerApp::newInstance()
     if ( !playlistUrl.isEmpty() )             //playlist
     {
         m_pBrowserWin->m_pPlaylistWidget->clear();
-        m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( KCmdLineArgs::makeURL( playlistUrl ).path(), 0 );
-        m_pBrowserWin->m_pPlaylistWidget->writeUndo();
+        m_pBrowserWin->m_pPlaylistWidget->insertMedia( KCmdLineArgs::makeURL( playlistUrl ).path() );
 
     }
 
     if ( args->count() > 0 )
     {
-        if ( args->isSet( "e" ) )             //enqueue
-        {
-            for ( int i = 0; i < args->count(); i++ )
-            {
-                if ( !m_pBrowserWin->m_pPlaylistWidget->
-                     loadPlaylist( args->url( i ), m_pBrowserWin->m_pPlaylistWidget->lastItem() ) )
-                {
-                    if ( isFileValid( args->url( i ) ) )
-                        m_pBrowserWin->m_pPlaylistWidget->addItem( ( PlaylistItem* ) 1, args->url( i ) );
-                }
-            }
-            m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-        }
-        else                              //URLs
-        {
-            m_pBrowserWin->m_pPlaylistWidget->clear();
+       KURL::List list;
 
-            for ( int i = 0; i < args->count(); i++ )
-            {
-                if ( !m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( args->url( i ), 0 ) )
-                {
-                    if ( isFileValid( args->url( i ) ) )
-                        m_pBrowserWin->m_pPlaylistWidget->addItem( 0, args->url( i ) );
-                }
-            }
-            m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-            slotPlay();
-        }
+       for ( int i = 0; i < args->count(); i++ )
+       {
+          list << args->url( i );
+       }
+
+       bool b = !args->isSet( "e" ); //b = (not enqueue?)
+
+       m_pBrowserWin->m_pPlaylistWidget->insertMedia( list, b );
+
+       if ( b )
+       {
+          //FIXME why specify the play flag if we aren't going to be strict?
+          slotPlay();
+       }
     }
 
     if ( args->isSet( "r" ) )                 //rewind
@@ -503,9 +489,6 @@ void PlayerApp::initBrowserWin()
     connect( m_pBrowserWin->m_pButtonSave, SIGNAL( clicked() ),
              this, SLOT( slotSavePlaylist() ) );
 
-    connect( m_pBrowserWin->m_pButtonClear, SIGNAL( clicked() ),
-             this, SLOT( slotClearPlaylistAsk() ) );
-
     connect( m_pBrowserWin->m_pButtonUndo, SIGNAL( clicked() ),
              m_pBrowserWin->m_pPlaylistWidget, SLOT( doUndo() ) );
 
@@ -529,6 +512,8 @@ void PlayerApp::initBrowserWin()
 
     connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( doubleClicked( QListViewItem* ) ),
              this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
+    connect( m_pBrowserWin->m_pPlaylistWidget, SIGNAL( returnPressed( QListViewItem* ) ),
+             this, SLOT( slotItemDoubleClicked( QListViewItem* ) ) );
 
     connect( m_pBrowserWin, SIGNAL( signalHide() ),
              this, SLOT( slotPlaylistIsHidden() ) );
@@ -539,109 +524,43 @@ void PlayerApp::initBrowserWin()
 
 void PlayerApp::restoreSession()
 {
-    //here we restore the session
-    //however, do note, this is always done, KDE session management is not involved
+   //here we restore the session
+   //however, do note, this is always done, KDE session management is not involved
 
-    m_pConfig->setGroup( "Session" );
-    KURL url = m_pConfig->readEntry( "Track" );
+   m_pConfig->setGroup( "Session" );
+   KURL url = m_pConfig->readEntry( "Track" );
 
-    if ( !url.isEmpty() ) /* && url.isValid() amaroK should decide the validity of the url */
-    {
-        //FIXME I have no idea if this will work with streaming, check before you commit!
+   //first check if this item is already in the playlist
+   //FIXME this block sucks a little
+   m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( url ); //will insert the item for us if not in the list
 
-        if ( isFileValid( url ) ) //FIXME may not be required
-        {
-            //first check if this item is already in the playlist
-            if( !restorePlaylistSelection( url ) )
-            {
-               //if we didn't find the item, add it to the playlist
-               m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url ) );
-            }
+   if ( m_optResumePlayback )
+   {
+      //see if we also saved the time
+      int seconds = m_pConfig->readNumEntry( "Time", -1 );
 
-            if ( m_optResumePlayback )
-            {
-               //see if we also saved the time
-               int seconds = m_pConfig->readNumEntry( "Time", -1 );
+      if ( seconds >= 0 )
+      {
+         slotPlay();
 
-               if ( seconds >= 0 )
-               {
-                   slotPlay();
+         if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
+         {
+            //FIXME I just copied this code, do I need all these properties?
+            Arts::poTime time;
+            time.ms = 0;
+            time.seconds = seconds;
+            time.custom = 0;
+            time.customUnit = std::string();
 
-                   if ( seconds > 0 && m_pPlayObject && !m_pPlayObject->isNull() )
-                   {
-                      //FIXME I just copied this code, do I need all these properties?
-                      Arts::poTime time;
-                      time.ms = 0;
-                      time.seconds = seconds;
-                      time.custom = 0;
-                      time.customUnit = std::string();
-
-                      m_pPlayObject->seek( time );
-                   }
-               }
-            }
-        }
-    }
+            m_pPlayObject->seek( time );
+         }
+      }
+   }
 }
 
 
 
 // METHODS --------------------------------------------------------------------------
-
-
-/**
- @short   Find and select item in playlist given its URL.
- @return  true if item was found in playlist and selected, false otherwise.
-*/
-bool PlayerApp::restorePlaylistSelection(const KURL& url)
-{
-    kdDebug() << "[restorePlaylistSelection] For URL " << url.url() << endl;
-
-    if ( !url.isEmpty() ) /* && url.isValid() amaroK should decide the validity of the url */
-    {
-        //if ( !url.path().startsWith("file:") || isFileValid( url ) ) FIXME do we _really_ need this check?
-        {
-            kdDebug() << "[restorePlaylistSelection] file is valid, going on" << endl;
-            PlaylistItem * item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->firstChild() );
-            while ( item && item->url() != url )
-            {
-               kdDebug() << "[restorePlaylistSelection] searching in " << item->url().url() << endl;
-               item = static_cast<PlaylistItem*>( item->nextSibling() );
-            }
-            if ( item == NULL )
-            {
-               return false;
-            }
-
-            //set current
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
-            return true;
-        }
-    }
-    return false;
-}
-
-
-bool PlayerApp::isFileValid( const KURL &url )
-{
-    KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url );
-    KMimeType::Ptr mimeTypePtr = fileItem.determineMimeType();
-
-    Arts::TraderQuery query;
-    query.supports( "Interface", "Arts::PlayObject" );
-    query.supports( "MimeType", mimeTypePtr->name().latin1() );
-    std::vector<Arts::TraderOffer> *offers = query.query();
-
-    if ( offers->empty() )
-    {
-        delete offers;
-        return false;
-    }
-
-    delete offers;
-    return true;
-}
-
 
 void PlayerApp::saveConfig()
 {
@@ -841,8 +760,7 @@ void PlayerApp::setupScrolltext()
                 str.append( item->artist() + " - " + item->title() + " " );
             }
 
-            if ( !item->seconds() ) item->m_tagSeconds = m_length; // *SIGH* Break me, shake me, FIXME
-            str.append( "(" + item->length() + ")" );
+            str.append( "(" + item->length( m_length ) + ")" );
 
             m_pPlayerWidget->setScroll( str,
                                         QString::number(item->bitrate()) + "kbps",
@@ -1009,8 +927,6 @@ void PlayerApp::slotPrev()
     if ( pItem != NULL )
     {
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( pItem );
-        m_pBrowserWin->m_pPlaylistWidget->unglowItems();
-        m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( pItem );
 
         if ( m_bIsPlaying )
         {
@@ -1090,9 +1006,6 @@ void PlayerApp::slotPlay()
         slotConnectPlayObj();
 
     m_pPlayObject->play();
-
-    m_pBrowserWin->m_pPlaylistWidget->unglowItems();
-    m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( item );
 
     if ( m_pPlayObject->stream() )
     {
@@ -1232,8 +1145,6 @@ void PlayerApp::slotNext()
     if ( pItem != NULL )
     {
         m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( pItem );
-        m_pBrowserWin->m_pPlaylistWidget->unglowItems();
-        m_pBrowserWin->m_pPlaylistWidget->ensureItemVisible( pItem );
 
         if ( m_bIsPlaying )
         {
@@ -1276,19 +1187,6 @@ void PlayerApp::slotSavePlaylist()
 }
 
 
-void PlayerApp::slotClearPlaylistAsk()
-{
-    if ( m_optConfirmClear )
-    {
-        if ( KMessageBox::questionYesNo( 0, i18n( "Really clear playlist?" ) ) == KMessageBox::No )
-            return ;
-    }
-
-    m_pBrowserWin->m_pPlaylistWidget->clear();
-    m_pBrowserWin->m_pPlaylistWidget->writeUndo();
-}
-
-
 void PlayerApp::slotAddLocation()
 {
     KURLRequesterDlg dlg( QString::null, 0, 0 );
@@ -1296,16 +1194,7 @@ void PlayerApp::slotAddLocation()
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
-    KURL url = dlg.selectedURL();
-
-    if ( !url.isEmpty() && url.isValid() )
-    {
-        if ( !m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( url, 0 ) )
-        {
-            if ( isFileValid( url ) )
-                new PlaylistItem( m_pBrowserWin->m_pPlaylistWidget, url );
-        }
-    }
+    m_pBrowserWin->m_pPlaylistWidget->insertMedia( dlg.selectedURL() );
 }
 
 

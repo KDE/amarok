@@ -2,11 +2,18 @@ amaroK Changelog
 ==================
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
-
+  * add: threaded playlist insertion
+  * fix: remoived bugs and waste code keyhandling in browser*, it mostly works as expected
+         now with various keypresses going to the correct places
+  * fix: cleaned the playlist class's public interface, also fixed some unreported bugs in
+         process (inconsistent recursive behavior), please keep the encapsulation, it's a
+         good thing (tm)
+  * fix: tweaked undo/redo behavior
   * chg: exchanged old player icons with new ones made by
          Alper Ayazoglu a.k.a. cubon <cubon@cubon.de>
-  * add: clicking on EQ button activates effect selection widget 
+  * add: clicking on EQ button activates effect selection widget
   * add: KJanusWidget as a sidebar for filebrowser mode selection
+  * fix: pushing enter in lineedit goes up a level
   * add: a stream browser, can only DnD, separate window, not great yet
   * fix: finally fixed the ancient "annoying-noise-when-pressing-pause" bug
   * fix: should keep track of currently played item no matter what you do to the playlist,

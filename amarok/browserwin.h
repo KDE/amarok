@@ -26,19 +26,19 @@ class ExpandButton;
 class PlaylistItem;
 class PlaylistWidget;
 
+class QHideEvent;
 class QCloseEvent;
 class QColor;
-class QHideEvent;
 class QListViewItem;
-class QMoveEvent;
 class QPaintEvent;
 class QPoint;
+class QMoveEvent;
 class QSplitter;
 
 class KActionCollection;
-class KHistoryCombo;
 class KJanusWidget;
 class KLineEdit;
+class KHistoryCombo;
 class KListView;
 class KURL;
 
@@ -84,24 +84,15 @@ class BrowserWin : public QWidget
         KHistoryCombo *m_pBrowserLineEdit;
         KLineEdit *m_pPlaylistLineEdit;
         KJanusWidget *m_pJanusWidget;
-        
+
     public slots:
         void slotBrowserDoubleClicked( QListViewItem *pItem );
-        void slotShufflePlaylist();
-        void slotBrowserDrop();
         void slotPlaylistRightButton( QListViewItem *pItem, const QPoint &rPoint );
         void slotShowInfo();
         void slotMenuPlay();
         void slotUpdateFonts();
 
     private slots:
-        void slotKeyUp();
-        void slotKeyDown();
-        void slotKeyPageUp();
-        void slotKeyPageDown();
-        void slotKeyEnter();
-        void slotKeyDelete();
-
         void setBrowserURL( const KURL& ); //sets browser line edit to KURL
 
     signals:
@@ -112,9 +103,11 @@ class BrowserWin : public QWidget
         void closeEvent( QCloseEvent * );
         void moveEvent( QMoveEvent * );
         void paintEvent( QPaintEvent * );
+        void keyPressEvent( QKeyEvent * );
 
         // ATTRIBUTES ------
         QColor m_TextColor;
         QPixmap m_bgPixmap;
 };
+
 #endif

@@ -19,8 +19,36 @@
 #define PLAYLISTITEM_H
 
 #include <klistview.h>
+#include <kurl.h> //KURL::List
+#include <taglib/audioproperties.h>  //Tags
 
-#include <kurl.h>
+struct Tags
+{
+   Tags( const QString &t1, const QString &t2, const QString &t3, const QString &t4, const QString &t5, const QString &t6, const QString &t7, const QString &t8, const TagLib::AudioProperties *ap )
+    : m_title( t1 ), m_artist( t2 ), m_album( t3 ), m_genre( t4 ), m_comment( t5 ), m_year( t6 ), m_track( t7 ), m_directory( t8 ),
+      m_bitrate( 0 ), m_length( 0 ), m_sampleRate( 0 )
+   {
+      if( ap )
+      {
+         m_bitrate    = ap->bitrate();
+         m_length     = ap->length();
+         m_sampleRate = ap->sampleRate();
+      }
+   }
+
+   QString m_title;
+   QString m_artist;
+   QString m_album;
+   QString m_genre;
+   QString m_comment;
+   QString m_year;
+   QString m_track;
+   QString m_directory;
+
+   uint m_bitrate;
+   uint m_length;
+   uint m_sampleRate;
+};
 
 class QColor;
 class QColorGroup;
@@ -32,41 +60,30 @@ class QString;
 class PlayerApp;
 extern PlayerApp *pApp;
 
+
 class PlaylistItem : public KListViewItem
 {
 
     public:
         PlaylistItem( QListView* parent, const KURL &url );
-        PlaylistItem( QListView* parent, QListViewItem* after, const KURL &url );
+        PlaylistItem( QListView* parent, QListViewItem* after, const KURL &url, Tags *tags = 0 );
         ~PlaylistItem();
 
         // These accessor methods obsolete public fields in next release
-        QString title()   { return m_tagTitle; }
-        QString artist()  { return m_tagArtist; }
-        QString album()   { return m_tagAlbum; }
-        QString genre()   { return m_tagGenre; }
-        QString comment() { return m_tagComment; }
-        QString year()    { return m_tagYear; }
-        QString track()   { return m_tagTrack; }
-        int     seconds() { return m_tagSeconds; }
-        QString length(); ///< Return track length as mm:ss
-        int     bitrate() { return m_tagBitrate; }
-        int  samplerate() { return m_tagSamplerate; }
-        // These are still here but will be declared private since 0.7
-        QString m_tagTitle;
-        QString m_tagArtist;
-        QString m_tagAlbum;
-        QString m_tagGenre;
-        QString m_tagComment;
-        QString m_tagYear;
-        QString m_tagTrack;
-        QString m_tagDirectory;
-        int m_tagSeconds;
-        int m_tagBitrate;
-        int m_tagSamplerate;
+        QString title()   { return m_tags->m_title; }
+        QString artist()  { return m_tags->m_artist; }
+        QString album()   { return m_tags->m_album; }
+        QString genre()   { return m_tags->m_genre; }
+        QString comment() { return m_tags->m_comment; }
+        QString year()    { return m_tags->m_year; }
+        QString track()   { return m_tags->m_track; }
+        uint    seconds() { return m_tags->m_length; }
+        uint    bitrate() { return m_tags->m_bitrate; }
+        uint samplerate() { return m_tags->m_sampleRate; }
+
+        QString length( uint = 0 ); //Return track length as mm:ss
 
         KURL url() const { return m_url; }
-        void readMetaInfo();
         void setMetaTitle();
         bool hasMetaInfo();
         bool isDir();
@@ -89,5 +106,6 @@ class PlaylistItem : public KListViewItem
         bool m_isDir;
         QString m_sPath;
         QColor m_glowCol;
+        Tags *m_tags;
 };
 #endif
