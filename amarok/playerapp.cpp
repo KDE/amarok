@@ -123,7 +123,7 @@ PlayerApp::PlayerApp()
 
 PlayerApp::~PlayerApp()
 {
-    kdDebug() << "PlayerApp:~PlayerApp()" << endl;
+    kdDebug() << k_funcinfo << endl;
 
     m_pMainTimer->stop();
 
@@ -210,7 +210,7 @@ void PlayerApp::handleLoaderArgs( const QCString& args ) //SLOT
 
     for ( int i = 0; i < argc; i++ ) {
         argv[i] = const_cast<char*>( strlist[i].latin1() );
-        kdDebug() << "[PlayerApp::handleLoaderArgs()] extracted string: " << argv[i] << endl;
+        kdDebug() << k_funcinfo << " extracted string: " << argv[i] << endl;
     }
 
     //re-initialize KCmdLineArgs with the new arguments
@@ -293,7 +293,7 @@ void PlayerApp::initIpc()
 {
     int m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
     if ( m_sockfd == -1 ) {
-        kdWarning() << "[PlayerApp::initIpc()] socket() error\n";
+        kdWarning() << k_funcinfo << " socket() error\n";
         return;
     }
     sockaddr_un local;
@@ -306,11 +306,11 @@ void PlayerApp::initIpc()
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
 
     if ( ::bind( m_sockfd, (struct sockaddr*) &local, len ) == -1 ) {
-        kdWarning() << "[PlayerApp::initIpc()] bind() error\n";
+        kdWarning() << k_funcinfo << " bind() error\n";
         return;
     }
     if ( ::listen( m_sockfd, 1 ) == -1 ) {
-        kdWarning() << "[PlayerApp::initIpc()] listen() error\n";
+        kdWarning() << k_funcinfo << " listen() error\n";
         return;
     }
 
@@ -324,7 +324,7 @@ void PlayerApp::initIpc()
 
 void PlayerApp::initBrowserWin()
 {
-    kdDebug() << "begin PlayerApp::initBrowserWin()" << endl;
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
@@ -332,13 +332,13 @@ void PlayerApp::initBrowserWin()
              //m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
              this,                SLOT  ( slotPlaylistShowHide() ) );
 
-    kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
 void PlayerApp::initPlayerWidget()
 {
-    kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
@@ -347,7 +347,7 @@ void PlayerApp::initPlayerWidget()
     connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( released        () ),
              this,                           SLOT( showEffectWidget() ) );
 
-    kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -392,7 +392,7 @@ void PlayerApp::applySettings()
         delete m_pEngine;
         initEngine();
 
-        kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
+        kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
     if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
@@ -454,7 +454,7 @@ void PlayerApp::saveConfig()
 
 void PlayerApp::readConfig()
 {
-    kdDebug() << "begin PlayerApp::readConfig()" << endl;
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
@@ -501,7 +501,7 @@ void PlayerApp::readConfig()
     m_pPlayerWidget->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
     m_pBrowserWin->m_pActionCollection->readShortcutSettings( QString::null, kapp->config() );
 
-    kdDebug() << "end PlayerApp::readConfig()" << endl;
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -673,7 +673,7 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
 
 void PlayerApp::slotPlay()
 {
-    kdDebug() << "[PlayerApp::slotPlay()] me got started" << endl;
+    kdDebug() << k_funcinfo << endl;
     if ( m_pEngine->state() == EngineBase::Paused )
     {
         slotPause();
@@ -693,7 +693,10 @@ void PlayerApp::play( const MetaBundle &bundle )
     m_playingURL = url;
     emit currentTrack( url );
 
-    if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
+    if ( AmarokConfig::titleStreaming() &&
+         !m_proxyError &&
+         !url.isLocalFile() &&
+         !url.path().endsWith( ".ogg" ) )
     {
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
         m_pEngine->play( pProxy->proxyUrl() );
@@ -727,9 +730,10 @@ void PlayerApp::play( const MetaBundle &bundle )
 
 void PlayerApp::proxyError()
 {
-    kdWarning() << "[PlayerApp::proxyError()] TitleProxy error! Switching to normal playback.." << endl;
+    kdWarning() << k_funcinfo << " TitleProxy error! Switching to normal playback.." << endl;
 
     m_proxyError = true;
+    m_pEngine->stop();
     slotPlay();
 }
 
@@ -874,7 +878,7 @@ void PlayerApp::slotMainTimer()
     if ( m_pEngine->state() == EngineBase::Empty ||
          m_pEngine->state() == EngineBase::Idle )
     {
-        kdDebug() << "[PlayerApp::slotMainTimer()] Idle detected. Skipping track.\n";
+        kdDebug() << k_funcinfo " Idle detected. Skipping track.\n";
 
         if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
         {
@@ -981,18 +985,18 @@ LoaderServer::LoaderServer( QObject* parent )
 
 void LoaderServer::newConnection( int sockfd )
 {
-    kdDebug() << "[LoaderServer::newConnection()]\n";
+    kdDebug() << k_funcinfo << endl;
 
     char buf[2000];
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
 
     if ( nbytes < 0 )
-        kdDebug() << "[LoaderServer::newConnection()] recv error" << endl;
+        kdDebug() << k_funcinfo << " recv error" << endl;
     else
     {
         buf[nbytes] = '\000';
         QCString result( buf );
-        kdDebug() << "[LoaderServer::newConnection()] received: \n" << result << endl;
+        kdDebug() << k_funcinfo << " received: \n" << result << endl;
 
         if ( !result.contains( "STARTUP" ) )
             emit loaderArgs( result );
