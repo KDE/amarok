@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: "Add to Playlist" feature in CollectionBrowser, appends tracks to playlist.
   ADD: Clear button for CollectionBrowser search.
   FIX: Problem with invisible "Play next" marker in playlist.
   FIX: Don't try to create sql-tables on every startup, but only on

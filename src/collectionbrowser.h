@@ -96,7 +96,12 @@ class CollectionView : public KListView
         void cat1Menu( int );
         void cat2Menu( int );
         void rmbPressed( QListViewItem*, const QPoint&, int );
+        
+        /** Creates a new playlist containing all selected tracks on-the-fly */
         void makePlaylist();
+        /** Adds all selected tracks to current playlist */
+        void addToPlaylist();
+        /** Shows dialog with information on selected track */
         void showTrackInfo();
                 
     private:

@@ -586,6 +586,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu menu( this );
 
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
+        menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
 
         if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 )
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
@@ -599,6 +600,13 @@ void
 CollectionView::makePlaylist() //slot
 {
     pApp->actionCollection()->action( "playlist_clear" )->activate();
+    pApp->insertMedia( listSelected() );
+}
+
+
+void
+CollectionView::addToPlaylist() //slot
+{
     pApp->insertMedia( listSelected() );
 }
 
