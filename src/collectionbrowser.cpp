@@ -111,7 +111,7 @@ CollectionDB::escapeString( QString string ) //static
 bool   
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
 {
-    kdDebug() << "execSql(): " << statement << endl;
+    //kdDebug() << "execSql(): " << statement << endl;
 
     if ( !m_db ) {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
@@ -231,10 +231,10 @@ CollectionDB::createTables( bool temporary )
     
     if ( !temporary )
     {
-        execSql( "CREATE INDEX album ON tags( album );" );
-        execSql( "CREATE INDEX artist ON tags( artist );" );
-        execSql( "CREATE INDEX genre ON tags( genre );" );
-        execSql( "CREATE INDEX year ON tags( year );" );
+        execSql( "CREATE INDEX album_tag ON tags( album );" );
+        execSql( "CREATE INDEX artist_tag ON tags( artist );" );
+        execSql( "CREATE INDEX genre_tag ON tags( genre );" );
+        execSql( "CREATE INDEX year_tag ON tags( year );" );
     }
 }
 
@@ -324,7 +324,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
-//         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
+        m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
 
         m_insertdb = new CollectionDB( path );
@@ -451,11 +451,7 @@ CollectionView::renderView( )  //SLOT
 
     QStringList values;
     QStringList names;
-
-    // FIXME: i'm too ugly, since i'm a hotfix. this needs discussion before implementation
-    int x = 0;
-    while ( x < 5 && !m_db->execSql( command, &values, &names ) )
-    { ++x; }
+    m_db->execSql( command, &values, &names );
 
     QPixmap pixmap = iconForCat( m_category1 );
 
@@ -669,6 +665,13 @@ CollectionView::customEvent( QCustomEvent *e )
                     m_dirWatch->addDir( c->dirList()[i], true );
                         //kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
                 }
+
+        // we need to reconnect to the db after every scan, since sqlite is not able to keep
+        // the tables synced for multiple threads.
+        const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
+                              + "collection.db" ).local8Bit();
+        delete m_db;
+        m_db = new CollectionDB( path );
 
         emit tagsReady();
     }
