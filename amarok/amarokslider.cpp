@@ -17,7 +17,7 @@
 
 #include "amarokslider.h"
 
-#include <qapplication.h>
+#include <qapplication.h> //globalStut() function
 #include <qbrush.h>
 #include <qpainter.h>
 #include <qpixmap.h>
@@ -39,12 +39,10 @@ AmarokSlider::AmarokSlider( QWidget *parent, Qt::Orientation orient, VDirection 
         , m_orientation( orient )
         , m_dir( dir )
 {
-    if ( orient == Horizontal )
-        setSizePolicy( QSizePolicy( QSizePolicy::Expanding,
-                                    QSizePolicy::Fixed ) );
-    else
-        setSizePolicy( QSizePolicy(  QSizePolicy::Fixed,
-                                     QSizePolicy::Expanding ) );
+    setFocusPolicy( QWidget::NoFocus );
+    setSizePolicy( (orient == Horizontal)
+                   ? QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed )
+                   : QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding ) );
 }
 //---</init>---
 
@@ -85,18 +83,21 @@ void AmarokSlider::mouseMoveEvent( QMouseEvent *e )
         if ( m_orientation == Qt::Horizontal )
             setValue( valueFromPosition( e->pos().x(), width() ) );
         else
-            setValue( valueFromPosition( height() - e->pos().y(), height() ) );
+            setValue( valueFromPosition( height() - 3 - e->pos().y(), height() - 3 ) );
     }
 }
 
 
 void AmarokSlider::mousePressEvent( QMouseEvent *e )
 {
-    m_isPressed = true;
+    if( e->button() == Qt::LeftButton )
+    {
+        m_isPressed = true;
 
-    mouseMoveEvent( e );
+        mouseMoveEvent( e );
 
-    emit sliderPressed();
+        emit sliderPressed();
+    }
 }
 
 
@@ -129,6 +130,7 @@ void AmarokSlider::paintEvent( QPaintEvent * )
     }
 
     p.translate( 0, MARGIN );
+    p.setPen( QColor( 0x80a0ff ) );
     p.drawRect( 0, 0, length-1, THICKNESS-1 );
     p.fillRect( 1, 1, pos,      THICKNESS-2-1,
                 QBrush( QColor( 0x00, 0x20, 0x90 ), QBrush::SolidPattern ) );
@@ -146,6 +148,5 @@ void AmarokSlider::paintEvent( QPaintEvent * )
     p.end();
     bitBlt( this, 0, 0, &pBufPixmap );
 }
-
 
 #include "amarokslider.moc"

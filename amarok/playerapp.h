@@ -39,7 +39,6 @@ class KGlobalAccel;
 
 class BrowserWin;
 class EngineBase;
-class FHT;
 class MetaBundle;
 class OSDWidget;
 class PlayerWidget;
@@ -65,7 +64,6 @@ class PlayerApp : public KUniqueApplication
         static const int     ANIM_TIMER  = 30;
         static const int     MAIN_TIMER  = 150;
         static const int     SCOPE_SIZE  = 7;
-        static const int     VOLUME_MAX  = 100;
 
         // ATTRIBUTES
         static EngineBase *m_pEngine;
@@ -95,8 +93,6 @@ class PlayerApp : public KUniqueApplication
         void slotSliderChanged( int );
         void slotVolumeChanged( int value );
         void slotMainTimer();
-        void slotAnimTimer();
-        void slotVisTimer();
         void slotShowOptions();
 
     private slots:
@@ -132,7 +128,8 @@ class PlayerApp : public KUniqueApplication
         long m_length;
         int m_playRetryCounter;
         int m_delayTime;
-        FHT *m_pFht;
+
+
         OSDWidget *m_pOSD;
         bool m_proxyError;
 };

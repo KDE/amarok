@@ -15,6 +15,13 @@ email                :
  *                                                                         *
  ***************************************************************************/
 
+/*****************
+    HELLO!!!
+    This class is now obsolete!!
+    Please cvs remove at some point, thanks! - mxcl
+*/
+
+
 #include "amarokbutton.h"
 
 #include <qlabel.h>

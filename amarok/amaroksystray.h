@@ -8,7 +8,7 @@
 
 #ifndef AMAROKSYSTRAY_H
 #define AMAROKSYSTRAY_H
-    
+
 #include <ksystemtray.h>
 
 class QMouseEvent;
@@ -16,7 +16,6 @@ class QWheelEvent;
 class QDragEnterEvent;
 class QDropEvent;
 
-class PlayerWidget;
 class KActionCollection;
 
 class AmarokSystray : public KSystemTray
@@ -24,7 +23,7 @@ class AmarokSystray : public KSystemTray
     Q_OBJECT
 
 public:
-    AmarokSystray( PlayerWidget *, KActionCollection * );
+    AmarokSystray( QWidget *, KActionCollection * );
 
 private:
     void mousePressEvent( QMouseEvent * );
@@ -32,5 +31,5 @@ private:
     void dragEnterEvent( QDragEnterEvent * );
     void dropEvent( QDropEvent *e );
 };
-    
+
 #endif

@@ -15,70 +15,68 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "amarokbutton.h"
 #include "amarokconfig.h"
-#include "amarokdcophandler.h"
+#include "amarokdcophandler.h" //FIXME
 #include "amarokslider.h"
 #include "amaroksystray.h"
 #include "analyzerbase.h"
-#include "browserwin.h"    //for action collection only
-#include "effectwidget.h"  //in the popupmenu
-#include "enginebase.h"    //timeDisplay()
-#include "metabundle.h"    //setScroll()
+#include "effectwidget.h"    //in the popupmenu
+#include "enginebase.h"      //setScroll()
+#include "metabundle.h"      //setScroll()
 #include "playerapp.h"
 #include "playerwidget.h"
+#include "playlisttooltip.h" //setScroll()
 
-#include <qbitmap.h>
-#include <qevent.h>
+#include <math.h> //updateAnalzyer()
+
 #include <qfont.h>
-#include <qframe.h>
+#include <qhbox.h>
 #include <qiconset.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qpainter.h>
-#include <qpalette.h>
-#include <qpixmap.h>
-#include <qpoint.h>
 #include <qpopupmenu.h>
-#include <qpushbutton.h>
 #include <qrect.h>
-#include <qstring.h>
-#include <qtoolbutton.h>
-#include <qtooltip.h>
-#include <qwidget.h>
-#include <qtimer.h>
+#include <qstringlist.h>
 #include <qdragobject.h>
 
 #include <kaction.h>
-#include <kbugreport.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <khelpmenu.h>
 #include <kkeydialog.h>
-#include <klistview.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
 #include <kmessagebox.h>
 
 
+inline QPixmap getPNG( const QString &filename ) { return QPixmap( locate( "data", QString( "amarok/images/" ) + filename ), "PNG" ); }
+
+
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name )
-        , m_pActionCollection( new KActionCollection( this ) )
-        , m_pPopupMenu( NULL )
-        , m_pVis( NULL )
-        , m_visTimer( new QTimer( this ) )
-        , m_helpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
-        , m_pDcopHandler( new AmarokDcopHandler )
+    : QWidget( parent, name )
+    , m_pActionCollection( new KActionCollection( this ) )
+    , m_pDcopHandler( new AmarokDcopHandler )
+    , m_pTray( 0 )
+    , m_analyzer( 0 )
+    , m_fht( PlayerApp::SCOPE_SIZE ) //FIXME
+    , m_helpMenu( new KHelpMenu( this, KGlobal::instance()->aboutData(), m_pActionCollection ) )
+    , m_scrollBuffer( 291, 16 ) //FIXME check ctor params //FIXME use staic const members for params
+    , m_plusPixmap( getPNG( "time_plus.png" ) )
+    , m_minusPixmap( getPNG( "time_minus.png" ) )
 {
     setCaption( "amaroK" );
-    //TODO set using amaroK QColorGroup..
-    setPaletteForegroundColor( 0x80a0ff );
+    setFixedSize( 311, 140 );
+    //TODO set using derived QColorGroup..
+    setPaletteForegroundColor( Qt::white ); //0x80a0ff
     setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
 
+    QFont font( "Arial" ); //= AmarokConfig::playerWidgetFont();
+    font.setBold( TRUE );
+    font.setPixelSize( 10 );
+    setFont( font );
+
     //actions
-    //FIXME declare these in PlayerApp.cpp and have globall action collection
+    //FIXME declare these in PlayerApp.cpp and have global action collection
     KStdAction::keyBindings( this, SLOT( slotConfigShortcuts() ), m_pActionCollection );
     KStdAction::keyBindings( this, SLOT( slotConfigGlobalShortcuts() ), m_pActionCollection,
                              "options_configure_global_keybinding"
@@ -86,337 +84,257 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     KStdAction::preferences( pApp, SLOT( slotShowOptions() ), m_pActionCollection );
     KStdAction::quit( kapp, SLOT( quit() ), m_pActionCollection );
 
+    { //<NavButtons>
+        //NOTE we use a layout for the buttons so resizing will be possible
+        m_pFrameButtons = wrapper<QHBox>( QRect(0, 118, 311, 22), this );
 
-    // amaroK background pixmap
-    m_oldBgPixmap.resize( 311, 22 );
+        //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
+        new NavButton( m_pFrameButtons, "prev",  pApp, SLOT( slotPrev()  ) );
+        m_pButtonPlay  = new NavButton( m_pFrameButtons, "play",  pApp, SLOT( slotPlay()  ) );
+        m_pButtonPause = new NavButton( m_pFrameButtons, "pause", pApp, SLOT( slotPause() ) );
+        new NavButton( m_pFrameButtons, "stop",  pApp, SLOT( slotStop()  ) );
+        new NavButton( m_pFrameButtons, "next",  pApp, SLOT( slotNext()  ) );
 
-    //setPaletteBackgroundPixmap( QPixmap( locate( "data", "amarok/images/player_background.jpg" ) ) );
+        m_pButtonPlay->setToggleButton( true );
+    } //</NavButtons>
 
-    m_pFrame = new QFrame( this );
+    { //<Sliders>
+        m_pSlider    = placeWidget( new AmarokSlider( this, Qt::Horizontal ), QRect(4,103, 303,12) );
+        m_pVolSlider = placeWidget( new AmarokSlider( this, Qt::Vertical ), QRect(294,18, 12,79) );
 
-    //layout, widgets, assembly
-    m_pFrameButtons = new QFrame( this );
+        m_pVolSlider->setMaxValue( VOLUME_MAX );
 
-    m_pSlider = new AmarokSlider( this, Qt::Horizontal );
-    m_pSlider->setFocusPolicy( QWidget::NoFocus );
+        //FIXME move these slots here!
+        connect( m_pSlider,    SIGNAL( sliderPressed() ),
+                 pApp,         SLOT  ( slotSliderPressed() ) );
+        connect( m_pSlider,    SIGNAL( sliderReleased() ),
+                 pApp,         SLOT  ( slotSliderReleased() ) );
+        connect( m_pSlider,    SIGNAL( valueChanged( int ) ),
+                 pApp,         SLOT  ( slotSliderChanged( int ) ) );
+        connect( m_pVolSlider, SIGNAL( valueChanged( int ) ),
+                 pApp,         SLOT  ( slotVolumeChanged( int ) ) );
+    } //<Sliders>
 
-    m_pSliderVol = new AmarokSlider( this, Qt::Vertical );
-    m_pSliderVol->setFocusPolicy( QWidget::NoFocus );
+    { //<Scroller>
+        font.setPixelSize( 11 );
+        int fontHeight = QFontMetrics( font ).height(); //the real height is more like 13px
 
-    QString pathStr( locate( "data", "amarok/images/b_prev.png" ) );
+        m_scrollFrame = wrapper<QFrame>( QRect(6,18, 285,fontHeight), this );
+        m_scrollFrame->setFont( font );
 
-    if ( pathStr == QString::null )
-        KMessageBox::sorry( this, i18n( "Error: Could not find icons. Did you forget to 'make install'?" ),
-                            i18n( "amaroK Error" ) );
+        #ifdef USE_SCROLLMASK
+        m_pScrollMask = new QBitmap( m_scrollFrame->size() );
+        #endif
+        m_scrollBuffer.fill( backgroundColor() );
+      //</Scroller>
 
-    //<Player Buttons>
-    QIconSet iconSet;
+      //<TimeLabel>
+        font.setPixelSize( 18 );
 
-    m_pButtonPrev = new QPushButton( m_pFrameButtons );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_prev.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_prev_down.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
-    m_pButtonPrev->setIconSet( iconSet );
-    m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPrev->setFlat( true );
+        m_timeLabel = wrapper<QLabel>( QRect(16,36, 9*12+2,16), this, 0, Qt::WRepaintNoErase );
+        m_timeLabel->setFont( font );
 
-    m_pButtonPlay = new QPushButton( m_pFrameButtons );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_play.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_play_down.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
-    m_pButtonPlay->setIconSet( iconSet );
-    m_pButtonPlay->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPlay->setToggleButton( true );
-    m_pButtonPlay->setFlat( true );
+        m_timeBuffer.resize( m_timeLabel->size() );
+        m_timeBuffer.fill( backgroundColor() );
+    } //<TimeLabel>
 
-    m_pButtonPause = new QPushButton( m_pFrameButtons );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_pause.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_pause_down.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
-    m_pButtonPause->setIconSet( iconSet );
-    m_pButtonPause->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPause->setFlat( true );
+    m_pButtonEq = placeWidget( new IconButton( this, "eq" ), QRect(34,85, 28,13) );
+    m_pButtonPl = placeWidget( new IconButton( this, "pl" ), QRect( 5,85, 28,13) );
 
-    m_pButtonStop = new QPushButton( m_pFrameButtons );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_stop.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_stop_down.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
-    m_pButtonStop->setIconSet( iconSet );
-    m_pButtonStop->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonStop->setFlat( true );
+    m_pDescription = wrapper<QLabel>( QRect(4,6, 130,10), this );
+    m_pTimeSign    = wrapper<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
+    m_pVolSign     = wrapper<QLabel>( QRect(295,7, 9,8),  this );
 
-    m_pButtonNext = new QPushButton( m_pFrameButtons );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_next.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( locate( "data", "amarok/images/b_next_down.png" ),
-                       QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
-    m_pButtonNext->setIconSet( iconSet );
-    m_pButtonNext->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonNext->setFlat( true );
-    //</Player Buttons>
+    m_pDescription->setPixmap( getPNG( "description.png" ) );
+    m_pVolSign    ->setPixmap( getPNG( "vol_speaker.png" ) );
 
-    m_oldBgPixmap.fill( m_pButtonPlay->paletteBackgroundColor() );
+    m_pTray = new AmarokSystray( this, m_pActionCollection ); //show/hide is handled by KConfig XT
 
-    // MainWindow Layout
-    m_pTimeDisplayLabel = new QLabel( this, 0, Qt::WRepaintNoErase );
-    m_pTimeDisplayLabel->move( 16, 36 );
+    defaultScroll();
 
-    m_pTimePlusPixmap   = new QPixmap( locate( "data", "amarok/images/time_plus.png" ) );
-    m_pTimeMinusPixmap  = new QPixmap( locate( "data", "amarok/images/time_minus.png" ) );
-    m_pVolSpeaker       = new QPixmap( locate( "data", "amarok/images/vol_speaker.png" ) );
-    m_pDescriptionImage = new QPixmap( locate( "data", "amarok/images/description.png" ) );
-
-    m_pDescription = new QLabel ( this );
-    m_pDescription->move( 4, 6 );
-    m_pDescription->setFixedSize( 130, 10 );
-    m_pDescription->setPixmap( *m_pDescriptionImage );
-
-    m_pTimeSign = new QLabel( this, 0, Qt::WRepaintNoErase );
-    m_pTimeSign->move( 6, 40 );
-    m_pTimeSign->setFixedSize( 10, 10 );
-
-    m_pVolSign = new QLabel( this );
-    m_pVolSign->move( 295, 7 );
-    m_pVolSign->setFixedSize( 9, 8 );
-    m_pVolSign->setPixmap( *m_pVolSpeaker );
-
-    /*    m_pButtonLogo = new AmarokButton( this, locate( "data", "amarok/images/logo_new_active.png" ),
-                                          locate( "data", "amarok/images/logo_new_inactive.png" ), false );
-        m_pButtonLogo->move( -100, -100 );*/
-
-    m_pButtonPl = new AmarokButton( this, locate( "data", "amarok/images/pl_inactive2.png" ),
-                                    locate( "data", "amarok/images/pl_active2.png" ), true );
-    m_pButtonEq = new AmarokButton( this, locate( "data", "amarok/images/eq_inactive2.png" ),
-                                    locate( "data", "amarok/images/eq_active2.png" ), true );
-
-    m_pButtonEq->move( 5, 85 );
-    m_pButtonEq->resize( 28, 13 );
-    m_pButtonPl->move( 34, 85 );
-    m_pButtonPl->resize( 28, 13 );
-
-    m_pSlider->move( 4, 103 );
-    m_pSlider->resize( 303, 12 );
-    m_pSliderVol->move( 294, 18 );
-    m_pSliderVol->resize( 12, 79 );
-
-    m_pFrameButtons->move( 0, 118 );
-    m_pFrameButtons->resize( 311, 22 );
-    m_pFrameButtons->setPaletteBackgroundPixmap( m_oldBgPixmap );
-
-    m_pButtonPrev->move( 1, 2 );
-    m_pButtonPrev->resize( 61, 20 );
-
-    m_pButtonPlay->move( 63, 2 );
-    m_pButtonPlay->resize( 61, 20 );
-
-    m_pButtonPause->move( 125, 2 );
-    m_pButtonPause->resize( 61, 20 );
-
-    m_pButtonStop->move( 187, 2 );
-    m_pButtonStop->resize( 61, 20 );
-
-    m_pButtonNext->move( 249, 2 );
-    m_pButtonNext->resize( 61, 20 );
-
-    // set up system tray
-    m_pTray = new AmarokSystray( this, m_pActionCollection );
-    m_pTray->show();
-
-    // some sizing details
-    setFixedSize( 311, 140 ); //y was 130
-    initScroll(); //requires m_pFrame to be created
-
-    m_pTimeDisplayLabel->setFixedSize( 9 * 12 + 2, 16 );
-    m_pTimeDisplayLabelBuf = new QPixmap( m_pTimeDisplayLabel->size() );    // FIXME flickerfixer hack
-    m_pTimeDisplayLabelBuf->fill( backgroundColor() );
-    //timeDisplay( 0 );
-
-    // connect vistimer
-    connect( m_visTimer, SIGNAL( timeout() ), pApp, SLOT( slotVisTimer() ) );
-    //    connect( m_pButtonLogo, SIGNAL( clicked() ), m_helpMenu, SLOT( aboutApplication() ) );
-
-    connect( pApp, SIGNAL( metaData( const TitleProxy::metaPacket& ) ),
-             this, SLOT  ( setScroll( const TitleProxy::metaPacket& ) ) );
+    connect( &m_analyzerTimer, SIGNAL( timeout() ), SLOT( updateAnalyzer() ) );
 }
 
 
 PlayerWidget::~PlayerWidget()
-{}
+{
+    m_analyzerTimer.stop();
+}
 
 
 // METHODS ----------------------------------------------------------------
 
-void PlayerWidget::initScroll()
-{
-    //QFont font( "Helvetica", 10 );
-    //font.setStyleHint( QFont::Helvetica );
-    //int frameHeight = QFontMetrics( font ).height() + 5;
-    const int frameHeight = 16;
-
-    m_pFrame->setFixedSize( 246, frameHeight );
-    //    m_pFrame->setFixedSize( 252, frameHeight );
-    m_pFrame->move( 3, 14 );
-    //m_pFrame->setFont( font );
-
-    m_pixmapWidth  = 2000;
-    m_pixmapHeight = frameHeight; //config()->playerWidgetScrollFont
-
-//NOTE this crashes VNC as it returns 0
-//    QPixmap *bgPix = paletteBackgroundPixmap();
-//    m_pBgPixmap = new QPixmap( bgPix->convertToImage().copy( m_pFrame->x(),
-//                              m_pFrame->y(), m_pFrame->width(), m_pFrame->height() ) );
-
-    m_pBgPixmap = new QPixmap( m_pFrame->width(), m_pFrame->height() );
-    m_pBgPixmap->fill( backgroundColor() );
-
-    m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
-    m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
-    m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    defaultScroll();
-
-    m_sx = m_sy = 0;
-    m_sxAdd = 1;
-}
-
-
-void PlayerWidget::polish()
-{
-    QWidget::polish();
-}
-
-
 void PlayerWidget::defaultScroll()
 {
-    QString blank;
-
-    m_bitrate = m_samplerate = blank;
+    m_rateString = QString::null;
 
     setScroll( i18n( "Welcome to amaroK" ) );
 
     QToolTip::remove( m_pTray );
-    QToolTip::add( m_pTray, i18n( "amaroK - Media Player" ) );
-    m_pDcopHandler->setNowPlaying( blank );
+    QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
+    m_pDcopHandler->setNowPlaying( QString::null );
 }
 
 
 void PlayerWidget::setScroll( const MetaBundle &bundle )
 {
-    m_bitrate    = bundle.prettyBitrate();
-    m_samplerate = bundle.prettySampleRate();
-    m_length     = bundle.prettyLength();
+    QStringList text;
 
-    setScroll( bundle.prettyTitle() );
+    if( pApp->m_pEngine->isStream() ) //TODO this information should be with the bundle (?)
+    {
+        text += i18n( "Stream from: %1" ).arg( bundle.prettyURL() );
+
+        m_rateString = QString::null;
+    }
+    else
+    {
+        text += bundle.prettyTitle();
+        text += bundle.m_album;
+        text += bundle.prettyLength();
+    }
+
+    m_rateString = bundle.prettyBitrate();
+    if( !m_rateString.isEmpty() ) m_rateString += " / ";
+    m_rateString += bundle.prettySampleRate();
+    if( m_rateString == " / " ) m_rateString = QString::null; //FIXME
+
+    setScroll( text );
+
+    //update image tooltip
+    PlaylistToolTip::add( m_scrollFrame, bundle );
 }
 
 
-void PlayerWidget::setScroll( const QString &s )
+void PlayerWidget::setScroll( const QStringList &list )
 {
+static const char* const not_close_xpm[]={
+"5 5 2 1",
+"# c white",//#ffeacd",
+". c #80a0ff",
+"#####",
+"#...#",
+"#...#",
+"#...#",
+"#####"};
+
+    QPixmap square( const_cast< const char** >(not_close_xpm) );
+
+    const QString s = list.first();
     QToolTip::remove( m_pTray );
     QToolTip::add( m_pTray, s );
     m_pDcopHandler->setNowPlaying( s );
 
-    QString text = s;
-    text.prepend( " | " );
+    //WARNING! don't pass an empty StringList to this function!
 
-    m_pScrollMask->fill( Qt::color0 );
-    QPainter painterPix( m_pScrollPixmap );
-    QPainter painterMask( m_pScrollMask );
-    painterPix.setBackgroundColor( Qt::black );
-    painterPix.setPen( Qt::white );
-    painterMask.setPen( Qt::color1 );
+    QString text;
+    QStringList list2( list );
+    //const QString separator = " | ";
 
-    QFont scrollerFont( "Arial" );
-    scrollerFont.setBold( TRUE );
-    scrollerFont.setPixelSize( 11 );
+    for( QStringList::Iterator it = list2.begin();
+         it != list2.end(); )
+    {
+        if( (*it).isEmpty() ) it = list2.remove( it );
+        else
+        {
+            kdDebug() << *it << endl;
+            text.append( *it );
+            //text.append( separator );
+            ++it;
+        }
+    }
 
-    painterPix.setFont( scrollerFont );
-    painterMask.setFont( scrollerFont );
+    QFont font( m_scrollFrame->font() );
+    QFontMetrics fm( font );
+    const uint height = font.pixelSize(); //the font actually extends below its pixelHeight
+    m_scrollTextPixmap.resize( fm.width( text ) + list2.count() * 20, m_scrollFrame->height() );
+    //m_scrollTextPixmap.resize( fm.width( text ), m_scrollFrame->height() );
+    m_scrollTextPixmap.fill( backgroundColor() );
+    QPainter p( &m_scrollTextPixmap );
+    p.setPen( foregroundColor() );
+    p.setFont( font );
+    uint x = 0;
+    //const QColor separatorColor( Qt::lightGray );
+    const uint   separatorWidth = 20;//fm.width( separator );
 
-    painterPix.eraseRect( 0, 0, m_pixmapWidth, m_pixmapHeight );
-    painterPix.drawText(  0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
-    painterMask.drawText( 0, 0, m_pixmapWidth, m_pixmapHeight, Qt::AlignLeft || Qt::AlignVCenter, text );
-    m_pScrollPixmap->setMask( *m_pScrollMask );
+    for( QStringList::ConstIterator it = list2.constBegin();
+         it != list2.end();
+         ++it )
+    {
+        //p.setPen( foregroundColor() );
+        p.drawText( x, height, *it );
+        x += fm.width( *it );
 
-    QRect rect = painterPix.boundingRect( 0, 0, m_pixmapWidth, m_pixmapHeight,
-                                          Qt::AlignLeft || Qt::AlignVCenter, text );
-    m_scrollWidth = rect.width();
+        //p.setPen( separatorColor );
+        //p.drawText( x, height, separator );
+        p.drawPixmap( x + 8, font.pixelSize() / 2, square );
+        x += separatorWidth;
+    }
 
-    // trigger paintEvent, so the Bitrate and Samplerate text gets drawn
-    update();
+    drawScroll();
+    update(); //we need to update rateString
 }
 
 
 void PlayerWidget::drawScroll()
 {
-    bitBlt( m_pComposePixmap, 0, 0, m_pBgPixmap );
+    static uint phase = 0;
 
-    m_sx += m_sxAdd;
-    if ( m_sx >= m_scrollWidth )
-        m_sx = 0;
+    QPixmap* const buffer = &m_scrollBuffer;
+    QPixmap* const scroll = &m_scrollTextPixmap;
 
-    int marginH = 4;
-    int marginV = 3;
+    const int topMargin  = 0; //moved margins into widget placement
+    const int leftMargin = 0; //as this makes it easier to fiddle
+    const int w = m_scrollTextPixmap.width();
+    const int h = m_scrollTextPixmap.height();
+
+    phase += SCROLL_RATE;
+    if( phase >= w ) phase = 0;
+
     int subs = 0;
-    int dx = marginH;
-    int sxTmp = m_sx;
+    int dx = leftMargin;
+    int phase2 = phase;
 
-    while ( dx < m_pFrame->width() )
+    while( dx < m_scrollFrame->width() )
     {
-        subs = -m_pFrame->width() + marginH;
-        subs += dx + ( m_scrollWidth - sxTmp );
-        if ( subs < 0 )
-            subs = 0;
-        bitBlt( m_pComposePixmap, dx, marginV,
-                m_pScrollPixmap, sxTmp, m_sy, m_scrollWidth - sxTmp - subs, m_pixmapHeight, Qt::CopyROP );
-        dx += ( m_scrollWidth - sxTmp );
-        sxTmp += ( m_scrollWidth - sxTmp ) ;
+        subs = -m_scrollFrame->width() + topMargin;
+        subs += dx + ( w - phase2 );
+        if( subs < 0 ) subs = 0;
 
-        if ( sxTmp >= m_scrollWidth )
-            sxTmp = 0;
+        bitBlt( buffer, dx, topMargin,
+                scroll, phase2, 0, w - phase2 - subs, h, Qt::CopyROP );
+
+        dx     += ( w - phase2 );
+        phase2 += ( w - phase2 );
+
+        if( phase2 >= w ) phase2 = 0;
     }
 
-    bitBlt( m_pFrame, 0, 0, m_pComposePixmap );
+    bitBlt( m_scrollFrame, 0, 0, buffer );
 }
 
 
 void PlayerWidget::timeDisplay( int seconds )
 {
     int songLength = pApp->trackLength() / 1000;
-    m_remaining = AmarokConfig::timeDisplayRemaining() && !pApp->m_pEngine->isStream() && songLength > 0;
+    bool remaining = AmarokConfig::timeDisplayRemaining() && !pApp->m_pEngine->isStream() && songLength > 0;
 
-    if( m_remaining ) seconds = songLength - seconds;
-
-    m_hours   = seconds /60/60%60;
-    m_minutes = seconds /60%60;
-    m_seconds = seconds %60;
+    if( remaining ) seconds = songLength - seconds;
 
     QString
-    str  = zeroPad( m_hours );
+    str  = zeroPad( seconds /60/60%60 );
     str += ':';
-    str += zeroPad( m_minutes );
+    str += zeroPad( seconds /60%60 );
     str += ':';
-    str += zeroPad( m_seconds );
+    str += zeroPad( seconds %60 );
 
-    QFont timeFont( "Arial" );
-    timeFont.setBold( TRUE );
-    timeFont.setPixelSize( 18 );
+    m_timeBuffer.fill( backgroundColor() );
+    QPainter p( &m_timeBuffer );
+    p.setPen( foregroundColor() );
+    p.setFont( m_timeLabel->font() );
+    p.drawText( 0, 16, str ); //FIXME remove padding here and put in the widget placement!
+    bitBlt( m_timeLabel, 0, 0, &m_timeBuffer );
 
-    m_pTimeDisplayLabelBuf->fill( backgroundColor() );
-
-    QPainter p( m_pTimeDisplayLabelBuf );
-    p.setPen( Qt::white );
-    p.setFont( timeFont );
-    p.drawText( 0, 16, str );
-    bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );    // FIXME ugly hack for flickerfixing*/
-
-    if ( !m_remaining )
-        m_pTimeSign->setPixmap( *m_pTimePlusPixmap );
-    else
-        m_pTimeSign->setPixmap( *m_pTimeMinusPixmap );
+    m_pTimeSign->setPixmap( remaining ? m_minusPixmap : m_plusPixmap );
 }
 
 
@@ -425,118 +343,93 @@ void PlayerWidget::timeDisplay( int seconds )
 void PlayerWidget::paintEvent( QPaintEvent * )
 {
     QPainter pF( this );
+    //uses widget's font and foregroundColor() - see ctor
+    pF.drawText( 6, 68, m_rateString );
 
-    QFont font( "Arial" );
-    //    font.setStyleHint( QFont::Arial );
-    font.setBold( TRUE );
-    font.setPixelSize( 10 );
-    pF.setFont( font );
-    pF.setPen( QColor( 255, 255, 255 ) );
-
-    //this method avoids creation/destruction of temporaries (use +=)
-    //also it's visually appealing as it shows nothing if the rates aren't set
-    QString str = m_bitrate;
-    if( !(m_bitrate.isEmpty() || m_samplerate.isEmpty() ) ) str += " / ";
-    str += m_samplerate;
-    pF.drawText( 6, 68, str );
-
-    //draw the song length, right to the title-scroller
-    font.setBold( TRUE );
-    font.setPixelSize( 11 );
-    pF.setFont( font );
-    pF.drawText( 248, 27, " - " + m_length );
-
-    drawScroll();    // necessary for pause mode
-
-    bitBlt( m_pTimeDisplayLabel, 0, 0, m_pTimeDisplayLabelBuf );
+    bitBlt( m_scrollFrame, 0, 0, &m_scrollBuffer );
+    bitBlt( m_timeLabel, 0, 0, &m_timeBuffer ); //FIXME have functions that replace these blts that are inlined things like "bltTimeDisplay" etc.
 }
 
 
 void PlayerWidget::wheelEvent( QWheelEvent *e )
 {
     e->accept();
-    AmarokConfig::setMasterVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
 
-    if ( AmarokConfig::masterVolume() < 0 )
-        AmarokConfig::setMasterVolume( 0 );
-    if ( AmarokConfig::masterVolume() > PlayerApp::VOLUME_MAX )
-        AmarokConfig::setMasterVolume( PlayerApp::VOLUME_MAX );
+    switch( e->state() )
+    {
+    case ShiftButton:
 
-    pApp->slotVolumeChanged( AmarokConfig::masterVolume() );
-    m_pSliderVol->setValue( AmarokConfig::masterVolume() );
+        if( e->delta() > 0 )
+            pApp->slotPrev();
+        else
+            pApp->slotNext();
+
+        break;
+
+    default:
+
+        AmarokConfig::setMasterVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
+
+        if ( AmarokConfig::masterVolume() < 0 )
+            AmarokConfig::setMasterVolume( 0 );
+        if ( AmarokConfig::masterVolume() > VOLUME_MAX )
+            AmarokConfig::setMasterVolume( VOLUME_MAX );
+
+        pApp->slotVolumeChanged( AmarokConfig::masterVolume() );
+        m_pVolSlider->setValue( AmarokConfig::masterVolume() );
+    }
 }
 
 
-#define ID_REPEAT_TRACK 100
-#define ID_REPEAT_PLAYLIST 101
-#define ID_RANDOM_MODE 102
-#define ID_CONF_PLAYOBJECT 103
-
 void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
+    #define ID_REPEAT_TRACK 100
+    #define ID_REPEAT_PLAYLIST 101
+    #define ID_RANDOM_MODE 102
+    #define ID_CONF_PLAYOBJECT 103
+
     if ( e->button() == QMouseEvent::RightButton )
     {
-        if ( !m_pPopupMenu )
+        QPopupMenu popup;
+        popup.setCheckable( true );
+
+        popup.insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
+        popup.insertItem( i18n( "Repeat Play&list" ), ID_REPEAT_PLAYLIST );
+        popup.insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
+      popup.insertSeparator();
+        popup.insertItem( i18n( "Configure &Effects..." ), m_pButtonEq, SLOT( toggle() ) );
+        popup.insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ), 0, ID_CONF_PLAYOBJECT );
+      popup.insertSeparator();
+        m_pActionCollection->action( "options_configure_keybinding" )->plug( &popup );
+        m_pActionCollection->action( "options_configure_global_keybinding" )->plug( &popup );
+        m_pActionCollection->action( "options_configure" )->plug( &popup );
+      popup.insertSeparator();
+        popup.insertItem( i18n( "&Help" ), (QPopupMenu*)m_helpMenu->menu() );
+      popup.insertSeparator();
+        m_pActionCollection->action( "file_quit" )->plug( &popup );
+
+        popup.setItemChecked( ID_REPEAT_TRACK,    AmarokConfig::repeatTrack() );
+        popup.setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
+        popup.setItemChecked( ID_RANDOM_MODE,     AmarokConfig::randomMode() );
+        popup.setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
+
+        switch( popup.exec( e->globalPos() ) )
         {
-            m_pPopupMenu = new QPopupMenu( this );
-            m_pPopupMenu->setCheckable( true );
-
-            m_pPopupMenu->insertItem( i18n( "Repeat &Track" ),    ID_REPEAT_TRACK );
-            m_pPopupMenu->insertItem( i18n( "Repeat Play&list" ), ID_REPEAT_PLAYLIST );
-            m_pPopupMenu->insertItem( i18n( "Random &Mode" ),     ID_RANDOM_MODE );
-
-            m_pPopupMenu->insertSeparator();
-
-            m_pPopupMenu->insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
-            m_pPopupMenu->insertItem( i18n( "Configure &PlayObject..." ), this, SLOT( slotConfigPlayObject() ), 0, ID_CONF_PLAYOBJECT );
-
-            m_pPopupMenu->insertSeparator();
-
-            //FIXME bad form, test the pointers!
-            m_pActionCollection->action( "options_configure_keybinding" )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "options_configure_global_keybinding" )->plug( m_pPopupMenu );
-            m_pActionCollection->action( "options_configure" )->plug( m_pPopupMenu );
-
-            m_pPopupMenu->insertSeparator();
-
-            m_pPopupMenu->insertItem( i18n( "&Help" ), (QPopupMenu*)helpMenu() );
-
-            m_pPopupMenu->insertSeparator();
-
-            m_pActionCollection->action( "file_quit" )->plug( m_pPopupMenu );
-        }
-
-        m_pPopupMenu->setItemChecked( ID_REPEAT_TRACK, AmarokConfig::repeatTrack() );
-        m_pPopupMenu->setItemChecked( ID_REPEAT_PLAYLIST, AmarokConfig::repeatPlaylist() );
-        m_pPopupMenu->setItemChecked( ID_RANDOM_MODE, AmarokConfig::randomMode() );
-
-        m_pPopupMenu->setItemEnabled( ID_CONF_PLAYOBJECT, pApp->playObjectConfigurable() );
-
-
-        if( int id = m_pPopupMenu->exec( e->globalPos() ) )
-        {
-            //set various bool items if clicked
-            switch( id )
-            {
-            case ID_REPEAT_TRACK:
-                AmarokConfig::setRepeatTrack( !m_pPopupMenu->isItemChecked(id) );
-                break;
-            case ID_REPEAT_PLAYLIST:
-                AmarokConfig::setRepeatPlaylist( !m_pPopupMenu->isItemChecked(id) );
-                break;
-            case ID_RANDOM_MODE:
-                AmarokConfig::setRandomMode( !m_pPopupMenu->isItemChecked(id) );
-                break;
-            }
+        case ID_REPEAT_TRACK:
+            AmarokConfig::setRepeatTrack( !popup.isItemChecked(ID_REPEAT_TRACK) );
+            break;
+        case ID_REPEAT_PLAYLIST:
+            AmarokConfig::setRepeatPlaylist( !popup.isItemChecked(ID_REPEAT_PLAYLIST) );
+            break;
+        case ID_RANDOM_MODE:
+            AmarokConfig::setRandomMode( !popup.isItemChecked(ID_RANDOM_MODE) );
+            break;
         }
     }
     else //other buttons
     {
-        QRect rect( dynamic_cast<QWidget *>(m_pVis)->geometry() );
-
-        if( rect.contains( e->pos() ) ) { nextVis(); return; }
-
-        rect  = m_pTimeDisplayLabel->geometry();
+        QRect
+        rect  = m_timeLabel->geometry();
         rect |= m_pTimeSign->geometry();
 
         if ( rect.contains( e->pos() ) )
@@ -544,8 +437,8 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             repaint( true );
         }
-        else
-            startDrag();
+        else if( dynamic_cast<QWidget*>(m_analyzer)->geometry().contains( e->pos() ) ) { createAnalyzer( true ); return; }
+        else startDrag();
     }
 }
 
@@ -561,10 +454,8 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
 
     e->accept();
 
-    if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
+    if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() /*&& !QApplication::closingDown()*/ )
     {
-
-
         KMessageBox::information( this,
                                   i18n( "<qt>Closing the main window will keep amaroK running in the system tray. "
                                         "Use Quit from the popup-menu to quit the application.</qt>" ),
@@ -573,64 +464,35 @@ void PlayerWidget::closeEvent( QCloseEvent *e )
     else kapp->quit();
 }
 
-/*
-void PlayerWidget::moveEvent( QMoveEvent * )
-{
-    //     You can get the frame sizes like so (found in Qt sources while looking for something else):
-        int framew = geometry().x() - x();
-        int frameh = geometry().y() - y();
-
-    // Makes the the playlistwindow stick magnetically to the playerwindow
-
-        if ( pApp->m_pBrowserWin->isVisible() )
-        {
-            if ( ( frameGeometry().x() == pApp->m_pBrowserWin->frameGeometry().right() + 1 ) )
-                    ( e->oldPos().y() == pApp->m_pBrowserWin->frameGeometry().bottom() ) ||
-                    ( e->oldPos().x() + frameSize().width() + 0 == pApp->m_pBrowserWin->frameGeometry().left() ) ||
-                    ( e->oldPos().y() + frameSize().height() + 0 == pApp->m_pBrowserWin->frameGeometry().top() ) )
-            {
-                pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
-                pApp->m_pBrowserWin->move( e->pos() + ( pApp->m_pBrowserWin->pos() -  e->oldPos() ) );
-            }
-        }
-}
-*/
 
 // SLOTS ---------------------------------------------------------------------
 
-void PlayerWidget::nextVis()
+void PlayerWidget::createAnalyzer( bool increment )
 {
-    AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + 1 );
-    createVis();
-}
+    if( increment ) AmarokConfig::setCurrentAnalyzer( AmarokConfig::currentAnalyzer() + 1 );
 
-void PlayerWidget::createVis()
-{
-    delete m_pVis;
+    delete m_analyzer;
 
-    m_pVis = AnalyzerBase::AnalyzerFactory::createAnalyzer( this );
+    m_analyzer = AnalyzerBase::AnalyzerFactory::createAnalyzer( this );
 
-    // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
-    //FIXME implement virtual minimumSizeHint()
-    if ( AmarokConfig::currentAnalyzer() == 1 )
+    QWidget *visWidget = dynamic_cast<QWidget*>(m_analyzer); //we don't test for 0 as we know it'll work! :)
+    if ( AmarokConfig::currentAnalyzer() == 1 ) //FIXME
     {
-        dynamic_cast<QWidget*>(m_pVis)->setFixedSize( 168, 70 );
-        dynamic_cast<QWidget*>(m_pVis)->move( 119, 30 );
+        visWidget->move( QPoint( 119, 30 ) );
+        visWidget->resize( QSize( 168, 70 ) );
     }
     else
     {
-        dynamic_cast<QWidget*>(m_pVis)->setFixedSize( 168, 50 );
-        dynamic_cast<QWidget*>(m_pVis)->move( 119, 45 );
+        visWidget->move( QPoint( 119, 40 ) );
+        visWidget->resize( QSize( 168, 56 ) );
     }
+    visWidget->show();
 
-//    connect( dynamic_cast<QWidget*>(m_pVis), SIGNAL( clicked() ), this, SLOT( nextVis() ) );
-
-    m_visTimer->start( m_pVis->timeout() );
-    dynamic_cast<QWidget*>(m_pVis)->show();
+    m_analyzerTimer.start( m_analyzer->timeout() );
 }
 
-
-void PlayerWidget::slotConfigShortcuts()
+#include "browserwin.h" //FIXME bah!
+void PlayerWidget::slotConfigShortcuts() //FIXME move to pApp
 {
     KKeyDialog keyDialog( true );
 
@@ -641,13 +503,13 @@ void PlayerWidget::slotConfigShortcuts()
 }
 
 
-void PlayerWidget::slotConfigGlobalShortcuts()
+void PlayerWidget::slotConfigGlobalShortcuts() //FIXME move to pApp
 {
     KKeyDialog::configure( pApp->m_pGlobalAccel, true, 0, true );
 }
 
 
-void PlayerWidget::slotConfigPlayObject()
+void PlayerWidget::slotConfigPlayObject() //FIXME move to pApp
 {
 /*    if ( pApp->m_pPlayObject && !m_pPlayObjConfigWidget )
     {
@@ -659,23 +521,105 @@ void PlayerWidget::slotConfigPlayObject()
 }
 
 
-void PlayerWidget::slotUpdateTrayIcon( bool visible )
-{
-    if ( visible )
-    {
-        m_pTray->show();
-    }
-    else
-    {
-        m_pTray->hide();
-    }
-}
-
 void PlayerWidget::startDrag()
 {
+    //TODO allow minimum drag distance
+
     QDragObject *d = new QTextDrag( m_pDcopHandler->nowPlaying(), this );
     d->dragCopy();
     // do NOT delete d.
+}
+
+
+void PlayerWidget::updateAnalyzer()
+{
+    EngineBase *m_pEngine = pApp->m_pEngine;
+
+    if ( !isVisible() )
+        return; //FIXME pause all timers when hidden
+
+    static int t = 201;
+
+    if ( m_pEngine->state() == EngineBase::Playing )
+    {
+        std::vector<float> *pScopeVector = m_pEngine->scope();
+        float *front = static_cast<float*>( &pScopeVector->front() );
+        if (!front)
+            return;
+
+        if ( AmarokConfig::currentAnalyzer() == 2)
+        { // sonogram
+            m_fht.power( front );
+            m_fht.scale( front, 1.0 / 64 );
+        }
+        else
+        {
+            float *f = new float[ m_fht.size() ];
+            m_fht.copy( f, front );
+            m_fht.logSpectrum( front, f );
+            m_fht.scale( front, 1.0 / 20 );
+            delete[] f;
+        }
+        pScopeVector->resize( pScopeVector->size() / 2 );
+
+        m_analyzer->drawAnalyzer( pScopeVector );
+
+        delete pScopeVector;
+        //FIXME <markey> beat detection code temporarily moved to VIS_PLAN, since it was disabled anyway
+    }
+    else
+    {
+        if ( t > 999 ) t = 1; //0 = wasted calculations
+        if ( t < 201 )
+        {
+            double dt = double(t) / 200 ;
+            std::vector<float> v( 31 );
+            for( uint i = 0; i < v.size(); ++i )
+                v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
+            m_analyzer->drawAnalyzer( &v );
+        }
+        else
+            m_analyzer->drawAnalyzer( NULL );
+
+        ++t;
+    }
+}
+
+
+
+NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
+  : QPushButton( parent )
+{
+    QString up = QString( "b_%1.png" ).arg( icon );
+    QString down = QString( "b_%1_down.png" ).arg( icon );
+
+    QIconSet iconSet;
+    iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
+    iconSet.setPixmap( getPNG( down ), QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
+
+    setIconSet( iconSet );
+    setFocusPolicy( QWidget::NoFocus );
+    setFlat( true );
+
+    connect( this, SIGNAL( clicked() ), receiver, slot );
+}
+
+
+
+IconButton::IconButton( QWidget *parent, const QString &icon/*, QObject *receiver, const char *slot, bool isToggleButton*/ )
+    : QButton( parent )
+    , m_up(   getPNG( icon + "_active2.png" ) ) //TODO rename files better (like the right way round for one!)
+    , m_down( getPNG( icon + "_inactive2.png" ) )
+{
+    //const char *signal = isToggleButton ? SIGNAL( toggled( bool ) ) : SIGNAL( clicked() );
+    //connect( this, signal, receiver, slot );
+
+    setToggleButton( /*isToggleButton*/ true );
+}
+
+void IconButton::drawButton( QPainter *p )
+{
+    p->drawPixmap( 0, 0, (isOn()||isDown()) ? m_down : m_up );
 }
 
 #include "playerwidget.moc"

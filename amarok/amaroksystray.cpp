@@ -20,7 +20,7 @@
 #include <kurldrag.h>
 
 
-AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
+AmarokSystray::AmarokSystray( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     //setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
@@ -43,6 +43,7 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
     // 3. exactly why we should stick to the KDE guidelines unless you want to implement something
     //    that changes the menu order depending on systray position
 
+    //FIXME it's high time these were KActions
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_prev.png" ) ),
                                i18n( "[&Z] Prev" ), kapp, SLOT( slotPrev() ) );
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_play.png" ) ),
@@ -69,22 +70,8 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
 
 void AmarokSystray::wheelEvent( QWheelEvent *e )
 {
-    if ( e->orientation() == Horizontal )
-        return;
-
-    switch ( e->state() )
-    {
-    case ShiftButton:
-        if ( e->delta() > 0 )
-            static_cast<PlayerApp *>( kapp ) ->slotPrev();
-        else
-            static_cast<PlayerApp *>( kapp ) ->slotNext();
-        e->accept();
-        break;
-    default:
-        static_cast<PlayerApp *>( kapp )->m_pPlayerWidget->wheelEvent( e );
-        break;
-    }
+    parentWidget()->setWindowState( Qt::WindowActive );
+    e->ignore(); //will pass event to PlayerWidget
 }
 
 
@@ -111,7 +98,7 @@ void AmarokSystray::dragEnterEvent( QDragEnterEvent *e )
 void AmarokSystray::dropEvent( QDropEvent *e )
 {
    KURL::List list;
-   if (KURLDrag::decode(e, list))
+   if( KURLDrag::decode(e, list) )
       pApp->insertMedia(list);
 }
 

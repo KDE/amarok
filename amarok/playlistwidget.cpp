@@ -652,6 +652,10 @@ bool PlaylistWidget::saveState( QStringList &list )
 }
 
 
+void PlaylistWidget::undo() { switchState( m_undoList, m_redoList ); } //SLOT
+void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
+
+
 void PlaylistWidget::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
     //switch to a previously saved state, remember current state
@@ -891,10 +895,6 @@ void PlaylistWidget::readAudioProperties( PlaylistItem *pi )
 }
 
 
-void PlaylistWidget::undo() { switchState( m_undoList, m_redoList ); } //SLOT
-void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
-
-
 
 // PRIVATE EVENTS =======================================================
 
@@ -1015,8 +1015,6 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
         //FIXME report to Trolltech?
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
-        m_undoButton->setEnabled( false );
-        m_redoButton->setEnabled( false );
         m_clearButton->setEnabled( false );
         QApplication::setOverrideCursor( KCursor::workingCursor() );
         break;
@@ -1043,8 +1041,6 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
     case PlaylistLoader::Done:
 
         //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
-        m_undoButton->setEnabled( !m_undoList.isEmpty() );
-        m_redoButton->setEnabled( !m_redoList.isEmpty() );
         m_clearButton->setEnabled( true );
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack();

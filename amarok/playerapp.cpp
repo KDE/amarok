@@ -16,16 +16,13 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "amarokarts.h"
-#include "amarokbutton.h"
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
-#include "amarokslider.h"
-#include "analyzerbase.h"
+#include "amarokslider.h" //FIXME
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "enginebase.h"
-#include "fht.h"
-#include "metabundle.h" //play( const KURL& )
+#include "metabundle.h"
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
@@ -51,7 +48,9 @@ email                : markey@web.de
 #include <kuniqueapplication.h>
 #include <kurl.h>
 #include <kconfigdialog.h>
+#include <kwin.h>    //eventFilter()
 
+#include <qpixmap.h> //QPixmap::setDefaultOptimization()
 #include <qdir.h>
 #include <qpoint.h>
 #include <qsize.h>
@@ -72,32 +71,31 @@ PlayerApp::PlayerApp()
         , m_length( 0 )
         , m_playRetryCounter( 0 )
         , m_delayTime( 0 )
-        , m_pFht( new FHT( SCOPE_SIZE ) )
         , m_pOSD( new OSDWidget() )
         , m_proxyError( false )
 {
     setName( "amarok" );
     pApp = this; //global
 
+    QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
+
     initPlayerWidget();
     initBrowserWin();
-    
+
     //we monitor for close, hide and show events
     m_pBrowserWin  ->installEventFilter( this );
     m_pPlayerWidget->installEventFilter( this );
 
     readConfig();
 
-    { //<AmarokConfigDialog>
-        //TODO can we create this on demand only? it would save a whole bunch of memory
-        KConfigDialog *dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
-        
-        connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
-    } //</AmarokConfigDialog>
-    
     { //<EffectConfigWidget>
+
+        //TODO currently we can't only create on demand
+        //     as the class holds the effectslist, solution: make the list a static member
+        //     with a static functions for retrieval etc.
+
         EffectWidget *pEffectWidget = new EffectWidget(); //gets destroyed with PlayerWidget
-        
+
         connect( m_pPlayerWidget->m_pButtonEq, SIGNAL( toggled  ( bool ) ),
                  pEffectWidget,                SLOT  ( setShown ( bool ) ) );
         connect( pEffectWidget,                SIGNAL( sigHide  ( bool ) ),
@@ -105,21 +103,26 @@ PlayerApp::PlayerApp()
         connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
                  pEffectWidget,                SLOT  ( deleteLater() ) );
     } //</EffectConfigWidget>
-                                             
+
+    //after this point only analyzer pixmaps will be created
+    QPixmap::setDefaultOptimization( QPixmap::BestOptim );
+
     applySettings();
     m_pPlayerWidget->show(); //browserWin gets shown automatically if buttonPl isOn()
 
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
-    connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
-    m_pMainTimer->start( MAIN_TIMER );
+    connect( m_pAnimTimer, SIGNAL( timeout() ), m_pPlayerWidget, SLOT( drawScroll() ) );
 
+    //process some events so that the UI appears and things feel more responsive
     kapp->processEvents();
 
-    restoreSession(); //do after processEvents() - sounds better
-    m_pAnimTimer->start( ANIM_TIMER ); //do after restoreSession() - looks better
+    //start timers and restore session
+    m_pMainTimer->start( MAIN_TIMER );
+    restoreSession(); //sounds better done here
+    m_pAnimTimer->start( ANIM_TIMER ); //looks better done here
 
     connect( this, SIGNAL( metaData( const MetaBundle& ) ), m_pOSD, SLOT( showOSD( const MetaBundle& ) ) );
-    
+
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 }
 
@@ -127,6 +130,15 @@ PlayerApp::PlayerApp()
 PlayerApp::~PlayerApp()
 {
     kdDebug() << "PlayerApp:~PlayerApp()" << endl;
+
+    //hiding these widgets stops visual oddness
+    //I know they won't dissapear because the event Loop isn't updated, but it stops
+    //some syncronous updates etc.
+    m_pMainTimer->stop();
+    m_pAnimTimer->stop();
+
+    m_pPlayerWidget->hide();
+    m_pBrowserWin->hide();
 
     //Save current item info in dtor rather than saveConfig() as it is only relevant on exit
     //and we may in the future start to use read and saveConfig() in other situations
@@ -144,11 +156,10 @@ PlayerApp::~PlayerApp()
 
     slotStop();
 
-    killTimers();
+    //killTimers(); doesn't kill QTimers only QObject::startTimer() timers
 
     saveConfig();
 
-    delete m_pFht;
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
     delete m_pOSD;
     delete m_pEngine;
@@ -205,29 +216,8 @@ void PlayerApp::initPlayerWidget()
 
     m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
 
-    m_pPlayerWidget->m_pSliderVol->setMaxValue( VOLUME_MAX );
-
-    //could fancy formatting be the true purpose of life?
-    connect( m_pPlayerWidget->m_pSlider,         SIGNAL( sliderPressed() ),
-             this,                               SLOT  ( slotSliderPressed() ) );
-    connect( m_pPlayerWidget->m_pSlider,         SIGNAL( sliderReleased() ),
-             this,                               SLOT  ( slotSliderReleased() ) );
-    connect( m_pPlayerWidget->m_pSlider,         SIGNAL( valueChanged( int ) ),
-             this,                               SLOT  ( slotSliderChanged( int ) ) );
-    connect( m_pPlayerWidget->m_pSliderVol,      SIGNAL( valueChanged( int ) ),
-             this,                               SLOT  ( slotVolumeChanged( int ) ) );
-    connect( m_pPlayerWidget->m_pButtonPrev,     SIGNAL( clicked() ),
-             this,                               SLOT  ( slotPrev() ) );
-    connect( m_pPlayerWidget->m_pButtonPlay,     SIGNAL( clicked() ),
-             this,                               SLOT  ( slotPlay() ) );
-    connect( m_pPlayerWidget->m_pButtonPause,    SIGNAL( clicked() ),
-             this,                               SLOT  ( slotPause() ) );
-    connect( m_pPlayerWidget->m_pButtonStop,     SIGNAL( clicked() ),
-             this,                               SLOT  ( slotStop() ) );
-    connect( m_pPlayerWidget->m_pButtonNext,     SIGNAL( clicked() ),
-             this,                               SLOT  ( slotNext() ) );
-    connect( this,                               SIGNAL( metaData( const MetaBundle& ) ),
-             m_pPlayerWidget,                    SLOT  ( setScroll( const MetaBundle& ) ) );
+    connect( this,            SIGNAL( metaData( const MetaBundle& ) ),
+             m_pPlayerWidget, SLOT  ( setScroll( const MetaBundle& ) ) );
 
     kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
@@ -239,9 +229,9 @@ void PlayerApp::initBrowserWin()
 
     m_pBrowserWin = new BrowserWin( m_pPlayerWidget, "BrowserWin" );
 
-    connect( m_pPlayerWidget->m_pButtonPl,       SIGNAL( toggled( bool ) ),
-             m_pBrowserWin,                      SLOT  ( setShown( bool ) ) );
-    
+    connect( m_pPlayerWidget->m_pButtonPl, SIGNAL( toggled( bool ) ),
+             m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
+
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
 }
 
@@ -281,7 +271,7 @@ void PlayerApp::applySettings()
         if ( AmarokConfig::soundSystem() == "gstreamer" )
             KMessageBox::information( 0, i18n( "GStreamer support is still experimental. Some features "
                                                "(like effects and visualizations) might not work properly." ) );
-        
+
         delete m_pEngine;
         m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
                                               m_artsNeedsRestart,
@@ -303,9 +293,11 @@ void PlayerApp::applySettings()
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
 
-    m_pPlayerWidget->createVis();
+    m_pPlayerWidget->createAnalyzer( false );
     m_pBrowserWin->setFont( AmarokConfig::useCustomFonts() ?
                             AmarokConfig::browserWindowFont() : QApplication::font() );
+
+    reinterpret_cast<QWidget*>(m_pPlayerWidget->m_pTray)->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
 }
@@ -353,15 +345,13 @@ void PlayerApp::readConfig()
 
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pEngine->setVolume( AmarokConfig::masterVolume() );
-    m_pPlayerWidget->m_pSliderVol->setValue( m_pEngine->volume() );
+    m_pPlayerWidget->m_pVolSlider->setValue( m_pEngine->volume() );
 
     m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
     m_pBrowserWin  ->move  ( AmarokConfig::browserWinPos() );
     m_pBrowserWin  ->resize( AmarokConfig::browserWinSize() );
 
     m_pPlayerWidget->m_pButtonPl->setOn( AmarokConfig::browserWinEnabled() );
-
-    m_pPlayerWidget->slotUpdateTrayIcon( AmarokConfig::showTrayIcon() );
 
     // Actions ==========
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, CTRL + ALT + Key_A, 0,
@@ -486,9 +476,19 @@ bool PlayerApp::eventFilter( QObject *o, QEvent *e )
     {
         m_pPlayerWidget->m_pButtonPl->setOn( false );
     }
-    else if( e->type() == QEvent::Hide && o == m_pPlayerWidget && !e->spontaneous() )
+    else if( e->type() == QEvent::Hide && o == m_pPlayerWidget )
     {
-        m_pBrowserWin->hide();
+        //if the event is not spontaneous then we did the hide
+        //we can therefore hide the playlist window
+
+        if( !e->spontaneous() ) m_pBrowserWin->hide();
+        else
+        {
+            //check to see if we've been minimized
+            KWin::WindowInfo info = KWin::windowInfo( m_pPlayerWidget->winId() );
+
+            if( info.valid() && info.isMinimized() ) m_pBrowserWin->hide();
+        }
     }
     else if( e->type() == QEvent::Show && o == m_pPlayerWidget && m_pPlayerWidget->m_pButtonPl->isOn() )
     {
@@ -539,9 +539,6 @@ void PlayerApp::play( const MetaBundle &bundle )
 
     emit metaData( bundle );
     m_length = bundle.length() * 1000;
-
-    // update image tooltip
-    PlaylistToolTip::add( m_pPlayerWidget->m_pFrame, bundle );
 
     kdDebug() << "[play()] Playing " << url.prettyURL() << endl;
     m_pEngine->play();
@@ -695,76 +692,17 @@ void PlayerApp::slotMainTimer()
 }
 
 
-void PlayerApp::slotAnimTimer()
-{
-    //FIXME move animation timer to playerWidget
-
-    if ( m_pPlayerWidget->isVisible() && !m_pPlayerWidget->m_pButtonPause->isDown() )
-    {
-        m_pPlayerWidget->drawScroll();
-    }
-}
-
-
-void PlayerApp::slotVisTimer()
-{
-    //FIXME move to playerWidget
-
-    if ( !m_pPlayerWidget->isVisible() )
-        return;
-
-    static int t = 1;
-
-    if ( m_pEngine->state() == EngineBase::Playing )
-    {
-        std::vector<float> *pScopeVector = m_pEngine->scope();
-        float *front = static_cast<float*>( &pScopeVector->front() );
-        if (!front)
-            return;
-
-        if ( AmarokConfig::currentAnalyzer() == 2)
-        { // sonogram
-            m_pFht->power( front );
-            m_pFht->scale( front, 1.0 / 64 );
-        }
-        else
-        {
-            float *f = new float[ m_pFht->size() ];
-            m_pFht->copy( f, front );
-            m_pFht->logSpectrum( front, f );
-            m_pFht->scale( front, 1.0 / 20 );
-            delete[] f;
-        }
-        pScopeVector->resize( pScopeVector->size() / 2 );
-
-        m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
-
-        delete pScopeVector;
-        //FIXME <markey> beat detection code temporarily moved to VIS_PLAN, since it was disabled anyway
-    }
-    else
-    {
-        if ( t > 999 ) t = 1; //0 = wasted calculations
-        if ( t < 201 )
-        {
-            double dt = double(t) / 200 ;
-            std::vector<float> v( 31 );
-            for( uint i = 0; i < v.size(); ++i )
-                v[i] = dt * (sin( M_PI + (i * M_PI) / v.size() ) + 1.0);
-            m_pPlayerWidget->m_pVis->drawAnalyzer( &v );
-        }
-        else
-            m_pPlayerWidget->m_pVis->drawAnalyzer( NULL );
-
-        ++t;
-    }
-}
-
-
 void PlayerApp::slotShowOptions()
 {
-    KConfigDialog::showDialog( "settings" );
-}
+    if( !KConfigDialog::showDialog( "settings" ) )
+    {
+        //KConfigDialog didn't find an instance of this dialog, so lets create it :
+        KConfigDialog* dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
 
+        connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
+
+        dialog->show();
+    }
+}
 
 #include "playerapp.moc"

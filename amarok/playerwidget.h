@@ -18,40 +18,50 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
-#include <qguardedptr.h>
-#include <qlabel.h>
-#include <qwidget.h>
-#include <qpixmap.h>
-
-#include <khelpmenu.h> //inlined helpmenu()
-
-class QBitmap;
-class QBoxLayout;
-class QFrame;
-class QMouseEvent;
-class QMoveEvent;
-class QShowEvent;
-class QPaintEvent;
-class QPopupMenu;
-class QPushButton;
-class QString;
-class QTimer;
-class QTimerEvent;
-class QToolButton;
-
-class KActionCollection;
-class KSystemTray;
-
-class AmarokButton;
-class AnalyzerBase;
-class ArtsConfigWidget;
+#include <qguardedptr.h> //stack allocated
+#include <qlabel.h>      //stack allocated
+#include <qpixmap.h>     //stack allocated
+#include <qpushbutton.h> //baseclass
+#include <qtimer.h>      //stack allocated
+#include <qwidget.h>     //baseclass
+#include "fht.h"         //stack allocated
 
 class AmarokDcopHandler;
 class AmarokSlider;
 class AmarokSystray;
-class PlayerWidget;
-
+class AnalyzerBase;
+class ArtsConfigWidget;
+class KActionCollection;
+class KHelpMenu;
+class KSystemTray;
 class MetaBundle;
+class PlayerApp;
+class PlayerWidget;
+class QBitmap;
+class QButton;
+class QHBox;
+class QMouseEvent;
+class QPaintEvent;
+class QString;
+class QStringList;
+
+
+class NavButton : public QPushButton //no QOBJECT macro - why bother?
+{
+public: NavButton( QWidget*, const QString&, QObject*, const char* );
+};
+
+class IconButton : public QButton
+{
+Q_OBJECT
+public:
+    IconButton( QWidget*, const QString&/*, QObject*, const char*, bool=false*/ );
+public slots:
+    void setOn( bool b ) { QButton::setOn( b ); }
+private:
+    void drawButton( QPainter* );
+    const QPixmap m_up, m_down;
+};
 
 
 class PlayerWidget : public QWidget
@@ -59,99 +69,91 @@ class PlayerWidget : public QWidget
         Q_OBJECT
 
     public:
-        PlayerWidget( QWidget *parent = 0, const char *name = 0 );
+        PlayerWidget( QWidget* =0, const char* =0 );
         ~PlayerWidget();
 
+        friend class PlayerApp; //playerApp is fairly tied to this class
+
         void defaultScroll();
-        void drawScroll();
         void timeDisplay( int );
-        const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
+        void wheelEvent( QWheelEvent* ); //systray requires access
+        void startDrag();
+
+        //const KPopupMenu *helpMenu() const { return m_helpMenu->menu(); }
 
         // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
-
-        QPopupMenu *m_pPopupMenu;
-        AnalyzerBase *m_pVis;
-        QFrame *m_pFrame;
-        QFrame *m_pFrameButtons;
-        AmarokSlider *m_pSlider;
-        AmarokSlider *m_pSliderVol;
-        QLabel  *m_pTimeDisplayLabel;
-        QPixmap *m_pTimeDisplayLabelBuf;
-        QLabel *m_pTimeSign;
-
-        AmarokButton *m_pButtonPl;
-        AmarokButton *m_pButtonEq;
-        AmarokButton *m_pButtonLogo;
-
-        QPushButton *m_pButtonPrev;
-        QPushButton *m_pButtonPlay;
-        QPushButton *m_pButtonPause;
-        QPushButton *m_pButtonStop;
-        QPushButton *m_pButtonNext;
-
-        QGuardedPtr<ArtsConfigWidget> m_pPlayObjConfigWidget;
-
-        void wheelEvent( QWheelEvent *e ); //systray requires access
-        void startDrag();
-
-    public slots:
-        void createVis();
-        void slotConfigShortcuts();
-        void slotConfigGlobalShortcuts();
-        void slotConfigPlayObject();
-        void slotUpdateTrayIcon( bool visible );
-        void nextVis();
-        void setScroll( const MetaBundle& );
+        //QGuardedPtr<ArtsConfigWidget> m_pPlayObjConfigWidget;
 
         static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
 
-    private:
-        void initScroll();
-        void setScroll( const QString& );
-        void polish();
+    public slots:
+        void createAnalyzer( bool = true );
+        void slotConfigShortcuts();       //TODO move to playerapp
+        void slotConfigGlobalShortcuts(); //TODO move all generic stuff to playerapp
+        void slotConfigPlayObject();      //TODO move to playerapp
 
+        void setScroll( const MetaBundle& );
+        void drawScroll();
+
+    private slots:
+        void updateAnalyzer();
+
+    private:
+        void setScroll( const QStringList& );
         void paintEvent( QPaintEvent *e );
         void mousePressEvent( QMouseEvent *e );
-        void queryClose();
         void closeEvent( QCloseEvent *e );
-        //void moveEvent( QMoveEvent *e );
+
+        static const int SCROLL_RATE = 1;
+        static const int VOLUME_MAX  = 100;
 
         // ATTRIBUTES ------
-        QString m_bitrate, m_samplerate, m_length;
-        QTimer *scrollTimer;
-        QTimer *m_visTimer;
-        QBoxLayout *m_pLay6;
 
-        QPixmap m_oldBgPixmap;
-        QPixmap *m_pScrollPixmap;
-        QPixmap *m_pBgPixmap;
-        QPixmap *m_pComposePixmap;
-        QBitmap *m_pScrollMask;
+        QString m_rateString;
+        QTimer  m_analyzerTimer;
 
-        // Signs
-        QPixmap *m_pTimePlusPixmap;
-        QPixmap *m_pTimeMinusPixmap;
-        QPixmap *m_pVolSpeaker;
-        QLabel  *m_pVolSign;
-        QPixmap *m_pDescriptionImage;
-        QLabel  *m_pDescription;
-
+        AmarokDcopHandler *m_pDcopHandler; //TODO move to playerapp
+        AmarokSystray     *m_pTray;
+        AnalyzerBase      *m_analyzer;
+        FHT m_fht;
         KHelpMenu *m_helpMenu;
 
-        int m_pixmapWidth;
-        int m_pixmapHeight;
-        int m_scrollWidth;
-        int m_sx;
-        int m_sy;
-        int m_sxAdd;
-        AmarokSystray *m_pTray;
-        AmarokDcopHandler *m_pDcopHandler;
+        QPixmap m_scrollTextPixmap;
+        QPixmap m_scrollBuffer;
+        QPixmap m_timeBuffer;
+        QPixmap m_plusPixmap;
+        QPixmap m_minusPixmap;
 
-        bool m_remaining;
-        int m_hours;
-        int m_minutes;
-        int m_seconds;
+        //widgets
+        QFrame *m_scrollFrame;
+        QLabel *m_timeLabel;
+        QLabel *m_pTimeSign;
+        QLabel *m_pVolSign;
+        QLabel *m_pDescription;
+        QHBox  *m_pFrameButtons;
+        IconButton   *m_pButtonEq;
+        IconButton   *m_pButtonPl;
+        AmarokSlider *m_pSlider;
+        AmarokSlider *m_pVolSlider;
+        QPushButton  *m_pButtonPlay;
+        QPushButton  *m_pButtonPause;
 };
+
+
+//these two template functions are here simply to reduce the bloat of the PlayerWidget ctor
+//and hopefully will be compiled such that the final binary is smaller too
+template<class W> W *wrapper( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WFlags f = 0 )
+{
+    W *w = new W( parent, name, f );
+    return placeWidget( w, r );
+}
+
+template<class W> W *placeWidget( W *w, const QRect &r )
+{
+    w->move( r.topLeft() );
+    w->resize( r.size() );
+    return w;
+}
 
 #endif

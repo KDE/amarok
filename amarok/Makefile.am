@@ -15,7 +15,7 @@ bin_PROGRAMS = amarok
 amarok_SOURCES = playlistwidget.cpp playlisttooltip.cpp playlistloader.cpp playlistitem.cpp playlistbrowser.cpp \
                  browserwin.cpp streambrowser.cpp expandbutton.cpp \
                  filebrowser.cpp kactionselector.cpp kbookmarkhandler.cpp amarokfilelist.cpp \
-                 playerwidget.cpp osd.cpp effectwidget.cpp amarokbutton.cpp amarokslider.cpp amaroksystray.cpp \
+                 playerwidget.cpp osd.cpp effectwidget.cpp amarokslider.cpp amaroksystray.cpp \
                  Options1.ui Options2.ui Options3.ui Options4.ui Options5.ui \
                  playerapp.cpp fht.cpp amarokconfigdialog.cpp threadweaver.cpp
 
