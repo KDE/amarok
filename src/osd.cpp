@@ -20,6 +20,7 @@
 #include "osd.h"
 #include <qbitmap.h>
 #include <qpainter.h>
+#include <qregexp.h>
 #include <qtimer.h>
 
 namespace ShadowEngine
@@ -101,6 +102,9 @@ OSDWidget::determineMetrics( const uint M )
     const QSize margin( (M + MARGIN) * 2, (M + MARGIN) * 2 ); //margins
     const QSize image = m_cover.isNull() ? QSize( 0, 0 ) : minImageSize;
     const QSize max = QApplication::desktop()->screen( m_screen )->size() - margin;
+
+    // If we don't do that, the boundingRect() might not be suitable for drawText() (Qt issue N67674)
+    m_text.replace( QRegExp(" +\n"), "\n" ); 
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0,
