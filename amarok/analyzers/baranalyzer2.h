@@ -40,7 +40,7 @@ typedef struct
 }
 peak_t;
 
-class BarAnalyzer2 : public Base2d
+class BarAnalyzer2 : public Base2D
 {
   Q_OBJECT
 
