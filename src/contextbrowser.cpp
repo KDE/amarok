@@ -59,7 +59,6 @@ ContextBrowser::~ContextBrowser()
 
 void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 {
-    kdDebug() << url.path().latin1() << endl;
     if ( url.protocol() == "album" )
     {
         QStringList info = QStringList::split( "/", url.path() );
@@ -178,12 +177,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
     
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
-        {
-            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2 <i>(%3)</i></a></td></tr>" )
-                            .arg( values[i*3 + 1] )
-                            .arg( values[i*3] )
-                            .arg( values[i*3 + 2] ) );
-        }
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + values[i*3] + "<i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
     
         values.clear();
         names.clear();
@@ -212,10 +206,8 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
-            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:%1\"'>%2%3</a></td></tr>" )
-                            .arg( values[i*3 + 1] )
-                            .arg( ( values[i*3 + 2] == "" ) ? "" : values[i*3 + 2] + ". " )
-                            .arg( values[i*3] ) );
+            QString tmp = values[i*3 + 2] == "" ? "" : values[i*3 + 2] + ". ";
+            browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + tmp + values[i*3] + "</a></td></tr>" ) );
         }
     
         values.clear();
