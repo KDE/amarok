@@ -17,12 +17,12 @@
     </entry>
     <entry key="Player Pos" type="Point">
         <label>Position of player window</label>
-        <default code="true">QPoint(0,0)</default>
+        <default code="true">QPoint(-1,-1)</default>
         <whatsthis>The position of the amaroK main window when amaroK is started.</whatsthis>
     </entry>
     <entry key="Playlist Window Pos" type="Point">
         <label>Position of playlist window</label>
-        <default code="true">QPoint(0,0)</default>
+        <default code="true">QPoint(-1,-1)</default>
         <whatsthis>The position of the playlist window when amaroK is started.</whatsthis>
     </entry>
     <entry key="Playlist Window Size" type="Size">

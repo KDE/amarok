@@ -30,12 +30,17 @@ WelcomeBrowser::WelcomeBrowser( QObject* parent, const char *name )
 
 void WelcomeBrowser::paletteChange( const QPalette& pal )
 {
-    kdDebug() << k_funcinfo << endl;
-
     QVBox::paletteChange( pal );
 
     setStyleSheet();
     showPage();
+}
+
+QSize WelcomeBrowser::sizeHint() const
+{
+    QFontMetrics fm( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+
+    return QSize( fm.width( 'x' ) * 30, 50 );
 }
 
 
@@ -71,7 +76,7 @@ void WelcomeBrowser::showPage()
                           "<div class='title'>" + i18n( "Welcome to amaroK!" ) + "</div>"
                           "<div>" + i18n( "There are many media players around these days, this is true; but, what is missing from most players, is an interface that does not get in the way of the user. How many buttons do you have to press when simply adding media to the playlist? amaroK tries to be a little different, providing a simple drag-and-drop interface that makes playlist handling really easy." ) + "</div><br>"
                           "<div class='title'>" + i18n( "Customise your amaroK" ) + "</div>"
-                          "<div>" + i18n( "amaroK has two main modes of operation. It can look and act a little like XMMS and other Winamp clones [SCREENIE], or it can have a single window with a statusbar to keep you up to date with the track progress. You can switch between them using the following links:" ) +
+                          "<div>" + i18n( "amaroK has two main modes of operation. It can look and act a little like XMMS and other Winamp clones, or it can have a single window with a statusbar to keep you up to date with the track progress. You can switch between them using the following links:" ) +
                           "<ul>"
                           "<li><A href='amarok://xmms_mode'>" + i18n( "Switch to XMMS-mode" ) + "</A>"
                           "<li><A href='amarok://compact_mode'>" + i18n( "Switch to Compact-mode" ) + "</A>"

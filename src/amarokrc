@@ -9,6 +9,9 @@ metaservers[$e]=ggzmeta://mindx.dyndns.org:15690,ggzmeta://mindx.dyndns.org:1569
 [contributions]
 ggzmeta://mindx.dyndns.org:15691=true
 
+[General]
+XMLFile=amarokui_first.rc
+
 [PlaylistSideBar]
 CurrentPane=WelcomePage
 

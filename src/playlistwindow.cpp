@@ -93,7 +93,8 @@ PlaylistWindow::PlaylistWindow()
     ac->readShortcutSettings( QString::null, kapp->config() );
 
 
-    move( AmarokConfig::playlistWindowPos() );
+    //if first run let KWin place us
+    if( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) ) move( AmarokConfig::playlistWindowPos() );
     resize( AmarokConfig::playlistWindowSize() );
 }
 

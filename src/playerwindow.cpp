@@ -77,7 +77,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     ec->attach( this );
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
-    move( AmarokConfig::playerPos() );
+    if( AmarokConfig::playerPos() != QPoint(-1,-1) ) move( AmarokConfig::playerPos() );
     setFixedSize( 311, 140 );
     //setFocusPolicy( NoFocus );
     setCaption( "amaroK" );
