@@ -149,8 +149,8 @@ TagDialog::queryDone( KTRMResultList results ) //SLOT
         if ( !results[0].title().isEmpty() )    kLineEdit_title->setText( results[0].title() );
         if ( !results[0].artist().isEmpty() )   kComboBox_artist->setCurrentText( results[0].artist() );
         if ( !results[0].album().isEmpty() )    kComboBox_album->setCurrentText( results[0].album() );
-	if ( results[0].track() != 0 )          kIntSpinBox_track->setValue( results[0].track() );
-	if ( results[0].year() != 0 )           kIntSpinBox_year->setValue( results[0].year() );
+        if ( results[0].track() != 0 )          kIntSpinBox_track->setValue( results[0].track() );
+        if ( results[0].year() != 0 )           kIntSpinBox_year->setValue( results[0].year() );
     }
     else
         KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
