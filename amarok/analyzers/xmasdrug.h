@@ -39,6 +39,8 @@ class XmasAnalyzer : public AnalyzerBase
       virtual void drawAnalyzer( std::vector<float> * );
 
    protected:
+      void drawStar( QPainter &p, int x, int y, QColor startColor );
+
       QPixmap     *m_pComposePixmap;
       QBitmap     *m_pBuckPixmap;
       QPixmap     *m_pSantaPixmap;

@@ -22,6 +22,7 @@
 #include <qpixmap.h>
 #include <qbitmap.h>
 
+#include <kapplication.h>
 #include <kstandarddirs.h>
 
 // FIXME: WIP
@@ -71,12 +72,39 @@ void XmasAnalyzer::init()
    m_pSantaPixmap->setMask(*m_pBuckPixmap);
 }
 
+#define NDOTS 15
+#define WAVESIZE 15
+
+#define KRAND(x) (kapp->random() % (x))
+
+
+void XmasAnalyzer::drawStar( QPainter &p, int x, int y, QColor startColor )
+{
+   p.setPen(startColor);
+   p.drawPoint(x,y);
+   p.setPen( QColor(startColor.red() - 15, startColor.green() - 15, startColor.blue() - 15) );
+   p.drawPoint(x-1,y);
+   p.drawPoint(x,y-1);
+   p.drawPoint(x+1,y);
+   p.drawPoint(x,y+1);
+   p.setPen( QColor(startColor.red() - 35, startColor.green() - 35, startColor.blue() - 35) );
+   p.drawPoint(x-2,y);
+   p.drawPoint(x,y-2);
+   p.drawPoint(x+2,y);
+   p.drawPoint(x,y+2);
+}
 
 void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
 {
    int x2;
+   static int wave1pos = -WAVESIZE, wave2pos = -WAVESIZE, wavecounter = 0;
+   static bool waving = false;
+   static QColor wave1col, wave2col;
 
    bitBlt( m_pComposePixmap, 0, 0, grid() ); //start with a blank canvas
+
+   QPainter p( m_pSantaPixmap );
+   QPainter q( m_pComposePixmap );
 
    std::vector<float> bands( BAND_COUNT, 0 );
    std::vector<float>::const_iterator it( bands.begin() );
@@ -84,17 +112,68 @@ void XmasAnalyzer::drawAnalyzer( std::vector<float> *s )
    if ( s )
       interpolate( s, bands );
 
+   // splash some waves
+   if ((++wavecounter > 300) && !waving)
+   {
+      wave1pos = m_pComposePixmap->width() - 1;
+      wave2pos = wave1pos + 45;
+      wave1col = QColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
+      wave2col = QColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80));
+      waving = true;
+   }
+
+   if ((wave1pos < m_pComposePixmap->width()) && (wave1pos > -WAVESIZE))
+   {
+      for ( int i = 0; (i < WAVESIZE) && (i < m_pComposePixmap->width() - wave1pos); i++ )
+      {
+         QColor c = QColor( wave1col.red() - i * 2, wave1col.green() - i * 3, wave1col.blue() - i * 2 );
+         q.setPen( c );
+         q.drawLine( wave1pos + i, 0, wave1pos + i, m_pComposePixmap->height() );
+      }
+   }
+
+   if ((wave2pos < m_pComposePixmap->width()) && (wave2pos > -WAVESIZE))
+   {
+      for ( int i = 0; (i < WAVESIZE) && (i < m_pComposePixmap->width() - wave2pos); i++ )
+      {
+         QColor c = QColor( wave2col.red() - i * 3, wave2col.green() - i * 2, wave2col.blue() - i * 2 );
+         q.setPen( c );
+         q.drawLine( wave2pos + i, 0, wave2pos + i, m_pComposePixmap->height() );
+      }
+   }
+
+   if (wave2pos <= -WAVESIZE)
+   {
+      waving = false;
+      wavecounter = 0;
+   }
+
+   if (waving)
+   {
+      wave1pos--;
+      wave2pos--;
+   }
+
+   // paint some random disco stars too =)
+   if (waving)
+      for ( uint i = 0; i < NDOTS; i++)
+      {
+         drawStar( q, KRAND(m_pComposePixmap->width() - 5), KRAND(m_pComposePixmap->height() -5), QColor(0xff - KRAND(0x80), 0xff - KRAND(0x80), 0xff - KRAND(0x80)) );
+      }
+
+   // and let deers run...
    for ( uint i = 0; i < bands.size(); ++i, ++it )
    {
       x2  = uint((*it) * 255);
       x2 = m_levelToX[ (x2 > 255) ? 255 : x2 ];
 
-      QPainter p( m_pSantaPixmap );
-      p.fillRect( p.window(), QColor(0x40 + (+x2*4), 0x30 + x2, 0xff + (-x2*4)) );
+      p.fillRect( p.window(), QColor(0x40 + (+x2*4), 0x30 + x2, 0xff + (-x2*3)) );
 
       bitBlt( m_pComposePixmap, x2, 0,
               m_pSantaPixmap );
    }
+
+   // let santa jump
 
    bitBlt( this, 0, 0, m_pComposePixmap );
 }
