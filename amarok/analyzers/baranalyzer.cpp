@@ -23,13 +23,30 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
     , barVector( BAND_COUNT, 0 )
     , roofVector( BAND_COUNT, 50 )
     , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
-{}
+{
+    //roof pixmaps don't depend on size() so we do in the ctor
+    QColor fg( 0xff, 0x50, 0x70 );
+    #define bg backgroundColor()
+
+    double dr = double(bg.red()   - fg.red())   / (NUM_ROOFS-1); //-1 because we start loop below at 0
+    double dg = double(bg.green() - fg.green()) / (NUM_ROOFS-1);
+    double db = double(bg.blue()  - fg.blue())  / (NUM_ROOFS-1);
+
+    for ( int i = 0; i < NUM_ROOFS; ++i )
+    {
+        m_pixRoof[i].resize( COLUMN_WIDTH, 1 );
+        m_pixRoof[i].fill( QColor( fg.red()+dr*i, fg.green()+dg*i, fg.blue()+db*i ) );
+    }
+
+    #undef bg
+}
+
 
 // METHODS =====================================================
 
 void BarAnalyzer::init()
 {
-    const uint MAX_AMPLITUDE = 1.0;
+    const double MAX_AMPLITUDE = 1.0;
     const double F = double(height() - 2) / (log10( 255 ) * MAX_AMPLITUDE );
 
     //generate a list of values that express amplitudes in range 0-MAX_AMP as ints from 0-height() on log scale
@@ -38,18 +55,10 @@ void BarAnalyzer::init()
         m_lvlMapper[x] = uint( F * log10( x+1 ) );
     }
 
-    m_gradientPixmap.resize( height()*COLUMN_WIDTH, height() );
-    m_composePixmap.resize( size() );
+    m_pixBarGradient.resize( height()*COLUMN_WIDTH, height() );
+    m_pixCompose.resize( size() );
 
-    QColor col( 0xff, 0x50, 0x70 );
-
-    for ( uint i = 0; i < NUM_ROOFS; ++i )
-    {
-        m_roofPixmaps[i].resize( COLUMN_WIDTH, 1 );
-        m_roofPixmaps[i].fill( col.dark( i + 100 + i * 5  ) );
-    }
-
-    QPainter p( &m_gradientPixmap );
+    QPainter p( &m_pixBarGradient );
     for ( uint x=0, r=0x40, g=0x30, b=0xff, r2=255-r;
           x < height(); ++x )
     {
@@ -111,7 +120,7 @@ void BarAnalyzer::analyze( const Scope &s )
         //blt last n roofs, a.k.a motion blur
         for ( uint c = 0; c < m_roofMem[i].size(); ++c )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
-            bitBlt( canvas(), x, m_roofMem[i].at( c ), &m_roofPixmaps[ NUM_ROOFS - 1 - c ] );
+            bitBlt( canvas(), x, m_roofMem[i].at( c ), &m_pixRoof[ NUM_ROOFS - 1 - c ] );
 
         //blt the bar
         bitBlt( canvas(), x, height() - y2,

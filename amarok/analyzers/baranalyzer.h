@@ -7,7 +7,7 @@
 #define BARANALYZER_H
 
 #include "analyzerbase.h"
-#include <qvaluevector.h> //stack allocated
+//#include <qvaluevector.h> //stack allocated
 
 /**
 @author Mark Kretschmann && Max Howell
@@ -30,21 +30,21 @@ class BarAnalyzer : public Analyzer::Base2D
         static const uint COLUMN_WIDTH = 4;
 
     protected:
-        QPixmap m_roofPixmaps[ NUM_ROOFS ];
-        QValueVector<int> m_roofMem[ BAND_COUNT ];
+        QPixmap m_pixRoof[NUM_ROOFS];
+        std::vector<uint> m_roofMem[BAND_COUNT];
 
-        Scope m_bands; //we keep a copy of the scope to save creating/destroying a Scope vector every iteration
+        Scope m_bands; //copy of the Scope to prevent creating/destroying a Scope every iteration
         uint  m_lvlMapper[256];
 
         std::vector<uint> barVector;          //positions of bars
         std::vector<int>  roofVector;         //positions of roofs
         std::vector<uint> roofVelocityVector; //speed that roofs falls
 
-        const QPixmap *gradient() const { return &m_gradientPixmap; }
+        const QPixmap *gradient() const { return &m_pixBarGradient; }
 
     private:
-        QPixmap  m_gradientPixmap;
-        QPixmap  m_composePixmap;
+        QPixmap m_pixBarGradient;
+        QPixmap m_pixCompose;
 };
 
 #endif

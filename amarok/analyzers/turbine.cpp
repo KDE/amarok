@@ -53,8 +53,8 @@ void TurbineAnalyzer::analyze( const Scope &s )
         bitBlt( canvas(), x, height()/2,
                 gradient(), y2 * 4, height() - y2, 4, y2, Qt::CopyROP );
         //blt the roof bar
-        bitBlt( canvas(), x, height()/2 - roofVector[i] - 2, &m_roofPixmap );
-        bitBlt( canvas(), x, height()/2 + roofVector[i] + 2, &m_roofPixmap );
+        bitBlt( canvas(), x, height()/2 - roofVector[i] - 2, &m_pixRoof[0] );
+        bitBlt( canvas(), x, height()/2 + roofVector[i] + 2, &m_pixRoof[0] );
 
         //set roof parameters for the NEXT draw
         if ( roofVelocityVector[i] != 0 )
