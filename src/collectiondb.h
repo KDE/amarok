@@ -45,6 +45,12 @@ class DbConnection
         const bool isInitialized() const { return m_initialized; }
 
     private:
+#ifndef USE_MYSQL
+        static void sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/);
+        static void sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv);
+#endif
+
+    private:
 #ifdef USE_MYSQL
         mysql::MYSQL* m_db;
 #else

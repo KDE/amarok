@@ -75,10 +75,10 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QString defaultName, 
     m_orderCombo = new KComboBox( orderBox );
     for ( QStringList::ConstIterator it = m_fields.begin(); it != m_fields.end(); ++it )
         m_orderCombo->insertItem( i18n( (*it).utf8() ) );
+    m_orderCombo->insertItem( i18n("Random") );
     //order type
     m_orderTypeCombo = new KComboBox( orderBox );
-    m_orderTypeCombo->insertItem( i18n("Ascending") );
-    m_orderTypeCombo->insertItem( i18n("Descending") );
+    updateOrderTypes(0); // populate the new m_orderTypeCombo
     hbox2->setStretchFactor( new QWidget( hbox2 ), 1 );
 
     //limit box
@@ -99,6 +99,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QString defaultName, 
     connect( m_matchCheck, SIGNAL( toggled(bool) ), m_criteriaGroupBox, SLOT( setEnabled(bool) ) );
     connect( m_orderCheck, SIGNAL( toggled(bool) ), orderBox, SLOT( setEnabled(bool) ) );
     connect( m_limitCheck, SIGNAL( toggled(bool) ), limitBox, SLOT(  setEnabled(bool) ) );
+    connect( m_orderCombo, SIGNAL( activated(int) ), this, SLOT( updateOrderTypes(int) ) );
 
     orderBox->setEnabled( false );
     limitBox->setEnabled( false );
@@ -146,6 +147,24 @@ void SmartPlaylistEditor::removeCriteria( CriteriaEditor *criteria )
         m_criteriaEditorList.first()->enableRemove( false );
 }
 
+void SmartPlaylistEditor::updateOrderTypes( int index )
+{
+    int currentOrderType = m_orderTypeCombo->currentItem();
+    if( index == m_orderCombo->count()-1 ) {  // random order selected
+        m_orderTypeCombo->clear();
+        m_orderTypeCombo->insertItem( i18n("Completely Random") );
+        m_orderTypeCombo->insertItem( i18n("Score weighted") );
+    }
+    else {  // ordinary order column selected
+        m_orderTypeCombo->clear();
+        m_orderTypeCombo->insertItem( i18n("Ascending") );
+        m_orderTypeCombo->insertItem( i18n("Descending") );
+    }
+    if( currentOrderType < m_orderTypeCombo->count() )
+        m_orderTypeCombo->setCurrentItem( currentOrderType );
+    m_orderTypeCombo->setFont(m_orderTypeCombo->font());  // invalidate size hint
+    m_orderTypeCombo->updateGeometry();
+}
 
 QString SmartPlaylistEditor::getQuery()
 {
@@ -176,19 +195,43 @@ QString SmartPlaylistEditor::getQuery()
 
     //order by expression
     if( m_orderCheck->isChecked() ) {
-        QString field = m_dbFields[ m_orderCombo->currentItem() ];
-        QString table = field.left( field.find('.') );
-        if( !tables.contains( table ) ) {
-            whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
-            if( table == "statistics" )
-                whereStr += "tags.url = statistics.url";
-            else if( table != "tags" )
-                whereStr += "tags." + table + " = " + table + ".id";
-            tables += ", " + table;
+        if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
+            QString field = m_dbFields[ m_orderCombo->currentItem() ];
+            QString table = field.left( field.find('.') );
+            if( !tables.contains( table ) ) {
+                whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
+                if( table == "statistics" )
+                    whereStr += "tags.url = statistics.url";
+                else if( table != "tags" )
+                    whereStr += "tags." + table + " = " + table + ".id";
+                tables += ", " + table;
+            }
+            QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
+            orderStr = " ORDER BY " +  field + orderType;
         }
-
-        QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
-        orderStr = " ORDER BY " +  field + orderType;
+        else if( m_orderTypeCombo->currentItem() == 0 ) { // completely random
+            orderStr = " ORDER BY RAND()";
+        }
+        else {
+            /*
+            This is the score weighted random order.
+            The RAND() function returns random values equally distributed between 0.0 (inclusive) and 1.0 (exclusive).
+            The obvious way to get this order is to put every track <score> times into a list, sort the list by RAND()
+            (i.e. shuffle it) and discard every occurence of every track but the very first of each.
+            By putting every track into the list only once but applying a transfer function
+            T_s(x) := 1-(1-x)^(1/s) where s is the score, to RAND() before sorting the list, exactly the same
+            distribution of tracks can be achieved (for a proof write to Stefan Siegel <kde@sdas.de>)
+            In the query below a simplified function is used: The score is incremented by one to prevent division by
+            zero, RAND() is used instead of 1-RAND() because it doesn't matter if it becomes zero (the exponent is
+            always non-zero), and finally POWER(...) is used instead of 1-POWER(...) because it only changes the order type.
+            */
+            orderStr = " ORDER BY POWER(RAND(),1.0/(statistics.percentage+1)) DESC";
+            if( !tables.contains( "statistics" ) ) {
+                whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
+                whereStr += "tags.url = statistics.url";
+                tables += ", statistics";
+            }
+        }
     }
 
     QString query = "SELECT tags.url FROM " + tables + whereStr + orderStr;

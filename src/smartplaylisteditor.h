@@ -39,6 +39,9 @@ Q_OBJECT
         Result exec();
         void addCriteria();
         void removeCriteria( CriteriaEditor *criteria );
+    
+    private slots:
+        void updateOrderTypes( int index );
 
     private:
         QString getQuery();

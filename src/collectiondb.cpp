@@ -7,6 +7,8 @@
 
 #ifdef USE_MYSQL
 #include "app.h"
+#else
+#include <math.h>                 //DbConnection::sqlite_power()
 #endif
 
 #include "amarok.h"
@@ -1725,6 +1727,13 @@ DbConnection::DbConnection()
             m_initialized = true;
         }
     }
+    if ( m_initialized )
+    {
+        if( sqlite3_create_function(m_db, "rand", 0, SQLITE_UTF8, NULL, sqlite_rand, NULL, NULL) != SQLITE_OK )
+            m_initialized = false;
+        if( sqlite3_create_function(m_db, "power", 2, SQLITE_UTF8, NULL, sqlite_power, NULL, NULL) != SQLITE_OK )
+            m_initialized = false;
+    }
 #endif
 }
 
@@ -1751,6 +1760,26 @@ sqlite3* DbConnection::db()
 }
 #endif
 
+#ifndef USE_MYSQL
+// this implements a RAND() function compatible with the MySQL RAND() (0-param-form without seed)
+void DbConnection::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
+{
+    sqlite3_result_double( context, static_cast<double>(KApplication::random()) / (RAND_MAX+1.0) );
+}
+
+// this implements a POWER() function compatible with the MySQL POWER()
+void DbConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    Q_ASSERT( argc==2 );
+    if( sqlite3_value_type(argv[0])==SQLITE_NULL || sqlite3_value_type(argv[1])==SQLITE_NULL ) {
+        sqlite3_result_null(context);
+        return;
+    }
+    double a = sqlite3_value_double(argv[0]);
+    double b = sqlite3_value_double(argv[1]);
+    sqlite3_result_double( context, pow(a,b) );
+}
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS DbConnectionPool
