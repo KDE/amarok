@@ -527,51 +527,47 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 static QString
 verboseTimeSince( const QDateTime &datetime )
 {
-    const QDate date = datetime.date();
-    const QDate now  = QDate::currentDate();
-    if( date > now )
-        return i18n( "The future" );
+    const QDateTime now = QDateTime::currentDateTime();
+    const int datediff = datetime.daysTo( now );
 
-    if( date.year() == now.year() ) {
-        if( date.month() == now.month() ) {
-            if( date.day() == now.day() ) {
-                //the date is today, let's get more resolution
-                const QTime time = datetime.time();
-                const QTime now  = QTime::currentTime();
-                if( time > now )
-                    return i18n( "The future" );
-
-                int
-                minutes  = now.hour() - time.hour();
-                minutes *= 60;
-                minutes += QABS(now.minute() - time.minute());
-
-                if( minutes < 90 )
-                    return i18n( "Within the last minute", "%n minutes ago", minutes == 0 ? 1 : minutes );
-                else
-                    return i18n( "Within the last hour", "%n hours ago", now.hour() - time.hour() );
-            }
-            else
-                /*continue to days calculation section*/;
-        }
-
-        const int days = date.daysTo( now );
-
-        if ( days > 28 )
-            return i18n( "Last month", "%n months ago", now.month() - date.month() );
-        else if( days < 7 )
-            return i18n( "Yesterday", "%n days ago", days );
-        else
-            return i18n( "Last week", "%n weeks ago", days / 7 );
+    if( datediff >= 6*7 /*six weeks*/ ) {  // return difference in months or years
+        const int yeardiff = now.date().year() - datetime.date().year();
+        const int monthdiff = yeardiff * 12 + now.date().month() - datetime.date().month();
+        if( !yeardiff || monthdiff < 6 )  // return difference in months
+            return i18n( "Last month", "%n months ago", monthdiff );
+        return i18n( "Last year", "%n years ago", yeardiff );
+        /* FIXME Replace above line with this when string freeze is over
+        return yeardiff == 1 ? i1_8n( "Last year" ) : i1_8n( "One year ago", "%n years ago", (monthdiff+6)/12 );*/
     }
 
-    // it was played last year, but that could still be yesterday
-    //TODO it could still be yesterday, this whole function needs adaption
+    if( datediff >= 7 )  // return difference in weeks
+        return i18n( "Last week", "%n weeks ago", (datediff+3)/7 );
+        /* FIXME Replace above line with this when string freeze is over
+        return i1_8n( "One week ago", "%n weeks ago", (datediff+3)/7 );*/
 
-    if( now.year() - date.year() == 1 && QABS(now.month() - date.month()) < 7 )
-        return i18n( "Last month", "%n months ago", now.month() - date.month() );
-    else
-        return i18n( "Last year", "%n years ago", now.year() - date.year() );
+    const int timediff = datetime.secsTo( now );
+
+    if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
+        return i18n( "Yesterday", "%n days ago", (timediff+12*60*60)/(24*60*60) );
+        /* FIXME Replace above line with this when string freeze is over
+        return datediff == 1 ?
+                i1_8n( "Yesterday" ) :
+                i1_8n( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );*/
+
+    if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
+        return i18n( "Within the last hour", "%n hours ago", (timediff+30*60)/(60*60) );
+        /* FIXME Replace above line with this when string freeze is over. We don't need "One hour ago", but
+                 some languages might have special translations for two, three, ... hours
+        return i1_8n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) ); */
+
+    if( timediff > 0 )  // return difference in minutes
+        return i18n( "Within the last minute", "%n minutes ago", timediff/60 == 0 ? 1 : timediff/60 );
+        /* FIXME Replace above line with this when string freeze is over
+        return timediff/60 ?
+                i1_8n( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
+                i1_8n( "Within the last minute" );*/
+
+    return i18n( "The future" );
 }
 
 
