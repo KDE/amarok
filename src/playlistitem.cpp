@@ -20,7 +20,6 @@
 #include "playlistitem.h"
 #include "playlist.h"
 
-#include <qcolor.h>
 #include <qlistview.h>
 #include <qpainter.h>
 #include <qpen.h>
@@ -31,11 +30,10 @@
 #include <kdebug.h>
 #include <kfilemetainfo.h>
 #include <kiconloader.h>
-#include <kurl.h>
 
 
-QColor PlaylistItem::glowText;
-QColor PlaylistItem::glowBase;
+QColor PlaylistItem::glowText = Qt::white;
+QColor PlaylistItem::glowBase = Qt::white;
 
 
 // These are untranslated and used for storing/retrieving XML playlist
@@ -243,15 +241,6 @@ void PlaylistItem::setText( int column, const QString &newText )
         KListViewItem::setText( column, newText );
         break;
     }
-
-    //FIXME this can be done multiple times, eg setText(MetaBundle&)
-    switch( column ) {
-    case TrackName:
-    case Title:
-    case Artist:
-    default:
-        break;
-    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -345,10 +334,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( &painterBuf, glowCg, column, width, align );
 
-    } else {
-
-        KListViewItem::paintCell( &painterBuf, cg, column, width, align );
     }
+    else KListViewItem::paintCell( &painterBuf, cg, column, width, align );
 
     //figure out if we are in the actual physical first column
     if( playNext && column == listView()->m_firstColumn )

@@ -21,8 +21,10 @@
 #include <kurl.h>
 #include <dcopobject.h>
 
-/* Berkus warning: NEVER EVER MODIFY THIS FILE WITHOUT CONSULTING ME FIRST. FAILURE TO COMPLY TO THIS SIMPLE RULE
-                   WILL RESULT IN IMMEDIATE BAN FROM AMAROK DEVELOPMENT DESPITE ANY PREVIOUS ACHIEVEMENTS. */
+///////////////////////////////////////////////////////////////////////
+// WARNING! Please ask on #amarok before modifying the DCOP interface!
+///////////////////////////////////////////////////////////////////////
+
 class AmarokIface : virtual public DCOPObject
 {
    K_DCOP
@@ -61,14 +63,15 @@ k_dcop:
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
-   
+
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.
    virtual void volumeUp() = 0;                             ///< Increase volume by a reasonable step.
    virtual void volumeDown() = 0;                           ///< Decrease volume by a reasonable step.
-   virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off
+   virtual void mute() = 0;                                 ///< Toggle mute.
+   virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
 };
 
 #endif

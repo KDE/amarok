@@ -28,6 +28,7 @@ email                : fh@ez.no
 #include <qtimer.h>
 
 
+static
 class DummyEngine : public EngineBase
 {
     //Does nothing, just here to prevent crashes on startup
@@ -67,6 +68,7 @@ EngineController::EngineController()
     , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
     , m_delayTime( 0 )
+    , m_muteVolume( 0 )
 {
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
@@ -132,7 +134,7 @@ void EngineController::play( const MetaBundle &bundle )
         }
         m_pEngine->stop(); //hack, prevents artsengine killing the proxy when stopped() is emitted
         m_pEngine->play( proxy->proxyUrl() );
-        
+
         connect( proxy,     SIGNAL( metaData( const MetaBundle& ) ),
                  this,        SLOT( newMetaData( const MetaBundle& ) ) );
         connect( proxy,     SIGNAL( streamData( char*, int ) ),
@@ -185,10 +187,16 @@ int EngineController::decreaseVolume( int ticks )
 }
 
 
-void EngineController::loadEngine()
+EngineBase *EngineController::loadEngine() //static
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
+    EngineBase *m_pEngine = engine();
+
+    //first unload previous engine
+    if( m_pEngine != &dummyEngine ) PluginManager::unload( m_pEngine );
+
+    //now load new engine
     const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'";
     amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
 
@@ -220,12 +228,16 @@ void EngineController::loadEngine()
 
     m_pEngine = static_cast<EngineBase*>( plugin );
     bool restartArts = AmarokConfig::version() != APP_VERSION;
-    
+
     m_pEngine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
-    connect( m_pEngine, SIGNAL( endOfTrack() ), this, SLOT( slotEndOfTrack() ) ); 
-    
+    connect( m_pEngine, SIGNAL( endOfTrack() ), instance(), SLOT( slotEndOfTrack() ) );
+
+    instance()->m_pEngine = m_pEngine;
+
     kdDebug() << "END " << k_funcinfo << endl;
     //NOTE App::applySettings() must be called now to ensure mixer settings are set
+
+    return m_pEngine;
 }
 
 
@@ -292,6 +304,6 @@ void EngineController::slotEndOfTrack()
     else
         next();
 }
-    
+
 
 #include "enginecontroller.moc"

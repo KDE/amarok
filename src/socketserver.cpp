@@ -296,7 +296,7 @@ Vis::Selector::Selector( QWidget *parent )
         if ( fi->isFile() && fi->extension() == "so" )
             new Selector::Item( this, fi->fileName() );
 
-    resize( sizeHint() + QSize(20,20) );
+    resize( sizeHint() + QSize(20,0) );
 }
 
 void

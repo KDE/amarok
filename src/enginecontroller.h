@@ -41,7 +41,7 @@ public:
     static EngineController *instance();
 
     static EngineBase *engine() { return instance()->m_pEngine; }
-    void loadEngine();
+    static EngineBase *loadEngine();
     long trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const { return m_bundle; }
     const KURL &playingURL() const { return m_bundle.url(); }
@@ -58,6 +58,20 @@ public slots:
     int increaseVolume( int ticks = 100/25 );
     int decreaseVolume( int ticks = 100/25 );
     int setVolume( int percent );
+
+    void mute()
+    {
+        if( m_muteVolume == 0 )
+        {
+            m_muteVolume = m_pEngine->volume();
+            m_pEngine->setVolume( 0 );
+        }
+        else
+        {
+            m_pEngine->setVolume( m_muteVolume );
+            m_muteVolume = 0;
+        }
+    }
 
 signals:
     void orderNext();
@@ -80,6 +94,7 @@ private:
     bool m_proxyError;
     QTimer *m_pMainTimer;
     long m_delayTime;
+    int m_muteVolume;
 };
 
 #endif

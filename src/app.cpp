@@ -128,8 +128,8 @@ App::~App()
 
     engine->stop(); //don't call EngineController::stop() - it's slow
 
-    if ( AmarokConfig::showTrayIcon() )
-        amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
+    //do even if trayicon is not shown, it is safe
+    amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
@@ -138,8 +138,8 @@ App::~App()
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::writeConfig();
 
-    //TODO move engine load and unload to controller so that it can handle this properly
-    if( QCString( engine->name() ) != "Dummy" ) PluginManager::unload( engine );
+    //need to unload the engine before the kapplication is destroyed
+    PluginManager::unload( engine );
 }
 
 
@@ -271,11 +271,14 @@ void App::restoreSession()
 
     if( !AmarokConfig::resumeTrack().isEmpty() )
     {
-        KURL track( AmarokConfig::resumeTrack() );
-        MetaBundle bundle( track );
+        MetaBundle bundle( KURL(AmarokConfig::resumeTrack()) );
 
-        EngineController::instance()->play( bundle );
-        EngineController::engine()->seek( AmarokConfig::resumeTime() * 1000 );
+        EngineController* const ec = EngineController::instance();
+
+        ec->mute();
+        ec->play( bundle );
+        ec->engine()->seek( AmarokConfig::resumeTime() * 1000 );
+        ec->mute();
     }
 }
 
@@ -371,23 +374,23 @@ void App::applySettings( bool firstTime )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
     }
 
-    
+
     { //<Engine>
         EngineBase *engine = EngineController::engine();
-        const bool b = QCString( engine->name() ) == "Dummy";
 
-        if( b || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
+        //firstTime the engine is the DummyEngine, which isn't a plugin so it can't
+        //be queried by the Manager
+
+        if( firstTime || AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
         {
-            if( !b ) PluginManager::unload( engine );
-            EngineController::instance()->loadEngine();
-            engine = EngineController::engine();
+            engine = EngineController::loadEngine();
             // Invalidate extension cache
             Playlist::s_extensionCache.clear();
 
-            AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+            goto setMixer;
         }
         else if( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
-            AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+            setMixer: AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
          engine->setSoundOutput( AmarokConfig::soundOutput() );
          engine->setSoundDevice( AmarokConfig::soundDevice() );

@@ -127,7 +127,7 @@ namespace amaroK
 
     QString DcopHandler::totalTime()
     {
-        return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
+        return EngineController::instance()->bundle().prettyLength();
     }
 
     QString DcopHandler::currentTime()
@@ -202,7 +202,7 @@ namespace amaroK
     {
         return EngineController::engine() ->volume();
     }
-    
+
     void DcopHandler::volumeUp()
     {
         EngineController::instance()->increaseVolume();
@@ -211,6 +211,11 @@ namespace amaroK
     void DcopHandler::volumeDown()
     {
         EngineController::instance()->decreaseVolume();
+    }
+
+    void DcopHandler::mute()
+    {
+        EngineController::instance()->mute();
     }
 
     void DcopHandler::enableOSD(bool enable)
