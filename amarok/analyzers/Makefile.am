@@ -1,4 +1,4 @@
-INCLUDES = $(all_includes) -I$(top_builddir)/amarok/amarokcore
+INCLUDES = $(all_includes) -I$(top_builddir)/amarok/amarok/amarokcore
 METASOURCES = AUTO
 noinst_LIBRARIES =  libanalyzers.a
 noinst_HEADERS = analyzerbase.h analyzerbase2d.h analyzerbase3d.h blockanalyzer.h baranalyzer.h baranalyzer2.h distortanalyzer.h sonogram.h turbine.h xmasdrug.h glanalyzer.h
