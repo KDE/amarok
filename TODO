@@ -3,10 +3,18 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #116 being the highest available (take this one for your next bug and increase here)
+           #117 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 116 <dato>   Little trouble with AmarokConfigDialog: configure -> playback -> sound system.
+                   Change to another value and then hit Cancel. Go again there: the displayed sound
+                   system is the second (which was not applied), not the current one. This is
+                   different to how other options work and should be fixed.
+
+                   --> dato (I'll take a look tomorrow, now is late; if sbd. feels like fixing it,
+                   please do. I have a patch for #115 but I won't commit until this gets fixed.)
 
   FIX 115 <dato>   Sound system and Output to combos should be synchronized (Output to should be
                    enabled/disabled immediatly after changing sound system, not next time the prefs
