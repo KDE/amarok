@@ -29,15 +29,12 @@ Loader::Loader( int& argc, char** argv )
 {
     qDebug( "[Loader::Loader()]" );
 
-    QString path( getenv( "KDEDIR" ) );
-    path += "/share/apps/amarok/images/logo_splash.png";
-    m_pOsd->showSplash( path );
-        
-    QProcess* proc = new QProcess( this );
-    proc->addArgument( "amarok" );
-    proc->start();
+    m_pPrefixProc = new QProcess( this );
+    m_pPrefixProc->addArgument( "kde-config" );
+    m_pPrefixProc->addArgument( "--prefix" );
+    connect( m_pPrefixProc, SIGNAL( processExited() ), this, SLOT( gotPrefix() ) );    
     
-    connect( proc, SIGNAL( processExited() ), this, SLOT( loaded() ) );    
+    m_pPrefixProc->start();
 }
 
 
@@ -50,6 +47,22 @@ Loader::~Loader()
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
+
+//SLOT
+void Loader::gotPrefix()
+{
+    QString path = m_pPrefixProc->readStdout();
+    path.remove( "\n" );
+    path += "/share/apps/amarok/images/logo_splash.png";
+    qDebug( path.latin1() );
+    m_pOsd->showSplash( path );
+    
+    QProcess* proc = new QProcess( this );
+    proc->addArgument( "amarok" );
+    proc->start();
+    
+    connect( proc, SIGNAL( processExited() ), this, SLOT( loaded() ) );    
+}
     
 //SLOT
 void Loader::loaded()

@@ -21,7 +21,7 @@
 #include <qapplication.h>    //baseclass
 
 class OSDWidget;
-
+class QProcess;
 
 class Loader : public QApplication
 {
@@ -32,9 +32,11 @@ class Loader : public QApplication
         ~Loader();
         
     private slots:
+        void gotPrefix();
         void loaded();
         
     private:
+        QProcess*  m_pPrefixProc;
         OSDWidget* m_pOsd;
         
 // ATTRIBUTES ------
