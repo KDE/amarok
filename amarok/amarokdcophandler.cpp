@@ -1,10 +1,8 @@
 #include "amarokdcophandler.h"
 #include "amarokslider.h"
-#include "browserwin.h"
 #include "engine/enginebase.h"
 #include "playerapp.h"
 #include "playerwidget.h"
-#include "playlistwidget.h"
 
 #include <dcopclient.h>
 
@@ -81,17 +79,18 @@ void AmarokDcopHandler::seek(int s)
 
 int AmarokDcopHandler::trackCurrentTime()
 {
+   //FIXME must be a more reliable way to get the currentTime
    return pApp->m_pPlayerWidget->m_pSlider->value();
 }
 
 void AmarokDcopHandler::addMedia(const KURL &url)
 {
-   pApp->m_pBrowserWin->m_pPlaylistWidget->insertMedia(url);
+   pApp->insertMedia(url);
 }
 
 void AmarokDcopHandler::addMediaList(const KURL::List &urls)
 {
-   pApp->m_pBrowserWin->m_pPlaylistWidget->insertMedia(urls);
+   pApp->insertMedia(urls);
 }
 
 
