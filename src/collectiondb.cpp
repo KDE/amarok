@@ -465,7 +465,7 @@ CollectionDB::albumID( QString value, bool autocreate, const bool temporary, con
 
     // cache values
     m_cacheAlbum = value;
-    m_cacheAlbum = id;
+    m_cacheAlbumID = id;
 
     return id;
 }
@@ -1331,7 +1331,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary, DbCo
     {
         if ( albums[ i ].isEmpty() ) continue;
 
-        const uint album_id = albumID( albums[ i ], false, temporary, conn );
+        const uint album_id = albumID( albums[ i ], false, temporary, false, conn );
         artists = query( QString( "SELECT DISTINCT artist.name FROM tags_temp, artist%1 AS artist WHERE tags_temp.album = '%2' AND tags_temp.artist = artist.id;" )
                             .arg( temporary ? "_temp" : "" )
                             .arg( album_id ), conn );
