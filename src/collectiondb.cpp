@@ -621,6 +621,46 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 
 
 bool
+CollectionDB::addSong( const MetaBundle& bundle, const bool temporary )
+{
+    QString command = "INSERT INTO tags_temp "
+                      "( url, dir, createdate, album, artist, genre, year, title, comment, track, sampler, length ) "
+                      "VALUES ('";
+
+    QString artist = bundle.artist();
+    QString title = bundle.title();
+    if ( bundle.title().isEmpty() )
+    {
+        title = bundle.url().fileName();
+        if ( bundle.url().fileName().find( '-' ) > 0 )
+        {
+            if ( artist.isEmpty() ) artist = bundle.url().fileName().left( bundle.url().fileName().find( '-' ) ).stripWhiteSpace();
+            title = bundle.url().fileName().mid( bundle.url().fileName().find( '-' ) + 1 );
+            title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+        }
+    }
+
+    command += escapeString( bundle.url().path() ) + "','";
+    command += escapeString( bundle.url().directory() ) + "',";
+    command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
+
+    command += escapeString( QString::number( albumID( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !temporary ) ) ) + ",";
+    command += escapeString( QString::number( artistID( artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !temporary ) ) ) + ",";
+    command += escapeString( QString::number( genreID( bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !temporary ) ) ) + ",'";
+    command += escapeString( QString::number( yearID( bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !temporary ) ) ) + "','";
+
+    command += escapeString( title.isEmpty() ? bundle.url().fileName() : title ) + "','";
+    command += escapeString( bundle.comment() ) + "','";
+    command += escapeString( bundle.track() ) + "', ";
+    command += artist == i18n( "Various Artists" ) ? "1" : "0";
+    command += ", 0);";
+
+    query( command );
+    return true;
+}
+
+
+bool
 CollectionDB::getMetaBundleForUrl( const QString &url , MetaBundle *bundle )
 {
     query( QString( "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate "
@@ -1229,7 +1269,7 @@ CollectionDB::md5sum( const QString& artist, const QString& album )
 void
 CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
 {
-    #ifdef AMAZON_SUPPORT
+#ifdef AMAZON_SUPPORT
     /* Static license Key. Thanks muesli ;-) */
     QString amazonLicense = "D1URM11J3F2CEH";
     kdDebug() << "Querying amazon with artist: " << artist << " and album " << album << endl;
@@ -1241,8 +1281,7 @@ CollectionDB::fetchCover( QObject* parent, const QString& artist, const QString&
     connect( fetcher, SIGNAL( error() ), this, SLOT( fetcherError() ) );
 
     fetcher->getCover( artist, album, keyword, CoverFetcher::heavy, noedit, 2, false );
-
-    #endif
+#endif
 }
 
 

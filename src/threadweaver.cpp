@@ -342,75 +342,22 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         log.flush();
 
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
-
-        QString command = "INSERT INTO tags_temp "
-                            "( url, dir, createdate, album, artist, genre, title, year, comment, track, sampler, length ) "
-                            "VALUES ('";
-
         if ( !f.isNull() )
         {
             MetaBundle bundle( url, f.tag(), 0 );
-
-            QString artist = bundle.artist();
-            QString title = bundle.title();
-            if ( bundle.title().isEmpty() )
-            {
-                title = url.fileName();
-                if ( url.fileName().find( '-' ) > 0 )
-                {
-                    if ( artist.isEmpty() ) artist = url.fileName().left( url.fileName().find( '-' ) ).stripWhiteSpace();
-                    title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
-                    title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
-                }
-            }
-
-            command += m_parent->escapeString( bundle.url().path() ) + "','";
-            command += m_parent->escapeString( bundle.url().directory() ) + "',";
-            command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
-            command += m_parent->escapeString( QString::number( m_parent->albumID( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album(), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->artistID( artist.isEmpty() ? i18n( "Unknown" ) : artist, true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->genreID( bundle.genre().isEmpty() ? i18n( "Unknown" ) : bundle.genre(), true, !m_incremental ) ) ) + ",'";
-            command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->yearID( bundle.year().isEmpty() ? i18n( "Unknown" ) : bundle.year(), true, !m_incremental ) ) ) + "','";
-            command += m_parent->escapeString( bundle.comment() ) + "','";
-            command += m_parent->escapeString( bundle.track() ) + "', ";
-            command += artist == i18n( "Various Artists" ) ? "1" : "0";
-            command += ", 0);";
-
-            m_parent->query( command );
+            m_parent->addSong( bundle, m_incremental );
         }
         // Add tag-less tracks to database
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
         {
-            // extract tag information from filename
-            QString artist;
-            QString title = url.fileName();
-            if ( url.fileName().find( '-' ) > 0 )
-            {
-                artist = url.fileName().left( url.fileName().find( '-' ) ).stripWhiteSpace();
-                title = url.fileName().mid( url.fileName().find( '-' ) + 1 );
-                title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
-            }
-
-            command += m_parent->escapeString( url.path() ) + "','";
-            command += m_parent->escapeString( url.directory() ) + "',";
-            command += "'" + QString::number(QDateTime::currentDateTime().toTime_t()) + "',";
-            command += m_parent->escapeString( QString::number( m_parent->albumID( i18n( "Unknown" ), true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->artistID( artist.isEmpty() ? "Unknown" : artist, true, !m_incremental ) ) ) + ",";
-            command += m_parent->escapeString( QString::number( m_parent->genreID( i18n( "Unknown" ), true, !m_incremental ) ) ) + ",'";
-            command += m_parent->escapeString( title.isEmpty() ? url.fileName() : title ) + "','";
-            command += m_parent->escapeString( QString::number( m_parent->yearID( i18n( "Unknown" ), true, !m_incremental ) ) ) + "','";
-            command += m_parent->escapeString( i18n( "Unknown" ) ) + "','";
-            command += m_parent->escapeString( i18n( "Unknown" ) ) + "', ";
-            command += artist == i18n( "Various Artists" ) ? "1" : "0";
-            command += ", 0);";
-
-            m_parent->query( command );
+            MetaBundle bundle( url, false, false );
+            m_parent->addSong( bundle, m_incremental );
         }
         // Add images to the cover database
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
             m_parent->addImageToPath( url.directory(), url.filename(), true );
     }
+
     // let's lock the database (will block other threads)
 #ifdef USE_MYSQL
 //    m_parent->query( "START TRANSACTION;" );
@@ -435,6 +382,7 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
 
     // remove temp tables and unlock database
     m_parent->dropTables( true );
+
 #ifdef USE_MYSQL
 //    m_parent->query( "COMMIT;" );
 #else

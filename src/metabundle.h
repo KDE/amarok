@@ -36,13 +36,13 @@ public:
      */
     MetaBundle() { init(); }
 
-     /**
+    /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    MetaBundle( const KURL &u, bool readAudioProperties = true )
+    MetaBundle( const KURL &u, bool readAudioProperties = true, bool readMetaData = true )
         : m_url( u )
     {
-        readTags( readAudioProperties );
+        if ( readMetaData ) readTags( readAudioProperties );
     }
 
     //StreamProvider:
@@ -59,7 +59,7 @@ public:
     //From tags:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
-     /**
+    /**
      * Test for an empty metabundle
      */
     bool isEmpty() const { return m_url.isEmpty(); }

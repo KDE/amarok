@@ -37,7 +37,7 @@ class CollectionDB : public QObject
 
         //sql helper methods
         QStringList query( const QString& statement, QStringList& names, bool debug = false);
-        // no away to add a default argument for a Object& in gcc3, hack around it
+        // no way to add a default argument for a Object& in gcc3, hack around it
         QStringList query( const QString& statement ) { QStringList sl; return query( statement, sl, false ); }
         int sqlInsertID();
         QString escapeString( QString string );
@@ -51,9 +51,6 @@ class CollectionDB : public QObject
         void createStatsTable();
         void dropStatsTable();
 
-        void updateTags( const QString &url, const MetaBundle &bundle, bool updateCB=true );
-        void updateURL( const QString &url );
-
         //general management methods
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void scanModifiedDirs( bool recursively, bool importPlaylists );
@@ -65,11 +62,16 @@ class CollectionDB : public QObject
         void purgeDirCache();
 
         //song methods
+        bool addSong( const MetaBundle& bundle, const bool temporary = false );
         bool getMetaBundleForUrl( const QString &url , MetaBundle *bundle );
         void addAudioproperties( const MetaBundle& bundle );
+
         int addSongPercentage( const QString &url , const int percentage );
         int getSongPercentage( const QString &url  );
         void setSongPercentage( const QString &url , int percentage );
+
+        void updateTags( const QString &url, const MetaBundle &bundle, bool updateCB=true );
+        void updateURL( const QString &url );
 
         //album methods
         bool isSamplerAlbum( const QString &album );
