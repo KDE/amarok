@@ -137,7 +137,7 @@ PlayerApp::~PlayerApp()
     //close loader IPC server socket
     if ( m_sockfd != -1 )
         ::close( m_sockfd );
-        
+
     //hiding these widgets stops visual oddness
     //I know they won't dissapear because the event Loop isn't updated, but it stops
     //some syncronous updates etc.
@@ -178,27 +178,33 @@ int PlayerApp::newInstance()
     if ( args->count() > 0 )
     {
         KURL::List list;
+        bool notEnqueue = !args->isSet( "enqueue" );
 
         for ( int i = 0; i < args->count(); i++ )
         {
             list << args->url( i );
         }
 
-        m_pBrowserWin->insertMedia( list, !args->isSet( "enqueue" ), args->isSet( "play" ) );
+        //add to the playlist with the correct arguments ( bool clear, bool play )
+        m_pBrowserWin->insertMedia( list, notEnqueue, notEnqueue || args->isSet( "play" ) );
     }
 
-    if ( args->isSet( "previous" ) )
-        pApp->slotPrev();
-    if ( args->isSet( "next" ) )
-        pApp->slotNext();
-    if ( args->isSet( "stop" ) )
-        pApp->slotStop();
-    if ( args->isSet( "pause" ) )
-        pApp->slotPause();
+    //we shouldn't let the user specify two of these since it is pointless!
+    //so we prioritise, pause > stop > play > next > prev
+    //thus pause is the least destructive, followed by stop as brakes are the most important bit of a car(!)
+    //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
+    //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
 
-    // insertMedia already cares about directly playing when enqueue _and_ play is set
-    if ( !args->isSet( "enqueue" ) && args->isSet( "play" ) )
+    else if ( args->isSet( "pause" ) )
+        pApp->slotPause();
+    else if ( args->isSet( "stop" ) )
+        pApp->slotStop();
+    else if ( args->isSet( "play" ) ) //will restart if we are playing
         pApp->slotPlay();
+    else if ( args->isSet( "next" ) )
+        pApp->slotNext();
+    else if ( args->isSet( "previous" ) )
+        pApp->slotPrev();
 
     return KUniqueApplication::newInstance();
 }
@@ -223,16 +229,16 @@ void PlayerApp::initIpc()
         kdDebug() << "[PlayerApp::initIpc()] socket() error\n";
         return;
     }
-        
+
     sockaddr_un local;
     local.sun_family = AF_UNIX;
     QCString path( ::getenv( "HOME" ) );
     path += "/.kde/share/apps/amarok/.loader_socket";
     ::strcpy( &local.sun_path[0], path );
     ::unlink( path );
-    
+
     int len = ::strlen( local.sun_path ) + sizeof( local.sun_family );
-    
+
     if ( ::bind( m_sockfd, (struct sockaddr*) &local, len ) == -1 ) {
         kdDebug() << "[PlayerApp::initIpc()] bind() error\n";
         return;
@@ -243,7 +249,7 @@ void PlayerApp::initIpc()
     }
 
     LoaderServer* server = new LoaderServer( this );
-    server->setSocket( m_sockfd );                    
+    server->setSocket( m_sockfd );
 }
 
 
@@ -778,15 +784,15 @@ LoaderServer::LoaderServer( QObject* parent )
 void LoaderServer::newConnection( int sockfd )
 {
     kdDebug() << "[LoaderServer::newConnection()]\n";
-    
+
     char buf[1024];
     int nbytes = recv( sockfd, buf, sizeof(buf) - 1, 0 );
-    
+
     if ( nbytes < 0 )
         qDebug( "[LoaderServer::newConnection()] recv error" );
     else
-    {    
-        buf[nbytes] = '\000';    
+    {
+        buf[nbytes] = '\000';
         QCString result = buf;
         qDebug( result );
     }
