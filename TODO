@@ -4,6 +4,8 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * debug: xfading. after playing last track in PL, the sound gets into a loop
+
     * <berkus> in ui dialogs font labels need to resize vertically
       dynamically adopting the font size
 
@@ -83,8 +85,18 @@ LONG-TERM:
     * add pitch-slider (?) (berkus: should be in separate "Effects Control"
       panel)
 
+    * add: aRts info widget, showing all available codecs and maybe more
+    
 
 IDEAS:
     * resizable playerwidget, like in Winamp3. Maybe using SVG graphics, or
       scaled down bitmaps. Would look most cool when it could resize smoothly
       in realtime *drool*
+    
+    * think about moving amarok to kdeextragear. this would get us access to the kde bug system
+      (and possibly something else), packaging and better visibility
+   
+    * using filelight (as a kpart maybe) for a graphical representation of the playlist. so you could
+      see at first glance how the altogether playing time is divided into different albums, tunes and
+      so on.
+      
