@@ -60,9 +60,9 @@ public:
                     const QString& genre,
                     const QString& streamName,
                     const QString& streamUrl )
-      
+
       : m_url       ( streamUrl )
-      , m_title     ( url + title )      
+      , m_title     ( url + title )
       , m_genre     ( genre )
       , m_bitrate   ( bitrate )
       , m_length    ( Undetermined )
@@ -147,7 +147,16 @@ MetaBundle::prettyTitle() const
     if( !s.isEmpty() ) s += " - ";
     s += m_title;
 
-    return s.isEmpty() ? m_url.fileName().section( '.', 0, 0 ).replace( '_', ' ' ) : s;
+    if( s.isEmpty() )
+    {
+    //    s = m_url.fileName();
+    //    int thedot = s.findRev( '.' );
+    //    s = s.left( thedot ).replace( '_', ' ' );
+        //remove file extension and tidy
+        s = m_url.fileName().section( '.', 0, -2 ).replace( '_', ' ' );
+    }
+
+    return s;
 }
 
 inline QString
