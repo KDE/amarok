@@ -540,18 +540,28 @@ void Playlist::clear() //SLOT
 
 bool Playlist::isTrackAfter() const
 {
-    return !isEmpty() && (
-           !m_nextTracks.isEmpty() ||
-           m_currentTrack && (
-           AmarokConfig::repeatPlaylist() || m_currentTrack->itemBelow() ) );
+    //order is carefully crafted, remember count() is O(n)
+
+    return !isEmpty() &&
+           (
+               !m_nextTracks.isEmpty()
+               ||
+               currentTrack() && (currentTrack()->itemBelow() || AmarokConfig::repeatPlaylist() && childCount() > 1)
+               ||
+               AmarokConfig::randomMode() && childCount() > 1
+           );
 }
 
 bool Playlist::isTrackBefore() const
 {
-    return !isEmpty() && (
-           AmarokConfig::randomMode() && !m_prevTracks.isEmpty() ||
-           currentTrack() && (
-           AmarokConfig::repeatPlaylist() || currentTrack()->itemAbove() ) );
+    //order is carefully crafted, remember count() is O(n)
+
+    return !isEmpty() &&
+           (
+               currentTrack() && (currentTrack()->itemAbove() || AmarokConfig::repeatPlaylist() && childCount() > 1)
+               ||
+               AmarokConfig::randomMode() && childCount() > 1
+           );
 }
 
 void Playlist::updateNextPrev()
@@ -1062,11 +1072,12 @@ void Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
     if( item )
     {
         const PlaylistItem* playlistItem = static_cast<const PlaylistItem*>( item );
-        
-        QString text = playlistItem->trackName();
+
+        QString text = MetaBundle( playlistItem ).prettyTitle();
         // For streams add the streamtitle too
-        if ( playlistItem->url().protocol() == "http" ) text.prepend( playlistItem->title() + " :: " );       
-        
+        //TODO make prettyTitle do this
+        if ( playlistItem->url().protocol() == "http" ) text.prepend( playlistItem->title() + " :: " );
+
         // Copy both to clipboard and X11-selection
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
         QApplication::clipboard()->setText( text, QClipboard::Selection );
@@ -1086,6 +1097,8 @@ void Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const Q
         //TODO handle multiple urls?
         const QString path = QApplication::clipboard()->text( QClipboard::Selection );
         kdDebug() << "[playlist] X11 Paste: " << path << endl;
+
+        //TODO paste at end of all tracks doesn't work
 
         insertMediaInternal( KURL::fromPathOrURL( path ), (PlaylistItem*)after );
         break;
