@@ -445,54 +445,43 @@ void PlayerWidget::drawScroll()
 
 void PlayerWidget::timeDisplay( bool remaining, int hours, int minutes, int seconds )
 {
-    m_timeRemaining = remaining;
-    m_timeHours = hours;
-    m_timeMinutes = minutes;
-    m_timeSeconds = seconds;
-
-    update();
-}
-
-
-void PlayerWidget::drawTimeDisplay()
-{
     bitBlt( m_pTimeComposePixmap, 0, 0, m_pTimeBgPixmap );
 
     int x = 0;
     int y = 0;
 
-    if ( m_timeHours > 60 || m_timeHours < 0 )
-        m_timeHours = 0;
-    if ( m_timeMinutes > 60 || m_timeMinutes < 0 )
-        m_timeMinutes = 0;
-    if ( m_timeSeconds > 60 || m_timeSeconds < 0 )
-        m_timeSeconds = 0;
+    if ( hours > 60 || hours < 0 )
+        hours = 0;
+    if ( minutes > 60 || minutes < 0 )
+        minutes = 0;
+    if ( seconds > 60 || seconds < 0 )
+        seconds = 0;
 
-    if ( m_timeRemaining )
+    if ( remaining )
         bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 11 * m_timeDisplayW, 0, m_timeDisplayW );
     else
         bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 12 * m_timeDisplayW, 0, m_timeDisplayW );
 
     x += m_timeDisplayW;
 
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeHours / 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, hours / 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeHours % 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeMinutes / 10 * m_timeDisplayW, 0, m_timeDisplayW );
-    x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeMinutes % 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, hours % 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
     bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeSeconds / 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes / 10 * m_timeDisplayW, 0, m_timeDisplayW );
     x += m_timeDisplayW;
-    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, m_timeSeconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, minutes % 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    x += m_timeDisplayW;
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    x += m_timeDisplayW;
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds / 10 * m_timeDisplayW, 0, m_timeDisplayW );
+    x += m_timeDisplayW;
+    bitBlt( m_pTimeComposePixmap, x, y, m_pTimePixmap, seconds % 10 * m_timeDisplayW, 0, m_timeDisplayW );
 
-    //offset 1 pixel because of bounding box
-    bitBlt( m_pTimeDisplayLabel, 1, 1, m_pTimeComposePixmap );
+        
+    m_pTimeDisplayLabel->setPixmap( *m_pTimeComposePixmap );
 }
 
 
@@ -512,8 +501,6 @@ void PlayerWidget::paintEvent( QPaintEvent * )
     pF.setPen( pApp->m_fgColor );
     pF.drawText( 20, 40, m_bitrate );
     pF.drawText( 70, 40, m_samplerate );
-
-    drawTimeDisplay();
 }
 
 

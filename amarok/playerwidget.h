@@ -108,7 +108,6 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void setScroll( QString text, QString bitrate, QString samplerate );
         void drawScroll();
         void timeDisplay( bool remaining, int hours, int minutes, int seconds );
-        void drawTimeDisplay();
         void createVis();
 
         // ATTRIBUTES ------
@@ -175,7 +174,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         void initTimeDisplay();
         void polish();
 
-        void paintEvent( QPaintEvent * );
+        void paintEvent( QPaintEvent *e );
         void mouseReleaseEvent( QMouseEvent *e );
         void mousePressEvent( QMouseEvent *e );
         void queryClose();
@@ -199,10 +198,6 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         int m_timeDisplayX;
         int m_timeDisplayY;
         int m_timeDisplayW;
-        bool m_timeRemaining;
-        int m_timeHours;
-        int m_timeMinutes;
-        int m_timeSeconds;
 
         int m_pixmapWidth;
         int m_pixmapHeight;
