@@ -269,7 +269,7 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
         QPainter p( viewport() );
         QSimpleRichText t( i18n(
                 "<div align=center>"
-                  "<h3>No Visualizations Found!</h3>"
+                  "<h3>No Visualizations Found</h3>"
                   "Please install libvisual and recompile."
                 "</div>" ), font() );
 

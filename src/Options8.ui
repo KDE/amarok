@@ -198,7 +198,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Once registered, amaroK can tell Audioscrobbler about your listening habits, your profile can then provide statistics and recommendations. A profile is not required to retrieve similar-artists for display in the Context Browser.</string>
+                        <string>Once registered, amaroK can tell Audioscrobbler about your listening habits; your profile can then provide statistics and recommendations. A profile is not required to retrieve similar-artists for display in the Context Browser.</string>
                     </property>
                     <property name="textFormat">
                         <enum>RichText</enum>
@@ -220,7 +220,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Improve my profile by submiting the tracks I play</string>
+                        <string>Improve my profile by submitting the tracks I play</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
