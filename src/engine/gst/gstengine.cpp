@@ -390,10 +390,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
             return false;
 
     // If paused, unpause
-    if ( GST_STATE( m_gst_outputThread ) == GST_STATE_PAUSED ) {
-        gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
-        gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING );
-    }
+    if ( GST_STATE( m_gst_rootBin ) == GST_STATE_PAUSED )
+        gst_element_set_state( m_gst_rootBin, GST_STATE_PLAYING );
 
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
@@ -506,16 +504,14 @@ GstEngine::pause()  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
 
-    if ( GST_STATE( m_gst_outputThread ) == GST_STATE_PAUSED ) {
-        gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
-        gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING );
+    if ( GST_STATE( m_gst_rootBin ) == GST_STATE_PAUSED ) {
+        gst_element_set_state( m_gst_rootBin, GST_STATE_PLAYING );
+        emit stateChanged( Engine::Playing );
     }
     else {
-        gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED );
-        gst_element_set_state( m_gst_outputThread, GST_STATE_PAUSED );
+        gst_element_set_state( m_gst_rootBin, GST_STATE_PAUSED );
+        emit stateChanged( Engine::Paused );
     }
-
-    emit stateChanged( state() );
 }
 
 
@@ -896,6 +892,8 @@ GstEngine::createPipeline()
     kdDebug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
 
+    m_gst_rootBin = gst_bin_new( "root_bin" );
+
     //<input>
     if ( !( m_gst_inputThread = createElement( "thread" ) ) ) { return false; }
     if ( !( m_gst_adder = createElement( "adder", m_gst_inputThread ) ) ) { return false; }
@@ -922,6 +920,9 @@ GstEngine::createPipeline()
     if ( !( m_gst_queue = createElement( "queue", m_gst_outputThread ) ) ) { return false; }
     if ( !( m_gst_identity = createElement( "identity", m_gst_outputThread ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_outputThread ) ) ) { return false; }
+
+    // Put everything into the root bin
+    gst_bin_add_many( GST_BIN( m_gst_rootBin ), m_gst_inputThread, m_gst_outputThread, 0 );
 
     // More buffers means less dropouts and higher latency
     gst_element_set( m_gst_queue, "max-size-buffers", 100, NULL );
@@ -966,17 +967,11 @@ GstEngine::destroyPipeline()
     m_mutexScope.unlock();
 
     if ( m_pipelineFilled ) {
-        if ( GST_STATE( m_gst_inputThread ) != GST_STATE_NULL )
-            gst_element_set_state( m_gst_inputThread, GST_STATE_NULL );
+        if ( GST_STATE( m_gst_rootBin ) != GST_STATE_NULL )
+            gst_element_set_state( m_gst_rootBin, GST_STATE_NULL );
 
-        if ( GST_STATE( m_gst_outputThread ) != GST_STATE_NULL )
-            gst_element_set_state( m_gst_outputThread, GST_STATE_NULL );
-
-        kdDebug() << "[Gst-Engine] Destroying input thread.\n";
-        gst_object_unref( GST_OBJECT( m_gst_inputThread ) );
-
-        kdDebug() << "[Gst-Engine] Destroying output thread.\n";
-        gst_object_unref( GST_OBJECT( m_gst_outputThread ) );
+        kdDebug() << "[Gst-Engine] Destroying GStreamer pipelines.\n";
+        gst_object_unref( GST_OBJECT( m_gst_rootBin ) );
 
         m_pipelineFilled = false;
     }

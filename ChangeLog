@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.1.1:
+  FIX: Pausing failed on some systems with GStreamer-engine. (BR 90417)
   FIX: Never scan the same directory twice.
   FIX: Disable CD-burning menu for streams. (BR 90336)
   ADD: Open Cover-Manager from Context-Browser popup menu.

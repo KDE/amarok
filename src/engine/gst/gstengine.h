@@ -128,6 +128,9 @@ class GstEngine : public Engine::Base
         static const int TIMER_INTERVAL = 70; //msec
         static GstEngine* s_instance;
 
+        // Root bin
+        GstElement* m_gst_rootBin;
+
         // Input thread
         GstElement* m_gst_inputThread;
         GstElement* m_gst_adder;
@@ -190,9 +193,9 @@ class InputPipeline
         GstElement* bin;
         GstElement* src;
         GstElement* spider;
-        GstElement* volume;
         GstElement* audioconvert;
         GstElement* audioscale;
+        GstElement* volume;
 };
 
 
