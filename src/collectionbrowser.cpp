@@ -581,12 +581,10 @@ CollectionView::listSelected() {
 void
 CollectionView::doubleClicked( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
-    if ( !item ) return;
+    if ( !item )
+        return;
     
-    if ( item->isOpen() )
-        slotCollapse( item );
-    else
-        slotExpand( item );
+    item->setOpen( !item->isOpen() );
 }
 
 
