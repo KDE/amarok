@@ -10,5 +10,5 @@ Add your ideas here:
 "The audio player for Unix"
 "The audio player"
 "The next generation media player"
-
-
+"Manage your music"
+"The audio manager"
