@@ -310,8 +310,8 @@ void App::restoreSession()
 
     if( !AmarokConfig::resumeTrack().isEmpty() )
     {
-        MetaBundle bundle( KURL(AmarokConfig::resumeTrack()) );
-
+        KURL track( AmarokConfig::resumeTrack() );
+        MetaBundle bundle( track );
         bundle.readTags();
 
         EngineController::instance()->play( bundle );
