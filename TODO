@@ -37,28 +37,22 @@ SHORT-TERM (URGENT):
              both.
              <mxcl> let's not worry about this until the next release.. :-)
 
+    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
+           some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
+
+    * fix: <muesli> clean up the GUI
+
+
+MID-TERM:
+
+    * fix: redirected URLs do not work (? - we need some testcase)
+
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
            <markey> replace with "add all media in current directory".
            basically just a shortcut for going up to the parent directory, and then dragging
            the directory. imagine you're in the root directory of some filesystem, and want to add all
            files in it.. currently you'd have to select all files manually 
            
-    * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
-           some #ifdefs to surround that code and hope nobody gets too pissed about it -->mxcl
-
-    * fix: <muesli> clean up the GUI
-
-    * fix: redirected URLs do not work (? - we need some testcase)
-
-
-MID-TERM:
-
-    * chg: <mxcl> use QApplication::setPalette to adjust application colours, as it propagates
-           changes to all widgets and will hopefully deal with the selection colour issues in
-           the browser/janus widgets (although we have to stop it setting browserWin colors)
-    
-    * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
-
     * fix: opening hidden directories is impossible in filebrowser
 
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
@@ -69,6 +63,8 @@ MID-TERM:
     * fix: pause vis/anim timers when hide/show main widget as a courtesy to our users -->mxcl
 
     * fix: honor KDE single/double-click setting in BrowserWin
+
+    * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: "show playlist" to the right click menu, redundant but necessary
     
@@ -112,6 +108,10 @@ MID-TERM:
 
     * add: save/load arts effects on close/startup automatically
 
+    * chg: <mxcl> use QApplication::setPalette to adjust application colours, as it propagates
+           changes to all widgets and will hopefully deal with the selection colour issues in
+           the browser/janus widgets (although we have to stop it setting browserWin colors)
+    
     * chg: can we make all buttons into actions? if we can, we could use setState(), a global
            actionCollection and save plenty of LOC. I see problems with the play/stop/etc
            buttons though.
@@ -125,7 +125,7 @@ MID-TERM:
     * chg: ability to get currently playing title to clipboard, or writing
            info in some file or some other easy way to get this info..
 
-    * chg: select tracks on mouseup, not mousedown
+    * chg: select tracks on mouseup, not mousedown (does this make sense?)
                       
 
 LONG-TERM:
