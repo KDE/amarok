@@ -2,7 +2,9 @@ amaroK ChangeLog
 ================
 (c) 2002-2004 the amaroK authors.
 
+
 VERSION 0.9-beta3:
+  * fix: skipping broken/non-existant tracks
   * fix: respect "hide playlist with main window" and playlist minimize/hide behaviour.
 
 VERSION 0.9-beta2:

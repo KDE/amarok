@@ -211,10 +211,9 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
 
 ArtsEngine::~ ArtsEngine()
 {
+    emit endOfTrack();
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
-    emit endOfTrack();
-
     saveEffects();
 
     m_scope             = Amarok::RawScope::null();
@@ -360,6 +359,9 @@ void ArtsEngine::connectPlayObject()
         Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
     
     }
+    else
+        //something went wrong, we can't play this track
+        connectTimeout();
 }
 
 //SLOT
@@ -368,6 +370,8 @@ void ArtsEngine::connectTimeout()
     if ( m_pPlayObject && !m_pPlayObject->isNull() && m_pPlayObject->object().isNull() )
     {
         kdWarning() << "[ArtsEngine::open()] Cannot initialize PlayObject! Skipping this track." << endl;
+        
+        emit endOfTrack();
         delete m_pPlayObject;
         m_pPlayObject = NULL;
     }
@@ -387,6 +391,7 @@ void ArtsEngine::stop()
 {
     kdDebug() << "[void ArtsEngine::stop()]" << endl;
 
+    emit endOfTrack();
     //switch xfade channels
     m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
 

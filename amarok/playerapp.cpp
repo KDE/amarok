@@ -623,7 +623,7 @@ void PlayerApp::play( const MetaBundle &bundle )
         m_pEngine->open( url );
 
     m_proxyError = false;
-
+    
     emit metaData( bundle ); //TODO replace currentTrack with this, and in PlaylistWidget do a compare type function to see if there is any new data
     m_length = bundle.length() * 1000;
 
@@ -644,7 +644,7 @@ void PlayerApp::proxyError()
     kdWarning() << "[PlayerApp::proxyError()] TitleProxy error! Switching to normal playback.." << endl;
 
     m_proxyError = true;
-    play( MetaBundle() );
+    slotPlay();
 }
 
 
@@ -745,7 +745,7 @@ void PlayerApp::slotVolumeChanged( int value )
 
 void PlayerApp::slotMainTimer()
 {
-    if ( m_sliderIsPressed || ( m_pEngine->state() == EngineBase::Empty ) )
+    if ( m_sliderIsPressed || m_playingURL.isEmpty() )
         return;
 
     m_pPlayerWidget->m_pSlider->setValue( m_pEngine->position() );
@@ -767,8 +767,9 @@ void PlayerApp::slotMainTimer()
         return;
     }
 
-    // check if track has ended
-    if ( m_pEngine->state() == EngineBase::Idle )
+    // check if track has ended or is broken
+    if ( m_pEngine->state() == EngineBase::Empty ||
+         m_pEngine->state() == EngineBase::Idle )
     {
         if ( AmarokConfig::trackDelayLength() > 0 ) //this can occur syncronously to XFade and not be fatal
         {

@@ -47,11 +47,6 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    MetaBundle() //TODO preferably don't have this! It's not useful, if possible always have at least a URL
-    {
-        init();
-    }
-
     MetaBundle( const KURL &u ) //Minimal ctor, try not to use this!
       : m_url( u )
     {

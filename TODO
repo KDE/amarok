@@ -15,9 +15,6 @@ SHORT-TERM (URGENT):
 
     * fix: #56 <markey> providing a non-existant file as command line argument -> instant crash
 
-    * fix: #53 <mxcl> if PlayerApp::play() tries to play a file which doesn't exist (which can happen,
-                despite PlaylistLoader checks), amaroK get in a amusing state.
-
     * fix: #52 <markey> got those today, possibly from new PlayerWidget code (app was freezing):
                 QPainter::begin: Cannot paint null pixmap
                 QPainter::setPen: Will be reset by begin()
