@@ -841,13 +841,7 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
         }
         else //large image
         {
-            QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
-            if ( !largeCoverDir.exists( widthKey + key ) )
-            {
-                QImage img = QImage( image );
-                img.save( largeCoverDir.filePath( widthKey + key ), "PNG" );
-            }
-            return largeCoverDir.filePath( widthKey + key );
+            return image;
         }
     }
 
