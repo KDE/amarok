@@ -40,29 +40,29 @@ class PlaylistItem : public KListViewItem
         PlaylistItem( QListView* parent, QListViewItem* after, const KURL &url );
         ~PlaylistItem();
 
-	// These accessor methods obsolete public fields in next release
-	QString title()   { return m_tagTitle; }
-	QString artist()  { return m_tagArtist; }
-	QString album()   { return m_tagAlbum; }
-	QString genre()   { return m_tagGenre; }
-	QString comment() { return m_tagComment; }
-	QString year()    { return m_tagYear; }
-	QString track()   { return m_tagTrack; }
-	int     seconds() { return m_tagSeconds; }
-	int     bitrate() { return m_tagBitrate; }
-	int  samplerate() { return m_tagSamplerate; }
-	// These are still here but will be declared private since 0.7
+        // These accessor methods obsolete public fields in next release
+        QString title()   { return m_tagTitle; }
+        QString artist()  { return m_tagArtist; }
+        QString album()   { return m_tagAlbum; }
+        QString genre()   { return m_tagGenre; }
+        QString comment() { return m_tagComment; }
+        QString year()    { return m_tagYear; }
+        QString track()   { return m_tagTrack; }
+        int     seconds() { return m_tagSeconds; }
+        int     bitrate() { return m_tagBitrate; }
+        int  samplerate() { return m_tagSamplerate; }
+        // These are still here but will be declared private since 0.7
         QString m_tagTitle;
         QString m_tagArtist;
         QString m_tagAlbum;
         QString m_tagGenre;
         QString m_tagComment;
         QString m_tagYear;
-	QString m_tagTrack;
+        QString m_tagTrack;
         QString m_tagDirectory;
-	int m_tagSeconds;
-	int m_tagBitrate;
-	int m_tagSamplerate;
+        int m_tagSeconds;
+        int m_tagBitrate;
+        int m_tagSamplerate;
 
         KURL url() const { return m_url; }
         void readMetaInfo();
