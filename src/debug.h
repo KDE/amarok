@@ -77,13 +77,13 @@ using namespace Debug;
 #define DEBUG_FUNC_INFO kdDebug() << Debug::__indent << k_funcinfo << endl;
 
 #define DEBUG_INDENT Debug::__indent += "  ";
-#define DEBUG_UNDENT Debug::__indent.truncate( Debug::__indent.length() - 2 );
+#define DEBUG_UNINDENT Debug::__indent.truncate( Debug::__indent.length() - 2 );
 
 /// Use this to introduce a function
 #define DEBUG_BEGIN kdDebug() << __indent << "BEGIN: " << __PRETTY_FUNCTION__ << endl; DEBUG_INDENT
 
 /// Use this to extroduce a function
-#define DEBUG_END   DEBUG_UNDENT kdDebug() << __indent << "END: " << __PRETTY_FUNCTION__ << endl;
+#define DEBUG_END   DEBUG_UNINDENT kdDebug() << __indent << "END: " << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to remind yourself to finish the implementation of a function
 #define AMAROK_NOTIMPLEMENTED kdWarning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
@@ -101,7 +101,7 @@ namespace Debug
      *
      *     void function()
      *     {
-     *         DebugSection helper( "section" );
+     *         DebugSection s( "section" );
      *
      *         debug() << "output1" << endl;
      *         debug() << "output2" << endl;
@@ -126,8 +126,8 @@ namespace Debug
 
         ~DebugSection()
         {
-            DEBUG_UNDENT
-                    kdDebug() << __indent << "END: " << m_label << endl;
+            DEBUG_UNINDENT
+            kdDebug() << __indent << "END: " << m_label << endl;
         }
 
     private:

@@ -30,7 +30,6 @@
 
 PlaylistLoader::PlaylistLoader( QObject *recipient, const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
     : ThreadWeaver::DependentJob( recipient, "PlaylistLoader" )
-    , m_URLs( urls )
     , m_dirLister( new KDirLister() )
     , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
     , m_playFirstUrl( playFirstUrl )
@@ -48,11 +47,16 @@ PlaylistLoader::PlaylistLoader( QObject *recipient, const KURL::List &urls, QLis
 
     // BEGIN Read folders recursively
     KURL::List::ConstIterator it;
-    KURL::List::ConstIterator end = m_URLs.end();
+    const KURL::List::ConstIterator end = urls.end();
 
-    for( it = m_URLs.begin(); it != end && !isAborted(); ++it )
+    for( it = urls.begin(); it != end && !isAborted(); ++it )
     {
-        const KURL url = *it;
+        const KURL &url = *it;
+
+        if ( isPlaylist( url ) && !url.isLocalFile() ) {
+            new RemotePlaylistFetcher( recipient, url );
+            continue;
+        }
 
         if ( url.protocol() == "fetchcover" ) {
             // ignore
@@ -78,17 +82,16 @@ PlaylistLoader::PlaylistLoader( QObject *recipient, const KURL::List &urls, QLis
                    url.setProtocol("file");
                    m_fileURLs.append( url );
                }
-        } else
-            if ( url.isLocalFile() ) {
-                if ( QFileInfo( url.path() ).isDir() )
+        }
+        else if ( url.isLocalFile() ) {
+            if ( QFileInfo( url.path() ).isDir() )
                     recurse( url );
-                else
-                    m_fileURLs.append( url );
-            }
-            else if ( !recurse( url ) )
+            else
                 m_fileURLs.append( url );
+        }
+        else if ( !recurse( url ) )
+            m_fileURLs.append( url );
     }
-    // END
 
     delete m_dirLister;
 }
@@ -101,43 +104,6 @@ PlaylistLoader::~PlaylistLoader()
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 /////////////////////////////////////////////////////////////////////////////////////
-
-#include <ktempfile.h>
-#include <kio/netaccess.h>
-#include <kcursor.h>
-#include <kmessagebox.h>
-#include <klocale.h>
-void
-PlaylistLoader::downloadPlaylist( const KURL &url, QListView *listView, QListViewItem *item, bool directPlay )
-{
-    //KIO::NetAccess can make it's own tempfile
-    //but we need to add .pls/.m3u extension or the Loader will fail
-    QString path = url.filename();
-    KTempFile tmpfile( QString::null, path.mid( path.findRev( '.' ) ) ); //use default prefix
-    path = tmpfile.name();
-
-//TODO    setStatus( i18n("Retrieving playlist...") );
-
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
-        const bool succeeded = KIO::NetAccess::download( url, path, listView );
-    QApplication::restoreOverrideCursor();
-
-    if( succeeded )
-    {
-        //TODO delete the tempfile
-        KURL url;
-        url.setPath( path );
-
-        ThreadWeaver::instance()->queueJob( new PlaylistLoader( listView, KURL::List( url ), item, directPlay ) );
-
-    } else {
-
-        amaroK::StatusBar::instance()->longMessage(
-                i18n("<p>The playlist, <i>'%1'</i>, could not be downloaded.").arg( url.prettyURL() ),
-                KDE::StatusBar::Sorry );
-        tmpfile.unlink();
-    }
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -152,19 +118,15 @@ PlaylistLoader::doJob()
     KURL::List::ConstIterator it;
     KURL::List::ConstIterator end = m_fileURLs.end();
 
-    for ( it = m_fileURLs.begin(); it != end && !isAborted(); ++it )
-    {
+    for ( it = m_fileURLs.begin(); it != end && !isAborted(); ++it ) {
         incrementProgress();
 
         const KURL &url = *it;
 
-        if ( url.isLocalFile() && isPlaylist( url ) ) {
-            if ( loadPlaylist( url.path() ) )
-                continue;
-            else
-                amaroK::StatusBar::instance()->longMessageThreadSafe(
-                        i18n( "The playlist located at '%1' could not be loaded. "
-                              "Sorry, for the lack of detail, I'll improve this code soon!" ) );
+        if ( isPlaylist( url ) ) {
+            if ( !loadPlaylist( url.path() ) )
+                m_badURLs += url;
+            continue;
         }
 
         if ( EngineController::canDecode( url ) )
@@ -192,7 +154,7 @@ PlaylistLoader::completeJob()
                 i18n("These URLs could not be loaded into the playlist: " ) ); //TODO
 
         for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
-            kdDebug() << *it << endl;
+            debug() << *it << endl;
     }
 
     //syncronous, ie not using eventLoop
@@ -207,7 +169,7 @@ PlaylistLoader::postItem( const KURL &url, const QString &title, const uint leng
     if ( !title.isEmpty())
         bundle.setTitle( title );
 
-    if ( length != MetaBundle::Undetermined )
+    if ( (int)length != MetaBundle::Undetermined )
         bundle.setLength( length );
 
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle, m_markerListViewItem, m_playFirstUrl ) );
@@ -366,3 +328,50 @@ PlaylistLoader::postItem( const KURL &url )
 
     m_playFirstUrl = false;
 }
+
+
+/// @class RemotePlaylistFetcher
+
+#include <ktempfile.h>
+#include <kio/job.h>
+#include <klocale.h>
+
+RemotePlaylistFetcher::RemotePlaylistFetcher( QObject *parent, const KURL &source )
+    : QObject( parent )
+    , m_source( source )
+{
+    //We keep the extension so the PlaylistLoader knows what file type it is
+    QString path = source.path();
+    KTempFile tempfile( QString::null /*use default prefix*/, path.mid( path.findRev( '.' ) ) );
+
+    m_destination.setPath( tempfile.name() );
+
+    KIO::Job *job = KIO::file_copy( m_source, m_destination,
+            -1,      /* permissions, this means "do what you think" */
+            true,    /* overwrite */
+            false,   /* resume download */
+            false ); /* don't show stupid UIServer dialog */
+
+    amaroK::StatusBar::instance()->newProgressOperation( job )
+            .setDescription( i18n("Retrieving Playlist") );
+
+    connect( job, SIGNAL(result( KIO::Job* )), SLOT(result( KIO::Job* )) );
+
+    //TODO delete the tempfile
+}
+
+void
+RemotePlaylistFetcher::result( KIO::Job *job )
+{
+    if ( job->error() )
+        return;
+
+    debug() << "Playlist was downloaded successfully\n";
+
+    const KURL url = static_cast<KIO::FileCopyJob*>(job)->destURL();
+    ThreadWeaver::instance()->queueJob( new PlaylistLoader( parent(), url, 0 ) );
+
+    deleteLater();
+}
+
+#include "playlistloader.moc"

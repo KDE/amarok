@@ -362,23 +362,10 @@ Playlist::insertMedia( KURL::List list, int options )
 void
 Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
-    //TODO queue these in the threadweaver?
-    if ( list.count() == 1 ) {
-        const KURL &url = list.front();
-        if ( PlaylistLoader::isPlaylist( url ) ) {
-            if ( !url.isLocalFile() ) {
-                PlaylistLoader::downloadPlaylist( url, this, after, directPlay );
-                return;
-            }
-        }
-    }
-
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
         ThreadWeaver::instance()->queueJob( new PlaylistLoader( this, list, after, directPlay ) );
     }
-
-    return;
 }
 
 QString

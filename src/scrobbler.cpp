@@ -884,7 +884,7 @@ void ScrobblerSubmitter::announceSubmit(
     else
     {
         if ( tracks == 1 )
-            _short = i18n( "Failed to submit '%1'" ).arg( item->title() );
+            _short = i18n( "Failed to submit '%1' to Audioscrobbler" ).arg( item->title() );
         else
         {
             _short = i18n( "Failed to submit several tracks to Audioscrobbler" );

@@ -19,7 +19,7 @@ public:
         , progress( progress )
     {}
 
-    int progress;
+    const int progress;
 };
 
 using amaroK::StatusBar;

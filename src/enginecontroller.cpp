@@ -17,6 +17,7 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "enginebase.h"
@@ -202,7 +203,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     //TODO a KFileItem version? <- presumably so we can mimetype check
 
     const QString fileName = url.fileName();
-    const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
+    const QString ext = amaroK::extension( fileName );
 
     //FIXME why do we do this? Please add comments to odd looking code!
     if ( ext == "m3u" || ext == "pls" ) return false;

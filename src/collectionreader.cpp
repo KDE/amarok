@@ -4,6 +4,7 @@
 
 #define DEBUG_PREFIX "CollectionReader"
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "collectionreader.h"
@@ -14,7 +15,6 @@
 #include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
-#include <kstandarddirs.h>
 #include "metabundle.h"
 #include "playlistbrowser.h"
 #include <sys/types.h> //stat
@@ -23,14 +23,6 @@
 #include <taglib/tag.h>
 #include <unistd.h>    //stat
 
-namespace amaroK
-{
-    QString
-    saveLocation( const QString &directory )
-    {
-        return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
-    }
-}
 
 CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )
     : DependentJob( parent, "CollectionReader" )
@@ -216,10 +208,6 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
     closedir( d );
 }
 
-
-static inline QString extension( const QString &filename ) { return filename.mid( filename.findRev( '.' ) + 1 ).lower(); }
-static inline QString directory( const QString &filename ) { return filename.section( '/', 0, -2 ); }
-
 void
 CollectionReader::readTags( const QStringList& entries )
 {
@@ -242,8 +230,8 @@ CollectionReader::readTags( const QStringList& entries )
         KURL url; url.setPath( *it );
         QValueList<CoverBundle> covers;
         QStringList images;
-        const QString ext = extension( *it );
-        const QString dir = directory( *it );
+        const QString ext = amaroK::extension( *it );
+        const QString dir = amaroK::directory( *it );
 
         // Append path to logfile
         log << url.path().local8Bit() << "\n";
@@ -282,7 +270,7 @@ CollectionReader::readTags( const QStringList& entries )
             images << url.path();
 
         // Update Compilation-flag, when this is the last loop-run or we're going to switch to another dir in the next run
-        if ( it == entries.fromLast() || dir != directory( *++QStringList::ConstIterator( it ) ) )
+        if ( it == entries.fromLast() || dir != amaroK::directory( *++QStringList::ConstIterator( it ) ) )
         {
             // we entered the next directory
             foreach( images )

@@ -27,7 +27,6 @@ public:
     enum Format { M3U, PLS, XML, UNKNOWN };
     enum EventType { Item = 3000, DomItem };
 
-    static void downloadPlaylist( const KURL&, QListView*, QListViewItem*, bool directPlay = false );
     static bool isPlaylist( const KURL& );        //inlined
     static Format playlistType( const QString& ); //inlined
 
@@ -73,11 +72,8 @@ protected:
 private:
     bool recurse( const KURL&, bool recursing = false );
     void postItem( const KURL& );
-    void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
-    const KURL::List m_URLs;
-
     KURL::List m_badURLs;
     KURL::List m_fileURLs;
 
@@ -89,6 +85,20 @@ private:
 protected:
     PlaylistLoader( const PlaylistLoader& ); //undefined
     PlaylistLoader &operator=( const PlaylistLoader& ); //undefined
+};
+
+
+class RemotePlaylistFetcher : public QObject {
+    Q_OBJECT
+
+    const KURL m_source;
+    KURL m_destination;
+
+public:
+    RemotePlaylistFetcher( QObject *parent, const KURL &source );
+
+private slots:
+    void result( KIO::Job* );
 };
 
 

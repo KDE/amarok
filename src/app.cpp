@@ -884,6 +884,11 @@ namespace amaroK
     {
         QApplication::restoreOverrideCursor();
     }
+
+    QString saveLocation( const QString &directory )
+    {
+        return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
+    }
 }
 
 namespace Debug

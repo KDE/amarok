@@ -109,7 +109,7 @@ PlaylistWindow::addBrowser( const char *name, const QString &title, const QStrin
         clock_t finish = clock();
 
         const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
-    DEBUG_UNDENT
+    DEBUG_UNINDENT
 
     debug() << "END: Time: " << duration << "s\n";
 }
@@ -117,8 +117,8 @@ PlaylistWindow::addBrowser( const char *name, const QString &title, const QStrin
 
 PlaylistWindow::PlaylistWindow()
    : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
-   , EngineObserver( EngineController::instance() )
    , KXMLGUIClient()
+   , EngineObserver( EngineController::instance() )
    , m_lastBrowser( 0 )
 {
     s_instance = this;
@@ -339,7 +339,7 @@ PlaylistWindow::init()
             addBrowser<MediaBrowser>( "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
 
-        DEBUG_UNDENT
+        DEBUG_UNINDENT
     //</Browsers>
 
 
