@@ -339,11 +339,11 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //menu.setItemEnabled( APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        if( K3bExporter::isAvailable() ) {
-            menu.insertSeparator();
-            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
-        }
+        menu.insertSeparator();
+        menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
+        menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
+        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
 
         switch ( menu.exec( point ) )
         {
@@ -378,11 +378,12 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Append To Playlist" ), APPEND );
         menu.insertItem( SmallIcon( "next" ), i18n( "&Queue After Current Track" ), ASNEXT );
         menu.insertItem( SmallIcon( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        if( K3bExporter::isAvailable() ) {
-            menu.insertSeparator();
-            menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
-            menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
-        }
+        menu.insertSeparator();
+        menu.insertItem( SmallIcon( "cdaudio_unmount" ), i18n( "&Burn Audio-CD" ), BURN_AUDIOCD );
+        menu.insertItem( SmallIcon( "cdrom_unmount" ), i18n( "Burn &Data-CD" ), BURN_DATACD );
+        menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+        menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+
          int id = menu.exec( point );
 
         QStringList list = QStringList::split( " @@@ ", url.path() );
@@ -402,7 +403,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
                     KURL tmp;
                     tmp.setPath( values[i] );
-                    if( EngineController::canDecode( tmp ) ) Playlist::instance()->appendMedia( tmp, false, true );
+                    Playlist::instance()->appendMedia( tmp, false, true );
                 }
             break;
 
@@ -413,7 +414,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
                     KURL tmp;
                     tmp.setPath( values[i] );
-                    if( EngineController::canDecode( tmp ) ) Playlist::instance()->queueMedia( tmp );
+                    Playlist::instance()->queueMedia( tmp );
                 }
             break;
 
@@ -426,7 +427,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
                     KURL tmp;
                     tmp.setPath( values[i] );
-                    if( EngineController::canDecode( tmp ) ) Playlist::instance()->appendMedia( tmp, false, true );
+                    Playlist::instance()->appendMedia( tmp, false, true );
                 }
             break;
 
@@ -451,7 +452,7 @@ void ContextBrowser::showHome() //SLOT
     m_db = new CollectionDB();
     // Triggers redisplay when new cover image is downloaded
     #ifdef AMAZON_SUPPORT
-    connect( m_db, SIGNAL( coverFetched(const QString&) ), this, SLOT( showCurrentTrack() ) );
+    connect( m_db, SIGNAL( coverFetched(const QString&, const QString &) ), this, SLOT( showCurrentTrack() ) );
     #endif
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );

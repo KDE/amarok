@@ -330,13 +330,15 @@ inline void FileBrowser::selectAllFiles()
 }
 
 
-void FileBrowser::burnDataCd() // SLOT
+inline void FileBrowser::burnDataCd() // SLOT
 {
+    K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::DataCD );
 }
 
 
-void FileBrowser::burnAudioCd() // SLOT
+inline void FileBrowser::burnAudioCd() // SLOT
 {
+    K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::AudioCD );
 }
 
 

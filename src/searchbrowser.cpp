@@ -1,7 +1,7 @@
 // (c) Christian Muehlhaeuser 2004
 // See COPYING file for licensing information
 
-
+#include "k3bexporter.h"
 #include "playlist.h"
 #include "searchbrowser.h"
 
@@ -11,6 +11,7 @@
 #include <kcursor.h>      //waitCursor()
 #include <kdebug.h>
 #include <klineedit.h>
+#include <kpopupmenu.h>
 #include <kurl.h>
 #include <kurlcombobox.h>
 #include <stdlib.h>
@@ -30,10 +31,43 @@ SearchBrowser::SearchListView::SearchListView( QWidget *parent, const char *name
         : KListView ( parent, name )
 {}
 
+KURL::List SearchBrowser::SearchListView::selectedUrls()
+{
+    KURL::List list;
+
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected); *it; ++it )
+        list += KURL( (*it)->text( 2 ) );
+
+    return list;
+}
+
+QDragObject *SearchBrowser::SearchListView::dragObject()
+{
+    return new KURLDrag( selectedUrls(), this );
+}
+
 
 SearchBrowser::HistoryListView::HistoryListView( QWidget *parent, const char *name )
         : KListView ( parent, name )
 {}
+
+KURL::List SearchBrowser::HistoryListView::selectedUrls()
+{
+    KURL::List list;
+
+    setSelected( currentItem(), true );
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    for(  ; it.current(); ++it )
+        list += static_cast<HistoryListView::Item*>(*it)->urlList();
+
+    return list;
+}
+
+QDragObject *SearchBrowser::HistoryListView::dragObject()
+{
+    return new KURLDrag( selectedUrls(), viewport() );
+}
+
 
 
 SearchBrowser::SearchBrowser( const char *name )
@@ -92,6 +126,10 @@ SearchBrowser::SearchBrowser( const char *name )
     connect( m_searchButton, SIGNAL( clicked() ),          SLOT( slotStartSearch() ) );
     connect( resultView,     SIGNAL( doubleClicked( QListViewItem *, const QPoint &, int ) ),
              SLOT( slotDoubleClicked( QListViewItem *, const QPoint &, int ) ) );
+    connect( resultView, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
+             SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
+    connect( historyView, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
+             SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
     connect( historyView,    SIGNAL( selectionChanged() ), SLOT( historySelectionChanged() ) );
 
     setFocusProxy( searchEdit ); //so focus is given to a sensible widget when the tab is opened
@@ -149,34 +187,6 @@ void SearchBrowser::slotStartSearch()
             m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, historyItem ) );
         }
     }
-}
-
-
-QDragObject *SearchBrowser::SearchListView::dragObject()
-{
-    KURL::List list;
-    KURL url;
-
-    for( QListViewItemIterator it( this, QListViewItemIterator::Selected); *it; ++it )
-    {
-        url.setPath( (*it)->text( 2 ) );
-        list += url;
-    }
-
-    return new KURLDrag( list, this );
-}
-
-
-QDragObject *SearchBrowser::HistoryListView::dragObject()
-{
-    KURL::List list;
-
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
-    for( ; it.current(); ++it ) {
-        list += static_cast<HistoryListView::Item*>( it.current() )->urlList();
-    }
-
-    return new KURLDrag( list, viewport() );
 }
 
 
@@ -257,17 +267,57 @@ void SearchBrowser::slotDoubleClicked( QListViewItem *item, const QPoint &, int 
 }
 
 
-void SearchBrowser::historySelectionChanged()
+void SearchBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int )
 {
-    KURL::List list;
+    if( !item ) return;
 
-    historyView->setSelected( historyView->currentItem(), true );
-    QListViewItemIterator it( historyView, QListViewItemIterator::Selected );
-    for(  ; it.current(); ++it ) {
-        list += static_cast<HistoryListView::Item*>(*it)->urlList();
+    enum Actions { MAKE, APPEND, QUEUE, BURN_DATACD, BURN_AUDIOCD, REMOVE };
+
+    KPopupMenu menu( this );
+    menu.insertItem( i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( i18n( "&Make Playlist" ), MAKE );
+    menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
+    menu.insertSeparator();
+    menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+    menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+    menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+    menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
+    if( item->listView() == historyView ) {
+        menu.insertSeparator();
+        menu.insertItem( i18n( "&Remove" ), REMOVE );
     }
 
-    showResults( list );
+    switch( menu.exec( p ) ) {
+            case MAKE:
+                Playlist::instance()->clear(); //FALL THROUGH
+
+            case APPEND:
+                Playlist::instance()->appendMedia( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls() );
+                break;
+
+            case QUEUE:
+                Playlist::instance()->queueMedia( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls() );
+                break;
+
+            case BURN_DATACD:
+                 K3bExporter::instance()->exportTracks( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls(), K3bExporter::DataCD );
+                 break;
+
+            case BURN_AUDIOCD:
+                 K3bExporter::instance()->exportTracks( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls(), K3bExporter::AudioCD );
+                 break;
+
+            case REMOVE:
+                delete item;
+                historySelectionChanged();
+                break;
+        }
+}
+
+
+void SearchBrowser::historySelectionChanged()
+{
+    showResults( historyView->selectedUrls() );
 }
 
 

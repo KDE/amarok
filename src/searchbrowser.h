@@ -23,6 +23,7 @@ class SearchBrowser : public QVBox
     {
         public:
             SearchListView( QWidget *parent=0, const char *name=0 );
+            KURL::List selectedUrls();
 
         protected:
             virtual class QDragObject *dragObject();
@@ -43,6 +44,7 @@ class SearchBrowser : public QVBox
             };
 
         HistoryListView( QWidget *parent=0, const char *name=0 );
+        KURL::List selectedUrls();
 
         protected:
             virtual class QDragObject *dragObject();
@@ -58,6 +60,7 @@ class SearchBrowser : public QVBox
     private slots:
         void stopSearch();
         void slotDoubleClicked( QListViewItem *, const QPoint &, int );
+        void showContextMenu( QListViewItem *, const QPoint &, int );
         void historySelectionChanged();
 
     private:

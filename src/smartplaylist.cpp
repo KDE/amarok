@@ -3,6 +3,7 @@
 
 #include "collectionbrowser.h"
 #include "collectiondb.h"
+#include "k3bexporter.h"
 #include "playlist.h"
 #include "smartplaylist.h"
 #include "smartplaylisteditor.h"
@@ -339,22 +340,35 @@ void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, i
 
     if( !item ) return;
 
+    enum Id { BURN_DATACD, BURN_AUDIOCD, EDIT, REMOVE };
+
+    KPopupMenu menu( this );
+    //TODO menu.insertItem( i18n("Edit"), EDIT );
+    menu.insertItem( i18n("Burn to CD as data"), BURN_DATACD );
+    menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
+    menu.insertItem( i18n("Burn to CD as audio"), BURN_AUDIOCD );
+    menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
     if( item->isCustom() ) {
-        enum Id { EDIT, REMOVE };
-
-        KPopupMenu menu;
-        //menu.insertItem( i18n("Edit"), EDIT );
+        menu.insertSeparator();
         menu.insertItem( i18n("Remove"), REMOVE );
-
-        switch( menu.exec( p ) ) {
-            case EDIT:
-                break;
-
-            case REMOVE:
-                removeSelectedPlaylists();
-                break;
-        };
     }
+
+    switch( menu.exec( p ) ) {
+        case BURN_DATACD:
+            K3bExporter::instance()->exportTracks( loadSmartPlaylist( item ), K3bExporter::DataCD );
+            break;
+
+        case BURN_AUDIOCD:
+            K3bExporter::instance()->exportTracks( loadSmartPlaylist( item ), K3bExporter::AudioCD );
+            break;
+
+        case EDIT:
+            break;
+
+        case REMOVE:
+            removeSelectedPlaylists();
+            break;
+    };
 
     #undef item
 }
