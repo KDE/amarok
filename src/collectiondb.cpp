@@ -2425,7 +2425,7 @@ QueryBuilder::clear()
 QString
 QueryBuilder::tableName( int table )
 {
-    QString tables = "";
+    QString tables;
 
     if ( table & tabSong )   tables += ",tags";
     if ( table & tabArtist ) tables += ",artist";
@@ -2442,7 +2442,7 @@ QueryBuilder::tableName( int table )
 QString
 QueryBuilder::valueName( int value )
 {
-    QString values = "";
+    QString values;
 
     if ( value & valID )          values += "id";
     if ( value & valName )        values += "name";
