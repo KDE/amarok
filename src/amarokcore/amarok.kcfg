@@ -75,7 +75,7 @@
     <entry key="Animate Tray Icon" type="Bool">
         <label>Whether to animate the systray icon</label>
         <whatsthis>Enable/Disable tray icon animation.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Show Player Window" type="Bool">
         <label>Whether to show player window</label>
