@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: Parameter "%score" shows the current song's score in OSD.
   CHG: When you delete a song within amaroK, it gets removed from
        the Collection automatically.
   FIX: Directory column in the playlist was eating the first letter.
