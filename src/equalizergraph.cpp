@@ -58,9 +58,11 @@ EqualizerGraph::paintEvent( QPaintEvent* )
     bitBlt( m_composePixmap, 0, 0, m_backgroundPixmap );
 
     QPainter p( m_composePixmap );
-    p.setPen( Qt::black );
 
-//     int cols[ 19 ];
+    QColor color( kapp->palette().active().highlight() );
+    int h, s, v;
+    color.getHsv( &h, &s, &v );
+
     int i, y, ymin, ymax, py = 0;
     float x[] = {0, 11, 23, 35, 47, 59, 71, 83, 97, 109}, yf[ 10 ];
 
@@ -89,6 +91,11 @@ EqualizerGraph::paintEvent( QPaintEvent* )
 
         py = y;
         for ( y = ymin; y <= ymax; y++ ) {
+            s = y - height() / 2;
+            if ( s < 0 ) s *= -1;
+            color.setHsv( h, 255 - s * 23, v );
+            p.setPen( color );
+
             p.drawPoint( i, y );
         }
     }
