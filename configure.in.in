@@ -316,6 +316,7 @@ fi
 ###############################################################################
 # BEGIN SQLITE CHECK
 ###############################################################################
+
 LIB_SQLITE=""
 
 AC_ARG_WITH(included-sqlite,
@@ -342,6 +343,11 @@ fi
 AC_SUBST(LIB_SQLITE)
 AM_CONDITIONAL(with_included_sqlite, [test x$included_sqlite = xyes])
 
+
+# Determine pointer size for sqlite
+
+KDE_CHECK_TYPES
+AC_DEFINE(SQLITE_PTR_SZ, SIZEOF_CHAR_P, [Determine pointer size for SQLite])
 
 ###############################################################################
 # END SQLITE CHECK
@@ -500,9 +506,5 @@ fi
 ###############################################################################
 # END DO_NOT_COMPILE CHECK
 ###############################################################################
-
-
-## needed for SQLite
-KDE_CHECK_TYPES
 
 

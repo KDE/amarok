@@ -966,9 +966,9 @@ InputPipeline::~InputPipeline()
 
     if ( GST_IS_THREAD( thread ) )
     {
-        gst_element_send_event( thread, gst_event_new( GST_EVENT_FLUSH ) );
-        gst_element_set_state( thread, GST_STATE_PAUSED );
+        gst_element_send_event( thread, gst_event_new( GST_EVENT_EOS ) );
 
+        gst_element_set_state( thread, GST_STATE_PAUSED );
         // Wait until queue is empty
         int filled = 1;
         while( filled ) {
@@ -979,11 +979,11 @@ InputPipeline::~InputPipeline()
         if ( GstEngine::instance()->m_pipelineFilled )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
 
-        if ( gst_element_get_state( thread ) != GST_STATE_NULL )
+        if ( GST_IS_THREAD( thread ) ) {
+            kdDebug() << "Unreffing input thread.\n";
             gst_element_set_state( thread, GST_STATE_NULL );
-
-        kdDebug() << "Unreffing input thread.\n";
-        gst_object_unref( GST_OBJECT( thread ) );
+            gst_object_unref( GST_OBJECT( thread ) );
+        }
     }
 
     kdDebug() << "END " << k_funcinfo << endl;

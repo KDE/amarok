@@ -1,15 +1,16 @@
 noinst_LTLIBRARIES = \
     libsqlite.la
 
-INCLUDES = \
-    $(all_includes)
-    
 KDE_CFLAGS = \
     -w
 
+libsqlite_la_CFLAGS = \
+    $(all_includes) \
+    -DTHREADSAFE=1
+
 libsqlite_la_LDFLAGS = \
     $(LIBPTHREAD)
-  
+
 libsqlite_la_SOURCES = \
     attach.c \
     auth.c \
