@@ -8,10 +8,6 @@ TODO-list for amaroK
                       
 SHORT-TERM (URGENT):
 
-    * chg: #13<mxcl> use QApplication::setPalette to adjust application colours, as it propagates
-              changes to all widgets and will hopefully deal with the selection colour issues in
-              the browser/janus widgets (although we have to stop it setting browserWin colors)
-
     * fix: #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing). 
               such zombies can lead to very weird behaviour on next amarok start and eat ressources,
               and the user has no chance of noticing what's wrong.
@@ -39,6 +35,7 @@ SHORT-TERM (URGENT):
              was right, but I'm not sure if that's to everyone's taste. I think you should be able to
              click on a single taskbar entry and have both widgets raised. Rather than have to click on
              both.
+             <mxcl> let's not worry about this until the next release.. :-)
 
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
            <markey> replace with "add all media in current directory".
@@ -51,14 +48,18 @@ SHORT-TERM (URGENT):
 
     * fix: <muesli> clean up the GUI
 
-    * fix: opening hidden directories is impossible in filebrowser
-
     * fix: redirected URLs do not work (? - we need some testcase)
-
-    * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
 
 MID-TERM:
+
+    * chg: <mxcl> use QApplication::setPalette to adjust application colours, as it propagates
+           changes to all widgets and will hopefully deal with the selection colour issues in
+           the browser/janus widgets (although we have to stop it setting browserWin colors)
+    
+    * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
+
+    * fix: opening hidden directories is impossible in filebrowser
 
     * fix: <mxcl>KListView sets the hand cursor on column(0) of the playlist. This is not
            relevant to amaroK since we are naughty and don't obey KDE's single click mode
