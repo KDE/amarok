@@ -1407,8 +1407,10 @@ void PlayerApp::slotAnimTimer()
 
 void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 {
+   if (item) {
     m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
     slotPlay();
+   }
 }
 
 
