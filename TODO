@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #120 being the highest available (take this one for your next bug and increase here)
+           #121 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 120 <markey> Regression: when pressing stop, currentTrack stops glowing at random glow-state.
+
   FIX 119 <markey> Use KFMI for trackinfo dialog, and use the same dialog in CollectionBrowser -->markey
 
   FIX 118 <markey> Option for auto-centering the OSD horizontally (or even do it by default).
