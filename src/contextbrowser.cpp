@@ -1041,9 +1041,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // <Albums by this artist>
     values = CollectionDB::instance()->query( QString( "SELECT DISTINCT album.name, album.id "
-                                   "FROM tags, album "
-                                   "WHERE album.id = tags.album AND tags.artist = %1 AND album.name <> '' "
-                                   "ORDER BY album.name;" )
+                                   "FROM tags, album, year "
+                                   "WHERE album.id = tags.album AND year.id = tags.year AND tags.artist = %1 AND album.name <> '' "
+                                   "ORDER BY (year.name+0) DESC, album.name;" )
                           .arg( artist_id ) );
 
     if ( !values.isEmpty() )
@@ -1058,21 +1058,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
             "</div>"
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
-        // place current album first
         uint vectorPlace = 0;
+	// find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
-        // if album found, swap that entry with the first one
-        if ( vectorPlace != 0 && vectorPlace < values.count() )
-        {
-            QString tmp = values[ vectorPlace ];
-            values[ vectorPlace ] = values[ 0 ];
-            values[ 0 ] = tmp;
-            tmp = values[ vectorPlace+1 ];
-            values[ vectorPlace+1 ] = values[ 1 ];
-            values[ 1 ] = tmp;
-        }
-
         for ( uint i = 0; i < values.count(); i += 2 )
         {
             QStringList albumValues = CollectionDB::instance()->query( QString(
@@ -1129,7 +1118,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << values[ i+1 ] //album.id
                     << escapeHTML( values[ i ] )
                     << albumYear
-                    << ( i ? "none" : "block" )
+                    << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
                     << values[ i+1 ] ) );
 
             if ( !albumValues.isEmpty() )
