@@ -1,17 +1,17 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
-#include "amarokconfig.h"
 #include "actionclasses.h"
-#include "enginecontroller.h"
+#include "amarokconfig.h"
 #include "app.h"    //actionCollection() and a SLOT
+#include "enginecontroller.h"
 #include "socketserver.h" //Vis::Selector::showInstance()
 
 #include <kaction.h>
 #include <kapplication.h>
 #include <khelpmenu.h>
-#include <klocale.h>
 #include <kiconloader.h>
+#include <klocale.h>
 
 
 using namespace amaroK;
@@ -98,8 +98,9 @@ Menu::slotActivated( int index )
     }
 }
 
-
-
+//////////////////////////////////////////////////////////////////////////////////////////
+// MenuAction
+//////////////////////////////////////////////////////////////////////////////////////////
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 
@@ -137,8 +138,9 @@ MenuAction::plug( QWidget *w, int index )
     else return -1;
 }
 
-
-
+//////////////////////////////////////////////////////////////////////////////////////////
+// PlayPauseAction
+//////////////////////////////////////////////////////////////////////////////////////////
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
   : KAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
 {
@@ -169,8 +171,9 @@ PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
     }
 }
 
-
-
+//////////////////////////////////////////////////////////////////////////////////////////
+// AnalyzerAction
+//////////////////////////////////////////////////////////////////////////////////////////
 #include "blockanalyzer.h"
 
 AnalyzerAction::AnalyzerAction( KActionCollection *ac )
@@ -205,19 +208,75 @@ AnalyzerAction::plug( QWidget *w, int index )
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// VolumeAction
+//////////////////////////////////////////////////////////////////////////////////////////
+#include "qslider.h"
 
+VolumeAction::VolumeAction( KActionCollection *ac )
+  : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
+{}
+
+int
+VolumeAction::plug( QWidget *w, int index )
+{
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+
+    if( bar && kapp->authorizeKAction( name() ) )
+    {
+        EngineController::instance()->attach( this );
+        
+        const int id = KAction::getToolButtonID();
+        addContainer( w, id );
+        connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+
+        m_slider = new QSlider( Qt::Vertical, w, "ToolBarVolume" );
+        //FIXME is there a way to get some sensible height?
+        m_slider->setFixedHeight( 35 ); 
+        m_slider->setMaxValue( amaroK::VOLUME_MAX );
+        connect( m_slider, SIGNAL( sliderMoved( int ) ),
+                 this,       SLOT( sliderMoved( int ) ) );
+
+        bar->insertWidget( id, 0, m_slider, index );
+        
+        return containerCount() - 1;
+    }
+    else return -1;
+}
+
+void
+VolumeAction::engineVolumeChanged( int value )
+{
+    m_slider->setValue( amaroK::VOLUME_MAX - value );
+}
+
+void
+VolumeAction::sliderMoved( int value )
+{
+    EngineController::instance()->setVolume( amaroK::VOLUME_MAX - value );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// RandomAction
+//////////////////////////////////////////////////////////////////////////////////////////
 RandomAction::RandomAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Random &Mode" ), &AmarokConfig::setRandomMode, ac, "random_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::randomMode() );
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// RepeatTrackAction
+//////////////////////////////////////////////////////////////////////////////////////////
 RepeatTrackAction::RepeatTrackAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Repeat &Track" ), &AmarokConfig::setRepeatTrack, ac, "repeat_track" )
 {
     KToggleAction::setChecked( AmarokConfig::repeatTrack() );
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// RepeatPlaylistAction
+//////////////////////////////////////////////////////////////////////////////////////////
 RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
     ToggleAction( i18n( "Repeat &Playlist" ), &AmarokConfig::setRepeatPlaylist, ac, "repeat_playlist" )
 {

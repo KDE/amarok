@@ -35,6 +35,8 @@ namespace amaroK
     class OSD;
     class TrayIcon;
     class DcopHandler;
+        
+    static const int VOLUME_MAX = 100;
 }
 
 class PlaylistWindow;

@@ -122,7 +122,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         m_pSlider->setGeometry( 4,103, 303,12 );
         m_pVolSlider->setGeometry( 294,18, 12,79 );
 
-        m_pVolSlider->setMaxValue( VOLUME_MAX );
+        m_pVolSlider->setMaxValue( amaroK::VOLUME_MAX );
 
         connect( m_pSlider,    SIGNAL( sliderReleased() ),
                  this,         SLOT  ( slotSliderReleased() ) );

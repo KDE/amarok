@@ -106,7 +106,6 @@ class PlayerWidget : public QWidget, public EngineObserver
         void hideEvent( QHideEvent * );
 
         static const int SCROLL_RATE = 1;
-        static const int VOLUME_MAX  = 100;
         static const int ANIM_TIMER  = 30;
 
         // ATTRIBUTES ------

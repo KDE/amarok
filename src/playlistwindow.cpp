@@ -88,6 +88,7 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
         new amaroK::MenuAction( ac );
         new amaroK::PlayPauseAction( ac );
         new amaroK::AnalyzerAction( ac );
+        new amaroK::VolumeAction( ac );
         new amaroK::RepeatTrackAction( ac );
         new amaroK::RepeatPlaylistAction( ac );
         new amaroK::RandomAction( ac );

@@ -17,6 +17,9 @@
  <Action name="pause" />
  <Action name="stop" />
  <Action name="next" />
+ <Separator lineSeparator="true"/>
+ <Action name="toolbar_volume" />
+ <Separator lineSeparator="true"/>
  <Action name="amarok_menu"/>
 </ToolBar>
 
