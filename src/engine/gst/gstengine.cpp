@@ -147,7 +147,8 @@ GstEngine::shutdown_cb() //static
 
 GstEngine::GstEngine()
         : Engine::Base( /*StreamingMode*/ Engine::Signal, /*hasConfigure*/ true, /*hasXFade*/ true )
-        , m_gst_thread( 0 )
+        , m_gst_inputThread( 0 )
+        , m_gst_outputThread( 0 )
         , m_currentInput( 0 )
         , m_streamBuf( new char[STREAMBUF_SIZE] )
         , m_transferJob( 0 )
@@ -166,8 +167,8 @@ GstEngine::~GstEngine()
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
 
-    if ( m_gst_thread ) {
-        g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
+    if ( m_gst_outputThread ) {
+        g_signal_connect( G_OBJECT( m_gst_outputThread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_outputThread );
         destroyPipeline();
         // Wait for pipeline to shut down properly
         while ( !m_shutdown ) ::usleep( 20000 ); // 20 msec
@@ -266,7 +267,6 @@ uint
 GstEngine::position() const
 {
     if ( !m_currentInput ) return 0;
-    if ( !m_currentInput->thread ) return 0;
 
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
@@ -280,16 +280,14 @@ GstEngine::position() const
 Engine::State
 GstEngine::state() const
 {
-    if ( !m_gst_thread )
+    if ( !m_gst_outputThread )
         return Engine::Empty;
     if ( m_eos )
         return Engine::Idle;
     if ( !m_currentInput )
         return Engine::Empty;
-    if ( !m_currentInput->thread )
-        return Engine::Empty;
 
-    switch ( gst_element_get_state( m_currentInput->thread ) )
+    switch ( gst_element_get_state( m_currentInput->bin ) )
     {
         case GST_STATE_NULL:
             return Engine::Empty;
@@ -359,18 +357,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
-    if ( !m_gst_thread )
+    if ( !m_gst_outputThread )
         if ( !createPipeline() )
             return false;
-
-    // Set output pipeline to PLAYING if it's not already in this state
-    if ( GST_STATE( m_gst_thread ) != GST_STATE_PLAYING ) {
-        if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) ) {
-            kdError() << "Could not set output pipeline to state PLAYING!\n";
-            destroyPipeline();
-            return false;
-        }
-    }
 
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
@@ -380,7 +369,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 
     if ( url.isLocalFile() ) {
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
-        if ( !( input->src = createElement( "filesrc", input->thread ) ) ) { delete input; return false; }
+        if ( !( input->src = createElement( "filesrc", input->bin ) ) ) { delete input; return false; }
         // Set file path
         gst_element_set( input->src, "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
@@ -388,14 +377,21 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         // Create our custom streamsrc element, which transports data into the pipeline
         input->src = GST_ELEMENT( gst_streamsrc_new( m_streamBuf, &m_streamBufIndex, &m_streamBufStop ) );
         gst_element_set( input->src, "buffer_min", STREAMBUF_MIN, NULL );
-        gst_bin_add ( GST_BIN ( input->thread ), input->src );
-        g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->thread );
+        gst_bin_add ( GST_BIN ( input->bin ), input->src );
+        g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
     }
+    gst_element_link_many( input->src, input->spider, input->volume, 0 );
 
-    /* link elements */
-    gst_element_link_many( input->src, input->spider, input->volume, input->queue, m_gst_adder, 0 );
+    // Pause input thread
+    gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED );
+    // Put input bin into input thread
+    gst_bin_add( GST_BIN( m_gst_inputThread ), input->bin );
+    // Link elements
+    gst_element_link( input->volume, m_gst_adder );
+    // Play input thread
+    gst_element_set_state( m_gst_inputThread, GST_STATE_PLAYING );
 
-    if ( !gst_element_set_state( input->thread, GST_STATE_READY ) ) {
+    if ( !gst_element_set_state( input->bin, GST_STATE_READY ) ) {
         delete input;
         return false;
     }
@@ -435,18 +431,20 @@ GstEngine::play( uint )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return false;
 
-    if ( !m_currentInput->thread ) {
-        destroyInput( m_currentInput );
-        return false;
-    }
+//     // Set output pipeline to PLAYING if it's not already in this state
+//     if ( GST_STATE( m_gst_outputThread ) != GST_STATE_PLAYING ) {
+//         if ( !gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING ) ) {
+//             kdError() << "Could not set output thread to state PLAYING!\n";
+//             destroyPipeline();
+//             return false;
+//         }
+//     }
 
     /* start playing */
-    if ( !gst_element_set_state( m_currentInput->thread, GST_STATE_PLAYING ) ) {
+    if ( !gst_element_set_state( m_currentInput->bin, GST_STATE_PLAYING ) ) {
         destroyInput( m_currentInput );
         return false;
     }
-
-//     gst_element_link( m_currentInput->queue, m_gst_adder );
 
     emit stateChanged( Engine::Playing );
     return true;
@@ -461,7 +459,7 @@ GstEngine::stop()  //SLOT
 
     // When engine is in pause mode, don't fade but destroy right away
     if ( state() != Engine::Playing )
-        m_currentInput->prepareToDie();
+        destroyInput( m_currentInput );
     else
         m_currentInput->setState( InputPipeline::FADE_OUT );
 
@@ -474,12 +472,11 @@ GstEngine::pause()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return;
-    if ( !m_currentInput->thread ) return;
 
     if ( state() == Engine::Paused )
-        gst_element_set_state( m_currentInput->thread, GST_STATE_PLAYING );
+        gst_element_set_state( m_currentInput->bin, GST_STATE_PLAYING );
     else
-        gst_element_set_state( m_currentInput->thread, GST_STATE_PAUSED );
+        gst_element_set_state( m_currentInput->bin, GST_STATE_PAUSED );
 
     emit stateChanged( state() );
 }
@@ -488,7 +485,7 @@ GstEngine::pause()  //SLOT
 void
 GstEngine::seek( uint ms )  //SLOT
 {
-    if ( !m_gst_thread ) return;
+    if ( !m_gst_outputThread ) return;
 
     if ( ms > 0 )
     {
@@ -525,7 +522,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 void
 GstEngine::setVolumeSW( uint percent )  //SLOT
 {
-    if ( !m_gst_thread ) return;
+    if ( !m_gst_outputThread ) return;
 
     gst_element_set( m_gst_volume, "volume", (double) percent * 0.01, NULL );
 }
@@ -557,7 +554,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     kdDebug() << "[Gst-Engine] Fade-in finished.\n";
                     input->setState( InputPipeline::NO_FADE );
                 }
-                else if ( input->thread ) {
+                else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
@@ -571,8 +568,8 @@ void GstEngine::timerEvent( QTimerEvent* )
 
                 // Fade finished?
                 if ( input->m_fade < 0.0 )
-                    input->prepareToDie();
-                else if ( input->thread ) {
+                    destroyList.append( input );
+                else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "FADE_OUT: " << value << endl;
@@ -590,7 +587,7 @@ void GstEngine::timerEvent( QTimerEvent* )
                     kdDebug() << "[Gst-Engine] XFade-in finished.\n";
                     input->setState( InputPipeline::NO_FADE );
                 }
-                else if ( input->thread ) {
+                else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - input->m_fade;
 //                     kdDebug() << "XFADE_IN: " << value << endl;
@@ -604,28 +601,14 @@ void GstEngine::timerEvent( QTimerEvent* )
 
                 // Fade finished?
                 if ( input->m_fade < 0.0 )
-                    input->prepareToDie();
-                else if ( input->thread ) {
+                    destroyList.append( input );
+                else {
                     // Set new value for fadeout volume element
                     double value = 1.0 - log10( ( 1.0 - input->m_fade ) * 9.0 + 1.0 );
 //                     kdDebug() << "XFADE_OUT: " << value << endl;
                     gst_element_set( input->volume, "volume", value, NULL );
                 }
                 break;
-
-            case InputPipeline::NEAR_DEATH:
-                input->m_killCounter--;
-
-                int filled;
-                gst_element_get( input->queue, "current-level-buffers", &filled, NULL );
-                kdDebug() << "[Gst-Engine] Queue buffer-level: " << filled << endl;
-
-                if ( !filled || !input->m_killCounter ) {
-                    if ( !input->m_killCounter )
-                        kdWarning() << "[Gst-Engine] killCounter has reached 0.\n";
-                    // Fade transition has finished, stop playback
-                    destroyList.append( input );
-                }
         }
     }
 
@@ -813,7 +796,7 @@ GstEngine::getPluginList( const QCString& classname ) const
 bool
 GstEngine::createPipeline()
 {
-    if ( m_gst_thread )
+    if ( m_gst_outputThread )
         destroyPipeline();
 
     if ( GstConfig::soundOutput().isEmpty() ) {
@@ -827,10 +810,14 @@ GstEngine::createPipeline()
     kdDebug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
 
+    //<input>
+    if ( !( m_gst_inputThread = createElement( "thread" ) ) ) { return false; }
+    if ( !( m_gst_adder = createElement( "adder", m_gst_inputThread ) ) ) { return false; }
+    //</input>
+
     /* create a new pipeline (thread) to hold the elements */
-    if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
-    g_object_add_weak_pointer( (GObject*) m_gst_thread, (gpointer*) &m_gst_thread );
-    gst_element_set( m_gst_thread, "priority", GstConfig::threadPriority(), NULL );
+    if ( !( m_gst_outputThread = createElement( "thread" ) ) ) { return false; }
+    gst_element_set( m_gst_outputThread, "priority", GstConfig::threadPriority(), NULL );
 
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
@@ -840,26 +827,30 @@ GstEngine::createPipeline()
     }
     GError* err;
     if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) { return false; }
-    gst_bin_add( GST_BIN( m_gst_thread ), m_gst_audiosink );
+    gst_bin_add( GST_BIN( m_gst_outputThread ), m_gst_audiosink );
 
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
 
-    if ( !( m_gst_adder = createElement( "adder", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread, "audioconvert" ) ) ) { return false; }
+    if ( !( m_gst_queue = createElement( "queue", m_gst_outputThread ) ) ) { return false; }
+    if ( !( m_gst_identity = createElement( "identity", m_gst_outputThread ) ) ) { return false; }
+    if ( !( m_gst_volume = createElement( "volume", m_gst_outputThread ) ) ) { return false; }
+    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_outputThread ) ) ) { return false; }
+    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_outputThread, "audioconvert" ) ) ) { return false; }
 
-    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_thread );
-    g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( error_cb ), m_gst_thread );
+    // More buffers means less dropouts and higher latency
+    gst_element_set( m_gst_queue, "max-size-buffers", 500, NULL );
+
+    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_outputThread );
+    g_signal_connect ( G_OBJECT( m_gst_outputThread ), "error", G_CALLBACK ( error_cb ), m_gst_outputThread );
 
     /* link elements */
-    gst_element_link_many( m_gst_adder, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
+    gst_element_link( m_gst_adder, m_gst_queue );
+    gst_element_link_many( m_gst_queue, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
 
-    if ( !gst_element_set_state( m_gst_thread, GST_STATE_READY ) ) {
-        kdError() << "Could not set threadOutput to state READY!\n";
+    if ( !gst_element_set_state( m_gst_outputThread, GST_STATE_PLAYING ) ) {
+        kdError() << "Could not set threadOutput to state PLAYING!\n";
         destroyPipeline();
         return false;
     }
@@ -883,14 +874,24 @@ GstEngine::destroyPipeline()
     // Clear the scope adapter
     gst_adapter_clear( m_gst_adapter );
 
-    if ( m_gst_thread ) {
-        kdDebug() << "[Gst-Engine] Destroying output pipeline.\n";
+    if ( m_gst_inputThread ) {
+        kdDebug() << "[Gst-Engine] Destroying output thread.\n";
 
         // Destroy the pipeline
-        if ( GST_STATE( m_gst_thread ) != GST_STATE_NULL )
-            gst_element_set_state( m_gst_thread, GST_STATE_NULL );
+        if ( GST_STATE( m_gst_inputThread ) != GST_STATE_NULL )
+            gst_element_set_state( m_gst_inputThread, GST_STATE_NULL );
 
-        gst_object_unref( GST_OBJECT( m_gst_thread ) );
+        gst_object_unref( GST_OBJECT( m_gst_inputThread ) );
+    }
+
+    if ( m_gst_outputThread ) {
+        kdDebug() << "[Gst-Engine] Destroying output thread.\n";
+
+        // Destroy the pipeline
+        if ( GST_STATE( m_gst_outputThread ) != GST_STATE_NULL )
+            gst_element_set_state( m_gst_outputThread, GST_STATE_NULL );
+
+        gst_object_unref( GST_OBJECT( m_gst_outputThread ) );
     }
 
     // Destroy KIO transmission job
@@ -912,11 +913,11 @@ GstEngine::destroyInput( InputPipeline* input )
         // Destroy the pipeline
         m_inputs.remove( input );
 
-        if ( m_gst_thread && m_inputs.isEmpty() ) {
+        if ( m_gst_outputThread && m_inputs.isEmpty() ) {
             kdDebug() << "Inputs now empty. Stopping output pipeline.\n";
 
-            if ( GST_STATE( m_gst_thread ) != GST_STATE_READY )
-                gst_element_set_state( m_gst_thread, GST_STATE_READY );
+//             if ( GST_STATE( m_gst_outputThread ) != GST_STATE_READY )
+//                 gst_element_set_state( m_gst_outputThread, GST_STATE_READY );
         }
     }
 
@@ -954,24 +955,11 @@ InputPipeline::InputPipeline()
     kdDebug() << k_funcinfo << endl;
 
     /* create a new pipeline (thread) to hold the elements */
-    if ( !( thread = GstEngine::createElement( "thread" ) ) ) { goto error; }
-    if ( !( spider = GstEngine::createElement( "spider", thread ) ) ) { goto error; }
-    if ( !( volume = GstEngine::createElement( "volume", thread ) ) ) { goto error; }
-    if ( !( queue = GstEngine::createElement( "queue", thread ) ) ) { goto error; }
+    if ( !( bin = GstEngine::createElement( "bin" ) ) ) { goto error; }
+    if ( !( spider = GstEngine::createElement( "spider", bin ) ) ) { goto error; }
+    if ( !( volume = GstEngine::createElement( "volume", bin ) ) ) { goto error; }
 
-    // SmartPointer
-    g_object_add_weak_pointer( (GObject*) thread, (gpointer*) &thread );
-
-    gst_element_enable_threadsafe_properties( volume );
-    gst_element_enable_threadsafe_properties( queue );
-
-    g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), thread );
-
-    // Set thread priority for less dropouts
-    gst_element_set( thread, "priority", GstConfig::threadPriority(), NULL );
-
-    // More buffers means less dropouts and higher latency
-    gst_element_set( queue, "max-size-buffers", 500, NULL );
+    g_signal_connect( G_OBJECT( spider ), "eos", G_CALLBACK( GstEngine::eos_cb ), bin );
 
     // Start silent
     gst_element_set( volume, "volume", 0.0, NULL );
@@ -987,41 +975,20 @@ InputPipeline::~InputPipeline()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    if ( thread ) {
-        kdDebug() << "Unreffing input thread.\n";
-
-        gst_element_set_state( thread, GST_STATE_READY );
-
-        gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
-
-        gst_element_set_state( thread, GST_STATE_NULL );
-        gst_object_unref( GST_OBJECT( thread ) );
-    }
-
-    kdDebug() << "END " << k_funcinfo << endl;
-}
-
-
-void InputPipeline::prepareToDie()
-{
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
-    if ( GstEngine::instance()->m_currentInput == this ) {
+    if ( GstEngine::instance()->m_currentInput == this )
         GstEngine::instance()->m_currentInput = 0;
-        kdDebug() << "m_currentInput == this; setting to 0.\n";
-    }
 
-    m_killCounter = 100;
-    setState( NEAR_DEATH );
+    kdDebug() << "Unreffing input bin.\n";
 
-    if ( thread )
-    {
-        if ( GST_STATE( thread ) == GST_STATE_PLAYING )
-            gst_element_set_state( thread, GST_STATE_PAUSED );
-        else
-            // If not playing, destroy right away
-            m_killCounter = 1;
-    }
+    gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED );
+    gst_element_set_state( bin, GST_STATE_PAUSED );
+
+    gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
+
+    gst_element_set_state( bin, GST_STATE_NULL );
+    gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
+
+    gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -1037,9 +1004,6 @@ InputPipeline::setState( State newState )
         case NO_FADE:
             gst_element_set( volume, "volume", 1.0, NULL );
             m_fade = 0.0;
-            break;
-
-        case NEAR_DEATH:
             break;
 
         default:

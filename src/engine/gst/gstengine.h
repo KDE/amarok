@@ -128,9 +128,13 @@ class GstEngine : public Engine::Base
         static GError* error_msg;
         static GstEngine* s_instance;
 
-        // Output pipeline
-        GstElement* m_gst_thread;
+        // Input thread
         GstElement* m_gst_adder;
+        GstElement* m_gst_inputThread;
+
+        // Output thread
+        GstElement* m_gst_outputThread;
+        GstElement* m_gst_queue;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
         GstElement* m_gst_audioscale;
@@ -164,7 +168,7 @@ class GstEngine : public Engine::Base
 class InputPipeline
 {
     public:
-        enum State { NO_FADE, NEAR_DEATH, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
+        enum State { NO_FADE, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
 
         InputPipeline();
         ~InputPipeline();
@@ -183,13 +187,10 @@ class InputPipeline
         bool m_error;
         bool m_eos;
 
-        int m_killCounter;
-
-        GstElement* thread;
+        GstElement* bin;
         GstElement* src;
         GstElement* spider;
         GstElement* volume;
-        GstElement* queue;
 };
 
 
