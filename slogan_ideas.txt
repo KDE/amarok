@@ -1,0 +1,11 @@
+SLOGAN-IDEAS
+============
+
+This file is meant for brainstorming. We are looking for a new amaroK slogan.
+The current slogan "The audio player for KDE" is too strongly tied to KDE.
+
+Add your ideas here:
+
+
+"amaroK - The audio player for Unix"
+
