@@ -1934,7 +1934,7 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
             if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
             if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
             if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            m_where += " ) ";            
+            m_where += " ) ";
         }
 
         m_where += " ) ";

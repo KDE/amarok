@@ -231,29 +231,15 @@ void Scrobbler::applySettings()
 void Scrobbler::appendSimilar( SubmitItem* item ) const
 {
     QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 16 );
+
     QueryBuilder qb;
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addMatches( QueryBuilder::tabArtist, suggestions );
-    qb.setLimit( 0, 10 );
-    QStringList values = qb.run();
-    QStringList urls;
+    qb.setLimit( 0, 4 );
+    QStringList urls = qb.run();
 
-    for ( uint i = 0; i < values.count(); i = i + 2 )
-    {
-        if ( !Playlist::instance()->containsUrl( values[i] ) )
-        {
-            // Only append song if it's not on playlist yet.
-            urls.append( values[i] );
-        }
-        if ( urls.count() == 2 )
-        {
-            // Don't append more than two songs.
-            break;
-        }
-    }
-    Playlist::instance()->insertMedia( KURL::List( urls ) );
+    Playlist::instance()->insertMedia( KURL::List( urls ), Playlist::Unique );
 }
 
 
