@@ -77,12 +77,12 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyHomePage( true )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
+        , m_suggestionsOpen( true )
+        , m_favouritesOpen( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
-        , m_suggestionsOpen( true )
-        , m_favouritesOpen( true )
 {
     s_instance = this;
 
@@ -226,7 +226,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // When left-clicking on cover image, open browser with amazon site
     if ( url.protocol() == "fetchcover" )
     {
-        if ( CollectionDB::instance()->findImageByArtistAlbum (artist, album, 0 ) 
+        if ( CollectionDB::instance()->findImageByArtistAlbum (artist, album, 0 )
            == CollectionDB::instance()->notAvailCover( 0 ) ) {
             CollectionDB::instance()->fetchCover( this, artist, album, false );
             return;
@@ -873,7 +873,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImageTitleAttr;
     QString albumImage = CollectionDB::instance()->albumImage( currentTrack );
-    if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) ) 
+    if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
         albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
     else
         albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );

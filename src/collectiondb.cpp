@@ -615,7 +615,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
 }
 
 QImage
-CollectionDB::fetchImage(const KURL& url, QString &tmpFile)
+CollectionDB::fetchImage(const KURL& url, QString &/*tmpFile*/)
 {
     if(url.protocol() != "file")
     {
@@ -2411,7 +2411,7 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
-         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage || 
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage ||
          table & tabYear )
         b = false;
 
