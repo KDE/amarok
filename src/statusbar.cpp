@@ -155,25 +155,56 @@ StatusBar::~StatusBar()
 }
 
 
+void StatusBar::message( const QString& message ) //SLOT
+{
+    m_pTitle->setText( message );
+    m_oldMessage = message;
+}
+
+
+void StatusBar::message( const QString& message, int ms ) //SLOT
+{
+    m_pTitle->setText( message );
+
+    // Remove possible old timer
+    disconnect( this, SLOT( restoreMessage() ) );    
+    
+    QTimer::singleShot( ms, this, SLOT( restoreMessage() ) );
+}
+
+
+void StatusBar::restoreMessage() //SLOT
+{
+    m_pTitle->setText( m_oldMessage );
+}
+
+
+void StatusBar::clearMessage() //SLOT
+{
+    m_pTitle->clear();
+    m_oldMessage = "";
+}
+
+
 void StatusBar::engineStateChanged( Engine::State state )
 {
     switch( state )
     {
         case Engine::Empty:
-            m_pTitle->clear();
+            clearMessage();
             m_pSlider->setEnabled( false );
             m_pSlider->setMaxValue( 0 );
             m_pTimeLabel->clear(); //must be done after the setValue() above, due to a signal connection
             break;
 
         case Engine::Paused:
-            message( i18n( "amaroK is paused" ) ); // display TEMPORARY message
+            m_pTitle->setText( i18n( "amaroK is paused" ) ); // display TEMPORARY message
             m_pPauseTimer->start( 300 );
             break;
 
         case Engine::Playing:
+            restoreMessage();
             m_pPauseTimer->stop();
-            clear(); // clear TEMPORARY pause message
             break;
 
         case Engine::Idle:
@@ -184,7 +215,7 @@ void StatusBar::engineStateChanged( Engine::State state )
 
 void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    m_pTitle->setText( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ) );
+    message( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ) );
     m_pSlider->setMaxValue( bundle.length() * 1000 );
     m_pSlider->setEnabled( bundle.length() > 0 );
 }

@@ -33,6 +33,7 @@ email                : markey@web.de
 #include "pluginmanager.h"
 #include "scriptmanager.h"
 #include "socketserver.h"
+#include "statusbar.h"
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
@@ -92,6 +93,8 @@ App::App()
 
     // Invoke first-run wizard if needed
     if ( config()->readBoolEntry( "First Run", true ) ) {
+        amaroK::StatusBar::instance()->message( i18n( "Invoking first-run wizard.." ), 3000 );
+        processEvents();
         firstrunWizard();
         config()->writeEntry( "First Run", false );
     }

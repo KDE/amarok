@@ -41,7 +41,6 @@ public:
     ~StatusBar();
 
     static StatusBar* instance() { return s_instance; }
-    static StatusBar* self()     { return s_instance; }
 
     static void startProgress();
     static void showProgress( uint );
@@ -50,6 +49,10 @@ public:
 public slots:
     /** update total song count */
     void slotItemCountChanged(int newCount);
+    void message( const QString& message ); //reimpl. from QStatusBar
+    void message( const QString&, int ms ); //reimpl. from QStatusBar
+    void restoreMessage();
+    void clearMessage();
     void engineMessage( const QString &s ) { message( s, 2000 ); } //NOTE leave inlined!
 
 protected: /* reimpl from engineobserver */
@@ -75,6 +78,7 @@ private:
     amaroK::Slider *m_pSlider;
     bool            m_sliderPressed;
     QTimer         *m_pPauseTimer;
+    QString         m_oldMessage;
 };
 
 
