@@ -27,7 +27,7 @@
 #include <kapplication.h>          //baseclass
 #include <kurl.h>                  //needed for KURL::List (nested)
 
-#define APP_VERSION "0.9-CVS"
+#define APP_VERSION "0.9.1-CVS"
 
 class BrowserWin;
 class EngineBase;
