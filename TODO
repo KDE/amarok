@@ -185,3 +185,50 @@ DISCUSSING:
     * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
            at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
            have limited screen width, like in console or kdevelop. pretty please with icing =)
+
+
+TROUBLE:
+
+BT 2004/02/08 (while trying to load playlist):           
+                      
+[New Thread 1024 (LWP 3926)]
+[New Thread 2049 (LWP 3928)]
+0x423aa449 in wait4 () from /lib/libc.so.6
+#0  0x423aa449 in wait4 () from /lib/libc.so.6
+#1  0x42426fd0 in __DTOR_END__ () from /lib/libc.so.6
+#2  0x42268a73 in waitpid () from /lib/libpthread.so.0
+#3  0x4141b798 in KCrash::defaultCrashHandler(int) ()
+   from /opt/kde3/lib/libkdecore.so.4
+#4  0x4226611b in pthread_sighandler () from /lib/libpthread.so.0
+#5  <signal handler called>
+#6  0x41ac0e79 in QString::QString(QString const&) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#7  0x08091d6f in TagReader::TagReaderEvent::addSearchTokens(QStringList&, QPtrList<QListViewItem>&) (this=0x81ac158, tokens=@0xbfffeabc, ptrs=@0x81d0f18)
+    at amarok/playlistloader.cpp:585
+#8  0x0808c6fc in PlaylistWidget::customEvent(QCustomEvent*) (this=0x81d0e50, 
+    e=0x81ac158) at amarok/playlistwidget.cpp:959
+#9  0x4180b5fc in QObject::event(QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#10 0x4184253c in QWidget::event(QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#11 0x4117683d in KListView::event(QEvent*) () from /opt/kde3/lib/libkdeui.so.4
+#12 0x417b2345 in QApplication::internalNotify(QObject*, QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#13 0x417b1735 in QApplication::notify(QObject*, QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#14 0x413ac933 in KApplication::notify(QObject*, QEvent*) ()
+   from /opt/kde3/lib/libkdecore.so.4
+#15 0x417b30f8 in QApplication::sendPostedEvents(QObject*, int) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#16 0x417b2f78 in QApplication::sendPostedEvents() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#17 0x4175cb78 in QEventLoop::processEvents(unsigned) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#18 0x417c5516 in QEventLoop::enterLoop() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#19 0x417c53b8 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#20 0x417b2591 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#21 0x080b2604 in main (argc=5, argv=0xbffff5f4)
+    at amarok/amarokcore/main.cpp:73
+#22 0x423244f2 in __libc_start_main () from /lib/libc.so.6
+       
