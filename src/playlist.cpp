@@ -48,6 +48,7 @@
 #include <qpainter.h>
 #include <qpen.h>            //slotGlowTimer()
 #include <qtimer.h>
+#include <qmap.h>        //dragObject()
 
 #include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
 
@@ -1257,7 +1258,7 @@ void Playlist::startEditTag( QListViewItem *item, int column )
     delete db;
 
     m_editText = ((PlaylistItem *)item)->exactText( column );
-    kdDebug() << "isempty "<< m_editText.isEmpty()<<endl;
+    
     rename( item, column );
 
 }
@@ -1484,11 +1485,17 @@ void Playlist::contentsDropEvent( QDropEvent *e )
 QDragObject* Playlist::dragObject()
 {
     KURL::List list;
-
-    for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); *it; ++it )
-        list += static_cast<PlaylistItem*>(*it)->url();
-
-    return new KURLDrag( list, viewport() );
+    QMap<QString,QString> map;
+    
+    for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); *it; ++it ) {
+        PlaylistItem *item = (PlaylistItem*)*it;
+        KURL url = item->url();
+        list += url;
+        map[ url.path() ] = QString("%1;%2").arg(item->title()).arg(item->seconds());
+    }
+    //it returns a KURLDrag with a QMap containing the title and the length of the track
+    //this is used by the playlistbrowser to insert tracks in playlists without re-reading tags
+    return new KURLDrag( list, map, viewport() );
 }
 
 
