@@ -38,13 +38,13 @@ class TitleProxy : public QObject
         ~TitleProxy();
 
         KURL proxyUrl();
-        
+
         // ATTRIBUTES ------
 
     signals:
         void metaData( QString, QString, QString );
         void error();
-        
+
     public slots:
 
     private slots:
@@ -53,8 +53,8 @@ class TitleProxy : public QObject
         void accept();
 
     private:
-        void transmitData( QString data );
-        QString extractStr( QString str, QString key );
+        void transmitData( const QString &data );
+        QString extractStr( const QString &str, const QString &key );
 
         // ATTRIBUTES ------
         KURL m_url;
@@ -66,7 +66,12 @@ class TitleProxy : public QObject
         QString m_metaData;
         bool m_headerFinished;
         QString m_headerStr;
-        
+        int m_usedPort;
+
+        QString m_streamName;
+        QString m_streamGenre;
+        QString m_streamUrl;
+
         char *m_pBuf;
 
         KExtendedSocket m_sockRemote;

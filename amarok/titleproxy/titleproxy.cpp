@@ -3,7 +3,7 @@
                          -------------------
 begin                : Nov 20 14:35:18 CEST 2003
 copyright            : (C) 2003 by Mark Kretschmann
-email                :
+email                : markey@web.de
 ***************************************************************************/
 
 /***************************************************************************
@@ -14,7 +14,7 @@ email                :
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+ 
 #include <titleproxy.h>
 
 #include <kdebug.h>
@@ -25,7 +25,9 @@ email                :
 #include <qsocketnotifier.h>
 #include <qstring.h>
 
-#define PROXYPORT 6666     //FIXME maybe port should not be hardcoded?
+#define MIN_PROXYPORT 6666
+#define MAX_PROXYPORT 7777
+#define IN_BUFSIZE (8192 * 4)
 #define BUFSIZE 8192
 
 // Some info on the shoutcast metadata protocol can be found at:
@@ -38,45 +40,55 @@ email                :
 // 4. Modify GET request by adding Icy-MetaData:1 token
 // 5. Write request to streamserver
 // 6. Read MetaInt token from streamserver (==metadata offset)
-// 
+//
 // 7. Read stream data (mp3 + metadata) from streamserver
 // 8. Filter out metadata, send to app
 // 9. Write mp3 data to proxyserver
 //10. Goto 7
 
-
-TitleProxy::TitleProxy( KURL url ) :
-        QObject(),
-        m_url( url ),
-        m_initSuccess( false ),
-        m_metaInt( 0 ),
-        m_byteCount( 0 ),
-        m_metaLen( 0 ),
-        m_headerFinished( false ),
-        m_pBuf( NULL ),
-        m_pSockProxy( NULL )
+TitleProxy::TitleProxy(KURL url) : QObject(),
+        m_url(url),
+        m_initSuccess(false),
+        m_metaInt(0),
+        m_byteCount(0),
+        m_metaLen(0),
+        m_headerFinished(false),
+        m_usedPort(0),
+        m_pBuf(0),
+        m_pSockProxy(0)
 {
+    //kdDebug() << k_funcinfo << "Called" << endl;
     m_sockRemote.setSocketFlags( KExtendedSocket::inetSocket |
                                  KExtendedSocket::bufferedSocket |
                                  KExtendedSocket::streamSocket );
-    m_sockRemote.setAddress    ( url.host(), url.port() );
-    m_sockRemote.setTimeout    ( 4 );
-    
-    int connectResult = m_sockRemote.connect();
-    kdDebug() << "sock.connect() result: " << connectResult << endl;
+    m_sockRemote.setAddress(url.host(), url.port());
+    m_sockRemote.setTimeout(8);
 
+    int connectResult = m_sockRemote.connect();
+    //kdDebug() << k_funcinfo << "sock.connect() result: " << connectResult << endl;
     if ( connectResult != 0 )
         return;
 
-    m_sockPassive.setHost( "localhost" );
-    m_sockPassive.setPort( PROXYPORT );
-    m_sockPassive.setSocketFlags( KExtendedSocket::passiveSocket );
-    
-    int listenResult = m_sockPassive.listen();
-    kdDebug() << "m_sockPassive.listen() result: " << listenResult << endl;
+    int listenResult = -1;
+    unsigned int i = 0;
+    for(i = MIN_PROXYPORT; i <= MAX_PROXYPORT; i++)
+    {
+        m_sockPassive.setPort(i);
+        m_sockPassive.setHost("localhost");
+        m_sockPassive.setSocketFlags(KExtendedSocket::passiveSocket);
+        listenResult = m_sockPassive.listen();
+        kdDebug() << k_funcinfo <<
+        "Trying to bind to port " << i << ", listen() result: " << listenResult << endl;
+        if(listenResult == 0)                     // found a free port
+            break;
+        m_sockPassive.reset();
 
+    }
+
+    kdDebug() << k_funcinfo << "final listen() result: " << listenResult << endl;
     if ( listenResult != 0 )
         return;
+    m_usedPort = i;
 
     m_pBuf = new char[ BUFSIZE ];
 
@@ -87,6 +99,7 @@ TitleProxy::TitleProxy( KURL url ) :
 
 TitleProxy::~TitleProxy()
 {
+    //kdDebug() << k_funcinfo << "Called" << endl;
     delete[] m_pBuf;
     delete m_pSockProxy;
 }
@@ -94,13 +107,14 @@ TitleProxy::~TitleProxy()
 
 KURL TitleProxy::proxyUrl()
 {
-    if ( m_initSuccess )
+    if(m_initSuccess)
     {
         KURL url;
-        url.setPort    ( PROXYPORT );
-        url.setHost    ( "localhost" );
-        url.setProtocol( "http" );
+        url.setPort(m_usedPort);
+        url.setHost("localhost");
+        url.setProtocol("http");
         return url;
+
     }
     else
         return m_url;
@@ -109,21 +123,17 @@ KURL TitleProxy::proxyUrl()
 
 void TitleProxy::accept()
 {
-    int acceptResult = m_sockPassive.accept( m_pSockProxy );
-    m_sockPassive.close();
+    m_sockPassive.accept( m_pSockProxy );
+    m_sockPassive.close();                        // don't take another connection
     m_pSockProxy->setSocketFlags( KExtendedSocket::inetSocket | KExtendedSocket::bufferedSocket );
-    kdDebug() << "acceptResult: " << acceptResult << endl;
 
     int bytesRead = m_pSockProxy->readBlock( m_pBuf, BUFSIZE );
-    kdDebug() << "TitleProxy::readLocal() received block: " << endl << QCString( m_pBuf, bytesRead ) << endl;
     m_pSockProxy->setBlockingMode( false );
 
     QString str = QString::fromAscii( m_pBuf, bytesRead );
-    int index = str.find( "GET / HTTP/1.1" );
-    index = str.find( "\n", index );
-    index++;
-    
-    m_sockRemote.setBufferSize( 256 * 1024 );
+    int index = str.find( "\n", str.find( "GET / HTTP/1.1" ) ) + 1;
+
+    m_sockRemote.setBufferSize( IN_BUFSIZE );
     m_sockRemote.enableRead( true );
     connect( &m_sockRemote, SIGNAL( readyRead() ), this, SLOT( readRemote() ) );
     m_sockRemote.writeBlock( m_pBuf, index );
@@ -136,21 +146,21 @@ void TitleProxy::accept()
 
 void TitleProxy::readRemote()
 {
-    Q_LONG index = 0, bytesWrite = 0;
+    Q_LONG index = 0;
+    Q_LONG bytesWrite = 0;
     Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
-    //    kdDebug() << "TitleProxy::readRemote(): bytesRead = " << bytesRead << endl;
 
-    if ( !m_headerFinished )
-        processHeader( index, bytesRead );
+    if(!m_headerFinished)
+        processHeader(index, bytesRead);
 
     //This is the main loop which processes the stream data
     while ( index < bytesRead )
-    {                
+    {
         if ( m_byteCount == m_metaInt )
         {
             m_byteCount = 0;
             m_metaLen = m_pBuf[ index++ ] << 4;
-//            if ( m_metaLen ) kdDebug() << "m_metaLen: " << m_metaLen << "\n" << endl;
+
         }
         else if ( m_metaLen )
         {
@@ -161,80 +171,107 @@ void TitleProxy::readRemote()
             {
                 transmitData( m_metaData );
                 m_metaData = "";
+
             }
+
         }
-        else 
+        else
         {
             bytesWrite = bytesRead - index;
-            
+
             if ( bytesWrite > m_metaInt - m_byteCount )
                 bytesWrite = m_metaInt - m_byteCount;
-                        
+
             m_pSockProxy->writeBlock( m_pBuf + index, bytesWrite );
-        
+
             index += bytesWrite;
             m_byteCount += bytesWrite;
+
         }
+
     }
-}        
+}
 
 
-void TitleProxy::processHeader( Q_LONG &index, Q_LONG bytesRead )
-{    
+void TitleProxy::processHeader(Q_LONG &index, Q_LONG bytesRead)
+{
     while ( index < bytesRead )
     {
         m_headerStr.append( m_pBuf[ index++ ] );
-                                
         if ( m_headerStr.endsWith( "\r\n\r\n" ) )
         {
+
+            /*kdDebug() << k_funcinfo <<
+                  "Got shoutcast header: '" << m_headerStr << "'" << endl;*/
+            /*
+            TODO: emit error including helpful error message on headers like this:
+             
+            ICY 401 Service Unavailable
+            icy-notice1:<BR>SHOUTcast Distributed Network Audio Server/Linux v1.9.2<BR>
+            icy-notice2:The resource requested is currently unavailable<BR>
+            */
             m_metaInt = m_headerStr.section( "icy-metaint:", 1, 1,
-                        QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
+                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0)
                         .toInt();
-                
-            kdDebug() << "m_metaInt: " << m_metaInt << endl;
-            
             m_bitRate = m_headerStr.section( "icy-br:", 1, 1,
-                        QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
-        
-            m_pSockProxy->writeBlock( m_headerStr.latin1(), m_headerStr.length() );
+                                             QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+            m_streamName = m_headerStr.section( "icy-name:", 1, 1,
+                                                QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+            m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1,
+                                                 QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+            m_streamUrl = m_headerStr.section( "icy-url:", 1, 1,
+                                               QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0);
+            if(m_streamUrl.startsWith("www.", true))
+                m_streamUrl.prepend("http://");
+            m_pSockProxy->writeBlock(m_headerStr.latin1(), m_headerStr.length());
             m_headerFinished = true;
-            
-            if ( !m_metaInt )
+            if(!m_metaInt)
                 emit error();
-                        
             break;
-        }                                                      
+
+        }
+
     }
-}     
-
-
-void TitleProxy::transmitData( QString data )
-{
-    QString title = extractStr( data, "StreamTitle" );
-    QString url = extractStr( data, "StreamUrl" );
-
-    kdDebug() << "title: " << title << "\n" << endl;
-    kdDebug() << "url: " << url << "\n" << endl;
-
-    emit metaData( title, url, m_bitRate );
 }
 
 
-QString TitleProxy::extractStr( QString str, QString key )
+void TitleProxy::transmitData(const QString &data)
 {
-    int index = str.find( key, 0 );
 
-    if ( index == -1 )
+    /*kdDebug() << k_funcinfo <<
+      "received new metadata: '" << data << "'" << endl;*/
+    QString title = extractStr(data, "StreamTitle");
+    QString url = extractStr(data, "StreamUrl");
+    
+    emit metaData( title, url, m_bitRate );
+    
+/*    emit metaData(
+        m_streamName,
+        m_streamGenre,
+        m_streamUrl,
+        m_bitRate,
+        title,
+        url);*/
+}
+
+
+QString TitleProxy::extractStr(const QString &str, const QString &key)
+{
+    int index = str.find(key, 0, true);
+    if(index == -1)
     {
-        return QString();
+        return QString::null;
+
     }
     else
     {
-        index = str.find( "'", index );
-        index++;
+        index = str.find( "'", index ) + 1;
         int indexEnd = str.find( "'", index );
         return str.mid( index, indexEnd - index );
+
     }
 }
 
+
 #include "titleproxy.moc"
+
