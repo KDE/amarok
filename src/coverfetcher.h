@@ -26,7 +26,6 @@ class CoverFetcher : public QObject
         ~CoverFetcher();
 
         void setLicense( const QString& license ) { m_license = license; }
-        void setLocale( const QString& locale );
         void getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode = lite, bool noedit = false, int size = 2, bool albumonly = false );
 
     signals:
@@ -41,9 +40,9 @@ class CoverFetcher : public QObject
         void editSearch();
         void saveCover();
         void saveCover( const QImage& image );
+
     private:
         static const uint BUFFER_SIZE = 2000000; // 2mb
-        static QString m_locale;
 
         QString m_license;
         QString m_xmlDocument;
@@ -62,6 +61,5 @@ class CoverFetcher : public QObject
         bool m_noedit;
         bool m_albumonly;
 };
-QString CoverFetcher::m_locale = QString("com");
 
 #endif /* AMAROK_COVERFETCHER_H */

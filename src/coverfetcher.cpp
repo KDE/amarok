@@ -46,14 +46,6 @@ CoverFetcher::~CoverFetcher()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::setLocale( const QString& locale )
-{
-    m_locale = locale;
-    AmarokConfig::setAmazonLocale( locale );
-    kdDebug() << "Setting Locale: " << locale << endl;
-}
-
-void
 CoverFetcher::getCover( const QString& artist, const QString& album, const QString& saveas, QueryMode mode, bool noedit, int size, bool albumonly )
 {
     kdDebug() << k_funcinfo << endl;
@@ -78,7 +70,7 @@ CoverFetcher::getCover( const QString& artist, const QString& album, const QStri
 
     QString url = QString( "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2"
                            "&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml" )
-                           .arg( m_locale )
+                           .arg( AmarokConfig::amazonLocale() )
                            .arg( m_license )
                            .arg( m_keyword )
                            .arg( mode == lite ? "lite" : "heavy" );

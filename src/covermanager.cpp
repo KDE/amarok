@@ -606,22 +606,20 @@ void CoverManager::changeView( int id  ) //SLOT
 
 void CoverManager::changeLocale( int id ) //SLOT
 {
-    if ( m_currentLocale == id ) return;
-
     CoverFetcher* fetcher;
     switch ( id )
     {
         case International:
-            fetcher->setLocale( QString( "com" ) );
+            AmarokConfig::setAmazonLocale( "com" );
             break;
         case France:
-            fetcher->setLocale( QString( "fr" ) );
+            AmarokConfig::setAmazonLocale( "fr" );
             break;
         case Germany:
-            fetcher->setLocale( QString( "de" ) );
+            AmarokConfig::setAmazonLocale( "de" );
             break;
         case UK:
-            fetcher->setLocale( QString( "co.uk" ) );
+            AmarokConfig::setAmazonLocale( "co.uk" );
             break;
     }
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, false );
