@@ -149,16 +149,16 @@ GType kiosrc_get_type( void ) {
     static GType kiosrc_type = 0;
 
     if ( !kiosrc_type ) {
-        static const GTypeInfo kiosrc_info = {
-                                                 sizeof( KioSrcClass ), NULL,
-                                                 NULL,
-                                                 ( GClassInitFunc ) kiosrc_class_init,
-                                                 NULL,
-                                                 NULL,
-                                                 sizeof( KioSrc ),
-                                                 0,
-                                                 ( GInstanceInitFunc ) kiosrc_init,
-                                             };
+        static GTypeInfo kiosrc_info = {
+                                     sizeof( KioSrcClass ), NULL,
+                                     NULL,
+                                     ( GClassInitFunc ) kiosrc_class_init,
+                                     NULL,
+                                     NULL,
+                                     sizeof( KioSrc ),
+                                     0,
+                                     ( GInstanceInitFunc ) kiosrc_init,
+                                     };
         kiosrc_type =
             g_type_register_static( GST_TYPE_ELEMENT,
                                     "KioSrc",
@@ -433,19 +433,17 @@ static gboolean kiosrc_srcpad_query( GstPad *pad, GstQueryType type,
 }
 
 
-extern "C" {
-    GST_PLUGIN_DEFINE (
-        GST_VERSION_MAJOR,     /* version major */
-        GST_VERSION_MINOR,     /* version minor */
-        ( gchar* ) "kio",
-        ( gchar* ) "KIOsrc plugin",
-        plugin_init,
-        ( gchar* ) "0.1",
-        ( gchar* ) "LGPL",
-        ( gchar* ) "GStreamer",
-        ( gchar* ) "http://gstreamer.net/"
-    )
-}
+GST_PLUGIN_DEFINE (
+    GST_VERSION_MAJOR,     /* version major */
+    GST_VERSION_MINOR,     /* version minor */
+    ( gchar* ) "kio",
+    ( gchar* ) "KIOsrc plugin",
+    plugin_init,
+    ( gchar* ) "0.1",
+    ( gchar* ) "LGPL",
+    ( gchar* ) "GStreamer",
+    ( gchar* ) "http://gstreamer.net/"
+)
 
 
 #endif /* AMAROK_WITH_GSTKIOSRC */

@@ -24,7 +24,7 @@
  */
 
 //uncomment to activate code
-//#define AMAROK_WITH_GSTKIOSRC
+#define AMAROK_WITH_GSTKIOSRC
  
 
 #ifndef GST_KIORECEIVER_H

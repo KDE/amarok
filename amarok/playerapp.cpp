@@ -15,6 +15,8 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include <assert.h> 
+ 
 #include "amarokconfig.h"
 #include "amarokconfigdialog.h"
 #include "amarokdcophandler.h"
@@ -117,9 +119,7 @@ PlayerApp::PlayerApp()
     EngineController::instance()->attach( this );
     m_pTray = new amaroK::TrayIcon( m_pPlayerWidget, actionCollection() ); //shown/hidden in applySettings()
 
-
     applySettings();  //will load the engine
-
 
     //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
     KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
@@ -312,6 +312,8 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 
 void PlayerApp::initEngine()
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     Plugin* plugin = PluginManager::createFromQuery
                          ( "[X-KDE-amaroK-plugintype] == 'engine' and "
                            "Name                      == '" + AmarokConfig::soundSystem() + '\'' );
@@ -327,14 +329,16 @@ void PlayerApp::initEngine()
             //this will call abort(), but this causes amarok to crash anyway!
             kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
-
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
     EngineBase *engine = static_cast<EngineBase*>( plugin );
     // feed engine to controller
     EngineController::instance()->setEngine( engine );
+    assert( engine );
     engine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
@@ -436,6 +440,8 @@ void PlayerApp::restoreSession()
 //SLOT
 void PlayerApp::applySettings()
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     EngineBase *engine = EngineController::instance()->engine();
     if ( AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
     {
@@ -450,8 +456,7 @@ void PlayerApp::applySettings()
 
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
-
-
+    
     if ( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
         AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
@@ -482,6 +487,8 @@ void PlayerApp::applySettings()
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     setupColors();
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 
