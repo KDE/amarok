@@ -55,7 +55,6 @@ CoverManager* instance = 0;
 
 CoverManager::CoverManager()
     : QWidget( 0, "TheCoverManager", WDestructiveClose )
-    , m_db( new CollectionDB() )
     , m_timer( new QTimer( this ) )    //search filter timer
     , m_fetchCounter( 0 )
     , m_fetchingCovers( 0 )
@@ -63,7 +62,7 @@ CoverManager::CoverManager()
     , m_coverErrors( 0 )
 {
     instance = this;
-
+    
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
     QVBoxLayout *vbox = new QVBoxLayout( this );
@@ -83,7 +82,7 @@ CoverManager::CoverManager()
     item->setPixmap( 0, SmallIcon("cdrom_unmount") );
 
     //load artists from the collection db
-    QStringList artists = m_db->artistList( false, false );
+    QStringList artists = CollectionDB::instance()->artistList( false, false );
     if( !artists.isEmpty() ) {
         for( uint i=0; i < artists.count(); i++ )  {
             item = new KListViewItem( m_artistView, item, artists[i] );
@@ -227,9 +226,7 @@ CoverManager::~CoverManager()
     KConfig *config = kapp->config();
     config->setGroup( "Cover Manager" );
     config->writeEntry( "Window Size", size() );
-
-    delete m_db;
-
+    
     instance = 0;
 }
 
@@ -255,7 +252,7 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
     //QDialog means "escape" works as expected
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
     dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
-    QPixmap pixmap( CollectionDB().albumImage( artist, album, 0) );
+    QPixmap pixmap( CollectionDB::instance()->albumImage( artist, album, 0) );
     dialog->setPaletteBackgroundPixmap( pixmap );
     dialog->setFixedSize( pixmap.size() );
     dialog->show();
@@ -293,7 +290,7 @@ void CoverManager::fetchCoversLoop() //SLOT
         const QStringList values = QStringList::split( " @@@ ", m_fetchCovers[m_fetchCounter], true );
 
         if( values.count() >= 2 )
-           m_db->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
+           CollectionDB::instance()->fetchCover( this, values[0], values[1], m_fetchCovers.count() != 1); //edit mode when fetching 1 cover
 
         m_fetchCounter++;
 
@@ -330,9 +327,9 @@ void CoverManager::expandItem( QListViewItem *item ) //SLOT
 
     if ( item == m_artistView->firstChild() )
         //All Artists
-        albums = m_db->albumList( false, true );
+        albums = CollectionDB::instance()->albumList( false, true );
     else
-        albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
+        albums = CollectionDB::instance()->albumListOfArtist( item->text( 0 ), false, false );
 
     if ( !albums.isEmpty() )
     {
@@ -384,7 +381,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     QApplication::setOverrideCursor( KCursor::waitCursor() );
     QStringList albums;
     if ( item != m_artistView->firstChild() ) {
-        albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
+        albums = CollectionDB::instance()->albumListOfArtist( item->text( 0 ), false, false );
 
         //we need to insert the artist in front of the album for the next section to work
         for( QStringList::Iterator it = albums.begin(), end = albums.end(); it != end; it += 2 )
@@ -392,7 +389,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     }
     else {
         //we don't want blank albums, but blank artists are ok
-        albums = m_db->query(
+        albums = CollectionDB::instance()->query(
             "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
             "tags.album = album.id AND tags.artist = artist.id "
             "AND album.name <> '' AND tags.sampler = 0 "
@@ -489,7 +486,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             if ( !file.isEmpty() )
             {
                 qApp->processEvents();    //it may takes a while so process pending events
-                m_db->setAlbumImage( item->artist(), item->album(), file );
+                CollectionDB::instance()->setAlbumImage( item->artist(), item->album(), file );
                 item->loadCover();
             }
             break;
@@ -695,7 +692,7 @@ void CoverManager::deleteSelectedCovers()
     if ( button == KMessageBox::Continue ) {
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
             qApp->processEvents();
-            if ( m_db->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
+            if ( CollectionDB::instance()->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
                   item->loadCover();    //show the nocover icon
         }
     }
@@ -809,15 +806,14 @@ QDragObject *CoverView::dragObject()
     if( !item )
        return 0;
 
-    CollectionDB db;
     const QString sql = "SELECT tags.url FROM tags, album WHERE album.name LIKE '%1' AND tags.album = album.id ORDER BY tags.track;";
-    const QStringList values = db.query( sql.arg( item->album() ) );
+    const QStringList values = CollectionDB::instance()->query( sql.arg( item->album() ) );
 
     KURL::List urls;
     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
         urls += *it;
 
-    QString imagePath = db.albumImage( item->artist(), item->album(), 0 );
+    QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), 0 );
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
     drag->addDragObject( new QIconDrag( this ) );
@@ -835,7 +831,7 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
-    , m_coverImagePath( CollectionDB().albumImage( m_artist, m_album, 0 ) )
+    , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, 0 ) )
     , m_coverPixmap( 0 )
 {
     setDragEnabled( true );
@@ -850,7 +846,7 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
-    m_coverImagePath = CollectionDB().albumImage( m_artist, m_album );
+    m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album );
     m_coverPixmap = QPixmap( m_coverImagePath );  //create the scaled cover
 
     repaint();
@@ -934,8 +930,8 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
 
        QImage img;
        QImageDrag::decode( e, img );
-       CollectionDB().setAlbumImage( artist(), album(), img );
-       m_coverImagePath = CollectionDB().albumImage( m_artist, m_album, 0 );
+       CollectionDB::instance()->setAlbumImage( artist(), album(), img );
+       m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, 0 );
        loadCover();
     }
 }

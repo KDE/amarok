@@ -13,7 +13,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "collectiondb.h"    //updateURL()
+#include "collectiondb.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
@@ -219,11 +219,9 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
              this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
              this,       SLOT( saveUndoState() ) );
-
-    // make sure CollectionEmitter was initialized
-    CollectionDB db;
     connect( CollectionDB::emitter(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( scoreChanged( const QString&, int ) ) );
+    
 
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
 
@@ -238,7 +236,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
-
 
     m_clearButton->setIcon( "view_remove" );
     m_undoButton->setEnabled( false );
@@ -275,7 +272,6 @@ Playlist::~Playlist()
     KListView::clear();   //our implementation is slow
     blockSignals( true ); //might help
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -878,11 +874,11 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
     switch( column )
     {
         case PlaylistItem::Artist:
-            renameLineEdit()->completionObject()->setItems( CollectionDB().artistList() );
+            renameLineEdit()->completionObject()->setItems( CollectionDB::instance()->artistList() );
             break;
 
         case PlaylistItem::Album:
-            renameLineEdit()->completionObject()->setItems( CollectionDB().albumList() );
+            renameLineEdit()->completionObject()->setItems( CollectionDB::instance()->albumList() );
             break;
 
         case PlaylistItem::Genre:
@@ -2086,7 +2082,7 @@ Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SL
         {
             if ( column == PlaylistItem::Score )
                 // update score in database, only
-                CollectionDB().setSongPercentage( item->url().path(), newTag.toInt() );
+                CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
             else
                 ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
         }
@@ -2308,7 +2304,7 @@ TagWriter::doJob()
            // Update the collection db.
            // Hopefully this does not cause concurreny issues with sqlite3, as we had in BR 87169.
             if( m_updateView )
-               CollectionDB().updateURL( path, m_updateView );
+               CollectionDB::instance()->updateURL( path, m_updateView );
 
            m_failed = false;
         }

@@ -70,7 +70,6 @@ void albumArtistFromUrl( QString url, QString &artist, QString &album )
 
 ContextBrowser::ContextBrowser( const char *name )
    : QVBox( 0, name )
-   , m_db( new CollectionDB )
    , m_bgGradientImage( 0 )
    , m_headerGradientImage( 0 )
    , m_shadowGradientImage( 0 )
@@ -94,12 +93,14 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                          SLOT( openURLRequest( const KURL & ) ) );
     connect( browser,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                          SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-
+    
     connect( CollectionDB::emitter(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
     connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString&, const QString& ) ),
              this,                      SLOT( coverFetched( const QString&, const QString& ) ) );
-
+    connect( CollectionDB::emitter(), SIGNAL( similarArtistsFetched( const QString& ) ),
+             this,                      SLOT( similarArtistsFetched( const QString& ) ) );
+    
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
 }
@@ -107,8 +108,6 @@ ContextBrowser::ContextBrowser( const char *name )
 
 ContextBrowser::~ContextBrowser()
 {
-    delete m_db;
-
     if( m_bgGradientImage )
       m_bgGradientImage->unlink();
     if( m_headerGradientImage )
@@ -144,7 +143,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     if ( url.protocol() == "album" )
     {
         QString sql = "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;";
-        QStringList values = m_db->query( sql.arg( artist, album ) );
+        QStringList values = CollectionDB::instance()->query( sql.arg( artist, album ) );
         KURL::List urls;
         KURL url;
 
@@ -188,7 +187,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // When left-clicking on cover image, open browser with amazon site
     if ( url.protocol() == "fetchcover" )
     {
-        QImage img( m_db->albumImage( artist, album, 0 ) );
+        QImage img( CollectionDB::instance()->albumImage( artist, album, 0 ) );
         const QString amazonUrl = img.text( "amazon-url" );
         kdDebug() << "[ContextBrowser] Embedded amazon url in cover image: " << amazonUrl << endl;
 
@@ -222,11 +221,7 @@ void ContextBrowser::collectionScanStarted()
 
 void ContextBrowser::collectionScanDone()
 {
-    // take care of sql updates (schema changed errors)
-    delete m_db;
-    m_db = new CollectionDB();
-
-    if ( CollectionDB().isEmpty() )
+    if ( CollectionDB::instance()->isEmpty() )
     {
         showIntroduction();
         m_emptyDB = true;
@@ -254,7 +249,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
         m_metadataHistory << QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
 
-    switch( m_db->isEmpty() || !m_db->isValid() )
+    switch( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
     {
         case true:  showIntroduction();
 
@@ -354,7 +349,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
         #endif
-        menu.setItemEnabled( SHOW, !m_db->albumImage( artist, album, 0 ).contains( "nocover" ) );
+        menu.setItemEnabled( SHOW, !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" ) );
     }
     else {
         //TODO it would be handy and more usable to have this menu under the cover one too
@@ -368,7 +363,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if ( url.protocol() == "album" )
         {
             QString sql = "select distinct url from tags where artist = '%1' and album = '%2' order by track;";
-            QStringList values = m_db->query( sql.arg( artist, album ) );
+            QStringList values = CollectionDB::instance()->query( sql.arg( artist, album ) );
 
             urls.clear(); //remove urlString
             KURL url;
@@ -398,7 +393,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         if ( button == KMessageBox::Continue )
         {
-            m_db->removeAlbumImage( artist, album );
+            CollectionDB::instance()->removeAlbumImage( artist, album );
             showCurrentTrack();
         }
         break;
@@ -419,7 +414,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case FETCH:
     #ifdef AMAZON_SUPPORT
-        m_db->fetchCover( this, artist, album, false );
+        CollectionDB::instance()->fetchCover( this, artist, album, false );
         break;
     #endif
 
@@ -431,7 +426,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             //TODO processEvents is dangerous in this context
             qApp->processEvents();    //it may takes a while so process pending events
-            m_db->setAlbumImage( artist, album, file );
+            CollectionDB::instance()->setAlbumImage( artist, album, file );
             showCurrentTrack();
         }
         break;
@@ -482,7 +477,7 @@ verboseTimeSince( const QDateTime &datetime )
         else if( days < 7 )
             return i18n( "Yesterday", "%n days ago", days );
         else
-            return i18n( "Last week", "%n weeks ago", days );
+            return i18n( "Last week", "%n weeks ago", days % 7 );
     }
 
     return i18n( "Last year", "%n years ago", now.year() - date.year() );
@@ -495,21 +490,21 @@ void ContextBrowser::showHome() //SLOT
     m_tabBar->setCurrentTab( m_tabHome );
     m_tabBar->blockSignals( false );
 
-    QStringList fave = m_db->query(
+    QStringList fave = CollectionDB::instance()->query(
         "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
         "FROM tags, artist, album, statistics "
         "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
         "ORDER BY statistics.percentage DESC "
         "LIMIT 0,10;" );
 
-    QStringList recent = m_db->query(
+    QStringList recent = CollectionDB::instance()->query(
         "SELECT tags.title, tags.url, artist.name, album.name "
         "FROM tags, artist, album "
         "WHERE artist.id = tags.artist AND album.id = tags.album "
         "ORDER BY tags.createdate DESC "
         "LIMIT 0,5;" );
 
-    QStringList least = m_db->query(
+    QStringList least = CollectionDB::instance()->query(
         "SELECT tags.title, tags.url, artist.name, album.name, statistics.accessdate "
         "FROM tags, artist, album, statistics "
         "WHERE artist.id = tags.artist AND album.id = tags.album AND tags.url = statistics.url "
@@ -713,16 +708,16 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
     }
 
-    const uint artist_id = m_db->artistID( currentTrack.artist() );
-    const uint album_id  = m_db->albumID ( currentTrack.album() );
+    const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist() );
+    const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
 
     // <Current Track Information>
-    QStringList values = m_db->query( QString(
+    QStringList values = CollectionDB::instance()->query( QString(
         "SELECT statistics.createdate, statistics.accessdate, "
         "statistics.playcounter, round( statistics.percentage + 0.4 ) "
         "FROM  statistics "
         "WHERE url = '%1';" )
-            .arg( m_db->escapeString( currentTrack.url().path() ) ) );
+            .arg( CollectionDB::instance()->escapeString( currentTrack.url().path() ) ) );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     m_HTMLSource.append( QStringx(
@@ -753,7 +748,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << escapeHTML( currentTrack.album() )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
-            << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
+            << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), currentTrack.album() ) )
             << i18n( "Click for information from amazon.%1, right-click for menu." ).arg( AmarokConfig::amazonLocale() )
             << i18n( "Look up this track at musicbrainz.com" )
             << escapeHTMLAttr( currentTrack.artist() )
@@ -805,7 +800,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         "</div>" );
     // </Current Track Information>
 
-    if ( !m_db->isFileInCollection( currentTrack.url().path() ) )
+    if ( !CollectionDB::instance()->isFileInCollection( currentTrack.url().path() ) )
     {
         m_HTMLSource.append(
                 "<div class='warning'>"
@@ -817,7 +812,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // <Suggested Songs>
     QStringList relArtists;
-    relArtists = m_db->relatedArtists( currentTrack.artist(), 10 );
+    relArtists = CollectionDB::instance()->similarArtists( currentTrack.artist(), 10 );
     if ( !relArtists.isEmpty() )
     {
         QString token;
@@ -886,7 +881,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     // <Favourite Tracks Information>
     QString artistName = currentTrack.artist().isEmpty() ? i18n( "This Artist" ) : escapeHTML( currentTrack.artist() );
-    values = m_db->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
+    values = CollectionDB::instance()->query( QString( "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ) "
                                    "FROM tags, statistics "
                                    "WHERE tags.artist = %1 AND statistics.url = tags.url "
                                    "ORDER BY statistics.percentage DESC "
@@ -923,7 +918,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // </Favourite Tracks Information>
 
     // <Albums by this artist>
-    values = m_db->query( QString( "SELECT DISTINCT album.name, album.id "
+    values = CollectionDB::instance()->query( QString( "SELECT DISTINCT album.name, album.id "
                                    "FROM tags, album "
                                    "WHERE album.id = tags.album AND tags.artist = %1 AND album.name <> '' "
                                    "ORDER BY album.name;" )
@@ -954,7 +949,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
         for ( uint i = 0; i < values.count(); i += 2 )
         {
-            QStringList albumValues = m_db->query( QString(
+            QStringList albumValues = CollectionDB::instance()->query( QString(
                 "SELECT tags.title, tags.url, tags.track, year.name, tags.length "
                 "FROM tags, year "
                 "WHERE tags.album = %1 AND "
@@ -982,7 +977,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                   "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr>"
-                     "<td width='1'><a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
+                     "<td width='1'><a href='fetchcover:%2 @@@ %3'><img align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></td>"
                      "<td valign='middle' align='left'><div class='albuminfo'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
                      "<br><i><font class='default'>%10</font></i></td>"
@@ -995,7 +990,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
                     << escapeHTMLAttr( values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
-                    << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), values[ i ], 50 ) )
+                    << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
                     << i18n( "Single", "%n Tracks",  albumValues.count() / 4 )
                     << QString::number( artist_id )
                     << values[ i+1 ] //album.id
@@ -1398,6 +1393,18 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album )
 
     if ( currentTrack.artist() == artist ||
          currentTrack.album() == album ) // this is for compilations or artist == ""
+    {
+        showCurrentTrack();
+    }
+}
+
+
+void
+ContextBrowser::similarArtistsFetched( const QString &artist )
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    
+    if ( currentTrack.artist() == artist )
     {
         showCurrentTrack();
     }

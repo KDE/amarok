@@ -25,7 +25,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
     QStringList left, right;
     const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
-    QString image = CollectionDB().albumImage( tags.artist(), tags.album() );
+    QString image = CollectionDB::instance()->albumImage( tags.artist(), tags.album() );
 
     left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" );
     right << tags.title() << tags.artist() << tags.album();

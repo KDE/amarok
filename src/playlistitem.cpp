@@ -100,7 +100,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
 {
     setDragEnabled( true );
 
-    setText( Directory, u.directory().section( '/', -1 ) );
+    setText( Directory, u.directory() );
 }
 
 PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const MetaBundle& bundle )
@@ -129,6 +129,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n
         //TODO  it would be neat to have all store columns adjacent and at top end so you can use
         //      a simple bit of logic to discern which ones to store
         //FIXME use the MetaBundle implicitly shared bitrate and track # strings
+        //setText( x, text );
         switch( x ) {
         case Artist:
         case Album:
@@ -210,7 +211,7 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setText( Length,  bundle.prettyLength() );
     setText( Bitrate, bundle.prettyBitrate() );
 
-    const int score = CollectionDB().getSongPercentage( bundle.url().path() );
+    const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
     if ( score )
         setText( Score, QString::number( score ) );
 }
@@ -240,7 +241,7 @@ void PlaylistItem::setText( int column, const QString &newText )
 
     case Track:
     case Year:
-        KListViewItem::setText( column, newText == "0" ? QString::null : newText );
+        KListViewItem::setText( column, newText == "0" ? QString::null : attemptStore( newText ) );
         break;
 
     default:

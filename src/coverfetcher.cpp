@@ -105,7 +105,7 @@ CoverFetcher::startFetch()
         query = m_userQuery;
 
     QString url = "http://xml.amazon.%1/onca/xml3?t=webservices-20&dev-t=%2&KeywordSearch=%3&mode=music&type=%4&page=1&f=xml";
-    url = url.arg( AmarokConfig::amazonLocale(), LICENSE, KURL::encode_string( query ), "heavy" );
+    url = url.arg( AmarokConfig::amazonLocale(), LICENSE, KURL::encode_string_no_slash( query ), "heavy" );
 
     kdDebug() << "[CoverFetcher] " << url << endl;
 

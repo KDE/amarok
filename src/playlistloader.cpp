@@ -29,7 +29,6 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bo
     , m_URLs( urls )
     , m_afterItem( after )
     , m_playFirstUrl( playFirstUrl )
-    , m_db( new CollectionDB )
     , m_dirLister( new KDirLister() )
 {
     s_stop = false;
@@ -63,7 +62,6 @@ PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bo
 
 PlaylistLoader::~PlaylistLoader()
 {
-    delete m_db;
 }
 
 
@@ -152,7 +150,7 @@ PlaylistLoader::doJob()
 void
 PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
 {
-    MetaBundle bundle( url, true, m_db );
+    MetaBundle bundle( url, true, CollectionDB::instance() );
 
     if (! title.isEmpty())
         bundle.setTitle( title );
@@ -314,6 +312,6 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
 void
 PlaylistLoader::postItem( const KURL &url )
 {
-    MetaBundle bundle( url, true, m_db );
+    MetaBundle bundle( url, true, CollectionDB::instance() );
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
 }

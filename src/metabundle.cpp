@@ -192,7 +192,7 @@ MetaBundle::readTags( bool readAudioProperties )
 {
     //TODO detect mimetype and use specfic reader like Scott recommends
 
-    if( readAudioProperties || !CollectionDB().getMetaBundleForUrl( m_url.path(), this ) )
+    if( readAudioProperties || !CollectionDB::instance()->getMetaBundleForUrl( m_url.path(), this ) )
     {
         TagLib::FileRef f( QFile::encodeName( m_url.path() ), readAudioProperties, TagLib::AudioProperties::Fast );
 

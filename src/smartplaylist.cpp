@@ -66,7 +66,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
     setRootIsDecorated( true );
     setShowSortIndicator( true );
 
-    if( !CollectionDB().isEmpty() ) {
+    if( !CollectionDB::instance()->isEmpty() ) {
         loadDefaultPlaylists();
         loadCustomPlaylists();
         m_loaded = true;
@@ -111,7 +111,7 @@ void SmartPlaylistView::createCustomPlaylist() //SLOT
 {
     //open a dialog to create a custom smart playlist
 
-    if( CollectionDB().isEmpty() )
+    if( CollectionDB::instance()->isEmpty() )
         return;
 
     int counter = 1;
@@ -139,8 +139,7 @@ void SmartPlaylistView::removeSelectedPlaylists()
 
 void SmartPlaylistView::loadDefaultPlaylists()
 {
-    CollectionDB db;
-    QStringList artistList = db.artistList();
+    QStringList artistList = CollectionDB::instance()->artistList();
 
     /********** All Collection **************/
     QString sql = "SELECT tags.url "
@@ -166,7 +165,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                        "ORDER BY statistics.percentage DESC "
                        "LIMIT 0,15;" )
-                       .arg( db.escapeString( artistList[i] ) );
+                       .arg( CollectionDB::instance()->escapeString( artistList[i] ) );
 
         childItem = new SmartPlaylist( item, childItem, i18n("By %1").arg( artistList[i] ), sql );
     }
@@ -185,7 +184,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "FROM tags, artist, statistics "
                        "WHERE statistics.url = tags.url AND tags.artist = artist.id AND artist.name = '%1' "
                        "ORDER BY statistics.playcounter DESC "
-                       "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
+                       "LIMIT 0,15;" ).arg( CollectionDB::instance()->escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By %1").arg( artistList[i] ), sql );
     }
 
@@ -202,7 +201,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "FROM tags, artist "
                        "WHERE tags.artist = artist.id AND artist.name = '%1' "
                        "ORDER BY tags.createdate DESC "
-                       "LIMIT 0,15;" ).arg( db.escapeString( artistList[i] ) );
+                       "LIMIT 0,15;" ).arg( CollectionDB::instance()->escapeString( artistList[i] ) );
         childItem = new SmartPlaylist( item, childItem, i18n("By %1").arg( artistList[i] ), sql );
     }
 
@@ -227,7 +226,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
     item->setDragEnabled( false );
     item->setKey( 7 );
 
-    QStringList values = db.query( "SELECT DISTINCT name FROM genre;" );
+    QStringList values = CollectionDB::instance()->query( "SELECT DISTINCT name FROM genre;" );
 
     childItem = 0;
     for( uint i=0; i < values.count(); i++ ) {
@@ -235,7 +234,7 @@ void SmartPlaylistView::loadDefaultPlaylists()
                        "FROM tags, artist "
                        "WHERE tags.genre = %1 AND tags.artist = artist.id "
                        "ORDER BY artist.name, tags.title;" )
-                       .arg( db.genreID( values[i], false ) );
+                       .arg( CollectionDB::instance()->genreID( values[i], false ) );
 
         childItem = new SmartPlaylist( item, childItem, values[i], sql );
     }
@@ -272,8 +271,7 @@ KURL::List SmartPlaylistView::loadSmartPlaylist( QListViewItem *item )
     #define item static_cast<SmartPlaylist*>(item)
 
     KURL::List list;
-    CollectionDB db;
-    QStringList values = db.query( item->query() );
+    QStringList values = CollectionDB::instance()->query( item->query() );
 
     if ( !values.isEmpty() )
     {
@@ -366,7 +364,7 @@ void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, i
 
 void SmartPlaylistView::collectionScanDone() //SLOT
 {
-    if( CollectionDB().isEmpty() ) {
+    if( CollectionDB::instance()->isEmpty() ) {
         clear();
         m_loaded = false;
     }

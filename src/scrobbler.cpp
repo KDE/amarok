@@ -7,6 +7,7 @@
 #include "collectiondb.h"
 #include "config.h"
 #include "enginecontroller.h"
+#include "playlist.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 
@@ -64,8 +65,9 @@ Scrobbler::~Scrobbler()
  */
 void Scrobbler::similarArtists( QString artist )
 {
-    QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
-                     .arg( artist.utf8() );
+    QString url =
+        QString( "http://www.audioscrobbler.com/similar/%1" )
+            .arg( KURL::encode_string_no_slash( artist.utf8() ) );
 
     kdDebug() << "[AudioScrobbler] Similar artists: " << url << endl;
 
@@ -127,9 +129,11 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 
     }
 
-    kdDebug() << "[AudioScrobbler] Suggestions retrieved" << endl;
+    kdDebug()
+        << "[AudioScrobbler] Suggestions retrieved ("
+        << suggestions.count() << ")" << endl;
     if ( suggestions.count() > 0 )
-        emit relatedArtistsFetched( m_artist, suggestions );
+        emit similarArtistsFetched( m_artist, suggestions );
 }
 
 
@@ -146,8 +150,22 @@ void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& d
 /**
  * Called when the signal is received.
  */
-void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ )
+void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 {
+    if ( !trackChanged )
+    {
+        // Tags were changed, update them if not yet submitted.
+        // TODO: In this case submit could be enabled if the artist or title
+        // tag was missing initially and disabled submit
+        if ( m_item != NULL )
+        {
+            m_item->setArtist( bundle.artist() );
+            m_item->setAlbum( bundle.album() );
+            m_item->setTitle( bundle.title() );
+        }
+        return;
+    }
+    
     m_prevPos = 0;
 
     // Plugins must not submit tracks played from online radio stations, even
@@ -207,6 +225,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
             // Position has changed more than it would during normal
             // playback.
             m_validForSending = false;
+            return;
         }
     }
 
@@ -215,6 +234,9 @@ void Scrobbler::engineTrackPositionChanged( long position )
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
     {
         m_submitter->submitItem( m_item );
+        // TODO: Make menu entry for automatically adding suggestions to playlist.
+        // TODO: This causes weird crash.
+        //appendSimilar( m_item );
         m_item = NULL;
         m_validForSending = false;
     }
@@ -233,6 +255,28 @@ void Scrobbler::applySettings()
     m_submitter->setPassword( AmarokConfig::scrobblerPassword() );
 
     m_submitter->handshake();
+}
+
+
+/**
+ * Appends suggested songs to playlist.
+ */
+void Scrobbler::appendSimilar( SubmitItem* item ) const
+{
+    QStringList suggestions = CollectionDB::instance()->similarArtists( item->artist(), 3 );
+    QueryBuilder qb;
+    qb.setOptions( QueryBuilder::optRandomize );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addMatches( QueryBuilder::tabArtist, suggestions );
+    qb.setLimit( 0, 5 );
+    QStringList values = qb.run();
+    
+    for ( uint i = 0; i < values.count(); i++ )
+    {
+        kdDebug() << "SUGGESTION: " + values[i] << endl;
+        Playlist::instance()->appendMedia( values[i] );
+    }
 }
 
 
@@ -519,9 +563,9 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
 
         data =
-            "u=" + KURL::encode_string( m_username ) +
+            "u=" + KURL::encode_string_no_slash( m_username ) +
             "&s=" +
-                KURL::encode_string( KMD5( KMD5( m_password.utf8() ).hexDigest() +
+                KURL::encode_string_no_slash( KMD5( KMD5( m_password.utf8() ).hexDigest() +
                     m_challenge.utf8() ).hexDigest() );
 
         m_submitQueue.first();
@@ -541,15 +585,15 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             playStartTime.setTime_t( itemFromQueue->playStartTime() );
             data +=
                 "a[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string( itemFromQueue->artist().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->artist().utf8() ) +
                 "&t[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string( itemFromQueue->title().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->title().utf8() ) +
                 "&b[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string( itemFromQueue->album().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->album().utf8() ) +
                 "&m[" + QString::number( submitCounter ) + "]=" +
                 "&l[" + QString::number( submitCounter ) + "]=" +
                 QString::number( itemFromQueue->length() ) +
-                "&i[" + QString::number( submitCounter ) + "]=" + KURL::encode_string(
+                "&i[" + QString::number( submitCounter ) + "]=" + KURL::encode_string_no_slash(
                     playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
         }
     }

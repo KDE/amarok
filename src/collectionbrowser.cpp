@@ -80,7 +80,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     } //</Search LineEdit>
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Update" ), "reload", 0, this, SLOT( scanMonitor() ), ac, "Start Scan" );
+    m_scanAction = new KAction( i18n( "Update" ), "reload", 0, CollectionDB::instance(), SLOT( scanMonitor() ), ac, "Start Scan" );
 
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
@@ -150,9 +150,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
-    // This is used when the collection folders were changed in the first-run wizard
-    connect( kapp, SIGNAL( sigScanCollection() ), m_view, SLOT( scan() ) );
-
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
@@ -173,18 +170,6 @@ CollectionBrowser::slotSetFilter() //SLOT
 }
 
 void
-CollectionBrowser::scan()  //SLOT
-{
-    m_view->scan();
-}
-
-void
-CollectionBrowser::scanMonitor()  //SLOT
-{
-    m_view->scanMonitor();
-}
-
-void
 CollectionBrowser::setupDirs()  //SLOT
 {
     m_view->setupDirs();
@@ -196,8 +181,6 @@ CollectionBrowser::setupDirs()  //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 
 CollectionView* CollectionView::m_instance = 0;
-CollectionDB* CollectionView::m_db = 0;
-CollectionDB* CollectionView::m_insertdb = 0;
 
 
 CollectionView::CollectionView( CollectionBrowser* parent )
@@ -215,10 +198,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setAcceptDrops( false );
     setSorting( -1 );
 
-    m_db = new CollectionDB();
-    if ( !m_db )
-        kdWarning() << k_funcinfo << "Could not open SQLite database\n";
-
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
         m_cat1 = config->readNumEntry( "Category1", CollectionBrowser::IdArtist );
@@ -227,49 +206,20 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
     //</READ CONFIG>
 
-    //<OPEN DATABASE>
-        //optimization for speeding up SQLite
-#ifdef USE_MYSQL
-//TODO?
-#else
-        m_db->query( "PRAGMA default_synchronous = OFF;" );
-#endif
-
-        //remove database file if version is incompatible
-        if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isValid() ) )
-        {
-            kdDebug() << "Rebuilding database!" << endl;
-            m_db->dropTables();
-            m_db->createTables();
-        }
-        if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !m_db->isValid() ) )
-        {
-            kdDebug() << "Rebuilding stats-database!" << endl;
-            m_db->dropStatsTable();
-            m_db->createStatsTable();
-        }
-
-        m_insertdb = new CollectionDB();
-        connect( CollectionDB::emitter(), SIGNAL( scanStarted() ),
-                 this,                      SLOT( scanStarted() ) );
-        connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ),
-                 this,                      SLOT( scanDone( bool ) ) );
-
-        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
-            scan();
-        else
-            scanMonitor();
-    //</OPEN DATABASE>
-
     //<PROGRESS BAR>
         m_progressBox = new QHBox( m_parent );
         QPushButton* button = new QPushButton( SmallIconSet( "button_cancel" ), i18n( "Abort" ), m_progressBox );
-        connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
+        connect( button, SIGNAL( clicked() ), CollectionDB::instance(), SLOT( stopScan() ) );
         m_progress = new KProgress( m_progressBox );
         m_progress->setFixedHeight( button->sizeHint().height() );
         m_progressBox->hide();
     //<PROGRESS BAR>
 
+    connect( CollectionDB::emitter(), SIGNAL( scanStarted() ),
+             this,                      SLOT( scanStarted() ) );
+    connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ),
+             this,                      SLOT( scanDone( bool ) ) );
+    
     connect( this,           SIGNAL( currentChanged( QListViewItem* ) ),
              this,             SLOT( cacheItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
@@ -295,11 +245,6 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
     config->writeEntry( "ViewMode", m_viewMode );
-    config->writeEntry( "Database Version", DATABASE_VERSION );
-    config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-
-    delete m_db;
-    delete m_insertdb;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -321,39 +266,10 @@ CollectionView::setupDirs()  //SLOT
         setup->writeConfig();
 
         if ( rescan )
-            scan();
+            CollectionDB::instance()->startScan();
 
         m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
     }
-}
-
-
-void
-CollectionView::scan()  //SLOT
-{
-    kdDebug() << k_funcinfo << endl;
-
-    if ( AmarokConfig::collectionFolders().isEmpty() )
-    {
-        //FIXME: this should be done by CollectionDB, too
-        m_insertdb->dropTables();
-        this->clear();
-    }
-    else if ( !m_isScanning )
-    {
-        m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
-                          AmarokConfig::importPlaylists() );
-
-        amaroK::StatusBar::instance()->message( i18n( "Building Collection..." ) );
-    }
-}
-
-
-void
-CollectionView::scanMonitor()  //SLOT
-{
-    if ( !m_isScanning )
-        m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
 }
 
 
@@ -500,10 +416,6 @@ CollectionView::scanDone( bool changed ) //SLOT
 {
     if ( changed )
     {
-        // take care of sql updates (schema changed errors)
-        delete m_db;
-        m_db = new CollectionDB();
-
         renderView();
 
         //restore cached item
@@ -924,13 +836,15 @@ CollectionView::fetchCover() //SLOT
     QString album = item->text(0);
 
     // find the first artist's name
-    m_db->query( QString ( "SELECT DISTINCT artist.name FROM artist, album, tags "
-                           "WHERE artist.id = tags.artist AND tags.album = album.id "
-                           "AND album.name = '%1';" )
-                           .arg( album ) );
+    QStringList values =
+        CollectionDB::instance()->query( QString (
+            "SELECT DISTINCT artist.name FROM artist, album, tags "
+            "WHERE artist.id = tags.artist AND tags.album = album.id "
+            "AND album.name = '%1';" )
+            .arg( album ) );
 
-    if ( !m_db->m_values.isEmpty() )
-        m_db->fetchCover( this, m_db->m_values[0], album, false );
+    if ( !values.isEmpty() )
+        CollectionDB::instance()->fetchCover( this, values[0], album, false );
     #endif
 }
 
@@ -950,14 +864,6 @@ CollectionView::showTrackInfo() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 // protected
 //////////////////////////////////////////////////////////////////////////////////////////
-
-void
-CollectionView::timerEvent( QTimerEvent* )
-{
-    if ( AmarokConfig::monitorChanges() )
-        scanMonitor();
-}
-
 
 void
 CollectionView::customEvent( QCustomEvent *e )

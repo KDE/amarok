@@ -18,6 +18,7 @@
 #define K3BEXPORTER_H
 
 
+#include "collectiondb.h"
 #include <kurl.h>
 
 class DCOPRef;
@@ -29,9 +30,6 @@ class K3bExporter
 {
 public:
     enum K3bOpenMode { AudioCD, DataCD, Abort };
-
-    K3bExporter();
-    ~K3bExporter() {}
 
     /**
     * @return true if the executable of K3B is found

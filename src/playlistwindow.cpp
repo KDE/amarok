@@ -180,7 +180,11 @@ PlaylistWindow::init()
     //this function is necessary because amaroK::actionCollection() returns our actionCollection
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-
+    
+    // Make sure that CollectionDB has initialized DbConnectionPool, before anyone else
+    // tries to make queries (as it is singleton).
+    CollectionDB::instance();
+    
     m_browsers = new BrowserBar( this );
 
     { //<Search LineEdit>
@@ -672,8 +676,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
         break;
     case ID_RESCAN_COLLECTION:
-        CollectionBrowser* collectionBrowser = (CollectionBrowser*) browserBar()->browser( "CollectionBrowser" );
-        collectionBrowser->scan();
+        CollectionDB::instance()->startScan();
         break;
     }
 }

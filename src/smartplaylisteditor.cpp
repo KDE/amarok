@@ -390,9 +390,9 @@ void CriteriaEditor::slotFieldSelected( int field )
 
         int currentField = m_fieldCombo->currentItem();
         if( currentField == 0 ) //artist
-           items = CollectionDB().artistList();
+           items = CollectionDB::instance()->artistList();
         else if( currentField == 1 ) //album
-           items = CollectionDB().albumList();
+           items = CollectionDB::instance()->albumList();
         else  //genre
            items = MetaBundle::genreList();
 

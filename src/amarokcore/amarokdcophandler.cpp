@@ -174,7 +174,7 @@ namespace amaroK
     QString DcopHandler::coverImage()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
-        QString image = CollectionDB().albumImage( bundle.artist(), bundle.album(), 0 );
+        QString image = CollectionDB::instance()->albumImage( bundle.artist(), bundle.album(), 0 );
         return image;
     }
 
@@ -272,7 +272,7 @@ namespace amaroK
     int DcopHandler::score()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
-        int score = CollectionDB().getSongPercentage( bundle.url().path() );
+        int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
     void DcopHandler::playMedia(const KURL &url)

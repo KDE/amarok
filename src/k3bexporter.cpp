@@ -33,11 +33,6 @@
 
 K3bExporter *K3bExporter::s_instance = 0;
 
-
-K3bExporter::K3bExporter()
-{
-}
-
 bool K3bExporter::isAvailable() //static
 {
     return !KStandardDirs::findExe( "k3b" ).isNull();
@@ -76,12 +71,13 @@ void K3bExporter::exportSelectedTracks( int openmode )
 
 void K3bExporter::exportAlbum( const QString &album, int openmode )
 {
-    CollectionDB db;
-    QString albumId = QString::number( db.albumID( album, false ) );
+    QString albumId = QString::number( CollectionDB::instance()->albumID( album, false ) );
 
-    QStringList values = db.query( "SELECT url FROM tags "
-                                   "WHERE album = " + albumId + " "
-                                   "ORDER BY track;" );
+    QStringList values =
+        CollectionDB::instance()->query(
+            "SELECT url FROM tags "
+            "WHERE album = " + albumId + " "
+            "ORDER BY track;" );
 
     if( values.count() ) {
         KURL::List urls;
@@ -95,12 +91,13 @@ void K3bExporter::exportAlbum( const QString &album, int openmode )
 
 void K3bExporter::exportArtist( const QString &artist, int openmode )
 {
-    CollectionDB db;
-    const QString artistId = QString::number( db.artistID( artist, false ) );
+    const QString artistId = QString::number( CollectionDB::instance()->artistID( artist, false ) );
 
-    QStringList values = db.query( "SELECT url FROM tags "
-                                   "WHERE artist = " + artistId + " "
-                                   "ORDER BY title;" );
+    QStringList values =
+        CollectionDB::instance()->query(
+            "SELECT url FROM tags "
+            "WHERE artist = " + artistId + " "
+            "ORDER BY title;" );
 
     if( !values.isEmpty() ) {
         KURL::List urls;

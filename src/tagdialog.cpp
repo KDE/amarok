@@ -201,9 +201,8 @@ void TagDialog::init()
     //get artist and album list from collection db
     QStringList artistList, albumList;
     {
-        CollectionDB db;
-        artistList = db.artistList();
-        albumList  = db.albumList();
+        artistList = CollectionDB::instance()->artistList();
+        albumList  = CollectionDB::instance()->albumList();
     }
 
     //enable auto-completion for artist, album and genre
@@ -282,7 +281,7 @@ void TagDialog::readTags()
     kLineEdit_samplerate->setText( m_bundle.prettySampleRate() );
     kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
-    QString cover = CollectionDB().albumImage( m_bundle.artist(), m_bundle.album() );
+    QString cover = CollectionDB::instance()->albumImage( m_bundle.artist(), m_bundle.album() );
     if( m_currentCover != cover ) {
         pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
         m_currentCover = cover;
@@ -473,7 +472,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
         bool result = f.save();
         if( result )
             //update the collection db
-            CollectionDB().updateTags( path, mb, updateCB );
+            CollectionDB::instance()->updateTags( path, mb, updateCB );
 
         QApplication::restoreOverrideCursor();
 

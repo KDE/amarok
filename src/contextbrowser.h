@@ -50,6 +50,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
+        void similarArtistsFetched( const QString &artist );
 
     private:
         void setStyleSheet();
@@ -58,10 +59,9 @@ class ContextBrowser : public QVBox, public EngineObserver
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
-
+        
         KHTMLPart    *browser;
         KTabBar      *m_tabBar;
-        CollectionDB *m_db;
 
         int           m_tabHome;
         int           m_tabCurrent;

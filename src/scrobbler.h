@@ -32,7 +32,7 @@ class Scrobbler : public QObject, public EngineObserver
         void applySettings();
 
     signals:
-        void relatedArtistsFetched( const QString& artist, const QStringList& suggestions );
+        void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     protected:
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*state*/ );
@@ -46,6 +46,7 @@ class Scrobbler : public QObject, public EngineObserver
     private:
         Scrobbler();
         ~Scrobbler();
+        void appendSimilar( SubmitItem* item ) const;
         QString m_similarArtistsBuffer;
         QString m_artist;
         long m_prevPos;
@@ -67,6 +68,9 @@ class SubmitItem
         
         bool operator==( const SubmitItem& item );
         
+        const void setArtist( const QString& artist ) { m_artist = artist; }
+        const void setAlbum( const QString& album ) { m_album = album; }
+        const void setTitle( const QString& title ) { m_title = title; }
         const QString artist() const { return m_artist; }
         const QString album() const { return m_album; }
         const QString title() const { return m_title; }

@@ -4,6 +4,8 @@
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
+#include "collectiondb.h"
+
 #include <qdialog.h>
 #include <qptrlist.h>
 #include <kiconview.h>
@@ -69,8 +71,6 @@ Q_OBJECT
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
 
-        CollectionDB *m_db;
-
         KListView      *m_artistView;
         CoverView      *m_coverView;
         QHBox          *m_searchBox;
@@ -112,6 +112,8 @@ Q_OBJECT
 
     protected:
         QDragObject *dragObject();
+    
+    private:
 };
 
 class CoverViewItem : public KIconViewItem

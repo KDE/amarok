@@ -181,7 +181,6 @@ ThreadWeaver::customEvent( QCustomEvent *e )
 }
 
 
-
 ThreadWeaver::Thread::Thread( const char *_name )
     : QThread()
     , name( _name )
@@ -257,7 +256,6 @@ ThreadWeaver::Thread::abortAllJobs()
 }
 
 
-
 ThreadWeaver::Job::Job( const char *name )
     : QCustomEvent( ThreadWeaver::JobEvent )
     , m_name( name )
@@ -267,11 +265,11 @@ ThreadWeaver::Job::Job( const char *name )
     debug() << "Job::Job: " << QCString(m_name) << endl;
 }
 
+
 ThreadWeaver::Job::~Job()
 {
     debug() << "Job::~Job: " << QCString(m_name) << endl;
 }
-
 
 
 ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )

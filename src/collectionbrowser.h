@@ -37,8 +37,6 @@ class CollectionBrowser: public QVBox
         CollectionBrowser( const char* name );
 
     public slots:
-        void scan();
-        void scanMonitor();
         void setupDirs();
 
     private slots:
@@ -108,8 +106,7 @@ class CollectionView : public KListView
 
     private slots:
         void setupDirs();
-        void scan();
-        void scanMonitor();
+        
         void scanStarted();
         void scanDone( bool changed = true );
 
@@ -126,8 +123,6 @@ class CollectionView : public KListView
         void showTrackInfo();
 
     protected:
-        /** Manages regular folder monitoring scan */
-        void timerEvent( QTimerEvent* e );
         /** Processes progress events from CollectionReader */
         void customEvent( QCustomEvent* e );
 
@@ -140,11 +135,6 @@ class CollectionView : public KListView
         QString captionForCategory( const int cat ) const;
 
     //attributes:
-        //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 17;
-        static const int DATABASE_STATS_VERSION = 3;
-        static CollectionDB* m_db;
-        static CollectionDB* m_insertdb;
         static CollectionView* m_instance;
 
         CollectionBrowser* m_parent;

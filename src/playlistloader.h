@@ -108,7 +108,6 @@ private:
 
     QListViewItem *m_afterItem;
     bool m_playFirstUrl;
-    CollectionDB* m_db;
     KDirLister* m_dirLister;
 
 protected:

@@ -98,7 +98,7 @@ void OSDWidget::renderOSDText( const QString &text )
     // Paint the album cover if existant
     if ( !m_image.isNull() && m_useImage )
     {
-        m_image = m_image.smoothScale( imageSize, imageSize );
+        m_image = m_image.smoothScale( imageSize, imageSize, QImage::ScaleMin );
         if ( text.isRightToLeft() )
         {
             imagePosition = -10;
@@ -550,7 +550,7 @@ amaroK::OSD::setImage( const MetaBundle &bundle )
 {
     //avoid showing the generic cover.  we can overwrite this by passing an arg.
     //get large cover for scaling if big cover needed
-    QString imageLocation = CollectionDB().albumImage( bundle.artist(), bundle.album(), 0 );
+    QString imageLocation = CollectionDB::instance()->albumImage( bundle.artist(), bundle.album(), 0 );
     if ( imageLocation.find( QString("nocover") ) != -1 )
         imageLocation = QString::null;
 

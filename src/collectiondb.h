@@ -9,6 +9,8 @@
 
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
+#include <qptrqueue.h>
+#include <qsemaphore.h>
 #include <qstringlist.h>     //stack allocated
 
 #ifdef USE_MYSQL
@@ -21,50 +23,106 @@ namespace mysql
 #include "sqlite/sqlite3.h"
 #endif
 
+class DbConnection;
+class DbConnectionPool;
 class CollectionEmitter;
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
+
+
+class DbConnection
+{
+    public:
+        DbConnection();
+        ~DbConnection();
+        
+#ifdef USE_MYSQL
+        mysql::MYSQL* db();
+#else
+        sqlite3* db();
+#endif
+        const bool isInitialized() const { return m_initialized; }
+        
+    private:
+#ifdef USE_MYSQL
+        mysql::MYSQL* m_db;
+#else
+        sqlite3* m_db;
+#endif
+        bool m_initialized;
+        
+};
+
+
+class DbConnectionPool : QPtrQueue<DbConnection>
+{
+    public:
+        DbConnectionPool();
+        ~DbConnectionPool();
+        
+        void createDbConnections();
+        
+        DbConnection *getDbConnection();
+        void putDbConnection( const DbConnection* /* conn */ );
+        
+    private:
+        static const int POOL_SIZE = 5;
+        QSemaphore m_semaphore;
+};
+
 
 class CollectionDB : public QObject
 {
     Q_OBJECT
 
     public:
-        CollectionDB();
-        ~CollectionDB();
+        static CollectionDB *instance();
 
         static CollectionEmitter* emitter() { return s_emitter; }
-
+        
+        static QString escapeString( QString string );
+        
+        /**
+         * This method returns a static DbConnection for components that want to use
+         * the same connection for the whole time. Should not be used anywhere else
+         * but in CollectionReader.
+         *
+         * @return static DbConnection
+         */
+        DbConnection *getStaticDbConnection();
+        
+        /**
+         * Returns the DbConnection back to connection pool.
+         *
+         * @param conn DbConnection to be returned
+         */
+        void returnStaticDbConnection( DbConnection *conn );
+        
         //sql helper methods
-        QStringList query( const QString& statement, QStringList& names, bool debug = false);
-        // no way to add a default argument for a Object& in gcc3, hack around it
-        QStringList query( const QString& statement ) { QStringList sl; return query( statement, sl, false ); }
-        int sqlInsertID();
-        QString escapeString( QString string );
-
+        QStringList query( const QString& statement, DbConnection *conn = NULL );
+        
         //table management methods
-        bool isValid();
         bool isEmpty();
-
-        void createTables( const bool temporary = false );
-        void dropTables( const bool temporary = false );
-        void createStatsTable();
-        void dropStatsTable();
-        void moveTempTables();
-
-        //general management methods
-        void scan( const QStringList& folders, bool recursively, bool importPlaylists );
-        void scanModifiedDirs( bool recursively, bool importPlaylists );
-
+        bool isValid();
+        void createTables( DbConnection *conn = NULL );
+        void dropTables( DbConnection *conn = NULL );
+        void clearTables( DbConnection *conn = NULL );
+        void moveTempTables( DbConnection *conn );
+        
+        uint artistID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
+        uint albumID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
+        uint genreID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
+        uint yearID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
+        
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url  );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
-        void updateDirStats( QString path, const long datetime, bool temporary = false );
+        void updateDirStats( QString path, const long datetime, DbConnection *conn = NULL );
 
         //song methods
-        bool addSong( MetaBundle* bundle, const bool temporary = false );
+        bool addSong( MetaBundle* bundle, const bool temporary = false, DbConnection *conn = NULL );
         bool getMetaBundleForUrl( const QString& url , MetaBundle* bundle );
         void addAudioproperties( const MetaBundle& bundle );
 
@@ -77,10 +135,10 @@ class CollectionDB : public QObject
         void setSongPercentage( const QString &url , int percentage );
 
         //artist methods
-        QStringList relatedArtists( const QString &artist, uint count );
+        QStringList similarArtists( const QString &artist, uint count );
 
         //album methods
-        void checkCompilations( const QString &path );
+        void checkCompilations( const QString &path, DbConnection *conn = NULL );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
 
         //list methods
@@ -105,59 +163,61 @@ class CollectionDB : public QObject
         bool removeAlbumImage( const QString &artist, const QString &album );
 
         //local cover methods
-        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, bool temporary );
+        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn = NULL );
         QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
-
-        uint artistID( QString value, bool autocreate = true, bool useTempTables = false );
-        QString artistValue( uint id );
-        uint albumID( QString value, bool autocreate = true, bool useTempTables = false );
-        QString albumValue( uint id );
-        uint genreID( QString value, bool autocreate = true, bool useTempTables = false );
-        QString genreValue( uint id );
-        uint yearID( QString value, bool autocreate = true, bool useTempTables = false );
-        QString yearValue( uint id );
-
-        //member variables
-        QString m_amazonLicense;
-
-        QStringList m_values;
-        QStringList m_names;
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
 
     public slots:
         void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit );
+        void scanMonitor();
+        void startScan();
         void stopScan();
 
     private slots:
         void dirDirty( const QString& path );
         void coverFetcherResult( CoverFetcher* );
-        void relatedArtistsFetched( const QString& artist, const QStringList& suggestions );
+        void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
 
     private:
-        void customEvent( QCustomEvent* );
-
-        uint IDFromValue( QString name, QString value, bool autocreate = true, bool useTempTables = false );
+        //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
+        static const int DATABASE_VERSION = 17;
+        static const int DATABASE_STATS_VERSION = 3;
+        static const bool DEBUG = false;
+        
+        CollectionDB();
+        ~CollectionDB();
+        //general management methods
+        void createStatsTable();
+        void dropStatsTable();
+        void scan( const QStringList& folders, bool recursively, bool importPlaylists );
+        void scanModifiedDirs( bool recursively, bool importPlaylists );
+        
+        int sqlInsertID( DbConnection *conn );
+        QString artistValue( uint id );
+        QString albumValue( uint id );
+        QString genreValue( uint id );
+        QString yearValue( uint id );
+        uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
         QString valueFromID( QString table, uint id );
-
+        void customEvent( QCustomEvent* );
+        
+        //member variables
         static CollectionEmitter* s_emitter;
-
-#ifdef USE_MYSQL
-        mysql::MYSQL* m_db;
-#else
-        sqlite3* m_db;
-#endif
-
-        bool m_monitor;
-        QDir m_cacheDir;
-        QDir m_coverDir;
-
+        QString m_amazonLicense;
         QString m_cacheArtist;
         uint m_cacheArtistID;
         QString m_cacheAlbum;
         uint m_cacheAlbumID;
+        
+        DbConnectionPool m_dbConnPool;
+        
+        bool m_isScanning;
+        bool m_monitor;
+        QDir m_cacheDir;
+        QDir m_coverDir;
 };
 
 
@@ -181,6 +241,8 @@ class CollectionEmitter : public QObject, public EngineObserver
 
         void coverFetched( const QString &artist, const QString &album );
         void coverFetcherError( const QString &error );
+        
+        void similarArtistsFetched( const QString &artist );
 };
 
 
@@ -225,8 +287,6 @@ class QueryBuilder : public QObject
 
         int m_linkTables;
         uint m_returnValues;
-
-        CollectionDB m_db;
 };
 
 

@@ -32,7 +32,15 @@ CollectionReader::CollectionReader( CollectionDB* parent, QObject *playlistBrows
         , m_recursively( recursively )
         , m_importPlaylists( importPlaylists )
         , m_incremental( incremental )
-{}
+{
+    m_staticDbConnection = CollectionDB::instance()->getStaticDbConnection();
+}
+
+
+CollectionReader::~CollectionReader()
+{
+    CollectionDB::instance()->returnStaticDbConnection( m_staticDbConnection );
+}
 
 
 bool
@@ -45,7 +53,7 @@ CollectionReader::doJob()
         QStringList values;
         struct stat statBuf;
 
-        values = m_parent->query( "SELECT dir, changedate FROM directories;" );
+        values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
 
         for ( uint i = 0; i < values.count(); i += 2 )
         {
@@ -76,7 +84,7 @@ CollectionReader::doJob()
     if ( !m_folders.empty() )
     {
         // we need to create the temp tables before readDir gets called ( for the dir stats )
-        m_parent->createTables( true );
+        CollectionDB::instance()->createTables( m_staticDbConnection );
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
     }
 
@@ -96,7 +104,7 @@ CollectionReader::doJob()
         readTags( entries, log );
     }
 
-    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
+    QApplication::postEvent( CollectionDB::instance(), new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
     log.close();
 
     return !entries.empty();
@@ -116,13 +124,14 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
     //update dir statistics for rescanning purposes
     if ( stat( QFile::encodeName( dir ), &statBuf ) == 0 )
-        m_parent->updateDirStats( dir, ( long ) statBuf.st_mtime, !m_incremental );
+        CollectionDB::instance()->updateDirStats(
+            dir, ( long ) statBuf.st_mtime, !m_incremental ? m_staticDbConnection : NULL );
     else
     {
         if ( m_incremental )
         {
-            m_parent->removeSongsInDir( dir );
-            m_parent->removeDirFromCollection( dir );
+            CollectionDB::instance()->removeSongsInDir( dir );
+            CollectionDB::instance()->removeDirFromCollection( dir );
         }
         return;
     }
@@ -156,7 +165,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
                         kdWarning() << "[CollectionReader] Skipping recursive symlink.\n";
                         continue;
                     }
-                    if ( !m_incremental || !m_parent->isDirInCollection( entry ) )
+                    if ( !m_incremental || !CollectionDB::instance()->isDirInCollection( entry ) )
                         // we MUST add a '/' after the dirname
                         readDir( QFile::decodeName( entry ) + '/', entries );
                 }
@@ -209,7 +218,8 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         if ( !f.isNull() )
         {
             MetaBundle bundle( url, f.tag(), 0 );
-            m_parent->addSong( &bundle, m_incremental );
+            CollectionDB::instance()->addSong(
+                &bundle, m_incremental, m_staticDbConnection );
 
             if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
                 cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
@@ -219,7 +229,8 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         {
             MetaBundle bundle;
             bundle.setUrl( url.path() );
-            m_parent->addSong( &bundle, m_incremental );
+            CollectionDB::instance()->addSong(
+                &bundle, m_incremental, m_staticDbConnection );
 
             if ( !cbl.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
                 cbl.append( CoverBundle( bundle.artist(), bundle.album() ) );
@@ -233,29 +244,31 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         {
             // we entered the next directory
             for ( uint j = 0; j < images.count(); j++ )
-                m_parent->addImageToAlbum( images[ j ], cbl, true );
+                CollectionDB::instance()->addImageToAlbum(
+                    images[ j ], cbl, m_staticDbConnection );
 
             cbl.clear();
             images.clear();
-            m_parent->checkCompilations( url.path().section( '/', 0, -2 ) );
+            CollectionDB::instance()->checkCompilations(
+                url.path().section( '/', 0, -2 ), m_staticDbConnection );
         }
     }
 
-    // remove tables and recreate them (quicker than DELETE FROM)
+    // clear tables
     if ( !m_incremental )
     {
-        m_parent->dropTables();
-        m_parent->createTables();
-    } else
+        CollectionDB::instance()->clearTables();
+    }
+    else
     {
         // remove old entries from database, only
         for ( uint i = 0; i < m_folders.count(); i++ )
-            m_parent->removeSongsInDir( m_folders[ i ] );
+            CollectionDB::instance()->removeSongsInDir( m_folders[ i ] );
     }
 
     // rename tables
-    m_parent->moveTempTables();
-    m_parent->dropTables( true );
+    CollectionDB::instance()->moveTempTables( m_staticDbConnection );
+    CollectionDB::instance()->dropTables( m_staticDbConnection );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
