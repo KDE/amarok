@@ -97,21 +97,32 @@ namespace amaroK
 
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
-#include <time.h>
+
+namespace Debug
+{
+    Timer::Timer( const char *label )
+            : m_start( std::clock() )
+    {
+        kdDebug() << indent << "BEGIN: " << label << endl;
+        DEBUG_INDENT
+    }
+
+    Timer::~Timer()
+    {
+        std::clock_t finish = std::clock();
+        const double duration = (double) (finish - m_start) / CLOCKS_PER_SEC;
+
+        DEBUG_UNINDENT
+        kdDebug() << indent << "END: Took " << duration << "s\n";
+    }
+}
+
 template <class B> void
 PlaylistWindow::addBrowser( const char *name, const QString &title, const QString &icon )
 {
-    debug() << "BEGIN: " << name << endl;
+    Debug::Timer timer( name );
 
-    DEBUG_INDENT
-        clock_t start  = clock();
-            m_browsers->addBrowser( new B( name ), title, icon );
-        clock_t finish = clock();
-
-        const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
-    DEBUG_UNINDENT
-
-    debug() << "END: Time: " << duration << "s\n";
+    m_browsers->addBrowser( new B( name ), title, icon );
 }
 
 
@@ -201,7 +212,7 @@ PlaylistWindow::init()
         KToolBar *bar = new KToolBar( m_browsers->container() );
         bar->setIconSize( 22, false ); //looks more sensible
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
-        m_lineEdit = new ClickLineEdit( bar, i18n( "Filter here..." ) );
+        m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
 
         bar->setStretchableWidget( m_lineEdit );
 
