@@ -157,6 +157,7 @@ class Playlist : private KListView, public EngineObserver
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
+        void showEvent( QShowEvent* ) { setCurrentTrack( m_currentTrack ); }
         #ifdef PURIST
         //KListView imposes hand cursor so override it
         void contentsMouseMoveEvent( QMouseEvent *e ); { QListView::contentsMouseMoveEvent( e ); }

@@ -258,7 +258,7 @@ Vis::Selector* Vis::Selector::m_instance = 0;
 Vis::Selector*
 Vis::Selector::instance()
 {
-    if ( !m_instance ) m_instance =  new Selector( pApp->mainWindow() );
+    if ( !m_instance ) m_instance =  new Selector( reinterpret_cast<QWidget*>(pApp->playlistWindow()) );
 
     return m_instance;
 }
@@ -279,13 +279,12 @@ Vis::Selector::Selector( QWidget *parent )
     //setWFlags( Qt::WDestructiveClose ); //FIXME reenable when we can
 
     setSorting( 0 );
-    setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
+    setCaption( i18n( "Visualizations" ) ); //don't bother with standard caption as dialog is tiny
+    setColumnWidthMode( 0, QListView::Maximum );
     QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
     addColumn( i18n( "Name" ) );
     header()->hide();
-    // Set sensible default size
-    resize( 280, 200 );
-    
+
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
 
@@ -297,7 +296,7 @@ Vis::Selector::Selector( QWidget *parent )
         if ( fi->isFile() && fi->extension() == "so" )
             new Selector::Item( this, fi->fileName() );
 
-    //TODO get the listview to set an appropriate size! why is this hard?
+    resize( sizeHint() );
 }
 
 void
@@ -325,11 +324,13 @@ Vis::Selector::mapPID( int pid, int sockfd )
 void
 Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
 {
+    //TODO if the vis is not running it cannot be configured and you shouldn't show the popupmenu!
+
     if ( !item ) return;
 
     KPopupMenu menu( this );
     menu.insertItem( i18n( "Configure" ), 0 );
-    menu.insertItem( i18n( "Fullscreen" ), 1 );
+    //menu.insertItem( i18n( "Fullscreen" ), 1 );
 
     switch( menu.exec( pos ) )
     {

@@ -878,6 +878,8 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
     if( item ) {
         //remove pixmap in all columns
+        //TODO only necessary to remove pixmap in one column and be thorough in the column move function
+
         QPixmap null;
         for ( int i = 0; i < header()->count(); i++ )
             item->setPixmap( i, null );

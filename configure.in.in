@@ -52,7 +52,7 @@ AC_DEFUN([KDE_PKG_CHECK_MODULES], [
 ###############################################################################
 # BEGIN PKG-CONFIG CHECK
 ###############################################################################
-    
+
 AC_ARG_VAR(PKGCONFIGFOUND, [Path to pkg-config])
 AC_CHECK_PROG(PKGCONFIGFOUND, pkg-config,[yes])
 
@@ -135,16 +135,16 @@ if test "$build_gstreamer" != "no"; then
         dnl Now we're ready to ask for gstreamer libs and cflags
         dnl And we can also ask for the right version of gstreamer
         have_gst=no
-    
+
         GST_MAJORMINOR=0.8
         GST_REQ=0.8.1
-        
-        KDE_PKG_CHECK_MODULES(GST, gstreamer-$GST_MAJORMINOR >= $GST_REQ, 
+
+        KDE_PKG_CHECK_MODULES(GST, gstreamer-$GST_MAJORMINOR >= $GST_REQ,
             have_gst=yes,have_gst=no)
-        
+
         KDE_PKG_CHECK_MODULES(GST_PLUGINS, gstreamer-plugins-$GST_MAJORMINOR >= $GST_REQ, \
             have_gst_plugins=yes,have_gst_plugins=no)
-    
+
         dnl Give error if we don't have gstreamer
         if test "x$have_gst" = "xno"; then
             LIB_GST=""
@@ -185,7 +185,7 @@ AC_ARG_WITH(nmm,
 )
 
 if test "$build_nmm" != "no"; then
-  
+
     #currently NMM libs must by in LD_PATH
     CFLAGS_NMM="-I$nmm_cflags"
     AC_DEFINE(HAVE_NMM, 1, [have NMM])
@@ -271,21 +271,22 @@ AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes)
 
 if test x$XMMS_CONFIG = xyes; then
     xmms_plugin_path=`xmms-config --visualization-plugin-dir`
-    xmms_cflags=`xmms-config --cflags`    
-    xmms_libs=`xmms-config --libs`    
+    xmms_cflags=`xmms-config --cflags`
+    xmms_libs=`xmms-config --libs`
 fi
 
 AC_DEFINE_UNQUOTED(XMMS_PLUGIN_PATH, "$xmms_plugin_path", [Define the path to XMMS plugins])
 AC_SUBST(xmms_cflags)
 AC_SUBST(xmms_libs)
 
-## XMMSwrapper depends on gtk/gdk headers        
+## XMMSwrapper depends on gtk/gdk headers
 AC_CHECK_PROG(GTK_CONFIG, gtk-config, yes)
 
 if test x$XMMS_CONFIG = xyes -a x$GTK_CONFIG = xyes; then
-    gtk_cflags=`gtk-config --cflags`    
-    gtk_libs=`gtk-config --libs`    
+    gtk_cflags=`gtk-config --cflags`
+    gtk_libs=`gtk-config --libs`
     build_xmmswrapper=yes
+    AC_DEFINE(HAVE_XMMS, 1, [have XMMS])
 else
     build_xmmswrapper=no
 fi
@@ -309,7 +310,7 @@ if test x$have_kdemm != xyes -a x$have_gst != xyes -a x$build_nmm != xyes; then
     DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
     no_engine=yes
 fi
-           
+
 ###############################################################################
 # END DO_NOT_COMPILE CHECK
 ###############################################################################

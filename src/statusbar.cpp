@@ -184,27 +184,26 @@ void StatusBar::drawTimeDisplay( long seconds )
 
 void StatusBar::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
+    CollectionReader::ProgressEvent* p = (CollectionReader::ProgressEvent*)e;
 
-        CollectionReader::ProgressEvent* p =
-            static_cast<CollectionReader::ProgressEvent*>( e );
+    switch ( p->state() ) {
+    case CollectionReader::ProgressEvent::Start:
+        m_pProgress->setProgress( 0 );
+        m_pProgress->show();
+        if( isHidden() ) show();
+        break;
 
-        switch ( p->state() ) {
-            case CollectionReader::ProgressEvent::Start:
-                m_pProgress->setProgress( 0 );
-                m_pProgress->show();
-                if( isHidden() ) show();
-                break;
-            case CollectionReader::ProgressEvent::Stop:
-                m_pProgress->hide();
-                if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 1000, this, SLOT(hide()) );
-                break;
-            case CollectionReader::ProgressEvent::Total:
-                m_pProgress->setTotalSteps( p->value() );
-                break;
-            case CollectionReader::ProgressEvent::Progress:
-                m_pProgress->setProgress( p->value() );
-        }
+    case CollectionReader::ProgressEvent::Stop:
+        QTimer::singleShot( 2000, m_pProgress, SLOT(hide()) );
+        if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 2000, this, SLOT(hide()) );
+        break;
+
+    case CollectionReader::ProgressEvent::Total:
+        m_pProgress->setTotalSteps( p->value() );
+        break;
+
+    case CollectionReader::ProgressEvent::Progress:
+        m_pProgress->setProgress( p->value() );
     }
 }
 

@@ -1,6 +1,10 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
+#ifdef HAVE_CONFIG_H
+    #include <config.h> //HAVE_XMMS definition
+#endif
+
 #include "actionclasses.h"
 #include "amarokconfig.h"
 #include "app.h"                //actionCollection() and a SLOT
@@ -106,6 +110,10 @@ Menu::Menu()
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+
+    #ifndef HAVE_XMMS
+    setItemEnabled( ID_SHOW_VIS_SELECTOR, false );
+    #endif
 }
 
 KPopupMenu*
