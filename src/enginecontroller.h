@@ -46,6 +46,8 @@ class EngineController : public QObject, public EngineSubject
 public:
     // plugins have their own static space, so calling instance from a plugin won't do any good.
     // you'll only get a new (empty) instance.
+    ~EngineController();
+
     static EngineController *instance();
     static EngineBase       *engine() { return instance()->m_engine; }
     static EngineBase       *loadEngine();
@@ -91,7 +93,6 @@ private slots:
 
 private:
     EngineController();
-    ~EngineController();
 
 private:
     static ExtensionCache s_extensionCache;
