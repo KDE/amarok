@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#if HAVE_MUSICBRAINZ
+#ifdef HAVE_MUSICBRAINZ
 
 #include <musicbrainz/musicbrainz.h>
 #include <qobject.h>

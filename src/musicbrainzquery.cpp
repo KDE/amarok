@@ -20,7 +20,7 @@
 
 #include <config.h>
 
-#if HAVE_MUSICBRAINZ
+#ifdef HAVE_MUSICBRAINZ
 
 #include "musicbrainzquery.h"
 #include "tag.h"

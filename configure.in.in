@@ -384,22 +384,11 @@ fi
 # BEGIN MUSICBRAINZ CHECK
 ###############################################################################
 
-AC_DEFUN([AC_HAVE_MUSICBRAINZ],
-[
+KDE_CHECK_HEADER(musicbrainz/musicbrainz.h, have_musicbrainz=yes, have_musicbrainz=no)
+
+if test x$have_musicbrainz = xyes; then
     AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
-    have_musicbrainz=yes
-])
-
-AC_DEFUN([AC_NO_MUSICBRAINZ],
-[
-    AC_DEFINE(HAVE_MUSICBRAINZ, 0, [have MusicBrainz])
-    have_musicbrainz=no
-])
-
-KDE_CHECK_HEADER(musicbrainz/musicbrainz.h,
-    AC_HAVE_MUSICBRAINZ,
-    AC_NO_MUSICBRAINZ
-)
+fi
 
 AM_CONDITIONAL(with_musicbrainz, test x$have_musicbrainz = xyes )
 
