@@ -58,6 +58,7 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+  <sebr>   Merge Metabar's box retraction animation to the context browser. More iCandy.
 
   <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
            artist or album that is right clicked.
