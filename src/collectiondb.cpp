@@ -25,13 +25,14 @@
 CollectionDB::CollectionDB( bool monitor )
         : m_weaver( new ThreadWeaver( this ) )
         , m_dirWatch( new KDirWatch( this ) )
+        , m_monitor( monitor )
 {
     QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
     m_db = sqlite_open( path, 0, 0 );
     
-    if ( monitor )
+    if ( m_monitor )
     {
         connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
                 this,       SLOT( dirDirty( const QString& ) ) );
@@ -451,6 +452,20 @@ void
 CollectionDB::customEvent( QCustomEvent *e )
 {
     kdDebug() << k_funcinfo << endl;
+    
+    // reset KDirWatcher
+    if ( m_monitor )
+    {
+        delete m_dirWatch;
+        m_dirWatch = new KDirWatch( this );
+
+        connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
+                this,       SLOT( dirDirty( const QString& ) ) );
+
+        addCollectionToWatcher();
+        m_dirWatch->startScan();
+    }
+
     emit scanDone();
 }
 

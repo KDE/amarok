@@ -67,6 +67,7 @@ class CollectionDB : public QObject
         sqlite* m_db;
         ThreadWeaver* m_weaver;
         KDirWatch* m_dirWatch;
+        bool m_monitor;
 };
 
 
