@@ -18,16 +18,17 @@ SHORT-TERM (URGENT):
                0.9-beta2 btw <markey> WORKSFORME
 
     * fix: #60 <markey> I'm still getting the occasional crash in PlaylistItem::setText()
+               <mxcl> I'm not! heh. Anyone else getting these? Looks like release is still on.
 
 
 MID-TERM:
 
     * fix: #44 <markey> ExpandButtons do not work well with keyboard shortcuts: the button expands, and then
                nothing happens. you must close it using the mouse
-    
+
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)
-    
+
     * fix: #64 <markey> when loading a playlist for the first time after startup, amaroK starts playing
                the first track automagically
                <mxcl> fixed, but the cause is not fixed. Somewhere it seems a KURL::List with 1 empty KURL is
@@ -173,49 +174,3 @@ DISCUSSING:
     * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
            at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
            have limited screen width, like in console or kdevelop. pretty please with icing =)
-
-
-TROUBLE:
-
-BT 2004/03/02 while starting a stream:
-
-[New Thread 1024 (LWP 4736)]
-[New Thread 2049 (LWP 4738)]
-[New Thread 38914 (LWP 4839)]
-0x422fc449 in wait4 () from /lib/libc.so.6
-#0  0x422fc449 in wait4 () from /lib/libc.so.6
-#1  0x42378fd0 in __DTOR_END__ () from /lib/libc.so.6
-#2  0x41e59a73 in waitpid () from /lib/libpthread.so.0
-#3  0x41220a3d in KCrash::defaultCrashHandler(int) ()
-   from /opt/kde3/lib/libkdecore.so.4
-#4  0x41e5711b in pthread_sighandler () from /lib/libpthread.so.0
-#5  <signal handler called>
-#6  0x4189bcc4 in QGListIteratorList::notifyClear(bool) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#7  0x4189a897 in QGList::clear() () from /usr/lib/qt3/lib/libqt-mt.so.3
-#8  0x416dd80d in QPtrList<QListViewPrivate::DrawableItem>::~QPtrList() ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#9  0x416c9640 in QListViewItem::takeItem(QListViewItem*) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#10 0x416c8db5 in QListViewItem::~QListViewItem() ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#11 0x40fb8e7a in KListViewItem::~KListViewItem() ()
-   from /opt/kde3/lib/libkdeui.so.4
-#12 0x080898e5 in ~PlaylistItem (this=0x4110dcc4) at amarok/playlistitem.cpp:60
-#13 0x08086bec in ~PlaylistLoader (this=0x82d78c8)
-    at amarok/playlistloader.cpp:97
-#14 0x08089019 in ~DoneEvent (this=0x81d8768) at amarok/playlistloader.h:119
-#15 0x41598bcd in QApplication::sendPostedEvents(QObject*, int) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#16 0x41598a68 in QApplication::sendPostedEvents() ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#17 0x4154105e in QEventLoop::processEvents(unsigned) ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#18 0x415a9c26 in QEventLoop::enterLoop() ()
-   from /usr/lib/qt3/lib/libqt-mt.so.3
-#19 0x415a9ac8 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
-#20 0x41598071 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
-#21 0x080bb469 in main (argc=1, argv=0xbffff304)
-    at amarok/amarokcore/main.cpp:30
-#22 0x422764f2 in __libc_start_main () from /lib/libc.so.6
-
