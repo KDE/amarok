@@ -266,6 +266,7 @@ uint
 GstEngine::position() const
 {
     if ( !m_currentInput ) return 0;
+    if ( !GST_IS_THREAD( m_currentInput->thread ) ) return 0;
 
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
@@ -995,9 +996,11 @@ void InputPipeline::prepareToDie()
 
         // Wait until queue is empty
         int filled = 1;
-        while( filled ) {
+        int count = 25;
+        while( filled && count ) {
             gst_element_get( queue, "current-level-buffers", &filled, NULL );
             ::usleep( 20000 ); // 20 msec
+            count--;
         }
 
         gst_element_set_state( thread, GST_STATE_READY );
