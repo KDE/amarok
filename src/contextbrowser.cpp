@@ -117,7 +117,7 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     QStringList values;
     QStringList names;
     
-    if ( m_db->execSql( QString( "SELECT datetime(accessdate, 'unixepoch'), playcounter FROM statistics WHERE url = '%1';" )
+    if ( m_db->execSql( QString( "SELECT datetime( datetime(accessdate, 'unixepoch'), 'localtime' ), playcounter FROM statistics WHERE url = '%1';" )
                         .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names ) )
     {
         if ( !values.count() )
