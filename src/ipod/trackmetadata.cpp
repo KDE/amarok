@@ -87,7 +87,7 @@ bool TrackMetadata::readFromBundle( const MetaBundle& bundle )
 
     volumeadjust = 0;
     playcount = 0;
-    setAlbum( bundle.album() );
+    setAlbum( bundle.album().isEmpty() ? i18n( "Unknown" ) : bundle.album() );
     setArtist( bundle.artist() );
     setTitle( bundle.title() );
     setComment( "" );
