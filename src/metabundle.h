@@ -13,8 +13,9 @@
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
 
-class PlaylistItem;
 class KFileMetaInfo;
+class PlaylistItem;
+template<class T> class QValueList;
 
 
 /**
@@ -31,14 +32,18 @@ class MetaBundle
 public:
 
     //for the audioproperties
-    static const int Undetermined = -2; /// obtain them with readTags( true )
+    static const int Undetermined = -2; /// not yet obtained, @see readTags()
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length with http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
     /**
      * Creates an empty MetaBundle
      */
-    MetaBundle() : m_exists( true ), m_isValidMedia( true ) { init(); }
+    MetaBundle()
+            : m_isValidMedia( true ) //because we are cheating
+    {
+        init();
+    }
 
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
@@ -59,7 +64,7 @@ public:
     /** Test for an empty metabundle */
     bool isEmpty() const { return m_url.isEmpty(); }
 
-    /** Did you get tags from the file at url()? */
+    /** Is it media that has metadata? Note currently we don't check for an audio mimetype */
     bool isValidMedia() const { return m_isValidMedia; }
 
     /** The bundle doesn't yet know its audioProperties */
@@ -69,10 +74,10 @@ public:
     }
 
     /** If you want Accurate reading say so */
-    MetaBundle &readTags( TagLib::AudioProperties::ReadStyle );
+    void readTags( TagLib::AudioProperties::ReadStyle );
 
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
-    bool exists() const { return m_exists; }
+    bool exists() const { return true; }
 
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
@@ -106,14 +111,15 @@ public:
     static QStringList genreList();
 
 public:
-    void setPath( QString path ) { m_url.setPath( path ); }
-    void setTitle( QString title ) { m_title = title; }
-    void setArtist( QString artist ) { m_artist = artist; }
-    void setAlbum( QString album ) { m_album = album; }
-    void setYear( QString year ) { m_year = year; }
-    void setComment( QString comment ) { m_comment = comment; }
-    void setGenre( QString genre ) { m_genre = genre; }
-    void setTrack( QString track ) { m_track = track; }
+    void setUrl( const KURL &url ) { m_url = url; }
+    void setPath( const QString &path ) { m_url.setPath( path ); }
+    void setTitle( const QString &title ) { m_title = title; }
+    void setArtist( const QString &artist ) { m_artist = artist; }
+    void setAlbum( const QString &album ) { m_album = album; }
+    void setYear( const QString &year ) { m_year = year; }
+    void setComment( const QString &comment ) { m_comment = comment; }
+    void setGenre( const QString &genre ) { m_genre = genre; }
+    void setTrack( const QString &track ) { m_track = track; }
     void setLength( int length ) { m_length = length; }
     void setBitrate( int bitrate ) { m_bitrate = bitrate; }
     void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
@@ -146,19 +152,12 @@ private:
 
     void init( TagLib::AudioProperties *ap = 0 );
     void init( const KFileMetaInfo& info );
+
+    void checkExists();
 };
 
 
-/**
- * @class MutableBundle
- * @author Max Howell <max.howell@methylblue.com>
- * @short A Metabundle you can change values for
- */
-
-class MutableBundle : public MetaBundle
-{
-public:
-
-};
+/// for your convenience
+typedef QValueList<MetaBundle> BundleList;
 
 #endif

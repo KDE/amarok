@@ -64,8 +64,8 @@ namespace Debug
         };
 
         static inline kdbgstream debug()   { return kdbgstream( indent, 0, KDEBUG_INFO  ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { return kdbgstream( indent, 0, KDEBUG_WARN  ) << AMK_PREFIX; }
-        static inline kdbgstream error()   { return kdbgstream( indent, 0, KDEBUG_ERROR ) << AMK_PREFIX; }
+        static inline kdbgstream warning() { return kdbgstream( indent, 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
+        static inline kdbgstream error()   { return kdbgstream( indent, 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
         static inline kdbgstream fatal()   { return kdbgstream( indent, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
 
         typedef kdbgstream DebugStream;
@@ -85,6 +85,9 @@ using Debug::DebugStream;
 /// Standard function announcer
 #define DEBUG_FUNC_INFO kdDebug() << Debug::indent << k_funcinfo << endl;
 
+/// Announce a line
+#define DEBUG_LINE_INFO kdDebug() << Debug::indent << k_funcinfo << "Line: " << __LINE__ << endl;
+
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
 
@@ -92,10 +95,10 @@ using Debug::DebugStream;
 #define DEBUG_UNINDENT Debug::indent.truncate( Debug::indent.length() - 2 );
 
 /// Use this to remind yourself to finish the implementation of a function
-#define AMAROK_NOTIMPLEMENTED kdWarning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to alert other developers to stop using a function
-#define AMAROK_DEPRECATED kdWarning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_DEPRECATED warning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
 
 namespace Debug
 {
@@ -218,9 +221,9 @@ namespace Debug
 
     class ListStream : private Debug::Block
     {
-        friend ListStream list();
+        friend ListStream list( const char* );
 
-        ListStream( const char *header = "List" ) : Block( header ), d( kdDebug() ) {}
+        ListStream( const char *header ) : Block( header ), d( kdDebug() ) {}
 
         DebugStream d;
 
@@ -237,7 +240,7 @@ namespace Debug
             }
     };
 
-    inline ListStream list() { return ListStream(); }
+    inline ListStream list( const char *header = "List" ) { return ListStream( header ); }
 }
 
 #endif

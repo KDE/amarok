@@ -12,33 +12,37 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include <kapplication.h>
+#include <kdirlister.h>
+#include <kurl.h>
 #include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
-#include "statusbar.h"
-
 #include <qfile.h>       //::loadPlaylist()
 #include <qlistview.h>
 #include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
+#include "statusbar.h"
 
-#include <kapplication.h>
-#include <kdirlister.h>
-#include <kurl.h>
+
+typedef QValueList<QDomNode> NodeList;
 
 
 //TODO playlists within playlists, local or remote are legal entries in m3u and pls
+//TODO directories from inside playlists
 
 
-PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
-    : ThreadWeaver::DependentJob( dependent, "PlaylistLoader" )
-    , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
-    , m_playFirstUrl( playFirstUrl )
-    , m_block( "PlaylistLoader" )
+PlaylistLoader::PlaylistLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
+        : ThreadWeaver::DependentJob( Playlist::instance(), "PlaylistLoader" )
+        , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
+        , m_playFirstUrl( playFirstUrl )
+        , m_block( "PlaylistLoader" )
 {
+    DEBUG_BLOCK
+
     amaroK::OverrideCursor cursor;
 
-    setDescription( i18n("Loading media") ); //TODO better wording
+    setDescription( i18n("Populating playlist") ); //TODO better wording
 
     amaroK::StatusBar::instance()->newProgressOperation( this )
             .setDescription( m_description )
@@ -47,12 +51,12 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
 
     m_markerListViewItem->setText( 0, "IF YOU CAN SEE THIS THERE IS A BUG" );
 
-    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
+    foreachType( KURL::List, urls )
     {
         const KURL &url = *it;
 
-        if ( isPlaylistFile( url ) && !url.isLocalFile() ) {
-            new RemotePlaylistFetcher( url, after, dependent );
+        if( PlaylistFile::isPlaylistFile( url ) && !url.isLocalFile() ) {
+            new RemotePlaylistFetcher( url, after, dependent() );
             continue;
         }
 
@@ -61,7 +65,6 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
 
         else if( url.protocol() == "album" ) {
            // url looks like:   album:<artist_id> @@@ <album_id>
-           // extract artist_id, album_id
            QString myUrl = url.path();
            if ( myUrl.endsWith( " @@@" ) )
                myUrl += ' ';
@@ -70,7 +73,6 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
            QString artist_id = list.front();
            QString album_id = list.back();
 
-           // get tracks for album, and add them to the playlist
            QStringList trackUrls = CollectionDB::instance()->albumTracks( artist_id, album_id );
            KURL url;
            foreach( trackUrls ) {
@@ -78,7 +80,8 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
                 m_URLs += url;
            }
         }
-        else if ( KFileItem( KFileItem::Unknown, KFileItem::Unknown, url ).isDir() )
+        else if( KFileItem( KFileItem::Unknown, KFileItem::Unknown, url ).isDir() )
+            // we must check if it's a directory before we call recurse() on it
             m_URLs += recurse( url );
 
         else
@@ -86,118 +89,62 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
     }
 }
 
-
 PlaylistLoader::~PlaylistLoader()
-{}
+{
+    delete m_markerListViewItem;
+}
 
-
-/////////////////////////////////////////////////////////////////////////////////////
-// PROTECTED
-/////////////////////////////////////////////////////////////////////////////////////
-
-typedef QValueList<MetaBundle> BundleList;
-typedef QValueList<PlaylistItem*> ItemList;
 
 class TagsEvent : public QCustomEvent {
 public:
-    TagsEvent( PlaylistItem *i )
-            : QCustomEvent( 1000 )
-            , item( i ) {}
+    TagsEvent() : QCustomEvent( 1001 ) {}
+    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
+        for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
+            /// @see MetaBundle for explanation of length < 0
+            if( (*it).length() <= 0 ) (*it).readTags( TagLib::AudioProperties::Fast );
+    }
 
-    TagsEvent( const KURL &u, PlaylistItem *i )
-            : QCustomEvent( 1000 )
-            , item( i )
-            , bundle( u ) {}
-
-    TagsEvent( const KURL &u, const QDomNode &n )
-            : QCustomEvent( 1001 )
-            , item( 0 )
-            , url( u )
-            , node( n ) {}
-
-    TagsEvent( const BundleList &b, const ItemList &i )
-            : QCustomEvent( 1002 )
-            , item( 0 )
-            , items( i )
-            , bundles( b ) {}
-
-    TagsEvent( const BundleList &b )
-            : QCustomEvent( 1003 )
-            , item( 0 )
-            , bundles( b ) {}
-
-    PlaylistItem* const item;
-    MetaBundle bundle;
-    KURL url;
-    QDomNode node;
-
-    ItemList items;
+    NodeList nodes;
     BundleList bundles;
 };
 
 bool
 PlaylistLoader::doJob()
 {
-    ItemList items;
+    setProgressTotalSteps( m_URLs.count() );
 
-    setProgressTotalSteps( m_URLs.count() * 2 );
-    setStatus( i18n("Populating playlist") );
-
-    // 1st pass create items
     KURL::List urls;
-    for( KURL::List::ConstIterator it = m_URLs.begin(), end = m_URLs.end(); it != end && !isAborted(); ++it ) {
-        incrementProgress();
-
+    for( for_iterators( KURL::List, m_URLs ); it != end && !isAborted(); ++it )
+    {
         const KURL &url = *it;
 
-        if ( isPlaylistFile( url ) ) {
-            if ( !loadPlaylist( url.path() ) )
+        incrementProgress();
+
+        switch( PlaylistFile::format( url.fileName() ) )
+        {
+        case PlaylistFile::XML:
+            loadXml( url );
+            break;
+
+        default: {
+            PlaylistFile playlist( url.path() );
+
+            if( !playlist.isError() )
+                QApplication::postEvent( this, new TagsEvent( playlist.bundles() ) );
+            else
                 m_badURLs += url;
 
-            continue;
+            } break;
+
+        case PlaylistFile::NotPlaylist:
+            (EngineController::canDecode( url ) ? urls : m_badURLs) += url;
         }
 
-        if ( EngineController::canDecode( url ) ) {
-            items += new PlaylistItem( url, m_markerListViewItem );
-            urls  += url;
-        }
-        else
-            m_badURLs += url;
-    }
-
-    setStatus( i18n("Filling in tags") );
-
-    //TODO should I only send it local urls?
-    BundleList bundles = CollectionDB::instance()->bundlesByUrls( urls );
-
-    // 2nd pass, fill in tags
-    {
-        Q_ASSERT( bundles.count() == items.count() );
-
-        BundleList::Iterator bu = bundles.begin();
-        for( ItemList::ConstIterator it = items.begin(), end = items.end(); it != end && !isAborted(); ) {
-            BundleList bundles;
-            ItemList items;
-
-            for( uint x = 0; x < 30 && it != end; ++x, ++it, ++bu )
-            {
-                incrementProgress();
-
-                if ( (*bu).length() <= 0 ) {
-                    // we try to read the tags, despite the slow-down
-                    debug() << "Audioproperties not known for: " << (*bu).url().fileName() << endl;
-                    (*bu).readTags( TagLib::AudioProperties::Fast );
-                }
-
-                items   += *it;
-                bundles += *bu;
-            }
-
-            QApplication::postEvent( this, new TagsEvent( bundles, items ) );
+        if( urls.count() == 50 || it == last ) {
+            QApplication::postEvent( this, new TagsEvent( CollectionDB::instance()->bundlesByUrls( urls ) ) );
+            urls.clear();
         }
     }
-
-    setProgress100Percent();
 
     return true;
 }
@@ -206,135 +153,89 @@ void
 PlaylistLoader::customEvent( QCustomEvent *e )
 {
     #define e static_cast<TagsEvent*>(e)
-    switch( e->type() )
-    {
+    switch( e->type() ) {
     case 1000:
-        e->item->setText( e->bundle );
+        foreachType( BundleList, e->bundles ) {
+            PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
 
-        if( m_playFirstUrl )
-        {
-            Playlist::instance()->activate( e->item );
-            m_playFirstUrl = false;
+            if( m_playFirstUrl ) {
+                Playlist::instance()->activate( item );
+                m_playFirstUrl = false;
+            }
         }
-
-        break;
-
-    case 1002:
-    {
-        if( m_playFirstUrl )
-        {
-            Playlist::instance()->activate( e->items.first() );
-            m_playFirstUrl = false;
-        }
-
-        BundleList::ConstIterator bundle = e->bundles.begin();
-        for( ItemList::ConstIterator it = e->items.begin(), end = e->items.end(); it != end; ++it, ++bundle )
-            (*it)->setText( *bundle );
-
-    }   break;
-
-    case 1003:
-        //TODO playFirstUrl
-
-        for( BundleList::ConstIterator it = e->bundles.begin(), end = e->bundles.end(); it != end; ++it )
-            new PlaylistItem( *it, m_markerListViewItem );
         break;
 
     case 1001:
     {
-        PlaylistItem *item = new PlaylistItem( e->url, m_markerListViewItem, e->node );
-        QString attribute  = e->node.toElement().attribute( "queue_index" );
+        const QString QUEUE_INDEX = "queue_index";
+        const NodeList::ConstIterator end = e->nodes.end();
+        foreachType( NodeList, e->nodes )
+        {
+            const QDomElement element = QDomNode( *it ).toElement(); //we check it is an element in loadPlaylist
+            PlaylistItem* const item = new PlaylistItem( (*it), m_markerListViewItem );
 
-        //TODO scrollbar position
-        //TODO previous tracks queue
-        //TODO current track position, even if user doesn't have resum playback turned on
+            //TODO scrollbar position
+            //TODO previous tracks queue
+            //TODO current track position, even if user doesn't have resume playback turned on
 
-        if ( !attribute.isEmpty() ) { /// Setting current track, and filling nextTracks queue
-            const int index = attribute.toInt();
+            if( element.hasAttribute( QUEUE_INDEX ) ) {
+                const int index = element.attribute( QUEUE_INDEX ).toInt();
 
-            if ( index == 0 )
-                Playlist::instance()->setCurrentTrack( item );
+                if( index == 0 )
+                    Playlist::instance()->setCurrentTrack( item );
 
-            else if ( index > 0 ) {
-                QPtrList<PlaylistItem> &m_nextTracks = Playlist::instance()->m_nextTracks;
-                int count = m_nextTracks.count();
+                else if( index > 0 ) {
+                    QPtrList<PlaylistItem> &m_nextTracks = Playlist::instance()->m_nextTracks;
+                    int count = m_nextTracks.count();
 
-                for( int c = count; c < index; c++ )
-                    // Append foo values and replace with correct values later.
-                    m_nextTracks.append( item );
+                    for( int c = count; c < index; c++ )
+                        // Append foo values and replace with correct values later.
+                        m_nextTracks.append( item );
 
-                m_nextTracks.replace( index - 1, item );
+                    m_nextTracks.replace( index - 1, item );
+                }
             }
         }
-
-    }   break;
+        break;
+    }
 
     default:
         DependentJob::customEvent( e );
         return;
     }
-
     #undef e
 }
 
 void
 PlaylistLoader::completeJob()
 {
-    delete m_markerListViewItem; //TODO doesn't get deleted if this isn't called
-
     KURL::List &list = m_badURLs;
 
     if ( !list.isEmpty() ) {
         amaroK::StatusBar::instance()->shortLongMessage(
                 i18n("Some URLs were not suitable for the playlist."),
-                i18n("These URLs could not be loaded into the playlist: " ) ); //TODO
+                i18n("These URLs could not be loaded into the playlist: " ) );
 
-        for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
-            debug() << *it << endl;
+//        for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
+//            debug() << *it << endl;
     }
 
     //syncronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
 
-void
-PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
-{
-    PlaylistItem *item = new PlaylistItem( url, m_markerListViewItem );
-
-    if ( url.protocol() == "file" )
-        QApplication::postEvent( this, new TagsEvent( url, item ) );
-
-    else {
-        TagsEvent *e = new TagsEvent( item );
-
-        e->url = url;
-        e->bundle.setTitle( title );
-        e->bundle.setLength( length );
-
-        QApplication::postEvent( this, e );
-    }
-}
-
-void
-PlaylistLoader::postXmlItem( const KURL &url, const QDomNode &node )
-{
-    QApplication::postEvent( this, new TagsEvent( url, node ) );
-}
-
+#include <qeventloop.h>
 KURL::List
 PlaylistLoader::recurse( const KURL &url )
 {
     KURL::List urls;
-
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
     lister.openURL( url );
 
     while( !lister.isFinished() )
-        //FIXME this is a crash waiting to happen
-        kapp->processEvents( 100 );
+        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     //returns QPtrList, so we MUST only do it once!
     KFileItemList items = lister.items();
@@ -346,95 +247,132 @@ PlaylistLoader::recurse( const KURL &url )
     return urls;
 }
 
+void
+PlaylistLoader::loadXml( const KURL &url )
+{
+    QFile file( url.path() );
+    if( !file.open( IO_ReadOnly ) ) {
+        m_badURLs += url;
+        return;
+    }
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+    if( !d.setContent( stream.read() ) ) {
+        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+                //TODO add a link to the path to the playlist
+                "The XML in the playlist was invalid. Please report this as a bug to the amaroK "
+                "developers. Thank you." ) );
+        return;
+    }
+
+    NodeList nodes;
+    TagsEvent *e = new TagsEvent;
+    const QString ITEM( "item" ); //so we don't construct this QString all the time
+    for( QDomNode n = d.namedItem( "playlist" ).firstChild(); !n.isNull(); n = n.nextSibling() )
+    {
+        if( n.nodeName() != ITEM ) continue;
+
+        if( !n.toElement().isNull() )
+            e->nodes += n;
+
+        if( e->nodes.count() == 50 ) {
+            QApplication::postEvent( this, e );
+            e = new TagsEvent;
+        }
+    }
+
+    QApplication::postEvent( this, e );
+};
 
 
-/// @class PlaylistFileTranslator
 
-bool
-PlaylistFileTranslator::loadPlaylist( const QString &path, Format type )
+/// @class PlaylistFile
+
+PlaylistFile::PlaylistFile( const QString &path )
+        : m_path( path )
 {
     QFile file( path );
-    if( !file.open( IO_ReadOnly ) ) return false;
+    if( !file.open( IO_ReadOnly ) ) {
+        m_error = i18n( "amaroK couldn't open the file." );
+        return;
+    }
+
     QTextStream stream( &file );
 
-    switch( type ) {
-    case M3U: {
-        const QString dir = path.left( path.findRev( '/' ) + 1 );
-        QString str, title;
-        int length = MetaBundle::Undetermined; // = -2
-
-        while( !( str = stream.readLine() ).isNull() /*&& !isAborted()*/ )
-        {
-            if ( str.startsWith( "#EXTINF" ) )
-            {
-                QString extinf = str.section( ':', 1);
-                length = extinf.section( ',', 0, 0 ).toInt();
-                title = extinf.section( ',', 1 );
-
-                if ( length == 0 ) length = MetaBundle::Undetermined;
-            }
-            else if ( !str.startsWith( "#" ) && !str.isEmpty() )
-            {
-
-                if ( !( str[ 0 ] == '/' || str.contains( "://" ) ) )
-                    str.prepend( dir );
-
-                postItem( KURL::fromPathOrURL( str ), title, length );
-
-                length = MetaBundle::Undetermined;
-                title = QString();
-            }
-        }
-        break;
-    }
-    case PLS:
-        for( QString line = stream.readLine(); !line.isNull() /*&& !isAborted()*/; line = stream.readLine() ) {
-            if ( line.startsWith( "File" ) ) {
-                const KURL url = KURL::fromPathOrURL( line.section( "=", -1 ) );
-                QString title;
-                int length = 0;
-
-                line = stream.readLine();
-
-                if ( line.startsWith( "Title" ) ) {
-                    title = line.section( "=", -1 );
-                    line  = stream.readLine();
-                }
-
-                if ( line.startsWith( "Length" ) )
-                    length = line.section( "=", -1 ).toInt();
-
-                postItem( url, title, length );
-            }
-        }
-        break;
-
-    case XML: {
-        stream.setEncoding( QTextStream::UnicodeUTF8 );
-
-        QDomDocument d;
-        if( !d.setContent( stream.read() ) ) return false;
-
-        const QString ITEM( "item" ); //so we don't construct these QStrings all the time
-        const QString URL( "url" );
-
-        for( QDomNode n = d.namedItem( "playlist" ).firstChild();
-             !n.isNull() && n.nodeName() == ITEM /*&& !isAborted()*/;
-             n = n.nextSibling() )
-        {
-            const QDomElement e = n.toElement();
-
-            if ( !e.isNull() )
-                postXmlItem( KURL(e.attribute( URL )), n );
-        }
-    }
+    switch( format( m_path ) ) {
+    case M3U: loadM3u( stream ); break;
+    case PLS: loadPls( stream ); break;
+    case XML:
+        m_error = i18n( "This componenet of amaroK cannot translate XML playlists." );
+        return;
     default:
-        ;
-    } //switch
+        m_error = i18n( "amaroK does not support this playlist format." );
+        return;
+    }
+
+    if( m_error.isEmpty() && m_bundles.isEmpty() )
+        m_error = i18n( "The playlist didn't contain any references to files." );
+}
+
+bool
+PlaylistFile::loadM3u( QTextStream &stream )
+{
+    const QString directory = m_path.left( m_path.findRev( '/' ) + 1 );
+    MetaBundle b;
+
+    for( QString line; !stream.atEnd(); line = stream.readLine() )
+    {
+        if( line.isEmpty() ) continue;
+
+        if( line.startsWith( "#EXTINF" ) ) {
+            const QString extinf = line.section( ':', 1 );
+            const int length = extinf.section( ',', 0, 0 ).toInt();
+            b.setTitle( extinf.section( ',', 1 ) );
+            b.setLength( length <= 0 ? MetaBundle::Undetermined : length );
+        }
+
+        else if( !line.startsWith( "#" ) ) {
+            if( KURL::isRelativeURL( line ) )
+                b.setPath( directory + line );
+            else
+                b.setUrl( KURL::fromPathOrURL( line ) );
+
+            m_bundles += b;
+            b = MetaBundle();
+        }
+    }
 
     return true;
 }
 
+bool
+PlaylistFile::loadPls( QTextStream &stream )
+{
+    for( QString line; !stream.atEnd(); line = stream.readLine() )
+    {
+        if( line.startsWith( "File" ) ) {
+            MetaBundle b;
+
+            b.setUrl( KURL::fromPathOrURL( line.section( "=", -1 ) ) );
+            line = stream.readLine();
+
+            if( line.startsWith( "Title" ) ) {
+                b.setTitle( line.section( "=", -1 ) );
+                line = stream.readLine();
+            }
+
+            if( line.startsWith( "Length" ) )
+                b.setLength( line.section( "=", -1 ).toInt() );
+
+            m_bundles += b;
+        }
+    }
+
+    return true;
+}
 
 
 /// @class RemotePlaylistFetcher
@@ -444,9 +382,9 @@ PlaylistFileTranslator::loadPlaylist( const QString &path, Format type )
 #include <klocale.h>
 
 RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, QObject *playlist )
-    : QObject( playlist )
-    , m_source( source )
-    , m_after( after )
+        : QObject( playlist )
+        , m_source( source )
+        , m_after( after )
 {
     //We keep the extension so the PlaylistLoader knows what file type it is
     QString path = source.path();
@@ -478,7 +416,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
     debug() << "Playlist was downloaded successfully\n";
 
     const KURL url = static_cast<KIO::FileCopyJob*>(job)->destURL();
-    ThreadWeaver::instance()->queueJob( new PlaylistLoader( parent(), url, m_after ) );
+    ThreadWeaver::instance()->queueJob( new PlaylistLoader( url, m_after ) );
 
     deleteLater();
 }
@@ -488,9 +426,11 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 /// @class SqlLoader
 
 SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
-    : PlaylistLoader( (QObject*)Playlist::instance(), KURL::List(), after, false )
+    : PlaylistLoader( KURL::List(), after, false )
     , m_sql( sql )
-{}
+{
+    setDescription( i18n("Populating playlist") );
+}
 
 bool
 SqlLoader::doJob()
@@ -499,7 +439,6 @@ SqlLoader::doJob()
     QStringList values = CollectionDB::instance()->query( m_sql );
 
     setProgressTotalSteps( values.count() );
-    setStatus( i18n("Populating playlist") );
 
     uint x = 0;
     foreach( values ) {
@@ -527,7 +466,7 @@ SqlLoader::doJob()
         }
 
         if ( ++x % 30 == 0 ) {
-            QApplication::postEvent( this, new TagsEvent( bundles ) );
+//            QApplication::postEvent( this, new TagsEvent( bundles ) );
             bundles.clear();
         }
     }

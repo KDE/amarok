@@ -115,7 +115,7 @@ ThreadWeaver::Thread*
 ThreadWeaver::gimmeThread()
 {
     for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
-        if ( !(*it)->running() )
+        if ( !(*it)->running() && (*it)->job() == 0 )
             return *it;
 
     Thread *thread = new Thread;
@@ -133,8 +133,6 @@ ThreadWeaver::event( QEvent *e )
         DebugStream d = debug() << "Job ";
         const QCString name = job->name();
         Thread *thread = job->m_thread;
-
-        thread->m_job = 0;
 
         QApplication::postEvent(
                 ThreadWeaver::instance(),
@@ -155,8 +153,11 @@ ThreadWeaver::event( QEvent *e )
         for( JobList::ConstIterator it = m_jobs.begin(), end = m_jobs.end(); it != end; ++it )
             if ( name == (*it)->name() ) {
                 thread->runJob( (*it) );
-                break;
+                return true;
             }
+
+        // this thread is done
+        thread->m_job = 0;
 
         break;
     }
@@ -229,7 +230,8 @@ ThreadWeaver::Thread::run()
 
     m_job->m_aborted |= !m_job->doJob();
 
-    QApplication::postEvent( ThreadWeaver::instance(), m_job );
+    if( m_job )
+        QApplication::postEvent( ThreadWeaver::instance(), m_job );
 
     // almost always the thread doesn't finish until after the
     // above event is already finished processing
@@ -243,7 +245,7 @@ ThreadWeaver::Thread::run()
 class ProgressEvent : public QCustomEvent {
 public:
     ProgressEvent( int progress )
-            : QCustomEvent( 40000 )
+            : QCustomEvent( 30303 )
             , progress( progress ) {}
 
     const int progress;
@@ -254,16 +256,19 @@ public:
 /// @class ThreadWeaver::Job
 
 ThreadWeaver::Job::Job( const char *name )
-    : QCustomEvent( ThreadWeaver::JobEvent )
-    , m_name( name )
-    , m_thread( 0 )
-    , m_percentDone( 0 )
-    , m_progressDone( 0 )
-    , m_totalSteps( 1 ) // no divide by zero
+        : QCustomEvent( ThreadWeaver::JobEvent )
+        , m_name( name )
+        , m_thread( 0 )
+        , m_percentDone( 0 )
+        , m_progressDone( 0 )
+        , m_totalSteps( 1 ) // no divide by zero
 {}
 
 ThreadWeaver::Job::~Job()
-{}
+{
+    if( m_thread->running() && m_thread->job() == this )
+        warning() << "Deleting a job before its thread has finished with it!\n";
+}
 
 void
 ThreadWeaver::Job::setProgressTotalSteps( uint steps )

@@ -1059,13 +1059,11 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
     QStringList paths;
     QueryBuilder qb;
 
-    uint i = 0;
-    for ( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
+    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
     {
         paths += (*it).protocol() == "file" ? (*it).path() : QString();
-        i++;
 
-        if ( i % 50 == 0 || i == urls.count() )
+        if( paths.count() == 50 || it == last )
         {
             qb.clear();
 

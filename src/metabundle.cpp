@@ -7,6 +7,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include <kfilemetainfo.h>
+#include <kmimetype.h>
 #include "metabundle.h"
 #include "playlistitem.h"
 #include <qfile.h>
@@ -32,7 +33,7 @@ MetaBundle::MetaBundle( const KURL &url, TagLib::AudioProperties::ReadStyle read
             readTags( readStyle );
     }
     else
-        init( 0 );
+        m_bitrate = m_length = m_sampleRate = Unavailable;
 }
 
 //StreamProvider ctor
@@ -141,10 +142,10 @@ MetaBundle::init( const KFileMetaInfo& info )
     }
 }
 
-MetaBundle&
+void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 {
-    Q_ASSERT( m_url.protocol() == "file" );
+    if( m_url.protocol() != "file" ) return;
 
     TagLib::FileRef f(
             QFile::encodeName( m_url.path() ),
@@ -169,9 +170,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
         m_isValidMedia = true;
     }
-    else init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
-
-    return *this;
+/*FIXME disabled for beta4 as it's simpler to not got 100 bug reports
+        else if( KMimeType::findByUrl( m_url )->is( "audio" ) )
+        init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );*/
 }
 
 QString

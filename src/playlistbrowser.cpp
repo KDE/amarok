@@ -1002,37 +1002,18 @@ void PlaylistBrowserView::startDrag()
 //    CLASS PlaylistBrowserItem
 ////////////////////////////////////////////////////////////////////////////
 
-class PlaylistReader
-        : public ThreadWeaver::DependentJob
-        , protected PlaylistFileTranslator
-{
+class PlaylistReader : public ThreadWeaver::DependentJob {
 public:
     PlaylistReader( QObject *recipient, const QString &path )
             : ThreadWeaver::DependentJob( recipient, "PlaylistReader" )
             , m_path( path ) {}
 
     virtual bool doJob() {
-        loadPlaylist( m_path );
+        bundles = PlaylistFile( m_path ).bundles();
         return true;
     }
 
-    enum EventType { Item = 1000 };
-
-    virtual void postItem( const KURL &url, const QString &title, const uint length ) {
-        QApplication::postEvent( dependent(), new ItemEvent( url, title, length ) );
-    }
-
-    virtual void postXmlItem( const KURL&, const QDomNode& ) {}
-
-    class ItemEvent : public QCustomEvent {
-    public:
-        ItemEvent( const KURL &url, const QString &title, const uint length )
-                : QCustomEvent( PlaylistReader::Item ), url( url ), title( title ), length( length ) {}
-
-        const KURL url;
-        const QString title;
-        const uint length;
-    };
+    BundleList bundles;
 
 private:
     const QString m_path;
@@ -1174,45 +1155,35 @@ void PlaylistBrowserItem::removeTrack( QListViewItem *item )
 
 void PlaylistBrowserItem::customEvent( QCustomEvent *e )
 {
-    switch( e->type() )
+    if( e->type() == PlaylistReader::JobFinishedEvent )
     {
-        case PlaylistReader::Item:  {
-            #define e static_cast<PlaylistReader::ItemEvent*>(e)
-            TrackItemInfo *info = new TrackItemInfo( e->url, e->title, e->length );
-            m_trackList.append( info );
-            m_length += info->length();
-            if( isOpen() )
-                m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
-            #undef e
-            break;
-       }
-
-        case PlaylistReader::JobFinishedEvent: {
-
-            //the tracks dropped on the playlist while it wasn't loaded are added to the track list
-            if( tmp_droppedTracks.count() ) {
-                for ( TrackItemInfo *info = tmp_droppedTracks.first(); info; info = tmp_droppedTracks.next() ) {
-                    m_trackList.append( info );
-                    m_length += info->length();
-                }
-                tmp_droppedTracks.clear();
-            }
-
-            m_loading = false;
-            m_loaded = true;
-            ((PlaylistBrowserView *)listView())->stopAnimation( this );  //stops the loading animation
-
-            if( m_trackCount ) setOpen( true );
-            else repaint();
-
-            m_trackCount = m_trackList.count();
-
-            break;
+        foreachType( BundleList, static_cast<PlaylistReader*>(e)->bundles ) {
+           const MetaBundle &b = *it;
+           TrackItemInfo *info = new TrackItemInfo( b.url(), b.title(), b.length() );
+           m_trackList.append( info );
+           m_length += info->length();
+           if( isOpen() )
+               m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
         }
 
-        default: break;
-    }
+        //the tracks dropped on the playlist while it wasn't loaded are added to the track list
+        if( tmp_droppedTracks.count() ) {
+            for ( TrackItemInfo *info = tmp_droppedTracks.first(); info; info = tmp_droppedTracks.next() ) {
+                m_trackList.append( info );
+                m_length += info->length();
+            }
+            tmp_droppedTracks.clear();
+        }
 
+        m_loading = false;
+        m_loaded = true;
+        ((PlaylistBrowserView *)listView())->stopAnimation( this );  //stops the loading animation
+
+        if( m_trackCount ) setOpen( true );
+        else repaint();
+
+        m_trackCount = m_trackList.count();
+    }
 }
 
 

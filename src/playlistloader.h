@@ -13,60 +13,62 @@
 
 class QDomNode;
 class QListViewItem;
+class QTextStream;
 class PlaylistItem;
 
 namespace KIO { class Job; }
 
 
 /**
+ * @class PlaylistFile
  * @author Max Howell
- * @short Abstract base class for extracting data from _local_ Playlist files
+ * @short Allocate on the stack, the contents are immediately available from bundles()
  *
- * Reimplement postItem() and call loadPlaylist()
+ * Note, it won't do anything with XML playlists
  *
  * TODO be able to load directories too, it's in the spec
  * TODO and playlists within playlists, remote and local
  */
-class PlaylistFileTranslator
+class PlaylistFile
 {
 public:
-    enum Format { M3U, PLS, XML, UNKNOWN };
+    PlaylistFile( const QString &path );
+
+    enum Format { M3U, PLS, XML, Unknown, NotPlaylist = Unknown };
+
+    /// the bundles from this playlist, they only contain
+    /// the information that can be extracted from  the playlists
+    BundleList &bundles() { return m_bundles; }
+
+    ///@return true if couldn't load the playlist's contents
+    bool isError() const { return !m_error.isEmpty(); }
+
+    /// if start returns false this has a translated error description
+    QString error() const { return m_error; }
 
     static inline bool isPlaylistFile( const KURL &url ) { return isPlaylistFile( url.fileName() ); }
-    static inline bool isPlaylistFile( const QString &fileName ) { return playlistType( fileName ) != UNKNOWN; }
-
-    static inline Format playlistType( const QString &fileName );
+    static inline bool isPlaylistFile( const QString &fileName ) { return format( fileName ) != Unknown; }
+    static inline Format format( const QString &fileName );
 
 protected:
-    /// pure virtual, called for every entry
-    virtual void postItem( const KURL&, const QString &title, uint length ) = 0;
+    /// make these virtual if you need to
+    bool loadM3u( QTextStream& );
+    bool loadPls( QTextStream& );
 
-    /// specially called for amaroK-XML playlists
-    virtual void postXmlItem( const KURL&, const QDomNode& ) = 0;
-
-//    virtual bool isAborted() const = 0;
-
-    bool loadPlaylist( const QString &path );
-    bool loadPlaylist( const QString &path, Format );
+    QString m_path;
+    QString m_error;
+    BundleList m_bundles;
 };
 
-inline PlaylistFileTranslator::Format
-PlaylistFileTranslator::playlistType( const QString &fileName )
+inline PlaylistFile::Format
+PlaylistFile::format( const QString &fileName )
 {
     const QString ext = fileName.right( 4 ).lower();
 
     if( ext == ".m3u" ) return M3U;
     else if( ext == ".pls" ) return PLS;
     else if( ext == ".xml" ) return XML;
-    else return UNKNOWN;
-}
-
-inline bool
-PlaylistFileTranslator::loadPlaylist( const QString &path )
-{
-    Format type = playlistType( path );
-
-    return type != UNKNOWN ? loadPlaylist( path, type ) : false;
+    else return Unknown;
 }
 
 
@@ -76,17 +78,13 @@ PlaylistFileTranslator::loadPlaylist( const QString &path )
  * @author Mark Kretschmann
  * @short Populates the Playlist-view with URLs
  *
- * Will load playlists, remote and local, and tags (if local)
+ * Will load playlists, remote and local, and tags (if local or in db)
  */
-class PlaylistLoader
-    : public ThreadWeaver::DependentJob
-    , protected PlaylistFileTranslator
+class PlaylistLoader : public ThreadWeaver::DependentJob
 {
 public:
-    PlaylistLoader( QObject *dependent, const KURL::List&, QListViewItem*, bool playFirstUrl = false );
+    PlaylistLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
    ~PlaylistLoader();
-
-    enum EventType { Item = 3000, DomItem };
 
 protected:
     /// reimplemented from ThreadWeaver::Job
@@ -94,9 +92,7 @@ protected:
     virtual void completeJob();
     virtual void customEvent( QCustomEvent* );
 
-    /// reimplemented from PlaylistFileTranslator
-    virtual void postItem( const KURL&, const QString &title, uint length );
-    virtual void postXmlItem( const KURL&, const QDomNode& );
+    void loadXml( const KURL& );
 
 private:
     KURL::List recurse( const KURL& );
@@ -135,11 +131,13 @@ public:
 };
 
 
+
 /**
  * @author Max Howell
  * @short Fetches a playlist-file from any location, and then loads it into the Playlist-view
  */
-class RemotePlaylistFetcher : public QObject {
+class RemotePlaylistFetcher : public QObject
+{
     Q_OBJECT
 
     const KURL m_source;

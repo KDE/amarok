@@ -39,6 +39,8 @@ email                : markey@web.de
 #include "systray.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
+#include <iostream>
+
 #include <kcmdlineargs.h>        //initCliArgs()
 #include <kcursor.h>             //amaroK::OverrideCursor
 #include <kedittoolbar.h>        //slotConfigToolbars()
@@ -49,8 +51,6 @@ email                : markey@web.de
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
 #include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
-
-#include <iostream>
 
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
@@ -329,19 +329,16 @@ void App::initGlobalShortcuts()
 //this class is only used in this module, so I figured I may as well define it
 //here and save creating another header/source file combination
 
-class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
-{
+class ID3v1StringHandler : public TagLib::ID3v1::StringHandler {
     QTextCodec *m_codec;
-
 public:
     ID3v1StringHandler( int codecIndex )
-        : m_codec( QTextCodec::codecForIndex( codecIndex ) ) {}
-
+            : m_codec( QTextCodec::codecForIndex( codecIndex ) )
+    {}
     virtual TagLib::String parse( const TagLib::ByteVector &data ) const
     {
         return QStringToTString( m_codec->toUnicode( data.data(), data.size() ) );
     }
-
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
     {
         const QCString qcs = m_codec->fromUnicode( TStringToQString( ts ) );
@@ -406,7 +403,6 @@ void App::applySettings( bool firstTime )
     amaroK::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
     amaroK::StatusBar::instance()->setShown( AmarokConfig::showStatusBar() );
-
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
 
     if ( AmarokConfig::recodeID3v1Tags() )

@@ -26,19 +26,9 @@
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
-#include "kbookmarkhandler.h"
-#include "playlist.h"
-#include "playlistloader.h"
-
-#include <qdir.h>
-#include <qhbox.h>
-#include <qlabel.h>
-#include <qsimplerichtext.h>
-#include <qtimer.h>
-#include <qtooltip.h>
-
 #include <kaction.h>
 #include <kapplication.h>
+#include "kbookmarkhandler.h"
 #include <kdiroperator.h>
 #include <kiconloader.h>
 #include <klistview.h>
@@ -48,6 +38,13 @@
 #include <ktoolbarbutton.h>  ///@see ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
+#include "playlist.h"
+#include "playlistloader.h"
+#include <qdir.h>
+#include <qhbox.h>
+#include <qlabel.h>
+#include <qtimer.h>
+#include <qtooltip.h>
 
 
 //TODO wait for lister to finish, if there are no files shown, but there are
@@ -64,7 +61,7 @@ protected:
             item->isDir() ||
             EngineController::canDecode( item->name() ) ||
             item->url().protocol() == "audiocd" ||
-            PlaylistFileTranslator::isPlaylistFile( item->name() );
+            PlaylistFile::isPlaylistFile( item->name() );
     }
 };
 
@@ -337,6 +334,7 @@ FileBrowser::contextMenuActivated( int id )
 
 #include <kurldrag.h>
 #include <qpainter.h>
+#include <qsimplerichtext.h>
 
 class KURLView : public KListView
 {
@@ -374,27 +372,24 @@ public:
         if ( childCount() == 0 ) {
             QPainter p( viewport() );
             QRect r( rect() );
-            QString text = m_text;
 
-            if ( text.isEmpty() ) {
+            if ( m_text.isEmpty() ) {
                 //TODO Perhaps it's time to put this in some header, as we use it in three places now
                 QSimpleRichText t( i18n(
                         "<div align=center>"
                             "Enter a search term above; you can use wildcards like * and ?"
-                        "</div>" ), QApplication::font() );
+                        "</div>" ), font() );
 
-                const int wd3 = r.width() / 3;
-                t.setWidth( wd3 );
-                const int y = (r.height() - t.height()) / 2;
+                t.setWidth( width() - 40 );
 
                 p.setBrush( colorGroup().background() );
-                p.drawRoundRect( wd3-15, y-15, t.width()+30, t.height()+30, 5, 5 );
-                t.draw( &p, wd3, y, QRect( 0, 0, r.width(), r.height() ), colorGroup() );
+                p.drawRoundRect( 15, 15, t.width() + 10, t.height() + 10, 5, 10 );
+                t.draw( &p, 20, 20, QRect(), colorGroup() );
             }
-            else
+            else {
                 p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-
-            p.drawText( r, Qt::AlignCenter | Qt::WordBreak, text );
+                p.drawText( r, Qt::AlignCenter | Qt::WordBreak, m_text );
+            }
         }
     }
 

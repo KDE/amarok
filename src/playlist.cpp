@@ -369,7 +369,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 {
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
-        ThreadWeaver::instance()->queueJob( new PlaylistLoader( this, list, after, directPlay ) );
+        ThreadWeaver::instance()->queueJob( new PlaylistLoader( list, after, directPlay ) );
     }
 }
 
@@ -384,7 +384,7 @@ Playlist::restoreSession()
 {
     KURL url;
     url.setPath( amaroK::saveLocation() + "current.xml" );
-    ThreadWeaver::instance()->queueJob( new PlaylistLoader( this, url, 0 ) );
+    ThreadWeaver::instance()->queueJob( new PlaylistLoader( url, 0 ) );
 }
 
 
@@ -573,6 +573,7 @@ Playlist::activate( QListViewItem *item )
 
         setCurrentTrack( 0 );
         EngineController::instance()->stop();
+        amaroK::OSD::instance()->show( i18n("Playlist finished") );
     }
 }
 

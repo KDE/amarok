@@ -110,9 +110,38 @@ namespace amaroK
     }
 }
 
-/// Use this to const-iterate over QStringLists, if you like
+/**
+ * Use this to const-iterate over QStringLists, if you like.
+ *
+ *     QStringList strings;
+ *     foreach( strings )
+ *         debug() << *it << endl;
+ */
 #define foreach( x ) \
     for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
+
+/**
+ * Creates iterators of type @p Type.
+ * Watch out for the definitions of last and end in your scope.
+ *
+ *     BundleList bundles;
+ *     for( for_iterators( BundleList, bundles ); it != end; ++it )
+ *         debug() << *it.url() << endl;
+ */
+#define for_iterators( Type, x ) \
+    Type::ConstIterator it = x.begin(), end = x.end(), last = x.fromLast()
+
+/**
+ * You can use this for lists that aren't QStringLists.
+ * Watch out for the definitions of last and end in the scope of your foreach.
+ *
+ *     BundleList bundles;
+ *     foreach( BundleList, bundles )
+ *         debug() << *it.url() << endl;
+ */
+#define foreachType( Type,x ) \
+    for( for_iterators( Type, x ); it != end; ++it )
+
 
 /// Update this when necessary
 #define APP_VERSION "1.2-CVS"

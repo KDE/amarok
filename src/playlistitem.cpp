@@ -114,11 +114,12 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
     setText( bundle );
 }
 
-PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n )
-      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
-      , m_url( u )
+PlaylistItem::PlaylistItem( QDomNode n, QListViewItem *lvi )
+      : KListViewItem( lvi->listView(), lvi->itemAbove() )
+      , m_url( n.toElement().attribute( "url" ) )
       , m_missing( false )
 {
+    setText( TrackName, trackName( m_url ) );
     setDragEnabled( true );
     const uint ncol = listView()->columns();
 
@@ -141,7 +142,7 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n
             KListViewItem::setText( x, attemptStore( text ) );
             continue;
         case Score: {
-            const int score = CollectionDB::instance()->getSongPercentage( u.path() );
+            const int score = CollectionDB::instance()->getSongPercentage( m_url.path() );
             KListViewItem::setText( x, QString::number( score ) );
             continue; }
         default:

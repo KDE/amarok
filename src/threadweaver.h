@@ -150,7 +150,7 @@ private:
     ThreadWeaver();
    ~ThreadWeaver();
 
-    enum EventType { JobEvent = 2000, OverrideCursorEvent, RestoreOverrideCursorEvent };
+    enum EventType { JobEvent = 20202, OverrideCursorEvent, RestoreOverrideCursorEvent };
 
     virtual bool event( QEvent* );
 
@@ -167,6 +167,8 @@ private:
 
         void runJob( Job* );
         void msleep( int ms ) { QThread::msleep( ms ); } //we need to make this public for class Job
+
+        Job *job() const { return m_job; }
 
     private:
         Job *m_job;
