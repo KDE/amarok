@@ -30,6 +30,9 @@
 #include <qtimer.h>
 #include "sliderwidget.h"
 #include "statusbar.h"
+
+// stuff that must be included last
+//#include "startupTips.h"
 #include "timeLabel.h"
 #include "toggleLabel.h"
 #include "toggleLabel.moc"
@@ -96,6 +99,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     slotItemCountChanged( 0, 0, 0, 0 );
 
+    //see statupTips.h
+    //KDE::showNextTip( this );
+
     //session stuff
     //setShown( AmarokConfig::showStatusBar() );
 }
@@ -145,11 +151,18 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
                 "The many other people who have helped make amaroK what it is</p>" ) );
     }
 
-    if ( title.isEmpty() )
+    if( title.isEmpty() )
         title = i18n( "Unknown track" );
 
+
+
+    title = "<b>" + title + "</b>";
+
+    if( !bundle.album().isEmpty() )
+       title += " on <b>" + bundle.album() + "</b>";
+
     // don't show '-' or '?'
-    if ( length.length() > 1 ) {
+    if( length.length() > 1 ) {
         title += " (";
         title += length;
         title += ")";
