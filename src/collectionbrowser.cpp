@@ -486,7 +486,7 @@ CollectionView::fetchCover() //SLOT
 
     QString key = values[0] + " - " + values[1];
     kdDebug() << "keyword: " << key << endl;
-    m_coverFetcher->getCover( key );
+    m_coverFetcher->getCover( key, CoverFetcher::heavy );
 }
 
 
