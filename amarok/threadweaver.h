@@ -156,7 +156,7 @@ public:
     QStringList dirList() { return m_dirList; }
 
 private:
-    void readDir( const QString& path, QStringList& entries );
+    void readDir( const QString& dir, QStringList& entries );
     void readTags( const QStringList& entries );
 
     QPtrList<MetaBundle> m_metaList;

@@ -212,20 +212,21 @@ CollectionReader::doJob() {
 
 void
 CollectionReader::readDir( const QString& dir, QStringList& entries ) {
-    m_dirList << dir;
+    m_dirList <<  dir;
     DIR* d = opendir( dir.local8Bit() );
+    if ( !d ) return;
     dirent *ent;
     struct stat statBuf;
 
     while ( ent = readdir( d ) ) {
-        QString entry = ent->d_name;
+        QCString entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
             continue;
-        entry.prepend( dir.endsWith( "/" ) ? dir : dir + "/" );
+        entry.prepend( ( dir.endsWith( "/" ) ? dir : dir + "/" ).local8Bit() );
         
 //         kdDebug() << entry << endl;
-        stat( entry.local8Bit(), &statBuf );
+        stat( entry, &statBuf );
 
         if ( S_ISDIR( statBuf.st_mode ) ) {
             if ( m_recursively )
@@ -233,7 +234,7 @@ CollectionReader::readDir( const QString& dir, QStringList& entries ) {
                 readDir( entry, entries );
         }
         else if ( S_ISREG( statBuf.st_mode ) )
-            entries << entry;
+            entries << QString::fromLocal8Bit( entry );
     }
     closedir( d );
 }
@@ -248,13 +249,11 @@ CollectionReader::readTags( const QStringList& entries ) {
         
         url.setPath( entries[i] );
 
-        if ( url.isValid() && url.isLocalFile() ) {
-            TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
-            MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), f.audioProperties() );
+        TagLib::FileRef f( url.path().local8Bit(), false /*== read AudioProps */ );
+        MetaBundle* bundle = f.isNull() ? 0 : new MetaBundle( url, f.tag(), 0 );
 
-            if ( bundle )
-                m_metaList.append( bundle );
-        }
+        if ( bundle )
+            m_metaList.append( bundle );
     }
 }
 
