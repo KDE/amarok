@@ -18,7 +18,7 @@ email                : markey@web.de
 #ifndef AMAROK_ARTSENGINE_H
 #define AMAROK_ARTSENGINE_H
 
-#include "../amarokarts/amarokarts.h" //FIXME relative dirs are evil apparently
+#include "amarokarts.h" 
 #include "enginebase.h"
 
 #include <vector>
@@ -65,7 +65,7 @@ class ArtsEngine : public EngineBase
         void                                     configureEffect( long id );
 
     public slots:
-        bool                                     open( const KURL& );
+        void                                     open( const KURL& );
         void                                     play();
         void                                     stop();
         void                                     pause();
@@ -73,6 +73,10 @@ class ArtsEngine : public EngineBase
         void                                     seek( long ms );
         void                                     setVolume( int percent );
 
+    private slots:
+        void                                     connectPlayObject();
+        void                                     connectTimeout();
+    
     private:
         void                                     startXfade();
         void                                     timerEvent( QTimerEvent* );
@@ -102,7 +106,8 @@ class ArtsEngine : public EngineBase
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
-        static const int                         ARTS_TIMER;
+        static const int                         ARTS_TIMER = 100;   //ms
+        static const int                         TIMEOUT    = 3000;  //ms
 
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
@@ -123,9 +128,6 @@ class ArtsEngine : public EngineBase
         bool                                     m_xfadeFadeout;
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
-
-    private slots:
-        void                                     connectPlayObject();
 };
 
 

@@ -15,7 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#include "../amarokarts/amarokarts.h"
+#include "amarokarts.h"
 #include "artsengine.h"
 
 #include <string>
@@ -25,9 +25,9 @@ email                : markey@web.de
 #include <qdom.h>
 #include <qfile.h>
 #include <qlayout.h>
-#include <qtimer.h>
 #include <qstring.h>
 #include <qtextstream.h>
+#include <qtimer.h>
 
 #include <kapplication.h>
 #include <kartswidget.h>
@@ -54,8 +54,6 @@ email                : markey@web.de
 
 #include <sys/wait.h>
 
-const int ArtsEngine::ARTS_TIMER = 100;
-
 
 ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         : EngineBase()
@@ -66,9 +64,9 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_volumeId( 0 )
         , m_xfadeFadeout( false )
         , m_xfadeValue( 0.0 )
-        , m_xfadeCurrent( "invalue1" )
+        , m_xfadeCurrent( "invalue2" )
 {
-    setName( "arts" ); //FIXME rename artsEngine if this won't break anything
+    setName( "arts" );  //name is used for RTTI
     m_mixerHW = -1;     //initialize
 
     // We must restart artsd whenever we installed new mcopclasses
@@ -320,7 +318,7 @@ std::vector<float>* ArtsEngine::scope()
 
 //////////////////////////////////////////////////////////////////////
 
-bool ArtsEngine::open( const KURL& url )
+void ArtsEngine::open( const KURL& url )
 {
     m_xfadeFadeout = false;
     startXfade();
@@ -329,19 +327,17 @@ bool ArtsEngine::open( const KURL& url )
     m_pPlayObject = factory.createPlayObject( url, false ); //second parameter: create BUS(true/false)
 
     if ( !m_pPlayObject || m_pPlayObject->isNull() )
-    {
-        kdWarning() << "[ArtsEngine::open()] Cannot initialize PlayObject! Skipping this track." << endl;
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-        return false;
-    }
+        connectTimeout();
     else
     {
         if ( m_pPlayObject->object().isNull() )
+        {            
+            kdDebug() << "[void ArtsEngine::open()] m_pPlayObject->object().isNull()" << endl;
             connect( m_pPlayObject, SIGNAL( playObjectCreated() ), this, SLOT( connectPlayObject() ) );
+            QTimer::singleShot( TIMEOUT, this, SLOT( connectTimeout() ) );
+        }
         else
             connectPlayObject();
-        return true;
     }
 }
 
@@ -354,11 +350,29 @@ void ArtsEngine::connectPlayObject()
     {
         m_pPlayObject->object()._node()->start();
 
+        //switch xfade channels
+        m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
+    
+        if ( m_xfadeValue == 0.0 )
+            m_xfadeValue = 1.0;
+        
         Arts::connect( m_pPlayObject->object(), "left", m_xfade, ( m_xfadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_xfade, ( m_xfadeCurrent + "_r" ).latin1() );
+    
     }
 }
 
+//SLOT
+void ArtsEngine::connectTimeout()
+{        
+    if ( m_pPlayObject && !m_pPlayObject->isNull() && m_pPlayObject->object().isNull() )
+    {
+        kdWarning() << "[ArtsEngine::open()] Cannot initialize PlayObject! Skipping this track." << endl;
+        delete m_pPlayObject;
+        m_pPlayObject = NULL;
+    }
+}
+        
 
 void ArtsEngine::play()
 {
@@ -373,6 +387,12 @@ void ArtsEngine::stop()
 {
     kdDebug() << "[void ArtsEngine::stop()]" << endl;
 
+    //switch xfade channels
+    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
+
+    if ( m_xfadeValue == 0.0 )
+        m_xfadeValue = 1.0;
+   
     m_xfadeFadeout = true;
     startXfade();
 }
@@ -529,13 +549,7 @@ void ArtsEngine::configureEffect( long id )
 
 void ArtsEngine::startXfade()
 {
-    //switch xfade channels
-    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
-
-    if ( m_xfadeValue == 0.0 )
-        m_xfadeValue = 1.0;
-
-    if ( m_pPlayObjectXfade )
+     if ( m_pPlayObjectXfade )
     {
         m_pPlayObjectXfade->halt();
         delete m_pPlayObjectXfade;

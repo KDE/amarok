@@ -28,9 +28,6 @@ SHORT-TERM (URGENT):
                of .mod (etc.) files. either: 1) extend TagLib or 2) resurrect aRts length detection as
                backup
 
-    * fix: #42 with restore track on startup and crossfade volume starts at max and then crossfades
-               from 0 so you get a noticeable "blip" sound.
-
     * fix: #41 <mxcl> id3v2 tags append rather than write tags, ie Dr.DreDr.Dre
 
     * fix: #40 <markey> change "EQ" button to "FX", as it is more appropriate.

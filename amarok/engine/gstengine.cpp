@@ -254,7 +254,7 @@ std::vector<float>* GstEngine::scope()
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
 
-bool GstEngine::open( const KURL& url )
+void GstEngine::open( const KURL& url )
 {
     stop();
 

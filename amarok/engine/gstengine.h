@@ -57,7 +57,7 @@ class GstEngine : public EngineBase
         void                                     configureEffect( long id ) {}
 
     public slots:
-        bool                                     open( const KURL& );
+        void                                     open( const KURL& );
 
         void                                     play();
         void                                     stop();

@@ -21,7 +21,7 @@ email                : markey@web.de
 #include "amaroksystray.h"
 #include "analyzerbase.h"
 #include "effectwidget.h"    //in the popupmenu
-#include "enginebase.h"      //setScroll()
+#include "enginebase.h"
 #include "metabundle.h"      //setScroll()
 #include "playerapp.h"
 #include "playerwidget.h"
@@ -180,18 +180,9 @@ void PlayerWidget::setScroll( const MetaBundle &bundle )
 {
     QStringList text;
 
-    if( pApp->m_pEngine->isStream() ) //TODO this information should be with the bundle (?)
-    {
-        text += i18n( "Stream from: %1" ).arg( bundle.prettyURL() );
-
-        m_rateString = QString::null;
-    }
-    else
-    {
-        text += bundle.prettyTitle();
-        text += bundle.m_album;
-        text += bundle.prettyLength();
-    }
+    text += bundle.prettyTitle();
+    text += bundle.m_album;
+    text += bundle.prettyLength();
 
     m_rateString = bundle.prettyBitrate();
     if( !m_rateString.isEmpty() ) m_rateString += " / ";
@@ -243,6 +234,10 @@ static const char* const not_close_xpm[]={
         }
     }
 
+    //FIXME WORKAROUND prevents crash
+    if ( text.isEmpty() )
+        text = "FIXME: EMPTY STRING MAKES ME CRASH";
+    
     QFont font( m_scrollFrame->font() );
     QFontMetrics fm( font );
     const uint height = font.pixelSize(); //the font actually extends below its pixelHeight

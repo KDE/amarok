@@ -210,16 +210,12 @@ int PlayerApp::newInstance()
 // INIT
 /////////////////////////////////////////////////////////////////////////////////////
 
-void PlayerApp::initPlayerWidget()
+void PlayerApp::initEngine()
 {
-    kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
-
-    m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
-
-    connect( this,            SIGNAL( metaData( const MetaBundle& ) ),
-             m_pPlayerWidget, SLOT  ( setScroll( const MetaBundle& ) ) );
-
-    kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
+    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
+                                          m_artsNeedsRestart,
+                                          SCOPE_SIZE,
+                                          AmarokConfig::rememberEffects() );
 }
 
 
@@ -233,6 +229,19 @@ void PlayerApp::initBrowserWin()
              m_pBrowserWin,                SLOT  ( setShown( bool ) ) );
 
     kdDebug() << "end PlayerApp::initBrowserWin()" << endl;
+}
+
+
+void PlayerApp::initPlayerWidget()
+{
+    kdDebug() << "begin PlayerApp::initPlayerWidget()" << endl;
+
+    m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
+
+    connect( this,            SIGNAL( metaData( const MetaBundle& ) ),
+             m_pPlayerWidget, SLOT  ( setScroll( const MetaBundle& ) ) );
+
+    kdDebug() << "end PlayerApp::initPlayerWidget()" << endl;
 }
 
 
@@ -273,19 +282,15 @@ void PlayerApp::applySettings()
                                                "(like effects and visualizations) might not work properly." ) );
 
         delete m_pEngine;
-        m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
-                                              m_artsNeedsRestart,
-                                              SCOPE_SIZE,
-                                              AmarokConfig::rememberEffects() );
-
-        m_pEngine->setVolume( AmarokConfig::masterVolume() );
+        initEngine();
 
         kdDebug() << "[PlayerApp::applySettings()] AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
-
+ 
     if ( AmarokConfig::hardwareMixer() != m_pEngine->isMixerHardware() )
         AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
 
+    m_pEngine->setVolume( AmarokConfig::masterVolume() );
     m_pEngine->setRestoreEffects( AmarokConfig::rememberEffects() );
     m_pEngine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
 
@@ -319,9 +324,6 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
     AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
-
-
-
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
 
@@ -338,11 +340,8 @@ void PlayerApp::readConfig()
     //we must restart artsd after each version change, so that it picks up any plugin changes
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
 
-    m_pEngine = EngineBase::createEngine( AmarokConfig::soundSystem(),
-                                          m_artsNeedsRestart,
-                                          SCOPE_SIZE,
-                                          AmarokConfig::rememberEffects() );
-
+    initEngine();
+    
     AmarokConfig::setHardwareMixer( m_pEngine->initMixer( AmarokConfig::hardwareMixer() ) );
     m_pEngine->setVolume( AmarokConfig::masterVolume() );
     m_pPlayerWidget->m_pVolSlider->setValue( m_pEngine->volume() );
@@ -513,12 +512,11 @@ void PlayerApp::play( const MetaBundle &bundle )
     const KURL &url = bundle.m_url;
     m_playingURL = url;
     emit currentTrack( url );
-    bool success;
 
     if ( AmarokConfig::titleStreaming() && !m_proxyError && !url.isLocalFile() )
     {
         TitleProxy::Proxy *pProxy = new TitleProxy::Proxy( url );
-        success = m_pEngine->open( pProxy->proxyUrl() );
+        m_pEngine->open( pProxy->proxyUrl() );
 
         connect( m_pEngine, SIGNAL( endOfTrack  () ),
                  pProxy,    SLOT  ( deleteLater () ) );
@@ -528,13 +526,8 @@ void PlayerApp::play( const MetaBundle &bundle )
                  this,      SIGNAL( metaData    ( const MetaBundle& ) ) );
     }
     else
-        success = m_pEngine->open( url );
-
-    if ( !success ) {
-        slotNext();
-        return;
-    }
-
+        m_pEngine->open( url );
+       
     m_proxyError = false;
 
     emit metaData( bundle );
