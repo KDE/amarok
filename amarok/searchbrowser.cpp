@@ -11,9 +11,10 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <kurlcompletion.h>
 #include <qhbox.h>
 #include <qpushbutton.h>
+#include <qlabel.h>
+#include <kurlcompletion.h>
 #include <kurldrag.h>
 #include "threadweaver.h"
 
@@ -27,31 +28,39 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
         : QVBox( parent, name )
         , m_weaver( new ThreadWeaver( this ) )
 {
-    QHBox *hb = new QHBox( this );
-    searchEdit = new KLineEdit( hb );
-    QWidget *searchButton = new QPushButton( "&Search", hb );
+    QHBox *hb1 = new QHBox( this );
+    hb1->setSpacing( 4 );
+    hb1->setMargin( 2 );
+    QLabel *label1 = new QLabel( "Search for:", hb1 );
+    searchEdit = new KLineEdit( hb1 );
+    QWidget *searchButton = new QPushButton( "&Search", hb1 );
+    
+    QHBox *hb2 = new QHBox( this );
+    hb2->setSpacing( 4 );
+    hb2->setMargin( 2 );
+    QLabel *label2 = new QLabel( "in:", hb2 );
+    urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, hb2 );
 
-    urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, this );
     KURLCompletion *cmpl = new KURLCompletion();
     urlEdit->setCompletionObject( cmpl );
     urlEdit->setURL( "/" );
 
-    resultView  = new SearchListView( this );
-    historyView = new KListView( this );
+    QVBox *vb1 = new QVBox( this );
+    vb1->setSpacing( 2 );
+    vb1->setMargin( 2 );
+    resultView  = new SearchListView( vb1 );
+    historyView = new KListView( vb1 );
 
     resultView->setDragEnabled( TRUE );
     resultView->addColumn( i18n( "Filename" ) );
     resultView->addColumn( i18n( "Directory" ) );
 
     historyView->addColumn( i18n( "Search Token" ) );
-    historyView->addColumn( i18n( "Counter" ) );
+    historyView->addColumn( i18n( "Results" ) );
     historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
 
-    historyView->setColumnWidthMode( 0, QListView::Manual );
-    historyView->setColumnWidthMode( 1, QListView::Manual );
-    historyView->setColumnWidthMode( 2, QListView::Manual );
-    historyView->setColumnWidthMode( 3, QListView::Manual );
+    resultView->setColumnWidthMode( 1, QListView::Manual );
 
     connect( searchEdit,   SIGNAL( returnPressed() ), this, SLOT( slotStartSearch() ) );
     connect( searchButton, SIGNAL( clicked() ),       this, SLOT( slotStartSearch() ) );
@@ -74,7 +83,7 @@ void SearchBrowser::slotStartSearch()
         kdDebug() << path << endl;
         KURL *url;
         url = new KURL( path );
-        path = url->directory( FALSE, TRUE );
+        path = url->directory( FALSE, FALSE );
         delete url;
         
         kdDebug() << path << endl;
@@ -125,9 +134,13 @@ void SearchBrowser::customEvent( QCustomEvent *e )
                 // kdDebug() << "********************************\n";
                 // kdDebug() << "SearchModuleEvent arrived, found item: " << p->curPath() << p->curFile() << "\n";
                 // kdDebug() << "********************************\n";
-              
+
+                QString curToken = p->curPath();
+                if ( curToken.startsWith( p->item()->text( 3 ) ) )
+                    curToken = curToken.right( curToken.length() - p->item()->text( 3 ).length() );
+
                 p->item()->setText( 1, QString::number( p->count() ) );
-                p->item()->setText( 2, p->curPath() );
+                p->item()->setText( 2, curToken );
       
                 KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
                 resItem->setText( 1, p->curPath() );
