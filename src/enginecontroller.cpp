@@ -187,6 +187,9 @@ EngineController::loadEngine( const QString &engineName )
 
     // don't use QApplication::exit, as the eventloop may not have started yet
     std::exit( EXIT_SUCCESS );
+
+    // Not executed, just here to prevent compiler warning
+    return 0;
 }
 
 
