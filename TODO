@@ -6,6 +6,9 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <mxcl>   Handle the case where user drops a directory and there is a playlist file that duplicates what is
+           in the directories above it and you end up with duplicate URLs all over the place.
+
   <markey> Gst-Engine: Some users report trouble with the first track they play after startup.
 
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
@@ -25,8 +28,8 @@ SHORT-TERM (URGENT):
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
 
-  <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
-           so show the artist or album that is right clicked.
+  <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
+           artist or album that is right clicked.
 
   <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry users if
            they start to lose stats.
@@ -47,8 +50,7 @@ SHORT-TERM (URGENT):
 
   <muesli> Show "Artist - Song" for Various Artist folder.
 
-  <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another
-           widget.
+  <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
 
 MID-TERM:
@@ -67,17 +69,10 @@ MID-TERM:
                    Update: Would be even better to detect the mpeglib arts-plugins directly, since some
                    distros offer them as a separate package.
 
-  ADD 127 <mxcl>   Connect PlayerWindow navigation buttons to KAction enabled states
-
   ADD 104 <mxcl>   Perhaps a nice idea: when you drag playlistItems to a branch in the collection browser
                    it prompts to change the track's tags, so drag a track to the "moolaaa" album and that
                    track get's it's album tag changed to "moolaaa" and is inserted into the branch, so the user
                    know's what has happened.
-
-  ADD 100 <mxcl>   We have several areas where we ask for paths, it would be good to make it so these
-                   always reflect the most recent path the user has used, eg looking in /my/music/bands
-                   in the FileBrowser means when you open the SearchBrowser this is the search path
-                   would be easy with a KConfig XT key. May be nice to do this with the URL histories too.
 
   ADD  96 <mxcl>   User asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
                    of a track. I'll see if I can do it with tiny amount of code -->mxcl
