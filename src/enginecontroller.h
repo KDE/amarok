@@ -85,7 +85,7 @@ signals:
 
 private slots:
     void playRemote( KIO::Job* );
-    void slotNewMetaData( const MetaBundle& );
+    void slotStreamMetaData( const MetaBundle& );
     void slotMainTimer();
     void slotTrackEnded();
     void slotStateChanged( Engine::State );

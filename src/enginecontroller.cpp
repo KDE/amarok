@@ -382,9 +382,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
     StatusBar::instance()->clear();
 
-    if ( isStream &&
-         AmarokConfig::titleStreaming() &&
-         m_engine->streamingMode() != Engine::NoStreaming )
+    if ( isStream && m_engine->streamingMode() != Engine::NoStreaming )
     {
         m_stream = new amaroK::StreamProvider( url, m_engine->streamingMode() );
 
@@ -396,7 +394,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         }
 
         connect( m_stream, SIGNAL(metaData( const MetaBundle& )),
-                 this,       SLOT(slotNewMetaData( const MetaBundle& )) );
+                 this,       SLOT(slotStreamMetaData( const MetaBundle& )) );
         connect( m_stream, SIGNAL(streamData( char*, int )),
                  m_engine,   SLOT(newStreamData( char*, int )) );
         connect( m_stream, SIGNAL(sigError()),
@@ -411,11 +409,13 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     newMetaDataNotify( m_bundle, true /* track change */ );
 }
 
-void EngineController::slotNewMetaData( const MetaBundle &bundle ) //SLOT
+void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
 {
-    m_bundle = bundle;
-
-    newMetaDataNotify( bundle, false /* not a new track */ );
+    if ( AmarokConfig::titleStreaming() )
+    {
+        m_bundle = bundle;
+        newMetaDataNotify( bundle, false /* not a new track */ );
+    }
 }
 
 void EngineController::slotMainTimer() //SLOT

@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
           <mxcl>   With one track in pls and repeat and random mode on, amaroK crashes at track end.
 
-          <mxcl>   You can't stream with gstreamer unless title-streaming is enabled.
-
   ADD     <markey> We must add a FAQ about dmix software mixing and its setup. "amaroK blocks the sound
                    device" is one of the top user complaints. This FAQ should be put into a promiment
                    place, perhaps also in README.
@@ -21,8 +19,6 @@ SHORT-TERM (URGENT):
           <markey> Check TagLib autoconf and makefile stuff. I have a feeling the problem with picking
                    up old versions could be on our side.
 
-          <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
-
           <markey> LibVisual windows are missing a caption with the current plugin name.
 
           <mxcl>   You can't add or drag albums from the context browser anymore
@@ -30,8 +26,6 @@ SHORT-TERM (URGENT):
           <markey> "Handbook" and "About" menu entries are disabled (greyed out) for some people.
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
-
-  FIX 162 <markey> Try to achieve Qt 3.2 compatibility for amaroK 1.1.
 
   FIX 161 <markey> Configure prints "Good - your configure finished. Start make now" even when amaroK
                    will _not_ be built. Confusing..
@@ -42,6 +36,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+          <mxcl>   Context Browser doesn't update images when you fetch them using the Cover Manager.
 
   CHG     <markey> Make CollectionDB a singleton. Why do we create a fucking object for each db access?
                    This SUCKS. Also, you can't connect to CollectionDB signals currently, cause there are
