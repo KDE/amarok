@@ -791,7 +791,7 @@ void ContextBrowser::setStyleSheet()
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
     m_styleSheet  = QString( "body { font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
-                       .arg( pxSize ).arg( text ).arg( bg ).arg( locate( "data", "amarok/images/fadein.png" ) );
+                       .arg( pxSize ).arg( text ).arg( colorGroup().mid().name() ).arg( locate( "data", "amarok/images/fadein.png" ) );
     m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
 
     m_styleSheet += QString( ".menu { margin: 0.4em 0.0em; font-weight: bold; }" );
