@@ -96,6 +96,7 @@ PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistItem *item )
         , m_after( item )
         , m_first( item )
         , m_listView( item->listView() )
+        , m_receiver( item->listView() )
 {}
 
 
