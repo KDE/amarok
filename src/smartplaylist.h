@@ -27,6 +27,7 @@ Q_OBJECT
 
     public slots:
         void createCustomPlaylist();
+        void removeSelectedPlaylists();
 
     protected:
         virtual class QDragObject *dragObject();

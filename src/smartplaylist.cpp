@@ -14,23 +14,38 @@
 #include <qstringlist.h>
 #include <qtextstream.h>    //loadCustomPlaylists()
 
+#include <kaction.h>
+#include <kactioncollection.h>
 #include <kapplication.h>    //customPlaylistsFile()
 #include <kguiitem.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kpopupmenu.h>
-#include <kpushbutton.h>    //SmartPlaylistBox ctor
 #include <kstandarddirs.h>    //KGlobal::dirs()
 #include <kurldrag.h>         //dragObject()
+#include <ktoolbar.h>
 
 
 SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
     : QVBox( parent, name )
 {
     SmartPlaylistView *smartListView = new SmartPlaylistView( this );
-    KPushButton *newButton = new KPushButton( KGuiItem( i18n("Make New Smart-playlist..."), "filenew" ), this );
 
-    connect( newButton, SIGNAL( clicked() ), smartListView, SLOT( createCustomPlaylist() ) );
+    KActionCollection *ac = new KActionCollection( this );
+    KAction *createSmartPlayist = new KAction( i18n("Create Smart-playlist"), "filenew", 0, smartListView, SLOT( createCustomPlaylist() ), ac, "Create Smart-playlist" );
+    KAction *remove = new KAction( i18n("Remove"), "edittrash", 0, smartListView, SLOT( removeSelectedPlaylists() ), ac, "Remove" );
+
+    KToolBar *toolbar = new KToolBar( this );
+    toolbar->setMovingEnabled(false);
+    toolbar->setFlat(true);
+    toolbar->setIconSize( 16 );
+    toolbar->setEnableContextMenu( false );
+
+    toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the "create smart-playlist" button to have text on right
+    createSmartPlayist->plug( toolbar );
+    toolbar->insertLineSeparator();
+    toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
+    remove->plug( toolbar);
 }
 
 
@@ -44,7 +59,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    , m_loaded( 0 )
 {
     addColumn( i18n("Smart-playlists") );
-    setSelectionMode(QListView::Single);
+    setSelectionMode(QListView::Extended);
     setSorting( 0 ); //enable sorting (used for custom smart playlists)
     setFullWidth( true );
     setRootIsDecorated( true );
@@ -109,6 +124,15 @@ void SmartPlaylistView::createCustomPlaylist() //SLOT
     SmartPlaylistEditor::Result r = editor->exec();
     if( r.result == QDialog::Accepted )
         new SmartPlaylist( this, 0, r.playlistName, r.query, QString::null, true );
+}
+
+
+void SmartPlaylistView::removeSelectedPlaylists()
+{
+    QPtrList<QListViewItem> selected = selectedItems();
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+        if( static_cast<SmartPlaylist*>(item )->isCustom() )
+            delete item;
 }
 
 
@@ -327,7 +351,7 @@ void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, i
                 break;
 
             case REMOVE:
-                delete item;
+                removeSelectedPlaylists();
                 break;
         };
     }
