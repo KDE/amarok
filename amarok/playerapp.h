@@ -114,6 +114,7 @@ class PlayerApp : public KApplication
         void applySettings();
         void proxyError();
         void showEffectWidget();
+        void slotEffectWidgetDestroyed();
         void slotShowOSD( const MetaBundle& );
 
     signals:

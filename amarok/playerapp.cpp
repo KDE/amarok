@@ -744,7 +744,7 @@ void PlayerApp::slotPlay()
     if ( m_pEngine->state() == EngineBase::Paused )
     {
         slotPause();
-        m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
+//        m_pPlayerWidget->m_pButtonPlay->setDown( TRUE );
         m_pPlayerWidget->m_pButtonPlay->setOn( TRUE );
     }
     else
@@ -982,8 +982,8 @@ void PlayerApp::showEffectWidget()
     {
         EffectWidget::self = new EffectWidget();
 
-        connect( m_pPlayerWidget,              SIGNAL( destroyed() ),
-                 EffectWidget::self,           SLOT  ( deleteLater() ) );
+        connect( EffectWidget::self,           SIGNAL( destroyed() ),
+                  this,        SLOT( slotEffectWidgetDestroyed() ) );
 
         EffectWidget::self->show();
 
@@ -997,6 +997,10 @@ void PlayerApp::showEffectWidget()
     }
 }
 
+void PlayerApp::slotEffectWidgetDestroyed()
+{
+    m_pPlayerWidget->setEffectsWindowShown( false );
+}
 
 void PlayerApp::slotShowOptions()
 {
