@@ -439,8 +439,27 @@ bool PlayerWidget::event( QEvent *e )
         pApp->genericEventHandler( this, e );
         return TRUE; //we handled it
 
-    case QEvent::Show:
+    case 6/*QEvent::KeyPress*/:
+        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D && m_pAnalyzer->inherits("QGLWidget"))
+        {
+            if (m_pAnalyzer->parent() == 0)
+            {
+                m_pAnalyzer->reparent(this, QPoint(119,4), true);
+                m_pAnalyzer->setGeometry( 119,40, 168,56 );
+                m_pAnalyzer->removeEventFilter( this );
+            }
+            else
+            {
+                m_pAnalyzer->reparent(0, QPoint(50,50), true);
+                m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
+                m_pAnalyzer->installEventFilter( this );
+            }
 
+            return TRUE; //eat event
+        }
+        return FALSE; //don't eat event
+
+    case QEvent::Show:
         m_pAnimTimer->start( ANIM_TIMER );
 
         if( AmarokConfig::hidePlaylistWindow() && m_pPlaylistButton->isOn() )
@@ -498,28 +517,7 @@ bool PlayerWidget::event( QEvent *e )
 
         return FALSE;
 
-    case 6/*QEvent::KeyPress*/:
-        if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D && m_pAnalyzer->inherits("QGLWidget"))
-        {
-            if (m_pAnalyzer->parent() == 0)
-            {
-                m_pAnalyzer->reparent(this, QPoint(119,4), true);
-                m_pAnalyzer->setGeometry( 119,40, 168,56 );
-                m_pAnalyzer->removeEventFilter( this );
-            }
-            else
-            {
-                m_pAnalyzer->reparent(0, QPoint(50,50), true);
-                m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
-                m_pAnalyzer->installEventFilter( this );
-            }
-
-            return TRUE; //eat event
-        }
-        return FALSE; //don't eat event
-
     case QEvent::Hide:
-
         m_pAnimTimer->stop();
 
         if( AmarokConfig::hidePlaylistWindow() )
@@ -537,13 +535,16 @@ bool PlayerWidget::event( QEvent *e )
 
                 const KWin::WindowInfo info = KWin::windowInfo( winId() );
 
+                #if KDE_IS_VERSION(3,2,1)
                 if( info.hasState( NET::Shaded ) )
                 {
                     //FIXME this works if the OSD is up, and only then sometimes
                     //      I think it's maybe a KWin bug..
                     parentWidget()->hide();
                 }
-                else if( info.isMinimized() ) KWin::iconifyWindow( parentWidget()->winId(), false );
+                else
+                #endif
+                if( info.isMinimized() ) KWin::iconifyWindow( parentWidget()->winId(), false );
                 else
                     //this may seem strange, but it is correct
                     //we have a handler in eventFilter for all other eventualities
@@ -603,7 +604,11 @@ bool PlayerWidget::eventFilter( QObject *o, QEvent *e )
 
             KWin::WindowInfo info = KWin::windowInfo( parentWidget()->winId() );
 
-            if( !(info.isMinimized() || info.hasState( NET::Shaded )) ) break;
+            if( !(info.isMinimized()
+            #if KDE_IS_VERSION(3,2,1)
+            || info.hasState( NET::Shaded ))
+            #endif
+            ) break;
         }
 
         //FALL THROUGH

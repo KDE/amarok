@@ -51,6 +51,7 @@
 #include <ktoolbarbutton.h>   //createGUI()
 #include <kurlrequester.h>    //slotAddLocation()
 #include <kurlrequesterdlg.h> //slotAddLocation()
+#include <kwin.h>             //showHide()
 #include <kxmlguifactory.h>   //XMLGUI
 #include <kxmlguibuilder.h>   //XMLGUI
 
@@ -460,7 +461,6 @@ void PlaylistWindow::slotAddLocation() //SLOT
 }
 
 
-#include <kwin.h>
 void PlaylistWindow::showHide() //SLOT
 {
     //show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
@@ -479,8 +479,12 @@ void PlaylistWindow::showHide() //SLOT
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     const uint desktop = KWin::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
-    const bool isShaded = info.hasState( NET::Shaded );
-
+    const bool isShaded =
+    #if KDE_IS_VERSION(3,2,1)
+    info.hasState( NET::Shaded );
+    #else
+    false;
+    #endif
 
     if( isShaded )
     {
