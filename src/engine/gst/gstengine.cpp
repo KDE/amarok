@@ -26,6 +26,7 @@ email                : markey@web.de
 #include <qfile.h>
 #include <qtimer.h>
 
+#include <kapplication.h>
 #include <kdebug.h>
 #include <kio/job.h>
 #include <klocale.h>
@@ -159,7 +160,7 @@ GstEngine::~GstEngine()
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void
+bool
 GstEngine::init( bool&, int scopeSize, bool )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
@@ -170,10 +171,29 @@ GstEngine::init( bool&, int scopeSize, bool )
     m_scopeBuf.resize( SCOPEBUF_SIZE );
     m_scopeSize = 1 << scopeSize;
 
-    gst_init( NULL, NULL );
+    // GStreamer initilization
+    if ( !gst_init_check( NULL, NULL ) ) {
+        KMessageBox::error( 0,
+            i18n( "<h3>GStreamer could not be initialized.</h3> "
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run <i>'gst-register'</i> afterwards.</p>"
+                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
+        return false;
+    }
+            
+    // Check if registry exists
+    GstElement* dummy = gst_element_factory_make ( "fakesink", "fakesink" );
+    if ( !dummy || !gst_scheduler_factory_make( NULL, GST_ELEMENT ( dummy ) ) ) {
+        KMessageBox::error( 0,
+            i18n( "<h3>GStreamer is missing a registry.</h3> "
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run <i>'gst-register'</i> afterwards.</p>"
+                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
+        return false;
+    }
+                      
     startTimer( TIMER_INTERVAL );
 
     kdDebug() << "END " << k_funcinfo << endl;
+    return true;
 }
 
 
@@ -197,15 +217,13 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     
     bool success = false;
     GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
-
-    /* create a new pipeline to hold the elements */
-    pipeline = gst_pipeline_new( "pipeline" );
     
-    if ( !( filesrc = createElement( pipeline, "filesrc", "filesrc" ) ) ) return false;
-    if ( !( spider = createElement( pipeline, "spider", "spider" ) ) ) return false;
-    if ( !( audioconvert = createElement( pipeline, "audioconvert", "audioconvert" ) ) ) return false;
-    if ( !( audioscale = createElement( pipeline, "audioscale", "audioscale" ) ) ) return false;
-    if ( !( audiosink = createElement( pipeline, m_soundOutput.latin1(), "audiosink" ) ) ) return false;
+    if ( !( pipeline = createElement( pipeline, "pipeline" ) ) ) return false;
+    if ( !( filesrc = createElement( pipeline, "filesrc" ) ) ) return false;
+    if ( !( spider = createElement( pipeline, "spider" ) ) ) return false;
+    if ( !( audioconvert = createElement( pipeline, "audioconvert" ) ) ) return false;
+    if ( !( audioscale = createElement( pipeline, "audioscale" ) ) ) return false;
+    if ( !( audiosink = createElement( pipeline, m_soundOutput.latin1() ) ) ) return false;
 
     /* setting device property for AudioSink*/
     if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
@@ -300,19 +318,19 @@ GstEngine::play( const KURL& url, bool stream )  //SLOT
     kdDebug() << "Sound Device:       " << m_soundDevice << endl;
     
     /* create a new pipeline (thread) to hold the elements */
-    m_gst_thread = gst_thread_new ( "thread" );
+    if ( !( m_gst_thread = createElement( m_gst_thread, "thread" ) ) ) { goto error; }
     g_object_set( G_OBJECT( m_gst_thread ), "priority", m_threadPriority, NULL );
-    if ( !( m_gst_audiosink = createElement( m_gst_thread, m_soundOutput.latin1(), "play_audio" ) ) ) { goto error; }
+    if ( !( m_gst_audiosink = createElement( m_gst_thread, m_soundOutput.latin1() ) ) ) { goto error; }
     
     /* setting device property for AudioSink*/
     if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", m_soundDevice.latin1(), NULL );
 
-    if ( !( m_gst_identity = createElement( m_gst_thread, "identity", "rawscope" ) ) ) { goto error; }
-    if ( !( m_gst_volume = createElement( m_gst_thread, "volume", "volume" ) ) ) { goto error; }
-    if ( !( m_gst_volumeFade = createElement( m_gst_thread, "volume", "volumeFade" ) ) ) { goto error; }
-    if ( !( m_gst_audioconvert = createElement( m_gst_thread, "audioconvert", "audioconvert" ) ) ) { goto error; }
-    if ( !( m_gst_audioscale = createElement( m_gst_thread, "audioscale", "audioscale" ) ) ) { goto error; }
+    if ( !( m_gst_identity = createElement( m_gst_thread, "identity" ) ) ) { goto error; }
+    if ( !( m_gst_volume = createElement( m_gst_thread, "volume" ) ) ) { goto error; }
+    if ( !( m_gst_volumeFade = createElement( m_gst_thread, "volume" ) ) ) { goto error; }
+    if ( !( m_gst_audioconvert = createElement( m_gst_thread, "audioconvert" ) ) ) { goto error; }
+    if ( !( m_gst_audioscale = createElement( m_gst_thread, "audioscale" ) ) ) { goto error; }
 
     g_object_set( G_OBJECT( m_gst_volumeFade ), "volume", 1.0, NULL );
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), m_gst_thread );
@@ -321,7 +339,7 @@ GstEngine::play( const KURL& url, bool stream )  //SLOT
 
     if ( url.isLocalFile() ) {
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
-        if ( !( m_gst_src = createElement( m_gst_thread, "filesrc", "filesrc" ) ) ) { goto error; }
+        if ( !( m_gst_src = createElement( m_gst_thread, "filesrc" ) ) ) { goto error; }
         // Set file path
         g_object_set( G_OBJECT( m_gst_src ), "location", static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     }
@@ -340,7 +358,7 @@ GstEngine::play( const KURL& url, bool stream )  //SLOT
         gst_element_link_many( m_gst_uadesrc, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
     }
     else {
-        if ( !( m_gst_spider = createElement( m_gst_thread, "spider", "spider" ) ) ) { goto error; }
+        if ( !( m_gst_spider = createElement( m_gst_thread, "spider" ) ) ) { goto error; }
         /* link all elements */
         gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, 0 );
     }
@@ -620,7 +638,7 @@ GstEngine::createElement( GstElement* bin, const QCString& factoryName, const QC
     else {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not create the element: <i>%1</i></h3> "
-                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run 'gst-register' afterwards.</p>"
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run <i>'gst-register'</i> afterwards.</p>"
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ).arg( factoryName ) );
         gst_object_unref( GST_OBJECT( bin ) );
     }

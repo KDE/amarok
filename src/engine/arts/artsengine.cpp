@@ -100,7 +100,7 @@ ArtsEngine::~ ArtsEngine()
 }
 
 
-void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
+bool ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -215,7 +215,7 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
                                       "please re-configure amaroK using:"
                                       "<pre>./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>" ),
                                 i18n( "Fatal Error" ) );
-            ::exit( 1 );
+            ::exit( EXIT_SUCCESS );
         }
 
         m_xfade.percentage( m_xfadeValue );
@@ -249,6 +249,7 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
     connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
+    return true;
 }
 
 

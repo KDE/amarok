@@ -36,19 +36,19 @@ class DummyEngine : public EngineBase
     //Does nothing, just here to prevent crashes on startup
     //and in case no engines are found
 
-    virtual void init( bool&, int, bool ) {}
-    virtual bool initMixer( bool ) { return false; }
-    virtual bool canDecode( const KURL&, mode_t, mode_t ) { return false; }
-    virtual long length() const { return 0; }
-    virtual long position() const { return 0; }
-    virtual EngineState state() const { return EngineBase::Empty; }
-    virtual void play( const KURL&, bool ) {}
-    virtual void play() {}
-    virtual void stop() {}
-    virtual void pause() {}
+    bool init( bool&, int, bool ) { return true; }
+    bool initMixer( bool ) { return false; }
+    bool canDecode( const KURL&, mode_t, mode_t ) { return false; }
+    long length() const { return 0; }
+    long position() const { return 0; }
+    EngineState state() const { return EngineBase::Empty; }
+    void play( const KURL&, bool ) {}
+    void play() {}
+    void stop() {}
+    void pause() {}
 
-    virtual void seek( long ) {}
-    virtual void setVolume( int v ) { m_volume = v; }
+    void seek( long ) {}
+    void setVolume( int v ) { m_volume = v; }
 
 public: DummyEngine() : EngineBase() { setName( "Dummy" ); }
 
@@ -74,10 +74,6 @@ EngineController::EngineController()
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
 }
-
-
-EngineController::~EngineController()
-{}
 
 
 void EngineController::previous()
@@ -209,11 +205,12 @@ EngineBase *EngineController::loadEngine() //static
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    EngineBase *m_pEngine = engine();
-
     //first unload previous engine
-    if( m_pEngine != &dummyEngine ) PluginManager::unload( m_pEngine );
-
+    if( engine() != &dummyEngine ) {
+        PluginManager::unload( engine() );
+        instance()->m_pEngine = 0;
+    }
+        
     //now load new engine
     const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and Name == '%1'";
     amaroK::Plugin* plugin = PluginManager::createFromQuery( query.arg( AmarokConfig::soundSystem() ) );
@@ -244,19 +241,20 @@ EngineBase *EngineController::loadEngine() //static
         kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
-    m_pEngine = static_cast<EngineBase*>( plugin );
+    instance()->m_pEngine = static_cast<EngineBase*>( plugin );
     bool restartArts = AmarokConfig::version() != APP_VERSION;
 
-    m_pEngine->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() );
-    connect( m_pEngine, SIGNAL( endOfTrack() ), instance(), SLOT( slotEndOfTrack() ) );
-    connect( m_pEngine, SIGNAL( stopped() ), instance(), SLOT( slotStopped() ) );
-
-    instance()->m_pEngine = m_pEngine;
+    if ( !engine()->init( restartArts, amaroK::SCOPE_SIZE, AmarokConfig::rememberEffects() ) ) {
+        PluginManager::unload( engine() );
+        ::exit( EXIT_SUCCESS );
+    }
+    connect( engine(), SIGNAL( endOfTrack() ), instance(), SLOT( slotEndOfTrack() ) );
+    connect( engine(), SIGNAL( stopped() ), instance(), SLOT( slotStopped() ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
     //NOTE App::applySettings() must be called now to ensure mixer settings are set
 
-    return m_pEngine;
+    return engine();
 }
 
 

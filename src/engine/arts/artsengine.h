@@ -51,7 +51,7 @@ class ArtsEngine : public EngineBase
                                                  ArtsEngine( );
                                                  ~ArtsEngine();
                                         
-        void                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
+        bool                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
                                                                                                   
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );

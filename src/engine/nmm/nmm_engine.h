@@ -21,7 +21,7 @@ public:
     NmmEngine();
     ~NmmEngine();
 
-    void init( bool&, int, bool ) {}
+    bool init( bool&, int, bool ) { return true; }
 
     bool initMixer( bool hardware );
     bool canDecode( const KURL&, mode_t, mode_t );

@@ -58,7 +58,7 @@ XineEngine::~XineEngine()
     debug() << "xine closed\n";
 }
 
-void
+bool
 XineEngine::init( bool&, int, bool )
 {
     debug() << "Enjoy the xine-engine. Please report bugs to amarok-devel@lists.sourceforge.net\n";
@@ -68,7 +68,7 @@ XineEngine::init( bool&, int, bool )
     if (!m_xine)
     {
         KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
-        return;
+        return false;
     }
 
     //xine_engine_set_param( m_xine, XINE_ENGINE_PARAM_VERBOSITY, 99 );
@@ -87,14 +87,14 @@ XineEngine::init( bool&, int, bool )
     if( !m_audioPort )
     {
         KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
-        return;
+        return false;
     }
 
     m_stream  = xine_stream_new( m_xine, m_audioPort, 0 );
     if( !m_stream )
     {
         KMessageBox::error( 0, i18n("amaroK could not create a new xine-stream.") );
-        return;
+        return false;
     }
 
     //less buffering, faster seeking.. TODO test
@@ -130,6 +130,8 @@ XineEngine::init( bool&, int, bool )
     m_post = &post_plugin->xine_post;
 
     post_class->dispose( post_class );
+
+    return true;
 }
 
 void

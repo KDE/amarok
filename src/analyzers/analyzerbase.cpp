@@ -94,7 +94,8 @@ template<class W> void
 Analyzer::Base<W>::drawFrame()
 {
     EngineBase *engine = EngineController::engine();
-
+    if ( !engine ) return;
+    
     switch( engine->state() )
     {
     case EngineBase::Playing:

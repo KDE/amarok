@@ -40,7 +40,7 @@ class GstEngine : public EngineBase
                                                  GstEngine();
                                                  ~GstEngine();
 
-        void                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
+        bool                                     init( bool& restart, int scopeSize, bool restoreEffects ); 
                                                                                                   
         bool                                     initMixer( bool hardware );
         bool                                     canDecode( const KURL &url, mode_t mode, mode_t permissions );
@@ -82,7 +82,7 @@ class GstEngine : public EngineBase
         /** Get a list of available plugins from a specified Class */
         QStringList                              getPluginList( const QCString& classname );
         
-        GstElement*                              createElement( GstElement* bin, const QCString& factoryName, const QCString& name );
+        GstElement*                              createElement( GstElement* bin, const QCString& factoryName, const QCString& name = 0 );
         void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
     

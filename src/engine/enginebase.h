@@ -53,8 +53,9 @@ class EngineBase : public QObject, public amaroK::Plugin {
          * @param restart True if artsd must be restarted (aRts-Engine only).
          * @param scopeSize Size of buffer for visualization data (in bytes).
          * @param restoreEffects True if last effect configuration should be restored.
+         * @return True if initialization was successful.
          */
-        virtual void init( bool& restart, int scopeSize, bool restoreEffects ) = 0;
+        virtual bool init( bool& restart, int scopeSize, bool restoreEffects ) = 0;
 
         /**
          * Initialize mixer.

@@ -17,7 +17,7 @@ public:
     XineEngine();
     ~XineEngine();
 
-    void init( bool&, int, bool );
+    bool init( bool&, int, bool );
 
     bool initMixer( bool );
     bool canDecode( const KURL&, mode_t, mode_t );

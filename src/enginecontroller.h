@@ -38,8 +38,6 @@ class EngineController : public QObject, public EngineSubject
 {
     Q_OBJECT
 public:
-    virtual ~EngineController();
-
     // plugins have their own static space, so calling instance from a plugin won't do any good.
     // you'll only get a new (empty) instance.
     static EngineController *instance();
