@@ -65,9 +65,10 @@ MasEngine::MasEngine()
     kdDebug() << k_funcinfo << endl;
     
     addPluginProperty( "StreamingMode",  "NoStreaming" );
-    addPluginProperty( "HasConfigure",   "false" );
-    addPluginProperty( "HasCrossfading", "false" );
-    addPluginProperty( "HasEqualizer",   "false" );
+    // NOT SUPPORTED
+    //addPluginProperty( "HasConfigure",   "true" );
+    //addPluginProperty( "HasCrossfading", "true" );
+    //addPluginProperty( "HasEqualizer",   "true" );
 }
 
 
