@@ -43,14 +43,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     KMenuBar* menu = new KMenuBar( this );
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
-    menu->insertItem( i18n( "1st Sort" ), m_cat1Menu );
-    menu->insertItem( i18n( "2nd Sort" ), m_cat2Menu );
+    menu->insertItem( i18n( "Primary" ), m_cat1Menu );
+    menu->insertItem( i18n( "Secondary" ), m_cat2Menu );
     
     CollectionView* view = new CollectionView( this );
-
+    
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), view, SLOT( scan() ) );
-
+    
     m_cat1Menu ->insertItem( "Album", view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( "Artist", view, SLOT( cat1Menu( int ) ), 0, IdArtist );
     m_cat1Menu ->insertItem( "Genre", view, SLOT( cat1Menu( int ) ), 0, IdGenre );
@@ -62,6 +62,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( "Artist", view, SLOT( cat2Menu( int ) ), 0, IdArtist );
     m_cat2Menu ->insertItem( "Genre", view, SLOT( cat2Menu( int ) ), 0, IdGenre );
     m_cat2Menu ->insertItem( "Year", view, SLOT( cat2Menu( int ) ), 0, IdYear );
+
+    m_cat1Menu->setItemChecked( view->idForCat( view->m_category1 ), true );
+    m_cat2Menu->setItemChecked( view->idForCat( view->m_category2 ), true );
 }
 
 
@@ -345,8 +348,10 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 void
 CollectionView::cat1Menu( int id )  //SLOT
 {
+    m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), false ); //uncheck old item
     m_category1 = catForId( id );
     setColumnText( 0, m_category1 );
+    m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
     
     renderView();
 }
@@ -355,7 +360,9 @@ CollectionView::cat1Menu( int id )  //SLOT
 void
 CollectionView::cat2Menu( int id )  //SLOT
 {
+    m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
     m_category2 = catForId( id );
+    m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
     
     renderView();
 }
@@ -378,6 +385,17 @@ CollectionView::catForId( int id )
     }
     
     return "None";
+}
+
+
+int
+CollectionView::idForCat( const QString& cat )
+{
+    if ( cat == "None"   ) return CollectionBrowser::IdNone;
+    if ( cat == "Album"  ) return CollectionBrowser::IdAlbum;
+    if ( cat == "Artist" ) return CollectionBrowser::IdArtist;
+    if ( cat == "Genre"  ) return CollectionBrowser::IdGenre;
+    if ( cat == "Year"   ) return CollectionBrowser::IdYear;
 }
 
 

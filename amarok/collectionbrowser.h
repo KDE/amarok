@@ -37,7 +37,7 @@ class CollectionBrowser: public QVBox
     
     private:
     //attributes:
-        enum actionsMenuIds { IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
+        enum CatMenuId { IdAlbum, IdArtist, IdGenre, IdYear, IdNone };
         
         KPopupMenu* m_actionsMenu;
         KPopupMenu* m_cat1Menu;
@@ -95,6 +95,7 @@ class CollectionView : public KListView
         void customEvent( QCustomEvent* );
         void startDrag();
         QString catForId( int id );
+        int idForCat( const QString& cat );
         QPixmap iconForCat( const QString& cat );
         
         /**
