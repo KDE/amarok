@@ -8,6 +8,8 @@ TODO-list for amaroK
                         
 SHORT-TERM (URGENT):
 
+    * fix: <mxcl> xmmswrapper requires gtk headers and gdk headers unfortunately, without build
+                  fails :(
     
 MID-TERM:
 

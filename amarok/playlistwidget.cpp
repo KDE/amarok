@@ -878,6 +878,7 @@ void PlaylistWidget::slotMouseButtonPressed( int button, QListViewItem *after, c
 void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
     #define item static_cast<PlaylistItem*>(item)
+    
     enum Id { PLAY, PLAY_NEXT, VIEW, EDIT, FILL_DOWN, COPY, REMOVE };
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
@@ -954,16 +955,12 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
         //Spreadsheet like fill-down
         //TODO for track, increment obviously
         {
-            QString newTag = static_cast<PlaylistItem*>(item)->exactText( col );
-            QListViewItemIterator it( item );
+            const QString newTag = item->exactText( col );
+            QListViewItemIterator it( item, QListViewItemIterator::Visible | QListViewItemIterator::Selected );
 
-            for( ++it; it.current(); ++it )
+            while( ++it, *it )
             {
-                if( it.current()->isSelected() )
-                {
-                    m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
-                }
-                else break;
+                m_weaver->append( new TagWriter( this, (PlaylistItem*)*it, newTag, col ), true );
             }
         }
         break;
@@ -1063,7 +1060,7 @@ void PlaylistWidget::slotTextChanged( const QString &query ) //SLOT
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
 
-    clearSelection(); //why do this?
+    clearSelection(); //we do this because QListView selects inbetween visible items, this is a non ideal solution
     triggerUpdate();
 }
 
