@@ -1,8 +1,8 @@
 Source: amarok
 Section: kde
 Priority: extra
-Maintainer: Peter Rockai (mornfall) <mornfall@mornfall.homeip.net>
-Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.0.18), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libtag1-dev (>= 1.1), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev, xmms-dev, libsqlite0-dev
+Maintainer: Peter Rockai (mornfall) <mornfall@danill.sk>
+Build-Depends: cdbs (>= 0.4.21), debhelper (>> 4.1.0), kdelibs4-dev (>= 4:3.2), kdemultimedia-dev (>= 4:3.2), libtag1-dev (>= 1.1), libgstreamer0.8-dev, libgstreamer-plugins0.8-dev, xmms-dev, libsqlite0-dev
 Standards-Version: 3.5.8.0
 
 Package: amarok
@@ -30,7 +30,7 @@ Description: versatile and easy to use audio player for KDE
 Package: amarok-arts
 Section: kde
 Architecture: any
-Depends: arts (>= 1.2), amarok, ${shlibs:Depends}
+Depends: arts (>= 1.2), amarok (= ${Source-Version}), ${shlibs:Depends}
 Description: arts engine for amarok audio player
  Arts support for amaroK, a versatile and easy to use audio player for KDE.
  See package amarok for the actual player.
@@ -38,7 +38,7 @@ Description: arts engine for amarok audio player
 Package: amarok-gstreamer
 Section: kde
 Architecture: any
-Depends: gstreamer0.8-oss | gstreamer0.8-audiosink, gstreamer0.8-misc, gstreamer0.8-mad, gstreamer0.8-vorbis, amarok, ${shlibs:Depends}
+Depends: gstreamer0.8-oss | gstreamer0.8-audiosink, gstreamer0.8-misc, gstreamer0.8-mad, gstreamer0.8-vorbis, amarok (= ${Source-Version}), ${shlibs:Depends}
 Recommends: gstreamer0.8-flac, gstreamer0.8-audiofile
 Suggests: gstreamer0.8-plugins
 Description: gstreamer engine for amarok audio player
@@ -53,7 +53,7 @@ Description: gstreamer engine for amarok audio player
 Package: amarok-xmms
 Section: kde
 Architecture: any
-Depends: amarok, ${shlibs:Depends}
+Depends: amarok (= ${Source-Version}), ${shlibs:Depends}
 Description: xmms visualisation support for amarok audio player
  Using this package, amaroK can make use of xmms visualisations. Install this
  package if you want additional visualisation support in amaroK.

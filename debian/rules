@@ -1,7 +1,9 @@
 #!/usr/bin/make -f
 
 include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk
 include /usr/share/cdbs/1/class/kde.mk
 
 DEB_INSTALL_DOCS_ALL :=
 DEB_INSTALL_DOCS_amarok := README TODO AUTHORS
+DEB_EXTRA_CONNFIGURE_FLAGS := --without-included-sqlite

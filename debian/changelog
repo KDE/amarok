@@ -1,3 +1,18 @@
+amarok (1.0.2-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Thu,  5 Aug 2004 14:23:23 +0200
+
+amarok (1.0.1-1) unstable; urgency=low
+
+  * New upstream version
+  * Make depends among amarok packages versioned
+  * Prepare to upload into Debian, closes: #236696
+  * Add manpage for amarok by Alejandro Exojo
+
+ -- Peter Rockai (mornfall) <mornfall@danill.sk>  Wed, 30 Jun 2004 23:24:16 +0200
+
 amarok (1.0.0-3) unstable; urgency=low
 
   * Dynamically link against libsqlite0
