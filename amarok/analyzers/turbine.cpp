@@ -8,16 +8,26 @@
 
 #include "turbine.h"
 
-// METHODS =====================================================
+void TurbineAnalyzer::transform( Scope &scope ) //virtual
+{
+    float *front = (float*)&scope.front();
+
+    float f[ m_fht.size() ];
+    m_fht.copy( &f[0], front );
+    m_fht.logSpectrum( front, &f[0] );
+    m_fht.scale( front, 1.0 / 20 );
+
+    //scope.resize( m_fht.size()/2 ); //second half of values are rubbish
+}
 
 void TurbineAnalyzer::analyze( const Scope &s )
 {
     eraseCanvas();
 
-    Analyzer::interpolate( s, m_bands );
+//    Analyzer::interpolate( s, m_bands );
 
-    std::vector<float>::const_iterator it( m_bands.begin() );
-    for ( uint i = 0, x = 10, y2; i < m_bands.size(); ++i, ++it, x+=5 )
+    std::vector<float>::const_iterator it( s.begin() );
+    for ( uint i = 0, x = 10, y2; i < BAND_COUNT; ++i, ++it, x+=5 )
     {
         //assign pre[log10]'d value
         y2 = uint((*it) * 255);

@@ -71,7 +71,8 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
     //this is a standard transformation that should give
     //an FFT scope that has bands for pretty analyzers
 
-    scope.resize( scope.size() / 2 ); //why do we do this?
+    //NOTE resizing here is redundant as FHT routines only calculate FHT::size() values
+    //scope.resize( m_fht.size() );
 
     float *front = static_cast<float*>( &scope.front() );
 
@@ -79,6 +80,8 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
     m_fht.copy( &f[0], front );
     m_fht.logSpectrum( front, &f[0] );
     m_fht.scale( front, 1.0 / 20 );
+
+    scope.resize( m_fht.size()/2 ); //second half of values are rubbish
 }
 
 template<class W> void

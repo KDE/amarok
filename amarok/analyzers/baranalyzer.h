@@ -19,6 +19,7 @@ class BarAnalyzer : public Analyzer::Base2D
 
         void init();
         virtual void analyze( const Scope& );
+        virtual void transform( Scope& );
 
         static const uint BAND_COUNT = 32;
         static const uint ROOF_HOLD_TIME = 48;
@@ -30,7 +31,7 @@ class BarAnalyzer : public Analyzer::Base2D
         QPixmap m_pixRoof[NUM_ROOFS];
         vector<uint> m_roofMem[BAND_COUNT];
 
-        Scope m_bands; //copy of the Scope to prevent creating/destroying a Scope every iteration
+        //Scope m_bands; //copy of the Scope to prevent creating/destroying a Scope every iteration
         uint  m_lvlMapper[256];
 
         vector<uint> barVector;          //positions of bars

@@ -16,7 +16,8 @@ class TurbineAnalyzer : public BarAnalyzer
     public:
         TurbineAnalyzer( QWidget *parent ) : BarAnalyzer( parent ) {}
 
-        void analyze( const Scope & );
+        void analyze( const Scope& );
+        void transform( Scope& );
 };
 
 #endif

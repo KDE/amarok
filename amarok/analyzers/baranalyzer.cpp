@@ -18,8 +18,8 @@
 
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
-    : Analyzer::Base2D( parent, 12 )
-    , m_bands( BAND_COUNT )
+    : Analyzer::Base2D( parent, 12, 6 )
+    //, m_bands( BAND_COUNT )
     , barVector( BAND_COUNT, 0 )
     , roofVector( BAND_COUNT, 50 )
     , roofVelocityVector( BAND_COUNT, ROOF_VELOCITY_REDUCTION_FACTOR )
@@ -76,15 +76,26 @@ void BarAnalyzer::init()
 }
 
 
+void BarAnalyzer::transform( Scope &s )
+{
+    float* const f = &(s.front());
+
+    m_fht.power2( f );
+    m_fht.scale( f, 1.0/64 );
+
+    //s.resize( 32 );
+}
+
+
 void BarAnalyzer::analyze( const Scope &s )
 {
     //start with a blank canvas
     eraseCanvas();
 
-    Analyzer::interpolate( s, m_bands );
+    //Analyzer::interpolate( s, m_bands );
 
-    Scope::const_iterator it( m_bands.begin() );
-    for ( uint i = 0, x = 0, y2; i < m_bands.size(); ++i, ++it, x+=COLUMN_WIDTH+1 )
+    Scope::const_iterator it( s.begin() );
+    for ( uint i = 0, x = 0, y2; i < BAND_COUNT; ++i, ++it, x+=COLUMN_WIDTH+1 )
     {
         //assign pre[log10]'d value
         y2 = uint((*it) * 256); //256 will be optimised to a bitshift

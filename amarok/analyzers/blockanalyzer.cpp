@@ -19,7 +19,7 @@ static float lvlMapper[BlockAnalyzer::ROWS+1];// = { 0.080, 0.140, 0.200, 0.300,
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
- : Analyzer::Base2D( parent, 20 )
+ : Analyzer::Base2D( parent, 20, 7 )
  , m_dark( WIDTH, HEIGHT )
  , m_store( 16, 0 )
 {
@@ -37,15 +37,14 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         m_glow[x].fill( QColor( 32+dr*x, 32+dg*x, 82+db*x ) ); //amaroK blue, graduated
     }
 }
-
+#include <iostream>
 void
 BlockAnalyzer::init()
 {
     //FIXME adjust height so we fit to smaller toolbars
 
     const uint bands = (double)width() / (WIDTH+1);
-    if( bands < 16 ) m_store.resize( 16 );
-    else             m_store.resize( bands );
+    m_store.resize( bands < 16 ? 16 : bands );
 
     std::fill( m_store.begin(), m_store.end(), 0 );
 
@@ -53,11 +52,14 @@ BlockAnalyzer::init()
     //make a set of discrete values from 0-1 that the scope amplitude must exceed for that block
     //to be rendered
     //last value is huge to ensure we don't crash by referencing beyond array size
-    for( uint x = 2; x < ROWS+2; ++x )
+    //first value is reasonable so the first row is not always rendered
+    const uint PRE = 2, PRO = 1;
+    for( uint x = 0; x < ROWS; ++x )
     {
-        lvlMapper[ROWS+2-x] = 1-(log10(x) / log10(ROWS+2));
+        lvlMapper[ROWS-1-x] = 1-(log10(x+PRE) / log10(ROWS+PRE+PRO));
     }
-    lvlMapper[ROWS] = 100;
+    lvlMapper[ROWS] = 1000;
+
 
     setMinimumWidth( (m_store.size() + 2) * (WIDTH+1) ); //+2 is 2 blocks margin either side
 }
@@ -65,19 +67,12 @@ BlockAnalyzer::init()
 void
 BlockAnalyzer::transform( Scope &scope )
 {
-    scope.resize( 32 );
-
     float *front = static_cast<float*>( &scope.front() );
 
     m_fht.spectrum( front );
     m_fht.scale( front, 1.0 / 20 );
 
-    /*
-    float f[ m_fht.size() ];
-    m_fht.copy( &f[0], front );
-    m_fht.logSpectrum( front, &f[0] );
-    m_fht.scale( front, 1.0 / 20 );
-    */
+    scope.resize( 32 ); //64 useful values, take the first half
 }
 
 void
@@ -92,8 +87,9 @@ BlockAnalyzer::analyze( const Scope &s )
     // visual aid for how this analyzer works.
     // as can be seen the value of z is from the top in units of blocks
 
-    const int offset = height() - (HEIGHT+1) * ROWS;
-    Scope v( m_store.size() + 7 );
+    const uint WEDGE  = 4;
+    const uint offset = height() - (HEIGHT+1) * ROWS;
+    Scope v( m_store.size() + WEDGE );
 
     Analyzer::interpolate( s, v );
 
@@ -102,8 +98,9 @@ BlockAnalyzer::analyze( const Scope &s )
     for( uint x = 0; x < m_store.size(); ++x )
     {
         uint z = 0;
-        for( ; v[x+7] > lvlMapper[z]; ++z );
+        for( ; v[x + WEDGE] > lvlMapper[z]; ++z );
         z = ROWS - 1 - z;
+
 
         //too high is not fatal
         //higher than stored value means we are falling
