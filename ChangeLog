@@ -9,6 +9,7 @@ amaroK ChangeLog
   * chg: upgrade streambrowser to kderadiostation 0.5
   * fix: many streams not loading from browser and AddItem dialog
   * chg: amaroK moved out of kdenonbeta. we are now member of KDE Extra Gear 1
+  * add: on-screen-display (OSD), shows an overlay with information on the currently playing track
   * chg: use KMultiTabBar for browser selection
   * chg: migrated settings system to KConfig XT 
   * add: playlist columns for length and bitrate

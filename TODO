@@ -81,8 +81,6 @@ MID-TERM:
 
     * add: <muesli> background chooser
 
-    * add: <muesli> add OSD support (permanent display or just on events like a song switch)
-
     * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
            reduce arts buffer to ~20ms for much better analyzers etc. 
 
