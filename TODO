@@ -3,7 +3,7 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #25 being the highest available (take this one for your next bug and increase here)
+           #27 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
@@ -127,6 +127,8 @@ MID-TERM:
 
 LONG-TERM:
 
+    * add: #25 support for tag editing
+
     * add: support for multiple audio frameworks (will require switching to an abstract audio engine class.
            hopefully this will also improve our architecture, and reduce the playerapp dependency hell).
            alternative frameworks might include gstreamer, and NMM  -->markey
@@ -157,6 +159,8 @@ LONG-TERM:
 
 
 IDEAS:
+
+    * #26<markey> in BarAnalyzer, add a bit motion blur to the red peak ("roof") markers
 
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
