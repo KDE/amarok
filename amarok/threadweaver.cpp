@@ -190,11 +190,12 @@ SearchModule::~SearchModule()
 
 bool SearchModule::doJob()
 {
-//    m_resultView->clear();
-
     resultCount = 0;
+
+    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Start, m_historyItem ) );
     searchDir( m_path.local8Bit() );
-    
+    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, m_historyItem ) );
+
     return TRUE;
 }
 
@@ -219,7 +220,7 @@ void SearchModule::searchDir( QString path )
                 else
                     if ( file.contains( m_token, FALSE ) )
                     {
-                        QApplication::postEvent( m_parent, new ProgressEvent( 0, ++resultCount, m_resultView, m_historyItem, path, file ) );
+                        QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Progress, m_historyItem, m_resultView, ++resultCount, path, file ) );
                         m_resultList.append( path + file );
                     }
             }

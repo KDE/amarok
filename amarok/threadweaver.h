@@ -137,9 +137,9 @@ public:
     class ProgressEvent : public QCustomEvent
     {
         public:
-            enum State { Start = -1, Stop = -2, Total = -3, Progress = -4 };
+            enum State { Start = -1, Stop = -2, Progress = -3 };
 
-            ProgressEvent( int state, int count = 0, KListView* resultView = 0, KListViewItem* historyItem = 0, QString curPath = "", QString curFile = "" )
+            ProgressEvent( int state, KListViewItem* historyItem = 0, KListView* resultView = 0, int count = 0, QString curPath = "", QString curFile = "" )
             : QCustomEvent( ProgressEventType )
             , m_state( state )
             , m_count( count )
