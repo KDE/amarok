@@ -17,6 +17,7 @@
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "qstringx.h"
+#include "statusbar.h"
 
 #include <qdatetime.h>
 #include <qfile.h> // External CSS opening
@@ -1475,6 +1476,9 @@ void ContextBrowser::showLyrics( const QString &hash )
             KURL::encode_string_no_slash( EngineController::instance()->bundle().year() ) );
 
     KIO::TransferJob* job = KIO::get( url, false, false );
+
+    amaroK::StatusBar::instance()->newProgressOperation( job )
+            .setDescription( "Fetching Lyrics" ); //TODO i18n this
 
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( lyricsResult( KIO::Job* ) ) );
