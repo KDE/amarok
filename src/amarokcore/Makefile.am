@@ -27,3 +27,5 @@ METASOURCES = \
 kde_kcfg_DATA = \
     amarok.kcfg
 
+KDE_OPTIONS = nofinal
+
