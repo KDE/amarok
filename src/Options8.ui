@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>533</width>
-            <height>649</height>
+            <width>510</width>
+            <height>753</height>
         </rect>
     </property>
     <property name="minimumSize">
@@ -23,7 +23,7 @@
             <cstring>unnamed</cstring>
         </property>
         <property name="spacing">
-            <number>16</number>
+            <number>8</number>
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -90,9 +90,6 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="spacing">
-                    <number>12</number>
-                </property>
                 <widget class="KActiveLabel">
                     <property name="name">
                         <cstring>kActiveLabel1</cstring>
@@ -106,7 +103,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>&lt;P&gt;To use Audioscrobbler with amaroK, you need an Audioscrobbler profile, &lt;A href='http://www.audioscrobbler.com:80/signup.php'&gt;register here!&lt;/A&gt;</string>
+                        <string>&lt;P&gt;To use Audioscrobbler with amaroK, you need an &lt;A href='http://www.audioscrobbler.com:80/signup.php'&gt;Audioscrobbler profile&lt;/A&gt;.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -187,27 +184,24 @@
                 <cstring>groupBox2</cstring>
             </property>
             <property name="title">
-                <string>Track Submission</string>
+                <string>Audioscrobbler Services</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="spacing">
-                    <number>12</number>
-                </property>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>&lt;qt&gt;Once registered, you can submit the tracks you play to Audioscrobbler, which then creates statistics, graphs and recommendations for you.</string>
+                        <string>Once registered, amaroK can tell Audioscrobbler about your listening habits, your profile can then provide statistics and recommendations. A profile is not required to retrieve similar-artists for display in the Context Browser.</string>
                     </property>
                     <property name="textFormat">
                         <enum>RichText</enum>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="1" column="0">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_SubmitPlayedSongs</cstring>
                     </property>
@@ -223,28 +217,15 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Submit the tracks I play</string>
+                        <string>Improve my profile by submiting the tracks I play</string>
                     </property>
                 </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>groupBox16</cstring>
-            </property>
-            <property name="title">
-                <string>Similar Artists</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
                 <widget class="QCheckBox">
                     <property name="name">
                         <cstring>kcfg_RetrieveSimilarArtists</cstring>
                     </property>
                     <property name="text">
-                        <string>Retrieve similar artists from Audioscrobbler</string>
+                        <string>Retrieve similar artists</string>
                     </property>
                 </widget>
             </vbox>
