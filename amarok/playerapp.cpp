@@ -116,7 +116,7 @@ PlayerApp::PlayerApp() :
 
     readConfig();
 
-    connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
+//    connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
     connect( this, SIGNAL( sigShowTrayIcon( bool ) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon( bool ) ) );
 
@@ -448,11 +448,10 @@ void PlayerApp::initMixer()
     //TEST
     kdDebug(DA_COMMON) << "begin PlayerApp::initMixer()" << endl;
 
-    if ( initMixerHW() )
+    if ( !m_optSoftwareMixerOnly && initMixerHW() )
     {
         m_usingMixerHW = true;
     }
-
     else
     {
         // Hardware mixer doesn't work --> use arts software-mixing
@@ -613,6 +612,7 @@ void PlayerApp::saveConfig()
     m_pConfig->writeEntry( "BrowserFgColor", m_optBrowserFgColor );
     m_pConfig->writeEntry( "BrowserBgColor", m_optBrowserBgColor );
     m_pConfig->writeEntry( "Undo Levels", m_optUndoLevels );
+    m_pConfig->writeEntry( "Software Mixer Only", m_optSoftwareMixerOnly );
 
     //store current item
     PlaylistItem *item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
@@ -641,6 +641,8 @@ void PlayerApp::readConfig()
     QPoint pointZero = QPoint( 0, 0 );
     QSize arbitrarySize = QSize ( 600, 450 );
     QFont defaultFont( "Helvetica", 9 );
+    QColor defaultColor( 0x80, 0xa0, 0xff );
+    QColor black( Qt::black );
 
     m_pConfig->setGroup( "General Options" );
 
@@ -668,14 +670,16 @@ void PlayerApp::readConfig()
     m_optPlayerWidgetScrollFont = m_pConfig->readFontEntry( "Player Widget Scroll Font", &defaultFont );
     m_pBrowserWin->slotUpdateFonts();
 
-    m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &( QColor( 0x80, 0xa0, 0xff ) ) );
-    m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &( QColor( Qt::black ) ) );
+    m_optBrowserFgColor = m_pConfig->readColorEntry( "BrowserFgColor", &defaultColor );
+    m_optBrowserBgColor = m_pConfig->readColorEntry( "BrowserBgColor", &black );
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->update();
 
     m_optUndoLevels = m_pConfig->readUnsignedNumEntry( "Undo Levels", 30 );
 
+    m_optSoftwareMixerOnly = m_pConfig->readBoolEntry( "Software Mixer Only", false );
+    
     m_Volume = m_pConfig->readNumEntry( "Master Volume", 50 );
     slotVolumeChanged( m_Volume );
     m_pPlayerWidget->m_pSliderVol->setValue( m_Volume );
@@ -881,7 +885,7 @@ void PlayerApp::slotPrev()
     //FIXME always the chance that nothing is selected and bIsPlaying (eg deleted currentTrack from playlist)
     //      current behavior will stop playback, is this acceptable?
     //    * perhaps if user expects playback to continue we should continue playing from the beginning
-    //    * perhaps we should stop playback dead if the playing item is removed from the playlist (this gives a more consistent interface)
+    //    * perhaps we should stop playback dead if the playing item is removed from the playlist (this gives a more consistent interface) <berkus>: no no no when a track is deleted we should continue playing it (this is consistent with WinAmp classic and also i hate when it stops playing in the middle of the song when i'm trying to compose a new playlist already).
     //FIXME detection of empty playlist seems broken for above behavior
 
     if ( pItem == NULL )
@@ -994,7 +998,7 @@ void PlayerApp::slotConnectPlayObj()
 {
     if ( !m_pPlayObject->object().isNull() )
     {
-        m_pPlayObject->object()._node() ->start();
+        m_pPlayObject->object()._node()->start();
 
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
@@ -1162,7 +1166,6 @@ void PlayerApp::slotSliderReleased()
 {
     if ( m_bIsPlaying && m_pPlayObject != NULL )
     {
-
         Arts::poTime time;
         time.ms = 0;
         time.seconds = static_cast<long>( m_pPlayerWidget->m_pSlider->value() );
