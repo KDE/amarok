@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #134 being the highest available (take this one for your next bug and increase here)
+           #135 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+  FIX 134 <markey> Ctrl-C as shortcut for copying title just doesn't work. We need to choose another
+                   shortcut. How about a global shortcut?
 
 
 MID-TERM:
