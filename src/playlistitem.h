@@ -10,6 +10,7 @@
 
 #include <klistview.h> //baseclass
 #include <kurl.h>      //stack allocated
+#include <qcolor.h>    //stack allocated
 
 class QColorGroup;
 class QDomNode;
@@ -37,6 +38,8 @@ class PlaylistItem : public KListViewItem
         const KURL &url() const { return m_url; }
         QString seconds() const;
 
+        static QColor glowText;
+        static QColor glowBase;
 
 #ifdef CORRUPT_FILE
         bool corruptFile;
@@ -53,6 +56,8 @@ class PlaylistItem : public KListViewItem
                        Directory = 8,
                        Length = 9,
                        Bitrate = 10 };
+
+        void setHeight( int i ) { KListViewItem::setHeight( i ); }
 
     private:
         QString text( int column ) const;

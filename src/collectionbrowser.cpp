@@ -33,6 +33,9 @@
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
 {
+    setSpacing( 4 );
+    setMargin( 5 );
+
     m_actionsMenu = new KPopupMenu( this );
     m_cat1Menu = new KPopupMenu( this );
     m_cat2Menu = new KPopupMenu( this );
@@ -44,11 +47,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     QHBox * hbox2 = new QHBox( this );
     hbox2->setSpacing( 4 );
-    hbox2->setMargin( 4 );
     new QLabel( "Search for:", hbox2 );
     m_searchEdit = new KLineEdit( hbox2 );
 
     m_view = new CollectionView( this );
+    //m_view->setMargin( 2 );
 
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
@@ -108,7 +111,7 @@ CollectionDB::escapeString( QString string ) //static
 }
 
 
-bool   
+bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names ) //static
 {
     //kdDebug() << "execSql(): " << statement << endl;
@@ -659,7 +662,7 @@ CollectionView::customEvent( QCustomEvent *e )
 {
     if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader ) {
         kdDebug() << k_funcinfo << endl;
-        
+
         CollectionReader * c = static_cast<CollectionReader*>( e );
         //CollectionReader provides a list of all subdirs, which we feed into KDirWatch
         if ( m_monitor )

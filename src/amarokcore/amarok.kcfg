@@ -70,6 +70,11 @@
         <default>true</default>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>
      </entry>
+     <entry key="Show Player Window" type="Bool">
+        <label>Whether to show player window</label>
+        <default>true</default>
+        <whatsthis>Makes amaroK more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
+    </entry>
      <entry key="Directories Recursively" type="Bool">
         <label>Whether to add directories to playlist recursively</label>
         <default>true</default>

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>334</width>
-            <height>287</height>
+            <width>518</width>
+            <height>492</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -60,7 +60,7 @@
                 </sizepolicy>
             </property>
             <property name="title">
-                <string>Custom Fonts</string>
+                <string></string>
             </property>
             <property name="alignment">
                 <set>AlignBottom</set>
@@ -78,130 +78,121 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>textLabel1</cstring>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout10</cstring>
-                            </property>
-                            <grid>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
-                                    <property name="name">
-                                        <cstring>textLabel1</cstring>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>150</width>
-                                            <height>20</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>Player font:</string>
-                                    </property>
-                                    <property name="alignment">
-                                        <set>AlignTop|AlignLeft</set>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the player window.</string>
-                                    </property>
-                                </widget>
-                            </grid>
-                        </widget>
-                        <widget class="KFontRequester">
-                            <property name="name">
-                                <cstring>kcfg_PlayerWidgetFont</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>360</width>
-                                    <height>40</height>
-                                </size>
-                            </property>
-                            <property name="sampleText">
-                                <string></string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use in the player window.</string>
-                            </property>
-                        </widget>
-                    </vbox>
+                    <property name="minimumSize">
+                        <size>
+                            <width>150</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Player font:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignLeft</set>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use in the player window.</string>
+                    </property>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="KFontRequester">
                     <property name="name">
-                        <cstring>layout6</cstring>
+                        <cstring>kcfg_PlayerWidgetFont</cstring>
                     </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Marquees font:</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignTop|AlignLeft</set>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use in the player window title scroller.</string>
-                            </property>
-                        </widget>
-                        <widget class="KFontRequester">
-                            <property name="name">
-                                <cstring>kcfg_PlayerWidgetScrollFont</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>360</width>
-                                    <height>40</height>
-                                </size>
-                            </property>
-                            <property name="sampleText">
-                                <string></string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use in the player window title scroller.</string>
-                            </property>
-                        </widget>
-                    </vbox>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="sampleText">
+                        <string></string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use in the player window.</string>
+                    </property>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>textLabel2</cstring>
                     </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>150</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Marquees font:</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignTop|AlignLeft</set>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use in the player window title scroller.</string>
+                    </property>
+                </widget>
+                <widget class="KFontRequester">
+                    <property name="name">
+                        <cstring>kcfg_PlayerWidgetScrollFont</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="sampleText">
+                        <string></string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use in the player window title scroller.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>150</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Playlist-window font:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use in the playlist window.</string>
+                    </property>
+                </widget>
+                <widget class="KFontRequester">
+                    <property name="name">
+                        <cstring>kcfg_BrowserWindowFont</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="sampleText">
+                        <string></string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The font to use in the playlist window.</string>
+                    </property>
+<<<<<<< Options2.ui
+=======
                     <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
@@ -249,6 +240,7 @@
                             </property>
                         </widget>
                     </vbox>
+>>>>>>> 1.21
                 </widget>
             </vbox>
         </widget>

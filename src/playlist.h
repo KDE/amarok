@@ -133,7 +133,7 @@ class Playlist : private KListView, public EngineObserver
         void showContextMenu( QListViewItem*, const QPoint&, int );
         void activate( QListViewItem*, bool rememberTrack = true );
         void writeTag( QListViewItem*, const QString&, int );
-
+        void slotHeaderResized( int, int, int );
         void saveUndoState();
 
     private:
@@ -157,7 +157,11 @@ class Playlist : private KListView, public EngineObserver
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
-        //void contentsMouseMoveEvent( QMouseEvent *e ); { QListView::contentsMouseMoveEvent( e ); } //KListView imposes hand cursor so override it
+        #ifdef PURIST
+        //KListView imposes hand cursor so override it
+        void contentsMouseMoveEvent( QMouseEvent *e ); { QListView::contentsMouseMoveEvent( e ); }
+        #endif
+        void paletteChange( const QPalette& );
         void viewportPaintEvent( QPaintEvent* );
         void customEvent( QCustomEvent* );
         bool eventFilter( QObject*, QEvent* );
@@ -171,19 +175,16 @@ class Playlist : private KListView, public EngineObserver
         PlaylistBrowser *m_browser;
         #endif
 
-        int m_glowCount;
-        int m_glowAdd;
-        QTimer* const m_glowTimer;
-
         PlaylistItem  *m_currentTrack; //the track that is playing
         PlaylistItem  *m_cachedTrack;  //we expect this to be activated next //FIXME mutable
         QListViewItem *m_marker;       //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
-        QString                    m_lastSearch; //contains the last search token
+        QString                    m_lastSearch; //the last search token
         QPtrList<PlaylistItem>     m_prevTracks; //the previous history
         QPtrList<PlaylistItem>     m_nextTracks; //the tracks to be played after the current track
 
+        QTimer*       const m_glowTimer;
         ThreadWeaver* const m_weaver;
 
         KAction *m_undoButton;

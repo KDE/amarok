@@ -67,8 +67,8 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, QWidget::WF
 
 
 
-PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
-    : QWidget( parent, name )
+PlayerWidget::PlayerWidget( QWidget *parent, const char *name, WFlags f )
+    : QWidget( parent, name, f )
     , m_pAnimTimer( new QTimer( this ) )
     , m_pAnalyzer( 0 )
     , m_scrollBuffer( 291, 16 )
@@ -79,6 +79,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     //createWidget just creates a widget which has it's geometry set too
 
     kdDebug() << "BEGIN " << k_funcinfo << endl;
+
+    EngineController* const ec = EngineController::instance();
+
+    ec->attach( this );
 
     setCaption( kapp->makeStdCaption( i18n("Player") ) );
     setFixedSize( 311, 140 );
@@ -97,8 +101,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         //     not backgroundColor. Report as bug.
 
         m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
-
-        EngineController* const ec = EngineController::instance();
 
         // In case you are wondering, the PLAY and PAUSE buttons are created here!
 
@@ -178,6 +180,13 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
     //KWin::setOnAllDesktops( winId(), true );
 
     kdDebug() << "END " << k_funcinfo << endl;
+}
+
+PlayerWidget::~PlayerWidget()
+{
+    EngineController::instance()->detach( this );
+
+    AmarokConfig::setPlayerPos( pos() ); //TODO unecessary XT IMO
 }
 
 // METHODS ----------------------------------------------------------------

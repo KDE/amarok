@@ -180,6 +180,10 @@ AnalyzerAction::AnalyzerAction( KActionCollection *ac )
 int
 AnalyzerAction::plug( QWidget *w, int index )
 {
+    //NOTE the analyzer will be deleted when the toolbar is deleted or cleared()
+    //we are not designed for unplugging() yet so there would be a leak if that happens
+    //but it's a rare event and unplugging is complicated.
+
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
     if( bar && kapp->authorizeKAction( name() ) )
@@ -190,7 +194,7 @@ AnalyzerAction::plug( QWidget *w, int index )
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
         QWidget *block = new BlockAnalyzer( w );
-        //block->setBackgroundColor( w->backgroundColor().dark( 110 ) );
+        block->setName( "ToolBarAnalyzer" );
 
         bar->insertWidget( id, 0, block, index );
         bar->setItemAutoSized( id, true );

@@ -50,6 +50,9 @@ QColor FileBrowser::altBgColor; //FIXME should be redundant eventually!
 FileBrowser::FileBrowser( const char * name )
   : QVBox( 0, name )
 {
+    setSpacing( 4 );
+    setMargin( 5 );
+
     KConfig* const config = kapp->config();
     config->setGroup( "Filebrowser" );
 
@@ -77,6 +80,7 @@ FileBrowser::FileBrowser( const char * name )
     dir->actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
     dir->readConfig( config );
     dir->setView( KFile::Default ); //will set userconfigured view, will load URL
+//    dir->layout()->setMargin( 2 );
     //dir->setView( new amaroK::FileView( dir ) );
     setStretchFactor( dir, 2 );
 

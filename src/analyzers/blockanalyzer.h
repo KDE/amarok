@@ -13,6 +13,7 @@
 
 class QResizeEvent;
 class QMouseEvent;
+class QPalette;
 
 class BlockAnalyzer : public Analyzer::Base2D
 {
@@ -27,10 +28,12 @@ public:
     static const uint MIN_COLUMNS = 32;  //arbituary
     static const uint MAX_COLUMNS = 128; //must be 2**n
 
+protected:
     void transform( Scope& );
     void analyze( const Scope& );
     void resizeEvent( QResizeEvent* );
     void mousePressEvent( QMouseEvent* );
+    void paletteChange( const QPalette& );
 
 private:
     QPixmap m_glow[MAX_ROWS];

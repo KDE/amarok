@@ -46,6 +46,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     public:
         PlaylistWindow( QWidget* = 0, const char* = 0 );
+        ~PlaylistWindow();
 
         //convenience functions
         void insertMedia( const QString& );
@@ -56,7 +57,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
         void setFont( const QFont& );
         void setColors( const QPalette&, const QColor& );
-        void saveConfig();
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
 
@@ -69,10 +69,10 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void slotAddLocation();
 
     private:
-        BrowserBar     *m_browsers;
-        Playlist *m_playlist;
-        KLineEdit      *m_lineEdit;
-        KToolBar       *m_toolbar;
+        BrowserBar *m_browsers;
+        Playlist   *m_playlist;
+        KLineEdit  *m_lineEdit;
+        KToolBar   *m_toolbar;
 };
 
 

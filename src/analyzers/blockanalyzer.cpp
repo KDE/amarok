@@ -1,29 +1,20 @@
-//
-// C++ Implementation: blockanalyzer
-//
-// Description:
-//
-//
-// Author: Max Howell <max.howell@methylblue.com>, (C) 2003
-//
+// Author:    Max Howell <max.howell@methylblue.com>, (C) 2003
 // Copyright: See COPYING file that comes with this distribution
-//
 //
 
 #include "blockanalyzer.h"
 #include "fht.h"
-#include <kconfig.h>    //config object
+#include <kconfig.h>         //config object
 #include <kdebug.h>
-#include <kglobal.h>    //config object
-#include <klocale.h>    //mousePressEvent
-#include <kpopupmenu.h> //mousePressEvent
+#include <kglobal.h>         //config object
+#include <kglobalsettings.h> //paletteChange()
+#include <klocale.h>         //mousePressEvent
+#include <kpopupmenu.h>      //mousePressEvent
 #include <math.h>
-#include <qevent.h>
+#include <qevent.h>          //mousePressEvent
 
 
-#define DARK 112
-
-static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];// = { 0.080, 0.140, 0.200, 0.300, 0.500, 0.700, 100 };
+static float lvlMapper[BlockAnalyzer::MAX_ROWS+1];
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
@@ -33,9 +24,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
  , m_scope( MIN_COLUMNS )    //Scope
  , m_columns( MIN_COLUMNS )  //uint
 {
-    QColor darkColor( backgroundColor().dark( DARK ) );
-
-    m_dark.fill( darkColor );
+    for( uint x = 0; x < MAX_ROWS; ++x ) m_glow[x].resize( WIDTH, HEIGHT );
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumSize( MAX_COLUMNS*(WIDTH+1) -1, MAX_ROWS*(HEIGHT+1) -1 );
@@ -85,19 +74,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
         //for( uint x = 0; x <= m_rows; ++x ) kdDebug() << x << ": " << endl;
 
-
-        QColor darkColor( backgroundColor().dark( DARK ) );
-
-        double dr = 7.5*double(darkColor.red()   - 32) / (m_rows*8);
-        double dg = 7.5*double(darkColor.green() - 32) / (m_rows*8);
-        double db = 7.5*double(darkColor.blue()  - 82) / (m_rows*8);
-
-        for( uint x = 0; x < m_rows; ++x )
-        {
-            m_glow[x].resize( WIDTH, HEIGHT );
-            m_glow[x].fill( QColor( 32+int(dr*x), 32+int(dg*x), 82+int(db*x) ) ); //amaroK blue, graduated
-        }
-
+        paletteChange( palette() );
 
         //ox = uint(((width()%(WIDTH+1))-1)/2); //TODO make member // -1 due to margin on right in draw routine
         oy = height()%(HEIGHT+1);             //TODO make member
@@ -112,7 +89,9 @@ BlockAnalyzer::transform( Scope &s )
     m_fht.spectrum( front );
     m_fht.scale( front, 1.0 / 20 );
 
-    s.resize( MAX_COLUMNS );
+    //the second half is pretty dull, so only show it if the user has a large analyzer
+    //by setting to m_scope.size() if large we prevent interpolation of large analyzers, this is good!
+    s.resize( m_scope.size() <= MAX_COLUMNS/2 ? MAX_COLUMNS/2 : m_scope.size() );
 }
 
 void
@@ -133,10 +112,10 @@ BlockAnalyzer::analyze( const Scope &s )
     //lvlMapper looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
     //if it contains 6 elements there are 5 rows in the analyzer
 
-    Analyzer::interpolate( s, m_scope );
-
     Scope &v = m_scope;
     uint z;
+
+    Analyzer::interpolate( s, v );
 
     for( uint x = 0; x < v.size(); ++x )
     {
@@ -212,4 +191,78 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
         if( id >= 20 ) { m_timer.changeInterval( id ); m_timeout = id; }
         //else if( id > 0 ) changeFhtSize( id );
     }
+}
+
+static QColor
+ensureContrast( const QColor &c1, const QColor &c2, uint amount = 150 )
+{
+    //TODO together with the contrast functions in PlaylistItem, make a separate header for these
+
+    int h, s1, v1, s2, v2;
+
+    c2.hsv( &h, &s2, &v2 );
+    c1.hsv( &h, &s1, &v1 ); //must be second, see setHsv() later
+
+    const uint contrast = abs(v2 - v1) + abs(s2 - s1);
+
+    if( amount > contrast )
+    {
+        //TODO this algorythm is basic but simple,
+        //it doesn't handle all cases
+        //I can almost see a complex but compact full solution, keep at it!
+
+        const uint difference = amount - contrast;
+        uint error = 0;
+
+        v1 += (v2 <= v1) ? difference : -difference;
+
+        if( v1 > 255 )
+        {
+            error = v1 - 255;
+            v1 = 255;
+        }
+
+        if( v1 < 0 )
+        {
+            error = -v1;
+            v1 = 0;
+        }
+
+        if( error != 0 ) s1 += (s2 < s1) ? error : -error;
+
+        //TODO check if this is necessary
+        if( s1 < 0 ) s1 = 0;
+        if( s1 > 255 ) s1 = 255;
+
+        //if s1 is no invalid, Qt will adjust it
+        //but it is not possible to increase the contrast any more, we have done our best
+
+        return QColor( h, s1, v1, QColor::Hsv );
+    }
+
+    return c1;
+}
+
+void
+BlockAnalyzer::paletteChange( const QPalette &p )
+{
+    //Qt calls this function when the palette is changed
+
+    const QColor bg = backgroundColor().dark( 112 );
+    const QColor fg = ensureContrast( KGlobalSettings::activeTitleColor(), bg );
+
+    const double dr = 7.5*double(bg.red()   - fg.red())   / (m_rows*8);
+    const double dg = 7.5*double(bg.green() - fg.green()) / (m_rows*8);
+    const double db = 7.5*double(bg.blue()  - fg.blue())  / (m_rows*8);
+
+    const int r = fg.red(), g = fg.green(), b = fg.blue();
+
+    for( int x = 0; (uint)x < m_rows; ++x )
+    {
+        m_glow[x].fill( QColor( r+int(dr*x), g+int(dg*x), b+int(db*x) ) ); //graduate the fg color
+    }
+
+    m_dark.fill( bg );
+
+    Base2D::paletteChange( p );
 }

@@ -1,20 +1,16 @@
-// Maintainer:  Max Howell (C) Copyright 2004
-// Description: A fancy QSplitter type widget that also provides the browserBar and docking
-//
-// Copyright: See COPYING file that comes with this distribution
+// Maintainer: Max Howell (C) Copyright 2004
+// Copyright:  See COPYING file that comes with this distribution
 //
 
 #ifndef PLAYLISTSIDEBAR_H
 #define PLAYLISTSIDEBAR_H
 
-#include <qhbox.h>       //baseclass
-//#include <qptrlist.h>    //stack allocated
-//#include <qvaluelist.h>  //stack allocated
-#include <qvaluevector.h>  //stack allocated
-#include <qpushbutton.h> //baseclass
+#include <qhbox.h>        //baseclass
+#include <qpushbutton.h>  //baseclass
+#include <qvaluevector.h> //stack allocated
 
-typedef QValueVector<QWidget*> PageList;
-typedef QValueVector<QWidget*>::ConstIterator PageIterator;
+typedef QValueVector<QWidget*> BrowserList;
+typedef QValueVector<QWidget*>::ConstIterator BrowserIterator;
 
 class KMultiTabBar;
 class KMultiTabBarTab;
@@ -47,42 +43,42 @@ public:
     BrowserBar( QWidget *parent );
     ~BrowserBar();
 
-    QVBox *container() const { return (QVBox*)m_playlist; }
-    uint   position()  const { return m_pos; }
+    QVBox   *container() const { return (QVBox*)m_playlist; }
+    QWidget *browser( const QCString& ) const;
+    uint     position() const { return m_pos; }
+
+    void     setFont( const QFont& );
+    void     addBrowser( QWidget*, const QString&, const QString& );
 
 protected:
     bool eventFilter( QObject*, QEvent* );
     bool event( QEvent* );
 
-private:
-    QVBox  *m_playlist;
-    QFrame *m_divider;
-    uint    m_pos; //FIXME not required really, just use m_divider.left(), but it's only an int
-
-public:
-    void setFont( const QFont& );
-    void addPage( QWidget*, const QString&, const QString& );
-    QWidget *page( const QString& );
-
 public slots:
-    void showHidePage( int = -1 );
-    void close() { showHidePage(); }
-    void autoClosePages();
-    void adjustSize();
+    void showHideBrowser( int = -1 );
+    void close() { showHideBrowser(); }
+    void autoCloseBrowsers();
 
 private slots:
     void toggleOverlap( bool );
 
 private:
+    void adjustWidgetSizes();
+
     static const int DEFAULT_HEIGHT = 50;
 
+    uint             m_pos; //the x-axis position of m_divider
+    QVBox           *m_playlist; //not the playlist, but parent to the playlist and searchBar
+    QWidget         *m_divider; //a qsplitter like widget
     KMultiTabBar    *m_tabBar;
-    QWidget         *m_pageHolder;
+    BrowserList      m_browsers; //the browsers are stored in this qvaluevector
+    QWidget         *m_browserHolder; //parent widget to the browsers
+    QWidget         *m_currentBrowser; //currently displayed page, may be 0
+    KMultiTabBarTab *m_currentTab;  //currently open tab, may be 0
     QPushButton     *m_overlapButton;
-    QSignalMapper   *m_mapper;
-    PageList         m_pages;
-    QWidget         *m_currentPage;
-    KMultiTabBarTab *m_currentTab;
+
+    QSignalMapper   *m_mapper; //maps tab clicks to browsers
+
 
     class TinyButton : public QPushButton
     {

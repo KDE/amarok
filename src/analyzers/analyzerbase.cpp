@@ -36,6 +36,10 @@
 // TODO make an INSTRUCTIONS file
 //can't mod scope in analyze you have to use transform
 
+
+//TODO for 2D use setErasePixmap Qt function insetead of m_background
+
+
 template<class W>
 Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint scopeSize )
   : W( parent )
@@ -147,6 +151,8 @@ Analyzer::Base<W>::demo() //virtual
 Analyzer::Base2D::Base2D( QWidget *parent, uint timeout, uint scopeSize )
    : Base<QWidget>( parent, timeout, scopeSize )
 {
+    setWFlags( Qt::WNoAutoErase ); //no flicker
+
     connect( &m_timer, SIGNAL( timeout() ), SLOT( draw() ) );
 }
 
@@ -185,6 +191,15 @@ Analyzer::Base2D::resizeEvent( QResizeEvent *e )
 
     QWidget::resizeEvent( e );
 }
+
+void
+Analyzer::Base2D::paletteChange( const QPalette& )
+{
+    m_background.fill( backgroundColor() );
+    eraseCanvas();
+}
+
+
 
 #ifdef HAVE_QGLWIDGET
 Analyzer::Base3D::Base3D( QWidget *parent, uint timeout, uint scopeSize )

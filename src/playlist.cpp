@@ -15,7 +15,9 @@
 
 #include "amarokconfig.h"
 #include "metabundle.h"
-//#include "playlistbrowser.h"
+#ifdef PLAYLIST_BROWSER
+    #include "playlistbrowser.h"
+#endif
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlist.h"
@@ -56,11 +58,10 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 #ifdef PLAYLIST_BROWSER
     , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
 #endif
-    , m_glowAdd( 5 )
-    , m_glowTimer( new QTimer( this ) )
     , m_currentTrack( 0 )
     , m_cachedTrack( 0 )
     , m_marker( 0 )
+    , m_glowTimer( new QTimer( this ) )
     , m_weaver( new ThreadWeaver( this ) )
     , m_undoButton( KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" ) )
     , m_redoButton( KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" ) )
@@ -124,7 +125,11 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
              this,   SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
     connect( this, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
              this,   SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
-    connect( this, SIGNAL( aboutToClear() ), SLOT( saveUndoState() ) );
+    connect( this, SIGNAL( aboutToClear() ),
+             this,   SLOT( saveUndoState() ) );
+
+    //FIXME causes problems with saving playlists
+    //connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(slotHeaderResized( int, int, int )) );
 
     connect( m_glowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
 
@@ -163,6 +168,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
+    paletteChange( palette() ); //sets up glowColors
 
     /*
         TODO the following actually works!
@@ -192,6 +198,8 @@ Playlist::~Playlist()
        m_weaver->halt();
        m_weaver->wait();
    }
+
+   delete m_weaver;
 
    if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
 
@@ -487,17 +495,17 @@ void Playlist::clear() //SLOT
 bool Playlist::isTrackAfter() const
 {
     return !isEmpty() && (
-           AmarokConfig::repeatPlaylist() ||
            !m_nextTracks.isEmpty() ||
-           m_currentTrack && m_currentTrack->itemBelow() );
+           m_currentTrack && (
+           AmarokConfig::repeatPlaylist() || m_currentTrack->itemBelow() ) );
 }
 
 bool Playlist::isTrackBefore() const
 {
     return !isEmpty() && (
-           AmarokConfig::repeatPlaylist() ||
            !m_prevTracks.isEmpty() ||
-           currentTrack() && currentTrack()->itemAbove() );
+           currentTrack() && (
+           AmarokConfig::repeatPlaylist() || currentTrack()->itemAbove() ) );
 }
 
 
@@ -569,6 +577,30 @@ void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after,
         loader->start();
     }
     else kdDebug() << "[playlist] Unable to create loader-thread!\n";
+}
+
+
+void PlaylistWidget::slotHeaderResized( int section, int, int newSize )
+{
+#if 0
+    //TODO the header has some padding either side of the text, so the fontMetrics width
+    //     is too small
+
+    if( section == PlaylistItem::Track )
+    {
+        const QString text  = columnText( PlaylistItem::Track );
+        const int     width = fontMetrics().width( i18n("Track") );
+
+        if( text != "#" && newSize < width )
+        {
+            setColumnText( PlaylistItem::Track, "#" );
+
+        } else if( text == "#" && newSize >= width ) {
+
+            setColumnText( PlaylistItem::Track, i18n("Track") );
+        }
+    }
+#endif
 }
 
 
@@ -683,6 +715,8 @@ void Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
     if( m_currentTrack && !trackChanged )
     {
+        kdDebug() << "newMetaData, track is same: " << !trackChanged << endl;
+
         //if the track hasn't changed then we should update the meta data for the item
         m_currentTrack->setText( bundle );
     
@@ -708,8 +742,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
     {
     case EngineBase::Playing:
         //TODO make it fade in and out of the backgroundColor()
-        m_glowCount = 100;
-        m_glowTimer->start( 150 );
+        m_glowTimer->start( AmarokConfig::schemeAmarok() ? 150 : 30 );
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
         m_ac->action( "prev" )->setEnabled( isTrackBefore() ); //FIXME you also do this in setCurrenTrack
@@ -779,6 +812,8 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
     }
 
     m_currentTrack = item;
+    if( item ) { item->setPixmap( 0, SmallIcon("artsbuilderexecute") ); item->setHeight( fontMetrics().height() * 2 ); }
+    if( prev ) { prev->setPixmap( 0, QPixmap() ); prev->invalidateHeight(); }
     m_cachedTrack  = 0; //invalidate cached pointer
 
     repaintItem( prev );
@@ -967,13 +1002,16 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     }
     else popup.insertItem( i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information" ), VIEW ); //TODO rename properties
-    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
+    popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), 0, 0, Key_F2, EDIT );
     if( canRename )
     {
         const QListViewItem *below = item->itemBelow();
-        if( below && below->isSelected() )
+        if( below && below->isSelected() && item->exactText( col ) != "Writing tag..." )
         {
+            //we disable Fill-Down when the current cell is having it's tag written
+            //but it's a hack that needs to be improved
+
             popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down" ), FILL_DOWN );
         }
     }
@@ -1064,34 +1102,128 @@ void Playlist::showTrackInfo( PlaylistItem *pItem ) const //SLOT
 
     str.append( "</table></body></html>" );
 
-    QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
+    QMessageBox box( kapp->makeStdCaption( i18n("Meta Information") ), str, QMessageBox::Information,
                      QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
                      0, 0, true, Qt::WStyle_DialogBorder );
     box.setTextFormat( Qt::RichText );
     box.exec();
 }
 
+namespace Glow
+{
+    namespace Text
+    {
+        static double dr, dg, db;
+        static int    r, g, b;
+    }
+    namespace Base
+    {
+        static double dr, dg, db;
+        static int    r, g, b;
+    }
+
+    static const uint STEPS = 13;
+
+    static int counter; //int just in case amaroKScheme method breaks
+}
+
+void Playlist::paletteChange( const QPalette &p )
+{
+    using namespace Glow;
+
+    QColor fg;
+    QColor bg;
+
+    {
+        using namespace Base;
+
+        const uint steps = STEPS+7; //so we don't fade all the way to base
+
+        fg = colorGroup().highlight();
+        bg = colorGroup().base();
+
+        dr = double(bg.red() - fg.red()) / steps;
+        dg = double(bg.green() - fg.green()) / steps;
+        db = double(bg.blue() - fg.blue()) / steps;
+
+        r = fg.red() + int(dr*5.0); //we add 5 steps so the default colour is slightly different to highlight
+        g = fg.green() + int(dg*5.0);
+        b = fg.blue() + int(db*5.0);
+    }
+
+    {
+        using namespace Text;
+
+        const uint steps = STEPS+2; //so we don't fade all the way to base
+
+        fg = colorGroup().highlightedText();
+        bg = colorGroup().text();
+
+        dr = double(bg.red() - fg.red()) / steps;
+        dg = double(bg.green() - fg.green()) / steps;
+        db = double(bg.blue() - fg.blue()) / steps;
+
+        r = fg.red();
+        g = fg.green();
+        b = fg.blue();
+    }
+
+    Glow::counter = 63; //ensure color is set
+
+    KListView::paletteChange( p );
+}
 
 void Playlist::slotGlowTimer() //SLOT
 {
-    if( m_glowCount > 120 || m_glowCount < 90 ) m_glowAdd = -m_glowAdd;
+    if( !currentTrack() ) return;
 
-    //draw glowing rectangle around current track, to indicate activity
-    QRect rect = itemRect( currentTrack() ); //FIXME slow function!
-
-    if( rect.isValid() )
+    if( AmarokConfig::schemeAmarok() )
     {
-        QPainter p( viewport() );
-        p.setPen( colorGroup().brightText().light( m_glowCount ) );
+        using Glow::counter;
 
-        //rect.setTop   ( rect.top()      );
-        //rect.setBottom( rect.bottom()   );
-        rect.setWidth ( contentsWidth() ); //without this the glow rectangle is wrong
+        static int add = 5;
 
-        p.drawRect( rect );
+        if( counter >= 35 ) add = -5;
+        if( counter <= 0  ) add = +5;
+
+        //draw glowing rectangle around current track, to indicate activity
+        QRect rect = itemRect( currentTrack() ); //FIXME slow function!
+
+        if( rect.isValid() )
+        {
+            QPainter p( viewport() );
+            p.setPen( colorGroup().brightText().light( 100 + counter ) ); //brightText is set in PlayerApp::setupColors()
+
+            rect.setWidth( contentsWidth() ); //without this the glow rectangle is wrong
+
+            p.drawRect( rect );
+        }
+
+        counter += add;
+
+    } else {
+
+        using namespace Glow;
+
+        if( counter > 63-(STEPS*2) )
+        {
+            const double d = (counter > 63-STEPS) ? STEPS-(counter-(63-STEPS)) : counter-(63-STEPS*2);
+
+            {
+                using namespace Base;
+                PlaylistItem::glowBase = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
+            }
+
+            {
+                using namespace Text;
+                PlaylistItem::glowText = QColor( r + int(d*dr), g + int(d*dg), b + int(d*db) );
+            }
+
+            repaintItem( currentTrack() );
+        }
+
+        ++counter &= 63; //built in bounds checking with &=
     }
-
-    m_glowCount += m_glowAdd;
 }
 
 
@@ -1140,6 +1272,9 @@ void Playlist::slotEraseMarker() //SLOT
 
 void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLOT
 {
+    //TODO we need a way to tell if the text after the rename was the same
+    //     at this point the text is already changed grrr..
+
     m_weaver->append( new TagWriter( this, (PlaylistItem *)lvi, tag, col ), true );
 
     QListViewItem *below = lvi->itemBelow();
@@ -1150,7 +1285,7 @@ void Playlist::writeTag( QListViewItem *lvi, const QString &tag, int col ) //SLO
 
 void Playlist::readAudioProperties( PlaylistItem *pi )
 {
-    m_weaver->append( new AudioPropertiesReader( this, pi ) );
+    if( AmarokConfig::showMetaInfo() ) m_weaver->append( new AudioPropertiesReader( this, pi ) );
 }
 
 

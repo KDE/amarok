@@ -82,6 +82,7 @@ protected:
 
     void paintEvent( QPaintEvent* ) { if( !m_canvas.isNull() ) bitBlt( this, 0, 0, canvas() ); }
     void resizeEvent( QResizeEvent* );
+    void paletteChange( const class QPalette& );
 
     void polish();
 

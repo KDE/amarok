@@ -33,19 +33,20 @@ SearchBrowser::SearchBrowser( const char *name )
         : QVBox( 0, name )
         , m_weaver( new ThreadWeaver( this ) )
 {
+    setSpacing( 4 );
+    setMargin( 5 );
+
     KConfig *config = kapp->config();
     config->setGroup( "SearchBrowser" );
 
     QHBox *hb1 = new QHBox( this );
     hb1->setSpacing( 4 );
-    hb1->setMargin( 2 );
     QLabel *label1 = new QLabel( "Search &for:", hb1 );
     searchEdit = new KLineEdit( hb1 );
     label1->setBuddy( searchEdit );
 
     QHBox *hb2 = new QHBox( this );
     hb2->setSpacing( 4 );
-    hb2->setMargin( 2 );
     QLabel *label2 = new QLabel( "&In:", hb2 );
     urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, hb2 );
     label2->setBuddy( urlEdit );
@@ -68,14 +69,13 @@ SearchBrowser::SearchBrowser( const char *name )
     resultView->setResizeMode( QListView::AllColumns );
     resultView->setSelectionMode( QListView::Extended );
     resultView->setAllColumnsShowFocus( true );
-    //resultView->setColumnWidthMode( 1, QListView::Manual ); //NOTE is default
 
     historyView->addColumn( i18n( "Search Token" ) );
     historyView->addColumn( i18n( "Results" ) );
     historyView->addColumn( i18n( "Progress" ) );
     historyView->addColumn( i18n( "Base Folder" ) );
-    historyView->setAllColumnsShowFocus( true );
     historyView->setResizeMode( QListView::AllColumns );
+    historyView->setAllColumnsShowFocus( true );
 
     connect( searchEdit,   SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );
     connect( urlEdit,      SIGNAL( returnPressed() ), SLOT( slotStartSearch() ) );

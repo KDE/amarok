@@ -12,7 +12,6 @@
 
 #include <qevent.h>
 #include <kaction.h>
-#include <klocale.h>
 #include <kpopupmenu.h>
 
 
@@ -42,18 +41,32 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSy
     ac->action( "options_configure" )->plug( contextMenu() );
 
     //seems to be necessary
-    actionCollection()->action( "file_quit" )->disconnect();
-    connect( actionCollection()->action( "file_quit" ), SIGNAL( activated() ), kapp, SLOT( quit() ) );
+    KAction *quit = actionCollection()->action( "file_quit" );
+    quit->disconnect();
+    connect( quit, SIGNAL( activated() ), kapp, SLOT( quit() ) );
 }
 
+#include <klocale.h>
 bool
 amaroK::TrayIcon::event( QEvent *e )
 {
     switch( e->type() ) {
+    case QEvent::Drop:
+    {
+        QPopupMenu popup;
+
+        //popup.insertItem( i18n( "Play" ) );
+        popup.insertItem( i18n( "Append and &Play" ) );
+        popup.insertItem( i18n( "&Append" ) );
+        popup.insertSeparator();
+        popup.insertItem( i18n( "&Cancel" ) );
+
+        popup.exec( mapToGlobal( static_cast<QDropEvent*>(e)->pos() ) );
+
+        return TRUE;
+    }
     case QEvent::Wheel:
     case QEvent::DragEnter:
-    case QEvent::Drop:
-
         //ignore() doesn't pass the event to parent unless
         //the parent isVisible() and the active window!
 

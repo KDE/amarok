@@ -23,7 +23,9 @@
 
 class QCustomEvent;
 class QSlider;
+class QTimer;
 class KProgress;
+class KToggleAction;
 
 namespace amaroK {
 
@@ -37,7 +39,7 @@ public:
     virtual ~StatusBar();
 
     static StatusBar* self() { return m_self; }
-    
+
 public slots:
     /** update total song count */
     void slotItemCountChanged(int newCount);
@@ -49,22 +51,24 @@ protected: /* reimpl from engineobserver */
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); } // TODO: don't duplicate
 
 private slots:
-    void slotToggleTime();
     void sliderPressed();
     void sliderReleased();
     void sliderMoved( int value );
-        
+    void slotPauseTimer();
+
 private:
     void customEvent( QCustomEvent* e );
     void drawTimeDisplay( long position );
 
     static StatusBar* m_self;
-    static const int ID_STATUS = 1;
-    static const int ID_TOTAL  = 2;
-    ToggleLabel *m_pTimeLabel;
-    KProgress* m_progress;
-    QSlider* m_pSlider;
-    bool m_sliderPressed;
+
+    QLabel    *m_pTimeLabel;
+    QLabel    *m_pTitle;
+    QLabel    *m_pTotal;
+    KProgress *m_pProgress;
+    QSlider   *m_pSlider;
+    bool       m_sliderPressed;
+    QTimer    *m_pPauseTimer;
 };
 
 
@@ -72,23 +76,19 @@ class ToggleLabel : public QLabel
 {
     Q_OBJECT
 public:
-    ToggleLabel( const QString &text, QWidget *parent = 0, const char *name = 0 );
-    ~ToggleLabel();
-
-    void setColorToggle( bool on );
+    ToggleLabel( const QString&, KStatusBar* const, const KToggleAction* const );
 
 protected:
-    virtual void mouseDoubleClickEvent ( QMouseEvent * e );
+    virtual void mouseDoubleClickEvent ( QMouseEvent* );
 
 public slots:
-    virtual void setOn( bool );
+    void setChecked( bool );
 
 signals:
     void toggled( bool state );
 
 private:
     bool m_State;
-    bool m_ColorToggle;
 };
 
 } //namespace amaroK

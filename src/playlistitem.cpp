@@ -34,6 +34,9 @@
 #include <kurl.h>
 
 
+QColor PlaylistItem::glowText;
+QColor PlaylistItem::glowBase;
+
 
 static inline QColor
 mixColors( const QColor &c1, const QColor &c2, uint f1 = 1, uint f2 = 1 )
@@ -310,30 +313,41 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
     return 0;    //a == b
 }
 
-
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
 
-    if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
+    //FIXME this was crashing stuff when you were dropping remote playlists
+    //TODO  anyway it sucks, load audio props simultaneously to other tags
+    //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
+    //if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
 
     bool hideSeparator = false;
     int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
     if( this == listView()->currentTrack() )
     {
-        const QColor glowText( cg.brightText() );
-        const QColor glowBase( mixColors( cg.base(), changeContrast( glowText, -50 ), 5, 2 ) );
         QColorGroup glowCg = cg; //shallow copy
 
-        glowCg.setColor( QColorGroup::Text, glowText );
-        glowCg.setColor( QColorGroup::Base, glowBase );
-
-        if( isSelected() )
+        if( AmarokConfig::schemeAmarok() )
         {
-            glowCg.setColor( QColorGroup::Highlight, mixColors( glowText, cg.highlight(), 2 ) );
-            glowCg.setColor( QColorGroup::HighlightedText, mixColors( glowText, cg.highlightedText() ) );
+            const QColor glowText( cg.brightText() );
+            const QColor glowBase( mixColors( cg.base(), changeContrast( glowText, -50 ), 5, 2 ) );
+
+            glowCg.setColor( QColorGroup::Text, glowText );
+            glowCg.setColor( QColorGroup::Base, glowBase );
+
+            if( isSelected() )
+            {
+                glowCg.setColor( QColorGroup::Highlight, mixColors( glowText, cg.highlight(), 2 ) );
+                glowCg.setColor( QColorGroup::HighlightedText, mixColors( glowText, cg.highlightedText() ) );
+            }
+
+        } else {
+
+            glowCg.setColor( QColorGroup::Base, glowBase );
+            glowCg.setColor( QColorGroup::Text, glowText );
         }
 
         //KListViewItem enforces alternate color, so we use QListViewItem
@@ -341,7 +355,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         hideSeparator = true; //don't draw separator
 
-    } else if( playNext ) {
+    } else if( playNext && AmarokConfig::schemeAmarok() ) {
 
         QColorGroup glowCg = cg; //shallow copy
         int h, s, v;
@@ -414,7 +428,7 @@ const QString &PlaylistItem::attemptStore( const QString &candidate ) //static
 
     if( candidate.isEmpty() ) return candidate; //nothing to try to share
 
-    uchar hash = candidate[0].unicode() % STRING_STORE_SIZE;
+    const uchar hash = candidate[0].unicode() % STRING_STORE_SIZE;
 
 
     if( stringStore[hash] != candidate ) //then replace

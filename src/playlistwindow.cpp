@@ -41,6 +41,7 @@
 #include <kdebug.h>
 #include <kglobal.h>
 #include <kfiledialog.h>   //savePlaylist()
+#include <kiconloader.h>   //ClearFilter button
 #include <klineedit.h>     //m_lineEdit
 #include <klocale.h>
 #include <ktoolbar.h>
@@ -61,6 +62,7 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
     setCaption( "amaroK" );
 
     pApp->m_pActionCollection = actionCollection(); //FIXME sucks
+
 
     //<actions>
         KActionCollection* const ac = actionCollection();
@@ -97,21 +99,42 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
 
     m_browsers = new BrowserBar( this );
+
+
+    { //<Search LineEdit>
+        QHBox *hbox; QToolButton *button;
+
+        hbox       = new QHBox( m_browsers->container() );
+        button     = new QToolButton( hbox );
+        m_lineEdit = new KLineEdit( hbox );
+
+        hbox->setMargin( 4 );
+        button->setIconSet( SmallIconSet( "locationbar_erase.png" ) );
+        m_lineEdit->setFrame( QFrame::Sunken );
+        m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+
+        connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
+    } //</Search LineEdit>
+
+
+    KStatusBar *statusbar;
+
     m_toolbar  = new KToolBar( this, "playlist_toolbar" );
-    m_lineEdit = new KLineEdit( m_browsers->container() );
+    statusbar  = new amaroK::StatusBar( this );
     m_playlist = new Playlist( m_browsers->container(), ac );
 
     QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 
     QBoxLayout *layV = new QVBoxLayout( this );
-    layV->addWidget( m_browsers, 10 );
+    layV->addWidget( m_browsers, 2 );
     layV->addWidget( m_toolbar );
-    amaroK::StatusBar *statusbar = new amaroK::StatusBar( this, "statusbar" );
     layV->addWidget( statusbar );
 
-
+    m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
-    m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
 
     //<XMLGUI>
@@ -122,35 +145,36 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
     //<FileBrowser>
         QWidget *fb = new FileBrowser( "FileBrowser" );
-        m_browsers->addPage( fb, i18n( "Files" ), "hdd_unmount" );
+        m_browsers->addBrowser( fb, i18n( "Files" ), "hdd_unmount" );
         connect( fb, SIGNAL(activated( const KURL& )), m_playlist, SLOT(insertMedia( const KURL& )) );
     //</FileBrowser>
 
     //<SearchBrowser>
-        m_browsers->addPage( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
+        m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
     //</SearchBrowser>
 
-#ifdef PLAYLIST_BROWSER
     //<PlaylistBrowser>
-        m_browsers->addPage( m_playlist->browser(), i18n( "Playlist" ), "midi" );
+    #ifdef PLAYLIST_BROWSER
+        m_browsers->addBrowser( m_playlist->browser(), i18n( "Playlist" ), "midi" );
+    #endif
     //</PlaylistBrowser>
-#endif
 
     //<CollectionBrowser>
-        m_browsers->addPage( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
+        m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
     //</CollectionBrowser>
 
     { //<StreamBrowser>
         QVBox   *vb = new QVBox( 0, "StreamBrowser" );
         QWidget *b  = new QPushButton( "&Fetch Stream Information", vb );
         QWidget *sb = new StreamBrowser( vb );
-        vb->setSpacing( 2 );
-        vb->setMargin( 2 );
+        vb->setSpacing( 3 );
+        vb->setMargin( 5 );
         vb->setFocusProxy( sb );
         connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
         connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
-        m_browsers->addPage( vb, i18n( "Streams" ), "network" );
+        m_browsers->addBrowser( vb, i18n( "Streams" ), "network" );
     } //</StreamBrowser>
+
 
     connect( m_playlist, SIGNAL(itemCountChanged( int )),
              statusbar,    SLOT(slotItemCountChanged( int )) );
@@ -162,6 +186,13 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
+
+PlaylistWindow::~PlaylistWindow()
+{
+    AmarokConfig::setBrowserWinPos( pos() );  //TODO no need to be XT'd
+    AmarokConfig::setBrowserWinSize( size() ); //TODO no need to be XT'd
+}
+
 
 ///////// public interface
 
@@ -232,11 +263,12 @@ bool PlaylistWindow::isAnotherTrack() const
 void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 {
     //TODO optimise bearing in mind ownPalette property and unsetPalette()
+    //TODO this doesn't work well with the select your own colours options. SIGH. Is it worth the trouble?
 
     //this updates all children's palettes recursively (thanks Qt!)
     m_browsers->setPalette( pal );
 
-    const bool schemeKDE = !AmarokConfig::schemeKDE();
+    const bool schemeAmarok = !AmarokConfig::schemeKDE();
     QObjectList* const list = m_browsers->queryList( "QWidget" );
 
     //now we need to search for KListViews so we can set the alternative colours
@@ -250,7 +282,7 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
             KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
             if( lv ) lv->setAlternateBackground( bgAlt );
         }
-        else if( schemeKDE )
+        else if( schemeAmarok )
         {
             if( obj->inherits("QLabel") || obj->inherits("QToolBar") )
             {
@@ -267,6 +299,8 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
         #undef widget
     }
 
+    delete list; //heap allocated! Naughty Qt! Should use a QValueList<QObject*> no? (ValueLists are shared)
+
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     FileBrowser::altBgColor = bgAlt;
 }
@@ -279,10 +313,6 @@ void PlaylistWindow::setFont( const QFont &newFont )
 }
 
 
-void PlaylistWindow::saveConfig()
-{}
-
-
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
     //here we filter some events for the Playlist Search LineEdit and the Playlist
@@ -291,7 +321,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
     switch( e->type() )
     {
     case QEvent::FocusIn:
-        m_browsers->autoClosePages();
+        m_browsers->autoCloseBrowsers();
         break;
 
     case QEvent::KeyPress:
@@ -299,6 +329,26 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         //there are a few keypresses that we intercept
 
         #define e static_cast<QKeyEvent*>(e)
+
+        if( e->key() == Key_F2 )
+        {
+            QListViewItem* item = reinterpret_cast<QListViewItem*>(m_playlist->currentTrack());
+
+            // we set it to currentItem if currentTrack() is no good, currentItem is ALWAYS visible.
+            if( !( item && item->isVisible() ) ) item = m_playlist->currentItem();
+
+            // intercept F2 for inline tag renaming
+            // NOTE: tab will move to the next tag
+            // NOTE: if item is still null don't select first item in playlist, user wouldn't want that. It's silly.
+            // TODO: berkus has solved the "inability to cancel" issue with KListView, but it's not in kdelibs yet..
+
+            // item may still be null, but this is safe
+            // NOTE: column 0 cannot be edited currently
+            m_playlist->rename( item, 1 ); //TODO what if this column is hidden?
+
+            return TRUE;
+        }
+
         if( o == m_lineEdit ) //the search lineedit
         {
             //FIXME inefficient to always construct this
@@ -365,7 +415,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
 void PlaylistWindow::savePlaylist() const //SLOT
 {
-    QWidget *fb = m_browsers->page( "FileBrowser" );
+    QWidget *fb = m_browsers->browser( "FileBrowser" );
     QString path = fb ? static_cast<FileBrowser *>(fb)->location() : "~";
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );
@@ -386,6 +436,5 @@ void PlaylistWindow::slotAddLocation() //SLOT
 
     insertMedia( dlg.selectedURL() );
 }
-
 
 #include "playlistwindow.moc"

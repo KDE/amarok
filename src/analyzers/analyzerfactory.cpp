@@ -17,7 +17,7 @@
 
 #include <config.h> //for HAVE_QGLWIDGET macro
 
-#include "amarokconfig.h"
+#include "amarokcore/amarokconfig.h"
 #include "analyzerbase.h" //declaration here
 
 #include "baranalyzer.h"
@@ -38,6 +38,8 @@
 
 QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 {
+    //new XmmsWrapper(); //toplevel
+
     QWidget *analyzer = 0;
 
     switch( AmarokConfig::currentAnalyzer() )
@@ -49,7 +51,7 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
         analyzer = new TurbineAnalyzer( parent );
         break;
     case 3:
-        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analzyer to satisfy Grue
+        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
         static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
         break;
 #ifdef HAVE_QGLWIDGET

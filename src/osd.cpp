@@ -372,7 +372,7 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent */*event*/ )
 void
 amaroK::OSD::showVolume()
 {
-    showOSD( i18n("Volume %1%").arg( EngineController::instance()->engine()->volume() ), true );
+    showOSD( i18n("Volume %1%").arg( EngineController::engine()->volume() ), true );
 }
 
 void

@@ -1,5 +1,6 @@
-// Maintainer: Max Howell (C) Copyright 2004
-// Copyright:  See COPYING file that comes with this distribution
+// Maintainer:  Max Howell (C) Copyright 2004
+// Copyright:   See COPYING file that comes with this distribution
+// Description: The SideBar/MultTabBar/BrowserBar all-in-one spectacular!
 //
 
 #include "browserbar.h"
@@ -20,50 +21,55 @@
 #include <kmultitabbar.h>  //m_tabBar
 
 
-/**
- * The SideBbar/MultTab/Tray all-in-one spectacular!
- *
- * @author Max Howell.
-*/
-
-//Important: name the widgets you plan to add to the bar! The name is important and browser settings are
-//associated with it. You also can get the widget pointer using page( "name" );
-
-
-//TODO update commentry
-//TODO change container() name, it is poor
-//TODO make pageholder a layout
-//TODO get the browsers to offer more sensible minimumWidths!
-//TODO perhaps you can add pages and holder to multitabbar, and then just size that accordingly?
-
+//USAGE
+// 1. create a widget, NAME THE WIDGET!
+// 2. use addBrowser() to append it to the bar
+// 3. you can retrieve pointers to the widgets you inserted using browser( "name" )
 
 //<mxcl>
-//I avoided using KDockWidget as it is horrendously large and we only wanted a subset
-//of its functionality. But this turned out to be more code than I thought.
-//Maybe this was a silly decision.. but we have some functionality that KDockWidget doesn't offer
-//like variable sized panes.
-//I suggest using KDockWindow and KDockWidget if they have been cleaned up and made easier to understand
-//with KDE 4
+//This is much tighter code than KDockWidget and co.
+//I think I should look into submitting patches for that class. It's quite messy.
+//But it is also more flexible in a docking perspective.
 
-
-//NOTE I use the baseSize().width() property to remember page widths as it
-//an otherwise unused property and this saves memory
-//NOTE you can obtain pointers to the widgets you insert with addPage() using: page( "name" );
+//TODO make browserholder a layout
+//TODO perhaps you can add browsers and holder to multitabbar, and then just size that accordingly?
+//NOTE the widget widths are saved in their baseSize() property
 
 
 #define BROWSER_BAR_LEFT
 
 
+namespace amaroK {
+
+class Divider : public QWidget
+{
+public:
+    Divider( QWidget *w ) : QWidget( w ) { styleChange( style() ); }
+
+    virtual void paintEvent( QPaintEvent* )
+    {
+        QPainter p( this );
+        parentWidget()->style().drawPrimitive( QStyle::PE_Splitter, &p, rect(), colorGroup(), 0 );
+    }
+
+    virtual void styleChange( QStyle& )
+    {
+        setFixedWidth( style().pixelMetric( QStyle::PM_SplitterWidth, this ) );
+    }
+};
+
+}
+
+
 BrowserBar::BrowserBar( QWidget *parent )
-  : QWidget( parent )
+  : QWidget( parent, "BrowserBar" )
   , m_playlist( new QVBox( this ) )
-  , m_divider( new QFrame( parent ) )
+  , m_divider( new amaroK::Divider( parent ) ) //FIXME why parent?
   , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
-  , m_pageHolder( new QWidget( this ) ) //FIXME making this a layout would save mem
-  , m_mapper( new QSignalMapper( this ) )
-  , m_pages()
-  , m_currentPage( 0 )
+  , m_browserHolder( new QWidget( this ) ) //FIXME making this a layout would save mem
+  , m_currentBrowser( 0 )
   , m_currentTab( 0 )
+  , m_mapper( new QSignalMapper( this ) )
 {
     m_pos = m_tabBar->sizeHint().width();
 
@@ -73,24 +79,24 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setFixedWidth( m_pos );
 
 #ifdef BROWSER_BAR_LEFT
-    m_pageHolder->move( m_pos, 0 );
+    m_browserHolder->move( m_pos, 0 );
 #else
     m_playlist->move( 0, 0 );
-    //m_pos will be adjusted before we are shown (Resize event() or/and showHidePage())
+    //m_pos will be adjusted before we are shown (Resize event() or/and showHideBrowser())
 #endif
 
-    m_overlapButton = new TinyButton( m_pageHolder, const_cast< const char** >(not_close_xpm), i18n( "Overlap" ) );
+    m_overlapButton = new TinyButton( m_browserHolder, const_cast< const char** >(not_close_xpm), i18n( "Overlap" ) );
     m_overlapButton->setToggleButton( true );
     connect( m_overlapButton, SIGNAL( toggled( bool ) ), SLOT( toggleOverlap( bool ) ) );
 
-    QPushButton *closeButton = new TinyButton( m_pageHolder, style().stylePixmap( QStyle::SP_TitleBarCloseButton ), i18n( "Close" ) );
+    QPushButton *closeButton = new TinyButton( m_browserHolder, style().stylePixmap( QStyle::SP_TitleBarCloseButton ), i18n( "Close" ) );
     connect( closeButton, SIGNAL( clicked() ), SLOT( close() ) );
 
-    QSize buttonSize = closeButton->pixmap()->size();
+    const QSize buttonSize = closeButton->pixmap()->size();
     closeButton->setFixedSize( buttonSize );
     m_overlapButton->setFixedSize( buttonSize );
 
-    QVBoxLayout *mainLayout = new QVBoxLayout( m_pageHolder );
+    QVBoxLayout *mainLayout = new QVBoxLayout( m_browserHolder );
     QHBoxLayout *tinyLayout = new QHBoxLayout();
 #ifdef BROWSER_BAR_LEFT
     tinyLayout->setAlignment( Qt::AlignRight );
@@ -103,14 +109,17 @@ BrowserBar::BrowserBar( QWidget *parent )
 #endif
     mainLayout->addLayout( tinyLayout );
 
-    //set it to a default state of closed();
-    m_pageHolder->hide();
+    connect( m_mapper, SIGNAL( mapped( int ) ), SLOT( showHideBrowser( int ) ) );
 
-    connect( m_mapper, SIGNAL( mapped( int ) ), SLOT( showHidePage( int ) ) );
-
-    m_divider->setFrameStyle( QFrame::Panel | QFrame::Raised );
     m_divider->installEventFilter( this );
     m_divider->setCursor( QCursor(SizeHorCursor) );
+
+    //set the browserbar to an initial state of closed();
+    m_browserHolder->hide();
+    m_divider->hide();
+    //ensure these widgets are at the front of the stack
+    m_browserHolder->raise();
+    m_divider->raise();
 }
 
 BrowserBar::~BrowserBar()
@@ -119,67 +128,41 @@ BrowserBar::~BrowserBar()
     config->setGroup( "PlaylistSideBar" );
 
     config->writeEntry( "Stay", m_overlapButton->isOn() );
-    config->writeEntry( "CurrentPane", m_currentPage ? m_currentPage->name() : QString::null );
+    config->writeEntry( "CurrentPane", m_currentBrowser ? m_currentBrowser->name() : QString::null );
 
-    const PageIterator end = m_pages.constEnd();
-    for( PageIterator it = m_pages.constBegin(); it != end; ++it )
+    for( BrowserIterator it = m_browsers.constBegin(), end = m_browsers.constEnd(); it != end; ++it )
         config->writeEntry( (*it)->name(), (*it)->baseSize().width() );
 }
 
 
 void
-BrowserBar::adjustSize() //SLOT
+BrowserBar::adjustWidgetSizes()
 {
     const uint w   = width();
     const uint h   = height();
     const uint p   = position();
-    const uint pp4 = p+4;
+    const uint ppw = p + m_divider->width();
+    const uint tbw = m_tabBar->width();
 
-    //TODO in non-overlap mode, only resizes have to adjust the playlist size
-    //TODO on right, ensure the divider is below the tabs in the stack and then take 2 pixs instead of 4
-    //TODO shouldn't be necessary to raise() the pageHodler and divider every time, there is a widget stack
+    //this bool indicates whether or not to draw the playlist offset
+    //due to an open tab in overlap mode
+    const bool b = m_overlapButton->isOn() && !m_divider->isHidden();
 
-    m_divider->setGeometry( p, 0, 4, h );
+    m_divider->move( p, 0 );
 
 #ifdef BROWSER_BAR_LEFT
 
-    const uint offset = m_tabBar->width();
-    const uint op4    = offset+4;
+    const uint offset = b ? ppw : tbw + 4; //the 4 is just for aesthetics
 
-    //m_pageHolder->setGeometry( offset, 0, p-offset, h );
-    m_pageHolder->resize( p-offset, h );
-
-    if( m_overlapButton->isOn() )
-    {
-        m_playlist->setGeometry( pp4, 0, w-pp4, h );
-
-    } else {
-
-        m_pageHolder->raise();
-        m_divider->raise();
-
-        m_playlist->setGeometry( op4, 0, w-op4, h );
-    }
+    m_browserHolder->resize( p - tbw, h );
+    m_playlist->setGeometry( offset, 0, w - offset, h );
 
 #else
 
-    const uint offset = w - m_tabBar->width();
+    const uint reducedWidth = w - tbw;
 
-    m_pageHolder->setGeometry( pp4, 0, offset-pp4, h );
-
-    if( m_overlapButton->isOn() )
-    {
-        //m_playlist->setGeometry( 0, 0, p, h );
-        m_playlist->resize( p, h );
-
-    } else {
-
-        m_pageHolder->raise();
-        m_divider->raise();
-
-        //m_playlist->setGeometry( 0, 0, offset-4, h );
-        m_playlist->resize( offset-4, h );
-    }
+    m_browserHolder->setGeometry( ppw, 0, reducedWidth - ppw, h );
+    m_playlist->resize( b ? p : reducedWidth, h );
 
 #endif
 }
@@ -187,13 +170,13 @@ BrowserBar::adjustSize() //SLOT
 bool
 BrowserBar::eventFilter( QObject*, QEvent *e )
 {
-    if( !m_currentPage ) return false;
+    if( !m_currentBrowser ) return false;
 
     switch( e->type() )
     {
     case QEvent::MouseButtonRelease:
 
-        m_currentPage->setBaseSize( m_currentPage->size() ); //only necessary to do on mouse release
+        m_currentBrowser->setBaseSize( m_currentBrowser->size() ); //only necessary to do on mouse release
 
         //FALL THROUGH
 
@@ -205,7 +188,7 @@ BrowserBar::eventFilter( QObject*, QEvent *e )
         const uint newPos     = mapFromGlobal( e->globalPos() ).x();
 
     #ifdef BROWSER_BAR_LEFT
-        const uint minWidth   = m_tabBar->width() + m_currentPage->minimumWidth();
+        const uint minWidth   = m_tabBar->width() + m_currentBrowser->minimumWidth();
         const uint maxWidth   = uint(width() * 0.9);
 
         if( newPos < minWidth ) m_pos = minWidth;
@@ -216,7 +199,7 @@ BrowserBar::eventFilter( QObject*, QEvent *e )
 
         //TODO minimum playlist width must be greater than 10/9 of tabBar width or will be strange behaviour
 
-        if( m_pos != currentPos ) adjustSize();
+        if( m_pos != currentPos ) adjustWidgetSizes();
 
         return true;
 
@@ -236,23 +219,24 @@ BrowserBar::event( QEvent *e )
   switch( e->type() )
   {
   case QEvent::LayoutHint:
-      //kdDebug() << "LAYOUT_HINT!\n";
-      setMinimumWidth( m_tabBar->minimumWidth() + m_playlist->minimumWidth() + 4 );
+      setMinimumWidth( m_tabBar->minimumWidth() + m_divider->minimumWidth() + m_playlist->minimumWidth() );
       break;
 
   case QEvent::Resize:
+
+      m_divider->resize( 0, height() ); //Qt will set width
+
   #ifdef BROWSER_BAR_LEFT
-      //m_tabBar->setGeometry( 0, 0, 0, height() ); //width will be adjusted by Qt
-      m_tabBar->resize( 0, height() ); //width will be adjusted by Qt
+      m_tabBar->resize( 0, height() ); //Qt will set width
   #else
   {
       const uint x = width()-m_tabBar->width();
-      if( !m_pageHolder->isVisible() ) m_pos = x-4;
+      if( !m_browserHolder->isVisible() ) m_pos = x-4;
       else m_pos += width() - ((QResizeEvent*)e)->oldSize().width();
       m_tabBar->setGeometry( x, 0, 0, height() );
   }
   #endif
-      adjustSize();
+      adjustWidgetSizes();
       return true;
 
   default:
@@ -263,7 +247,7 @@ BrowserBar::event( QEvent *e )
 }
 
 void
-BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon )
+BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& icon )
 {
     //hi, this function is ugly - blame the monstrosity that is KMultiTabBar
 
@@ -271,88 +255,86 @@ BrowserBar::addPage( QWidget *widget, const QString &title, const QString& icon 
     const int id = m_tabBar->tabs()->count();
     const QString name( widget->name() );
 
-    widget->reparent( m_pageHolder, QPoint(), false ); //we need to own this widget for it to layout properly
-    m_pageHolder->layout()->add( widget );
+    widget->reparent( m_browserHolder, QPoint(), false ); //we need to own this widget for it to layout properly
+    m_browserHolder->layout()->add( widget );
     widget->hide();
     if( widget->minimumWidth() < 30 ) widget->setMinimumWidth( 30 );
 
     m_tabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_tabBar->tab( id );
-    tab->setFocusPolicy( QWidget::NoFocus ); //FIXME currently if you tab to these widgets, they respond to no input!
+    tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
 
-    //we use a SignalMapper to show/hide the corresponding page when tabs are clicked
+    //we use a SignalMapper to show/hide the corresponding browser when tabs are clicked
     connect( tab, SIGNAL( clicked() ), m_mapper, SLOT( map() ) );
     m_mapper->setMapping( tab, id );
 
-    m_pages.push_back( widget ); //TODO check the index of this is the id of the tab, QValueVector?
+    m_browsers.push_back( widget );
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistSideBar" );
     widget->setBaseSize( config->readNumEntry( name, widget->sizeHint().width() ), DEFAULT_HEIGHT );
     m_overlapButton->setOn( config->readBoolEntry( "Stay", true ) );
-    if( config->readEntry( "CurrentPane" ) == name ) showHidePage( id );
+    if( config->readEntry( "CurrentPane" ) == name ) showHideBrowser( id );
 }
 
 void
-BrowserBar::showHidePage( int index )
+BrowserBar::showHideBrowser( int index )
 {
-    //determine the target page (the widget to show/hide)
-    QWidget* const target = index != -1 ? m_pages[index] : m_currentPage;
+    //determine the target browser (the widget to show/hide)
+    QWidget* const target = index == -1 ? m_currentBrowser : m_browsers[index];
 
-    if( m_currentPage ) //then we need to hide the currentPage
+    if( m_currentBrowser ) //then we need to hide the currentBrowser
     {
-        m_currentPage->hide();
+        m_currentBrowser->hide();
         m_currentTab->setState( false );
     }
 
-    if( target == m_currentPage ) //then we need to set the bar to the closed state
+    if( target == m_currentBrowser ) //then we need to set the bar to the closed state
     {
-        m_currentPage = 0;
+        m_currentBrowser = 0;
         m_currentTab  = 0;
 
-        m_pageHolder->hide();
+        m_browserHolder->hide();
+        m_divider->hide();
 
-        #ifdef BROWSER_BAR_LEFT
-        m_pos = m_tabBar->width();
-        #else
-        m_pos = width() - m_tabBar->width() - 4;
-        #endif
+        //we only need to adjust widget sizes if the overlap button is on
+        //as otherwise playlist is right size already (see adjustWidgetSizes())
+        if( m_overlapButton->isOn() ) adjustWidgetSizes();
 
     } else if( target ) { //then open up target
 
-        const bool resizePage = !m_currentPage || !m_overlapButton->isOn();
+        const bool resize = !m_currentBrowser || !m_overlapButton->isOn();
 
-        m_currentPage = target;
+        m_currentBrowser = target;
         m_currentTab  = m_tabBar->tab( index );
 
-        //TODO if you always set baseSize to m_pos irrelevant of side you can avoid extra maths
-        //     no that won't work if the window size is changed, but you may be able to remove the tabBar->width() factor..
-        //TODO if you override width() and make it = width() - m_tabBar->width() would that make the code easier to read?
-
-        //set the page Holder size if appropriate
-        #ifdef BROWSER_BAR_LEFT
-        if( resizePage ) m_pos = m_currentPage->baseSize().width() + m_tabBar->width();
-        #else
-        if( resizePage ) m_pos = width() - m_currentPage->baseSize().width() - m_tabBar->width();
-        #endif
-
-        m_currentPage->show();
-        m_currentPage->setFocus();
+        //NOTE it is important that the divider is visible before adjust..() is called
+        //NOTE the showEvents are processed after we have adjustedSizes below
+        m_divider->show();
+        m_currentBrowser->show();
+        m_currentBrowser->setFocus();
         m_currentTab->setState( true );
-        m_pageHolder->show();
+        m_browserHolder->show();
+
+        if( resize )
+        {
+            //we need to resize the browserHolder
+
+            #ifdef BROWSER_BAR_LEFT
+            m_pos = m_currentBrowser->baseSize().width() + m_tabBar->width();
+            #else
+            m_pos = width() - m_currentBrowser->baseSize().width() - m_tabBar->width();
+            #endif
+
+            adjustWidgetSizes();
+        }
     }
-
-    //kdDebug() << m_pos << ", " << width() << endl;
-
-    adjustSize(); //m_pos has changed, we need to update geometries
 }
 
 QWidget*
-BrowserBar::page( const QString &widgetName )
+BrowserBar::browser( const QCString &widgetName ) const
 {
-    const PageIterator end = m_pages.constEnd();
-
-    for( PageIterator it = m_pages.constBegin(); it != end; ++it )
+    for( BrowserIterator it = m_browsers.constBegin(), end = m_browsers.constEnd(); it != end; ++it )
         if( widgetName == (*it)->name() )
             return *it;
 
@@ -367,21 +349,21 @@ BrowserBar::setFont( const QFont & )
 }
 
 void
-BrowserBar::autoClosePages() //SLOT
+BrowserBar::autoCloseBrowsers() //SLOT
 {
-    if( !m_overlapButton->isOn() && m_currentPage )
+    if( !m_overlapButton->isOn() && m_currentBrowser )
     {
-        showHidePage();
+        showHideBrowser();
     }
 }
 
-void
+inline void
 BrowserBar::toggleOverlap( bool on ) //SLOT
 {
     //cursor for divider should be qsplitter style when overlapped and resize like when not
     m_divider->setCursor( QCursor( on ? SplitHCursor : SizeHorCursor ) );
 
-    adjustSize();
+    adjustWidgetSizes();
 }
 
 

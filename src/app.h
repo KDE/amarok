@@ -96,14 +96,12 @@ class App : public KApplication, public EngineObserver
 
     private:
         void handleCliArgs();
-        void initPlaylistWindow();
         void initColors();
         void initConfigDialog();
         void initEngine();
         void initIpc();
         void initMixer();
         bool initMixerHW();
-        void initPlayerWidget();
         void readConfig();
         void restoreSession();
         void saveConfig();
@@ -112,8 +110,8 @@ class App : public KApplication, public EngineObserver
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWidget;
-        PlaylistWindow          *m_pPlaylistWindow;
-        Playlist      *m_pPlaylist;
+        PlaylistWindow      *m_pPlaylistWindow;
+        Playlist            *m_pPlaylist;
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
         amaroK::OSD         *m_pOSD;

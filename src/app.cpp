@@ -31,7 +31,7 @@ email                : markey@web.de
 #include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
-#include "socketserver.h" 
+#include "socketserver.h"
 
 #include <kaboutdata.h>          //initCliArgs()
 #include <kaction.h>
@@ -67,50 +67,44 @@ App::App()
         : KApplication()
         , m_pActionCollection( 0 )
         , m_pGlobalAccel( new KGlobalAccel( this ) )
+        , m_pPlayerWindow( 0 ) //will be created in applySettings()
         , m_pDcopHandler( new amaroK::DcopHandler )
         , m_pTray( 0 )
         , m_pOSD( new amaroK::OSD() )
         , m_sockfd( -1 )
         , m_showPlaylistWindow( false )
 {
-    //TODO readConfig and applySettings first
-    //     reason-> create Engine earlier, so we can restore session asap to get playlist loaded by
-    //     the time amaroK is visible
-
     setName( "amarok" );
     pApp = this; //global
 
+    KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
+    const bool bRestoreSession = args->count() == 0 || args->isSet( "enqueue" );
+
+    EngineController::instance()->attach( this ); //must be done before restoreSession()
+
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
-    new Vis::SocketServer( this );
-    initPlaylistWindow(); //must go first as it creates the action collection
-    initPlayerWidget();
+    m_pPlaylistWindow = new PlaylistWindow(); //creates the actionCollection()
+    m_pPlaylist       = m_pPlaylistWindow->playlist();
+    m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow, actionCollection() ); //shown state will be adjusted in applySettings()
+    (void)              new Vis::SocketServer( this );
 
-    //we monitor for close, hide and show events
-    m_pPlaylistWindow  ->installEventFilter( this );
-    m_pPlayerWidget->installEventFilter( this );
+    //load previous playlist
+    if( bRestoreSession && AmarokConfig::savePlaylist() ) m_pPlaylistwindow->restoreSessionPlaylist();
 
     readConfig();
-    initIpc();   //initializes Unix domain socket for loader communication, will also hide the splash
+    initIpc(); //initializes Unix domain socket for loader communication, will also hide the splash
 
     //after this point only analyzer pixmaps will be created
     QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
-    EngineController::instance()->attach( m_pPlayerWidget );
-    EngineController::instance()->attach( this );
-    m_pTray = new amaroK::TrayIcon( m_pPlayerWidget, actionCollection() ); //shown/hidden in applySettings()
+    m_pPlaylistWindow->show(); //TODO remember if we were in tray last exit, if so don't show!
 
-    applySettings();  //will load the engine
+    applySettings();  //show PlayerWidget, show TrayIcon etc.
 
     //restore session as long as the user isn't asking for stuff to be inserted into the playlist etc.
-    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-    if( args->count() == 0 || args->isSet( "enqueue" ) ) restoreSession(); //resume playback + load prev PLS
-
-    //TODO remember if we were in tray last exit, if so don't show!
-    m_pPlayerWidget->show(); //PlaylistWindow will sponaneously show if appropriate
-
-    //process some events so that the UI appears and things feel more responsive
-    kapp->processEvents();
+    if( bRestoreSession ) restoreSession();
+    else engineStateChanged( EngineBase::Empty ); //otherwise set a default interface
 
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 
@@ -144,13 +138,14 @@ App::~App()
     }
     else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
 
-    engine->stop(); //slotStop() is not necessary
+    engine->stop(); //don't call slotStop(), it's slow
+
+    delete m_pPlayerWidget;   //sets some XT keys
+    delete m_pPlaylistWindow; //sets some XT keys
+    delete m_pOSD;
 
     saveConfig();
 
-    delete m_pPlayerWidget;
-    delete m_pPlaylistWindow;
-    delete m_pOSD;
     // delete EngineController
     PluginManager::unload( engine );
 }
@@ -301,13 +296,40 @@ void App::initEngine()
 
     if ( !plugin ) {
         kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";
-        
+
         //when the engine specified in our config does not exist/work, try to invoke _any_ engine plugin
         plugin = PluginManager::createFromQuery( "[X-KDE-amaroK-plugintype] == 'engine'" );
 
         if ( !plugin )
-            kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
-        
+        {
+            class DummyEngine : public EngineBase
+            {
+                virtual void init( bool&, int, bool ) {}
+                virtual bool initMixer( bool ) { return false; }
+                virtual bool canDecode( const KURL&, mode_t, mode_t ) { return false; }
+                virtual long length() const { return 0; }
+                virtual long position() const { return 0; }
+                virtual EngineState state() const { return EngineBase::Empty; }
+                virtual bool isStream() const { return false; }
+                virtual const QObject* play( const KURL& ) { return 0; }
+                virtual void play() {}
+                virtual void stop() {}
+                virtual void pause() {}
+
+                virtual void seek( long ) {}
+                virtual void setVolume( int ) {}
+            };
+
+            //TODO the kdFatal() command crashes amaroK for some reason
+            //TODO decide whether or not to keep the dummy engine
+            //kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
+
+            EngineController::setEngine( new DummyEngine() );
+            AmarokConfig::setSoundSystem( "Dummy Engine" );
+
+            return;
+        }
+
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
@@ -361,32 +383,10 @@ void App::initIpc()
 }
 
 
-void App::initPlaylistWindow()
-{
-    m_pPlaylistWindow     = new PlaylistWindow( 0, "PlaylistWindow" );
-    m_pPlaylist = m_pPlaylistWindow->playlist();
-}
-
-
-void App::initPlayerWidget()
-{
-    m_pPlayerWidget = new PlayerWidget( 0, "PlayerWidget" );
-
-    connect( m_pPlayerWidget, SIGNAL( playlistToggled( bool ) ),
-             this,              SLOT( slotPlaylistShowHide() ) );
-    connect( m_pPlayerWidget, SIGNAL( effectsWindowActivated() ),
-             this,              SLOT( showEffectWidget() ) );
-}
-
-
 void App::restoreSession()
 {
     //here we restore the session
     //however, do note, this is always done, KDE session management is not involved
-
-    //load previous playlist
-    if ( AmarokConfig::savePlaylist() )
-        m_pPlaylistWindow->restoreSessionPlaylist();
 
     if ( AmarokConfig::resumePlayback() && !AmarokConfig::resumeTrack().isEmpty() )
     {
@@ -399,7 +399,7 @@ void App::restoreSession()
 
             //see if we also saved the time
             int seconds = AmarokConfig::resumeTime();
-            if ( seconds > 0 ) EngineController::instance()->engine()->seek( seconds * 1000 );
+            if ( seconds > 0 ) EngineController::engine()->seek( seconds * 1000 );
         }
     }
 }
@@ -420,15 +420,17 @@ void App::applySettings()
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
 
-    if ( AmarokConfig::hardwareMixer() != EngineController::engine()->isMixerHardware() )
-        AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
+    EngineController *const controller = EngineController::instance();
+    EngineBase *const engine = controller->engine();
 
-    EngineController::instance()->setVolume( AmarokConfig::masterVolume() );
-    EngineController::engine()->setRestoreEffects( AmarokConfig::rememberEffects() );
-    EngineController::engine()->setSoundOutput( AmarokConfig::soundOutput() );
-    EngineController::engine()->setXfadeLength( AmarokConfig::crossfade() ?
-                                                AmarokConfig::crossfadeLength() : 0 );
+    if ( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
+        AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
 
+    controller->setVolume( AmarokConfig::masterVolume() ); //FIXME this shouldn't be here!
+    engine->setRestoreEffects( AmarokConfig::rememberEffects() );
+    engine()->setSoundOutput( AmarokConfig::soundOutput() );
+    engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+    
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont( AmarokConfig::osdFont() );
     m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
@@ -438,18 +440,46 @@ void App::applySettings()
     m_pOSD->setScreen( AmarokConfig::osdScreen() );
     m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
 
-    m_pPlayerWidget->createAnalyzer( false );
-    m_pPlaylistWindow->setFont( AmarokConfig::useCustomFonts() ?
-                            AmarokConfig::playlistWindowFont() : QApplication::font() );
+    if( AmarokConfig::showPlayerWindow() )
+    {
+        if( !m_pPlayerWidget )
+        {
+            m_pPlayerWidget = new PlayerWidget( m_pPlaylistWindow, "PlayerWidget", Qt::WType_Dialog );
 
-    QFont font = m_pPlayerWidget->font();
-    font.setFamily( AmarokConfig::useCustomFonts() ?
-                    AmarokConfig::playerWidgetFont().family() : QApplication::font().family() );
-    m_pPlayerWidget->setFont( font );
-    m_pPlayerWidget->update(); //FIXME doesn't update the scroller, we require the metaBundle to do that, wait for my metaBundle modifications..
+            m_pPlayerWidget->move( AmarokConfig::playerPos() );
+            m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
 
-    //TODO delete when not in use
-    m_pTray->setShown( AmarokConfig::showTrayIcon() );
+            m_pPlayerWidget->createAnalyzer( false );
+
+            m_pPlaylistWindow->installEventFilter( this );
+            m_pPlayerWidget->installEventFilter( this );
+
+            connect( m_pPlayerWidget, SIGNAL(playlistToggled( bool )),  SLOT(slotPlaylistShowHide()) );
+            connect( m_pPlayerWidget, SIGNAL(effectsWindowActivated()), SLOT(showEffectWidget()) );
+
+            m_pPlayerWidget->show();
+        }
+
+        QFont font = m_pPlayerWidget->font();
+        font.setFamily( AmarokConfig::useCustomFonts() ?
+                        AmarokConfig::playerWidgetFont().family() : QApplication::font().family() );
+        m_pPlayerWidget->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
+        m_pPlayerWidget->update(); //FIXME doesn't update the scroller
+
+    } else if( m_pPlayerWidget ) {
+
+        m_pPlaylistWindow->removeEventFilter( this );
+        m_pPlayerWidget->removeEventFilter( this );
+
+        delete m_pPlayerWidget;
+        m_pPlayerWidget = 0;
+    }
+
+
+    const QFont font = AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
+    m_pPlaylistWindow->setFont( font );
+
+    m_pTray->setShown( AmarokConfig::showTrayIcon() ); //TODO delete when not in use
 
     setupColors();
 
@@ -459,13 +489,9 @@ void App::applySettings()
 
 void App::saveConfig()
 {
-    AmarokConfig::setPlaylistWindowPos     ( m_pPlaylistWindow->pos() );
-    AmarokConfig::setPlaylistWindowSize    ( m_pPlaylistWindow->size() );
-    AmarokConfig::setPlaylistWindowEnabled ( m_showPlaylistWindow );
-    AmarokConfig::setMasterVolume      ( EngineController::instance()->engine()->volume() );
-    AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
-    AmarokConfig::setVersion           ( APP_VERSION );
-    m_pPlaylistWindow->saveConfig();
+    AmarokConfig::setMasterVolume( EngineController::engine()->volume() ); //engineController should set when volume is changed
+    AmarokConfig::setVersion( APP_VERSION );
+    AmarokConfig::setPlaylistWindowEnabled( m_showPlaylistWindow ); //TODO should be set when toggled no?
 
     AmarokConfig::writeConfig();
 }
@@ -479,15 +505,16 @@ void App::readConfig()
     m_artsNeedsRestart = AmarokConfig::version() != APP_VERSION;
 
     initEngine();
-    EngineBase *engine = EngineController::instance()->engine();
+
+    EngineController* const ec = EngineController::instance();
+    EngineBase* const engine = ec->engine();
+
     AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+    ec->setVolume( AmarokConfig::masterVolume() );
 
-    m_pPlayerWidget->move  ( AmarokConfig::playerPos() );
-    m_pPlaylistWindow  ->move  ( AmarokConfig::playlistWindowPos() );
-    m_pPlaylistWindow  ->resize( AmarokConfig::playlistWindowSize() );
-
+    m_pPlaylistWindow->move( AmarokConfig::playlistWindowPos() );
+    m_pPlaylistWindow->resize( AmarokConfig::playlistWindowSize() );
     m_showPlaylistWindow = AmarokConfig::playlistWindowEnabled();
-    m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow );
 
     // Actions ==========
     m_pGlobalAccel->insert( "add", i18n( "Add Location" ), 0, KKey("WIN+a"), 0,
@@ -495,15 +522,15 @@ void App::readConfig()
     m_pGlobalAccel->insert( "show", i18n( "Show/Hide the Playlist" ), 0, KKey("WIN+p"), 0,
                             this, SLOT( slotPlaylistShowHide() ), true, true );
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
-                            EngineController::instance(), SLOT( play() ), true, true );
+                            ec, SLOT( play() ), true, true );
     m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
-                            EngineController::instance(), SLOT( pause() ), true, true );
+                            ec, SLOT( pause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
-                            EngineController::instance(), SLOT( stop() ), true, true );
+                            ec, SLOT( stop() ), true, true );
     m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0,
-                            EngineController::instance(), SLOT( next() ), true, true );
+                            ec, SLOT( next() ), true, true );
     m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0,
-                            EngineController::instance(), SLOT( previous() ), true, true );
+                            ec, SLOT( previous() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             m_pOSD, SLOT( showTrack() ), true, true );
     m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0,
@@ -515,9 +542,7 @@ void App::readConfig()
     m_pGlobalAccel->readSettings( kapp->config() );
     m_pGlobalAccel->updateConnections();
 
-    //FIXME use a global actionCollection (perhaps even at global scope)
     actionCollection()->readShortcutSettings( QString::null, kapp->config() );
-    m_pPlaylistWindow->actionCollection()->readShortcutSettings( QString::null, kapp->config() );
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -525,19 +550,35 @@ void App::readConfig()
 
 #include <qpalette.h>
 #include <kglobalsettings.h>
+#include <qobjectlist.h>
 
 void App::setupColors()
 {
-    //FIXME you have to fix the XT stuff for this, we need an enum (and preferably, hard-coded amarok-defaults.. or maybe not)
+    //TODO move to PlaylistWindow?
 
     if( AmarokConfig::schemeKDE() )
     {
-        //TODO this sucks a bit, perhaps just iterate over all children calling "unsetPalette"?
-        QColorGroup group = QApplication::palette().active();
-        group.setColor( QColorGroup::BrightText, group.highlight() ); //GlowColor
-        group.setColor( QColorGroup::Midlight, group.mid() ); //column separator
-        m_pPlaylistWindow->setColors( QPalette( group, group, group ), KGlobalSettings::alternateBackgroundColor() );
+        QObject* const browserBar = m_pPlaylistWindow->child( "BrowserBar" );
+        QObjectList* const list = browserBar->queryList( "QWidget" );
+        list->prepend( browserBar );
 
+        for( QObject *o = list->first(); o; o = list->next() )
+        {
+            //We have to unset the palette due to BrowserWin::setColors() setting
+            //some widgets' palettes, and thus they won't propagate the changes
+
+            static_cast<QWidget*>(o)->unsetPalette();
+
+            if( o->inherits( "KListView" ) )
+            {
+                //TODO find out how KListView alternate colors are updated when a
+                //     control center colour change is made
+
+                static_cast<KListView*>(o)->setAlternateBackground( KGlobalSettings::alternateBackgroundColor() );
+            }
+        }
+
+        delete list;
     }
     else if( AmarokConfig::schemeAmarok() )
     {
@@ -555,21 +596,15 @@ void App::setupColors()
          *instead customise PlaylistWindow::setColors();
          */
         //group.setColor( QColorGroup::Foreground, Qt::white );
-        
+
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
-        group.setColor( QColorGroup::Background, bg.dark( 115 ) );
+        group.setColor( QColorGroup::Background, bg.light(120) );
 
         group.setColor( QColorGroup::Highlight, Qt::white );
         group.setColor( QColorGroup::HighlightedText, bg );
         group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
-/*
-        group.setColor( QColorGroup::Light,    Qt::red );
-        group.setColor( QColorGroup::Midlight, Qt::red );
-        group.setColor( QColorGroup::Mid,      Qt::red );
-        group.setColor( QColorGroup::Dark,     Qt::red );
-        group.setColor( QColorGroup::Shadow,   Qt::red );
-*/
+
         int h,s,v;
         bgAlt.getHsv( &h, &s, &v );
         group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) ); //column separator in playlist
@@ -632,6 +667,8 @@ bool App::eventFilter( QObject *o, QEvent *e )
     //as most of this stuff is cleverly crafted and has purpose! Comments aren't always thorough as
     //it tough explaining what is going on! Thanks.
 
+    //NOTE this eventFilter is only processed if the AmarokConfig::showPlayerWindow() is true
+
     if( e->type() == QEvent::Close && o == m_pPlaylistWindow && m_pPlayerWidget->isShown() )
     {
         m_pPlayerWidget->setPlaylistShown( m_showPlaylistWindow = false );
@@ -681,16 +718,7 @@ bool App::eventFilter( QObject *o, QEvent *e )
             m_pPlayerWidget->setPlaylistShown( true );
         }
     }
-    /*
-    //The idea here is to raise both windows when one raises so that both get shown. Unfortunately
-    //there just isn't a simple solution that doesn't cause breakage in other areas. Anything more complex
-    //than this would probably be too much effort to maintain. I'll leave it commented though in case
-    //a future developer has more wisdom than me. IMO if we can get the systray to do it, that'll be enough
-    else if( e->type() == QEvent::WindowActivate )
-    {
-        (o == m_pPlayerWidget ? (QWidget*)m_pPlaylistWindow : (QWidget*)m_pPlayerWidget)->raise();
-    }
-    */
+
     return FALSE;
 }
 
@@ -702,7 +730,6 @@ void App::engineStateChanged( EngineBase::EngineState state )
         case EngineBase::Empty:
         case EngineBase::Idle:
             m_pDcopHandler->setNowPlaying( QString::null );
-            //QToolTip::remove( m_pTray );
             QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
             break;
         case EngineBase::Paused: // shut up GCC
@@ -714,12 +741,8 @@ void App::engineStateChanged( EngineBase::EngineState state )
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    QString prettyTitle = bundle.prettyTitle();
-
     m_pOSD->showTrack( bundle );
-    m_pDcopHandler->setNowPlaying( prettyTitle );
-    //QToolTip::remove( m_pTray );
-    //QToolTip::add( m_pTray, prettyTitle );
+    m_pDcopHandler->setNowPlaying( bundle.prettyTitle() );
     PlaylistToolTip::add( m_pTray, bundle );
 }
 
@@ -728,6 +751,8 @@ void App::slotPlaylistShowHide()
 {
     //show/hide the playlist global shortcut slot
     //bahavior depends on state of the PlayerWidget and various minimization states
+
+    if( !AmarokConfig::showPlayerWindow() ) { m_pPlaylistWindow->setShown( true ); return; }
 
     KWin::WindowInfo info = KWin::windowInfo( m_pPlaylistWindow->winId() );
     bool isMinimized = info.valid() && info.isMinimized();
@@ -759,10 +784,13 @@ void App::showEffectWidget()
     {
         EffectWidget::self = new EffectWidget();
 
-        connect( m_pPlayerWidget,    SIGNAL( destroyed() ),
-                 EffectWidget::self,   SLOT( deleteLater() ) );
-        connect( EffectWidget::self, SIGNAL( destroyed() ),
-                 m_pPlayerWidget,      SLOT( setEffectsWindowShown() ) ); //defaults to false
+        if( m_pPlayerWidget )
+        {
+            connect( m_pPlayerWidget,    SIGNAL( destroyed() ),
+                     EffectWidget::self,   SLOT( deleteLater() ) );
+            connect( EffectWidget::self, SIGNAL( destroyed() ),
+                     m_pPlayerWidget,      SLOT( setEffectsWindowShown() ) ); //defaults to false
+        }
 
         EffectWidget::self->show();
 
@@ -771,7 +799,7 @@ void App::showEffectWidget()
     }
     else
     {
-        m_pPlayerWidget->setEffectsWindowShown( false );
+        if( m_pPlayerWidget ) m_pPlayerWidget->setEffectsWindowShown( false );
         delete EffectWidget::self;
     }
 }
@@ -781,7 +809,7 @@ void App::slotShowOptions()
     if( !KConfigDialog::showDialog( "settings" ) )
     {
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
-        KConfigDialog* dialog = new AmarokConfigDialog( m_pPlayerWidget, "settings", AmarokConfig::self() );
+        KConfigDialog* dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
 
         connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
 
@@ -808,6 +836,7 @@ void App::slotIncreaseVolume()
 
 void App::slotDecreaseVolume()
 {
+    //TODO move these two slots to the engineController
     EngineController *controller = EngineController::instance();
     controller->setVolume( controller->engine()->volume() - 100 / 25 );
     m_pOSD->showVolume();
