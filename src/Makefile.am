@@ -115,7 +115,8 @@ config_DATA = \
     amarokrc
 
 xdg_apps_DATA = \
-    amarok.desktop
+    amarok.desktop \
+    amarokapp.desktop
 
 kde_servicetypes_DATA = \
     amarok_plugin.desktop
