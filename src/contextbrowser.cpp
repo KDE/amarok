@@ -1374,7 +1374,7 @@ void ContextBrowser::setStyleSheet()
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
     const QString file = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
 
-    if ( QFile::exists( file ) && themeName != "default" )
+    if ( themeName != "default" && QFile::exists( file ) )
         setStyleSheet_ExternalStyle( m_styleSheet, themeName );
     else
         setStyleSheet_Default( m_styleSheet );
