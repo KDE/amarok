@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
+  ADD: Show total length of selected songs in statusbar. (BR 90284)
   ADD: Context-Browser now caches the tab widgets. Patch from Matias
        Costa <mcc3@alu.um.es>. (BR 95999)
   FIX: RAND and REP buttons were always enabled at startup. (BR 95861)
