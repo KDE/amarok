@@ -22,6 +22,9 @@ MID-TERM:
 	       <larson> I think this is really weird. When I drag something I expect that someting to be
 			added or opened in the target. Not removed from the sender.
                (RFC: is this still appropriate or would it be misleading?)
+	       <muesli> imho, it's misleading and not hid-compatible. i would rather
+			expect that file to be copied to the browser's current
+			directory.
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
