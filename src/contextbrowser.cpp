@@ -541,26 +541,30 @@ void ContextBrowser::showCurrentTrack() //SLOT
     QString menu = "<div class='menu'>"
                     "<a href='show:home'>%1</a>"
                     "&nbsp;&nbsp;"
-                    "<a>%3</a>"
+                    "<a>%2</a>"
                    "</div>";
 
     browser->write( menu.arg( i18n("Home") ).arg( EngineController::engine()->isStream() ? i18n("Current Stream") : i18n("Current Track") ) );
 
     if ( !m_db->isFileInCollection( m_currentTrack->url().path() ) )
     {
-        browser->write( "<div><br>");
-        browser->write( i18n( "This song is not in your current collection. If you like further contextual information about this song, add it to your collection!" )
-                        + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to change your collection setup." ) + "</a>" );
-        browser->write( "<br><br></div>");
+        browser->write( "<div style='padding: 1em 0.5em 2em 0.5em'>");
+        browser->write(   i18n("If you would like to see contextual information about this track, "
+                               "you must add it to your Collection.") );
+        browser->write(  "&nbsp;"
+                         "<a href='show:collectionSetup'>" );
+        browser->write(    i18n( "Click here to change your Collection setup" ) );
+        browser->write(  "</a>."
+                        "</div>" );
     }
 
     // <Current Track Information>
-    browser->write( "<div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Currently playing:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+    browser->write( "<div class='rbcontent'>"
+                     "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                      "<tr><td class='head'>&nbsp;" + i18n( "Currently Playing:" ) + "</td></tr>"
+                      "<tr><td height='1' bgcolor='black'></td></tr>"
+                     "</table>"
+                     "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT album.name, artist.name, datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
                             "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
@@ -576,33 +580,39 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                       "<br>%3"
                                      "</td>"
                                      "<td valign='top' align='right' width='10%'>"
-                                      "<a title='%10' href='musicbrainz:%4 @@@ %5'><img src='%6'></a>"
+                                      "<a title='%4' href='musicbrainz:%5 @@@ %6'><img src='%7'></a>"
                                      "</td>"
                                     "</tr>"
                                    "</table>"
                                    "<table width='100%'>"
                                     "<tr>"
                                      "<td width='20%'>"
-                                      "<a class='menu' href='fetchcover:%7 @@@ %8'>"
-                                       "<img hspace='2' src='%9'>"
+                                      "<a class='menu' href='fetchcover:%8 @@@ %9'>"
+                                       "<img hspace='2' src='%10'>"
                                       "</a>"
                                      "</td>"
-                                     "<td valign='bottom' align='right' width='80%'>" +
-                                    i18n( "Track played 1 time", "Track played %n times", values[4].toInt() ) + "<br>" +
-                                    i18n( "Score: %1" ).arg( values[5] ) + "<br>" +
-                                    i18n( "Last play: %1" ).arg( values[3].left( values[3].length() - 3 ) ) + "<br>" +
-                                    i18n( "First play: %1" ).arg( values[2].left( values[2].length() - 3 ) ) + "</i></td></tr>" )
+                                     "<td valign='bottom' align='right' width='80%'>"
+                                      "%11<br>"
+                                      "%12<br>"
+                                      "%13<br>"
+                                      "%14<br>"
+                                     "</td>"
+                                    "</tr>" )
                          .args( QStringList()
                                 << escapeHTML( m_currentTrack->artist() )
                                 << escapeHTML( m_currentTrack->title() )
                                 << escapeHTML( m_currentTrack->album() )
+                                << i18n( "Look up this track at musicbrainz.com" )
                                 << escapeHTMLAttr( m_db->escapeString( m_currentTrack->artist() ) )
                                 << escapeHTMLAttr( m_db->escapeString( m_currentTrack->album() ) )
                                 << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
                                 << escapeHTMLAttr( m_currentTrack->artist() )
                                 << escapeHTMLAttr( m_currentTrack->album() )
                                 << escapeHTMLAttr( m_db->getImageForAlbum( values[1], values[0] ) )
-                                << i18n( "Look up this track at musicbrainz.com" )
+                                << i18n( "Track played once", "Track played %n times", values[4].toInt() )
+                                << i18n( "Score: %1" ).arg( values[5] )
+                                << i18n( "Last play: %1" ).arg( values[3].left( values[3].length() - 3 ) )
+                                << i18n( "First play: %1" ).arg( values[2].left( values[2].length() - 3 ) )
                                 )
                          );
     else
@@ -651,7 +661,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         browser->write( "<br><div class='rbcontent'>" );
         browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite tracks by this artist:" ) + "</td></tr>" );
+        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite Tracks By This Artist:" ) + "</td></tr>" );
         browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -683,7 +693,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             browser->write( "<br><div class='rbcontent'>"
                             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                            "<tr><td class='head'>&nbsp;" + i18n( "Tracks on this album:" ) + "</td></tr>"
+                            "<tr><td class='head'>&nbsp;" + i18n( "Tracks On This Album:" ) + "</td></tr>"
                             "<tr><td height='1' bgcolor='black'></td></tr>"
                             "</table>"
                             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -713,7 +723,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         browser->write( "<br><div class='rbcontent'>" );
         browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Albums by this artist:" ) + "</td></tr>" );
+        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Albums By This Artist:" ) + "</td></tr>" );
         browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
@@ -778,7 +788,7 @@ void ContextBrowser::setStyleSheet()
     m_styleSheet  = QString( "body { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
 
-    m_styleSheet += QString( ".menu a { font-weight: bold; }" );
+    m_styleSheet += QString( ".menu a { padding: 0.5em 0; font-weight: bold; }" );
 
     //used in the currentlyPlaying block
     //m_styleSheet += QString( ".album { font-weight: bold; }" );
