@@ -3,12 +3,17 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #84 being the highest available (take this one for your next bug and increase here)
+           #86 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
 
+    * add: #85 <muesli> make searchbrowser search the collection, too -->muesli
+
+    * fix: #84 <muesli> fix the broken SQLite check (doesnt work @berkus,muesli)
+
     * fix: #83 <markey> take care of Qt 3.2 compatibility
+               <muesli> works perfectly with Qt 3.2.3, here
 
     * fix: #82 about dialog makes toolbar go crazy
 
@@ -62,8 +67,6 @@ MID-TERM:
            column(0)
 
     * add: "show playlist" to the right click menu, redundant but necessary
-
-    * add: <muesli> background chooser
 
     * add: more KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
            reduce arts buffer to ~20ms for much better analyzers etc.
