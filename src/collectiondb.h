@@ -155,7 +155,7 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList similarArtists( const QString &artist, uint count );
 
         //album methods
-        void checkCompilations( const QString &path, DbConnection *conn = NULL );
+        void checkCompilations( const QString &path, const bool temporary = false, DbConnection *conn = NULL );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
 
         //list methods
