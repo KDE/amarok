@@ -38,8 +38,6 @@ SHORT-TERM (URGENT):
     * fix: <grue> with focus-follows-mouse, both player window and playlist
            rise to foreground when you point on the player <mxcl> should now be fixed, please check
 
-    * fix: <grue> when adding files from commandline they get sorted in reversed order
-
     * fix: <grue> ctrl-c for copying current title seems broken
 
     * fix: opening hidden directories is impossible in filebrowser
