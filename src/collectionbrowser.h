@@ -110,6 +110,7 @@ class CollectionView : public KListView
         void setupDirs();
         void scan();
         void scanMonitor();
+        void scanStarted();
         void scanDone( bool changed = true );
 
         void cacheItem( QListViewItem* item );

@@ -239,6 +239,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         }
 
         m_insertdb = new CollectionDB();
+        connect( CollectionDB::emitter(), SIGNAL( scanStarted() ),
+                 this,                      SLOT( scanStarted() ) );
         connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ),
                  this,                      SLOT( scanDone( bool ) ) );
 
@@ -321,13 +323,9 @@ CollectionView::scan()  //SLOT
         //FIXME: this should be done by CollectionDB, too
         m_insertdb->dropTables();
         this->clear();
-//        emit CollectionDB::emitter()->scanDone( false );
     }
     else if ( !m_isScanning )
     {
-        m_isScanning = true;
-        m_parent->m_scanAction->setEnabled( false );
-
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                           AmarokConfig::importPlaylists() );
 
@@ -340,10 +338,7 @@ void
 CollectionView::scanMonitor()  //SLOT
 {
     if ( !m_isScanning && AmarokConfig::monitorChanges() )
-    {
-        m_parent->m_scanAction->setEnabled( false );
         m_insertdb->scanModifiedDirs( AmarokConfig::scanRecursively(), AmarokConfig::importPlaylists() );
-    }
 }
 
 
@@ -379,7 +374,6 @@ CollectionView::renderView( )  //SLOT
         qb.sortBy( m_cat1, QueryBuilder::valName );
         if ( m_cat2 != CollectionBrowser::IdNone ) qb.sortBy( m_cat2, QueryBuilder::valName );
         if ( m_cat3 != CollectionBrowser::IdNone ) qb.sortBy( m_cat3, QueryBuilder::valName );
-
         qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter, QueryBuilder::modeNormal );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
@@ -479,6 +473,14 @@ CollectionView::renderView( )  //SLOT
 
 
 void
+CollectionView::scanStarted() // SLOT
+{
+    m_parent->m_scanAction->setEnabled( false );
+    m_isScanning = true;
+}
+
+
+void
 CollectionView::scanDone( bool changed ) //SLOT
 {
     if ( changed )
@@ -522,6 +524,7 @@ CollectionView::scanDone( bool changed ) //SLOT
     m_isScanning = false;
 
     amaroK::StatusBar::instance()->clear();
+    m_progressBox->hide();
 }
 
 
@@ -933,26 +936,22 @@ CollectionView::customEvent( QCustomEvent *e )
 {
     CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
 
-    if ( p ) {
-        switch ( p->state() ) {
-        case CollectionReader::ProgressEvent::Start:
-            m_progress->setProgress( 0 );
-            m_progressBox->show();
-            m_isScanning = true;
-            break;
-
-        case CollectionReader::ProgressEvent::Stop:
-            m_progressBox->hide();
-            break;
-
-        case CollectionReader::ProgressEvent::Total:
-            m_progress->setTotalSteps( p->value() );
-            break;
-
-        case CollectionReader::ProgressEvent::Progress:
-            m_progress->setProgress( p->value() );
+    if ( p )
+        switch ( p->state() )
+        {
+            case CollectionReader::ProgressEvent::Start:
+                // dispaly progress bar
+                m_progress->setProgress( 0 );
+                m_progressBox->show();
+                break;
+            
+            case CollectionReader::ProgressEvent::Total:
+                m_progress->setTotalSteps( p->value() );
+                break;
+    
+            case CollectionReader::ProgressEvent::Progress:
+                m_progress->setProgress( p->value() );
         }
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

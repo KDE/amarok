@@ -207,7 +207,31 @@ CollectionReader::doJob()
 {
     m_stop = false;
 
-    QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
+    if ( m_incremental )
+    {
+        QStringList values;
+        struct stat statBuf;
+
+        values = m_parent->query( "SELECT dir, changedate FROM directories;" );
+    
+        for ( uint i = 0; i < values.count(); i += 2 )
+        {
+            if ( stat( values[i].local8Bit(), &statBuf ) == 0 )
+            {
+                if ( QString::number( (long)statBuf.st_mtime ) != values[i + 1] )
+                {
+                    m_folders << values[i];
+                    kdDebug() << "Collection dir changed: " << values[i] << endl;
+                }
+            }
+            else
+            {
+                // this folder has been removed
+                m_folders << values[i];
+                kdDebug() << "Collection dir removed: " << values[i] << endl;
+            }
+        }
+    }
 
     const QString logPath = KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "collection_scan.log";
     std::ofstream log(  QFile::encodeName( logPath ) );
@@ -218,6 +242,9 @@ CollectionReader::doJob()
     if ( !m_incremental )
         m_parent->purgeDirCache();
 
+    if ( !m_folders.empty() )
+        QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
+  
     QStringList entries;
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
@@ -230,12 +257,13 @@ CollectionReader::doJob()
         readDir( dir, entries );
     }
 
-    if ( !entries.empty() ) {
+    if ( !entries.empty() )
+    {
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
         readTags( entries, log );
     }
 
-    QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Stop ) );
+    QApplication::postEvent( m_parent, new ProgressEvent( ProgressEvent::Stop, entries.count() ) );
 
     log.close();
     return !entries.empty();

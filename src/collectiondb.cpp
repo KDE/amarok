@@ -912,11 +912,7 @@ CollectionDB::createTables( bool temporary )
                     "bitrate INTEGER,"
                     "length INTEGER,"
                     "samplerate INTEGER,"
-                    "sampler BOOL" 
-#ifdef USE_MYSQL
-                    ", FULLTEXT ( title )"
-#endif
-                    " );" )
+                    "sampler BOOL );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -1061,12 +1057,25 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
 {
     kdDebug() << k_funcinfo << endl;
 
-    emit s_emitter->scanStarted();
     if ( !folders.isEmpty() )
+    {
+        emit s_emitter->scanStarted();
+
         m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
                                                 recursively, importPlaylists, false ) );
-    else
-        emit s_emitter->scanDone( false );
+    }
+}
+
+
+void
+CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
+{
+    if ( PlaylistBrowser::instance() )
+    {
+        emit s_emitter->scanStarted();
+        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
+                                                recursively, importPlaylists, true ) );
+    }
 }
 
 
@@ -1102,42 +1111,6 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 {
     const MetaBundle bundle = MetaBundle( url );
     updateTags( url, bundle, updateView );
-}
-
-
-void
-CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
-{
-    emit s_emitter->scanStarted();
-
-    QStringList folders;
-    struct stat statBuf;
-
-    query( "SELECT dir, changedate FROM directories;" );
-
-    for ( uint i = 0; i < m_values.count(); i = i + 2 )
-    {
-        if ( stat( m_values[i].local8Bit(), &statBuf ) == 0 )
-        {
-            if ( QString::number( (long)statBuf.st_mtime ) != m_values[i + 1] )
-            {
-                folders << m_values[i];
-                kdDebug() << "Collection dir changed: " << m_values[i] << endl;
-            }
-        }
-        else
-        {
-            // this folder has been removed
-            folders << m_values[i];
-            kdDebug() << "Collection dir removed: " << m_values[i] << endl;
-        }
-    }
-
-    if ( !folders.isEmpty() )
-        m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
-                                                recursively, importPlaylists, true ) );
-    else
-        emit s_emitter->scanDone( false );
 }
 
 
@@ -1363,11 +1336,16 @@ CollectionDB::relatedArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
-    {
-        kdDebug() << k_funcinfo << endl;
-        emit s_emitter->scanDone( true );
-    }
+//    kdDebug() << k_funcinfo << endl;
+    CollectionReader::ProgressEvent* p = dynamic_cast<CollectionReader::ProgressEvent*>( e );
+
+    if ( p )
+        switch ( p->state() )
+        {
+            case CollectionReader::ProgressEvent::Stop:
+                emit s_emitter->scanDone( p->value() > 0 );
+                break;
+        }
 }
 
 
