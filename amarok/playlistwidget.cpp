@@ -1,9 +1,9 @@
 /***************************************************************************
-                         playlistwidget.cpp  -  description
-                            -------------------
-   begin                : Don Dez 5 2002
-   copyright            : (C) 2002 by Mark Kretschmann
-   email                :
+                        playlistwidget.cpp  -  description
+                           -------------------
+  begin                : Don Dez 5 2002
+  copyright            : (C) 2002 by Mark Kretschmann
+  email                :
 ***************************************************************************/
 
 /***************************************************************************
@@ -22,13 +22,16 @@
 #include "browserwidget.h"
 #include "playlistitem.h"
 
+#include <qbrush.h>
 #include <qcolor.h>
 #include <qcursor.h>
 #include <qevent.h>
 #include <qheader.h>
 #include <qmessagebox.h>
+#include <qpainter.h>
 #include <qpoint.h>
 #include <qpopupmenu.h>
+#include <qrect.h>
 #include <qstringlist.h>
 #include <qtimer.h>
 #include <qvaluelist.h>
@@ -50,26 +53,28 @@
 PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) :
         KListView( parent, name ),
         m_GlowCount( 100 ),
-        m_GlowAdd( 5 ),
-        m_pMarkerItem( NULL ),
-        m_pMarkerItemPrev( NULL )
+        m_GlowAdd( 5 )
 {
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
     setPaletteBackgroundColor( pApp->m_bgColor );
     setShowSortIndicator( true );
+    setDropVisualizer( false );      // we handle the drawing for ourselves
+    setDropVisualizerWidth( 3 );
 
-    addColumn( i18n("Trackname"), 280 );
-    addColumn( i18n("Title"), 200 );
-    addColumn( i18n("Album"), 100 );
-    addColumn( i18n("Artist"), 100 );
-    addColumn( i18n("Year"), 40 );
-    addColumn( i18n("Comment"), 80 );
-    addColumn( i18n("Genre"), 80 );
-    addColumn( i18n("Directory"), 80 );
+    addColumn( i18n( "Trackname" ), 280 );
+    addColumn( i18n( "Title" ), 200 );
+    addColumn( i18n( "Album" ), 100 );
+    addColumn( i18n( "Artist" ), 100 );
+    addColumn( i18n( "Year" ), 40 );
+    addColumn( i18n( "Comment" ), 80 );
+    addColumn( i18n( "Genre" ), 80 );
+    addColumn( i18n( "Directory" ), 80 );
 
     setSorting( -1 );
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
+
+    connect( this, SIGNAL( contentsMoving( int, int ) ), this, SLOT( slotEraseMarker() ) );
 
     setCurrentTrack( NULL );
     m_GlowColor.setRgb( 0xff, 0x40, 0x40 );
@@ -92,97 +97,89 @@ PlaylistWidget::~PlaylistWidget()
 void PlaylistWidget::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     e->acceptAction();
-    m_pMarkerItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
 
-    if ( m_pMarkerItem != m_pMarkerItemPrev )
+    QListViewItem *parent;
+    QListViewItem *after;
+    findDrop( e->pos(), parent, after );
+
+    QRect tmpRect = drawDropVisualizer( 0, parent, after );
+
+    if ( tmpRect != m_marker )
     {
-        eraseMarker();
-
-        if ( m_pMarkerItem != NULL )
-        {
-            m_pMarkerItem->setMarker( true );
-            repaintItem( m_pMarkerItem );
-        }
-
-        m_pMarkerItemPrev = m_pMarkerItem;
+        slotEraseMarker();
+        m_marker = tmpRect;
+        viewport() ->repaint( tmpRect );
     }
 }
 
 
 void PlaylistWidget::contentsDragLeaveEvent( QDragLeaveEvent* )
 {
-    eraseMarker();
+    slotEraseMarker();
 }
 
 
 void PlaylistWidget::contentsDropEvent( QDropEvent* e )
 {
-    eraseMarker();
-    m_dropRecursionCounter = 0;
+    slotEraseMarker();
 
-    if ( pApp->m_optDropMode == "Recursively" )
-        m_dropRecursively = true;
-    else
-        m_dropRecursively = false;
+    QListViewItem *parent, *after;
+    findDrop( e->pos(), parent, after );
 
-    KURL::List urlList;
-
-    if ( e->source() == NULL )                     // dragging from outside amarok
+    if ( e->source() == viewport() )
     {
-        if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
-            return ;
-
-        setUpdatesEnabled( false );
-        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
-        playlistDrop( urlList );
+        movableDropEvent( parent, after );
     }
     else
     {
-        PlaylistItem *srcItem, *newItem;
+        m_dropRecursionCounter = 0;
 
-        m_pDropCurrentItem = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
-
-        if ( !m_pDropCurrentItem )
-            m_pDropCurrentItem = ( PlaylistItem* ) 1;
-
-        if ( e->source()->parent() == this )
-            srcItem = static_cast<PlaylistItem*>( firstChild() );
+        if ( pApp->m_optDropMode == "Recursively" )
+            m_dropRecursively = true;
         else
+            m_dropRecursively = false;
+
+        KURL::List urlList;
+
+        if ( e->source() == NULL )                      // dragging from outside amarok
+        {
+            if ( !KURLDrag::decode( e, urlList ) || urlList.isEmpty() )
+                return ;
+
+            m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
+            playlistDrop( urlList );
+        }
+        else
+        {
+            PlaylistItem *srcItem, *newItem;
+            m_pDropCurrentItem = static_cast<PlaylistItem*>( after );
+
             srcItem = static_cast<PlaylistItem*>( pApp->m_pBrowserWin->m_pBrowserWidget->firstChild() );
+            bool containsDirs = false;
 
-        bool containsDirs = false;
-
-        setUpdatesEnabled( false );
-
-        while ( srcItem != NULL )
-        {
-            newItem = static_cast<PlaylistItem*>( srcItem->nextSibling() );
-
-            if ( srcItem->isSelected() )
+            while ( srcItem != NULL )
             {
-                urlList.append( srcItem->url() );
+                newItem = static_cast<PlaylistItem*>( srcItem->nextSibling() );
 
-                if ( srcItem->isDir() )
-                    containsDirs = true;
-                // if drag is inside this widget, do a move operation
-                if ( e->source()->parent() == this )
-                    delete srcItem;
+                if ( srcItem->isSelected() )
+                {
+                    urlList.append( srcItem->url() );
+
+                    if ( srcItem->isDir() )
+                        containsDirs = true;
+                }
+                srcItem = newItem;
             }
-            srcItem = newItem;
-        }
-        if ( containsDirs && pApp->m_optDropMode == "Ask" )
-        {
-            QPopupMenu popup( this );
-            popup.insertItem( i18n("Add Recursively"), this, SLOT( slotSetRecursive() ) );
-            popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
-        }
+            if ( containsDirs && pApp->m_optDropMode == "Ask" )
+            {
+                QPopupMenu popup( this );
+                popup.insertItem( i18n( "Add Recursively" ), this, SLOT( slotSetRecursive() ) );
+                popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
+            }
 
-        playlistDrop( urlList );
+            playlistDrop( urlList );
+        }
     }
-
-    setUpdatesEnabled( true );
-    triggerUpdate();
-    e->acceptAction();
 }
 
 
@@ -206,7 +203,7 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
             if ( fileItem->isLink() && !pApp->m_optFollowSymlinks && m_dropRecursionCounter >= 2 )
                 continue;
 
-            if ( m_dropRecursionCounter >= 50 )      //no infinite loops, please
+            if ( m_dropRecursionCounter >= 50 )       //no infinite loops, please
                 continue;
 
             if ( !m_dropRecursively && m_dropRecursionCounter >= 2 )
@@ -245,6 +242,21 @@ void PlaylistWidget::playlistDrop( KURL::List urlList )
     --m_dropRecursionCounter;
 }
 
+
+void PlaylistWidget::viewportPaintEvent( QPaintEvent *e )
+{
+    QListView::viewportPaintEvent( e );
+
+    if ( m_marker.isValid() && e->rect().intersects( m_marker ) )
+    {
+        QPainter painter( viewport() );
+        QBrush brush( QBrush::Dense4Pattern );
+        brush.setColor( Qt::red );
+
+        // This is where we actually draw the drop-visualizer
+        painter.fillRect( m_marker, brush );
+    }
+}
 
 
 QListViewItem* PlaylistWidget::currentTrack()
@@ -292,9 +304,9 @@ void PlaylistWidget::focusInEvent( QFocusEvent *e )
 
 PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 {
-    PlaylistItem *pNewItem;
+    PlaylistItem * pNewItem;
 
-// we're abusing *after as a flag. value 1 == append to list
+    // we're abusing *after as a flag. value 1 == append to list
     if ( ( unsigned long ) after == 1 )
     {
         pNewItem = new PlaylistItem( this, lastItem(), url );
@@ -311,16 +323,6 @@ PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
     }
 
     return pNewItem;
-}
-
-
-void PlaylistWidget::eraseMarker()
-{
-    if ( m_pMarkerItemPrev != NULL )
-    {
-        m_pMarkerItemPrev->setMarker( false );
-        repaintItem( m_pMarkerItemPrev  );
-    }
 }
 
 
@@ -391,8 +393,8 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 void PlaylistWidget::slotHeaderClicked( int section )
 {
     QPopupMenu popup( this );
-    int MENU_ASCENDING = popup.insertItem( i18n("Sort Ascending") );
-    int MENU_DESCENDING = popup.insertItem( i18n("Sort Descending") );
+    int MENU_ASCENDING = popup.insertItem( i18n( "Sort Ascending" ) );
+    int MENU_DESCENDING = popup.insertItem( i18n( "Sort Descending" ) );
 
     QPoint menuPos = QCursor::pos();
     menuPos.setX( menuPos.x() - 20 );
@@ -410,6 +412,17 @@ void PlaylistWidget::slotHeaderClicked( int section )
         setSorting( section, false );
         sort();
         setSorting( -1 );
+    }
+}
+
+
+void PlaylistWidget::slotEraseMarker()
+{
+    if ( m_marker.isValid() )
+    {
+        QRect rect = m_marker;
+        m_marker = QRect();
+        viewport() ->repaint( rect, true );
     }
 }
 

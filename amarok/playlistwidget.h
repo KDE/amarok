@@ -28,7 +28,9 @@ class QDragLeaveEvent;
 class QDragMoveEvent;
 class QDropEvent;
 class QFocusEvent;
+class QPaintEvent;
 class QPoint;
+class QRect;
 class QString;
 class QStringList;
 class QTimer;
@@ -52,8 +54,6 @@ class PlaylistWidget : public KListView
         void unglowItems();
         void triggerSignalPlay();
         PlaylistItem* addItem( PlaylistItem *after, KURL url );
-        void eraseMarker();
-
         void contentsDropEvent( QDropEvent* e);
 
 // ATTRIBUTES ------
@@ -63,6 +63,7 @@ class PlaylistWidget : public KListView
         void slotSetRecursive();
         void slotTextChanged( const QString &str );
         void slotHeaderClicked( int section );
+        void slotEraseMarker();
 
     signals:
         void signalJump();
@@ -72,6 +73,7 @@ class PlaylistWidget : public KListView
         void contentsDragMoveEvent( QDragMoveEvent* e );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
         void focusInEvent( QFocusEvent *e );
+        void viewportPaintEvent( QPaintEvent *e );
 
         void playlistDrop( KURL::List urlList );
         PlaylistItem* playlistInsertItem( KURL srcUrl, PlaylistItem* dstItem );
@@ -89,7 +91,6 @@ class PlaylistWidget : public KListView
         int m_GlowAdd;
         QColor m_GlowColor;
         QListViewItem *m_pCurrentTrack;
-        PlaylistItem *m_pMarkerItem;
-        PlaylistItem *m_pMarkerItemPrev;
+        QRect m_marker;
 };
 #endif

@@ -9,7 +9,7 @@ SHORT-TERM:
 
     * fix: app freezing when renaming the file that's currently playing
 
-    * fix: sample looping @ end of track or pause
+    * fix: sample looping @ end of track or pause (fixed?)
 
     * fix: redirected URLs do not work
 

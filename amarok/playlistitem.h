@@ -63,9 +63,6 @@ class PlaylistItem : public KListViewItem
         void setGlowing( bool b ) { m_bIsGlowing = b; }
         void setGlowCol( QColor col ) { m_glowCol = col; }
 
-        bool isMarker() const  { return m_isMarker; }
-        void setMarker( bool on ) { m_isMarker = on; }
-
     private:
         QString nameForUrl( const KURL &url ) const;
         void init();
@@ -75,7 +72,6 @@ class PlaylistItem : public KListViewItem
         bool m_hasMetaInfo;
         KURL m_url;
         bool m_bIsGlowing;
-        bool m_isMarker;
         bool m_isDir;
         QString m_sPath;
         QColor m_glowCol;
