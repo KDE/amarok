@@ -85,7 +85,7 @@ class PlaylistItem : public KListViewItem
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
 
-        static QString trackName( const KURL &u ) { return u.fileName(); }
+        static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
         const KURL m_url;
         const bool m_inCollection;
