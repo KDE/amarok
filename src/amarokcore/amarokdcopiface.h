@@ -49,6 +49,7 @@ k_dcop:
       track lengths and positions in seconds. DO NOT TOUCH! */
    virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
    virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
+   virtual int  trackPlayCounter() = 0;                     ///< Return play counter for current song.
 
    virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
    virtual int  status() = 0;                               ///< Return playback status: 0 - stopped, 1 - paused, 2 - playing. < 0 - error

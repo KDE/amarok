@@ -43,6 +43,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void enableRandomMode( bool enable );
       virtual int  trackTotalTime();
       virtual int  trackCurrentTime();
+      virtual int  trackPlayCounter();
       virtual void scanCollection();
       virtual QString nowPlaying();
       virtual QString artist();

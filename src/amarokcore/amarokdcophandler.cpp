@@ -206,6 +206,16 @@ namespace amaroK
         return EngineController::engine()->position() / 1000;
     }
 
+    int DcopPlayerHandler::trackPlayCounter()
+    {
+      const MetaBundle &bundle = EngineController::instance()->bundle();
+      QueryBuilder qb;
+      qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+      qb.addMatches( QueryBuilder::tabStats, bundle.url().path() );
+      QStringList values = qb.run();
+      return values.first().toInt();
+    }
+
     void DcopPlayerHandler::seek(int s)
     {
         EngineBase* const engine = EngineController::engine();

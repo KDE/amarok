@@ -2253,6 +2253,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
             if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
             if ( tables & tabYear ) m_where += "OR year.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
             if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
+            if ( tables & tabStats ) m_where += "OR statistics.url LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
 
             if ( match[i] == i18n( "Unknown" ) )
             {
