@@ -155,7 +155,7 @@ void AmarokSystray::wheelEvent( QWheelEvent *e )
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name )
         : QWidget( parent, name )
-        , DCOPObject( "amarok" )
+        , DCOPObject( "player" )
 {
     setName( "PlayerWidget " );
     setCaption( "amaroK" );
