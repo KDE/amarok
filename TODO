@@ -4,6 +4,10 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
+    * fix: select something in playlist, go to drag from the browser, move mouse over playlist,
+           move mouse back to browser and drop, selected item from playlist disappears! I know
+           what to do about this. <mxcl>
+
     * fix: <mxcl> reimplement ask recursively on drop operations to playlist
 
     * fix: <mxcl> GroupBoxes can't have check boxes with Qt 3.1, so before next release do
