@@ -113,9 +113,10 @@ LoaderServer::newConnection( int sockfd )
 
             if( !args.isEmpty() )
             {
-                //stop startup cursor animation
+                //stop startup cursor animation - do not mess with this, it's carefully crafted
                 kdDebug() << "DESKTOP_STARTUP_ID: " << args.first() << endl;
-                //KStartupInfo::appStarted( args.first().local8Bit() );
+                pApp->setStartupId( args.first().local8Bit() );
+                KStartupInfo::appStarted();
                 args.pop_front();
 
                 //divide argument line into single strings
