@@ -947,6 +947,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         if ( values.count() < 8 * qb.countReturnValues() )
         {
             qb.clear();
+            qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
