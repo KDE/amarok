@@ -118,6 +118,9 @@ App::~App()
 {
     kdDebug() << k_funcinfo << endl;
 
+    // Hiding the OSD before exit prevents crash
+    amaroK::OSD::instance()->hide();
+    
     EngineBase* const engine = EngineController::engine();
 
     if( AmarokConfig::resumePlayback() )
