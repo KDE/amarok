@@ -45,6 +45,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         KHTMLPart *browser;
         MetaBundle *m_currentTrack;
         CollectionDB *m_db;
+	void *m_loaded;
         QString m_styleSheet;
         KURL m_url;
 };

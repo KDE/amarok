@@ -73,9 +73,9 @@ ContextBrowser::~ContextBrowser()
     EngineController::instance()->detach( this );
 }
 
-void ContextBrowser::showEvent( QShowEvent *)
+/*void ContextBrowser::showEvent( QShowEvent *)
 {
-    /*kdDebug() << k_funcinfo << endl;
+    kdDebug() << k_funcinfo << endl;
     if( m_loaded ) return;
     QTime t;
     t.start();
@@ -87,8 +87,8 @@ void ContextBrowser::showEvent( QShowEvent *)
     kdDebug()<<"END show"<<endl;
     qDebug( "Context show elapsed: %d ms", t.elapsed() );
     
-    m_loaded = true;*/
-}
+    m_loaded = true;
+}*/
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS

@@ -55,6 +55,7 @@ class CollectionDB : public QObject
         QString escapeString( QString string );
 
         uint getValueID( QString name, QString value, bool autocreate = true, bool useTempTables = false );
+        QString getValueFromID( QString table, uint id );
         void createTables( const bool temporary = false );
         void dropTables( const bool temporary = false );
         void moveTempTables();
