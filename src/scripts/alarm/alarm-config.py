@@ -14,6 +14,7 @@
 #
 ############################################################################
 
+from ConfigParser import *
 import sys
 import os.path
 from qt import *
@@ -54,7 +55,12 @@ class Config( QDialog ):
         print wakeTime
 
         file = open( "alarmrc", "w" )
-        file.writelines( "wake time = " + wakeTime )
+
+        config = ConfigParser()
+        config.add_section( "General" )
+        config.set( "General", "alarm time", wakeTime)
+        config.write( file )
+
         file.close()
 
         self.accept()

@@ -14,10 +14,21 @@
 #
 ############################################################################
 
+from ConfigParser import *
 import sys
 import os.path
 from qt import *
 
 
-print "Alarm Script"
+file = open( "alarmrc", "r" )
+
+config = ConfigParser()
+config.readfp( file )
+
+#time = config.get( "General", "alarm time" )
+#print time
+
+file.close()
+
+
 
