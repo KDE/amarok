@@ -482,9 +482,12 @@ TagWriter::doJob()
         f.save(); //FIXME this doesn't always work, but! it returns void. Great huh?
 
         //update the collection db
-        CollectionDB *db = new CollectionDB();
-        db->updateTag( url.path(), field, m_tagString );
-        delete db;
+
+        //FIXME <markey> Deactivated this code, as it caused BR 87169.
+
+//         CollectionDB *db = new CollectionDB();
+//         db->updateTag( url.path(), field, m_tagString );
+//         delete db;
     }
 
     //TODO can solve by reading tags now. Sucks or what?
