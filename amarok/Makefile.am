@@ -1,4 +1,4 @@
-SUBDIRS = amarokcore amarokarts analyzers titleproxy engine images data
+SUBDIRS = amarokcore amarokarts analyzers titleproxy engine images data loader
 
 INCLUDES = \
         -I$(kde_includes)/arts \
@@ -29,7 +29,6 @@ amarok_LDADD = \
         -lartsgui -lartsgui_kde -lartsmodules $(LIB_KUTILS) $(LIB_KFILE) \
         $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST) $(gl_libs)
 
-# $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
 METASOURCES = AUTO
