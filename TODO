@@ -97,10 +97,6 @@ MID-TERM:
 
   ADD              Option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
 
-  ADD     <muesli> Reading metadata on the fly (read for displayed playlist-items or onClick)
-          <berkus> this means that metadata is read only for visible now items or the items
-                   you click. (see winamp).
-
   ADD              "Add item"-dialog should support multiple selections.
 
   ADD     <berkus> Playmode indication button in main widget (repeat track/pl/shuffle), clickable.
@@ -137,8 +133,6 @@ LONG-TERM:
           <larson> How do you propose this should work? Since we are handled by kwin and have
                    normal window borders, double clicking the titlebar is handled by kwin. Also, should
                    the playlist be shadable?
-
-  ADD              Display some information about current track in playlist window
 
   ADD              Support for compressed archives / tarballs
 
