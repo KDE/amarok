@@ -321,7 +321,13 @@ XineEngine::length() const
 void
 XineEngine::seek( uint ms )
 {
-    xine_play( m_stream, 0, (int)ms );
+    if ( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
+        xine_play( m_stream, 0, (int)ms );
+    else {
+        // It was paused, then should keep paused
+        xine_play( m_stream, 0, (int)ms );
+        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
+    }
 }
 
 void
