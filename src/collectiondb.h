@@ -7,7 +7,7 @@
 
 #include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
-#include <qdir.h>     //stack allocated
+#include <qdir.h>            //stack allocated
 
 class sqlite;
 class ThreadWeaver;
@@ -25,6 +25,7 @@ class CollectionDB : public QObject
         QString albumSongCount( const QString artist_id, const QString album_id );
         void addImageToPath( const QString path, const QString image, bool temporary );
         QString getPathForAlbum( const QString artist_id, const QString album_id );
+        QString getCoverForAlbum( const QString& path, const QString& album, const QString& defaultImage, const uint width = 40 );
         QString getImageForAlbum( const QString artist_id, const QString album_id, const QString defaultImage );
         QString getImageForPath( const QString path, const QString defaultImage, const uint width = 40 );
         
@@ -71,6 +72,9 @@ class CollectionDB : public QObject
     signals:
         void scanDone( bool changed );
 
+    public slots:
+        void saveCover( const QString& keyword, const QPixmap& image );
+    
     private slots:
         void dirDirty( const QString& path );
 

@@ -19,7 +19,6 @@ class CoverFetcher : public QObject
         enum QueryMode { lite, heavy };
         
         CoverFetcher( QObject* parent = 0 );
-        ~CoverFetcher();
     
         void setLicense( const QString license ) { m_license = license; }
         void getCover( const QString& keyword, QueryMode mode = lite );
@@ -32,7 +31,8 @@ class CoverFetcher : public QObject
         void xmlResult( KIO::Job* job );        
         void imageData( KIO::Job* job, const QByteArray& data );
         void imageResult( KIO::Job* job );        
-        
+        void saveCover();
+                
     private:
         QString m_license;
         QString m_xmlDocument;

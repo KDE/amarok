@@ -28,7 +28,6 @@
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
-#include <kpushbutton.h>    //gotCover()
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -204,7 +203,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( m_coverFetcher, SIGNAL( imageReady( const QString&, const QPixmap& ) ),
-             this,             SLOT( gotCover( const QString&, const QPixmap& ) ) );
+             m_db,             SLOT( saveCover( const QString&, const QPixmap& ) ) );
 
     startTimer( MONITOR_INTERVAL );
 }
@@ -489,31 +488,7 @@ CollectionView::fetchCover() //SLOT
     }
 }
 
-
-void
-CollectionView::gotCover( const QString& keyword, const QPixmap& image ) //SLOT
-{
-    kdDebug() << k_funcinfo << endl;
-
-    QVBox* container = new QVBox( 0, 0, WDestructiveClose );
-    container->setCaption( keyword + " - amaroK" );
-    
-    QWidget* widget = new QWidget( container );
-    widget->setPaletteBackgroundPixmap( image );
-    widget->setFixedSize( image.size() );
-    
-    QHBox* buttons = new QHBox( container );
-    KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
-    KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
-    connect( cancel, SIGNAL( clicked() ), container, SLOT( deleteLater() ) );
-    connect( save, SIGNAL( clicked() ), m_db, SLOT( saveCover() ) );
-            
-    container->adjustSize();
-    container->setFixedSize( container->size() );
-    container->show();
-}
-
-
+                        
 void
 CollectionView::showTrackInfo() //SLOT
 {
@@ -665,7 +640,7 @@ CollectionView::tableForCat( const QString& cat ) const
     //falltrough:
     return 0;
 }
-
+  
 
 #include "collectionbrowser.moc"
 

@@ -7,7 +7,7 @@
 
 #include "collectiondb.h"
 
-#include <qvbox.h>           //baseclass
+#include "qvbox.h"           //baseclass
 
 #include <klistview.h>       //baseclass
 #include <klineedit.h>       //baseclass
@@ -98,7 +98,6 @@ class CollectionView : public KListView
 
         /** Tries to download the cover image from Amazon.com */
         void fetchCover();
-        void gotCover( const QString& keyword, const QPixmap& image );
         /** Shows dialog with information on selected track */
         void showTrackInfo();
 
@@ -116,7 +115,7 @@ class CollectionView : public KListView
 
     //attributes:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 9;
+        static const int DATABASE_VERSION = 10;
         static const int DATABASE_STATS_VERSION = 1;
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;

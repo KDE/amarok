@@ -8,13 +8,14 @@
 #include "threadweaver.h"
 
 #include <kapplication.h>
+#include <kmdcodec.h>
 #include <kdebug.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 
-#include <qcstring.h>
+#include <qbuffer.h>
 #include <qimage.h>
 
 #include <sys/stat.h>
@@ -121,7 +122,48 @@ CollectionDB::getImageForAlbum( const QString artist_id, const QString album_id,
     KURL url;
     url.setPath( getPathForAlbum( artist_id, album_id ) );
 
-    return getImageForPath( url.directory(), defaultImage );
+    return getCoverForAlbum( url.directory(), album_id, defaultImage );
+
+//     return getImageForPath( url.directory(), defaultImage );
+}
+
+
+QString
+CollectionDB::getCoverForAlbum( const QString& path, const QString& album, const QString& defaultImage, const uint width )
+{
+    kdDebug() << "Fetching album from DB: " << album << endl;
+    
+    if ( album.isEmpty() )
+        return defaultImage;
+
+    QStringList values;
+    QStringList names;
+
+    QString escapedPath( QString::number( width ) + "@" + path );
+    escapedPath.replace( "/", "_" );
+    escapedPath.replace( "'", "_" );
+
+    if ( m_cacheDir.exists( escapedPath ) )
+        return m_cacheDir.absPath() + "/" + escapedPath;
+
+    execSql( QString( "SELECT image FROM covers WHERE album = '%1';" )
+             .arg( escapeString( album ) ), &values, &names );
+
+    if ( values.count() )
+    {
+        QByteArray ba( KCodecs::quotedPrintableDecode( values[0].latin1() ) );
+        QImage img;
+        img.loadFromData( ba, "PNG" );
+
+        QPixmap pix;
+        if( pix.convertFromImage( img.smoothScale( width, width ) ) )
+        {
+            pix.save( m_cacheDir.absPath() + "/" + escapedPath, "PNG" );
+            return m_cacheDir.absPath() + "/" + escapedPath;
+        }
+    }
+
+    return defaultImage;
 }
 
 
@@ -361,6 +403,13 @@ CollectionDB::createTables( bool temporary )
                         .arg( temporary ? "TEMPORARY" : "" )
                         .arg( temporary ? "_temp" : "" ) );
 
+    //create covers table
+    execSql( QString( "CREATE %1 TABLE covers%2 ("
+                        "image BLOB,"
+                        "album VARCHAR(100) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+    
     //create indexes
     execSql( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
@@ -678,6 +727,23 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
              + id + " " + filterToken + " ORDER BY tags.track, tags.url;";
 
     execSql( command, values, names );
+}
+
+
+void
+CollectionDB::saveCover( const QString& keyword, const QPixmap& image )
+{
+    kdDebug() << k_funcinfo << endl;
+    
+    QByteArray ba;
+    QBuffer buffer( ba );
+    buffer.open( IO_WriteOnly );
+     // write pixmap into ba in JPG format
+    image.save( &buffer, "PNG" ); 
+    
+    execSql( QString( "REPLACE INTO covers ( image, album ) VALUES ( '%1', '%2' );" )
+             .arg( escapeString( keyword ) )
+             .arg( KCodecs::quotedPrintableEncode( ba ) ) );
 }
 
 

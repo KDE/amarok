@@ -5,10 +5,13 @@
 
 #include <qdom.h>
 #include <qpixmap.h>
+#include <qvbox.h>
 
 #include <kdebug.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <klocale.h>
+#include <kpushbutton.h>   
 
 
 CoverFetcher::CoverFetcher( QObject* parent )
@@ -16,10 +19,6 @@ CoverFetcher::CoverFetcher( QObject* parent )
 {
     kdDebug() << k_funcinfo << endl;
 }
-
-
-CoverFetcher::~CoverFetcher()
-{}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +112,30 @@ CoverFetcher::imageResult( KIO::Job* job ) //SLOT
         kdWarning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
+    QVBox* container = new QVBox( 0, 0, WDestructiveClose );
+    container->setCaption( m_keyword + " - amaroK" );
+    
+    QWidget* widget = new QWidget( container );
+    widget->setPaletteBackgroundPixmap( QPixmap( m_image ) );
+    widget->setFixedSize( QPixmap( m_image ).size() );
+    
+    QHBox* buttons = new QHBox( container );
+    KPushButton* save = new KPushButton( i18n( "Save" ), buttons );
+    KPushButton* cancel = new KPushButton( i18n( "Cancel" ), buttons );
+    connect( cancel, SIGNAL( clicked() ), container, SLOT( deleteLater() ) );
+    connect( save, SIGNAL( clicked() ), this, SLOT( saveCover() ) );
+            
+    container->adjustSize();
+    container->setFixedSize( container->size() );
+    container->show();
+}
 
+
+void 
+CoverFetcher::saveCover() //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    
     emit imageReady( m_keyword, QPixmap( m_image ) );
 }
 
