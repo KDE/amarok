@@ -424,7 +424,8 @@ void PlayerWidget::paintEvent( QPaintEvent * )
 
 void PlayerWidget::mouseReleaseEvent( QMouseEvent *e )
 {
-    if ( m_pTimeDisplayLabel->geometry().contains( e->pos() ) )
+    if ( m_pTimeDisplayLabel->geometry().contains( e->pos() ) ||
+         m_pTimeSign        ->geometry().contains( e->pos() ) )
     {
         pApp->m_optTimeDisplayRemaining = !pApp->m_optTimeDisplayRemaining;
     }
@@ -601,16 +602,16 @@ void PlayerWidget::createVis()
     }
 
     // we special-case the DistortAnalyzer, since it needs more height. yes, this ugly.. I need whipping
-    /*    if ( pApp->m_optVisCurrent == 1 )
-        {
-            m_pVis->setFixedSize( 168, 80 );
-            m_pVis->move( 113, 20 );
-        }
-        else
-        {*/
-    m_pVis->setFixedSize( 168, 50 );
-    m_pVis->move( 119, 45 );
-    //    }
+    if ( pApp->m_optVisCurrent == 1 )
+    {
+        m_pVis->setFixedSize( 168, 70 );
+        m_pVis->move( 119, 30 );
+    }
+    else
+    {
+        m_pVis->setFixedSize( 168, 50 );
+        m_pVis->move( 119, 45 );
+    }
 
     connect( m_pVis, SIGNAL( clicked() ), this, SLOT( createVis() ) );
 
@@ -677,11 +678,13 @@ void PlayerWidget::show()
     QWidget::show();
 }
 
+
 void PlayerWidget::hide()
 {
     emit sigAboutToHide();
 
     QWidget::hide();
 }
+
 
 #include "playerwidget.moc"

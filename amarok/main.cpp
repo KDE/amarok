@@ -56,6 +56,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Adam Pigg", "Analyzer, Patches", "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Alper Ayazoglu", "Graphics: Buttons", "cubon@cubon.de", "http://cubon.de" );
     aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator, Whipping", "grue@iki.fi" );
+    aboutData.addCredit( "Josef Spillner", "KDE RadioStation Code", "spillner@kde.org" );
     aboutData.addCredit( "Markus A. Rykalski", "Graphics", "exxult@exxult.de" );
     aboutData.addCredit( "Roman Becker", "Graphics", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Scott Wheeler", "Taglib", "wheeler@kde.org" );
