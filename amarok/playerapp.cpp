@@ -788,18 +788,13 @@ void PlayerApp::startXFade()
 {
     kdDebug() << "void PlayerApp::startXFade()" << endl;
 
-    if ( !m_XFadeRunning )
-    {
-        m_XFadeRunning = true;
-
-        if ( m_XFadeCurrent == "invalue1" )
-            m_XFadeCurrent = "invalue2";
-        else
-            m_XFadeCurrent = "invalue1";
-
-        m_pPlayObjectXFade = m_pPlayObject;
-        m_pPlayObject = NULL;
-    }
+    if ( m_XFadeRunning )
+        stopXFade();
+    
+    m_XFadeRunning = true;
+   
+    m_pPlayObjectXFade = m_pPlayObject;
+    m_pPlayObject = NULL;
 }
 
 
@@ -1027,6 +1022,11 @@ void PlayerApp::slotConnectPlayObj()
     {
         m_pPlayObject->object()._node()->start();
 
+        if ( m_XFadeCurrent == "invalue1" )
+            m_XFadeCurrent = "invalue2";
+        else
+            m_XFadeCurrent = "invalue1";
+        
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
@@ -1316,6 +1316,7 @@ void PlayerApp::slotMainTimer()
         else if ( m_XFadeValue > 1.0 )
             m_XFadeValue = 1.0;
 
+        kdDebug() << "[void PlayerApp::slotMainTimer()] m_XFadeValue: " << m_XFadeValue << endl;
         m_XFade.percentage( m_XFadeValue );
 
         if( m_XFadeValue == 0.0 || m_XFadeValue == 1.0 )

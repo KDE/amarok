@@ -3,6 +3,8 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: crossfading bug. before the fix amaroK sometimes mixed up the two xfade sources,
+         so it sort of faded in reverse (==crap)
   * add: tag reading in separate thread
   * add: re-added m_optCrossFade, so we don't lose the crossfade length on switching it on/off.
          set default crossfade length to 2500.
