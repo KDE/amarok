@@ -18,41 +18,20 @@
 #ifndef BROWSERWIN_H
 #define BROWSERWIN_H
 
-#include <qpixmap.h>
-#include <qwidget.h>
-
-#include <kaction.h>
-
-class ExpandButton;
-class KDevFileSelector;
-class PlaylistItem;
-class PlaylistWidget;
-class StreamBrowser;
-class PlaylistSideBar;
-
-class QHideEvent;
-class QCloseEvent;
-class QColor;
-class QListViewItem;
-class QPoint;
-class QSplitter;
-class QVBox;
-
-class KLineEdit;
-class KListView;
-class KURL;
-
 class PlayerApp;
 extern PlayerApp *pApp;
 
+
+
+// CLASS PlaylistSideBar ==============================================================
 
 //In order to remember the size of the tabs when using a QSplitter it is
 //necessary to override sizeHint(). Hence this class.
 //Later it seemed convenient to move management of the widgets (pages)
 //here too, so I did that too.
  
-#include <qhbox.h>
-#include <vector>
+#include <qhbox.h> //baseclass
+#include <vector>  //statically allocated
 
 class KMultiTabBar;
 class QSignalMapper;
@@ -89,15 +68,30 @@ private:
 
 // CLASS BrowserWin =====================================================================
 
+#include <qwidget.h> //baseclass
+
+class ExpandButton;
+class PlaylistWidget;
+class PlaylistSideBar;
+
+class QCloseEvent;
+class QKeyEvent;
+class QColor;
+class QPalette;
+class QSplitter;
+
+class KLineEdit;
+class KActionCollection; //FIXME do we need #include <kaction.h>?
+
 class BrowserWin : public QWidget
 {
         Q_OBJECT
 
     public:
-        BrowserWin( QWidget *parent = 0, const char *name = 0 );
+        BrowserWin( QWidget* = 0, const char* = 0 );
         ~BrowserWin();
 
-        void setPalettes( const QColor &, const QColor &, const QColor & );
+        void setPalettes( const QPalette&, const QColor& );
 
 // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
@@ -132,8 +126,8 @@ class BrowserWin : public QWidget
 
     private:
         void initChildren();
-        void closeEvent( QCloseEvent * );
-        void keyPressEvent( QKeyEvent * );
+        void closeEvent( QCloseEvent* );
+        void keyPressEvent( QKeyEvent* );
         
         PlaylistSideBar *m_pSideBar;
 

@@ -70,12 +70,13 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     setSorting( 200 );
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
+    setAllColumnsShowFocus( true );
     
     //    setStaticBackground( true );
     //    m_rootPixmap.setFadeEffect( 0.5, Qt::black );
     //    m_rootPixmap.start();
 
-    //NOTE order is critical because we can't set indexes
+    //NOTE order is critical because we can't set indexes or ids
     addColumn( i18n( "Trackname" ), 280 );
     addColumn( i18n( "Title"     ), 200 );
     addColumn( i18n( "Artist"    ), 100 );
@@ -96,6 +97,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name )
     setRenameable( 5 );
     setRenameable( 6 );
     setRenameable( 7 );
+    setColumnAlignment( 7, Qt::AlignRight );
     setColumnAlignment( 9, Qt::AlignRight );
 
     connect( this, SIGNAL( contentsMoving( int, int ) ),  this, SLOT( slotEraseMarker() ) );

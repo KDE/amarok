@@ -447,19 +447,34 @@ void PlayerApp::receiveStreamMeta( QString title, QString url, QString kbps )
 }
 
 
+#include <qpalette.h>
+#include <kglobalsettings.h>
+
 void PlayerApp::setupColors()
 {
     // we try to be smart: this code figures out contrasting colors for selection and alternate background rows
-    int h, s, v;
+    int h, s, v;    
+    QColorGroup group = QApplication::palette().active();
+    QColor bgAlt, highlight;
+    
+    //TODO below is amaroK default
+    //const QColor fg = config()->browserFgColor();    
+    const QColor bg = config()->browserBgColor();
+    
+    //TODO this is fancy colouring that fits with the window better (providing base is a neutral colour, eg black)
+    //FIXME make fancy/custom/kde-default options in colour select dialog
+    KGlobalSettings::activeTitleColor().hsv( &h, &s, &v );
+    const QColor fg = QColor( h, s, 255, QColor::Hsv );    
 
-    config()->browserBgColor().hsv( &h, &s, &v );
+
+    bg.hsv( &h, &s, &v );
     if ( v < 128 )
         v += 50;
     else
         v -= 50;
-    m_optBrowserBgAltColor.setHsv( h, s, v );
+    bgAlt.setHsv( h, s, v );
 
-    config()->browserFgColor().hsv( &h, &s, &v );
+    fg.hsv( &h, &s, &v );
     if ( v < 128 )
         v += 150;
     else
@@ -468,9 +483,16 @@ void PlayerApp::setupColors()
         v = 0;
     if ( v > 255 )
         v = 255;
-    m_optBrowserSelColor.setHsv( h, s, v );
-
-    m_pBrowserWin->setPalettes( config()->browserFgColor(), config()->browserBgColor(), m_optBrowserBgAltColor );
+    highlight.setHsv( h, s, v );
+    
+    group.setColor( QColorGroup::Base, bg );
+    group.setColor( QColorGroup::Background, bg );
+    group.setColor( QColorGroup::Text, fg );//fg );
+    group.setColor( QColorGroup::Highlight, highlight );
+    group.setColor( QColorGroup::HighlightedText, Qt::white );
+    
+    //FIXME disabled QColorGroup looks very bad (eg buttons)
+    m_pBrowserWin->setPalettes( QPalette( group, group, group ), bgAlt );
 }
 
 void PlayerApp::insertMedia( const KURL::List &list )

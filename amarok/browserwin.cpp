@@ -24,7 +24,8 @@
 
 #include "amarokconfig.h"
 
-#include <qcolor.h>
+#include <qcolor.h>   //setPalettes()
+#include <qpalette.h> //setPalettes()
 #include <qfile.h>
 #include <qlayout.h>
 #include <qpixmap.h>
@@ -316,13 +317,11 @@ void BrowserWin::slotAddLocation()
 }
 
 
-void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &altbg )
+void BrowserWin::setPalettes( const QPalette &pal, const QColor &bgAlt )
 {
-    QPalette pal( fg, bg );
-    
-    setPaletteRecursively( m_pPlaylistWidget,   pal, altbg );
-    setPaletteRecursively( m_pPlaylistLineEdit, pal, altbg );
-    setPaletteRecursively( m_pSideBar,          pal, altbg );
+    setPaletteRecursively( m_pPlaylistWidget,   pal, bgAlt );
+    setPaletteRecursively( m_pPlaylistLineEdit, pal, bgAlt );
+    setPaletteRecursively( m_pSideBar,          pal, bgAlt );
     
     update();
     m_pPlaylistWidget->triggerUpdate();
@@ -330,7 +329,7 @@ void BrowserWin::setPalettes( const QColor &fg, const QColor &bg, const QColor &
 
 
 //Routine for setting palette recursively in a widget and all its childen
-static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& altbg )
+static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const QColor& bgAlt )
 {
     QObjectList *list = widget->queryList( "QWidget" );
     list->append( widget );
@@ -338,10 +337,15 @@ static void setPaletteRecursively( QWidget* widget, const QPalette &pal, const Q
     for( QObject *obj = list->first(); obj; obj = list->next() )
     {
         static_cast<QWidget*>(obj)->setPalette( pal );
-        if( obj->inherits( "KListView" ) )
+        if( obj->inherits( "QLineEdit" ) )
         {
-            KListView *lv = dynamic_cast<KListView *>(obj);
-            if( lv ) lv->setAlternateBackground( altbg );
+            QLineEdit *le = dynamic_cast<QLineEdit *>(obj); //slow, but safe
+            if( le ) le->setPaletteForegroundColor( Qt::white ); //FIXME don't be hard set!
+        }
+        else if( obj->inherits( "KListView" ) )
+        {
+            KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
+            if( lv ) lv->setAlternateBackground( bgAlt );
         }
     }        
 }
