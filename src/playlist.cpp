@@ -1200,7 +1200,6 @@ void Playlist::showTrackInfo( const KURL& url ) //STATIC
 }
 
 
-#include "app.h" //FIXME sucks including this header just for here! move this function to separate module
 void Playlist::showTrackInfo( const MetaBundle& mb ) //STATIC
 {
     const QString body = "<tr><td>%1</td><td>%2</td></tr>";
@@ -1219,7 +1218,7 @@ void Playlist::showTrackInfo( const MetaBundle& mb ) //STATIC
     str += body.arg( i18n( "Location" ),   mb.url().isLocalFile() ? mb.url().path() : mb.url().url() );
     str += "</table></body></html>";
 
-    KMessageBox::information( pApp->mainWindow(), str, i18n( "Meta Information" ) );
+    KMessageBox::information( instance(), str, i18n( "Meta Information" ) );
 }
 
 
