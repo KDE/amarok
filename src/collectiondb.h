@@ -110,16 +110,6 @@ class CollectionDB : public QObject
         uint yearID( QString value, bool autocreate = true, bool useTempTables = false );
         QString yearValue( uint id );
 
-        //tree methods
-        void retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString gcategory2, const QString& category3,
-                                                    QString filter, QStringList& values, QStringList& names );
-        void retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
-                                                         const QString& category2, const QString& category3, QString filter,
-                                                         QStringList& values, QStringList& names );
-        void retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
-                                                     const QString& category1, const QString& category2, const QString& category3, 
-                                                     QString filter, QStringList& values, QStringList& names );
-
         //member variables
         QString m_amazonLicense;
 

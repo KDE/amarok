@@ -440,9 +440,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     QStringList values;
     QueryBuilder qb;
 
-    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-
     switch ( item->depth() )
     {
         case 0:
@@ -497,6 +494,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             category = i18n( "None" );
             break;
     }
+
+    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
 
     QPixmap pixmap;
@@ -843,18 +843,20 @@ CollectionView::listSelected() {
     KURL::List list;
     QListViewItem* item;
     QStringList values;
-    QStringList names;
+    QueryBuilder qb;
 
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
         {
-            values.clear();
-            names.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addMatch( m_cat1, item->text( 0 ) );
+            qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+            qb.sortBy( m_cat1, QueryBuilder::valName );
+            qb.setOptions( QueryBuilder::optRemoveDuplicates );
+            values = qb.run();
 
-            m_db->retrieveFirstLevelURLs( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ),
-                                                            tableForCat( m_category3 ), m_filter, values, names );
-            for ( uint i = 0; i < values.count(); i++ )
+            for ( int i = values.count() - 1; i >= 0; --i )
             {
                 KURL tmp;
                 tmp.setPath( values[i] );
@@ -875,13 +877,16 @@ CollectionView::listSelected() {
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() && !child->parent()->isSelected() )
                 {
-                    values.clear();
-                    names.clear();
+                    qb.clear();
+                    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+                    qb.addMatch( m_cat1, item->text( 0 ) );
+                    qb.addMatch( m_cat2, child->text( 0 ) );
+                    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+                    qb.sortBy( m_cat1, QueryBuilder::valName );
+                    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+                    values = qb.run();
 
-                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ),
-                                                   tableForCat( m_category2 ), tableForCat( m_category3 ),
-                                                   m_filter, values, names );
-                    for ( uint i = 0; i < values.count(); i++ )
+                    for ( int i = values.count() - 1; i >= 0; --i )
                     {
                         KURL tmp;
                         tmp.setPath( values[i] );
@@ -914,13 +919,17 @@ CollectionView::listSelected() {
                 for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                     if ( grandChild->isSelected() && !grandChild->parent()->isSelected() )
                     {
-                        values.clear();
-                        names.clear();
+                        qb.clear();
+                        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+                        qb.addMatch( m_cat1, item->text( 0 ) );
+                        qb.addMatch( m_cat2, child->text( 0 ) );
+                        qb.addMatch( m_cat3, grandChild->text( 0 ) );
+                        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+                        qb.sortBy( m_cat1, QueryBuilder::valName );
+                        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+                        values = qb.run();
 
-                        m_db->retrieveThirdLevelURLs( item->text( 0 ), child->text( 0 ), grandChild->text(0),
-                                                      tableForCat( m_category1 ), tableForCat( m_category2 ),
-                                                      tableForCat( m_category3 ),  m_filter, values, names );
-                        for ( uint i = 0; i < values.count(); i++ )
+                        for ( int i = values.count() - 1; i >= 0; --i )
                         {
                             KURL tmp;
                             tmp.setPath( values[i] );
