@@ -4,7 +4,7 @@ INCLUDES = -I$(kde_includes)/arts $(taglib_includes) -I$(srcdir)/ui $(all_includ
 
 bin_PROGRAMS = amarok
 
-amarok_SOURCES = main.cpp playerapp.cpp playerwidget.cpp browserwin.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp amarokconfig.kcfgc ui/Options1.ui ui/Options2.ui ui/Options3.ui ui/Options4.ui ui/Options5.ui amarokslider.cpp amaroksystray.cpp osd.cpp filebrowser.cpp kactionselector.cpp  kbookmarkhandler.cpp fht.cpp
+amarok_SOURCES = main.cpp browserwin.cpp streambrowser.cpp playlistwidget.cpp playlistitem.cpp playlistloader.cpp expandbutton.cpp effectwidget.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokbutton.cpp amarokfilelist.cpp amarokconfig.kcfgc ui/Options1.ui ui/Options2.ui ui/Options3.ui ui/Options4.ui ui/Options5.ui amarokslider.cpp amaroksystray.cpp osd.cpp filebrowser.cpp kactionselector.cpp  kbookmarkhandler.cpp fht.cpp playerapp.cpp playerwidget.cpp
 
 amarok_LDADD = ./engine/libengine.a ./titleproxy/libtitleproxy.a ./analyzers/libanalyzers.a ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde -lartsmodules $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST)
 
