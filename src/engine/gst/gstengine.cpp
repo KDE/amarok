@@ -51,7 +51,7 @@ GError*
 GstEngine::error_msg;
 
 GstEngine*
-GstEngine::self;
+GstEngine::s_instance;
 
 
 void
@@ -61,7 +61,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
-    QTimer::singleShot( 0, self, SLOT( stopAtEnd() ) );
+    QTimer::singleShot( 0, instance(), SLOT( stopAtEnd() ) );
 }
 
 
@@ -69,7 +69,7 @@ void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 {
     int channels = 2;  //2 == default, if we cannot determine the value from gst
-    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( self->m_spider, "src_0" ) );
+    GstCaps* caps = gst_pad_get_caps( gst_element_get_pad( instance()->m_spider, "src_0" ) );
 
     for ( int i = 0; i < gst_caps_get_size( caps ); i++ ) {
         GstStructure* structure = gst_caps_get_structure( caps, i );
@@ -88,8 +88,8 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
 
         //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
-            if ( self->m_scopeBufIndex == self->m_scopeBuf.size() ) {
-                self->m_scopeBufIndex = 0;
+            if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() ) {
+                instance()->m_scopeBufIndex = 0;
                 //                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
             }
 
@@ -99,28 +99,29 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
                 //convert uint-16 to float and write into buf
                 temp += ( float ) ( data[ i + j ] - 32768 ) / 32768.0;
             }
-            self->m_scopeBuf[ self->m_scopeBufIndex++ ] = temp;
+            instance()->m_scopeBuf[ instance()->m_scopeBufIndex++ ] = temp;
         }
     }
 }
 
 
 void
-GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstElement* /*pipeline*/ )
+GstEngine::typefindFound_cb( GstElement*, guint, GstCaps* caps, gpointer )
 {
-//     kdDebug() << "GstEngine::typefindFound" << endl;
+    GstStructure* type = gst_caps_get_structure( caps, 0 );
+    
+    // Extract mimetype from GstType structure
+    QString mimetype = gst_structure_get_name( type );
+    kdDebug() << "MimeType detected: " << mimetype << endl;
 
-    self->m_typefindResult = true;
+    // Don't allow mimetypes that are clearly not audio
+    if ( mimetype.contains( "image" ) || 
+         mimetype.contains( "video" ) || 
+         mimetype.contains( "text" ) )
+        return;     
+    
+    instance()->m_typefindResult = true;
 }
-
-//     const GList *elements = gst_registry_pool_feature_list( GST_TYPE_ELEMENT_FACTORY );
-//
-//     while ( elements != NULL )
-//     {
-//         factory = (GstElementFactory *) elements->data;
-//         const gchar *klass = gst_element_factory_get_klass( factory );
-//         elements = elements->next;
-//     }
 
 
 void
@@ -128,7 +129,7 @@ GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* er
 {
     kdDebug() << k_funcinfo << endl;
 
-    QTimer::singleShot( 0, self, SLOT( handleError() ) );
+    QTimer::singleShot( 0, instance(), SLOT( handleError() ) );
 }
 
 
@@ -168,7 +169,7 @@ GstEngine::init( bool&, int scopeSize, bool )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    self = this;
+    s_instance = this;
     m_mixerHW = -1;            //initialize
 
     m_scopeBuf.resize( SCOPEBUF_SIZE );
@@ -195,9 +196,6 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
-    //TODO HACK
-    return true;
-    
     GstElement* pipeline;
     GstElement* filesrc;
     GstElement* typefind;

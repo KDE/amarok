@@ -12,7 +12,7 @@
 #include <sys/mman.h>
 
 #define DEFAULT_BLOCKSIZE 4096
-#define MAPFILE_PATH "/home/mark/mapfile\000"
+#define MAPFILE_PATH "/home/mark/mapfile"
 
 
 GST_DEBUG_CATEGORY_STATIC ( gst_uade_debug );
@@ -47,11 +47,11 @@ GST_BOILERPLATE_FULL ( GstUade, gst_uade, GstElement, ( GTypeFlags ) GST_TYPE_EL
 
 
 static void gst_uade_set_property ( GObject * object, guint prop_id,
-        const GValue * value, GParamSpec * pspec );
+                                    const GValue * value, GParamSpec * pspec );
 
 
 static void gst_uade_get_property ( GObject * object, guint prop_id,
-        GValue * value, GParamSpec * pspec );
+                                    GValue * value, GParamSpec * pspec );
 
 
 static GstData *gst_uade_get ( GstPad * pad );
@@ -61,33 +61,35 @@ static GstData *gst_uade_get ( GstPad * pad );
 // IMPORTED FROM UADE
 /////////////////////////////////////////////////////////////////////////////////////
 
-uade_msgstruct* uade_mmap_file(const char *filename, int length) {
-  void *mmapptr;
-  unlink(filename);
-  int fd;
-  fd = open(filename,O_RDWR | O_CREAT);
-  if(fd < 0) {
-    fprintf(stderr,"uade: can not open sharedmem file!\n");
-    return 0;
-  }
-  
-  // Make file big enough to hold our struc
-  char buf[length];
-  memset( buf, 0, length );
-  write(fd, buf, length);
-  
-  kdDebug() << "mmapfile length: " << length << endl;
-  mmapptr = mmap(0, length * 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-  if(mmapptr == MAP_FAILED) {
-    fprintf(stderr,"uade: can not mmap sharedmem file!\n");
-    return 0;
-  }
-  return (uade_msgstruct*) mmapptr;
+uade_msgstruct* uade_mmap_file( const char *filename, int length )
+{
+    void * mmapptr;
+    unlink( filename );
+    int fd;
+    fd = open( filename, O_RDWR | O_CREAT );
+    if ( fd < 0 ) {
+        fprintf( stderr, "uade: can not open sharedmem file!\n" );
+        return 0;
+    }
+
+    // Make file big enough to hold our struc
+    char buf[ length ];
+    memset( buf, 0, length );
+    write( fd, buf, length );
+
+    kdDebug() << "mmapfile length: " << length << endl;
+    mmapptr = mmap( 0, length * 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0 );
+    if ( mmapptr == MAP_FAILED ) {
+        fprintf( stderr, "uade: can not mmap sharedmem file!\n" );
+        return 0;
+    }
+    return ( uade_msgstruct* ) mmapptr;
 }
 
 
-void uade_exit(int code) {
-  exit(code);
+void uade_exit( int code )
+{
+    exit( code );
 }
 
 
@@ -113,15 +115,15 @@ gst_uade_class_init ( GstUadeClass * klass )
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
                                       g_param_spec_ulong ( "blocksize", "Block size",
                                                            "Size in bytes to read per buffer", 1, G_MAXULONG, DEFAULT_BLOCKSIZE,
-                                                           (GParamFlags) G_PARAM_READWRITE ) );
-    
+                                                           ( GParamFlags ) G_PARAM_READWRITE ) );
+
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_TIMEOUT,
                                       g_param_spec_uint64 ( "timeout", "Timeout", "Read timeout in nanoseconds",
-                                                            0, G_MAXUINT64, 0, (GParamFlags) G_PARAM_READWRITE ) );
-    
+                                                            0, G_MAXUINT64, 0, ( GParamFlags ) G_PARAM_READWRITE ) );
+
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_LOCATION,
-                                      g_param_spec_string ( "location", "Location", "Set file location", "test", 
-                                                            (GParamFlags) G_PARAM_READWRITE ) );
+                                      g_param_spec_string ( "location", "Location", "Set file location", "test",
+                                                            ( GParamFlags ) G_PARAM_READWRITE ) );
 
     gst_uade_signals[ SIGNAL_TIMEOUT ] =
         g_signal_new ( "timeout", G_TYPE_FROM_CLASS ( klass ), G_SIGNAL_RUN_LAST,
@@ -151,9 +153,10 @@ gst_uade_init ( GstUade* gstuade )
         uade_exit( -1 );
     }
     gstuade->uade_struct->masterpid = getpid();
+    
     int uadepid = fork();
     if ( !uadepid ) {
-        char *newargv[] = {"/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0};
+        char * newargv[] = { "/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0 };
         execv( newargv[0], newargv );
         kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
         abort();
@@ -161,6 +164,7 @@ gst_uade_init ( GstUade* gstuade )
     while ( gstuade->uade_struct->uade_inited_boolean == 0 ) {
         sleep( 1 );
     }
+    kdDebug() << "CHECKPOINT\n";
 }
 
 
@@ -170,7 +174,7 @@ gst_uade_init ( GstUade* gstuade )
 
 static void
 gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
-                             GParamSpec * pspec )
+                        GParamSpec * pspec )
 {
     GstUade * src;
 
@@ -190,9 +194,9 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
 
             case ARG_LOCATION:
             kdDebug() << "ARG_LOCATION\n";
-            
+
             strcpy( src->uade_struct->playername, g_value_get_string( value ) );
-            src->uade_struct->modulename[0] = 0;
+            strcpy( src->uade_struct->modulename, g_value_get_string( value ) );
             strcpy( src->uade_struct->scorename, g_value_get_string( value ) );
             src->uade_struct->set_subsong = 0;
             src->uade_struct->subsong = 0;
@@ -204,7 +208,7 @@ gst_uade_set_property ( GObject * object, guint prop_id, const GValue * value,
             src->uade_struct->touaemsgtype = UADE_PLAYERNAME;
             src->uade_struct->loadnewsongboolean = 1;
             break;
-    
+
             default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID ( object, prop_id, pspec );
     }
@@ -242,26 +246,26 @@ gst_uade_get ( GstPad * pad )
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
     uade_msgstruct* uade_struct = src->uade_struct;
-    
+
     int readBytes = src->blocksize;
     int rbsize = src->blocksize;
-    
-//     if ( uade_struct->sbuf_readoffset <= uade_struct->sbuf_writeoffset ) 
-//         datainbuffer = uade_struct->sbuf_writeoffset - uade_struct->sbuf_readoffset;
-//     else
-//         datainbuffer = uade_struct->sbuf_writeoffset + rbsize - uade_struct->sb;
-    
-/*    if ( ( uade_struct->sbuf_readoffset + src->blocksize ) > rbsize ) {
-        int firstsize = rbsize - uade_struct->sbuf_readoffset;
-        memcpy( data, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, firstsize );
-        memcpy( data + firstsize, uade_struct->soundbuffer, src->blocksize - firstsize );
-    } else {
-        memcpy( data, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, src->blocksize );
-    }
-    uade_struct->sbuf_readoffset = ( uade_struct->sbuf_readoffset + src->blocksize ) % rbsize;*/
-    
+
+    //     if ( uade_struct->sbuf_readoffset <= uade_struct->sbuf_writeoffset )
+    //         datainbuffer = uade_struct->sbuf_writeoffset - uade_struct->sbuf_readoffset;
+    //     else
+    //         datainbuffer = uade_struct->sbuf_writeoffset + rbsize - uade_struct->sb;
+
+    /*    if ( ( uade_struct->sbuf_readoffset + src->blocksize ) > rbsize ) {
+            int firstsize = rbsize - uade_struct->sbuf_readoffset;
+            memcpy( data, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, firstsize );
+            memcpy( data + firstsize, uade_struct->soundbuffer, src->blocksize - firstsize );
+        } else {
+            memcpy( data, uade_struct->soundbuffer + uade_struct->sbuf_readoffset, src->blocksize );
+        }
+        uade_struct->sbuf_readoffset = ( uade_struct->sbuf_readoffset + src->blocksize ) % rbsize;*/
+
     memcpy( data, uade_struct->soundbuffer, readBytes );
-        
+
     GST_BUFFER_SIZE ( buf ) = readBytes;
     GST_BUFFER_TIMESTAMP ( buf ) = GST_CLOCK_TIME_NONE;
 

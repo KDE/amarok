@@ -65,12 +65,13 @@ class GstEngine : public EngineBase
         void                                     stopAtEnd();
         
     private:
+        static GstEngine*                        instance() { return s_instance; }
         /** Called at end of track */
         static void                              eos_cb( GstElement*, GstElement* );
         /** Duplicates audio data for application side processing */
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
         
-        static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
+        static void                              typefindFound_cb( GstElement*, guint, GstCaps* caps, gpointer );
         static void                              error_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
 
         /** Get a list of available plugins from a specified Class */
@@ -83,7 +84,7 @@ class GstEngine : public EngineBase
         // ATTRIBUTES
         /////////////////////////////////////////////////////////////////////////////////////
         static GError*                           error_msg;
-        static GstEngine*                        self;
+        static GstEngine*                        s_instance;
         
         GstElement*                              m_thread;
         GstElement*                              m_audiosink;
