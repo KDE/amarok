@@ -121,7 +121,7 @@ CollectionDB::CollectionDB()
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
 
     startTimer( MONITOR_INTERVAL * 1000 );
-    
+
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 }
@@ -1306,7 +1306,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
     else
     {
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                        "VALUES ( '%1', %2, %3, %4, 0 );" )
+                         "VALUES ( '%1', %2, %3, %4, 0 );" )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
@@ -1324,9 +1324,9 @@ CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *c
         path = path.left( path.length() - 1 );
 
     query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
-                    .arg( conn ? "_temp" : "" )
-                    .arg( escapeString( path ) )
-                    .arg( datetime ), conn );
+              .arg( conn ? "_temp" : "" )
+              .arg( escapeString( path ) )
+              .arg( datetime ), conn );
 }
 
 
@@ -1337,7 +1337,7 @@ CollectionDB::removeSongsInDir( QString path )
         path = path.left( path.length() - 1 );
 
     query( QString( "DELETE FROM tags WHERE dir = '%1';" )
-                    .arg( escapeString( path ) ) );
+              .arg( escapeString( path ) ) );
 }
 
 
@@ -1348,9 +1348,8 @@ CollectionDB::isDirInCollection( QString path )
         path = path.left( path.length() - 1 );
 
     QStringList values =
-        query( QString(
-            "SELECT changedate FROM directories WHERE dir = '%1';" )
-            .arg( escapeString( path ) ) );
+        query( QString( "SELECT changedate FROM directories WHERE dir = '%1';" )
+                  .arg( escapeString( path ) ) );
 
     return !values.isEmpty();
 }
@@ -1360,9 +1359,8 @@ bool
 CollectionDB::isFileInCollection( const QString &url  )
 {
     QStringList values =
-        query( QString(
-            "SELECT url FROM tags WHERE url = '%1';" )
-            .arg( escapeString( url ) ) );
+        query( QString( "SELECT url FROM tags WHERE url = '%1';" )
+                  .arg( escapeString( url ) ) );
 
     return !values.isEmpty();
 }
@@ -1372,10 +1370,9 @@ QStringList
 CollectionDB::similarArtists( const QString &artist, uint count )
 {
     QStringList values =
-        query( QString(
-            "SELECT suggestion FROM related_artists WHERE artist = '%1' "
-            "LIMIT 0, %2;" )
-            .arg( escapeString( artist ) ).arg( count ) );
+        query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT 0, %2;" )
+                  .arg( escapeString( artist ) ).arg( count ) );
+
     if ( values.isEmpty() )
         Scrobbler::instance()->similarArtists( artist );
 

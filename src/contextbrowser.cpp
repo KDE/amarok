@@ -75,7 +75,6 @@ ContextBrowser::ContextBrowser( const char *name )
 {
     EngineController::instance()->attach( this );
 
-    
     m_homePage = new KHTMLPart( this, "home_page" );
     m_homePage->setDNDEnabled( true );
     m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
@@ -86,11 +85,11 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),  SmallIconSet( "gohome" ), i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ), i18n( "Current Track" ) );
     addTab( m_lyricsPage->view(), SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    
+
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
-    
+
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
     connect( m_homePage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
@@ -144,6 +143,7 @@ void ContextBrowser::setFont( const QFont &newFont )
         setStyleSheet();
 //    }
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
@@ -268,7 +268,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
         const QString timeString = QTime::currentTime().toString( "hh:mm" );
         m_metadataHistory << QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" );
     }
-    
+
     if ( currentPage() != m_currentTrackPage->view() || bundle.url() != m_currentURL || newMetaData )
         showCurrentTrack();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
@@ -281,7 +281,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
-    
+
     switch( state )
     {
         case Engine::Empty:
@@ -304,6 +304,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     }
 }
 
+
 void ContextBrowser::saveHtmlData()
 {
     QFile exportedDocument(KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "contextbrowser.html");
@@ -313,6 +314,7 @@ void ContextBrowser::saveHtmlData()
         .replace("<html>",QString("<html><head><style type=\"text/css\">%1</style></head>").arg(m_styleSheet) ); // and the stylesheet code
     exportedDocument.close();
 }
+
 
 void ContextBrowser::paletteChange( const QPalette& pal )
 {
@@ -512,7 +514,7 @@ void ContextBrowser::showHome() //SLOT
         showPage( m_homePage->view() );
         blockSignals( false );
     }
-    
+
     // Do we have to rebuild the page?
     if ( !m_dirtyHomePage ) return;
 
@@ -680,10 +682,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
         showPage( m_currentTrackPage->view() );
         blockSignals( false );
     }
-    
+
     // Do we have to rebuild the page?
     if ( !m_dirtyCurrentTrackPage ) return;
-    
+
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     m_currentURL = EngineController::instance()->bundle().url();
 
@@ -1139,6 +1141,7 @@ void ContextBrowser::setStyleSheet()
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
 }
 
+
 void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 {
     //colorscheme/font dependant parameters
@@ -1253,6 +1256,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( "#current_box-largecover-image { padding: 4px; vertical-align: bottom; }" );
 }
 
+
 void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName )
 {
     //colorscheme/font dependant parameters
@@ -1298,6 +1302,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     styleSheet += tmpCSS;
 }
 
+
 void ContextBrowser::showIntroduction()
 {
     if ( currentPage() != m_homePage->view() )
@@ -1306,9 +1311,8 @@ void ContextBrowser::showIntroduction()
         showPage( m_homePage->view() );
         blockSignals( false );
     }
-    
-    // Do we have to rebuild the page? I don't care
 
+    // Do we have to rebuild the page? I don't care
     m_homePage->begin();
     m_HTMLSource="";
     m_homePage->setUserStyleSheet( m_styleSheet );
@@ -1348,9 +1352,8 @@ void ContextBrowser::showScanning()
         showPage( m_homePage->view() );
         blockSignals( false );
     }
-    
-    // Do we have to rebuild the page? I don't care
 
+    // Do we have to rebuild the page? I don't care
     m_homePage->begin();
     m_HTMLSource="";
     m_homePage->setUserStyleSheet( m_styleSheet );
@@ -1390,9 +1393,9 @@ void ContextBrowser::showLyrics( const QString &hash )
         showPage( m_homePage->view() );
         blockSignals( false );
     }
-    
+
     if ( !m_dirtyLyricsPage ) return;
-    
+
     //remove all matches to the regExp and the song production type.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
     QString replaceMe = " \\([^}]*%1[^}]*\\)";
@@ -1545,6 +1548,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album )
     }
 }
 
+
 void
 ContextBrowser::coverRemoved( const QString &artist, const QString &album )
 {
@@ -1558,6 +1562,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album )
     }
 }
 
+
 void
 ContextBrowser::similarArtistsFetched( const QString &artist )
 {
@@ -1569,4 +1574,6 @@ ContextBrowser::similarArtistsFetched( const QString &artist )
         showCurrentTrack();
     }
 }
+
+
 #include "contextbrowser.moc"
