@@ -30,7 +30,7 @@ amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
         -lqtmcop -lkmedia2_idl -lartsflow -lsoundserver_idl -lartskde \
         -lartsgui -lartsgui_kde -lartsmodules $(LIB_KUTILS) $(LIB_KFILE) \
-        $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST) $(LIB_NMM) $(gl_libs) \
+        $(LIB_KDEUI) $(LIB_KDECORE) $(taglib_libs) $(LIB_GST) $(LIB_NMM) $(gl_libs)
 
 amarokapp_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 
