@@ -2192,11 +2192,13 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
     if ( items.count() == 1 ) {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
 
-        if ( QFile::exists( item->url().path() ) )
+        if ( QFile::exists( item->url().path() ) ) {
             //NOTE we are modal because, eg, user clears playlist while
             //this dialog is shown, then the dialog operates on the playlistitem
             //TODO not perfect as dcop clear works for instance
-            TagDialog( MetaBundle( item ), item, instance() ).exec();
+            MetaBundle bundle( item );
+            TagDialog( bundle, item, instance() ).exec();
+        }
         else
             KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
     }
