@@ -413,7 +413,7 @@
             <whatsthis>The user's name to use for connecting MySql</whatsthis>
             <default/>
         </entry>
-        <entry key="MySqlPassword" type="String">
+        <entry key="MySqlPassword" type="Password">
             <label>Password</label>
             <whatsthis>The user's password</whatsthis>
             <default/>
