@@ -967,7 +967,7 @@ void ScrobblerSubmitter::announceSubmit(
             _long = "<p>";
             _long  = i18n( "'%1' and one other track submitted",
                            "'%1' and %n other tracks submitted", tracks-1 )
-                            .arg( item->title() ).arg( tracks - 1 );
+                            .arg( item->title() );
         }
     }
     else
