@@ -21,6 +21,14 @@ namespace mysql
 #include <mysql/mysql.h>
 }
 #endif
+#ifdef USE_POSTGRESQL
+namespace postgresql
+{
+#include <postgresql/pgsql/libpq-fe.h>
+}
+#endif
+
+
 #include "sqlite/sqlite3.h"
 
 class DbConnection;
@@ -71,16 +79,29 @@ class MySqlConfig : public DbConfig
 };
 
 
+class PostgresqlConfig : public DbConfig
+{
+    public:
+        PostgresqlConfig(
+            const QString& /* conninfo*/);
+    
+        const QString conninfo() const { return m_conninfo; }
+  
+    private:
+      QString m_conninfo;
+};
+
+
 class DbConnection
 {
     public:
-        enum DbConnectionType { sqlite = 0, mysql = 1 };
+        enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
 
         DbConnection( DbConfig* /* config */ );
         virtual ~DbConnection() = 0;
 
         virtual QStringList query( const QString& /* statement */ ) = 0;
-        virtual int insert( const QString& /* statement */ ) = 0;
+        virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
         const bool isInitialized() const { return m_initialized; }
         virtual bool isConnected()const = 0;
         virtual const QString lastError() const { return "None"; }
@@ -97,7 +118,7 @@ class SqliteConnection : public DbConnection
         ~SqliteConnection();
 
         QStringList query( const QString& /* statement */ );
-        int insert( const QString& /* statement */ );
+        int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return true; }
     private:
         static void sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/);
@@ -115,12 +136,32 @@ class MySqlConnection : public DbConnection
         ~MySqlConnection();
 
         QStringList query( const QString& /* statement */ );
-        int insert( const QString& /* statement */ );
+        int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return m_connected; }
         const QString lastError() const { return m_error; }
     private:
         void setMysqlError();
         mysql::MYSQL* m_db;
+        bool m_connected;
+        QString m_error;
+};
+#endif
+
+
+#ifdef USE_POSTGRESQL
+class PostgresqlConnection : public DbConnection
+{
+    public:
+        PostgresqlConnection( PostgresqlConfig* /* config */ );
+        ~PostgresqlConnection();
+    
+        QStringList query( const QString& /* statement */ );
+        int insert( const QString& /* statement */, const QString& /* table */ );
+        bool isConnected()const { return m_connected; }
+        const QString lastError() const { return m_error; }
+    private:
+        void setPostgresqlError();
+        postgresql::PGconn* m_db;
         bool m_connected;
         QString m_error;
 };
@@ -183,6 +224,12 @@ class CollectionDB : public QObject, public EngineObserver
         static CollectionDB *instance();
 
         QString escapeString( QString string ) { return m_dbConnPool->escapeString(string); }
+        QString boolT() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
+        QString boolF() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
+        QString textColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
+        QString randomFunc() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
+        int getType() { return m_dbConnPool->getDbConnectionType(); }
+
 
         /**
          * This method returns a static DbConnection for components that want to use
@@ -202,7 +249,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //sql helper methods
         QStringList query( const QString& statement, DbConnection *conn = NULL );
-        int insert( const QString& statement, DbConnection *conn = NULL );
+        int insert( const QString& statement, const QString& table, DbConnection *conn = NULL );
 
         //table management methods
         bool isEmpty();

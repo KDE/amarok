@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>351</width>
-            <height>163</height>
+            <height>213</height>
         </rect>
     </property>
     <property name="caption">
@@ -172,10 +172,34 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>postgresqlConfig</cstring>
+            </property>
+            <property name="title">
+                <string>Postgresql Configuration</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Conninfo:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit">
+                    <property name="name">
+                        <cstring>kcfg_PostgresqlConninfo</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <includes>
     <include location="local" impldecl="in implementation">amarokconfig.h</include>
     <include location="local" impldecl="in implementation">config.h</include>
@@ -191,6 +215,7 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>knuminput.h</includehint>
+    <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>

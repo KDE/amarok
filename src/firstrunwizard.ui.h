@@ -54,9 +54,9 @@ FirstRunWizard::init()
     dbActiveLabel->disconnect( SIGNAL(linkClicked( const QString& )) );
     connect( dbActiveLabel, SIGNAL(linkClicked( const QString& )), SLOT(openLink( const QString &)) );
     setFinishEnabled ( WizardPage_4, true );
-    #ifndef USE_MYSQL
+#if !defined(USE_MYSQL) && !defined(USE_POSTGRESQL)
         removePage(WizardPage_3);
-    #endif
+#endif
 
 }
 

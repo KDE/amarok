@@ -119,6 +119,17 @@ if test x$amarok_warning_mysql_notfound = xyes; then
 
 fi
 
+if test x$amarok_warning_postgresql_notfound = xyes; then
+    echo " =========================="
+    echo " ===  amaroK - WARNING  ========================================================"
+    echo " =========================="
+    echo " ="
+    echo " = pg_config could not be found, this means that support for Postgresql"
+    echo " = will be disabled."
+    echo " ="
+
+fi
+
 if test x$no_engine = xyes; then
     all_tests=bad
     echo " =================================="
@@ -186,6 +197,10 @@ else
 
     if test x$enable_mysql = xyes; then
         echo " =   + MySql support"
+    fi
+
+    if test x$enable_postgresql = xyes; then
+        echo " =   + Postgresql support"
     fi
 
     if test x$have_konqsidebar = xyes; then

@@ -39,6 +39,7 @@ INCLUDES = \
     $(taglib_includes) \
     $(sqlite_includes) \
     $(mysql_includes) \
+    $(postgresql_includes) \
     $(all_includes)
 
 amarokapp_SOURCES = \
@@ -110,7 +111,8 @@ amarokapp_LDADD = \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) $(LIB_TUNEPIMP) \
-    $(mysql_libs)
+    $(mysql_libs) \
+    $(postgresql_libs)
 
 amarokapp_LDFLAGS = \
     $(all_libraries) \

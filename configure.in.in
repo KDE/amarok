@@ -432,6 +432,43 @@ AC_SUBST(mysql_libs)
 
 
 ###############################################################################
+# BEGIN POSTGRESQL CHECK
+###############################################################################
+
+AC_ARG_ENABLE(postgresql,
+    AC_HELP_STRING([--enable-postgresql],[build amaroK with Postgresql support [default=disabled]]),
+    [enable_postgresql=$enableval],
+    [enable_postgresql=no]
+)
+
+if test "$enable_postgresql" = "yes"; then
+
+    AC_CHECK_PROG(POSTGRESQL_CONFIG, pg_config, yes)
+
+    if test x$POSTGRESQL_CONFIG = xyes; then
+        AC_DEFINE(USE_POSTGRESQL, 1, [Postgresql database support enabled])
+
+        postgresql_includes=-I`pg_config --includedir`
+        postgresql_libs="-L`pg_config --libdir` -lpq"
+    else
+        amarok_warning_postgresql_notfound=yes
+        enable_postgresql=no
+    fi
+
+    AC_DEFINE(USE_POSTGRESQL, 1, [Postgresql database support enabled])
+fi
+
+AM_CONDITIONAL(enable_postgresql, test x$enable_postgresql = xyes)
+AC_SUBST(postgresql_includes)
+AC_SUBST(postgresql_libs)
+
+###############################################################################
+# END POSTGRESQL CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN XMMS CHECK
 ###############################################################################
 

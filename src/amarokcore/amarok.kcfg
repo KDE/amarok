@@ -415,6 +415,14 @@
     </entry>
 </group>
 
+<group name="Postgresql">
+    <entry key="PostgresqlConninfo" type="String">
+        <label>Host</label>
+        <whatsthis>The connection info for the Postgresql server</whatsthis>
+        <default>host=amarok dbname=amarok user=amarok password=changeme</default>
+    </entry>
+</group>
+
 <group name="Scrobbler">
         <entry key="SubmitPlayedSongs" type="Bool">
             <label>SubmitPlayedSongs</label>

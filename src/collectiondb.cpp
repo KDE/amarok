@@ -170,7 +170,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
  * @return          The rowid of the inserted item.
  */
 int
-CollectionDB::insert( const QString& statement, DbConnection *conn )
+CollectionDB::insert( const QString& statement, const QString& table, DbConnection *conn )
 {
     if ( DEBUG )
         debug() << "insert-start: " << statement << endl;
@@ -187,7 +187,7 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
         dbConn = m_dbConnPool->getDbConnection();
     }
 
-    int id = dbConn->insert( statement );
+    int id = dbConn->insert( statement, table );
 
     if ( conn == NULL )
     {
@@ -207,7 +207,16 @@ CollectionDB::insert( const QString& statement, DbConnection *conn )
 bool
 CollectionDB::isEmpty()
 {
-    QStringList values = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
+    QStringList values;
+    
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) 
+    {
+        values = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
+    } 
+    else 
+    {
+        values = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
+    }      
 
     return values.isEmpty() ? true : values.first() == "0";
 }
@@ -216,9 +225,19 @@ CollectionDB::isEmpty()
 bool
 CollectionDB::isValid()
 {
-    QStringList values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
-    QStringList values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" );
-
+    QStringList values1;
+    QStringList values2;
+    
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+        values1 = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
+        values2 = query( "SELECT COUNT( url ) FROM statistics OFFSET 0 LIMIT 1;" );
+    } 
+    else 
+    {
+        values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
+        values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" );
+    }
+    
     //TODO? this returns true if value1 or value2 is not empty. Shouldn't this be and (&&)???
     return !values1.isEmpty() || !values2.isEmpty();
 }
@@ -231,15 +250,15 @@ CollectionDB::createTables( DbConnection *conn )
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
-                    "url VARCHAR(255),"
-                    "dir VARCHAR(255),"
+                    "url " + textColumnType() + ","
+                    "dir " + textColumnType() + ","
                     "createdate INTEGER,"
                     "album INTEGER,"
                     "artist INTEGER,"
                     "genre INTEGER,"
-                    "title VARCHAR(255),"
+                    "title " + textColumnType() + ","
                     "year INTEGER,"
-                    "comment VARCHAR(255),"
+                    "comment " + textColumnType() + ","
                     "track NUMERIC(4),"
                     "bitrate INTEGER,"
                     "length INTEGER,"
@@ -248,54 +267,72 @@ CollectionDB::createTables( DbConnection *conn )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" ), conn );
 
-    QString autoIncrement = "";
-    if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
+    QString albumAutoIncrement = "";
+    QString artistAutoIncrement = "";
+    QString genreAutoIncrement = "";
+    QString yearAutoIncrement = "";
+    if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
     {
-        autoIncrement = "AUTO_INCREMENT";
+        query( QString( "CREATE %1 SEQUENCE album%2_seq;" ).arg( conn ? "TEMPORARY" : "" ).arg( conn ? "_temp" : "" ), conn );
+        query( QString( "CREATE %1 SEQUENCE artist%2_seq;" ).arg( conn ? "TEMPORARY" : "" ).arg( conn ? "_temp" : "" ), conn );
+        query( QString( "CREATE %1 SEQUENCE genre%2_seq;" ).arg( conn ? "TEMPORARY" : "" ).arg( conn ? "_temp" : "" ), conn );
+        query( QString( "CREATE %1 SEQUENCE year%2_seq;" ).arg( conn ? "TEMPORARY" : "" ).arg( conn ? "_temp" : "" ), conn );
+
+        albumAutoIncrement = QString("DEFAULT nextval('album%1_seq')").arg( conn ? "_temp" : "" );
+        artistAutoIncrement = QString("DEFAULT nextval('artist%1_seq')").arg( conn ? "_temp" : "" );
+        genreAutoIncrement = QString("DEFAULT nextval('genre%1_seq')").arg( conn ? "_temp" : "" );
+        yearAutoIncrement = QString("DEFAULT nextval('year%1_seq')").arg( conn ? "_temp" : "" );
+    }
+    else if ( m_dbConnPool->getDbConnectionType() == DbConnection::mysql )
+    {
+        albumAutoIncrement = "AUTO_INCREMENT";
+        artistAutoIncrement = "AUTO_INCREMENT";
+        genreAutoIncrement = "AUTO_INCREMENT";
+        yearAutoIncrement = "AUTO_INCREMENT";
     }
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
                     "id INTEGER PRIMARY KEY %3,"
-                    "name VARCHAR(255) );" )
+                    "name " + textColumnType() + ");" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" )
-                    .arg( autoIncrement ), conn );
+                    .arg( albumAutoIncrement ), conn );
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
                     "id INTEGER PRIMARY KEY %3,"
-                    "name VARCHAR(255) );" )
+                    "name " + textColumnType() + ");" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" )
-                    .arg( autoIncrement ), conn );
+                    .arg( artistAutoIncrement ), conn );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
                     "id INTEGER PRIMARY KEY %3,"
-                    "name VARCHAR(255) );" )
+                    "name " + textColumnType() +");" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" )
-                    .arg( autoIncrement ), conn );
+                    .arg( genreAutoIncrement ), conn );
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
                     "id INTEGER PRIMARY KEY %3,"
-                    "name VARCHAR(4) );" )
+                    "name " + textColumnType() + ");" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" )
-                    .arg( autoIncrement ), conn );
+                    .arg( yearAutoIncrement ), conn );
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
-                    "path VARCHAR(255),"
-                    "artist VARCHAR(255),"
-                    "album VARCHAR(255) );" )
+                    "path " + textColumnType() + ","
+                    "artist " + textColumnType() + ","
+                    "album " + textColumnType() + ");" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" ), conn );
 
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
-                    "dir VARCHAR(255) UNIQUE,"
+                    "dir " + textColumnType() + " UNIQUE,"
                     "changedate INTEGER );" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" ), conn );
@@ -315,8 +352,8 @@ CollectionDB::createTables( DbConnection *conn )
     {
         // create related artists cache
         query( QString( "CREATE TABLE related_artists ("
-                        "artist VARCHAR(255),"
-                        "suggestion VARCHAR(255),"
+                        "artist " + textColumnType() + ","
+                        "suggestion " + textColumnType() + ","
                         "changedate INTEGER );" ) );
 
         query( "CREATE INDEX url_tag ON tags( url );" );
@@ -351,6 +388,14 @@ CollectionDB::dropTables( DbConnection *conn )
     {
         query( QString( "DROP TABLE related_artists;" ) );
     }
+    
+    if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
+    {
+        query( QString( "DROP SEQUENCE album%1_seq;" ).arg( conn ? "_temp" : "" ), conn );
+        query( QString( "DROP SEQUENCE artist%1_seq;" ).arg( conn ? "_temp" : "" ), conn );
+        query( QString( "DROP SEQUENCE genre%1_seq;" ).arg( conn ? "_temp" : "" ), conn );
+        query( QString( "DROP SEQUENCE year%1_seq;" ).arg( conn ? "_temp" : "" ), conn );
+    }
 }
 
 
@@ -383,13 +428,13 @@ CollectionDB::clearTables( DbConnection *conn )
 void
 CollectionDB::moveTempTables( DbConnection *conn )
 {
-    insert( "INSERT INTO tags SELECT * FROM tags_temp;", conn );
-    insert( "INSERT INTO album SELECT * FROM album_temp;", conn );
-    insert( "INSERT INTO artist SELECT * FROM artist_temp;", conn );
-    insert( "INSERT INTO genre SELECT * FROM genre_temp;", conn );
-    insert( "INSERT INTO year SELECT * FROM year_temp;", conn );
-    insert( "INSERT INTO images SELECT * FROM images_temp;", conn );
-    insert( "INSERT INTO directories SELECT * FROM directories_temp;", conn );
+    insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL, conn );
+    insert( "INSERT INTO album SELECT * FROM album_temp;", NULL, conn );
+    insert( "INSERT INTO artist SELECT * FROM artist_temp;", NULL, conn );
+    insert( "INSERT INTO genre SELECT * FROM genre_temp;", NULL, conn );
+    insert( "INSERT INTO year SELECT * FROM year_temp;", NULL, conn );
+    insert( "INSERT INTO images SELECT * FROM images_temp;", NULL, conn );
+    insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL, conn );
 }
 
 
@@ -400,7 +445,7 @@ CollectionDB::createStatsTable()
 
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
-                    "url VARCHAR(255) UNIQUE,"
+                    "url " + textColumnType() + " UNIQUE,"
                     "createdate INTEGER,"
                     "accessdate INTEGER,"
                     "percentage FLOAT,"
@@ -547,7 +592,7 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, const b
     {
         id = insert( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
                         .arg( name )
-                        .arg( CollectionDB::instance()->escapeString( value ) ), conn );
+                        .arg( CollectionDB::instance()->escapeString( value ) ), name, conn );
 
         return id;
     }
@@ -585,11 +630,22 @@ CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id 
 QStringList
 CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
 {
-    return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
-                           "( tags.sampler = 1 OR tags.artist = %2 ) AND year.id = tags.year "
-                           "ORDER BY tags.track;" )
-                     .arg( album_id )
-                     .arg( artist_id ) );
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+        return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+                               "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
+                               "ORDER BY tags.track;" )
+                      .arg( album_id )
+                      .arg( boolT() )
+                      .arg( artist_id ) );
+    }
+    else
+    {
+        return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
+                              "( tags.sampler = 1 OR tags.artist = %2 ) AND year.id = tags.year "
+                              "ORDER BY tags.track;" )
+                        .arg( album_id )
+                        .arg( artist_id ) );
+    }
 }
 
 
@@ -606,7 +662,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
          .arg( conn ? "_temp" : "" )
          .arg( escapeString( image ) )
          .arg( escapeString( (*it).first ) )
-         .arg( escapeString( (*it).second ) ), conn );
+         .arg( escapeString( (*it).second ) ), NULL, conn );
     }
 }
 
@@ -967,23 +1023,46 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
 QStringList
 CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool withCompilations )
 {
-    return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
-                  "tags.album = album.id AND tags.artist = artist.id "
-                  "AND artist.name = '" + escapeString( artist ) + "' " +
-                  ( withUnknown ? QString::null : "AND album.name <> '' " ) +
-                  ( withCompilations ? QString::null : "AND tags.sampler = 0 " ) +
-                  "ORDER BY lower( album.name );" );
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) 
+    {
+        return query( "SELECT DISTINCT album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
+                      "tags.album = album.id AND tags.artist = artist.id "
+                      "AND artist.name = '" + escapeString( artist ) + "' " +
+                      ( withUnknown ? QString::null : "AND album.name <> '' " ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
+                      " ORDER BY lower( album.name );" );
+    }
+    else
+    {
+        return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
+                      "tags.album = album.id AND tags.artist = artist.id "
+                      "AND artist.name = '" + escapeString( artist ) + "' " +
+                      ( withUnknown ? QString::null : "AND album.name <> '' " ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
+                      " ORDER BY lower( album.name );" );
+    }
 }
 
 
 QStringList
 CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
-    return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
-                  "tags.album = album.id AND tags.artist = artist.id " +
-                  ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                  ( withCompilations ? QString::null : "AND tags.sampler = 0 " ) +
-                  "ORDER BY lower( album.name );" );
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) 
+    {
+        return query( "SELECT DISTINCT artist.name, album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
+                      "tags.album = album.id AND tags.artist = artist.id " +
+                      ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + 
+                      " ORDER BY lower( album.name );" );
+    }
+    else
+    {
+        return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
+                      "tags.album = album.id AND tags.artist = artist.id " +
+                      ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + 
+                      " ORDER BY lower( album.name );" );
+    }
 }
 
 
@@ -1024,7 +1103,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     command += escapeString( bundle->title() ) + "','";
     command += escapeString( bundle->comment() ) + "', ";
     command += ( bundle->track().isEmpty() ? "NULL" : escapeString( bundle->track() ) ) + " , ";
-    command += artist == i18n( "Various Artists" ) ? "1," : "0,";
+    command += artist == i18n( "Various Artists" ) ? boolT() + "," : boolF() + ",";
 
     // NOTE any of these may be -1 or -2, this is what we want
     //      see MetaBundle::Undetermined
@@ -1034,7 +1113,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
-    insert( command, conn );
+    insert( command, NULL, conn );
     return true;
 }
 
@@ -1193,13 +1272,22 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
         // entry exists, increment playcounter and update accesstime
         score = ( ( values[2].toDouble() * values.first().toInt() ) + percentage ) / ( values.first().toInt() + 1 );
 
-        query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                        "VALUES ( '%1', %2, %3, %4, %5 );" )
-                        .arg( escapeString( url ) )
-                        .arg( values[1] )
-                        .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( score )
-                        .arg( values[0] + " + 1" ) );
+        if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+            query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2+1 WHERE url='%3';" )
+                            .arg( score )
+                            .arg( values[0] + " + 1" )
+                            .arg( escapeString( url ) ) );
+        } 
+        else
+        {
+            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+                            "VALUES ( '%1', %2, %3, %4, %5 );" )
+                            .arg( escapeString( url ) )
+                            .arg( values[1] )
+                            .arg( QDateTime::currentDateTime().toTime_t() )
+                            .arg( score )
+                            .arg( values[0] + " + 1" ) );
+        }
     }
     else
     {
@@ -1211,7 +1299,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( score ) );
+                        .arg( score ), NULL );
     }
 
     int iscore = getSongPercentage( url );
@@ -1247,14 +1335,22 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
 
     if ( !values.isEmpty() )
     {
-        // entry exists
-        query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
-                        "VALUES ( '%1', '%2', '%3', %4, %5 );" )
-                        .arg( escapeString( url ) )
-                        .arg( values[1] )
-                        .arg( values[2] )
-                        .arg( percentage )
-                        .arg( values[0] ) );
+        if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+            query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%2';" )
+                            .arg( percentage )
+                            .arg( escapeString( url ) ) );
+        } 
+        else
+        {
+            // entry exists
+            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+                            "VALUES ( '%1', '%2', '%3', %4, %5 );" )
+                            .arg( escapeString( url ) )
+                            .arg( values[1] )
+                            .arg( values[2] )
+                            .arg( percentage )
+                            .arg( values[0] ) );
+        }
     }
     else
     {
@@ -1263,7 +1359,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
                         .arg( escapeString( url ) )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( percentage ) );
+                        .arg( percentage ), NULL );
     }
 
     emit scoreChanged( url, percentage );
@@ -1276,10 +1372,19 @@ CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *c
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
 
-    query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
-              .arg( conn ? "_temp" : "" )
-              .arg( escapeString( path ) )
-              .arg( datetime ), conn );
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+        query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
+                        .arg( conn ? "_temp" : "" )
+                        .arg( datetime )
+                        .arg( escapeString( path ) ), conn );
+    }
+    else
+    {
+        query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
+                  .arg( conn ? "_temp" : "" )
+                  .arg( escapeString( path ) )
+                  .arg( datetime ), conn );
+    }
 }
 
 
@@ -1333,9 +1438,17 @@ CollectionDB::removeSongs( const KURL::List& urls )
 QStringList
 CollectionDB::similarArtists( const QString &artist, uint count )
 {
-    QStringList values =
-        query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT 0, %2;" )
-                  .arg( escapeString( artist ) ).arg( count ) );
+    QStringList values;
+    
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
+        values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' OFFSET 0 LIMIT %2;" )
+                                 .arg( escapeString( artist ) ).arg( count ) );  
+    }
+    else 
+    {
+        values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT 0, %2;" )
+                                 .arg( escapeString( artist ) ).arg( count ) );
+    }
 
     if ( values.isEmpty() )
         Scrobbler::instance()->similarArtists( artist );
@@ -1369,8 +1482,8 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary, DbCo
         if ( artists.count() > dirs.count() )
         {
             debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
-            query( QString( "UPDATE tags_temp SET sampler = 1 WHERE album = '%1';" )
-                      .arg( album_id ), conn );
+            query( QString( "UPDATE tags_temp SET sampler = %1 WHERE album = '%2';" )
+                            .arg(boolT()).arg( album_id ), conn );
         }
     }
 }
@@ -1450,7 +1563,7 @@ CollectionDB::applySettings()
     {
         recreateConnections = true;
     }
-    else if ( AmarokConfig::databaseEngine().toInt() != 0 )
+    else if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
     {
         // Using MySQL, so check if MySQL settings were changed
         const MySqlConfig *config =
@@ -1475,6 +1588,15 @@ CollectionDB::applySettings()
         {
             recreateConnections = true;
         }
+    }
+    else if ( AmarokConfig::databaseEngine().toInt() == DbConnection::postgresql )
+    {
+      const PostgresqlConfig *config =
+          static_cast<const PostgresqlConfig*> ( m_dbConnPool->getDbConfig() );
+      if ( AmarokConfig::postgresqlConninfo() != config->conninfo() )
+      {
+          recreateConnections = true;
+      }
     }
     if ( recreateConnections )
     {
@@ -1624,7 +1746,7 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
         foreach( suggestions )
             CollectionDB::instance()->insert( sql
                     .arg( escapedArtist )
-                    .arg( CollectionDB::instance()->escapeString( *it ) ) );
+                    .arg( CollectionDB::instance()->escapeString( *it ) ), NULL );
 
         return true;
     }
@@ -1852,7 +1974,7 @@ QStringList SqliteConnection::query( const QString& statement )
 }
 
 
-int SqliteConnection::insert( const QString& statement )
+int SqliteConnection::insert( const QString& statement, const QString& /* table */ )
 {
     int error;
     const char* tail;
@@ -2023,7 +2145,7 @@ QStringList MySqlConnection::query( const QString& statement )
 }
 
 
-int MySqlConnection::insert( const QString& statement )
+int MySqlConnection::insert( const QString& statement, const QString& /* table */ )
 {
     mysql::mysql_query( m_db, statement.utf8() );
     return mysql::mysql_insert_id( m_db );
@@ -2037,6 +2159,162 @@ MySqlConnection::setMysqlError()
             + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure amaroK</p>");
 }
 #endif
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS PostgresqlConnection
+//////////////////////////////////////////////////////////////////////////////////////////
+
+#ifdef USE_POSTGRESQL
+PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
+    : DbConnection( config )
+{
+    debug() << k_funcinfo << endl;
+    
+    m_initialized = false;
+    m_connected = false;
+    if ( config->conninfo().isEmpty() )
+        pApp->slotConfigAmarok("Postgresql");
+
+    m_db = postgresql::PQconnectdb( config->conninfo().latin1() );
+    if (!m_db) 
+    {
+        debug() << "POSTGRESQL CONNECT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n";
+        error() << "Failed to allocate/initialize Postgresql struct\n";
+        setPostgresqlError();
+        return;
+    }
+    
+    if (postgresql::PQstatus(m_db) != postgresql::CONNECTION_OK) 
+    {
+        debug() << "POSTGRESQL CONNECT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n";
+        error() << "Failed to allocate/initialize Postgresql struct\n";
+        setPostgresqlError();
+        PQfinish(m_db);
+        m_db = NULL;
+        return;
+    }
+
+    m_initialized = true;
+    m_connected = true;
+}
+
+
+PostgresqlConnection::~PostgresqlConnection()
+{
+    if ( m_db ) postgresql::PQfinish( m_db );
+}
+
+
+QStringList PostgresqlConnection::query( const QString& statement )
+{
+    QStringList values;
+    postgresql::PGresult* result;
+    postgresql::ExecStatusType status;
+
+    result = postgresql::PQexec(m_db, statement.utf8());
+    if (result == NULL) 
+    {
+        debug() << "POSTGRESQL QUERY FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        return values;
+    }
+
+    status = postgresql::PQresultStatus(result);
+    if ((status != postgresql::PGRES_COMMAND_OK) && (status != postgresql::PGRES_TUPLES_OK))
+    {
+        debug() << "POSTGRESQL QUERY FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        PQclear(result);
+        return values;
+    }
+
+    int cols = postgresql::PQnfields( result );
+    int rows = postgresql::PQntuples( result );
+    QMap<int, bool> discardCols;
+    for(int col=0; col< cols; col++) {
+        if (QString(PQfname(result, col)) == QString("__discard"))
+        {
+            discardCols[col] = true; 
+        }
+    }
+
+    for(int row=0; row< rows; row++) 
+    {
+        for(int col=0; col< cols; col++) 
+        {
+            if (discardCols[col]) continue;
+            
+            values << QString::fromUtf8(postgresql::PQgetvalue(result, row, col));
+        }
+    }
+
+    postgresql::PQclear(result);
+
+    return values;
+}
+
+
+int PostgresqlConnection::insert( const QString& statement, const QString& table )
+{
+    postgresql::PGresult* result;
+    postgresql::ExecStatusType status;
+    QString curvalSql;
+    int id;
+  
+    result = postgresql::PQexec(m_db, statement.utf8());
+    if (result == NULL) 
+    {
+        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
+        return 0;
+    }
+  
+    status = postgresql::PQresultStatus(result);
+    if (status != postgresql::PGRES_COMMAND_OK)
+    {
+        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
+        PQclear(result);
+        return 0;
+    }
+    PQclear(result);
+
+    if (table == NULL) return 0;
+
+    curvalSql = QString("SELECT currval('%1_seq');").arg(table);
+    result = postgresql::PQexec(m_db, curvalSql.utf8());
+    if (result == NULL) 
+    {
+        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
+        return 0;
+    }
+
+    status = postgresql::PQresultStatus(result);
+    if (status != postgresql::PGRES_TUPLES_OK)
+    {
+        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
+        PQclear(result);
+        return 0;
+    }
+
+    if ((postgresql::PQnfields( result ) != 1) || (postgresql::PQntuples( result ) != 1)) 
+    {
+        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
+        PQclear(result);
+        return 0;      
+    }
+
+    id = QString::fromUtf8(postgresql::PQgetvalue(result, 0, 0)).toInt();
+    PQclear(result);
+
+    return id;
+}
+
+
+void PostgresqlConnection::setPostgresqlError()
+{
+    m_error = i18n("Postgresql reported the following error:<br>") + postgresql::PQerrorMessage(m_db)
+            + i18n("<p>You can configure Postgresql in the Collection section under Settings->Configure amaroK</p>");
+}
+#endif
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -2069,14 +2347,30 @@ MySqlConfig::MySqlConfig(
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
+// CLASS PostgresqlConfig
+//////////////////////////////////////////////////////////////////////////////////////////
+
+PostgresqlConfig::PostgresqlConfig(
+    const QString& conninfo )
+    : m_conninfo( conninfo )
+{
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
 // CLASS DbConnectionPool
 //////////////////////////////////////////////////////////////////////////////////////////
 
 DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
 {
 #ifdef USE_MYSQL
-    if ( AmarokConfig::databaseEngine() == "1" )
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::mysql )
         m_dbConnType = DbConnection::mysql;
+    else
+#endif
+#ifdef USE_POSTGRESQL
+    if ( AmarokConfig::databaseEngine().toInt() == DbConnection::postgresql )
+        m_dbConnType = DbConnection::postgresql;
     else
 #endif
         m_dbConnType = DbConnection::sqlite;
@@ -2097,13 +2391,21 @@ DbConnectionPool::DbConnectionPool() : m_semaphore( POOL_SIZE )
         dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
     }
     else
-    {
 #endif
+#ifdef USE_POSTGRESQL
+    if ( m_dbConnType == DbConnection::postgresql )
+    {
+        m_dbConfig =
+            new PostgresqlConfig(
+                AmarokConfig::postgresqlConninfo() );
+        dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( m_dbConfig ) );
+    }
+    else
+#endif
+    {
         m_dbConfig = new SqliteConfig( "collection.db" );
         dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
-#ifdef USE_MYSQL
     }
-#endif
     enqueue( dbConn );
     m_semaphore--;
     debug() << "Available db connections: " << m_semaphore.available() << endl;
@@ -2141,6 +2443,11 @@ void DbConnectionPool::createDbConnections()
 #ifdef USE_MYSQL
         if ( m_dbConnType == DbConnection::mysql )
             dbConn = new MySqlConnection( static_cast<MySqlConfig*> ( m_dbConfig ) );
+        else
+#endif
+#ifdef USE_POSTGRESQL
+        if ( m_dbConnType == DbConnection::postgresql )
+            dbConn = new PostgresqlConnection( static_cast<PostgresqlConfig*> ( m_dbConfig ) );
         else
 #endif
             dbConn = new SqliteConnection( static_cast<SqliteConfig*> ( m_dbConfig ) );
@@ -2241,7 +2548,7 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( 0 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
@@ -2260,14 +2567,24 @@ QueryBuilder::addFilter( int tables, const QString& filter, int /*mode*/ )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( 0 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
 
-        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-
+        if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
+            if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            if ( tables & tabYear ) m_where += "OR year.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            if ( tables & tabSong ) m_where += "OR tags.title ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+        }
+        else
+        {
+            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+        }
+        
         m_where += " ) ";
     }
 
@@ -2280,16 +2597,26 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( 1 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
-            m_where += " AND ( 0 ";
-            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            m_where += " AND ( " + CollectionDB::instance()->boolF() + " ";
+            if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
+                if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+                if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+                if ( tables & tabGenre ) m_where += "OR genre.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+                if ( tables & tabYear ) m_where += "OR year.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+                if ( tables & tabSong ) m_where += "OR tags.title ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+            }
+            else
+            {
+                if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+                if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+                if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+                if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+                if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
+            }
             m_where += " ) ";
         }
 
@@ -2305,7 +2632,7 @@ QueryBuilder::addMatch( int tables, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( 0 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
         if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
@@ -2331,7 +2658,7 @@ QueryBuilder::addMatch( int tables, int value, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( 0 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
         m_where += QString( "OR %1.%2 LIKE '" ).arg( tableName( tables ) ).arg( valueName( value ) ) + CollectionDB::instance()->escapeString( match ) + "' ";
 
         if ( ( value & valName ) && match == i18n( "Unknown" ) )
@@ -2349,7 +2676,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( 0 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
 
         for ( uint i = 0; i < match.count(); i++ )
         {
@@ -2381,12 +2708,22 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( 1 ";
-        if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabYear ) m_where += "AND year.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        if ( tables & tabSong ) m_where += "AND tags.title <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
+        if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
+          if ( tables & tabAlbum ) m_where += "AND album.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+          if ( tables & tabArtist ) m_where += "AND artist.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+          if ( tables & tabGenre ) m_where += "AND genre.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+          if ( tables & tabYear ) m_where += "AND year.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+          if ( tables & tabSong ) m_where += "AND tags.title !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+        }
+        else
+        {
+            if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabYear ) m_where += "AND year.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabSong ) m_where += "AND tags.title <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+        }
         m_where += " ) ";
     }
 
@@ -2399,7 +2736,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( 1 ";
+        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
         if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
@@ -2446,14 +2783,14 @@ QueryBuilder::setOptions( int options )
     if ( options & optNoCompilations || options & optOnlyCompilations )
         m_linkTables |= tabSong;
 
-    if ( options & optNoCompilations ) m_where += "AND tags.sampler = 0 ";
-    if ( options & optOnlyCompilations ) m_where += "AND tags.sampler = 1 ";
+    if ( options & optNoCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolF());
+    if ( options & optOnlyCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolT());
     if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
 
     if ( options & optRandomize )
     {
         if ( !m_sort.isEmpty() ) m_sort += ",";
-        m_sort += "RAND() ";
+        m_sort += CollectionDB::instance()->randomFunc() + " ";
     }
 }
 
@@ -2475,10 +2812,28 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     m_sort += tableName( table ) + ".";
     m_sort += valueName( value );
 
-    if ( table & tabYear ) m_sort += "+0)";
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql) 
+    {
+        if ( table & tabYear ) m_sort += ")";
+    }
+    else
+    {
+        if ( table & tabYear ) m_sort += "+0)";  
+    }
+
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
 
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    {
+        if (!m_values.isEmpty()) m_values += ",";
+        if ( b ) m_values += "LOWER( ";
+        m_values += tableName( table ) + ".";
+        m_values += valueName( value );
+        if ( b ) m_values += ")";
+        m_values += " as __discard ";
+    }
+    
     m_linkTables |= table;
 }
 
@@ -2496,7 +2851,14 @@ QueryBuilder::groupBy( int table, int value )
 void
 QueryBuilder::setLimit( int startPos, int length )
 {
-    m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql) 
+    {
+        m_limit = QString( " OFFSET %1 LIMIT %2 " ).arg( startPos ).arg( length );
+    }
+    else
+    {
+        m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
+    }
 }
 
 
@@ -2525,7 +2887,7 @@ QueryBuilder::buildQuery()
     {
         linkTables( m_linkTables );
 
-        m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE 1 " + m_where;
+        m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE " + CollectionDB::instance()->boolT() + " " + m_where;
         if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
         if ( !m_group.isEmpty() ) m_query += " GROUP BY " + m_group;
         m_query += m_limit;
@@ -2564,12 +2926,12 @@ QueryBuilder::tableName( int table )
 {
     QString tables;
 
-    if ( table & tabSong )   tables += ",tags";
     if ( table & tabArtist ) tables += ",artist";
     if ( table & tabAlbum )  tables += ",album";
     if ( table & tabGenre )  tables += ",genre";
     if ( table & tabYear )   tables += ",year";
     if ( table & tabStats )  tables += ",statistics";
+    if ( table & tabSong )   tables += ",tags";
 
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );

@@ -30,6 +30,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
+#include "collectiondb.h"
 
 #include <qcombobox.h>
 #include <qgroupbox.h>
@@ -103,9 +104,11 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         m_opt1->kcfg_RecodeEncoding->insertItem( codec->name() );
 
     // Collection
-#ifndef USE_MYSQL
+#if !defined(USE_MYSQL) && !defined(USE_POSTGRESQL)
     m_opt7->databaseBox->hide();
+#endif
 
+#ifndef USE_MYSQL
     //FIXME we do this because this widget breaks the Apply button (always enabled).
     //It breaks because it is set to type="password" in the .kcfg file. Setting to
     //type="string" also fixes this bug, but means the password is stored in plain
@@ -114,6 +117,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     delete m_opt7->dbSetupFrame->kcfg_MySqlPassword;
 #endif
     m_opt7->collectionFoldersBox->setColumns( 1 );
+    m_opt7->setMinimumHeight(600);
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
 
     // add pages
@@ -136,7 +140,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     for( QObject *label = list->first(); label; label = list->next() )
         static_cast<QLabel*>(label)->setMaximumWidth( 250 );
     delete list;
-
+    
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
     connect( opt5, SIGNAL(settingsChanged()), SLOT(updateButtons()) ); //see options5.ui.h
