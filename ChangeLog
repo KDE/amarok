@@ -3,6 +3,8 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * fix: make loading playlist not block UI
+  * fix: on startup load playlist after UI is shown
   * fix: timedisplay also works for streams
   * fix: volume slider adjusting
   * fix: when dropping tracks to PL, order will stay the same as in FileBrowser

@@ -370,10 +370,9 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
+            uint n = 0;
             QString str, dir = ( url.protocol() == "file" ) ? url.directory( false ) : url.url( 1 );
             QTextStream stream( &file );
-
-
 
             while ( ( str = stream.readLine() ) != QString::null )
             {
@@ -387,6 +386,8 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
 
                     pCurr = addItem( pCurr, str );
                 }
+                //give UI time to breathe :)
+                if ( !( n++ % 100 ) )  kapp->processEvents();
             }
             file.close();
             success = true;
@@ -406,6 +407,7 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
+            uint n = 0;
             QString str;
             QTextStream stream( &file );
 
@@ -419,6 +421,8 @@ bool PlaylistWidget::loadPlaylist( KURL url, QListViewItem *destination )
                     if ( str.startsWith( "Title" ) )
                         pCurr->setText( 0, str.section( "=", -1 ) );
                 }
+                //give UI time to breathe :)
+                if ( !( n++ % 100 ) )  kapp->processEvents();
             }
             file.close();
             success = true;

@@ -132,7 +132,9 @@ PlayerApp::PlayerApp() :
     m_pAnimTimer->start( 25 );
 
     m_pPlayerWidget->show();
+    kapp->processEvents();
 
+    //restore last playlist    
     m_pBrowserWin->m_pPlaylistWidget->loadPlaylist( kapp->dirs()->saveLocation(
                                       "data", kapp->instanceName() + "/" ) + "current.m3u", 0 );
     m_pBrowserWin->m_pPlaylistWidget->writeUndo();
