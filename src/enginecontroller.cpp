@@ -111,6 +111,7 @@ void EngineController::stop()
 
 void EngineController::play( const MetaBundle &bundle )
 {
+    m_bundle = bundle;
     const KURL &url = bundle.url();
 
     if ( url.protocol() == "http" ) {
@@ -121,6 +122,8 @@ void EngineController::play( const MetaBundle &bundle )
     }
                         
     m_pEngine->play( url );
+    
+    newMetaDataNotify( m_bundle, true /* track change */ );
 }
 
 
@@ -158,6 +161,8 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     }
     else
         m_pEngine->play( url, isStream );
+
+    newMetaDataNotify( m_bundle, true /* track change */ );
 }
 
 
