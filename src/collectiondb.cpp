@@ -77,11 +77,31 @@ CollectionDB::CollectionDB()
     DbConnection *dbConn = m_dbConnPool.getDbConnection();
     bool initialized = dbConn->isInitialized();
     m_dbConnPool.putDbConnection( dbConn );
+    
+    KConfig* config = amaroK::config( "Collection Browser" );
     if ( !initialized || !isValid() )
     {
         createTables();
         createStatsTable();
     }
+    else
+    {
+        //remove database file if version is incompatible
+        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        {
+            kdDebug() << "Rebuilding database!" << endl;
+            dropTables();
+            createTables();
+            startScan();
+        }
+        if ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+        {
+            kdDebug() << "Rebuilding stats-database!" << endl;
+            dropStatsTable();
+            createStatsTable();
+        }
+    }
+        
     m_dbConnPool.createDbConnections();
 
 #ifdef USE_MYSQL
@@ -90,22 +110,6 @@ CollectionDB::CollectionDB()
     //optimization for speeding up SQLite
     query( "PRAGMA default_synchronous = OFF;" );
 #endif
-
-    KConfig* config = amaroK::config( "Collection Browser" );
-    //remove database file if version is incompatible
-    if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !isValid() ) )
-    {
-        kdDebug() << "Rebuilding database!" << endl;
-        dropTables();
-        createTables();
-        startScan();
-    }
-    if ( ( config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION ) || ( !isValid() ) )
-    {
-        kdDebug() << "Rebuilding stats-database!" << endl;
-        dropStatsTable();
-        createStatsTable();
-    }
     //</OPEN DATABASE>
 
     // TODO: Should write to config in dtor, but it crashes...
@@ -118,7 +122,7 @@ CollectionDB::CollectionDB()
              this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 
     // This is used when the collection folders were changed in the first-run wizard
-    connect( kapp, SIGNAL( sigScanCollection() ), this, SLOT( startScan() ) );
+//     connect( kapp, SIGNAL( sigScanCollection() ), this, SLOT( startScan() ) );
 }
 
 
@@ -1543,7 +1547,10 @@ DbConnection::DbConnection()
     {
         // Remove old db file; create new
         QFile::remove( path );
-        sqlite3_open( path, &m_db );
+        if ( sqlite3_open( path, &m_db ) == SQLITE_OK )
+        {
+            m_initialized = true;
+        }
     }
 #endif
 }

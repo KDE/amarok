@@ -129,7 +129,7 @@ App::App()
 
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
-        emit sigScanCollection();
+        CollectionDB::instance()->startScan();
 
     handleCliArgs();
 }
@@ -809,7 +809,7 @@ void App::firstRunWizard()
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
         if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
              oldCollectionFolders != AmarokConfig::collectionFolders() )
-            emit sigScanCollection();
+            CollectionDB::instance()->startScan();
     }
 }
 
