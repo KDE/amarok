@@ -32,10 +32,11 @@
 
 #include <enginecontroller.h>
 
+using namespace amaroK;
 
-amaroK::StatusBar* amaroK::StatusBar::m_self;
+StatusBar* StatusBar::m_self;
 
-amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, name )
+StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, name )
 {
     m_self = this;
     EngineController::instance()->attach( this );
@@ -47,6 +48,9 @@ amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( 
     m_progress->setMaximumHeight( fontMetrics().height() );
     m_progress->hide();
     addWidget( m_progress, 0, true );
+
+    // total songs count
+    insertItem( QString::null, ID_TOTAL);
 
     // random
     ToggleLabel *rand = new ToggleLabel( i18n( "RAND" ), this );
@@ -70,18 +74,19 @@ amaroK::StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( 
     connect( m_pTimeLabel, SIGNAL( toggled( bool ) ), this, SLOT( slotToggleTime() ) );
 
     setItemAlignment( ID_STATUS, AlignLeft|AlignVCenter );
+    setItemAlignment( ID_TOTAL, AlignCenter );
     // make the time label show itself.
     engineTrackPositionChanged( 0 );
 }
 
 
-amaroK::StatusBar::~StatusBar()
+StatusBar::~StatusBar()
 {
     EngineController::instance()->detach( this );
 }
 
 
-void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
+void StatusBar::engineStateChanged( EngineBase::EngineState state )
 {
     switch( state )
     {
@@ -97,12 +102,18 @@ void amaroK::StatusBar::engineStateChanged( EngineBase::EngineState state )
 }
 
 
-void amaroK::StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     changeItem( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ), ID_STATUS );
 }
 
-void amaroK::StatusBar::engineTrackPositionChanged( long position )
+void StatusBar::slotItemCountChanged(int newCount)
+{
+    changeItem( newCount != 1 ? i18n( "%1 songs" ).arg( newCount )
+                              : i18n( "1 song" ), ID_TOTAL );
+}
+
+void StatusBar::engineTrackPositionChanged( long position )
 {
     // TODO: Don't duplicate code
     int seconds = position / 1000;
@@ -122,12 +133,12 @@ void amaroK::StatusBar::engineTrackPositionChanged( long position )
     m_pTimeLabel->setText( str );
 }
 
-void amaroK::StatusBar::slotToggleTime()
+void StatusBar::slotToggleTime()
 {
     AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 }
 
-void amaroK::StatusBar::customEvent( QCustomEvent *e )
+void StatusBar::customEvent( QCustomEvent *e )
 {
     if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
 //         kdDebug() << k_funcinfo << "Received ProgressEvent\n";
@@ -154,25 +165,25 @@ void amaroK::StatusBar::customEvent( QCustomEvent *e )
 
 /********** ToggleLabel ****************/
 
-amaroK::ToggleLabel::ToggleLabel( const QString &text, QWidget *parent, const char *name ) :
+ToggleLabel::ToggleLabel( const QString &text, QWidget *parent, const char *name ) :
     QLabel( text, parent, name )
     , m_State( false )
     , m_ColorToggle( true )
 {
 }
 
-amaroK::ToggleLabel::~ToggleLabel()
+ToggleLabel::~ToggleLabel()
 {
 }
 
-void amaroK::ToggleLabel::setColorToggle( bool on )
+void ToggleLabel::setColorToggle( bool on )
 {
     m_ColorToggle = on;
     QColorGroup group = palette().active();
     setPaletteForegroundColor( group.text() );
 }
 
-void amaroK::ToggleLabel::mouseDoubleClickEvent ( QMouseEvent */*e*/ )
+void ToggleLabel::mouseDoubleClickEvent ( QMouseEvent */*e*/ )
 {
     m_State = !m_State;
     if( m_ColorToggle )
@@ -183,7 +194,7 @@ void amaroK::ToggleLabel::mouseDoubleClickEvent ( QMouseEvent */*e*/ )
     emit toggled( m_State );
 }
 
-void amaroK::ToggleLabel::setOn( bool on )
+void ToggleLabel::setOn( bool on )
 {
     if( m_ColorToggle )
     {

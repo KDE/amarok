@@ -321,6 +321,8 @@ void PlaylistWidget::saveXML( const QString &path ) const
 {
     //TODO save nextTrack queue
     //TODO do the write in one go rather than gradually?
+    //  <berkus>: you can generate dom tree and then let it write down
+    //            (also saves you from making stupid mistakes with raw xml =)
 
     QFile file( path );
 
@@ -419,6 +421,7 @@ void PlaylistWidget::clear() //SLOT
         list->append( item );
     }
     QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
+    emit itemCountChanged( childCount() );
 }
 
 
@@ -468,6 +471,7 @@ void PlaylistWidget::removeSelectedItems() //SLOT
         }
         else delete item;
     }
+    emit itemCountChanged( childCount() );
 }
 
 /*
@@ -550,6 +554,8 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
 
     //keep recent buffer synchronised
     m_prevTracks.remove( item ); //removes all items
+    
+    emit itemCountChanged( childCount() );
 }
 
 
@@ -1262,6 +1268,8 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
             if( e->playMe() ) activate( item );
 
             if( AmarokConfig::showMetaInfo() ) m_weaver->append( new TagReader( this, item ) );
+	    
+	    emit itemCountChanged( childCount() );
         }
         #undef e
         break;
@@ -1282,6 +1290,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
         QApplication::restoreOverrideCursor();
         restoreCurrentTrack(); //just in case the track that is playing is not set current
+	emit itemCountChanged( childCount() ); // final touch (also helps with default pls)
         break;
 
 

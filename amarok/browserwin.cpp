@@ -108,7 +108,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     QBoxLayout *layV = new QVBoxLayout( this );
     layV->addWidget( m_browsers, 10 );
     layV->addWidget( m_toolbar );
-    layV->addWidget( new amaroK::StatusBar( this, "statusbar" ) );
+    amaroK::StatusBar *statusbar = new amaroK::StatusBar( this, "statusbar" );
+    layV->addWidget( statusbar );
 
 
     m_playlist->installEventFilter( this ); //we intercept keyEvents
@@ -149,6 +150,8 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     } //</StreamBrowser>
 
 
+    connect( m_playlist, SIGNAL(itemCountChanged(int)),
+             statusbar,    SLOT(slotItemCountChanged(int)) );
     connect( m_playlist, SIGNAL( aboutToClear() ),
              m_lineEdit,   SLOT( clear() ) );
     //FIXME you need to detect focus out from the sideBar and connect to that..

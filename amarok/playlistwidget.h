@@ -109,6 +109,7 @@ class PlaylistWidget : private KListView, public EngineObserver
 
     signals:
         void aboutToClear();
+	void itemCountChanged(int newCount);
 
     public slots:
         void handleOrderPrev(); //DEPRECATE

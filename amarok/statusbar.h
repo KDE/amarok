@@ -38,6 +38,10 @@ public:
     virtual ~StatusBar();
 
     static StatusBar* self() { return m_self; }
+    
+public slots:
+    /** update total song count */
+    void slotItemCountChanged(int newCount);
 
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( EngineBase::EngineState state );
@@ -53,6 +57,7 @@ private:
 
     static StatusBar* m_self;
     static const int ID_STATUS = 1;
+    static const int ID_TOTAL  = 2;
     ToggleLabel *m_pTimeLabel;
     KProgress* m_progress;
 };

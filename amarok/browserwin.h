@@ -20,7 +20,7 @@
 
 
 #include <qwidget.h>        //baseclass
-#include <kurl.h>           //KUL::List
+#include <kurl.h>           //KURL::List
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 class BrowserBar;
