@@ -93,26 +93,6 @@ void FHT::ewma(float *d, float *s, float w)
 }
 
 
-static inline float sind(float d) { return sin(d * M_PI / 180); }
-void FHT::pattern(float *p, bool rect = false)
-{
-	static float f = 1.0;
-	static float h = 0.1;
-	int i;
-	for (i = 0; i < 3 * m_num / 4; i++, p++) {
-		float o = 360.0 * i / m_num;
-		*p = sind(f * o);
-		if (rect)
-			*p = *p < 0 ? -1.0 : 1.0;
-	}
-	for (; i < m_num; i++)
-		*p++ = 0.0;
-	if (f > m_num / 2.0 || f < .05)
-		h = -h;
-	f += h;
-}
-
-
 void FHT::logSpectrum(float *out, float *p)
 {
 	int n = m_num / 2, i, j, k, *r;
