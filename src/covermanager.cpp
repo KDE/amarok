@@ -136,14 +136,15 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     KStatusBar *m_statusBar = new KStatusBar( coverWidget );
     //status label
     m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
-    // fetching progressbar
+
     m_statusBar->addWidget( m_progressBox = new QHBox( m_statusBar ), 1, true );
-    m_progress = new KProgress( m_progressBox );
-    m_progress->setCenterIndicator( true );
     //stop button
     QToolButton *stopButton = new QToolButton( m_progressBox );
     stopButton->setIconSet( SmallIcon( "cancel" ) );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
+    //progressbar for coverfetching
+    m_progress = new KProgress( m_progressBox );
+    m_progress->setCenterIndicator( true );
 
     const int h = m_statusLabel->height() + 3;
     m_statusLabel->setFixedHeight( h );

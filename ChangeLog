@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  FIX: Huge performance optimization for Context-Browser, makes changing
+       tracks faster.
   ADD: Progress display for Cover-Manager.
   CHG: Systray animation is now optional.
   CHG: Updated included sqlite to 3.0.7 (stable).
