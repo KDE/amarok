@@ -33,6 +33,7 @@
 
 #include <dcopclient.h>
 #include <kactioncollection.h>
+#include <kstartupinfo.h>
 
 
 namespace amaroK
@@ -286,10 +287,12 @@ namespace amaroK
         DEBUG_BLOCK
 
         //stop startup cursor animation - do not mess with this, it's carefully crafted
-//         debug() << "Startup ID: " << args.first() << endl;
-//         kapp->setStartupId( args.first().local8Bit() );
-//         KStartupInfo::appStarted();
-//         args.pop_front();
+        //NOTE I have no idea why we need to do this, I never get startup notification from
+        //the amarok binary anyway --mxcl
+        debug() << "Startup ID: " << args.first() << endl;
+        kapp->setStartupId( args.first().latin1() ); //we encoded it from latin1 in the loader
+        KStartupInfo::appStarted();
+        args.pop_front();
 
         const int argc = args.count() + 1;
         char **argv = new char*[argc];

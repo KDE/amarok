@@ -90,6 +90,7 @@ main( int argc, char *argv[] )
     if ( isRunning ) {
         QStringList dcop_args;
         dcop_args << "dcop" << "amarok" << "player" << "transferCliArgs" << "[";
+        dcop_args += std::getenv( "DESKTOP_STARTUP_ID" ); //will be interptreted as latin1
         dcop_args += args;
         dcop_args += "]";
 
