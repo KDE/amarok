@@ -125,7 +125,7 @@ MetaBundle::prettyTitle() const
 {
     if( m_title.isEmpty() ) return m_url.fileName().section( '.', 0, 0 );
 
-    return QString( "%1 -%2" ).arg( m_artist, m_title );
+    return QString( "%1 - %2" ).arg( m_artist, m_title );
 }
 
 inline QString
