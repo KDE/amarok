@@ -704,7 +704,7 @@ void PlayerApp::slotVisTimer()
         if (!front)
             return;
 
-        if ( AmarokConfig::currentAnalyzer() == 6)
+        if ( AmarokConfig::currentAnalyzer() == 2)
         { // sonogram
             m_pFht->power( front );
             m_pFht->scale( front, 1.0 / 64 );
