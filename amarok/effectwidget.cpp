@@ -151,19 +151,19 @@ EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( p
 {
     setName( "EffectWidget" );
     setWFlags( Qt::WType_TopLevel );
-    setCaption( "Effects - amaroK" );
+    setCaption( kapp->makeStdCaption( i18n("Effects") ) );
     setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
     showButtonApply( false );
     showButtonCancel( false );
-    setButtonText( Ok, "Close" );
+    setButtonText( Ok, i18n("Close") );
 
     QVBox *pFrame = makeVBoxMainWidget();
     pFrame->layout()->setResizeMode( QLayout::FreeResize );
     KIconLoader iconLoader;
 
-    m_pGroupBoxTop = new QGroupBox( 2, Qt::Horizontal, "Available Effects", pFrame );
+    m_pGroupBoxTop = new QGroupBox( 2, Qt::Horizontal, i18n("Available Effects"), pFrame );
     m_pGroupBoxTop->setInsideSpacing( KDialog::spacingHint() );
-    m_pGroupBoxBot = new QGroupBox( 2, Qt::Horizontal, "Active Effects", pFrame );
+    m_pGroupBoxBot = new QGroupBox( 2, Qt::Horizontal, i18n("Active Effects"), pFrame );
 
     pFrame->setStretchFactor( m_pGroupBoxTop, 1 );
     pFrame->setStretchFactor( m_pGroupBoxBot, 10 );
@@ -175,7 +175,7 @@ EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( p
     m_pButtonTopDown = new QPushButton( iconLoader.loadIconSet( "down", KIcon::Toolbar, KIcon::SizeSmall ),
         0, m_pGroupBoxTop );
     m_pButtonTopDown->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum, 1, 1 ) );
-    QToolTip::add( m_pButtonTopDown, "Add" );
+    QToolTip::add( m_pButtonTopDown, i18n("Add") );
     connect( m_pButtonTopDown, SIGNAL( clicked() ), this, SLOT( slotButtonTop() ) );
 
     m_pListView = new QListView( m_pGroupBoxBot );
@@ -197,7 +197,7 @@ EffectWidget::EffectWidget( QWidget *parent, const char *name ) : KDialogBase( p
     m_pButtonBotRem = new QPushButton( iconLoader.loadIconSet( "remove", KIcon::Toolbar, KIcon::SizeSmall ),
         0, pContainerBotButtons );
     m_pButtonBotRem->resize( m_pButtonBotRem->minimumSize() );
-    QToolTip::add( m_pButtonBotRem, "Remove" );
+    QToolTip::add( m_pButtonBotRem, i18n("Remove") );
     connect( m_pButtonBotRem, SIGNAL( clicked() ), this, SLOT( slotButtonBotRem() ) );
 
     QBoxLayout *pLayoutBotButtons = new QVBoxLayout( pContainerBotButtons );

@@ -39,6 +39,7 @@
 #include <kdirlister.h>
 #include <kfileitem.h>
 #include <klistview.h>
+#include <klocale.h>
 #include <kurl.h>
 #include <kurldrag.h>
 #include <klineedit.h>
@@ -53,14 +54,14 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, const char *name ) : KListView(
     setPaletteBackgroundColor( pApp->m_bgColor );
     setShowSortIndicator( true );
 
-    addColumn( "Trackname", 280 );
-    addColumn( "Title", 200 );
-    addColumn( "Album", 100 );
-    addColumn( "Artist", 100 );
-    addColumn( "Year", 40 );
-    addColumn( "Comment", 80 );
-    addColumn( "Genre", 80 );
-    addColumn( "Directory", 80 );
+    addColumn( i18n("Trackname"), 280 );
+    addColumn( i18n("Title"), 200 );
+    addColumn( i18n("Album"), 100 );
+    addColumn( i18n("Artist"), 100 );
+    addColumn( i18n("Year"), 40 );
+    addColumn( i18n("Comment"), 80 );
+    addColumn( i18n("Genre"), 80 );
+    addColumn( i18n("Directory"), 80 );
 
     setSorting( -1 );
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
@@ -143,7 +144,7 @@ void PlaylistWidget::contentsDropEvent( QDropEvent* e )
         if ( containsDirs && pApp->m_optDropMode == "Ask" )
         {
             QPopupMenu popup( this );
-            popup.insertItem( "Add Recursively", this, SLOT( slotSetRecursive() ) );
+            popup.insertItem( i18n("Add Recursively"), this, SLOT( slotSetRecursive() ) );
             popup.exec( mapToGlobal( QPoint( e->pos().x() - 120, e->pos().y() - 20 ) ) );
         }
 
@@ -358,8 +359,8 @@ void PlaylistWidget::slotTextChanged( const QString &str )
 void PlaylistWidget::slotHeaderClicked( int section )
 {
     QPopupMenu popup( this );
-    int MENU_ASCENDING = popup.insertItem( "Sort Ascending" );
-    int MENU_DESCENDING = popup.insertItem( "Sort Descending" );
+    int MENU_ASCENDING = popup.insertItem( i18n("Sort Ascending") );
+    int MENU_DESCENDING = popup.insertItem( i18n("Sort Descending") );
 
     QPoint menuPos = QCursor::pos();
     menuPos.setX( menuPos.x() - 20 );

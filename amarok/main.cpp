@@ -45,13 +45,14 @@ int main( int argc, char *argv[] )
 {
     KAboutData aboutData( "amarok", I18N_NOOP( "amaroK" ),
                           APP_VERSION, description, KAboutData::License_GPL,
-                          "(c) 2002-2003, Mark Kretschmann", 0, "http://amarok.sourceforge.net", "" );
+                          "(c) 2002-2003, Mark Kretschmann and The amaroK team", 0, "http://amarok.sourceforge.net", "" );
 
     aboutData.addAuthor( "Mark Kretschmann", "Developer, Maintainer", "markey@web.de" );
     aboutData.addCredit( "Markus A. Rykalski", "Graphics", "exxult@exxult.de" );
     aboutData.addCredit( "Roman Becker", "Graphics", "roman@formmorf.de", "http://www.formmorf.de" );
     aboutData.addCredit( "Jarkko Lehti", "Tester, Irc channel operator", "grue@iki.fi" );
     aboutData.addCredit( "Whitehawk Stormchaser", "Tester, Patches", "zerokode@gmx.net" );
+    aboutData.addCredit( "Stanislav Karchebny", "Patches here and there, i18n", "berkus@users.sourceforge.net" );
     aboutData.addCredit( "The Noatun Authors", "Code Inspiration", 0, "http://noatun.kde.org" );
 
     KCmdLineArgs::init( argc, argv, &aboutData );

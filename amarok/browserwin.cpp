@@ -31,7 +31,6 @@
 #include <qfileinfo.h>
 #include <qtextstream.h>
 #include <qsplitter.h>
-#include <klistview.h>
 #include <qcolor.h>
 #include <qfont.h>
 #include <qpopupmenu.h>
@@ -49,7 +48,9 @@
 #include <kfileitem.h>
 #include <kfilemetainfo.h>
 #include <kglobalsettings.h>
+#include <klocale.h>
 #include <klineedit.h>
+#include <klistview.h>
 #include <kmimetype.h>
 #include <krandomsequence.h>
 #include <kstandarddirs.h>
@@ -69,7 +70,7 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name ) :
     setIcon( QPixmap( locate( "icon", "locolor/32x32/apps/amarok.png" ) ) );
     setFont ( QFont( "Arial", 9 ) );
 
-    setCaption( "Playlist - amaroK" );
+    setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
     setAcceptDrops( true );
 
     m_pActionCollection = new KActionCollection( this );
@@ -99,23 +100,23 @@ BrowserWin::~BrowserWin()
 
 void BrowserWin::initChildren()
 {
-    m_pButtonAdd = new ExpandButton( "Add Item", this );
+    m_pButtonAdd = new ExpandButton( i18n("Add Item"), this );
 
-    m_pButtonClear = new ExpandButton( "Clear", this );
-    QToolTip::add( m_pButtonClear, "Keep button pressed for sub-menu" );
-    m_pButtonShuffle = new ExpandButton( "Shuffle", m_pButtonClear );
-    m_pButtonSave = new ExpandButton( "Save Playlist", m_pButtonClear );
+    m_pButtonClear = new ExpandButton( i18n("Clear"), this );
+    QToolTip::add( m_pButtonClear, i18n("Keep button pressed for sub-menu") );
+    m_pButtonShuffle = new ExpandButton( i18n("Shuffle"), m_pButtonClear );
+    m_pButtonSave = new ExpandButton( i18n("Save Playlist"), m_pButtonClear );
 
-    m_pButtonUndo = new ExpandButton( "Undo", this );
-    QToolTip::add( m_pButtonUndo, "Keep button pressed for sub-menu" );
-    m_pButtonRedo = new ExpandButton( "Redo", m_pButtonUndo );
+    m_pButtonUndo = new ExpandButton( i18n("Undo"), this );
+    QToolTip::add( m_pButtonUndo, i18n("Keep button pressed for sub-menu") );
+    m_pButtonRedo = new ExpandButton( i18n("Redo"), m_pButtonUndo );
 
-    m_pButtonPlay = new ExpandButton( "Play", this );
-    QToolTip::add( m_pButtonPlay, "Keep button pressed for sub-menu" );
-    m_pButtonPause = new ExpandButton( "Pause", m_pButtonPlay );
-    m_pButtonStop = new ExpandButton( "Stop", m_pButtonPlay );
-    m_pButtonNext = new ExpandButton( "Next", m_pButtonPlay );
-    m_pButtonPrev = new ExpandButton( "Previous", m_pButtonPlay );
+    m_pButtonPlay = new ExpandButton( i18n("Play"), this );
+    QToolTip::add( m_pButtonPlay, i18n("Keep button pressed for sub-menu") );
+    m_pButtonPause = new ExpandButton( i18n("Pause"), m_pButtonPlay );
+    m_pButtonStop = new ExpandButton( i18n("Stop"), m_pButtonPlay );
+    m_pButtonNext = new ExpandButton( i18n("Next"), m_pButtonPlay );
+    m_pButtonPrev = new ExpandButton( i18n("Previous"), m_pButtonPlay );
 
     m_pSplitter = new QSplitter( this );
 
@@ -131,7 +132,7 @@ void BrowserWin::initChildren()
     m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
     m_pBrowserLineEdit = new KLineEdit( pBrowserWidgetContainer );
-    QToolTip::add( m_pBrowserLineEdit, "Enter directory/URL" );
+    QToolTip::add( m_pBrowserLineEdit, i18n("Enter directory/URL") );
     m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pBrowserLineEdit->setFont ( QFont( "Arial", 9 ) );
@@ -142,7 +143,7 @@ void BrowserWin::initChildren()
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ), m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
 
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
-    QToolTip::add( m_pPlaylistLineEdit, "Enter Filter String" );
+    QToolTip::add( m_pPlaylistLineEdit, i18n("Enter Filter String") );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     m_pPlaylistLineEdit->setFont ( QFont( "Arial", 9 ) );
@@ -267,14 +268,14 @@ bool BrowserWin::isFileValid( const KURL &url )
 void BrowserWin::slotPlaylistRightButton( QListViewItem * /*pItem*/, const QPoint &rPoint )
 {
     QPopupMenu popup( this );
-    int item1 = popup.insertItem( "Show File Info", this, SLOT( slotShowInfo() ) );
+    int item1 = popup.insertItem( i18n("Show File Info"), this, SLOT( slotShowInfo() ) );
 
     // only enable when file is selected
     if ( !m_pPlaylistWidget->currentItem() )
         popup.setItemEnabled( item1, false );
 
-    /*int item2 = */popup.insertItem(  "Play Track",  this,  SLOT(  slotMenuPlay()  )  );
-    /*int item3 = */popup.insertItem(  "Remove Selected",  this,  SLOT(  slotBrowserDrop()  )  );
+    /*int item2 = */popup.insertItem(  i18n("Play Track"),  this,  SLOT(  slotMenuPlay()  )  );
+    /*int item3 = */popup.insertItem(  i18n("Remove Selected"),  this,  SLOT(  slotBrowserDrop()  )  );
 
     popup.exec( rPoint );
 }
@@ -284,6 +285,7 @@ void BrowserWin::slotShowInfo()
 {
     PlaylistItem * pItem = static_cast<PlaylistItem*>( m_pPlaylistWidget->currentItem() );
 
+    // FIXME KMessageBoxize
     QMessageBox *box = new QMessageBox( "Track Information", 0,
                                         QMessageBox::Information, QMessageBox::Ok, QMessageBox::NoButton,
                                         QMessageBox::NoButton, 0, "Track Information", true,

@@ -33,6 +33,7 @@
 #include <kiconloader.h>
 #include <klineedit.h>
 #include <klistview.h>
+#include <klocale.h>
 #include <kmimetype.h>
 #include <kurl.h>
 
@@ -42,11 +43,11 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( p
     setFocusPolicy( QWidget::ClickFocus );
     setPaletteBackgroundColor( pApp->m_bgColor );
 
-    addColumn( "Filebrowser" );
+    addColumn( i18n("Filebrowser") );
     setFullWidth( true );
     setAcceptDrops( true );
     m_Count = 0;
-        
+
     m_pDirLister = new KDirLister();
     m_pDirLister->setAutoUpdate( true );
     connect( m_pDirLister, SIGNAL( completed() ), this, SLOT( slotCompleted() ) );

@@ -232,7 +232,7 @@ void PlayerApp::restore()
     KURL url = config->readEntry( "track" );
     int seconds = config->readNumEntry( "position" );
 
-    //FIXME this is duplicated in slotAddLocation, reduce LOC
+    //FIXME REFACTOR this is duplicated in slotAddLocation, reduce LOC
 
     if ( !url.isEmpty() && url.isValid() )
     {

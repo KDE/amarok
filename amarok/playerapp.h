@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KDETEST_H
-#define KDETEST_H
+#ifndef AMAROK_PLAYERAPP_H
+#define AMAROK_PLAYERAPP_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -182,4 +182,4 @@ class PlayerApp : public KUniqueApplication
         float m_XFadeValue;
         QString m_XFadeCurrent;
 };
-#endif                                            // KDETEST_H
+#endif                                            // AMAROK_PLAYERAPP_H

@@ -236,7 +236,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 
     QString pathStr( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
     if ( pathStr == QString::null )
-        QMessageBox::warning( this, "amaroK Error", "Error: Could not find icons. Did you forget make install?",
+        QMessageBox::warning( this, i18n("amaroK Error"), i18n("Error: Could not find icons. Did you forget make install?"),
                               QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
 
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
@@ -346,7 +346,7 @@ void PlayerWidget::initScroll()
     m_pComposePixmap = new QPixmap( m_pFrame->width(), m_pixmapHeight );
     m_pScrollPixmap = new QPixmap( m_pixmapWidth, m_pixmapHeight );
     m_pScrollMask = new QBitmap( m_pixmapWidth, m_pixmapHeight );
-    setScroll( "   welcome to amarok   ", " ", " " );
+    setScroll( i18n("   welcome to amarok   "), " ", " " );
 
     m_sx = m_sy = 0;
     m_sxAdd = 1;
@@ -544,30 +544,30 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             m_pPopupMenu = new QPopupMenu( this );
             m_pPopupMenu->setCheckable( true );
 
-            m_pPopupMenu->insertItem( "About", pApp, SLOT( slotShowAbout() ) );
-            m_pPopupMenu->insertItem( "amaroK Handbook", pApp, SLOT( slotShowHelp() ) );
-            m_pPopupMenu->insertItem( "Tip of the Day", pApp, SLOT( slotShowTip() ) );
+            m_pPopupMenu->insertItem( i18n("About"), pApp, SLOT( slotShowAbout() ) );
+            m_pPopupMenu->insertItem( i18n("amaroK Handbook"), pApp, SLOT( slotShowHelp() ) );
+            m_pPopupMenu->insertItem( i18n("Tip of the Day"), pApp, SLOT( slotShowTip() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( "Settings", pApp, SLOT( slotShowOptions() ) );
-            m_pPopupMenu->insertItem( "Configure Shortcuts", this, SLOT( slotConfigShortcuts() ) );
-            m_pPopupMenu->insertItem( "Configure Global Shortcuts", this, SLOT( slotConfigGlobalShortcuts() ) );
+            m_pPopupMenu->insertItem( i18n("Configure amaroK"), pApp, SLOT( slotShowOptions() ) );
+            m_pPopupMenu->insertItem( i18n("Configure Shortcuts"), this, SLOT( slotConfigShortcuts() ) );
+            m_pPopupMenu->insertItem( i18n("Configure Global Shortcuts"), this, SLOT( slotConfigGlobalShortcuts() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( "Effects", pApp, SLOT( slotConfigEffects() ) );
-            m_IdConfPlayObject = m_pPopupMenu->insertItem( "Configure PlayObject", this, SLOT( slotConfigPlayObject() ) );
+            m_pPopupMenu->insertItem( i18n("Effects"), pApp, SLOT( slotConfigEffects() ) );
+            m_IdConfPlayObject = m_pPopupMenu->insertItem( i18n("Configure PlayObject"), this, SLOT( slotConfigPlayObject() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_IdRepeatTrack = m_pPopupMenu->insertItem( "Repeat Track", pApp, SLOT( slotSetRepeatTrack() ) );
-            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( "Repeat Playlist", pApp, SLOT( slotSetRepeatPlaylist() ) );
-            m_IdRandomMode = m_pPopupMenu->insertItem( "Random Mode", pApp, SLOT( slotSetRandomMode() ) );
+            m_IdRepeatTrack = m_pPopupMenu->insertItem( i18n("Repeat Track"), pApp, SLOT( slotSetRepeatTrack() ) );
+            m_IdRepeatPlaylist = m_pPopupMenu->insertItem( i18n("Repeat Playlist"), pApp, SLOT( slotSetRepeatPlaylist() ) );
+            m_IdRandomMode = m_pPopupMenu->insertItem( i18n("Random Mode"), pApp, SLOT( slotSetRandomMode() ) );
 
             m_pPopupMenu->insertSeparator();
 
-            m_pPopupMenu->insertItem( "Quit", pApp, SLOT( quit() ) );
+            m_pPopupMenu->insertItem( i18n("Quit"), pApp, SLOT( quit() ) );
         }
 
         if ( playObjectConfigurable() )
