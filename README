@@ -39,9 +39,6 @@ recommended
     * aRts 1.2 + KDEMULTIMEDIA 3.2
       http://www.kde.org
 
-    * SQLite 2.8
-      http://www.sqlite.org  
-
     * OpenGL accelerated X-Server
             
 optional
@@ -94,10 +91,6 @@ A: Yes, but not yet. One reason we use aRts/GStreamer and NMM is for codecs.
    To output directly to ALSA, etc. someone needs to write an amaroK engine
    plugin that uses libmad and libvorbis to decode directly to alsa. And then
    call it amaroK_ALSA_engine. :-)
-       
-Q: Where is the Collection Browser?
-A: You need to install sqlite, reconfigure and rebuild. Check your PKG_CONFIG_PATH
-   is set correctly if there are problems detecting sqlite!
        
 Q: The amaroK analyzers are really unresponsive!
 A: You are probably using the aRts engine, either use the GST or NMM engines, or
