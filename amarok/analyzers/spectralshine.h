@@ -18,7 +18,7 @@
 #ifndef ANALYZER_SPECTRALSHINE_H
 #define ANALYZER_SPECTRALSHINE_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 
 
 class QPixmap;

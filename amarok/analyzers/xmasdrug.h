@@ -18,7 +18,7 @@
 #ifndef ANALYZER_XMASDRUG_H
 #define ANALYZER_XMASDRUG_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 
 
 class QPixmap;

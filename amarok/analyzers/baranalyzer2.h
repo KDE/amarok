@@ -18,7 +18,7 @@
 #ifndef VISWIDGETV2_H
 #define VISWIDGETV2_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 
 #include <vector>
 

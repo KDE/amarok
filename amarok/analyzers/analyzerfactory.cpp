@@ -15,18 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h> //for HAVE_QGLWIDGET macro
+
 #include "amarokconfig.h"
 #include "analyzerbase.h" //declaration here
+
 #include "baranalyzer.h"
-#include "baranalyzer2.h"
-#include "blockanalyzer.h"
 #include "distortanalyzer.h"
 #include "glanalyzer.h"
 #include "sonogram.h"
-//#include "spectralshine.h"
-#include "turbine.h"
-#include "xmasdrug.h"
 
+//FIXME is there a better define?
+#define AMAROK_RELEASE
+
+#ifndef AMAROK_RELEASE
+    #include "blockanalyzer.h"
+    #include "baranalyzer2.h"
+    #include "spectralshine.h"
+    #include "turbine.h"
+    #include "xmasdrug.h"
+#endif
 
 //separate from analyzerbase.cpp to save compile time
 //sorry if this isn't to your liking..
@@ -41,29 +49,31 @@ AnalyzerBase *AnalyzerBase::AnalyzerFactory::createAnalyzer( QWidget *parent )
     case 1:
         analyzer = new DistortAnalyzer( parent );
         break;
+#ifdef HAVE_QGLWIDGET
     case 2:
-        analyzer = new TurbineAnalyzer( parent );
-        break;
-    case 3:
-        analyzer = new XmasAnalyzer( parent );
-        break;
-    case 4:
-        analyzer = new BlockAnalyzer( parent );
-        break;
-    case 5:
-        analyzer = new BarAnalyzer2( parent );
-        break;
-    case 6:
         analyzer = new Sonogram( parent );
         break;
-#ifdef HAVE_QGLWIDGETNOWAY
-    case 7:
+    case 3:
         analyzer = new GLAnalyzer( parent );
         break;
 #endif
-//   case 8:
-//        analyzer = new SpectralShineAnalyzer( this );
-//        break;
+#ifndef AMAROK_RELEASE
+    case 4:
+        analyzer = new XmasAnalyzer( parent );
+        break;
+    case 5:
+        analyzer = new BlockAnalyzer( parent );
+        break;
+    case 6:
+        analyzer = new BarAnalyzer2( parent );
+        break;
+    case 7:
+        analyzer = new TurbineAnalyzer( parent );
+        break;
+   case 8:
+        analyzer = new SpectralShineAnalyzer( this );
+        break;
+#endif
     default:
         AmarokConfig::setCurrentAnalyzer( 0 );
     case 0:

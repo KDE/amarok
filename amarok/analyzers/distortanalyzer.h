@@ -18,7 +18,7 @@
 #ifndef VISDISTORTWIDGET_H
 #define VISDISTORTWIDGET_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 #include <vector>
 
 class QPixmap;
@@ -37,7 +37,7 @@ class DistortAnalyzer : public AnalyzerBase2d
         virtual void init();
         virtual void drawAnalyzer( std::vector<float> * );
         inline int checkIndex( int, int );
-        
+
     // ATTRIBUTES:
         QPixmap *m_pComposePixmap;
         QPixmap *m_pComposePixmap1;

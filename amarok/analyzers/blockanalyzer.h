@@ -1,7 +1,7 @@
 //
 // C++ Interface: blockanalyzer
 //
-// Description: 
+// Description:
 //
 //
 // Author: Mark Kretschmann <markey@web.de>, (C) 2003
@@ -12,7 +12,7 @@
 #ifndef BLOCKANALYZER_H
 #define BLOCKANALYZER_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 
 /**
 @author Max Howell
@@ -25,10 +25,10 @@ Q_OBJECT
 public:
     BlockAnalyzer( QWidget * = 0, const char * = 0 );
     ~BlockAnalyzer();
-    
+
     virtual void init();
     virtual void drawAnalyzer( std::vector<float> * );
-    
+
 private:
     QPixmap m_block1;
     QPixmap m_block2;

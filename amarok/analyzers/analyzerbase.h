@@ -1,5 +1,5 @@
 /***************************************************************************
-                          viswidget.h  -  description
+                               analyzerbase.h
                              -------------------
     begin                : Die Jan 7 2003
     copyright            : (C) 2003 by Mark Kretschmann
@@ -18,15 +18,12 @@
 #ifndef ANALYZERBASE_H
 #define ANALYZERBASE_H
 
-#include <vector>
+#define SINVEC_SIZE 6000
+#undef  DRAW_GRID  //disable the grid
 
 class QWidget;
-
-#define SINVEC_SIZE 6000
-
-/**
- *@author Max, Piggz
- */
+//namespace std { template<class T> class vector; }
+#include <vector> //couldn't get the predeclaration right :(
 
 class AnalyzerBase
 {
@@ -40,6 +37,8 @@ protected:
     AnalyzerBase( uint );
 
     void interpolate( std::vector<float>*, std::vector<float>& ) const;
+    void initSin( std::vector<float> & ) const;
+
     virtual void init() = 0;
 
 private:
@@ -61,4 +60,58 @@ public:
     };
 };
 
+
+
+#include <qwidget.h>  //baseclass
+#include <qpixmap.h>  //stack allocated
+
+/**
+ *@author PiggZ
+ */
+
+class AnalyzerBase2d : public QWidget, public AnalyzerBase
+{
+    Q_OBJECT
+
+    public:
+        //this is called often in drawAnalyser implementations
+        //so you felt you had to shorten the workload by re-implementing it
+        //but! don't forget to set it to the new value for height when
+        //we start allowing the main Widget to be resized
+        uint height() const { return m_height; }
+        const QPixmap *grid() const { return &m_background; } //DEPRECATE
+        const QPixmap *background() const { return &m_background; }
+
+    protected:
+        AnalyzerBase2d( uint, QWidget* =0, const char* =0 );
+
+    private:
+        void polish();
+
+        uint m_height;
+        QPixmap m_background;
+};
+
+
+
+#include <config.h>
+#ifdef HAVE_QGLWIDGET
+
+#include <qgl.h>    //basclass
+#include <GL/gl.h>  //include for convenience
+#include <GL/glu.h> //include for convenience
+
+/**
+ *@author PiggZ
+ */
+
+class AnalyzerBase3d : public QGLWidget, public AnalyzerBase
+{
+    Q_OBJECT
+
+    protected:
+        AnalyzerBase3d( uint, QWidget* =0, const char* =0 );
+};
+
+#endif
 #endif

@@ -14,7 +14,7 @@
 #ifndef BARANALYZER_H
 #define BARANALYZER_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 
 #include <qvaluevector.h>
 

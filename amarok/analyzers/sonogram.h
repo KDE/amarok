@@ -2,7 +2,7 @@
 //
 // C++ Interface: Sonogram
 //
-// Description: 
+// Description:
 //
 //
 // Author: Melchior FRANZ <mfranz@kde.org>, (C) 2004
@@ -14,7 +14,7 @@
 #ifndef SONOGRAM_H
 #define SONOGRAM_H
 
-#include "analyzerbase2d.h"
+#include "analyzerbase.h"
 
 
 /**
@@ -26,14 +26,14 @@ class Sonogram : public AnalyzerBase2d
     Q_OBJECT
 
     public:
-	Sonogram( QWidget *parent=0, const char *name=0 );
-	virtual ~Sonogram();
+        Sonogram( QWidget *parent=0, const char *name=0 );
+        virtual ~Sonogram();
 
-	virtual void init();
-	virtual void drawAnalyzer( std::vector<float> * );
+        virtual void init();
+        virtual void drawAnalyzer( std::vector<float> * );
 
     protected:
-	QPixmap *m_pPixmap;
+        QPixmap *m_pPixmap;
 };
 
 #endif

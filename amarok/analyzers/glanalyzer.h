@@ -15,16 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+#ifdef HAVE_QGLWIDGET
+
 #ifndef GLOSCOPE_H
 #define GLOSCOPE_H
 
-#include <config.h>
+#include "analyzerbase.h"
 
-#include "analyzerbase3d.h"
-#include <qgl.h>
-#include <vector>
-
-class QMouseEvent;
 class QWidget;
 
 /**
@@ -46,14 +44,13 @@ private:
   std::vector<float> m_bands;
   std::vector<float> m_oldy;
   std::vector<peak_tx> m_peaks;
-  
-  void interpolate(std::vector<float> *);
+
   void drawScope();
   void drawCube();
   void drawFrame();
   void drawBar(float xPos, float height);
   void drawPeak(float xPos, float ypos);
-  
+
   GLfloat x, y;
 public:
   GLAnalyzer(QWidget *parent=0, const char *name=0);
@@ -66,4 +63,6 @@ protected:
   void resizeGL( int w, int h );
   void paintGL();
 };
+
+#endif
 #endif
