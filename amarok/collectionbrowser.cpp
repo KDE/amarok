@@ -286,8 +286,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QPixmap pixmap = iconForCat( m_category2 );
         
         for ( uint i = 0; i < values.count(); i += 2 ) {
-            if ( values[i].isEmpty() ) continue;
-    
             Item* child = new Item( item );
             child->setDragEnabled( true );
             child->setDropEnabled( false );
@@ -312,8 +310,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         execSql( command, &values, &names );
     
         for ( uint i = 0; i < values.count(); i += 2 ) {
-            if ( values[i].isEmpty() ) continue;
-    
             Item* child = new Item( item );
             child->setDragEnabled( true );
             child->setDropEnabled( false );
