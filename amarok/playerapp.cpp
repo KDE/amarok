@@ -118,7 +118,6 @@ PlayerApp::PlayerApp() :
 
 //    connect( this, SIGNAL( sigplay() ), this, SLOT( slotPlay() ) );
     connect( this, SIGNAL( saveYourself() ), this, SLOT( saveSessionState() ) );
-    connect( this, SIGNAL( sigShowTrayIcon( bool ) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon( bool ) ) );
 
     connect( m_pPlayerWidget, SIGNAL( sigMinimized() ), this, SLOT( slotWidgetMinimized() ) );
     connect( m_pPlayerWidget, SIGNAL( sigRestored() ), this, SLOT( slotWidgetRestored() ) );
@@ -1387,9 +1386,8 @@ void PlayerApp::slotEq( bool b )
 void PlayerApp::slotShowOptions()
 {
     ConfigDlg *pDlg = new ConfigDlg();
+    connect( pDlg, SIGNAL( sigShowTrayIcon( bool ) ), m_pPlayerWidget, SLOT( slotUpdateTrayIcon( bool ) ) );
     pDlg->show();
-
-    emit sigShowTrayIcon( m_optShowTrayIcon );
 }
 
 

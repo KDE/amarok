@@ -147,7 +147,6 @@ class PlayerApp : public KUniqueApplication
     signals:
         void sigScope( std::vector<float> *s );
         void sigPlay();
-        void sigShowTrayIcon( bool );
 /*         void sigUpdateFonts(); */
 
     private:
