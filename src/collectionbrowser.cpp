@@ -40,7 +40,7 @@
 
 
 namespace amaroK { extern KConfig *config( const QString& ); }
-static const int MONITOR_INTERVAL = 1000 * 30; //ms
+static const int MONITOR_INTERVAL = 1000 * 60; //ms
 
 
 CollectionBrowser::CollectionBrowser( const char* name )
