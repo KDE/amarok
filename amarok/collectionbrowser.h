@@ -88,7 +88,6 @@ class CollectionView : public KListView
         void actionsMenu( int );
         
     private:
-        void dumpDb();
         void customEvent( QCustomEvent* );
         void startDrag();
         

@@ -157,10 +157,14 @@ CollectionView::setupDirs()  //SLOT
     m_recursively = result.scanRecursively;
     m_monitor = result.monitorChanges;
 
-    //destroy KDirWatch and create new one, to make it forget all directories
-    delete m_dirWatch;
-    m_dirWatch = new KDirWatch( this );        
-        
+    //we must re-scan everything, when a change was made to the folder list
+    if ( result.addedDirs.count() || result.removedDirs.count() ) {
+        //destroy KDirWatch and create new one, to make it forget all directories
+        delete m_dirWatch;
+        m_dirWatch = new KDirWatch( this );        
+        scan();
+    }
+    
     if ( m_monitor )
         m_dirWatch->startScan();
     else
@@ -317,7 +321,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
             for ( uint i = 0; i < c->dirList().count(); i++ )
                 if ( !m_dirWatch->contains( c->dirList()[i] ) ) {
                     m_dirWatch->addDir( c->dirList()[i], true );
-                    kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
+//                     kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
                 }
                     
         MetaBundle* bundle;
@@ -355,20 +359,6 @@ CollectionView::customEvent( QCustomEvent *e ) {
         
         emit tagsReady();
     }
-}
-
-
-void
-CollectionView::dumpDb() {
-    kdDebug() << k_funcinfo << endl;
-
-    QCString command = "SELECT artist FROM tags;";
-
-    QStringList values;
-    QStringList names;
-
-    execSql( command, &values, &names );
-    kdDebug() << values << endl;
 }
 
 
