@@ -46,6 +46,10 @@
 #include <qtimer.h>
 #include <X11/Xlib.h>        //contentsDragMoveEvent
 
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
+#include <taglib/tstring.h>
+
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
@@ -1189,12 +1193,21 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
 bool Playlist::showTrackInfo( const KURL& url ) //STATIC
 {
-    KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
-    if ( info.isEmpty() ) return false;
-    
-    MetaBundle mb( url, info );  
+    MetaBundle mb;
+    TagLib::FileRef f( url.path().local8Bit(), true /*readAudioProps*/, TagLib::AudioProperties::Fast );
+
+    if ( !f.isNull() )
+        mb = MetaBundle::MetaBundle( url, f.tag(), f.audioProperties() );
+    else
+    {
+        KFileMetaInfo info( url, QString::null, KFileMetaInfo::Everything );
+        if ( info.isValid() )
+            mb = MetaBundle::MetaBundle( url, info );  
+        else
+            return false;
+    }
+
     showTrackInfoDlg( mb );
-    
     return true;
 }
 
