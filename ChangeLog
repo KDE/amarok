@@ -4,7 +4,6 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta3:
-  CHG: Don't change score if track has been played < 15 sec. (BR 95720)
   FIX: Playlist-Browser was appending to playlist when clicking "Load".
        Now it replaces the current playlist again, as intended.
   ADD: Profile for KDELIRC (Remote Controls). Patch by Dirk Ziegelmeier

@@ -1419,7 +1419,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     //TODO statistics are not calculated when currentTrack doesn't exist
 
     // Don't update statistics if song has been played for less than 15 seconds
-    if ( finalPosition < 15000 ) return;
+    // if ( finalPosition < 15000 ) return;
 
     const KURL &url = EngineController::instance()->bundle().url();
     if ( url.path().isEmpty() ) return;
