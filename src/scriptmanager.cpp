@@ -426,6 +426,8 @@ ScriptManager::engineStateChanged( Engine::State state )
 void
 ScriptManager::engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ )
 {
+    DEBUG_FUNC_INFO
+
     notifyScripts( "trackChange" );
 }
 
