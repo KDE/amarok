@@ -2931,12 +2931,19 @@ QueryBuilder::tableName( int table )
 {
     QString tables;
 
+    if (CollectionDB::instance()->getType() != DbConnection::postgresql)
+    {
+        if ( table & tabSong )   tables += ",tags";
+    }
     if ( table & tabArtist ) tables += ",artist";
     if ( table & tabAlbum )  tables += ",album";
     if ( table & tabGenre )  tables += ",genre";
     if ( table & tabYear )   tables += ",year";
     if ( table & tabStats )  tables += ",statistics";
-    if ( table & tabSong )   tables += ",tags";
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    {
+        if ( table & tabSong )   tables += ",tags";
+    }
 
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );
