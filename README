@@ -145,7 +145,7 @@ INFORMATION FOR PACKAGERS
 
 For amaroK packages we suggest you build:
 
-                % ./configure --enable-final --disable-debug
+                % ./configure --disable-debug
 
 There is a special option for packagers who wish to use the version of sqlite
 that is distributed with their operating system:
