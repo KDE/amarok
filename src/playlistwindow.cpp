@@ -256,7 +256,6 @@ PlaylistWindow::init()
 
     //BEGIN Tools menu
     KPopupMenu *toolsMenu = new KPopupMenu( m_menubar );
-    toolsMenu->insertItem( i18n("&Player-window") );
     toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
@@ -266,8 +265,9 @@ PlaylistWindow::init()
     //BEGIN Settings menu
     m_settingsMenu = new KPopupMenu( m_menubar );
     //TODO use KStdAction or KMainWindow
-    m_settingsMenu->insertItem( "Hide Menubar", ID_SHOW_MENUBAR );
-    m_settingsMenu->insertItem( "Hide Toolbar", ID_SHOW_TOOLBAR );
+    m_settingsMenu->insertItem( i18n( "Hide Menubar" ), ID_SHOW_MENUBAR );
+    m_settingsMenu->insertItem( i18n( "Hide Toolbar" ), ID_SHOW_TOOLBAR );
+    m_settingsMenu->insertItem( i18n( "Show &Player Window" ) );
     m_settingsMenu->insertSeparator();
     //this should be only a context menu option and use next-queue graphics with an infinity symbol or something
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
@@ -286,7 +286,7 @@ PlaylistWindow::init()
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
 
-    m_menubar->insertItem( i18n( "&Location" ), fileMenu );
+    m_menubar->insertItem( i18n( "&Actions" ), fileMenu );
     m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
     m_menubar->insertItem( i18n( "&Tools" ), toolsMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
