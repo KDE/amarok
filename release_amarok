@@ -147,7 +147,7 @@ tar -cf $folder.tar $folder
 bzip2 $folder.tar
 rm -rf $folder
 
-if $upload = "true"; then
+if test x$upload = xtrue; then
     echo
     echo "Uploading file to sourceforge.."
     echo
