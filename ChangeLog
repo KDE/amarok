@@ -11,6 +11,7 @@ VERSION 1.2.3:
   CHANGES:
 
   BUGFIXES:
+    *  (BR 102059)
     * "Remove Duplicates / Missing" fixed. Removes dead entries correctly.
     * Fix units for samplerate. (BR 101528)
     * amaroK using 100% CPU on some systems. (BR 101524)
