@@ -12,8 +12,6 @@ SHORT-TERM (URGENT):
           <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
                    so show the artist or album that is right clicked.
 
-          <muesli> Run the incremental filescan inside the thread. GUI blocking is bad.
-
           <mxcl>   We should make regular backups of the user's statistics tables, we'll get so many angry
                    users if they start to lose stats.
 
