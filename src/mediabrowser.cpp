@@ -38,11 +38,6 @@
 #include <kurl.h>
 #include <kurldrag.h>       //dragObject()
 
-namespace IPod
-{
-#include "ipod/ipod.h"
-}
-
 #define escapeIPod(s)   QString(s).replace( "/", "%252f" )
 
 
@@ -312,7 +307,6 @@ MediaDeviceView::~MediaDeviceView()
 MediaDevice::MediaDevice( MediaBrowser* parent )
     : m_parent( parent )
 {
-    IPod::IPod* m_ipod;
     s_instance = this;
 
     m_ipod = new IPod::IPod();
@@ -322,7 +316,7 @@ MediaDevice::MediaDevice( MediaBrowser* parent )
 
 MediaDevice::~MediaDevice()
 {
-//    delete m_ipod;
+    delete m_ipod;
 }
 
 
@@ -349,7 +343,7 @@ QStringList
 MediaDevice::items( QListViewItem* item )
 {
     QStringList items;
-//    m_ipod->getArtists( items );
+    m_ipod->getArtists( items );
     return items;
 }
 

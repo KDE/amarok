@@ -4,6 +4,8 @@
 #ifndef AMAROK_MEDIABROWSER_H
 #define AMAROK_MEDIABROWSER_H
 
+#include "ipod/ipod.h"
+
 #include <qhbox.h>
 #include <qvbox.h>
 
@@ -135,7 +137,7 @@ class MediaDevice : public QObject
         KURL::List m_transferURLs;
 
         MediaBrowser* m_parent;
-//        IPod::IPod* m_ipod;
+        IPod::IPod* m_ipod;
         static MediaDevice *s_instance;
 };
 

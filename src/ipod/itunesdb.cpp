@@ -20,14 +20,17 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 
-#include "itunesdb.h"
-#include "itunesdb/itunesdbparser.h"
-#include "itunesdb/itunesdbwriter.h"
-
 #include <qfile.h>
 #include <qfileinfo.h>
 
 #include <kdebug.h>
+
+namespace IPod
+{
+
+#include "itunesdb.h"
+#include "itunesdb/itunesdbparser.h"
+#include "itunesdb/itunesdbwriter.h"
 
 ITunesDB::ITunesDB(bool resolve_slashes)
     : artistmap(101, false), playlistmap(17, false), playlistiterator(playlistmap)
@@ -591,3 +594,4 @@ void ITunesDB::insertTrackToDataBase(TrackMetadata& track)
     // kdDebug() << "ITunesDB::insertTrackToDataBase() done" << endl;
 }
 
+}
