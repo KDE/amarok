@@ -26,18 +26,19 @@ class ExpandButton;
 class PlaylistItem;
 class PlaylistWidget;
 
-class QHideEvent;
 class QCloseEvent;
 class QColor;
+class QHideEvent;
 class QListViewItem;
+class QMoveEvent;
 class QPaintEvent;
 class QPoint;
-class QMoveEvent;
 class QSplitter;
 
 class KActionCollection;
-class KLineEdit;
 class KHistoryCombo;
+class KJanusWidget;
+class KLineEdit;
 class KListView;
 class KURL;
 
@@ -82,7 +83,8 @@ class BrowserWin : public QWidget
         QSplitter *m_pSplitter;
         KHistoryCombo *m_pBrowserLineEdit;
         KLineEdit *m_pPlaylistLineEdit;
-
+        KJanusWidget *m_pJanusWidget;
+        
     public slots:
         void slotBrowserDoubleClicked( QListViewItem *pItem );
         void slotShufflePlaylist();

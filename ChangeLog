@@ -3,6 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann and the amaroK team. GPL License.
 
 
+  * add: KJanusWidget as a sidebar for filebrowser mode selection
   * add: a stream browser, can only DnD, separate window, not great yet
   * fix: finally fixed the ancient "annoying-noise-when-pressing-pause" bug
   * fix: should keep track of currently played item no matter what you do to the playlist,

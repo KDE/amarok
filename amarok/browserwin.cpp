@@ -36,6 +36,7 @@
 #include <qsplitter.h>
 #include <qstring.h>
 #include <qtooltip.h>
+#include <qvbox.h>
 #include <qwidget.h>
 
 #include <kaction.h>
@@ -43,7 +44,10 @@
 #include <kcompletion.h>
 #include <kdebug.h>
 #include <kdirlister.h>
+#include <kglobal.h>
 #include <kglobalsettings.h>
+#include <kiconloader.h>
+#include <kjanuswidget.h>
 #include <klocale.h>
 #include <klineedit.h>
 #include <klistview.h>
@@ -136,8 +140,25 @@ void BrowserWin::initChildren()
 
     m_pSplitter = new QSplitter( this );
 
-    QWidget *pBrowserWidgetContainer = new QWidget( m_pSplitter );
-    m_pBrowserWidget = new BrowserWidget( pBrowserWidgetContainer, "BrowserWidget" );
+    m_pJanusWidget = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
+    
+    QVBox *pBrowserBox = m_pJanusWidget->addVBoxPage( QString( "Filebrowser" ), QString::null,
+                         KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup, KIcon::SizeMedium ) );
+    QVBox *pStreamBox =  m_pJanusWidget->addVBoxPage( QString( "Streambrowser" ), QString::null,
+                         KGlobal::iconLoader()->loadIcon( "network", KIcon::NoGroup, KIcon::SizeMedium ) );
+    QVBox *pVirtualBox = m_pJanusWidget->addVBoxPage( QString( "Virtual Folders" ), QString::null,
+                         KGlobal::iconLoader()->loadIcon( "folder_sound", KIcon::NoGroup,
+                         KIcon::SizeMedium ) );
+
+    //<mxcl> MAKE_IT_CLEAN: move to browserWidget, also use a validator to make sure has trailing /
+    m_pBrowserLineEdit = new KHistoryCombo( true, pBrowserBox );
+    m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
+    m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
+    m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+    m_pBrowserLineEdit->setDuplicatesEnabled( false );
+    m_pBrowserLineEdit->setMinimumWidth( 1 );
+                            
+    m_pBrowserWidget = new BrowserWidget( pBrowserBox );
     m_pBrowserWidget->setAcceptDrops( true );
     m_pBrowserWidget->setSorting( -1 );
     m_pBrowserWidget->setSelectionMode( QListView::Extended );
@@ -147,38 +168,30 @@ void BrowserWin::initChildren()
     m_pPlaylistWidget->setAcceptDrops( true );
     m_pPlaylistWidget->setSelectionMode( QListView::Extended );
 
-    //<mxcl> MAKE_IT_CLEAN: move to browserWidget, also use a validator to make sure has trailing /
-    m_pBrowserLineEdit = new KHistoryCombo( true, pBrowserWidgetContainer );
-    m_pBrowserLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
-    m_pBrowserLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
-    m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
-    m_pBrowserLineEdit->setDuplicatesEnabled( false );
-    m_pBrowserLineEdit->setMinimumWidth( 1 );
-    
-    connect( m_pBrowserLineEdit, SIGNAL( activated( const QString& ) ),
-             m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
-    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
-             m_pBrowserLineEdit, SLOT( addToHistory( const QString& ) ) );
-
    //<mxcl> MAKE_IT_CLEAN: move to playlistWidget implementation
     m_pPlaylistLineEdit = new KLineEdit( pPlaylistWidgetContainer );
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
+        
+    connect( m_pBrowserLineEdit, SIGNAL( activated( const QString& ) ),
+             m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
+    connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
+             m_pBrowserLineEdit, SLOT( addToHistory( const QString& ) ) );
 
     connect( m_pPlaylistLineEdit, SIGNAL( textChanged( const QString& ) ),
              m_pPlaylistWidget, SLOT( slotTextChanged( const QString& ) ) );
     connect( m_pPlaylistLineEdit, SIGNAL( returnPressed() ),
              m_pPlaylistWidget, SLOT( slotReturnPressed() ) );
 
-    QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserWidgetContainer );
-    layBrowserWidget->addWidget( m_pBrowserLineEdit );
-    layBrowserWidget->addWidget( m_pBrowserWidget );
+//     QBoxLayout *layBrowserWidget = new QVBoxLayout( pBrowserBox );
+//     layBrowserWidget->addWidget( m_pBrowserLineEdit );
+//     layBrowserWidget->addWidget( m_pBrowserWidget );
 
     QBoxLayout *layPlaylistWidget = new QVBoxLayout( pPlaylistWidgetContainer );
     layPlaylistWidget->addWidget( m_pPlaylistLineEdit );
     layPlaylistWidget->addWidget( m_pPlaylistWidget );
 
-    m_pSplitter->setResizeMode( pBrowserWidgetContainer, QSplitter::Stretch );
+    m_pSplitter->setResizeMode( m_pJanusWidget, QSplitter::Stretch );
     m_pSplitter->setResizeMode( pPlaylistWidgetContainer, QSplitter::Stretch );
 
     QBoxLayout *layV = new QVBoxLayout( this );

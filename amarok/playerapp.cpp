@@ -945,12 +945,15 @@ void PlayerApp::setupColors()
     m_pBrowserWin->m_pBrowserWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
 
+/*    m_pBrowserWin->m_pJanusWidget->setPaletteBackgroundColor( m_optBrowserBgColor );
+    m_pBrowserWin->m_pJanusWidget->setPaletteForegroundColor( m_optBrowserFgColor );*/
+    
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pBrowserLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
 
     m_pBrowserWin->m_pPlaylistLineEdit->setPaletteBackgroundColor( m_optBrowserBgColor );
     m_pBrowserWin->m_pPlaylistLineEdit->setPaletteForegroundColor( m_optBrowserFgColor );
-
+   
     m_pBrowserWin->update();
     m_pBrowserWin->m_pBrowserWidget->triggerUpdate();
     m_pBrowserWin->m_pPlaylistWidget->triggerUpdate();
