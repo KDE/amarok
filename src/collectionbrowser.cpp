@@ -232,36 +232,10 @@ CollectionView::~CollectionView() {
     config->writeEntry( "ViewMode", m_viewMode );
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
-// private slots
+// public slots
 //////////////////////////////////////////////////////////////////////////////////////////
-
-void
-CollectionView::setupDirs()  //SLOT
-{
-    KDialogBase dialog( this, 0, false );
-    kapp->setTopWidget( &dialog );
-    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Collection") ) );
-
-    CollectionSetup *setup = new CollectionSetup( &dialog );
-    dialog.setMainWidget( setup );
-    dialog.showButtonApply( false );
-    dialog.adjustSize();
-    // Make the dialog a bit wider, default is too narrow to be useful
-    dialog.resize( dialog.width() + 50, dialog.height() );
-
-    if ( dialog.exec() != QDialog::Rejected )
-    {
-        const bool rescan = ( AmarokConfig::collectionFolders() != setup->dirs() );
-        setup->writeConfig();
-
-        if ( rescan )
-            CollectionDB::instance()->startScan();
-
-        m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
-    }
-}
-
 
 void
 CollectionView::renderView()  //SLOT
@@ -400,6 +374,37 @@ CollectionView::renderView()  //SLOT
         }
     }
 
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// private slots
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void
+CollectionView::setupDirs()  //SLOT
+{
+    KDialogBase dialog( this, 0, false );
+    kapp->setTopWidget( &dialog );
+    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Collection") ) );
+
+    CollectionSetup *setup = new CollectionSetup( &dialog );
+    dialog.setMainWidget( setup );
+    dialog.showButtonApply( false );
+    dialog.adjustSize();
+    // Make the dialog a bit wider, default is too narrow to be useful
+    dialog.resize( dialog.width() + 50, dialog.height() );
+
+    if ( dialog.exec() != QDialog::Rejected )
+    {
+        const bool rescan = ( AmarokConfig::collectionFolders() != setup->dirs() );
+        setup->writeConfig();
+
+        if ( rescan )
+            CollectionDB::instance()->startScan();
+
+        m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
+    }
 }
 
 

@@ -23,6 +23,7 @@
 
 #include <qfile.h>
 #include <qimage.h>
+#include <qtimer.h>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -1356,8 +1357,10 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         EngineController::instance()->currentTrackMetaDataChanged( bundle );
     }
 
-    if ( updateView )    //update the collection browser
-      CollectionView::instance()->renderView();
+    // Update the Collection-Browser view,
+    // using QTimer to make sure we don't manipulate the GUI from a thread
+    if ( updateView )
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
 }
 
 

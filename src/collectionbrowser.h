@@ -88,13 +88,14 @@ class CollectionView : public KListView
         ~CollectionView();
 
         static CollectionView* instance() { return m_instance; }
-        /** Rebuilds and displays the treeview by querying the database. */
-        void renderView();
         void setFilter( const QString &filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
 
     public slots:
+        /** Rebuilds and displays the treeview by querying the database. */
+        void renderView();
+
         void setTreeMode() { setViewMode( modeTreeView ); };
         void setFlatMode() { setViewMode( modeFlatView ); };
 
