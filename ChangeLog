@@ -7,9 +7,8 @@ VERSION 1.2-beta1:
   ADD: 'Stop after current song' functionality. (BR 88652)
   FIX: Queue function from context/collection browsers actually properly
        queues tracks. (BR 90319)
-  ADD: MySQL database support.  Unmaintained and not guaranteed. Patch by
-       <am_ml@linogate.com>. Please refer to mailing list for detailed
-       instructions.
+  ADD: MySQL database support. Patch by Andreas Mair <am_ml@linogate.com>.
+       Please refer to mailing list for detailed instructions.
   ADD: Metadata history for streams in Context-Browser. (BR 89839)
   ADD: Command line option --engine.
   ADD: OSD text is now configurable, and it displays the album cover.
