@@ -39,6 +39,7 @@ public:
 
     VisPlugin *vis() { return m_vis; }
     const VisPlugin *vis() const { return m_vis; }
+    void configure();
 };
 
 //END XmmsWrapper

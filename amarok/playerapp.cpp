@@ -84,6 +84,7 @@ PlayerApp::PlayerApp()
 
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
+    new Vis::SocketServer( this );
     initBrowserWin(); //must go first as it creates the action collection
     initPlayerWidget();
 
@@ -116,8 +117,6 @@ PlayerApp::PlayerApp()
     KTipDialog::showTip( "amarok/data/startupTip.txt", false );
 
     handleCliArgs();
-
-    new Vis::SocketServer( this );
 }
 
 PlayerApp::~PlayerApp()

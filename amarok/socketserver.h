@@ -9,7 +9,6 @@
 //TODO use only one socket?
 
 #include <klistview.h>        //baseclass
-#include <qguardedptr.h>      //stack allocated
 #include <qserversocket.h>    //baseclass
 #include <vector>             //stack allocated
 
@@ -26,8 +25,8 @@ Q_OBJECT
 public:
     Selector();
     
-    static QWidget *instance() { return m_instance ? m_instance : (QWidget*)new Selector(); }
-    static QGuardedPtr<Selector> m_instance;
+    static QWidget* instance();
+    static Selector* m_instance;
     
     class Item : public QCheckListItem //TODO use stack allocated KProcess
     {
@@ -40,8 +39,13 @@ public:
         virtual void stateChange( bool state );
         
         KProcess *m_proc;
-        
     };
+
+signals:
+    void configureVis( const QString& );    
+    
+private slots:
+    void rightButton( QListViewItem*, const QPoint&, int );       
 
 public slots:
     void processExited( KProcess* );
@@ -56,13 +60,19 @@ public:
     SocketServer( QObject* );
     void newConnection( int );
 
+    static SocketServer* m_self;
+
 private slots:
     void request( int );
+
+public slots:
+    void invokeConfig( const QString& );    
     
 private:
     static bool m_ignoreState;
-               
+
     int m_sockfd;
+    QString m_configVis;
 };
 
         

@@ -20,19 +20,17 @@
 #include <list> 
 #include <vector>
 
+#include <qstring.h>
+
+#include <kdebug.h>
+#include <kinstance.h>
+#include <kstandarddirs.h>
+
 #define SHARED_LIB_EXT ".so"
 
-//TODO pure c would give a smaller binary <markey> get real, max! :)
 //TODO keep socket open
 
 #include "fft.c"
-
-// This increases our little wrapper a lot, but unless Max implements
-// auto search for proper place of visualization_socket, I'll do it KDE way.
-//    -- berkus
-#include <qstring.h>
-#include <kinstance.h>
-#include <kstandarddirs.h>
 
 
 GtkWidget dummy;
@@ -112,7 +110,7 @@ main( int argc, char** argv )
 
     sockfd = tryConnect();
 
-    while ( ( sockfd ) != -1 ) {
+    while ( sockfd != -1 ) {
         gtk_main_iteration_do( FALSE );
         usleep( 20 * 1000 );
 
@@ -123,7 +121,14 @@ main( int argc, char** argv )
 
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
-
+            
+            char strbuf[10];
+            qstrncpy( strbuf, (char*) float_data, 10 );
+            if ( QString( strbuf ).startsWith( "CONFIG" ) ) {
+                kdDebug() << k_funcinfo << "Received Configure signal.\n";
+                wrap.configure();            
+            }
+                            
             //NOTE we times by 1<<14 rather than 1<<15 (maximum value of signed 16bit)
             //     this is because values of pcm data tend to range 0-2 (although there
             //     is no theoretical maximum.
@@ -162,6 +167,13 @@ main( int argc, char** argv )
 
             send( sockfd, "PCM", 4, 0 );
             nbytes = recv( sockfd, float_data, 512 * sizeof( float ), 0 );
+            
+            char strbuf[10];
+            qstrncpy( strbuf, (char*) float_data, 10 );
+            if ( QString( strbuf ).startsWith( "CONFIG" ) ) {
+                kdDebug() << k_funcinfo << "Received Configure signal.\n";
+                wrap.configure();            
+            }
 
             for ( uint x = 0; x < 512; ++x ) {
                 pcm_data[ 0 ][ x ] = gint16( float_data[ x ] * ( 1 << 14 ) );
@@ -198,8 +210,7 @@ main( int argc, char** argv )
 
     close( sockfd );
 }
-
-
+    
 int
 tryConnect()
 {
@@ -264,8 +275,6 @@ XmmsWrapper::XmmsWrapper( const std::string &plugin )
 
     if ( m_vis->init ) { std::cout << "[amK] init()\n"; m_vis->init(); }
     if ( m_vis->playback_start ) { std::cout << "[amK] start()\n"; m_vis->playback_start(); }
-    
-    if ( m_vis->configure ) { std::cout << "[amK] configure()\n"; m_vis->configure(); }
 }
 
 
@@ -277,6 +286,13 @@ XmmsWrapper::~XmmsWrapper()
 }
 
 
+void XmmsWrapper::configure()
+{
+    if ( m_vis->configure ) {
+        std::cout << "[amK] configure()\n";
+        m_vis->configure();
+    }
+}
 
 
 //NOTE as yet, these functions are a little mysterious to me

@@ -14,7 +14,8 @@
 
 #include <kdebug.h>
 #include <klocale.h>
-#include <kprocess.h> //Vis::Selector
+#include <kpopupmenu.h>       //Vis::Selector  
+#include <kprocess.h>         //Vis::Selector
 #include <kstandarddirs.h>
 
 #include <sys/socket.h>
@@ -22,9 +23,6 @@
 #include <sys/un.h>
 #include <unistd.h>
 #include <vector>
-
-
-QGuardedPtr<Vis::Selector> Vis::Selector::m_instance;
 
 
 //TODO allow stop/start and pause signals to be sent to registered visualisations
@@ -35,10 +33,12 @@ QGuardedPtr<Vis::Selector> Vis::Selector::m_instance;
 //TODO consider moving fht.* here
 //TODO allow visualisations to determine their own data sizes
 
+Vis::SocketServer* Vis::SocketServer::m_self;
 
 Vis::SocketServer::SocketServer( QObject *parent )
   : QServerSocket( parent )
 {
+    m_self = this;
     m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
     if ( m_sockfd == -1 )
@@ -111,8 +111,13 @@ Vis::SocketServer::request( int sockfd )
 
             float data[512]; for( uint x = 0; x < 512; ++x ) data[x] = (*scope)[x];
 
-            ::send( sockfd, data, 512*sizeof(float), 0 );
-
+            if ( m_configVis.isEmpty() )
+                ::send( sockfd, data, 512*sizeof(float), 0 );
+            else {
+                ::send( sockfd, "CONFIG", 7, 0 );
+                m_configVis = "";
+            }
+                
             delete scope;
         }
         else if( result == "FFT" )
@@ -141,27 +146,50 @@ Vis::SocketServer::request( int sockfd )
             fht.scale( front, 1.0 / 64 );
 
             //only half the samples from the fft are useful
-
-            ::send( sockfd, scope, 256*sizeof(float), 0 );
+            if ( m_configVis.isEmpty() )
+                ::send( sockfd, scope, 256*sizeof(float), 0 );
+            else {
+                ::send( sockfd, "CONFIG", 7, 0 );
+                m_configVis = "";
+            }
 
             delete scope;
         }
         else if( result.startsWith( "REG", false ) )
         {
-
         }
 
     } else {
-
         kdDebug() << "[Vis::Server] recv() error, closing socket" << endl;
         ::close( sockfd );
     }
+}
+
+void
+Vis::SocketServer::invokeConfig( const QString& name ) //SLOT
+{
+    m_configVis = name;    
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Vis::Selector
 /////////////////////////////////////////////////////////////////////////////////////////
+
+Vis::Selector* Vis::Selector::m_instance = 0;
+
+QWidget*
+Vis::Selector::instance()
+{
+    if ( !m_instance ) {
+        m_instance =  new Selector();
+        
+        connect( m_instance,           SIGNAL( configureVis( const QString& ) ),
+                 SocketServer::m_self,   SLOT( invokeConfig( const QString& ) ) );
+    }
+        
+    return (QWidget*) m_instance;
+}
 
 Vis::Selector::Selector()
   : KListView()
@@ -184,7 +212,10 @@ Vis::Selector::Selector()
     setCaption( i18n( "Visualizations - amaroK" ) );
     addColumn( i18n( "Name" ) );
     resize( 250, 250 );
-    
+
+    connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
+        
     QDir dir( XMMS_PLUGIN_PATH );
     const QFileInfoList *list = dir.entryInfoList();
     QFileInfo *fi;
@@ -205,9 +236,27 @@ Vis::Selector::processExited( KProcess *proc )
     kdDebug() << "done\n";
 }
 
+void
+Vis::Selector::rightButton( QListViewItem* item, const QPoint& pos, int )
+{
+    if ( !item ) return;
+    
+    KPopupMenu menu( this );
+    menu.insertItem( "Configure" );
+    
+    if ( menu.exec( pos ) != -1 ) {
+        kdDebug() << "Configure vis: " << item->text( 0 ) << "\n";
+        emit configureVis( item->text( 0 ) );
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// CLASS Vis::Selector::Item
+/////////////////////////////////////////////////////////////////////////////////////////
+
 Vis::Selector::Item::~Item()
 {
-    //if( m_proc ) m_proc->kill(); //NOTE makes no difference to kill speed
     delete m_proc; //kills the process too
 }
 
