@@ -290,6 +290,9 @@ void PlayerApp::applySettings()
     m_pOSD->setEnabled( !AmarokConfig::osdEnabled() );      //workaround for reversed config entry
     m_pOSD->setFont   ( AmarokConfig::osdFont() );
     m_pOSD->setColor  ( AmarokConfig::osdColor() );
+    
+    m_pBrowserWin  ->slotUpdateFonts();
+    m_pPlayerWidget->createVis();    
 
     setupColors();
 }
@@ -812,10 +815,8 @@ void PlayerApp::slotShowOptions()
     dialog->addPage( new Options4(0,"Playback"), i18n("Playback"), "kmix",   i18n("Configure playback") );
     dialog->addPage( new Options5(0,"OSD"),      i18n("OSD" ),     "tv",     i18n("Configure OSD") );
 
-    connect( dialog, SIGNAL( settingsChanged() ), this,            SLOT( applySettings() ) );
-    connect( dialog, SIGNAL( settingsChanged() ), m_pBrowserWin,   SLOT( slotUpdateFonts() ) );
-    connect( dialog, SIGNAL( settingsChanged() ), m_pPlayerWidget, SLOT( createVis() ) );
-    
+    connect( dialog, SIGNAL( settingsChanged() ), this, SLOT( applySettings() ) );
+     
     dialog->setInitialSize( QSize( 460, 390 ) );
     dialog->show();
 }
