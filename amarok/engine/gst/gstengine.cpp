@@ -137,7 +137,9 @@ GstEngine::GstEngine()
     : EngineBase()
     , m_pThread( NULL )
     , m_pipelineFilled( false )
-{}
+{
+    kdDebug() << k_funcinfo << endl;
+}
 
 
 GstEngine::~GstEngine()
@@ -150,6 +152,8 @@ GstEngine::~GstEngine()
 void
 GstEngine::init( bool&, int scopeSize, bool )
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     pObject = this;
     m_mixerHW = -1;            //initialize 
     
@@ -160,7 +164,10 @@ GstEngine::init( bool&, int scopeSize, bool )
 //     g_module_open( "libgstreamer-0.8.so", (GModuleFlags) 0 );
     gst_init( NULL, NULL );
     fillPipeline();
+
+    kdDebug() << "END " << k_funcinfo << endl;
 }
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -353,20 +360,19 @@ GstEngine::setVolume( int percent ) //SLOT
 void
 GstEngine::fillPipeline()
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    
     if ( m_pipelineFilled )
         cleanPipeline();
         
     /* create a new thread to hold the elements */
-    kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
     m_pThread              = gst_thread_new          ( "thread" );
     
     /* create a disk reader */
-    kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
     m_pFilesrc   = gst_element_factory_make( "filesrc", "disk_source" );
     m_pSpider    = gst_element_factory_make( "spider", "spider" );
     /* and an audio sink */
     
-    kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
     m_pAudiosink = gst_element_factory_make( "osssink", "play_audio" );
     m_pIdentity  = gst_element_factory_make( "identity", "rawscope" );
     m_pVolume    = gst_element_factory_make( "volume", "volume" );
@@ -385,6 +391,8 @@ GstEngine::fillPipeline()
 
     setVolume( volume() );
     m_pipelineFilled = true;
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 

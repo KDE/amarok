@@ -332,11 +332,10 @@ void PlayerApp::initEngine()
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
-    EngineBase *engine = static_cast<EngineBase*>( plugin );
     // feed engine to controller
-    EngineController::instance()->setEngine( engine );
-    assert( engine );
-    engine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
+    EngineController::setEngine( static_cast<EngineBase*>( plugin ) );
+    assert( EngineController::engine() );
+    EngineController::engine()->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
     
     kdDebug() << "END " << k_funcinfo << endl;
 }
@@ -442,27 +441,20 @@ void PlayerApp::applySettings()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     
-    EngineBase *engine = EngineController::instance()->engine();
-    if ( AmarokConfig::soundSystem() != PluginManager::getService( engine )->name() )
-    {
-        if ( AmarokConfig::soundSystem() == "GstEngine" )
-            KMessageBox::information( 0, i18n( "GStreamer support is still experimental. Some features "
-                                               "(like effects and visualizations) might not work properly." ) );
-
-        PluginManager::unload( engine );
-        EngineController::instance()->setEngine( NULL );
+    if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
+        PluginManager::unload( EngineController::engine() );
         initEngine();
-        engine = EngineController::instance()->engine();
 
         kdDebug() << k_funcinfo << " AmarokConfig::soundSystem() == " << AmarokConfig::soundSystem() << endl;
     }
     
-    if ( AmarokConfig::hardwareMixer() != engine->isMixerHardware() )
-        AmarokConfig::setHardwareMixer( engine->initMixer( AmarokConfig::hardwareMixer() ) );
+    if ( AmarokConfig::hardwareMixer() != EngineController::engine()->isMixerHardware() )
+        AmarokConfig::setHardwareMixer( EngineController::engine()->initMixer( AmarokConfig::hardwareMixer() ) );
 
     EngineController::instance()->setVolume( AmarokConfig::masterVolume() );
-    engine->setRestoreEffects( AmarokConfig::rememberEffects() );
-    engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
+    EngineController::engine()->setRestoreEffects( AmarokConfig::rememberEffects() );
+    EngineController::engine()->setXfadeLength( AmarokConfig::crossfade() ?
+                                                AmarokConfig::crossfadeLength() : 0 );
 
     m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
     m_pOSD->setFont( AmarokConfig::osdFont() );

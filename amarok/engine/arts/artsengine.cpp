@@ -73,7 +73,9 @@ ArtsEngine::ArtsEngine( )
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue2" )
         , m_pConnectTimer( new QTimer( this ) )
-{}
+{
+    kdDebug() << k_funcinfo << endl;
+}
 
 
 ArtsEngine::~ ArtsEngine()
@@ -95,6 +97,8 @@ ArtsEngine::~ ArtsEngine()
 
 void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
 {
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
+   
     m_scopeSize = 1 << scopeSize;
     m_restoreEffects = restoreEffects;
     m_mixerHW = -1;   //initialize
@@ -237,6 +241,8 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
     connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
+    
+    kdDebug() << "END " << k_funcinfo << endl;
 }
 
 

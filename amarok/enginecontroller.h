@@ -41,8 +41,8 @@ public:
     // you'll only get a new (empty) instance.
     static EngineController *instance();
 
-    EngineBase *engine() const { return m_pEngine; }
-    void setEngine( EngineBase *engine ) { m_pEngine = engine; }
+    static EngineBase *engine() { return instance()->m_pEngine; }
+    static void setEngine( EngineBase *engine ) { instance()->m_pEngine = engine; }
     long trackLength() const { return m_length; }  // how about : const MetaBundle &currentTrack() const;
     const KURL &playingURL() { return m_playingURL; } // see over.
 
