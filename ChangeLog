@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1-beta2:
+  ADD: "Cool-Streams", a list of amaroK Squad recommended streams for
+       playlist-browser.
   ADD: Detecting Sampler/VA discs in CollectionBrowser (shown as
        "Various Artists"). (BR 81683)
   ADD: Next and previous track buttons for Tag-Editor.
