@@ -8,6 +8,7 @@
 #include "amarokfilelist.h"    //for sorting directories
 #endif
 #include "engine/enginebase.h" //isValidMedia()
+#include "metabundle.h"
 #include "playerapp.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
@@ -64,10 +65,6 @@
 //     you can always open the dir and select the files. Stupid option and PITA to implement.
 //     <markey> non-recursive adding should get replaced by "add all media files in current directory"
 //TODO reimplement ask recursive in PlaylistWidget::insertMedia()
-
-
-class PlayerApp;
-extern PlayerApp *pApp;
 
 
 PlaylistLoader::PlaylistLoader( const KURL::List &ul, PlaylistWidget *lv, QListViewItem *lvi )
