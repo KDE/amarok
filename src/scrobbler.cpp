@@ -63,7 +63,7 @@ Scrobbler::~Scrobbler()
 void Scrobbler::similarArtists( const QString & artist )
 {
     QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
-                     .arg( KURL::encode_string_no_slash( artist.utf8() ) );
+                     .arg( KURL::encode_string_no_slash( artist ) );
 
     kdDebug() << "[AudioScrobbler] Similar artists: " << url << endl;
 
@@ -539,11 +539,11 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
             data +=
                 "a[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->artist().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->artist() ) +
                 "&t[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->title().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->title() ) +
                 "&b[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->album().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->album() ) +
                 "&m[" + QString::number( submitCounter ) + "]=" +
                 "&l[" + QString::number( submitCounter ) + "]=" +
                 QString::number( itemFromQueue->length() ) +
@@ -724,7 +724,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.find( "\n" ) );
         if ( reason.length() > 6 )
             reason = reason.mid( 7 ).stripWhiteSpace();
-        
+
         kdWarning() << "[AudioScrobbler] Submit failed (" << reason << ")" << endl;
 
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
