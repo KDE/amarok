@@ -87,7 +87,7 @@ static void sqliteAuthBadReturnCode(Parse *pParse, int rc){
   sqlite3ErrorMsg(pParse, "illegal return value (%d) from the "
     "authorization function - should be SQLITE_OK, SQLITE_IGNORE, "
     "or SQLITE_DENY", rc);
-  pParse->rc = SQLITE_MISUSE;
+  pParse->rc = SQLITE_ERROR;
 }
 
 /*

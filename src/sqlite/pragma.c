@@ -207,8 +207,7 @@ void sqlite3Pragma(
   zLeft = sqlite3NameFromToken(pId);
   if( !zLeft ) return;
   if( minusFlag ){
-    zRight = 0;
-    sqlite3SetNString(&zRight, "-", 1, pValue->z, pValue->n, (char*)0);
+    zRight = sqlite3MPrintf("-%T", pValue);
   }else{
     zRight = sqlite3NameFromToken(pValue);
   }
@@ -235,7 +234,7 @@ void sqlite3Pragma(
   ** and a positive value means synchronous is on.
   */
   if( sqlite3StrICmp(zLeft,"default_cache_size")==0 ){
-    static VdbeOpList getCacheSize[] = {
+    static const VdbeOpList getCacheSize[] = {
       { OP_ReadCookie,  0, 2,        0},  /* 0 */
       { OP_AbsValue,    0, 0,        0},
       { OP_Dup,         0, 0,        0},
@@ -262,7 +261,6 @@ void sqlite3Pragma(
       sqlite3VdbeAddOp(v, OP_Ge, 0, addr+3);
       sqlite3VdbeAddOp(v, OP_Negative, 0, 0);
       sqlite3VdbeAddOp(v, OP_SetCookie, iDb, 2);
-      sqlite3EndWriteOperation(pParse);
       pDb->cache_size = size;
       sqlite3BtreeSetCacheSize(pDb->pBt, pDb->cache_size);
     }
@@ -386,7 +384,7 @@ void sqlite3Pragma(
   if( sqlite3StrICmp(zLeft, "table_info")==0 && zRight ){
     Table *pTab;
     if( sqlite3ReadSchema(pParse) ) goto pragma_out;
-    pTab = sqlite3FindTable(db, zRight, 0);
+    pTab = sqlite3FindTable(db, zRight, zDb);
     if( pTab ){
       int i;
       sqlite3VdbeSetNumCols(v, 6);
@@ -415,7 +413,7 @@ void sqlite3Pragma(
     Index *pIdx;
     Table *pTab;
     if( sqlite3ReadSchema(pParse) ) goto pragma_out;
-    pIdx = sqlite3FindIndex(db, zRight, 0);
+    pIdx = sqlite3FindIndex(db, zRight, zDb);
     if( pIdx ){
       int i;
       pTab = pIdx->pTable;
@@ -438,7 +436,7 @@ void sqlite3Pragma(
     Index *pIdx;
     Table *pTab;
     if( sqlite3ReadSchema(pParse) ) goto pragma_out;
-    pTab = sqlite3FindTable(db, zRight, 0);
+    pTab = sqlite3FindTable(db, zRight, zDb);
     if( pTab ){
       v = sqlite3GetVdbe(pParse);
       pIdx = pTab->pIndex;
@@ -464,7 +462,7 @@ void sqlite3Pragma(
     FKey *pFK;
     Table *pTab;
     if( sqlite3ReadSchema(pParse) ) goto pragma_out;
-    pTab = sqlite3FindTable(db, zRight, 0);
+    pTab = sqlite3FindTable(db, zRight, zDb);
     if( pTab ){
       v = sqlite3GetVdbe(pParse);
       pFK = pTab->pFKey;
@@ -529,7 +527,7 @@ void sqlite3Pragma(
     /* Code that initializes the integrity check program.  Set the
     ** error count 0
     */
-    static VdbeOpList initCode[] = {
+    static const VdbeOpList initCode[] = {
       { OP_Integer,     0, 0,        0},
       { OP_MemStore,    0, 1,        0},
     };
@@ -538,7 +536,7 @@ void sqlite3Pragma(
     ** messages have been generated, output OK.  Otherwise output the
     ** error message
     */
-    static VdbeOpList endCode[] = {
+    static const VdbeOpList endCode[] = {
       { OP_MemLoad,     0, 0,        0},
       { OP_Integer,     0, 0,        0},
       { OP_Ne,          0, 0,        0},    /* 2 */
@@ -600,7 +598,7 @@ void sqlite3Pragma(
         sqlite3VdbeAddOp(v, OP_MemIncr, 1, 0);
         for(j=0, pIdx=pTab->pIndex; pIdx; pIdx=pIdx->pNext, j++){
           int jmp2;
-          static VdbeOpList idxErr[] = {
+          static const VdbeOpList idxErr[] = {
             { OP_MemIncr,     0,  0,  0},
             { OP_String8,     0,  0,  "rowid "},
             { OP_Recno,       1,  0,  0},
@@ -618,7 +616,7 @@ void sqlite3Pragma(
         sqlite3VdbeAddOp(v, OP_Next, 1, loopTop+1);
         sqlite3VdbeChangeP2(v, loopTop, sqlite3VdbeCurrentAddr(v));
         for(j=0, pIdx=pTab->pIndex; pIdx; pIdx=pIdx->pNext, j++){
-          static VdbeOpList cntIdx[] = {
+          static const VdbeOpList cntIdx[] = {
              { OP_Integer,      0,  0,  0},
              { OP_MemStore,     2,  1,  0},
              { OP_Rewind,       0,  0,  0},  /* 2 */
@@ -670,7 +668,7 @@ void sqlite3Pragma(
   ** useful if invoked immediately after the main database i
   */
   if( sqlite3StrICmp(zLeft, "encoding")==0 ){
-    struct EncName {
+    static struct EncName {
       char *zName;
       u8 enc;
     } encnames[] = {
@@ -723,7 +721,7 @@ void sqlite3Pragma(
   ** Report the current state of file logs for all databases
   */
   if( sqlite3StrICmp(zLeft, "lock_status")==0 ){
-    static char *azLockName[] = {
+    static const char *const azLockName[] = {
       "unlocked", "shared", "reserved", "pending", "exclusive"
     };
     int i;

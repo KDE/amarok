@@ -23,164 +23,106 @@
 #include <stdlib.h>
 
 /*
-** All the keywords of the SQL language are stored as in a hash
-** table composed of instances of the following structure.
-*/
-typedef struct Keyword Keyword;
-struct Keyword {
-  char *zName;             /* The keyword name */
-  u8 tokenType;            /* Token value for this keyword */
-  u8 len;                  /* Length of this keyword */
-  u8 iNext;                /* Index in aKeywordTable[] of next with same hash */
-};
-
-/*
-** These are the keywords
-*/
-static Keyword aKeywordTable[] = {
-  { "ABORT",             TK_ABORT,        },
-  { "AFTER",             TK_AFTER,        },
-  { "ALL",               TK_ALL,          },
-  { "AND",               TK_AND,          },
-  { "AS",                TK_AS,           },
-  { "ASC",               TK_ASC,          },
-  { "ATTACH",            TK_ATTACH,       },
-  { "BEFORE",            TK_BEFORE,       },
-  { "BEGIN",             TK_BEGIN,        },
-  { "BETWEEN",           TK_BETWEEN,      },
-  { "BY",                TK_BY,           },
-  { "CASCADE",           TK_CASCADE,      },
-  { "CASE",              TK_CASE,         },
-  { "CHECK",             TK_CHECK,        },
-  { "CLUSTER",           TK_CLUSTER,      },
-  { "COLLATE",           TK_COLLATE,      },
-  { "COMMIT",            TK_COMMIT,       },
-  { "CONFLICT",          TK_CONFLICT,     },
-  { "CONSTRAINT",        TK_CONSTRAINT,   },
-  { "CREATE",            TK_CREATE,       },
-  { "CROSS",             TK_JOIN_KW,      },
-  { "DATABASE",          TK_DATABASE,     },
-  { "DEFAULT",           TK_DEFAULT,      },
-  { "DEFERRED",          TK_DEFERRED,     },
-  { "DEFERRABLE",        TK_DEFERRABLE,   },
-  { "DELETE",            TK_DELETE,       },
-  { "DESC",              TK_DESC,         },
-  { "DETACH",            TK_DETACH,       },
-  { "DISTINCT",          TK_DISTINCT,     },
-  { "DROP",              TK_DROP,         },
-  { "END",               TK_END,          },
-  { "EACH",              TK_EACH,         },
-  { "ELSE",              TK_ELSE,         },
-  { "EXCEPT",            TK_EXCEPT,       },
-  { "EXPLAIN",           TK_EXPLAIN,      },
-  { "FAIL",              TK_FAIL,         },
-  { "FOR",               TK_FOR,          },
-  { "FOREIGN",           TK_FOREIGN,      },
-  { "FROM",              TK_FROM,         },
-  { "FULL",              TK_JOIN_KW,      },
-  { "GLOB",              TK_GLOB,         },
-  { "GROUP",             TK_GROUP,        },
-  { "HAVING",            TK_HAVING,       },
-  { "IGNORE",            TK_IGNORE,       },
-  { "IMMEDIATE",         TK_IMMEDIATE,    },
-  { "IN",                TK_IN,           },
-  { "INDEX",             TK_INDEX,        },
-  { "INITIALLY",         TK_INITIALLY,    },
-  { "INNER",             TK_JOIN_KW,      },
-  { "INSERT",            TK_INSERT,       },
-  { "INSTEAD",           TK_INSTEAD,      },
-  { "INTERSECT",         TK_INTERSECT,    },
-  { "INTO",              TK_INTO,         },
-  { "IS",                TK_IS,           },
-  { "ISNULL",            TK_ISNULL,       },
-  { "JOIN",              TK_JOIN,         },
-  { "KEY",               TK_KEY,          },
-  { "LEFT",              TK_JOIN_KW,      },
-  { "LIKE",              TK_LIKE,         },
-  { "LIMIT",             TK_LIMIT,        },
-  { "MATCH",             TK_MATCH,        },
-  { "NATURAL",           TK_JOIN_KW,      },
-  { "NOT",               TK_NOT,          },
-  { "NOTNULL",           TK_NOTNULL,      },
-  { "NULL",              TK_NULL,         },
-  { "OF",                TK_OF,           },
-  { "OFFSET",            TK_OFFSET,       },
-  { "ON",                TK_ON,           },
-  { "OR",                TK_OR,           },
-  { "ORDER",             TK_ORDER,        },
-  { "OUTER",             TK_JOIN_KW,      },
-  { "PRAGMA",            TK_PRAGMA,       },
-  { "PRIMARY",           TK_PRIMARY,      },
-  { "RAISE",             TK_RAISE,        },
-  { "REFERENCES",        TK_REFERENCES,   },
-  { "REPLACE",           TK_REPLACE,      },
-  { "RESTRICT",          TK_RESTRICT,     },
-  { "RIGHT",             TK_JOIN_KW,      },
-  { "ROLLBACK",          TK_ROLLBACK,     },
-  { "ROW",               TK_ROW,          },
-  { "SELECT",            TK_SELECT,       },
-  { "SET",               TK_SET,          },
-  { "STATEMENT",         TK_STATEMENT,    },
-  { "TABLE",             TK_TABLE,        },
-  { "TEMP",              TK_TEMP,         },
-  { "TEMPORARY",         TK_TEMP,         },
-  { "THEN",              TK_THEN,         },
-  { "TRANSACTION",       TK_TRANSACTION,  },
-  { "TRIGGER",           TK_TRIGGER,      },
-  { "UNION",             TK_UNION,        },
-  { "UNIQUE",            TK_UNIQUE,       },
-  { "UPDATE",            TK_UPDATE,       },
-  { "USING",             TK_USING,        },
-  { "VACUUM",            TK_VACUUM,       },
-  { "VALUES",            TK_VALUES,       },
-  { "VIEW",              TK_VIEW,         },
-  { "WHEN",              TK_WHEN,         },
-  { "WHERE",             TK_WHERE,        },
-};
-
-/*
-** This is the hash table
-*/
-#define KEY_HASH_SIZE 101
-static u8 aiHashTable[KEY_HASH_SIZE];
-
-
-/*
 ** This function looks up an identifier to determine if it is a
 ** keyword.  If it is a keyword, the token code of that keyword is 
 ** returned.  If the input is not a keyword, TK_ID is returned.
+**
+** The implementation of this routine was generated by a program,
+** mkkeywordhash.c, located in the tool subdirectory of the distribution.
+** The output of the mkkeywordhash.c program was manually cut and pasted
+** into this file.  When the set of keywords for SQLite changes, you
+** must modify the mkkeywordhash.c program (to add or remove keywords from
+** the data tables) then rerun that program to regenerate this function.
 */
 int sqlite3KeywordCode(const char *z, int n){
+  static const char zText[519] =
+    "ABORTAFTERALLANDASCATTACHBEFOREBEGINBETWEENBYCASCADECASECHECK"
+    "COLLATECOMMITCONFLICTCONSTRAINTCREATECROSSDATABASEDEFAULTDEFERRABLE"
+    "DEFERREDDELETEDESCDETACHDISTINCTDROPEACHELSEENDEXCEPTEXCLUSIVE"
+    "EXPLAINFAILFOREIGNFROMFULLGLOBGROUPHAVINGIGNOREIMMEDIATEINDEX"
+    "INITIALLYINNERINSERTINSTEADINTERSECTINTOISNULLJOINKEYLEFTLIKE"
+    "LIMITMATCHNATURALNOTNULLNULLOFFSETONORDEROUTERPRAGMAPRIMARYRAISE"
+    "REFERENCESREPLACERESTRICTRIGHTROLLBACKROWSELECTSETSTATEMENTTABLE"
+    "TEMPORARYTHENTRANSACTIONTRIGGERUNIONUNIQUEUPDATEUSINGVACUUMVALUES"
+    "VIEWWHENWHERE";
+  static const unsigned char aHash[154] = {
+       0,  75,  82,   0,   0,  97,  80,   0,  83,   0,   0,   0,   0,
+       0,   0,   6,   0,  95,   4,   0,   0,   0,   0,   0,   0,   0,
+       0,  96,  86,   8,   0,  26,  13,   7,  19,  15,   0,   0,  32,
+      25,   0,  21,  31,  41,   0,   0,   0,  34,  27,   0,   0,  30,
+       0,   0,   0,   9,   0,  10,   0,   0,   0,   0,  51,   0,  44,
+      43,   0,  45,  40,   0,  29,  39,  35,   0,   0,  20,   0,  59,
+       0,  16,   0,  17,   0,  18,   0,  55,  42,  72,   0,  33,   0,
+       0,  61,  66,  56,   0,   0,   0,   0,   0,   0,   0,  54,   0,
+       0,   0,   0,   0,  74,  50,  76,  64,  52,   0,   0,   0,   0,
+      68,  84,   0,  47,   0,  58,  60,  92,   0,   0,  48,   0,  93,
+       0,  63,  71,  98,   0,   0,   0,   0,   0,  67,   0,   0,   0,
+       0,  87,   0,   0,   0,   0,   0,  90,  88,   0,  94,
+  };
+  static const unsigned char aNext[98] = {
+       0,   0,   0,   0,   2,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,  12,   0,   0,   0,   0,   0,   0,  11,   0,   0,   0,   0,
+       0,   0,   0,  14,   3,  24,   0,   0,   0,   1,  22,   0,   0,
+      36,  23,  28,   0,   0,   0,   0,   0,   0,   0,   0,   5,   0,
+       0,  49,  37,   0,   0,   0,  38,   0,  53,   0,  57,  62,   0,
+       0,   0,   0,   0,   0,  70,  46,   0,  65,   0,   0,   0,   0,
+      69,  73,   0,  77,   0,   0,   0,   0,   0,   0,  81,  85,   0,
+      91,  79,  78,   0,   0,  89,   0,
+  };
+  static const unsigned char aLen[98] = {
+       5,   5,   3,   3,   2,   3,   6,   6,   5,   7,   2,   7,   4,
+       5,   7,   6,   8,  10,   6,   5,   8,   7,  10,   8,   6,   4,
+       6,   8,   4,   4,   4,   3,   6,   9,   7,   4,   3,   7,   4,
+       4,   4,   5,   6,   6,   9,   2,   5,   9,   5,   6,   7,   9,
+       4,   2,   6,   4,   3,   4,   4,   5,   5,   7,   3,   7,   4,
+       2,   6,   2,   2,   5,   5,   6,   7,   5,  10,   7,   8,   5,
+       8,   3,   6,   3,   9,   5,   4,   9,   4,  11,   7,   5,   6,
+       6,   5,   6,   6,   4,   4,   5,
+  };
+  static const unsigned short int aOffset[98] = {
+       0,   5,  10,  13,  16,  16,  19,  25,  31,  36,  43,  45,  52,
+      56,  61,  68,  74,  82,  92,  98, 103, 111, 118, 128, 136, 142,
+     146, 152, 160, 164, 168, 172, 175, 181, 190, 197, 201, 201, 208,
+     212, 216, 220, 225, 231, 237, 246, 246, 251, 260, 265, 271, 278,
+     287, 291, 291, 297, 301, 304, 308, 312, 317, 322, 329, 329, 336,
+     340, 340, 346, 348, 348, 353, 358, 364, 371, 376, 386, 393, 401,
+     406, 414, 417, 423, 426, 435, 440, 440, 449, 453, 464, 471, 476,
+     482, 488, 493, 499, 505, 509, 513,
+  };
+  static const unsigned char aCode[98] = {
+    TK_ABORT,      TK_AFTER,      TK_ALL,        TK_AND,        TK_AS,         
+    TK_ASC,        TK_ATTACH,     TK_BEFORE,     TK_BEGIN,      TK_BETWEEN,    
+    TK_BY,         TK_CASCADE,    TK_CASE,       TK_CHECK,      TK_COLLATE,    
+    TK_COMMIT,     TK_CONFLICT,   TK_CONSTRAINT, TK_CREATE,     TK_JOIN_KW,    
+    TK_DATABASE,   TK_DEFAULT,    TK_DEFERRABLE, TK_DEFERRED,   TK_DELETE,     
+    TK_DESC,       TK_DETACH,     TK_DISTINCT,   TK_DROP,       TK_EACH,       
+    TK_ELSE,       TK_END,        TK_EXCEPT,     TK_EXCLUSIVE,  TK_EXPLAIN,    
+    TK_FAIL,       TK_FOR,        TK_FOREIGN,    TK_FROM,       TK_JOIN_KW,    
+    TK_GLOB,       TK_GROUP,      TK_HAVING,     TK_IGNORE,     TK_IMMEDIATE,  
+    TK_IN,         TK_INDEX,      TK_INITIALLY,  TK_JOIN_KW,    TK_INSERT,     
+    TK_INSTEAD,    TK_INTERSECT,  TK_INTO,       TK_IS,         TK_ISNULL,     
+    TK_JOIN,       TK_KEY,        TK_JOIN_KW,    TK_LIKE,       TK_LIMIT,      
+    TK_MATCH,      TK_JOIN_KW,    TK_NOT,        TK_NOTNULL,    TK_NULL,       
+    TK_OF,         TK_OFFSET,     TK_ON,         TK_OR,         TK_ORDER,      
+    TK_JOIN_KW,    TK_PRAGMA,     TK_PRIMARY,    TK_RAISE,      TK_REFERENCES, 
+    TK_REPLACE,    TK_RESTRICT,   TK_JOIN_KW,    TK_ROLLBACK,   TK_ROW,        
+    TK_SELECT,     TK_SET,        TK_STATEMENT,  TK_TABLE,      TK_TEMP,       
+    TK_TEMP,       TK_THEN,       TK_TRANSACTION,TK_TRIGGER,    TK_UNION,      
+    TK_UNIQUE,     TK_UPDATE,     TK_USING,      TK_VACUUM,     TK_VALUES,     
+    TK_VIEW,       TK_WHEN,       TK_WHERE,      
+  };
   int h, i;
-  Keyword *p;
-  static char needInit = 1;
-  if( needInit ){
-    /* Initialize the keyword hash table */
-    sqlite3OsEnterMutex();
-    if( needInit ){
-      int nk;
-      nk = sizeof(aKeywordTable)/sizeof(aKeywordTable[0]);
-      for(i=0; i<nk; i++){
-        aKeywordTable[i].len = strlen(aKeywordTable[i].zName);
-        h = sqlite3HashNoCase(aKeywordTable[i].zName, aKeywordTable[i].len);
-        h %= KEY_HASH_SIZE;
-        aKeywordTable[i].iNext = aiHashTable[h];
-        aiHashTable[h] = i+1;
-      }
-      needInit = 0;
-    }
-    sqlite3OsLeaveMutex();
-  }
-  h = sqlite3HashNoCase(z, n) % KEY_HASH_SIZE;
-  for(i=aiHashTable[h]; i; i=p->iNext){
-    p = &aKeywordTable[i-1];
-    if( p->len==n && sqlite3StrNICmp(p->zName, z, n)==0 ){
-      return p->tokenType;
+  if( n<2 ) return TK_ID;
+  h = (sqlite3UpperToLower[((unsigned char*)z)[0]]*5 + 
+      sqlite3UpperToLower[((unsigned char*)z)[n-1]]*3 +
+      n) % 154;
+  for(i=((int)aHash[h])-1; i>=0; i=((int)aNext[i])-1){
+    if( aLen[i]==n && sqlite3StrNICmp(&zText[aOffset[i]],z,n)==0 ){
+      return aCode[i];
     }
   }
   return TK_ID;
 }
-
 
 /*
 ** If X is a character that can be used in an identifier and
@@ -198,9 +140,6 @@ int sqlite3KeywordCode(const char *z, int n){
 */
 static const char isIdChar[] = {
 /* x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 xA xB xC xD xE xF */
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  /* 0x */
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  /* 1x */
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  /* 2x */
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,  /* 3x */
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  /* 4x */
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,  /* 5x */
@@ -208,13 +147,14 @@ static const char isIdChar[] = {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,  /* 7x */
 };
 
+#define IdChar(C)  (((c=C)&0x80)!=0 || (c>0x2f && isIdChar[c-0x30]))
 
 /*
 ** Return the length of the token that begins at z[0]. 
 ** Store the token type in *tokenType before returning.
 */
 static int sqliteGetToken(const unsigned char *z, int *tokenType){
-  int i;
+  int i, c;
   switch( *z ){
     case ' ': case '\t': case '\n': case '\f': case '\r': {
       for(i=1; isspace(z[i]); i++){}
@@ -223,7 +163,7 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
     }
     case '-': {
       if( z[1]=='-' ){
-        for(i=2; z[i] && z[i]!='\n'; i++){}
+        for(i=2; (c=z[i])!=0 && c!='\n'; i++){}
         *tokenType = TK_COMMENT;
         return i;
       }
@@ -255,8 +195,8 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
         *tokenType = TK_SLASH;
         return 1;
       }
-      for(i=3; z[i] && (z[i]!='/' || z[i-1]!='*'); i++){}
-      if( z[i] ) i++;
+      for(i=3, c=z[2]; (c!='*' || z[i]!='/') && (c=z[i])!=0; i++){}
+      if( c ) i++;
       *tokenType = TK_COMMENT;
       return i;
     }
@@ -269,13 +209,13 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
       return 1 + (z[1]=='=');
     }
     case '<': {
-      if( z[1]=='=' ){
+      if( (c=z[1])=='=' ){
         *tokenType = TK_LE;
         return 2;
-      }else if( z[1]=='>' ){
+      }else if( c=='>' ){
         *tokenType = TK_NE;
         return 2;
-      }else if( z[1]=='<' ){
+      }else if( c=='<' ){
         *tokenType = TK_LSHIFT;
         return 2;
       }else{
@@ -284,10 +224,10 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
       }
     }
     case '>': {
-      if( z[1]=='=' ){
+      if( (c=z[1])=='=' ){
         *tokenType = TK_GE;
         return 2;
-      }else if( z[1]=='>' ){
+      }else if( c=='>' ){
         *tokenType = TK_RSHIFT;
         return 2;
       }else{
@@ -327,8 +267,8 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
     }
     case '\'': case '"': {
       int delim = z[0];
-      for(i=1; z[i]; i++){
-        if( z[i]==delim ){
+      for(i=1; (c=z[i])!=0; i++){
+        if( c==delim ){
           if( z[i+1]==delim ){
             i++;
           }else{
@@ -336,7 +276,7 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
           }
         }
       }
-      if( z[i] ) i++;
+      if( c ) i++;
       *tokenType = TK_STRING;
       return i;
     }
@@ -365,7 +305,7 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
       return i;
     }
     case '[': {
-      for(i=1; z[i] && z[i-1]!=']'; i++){}
+      for(i=1, c=z[0]; c!=']' && (c=z[i])!=0; i++){}
       *tokenType = TK_ID;
       return i;
     }
@@ -375,12 +315,11 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
       return i;
     }
     case ':': {
-      for(i=1; (z[i]&0x80)!=0 || isIdChar[z[i]]; i++){}
+      for(i=1; IdChar(z[i]); i++){}
       *tokenType = i>1 ? TK_VARIABLE : TK_ILLEGAL;
       return i;
     }
     case '$': {
-      int c;
       *tokenType = TK_VARIABLE;
       if( z[1]=='{' ){
         int nBrace = 1;
@@ -418,29 +357,29 @@ static int sqliteGetToken(const unsigned char *z, int *tokenType){
       return i;
     } 
     case 'x': case 'X': {
-      if( z[1]=='\'' || z[1]=='"' ){
-        int delim = z[1];
+      if( (c=z[1])=='\'' || c=='"' ){
+        int delim = c;
         *tokenType = TK_BLOB;
-        for(i=2; z[i]; i++){
-          if( z[i]==delim ){
+        for(i=2; (c=z[i])!=0; i++){
+          if( c==delim ){
             if( i%2 ) *tokenType = TK_ILLEGAL;
             break;
           }
-          if( !isxdigit(z[i]) ){
+          if( !isxdigit(c) ){
             *tokenType = TK_ILLEGAL;
             return i;
           }
         }
-        if( z[i] ) i++;
+        if( c ) i++;
         return i;
       }
       /* Otherwise fall through to the next case */
     }
     default: {
-      if( (*z&0x80)==0 && !isIdChar[*z] ){
+      if( !IdChar(*z) ){
         break;
       }
-      for(i=1; (z[i]&0x80)!=0 || isIdChar[z[i]]; i++){}
+      for(i=1; IdChar(z[i]); i++){}
       *tokenType = sqlite3KeywordCode((char*)z, i);
       return i;
     }
@@ -500,8 +439,11 @@ int sqlite3RunParser(Parse *pParse, const char *zSql, char **pzErrMsg){
         break;
       }
       case TK_ILLEGAL: {
-        sqlite3SetNString(pzErrMsg, "unrecognized token: \"", -1, 
-           pParse->sLastToken.z, pParse->sLastToken.n, "\"", 1, (char*)0);
+        if( pzErrMsg ){
+          sqliteFree(*pzErrMsg);
+          *pzErrMsg = sqlite3MPrintf("unrecognized token: \"%T\"",
+                          &pParse->sLastToken);
+        }
         nErr++;
         goto abort_parse;
       }
@@ -689,10 +631,11 @@ int sqlite3_complete(const char *zSql){
         break;
       }
       default: {
-        if( isIdChar[(u8)*zSql] ){
+        int c;
+        if( IdChar((u8)*zSql) ){
           /* Keywords and unquoted identifiers */
           int nId;
-          for(nId=1; isIdChar[(u8)zSql[nId]]; nId++){}
+          for(nId=1; IdChar(zSql[nId]); nId++){}
           switch( *zSql ){
             case 'c': case 'C': {
               if( nId==6 && sqlite3StrNICmp(zSql, "create", 6)==0 ){

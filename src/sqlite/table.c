@@ -150,12 +150,11 @@ int sqlite3_get_table(
     if( res.zErrMsg ){
       if( pzErrMsg ){
         free(*pzErrMsg);
-        *pzErrMsg = res.zErrMsg;
-        sqlite3StrRealloc(pzErrMsg);
-      }else{
-        sqliteFree(res.zErrMsg);
+        *pzErrMsg = sqlite3_mprintf("%s",res.zErrMsg);
       }
+      sqliteFree(res.zErrMsg);
     }
+    db->errCode = res.rc;
     return res.rc;
   }
   sqliteFree(res.zErrMsg);

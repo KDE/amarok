@@ -918,7 +918,7 @@ static void minMaxFinalize(sqlite3_context *context){
 ** external linkage.
 */
 void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
-  static struct {
+  static const struct {
      char *zName;
      signed char nArg;
      u8 argType;           /* 0: none.  1: db  2: (-1) */
@@ -962,7 +962,7 @@ void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
     { "test_auxdata",         -1, 0, SQLITE_UTF8, 0, test_auxdata},
 #endif
   };
-  static struct {
+  static const struct {
     char *zName;
     signed char nArg;
     u8 argType;

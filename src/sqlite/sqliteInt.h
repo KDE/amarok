@@ -16,6 +16,29 @@
 #ifndef _SQLITEINT_H_
 #define _SQLITEINT_H_
 
+/*
+** These #defines should enable >2GB file support on Posix if the
+** underlying operating system supports it.  If the OS lacks
+** large file support, or if the OS is windows, these should be no-ops.
+**
+** Large file support can be disabled using the -DSQLITE_DISABLE_LFS switch
+** on the compiler command line.  This is necessary if you are compiling
+** on a recent machine (ex: RedHat 7.2) but you want your code to work
+** on an older machine (ex: RedHat 6.0).  If you compile on RedHat 7.2
+** without this option, LFS is enable.  But LFS does not exist in the kernel
+** in RedHat 6.0, so the code won't work.  Hence, for maximum binary
+** portability you should omit LFS.
+**
+** Similar is true for MacOS.  LFS is only supported on MacOS 9 and later.
+*/
+#ifndef SQLITE_DISABLE_LFS
+# define _LARGE_FILE       1
+# ifndef _FILE_OFFSET_BITS
+#   define _FILE_OFFSET_BITS 64
+# endif
+# define _LARGEFILE_SOURCE 1
+#endif
+
 #include "config.h"
 #include "sqlite3.h"
 #include "hash.h"
@@ -197,16 +220,13 @@ struct BusyHandler {
 # define sqliteRealloc(X,Y) sqlite3Realloc_(X,Y,__FILE__,__LINE__)
 # define sqliteStrDup(X)    sqlite3StrDup_(X,__FILE__,__LINE__)
 # define sqliteStrNDup(X,Y) sqlite3StrNDup_(X,Y,__FILE__,__LINE__)
-  void sqlite3StrRealloc(char**);
 #else
 # define sqliteFree          sqlite3FreeX
 # define sqliteMalloc        sqlite3Malloc
 # define sqliteMallocRaw     sqlite3MallocRaw
 # define sqliteRealloc       sqlite3Realloc
-/* # define sqliteRealloc_(X,Y) sqlite3Realloc(X,Y) */
-# define sqlite3StrRealloc(X)
-# define sqliteStrDup         sqlite3StrDup
-# define sqliteStrNDup        sqlite3StrNDup
+# define sqliteStrDup        sqlite3StrDup
+# define sqliteStrNDup       sqlite3StrNDup
 #endif
 
 /*
@@ -747,9 +767,9 @@ struct Token {
 struct Expr {
   u8 op;                 /* Operation performed by this node */
   char affinity;         /* The affinity of the column or 0 if not a column */
-  CollSeq *pColl;        /* The collation type of the column or 0 */
   u8 iDb;                /* Database referenced by this expression */
   u8 flags;              /* Various flags.  See below */
+  CollSeq *pColl;        /* The collation type of the column or 0 */
   Expr *pLeft, *pRight;  /* Left and right subnodes */
   ExprList *pList;       /* A list of expressions used as function arguments
                          ** or in "<expr> IN (<expr-list)" */
@@ -1208,7 +1228,6 @@ char *sqlite3VMPrintf(const char*, va_list);
 void sqlite3DebugPrintf(const char*, ...);
 void *sqlite3TextToPtr(const char*);
 void sqlite3SetString(char **, const char *, ...);
-void sqlite3SetNString(char **, ...);
 void sqlite3ErrorMsg(Parse*, const char*, ...);
 void sqlite3Dequote(char*);
 int sqlite3KeywordCode(const char*, int);
@@ -1263,6 +1282,7 @@ void sqlite3SelectDelete(Select*);
 void sqlite3SelectUnbind(Select*);
 Table *sqlite3SrcListLookup(Parse*, SrcList*);
 int sqlite3IsReadOnly(Parse*, Table*, int);
+void sqlite3OpenTableForReading(Vdbe*, int iCur, Table*);
 void sqlite3DeleteFrom(Parse*, SrcList*, Expr*);
 void sqlite3Update(Parse*, SrcList*, ExprList*, Expr*, int);
 WhereInfo *sqlite3WhereBegin(Parse*, SrcList*, Expr*, int, ExprList**);
@@ -1290,7 +1310,7 @@ Vdbe *sqlite3GetVdbe(Parse*);
 void sqlite3Randomness(int, void*);
 void sqlite3RollbackAll(sqlite3*);
 void sqlite3CodeVerifySchema(Parse*, int);
-void sqlite3BeginTransaction(Parse*);
+void sqlite3BeginTransaction(Parse*, int);
 void sqlite3CommitTransaction(Parse*);
 void sqlite3RollbackTransaction(Parse*);
 int sqlite3ExprIsConstant(Expr*);
@@ -1303,7 +1323,6 @@ void sqlite3GenerateConstraintChecks(Parse*,Table*,int,char*,int,int,int,int);
 void sqlite3CompleteInsertion(Parse*, Table*, int, char*, int, int, int);
 void sqlite3OpenTableAndIndices(Parse*, Table*, int, int);
 void sqlite3BeginWriteOperation(Parse*, int, int);
-void sqlite3EndWriteOperation(Parse*);
 Expr *sqlite3ExprDup(Expr*);
 void sqlite3TokenCopy(Token*, Token*);
 ExprList *sqlite3ExprListDup(ExprList*);
@@ -1371,7 +1390,6 @@ char sqlite3AffinityType(const char *, int);
 void sqlite3IndexAffinityStr(Vdbe *, Index *);
 void sqlite3TableAffinityStr(Vdbe *, Table *);
 char sqlite3CompareAffinity(Expr *pExpr, char aff2);
-char const *sqlite3AffinityString(char affinity);
 int sqlite3IndexAffinityOk(Expr *pExpr, char idx_affinity);
 char sqlite3ExprAffinity(Expr *pExpr);
 int sqlite3atoi64(const char*, i64*);

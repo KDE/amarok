@@ -784,9 +784,9 @@ void sqlite3AddColumnType(Parse *pParse, Token *pFirst, Token *pLast){
   if( i<0 ) return;
   pCol = &p->aCol[i];
   pz = &pCol->zType;
-  n = pLast->n + Addr(pLast->z) - Addr(pFirst->z);
-  sqlite3SetNString(pz, pFirst->z, n, (char*)0);
-  z = *pz;
+  n = pLast->n + (pLast->z - pFirst->z);
+  assert( pCol->zType==0 );
+  z = pCol->zType = sqlite3MPrintf("%.*s", n, pFirst->z);
   if( z==0 ) return;
   for(i=j=0; z[i]; i++){
     int c = z[i];
@@ -808,17 +808,13 @@ void sqlite3AddColumnType(Parse *pParse, Token *pFirst, Token *pLast){
 void sqlite3AddDefaultValue(Parse *pParse, Token *pVal, int minusFlag){
   Table *p;
   int i;
-  char **pz;
+  char *z;
   if( (p = pParse->pNewTable)==0 ) return;
   i = p->nCol-1;
   if( i<0 ) return;
-  pz = &p->aCol[i].zDflt;
-  if( minusFlag ){
-    sqlite3SetNString(pz, "-", 1, pVal->z, pVal->n, (char*)0);
-  }else{
-    sqlite3SetNString(pz, pVal->z, pVal->n, (char*)0);
-  }
-  sqlite3Dequote(*pz);
+  assert( p->aCol[i].zDflt==0 );
+  z = p->aCol[i].zDflt = sqlite3MPrintf("%s%T", minusFlag ? "-" : "", pVal);
+  sqlite3Dequote(z);
 }
 
 /*
@@ -1016,8 +1012,7 @@ static int synthCollSeq(Parse *pParse, CollSeq *pColl){
     }
   }
   if( pParse->nErr==0 ){
-    sqlite3SetNString(&pParse->zErrMsg, "no such collation sequence: ", 
-        -1, z, n, (char*)0);
+    sqlite3ErrorMsg(pParse, "no such collation sequence: %.*s", n, z);
   }
   pParse->nErr++;
   return SQLITE_ERROR;
@@ -1082,6 +1077,7 @@ CollSeq *sqlite3LocateCollSeq(Parse *pParse, const char *zName, int nName){
   u8 enc = pParse->db->enc;
   u8 initbusy = pParse->db->init.busy;
   CollSeq *pColl = sqlite3FindCollSeq(pParse->db, enc, zName, nName, initbusy);
+  if( nName<0 ) nName = strlen(zName);
   if( !initbusy && (!pColl || !pColl->xCmp) ){
     /* No collation sequence of this type for this encoding is registered.
     ** Call the collation factory to see if it can supply us with one.
@@ -1101,10 +1097,8 @@ CollSeq *sqlite3LocateCollSeq(Parse *pParse, const char *zName, int nName){
   /* If nothing has been found, write the error message into pParse */
   if( !initbusy && (!pColl || !pColl->xCmp) ){
     if( pParse->nErr==0 ){
-      sqlite3SetNString(&pParse->zErrMsg, "no such collation sequence: ", -1,
-          zName, nName, (char*)0);
+      sqlite3ErrorMsg(pParse, "no such collation sequence: %.*s", nName, zName);
     }
-    pParse->nErr++;
     pColl = 0;
   }
   return pColl;
@@ -1118,7 +1112,7 @@ CollSeq *sqlite3LocateCollSeq(Parse *pParse, const char *zName, int nName){
 */
 char sqlite3AffinityType(const char *zType, int nType){
   int n, i;
-  struct {
+  static const struct {
     const char *zSub;  /* Keywords substring to search for */
     char nSub;         /* length of zSub */
     char affinity;     /* Affinity to return if it matches */
@@ -1382,8 +1376,6 @@ void sqlite3EndTable(Parse *pParse, Token *pEnd, Select *pSelect){
     sqlite3VdbeAddOp(v, OP_Close, 0, 0);
     sqlite3VdbeOp3(v, OP_ParseSchema, p->iDb, 0,
         sqlite3MPrintf("tbl_name='%q'",p->zName), P3_DYNAMIC);
-
-    sqlite3EndWriteOperation(pParse);
   }
 
   /* Add the table to the in-memory representation of the database.
@@ -1620,7 +1612,7 @@ void sqlite3DropTable(Parse *pParse, SrcList *pName, int isView){
   */
   v = sqlite3GetVdbe(pParse);
   if( v ){
-    static VdbeOpList dropTable[] = {
+    static const VdbeOpList dropTable[] = {
       { OP_Rewind,     0, ADDR(13), 0},
       { OP_String8,    0, 0,        0}, /* 1 */
       { OP_MemStore,   1, 1,        0},
@@ -1669,7 +1661,6 @@ void sqlite3DropTable(Parse *pParse, SrcList *pName, int isView){
       }
     }
     sqlite3VdbeOp3(v, OP_DropTable, pTab->iDb, 0, pTab->zName, 0);
-    sqlite3EndWriteOperation(pParse);
   }
   sqliteViewResetAll(db, iDb);
 
@@ -2137,7 +2128,6 @@ void sqlite3CreateIndex(
       sqlite3VdbeAddOp(v, OP_Close, 1, 0);
       sqlite3ChangeCookie(db, v, iDb);
       sqlite3VdbeAddOp(v, OP_Close, 0, 0);
-      sqlite3EndWriteOperation(pParse);
       sqlite3VdbeOp3(v, OP_ParseSchema, iDb, 0,
          sqlite3MPrintf("name='%q'", pIndex->zName), P3_DYNAMIC);
     }
@@ -2217,7 +2207,7 @@ void sqlite3DropIndex(Parse *pParse, SrcList *pName){
   /* Generate code to remove the index and from the master table */
   v = sqlite3GetVdbe(pParse);
   if( v ){
-    static VdbeOpList dropIndex[] = {
+    static const VdbeOpList dropIndex[] = {
       { OP_Rewind,     0, ADDR(9), 0}, 
       { OP_String8,    0, 0,       0}, /* 1 */
       { OP_MemStore,   1, 1,       0},
@@ -2238,7 +2228,6 @@ void sqlite3DropIndex(Parse *pParse, SrcList *pName){
     sqlite3VdbeAddOp(v, OP_Close, 0, 0);
     sqlite3VdbeAddOp(v, OP_Destroy, pIndex->tnum, pIndex->iDb);
     sqlite3VdbeOp3(v, OP_DropIndex, pIndex->iDb, 0, pIndex->zName, 0);
-    sqlite3EndWriteOperation(pParse);
   }
 
 exit_drop_index:
@@ -2404,9 +2393,10 @@ void sqlite3SrcListDelete(SrcList *pList){
 /*
 ** Begin a transaction
 */
-void sqlite3BeginTransaction(Parse *pParse){
+void sqlite3BeginTransaction(Parse *pParse, int type){
   sqlite3 *db;
   Vdbe *v;
+  int i;
 
   if( pParse==0 || (db=pParse->db)==0 || db->aDb[0].pBt==0 ) return;
   if( pParse->nErr || sqlite3_malloc_failed ) return;
@@ -2414,6 +2404,11 @@ void sqlite3BeginTransaction(Parse *pParse){
 
   v = sqlite3GetVdbe(pParse);
   if( !v ) return;
+  if( type!=TK_DEFERRED ){
+    for(i=0; i<db->nDb; i++){
+      sqlite3VdbeAddOp(v, OP_Transaction, i, (type==TK_EXCLUSIVE)+1);
+    }
+  }
   sqlite3VdbeAddOp(v, OP_AutoCommit, 0, 0);
 }
 
@@ -2555,21 +2550,6 @@ void sqlite3BeginWriteOperation(Parse *pParse, int setStatement, int iDb){
   if( iDb!=1 && pParse->db->aDb[1].pBt!=0 ){
     sqlite3BeginWriteOperation(pParse, setStatement, 1);
   }
-}
-
-/*
-** Generate code that concludes an operation that may have changed
-** the database.  If a statement transaction was started, then emit
-** an OP_Commit that will cause the changes to be committed to disk.
-**
-** Note that checkpoints are automatically committed at the end of
-** a statement.  Note also that there can be multiple calls to 
-** sqlite3BeginWriteOperation() but there should only be a single
-** call to sqlite3EndWriteOperation() at the conclusion of the statement.
-*/
-void sqlite3EndWriteOperation(Parse *pParse){
-  /* Delete me! */
-  return;
 }
 
 /* 

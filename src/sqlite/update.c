@@ -253,9 +253,7 @@ void sqlite3Update(
     */
     sqlite3VdbeAddOp(v, OP_Dup, 0, 0);
     if( !isView ){
-      sqlite3VdbeAddOp(v, OP_Integer, pTab->iDb, 0);
-      sqlite3VdbeAddOp(v, OP_OpenRead, iCur, pTab->tnum);
-      sqlite3VdbeAddOp(v, OP_SetNumColumns, iCur, pTab->nCol);
+      sqlite3OpenTableForReading(v, iCur, pTab);
     }
     sqlite3VdbeAddOp(v, OP_MoveGe, iCur, 0);
 
@@ -431,8 +429,6 @@ void sqlite3Update(
     sqlite3VdbeAddOp(v, OP_Close, newIdx, 0);
     sqlite3VdbeAddOp(v, OP_Close, oldIdx, 0);
   }
-
-  sqlite3EndWriteOperation(pParse);
 
   /*
   ** Return the number of rows that were changed.

@@ -12,9 +12,9 @@
 **
 ** This file contains code that is specific to Unix systems.
 */
-#include "os.h"          /* Must be first to enable large file support */
-#if OS_UNIX              /* This file is used on unix only */
 #include "sqliteInt.h"
+#include "os.h"
+#if OS_UNIX              /* This file is used on unix only */
 
 
 #include <time.h>
@@ -33,6 +33,7 @@
 #ifndef O_BINARY
 # define O_BINARY 0
 #endif
+
 
 /*
 ** The DJGPP compiler environment looks mostly like Unix, but it
@@ -587,7 +588,7 @@ int sqlite3OsTempFileName(char *zBuf){
      "/tmp",
      ".",
   };
-  static unsigned char zChars[] =
+  static const unsigned char zChars[] =
     "abcdefghijklmnopqrstuvwxyz"
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "0123456789";
@@ -645,6 +646,7 @@ int sqlite3OsWrite(OsFile *id, const void *pBuf, int amt){
   int wrote = 0;
   assert( id->isOpen );
   SimulateIOError(SQLITE_IOERR);
+  SimulateDiskfullError;
   TIMER_START;
   while( amt>0 && (wrote = write(id->h, pBuf, amt))>0 ){
     amt -= wrote;
@@ -662,7 +664,7 @@ int sqlite3OsWrite(OsFile *id, const void *pBuf, int amt){
 /*
 ** Move the read/write pointer in a file.
 */
-int sqlite3OsSeek(OsFile *id, off_t offset){
+int sqlite3OsSeek(OsFile *id, i64 offset){
   assert( id->isOpen );
   SEEK(offset/1024 + 1);
   lseek(id->h, offset, SEEK_SET);
@@ -733,7 +735,7 @@ int sqlite3OsSyncDirectory(const char *zDirname){
 /*
 ** Truncate an open file to a specified size
 */
-int sqlite3OsTruncate(OsFile *id, off_t nByte){
+int sqlite3OsTruncate(OsFile *id, i64 nByte){
   assert( id->isOpen );
   SimulateIOError(SQLITE_IOERR);
   return ftruncate(id->h, nByte)==0 ? SQLITE_OK : SQLITE_IOERR;
@@ -742,7 +744,7 @@ int sqlite3OsTruncate(OsFile *id, off_t nByte){
 /*
 ** Determine the current size of a file in bytes
 */
-int sqlite3OsFileSize(OsFile *id, off_t *pSize){
+int sqlite3OsFileSize(OsFile *id, i64 *pSize){
   struct stat buf;
   assert( id->isOpen );
   SimulateIOError(SQLITE_IOERR);
@@ -1019,11 +1021,14 @@ end_lock:
 ** If the locking level of the file descriptor is already at or below
 ** the requested locking level, this routine is a no-op.
 **
-** It is not possible for this routine to fail.
+** It is not possible for this routine to fail if the second argument
+** is NO_LOCK.  If the second argument is SHARED_LOCK, this routine
+** might return SQLITE_IOERR instead of SQLITE_OK.
 */
 int sqlite3OsUnlock(OsFile *id, int locktype){
   struct lockInfo *pLock;
   struct flock lock;
+  int rc = SQLITE_OK;
 
   assert( id->isOpen );
   TRACE7("UNLOCK %d %d was %d(%d,%d) pid=%d\n", id->h, locktype, id->locktype, 
@@ -1038,6 +1043,16 @@ int sqlite3OsUnlock(OsFile *id, int locktype){
   assert( pLock->cnt!=0 );
   if( id->locktype>SHARED_LOCK ){
     assert( pLock->locktype==id->locktype );
+    if( locktype==SHARED_LOCK ){
+      lock.l_type = F_RDLCK;
+      lock.l_whence = SEEK_SET;
+      lock.l_start = SHARED_FIRST;
+      lock.l_len = SHARED_SIZE;
+      if( fcntl(id->h, F_SETLK, &lock)!=0 ){
+        /* This should never happen */
+        rc = SQLITE_IOERR;
+      }
+    }
     lock.l_type = F_UNLCK;
     lock.l_whence = SEEK_SET;
     lock.l_start = PENDING_BYTE;
@@ -1080,7 +1095,7 @@ int sqlite3OsUnlock(OsFile *id, int locktype){
   }
   sqlite3OsLeaveMutex();
   id->locktype = locktype;
-  return SQLITE_OK;
+  return rc;
 }
 
 /*

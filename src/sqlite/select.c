@@ -81,7 +81,7 @@ int sqlite3JoinType(Parse *pParse, Token *pA, Token *pB, Token *pC){
   int jointype = 0;
   Token *apAll[3];
   Token *p;
-  static struct {
+  static const struct {
     const char *zKeyword;
     u8 nChar;
     u8 code;
@@ -116,13 +116,12 @@ int sqlite3JoinType(Parse *pParse, Token *pA, Token *pB, Token *pC){
      (jointype & (JT_INNER|JT_OUTER))==(JT_INNER|JT_OUTER) ||
      (jointype & JT_ERROR)!=0
   ){
-    static Token dummy = { 0, 0 };
-    char *zSp1 = " ", *zSp2 = " ";
-    if( pB==0 ){ pB = &dummy; zSp1 = 0; }
-    if( pC==0 ){ pC = &dummy; zSp2 = 0; }
-    sqlite3SetNString(&pParse->zErrMsg, "unknown or unsupported join type: ", 0,
-       pA->z, pA->n, zSp1, 1, pB->z, pB->n, zSp2, 1, pC->z, pC->n, (char*)0);
-    pParse->nErr++;
+    const char *zSp1 = " ";
+    const char *zSp2 = " ";
+    if( pB==0 ){ zSp1++; }
+    if( pC==0 ){ zSp2++; }
+    sqlite3ErrorMsg(pParse, "unknown or unsupported join type: "
+       "%T%s%T%s%T", pA, zSp1, pB, zSp2, pC);
     jointype = JT_INNER;
   }else if( jointype & JT_RIGHT ){
     sqlite3ErrorMsg(pParse, 
@@ -344,9 +343,11 @@ static void codeLimiter(
       sqlite3VdbeAddOp(v, OP_Pop, nPop, 0);
     }
     sqlite3VdbeAddOp(v, OP_Goto, 0, iContinue);
+    VdbeComment((v, "# skip OFFSET records"));
   }
   if( p->iLimit>=0 ){
     sqlite3VdbeAddOp(v, OP_MemIncr, p->iLimit, iBreak);
+    VdbeComment((v, "# exit when LIMIT reached"));
   }
 }
 
@@ -415,6 +416,7 @@ static int selectInnerLoop(
     sqlite3VdbeAddOp(v, OP_Distinct, distinct, sqlite3VdbeCurrentAddr(v)+3);
     sqlite3VdbeAddOp(v, OP_Pop, pEList->nExpr+1, 0);
     sqlite3VdbeAddOp(v, OP_Goto, 0, iContinue);
+    VdbeComment((v, "# skip indistinct records"));
     sqlite3VdbeAddOp(v, OP_String8, 0, 0);
     sqlite3VdbeAddOp(v, OP_PutStrKey, distinct, 0);
     if( pOrderBy==0 ){
@@ -477,11 +479,9 @@ static int selectInnerLoop(
       if( pOrderBy ){
         pushOntoSorter(pParse, v, pOrderBy);
       }else{
-        char const *affStr;
         char aff = (iParm>>16)&0xFF;
         aff = sqlite3CompareAffinity(pEList->a[0].pExpr, aff);
-        affStr = sqlite3AffinityString(aff);
-        sqlite3VdbeOp3(v, OP_MakeRecord, 1, 0, affStr, P3_STATIC);
+        sqlite3VdbeOp3(v, OP_MakeRecord, 1, 0, &aff, 1);
         sqlite3VdbeAddOp(v, OP_String8, 0, 0);
         sqlite3VdbeAddOp(v, OP_PutStrKey, (iParm&0x0000FFFF), 0);
       }
@@ -1223,6 +1223,7 @@ static void computeLimitRegisters(Parse *pParse, Select *p){
     if( v==0 ) return;
     sqlite3VdbeAddOp(v, OP_Integer, -p->nLimit, 0);
     sqlite3VdbeAddOp(v, OP_MemStore, iMem, 1);
+    VdbeComment((v, "# LIMIT counter"));
     p->iLimit = iMem;
   }
   if( p->nOffset>0 ){
@@ -1231,6 +1232,7 @@ static void computeLimitRegisters(Parse *pParse, Select *p){
     if( v==0 ) return;
     sqlite3VdbeAddOp(v, OP_Integer, -p->nOffset, 0);
     sqlite3VdbeAddOp(v, OP_MemStore, iMem, 1);
+    VdbeComment((v, "# OFFSET counter"));
     p->iOffset = iMem;
   }
 }
@@ -2107,9 +2109,7 @@ static int simpleMinMaxQuery(Parse *pParse, Select *p, int eDest, int iParm){
   base = pSrc->a[0].iCursor;
   computeLimitRegisters(pParse, p);
   if( pSrc->a[0].pSelect==0 ){
-    sqlite3VdbeAddOp(v, OP_Integer, pTab->iDb, 0);
-    sqlite3VdbeAddOp(v, OP_OpenRead, base, pTab->tnum);
-    sqlite3VdbeAddOp(v, OP_SetNumColumns, base, pTab->nCol);
+    sqlite3OpenTableForReading(v, base, pTab);
   }
   cont = sqlite3VdbeMakeLabel(v);
   if( pIdx==0 ){

@@ -28,7 +28,11 @@ extern "C" {
 /*
 ** The version of the SQLite library.
 */
-#define SQLITE_VERSION         "3.0.7"
+#ifdef SQLITE_VERSION
+# undef SQLITE_VERSION
+#else
+# define SQLITE_VERSION         "3.0.8"
+#endif
 
 /*
 ** The version string is also compiled into the library so that a program
@@ -38,7 +42,7 @@ extern "C" {
 ** global variables.
 */
 extern const char sqlite3_version[];
-const char *sqlite3_libversion();
+const char *sqlite3_libversion(void);
 
 /*
 ** Each open sqlite database is represented by an instance of the
@@ -760,9 +764,21 @@ int sqlite3_data_count(sqlite3_stmt *pStmt);
 */
 #define SQLITE_INTEGER  1
 #define SQLITE_FLOAT    2
-#define SQLITE_TEXT     3
+/* #define SQLITE_TEXT  3  // See below */
 #define SQLITE_BLOB     4
 #define SQLITE_NULL     5
+
+/*
+** SQLite version 2 defines SQLITE_TEXT differently.  To allow both
+** version 2 and version 3 to be included, undefine them both if a
+** conflict is seen.  Define SQLITE3_TEXT to be the version 3 value.
+*/
+#ifdef SQLITE_TEXT
+# undef SQLITE_TEXT
+#else
+# define SQLITE_TEXT     3
+#endif
+#define SQLITE3_TEXT     3
 
 /*
 ** The next group of routines returns information about the information

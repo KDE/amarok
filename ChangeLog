@@ -4,7 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2:
-
+  CHG: Internal SQLite upgraded to 3.0.8.
 
 VERSION 1.1.1:
   FIX: Crash when using GStreamer-engine on 64bit. (BR 90869)

@@ -127,15 +127,16 @@
 **
 ** The flags define the format of this btree page.  The leaf flag means that
 ** this page has no children.  The zerodata flag means that this page carries
-** only keys and no data.  The intkey flag means that the key is a single
-** variable length integer at the beginning of the payload.
+** only keys and no data.  The intkey flag means that the key is a integer
+** which is stored in the key size entry of the cell header rather than in
+** the payload area.
 **
 ** The cell pointer array begins on the first byte after the page header.
 ** The cell pointer array contains zero or more 2-byte numbers which are
 ** offsets from the beginning of the page to the cell content in the cell
 ** content area.  The cell pointers occur in sorted order.  The system strives
 ** to keep free space after the last cell pointer so that new cells can
-** be easily added without have to defragment the page.
+** be easily added without having to defragment the page.
 **
 ** Cell content is stored at the very end of the page and grows toward the
 ** beginning of the page.
@@ -1288,8 +1289,12 @@ static int newDatabase(Btree *pBt){
 
 /*
 ** Attempt to start a new transaction. A write-transaction
-** is started if the second argument is true, otherwise a read-
-** transaction.
+** is started if the second argument is nonzero, otherwise a read-
+** transaction.  If the second argument is 2 or more and exclusive
+** transaction is started, meaning that no other process is allowed
+** to access the database.  A preexisting transaction may not be
+** upgrade to exclusive by calling this routine a second time - the
+** exclusivity flag only works for a new transaction.
 **
 ** A write-transaction must be started before attempting any 
 ** changes to the database.  None of the following routines 
@@ -1328,7 +1333,7 @@ int sqlite3BtreeBeginTrans(Btree *pBt, int wrflag){
   }
 
   if( rc==SQLITE_OK && wrflag ){
-    rc = sqlite3pager_begin(pBt->pPage1->aData);
+    rc = sqlite3pager_begin(pBt->pPage1->aData, wrflag>1);
     if( rc==SQLITE_OK ){
       rc = newDatabase(pBt);
     }
@@ -2668,7 +2673,8 @@ static void reparentPage(Btree *pBt, Pgno pgno, MemPage *pNewParent, int idx){
   assert( pBt->pPager!=0 );
   aData = sqlite3pager_lookup(pBt->pPager, pgno);
   if( aData ){
-    pThis = (MemPage*)&aData[pBt->usableSize];
+    pThis = (MemPage*)&aData[pBt->pageSize];
+    assert( pThis->aData==aData );
     if( pThis->isInit ){
       if( pThis->pParent!=pNewParent ){
         if( pThis->pParent ) sqlite3pager_unref(pThis->pParent->aData);

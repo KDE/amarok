@@ -211,7 +211,7 @@ void sqlite3FinishTrigger(
   ** build the sqlite_master entry
   */
   if( !db->init.busy ){
-    static VdbeOpList insertTrig[] = {
+    static const VdbeOpList insertTrig[] = {
       { OP_NewRecno,   0, 0,  0          },
       { OP_String8,    0, 0,  "trigger"  },
       { OP_String8,    0, 0,  0          },  /* 2: trigger name */
@@ -241,7 +241,6 @@ void sqlite3FinishTrigger(
     sqlite3VdbeAddOp(v, OP_Close, 0, 0);
     sqlite3VdbeOp3(v, OP_ParseSchema, nt->iDb, 0, 
        sqlite3MPrintf("type='trigger' AND name='%q'", nt->name), P3_DYNAMIC);
-    sqlite3EndWriteOperation(pParse);
   }
 
   if( db->init.busy ){
@@ -488,12 +487,12 @@ void sqlite3DropTriggerPtr(Parse *pParse, Trigger *pTrigger, int nested){
   */
   if( pTable!=0 && (v = sqlite3GetVdbe(pParse))!=0 ){
     int base;
-    static VdbeOpList dropTrigger[] = {
+    static const VdbeOpList dropTrigger[] = {
       { OP_Rewind,     0, ADDR(9),  0},
-      { OP_String8,     0, 0,        0}, /* 1 */
+      { OP_String8,    0, 0,        0}, /* 1 */
       { OP_Column,     0, 1,        0},
       { OP_Ne,         0, ADDR(8),  0},
-      { OP_String8,     0, 0,        "trigger"},
+      { OP_String8,    0, 0,        "trigger"},
       { OP_Column,     0, 0,        0},
       { OP_Ne,         0, ADDR(8),  0},
       { OP_Delete,     0, 0,        0},
@@ -645,7 +644,12 @@ static int codeTriggerProgram(
 ){
   TriggerStep * pTriggerStep = pStepList;
   int orconf;
+  Vdbe *v = pParse->pVdbe;
 
+  assert( pTriggerStep!=0 );
+  assert( v!=0 );
+  sqlite3VdbeAddOp(v, OP_ContextPush, 0, 0);
+  VdbeComment((v, "# begin trigger %s", pStepList->pTrig->name));
   while( pTriggerStep ){
     orconf = (orconfin == OE_Default)?pTriggerStep->orconf:orconfin;
     pParse->trigStack->orconf = orconf;
@@ -661,34 +665,30 @@ static int codeTriggerProgram(
       case TK_UPDATE: {
         SrcList *pSrc;
         pSrc = targetSrcList(pParse, pTriggerStep);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ResetCount, 0, 0);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ListPush, 0, 0);
+        sqlite3VdbeAddOp(v, OP_ResetCount, 0, 0);
         sqlite3Update(pParse, pSrc,
 		sqlite3ExprListDup(pTriggerStep->pExprList), 
 		sqlite3ExprDup(pTriggerStep->pWhere), orconf);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ListPop, 0, 0);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ResetCount, 1, 0);
+        sqlite3VdbeAddOp(v, OP_ResetCount, 1, 0);
         break;
       }
       case TK_INSERT: {
         SrcList *pSrc;
         pSrc = targetSrcList(pParse, pTriggerStep);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ResetCount, 0, 0);
+        sqlite3VdbeAddOp(v, OP_ResetCount, 0, 0);
         sqlite3Insert(pParse, pSrc,
           sqlite3ExprListDup(pTriggerStep->pExprList), 
           sqlite3SelectDup(pTriggerStep->pSelect), 
           sqlite3IdListDup(pTriggerStep->pIdList), orconf);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ResetCount, 1, 0);
+        sqlite3VdbeAddOp(v, OP_ResetCount, 1, 0);
         break;
       }
       case TK_DELETE: {
         SrcList *pSrc;
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ResetCount, 0, 0);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ListPush, 0, 0);
+        sqlite3VdbeAddOp(v, OP_ResetCount, 0, 0);
         pSrc = targetSrcList(pParse, pTriggerStep);
         sqlite3DeleteFrom(pParse, pSrc, sqlite3ExprDup(pTriggerStep->pWhere));
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ListPop, 0, 0);
-        sqlite3VdbeAddOp(pParse->pVdbe, OP_ResetCount, 1, 0);
+        sqlite3VdbeAddOp(v, OP_ResetCount, 1, 0);
         break;
       }
       default:
@@ -696,6 +696,8 @@ static int codeTriggerProgram(
     } 
     pTriggerStep = pTriggerStep->pNext;
   }
+  sqlite3VdbeAddOp(v, OP_ContextPop, 0, 0);
+  VdbeComment((v, "# end trigger %s", pStepList->pTrig->name));
 
   return 0;
 }
@@ -731,8 +733,9 @@ int sqlite3CodeRowTrigger(
   int orconf,          /* ON CONFLICT policy */
   int ignoreJump       /* Instruction to jump to for RAISE(IGNORE) */
 ){
-  Trigger * pTrigger;
-  TriggerStack * pTriggerStack;
+  Trigger *pTrigger;
+  TriggerStack *pStack;
+  TriggerStack trigStackEntry;
 
   assert(op == TK_UPDATE || op == TK_INSERT || op == TK_DELETE);
   assert(tr_tm == TK_BEFORE || tr_tm == TK_AFTER );
@@ -747,20 +750,18 @@ int sqlite3CodeRowTrigger(
     if( pTrigger->op == op && pTrigger->tr_tm == tr_tm && 
         pTrigger->foreach == TK_ROW ){
       fire_this = 1;
-      pTriggerStack = pParse->trigStack;
-      while( pTriggerStack ){
-        if( pTriggerStack->pTrigger == pTrigger ){
+      for(pStack=pParse->trigStack; pStack; pStack=pStack->pNext){
+        if( pStack->pTrigger==pTrigger ){
 	  fire_this = 0;
 	}
-        pTriggerStack = pTriggerStack->pNext;
       }
       if( op == TK_UPDATE && pTrigger->pColumns &&
           !checkColumnOverLap(pTrigger->pColumns, pChanges) ){
         fire_this = 0;
       }
     }
-
-    if( fire_this && (pTriggerStack = sqliteMalloc(sizeof(TriggerStack)))!=0 ){
+ 
+    if( fire_this ){
       int endTrigger;
       SrcList dummyTablist;
       Expr * whenExpr;
@@ -769,35 +770,31 @@ int sqlite3CodeRowTrigger(
       dummyTablist.nSrc = 0;
 
       /* Push an entry on to the trigger stack */
-      pTriggerStack->pTrigger = pTrigger;
-      pTriggerStack->newIdx = newIdx;
-      pTriggerStack->oldIdx = oldIdx;
-      pTriggerStack->pTab = pTab;
-      pTriggerStack->pNext = pParse->trigStack;
-      pTriggerStack->ignoreJump = ignoreJump;
-      pParse->trigStack = pTriggerStack;
+      trigStackEntry.pTrigger = pTrigger;
+      trigStackEntry.newIdx = newIdx;
+      trigStackEntry.oldIdx = oldIdx;
+      trigStackEntry.pTab = pTab;
+      trigStackEntry.pNext = pParse->trigStack;
+      trigStackEntry.ignoreJump = ignoreJump;
+      pParse->trigStack = &trigStackEntry;
       sqlite3AuthContextPush(pParse, &sContext, pTrigger->name);
 
       /* code the WHEN clause */
       endTrigger = sqlite3VdbeMakeLabel(pParse->pVdbe);
       whenExpr = sqlite3ExprDup(pTrigger->pWhen);
       if( sqlite3ExprResolveIds(pParse, &dummyTablist, 0, whenExpr) ){
-        pParse->trigStack = pParse->trigStack->pNext;
-        sqliteFree(pTriggerStack);
+        pParse->trigStack = trigStackEntry.pNext;
         sqlite3ExprDelete(whenExpr);
         return 1;
       }
       sqlite3ExprIfFalse(pParse, whenExpr, endTrigger, 1);
       sqlite3ExprDelete(whenExpr);
 
-      sqlite3VdbeAddOp(pParse->pVdbe, OP_ContextPush, 0, 0);
       codeTriggerProgram(pParse, pTrigger->step_list, orconf); 
-      sqlite3VdbeAddOp(pParse->pVdbe, OP_ContextPop, 0, 0);
 
       /* Pop the entry off the trigger stack */
-      pParse->trigStack = pParse->trigStack->pNext;
+      pParse->trigStack = trigStackEntry.pNext;
       sqlite3AuthContextPop(&sContext);
-      sqliteFree(pTriggerStack);
 
       sqlite3VdbeResolveLabel(pParse->pVdbe, endTrigger);
     }

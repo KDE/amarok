@@ -27,7 +27,6 @@ libsqlite_la_SOURCES = \
     main.c \
     opcodes.c \
     os_mac.c \
-    os_test.c \
     os_unix.c \
     os_win.c \
     pager.c \

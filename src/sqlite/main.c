@@ -128,7 +128,7 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
   /*
   ** The master database table has a structure like this
   */
-  static char master_schema[] = 
+  static const char master_schema[] = 
      "CREATE TABLE sqlite_master(\n"
      "  type text,\n"
      "  name text,\n"
@@ -137,7 +137,7 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
      "  sql text\n"
      ")"
   ;
-  static char temp_master_schema[] = 
+  static const char temp_master_schema[] = 
      "CREATE TEMP TABLE sqlite_temp_master(\n"
      "  type text,\n"
      "  name text,\n"
@@ -445,11 +445,7 @@ int sqlite3_close(sqlite3 *db){
   if( !db ){
     return SQLITE_OK;
   }
-
-  if( db->magic!=SQLITE_MAGIC_CLOSED && 
-      db->magic!=SQLITE_MAGIC_OPEN &&
-      db->magic!=SQLITE_MAGIC_BUSY
-  ){
+  if( sqlite3SafetyCheck(db) ){
     return SQLITE_MISUSE;
   }
 
@@ -530,6 +526,8 @@ void sqlite3RollbackAll(sqlite3 *db){
 const char *sqlite3ErrStr(int rc){
   const char *z;
   switch( rc ){
+    case SQLITE_ROW:
+    case SQLITE_DONE:
     case SQLITE_OK:         z = "not an error";                          break;
     case SQLITE_ERROR:      z = "SQL logic error or missing database";   break;
     case SQLITE_INTERNAL:   z = "internal SQLite implementation flaw";   break;
@@ -613,6 +611,9 @@ int sqlite3_busy_handler(
   int (*xBusy)(void*,int),
   void *pArg
 ){
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
   db->busyHandler.xFunc = xBusy;
   db->busyHandler.pArg = pArg;
   return SQLITE_OK;
@@ -630,14 +631,16 @@ void sqlite3_progress_handler(
   int (*xProgress)(void*), 
   void *pArg
 ){
-  if( nOps>0 ){
-    db->xProgress = xProgress;
-    db->nProgressOps = nOps;
-    db->pProgressArg = pArg;
-  }else{
-    db->xProgress = 0;
-    db->nProgressOps = 0;
-    db->pProgressArg = 0;
+  if( !sqlite3SafetyCheck(db) ){
+    if( nOps>0 ){
+      db->xProgress = xProgress;
+      db->nProgressOps = nOps;
+      db->pProgressArg = pArg;
+    }else{
+      db->xProgress = 0;
+      db->nProgressOps = 0;
+      db->pProgressArg = 0;
+    }
   }
 }
 #endif
@@ -660,7 +663,9 @@ int sqlite3_busy_timeout(sqlite3 *db, int ms){
 ** Cause any pending operation to stop at its earliest opportunity.
 */
 void sqlite3_interrupt(sqlite3 *db){
-  db->flags |= SQLITE_Interrupt;
+  if( !sqlite3SafetyCheck(db) ){
+    db->flags |= SQLITE_Interrupt;
+  }
 }
 
 /*
@@ -669,9 +674,7 @@ void sqlite3_interrupt(sqlite3 *db){
 ** SQLite is a DLL.  For some reason, it does not work to call free()
 ** directly.
 **
-** Note that we need to call free() not sqliteFree() here, since every
-** string that is exported from SQLite should have already passed through
-** sqlite3StrRealloc().
+** Note that we need to call free() not sqliteFree() here.
 */
 void sqlite3_free(char *p){ free(p); }
 
@@ -691,7 +694,10 @@ int sqlite3_create_function(
   FuncDef *p;
   int nName;
 
-  if( (db==0 || zFunctionName==0 || sqlite3SafetyCheck(db)) ||
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
+  if( zFunctionName==0 ||
       (xFunc && (xFinal || xStep)) || 
       (!xFunc && (xFinal && !xStep)) ||
       (!xFunc && (!xFinal && xStep)) ||
@@ -740,8 +746,12 @@ int sqlite3_create_function16(
 ){
   int rc;
   char const *zFunc8;
+  sqlite3_value *pTmp;
 
-  sqlite3_value *pTmp = sqlite3GetTransientValue(db);
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
+  pTmp = sqlite3GetTransientValue(db);
   sqlite3ValueSetStr(pTmp, -1, zFunctionName, SQLITE_UTF16NATIVE,SQLITE_STATIC);
   zFunc8 = sqlite3ValueText(pTmp, SQLITE_UTF8);
 
@@ -856,22 +866,18 @@ int sqlite3BtreeFactory(
 ** error.
 */
 const char *sqlite3_errmsg(sqlite3 *db){
-  if( !db || !db->pErr ){
-    /* If db is NULL, then assume that a malloc() failed during an
-    ** sqlite3_open() call.
-    */
+  const char *z;
+  if( sqlite3_malloc_failed ){
     return sqlite3ErrStr(SQLITE_NOMEM);
   }
-  if( db->magic!=SQLITE_MAGIC_OPEN && 
-      db->magic!=SQLITE_MAGIC_BUSY &&
-      db->magic!=SQLITE_MAGIC_CLOSED 
-  ){
+  if( sqlite3SafetyCheck(db) || db->errCode==SQLITE_MISUSE ){
     return sqlite3ErrStr(SQLITE_MISUSE);
   }
-  if( !sqlite3_value_text(db->pErr) ){
-    return sqlite3ErrStr(db->errCode);
+  z = sqlite3_value_text(db->pErr);
+  if( z==0 ){
+    z = sqlite3ErrStr(db->errCode);
   }
-  return sqlite3_value_text(db->pErr);
+  return z;
 }
 
 /*
@@ -884,12 +890,12 @@ const void *sqlite3_errmsg16(sqlite3 *db){
   ** zero byte, we can obtain the little-endian string with
   ** &big_endian[1].
   */
-  static char outOfMemBe[] = {
+  static const char outOfMemBe[] = {
     0, 'o', 0, 'u', 0, 't', 0, ' ', 
     0, 'o', 0, 'f', 0, ' ', 
     0, 'm', 0, 'e', 0, 'm', 0, 'o', 0, 'r', 0, 'y', 0, 0, 0
   };
-  static char misuseBe [] = {
+  static const char misuseBe [] = {
     0, 'l', 0, 'i', 0, 'b', 0, 'r', 0, 'a', 0, 'r', 0, 'y', 0, ' ', 
     0, 'r', 0, 'o', 0, 'u', 0, 't', 0, 'i', 0, 'n', 0, 'e', 0, ' ', 
     0, 'c', 0, 'a', 0, 'l', 0, 'l', 0, 'e', 0, 'd', 0, ' ', 
@@ -898,31 +904,32 @@ const void *sqlite3_errmsg16(sqlite3 *db){
     0, 's', 0, 'e', 0, 'q', 0, 'u', 0, 'e', 0, 'n', 0, 'c', 0, 'e', 0, 0, 0
   };
 
-  if( db && db->pErr ){
-    if( db->magic!=SQLITE_MAGIC_OPEN && 
-        db->magic!=SQLITE_MAGIC_BUSY &&
-        db->magic!=SQLITE_MAGIC_CLOSED 
-    ){
-      return (void *)(&misuseBe[SQLITE_UTF16NATIVE==SQLITE_UTF16LE?1:0]);
-    }
-    if( !sqlite3_value_text16(db->pErr) ){
-      sqlite3ValueSetStr(db->pErr, -1, sqlite3ErrStr(db->errCode),
-          SQLITE_UTF8, SQLITE_STATIC);
-    }
-    if( sqlite3_value_text16(db->pErr) ){
-      return sqlite3_value_text16(db->pErr);
-    }
-  }  
-
-  /* If db is NULL, then assume that a malloc() failed during an
-  ** sqlite3_open() call. We have a static version of the string 
-  ** "out of memory" encoded using UTF-16 just for this purpose.
-  */
-  return (void *)(&outOfMemBe[SQLITE_UTF16NATIVE==SQLITE_UTF16LE?1:0]);
+  const void *z;
+  if( sqlite3_malloc_failed ){
+    return (void *)(&outOfMemBe[SQLITE_UTF16NATIVE==SQLITE_UTF16LE?1:0]);
+  }
+  if( sqlite3SafetyCheck(db) || db->errCode==SQLITE_MISUSE ){
+    return (void *)(&misuseBe[SQLITE_UTF16NATIVE==SQLITE_UTF16LE?1:0]);
+  }
+  z = sqlite3_value_text16(db->pErr);
+  if( z==0 ){
+    sqlite3ValueSetStr(db->pErr, -1, sqlite3ErrStr(db->errCode),
+         SQLITE_UTF8, SQLITE_STATIC);
+    z = sqlite3_value_text16(db->pErr);
+  }
+  return z;
 }
 
+/*
+** Return the most recent error code generated by an SQLite routine.
+*/
 int sqlite3_errcode(sqlite3 *db){
-  if( !db ) return SQLITE_NOMEM;
+  if( sqlite3_malloc_failed ){
+    return SQLITE_NOMEM;
+  }
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
   return db->errCode;
 }
 
@@ -1045,6 +1052,9 @@ int sqlite3_prepare16(
   int rc;
   sqlite3_value *pTmp;
 
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
   pTmp = sqlite3GetTransientValue(db);
   sqlite3ValueSetStr(pTmp, -1, zSql, SQLITE_UTF16NATIVE, SQLITE_STATIC);
   zSql8 = sqlite3ValueText(pTmp, SQLITE_UTF8);
@@ -1247,6 +1257,10 @@ int sqlite3_create_collation(
   CollSeq *pColl;
   int rc = SQLITE_OK;
   
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
+
   /* If SQLITE_UTF16 is specified as the encoding type, transform this
   ** to one of SQLITE_UTF16LE or SQLITE_UTF16BE using the
   ** SQLITE_UTF16NATIVE macro. SQLITE_UTF16 is not used internally.
@@ -1285,7 +1299,11 @@ int sqlite3_create_collation16(
   int(*xCompare)(void*,int,const void*,int,const void*)
 ){
   char const *zName8;
-  sqlite3_value *pTmp = sqlite3GetTransientValue(db);
+  sqlite3_value *pTmp;
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
+  pTmp = sqlite3GetTransientValue(db);
   sqlite3ValueSetStr(pTmp, -1, zName, SQLITE_UTF16NATIVE, SQLITE_STATIC);
   zName8 = sqlite3ValueText(pTmp, SQLITE_UTF8);
   return sqlite3_create_collation(db, zName8, enc, pCtx, xCompare);
@@ -1300,6 +1318,9 @@ int sqlite3_collation_needed(
   void *pCollNeededArg, 
   void(*xCollNeeded)(void*,sqlite3*,int eTextRep,const char*)
 ){
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
   db->xCollNeeded = xCollNeeded;
   db->xCollNeeded16 = 0;
   db->pCollNeededArg = pCollNeededArg;
@@ -1315,6 +1336,9 @@ int sqlite3_collation_needed16(
   void *pCollNeededArg, 
   void(*xCollNeeded16)(void*,sqlite3*,int eTextRep,const void*)
 ){
+  if( sqlite3SafetyCheck(db) ){
+    return SQLITE_MISUSE;
+  }
   db->xCollNeeded = 0;
   db->xCollNeeded16 = xCollNeeded16;
   db->pCollNeededArg = pCollNeededArg;

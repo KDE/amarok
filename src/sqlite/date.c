@@ -47,8 +47,8 @@
 **      Willmann-Bell, Inc
 **      Richmond, Virginia (USA)
 */
-#include "os.h"
 #include "sqliteInt.h"
+#include "os.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -872,7 +872,7 @@ static void strftimeFunc(
 */
 void sqlite3RegisterDateTimeFunctions(sqlite3 *db){
 #ifndef SQLITE_OMIT_DATETIME_FUNCS
-  static struct {
+  static const struct {
      char *zName;
      int nArg;
      void (*xFunc)(sqlite3_context*,int,sqlite3_value**);
