@@ -28,8 +28,6 @@ class QRect;
 class QWidget;
 class KComboBox;
 
-class EffectListItem;
-
 /**
  *@author mark
  */
@@ -51,7 +49,7 @@ class EffectWidget : public KDialogBase
         void slotButtonTop();
         void slotButtonBotConf();
         void slotButtonBotRem();
-        void slotItemClicked( QListViewItem *pCurrentItem );
+        void slotChanged();
 
     private:
 // ATTRIBUTES ------

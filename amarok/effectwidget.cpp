@@ -79,8 +79,8 @@ EffectWidget::EffectWidget( QWidget* parent )
     m_pListView->header()->hide();
     m_pListView->addColumn( "void" );
     m_pListView->setSorting( -1 );
-    connect( m_pListView, SIGNAL( currentChanged( QListViewItem * ) ),
-             this, SLOT( slotItemClicked( QListViewItem * ) ) );
+    connect( m_pListView, SIGNAL( selectionChanged() ),
+             this,          SLOT( slotChanged() ) );
 
     QFrame *pContainerBotButtons = new QFrame( m_pGroupBoxBot );
 
@@ -127,7 +127,7 @@ EffectWidget::~EffectWidget()
 void EffectWidget::slotButtonTop()
 {
     new EffectListItem( m_pListView, m_pComboBox->currentText() );
-    slotItemClicked( m_pListView->currentItem() );
+    slotChanged();
 }
 
 
@@ -135,30 +135,30 @@ void EffectWidget::slotButtonBotConf()
 {
     EffectListItem *pItem = static_cast<EffectListItem*>( m_pListView->currentItem() );
     pItem->configure();
-    
-    m_pButtonBotConf->setEnabled( false );
 }
 
 
 void EffectWidget::slotButtonBotRem()
 {
-    pApp->m_pEngine->removeEffect( static_cast<EffectListItem*>( m_pListView->currentItem() )->m_id );
-    delete m_pListView->currentItem();
-    
-    m_pButtonBotConf->setEnabled( false );
+    if ( QListViewItem *item = m_pListView->currentItem() )
+    {
+        pApp->m_pEngine->removeEffect( static_cast<EffectListItem*>( item )->m_id );
+        delete m_pListView->currentItem();
+    }
 }
 
 
-void EffectWidget::slotItemClicked( QListViewItem *pCurrentItem )
+void EffectWidget::slotChanged() //SLOT
 {
-    if ( pCurrentItem )
-    {
-        EffectListItem *pEffect = static_cast<EffectListItem *>( pCurrentItem );
-        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable( pEffect->m_id ) );
+    kdDebug() << "[EffectWidget::slotChanged()]\n";
+    
+    QListViewItem* item = m_pListView->currentItem();
+    
+    if ( item ) {
+        m_pButtonBotConf->setEnabled( pApp->m_pEngine->effectConfigurable(
+                                      static_cast<EffectListItem*>( item )->m_id ) );
     }
-
-    else
-    {
+    else {
         m_pButtonBotConf->setEnabled( false );
     }
 }

@@ -103,7 +103,7 @@ MID-TERM:
 
     * add: seeking with mousewheel
            <muesli> what's seeking with mousewheel? <markey> dunno, but several users requested it
-	   <berkus> seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
+           <berkus> seeking the track via mousewheel, wheelUp to seek back, wheelDown to seek further
 
     * chg: #21<markey> use more accurate interpolation for analyzers (cubic or spline)
 
@@ -128,10 +128,10 @@ LONG-TERM:
 
     * add: make PlayerWidget shadeable (like XMMS)
            <mxcl> doesn't the systray provide this functionality already?
-	   <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
-	   <larson> How do you propose this should work? Since we are handled by kwin and have
-	   normal window borders, double clicking the titlebar is handled by kwin. Also, should
-	   the playlist be shadable?
+           <berkus> no it doesn't, double click the winamp/xmms window and see for yourself
+           <larson> How do you propose this should work? Since we are handled by kwin and have
+           normal window borders, double clicking the titlebar is handled by kwin. Also, should
+           the playlist be shadable?
 
     * add: display some information about current track in playlist window
 
@@ -139,9 +139,6 @@ LONG-TERM:
 
     * add: <mxcl> implement beat detection (thread?), interface should glow/move to
            the beat, visualisations have access to beat/bpm info
-
-    * add: pitch-slider (?)
-           <berkus> should be in separate "Effects Control" panel
 
     * add: audio system info widget, showing all available codecs and similar info
 
@@ -155,7 +152,7 @@ IDEAS:
     * #54<markey> For reducing startup time, we could try not to link to the audio frameworks (aRts, Gst..),
          but instead open the libraries at runtime with dlopen(). I reckon this could be a substantial
          saving (maybe also in memory), since these libs are quite huge.
-	 <berkus> I think kdeinit does the preloading for us...
+         <berkus> I think kdeinit does the preloading for us...
 
     * #12<markey> prevent zombie processes after amarok has exited (proper exit or crashing).
          such zombies can lead to very weird behaviour on next amarok start and eat ressources,

@@ -500,7 +500,7 @@ QString ArtsEngine::effectNameForId( long id ) const
 
 bool ArtsEngine::effectConfigurable( long id ) const
 {
-    if ( m_effectMap[id].widget )
+    if ( m_effectMap.find(id) == m_effectMap.end() )
         return false;
 
     Arts::TraderQuery query;
@@ -565,8 +565,11 @@ void ArtsEngine::removeEffect( long id )
 
 void ArtsEngine::configureEffect( long id )
 {
-    m_effectMap[id].widget = new ArtsConfigWidget( *m_effectMap[id].effect );
-    m_effectMap[id].widget->show();
+    if ( !m_effectMap[id].widget )
+    {    
+        m_effectMap[id].widget = new ArtsConfigWidget( *m_effectMap[id].effect );
+        m_effectMap[id].widget->show();
+    }
 }
 
 
