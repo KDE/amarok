@@ -39,6 +39,47 @@ QColor PlaylistItem::glowText;
 QColor PlaylistItem::glowBase;
 
 
+// These are untranslated and used for storing/retrieving XML playlist
+const QString PlaylistItem::columnName(int n) const
+{
+   switch(n) {
+      case TrackName:
+         return "TrackName";
+         break;
+      case Title:
+         return "Title";
+         break;
+      case Artist:
+         return "Artist";
+         break;
+      case Album:
+         return "Album";
+         break;
+      case Year:
+         return "Year";
+         break;
+      case Comment:
+         return "Comment";
+         break;
+      case Genre:
+         return "Genre";
+         break;
+      case Track:
+         return "TrackNo";
+         break;
+      case Directory:
+         return "Directory";
+         break;
+      case Length:
+         return "Length";
+         break;
+      case Bitrate:
+         return "Bitrate";
+         break;
+   }
+   return "<ERROR>";
+}
+
 static inline QColor
 mixColors( const QColor &c1, const QColor &c2, uint f1 = 1, uint f2 = 1 )
 {
@@ -99,7 +140,7 @@ PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u,
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
     for( uint x = 1; x < ncol; ++x )
     {
-        const QString text = n.namedItem( parent->columnText( x ) ).toElement().text();
+        const QString text = n.namedItem( columnName( x ) ).toElement().text();
 
         //FIXME this is duplication of setText()
         //TODO  it would be neat to have all store columns adjacent and at top end so you can use
@@ -332,18 +373,18 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             break;
     //convert to logical column
     firstCol = header->mapToSection( firstCol );
-                   
-    //Allocate buffer pixmap, for flicker-free drawing 
+
+    //Allocate buffer pixmap, for flicker-free drawing
     QPixmap* buffer = new QPixmap( width, height() );
     QPainter painterBuf( buffer, true );
     painterBuf.setFont( p->font() );
-        
+
     int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
     if( this == listView()->currentTrack() )
     {
         QColorGroup glowCg = cg; //shallow copy
-        
+
         glowCg.setColor( QColorGroup::Base, glowBase );
         glowCg.setColor( QColorGroup::Text, glowText );
 
@@ -389,7 +430,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         painterBuf.setPen( QPen( cg.dark(), 0, Qt::SolidLine ) );
         painterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
     }
-    
+
     painterBuf.end();
     p->drawPixmap( 0, 0, *buffer );
     delete buffer;

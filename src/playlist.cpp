@@ -427,7 +427,7 @@ void Playlist::saveXML( const QString &path ) const
         {
             if( !item->exactText(x).isEmpty() )
             {
-                QDomElement attr = newdoc.createElement( columnText(x) );
+                QDomElement attr = newdoc.createElement( item->columnName(x) );
                 QDomText t = newdoc.createTextNode( item->exactText(x) );
                 attr.appendChild( t );
                 i.appendChild( attr );
@@ -573,9 +573,9 @@ void Playlist::summary( QPopupMenu &popup ) const
 }
 */
 
-int Playlist::mapToLogicalColumn( int physical ) 
+int Playlist::mapToLogicalColumn( int physical )
 {
-    int logical;    
+    int logical;
 
     //skip hidden columns
     do logical = header()->mapToSection( physical++ );

@@ -45,6 +45,8 @@ class PlaylistItem : public KListViewItem
         bool corruptFile;
 #endif
 
+        const QString columnName(int n) const;
+
         enum Column  { TrackName = 0,
                        Title = 1,
                        Artist = 2,
