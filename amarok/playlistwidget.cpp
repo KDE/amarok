@@ -743,39 +743,47 @@ void PlaylistWidget::removeSelectedItems()
   //FIXME this is the only method with which the user can remove items, however to properly future proof
   //      you need to somehow make it so creation and deletion of playlistItems handle the search
   //      tokens and pointers (and removal from tagReader queue!)
+  
+    //We use two loops as the code is neater and so we can select the item after
+    //currentTrack if it is to be removed
+    //FIXME when we implement a "play this track next" feature, you can scrap this selection method
 
     QPtrList<PlaylistItem> list;
     
     for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
-        if( item->isSelected() ) list.append( static_cast<PlaylistItem *>(item) );
-
-    if( !list.isEmpty() ) writeUndo();
+        if( item->isSelected() && item != m_pCurrentTrack ) list.append( static_cast<PlaylistItem *>(item) );
             
+    //currenTrack must be last to ensure the item after it won't be removed
+    //we select the item after currentTrack so it's played when currentTrack finishes
+    if( m_pCurrentTrack->isSelected() ) list.append( m_pCurrentTrack );
+    if( !list.isEmpty() ) writeUndo();
+
     for ( PlaylistItem *item = list.first(); item; item = list.next() )
     {
-        int x = searchPtrs.find( item );
-
-        if ( x >= 0 )
+        if( m_pCurrentTrack == item )
+        {
+            m_pCurrentTrack = NULL;
+            //now we select the next item if available so playback will continue from there next iteration
+            if( pApp->isPlaying() )
+                if( QListViewItem *tmp = item->nextSibling() )
+                    tmp->setSelected( true );
+        }        
+        
+        //keep search system synchronised
+        if( int x = searchPtrs.find( item ) >= 0 )
         {
             searchTokens.remove( searchTokens.at( x ) );
             searchPtrs.remove( searchPtrs.at( x ) );
         }
 
-        if( m_pCurrentTrack == item )
-        {
-            m_pCurrentTrack = NULL;
-            //now we select the next item if available so playback will continue from there next iteration
-            if( QListViewItem *tmp = item->nextSibling() ) tmp->setSelected( true );
-        }
-           
+        //if tagreader is running don't let tags be read for this item and delete later
         if( m_tagReader->running() )
         {
-            item->setVisible( false );               
+            //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
+            item->setVisible( false ); //will be removed next time playlist is cleared        
             m_tagReader->remove( item );
         }
         else { delete item; }
-           
-        //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
     }
 }
 
