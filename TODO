@@ -11,8 +11,6 @@ SHORT-TERM (URGENT):
   ADD 182 <till>   When kdemultimedia isn't installed, the "Current Track"-Play icon in the playlist is missing
                    (artsbuilderexecute.png). Need to import this one.
 
-  ADD 181 <markey> Filebrowser toolbar needs an icon for "Sort".
-
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
   FIX 176 <muesli> Context sometimes still shows "Build a collection", just after the scan

@@ -192,7 +192,8 @@ void FileBrowser::setupToolbar()
     for( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
     {
         a = m_dir->actionCollection()->action( (*it).latin1() );
-        if( a ) a->plug( m_toolbar );
+        if ( *it == "sorting menu" ) a->setIcon( "configure" );
+        if ( a ) a->plug( m_toolbar );
     }
 }
 
