@@ -27,28 +27,32 @@ namespace std
 
 namespace amaroK
 {
+    #if 0
     class CrashHandlerWidget : public KDialog {
     public:
         CrashHandlerWidget();
     };
+    #endif
 
     void
     Crash::crashHandler( int /*signal*/ )
     {
-        DEBUG_FUNC_INFO
-
-        switch( CrashHandlerWidget().exec() )
         {
-        case QDialog::Accepted: {
             #define LINES 40
 
             QString backtrace;
             QString path = amaroK::saveLocation() + "backtrace";
-            QString body =
-                    "Please enter a BRIEF DESCRIPTION describing the crash's cause. Thanks!\n\n"
-                    "Engine       %1\n"
+            QString body = i18n(
+                    "amaroK has crashed! We're terribly sorry about this :(\n\n"
+                    "But, all is not lost! You could potentially help us fix the crash. "
+                    "amaroK has attached a backtrace that describes the crash, so just click send, "
+                    "or if you have time, write a brief description of how the crash happened first.\n\n"
+                    "Many thanks.\n\n" );
+
+            body += "Engine       %1\n"
                     "Build date:  " __DATE__ "\n"
-                    "GCC version: " __VERSION__; //assuming we're using GCC
+                    "GCC version: " __VERSION__ "\n" //assuming we're using GCC
+                    "Description: \n\n";
 
             {   /// obtain backtrace
                 void *array[ LINES ];
@@ -82,7 +86,6 @@ namespace amaroK
                     /*messageFile*/ QString(),
                     /*attachURLs*/  QStringList( path ),
                     /*startup_id*/  "" );
-            }
         }
 
         //_exit() exits immediately, otherwise this
@@ -91,10 +94,9 @@ namespace amaroK
     }
 }
 
+#if 0
 amaroK::CrashHandlerWidget::CrashHandlerWidget()
 {
-    DEBUG_FUNC_INFO
-
     QBoxLayout *layout = new QHBoxLayout( this, 18, 12 );
 
     {
@@ -130,3 +132,4 @@ amaroK::CrashHandlerWidget::CrashHandlerWidget()
     setCaption( i18n("Crash Handler") );
     setFixedSize( sizeHint() );
 }
+#endif
