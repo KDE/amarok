@@ -1053,7 +1053,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
     {
         values << (*it).path();
         i++;
-        if ( i % 50 == 0 )
+        if ( i % 50 == 0 || i == urls.count() )
         {
             qb.clear();
 
@@ -1074,21 +1074,21 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
             values = qb.run();
             if ( values.count() )
-                for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
+                for ( uint j = 0; j < values.count(); j += qb.countReturnValues() )
                 {
                     MetaBundle b;
 
-                    b.setAlbum     ( values[ i + 0 ] );
-                    b.setArtist    ( values[ i + 1 ] );
-                    b.setGenre     ( values[ i + 2 ] );
-                    b.setTitle     ( values[ i + 3 ] );
-                    b.setYear      ( values[ i + 4 ] );
-                    b.setComment   ( values[ i + 5 ] );
-                    b.setTrack     ( values[ i + 6 ] );
-                    b.setBitrate   ( values[ i + 7 ].toInt() );
-                    b.setLength    ( values[ i + 8 ].toInt() );
-                    b.setSampleRate( values[ i + 9 ].toInt() );
-                    b.setUrl       ( values[ i + 10 ] );
+                    b.setAlbum     ( values[ j + 0 ] );
+                    b.setArtist    ( values[ j + 1 ] );
+                    b.setGenre     ( values[ j + 2 ] );
+                    b.setTitle     ( values[ j + 3 ] );
+                    b.setYear      ( values[ j + 4 ] );
+                    b.setComment   ( values[ j + 5 ] );
+                    b.setTrack     ( values[ j + 6 ] );
+                    b.setBitrate   ( values[ j + 7 ].toInt() );
+                    b.setLength    ( values[ j + 8 ].toInt() );
+                    b.setSampleRate( values[ j + 9 ].toInt() );
+                    b.setUrl       ( values[ j + 10 ] );
 
                     bundles.append( b );
                 }
