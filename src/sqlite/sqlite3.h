@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+#define THREADSAFE 1
+
 /*
 ** The version of the SQLite library.
 */
