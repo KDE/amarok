@@ -380,7 +380,7 @@ public:
                 //TODO Perhaps it's time to put this in some header, as we use it in three places now
                 QSimpleRichText t( i18n(
                         "<div align=center>"
-                            "Enter a search term above, you can use globbing wildcards like * and ?"
+                            "Enter a search term above; you can use wildcards like * and ?"
                         "</div>" ), QApplication::font() );
 
                 const int wd3 = r.width() / 3;
