@@ -70,7 +70,6 @@ LONG-TERM:
 
     * add: adjustable gap between tracks, making recording easier
 
-    * add: red line marker as drop indicator
     * fix: find solution for dropping items to the first position. maybe an empty line
       at the top or bottom? (should be unneeded with the guide line)
 
