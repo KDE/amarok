@@ -3,7 +3,7 @@ amaroK Changelog
 (c) 2002, 2003 by Mark Kretschmann. GPL License.
 
 
-VERSION HEAD:
+  * add: crossfading between tracks
   * add: vertical lines between columns in Playlist
   * add: alternating item colors in Playlist
   * add: column "directory" in PlaylistWidget (for Grue:)
@@ -105,7 +105,7 @@ VERSION 0.5.1:
     not satisfied with overall performance, tho, but it seems that most of the 
     load is produced by the aRts code itself, so this will rather be difficult
     to improve.  
-  * fixed crash when "next" or "previous" was pressed without a track 
+  * fixed crash when "next" or "previous" was pressed without a track
     loaded
   * thanks to valgrind I was able to find and squish some serious bugs, 
     most of which were related to pointers. to sum it up: pointers are evil. 
@@ -147,8 +147,8 @@ VERSION 0.14 (internal):
     (unofficial?) KDE c++ coding standard (using the prefix "m_" for member 
     attributes and so on). This was real slave-work :/
   * cleaned up code in several classes
-  * fixed problem where subwidgets got keyboard focus and were drawn dark with 
-    the liquid style. switched off focus completely, since it's not needed for 
+  * fixed problem where subwidgets got keyboard focus and were drawn dark with
+    the liquid style. switched off focus completely, since it's not needed for
     this type of application
 
 VERSION 0.13 (internal):
@@ -157,12 +157,12 @@ VERSION 0.13 (internal):
   * added dragging items inside of playlist widget
   * added forward declarations in header files to reduce compile time
   * added saving of browserwin/splitter size
-  * rewrote track information widget. used a html table for the text. looks much 
+  * rewrote track information widget. used a html table for the text. looks much
     nicer now :)
   * fixed sorting function
   * fixed jump widget. removed huge memory leaks in the widget
   * fixed flicker in analyzer widget
-  * tons of bugfixes in playing code. partly rewritten. seems to be much more 
+  * tons of bugfixes in playing code. partly rewritten. seems to be much more
     stable now
 
 VERSION 0.12 (internal):

@@ -1,9 +1,9 @@
 /***************************************************************************
-                       playerapp.cpp  -  description
-                          -------------------
- begin                : Mit Okt 23 14:35:18 CEST 2002
- copyright            : (C) 2002 by Mark Kretschmann
- email                :
+                      playerapp.cpp  -  description
+                         -------------------
+begin                : Mit Okt 23 14:35:18 CEST 2002
+copyright            : (C) 2002 by Mark Kretschmann
+email                :
 ***************************************************************************/
 
 /***************************************************************************
@@ -99,8 +99,8 @@ PlayerApp::PlayerApp() :
         m_bIsPlaying( false ),
         m_bChangingSlider( false ),
         m_XFadeRunning( false ),
-        m_XFadeCurrent( "invalue1" ),
-        m_XFadeValue( 1.0 )
+        m_XFadeValue( 1.0 ),
+        m_XFadeCurrent( "invalue1" )
 {
     setName( "amarok" );
 
@@ -145,6 +145,9 @@ PlayerApp::PlayerApp() :
 
 PlayerApp::~PlayerApp()
 {
+    //TEST
+    kdDebug() << "PlayerApp:~PlayerApp()" << endl;
+
     slotStop();
 
     killTimers();
@@ -171,7 +174,7 @@ int PlayerApp::newInstance()
 
     QCString playlistUrl = args->getOption( "playlist" );
 
-    if ( !playlistUrl.isEmpty() )            //playlist
+    if ( !playlistUrl.isEmpty() )             //playlist
     {
         slotClearPlaylist();
         loadPlaylist( KCmdLineArgs::makeURL( playlistUrl ).path(), 0 );
@@ -179,7 +182,7 @@ int PlayerApp::newInstance()
 
     if ( args->count() > 0 )
     {
-        if ( args->isSet( "e" ) )            //enqueue
+        if ( args->isSet( "e" ) )             //enqueue
         {
             for ( int i = 0; i < args->count(); i++ )
             {
@@ -206,13 +209,13 @@ int PlayerApp::newInstance()
         }
     }
 
-    if ( args->isSet( "r" ) )                //rewind
+    if ( args->isSet( "r" ) )                 //rewind
         pApp->slotPrev();
-    if ( args->isSet( "f" ) )                //forward
+    if ( args->isSet( "f" ) )                 //forward
         pApp->slotNext();
-    if ( args->isSet( "p" ) )                //play
+    if ( args->isSet( "p" ) )                 //play
         pApp->slotPlay();
-    if ( args->isSet( "s" ) )                //stop
+    if ( args->isSet( "s" ) )                 //stop
         pApp->slotStop();
 
     return KUniqueApplication::newInstance();
@@ -245,9 +248,9 @@ void PlayerApp::restore()
             time.custom = 0;
             time.customUnit = std::string();
 
-          // try to fix a crash on session restore when there's nothing to restore
-          if (m_pPlayObject && !m_pPlayObject->isNull())
-            m_pPlayObject->seek( time );
+            // try to fix a crash on session restore when there's nothing to restore
+            if ( m_pPlayObject && !m_pPlayObject->isNull() )
+                m_pPlayObject->seek( time );
         }
     }
 }
@@ -574,10 +577,10 @@ bool PlayerApp::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
-	    QString str;
+            QString str;
             QTextStream stream( &file );
 
-            while ( (str = stream.readLine()) != QString::null )
+            while ( ( str = stream.readLine() ) != QString::null )
             {
                 if ( !str.startsWith( "#" ) )
                 {
@@ -598,10 +601,10 @@ bool PlayerApp::loadPlaylist( KURL url, QListViewItem *destination )
         QFile file( tmpFile );
         if ( file.open( IO_ReadOnly ) )
         {
-	    QString str;
+            QString str;
             QTextStream stream( &file );
 
-            while ( (str = stream.readLine()) != QString::null )
+            while ( ( str = stream.readLine() ) != QString::null )
             {
                 if ( str.startsWith( "File" ) )
                 {
@@ -884,6 +887,8 @@ void PlayerApp::toggleXFade( bool on )
 
 void PlayerApp::startXFade()
 {
+    kdDebug() << "void PlayerApp::startXFade()" << endl;
+
     m_XFadeRunning = true;
 
     if ( m_XFadeCurrent == "invalue1" )
@@ -893,10 +898,6 @@ void PlayerApp::startXFade()
 
     m_pPlayObjectXFade = m_pPlayObject;
     m_pPlayObject = NULL;
-    m_length = 0;
-
-    delete m_pPlayerWidget->m_pPlayObjConfigWidget;
-    m_pPlayerWidget->m_pPlayObjConfigWidget = NULL;
 
     slotNext();
 }
@@ -904,15 +905,24 @@ void PlayerApp::startXFade()
 
 void PlayerApp::stopXFade()
 {
+    kdDebug() << "void PlayerApp::stopXFade()" << endl;
+
+    m_XFadeRunning = false;
+
+    if ( m_XFadeCurrent == "invalue2" )
+        m_XFadeValue = 0.0;
+    else
+        m_XFadeValue = 1.0;
+
+    m_XFade.percentage( m_XFadeValue );
+
     if ( m_pPlayObjectXFade != NULL )
     {
         m_pPlayObjectXFade->halt();
-        m_pPlayObjectXFade->object()._node()->stop();
+        m_pPlayObjectXFade->object()._node() ->stop();
 
         delete m_pPlayObjectXFade;
         m_pPlayObjectXFade = NULL;
-
-        m_XFadeRunning = false;
     }
 }
 
@@ -955,12 +965,11 @@ void PlayerApp::slotPlay()
     // although I'm not 100% sure it was a good idea as I can't tell if it is necessary to setCurrentTrack()
     // please check!
 
-    if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() )    //bit of a hack really
-    {
-        slotStop();
-        return ;
-    }
-
+//     if ( m_bIsPlaying && !m_pPlayerWidget->m_pButtonPlay->isOn() )     //bit of a hack really
+//     {
+//         slotStop();
+//         return ;
+//     }
 
     PlaylistItem* item = static_cast<PlaylistItem*>( m_pBrowserWin->m_pPlaylistWidget->currentTrack() );
 
@@ -978,11 +987,11 @@ void PlayerApp::slotPlay()
                 break;
             tmpItem = static_cast<PlaylistItem*>( tmpItem->nextSibling() );
         }
-        if ( tmpItem )                               //skip to the first selected item
+        if ( tmpItem )                                //skip to the first selected item
             item = tmpItem;
-    }
 
-    m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( item );
+    }
 
     m_pPlayerWidget->m_pButtonPlay->setOn( true ); //interface consistency
 
@@ -1040,13 +1049,12 @@ void PlayerApp::slotConnectPlayObj()
 {
     if ( !m_pPlayObject->object().isNull() )
     {
-        m_pPlayObject->object()._node()->start();
+        m_pPlayObject->object()._node() ->start();
 
         Arts::connect( m_pPlayObject->object(), "left", m_XFade, ( m_XFadeCurrent + "_l" ).latin1() );
         Arts::connect( m_pPlayObject->object(), "right", m_XFade, ( m_XFadeCurrent + "_r" ).latin1() );
     }
 }
-
 
 
 void PlayerApp::slotPause()
@@ -1080,14 +1088,7 @@ void PlayerApp::slotStop()
         m_pPlayObject = NULL;
     }
 
-    if ( m_pPlayObjectXFade != NULL )
-    {
-        m_pPlayObjectXFade->halt();
-        m_pPlayObjectXFade->object()._node() ->stop();
-
-        delete m_pPlayObjectXFade;
-        m_pPlayObjectXFade = NULL;
-    }
+    stopXFade();
 
     m_bIsPlaying = false;
     m_length = 0;
@@ -1123,10 +1124,9 @@ void PlayerApp::slotNext()
 
     if ( pItem == NULL )
     {
-        //do nothing when list is empty
         if ( m_pBrowserWin->m_pPlaylistWidget->childCount() == 0 || !m_optRepeatPlaylist )
         {
-            m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( NULL );
+            slotStop();
             return ;
         }
         else
@@ -1316,28 +1316,20 @@ void PlayerApp::slotMainTimer()
     m_pPlayerWidget->m_pSlider->setValue( static_cast<int>( timeC.seconds ) );
 
     // <Crossfading>
-    if ( m_optXFade and not m_pPlayObject->stream() and m_length - timeC.seconds < 4 and not m_XFadeRunning )
+    if ( ( m_optXFade ) && ( !m_pPlayObject->stream() ) && ( !m_XFadeRunning ) && ( m_length - timeC.seconds < 3 )  )
     {
         startXFade();
+        return ;
     }
     if ( m_XFadeRunning )
     {
         if ( m_XFadeCurrent == "invalue2" )
-        {
-            m_XFadeValue -= 0.04;
-            if ( m_XFadeValue < 0.0 )
-            {
-                stopXFade();
-                m_XFadeValue = 0.0;
-            }
-        }
+            m_XFadeValue -= 0.08;
         else
-            m_XFadeValue += 0.04;
-            if ( m_XFadeValue > 1.0 )
-            {
-                stopXFade();
-                m_XFadeValue = 1.0;
-            }
+            m_XFadeValue += 0.08;
+
+        if ( m_XFadeValue < 0.0 or m_XFadeValue > 1.0 )
+            stopXFade();
 
         m_XFade.percentage( m_XFadeValue );
     }
@@ -1499,9 +1491,9 @@ void PlayerApp::slotShowOptions()
             m_optHidePlaylistWindow = false;
 
         if ( opt1->checkBoxXFade->isChecked() )
-            toggleXFade(true);
+            toggleXFade( true );
         else
-            toggleXFade(false);
+            toggleXFade( false );
 
         switch ( opt1->comboBox1->currentItem() )
         {
@@ -1583,14 +1575,14 @@ void PlayerApp::slotShowHelp()
 
 void PlayerApp::slotWidgetMinimized()
 {
-   if (m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn())
-      m_pBrowserWin->hide();
+    if ( m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn() )
+        m_pBrowserWin->hide();
 }
 
 void PlayerApp::slotWidgetRestored()
 {
-   if (m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn())
-      m_pBrowserWin->show();
+    if ( m_optHidePlaylistWindow && m_pPlayerWidget->m_pButtonPl->isOn() )
+        m_pBrowserWin->show();
 }
 
 #include "playerapp.moc"
