@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #22 being the highest available (take this one for your next bug and increase here)
+           #23 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #22<markey> in filebrowser the column width does not get saved
 
     * fix: #20<muesli> remove beat detection into own analyzer (project "sun-down") -->muesli
 
