@@ -230,7 +230,8 @@ GstEngine::canDecode( const KURL &url ) const
 
     // Try to iterate over the bin, if it works gst can decode our file
     if ( gst_bin_iterate ( GST_BIN ( pipeline ) ) )
-        success = true;
+        if ( gst_bin_iterate ( GST_BIN ( pipeline ) ) )
+            success = true;
 
     gst_element_set_state( pipeline, GST_STATE_NULL );
     gst_object_unref( GST_OBJECT( pipeline ) );
