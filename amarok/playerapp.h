@@ -87,6 +87,7 @@ class PlayerApp : public KUniqueApplication
         void play( const MetaBundle& );
         void slotPause();
         void slotStop();
+		void slotPlaylistShowHide();
         void slotSliderPressed();
         void slotSliderReleased();
         void slotSliderChanged( int );
