@@ -315,6 +315,33 @@ KDE_CHECK_HEADER(kjsembed/kjsembedpart.h, [AC_DEFINE(HAVE_KJSEMBED, 1, [have KJS
 
 
 ###############################################################################
+# BEGIN MUSICBRAINZ CHECK
+###############################################################################
+
+AC_DEFUN([AC_HAVE_MUSICBRAINZ],
+[
+    AC_DEFINE(HAVE_MUSICBRAINZ, 1, [have MusicBrainz])
+    have_musicbrainz=true
+])
+
+AC_DEFUN([AC_NO_MUSICBRAINZ],
+[
+    AC_DEFINE(HAVE_MUSICBRAINZ, 0, [have MusicBrainz])
+    have_musicbrainz=false
+])
+
+KDE_CHECK_HEADER(musicbrainz/musicbrainz.h,
+    AC_HAVE_MUSICBRAINZ,
+    AC_NO_MUSICBRAINZ
+)
+
+###############################################################################
+# END MUSICBRAINZ CHECK
+###############################################################################
+
+
+
+###############################################################################
 # BEGIN DO_NOT_COMPILE CHECK
 ###############################################################################
 
