@@ -34,6 +34,8 @@ Q_OBJECT
     public:
         CoverManager( QWidget *parent=0, const char *name=0 );
         ~CoverManager();
+
+        static void showOnce();
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
 
     private slots:
@@ -104,14 +106,14 @@ Q_OBJECT
 class CoverView : public KIconView
 {
 Q_OBJECT
-        
+
     public:
         CoverView( QWidget *parent = 0, const char *name = 0, WFlags f = 0 );
 
     protected:
         QDragObject *dragObject();
 };
-		  
+
 class CoverViewItem : public KIconViewItem
 {
     public:

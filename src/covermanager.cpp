@@ -47,6 +47,7 @@
 
 
 QPixmap *nocover = 0;
+CoverManager* instance = 0;
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
@@ -56,6 +57,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     , m_coversFetched( 0 )
     , m_coverErrors( 0 )
 {
+    instance = this;
+
     m_db = new CollectionDB();
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
@@ -204,12 +207,13 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
 
 CoverManager::~CoverManager()
 {
-    delete nocover;
-
     //save window size
     KConfig *config = kapp->config();
     config->setGroup( "Cover Manager" );
     config->writeEntry( "Window Size", size() );
+
+    delete nocover;
+    instance = 0;
 }
 
 
@@ -266,6 +270,18 @@ void CoverManager::fetchCoversLoop() //SLOT
     }
 
     #endif
+}
+
+
+void CoverManager::showOnce()
+{
+    if ( !instance )
+        (new CoverManager())->show();
+    else
+    {
+        instance->setActiveWindow();
+        instance->raise();
+    }
 }
 
 

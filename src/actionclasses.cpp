@@ -166,7 +166,7 @@ Menu::slotActivated( int index )
     switch( index )
     {
     case ID_SHOW_COVER_MANAGER:
-        (new CoverManager())->show();
+        CoverManager::showOnce();
         break;
     case ID_SHOW_WIZARD:
         pApp->firstRunWizard();

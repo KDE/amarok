@@ -360,7 +360,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     #endif
 
     case MANAGER:
-        (new CoverManager())->show();
+        CoverManager::showOnce();
         break;
     }
 }
