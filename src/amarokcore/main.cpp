@@ -48,7 +48,8 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "Analyzers, Context Browser and systray eye-candy" ), "eros.kde@email.it" );
     aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
-    aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Fabulous help with our pre 1.2 bug-avalanche" ), "<greg@gkmweb.com>" );
+    aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Fabulous help with our pre 1.2 bug-avalanche" ), "greg@gkmweb.com" );
+    aboutData.addCredit( "Ian Monroe", I18N_NOOP( "Patches, Ruby script template" ), "ian@monroe.nu" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Kenny Lemieux", I18N_NOOP( "amaroK webmaster" ), "swaft@pwsp.net" );
