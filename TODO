@@ -135,10 +135,6 @@ LONG-TERM:
 
 IDEAS:
 
-    * functionality for finding/browsing streams, similar to streamtuner
-      (http://www.nongnu.org/streamtuner). possibly map this to the filebrowser
-      [berkus: seems -->mxcl took this one?]
-
     * bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
     * resizable playerwidget, like in Winamp3. Maybe using SVG graphics, or
