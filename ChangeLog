@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: Compatibility bugfixes to TitleProxy, thanks to Daniel Molkentin
+       <danimo@kde.org>. I think we've now got 100% Shoutcast compatibility.
   ADD: Allow changing volume by using the mousewheel anywhere on the toolbar.
   FIX: Wheel-scrolling toolbar's volume slider doesn't change volume (BR 81155).
   FIX: ContextBrowser is now shown in proper colors for every scheme.
