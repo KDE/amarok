@@ -15,8 +15,11 @@
 #include <kpopupmenu.h>
 
 
-amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
+amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
+  : KSystemTray( playerWidget )
 {
+    KActionCollection* const ac = pApp->actionCollection();
+
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setAcceptDrops( true );
 
@@ -28,7 +31,7 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSy
 
     QPopupMenu &p = *contextMenu();
     QStringList shortcuts; shortcuts << "" << "Z" << "X" << "C" << "V" << "B";
-    QString body = "|&%1| %2";
+    const QString body = "|&%1| %2";
 
     for( uint index = 1; index < 6; ++index )
     {
@@ -36,46 +39,21 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget, KActionCollection *ac ) : KSy
         p.changeItem( id, body.arg( *shortcuts.at( index ), p.text( id ) ) );
     }
 
-    contextMenu()->insertSeparator();
-
-    ac->action( "options_configure" )->plug( contextMenu() );
-
     //seems to be necessary
     KAction *quit = actionCollection()->action( "file_quit" );
     quit->disconnect();
     connect( quit, SIGNAL( activated() ), kapp, SLOT( quit() ) );
 }
 
-#include <klocale.h>
 bool
 amaroK::TrayIcon::event( QEvent *e )
 {
-    switch( e->type() ) {
-    case QEvent::Drop:
+    switch( e->type() )
     {
-        QPopupMenu popup;
-
-        //popup.insertItem( i18n( "Play" ) );
-        popup.insertItem( i18n( "Append and &Play" ) );
-        popup.insertItem( i18n( "&Append" ) );
-        popup.insertSeparator();
-        popup.insertItem( i18n( "&Cancel" ) );
-
-        popup.exec( mapToGlobal( static_cast<QDropEvent*>(e)->pos() ) );
-
-        return TRUE;
-    }
+    case QEvent::Drop:
     case QEvent::Wheel:
-        EngineController::instance()->setVolume( EngineController::engine()->volume() +
-                                                 static_cast<QWheelEvent*>(e)->delta() / 18 );
-        return TRUE;
-    
     case QEvent::DragEnter:
-        //ignore() doesn't pass the event to parent unless
-        //the parent isVisible() and the active window!
-
-        //send the event to the parent PlayerWidget, it'll handle it with much wisdom
-        QApplication::sendEvent( parentWidget(), e );
+        pApp->genericEventHandler( this, e );
         return TRUE;
 
     case QEvent::MouseButtonPress:
@@ -86,9 +64,9 @@ amaroK::TrayIcon::event( QEvent *e )
             return TRUE;
         }
 
+        //else FALL THROUGH
+
     default:
         return KSystemTray::event( e );
     }
 }
-
-#include "systray.moc"

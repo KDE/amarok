@@ -31,11 +31,7 @@ class MetaBundle;
 class PlayerWidget;
 class QBitmap;
 class QButton;
-class QDragEnterEvent;
-class QDropEvent;
 class QHBox;
-class QMouseEvent;
-class QPaintEvent;
 class QString;
 class QStringList;
 
@@ -49,7 +45,7 @@ class IconButton : public QButton
 {
 Q_OBJECT
 public:
-    IconButton( QWidget*, const QString&/*, QObject*, const char*, bool=false*/ );
+    IconButton( QWidget*, const QString&, const char *signal );
 public slots:
     void setOn( bool b ) { QButton::setOn( b ); }
     void setOff()        { QButton::setOn( false ); }
@@ -67,17 +63,12 @@ class PlayerWidget : public QWidget, public EngineObserver
         PlayerWidget( QWidget* = 0, const char* = 0, Qt::WFlags = 0 );
         ~PlayerWidget();
 
-        void defaultScroll();
         void timeDisplay( int );
-        void wheelEvent( QWheelEvent* ); //systray requires access
         void startDrag();
 
     public slots:
         void createAnalyzer( int = 0 );
-        void setScroll( const MetaBundle& );
-        void drawScroll();
-        void setPlaylistShown( bool on );
-        void setEffectsWindowShown( bool on = false );
+        void setEffectsWindowShown( bool );
 
     protected:
     /** Observer reimpls **/
@@ -88,32 +79,30 @@ class PlayerWidget : public QWidget, public EngineObserver
 
     signals:
         void playlistToggled( bool on );
-        void effectsWindowActivated();
+        void effectsWindowToggled( bool );
 
     private slots:
         void slotSliderReleased();
         void slotSliderChanged( int value );
+        void drawScroll();
 
     private:
-        static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
         void setScroll( const QStringList& );
-        void paintEvent( QPaintEvent* );
-        void mousePressEvent( QMouseEvent* );
-        void closeEvent( QCloseEvent* );
-        void dragEnterEvent( QDragEnterEvent* );
-        void dropEvent( QDropEvent* );
-        void showEvent( QShowEvent * );
-        void hideEvent( QHideEvent * );
+
+        virtual bool event( QEvent* );
+        virtual bool eventFilter( QObject*, QEvent* );
+        virtual void paintEvent( QPaintEvent* );
+        virtual void mousePressEvent( QMouseEvent* );
+        virtual void mouseMoveEvent( QMouseEvent* );
+
 
         static const int SCROLL_RATE = 1;
         static const int ANIM_TIMER  = 30;
 
         // ATTRIBUTES ------
 
-        QTimer    *m_pAnimTimer;
-        QString    m_rateString;
-
-        QWidget   *m_pAnalyzer;
+        QTimer  *m_pAnimTimer;
+        QString  m_rateString;
 
         QPixmap m_scrollTextPixmap;
         QPixmap m_scrollBuffer;
@@ -121,15 +110,18 @@ class PlayerWidget : public QWidget, public EngineObserver
         QPixmap m_plusPixmap;
         QPixmap m_minusPixmap;
 
+        QPoint  m_startDragPos; //for drag behaviour
+
         //widgets
-        QFrame *m_pScrollFrame;
-        QLabel *m_pTimeLabel;
-        QLabel *m_pTimeSign;
-        QLabel *m_pVolSign;
-        QLabel *m_pDescription;
-        QHBox  *m_pFrameButtons;
-        IconButton     *m_pButtonEq;
-        IconButton     *m_pButtonPl;
+        QWidget *m_pAnalyzer;
+        QFrame  *m_pScrollFrame;
+        QLabel  *m_pTimeLabel;
+        QLabel  *m_pTimeSign;
+        QLabel  *m_pVolSign;
+        QLabel  *m_pDescription;
+        QHBox   *m_pFrameButtons;
+        IconButton     *m_pButtonFx;
+        IconButton     *m_pPlaylistButton;
         amaroK::Slider *m_pSlider;
         amaroK::Slider *m_pVolSlider;
         QPushButton    *m_pButtonPlay;

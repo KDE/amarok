@@ -29,9 +29,7 @@ class DcopHandler : public QObject, virtual public AmarokIface
       Q_OBJECT
 
    public:
-      DcopHandler();
-      void setNowPlaying( const QString & );
-//      void setTrackTotalTime( int );
+      DcopHandler( QObject* = 0 );
 
    public /* DCOP */ slots:
       virtual void play();
@@ -53,8 +51,6 @@ class DcopHandler : public QObject, virtual public AmarokIface
       virtual void enableOSD(bool enable);
 
    private:
-      QString m_nowPlaying; /* state for nowPlaying() */
-//      int m_trackTotalTime;
 };
 
 }

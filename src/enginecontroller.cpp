@@ -17,52 +17,67 @@ email                : fh@ez.no
 
 #include "enginecontroller.h"
 #include "enginebase.h"
-#include "metabundle.h"
 #include "amarokconfig.h"
 #include "titleproxy.h"
 
 #include <kdebug.h>
 #include <qtimer.h>
 
-EngineController *EngineController::Instance = 0;
+
+class DummyEngine : public EngineBase
+{
+    virtual void init( bool&, int, bool ) {}
+    virtual bool initMixer( bool ) { return false; }
+    virtual bool canDecode( const KURL&, mode_t, mode_t ) { return false; }
+    virtual long length() const { return 0; }
+    virtual long position() const { return 0; }
+    virtual EngineState state() const { return EngineBase::Empty; }
+    virtual bool isStream() const { return false; }
+    virtual const QObject* play( const KURL& ) { return 0; }
+    virtual void play() {}
+    virtual void stop() {}
+    virtual void pause() {}
+
+    virtual void seek( long ) {}
+    virtual void setVolume( int ) {}
+
+public: DummyEngine() : EngineBase() { setName( "Dummy" ); }
+
+} dummyEngine;
+
 
 EngineController *EngineController::instance()
 {
-    if( Instance == 0 )
-    {
-        Instance = new EngineController();
-    }
-    return Instance;
+    //will only be instantiated the first time this function is called
+    static EngineController Instance;
+
+    return &Instance;
 }
 
 EngineController::EngineController()
-    : m_pEngine( 0 )
+
+    //we use the dummy Engine to ensure we always have an engine and don't have to test for
+    //m_pEngine == 0 and amaroK is in a safe state before an engine is loaded on startup
+
+    : m_pEngine( &dummyEngine )
+    , m_proxyError( false )
     , m_pMainTimer( new QTimer( this ) )
-    , m_length( 0 )
     , m_delayTime( 0 )
 {
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
     m_pMainTimer->start( MAIN_TIMER );
 }
 
-
 EngineController::~EngineController()
-{
-    Instance = 0;
-    m_pMainTimer->stop();
-}
+{}
 
 void EngineController::previous()
 {
-    if( !m_pEngine ) return;
-
     emit orderPrevious();
 }
 
 void EngineController::next()
 {
-    if( !m_pEngine ) return;
-
     emit orderNext();
 }
 
@@ -70,18 +85,15 @@ void EngineController::playPause()
 {
     //this is used by the TrayIcon and PlayPauseAction
 
-    if( m_pEngine && m_pEngine->state() == EngineBase::Playing )
+    if( m_pEngine->state() == EngineBase::Playing )
     {
         pause();
     }
     else play();
 }
 
-
 void EngineController::play()
 {
-    if( !m_pEngine ) return;
-
     if ( m_pEngine->state() == EngineBase::Paused )
     {
         m_pEngine->play();
@@ -93,8 +105,11 @@ void EngineController::play()
 
 void EngineController::play( const MetaBundle &bundle )
 {
+    m_bundle = bundle;
     const KURL &url = bundle.url();
-    
+
+    kdDebug() << "[engine] Playing: " << url.filename() << endl;
+
     if ( AmarokConfig::titleStreaming() &&
          engine()->streamingMode() != EngineBase::NoStreaming &&
          url.protocol() == "http" &&
@@ -107,14 +122,14 @@ void EngineController::play( const MetaBundle &bundle )
             return;
         }
         const QObject* object = m_pEngine->play( proxy->proxyUrl() );
-        
+
         connect( this,     SIGNAL( deleteProxy () ),
                  proxy,      SLOT( deleteLater () ) );
         connect( proxy,    SIGNAL( metaData( const MetaBundle& ) ),
                  this,       SLOT( newMetaData( const MetaBundle& ) ) );
         connect( proxy,    SIGNAL( streamData( char*, int ) ),
                  engine(),   SLOT( newStreamData( char*, int ) ) );
-        
+
         if ( object )
             connect( object, SIGNAL( destroyed () ),
                      proxy,    SLOT( deleteLater() ) );
@@ -122,21 +137,17 @@ void EngineController::play( const MetaBundle &bundle )
     else
         m_pEngine->play( url );
 
-    m_playingURL = url;
     kdDebug() << "[engine] Playing: " << url.filename() << endl;
-    
+
     stateChangedNotify( EngineBase::Playing );
     newMetaDataNotify( bundle, true /* track change */ );
 
     //when TagLib can't get us the track length, we ask the engine as fallback
 //    m_determineLength = ( engine->isStream() || bundle.length() ) ? false : true;
-    m_length = bundle.length() * 1000;
 }
 
 void EngineController::pause()
 {
-    if( !m_pEngine ) return;
-
     if ( m_pEngine->loaded() )
     {
         if ( m_pEngine->state() == EngineBase::Paused )
@@ -149,11 +160,26 @@ void EngineController::pause()
 
 void EngineController::stop()
 {
-    if( !m_pEngine ) return;
-
-    m_playingURL = KURL();
+    m_bundle = MetaBundle();
     m_pEngine->stop();
     stateChangedNotify( m_pEngine->state() );
+}
+
+int EngineController::increaseVolume()
+{
+    return setVolume( m_pEngine->volume() + 100/25 );
+}
+
+int EngineController::decreaseVolume()
+{
+    return setVolume( m_pEngine->volume() - 100/25 );
+}
+
+void EngineController::setEngine( EngineBase *engine )
+{
+    instance()->m_pEngine = engine;
+
+    engine->setVolume( AmarokConfig::masterVolume() );
 }
 
 int EngineController::setVolume( int percent )
@@ -165,31 +191,32 @@ int EngineController::setVolume( int percent )
     {
         m_pEngine->setVolume( percent );
         AmarokConfig::setMasterVolume( percent );
+
+        volumeChangedNotify( percent );
     }
 
-    volumeChangedNotify( percent );
     return m_pEngine->volume();
 }
 
-
-void EngineController::newMetaData( const MetaBundle &bundle )
+inline void EngineController::newMetaData( const MetaBundle &bundle )
 {
     newMetaDataNotify( bundle, false /* not a new track */ );
 }
 
-void EngineController::slotMainTimer()
+inline void EngineController::slotMainTimer()
 {
-    if ( m_playingURL.isEmpty() )
-        return;
+    if( m_pEngine->state() == EngineBase::Empty ) return;
+
+    const uint position = m_pEngine->position();
+    const uint length   = m_bundle.length() * 1000;
 
     // TODO!!! (if length 0 then check --> over and over )
     // send signal on success
-    //try to get track length from engine when TagLib fails
-    trackPositionChangedNotify( m_pEngine->position() );
+    // try to get track length from engine when TagLib fails
+    trackPositionChangedNotify( position );
 
     // check if track has ended or is broken
-    if ( m_pEngine->state() == EngineBase::Empty ||
-         m_pEngine->state() == EngineBase::Idle )
+    if ( m_pEngine->state() == EngineBase::Idle )
     {
         kdDebug() << k_funcinfo << "Idle detected. Skipping track.\n";
 
@@ -210,13 +237,11 @@ void EngineController::slotMainTimer()
     else if ( ( AmarokConfig::crossfade() ) &&
               ( m_pEngine->supportsXFade() ) &&
               ( !m_pEngine->isStream() ) &&
-              ( m_length ) &&
-              ( m_length > m_pEngine->position() ) &&
-              ( m_length - m_pEngine->position() < AmarokConfig::crossfadeLength() )  )
+              ( length ) &&
+              ( length - position < (uint)AmarokConfig::crossfadeLength() )  )
     {
         kdDebug() << k_funcinfo << "Crossfading to next track.\n";
         next();
-        return;
     }
 }
 

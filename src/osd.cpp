@@ -19,111 +19,98 @@
 #include <qimage.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qregexp.h>
 #include <qtimer.h>
 
-#include <kcursor.h>
+#include <kcursor.h> //previewWidget
+#include <kglobalsettings.h> //activeTitleColor()
 
-OSDWidget::OSDWidget( const QString &appName )
-    : QWidget(NULL, "osd",
+OSDWidget::OSDWidget( const QString &appName, QWidget *parent, const char *name )
+    : QWidget( parent, name,
               WType_TopLevel | WStyle_StaysOnTop |
               WStyle_Customize | WStyle_NoBorder |
               WStyle_Tool | WRepaintNoErase | WX11BypassWM)
       , m_appName( appName )
       , m_duration( 5000 )
-      , m_textColor( 0, 0 , 0 )
-      , m_bgColor( 0x00, 0x00, 0x80 )
+      , timer( new QTimer( this ) )
+      , timerMin( new QTimer( this ) )
       , m_offset( 10, 40 )
       , m_position( TopLeft )
       , m_screen( 0 )
+      , m_dirty( false )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
-    timer = new QTimer( this );
-    timerMin = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( removeOSD() ) );
-    connect( timerMin, SIGNAL( timeout() ), this, SLOT( minReached() ) );
+    setPaletteForegroundColor( KGlobalSettings::activeTextColor() );
+    setPaletteBackgroundColor( KGlobalSettings::activeTitleColor() );
+
+    connect( timer,    SIGNAL(timeout()), SLOT(removeOSD()) );
+    connect( timerMin, SIGNAL(timeout()), SLOT(minReached()) );
 }
 
 
 void OSDWidget::renderOSDText( const QString &text )
 {
-    m_currentText = text;
-    QPainter paint;
-    QColor bg( 0, 0, 0 );
-    QColor fg( 255, 255, 255 );
+    static QBitmap mask;
 
-    // Get desktop dimensions
-    QWidget *d = QApplication::desktop()->screen( m_screen );
+    // Set a sensible maximum size, don't cover the whole desktop or cross the screen
+    QSize max = QApplication::desktop()->screen( m_screen )->size() - QSize( 40, 100 );
+    QFont titleFont( "Arial", 12, QFont::Bold );
+    QFontMetrics titleFm( titleFont );
 
-    QFontMetrics *fm = new QFontMetrics( font );
-    /* AlignAuto = we want to align Arabic to the right, don't we? */
-    /* Sane width and height limits - don't go over the screen dimensions,
-       and don't cover whole desktop neither. */
-    QRect fmRect = fm->boundingRect( 0, 0, d->width()-40, d->height()-100, AlignAuto | WordBreak, text );
+    // The title cannnot be taller than one line
+    // AlignAuto = align Arabic to the right, etc.
+    QRect titleRect = titleFm.boundingRect( 0, 0, max.width(), titleFm.height(), AlignAuto, m_appName );
+    // The osd cannot be larger than the screen
+    QRect textRect = fontMetrics().boundingRect( 0, 0, max.width(), max.height(), AlignAuto | WordBreak, text );
 
-    QFont titleFont("Arial", 12, QFont::Bold);
-    QFontMetrics *titleFm = new QFontMetrics( titleFont );
-    /* Measure how much title will take, but don't let it take too much vertically. */
-    QRect titleRect = titleFm->boundingRect( 0, 0, d->width()-40, titleFm->height(), AlignAuto, m_appName );
+    if ( textRect.width() < titleRect.width() )
+        textRect.setWidth( titleRect.width() );
 
-    if ( fmRect.width() < titleRect.width() )
-	fmRect.setWidth( titleRect.width() );
-    fmRect.addCoords( 0, 0, 20, titleRect.height() );
+    //this should by within the screen bounds, there is a change the height is too much though
+    textRect.addCoords( 0, 0, 20, titleRect.height() );
 
-    resize( fmRect.size() );
-    //    QPixmap *buffer = new QPixmap( fmRect.width(), fmRect.height() );
-    QPixmap buffer = QPixmap( fmRect.size() );
 
-    // Draw the OnScreenMessage
-    QPainter bufferPainter( &buffer );
+    osdBuffer.resize( textRect.size() );
+    mask.resize( textRect.size() );
+    resize( textRect.size() );
+    rePosition();
 
-    bufferPainter.setBrush( m_bgColor );
-    bufferPainter.drawRoundRect( fmRect, 1500 / fmRect.width(), 1500 / fmRect.height() );
-    //paintRoundRect( bufferPainter, fmRect );
 
-    bufferPainter.setFont( titleFont );
-    bufferPainter.setPen( m_textColor );
-    bufferPainter.drawText( 10, 3, width()-1, height()-1, AlignLeft, m_appName );
+    // Start painting!
+    QPainter bufferPainter( &osdBuffer );
+    QPainter maskPainter( &mask );
 
-    bufferPainter.setFont( font );
+    // Draw backing rectangle
+    bufferPainter.setPen( Qt::black );
+    bufferPainter.setBrush( backgroundColor() );
+    bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
 
-    // Draw the border around the text
-    bufferPainter.setPen( black );
-    /*  bufferPainter.drawText( 0, 0, width()-1, height()-1, AlignLeft | WordBreak, text );
-      bufferPainter.drawText( 2, 0, width()-1, height()-1, AlignLeft | WordBreak, text );
-      bufferPainter.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, text );
-      bufferPainter.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, text );*/
-    bufferPainter.drawText( 13, titleFm->height() + 1, width()-1, height()-1, AlignLeft | WordBreak, text );
+    const uint w = width()  - 1;
+    const uint h = height() - 1;
+
+    // Draw the text shadow
+    bufferPainter.setFont( font() );
+    bufferPainter.setPen( backgroundColor().dark( 175 ) );
+    bufferPainter.drawText( 13, titleFm.height() + 1, w, h, AlignLeft | WordBreak, text );
 
     // Draw the text
-    bufferPainter.setPen( m_textColor );
-    bufferPainter.drawText( 10, titleFm->height() - 1, width()-1, height()-1, AlignLeft | WordBreak, text );
-    bufferPainter.end();
+    bufferPainter.setPen( foregroundColor() );
+    bufferPainter.drawText( 10, titleFm.height() - 1, w, h, AlignLeft | WordBreak, text );
+
+    // Draw the title text
+    bufferPainter.setFont( titleFont );
+    bufferPainter.drawText( 10, 3, w, h, AlignLeft, m_appName );
+
 
     // Masking for transparency
-    QBitmap bm( fmRect.size() );
-    paint.begin( &bm );
-    paint.fillRect( 0, 0, fmRect.width(), fmRect.height(), bg );
-    paint.setBrush( fg );
-    paint.drawRoundRect( fmRect, 1500 / fmRect.width(), 1500 / fmRect.height() );
-/*    paint.setPen( Qt::color0 );
-    paint.setFont( font );
-    //  paint.drawText( 0, 0, width()-1, height()-1, AlignLeft | WordBreak, text );
-    paint.drawText( 1, 1, width()-1, height()-1, AlignLeft | WordBreak, text );
-    paint.drawText( 3, 3, width()-1, height()-1, AlignLeft | WordBreak, text );*/
-    //  paint.drawText( 2, 0, width()-1, height()-1, AlignLeft | WordBreak, text );
-    //  paint.drawText( 0, 2, width()-1, height()-1, AlignLeft | WordBreak, text );
-    //  paint.drawText( 2, 2, width()-1, height()-1, AlignLeft | WordBreak, text );
-    paint.end();
+    mask.fill( Qt::black );
+    maskPainter.setBrush( Qt::white );
+    maskPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
+    setMask( mask );
 
-    delete fm;
-    delete titleFm;
 
-    osdBuffer = buffer;
-
-    setMask( bm );
-    rePosition();
+    m_currentText = text;
+    m_dirty = false;
 }
 
 void OSDWidget::showOSD( const QString &text, bool preemptive )
@@ -136,21 +123,23 @@ void OSDWidget::showOSD( const QString &text, bool preemptive )
         }
         else
         {
-            if ( timer->isActive() ) timer->stop();
-            renderOSDText( text );
+            timer->stop();
+
+            if( m_currentText != text || m_dirty ) renderOSDText( text );
+
             if( !isVisible() )
             {
                 raise();
                 QWidget::show();
             }
             else
-                repaint();
+                update();
 
             // let it disappear via a QTimer
             if( m_duration ) // if duration is 0 stay forever
             {
                 timer->start( m_duration, TRUE );
-                timerMin->start( 150, TRUE );
+                timerMin->start( 150 );
             }
         }
     }
@@ -162,131 +151,137 @@ void OSDWidget::setDuration(int ms)
 }
 
 
-void OSDWidget::setFont(QFont newfont)
+//TODO personally I feel you should just insist people call refresh()
+//     after they set settings and then inline all these
+
+void OSDWidget::setFont(QFont newFont)
 {
-    font = newfont;
-    if( isVisible() )
-    {
-        renderOSDText( m_currentText );
-        repaint();
-    }
+    QWidget::setFont( newFont );
+    refresh();
 }
 
 
-void OSDWidget::setTextColor(QColor newcolor)
+void OSDWidget::setTextColor(QColor newColor)
 {
-    m_textColor = newcolor;
-    if( isVisible() )
-    {
-        renderOSDText( m_currentText );
-        repaint();
-    }
+    //setPaletteForegroundColor( newColor );
+    refresh();
 }
 
 void OSDWidget::setBackgroundColor(QColor newColor)
 {
-    m_bgColor = newColor;
-    if( isVisible() )
-    {
-        renderOSDText( m_currentText );
-        repaint();
-    }
+    //setPaletteBackgroundColor( newColor );
+    refresh();
 }
 
-
-void OSDWidget::setOffset(int x, int y) // QPoint?
+void OSDWidget::setOffset(int x, int y)
 {
-    m_offset.setX( x );
-    m_offset.setY( y );
-    if( isVisible() ) rePosition();
+    m_offset = QPoint( x, y );
+    rePosition();
 }
 
 void OSDWidget::setPosition(Position pos)
 {
     m_position = pos;
-    if( isVisible() ) rePosition();
+    rePosition();
 }
 
 void OSDWidget::setScreen(uint screen)
 {
     m_screen = screen;
     if( m_screen >= QApplication::desktop()->numScreens() )
-        m_screen = QApplication::desktop()->numScreens() - 1;
-    if( isVisible() ) rePosition();
+        m_screen  = QApplication::desktop()->numScreens() - 1;
+    rePosition();
+}
+
+void OSDWidget::refresh()
+{
+    if( isVisible() )
+    {
+        //we need to update the buffer
+        renderOSDText( m_currentText );
+
+        //may as well update(), visible or not, if we're not visible Qt will wait until we are
+        update();
+    }
+    else m_dirty = true; //ensure we are re-rendered before we are shown
 }
 
 
 //SLOT
 void OSDWidget::minReached()
 {
-    if ( textBuffer.count() > 0 )
+    if( !textBuffer.isEmpty() )
     {
-        renderOSDText( textBuffer[0] );
-        textBuffer.remove( textBuffer.at( 0 ) );
-        repaint();
+        renderOSDText( textBuffer.front() );
+        textBuffer.pop_front();
+        update();
 
         if( m_duration ) // if duration is 0 stay forever
         {
+            //timerMin is still running
             timer->start( m_duration, TRUE );
-            timerMin->start( 150, TRUE );
         }
     }
-}
-
-//SLOT
-void OSDWidget::removeOSD()
-{
-    hide();
+    else timerMin->stop();
 }
 
 
 void OSDWidget::paintEvent( QPaintEvent* )
 {
-    QPainter p( this );
-    p.drawPixmap( 0, 0, osdBuffer );
-    p.end();
+    bitBlt( this, 0, 0, &osdBuffer );
 }
-
 
 void OSDWidget::mousePressEvent( QMouseEvent* )
 {
     removeOSD();
 }
 
+void OSDWidget::show()
+{
+    if( m_dirty )
+    {
+        //renderOSDText() sets m_dirty=false for us
+
+        renderOSDText( m_currentText );
+    }
+
+    QWidget::show();
+}
+
+
 void OSDWidget::rePosition()
 {
-    int newX = 0, newY = 0;
-    QRect screenRect = QApplication::desktop()->screenGeometry( m_screen );
+    QPoint newPos = m_offset;
+    const QRect screenRect = QApplication::desktop()->screenGeometry( m_screen );
+
     switch( m_position )
     {
         case TopLeft:
-            newX = m_offset.x();
-            newY = m_offset.y();
+            //nothing to do here, it is already set to m_offset above
             break;
+
         case TopRight:
-            newX = screenRect.width() - m_offset.x() - osdBuffer.width();
-            newY = m_offset.y();
-            break;
-        case BottomLeft:
-            newX = m_offset.x();
-            newY = screenRect.height() - m_offset.y() - osdBuffer.height();
-            break;
         case BottomRight:
-            newX = screenRect.width() - m_offset.x() - osdBuffer.width();
-            newY = screenRect.height() - m_offset.y() - osdBuffer.height();
+            newPos.rx() = screenRect.width() - m_offset.x() - osdBuffer.width();
+            if( m_position == TopRight ) break;
+
+            //BottomRight FALLS_THROUGH
+
+        case BottomLeft:
+            newPos.ry() = screenRect.height() - m_offset.y() - osdBuffer.height();
             break;
+
         case Center:
-            newX = ( screenRect.width() - osdBuffer.width() ) / 2;
-            newY = ( screenRect.height() - osdBuffer.height() ) / 2;
+            newPos.rx() = (screenRect.width()  - osdBuffer.width())  / 2;
+            newPos.ry() = (screenRect.height() - osdBuffer.height()) / 2;
             break;
     }
 
     // correct for screen position
-    newX += screenRect.x();
-    newY += screenRect.y();
+    newPos += screenRect.topLeft();
 
     // TODO: check for sanity?
-    if( newX != x() || newY != y() ) move( newX, newY );
+    move( newPos ); //no need to check if pos() == newPos, Qt does that too
 }
 
 
@@ -300,7 +295,7 @@ OSDPreviewWidget::OSDPreviewWidget( const QString &appName ) : OSDWidget( appNam
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
-    m_dragOffset = QCursor::pos() - QPoint( x(), y() );
+    m_dragOffset = event->pos();
     if( event->button() == LeftButton && !m_dragging ) {
         grabMouse( KCursor::sizeAllCursor() );
         m_dragging = true;
@@ -316,7 +311,7 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
 
         // compute current Position && offset
         QDesktopWidget *desktop = QApplication::desktop();
-        int currentScreen = desktop->screenNumber( QPoint( x(), y() ) );
+        int currentScreen = desktop->screenNumber( pos() );
         Position pos = Center;
         if( currentScreen != -1 )
         {
@@ -344,8 +339,7 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
                 pos = left ? BottomLeft : BottomRight;
             }
             // set new data
-            m_offset.setX( xoffset );
-            m_offset.setY( yoffset );
+            m_offset = QPoint( xoffset, yoffset );
             m_position = pos;
             m_screen = currentScreen;
             emit positionChanged( currentScreen, pos, xoffset, yoffset );
@@ -353,11 +347,11 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent */*event*/ )
     }
 }
 
-void OSDPreviewWidget::mouseMoveEvent( QMouseEvent */*event*/ )
+void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
     if( m_dragging && this == mouseGrabber() )
     {
-        move( QCursor::pos() - m_dragOffset );
+        move( e->globalPos() - m_dragOffset );
     }
 }
 
@@ -368,12 +362,6 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent */*event*/ )
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include <qregexp.h>
-
-void
-amaroK::OSD::showVolume()
-{
-    showOSD( i18n("Volume %1%").arg( EngineController::engine()->volume() ), true );
-}
 
 void
 amaroK::OSD::showTrack( const MetaBundle &bundle )
@@ -395,12 +383,6 @@ amaroK::OSD::showTrack( const MetaBundle &bundle )
     m_text = text;
 
     showTrack();
-}
-
-void
-amaroK::OSD::showTrack()
-{
-    showOSD( m_text );
 }
 
 #include "osd.moc"

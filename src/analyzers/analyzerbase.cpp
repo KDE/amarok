@@ -94,7 +94,7 @@ Analyzer::Base<W>::transform( Scope &scope ) //virtual
 template<class W> void
 Analyzer::Base<W>::drawFrame()
 {
-    EngineBase *engine = EngineController::instance()->engine();
+    EngineBase *engine = EngineController::engine();
 
     switch( engine->state() )
     {

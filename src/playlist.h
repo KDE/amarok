@@ -84,6 +84,8 @@ class Playlist : private KListView, public EngineObserver
         bool isTrackBefore() const;
         bool isTrackAfter() const;
 
+        void restoreSession() { insertMedia( defaultPlaylistPath() ); }
+
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
 
@@ -98,7 +100,7 @@ class Playlist : private KListView, public EngineObserver
 
         /** Converts physical PlaylistItem column position to logical */
         int mapToLogicalColumn( int physical );
-        
+
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
@@ -108,7 +110,7 @@ class Playlist : private KListView, public EngineObserver
 
         friend class PlaylistItem;
         friend class PlaylistLoader;
-        friend PlaylistWindow::PlaylistWindow( QWidget*, const char* );   //setting up connections etc.
+        friend void PlaylistWindow::init(); //setting up connections etc.
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
 
     signals:
@@ -116,7 +118,8 @@ class Playlist : private KListView, public EngineObserver
         void itemCountChanged(int newCount);
 
     public slots:
-        void insertMedia( const KURL &u ) { insertMedia( KURL::List(u), false, false ); }
+        void insertMedia( const QString &path ) { insertMedia( KURL::fromPathOrURL( path ) ); }
+        void insertMedia( const KURL& );
         void handleOrderPrev(); //DEPRECATE
         void handleOrderCurrent(); //DEPRECATE
         void handleOrder( Playlist::RequestType = Next ); //DEPRECATE
@@ -202,8 +205,13 @@ class Playlist : private KListView, public EngineObserver
         KActionCollection* const m_ac;
 };
 
+inline void
+Playlist::insertMedia( const KURL &url )
+{
+    if( !url.isEmpty() )
+    {
+        insertMedia( KURL::List( url ) );
+    }
+}
 
 #endif //AMAROK_PLAYLIST_H
-
-
-

@@ -14,12 +14,10 @@ typedef QValueVector<QWidget*>::ConstIterator BrowserIterator;
 
 class KMultiTabBar;
 class KMultiTabBarTab;
-class QEvent;
-class QObject;
+class KURL;
 class QObjectList;
 class QPixmap;
 class QPushButton;
-class QResizeEvent;
 class QSignalMapper;
 class QVBox;
 
@@ -54,16 +52,21 @@ protected:
     bool eventFilter( QObject*, QEvent* );
     bool event( QEvent* );
 
+signals:
+    void activated( const KURL& );
+
 public slots:
-    void showHideBrowser( int = -1 );
-    void close() { showHideBrowser(); }
+    void showHideBrowser( int );
     void autoCloseBrowsers();
+    void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
 
 private slots:
     void toggleOverlap( bool );
 
 private:
     void adjustWidgetSizes();
+    QWidget *currentBrowser() { return m_browsers[m_currentIndex]; }
+    uint maxBrowserWidth() const { return uint(width() * 0.85); }
 
     static const int DEFAULT_HEIGHT = 50;
 
@@ -73,8 +76,7 @@ private:
     KMultiTabBar    *m_tabBar;
     BrowserList      m_browsers; //the browsers are stored in this qvaluevector
     QWidget         *m_browserHolder; //parent widget to the browsers
-    QWidget         *m_currentBrowser; //currently displayed page, may be 0
-    KMultiTabBarTab *m_currentTab;  //currently open tab, may be 0
+    int              m_currentIndex;
     QPushButton     *m_overlapButton;
 
     QSignalMapper   *m_mapper; //maps tab clicks to browsers

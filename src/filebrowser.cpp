@@ -22,7 +22,6 @@
 */
 
 #include "amarokconfig.h"
-//#include "amarokfileview.cpp" //FIXME
 #include "filebrowser.h"
 #include "kbookmarkhandler.h"
 
@@ -70,7 +69,7 @@ FileBrowser::FileBrowser( const char * name )
     QDir currentDir( currentLocation );
     if ( !currentDir.exists() )
         currentLocation = QDir::homeDirPath();
-    
+
     cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
     cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
     cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );

@@ -17,6 +17,7 @@
 
 #include "amarokconfig.h"
 #include "app.h"
+#include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"
@@ -40,9 +41,9 @@ QColor PlaylistItem::glowBase;
 
 
 // These are untranslated and used for storing/retrieving XML playlist
-const QString PlaylistItem::columnName(int n) const
+const QString PlaylistItem::columnName(int col) //static
 {
-   switch(n) {
+   switch(col) {
       case TrackName:
          return "TrackName";
          break;
@@ -80,33 +81,6 @@ const QString PlaylistItem::columnName(int n) const
    return "<ERROR>";
 }
 
-static inline QColor
-mixColors( const QColor &c1, const QColor &c2, uint f1 = 1, uint f2 = 1 )
-{
-    const uint denominator = f1 + f2;
-
-    return QColor( (c1.red()*f1   + c2.red()*f2)   / denominator,
-                   (c1.green()*f1 + c2.green()*f2) / denominator,
-                   (c1.blue()*f1  + c2.blue()*f2)  / denominator );
-}
-
-static inline QColor
-changeContrast( const QColor &c, int contrast )
-{
-    //you get contrast by changing the saturation and value parameters
-
-    int h,s,v; c.getHsv( &h, &s, &v );
-
-    s += contrast;
-
-    if( s > 255 )    { int d = 255 - s; v += d; s = 255; }
-    else if( s < 0 ) { v += s; s = 0; }
-
-    //if v is out of range then leave it, no additional contrast is possible
-
-    return QColor( h,s,v, QColor::Hsv );
-}
-
 
 
 //statics
@@ -116,10 +90,6 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
   : KListViewItem( parent, lvi, trackName( u ) )
-#ifdef CORRUPT_FILE
-  , m_playing( false )
-  , corruptFile( FALSE ) //our friend threadweaver will take care of this flag
-#endif
   , m_url( u )
 {
     setDragEnabled( true );
@@ -360,6 +330,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
 
+    //TODO this function is called extremely regularly as QListView sucks a little, optimise it immensely!!!!
+
     //FIXME this was crashing stuff when you were dropping remote playlists
     //TODO  anyway it sucks, load audio props simultaneously to other tags
     //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
@@ -374,28 +346,33 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //convert to logical column
     firstCol = header->mapToSection( firstCol );
 
-    //Allocate buffer pixmap, for flicker-free drawing
-    QPixmap* buffer = new QPixmap( width, height() );
-    QPainter painterBuf( buffer, true );
+    //flicker-free drawing
+    static QPixmap buffer;
+    buffer.resize( width, height() );
+    QPainter painterBuf( &buffer, true );
     painterBuf.setFont( p->font() );
 
-    int  playNext = listView()->m_nextTracks.findRef( this ) + 1;
-    
-    //HACK, but I don't know how to restore the height otherwise; calling invalidateHeight inside of 
+    int playNext = listView()->m_nextTracks.findRef( this ) + 1;
+
+    //FIXME HACK, but I don't know how to restore the height otherwise; calling invalidateHeight inside of
     //paintCell() slows things down extremely
     if ( height() != listView()->fontMetrics().height() * 2 )
         m_cachedHeight = height();
-    
+
     if( this == listView()->currentTrack() )
     {
-        if ( m_playing && column == firstCol )
+        //FIXME really this shouldn't be done in the paint event, it'll be set up to 40 times per second
+
+        EngineBase::EngineState state = EngineController::engine()->state();
+        if( column == firstCol && (state == EngineBase::Playing || state == EngineBase::Paused) )
             //display "Play" icon
             setPixmap( column, SmallIcon( "artsbuilderexecute" ) );
         else
             //hide "Play" icon
             setPixmap( column, 0 );
-                    
+
         setHeight( listView()->fontMetrics().height() * 2 );
+
         QColorGroup glowCg = cg; //shallow copy
 
         glowCg.setColor( QColorGroup::Base, glowBase );
@@ -403,14 +380,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( &painterBuf, glowCg, column, width, align );
-    }
-    else {
+
+    } else {
+
         //hide "Play" icon
         setPixmap( column, 0 );
         setHeight( m_cachedHeight );
         KListViewItem::paintCell( &painterBuf, cg, column, width, align );
     }
-        
+
     //figure out if we are in the actual physical first column
     if( playNext && column == firstCol )
     {
@@ -444,13 +422,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     if( !isSelected() )
     {
-        painterBuf.setPen( QPen( cg.dark(), 0, Qt::SolidLine ) );
+        painterBuf.setPen( QPen( cg.mid(), 0, Qt::SolidLine ) ); //FIXME looks hideous!
         painterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
     }
 
     painterBuf.end();
-    p->drawPixmap( 0, 0, *buffer );
-    delete buffer;
+    p->drawPixmap( 0, 0, buffer );
 }
 
 

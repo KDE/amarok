@@ -8,6 +8,7 @@
 #include "coverfetcher.h"
 #include "directorylist.h"
 #include "metabundle.h"
+#include "playlist.h"       //insertMedia()
 #include "statusbar.h"
 
 #include <unistd.h>         //CollectionView ctor
@@ -48,7 +49,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     menu->insertItem( i18n( "Actions" ), m_actionsMenu );
     menu->insertItem( i18n( "Primary" ), m_cat1Menu );
     menu->insertItem( i18n( "Secondary" ), m_cat2Menu );
-    
+
     { //<Search LineEdit>
         QHBox *hbox; QToolButton *button;
 
@@ -64,7 +65,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
-    
+
     timer = new QTimer( this );
     connect( timer, SIGNAL( timeout() ), this, SLOT( slotSetFilter() ) );
 
@@ -93,7 +94,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ),
              this,           SLOT( slotSetFilterTimeout() ) );
-    
+
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
@@ -155,7 +156,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         addColumn( m_category1 );
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
-        
+
         m_amazonLicense = config->readEntry( "Amazon License Key" );
         m_coverFetcher->setLicense( m_amazonLicense );
     //</read config>
@@ -202,9 +203,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( m_coverFetcher, SIGNAL( imageReady( const QPixmap& ) ),
              this,             SLOT( gotCover( const QPixmap& ) ) );
-             
+
     renderView();
-    startTimer( MONITOR_INTERVAL );         
+    startTimer( MONITOR_INTERVAL );
 }
 
 
@@ -250,11 +251,11 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::setupCoverFetcher()  //SLOT
 {
-    AmazonDialog* dia = new AmazonDialog();
+    AmazonDialog* dia = new AmazonDialog( topLevelWidget() );
     dia->kLineEdit1->setText( m_amazonLicense );
-    int result = dia->exec();
-    
-    if ( result == QDialog::Accepted ) {
+    dia->setModal( true );
+
+    if ( dia->exec() == QDialog::Accepted ) {
         m_amazonLicense = dia->kLineEdit1->text();
         m_coverFetcher->setLicense( m_amazonLicense );
     }
@@ -265,12 +266,12 @@ void
 CollectionView::scan()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     if ( !m_isScanning )
     {
         m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
-        
+
         m_insertdb->scan( m_dirs, m_recursively );
     }
 }
@@ -327,7 +328,7 @@ CollectionView::scanDone( bool changed ) //SLOT
 
     if ( changed )
         renderView();
-    
+
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
 }
@@ -425,7 +426,7 @@ CollectionView::doubleClicked( QListViewItem* item, const QPoint&, int ) //SLOT
 {
     if ( !item )
         return;
-    
+
     item->setOpen( !item->isOpen() );
 }
 
@@ -438,12 +439,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertItem( i18n( "Make Playlist" ), this, SLOT( makePlaylist() ) );
         menu.insertItem( i18n( "Add to Playlist" ), this, SLOT( addToPlaylist() ) );
-        
+
         if ( ( item->depth() && m_category2 == i18n( "None" ) ) || item->depth() == 2 ) {
             menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
             menu.insertItem( i18n( "Fetch Cover Image" ), this, SLOT( fetchCover() ) );
         }
-            
+
         menu.exec( point );
     }
 }
@@ -453,14 +454,14 @@ void
 CollectionView::makePlaylist() //SLOT
 {
     pApp->actionCollection()->action( "playlist_clear" )->activate();
-    pApp->insertMedia( listSelected() );
+    pApp->playlist()->insertMedia( listSelected() );
 }
 
 
 void
 CollectionView::addToPlaylist() //SLOT
 {
-    pApp->insertMedia( listSelected() );
+    pApp->playlist()->insertMedia( listSelected() );
 }
 
 
@@ -472,8 +473,8 @@ CollectionView::fetchCover() //SLOT
     if ( m_category2 != i18n( "None" ) && item->depth() != 2 ) return;
     //make sure we've got a license key
     if ( m_amazonLicense.isEmpty() )
-        setupCoverFetcher();        
-        
+        setupCoverFetcher();
+
     QString command = QString
                         ( "SELECT DISTINCT artist.name, album.name FROM tags, artist, album, genre, year "
                         "WHERE artist.id = tags.artist AND album.id = tags.album AND genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
@@ -494,11 +495,11 @@ void
 CollectionView::gotCover( const QPixmap& image ) //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     QWidget* widget = new QWidget( 0, 0, WDestructiveClose );
     widget->setPaletteBackgroundPixmap( image );
     widget->resize( image.size() );
-        
+
     widget->show();
 }
 

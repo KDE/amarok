@@ -23,7 +23,7 @@
 
 
 OSDWidget::OSDWidget()
-    : QWidget(NULL, "osd",
+    : QWidget( 0, "osd",
               WType_TopLevel | WStyle_StaysOnTop |
               WStyle_Customize | WStyle_NoBorder |
               WStyle_Tool | WRepaintNoErase | WX11BypassWM)
@@ -31,61 +31,48 @@ OSDWidget::OSDWidget()
     // Currently fixed to the top border of desktop, full width
     // This should be configurable, already on my TODO
 
-    move( 10, 40 );
-    resize( 0, 0 );
     setFocusPolicy( NoFocus );
     timer = new QTimer( this );
-    connect( timer, SIGNAL( timeout() ), this, SLOT( removeOSD() ) );
+    connect( timer, SIGNAL( timeout() ), this, SLOT( hide() ) );
 }
 
 
 //SLOT
 void OSDWidget::showSplash( const QString& imagePath )
 {
-    if ( isEnabled() )
-    {
-        QImage image( imagePath );
-        osdBuffer = image;
+    QImage image( imagePath );
+    osdBuffer.load( imagePath );
 
-        QBitmap bm( image.size() );
-        QPainter p( &bm );
-        p.drawImage( 0, 0, image.createAlphaMask() );
+    QBitmap bm( image.size() );
+    QPainter paint( &bm );
+    paint.drawImage( 0, 0, image.createAlphaMask() );
+    paint.end();
 
-        QRect d = QApplication::desktop()->screenGeometry( QApplication::desktop()->screenNumber( QPoint(0,0) ) );
-        move( ( d.width () - image.width () ) / 2 + d.left(),
-              ( d.height() - image.height() ) / 2 + d.top() );
-        resize( osdBuffer.size() );
+    QWidget* const d = QApplication::desktop();
+    QPoint p = d->rect().topLeft();
+    p.rx() += (d->width()-image.width()) / 2;
+    p.ry() += (d->height()-image.height()) / 2;
+    move( p );
+    resize( osdBuffer.size() );
 
-        setMask( bm );
+    setMask( bm );
 
-        show();
-        repaint();
+    show();
 
-        // let it disappear via a QTimer
-        timer->start( SPLASH_DURATION, true );
-    }
-}
-
-
-//SLOT
-void OSDWidget::removeOSD()
-{
-    // hide() and show() prevents flickering
-    hide();
+    // let it disappear via a QTimer
+    timer->start( SPLASH_DURATION, true );
 }
 
 
 void OSDWidget::paintEvent( QPaintEvent* )
 {
-    QPainter p( this );
-    p.drawPixmap( 0, 0, osdBuffer );
-    p.end();
+    bitBlt( this, 0, 0, &osdBuffer );
 }
 
 
 void OSDWidget::mousePressEvent( QMouseEvent* )
 {
-    removeOSD();
+    hide();
 }
 
 

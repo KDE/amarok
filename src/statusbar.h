@@ -48,7 +48,6 @@ protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( EngineBase::EngineState state );
     virtual void engineTrackPositionChanged( long position );
     virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
-    static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); } // TODO: don't duplicate
 
 private slots:
     void sliderPressed();

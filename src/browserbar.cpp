@@ -67,8 +67,7 @@ BrowserBar::BrowserBar( QWidget *parent )
   , m_divider( new amaroK::Divider( parent ) ) //FIXME why parent?
   , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
   , m_browserHolder( new QWidget( this ) ) //FIXME making this a layout would save mem
-  , m_currentBrowser( 0 )
-  , m_currentTab( 0 )
+  , m_currentIndex( -1 )
   , m_mapper( new QSignalMapper( this ) )
 {
     m_pos = m_tabBar->sizeHint().width();
@@ -90,7 +89,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     connect( m_overlapButton, SIGNAL( toggled( bool ) ), SLOT( toggleOverlap( bool ) ) );
 
     QPushButton *closeButton = new TinyButton( m_browserHolder, style().stylePixmap( QStyle::SP_TitleBarCloseButton ), i18n( "Close" ) );
-    connect( closeButton, SIGNAL( clicked() ), SLOT( close() ) );
+    connect( closeButton, SIGNAL( clicked() ), SLOT( closeCurrentBrowser() ) );
 
     const QSize buttonSize = closeButton->pixmap()->size();
     closeButton->setFixedSize( buttonSize );
@@ -128,7 +127,7 @@ BrowserBar::~BrowserBar()
     config->setGroup( "PlaylistSideBar" );
 
     config->writeEntry( "Stay", m_overlapButton->isOn() );
-    config->writeEntry( "CurrentPane", m_currentBrowser ? m_currentBrowser->name() : QString::null );
+    config->writeEntry( "CurrentPane", m_currentIndex != -1 ? currentBrowser()->name() : QString::null );
 
     for( BrowserIterator it = m_browsers.constBegin(), end = m_browsers.constEnd(); it != end; ++it )
         config->writeEntry( (*it)->name(), (*it)->baseSize().width() );
@@ -138,9 +137,12 @@ BrowserBar::~BrowserBar()
 void
 BrowserBar::adjustWidgetSizes()
 {
+    //TODO set the geometry of the BrowserWin before it the browsers are loaded so this isn't called twice
+
     const uint w   = width();
     const uint h   = height();
-    const uint p   = position();
+    const uint mxW = uint(w*0.85);
+    const uint p   = (m_pos < mxW) ? m_pos : mxW;
     const uint ppw = p + m_divider->width();
     const uint tbw = m_tabBar->width();
 
@@ -170,13 +172,13 @@ BrowserBar::adjustWidgetSizes()
 bool
 BrowserBar::eventFilter( QObject*, QEvent *e )
 {
-    if( !m_currentBrowser ) return false;
+    //if( !currentBrowser() ) return false; //we hide the divider now, so this should be impossible
 
     switch( e->type() )
     {
     case QEvent::MouseButtonRelease:
 
-        m_currentBrowser->setBaseSize( m_currentBrowser->size() ); //only necessary to do on mouse release
+        currentBrowser()->setBaseSize( currentBrowser()->size() ); //only necessary to do on mouse release
 
         //FALL THROUGH
 
@@ -188,11 +190,10 @@ BrowserBar::eventFilter( QObject*, QEvent *e )
         const uint newPos     = mapFromGlobal( e->globalPos() ).x();
 
     #ifdef BROWSER_BAR_LEFT
-        const uint minWidth   = m_tabBar->width() + m_currentBrowser->minimumWidth();
-        const uint maxWidth   = uint(width() * 0.9);
+        const uint minWidth   = m_tabBar->width() + currentBrowser()->minimumWidth();
 
         if( newPos < minWidth ) m_pos = minWidth;
-        else if( newPos < maxWidth ) m_pos = newPos; //TODO allow for widget maximumWidth
+        else /*if( newPos < maxWidth )*/ m_pos = newPos; //TODO allow for widget maximumWidth
     #else
         m_pos = newPos;
     #endif
@@ -260,6 +261,9 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     widget->hide();
     if( widget->minimumWidth() < 30 ) widget->setMinimumWidth( 30 );
 
+    //this is a signal the browser should emit when a single KURL is activated by the user
+    connect( widget, SIGNAL(activated( const KURL& )), SIGNAL(activated( const KURL& )) );
+
     m_tabBar->appendTab( KGlobal::iconLoader()->loadIcon( icon, KIcon::NoGroup, KIcon::SizeSmall ), id, title );
     QWidget *tab = m_tabBar->tab( id );
     tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
@@ -280,19 +284,30 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 void
 BrowserBar::showHideBrowser( int index )
 {
-    //determine the target browser (the widget to show/hide)
-    QWidget* const target = index == -1 ? m_currentBrowser : m_browsers[index];
+    //this function is safe for any values of index ( even < 1 )
 
-    if( m_currentBrowser ) //then we need to hide the currentBrowser
+    //we use this tmpIndex due to a strange race condition caused by the following hide()
+    //hide() seems to cause some events to be processed by BrowserWin::eventFilter()
+    //the issue was autoClosePages() being called halfway during the call to hide()
+    //that was crashing us as it was totally unexpected!(!)
+    const int prevIndex = m_currentIndex;
+
+    if( m_currentIndex != -1 )
     {
-        m_currentBrowser->hide();
-        m_currentTab->setState( false );
+        //we need to hide the currentBrowser in all circumstances
+
+        m_currentIndex = -1; //to prevent race condition crash described above
+
+        m_browsers[prevIndex]->hide();
+        m_tabBar->setTab( prevIndex, false );
     }
 
-    if( target == m_currentBrowser ) //then we need to set the bar to the closed state
+    if( index == prevIndex )
     {
-        m_currentBrowser = 0;
-        m_currentTab  = 0;
+        //then we are closing the BrowserBar
+        //set to a closed state
+
+        //m_currentIndex = -1; //done above now, will always happen
 
         m_browserHolder->hide();
         m_divider->hide();
@@ -301,29 +316,28 @@ BrowserBar::showHideBrowser( int index )
         //as otherwise playlist is right size already (see adjustWidgetSizes())
         if( m_overlapButton->isOn() ) adjustWidgetSizes();
 
-    } else if( target ) { //then open up target
+    } else if( QWidget* const target = m_browsers[index] ) {
 
-        const bool resize = !m_currentBrowser || !m_overlapButton->isOn();
+        //then open up target, adjust sized etc.
 
-        m_currentBrowser = target;
-        m_currentTab  = m_tabBar->tab( index );
+        m_currentIndex = index;
 
         //NOTE it is important that the divider is visible before adjust..() is called
         //NOTE the showEvents are processed after we have adjustedSizes below
         m_divider->show();
-        m_currentBrowser->show();
-        m_currentBrowser->setFocus();
-        m_currentTab->setState( true );
+        target->show();
+        target->setFocus();
+        m_tabBar->setTab( index, true );
         m_browserHolder->show();
 
-        if( resize )
+        if( prevIndex == -1 || !m_overlapButton->isOn() )
         {
             //we need to resize the browserHolder
 
             #ifdef BROWSER_BAR_LEFT
-            m_pos = m_currentBrowser->baseSize().width() + m_tabBar->width();
+            m_pos = target->baseSize().width() + m_tabBar->width();
             #else
-            m_pos = width() - m_currentBrowser->baseSize().width() - m_tabBar->width();
+            m_pos = width() - target->baseSize().width() - m_tabBar->width();
             #endif
 
             adjustWidgetSizes();
@@ -351,9 +365,9 @@ BrowserBar::setFont( const QFont & )
 void
 BrowserBar::autoCloseBrowsers() //SLOT
 {
-    if( !m_overlapButton->isOn() && m_currentBrowser )
+    if( m_currentIndex != -1 && !m_overlapButton->isOn() )
     {
-        showHideBrowser();
+         closeCurrentBrowser();
     }
 }
 
@@ -367,7 +381,7 @@ BrowserBar::toggleOverlap( bool on ) //SLOT
 }
 
 
-//FIXME move back to the top to make the commit more readable
+
 BrowserBar::TinyButton::TinyButton( QWidget *parent, const QPixmap &pix, const QString &toolTipText )
   : QPushButton( parent )
   , m_mouseOver( false )
@@ -392,7 +406,7 @@ BrowserBar::TinyButton::drawButton( QPainter* p )
     if( isOn() || isDown() )
     {
         //draw buttonPressed state
-        topLeft     = colorGroup().dark();
+        topLeft     = bottomRight;
         bottomRight = colorGroup().light();
     }
     else if( !m_mouseOver ) return; //otherwise we are already drawn correctly

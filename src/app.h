@@ -22,10 +22,9 @@
     #include <config.h>
 #endif
 
-#include "engineobserver.h"        //baseclass
-#include <kapplication.h>          //baseclass
-#include <kurl.h>                  //needed for KURL::List (nested)
-#include <qserversocket.h>         //baseclass
+#include "engineobserver.h" //baseclass
+#include <kapplication.h>   //baseclass
+#include <kurl.h>           //needed for KURL::List (nested)
 
 #define APP_VERSION "1.0-CVS"
 
@@ -34,7 +33,7 @@ namespace amaroK {
     class OSD;
     class TrayIcon;
     class DcopHandler;
-        
+
     static const int VOLUME_MAX = 100;
 }
 
@@ -58,86 +57,55 @@ class App : public KApplication, public EngineObserver
         App();
         ~App();
 
-        bool playObjectConfigurable();
-        void setupColors();
-        void insertMedia( const KURL::List&, bool directPlay = false, bool preventDoubles = false );
+        void genericEventHandler( QWidget*, QEvent* ); //handles events in a generic amaroK fashion
+        void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
+
+        KActionCollection   *actionCollection() const;
+        Playlist            *playlist() const;
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
+        amaroK::OSD         *osd() const { return m_pOSD; }
+        QWidget             *mainWindow() const { return (QWidget*)m_pPlaylistWindow; }
+        PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
 
-        KActionCollection *actionCollection() { return m_pActionCollection; }
-        const KActionCollection *actionCollection() const { return m_pActionCollection; }
-
-        Playlist *playlist() const { return m_pPlaylist; }
-
-        // ATTRIBUTES
+        // ATTRIBUTES ------
         KActionCollection *m_pActionCollection;
 
-        // STATICS
-        static const int SCOPE_SIZE = 9; //NOTE 512
+        // STATICS ------
+        static const int SCOPE_SIZE = 9; //= 2**9 = 512
 
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( EngineBase::EngineState state );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+        void engineVolumeChanged( int );
 
     public slots:
-        void slotPlaylistShowHide();
-        void slotShowOptions();
-        void slotConfigCollection();
-        void slotIncreaseVolume();
-        void slotDecreaseVolume();
-        void slotShowVolumeOsd();
+        void slotConfigAmarok();
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
+        void slotConfigEffects( bool = true );
 
     private slots:
-        void handleLoaderArgs( QCString args );
         void applySettings();
-        void showEffectWidget();
 
     private:
-        void handleCliArgs();
-        void initColors();
-        void initConfigDialog();
         void initEngine();
-        void initIpc();
-        void initMixer();
-        bool initMixerHW();
-        void readConfig();
+        void initGlobalShortcuts();
         void restoreSession();
-        void saveConfig();
-        bool eventFilter( QObject*, QEvent* );
+        void setupColors();
 
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
-        Playlist            *m_pPlaylist;
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
         amaroK::OSD         *m_pOSD;
-
-        long      m_length; //DEPRECATE
-        int       m_sockfd;
-        bool      m_showPlaylistWindow;
-        bool      m_artsNeedsRestart; //DEPRECATE
 };
 
 
-class LoaderServer : public QServerSocket
-{
-    Q_OBJECT
+#define pApp static_cast<App*>(kapp)
 
-    public:
-        LoaderServer( QObject* parent );
-
-    signals:
-        void loaderArgs( QCString );
-
-    private :
-        void newConnection( int socket );
-};
 
 #endif  // AMAROK_APP_H
-
-extern App* pApp;

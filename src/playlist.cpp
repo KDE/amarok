@@ -14,43 +14,36 @@
 
 
 #include "amarokconfig.h"
+#include "enginecontroller.h"
 #include "metabundle.h"
-#ifdef PLAYLIST_BROWSER
-    #include "playlistbrowser.h"
-#endif
+#include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include "playlist.h"
 #include "threadweaver.h"
-#include "enginecontroller.h"
 
-#include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
-#include <qcolor.h>
-#include <qevent.h>
-#include <qfile.h>
-#include <qheader.h> //eventFilter()
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qpen.h>    //slotGlowTimer()
-#include <qpoint.h>
-#include <qrect.h>
-#include <qtimer.h>
-
-#include <kapplication.h> //use of kapp
+#include <kapplication.h>
 #include <kaction.h>
-#include <kcursor.h>
+#include <kcursor.h>      //setOverrideCursor()
 #include <kdebug.h>
-#include <kiconloader.h> //slotShowContextMenu()
-#include <klineedit.h>   //setCurrentTrack()
+#include <kiconloader.h>  //slotShowContextMenu()
+#include <klineedit.h>    //setCurrentTrack()
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <krandomsequence.h> //random Mode
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
 #include <kurldrag.h>
-
-#include <X11/Xlib.h>  // for XQueryPointer
-
+#include <qclipboard.h> //copyToClipboard(), slotMouseButtonPressed()
+#include <qcolor.h>
+#include <qevent.h>
+#include <qfile.h>   //undo system
+#include <qheader.h> //eventFilter()
+#include <qmessagebox.h>
+#include <qpainter.h>
+#include <qpen.h>    //slotGlowTimer()
+#include <qtimer.h>
+#include <X11/Xlib.h>        //contentsDragMoveEvent
 
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
@@ -72,10 +65,13 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    EngineController* const ec = EngineController::instance();
 
-    // we want to receive engine updates
+    EngineController* const ec = EngineController::instance();
     ec->attach( this );
+    //TODO deprecate these, use a better system
+    connect( ec, SIGNAL( orderPrevious() ), SLOT( handleOrderPrev() ) );
+    connect( ec, SIGNAL( orderCurrent() ), SLOT( handleOrderCurrent() ) );
+    connect( ec, SIGNAL( orderNext() ), SLOT( handleOrder() ) );
 
 
     setShowSortIndicator( true );
@@ -115,8 +111,9 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
 
 
-    connect( this, SIGNAL( contentsMoving( int, int ) ),
-             this,   SLOT( slotEraseMarker() ) );
+    //FIXME what is this connection for?
+    //connect( this, SIGNAL( contentsMoving( int, int ) ),
+    //         this,   SLOT( slotEraseMarker() ) );
     connect( this, SIGNAL( doubleClicked( QListViewItem* ) ),
              this,   SLOT( activate( QListViewItem* ) ) );
     connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
@@ -132,12 +129,6 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     //connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(slotHeaderResized( int, int, int )) );
 
     connect( m_glowTimer, SIGNAL( timeout() ), this, SLOT( slotGlowTimer() ) );
-
-
-    //TODO deprecate these, use a better system
-    connect( ec, SIGNAL( orderPrevious() ), SLOT( handleOrderPrev() ) );
-    connect( ec, SIGNAL( orderCurrent() ), SLOT( handleOrderCurrent() ) );
-    connect( ec, SIGNAL( orderNext() ), SLOT( handleOrder() ) );
 
 
     //<init undo/redo>
@@ -161,14 +152,14 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     new KAction( i18n( "&Goto Current" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "playlist_clear" );
 
-    ac->action( "playlist_show" )->setEnabled( false ); //FIXME instead get the engineController to set state on registration!
+
+    engineStateChanged( EngineBase::Empty ); //initialise state of UI
+    paletteChange( palette() ); //sets up glowColors
+    restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
 
     header()->installEventFilter( this );
 
-    restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
-
-    paletteChange( palette() ); //sets up glowColors
 
     /*
         TODO the following actually works!
@@ -206,8 +197,8 @@ Playlist::~Playlist()
    EngineController::instance()->detach( this );
 
    //speed up quit a little
-   KListView::clear();
-   blockSignals( true );
+   KListView::clear();   //our implementation is slow
+   blockSignals( true ); //might help
 }
 
 
@@ -251,7 +242,7 @@ void Playlist::insertMedia( KURL::List list, bool directPlay, bool preventDouble
             if ( list.contains( tItem->url() ) )
             {
                 list.remove( tItem->url() );
-                
+
                 if ( directPlay )
                     activate ( tItem );
             }
@@ -422,18 +413,14 @@ void Playlist::saveXML( const QString &path ) const
 {
     //TODO save nextTrack queue
     QFile file( path );
-    QDomDocument newdoc;
 
     if( !file.open( IO_WriteOnly ) ) return;
-    QTextStream stream( &file );
-    stream.setEncoding(QTextStream::UnicodeUTF8);
 
-    stream << "<?xml version=\"1.0\" encoding=\"utf8\"?>\n";
-
-    QDomElement playlist = newdoc.createElement("playlist");
-    playlist.setAttribute("product", "amaroK");
-    playlist.setAttribute("version", "1");
-    newdoc.appendChild(playlist);
+    QDomDocument newdoc;
+    QDomElement playlist = newdoc.createElement( "playlist" );
+    playlist.setAttribute( "product", "amaroK" );
+    playlist.setAttribute( "version", "1" );
+    newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
@@ -451,9 +438,12 @@ void Playlist::saveXML( const QString &path ) const
             }
         }
 
-        playlist.appendChild(i);
+        playlist.appendChild( i );
     }
 
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf8\"?>\n";
     stream << newdoc.toString();
     file.close();
 }
@@ -496,6 +486,7 @@ void Playlist::shuffle() //SLOT
 
     m_nextTracks.clear();
 
+    //TODO you need a generic function for this action
     m_ac->action( "prev" )->setEnabled( isTrackBefore() );
     m_ac->action( "next" )->setEnabled( isTrackAfter() );
 }
@@ -505,7 +496,7 @@ void Playlist::clear() //SLOT
 {
     emit aboutToClear(); //will saveUndoState()
 
-    setCurrentTrack( NULL );
+    setCurrentTrack( 0 );
     m_prevTracks.clear();
     m_nextTracks.clear();
 
@@ -523,6 +514,7 @@ void Playlist::clear() //SLOT
         list->append( item );
     }
     QApplication::postEvent( this, new QCustomEvent( QCustomEvent::Type(4000), list ) );
+
     emit itemCountChanged( childCount() );
 }
 
@@ -549,7 +541,7 @@ void Playlist::removeSelectedItems() //SLOT
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
 
     //assemble a list of what needs removing
-    //calling removeItem() iteratively is more efficient if they are in _reverse_ order
+    //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
     QPtrList<QListViewItem> list;
     for( QListViewItemIterator it( this, QListViewItemIterator::Selected );
          it.current();
@@ -566,13 +558,15 @@ void Playlist::removeSelectedItems() //SLOT
         //if tagreader is running don't let tags be read for this item and delete later
         if( m_weaver->running() )
         {
+            //FIXME this will cause childCount() to report wrongly
             //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
             item->setVisible( false ); //will be removed next time playlist is cleared
             //FIXME m_weaver->remove( item );
         }
         else delete item;
     }
-    emit itemCountChanged( childCount() );
+
+    //NOTE no need to emit childCountChanged(), removeItem() does that for us
 }
 
 /*
@@ -607,7 +601,7 @@ int Playlist::mapToLogicalColumn( int physical )
 void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
     //we don't check list.isEmpty(), this is a private function so we shouldn't have to
-    
+
     PlaylistLoader *loader = new PlaylistLoader( list, this, after );
 
     if( loader )
@@ -653,17 +647,17 @@ void Playlist::removeItem( PlaylistItem *item )
 {
     //this function ensures we don't have dangling pointers to items that are about to be removed
     //for some reason using QListView::takeItem() and QListViewItem::takeItem() was ineffective
-    //FIXME there must be a way to do this without requiring notification from the item dtor!
-    //NOTE  orginally this was in ~PlaylistItem(), but that caused crashes due to clear() *shrug*
+    //NOTE we don't delete item for you! You must call delete item yourself :)
 
+    //TODO there must be a way to do this without requiring notification from the item dtor!
+    //NOTE orginally this was in ~PlaylistItem(), but that caused crashes due to clear() *shrug*
     //NOTE items already removed by takeItem() will crash if you call nextSibling() on them
-    //taken items return 0 from listView()
-
+    //     taken items return 0 from listView()
     //FIXME if you remove a series of items including the currentTrack and all the nextTracks
     //      then no new nextTrack will be selected and the playlist will resume from the begging
     //      next time
 
-    if( item == m_currentTrack )
+    if( m_currentTrack == item )
     {
         setCurrentTrack( 0 );
 
@@ -671,23 +665,19 @@ void Playlist::removeItem( PlaylistItem *item )
         //we don't need to do that in random mode, it's getting randomly selected anyways
         if( m_nextTracks.isEmpty() && !AmarokConfig::randomMode() )
         {
-            PlaylistItem *nextItem = item->nextSibling();
-            m_nextTracks.append( nextItem );
-            repaintItem( nextItem );
+            PlaylistItem* const next = item->nextSibling();
+            m_nextTracks.append( next );
+            repaintItem( next );
         }
     }
 
-    if( item == m_cachedTrack ) m_cachedTrack = 0;
+    if( m_cachedTrack == item ) m_cachedTrack = 0;
 
     //keep m_nextTracks queue synchronised
-    if( m_nextTracks.findRef( item ) != -1 ) //sets List Current Item
-    {
-        m_nextTracks.remove(); //remove list's listCurrentItem, set listCurrentItem to next item
-        refreshNextTracks();   //repaint from current
-    }
+    if( m_nextTracks.removeRef( item ) ) refreshNextTracks();
 
     //keep recent buffer synchronised
-    m_prevTracks.remove( item ); //removes all items
+    m_prevTracks.remove( item ); //removes all pointers to item
 
     emit itemCountChanged( childCount() );
 }
@@ -718,30 +708,24 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
     PlaylistItem* const item = (PlaylistItem*)lvi;
 
-    if( rememberTrack && item )
-    {
-        m_prevTracks.insert( 0, item ); //is push_back, see QPtrStack docs
-
-        //keep prevList within reasonable limits, remove most distant members
-        while( m_prevTracks.count() > 40 )
-            m_prevTracks.remove( m_prevTracks.at( m_prevTracks.count() - 1 ) );
-    }
-
-
     if( item )
     {
+        if( rememberTrack )
+        {
+            m_prevTracks.insert( 0, item ); //use QValueStack and push_back
+
+            //keep prevList within reasonable limits, remove most distant members
+            //FIXME Use QValueList for prevTracks. PtrLists have crappy interface functions
+            while( m_prevTracks.count() > 40 )
+                m_prevTracks.remove( m_prevTracks.last() );
+        }
+
         //if we are playing something from the next tracks list, remove it from the list
         //do it here rather than in setCurrentTrack(), because if playback fails we don't
         //want to try playing it repeatedly!
+        if( m_nextTracks.removeRef( item ) ) refreshNextTracks(); //will refresh from the one after "item"
 
-        int index = m_nextTracks.findRef( item ); //set's m_nextTracks.current()
-        if( index != -1 )
-        {
-            m_nextTracks.remove(); //will remove m_nextTracks.current()
-            refreshNextTracks( index );
-        }
-
-        //when the engine calls newMetaDataNotify we are expecting it
+        //so that when the engine calls newMetaDataNotify we are expecting this PlaylistItem to be set
         m_cachedTrack = item;
 
         //tell the engine to play the new track
@@ -749,9 +733,14 @@ void Playlist::activate( QListViewItem *lvi, bool rememberTrack ) //SLOT
 
     } else {
 
-        //FIXME this may cause premature stopping with crossfading..
-        EngineController::instance()->stop();
+        //NOTE we setCurrentTrack( 0 ) here and not in engineStateChange()
+        //because normally we want the marker to stay so people know what song was
+        //playing before they pushed stop, but here have reached the end of the playlist
+        //and need to clear m_currentTrack to ensure play will start at the beginning
+        //of the playlist next time
+
         setCurrentTrack( 0 );
+        EngineController::instance()->stop();
     }
 }
 
@@ -786,12 +775,9 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
     switch( state )
     {
     case EngineBase::Playing:
-        //TODO make it fade in and out of the backgroundColor()
         m_glowTimer->start( 40 );
         m_ac->action( "pause" )->setEnabled( true );
         m_ac->action( "stop" )->setEnabled( true );
-        m_ac->action( "prev" )->setEnabled( isTrackBefore() ); //FIXME you also do this in setCurrenTrack
-        m_ac->action( "next" )->setEnabled( isTrackAfter() );  //FIXME you also do this in setCurrenTrack
         m_ac->action( "playlist_show" )->setEnabled( true );
         break;
 
@@ -805,11 +791,7 @@ void Playlist::engineStateChanged( EngineBase::EngineState state )
 
         //don't leave currentTrack in undefined glow state
         Glow::counter = 63;
-        if ( currentTrack() )
-        {
-            currentTrack()->m_playing = false;
-            currentTrack()->invalidateHeight();
-        }
+        if ( currentTrack() ) currentTrack()->invalidateHeight();
         slotGlowTimer();
 
         //FALL THROUGH
@@ -866,18 +848,16 @@ void Playlist::setCurrentTrack( PlaylistItem *item )
 
     m_currentTrack = item;
     m_cachedTrack  = 0; //invalidate cached pointer
-    
-    if( item ) {
-        item->m_playing = true;
-        item->setHeight( fontMetrics().height() * 2 );
-    }    
-    if( prev && item != prev ) {
-        prev->m_playing = false;
-        prev->invalidateHeight();
-    }
 
-    repaintItem( prev );
-    repaintItem( item );
+    if( item ) item->setHeight( fontMetrics().height() * 2 );
+    if( prev && item != prev ) prev->invalidateHeight();
+
+    //FIXME we need to paint the pix ourselves so we are sure it is the first column
+    if( item ) { item->setPixmap( 1, SmallIcon("artsbuilderexecute") ); item->setHeight( fontMetrics().height()*2 ); }
+    if( prev ) { prev->setPixmap( 1, QPixmap() ); prev->invalidateHeight(); }
+
+    //repaintItem( prev );
+    //repaintItem( item );
 
     m_ac->action( "prev" )->setEnabled( isTrackBefore() );
     m_ac->action( "next" )->setEnabled( isTrackAfter() );
@@ -958,8 +938,6 @@ bool Playlist::saveState( QStringList &list )
       saveXML( fileName );
       list.append( fileName );
 
-      //kdDebug() << "Saved state: " << fileName << endl;
-
       return true;
    }
 
@@ -1015,7 +993,7 @@ void Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const Q
     {
         //FIXME shouldn't the X11 paste get to Qt via some kind of drop?
         //TODO handle multiple urls?
-        QString path = QApplication::clipboard()->text( QClipboard::Selection );
+        const QString path = QApplication::clipboard()->text( QClipboard::Selection );
         kdDebug() << "[playlist] X11 Paste: " << path << endl;
 
         insertMediaInternal( KURL::fromPathOrURL( path ), (PlaylistItem*)after );
@@ -1040,11 +1018,11 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
     if( item == NULL ) return; //technically we should show "Remove" but this is far neater
 
-    const bool canRename = isRenameable( col );
-    const bool isCurrent = (item == m_currentTrack);
-    const bool isPlaying = EngineController::engine()->state() == EngineBase::Playing;
-    const int queueIndex = m_nextTracks.findRef( item );
-    const bool isQueued  = queueIndex != -1;
+    const bool canRename  = isRenameable( col );
+    const bool isCurrent  = (item == m_currentTrack);
+    const bool isPlaying  = EngineController::engine()->state() == EngineBase::Playing;
+    const int  queueIndex = m_nextTracks.findRef( item );
+    const bool isQueued   = queueIndex != -1;
 
     //Markey, sorry for the lengths of these lines! -mxcl
 
@@ -1055,10 +1033,10 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     {
         QString nextText = i18n( "Play as &Next" );
 
-        uint nextIndex = m_nextTracks.count() + 1;
+        const uint nextIndex = m_nextTracks.count() + 1;
         if( nextIndex > 1 ) nextText += QString( " (%1)" ).arg( nextIndex );
 
-        popup.insertItem( SmallIcon( "2downarrow" ), nextText, PLAY_NEXT );
+        popup.insertItem( SmallIcon( "2rightarrow" ), nextText, PLAY_NEXT );
     }
     else popup.insertItem( i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
@@ -1066,16 +1044,18 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), 0, 0, Key_F2, EDIT );
     if( canRename )
     {
+        //FIXME does below() operate only on visible members?
+
         const QListViewItem *below = item->itemBelow();
         if( below && below->isSelected() && item->exactText( col ) != i18n( "Writing tag..." ) )
         {
             //we disable Fill-Down when the current cell is having it's tag written
             //but it's a hack that needs to be improved
 
-            popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down" ), FILL_DOWN );
+            popup.insertItem( i18n( "Spreadsheet-style fill down", "&Fill-down this tag" ), FILL_DOWN );
         }
     }
-    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Trackname" ), 0, 0, CTRL+Key_C, COPY ); //FIXME use KAction
+    popup.insertItem( SmallIcon( "editcopy" ), i18n( "&Copy Trackname" ), 0, 0, CTRL+Key_C, COPY );
     popup.insertSeparator();
     popup.insertItem( SmallIcon( "edittrash" ), i18n( "&Remove Selected" ), this, SLOT( removeSelectedItems() ), Key_Delete );
 
@@ -1093,13 +1073,13 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 
         if( isQueued )
         {
-            //if is Queued, remove the item
-            m_nextTracks.at( queueIndex ); //set current item, at() is quickest way
-            m_nextTracks.remove(); //NOTE!! gets repainted due to the deselect above
+            //remove the item, this is better way than remove( item )
+            m_nextTracks.remove( queueIndex ); //sets current() to next item
+            refreshNextTracks(); //from current()
         }
-        else m_nextTracks.append( item ); //else append it on the end of the list
+        else m_nextTracks.append( item );
 
-        refreshNextTracks(); //will start at current item in QPtrList
+        //NOTE "item" is repainted due to the setSelected() call
 
         break;
 
@@ -1197,7 +1177,7 @@ void Playlist::paletteChange( const QPalette &p )
     {
         using namespace Base;
 
-        const uint steps = STEPS+7; //so we don't fade all the way to base
+        const uint steps = STEPS+5+5; //so we don't fade all the way to base, and all the way up to highlight either
 
         fg = colorGroup().highlight();
         bg = colorGroup().base();
@@ -1214,7 +1194,7 @@ void Playlist::paletteChange( const QPalette &p )
     {
         using namespace Text;
 
-        const uint steps = STEPS+2; //so we don't fade all the way to base
+        const uint steps = STEPS+5; //so we don't fade all the way to base
 
         fg = colorGroup().highlightedText();
         bg = colorGroup().text();
@@ -1296,7 +1276,7 @@ void Playlist::slotEraseMarker() //SLOT
 {
     if( m_marker )
     {
-        QRect spot = drawDropVisualizer( 0, 0, m_marker );
+        const QRect spot = drawDropVisualizer( 0, 0, m_marker );
         m_marker = 0;
         viewport()->repaint( spot, false );
     }
@@ -1333,29 +1313,24 @@ void Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
 
 void Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
-    slotEraseMarker();
+    //TODO decide, use this or what was here before? still have to include the Xlib header..
+    const bool ctrlPressed= KApplication::keyboardModifiers() & ControlMask;
 
-    Window root;
-    Window child;
-    int root_x, root_y, win_x, win_y;
-    uint keybstate;
-    XQueryPointer( qt_xdisplay(), qt_xrootwin(), &root, &child,
-                   &root_x, &root_y, &win_x, &win_y, &keybstate );
-    bool shiftPressed = keybstate & ShiftMask;
+    //Get the closest item _before_ the cursor
+    const QPoint p = contentsToViewport( e->pos() );
+    QListViewItem *item = itemAt( p );
+    if( !item || ctrlPressed ) item = lastItem();
+    else if( p.y() - itemRect( item ).top() < (item->height()/2) ) item = item->itemAbove();
 
-    //NOTE this code straight from KListView::findDrop()
-    //TODO use findDrop()!
-    //Get the closest item before us ('atpos' or the one above, if any)
-    QPoint p = contentsToViewport( e->pos() );
-    m_marker = itemAt( p );
-    if( NULL == m_marker || shiftPressed )
-        m_marker = lastItem();
-    else if( p.y() - itemRect( m_marker ).topLeft().y() < (m_marker->height()/2) )
-        m_marker = m_marker->itemAbove();
+    if( item != m_marker )
+    {
+        //NOTE the if block prevents flicker
+        //NOTE it is correct to set m_marker in the middle
 
-    //TODO don't dupe code, see viewportPaintEvent()
-    QPainter painter( viewport() );
-    painter.fillRect( drawDropVisualizer( 0, 0, m_marker ), QBrush( Qt::red, QBrush::Dense4Pattern ) );
+        slotEraseMarker();
+        m_marker = item;
+        viewportPaintEvent( 0 );
+    }
 }
 
 
@@ -1370,10 +1345,9 @@ void Playlist::contentsDropEvent( QDropEvent *e )
     //NOTE parent is always 0 currently, but we support it in case we start using trees
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
-    if( after == 0 )
-    {
-        findDrop( e->pos(), parent, after );
-    }
+
+    if( !after ) findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
+
     slotEraseMarker();
 
     if( e->source() == viewport() )
@@ -1381,10 +1355,10 @@ void Playlist::contentsDropEvent( QDropEvent *e )
         setSorting( NO_SORT ); //disableSorting and saveState()
         movableDropEvent( parent, after );
 
-        //FIXME if the current Item was moved we need to update whether next/prev are enabled/disabled
-    }
-    else
-    {
+        //TODO FIXME we need to update whether next/prev are enabled/disabled
+
+    } else {
+
         KURL::List list;
         if( KURLDrag::decode( e, list ) )
         {
@@ -1408,12 +1382,12 @@ QDragObject* Playlist::dragObject()
 
 void Playlist::viewportPaintEvent( QPaintEvent *e )
 {
-    KListView::viewportPaintEvent( e );
+    if( e ) KListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
 
     if( m_marker )
     {
         QPainter painter( viewport() );
-        painter.fillRect( drawDropVisualizer( 0, 0, m_marker ), QBrush( Qt::red, QBrush::Dense4Pattern ) );
+        painter.fillRect( drawDropVisualizer( 0, 0, m_marker ), QBrush( colorGroup().highlight(), QBrush::Dense4Pattern ) );
     }
 }
 
@@ -1422,11 +1396,8 @@ bool Playlist::eventFilter( QObject *o, QEvent *e )
 {
     #define me static_cast<QMouseEvent*>(e)
 
-    //we only filter the header currently, but the base class has eventFilters in place too
-
     if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
-        //currently the only use for this filter is to get mouse clicks on the header()
         KPopupMenu popup;
         popup.setCheckable( true );
         popup.insertTitle( i18n( "Available Columns" ) );
@@ -1449,25 +1420,22 @@ bool Playlist::eventFilter( QObject *o, QEvent *e )
         return TRUE; // eat event
 
     }
+
     // not in slotMouseButtonPressed because we need to disable normal usage.
-    else if( o == viewport() && e->type() == QEvent::MouseButtonPress &&
-             me->button() == RightButton && me->state() == Qt::ControlButton )
+    if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->state() == Qt::ControlButton && me->button() == RightButton )
     {
-        const QPoint p = me->pos();
-        PlaylistItem *item = static_cast<PlaylistItem*>(itemAt(p) );
+        PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
+
         if( item )
         {
-            item->setSelected( false ); //for prettiness
-
-            if( m_nextTracks.findRef( item ) != -1 ) //will set list's current item
+            if( m_nextTracks.removeRef( item ) )
             {
-                //if is Queued, remove the item
-                m_nextTracks.remove();
-                item->repaint();
+                //m_nextTracks.current() is now item
+                refreshNextTracks(); //will repaint from current()
             }
             else m_nextTracks.append( item );
 
-            refreshNextTracks();
+            item->repaint(); //we need to repaint item in both cases
         }
 
         return TRUE; //yum!
@@ -1562,7 +1530,7 @@ void Playlist::customEvent( QCustomEvent *e )
 
         //this is a list of all the listItems from a clear operation
         #define list static_cast<QPtrList<QListViewItem>*>(e->data())
-        kdDebug() << "Deleting " << list->count() << " PlaylistItems\n";
+        //kdDebug() << "Deleting " << list->count() << " PlaylistItems\n";
         delete list;
         #undef list
         break;

@@ -87,10 +87,43 @@ MetaBundle::init( TagLib::AudioProperties *ap )
 QString
 MetaBundle::prettyTitle() const
 {
-    if( m_artist.isEmpty() )
-        return m_title;
-    else
-        return m_artist + " - " + m_title;
+    if( !m_artist.isEmpty() )
+    {
+        QString
+        s  = m_artist;
+        s += " - ";
+        s += m_title;
+
+        return s;
+    }
+    else return m_title;
+
+
+    //FIXME fix title/artist ordering and insert in place of above
+
+    #ifdef PRETTY_TITLE_CACHE
+    if( m_prettyTitleCache.isEmpty() )
+    {
+        QString &s = m_prettyTitleCache = m_artist;
+    #else
+        QString s = m_artist;
+    #endif
+
+        if( s.isEmpty() )
+
+            s = prettyTitle( m_url.fileName() );
+
+        else if( !m_title.isEmpty() ) {
+
+            s += " - ";
+            s += m_title;
+        }
+    #ifdef PRETTY_TITLE_CACHE
+    }
+    return m_prettyTitleCache;
+    #else
+    return s;
+    #endif
 }
 
 QString
@@ -106,25 +139,33 @@ MetaBundle::prettyTitle( QString fileName ) //static
 }
 
 QString
-MetaBundle::prettyLength( int length ) //static
+MetaBundle::prettyLength( int seconds ) //static
 {
-    //NOTE don't inline this function!
-
     QString s;
 
-    if( length > 0 )
-    {
-        //we don't do hours, people aren't interested in them
-        int min = length / 60;
-        int sec = length % 60;
+    if( seconds > 0 ) s = prettyTime( seconds, false );
+    else if( seconds == Unavailable ) s = '?';
+    else if( seconds == Irrelevant  ) s = '-';
 
-        //don't zeroPad the minutes
-        s.setNum( min ).append( ':' );
-        if( sec < 10 ) s += '0';
-        s += QString::number( sec );
+    return s;
+}
+
+QString
+MetaBundle::prettyTime( int seconds, bool showHours ) //static
+{
+    QString s = QChar( ':' );
+    s.append( zeroPad( seconds % 60 ) ); //seconds
+    seconds /= 60;
+
+    if( showHours )
+    {
+        s.prepend( zeroPad( seconds % 60 ) ); //minutes
+        s.prepend( ':' );
+        seconds /= 60;
     }
-    else if( length == Unavailable ) s = '?';
-    else if( length == Irrelevant  ) s = '-';
+
+    //don't zeroPad the last one, as it can be greater than 2 digits
+    s.prepend( QString::number( seconds ) ); //hours or minutes depending on above if block
 
     return s;
 }

@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 #include "loader.h"
- 
+
 
 int main( int argc, char *argv[] )
 {
-    Loader app( argc, argv ); 
+    Loader app( argc, argv );
 
     return app.exec();
 }

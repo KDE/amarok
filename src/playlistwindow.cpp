@@ -41,10 +41,12 @@
 #include <kapplication.h>  //kapp
 #include <kdebug.h>
 #include <kglobal.h>
-#include <kfiledialog.h>   //savePlaylist()
-#include <kiconloader.h>   //ClearFilter button
-#include <klineedit.h>     //m_lineEdit
+#include <kfiledialog.h>    //savePlaylist()
+#include <khtml_part.h>     //Welcome Tab
+#include <kiconloader.h>    //ClearFilter button
+#include <klineedit.h>      //m_lineEdit
 #include <klocale.h>
+#include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>   //createGUI()
 #include <kurlrequester.h>    //slotAddLocation()
@@ -54,50 +56,65 @@
 
 
 
-PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
-   : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase )
+PlaylistWindow::PlaylistWindow()
+   : QWidget( 0, "PlaylistWindow", Qt::WNoAutoErase | Qt::WGroupLeader )
    , KXMLGUIClient()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-
     setCaption( "amaroK" );
 
-    pApp->m_pActionCollection = actionCollection(); //FIXME sucks
+
+    KActionCollection* const ac = actionCollection();
+    const EngineController* const ec = EngineController::instance();
+
+    KStdAction::configureToolbars( pApp, SLOT( slotConfigToolBars() ), ac );
+    KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), ac );
+    KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
+    KStdAction::preferences( pApp, SLOT( slotConfigAmarok() ), ac );
+    KStdAction::quit( pApp, SLOT( quit() ), ac );
+    KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media") );
+    KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist") );
+
+    ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
+
+    new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
+    new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
+    new KAction( i18n( "Stop" ), "player_stop", 0, ec, SLOT( stop() ), ac, "stop" );
+    new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
+    new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
+
+    new amaroK::MenuAction( ac );
+    new amaroK::PlayPauseAction( ac );
+    new amaroK::AnalyzerAction( ac );
+    new amaroK::RepeatTrackAction( ac );
+    new amaroK::RepeatPlaylistAction( ac );
+    new amaroK::RandomAction( ac );
+    new amaroK::VolumeAction( ac );
+
+    ac->readShortcutSettings( QString::null, kapp->config() );
 
 
-    //<actions>
-        KActionCollection* const ac = actionCollection();
-        const EngineController* const ec = EngineController::instance();
+    move( AmarokConfig::playlistWindowPos() );
+    resize( AmarokConfig::playlistWindowSize() );
+}
 
-        KStdAction::configureToolbars( pApp, SLOT( slotConfigToolBars() ), ac );
-        KStdAction::keyBindings( pApp, SLOT( slotConfigShortcuts() ), ac );
-        KStdAction::keyBindings( pApp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
-        KStdAction::preferences( pApp, SLOT( slotShowOptions() ), ac );
-        KStdAction::quit( pApp, SLOT( quit() ), ac );
-        KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media") );
-        KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist") );
+PlaylistWindow::~PlaylistWindow()
+{
+    AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
+    AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
+}
 
-        ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
-        new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
-        new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
-        new KAction( i18n( "Stop" ), "player_stop", 0, ec, SLOT( stop() ), ac, "stop" );
-        new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
-        new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
+///////// public interface
 
-        new amaroK::MenuAction( ac );
-        new amaroK::PlayPauseAction( ac );
-        new amaroK::AnalyzerAction( ac );
-        new amaroK::VolumeAction( ac );
-        new amaroK::RepeatTrackAction( ac );
-        new amaroK::RepeatPlaylistAction( ac );
-        new amaroK::RandomAction( ac );
+void
+PlaylistWindow::init()
+{
+    //this function is necessary because we reference pApp->actionCollection() are members of
+    //this function and some objects we create in this function use pApp->actionCollection()
+    //but since pApp->m_pPlaylistWindow is no defined until the above ctor returns it causes a
+    //crash unless we do the initialisation in 2 stages.
 
-        ac->action( "stop" )->setEnabled( false );
-        ac->action( "pause" )->setEnabled( false );
-        ac->action( "prev" )->setEnabled( false );
-        ac->action( "next" )->setEnabled( false );
-    //</actions>
+    kdDebug() << "BEGIN " << k_funcinfo << endl;
 
 
     m_browsers = new BrowserBar( this );
@@ -126,14 +143,14 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
 
     m_toolbar  = new amaroK::ToolBar( this, "playlist_toolbar" );
     statusbar  = new amaroK::StatusBar( this );
-    m_playlist = new Playlist( m_browsers->container(), ac );
+    m_playlist = new Playlist( m_browsers->container(), actionCollection() );
 
-    QToolTip::add( m_lineEdit, i18n( "Enter filter string" ) );
 
     QBoxLayout *layV = new QVBoxLayout( this );
-    layV->addWidget( m_browsers, 2 );
+    layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
     layV->addWidget( statusbar );
+
 
     m_playlist->setMargin( 2 );
     m_playlist->installEventFilter( this ); //we intercept keyEvents
@@ -145,43 +162,41 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
     //</XMLGUI>
 
 
-    //<FileBrowser>
-        QWidget *fb = new FileBrowser( "FileBrowser" );
-        m_browsers->addBrowser( fb, i18n( "Files" ), "hdd_unmount" );
-        connect( fb, SIGNAL(activated( const KURL& )), m_playlist, SLOT(insertMedia( const KURL& )) );
-    //</FileBrowser>
-
-    //<SearchBrowser>
+    //<Browsers>
+        m_browsers->addBrowser( new FileBrowser( "FileBrowser" ), i18n( "Files" ), "hdd_unmount" );
         m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
-    //</SearchBrowser>
+        m_browsers->addBrowser( new CollectionBrowser( "CollectionBrowser" ), i18n( "Collection" ), "contents" );
+        m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "document" );
 
-    //<PlaylistBrowser>
-    #ifdef PLAYLIST_BROWSER
+        #ifdef PLAYLIST_BROWSER
         m_browsers->addBrowser( m_playlist->browser(), i18n( "Playlist" ), "midi" );
-    #endif
-    //</PlaylistBrowser>
+        #endif
 
-    //<CollectionBrowser>
-        m_collectionBrowser = new CollectionBrowser( "CollectionBrowser" );
-        m_browsers->addBrowser( m_collectionBrowser, i18n( "Collection" ), "contents" );
-    //</CollectionBrowser>
+        { //<StreamBrowser>
+            QVBox   *vb = new QVBox( 0, "StreamBrowser" );
+            QWidget *b  = new KPushButton( KGuiItem(i18n("&Fetch Stream Information"), "2downarrow"), vb );
+            QWidget *sb = new StreamBrowser( vb );
+            vb->setSpacing( 3 );
+            vb->setMargin( 5 );
+            vb->setFocusProxy( sb );
+            connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
+            connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
+            m_browsers->addBrowser( vb, i18n( "Streams" ), "network" );
+        } //</StreamBrowser>
 
-    //<InfoBrowser>
-        m_contextBrowser = new ContextBrowser( "ContextBrowser" );
-        m_browsers->addBrowser( m_contextBrowser, i18n( "Context" ), "document" );
-    //</InfoBrowser>
-    
-    { //<StreamBrowser>
-        QVBox   *vb = new QVBox( 0, "StreamBrowser" );
-        QWidget *b  = new QPushButton( i18n( "&Fetch Stream Information" ), vb );
-        QWidget *sb = new StreamBrowser( vb );
-        vb->setSpacing( 3 );
-        vb->setMargin( 5 );
-        vb->setFocusProxy( sb );
-        connect( b, SIGNAL( clicked() ), sb, SLOT( slotUpdateStations() ) );
-        connect( b, SIGNAL( clicked() ),  b, SLOT( deleteLater() ) );
-        m_browsers->addBrowser( vb, i18n( "Streams" ), "network" );
-    } //</StreamBrowser>
+        { //<WelcomePage>
+            //TODO use a Qt text viewer to save to link time?
+            KHTMLPart *w = new KHTMLPart( (QWidget*)0 );
+            KURL url; url.setPath( locate("data", "amarok/data/welcome.html") );
+            w->widget()->setName( "WelcomePage" );
+            w->openURL( url );
+            m_browsers->addBrowser( w->widget(), i18n( "Welcome" ), "help" );
+        } //</WelcomePage>
+
+        connect( m_browsers, SIGNAL(  activated( const KURL& )),
+                 m_playlist,   SLOT(insertMedia( const KURL& )) );
+
+    //</Browsers>
 
 
     connect( m_playlist, SIGNAL(itemCountChanged( int )),
@@ -191,18 +206,9 @@ PlaylistWindow::PlaylistWindow( QWidget *parent, const char *name )
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
              m_playlist,   SLOT(slotTextChanged( const QString& )) );
 
-
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
-PlaylistWindow::~PlaylistWindow()
-{
-    AmarokConfig::setPlaylistWindowPos( pos() );  //TODO no need to be XT'd
-    AmarokConfig::setPlaylistWindowSize( size() ); //TODO no need to be XT'd
-}
-
-
-///////// public interface
 
 void PlaylistWindow::createGUI()
 {
@@ -253,26 +259,6 @@ void PlaylistWindow::createGUI()
 }
 
 
-void PlaylistWindow::insertMedia( const KURL::List &list, bool clearList, bool directPlay, bool preventDoubles )
-{
-    if( clearList ) m_playlist->clear(); //FIXME clear currently is not 100% bug free, it might not work as expected
-
-    m_playlist->insertMedia( list, directPlay, preventDoubles );
-}
-
-
-void PlaylistWindow::restoreSessionPlaylist()
-{
-    insertMedia( m_playlist->defaultPlaylistPath() );
-}
-
-
-bool PlaylistWindow::isAnotherTrack() const
-{
-    return m_playlist->isTrackAfter();
-}
-
-
 void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 {
     //TODO optimise bearing in mind ownPalette property and unsetPalette()
@@ -281,7 +267,6 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
     //this updates all children's palettes recursively (thanks Qt!)
     m_browsers->setPalette( pal );
 
-    const bool schemeAmarok = !AmarokConfig::schemeKDE();
     QObjectList* const list = m_browsers->queryList( "QWidget" );
 
     //now we need to search for KListViews so we can set the alternative colours
@@ -292,27 +277,23 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 
         if( obj->inherits("KListView") )
         {
-            KListView *lv = dynamic_cast<KListView *>(obj); //slow, but safe
-            if( lv ) lv->setAlternateBackground( bgAlt );
+            static_cast<KListView*>(obj)->setAlternateBackground( bgAlt );
         }
-        else if( schemeAmarok )
+        else if( obj->inherits("QLabel") || obj->inherits("QToolBar") )
         {
-            if( obj->inherits("QLabel") || obj->inherits("QToolBar") )
-            {
-                widget->setPaletteForegroundColor( Qt::white );
-            }
-            else if( obj->inherits("QMenuBar") || obj->parent()->isA("QSplitter") )
-            {
-                //I don't understand the QSplitter one, I got it to work by trial and error
+            widget->setPaletteForegroundColor( Qt::white );
+        }
+        else if( obj->inherits("QMenuBar") || obj->parent()->isA("QSplitter") )
+        {
+            //I don't understand the QSplitter one, I got it to work by trial and error
 
-                widget->setPalette( QApplication::palette() );
-            }
+            widget->setPalette( QApplication::palette() );
         }
 
         #undef widget
     }
 
-    delete list; //heap allocated! Naughty Qt! Should use a QValueList<QObject*> no? (ValueLists are shared)
+    delete list; //heap allocated!
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     FileBrowser::altBgColor = bgAlt;
@@ -324,6 +305,7 @@ void PlaylistWindow::setFont( const QFont &newFont )
     m_browsers->setFont( newFont );
     m_playlist->setFont( newFont );
 }
+
 
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
@@ -345,10 +327,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( e->key() == Key_F2 )
         {
-            QListViewItem* item = reinterpret_cast<QListViewItem*>(m_playlist->currentTrack());
-
-            // we set it to currentItem if currentTrack() is no good, currentItem is ALWAYS visible.
-            if( !( item && item->isVisible() ) ) item = m_playlist->currentItem();
+            // currentItem is ALWAYS visible.
+            QListViewItem *item = m_playlist->currentItem();
 
             // intercept F2 for inline tag renaming
             // NOTE: tab will move to the next tag
@@ -356,7 +336,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             // TODO: berkus has solved the "inability to cancel" issue with KListView, but it's not in kdelibs yet..
 
             // item may still be null, but this is safe
-            // NOTE: column 0 cannot be edited currently
+            // NOTE: column 0 cannot be edited currently, hence we pick column 1
             m_playlist->rename( item, 1 ); //TODO what if this column is hidden?
 
             return TRUE;
@@ -425,11 +405,16 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
     return FALSE;
 }
 
+void PlaylistWindow::closeEvent( QCloseEvent *e )
+{
+    pApp->genericEventHandler( this, e );
+}
+
 
 void PlaylistWindow::savePlaylist() const //SLOT
 {
-    QWidget *fb = m_browsers->browser( "FileBrowser" );
-    QString path = fb ? static_cast<FileBrowser *>(fb)->location() : "~";
+    FileBrowser *fb = (FileBrowser*)m_browsers->browser( "FileBrowser" );
+    QString path = fb ? fb->location() : "~";
 
     path = KFileDialog::getSaveFileName( path, "*.m3u" );
 
@@ -447,7 +432,46 @@ void PlaylistWindow::slotAddLocation() //SLOT
     dlg.urlRequester()->setMode( KFile::File | KFile::ExistingOnly );
     dlg.exec();
 
-    insertMedia( dlg.selectedURL() );
+    playlist()->insertMedia( dlg.selectedURL() );
+}
+
+
+#include <kwin.h>
+void PlaylistWindow::showHide() //SLOT
+{
+    //show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
+
+    //RULES:
+    //1. hidden & iconified -> deiconify & show
+    //2. hidden & deiconified -> show
+    //3. shown & iconified -> deiconify
+    //4. shown & deiconified -> hide
+    //5. don't hide if there is no tray icon or playerWindow //TODO (I can't be arsed)
+
+    //NOTE isMinimized() can only be true if the window isShown()
+    //NOTE this has taken me hours to get right, change at your peril!
+    //     there are more contingencies than you can believe
+
+    const KWin::WindowInfo info = KWin::windowInfo( winId() );
+    const uint desktop = KWin::currentDesktop();
+    const bool isOnThisDesktop = info.isOnDesktop( desktop );
+    const bool isShaded = info.hasState( NET::Shaded );
+
+
+    if( isShaded )
+    {
+        KWin::clearState( winId(), NET::Shaded );
+        setShown( true );
+    }
+
+    if( !isOnThisDesktop )
+    {
+        KWin::setOnDesktop( winId(), desktop );
+        setShown( true );
+    }
+    else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
+
+    if( isShown() ) KWin::deIconifyWindow( winId() );
 }
 
 #include "playlistwindow.moc"

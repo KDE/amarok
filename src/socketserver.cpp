@@ -4,12 +4,15 @@
 
 #include "config.h" //XMMS_CONFIG_DIR
 
+#include "app.h"
 #include "enginebase.h"       //to get the scope
 #include "enginecontroller.h" //to get the engine
 #include "fht.h"              //processing the scope
 #include "socketserver.h"
 
 #include <qdir.h>
+#include <qheader.h>          //Vis::Selector ctor
+#include <qsocketnotifier.h>
 
 #include <kdebug.h>
 #include <klocale.h>
@@ -31,12 +34,15 @@
 //TODO consider moving fht.* here
 //TODO allow visualisations to determine their own data sizes
 
-Vis::SocketServer* Vis::SocketServer::m_self;
 
-Vis::SocketServer::SocketServer( QObject *parent )
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS amaroK::SocketServer
+////////////////////////////////////////////////////////////////////////////////
+
+amaroK::SocketServer::SocketServer( const QString &socketname, QObject *parent )
   : QServerSocket( parent )
 {
-    m_self = this;
     m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
     if ( m_sockfd == -1 )
@@ -47,11 +53,11 @@ Vis::SocketServer::SocketServer( QObject *parent )
 
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path = ::locateLocal( "socket", QString( "amarok.visualization_socket" ) ).local8Bit();
+    QCString path = ::locateLocal( "socket", socketname ).local8Bit();
     ::strcpy( &local.sun_path[0], path );
     ::unlink( path );
 
-    if ( ::bind( m_sockfd, (struct sockaddr*) &local, sizeof( local ) ) == -1 )
+    if ( ::bind( m_sockfd, (sockaddr*) &local, sizeof(local) ) == -1 )
     {
         kdWarning() << k_funcinfo << " bind() error\n";
         ::close ( m_sockfd );
@@ -69,6 +75,83 @@ Vis::SocketServer::SocketServer( QObject *parent )
     this->setSocket( m_sockfd );
 }
 
+amaroK::SocketServer::~SocketServer()
+{
+    if( m_sockfd != -1 ) ::close( m_sockfd );
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS LoaderServer
+////////////////////////////////////////////////////////////////////////////////
+
+#include <kstartupinfo.h>
+
+LoaderServer::LoaderServer( QObject* parent )
+  : amaroK::SocketServer( "amarok.loader_socket", parent )
+{}
+
+
+void
+LoaderServer::newConnection( int sockfd )
+{
+    kdDebug() << k_funcinfo << endl;
+
+    char buf[1000];
+    const int nbytes = ::recv( sockfd, buf, sizeof(buf), 0 );
+
+    if( nbytes > 0 )
+    {
+        QString result( buf );
+
+        kdDebug() << QString( "Received: %1 (%2 bytes)\n" ).arg( result ).arg( nbytes );
+
+        if( result != "STARTUP" )
+        {
+            QStringList args = QStringList::split( '|', result, true );
+
+            if( !args.isEmpty() )
+            {
+                //stop startup cursor animation
+                kdDebug() << "DESKTOP_STARTUP_ID: " << args.first() << endl;
+                //KStartupInfo::appStarted( args.first().local8Bit() );
+                args.pop_front();
+
+                //divide argument line into single strings
+                int argc = args.count();
+                char **argv = new char*[argc];
+
+                QStringList::ConstIterator it = args.constBegin(); //use an iterator for QValueLists
+                for ( int i = 0; i < argc; ++i, ++it )
+                {
+                    argv[i] = const_cast<char*>((*it).latin1());
+                    kdDebug() << "Extracted: " << argv[i] << endl;
+                }
+
+                //re-initialize KCmdLineArgs with the new arguments
+                pApp->initCliArgs( argc, argv );
+                pApp->handleCliArgs();
+                delete[] argv;
+            }
+        }
+    }
+    else kdDebug() << "recv() error\n";
+
+    ::close( sockfd );
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS Vis::SocketServer
+////////////////////////////////////////////////////////////////////////////////
+
+
+Vis::SocketServer::SocketServer( QObject *parent )
+  : amaroK::SocketServer( "amarok.visualization_socket", parent )
+{}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC interface
@@ -78,35 +161,30 @@ void
 Vis::SocketServer::newConnection( int sockfd )
 {
     kdDebug() << "[Vis::Server] Connection requested: " << sockfd << endl;
-    VisSocket *sn = new VisSocket( sockfd );
+    new SocketNotifier( sockfd );
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// CLASS Vis::VisSocket
+// CLASS Vis::SocketNotifier
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Vis::VisSocket::VisSocket( int sockfd )
+Vis::SocketNotifier::SocketNotifier( int sockfd )
   : QSocketNotifier( sockfd, QSocketNotifier::Read, this )
 {
     connect( this, SIGNAL(activated( int )), SLOT(request( int )) );
 }
 
-
-/////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE interface
-/////////////////////////////////////////////////////////////////////////////////////////
-
 void
-Vis::VisSocket::request( int sockfd )
+Vis::SocketNotifier::request( int sockfd ) //slot
 {
-    std::vector<float> *scope = EngineController::engine()->scope();
-
     char buf[16]; //TODO docs should state request commands can only be 4 bytes
     int nbytes = recv( sockfd, buf, 16, 0 );
 
     if( nbytes > 0 )
     {
+        std::vector<float> *scope = EngineController::engine()->scope();
+
         //buf[nbytes] = '\000';
         QString result( buf );
 
@@ -178,13 +256,13 @@ Vis::Selector* Vis::Selector::m_instance = 0;
 Vis::Selector*
 Vis::Selector::instance()
 {
-    if ( !m_instance ) m_instance =  new Selector();
+    if ( !m_instance ) m_instance =  new Selector( pApp->mainWindow() );
 
     return m_instance;
 }
 
-Vis::Selector::Selector()
-  : KListView()
+Vis::Selector::Selector( QWidget *parent )
+  : QListView( parent, 0, Qt::WType_Dialog )
 {
     //TODO we will have to update the status of the visualisation window using the socket
     //     it should know which processes are requesting data from it
@@ -198,12 +276,11 @@ Vis::Selector::Selector()
     //     it isn't a perfect system, but it will suffice
     //setWFlags( Qt::WDestructiveClose ); //FIXME reenable when we can
 
-    setFullWidth( true );
-    setShowSortIndicator( true );
     setSorting( 0 );
-    setCaption( i18n( "Visualizations - amaroK" ) );
+    setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
+    setResizeMode( QListView::LastColumn );
     addColumn( i18n( "Name" ) );
-    resize( 250, 250 );
+    header()->hide();
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
@@ -211,13 +288,14 @@ Vis::Selector::Selector()
     QDir dir( XMMS_PLUGIN_PATH );
     const QFileInfoList *list = dir.entryInfoList();
     QFileInfo *fi;
-    if ( list )
-    {
-        for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
-            if ( fi->isFile() && fi->extension() == "so" )
-                new Selector::Item( this, fi->fileName() );
-    }
+
+    for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
+        if ( fi->isFile() && fi->extension() == "so" )
+            new Selector::Item( this, fi->fileName() );
+
+    //TODO get the listview to set an appropriate size! why is this hard?
 }
+
 void
 Vis::Selector::processExited( KProcess *proc )
 {

@@ -256,7 +256,7 @@ bool PlaylistLoader::isValidMedia( const KURL &url, mode_t mode, mode_t permissi
    QString ext = url.path().right( 4 ).lower();
    bool b = ( ext == ".mp3" || ext == ".ogg" || ext == ".m3u" || ext == ".pls" || ext == ".mod" ||  ext == ".wav" );
 
-   if( !b && !(b = EngineController::instance()->engine()->canDecode( url, mode, permissions )) )
+   if( !b && !(b = EngineController::engine()->canDecode( url, mode, permissions )) )
        kdDebug() << "Rejected URL: " << url.prettyURL() << endl;
 
     return b;

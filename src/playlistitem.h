@@ -38,15 +38,10 @@ class PlaylistItem : public KListViewItem
         const KURL &url() const { return m_url; }
         QString seconds() const;
 
-        bool m_playing;
         static QColor glowText;
         static QColor glowBase;
 
-#ifdef CORRUPT_FILE
-        bool corruptFile;
-#endif
-
-        const QString columnName(int n) const;
+        static const QString columnName(int n);
 
         enum Column  { TrackName = 0,
                        Title = 1,
@@ -71,7 +66,7 @@ class PlaylistItem : public KListViewItem
 
         const KURL m_url;
         int m_cachedHeight;
-        
+
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];
         static const QString& attemptStore( const QString& );

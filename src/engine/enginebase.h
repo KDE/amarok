@@ -29,8 +29,6 @@ email                : markey@web.de
  #include <sys/types.h>
 #endif
 
-class QObject;
-
 class KURL;
 
 class EngineBase : public QObject, public amaroK::Plugin {
@@ -97,7 +95,7 @@ class EngineBase : public QObject, public amaroK::Plugin {
          * @return True if crossfading is supported.
          */
         virtual bool supportsXFade() const { return false; }
-        
+
         /**
          * Fetches the current audio sample buffer.
          * @return Pointer to result of FFT calculation. Must be deleted after use.

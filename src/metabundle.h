@@ -12,6 +12,8 @@ class PlaylistItem;
 
 namespace TagLib { class AudioProperties; class Tag; }
 
+#define PRETTY_TITLE_CACHE
+
 /*
  * This class is not very complete, it fits our needs as they stand currently
  * If it doesn't work for you in some way, extend it sensibly :)
@@ -26,7 +28,8 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    //Shouldn't be used if possible!
+    //these shouldn't be used if possible!
+    MetaBundle() { init(); }
     MetaBundle( const KURL &u ) : m_url( u ) { init(); }
 
     //TitleProxy:
@@ -57,25 +60,31 @@ public:
     const QString &genre()   const { return m_genre; }
     const QString &track()   const { return m_track; }
 
-    QString prettyTitle()   const;
-    QString prettyURL()     const { return m_url.prettyURL(); }
+    QString prettyTitle() const;
+    QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
-    QString prettyLength()  const { return prettyLength( m_length ); }
+    QString prettyLength() const { return prettyLength( m_length ); }
     QString prettySampleRate() const { return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate ); }
 
     static /*inline */QString prettyBitrate( int );
     static QString prettyLength( int );
+    static QString prettyTime( int, bool showHours = true );
+    static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
     static QString prettyTitle( QString );
 
 private:
-    const KURL    m_url;
-    const QString m_title;
-    const QString m_artist;
-    const QString m_album;
-    const QString m_year;
-    const QString m_comment;
-    const QString m_genre;
-    const QString m_track;
+    KURL    m_url;
+    QString m_title;
+    QString m_artist;
+    QString m_album;
+    QString m_year;
+    QString m_comment;
+    QString m_genre;
+    QString m_track;
+
+    #ifdef PRETTY_TITLE_CACHE
+    mutable QString m_prettyTitleCache;
+    #endif
 
     int m_bitrate;
     int m_length;

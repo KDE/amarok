@@ -11,17 +11,12 @@
 
 #include <ksystemtray.h>
 
-class KActionCollection;
-class QEvent;
-
 namespace amaroK {
 
 class TrayIcon : public KSystemTray
 {
-Q_OBJECT
-
 public:
-    TrayIcon( QWidget *, KActionCollection * );
+    TrayIcon( QWidget* );
 
 private:
     bool event( QEvent* );

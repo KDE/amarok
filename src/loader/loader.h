@@ -21,32 +21,28 @@
 #include <qapplication.h>    //baseclass
 
 class OSDWidget;
-class QProcess;
+class QTimerEvent;
 
 class Loader : public QApplication
 {
     Q_OBJECT
-    
+
     public:
         Loader( int& argc, char** argv );
-        ~Loader();
-        
+
     private slots:
         void doExit();
-        void stdoutActive();
-        
+
     private:
         bool splashEnabled() const;
         void showSplash();
         int  tryConnect( bool verbose = false );
+        void timerEvent( QTimerEvent* );
 
 // ATTRIBUTES ------
-        int        m_argc;        
-        char**     m_argv;
-        
+
         int        m_sockfd;
-        QProcess*  m_pProc;
-        OSDWidget* m_pOsd;
+        OSDWidget *m_pOsd;
 };
 
 

@@ -18,13 +18,9 @@
 #ifndef EFFECTWIDGET_H
 #define EFFECTWIDGET_H
 
-#include <qlistview.h>
-
 #include <kdialogbase.h>
+#include <klistview.h>
 
-class QGroupBox;
-class QPushButton;
-class QRect;
 class QWidget;
 class KComboBox;
 
@@ -41,44 +37,34 @@ class EffectWidget : public KDialogBase
         EffectWidget( QWidget* parent = 0 );
         ~EffectWidget();
 
-// ATTRIBUTES ------
         static EffectWidget* self;
-        static QRect         save_geometry;
-    
+
     private slots:
-        void slotButtonTop();
-        void slotButtonBotConf();
-        void slotButtonBotRem();
-        void slotChanged();
+        void slotAdd();
+        void slotRemove();
+        void slotConfigure();
+        void slotChanged( QListViewItem* );
 
     private:
 // ATTRIBUTES ------
         static const int BUTTON_WIDTH = 30;
-        
+        static QRect         saveGeometry;
+
         KComboBox   *m_pComboBox;
-        QListView   *m_pListView;
-
-        QPushButton *m_pButtonTopDown;
-        QPushButton *m_pButtonBotConf;
-        QPushButton *m_pButtonBotRem;
-
-        QGroupBox   *m_pGroupBoxTop;
-        QGroupBox   *m_pGroupBoxBot;
+        KListView   *m_pListView;
+        QWidget     *m_pConfigureButton;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS EffectListItem
 ////////////////////////////////////////////////////////////////////////////////
 
-class EffectListItem : public QListViewItem
+class EffectListItem : public KListViewItem
 {
     public:
-        EffectListItem( QListView *parent, const QString &label );
-        EffectListItem( QListView *parent, const QString &label, long id );
-        ~EffectListItem();
+        EffectListItem( KListView *parent, const QString &label, long id = -1 );
 
         void configure();
-        bool configurable() const;
 
 // ATTRIBUTES ------
         long m_id;

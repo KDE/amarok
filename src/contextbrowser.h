@@ -5,6 +5,7 @@
 #ifndef AMAROK_CONTEXTBROWSER_H
 #define AMAROK_CONTEXTBROWSER_H
 
+#include "engineobserver.h"
 #include <qvbox.h>
 #include <klistview.h>
 #include <kparts/browserextension.h>
@@ -14,18 +15,21 @@ class KHTMLPart;
 class MetaBundle;
 class CollectionDB;
 
-class ContextBrowser : public QVBox
+class ContextBrowser : public QVBox, public EngineObserver
 {
     Q_OBJECT
 
     public:
         ContextBrowser( const char *name );
         ~ContextBrowser();
-        
+
         void showContextForItem( const KURL &url );
 
     public slots:
         void openURLRequest(const KURL &url, const KParts::URLArgs & );
+
+    protected:
+        void engineNewMetaData( MetaBundle&, bool );
 
     private:
         void showIntroduction();

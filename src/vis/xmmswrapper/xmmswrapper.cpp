@@ -7,7 +7,7 @@
 #include <dlfcn.h>    //dlopen etc.
 #include <gtk/gtk.h>  //gtk_init(), gtk_rgb_init()
 #include <stdlib.h>
-#include <sys/types.h>
+#include <sys/types.h> //this must be before sys/socket on freebsd (which suggests freebsd needs to sort itself out)
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
@@ -90,6 +90,8 @@ main( int argc, char** argv )
 
         if( FD_ISSET( sockfd, &fds) )
         {
+            //amaroK sent us some data
+
             char c[16];
             recv( sockfd, c, 16, 0 );
             std::string command( c );
@@ -310,7 +312,7 @@ void XmmsWrapper::render( float *float_data )
             fft_data[ 0 ][ i ] = fft_data[ 1 ][ i ] = ( ( gint ) sqrt( tmp_out[ i + 1 ] ) ) >> 8;
         }
 
-        vis() ->render_freq( fft_data );
+        vis()->render_freq( fft_data );
         /*
         if (wrap.vis()->num_freq_chs_wanted == 1)
         {

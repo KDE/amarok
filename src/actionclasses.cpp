@@ -48,7 +48,7 @@ Menu::Menu( QWidget *parent )
 
     insertSeparator();
 
-    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( showEffectWidget() ) );
+    insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
     insertItem( i18n( "Configure &Decoder..." ), ID_CONF_DECODER );
 
     insertSeparator();
@@ -109,7 +109,9 @@ Menu::slotActivated( int index )
 
 MenuAction::MenuAction( KActionCollection *ac )
   : KAction( i18n( "amaroK Menu" ), 0, ac, "amarok_menu" )
-{}
+{
+    setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
+}
 
 int
 MenuAction::plug( QWidget *w, int index )
@@ -179,7 +181,9 @@ PlayPauseAction::engineStateChanged( EngineBase::EngineState state )
 
 AnalyzerAction::AnalyzerAction( KActionCollection *ac )
   : KAction( i18n( "Analyzer" ), 0, ac, "toolbar_analyzer" )
-{}
+{
+    setShortcutConfigurable( false );
+}
 
 int
 AnalyzerAction::plug( QWidget *w, int index )
@@ -226,14 +230,14 @@ VolumeAction::plug( QWidget *w, int index )
     if( bar && kapp->authorizeKAction( name() ) )
     {
         EngineController::instance()->attach( this );
-        
+
         const int id = KAction::getToolButtonID();
         addContainer( w, id );
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
         m_slider = new QSlider( Qt::Vertical, w, "ToolBarVolume" );
         //FIXME is there a way to get some sensible height?
-        m_slider->setFixedHeight( 35 ); 
+        m_slider->setFixedHeight( 35 );
         m_slider->setMaxValue( amaroK::VOLUME_MAX );
         connect( m_slider, SIGNAL( valueChanged( int ) ),
                  this,       SLOT( sliderMoved( int ) ) );
@@ -241,7 +245,7 @@ VolumeAction::plug( QWidget *w, int index )
                  this,       SLOT( wheelMoved( int ) ) );
 
         bar->insertWidget( id, 0, m_slider, index );
-                
+
         return containerCount() - 1;
     }
     else return -1;
@@ -257,7 +261,6 @@ void
 VolumeAction::sliderMoved( int value ) //SLOT
 {
     EngineController::instance()->setVolume( amaroK::VOLUME_MAX - value );
-    pApp->slotShowVolumeOsd();
 }
 
 void

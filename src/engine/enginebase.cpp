@@ -35,7 +35,7 @@ EngineBase::EngineBase()
 EngineBase::~EngineBase()
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     closeMixerHW();
 }
 

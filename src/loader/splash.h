@@ -26,20 +26,19 @@ class QTimer;
 class OSDWidget : public QWidget
 {
     Q_OBJECT
-      
+
       public:
         OSDWidget();
-      
+
       public slots:
         void showSplash(const QString& imagePath);
-        void removeOSD();
-      
+
       protected:
-        void paintEvent(QPaintEvent*);
+        void paintEvent( QPaintEvent* );
         void mousePressEvent( QMouseEvent* );
-        
-        static const int SPLASH_DURATION = 25000; 
-        
+
+        static const int SPLASH_DURATION = 25000;
+
         QTimer      *timer;
         QPixmap     osdBuffer;
 };

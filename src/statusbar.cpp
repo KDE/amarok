@@ -20,7 +20,6 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
-#include <qapplication.h>
 #include <qcolor.h>
 #include <qevent.h>
 #include <qslider.h>
@@ -32,6 +31,7 @@
 #include <kglobalsettings.h>
 #include <kprogress.h>
 #include <ksqueezedtextlabel.h>
+#include <ksqueezedtextlabel.h>
 
 
 using namespace amaroK;
@@ -42,10 +42,10 @@ StatusBar* StatusBar::m_self = 0;
 class TimeLabel : public QLabel
 {
 public:
-    TimeLabel( const QString &text, QWidget *parent ) : QLabel( text, parent )
+    TimeLabel( QWidget *parent ) : QLabel( " 0:00:00 ", parent )
     {
-        setFont( KGlobalSettings::fixedFont() );
         setFixedSize( sizeHint() );
+        setFont( KGlobalSettings::fixedFont() );
     }
 
     virtual void mouseDoubleClickEvent( QMouseEvent* )
@@ -55,7 +55,7 @@ public:
 };
 
 
-//#include <qlayout.h>
+
 StatusBar::StatusBar( QWidget *parent, const char *name )
     : KStatusBar( parent, name )
     , m_sliderPressed( false )
@@ -70,7 +70,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     EngineController::instance()->attach( this );
 
     // title label
-    addWidget( m_pTitle = new KSqueezedTextLabel( this ), 2 ); //TODO may look nicer without the gray border
+    addWidget( m_pTitle = new KSqueezedTextLabel( this ), 4 ); //TODO may look nicer without the gray border
 
     // progress
     addWidget( m_pProgress = new KProgress( this ), 0, true );
@@ -83,21 +83,18 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     const KActionCollection* const ac = pApp->actionCollection();
     QWidget *w1 = new ToggleLabel( i18n( "RAND" ), this, (KToggleAction*)ac->action( "random_mode" ) );
     QWidget *w2 = new ToggleLabel( i18n( "REP" ),  this, (KToggleAction*)ac->action( "repeat_playlist" ) );
-
     QToolTip::add( w1, i18n("Double-click to toggle Random Mode") );
     QToolTip::add( w2, i18n("Double-click to toggle Repeat Playlist Mode") );
 
-    // position slider
-    //TODO make this stretchy?
-    addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 0, true );
+    // position slider (stretches at 1/4 the rate of the squeezedTextKLabel)
+    addWidget( m_pSlider = new QSlider( Qt::Horizontal, this ), 1, true );
     m_pSlider->setTracking( false );
-    m_pSlider->setFixedWidth( 70 );
     connect( m_pSlider, SIGNAL( sliderPressed() ),     SLOT( sliderPressed() ) );
     connect( m_pSlider, SIGNAL( sliderReleased() ),    SLOT( sliderReleased() ) );
     connect( m_pSlider, SIGNAL( sliderMoved( int ) ),  SLOT( sliderMoved( int ) ) );
 
     // time display
-    addWidget( m_pTimeLabel = new TimeLabel( " 00:00:00 ", this ), 0, true );
+    addWidget( m_pTimeLabel = new TimeLabel( this ), 0, true );
 
     // make all widgets as high as the time display
     m_pTitle->setFixedHeight( m_pTimeLabel->height() );
@@ -166,36 +163,29 @@ void StatusBar::slotItemCountChanged(int newCount)
 void StatusBar::engineTrackPositionChanged( long position )
 {
     if ( !m_sliderPressed ) {
-        drawTimeDisplay( position );
+        drawTimeDisplay( position / 1000 );
         // adjust position slider
         m_pSlider->setValue( position );
     }
 }
 
-void StatusBar::drawTimeDisplay( long position )
+void StatusBar::drawTimeDisplay( long seconds )
 {
-    const uint trackLength = EngineController::instance()->trackLength();
-    const bool remaining = AmarokConfig::timeDisplayRemaining() && trackLength > 0;
-    uint seconds = remaining ? (trackLength - position)/1000 : position/1000;
+    const uint trackLength = EngineController::instance()->bundle().length();
+    if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) seconds = trackLength - seconds;
 
-    // TODO: Don't duplicate code
-    // TODO: instead make a static Metabundle prettyLength( int ) function
-    QString str( " " );
-    str.prepend( zeroPad( seconds % 60 ) );
-    str.prepend( ':' );
-    seconds /= 60;
-    str.prepend( zeroPad( seconds % 60 ) );
-    str.prepend( ':' );
-    str.prepend( zeroPad( seconds / 60 ) );
-    str.prepend( ' ' );
+    QString s;
+    s  = ' ';
+    s += MetaBundle::prettyTime( seconds );
+    s += ' ';
 
-    m_pTimeLabel->setText( str );
+    m_pTimeLabel->setText( s );
 }
 
 void StatusBar::customEvent( QCustomEvent *e )
 {
     if ( e->type() == (QEvent::Type) CollectionReader::ProgressEventType ) {
-//         kdDebug() << k_funcinfo << "Received ProgressEvent\n";
+
         CollectionReader::ProgressEvent* p =
             static_cast<CollectionReader::ProgressEvent*>( e );
 

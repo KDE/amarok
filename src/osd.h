@@ -12,6 +12,7 @@
   email:     muesli@chareit.net
 */
 
+
 #ifndef OSD_H
 #define OSD_H
 
@@ -36,7 +37,7 @@ class OSDWidget : public QWidget
           Center
         };
 
-        OSDWidget(const QString &appName);
+        OSDWidget(const QString &appName, QWidget *parent = 0, const char *name = "osd");
         void setDuration(int ms);
         void setFont(QFont newfont);
         void setTextColor(QColor newcolor);
@@ -47,7 +48,7 @@ class OSDWidget : public QWidget
 
       public slots:
         void showOSD(const QString&, bool preemptive=false );
-        void removeOSD();
+        void removeOSD() { hide(); } //inlined as is convenience function
 
       protected slots:
         void minReached();
@@ -57,17 +58,19 @@ class OSDWidget : public QWidget
         void renderOSDText(const QString &text);
         void paintEvent(QPaintEvent*);
         void mousePressEvent( QMouseEvent* );
+        //void showEvent( QShowEvent* );
+        void show();
 
         /* always call rePosition if the size of osdBuffer has changed */
         void rePosition();
+
+        //called after most set*() calls to update the OSD
+        void refresh();
 
         QString     m_appName;
         int         m_duration;
         QTimer      *timer;
         QTimer      *timerMin;
-        QFont       font;
-        QColor      m_textColor;
-        QColor      m_bgColor;
         QPixmap     osdBuffer;
         QStringList textBuffer;
         QString     m_currentText;
@@ -75,6 +78,8 @@ class OSDWidget : public QWidget
         QPoint m_offset;
         Position m_position;
         int m_screen;
+
+        bool m_dirty; //if dirty we will be re-rendered before we are shown
 };
 
 
@@ -110,9 +115,11 @@ public:
     OSD() : OSDWidget( "amaroK" ) {}
 
 public slots:
-    void showVolume();
     void showTrack( const MetaBundle &bundle );
-    void showTrack();
+    void showTrack() { showOSD( m_text ); }
+
+    //this function is for the showOSD global shortcut, it should always work //FIXME sucks
+    void forceShowTrack() { bool b = isEnabled(); setEnabled( true ); showTrack(); setEnabled( b ); }
 
 private:
     QString m_text;

@@ -6,6 +6,7 @@
 #include "threadweaver.h"
 #include "collectiondb.h"
 #include "metabundle.h"
+#include "playlist.h"     //insertMedia()
 #include "sqlite/sqlite.h"
 
 #include <kapplication.h> //kapp->config(), QApplication::setOverrideCursor()
@@ -73,7 +74,7 @@ ContextBrowser::ContextBrowser( const char *name )
         showIntroduction();
     else
         showHome();
-    
+
     connect( browser->browserExtension(),
              SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ), this,
              SLOT( openURLRequest(const KURL &, const KParts::URLArgs & ) ) );
@@ -83,7 +84,10 @@ ContextBrowser::ContextBrowser( const char *name )
 
 
 ContextBrowser::~ContextBrowser()
-{}
+{
+    delete m_db;
+    delete m_currentTrack;
+}
 
 
 void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
@@ -104,12 +108,12 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
 
             KURL tmp;
             tmp.setPath( values[i] );
-            pApp->insertMedia( tmp, false, true );
+            pApp->playlist()->insertMedia( tmp, false, true );
         }
     }
 
     if ( url.protocol() == "file" )
-        pApp->insertMedia( url, true, true );
+        pApp->playlist()->insertMedia( url, true, true );
 
     if ( url.protocol() == "show" )
     {
@@ -118,17 +122,25 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
         if ( url.path() == "context" )
             showCurrentTrack();
         if ( url.path() == "collectionSetup" )
-            pApp->slotConfigCollection();
+            ; //FIXME
     }
 }
 
+
+void ContextBrowser::engineNewMetaData( MetaBundle &bundle, bool /*trackChanged*/ )
+{
+    delete m_currentTrack;
+    m_currentTrack = new MetaBundle( bundle );
+    showCurrentTrack();
+}
 
 void ContextBrowser::showContextForItem( const KURL &url )
 {
     //prevents segfault when playing streams
     if ( !url.isLocalFile() ) return;
-    
-    m_currentTrack = TagReader::readTags( url, true );
+
+    delete m_currentTrack;
+    m_currentTrack = TagReader::readTags( url, true ); //we have to delete this
     showCurrentTrack();
 
     // increase song counter
@@ -144,7 +156,7 @@ void ContextBrowser::showIntroduction()
     // <Favorite Tracks Information>
     browser->write( "<html><div>");
     browser->write( i18n( "Hello amaroK user!" )
-                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." ) 
+                    + "<br><br>" + i18n( "To use the extended features of amaroK, you need to build a collection." )
                     + "&nbsp;<a href='show:collectionSetup'>" + i18n( "Click here to create one." ) + "</a>" );
     browser->write( "</div></html>");
 }
@@ -218,7 +230,7 @@ void ContextBrowser::showHome()
 
     browser->write( "</table></div>" );
     // </Recent Tracks Information>
-    
+
     browser->write( "<br></html>" );
     browser->end();
 }
@@ -226,11 +238,11 @@ void ContextBrowser::showHome()
 
 void ContextBrowser::showCurrentTrack()
 {
-    QStringList values;
-    QStringList names;
-
     if ( !m_currentTrack )
         return;
+
+    QStringList values;
+    QStringList names;
 
     // take care of sql updates (schema changed errors)
     delete m_db;
@@ -293,13 +305,13 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-    
+
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
             browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + values[i*3] + " <i>(" + values[i*3 + 2] + ")</i></a></td></tr>" ) );
-    
+
         values.clear();
         names.clear();
-    
+
         browser->write( "</table></div>" );
     }
     // </Favourite Tracks Information>
@@ -321,16 +333,16 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-    
+
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
             QString tmp = values[i*3 + 2] == "" ? "" : values[i*3 + 2] + ". ";
             browser->write( QString ( "<tr><td class='song' onClick='window.location.href=\"file:" + values[i*3 + 1].replace( "'", QCString( "%27" ) ) + "\"'>" + tmp + values[i*3] + "</a></td></tr>" ) );
         }
-    
+
         values.clear();
         names.clear();
-    
+
         browser->write( "</table></div>" );
     }
     // </Tracks on this album>
@@ -350,11 +362,11 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-    
+
         for ( uint i = 0; i < ( values.count() / 3 ); i++ )
         {
             if ( values[i].isEmpty() ) continue;
-    
+
             browser->write( QString ( "<tr><td onClick='window.location.href=\"album:%1/%2\"' height='42' valign='top' class='rbalbum'>"
                                       "<img align='left' hspace='2' width='40' height='40' src='%3'><span class='album'>%4</span><br>%5 Tracks</td>"
                                       "</tr>" )
@@ -368,7 +380,7 @@ void ContextBrowser::showCurrentTrack()
         browser->write( "</table></div>" );
     }
     // </Albums by this artist>
-    
+
     browser->write( "<br></html>" );
     browser->end();
 }

@@ -162,12 +162,16 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
 {
     if( e->button() == Qt::RightButton )
     {
-        KPopupMenu menu;
+        //this is hard to read in order to be compact, apologies..
+        //the id of each menu item is the value of the attribute it represents,
+        //so mapping is concise.
 
         const uint ids[7] = { 40, 33, 20, 9, 8, 7, 6 };
 
-        uint compare = timeout();
+        KPopupMenu menu;
         QString body = i18n( "%1 fps" );
+        uint compare = timeout();
+
         menu.insertTitle( i18n( "Framerate" ) );
 
         for( uint x = 0; x < 7; ++x )
@@ -181,15 +185,15 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
                 menu.insertTitle( i18n( "Spectrum Size" ) );
             }
 
-            menu.insertItem( body.arg( x<3 ? 1000/v : 1 << (v-1) ), v );
+            menu.insertItem( body.arg( x<3 ? 1000/v : 1<<(v-1) ), v );
             menu.setItemChecked( v, v == compare );
         }
 
 
-        int id = menu.exec( e->globalPos() );
+        const int id = menu.exec( e->globalPos() );
 
         if( id >= 20 ) { m_timer.changeInterval( id ); m_timeout = id; }
-        //else if( id > 0 ) changeFhtSize( id );
+        //else if( id > 0 ) changeFhtSize( id ); //TODO
     }
 }
 

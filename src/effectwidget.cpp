@@ -20,19 +20,11 @@
 #include "app.h"
 #include "enginecontroller.h"
 
-#include <string>
 #include <vector>
 
-#include <qcstring.h>
-#include <qframe.h>
 #include <qgroupbox.h>
 #include <qheader.h>
-#include <qiconset.h>
 #include <qlayout.h>
-#include <qlistview.h>
-#include <qpixmap.h>
-#include <qpushbutton.h>
-#include <qrect.h>
 #include <qsizepolicy.h>
 #include <qstring.h>
 #include <qtooltip.h>
@@ -40,66 +32,69 @@
 
 #include <kcombobox.h>
 #include <kdebug.h>
-#include <kiconloader.h>
 #include <klocale.h>
-#include <kstandarddirs.h>
+#include <kpushbutton.h>
 
 
 EffectWidget* EffectWidget::self = 0;
-QRect         EffectWidget::save_geometry;
+QRect         EffectWidget::saveGeometry;
+
 
 EffectWidget::EffectWidget( QWidget* parent )
         : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects")), User1, User1, false, KStdGuiItem::close() )
 {
-    EngineBase *engine = EngineController::instance()->engine();
+    if( saveGeometry.isValid() )
+    {
+        setGeometry( saveGeometry );
+    }
+    else resize( 300, 400 );
+
+
+    EngineBase *engine = EngineController::engine();
     setWFlags( Qt::WDestructiveClose );
 
     QVBox *pFrame = makeVBoxMainWidget();
-    pFrame->layout()->setResizeMode( QLayout::FreeResize );
-    KIconLoader iconLoader;
+    QWidget *w, *box1, *box2;
+    QVBox   *box3;
+    QSizePolicy policy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-    m_pGroupBoxTop = new QGroupBox( 2, Qt::Horizontal, i18n("Available Effects"), pFrame );
-    m_pGroupBoxBot = new QGroupBox( 2, Qt::Horizontal, i18n("Active Effects"), pFrame );
+    box1 = new QGroupBox( 2, Qt::Horizontal, i18n("Available Effects"), pFrame );
+    box2 = new QGroupBox( 2, Qt::Horizontal, i18n("Active Effects"), pFrame );
 
-    pFrame->setStretchFactor( m_pGroupBoxTop, 1 );
-    pFrame->setStretchFactor( m_pGroupBoxBot, 10 );
+    pFrame->setStretchFactor( box1, 1 );
+    pFrame->setStretchFactor( box2, 10 );
 
-    m_pComboBox = new KComboBox( m_pGroupBoxTop );
+    m_pComboBox = new KComboBox( box1 );
     m_pComboBox->insertStringList( engine->availableEffects() );
 
-    m_pButtonTopDown = new QPushButton( iconLoader.loadIconSet( "down", KIcon::Toolbar, KIcon::SizeSmall ),
-                                        0, m_pGroupBoxTop );
-    m_pButtonTopDown->setMaximumWidth ( BUTTON_WIDTH );
-    QToolTip::add( m_pButtonTopDown, i18n("Add") );
-    connect( m_pButtonTopDown, SIGNAL( clicked() ), this, SLOT( slotButtonTop() ) );
+    w = new KPushButton( KGuiItem( "", "down" ), box1 );
+    w->setSizePolicy( policy );
+    QToolTip::add( w, i18n("Add") );
+    connect( w, SIGNAL( clicked() ), SLOT( slotAdd() ) );
 
-    m_pListView = new QListView( m_pGroupBoxBot );
+
+    m_pListView = new KListView( box2 );
     m_pListView->header()->hide();
     m_pListView->addColumn( "void" );
-    m_pListView->setSorting( -1 );
-    connect( m_pListView, SIGNAL( selectionChanged() ),
-             this,          SLOT( slotChanged() ) );
+    m_pListView->setResizeMode( QListView::LastColumn );
+    connect( m_pListView, SIGNAL(selectionChanged( QListViewItem* )), SLOT(slotChanged( QListViewItem* )) );
 
-    QFrame *pContainerBotButtons = new QFrame( m_pGroupBoxBot );
+    box3 = new QVBox( box2 );
 
-    m_pButtonBotConf = new QPushButton( iconLoader.loadIconSet( "configure", KIcon::Toolbar, KIcon::SizeSmall ),
-                                        0, pContainerBotButtons );
-    m_pButtonBotConf->setMaximumWidth ( BUTTON_WIDTH );
-    m_pButtonBotConf->setEnabled      ( false );
-    QToolTip::add( m_pButtonBotConf, i18n( "Configure" ) );
-    connect( m_pButtonBotConf, SIGNAL( clicked() ), this, SLOT( slotButtonBotConf() ) );
+    w = new KPushButton( KGuiItem( "", "configure" ), box3 );
+    w->setSizePolicy( policy );
+    w->setEnabled( false );
+    QToolTip::add( w, i18n( "Configure" ) );
+    connect( w, SIGNAL( clicked() ), SLOT( slotConfigure() ) );
 
-    m_pButtonBotRem = new QPushButton( iconLoader.loadIconSet( "editdelete", KIcon::Toolbar, KIcon::SizeSmall ),
-                                       0, pContainerBotButtons );
-    m_pButtonBotRem->setMaximumWidth ( BUTTON_WIDTH );
-    QToolTip::add( m_pButtonBotRem, i18n("Remove") );
-    connect( m_pButtonBotRem, SIGNAL( clicked() ), this, SLOT( slotButtonBotRem() ) );
+    m_pConfigureButton = w;
 
-    QBoxLayout *pLayoutBotButtons = new QVBoxLayout( pContainerBotButtons );
-    pLayoutBotButtons->setResizeMode( QLayout::FreeResize );
-    pLayoutBotButtons->addWidget    ( m_pButtonBotConf );
-    pLayoutBotButtons->addWidget    ( m_pButtonBotRem );
-    pLayoutBotButtons->addItem      ( new QSpacerItem( 0, 10 ) );
+    w = new KPushButton( KGuiItem( "", "editdelete" ), box3 );
+    w->setSizePolicy( policy );
+    QToolTip::add( w, i18n("Remove") );
+    connect( w, SIGNAL( clicked() ), SLOT( slotRemove() ) );
+
+    box3->layout()->addItem( new QSpacerItem( 0, 10 ) );
 
     { //fill listview with restored effect entries
         std::vector<long> vec = engine->activeEffects();
@@ -108,14 +103,15 @@ EffectWidget::EffectWidget( QWidget* parent )
     }
 
     connect( this, SIGNAL( user1Clicked() ), this, SLOT( accept() ) );
-    resize( 300, 400 );
+
+    show();
 }
 
 
 EffectWidget::~EffectWidget()
 {
     self = 0;
-    save_geometry = geometry();
+    saveGeometry = geometry();
 }
 
 
@@ -123,43 +119,35 @@ EffectWidget::~EffectWidget()
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
-void EffectWidget::slotButtonTop()
+void EffectWidget::slotAdd()
 {
-    new EffectListItem( m_pListView, m_pComboBox->currentText() );
-    slotChanged();
+    m_pListView->setCurrentItem( new EffectListItem( m_pListView, m_pComboBox->currentText() ) );
 }
 
 
-void EffectWidget::slotButtonBotConf()
+void EffectWidget::slotConfigure()
 {
-    EffectListItem *pItem = static_cast<EffectListItem*>( m_pListView->currentItem() );
-    pItem->configure();
+    EffectListItem *item = (EffectListItem*)m_pListView->currentItem();
+    item->configure();
 }
 
 
-void EffectWidget::slotButtonBotRem()
+void EffectWidget::slotRemove()
 {
-    if ( QListViewItem *item = m_pListView->currentItem() )
+    if ( EffectListItem *item = (EffectListItem*)m_pListView->currentItem() )
     {
-        EngineController::instance()->engine()->removeEffect( static_cast<EffectListItem*>( item )->m_id );
-        delete m_pListView->currentItem();
+        EngineController::engine()->removeEffect( item->m_id );
+        delete item;
     }
 }
 
 
-void EffectWidget::slotChanged() //SLOT
+void EffectWidget::slotChanged( QListViewItem *selectedItem ) //SLOT
 {
-    kdDebug() << "[EffectWidget::slotChanged()]\n";
+    const EffectListItem* const item = (EffectListItem*)selectedItem;
+    const bool enabled = item && EngineController::engine()->effectConfigurable( item->m_id );
 
-    QListViewItem* item = m_pListView->currentItem();
-
-    if ( item ) {
-        m_pButtonBotConf->setEnabled( EngineController::instance()->engine()->effectConfigurable(
-                                      static_cast<EffectListItem*>( item )->m_id ) );
-    }
-    else {
-        m_pButtonBotConf->setEnabled( false );
-    }
+    m_pConfigureButton->setEnabled( enabled );
 }
 
 
@@ -168,26 +156,15 @@ void EffectWidget::slotChanged() //SLOT
 // CLASS EffectListItem
 ////////////////////////////////////////////////////////////////////////////////
 
-EffectListItem::EffectListItem( QListView *parent, const QString &label )
-        : QListViewItem( parent, label )
-        , m_id( EngineController::instance()->engine()->createEffect( label ) )
-
-{}
-
-
-EffectListItem::EffectListItem( QListView *parent, const QString &label, long id )
-        : QListViewItem( parent, label )
-        , m_id( id )
-{}
-
-
-EffectListItem::~EffectListItem()
+EffectListItem::EffectListItem( KListView *parent, const QString &label, long id )
+        : KListViewItem( parent, label )
+        , m_id( id != -1 ? id : EngineController::engine()->createEffect( label ) )
 {}
 
 
 void EffectListItem::configure()
 {
-    EngineController::instance()->engine()->configureEffect( m_id );
+    EngineController::engine()->configureEffect( m_id );
 }
 
 

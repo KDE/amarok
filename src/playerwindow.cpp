@@ -17,7 +17,6 @@ email                : markey@web.de
 
 #include "actionclasses.h"
 #include "amarokconfig.h"
-#include "amarokdcophandler.h" //FIXME
 #include "analyzerbase.h"
 #include "app.h"
 #include "enginecontroller.h"
@@ -26,8 +25,7 @@ email                : markey@web.de
 #include "sliderwidget.h"
 #include "tracktooltip.h"    //setScroll()
 
-#include <qdragobject.h>
-#include <qevent.h>          //various events
+#include <qevent.h>         //various events
 #include <qfont.h>
 #include <qhbox.h>
 #include <qpainter.h>
@@ -37,15 +35,12 @@ email                : markey@web.de
 #include <qstringlist.h>
 #include <qtooltip.h>
 
-#include <kaction.h>
 #include <kdebug.h>
-#include <kiconloader.h>     //NavButton::NavButton()
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
-#include <ksystemtray.h>
 #include <kurldrag.h>
-//#include <kwin.h> Yagami mode, most cool, try it!
+#include <kwin.h>           //eventFilter()
 
 
 //simple function for fetching amarok images
@@ -56,7 +51,7 @@ static inline QPixmap getPNG( const QString &filename )
 
 
 //fairly pointless template which was designed to make the ctor clearer,
-//but probably achieves the opposite.
+//but probably achieves the opposite. Still, the code is neater..
 template<class W> static inline W*
 createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags f = 0 )
 {
@@ -66,14 +61,13 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 }
 
 
-
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
-    : QWidget( parent, name, f )
+    : QWidget( parent, name, Qt::WType_TopLevel )
     , m_pAnimTimer( new QTimer( this ) )
-    , m_pAnalyzer( 0 )
     , m_scrollBuffer( 291, 16 )
     , m_plusPixmap( getPNG( "time_plus" ) )
     , m_minusPixmap( getPNG( "time_minus" ) )
+    , m_pAnalyzer( 0 )
 {
     //the createWidget template function is used here
     //createWidget just creates a widget which has it's geometry set too
@@ -83,12 +77,19 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     EngineController* const ec = EngineController::instance();
 
     ec->attach( this );
+    parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
-    setCaption( kapp->makeStdCaption( i18n("Player") ) );
+    move( AmarokConfig::playerPos() );
     setFixedSize( 311, 140 );
+    setFocusPolicy( NoFocus );
+    setCaption( "amaroK" );
     setAcceptDrops( true );
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
     setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
+
+// this is interesting..
+//     #include <X11/Xlib.h>
+//     XSetTransientForHint( qt_xdisplay(), winId(), parent->winId() );
 
     QFont font;
     font.setBold( TRUE );
@@ -104,20 +105,16 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
 
         // In case you are wondering, the PLAY and PAUSE buttons are created here!
 
-        //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
                          new NavButton( m_pFrameButtons, "player_start", ec, SLOT( previous()  ) );
         m_pButtonPlay  = new NavButton( m_pFrameButtons, "player_play", ec, SLOT(play()) );
         m_pButtonPause = new NavButton( m_pFrameButtons, "player_pause", ec, SLOT(pause()) );
                          new NavButton( m_pFrameButtons, "player_stop", ec, SLOT( stop()  ) );
                          new NavButton( m_pFrameButtons, "player_end", ec, SLOT( next()  ) );
-//         new NavButton( m_pFrameButtons, "prev", ec, SLOT( previous()  ) );
-//         m_pButtonPlay  = new NavButton( m_pFrameButtons, "play", ec, SLOT(play()) );
-//         m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ec, SLOT(pause()) );
-//         new NavButton( m_pFrameButtons, "stop", ec, SLOT( stop()  ) );
-//         new NavButton( m_pFrameButtons, "next", ec, SLOT( next()  ) );
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
+
+        m_pButtonPlay->setFocus();
     } //</NavButtons>
 
     { //<Sliders>
@@ -128,13 +125,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
         m_pVolSlider->setGeometry( 294,18, 12,79 );
 
         m_pVolSlider->setMaxValue( amaroK::VOLUME_MAX );
+        m_pVolSlider->setValue( AmarokConfig::masterVolume() );
 
-        connect( m_pSlider,    SIGNAL( sliderReleased() ),
-                 this,         SLOT  ( slotSliderReleased() ) );
-        connect( m_pSlider,    SIGNAL( valueChanged( int ) ),
-                 this,         SLOT  ( slotSliderChanged( int ) ) );
-        connect( m_pVolSlider, SIGNAL( valueChanged( int ) ),
-                 EngineController::instance(), SLOT  ( setVolume( int ) ) );
+        connect( m_pSlider, SIGNAL(sliderReleased()), SLOT(slotSliderReleased()) );
+        connect( m_pSlider, SIGNAL(valueChanged( int )), SLOT(slotSliderChanged( int )) );
+        connect( m_pVolSlider, SIGNAL(valueChanged( int )), ec, SLOT(setVolume( int )) );
     } //<Sliders>
 
     { //<Scroller>
@@ -158,16 +153,16 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     } //<TimeLabel>
 
 
-    connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( drawScroll() ) );
+    connect( m_pAnimTimer, SIGNAL( timeout() ), SLOT( drawScroll() ) );
 
 
-    m_pButtonEq = new IconButton( this, "eq" );
-    m_pButtonEq->setGeometry( 34,85, 28,13 );
-    connect( m_pButtonEq, SIGNAL( released() ), this, SIGNAL( effectsWindowActivated() ) );
+    m_pButtonFx = new IconButton( this, "eq", SIGNAL(effectsWindowToggled( bool )) );
+    m_pButtonFx->setGeometry( 34,85, 28,13 );
+    //TODO set isOn()
 
-    m_pButtonPl = new IconButton( this, "pl" );
-    m_pButtonPl->setGeometry( 5,85, 28,13 );
-    connect( m_pButtonPl, SIGNAL( toggled( bool ) ), this, SIGNAL( playlistToggled( bool ) ) );
+    m_pPlaylistButton = new IconButton( this, "pl", SIGNAL(playlistToggled( bool )) );
+    m_pPlaylistButton->setGeometry( 5,85, 28,13 );
+    m_pPlaylistButton->setOn( parent->isShown() );
 
 
     m_pDescription = createWidget<QLabel>( QRect(4,6, 130,10), this );
@@ -177,7 +172,14 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, Qt::WFlags f )
     m_pDescription->setPixmap( getPNG( "description" ) );
     m_pVolSign    ->setPixmap( getPNG( "vol_speaker" ) );
 
-    defaultScroll();
+
+    //set interface to correct state
+    const EngineBase::EngineState state = EngineController::engine()->state();
+    engineStateChanged( state );
+    if( state == EngineBase::Playing ) engineNewMetaData( ec->bundle(), true );
+    createAnalyzer( 0 );
+    show();
+
 
     //Yagami mode!
     //KWin::setState( winId(), NET::KeepBelow | NET::SkipTaskbar | NET::SkipPager );
@@ -192,105 +194,67 @@ PlayerWidget::~PlayerWidget()
     EngineController::instance()->detach( this );
 
     AmarokConfig::setPlayerPos( pos() );
+    AmarokConfig::setPlaylistWindowEnabled( m_pPlaylistButton->isOn() );
 }
 
 // METHODS ----------------------------------------------------------------
 
-void PlayerWidget::defaultScroll()
-{
-    m_rateString = QString::null;
-    setScroll( i18n( "Welcome to amaroK" ) );
-    m_pTimeLabel->hide();
-    m_pTimeSign->hide();
-}
-
-
-void PlayerWidget::setScroll( const MetaBundle &bundle )
-{
-    QStringList text;
-
-    text += bundle.prettyTitle();
-    text += bundle.album();
-    text += bundle.prettyLength();
-
-    m_rateString = bundle.prettyBitrate();
-    if( !m_rateString.isEmpty() && !bundle.prettySampleRate().isEmpty() ) m_rateString += " / ";
-    m_rateString += bundle.prettySampleRate();
-    if( m_rateString == " / " ) m_rateString = QString::null; //FIXME
-
-    setScroll( text );
-
-    //update image tooltip
-    PlaylistToolTip::add( m_pScrollFrame, bundle );
-}
-
-
 void PlayerWidget::setScroll( const QStringList &list )
 {
-//#define MAX_KNOWS_BEST
-#ifdef  MAX_KNOWS_BEST
-static const char* const separator_xpm[]={
-"5 5 2 1",
-"# c #80a0ff",
-". c none",
-"#####",
-"#...#",
-"#...#",
-"#...#",
-"#####"};
-#else
-static const char* const separator_xpm[]={
-"4 4 1 1",
-"# c #80a0ff",
-"####",
-"####",
-"####",
-"####"};
-#endif
-    //TODO make me pretty!
+//all you infidels should accept that this looks better! :-p
+// static const char* const separator_xpm[]={
+// "5 5 2 1",
+// "# c #80a0ff",
+// ". c none",
+// "#####",
+// "#...#",
+// "#...#",
+// "#...#",
+// "#####"};
 
-    QPixmap separator( const_cast< const char** >(separator_xpm) );
-
-    const QString s = list.first();
-
-    //WARNING! don't pass an empty StringList to this function!
+    static const char* const separator_xpm[]=
+    {
+        "4 4 1 1",
+        "# c #80a0ff",
+        "####",
+        "####",
+        "####",
+        "####"
+    };
+    static const QPixmap separator( const_cast< const char** >(separator_xpm) );
 
     QString text;
     QStringList list2( list );
 
-    for( QStringList::Iterator it = list2.begin();
-         it != list2.end(); )
+    for( QStringList::Iterator it = list2.begin(); it != list2.end(); )
     {
-        if( (*it).isEmpty() ) it = list2.remove( it );
-        else
+        if( !(*it).isEmpty() )
         {
             text.append( *it );
             ++it;
         }
+        else it = list2.remove( it );
     }
 
-    //FIXME WORKAROUND prevents crash
-    if ( text.isEmpty() )
-        text = "This message should not be displayed! Please report it to amarok-devel@lists.sf.net, thanks!";
+    //FIXME empty QString would crash due to NULL Pixmaps
+    if( text.isEmpty() ) text = "Please report this message to amarok-devel@lists.sf.net, thanks!";
 
     QFont font( m_pScrollFrame->font() );
     QFontMetrics fm( font );
     const uint separatorWidth = 21;
     const uint baseline = font.pixelSize(); //the font actually extends below its pixelHeight
-    #ifdef MAX_KNOWS_BEST
-    const uint separatorYPos = baseline - fm.boundingRect( "x" ).height();
-    #else
     const uint separatorYPos = baseline - fm.boundingRect( "x" ).height() + 1;
-    #endif
+
     m_scrollTextPixmap.resize( fm.width( text ) + list2.count() * separatorWidth, m_pScrollFrame->height() );
     m_scrollTextPixmap.fill( backgroundColor() );
+
     QPainter p( &m_scrollTextPixmap );
     p.setPen( foregroundColor() );
     p.setFont( font );
     uint x = 0;
 
     for( QStringList::ConstIterator it = list2.constBegin();
-         it != list2.end();
+         it != list2.constEnd();
          ++it )
     {
         p.drawText( x, baseline, *it );
@@ -299,9 +263,7 @@ static const char* const separator_xpm[]={
         x += separatorWidth;
     }
 
-     m_pTimeLabel->show(); m_pTimeSign->show();
     drawScroll();
-    update(); //we need to update rateString
 }
 
 
@@ -330,33 +292,15 @@ void PlayerWidget::drawScroll()
         subs += dx + ( w - phase2 );
         if( subs < 0 ) subs = 0;
 
-        bitBlt( buffer, dx, topMargin,
-                scroll, phase2, 0, w - phase2 - subs, h, Qt::CopyROP );
+        bitBlt( buffer, dx, topMargin, scroll, phase2, 0, w - phase2 - subs, h, Qt::CopyROP );
 
-        dx     += ( w - phase2 );
-        phase2 += ( w - phase2 );
+        dx     += w - phase2;
+        phase2 += w - phase2;
 
         if( phase2 >= w ) phase2 = 0;
     }
 
     bitBlt( m_pScrollFrame, 0, 0, buffer );
-}
-
-// passive set. No signals are emited when using this toggle.
-void PlayerWidget::setPlaylistShown( bool on )
-{
-    m_pButtonPl->blockSignals( true );
-    m_pButtonPl->setOn( on );
-    m_pButtonPl->blockSignals( false );
-}
-
-
-// passive set. No signals are emited when using this toggle.
-void PlayerWidget::setEffectsWindowShown( bool on )
-{
-    m_pButtonEq->blockSignals( true );
-    m_pButtonEq->setOn( on );
-    m_pButtonEq->blockSignals( false );
 }
 
 
@@ -368,14 +312,17 @@ void PlayerWidget::engineStateChanged( EngineBase::EngineState state )
         case EngineBase::Idle:
             m_pButtonPlay->setOn( false );
             m_pButtonPause->setOn( false );
-
-            defaultScroll();
-            timeDisplay( 0 );
             m_pSlider->setValue( 0 );
             m_pSlider->setMaxValue( 0 );
-        break;
+            m_pTimeLabel->hide();
+            m_pTimeSign->hide();
+            m_rateString = QString::null;
+            setScroll( i18n( "Welcome to amaroK" ) );
+            break;
 
         case EngineBase::Playing:
+            m_pTimeLabel->show();
+            m_pTimeSign->show();
             m_pButtonPlay->setOn( true );
             m_pButtonPause->setOn( false );
             break;
@@ -396,17 +343,26 @@ void PlayerWidget::engineVolumeChanged( int percent )
     }
 }
 
-void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
+void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 {
-    if( trackChanged )
+    m_pSlider->setMaxValue( bundle.length() * 1000 );
+
+    m_rateString     = bundle.prettyBitrate();
+    const QString Hz = bundle.prettySampleRate();
+    if( !Hz.isEmpty() )
     {
-        // we are playing
-        m_pButtonPlay->setOn( true );
-        m_pButtonPause->setOn( false );
-        m_pSlider->setMaxValue( bundle.length() * 1000 );
+        if( !m_rateString.isEmpty() ) m_rateString += " / ";
+        m_rateString += Hz;
     }
 
-    setScroll( bundle );
+    QStringList list;
+    list << bundle.prettyTitle() << bundle.album() << bundle.prettyLength();
+    setScroll( list );
+
+    //update image tooltip
+    PlaylistToolTip::add( m_pScrollFrame, bundle );
+
+    update(); //we need to update rateString
 }
 
 void PlayerWidget::engineTrackPositionChanged( long position )
@@ -421,7 +377,7 @@ void PlayerWidget::engineTrackPositionChanged( long position )
 
 void PlayerWidget::slotSliderReleased()
 {
-    EngineBase *engine = EngineController::instance()->engine();
+    EngineBase *engine = EngineController::engine();
     if ( engine->state() == EngineBase::Playing )
     {
         engine->seek( m_pSlider->value() );
@@ -441,61 +397,234 @@ void PlayerWidget::slotSliderChanged( int value )
 
 void PlayerWidget::timeDisplay( int seconds )
 {
-    int songLength = EngineController::instance()->trackLength() / 1000;
-    bool remaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
+    const int songLength = EngineController::instance()->bundle().length();
+    const bool showRemaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
 
-    if( remaining ) seconds = songLength - seconds;
-
-    QString
-    str  = zeroPad( seconds /60/60%60 );
-    str += ':';
-    str += zeroPad( seconds /60%60 );
-    str += ':';
-    str += zeroPad( seconds %60 );
+    if( showRemaining ) seconds = songLength - seconds;
 
     m_timeBuffer.fill( backgroundColor() );
     QPainter p( &m_timeBuffer );
     p.setPen( foregroundColor() );
     p.setFont( m_pTimeLabel->font() );
-    p.drawText( 0, 16, str ); //FIXME remove padding here and put in the widget placement!
+    p.drawText( 0, 16, MetaBundle::prettyTime( seconds ) ); //FIXME remove padding, instead move()!
     bitBlt( m_pTimeLabel, 0, 0, &m_timeBuffer );
 
-    m_pTimeSign->setPixmap( remaining ? m_minusPixmap : m_plusPixmap );
+    m_pTimeSign->setPixmap( showRemaining ? m_minusPixmap : m_plusPixmap );
 }
 
 
 // EVENTS -----------------------------------------------------------------
 
-void PlayerWidget::paintEvent( QPaintEvent * )
-{
-    QPainter pF( this );
-    //uses widget's font and foregroundColor() - see ctor
-    pF.drawText( 6, 68, m_rateString );
+static bool dontChangeButtonState = false; //FIXME I hate this hack
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 
-    bitBlt( m_pScrollFrame, 0, 0, &m_scrollBuffer );
-    bitBlt( m_pTimeLabel, 0, 0, &m_timeBuffer );
+bool PlayerWidget::event( QEvent *e )
+{
+    switch( e->type() )
+    {
+    case QEvent::Wheel:
+    case QEvent::DragEnter:
+    case QEvent::Drop:
+    case QEvent::Close:
+
+        pApp->genericEventHandler( this, e );
+        return TRUE; //we handled it
+
+//     case QEvent::KeyPress:
+//     {
+//         EngineController* const controller = EngineController::instance();
+//
+//         switch( static_cast<QKeyEvent*>(e)->key() )
+//         {
+//         case Key_Left:
+//             controller->previous(); //TODO scan backwards
+//             break;
+//         case Key_Right:
+//             controller->next(); //TODO scan forwards
+//             break;
+//         case Key_Up:
+//             controller->increaseVolume();
+//             break;
+//         case Key_Down:
+//             controller->decreaseVolume();
+//             break;
+//         default:
+//             return QWidget::event( e ); //QWidget has its own keyhandler in event
+//         }
+//
+//         return TRUE;
+//     }
+
+    case QEvent::Show:
+
+        m_pAnimTimer->start( ANIM_TIMER );
+
+        if( AmarokConfig::hidePlaylistWindow() && m_pPlaylistButton->isOn() )
+        {
+            //IMPORTANT! If the PlaylistButton is on then we MUST be shown
+            //we leave the PlaylistButton "on" to signify that we should restore it here
+            //we leave it on when we do a hidePlaylistWithPlayerWindow type action
+
+            //IMPORTANT - I beg of you! Please leave all this alone, it was hell to
+            //create! If you have an issue with the behaviour bring it up on the mailing
+            //list before you even think about committing. Thanks! (includes case Hide)
+
+            const WId id = parentWidget()->winId();
+            const uint desktop = KWin::windowInfo( winId() ).desktop();
+            const KWin::WindowInfo info = KWin::windowInfo( id );
+
+            //check the Playlist Window is on the correct desktop
+            if( !info.isOnDesktop( desktop ) ) KWin::setOnDesktop( id, desktop );
+
+            if( info.mappingState() == NET::Withdrawn )
+            {
+                //extern Atom qt_wm_state; //XAtom defined by Qt
+
+                //TODO prevent the active Window flicker from playlist to player window please!
+                //TODO look at code for QWidget::show();
+
+                //XDeleteProperty( qt_xdisplay(), id, qt_wm_state );
+
+                //parentWidget()->show();
+                //if( !parentWidget()->isShown() ) XMapWindow( qt_xdisplay(), id );
+//                 unsigned long data[2];
+//                 data[0] = (unsigned long) NormalState;
+//                 data[1] = (unsigned long) None;
+//
+//                 XChangeProperty( qt_xdisplay(), id, qt_wm_state, qt_wm_state, 32,
+//                      PropModeReplace, (unsigned char *)data, 2);
+//
+//                 KWin::clearState( id, NET::Hidden );
+//
+//                 XMapWindow( qt_xdisplay(), id );
+//
+                //KWin::deIconifyWindow( id, false );
+                parentWidget()->show();
+            }
+
+
+            if( info.isMinimized() )
+            {
+                //then the user will expect us to deiconify the Playlist Window
+                //the PlaylistButton would be off otherwise (honest!)
+                KWin::deIconifyWindow( id, false );
+
+            }
+        }
+
+        return FALSE;
+
+    case QEvent::Hide:
+
+        m_pAnimTimer->stop();
+
+        if( AmarokConfig::hidePlaylistWindow() )
+        {
+            //this prevents the PlaylistButton being set to off (see the eventFilter)
+            //by leaving it on we ensure that we show the Playlist Window again when
+            //we are next shown (see Show event handler above)
+            if( parentWidget()->isShown() ) dontChangeButtonState = true;
+
+            if( e->spontaneous() ) //the window system caused the event
+            {
+                //if we have been iconified, iconify the Playlist Window too
+                //if we have been shaded, hide the PlaylistWindow
+                //if the user is on another desktop to amaroK, do nothing
+
+                const KWin::WindowInfo info = KWin::windowInfo( winId() );
+
+                if( info.hasState( NET::Shaded ) )
+                {
+                    //FIXME this works if the OSD is up, and only then sometimes
+                    //      I think it's maybe a KWin bug..
+                    parentWidget()->hide();
+                }
+                else if( info.isMinimized() ) KWin::iconifyWindow( parentWidget()->winId(), false );
+                else
+                    //this may seem strange, but it is correct
+                    //we have a handler in eventFilter for all other eventualities
+                    dontChangeButtonState = false;
+
+            }
+            else
+                //we caused amaroK to hide, so we should hide the Playlist Window
+                //NOTE we "override" closeEvents and thus they count as non-spontaneous
+                //hideEvents; which frankly is a huge relief!
+                parentWidget()->hide();
+        }
+
+        return FALSE;
+
+    default:
+        return QWidget::event( e );
+    }
 }
 
-
-void PlayerWidget::wheelEvent( QWheelEvent *e )
+bool PlayerWidget::eventFilter( QObject*, QEvent *e )
 {
-    e->accept();
+    //NOTE we only monitor for parent() - which is the PlaylistWindow
 
-    switch( e->state() )
+    switch( e->type() )
     {
-    case ShiftButton:
+    case QEvent::Close:
 
-        if( e->delta() > 0 )
-            EngineController::instance()->previous();
-        else
-            EngineController::instance()->next();
+        static_cast<QCloseEvent*>(e)->accept(); //close the window!
+        return TRUE; //don't let PlaylistWindow have the event - see PlaylistWindow::closeEvent()
 
+    case QEvent::Hide:
+
+        if( dontChangeButtonState )
+        {
+            //we keep the PlaylistButton set to "on" - see event() for more details
+            //NOTE the Playlist Window will still be hidden
+
+            dontChangeButtonState = false;
+            break;
+        }
+
+        if( e->spontaneous() )
+        {
+            //we want to avoid setting the button for most spontaneous events
+            //since they are not user driven, two are however:
+
+            KWin::WindowInfo info = KWin::windowInfo( parentWidget()->winId() );
+
+            if( !(info.isMinimized() || info.hasState( NET::Shaded )) ) break;
+        }
+
+        //FALL THROUGH
+
+    case QEvent::Show:
+
+        if( isShown() )
+        {
+            //only when shown means that using the global Show/Hide Playlist shortcut
+            //when in the tray doesn't effect the state of the PlaylistButton
+            //this is a good thing, but we have to set the state correctly when we are shown
+
+            m_pPlaylistButton->blockSignals( true );
+            m_pPlaylistButton->setOn( e->type() == QEvent::Show );
+            m_pPlaylistButton->blockSignals( false );
+        }
         break;
 
     default:
-        EngineController::instance()->setVolume( AmarokConfig::masterVolume() + e->delta() / 18 );
-        pApp->slotShowVolumeOsd();
+        break;
     }
+
+    return FALSE;
+}
+
+
+void PlayerWidget::paintEvent( QPaintEvent* )
+{
+    //uses widget's font and foregroundColor() - see ctor
+    QPainter p( this );
+    p.drawText( 6, 68, m_rateString );
+
+    bitBlt( m_pScrollFrame, 0, 0, &m_scrollBuffer );
+    bitBlt( m_pTimeLabel,   0, 0, &m_timeBuffer );
 }
 
 
@@ -506,7 +635,11 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         amaroK::Menu popup( this );
         popup.exec( e->globalPos() );
     }
-    else //other buttons
+    else if ( m_pAnalyzer->geometry().contains( e->pos() ) )
+    {
+        createAnalyzer( e->state() & Qt::ControlButton ? -1 : +1 );
+    }
+    else
     {
         QRect
         rect  = m_pTimeLabel->geometry();
@@ -517,63 +650,21 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             repaint( true );
         }
-        else if( m_pAnalyzer->geometry().contains( e->pos() ) )
-        {
-            createAnalyzer( e->state() & Qt::ControlButton ? -1 : +1 );
-        }
-        else startDrag(); //FIXME needs dragDelay
+        else m_startDragPos = e->pos();
     }
 }
 
 
-void PlayerWidget::closeEvent( QCloseEvent *e )
+void PlayerWidget::mouseMoveEvent( QMouseEvent *e )
 {
-    //KDE policy states we should hide to tray and not quit() when the close window button is
-    //pushed for the main widget -mxcl
-    //of course since we haven't got an obvious quit button, this is not yet a perfect solution..
-
-    //NOTE we must accept() here or the info box below appears on quit()
-    //Don't ask me why.. *shrug*
-
-    e->accept();
-
-    if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() /*&& !QApplication::closingDown()*/ )
+    if( e->state() & Qt::LeftButton )
     {
-        KMessageBox::information( this,
-                                  i18n( "<qt>Closing the main window will keep amaroK running in the system tray. "
-                                        "Use Quit from the popup-menu to quit the application.</qt>" ),
-                                  i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
+        const int distance = (e->pos() - m_startDragPos).manhattanLength();
+
+        if( distance > QApplication::startDragDistance() ) startDrag();
     }
-    else kapp->quit();
 }
 
-
-void PlayerWidget::dragEnterEvent( QDragEnterEvent *e )
-{
-   e->accept( KURLDrag::canDecode( e ) );
-}
-
-
-void PlayerWidget::dropEvent( QDropEvent *e )
-{
-    KURL::List list;
-    if( KURLDrag::decode( e, list ) )
-    {
-        pApp->insertMedia( list );
-    }
-    else e->ignore();
-}
-
-void PlayerWidget::showEvent( QShowEvent * )
-{
-    m_pAnimTimer->start( ANIM_TIMER );
-}
-
-
-void PlayerWidget::hideEvent( QHideEvent * )
-{
-    m_pAnimTimer->stop();
-}
 
 
 // SLOTS ---------------------------------------------------------------------
@@ -586,37 +677,34 @@ void PlayerWidget::createAnalyzer( int increment )
 
     m_pAnalyzer = Analyzer::Factory::createAnalyzer( this );
     m_pAnalyzer->setGeometry( 119,40, 168,56 );
-    QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers" ) );
     m_pAnalyzer->show();
-}
 
+    QToolTip::add( m_pAnalyzer, i18n( "Click for more analyzers" ) );
+}
 
 void PlayerWidget::startDrag()
 {
-    //TODO allow minimum drag distance
-
-    QDragObject *d = new QTextDrag( pApp->dcopHandler()->nowPlaying(), this );
+    QDragObject *d = new QTextDrag( EngineController::instance()->bundle().prettyTitle(), this );
     d->dragCopy();
-    // do NOT delete d.
+    // Qt will delete d for us.
+}
+
+void PlayerWidget::setEffectsWindowShown( bool on )
+{
+    m_pButtonFx->blockSignals( true );
+    m_pButtonFx->setOn( on );
+    m_pButtonFx->blockSignals( false );
 }
 
 
 
-
+#include <kiconloader.h>
 NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, const char *slot )
   : QPushButton( parent )
 {
-//     QString up = QString( "b_%1" ).arg( icon );
-//     QString down = QString( "b_%1_down" ).arg( icon );
-// 
-//     QIconSet iconSet;
-//     iconSet.setPixmap( getPNG( up   ), QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-//     iconSet.setPixmap( getPNG( down ), QIconSet::Automatic, QIconSet::Normal, QIconSet::On  );
-    
-    KIconLoader iconLoader;
+    KIconLoader &iconLoader = *KGlobal::iconLoader();
     setIconSet( iconLoader.loadIconSet( icon, KIcon::Toolbar, KIcon::SizeSmall ) );
-    
-    setFocusPolicy( QWidget::NoFocus );
+
     setFlat( true );
 
     connect( this, SIGNAL( clicked() ), receiver, slot );
@@ -625,15 +713,15 @@ NavButton::NavButton( QWidget *parent, const QString &icon, QObject *receiver, c
 
 
 
-IconButton::IconButton( QWidget *parent, const QString &icon/*, QObject *receiver, const char *slot, bool isToggleButton*/ )
+IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal )
     : QButton( parent )
     , m_up(   getPNG( icon + "_active2" ) ) //TODO rename files better (like the right way round for one!)
     , m_down( getPNG( icon + "_inactive2" ) )
 {
-    //const char *signal = isToggleButton ? SIGNAL( toggled( bool ) ) : SIGNAL( clicked() );
-    //connect( this, signal, receiver, slot );
+    connect( this, SIGNAL(toggled( bool )), parent, signal );
 
-    setToggleButton( /*isToggleButton*/ true );
+    setToggleButton( true );
+     setFocusPolicy( NoFocus ); //FIXME we have no way to show focus on these widgets currently
 }
 
 void IconButton::drawButton( QPainter *p )

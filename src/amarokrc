@@ -10,7 +10,7 @@ metaservers[$e]=ggzmeta://mindx.dyndns.org:15690,ggzmeta://mindx.dyndns.org:1569
 ggzmeta://mindx.dyndns.org:15691=true
 
 [PlaylistSideBar]
-CurrentPane=FileBrowser
+CurrentPane=WelcomePage
 
 [PlaylistColumnsLayout]
 #see PlaylistWidget::setColumnWidth() for explanation for below

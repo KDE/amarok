@@ -19,12 +19,11 @@ email                : fh@ez.no
 #define AMAROK_ENGINECONTROLLER_H
 
 #include <qobject.h>
-#include <kurl.h>
 #include "engineobserver.h" // move me
+#include "metabundle.h"
 
 class EngineBase;
-class MetaBundle;
-class MainTimer;
+class QTimer;
 
 /**
  * This class captures amaroK specific behaviour for some common features.
@@ -42,9 +41,10 @@ public:
     static EngineController *instance();
 
     static EngineBase *engine() { return instance()->m_pEngine; }
-    static void setEngine( EngineBase *engine ) { instance()->m_pEngine = engine; }
-    long trackLength() const { return m_length; }  // how about : const MetaBundle &currentTrack() const;
-    const KURL &playingURL() const { return m_playingURL; } // see over.
+    static void setEngine( EngineBase* );
+    long trackLength() const { return m_bundle.length() * 1000; }
+    const MetaBundle &bundle() const { return m_bundle; }
+    const KURL &playingURL() const { return m_bundle.url(); }
 
 public slots:
     void previous();
@@ -53,8 +53,10 @@ public slots:
     void play( const MetaBundle& );
     void pause();
     void stop();
-    void playPause(); //pauses if playing, plays if paused, plays if stopped
+    void playPause(); //pauses if playing, plays if paused or stopped
 
+    int increaseVolume();
+    int decreaseVolume();
     int setVolume( int percent );
 
 signals:
@@ -73,14 +75,11 @@ private:
 
 private:
     static const int MAIN_TIMER  = 150;
-    static EngineController *Instance;
-    // TODO:
-    //start with a dummy engine that has no capabilities but ensures that amaroK always starts with
-    //something even if configuration is corrupt or engine is not compiled into new amaroK etc.
+
     EngineBase *m_pEngine;
-    KURL m_playingURL;
+    MetaBundle m_bundle;
+    bool m_proxyError;
     QTimer *m_pMainTimer;
-    long m_length; ///< Current track length in milliseconds
     long m_delayTime;
 };
 
