@@ -141,7 +141,6 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
     //execute virtual machine by iterating over rows
     while ( true ) {
         error = sqlite_step( vm, &number, &value, &colName );
-
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
             break;
         //iterate over columns

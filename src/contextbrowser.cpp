@@ -117,11 +117,17 @@ void ContextBrowser::showContextForItem( const MetaBundle &bundle )
     QStringList values;
     QStringList names;
     
-    if ( m_db->execSql( QString( "SELECT datetime(accessdate, 'unixepoch') FROM statistics WHERE url = '%1';" )
-                        .arg( m_db->escapeString( bundle.url().path() ) ) ), &values, &names )
+    if ( m_db->execSql( QString( "SELECT datetime(accessdate, 'unixepoch'), playcounter FROM statistics WHERE url = '%1';" )
+                        .arg( m_db->escapeString( bundle.url().path() ) ), &values, &names ) )
     {
-        browser->write( QString( "<div>Last playtime: %1</div>" )
-                        .arg( values[0] ) );
+        if ( !values.count() )
+        {
+            values << "Never";
+            values << "0";
+        }
+        browser->write( QString( "<div>Last playtime: <b>%1</b><br>Total plays: <b>%2</b></div>" )
+                        .arg( values[0] )
+                        .arg( values[1] ) );
     }
 
     values.clear();
