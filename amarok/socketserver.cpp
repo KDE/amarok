@@ -56,7 +56,7 @@ Vis::SocketServer::SocketServer( QObject *parent )
 
     sockaddr_un local;
     local.sun_family = AF_UNIX;
-    QCString path = ::locate( "socket", QString( "amarok/visualization_socket" ) ).local8Bit();
+    QCString path = ::locateLocal( "socket", QString( "amarok.visualization_socket" ) ).local8Bit();
     ::strcpy( &local.sun_path[0], path );
     ::unlink( path );
 

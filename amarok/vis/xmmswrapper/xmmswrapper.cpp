@@ -33,6 +33,7 @@
 // auto search for proper place of visualization_socket, I'll do it KDE way.
 //    -- berkus
 #include <qstring.h>
+#include <kinstance.h>
 #include <kstandarddirs.h>
 
 
@@ -45,14 +46,16 @@ GtkWidget *mainwin = &dummy; //required by msa visplugin
 int tryConnect();
 void vis_disable_plugin( VisPlugin *vp ) {} //seems to be a required function (see loadVis() )
 
-std::string socketpath; //global
-
+QString socketpath; //global
+KInstance *inst;
 
 int
 main( int argc, char** argv ) {
     //Hi! You can tell I haven't done any c programming in a while can't you! ;-)
 
     //TODO fork after connection?
+    
+    inst = new KInstance("xmmswrapper");
 
     std::string plugin;
 
@@ -102,7 +105,7 @@ main( int argc, char** argv ) {
     } else plugin = argv[ 0 ];
 
 
-    socketpath = ::locate( "socket", QString( "amarok/visualization_socket" ) ).local8Bit();
+    socketpath = ::locateLocal( "socket", "amarok.visualization_socket", inst );
 
     gtk_init( &argc, &argv ); //xmms plugins require this
     gdk_rgb_init();
@@ -114,7 +117,7 @@ main( int argc, char** argv ) {
     const int nch = 1; //no of channels?
 
     sockfd = tryConnect();
-
+    
     while ( ( sockfd ) != -1 ) {
         gtk_main_iteration_do( FALSE );
         usleep( 20 * 1000 );
@@ -211,12 +214,16 @@ tryConnect() {
 
         struct sockaddr_un local;
 
-        strcpy( &local.sun_path[ 0 ], socketpath.c_str() );
+        strcpy( &local.sun_path[ 0 ], socketpath.local8Bit() );
         local.sun_family = AF_UNIX;
+	
+	std::cout << "[amK] Connecting to " << socketpath.local8Bit() << '\n';
 
         if ( connect( fd, ( struct sockaddr* ) & local, sizeof( local ) ) == -1 ) {
             close ( fd );
             fd = -1;
+
+	    std::cerr << "[amK] tryConnect() failed\n";
         }
     }
 
