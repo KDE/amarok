@@ -70,7 +70,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
         hbox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
-        connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
+        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
@@ -123,7 +123,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setMinimumWidth( menu->sizeHint().width() + 2 ); //set a reasonable minWidth
 }
 
-
 void
 CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
@@ -131,12 +130,24 @@ CollectionBrowser::slotSetFilterTimeout() //SLOT
     m_timer->start( 180, true );
 }
 
-
 void
 CollectionBrowser::slotSetFilter() //SLOT
 {
     m_view->setFilter( m_searchEdit->text() );
     m_view->renderView();
+}
+
+void
+CollectionBrowser::clearFilter()
+{
+    m_searchEdit->clear();
+    m_timer->stop();
+    slotSetFilter();
+    if( !m_searchEdit->hasFocus() ) {
+        //set the lineEdit to initial state
+        QEvent e( QEvent::FocusOut );
+        eventFilter( m_searchEdit, &e);
+    }
 }
 
 void

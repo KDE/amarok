@@ -22,6 +22,7 @@
 #include <qstringlist.h>
 #include <qtimer.h>    //search filter timer
 #include <qtoolbutton.h>
+#include <qtooltip.h>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -38,6 +39,7 @@
 #include <ksqueezedtextlabel.h> //status label
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstatusbar.h>
+#include <ktoolbarbutton.h>    //clear filter button
 #include <kurl.h>
 
 
@@ -86,13 +88,29 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     viewBox->setSpacing( 4 );
     QHBoxLayout *hbox = new QHBoxLayout( viewBox->layout() );
 
-    //search line edit
-    m_searchEdit = new KLineEdit( coverWidget );
-    m_searchEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-    m_searchEdit->setText( i18n( "Search here..." ) );
-    m_searchEdit->installEventFilter( this );
-    hbox->addWidget( m_searchEdit );
+    { //<Search LineEdit>
+        QHBox *searchBox; KToolBarButton *button;
+
+        searchBox         = new QHBox( coverWidget );
+        button       = new KToolBarButton( "locationbar_erase", 0, searchBox );
+        m_searchEdit = new KLineEdit( searchBox, "filter_edit" );
+        m_searchEdit->installEventFilter( this );
+
+        searchBox->setMargin( 1 );
+        m_searchEdit->setFrame( QFrame::Sunken );
+        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
+
+        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
+        hbox->addWidget( searchBox );
+    } //</Search LineEdit>
+
     m_timer = new QTimer( this );    //search filter timer
+    {
+        //set the lineEdit to initial state
+        QEvent e( QEvent::FocusOut );
+        eventFilter( m_searchEdit, &e );
+    }
 
     //view tool button
     m_viewButton = new QToolButton( coverWidget );
@@ -458,6 +476,18 @@ void CoverManager::slotSetFilterTimeout() //SLOT
     m_timer->start( 180, true );
 }
 
+
+void CoverManager::clearFilter()
+{
+    m_searchEdit->clear();
+    m_timer->stop();
+    slotSetFilter();
+    if( !m_searchEdit->hasFocus() ) {
+        //set the lineEdit to initial state
+        QEvent e( QEvent::FocusOut );
+        eventFilter( m_searchEdit, &e);
+    }
+}
 
 void CoverManager::changeView( int id  ) //SLOT
 {

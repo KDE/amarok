@@ -74,6 +74,7 @@ private slots:
     void cmbPathReturnPressed( const QString& u );
     void dirUrlEntered( const KURL& u );
     void slotSetFilterTimeout();
+    void clearFilter();
     void slotViewChanged( KFileView* );
     void activateThis( const KFileItem* );
     void makePlaylist();

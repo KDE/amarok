@@ -105,7 +105,7 @@ FileBrowser::FileBrowser( const char * name )
         m_filterEdit = new KLineEdit( hbox, "filter_edit" );
         m_filterEdit->installEventFilter( this );
 
-        connect( button, SIGNAL(clicked()), m_filterEdit, SLOT(clear()) );
+        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_filterEdit, i18n( "Space-separated terms will be used to filter the directory-listing" ) );
@@ -317,6 +317,19 @@ inline void FileBrowser::slotSetFilterTimeout()
 {
     if ( m_timer->isActive() ) m_timer->stop();
     m_timer->start( 180, true );
+}
+
+
+inline void FileBrowser::clearFilter()
+{
+    m_filterEdit->clear();
+    m_timer->stop();
+    slotSetFilter();
+    if( !m_filterEdit->hasFocus() ) {
+        //set the lineEdit to initial state
+        QEvent e( QEvent::FocusOut );
+        eventFilter( m_filterEdit, &e);
+    }
 }
 
 

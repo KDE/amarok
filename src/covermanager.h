@@ -34,8 +34,6 @@ Q_OBJECT
         CoverManager( QWidget *parent=0, const char *name=0 );
         ~CoverManager();
 
-        virtual bool eventFilter( QObject*, QEvent* );
-
     private slots:
         void expandItem( QListViewItem * );
         void collapseItem( QListViewItem * );
@@ -47,6 +45,7 @@ Q_OBJECT
         //filter
         void slotSetFilter();
         void slotSetFilterTimeout();
+        void clearFilter();
         void changeView( int id );
         //cover fetching
         void fetchMissingCovers();
@@ -63,6 +62,7 @@ Q_OBJECT
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
+        bool eventFilter( QObject*, QEvent* );
 
         CollectionDB *m_db;
 
