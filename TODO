@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #81 being the highest available (take this one for your next bug and increase here)
+           #82 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #81 about dialog shows all credits twice
 
     * fix: #80 with the new toolbar it's impossible to resize the playlist smaller than ca. 700px width
 
