@@ -1,5 +1,5 @@
 /***************************************************************************
-gstengine.cpp - GStreamer audio interface
+                       gstengine.cpp - GStreamer audio interface
 
 begin                : Jan 02 2003
 copyright            : (C) 2003 by Mark Kretschmann
@@ -92,16 +92,15 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
     if ( GST_IS_BUFFER( buf ) ) {
         gint16 * data = ( gint16* ) GST_BUFFER_DATA( buf );
 
-        //divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
+        // Divide length by 2 for casting from 8bit to 16bit, and divide by number of channels
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
             if ( instance()->m_scopeBufIndex == instance()->m_scopeBuf.size() )
                 instance()->m_scopeBufIndex = 0;
 
-            float temp = 0.0;
-            //add all channels together so we effectively get a mono scope
+            Engine::Scope::value_type temp = 0;
             for ( int j = 0; j < channels; j++ ) {
-                //convert uint-16 to float and write into buf
-                temp += ( float ) ( data[ i + j ] - 32768 ) / 32768.0;
+                // Add all channels together so we effectively get a mono scope
+                temp += data[ i + j ];
             }
             instance()->m_scopeBuf[ instance()->m_scopeBufIndex++ ] = temp;
         }
