@@ -38,6 +38,8 @@ PlaylistLoader::PlaylistLoader( QObject *dependent, const KURL::List &urls, QLis
     , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
     , m_playFirstUrl( playFirstUrl )
 {
+    Debug::Timer timer( __PRETTY_FUNCTION__ );
+
     setDescription( i18n("Loading media") ); //TODO better wording
 
     amaroK::StatusBar::instance()->newProgressOperation( this )
@@ -119,7 +121,7 @@ public:
     TagsEvent( const KURL &u, PlaylistItem *i )
     : QCustomEvent( 1000 )
             , item( i )
-            , bundle( u, true, CollectionDB::instance() ) {}
+            , bundle( u, true ) {}
 
     TagsEvent( const KURL &u, const QDomNode &n )
             : QCustomEvent( 1001 )
@@ -182,21 +184,23 @@ PlaylistLoader::doJob()
 
     BundleList bundles = CollectionDB::instance()->bundlesByUrls( urls );
 
-    debug() << urls.count() << endl;
-    debug() << bundles.count() << endl;
-
     Q_ASSERT( bundles.count() == items.count() );
 
     // 2nd pass, fill in tags
     {
-        BundleList::ConstIterator bu = bundles.begin();
+        BundleList::Iterator bu = bundles.begin();
         for( ItemList::ConstIterator it = items.begin(), end = items.end(); it != end && !isAborted(); ) {
             BundleList bundles;
             ItemList items;
 
-            for( uint x = 0; x < 100 && it != end; ++x, ++it, ++bu )
+            for( uint x = 0; x < 30 && it != end; ++x, ++it, ++bu )
             {
                 incrementProgress();
+
+                if ( (*bu).length() == 0 ) {
+                    debug() << "NO AUDIO-PROPS\n";
+                    (*bu).readTags( true );
+                }
 
                 items   += *it;
                 bundles += *bu;
@@ -205,6 +209,8 @@ PlaylistLoader::doJob()
             QApplication::postEvent( this, new TagsEvent( bundles, items ) );
         }
     }
+
+    setProgress100Percent();
 
     return true;
 }

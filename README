@@ -162,6 +162,10 @@ that is distributed with their operating system:
 
                 % ./configure --without-included-sqlite
 
+It is also possible to build amaroK to use MySQL as the database backend. Using
+MySQL makes the amaroK collection faster. We suggest not building sqlite into
+amaroK if you plan to ship amaroK with a MySQL dependency.
+
 However, the sqlite you ship MUST be threadsafe! Also amaroK will take longer
 to start with this option since sqlite is not statically linked into the
 amarok binary. The amaroK binary will be approximately 200kB smaller.
@@ -172,12 +176,15 @@ benefit from optimisation, so the smallest binary is probably the best route.
 In order to limit the dependencies the amaroK package demands we suggest
 splitting amaroK into the following packages:
 
-   1. amaroK + GStreamer-engine
-   2. aRts-engine
+   1. amaroK + one backend
+   2. GStreamer-engine
    3. xine-engine
-   4. amarok_xmmswrapper + amarok_libvisual
+   4. aRts-engine
+   5. amarok_xmmswrapper + amarok_libvisual
 
-amaroK is modular and wil be fully functional without 2, 3 and 4.
+amaroK is modular and wil be fully functional as long as one of 2, 3, or 4 is
+also installed. Hence we suggest amaroK + one backend. Feel free to include the
+MAS and NMM engines if you can satisfy their dependencies.
 
 amaroK ships with two binaries: amarok and amarokapp. The amarok binary is a
 wrapper designed to speed up command line argument passing. amarokapp is the

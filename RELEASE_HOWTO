@@ -1,29 +1,31 @@
-Please do the following:
+1.  Check the README file is still relevant
 
-1.  Checkout a fresh copy of amarok, its docs and po; cd into the root
-2.  Update APP_VERSION in amarok/src/amarok.h
-3.  Update the version in amarok/amarok.lsm
-4.  find -name CVS -o -name .cvsignore -exec rm {} \;
-5.  export WANT_AUTOMAKE=1.6
-6.  make -f Makefile.cvs
-7.  rm -rf autom4te.cache config.h config.log
-8.  pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS ..; popd
-9.  mv ../kdeextragear-1 ../amarok-VERSION
-10. tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
-11. test for default configure, --enable-final, separate build directory
-12. get some other people to test
+Please do the following, or run release_amarok:
 
-ONCE HAPPY WITH THE TARBALL:
+2.  Checkout a fresh copy of amarok, its docs and po; cd into the root
+3.  Update APP_VERSION in amarok/src/amarok.h
+4.  Update the version in amarok/amarok.lsm
+5.  find -name CVS -o -name .cvsignore -exec rm {} \;
+6.  export WANT_AUTOMAKE=1.6
+7.  make -f Makefile.cvs
+8.  rm -rf autom4te.cache config.h config.log
+9.  pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS ..; popd
+10. mv ../kdeextragear-1 ../amarok-VERSION
+11. tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
+12. Test for default configure, --enable-final, separate build directory
+13. Get some other people to test
 
-13. upload to ftp://upload.sf.net/incoming
-14. release via sourceforge
-15. wait for berkus to appear (can take days) and get him to update kde-apps.org
-16. send a release email to kde-announce
-17. drink a few pints, have some fun on #amarok
+Once HAPPY with the tarball:
+
+13. Upload to ftp://upload.sf.net/incoming
+14. Release via sourceforge
+15. Update kde-apps.org, freshmeat, amarok.kde.org
+16. Send a release email to kde-announce, libvisual-devel, kde-multimedia, etc.
+17. Drink a few pints, have some fun on #amarok
 
 If you must change anything about the tarball you need to email
 binner@kde.org in case the md5sum changing would break Konstruct.
 
 TODO
     MD5sum procedure
-    automate some of this with a dist target?
+    create a dist Makefile target?

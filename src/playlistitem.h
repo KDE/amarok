@@ -60,6 +60,11 @@ class PlaylistItem : public KListViewItem
          */
         QString seconds() const;
 
+        /**
+         * @return does the file exist?
+         */
+        bool exists() const { return !m_missing; }
+
         static QColor glowText;
         static QColor glowBase;
 

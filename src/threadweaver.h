@@ -275,6 +275,7 @@ public:
          * Does a thread-safe update of the progressBar
          */
         void setProgress( uint progress );
+        void setProgress100Percent() { setProgress( m_totalSteps ); }
 
         /**
          * Convenience function, increments the progress by 1

@@ -5,6 +5,10 @@
 #ifndef METABUNDLE_H
 #define METABUNDLE_H
 
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
+#define PRETTY_TITLE_CACHE
+#endif
+
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 
@@ -26,9 +30,9 @@ class MetaBundle
 public:
 
     //for the audioproperties
-    static const int Undetermined = -2;
-    static const int Irrelevant   = -1;
-    static const int Unavailable  =  0;
+    static const int Undetermined = -2; /// obtain them with readTags( true )
+    static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length with http streams
+    static const int Unavailable  =  0; /// cannot be obtained
 
     static const MetaBundle null; //use like you would QString::null
 
@@ -40,7 +44,7 @@ public:
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    explicit MetaBundle( const KURL &u, bool readAudioProperties = true, CollectionDB* const db = 0 );
+    explicit MetaBundle( const KURL &u, bool readAudioProperties = true );
 
     //StreamProvider:
     MetaBundle( const QString& title,
@@ -56,10 +60,14 @@ public:
     //From tags:
     MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
 
-    /**
-     * Test for an empty metabundle
-     */
+    /** Test for an empty metabundle */
     bool isEmpty() const { return m_url.isEmpty(); }
+
+    /** The bundle doesn't yet know its audioProperties */
+    bool audioPropertiesUndetermined() const
+    {
+        return m_bitrate == Undetermined || m_sampleRate == Undetermined || m_length == Undetermined;
+    }
 
     MetaBundle &readTags( bool readAudioProperties = true );
 
@@ -69,20 +77,21 @@ public:
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
-    void setLength( int length )         { m_length = length; }
-    void setBitrate( int bitrate )       { m_bitrate = bitrate; }
+
+    void setLength( int length ) { m_length = length; }
+    void setBitrate( int bitrate ) { m_bitrate = bitrate; }
     void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
-    const KURL    &url()        const { return m_url; }
-    const QString &title()      const { return m_title; }
-    const QString &artist()     const { return m_artist; }
-    const QString &album()      const { return m_album; }
-    const QString &year()       const { return m_year; }
-    const QString &comment()    const { return m_comment; }
-    const QString &genre()      const { return m_genre; }
-    const QString &track()      const { return m_track; }
+    const KURL &url() const { return m_url; }
+    const QString &title() const { return m_title; }
+    const QString &artist() const { return m_artist; }
+    const QString &album() const { return m_album; }
+    const QString &year() const { return m_year; }
+    const QString &comment() const { return m_comment; }
+    const QString &genre() const { return m_genre; }
+    const QString &track() const { return m_track; }
     const QString &streamName() const { return m_streamName; }
-    const QString &streamUrl()  const { return m_streamUrl; }
+    const QString &streamUrl() const { return m_streamUrl; }
 
     void setPath( QString path ) { m_url.setPath( path ); }
     void setTitle( QString title ) { m_title = title; }

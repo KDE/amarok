@@ -33,10 +33,12 @@ static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "
 const MetaBundle MetaBundle::null;
 
 
-MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* const db )
+MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties )
   : m_url( u )
   , m_exists( !m_url.isLocalFile() || QFile::exists( u.path() ) )
 {
+    CollectionDB *db = CollectionDB::instance();
+
     if( !m_exists ) {
         init( 0 );
         return;
@@ -65,7 +67,7 @@ MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties, CollectionDB* c
 
                 // Generate a seperate MetaBundle for the audio properties. The Collection got
                 // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
-                bundle = MetaBundle( u );
+                bundle = MetaBundle( u, true );
                 db->addAudioproperties( bundle );
             }
 
@@ -106,37 +108,24 @@ MetaBundle::MetaBundle( const QString& title,
    }
 }
 
-//PlaylistItem ctor
+///PlaylistItem ctor
+/// NOT THREAD-SAFE!!
 MetaBundle::MetaBundle( const PlaylistItem *item )
-  : m_url    ( item->url() )
-  , m_title  ( item->title() )        //because you override text()
-  , m_artist ( item->exactText( 2 ) ) //because you override text()
-  , m_album  ( item->exactText( 3 ) ) //etc.
-  , m_year   ( item->exactText( 4 ) ) //..
-  , m_comment( item->exactText( 5 ) ) //.
-  , m_genre  ( item->exactText( 6 ) )
-  , m_track  ( item->exactText( 7 ) )
-  , m_exists ( true ) //FIXME
+        : m_url    ( item->url() )
+        , m_title  ( item->title() )        //because you override text()
+        , m_artist ( item->exactText( 2 ) ) //because you override text()
+        , m_album  ( item->exactText( 3 ) ) //etc.
+        , m_year   ( item->exactText( 4 ) ) //..
+        , m_comment( item->exactText( 5 ) ) //.
+        , m_genre  ( item->exactText( 6 ) )
+        , m_track  ( item->exactText( 7 ) )
+        , m_exists ( true ) //FIXME
 {
-    if( m_url.isLocalFile() )
+    if( m_url.protocol() == "file" && audioPropertiesUndetermined() )
     {
-        TagLib::FileRef f( QFile::encodeName( m_url.path() ), true, TagLib::AudioProperties::Accurate );
-
-        if( f.isNull() )
-        {
-            KFileMetaInfo info( m_url, QString::null, KFileMetaInfo::Everything );
-
-            if ( info.isValid() && !info.isEmpty() )
-            {
-                m_bitrate    = info.item( "Bitrate" ).value().toInt();
-                m_length     = info.item( "Length" ).value().toInt();
-                m_sampleRate = info.item( "Sample Rate" ).value().toInt();
-            }
-            else init( 0 );
-        }
-        else init( f.audioProperties() );
-
-    } else { //is Stream
+        readTags( true );
+    }
+    else { //is Stream
 
         //FIXME not correct handling, say is ftp://file
         m_bitrate    = item->exactText( 10 ).left( 3 ).toInt();
@@ -147,15 +136,15 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
 
 //Taglib::Tag ctor //TODO DEPRECATE
 MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap )
-  : m_url( url )
-  , m_title(   TStringToQString( tag->title() ).stripWhiteSpace() )
-  , m_artist(  TStringToQString( tag->artist() ).stripWhiteSpace() )
-  , m_album(   TStringToQString( tag->album() ).stripWhiteSpace() )
-  , m_year(    tag->year() ? QString::number( tag->year() ) : QString::null )
-  , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
-  , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
-  , m_track(   tag->track() ? QString::number( tag->track() ) : QString::null )
-  , m_exists( true )
+        : m_url( url )
+        , m_title(   TStringToQString( tag->title() ).stripWhiteSpace() )
+        , m_artist(  TStringToQString( tag->artist() ).stripWhiteSpace() )
+        , m_album(   TStringToQString( tag->album() ).stripWhiteSpace() )
+        , m_year(    tag->year() ? QString::number( tag->year() ) : QString::null )
+        , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
+        , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
+        , m_track(   tag->track() ? QString::number( tag->track() ) : QString::null )
+        , m_exists( true )
 {
     init( ap );
 }
@@ -163,10 +152,7 @@ MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperti
 void
 MetaBundle::init( TagLib::AudioProperties *ap )
 {
-    if( !m_url.isLocalFile() ) return;
-
-    if( ap )
-    {
+    if( ap ) {
         m_bitrate    = ap->bitrate();
         m_length     = ap->length();
         m_sampleRate = ap->sampleRate();
@@ -206,43 +192,60 @@ MetaBundle::init( const KFileMetaInfo& info )
 MetaBundle&
 MetaBundle::readTags( bool readAudioProperties )
 {
-    //TODO detect mimetype and use specfic reader like Scott recommends
+    #define bing( x ) TStringToQString( x ).stripWhiteSpace()
 
-    if( readAudioProperties || !CollectionDB::instance()->getMetaBundleForUrl( m_url.path(), this ) )
+    Q_ASSERT( m_url.protocol() == "file" );
+
+    TagLib::FileRef f(
+            QFile::encodeName( m_url.path() ),
+            readAudioProperties,
+            TagLib::AudioProperties::Accurate );
+
+    if( !f.isNull() )
     {
-        TagLib::FileRef f( QFile::encodeName( m_url.path() ), readAudioProperties, TagLib::AudioProperties::Fast );
-
-        if( !f.isNull() )
+        if( f.tag() )
         {
-            if( f.tag() )
-            {
-                TagLib::Tag *tag = f.tag();
+            TagLib::Tag* const tag = f.tag();
 
-                m_title   = TStringToQString( tag->title() ).stripWhiteSpace();
-                m_artist  = TStringToQString( tag->artist() ).stripWhiteSpace();
-                m_album   = TStringToQString( tag->album() ).stripWhiteSpace();
-                m_comment = TStringToQString( tag->comment() ).stripWhiteSpace();
-                m_genre   = TStringToQString( tag->genre() ).stripWhiteSpace();
-                m_year    = tag->year() ? QString::number( tag->year() ) : QString::null;
-                m_track   = tag->track() ? QString::number( tag->track() ) : QString::null;
-            }
-            init( f.audioProperties() ); //no need to test for the readAudioProperties bool
+            m_title   = bing( tag->title() );
+            m_artist  = bing( tag->artist() );
+            m_album   = bing( tag->album() );
+            m_comment = bing( tag->comment() );
+            m_genre   = bing( tag->genre() );
+            m_year    = tag->year() ? QString::number( tag->year() ) : QString();
+            m_track   = tag->track() ? QString::number( tag->track() ) : QString();
         }
-        else init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
+
+        init( f.audioProperties() ); //no need to test for the readAudioProperties bool
     }
-    else init( 0 );
+    else init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
+
+    if( readAudioProperties ) //FIXME fast?
+       CollectionDB::instance()->addAudioproperties( *this );
 
     return *this;
+
+    #undef bing
 }
 
 QString
 MetaBundle::prettyTitle() const
 {
-    //NOTE this gets regressed often, please be careful!
-    //NOTE whatever you do, handle the stream case, streams have no artist but have an excellent title
-    //NOTE doesn't work for resume playback
+    #ifdef PRETTY_TITLE_CACHE
+    if( !m_prettyTitleCache.isEmpty() )
+       return m_prettyTitleCache;
 
+    QString &s = m_prettyTitleCache;
+    #else
     QString s = m_artist;
+    #endif
+
+
+    //NOTE this gets regressed often, please be careful!
+    //     whatever you do, handle the stream case, streams have no artist but have an excellent title
+
+    //FIXME doesn't work for resume playback
+
     if( !s.isEmpty() ) s += " - ";
     s += m_title;
     if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
@@ -313,8 +316,8 @@ MetaBundle::genreList()    //static
     QStringList list;
 
     TagLib::StringList genres = TagLib::ID3v1::genreList();
-    for( TagLib::StringList::ConstIterator it = genres.begin(); it != genres.end(); ++it)
-        list.append( TStringToQString((*it)) );
+    for( TagLib::StringList::ConstIterator it = genres.begin(), end = genres.end(); it != end; ++it )
+        list += TStringToQString( (*it) );
 
     list.sort();
 

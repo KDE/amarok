@@ -245,7 +245,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    new KAction( i18n( "&Goto Current" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
+    new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "Remove Duplicates / Missing" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
 
     //ensure we update action enabled states when repeat Playlist is toggled
@@ -563,7 +563,8 @@ Playlist::activate( QListViewItem *item )
 
         setCurrentTrack( item );
 
-        EngineController::instance()->play( item );
+        //use PlaylistItem::MetaBundle as it also updates the audioProps
+        EngineController::instance()->play( item->metaBundle() );
         #undef item
     }
     else
@@ -1571,7 +1572,7 @@ Playlist::removeDuplicates() //SLOT
 
     for( QListViewItemIterator it( this ); it.current(); ) {
         PlaylistItem* item = static_cast<PlaylistItem*>( *it );
-        if ( item->url().isLocalFile() && !QFile::exists( item->url().path() ) ) {
+        if ( !item->exists() ) {
             removeItem( item );
             ++it;
             delete item;
@@ -1608,7 +1609,7 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
     {
         const PlaylistItem* playlistItem = static_cast<const PlaylistItem*>( item );
 
-        QString text = MetaBundle( playlistItem ).prettyTitle();
+        QString text = MetaBundle( (PlaylistItem*)playlistItem ).prettyTitle();
         // For streams add the streamtitle too
         //TODO make prettyTitle do this
         if ( playlistItem->url().protocol() == "http" )

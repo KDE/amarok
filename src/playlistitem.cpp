@@ -140,6 +140,10 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n
         case Directory:
             KListViewItem::setText( x, attemptStore( text ) );
             continue;
+        case Score: {
+            const int score = CollectionDB::instance()->getSongPercentage( u.path() );
+            KListViewItem::setText( x, QString::number( score ) );
+            continue; }
         default:
             KListViewItem::setText( x, text );
         }
@@ -159,14 +163,16 @@ void PlaylistItem::setPixmapChanged()
 
 MetaBundle PlaylistItem::metaBundle()
 {
-    //TODO this meta prop reading causes ogg files to skip, so we need to do it a few seconds before the
-    //ogg file starts playing or something
-
     //Do this everytime to save cost of storing int for length/samplerate/bitrate
     //This function isn't called often (on play request), but playlists can contain
     //thousands of items. So favor saving memory over CPU.
 
-    return MetaBundle( this );
+    MetaBundle bundle( this );
+
+    setText( Length,  bundle.prettyLength() );
+    setText( Bitrate, bundle.prettyBitrate() );
+
+    return bundle;
 }
 
 
@@ -174,7 +180,9 @@ QString PlaylistItem::text( int column ) const
 {
     //if there is no text set for the title, return a pretty version of the track name
 
-    if( column == Title && KListViewItem::text( Title ).isEmpty() )
+    if( column == Title && KListViewItem::text( Title ).isEmpty()
+            // this is important, as we don't want to show the trackname twice
+            && listView()->columnWidth( TrackName ) == 0 )
     {
         return MetaBundle::prettyTitle( KListViewItem::text( TrackName ) );
     }
@@ -210,18 +218,18 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setText( Comment, bundle.comment() );
     setText( Genre,   bundle.genre() );
     setText( Track,   bundle.track() );
-    QString directory = bundle.prettyURL();
-    if ( bundle.url().isLocalFile() )
-    {
-        int firstIndex = bundle.prettyURL().find( '/' );
-        int lastIndex = bundle.prettyURL().findRev( '/', -1 );
-        directory = bundle.prettyURL().mid( firstIndex, lastIndex - firstIndex );
 
-        m_missing = !QFile::exists( bundle.url().path() );
+    QString directory = bundle.prettyURL();
+    if ( bundle.url().isLocalFile() ) {
+        const int firstIndex = bundle.prettyURL().find( '/' );
+        const int lastIndex = bundle.prettyURL().findRev( '/', -1 );
+        directory = bundle.prettyURL().mid( firstIndex, lastIndex - firstIndex );
     }
     setText( Directory, directory );
     setText( Length,  bundle.prettyLength() );
     setText( Bitrate, bundle.prettyBitrate() );
+
+    m_missing = !bundle.exists();
 
     const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
     if ( score )
@@ -410,8 +418,11 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     }
     else {
         QColorGroup _cg = cg;
-        if( m_missing ) //this file doesn't exist
+        if( m_missing )
+            //this file doesn't exist
+            //FIXME cg.mid() is not acceptable, it is not the disabled palette
             _cg.setColor( QColorGroup::Text, cg.mid() );
+
         KListViewItem::paintCell( p, _cg, column, width, align );
     }
 

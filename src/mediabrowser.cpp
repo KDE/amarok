@@ -74,7 +74,7 @@ MediaBrowser::MediaBrowser( const char *name )
         searchToolBar->setEnableContextMenu( false );
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_searchEdit = new ClickLineEdit( searchToolBar, i18n( "Filter here..." ), "filter_edit" );
+        m_searchEdit = new ClickLineEdit( searchToolBar, i18n( "Filter here..." ) );
         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( QFrame::Sunken );
@@ -553,7 +553,7 @@ MediaDevice::transferFiles()  //SLOT
             for ( ; it != m_transferURLs.end(); ++it )
             {
                 kdDebug() << "[MediaBrowser] Transfering: " << (*it).path() << endl;
-                MetaBundle bundle( *it, true, CollectionDB::instance() );
+                MetaBundle bundle( *it, true );
 
                 TrackMetadata track = m_ipod->createNewTrackMetadata();
                 track.setPath( track.getPath() + ".mp3" );
