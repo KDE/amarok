@@ -300,7 +300,7 @@ QWidget *PlaylistSideBar::page( const QString &widgetName )
     return 0;
 }
 
-void PlaylistSideBar::setFont( const QFont &font )
+void PlaylistSideBar::setFont( const QFont & )
 {
     //Hi! are you here because this function doesn't work?
     //Please consider not changing the fonts for the browsers as they require a

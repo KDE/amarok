@@ -530,7 +530,7 @@ void PlaylistWidget::insertMediaInternal( const KURL::List &list, QListViewItem 
 void PlaylistWidget::activate( QListViewItem *item ) //SLOT
 {
     kdDebug() << "[PlaylistWidget::activate()]\n";
-    
+
     //lets ask the engine to play something
     if( item )
     {
@@ -1136,7 +1136,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 }
 
 
-void PlaylistWidget::handleStreamMeta( const MetaBundle& bundle )
+void PlaylistWidget::handleStreamMeta( const MetaBundle& /*bundle*/ )
 {
 /*
     FIXME this did work when it was done for streams only, but now it buggers the title column
