@@ -814,12 +814,13 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
     QString command;
     if ( category2 == 0 )
     {
+        QString sorting = category1.lower() == "album" ? "track" : "title";
         if ( filter != "" )
             filterToken = "AND ( " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
 
         QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
         command = "SELECT DISTINCT tags.title, tags.url FROM tags, " + category1.lower() + " WHERE tags."
-                + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.track DESC, tags.url DESC;";
+                + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
     }
     else
     {
@@ -848,7 +849,7 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
         filterToken += category2.lower() + ".name LIKE '%" + filter + "%' OR ";
         filterToken += "tags.title LIKE '%" + filter + "%' )";
     }
-
+    QString sorting = category2.lower() == "album" ? "track" : "title";
     QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
     QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
 
@@ -857,7 +858,7 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
              + " AND tags." + category1.lower() + " = " + category1.lower() + ".id "
              + " AND tags." + category2.lower() + " = " + category2.lower() + ".id "
              + filterToken
-             + " ORDER BY tags.track DESC, tags.url DESC;";
+             + " ORDER BY tags." + sorting + " DESC;";
 
     execSql( command, values, names );
 }
@@ -879,6 +880,7 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     }
 
     //query database for all tracks in our sub-category
+    QString sorting = category1.lower() == "album" ? "track" : "title";
     QString id = QString::number( getValueID( category1.lower(), itemText, false ) );
     QString command = "SELECT DISTINCT tags.url FROM tags, " + category1.lower();
     if ( category2 != 0 )
@@ -888,7 +890,7 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     if ( category2 != 0 )
         command += "AND tags." + category2.lower() + "=" + category2.lower() + ".id ";
 
-    command += "AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags.dir, tags.track, tags.url;";
+    command += "AND tags." + category1.lower() + "=" + id + " " + filterToken + " ORDER BY tags." + sorting + ";";
 
     execSql( command, values, names );
 }
@@ -904,13 +906,14 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
         filterToken = "AND ( " + category2.lower() + ".name LIKE '%" + filter + "%' OR " + category1.lower() + ".name LIKE '%" + filter + "%' OR tags.title LIKE '%" + filter + "%' )";
     }
 
+    QString sorting = category2.lower() == "album" ? "track" : "title";
     QString id = QString::number( getValueID( category1.lower(), itemText1, false ) );
     QString id_sub = QString::number( getValueID( category2.lower(), itemText2, false ) );
 
     QString command = "SELECT DISTINCT tags.url FROM " + category1.lower() + ", tags, " + category2.lower();
     command += " WHERE tags." + category1.lower() + "=" + category1.lower() + ".id AND"
              + " tags." + category2.lower() + "=" + id_sub + " AND tags." + category1.lower() + "="
-             + id + " " + filterToken + " ORDER BY tags.track, tags.url;";
+             + id + " " + filterToken + " ORDER BY tags." + sorting + ";";
 
     execSql( command, values, names );
 }
