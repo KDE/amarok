@@ -33,11 +33,13 @@ email                : markey@web.de
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qstringlist.h>
+#include <qtimer.h>
 #include <qtooltip.h>        //analyzer tooltip
 
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <kurldrag.h>
 #include <kwin.h>            //eventFilter()
@@ -162,8 +164,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     } //<TimeLabel>
 
 
-    m_pButtonFx = new IconButton( this, "eq", SIGNAL(effectsWindowToggled( bool )) );
-    m_pButtonFx->setGeometry( 34,85, 28,13 );
+    m_pButtonEq = new IconButton( this, "eq", this, SLOT(slotShowEqualizer( bool )) );
+    m_pButtonEq->setGeometry( 34,85, 28,13 );
     //TODO set isOn()
 
     m_pPlaylistButton = new IconButton( this, "pl", SIGNAL(playlistToggled( bool )) );
@@ -760,9 +762,24 @@ void PlayerWidget::startDrag()
 
 void PlayerWidget::setEffectsWindowShown( bool on )
 {
-    m_pButtonFx->blockSignals( true );
-    m_pButtonFx->setOn( on );
-    m_pButtonFx->blockSignals( false );
+    m_pButtonEq->blockSignals( true );
+    m_pButtonEq->setOn( on );
+    m_pButtonEq->blockSignals( false );
+}
+
+
+void PlayerWidget::slotShowEqualizer( bool show ) //SLOT
+{
+    if( show )
+    {
+        m_pButtonEq->setOff();
+
+        if ( !EngineController::hasEngineProperty( "HasEqualizer" ) )
+            KMessageBox::sorry( 0, i18n( "Equalizer is not available with this engine." ) );
+
+        else
+            QTimer::singleShot( 0, kapp, SLOT( slotConfigEqualizer() ) );
+    }
 }
 
 
@@ -864,6 +881,17 @@ IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal
     , m_down( getPNG( icon + "_inactive2" ) )
 {
     connect( this, SIGNAL(toggled( bool )), parent, signal );
+
+    setToggleButton( true );
+    setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently
+}
+
+IconButton::IconButton( QWidget *parent, const QString &icon, QObject* receiver, const char *slot )
+    : QButton( parent )
+    , m_up(   getPNG( icon + "_active2" ) ) //TODO rename files better (like the right way round for one!)
+    , m_down( getPNG( icon + "_inactive2" ) )
+{
+    connect( this, SIGNAL(toggled( bool )), receiver, slot );
 
     setToggleButton( true );
     setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently

@@ -64,6 +64,7 @@ class IconButton : public QButton
 
 public:
     IconButton( QWidget*, const QString&, const char *signal );
+    IconButton( QWidget*, const QString&, QObject* receiver, const char *slot );
 
 public slots:
     void setOn( bool b ) { QButton::setOn( b ); }
@@ -113,6 +114,7 @@ class PlayerWidget : public QWidget, public EngineObserver
     private slots:
         void drawScroll();
         void timeDisplay( int );
+        void slotShowEqualizer( bool show );
 
     private:
         void setScroll( const QStringList& );
@@ -151,7 +153,7 @@ class PlayerWidget : public QWidget, public EngineObserver
         QLabel  *m_pVolSign;
         QLabel  *m_pDescription;
         QHBox   *m_pFrameButtons;
-        IconButton     *m_pButtonFx;
+        IconButton     *m_pButtonEq;
         IconButton     *m_pPlaylistButton;
         amaroK::Slider *m_pSlider;
         amaroK::Slider *m_pVolSlider;
