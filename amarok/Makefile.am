@@ -32,6 +32,8 @@ amarokapp_SOURCES = \
         browserbar.cpp \
         browserwin.cpp \
         collectionbrowser.cpp \
+        directorylist.cpp \
+        directorylistbase.ui \
         effectwidget.cpp \
         enginecontroller.cpp \
         fht.cpp \

@@ -7,14 +7,15 @@
 #ifdef HAVE_SQLITE
 
 #include "collectionbrowser.h"
+#include "directorylist.h"
 #include "metabundle.h"
 #include "threadweaver.h"
 
 #include <sqlite.h>
-#include <vector>
 
 #include <qcstring.h>
 #include <qptrlist.h>
+#include <qpushbutton.h>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -24,12 +25,37 @@
 #include <kurldrag.h>    //dragObject()
 
 
+CollectionBrowser::CollectionBrowser( const char* name )
+    : QVBox( 0, name )
+{
+    QPushButton* button = new QPushButton( "Select Folders", this );
+    new Browser( this );
+
+    connect( button, SIGNAL( clicked() ), this, SLOT( setupDirs() ) );
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
-// public
+// private
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionBrowser::CollectionBrowser( const char* name )
-    : KIconView( 0, name )
+void
+CollectionBrowser::setupDirs() //SLOT
+{
+    DirectoryList list( m_dirs.toStringList(), false );
+    DirectoryList::Result result = list.exec();
+
+    m_dirs = KURL::List( result.dirs );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS Browser
+//////////////////////////////////////////////////////////////////////////////////////////
+
+CollectionBrowser::Browser::Browser( QWidget* parent )
+    : KIconView( parent, 0 )
+    , m_parent( static_cast<CollectionBrowser*>( parent ) )
     , m_weaver( new ThreadWeaver( this ) )
     , m_dirLister( new KDirLister() )
 {
@@ -50,12 +76,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
                 
     KURL url;
     url.setPath( "/home/mark/mp3" );
-
+    m_parent->m_dirs << url;
     readDir( url );                
 }
 
 
-CollectionBrowser::~CollectionBrowser()
+CollectionBrowser::Browser::~Browser()
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -68,7 +94,8 @@ CollectionBrowser::~CollectionBrowser()
 // private
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void CollectionBrowser::readDir( const KURL& url )
+void 
+CollectionBrowser::Browser::readDir( const KURL& url )
 {
     m_dirLister->openURL( url );
     
@@ -79,7 +106,8 @@ void CollectionBrowser::readDir( const KURL& url )
 }
 
 
-void CollectionBrowser::customEvent( QCustomEvent *e )
+void 
+CollectionBrowser::Browser::customEvent( QCustomEvent *e )
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -110,7 +138,8 @@ void CollectionBrowser::customEvent( QCustomEvent *e )
 }
 
 
-void CollectionBrowser::dumpDb()
+void 
+CollectionBrowser::Browser::dumpDb()
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -124,7 +153,10 @@ void CollectionBrowser::dumpDb()
 }
 
 
-bool CollectionBrowser::execSql( const QCString& statement, QStringList* const values, QStringList* const names )
+bool 
+CollectionBrowser::Browser::execSql( const QCString& statement,
+                                     QStringList* const values,
+                                     QStringList* const names )
 {
     kdDebug() << k_funcinfo << endl;
     
@@ -137,7 +169,7 @@ bool CollectionBrowser::execSql( const QCString& statement, QStringList* const v
     sqlite_vm* vm;
     char* errorStr;
     int error;
-    
+    //compile SQL program to virtual machine
     error = sqlite_compile( m_db, statement, &tail, &vm, &errorStr );
         
     if ( error != SQLITE_OK ) {
@@ -150,8 +182,8 @@ bool CollectionBrowser::execSql( const QCString& statement, QStringList* const v
     int n;
     const char** value;
     const char** colName;
-    
-    while( true ) {
+    //execute virtual machine by iterating over rows
+        while( true ) {
         error = sqlite_step( vm, &n, &value, &colName );
         
         if ( error == SQLITE_DONE || error == SQLITE_ERROR )
@@ -161,6 +193,7 @@ bool CollectionBrowser::execSql( const QCString& statement, QStringList* const v
         if ( names && colName )
             *names << *colName;
     }
+    //deallocate vm ressources
     sqlite_finalize( vm, 0 );
     
     if ( error != SQLITE_DONE ) {
