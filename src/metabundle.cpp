@@ -92,21 +92,26 @@ MetaBundle::readTags( bool audioProperties )
 
    TagLib::FileRef f( m_url.path().local8Bit(), audioProperties, TagLib::AudioProperties::Fast );
 
-   if( f.tag() )
-   {
-       TagLib::Tag *tag = f.tag();
-
-       m_title   = TStringToQString( tag->title() ).stripWhiteSpace();
-       m_artist  = TStringToQString( tag->artist() ).stripWhiteSpace();
-       m_album   = TStringToQString( tag->album() ).stripWhiteSpace();
-       m_comment = TStringToQString( tag->comment() ).stripWhiteSpace();
-       m_genre   = TStringToQString( tag->genre() ).stripWhiteSpace();
-       m_year    = tag->year() ? QString::number( tag->year() ) : QString::null;
-       m_track   = tag->track() ? QString::number( tag->track() ) : QString::null;
-   }
-
-    init( f.audioProperties() ); //safe if f.isNull()
-
+   if ( f.isNull() ) {
+       init( 0 ); 
+   
+   } else {
+        
+        if( f.tag() )
+        {
+            TagLib::Tag *tag = f.tag();
+        
+            m_title   = TStringToQString( tag->title() ).stripWhiteSpace();
+            m_artist  = TStringToQString( tag->artist() ).stripWhiteSpace();
+            m_album   = TStringToQString( tag->album() ).stripWhiteSpace();
+            m_comment = TStringToQString( tag->comment() ).stripWhiteSpace();
+            m_genre   = TStringToQString( tag->genre() ).stripWhiteSpace();
+            m_year    = tag->year() ? QString::number( tag->year() ) : QString::null;
+            m_track   = tag->track() ? QString::number( tag->track() ) : QString::null;
+        }
+        init( f.audioProperties() );
+    }
+    
     return *this;
 }
 
