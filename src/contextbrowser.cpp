@@ -284,7 +284,6 @@ void ContextBrowser::paletteChange( const QPalette& pal )
     QVBox::paletteChange( pal );
 
     setStyleSheet();
-    showHome();
 }
 
 
@@ -777,19 +776,51 @@ void ContextBrowser::viewImage( const QString& artist, const QString& album )
     widget->show();
 }
 
+namespace amaroK {
+class Color : public QColor {
+    static const uint CONTRAST = 100;
+public:
+    Color( const QColor &c )
+        : QColor( c )
+    {
+        int h,s,v,d;
+
+        getHsv( &h, &s, &v );
+
+        //we want the new colour to be low saturation
+        d = QMAX( 0, s - 25 );
+        s = 25;
+
+        //if there is any remaining contrast adjustment required
+        //we should adjust the value, in an intelligent direction
+        if( d < CONTRAST ) {
+           const int remainingContrast = CONTRAST - d;
+
+           if( (255 - v) > remainingContrast )
+              v += remainingContrast;
+            else
+               v -= remainingContrast;
+        }
+
+        setHsv( h, s, v );
+    }
+};
+}
 
 void ContextBrowser::setStyleSheet()
 {
     int pxSize = fontMetrics().height() - 4;
 
     const QString text = colorGroup().text().name();
-    const QString fg   = colorGroup().base().name();
-    const QString bg   = colorGroup().dark().name();
+    const QString fg   = colorGroup().highlightedText().name();
+    const QString bg   = colorGroup().highlight().name();
+
+    amaroK::Color gradient = colorGroup().highlight();
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    m_styleSheet  = QString( "body { font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
-                       .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? colorGroup().highlightedText().name() : colorGroup().highlight().name() )
+    m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
+                       .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
                        .arg( locate( "data", "amarok/images/fadein.png" ) );
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
 
@@ -820,6 +851,8 @@ void ContextBrowser::setStyleSheet()
 
     m_styleSheet += QString( ".rbcontent .rbalbum:hover { background-color: %1; cursor: pointer; }" ).arg( bg );
     m_styleSheet += QString( ".rbcontent .rbalbum:hover a { color: %1; }" ).arg( fg );
+
+    browser->setUserStyleSheet( m_styleSheet );
 }
 
 
