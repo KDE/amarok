@@ -165,10 +165,11 @@ PlaylistWindow::PlaylistWindow()
 
 
     //if first run let KWin place us
-    if( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) ) {
-       move( AmarokConfig::playlistWindowPos() );
-       resize( AmarokConfig::playlistWindowSize() );
-    }
+    if( AmarokConfig::playlistWindowPos() != QPoint(-1,-1) )
+        move( AmarokConfig::playlistWindowPos() );
+
+    // On first run, the default value from PlaylistWindowSize is used
+    resize( AmarokConfig::playlistWindowSize() );
 }
 
 PlaylistWindow::~PlaylistWindow()
