@@ -451,22 +451,25 @@ CollectionDB::dirDirty( const QString& path )
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-    kdDebug() << k_funcinfo << endl;
-    
-    // reset KDirWatcher
-    if ( m_monitor )
+    if ( e->type() == (QEvent::Type) ThreadWeaver::Job::CollectionReader )
     {
-        delete m_dirWatch;
-        m_dirWatch = new KDirWatch( this );
-
-        connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
-                this,       SLOT( dirDirty( const QString& ) ) );
-
-        addCollectionToWatcher();
-        m_dirWatch->startScan();
+        kdDebug() << k_funcinfo << endl;
+        
+        // reset KDirWatcher
+        if ( m_monitor )
+        {
+            delete m_dirWatch;
+            m_dirWatch = new KDirWatch( this );
+    
+            connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
+                    this,       SLOT( dirDirty( const QString& ) ) );
+    
+            addCollectionToWatcher();
+            m_dirWatch->startScan();
+        }
+    
+        emit scanDone();
     }
-
-    emit scanDone();
 }
 
 
