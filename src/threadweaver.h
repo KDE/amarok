@@ -204,14 +204,16 @@ public:
    };
 
     CollectionReader( CollectionDB* parent, QObject* statusBar, const QStringList& folders, bool recursively, bool incremental );
-    ~CollectionReader();
 
+    static void stop() { m_stop = true; }       
     bool doJob();
 
 private:
     void readDir( const QString& dir, QStringList& entries );
     void readTags( const QStringList& entries );
-
+    
+    static bool m_stop;
+    
     CollectionDB* m_parent;
     QObject* m_statusBar;
     QStringList m_folders;

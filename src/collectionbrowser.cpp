@@ -8,6 +8,7 @@
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia(), showTrackInfo()
 #include "statusbar.h"
+#include "threadweaver.h"
 
 #include <unistd.h>         //CollectionView ctor
 
@@ -25,6 +26,8 @@
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kpopupmenu.h>
+#include <kprogress.h>
+#include <kpushbutton.h>
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
@@ -126,16 +129,20 @@ CollectionBrowser::setupDirs()  //SLOT
 // CLASS CollectionView
 //////////////////////////////////////////////////////////////////////////////////////////
 
+CollectionView* CollectionView::m_instance;
 CollectionDB* CollectionView::m_db;
 CollectionDB* CollectionView::m_insertdb;
+
 
 CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_isScanning( false )
+        , m_progressBox( 0 )
 {
     kdDebug() << k_funcinfo << endl;
-
+    m_instance = this;
+    
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
     setRootIsDecorated( true );
@@ -247,6 +254,12 @@ CollectionView::scan()  //SLOT
         m_isScanning = true;
         m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, false );
         m_insertdb->scan( m_dirs, m_recursively );
+    
+        m_progressBox = new QHBox( m_parent  );
+        KPushButton* button = new KPushButton( i18n( "Abort Scan" ), m_progressBox );
+        connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
+        m_progress = new KProgress( m_progressBox );
+        m_progressBox->show();
     }
 }
 
@@ -302,6 +315,9 @@ CollectionView::scanDone( bool changed ) //SLOT
 
     m_parent->m_actionsMenu->setItemEnabled( CollectionBrowser::IdScan, true );
     m_isScanning = false;
+    
+    delete m_progressBox;
+    m_progressBox = 0;
 }
 
 
@@ -474,7 +490,7 @@ CollectionView::showTrackInfo() //SLOT
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// private
+// protected
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
@@ -484,6 +500,34 @@ CollectionView::timerEvent( QTimerEvent* )
         scanMonitor();
 }
 
+
+void
+CollectionView::customEvent( QCustomEvent *e )
+{
+    CollectionReader::ProgressEvent* p = (CollectionReader::ProgressEvent*)e;
+
+    switch ( p->state() ) {
+    case CollectionReader::ProgressEvent::Start:
+        m_progress->setProgress( 0 );
+        m_progress->show();
+        break;
+
+    case CollectionReader::ProgressEvent::Stop:
+        break;
+
+    case CollectionReader::ProgressEvent::Total:
+        m_progress->setTotalSteps( p->value() );
+        break;
+
+    case CollectionReader::ProgressEvent::Progress:
+        m_progress->setProgress( p->value() );
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// private
+//////////////////////////////////////////////////////////////////////////////////////////
 
 void
 CollectionView::startDrag() {

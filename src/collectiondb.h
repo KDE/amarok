@@ -79,7 +79,8 @@ class CollectionDB : public QObject
     public slots:
         void setupCoverFetcher();
         void fetchCover( QObject* parent, const QString& key );
-        
+        void stopScan();
+                
     private slots:
         void dirDirty( const QString& path );
         void saveCover( const QString& keyword, const QPixmap& image );

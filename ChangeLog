@@ -4,6 +4,8 @@ amaroK ChangeLog
 
 
 VERSION 1.1:
+  ADD: Progressbar in CollectionBrowser informs about scan progress, and a
+       button was added for aborting the scan. (BR 83019)
   ADD: Playlist sliders (volume and position) now move directly when clicked
        outside of the handle. (BR 83611) 
   ADD: Tagless tracks now go into Collection too, listed as "unknown".

@@ -23,6 +23,7 @@ class QPoint;
 class QStringList;
 
 class KPopupMenu;
+class KProgress;
 
 class CollectionBrowser: public QVBox
 {
@@ -73,6 +74,7 @@ class CollectionView : public KListView
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
 
+        static CollectionView* instance() { return m_instance; }
         void setFilter( QString filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
         Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
@@ -98,10 +100,13 @@ class CollectionView : public KListView
         /** Shows dialog with information on selected track */
         void showTrackInfo();
 
-    private:
+    protected:    
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
+        /** Processes progress events from CollectionReader */
+        void customEvent( QCustomEvent* e );
 
+    private:
         void startDrag();
         KURL::List listSelected();
 
@@ -116,7 +121,8 @@ class CollectionView : public KListView
         static const int DATABASE_STATS_VERSION = 1;
         static CollectionDB* m_db;
         static CollectionDB* m_insertdb;
-
+        static CollectionView* m_instance;
+        
         CollectionBrowser* m_parent;
         QString m_filter;
         QStringList m_dirs;
@@ -125,6 +131,8 @@ class CollectionView : public KListView
         bool m_recursively;
         bool m_monitor;
         bool m_isScanning;
+        QHBox* m_progressBox;
+        KProgress* m_progress;
 };
 
 

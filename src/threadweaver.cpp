@@ -4,7 +4,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "collectiondb.h"    //needed for execSql()
+#include "collectionbrowser.h"   //CollectionReader::readTags()
+#include "collectiondb.h"        //needed for execSql()
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "threadweaver.h"
@@ -224,6 +225,8 @@ void SearchModule::searchDir( QString path )
 // CLASS CollectionReader
 //////////////////////////////////////////////////////////////////////////////////////////
 
+bool CollectionReader::m_stop;
+
 CollectionReader::CollectionReader( CollectionDB* parent, QObject* statusBar,
                                     const QStringList& folders, bool recursively, bool incremental )
         : Job( parent, Job::CollectionReader )
@@ -234,13 +237,13 @@ CollectionReader::CollectionReader( CollectionDB* parent, QObject* statusBar,
         , m_incremental( incremental )
 {}
 
-CollectionReader::~CollectionReader()
-{}
-
 bool
 CollectionReader::doJob()
 {
+    m_stop = false;
+    
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Start ) );
+    QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
 
     if ( !m_incremental )
         m_parent->purgeDirCache();
@@ -252,9 +255,11 @@ CollectionReader::doJob()
 
     if ( !entries.empty() ) {
         QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Total, entries.count() ) );
+        QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );
         readTags( entries );
     }
     QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Stop ) );
+    QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Stop ) );
 
     return !entries.empty();
 }
@@ -323,9 +328,14 @@ CollectionReader::readTags( const QStringList& entries )
     validMusic << "mp3" << "ogg" << "flac" << "wav";
     
     for ( uint i = 0; i < entries.count(); i++ ) {
-        if ( !( i % 20 ) )  //don't post events too often since this blocks amaroK
+        // Check if we shall abort the scan
+        if ( m_stop ) return;
+        
+        if ( !( i % 20 ) ) { //don't post events too often since this blocks amaroK
             QApplication::postEvent( m_statusBar, new ProgressEvent( ProgressEvent::Progress, i ) );
-
+            QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
+        }
+           
         url.setPath( entries[ i ] );
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
