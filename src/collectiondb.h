@@ -6,11 +6,20 @@
 #define AMAROK_COLLECTIONDB_H
 
 #include "engineobserver.h"
-#include "sqlite/sqlite3.h"
 
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
 #include <qstringlist.h>     //stack allocated
+
+#ifdef __USE_MYSQL
+#include <qdatetime.h>
+namespace mysql
+{
+#include <mysql/mysql.h>
+}
+#else
+#include "sqlite/sqlite3.h"
+#endif
 
 class CollectionEmitter;
 class MetaBundle;
@@ -137,7 +146,11 @@ class CollectionDB : public QObject
         QString valueFromID( QString table, uint id );
 
         static CollectionEmitter* s_emitter;
+#ifdef __USE_MYSQL
+        mysql::MYSQL m_db;
+#else
         sqlite3* m_db;
+#endif
         ThreadWeaver* m_weaver;
         bool m_monitor;
         QDir m_cacheDir;

@@ -199,7 +199,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<OPEN DATABASE>
         //optimization for speeding up SQLite
+#ifdef __USE_MYSQL
+//TODO?
+#else
         m_db->query( "PRAGMA default_synchronous = OFF;" );
+#endif
 
         //remove database file if version is incompatible
         if ( ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION ) || ( !m_db->isValid() ) )

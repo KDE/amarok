@@ -38,11 +38,36 @@
 CollectionEmitter* CollectionDB::s_emitter = 0;
 
 
+#ifdef __USE_MYSQL
+//TODO: this has to go into Settings dialog
+#define __MYSQL_HOST "localhost"
+#define __MYSQL_PORT 3306
+#define __MYSQL_USER "root"
+#define __MYSQL_PASSWORD "root"
+#define __MYSQL_DB "amarok"
+#endif
+
 CollectionDB::CollectionDB()
         : m_weaver( new ThreadWeaver( this ) )
         , m_cacheDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
         , m_coverDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
 {
+#ifdef __USE_MYSQL
+    mysql::mysql_init(&m_db);
+    if (mysql::mysql_real_connect(&m_db, __MYSQL_HOST, __MYSQL_USER, __MYSQL_PASSWORD, __MYSQL_DB, __MYSQL_PORT, NULL, CLIENT_COMPRESS))
+    {
+        if (!isValid())
+        	createTables();
+    }
+    else
+    {
+        if (mysql::mysql_real_connect(&m_db, __MYSQL_HOST, __MYSQL_USER, __MYSQL_PASSWORD, NULL, __MYSQL_PORT, NULL, CLIENT_COMPRESS))
+        {
+            mysql::mysql_query(&m_db, "CREATE DATABASE " __MYSQL_DB);
+            createTables();
+        }
+    }
+#else
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
@@ -67,6 +92,7 @@ CollectionDB::CollectionDB()
         QFile::remove( path );
         sqlite3_open( path, &m_db );
     }
+#endif
 
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
@@ -84,7 +110,11 @@ CollectionDB::CollectionDB()
 
 CollectionDB::~CollectionDB()
 {
+#ifdef __USE_MYSQL
+    mysql::mysql_close( &m_db );
+#else
     sqlite3_close( m_db );
+#endif
 }
 
 
@@ -108,8 +138,49 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
     if ( debug )
         kdDebug() << "query-start: " << statement << endl;
 
+    QStringList values;
+
     clock_t start = clock();
 
+#ifdef __USE_MYSQL
+    if (!mysql::mysql_query(&m_db, statement.ascii()))
+    {
+        mysql::MYSQL_RES* result;
+        if ((result = mysql::mysql_use_result(&m_db)))
+        {
+            if (names)
+            {
+                mysql::MYSQL_FIELD* field;
+                while ((field = mysql::mysql_fetch_field(result)))
+                    *names  << QString( field->name );
+            }
+
+            int number = mysql::mysql_field_count(&m_db);
+            mysql::MYSQL_ROW row;
+            while ((row = mysql::mysql_fetch_row(result)))
+            {
+                for ( int i = 0; i < number; i++ )
+                {
+                  values << QString::fromUtf8( (const char*)row[i] );
+                }
+            }
+            mysql::mysql_free_result(result);
+        }
+        else
+        {
+            if (mysql::mysql_field_count(&m_db) != 0)
+            {
+                kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n";
+                return false;
+            }
+        }
+    }
+    else
+    {
+        kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(&m_db) << "\n";
+        return false;
+    }
+#else
     if ( !m_db )
     {
         kdError() << k_funcinfo << "[CollectionDB] SQLite pointer == NULL.\n";
@@ -117,7 +188,6 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
     }
 
     int error;
-    QStringList values;
     const char* tail;
     sqlite3_stmt* stmt;
 
@@ -172,6 +242,7 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
 
         return QStringList();
     }
+#endif
 
     if ( debug )
     {
@@ -195,6 +266,9 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
 int
 CollectionDB::sqlInsertID()
 {
+#ifdef __USE_MYSQL
+    return mysql::mysql_insert_id(&m_db);
+#else
     if ( !m_db )
     {
         kdWarning() << k_funcinfo << "SQLite pointer == NULL.\n";
@@ -202,6 +276,7 @@ CollectionDB::sqlInsertID()
     }
 
     return sqlite3_last_insert_rowid( m_db );
+#endif
 }
 
 
@@ -552,11 +627,20 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
         score = ( ( m_values[2].toDouble() * m_values.first().toInt() ) + percentage ) / ( m_values.first().toInt() + 1 );
 
         query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+#ifdef __USE_MYSQL
+                        "VALUES ( '%1', '%2', %5, %3, %4 );" )
+                        .arg( escapeString( url ) )
+                        .arg( m_values[1] )
+                        .arg( score )
+                        .arg( m_values[0] + " + 1" )
+                        .arg( QDateTime::currentDateTime().toTime_t() ) ); //TODO: maybe this could be used for sqlite too?
+#else
                         "VALUES ( '%1', '%2', strftime('%s', 'now'), %3, %4 );" )
                         .arg( escapeString( url ) )
                         .arg( m_values[1] )
                         .arg( score )
                         .arg( m_values[0] + " + 1" ) );
+#endif
     }
     else
     {
@@ -564,9 +648,16 @@ CollectionDB::addSongPercentage( const QString url, const int percentage )
         score = ( ( 50 + percentage ) / 2 );
 
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+#ifdef __USE_MYSQL
+                        "VALUES ( '%1', %3, %3, %2, 1 );" )
+                        .arg( escapeString( url ) )
+                        .arg( score )
+                        .arg( QDateTime::currentDateTime().toTime_t() ) ); //TODO: maybe this could be used for sqlite too?
+#else
                         "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 1 );" )
                         .arg( escapeString( url ) )
                         .arg( score ) );
+#endif
     }
 
     int iscore = getSongPercentage( url );
@@ -612,9 +703,16 @@ CollectionDB::setSongPercentage( const QString url, int percentage )
     else
     {
         query( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
+#ifdef __USE_MYSQL
+                        "VALUES ( '%1', %3, %3, %2, 0 );" )
+                        .arg( escapeString( url ) )
+                        .arg( percentage )
+                        .arg( QDateTime::currentDateTime().toTime_t() ) ); //TODO: maybe this could be used for sqlite too?
+#else
                         "VALUES ( '%1', strftime('%s', 'now'), strftime('%s', 'now'), %2, 0 );" )
                         .arg( escapeString( url ) )
                         .arg( percentage ) );
+#endif
     }
 
     emit s_emitter->scoreChanged( url, percentage );
@@ -712,55 +810,79 @@ CollectionDB::createTables( bool temporary )
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
-                    "url VARCHAR(256),"
-                    "dir VARCHAR(256),"
+                    "url VARCHAR(255),"
+                    "dir VARCHAR(255),"
                     "createdate INTEGER,"
                     "album INTEGER,"
                     "artist INTEGER,"
                     "genre INTEGER,"
-                    "title VARCHAR(256),"
+                    "title VARCHAR(255),"
                     "year INTEGER,"
-                    "comment VARCHAR(256),"
+                    "comment VARCHAR(255),"
+#ifdef __USE_MYSQL
+                    "track NUMERIC(4),"
+#else
                     "track NUMBER(4),"
+#endif
                     "bitrate INTEGER,"
                     "length INTEGER,"
                     "samplerate INTEGER,"
+#ifdef __USE_MYSQL
+                    "sampler BOOL );" )
+#else
                     "sampler BOOLEAN );" )
+#endif
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
+#ifdef __USE_MYSQL
+                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+#else
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(256) );" )
+#endif
+                    "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create artist table
     query( QString( "CREATE %1 TABLE artist%2 ("
+#ifdef __USE_MYSQL
+                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+#else
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(256) );" )
+#endif
+                    "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
+#ifdef __USE_MYSQL
+                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+#else
                     "id INTEGER PRIMARY KEY,"
-                    "name VARCHAR(256) );" )
+#endif
+                    "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create year table
     query( QString( "CREATE %1 TABLE year%2 ("
+#ifdef __USE_MYSQL
+                    "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
+#else
                     "id INTEGER PRIMARY KEY,"
+#endif
                     "name VARCHAR(4) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
-                    "path VARCHAR(256),"
-                    "name VARCHAR(256) );" )
+                    "path VARCHAR(255),"
+                    "name VARCHAR(255) );" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -785,7 +907,7 @@ CollectionDB::createTables( bool temporary )
 
         // create directory statistics database
         query( QString( "CREATE TABLE directories ("
-                        "dir VARCHAR(256) UNIQUE,"
+                        "dir VARCHAR(255) UNIQUE,"
                         "changedate INTEGER );" ) );
     }
 }
@@ -824,7 +946,7 @@ CollectionDB::createStatsTable()
 
     // create music statistics database
     query( QString( "CREATE TABLE statistics ("
-                    "url VARCHAR(256) UNIQUE,"
+                    "url VARCHAR(255) UNIQUE,"
                     "createdate INTEGER,"
                     "accessdate INTEGER,"
                     "percentage FLOAT,"
@@ -1051,7 +1173,7 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, bool us
     if ( useTempTables )
         name.append( "_temp" );
 
-    query( QString( "SELECT id FROM '%1' WHERE name LIKE '%2';" )
+    query( QString( "SELECT id FROM %1 WHERE name LIKE '%2';" )
                     .arg( name )
                     .arg( escapeString( value ) ) );
 
@@ -1059,7 +1181,7 @@ CollectionDB::IDFromValue( QString name, QString value, bool autocreate, bool us
     //check if item exists. if not, should we autocreate it?
     if ( m_values.isEmpty() && autocreate )
     {
-        query( QString( "INSERT INTO '%1' ( name ) VALUES ( '%2' );" )
+        query( QString( "INSERT INTO %1 ( name ) VALUES ( '%2' );" )
                         .arg( name )
                         .arg( escapeString( value ) ) );
 

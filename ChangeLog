@@ -26,6 +26,11 @@ VERSION 1.2:
        a dependency is missing.
   ADD: Shaded current-track marker in playlist.
   CHG: Internal SQLite upgraded to 3.0.8.
+  FIX: Queue function from context/collection browsers actually properly
+       queues tracks (BR 90319)
+  ADD: MySQL database support.  Unmaintained and not guaranteed. Patch by 
+       <am_ml@linogate.com>. Please refer to mailing list for detailed
+       instructions.
 
 VERSION 1.1.1:
   FIX: Crash when using GStreamer-engine on 64bit. (BR 90869)
