@@ -613,11 +613,15 @@ void Playlist::removeSelectedItems() //SLOT
 
 void Playlist::deleteSelectedFiles() //SLOT
 {
-    int button = KMessageBox::warningContinueCancel( this, i18n(
-                    "<p>You have selected %1 to be <b>irreversibly</b> "
-                    "deleted." ).arg( i18n("1 file", "<u>%n files</u>", selectedItems().count()) ),
+    //NOTE we assume that currentItem is the main target
+    int count  = selectedItems().count();
+    int button = KMessageBox::warningContinueCancel( this,
+                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." ).
+                        arg( count > 1 ?
+                            i18n("<u>%1 files</u>").arg( count ) :
+                            static_cast<PlaylistItem*>(currentItem())->url().prettyURL() ),
                     QString::null,
-                    i18n("&Delete Selected Files") );
+                    i18n("&Delete") );
 
     if ( button == KMessageBox::Continue )
     {
@@ -1257,7 +1261,7 @@ void Playlist::startEditTag( QListViewItem *item, int column )
     delete db;
 
     m_editText = ((PlaylistItem *)item)->exactText( column );
-    
+
     rename( item, column );
 
 }
@@ -1478,7 +1482,7 @@ QDragObject* Playlist::dragObject()
 {
     KURL::List list;
     QMap<QString,QString> map;
-    
+
     for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); *it; ++it ) {
         PlaylistItem *item = (PlaylistItem*)*it;
         KURL url = item->url();
