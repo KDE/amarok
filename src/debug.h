@@ -2,6 +2,7 @@
 #ifndef AMAROK_DEBUG_H
 #define AMAROK_DEBUG_H
 
+#include <ctime>       //std::clock_t
 #include <kdebug.h>
 #include <qcstring.h>
 
@@ -31,6 +32,8 @@
  * app: END: [void function()]
  *
  * @see Block
+ * @see CrashHelper
+ * @see Timer
  */
 
 namespace Debug
@@ -98,7 +101,7 @@ using Debug::debugstream;
 namespace Debug
 {
     /**
-     * @class Block
+     * @class Debug::Block
      * @short Use this to label sections of your code
      *
      * Usage:
@@ -147,8 +150,64 @@ namespace Debug
             kdDebug() << indent << "END: " << m_label << endl;
         }
 
-    private:
+    protected:
         const char *m_label;
+    };
+
+
+    /**
+     * @class Debug::CrashHelper
+     * @short To facilitate crash/freeze bugs, by making it easy to mark code that has been processed
+     *
+     * Usage:
+     *
+     *     {
+     *         Debug::CrashHelper d( "Crash test" );
+     *
+     *         d.stamp();
+     *         function1();
+     *         d.stamp();
+     *         function2();
+     *         d.stamp();
+     *     }
+     *
+     * Will output (assuming the crash occurs in function2()
+     *
+     *     app: BEGIN: Crash Test
+     *     app:   [section] 1
+     *     app:   [section] 2
+     *     app: END: Crash Test
+     *
+     */
+
+    class CrashHelper : public Block
+    {
+        int m_counter;
+        const char *m_label;
+
+    public:
+        CrashHelper( const char *label = 0 ) : Block( label ), m_counter( 0 )
+        {}
+
+        inline void stamp()
+        {
+            debug() <<  ": " << ++m_counter << endl;
+        }
+    };
+
+
+    /**
+     * @class Debug::Timer
+     * @short When destroyed it will output the time in seconds since it was created
+     */
+
+    class Timer
+    {
+        std::clock_t m_start;
+
+    public:
+        Timer( const char *label );
+       ~Timer();
     };
 }
 
