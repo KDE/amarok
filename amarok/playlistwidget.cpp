@@ -272,7 +272,7 @@ void PlaylistWidget::handleOrder( RequestType request ) //SLOT
 
 		const uint count = childCount();
                 item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
-		
+
                 while( m_prevTracks.contains( item ) )
 		{
                      item = (PlaylistItem *)itemAtIndex( KApplication::random() % count );
@@ -556,7 +556,7 @@ void PlaylistWidget::removeItem( PlaylistItem *item )
 
     //keep recent buffer synchronised
     m_prevTracks.remove( item ); //removes all items
-    
+
     emit itemCountChanged( childCount() );
 }
 
@@ -905,7 +905,7 @@ void PlaylistWidget::showContextMenu( QListViewItem *item, const QPoint &p, int 
     }
     else popup.insertItem( i18n( "&Dequeue (%1)" ).arg( queueIndex+1 ), PLAY_NEXT );
 
-    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information..." ), VIEW ); //TODO rename properties
+    popup.insertItem( SmallIcon( "info" ), i18n( "&View Meta Information" ), VIEW ); //TODO rename properties
     popup.insertItem( SmallIcon( "edit" ), i18n( "&Edit Tag: '%1'" ).arg( columnText( col ) ), EDIT );
     if( canRename )
     {
@@ -1272,7 +1272,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
             if( e->playMe() ) activate( item );
 
             if( AmarokConfig::showMetaInfo() ) m_weaver->append( new TagReader( this, item ) );
-	    
+
 	    emit itemCountChanged( childCount() );
         }
         #undef e

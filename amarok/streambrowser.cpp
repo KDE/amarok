@@ -855,13 +855,13 @@ Share::Share(QWidget *parent, const char *name)
         QLabel *lwarning, *lstream, *luri, *lspeed, *llocation, *ltype, *lstyle, *lcategory;
 
         lwarning = new QLabel( i18n( "<b>Warning</b>: Streams may take up to a week to appear in the listing!" ), this );
-        lstream = new QLabel(i18n("Stream title"), this);
-        lstyle = new QLabel(i18n("Style"), this);
-        llocation = new QLabel(i18n("Location"), this);
-        lspeed = new QLabel(i18n("Bandwidth in kB"), this);
-        ltype = new QLabel(i18n("Type"), this);
-        luri = new QLabel(i18n("URI"), this);
-        lcategory = new QLabel(i18n("Category"), this);
+        lstream = new QLabel(i18n("Stream title:"), this);
+        lstyle = new QLabel(i18n("Style:"), this);
+        llocation = new QLabel(i18n("Location:"), this);
+        lspeed = new QLabel(i18n("Bandwidth in kB:"), this);
+        ltype = new QLabel(i18n("Type:"), this);
+        luri = new QLabel(i18n("URI:"), this);
+        lcategory = new QLabel(i18n("Category:"), this);
 
         estream = new QLineEdit(this);
         estyle = new QLineEdit(this);
@@ -872,7 +872,7 @@ Share::Share(QWidget *parent, const char *name)
         uribox = new QComboBox(this);
 
         typebox->insertItem(i18n("Playlist"));
-        typebox->insertItem(i18n("Direct stream"));
+        typebox->insertItem(i18n("Direct Stream"));
 
         vbox = new QVBoxLayout(page, marginHint(), spacingHint());
         vbox->add(lwarning);

@@ -10,7 +10,7 @@
 #include <kapplication.h>
 #include <khelpmenu.h>
 #include <klocale.h>
-
+#include <kiconloader.h>
 
 //TODO get kde-admin to rename this file amarokactions.cpp!
 
@@ -45,7 +45,7 @@ Menu::Menu( QWidget *parent )
     safePlug( ac, "random_mode", this );
 
     insertSeparator();
-    
+
     insertItem( i18n( "&Visualizations" ), pApp, SIGNAL( showVisSelector() ) );
 
     insertSeparator();
@@ -61,8 +61,8 @@ Menu::Menu( QWidget *parent )
     safePlug( ac, KStdAction::name(KStdAction::Preferences), this );
 
     insertSeparator();
-       
-    insertItem( i18n( "&Help" ), helpMenu( parent ) );
+
+    insertItem( SmallIcon("help"), i18n( "&Help" ), helpMenu( parent ) );
 
     insertSeparator();
 

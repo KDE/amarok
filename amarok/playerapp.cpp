@@ -118,7 +118,7 @@ PlayerApp::PlayerApp()
     handleCliArgs();
 
     Vis::SocketServer* server = new Vis::SocketServer( this );
-    connect( this, SIGNAL( showVisSelector() ), server, SLOT( showSelector() ) ) ; 
+    connect( this, SIGNAL( showVisSelector() ), server, SLOT( showSelector() ) ) ;
 }
 
 PlayerApp::~PlayerApp()
@@ -334,7 +334,7 @@ void PlayerApp::initIpc()
     QCString path = ::locateLocal( "socket", "amarok.loader_socket" ).local8Bit();
     ::strcpy( &local.sun_path[0], path );
     ::unlink( path );
-    
+
     kdDebug() << "Opening control socket on " << path << endl;
 
     int len = sizeof( local );
@@ -507,9 +507,9 @@ void PlayerApp::readConfig()
                             EngineController::instance(), SLOT( previous() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             m_pOSD, SLOT( showTrack() ), true, true );
-    m_pGlobalAccel->insert( "volup", i18n( "Increase volume" ), 0, KKey("WIN+KP_Add"), 0,
+    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0,
                             this, SLOT( slotIncreaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "voldn", i18n( "Decrease volume" ), 0, KKey("WIN+KP_Subtract"), 0,
+    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0,
                             this, SLOT( slotDecreaseVolume() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );

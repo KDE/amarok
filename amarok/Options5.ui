@@ -55,7 +55,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>font:</string>
+                        <string>Font:</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>The font to use for the On-Screen Display.</string>
@@ -95,7 +95,7 @@
                                         <cstring>textLabel2</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>text color:</string>
+                                        <string>Text color:</string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
                                         <string>The color of the OSD text.</string>
@@ -134,7 +134,7 @@
                                         <cstring>textLabel2_2</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>background color:</string>
+                                        <string>Background color:</string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
                                         <string>The color of the OSD background.</string>
@@ -167,7 +167,7 @@
                         <cstring>textLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>duration:</string>
+                        <string>Duration:</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
@@ -227,22 +227,22 @@
                         <widget class="KComboBox">
                             <item>
                                 <property name="text">
-                                    <string>Top left</string>
+                                    <string>Top Left</string>
                                 </property>
                             </item>
                             <item>
                                 <property name="text">
-                                    <string>Top right</string>
+                                    <string>Top Right</string>
                                 </property>
                             </item>
                             <item>
                                 <property name="text">
-                                    <string>Bottom left</string>
+                                    <string>Bottom Left</string>
                                 </property>
                             </item>
                             <item>
                                 <property name="text">
-                                    <string>Bottom right</string>
+                                    <string>Bottom Right</string>
                                 </property>
                             </item>
                             <item>

@@ -49,14 +49,10 @@ EffectWidget* EffectWidget::self = 0;
 QRect         EffectWidget::save_geometry;
 
 EffectWidget::EffectWidget( QWidget* parent )
-        : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects") ) )
+        : KDialogBase( parent, "EffectWidget", false, kapp->makeStdCaption( i18n("Effects")), User1, User1, false, KStdGuiItem::close() )
 {
     EngineBase *engine = EngineController::instance()->engine();
     setWFlags( Qt::WDestructiveClose );
-    
-    showButtonApply( false );
-    showButtonCancel( false );
-    setButtonText( Ok, i18n("Close") );
 
     QVBox *pFrame = makeVBoxMainWidget();
     pFrame->layout()->setResizeMode( QLayout::FreeResize );
@@ -93,7 +89,7 @@ EffectWidget::EffectWidget( QWidget* parent )
     QToolTip::add( m_pButtonBotConf, i18n( "Configure" ) );
     connect( m_pButtonBotConf, SIGNAL( clicked() ), this, SLOT( slotButtonBotConf() ) );
 
-    m_pButtonBotRem = new QPushButton( iconLoader.loadIconSet( "remove", KIcon::Toolbar, KIcon::SizeSmall ),
+    m_pButtonBotRem = new QPushButton( iconLoader.loadIconSet( "editdelete", KIcon::Toolbar, KIcon::SizeSmall ),
                                        0, pContainerBotButtons );
     m_pButtonBotRem->setMaximumWidth ( BUTTON_WIDTH );
     QToolTip::add( m_pButtonBotRem, i18n("Remove") );
@@ -110,7 +106,8 @@ EffectWidget::EffectWidget( QWidget* parent )
         for ( uint i = 0; i < vec.size(); i++ )
                 new EffectListItem( m_pListView, engine->effectNameForId( vec[i] ), vec[i] );
     }
-                
+
+    connect( this, SIGNAL( user1Clicked() ), this, SLOT( accept() ) );
     resize( 300, 400 );
 }
 
@@ -153,9 +150,9 @@ void EffectWidget::slotButtonBotRem()
 void EffectWidget::slotChanged() //SLOT
 {
     kdDebug() << "[EffectWidget::slotChanged()]\n";
-    
+
     QListViewItem* item = m_pListView->currentItem();
-    
+
     if ( item ) {
         m_pButtonBotConf->setEnabled( EngineController::instance()->engine()->effectConfigurable(
                                       static_cast<EffectListItem*>( item )->m_id ) );
@@ -174,7 +171,7 @@ void EffectWidget::slotChanged() //SLOT
 EffectListItem::EffectListItem( QListView *parent, const QString &label )
         : QListViewItem( parent, label )
         , m_id( EngineController::instance()->engine()->createEffect( label ) )
-        
+
 {}
 
 

@@ -32,13 +32,13 @@ SearchBrowser::SearchBrowser( QWidget *parent, const char *name )
     QHBox *hb1 = new QHBox( this );
     hb1->setSpacing( 4 );
     hb1->setMargin( 2 );
-    QLabel *label1 = new QLabel( "Search for", hb1 );
+    QLabel *label1 = new QLabel( "Search for:", hb1 );
     searchEdit = new KLineEdit( hb1 );
-    
+
     QHBox *hb2 = new QHBox( this );
     hb2->setSpacing( 4 );
     hb2->setMargin( 2 );
-    QLabel *label2 = new QLabel( "in", hb2 );
+    QLabel *label2 = new QLabel( "In:", hb2 );
     urlEdit = new KURLComboBox( KURLComboBox::Directories, TRUE, hb2 );
     QWidget *searchButton = new QPushButton( "&Search", hb2 );
 
@@ -80,13 +80,13 @@ void SearchBrowser::slotStartSearch()
         // Verify the slash and let KURL parse it
         if ( !path.endsWith( "/" ) )
             path += "/";
-    
+
         kdDebug() << path << endl;
         KURL *url;
         url = new KURL( path );
         path = url->directory( FALSE, FALSE );
         delete url;
-        
+
         kdDebug() << path << endl;
         if ( searchEdit->text().length() )
         {
@@ -96,7 +96,7 @@ void SearchBrowser::slotStartSearch()
             item->setText( 1, "0" );
             item->setText( 2, "Waiting for other thread" );
             item->setText( 3, path );
-    
+
             m_weaver->append( new SearchModule( this, path, searchEdit->text(), resultView, item ) );
         }
     }
@@ -126,11 +126,11 @@ void SearchBrowser::customEvent( QCustomEvent *e )
                 p->item()->setText( 2, "Started" );
                 resultView->clear();
                 break;
-                
+
             case SearchModule::ProgressEvent::Stop:
                 p->item()->setText( 2, "Done" );
                 break;
-                
+
             case SearchModule::ProgressEvent::Progress:
                 // kdDebug() << "********************************\n";
                 // kdDebug() << "SearchModuleEvent arrived, found item: " << p->curPath() << p->curFile() << "\n";
@@ -142,7 +142,7 @@ void SearchBrowser::customEvent( QCustomEvent *e )
 
                 p->item()->setText( 1, QString::number( p->count() ) );
                 p->item()->setText( 2, curToken );
-      
+
                 KListViewItem *resItem = new KListViewItem( p->resultView(), p->curFile() );
                 resItem->setText( 1, p->curPath() );
                 resItem->setText( 2, p->curPath() + p->curFile() );
@@ -150,6 +150,6 @@ void SearchBrowser::customEvent( QCustomEvent *e )
     }
 }
 
-        
+
 #include "searchbrowser.moc"
 

@@ -50,14 +50,14 @@ CollectionBrowser::CollectionBrowser( const char* name )
     QHBox * hbox2 = new QHBox( this );
     hbox2->setSpacing( 4 );
     hbox2->setMargin( 4 );
-    QLabel * label1 = new QLabel( "Search for", hbox2 );
+    QLabel * label1 = new QLabel( "Search for:", hbox2 );
     m_searchEdit = new KLineEdit( hbox2 );
 
     m_view = new CollectionView( this );
-    
+
     m_actionsMenu->insertItem( i18n( "Configure Folders" ), m_view, SLOT( setupDirs() ) );
     m_actionsMenu->insertItem( i18n( "Start Scan" ), m_view, SLOT( scan() ) );
-    
+
     m_cat1Menu ->insertItem( "Album", m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( "Artist", m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
     m_cat1Menu ->insertItem( "Genre", m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
@@ -109,7 +109,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //<read config>
         KConfig* config = KGlobal::config();
         config->setGroup( "Collection Browser" );
-        
+
         m_dirs = config->readListEntry( "Folders" );
         m_category1 = config->readEntry( "Category1", "Artist" );
         m_category2 = config->readEntry( "Category2", "None" );
@@ -117,22 +117,22 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_recursively = config->readBoolEntry( "Scan Recursively", true );
         m_monitor = config->readBoolEntry( "Monitor Changes", false );
     //</read config>
-    
+
     //<open database>
         const QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                               + "collection.db" ).local8Bit();
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
             ::unlink( path );
-                            
+
         m_db = sqlite_open( path, 0, 0 );
-    
+
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
-        execSql( "PRAGMA default_synchronous = OFF;" );        
-        execSql( "PRAGMA default_cache_size = 4000;" );        
-            
+        execSql( "PRAGMA default_synchronous = OFF;" );
+        execSql( "PRAGMA default_cache_size = 4000;" );
+
         QCString command = "CREATE TABLE tags ("
                         "url varchar(100),"
                         "dir varchar(100),"
@@ -143,10 +143,10 @@ CollectionView::CollectionView( CollectionBrowser* parent )
                         "year varchar(4),"
                         "comment varchar(100),"
                         "track number(4) );";
-    
+
         execSql( command );
     //</open database>
-    
+
     connect( this,       SIGNAL( tagsReady() ),
              this,         SLOT( renderView() ) );
     connect( this,       SIGNAL( expanded( QListViewItem* ) ),
@@ -157,9 +157,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,         SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( m_dirWatch, SIGNAL( dirty( const QString& ) ),
              this,         SLOT( dirDirty( const QString& ) ) );
-             
+
     renderView();
-    
+
     if ( m_monitor ) {
         m_dirWatch->startScan();
         scan();
@@ -201,10 +201,10 @@ CollectionView::setupDirs()  //SLOT
     if ( result.addedDirs.count() || result.removedDirs.count() ) {
         //destroy KDirWatch and create new one, to make it forget all directories
         delete m_dirWatch;
-        m_dirWatch = new KDirWatch( this );        
+        m_dirWatch = new KDirWatch( this );
         scan();
     }
-    
+
     if ( m_monitor )
         m_dirWatch->startScan();
     else
@@ -236,7 +236,7 @@ CollectionView::dirDirty( const QString& path )
                       ( "DELETE FROM tags WHERE dir = '%1';" )
                       .arg( escapeString( path ) );
     execSql( command );
-        
+
     m_weaver->append( new CollectionReader( this, amaroK::StatusBar::self(), path, false ) );
 }
 
@@ -263,9 +263,9 @@ CollectionView::renderView( )  //SLOT
     QStringList values;
     QStringList names;
     execSql( command, &values, &names );
-    
+
     QPixmap pixmap = iconForCat( m_category1 );
-    
+
     for ( uint i = 0; i < values.count(); i++ ) {
         if ( values[i].isEmpty() ) continue;
 
@@ -286,9 +286,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( !item ) return ;
 
     kdDebug() << "item depth: " << item->depth() << endl;
-    if  ( item->depth() == 0 ) {    
+    if  ( item->depth() == 0 ) {
         //Filter for category 1:
-        
+
         QString command;
         if ( m_category2 == "None" ) {
             command = QString
@@ -296,7 +296,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                       .arg( m_category1.lower() )
                       .arg( escapeString( item->text( 0 ) ) );
         }
-        else {        
+        else {
             QString cat = m_category2.lower().append( "," ).append( m_category2.lower() );
             command = QString
                       ( "SELECT DISTINCT %1 FROM tags WHERE %2 = '%3';" )
@@ -304,13 +304,13 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                       .arg( m_category1.lower() )
                       .arg( escapeString( item->text( 0 ) ) );
         }
-                                    
+
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
-    
+
         QPixmap pixmap = iconForCat( m_category2 );
-        
+
         for ( uint i = 0; i < values.count(); i += 2 ) {
             Item* child = new Item( item );
             child->setDragEnabled( true );
@@ -334,7 +334,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
-    
+
         for ( uint i = 0; i < values.count(); i += 2 ) {
             Item* child = new Item( item );
             child->setDragEnabled( true );
@@ -354,7 +354,7 @@ CollectionView::iconForCat( const QString& cat ) const
     if ( cat == "Artist" ) icon = "personal";
     if ( cat == "Genre"  ) icon = "kfm";
     if ( cat == "Year"   ) icon = "history";
-        
+
     KIconLoader iconLoader;
     return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
 }
@@ -383,7 +383,7 @@ CollectionView::cat1Menu( int id )  //SLOT
     m_category1 = catForId( id );
     setColumnText( 0, m_category1 );
     m_parent->m_cat1Menu->setItemChecked( idForCat( m_category1 ), true );
-    
+
     renderView();
 }
 
@@ -394,7 +394,7 @@ CollectionView::cat2Menu( int id )  //SLOT
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
     m_category2 = catForId( id );
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
-    
+
     renderView();
 }
 
@@ -414,7 +414,7 @@ CollectionView::catForId( int id ) const
         default:
             break;
     }
-    
+
     return "None";
 }
 
@@ -443,26 +443,26 @@ CollectionView::customEvent( QCustomEvent *e ) {
         kdDebug() << "CollectionEvent arrived.\n";
         kdDebug() << "********************************\n";
 
-        //CollectionReader provides a list of all subdirs, which we feed into KDirWatch 
+        //CollectionReader provides a list of all subdirs, which we feed into KDirWatch
         if ( m_monitor )
             for ( uint i = 0; i < c->dirList().count(); i++ )
                 if ( !m_dirWatch->contains( c->dirList()[i] ) ) {
                     m_dirWatch->addDir( c->dirList()[i], true );
 //                     kdDebug() << "Adding to dirWatch: " << c->dirList()[i] << endl;
                 }
-                    
+
         QString tag;
         MetaBundle* bundle;
         kdDebug() << "Number of records to store in db: " << c->bundleList().count() << endl;
         execSql( "BEGIN TRANSACTION;" );
-        
+
         for ( uint i = 0; i < c->bundleList().count(); i++ ) {
             bundle = c->bundleList().at( i );
- 
+
             QString command = "INSERT INTO tags "
                               "( url, dir, album, artist, genre, title, year, comment, track ) "
                               "VALUES('";
-                                                       
+
             command += escapeString( bundle->url().path() );
             command += "','";
             command += escapeString( bundle->url().directory() );
@@ -481,14 +481,14 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += "','";
             command += escapeString( bundle->track() );
             command += "');";
-            
+
             execSql( command );
             delete bundle;
             //grant event loop some time for breathing
             if ( !(i % 10) ) kapp->processEvents();
         }
         execSql( "END TRANSACTION;" );
-        
+
         emit tagsReady();
     }
 }
@@ -550,10 +550,10 @@ void
 CollectionView::startDrag() {
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
     //and another one for the children.
-    
+
     KURL::List list;
     QListViewItem* item;
-    
+
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() ) {
@@ -572,8 +572,8 @@ CollectionView::startDrag() {
                 list << tmp;
             }
         }
-        
-    //second pass: category 1    
+
+    //second pass: category 1
     if ( m_category2 == "None" ) {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
@@ -595,7 +595,7 @@ CollectionView::startDrag() {
                     QStringList values;
                     QStringList names;
                     execSql( command, &values, &names );
-        
+
                     for ( uint i = 0; i < values.count(); i++ ) {
                         KURL tmp;
                         tmp.setPath( values[i] );
@@ -603,14 +603,14 @@ CollectionView::startDrag() {
                     }
                 }
     }
-                        
-    //third pass: category 2    
+
+    //third pass: category 2
     for ( item = firstChild(); item; item = item->nextSibling() )
         for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
             for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                 if ( grandChild->isSelected() )
                     list << static_cast<Item*>( grandChild ) ->url();
-    
+
     KURLDrag* d = new KURLDrag( list, this );
     d->dragCopy();
 }
@@ -620,7 +620,7 @@ void
 CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
 {
     if ( !item ) return;
-        
+
     if ( m_category2 == "None" || item->depth() == 2 ) {
         KPopupMenu menu( this );
         menu.insertItem( i18n( "Track Information" ), this, SLOT( showTrackInfo() ) );
@@ -629,26 +629,26 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 }
 
 
-void 
+void
 CollectionView::showTrackInfo() //slot
 {
-    Item* item = static_cast<Item*>( currentItem() );    
+    Item* item = static_cast<Item*>( currentItem() );
     if ( !item ) return;
-    
+
     if ( m_category2 == "None" || item->depth() == 2 ) {
         QString command = QString
                           ( "SELECT DISTINCT artist, album, genre, year, comment FROM tags "
                             "WHERE url = '%1';" )
                             .arg( escapeString( item->url().path() ) );
-        
+
         QStringList values;
         QStringList names;
         execSql( command, &values, &names );
         if ( values.isEmpty() ) return;
-        
+
         QString str  = "<html><body><table width=\"100%\" border=\"1\">";
         QString body = "<tr><td>%1</td><td>%2</td></tr>";
-    
+
         str += body.arg( i18n( "Title" ),  item->text( 0 ) );
         str += body.arg( i18n( "Artist" ), values[0] );
         str += body.arg( i18n( "Album" ),  values[1] );
@@ -658,9 +658,9 @@ CollectionView::showTrackInfo() //slot
     //     str += body.arg( i18n( "Length" ), mb.prettyLength() );
     //     str += body.arg( i18n( "Bitrate" ),mb.prettyBitrate() );
     //     str += body.arg( i18n( "Samplerate" ), mb.prettySampleRate() );
-    
+
         str.append( "</table></body></html>" );
-    
+
         QMessageBox box( i18n( "Meta Information" ), str, QMessageBox::Information,
                         QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton,
                         0, 0, true, Qt::WStyle_DialogBorder );
@@ -682,12 +682,12 @@ int
 CollectionView::Item::compare( QListViewItem* item, int col, bool ascending ) const
 {
     //We overload compare() just to prevent the listView from sorting our items.
-    
+
     if ( item->depth() == 1 && ( (CollectionView*) listView() )->m_category2 == "None" )
         return 0;
     if ( item->depth() == 2 )
         return 0;
-                        
+
     return KListViewItem::compare( item, col, ascending );
 }
 
