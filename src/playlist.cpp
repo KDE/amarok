@@ -55,6 +55,7 @@ Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     : KListView( parent, name )
+#define PLAYLIST_BROWSER 1
 #ifdef PLAYLIST_BROWSER
     , m_browser( new PlaylistBrowser( "PlaylistBrowser" ) )
 #endif

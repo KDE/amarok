@@ -1,20 +1,20 @@
 // (c) Max Howell 2004
 // See COPYING file for licensing information
 
+#define PLAYLIST_BROWSER 1
 #ifdef PLAYLIST_BROWSER
 
+#include "metabundle.h"       //prettyLength()
 #include "playlistbrowser.h"
-#include "metabundle.h"   //prettyLength()
-#include "threadweaver.h" //PLStats Job
+#include "threadweaver.h"     //PLStats Job
 
-#include <qevent.h>       //customEvent()
-#include <qfontmetrics.h> //paintItem()
-#include <qpainter.h>     //paintItem()
+#include <qevent.h>           //customEvent()
+#include <qfontmetrics.h>     //paintItem()
+#include <qpainter.h>         //paintItem()
 #include <kdebug.h>
-#include <kiconloader.h>  //smallIcon
-#include <klocale.h >
-#include <kurldrag.h>     //dragObject()
-
+#include <kiconloader.h>      //smallIcon
+#include <klocale.h>
+#include <kurldrag.h>         //dragObject()
 
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
@@ -24,6 +24,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     setSelectionMode( QIconView::Extended );
 
     setGridX( 140 );
+    setFocusProxy( this );
 }
 
 PlaylistBrowser::~PlaylistBrowser()

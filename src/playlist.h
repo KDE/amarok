@@ -18,8 +18,9 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
-#include "playlistwindow.h"  //friend
 #include "engineobserver.h"  //baseclass
+#include "playlistbrowser.h"
+#include "playlistwindow.h"  //friend
 
 #include <qstringlist.h>     //stack allocated
 #include <qptrlist.h>        //stack allocated
@@ -73,6 +74,7 @@ class Playlist : private KListView, public EngineObserver
         void saveM3U( const QString& ) const;
         void saveXML( const QString& ) const;
 
+        #define PLAYLIST_BROWSER 1
         #ifdef PLAYLIST_BROWSER
         QWidget *browser() const;
         #endif
@@ -172,6 +174,7 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *lastItem() const { return (PlaylistItem*)KListView::lastItem(); }
 
 // ATTRIBUTES ------
+        #define PLAYLIST_BROWSER 1
         #ifdef PLAYLIST_BROWSER
         PlaylistBrowser *m_browser;
         #endif

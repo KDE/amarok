@@ -166,8 +166,9 @@ PlaylistWindow::init()
         m_browsers->addBrowser( new ContextBrowser( "ContextBrowser" ), i18n( "Context" ), "info" );
         m_browsers->addBrowser( new SearchBrowser( "SearchBrowser" ), i18n( "Search" ), "find" );
 
+        #define PLAYLIST_BROWSER 1
         #ifdef PLAYLIST_BROWSER
-        m_browsers->addBrowser( m_playlist->browser(), i18n( "Playlist" ), "midi" );
+        m_browsers->addBrowser( new PlaylistBrowser( "PlaylistBrowser" ), i18n( "Playlist" ), "midi" );
         #endif
 
         { //<StreamBrowser>

@@ -6,8 +6,16 @@
 ScriptManager.connect( ScriptManager, "stop(const QString&)", this, "slotStop" );
 ScriptManager.connect( ScriptManager, "configure(const QString&)", this, "slotConfigure" );
 
+var date = new Date();
+print( date.getTime() );
+print( "\n" );
+
 // Load the demo gui
 var gui = Factory.loadui( "setup.ui" );
+
+timer = new QTimer();
+ScriptManager.connect( timer, "timeout()", this, "slotTimer" );
+timer.start( 2000 );
 
 // ScriptManager.connect( gui.child( "pushButton2" ), "clicked()", this, "slotPlay" );
 
@@ -15,6 +23,12 @@ var gui = Factory.loadui( "setup.ui" );
 ////////////////////////////////////////////////////////////////////////////////
 // functions
 ////////////////////////////////////////////////////////////////////////////////
+
+function slotTimer()
+{
+    print( "timer()\n" );
+}
+
 
 function slotStop( name )
 {
@@ -36,9 +50,6 @@ function slotConfigure( name )
         print( alarmTime.toString() );
         print( "\n" );
         
-        var date = new Date();
-        print( date.getTime() );
-        print( "\n" );
     }
 }
 
