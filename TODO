@@ -13,9 +13,9 @@ MID-TERM:
     * chg: #78 determine some behavior for the clear/shuffle/etc. buttons when a search is in action
                clear   -> only clear the stuff that was searched for?
                shuffle -> stop the search and do normal shuffle?
-           additionally what to do when user rearranges a set of items that are the search result?
-	   <larson>No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
-		   the search, then clear should clear the search only, and visa versa.
+               additionally what to do when user rearranges a set of items that are the search result?
+               <larson>No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
+               the search, then clear should clear the search only, and visa versa.
 
     * fix: #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
 
@@ -26,12 +26,12 @@ MID-TERM:
     * fix: #72 <markey> get amaroK to play nice with valgrind
 
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
-	       <larson> I think this is really weird. When I drag something I expect that someting to be
-			added or opened in the target. Not removed from the sender.
-               (RFC: is this still appropriate or would it be misleading?)
-	       <muesli> imho, it's misleading and not hid-compatible. i would rather
-			expect that file to be copied to the browser's current
-			directory.
+               <larson> I think this is really weird. When I drag something I expect that someting to be
+                added or opened in the target. Not removed from the sender.
+                (RFC: is this still appropriate or would it be misleading?)
+               <muesli> imho, it's misleading and not hid-compatible. i would rather
+                expect that file to be copied to the browser's current
+                directory.
 
     * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
 
@@ -287,4 +287,19 @@ Program received signal SIGSEGV, Segmentation fault.
 #2  0x80857ce in PlayerApp::PlayerApp (this=0xbfbff8d0) at ./amarok/playerapp.cpp:111
 #3  0x80a77eb in main (argc=1, argv=0xbfbffa3c) at ./amarok/amarokcore/main.cpp:35
 (gdb)
+
+///
+
+using GDB, I was finally able to get a BT from the "engine switching crash":
+#0  0x00000000 in ?? ()
+#1  0x40abce25 in QApplication::internalNotify(QObject*, QEvent*) () from /usr/lib/qt3/lib/libqt-mt.so.3
+#2  0x40abc215 in QApplication::notify(QObject*, QEvent*) () from /usr/lib/qt3/lib/libqt-mt.so.3
+#3  0x406b108c in KApplication::notify(QObject*, QEvent*) () from /opt/kde3/lib/libkdecore.so.4
+#4  0x40aaa48b in QEventLoop::activateTimers() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#5  0x40a663fa in QEventLoop::processEvents(unsigned) () from /usr/lib/qt3/lib/libqt-mt.so.3
+#6  0x40acec26 in QEventLoop::enterLoop() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#7  0x40aceac8 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#8  0x40abd071 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#9  0x080b475a in main (argc=1, argv=0xbffff2f4) at amarok/amarokcore/main.cpp:37
+#10 0x414f54f2 in __libc_start_main () from /lib/libc.so.6
 
