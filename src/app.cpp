@@ -99,8 +99,14 @@ App::App()
     if ( restoreSession && AmarokConfig::savePlaylist() )
         Playlist::instance()->restoreSession();
 
-    if( args->isSet( "engine" ) )
-      AmarokConfig::setSoundSystem( args->getOption( "engine" ) );
+    if( args->isSet( "engine" ) ) {
+        // we correct some common errors (case issues, missing -engine off the end)
+        QString engine = args->getOption( "engine" ).lower();
+        if( engine.startsWith( "gstreamer" ) ) engine = "gst-engine";
+        if( !engine.endsWith( "engine" ) ) engine += "-engine";
+
+        AmarokConfig::setSoundSystem( engine );
+    }
 
     //create engine, show PlayerWindow, show TrayIcon etc.
     applySettings( true );

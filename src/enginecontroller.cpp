@@ -185,7 +185,7 @@ amaroK::Plugin *EngineController::loadEngine( const QString &engineName )
         if( !engineName.isEmpty() )
             // the first ever run has an empty engine string
             amaroK::StatusBar::instance()->longMessage(
-                    i18n( "Sorry, the requested engine could not be loaded" ), KDE::StatusBar::Sorry );
+                    i18n( "Sorry, the %1 could not be found." ).arg( engineName ), KDE::StatusBar::Sorry );
     }
 
     return plugin;
