@@ -18,6 +18,8 @@ SHORT-TERM (URGENT):
     * fix: #38 <mxcl> saving edited-tags sometimes hangs the ui because it takes ages! Is this
                just a weak point in taglib or should we expect this and do something drastic like
                call tag.save() in a separate thread?
+	       <berkus> Saving i.e. ogg tags can take considerable time (esp. when you add a tag
+	       for a first time)
 
     * fix: #35 <mxcl>restore quick tag loading when users don't have bitrate/length columns
                in playlist -->mxcl
