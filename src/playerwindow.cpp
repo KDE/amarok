@@ -94,7 +94,16 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     setCaption( "amaroK" );
     setAcceptDrops( true );
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
-    setPaletteBackgroundColor( amaroK::blue );
+    //setPaletteBackgroundColor( amaroK::blue );
+
+    {
+        int h,h2,s,v;
+        KGlobalSettings::highlightColor().getHsv( h, s, v );
+        QColor amKblu( amaroK::blue );
+        amKblu.getHsv( h2, s, v );
+        setPaletteBackgroundColor( QColor( h, s, v, QColor::Hsv) );
+    }
+
 
     QFont font;
     font.setBold( true );
