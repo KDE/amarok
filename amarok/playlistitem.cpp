@@ -95,7 +95,7 @@ PlaylistItem::PlaylistItem( PlaylistWidget* parent, QListViewItem *lvi, const KU
     const uint ncol = parent->columns();
 
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
-    for( int x = 1; x < ncol; ++x )
+    for( uint x = 1; x < ncol; ++x )
     {
         const QString text = n.namedItem( parent->columnText( x ) ).toElement().text();
 
