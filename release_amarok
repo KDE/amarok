@@ -7,6 +7,17 @@
 # License: GPL V2
 #
 
+
+##############################################################
+# THIS SCRIPT IS OBSOLETE AND WILL NOT WORK CORRECTLY!
+# USE RELEASE_AMAROK.RB INSTEAD.
+##############################################################
+
+echo "THIS SCRIPT IS OBSOLETE. USE RELEASE_AMAROK.RB INSTEAD."
+exit
+
+
+
 # Usage
 #    Print usage and exit script
 Usage () {

@@ -6,7 +6,7 @@ SECTION 1: Preparation
 
 SECTION 2: Creating and Testing the Tarball
 
- * Run the release_amarok script; OR
+ * Run the release_amarok.rb script; OR
    Follow the guide lines in appendix A
  * Test the following:
 
