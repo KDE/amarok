@@ -56,8 +56,9 @@ Loader::Loader( int& argc, char** argv )
         //these arguments require a running amaroK
         //the rest should be done on a new instance (eg --help)
         QStringList sockArgs;
-        sockArgs << "--next" << "--previous" << "--stop" << "--pause" << "--play" << "--play-pause" << "--enqueue"
-                 << "-caption" << "-f" << "-r" << "-s" << "-p" << "-e" << "-t";
+        sockArgs << "--next" << "--previous" << "--stop" << "--pause" << "--play" << "--play-pause"
+                 << "--enqueue" << "--append" << "--queue"
+                 << "-caption" << "-f" << "-r" << "-s" << "-p" << "-e" << "-a" << "-m" << "-t";
 
         for ( int i = 0; i < argc; i++ )
         {
