@@ -52,10 +52,8 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name )
     setFocusPolicy( QWidget::ClickFocus );
 
     addColumn( i18n( "Filebrowser" ) );
-    setFullWidth( true );
     setAcceptDrops( true );
     setDragEnabled( true ); //NEW
-    setHScrollBarMode( QListView::AlwaysOn );
     
     connect( header(), SIGNAL( clicked( int ) ), this, SLOT( slotHeaderClicked( int ) ) );
 
