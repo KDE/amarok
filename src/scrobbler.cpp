@@ -58,7 +58,7 @@ Scrobbler::~Scrobbler()
 void Scrobbler::similarArtists( QString artist )
 {
     QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
-                     .arg( artist );
+                     .arg( artist.utf8() );
 
     kdDebug() << "[AudioScrobbler] Similar artists: " << url << endl;
 
@@ -347,9 +347,9 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             "&s=" +
                 KURL::encode_string( KMD5( KMD5( m_password.utf8() ).hexDigest() +
                     m_challenge.utf8() ).hexDigest() ) +
-            "&a[0]=" + KURL::encode_string( item->artist() ) +
-            "&t[0]=" + KURL::encode_string( item->title() ) +
-            "&b[0]=" + KURL::encode_string( item->album() ) +
+            "&a[0]=" + KURL::encode_string( item->artist().utf8() ) +
+            "&t[0]=" + KURL::encode_string( item->title().utf8() ) +
+            "&b[0]=" + KURL::encode_string( item->album().utf8() ) +
             "&m[0]=" +
             "&l[0]=" + QString::number( item->length() ) +
             "&i[0]=" + KURL::encode_string(
