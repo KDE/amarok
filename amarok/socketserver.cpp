@@ -9,19 +9,19 @@
 #include "fht.h"              //processing the scope
 #include "socketserver.h"
 
+#include <qdir.h>
+#include <qsocketnotifier.h>
+
 #include <kdebug.h>
 #include <klocale.h>
 #include <kprocess.h> //Vis::Selector
 #include <kstandarddirs.h>
-#include <qsocketnotifier.h>
+
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
 #include <vector>
-
-#include <dirent.h> //FIXME use QDir
-#include <sys/stat.h>
 
 
 QGuardedPtr<Vis::Selector> Vis::Selector::m_instance;
@@ -169,11 +169,12 @@ Vis::Selector::Selector()
     //TODO we will have to update the status of the visualisation window using the socket
     //     it should know which processes are requesting data from it
     //FIXME problem, you can have more than one of each vis running!
-    //      solution (for now) data starve multiple registrants
+    //      solution (for now) data starve multiple registrants <markey> Is there really a need for 
+    //      running multiple instances of the _same_ vis? Methinks that's a gimmick.
 
     //TODO for now we keep the widget around as this will keep the checkboxes set as the user expects
     //     it isn't a perfect system, but it will suffice
-    //setWFlags( Qt::WDestructiveClose ); //FIXME these are the defaults no?
+    //setWFlags( Qt::WDestructiveClose ); //FIXME these are the defaults no? <markey> No, it's not default.
 
     setFullWidth( true );
     setShowSortIndicator( true );
@@ -182,31 +183,13 @@ Vis::Selector::Selector()
     addColumn( i18n( "Name" ) );
     resize( 250, 250 );
     
+    QDir dir( XMMS_PLUGIN_PATH );
+    const QFileInfoList *list = dir.entryInfoList();
+    QFileInfo *fi;
     
-    QString dirname = XMMS_PLUGIN_PATH;
-    dirname.append( "/" );
-    QString filepath;
-    DIR *dir;
-    struct dirent *ent;
-    struct stat statbuf;
-
-    dir = opendir( dirname.local8Bit() );//TODO use QDir, it's just better to do that
-
-    while( (ent = readdir( dir )) )
-    {
-        QString filename = QString::fromLocal8Bit( ent->d_name );
-        
-        filepath = dirname + filename;
-        
-        if( filename.endsWith( ".so" ) &&
-            !stat( filepath.local8Bit(), &statbuf ) &&
-            S_ISREG( statbuf.st_mode ) )
-        {
-            new Selector::Item( this, filename );
-        }
-    }
-    
-    closedir( dir );
+    for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
+        if ( fi->isFile() && fi->extension() == "so" )
+            new Selector::Item( this, fi->fileName() );
 }
 
 void
