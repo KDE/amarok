@@ -159,6 +159,7 @@ void
 XineEngine::stop()
 {
     xine_stop( m_stream );
+    emit stopped();
 }
 
 void
