@@ -3,6 +3,7 @@ amaroK README
 
 RELEASE NOTES
 =============
+
 If you experience problems with building your Collection, please do:
 rm $KDEHOME/share/apps/amarok/collection.db
 
