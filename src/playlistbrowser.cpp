@@ -137,6 +137,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->firstChild() );
     addPlaylist( locate( "data","amarok/data/Cool-Streams.m3u" ) );
     lastPlaylist = static_cast<PlaylistBrowserItem*>( m_listview->lastItem() );
+    
+    // If database version is updated, the collection needs to be rescanned.
+    // This is done here because of a chicken/egg problem.
+    if ( CollectionDB::instance()->isEmpty() )
+    {
+        CollectionDB::instance()->startScan();
+    }
 }
 
 
