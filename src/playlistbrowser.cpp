@@ -1,33 +1,33 @@
 // (c) Max Howell 2004
 // See COPYING file for licensing information
 
-#include "playlistbrowser.h"
+#include "collectiondb.h"      //smart playlists
+#include "metabundle.h"        //paintCell()
 #include "playlist.h"
-#include "playlistloader.h" //PlaylistBrowserItem ctor
-#include "metabundle.h"    //paintCell()
-#include "collectiondb.h"  //smart playlists
-#include "threadweaver.h"  //PlaylistFoundEvent
+#include "playlistbrowser.h"
+#include "playlistloader.h"    //PlaylistBrowserItem ctor
+#include "threadweaver.h"      //PlaylistFoundEvent
 
-#include <qevent.h>       //customEvent()
-#include <qsplitter.h>
+#include <qevent.h>            //customEvent()
 #include <qfile.h>
-#include <qpainter.h>  //paintCell()
-#include <qpixmap.h>    //paintCell()
+#include <qpainter.h>          //paintCell()
+#include <qpixmap.h>           //paintCell()
+#include <qsplitter.h>
+
+#include <kaction.h>
+#include <kactioncollection.h>
 #include <kapplication.h>
 #include <kdebug.h>
-#include <kfiledialog.h>  //openPlaylist()
-#include <kiconloader.h>  //smallIcon
+#include <kfiledialog.h>       //openPlaylist()
+#include <kiconloader.h>       //smallIcon
 #include <klistview.h>
-#include <qvbox.h>
-#include <ktoolbar.h>
-#include <kpopupmenu.h>
-#include <kmessagebox.h>  //removePlaylist() and renamePlaylist()
-#include <kactioncollection.h>
-#include <kaction.h>
 #include <klocale.h>
-#include <kurldrag.h>     //dragObject()
+#include <kmessagebox.h>       //removePlaylist() and renamePlaylist()
+#include <kpopupmenu.h>
+#include <ktoolbar.h>
+#include <kurldrag.h>          //dragObject()
 
-#include <stdio.h> //remove() and rename()
+#include <stdio.h>             //remove() and rename()
 
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
@@ -78,7 +78,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     stream >> *m_splitter; //this sets the splitters position
 
     // signals and slots connections
-    connect( m_listview, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int ) ),
+    connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
            this, SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
     connect( m_listview, SIGNAL( doubleClicked( QListViewItem *) ), 
            this, SLOT( loadPlaylist( QListViewItem * ) ) );
@@ -346,11 +346,6 @@ PlaylistBrowserItem::PlaylistBrowserItem( KListViewItem *parent, KListViewItem *
 }
 
 
-PlaylistBrowserItem::~PlaylistBrowserItem() 
-{
-}
-
-
 void PlaylistBrowserItem::customEvent( QCustomEvent *e )
 {
     switch( e->type() )
@@ -488,11 +483,6 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
    
    connect( this, SIGNAL( doubleClicked( QListViewItem *) ), SLOT( loadPlaylistSlot( QListViewItem * ) ) );
    
-}
-
-
-SmartPlaylistView::~SmartPlaylistView()
-{
 }
 
 

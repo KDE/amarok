@@ -7,7 +7,6 @@
 #include <klistview.h>
 #include <kurl.h>
 #include <qvbox.h>
-#include <qobject.h>
 
 class KAction;
 class KActionCollection;
@@ -72,7 +71,6 @@ Q_OBJECT
    public:
        PlaylistBrowserItem( KListView *, QListViewItem *, const KURL &  );
        PlaylistBrowserItem( KListViewItem *, KListViewItem *, const KURL&, const QString&, int );
-       ~PlaylistBrowserItem();
        
        bool isPlaylist() { return m_isPlaylist; }
        
@@ -103,7 +101,7 @@ Q_OBJECT
     
    public:
        SmartPlaylistView( QWidget *parent, const char *name = 0 );
-       ~SmartPlaylistView();
+       
        KURL::List loadSmartPlaylist( QueryType );
    
    protected:
