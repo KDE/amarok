@@ -210,11 +210,11 @@ void App::handleLoaderArgs( QCString args ) //SLOT
     QStringList strlist = QStringList::split( "|", args );
 
     int argc = strlist.count();
-    char **argv = new char*[argc]; // char *argv[argc] is not ISO c++
+    if ( argc < 2 ) return;
+    char **argv = new char*[argc]; 
 
-    for ( int i = 0; i < argc; i++ )
-    {
-        argv[i] = const_cast<char*>( strlist[i].latin1() );
+    for ( int i = 0; i < argc; i++ ) {
+        argv[i] = qstrdup( strlist[i].local8Bit() );
         kdDebug() << k_funcinfo << " extracted string: " << argv[i] << endl;
     }
 

@@ -175,71 +175,75 @@ CollectionDB::sqlInsertID()
 void
 CollectionDB::createTables( bool temporary )
 {
-        //create tag table
-        execSql( QString( "CREATE %1 TABLE tags%2 ("
-                          "url VARCHAR(100),"
-                          "dir VARCHAR(100),"
-                          "album INTEGER,"
-                          "artist INTEGER,"
-                          "genre INTEGER,"
-                          "title VARCHAR(100),"
-                          "year INTEGER,"
-                          "comment VARCHAR(100),"
-                          "track NUMBER(4) );" )
-                          .arg( temporary ? "TEMPORARY" : "" )
-                          .arg( temporary ? "_temp" : "" ) );
-
-        //create album table
-        execSql( QString( "CREATE %1 TABLE album%2 ("
-                          "id INTEGER PRIMARY KEY,"
-                          "name varchar(100) );" )
-                          .arg( temporary ? "TEMPORARY" : "" )
-                          .arg( temporary ? "_temp" : "" ) );
-
-        //create artist table
-        execSql( QString( "CREATE %1 TABLE artist%2 ("
-                          "id INTEGER PRIMARY KEY,"
-                          "name varchar(100) );" )
-                          .arg( temporary ? "TEMPORARY" : "" )
-                          .arg( temporary ? "_temp" : "" ) );
-
-        //create genre table
-        execSql( QString( "CREATE %1 TABLE genre%2 ("
-                          "id INTEGER PRIMARY KEY,"
-                          "name varchar(100) );" )
-                          .arg( temporary ? "TEMPORARY" : "" )
-                          .arg( temporary ? "_temp" : "" ) );
-
-        //create year table
-        execSql( QString( "CREATE %1 TABLE year%2 ("
-                          "id INTEGER PRIMARY KEY,"
-                          "name varchar(100) );" )
-                          .arg( temporary ? "TEMPORARY" : "" )
-                          .arg( temporary ? "_temp" : "" ) );
-
-        //create indexes
-        execSql( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
-                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
-        execSql( QString( "CREATE INDEX artist_idx%1 ON artist%2( name );" )
-                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
-        execSql( QString( "CREATE INDEX genre_idx%1 ON genre%2( name );" )
-                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
-        execSql( QString( "CREATE INDEX year_idx%1 ON year%2( name );" )
-                 .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
-
-        if ( !temporary )
-        {
-            execSql( "CREATE INDEX album ON tags( album );" );
-            execSql( "CREATE INDEX artist ON tags( artist );" );
-            execSql( "CREATE INDEX genre ON tags( genre );" );
-            execSql( "CREATE INDEX year ON tags( year );" );
-        }
+    kdDebug() << k_funcinfo << endl;
+    
+    //create tag table
+    execSql( QString( "CREATE %1 TABLE tags%2 ("
+                        "url VARCHAR(100),"
+                        "dir VARCHAR(100),"
+                        "album INTEGER,"
+                        "artist INTEGER,"
+                        "genre INTEGER,"
+                        "title VARCHAR(100),"
+                        "year INTEGER,"
+                        "comment VARCHAR(100),"
+                        "track NUMBER(4) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+    
+    //create album table
+    execSql( QString( "CREATE %1 TABLE album%2 ("
+                        "id INTEGER PRIMARY KEY,"
+                        "name varchar(100) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+    
+    //create artist table
+    execSql( QString( "CREATE %1 TABLE artist%2 ("
+                        "id INTEGER PRIMARY KEY,"
+                        "name varchar(100) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+    
+    //create genre table
+    execSql( QString( "CREATE %1 TABLE genre%2 ("
+                        "id INTEGER PRIMARY KEY,"
+                        "name varchar(100) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+    
+    //create year table
+    execSql( QString( "CREATE %1 TABLE year%2 ("
+                        "id INTEGER PRIMARY KEY,"
+                        "name varchar(100) );" )
+                        .arg( temporary ? "TEMPORARY" : "" )
+                        .arg( temporary ? "_temp" : "" ) );
+    
+    //create indexes
+    execSql( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
+                .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "CREATE INDEX artist_idx%1 ON artist%2( name );" )
+                .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "CREATE INDEX genre_idx%1 ON genre%2( name );" )
+                .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+    execSql( QString( "CREATE INDEX year_idx%1 ON year%2( name );" )
+                .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+    
+    if ( !temporary )
+    {
+        execSql( "CREATE INDEX album ON tags( album );" );
+        execSql( "CREATE INDEX artist ON tags( artist );" );
+        execSql( "CREATE INDEX genre ON tags( genre );" );
+        execSql( "CREATE INDEX year ON tags( year );" );
+    }
 }
 
 
 void
 CollectionDB::dropTables( bool temporary )
 {
+    kdDebug() << k_funcinfo << endl;
+    
     execSql( QString( "DROP TABLE tags%1;" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "DROP TABLE album%1;" ).arg( temporary ? "_temp" : "" ) );
     execSql( QString( "DROP TABLE artist%1;" ).arg( temporary ? "_temp" : "" ) );

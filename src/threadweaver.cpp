@@ -343,6 +343,7 @@ CollectionReader::readTags( const QStringList& entries ) {
     }
     // let's lock the database (will block other threads)
     insertdb->execSql( "BEGIN TRANSACTION;" );
+    
     // remove tables and recreate them (quicker than DELETE FROM)
     insertdb->dropTables();
     insertdb->createTables();
