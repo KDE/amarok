@@ -39,6 +39,15 @@ class KURL;
 
 class InputPipeline;
 
+/**
+ *  GstEngine uses following pipeline for playing (syntax used by gst-launch):
+ *  { filesrc location=file.ext ! decodebin ! audioconvert ! audioscale ! volume
+ *  ! adder } ! { queue ! equalizer ! identity ! volume ! audiosink }
+ *  Part of pipeline between filesrc and first volume is double while 
+ *  crossfading. First pair of curly braces encloses m_gst_inputThread, second
+ *  m_gst_outputThread
+*/
+
 class GstEngine : public Engine::Base
 {
         friend class GstConfigDialog;
