@@ -25,8 +25,10 @@
 
 #include <kactionclasses.h>
 #include <kglobalsettings.h>
+#include <kiconloader.h>
 #include <qiconset.h>
 #include <qlabel.h>
+#include <qtooltip.h>
 
 
 class ToggleLabel : public QLabel
@@ -47,6 +49,13 @@ public:
         connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
 
         setChecked( isChecked() );
+
+        QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
+        tip += action->isChecked() ? i18n("%2: on") : i18n("%2: off");
+        tip += "&nbsp;";
+        const QString path = KGlobal::iconLoader()->iconPath( action->icon(), KIcon::Desktop );
+
+        QToolTip::add( this, tip.arg( path ).arg( action->text().remove('&') ) );
     }
 
     inline bool isChecked() const { return m_action->isChecked(); }
