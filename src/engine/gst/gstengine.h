@@ -43,7 +43,7 @@ class InputPipeline;
  *  GstEngine uses following pipeline for playing (syntax used by gst-launch):
  *  { filesrc location=file.ext ! decodebin ! audioconvert ! audioscale ! volume
  *  ! adder } ! { queue ! equalizer ! identity ! volume ! audiosink }
- *  Part of pipeline between filesrc and first volume is double while 
+ *  Part of pipeline between filesrc and first volume is double while
  *  crossfading. First pair of curly braces encloses m_gst_inputThread, second
  *  m_gst_outputThread
 */
@@ -123,9 +123,9 @@ class GstEngine : public Engine::Base
 
         // CALLBACKS:
         /** Called at end of track */
-        static void eos_cb( GstElement*, gpointer );
+        static void eos_cb( GstElement*, InputPipeline* );
         /** Called when decodebin has generated a new pad */
-        static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
+        static void newPad_cb( GstElement*, GstPad*, gboolean, InputPipeline* );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
@@ -180,10 +180,12 @@ class GstEngine : public Engine::Base
 
         GstAdapter* m_gst_adapter;
 
+        // These variables are shared between gst-engine and streamsrc
         char*    m_streamBuf;
         int      m_streamBufIndex;
         bool     m_streamBufStop;
         bool     m_streamBuffering;
+
         KIO::TransferJob* m_transferJob;
         QMutex   m_mutexScope;
 

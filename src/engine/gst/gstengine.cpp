@@ -37,9 +37,12 @@ email                : markey@web.de
 
 #include <gst/gst.h>
 
-//HACK
+//HACK Needed until debug.h gets fixed
 #define indent gst_indent
 #include "debug.h"
+
+#define RETURN_IF_PIPELINE_EMPTY if ( !m_pipelineFilled ) return;
+
 
 using std::vector;
 
@@ -54,14 +57,13 @@ AMAROK_EXPORT_PLUGIN( GstEngine )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::eos_cb( GstElement* /*element*/, gpointer inputPipeline ) //static
+GstEngine::eos_cb( GstElement* /*element*/, InputPipeline* input ) //static
 {
     DEBUG_FUNC_INFO
 
     // Ignore eos when gst error was raised
     if ( !instance()->m_gst_error.isEmpty() ) return;
 
-    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
     input->m_eos = true;
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
@@ -71,12 +73,11 @@ GstEngine::eos_cb( GstElement* /*element*/, gpointer inputPipeline ) //static
 
 
 void
-GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer inputPipeline ) //static
+GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, InputPipeline* input ) //static
 {
     DEBUG_BLOCK
 
-    InputPipeline* input = static_cast<InputPipeline*>( inputPipeline );
-    GstPad* audiopad = gst_element_get_pad( input->audioconvert, "sink" );
+    GstPad* const audiopad = gst_element_get_pad( input->audioconvert, "sink" );
 
     if ( GST_PAD_IS_LINKED( audiopad ) ) {
         debug() << "audiopad is already linked. Unlinking old pad." << endl;
@@ -98,7 +99,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
     instance()->m_mutexScope.lock();
 
     // Check for buffer overflow
-    uint available = gst_adapter_available( instance()->m_gst_adapter );
+    const uint available = gst_adapter_available( instance()->m_gst_adapter );
     if ( available > SCOPEBUF_SIZE )
         gst_adapter_flush( instance()->m_gst_adapter, available - 30000 );
 
@@ -297,6 +298,8 @@ GstEngine::init()
 bool
 GstEngine::canDecode( const KURL &url ) const
 {
+    // TODO Consider using decodebin here as well
+
     // We had some bug reports claiming that .mov files cause crashes in canDecode(),
     // so don't try to decode them
     if ( url.fileName().lower().endsWith( ".mov" ) ) return false;
@@ -427,7 +430,7 @@ GstEngine::scope()
     int offset = available - static_cast<int>( factor * (double) available );
     offset /= channels;
     offset *= channels;
-    if ( offset < 0 ) offset *= -1; //FIXME Offset should never become < 0. Find out why this happens.
+    if ( offset < 0 ) offset = -offset; //FIXME Offset should never become < 0. Find out why this happens.
     offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
     for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
@@ -476,9 +479,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     debug() << "Loading url: " << url.url() << endl;
 
     // Make sure we have a functional output pipeline
-    if ( !m_pipelineFilled )
-        if ( !createPipeline() )
-            return false;
+    if ( !m_pipelineFilled && !createPipeline() )
+        return false;
 
     InputPipeline* input = new InputPipeline();
     if ( input->m_error ) {
@@ -498,6 +500,19 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         gst_element_set( input->src, "buffer_min", STREAMBUF_MIN, NULL );
         gst_bin_add ( GST_BIN ( input->bin ), input->src );
         g_signal_connect( G_OBJECT( input->src ), "kio_resume", G_CALLBACK( kio_resume_cb ), input->bin );
+
+        m_streamBufIndex = 0;
+        m_streamBufStop = false;
+        m_streamBuffering = true;
+
+        if ( !stream ) {
+            // Use KIO for non-local files, except http, which is handled by TitleProxy
+            m_transferJob = KIO::get( url, false, false );
+            connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+                              this,   SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
+            connect( m_transferJob, SIGNAL( result( KIO::Job* ) ),
+                              this,   SLOT( kioFinished() ) );
+        }
     }
 
     gst_element_link( input->src, input->decodebin );
@@ -516,21 +531,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     m_currentInput = input;
     m_inputs.append( input );
 
-    if ( !url.isLocalFile()  ) {
-        m_streamBufIndex = 0;
-        m_streamBufStop = false;
-        m_streamBuffering = true;
-
-        if ( !stream ) {
-            // Use KIO for non-local files, except http, which is handled by TitleProxy
-            m_transferJob = KIO::get( url, false, false );
-            connect( m_transferJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-                              this,   SLOT( newKioData( KIO::Job*, const QByteArray& ) ) );
-            connect( m_transferJob, SIGNAL( result( KIO::Job* ) ),
-                              this,   SLOT( kioFinished() ) );
-        }
-    }
-
     return true;
 }
 
@@ -544,7 +544,7 @@ GstEngine::play( uint offset )  //SLOT
     if ( !m_currentInput ) return false;
 
     // We must pause the queue before changing the state of the input thread, else the scheduler
-    // freaks out
+    // freaks out. This is due to a bug in the queue element; will be fixed in gst-0.8.10
     gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
 
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED ) )
@@ -580,7 +580,7 @@ GstEngine::stop()  //SLOT
     emit stateChanged( Engine::Empty );
     m_eosReached = false;
 
-    if ( !m_currentInput ) return;
+    RETURN_IF_PIPELINE_EMPTY
 
     // When engine is in pause mode, don't fade but destroy right away
     if ( state() == Engine::Paused )
@@ -594,8 +594,7 @@ void
 GstEngine::pause()  //SLOT
 {
     DEBUG_BLOCK
-
-    if ( !m_currentInput ) return;
+    RETURN_IF_PIPELINE_EMPTY
 
     if ( GST_STATE( m_currentInput->bin ) == GST_STATE_PAUSED ) {
         gst_element_set_state( m_currentInput->bin, GST_STATE_PLAYING );
@@ -611,13 +610,11 @@ GstEngine::pause()  //SLOT
 void
 GstEngine::seek( uint ms )  //SLOT
 {
-    if ( !m_pipelineFilled ) return;
+    RETURN_IF_PIPELINE_EMPTY
 
-    if ( ms > 0 )
-    {
-        GstEvent* event = gst_event_new_seek( ( GstSeekType ) ( GST_FORMAT_TIME |
-                                                                GST_SEEK_METHOD_SET |
-                                                                GST_SEEK_FLAG_FLUSH ), ms * GST_MSECOND );
+    if ( ms > 0 ) {
+        const int seekType = GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH;
+        GstEvent* event = gst_event_new_seek( (GstSeekType) seekType, ms * GST_MSECOND );
 
         gst_element_send_event( m_gst_audiosink, event );
     }
@@ -644,7 +641,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 void
 GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
 {
-    if ( !m_pipelineFilled ) return;
+    RETURN_IF_PIPELINE_EMPTY
 
     gst_element_set( m_gst_equalizer, "active", enabled, NULL );
 }
@@ -653,7 +650,7 @@ GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
 void
 GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains ) //SLOT
 {
-    if ( !m_pipelineFilled ) return;
+    RETURN_IF_PIPELINE_EMPTY
 
     // BEGIN Preamp
     gst_element_set( m_gst_equalizer, "preamp", ( preamp + 100 ) / 2 , NULL );
@@ -676,7 +673,7 @@ GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains 
 void
 GstEngine::setVolumeSW( uint percent )  //SLOT
 {
-    if ( !m_pipelineFilled ) return;
+    RETURN_IF_PIPELINE_EMPTY
 
     gst_element_set( m_gst_volume, "volume", (double) percent * 0.01, NULL );
 }
@@ -1106,7 +1103,6 @@ GstEngine::destroyInput( InputPipeline* input )
 
     if ( input ) {
         debug() << "Destroying input pipeline.\n";
-
         // Destroy the pipeline
         m_inputs.remove( input );
     }
@@ -1124,8 +1120,9 @@ GstEngine::sendBufferStatus()
 {
     if ( m_streamBuffering )
     {
-        int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 105.0 );
+//         debug() << "m_streamBufIndex" << m_streamBufIndex << endl;
 
+        const int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 105.0 );
         emit statusText( i18n( "Buffering.. %1%" ).arg( MIN( percent, 100 ) ) );
     }
 }
@@ -1142,8 +1139,6 @@ InputPipeline::InputPipeline()
     , m_eos( false )
 {
     DEBUG_BLOCK
-
-    QString binName;
 
     /* create a new pipeline (thread) to hold the elements */
     if ( !( bin = GstEngine::createElement( "bin" ) ) ) { goto error; }
@@ -1180,6 +1175,8 @@ InputPipeline::~InputPipeline()
 
     if ( gst_element_get_managing_bin( bin ) == GST_BIN( GstEngine::instance()->m_gst_inputThread ) )
     {
+        // We must pause the queue before changing the state of the input thread, else the scheduler
+        // freaks out. This is due to a bug in the queue element; will be fixed in gst-0.8.10
         gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
 
         if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )

@@ -204,7 +204,7 @@ static GstData*
 gst_streamsrc_get ( GstPad* pad )
 {
     g_return_val_if_fail( pad != NULL, NULL );
-    GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
+    GstStreamSrc* const src = GST_STREAMSRC( GST_OBJECT_PARENT( pad ) );
 
     if ( src->stopped )
         return GST_DATA( gst_event_new( GST_EVENT_FLUSH ) );
@@ -213,14 +213,12 @@ gst_streamsrc_get ( GstPad* pad )
     if ( *src->m_bufIndex < src->buffer_resume )
         g_signal_emit ( G_OBJECT( src ), gst_streamsrc_signals[SIGNAL_KIO_RESUME], 0 );
 
-    if ( *src->m_bufStop ) {
+    if ( *src->m_bufStop && *src->m_bufIndex == 0 ) {
         // Send EOS event when buffer is empty
-        if ( *src->m_bufIndex == 0 ) {
-            kdDebug() << "Streamsrc EOS\n";
-            src->stopped = true;
-            gst_element_set_eos (GST_ELEMENT( src ) );
-            return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
-        }
+        kdDebug() << "Streamsrc EOS\n";
+        src->stopped = true;
+        gst_element_set_eos( GST_ELEMENT( src ) );
+        return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
     }
     // When buffering, return filler-event when buffer index is below minimum level
     else if ( *src->m_buffering && *src->m_bufIndex < src->buffer_min )
@@ -233,10 +231,10 @@ gst_streamsrc_get ( GstPad* pad )
     }
 
     *src->m_buffering = false;
-    int readBytes = MIN( *src->m_bufIndex, src->blocksize );
+    const int readBytes = MIN( *src->m_bufIndex, src->blocksize );
 
-    GstBuffer* buf = gst_buffer_new_and_alloc( readBytes );
-    guint8* data = GST_BUFFER_DATA( buf );
+    GstBuffer* const buf = gst_buffer_new_and_alloc( readBytes );
+    guint8*    const data = GST_BUFFER_DATA( buf );
 
     // Copy stream buffer content into gst buffer
     memcpy( data, src->m_buf, readBytes );
@@ -246,8 +244,8 @@ gst_streamsrc_get ( GstPad* pad )
     // Adjust buffer index
     *src->m_bufIndex -= readBytes;
 
-    GST_BUFFER_OFFSET ( buf ) = src->curoffset;
-    GST_BUFFER_OFFSET_END ( buf ) = src->curoffset + readBytes;
+    GST_BUFFER_OFFSET( buf )     = src->curoffset;
+    GST_BUFFER_OFFSET_END( buf ) = src->curoffset + readBytes;
     src->curoffset += readBytes;
 
     return GST_DATA ( buf );
@@ -257,7 +255,7 @@ gst_streamsrc_get ( GstPad* pad )
 GstStreamSrc*
 gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 {
-    GstStreamSrc * object = GST_STREAMSRC ( g_object_new ( GST_TYPE_STREAMSRC, NULL ) );
+    GstStreamSrc * object = GST_STREAMSRC( g_object_new( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
 
     object->m_buf = buf;
