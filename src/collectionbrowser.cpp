@@ -87,7 +87,7 @@ void
 CollectionBrowser::slotSetFilterTimeout() //slot
 {
     if ( timer->isActive() ) timer->stop();
-    timer->start( 300, true );
+    timer->start( 180, true );
 }
 
 
@@ -136,18 +136,20 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //<open database>
         m_databasePath = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
                        + "collection.db" ).local8Bit();
-        //remove database file if version is incompatible
-        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
-            ::unlink( m_databasePath );
 
         m_db = new CollectionDB( m_databasePath );
+        //remove database file if version is incompatible
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
+        {
+            m_db->dropTables();
+            m_db->createTables();
+        }
+
         if ( !m_db )
             kdWarning() << k_funcinfo << "Could not open SQLite database\n";
         //optimization for speeding up SQLite
         m_db->execSql( "PRAGMA default_synchronous = OFF;" );
         m_db->execSql( "PRAGMA default_cache_size = 4000;" );
-
-        m_db->createTables();
     //</open database>
 
     connect( this,       SIGNAL( tagsReady() ),
