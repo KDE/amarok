@@ -3,7 +3,7 @@ bin_PROGRAMS = \
 
 INCLUDES = \
     $(xmms_cflags) \
-    $(gtk_cflags ) \
+    $(gtk_cflags) \
     $(all_includes)
 
 amarok_xmmswrapper2_SOURCES = \
