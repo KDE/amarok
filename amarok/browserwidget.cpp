@@ -77,7 +77,10 @@ void BrowserWidget::contentsDragMoveEvent( QDragMoveEvent* e)
 {
     //FIXME, I guess we need to derive our own mimetype and do this properly at some point
     //       and only accept drags from the playlist
-    e->acceptAction();
+    if( e->source() && QString( e->source()->parent()->name() ) == "PlaylistWidget" )
+    {
+        e->acceptAction();
+    }
 }
 
 
@@ -95,14 +98,12 @@ QDragObject *BrowserWidget::dragObject()
 
 void BrowserWidget::contentsDropEvent( QDropEvent* e)
 {
-    if ( e->source()->parent() == this ) // reject drop if source is this widget
-        return;
-
-    //FIXME, I guess we need to derive our own mimetype and do this properly at some point
-    //       and only accept drags from the playlist
-
-    e->acceptAction();
-    emit browserDrop();
+    //for some reason the source is qt_viewport and the parent is the playlistWidget
+    if( e->source() && QString( e->source()->parent()->name() ) == "PlaylistWidget" )
+    {
+        e->acceptAction();
+        emit browserDrop();
+    }
 }
 
 
