@@ -64,6 +64,7 @@ class GstEngine : public EngineBase
     private slots:
         void                                     handleFakesrc();
         void                                     handleError();
+        void                                     stopAtEnd();
         
     private:
         /** Called at end of track */

@@ -63,7 +63,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 
     //this is the Qt equivalent to an idle function: delay the call until all events are finished,
     //otherwise gst will crash horribly
-    QTimer::singleShot( 0, self, SLOT( stop() ) );
+    QTimer::singleShot( 0, self, SLOT( stopAtEnd() ) );
 }
 
 
@@ -387,7 +387,7 @@ GstEngine::stop()             //SLOT
     if ( !m_pipelineFilled ) return ;
 
     /* stop the thread */
-    gst_element_set_state ( m_pThread, GST_STATE_READY );
+    gst_element_set_state ( m_pThread, GST_STATE_NULL );
 }
 
 
@@ -476,6 +476,17 @@ void
 GstEngine::handleError() //SLOT
 {
     kdDebug() << "Error message: " << static_cast<const char*>( error_msg->message ) << endl;
+}
+
+
+void
+GstEngine::stopAtEnd()             //SLOT
+{
+    kdDebug() << k_funcinfo << endl;
+    if ( !m_pipelineFilled ) return ;
+
+    /* stop the thread */
+    gst_element_set_state ( m_pThread, GST_STATE_READY );
 }
 
 
