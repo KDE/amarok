@@ -195,7 +195,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_category3 = config->readEntry( "Category3", i18n( "None" ) );
 
         addColumn( m_category1 );
-        addColumn( m_category2 );
     //</READ CONFIG>
 
     //<OPEN DATABASE>
