@@ -29,7 +29,7 @@ echo '*' | import
 
 [Prepare]
 # Dependency checking
-require @whatever.you/need 1.0
+require @kde.org/kdelibs 3.2
 
 [Install]
 # Put your installation script here
