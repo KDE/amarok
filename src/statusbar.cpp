@@ -166,25 +166,20 @@ void StatusBar::message( const QString& message, int ms ) //SLOT
 {
     // TODO Show statusbar for messages in case it is hidden
 
+    kdDebug() << "message: " << message << endl;
+
     m_pTitle->setText( message );
 
     // Remove possible old timer
-    disconnect( this, SLOT( restoreMessage() ) );
+    disconnect( this, SLOT( clear() ) );
 
-    QTimer::singleShot( ms, this, SLOT( restoreMessage() ) );
+    QTimer::singleShot( ms, this, SLOT( clear() ) );
 }
 
 
-void StatusBar::restoreMessage() //SLOT
+void StatusBar::clear() //SLOT
 {
     m_pTitle->setText( m_oldMessage );
-}
-
-
-void StatusBar::clearMessage() //SLOT
-{
-    m_pTitle->clear();
-    m_oldMessage = "";
 }
 
 
@@ -193,19 +188,19 @@ void StatusBar::engineStateChanged( Engine::State state )
     switch( state )
     {
         case Engine::Empty:
-            clearMessage();
+            m_pTitle->clear();
             m_pSlider->setEnabled( false );
             m_pSlider->setMaxValue( 0 );
             m_pTimeLabel->clear(); //must be done after the setValue() above, due to a signal connection
             break;
 
         case Engine::Paused:
-            m_pTitle->setText( i18n( "amaroK is paused" ) ); // display TEMPORARY message
+            message( i18n( "amaroK is paused" ) ); // display TEMPORARY message
             m_pPauseTimer->start( 300 );
             break;
 
         case Engine::Playing:
-            restoreMessage();
+            clear();
             m_pPauseTimer->stop();
             break;
 

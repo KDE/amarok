@@ -51,8 +51,7 @@ public slots:
     void slotItemCountChanged(int newCount);
     void message( const QString& message ); //reimpl. from QStatusBar
     void message( const QString&, int ms ); //reimpl. from QStatusBar
-    void restoreMessage();
-    void clearMessage();
+    void clear();
     void engineMessage( const QString &s ) { message( s, 3000 ); } //NOTE leave inlined!
 
 protected: /* reimpl from engineobserver */
