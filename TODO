@@ -184,4 +184,78 @@ DO-NOT-IMPLEMENT:
 BACKTRACE/DEBUG
 
 
+-- Starting program: /opt/kde/bin/amarokapp
+[New Thread 16384 (LWP 32293)]
+[amaroK::Plugin::Plugin()]
+amarok: BEGIN [void PlaylistWindow::init()]
+amarok: BEGIN [Playlist::Playlist(QWidget*, KActionCollection*, const char*)]
+amarok: END [Playlist::Playlist(QWidget*, KActionCollection*, const char*)]
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 16384 (LWP 32293)]
+0x40ff7a8b in QPixmap::fill(QColor const&) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+(gdb) bt
+#0  0x40ff7a8b in QPixmap::fill(QColor const&) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#1  0x080ed4da in BlockAnalyzer::paletteChange(QPalette const&) ()
+#2  0x410cb491 in QWidget::setPalette(QPalette const&) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#3  0x410cb500 in QWidget::unsetPalette() ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#4  0x410ce16a in QWidget::event(QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#5  0x080f3c72 in Analyzer::Base<QWidget>::event(QEvent*) ()
+#6  0x41042c7d in QApplication::internalNotify(QObject*, QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#7  0x41042329 in QApplication::notify(QObject*, QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#8  0x40b501bc in KApplication::notify(QObject*, QEvent*) ()
+   from /opt/kde/lib/libkdecore.so.4
+#9  0x410cb463 in QWidget::setPalette(QPalette const&) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#10 0x41fd3633 in LiquidStyle::polish(QWidget*) ()
+   from /opt/kde/lib/kde3/plugins/styles/baghira.so
+#11 0x41042056 in QApplication::polish(QWidget*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#12 0x410cd46a in QWidget::polish() () from /usr/lib/qt/lib/libqt-mt.so.3
+#13 0x408f8a25 in KToolBar::sizeHint() const ()
+---Type <return> to continue, or q <return> to quit---
+   from /opt/kde/lib/libkdeui.so.4
+#14 0x41087224 in qSmartMaxSize(QWidgetItem const*, int) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#15 0x4103783f in QWidgetItem::maximumSize() const ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#16 0x41083cc1 in QBoxLayout::setupGeom() ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#17 0x41083211 in QBoxLayout::setGeometry(QRect const&) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#18 0x41038d7a in QLayout::activate() () from /usr/lib/qt/lib/libqt-mt.so.3
+#19 0x4103834c in QLayout::eventFilter(QObject*, QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#20 0x4109989a in QObject::activate_filters(QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#21 0x410997aa in QObject::event(QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#22 0x410cddf2 in QWidget::event(QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#23 0x41042c7d in QApplication::internalNotify(QObject*, QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#24 0x41042329 in QApplication::notify(QObject*, QEvent*) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#25 0x40b501bc in KApplication::notify(QObject*, QEvent*) ()
+   from /opt/kde/lib/libkdecore.so.4
+---Type <return> to continue, or q <return> to quit---
+#26 0x41043a6e in QApplication::sendPostedEvents(QObject*, int) ()
+   from /usr/lib/qt/lib/libqt-mt.so.3
+#27 0x410cdaec in QWidget::adjustSize() () from /usr/lib/qt/lib/libqt-mt.so.3
+#28 0x407357cf in KDirOperator::KDirOperator(KURL const&, QWidget*, char 
+const*) () from /opt/kde/lib/libkio.so.4
+#29 0x0809cb4e in FileBrowser::FileBrowser(char const*) ()
+#30 0x080b67bb in PlaylistWindow::init() ()
+#31 0x080713c6 in App::App() ()
+#32 0x080dee89 in main ()
+#33 0x418c7d06 in __libc_start_main () from /lib/libc.so.6
+
+
 
