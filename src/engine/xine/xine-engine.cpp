@@ -233,6 +233,12 @@ XineEngine::position() const
 void
 XineEngine::seek( uint ms )
 {
+    if( m_url.path().endsWith( ".flac", false ) )
+    {
+        emit statusText( i18n("xine cannot seek in flac media currently, sorry") );
+        return;
+    }
+
     xine_play( m_stream, 0, (int)ms );
 }
 
