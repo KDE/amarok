@@ -17,8 +17,6 @@ SHORT-TERM (URGENT):
 
     * fix: #6<markey> install correct icons (not the inactive logo version)
 
-    * fix: #5<markey> amaroK is not listed in my K-menu any more <mxcl> desktop file bug I think
-
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
            I know what to do about this.

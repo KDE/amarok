@@ -3,20 +3,52 @@ Type=Application
 Version=0.9.4
 Encoding=UTF-8
 Name=amaroK
-#the following line seems undefined, what does it do? <mxcl>
 Name[xx]=xxamaroKxx
+#the following line seems undefined, what does it do? <mxcl>
 GenericName=Media Player
+GenericName[bg]=Media Плеар
+GenericName[ca]=Reproductor de medis
+GenericName[cs]=Přehrávač médií
+GenericName[el]=Αναπαραγωγέας πολυμέσων
+GenericName[et]=Multimeedia mängija
+GenericName[eu]=Media Jolea
+GenericName[fi]=Mediasoittaja
+GenericName[it]=Lettore multimediale
+GenericName[ja]=メディアプレーヤー
+GenericName[lt]=Media grotuvas
+GenericName[lv]=Mēdiju Atskaņotājs
+GenericName[pl]=Odtwarzacz multimedialny
+GenericName[pt]=Reprodutor Multimedia
+GenericName[pt_BR]=Tocador de Mídia
+GenericName[ro]=Program de redare multimedia
+GenericName[sk]=Prehrávač médií
+GenericName[sv]=Mediaspelare
+GenericName[ta]=°¼¸ ­Âì¸¢
+GenericName[th]=เครื่องเล่นแฟ้มสื่อ
+GenericName[uk]=Програвач медіа-матеріалів
+GenericName[ven]=Tshitambi tsha Media
+GenericName[wa]=Djoweu multimedia
+GenericName[xh]=Umdlali we Midia
+GenericName[xx]=xxMedia Playerxx
+GenericName[zu]=Umdlali Wezezindaba
 Exec=amarok -caption "%c" %i %U
 Comment=A new media player
+Comment[es]=Un nuevo reproductor de medios
+Comment[pt]=Um novo leitor multimédia
+Comment[pt_BR]=Um novo reprodutor de mídia
 Comment[sv]=En ny mediaspelare
 Icon=amarok.png
 MimeType=application/x-ogg;audio/x-vorbis;audio/basic;audio/x-mod;audio/x-mp3;audio/x-scpls;audio/x-sid;audio/x-wav;
 DocPath=amarok/index.html
 Terminal=false
-Categories=Audio;Player;KDE;
+Categories=Qt;KDE;AudioVideo
 Actions=Enqueue;
 
 [Desktop Action Enqueue]
 Exec=amarok -caption "%c" %i -e %U
 Name=Enqueue in amaroK
+Name[es]=Encolar en amaroK
+Name[pt]=Colar em fila no amaroK
+Name[pt_BR]=Enqueue no amaroK
+Name[sv]=Köa i amaroK
 
