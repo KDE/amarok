@@ -921,11 +921,11 @@ void LoaderServer::newConnection( int sockfd )
         kdDebug() << "[LoaderServer::newConnection()] recv error" << endl;
     else
     {
-        buf[nbytes] = '\000';
+/*        buf[nbytes] = '\000';
         QCString result( buf );
         kdDebug() << result << endl;
 
-        emit loaderArgs( result );
+        emit loaderArgs( result );*/
     }
 
     ::close( sockfd );

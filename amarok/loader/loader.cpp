@@ -30,7 +30,7 @@
 
 
 Loader::Loader( int& argc, char** argv )
-    : QApplication( argc, argv )
+    : QApplication( argc, argv, QApplication::GuiServer )
     , m_argc( argc )
     , m_argv( argv )
     , m_pOsd( NULL )
@@ -55,7 +55,9 @@ Loader::Loader( int& argc, char** argv )
         
         connect( m_pProc, SIGNAL( readyReadStdout() ), this, SLOT( stdoutActive() ) );
         connect( m_pProc, SIGNAL( processExited() ),   this, SLOT( quit() ) );
+        m_pProc->setCommunication( QProcess::Stdout );
         m_pProc->start();
+        m_pProc->closeStdin();
         
         //wait until LoaderServer starts (== amaroK is up and running)
         while( ( sockfd = tryConnect() ) == -1 ) {
