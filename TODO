@@ -3,10 +3,12 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #57 being the highest available (take this one for your next bug and increase here)
+           #58 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #57 <markey> "Configure effects" menu item does nothing
 
     * fix: #56 <markey> providing a non-existant file as command line argument -> instant crash
 
