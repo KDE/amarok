@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "config.h"             //HAVE_XMMS definition
+ 
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
