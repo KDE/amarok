@@ -50,6 +50,7 @@ ContextBrowser::ContextBrowser( const char *name )
    : QVBox( 0, name )
    , m_db( new CollectionDB )
    , m_gradientImage( 0 )
+   , m_albumGradientImage( 0 )
 {
     EngineController::instance()->attach( this );
 
@@ -86,6 +87,8 @@ ContextBrowser::~ContextBrowser()
 
     if( m_gradientImage )
       m_gradientImage->unlink();
+    if( m_albumGradientImage )
+      m_albumGradientImage->unlink();
 
     EngineController::instance()->detach( this );
 }
@@ -847,9 +850,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 "<tr>"
                  "<td>"
                   "<div class='album-header' onClick=\"toggleAlbumTracks('IDA%1')\">"
-                   "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                   "<table width='100%' style='background-color: transparent;' border='0' cellspacing='0' cellpadding='0'>"
                     "<tr><td>"
-                     "<a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a></div>"
+                     "<a href='fetchcover:%2 @@@ %3'><img width='50' align='left' vspace='2' hspace='2' title='%4' src='%5'/></a>"
                      "<div style='float:right;'>%6</div>"
                      "<a href='album:%7 @@@ %8'><b>%9</b></a>"
                      "<br><i>%10</i>"
@@ -914,10 +917,20 @@ void ContextBrowser::setStyleSheet()
     QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
     image.save( m_gradientImage->file(), "PNG" );
     m_gradientImage->close();
+    //writing temp album gradient image (album-header height is less than 60 px)
+    m_albumGradientImage = new KTempFile( locateLocal( "tmp", "gradient_album" ), ".png", 0600 );
+    QImage imageHig = KImageEffect::gradient( QSize( 1, 15 ), gradient, gradient.light(), KImageEffect::VerticalGradient, 3 );
+    QImage imageLow = KImageEffect::gradient( QSize( 1, 30 ), gradient.light(), gradient, KImageEffect::VerticalGradient, 3 );
+    QImage imageV( 1, 60, 32 );
+    imageV.fill( gradient.light().pixel() );
+    bitBlt( &imageV, 0, 0, &imageHig, 0,0, imageHig.width(), imageHig.height() );
+    bitBlt( &imageV, 0,40, &imageLow, 0,0, imageLow.width(), imageLow.height() );
+    imageV.save( m_albumGradientImage->file(), "PNG" );
+    m_albumGradientImage->close();
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); backgroud-repeat: repeat-y; }" )
+    m_styleSheet  = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat-y; }" )
                     .arg( pxSize ).arg( text ).arg( AmarokConfig::schemeAmarok() ? fg : gradient.name() )
                     .arg( m_gradientImage->name() );
     m_styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
@@ -943,8 +956,8 @@ void ContextBrowser::setStyleSheet()
     m_styleSheet += QString( ".rbcontent a { text-decoration: none; }" );
     m_styleSheet += QString( ".rbcontent .song a { display: block; padding: 1px 2px; }" );
     m_styleSheet += QString( ".rbcontent .song a:hover { color: %1; background-color: %1; }" ).arg( fg ).arg( bg );
-    m_styleSheet += QString( ".album-header { background-color: %1; }" ).arg( colorGroup().base().name() );
-    m_styleSheet += QString( ".album-header:hover { background-color: %1; cursor: pointer; }" ).arg( colorGroup().highlight().light( 120 ).name() );
+    m_styleSheet += QString( ".album-header { background-image: url( %1 ); background-repeat: repeat-x; }" ).arg( m_albumGradientImage->name() );
+    m_styleSheet += QString( ".album-header:hover { background-image: none; background-color: %1; cursor: pointer; }" ).arg( bg );
     m_styleSheet += QString( ".album-contents { background-color: %1; border-bottom: solid %2 1px; border-top: solid %3 1px; }" ).arg( colorGroup().base().name() ).arg( bg ).arg( bg );
 
     //boxes used to display score (sb: score box)
