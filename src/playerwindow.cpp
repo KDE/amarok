@@ -492,6 +492,7 @@ bool PlayerWidget::event( QEvent *e )
                 m_pAnalyzer->reparent(0, QPoint(50,50), true);
                 m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
                 m_pAnalyzer->installEventFilter( this );
+                m_pAnalyzer->setPaletteBackgroundColor( paletteBackgroundColor() );
                 QToolTip::remove( m_pAnalyzer );
             }
             else createAnalyzer( 0 );
