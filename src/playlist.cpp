@@ -1356,28 +1356,34 @@ Playlist::customEvent( QCustomEvent *e )
         break;
 
     case PlaylistLoader::DomItem:
-        #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
-        item = new PlaylistItem( e->url, afterItem, e->node );
-        int queueIndex =
-            e->node.toElement().attribute( "queue_index" ).isEmpty() ? -1 :
-                e->node.toElement().attribute( "queue_index" ).toInt();
-        #undef e
-        if ( queueIndex == 0 )
         {
-            setCurrentTrack( item );
-        }
-        else if ( queueIndex > 0 )
-        {
-            int count = m_nextTracks.count();
-            if ( count < queueIndex )
+            #define e static_cast<PlaylistLoader::DomItemEvent*>(e)
+            item = new PlaylistItem( e->url, afterItem, e->node );
+            QString indexStr = e->node.toElement().attribute( "queue_index" );
+            #undef e
+            int queueIndex = -1;
+            if ( !indexStr.isEmpty() )
             {
-                for ( int i = 0; i < queueIndex - count; i++ )
-                {
-                    // Append foo values and replace with correct values later.
-                    m_nextTracks.append( item );
-                }
+                queueIndex = indexStr.toInt();
             }
-            m_nextTracks.replace( queueIndex - 1, item );
+            if ( queueIndex == 0 )
+            {
+                setCurrentTrack( item );
+            }
+            else if ( queueIndex > 0 )
+            {
+                int count = m_nextTracks.count();
+                if ( count < queueIndex )
+                {
+                    for ( int i = 0; i < queueIndex - count; i++ )
+                    {
+                        // Append foo values and replace with correct values
+                        // later.
+                        m_nextTracks.append( item );
+                    }
+                }
+                m_nextTracks.replace( queueIndex - 1, item );
+            }
         }
         if ( directPlay ) {
             activate( item );
