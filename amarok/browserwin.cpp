@@ -60,7 +60,7 @@
 // CLASS BrowserWin =====================================================================
 
 BrowserWin::BrowserWin( QWidget *parent, const char *name )
-    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WType_Dialog | Qt::WPaintUnclipped )
+    : QWidget( parent, name, Qt::WType_TopLevel | Qt::WPaintUnclipped )
     , m_pActionCollection( new KActionCollection( this ) )
 {
     setCaption( kapp->makeStdCaption( i18n( "Playlist" ) ) );
@@ -129,7 +129,7 @@ void BrowserWin::initChildren()
 
     m_pSplitter      = new QSplitter( this );
     m_pJanusWidget   = new KJanusWidget( m_pSplitter, 0, KJanusWidget::IconList );
-    
+
     //HACK Traverse childrenlist of KJanusWidget in order to find members which are not exposed in API
     QObject *pIconBox = m_pJanusWidget->child( 0, "KListBox" );
     if ( pIconBox )    static_cast<QWidget*>( pIconBox )->setFocusPolicy( QWidget::NoFocus );
@@ -137,7 +137,7 @@ void BrowserWin::initChildren()
     if ( pHeader )     static_cast<QWidget*>( pHeader )->hide();
     QObject *pSeparator = m_pJanusWidget->child( 0, "KSeparator" );
     if ( pSeparator )  static_cast<QWidget*>( pSeparator )->hide();
-            
+
     QWidget *pBrowserBox = m_pJanusWidget->addPage( QString( i18n( "files" ) ), QString::null,
                            KGlobal::iconLoader()->loadIcon( "hdd_unmount", KIcon::NoGroup,
                            KIcon::SizeMedium ) );
@@ -156,7 +156,7 @@ void BrowserWin::initChildren()
     m_pBrowserLineEdit->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
     m_pBrowserLineEdit->setDuplicatesEnabled( false );
     m_pBrowserLineEdit->setMinimumWidth( 1 );
-                            
+
     m_pBrowserWidget = new BrowserWidget( pBrowserBox, "FileBrowser" );
     m_pBrowserWidget->setAcceptDrops( true );
     m_pBrowserWidget->setSorting( -1 );
@@ -164,11 +164,11 @@ void BrowserWin::initChildren()
 
     QPushButton *button = new QPushButton( "&Fetch Stream Information", pStreamBox );
     m_pStreamBrowser    = new StreamBrowser( pStreamBox, "StreamBrowser" );
-   
+
     connect( button, SIGNAL( clicked() ), m_pStreamBrowser, SLOT( slotUpdateStations() ) );
     connect( button, SIGNAL( clicked() ), button, SLOT( hide() ) );
     //</Browser>
-        
+
     //<Playlist>
     QWidget *pPlaylistWidgetContainer = new QWidget( m_pSplitter );
     m_pPlaylistWidget = new PlaylistWidget( pPlaylistWidgetContainer );
@@ -180,7 +180,7 @@ void BrowserWin::initChildren()
     m_pPlaylistLineEdit->setPaletteBackgroundColor( pApp->m_bgColor );
     m_pPlaylistLineEdit->setPaletteForegroundColor( pApp->m_fgColor );
     //</Playlist>
-        
+
     connect( m_pBrowserLineEdit, SIGNAL( activated( const QString& ) ),
              m_pBrowserWidget, SLOT( slotReturnPressed( const QString& ) ) );
     connect( m_pBrowserLineEdit, SIGNAL( returnPressed( const QString& ) ),
