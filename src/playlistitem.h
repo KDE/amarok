@@ -25,6 +25,32 @@ class Playlist;
 class PlaylistItem : public KListViewItem
 {
     public:
+        enum Column {
+            TrackName = 0,
+            Title     = 1,
+            Artist    = 2,
+            Album     = 3,
+            Year      = 4,
+            Comment   = 5,
+            Genre     = 6,
+            Track     = 7,
+            Directory = 8,
+            Length    = 9,
+            Bitrate   = 10,
+            Score     = 11
+        };
+
+        static const int NUM_COLUMNS = 12;
+
+        /// Indicates that the current-track pixmap has changed. Animation must be redrawn.
+        static void setPixmapChanged() { s_pixmapChanged = true; }
+        static const QString columnName( int n );
+
+        /// For the glow colouration stuff
+        static QColor glowText;
+        static QColor glowBase;
+
+    public:
         //used by PlaylistLoader
         PlaylistItem( QListView*, QListViewItem* );
 
@@ -39,53 +65,35 @@ class PlaylistItem : public KListViewItem
          * according to the MetaBundle @p bundle. If the PlaylistItem has a score
          * it will also be set.
          */
-        void setText( const MetaBundle& bundle);
-        void setText( int, const QString& );
+        void setText( const MetaBundle& bundle );
+        void setText( int, const QString& ); //virtual
 
-        /** Indicates that the current-track pixmap has changed. Animation must be redrawn. */
-        static void setPixmapChanged();
-
+        /// convenience functions
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
-        void setup();
 
-        MetaBundle metaBundle();
-
+        /// some accessors
+        const KURL &url() const { return m_url; }
         QString trackName() const { return KListViewItem::text( TrackName ); }
         QString title() const { return KListViewItem::text( Title ); }
-        const KURL &url() const { return m_url; }
+        QString artist() const { return KListViewItem::text( Artist ); }
+        QString album() const { return KListViewItem::text( Album ); }
 
-        /**
-         * @return the length of the PlaylistItem in seconds
-         */
+        /// convenience function
+        MetaBundle metaBundle() { return MetaBundle( this ); }
+
+        /// @return the length of the PlaylistItem in seconds
         QString seconds() const;
 
-        /**
-         * @return does the file exist?
-         */
+        /// @return does the file exist?
         bool exists() const { return !m_missing; }
 
-        static QColor glowText;
-        static QColor glowBase;
+        //used by class Playlist
+        virtual void setup();
 
-        static const QString columnName(int n);
-
-        enum Column  { TrackName = 0,
-                       Title = 1,
-                       Artist = 2,
-                       Album = 3,
-                       Year = 4,
-                       Comment = 5,
-                       Genre = 6,
-                       Track = 7,
-                       Directory = 8,
-                       Length = 9,
-                       Bitrate = 10,
-                       Score = 11 };
-
-        // Used for sorting
-        bool operator== ( const PlaylistItem & item ) const;
-        bool operator< ( const PlaylistItem & item ) const;
+        //won't compile unless these are public *shrug*
+        virtual bool operator== ( const PlaylistItem & item ) const;
+        virtual bool operator< ( const PlaylistItem & item ) const;
 
     private:
         struct paintCacheItem {
@@ -96,17 +104,16 @@ class PlaylistItem : public KListViewItem
             QMap<QString, QPixmap> map;
         };
 
-        static const int NUM_COLUMNS = 12;
-
         /**
         * @return The text of the column @p column. If there is no text set for
         * the title this method returns a pretty version of the track name
         */
-        QString text( int column ) const;
+        virtual QString text( int column ) const;
 
-        int     compare( QListViewItem*, int, bool ) const;
-        void    paintCell( QPainter*, const QColorGroup&, int, int, int );
+        virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
 
+        // Used for sorting
+        virtual int  compare( QListViewItem*, int, bool ) const;
 
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 

@@ -103,7 +103,7 @@ CoverManager::CoverManager()
     { //<Search LineEdit>
         m_searchBox = new QHBox( coverWidget );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, m_searchBox );
-        m_searchEdit = new ClickLineEdit( m_searchBox, i18n( "Filter here..." ), "filter_edit" );
+        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), m_searchBox );
 
         m_searchBox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );

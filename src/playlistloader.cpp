@@ -121,7 +121,7 @@ public:
     TagsEvent( const KURL &u, PlaylistItem *i )
     : QCustomEvent( 1000 )
             , item( i )
-            , bundle( u, true ) {}
+            , bundle( u ) {}
 
     TagsEvent( const KURL &u, const QDomNode &n )
             : QCustomEvent( 1001 )
@@ -154,8 +154,6 @@ PlaylistLoader::doJob()
     setProgressTotalSteps( m_URLs.count() * 2 );
     setStatus( i18n("Populating playlist") );
 
-    //TODO should I only send it local urls?
-
     // 1st pass create items
     KURL::List urls;
     for( KURL::List::ConstIterator it = m_URLs.begin(), end = m_URLs.end(); it != end && !isAborted(); ++it ) {
@@ -178,16 +176,15 @@ PlaylistLoader::doJob()
             m_badURLs += url;
     }
 
-    // people think things work faster if the statusbar fills up
-    // multiple times weird but true
     setStatus( i18n("Filling in tags") );
 
+    //TODO should I only send it local urls?
     BundleList bundles = CollectionDB::instance()->bundlesByUrls( urls );
-
-    Q_ASSERT( bundles.count() == items.count() );
 
     // 2nd pass, fill in tags
     {
+        Q_ASSERT( bundles.count() == items.count() );
+
         BundleList::Iterator bu = bundles.begin();
         for( ItemList::ConstIterator it = items.begin(), end = items.end(); it != end && !isAborted(); ) {
             BundleList bundles;
@@ -197,9 +194,10 @@ PlaylistLoader::doJob()
             {
                 incrementProgress();
 
-                if ( (*bu).length() == 0 ) {
-                    debug() << "NO AUDIO-PROPS\n";
-                    (*bu).readTags( true );
+                if ( (*bu).length() <= 0 ) {
+                    // we try to read the tags, despite the slow-down
+                    debug() << "Audioproperties not know for: " << (*bu).url().fileName() << endl;
+                    (*bu).readTags( TagLib::AudioProperties::Fast );
                 }
 
                 items   += *it;

@@ -214,13 +214,12 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 void
 CollectionReader::readTags( const QStringList& entries )
 {
-    DEBUG_BEGIN
+    Debug::Timer timer( __PRETTY_FUNCTION__ );
 
     typedef QPair<QString, QString> CoverBundle;
 
-    QStringList validImages, validMusic;
-    validImages << "jpg" << "png" << "gif" << "jpeg";
-    validMusic  << "mp3" << "ogg" << "wav" << "flac";
+    QStringList validImages; validImages << "jpg" << "png" << "gif" << "jpeg";
+//    QStringList validMusic; validMusic << "mp3" << "ogg" << "wav" << "flac";
 
     foreach( entries )
     {
@@ -230,7 +229,8 @@ CollectionReader::readTags( const QStringList& entries )
 
         incrementProgress();
 
-        KURL url; url.setPath( *it );
+        const QString path = *it;
+        KURL url; url.setPath( path );
         QValueList<CoverBundle> covers;
         QStringList images;
         const QString ext = amaroK::extension( *it );
@@ -240,46 +240,41 @@ CollectionReader::readTags( const QStringList& entries )
         log << url.path().local8Bit() << "\n";
         log.flush();
 
-        TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
-        if ( !f.isNull() ) {
-            MetaBundle bundle( url, f.tag(), 0 );
-            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
+        // Tests reveal the following:
+        //
+        // TagLib::AudioProperties   Relative Time Taken
+        //
+        //  No AudioProp Reading        1
+        //  Fast                        1.18
+        //  Average                     Untested
+        //  Accurate                    Untested
 
-            if ( !covers.contains( CoverBundle( bundle.artist(), bundle.album() ) ) )
-                covers.append( CoverBundle( bundle.artist(), bundle.album() ) );
-        }
-        // Add tag-less tracks to database
+        // don't use the KURL ctor as it checks the db first
+        MetaBundle bundle;
+        bundle.setPath( path );
+        bundle.readTags( TagLib::AudioProperties::Fast );
 
-        else if ( validMusic.contains( ext ) ) {
-            MetaBundle bundle; bundle.setPath( *it );
-            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
-
-            CoverBundle cover( bundle.artist(), bundle.album() );
-            if ( !covers.contains( cover ) )
-                covers += cover;
-        }
-
-        else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
+        if( bundle.isValidMedia() )
         {
-            MetaBundle bundle; bundle.setPath( *it );
-            CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
-
             CoverBundle cover( bundle.artist(), bundle.album() );
-            if ( !covers.contains( cover ) )
-                covers += cover;
-        }
-        // Add images to the cover database
-        else if ( validImages.contains( ext ) )
-            images << url.path();
 
-        // Update Compilation-flag, when this is the last loop-run or we're going to switch to another dir in the next run
-        if ( it == entries.fromLast() || dir != amaroK::directory( *++QStringList::ConstIterator( it ) ) )
+            if( !covers.contains( cover ) )
+                covers += cover;
+
+           CollectionDB::instance()->addSong( &bundle, m_incremental, m_db );
+        }
+        else if( validImages.contains( ext ) )
+                images += url.path();
+
+        // Update Compilation-flag, when this is the last loop-run
+        // or we're going to switch to another dir in the next run
+        if( it == entries.fromLast() || dir != amaroK::directory( *++QStringList::ConstIterator( it ) ) )
         {
             // we entered the next directory
             foreach( images )
                 CollectionDB::instance()->addImageToAlbum( *it, covers, m_db );
 
-            CollectionDB::instance()->checkCompilations( dir,  !m_incremental, m_db );
+            CollectionDB::instance()->checkCompilations( dir, !m_incremental, m_db );
         }
     }
 
@@ -292,6 +287,4 @@ CollectionReader::readTags( const QStringList& entries )
     // rename tables
     CollectionDB::instance()->moveTempTables( m_db );
     CollectionDB::instance()->dropTables( m_db );
-
-    DEBUG_END
 }

@@ -155,26 +155,6 @@ PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n
 // PUBLIC METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void PlaylistItem::setPixmapChanged()
-{
-    s_pixmapChanged = true;
-}
-
-
-MetaBundle PlaylistItem::metaBundle()
-{
-    //Do this everytime to save cost of storing int for length/samplerate/bitrate
-    //This function isn't called often (on play request), but playlists can contain
-    //thousands of items. So favor saving memory over CPU.
-
-    MetaBundle bundle( this );
-
-    setText( Length,  bundle.prettyLength() );
-    setText( Bitrate, bundle.prettyBitrate() );
-
-    return bundle;
-}
-
 
 QString PlaylistItem::text( int column ) const
 {

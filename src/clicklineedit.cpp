@@ -25,7 +25,7 @@
 #include "qpainter.h"
 
 
-ClickLineEdit::ClickLineEdit( QWidget *parent, const QString &msg, const char* name ) :
+ClickLineEdit::ClickLineEdit( const QString &msg, QWidget *parent, const char* name ) :
         KLineEdit( parent, name )
 {
     mDrawClickMsg = true;
@@ -56,6 +56,7 @@ void ClickLineEdit::setText( const QString &txt )
 // PROTECTED
 /////////////////////////////////////////////////////////////////////////////////////
 
+//#include <kiconloader.h>
 void ClickLineEdit::drawContents( QPainter *p )
 {
     KLineEdit::drawContents( p );
@@ -64,8 +65,11 @@ void ClickLineEdit::drawContents( QPainter *p )
         QPen tmp = p->pen();
         p->setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
         QRect cr = contentsRect();
+
+        //p->drawPixmap( 3, 3, SmallIcon("filter") );
+
         // Add two pixel margin on the left side
-        cr.setLeft( cr.left() + 2 );
+        cr.rLeft() += 3;
         p->drawText( cr, AlignAuto | AlignVCenter, mClickMessage );
         p->setPen( tmp );
     }

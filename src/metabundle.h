@@ -11,18 +11,19 @@
 
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
+#include <taglib/audioproperties.h>
 
-class CollectionDB;
 class PlaylistItem;
 class KFileMetaInfo;
 
-namespace TagLib { class AudioProperties; class Tag; }
 
-//#define PRETTY_TITLE_CACHE
-
-/*
- * This class is not very complete, it fits our needs as they stand currently
- * If it doesn't work for you in some way, extend it sensibly :)
+/**
+ * @class MetaBundle
+ * @author Max Howell <max.howell@methylblue.com>
+ *
+ * If this class doesn't work for you in some way, extend it sensibly :)
+ *
+ * @see class MutableBundle
  */
 
 class MetaBundle
@@ -34,17 +35,15 @@ public:
     static const int Irrelevant   = -1; /// not applicable to this stream/media type, eg length with http streams
     static const int Unavailable  =  0; /// cannot be obtained
 
-    static const MetaBundle null; //use like you would QString::null
-
     /**
      * Creates an empty MetaBundle
      */
-    MetaBundle() : m_exists( true ) { init(); }
+    MetaBundle() : m_exists( true ), m_isValidMedia( true ) { init(); }
 
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    explicit MetaBundle( const KURL &u, bool readAudioProperties = true );
+    explicit MetaBundle( const KURL&, TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast );
 
     //StreamProvider:
     MetaBundle( const QString& title,
@@ -57,11 +56,11 @@ public:
     //PlaylistItems:
     MetaBundle( const PlaylistItem *item );
 
-    //From tags:
-    MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap = 0 );
-
     /** Test for an empty metabundle */
     bool isEmpty() const { return m_url.isEmpty(); }
+
+    /** Did you get tags from the file at url()? */
+    bool isValidMedia() const { return m_isValidMedia; }
 
     /** The bundle doesn't yet know its audioProperties */
     bool audioPropertiesUndetermined() const
@@ -69,7 +68,8 @@ public:
         return m_bitrate == Undetermined || m_sampleRate == Undetermined || m_length == Undetermined;
     }
 
-    MetaBundle &readTags( bool readAudioProperties = true );
+    /** If you want Accurate reading say so */
+    MetaBundle &readTags( TagLib::AudioProperties::ReadStyle );
 
     /** used by PlaylistItem, should be true for everything but local files that aren't there */
     bool exists() const { return m_exists; }
@@ -77,10 +77,6 @@ public:
     int length()     const { return m_length > 0 ? m_length : 0; }
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
-
-    void setLength( int length ) { m_length = length; }
-    void setBitrate( int bitrate ) { m_bitrate = bitrate; }
-    void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
 
     const KURL &url() const { return m_url; }
     const QString &title() const { return m_title; }
@@ -92,15 +88,6 @@ public:
     const QString &track() const { return m_track; }
     const QString &streamName() const { return m_streamName; }
     const QString &streamUrl() const { return m_streamUrl; }
-
-    void setPath( QString path ) { m_url.setPath( path ); }
-    void setTitle( QString title ) { m_title = title; }
-    void setArtist( QString artist ) { m_artist = artist; }
-    void setAlbum( QString album ) { m_album = album; }
-    void setYear( QString year ) { m_year = year; }
-    void setComment( QString comment ) { m_comment = comment; }
-    void setGenre( QString genre ) { m_genre = genre; }
-    void setTrack( QString track ) { m_track = track; }
 
     QString prettyTitle() const;
     QString prettyURL() const { return m_url.prettyURL(); }
@@ -115,7 +102,20 @@ public:
     static QString prettyTitle( QString );
     static QStringList genreList();
 
-private:
+public:
+    void setPath( QString path ) { m_url.setPath( path ); }
+    void setTitle( QString title ) { m_title = title; }
+    void setArtist( QString artist ) { m_artist = artist; }
+    void setAlbum( QString album ) { m_album = album; }
+    void setYear( QString year ) { m_year = year; }
+    void setComment( QString comment ) { m_comment = comment; }
+    void setGenre( QString genre ) { m_genre = genre; }
+    void setTrack( QString track ) { m_track = track; }
+    void setLength( int length ) { m_length = length; }
+    void setBitrate( int bitrate ) { m_bitrate = bitrate; }
+    void setSampleRate( int sampleRate ) { m_sampleRate = sampleRate; }
+
+protected:
     KURL    m_url;
     QString m_title;
     QString m_artist;
@@ -127,20 +127,35 @@ private:
     QString m_streamName;
     QString m_streamUrl;
 
-    #ifdef PRETTY_TITLE_CACHE
-    mutable QString m_prettyTitleCache;
-    #endif
-
     int m_bitrate;
     int m_length;
     int m_sampleRate;
 
+private:
+    #ifdef PRETTY_TITLE_CACHE
+    mutable QString m_prettyTitleCache;
+    #endif
+
     bool m_exists;
+    bool m_isValidMedia;
 
     static /*inline */QString prettyGeneric( const QString&, int );
 
     void init( TagLib::AudioProperties *ap = 0 );
     void init( const KFileMetaInfo& info );
+};
+
+
+/**
+ * @class MutableBundle
+ * @author Max Howell <max.howell@methylblue.com>
+ * @short A Metabundle you can change values for
+ */
+
+class MutableBundle : public MetaBundle
+{
+public:
+
 };
 
 #endif

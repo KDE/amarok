@@ -6,79 +6,33 @@
 
 #include "collectiondb.h"
 #include "debug.h"
+#include <kfilemetainfo.h>
 #include "metabundle.h"
 #include "playlistitem.h"
-
 #include <qfile.h>
-
-#include <kfilemetainfo.h>
-
-#include <taglib/audioproperties.h>
 #include <taglib/fileref.h>
 #include <taglib/id3v1genres.h>    //used to load genre list
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 
 
-/*
- * This class is not very complete, it fits our needs as they stand currently
- * If it doesn't work for you in some way, extend it sensibly :)
- */
-
-
-//FIXME these aren't i18n'd
 //the point here is to force sharing of these strings returned from prettyBitrate()
 static const QString bitrateStore[9] = { "?", "32 kbps", "64 kbps", "96 kbps", "128 kbps", "160 kbps", "192 kbps", "224 kbps", "256 kbps" };
 
-const MetaBundle MetaBundle::null;
 
-
-MetaBundle::MetaBundle( const KURL &u, bool readAudioProperties )
-  : m_url( u )
-  , m_exists( !m_url.isLocalFile() || QFile::exists( u.path() ) )
+MetaBundle::MetaBundle( const KURL &url, TagLib::AudioProperties::ReadStyle readStyle )
+    : m_url( url )
+    , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
+    , m_isValidMedia( false ) //will be updated
 {
-    CollectionDB *db = CollectionDB::instance();
+    if ( m_exists ) {
+        m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
-    if( !m_exists ) {
-        init( 0 );
-        return;
-    }
-
-    if ( db )
-    {
-        MetaBundle bundle;
-        if ( db->getMetaBundleForUrl( u.path(), &bundle ) )
-        {
-            //FIXME why don't we pass "this" to the above function?
-            //      please comment your work!!!!
-
-            m_title   = bundle.title();
-            m_artist  = bundle.artist();
-            m_album   = bundle.album();
-            m_year    = bundle.year();
-            m_comment = bundle.comment();
-            m_genre   = bundle.genre();
-            m_track   = bundle.track();
-
-            // If it's in Collection but no audioproperties available, read them and store
-            if ( !bundle.length() && readAudioProperties )
-            {
-                debug() << bundle.url() << " has no audioproperties in the database\n";
-
-                // Generate a seperate MetaBundle for the audio properties. The Collection got
-                // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
-                bundle.readTags( true );
-            }
-
-            m_bitrate = bundle.bitrate();
-            m_length = bundle.length();
-            m_sampleRate = bundle.sampleRate();
-        }
-        else
-            readTags( readAudioProperties );
+        if ( !m_isValidMedia || length() <= 0 )
+            readTags( readStyle );
     }
     else
-        readTags( readAudioProperties );
+        init( 0 );
 }
 
 //StreamProvider ctor
@@ -88,14 +42,15 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& genre,
                         const QString& streamName,
                         const KURL& url )
-  : m_url       ( url )
-  , m_genre     ( genre )
-  , m_streamName( streamName )
-  , m_streamUrl ( streamUrl )
-  , m_bitrate   ( bitrate )
-  , m_length    ( Irrelevant )
-  , m_sampleRate( Unavailable )
-  , m_exists( true )
+        : m_url       ( url )
+        , m_genre     ( genre )
+        , m_streamName( streamName )
+        , m_streamUrl ( streamUrl )
+        , m_bitrate   ( bitrate )
+        , m_length    ( Irrelevant )
+        , m_sampleRate( Unavailable )
+        , m_exists( true )
+        , m_isValidMedia( true )
 {
    if( title.contains( '-' ) ) {
       m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
@@ -119,10 +74,11 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
         , m_genre  ( item->exactText( 6 ) )
         , m_track  ( item->exactText( 7 ) )
         , m_exists ( true ) //FIXME
+        , m_isValidMedia( true )
 {
     if( m_url.protocol() == "file" )
     {
-        readTags( true );
+        readTags( TagLib::AudioProperties::Accurate );
     }
     else { //is Stream
 
@@ -133,30 +89,16 @@ MetaBundle::MetaBundle( const PlaylistItem *item )
     }
 }
 
-//Taglib::Tag ctor //TODO DEPRECATE
-MetaBundle::MetaBundle( const KURL &url, TagLib::Tag *tag, TagLib::AudioProperties *ap )
-        : m_url( url )
-        , m_title(   TStringToQString( tag->title() ).stripWhiteSpace() )
-        , m_artist(  TStringToQString( tag->artist() ).stripWhiteSpace() )
-        , m_album(   TStringToQString( tag->album() ).stripWhiteSpace() )
-        , m_year(    tag->year() ? QString::number( tag->year() ) : QString::null )
-        , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
-        , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
-        , m_track(   tag->track() ? QString::number( tag->track() ) : QString::null )
-        , m_exists( true )
-{
-    init( ap );
-}
-
 void
 MetaBundle::init( TagLib::AudioProperties *ap )
 {
-    if( ap ) {
+    if ( ap ) {
         m_bitrate    = ap->bitrate();
         m_length     = ap->length();
         m_sampleRate = ap->sampleRate();
     }
-    else m_bitrate = m_length = m_sampleRate = Undetermined;
+    else
+        m_bitrate = m_length = m_sampleRate = Undetermined;
 }
 
 void
@@ -164,10 +106,6 @@ MetaBundle::init( const KFileMetaInfo& info )
 {
     if( info.isValid() && !info.isEmpty() )
     {
-        //TODO KMetaFileInfo returns "---" if the info.item is deemed invalid
-        //which is for eg with wav files as they have no tags
-        //TODO Suggest the bug fix on core-devel - but it won't go through, too much depends on the behaviour no stupid doubt
-
         m_artist     = info.item( "Artist" ).string();
         m_album      = info.item( "Album" ).string();
         m_year       = info.item( "Year" ).string();
@@ -178,53 +116,62 @@ MetaBundle::init( const KFileMetaInfo& info )
         m_length     = info.item( "Length" ).value().toInt();
         m_sampleRate = info.item( "Sample Rate" ).value().toInt();
 
-        /*
-         * For title, check if it is valid. If not, use prettyTitle.
-         * See bug#83650.
-         */
+        // For title, check if it is valid. If not, use prettyTitle.
+        // @see bug:83650
         const KFileMetaInfoItem item = info.item( "Title" );
         m_title = item.isValid() ? item.string() : prettyTitle( m_url.fileName() );
+
+        // because whoever designed KMetaInfoItem is a donkey
+        #define makeSane( x ) if( x == "---" ) x = null;
+        QString null;
+        makeSane( m_artist );
+        makeSane( m_album );
+        makeSane( m_year );
+        makeSane( m_comment );
+        makeSane( m_genre  );
+        makeSane( m_track );
+        makeSane( m_title );
+        #undef makeSane
+
+        m_isValidMedia = true;
     }
-    else m_bitrate = m_length = m_sampleRate = Undetermined;
+    else {
+        m_bitrate = m_length = m_sampleRate = Undetermined;
+        m_isValidMedia = false;
+    }
 }
 
 MetaBundle&
-MetaBundle::readTags( bool readAudioProperties )
+MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 {
-    #define bing( x ) TStringToQString( x ).stripWhiteSpace()
-
     Q_ASSERT( m_url.protocol() == "file" );
 
     TagLib::FileRef f(
             QFile::encodeName( m_url.path() ),
-            readAudioProperties,
-            TagLib::AudioProperties::Accurate );
+            true,
+            readStyle );
 
-    if( !f.isNull() )
+    if( !f.isNull() && f.tag() )
     {
-        if( f.tag() )
-        {
-            TagLib::Tag* const tag = f.tag();
+        TagLib::Tag* const tag = f.tag();
 
-            m_title   = bing( tag->title() );
-            m_artist  = bing( tag->artist() );
-            m_album   = bing( tag->album() );
-            m_comment = bing( tag->comment() );
-            m_genre   = bing( tag->genre() );
-            m_year    = tag->year() ? QString::number( tag->year() ) : QString();
-            m_track   = tag->track() ? QString::number( tag->track() ) : QString();
-        }
+        #define bing( x ) TStringToQString( x ).stripWhiteSpace()
+        m_title   = bing( tag->title() );
+        m_artist  = bing( tag->artist() );
+        m_album   = bing( tag->album() );
+        m_comment = bing( tag->comment() );
+        m_genre   = bing( tag->genre() );
+        m_year    = tag->year() ? QString::number( tag->year() ) : QString();
+        m_track   = tag->track() ? QString::number( tag->track() ) : QString();
+        #undef bing
 
-        init( f.audioProperties() ); //no need to test for the readAudioProperties bool
+        init( f.audioProperties() );
+
+        m_isValidMedia = true;
     }
     else init( KFileMetaInfo( m_url, QString::null, KFileMetaInfo::Everything ) );
 
-    if( readAudioProperties ) //FIXME fast?
-       CollectionDB::instance()->addAudioproperties( *this );
-
     return *this;
-
-    #undef bing
 }
 
 QString

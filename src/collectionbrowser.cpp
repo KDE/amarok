@@ -68,7 +68,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         searchToolBar->setEnableContextMenu( false );
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_searchEdit = new ClickLineEdit( searchToolBar, i18n( "Filter here..." ), "filter_edit" );
+        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( QFrame::Sunken );

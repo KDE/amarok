@@ -204,7 +204,13 @@ class CollectionDB : public QObject, public EngineObserver
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false, DbConnection *conn = NULL );
-        bool getMetaBundleForUrl( const QString& url , MetaBundle* bundle );
+
+        /**
+         * The @p bundle parameter's url() will be looked up in the Collection
+         * @param bundle this will be filled in with tags for you
+         * @return true if in the collection
+         */
+        bool bundleForUrl( MetaBundle* bundle );
         QValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
@@ -287,7 +293,6 @@ class CollectionDB : public QObject, public EngineObserver
         //general management methods
         void createStatsTable();
         void dropStatsTable();
-        void scan( const QStringList& folders );
         void scanModifiedDirs();
 
         QCString makeWidthKey( uint width );

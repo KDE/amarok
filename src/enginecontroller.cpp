@@ -410,7 +410,8 @@ void EngineController::mute() //SLOT
 const MetaBundle&
 EngineController::bundle() const
 {
-    return m_engine->state() == Engine::Empty ? MetaBundle::null : m_bundle;
+    static MetaBundle null;
+    return m_engine->state() == Engine::Empty ? null : m_bundle;
 }
 
 

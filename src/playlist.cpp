@@ -564,7 +564,7 @@ Playlist::activate( QListViewItem *item )
         setCurrentTrack( item );
 
         //use PlaylistItem::MetaBundle as it also updates the audioProps
-        EngineController::instance()->play( item->metaBundle() );
+        EngineController::instance()->play( item );
         #undef item
     }
     else
@@ -1839,19 +1839,19 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case BURN_ALBUM_DATA:
-        K3bExporter::instance()->exportAlbum( item->metaBundle().album(), K3bExporter::DataCD );
+        K3bExporter::instance()->exportAlbum( item->album(), K3bExporter::DataCD );
         break;
 
     case BURN_ALBUM_AUDIO:
-        K3bExporter::instance()->exportAlbum( item->metaBundle().album(), K3bExporter::AudioCD );
+        K3bExporter::instance()->exportAlbum( item->album(), K3bExporter::AudioCD );
         break;
 
     case BURN_ARTIST_DATA:
-        K3bExporter::instance()->exportArtist( item->metaBundle().artist(), K3bExporter::DataCD );
+        K3bExporter::instance()->exportArtist( item->artist(), K3bExporter::DataCD );
         break;
 
     case BURN_ARTIST_AUDIO:
-        K3bExporter::instance()->exportArtist( item->metaBundle().artist(), K3bExporter::AudioCD );
+        K3bExporter::instance()->exportArtist( item->artist(), K3bExporter::AudioCD );
         break;
     }
 

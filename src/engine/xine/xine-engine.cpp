@@ -88,7 +88,7 @@ XineEngine::~XineEngine()
 bool
 XineEngine::init()
 {
-   debug() << "xine-engine; bringing joy to small mexican gerbils a few weeks at a time.";
+   debug() << "xine-engine; bringing joy to small mexican gerbils a few weeks at a time.\n";
 
    m_xine = xine_new();
 

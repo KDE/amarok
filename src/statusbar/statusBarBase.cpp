@@ -61,7 +61,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QBoxLayout *layout = new QHBoxLayout( this, /*margin*/2, /*spacing*/5 );
     layout->setAutoAdd( true );
 
-    m_mainTextLabel = new QLabel( this, "mainTextLabel" );
+    m_mainTextLabel = new KSqueezedTextLabel( this, "mainTextLabel" );
     m_mainTextLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
     QHBox *mainProgressBarBox = new QHBox( this, "progressBox" );
@@ -342,8 +342,14 @@ void
 StatusBar::hideMainProgressBar()
 {
     if( !m_popupProgress->isShown() ) {
-        m_mainProgressBar->setProgress( 0 );
-        progressBox()->hide();
+
+        //we need to update the contents of the progressMap so we can test if it is empty
+        toggleProgressWindow( false );
+
+        if( m_progressMap.isEmpty() ) {
+            m_mainProgressBar->setProgress( 0 );
+            progressBox()->hide();
+        }
     }
 }
 

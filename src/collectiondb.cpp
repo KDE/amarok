@@ -987,11 +987,13 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     command += escapeString( bundle->title() ) + "','";
     command += escapeString( bundle->comment() ) + "','";
     command += escapeString( bundle->track() ) + "', ";
-    command += artist == i18n( "Various Artists" ) ? "1" : "0";
+    command += artist == i18n( "Various Artists" ) ? "1," : "0,";
 
-    command += ", 0";       // length
-    command += ", 0";       // bitrate
-    command += ", 0);";     // samplerate
+    // NOTE any of these may be -1 or -2, this is what we want
+    //      see MetaBundle::Undetermined
+    command += QString::number( bundle->length() ) + ",";
+    command += QString::number( bundle->bitrate() ) + ",";
+    command += QString::number( bundle->sampleRate() ) + ")";
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
@@ -1000,38 +1002,45 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
 }
 
 
-bool
-CollectionDB::getMetaBundleForUrl( const QString& url , MetaBundle* bundle )
+static void
+fillInBundle( QStringList values, MetaBundle &bundle )
 {
-    QStringList values =
-        query( QString(
+    //TODO use this whenever possible
+
+    // crash prevention
+    while( values.count() != 10 )
+        values += "IF YOU CAN SEE THIS THERE IS A BUG!";
+
+    QStringList::ConstIterator it = values.begin();
+
+    bundle.setAlbum     ( *it ); ++it;
+    bundle.setArtist    ( *it ); ++it;
+    bundle.setGenre     ( *it ); ++it;
+    bundle.setTitle     ( *it ); ++it;
+    bundle.setYear      ( *it ); ++it;
+    bundle.setComment   ( *it ); ++it;
+    bundle.setTrack     ( *it ); ++it;
+    bundle.setBitrate   ( (*it).toInt() ); ++it;
+    bundle.setLength    ( (*it).toInt() ); ++it;
+    bundle.setSampleRate( (*it).toInt() );
+}
+
+bool
+CollectionDB::bundleForUrl( MetaBundle* bundle )
+{
+    QStringList values = query( QString(
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.track, tags.bitrate, tags.length, "
             "tags.samplerate "
             "FROM tags, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
-            .arg( escapeString( url ) ) );
+                .arg( escapeString( bundle->url().path() ) ) );
 
-    if ( !values.isEmpty() )
-    {
-        bundle->setAlbum( values[0] );
-        bundle->setArtist( values[1] );
-        bundle->setGenre( values[2] );
-        bundle->setTitle( values[3] );
-        bundle->setYear( values[4] );
-        bundle->setComment( values[5] );
-        bundle->setTrack( values[6] );
-        bundle->setBitrate( values[7].toInt() );
-        bundle->setLength( values[8].toInt() );
-        bundle->setSampleRate( values[9].toInt() );
+    if ( !values.empty() )
+        fillInBundle( values, *bundle );
 
-        bundle->setPath( url );
-
-        return true;
-    }
-
-    return false;
+    return !values.isEmpty();
 }
 
 
@@ -1046,7 +1055,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
     uint i = 0;
     for ( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
-        paths += (*it).path();
+        paths += (*it).protocol() == "file" ? (*it).path() : QString();
         i++;
 
         if ( i % 50 == 0 || i == urls.count() )
@@ -1102,7 +1111,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
                 // if we get here, we didn't find an entry
                 warning() << "No bundle recovered for: " << *it << endl;
-                bundles += MetaBundle::null;
+                bundles += MetaBundle();
 
             success: ;
             }
@@ -1480,12 +1489,18 @@ CollectionDB::scanMonitor()  //SLOT
 void
 CollectionDB::startScan()  //SLOT
 {
-    if ( AmarokConfig::collectionFolders().isEmpty() ) {
+    QStringList folders = AmarokConfig::collectionFolders();
+
+    if ( folders.isEmpty() ) {
         dropTables();
         createTables();
     }
-    else
-        scan( AmarokConfig::collectionFolders() );
+    else if( PlaylistBrowser::instance() )
+    {
+        emit scanStarted();
+
+        ThreadWeaver::instance()->queueJob( new CollectionReader( this, folders ) );
+    }
 }
 
 
@@ -1582,17 +1597,6 @@ void
 CollectionDB::destroy()
 {
     delete m_dbConnPool;
-}
-
-
-void
-CollectionDB::scan( const QStringList& folders )
-{
-    if( !folders.isEmpty() && PlaylistBrowser::instance() ) {
-          emit scanStarted();
-
-        ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, folders ) );
-    }
 }
 
 

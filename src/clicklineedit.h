@@ -33,7 +33,7 @@
 class ClickLineEdit : public KLineEdit
 {
     public:
-        ClickLineEdit( QWidget *parent, const QString &msg = QString::null, const char* name = 0 );
+        ClickLineEdit( const QString &msg, QWidget *parent, const char* name = 0 );
 
         void setClickMessage( const QString &msg );
         QString clickMessage() const { return mClickMessage; }

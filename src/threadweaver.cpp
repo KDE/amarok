@@ -339,3 +339,4 @@ ThreadWeaver::DependentJob::completeJob()
 }
 
 #include "threadweaver.moc"
+#undef QT_FATAL_ASSERT //enable-final

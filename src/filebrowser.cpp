@@ -41,9 +41,14 @@
 #include <klistview.h>   //slotViewChanged()
 #include <klocale.h>
 #include <kpopupmenu.h>
+#include <kpushbutton.h>    //searchWidget button
 #include <ktoolbarbutton.h> //ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
+
+
+//TODO wait for lister to finish, if there are no files shown, but there are
+//     media files in that directory show a longMessage (preferably one that disappears when given a signal)
 
 
 namespace amaroK { extern KConfig *config( const QString& ); }
@@ -106,7 +111,7 @@ FileBrowser::FileBrowser( const char * name )
         searchToolBar->setEnableContextMenu( false );
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
-        m_filterEdit = new ClickLineEdit( searchToolBar, i18n( "Filter here..." ), "filter_edit" );
+        m_filterEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
         searchToolBar->setStretchableWidget( m_filterEdit );
 
         connect( button, SIGNAL( clicked() ), m_filterEdit, SLOT( clear() ) );
@@ -115,18 +120,51 @@ FileBrowser::FileBrowser( const char * name )
         QToolTip::add( m_filterEdit, i18n( "Space-separated terms will be used to filter the directory-listing" ) );
     }
 
-    //The main widget with file listings and that
-    m_dir = new MyDirOperator( KURL(currentLocation), this );
-    connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+    {
+        QVBox *container; QHBox *box;
 
-    //folder selection combo box
-    m_cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
-    m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-    m_cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
-    m_cmbPath->setMaxItems( 9 );
-    m_cmbPath->setURLs( config->readListEntry( "Dir History" ) );
-    m_cmbPath->lineEdit()->setText( currentLocation );
-    setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
+        container = new QVBox( this );
+        container->setFrameStyle( m_filterEdit->frameStyle() );
+        container->setMargin( 3 );
+        container->setSpacing( 2 );
+        container->setBackgroundMode( Qt::PaletteBase );
+
+        box = new QHBox( container );
+        box->setMargin( 3 );
+        box->setBackgroundMode( Qt::PaletteBase );
+
+        //folder selection combo box
+        m_cmbPath = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
+        m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+        m_cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+        m_cmbPath->setMaxItems( 9 );
+        m_cmbPath->setURLs( config->readListEntry( "Dir History" ) );
+        m_cmbPath->lineEdit()->setText( currentLocation );
+
+        //The main widget with file listings and that
+        m_dir = new MyDirOperator( KURL(currentLocation), container );
+        m_dir->setEnableDirHighlighting( true );
+        m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
+        m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
+        m_dir->readConfig( config );
+        m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
+        m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
+
+        static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
+
+        connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+
+        setStretchFactor( container, 2 );
+    }
+
+    {
+        QVBox *box = new QVBox( this, "SearchWidget" );
+        KPushButton *search = new KPushButton( KGuiItem( i18n("Perform Search..."), "find" ), this );
+        search->setToggleButton( true );
+        box->hide();
+        box->setFrameStyle( QFrame::Plain | QFrame::Box );
+        connect( search, SIGNAL(toggled( bool )), SLOT(toggleSearchWidget( bool )) );
+    }
 
     //insert our own actions at front of context menu
     QPopupMenu* const menu = ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu();
@@ -148,13 +186,6 @@ FileBrowser::FileBrowser( const char * name )
     actionCollection()->action( "delete" )->plug( menu );
     menu->insertSeparator();
     actionCollection()->action( "properties" )->plug( menu );
-
-    m_dir->setEnableDirHighlighting( true );
-    m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
-    m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
-    m_dir->readConfig( config );
-    m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
-    setStretchFactor( m_dir, 2 );
 
     {
         KActionMenu *a;
@@ -180,6 +211,7 @@ FileBrowser::FileBrowser( const char * name )
 
     setupToolbar();
 
+    setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
     setMinimumWidth( m_toolbar->sizeHint().width() ); //the m_toolbar minWidth is 0!
 }
 
@@ -235,20 +267,21 @@ KURL::List FileBrowser::selectedItems()
 
 //BEGIN Public Slots
 
-void FileBrowser::slotSetFilter( )
+void
+FileBrowser::slotSetFilter( )
 {
     const QString text = m_filterEdit->text();
 
     if ( text.isEmpty() )
         m_dir->clearFilter();
+
     else {
         QString filter;
         QStringList terms = QStringList::split( ' ', text );
 
         for ( QStringList::Iterator it = terms.begin(); it != terms.end(); ++it ) {
             filter += '*';
-            filter += *it;
-        }
+            filter += *it; }
 
         filter += '*';
         m_dir->setNameFilter( filter );
@@ -258,7 +291,8 @@ void FileBrowser::slotSetFilter( )
 }
 
 
-void FileBrowser::setDir( const KURL &u )
+void
+FileBrowser::setDir( const KURL &u )
 {
     m_dir->setURL( u, true );
 }
@@ -340,6 +374,79 @@ inline void FileBrowser::burnDataCd() // SLOT
 inline void FileBrowser::burnAudioCd() // SLOT
 {
     K3bExporter::instance()->exportTracks( selectedItems(), K3bExporter::AudioCD );
+}
+
+KListView *listView = 0;
+
+void
+FileBrowser::toggleSearchWidget( bool toggled )
+{
+    static bool b = true;
+
+    QFrame *container = (QFrame*)child( "SearchWidget" );
+
+    if ( b ) {
+        QHBox *box;
+
+        box = new QHBox( container );
+        box->setMargin( 5 );
+        box->setBackgroundMode( Qt::PaletteBase );
+
+        QLineEdit *lineEdit = new ClickLineEdit( i18n("Search here..."), box );
+        listView = new KListView( container );
+
+        container->setFrameStyle( listView->frameStyle() );
+        container->setMargin( 5 );
+        container->setBackgroundMode( Qt::PaletteBase );
+
+        listView->setFrameStyle( QFrame::NoFrame );
+        reinterpret_cast<QWidget*>(listView->header())->hide();
+        listView->addColumn( QString() );
+        listView->setResizeMode( KListView::LastColumn );
+
+        connect( lineEdit, SIGNAL(textChanged( const QString& )), SLOT(searchChanged( const QString& )) );
+
+        b = false;
+    }
+
+    container->setShown( toggled );
+}
+
+void
+FileBrowser::searchChanged( const QString &text )
+{
+    static KDirLister *lister = 0;
+
+    if ( !lister ) {
+        lister = new KDirLister( true /*delay mimetypes*/ );
+
+        connect( lister, SIGNAL(newItems( const KFileItemList& )), SLOT(searchItems( const KFileItemList& )) );
+    }
+
+    listView->clear();
+
+    if ( text.isEmpty() ) {
+        lister->stop();
+        return;
+    }
+
+    lister->stop();
+
+    if ( !text.contains( "*" ) )
+        lister->setNameFilter( '*' + text + '*' );
+    else
+        lister->setNameFilter( text );
+
+    KURL url; url.setPath( location() );
+
+    lister->openURL( url );
+}
+
+void
+FileBrowser::searchItems( const KFileItemList &list )
+{
+    for( KFileItemList::ConstIterator it = list.begin(), end = list.end(); it != end; ++it )
+        new KListViewItem( listView, (*it)->name() );
 }
 
 

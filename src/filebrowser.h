@@ -57,7 +57,7 @@ class FileBrowser : public QVBox
 
 public:
     FileBrowser( const char * name = 0 );
-    ~FileBrowser();
+   ~FileBrowser();
 
     KDirOperator *dirOperator() { return m_dir; }
     KActionCollection *actionCollection() { return m_dir->actionCollection(); };
@@ -82,6 +82,10 @@ private slots:
     void selectAllFiles();
     void burnDataCd();
     void burnAudioCd();
+
+    void toggleSearchWidget( bool );
+    void searchChanged( const QString& );
+    void searchItems( const KFileItemList& );
 
 private:
     void setupToolbar();
