@@ -33,7 +33,7 @@ Q_OBJECT
 
     public:
         CoverManager( QWidget *parent=0, const char *name=0 );
-        ~CoverManager();
+       ~CoverManager();
 
         static void showOnce();
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
@@ -42,7 +42,6 @@ Q_OBJECT
         void expandItem( QListViewItem * );
         void collapseItem( QListViewItem * );
         void slotArtistSelected( QListViewItem * );
-        void loadThumbnails();
 
         void coverItemExecuted( QIconViewItem *item );
         void showCoverMenu( QIconViewItem *item, const QPoint & );
@@ -59,16 +58,16 @@ Q_OBJECT
         void stopFetching();
         void updateStatusBar();
 
+        void init();
+
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
         enum Locale { International=0, France, Germany, UK };
 
-        void show();
         void loadCover( const QString &, const QString & );
         void fetchSelectedCovers();
         void deleteSelectedCovers();
         QPtrList<CoverViewItem> selectedItems();
-        void closeEvent( QCloseEvent* );
 
         CollectionDB *m_db;
 
@@ -94,12 +93,6 @@ Q_OBJECT
         QString         m_filter;
 
 
-
-        //used for the thumbnail loading
-        QStringList m_loadAlbums;
-        bool m_loadingThumbnails;
-        bool m_stopLoading;
-
         // Used by fetchCoversLoop() for temporary storage
         QStringList m_fetchCovers;
         uint m_fetchCounter;
@@ -108,9 +101,6 @@ Q_OBJECT
         int m_fetchingCovers;
         int m_coversFetched;
         int m_coverErrors;
-
-        //used in show()
-        bool m_firstShow;
 };
 
 class CoverView : public KIconView
@@ -130,7 +120,7 @@ class CoverViewItem : public KIconViewItem
         CoverViewItem( QIconView *parent, QIconViewItem *after, QString artist, QString album );
 
         void loadCover();
-        bool hasCover() const { return m_hasCover; }
+        bool hasCover() const;
         QString artist() const { return m_artist; }
         QString album() const { return m_album; }
         QPixmap coverPixmap() const { return m_coverPix; }

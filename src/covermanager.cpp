@@ -20,6 +20,7 @@
 #include <qpalette.h>    //paintItem()
 #include <qpixmap.h>
 #include <qpoint.h>
+#include <qprogressdialog.h>
 #include <qrect.h>
 #include <qsplitter.h>
 #include <qstringlist.h>
@@ -48,18 +49,16 @@
 #include <kurldrag.h>
 
 
-QPixmap *nocover = 0;
 CoverManager* instance = 0;
+
 
 CoverManager::CoverManager( QWidget *parent, const char *name )
     : QWidget( parent, name, WDestructiveClose )
     , m_timer( new QTimer( this ) )    //search filter timer
-    , m_filter( 0 )
     , m_fetchCounter( 0 )
     , m_fetchingCovers( 0 )
     , m_coversFetched( 0 )
     , m_coverErrors( 0 )
-    , m_firstShow( true )
 {
     instance = this;
 
@@ -165,17 +164,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
 
-    //load the 'nocover' icon
-    nocover = new QPixmap( m_db->albumImage( QString::null, QString::null, 50 ) );
-
     //cover view
     m_coverView = new CoverView( coverWidget );
-    m_coverView->setArrangement( QIconView::LeftToRight );
-    m_coverView->setResizeMode( QIconView::Adjust );
-    m_coverView->setSelectionMode( QIconView::Extended );
-    m_coverView->arrangeItemsInGrid();
-    m_coverView->setAutoArrange( TRUE );
-    m_coverView->setItemsMovable( FALSE );
     viewBox->addWidget( m_coverView, 4 );
 
     //status bar
@@ -222,6 +212,8 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     config->setGroup( "Cover Manager" );
     QSize winSize = config->readSizeEntry( "Window Size", new QSize( 610, 380 ) );    //default size
     resize( winSize );
+
+    QTimer::singleShot( 0, this, SLOT(init()) );
 }
 
 
@@ -232,25 +224,15 @@ CoverManager::~CoverManager()
     config->setGroup( "Cover Manager" );
     config->writeEntry( "Window Size", size() );
 
-    delete nocover;
+    delete m_db;
+
     instance = 0;
 }
 
 
-void CoverManager::show()
+void CoverManager::init()
 {
-    QWidget::show();
-    setCursor( KCursor::workingCursor() );
-    kapp->processEvents();
-
-    // We do this operation after the first showing, as it would block the GUI in the ctor
-
-    if ( m_firstShow ) {
-        m_firstShow = false;
-        m_artistView->setSelected( m_artistView->firstChild(), true );    //load all albums
-    }
-
-    unsetCursor();
+    m_artistView->setSelected( m_artistView->firstChild(), true );
 }
 
 
@@ -360,120 +342,89 @@ void CoverManager::collapseItem( QListViewItem *item ) //SLOT
     }
 }
 
-
 void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 {
     if( item->depth() ) //album item
         return;
 
-    //stop thumbnail loading
-    m_stopLoading = true;
-    m_loadAlbums.clear();
-
-    m_coverItems.clear();
     m_coverView->clear();
 
-    QStringList albums;
-    uint missingCovers=0;
+    QProgressDialog progress( this, 0, true );
+    progress.setLabelText( i18n("Loading Thumbnails...") );
+    progress.QDialog::setCaption( "..." );
 
-    bool allAlbums = (item == m_artistView->firstChild());
-    if( allAlbums )
-        albums = m_db->artistAlbumList( false, false );
-    else
+    //NOTE we MUST show the dialog, otherwise the closeEvents get processed
+    // in the processEvents() calls below, GRUMBLE! Qt sux0rs
+    progress.show();
+
+    //this is an extra processEvent call for the sake of init() and aesthetics
+    //it isn't necessary
+    kapp->processEvents();
+
+    QStringList albums;
+    if ( item != m_artistView->firstChild() ) {
         albums = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
-    if( !albums.isEmpty() ) {
-        for( uint i=0; i < albums.count();  allAlbums ? i+=2 : i++)  {
-            QString artist = allAlbums ? albums[i] : item->text(0);
-            QString album = albums[ allAlbums ? i+1 : i ];
-
-            if( !album.isEmpty() )
-            {
-                CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album );
-                m_coverItems.append( coverItem );
-                if( coverItem->hasCover() )
-                    m_loadAlbums += artist + " @@@ " + album; //used for thumbnail loading
-                else
-                    missingCovers++;
-            }
-        }
-
-        m_searchBox->setEnabled( false );
-        m_viewButton->setEnabled( false );
-
-        QTimer::singleShot( 0, this, SLOT( loadThumbnails() ) );
+        //we need to insert the artist in front of the album for the next section to work
+        for( QStringList::Iterator it = albums.begin(), end = albums.end(); it != end; it += 2 )
+            it = albums.insert( it, item->text( 0 ) );
     }
+    else
+        albums = m_db->artistAlbumList( false, false );
 
-    m_viewMenu->setItemChecked( m_currentView, false );
-    m_viewMenu->setItemChecked( AllAlbums, true );
-    m_currentView = AllAlbums;
+    progress.setTotalSteps( albums.count() / 2 );
 
-    updateStatusBar();
-    #ifdef AMAZON_SUPPORT
-    m_fetchButton->setEnabled( missingCovers );
-    #endif
-}
+    //insert the covers first because the list view is soooo paint-happy
+    for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it )
+        new CoverViewItem( m_coverView, m_coverView->lastItem(), *it, *++it );
 
-
-void CoverManager::loadThumbnails() //SLOT
-{
-    m_loadingThumbnails = true;
-    m_stopLoading = false;
-
-    for( QStringList::ConstIterator it = m_loadAlbums.begin(), end = m_loadAlbums.end(); it != end; ++it ) {
-        if( m_stopLoading ) return;
-
-        const QStringList values = QStringList::split( " @@@ ", *it );
-
-        //closeEvent is halted while this goes on to prevent crash!
+    //now, load the thumbnails
+    for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
+        progress.setProgress( progress.progress() + 1 );
         kapp->processEvents();
 
-        loadCover( values[0], values[1] );
+        if( progress.wasCancelled() )
+           break;
+
+        static_cast<CoverViewItem*>(item)->loadCover();
     }
 
-    m_searchBox->setEnabled( true );
-    m_viewButton->setEnabled( true );
-
-    m_loadingThumbnails = false;
+    updateStatusBar();
 }
-
-void CoverManager::closeEvent( QCloseEvent *e )
-{
-    if( m_loadingThumbnails )
-        m_stopLoading = true;
-
-    e->accept();
-}
-
 
 void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
 
-    enum Id { SHOW, FETCH, CUSTOM, DELETE };
-    KPopupMenu menu( this );
+    enum { SHOW, FETCH, CUSTOM, DELETE };
+
+    KPopupMenu menu;
+
+    menu.insertTitle( i18n( "Cover Image" ) );
 
     QPtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( "www" ), i18n( "Fetch From amazon." )+AmarokConfig::amazonLocale(), FETCH );
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Selected Covers" ), FETCH );
         #endif
-        menu.insertItem( SmallIconSet("editdelete"), i18n("Delete Selected Covers"), DELETE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("&Remove Selected Covers From Database"), DELETE );
 
     }
     else {
-        menu.insertItem( SmallIconSet("viewmag"), i18n("Show Fullsize"), SHOW );
-        menu.setItemEnabled( SHOW, item->hasCover() );
+        menu.insertItem( SmallIconSet("viewmag"), i18n("&Show Fullsize"), SHOW );
+
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet("www"), i18n("Fetch Cover"), FETCH );
+        menu.insertItem( SmallIconSet("www"), i18n("&Fetch from amazon.%1").arg( AmarokConfig::amazonLocale() ), FETCH );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("folder_image"), i18n("Add Custom Cover"), CUSTOM );
+        menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Custom Image"), CUSTOM );
         #else
-        menu.insertItem( SmallIconSet("folder_image"), i18n("Add Cover"), CUSTOM );
+        menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Cover Image"), CUSTOM );
         #endif
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("editdelete"), i18n("Delete Cover"), DELETE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("&Remove From Database"), DELETE );
+
+        menu.setItemEnabled( SHOW, item->hasCover() );
         menu.setItemEnabled( DELETE, item->hasCover() );
     }
 
@@ -800,21 +751,36 @@ void CoverManager::updateStatusBar()
 
 CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
     : KIconView( parent, name, f )
-{}
+{
+    setArrangement( QIconView::LeftToRight );
+    setResizeMode( QIconView::Adjust );
+    setSelectionMode( QIconView::Extended );
+    arrangeItemsInGrid();
+    setAutoArrange( true );
+    setItemsMovable( false );
+}
 
 
 QDragObject *CoverView::dragObject()
 {
-    CoverViewItem *item = static_cast<CoverViewItem *>( currentItem() );
+    CoverViewItem *item = static_cast<CoverViewItem*>( currentItem() );
     if( !item )
-        return 0;
+       return 0;
 
+    CollectionDB db;
+    const QString sql = "SELECT tags.url FROM tags, album WHERE album.name LIKE '%1' AND tags.album = album.id ORDER BY tags.track;";
+    const QStringList values = db.query( sql.arg( item->album() ) );
+
+    KURL::List urls;
+    for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
+        urls += *it;
+
+    QString imagePath = db.albumImage( item->artist(), item->album(), 0 );
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
     drag->addDragObject( new QIconDrag( 0 ) );
-    QString imagePath = CollectionDB().albumImage( item->artist(), item->album(), 0 );
     drag->addDragObject( new QImageDrag( QImage( imagePath ) ) );
-    drag->addDragObject( new KURLDrag( KURL( imagePath ) ) );
+    drag->addDragObject( new KURLDrag( urls ) );
 
     return drag;
 }
@@ -828,7 +794,6 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     , m_artist( artist )
     , m_album( album )
     , m_coverImagePath( CollectionDB().albumImage( m_artist, m_album, 0 ) )
-    , m_hasCover( QFile::exists( m_coverImagePath ) && !m_coverImagePath.endsWith( "nocover.png" ) )
     , m_coverPix( 0 )
 {
     setDragEnabled( hasCover() );
@@ -836,16 +801,14 @@ CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString a
     calcRect();
 }
 
+bool CoverViewItem::hasCover() const
+{
+    return !m_coverImagePath.endsWith( "nocover.png" ) && QFile::exists( m_coverImagePath );
+}
 
 void CoverViewItem::loadCover()
 {
-    m_hasCover = QFile::exists( m_coverImagePath );
-
-    if( m_hasCover ) {
-        m_coverPix = QPixmap( CollectionDB().albumImage( m_artist, m_album ) );  //create the scaled cover
-    }
-    else if( !m_coverPix.isNull() )
-        m_coverPix.resize( 0, 0 );    //make it a null pixmap
+    m_coverPix = QPixmap( CollectionDB().albumImage( m_artist, m_album ) );  //create the scaled cover
 
     repaint();
 }
@@ -882,10 +845,7 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     // draw the cover image
     if( !m_coverPix.isNull() )
         p->drawPixmap( pixmapRect().x() + (pixmapRect().width() - m_coverPix.width())/2,
-                                  pixmapRect().y() + (pixmapRect().height() - m_coverPix.height())/2, m_coverPix );
-    else if( !m_hasCover )    //draw the 'nocover' icon
-        p->drawPixmap( pixmapRect().x() + (pixmapRect().width() - nocover->width())/2,
-                                  pixmapRect().y() + (pixmapRect().height() - nocover->height())/2, *nocover );
+            pixmapRect().y() + (pixmapRect().height() - m_coverPix.height())/2, m_coverPix );
 
     //justify the album name
     QString str = text();
@@ -933,7 +893,6 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
        QImageDrag::decode( e, img );
        CollectionDB().setAlbumImage( artist(), album(), img );
        m_coverImagePath = CollectionDB().albumImage( m_artist, m_album, 0 );
-       m_hasCover = QFile::exists( m_coverImagePath );
        loadCover();
     }
 }
