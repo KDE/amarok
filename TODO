@@ -245,3 +245,44 @@ valgrind --logfile=amarok12_19_03valgrind.log --trace-children=yes /opt/kde3/bin
 #13 0x417b5591 in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
 #14 0x08066d57 in main (argc=5, argv=0xbffff614) at amarok/main.cpp:68
 #15 0x4207a4f2 in __libc_start_main () from /lib/libc.so.6
+
+
+16-Jan-2004:
+
+[New Thread 16384 (LWP 4381)]
+[New Thread 32769 (LWP 4391)]
+0x412b8ab6 in waitpid () from /lib/i686/libpthread.so.0
+#0  0x412b8ab6 in waitpid () from /lib/i686/libpthread.so.0
+#1  0x421ff962 in KCrash::defaultCrashHandler(int) (sig=11) at kcrash.cpp:246
+#2  0x412b796c in __pthread_sighandler () from /lib/i686/libpthread.so.0
+#3  <signal handler called>
+#4  FHT::_transform(float*, int, int) (this=0x8170c88, p=0x0, n=64, k=0)
+    at fht.cpp:209
+#5  0x08067fd9 in FHT::power2(float*) (this=0x8170c88, p=0x0) at fht.cpp:145
+#6  0x08067f7a in FHT::power(float*) (this=0x8170c88, p=0x0) at fht.cpp:128
+#7  0x0806c374 in PlayerApp::slotVisTimer() (this=0xbfffef20)
+    at amarok/playerapp.cpp:704
+#8  0x0806cea4 in PlayerApp::qt_invoke(int, QUObject*) (this=0xbfffef20, 
+    _id=33, _o=0xbfffe9a0) at playerapp.moc:194
+#9  0x4d724a6b in QObject::activate_signal(QConnectionList*, QUObject*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#10 0x4d724834 in QObject::activate_signal(int) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#11 0x4da561d9 in QTimer::timeout() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#12 0x4d746df3 in QTimer::event(QEvent*) () from /usr/lib/qt3/lib/libqt-mt.so.3
+#13 0x4d6c34c6 in QApplication::internalNotify(QObject*, QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#14 0x4d6c27ee in QApplication::notify(QObject*, QEvent*) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#15 0x421912c3 in KApplication::notify(QObject*, QEvent*) (this=0xbfffef20, 
+    receiver=0x8172958, event=0xbfffed70) at kapplication.cpp:511
+#16 0x4d6af9b3 in QEventLoop::activateTimers() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#17 0x4d66a16d in QEventLoop::processEvents(unsigned) ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#18 0x4d6d7810 in QEventLoop::enterLoop() ()
+   from /usr/lib/qt3/lib/libqt-mt.so.3
+#19 0x4d6d7706 in QEventLoop::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#20 0x4d6c375f in QApplication::exec() () from /usr/lib/qt3/lib/libqt-mt.so.3
+#21 0x08067b89 in main (argc=0, argv=0x0) at amarok/main.cpp:72
+
