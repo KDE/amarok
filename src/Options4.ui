@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Options4</string>
-    </property>
     <property name="whatsThis" stdset="0">
         <string>Select the sound system to use for playback.</string>
     </property>
@@ -68,9 +65,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;Crossfade</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
                             </property>
                             <property name="checked">
                                 <bool>false</bool>
@@ -281,9 +275,6 @@
                             <property name="text">
                                 <string>&amp;About</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+A</string>
-                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -314,9 +305,6 @@
                     </property>
                     <property name="text">
                         <string>Use &amp;hardware volume mixer</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+H</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the volume slider sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
