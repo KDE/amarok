@@ -426,11 +426,9 @@ GstEngine::setVolume( int percent )             //SLOT
 void
 GstEngine::newStreamData( char* buf, int size )            //SLOT
 {
-    kdDebug() << k_funcinfo << endl;
-    
     if ( m_streamBufIndex + size > STREAMBUF_SIZE ) {
         size = STREAMBUF_SIZE - m_streamBufIndex;    
-        kdWarning() << "Stream buffer overflow!" << endl;
+//         kdDebug() << "Stream buffer overflow!" << endl;
     }
             
     // Copy data into stream buffer
@@ -438,7 +436,7 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
     // Adjust index
     m_streamBufIndex += size;
     
-    // Wait until buffer is half filled, then start playback
+    // Wait until buffer is partly filled, then start playback
     if ( m_playFlag && m_streamBufIndex > STREAMBUF_SIZE / 2 ) {
         play();
         m_playFlag = false;

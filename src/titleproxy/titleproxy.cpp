@@ -43,12 +43,13 @@ Proxy::Proxy( KURL url, int streamingMode )
         , m_byteCount( 0 )
         , m_metaLen( 0 )
         , m_usedPort( 0 )
-        , m_icyMode( true )
         , m_pBuf( 0 )
 {
     kdDebug() << k_funcinfo << endl;
 
     m_pBuf = new char[ BUFSIZE ];
+    // Don't try to get metdata for ogg streams (different protocol)
+    m_icyMode = url.path().endsWith( ".ogg" ) ? false : true;
     
     if ( streamingMode == EngineBase::Socket ) {
         uint i;

@@ -117,8 +117,7 @@ void EngineController::play( const MetaBundle &bundle )
 
     if ( AmarokConfig::titleStreaming() &&
          m_pEngine->streamingMode() != EngineBase::NoStreaming &&
-         url.protocol() == "http" &&
-         !url.path().endsWith( ".ogg" ) )
+         url.protocol() == "http" )
     {
         TitleProxy::Proxy* proxy = new TitleProxy::Proxy( url, m_pEngine->streamingMode() );
         if ( !proxy->initSuccess() ) {

@@ -33,11 +33,8 @@ struct _GstStreamSrc
     char* streamBuf;
     int* streamBufIndex;
         
-    gulong curoffset; /* current offset in file */
-    gulong blocksize; /* bytes per read */
+    glong blocksize; /* bytes per read */
     guint64 timeout;  /* read timeout, in nanoseconds */
-
-    gulong seq;       /* buffer sequence number */
 };
 
 struct _GstStreamSrcClass

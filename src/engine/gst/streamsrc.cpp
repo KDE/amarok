@@ -7,7 +7,6 @@
 #include "config.h"
 #include <kdebug.h>
 
-
 #define DEFAULT_BLOCKSIZE 4096
 
 GST_DEBUG_CATEGORY_STATIC ( gst_streamsrc_debug );
@@ -22,7 +21,6 @@ enum {
 
 enum {
     ARG_0,
-    ARG_FD,
     ARG_BLOCKSIZE,
     ARG_TIMEOUT
 };
@@ -98,10 +96,8 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
     gst_pad_set_get_function ( streamsrc->srcpad, gst_streamsrc_get );
     gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
 
-    streamsrc->curoffset = 0;
     streamsrc->blocksize = DEFAULT_BLOCKSIZE;
     streamsrc->timeout = 0;
-    streamsrc->seq = 0;
     streamsrc->streamBufIndex = 0;
 }
 
@@ -162,15 +158,13 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 static GstData*
 gst_streamsrc_get ( GstPad * pad )
 {
-    kdDebug() << k_funcinfo << endl;
-    
     GstStreamSrc* src = GST_STREAMSRC ( GST_OBJECT_PARENT ( pad ) );
-    GstBuffer* buf = gst_buffer_new_and_alloc( DEFAULT_BLOCKSIZE );
+    GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     guint8* data = GST_BUFFER_DATA( buf );
     int readBytes = *src->streamBufIndex;
     
-    if ( *src->streamBufIndex > DEFAULT_BLOCKSIZE )
-        readBytes = DEFAULT_BLOCKSIZE;
+    if ( *src->streamBufIndex > src->blocksize )
+        readBytes = src->blocksize;
     
     // Copy stream buffer content into gst buffer
     memcpy( data, src->streamBuf, readBytes );
