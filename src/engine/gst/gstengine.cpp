@@ -636,6 +636,10 @@ GstEngine::handleGstError()  //SLOT
         text += m_gst_debug;
     }
 
+    // Stop playback and rebuild output pipeline
+    destroyPipeline();
+    createPipeline();
+
     kdError() << text << endl;
     emit statusText( text );
 }
@@ -995,6 +999,8 @@ void InputPipeline::prepareToDie()
             gst_element_get( queue, "current-level-buffers", &filled, NULL );
             ::usleep( 20000 ); // 20 msec
         }
+
+        gst_element_set_state( thread, GST_STATE_READY );
 
         if ( GstEngine::instance()->m_pipelineFilled )
             gst_element_unlink( queue, GstEngine::instance()->m_gst_adder );
