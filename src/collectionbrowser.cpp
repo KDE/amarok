@@ -260,6 +260,7 @@ CollectionView::scan()  //SLOT
                                   i18n( "Abort" ), m_progressBox );
         connect( button, SIGNAL( clicked() ), m_insertdb, SLOT( stopScan() ) );
         m_progress = new KProgress( m_progressBox );
+        m_progress->setFixedHeight( button->sizeHint().height() );
         m_progressBox->show();
     }
 }
