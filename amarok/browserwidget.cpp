@@ -43,6 +43,7 @@ BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( p
     setFocusPolicy( QWidget::ClickFocus );
     setPaletteBackgroundColor( pApp->m_bgColor );
 
+    addColumn( "Filebrowser" );
     setFullWidth( true );
     setAcceptDrops( true );
     m_Count = 0;

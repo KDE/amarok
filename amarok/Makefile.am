@@ -1,6 +1,6 @@
 SUBDIRS = images amarokarts data
 
-INCLUDES= $(all_includes)
+INCLUDES= $(all_includes) -I$(kde_includes)/taglib
 METASOURCES = AUTO
 
 EXTRA_DIST = browserwidget.h browserwin.h \
@@ -17,7 +17,7 @@ amarok_SOURCES = main.cpp viswidget.cpp playlistwidget.cpp \
 	browserwin.cpp browserwidget.cpp
 amarok_LDADD = ./amarokarts/libamarokarts.la -lqtmcop -lkmedia2_idl \
 	-lartsflow -lsoundserver_idl -lartskde -lartsgui -lartsgui_kde \
-	-lartsmodules $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
+	-lartsmodules -ltag $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE)
 # $(LIBSOCKET)
 amarok_LDFLAGS = $(all_libraries) $(KDE_RPATH)
 

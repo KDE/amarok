@@ -28,8 +28,6 @@ class QPainter;
 class QColorGroup;
 class QRect;
 
-class KFileMetaInfo;
-
 class PlayerApp;
 extern PlayerApp *pApp;
 
@@ -45,10 +43,17 @@ class PlaylistItem : public QListViewItem
         PlaylistItem( QListView* parent, QListViewItem* after, const KURL &url );
         ~PlaylistItem();
 
+        QString m_tagTitle;
+        QString m_tagArtist;
+        QString m_tagAlbum;
+        QString m_tagYear;
+        QString m_tagComment;
+        QString m_tagGenre;
+
         KURL url() const { return m_url; }
         void readMetaInfo();
-        KFileMetaInfo *metaInfo();
         void setMetaTitle();
+        bool hasMetaInfo();
         bool isDir();
         void setDir( bool on );
         bool isGlowing() const  { return m_bIsGlowing; }
@@ -61,8 +66,8 @@ class PlaylistItem : public QListViewItem
         void paintCell( QPainter* p, const QColorGroup& cg, int column, int width, int align );
         void paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r );
 
+        bool m_hasMetaInfo;
         KURL m_url;
-        KFileMetaInfo *m_pMetaInfo;
         bool m_bIsGlowing;
         bool m_isDir;
         QString m_sPath;

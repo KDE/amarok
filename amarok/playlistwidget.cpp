@@ -48,9 +48,16 @@ PlaylistWidget::PlaylistWidget(QWidget *parent, const char *name ) : KListView(p
     setName( "PlaylistWidget" );
     setFocusPolicy( QWidget::ClickFocus );
     setPaletteBackgroundColor( pApp->m_bgColor );
-    setFullWidth( true );
+
+    addColumn( "Title" );
+    addColumn( "Album" );
+    addColumn( "Artist" );
+    addColumn( "Year" );
+    addColumn( "Comment" );
+    addColumn( "Genre" );
+
     setCurrentTrack( NULL );
-    m_playlistDirty = false;
+    m_pCurrentMeta = NULL;
 
     mGlowCount = 100;
     mGlowAdd = 5;
@@ -263,24 +270,15 @@ void PlaylistWidget::focusInEvent( QFocusEvent *e )
 
 void PlaylistWidget::fetchMetaInfo()
 {
-    if ( m_playlistDirty )
+    if ( m_pCurrentMeta != NULL )
     {
-        PlaylistItem *item = static_cast<PlaylistItem*>( firstChild() );
-
-        while( item )
+        if ( !m_pCurrentMeta->hasMetaInfo() )
         {
-            if ( !item->metaInfo() )
-            {
-                item->readMetaInfo();
-                item->setMetaTitle();
-                break;
-            }
-
-            item = static_cast<PlaylistItem*>( item->nextSibling() );
+            m_pCurrentMeta->readMetaInfo();
+            m_pCurrentMeta->setMetaTitle();
         }
 
-        if ( !item )
-            m_playlistDirty = false;
+        m_pCurrentMeta = static_cast<PlaylistItem*>( m_pCurrentMeta->nextSibling() );
     }
 }
 
@@ -288,7 +286,7 @@ void PlaylistWidget::fetchMetaInfo()
 
 PlaylistItem* PlaylistWidget::addItem( PlaylistItem *after, KURL url )
 {
-    m_playlistDirty = true;
+    m_pCurrentMeta = firstChild();
 
     if ( (unsigned long) after == 1 )
     {
@@ -357,7 +355,7 @@ void PlaylistWidget::slotTextChanged( const QString &str )
         --it;
     }
                 
-    clearSelection();            
+    clearSelection();
     triggerUpdate();
 
     if ( pVisibleItem )

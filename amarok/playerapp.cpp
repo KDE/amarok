@@ -134,7 +134,7 @@ PlayerApp::PlayerApp() :
 
     m_pMainTimer = new QTimer( this );
     connect( m_pMainTimer, SIGNAL( timeout() ), this, SLOT( slotMainTimer() ) );
-    m_pMainTimer->start( 130 );
+    m_pMainTimer->start( 100 );
 
     m_pAnimTimer = new QTimer( this );
     connect( m_pAnimTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );

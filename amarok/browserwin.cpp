@@ -176,9 +176,6 @@ void BrowserWin::initChildren()
     layH->addWidget( m_pButtonClear );
     layH->addWidget( m_pButtonSort );
     layH->addWidget( m_pButtonPlay );
-
-    m_pBrowserWidget->addColumn( "Filebrowser" );
-    m_pPlaylistWidget->addColumn( "Playlist" );
 }
 
 

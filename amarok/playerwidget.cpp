@@ -244,28 +244,28 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name ) : QWidget( paren
 
     m_pButtonPrev = new QPushButton( m_pFrameButtons );
     m_pButtonPrev->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPrev->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunback.png" ) ) );
+    m_pButtonPrev->setPixmap( locate( "data", "amarok/images/hi16-action-noatunback.png" ) );
     m_pButtonPrev->setFlat( true );
 
     m_pButtonPlay = new QPushButton( m_pFrameButtons );
     m_pButtonPlay->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPlay->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunplay.png" ) ) );
+    m_pButtonPlay->setPixmap( locate( "data", "amarok/images/hi16-action-noatunplay.png" ) );
     m_pButtonPlay->setToggleButton( true );
     m_pButtonPlay->setFlat( true );
 
     m_pButtonPause = new QPushButton( m_pFrameButtons );
     m_pButtonPause->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonPause->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunpause.png" ) ) );
+    m_pButtonPause->setPixmap( locate( "data", "amarok/images/hi16-action-noatunpause.png" ) );
     m_pButtonPause->setFlat( true );
 
     m_pButtonStop = new QPushButton( m_pFrameButtons );
     m_pButtonStop->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonStop->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunstop.png" ) ) );
+    m_pButtonStop->setPixmap( locate( "data", "amarok/images/hi16-action-noatunstop.png" ) );
     m_pButtonStop->setFlat( true );
 
     m_pButtonNext = new QPushButton( m_pFrameButtons );
     m_pButtonNext->setFocusPolicy( QWidget::NoFocus );
-    m_pButtonNext->setPixmap( QPixmap( locate( "data", "amarok/images/hi16-action-noatunforward.png" ) ) );
+    m_pButtonNext->setPixmap( locate( "data", "amarok/images/hi16-action-noatunforward.png" ) );
     m_pButtonNext->setFlat( true );
 
     QBoxLayout* lay = new QVBoxLayout( this );

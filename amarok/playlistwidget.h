@@ -86,6 +86,6 @@ class PlaylistWidget : public KListView
         int mGlowCount, mGlowAdd;
         QColor mGlowColor;
         QListViewItem* m_pCurrentTrack;
-        bool m_playlistDirty;
+        PlaylistItem *m_pCurrentMeta;
 };
 #endif
