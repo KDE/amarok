@@ -61,7 +61,7 @@ void Options5::init()
                 "<li>Track Length - %7"
                 "<li>Track Number - %8"
                 "<li>Filename - %9"
-                "<li>Comment - %10
+                "<li>Comment - %10"
                 "<li>Score - %11"
                 "</ul>"
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
