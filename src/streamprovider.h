@@ -23,7 +23,7 @@ email                : markey@web.de
 #include <qobject.h>
 #include <qserversocket.h>    //baseclass
 #include <qsocket.h>          //stack allocated
-#include <qstring.h>          //stack allocated
+#include <qstringlist.h>          //stack allocated
 
 
 class MetaBundle;
@@ -113,7 +113,7 @@ namespace amaroK {
             bool m_headerFinished;
             QString m_headerStr;
             int m_usedPort;
-            QString m_lastMetadata;
+            QStringList m_lastMetadata;
             bool m_icyMode;
 
             QString m_streamName;

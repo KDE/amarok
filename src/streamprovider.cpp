@@ -286,11 +286,18 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
 void
 StreamProvider::transmitData( const QString &data )
 {
-    debug() << "Received new metadata: " << data << endl;
-
     // Prevent spamming by ignoring repeated identical data (some servers repeat it every 10 seconds)
-    if ( !data.isNull() && data == m_lastMetadata ) return;
-    m_lastMetadata = data;
+    if ( !data.isNull() && m_lastMetadata.contains( data ) ) {
+        debug() << "Received MetaData [suppressed]: " << data << endl;
+        return;
+    }
+
+    debug() << "Received MetaData: " << data << endl;
+    m_lastMetadata << data;
+    // We compare the new item with the last two items, because mth.house currently cycles
+    // two messages alternating, which gets very annoying
+    if ( m_lastMetadata.count() == 3 )
+        m_lastMetadata.pop_front();
 
     // because we assumed latin1 earlier this codec conversion works
     QTextCodec *codec = AmarokConfig::recodeShoutcastMetadata()
