@@ -74,13 +74,13 @@ class Alarm( QApplication ):
         QApplication.__init__( self, args )
 
         self.queue = Queue.Queue()
-
-        self.timer = QTimer()
-        self.connect( self.timer, SIGNAL( "timeout()" ), self.checkQueue )
-        self.timer.start( 100 )
+        self.startTimer( 100 )
 
         self.t = threading.Thread( target = self.readStdin )
         self.t.start()
+
+        self.alarmTimer = QTimer()
+        self.connect( self.alarmTimer, SIGNAL( "timeout()" ), self.wakeup )
 
         self.readSettings()
 
@@ -101,7 +101,7 @@ class Alarm( QApplication ):
             secondsleft = QTime.currentTime().secsTo( time )
 
             if secondsleft > 0:
-                QTimer.singleShot( secondsleft * 1000, self.wakeup )
+                self.alarmTimer.start( secondsleft * 1000, True )
         except:
             pass
 
@@ -124,7 +124,7 @@ class Alarm( QApplication ):
 # Command Handling
 ############################################################################
 
-    def checkQueue( self ):
+    def timerEvent( self, event ):
         if not self.queue.empty():
             string = QString( self.queue.get_nowait() )
 
