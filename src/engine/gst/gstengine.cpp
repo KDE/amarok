@@ -21,12 +21,10 @@ email                : markey@web.de
 #include <math.h>           //interpolate()
 #include <vector>
 
+#include <qfile.h>
 #include <qmessagebox.h>    //fillPipeline()
-#include <qobject.h>
-#include <qstring.h>
 #include <qstringlist.h>
 #include <qtimer.h>
-#include <qfile.h>
 
 #include <kdebug.h>
 #include <kurl.h>
@@ -231,7 +229,8 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 
     /* create a disk reader */
     filesrc = gst_element_factory_make( "filesrc", "disk_source" );
-    g_object_set( G_OBJECT( filesrc ), "location", QFile::encodeName( url.path() ), NULL );
+    g_object_set( G_OBJECT( filesrc ), "location",
+                  static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
 
     typefind = gst_element_factory_make( "typefind", "typefind" );
 
@@ -319,7 +318,8 @@ GstEngine::play( const KURL& url )  //SLOT
     if ( !m_pipelineFilled ) return 0;
 
     //load track into filesrc
-    g_object_set( G_OBJECT( m_pFilesrc ), "location", QFile::encodeName( url.path() ), NULL );
+    g_object_set( G_OBJECT( m_pFilesrc ), "location",
+                  static_cast<const char*>( QFile::encodeName( url.path() ) ), NULL );
     play();
 
     return 0;
