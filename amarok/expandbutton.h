@@ -30,10 +30,6 @@ class QTimer;
 class PlayerApp;
 extern PlayerApp *pApp;
 
-/**
- *@author mark
- */
-
 class ExpandButton : public QPushButton
 {
     Q_OBJECT
@@ -50,6 +46,7 @@ class ExpandButton : public QPushButton
         QPtrList<ExpandButton> m_ButtonList;
 
     public slots:
+        void slotDelayExpand();
         void slotStartExpand();
         void slotAnimTimer();
 
@@ -64,7 +61,9 @@ class ExpandButton : public QPushButton
         float m_animAdd, m_animSpeed;
 
         QTimer *m_pTimer;
-        QPixmap *m_pSavePixmap, *m_pComposePixmap;
-        QPixmap *m_pBlitMap1, *m_pBlitMap2;
+        QPixmap *m_pSavePixmap;
+        QPixmap *m_pComposePixmap;
+        QPixmap *m_pBlitMap1;
+        QPixmap *m_pBlitMap2;
 };
 #endif

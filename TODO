@@ -32,11 +32,9 @@ MID-TERM:
 
     * add: display warning when artsd is run w/o realtime
 
-    * fix: small redrawing bugs for ExpandButton
-
     * add: background "transparency" for playlist window
 
-    * add: better cleanup at program exit; delete all new'ed objects ( calling DTORS )
+    * add: better cleanup at program exit; delete all new'ed objects
 
     * add: title streaming ( mp3PlayObject needs to be patched )
 

@@ -48,7 +48,7 @@ QPushButton( text, parent )
 
     m_animFlag = ANIM_IDLE;
     m_ButtonList = QPtrList<ExpandButton>();
-    connect( this, SIGNAL( pressed() ), this, SLOT( slotStartExpand() ) );
+    connect( this, SIGNAL( pressed() ), this, SLOT( slotDelayExpand() ) );
 
     setFlat( true );
 }
@@ -112,11 +112,18 @@ void ExpandButton::mouseMoveEvent( QMouseEvent *e )
 
 // SLOTS ------------------------------------------------------
 
+void ExpandButton::slotDelayExpand()
+{
+    if ( m_animFlag == ANIM_IDLE )
+    {
+        QTimer::singleShot( 300, this, SLOT( slotStartExpand() ) );
+        m_animFlag = ANIM_EXPAND;
+    }
+}
+
+
 void ExpandButton::slotStartExpand()
 {
-    if ( m_animFlag != ANIM_IDLE )
-        return;
-
     m_animSpeed = 0.3;
 
     m_pSavePixmap = new QPixmap( QPixmap::grabWindow( parentWidget()->winId(),
@@ -147,10 +154,11 @@ void ExpandButton::slotStartExpand()
         bitBlt( m_pBlitMap1, 0, height() * i, &tmp );
     }
 
-//  m_pBlitMap1->setMask( m_pBlitMap1->createHeuristicMask() );
-//  m_pBlitMap2->setMask( m_pBlitMap2->createHeuristicMask() );
+    // FIXME: with the mask the buttons get transparent, which looks cool, but won't work with the Liquid
+    //        style, since that's badly b0rked. Fuck Liquid.
+//     m_pBlitMap1->setMask( m_pBlitMap1->createHeuristicMask() );
+//     m_pBlitMap2->setMask( m_pBlitMap2->createHeuristicMask() );
 
-    m_animFlag = ANIM_EXPAND;
     m_animHeight = 0; m_animAdd = 0;
     m_pTimer = new QTimer( this );
     connect( m_pTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
