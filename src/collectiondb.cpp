@@ -183,7 +183,7 @@ CollectionDB::query( const QString& statement, QStringList& names, bool debug )
             if (mysql::mysql_field_count(m_db) != 0)
             {
                 kdDebug() << "MYSQL QUERY FAILED: " << mysql::mysql_error(m_db) << "\n" << "FAILED QUERY: " << statement << "\n";
-        				return QStringList();
+                return QStringList();
             }
         }
     }
@@ -484,7 +484,7 @@ CollectionDB::getImageForPath( const QString path, uint width )
     {
         QString image( m_values.first() );
         for ( uint i = 0; i < m_values.count(); i++ )
-            if ( m_values[i].contains( "front", false ) )
+            if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ))
                 image = m_values[i];
 
         if ( width > 0 )
