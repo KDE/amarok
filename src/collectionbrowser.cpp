@@ -613,7 +613,7 @@ CollectionView::doubleClicked( QListViewItem* item, const QPoint&, int ) //SLOT
         item->setOpen( !item->isOpen() );
     else
         //direct play & prevent doubles in playlist
-        Playlist::instance()->appendMedia( static_cast<Item*>( item )->url(), true, true );
+        Playlist::instance()->insertMedia( static_cast<Item*>( item )->url(), Playlist::Unique | Playlist::DirectPlay );
 
 }
 
@@ -674,12 +674,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         switch( menu.exec( point ) ) {
 
             case APPEND:
-                Playlist::instance()->appendMedia( listSelected() );
+                Playlist::instance()->insertMedia( listSelected(), Playlist::Append );
                 break;
             case MAKE:
-                Playlist::instance()->clear(); //FALL THROUGH
+                Playlist::instance()->insertMedia( listSelected(), Playlist::Replace );
+                break;
             case QUEUE:
-                Playlist::instance()->queueMedia( listSelected() );
+                Playlist::instance()->insertMedia( listSelected(), Playlist::Queue );
                 break;
             case BURN_ARTIST:
                 K3bExporter::instance()->exportArtist( item->text(0) );

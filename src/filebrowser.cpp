@@ -345,20 +345,19 @@ inline void FileBrowser::slotViewChanged( KFileView *view )
 
 inline void FileBrowser::activateThis( const KFileItem *item )
 {
-    Playlist::instance()->appendMedia( item->url(), true );
+    Playlist::instance()->insertMedia( item->url(), Playlist::DirectPlay );
 }
 
 
 inline void FileBrowser::makePlaylist()
 {
-    Playlist::instance()->clear();
-    Playlist::instance()->appendMedia( selectedItems() );
+    Playlist::instance()->insertMedia( selectedItems(), Playlist::Replace );
 }
 
 
 inline void FileBrowser::addToPlaylist()
 {
-    Playlist::instance()->appendMedia( selectedItems() );
+    Playlist::instance()->insertMedia( selectedItems() );
 }
 
 

@@ -60,14 +60,24 @@ class Playlist : private KListView, public EngineObserver
     public:
         ~Playlist();
 
-        void appendMedia( KURL::List, bool play = false, bool preventDoubles = false );
-        void queueMedia( const KURL::List&, bool = false );
-        void replaceMedia( const KURL::List &list, bool play = false ) { clear(); appendMedia( list, play ); }
-        bool isEmpty() const { return childCount() == 0; }
+        static const int Append     = 1;     /// inserts media after the last item in the playlist
+        static const int Queue      = 2;     /// inserts media after the currentTrack
+        static const int Clear      = 4;     /// clears the playlist first
+        static const int Replace    = Clear;
+        static const int DirectPlay = 8;     /// start playback of the first item in the list
+        static const int Unique     = 16;    /// don't insert anything already in the playlist
 
+        /** Add media to the playlist
+         *  @param options you can OR these together, see the enum,
+         */
+        void insertMedia( KURL::List, int options = Append );
+        void appendMedia( KURL::List list ) { insertMedia( list ); } ///DEPRECATED
+
+        bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter() const;
 
+        /// called during initialisation
         void restoreSession();
 
         void saveM3U( const QString& ) const;
@@ -104,7 +114,7 @@ class Playlist : private KListView, public EngineObserver
 
     public slots:
         void appendMedia( const QString &path ) { appendMedia( KURL::fromPathOrURL( path ) ); }
-        void appendMedia( const KURL& );
+        void appendMedia( const KURL &url )     { appendMedia( KURL::List( url ) ); }
         void clear();
         void shuffle();
         void removeSelectedItems();
@@ -202,14 +212,5 @@ class Playlist : private KListView, public EngineObserver
 
         std::vector<double> m_columnFraction;
 };
-
-inline void
-Playlist::appendMedia( const KURL &url )
-{
-    if( !url.isEmpty() )
-    {
-        appendMedia( KURL::List( url ) );
-    }
-}
 
 #endif //AMAROK_PLAYLIST_H

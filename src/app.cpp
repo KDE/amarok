@@ -150,10 +150,8 @@ App::~App()
 
     EngineBase* const engine = EngineController::engine();
 
-    if( AmarokConfig::resumePlayback() )
-    {
-        if( engine->state() != Engine::Empty )
-        {
+    if ( AmarokConfig::resumePlayback() ) {
+        if ( engine->state() != Engine::Empty ) {
             AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyURL() );
             AmarokConfig::setResumeTime( engine->position() );
         }
@@ -185,16 +183,21 @@ void App::handleCliArgs() //static
     if ( args->count() > 0 )
     {
         KURL::List list;
-
-        for ( int i = 0; i < args->count(); i++ )
+        for( int i = 0; i < args->count(); i++ )
             list << args->url( i );
 
-        if ( args->isSet( "queue" ) )
-            Playlist::instance()->queueMedia( list, args->isSet( "play" ) );
-        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) )
-            Playlist::instance()->appendMedia( list, args->isSet( "play" ) );
+        int options;
+        if( args->isSet( "queue" ) )
+           options = Playlist::Queue;
+        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) ) {
+           options = Playlist::Append;
+           if( args->isSet( "play" ) )
+              options |= Playlist::DirectPlay;
+        }
         else
-            Playlist::instance()->replaceMedia( list, true );
+           options = Playlist::Replace | Playlist::DirectPlay;
+
+        Playlist::instance()->insertMedia( list, options );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -215,7 +218,7 @@ void App::handleCliArgs() //static
     else if ( args->isSet( "previous" ) )
         EngineController::instance()->previous();
 
-    if (  args->isSet( "toggle-playlist-window" ) )
+    if ( args->isSet( "toggle-playlist-window" ) )
         pApp->m_pPlaylistWindow->showHide();
 
     args->clear();    //free up memory
@@ -600,9 +603,9 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( i18n( "&Append to Playlist" ), 101 );
-            popup.insertItem( i18n( "Append && &Play" ), 102 );
-            if( b ) popup.insertItem( i18n( "&Queue After Current Track" ), 103 );
+            popup.insertItem( i18n( "&Append to Playlist" ), Playlist::Append );
+            popup.insertItem( i18n( "Append && &Play" ), Playlist::DirectPlay | Playlist::Append );
+            if( b ) popup.insertItem( i18n( "&Queue After Current Track" ), Playlist::Queue );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
@@ -610,15 +613,8 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
             KURL::List list;
             KURLDrag::decode( e, list );
 
-            switch( id )
-            {
-            case 101:
-            case 102:
-                Playlist::instance()->appendMedia( list, id == 102 );
-
-            case 103:
-                Playlist::instance()->queueMedia( list );
-            }
+            if ( id > 0 )
+                Playlist::instance()->insertMedia( list, id );
         }
         else return false;
         #undef e

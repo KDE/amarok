@@ -12,8 +12,8 @@
 #include "covermanager.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include "playlist.h"     //appendMedia()
-#include "playlistitem.h"     //appendMedia()
+#include "playlist.h"      //appendMedia()
+#include "playlistitem.h"  //statistics stuff
 #include "qstringx.h"
 #include "scrobbler.h"
 #include "sqlite/sqlite3.h"
@@ -53,7 +53,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_toolbar->setFlat( true );
     m_toolbar->setIconSize( 16 );
     m_toolbar->setIconText( KToolBar::IconTextRight );
-    m_toolbar->insertButton( "gohome", Home, SIGNAL(clicked()), this, SLOT(showHome()), true, i18n("Statistics") );
+    m_toolbar->insertButton( "gohome", Home, SIGNAL(clicked()), this, SLOT(showHome()), true, i18n("Home") );
     m_toolbar->insertButton( "today", CurrentTrack, SIGNAL(clicked()), this, SLOT(showCurrentTrack()), true, i18n("Current Track") );
     m_toolbar->insertButton( "document", Lyrics, SIGNAL(clicked()), this, SLOT(showLyrics()), true, i18n("Lyrics") );
 
@@ -98,8 +98,10 @@ ContextBrowser::~ContextBrowser()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void ContextBrowser::setFont( const QFont &newFont ) {
-    QWidget::setFont( newFont );
-    setStyleSheet();
+    if( newFont != font() ) {
+        QWidget::setFont( newFont );
+        setStyleSheet();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -110,24 +112,23 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
     QStringList info = QStringList::split( " @@@ ", url.path() );
 
     if ( url.protocol() == "album" ) {
-        QStringList values;
+        QString sql = "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;";
+        QStringList values = m_db->query( sql.arg( info[0] ).arg( info[1] ) );
+        KURL::List urls;
+        KURL url;
 
-        values = m_db->query( QString( "SELECT DISTINCT url FROM tags WHERE artist = %1 AND album = %2 ORDER BY track;" )
-                              .arg( info[0] )
-                              .arg( info[1] ), &values );
-
-        for ( uint i = 0; i < values.count(); i++ ) {
-            if ( values[i].isEmpty() )
-                continue;
-
-            KURL tmp;
-            tmp.setPath( values[i] );
-            Playlist::instance()->appendMedia( tmp, false, true );
+        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+            url.setPath( *it );
+            urls.append( url );
         }
+
+        Playlist::instance()->insertMedia( urls, Playlist::Unique );
+
+        return;
     }
 
     if ( url.protocol() == "file" )
-        Playlist::instance()->appendMedia( url, true, true );
+        Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 
     if ( url.protocol() == "show" ) {
         if ( url.path() == "home" )
@@ -163,13 +164,12 @@ void ContextBrowser::openURLRequest( const KURL &url ) {
         const QString command = "kfmclient openURL 'http://www.musicbrainz.org/taglookup.html?artist=''%1''&album=''%2'''";
         KRun::runCommand( command.arg( info[0] ).arg( info[1] ), "kfmclient", "konqueror" );
     }
-
 }
 
 
 void ContextBrowser::collectionScanStarted() {
     if( m_emptyDB )
-        showScanning();
+       showScanning();
 }
 
 
@@ -229,10 +229,10 @@ void ContextBrowser::engineTrackEnded( int finalPosition, int trackLength ) {
 void ContextBrowser::engineNewMetaData( const MetaBundle&, bool /*trackChanged*/ ) {
     m_relatedArtists.clear();
 
-    if ( m_db->isEmpty() || !m_db->isValid() )
-        showIntroduction();
-    else
-        showCurrentTrack();
+    switch( m_db->isEmpty() || !m_db->isValid() ) {
+        case true:  showIntroduction();
+        case false: showCurrentTrack();
+    }
 }
 
 
@@ -325,9 +325,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     case DELETE:
     {
         const int button = KMessageBox::warningContinueCancel( this,
-            i18n( "Are you sure you want to delete this cover?" ),
+            i18n( "This cover will be permanantly deleted" ),
             QString::null,
-            i18n("&Delete Confirmation") );
+            i18n("&Delete") );
 
         if ( button == KMessageBox::Continue ) {
             m_db->removeAlbumImage( info[0], info[1] );
@@ -337,7 +337,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
 
     case ASNEXT:
-        Playlist::instance()->queueMedia( urls );
+        Playlist::instance()->insertMedia( urls, Playlist::Queue );
         break;
 
     case MAKE:
@@ -346,7 +346,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //FALL_THROUGH
 
     case APPEND:
-        Playlist::instance()->appendMedia( urls, false, true );
+        Playlist::instance()->insertMedia( urls, Playlist::Unique );
         break;
 
     case FETCH:
@@ -378,55 +378,74 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
 void ContextBrowser::showHome() //SLOT
 {
-    browser->begin();
-    browser->setUserStyleSheet( m_styleSheet );
-
-    browser->write( "<html>" );
-
-    browser->write( "<div class='rbcontent'>" );
-    browser->write(  "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write(   "<tr><th>" + i18n( "Your Favorite Tracks" ) + "</th></tr>" );
-    browser->write(  "</table>" );
-    browser->write(  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
-
-    QStringList values = m_db->query(
+    QStringList fave = m_db->query(
         "SELECT tags.title, tags.url, round( statistics.percentage + 0.4 ), artist.name, album.name "
         "FROM tags, artist, album, statistics "
         "WHERE artist.id = tags.artist AND album.id = tags.album AND statistics.url = tags.url "
         "ORDER BY statistics.percentage DESC "
         "LIMIT 0,10;" );
 
-    if ( !values.isEmpty() ) {
-        for ( uint i = 0; i < values.count(); i = i + 5 )
-            browser->write( QString ( "<tr><td class='song'><a href=\"file:"
-                                      + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"><b>" + values[i]
-                                      + "</b> <i>(" + i18n( "Score:" ) + " " + values[i+2] + ")</i><br>" + values[i+3] + " - " + values[i+4] + "</a></td></tr>" ) );
-    }
+    QStringList recent = m_db->query(
+        "SELECT tags.title, tags.url, artist.name, album.name "
+        "FROM tags, artist, album "
+        "WHERE artist.id = tags.artist AND album.id = tags.album "
+        "ORDER BY tags.createdate DESC "
+        "LIMIT 0,10;" );
 
-    browser->write( "</table></div><br>" );
+    browser->begin();
+    browser->setUserStyleSheet( m_styleSheet );
+    browser->write( "<html>" );
+
+    // <Favorite Tracks Information>
+    browser->write(
+        "<div class='rbcontent'>"
+         "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+          "<tr><th>" + i18n( "Your Favorite Tracks" ) + "</th></tr>"
+         "</table>"
+         "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+
+    for( uint i = 0; i < fave.count(); i = i + 5 )
+        browser->write(
+            "<tr>"
+             "<td class='song'>"
+              "<a href='file:" + fave[i+1].replace( '"', QCString("%22") ) + "'>"
+               "<b>" + fave[i] + "</b> "
+               "<i>(" + i18n("Score: %1").arg( fave[i+2] ) + ")</i><br>" +
+               fave[i+3] + " - " + fave[i+4] +
+              "</a>"
+             "</td>"
+            "</tr>" );
+
+    browser->write(
+         "</table>"
+        "</div>"
+        "<br>"
+
     // </Favorite Tracks Information>
 
     // <Recent Tracks Information>
-    browser->write( "<div class='rbcontent'>"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
-                    "</table>"
-                    "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    values = m_db->query( "SELECT tags.title, tags.url, artist.name, album.name "
-                          "FROM tags, artist, album "
-                          "WHERE artist.id = tags.artist AND album.id = tags.album "
-                          "ORDER BY tags.createdate DESC "
-                          "LIMIT 0,10;" );
+        "<div class='rbcontent'>"
+         "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+          "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
+         "</table>"
+         "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
-    if ( !values.isEmpty() ) {
-        for ( uint i = 0; i < values.count(); i = i + 4 )
-            browser->write( QString ( "<tr><td class='song'><a href=\"file:"
-                                      + values[i+1].replace( "\"", QCString( "%22" ) ) + "\"'><b>" + values[i]
-                                      + "</b><br>" + values[i+2] + " - " + values[i+3] + "</a></td></tr>" ) );
-    }
+    for( uint i = 0; i < recent.count(); i = i + 4 )
+        browser->write(
+            "<tr>"
+             "<td class='song'>"
+              "<a href='file:" + recent[i+1].replace( '"', QCString("%22") ) + "'>"
+               "<b>" + recent[i] + "</b><br>" +
+               recent[i+2] + " - " + recent[i+3] +
+              "</a>"
+             "</td>"
+            "</tr>" );
 
-    browser->write( "</table></div><br>" );
+    browser->write(
+         "</table>"
+        "</div>" );
+
     // </Recent Tracks Information>
 
     browser->write( "</html>" );
@@ -481,95 +500,77 @@ void ContextBrowser::showCurrentTrack() //SLOT
     const uint artist_id = m_db->artistID( currentTrack.artist() );
     const uint album_id  = m_db->albumID ( currentTrack.album() );
 
-    // Triggers redisplay when new cover image is downloaded
 
     QStringList values = m_db->query( QString(
         "SELECT datetime( datetime( statistics.createdate, 'unixepoch' ), 'localtime' ), "
-        "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.4 ) "
+            "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), "
+            "statistics.playcounter, round( statistics.percentage + 0.4 ) "
         "FROM  statistics "
         "WHERE url = '%1';" )
             .arg( m_db->escapeString( currentTrack.url().path() ) ) );
 
-    if ( !values.isEmpty() )
-        /* making 2 tables is most probably not the cleanest way to do it, but it works. */
-        browser->write( QStringx ( "<tr>"
-                                   "<td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='album'><b>%1 - %2</b></span>"
-                                   "<br>%3"
-                                   "</td>"
-                                   "<td valign='top' align='right' width='10%'>"
-                                   "<a title='%4' href='musicbrainz:%5 @@@ %6'><img src='%7'></a>"
-                                   "</td>"
-                                   "</tr>"
-                                   "</table>"
-                                   "<table width='100%'>"
-                                   "<tr>"
-                                   "<td width='20%'>"
-                                   "<a class='menu' href='fetchcover:%8 @@@ %9'>"
-                                   "<img align='left' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%10'>"
-                                   "</a>"
-                                   "</td>"
-                                   "<td valign='bottom' align='right' width='80%'>"
-                                   "%11<br>"
-                                   "%12<br>"
-                                   "%13<br>"
-                                   "%14<br>"
-                                   "</td>"
-                                   "</tr>" )
-                        .args( QStringList()
-                               << escapeHTML( currentTrack.artist() )
-                               << escapeHTML( currentTrack.title() )
-                               << escapeHTML( currentTrack.album() )
-                               << i18n( "Look up this track at musicbrainz.com" )
-                               << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
-                               << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
-                               << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
-                               << escapeHTMLAttr( currentTrack.artist() )
-                               << escapeHTMLAttr( currentTrack.album() )
-                               << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
-                               << i18n( "Track played once", "Track played %n times", values[2].toInt() )
-                               << i18n( "Score: %1" ).arg( values[3] )
-                               << i18n( "Last play: %1" ).arg( values[1].left( values[1].length() - 3 ) )
-                               << i18n( "First play: %1" ).arg( values[0].left( values[0].length() - 3 ) )
-                             )
-                      );
-    else {
-        browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
-                                   "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
-                                   "<td valign='top' align='right' width='10%'><a href='musicbrainz:%4 @@@ %5'>"
-                                   "<img src='%6'></a></td></tr></table> <table width='100%'><tr><td width='20%'>"
-                                   "<a class='menu' href='fetchcover:%6 @@@ %7'><img align='left' hspace='2' title='Click for information from amazon.com, right-click for menu.' src='%8'></a>"
-                                   "</td><td width='80%' valign='bottom' align='right'>"
-                                   "<i>" + i18n( "Never played before" )  + "</i></td>"
-                                   "</tr>" )
-                        .args( QStringList()
-                               << escapeHTML( currentTrack.artist() )
-                               << escapeHTML( currentTrack.title() )
-                               << escapeHTML( currentTrack.album() )
-                               << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
-                               << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
-                               << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
-                               << escapeHTMLAttr( currentTrack.artist() )
-                               << escapeHTMLAttr( currentTrack.album() )
-                               << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
-                             )
-                      );
-    }
-    values.clear();
+    //making 2 tables is most probably not the cleanest way to do it, but it works.
+    browser->write( QStringx(
+        "<tr>"
+         "<td height='42' valign='top' class='rbcurrent' width='90%'>"
+          "<span class='album'>"
+           "<b>%1 - %2</b>"
+          "</span>"
+          "<br>%3"
+         "</td>"
+         "<td valign='top' align='right' width='10%'>"
+          "<a title='%4' href='musicbrainz:%5 @@@ %6'>"
+           "<img src='%7'>"
+          "</a>"
+         "</td>"
+        "</tr>"
+       "</table>"
+       "<table width='100%'>"
+        "<tr>"
+         "<td width='20%'>"
+          "<a class='menu' href='fetchcover:%8 @@@ %9'>"
+           "<img align='left' hspace='2' src='%11' title='%10'>"
+          "</a>"
+         "</td>"
+         "<td valign='bottom' align='right' width='80%'>" )
+        .args( QStringList()
+            << escapeHTML( currentTrack.artist() )
+            << escapeHTML( currentTrack.title() )
+            << escapeHTML( currentTrack.album() )
+            << i18n( "Look up this track at musicbrainz.com" )
+            << escapeHTMLAttr( m_db->escapeString( currentTrack.artist() ) )
+            << escapeHTMLAttr( m_db->escapeString( currentTrack.album() ) )
+            << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) )
+            << escapeHTMLAttr( currentTrack.artist() )
+            << escapeHTMLAttr( currentTrack.album() )
+            << escapeHTMLAttr( m_db->albumImage( currentTrack.artist(), currentTrack.album() ) )
+            << i18n( "Click for information from amazon.com, right-click for menu." ) ) );
 
-    browser->write( "</table></div>" );
+    if ( !values.isEmpty() )
+        browser->write( QStringx("%1<br>%2<br>%3<br>%4<br>")
+            .args( QStringList()
+                << i18n( "Track played once", "Track played %n times", values[2].toInt() )
+                << i18n( "Score: %1" ).arg( values[3] )
+                << i18n( "Last play: %1" ).arg( values[1].left( values[1].length() - 3 ) )
+                << i18n( "First play: %1" ).arg( values[0].left( values[0].length() - 3 ) ) ) );
+    else
+        browser->write( "<i>" + i18n( "Never played before" )  + "</i>" );
+
+    browser->write(
+         "</td>"
+        "</tr>"
+       "</table>"
+      "</div>" );
+
     // </Current Track Information>
 
+
     if ( !m_db->isFileInCollection( currentTrack.url().path() ) ) {
-        browser->write( "<div class='warning' style='padding: 1em 0.5em 2em 0.5em'>");
-        browser->write(   i18n("If you would like to see contextual information about this track, "
-                               "you must add it to your Collection.") );
-        browser->write(  "&nbsp;"
-                         "<a class='warning' href='show:collectionSetup'>" );
-        browser->write(    i18n( "Click here to change your Collection setup" ) );
-        browser->write(  "</a>."
-                         "</div>" );
+        browser->write( "<div class='warning' style='padding: 1em 0.5em 2em 0.5em'>" );
+        browser->write( i18n("If you would like to see contextual information about this track, you should add it to your Collection.") );
+        browser->write( "&nbsp;<a class='warning' href='show:collectionSetup'>" + i18n( "Click here to change your Collection setup" ) + "</a>.</div>" );
     }
+
 
     // scrobblaaaaaar
     if ( m_relatedArtists.isEmpty() )
@@ -591,20 +592,28 @@ void ContextBrowser::showCurrentTrack() //SLOT
                               .arg( token ) );
 
         if ( !values.isEmpty() ) {
-            browser->write( "<br><div class='rbcontent'>" );
-            browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-            browser->write( "<tr><th>" + i18n( "Suggested Songs" ) + "</th></tr>" );
-            browser->write( "</table>" );
-            browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+            browser->write(
+                "<br>"
+                 "<div class='rbcontent'>"
+                  "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                   "<tr><th>" + i18n("Suggested Songs") + "</th></tr>"
+                  "</table>"
+                  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
             for ( uint i = 0; i < values.count(); i += 3 )
-                browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                                          + values[i + 2] + " - " + values[i] + "</i></a></td></tr>" ) );
+                browser->write(
+                   "<tr>"
+                    "<td class='song'>"
+                     "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" +
+                      values[i + 2] + " - " + values[i] +
+                     "</a>"
+                    "</td>"
+                   "</tr>" );
 
-            browser->write( "</table></div>" );
+            browser->write(
+                  "</table>"
+                 "</div>" );
         }
-
-        values.clear();
     }
 
     // <Favourite Tracks Information>
@@ -616,19 +625,27 @@ void ContextBrowser::showCurrentTrack() //SLOT
                           .arg( artist_id ) );
 
     if ( !values.isEmpty() ) {
-        browser->write( "<br><div class='rbcontent'>" );
-        browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-        browser->write( "<tr><th>" + i18n( "Favorite Tracks By This Artist" ) + "</th></tr>" );
-        browser->write( "</table>" );
-        browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+        browser->write(
+            "<br>"
+            "<div class='rbcontent'>"
+             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+              "<tr><th>" + i18n( "Favorite Tracks By This Artist" ) + "</th></tr>"
+             "</table>"
+             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
         for ( uint i = 0; i < values.count(); i += 3 )
-            browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                                      + values[i] + " <i>(" + i18n( "Score:" ) + " " + values[i + 2] + ")</i></a></td></tr>" ) );
+            browser->write(
+              "<tr>"
+               "<td class='song'>"
+                "<a href='file:" + values[i + 1].replace( '"', QCString("%22") ) + "'>" +
+                 values[i] + " <i>(" + i18n("Score: %1").arg( values[i + 2] ) + ")</i>"
+                "</a>"
+               "</td>"
+              "</tr>" );
 
-        values.clear();
-
-        browser->write( "</table></div>" );
+        browser->write(
+             "</table>"
+            "</div>" );
     }
     // </Favourite Tracks Information>
 
@@ -653,8 +670,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 QString tmp = values[i + 2].stripWhiteSpace().isEmpty() ? "" : values[i + 2] + ". ";
                 browser->write( QString ( "<tr><td class='song'><a href=\"file:" + values[i + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + values[i] + "</a></td></tr>" ) );
             }
-
-            values.clear();
 
             browser->write( "</table></div>" );
         }

@@ -1,22 +1,21 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // See COPYING file for licensing information
 
-
 #ifndef AMAROK_CONTEXTBROWSER_H
 #define AMAROK_CONTEXTBROWSER_H
 
 #include "engineobserver.h"
 #include <qvbox.h>
-#include <klistview.h>
-#include <kparts/browserextension.h>
-#include <kurl.h>
-#include <ktempfile.h>
 
 class CollectionDB;
+class KHTMLPart;
+class KTempFile;
+class KToolBar;
 class MetaBundle;
 class QPalette;
-class KHTMLPart;
 class Scrobbler;
+
+namespace KIO { class Job; }
 
 class ContextBrowser : public QVBox, public EngineObserver
 {
@@ -55,24 +54,20 @@ class ContextBrowser : public QVBox, public EngineObserver
         void setStyleSheet();
         void showIntroduction();
         void showScanning();
-        void showCurrentStream();
 
-        KHTMLPart *browser;
-        MetaBundle *m_currentTrack;
+        enum ToolBarID { Home, Lyrics, CurrentTrack };
+
+        KHTMLPart    *browser;
+        KToolBar     *m_toolbar;
         CollectionDB *m_db;
-        Scrobbler *m_scrobbler;
+        Scrobbler    *m_scrobbler;
 
-        QString m_styleSheet;
-        KURL m_url;
-        QString m_artist;
-        QString m_album;
-        bool m_emptyDB;
-        QString m_lyrics;
-        QStringList m_relatedArtists;
-
-        QString m_HTMLSource;
-
-	KTempFile* temp_img;
+        QString       m_styleSheet;
+        bool          m_emptyDB;
+        QString       m_lyrics;
+        QStringList   m_relatedArtists;
+        QString       m_HTMLSource;
+        KTempFile    *m_gradientImage;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

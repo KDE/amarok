@@ -244,23 +244,21 @@ Playlist::~Playlist()
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-Playlist::appendMedia( KURL::List list, bool directPlay, bool preventDoubles )
+Playlist::insertMedia( KURL::List list, int options )
 {
-    //NOTE passing by value is quick for QValueLists, although it is slow if we change the list
-    //but we only do that ocassionally
+    bool directPlay = options & DirectPlay;
 
-    if( preventDoubles )
-    {
+    if( options & Unique ) {
+        //passing by value is quick for QValueLists, though it is slow
+        //if we change the list, but this is unlikely
+
         KURL::List::Iterator jt;
 
-        for( MyIt it( this, 0 ); *it; ++it )
-        {
+        for( MyIt it( this, 0 ); *it; ++it ) {
             jt = list.find( (*it)->url() );
 
-            if( jt != list.end() )
-            {
-                if( directPlay && jt == list.begin() )
-                {
+            if ( jt != list.end() ) {
+                if ( directPlay && jt == list.begin() ) {
                     directPlay = false;
                     activate( *it );
                 }
@@ -270,13 +268,17 @@ Playlist::appendMedia( KURL::List list, bool directPlay, bool preventDoubles )
         }
     }
 
-    insertMediaInternal( list, lastItem(), directPlay );
-}
+    PlaylistItem *after = 0;
 
-void
-Playlist::queueMedia( const KURL::List &list, bool play )
-{
-    insertMediaInternal( list, currentTrack(), play );
+    if( options & Replace )
+       clear();
+    else if( options & Queue )
+       after = currentTrack();
+    else
+       //we do this by default, even if we were passed some stupid flag combination
+       after = lastItem();
+
+    insertMediaInternal( list, after, directPlay );
 }
 
 void
@@ -1858,7 +1860,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
       clear();
     blockSignals( false );
 
-    appendMedia( url ); //because the listview is empty, undoState won't be forced
+    insertMediaInternal( url, 0 ); //because the listview is empty, undoState won't be forced
 
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );

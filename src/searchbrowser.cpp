@@ -261,9 +261,7 @@ void SearchBrowser::stopSearch()
 
 void SearchBrowser::slotDoubleClicked( QListViewItem *item, const QPoint &, int )
 {
-    KURL::List list;
-    list << KURL( item->text(2) );
-    Playlist::instance()->appendMedia( list, true );
+    Playlist::instance()->insertMedia( KURL(item->text( 2 )), Playlist::DirectPlay );
 }
 
 
@@ -287,31 +285,33 @@ void SearchBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int )
         menu.insertItem( i18n( "&Remove" ), REMOVE );
     }
 
+    const KURL::List urls = item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls();
+
     switch( menu.exec( p ) ) {
-            case MAKE:
-                Playlist::instance()->clear(); //FALL THROUGH
+        case MAKE:
+            Playlist::instance()->clear(); //FALL THROUGH
 
-            case APPEND:
-                Playlist::instance()->appendMedia( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls() );
+        case APPEND:
+            Playlist::instance()->appendMedia( urls );
+            break;
+
+        case QUEUE:
+            Playlist::instance()->insertMedia( urls, Playlist::Queue );
+            break;
+
+        case BURN_DATACD:
+                K3bExporter::instance()->exportTracks( urls, K3bExporter::DataCD );
                 break;
 
-            case QUEUE:
-                Playlist::instance()->queueMedia( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls() );
+        case BURN_AUDIOCD:
+                K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
                 break;
 
-            case BURN_DATACD:
-                 K3bExporter::instance()->exportTracks( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls(), K3bExporter::DataCD );
-                 break;
-
-            case BURN_AUDIOCD:
-                 K3bExporter::instance()->exportTracks( item->listView() == resultView ? resultView->selectedUrls() : historyView->selectedUrls(), K3bExporter::AudioCD );
-                 break;
-
-            case REMOVE:
-                delete item;
-                historySelectionChanged();
-                break;
-        }
+        case REMOVE:
+            delete item;
+            historySelectionChanged();
+            break;
+    }
 }
 
 
