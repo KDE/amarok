@@ -1,11 +1,42 @@
-TAGLIB_H=yes;
+TAGLIB_TAGLIB_H=yes;
+KDE_CHECK_HEADER(taglib/taglib.h,TAGLIB_TAGLIB_H=yes,TAGLIB_TAGLIB_H=no)
 
-KDE_CHECK_HEADERS(tag.h)
-if test "$ac_cv_header_tag_h" = "no"; then
-	  TAGLIB_H=no;
+dnl -- check for the artsgui library
+AC_DEFUN(AC_PATH_LIBARTSGUI,
+[
+        AC_MSG_CHECKING([for libartsgui])
+        ac_artsgui_libraries=NO
+
+artsgui_libdirs="/usr/lib /usr/local/lib /usr/local/kde3/lib $prefix/lib $exec_prefix/lib $kde_extra_libs"
+
+artsgui_libdir=NONE
+for dir in $artsgui_libdirs; do
+        try="ls -1 $dir/libartsgui*"
+                if test=`eval $try 2> /dev/null`; then artsgui_libdir=$dir; break; else echo "tried $dir" >&AC_FD_CC ; fi
+done
+
+ac_artsgui_libraries="$artsgui_libdir"
+
+
+if test "$ac_artsgui_libraries" = NO; then
+        have_artsgui=no
+        DO_NOT_COMPILE="$DO_NOT_COMPILE klatin"
+else
+        have_artsgui=yes;
 fi
 
-if test "$TAGLIB_H" = "no"; then
-	AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
-	DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+eval "$ac_cv_have_artsgui"
+])
+
+AC_PATH_LIBARTSGUI
+
+if test "$ac_kdeeducore_libraries" = NO; then
+        AC_MSG_RESULT([not found.  amaroK build will be disabled.])
+else
+        AC_MSG_RESULT([found in $ac_artsgui_libraries])
+        if test "$TAGLIB_TAGLIB_H" = "no"; then
+                AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
+                DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+        fi
 fi
+
