@@ -331,10 +331,10 @@ CollectionDB::artistList( bool withUnknown, bool withCompilations )
         execSql( "SELECT DISTINCT name FROM artist "
                  "ORDER BY lower( name );", &values );
     else
-        execSql( "SELECT DISTINCT artist.name FROM artist, tags WHERE 1 " +
+        execSql( "SELECT DISTINCT artist.name FROM tags, artist WHERE 1 " +
                ( withUnknown ? QString() : "AND artist.name <> 'Unknown' " ) +
                ( withCompilations ? QString() : "AND tags.artist = artist.id AND tags.sampler = 0 " ) +
-                 "ORDER BY lower( artist.name );", &values );
+                 "ORDER BY lower( artist.name );", &values, 0, true );
 
     return values;
 }
@@ -349,10 +349,10 @@ CollectionDB::albumList( bool withUnknown, bool withCompilations )
         execSql( "SELECT DISTINCT name FROM album "
                  "ORDER BY lower( name );", &values );
     else
-        execSql( "SELECT DISTINCT album.name FROM album, tags WHERE 1 " +
+        execSql( "SELECT DISTINCT album.name FROM tags, album WHERE 1 " +
                ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
                ( withCompilations ? QString() : "AND tags.album = album.id AND tags.sampler = 0 " ) +
-                 "ORDER BY lower( album.name );", &values );
+                 "ORDER BY lower( album.name );", &values, 0, true );
 
     return values;
 }
@@ -363,12 +363,12 @@ CollectionDB::albumListOfArtist( const QString artist, bool withUnknown, bool wi
 {
     QStringList values;
 
-    execSql( "SELECT DISTINCT album.name FROM album, artist, tags WHERE "
+    execSql( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
              "tags.album = album.id AND tags.artist = artist.id "
              "AND artist.name = '" + escapeString( artist ) + "' " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values );
+             "ORDER BY lower( album.name );", &values, 0, true );
 
     return values;
 }
@@ -379,11 +379,11 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
     QStringList values;
 
-    execSql( "SELECT DISTINCT artist.name, album.name FROM album, artist, tags WHERE "
+    execSql( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
              "tags.album = album.id AND tags.artist = artist.id " +
              ( withUnknown ? QString() : "AND album.name <> 'Unknown' AND artist.name <> 'Unknown' " ) +
              ( withCompilations ? QString() : "AND tags.sampler = 0 " ) +
-             "ORDER BY lower( album.name );", &values );
+             "ORDER BY lower( album.name );", &values, 0, true );
 
     return values;
 }
@@ -557,6 +557,9 @@ CollectionDB::removeDirFromCollection( QString path )
 bool
 CollectionDB::execSql( const QString& statement, QStringList* const values, QStringList* const names, const bool debug )
 {
+    if ( debug )
+        kdDebug() << "query-start: " << statement << endl;
+
     clock_t start = clock();
 
     if ( !m_db )

@@ -412,7 +412,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "datetime( datetime( statistics.accessdate, 'unixepoch' ), 'localtime' ), statistics.playcounter, round( statistics.percentage + 0.5 ) "
                             "FROM album, tags, artist, statistics "
                             "WHERE album.id = tags.album AND artist.id = tags.artist AND statistics.url = tags.url AND tags.url = '%1';" )
-                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names, true );
+                   .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
     if ( !values.isEmpty() )
          /* making 2 tables is most probably not the cleanest way to do it, but it works. */
@@ -446,7 +446,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         m_db->execSql( QString( "SELECT album.name, artist.name "
                                 "FROM album, tags, artist "
                                 "WHERE album.id = tags.album AND artist.id = tags.artist AND tags.url = '%1';" )
-                      .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names, true );
+                      .arg( m_db->escapeString( m_currentTrack->url().path() ) ), &values, &names );
 
              browser->write( QStringx ( "<tr><td height='42' valign='top' class='rbcurrent' width='90%'>"
                                         "<span class='album'><b>%1 - %2</b></span><br>%3</td>"
@@ -481,7 +481,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "WHERE tags.artist = artist.id AND artist.name LIKE '%1' AND statistics.url = tags.url "
                             "ORDER BY statistics.percentage DESC "
                             "LIMIT 0,5;" )
-                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names, true );
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
     if ( !values.isEmpty() )
     {
@@ -513,7 +513,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                                       "( tags.sampler = 1 OR artist.name LIKE '%2' ) "
                                 "ORDER BY tags.track;" )
                        .arg( m_db->escapeString( m_currentTrack->album() ) )
-                       .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names, true );
+                       .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
         if ( !values.isEmpty() )
         {
@@ -543,7 +543,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                             "FROM album, tags, artist "
                             "WHERE album.id = tags.album AND tags.artist = artist.id AND album.name <> '' AND artist.name LIKE '%1' "
                             "ORDER BY album.name;" )
-                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names, true );
+                   .arg( m_db->escapeString( m_currentTrack->artist() ) ), &values, &names );
 
     if ( !values.isEmpty() )
     {

@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
-  ADD 179 <muesli> CoverManager startup takes too long.
-
   FIX 176 <muesli> Context sometimes still shows "Build a collection", just after the scan
                    finished.
 
