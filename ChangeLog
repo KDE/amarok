@@ -3,10 +3,20 @@ amaroK ChangeLog
 (C) 2002-2005 the amaroK authors.
 
 
+VERSION 1.3-beta1:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
+==BEGIN KDE 3.3 DEPENDENCY==
+
 VERSION 1.2.3:
   FEATURES:
     * Graphequalizer script can now enable and disable the equalizer.
-    * New DCOP call "player: equalizerEnabled" returns whether or not 
+    * New DCOP call "player: equalizerEnabled" returns whether or not
       the equalizer is enabled.
     * OSD notification for mute.
     * Mute global shortcut, Win+M.

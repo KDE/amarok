@@ -145,6 +145,6 @@ namespace amaroK
 
 
 /// Update this when necessary
-#define APP_VERSION "1.2-CVS"
+#define APP_VERSION "1.3-CVS"
 
 #endif
