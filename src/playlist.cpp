@@ -61,6 +61,10 @@
 extern "C"
 {
     #include <unistd.h>      //usleep()
+
+    #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
+    #include <X11/Xlib.h>    //ControlMask in contentsDragMoveEvent()
+    #endif
 }
 
 
@@ -972,7 +976,11 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     if( !e->isAccepted() ) return;
 
+    #if KDE_IS_VERSION( 3, 3, 91 )
     const bool ctrlPressed = KApplication::keyboardMouseState() & Qt::ControlButton;
+    #else
+    const bool ctrlPressed= KApplication::keyboardModifiers() & ControlMask;
+    #endif
 
     //Get the closest item _before_ the cursor
     const QPoint p = contentsToViewport( e->pos() );
