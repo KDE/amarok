@@ -254,9 +254,8 @@ void KDevFileSelector::setupToolbar()
 
     QStringList tbactions;
     // resonable collection for default toolbar
-    tbactions << "up" << "back" << "forward" << "home" <<
-    "short view" << "detailed view" <<
-    "bookmarks" << "sync_dir";
+    tbactions << "up" << "back" << "forward" << "home"
+              << "short view" << "detailed view" << "bookmarks";
 
     KAction *ac;
     for ( QStringList::Iterator it=tbactions.begin(); it != tbactions.end(); ++it )
