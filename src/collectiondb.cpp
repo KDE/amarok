@@ -45,9 +45,6 @@
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CollectionEmitter* CollectionDB::s_emitter = 0;
-
-
 CollectionDB* CollectionDB::instance()
 {
     static CollectionDB db;
@@ -61,7 +58,9 @@ CollectionDB::CollectionDB()
         , m_coverDir( KGlobal::dirs()->saveLocation( "data", "amarok/" ) )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
+    EngineController::instance()->attach( this );
+
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
         m_coverDir.mkdir( "albumcovers", false );
@@ -72,10 +71,8 @@ CollectionDB::CollectionDB()
         m_cacheDir.mkdir( "albumcovers/cache", false );
     m_cacheDir.cd( "albumcovers/cache" );
 
-    if ( !s_emitter ) s_emitter = new CollectionEmitter();
-    
     //<OPEN DATABASE>
-    
+
     DbConnection *dbConn = m_dbConnPool.getDbConnection();
     bool initialized = dbConn->isInitialized();
     m_dbConnPool.putDbConnection( dbConn );
@@ -86,9 +83,9 @@ CollectionDB::CollectionDB()
     }
     m_dbConnPool.createDbConnections();
     //m_staticConnection
-    
+
 #ifdef USE_MYSQL
-    
+
 #else
     //optimization for speeding up SQLite
     query( "PRAGMA default_synchronous = OFF;" );
@@ -113,14 +110,14 @@ CollectionDB::CollectionDB()
     else
         scanMonitor();
     //</OPEN DATABASE>
-    
+
     // TODO: Should write to config in dtor, but it crashes...
     config->writeEntry( "Database Version", DATABASE_VERSION );
     config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-    
+
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
-    
+
     // This is used when the collection folders were changed in the first-run wizard
     connect( kapp, SIGNAL( sigScanCollection() ), this, SLOT( startScan() ) );
 }
@@ -166,11 +163,11 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
 {
     if ( DEBUG )
         kdDebug() << "query-start: " << statement << endl;
-    
+
     QStringList values;
 
     clock_t start = clock();
-    
+
     DbConnection *dbConn;
     if ( conn != NULL )
     {
@@ -239,7 +236,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
         while ( true )
         {
             error = sqlite3_step( stmt );
-    
+
             if ( error == SQLITE_BUSY )
             {
                 if ( busyCnt++ > 20 ) {
@@ -253,7 +250,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
                 kdDebug() << "[CollectionDB] sqlite3_step: MISUSE" << endl;
             if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                 break;
-    
+
             //iterate over columns
             for ( int i = 0; i < number; i++ )
             {
@@ -263,7 +260,7 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
         }
         //deallocate vm ressources
         sqlite3_finalize( stmt );
-    
+
         if ( error != SQLITE_DONE )
         {
             kdError() << k_funcinfo << "sqlite_step error.\n";
@@ -273,12 +270,12 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
         }
     }
 #endif
-    
+
     if ( conn == NULL )
     {
         m_dbConnPool.putDbConnection( dbConn );
     }
-    
+
     if ( DEBUG )
     {
         clock_t finish = clock();
@@ -349,7 +346,7 @@ void
 CollectionDB::createTables( DbConnection *conn )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
                     "url VARCHAR(255),"
@@ -796,13 +793,13 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
     if ( album.isEmpty() )
         return notAvailCover( width );
-    
+
     QStringList values =
         query( QString(
             "SELECT path FROM images WHERE artist LIKE '%1' AND album LIKE '%2' ORDER BY path;" )
             .arg( escapeString( artist ) )
             .arg( escapeString( album ) ) );
-    
+
     if ( !values.isEmpty() )
     {
         QString image( values.first() );
@@ -1025,7 +1022,7 @@ CollectionDB::getMetaBundleForUrl( const QString& url , MetaBundle* bundle )
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
             .arg( escapeString( url ) ) );
-    
+
     if ( !values.isEmpty() )
     {
         bundle->setAlbum( values[0] );
@@ -1094,9 +1091,9 @@ CollectionDB::addSongPercentage( const QString &url , const int percentage )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( score ) );
     }
-    
+
     int iscore = getSongPercentage( url );
-    emit s_emitter->scoreChanged( url, iscore );
+    emit scoreChanged( url, iscore );
     return iscore;
 }
 
@@ -1106,7 +1103,7 @@ CollectionDB::getSongPercentage( const QString &url  )
 {
     QStringList values = query( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
                                          .arg( escapeString( url ) ) );
-    
+
     if( values.count() )
         return values.first().toInt();
 
@@ -1147,7 +1144,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
                         .arg( percentage ) );
     }
 
-    emit s_emitter->scoreChanged( url, percentage );
+    emit scoreChanged( url, percentage );
 }
 
 
@@ -1156,7 +1153,7 @@ CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *c
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
-    
+
     query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%2', %3 );" )
                     .arg( conn ? "_temp" : "" )
                     .arg( escapeString( path ) )
@@ -1169,7 +1166,7 @@ CollectionDB::removeSongsInDir( QString path )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
-    
+
     query( QString( "DELETE FROM tags WHERE dir = '%1';" )
                     .arg( escapeString( path ) ) );
 }
@@ -1180,12 +1177,12 @@ CollectionDB::isDirInCollection( QString path )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
-    
+
     QStringList values =
         query( QString(
             "SELECT changedate FROM directories WHERE dir = '%1';" )
             .arg( escapeString( path ) ) );
-    
+
     return !values.isEmpty();
 }
 
@@ -1197,7 +1194,7 @@ CollectionDB::isFileInCollection( const QString &url  )
         query( QString(
             "SELECT url FROM tags WHERE url = '%1';" )
             .arg( escapeString( url ) ) );
-    
+
     return !values.isEmpty();
 }
 
@@ -1223,7 +1220,7 @@ CollectionDB::checkCompilations( const QString &path, DbConnection *conn )
     QStringList albums;
     QStringList artists;
     QStringList dirs;
-    
+
     albums = query( QString( "SELECT DISTINCT album_temp.name FROM tags_temp, album_temp WHERE tags_temp.dir = '%1' AND album_temp.id = tags_temp.album;" )
               .arg( escapeString( path ) ), conn );
 
@@ -1252,7 +1249,7 @@ CollectionDB::removeDirFromCollection( QString path )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
-    
+
     query( QString( "DELETE FROM directories WHERE dir = '%1';" )
                     .arg( escapeString( path ) ) );
 }
@@ -1271,7 +1268,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         command += "track = " + bundle.track() + ", ";
     command += "comment = '" + escapeString( bundle.comment() ) + "' ";
     command += "WHERE url = '" + escapeString( url ) + "';";
-    
+
     query( command );
 
     if ( EngineController::instance()->bundle().url() == bundle.url() )
@@ -1305,6 +1302,24 @@ CollectionDB::md5sum( const QString& artist, const QString& album, const QString
     return context.hexDigest();
 }
 
+
+void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
+{
+    //This is where percentages are calculated
+    //TODO statistics are not calculated when currentTrack doesn't exist
+
+    const KURL &url = EngineController::instance()->bundle().url();
+    if ( url.path().isEmpty() ) return;
+
+    // sanity check
+    if ( finalPosition > trackLength || finalPosition == 0 )
+        finalPosition = trackLength;
+
+    int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
+
+    // increase song counter & calculate new statistics
+    addSongPercentage( url.path(), pct );
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1379,11 +1394,11 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 {
     if ( fetcher->error() ) {
         kdError() << fetcher->errorMessage() << endl;
-        emit s_emitter->coverFetcherError( fetcher->errorMessage() );
+        emit coverFetcherError( fetcher->errorMessage() );
     }
     else {
         setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL() );
-        emit s_emitter->coverFetched( fetcher->artist(), fetcher->album() );
+        emit coverFetched( fetcher->artist(), fetcher->album() );
     }
 }
 
@@ -1398,8 +1413,8 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
         query( QString( "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );" )
                   .arg( escapeString( artist ) )
                   .arg( escapeString( suggestions[ i ] ) ) );
-    
-    emit s_emitter->similarArtistsFetched( artist );
+
+    emit similarArtistsFetched( artist );
 }
 
 
@@ -1416,7 +1431,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
     if ( !folders.isEmpty() )
     {
         m_isScanning = true;
-        emit s_emitter->scanStarted();
+        emit scanStarted();
 
         ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), folders, recursively, importPlaylists, false ) );
     }
@@ -1427,12 +1442,12 @@ void
 CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     if ( !m_isScanning && PlaylistBrowser::instance() )
     {
         m_isScanning = true;
-        emit s_emitter->scanStarted();
-        
+        emit scanStarted();
+
         ThreadWeaver::instance()->onlyOneJob( new CollectionReader( this, PlaylistBrowser::instance(), QStringList(),
                                                 recursively, importPlaylists, true ) );
     }
@@ -1449,7 +1464,7 @@ CollectionDB::customEvent( QCustomEvent *e )
         switch ( p->state() )
         {
             case CollectionReader::ProgressEvent::Stop:
-                emit s_emitter->scanDone( p->value() > 0 );
+                emit scanDone( p->value() > 0 );
                 m_isScanning = false;
                 break;
         }
@@ -1601,35 +1616,6 @@ void DbConnectionPool::putDbConnection( const DbConnection *conn )
 {
     enqueue( conn );
     m_semaphore--;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// CLASS CollectionEmitter
-//////////////////////////////////////////////////////////////////////////////////////////
-
-CollectionEmitter::CollectionEmitter()
-{
-    EngineController::instance()->attach( this );
-}
-
-
-void CollectionEmitter::engineTrackEnded( int finalPosition, int trackLength )
-{
-    //This is where percentages are calculated
-    //TODO statistics are not calculated when currentTrack doesn't exist
-
-    const KURL &url = EngineController::instance()->bundle().url();
-    if ( url.path().isEmpty() ) return;
-
-    // sanity check
-    if ( finalPosition > trackLength || finalPosition == 0 )
-        finalPosition = trackLength;
-
-    int pct = (int) ( ( (double) finalPosition / (double) trackLength ) * 100 );
-
-    // increase song counter & calculate new statistics
-    CollectionDB::instance()->addSongPercentage( url.path(), pct );
 }
 
 

@@ -25,7 +25,6 @@ namespace mysql
 
 class DbConnection;
 class DbConnectionPool;
-class CollectionEmitter;
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
@@ -36,14 +35,14 @@ class DbConnection
     public:
         DbConnection();
         ~DbConnection();
-        
+
 #ifdef USE_MYSQL
         mysql::MYSQL* db();
 #else
         sqlite3* db();
 #endif
         const bool isInitialized() const { return m_initialized; }
-        
+
     private:
 #ifdef USE_MYSQL
         mysql::MYSQL* m_db;
@@ -51,7 +50,7 @@ class DbConnection
         sqlite3* m_db;
 #endif
         bool m_initialized;
-        
+
 };
 
 
@@ -60,29 +59,38 @@ class DbConnectionPool : QPtrQueue<DbConnection>
     public:
         DbConnectionPool();
         ~DbConnectionPool();
-        
+
         void createDbConnections();
-        
+
         DbConnection *getDbConnection();
         void putDbConnection( const DbConnection* /* conn */ );
-        
+
     private:
         static const int POOL_SIZE = 5;
         QSemaphore m_semaphore;
 };
 
 
-class CollectionDB : public QObject
+class CollectionDB : public QObject, public EngineObserver
 {
     Q_OBJECT
+
+    signals:
+        void scanStarted();
+        void scanDone( bool changed );
+
+        void scoreChanged( const QString &url, int score );
+
+        void coverFetched( const QString &artist, const QString &album );
+        void coverFetcherError( const QString &error );
+
+        void similarArtistsFetched( const QString &artist );
 
     public:
         static CollectionDB *instance();
 
-        static CollectionEmitter* emitter() { return s_emitter; }
-        
         static QString escapeString( QString string );
-        
+
         /**
          * This method returns a static DbConnection for components that want to use
          * the same connection for the whole time. Should not be used anywhere else
@@ -91,17 +99,17 @@ class CollectionDB : public QObject
          * @return static DbConnection
          */
         DbConnection *getStaticDbConnection();
-        
+
         /**
          * Returns the DbConnection back to connection pool.
          *
          * @param conn DbConnection to be returned
          */
         void returnStaticDbConnection( DbConnection *conn );
-        
+
         //sql helper methods
         QStringList query( const QString& statement, DbConnection *conn = NULL );
-        
+
         //table management methods
         bool isEmpty();
         bool isValid();
@@ -109,12 +117,12 @@ class CollectionDB : public QObject
         void dropTables( DbConnection *conn = NULL );
         void clearTables( DbConnection *conn = NULL );
         void moveTempTables( DbConnection *conn );
-        
+
         uint artistID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
         uint albumID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
         uint genreID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
         uint yearID( QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
-        
+
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url  );
         void removeDirFromCollection( QString path );
@@ -169,6 +177,7 @@ class CollectionDB : public QObject
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
+        void engineTrackEnded( int finalPosition, int trackLength );
 
     public slots:
         void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit );
@@ -186,7 +195,7 @@ class CollectionDB : public QObject
         static const int DATABASE_VERSION = 17;
         static const int DATABASE_STATS_VERSION = 3;
         static const bool DEBUG = false;
-        
+
         CollectionDB();
         ~CollectionDB();
         //general management methods
@@ -194,7 +203,7 @@ class CollectionDB : public QObject
         void dropStatsTable();
         void scan( const QStringList& folders, bool recursively, bool importPlaylists );
         void scanModifiedDirs( bool recursively, bool importPlaylists );
-        
+
         int sqlInsertID( DbConnection *conn );
         QString artistValue( uint id );
         QString albumValue( uint id );
@@ -203,46 +212,20 @@ class CollectionDB : public QObject
         uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false, DbConnection *conn = NULL );
         QString valueFromID( QString table, uint id );
         void customEvent( QCustomEvent* );
-        
+
         //member variables
-        static CollectionEmitter* s_emitter;
         QString m_amazonLicense;
         QString m_cacheArtist;
         uint m_cacheArtistID;
         QString m_cacheAlbum;
         uint m_cacheAlbumID;
-        
+
         DbConnectionPool m_dbConnPool;
-        
+
         bool m_isScanning;
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;
-};
-
-
-class CollectionEmitter : public QObject, public EngineObserver
-{
-    Q_OBJECT
-
-    friend class CollectionDB;
-
-    public:
-        CollectionEmitter();
-
-    protected:
-        void engineTrackEnded( int finalPosition, int trackLength );
-
-    signals:
-        void scanStarted();
-        void scanDone( bool changed );
-
-        void scoreChanged( const QString &url, int score );
-
-        void coverFetched( const QString &artist, const QString &album );
-        void coverFetcherError( const QString &error );
-        
-        void similarArtistsFetched( const QString &artist );
 };
 
 

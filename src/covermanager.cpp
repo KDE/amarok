@@ -62,7 +62,7 @@ CoverManager::CoverManager()
     , m_coverErrors( 0 )
 {
     instance = this;
-    
+
     setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
 
     QVBoxLayout *vbox = new QVBoxLayout( this );
@@ -202,8 +202,8 @@ CoverManager::CoverManager()
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
 
     #ifdef AMAZON_SUPPORT
-    connect( CollectionDB::emitter(), SIGNAL(coverFetched( const QString&, const QString& )), SLOT(coverFetched( const QString&, const QString& )) );
-    connect( CollectionDB::emitter(), SIGNAL(coverFetcherError( const QString& )), SLOT(coverFetcherError()) );
+    connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )), SLOT(coverFetched( const QString&, const QString& )) );
+    connect( CollectionDB::instance(), SIGNAL(coverFetcherError( const QString& )), SLOT(coverFetcherError()) );
     #endif
 
     m_currentView = AllAlbums;
@@ -226,7 +226,7 @@ CoverManager::~CoverManager()
     KConfig *config = kapp->config();
     config->setGroup( "Cover Manager" );
     config->writeEntry( "Window Size", size() );
-    
+
     instance = 0;
 }
 

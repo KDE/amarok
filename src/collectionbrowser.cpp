@@ -215,11 +215,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_progressBox->hide();
     //<PROGRESS BAR>
 
-    connect( CollectionDB::emitter(), SIGNAL( scanStarted() ),
+    connect( CollectionDB::instance(), SIGNAL( scanStarted() ),
              this,                      SLOT( scanStarted() ) );
-    connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ),
+    connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ),
              this,                      SLOT( scanDone( bool ) ) );
-    
+
     connect( this,           SIGNAL( currentChanged( QListViewItem* ) ),
              this,             SLOT( cacheItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),

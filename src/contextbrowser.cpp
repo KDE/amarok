@@ -93,14 +93,14 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                          SLOT( openURLRequest( const KURL & ) ) );
     connect( browser,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                          SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-    
-    connect( CollectionDB::emitter(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
-    connect( CollectionDB::emitter(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
-    connect( CollectionDB::emitter(), SIGNAL( coverFetched( const QString&, const QString& ) ),
+
+    connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
+    connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
+    connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
              this,                      SLOT( coverFetched( const QString&, const QString& ) ) );
-    connect( CollectionDB::emitter(), SIGNAL( similarArtistsFetched( const QString& ) ),
+    connect( CollectionDB::instance(), SIGNAL( similarArtistsFetched( const QString& ) ),
              this,                      SLOT( similarArtistsFetched( const QString& ) ) );
-    
+
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
 }
@@ -1403,7 +1403,7 @@ void
 ContextBrowser::similarArtistsFetched( const QString &artist )
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    
+
     if ( currentTrack.artist() == artist )
     {
         showCurrentTrack();

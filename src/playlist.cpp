@@ -219,9 +219,9 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
              this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
              this,       SLOT( saveUndoState() ) );
-    connect( CollectionDB::emitter(), SIGNAL( scoreChanged( const QString&, int ) ),
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( scoreChanged( const QString&, int ) ) );
-    
+
 
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
 
