@@ -888,20 +888,27 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
     if( o == header() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::RightButton )
     {
+        enum { HIDE_THIS_COLUMN = 1000 };
+
+        const int mouseOverColumn = header()->sectionAt( me->pos().x() );
+
         KPopupMenu popup;
         popup.setCheckable( true );
-        popup.insertItem( i18n("Hide this Column"), 1 ); //TODO
-        popup.insertTitle( i18n( "Other Playlist Columns" ) );
+        popup.insertItem( i18n("&Hide This Column"), HIDE_THIS_COLUMN ); //TODO
+        popup.setItemEnabled( HIDE_THIS_COLUMN, mouseOverColumn != -1 );
 
         for( int i = 0; i < columns(); ++i ) //columns() references a property
         {
             popup.insertItem( columnText( i ), i, i + 1 );
             popup.setItemChecked( i, columnWidth( i ) != 0 );
         }
+        popup.insertTitle( i18n( "Playlist Columns" ), /*id*/ -1, /*index*/ 1 );
 
         int col = popup.exec( static_cast<QMouseEvent *>(e)->globalPos() );
 
-        if( col != -1 )
+        if ( col == HIDE_THIS_COLUMN )
+            hideColumn( mouseOverColumn );
+        else if( col != -1 )
         {
             //TODO can result in massively wide column appearing!
             if( columnWidth( col ) == 0 )
@@ -1002,6 +1009,12 @@ Playlist::customEvent( QCustomEvent *e )
         e->item->setText( e->bundle );
         #undef e
         break;
+
+//     case PlaylistLoader::Playlist:
+//         #define e static_cast<PlaylistLoader::PlaylistEvent*>(e)
+//         insertMediaInternal( e->url, lastItem() );
+//         #undef e
+//         break;
 
     case ThreadWeaver::Started:
 
