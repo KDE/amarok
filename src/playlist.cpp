@@ -1333,14 +1333,12 @@ Playlist::customEvent( QCustomEvent *e )
         {
             KURL::List &list = static_cast<PlaylistLoader::DoneEvent*>(e)->badURLs();
 
-            if( !list.isEmpty() )
-            {
-                amaroK::StatusBar::instance()->messageTemporary( i18n("Some URLs could not be loaded.") );
-//                 KMessageBox::error( this, i18n("Some URLs could not be loaded.") );//TODO details dialog
+            //if ( !list.isEmpty() ) {
+            //    amaroK::StatusBar::instance()->message( i18n("Some URLs could not be loaded.") );
 
-                for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
-                    kdDebug() << *it << endl;
-            }
+            //    for( KURL::List::ConstIterator it = list.begin(); it != list.end(); ++it )
+            //        kdDebug() << *it << endl;
+            //}
         }
         break;
     }
@@ -2121,6 +2119,9 @@ Playlist::writeTag( QListViewItem *lvi, const QString &newTag, int column ) //SL
 
     for( QListViewItem *item = list.first(); item; item = list.next() ) {
         #define item static_cast<PlaylistItem*>(item)
+
+        if( !item->isVisible() )
+           continue;
 
         const QString &oldTag = item == lvi ? m_editOldTag : item->exactText(column);
         if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()))  //write the new tag only if it's changed
