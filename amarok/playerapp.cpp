@@ -935,7 +935,7 @@ void PlayerApp::proxyError()
 {
     m_proxyError = true;
 
-    slotStopCurrent();
+    slotStopCurrent(); //FIXME play() does this for us (?) 
     slotPlay();
 }
 
@@ -962,29 +962,31 @@ void PlayerApp::slotStop()
 {
      stopXFade();
      slotStopCurrent();
+
+     m_pPlayerWidget->m_pButtonPlay->setOn( false );
+     m_pPlayerWidget->m_pButtonPause->setDown( false );
+     m_pPlayerWidget->setScroll();
 }
 
 
 void PlayerApp::slotStopCurrent()
 {
-    m_pPlayerWidget->m_pButtonPlay->setOn( false );
+     if ( m_pPlayObject != NULL )
+     {
+         m_pPlayObject->halt();
 
-    if ( m_pPlayObject != NULL )
-    {
-        m_pPlayObject->halt();
+         delete m_pPlayObject;
+         m_pPlayObject = NULL;
+     }
 
-        delete m_pPlayObject;
-        m_pPlayObject = NULL;
-    }
-
-    m_bIsPlaying = false;
-    m_length = 0;
-    m_pPlayerWidget->m_pButtonPause->setDown( false );
-    m_pPlayerWidget->m_pSlider->setValue( 0 );
-    m_pPlayerWidget->m_pSlider->setMinValue( 0 ); //FIXME disable it and setvalue(0) instead (?)
-    m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
-    m_pPlayerWidget->setScroll();
-    m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );
+     m_bIsPlaying = false;
+     m_length = 0;
+     
+     //FIXME would be nice to do this in slotStop at some point (when we no longer delay determination of length)
+     m_pPlayerWidget->m_pSlider->setValue( 0 );
+     m_pPlayerWidget->m_pSlider->setMinValue( 0 ); //FIXME disable it and setvalue(0) instead (?)
+     m_pPlayerWidget->m_pSlider->setMaxValue( 0 );
+     m_pPlayerWidget->timeDisplay( false, 0, 0, 0 );     
 }
 
 
@@ -1149,17 +1151,17 @@ void PlayerApp::slotMainTimer()
     {
         if ( m_optTrackDelay > 0 ) //this can occur syncronously to XFade and not be fatal
         {
-                //delay before start of next track, without freezing the app
-                m_DelayTime += MAIN_TIMER;
-                if ( m_DelayTime >= (m_optTrackDelay * 1000) )
-                {
-                        m_DelayTime = 0;
-                        slotNext();
-                }
+            //delay before start of next track, without freezing the app
+            m_DelayTime += MAIN_TIMER;
+            if ( m_DelayTime >= (m_optTrackDelay * 1000) )
+            {
+                m_DelayTime = 0;
+                slotNext();
+            }
         }
-        else
+        else if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_bIsPlaying ) )
         {
-                if( !m_pBrowserWin->m_pPlaylistWidget->request( PlaylistWidget::Next, m_bIsPlaying ) ) slotStopCurrent();
+            slotStop();
         }
     }
 }

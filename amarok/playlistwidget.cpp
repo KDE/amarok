@@ -160,26 +160,30 @@ void PlaylistWidget::insertMedia( const KURL::List &list, PlaylistItem *after )
 }
 
 
-bool PlaylistWidget::request( RequestType r, bool b )
+bool PlaylistWidget::request( RequestType rt, bool b )
 {
+   //FIXME bug #1 if there's a duplicate of the last track then instead of stopping it will advance to that one!
+
    PlaylistItem* item = currentTrack();   
 
    if( item == NULL && ( item = restoreCurrentTrack() ) == NULL )
    {
+      //no point advancing/receding track since there was no currentTrack!      
+      rt = Current;
+      
       //if still NULL, then play first selected track
       for( item = (PlaylistItem*)firstChild(); item; item = (PlaylistItem*)item->nextSibling() )
           if( item->isSelected() ) break;
-   }   
 
-   if( item == NULL )
-   {
-      item = (PlaylistItem*)firstChild();
+      //if still NULL, then play first track
+      if( item == NULL )
+         item = (PlaylistItem*)firstChild();
+      
       //if still null then playlist is empty
       //NOTE an initial ( childCount == 0 ) is possible, but this is safer
-      r = Current; //no point advancing/receding track since there was no currentTrack!
    }
       
-   switch( r )
+   switch( rt )
    {
    case Prev:
       
@@ -367,9 +371,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
    case 65433: //LoaderDoneEvent
        
        static_cast<PlaylistLoader::LoaderDoneEvent*>(e)->dispose();
-       //if( !m_tagReader->running() )
-           unsetCursor();
-       
+       if( !m_tagReader->running() ) unsetCursor();
        restoreCurrentTrack();
        break;
    
@@ -445,7 +447,6 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
     if( after == 0 ) after = static_cast<PlaylistItem *>(lastItem());
     PlaylistLoader *loader = new PlaylistLoader( list, this, after );
     
-    //FIXME remove meta option if that is the way things go
     if( loader )
     {
         setCursor( KCursor::workingCursor() );
@@ -457,19 +458,28 @@ void PlaylistWidget::startLoader( const KURL::List &list, PlaylistItem *after )
 
 
 inline
-void PlaylistWidget::setCurrentTrack( QListViewItem *item )
+void PlaylistWidget::setCurrentTrack( PlaylistItem *item )
 {
     PlaylistItem *tmp = PlaylistItem::GlowItem;
-    PlaylistItem::GlowItem = (PlaylistItem*)item;
+    PlaylistItem::GlowItem = item;
     repaintItem( tmp ); //new glowItem will be repainted by glowTime::timeout()
     
-    if( m_pCurrentTrack == NULL ) ensureItemVisible( item ); //this is a good thing (tm)
-    m_pCurrentTrack = (PlaylistItem*)item;
+    //the following 2 statements may seem strange, they are important however:
+    //1. if nothing is current and then playback starts, the user needs to be shown the currentTrack
+    //2. if we are setting to NULL (eg reached end of playlist) we need to unselect the item as well as unglow it
+    //   as otherwise we will play that track next time the user presses play (rather than say the first track)
+    //   because that is a feature of amaroK
+    if( m_pCurrentTrack == NULL ) ensureItemVisible( item ); //handles NULL gracefully
+    else if( item == NULL ) m_pCurrentTrack->setSelected( false );
+    
+    m_pCurrentTrack = item;
 }
 
 
 PlaylistItem *PlaylistWidget::restoreCurrentTrack()
 {
+   if( !pApp->isPlaying() ) return 0;
+
    KURL url( pApp->m_playingURL );
 
    if( !(m_pCurrentTrack && m_pCurrentTrack->url() == url) )
@@ -734,38 +744,38 @@ void PlaylistWidget::removeSelectedItems()
   //      you need to somehow make it so creation and deletion of playlistItems handle the search
   //      tokens and pointers (and removal from tagReader queue!)
 
-    bool b = true;
-    QListViewItem *item = firstChild();
-    PlaylistItem  *playlistItem;
+    QPtrList<PlaylistItem> list;
+    
+    for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
+        if( item->isSelected() ) list.append( static_cast<PlaylistItem *>(item) );
 
-    while( item != NULL )
+    if( !list.isEmpty() ) writeUndo();
+            
+    for ( PlaylistItem *item = list.first(); item; item = list.next() )
     {
-        playlistItem = static_cast<PlaylistItem *>(item);
-        item = item->nextSibling();        
-        
-        if( playlistItem->isSelected() )
-        {           
-           if( b ) { writeUndo(); b = false; } //save state once only
-           
-           int x = searchPtrs.find( playlistItem );
+        int x = searchPtrs.find( item );
 
-           if ( x >= 0 )
-           {
-              searchTokens.remove( searchTokens.at( x ) );
-              searchPtrs.remove( searchPtrs.at( x ) );
-           }
-
-           if( m_pCurrentTrack == playlistItem ) m_pCurrentTrack = NULL;
-           
-           if( m_tagReader->running() )
-           {
-               playlistItem->setVisible( false );               
-               m_tagReader->remove( playlistItem );
-           }
-           else { delete playlistItem; }
-           
-           //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
+        if ( x >= 0 )
+        {
+            searchTokens.remove( searchTokens.at( x ) );
+            searchPtrs.remove( searchPtrs.at( x ) );
         }
+
+        if( m_pCurrentTrack == item )
+        {
+            m_pCurrentTrack = NULL;
+            //now we select the next item if available so playback will continue from there next iteration
+            if( QListViewItem *tmp = item->nextSibling() ) tmp->setSelected( true );
+        }
+           
+        if( m_tagReader->running() )
+        {
+            item->setVisible( false );               
+            m_tagReader->remove( item );
+        }
+        else { delete item; }
+           
+        //FIXME make a customEvent to deleteLater(), can't use QObject::deleteLater() as we don't inherit QObject!
     }
 }
 

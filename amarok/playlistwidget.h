@@ -112,7 +112,7 @@ class PlaylistWidget : public KListView //: protected KListView
         
         PlaylistItem *restoreCurrentTrack();
         PlaylistItem *currentTrack() const { return m_pCurrentTrack; }        
-        void setCurrentTrack( QListViewItem * );
+        void setCurrentTrack( PlaylistItem * );
         void showTrackInfo( const PlaylistItem * );
 
         void contentsDropEvent( QDropEvent* );        
