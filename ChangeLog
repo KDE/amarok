@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: Help file for the playlist2html script.
   ADD: New DCOP call "playlist: playByIndex(int)".
   CHG: Upgraded internal SQLite database to 3.1.2.
   FIX: Update the database after editing tags in playlist. (BR 99593)
