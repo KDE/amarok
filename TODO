@@ -31,16 +31,6 @@ MID-TERM:
 
     * fix: #72 <markey> get amaroK to play nice with valgrind
 
-    * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
-               <larson> I think this is really weird. When I drag something I expect that someting to be
-                added or opened in the target. Not removed from the sender.
-                (RFC: is this still appropriate or would it be misleading?)
-               <muesli> imho, it's misleading and not hid-compatible. i would rather
-                expect that file to be copied to the browser's current
-                directory.
-
-    * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
-
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
     * add: display type of media next to bitrate (<berkus> i moved it here, seems its the
            same as above, no?)
@@ -120,6 +110,8 @@ MID-TERM:
 
 LONG-TERM:
 
+    * fix: #44 <markey> use kdWarning() instead of kdDebug() where appropriate
+
     * add: make windows magnetic / sticking together (difficult)
 
     * add: playlist export (generate text or html document from playlist entries)
@@ -163,17 +155,29 @@ IDEAS:
 
 DISCUSSING:
 
+    * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
+           at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
+           have limited screen width, like in console or kdevelop. pretty please with icing =)
+           <mxcl> I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
+           Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
+
+DO-NOT-IMPLEMENT:
+
+    * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
+               <larson> I think this is really weird. When I drag something I expect that someting to be
+                added or opened in the target. Not removed from the sender.
+                (RFC: is this still appropriate or would it be misleading?)
+               <muesli> imho, it's misleading and not hid-compatible. i would rather
+                expect that file to be copied to the browser's current
+                directory.
+
     * add: a "hide playlist when main widget is not active" option (?? comments please: )
            <berkus> noo, we have it hiding into tray, thats enough (imagine how much flashing will be
            if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
            <mxcl> hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
                   anyway.. dunno if I like the sound of it anymore either.
 
-    * inf: <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
-           at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when you only
-           have limited screen width, like in console or kdevelop. pretty please with icing =)
-           <mxcl> I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
-           Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
+
 
 BACKTRACE
 
