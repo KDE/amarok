@@ -594,7 +594,7 @@ GstEngine::errorNoOutput() const //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 
 QStringList
-GstEngine::getPluginList( const QCString& classname )
+GstEngine::getPluginList( const QCString& classname ) const
 {
     GList * pool_registries = NULL;
     GList* registries = NULL;
@@ -636,7 +636,7 @@ GstEngine::getPluginList( const QCString& classname )
 
 
 GstElement*
-GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QCString& name )
+GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QCString& name ) const
 {
     GstElement* element = gst_element_factory_make( factoryName, name );
 
