@@ -50,8 +50,11 @@ Loader::Loader( int& argc, char** argv )
 
         m_pProc = new QProcess( this );
 
+        //cunning trick: replace program name argument "amarok" with "amarokapp"
         QString path = argv[ 0 ];
-        path.replace( "amarok", "amarokapp" );   //FIXME!!! don't replace in path
+        QString amarok = "amarok";
+        int index = path.findRev( amarok, -1, true );
+        path.replace( index, amarok.length(), "amarokapp" );
         m_pProc->addArgument( path );
 
         //hand arguments through to amaroK
@@ -175,7 +178,7 @@ int Loader::tryConnect( bool verbose )
         qFatal( "[Loader::tryConnect()] Current user does not exist?!" );
 
     if ( !kde_home || !kde_home[ 0 ] )
-        kde_home = "~/.kde/";
+        kde_home = "~/.kde";
 
     if ( kde_home[ 0 ] == '~' ) {
         if ( uid == 0 )
