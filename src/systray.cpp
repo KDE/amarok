@@ -31,10 +31,8 @@ namespace amaroK
 
 
 amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
-  : KSystemTray( playerWidget ),
-  trackLength( 0 ), trackPercent( -1 ), drawnPercent( -1 ),
-  baseIcon( 0 ), grayedIcon( 0 ), alternateIcon( 0 ),
-  blinkTimerID( 0 )
+  : KSystemTray( playerWidget ), trackLength( 0 ), mergeLevel( -1 ),
+  grayedIcon( 0 ), alternateIcon( 0 ), blinkTimerID( 0 )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
@@ -61,6 +59,7 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     quit->disconnect();
     connect( quit, SIGNAL( activated() ), kapp, SLOT( quit() ) );
 
+    baseIcon = new QPixmap( KSystemTray::loadIcon("amarok") );
     playOverlay =  amaroK::loadOverlay( "play" );
     pauseOverlay = amaroK::loadOverlay( "pause" );
     stopOverlay =  amaroK::loadOverlay( "stop" );
@@ -102,7 +101,7 @@ amaroK::TrayIcon::event( QEvent *e )
         if ( overlay == playOverlay )
         {
             overlayVisible = !overlayVisible;
-            paintIcon( trackPercent, true );
+            paintIcon( mergeLevel, true );
         }
 
         // if we're stopped return to default state after the first tick
@@ -111,7 +110,7 @@ amaroK::TrayIcon::event( QEvent *e )
             killTimer( blinkTimerID );
             blinkTimerID = 0;
             overlayVisible = false;
-            paintIcon( 100, true );
+            paintIcon( -1, true );
         }
 
         return true;
@@ -148,7 +147,7 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
     {
     case Engine::Paused:
         overlay = pauseOverlay;
-        paintIcon( trackPercent, true );
+        paintIcon( mergeLevel, true );
         break;
 
     case Engine::Playing:
@@ -159,7 +158,7 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
     default: // idle/stopped case
         overlay = stopOverlay;
         blinkTimerID = startTimer( 2500 );  // start 'hide' timer
-        paintIcon( 100, true );
+        paintIcon( -1, true );
     }
 }
 
@@ -172,8 +171,8 @@ amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChang
 void
 amaroK::TrayIcon::engineTrackPositionChanged( long position )
 {
-    trackPercent = trackLength ? (100 * position) / trackLength : 100;
-    paintIcon( trackPercent );
+    mergeLevel = trackLength ? ((baseIcon->height() + 1) * position) / trackLength : -1;
+    paintIcon( mergeLevel );
 }
 
 void
@@ -184,21 +183,19 @@ amaroK::TrayIcon::paletteChange( const QPalette & op )
 
     delete alternateIcon;
     alternateIcon = 0;
-    paintIcon( trackPercent, true );
+    paintIcon( mergeLevel, true );
 }
 
 void
-amaroK::TrayIcon::paintIcon( int percent, bool force )
+amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
 {
     // skip redrawing the same pixmap
-    if ( percent == drawnPercent && !force )
-        return;
-    drawnPercent = percent;
+    static int mergePixelsCache = 0;
+    if ( mergePixels == mergePixelsCache && !force )
+         return;
+    mergePixelsCache = mergePixels;
 
-    // load the base trayIcon
-    if ( !baseIcon )
-        baseIcon = new QPixmap( KSystemTray::loadIcon("amarok") );
-    if ( percent > 99 )
+    if ( mergePixels < 0 )
         return blendOverlay( baseIcon );
         
     // make up the grayed icon
@@ -208,10 +205,9 @@ amaroK::TrayIcon::paintIcon( int percent, bool force )
         KIconEffect::semiTransparent( tmpTrayIcon );
         grayedIcon = new QPixmap( tmpTrayIcon );
     }
-
-    if ( percent < 1 )
+    if ( mergePixels == 0 )
         return blendOverlay( grayedIcon );
-
+    
     // make up the alternate icon (use hilight color but more saturated)
     if ( !alternateIcon )
     {
@@ -223,17 +219,16 @@ amaroK::TrayIcon::paintIcon( int percent, bool force )
         int hue, sat, value;
         saturatedColor.getHsv( &hue, &sat, &value );
         saturatedColor.setHsv( hue, (sat + 510) / 3, value );
-        KIconEffect::colorize( tmpTrayIcon, saturatedColor, 0.9 );
+        KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
         alternateIcon = new QPixmap( tmpTrayIcon );
     }
+    if ( mergePixels >= alternateIcon->height() )
+        return blendOverlay( alternateIcon );
 
     // mix [ grayed <-> colored ] icons
-    QPixmap tmpTrayPixmap( *grayedIcon );
-    int height = grayedIcon->height(),
-        sourceH = 1 + (height * percent) / 100, // 1 .. height
-        sourceY = height - sourceH;             // height-1 .. 0
-    copyBlt( &tmpTrayPixmap, 0,sourceY, alternateIcon, 0,sourceY,
-            grayedIcon->width(), sourceH );
+    QPixmap tmpTrayPixmap( *alternateIcon );
+    copyBlt( &tmpTrayPixmap, 0,0, grayedIcon, 0,0,
+            alternateIcon->width(), alternateIcon->height() - mergePixels );
     blendOverlay( &tmpTrayPixmap );
 }
 
@@ -248,7 +243,7 @@ amaroK::TrayIcon::blendOverlay( QPixmap * sourcePixmap )
     // the bottom-left corner of source pixmap with a smaller overlay pixmap)
     int opW = overlay->width(),
         opH = overlay->height(),
-        opX = 0,
+        opX = 1,
         opY = sourcePixmap->height() - opH;
 
     // get the rectangle where blending will take place 
