@@ -3,10 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #58 being the highest available (take this one for your next bug and increase here)
+           #60 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
+
+    * fix: #59 global shortcuts should be disabled by default, eg CTRL_ALT_C is a KDevelop shortcut, one user
+           was shocked to find the music stopped whenever he tried to bring up the class window!
 
     * fix: #57 <markey> "Configure effects" menu item does nothing
 
@@ -53,6 +56,9 @@ SHORT-TERM (URGENT):
 
 MID-TERM:
 
+    * add: #58 config side the osd appear next to as some people have panels on top, etc.
+           or be clever and figure out where the panels are (IMO too much trouble)
+
     * add: #55 <markey> (optional) logarithmic scale for volume mixer
 
     * add: #50 <markey> make amaroK configurable --without-arts -->markey
@@ -86,7 +92,7 @@ MID-TERM:
            maybe override KListView::mouseMoveEvent, or is there a better way?
            <markey> I think the hand cursor looks appropriate here. FWIW, the hand is not only in
            column(0)
-           
+
     * add: extend keyboard shortcuts [<mxcl> show playlist, also I'd say do this with actions as it's easiest]
 
     * add: "show playlist" to the right click menu, redundant but necessary
