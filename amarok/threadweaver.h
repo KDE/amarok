@@ -53,7 +53,7 @@ public:
    {
    public:
       friend class ThreadWeaver;
-      enum JobType { GenericJob = 3000, TagReader, PLStats };
+      enum JobType { GenericJob = 3000, TagReader, PLStats, CollectionReader };
 
       Job( QObject*, JobType = GenericJob );
       virtual ~Job() {}
@@ -112,25 +112,11 @@ public:
 
     bool doJob();
     static MetaBundle* readTags( const KURL& );
-
-private:
-    MetaBundle* m_tags;
-    const KURL  m_url;
-};
-
-static const int CollectionEventType = 8888;
-
-class CollectionEvent : public QCustomEvent
-{
-public:
-    CollectionEvent( MetaBundle* bundle )
-        : QCustomEvent( CollectionEventType )
-        , m_bundle( bundle )
-        {};
     MetaBundle* bundle() { return m_bundle; }
 
 private:
     MetaBundle* m_bundle;
+    const KURL  m_url;
 };
 
 

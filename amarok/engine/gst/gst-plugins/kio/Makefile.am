@@ -17,13 +17,12 @@ libgstkio_la_SOURCES = \
 libgstkio_la_LDFLAGS = \
     -module \
     -avoid-version \
-    -no-undefined \
     $(all_libraries) 
 
 libgstkio_la_LIBADD = \
     $(LIB_QT) \
     $(LIB_KIO) \
-    $(LIB_GST)
+    $(LIB_KDECORE)
 
 libgstkio_la_CXXFLAGS = \
     $(GST_CFLAGS)

@@ -194,15 +194,15 @@ TagReader::addSearchTokens( QStringList &tokens, QPtrList<QListViewItem> &ptrs )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 CollectionReader::CollectionReader( QObject* o, const KURL& url )
-   : Job( o, Job::TagReader )
+   : Job( o, Job::CollectionReader )
 //    , m_url( pi->url() )
-   , m_tags( 0 )
+   , m_bundle( 0 )
    , m_url( url )
 {}
 
 CollectionReader::~CollectionReader()
 {
-    delete m_tags;
+    delete m_bundle;
 }
 
 bool
@@ -210,7 +210,7 @@ CollectionReader::doJob()
 {
     if( m_url.protocol() == "file" )
     {
-        m_tags = readTags( m_url );
+        m_bundle = readTags( m_url );
         return true;
     }
 

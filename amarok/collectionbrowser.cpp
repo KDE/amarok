@@ -59,16 +59,17 @@ void CollectionBrowser::customEvent( QCustomEvent *e )
 {
     kdDebug() << k_funcinfo << endl;
     
-    if ( e->type() == CollectionEventType ) {
-        CollectionEvent* c = static_cast<CollectionEvent*>( e );
-        
+    if ( e->type() == ThreadWeaver::Job::CollectionReader ) {
+        CollectionReader* c = static_cast<CollectionReader*>( e );
+       
         kdDebug() << "********************************\n";
         kdDebug() << "CollectionEvent arrived.\n";
         kdDebug() << "********************************\n";
-        kdDebug() << "Artist: " << c->bundle()->artist() << endl;
+        
+        if ( c->bundle() ) 
+            kdDebug() << "Artist: " << c->bundle()->artist() << endl;
     }
 }
-
 
 
 #include "collectionbrowser.moc"
