@@ -10,8 +10,6 @@ SHORT-TERM (URGENT):
  
   FIX 120 <markey> Regression: when pressing stop, currentTrack stops glowing at random glow-state.
 
-  FIX 118 <markey> Option for auto-centering the OSD horizontally (or even do it by default).
-
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
                    Changing the Spectrum Size of toolbar's analyzer does not work. It's fixed at 128.
 
