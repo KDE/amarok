@@ -186,7 +186,7 @@ PlaylistWidget::~PlaylistWidget()
 
    if( m_weaver->running() )
    {
-       kdDebug() << "[TagReader] Halting jobs..\n";
+       kdDebug() << "[weaver] Halting jobs..\n";
        m_weaver->halt();
        m_weaver->wait();
    }
@@ -897,10 +897,9 @@ void PlaylistWidget::redo() { switchState( m_redoList, m_undoList ); } //SLOT
 
 // PRIVATE EVENTS =======================================================
 
-void PlaylistWidget::contentsDragEnterEvent( QDragEnterEvent* e )
+void PlaylistWidget::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    //TODO accept only if we want it!
-    e->accept();
+    e->accept( KURLDrag::canDecode( e ) );
 }
 
 
