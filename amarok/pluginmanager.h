@@ -24,6 +24,7 @@ email                : markey@web.de
 using namespace std;
 
 class Plugin;
+class KLibrary;
 
 class PluginManager
 {
@@ -91,6 +92,7 @@ class PluginManager
     private:
         struct StoreItem {
             Plugin*       plugin;
+            KLibrary*     library;
             KService::Ptr service;
         };
        

@@ -85,6 +85,7 @@ PluginManager::createFromService( const KService::Ptr service )
     //put plugin into store
     StoreItem item;
     item.plugin = plugin;
+    item.library = lib;
     item.service = service;
     m_store.push_back( item );
     
@@ -102,10 +103,9 @@ PluginManager::unload( Plugin* plugin )
             
     if ( iter != m_store.end() ) {
         delete plugin;
-        KLibLoader *loader = KLibLoader::self();
         assert( (*iter).service.data() );
         kdDebug() << "Unloading library: "<< (*iter).service->library() << endl;
-        loader->unloadLibrary( (*iter).service->library().latin1() );
+        (*iter).library->unload();
         
         m_store.erase( iter );
     }
