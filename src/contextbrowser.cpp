@@ -944,7 +944,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         for ( uint i = 0; i < values.count(); i += 2 )
         {
             QStringList albumValues = m_db->query( QString(
-                "SELECT tags.title, tags.url, tags.track, year.name "
+                "SELECT tags.title, tags.url, tags.track, year.name, tags.length "
                 "FROM tags, year "
                 "WHERE tags.album = %1 AND "
                 "( tags.sampler = 1 OR tags.artist = %2 ) "
@@ -955,7 +955,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += 4 )
+                for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
                     if ( albumValues[j + 3] != albumYear )
                     {
@@ -994,12 +994,13 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     << values[ i+1 ] ) );
 
             if ( !albumValues.isEmpty() )
-                for ( uint j = 0; j < albumValues.count(); j += 4 )
+                for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
                     QString tmp = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : "<span class='song-trackno'>" + albumValues[j + 2] + ".&nbsp;</span>";
+                    QString tmp_time = (albumValues[j + 4] == QString("0")) ? "" :" <span class='song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
                     m_HTMLSource.append(
-                        "<div class='song'>"
-                         "<a class='song' href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + "</a>"
+                            "<div class='song'>"
+                         "<a class='song' href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">" + tmp + albumValues[j] + tmp_time +"</a>"
                         "</div>" );
                 }
 
