@@ -248,13 +248,26 @@ Vis::Selector::Selector( QWidget *parent )
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rightButton       ( QListViewItem*, const QPoint&, int ) ) );
 
-    QDir dir( XMMS_PLUGIN_PATH );
-    const QFileInfoList *list = dir.entryInfoList();
-    QFileInfo *fi;
+    //can I get a pointer to the data section of a QCString?
+    char str[4096];
+    FILE *vis = popen( "amarok_xmmswrapper --list", "r" );
+    str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
+    pclose( vis );
 
-    for ( QFileInfoListIterator it( *list ); ( fi = *it ); ++it )
-        if ( fi->isFile() && fi->extension() == "so" )
-            new Selector::Item( this, fi->fileName() );
+    QStringList entries = QStringList::split( '\n', str );
+
+    for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
+        new Item( this, "amarok_xmmswrapper", *it );
+
+    vis = popen( "amarok_libvisual --list", "r" );
+    str[ fread( (void*)str, sizeof(char), 4096, vis ) ] = '\0';
+    pclose( vis );
+
+    entries = QStringList::split( '\n', str );
+
+    for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
+        new Item( this, "amarok_libvisual", *it );
+
 
     resize( sizeHint() + QSize(20,0) );
 }
@@ -323,11 +336,12 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
     switch( state() ) {
     case On:
         m_proc = new KProcess();
-        *m_proc << KStandardDirs::findExe( "amarok_xmmswrapper" ) << text( 0 );
+       *m_proc << KStandardDirs::findExe( m_command )
+               << text( 0 );
 
-        connect( m_proc, SIGNAL(processExited( KProcess* )), (Selector*)listView(), SLOT(processExited( KProcess* )) );
+        connect( m_proc, SIGNAL(processExited( KProcess* )), listView(), SLOT(processExited( KProcess* )) );
 
-        kdDebug() << "[Vis::Selector] Starting XMMS visualization..\n";
+        kdDebug() << "[Vis::Selector] Starting visualization..\n";
 
         if( m_proc->start() ) break;
 

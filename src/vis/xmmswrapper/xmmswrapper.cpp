@@ -141,6 +141,9 @@ main( int argc, char** argv )
         ::send( sockfd, "PCM", 4, 0 );
         nbytes = ::recv( sockfd, pcm_data, 512 * sizeof( gint16 ), 0 );
 
+        for( uint x = 0; x < 512; ++x )
+            pcm_data[1][x] = pcm_data[0][x];
+
         wrap.render( pcm_data );
     }
 
@@ -234,7 +237,12 @@ getPlugin( int argc, char **argv )
         return v[ selection - 1 ];
     }
 
-    return argv[ 1 ];
+    std::string
+    plugin  = "lib";
+    plugin += argv[1];
+    plugin += ".so";
+
+    return plugin;
 }
 
 
@@ -245,7 +253,7 @@ getPlugin( int argc, char **argv )
 
 XmmsWrapper::XmmsWrapper( const string &plugin )
 {
-    std::cout << "[XMMSWrapper] loading xmms plugin: " << plugin << '\n';
+    std::cout << "[XMMSWrapper] Loading xmms plugin: " << plugin << '\n';
 
     string
     path = XMMS_PLUGIN_PATH;
@@ -260,7 +268,7 @@ XmmsWrapper::XmmsWrapper( const string &plugin )
         if( ( h = dlopen( path.c_str(), RTLD_NOW ) ) == NULL )
         {
             std::cout << dlerror() << "\n";
-            return ;
+            std::exit( -1 );
         }
 
         if( ( gpi = ( void * ( * ) () ) dlsym( h, "get_vplugin_info" ) ) != NULL )
@@ -273,12 +281,11 @@ XmmsWrapper::XmmsWrapper( const string &plugin )
 
             m_vis = p;
         }
-        else { dlclose( h ); return ; }
+        else { dlclose( h ); return; }
 
     } //</load plugin>
 
-    if ( m_vis->init ) { std::cout << "[XMMSWrapper] init()\n"; m_vis
-    ->init(); }
+    if ( m_vis->init ) { std::cout << "[XMMSWrapper] init()\n"; m_vis->init(); }
     if ( m_vis->playback_start ) { std::cout << "[XMMSWrapper] start()\n"; m_vis->playback_start(); }
 }
 
@@ -302,10 +309,6 @@ void XmmsWrapper::configure()
 
 void XmmsWrapper::render( gint16 pcm_data[2][512] )
 {
-    for( uint x = 0; x < 512; ++x )
-        pcm_data[ 1 ][ x ] = pcm_data[ 0 ][ x ];
-
-
     if( renderPCM() )
     {
        vis()->render_pcm( pcm_data );
@@ -328,10 +331,10 @@ void XmmsWrapper::render( gint16 pcm_data[2][512] )
 
     if( renderFFT() )   //NOTE some vis's may render both data types
     {
-        gint16 fft_data[ 2 ][ 256 ];
+        gint16 fft_data[2][256];
 
         static fft_state *state = NULL;
-        gfloat tmp_out[ 257 ];
+        gfloat tmp_out[257];
 
         if ( !state ) state = fft_init();
 
@@ -339,7 +342,7 @@ void XmmsWrapper::render( gint16 pcm_data[2][512] )
 
         for ( uint i = 0; i < 256; i++ )
         {
-            fft_data[ 0 ][ i ] = fft_data[ 1 ][ i ] = ( ( gint ) sqrt( tmp_out[ i + 1 ] ) ) >> 8;
+            fft_data[0][i] = fft_data[1][i] = ( ( gint ) sqrt( tmp_out[i+1] ) ) >> 8;
         }
 
         vis()->render_freq( fft_data );

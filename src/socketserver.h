@@ -83,10 +83,11 @@ public:
     class Item : public QCheckListItem //TODO use stack allocated KProcess
     {
     public:
-        Item( QListView *parent, const QString &text )
+        Item( QListView *parent, const char *command, const QString &text )
           : QCheckListItem( parent, text, QCheckListItem::CheckBox )
           , m_proc( 0 )
           , m_sockfd( -1 )
+          , m_command( command )
         {}
         ~Item();
 
@@ -94,6 +95,7 @@ public:
 
         KProcess *m_proc;
         int       m_sockfd;
+        QCString  m_command;
     };
 
 private slots:
