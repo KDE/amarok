@@ -338,7 +338,8 @@ CollectionView::renderView( )  //SLOT
     QStringList values;
     QStringList names;
     bool addedVA = false;
-    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+    m_db->retrieveFirstLevel( tableForCat( m_category1 ), tableForCat( m_category2 ), 
+                              tableForCat( m_category3 ), m_filter, values, names );
 
     for ( uint i = 0; i < values.count(); i += 2 )
     {
@@ -430,13 +431,18 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     QString category;
 
     if( item->depth() == 0 ) {
-        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+        m_db->retrieveSecondLevel( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), 
+                                   tableForCat( m_category3 ), m_filter, values, names );
         category = m_category2;
     } else if( item->depth() == 1 ) {
-        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+        m_db->retrieveThirdLevel( item->parent()->text( 0 ), item->text( 0 ), tableForCat( m_category1 ), 
+                                  tableForCat( m_category2 ), tableForCat( m_category3 ), 
+                                  m_filter, values, names );
         category = m_category3;
     } else if( item->depth() == 2 ) {
-        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ), item->text( 0 ),  tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+        m_db->retrieveFourthLevel( item->parent()->parent()->text( 0 ), item->parent()->text( 0 ), 
+                                   item->text( 0 ),  tableForCat( m_category1 ), tableForCat( m_category2 ), 
+                                   tableForCat( m_category3 ), m_filter, values, names );
         category = i18n("None");
     }
 
@@ -791,7 +797,7 @@ CollectionView::listSelected() {
             names.clear();
 
             m_db->retrieveFirstLevelURLs( item->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ),
-                                                            tableForCat( m_category3 ), m_filter, &values, &names );
+                                                            tableForCat( m_category3 ), m_filter, values, names );
             for ( uint i = 0; i < values.count(); i++ )
             {
                 KURL tmp;
@@ -816,7 +822,9 @@ CollectionView::listSelected() {
                     values.clear();
                     names.clear();
 
-                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ), m_filter, &values, &names );
+                    m_db->retrieveSecondLevelURLs( item->text( 0 ), child->text( 0 ), tableForCat( m_category1 ), 
+                                                   tableForCat( m_category2 ), tableForCat( m_category3 ), 
+                                                   m_filter, values, names );
                     for ( uint i = 0; i < values.count(); i++ )
                     {
                         KURL tmp;
@@ -853,7 +861,9 @@ CollectionView::listSelected() {
                         values.clear();
                         names.clear();
 
-                        m_db->retrieveThirdLevelURLs( item->text( 0 ), child->text( 0 ), grandChild->text(0), tableForCat( m_category1 ), tableForCat( m_category2 ), tableForCat( m_category3 ),  m_filter, &values, &names );
+                        m_db->retrieveThirdLevelURLs( item->text( 0 ), child->text( 0 ), grandChild->text(0), 
+                                                      tableForCat( m_category1 ), tableForCat( m_category2 ), 
+                                                      tableForCat( m_category3 ),  m_filter, values, names );
                         for ( uint i = 0; i < values.count(); i++ )
                         {
                             KURL tmp;

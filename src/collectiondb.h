@@ -36,7 +36,9 @@ class CollectionDB : public QObject
         static CollectionEmitter* emitter() { return s_emitter; }
 
         //sql helper methods
-        QStringList query( const QString& statement, QStringList* const names = 0, bool debug = false );
+        QStringList query( const QString& statement, QStringList& names, bool debug = false);
+        // no away to add a default argument for a Object& in gcc3, hack around it
+        QStringList query( const QString& statement ) { QStringList sl; return query( statement, sl, false ); }
         int sqlInsertID();
         QString escapeString( QString string );
 
@@ -106,24 +108,27 @@ class CollectionDB : public QObject
         QString yearValue( uint id );
 
         //tree methods
-        void retrieveFirstLevel( QString category1, QString category2, QString category3,
-                                            QString filter, QStringList* const values, QStringList* const names );
-        void retrieveSecondLevel( QString itemText, QString category1, QString category2, QString category3,
-                                                 QString filter, QStringList* const values, QStringList* const names );
-        void retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2,
-                                             QString category3, QString filter, QStringList* const values, QStringList* const names );
-        void retrieveFourthLevel( QString itemText1, QString itemText2, QString itemText3, QString category1,
-                                               QString category2, QString category3, QString filter,
-                                               QStringList* const values, QStringList* const names );
+        void retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
+                                            QString& filter, QStringList& values, QStringList& names );
+        void retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2, 
+                                                 const QString& category3, QString& filter, 
+                                                 QStringList& values, QStringList& names );
+        void retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1, 
+                                             const QString& category2, const QString& category3, QString& filter, 
+                                            QStringList& values, QStringList& names );
+        void retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
+                                               const QString& category1, const QString& category2, 
+                                               const QString& category3, QString& filter, 
+                                               QStringList& values, QStringList& names );
 
-        void retrieveFirstLevelURLs( QString itemText, QString category1, QString category2, QString category3,
-                                                    QString filter, QStringList* const values, QStringList* const names );
-        void retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2,
-                                                         QString category3, QString filter,
-                                                         QStringList* const values, QStringList* const names );
-        void retrieveThirdLevelURLs( QString itemText1, QString itemText2, QString itemText3, QString category1,
-                                                     QString category2, QString category3, QString filter,
-                                                     QStringList* const values, QStringList* const names );
+        void retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString gcategory2, const QString& category3,
+                                                    QString& filter, QStringList& values, QStringList& names );
+        void retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
+                                                         const QString& category2, const QString& category3, QString& filter,
+                                                         QStringList& values, QStringList& names );
+        void retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
+                                                     const QString& category1, const QString& category2, const QString& category3, 
+                                                     QString& filter, QStringList& values, QStringList& names );
 
         //member variables
         QString m_amazonLicense;

@@ -138,7 +138,7 @@ CollectionDB::~CollectionDB()
  * @return          The queried data, or QStringList() on error.
  */
 QStringList
-CollectionDB::query( const QString& statement, QStringList* const names, bool debug )
+CollectionDB::query( const QString& statement, QStringList& names, bool debug )
 {
     m_names.clear();
     m_values.clear();
@@ -162,12 +162,9 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
         mysql::MYSQL_RES* result;
         if ((result = mysql::mysql_use_result(m_db)))
         {
-            if (names)
-            {
-                mysql::MYSQL_FIELD* field;
-                while ((field = mysql::mysql_fetch_field(result)))
-                    *names  << QString( field->name );
-            }
+            mysql::MYSQL_FIELD* field;
+            while ((field = mysql::mysql_fetch_field(result)))
+                    names  << QString( field->name );
 
             int number = mysql::mysql_field_count(m_db);
             mysql::MYSQL_ROW row;
@@ -242,7 +239,7 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
         for ( int i = 0; i < number; i++ )
         {
             values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
-            if ( names ) *names << QString( sqlite3_column_name( stmt, i ) );
+            names << QString( sqlite3_column_name( stmt, i ) );
         }
     }
     //deallocate vm ressources
@@ -267,7 +264,7 @@ CollectionDB::query( const QString& statement, QStringList* const names, bool de
 
     // Cache results in member variables for convenience access
     m_values = values;
-    if ( names ) m_names = *names;
+    m_names = names;
 
     return values;
 }
@@ -1217,7 +1214,8 @@ CollectionDB::valueFromID( QString table, uint id )
 
 
 void
-CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+ CollectionDB::retrieveFirstLevel( const QString& category1, const QString& category2, const QString& category3,
+                                   QString& filter, QStringList& values, QStringList& names )
 {
     QString filterToken;
 
@@ -1253,12 +1251,14 @@ CollectionDB::retrieveFirstLevel( QString category1, QString category2, QString 
     command += " " + filterToken;
     command += " ORDER BY lower(" + category1.lower() + ".name) DESC;";
 
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
 void
-CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+CollectionDB::retrieveSecondLevel( const QString& itemText, const QString& category1, const QString& category2, 
+                                   const QString& category3, QString& filter, QStringList& values, 
+                                   QStringList& names )
 {
     QString filterToken;
 
@@ -1317,12 +1317,14 @@ CollectionDB::retrieveSecondLevel( QString itemText, QString category1, QString 
         command += " " + filterToken + " ORDER BY lower(" + category2.lower() + ".name) DESC;";
     }
 
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
 void
-CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+CollectionDB::retrieveThirdLevel( const QString& itemText1, const QString& itemText2, const QString& category1, 
+                                  const QString& category2, const QString& category3, QString& filter, 
+                                  QStringList& values, QStringList& names )
 {
     QString filterToken;
 
@@ -1379,12 +1381,15 @@ CollectionDB::retrieveThirdLevel( QString itemText1, QString itemText2, QString 
         command += " " + filterToken + " ORDER BY lower(" + category3.lower() + ".name) DESC;";
     }
 
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
 void
-CollectionDB::retrieveFourthLevel( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+CollectionDB::retrieveFourthLevel( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
+                                   const QString& category1, const QString& category2, 
+                                   const QString& category3, QString& filter, 
+                                   QStringList& values, QStringList& names )
 {
     QString filterToken;
 
@@ -1422,12 +1427,14 @@ CollectionDB::retrieveFourthLevel( QString itemText1, QString itemText2, QString
     }
 
     command += " " + filterToken + " ORDER BY tags." + sorting + " DESC;";
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
 void
-CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+CollectionDB::retrieveFirstLevelURLs( const QString& itemText, const QString& category1, QString category2, 
+                                      const QString& category3, QString& filter, 
+                                      QStringList& values, QStringList& names )
 {
     QString filterToken;
 
@@ -1471,12 +1478,14 @@ CollectionDB::retrieveFirstLevelURLs( QString itemText, QString category1, QStri
     QString sorting = category1.lower() == "album" ? "track" : "title";
     command += " ORDER BY tags." + sorting;
 
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
 void
-CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
+CollectionDB::retrieveSecondLevelURLs( const QString& itemText1, const QString& itemText2, const QString& category1, 
+                                       const QString& category2, const QString& category3, QString& filter,
+                                       QStringList& values, QStringList& names )
 {
     QString filterToken;
     if ( !filter.isEmpty() )
@@ -1516,13 +1525,15 @@ CollectionDB::retrieveSecondLevelURLs( QString itemText1, QString itemText2, QSt
     QString sorting = category2.lower() == "album" ? "track" : "title";
     command += " ORDER BY tags." + sorting;
 
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
 void
-CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QString itemText3, QString category1, QString category2, QString category3, QString filter, QStringList* const values, QStringList* const names )
-{
+CollectionDB::retrieveThirdLevelURLs( const QString& itemText1, const QString& itemText2, const QString& itemText3, 
+                                      const QString& category1, const QString& category2, const QString& category3, 
+                                      QString& filter, QStringList& values, QStringList& names )
+{ 
     QString filterToken;
     if ( !filter.isEmpty() )
     {
@@ -1558,7 +1569,7 @@ CollectionDB::retrieveThirdLevelURLs( QString itemText1, QString itemText2, QStr
     QString sorting = category3.lower() == "album" ? "track" : "title";
     command += " ORDER BY tags." + sorting;
 
-    *values = query( command, names );
+    values = query( command, names );
 }
 
 
