@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "app.h"
 #include <kaboutdata.h>
 
@@ -52,7 +53,7 @@ int main( int argc, char *argv[] )
     KApplication::disableAutoDcopRegistration();
 
     //make amarokapp into amarok
-    for( uint x = 1, len = strlen( argv[0] ); x <= 3; ++x )
+    for( uint x = 1, len = strlen( argv[0] ); x & 3; ++x )
         argv[0][len-x] = '\0';
 
     App::initCliArgs( argc, argv );

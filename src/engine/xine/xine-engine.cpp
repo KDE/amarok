@@ -10,7 +10,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "plugin/plugin.h"
 #include "xine-engine.h"
 #include "xine-scope.h"
 
@@ -111,7 +110,7 @@ XineEngine::init()
 
     m_xine = xine_new();
 
-    if (!m_xine)
+    if( !m_xine )
     {
         KMessageBox::error( 0, i18n("amaroK could not initialise xine.") );
         return false;
@@ -322,7 +321,7 @@ XineEngine::scope()
             const int16_t *data16 = best_buf->mem;
             data16 += diff * myChannels;
 
-            for( int a, c, i = 0; i < 512; ++i, data16 += myChannels )
+            for( int c, i = 0; i < 512; ++i, data16 += myChannels )
                 for( m_scope[i] = 0, c = 0; c < myChannels; ++c )
                     m_scope[i] += data16[c];
         }
@@ -424,6 +423,19 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         QApplication::postEvent( xe, new QCustomEvent(3000) );
         break;
 
+    case XINE_EVENT_PROGRESS:
+    {
+        xine_progress_data_t* pd = (xine_progress_data_t*)xineEvent->data;
+
+        QString
+        msg = "%1 %2%";
+        msg = msg.arg( QString::fromUtf8( pd->description ) )
+                 .arg( KGlobal::locale()->formatNumber( pd->percent, 0 ) );
+
+        QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3002), new QString(msg)) );
+
+        break;
+    }
     case XINE_EVENT_UI_MESSAGE:
     {
         debug() << "xine message received\n";

@@ -18,7 +18,6 @@ public:
     bool init();
 
     bool canDecode( const KURL& );
-    uint position() const;
 
     const Engine::Scope &scope();
 
@@ -29,7 +28,9 @@ public:
     void stop();
     void pause();
 
+    uint position() const;
     void seek( uint );
+
     void setVolumeSW( uint );
 
 private:

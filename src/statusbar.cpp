@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
-#include "app.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlistloader.h"
@@ -22,13 +22,15 @@
 #include "statusbar.h"
 #include "threadweaver.h"
 
+#include <qapplication.h> //startProgress() etc.
 #include <qcolor.h>
-#include <qevent.h>
 #include <qpushbutton.h>
 #include <qtimer.h>
 #include <qtooltip.h> //toggle labels
+#include <qhbox.h>
 
 #include <kactionclasses.h>
+#include <kcursor.h> //setOverrideCursor()
 #include <kdebug.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
@@ -54,7 +56,7 @@ public:
 };
 
 
-StatusBar* StatusBar::m_instance = 0;
+StatusBar* StatusBar::s_instance = 0;
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
     : KStatusBar( parent, name )
@@ -64,25 +66,26 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //NOTE we don't use KStatusBar::insertItem() mainly because we have
     //no control over the heights of the labels
 
-    m_instance = this; //static member
+    s_instance = this; //static member
 
     // attach
     EngineController::instance()->attach( this );
 
     // title label
     addWidget( m_pTitle = new KSqueezedTextLabel( this ), 4 ); //TODO may look nicer without the gray border
-   
+
     // progress
-    addWidget( m_stopPlaylist = new QPushButton( SmallIcon( "cancel" ), QString::null, this ), 0, true );
-    connect( m_stopPlaylist, SIGNAL( clicked() ), this, SLOT( stopPlaylistLoader() ) );
-    addWidget( m_pProgress = new KProgress( this ), 0, true );
-    m_pProgress->hide();
+    addWidget( m_pProgressBox = new QHBox( this ), 0, true );
+    QObject *pb = new QPushButton( SmallIcon( "cancel" ), QString::null, m_pProgressBox );
+    m_pProgress = new KProgress( m_pProgressBox );
+    connect( pb, SIGNAL(clicked()), SLOT(stopPlaylistLoader()) );
+    m_pProgressBox->hide();
 
     // total songs count
     addWidget( m_pTotal = new QLabel( this ), 0, true );
 
     // toggle buttons
-    const KActionCollection* const ac = pApp->actionCollection();
+    const KActionCollection* const ac =amaroK::actionCollection();
     QWidget *w1 = new ToggleLabel( i18n( "RAND" ), this, (KToggleAction*)ac->action( "random_mode" ) );
     QWidget *w2 = new ToggleLabel( i18n( "REP" ),  this, (KToggleAction*)ac->action( "repeat_playlist" ) );
     QToolTip::add( w1, i18n("Double-click to toggle Random Mode") );
@@ -99,12 +102,12 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // make all widgets as high as the time display
     const int h = m_pTimeLabel->height();
     m_pTitle->setFixedHeight( h );
-    m_stopPlaylist->setFixedHeight( h );
-    m_pProgress->setFixedHeight( h );
+    m_pProgressBox->setFixedHeight( h );
     m_pTotal->setFixedHeight( h );
     w1->setFixedHeight( h );
     w2->setFixedHeight( h );
     m_pSlider->setFixedHeight( h );
+    m_pSlider->setMaximumWidth( 200 ); //hack to force statusbar to stay at reasonable width when showing tmp messages
 
     // set up us the bomb
     engineStateChanged( Engine::Empty );
@@ -112,7 +115,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // for great justice!
     connect( m_pPauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
-    connect( EngineController::instance(), SIGNAL(statusText(const QString& )), SLOT(engineMessage( const QString& )) );
+    connect( EngineController::instance(), SIGNAL(statusText( const QString& )), SLOT(engineMessage( const QString& )) );
 }
 
 
@@ -184,31 +187,36 @@ void StatusBar::stopPlaylistLoader() //SLOT
     PlaylistLoader::stop();
 }
 
+//these three are static functions
+void StatusBar::startProgress() { QApplication::postEvent( s_instance, new ProgressEvent( -1 ) ); }
+void StatusBar::showProgress( uint p ) { QApplication::postEvent( s_instance, new ProgressEvent( p ) ); }
+void StatusBar::stopProgress() { QApplication::postEvent( s_instance, new ProgressEvent( 101 ) ); }
+
 void StatusBar::customEvent( QCustomEvent *e )
 {
-    PlaylistLoader::ProgressEvent* p = dynamic_cast<PlaylistLoader::ProgressEvent*>( e );
-    if ( !p ) return;
-    
-    switch ( p->state() ) {
-    case PlaylistLoader::ProgressEvent::Start:
-        m_pProgress->setProgress( 0 );
-        m_stopPlaylist->show();
-        m_pProgress->show();
-        if( isHidden() ) show();
-        break;
+    if( e->type() == ProgressEvent::Type )
+    {
+        #define e static_cast<ProgressEvent*>(e)
+        switch( e->progress() )
+        {
+        case -1:
+            m_pProgress->setProgress( 0 );
+            m_pProgressBox->show();
+            if( isHidden() ) show();
+            QApplication::setOverrideCursor( KCursor::workingCursor() );
+            break;
 
-    case PlaylistLoader::ProgressEvent::Stop:
-        QTimer::singleShot( 1000, m_stopPlaylist, SLOT( hide() ) );
-        QTimer::singleShot( 1000, m_pProgress, SLOT( hide() ) );
-        if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 2000, this, SLOT(hide()) );
-        break;
+        case 101:
+            m_pProgress->setProgress( 100 );
+            QTimer::singleShot( 1000, m_pProgressBox, SLOT(hide()) );
+            if( !AmarokConfig::showStatusBar() ) QTimer::singleShot( 2000, this, SLOT(hide()) );
+            QApplication::restoreOverrideCursor();
+            break;
 
-    case PlaylistLoader::ProgressEvent::Total:
-        m_pProgress->setTotalSteps( p->value() );
-        break;
-
-    case PlaylistLoader::ProgressEvent::Progress:
-        m_pProgress->setProgress( p->value() );
+        default:
+            m_pProgress->setProgress( e->progress() );
+        }
+        #undef e
     }
 }
 

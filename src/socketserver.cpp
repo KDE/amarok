@@ -130,8 +130,8 @@ LoaderServer::newConnection( int sockfd )
                 }
 
                 //re-initialize KCmdLineArgs with the new arguments
-                pApp->initCliArgs( argc, argv );
-                pApp->handleCliArgs();
+                App::initCliArgs( argc, argv );
+                App::handleCliArgs();
                 delete[] argv;
             }
         }

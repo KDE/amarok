@@ -16,6 +16,7 @@ email                : fh@ez.no
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -26,6 +27,9 @@ email                : fh@ez.no
 #include <kio/global.h>
 #include <kio/job.h>
 #include <kmessagebox.h>
+
+
+ExtensionCache EngineController::s_extensionCache;
 
 
 static
@@ -112,37 +116,52 @@ void EngineController::stop()
 
 void EngineController::play( const MetaBundle &bundle )
 {
-    m_bundle = bundle;
     const KURL &url = bundle.url();
 
     if ( url.protocol() == "http" ) {
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
-        connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( playRemote( KIO::Job* ) ) );
-        return;
+        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( playRemote( KIO::Job* ) ) );
+        return; //don't do notify
     }
-                        
-    m_pEngine->play( url );
-    
-    newMetaDataNotify( m_bundle, true /* track change */ );
+    else if( !m_pEngine->play( url ) )
+    {
+        //NOTE it is up to the engine to present a graphical error message
+
+        return; //don't do notify
+    }
+    else
+    {
+        //non stream is now playing
+
+        m_xFadeThisTrack = AmarokConfig::crossfade() &&
+                           m_pEngine->hasXFade() &&
+                           !m_pEngine->isStream() &&
+                           m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
+    }
+
+    //don't assign until we are sure it is playing
+    m_bundle = bundle;
+
+    newMetaDataNotify( bundle, true /* track change */ );
 }
 
 
 void EngineController::playRemote( KIO::Job* job ) //SLOT
 {
     const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
-    kdDebug() << "DETECTED MIMETYPE: " << mimetype << endl;
-    
+    kdDebug() << "[controller] Detected mimetype: " << mimetype << endl;
+
     const KURL &url = m_bundle.url();
-    const bool isStream = mimetype.isEmpty() || mimetype == "text/html";               
-         
+    const bool isStream = mimetype.isEmpty() || mimetype == "text/html";
+
     if ( isStream &&
          AmarokConfig::titleStreaming() &&
          m_pEngine->streamingMode() != Engine::NoStreaming )
     {
         delete m_stream;
         m_stream = new amaroK::StreamProvider( url, m_pEngine->streamingMode() );
-        
+
         if ( !m_stream->initSuccess() ) {
             delete m_stream;
             m_stream = 0;
@@ -159,8 +178,10 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         connect( m_stream,   SIGNAL( sigError() ),
                  this,       SIGNAL( orderNext() ) );
     }
-    else
-        m_pEngine->play( url, isStream );
+    else if( !m_pEngine->play( url, isStream ) )
+    {
+        return; //don't notify
+    }
 
     newMetaDataNotify( m_bundle, true /* track change */ );
 }
@@ -170,11 +191,8 @@ EngineBase *EngineController::loadEngine() //static
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    // Unload previous engine
-    if( engine() != &dummyEngine ) {
-        PluginManager::unload( engine() );
-        instance()->m_pEngine = 0;
-    }
+    EngineController* const self = instance();
+    EngineBase *engine = self->m_pEngine;
 
     //now load new engine
     const QString query    = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] == '%1'";
@@ -184,7 +202,7 @@ EngineBase *EngineController::loadEngine() //static
     {
         QString query = "[X-KDE-amaroK-plugintype] == 'engine' and [X-KDE-amaroK-name] != '%1'";
         KTrader::OfferList offers = PluginManager::query( query.arg( AmarokConfig::soundSystem() ) );
-        
+
         while( !plugin && !offers.isEmpty() ) {
             plugin = PluginManager::createFromService( offers.front() );
             offers.pop_front();
@@ -204,25 +222,42 @@ EngineBase *EngineController::loadEngine() //static
 
             ::exit( EXIT_SUCCESS );
         }
+
         AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->property( "X-KDE-amaroK-name" ).toString() );
+
+        //TODO KMessageBox::error( 0, i18n( "The requested engine could not be loaded, instead %1 was loaded." ) );
         kdDebug() << "Setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
     }
 
-    instance()->m_pEngine = static_cast<EngineBase*>( plugin );
+    if( static_cast<EngineBase*>(plugin)->init() )
+    {
+        //only change things if the init was successful,
+        //otherwise leave amaroK with the old engine loaded
 
-    if ( !engine()->init() ) {
-        PluginManager::unload( engine() );
+        extensionCache().clear();
+
+        //assign new engine, unload old one. Order is thread-safe!
+        self->m_pEngine = static_cast<EngineBase*>(plugin);
+        if( engine != &dummyEngine ) PluginManager::unload( engine );
+
+        engine = static_cast<EngineBase*>(plugin);
+
+        connect( engine, SIGNAL(stateChanged( Engine::State )), self, SLOT(slotStateChanged( Engine::State )) );
+        connect( engine, SIGNAL(trackEnded()), self, SLOT(slotTrackEnded()) );
+        connect( engine, SIGNAL(statusText( const QString& )), self, SIGNAL(statusText( const QString& )) );
+
+        //NOTE engine settings are set in App::applySettings()
+
+    } else {
+
+        //init failed - fall back to currently loaded engine
         KMessageBox::error( 0, i18n( "The new engine could not be loaded." ) );
-        ::exit( EXIT_SUCCESS );
+        AmarokConfig::setSoundSystem( PluginManager::getService( engine )->property( "X-KDE-amaroK-name" ).toString() );
     }
-    connect( engine(), SIGNAL( stateChanged( Engine::State ) ), instance(), SLOT( slotStateChanged( Engine::State ) ) );
-    connect( engine(), SIGNAL( trackEnded() ), instance(), SLOT( slotTrackEnded() ) );
-    connect( engine(), SIGNAL( statusText( const QString& ) ), instance(), SIGNAL( statusText( const QString& ) ) );
 
     kdDebug() << "END " << k_funcinfo << endl;
-    //NOTE engine settings are not set, applySettings does that
 
-    return engine();
+    return engine;
 }
 
 
@@ -290,7 +325,7 @@ void EngineController::slotMainTimer()
     trackPositionChangedNotify( position );
 
     // Crossfading
-    if ( m_xFadeThisTrack && (m_bundle.length()*1000 - position < AmarokConfig::crossfadeLength()) )
+    if ( m_xFadeThisTrack && (m_bundle.length()*1000 - position < (uint)AmarokConfig::crossfadeLength()) )
     {
         kdDebug() << "[controller] Crossfading...\n";
         next();
@@ -336,5 +371,31 @@ void EngineController::slotStateChanged( Engine::State newState )
 
     stateChangedNotify( newState );
 }
+
+
+#include <kfileitem.h>
+bool EngineController::canDecode( const KURL &url ) //static
+{
+    //TODO engine refactor branch has to be KURL aware for this function
+    //TODO a KFileItem version?
+
+    // Accept non-local files, since we can't test them for validity at this point
+    if ( !url.isLocalFile() ) return true;
+
+    const QString fileName = url.fileName();
+    const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
+
+    if ( extensionCache().contains( ext ) )
+        return s_extensionCache[ext];
+
+    const bool valid = engine()->canDecode( url );
+
+    // Cache this result for the next lookup
+    if ( !ext.isEmpty() )
+        extensionCache().insert( ext, valid );
+
+    return valid;
+}
+
 
 #include "enginecontroller.moc"

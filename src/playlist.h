@@ -84,8 +84,6 @@ class Playlist : private KListView, public EngineObserver
         //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
-        static QMap<QString, bool> s_extensionCache;
-
         static Playlist *instance() { return s_instance; }
 
         //enums, typedefs and friends

@@ -83,26 +83,32 @@ const QString PlaylistItem::columnName(int col) //static
 QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 
 
-
-PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u, const QString &title, const int length )
-  : KListViewItem( parent, lvi, trackName( u ) )
-  , m_url( u )
-{
-    setDragEnabled( true );
-
-    KListViewItem::setText( Title, title );
-    setText( Directory, u.directory().section( '/', -1 ) ); //try for stringStore
-    setText( Length, MetaBundle::prettyLength( length ) );
-}
-
-
-PlaylistItem::PlaylistItem( Playlist* parent, QListViewItem *lvi, const KURL &u, const QDomNode &n )
-      : KListViewItem( parent, lvi, trackName( u ) )
+PlaylistItem::PlaylistItem( const KURL &u, QListView *lv, QListViewItem *lvi )
+      : KListViewItem( lv, lvi, trackName( u ) )
       , m_url( u )
 {
     setDragEnabled( true );
 
-    const uint ncol = parent->columns();
+    setText( Directory, u.directory().section( '/', -1 ) );
+}
+
+PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi )
+      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
+      , m_url( u )
+{
+    setDragEnabled( true );
+
+    setText( Directory, u.directory().section( '/', -1 ) );
+}
+
+
+PlaylistItem::PlaylistItem( const KURL &u, QListViewItem *lvi, const QDomNode &n )
+      : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( u ) )
+      , m_url( u )
+{
+    setDragEnabled( true );
+
+    const uint ncol = listView()->columns();
 
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
     for( uint x = 1; x < ncol; ++x )
@@ -213,30 +219,6 @@ void PlaylistItem::setText( int column, const QString &newText )
         KListViewItem::setText( Length, newText.isEmpty() ? newText : newText + ' ' ); //padding makes it neater
         break;
 
-//     case 1:
-//     case 9:
-//     case 10:
-//         if( newText.isEmpty() )
-//         {
-//             //FIXME this is an awful hack, do something about it
-//
-//             //don't overwrite old text with nothing
-//             //we do this because there are several stages to setting text when items are inserted into the
-//             //playlist, and not all of them have text set.
-//             //we only need to do this for columns 1, 9 and 10 currently
-//
-//             //FIXME removing a tag with inline edit doesn't get updated here, but
-//             //      you've hacked TagWriter so it sets a space as the new text
-//             //FIXME that needs fixing because it means the scrolling title has a space! dang.
-//
-//             //NOTE if you don't setText() it crashes amaroK!
-//             KListViewItem::setText( column, KListViewItem::text( column ) );
-//
-//             break;
-//         }
-//
-//         //else FALL THROUGH
-
     default:
         KListViewItem::setText( column, newText );
         break;
@@ -304,28 +286,24 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
 
     //TODO this function is called extremely regularly as QListView sucks a little, optimise it immensely!!!!
 
-    //FIXME this was crashing stuff when you were dropping remote playlists
-    //TODO  anyway it sucks, load audio props simultaneously to other tags
-    //TODO  don't read audioproperties if their columns aren't shown and re-read tags if those columns are then shown
-    //if( column == Length && text( Length ).isEmpty() ) listView()->readAudioProperties( this );
-
-    //flicker-free drawing
-    static QPixmap buffer;
-    buffer.resize( width, height() );
-
-    if( buffer.isNull() )
-    {
-        KListViewItem::paintCell( p, cg, column, width, align );
-        return;
-    }
-
-    QPainter painterBuf( &buffer, true );
-    painterBuf.setFont( p->font() );
-
-    int playNext = listView()->m_nextTracks.findRef( this ) + 1;
+    const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
 
     if( this == listView()->currentTrack() )
     {
+        //flicker-free drawing
+
+        QPixmap buffer;
+        buffer.resize( width, height() );
+
+        if( buffer.isNull() )
+        {
+            KListViewItem::paintCell( p, cg, column, width, align );
+            return;
+        }
+
+        QPainter painterBuf( &buffer, true );
+        painterBuf.setFont( p->font() );
+
         QColorGroup glowCg = cg; //shallow copy
 
         glowCg.setColor( QColorGroup::Base, glowBase );
@@ -334,8 +312,11 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //KListViewItem enforces alternate color, so we use QListViewItem
         QListViewItem::paintCell( &painterBuf, glowCg, column, width, align );
 
+        painterBuf.end();
+
+        p->drawPixmap( 0, 0, buffer );
     }
-    else KListViewItem::paintCell( &painterBuf, cg, column, width, align );
+    else KListViewItem::paintCell( p, cg, column, width, align );
 
     //figure out if we are in the actual physical first column
     if( playNext && column == listView()->m_firstColumn )
@@ -347,12 +328,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         const uint w  = 16; //keep this even
         const uint h  = height() - 2;
 
-        painterBuf.setBrush( cg.highlight() );
-        painterBuf.setPen( cg.highlight().dark() ); //TODO blend with background color
-        painterBuf.drawEllipse( width - fw - w/2, 1, w, h );
-        painterBuf.drawRect( width - fw, 1, fw, h );
-        painterBuf.setPen( cg.highlight() );
-        painterBuf.drawLine( width - fw, 2, width - fw, h - 1 );
+        p->setBrush( cg.highlight() );
+        p->setPen( cg.highlight().dark() ); //TODO blend with background color
+        p->drawEllipse( width - fw - w/2, 1, w, h );
+        p->drawRect( width - fw, 1, fw, h );
+        p->setPen( cg.highlight() );
+        p->drawLine( width - fw, 2, width - fw, h - 1 );
 
         //draw the shadowed inner text
         //NOTE we can't set an arbituary font size or family, these settings are already optional
@@ -364,25 +345,22 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //p->setPen( cg.highlightedText().dark() );
         //p->drawText( width - w + 2, 3, w, h-1, Qt::AlignCenter, str );
         fw += 2; //add some more padding
-        painterBuf.setPen( cg.highlightedText() );
-        painterBuf.drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
+        p->setPen( cg.highlightedText() );
+        p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
     }
 
     if( !isSelected() )
     {
-        painterBuf.setPen( QPen( cg.mid(), 0, Qt::SolidLine ) ); //FIXME looks hideous!
-        painterBuf.drawLine( width - 1, 0, width - 1, height() - 1 );
+        p->setPen( QPen( cg.mid(), 0, Qt::SolidLine ) );
+        p->drawLine( width - 1, 0, width - 1, height() - 1 );
     }
-
-    painterBuf.end();
-    p->drawPixmap( 0, 0, buffer );
 }
 
 
 void PlaylistItem::setup()
 {
     KListViewItem::setup();
-    
+
     if( this == listView()->currentTrack() )
         setHeight( listView()->fontMetrics().height() * 2 );
 }

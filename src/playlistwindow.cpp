@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "actionclasses.h"    //see toolbar construction
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
 #include "browserbar.h"
@@ -145,10 +146,9 @@ PlaylistWindow::~PlaylistWindow()
 void
 PlaylistWindow::init()
 {
-    //this function is necessary because we reference pApp->actionCollection() are members of
-    //this function and some objects we create in this function use pApp->actionCollection()
-    //but since pApp->m_pPlaylistWindow is not defined until the above ctor returns it causes a
-    //crash unless we do the initialisation in 2 stages.
+    //this function is necessary because amaroK::actionCollection() returns our actionCollection
+    //via the pApp->m_pPlaylistWindow pointer since pApp->m_pPlaylistWindow is not defined until
+    //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
     m_browsers = new BrowserBar( this );
 
@@ -289,6 +289,8 @@ void PlaylistWindow::createGUI()
 
 void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 {
+    //NOTE We are only called for amaroK colours or custom colours
+
     //TODO optimise bearing in mind ownPalette property and unsetPalette()
     //TODO this doesn't work well with the select your own colours options. SIGH. Is it worth the trouble?
 
@@ -433,7 +435,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
 void PlaylistWindow::closeEvent( QCloseEvent *e )
 {
-    pApp->genericEventHandler( this, e );
+    amaroK::genericEventHandler( this, e );
 }
 
 

@@ -113,23 +113,6 @@ private:
 };
 
 
-//@Will read tags for a PlaylistItem
-class TagReader : public ThreadWeaver::Job
-{
-public:
-    TagReader( QObject*, PlaylistItem* );
-    ~TagReader();
-
-    bool doJob();
-    void bindTags();
-
-private:
-    PlaylistItem* const m_item;
-    const KURL  m_url;
-    MetaBundle* m_tags;
-};
-
-
 //@Will search files for the SearchBrowser
 class SearchModule : public ThreadWeaver::Job
 {
@@ -171,9 +154,9 @@ public:
     QStringList resultList() { return m_resultList; }
 private:
     void searchDir( QString path );
-    
+
     static bool m_stop;
-    
+
     uint resultCount;
     QObject *m_parent;
     QString m_path;
@@ -216,40 +199,24 @@ public:
        private:
            QString m_path;
    };
-   
+
     CollectionReader( CollectionDB* parent, QObject* playlistBrowser, const QStringList& folders,
                       bool recursively, bool incremental );
 
-    static void stop() { m_stop = true; }       
+    static void stop() { m_stop = true; }
     bool doJob();
 
 private:
     void readDir( const QString& dir, QStringList& entries );
     void readTags( const QStringList& entries );
-    
+
     static bool m_stop;
-    
+
     CollectionDB* m_parent;
     QObject* m_playlistBrowser;
     QStringList m_folders;
     bool m_recursively;
     bool m_incremental;
-};
-
-
-//@Will read audioProperties for a PlaylistItem
-class AudioPropertiesReader : public ThreadWeaver::Job
-{
-public:
-    AudioPropertiesReader( QObject*, PlaylistItem* );
-    bool doJob();
-    void completeJob();
-private:
-    PlaylistItem* const m_item;
-    QListView*    const m_listView;
-    const KURL m_url;
-    QString    m_length;
-    QString    m_bitrate;
 };
 
 

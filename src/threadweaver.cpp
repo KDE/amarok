@@ -47,11 +47,11 @@ ThreadWeaver::append( Job* const job, bool priorityJob )
         m_Q.prepend( job );
     else
         m_Q.append( job );
-    mutex.unlock();
 
-    if ( !running() ) {
+    if ( !running() )
         start( QThread::LowestPriority );
-    }
+
+    mutex.unlock();
 }
 
 bool
@@ -130,44 +130,6 @@ ThreadWeaver::Job::postJob()
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-// CLASS TagReader
-//////////////////////////////////////////////////////////////////////////////////////////
-
-TagReader::TagReader( QObject *o, PlaylistItem *pi )
-        : Job( o, Job::TagReader )
-        , m_item( pi )
-        , m_url( pi->url() )
-        , m_tags( 0 )
-{}
-
-TagReader::~TagReader()
-{
-    delete m_tags;
-}
-
-bool
-TagReader::doJob()
-{
-    //TODO move this check to the playlist
-    if( m_url.isLocalFile() )
-    {
-        m_tags = new MetaBundle( m_url );
-        return true;
-    }
-
-    return false;
-}
-
-void
-TagReader::bindTags()
-{
-    //for GUI access only
-    //we're a friend of PlaylistItem
-    if( m_tags ) m_item->setText( *m_tags );
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
 // CLASS SearchPath
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -202,7 +164,7 @@ void SearchModule::searchDir( QString path )
         while ( ( ent = readdir( d ) ) ) {
             // Check if we shall abort
             if ( m_stop ) return;
-            
+
             QString file( ent->d_name );
 
             if ( file != "." && file != ".." ) {
@@ -243,7 +205,7 @@ bool
 CollectionReader::doJob()
 {
     m_stop = false;
-    
+
     QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Start ) );
 
     if ( !m_incremental )
@@ -331,15 +293,15 @@ CollectionReader::readTags( const QStringList& entries )
     validImages << "jpg" << "png" << "gif" << "jpeg";
     QStringList validMusic;
     validMusic << "mp3" << "ogg" << "flac" << "wav";
-    
+
     for ( uint i = 0; i < entries.count(); i++ ) {
         // Check if we shall abort the scan
         if ( m_stop ) return;
-        
+
         if ( !( i % 20 ) ) { //don't post events too often since this blocks amaroK
             QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Progress, i ) );
         }
-           
+
         url.setPath( entries[ i ] );
         TagLib::FileRef f( QFile::encodeName( url.path() ), false );  //false == don't read audioprops
 
@@ -469,7 +431,7 @@ TagWriter::doJob()
         }
 
         f.save(); //FIXME this doesn't always work, but! it returns void. Great huh?
-        
+
         //update the collection db
         CollectionDB *db = new CollectionDB();
         db->updateTag( url.path(), field, m_tagString );

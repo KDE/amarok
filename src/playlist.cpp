@@ -13,6 +13,7 @@
  */
 
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "collectiondb.h"    //startEditTag()
 #include "enginecontroller.h"
@@ -55,7 +56,6 @@
 
 
 Playlist *Playlist::s_instance = 0;
-QMap<QString, bool> Playlist::s_extensionCache;
 
 
 Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
@@ -69,7 +69,7 @@ Playlist::Playlist( QWidget *parent, KActionCollection *ac, const char *name )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", "amarok/undo/", true ) )
     , m_undoCounter( 0 )
     , m_editText( 0 )
-    , m_ac( ac ) //we use this so we don't have to include app.h
+    , m_ac( ac ) //REMOVE
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
@@ -236,7 +236,7 @@ void Playlist::showCurrentTrack() { ensureItemVisible( currentTrack() ); } //SLO
 
 QString Playlist::defaultPlaylistPath() //static
 {
-    return KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" ) + "current.xml";
+    return KGlobal::dirs()->saveLocation( "data", "amarok/" ) + "current.xml";
 }
 
 
@@ -445,13 +445,13 @@ void Playlist::saveXML( const QString &path ) const
     QDomDocument newdoc;
     QDomElement playlist = newdoc.createElement( "playlist" );
     playlist.setAttribute( "product", "amaroK" );
-    playlist.setAttribute( "version", "1" );
+    playlist.setAttribute( "version", APP_VERSION );
     newdoc.appendChild( playlist );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
         QDomElement i = newdoc.createElement("item");
-        i.setAttribute("url", item->url().url());
+        i.setAttribute("url", item->url().prettyURL());
 
         for( int x = 1; x < columns(); ++x )
         {
@@ -660,22 +660,35 @@ int Playlist::mapToLogicalColumn( int physical )
 
 void Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
 {
-    //we don't check list.isEmpty(), this is a private function so we shouldn't have to
-
-    PlaylistLoader *loader = new PlaylistLoader( list, this, after );
-
-    if( loader )
+    if( list.count() == 1 )
     {
-        setSorting( NO_SORT ); //disable sorting and saveState()
+        //TODO check it is not a playlist or directory
+        //if safe just add it
 
-        QApplication::postEvent( this, new QCustomEvent( PlaylistLoader::Started ) ); //see customEvent for explanation
+        const KURL &url = list.front();
 
-        loader->setOptions( AmarokConfig::directoriesRecursively(),
-                            directPlay,
-                            0 ); //no longer used
-        loader->start();
+        if( url.isLocalFile() )
+        {
+            setSorting( NO_SORT );
+
+            if ( PlaylistLoader::isPlaylist( url ) || QFileInfo( url.path() ).isDir() )
+                (new PlaylistLoader( list, this, after ))->start();
+            else
+                (new PlaylistItem( url, this, after ))->setText( MetaBundle( url ) );
+        }
+        else if( PlaylistLoader::isPlaylist( url ) )
+            PlaylistLoader::downloadPlaylist( url, this, after );
+        else
+        {
+            setSorting( NO_SORT );
+            (new PlaylistLoader( list, this, after ))->start();
+        }
     }
-    else kdDebug() << "[playlist] Unable to create loader-thread!\n";
+    else if( !list.isEmpty() )
+    {
+        setSorting( NO_SORT );
+        (new PlaylistLoader( list, this, after ))->start();
+    }
 }
 
 
@@ -937,10 +950,6 @@ PlaylistItem *Playlist::restoreCurrentTrack()
 {
     const KURL &url = EngineController::instance()->playingURL();
 
-    kdDebug() << url << endl;
-
-    if( m_currentTrack ) kdDebug() << m_currentTrack->url() << endl;
-
     if( !(m_currentTrack && m_currentTrack->url() == url) )
     {
         PlaylistItem* item;
@@ -1050,7 +1059,7 @@ void Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     //blockSignals so that we don't cause a saveUndoState()
     //FIXME, but this will stop the search lineEdit from being cleared..
     blockSignals( true );
-        clear();
+      clear();
     blockSignals( false );
 
     appendMedia( playlist ); //because the listview is empty, undoState won't be forced
@@ -1230,16 +1239,15 @@ void Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) 
 void Playlist::startEditTag( QListViewItem *item, int column )
 {
     KLineEdit *edit = renameLineEdit();
-    CollectionDB *db = new CollectionDB();
 
     switch( column )
     {
         case PlaylistItem::Artist:
-            edit->completionObject()->setItems( db->artistList() );
+            edit->completionObject()->setItems( CollectionDB().artistList() );
             break;
 
         case PlaylistItem::Album:
-            edit->completionObject()->setItems( db->albumList() );
+            edit->completionObject()->setItems( CollectionDB().albumList() );
             break;
 
         case PlaylistItem::Genre:
@@ -1251,10 +1259,9 @@ void Playlist::startEditTag( QListViewItem *item, int column )
             break;
     }
 
-    delete db;
     edit->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
 
-    m_editText = ((PlaylistItem *)item)->exactText( column );
+    m_editText = static_cast<PlaylistItem *>(item)->exactText( column );
 
     rename( item, column );
 }
@@ -1574,53 +1581,31 @@ void Playlist::customEvent( QCustomEvent *e )
     switch( e->type() )
     {
     case PlaylistLoader::Started:
-
-        //FIXME This is done here rather than startLoader()
-        //because Qt DnD sets the overrideCursor and then when it
-        //restores the cursor it removes the waitCursor we set!
-        //Qt4 may fix this (?) (if we're lucky)
-        //FIXME report to Trolltech?
-
-        //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( false );
         m_undoButton->setEnabled( false );
         m_redoButton->setEnabled( false );
-        QApplication::setOverrideCursor( KCursor::workingCursor() );
-        break;
-
-    case PlaylistLoader::MakeItem:
-
-        #define e static_cast<PlaylistLoader::MakeItemEvent*>(e)
-        if( PlaylistItem *item = e->makePlaylistItem( this ) )
-        {
-            if( e->playMe() )
-            {
-                //follows is temporary hack to ensure this member has tags!
-                item->setText( item->metaBundle().readTags() );
-                activate( item );
-            }
-
-            if( AmarokConfig::showMetaInfo() ) m_weaver->append( new TagReader( this, item ) );
-
-            emit itemCountChanged( childCount() );
-        }
-        #undef e
         break;
 
     case PlaylistLoader::Done:
-
-        //FIXME this doesn't work 100% yet as you can spawn multiple loaders..
         m_clearButton->setEnabled( true );
         m_undoButton->setEnabled( !m_undoList.isEmpty() );
         m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-        QApplication::restoreOverrideCursor();
-        restoreCurrentTrack(); //just in case the track that is playing is not set current
-        emit itemCountChanged( childCount() ); // final touch (also helps with default pls)
+        delete (PlaylistLoader*)e->data();
+
+        //just in case the track that is playing is not set current
+        restoreCurrentTrack();
+        //necessary usually
+        emit itemCountChanged( childCount() );
         //force redraw of currentTrack marker, play icon, etc.
         setCurrentTrack( currentTrack() );
         break;
 
+    case PlaylistLoader::Tags:
+        #define e static_cast<PlaylistLoader::TagsEvent*>(e)
+        e->item->setText( e->bundle );
+        #undef e
+        break;
 
     case ThreadWeaver::Started:
 
@@ -1638,13 +1623,6 @@ void Playlist::customEvent( QCustomEvent *e )
         #undef e
         break;
 
-    case ThreadWeaver::Job::TagReader:
-
-        #define e static_cast<TagReader*>(e)
-        e->bindTags();
-        #undef e
-        break;
-
     case 4000: //dustbinEvent
 
         //this is a list of all the listItems from a clear operation
@@ -1655,7 +1633,7 @@ void Playlist::customEvent( QCustomEvent *e )
         break;
 
     default:
-        break;
+        ;
     }
 }
 

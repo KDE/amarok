@@ -19,12 +19,13 @@ email                : fh@ez.no
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include "engineobserver.h" // move me
+#include "engineobserver.h" // move me // where to sir?
 #include "metabundle.h"
-
+#include <qmap.h>
 #include <qobject.h>
 #include <qtimer.h>
 
+typedef QMap<QString, bool>  ExtensionCache;
 
 namespace amaroK { class StreamProvider; }
 namespace KIO { class Job; }
@@ -43,11 +44,12 @@ public:
     // you'll only get a new (empty) instance.
     static EngineController *instance();
     static EngineController *self() { return instance(); }
+    static EngineBase       *engine() { return instance()->m_pEngine; }
+    static EngineBase       *loadEngine();
+    static bool              canDecode( const KURL& );
+    static ExtensionCache   &extensionCache() { return s_extensionCache; }
 
-    static EngineBase *engine() { return instance()->m_pEngine; }
-    static EngineBase *loadEngine();
-
-    long  trackLength() const { return m_bundle.length() * 1000; }
+    uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const { return m_bundle; }
     const KURL &playingURL() const { return m_bundle.url(); }
 
@@ -85,6 +87,8 @@ private:
     EngineController();
 
 private:
+    static ExtensionCache s_extensionCache;
+
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
 

@@ -2,13 +2,13 @@
 // Copyright:  See COPYING file that comes with this distribution
 
 #include "actionclasses.h"
+#include "amarok.h"
 #include "amarokconfig.h"
-#include "app.h"                //actionCollection() and a SLOT
+#include "app.h"                //slotConfigEffects
 #include "config.h"             //HAVE_XMMS definition
 #include "enginecontroller.h"
-#include "playlistwindow.h"     //need amaroK::ToolBar
 #include "scriptmanager.h"
-#include "socketserver.h"       //Vis::Selector::showInstance(
+#include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <kaction.h>
 #include <khelpmenu.h>
@@ -75,7 +75,7 @@ MenuAction::plug( QWidget *w, int index )
 
 Menu::Menu()
 {
-    KActionCollection *ac = pApp->actionCollection();
+    KActionCollection *ac = amaroK::actionCollection();
 
     setCheckable( true );
 
@@ -92,18 +92,9 @@ Menu::Menu()
     insertItem( i18n( "&Scripts..." ), ID_SHOW_SCRIPT_SELECTOR );
     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 
-    #ifndef HAVE_KJSEMBED
-    setItemEnabled( ID_SHOW_SCRIPT_SELECTOR, false );
-    setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
-    #endif
-
     insertSeparator();
 
     insertItem( i18n( "Configure &Effects..." ), pApp, SLOT( slotConfigEffects() ) );
-    insertItem( i18n( "Configure &Decoder..." ), EngineController::engine(), SLOT( configure() ) );
-
-    insertSeparator();
-
     safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
     safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );
     safePlug( ac, "options_configure_globals", this ); //we created this one
@@ -119,6 +110,11 @@ Menu::Menu()
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+
+    #ifndef HAVE_KJSEMBED
+    setItemEnabled( ID_SHOW_SCRIPT_SELECTOR, false );
+    setItemEnabled( ID_SHOW_SCRIPT_CONSOLE, false );
+    #endif
 
     #ifndef HAVE_XMMS
     setItemEnabled( ID_SHOW_VIS_SELECTOR, false );
@@ -138,7 +134,7 @@ Menu::helpMenu( QWidget *parent ) //STATIC
     extern KAboutData aboutData;
 
     if( s_helpMenu == 0 )
-        s_helpMenu = new KHelpMenu( parent, &aboutData, pApp->actionCollection() );
+        s_helpMenu = new KHelpMenu( parent, &aboutData, amaroK::actionCollection() );
 
     return s_helpMenu->menu();
 }

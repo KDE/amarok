@@ -16,9 +16,9 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "actionclasses.h"
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "analyzerbase.h"
-#include "app.h"
 #include "enginecontroller.h"
 #include "metabundle.h"      //setScroll()
 #include "playerwindow.h"
@@ -33,6 +33,7 @@ email                : markey@web.de
 #include <qstringlist.h>
 #include <qtooltip.h>        //analyzer tooltip
 
+#include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
@@ -83,14 +84,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     setCaption( "amaroK" );
     setAcceptDrops( true );
     setPaletteForegroundColor( Qt::white ); //0x80a0ff
-    setPaletteBackgroundColor( QColor( 32, 32, 80 ) );
-
-// this is interesting..
-//     #include <X11/Xlib.h>
-//     XSetTransientForHint( qt_xdisplay(), winId(), parent->winId() );
+    setPaletteBackgroundColor( amaroK::blue );
 
     QFont font;
-    font.setBold( TRUE );
+    font.setBold( true );
     font.setPixelSize( 10 );
     setFont( font );
 
@@ -98,7 +95,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         //NOTE we use a layout for the buttons so resizing will be possible
         m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
 
-        KActionCollection *ac = pApp->actionCollection();
+        KActionCollection *ac =amaroK::actionCollection();
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
                          new NavButton( m_pFrameButtons, "prev", ac->action( "prev" ) );
@@ -400,7 +397,7 @@ bool PlayerWidget::event( QEvent *e )
     case QEvent::Drop:
     case QEvent::Close:
 
-        pApp->genericEventHandler( this, e );
+        amaroK::genericEventHandler( this, e );
         return TRUE; //we handled it
 
     case 6/*QEvent::KeyPress*/:
@@ -627,7 +624,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
         if ( rect.contains( e->pos() ) )
         {
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
-            repaint( true );
+            timeDisplay( EngineController::engine()->position() / 1000 );
         }
         else m_startDragPos = e->pos();
     }

@@ -18,16 +18,9 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
-#ifdef HAVE_CONFIG_H
-    #include <config.h>
-#endif
-
 #include "engineobserver.h" //baseclass
 #include <kapplication.h>   //baseclass
 #include <kurl.h>           //needed for KURL::List (nested)
-
-#define APP_VERSION "1.1-CVS"
-
 
 class KActionCollection;
 class KConfig;
@@ -37,14 +30,8 @@ class QCString;
 class QEvent;
 
 namespace amaroK {
-    class OSD;
     class TrayIcon;
     class DcopHandler;
-
-    static const int VOLUME_MAX = 100;
-    static const int SCOPE_SIZE = 9; //= 2**9 = 512
-
-    KConfig *config( const QString &group = "General" );
 }
 
 class MetaBundle;
@@ -61,11 +48,9 @@ class App : public KApplication, public EngineObserver
         App();
         ~App();
 
-        void genericEventHandler( QWidget*, QEvent* ); //handles events in a generic amaroK fashion
-        void handleCliArgs();
+        static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
 
-        KActionCollection   *actionCollection() const;
         amaroK::DcopHandler *dcopHandler() const { return m_pDcopHandler; }
         QWidget             *mainWindow() const;
         PlaylistWindow      *playlistWindow() const { return m_pPlaylistWindow; }
@@ -99,8 +84,6 @@ class App : public KApplication, public EngineObserver
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::DcopHandler *m_pDcopHandler;
         amaroK::TrayIcon    *m_pTray;
-        KActionCollection   *m_pActionCollection;
-        amaroK::OSD         *m_pOSD;
 };
 
 

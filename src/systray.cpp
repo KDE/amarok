@@ -6,19 +6,20 @@
 // Copyright: like rest of amaroK
 //
 
-#include "app.h"
+#include "amarok.h"
 #include "enginecontroller.h"
 #include "systray.h"
 
 #include <qevent.h>
 #include <kaction.h>
+#include <kapplication.h>
 #include <kpopupmenu.h>
 
 
 amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
   : KSystemTray( playerWidget )
 {
-    KActionCollection* const ac = pApp->actionCollection();
+    KActionCollection* const ac = amaroK::actionCollection();
 
     setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setAcceptDrops( true );
@@ -53,15 +54,15 @@ amaroK::TrayIcon::event( QEvent *e )
     case QEvent::Drop:
     case QEvent::Wheel:
     case QEvent::DragEnter:
-        pApp->genericEventHandler( this, e );
-        return TRUE;
+        amaroK::genericEventHandler( this, e );
+        return true;
 
     case QEvent::MouseButtonPress:
         if( static_cast<QMouseEvent*>(e)->button() == Qt::MidButton )
         {
             EngineController::instance()->playPause();
 
-            return TRUE;
+            return true;
         }
 
         //else FALL THROUGH

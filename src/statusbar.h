@@ -16,17 +16,17 @@
 #ifndef AMAROK_STATUSBAR_H
 #define AMAROK_STATUSBAR_H
 
-#include <kstatusbar.h>
-#include <qlabel.h>
-
-#include "engineobserver.h"
+#include "engineobserver.h" //baseclass
+#include <kstatusbar.h>     //baseclass
+#include <qevent.h>         //baseclass
+#include <qlabel.h>         //baseclass
 
 class KAction;
 class KProgress;
 class KToggleAction;
 class QCustomEvent;
-class QPushButton;
 class QTimer;
+
 
 namespace amaroK {
 
@@ -40,11 +40,17 @@ public:
     StatusBar( QWidget *parent = 0, const char *name = 0 );
     ~StatusBar();
 
-    static StatusBar* instance() { return m_instance; }
+    static StatusBar* instance() { return s_instance; }
+    static StatusBar* self()     { return s_instance; }
+
+    static void startProgress();
+    static void showProgress( uint );
+    static void stopProgress();
 
 public slots:
     /** update total song count */
     void slotItemCountChanged(int newCount);
+    void engineMessage( const QString &s ) { message( s, 2000 ); } //NOTE leave inlined!
 
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( Engine::State state );
@@ -55,22 +61,20 @@ private slots:
     void slotPauseTimer();
     void drawTimeDisplay( int position );
     void stopPlaylistLoader();
-    
-    void engineMessage( const QString &s ) { message( s, 2000 ); } //NOTE leave inlined!
 
 private:
     virtual void customEvent( QCustomEvent* e );
 
-    static StatusBar* m_instance;
+    static StatusBar* s_instance;
 
     QLabel         *m_pTimeLabel;
     QLabel         *m_pTitle;
     QLabel         *m_pTotal;
     KProgress      *m_pProgress;
+    QWidget        *m_pProgressBox;
     amaroK::Slider *m_pSlider;
     bool            m_sliderPressed;
     QTimer         *m_pPauseTimer;
-    QPushButton    *m_stopPlaylist;
 };
 
 
@@ -91,6 +95,19 @@ private:
     KAction *m_action;
 };
 
+
+class ProgressEvent : public QCustomEvent
+{
+public:
+    ProgressEvent( int progress ) : QCustomEvent( 5000 ), m_value( progress ) {}
+
+    int progress() { return m_value; }
+
+    static const int Type = 5000;
+
+private:
+    int m_value;
+};
 } //namespace amaroK
 
 

@@ -22,8 +22,9 @@ class Playlist;
 class PlaylistItem : public KListViewItem
 {
     public:
-        PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QString& = QString::null, const int length = 0 );
-        PlaylistItem( Playlist*, QListViewItem*, const KURL&, const QDomNode& );
+        PlaylistItem( const KURL&, QListViewItem* );
+        PlaylistItem( const KURL&, QListViewItem*, const QDomNode& );
+        PlaylistItem( const KURL&, QListView*, QListViewItem* );
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
         void setText( const MetaBundle& );
@@ -60,7 +61,7 @@ class PlaylistItem : public KListViewItem
         int     compare( QListViewItem*, int, bool ) const;
         void    paintCell( QPainter*, const QColorGroup&, int, int, int );
         void    setup();
-        
+
         static QString trackName( const KURL &u ) { return u.protocol() == "file" ? u.fileName() : u.prettyURL(); }
 
         const KURL m_url;

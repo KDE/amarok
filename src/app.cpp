@@ -15,6 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h"
@@ -65,7 +66,6 @@ App::App()
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
     m_pDcopHandler    = new amaroK::DcopHandler();
-    m_pOSD            = amaroK::OSD::instance(); //creates the OSD
     m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
     (void)              new Vis::SocketServer( this );
 
@@ -120,7 +120,7 @@ App::~App()
     {
         if( engine->state() != Engine::Empty )
         {
-            AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().url() );
+            AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyURL() );
             AmarokConfig::setResumeTime( engine->position() / 1000 );
         }
         else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
@@ -143,7 +143,7 @@ App::~App()
 }
 
 
-void App::handleCliArgs()
+void App::handleCliArgs() //static
 {
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
@@ -238,7 +238,7 @@ void App::initGlobalShortcuts()
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
-                            m_pOSD, SLOT( forceShowTrack() ), true, true );
+                            amaroK::OSD::instance(), SLOT( forceShowTrack() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
@@ -335,7 +335,7 @@ void App::applySettings( bool firstTime )
     }
 
 
-    m_pOSD->applySettings();
+    amaroK::OSD::instance()->applySettings();
 
     playlistWindow()->setFont( AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font() );
 
@@ -368,13 +368,11 @@ void App::applySettings( bool firstTime )
         {
             //will unload engine for us first if necessary
             engine = EngineController::loadEngine();
-            // Invalidate extension cache
-            Playlist::s_extensionCache.clear();
         }
 
-         AmarokConfig::setHardwareMixer( engine->setHardwareMixer( AmarokConfig::hardwareMixer() ) );
+        AmarokConfig::setHardwareMixer( engine->setHardwareMixer( AmarokConfig::hardwareMixer() ) );
 
-         engine->setVolume( AmarokConfig::masterVolume() );
+        engine->setVolume( AmarokConfig::masterVolume() );
     } //</Engine>
 
     kdDebug() << "END " << k_funcinfo << endl;
@@ -412,7 +410,7 @@ void App::setupColors()
     } else if( AmarokConfig::schemeAmarok() ) {
 
         QColorGroup group = QApplication::palette().active();
-        const QColor bg( 32, 32, 80 );
+        const QColor bg( amaroK::blue );
         const QColor bgAlt( 57, 64, 98 );
 
         /* PLEASE don't do this, it makes lots of widget ugly
@@ -472,7 +470,7 @@ void App::setupColors()
 }
 
 
-void App::genericEventHandler( QWidget *source, QEvent *e )
+bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 {
     //this is used as a generic event handler for widgets that want to handle
     //typical events in an amaroK fashion
@@ -481,7 +479,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
     //
     // void Foo::barEvent( QBarEvent *e )
     // {
-    //     pApp->genericEventHandler( this, e );
+    //     amaroK::genericEventHandler( this, e );
     // }
 
     switch( e->type() )
@@ -504,7 +502,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
-            const int id = popup.exec( source->mapToGlobal( e->pos() ) );
+            const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
             KURL::List list;
             KURLDrag::decode( e, list );
 
@@ -518,6 +516,7 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
                 Playlist::instance()->queueMedia( list );
             }
         }
+        else return false;
         #undef e
 
         break;
@@ -527,23 +526,28 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
     case QEvent::Wheel:
     {
         #define e static_cast<QWheelEvent*>(e)
-        const bool up = e->delta() > 0;
-        int seek;
-        
+
+        //this behaviour happens for the systray and the player window
+        //to override one, override it in that class
+
         switch( e->state() )
         {
-        case ControlButton:
+        case Qt::ControlButton:
+        {
+            const bool up = e->delta() > 0;
+
             //if this seems strange to you, please bring it up on #amarok
             //for discussion as we can't decide which way is best!
             if( up ) EngineController::instance()->previous();
             else     EngineController::instance()->next();
             break;
-
-        case ShiftButton:
-            seek = EngineController::engine()->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
+        }
+        case Qt::ShiftButton:
+        {
+            int seek = EngineController::engine()->position() + ( e->delta() / 120 ) * 10000; // 10 seconds
             EngineController::engine()->seek( seek < 0 ? 0 : seek );
             break;
-
+        }
         default:
             EngineController::instance()->increaseVolume( e->delta() / 18 );
         }
@@ -561,20 +565,22 @@ void App::genericEventHandler( QWidget *source, QEvent *e )
 
         static_cast<QCloseEvent*>(e)->accept(); //if we don't do this the info box appears on quit()!
 
-        if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !sessionSaving() )
+        if( AmarokConfig::showTrayIcon() && !e->spontaneous() && !kapp->sessionSaving() )
         {
-            KMessageBox::information( source,
+            KMessageBox::information( recipient,
                 i18n( "<qt>Closing the main-window will keep amaroK running in the System Tray. "
                       "Use <B>Quit</B> from the menu, or the amaroK tray-icon to exit the application.</qt>" ),
                 i18n( "Docking in System Tray" ), "hideOnCloseInfo" );
         }
-        else quit();
+        else kapp->quit();
 
         break;
 
     default:
-        break;
+        return false;
     }
+
+    return true;
 }
 
 
@@ -594,7 +600,7 @@ void App::engineStateChanged( Engine::State state )
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    m_pOSD->showTrack( bundle );
+    amaroK::OSD::instance()->showTrack( bundle );
 
     TrackToolTip::add( m_pTray, bundle );
 }
@@ -602,7 +608,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
-    m_pOSD->showOSD( i18n("Volume: %1%").arg( newVolume ), true );
+    amaroK::OSD::instance()->showOSD( i18n("Volume: %1%").arg( newVolume ), true );
 }
 
 void App::slotConfigEffects( bool show )
@@ -663,9 +669,9 @@ void App::slotConfigToolBars()
 
 //globally available actionCollection and playlist retrieval functions
 
-KActionCollection *App::actionCollection() const
+KActionCollection *amaroK::actionCollection()
 {
-    return m_pPlaylistWindow->actionCollection();
+    return pApp->playlistWindow()->actionCollection();
 }
 
 QWidget *App::mainWindow() const

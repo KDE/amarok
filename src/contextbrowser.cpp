@@ -2,7 +2,6 @@
 // See COPYING file for licensing information
 
 
-#include "app.h"          //openUrlRequest() FIXME remove this if possible
 #include "amarokconfig.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
@@ -145,7 +144,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         {
             //TODO if we do move the configuration to the main configdialog change this,
             //     otherwise we need a better solution
-            QObject *o = pApp->playlistWindow()->child( "CollectionBrowser" );
+            QObject *o = parent()->child( "CollectionBrowser" );
             if( o ) static_cast<CollectionBrowser*>(o)->setupDirs();
         }
     }

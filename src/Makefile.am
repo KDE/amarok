@@ -131,15 +131,15 @@ messages: rc.cpp
 
 install-exec-hook:
 	@echo ""
-	@echo "======================================================="
+	@echo "=========================="
 	@echo "=  amaroK - INSTALLED  ================================"
-	@echo "======================================================="
-	@echo "=                                                     ="
-	@echo "=  Type amarok to start!                              ="
-	@echo "=                                                     ="
-	@echo "=  If you have problems, please consult the README;   ="
-	@echo "=  if the problems continue join us on #amarok.       ="
-	@echo "=                                                     ="
+	@echo "=========================="
+	@echo "="
+	@echo "=  Type amarok to start!"
+	@echo "="
+	@echo "=  If you have problems, please consult the README;"
+	@echo "=  if the problems continue join us on #amarok."
+	@echo "="
 	@echo "======================================================="
 
 
