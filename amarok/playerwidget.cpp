@@ -128,12 +128,10 @@ void AmarokButton::mouseReleaseEvent( QMouseEvent *e )
         }
         else
         {
-            if ( rect().contains( e->pos() ) )
-            {
+            if (! m_on)
                 setOn( false );
-            }
         }
-
+        
         m_clicked = false;
     }
 }
