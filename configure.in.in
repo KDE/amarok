@@ -30,7 +30,7 @@ eval "$ac_cv_have_artsgui"
 
 AC_PATH_LIBARTSGUI
 
-if test "$ac_kdeeducore_libraries" = NO; then
+if test "$ac_artsgui_libraries" = NO; then
         AC_MSG_RESULT([not found.  amaroK build will be disabled.])
 else
         AC_MSG_RESULT([found in $ac_artsgui_libraries])
