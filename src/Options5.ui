@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>319</width>
-            <height>514</height>
+            <width>354</width>
+            <height>369</height>
         </rect>
     </property>
     <vbox>
@@ -262,23 +262,36 @@
                         </widget>
                     </vbox>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="Line">
                     <property name="name">
-                        <cstring>durationBox</cstring>
+                        <cstring>line2</cstring>
                     </property>
                     <property name="frameShape">
-                        <enum>NoFrame</enum>
+                        <enum>HLine</enum>
                     </property>
-                    <property name="title">
-                        <string>&amp;Duration</string>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
                     </property>
-                    <property name="flat">
-                        <bool>true</bool>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
                     </property>
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Duration:</string>
+                            </property>
+                        </widget>
                         <widget class="KIntSpinBox">
                             <property name="name">
                                 <cstring>kcfg_OsdDuration</cstring>
@@ -313,22 +326,14 @@
                                 <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
                             </property>
                         </widget>
-                    </hbox>
-                </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>positionBox</cstring>
-                    </property>
-                    <property name="title">
-                        <string>&amp;Screen</string>
-                    </property>
-                    <property name="flat">
-                        <bool>true</bool>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Screen:</string>
+                            </property>
+                        </widget>
                         <widget class="KComboBox">
                             <property name="name">
                                 <cstring>kcfg_OsdScreen</cstring>
@@ -345,7 +350,7 @@
                                 <string>The screen that should display the OSD.</string>
                             </property>
                         </widget>
-                    </vbox>
+                    </hbox>
                 </widget>
             </vbox>
         </widget>
@@ -396,11 +401,6 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
     <includehint>ktextedit.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcombobox.h</includehint>
 </includehints>
 </UI>
