@@ -60,8 +60,6 @@ FileBrowser::FileBrowser( const char * name )
 
     KConfig* const config = amaroK::config( "Filebrowser" );
 
-    m_actionCollection = new KActionCollection( this );
-
     m_toolbar = new FileBrowser::ToolBar( this );
     m_toolbar->setMovingEnabled(false);
     m_toolbar->setFlat(true);
@@ -74,48 +72,39 @@ FileBrowser::FileBrowser( const char * name )
     if ( !currentDir.exists() )
         currentLocation = QDir::homeDirPath();
 
-    cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
-    cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-    cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
-    cmbPath->setMaxItems( 9 );
-    cmbPath->setURLs( config->readListEntry( "Dir History" ) );
-    cmbPath->lineEdit()->setText( currentLocation );
-    setFocusProxy( cmbPath ); //so the dirOperator is focussed when we get focus events
+    m_cmbPath = new KURLComboBox( KURLComboBox::Directories, true, this, "path combo" );
+    m_cmbPath->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+    m_cmbPath->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+    m_cmbPath->setMaxItems( 9 );
+    m_cmbPath->setURLs( config->readListEntry( "Dir History" ) );
+    m_cmbPath->lineEdit()->setText( currentLocation );
+    setFocusProxy( m_cmbPath ); //so the dirOperator is focussed when we get focus events
 
-    dir = new KDirOperator( KURL( currentLocation ), this );
-    connect( dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
+    m_dir = new KDirOperator( KURL( currentLocation ), this );
+    connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(dirUrlEntered( const KURL& )) );
 
     //insert our own actions at front of context menu
-    KActionCollection *ac = dir->actionCollection();
-    QPopupMenu* const menu = ((KActionMenu *)ac->action("popupMenu"))->popupMenu();
+    QPopupMenu* const menu = ((KActionMenu *)actionCollection()->action("popupMenu"))->popupMenu();
     menu->clear();
-    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()) );
-    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()) );
+    menu->insertItem( i18n( "&Make Playlist" ), this, SLOT(makePlaylist()), 0 );
+    menu->insertItem( i18n( "&Append to Playlist" ), this, SLOT(addToPlaylist()), 1 );
     menu->insertSeparator();
     //TODO this has no place in the context menu, make it a toolbar button instead
-    menu->insertItem( i18n( "&Select all Files" ), this, SLOT(selectAllFiles()) );
+    menu->insertItem( i18n( "&Select All Files" ), this, SLOT(selectAllFiles()) );
     menu->insertSeparator();
-    ac->action( "delete" )->plug( menu );
+    actionCollection()->action( "delete" )->plug( menu );
     menu->insertSeparator();
-    ac->action( "properties" )->plug( menu );
+    actionCollection()->action( "properties" )->plug( menu );
 
-    dir->setEnableDirHighlighting( true );
-    dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
-    dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
-    dir->actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
-    dir->readConfig( config );
-    dir->setView( KFile::Default ); //will set userconfigured view, will load URL
-//    dir->layout()->setMargin( 2 );
-    //dir->setView( new amaroK::FileView( dir ) );
-    setStretchFactor( dir, 2 );
+    m_dir->setEnableDirHighlighting( true );
+    m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
+    m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
+    m_dir->actionCollection()->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
+    m_dir->readConfig( config );
+    m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
+    setStretchFactor( m_dir, 2 );
 
-    //TODO enable drag from playlist, then give a konqi like popupmenu allowing copy/move/link and cancel
-    //TODO if dragged to tab it should open, so you need to make tabs accept drops if browser author wants it
-    //     and auto-expand if they are shut
-    //dir->setAcceptDrops( true ); FIXME I think the KDirOperator won't translate from KURL to KFileItem. BAH!
-    //dir->setDropOptions( KFileView::AutoOpenDirs );
-
-    KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark", m_actionCollection, "bookmarks" );
+    KActionMenu *acmBookmarks = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection(), "bookmarks" );
     acmBookmarks->setDelayed( false );
     bookmarkHandler = new KBookmarkHandler( this, acmBookmarks->popupMenu() );
 
@@ -137,11 +126,11 @@ FileBrowser::FileBrowser( const char * name )
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_filterEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-    connect( cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
-    connect( cmbPath, SIGNAL( returnPressed( const QString&  )), SLOT(cmbPathReturnPressed( const QString& )) );
+    connect( m_cmbPath, SIGNAL( urlActivated( const KURL&  )), SLOT(cmbPathActivated( const KURL& )) );
+    connect( m_cmbPath, SIGNAL( returnPressed( const QString&  )), SLOT(cmbPathReturnPressed( const QString& )) );
     connect( bookmarkHandler, SIGNAL(openURL( const QString& )), SLOT(setDir( const QString& )) );
-    connect( dir, SIGNAL(viewChanged( KFileView* )), SLOT(slotViewChanged( KFileView* )) );
-    connect( dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activateThis( const KFileItem* )) );
+    connect( m_dir, SIGNAL(viewChanged( KFileView* )), SLOT(slotViewChanged( KFileView* )) );
+    connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activateThis( const KFileItem* )) );
 
     setupToolbar();
 
@@ -153,10 +142,10 @@ FileBrowser::~FileBrowser()
 {
     KConfig* const c = amaroK::config( "Filebrowser" );
 
-    dir->writeConfig( c ); //uses currently set group
+    m_dir->writeConfig( c ); //uses currently set group
 
-    c->writeEntry( "Location", dir->url().directory( false, false ) );
-    c->writeEntry( "Dir History", cmbPath->urls() );
+    c->writeEntry( "Location", m_dir->url().directory( false, false ) );
+    c->writeEntry( "Dir History", m_cmbPath->urls() );
 }
 
 //END Constructor/Destructor
@@ -166,22 +155,22 @@ FileBrowser::~FileBrowser()
 
 QString FileBrowser::location() const
 {
-    return cmbPath->currentText();
+    return m_cmbPath->currentText();
 }
 
 
 void FileBrowser::setupToolbar()
 {
     QStringList actions;
-    actions << "up" << "back" << "forward" << "home" << "reload" << "short view" << "detailed view" << "sorting menu";
+    actions << "up" << "back" << "forward" << "home" << "reload" << "short view"
+            << "detailed view" << "sorting menu" << "bookmarks";
 
     KAction *a;
     for( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
     {
-        a = dir->actionCollection()->action( (*it).latin1() );
+        a = m_dir->actionCollection()->action( (*it).latin1() );
         if( a ) a->plug( m_toolbar );
     }
-    m_actionCollection->action( "bookmarks" )->plug( m_toolbar );
 }
 
 //END Public Methods
@@ -192,7 +181,7 @@ void FileBrowser::setupToolbar()
 KURL::List FileBrowser::selectedItems()
 {
     KURL::List list;
-    for( KFileItemListIterator it( *dir->selectedItems() ); *it; ++it )
+    for( KFileItemListIterator it( m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items() ); *it; ++it )
     {
         list.append( (*it)->url() );
     }
@@ -209,7 +198,7 @@ void FileBrowser::slotSetFilter( )
     QString text = m_filterEdit->text();
 
     if ( text.isEmpty() )
-        dir->clearFilter();
+        m_dir->clearFilter();
     else {
         QString filter;
         QStringList terms = QStringList::split( " ", text );
@@ -218,16 +207,16 @@ void FileBrowser::slotSetFilter( )
             filter += "*"+ *it;
 
         filter += "*";
-        dir->setNameFilter( filter );
+        m_dir->setNameFilter( filter );
     }
 
-    dir->updateDir();
+    m_dir->updateDir();
 }
 
 
 void FileBrowser::setDir( const KURL &u )
 {
-    dir->setURL( u, true );
+    m_dir->setURL( u, true );
 }
 
 //END Public Slots
@@ -239,18 +228,18 @@ void FileBrowser::setDir( const KURL &u )
 
 inline void FileBrowser::cmbPathReturnPressed( const QString& u )
 {
-    QStringList urls = cmbPath->urls();
+    QStringList urls = m_cmbPath->urls();
     urls.remove( u );
     urls.prepend( u );
-    cmbPath->setURLs( urls, KURLComboBox::RemoveBottom );
-    dir->setFocus();
-    dir->setURL( KURL(u), true );
+    m_cmbPath->setURLs( urls, KURLComboBox::RemoveBottom );
+    m_dir->setFocus();
+    m_dir->setURL( KURL(u), true );
 }
 
 
 inline void FileBrowser::dirUrlEntered( const KURL& u )
 {
-    cmbPath->setURL( u );
+    m_cmbPath->setURL( u );
 }
 
 
@@ -291,11 +280,11 @@ inline void FileBrowser::addToPlaylist()
 
 inline void FileBrowser::selectAllFiles()
 {
-    KFileItemList list( *dir->view()->items() );
+    KFileItemList list( *m_dir->view()->items() );
 
     // Select all items which represent files
     for ( KFileItem* item = list.first(); item; item = list.next() )
-        dir->view()->setSelected( item, item->isFile() );
+        m_dir->view()->setSelected( item, item->isFile() );
 }
 
 

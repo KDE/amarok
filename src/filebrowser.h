@@ -1,4 +1,5 @@
 /* This file is part of the KDE project
+   Copyright (C) 2004 Max Howell
    Copyright (C) 2004 Mark Kretschmann <markey@web.de>
    Copyright (C) 2003 Roberto Raggi <roberto@kdevelop.org>
    Copyright (C) 2001 Christoph Cullmann <cullmann@kde.org>
@@ -57,9 +58,8 @@ public:
     FileBrowser( const char * name = 0 );
     ~FileBrowser();
 
-    void setupToolbar();
-    KDirOperator *dirOperator() { return dir; }
-    KActionCollection *actionCollection() { return m_actionCollection; };
+    KDirOperator *dirOperator() { return m_dir; }
+    KActionCollection *actionCollection() { return m_dir->actionCollection(); };
     QString location() const;
 
     static QColor altBgColor;
@@ -79,26 +79,16 @@ private slots:
     void makePlaylist();
     void addToPlaylist();
     void selectAllFiles();
-    
+
 private:
-    class ToolBar;
-
-    ToolBar           *m_toolbar;
-    KActionCollection *m_actionCollection;
-    KURLComboBox      *cmbPath;
-    KDirOperator      *dir;
-    KLineEdit *m_filterEdit;
-    QTimer *m_timer;
-
+    void setupToolbar();
     KURL::List selectedItems();
-
-    class KBookmarkHandler *bookmarkHandler;
 
     class ToolBar: public KToolBar
     {
     public:
         ToolBar( QWidget *parent )
-          : KToolBar( parent, 0, true )
+            : KToolBar( parent, 0, true )
         {}
 
         virtual void setMovingEnabled( bool )
@@ -106,13 +96,14 @@ private:
             KToolBar::setMovingEnabled( false ); //TODO find out why we need this!
         }
     };
-};
 
-/*  @todo anders
-    KFSFilterHelper
-    A popup widget presenting a listbox with checkable items
-    representing the mime types available in the current directory, and
-    providing a name filter based on those.
-*/
+    ToolBar           *m_toolbar;
+    KURLComboBox      *m_cmbPath;
+    KDirOperator      *m_dir;
+    KLineEdit         *m_filterEdit;
+    QTimer            *m_timer;
+
+    class KBookmarkHandler *bookmarkHandler;
+};
 
 #endif
