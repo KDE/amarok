@@ -10,6 +10,7 @@
 version  = `kdialog --inputbox "amaroK version: "`.chomp
 username = `kdialog --inputbox "CVS username: "`.chomp
 
+name     = "amaroK"
 cvsroot  = ":pserver:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
@@ -34,11 +35,9 @@ Dir.chdir( folder )
 Dir.chdir( "kdeextragear-1" )
 'cvs -z3 -d #{cvsroot} co admin'
 
-print
+print "\n"
 print "**** i18n ****"
-print
-
-exit
+print "\n"
 
 
 # we check out kde-i18n/subdirs in kde-i18n..
@@ -50,10 +49,12 @@ if doi18n == "yes"
 
     # docs
     for lang in i18nlangs
-        `test -d doc/#{lang} && rm -Rf doc/#{lang}`
+        if FileTest.exists? "doc/#{lang}"
+            `rm -Rf doc/#{lang}`
+        end
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
         `echo "cvs co #{docdirname}" >> #{log}`
-        `cvs -z3 -q -d "#{cvsroot}" co #{branch} -P "#{docdirname}" > /dev/null 2>&1`
+        `cvs -z3 -q -d "#{cvsroot}" co -P "#{docdirname}" > /dev/null 2>&1`
         if not FileTest.exists? docdirname
             `echo "#{lang}'s #{name} documentation does not exist." >> #{log}`
         end
@@ -64,7 +65,11 @@ if doi18n == "yes"
         `echo "#{lang} documentation included." >> #{log}`
     end
 
-    print
+
+    print "\n"
+
+    exit
+
 
     `mkdir po`
     for lang in i18nlangs
