@@ -866,17 +866,18 @@ void PlayerApp::startXFade()
 {
     kdDebug(DA_COMMON) << "void PlayerApp::startXFade()" << endl;
 
-    m_XFadeRunning = true;
-
-    if ( m_XFadeCurrent == "invalue1" )
-        m_XFadeCurrent = "invalue2";
-    else
-        m_XFadeCurrent = "invalue1";
-
-    m_pPlayObjectXFade = m_pPlayObject;
-    m_pPlayObject = NULL;
-
-    slotNext();
+    if ( !m_XFadeRunning )
+    {
+        m_XFadeRunning = true;
+    
+        if ( m_XFadeCurrent == "invalue1" )
+            m_XFadeCurrent = "invalue2";
+        else
+            m_XFadeCurrent = "invalue1";
+    
+        m_pPlayObjectXFade = m_pPlayObject;
+        m_pPlayObject = NULL;
+    }
 }
 
 
@@ -1352,9 +1353,11 @@ void PlayerApp::slotMainTimer()
     if ( ( m_optXFade ) &&
          ( !m_pPlayObject->stream() ) &&
          ( !m_XFadeRunning ) &&
+         ( m_length ) &&
          ( m_length * 1000 - ( timeC.seconds * 1000 + timeC.ms ) < m_optXFadeLength )  )
     {
         startXFade();
+        slotNext();
         return;
     }
     if ( m_XFadeRunning )
@@ -1424,9 +1427,13 @@ void PlayerApp::slotAnimTimer()
 
 void PlayerApp::slotItemDoubleClicked( QListViewItem *item )
 {
-   if (item) {
-    m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
-    slotPlay();
+   if (item)
+   {
+        if ( m_optXFade )
+            startXFade();
+                    
+        m_pBrowserWin->m_pPlaylistWidget->setCurrentTrack( static_cast<PlaylistItem*>( item ) );
+        slotPlay();
    }
 }
 
