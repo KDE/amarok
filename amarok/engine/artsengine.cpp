@@ -15,6 +15,7 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
+#include "../amarokarts/amarokarts.h"
 #include "artsengine.h" 
 #include "enginebase.h"
 #include "../titleproxy/titleproxy.h"
@@ -46,6 +47,7 @@ email                : markey@web.de
 #include <arts/kplayobjectfactory.h>
 #include <arts/soundserver.h>
  
+#define SCOPE_SIZE 64
 
 ArtsEngine::ArtsEngine( bool& restart )
         : EngineBase()
@@ -157,8 +159,6 @@ ArtsEngine::ArtsEngine( bool& restart )
     m_XFade.percentage( m_XFadeValue );
     m_XFade.start();
 */
-    m_scope = Arts::DynamicCast( m_server.createObject( "Arts::StereoFFTScope" ) );
-
     m_globalEffectStack = Arts::DynamicCast( m_server.createObject( "Arts::StereoEffectStack" ) );
     m_globalEffectStack.start();
 
@@ -166,6 +166,10 @@ ArtsEngine::ArtsEngine( bool& restart )
     m_effectStack.start();
     m_globalEffectStack.insertBottom( m_effectStack, "Effect Stack" );
 
+    m_scope = Arts::DynamicCast( m_server.createObject( "Amarok::RawScope" ) );
+/*    m_scope = Arts::DynamicCast( m_server.createObject( "Arts::StereoFFTScope" ) );*/
+    enableScope();
+    
 //     Arts::connect( m_XFade, "outvalue_l", m_globalEffectStack, "inleft" );
 //     Arts::connect( m_XFade, "outvalue_r", m_globalEffectStack, "inright" );
 
@@ -175,8 +179,9 @@ ArtsEngine::ArtsEngine( bool& restart )
 
 ArtsEngine::~ ArtsEngine()
 {
+    m_scope             = Amarok::RawScope::null();
 //     m_XFade             = Amarok::Synth_STEREO_XFADE::null();
-    m_scope             = Arts::StereoFFTScope::null();
+/*    m_scope             = Arts::StereoFFTScope::null();*/
     m_volumeControl     = Arts::StereoVolumeControl::null();
     m_effectStack       = Arts::StereoEffectStack::null();
     m_globalEffectStack = Arts::StereoEffectStack::null();
@@ -383,7 +388,7 @@ void ArtsEngine::play()
     {
         m_pPlayObject->play();
         
-        enableScope();
+//         enableScope();
     }
 }
 
@@ -397,7 +402,7 @@ void ArtsEngine::stop()
         delete m_pPlayObject;
         m_pPlayObject = NULL;
     
-        disableScope();
+//         disableScope();
     }
 }
 
@@ -452,6 +457,7 @@ void ArtsEngine::enableScope()
     if ( !m_scopeId )
     {
         m_scope.start();
+        m_scope.buffer( SCOPE_SIZE );
         m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
     }
 }

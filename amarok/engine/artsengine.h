@@ -18,6 +18,7 @@ email                : markey@web.de
 #ifndef AMAROK_ARTSENGINE_H
 #define AMAROK_ARTSENGINE_H
 
+#include "../amarokarts/amarokarts.h"
 #include "enginebase.h"
 
 #include <vector>
@@ -77,7 +78,8 @@ class ArtsEngine : public EngineBase
         KArtsDispatcher*                         m_pArtsDispatcher;
         KDE::PlayObject*                         m_pPlayObject;
         Arts::SoundServerV2                      m_server;
-        Arts::StereoFFTScope                     m_scope;
+        Amarok::RawScope                         m_scope;
+//         Arts::StereoFFTScope                     m_scope;
         Arts::StereoEffectStack                  m_globalEffectStack;
         Arts::StereoEffectStack                  m_effectStack;
         Arts::StereoVolumeControl                m_volumeControl;

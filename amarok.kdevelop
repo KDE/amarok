@@ -20,7 +20,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>amarok/amarok</activetarget>
+      <activetarget>amarok/amarokarts/libamarokarts.la</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>

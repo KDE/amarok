@@ -40,12 +40,12 @@ class KConfig;
 
 class BrowserWin;
 class EffectWidget;
-class OSDWidget;
-class PlaylistItem;
-class PlayerWidget;
-
 class EngineBase;
+class FHT;
 class MetaBundle;
+class OSDWidget;
+class PlayerWidget;
+class PlaylistItem;
 
 class PlayerApp;
 extern PlayerApp *pApp;
@@ -149,7 +149,8 @@ class PlayerApp : public KUniqueApplication
         EffectWidget *m_pEffectWidget;
         bool m_bIsPlaying;
         bool m_bChangingSlider;
-
+        FHT *m_pFht;
+        
         bool m_XFadeRunning;
         float m_XFadeValue;
         QString m_XFadeCurrent;

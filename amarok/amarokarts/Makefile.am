@@ -4,7 +4,7 @@ METASOURCES = AUTO
 
 lib_LTLIBRARIES = libamarokarts.la
 
-libamarokarts_la_SOURCES = amarokarts.cc synth_stereo_xfade_impl.cpp
+libamarokarts_la_SOURCES = amarokarts.cc synth_stereo_xfade_impl.cpp rawscope_impl.cpp
 
 libamarokarts_la_LDFLAGS = $(all_libraries) -module -avoid-version -no-undefined
 libamarokarts_la_LIBADD =  -lkmedia2_idl -lsoundserver_idl -lartsflow
@@ -21,6 +21,6 @@ mcoptypedir = $(libdir)/mcop
 mcoptype_DATA = amarokarts.mcoptype amarokarts.mcopclass
 
 amarokmcopdir = $(libdir)/mcop/Amarok
-amarokmcop_DATA = Synth_STEREO_XFADE.mcopclass
+amarokmcop_DATA = Synth_STEREO_XFADE.mcopclass RawScope.mcopclass
 
 CLEANFILES = amarokarts.cc amarokarts.h amarokarts.mcopclass amarokarts.mcoptype

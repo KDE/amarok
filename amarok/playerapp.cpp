@@ -14,7 +14,7 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "amarokarts/amarokarts.h"
 #include "amarokbutton.h"
 #include "amarokslider.h"
@@ -22,6 +22,7 @@ email                : markey@web.de
 #include "browserwin.h"
 #include "effectwidget.h"
 #include "engine/enginebase.h"
+#include "fht/fht.cpp"
 #include "metabundle.h" //play( const KURL& )
 #include "osd.h"
 #include "playerapp.h"
@@ -82,6 +83,7 @@ PlayerApp::PlayerApp()
         , m_playRetryCounter( 0 )
         , m_pEffectWidget( NULL )
         , m_bChangingSlider( false )
+        , m_pFht( new FHT( 6 ) )
 {
     setName( "amaroK" );
     pApp = this; //global
@@ -144,6 +146,7 @@ PlayerApp::~PlayerApp()
     saveConfig();
 
     delete m_pEffectWidget;
+    delete m_pFht;
     delete m_pPlayerWidget; //is parent of browserWin (and thus deletes it)
     delete m_pOSD;
     delete m_pEngine;
@@ -691,6 +694,10 @@ void PlayerApp::slotVisTimer()
 //         if ( m_scopeId )
         {
             std::vector<float> *pScopeVector = m_pEngine->scope();
+            float *front = static_cast<float*>( &pScopeVector->front() );
+            m_pFht->power( front );
+            pScopeVector->resize( pScopeVector->size() / 2 );
+                        
             m_pPlayerWidget->m_pVis->drawAnalyzer( pScopeVector );
 
 /*
