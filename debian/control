@@ -66,8 +66,9 @@ Description: GStreamer engine for the amaroK audio player
  amaroK works with most other audiosinks (e.g., ALSA); there is an option
  in the configuration dialog to select the preferred sink and device.
  .
- For use with aRts, however, amarok-arts is your only choice, since this
- GStreamer engine will not allow artssink to be used.
+ Note that you can't use this package and output sound into aRts,
+ since this engine will not allow artssink to be used. amarok-arts and
+ amarok-xine are the only options if aRts output is required.
 
 Package: amarok-xine
 Architecture: any
