@@ -427,18 +427,17 @@ GstEngine::play( uint )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !m_currentInput ) return false;
 
-    kdDebug() << "BEGIN gst_element_unlink( m_gst_adder, m_gst_queue )\n";
-    // Unlink before changing state; otherwise the scheduler crashes :/
-    gst_element_unlink( m_gst_adder, m_gst_queue );
-    kdDebug() << "END gst_element_unlink( m_gst_adder, m_gst_queue )\n";
+    gst_element_set_state( m_gst_queue, GST_STATE_PAUSED );
 
     if ( !gst_element_set_state( m_gst_inputThread, GST_STATE_PAUSED ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
+    gst_element_set_state( m_gst_queue, GST_STATE_PLAYING );
+
     // Put input bin into input thread
     gst_bin_add( GST_BIN( m_gst_inputThread ), m_currentInput->bin );
     // Link elements
-    gst_element_link_many( m_currentInput->volume, m_gst_adder, m_gst_queue, 0 );
+    gst_element_link( m_currentInput->volume, m_gst_adder );
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
@@ -985,21 +984,17 @@ InputPipeline::~InputPipeline()
 
     kdDebug() << "Unreffing input bin.\n";
 
-    kdDebug() << "BEGIN gst_element_unlink( GstEngine::instance()->m_gst_adder, GstEngine::instance()->m_gst_queue )\n";
-    // Unlink before changing state; otherwise the scheduler crashes :/
-    gst_element_unlink( GstEngine::instance()->m_gst_adder, GstEngine::instance()->m_gst_queue );
-    kdDebug() << "END gst_element_unlink( GstEngine::instance()->m_gst_adder, GstEngine::instance()->m_gst_queue )\n";
+    gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PAUSED );
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PAUSED ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PAUSED.\n";
 
-    gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
+    gst_element_set_state( GstEngine::instance()->m_gst_queue, GST_STATE_PLAYING );
 
+    gst_element_unlink( volume, GstEngine::instance()->m_gst_adder );
     // Destroy bin
     gst_element_set_state( bin, GST_STATE_NULL );
     gst_bin_remove( GST_BIN( GstEngine::instance()->m_gst_inputThread ), bin );
-
-    gst_element_link( GstEngine::instance()->m_gst_adder, GstEngine::instance()->m_gst_queue );
 
     if ( !gst_element_set_state( GstEngine::instance()->m_gst_inputThread, GST_STATE_PLAYING ) )
         kdWarning() << "[Gst-Engine] Could not set input thread to PLAYING.\n";
