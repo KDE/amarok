@@ -4,6 +4,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
+#include "browserwin.h"
 #include "playlistloader.h"
 #include "playlistitem.h" //for Tags struct
 
