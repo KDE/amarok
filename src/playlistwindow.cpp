@@ -465,7 +465,7 @@ void PlaylistWindow::engineStateChanged( Engine::State state )
 {
     if ( !AmarokConfig::autoShowContextBrowser() ) return;
 
-    const int context = 2;
+    const int context = 0;
 
     switch ( state )
     {
