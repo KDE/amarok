@@ -664,6 +664,10 @@ Playlist::clear() //SLOT
     m_nextTracks.clear();
     m_totalLength = 0;
 
+    // Update player button states
+    m_ac->action( "prev" )->setEnabled( false );
+    m_ac->action( "next" )->setEnabled( false );
+
     //TODO make it possible to tell when it is safe to not delay deletion
     //TODO you'll have to do the same as below for removeSelected() too.
     m_weaver->cancel(); //cancel all jobs in this weaver, no new events will be sent
