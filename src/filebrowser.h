@@ -86,7 +86,7 @@ private:
 #include <qregexp.h>
 
 class KDirLister;
-class KListView;
+class KURLView;
 class QLineEdit;
 class QListViewItem;
 
@@ -113,7 +113,7 @@ private:
     KURL searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
 
     QLineEdit  *m_lineEdit;
-    KListView  *m_listView;
+    KURLView  *m_listView;
     KDirLister *m_lister;
     QRegExp     m_filter;
     KURL::List  m_dirs;

@@ -275,8 +275,6 @@ FileBrowser::urlChanged( const KURL &u )
     urls.remove( url );
     urls.prepend( url );
     m_combo->setURLs( urls, KURLComboBox::RemoveBottom );
-
-    //m_combo->setURL( url );
 }
 
 inline void
@@ -335,6 +333,7 @@ FileBrowser::contextMenuActivated( int id )
 
 
 #include <kurldrag.h>
+#include <qpainter.h>
 
 class KURLView : public KListView
 {
@@ -364,6 +363,35 @@ public:
 
         return new KURLDrag( urls, this );
     }
+
+    virtual void viewportPaintEvent( QPaintEvent *e )
+    {
+        KListView::viewportPaintEvent( e );
+
+        if ( childCount() == 0 ) {
+            QPainter p( viewport() );
+            QRect r( rect() );
+            QString text = m_text;
+
+            if ( text.isEmpty() ) {
+                r.addCoords( 20, 20, -20, -20 );
+                p.setBrush( colorGroup().background() );
+                p.drawRect( r );
+                r.addCoords( 5, 5, -5, -5 );
+                text = i18n("Enter a search term above, you can use globbing wildcards like * and ?");
+            }
+            else
+                p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
+
+            p.drawText( r, Qt::AlignCenter | Qt::WordBreak, text );
+        }
+    }
+
+    void unsetText() { setText( QString::null ); }
+    void setText( const QString &text ) { m_text = text; viewport()->update(); }
+
+private:
+    QString m_text;
 };
 
 
@@ -429,12 +457,16 @@ SearchPane::searchTextChanged( const QString &text )
     m_listView->clear();
     m_dirs.clear();
 
-    if ( text.isEmpty() )
+    if ( text.isEmpty() ) {
+        m_listView->unsetText();
         return;
+    }
 
     m_filter = QRegExp( text.contains( "*" ) ? text : '*'+text+'*', false, true );
 
     m_lister->openURL( searchURL() );
+
+    m_listView->setText( i18n( "Searching..." ) );
 }
 
 void
@@ -454,6 +486,8 @@ SearchPane::searchComplete()
     //KDirLister crashes if you call openURL() from a slot
     //connected to KDirLister::complete()
     //TODO fix crappy KDElibs
+
+    m_listView->setText( i18n("No results found") ); //only displayed if the listview is empty
 
     QTimer::singleShot( 0, this, SLOT(_searchComplete()) );
 }
