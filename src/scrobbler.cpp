@@ -55,6 +55,9 @@ Scrobbler::~Scrobbler()
 }
 
 
+/**
+ * Queries similar artists from Audioscrobbler.
+ */
 void Scrobbler::similarArtists( QString artist )
 {
     QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
@@ -74,6 +77,9 @@ void Scrobbler::similarArtists( QString artist )
 }
 
 
+/**
+ * Called when the similar artists TransferJob finishes.
+ */
 void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 {
     int x = 0;
@@ -122,6 +128,9 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 }
 
 
+/**
+ * Called when similar artists data is received for the TransferJob.
+ */
 void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
@@ -129,6 +138,9 @@ void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& d
 }
 
 
+/**
+ * Called when the signal is received.
+ */
 void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ )
 {
     m_prevPos = 0;
@@ -168,6 +180,9 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged
 }
 
 
+/**
+ * Called when the signal is received.
+ */
 void Scrobbler::engineTrackPositionChanged( long position )
 {
     if ( !m_validForSending )
@@ -190,7 +205,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
         }
     }
 
-    // Each track must be posted to the server when it is 50% or 240
+    // Each track must be submitted to the server when it is 50% or 240
     // seconds complete, whichever comes first.
     if ( position > 240 * 1000 || position > 0.5 * m_item->length() * 1000 )
     {
@@ -203,6 +218,9 @@ void Scrobbler::engineTrackPositionChanged( long position )
 }
 
 
+/**
+ * Applies settings from the config dialog.
+ */
 void Scrobbler::applySettings()
 {
     m_submitter->setEnabled( AmarokConfig::submitPlayedSongs() );
@@ -232,11 +250,22 @@ ScrobblerSubmitter::ScrobblerSubmitter() :
     m_challenge( NULL ),
     m_scrobblerEnabled( false ),
     m_prevSubmitTime( 0 ),
-    m_interval( 0 ),
-    m_item( NULL )
+    m_interval( 0 )
 {}
 
 
+ScrobblerSubmitter::~ScrobblerSubmitter()
+{
+    m_ongoingSubmits.setAutoDelete( TRUE );
+    m_ongoingSubmits.clear();
+    m_submitQueue.setAutoDelete( TRUE );
+    m_submitQueue.clear();
+}
+
+
+/**
+ * Performs handshake with Audioscrobbler.
+ */
 void ScrobblerSubmitter::handshake()
 {
     if ( !canSubmit() )
@@ -317,15 +346,33 @@ void ScrobblerSubmitter::handshake()
 }
 
 
+/**
+ * Sets item for submission to Audioscrobbler. Actual submission
+ * depends on things like (is scrobbling enabled, are Audioscrobbler
+ * profile details filled in etc).
+ */
 void ScrobblerSubmitter::submitItem( SubmitItem* item )
 {
+    enqueueItem( item );
+    
     if ( !canSubmit() )
     {
+        return;
+    }
+    else if ( m_challenge.isEmpty() )
+    {
+        handshake();
         return;
     }
 
     QString data = QString::null;
     uint currentTime = QDateTime::currentDateTime().toTime_t();
+    // Audioscrobbler accepts max 10 tracks on one submit.
+    SubmitItem* items[10];
+    for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
+    {
+        items[submitCounter] = 0;
+    }
 
     if ( PROTOCOL_VERSION == "1.1" )
     {
@@ -340,20 +387,41 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
         // ...
         // a[n]=<artist n>&t[n]=<track n>&b[n]=<album n>&
         // m[n]=<mbid n>&l[n]=<length n>&i[n]=<time n>&
-        QDateTime playStartTime = QDateTime();
-        playStartTime.setTime_t( item->playStartTime() );
+        
+        
         data =
             "u=" + KURL::encode_string( m_username ) +
             "&s=" +
                 KURL::encode_string( KMD5( KMD5( m_password.utf8() ).hexDigest() +
-                    m_challenge.utf8() ).hexDigest() ) +
-            "&a[0]=" + KURL::encode_string( item->artist().utf8() ) +
-            "&t[0]=" + KURL::encode_string( item->title().utf8() ) +
-            "&b[0]=" + KURL::encode_string( item->album().utf8() ) +
-            "&m[0]=" +
-            "&l[0]=" + QString::number( item->length() ) +
-            "&i[0]=" + KURL::encode_string(
-                playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+                    m_challenge.utf8() ).hexDigest() );
+        
+        for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
+        {
+            SubmitItem* itemFromQueue = dequeueItem();
+            if ( itemFromQueue == 0 )
+            {
+                break;
+            }
+            else
+            {
+                data += "&";
+            }
+            items[submitCounter] = itemFromQueue;
+            QDateTime playStartTime = QDateTime();
+            playStartTime.setTime_t( itemFromQueue->playStartTime() );
+            data +=
+                "a[" + QString::number( submitCounter ) + "]=" +
+                KURL::encode_string( itemFromQueue->artist().utf8() ) +
+                "&t[" + QString::number( submitCounter ) + "]=" +
+                KURL::encode_string( itemFromQueue->title().utf8() ) +
+                "&b[" + QString::number( submitCounter ) + "]=" +
+                KURL::encode_string( itemFromQueue->album().utf8() ) +
+                "&m[" + QString::number( submitCounter ) + "]=" +
+                "&l[" + QString::number( submitCounter ) + "]=" +
+                QString::number( itemFromQueue->length() ) +
+                "&i[" + QString::number( submitCounter ) + "]=" + KURL::encode_string(
+                    playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+        }
     }
 
     else
@@ -373,6 +441,16 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
         KIO::http_post( m_submitUrl, data.utf8(), false );
     job->addMetaData(
         "content-type", "Content-Type: application/x-www-form-urlencoded" );
+    // Loop in reverse order, which helps when items are later fetched from
+    // m_ongoingSubmits and possibly put back to queue, in correct order
+    // (i.e. oldest first).
+    for ( int submitCounter = 9; submitCounter >= 0; submitCounter-- )
+    {
+        if ( items[submitCounter] != 0 )
+        {
+            m_ongoingSubmits.insert( job, items[submitCounter] );
+        }
+    }
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( audioScrobblerSubmitResult( KIO::Job* ) ) );
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -380,24 +458,36 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 }
 
 
+/**
+ * Sets Audioscrobbler profile username.
+ */
 void ScrobblerSubmitter::setUsername( const QString& username )
 {
     m_username = username;
 }
 
 
+/**
+ * Sets Audioscrobbler profile password.
+ */
 void ScrobblerSubmitter::setPassword( const QString& password )
 {
     m_password = password;
 }
 
 
+/**
+ * Sets whether scrobbling is enabled.
+ */
 void ScrobblerSubmitter::setEnabled( bool enabled )
 {
     m_scrobblerEnabled = enabled;
 }
 
 
+/**
+ * Called when handshake TransferJob has finished and data is received.
+ */
 void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 {
     if ( job->error() )
@@ -485,12 +575,16 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 }
 
 
+/**
+ * Called when submit TransferJob has finished and data is received.
+ */
 void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
 {
     if ( job->error() )
     {
         kdWarning()
             << "[AudioScrobbler] KIO error! errno: " << job->error() << endl;
+        enqueueJob( job );
         return;
     }
 
@@ -508,6 +602,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         {
             m_interval = interval.mid( 9 ).toUInt();
         }
+        finishJob( job );
     }
     // FAILED <reason (optional)>
     // INTERVAL n (protocol 1.1)
@@ -528,6 +623,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         {
             m_interval = interval.mid( 9 ).toUInt();
         }
+        enqueueJob( job );
     }
     // BADAUTH
     // INTERVAL n (protocol 1.1)
@@ -541,17 +637,19 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         {
             m_interval = interval.mid( 9 ).toUInt();
         }
+        enqueueJob( job );
+        handshake();
     }
     else
     {
         kdWarning() << "[AudioScrobbler] Unknown submit response" << endl;
     }
-
-    delete m_item;
-    m_item = NULL;
 }
 
 
+/**
+ * Receives the data from the TransferJob.
+ */
 void ScrobblerSubmitter::audioScrobblerSubmitData(
     KIO::Job*, const QByteArray& data ) //SLOT
 {
@@ -560,6 +658,9 @@ void ScrobblerSubmitter::audioScrobblerSubmitData(
 }
 
 
+/**
+ * Checks if it is possible to try to submit the data to Audioscrobbler.
+ */
 bool ScrobblerSubmitter::canSubmit() const
 {
     if ( !m_scrobblerEnabled )
@@ -586,6 +687,65 @@ bool ScrobblerSubmitter::canSubmit() const
     }
 
     return true;
+}
+
+
+/**
+ * Enqueues the given item for later submission.
+ */
+void ScrobblerSubmitter::enqueueItem( SubmitItem* item )
+{
+    // Maintain max size of the queue, Audioscrobbler won't accept too old
+    // submissions anyway.
+    for ( uint size = m_submitQueue.count(); size >= 50; size-- )
+    {
+        SubmitItem* itemFromQueue = dequeueItem();
+        kdDebug()
+            << "[Audioscrobbler] Dropping " << itemFromQueue->artist()
+            << " - " << itemFromQueue->title() << " from submit queue" << endl;
+        delete itemFromQueue;
+    }
+    
+    m_submitQueue.enqueue( item );
+}
+
+
+/**
+ * Dequeues one item from the queue.
+ */
+SubmitItem* ScrobblerSubmitter::dequeueItem()
+{
+    SubmitItem* item = m_submitQueue.dequeue();
+    
+    return item;
+}
+
+
+/**
+ * Enqueues items associated with the job. This is used when the job
+ * has failed (e.g. network problems).
+ */
+void ScrobblerSubmitter::enqueueJob( KIO::Job* job )
+{
+    SubmitItem* item;
+    while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
+    {
+        enqueueItem( item );
+    }
+}
+
+
+/**
+ * Deletes items associated with the job. This is used when the job
+ * has succeeded.
+ */
+void ScrobblerSubmitter::finishJob( KIO::Job* job )
+{
+    SubmitItem* item;
+    while ( ( item = m_ongoingSubmits.take( job ) ) != 0 )
+    {
+        delete item;
+    }
 }
 
 

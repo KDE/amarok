@@ -7,6 +7,8 @@
 
 #include "engineobserver.h"
 #include <qobject.h>
+#include <qptrdict.h> 
+#include <qptrqueue.h>
 
 //some setups require this
 #undef PROTOCOL_VERSION
@@ -62,6 +64,7 @@ class ScrobblerSubmitter : public QObject
         static QString HANDSHAKE_URL;
 
         ScrobblerSubmitter();
+        ~ScrobblerSubmitter();
 
         void handshake();
         void submitItem( SubmitItem* /* item */ );
@@ -82,6 +85,10 @@ class ScrobblerSubmitter : public QObject
 
     private:
         bool canSubmit() const;
+        void enqueueItem( SubmitItem* /* item */ );
+        SubmitItem* dequeueItem();
+        void enqueueJob( KIO::Job* /* job */ );
+        void finishJob( KIO::Job* /* job */ );
         QString m_submitResultBuffer;
         QString m_username;
         QString m_password;
@@ -91,7 +98,8 @@ class ScrobblerSubmitter : public QObject
         uint m_prevSubmitTime;
         uint m_interval;
 
-        SubmitItem* m_item; // TODO: buffer these
+        QPtrDict<SubmitItem> m_ongoingSubmits;
+        QPtrQueue<SubmitItem> m_submitQueue;
 };
 
 
