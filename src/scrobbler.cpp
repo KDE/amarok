@@ -63,15 +63,66 @@ void Scrobbler::similarArtists( const QString & artist )
 {
     if ( AmarokConfig::retrieveSimilarArtists() )
     {
-        QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
-                        .arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ) );
-    
-        debug() << "Similar artists: " << url << endl;
-    
+//         Request looks like this:
+//         <?xml version="1.0"?>
+//         <methodCall>
+//             <methodName>getSimilarArtists</methodName>
+//             <params>
+//                 <param>
+//                     <value>
+//                         <string>Pearl Jam</string>
+//                     </value>
+//                 </param>
+//                 <param>
+//                     <value>
+//                         <int>30</int>
+//                     </value>
+//                 </param>
+//             </params>
+//         </methodCall>
+        
+        QDomDocument reqdoc;
+
+        QDomElement methodCall = reqdoc.createElement( "methodCall" );
+        QDomElement methodName = reqdoc.createElement( "methodName" );
+        QDomText methodNameValue = reqdoc.createTextNode( "getSimilarArtists" );
+        methodName.appendChild( methodNameValue );
+        methodCall.appendChild( methodName );
+        
+        QDomElement params = reqdoc.createElement( "params" );
+        QDomElement param1 = reqdoc.createElement( "param" );
+        QDomElement value1 = reqdoc.createElement( "value" );
+        QDomElement type1 = reqdoc.createElement( "string" );
+        QDomText param1Value = reqdoc.createTextNode( artist );
+        type1.appendChild( param1Value );
+        value1.appendChild( type1 );
+        param1.appendChild( value1 );
+        params.appendChild( param1 );
+        
+        QDomElement param2 = reqdoc.createElement( "param" );
+        QDomElement value2 = reqdoc.createElement( "value" );
+        QDomElement type2 = reqdoc.createElement( "int" );
+        QDomText param2Value = reqdoc.createTextNode( "30" );
+        type2.appendChild( param2Value );
+        value2.appendChild( type2 );
+        param2.appendChild( value2 );
+        params.appendChild( param2 );
+        
+        methodCall.appendChild( params );
+        reqdoc.appendChild( methodCall );
+        
+        QString xmlRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + reqdoc.toString();
+        
+        QByteArray postData;
+        QDataStream stream( postData, IO_WriteOnly );
+        stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.length() );
+        
         m_similarArtistsBuffer = "";
         m_artist = artist;
-    
-        KIO::TransferJob* job = KIO::get( url, false, false );
+        
+        KIO::TransferJob* job = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
+        job->addMetaData( "content-type", "Content-Type: text/xml" );
+        
         connect( job, SIGNAL( result( KIO::Job* ) ),
                 this,  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
         connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
@@ -85,34 +136,55 @@ void Scrobbler::similarArtists( const QString & artist )
  */
 void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 {
-    int x = 0;
-    QStringList suggestions;
-
     if ( job->error() )
     {
         warning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
-
-    m_similarArtistsBuffer = m_similarArtistsBuffer.mid( m_similarArtistsBuffer.find( "<div class=\"content\">" ) );
-    m_similarArtistsBuffer = m_similarArtistsBuffer.mid( 0, m_similarArtistsBuffer.find( "<div id=\"footer\">" ) );
-
-    while ( m_similarArtistsBuffer.find( "<small>[<a href=\"/similar/" ) )
+    
+//     Result looks like this:
+//     <?xml version="1.0" encoding="UTF-8"?>
+//     <methodResponse>
+//         <params>
+//             <param>
+//                 <value><array>
+//                     <data>
+//                         <value><string>Barenaked Ladies</string></value>
+//                         <value><string>Talking Heads</string></value>
+//                         <value><string>Bob Marley &amp; The Wailers</string></value>
+//                         <value><string>Sting</string></value>
+//                         <value><string>???</string></value>
+//                         <value><string>Massive Attack</string></value>
+//                         <value><string>Alt for Egil</string></value>
+//                         <value><string>Paul Simon</string></value>
+//                         <value><string>Joe Firstman</string></value>
+//                     </data>
+//                 </array></value>
+//             </param>
+//         </params>
+//     </methodResponse>
+    
+    QDomDocument document;
+    if ( !document.setContent( m_similarArtistsBuffer ) )
     {
-        if ( x++ > 15 ) break;
-
-        m_similarArtistsBuffer = m_similarArtistsBuffer.mid( m_similarArtistsBuffer.find( "<small>[<a href=\"/similar/" ) );
-
-        QString artist;
-        artist = m_similarArtistsBuffer.mid( m_similarArtistsBuffer.find( "/similar/" ) + 9 );
-        artist = KURL::decode_string( artist.mid( 0, artist.find( "\" title" ) ) );
-
-        //debug() << artist << endl;
-        if ( !artist.isEmpty() ) suggestions << artist.replace( "+", " " );
-
-        m_similarArtistsBuffer = m_similarArtistsBuffer.mid( m_similarArtistsBuffer.find( "</td>" ) );
+        debug() << "Couldn't read similar artists response" << endl;
+        return;
     }
-
+    
+    QDomNodeList values =
+        document.elementsByTagName( "methodResponse" ).item( 0 )
+            .namedItem( "params" ).namedItem( "param" ).namedItem( "value" )
+            .namedItem( "array" ).namedItem( "data" ).childNodes();
+    
+    QStringList suggestions;
+    for ( uint i = 0; i < values.count(); i++ )
+    {
+        QDomNode item = values.item( i );
+        QString artist = item.namedItem( "string" ).toElement().text();
+        //debug() << "Suggestion: " << artist << endl;
+        suggestions << artist;
+    }
+    
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
     if ( suggestions.count() > 0 )
         emit similarArtistsFetched( m_artist, suggestions );
