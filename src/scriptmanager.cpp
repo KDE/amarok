@@ -264,7 +264,7 @@ ScriptManager::slotUninstallScript()
     // Delete directory recursively
     KURL url = KURL::fromPathOrURL( directory );
     if ( !KIO::NetAccess::del( url, 0 ) ) {
-        KMessageBox::sorry( this, i18n( "Could not uninstall this script. The ScriptManager can only uninstall scripts that were installed as packages." ) );
+        KMessageBox::sorry( this, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
     }
 
