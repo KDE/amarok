@@ -539,6 +539,7 @@ MediaDevice::transferFiles()  //SLOT
 
     if ( m_ipod->ensureConsistency() )
     {
+        m_parent->m_progress->setProgress( 0 );
         m_parent->m_progress->setTotalSteps( m_parent->m_transferList->childCount() );
         m_parent->m_progress->show();
 
