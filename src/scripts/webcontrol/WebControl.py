@@ -38,7 +38,7 @@ except:
 
 
 # Replace with real name
-debug_prefix = "[Test Script]"
+debug_prefix = "[WebControl Script]"
 
 
 class ConfigDialog( QDialog ):
@@ -102,7 +102,7 @@ class Notification( QCustomEvent ):
     def __init__( self, str ):
         self.__super_init(QCustomEvent.User + 1)
         self.string = str
-    
+
 class WebControl( QApplication ):
     """ The main application, also sets up the Qt event loop """
 
@@ -125,7 +125,7 @@ class WebControl( QApplication ):
     def readSocket( self ):
         # Got a read event on the HTTP server socket.
         self.srv.handle_request()
-        
+
     def readSettings( self ):
         """ Reads settings from configuration file """
         config = ConfigParser.ConfigParser()
@@ -134,7 +134,7 @@ class WebControl( QApplication ):
         try:
 
             RequestHandler.AmarokStatus.allowControl = "True" in config.get( "General", "allowcontrol" )
-            
+
         except:
             debug( "No config file found, using defaults." )
 
@@ -151,7 +151,7 @@ class WebControl( QApplication ):
                 qApp.postEvent( self, Notification(line) )
             else:
                 break
-        
+
 ############################################################################
 # Notification Handling
 ############################################################################
@@ -182,7 +182,7 @@ class WebControl( QApplication ):
 
         else:
             debug( "Unknown notification: " + str(string) + " -> ignoring")
-            
+
 # Notification callbacks. Implement these functions to react to specific notification
 # events from amaroK:
 
@@ -222,7 +222,7 @@ class WebControl( QApplication ):
         RequestHandler.AmarokStatus.dcop_tracktotaltime = RequestHandler.PlayerDcop("trackTotalTime")
         RequestHandler.AmarokStatus.dcop_tracktotaltime.result()
 
-        
+
 ############################################################################
 
 def debug( message ):
