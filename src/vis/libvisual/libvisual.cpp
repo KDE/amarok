@@ -343,6 +343,8 @@ namespace LibVisual
 
         SDL::create( 320, 200 );
 
+        SDL_WM_SetCaption( plugin, 0 );
+
         /* Called so the flag is set to FALSE, seen we create the initial environment here */
         visual_bin_depth_changed( bin );
 
