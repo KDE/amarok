@@ -63,7 +63,7 @@ Scrobbler::~Scrobbler()
 void Scrobbler::similarArtists( const QString & artist )
 {
     QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
-                     .arg( KURL::encode_string_no_slash( artist.utf8() ) );
+                     .arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ) );
 
     kdDebug() << "[AudioScrobbler] Similar artists: " << url << endl;
 
@@ -539,11 +539,11 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
 
             data +=
                 "a[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->artist().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
                 "&t[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->title().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
                 "&b[" + QString::number( submitCounter ) + "]=" +
-                KURL::encode_string_no_slash( itemFromQueue->album().utf8() ) +
+                KURL::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
                 "&m[" + QString::number( submitCounter ) + "]=" +
                 "&l[" + QString::number( submitCounter ) + "]=" +
                 QString::number( itemFromQueue->length() ) +
