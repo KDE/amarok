@@ -373,7 +373,7 @@ void App::applySettings( bool firstTime )
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
             delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
-
+            
         }
 
         QFont font = m_pPlayerWindow->font();
@@ -383,7 +383,8 @@ void App::applySettings( bool firstTime )
         m_pPlayerWindow->setFont( font ); //NOTE dont use unsetFont(), we use custom font sizes (for now)
         m_pPlayerWindow->setModifiedPalette(); //do last for efficiency, forces scroller update
         m_pPlayerWindow->update();
-
+        amaroK::config()->writeEntry( "XMLFile", "amarokui_xmms.rc" );
+        
     } else if( m_pPlayerWindow ) {
 
         delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlaylistWindow );
@@ -399,8 +400,9 @@ void App::applySettings( bool firstTime )
         //forgive user-stupidity
         if( !AmarokConfig::showTrayIcon() )
            playlistWindow()->show();
+        
+        amaroK::config()->writeEntry( "XMLFile", "amarokui.rc" );
     }
-
 
     amaroK::OSD::instance()->applySettings();
 
@@ -449,6 +451,8 @@ void App::applySettings( bool firstTime )
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
         engine->setVolume( AmarokConfig::masterVolume() );
     } //</Engine>
+    
+    m_pPlaylistWindow->recreateGUI();
 
     kdDebug() << "END " << k_funcinfo << endl;
 }
