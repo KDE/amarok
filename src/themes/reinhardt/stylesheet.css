@@ -1,6 +1,6 @@
 body { margin: 8px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-attachment: fixed;}
 a { font-size: 10px; color: WindowText; }
-.button { margin: 2px; padding: 2px; display: block; border: 1px solid ButtonShadow; background-color: Window; color: WindowText; }
+.button { margin: 2px; padding: 2px; border: 1px solid ButtonShadow; background-color: Window; color: WindowText; width: 100%; }
 .button:hover { color: ButtonText; background-color: ButtonFace; }
 .song a { display: block; padding: 1px 2px; }
 .song a:hover { color: HighlightText; background-color: Highlight; }

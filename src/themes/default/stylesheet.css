@@ -30,18 +30,7 @@ a {
 
 
 .button {
-    margin: 2px;
-    padding: 2px;
-    display: block;
-    border: 1px solid AMAROK_TEXTCOLOR;
-    background-color: AMAROK_BASECOLOR;
-  }
-
-
-.button:hover {
-    border: 1px solid AMAROK_TEXTCOLOR;
-    background-color: AMAROK_BGCOLOR;
-    color: AMAROK_BASECOLOR;
+    width: 100%;
   }
 
 
