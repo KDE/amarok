@@ -50,10 +50,13 @@ main( int argc, char** argv )
 
 
     //register fd/pid combo with amaroK
-    pid_t pid = getpid();
-    send( sockfd, "REG", 4, 0 );
-    send( sockfd, &pid, sizeof(pid_t), 0 );
+    {
+        pid_t pid = getpid();
+        char  buf[32] = "REG";
+        *(pid_t*)&buf[4] = pid;
 
+        send( sockfd, buf, 4 + sizeof(pid_t), 0 );
+    }
 
     //start gtk
     gtk_init( &argc, &argv ); //xmms plugins require this
