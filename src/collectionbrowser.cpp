@@ -98,8 +98,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     tagfilterMenuButton->plug( toolbar );
 
-    toolbar->insertLineSeparator();
-
     toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     m_configureAction->plug( toolbar );
 
