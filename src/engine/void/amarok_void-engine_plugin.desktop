@@ -1,13 +1,19 @@
 [Desktop Entry]
 Type=Service
 Name=<no engine>
+Name[da]=<ingen motor>
+Name[de]=Kein Treiber
+Name[et]=<mootor puudub>
+Name[fr]=<aucun moteur>
 Name[it]=<nessun motore>
 Name[nl]=<geen engine>
 Name[pt]=<sem motor>
 Name[pt_BR]=<sem motor>
 Name[sv]=<inget gränssnitt>
+Name[uz]=<йўқ>
 X-KDE-Library=libamarok_void-engine_plugin
 Comment=Plugin for amaroK
+Comment[bg]=Приставка за amaroK
 Comment[cs]=Modul pro amaroK
 Comment[de]=Plugin für amaroK
 Comment[el]=Πρόσθετο για το amaroK
@@ -22,7 +28,6 @@ Comment[pt_BR]=Plug-in para o amaroK
 Comment[ru]=Модуль amaroK
 Comment[sl]=Vstavek za amaroK
 Comment[sr]=Прикључак за amaroK
-Comment[sr@Latn]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК

@@ -2,6 +2,7 @@
 Type=ServiceType
 X-KDE-ServiceType=amaroK/Plugin
 Comment=Plugin for amaroK
+Comment[bg]=Приставка за amaroK
 Comment[cs]=Modul pro amaroK
 Comment[de]=Plugin für amaroK
 Comment[el]=Πρόσθετο για το amaroK
@@ -16,7 +17,6 @@ Comment[pt_BR]=Plug-in para o amaroK
 Comment[ru]=Модуль amaroK
 Comment[sl]=Vstavek za amaroK
 Comment[sr]=Прикључак за amaroK
-Comment[sr@Latn]=Прикључак за amaroK
 Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК

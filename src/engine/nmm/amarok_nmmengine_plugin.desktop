@@ -20,6 +20,7 @@ Name[xx]=xxNMM Enginexx
 Name[zh_CN]=NMM 引擎
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=amaroK plugin
+Comment[bg]=приставка за amaroK
 Comment[cs]=amaroK modul
 Comment[da]=Plugin for amaroK
 Comment[de]=amaroK-Plugin
