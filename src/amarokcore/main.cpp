@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "new FFT routine, bugfixes" ), "mfranz@kde.org" );
     aboutData.addCredit( "Mike Diehl", I18N_NOOP( "handbook" ), "madpenguin8@yahoo.com" );
     aboutData.addCredit( "Scott Wheeler", "TagLib", "wheeler@kde.org" );
-    aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches" ), "FIXME" );
+    aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "tester, patches, translation" ), "bochi@online.ms" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "tester, patches" ), "zerokode@gmx.net" );
 
 
