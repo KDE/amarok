@@ -325,10 +325,9 @@ PlaylistWindow::init()
         addBrowser<CollectionBrowser>( "CollectionBrowser", i18n( "Collection" ), "kfm" );
         addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" );
         addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
-        addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
-        
         if ( MediaBrowser::isAvailable() )
             addBrowser<MediaBrowser>( "MediaBrowser", i18n( "Media Device" ), "usbpendrive_unmount" );
+        addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
     //</Browsers>
 
 
@@ -405,7 +404,7 @@ void PlaylistWindow::createGUI()
     if ( AmarokConfig::showMenuBar() ) {
         if( actionCollection()->action( "amarok_menu" )->isPlugged() )
             actionCollection()->action( "amarok_menu" )->unplugAll();
-    } 
+    }
 
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     conserveMemory();
