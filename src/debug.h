@@ -142,7 +142,7 @@ namespace Debug
             const double duration = (double) (finish - m_start) / CLOCKS_PER_SEC;
 
             DEBUG_UNINDENT
-            kdDebug() << indent << "END: " << m_label << " - Took " << duration << "s\n";
+            kdDebug() << indent << "END  : " << m_label << " - Took " << duration << "s\n";
         }
     };
 
