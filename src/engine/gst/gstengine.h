@@ -62,9 +62,12 @@ class GstEngine : public EngineBase
         void                                     newStreamData( char* data, int size );
 
     private:
+        /** Called at end of track */
         static void                              eos_cb( GstElement*, GstElement* );
+        /** Duplicates audio data for application side processing */
         static void                              handoff_cb( GstElement*, GstBuffer*, gpointer );
         static GstCaps*                          fixate_cb( GstPad* pad, const GstCaps* ccaps, gpointer data );
+        /** Called when pipeline needs new data from source */
         static void                              handoff_fakesrc_cb( GstElement*, GstBuffer*, GstPad, gpointer );
         static void                              typefindFound_cb( GstElement*, GstCaps*, GstElement* );
 

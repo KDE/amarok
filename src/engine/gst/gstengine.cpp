@@ -106,13 +106,12 @@ GstEngine::fixate_cb( GstPad* /*pad*/, const GstCaps* ccaps, gpointer /*data*/ )
 {
     kdDebug() << k_funcinfo << endl;
 
-    GstCaps *caps = gst_caps_copy ( ccaps );
-    
-    if ( !gst_caps_get_size( caps ) ) {
+    if ( !gst_caps_get_size( ccaps ) ) {
         kdDebug() << "caps is empty." << endl;
         return NULL;        
     }
-            
+    
+    GstCaps *caps = gst_caps_copy ( ccaps );
     GstStructure *str = gst_caps_get_structure ( caps, 0 );
 
     if ( gst_caps_structure_fixate_field_nearest_int ( str, "total", 100000000 ) ) 
