@@ -7,7 +7,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
-    * fix: #77 <larson> OSD is broken. Enable it together with moving the tray and dcophandler to playerapp --> larson
 
 MID-TERM:
     * fix: #76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
