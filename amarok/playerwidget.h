@@ -165,6 +165,7 @@ class PlayerWidget : public QWidget, virtual public AmarokIface
         virtual void hide();
 
     public /* DCOP */ slots:
+       /* FIXME: move dcop iface to a separate impl class */
        void play();
        void stop();
        void next();
