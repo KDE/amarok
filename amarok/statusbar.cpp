@@ -1,9 +1,7 @@
 /***************************************************************************
-		statusbar.h  -  amaroK browserwin statusbar
-			   -------------------
-  begin                : Fre Apr 24 2002
-  copyright            : (C) 2002 by Frederik Holljen
-  email                : fh@ez.no
+ statusbar.cpp        : amaroK browserwin statusbar
+ copyright            : (C) 2004 by Frederik Holljen
+ email                : fh@ez.no
 ***************************************************************************/
 
 /***************************************************************************
@@ -17,6 +15,7 @@
 
 #include "statusbar.h"
 #include "amarokconfig.h"
+#include "amarokslider.h"
 #include "metabundle.h"
 #include "playerapp.h"
 #include "threadweaver.h"
@@ -68,11 +67,19 @@ StatusBar::StatusBar( QWidget *parent, const char *name ) : KStatusBar( parent, 
     connect( tAction, SIGNAL( toggled(bool) ), repeat, SLOT( setOn(bool) ) );
     repeat->setOn( tAction->isChecked() );
 
+    // position slider
+    addWidget( m_pSlider = new amaroK::Slider( this, Qt::Horizontal ), 0, true );
+    m_pSlider->setMinimumWidth( 70 );
+    m_pSlider->setMaximumHeight( fontMetrics().height() );
+    connect( m_pSlider, SIGNAL( sliderReleased() ), this, SLOT( sliderReleased() ) );
+    connect( m_pSlider, SIGNAL( valueChanged( int ) ), this, SLOT( sliderChanged( int ) ) );
+    
+    // time display
     addWidget( (m_pTimeLabel = new ToggleLabel( "", this )), 0, true );
     m_pTimeLabel->setColorToggle( false );
     m_pTimeLabel->setFont( KGlobalSettings::fixedFont() );
     connect( m_pTimeLabel, SIGNAL( toggled( bool ) ), this, SLOT( slotToggleTime() ) );
-
+    
     setItemAlignment( ID_STATUS, AlignLeft|AlignVCenter );
     setItemAlignment( ID_TOTAL, AlignCenter );
     // make the time label show itself.
@@ -105,6 +112,7 @@ void StatusBar::engineStateChanged( EngineBase::EngineState state )
 void StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     changeItem( QString( "%1  (%2)" ).arg( bundle.prettyTitle(), bundle.prettyLength() ), ID_STATUS );
+    m_pSlider->setMaxValue( bundle.length() * 1000 );
 }
 
 void StatusBar::slotItemCountChanged(int newCount)
@@ -131,6 +139,10 @@ void StatusBar::engineTrackPositionChanged( long position )
     str.prepend( ' ' );
 
     m_pTimeLabel->setText( str );
+
+    // adjust position slider
+    if( !m_pSlider->sliding() )
+        m_pSlider->setValue( position );
 }
 
 void StatusBar::slotToggleTime()
@@ -159,6 +171,23 @@ void StatusBar::customEvent( QCustomEvent *e )
             case CollectionReader::ProgressEvent::Progress:
                 m_progress->setProgress( p->value() );
         }
+    }
+}
+
+void StatusBar::sliderReleased()
+{
+    EngineBase *engine = EngineController::instance()->engine();
+    if ( engine->state() == EngineBase::Playing )
+    {
+        engine->seek( m_pSlider->value() );
+    }
+}
+
+void StatusBar::sliderChanged( int value )
+{
+   if( m_pSlider->sliding() )
+    {
+        engineTrackPositionChanged( static_cast<long>( value ) );    
     }
 }
 

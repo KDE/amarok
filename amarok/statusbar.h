@@ -1,9 +1,7 @@
 /***************************************************************************
-                statusbar.h  -  amaroK browserwin statusbar
-                           -------------------
-  begin                : Fre Apr 24 2002
-  copyright            : (C) 2002 by Frederik Holljen
-  email                : fh@ez.no
+ statusbar.h          : amaroK browserwin statusbar
+ copyright            : (C) 2004 by Frederik Holljen
+ email                : fh@ez.no
 ***************************************************************************/
 
 /***************************************************************************
@@ -14,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 
 #ifndef AMAROK_STATUSBAR_H
 #define AMAROK_STATUSBAR_H
@@ -28,6 +25,8 @@ class QCustomEvent;
 class KProgress;
 
 namespace amaroK {
+
+class Slider;
 class ToggleLabel;
 
 class StatusBar : public KStatusBar, public EngineObserver
@@ -45,13 +44,15 @@ public slots:
 
 protected: /* reimpl from engineobserver */
     virtual void engineStateChanged( EngineBase::EngineState state );
-    virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
     virtual void engineTrackPositionChanged( long position );
+    virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); } // TODO: don't duplicate
 
 private slots:
     void slotToggleTime();
-
+    void sliderReleased();
+    void sliderChanged( int value );
+        
 private:
     void customEvent( QCustomEvent* e );
 
@@ -60,6 +61,7 @@ private:
     static const int ID_TOTAL  = 2;
     ToggleLabel *m_pTimeLabel;
     KProgress* m_progress;
+    amaroK::Slider* m_pSlider;
 };
 
 

@@ -3,6 +3,7 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  ADD: Mini position slider for playlist window.
   FIX: Don't try to crossfade with engines that do not support this feature. 
   ADD: XMMS visualization plugins can be configured with their GUI.
   FIX: Collection filtering had some regressions
