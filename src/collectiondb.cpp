@@ -1031,8 +1031,8 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
     command += escapeString( QString::number( yearID( bundle->year(),     true, !incremental, false, conn ) ) ) + "','";
 
     command += escapeString( bundle->title() ) + "','";
-    command += escapeString( bundle->comment() ) + "','";
-    command += escapeString( bundle->track() ) + "', ";
+    command += escapeString( bundle->comment() ) + "', ";
+    command += ( bundle->track().isEmpty() ? "NULL" : escapeString( bundle->track() ) ) + " , ";
     command += artist == i18n( "Various Artists" ) ? "1," : "0,";
 
     // NOTE any of these may be -1 or -2, this is what we want
