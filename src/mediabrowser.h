@@ -14,12 +14,14 @@
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
 
+
 class Color;
 class MetaBundle;
 
 class KProgress;
 class QLabel;
 class QPalette;
+class QPushButton;
 
 
 class MediaItem : public KListViewItem
@@ -64,7 +66,7 @@ class MediaDeviceList : public KListView
     friend class MediaBrowser;
     friend class MediaDevice;
     friend class Item;
-    
+
     public:
         MediaDeviceList( MediaDeviceView* parent );
         ~MediaDeviceList();
@@ -96,13 +98,14 @@ class MediaDeviceView : public QVBox
     public:
         MediaDeviceView( MediaBrowser* parent );
         ~MediaDeviceView();
-        
+
     private:
         QLabel*          m_stats;
         KProgress*       m_progress;
         MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
         KListView*       m_transferList;
+        QPushButton*     m_transferButton;
 
         MediaBrowser* m_parent;
 };
@@ -129,7 +132,7 @@ class MediaDevice : public QObject
         void transferFiles();
         void deleteFiles( const KURL::List& urls );
         void deleteFromIPod( MediaItem* item );
-        
+
     private slots:
         void fileTransferred();
         void fileTransferFinished();
@@ -138,6 +141,8 @@ class MediaDevice : public QObject
     private:
         bool fileExists( const MetaBundle& bundle );
         KURL::List m_transferURLs;
+
+        bool m_wait;
 
         MediaDeviceView* m_parent;
         IPod::IPod* m_ipod;

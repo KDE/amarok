@@ -388,12 +388,12 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     hb->setSpacing( 4 );
     m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), hb );
     m_progress = new KProgress( hb );
-    QPushButton* transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+    m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
 
-    m_progress->setFixedHeight( transferButton->sizeHint().height() );
+    m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
 
-    connect( transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
+    connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
 }
 
 
@@ -535,6 +535,8 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
 void
 MediaDevice::transferFiles()  //SLOT
 {
+    m_parent->m_transferButton->setEnabled( false );
+
     if ( m_ipod->ensureConsistency() )
     {
         m_parent->m_progress->setTotalSteps( m_parent->m_transferList->childCount() );
@@ -555,9 +557,16 @@ MediaDevice::transferFiles()  //SLOT
                 track.setPath( track.getPath() + ".mp3" );
                 QString trackpath = m_ipod->getRealPath( track.getPath() );
 
-                KIO::CopyJob *job = KIO::copy( *it, KURL( trackpath ), true );
+                m_wait = true;
+
+                KIO::CopyJob *job = KIO::copy( *it, KURL( trackpath ), false );
                 connect( job, SIGNAL( copyingDone( KIO::Job *, const KURL &, const KURL &, bool, bool ) ),
                         this,  SLOT( fileTransferred() ) );
+
+                while ( m_wait )
+                {
+                    kapp->processEvents( 100 );
+                }
 
                 if( !track.readFromBundle( bundle ) )
                 {
@@ -577,6 +586,8 @@ MediaDevice::transferFiles()  //SLOT
     }
     else
         kdDebug() << "[MediaBrowser] iPod inconsistent!" << endl;
+
+    m_parent->m_transferButton->setEnabled( true );
 }
 
 
@@ -697,8 +708,9 @@ MediaDevice::fileExists( const MetaBundle& bundle )
 void
 MediaDevice::fileTransferred()  //SLOT
 {
+    m_wait = false;
     m_parent->m_progress->setProgress( m_parent->m_progress->value() + 1 );
-    m_parent->m_deviceList->renderView( 0 );
+//    m_parent->m_deviceList->renderView( 0 );
 }
 
 
