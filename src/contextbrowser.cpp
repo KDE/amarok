@@ -579,11 +579,11 @@ void ContextBrowser::showCurrentTrack() //SLOT
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     browser->write( QStringx(
         "<div class='box'>"
-         "<div class='box-header' style='font-weight: normal;>"
+         "<div class='box-header' style='font-weight: normal;'>"
           "<a title='%1' href='musicbrainz:%2 @@@ %3'>"
            "<img src='%4' style='float: right; width: 38px; height: 22px;'/>"
           "</a>"
-          "<b>%5</b> - <b>%6</b><br>%7"
+          "<b>%5</b> - <b>%6</b><br>%7&nbsp;"
          "</div>"
          "<table class='box-body' width='100%'>"
           "<tr class='box-row'>"
