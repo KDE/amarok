@@ -321,8 +321,10 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
     QStringList albums;
+    QStringList images;
     QString lastdir;
     KURL url;
+
     m_parent->createTables( true );
 
     QStringList validImages, validMusic;
@@ -361,13 +363,17 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         }
         // Add images to the cover database
         else if ( validImages.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
-            m_parent->addImageToAlbum( url.path(), albums, true );
+            images << url.path();
 
         // Update Compilation-flag
         if ( url.path().section( '/', 0, -2 ) != lastdir || ( i + 1 ) == entries.count() )
         {
             // we entered the next directory
+            for ( uint j = 0; j < images.count(); j++ )
+                m_parent->addImageToAlbum( images[ j ], albums, true );
+
             albums.clear();
+            images.clear();
 
             if ( !lastdir.isEmpty() ) m_parent->checkCompilations( lastdir );
             lastdir = url.path().section( '/', 0, -2 );
