@@ -36,6 +36,7 @@ email                : markey@web.de
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kfileitem.h>
+#include <kgenericfactory.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmimetype.h>
@@ -57,10 +58,7 @@ email                : markey@web.de
 #include <sys/wait.h>
 
 
-extern "C" void* create_plugin()
-{
-    return new ArtsEngine();
-}
+AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 
 ArtsEngine::ArtsEngine()
@@ -73,8 +71,7 @@ ArtsEngine::ArtsEngine()
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue2" )
         , m_pConnectTimer( new QTimer( this ) )
-{
-}
+{}
 
 
 ArtsEngine::~ ArtsEngine()

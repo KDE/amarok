@@ -25,6 +25,7 @@ email                : markey@web.de
 
 #include <qguardedptr.h>
 #include <qmap.h>
+#include <qstringlist.h>
 #include <qwidget.h>
 
 #include <arts/artsgui.h>

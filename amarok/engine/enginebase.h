@@ -21,12 +21,15 @@ email                : markey@web.de
 #include "plugin.h"
 
 #include <vector>
-#include <qobject.h>
+
+#include <qobject.h>    //baseclass
 #include <qstringlist.h>
 
 #ifdef __FreeBSD__
     #include <sys/types.h>
 #endif
+
+class QObject;
 
 class KURL;
 
@@ -40,7 +43,7 @@ class EngineBase : public QObject, public Plugin
     public:
         enum                         EngineState { Empty, Idle, Playing, Paused };
 
-                                     EngineBase() : QObject() {}
+                                     EngineBase();
         virtual                      ~EngineBase();
 
         virtual void                 init( bool& restart,

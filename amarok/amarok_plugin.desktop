@@ -1,0 +1,21 @@
+[Desktop Entry]
+Type=ServiceType
+X-KDE-ServiceType=amaroK/Plugin
+Comment=Plugin for amaroK
+
+[PropertyDef::X-KDE-amaroK-plugintype]
+Type=QString
+
+[PropertyDef::X-KDE-amaroK-authors]
+Type=QStringList
+
+[PropertyDef::X-KDE-amaroK-email]
+Type=QStringList
+
+[PropertyDef::X-KDE-amaroK-version]
+Type=int
+
+[PropertyDef::X-KDE-amaroK-framework-version]
+Type=int
+
+

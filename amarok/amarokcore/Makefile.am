@@ -1,9 +1,24 @@
+INCLUDES = \
+    -I$(top_srcdir)/amarok/amarok \
+    -I$(top_srcdir)/amarok/amarok/plugin \
+    $(all_includes)
 
-INCLUDES = $(all_includes) -I$(top_srcdir)/amarok/amarok
-noinst_LIBRARIES =  libamarokcore.a
-noinst_HEADERS = amarokconfig.h amarokdcophandler.h
+noinst_LIBRARIES = \
+    libamarokcore.a
 
-libamarokcore_a_SOURCES = main.cpp amarokdcopiface.skel amarokdcophandler.cpp amarokconfig.kcfgc
+noinst_HEADERS = \
+    amarokconfig.h \
+    amarokdcophandler.h
 
-METASOURCES = AUTO
-kde_kcfg_DATA = amarok.kcfg
+libamarokcore_a_SOURCES = \
+    main.cpp \
+    amarokdcopiface.skel \
+    amarokdcophandler.cpp \
+    amarokconfig.kcfgc
+
+METASOURCES = \
+    AUTO
+
+kde_kcfg_DATA = \
+    amarok.kcfg
+

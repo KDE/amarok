@@ -3,6 +3,8 @@ amaroK ChangeLog
 (c) 2002-2004 the amaroK authors.
 
 
+  FIX: communication loader<-->amarok failing on FreeBSD
+  FIX: loader forgetting to close socket descriptors
   FIX: FileBrowser remembers that state of its view between sessions
   CHG: converted engines to plugins. they are now dynamically loaded at runtime
   ADD: plugin framework

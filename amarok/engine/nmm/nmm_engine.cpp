@@ -30,11 +30,7 @@ NMM::PlaybackNode         *playback = 0;
 
 
 
-extern "C" void* create_plugin()
-{
-    return new NmmEngine();
-}
-
+AMAROK_EXPORT_PLUGIN( NmmEngine )
 
 
 NmmEngine::NmmEngine()

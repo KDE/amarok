@@ -8,8 +8,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-    * fix: #74  PLUGIN_H issue -->markey
-
 
 MID-TERM:
 
@@ -27,9 +25,9 @@ MID-TERM:
                but kruler uses the hand. KRuler is borderless, so I chose the hand. Label in front of
                the preview button with info about dragging?
                <larson>OSD preview now reads: OSD Preview - Drag to reposition.
-	       <mxcl> hand still means "activate" I think KRuler is wrong to use the hand. Throughout KDE
-	       applications use the hand to mean "if you click I will do something" and not to mean
-	       "click to drag"
+               <mxcl> hand still means "activate" I think KRuler is wrong to use the hand. Throughout KDE
+               applications use the hand to mean "if you click I will do something" and not to mean
+               "click to drag"
 
     * fix: #61 <markey> allow removing of playlist items by dragging back into browser.
                (RFC: is this still appropriate or would it be misleading?)

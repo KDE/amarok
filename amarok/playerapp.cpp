@@ -26,6 +26,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerapp.h"
 #include "playerwidget.h"
+#include "plugin.h"
 #include "pluginmanager.h"
 #include "threadweaver.h"        //restoreSession()
 #include "playlisttooltip.h"
@@ -35,6 +36,7 @@ email                : markey@web.de
 #include <kaction.h>
 #include <kcmdlineargs.h>
 #include <kconfig.h>
+#include <kconfigdialog.h>
 #include <kdebug.h>
 #include <kglobalaccel.h>
 #include <kkeydialog.h>          //slotConfigShortcuts()
@@ -45,7 +47,6 @@ email                : markey@web.de
 #include <kstartupinfo.h>        //handleLoaderArgs()
 #include <ktip.h>
 #include <kurl.h>
-#include <kconfigdialog.h>
 #include <kwin.h>                //eventFilter()
 
 #include <qcstring.h>            //initIpc()
@@ -169,7 +170,6 @@ PlayerApp::~PlayerApp()
     else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
 
     m_pEngine->stop(); //slotStop() does this plus visual stuff we don't need to do on exit
-
     //killTimers(); doesn't kill QTimers only QObject::startTimer() timers
 
     saveConfig();
@@ -177,6 +177,7 @@ PlayerApp::~PlayerApp()
     delete m_pPlayerWidget;
     delete m_pBrowserWin;
     delete m_pOSD;
+    
     PluginManager::unload( m_pEngine );
 }
 
@@ -309,24 +310,27 @@ void PlayerApp::initCliArgs( int argc, char *argv[] ) //static
 
 void PlayerApp::initEngine()
 {
-    m_pEngine = static_cast<EngineBase*>( PluginManager::load( AmarokConfig::soundSystem() ) );
-
-    //when the engine that was specified in our config does not exist/work, try to invoke _any_ engine plugin
-    if ( !m_pEngine ) {
-        QStringList list = PluginManager::available( "engine" );
-
-        if ( list.isEmpty() )
+    Plugin* plugin;
+    
+    plugin = PluginManager::createFromQuery
+                 ( "[X-KDE-amaroK-plugintype] == 'engine' and "    
+                   "Name                      == '" + AmarokConfig::soundSystem() + "'" );                            
+    
+    if ( !plugin ) {
+        kdWarning() << k_funcinfo << "Cannot load the specified engine. Trying with another engine..\n";
+        
+        //when the engine specified in our config does not exist/work, try to invoke _any_ engine plugin
+        plugin = PluginManager::createFromQuery
+                     ( "[X-KDE-amaroK-plugintype] == 'engine'" );
+                         
+        if ( !plugin )
             kdFatal() << k_funcinfo << "No engine plugin found. Aborting.\n";
-
-        AmarokConfig::setSoundSystem( list[0] );
-
+            
+        AmarokConfig::setSoundSystem( PluginManager::getService( plugin )->name() );
         kdDebug() << k_funcinfo << "setting soundSystem to: " << AmarokConfig::soundSystem() << endl;
-        m_pEngine = static_cast<EngineBase*>( PluginManager::load( AmarokConfig::soundSystem() ) );
-
-        if ( !m_pEngine )
-            kdFatal() << k_funcinfo << "m_pEngine == NULL\n";
     }
-
+    
+    m_pEngine = static_cast<EngineBase*>( plugin );
     m_pEngine->init( m_artsNeedsRestart, SCOPE_SIZE, AmarokConfig::rememberEffects() );
 
     //called from AmarokPopup
@@ -434,9 +438,9 @@ void PlayerApp::restoreSession()
 //SLOT
 void PlayerApp::applySettings()
 {
-    if ( AmarokConfig::soundSystem() != PluginManager::getInfo( m_pEngine ).filename )
+    if ( AmarokConfig::soundSystem() != PluginManager::getService( m_pEngine )->name() )
     {
-        if ( AmarokConfig::soundSystem() == "gstengine" )
+        if ( AmarokConfig::soundSystem() == "GstEngine" )
             KMessageBox::information( 0, i18n( "GStreamer support is still experimental. Some features "
                                                "(like effects and visualizations) might not work properly." ) );
 

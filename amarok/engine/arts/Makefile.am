@@ -1,23 +1,33 @@
+kde_module_LTLIBRARIES = \
+    libamarok_artsengine_plugin.la
+
 INCLUDES = \
     -I$(top_builddir)/amarok/amarok/amarokarts \
     -I$(top_srcdir)/amarok/amarok/engine \
+    -I$(top_srcdir)/amarok/amarok/plugin \
     -I$(top_srcdir)/amarok/amarok \
     -I$(kde_includes)/arts \
     $(all_includes)
 
-artsengine_la_LIBADD = \
+libamarok_artsengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/amarok/amarokarts/libamarokarts.la \
     $(top_builddir)/amarok/amarok/engine/libengine.a \
+    $(top_builddir)/amarok/amarok/plugin/libplugin.a \
+    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
     $(arts_libs)
 
-kde_module_LTLIBRARIES = artsengine.la
+libamarok_artsengine_plugin_la_SOURCES = \
+    artsengine.cpp
 
-artsengine_la_SOURCES = artsengine.cpp
+libamarok_artsengine_plugin_la_LDFLAGS = \
+    -module \
+    $(KDE_PLUGIN) \
+    $(all_libraries) 
 
-artsengine_la_LDFLAGS = $(all_libraries) -module -avoid-version -no-undefined
+METASOURCES = \
+    AUTO
 
-METASOURCES = AUTO
+kde_services_DATA = \
+    amarok_artsengine_plugin.desktop
 
-plugin_DATA = artsengine.plugin
-plugindir = $(kde_datadir)/amarok
 

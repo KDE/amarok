@@ -32,10 +32,8 @@ extern "C"
 #include <gst/gst.h>
 }
 
-extern "C" void* create_plugin()
-{
-    return new GstEngine();
-}
+
+AMAROK_EXPORT_PLUGIN( GstEngine )
 
 //////////////////////////////////////////////////////////////////////
 // STATIC METHODS

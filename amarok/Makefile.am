@@ -2,7 +2,7 @@ if with_arts
     AMAROKARTS_BUILD = amarokarts
 endif
 
-SUBDIRS = amarokcore $(AMAROKARTS_BUILD) analyzers titleproxy engine images data loader
+SUBDIRS = amarokcore $(AMAROKARTS_BUILD) plugin analyzers titleproxy engine images data loader
 
 bin_PROGRAMS = amarokapp
 
@@ -13,6 +13,7 @@ INCLUDES = \
         -I$(top_srcdir)/amarok/amarok/amarokcore \
         -I$(top_srcdir)/amarok/amarok/analyzers \
         -I$(top_srcdir)/amarok/amarok/engine \
+        -I$(top_srcdir)/amarok/amarok/plugin \
         -I$(top_srcdir)/amarok/amarok/titleproxy \
         $(taglib_includes) \
         $(all_includes)
@@ -25,6 +26,7 @@ amarokapp_SOURCES = \
         Options5.ui \
         amarokconfigdialog.cpp \
         amarokfilelist.cpp \
+        amarokmenu.cpp \
         amarokslider.cpp \
         amaroksystray.cpp \
         browserwin.cpp \
@@ -43,30 +45,42 @@ amarokapp_SOURCES = \
         playlistwidget.cpp \
         pluginmanager.cpp \
         streambrowser.cpp \
-        threadweaver.cpp \
-        amarokmenu.cpp
+        threadweaver.cpp
 
 amarokapp_LDADD = \
         $(top_builddir)/amarok/amarok/amarokcore/libamarokcore.a \
         $(top_builddir)/amarok/amarok/titleproxy/libtitleproxy.a \
         $(top_builddir)/amarok/amarok/analyzers/libanalyzers.a \
         $(top_builddir)/amarok/amarok/engine/libengine.a \
+        $(top_builddir)/amarok/amarok/plugin/libplugin.a \
         $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
         $(taglib_libs) $(gl_libs)
 
+amarokapp_LDFLAGS = \
+    $(all_libraries) \
+    $(KDE_RPATH)
 
-amarokapp_LDFLAGS = $(all_libraries) $(KDE_RPATH)
+METASOURCES = \
+    AUTO
 
-METASOURCES = AUTO
-KDE_ICON = AUTO
+KDE_ICON = \
+    AUTO
 
-rcdir = $(kde_datadir)/amarok
-rc_DATA = amarokui.rc
+rcdir = \
+    $(kde_datadir)/amarok
+rc_DATA = \
+    amarokui.rc
 
-configdir = $(kde_confdir)
-config_DATA = amarokrc
+configdir = \
+    $(kde_confdir)
+config_DATA = \
+    amarokrc
 
-xdg_apps_DATA = amarok.desktop
+xdg_apps_DATA = \
+    amarok.desktop
+
+kde_servicetypes_DATA = \
+    amarok_plugin.desktop
 
 messages: rc.cpp
         LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \

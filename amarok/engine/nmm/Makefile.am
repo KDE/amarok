@@ -1,22 +1,32 @@
+kde_module_LTLIBRARIES = \
+    libamarok_nmmengine_plugin.la
+
 INCLUDES = \
     -I$(top_srcdir)/amarok/amarok/engine \
+    -I$(top_srcdir)/amarok/amarok/plugin \
     -I$(top_srcdir)/amarok/amarok \
     $(CFLAGS_NMM) \
     $(all_includes)
 
-nmm_engine_la_LIBADD = \
+libamarok_nmmengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/amarok/engine/libengine.a \
-    $(LIB_KDECORE) \
+    $(top_builddir)/amarok/amarok/plugin/libplugin.a \
+    $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) \
     -lnmmbase -lnmmfile -lnmmaudio -lnmmmpegread -lnmmmpegaudiodec -lnmmoggvorbis
 
-KDE_CXXFLAGS = $(USE_EXCEPTIONS)
+libamarok_nmmengine_plugin_la_SOURCES = \
+    nmm_engine.cpp
 
-kde_module_LTLIBRARIES = nmm_engine.la
+libamarok_nmmengine_plugin_la_LDFLAGS = \
+    -module \
+    $(KDE_PLUGIN) \
+    $(all_libraries) 
 
-nmm_engine_la_SOURCES = nmm_engine.cpp
-nmm_engine_la_LDFLAGS = $(all_libraries) -module -avoid-version -no-undefined
+METASOURCES = \
+    AUTO
 
-METASOURCES = AUTO
+kde_services_DATA = \
+    amarok_nmmengine_plugin.desktop
 
-plugin_DATA = nmm_engine.plugin
-plugindir = $(kde_datadir)/amarok
+
+    

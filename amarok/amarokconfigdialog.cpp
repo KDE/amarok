@@ -29,6 +29,7 @@ email                : markey@web.de
 #include <kconfigdialog.h>
 #include <klocale.h>
 
+
 AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConfigSkeleton *config )
         : KConfigDialog( parent, name, config )
 {
@@ -36,8 +37,15 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     //manage dynamic itemLists (at least I don't know how to do it)
     Options4* pOpt4 = new Options4( 0,"Playback" );
     m_pSoundSystem = pOpt4->sound_system;
-    m_pSoundSystem->insertStringList( PluginManager::available( "engine" ) );
-//     m_pSoundSystem->insertStringList( PlayerApp::m_pEngine->listEngines() );
+    
+    KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
+    QStringList list;
+    
+    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it )
+        list << (*it)->name();
+    
+    m_pSoundSystem->insertStringList( list );
+    
     m_pSoundSystem->setCurrentText  ( AmarokConfig::soundSystem() );
 
     // add screens

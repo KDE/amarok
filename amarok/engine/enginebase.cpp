@@ -26,6 +26,11 @@ email                : markey@web.de
 #include "qstringlist.h"
 
 
+EngineBase::EngineBase()
+    : QObject()
+    , Plugin()
+{}
+
 
 EngineBase::~EngineBase()
 {

@@ -13,85 +13,91 @@ email                : markey@web.de
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#ifndef AMAROK_PLUGINMANAGER_H
+#define AMAROK_PLUGINMANAGER_H
 
 #include <vector>
 
-#include <qstring.h>
-#include <qstringlist.h>
+#include <kservice.h>
+#include <ktrader.h>
 
-class Plugin;
 using namespace std;
 
+class Plugin;
 
 class PluginManager
 {
     public:
-        class PluginInfo {
-            public:        
-                bool isEmpty() const;
-                void dump() const;
-            //attributes:        
-                QString filename;
-                QString author;
-                QString license;
-                QString type;
-                QString site;
-                QString email;
-                QString name;
-                QString comment;
-                int     version; 
-                int     api_version;
-                QStringList require;
-            };
-        
-        struct StoreItem {
-            //attributes:
-                Plugin*    pointer;
-                PluginInfo info;
-        };
-        
-        static vector<PluginInfo>        available   ();
-        
-        /** 
-         * Find all existing plugins of a specified type 
-         * @param type    list all plugins of this type (e.g. "engine")  
-         * @return        list of all plugin names of the correct type
+        /**
+         * It will return a list of services that match your
+         * specifications.  The only required parameter is the service
+         * type.  This is something like 'text/plain' or 'text/html'.  The
+         * constraint parameter is used to limit the possible choices
+         * returned based on the constraints you give it.
+         *
+         * The @p constraint language is rather full.  The most common
+         * keywords are AND, OR, NOT, IN, and EXIST, all used in an
+         * almost spoken-word form.  An example is:
+         * \code
+         * (Type == 'Service') and (('KParts/ReadOnlyPart' in ServiceTypes) or (exist Exec))
+         * \endcode
+         *
+         * The keys used in the query (Type, ServiceType, Exec) are all
+         * fields found in the .desktop files.
+         *
+         * @param constraint  A constraint to limit the choices returned, QString::null to 
+         *                    get all services of the given @p servicetype
+         *
+         * @return            A list of services that satisfy the query
+         * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static QStringList               available   ( const QString& type );
-              
-        /** 
-         * Read plugin info from disk 
-         * @param name    name of plugin (e.g. "artsengine")  
-         * @return        PluginInfo struc
-         */
-        static PluginInfo                getInfo     ( const QString& name );
-        
-        /** 
-         * Look up plugin info for loaded plugin in store 
-         * @param pointer pointer to plugin  
-         * @return        PluginInfo struc, or empty PluginInfo if not found
-         */
-        static PluginInfo                getInfo     ( const Plugin* pointer );
+        static KTrader::OfferList query( const QString& constraint = QString::null );
         
         /**
-         * Load and instantiate plugin 
-         * @param name    name of plugin without extension (e.g. "artsengine")  
-         * @return        pointer to Plugin, or NULL if error
+         * Load and instantiate plugin from query 
+         * @param constraint  A constraint to limit the choices returned, QString::null to 
+         *                    get all services of the given @p servicetype
+         * @return            Pointer to Plugin, or NULL if error
+         * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static Plugin*                   load        ( const QString& name );
+        static Plugin* createFromQuery( const QString& constraint = QString::null );
+        
+        /**
+         * Load and instantiate plugin from service
+         * @param service     Pointer to KService  
+         * @return            Pointer to Plugin, or NULL if error
+         */
+        static Plugin* createFromService( const KService::Ptr service );
         
         /**
          * Remove library and delete plugin 
-         * @param pointer pointer to plugin  
+         * @param plugin      Pointer to plugin  
          */
-        static void                      unload      ( Plugin* pointer );
+        static void unload( Plugin* plugin );
 
+        /** 
+         * Look up service for loaded plugin from store 
+         * @param pointer     Pointer to plugin  
+         * @return            KService, or 0 if not found
+         */
+        static KService::Ptr getService( const Plugin* pointer );
+
+        /** 
+         * Dump properties from a service to stdout for debugging 
+         * @param service     Pointer to KService  
+         */
+        static void dump( const KService::Ptr service );
+                    
     private:
+        struct StoreItem {
+            //attributes:
+                Plugin*       plugin;
+                KService::Ptr service;
+        };
+       
         static vector<StoreItem>         m_store;
 };
 
 
-#endif /* PLUGINMANAGER_H */
+#endif /* AMAROK_PLUGINMANAGER_H */
 

@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Service
+Name=NmmEngine
+X-KDE-Library=libamarok_nmmengine_plugin
+Comment=Plugin for amaroK
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=engine
+X-KDE-amaroK-authors=Max Howell
+X-KDE-amaroK-email=max.howell@methylblue.com
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=1
+
+

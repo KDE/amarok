@@ -1,4 +1,7 @@
+noinst_LIBRARIES = libengine.a
+
 INCLUDES = \
+    -I$(top_srcdir)/amarok/amarok/plugin \
     -I$(top_srcdir)/amarok/amarok \
     $(all_includes)
 
@@ -20,9 +23,9 @@ libengine_a_SOURCES = \
 noinst_HEADERS = \
     enginebase.h
 
-METASOURCES = AUTO
-
-noinst_LIBRARIES = libengine.a
+METASOURCES = \
+    AUTO
 
 SUBDIRS = . $(ARTSENGINE_BUILD) $(GSTENGINE_BUILD) $(NMMENGINE_BUILD)
+
 
