@@ -236,8 +236,8 @@ void EngineController::play( const MetaBundle &bundle )
     delete m_stream;
 
     //let amaroK know that the previous track is no longer playing
-    if ( m_bundle.length() != 0 )
-        trackEnded( m_engine->position(), m_bundle.length() );
+    if ( m_bundle.length() > 0 )
+        trackEnded( m_engine->position(), m_bundle.length()*1000 );
 
     if ( m_engine->streamingMode() != Engine::NoStreaming && url.protocol() == "http" ) {
         m_bundle = bundle;
@@ -279,6 +279,10 @@ void EngineController::pause() //SLOT
 
 void EngineController::stop() //SLOT
 {
+    //let amaroK know that the previous track is no longer playing
+    if ( m_bundle.length() > 0 )
+        trackEnded( m_engine->position(), m_bundle.length() * 1000 );
+
     if ( m_engine->loaded() )
         m_engine->stop();
 }
