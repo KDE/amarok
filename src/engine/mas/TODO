@@ -1,0 +1,11 @@
+TODO
+
+- ask MAS which mimetypes it can play (MAS)
+- get/set position on source device (MAS)
+   (position is workarounded in the Engine. Grrgh)
+- more decoders (OGG, ...) (MAS)
+
+- scope ?
+- configuration ?
+- network ?
+ 

@@ -1,0 +1,29 @@
+HOWTO set up the MAS support
+
+
+donwload MAS code from their website www.mediaapplicationserver.net 
+  - mas-0.6.3.tar.gz
+  - mas-devtools-0.6.3.tar.gz
+  - mas-control-apps-0.6.3.tar.gz
+  or get them from their CVS
+
+  - mas-codec_mp1a_mad-0.6.3.tar.gz (!not in CVS ??)
+
+  
+compile, install
+
+add /usr/local/mas/lib to /etc/ld.so.conf
+call ldconfig
+edit /usr/local/mas/mas-launch
+	fix 1st line:   #!/bin/sh
+	move line 12 to line 25: export LD_LIBRARY_PATH # somehow i need this
+
+start mas-launch (superuser)
+
+you can find the logfile in /usr/local/mas/log
+
+
+start masplayer for testing
+
+
+
