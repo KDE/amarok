@@ -149,14 +149,19 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state )
 
     case Engine::Playing:
         overlay = &playOverlay;
-        if( AmarokConfig::animateTrayIcon() ) blinkTimerID = startTimer( 1500 );  // start 'blink' timer
-        else paintIcon( mergeLevel, true ); // repaint the icon
+        if( AmarokConfig::animateTrayIcon() )
+           blinkTimerID = startTimer( 1500 );  // start 'blink' timer
+
+        paintIcon( mergeLevel, true ); // repaint the icon
         break;
 
     default: // idle/stopped case
-        overlay = &stopOverlay;
-        if( AmarokConfig::animateTrayIcon() ) blinkTimerID = startTimer( 2500 );  // start 'blink' timer
-        else paintIcon( -1, true ); // repaint the icon
+        overlayVisible = false;
+//         overlay = &stopOverlay;
+//         if( AmarokConfig::animateTrayIcon() )
+//            blinkTimerID = startTimer( 2500 );  // start 'blink' timer
+
+        paintIcon( -1, true ); // repaint the icon
     }
 }
 
