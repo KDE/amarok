@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2-beta2:
+  ADD: Player-Window can also show the BlockAnalyzer.
   CHG: Run incremental scanning once a minute instead of every 30 seconds.
   FIX: When collection scanning was interrupted with Cancel, incremental
        scanning didn't work any longer.
