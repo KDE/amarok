@@ -102,11 +102,6 @@ namespace amaroK
 // Changed DCOP time output to mm:ss, by using MetaBundle::prettyLength ;)
 // prettyLength also adds an "0" when sec < 10
     
-    QString DcopHandler::PrettyTitle()
-    {
-        return EngineController::instance()->bundle().prettyTitle();
-    }
-    
     QString DcopHandler::TotalTime()
     {
         return MetaBundle::prettyLength( EngineController::instance()->bundle().length() );
