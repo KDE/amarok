@@ -1029,7 +1029,7 @@ bool CurrentTrackJob::doJob()
                 "<div align='center'>"
                 "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='"
                 + i18n( "Change Collection Setup" ) +
-                "'></div><br />"
+                "' class='button' /></div><br />"
             "</div>"
         "</div>"
                            );
@@ -1515,8 +1515,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
 
-    styleSheet += QString( ".button { text-align: center; margin: 2px; padding: 2px; display: block; border: 1px solid %1; background-color: %2; }" ).arg( text ).arg( colorGroup().base().name() );
-    styleSheet += QString( ".button:hover { border: 1px solid %1; background-color: %2; color: %3; }" ).arg( text ).arg( bg ).arg( colorGroup().base().name() );
+    styleSheet += QString( ".button { width: 100%; }" );
 
     //boxes used to display score (sb: score box)
     styleSheet += QString( ".sbtext { text-align: center; padding: 0px 4px; border-left: solid %1 1px; }" ).arg( colorGroup().base().dark( 120 ).name() );
@@ -1783,8 +1782,12 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     else
     {
         m_lyrics = i18n( "Lyrics not found." );
-        m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='" + m_lyricAddUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
-        m_lyrics += QString( "<div id='lyrics_box_searchlyrics'><a href='" + m_lyricSearchUrl + "' class='button'>" + i18n("Search Lyrics") + "</a></div>" );
+        m_lyrics += QString( "<div id='lyrics_box_addlyrics'>"
+            "<input type='button' onClick='window.location.href=\"" + m_lyricAddUrl + "\";' value='"
+            + i18n("Add Lyrics") + "' class='button' /></div>" );
+        m_lyrics += QString( "<div id='lyrics_box_searchlyrics'>"
+            "<input type='button' onClick='window.location.href=\"" + m_lyricSearchUrl + "\";' value='"
+            + i18n("Search Lyrics") + "' class='button' /></div>" );
     }
 
 
@@ -1837,8 +1840,12 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
         m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
-    m_lyrics += QString( "<div id='lyrics_box_addlyrics'><a href='" + m_lyricAddUrl + "' class='button'>" + i18n("Add Lyrics") + "</a></div>" );
-    m_lyrics += QString( "<div id='lyrics_box_searchlyrics'><a href='" + m_lyricSearchUrl + "' class='button'>" + i18n("Search Lyrics") + "</a></div>" );
+    m_lyrics += QString( "<div id='lyrics_box_addlyrics'>"
+        "<input type='button' onClick='window.location.href=\"" + m_lyricAddUrl + "\";' value='"
+        + i18n("Add Lyrics") + "' class='button' /></div>" );
+    m_lyrics += QString( "<div id='lyrics_box_searchlyrics'>"
+        "<input type='button' onClick='window.location.href=\"" + m_lyricSearchUrl + "\";' value='"
+        + i18n("Search Lyrics") + "' class='button' /></div>" );
 
 
 }
