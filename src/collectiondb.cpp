@@ -11,6 +11,9 @@
 #include "playlistbrowser.h"
 #include "threadweaver.h"
 
+#include <qfile.h>
+#include <qimage.h>
+
 #include <kapplication.h>
 #include <kconfig.h>
 #include <kdebug.h>
@@ -21,8 +24,6 @@
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <kio/job.h>
-
-#include <qimage.h>
 
 #include <sys/stat.h>
 
@@ -39,7 +40,12 @@ CollectionDB::CollectionDB()
     QCString path = ( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + "/" )
                   + "collection.db" ).local8Bit();
 
-    sqlite3_open( path, &m_db );
+    if ( sqlite3_open( path, &m_db ) != SQLITE_OK ) {
+        kdWarning() << "Database file corrupt. Removing and rebuilding database.\n";
+        sqlite3_close( m_db );
+        QFile::remove( path );
+        sqlite3_open( path, &m_db );
+    }
 
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
@@ -50,7 +56,6 @@ CollectionDB::CollectionDB()
     if( !m_cacheDir.exists( "albumcovers/cache", false ) )
         m_cacheDir.mkdir( "albumcovers/cache", false );
     m_cacheDir.cd( "albumcovers/cache" );
-
 }
 
 
