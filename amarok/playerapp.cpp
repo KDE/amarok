@@ -344,6 +344,7 @@ void PlayerApp::saveConfig()
     AmarokConfig::setBrowserWinSize    ( m_pBrowserWin->size() );
     AmarokConfig::setBrowserWinEnabled ( m_pPlayerWidget->m_pButtonPl->isOn() );
     AmarokConfig::setBrowserWinSplitter( m_pBrowserWin->m_pSplitter->sizes() );
+    AmarokConfig::setMasterVolume      ( m_pEngine->volume() );
     AmarokConfig::setPlayerPos         ( m_pPlayerWidget->pos() );
     AmarokConfig::setVersion           ( APP_VERSION );
     
