@@ -99,6 +99,8 @@ class GstEngine : public EngineBase
        
         char*                                    m_streamBuf;
         int                                      m_streamBufIndex;
+        
+        /** Used for delayed starting of the pipeline (for streaming) */
         bool                                     m_playFlag;
         
         bool                                     m_typefindResult;
