@@ -149,9 +149,10 @@ rm -rf debian
 popd # kdeextragear-1
 echo
 
+find -name "*" -exec touch {} \;
+
 make -f Makefile.cvs
 
-find -name "*" -exec touch {} \;
 rm -rf autom4te.cache
 rm stamp-h.in
 
