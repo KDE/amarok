@@ -447,14 +447,14 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
     if ( !m_values.isEmpty() )
     {
-        kdDebug() << "Local image found: " << m_values.first() << endl;
-
         QString image( m_values.first() );
         for ( uint i = 0; i < m_values.count(); i++ )
             if ( m_values[i].contains( "front", false ) || m_values[i].contains( "cover", false ) || m_values[i].contains( "folder", false ) )
                 image = m_values[i];
 
+        kdDebug() << "Local image found: " << image << endl;
         KURL u( image );
+        kdDebug() << "Filename excerpt: " << u.fileName().lower() << endl;
         if ( !m_cacheDir.exists( u.fileName().lower() ) )
         {
             QImage img = QImage( image );
