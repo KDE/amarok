@@ -14,6 +14,7 @@ class KToolBar;
 class MetaBundle;
 class QPalette;
 class Scrobbler;
+class Color;
 
 namespace KIO { class Job; }
 

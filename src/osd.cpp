@@ -12,17 +12,22 @@ the Free Software Foundation; either version 2 of the License, or
   email:     chris@chris.de; seb100@optusnet.com.au
 */
 
-#include "amarokconfig.h" //previewWidget
+#include "amarokconfig.h"   //previewWidget
+#include "collectiondb.h"   //for albumCover location
+#include "colorgenerator.h" //for gradient
 #include "osd.h"
-#include "collectiondb.h" //for albumCover location
 
 #include <qapplication.h>
 #include <qbitmap.h>
-#include <qpainter.h>
 #include <qimage.h>
+#include <qpainter.h>
+#include <qwidget.h>
 
 #include <kdebug.h>
+#include <kimageeffect.h>    //gradient backgroud image
 #include <kglobalsettings.h> //unsetColors()
+#include <kstandarddirs.h> //locate file
+#include <ktempfile.h>
 
 #include <X11/Xlib.h> //reposition()
 
@@ -93,8 +98,14 @@ void OSDWidget::renderOSDText( const QString &text )
 
     // Draw backing rectangle
     bufferPainter.setPen( Qt::black );
-    bufferPainter.setBrush( backgroundColor() );
+//     bufferPainter.setBrush( backgroundColor() );
+    createGradient( textRect.size() );
+
+    QBrush brush;
+    brush.setPixmap( m_gradient->name() );
+    bufferPainter.setBrush( brush );
     bufferPainter.drawRoundRect( textRect, 1500 / textRect.width(), 1500 / textRect.height() );
+//     createGradient( textRect.size() );
     bufferPainter.setFont( font() );
 
     const uint w = textRect.width()  - 1;
@@ -374,6 +385,21 @@ void OSDWidget::loadImage( QString &location )
         m_image = QImage::QImage(); //null image
 
 }
+
+void OSDWidget::createGradient( QSize size )
+{
+    amaroK::Color gradient = colorGroup().highlight();
+
+    //writing temp gradient image
+    m_gradient = new KTempFile( locateLocal( "tmp", "osdgradient" ), ".png", 0600 );
+    QImage image = KImageEffect::gradient( size , gradient, gradient.light(), KImageEffect::PipeCrossGradient, 3 );
+    image.save( m_gradient->file(), "PNG" );
+    m_gradient->close();
+
+    kdDebug() << "Gradient for osd: " << m_gradient->name() << endl;
+//     setPaletteBackgroundPixmap( QPixmap( m_gradient->name() ) );
+}
+
 
 //////  OSDPreviewWidget below /////////////////////
 
