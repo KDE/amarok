@@ -5,6 +5,8 @@ SECTION 1: Preparation
 
 SECTION 2: Creating and Testing the Tarball
 
+ * Before starting, run the "fixuifiles" script on the source,
+   to be sure the .ui file versions are correct.
  * Run the release_amarok script; OR
    Follow the guide lines in appendix A
  * Test the following:
