@@ -52,6 +52,7 @@ GstEngine::eos_cb( GstElement*, GstElement* )
 {
     kdDebug() << k_funcinfo << endl;
 
+    pObject->stop();
     //     pObject->emit endOfTrack();
 }
 
@@ -133,13 +134,14 @@ GstEngine::typefindFound_cb( GstElement* /*typefind*/, GstCaps* /*caps*/, GstEle
 GstEngine::GstEngine()
     : EngineBase()
     , m_pThread( NULL )
+    , m_pipelineFilled( false )
 {}
 
 
 GstEngine::~GstEngine()
 {
     stop();
-    gst_object_unref( GST_OBJECT( m_pThread ) );
+    cleanPipeline();
 }
 
 
@@ -155,34 +157,7 @@ GstEngine::init( bool&, int scopeSize, bool )
     
 //     g_module_open( "libgstreamer-0.8.so", (GModuleFlags) 0 );
     gst_init( NULL, NULL );
-    
-    /* create a new thread to hold the elements */
-    kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
-    m_pThread              = gst_thread_new          ( "thread" );
-   
-    /* create a disk reader */
-    kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
-    m_pFilesrc = gst_element_factory_make( "filesrc", "disk_source" );
-    m_pSpider  = gst_element_factory_make( "spider", "spider" );
-    /* and an audio sink */
-    
-    kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
-    m_pAudiosink           = gst_element_factory_make( "osssink", "play_audio" );
-    GstElement *pIdentity  = gst_element_factory_make( "identity", "rawscope" );
-    m_pVolume              = gst_element_factory_make( "volume", "volume" );
-    
-    g_signal_connect ( G_OBJECT( pIdentity ), "handoff",
-                       G_CALLBACK( handoff_cb ), m_pThread );
-    
-//     g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
-//                        G_CALLBACK( eos_cb ), m_pThread );
-
-    /* add objects to the main pipeline */
-    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, pIdentity,
-                                            m_pAudiosink, m_pVolume, NULL );
-    /* link src to sink */
-    
-    gst_element_link_many( m_pFilesrc, m_pSpider, pIdentity, m_pVolume, m_pAudiosink, NULL );
+    fillPipeline();
 }
 
 
@@ -226,8 +201,8 @@ GstEngine::canDecode( const KURL &url, mode_t, mode_t )
     g_signal_connect ( G_OBJECT( typefind ), "have-type",
                        G_CALLBACK( typefindFound_cb ), pipeline );
 
-    //     g_signal_connect ( G_OBJECT( typefind ), "error",
-    //                        G_CALLBACK( typefindError_cb ), pipeline );
+//     g_signal_connect ( G_OBJECT( typefind ), "error",
+//                        G_CALLBACK( typefindError_cb ), pipeline );
 
     gst_element_set_state( GST_ELEMENT( pipeline ), GST_STATE_PLAYING );
 
@@ -299,7 +274,9 @@ const QObject*
 GstEngine::play( const KURL& url )
 {
     stop();
-
+    fillPipeline();
+    
+    //load track into filesrc
     g_object_set( G_OBJECT( m_pFilesrc ), "location", url.path().latin1(), NULL );
     play();
 
@@ -310,6 +287,8 @@ GstEngine::play( const KURL& url )
 void 
 GstEngine::play()
 {
+    kdDebug() << k_funcinfo << endl;
+    
     /* start playing */
     gst_element_set_state( GST_ELEMENT( m_pThread ), GST_STATE_PLAYING );
 }
@@ -319,6 +298,7 @@ void
 GstEngine::stop()
 {
     kdDebug() << k_funcinfo << endl;
+    
     /* stop the thread */
     gst_element_set_state (GST_ELEMENT( m_pThread ), GST_STATE_NULL );
 }
@@ -367,6 +347,54 @@ GstEngine::setVolume( int percent )
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
+
+void
+GstEngine::fillPipeline()
+{
+    if ( m_pipelineFilled )
+        cleanPipeline();
+        
+    /* create a new thread to hold the elements */
+    kdDebug() << k_funcinfo << "BEFORE gst_thread_new ( thread );\n";
+    m_pThread              = gst_thread_new          ( "thread" );
+   
+    /* create a disk reader */
+    kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( filesrc, disk_source );\n";
+    m_pFilesrc   = gst_element_factory_make( "filesrc", "disk_source" );
+    m_pSpider    = gst_element_factory_make( "spider", "spider" );
+    /* and an audio sink */
+    
+    kdDebug() << k_funcinfo << "BEFORE gst_element_factory_make( osssink, play_audio );\n";
+    m_pAudiosink = gst_element_factory_make( "osssink", "play_audio" );
+    m_pIdentity  = gst_element_factory_make( "identity", "rawscope" );
+    m_pVolume    = gst_element_factory_make( "volume", "volume" );
+    
+    g_signal_connect ( G_OBJECT( m_pIdentity ), "handoff",
+                       G_CALLBACK( handoff_cb ), m_pThread );
+    
+/*    g_signal_connect ( G_OBJECT( m_pAudiosink ), "eos",
+                       G_CALLBACK( eos_cb ), m_pThread );*/
+    
+    /* add objects to the main pipeline */
+    gst_bin_add_many( GST_BIN( m_pThread ), m_pFilesrc, m_pSpider, m_pIdentity,
+                                            m_pVolume, m_pAudiosink, NULL );
+    /* link src to sink */
+    gst_element_link_many( m_pFilesrc, m_pSpider, m_pIdentity, m_pVolume, m_pAudiosink, NULL );
+
+    setVolume( volume() );
+    m_pipelineFilled = true;
+}
+
+
+void
+GstEngine::cleanPipeline()
+{
+    if ( m_pipelineFilled ) {
+        gst_object_unref( GST_OBJECT( m_pThread ) );
+        m_pipelineFilled = false;
+    }
+}
+
 
 void
 GstEngine::interpolate( const vector<float> &inVec, vector<float> &outVec )

@@ -52,11 +52,11 @@ class GstEngine : public EngineBase
         
         QStringList                              availableEffects() const            { return QStringList(); }
         std::vector<long>                        activeEffects() const               { return std::vector<long>(); }
-        QString                                  effectNameForId( long id ) const    { return QString(); }
-        bool                                     effectConfigurable( long id ) const { return false; }
-        long                                     createEffect( const QString& name ) { return 0; }
-        void                                     removeEffect( long id ) {}
-        void                                     configureEffect( long id ) {}
+        QString                                  effectNameForId( long ) const       { return QString(); }
+        bool                                     effectConfigurable( long ) const    { return false; }
+        long                                     createEffect( const QString& )      { return 0; }
+        void                                     removeEffect( long )                {}
+        void                                     configureEffect( long )             {}
         
         bool                                     decoderConfigurable()               { return false; }
 
@@ -75,6 +75,8 @@ class GstEngine : public EngineBase
         static void                              typefindError_cb( GstElement *typefind, GstElement *pipeline );
         static void                              typefindFound_cb( GstElement *typefind, GstCaps *caps, GstElement *pipeline );
 
+        void                                     fillPipeline();
+        void                                     cleanPipeline();
         void                                     interpolate( const vector<float>& inVec, vector<float>& outVec );
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
@@ -85,13 +87,15 @@ class GstEngine : public EngineBase
         GstElement*                              m_pAudiosink;
         GstElement*                              m_pSpider;
         GstElement*                              m_pFilesrc;
+        GstElement*                              m_pIdentity;
         GstElement*                              m_pVolume;
 
         vector<float>                            m_scopeBuf;
-        int                                      m_scopeBufIndex;
-        int                                      m_scopeSize;
+        uint                                     m_scopeBufIndex;
+        uint                                     m_scopeSize;
        
         bool                                     m_typefindResult;
+        bool                                     m_pipelineFilled;
 };
 
 
