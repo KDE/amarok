@@ -16,7 +16,7 @@ email                : markey@web.de
  ***************************************************************************/
 
 #include "amarokarts.h"
-#include "artseffects.h"
+// #include "artseffects.h"
 #include "artsengine.h"
 #include "enginebase.h"
 
@@ -63,7 +63,7 @@ AMAROK_EXPORT_PLUGIN( ArtsEngine )
 
 
 ArtsEngine::ArtsEngine()
-        : EngineBase()
+        : EngineBase( Engine::Socket, true, true )
         , m_pArtsDispatcher( new KArtsDispatcher( this ) )
         , m_pPlayObject( 0 )
         , m_pPlayObjectXfade( 0 )
@@ -86,7 +86,7 @@ ArtsEngine::~ ArtsEngine()
     killTimers();
     delete m_pPlayObject;
     delete m_pPlayObjectXfade;
-    saveEffects();
+//     saveEffects();
 
     m_server            = Arts::SoundServerV2::null();
     m_scope             = Amarok::RawScope::null();
@@ -100,27 +100,27 @@ ArtsEngine::~ ArtsEngine()
 }
 
 
-bool ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
+bool ArtsEngine::init()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
 
-    m_scopeSize = 1 << scopeSize;
-    m_restoreEffects = restoreEffects;
-    m_mixerHW = -1;   //initialize
+    m_scopeSize = 512;
+//     m_scopeSize = 1 << scopeSize;
+//     m_restoreEffects = restoreEffects;
 
     // We must restart artsd whenever we installed new mcopclasses
-    if ( restart )
-    {
-        QCString kill_cmdline;
-        kill_cmdline = "killall artsd";
-
-        int kill_status = ::system( kill_cmdline );
-        if ( kill_status != -1 && WIFEXITED( kill_status ) )
-        {
-            kdWarning() << "killall artsd succeeded." << endl;
-            restart = false;
-        }
-    }
+//     if ( restart )
+//     {
+//         QCString kill_cmdline;
+//         kill_cmdline = "killall artsd";
+//
+//         int kill_status = ::system( kill_cmdline );
+//         if ( kill_status != -1 && WIFEXITED( kill_status ) )
+//         {
+//             kdWarning() << "killall artsd succeeded." << endl;
+//             restart = false;
+//         }
+//     }
 
     KConfig config( "kcmartsrc" );
     config.setGroup( "Arts" );
@@ -244,7 +244,13 @@ bool ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
     Arts::connect( m_xfade, "outvalue_l", m_globalEffectStack, "inleft" );
     Arts::connect( m_xfade, "outvalue_r", m_globalEffectStack, "inright" );
 
-    if ( m_restoreEffects ) loadEffects();
+    { //volume mixer
+        m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
+        m_volumeControl.start();
+        m_volumeId = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
+    }
+
+//     if ( m_restoreEffects ) loadEffects();
     startTimer( ARTS_TIMER );
     connect( m_pConnectTimer, SIGNAL( timeout() ), this, SLOT( connectTimeout() ) );
 
@@ -252,29 +258,6 @@ bool ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
     return true;
 }
 
-
-bool ArtsEngine::initMixer( bool hardware )
-{
-    { //make sure any previously started volume control gets killed
-        if ( m_volumeId )
-        {
-            m_globalEffectStack.remove( m_volumeId );
-            m_volumeId = 0;
-            m_volumeControl = Arts::StereoVolumeControl::null();
-        }
-        closeMixerHW();
-    }
-
-    if ( hardware )
-        hardware = initMixerHW();
-    else
-    {
-        m_volumeControl = Arts::DynamicCast( m_server.createObject( "Arts::StereoVolumeControl" ) );
-        m_volumeControl.start();
-        m_volumeId = m_globalEffectStack.insertBottom( m_volumeControl, "Volume Control" );
-    }
-    return hardware;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
@@ -297,7 +280,7 @@ bool ArtsEngine::canDecode( const KURL &url ) const
 }
 
 
-long ArtsEngine::position() const
+uint ArtsEngine::position() const
 {
     if ( m_pPlayObject )
         return m_pPlayObject->currentTime().seconds * 1000 +
@@ -307,31 +290,43 @@ long ArtsEngine::position() const
 }
 
 
-EngineBase::EngineState ArtsEngine::state() const
+Engine::State ArtsEngine::state() const
 {
     if ( m_pPlayObject && !m_pPlayObject->isNull() )
     {
         if ( m_pPlayObject->object().isNull() )
-            return Playing;
+            return Engine::Playing;
 
         switch ( m_pPlayObject->state() )
         {
             case Arts::posPaused:
-                return Paused;
+                return Engine::Paused;
             case Arts::posPlaying:
-                return Playing;
+                return Engine::Playing;
             case Arts::posIdle:
-                return Idle;
+                return Engine::Idle;
         }
     }
 
-    return EngineBase::Empty;
+    return Engine::Empty;
 }
 
 
-std::vector<float>* ArtsEngine::scope()
+const Engine::Scope& ArtsEngine::scope()
 {
-    return m_scope.scope();
+    static Engine::Scope out;
+    out.resize( m_scopeSize );
+    std::vector<float>* in = m_scope.scope();
+
+    if ( in ) {
+        // Convert float to int
+        for ( int i = 0; i < m_scopeSize; i++ )
+            out[i] = (int16_t) ( in->at( i ) * sizeof( int16_t ) );
+
+        delete in;
+    }
+
+    return out;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -340,12 +335,12 @@ bool ArtsEngine::load( const KURL& url, bool stream )
 {
     Engine::Base::load( url, stream );
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
-    
+
     kdDebug() << "aRts-Engine: url.path()     == " << url.path()     << endl;
     kdDebug() << "aRts-Engine: url.protocol() == " << url.protocol() << endl;
     kdDebug() << "aRts-Engine: url.host()     == " << url.host()     << endl;
     kdDebug() << "aRts-Engine: url.port()     == " << url.port()     << endl;
-    
+
     m_xfadeFadeout = false;
     startXfade();
 
@@ -371,7 +366,7 @@ bool ArtsEngine::load( const KURL& url, bool stream )
 
         play();
     }
-    
+
     return true;
 }
 
@@ -409,10 +404,10 @@ void ArtsEngine::connectTimeout()
 bool ArtsEngine::play( uint )
 {
     if ( !m_pPlayObject ) return false;
-        
+
     m_pPlayObject->play();
     emit stateChanged( Engine::Playing );
-    
+
     return true;
 }
 
@@ -429,20 +424,20 @@ void ArtsEngine::stop()
 
     m_xfadeFadeout = true;
     startXfade();
-    
+
     emit stateChanged( Engine::Empty );
 }
 
 
 void ArtsEngine::pause()
 {
-    if ( !m_pPlayObject ) return false;
-       
-    if ( m_pPlayObject->paused() )
+    if ( !m_pPlayObject ) return;
+
+    if ( state() == Engine::Paused )
         m_pPlayObject->play();
-    else    
+    else
         m_pPlayObject->pause();
-    
+
     emit stateChanged( state() );
 }
 
@@ -463,7 +458,7 @@ void ArtsEngine::seek( uint ms )
 
 bool ArtsEngine::decoderConfigurable()
 {
-    if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pDecoderConfigWidget )
+/*    if ( m_pPlayObject && !m_pPlayObject->object().isNull() && !m_pDecoderConfigWidget )
     {
         Arts::TraderQuery query;
         query.supports( "Interface", "Arts::GuiFactory" );
@@ -474,14 +469,14 @@ bool ArtsEngine::decoderConfigurable()
         delete queryResults;
 
         return yes;
-    }
+    }*/
     return false;
 }
 
 
 void ArtsEngine::configureDecoder() //slot
 {
-    //this method shows a GUI for an aRts CODEC. currently only working with markey's modplug_artsplugin
+/*    //this method shows a GUI for an aRts CODEC. currently only working with markey's modplug_artsplugin
 
     if ( m_pPlayObject && !m_pDecoderConfigWidget )
     {
@@ -489,7 +484,7 @@ void ArtsEngine::configureDecoder() //slot
         connect( m_pPlayObject, SIGNAL( destroyed() ), m_pDecoderConfigWidget, SLOT( deleteLater() ) );
 
         m_pDecoderConfigWidget->show();
-    }
+    }*/
 }
 
 
@@ -525,13 +520,13 @@ void ArtsEngine::startXfade()
 
 void ArtsEngine::timerEvent( QTimerEvent* )
 {
-   if( state() == Idle )
-       emit endOfTrack();
-   
+   if( state() == Engine::Idle )
+       emit trackEnded();
+
    if ( m_xfadeValue > 0.0 )
    {
         m_xfadeValue -= ( m_xfadeLength ) ?  1.0 / m_xfadeLength * ARTS_TIMER : 1.0;
-        
+
         if ( m_xfadeValue <= 0.0 )
         {
             m_xfadeValue = 0.0;
@@ -547,7 +542,7 @@ void ArtsEngine::timerEvent( QTimerEvent* )
             value = 1.0 - log10( ( 1.0 - m_xfadeValue ) * 9.0 + 1.0 );
         else
             value = log10( m_xfadeValue * 9.0 + 1.0 );
-        
+
         m_xfade.percentage( ( m_xfadeCurrent == "invalue2" ) ? value : 1.0 - value );
 //         kdDebug() << k_funcinfo << "percentage: " << m_xfade.percentage() << endl;
     }

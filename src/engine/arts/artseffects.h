@@ -1,8 +1,8 @@
 /***************************************************************************
-file                 : artsengine.cpp - aRts audio interface
-begin                : Dec 31 2003
-copyright            : (C) 2003 Mark Kretschmann <markey@web.de>
-/***************************************************************************
+ file                 : artsengine.cpp - aRts audio interface
+ begin                : Dec 31 2003
+ copyright            : (C) 2003 Mark Kretschmann <markey@web.de>
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -11,10 +11,11 @@ copyright            : (C) 2003 Mark Kretschmann <markey@web.de>
  *                                                                         *
  ***************************************************************************/
 
+#if 0
 
 class ArtsEffects : public Engine::Effects
 {
-    public:        
+    public:
         QStringList                              availableEffects() const;
         std::vector<long>                        activeEffects() const;
         QString                                  effectNameForId( long id ) const;
@@ -41,3 +42,5 @@ struct EffectContainer
     QGuardedPtr<ArtsConfigWidget>        widget;
 };
 
+
+#endif

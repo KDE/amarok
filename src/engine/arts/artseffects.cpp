@@ -1,8 +1,8 @@
 /***************************************************************************
-file                 : artsengine.cpp - aRts audio interface
-begin                : Dec 31 2003
-copyright            : (C) 2003 Mark Kretschmann <markey@web.de>
-/***************************************************************************
+ file                 : artsengine.cpp - aRts audio interface
+ begin                : Dec 31 2003
+ copyright            : (C) 2003 Mark Kretschmann <markey@web.de>
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -11,6 +11,7 @@ copyright            : (C) 2003 Mark Kretschmann <markey@web.de>
  *                                                                         *
  ***************************************************************************/
 
+#if 0
 
 void ArtsEngine::loadEffects()
 {
@@ -297,4 +298,7 @@ ArtsEngine::ArtsConfigWidget::~ArtsConfigWidget()
     delete m_pArtsWidget;
     m_gui = Arts::Widget::null();
 }
+
+
+#endif
 

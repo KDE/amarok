@@ -18,7 +18,7 @@ email                : markey@web.de
 #ifndef AMAROK_ARTSENGINE_H
 #define AMAROK_ARTSENGINE_H
 
-#include "amarokarts.h" 
+#include "amarokarts.h"
 #include "enginebase.h"
 
 #include <vector>
@@ -50,40 +50,36 @@ class ArtsEngine : public Engine::Base
     public:
                                                  ArtsEngine();
                                                  ~ArtsEngine();
-                                        
-        bool                                     init(); 
-                                                                                                  
-        bool                                     initMixer( bool hardware );
+
+        bool                                     init();
+
         bool                                     canDecode( const KURL &url ) const;
-        StreamingMode                            streamingMode() { return Socket; }
+        Engine::StreamingMode                    streamingMode() { return Engine::Socket; }
         uint                                     position() const;
-        Enginee::State                           state() const;
+        Engine::State                            state() const;
         const Engine::Scope&                     scope();
 
         bool                                     decoderConfigurable();
-         
+
     public slots:
         bool                                     load( const KURL&, bool stream );
-        bool                                     play( uint );
+        bool                                     play( uint offset = 0 );
         void                                     stop();
         void                                     pause();
 
         void                                     seek( uint ms );
-        void                                     configureDecoder();                                                   
+        void                                     configureDecoder();
 
-    protected:        
+    protected:
         void                                     setVolumeSW( uint percent );
-    
+
     private slots:
         void                                     connectPlayObject();
         void                                     connectTimeout();
-    
+
     private:
         void                                     startXfade();
         void                                     timerEvent( QTimerEvent* );
-
-        void                                     loadEffects();
-        void                                     saveEffects();
 
         /////////////////////////////////////////////////////////////////////////////////////
         // ATTRIBUTES
@@ -105,12 +101,12 @@ class ArtsEngine : public Engine::Base
         long                                     m_scopeId;
         int                                      m_scopeSize;
         long                                     m_volumeId;
-        QMap<long, EffectContainer>              m_effectMap;
+//         QMap<long, EffectContainer>              m_effectMap;
 
         bool                                     m_xfadeFadeout;
         float                                    m_xfadeValue;
         QString                                  m_xfadeCurrent;
-        QGuardedPtr<ArtsConfigWidget>            m_pDecoderConfigWidget;
+//         QGuardedPtr<ArtsConfigWidget>            m_pDecoderConfigWidget;
         QTimer*                                  m_pConnectTimer;
 };
 
