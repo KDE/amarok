@@ -86,7 +86,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     
     //<open database>
         QCString path = ( KGlobal::dirs() ->saveLocation( "data", kapp->instanceName() + "/" )
-                        + "collection.db" ).latin1();
+                        + "collection.db" ).local8Bit();
         //remove database file if version is incompatible
         if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION )
             ::unlink( path );
@@ -193,7 +193,7 @@ CollectionView::dirDirty( const QString& path )
 
     //remove old records with the same dir as our dirty dir, to prevent dupes
     QCString command = "DELETE FROM tags WHERE dir = '";
-    command += path.latin1();
+    command += path.local8Bit();
     command += "';";
     execSql( command );
         
@@ -210,7 +210,7 @@ CollectionView::renderView()  //SLOT
 
     //query database for all records with the specified category
     QCString command = "SELECT DISTINCT ";
-    command += m_category.lower().latin1();
+    command += m_category.lower().local8Bit();
     command += " FROM tags;";
 
     QStringList values;
@@ -238,9 +238,9 @@ CollectionView::slotExpanded( QListViewItem* item )  //SLOT
 
     //query database for all tracks in our sub-category
     QCString command = "SELECT title, url FROM tags WHERE ";
-    command += m_category.lower().latin1();
+    command += m_category.lower().local8Bit();
     command += " = '";
-    command += item->text( 0 ).latin1();
+    command += item->text( 0 ).local8Bit();
     command += "';";
 
     QStringList values;
@@ -371,7 +371,7 @@ CollectionView::customEvent( QCustomEvent *e ) {
             command += tag;
             command += "');";
 
-            execSql( command.latin1() );
+            execSql( command.local8Bit() );
             delete bundle;
             //grant event loop some time for breathing
             if ( i % 10 ) kapp->processEvents();
