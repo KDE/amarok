@@ -550,7 +550,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
 
             menu.insertItem( i18n( "&Load" ), LOAD );
-            menu.insertItem( i18n( "&Add to playlist" ), ADD );
+            menu.insertItem( i18n( "&Append to playlist" ), ADD );
             menu.insertSeparator();
             if( item->isModified() ) {
                 menu.insertItem( SmallIcon("filesave"), i18n( "&Save" ), SAVE );
@@ -599,7 +599,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         enum Actions { MAKE, APPEND, QUEUE, REMOVE, INFO };
 
         menu.insertItem( i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( i18n( "&Add to Playlist" ), APPEND ); //TODO say Append to Playlist
+        menu.insertItem( i18n( "&Append to Playlist" ), APPEND ); //TODO say Append to Playlist
         menu.insertItem( i18n( "&Queue After Current Track" ), QUEUE );
         menu.insertSeparator();
         menu.insertItem( SmallIcon("edittrash"), i18n( "&Remove" ), REMOVE );
@@ -696,7 +696,7 @@ void PlaylistBrowserView::slotAnimation() //SLOT
     static uint iconCounter=1;
 
     for( QListViewItem *item = m_loadingItems.first(); item; item = m_loadingItems.next() )
-        item->setPixmap( 0, iconCounter==1 ? *m_loading1 : *m_loading2 );
+        ((PlaylistBrowserItem *)item)->setLoadingPix( iconCounter==1 ? m_loading1 : m_loading2 );
 
     iconCounter++;
     if( iconCounter > 2 )
@@ -977,6 +977,7 @@ PlaylistBrowserItem::PlaylistBrowserItem( KListView *parent, QListViewItem *afte
     , m_loaded( false )
     , m_modified( false )
     , m_savePix( 0 )
+    , m_loadingPix( 0 )
     , m_lastTrack( 0 )
 {
     m_trackList.setAutoDelete( true );
@@ -988,6 +989,8 @@ PlaylistBrowserItem::PlaylistBrowserItem( KListView *parent, QListViewItem *afte
 
     //kdDebug() << fileBaseName( url.path() ) << endl;
     setText(0, fileBaseName( url.path() ) );
+    if( m_url.protocol() != "cur" )
+        setPixmap( 0, SmallIcon("player_playlist") );
 
     if( !m_trackCount )
         load();   //load the playlist file
@@ -1257,8 +1260,10 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QRect rect( ((lv->treeStepSize()-9) / 2) + 1, (height()-9) / 2, 9, 9 );
 
-    if( m_loading && pixmap(0) ) {
-        pBuf.drawPixmap( (lv->treeStepSize() - pixmap(0)->width())/2, (height() - pixmap(0)->height())/2, *pixmap(0) );
+    if( m_loading && m_loadingPix ) {
+        pBuf.drawPixmap( (lv->treeStepSize() - m_loadingPix->width())/2,
+                         (height() - m_loadingPix->height())/2,
+                         *m_loadingPix );
     }
     else if( m_trackCount ) {
         //draw +/- symbol to expande/collapse the playlist
@@ -1287,6 +1292,11 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     if( m_modified && m_savePix ) {
         pBuf.drawPixmap( text_x, (textHeight - m_savePix->height())/2, *m_savePix );
         text_x += m_savePix->width()+4;
+    } else if( pixmap(0) ) {
+        int y = (textHeight - pixmap(0)->height())/2;
+        if( detailedView ) y++;
+        pBuf.drawPixmap( text_x, y, *pixmap(0) );
+        text_x += pixmap(0)->width()+4;
     }
 
     // draw the playlist name in bold
@@ -1312,8 +1322,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
     if( detailedView ) {
         QString info;
 
-        if( m_modified )
-            text_x = lv->treeStepSize() + 3;
+        text_x = lv->treeStepSize() + 3;
         font.setBold( false );
         pBuf.setFont( font );
 
@@ -1412,6 +1421,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
                         "ORDER BY statistics.percentage DESC "
                         "LIMIT 0,15;" );
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
+    lastItem->setDragEnabled(true);
 
     db->execSql( "SELECT DISTINCT name FROM artist ORDER BY name", &values, &names );
     SmartPlaylist *item = 0;
@@ -1436,6 +1446,7 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
                         "ORDER BY statistics.playcounter DESC "
                         "LIMIT 0,15;" );
     lastItem->setPixmap( 0, SmallIcon("player_playlist") );
+    lastItem->setDragEnabled(true);
 
     db->execSql( "SELECT DISTINCT name FROM artist ORDER BY name", &values, &names );
     item = 0;

@@ -129,6 +129,7 @@ Q_OBJECT
         int length() { return m_length; }
         bool isModified() { return m_modified; }
         void setModified( bool );
+        void setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
 
         KURL::List tracksURL();    //returns the list of tracks url
         QPtrList<TrackItemInfo> trackList() { return m_trackList; }    //returns the list of tracks information
@@ -161,6 +162,7 @@ Q_OBJECT
         bool m_loaded;    //playlist loaded
         bool m_modified;    //the playlist has been modified
         QPixmap *m_savePix;
+        QPixmap *m_loadingPix;
         PlaylistTrackItem *m_lastTrack;
 };
 
