@@ -180,6 +180,9 @@
                     <property name="suffix">
                         <string> ms</string>
                     </property>
+                    <property name="lineStep">
+                        <number>100</number>
+                    </property>
                     <property name="whatsThis" stdset="0">
                         <string>The time in milliseconds to show the OSD. The value must be between 500 ms and 10000 ms.</string>
                     </property>
