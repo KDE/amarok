@@ -17,6 +17,7 @@ VERSION 1.2:
   ADD: Cover-Manager supports drag-and-drop.
   ADD: Tags are now read from the Collection database if they are already
        stored. This speeds up adding items to the playlist. (BR 90137)
+  ADD: Context-browser shows "Suggested Tracks", utilizing audioscrobbler.
   FIX: Configure does no longer print "Good - Configure has finished" when
        a dependency is missing.
   ADD: Shaded current-track marker in playlist.
