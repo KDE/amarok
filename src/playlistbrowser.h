@@ -35,7 +35,7 @@ Q_OBJECT
        PlaylistBrowser( const char* );
        ~PlaylistBrowser();
        void loadPlaylists();
-       void addPlaylist( QString path, bool force=false, const QString& name = QString::null );
+       void addPlaylist( QString path, bool force=false );
        void savePlaylist( PlaylistBrowserItem * );
        QString playlistCacheFile();    //return the playlists stats cache file
        ViewMode viewMode() { return m_viewMode; }

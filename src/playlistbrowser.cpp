@@ -121,7 +121,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     // Check if user has installed a new version
     if ( APP_VERSION != AmarokConfig::version() )
-        addPlaylist( locate("data","amarok/data/playlistbrowser.m3u"), false, i18n( "Cool Streams" ) );
+        addPlaylist( locate("data","amarok/data/Cool-Streams.m3u"), false );
 
     loadPlaylists();    //load the playlists stats cache
 }
@@ -248,7 +248,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
 }
 
 
-void PlaylistBrowser::addPlaylist( QString path, bool force, const QString& name )
+void PlaylistBrowser::addPlaylist( QString path, bool force )
 {
     // this function add a playlist to the playlist browser
 
@@ -273,9 +273,6 @@ void PlaylistBrowser::addPlaylist( QString path, bool force, const QString& name
             deleteButton->setEnabled( true );
         }
         lastPlaylist = new PlaylistBrowserItem( m_listview, lastPlaylist, KURL( path ) );
-
-        if ( !name.isNull() )
-            lastPlaylist->setText( 0, name );
     }
 }
 
