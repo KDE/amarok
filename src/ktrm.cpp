@@ -314,6 +314,8 @@ QString KTRMResult::title() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->title;
+#else
+    return QString::null;
 #endif
 }
 
@@ -321,6 +323,8 @@ QString KTRMResult::artist() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->artist;
+#else
+    return QString::null;
 #endif
 }
 
@@ -328,6 +332,8 @@ QString KTRMResult::album() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->album;
+#else
+    return QString::null;
 #endif
 }
 
@@ -335,6 +341,8 @@ int KTRMResult::track() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->track;
+#else
+    return 0;
 #endif
 }
 
@@ -342,6 +350,8 @@ int KTRMResult::year() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->year;
+#else
+    return 0;
 #endif
 }
 
@@ -349,6 +359,8 @@ bool KTRMResult::operator<(const KTRMResult &r) const
 {
 #ifdef HAVE_MUSICBRAINZ
     return r.d->relevance < d->relevance;
+#else
+    return false;
 #endif
 }
 
@@ -356,6 +368,8 @@ bool KTRMResult::operator>(const KTRMResult &r) const
 {
 #ifdef HAVE_MUSICBRAINZ
     return r.d->relevance > d->relevance;
+#else
+    return true;
 #endif
 }
 
@@ -364,6 +378,8 @@ bool KTRMResult::isEmpty() const
 #ifdef HAVE_MUSICBRAINZ
     return d->title.isEmpty() && d->artist.isEmpty() && d->album.isEmpty() &&
         d->track == 0 && d->year == 0;
+#else
+    return true;
 #endif
 }
 #ifdef HAVE_MUSICBRAINZ
@@ -409,6 +425,8 @@ QString KTRMLookup::file() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->file;
+#else
+    return QString::null;
 #endif
 }
 
@@ -416,6 +434,8 @@ int KTRMLookup::fileId() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->fileId;
+#else
+    return -1;
 #endif
 }
 
@@ -533,6 +553,8 @@ KTRMResultList KTRMLookup::results() const
 {
 #ifdef HAVE_MUSICBRAINZ
     return d->results;
+#else
+    return KTRMResultList();
 #endif
 }
 

@@ -19,6 +19,9 @@
  *   USA                                                                   *
  ***************************************************************************/
 
+#ifndef COLORGENERATOR_H
+#define COLORGENERATOR_H
+
 #include <kdebug.h>
 
 namespace amaroK {
@@ -71,3 +74,6 @@ public:
 };
 
 }
+
+#endif
+

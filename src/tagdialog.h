@@ -10,12 +10,7 @@
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
 
-#ifdef HAVE_MUSICBRAINZ
-    #include "ktrm.h"
-#else
-    // Dummy class for queryDone argument.
-    class KTRMResultList {};
-#endif
+#include "ktrm.h"
 
 #include <kurl.h>             //stack alloc
 #include <qmap.h>

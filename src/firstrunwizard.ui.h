@@ -21,7 +21,7 @@ namespace amaroK
     extern QPixmap getPNG( const QString& );
     extern QPixmap getJPG( const QString& );
 
-    extern KConfig *config( const QString& = "General" );
+    extern KConfig *config( const QString& );
 }
 using namespace amaroK;
 
