@@ -59,13 +59,13 @@ class BrowserWin : public QWidget//, public KXMLGuiClient
 
         KActionCollection *actionCollection() const { return m_pActionCollection; }
 
+        virtual bool eventFilter( QObject*, QEvent* );
+
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
 
     private:
-        bool eventFilter( QObject*, QEvent* );
-
         BrowserBar     *m_browsers;
         PlaylistWidget *m_playlist;
         KLineEdit      *m_lineEdit;
