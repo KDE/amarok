@@ -1029,7 +1029,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     "<tr>"
                         "<td width='1'>"
                             "<a href='fetchcover:%2 @@@ %3'>"
-                            "<img class='album-image' align='left' vspace='2' hspace='2'title='%4'src='%5'/>"
+                            "<img class='album-image' align='left' vspace='2' hspace='2' title='%4' src='%5'/>"
                             "</a>"
                         "</td>"
                         "<td valign='middle' align='left'>"
