@@ -49,6 +49,19 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 }
 
 void
+OSDWidget::show( const QString &text, QImage newImage )
+{
+    m_text = text;
+    if ( !newImage.isNull() ) {
+        m_cover = newImage;
+        int w = m_scaledCover.width();
+        int h = m_scaledCover.height();
+        m_scaledCover = m_cover.smoothScale(w, h);
+    }
+    show();
+}
+
+void
 OSDWidget::show() //virtual
 {
     if ( !isEnabled() || m_text.isEmpty() )

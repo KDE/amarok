@@ -34,8 +34,8 @@ class OSDWidget : public QWidget
         void unsetColors();
 
       public slots:
-        /** calls setText() then show() */
-        void show( const QString &text ) { m_text = text; show(); }
+        /** calls setText() then show(), after setting image if needed */
+        void show( const QString &text, QImage newImage = QImage::QImage() );
 
         /** reimplemented, shows the OSD */
         virtual void show();

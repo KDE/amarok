@@ -48,6 +48,7 @@ email                : markey@web.de
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()
 #include <kglobalsettings.h>     //applyColorScheme()
+#include <kiconloader.h>         //amarok Icon
 #include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
@@ -725,6 +726,9 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
+    //get the amarok icon to show in osd if not playing - else show album cover.
+    QImage osdImage = QImage::QImage();
+    Engine::Playing ? osdImage = QImage::QImage()  :  osdImage = QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
     amaroK::OSD::instance()->OSDWidget::show( i18n("Volume: %1%").arg( newVolume ) );
 }
 

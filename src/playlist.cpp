@@ -610,7 +610,8 @@ Playlist::activate( QListViewItem *item )
 
         setCurrentTrack( 0 );
         EngineController::instance()->stop();
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Playlist finished") );
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Playlist finished"),
+                                          QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ) );
     }
 }
 
@@ -1718,7 +1719,8 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
         QApplication::clipboard()->setText( text, QClipboard::Selection );
 
-        amaroK::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ) );
+        amaroK::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ),
+                                 QImage(CollectionDB::instance()->albumImage(MetaBundle( (PlaylistItem*)playlistItem )) ) );
     }
 }
 
