@@ -21,21 +21,20 @@
 #include "playlistitem.h"
 #include "playlistwidget.h"
 
-#include <qwidget.h>
-#include <qpixmap.h>
 #include <qcstring.h>
-#include <qstringlist.h>
-#include <qdict.h>
+#include <qmap.h>
+#include <qpixmap.h>
+#include <qwidget.h>
 
-#include <klistview.h>
-#include <kiconloader.h>
 #include <kdebug.h>
-#include <kurl.h>
-#include <kglobal.h>
-#include <kfileitem.h>
-#include <kmimetype.h>
 #include <kdirlister.h>
+#include <kfileitem.h>
+#include <kglobal.h>
+#include <kiconloader.h>
 #include <klineedit.h>
+#include <klistview.h>
+#include <kmimetype.h>
+#include <kurl.h>
 
 BrowserWidget::BrowserWidget( QWidget *parent, const char *name ) : KListView( parent,name )
 {
@@ -114,61 +113,40 @@ void BrowserWidget::slotCompleted()
 
     KFileItemList myItems = m_pDirLister->items();
     KFileItemListIterator it( myItems );
-    QStringList fileList, dirList;
-        
-    QDict<KFileItem> dictFile, dictDir;
-        
+
+    QMap<QString, KFileItem*> itemMap;
+
+// put KFileItems in a QMap for sorting
     while ( *it )
     {
-        if ( (*it)->isFile() )
-        {
-            dictFile.insert( (*it)->url().path().lower(), *it );
-            fileList.append( (*it)->url().path().lower() );
-        }
-        else
-        {
-            dictDir.insert( (*it)->url().path().lower(), *it );
-            dirList.append( (*it)->url().path().lower() );
-        }                
+        itemMap[ ( *it )->url().path().lower() ] = *it;
         ++it;
     }
-                   
-    fileList.sort();
-    dirList.sort();
-        
+
     PlaylistItem *item;
-    KFileItem *pFileItem;
-    QStringList::Iterator itStr = dirList.begin();
-        
-    while( *itStr )
+    QMap<QString, KFileItem*>::Iterator itMap;
+
+// iterate over the map twice: 1. fetch dirs 2. fetch files
+    bool fetchDirs = true;
+    for ( int i = 0; i < 2; i++ )
     {
-        pFileItem = dictDir[ *itStr ];
-        item = new PlaylistItem( this, lastChild(), pFileItem->url() );
-        item->setDir( true );
-        item->setDragEnabled( true );
-        item->setDropEnabled( true );
+        for ( itMap = itemMap.begin(); itMap != itemMap.end(); ++itMap )
+        {
+            if ( itMap.data()->isDir() == fetchDirs )
+            {
+                item = new PlaylistItem( this, lastChild(), itMap.data()->url() );
+                item->setDir( fetchDirs );
+                item->setDragEnabled( true );
+                item->setDropEnabled( true );
 
-        QString iconName( pFileItem->determineMimeType()->icon( QString::null, true ) );
-        item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
-        ++itStr;
+                QString iconName( ( itMap.data() )->determineMimeType()->icon( QString::null, true ) );
+                item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
+            }
+        }
+        fetchDirs = false;
     }
-        
-    itStr = fileList.begin();
-    while( *itStr )
-    {
-        pFileItem = dictFile[ *itStr ];
-        item = new PlaylistItem( this, lastChild(), pFileItem->url() );
-        item->setDir( false );
-        item->setDragEnabled( true );
-        item->setDropEnabled( true );
-
-        QString iconName( pFileItem->determineMimeType()->icon( QString::null, true ) );
-        item->setPixmap( 0, KGlobal::iconLoader()->loadIcon( iconName, KIcon::NoGroup, KIcon::SizeSmall ) );
-        ++itStr;
-    }
-
     if ( m_pDirLister->url().path() != "/" )
-        new PlaylistItem( this, ".." );    
+        new PlaylistItem( this, ".." );
 
     clearSelection();
     setCurrentItem( firstChild() );
