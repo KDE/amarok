@@ -414,6 +414,13 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     //prevent choosing the same category in both menus
     m_parent->m_cat2Menu->setItemEnabled( id , false );
 
+    //if this item is checked in secondary, uncheck it
+    if ( m_parent->m_cat2Menu->isItemChecked( id ) ) {
+        m_parent->m_cat2Menu->setItemChecked( id, false );
+        m_parent->m_cat2Menu->setItemChecked( CollectionBrowser::IdNone, true );
+        m_category2 = catForId( CollectionBrowser::IdNone );
+    }
+
     if ( rerender )
         renderView();
 }
@@ -423,12 +430,8 @@ void
 CollectionView::cat2Menu( int id, bool rerender )  //SLOT
 {
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), false ); //uncheck old item
-    m_parent->m_cat1Menu->setItemEnabled( idForCat( m_category2 ), true );  //enable old item
     m_category2 = catForId( id );
     m_parent->m_cat2Menu->setItemChecked( idForCat( m_category2 ), true );
-
-    //prevent choosing the same category in both menus
-    m_parent->m_cat1Menu->setItemEnabled( id , false );
 
     if ( rerender )
         renderView();
