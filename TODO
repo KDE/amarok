@@ -4,7 +4,9 @@ TODO-list for amaroK
 
 SHORT-TERM:
 
-    * fix: ctrl-c for copying current title seems broken
+    * fix: <grue> when adding files from commandline they get sorted in reversed order
+
+    * fix: <grue> ctrl-c for copying current title seems broken
 
     * <berkus> in ui dialogs font labels need to resize vertically
       dynamically adopting the font size
