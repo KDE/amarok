@@ -5,6 +5,6 @@ AUTOMAKE_OPTIONS = foreign
 install-data-local:
 	@echo " ***********************"
 	@echo ""
-	@echo "  type amarok to start!"
+	@echo "  Type amarok to start!"
 	@echo ""
 	@echo " ***********************"
