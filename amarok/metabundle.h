@@ -47,9 +47,18 @@ public:
     static const int Irrelevant   = -1;
     static const int Unavailable  =  0;
 
-    MetaBundle()
-    {}
-    
+    MetaBundle() //TODO preferably don't have this! It's not useful, if possible always have at least a URL
+    {
+        init();
+    }
+
+    MetaBundle( const KURL &u ) //Minimal ctor, try not to use this!
+      : m_url( u )
+    {
+        init();
+    }
+
+    //FIXME this needs to have an url, having a blank one will break some stuff
     MetaBundle( const QString &title, const QString &genre, int bitrate = -2 )
       : m_title     ( title )
       , m_genre     ( genre )
@@ -69,9 +78,6 @@ public:
       , m_comment( item->text( 5 ) )
       , m_genre(   item->text( 6 ) )
       , m_track(   item->text( 7 ) )
-      , m_bitrate( -2 )
-      , m_length( -2 )
-      , m_sampleRate( -2 )
     {
         init( ap );
     }
@@ -85,11 +91,6 @@ public:
       , m_comment( TStringToQString( tag->comment() ).stripWhiteSpace() )
       , m_genre(   TStringToQString( tag->genre() ).stripWhiteSpace() )
       , m_track(   tag->track() ? QString::number( tag->track() ) : QString() )
-      , m_bitrate( -2 )
-
-      , m_length( -2 )
-      , m_sampleRate( -2 )
-
     {
         init( ap );
     }
@@ -124,7 +125,7 @@ private:
 
     static QString prettyGeneric( const QString&, int );
 
-    void init( TagLib::AudioProperties *ap )
+    void init( TagLib::AudioProperties *ap = 0 )
     {
         if( ap )
         {
@@ -132,6 +133,7 @@ private:
             m_length     = ap->length();
             m_sampleRate = ap->sampleRate();
         }
+        else m_bitrate = m_length = m_sampleRate = Undetermined;
     }
 };
 
@@ -143,7 +145,7 @@ MetaBundle::prettyTitle() const
     if( !s.isEmpty() ) s += " - ";
     s += m_title;
 
-    return s.isEmpty() ? m_url.fileName().section( '.', 0, 0 ) : s;
+    return s.isEmpty() ? m_url.fileName().section( '.', 0, 0 ).replace( '_', ' ' ) : s;
 }
 
 inline QString
@@ -171,9 +173,9 @@ MetaBundle::prettyLength( int length ) //static
 }
 
 inline QString
-MetaBundle::prettyGeneric( const QString &s, int i )
+MetaBundle::prettyGeneric( const QString &s, int i ) //static
 {
-    return ( i > 0 ) ? s.arg( i ) : ( i == -2 ) ? QString() : "?";
+    return ( i > 0 ) ? s.arg( i ) : ( i == Undetermined ) ? QString() : "?";
 }
 
 #endif
