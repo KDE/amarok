@@ -64,7 +64,6 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         , m_scopeId( 0 )
         , m_scopeSize( 1 << scopeSize )
         , m_volumeId( 0 )
-        , m_proxyError( false )
         , m_xfadeFadeout( false )
         , m_xfadeValue( 0.0 )
         , m_xfadeCurrent( "invalue1" )
@@ -190,7 +189,9 @@ ArtsEngine::ArtsEngine( bool& restart, int scopeSize )
         
     { //scope
         m_scope = Arts::DynamicCast( m_server.createObject( "Amarok::RawScope" ) );
-        enableScope();
+        m_scope.start();
+        m_scope.buffer( m_scopeSize );
+        m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
     }
 
     Arts::connect( m_globalEffectStack  , m_amanPlay );
@@ -321,12 +322,12 @@ void ArtsEngine::open( KURL url )
 
     if ( !m_pPlayObject  )
     {
-        kdDebug() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
+        kdWarning() << "Can't initialize Playobject. m_pPlayObject == NULL." << endl;
         return;
     }
     if ( m_pPlayObject->isNull() )
     {
-        kdDebug() << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
+        kdWarning() << "Can't initialize Playobject. m_pPlayObject->isNull()." << endl;
         delete m_pPlayObject;
         m_pPlayObject = NULL;
         return;
@@ -471,7 +472,7 @@ long ArtsEngine::createEffect( const QString& name )
     *pFX = Arts::DynamicCast( m_server.createObject( std::string( name.ascii() ) ) );
     
     if ( (*pFX).isNull() ) {
-        kdDebug() << "[ArtsEngine::createEffect] error: could not create effect." << endl;
+        kdWarning() << "[ArtsEngine::createEffect] error: could not create effect." << endl;
         delete pFX;
         return 0;
     }
@@ -480,7 +481,7 @@ long ArtsEngine::createEffect( const QString& name )
     long id = m_effectStack.insertBottom( *pFX, std::string( name.ascii() ) );
     
     if ( !id ) {
-        kdDebug() << "[ArtsEngine::createEffect] error: insertBottom failed." << endl;
+        kdWarning() << "[ArtsEngine::createEffect] error: insertBottom failed." << endl;
         pFX->stop();
         delete pFX;
         return 0;
@@ -519,35 +520,6 @@ void ArtsEngine::configureEffect( long id )
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ////////////////////////////////////////////////////////////////////////////////
-
-void ArtsEngine::disableScope()
-{
-    if ( m_scopeId )
-    {
-        m_scope.stop();
-        m_globalEffectStack.remove( m_scopeId );
-        m_scopeId = 0;
-    }
-}
-
-
-void ArtsEngine::enableScope()
-{
-    if ( !m_scopeId )
-    {
-        m_scope.start();
-        m_scope.buffer( m_scopeSize );
-        m_scopeId = m_globalEffectStack.insertTop( m_scope, "Analyzer" );
-    }
-}
-
-
-void ArtsEngine::proxyError()
-{
-    m_proxyError = true;
-    play();
-}
-
 
 void ArtsEngine::startXfade()
 {
@@ -608,7 +580,7 @@ void ArtsEngine::loadEffects()
     
     if ( !file.open( IO_ReadOnly ) )
     {
-        kdDebug() << "[ArtsEngine::loadEffects()] error: !file.open()" << endl;
+        kdWarning() << "[ArtsEngine::loadEffects()] error: !file.open()" << endl;
         return;
     }
      
@@ -617,10 +589,10 @@ void ArtsEngine::loadEffects()
     int     errorColumn;       
     if ( !doc.setContent( &file, &errorMsg, &errorLine, &errorColumn ) )
     {
-        kdDebug() << "[ArtsEngine::loadEffects()] error: !doc.setContent()" << endl;
-        kdDebug() << "[ArtsEngine::loadEffects()] errorMsg   : " << errorMsg    << endl;
-        kdDebug() << "[ArtsEngine::loadEffects()] errorLine  : " << errorLine   << endl;
-        kdDebug() << "[ArtsEngine::loadEffects()] errorColumn: " << errorColumn << endl;
+        kdWarning() << "[ArtsEngine::loadEffects()] error: !doc.setContent()" << endl;
+        kdWarning() << "[ArtsEngine::loadEffects()] errorMsg   : " << errorMsg    << endl;
+        kdWarning() << "[ArtsEngine::loadEffects()] errorLine  : " << errorLine   << endl;
+        kdWarning() << "[ArtsEngine::loadEffects()] errorColumn: " << errorColumn << endl;
         file.close();
         return;
     }
@@ -660,7 +632,7 @@ void ArtsEngine::loadEffects()
                 req.param( param );
                 
                 if ( !req.invoke() )
-                    kdDebug() << "DynamicRequest failed." << endl;
+                    kdWarning() << "DynamicRequest failed." << endl;
             }
         }
     }    
@@ -712,7 +684,7 @@ void ArtsEngine::saveEffects()
             }
                                     
             if ( !req.invoke( result ) )
-                kdDebug() << "request failed." << endl;
+                kdWarning() << "request failed." << endl;
             
             Arts::Buffer buf;
             result.writeType( buf );
@@ -748,7 +720,7 @@ ArtsEngine::ArtsConfigWidget::ArtsConfigWidget( Arts::Object object )
 
     if ( m_gui.isNull() )
     {
-        kdDebug() << "Arts::Widget gui == NULL! Returning.." << endl;
+        kdWarning() << "Arts::Widget gui == NULL! Returning.." << endl;
         return;
     }
 

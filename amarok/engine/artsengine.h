@@ -74,8 +74,6 @@ class ArtsEngine : public EngineBase
         void                                     setVolume( int percent );
 
     private:
-        void                                     enableScope();
-        void                                     disableScope();
         void                                     startXfade();
         void                                     timerEvent( QTimerEvent* );
 
@@ -120,7 +118,6 @@ class ArtsEngine : public EngineBase
         long                                     m_scopeId;
         int                                      m_scopeSize;
         long                                     m_volumeId;
-        bool                                     m_proxyError;
         QMap<long, EffectContainer>              m_effectMap;
         
         bool                                     m_xfadeFadeout;
@@ -129,7 +126,6 @@ class ArtsEngine : public EngineBase
             
     private slots:
         void                                     connectPlayObject();
-        void                                     proxyError();
 };
 
 
