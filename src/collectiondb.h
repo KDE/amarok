@@ -160,6 +160,8 @@ class CollectionDB : public QObject, public EngineObserver
         QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
+        QStringList albumTracks( const QString &artist_id, const QString &album_id );
+
         //cover management methods
         /** Saves images located on the user's filesystem */
         bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
