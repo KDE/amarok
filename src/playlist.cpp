@@ -2087,7 +2087,7 @@ void Playlist::showTagDialog( QPtrList<QListViewItem> items )
             TagDialog *dialog = new TagDialog( item->metaBundle(), item, instance() );
             dialog->show();
         }
-        else KMessageBox::sorry( this, i18n("This file does not exist") );
+        else KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->metaBundle().url().path() );
     }
     else
     {

@@ -696,7 +696,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     TagDialog* dialog = new TagDialog( item->url() );
                     dialog->show();
                 }
-                else KMessageBox::sorry( this, i18n("This file does not exist") );
+                else KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
         }
         #undef item
    }
