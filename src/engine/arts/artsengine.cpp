@@ -335,9 +335,9 @@ const Engine::Scope& ArtsEngine::scope()
     out.resize( m_scopeSize );
     std::vector<float>* in = m_scope.scope();
 
-    if ( in ) {
+    if ( in && in->size() >= m_scopeSize ) {
         // Convert float to int
-        for ( int i = 0; i < m_scopeSize; i++ )
+        for ( uint i = 0; i < m_scopeSize; i++ )
             out[i] = (int16_t) ( ( *in )[i] * (float) ( 1<<14 ) );
 
         delete in;
