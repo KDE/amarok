@@ -33,12 +33,15 @@
 #include <qmap.h>            //dragObject()
 #include <qpainter.h>
 #include <qpen.h>            //slotGlowTimer()
+#include <qsortedlist.h>
 #include <qtimer.h>
 #include <qvaluevector.h>    //playNextTrack()
+
 #include <kaction.h>
 #include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdebug.h>
+#include <kglobalsettings.h> //rename()
 #include <kiconloader.h>     //slotShowContextMenu()
 #include <kio/job.h>         //deleteSelectedFiles()
 #include <klineedit.h>       //setCurrentTrack()
@@ -49,11 +52,10 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstdaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
-#include <kglobalsettings.h> //rename()
 #include <kurldrag.h>
-#include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
-#include <qsortedlist.h>
 
+#include <unistd.h>          //usleep()
+#include <X11/Xlib.h>        //ControlMask in contentsDragMoveEvent()
 
 
 /**
