@@ -17,6 +17,8 @@
 
 #include "playerapp.h"
 
+#include <qstring.h>
+
 
 PlayerApp *pApp;
 
@@ -24,6 +26,11 @@ PlayerApp *pApp;
 int main( int argc, char *argv[] )
 {
     KApplication::disableAutoDcopRegistration();
+    
+    QString arg0 = argv[0];
+    arg0.replace( "amarokapp", "amarok" );
+    argv[0] = const_cast<char*>( arg0.latin1() );
+    
     PlayerApp::initCliArgs( argc, argv );
     PlayerApp app;
     
