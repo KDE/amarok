@@ -83,6 +83,10 @@ optional
       (visualization plugins)
       http://xmms.org
 
+    * K3B 0.11
+      (CD burning support)
+      http://www.k3b.org
+
 
 Please note, if you obtain these dependencies via a packaging system, you must
 also install the devel versions of these packages!
