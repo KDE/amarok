@@ -421,6 +421,16 @@ void App::applySettings()
         m_pPlayerWindow = 0;
     }
 
+    // OSD
+    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
+    m_pOSD->setFont( AmarokConfig::osdFont() );
+    m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
+    m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
+    m_pOSD->setDuration( AmarokConfig::osdDuration() );
+    m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
+    m_pOSD->setScreen( AmarokConfig::osdScreen() );
+    m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
+
     // Engine
     if ( AmarokConfig::soundSystem() != PluginManager::getService( EngineController::engine() )->name() ) {
         PluginManager::unload( EngineController::engine() );
@@ -438,16 +448,6 @@ void App::applySettings()
     engine->setRestoreEffects( AmarokConfig::rememberEffects() );
     engine->setSoundOutput( AmarokConfig::soundOutput() );
     engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
-
-    // OSD
-    m_pOSD->setEnabled( AmarokConfig::osdEnabled() );
-    m_pOSD->setFont( AmarokConfig::osdFont() );
-    m_pOSD->setTextColor( AmarokConfig::osdTextColor() );
-    m_pOSD->setBackgroundColor( AmarokConfig::osdBackgroundColor() );
-    m_pOSD->setDuration( AmarokConfig::osdDuration() );
-    m_pOSD->setPosition( (OSDWidget::Position)AmarokConfig::osdAlignment() );
-    m_pOSD->setScreen( AmarokConfig::osdScreen() );
-    m_pOSD->setOffset( AmarokConfig::osdXOffset(), AmarokConfig::osdYOffset() );
 
     // Fonts
     const QFont font = AmarokConfig::useCustomFonts() ? AmarokConfig::playlistWindowFont() : QApplication::font();

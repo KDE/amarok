@@ -251,13 +251,13 @@ void
 VolumeAction::engineVolumeChanged( int value )
 {
     m_slider->setValue( amaroK::VOLUME_MAX - value );
-    pApp->slotShowVolumeOsd();
 }
 
 void
 VolumeAction::sliderMoved( int value ) //SLOT
 {
     EngineController::instance()->setVolume( amaroK::VOLUME_MAX - value );
+    pApp->slotShowVolumeOsd();
 }
 
 void
