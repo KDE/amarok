@@ -35,7 +35,6 @@
 #include <kmultitabbar.h>  //m_multiTabBar
 
 //BrowserWin includes
-#include <qclipboard.h>    //eventFilter();
 #include <qcolor.h>        //setPalettes()
 #include <qevent.h>        //eventFilter()
 #include <qlayout.h>
@@ -424,8 +423,6 @@ BrowserWin::BrowserWin( QWidget *parent, const char *name )
     //FIXME you need to detect focus out from the sideBar and connect to that..
     connect( m_playlist,   SIGNAL( clicked( QListViewItem * ) ),
              m_sideBar,      SLOT( autoClosePages() ) );
-    connect( m_playlist,   SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
-             this,           SLOT( playlistPaste( int, QListViewItem*, const QPoint&, int ) ) );
     connect( m_lineEdit,   SIGNAL( textChanged( const QString& ) ),
              m_playlist,     SLOT( slotTextChanged( const QString& ) ) );
 
@@ -509,6 +506,9 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
     switch( e->type() )
     {
     case QEvent::KeyPress:
+
+        //there are a few keypresses that we override
+
         #define e static_cast<QKeyEvent*>(e)
         if( o == m_lineEdit )
         {
@@ -536,6 +536,9 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
             }
         }
 
+        //following are for m_playlist only
+        //we don't handle these in the playlist because often we manipulate the lineEdit too
+
         if( e->key() == Key_Up && m_playlist->currentItem()->itemAbove() == 0 )
         {
             m_playlist->currentItem()->setSelected( false );
@@ -556,10 +559,13 @@ bool BrowserWin::eventFilter( QObject *o, QEvent *e )
             return TRUE;
         }
         #undef e
+        break;
 
     default:
-        return FALSE;
+        break;
     }
+
+    return FALSE;
 }
 
 
@@ -585,20 +591,6 @@ void BrowserWin::slotAddLocation() //SLOT
     dlg.exec();
 
     insertMedia( dlg.selectedURL() );
-}
-
-
-void BrowserWin::playlistPaste( int button, QListViewItem*, const QPoint&, int ) //SLOT
-{
-    //catch X11-style paste with MidButton and try adding to playlist as new URL
-    if( button == Qt::MidButton )
-    {
-        QString path = QApplication::clipboard()->text( QClipboard::Selection );
-        kdDebug() << "[BrowserWin::playlistPaste] pasting into playlist: " << path << endl;
-        
-        //KURL::setPath() does not work here, so we cannot use insertMedia(const QString&)
-        insertMedia( KURL( path ) );
-    }
 }
 
 

@@ -140,8 +140,7 @@ class BrowserWin : public QWidget
     private slots:
         void savePlaylist() const;
         void slotAddLocation();
-        void playlistPaste( int button, QListViewItem*, const QPoint&, int );
-        
+
     private:
         bool    eventFilter( QObject*, QEvent* );
 
@@ -155,9 +154,7 @@ class BrowserWin : public QWidget
 inline
 void BrowserWin::insertMedia( const QString &path )
 {
-    KURL url;
-    url.setPath( path );
-    insertMedia( KURL::List( url ) );
+    insertMedia( KURL::fromPathOrURL( path ) );
 }
 
 inline
