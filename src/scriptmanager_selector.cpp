@@ -35,6 +35,8 @@ ScriptManager::Selector::Selector( const QStringList &directories, QWidget *pare
              SLOT( slotAddDirectory() ) );
     connect( m_base->removeDirectoryButton, SIGNAL( clicked() ),
              SLOT( slotRemoveDirectory() ) );
+    connect( m_base->editButton, SIGNAL( clicked() ),
+             SLOT( slotEditScript() ) );
     connect( m_base->runButton, SIGNAL( clicked() ),
              SLOT( slotRunScript() ) );
     connect( m_base->stopButton, SIGNAL( clicked() ),
@@ -100,6 +102,16 @@ ScriptManager::Selector::slotRemoveDirectory()
     m_dirList.remove( dir );
     m_result.removedDirs.append( dir );
     delete m_base->directoryListView->selectedItem();
+}
+
+
+void
+ScriptManager::Selector::slotEditScript()
+{
+    if ( !m_base->directoryListView->selectedItem() )
+        return ;
+
+   emit signalEditScript( m_base->directoryListView->selectedItem()->text( 0 ) );
 }
 
 

@@ -11,6 +11,7 @@
 #include <kdebug.h>
 #include <kjsembed/jsconsolewidget.h>
 #include <kjsembed/kjsembedpart.h>
+#include <klibloader.h>
 #include <kurl.h>
 
 using namespace KJSEmbed;
@@ -41,6 +42,8 @@ ScriptManager::Manager::showSelector()
     
     if ( !Selector::instance ) {
         Selector::instance = new Selector( m_list );
+        connect( Selector::instance, SIGNAL( signalEditScript( const QString& ) ),
+                this,   SLOT( slotEdit( const QString& ) ) );
         connect( Selector::instance, SIGNAL( signalRunScript( const QString& ) ),
                 this,   SLOT( slotRun( const QString& ) ) );
         connect( Selector::instance, SIGNAL( signalStopScript( const QString& ) ),
@@ -66,6 +69,16 @@ ScriptManager::Manager::addObject( QObject* object )
 {
     m_kjs->addObject( object );
 }
+
+
+void
+ScriptManager::Manager::slotEdit( const QString& path )
+{
+    kdDebug() << k_funcinfo << endl;  
+
+    Editor* editor = new Editor( path );
+    editor->show();
+}  
 
 
 void
@@ -105,7 +118,27 @@ ScriptManager::Manager::slotConfigure( const QString& path )
 // private 
 ////////////////////////////////////////////////////////////////////////////////
 
-   
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS Editor 
+////////////////////////////////////////////////////////////////////////////////
+ScriptManager::Editor::Editor( const QString& file )
+    : KParts::MainWindow()
+{    
+    KLibFactory *factory = KLibLoader::self()->factory( "libkatepart" );
+
+    if( !factory ) {
+        kdWarning() << "Could not load kate part.\n";
+        return;
+    }
+    
+    KParts::Part* part = (KParts::Part*) factory->create( this, "part", "KParts::ReadWritePart" );
+       
+    setCentralWidget( part->widget() );
+    createGUI( part );
+}
+ 
+  
 #include "scriptmanager.moc"
 
 #endif /*HAVE_KJSEMBED*/

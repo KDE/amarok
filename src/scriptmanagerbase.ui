@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>515</width>
-            <height>222</height>
+            <width>473</width>
+            <height>237</height>
         </rect>
     </property>
     <property name="caption">
@@ -35,83 +35,89 @@
                 <cstring>directoryListView</cstring>
             </property>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QSplitter">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>splitter1</cstring>
             </property>
-            <vbox>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <widget class="KPushButton">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>addDirectoryButton</cstring>
                 </property>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>addDirectoryButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Add...</string>
-                    </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>removeDirectoryButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Remove</string>
-                    </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>runButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Run</string>
-                    </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>stopButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Stop</string>
-                    </property>
-                </widget>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>configureScriptButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Configure...</string>
-                    </property>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>informationLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>These scripts are currently known to amaroK.</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>rightColumnSpacer</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>112</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
+                <property name="text">
+                    <string>Add...</string>
+                </property>
+            </widget>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>removeDirectoryButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Remove</string>
+                </property>
+            </widget>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>editButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Edit...</string>
+                </property>
+            </widget>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>runButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Run</string>
+                </property>
+            </widget>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>stopButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Stop</string>
+                </property>
+            </widget>
+            <widget class="KPushButton">
+                <property name="name">
+                    <cstring>configureScriptButton</cstring>
+                </property>
+                <property name="text">
+                    <string>Configure...</string>
+                </property>
+            </widget>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>informationLabel</cstring>
+                </property>
+                <property name="text">
+                    <string>These scripts are currently known to amaroK.</string>
+                </property>
+                <property name="alignment">
+                    <set>WordBreak|AlignVCenter</set>
+                </property>
+            </widget>
+            <spacer>
+                <property name="name">
+                    <cstring>rightColumnSpacer</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>20</width>
+                        <height>103</height>
+                    </size>
+                </property>
+            </spacer>
         </widget>
     </hbox>
 </widget>

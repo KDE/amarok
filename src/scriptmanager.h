@@ -9,8 +9,11 @@
 
 #include "scriptmanager_selector.h"
 
-#include <qobject.h>        //baseclass
-#include <qstringlist.h>    //stack allocated
+#include <qobject.h>            //baseclass
+#include <qstringlist.h>        //stack allocated
+
+#include <kparts/mainwindow.h>  //baseclass
+
 
 namespace KJSEmbed
 {
@@ -39,6 +42,7 @@ namespace ScriptManager
             static Manager *instance() { return s_instance; }
                         
         private slots:
+            void slotEdit( const QString& );             
             void slotRun( const QString& );             
             void slotStop( const QString& );             
             void slotConfigure( const QString& );             
@@ -50,6 +54,12 @@ namespace ScriptManager
             QStringList m_list;
     };
 
+    class Editor : public KParts::MainWindow
+    {
+        public:
+            Editor( const QString& file );
+    };
+    
 } //namespace ScriptManager
 
 #endif /* AMAROK_SCRIPTMANAGER_H */
