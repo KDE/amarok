@@ -380,7 +380,7 @@ CollectionView::renderView( )  //SLOT
         if ( m_cat2 != CollectionBrowser::IdNone ) qb.sortBy( m_cat2, QueryBuilder::valName );
         if ( m_cat3 != CollectionBrowser::IdNone ) qb.sortBy( m_cat3, QueryBuilder::valName );
         
-        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter, QueryBuilder::modeFuzzy );
+        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter, QueryBuilder::modeNormal );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         values = qb.run();
