@@ -306,6 +306,7 @@ CollectionView::renderView()  //SLOT
             qb.setOptions( QueryBuilder::optNoCompilations );
 
         values = qb.run();
+        if ( !values.count() ) return;
 
         //add items to the view
         for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
