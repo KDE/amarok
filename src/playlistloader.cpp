@@ -139,7 +139,7 @@ PlaylistLoader::run()
 void
 PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
 {
-    MetaBundle bundle = generateBundle( url );
+    MetaBundle bundle( url, true, true );
 
     bundle.setTitle( title );
     bundle.setLength( length );
@@ -297,35 +297,7 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
 void
 PlaylistLoader::postItem( const KURL &url )
 {
-    MetaBundle bundle = generateBundle( url );
-
+    MetaBundle bundle( url, true, true );
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
-}
-
-
-MetaBundle
-PlaylistLoader::generateBundle( const KURL &url )
-{
-    MetaBundle bundle;
-
-    // Get MetaBundle from Collection if it's already stored, else read tags and store
-    if ( !m_db->getMetaBundleForUrl( url.path(), &bundle ) )
-        bundle = MetaBundle( url );
-
-    // If it's in Collection but no audioproperties available, read them and store
-    else if ( !bundle.length() )
-    {
-        // Generate a seperate MetaBundle for the audio properties. The Collection got
-        // advanced tag-guessing for songs with empty tags, so we better stick with its MetaBundle.
-        MetaBundle apBundle;
-        apBundle = MetaBundle( url );
-
-        bundle.setBitrate( apBundle.bitrate() );
-        bundle.setLength( apBundle.length() );
-        bundle.setSampleRate( apBundle.sampleRate() );
-        m_db->addAudioproperties( apBundle );
-    }
-
-    return bundle;
 }
 

@@ -39,11 +39,7 @@ public:
     /**
      * Creates a MetaBundle for url, tags will be obtained and set
      */
-    MetaBundle( const KURL &u, bool readAudioProperties = true, bool readMetaData = true )
-        : m_url( u )
-    {
-        if ( readMetaData ) readTags( readAudioProperties );
-    }
+    MetaBundle( const KURL &u, bool readAudioProperties = true, bool fromDB = false );
 
     //StreamProvider:
     MetaBundle( const QString& title,

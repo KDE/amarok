@@ -357,7 +357,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         {
             setSorting( NO_SORT );
             PlaylistItem *item = new PlaylistItem( url, this, after );
-            MetaBundle mb( url );
+            MetaBundle mb( url, true, true );
             item->setText( mb );
             m_totalLength += mb.length();
 

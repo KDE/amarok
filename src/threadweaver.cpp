@@ -350,7 +350,8 @@ CollectionReader::readTags( const QStringList& entries, std::ofstream& log )
         // Add tag-less tracks to database
         else if ( validMusic.contains( url.filename().mid( url.filename().findRev( '.' ) + 1 ).lower() ) )
         {
-            MetaBundle bundle( url, false, false );
+            MetaBundle bundle;
+            bundle.setUrl( url.path() );
             m_parent->addSong( bundle, m_incremental );
         }
         // Add images to the cover database

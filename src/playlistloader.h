@@ -97,7 +97,6 @@ protected:
 private:
     bool recurse( const KURL&, bool recursing = false );
     void postItem( const KURL& );
-    MetaBundle generateBundle( const KURL& url );
     void addBadURL( const KURL &url ) { m_badURLs += url; }
 
 private:
