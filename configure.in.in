@@ -1,0 +1,11 @@
+TAGLIB_H=yes;
+
+KDE_CHECK_HEADERS(tag.h)
+if test "$ac_cv_header_tag_h" = "no"; then
+	  TAGLIB_H=no;
+fi
+
+if test "$TAGLIB_H" = "no"; then
+	AC_MSG_RESULT([Missing TagLib includes... amaroK will not be compiled])
+	DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+fi
