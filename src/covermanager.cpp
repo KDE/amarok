@@ -240,21 +240,24 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 
     QStringList values;
 
-    if( item == m_artistView->firstChild() )
-        values = m_db->albumList( false, false );
+    bool allAlbums = (item == m_artistView->firstChild());
+    if( allAlbums )
+        values = m_db->artistAlbumList( false, false );
     else
         values = m_db->albumListOfArtist( item->text( 0 ), false, false );
 
     if( !values.isEmpty() ) {
 
-        for( uint i=0; i < values.count();  ++i )  {
-            if( !values[i].isEmpty() ) {
+        for( uint i=0; i < values.count();  allAlbums ? i+=2 : i++)  {
+            if( !values[allAlbums ? i+1 : i].isEmpty() ) {
                 CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
-                                                              values[i], values[i] );
+                                                              allAlbums ? values[i] : item->text(0), 
+                                                              values[ allAlbums ? i+1 : i ] );
                 m_coverItems.append( coverItem );
 
                 if( coverItem->hasCover() ) {
-                    QString imgPath = m_db->getImageForAlbum( values[i], values[i] );
+                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), 
+                                                              values[ allAlbums ? i+1 : i ] );
                     coverItem->updateCover( QPixmap( imgPath ) );
                 }
             }
@@ -305,12 +308,12 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         {
             /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
             KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select cover image file - amaroK" ) );
-	    if ( !file.isEmpty() )
+            if ( !file.isEmpty() )
             {
                 QImage img( file.directory() + "/" + file.fileName() );
                 img.save( item->albumPath(), "PNG" );
                 item->updateCover( img.smoothScale( 60, 60 ) );
-	    }
+            }
             break;
         }
 
