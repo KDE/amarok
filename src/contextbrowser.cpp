@@ -986,7 +986,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
             << albumImageTitleAttr
-            << i18n( "Look up this track at musicbrainz.com" )
+            << i18n( "Look up this track at musicbrainz.org" )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
             << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) ) );
