@@ -38,8 +38,7 @@ GLAnalyzer::~GLAnalyzer()
 
 void GLAnalyzer::init()
 {
-          x = y = -10.0f;
-              m_bands.resize(20 , 0.0f);
+        m_bands.resize(20 , 0.0f);
         m_oldy.resize(20, -10.0f);
         m_peaks.resize(20);
 }
@@ -84,8 +83,8 @@ void GLAnalyzer::resizeGL( int w, int h )
 
 void GLAnalyzer::drawScope()
 {
-	glRotatef(0.25f, 0.1f, 1.0f, 0.5f); //Rotate the scene
 	drawFloor();
+	glRotatef(0.25f, 0.1f, 1.0f, 0.5f); //Rotate the scene
 	for ( uint i = 0; i < m_bands.size(); i++ )
 	{	
 		// Calculate new horizontal position (x) depending on number of samples
@@ -164,13 +163,15 @@ void GLAnalyzer::drawBar(float xPos, float height)
         glPushMatrix();
 
         //Sets color to blue
-        //glColor3f(0.5f, 0.625f, 1.0f);
 	//Set the colour depending on the height of the bar
 	glColor3f((height/40) + 0.5f, (height/40) + 0.625f, 1.0f);
         glTranslatef(xPos, -10.0f, 0.0f);
                 
         glScalef(1.0f, height, 3.0f);
         drawCube();
+	
+	//Set colour to full blue
+	glColor3f(0.0f, 0.0f, 1.0f);
 	drawFrame();
         glPopMatrix();
 }
@@ -179,8 +180,7 @@ void GLAnalyzer::drawFloor()
 {
         glPushMatrix();
 
-        /*Sets color to blue*/
-        //glColor3f(0.5f, 0.625f, 1.0f);
+        //Sets color to amarok blue
 	glColor3f( 0.5f, 0.625f, 1.0f);
         glTranslatef(-20.0f,-11.0f, -4.0f);
                 
@@ -194,7 +194,7 @@ void GLAnalyzer::drawPeak(float xPos, float ypos)
 {
         glPushMatrix();
 
-        /*Sets color to blue*/
+        //Set the colour to red
 	glColor3f(1.0f, 0.0f, 0.0f);
         glTranslatef(xPos, ypos - 10.0f, 0.0f);
                 
@@ -208,85 +208,48 @@ void GLAnalyzer::drawCube()
 {
         glPushMatrix();
         glBegin(GL_POLYGON);
-/*
-                //      This is the top face
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(0.0f, 0.0f, -1.0f);
-                glVertex3f(-1.0f, 0.0f, -1.0f);
-                glVertex3f(-1.0f, 0.0f, 0.0f);
-
-                //      This is the front face
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(-1.0f, 0.0f, 0.0f);
-                glVertex3f(-1.0f, -1.0f, 0.0f);
-                glVertex3f(0.0f, -1.0f, 0.0f);
-
-                //      This is the right face
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(0.0f, -1.0f, 0.0f);
-                glVertex3f(0.0f, -1.0f, -1.0f);
-                glVertex3f(0.0f, 0.0f, -1.0f);
-
-                //      This is the left face
-                glVertex3f(-1.0f, 0.0f, 0.0f);
-                glVertex3f(-1.0f, 0.0f, -1.0f);
-                glVertex3f(-1.0f, -1.0f, -1.0f);
-                glVertex3f(-1.0f, -1.0f, 0.0f);
-
-                //      This is the bottom face
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(0.0f, -1.0f, -1.0f);
-                glVertex3f(-1.0f, -1.0f, -1.0f);
-                glVertex3f(-1.0f, -1.0f, 0.0f);
-
-                // This is the back face
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(-1.0f, 0.0f, -1.0f);
-                glVertex3f(-1.0f, -1.0f, -1.0f);
-                glVertex3f(0.0f, -1.0f, -1.0f);
-*/
 		
-		                /*      This is the top face*/
-                glVertex3f(0.0f, 1.0f, 0.0f);
-                glVertex3f(1.0f, 1.0f, 0.0f);
-                glVertex3f(1.0f, 1.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 1.0f);
-		glVertex3f(0.0f, 1.0f, 0.0f);
-		
-                /*      This is the front face*/
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 1.0f, 0.0f);
-                glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
+	//This is the top face
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	
+	//This is the front face
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
-                /*      This is the right face*/
-                glVertex3f(1.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 1.0f);
-                glVertex3f(1.0f, 1.0f, 1.0f);
-                glVertex3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, 0.0f, 0.0f);
+	//This is the right face
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
 
-                /*      This is the left face*/
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(0.0f, 0.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
+	//This is the left face
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
-                /*      This is the bottom face*/
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 1.0f);
-                glVertex3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
+	//This is the bottom face
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
-                /*      This is the back face*/
-                glVertex3f(0.0f, 0.0f, 1.0f);
-                glVertex3f(1.0f, 0.0f, 1.0f);
-                glVertex3f(1.0f, 1.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 1.0f);
-		glVertex3f(0.0f, 0.0f, 1.0f);
+	//This is the back face
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
 		
         glEnd();
         glPopMatrix();
@@ -295,49 +258,49 @@ void GLAnalyzer::drawFrame()
 {
         glPushMatrix();
         glBegin(GL_LINES);
-                glColor3f(0.0f, 0.0f, 1.0f);
+        
 
-                /*      This is the top face*/
-                glVertex3f(0.0f, 1.0f, 0.0f);
-                glVertex3f(1.0f, 1.0f, 0.0f);
-                glVertex3f(1.0f, 1.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 1.0f);
-		glVertex3f(0.0f, 1.0f, 0.0f);
-		
-                /*      This is the front face*/
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 1.0f, 0.0f);
-                glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
+	//This is the top face
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	
+	//This is the front face
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
-                /*      This is the right face*/
-                glVertex3f(1.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 1.0f);
-                glVertex3f(1.0f, 1.0f, 1.0f);
-                glVertex3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(1.0f, 0.0f, 0.0f);
+	//This is the right face
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
 
-                /*      This is the left face*/
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(0.0f, 0.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
+	//This is the left face
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
-                /*      This is the bottom face*/
-                glVertex3f(0.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 0.0f);
-                glVertex3f(1.0f, 0.0f, 1.0f);
-                glVertex3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(0.0f, 0.0f, 0.0f);
+	//This is the bottom face
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
 
-                /*      This is the back face*/
-                glVertex3f(0.0f, 0.0f, 1.0f);
-                glVertex3f(1.0f, 0.0f, 1.0f);
-                glVertex3f(1.0f, 1.0f, 1.0f);
-                glVertex3f(0.0f, 1.0f, 1.0f);
-		glVertex3f(0.0f, 0.0f, 1.0f);
+	//This is the back face
+	glVertex3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 1.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 1.0f);
 
         glEnd();
         glPopMatrix();
