@@ -14,6 +14,7 @@ images_DATA = \
     covermanager.png \
     currenttrack_play.png \
     currenttrack_pause.png \
+    currenttrack_replay.png \
     description.png \
     eq_active2.png \
     eq_inactive2.png \
