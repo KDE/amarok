@@ -59,7 +59,6 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
-        KPopupMenu* m_advancedMenu;
         KLineEdit* m_searchEdit;
         CollectionView* m_view;
         QTimer* m_timer;

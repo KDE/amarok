@@ -49,7 +49,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
-    , m_advancedMenu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -119,11 +118,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_categoryMenu->insertSeparator();
 
-    m_categoryMenu->insertItem( i18n( "&Advanced" ), m_advancedMenu );
-
-    m_advancedMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
-    m_advancedMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
-    m_advancedMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
+    m_categoryMenu->insertItem( i18n( "&First Level" ), m_cat1Menu );
+    m_categoryMenu->insertItem( i18n( "&Second Level"), m_cat2Menu );
+    m_categoryMenu->insertItem( i18n( "&Third Level" ), m_cat3Menu );
 
     m_cat1Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "A&rtist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
@@ -671,24 +668,24 @@ CollectionView::presetMenu( int id )  //SLOT
     switch ( id )
     {
         case CollectionBrowser::IdArtist:
-            m_cat1 = CollectionBrowser::IdArtist;
-            m_cat2 = CollectionBrowser::IdNone;
-            m_cat3 = CollectionBrowser::IdNone;
+            cat1Menu( CollectionBrowser::IdArtist, false );
+            cat2Menu( CollectionBrowser::IdNone, false );
+            cat3Menu( CollectionBrowser::IdNone, false );
             break;
         case CollectionBrowser::IdAlbum:
-            m_cat1 = CollectionBrowser::IdAlbum;
-            m_cat2 = CollectionBrowser::IdNone;
-            m_cat3 = CollectionBrowser::IdNone;
+            cat1Menu( CollectionBrowser::IdAlbum, false );
+            cat2Menu( CollectionBrowser::IdNone, false );
+            cat3Menu( CollectionBrowser::IdNone, false );
             break;
         case CollectionBrowser::IdArtistAlbum:
-            m_cat1 = CollectionBrowser::IdArtist;
-            m_cat2 = CollectionBrowser::IdAlbum;
-            m_cat3 = CollectionBrowser::IdNone;
+            cat1Menu( CollectionBrowser::IdArtist, false );
+            cat2Menu( CollectionBrowser::IdAlbum, false );
+            cat3Menu( CollectionBrowser::IdNone, false );
             break;
         case CollectionBrowser::IdGenreArtistAlbum:
-            m_cat1 = CollectionBrowser::IdGenre;
-            m_cat2 = CollectionBrowser::IdArtist;
-            m_cat3 = CollectionBrowser::IdAlbum;
+            cat1Menu( CollectionBrowser::IdGenre, false );
+            cat2Menu( CollectionBrowser::IdArtist, false );
+            cat3Menu( CollectionBrowser::IdAlbum, false );
             break;
     }
 
