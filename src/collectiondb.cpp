@@ -25,8 +25,7 @@
 #include <kurl.h>
 #include <kio/job.h>
 
-#include <sys/stat.h>
-
+#include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
@@ -61,9 +60,6 @@ CollectionDB::CollectionDB()
         QFile::remove( path );
         sqlite3_open( path, &m_db );
     }
-
-    // Set busy timeout to 100 msec
-    sqlite3_busy_timeout( m_db, 100 );
 
     // create cover dir, if it doesn't exist.
     if( !m_coverDir.exists( "albumcovers", false ) )
@@ -619,7 +615,11 @@ CollectionDB::execSql( const QString& statement, QStringList* const values, QStr
 
         if ( error == SQLITE_BUSY )
         {
-            busyCnt++;
+            if ( busyCnt++ > 20 ) {
+                kdError() << "[CollectionDB] Busy-counter has reached maximum. Aborting this sql statement!\n";
+                break;
+            }
+            ::usleep( 100000 ); // Sleep 100 msec
             kdDebug() << "[CollectionDB] sqlite3_step: BUSY counter: " << busyCnt << endl;
         }
         if ( error == SQLITE_MISUSE )

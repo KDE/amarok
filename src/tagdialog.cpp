@@ -472,8 +472,7 @@ TagDialog::writeTag( MetaBundle mb )
         f.save();
 
          //update the collection db
-        // FIXME This sometimes causes endless loops, claiming database is busy
-//         CollectionDB().updateTags( path, mb );
+        CollectionDB().updateTags( path, mb );
 
         QApplication::restoreOverrideCursor();
 
