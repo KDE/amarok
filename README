@@ -38,9 +38,6 @@ recommended
 
     * SQLite 2.8
       http://www.sqlite.org  
-      
-    * SDL
-      http://www.libsdl.org      
 
     * OpenGL accelerated X-Server
             
@@ -50,8 +47,10 @@ optional
     
     * NMM 0.4.4
       http://www.networkmultimedia.org
-    
-          
+
+    * XMMS 1.2 + XMMS visualization plugins    
+      http://xmms.org        
+  
         
 --------------------------------------------------------------------------------
 IMPORTANT INSTALL INSTRUCTIONS
