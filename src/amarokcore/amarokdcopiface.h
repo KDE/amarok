@@ -46,6 +46,7 @@ k_dcop:
    virtual void scanCollection() = 0;                       ///< Scan the collection.
    
    virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
+   virtual void shufflePlaylist() = 0;                      ///< Shuffles the playlist.
 
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
       track lengths and positions in seconds. DO NOT TOUCH! */

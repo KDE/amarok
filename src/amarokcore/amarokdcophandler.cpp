@@ -247,6 +247,11 @@ namespace amaroK
         Playlist::instance()->clear();
     }
 
+    void DcopHandler::shufflePlaylist()
+    {
+        Playlist::instance()->shuffle();
+    }
+
     void DcopHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
