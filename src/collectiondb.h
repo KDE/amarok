@@ -149,6 +149,7 @@ class CollectionEmitter : public QObject
     friend class CollectionDB;
 
     signals:
+        void scanStarted();
         void scanDone( bool changed );
         void coverFetched( const QString &keyword );
         void coverFetched();

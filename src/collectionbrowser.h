@@ -67,10 +67,6 @@ class CollectionView : public KListView
     Q_OBJECT
     friend class CollectionBrowser;
 
-    signals:
-        void sigScanStarted();
-        void sigScanDone();
-
     public:
         class Item : public KListViewItem {
             public:

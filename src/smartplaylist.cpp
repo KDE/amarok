@@ -72,8 +72,8 @@ SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
         m_loaded = true;
     }
 
-    if ( CollectionView::instance() )
-        connect( CollectionView::instance(), SIGNAL( sigScanDone() ), SLOT( collectionScanDone() ) );
+    connect( CollectionDB::emitter(),     SIGNAL( scanDone( bool ) ),
+                                            SLOT( collectionScanDone() ) );
 
     connect( this, SIGNAL( doubleClicked(QListViewItem*) ), SLOT( loadPlaylistSlot(QListViewItem*) ) );
     connect( this, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),

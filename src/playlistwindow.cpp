@@ -324,18 +324,13 @@ PlaylistWindow::init()
         addBrowser<PlaylistBrowser>( "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" );
         addBrowser<SearchBrowser>( "SearchBrowser", i18n( "Search" ), "find" );
         addBrowser<FileBrowser>( "FileBrowser", i18n( "Files" ), "hdd_unmount" );
-
-        //update the context-browser when the collection begin or finish a scan
-        QWidget *cb = m_browsers->browser("ContextBrowser");
-        connect( CollectionView::instance(), SIGNAL( sigScanStarted() ), cb, SLOT( collectionScanStarted() ) );
-        connect( CollectionView::instance(), SIGNAL( sigScanDone() ), cb, SLOT( collectionScanDone() ) );
     //</Browsers>
 
 
     connect( m_playlist, SIGNAL(itemCountChanged( int, int )), m_statusbar, SLOT(slotItemCountChanged( int, int )) );
     connect( m_playlist, SIGNAL(aboutToClear()), m_lineEdit, SLOT(clear()) );
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), SLOT(slotSetFilterTimeout()) );
-    connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
+    connect( m_timer,    SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
 }
 
 

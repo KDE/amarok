@@ -91,8 +91,13 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                          SLOT( openURLRequest( const KURL & ) ) );
     connect( browser,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                          SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-    connect( m_scrobbler, SIGNAL( relatedArtistsFetched( QStringList& ) ),
-             this,        SLOT( relatedArtistsFetched( QStringList& ) ) );
+    connect( m_scrobbler,                 SIGNAL( relatedArtistsFetched( QStringList& ) ),
+             this,                          SLOT( relatedArtistsFetched( QStringList& ) ) );
+
+    connect( CollectionDB::emitter(),     SIGNAL( scanStarted() ),
+                                            SLOT( collectionScanStarted() ) );
+    connect( CollectionDB::emitter(),     SIGNAL( scanDone( bool ) ),
+                                            SLOT( collectionScanDone() ) );
 
     if ( m_db->isEmpty() || !m_db->isDbValid() )
     {

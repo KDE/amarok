@@ -828,6 +828,7 @@ CollectionDB::scan( const QStringList& folders, bool recursively, bool importPla
 {
     kdDebug() << k_funcinfo << endl;
 
+    emit s_emitter->scanStarted();
     if ( !folders.isEmpty() )
         m_weaver->append( new CollectionReader( this, PlaylistBrowser::instance(), folders,
                                                 recursively, importPlaylists, false ) );
@@ -883,6 +884,8 @@ CollectionDB::updateTag( const QString &url, const QString &field, const QString
 void
 CollectionDB::scanModifiedDirs( bool recursively, bool importPlaylists )
 {
+    emit s_emitter->scanStarted();
+
     QStringList folders;
     struct stat statBuf;
 

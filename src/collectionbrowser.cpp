@@ -67,7 +67,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
         hbox->setMargin( 1 );
         m_searchEdit->setFrame( QFrame::Sunken );
-        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
+        connect( button, SIGNAL( clicked() ), this, SLOT( clearFilter() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
@@ -338,9 +338,10 @@ CollectionView::scan()  //SLOT
 
     if ( AmarokConfig::collectionFolders().isEmpty() )
     {
+        //FIXME: this should be done by CollectionDB, too
         m_insertdb->dropTables();
         this->clear();
-        emit sigScanDone();
+//        emit CollectionDB::emitter()->scanDone( false );
     }
     else if ( !m_isScanning )
     {
@@ -350,8 +351,7 @@ CollectionView::scan()  //SLOT
         m_insertdb->scan( AmarokConfig::collectionFolders(), AmarokConfig::scanRecursively(),
                           AmarokConfig::importPlaylists() );
 
-        emit sigScanStarted();
-        amaroK::StatusBar::instance()->message( i18n("Building Collection...") );
+        amaroK::StatusBar::instance()->message( i18n( "Building Collection..." ) );
     }
 }
 
@@ -456,8 +456,6 @@ CollectionView::scanDone( bool changed ) //SLOT
     m_isScanning = false;
 
     amaroK::StatusBar::instance()->clear();
-
-    emit sigScanDone();
 }
 
 
