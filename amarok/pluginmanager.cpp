@@ -23,7 +23,6 @@ email                : markey@web.de
 
 #include <kdebug.h>
 #include <klibloader.h>
-#include <kurl.h>
 
 using namespace std;
 
