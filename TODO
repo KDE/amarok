@@ -24,6 +24,7 @@ SHORT-TERM (URGENT):
           <mxcl>   You can't add or drag albums from the context browser anymore
 
           <markey> "Handbook" and "About" menu entries are disabled (greyed out) for some people.
+                   For the life of me I can't reproduce this, even with KDE 3.3.
 
   ADD 180 <muesli> Show "Artist - Song" for Various Artist folder.
 
