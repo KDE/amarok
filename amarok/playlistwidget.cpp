@@ -331,7 +331,7 @@ void PlaylistWidget::saveXML( const QString &path ) const
     const QString open1 = "<item url=\"", open2 = "\">\n";
     const QString close = "</item>\n";
 
-    stream << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+    stream << "<?xml version=\"1.0\" encoding=\"utf8\"?>\n";
     stream << "<playlist product=\"amaroK\" version=\"1\">\n";
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
