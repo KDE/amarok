@@ -33,8 +33,6 @@ SHORT-TERM (URGENT):
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
 
-  <markey> CoverManager shows wrong count in StatusBar when fetching a couple of images.
-
   <muesli> Sort albums by date, name in ContextBrowser.
 
   <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB,
