@@ -46,6 +46,7 @@ email                : markey@web.de
 #include <qtooltip.h>
 #include <qwidget.h>
 #include <qtimer.h>
+#include <qdragobject.h>
 
 #include <kaction.h>
 #include <kbugreport.h>
@@ -529,6 +530,8 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
             AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
             timeDisplay();
         }
+	else
+	    startDrag();
     }
 }
 
@@ -651,6 +654,13 @@ void PlayerWidget::slotUpdateTrayIcon( bool visible )
     {
         m_pTray->hide();
     }
+}
+
+void PlayerWidget::startDrag()
+{
+    QDragObject *d = new QTextDrag( m_pDcopHandler->nowPlaying(), this );
+    d->dragCopy();
+    // do NOT delete d.
 }
 
 /*

@@ -91,6 +91,8 @@ class PlayerWidget : public QWidget
         QGuardedPtr<ArtsConfigWidget> m_pPlayObjConfigWidget;
 
         void wheelEvent( QWheelEvent *e ); //systray requires access
+	
+	void startDrag();
 
     public slots:
         void createVis();
