@@ -790,13 +790,17 @@ void ContextBrowser::setStyleSheet()
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    m_styleSheet  = QString( "body { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
+    m_styleSheet  = QString( "body { font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); }" )
+                       .arg( pxSize ).arg( text ).arg( bg ).arg( locate( "data", "amarok/images/fadein.png" ) );
     m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
 
     m_styleSheet += QString( ".menu { margin: 0.4em 0.0em; font-weight: bold; }" );
 
     //used in the currentlyPlaying block
     //m_styleSheet += QString( ".album { font-weight: bold; }" );
+
+    //set background for all tables
+    m_styleSheet += QString( "table { background-color: %1; }" ).arg( colorGroup().base().name() );
 
     //header for all sections
     m_styleSheet += QString( "th { text-align: left; color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
