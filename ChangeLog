@@ -4,6 +4,7 @@ amaroK ChangeLog
 
 
 VERSION 1.2.1:
+  ADD: support relative path of tracks in writing playlists iBR 91053)
   FIX: Don't inline-edit tags for the whole playlist's selection.
   FIX: Fix "Recode Tags" crash issues. (BR 95041)
   ADD: "Set Custom Cover" can fetch remote images. (BR 90499)

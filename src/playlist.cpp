@@ -1425,7 +1425,7 @@ Playlist::customEvent( QCustomEvent *e )
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-Playlist::saveM3U( const QString &path ) const
+Playlist::saveM3U( const QString &path, bool relativePath ) const
 {
     QFile file( path );
 
@@ -1443,7 +1443,15 @@ Playlist::saveM3U( const QString &path ) const
             stream << ',';
             stream << item->title();
             stream << '\n';
-            stream << (url.protocol() == "file" ? url.path() : url.url());
+            if (url.protocol() == "file" ) {
+                if ( relativePath ) {
+                  const QFileInfo fi(file);
+                  stream << KURL::relativePath(fi.dirPath(), url.path());
+                } else 
+                  stream << url.path();
+            } else {
+                stream << url.url();
+            }
             stream << "\n";
         }
     }

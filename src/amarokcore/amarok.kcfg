@@ -146,6 +146,11 @@
         <whatsthis>If set, amaroK displays a menubar on top of the application.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Relative Playlist" type="Bool">
+        <label>Whether playlists store relative path</label>
+        <whatsthis>If set, amaroK manually saved playlists will contain a relative path to the tracksa , not absolute.</whatsthis>
+        <default>false</default>
+    </entry>
 </group>
 
 <group name="Playback">

@@ -560,7 +560,7 @@ void PlaylistWindow::savePlaylist() const //SLOT
             static_cast<FileBrowser*>(m_browsers->browser( "FileBrowser" ))->url().path(), "*.m3u" );
 
     if( !path.isEmpty() ) {
-        Playlist::instance()->saveM3U( path );
+        Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() );
         PlaylistBrowser::instance()->addPlaylist( path, true );
     }
 }
