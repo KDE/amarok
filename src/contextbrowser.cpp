@@ -253,7 +253,7 @@ void ContextBrowser::paletteChange( const QPalette& pal ) {
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { SHOW, FETCH, DELETE, APPEND, ASNEXT, MAKE, MANAGER, TITLE };
+    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, MANAGER, TITLE };
 
     if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) )
        return;
@@ -268,6 +268,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertItem( SmallIcon( "viewmag" ), i18n( "&Show Fullsize" ), SHOW );
         menu.insertItem( i18n( "&Fetch From amazon.com" ), FETCH );
+        menu.insertItem( SmallIcon("folder_image"), i18n( "Add &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
         menu.insertItem( SmallIcon( "editdelete" ), i18n("&Delete Image File"), DELETE );
@@ -359,6 +360,19 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         break;
     #endif
 
+    case CUSTOM:
+    {
+        /* This opens a file-open-dialog and copies the selected image to albumcovers, scaled and unscaled. */
+        KURL file = KFileDialog::getImageOpenURL( ":homedir", this, i18n( "Select Cover Image File" ) );
+        if ( !file.isEmpty() )
+        {
+            qApp->processEvents();    //it may takes a while so process pending events
+            m_db->setAlbumImage( info[0], info[1], file );
+            showCurrentTrack();
+        }
+        break;
+    }
+    
     case MANAGER:
         CoverManager::showOnce();
         break;
