@@ -13,6 +13,7 @@ VERSION 1.2.2:
     * New DCOP call player: setEqualizer(preamp, the 10 eq settings)
 
   BUGFIXES:
+    * Handle delay gap between songs properly with aRts engine. (BR 90404)
     * Switched order of "Make playlist" and "Queue after current track" menus
       to avoid playlist destruction. (BR 96164 part 1)
     * Visualizations with LibVisual didn't work in some cases. (BR 99627)

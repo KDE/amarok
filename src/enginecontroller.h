@@ -119,6 +119,7 @@ private:
     long            m_delayTime;
     int             m_muteVolume;
     bool            m_xFadeThisTrack;
+    bool            m_isTiming;
     QTimer*         m_timer;
 
     QGuardedPtr<amaroK::StreamProvider> m_stream;

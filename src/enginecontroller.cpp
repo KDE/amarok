@@ -273,6 +273,7 @@ void EngineController::previous() //SLOT
 
 void EngineController::next( bool forceNext ) //SLOT
 {
+    m_isTiming = false;
     emit orderNext(forceNext);
 }
 
@@ -554,7 +555,12 @@ void EngineController::slotTrackEnded() //SLOT
     if ( AmarokConfig::trackDelayLength() > 0 )
     {
         //FIXME not perfect
-        QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(next()) );
+        if ( !m_isTiming )
+        {
+            QTimer::singleShot( AmarokConfig::trackDelayLength(), this, SLOT(next()) );
+            m_isTiming = true;
+        }
+
     }
     else next(false);
 }
