@@ -8,7 +8,6 @@
 
 #include "collectiondb.h"
 #include "enginecontroller.h"
-#include "metabundle.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "statusbar.h"
@@ -138,13 +137,7 @@ PlaylistLoader::run()
 void
 PlaylistLoader::postItem( const KURL &url, const QString &title, const uint length )
 {
-    MetaBundle bundle;
-
-    // Get MetaBundle from Collection if it's already stored, else read tags and store
-    if ( !m_db->getMetaBundleForUrl( url.path(), &bundle ) ) {
-        bundle = MetaBundle( url );
-        m_db->addAudioproperties( bundle );
-    }
+    MetaBundle bundle = generateBundle( url );
 
     bundle.setTitle( title );
     bundle.setLength( length );
@@ -302,15 +295,27 @@ PlaylistLoader::recurse( const KURL &url, bool recursing )
 void
 PlaylistLoader::postItem( const KURL &url )
 {
-    MetaBundle bundle;
-
-    // Get MetaBundle from Collection if it's already stored, else read tags and store
-    if ( !m_db->getMetaBundleForUrl( url.path(), &bundle ) ) {
-        bundle = MetaBundle( url );
-        m_db->addAudioproperties( bundle );
-    }
+    MetaBundle bundle = generateBundle( url );
 
     QApplication::postEvent( Playlist::instance(), new ItemEvent( bundle ) );
 }
 
+
+MetaBundle
+PlaylistLoader::generateBundle( const KURL &url )
+{
+    MetaBundle bundle;
+
+    // Get MetaBundle from Collection if it's already stored, else read tags and store
+    if ( !m_db->getMetaBundleForUrl( url.path(), &bundle ) )
+        bundle = MetaBundle( url );
+
+    // If it's in Collection but no audioproperties available, read them and store
+    else if ( !bundle.length() ) {
+        bundle = MetaBundle( url );
+        m_db->addAudioproperties( bundle );
+    }
+
+    return bundle;
+}
 

@@ -40,9 +40,6 @@ class PlaylistItem : public KListViewItem
 
         MetaBundle metaBundle();
 
-        bool inCollection() const { return m_inCollection; }
-        bool hasAudioproperties() const { return !text( Length ).contains( "?" ); }
-
         QString trackName() const { return KListViewItem::text( TrackName ); }
         QString title() const { return KListViewItem::text( Title ); }
         const KURL &url() const { return m_url; }
@@ -88,7 +85,6 @@ class PlaylistItem : public KListViewItem
         static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
         const KURL m_url;
-        const bool m_inCollection;
 
         static const uint STRING_STORE_SIZE = 80;
         static QString stringStore[STRING_STORE_SIZE];
