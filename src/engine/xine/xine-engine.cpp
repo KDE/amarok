@@ -137,12 +137,21 @@ XineEngine::init( bool&, int, bool )
 void
 XineEngine::play()
 {
+    if( xine_get_status( xineStream ) == XINE_STATUS_PLAY && !xine_get_param( xineStream, XINE_PARAM_SPEED ) )
+    {
+        xine_set_param(xineStream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL);
+        return;
+    }
+
+    xine_close( xineStream );
+
     if( xine_open( xineStream, m_url.url().local8Bit() ) )
     {
         if( xine_play( xineStream, 0, 0 ) ) return;
     }
 
     KMessageBox::sorry( 0, i18n( "<p>Xine could not open the media at: <i>%1</i>" ).arg( m_url.prettyURL() ) );
+    emit stopped();
 }
 
 void
@@ -185,18 +194,9 @@ XineEngine::position() const
 void
 XineEngine::seek( long ms )
 {
-    if( xine_get_status( xineStream ) == XINE_STATUS_PLAY && xine_get_stream_info( xineStream, XINE_STREAM_INFO_SEEKABLE ) )
+    if( xine_get_status( xineStream ) == XINE_STATUS_PLAY )
     {
-        int pos;
-        int time;
-        int length;
-
-        xine_get_pos_length( xineStream, &pos, &time, &length );
-
-        pos = int(65535*((double)ms/(double)length));
-
-        //apparently position stuff is out of 65535
-        xine_play( xineStream, pos, 0 );
+        xine_play( xineStream, 0, ms );
     }
 }
 
@@ -224,9 +224,24 @@ XineEngine::canDecode( const KURL &url, mode_t, mode_t )
 }
 
 void
-XineEngine::customEvent( QCustomEvent* )
+XineEngine::customEvent( QCustomEvent *e )
 {
-    emit endOfTrack();
+    switch( e->type() )
+    {
+    case 3000:
+        emit endOfTrack();
+        break;
+
+    case 3001:
+        #define message static_cast<QString*>(e->data())
+        KMessageBox::error( 0, *message );
+        delete message;
+        #undef message
+        break;
+
+    default:
+        ;
+    }
 }
 
 
@@ -315,16 +330,16 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             }
             *++d = '\0';
 
-            message = c;
+            debug() << c << endl;
 
             break;
         }
 
-        case XINE_MSG_ENCRYPTED_SOURCE: return;
+        case XINE_MSG_ENCRYPTED_SOURCE: break;
 
         case XINE_MSG_UNKNOWN_HOST: message = i18n("The specified host is unknown."); goto param;
         case XINE_MSG_UNKNOWN_DEVICE: message = i18n("The device name you specified seems invalid."); goto param;
-        case XINE_MSG_NETWORK_UNREACHABLE: message = i18n("The network appears unreachable. Check your network setup and the server name."); goto param;
+        case XINE_MSG_NETWORK_UNREACHABLE: message = i18n("The network appears unreachable."); goto param;
         case XINE_MSG_AUDIO_OUT_UNAVAILABLE: message = i18n("Audio output unavailable. The device is busy."); goto param;
         case XINE_MSG_CONNECTION_REFUSED: message = i18n("The connection was refused."); goto param;
         case XINE_MSG_FILE_NOT_FOUND: message = i18n("The specified file or url was not found."); goto param;
@@ -333,8 +348,8 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         case XINE_MSG_LIBRARY_LOAD_ERROR: message = i18n("A problem occured while loading a library or decoder."); goto param;
 
         case XINE_MSG_GENERAL_WARNING: message = i18n("General Warning"); goto explain;
-        case XINE_MSG_SECURITY: message = i18n("Security Warning"); goto explain;
-        default: message = i18n("Unknown Error"); goto explain;
+        case XINE_MSG_SECURITY:        message = i18n("Security Warning"); goto explain;
+        default:                       message = i18n("Unknown Error"); goto explain;
 
 
         explain:
@@ -353,16 +368,16 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
             if(data->explanation)
             {
-                message += "<p>Xine Paramaters:\n<i>;
+                message += "<p>Xine Paramaters:\n<i>";
                 message += ((char *) data + data->parameters);
                 message += "</i>";
             }
             else message += i18n("No information available");
 
             message.prepend( "<p>" );
-        }
 
-        debug() << message << endl;
+            QApplication::postEvent( xe, new QCustomEvent(QEvent::Type(3001), new QString(message)) );
+        }
 
     } //case
     } //switch
