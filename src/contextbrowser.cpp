@@ -641,7 +641,7 @@ void ContextBrowser::showHome() //SLOT
     }
     else
     {
-        m_HTMLSource.append( "<iframe name='ftframe' width='100%'></iframe>" );
+        m_HTMLSource.append( "<iframe name='ftframe' width='100%' style='vertical-align:bottom;'></iframe>" );
         ftBox.append( "<html>"
                         "<style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
                         "<div id='favorites_box-body' class='box-body'>"
@@ -689,7 +689,7 @@ void ContextBrowser::showHome() //SLOT
                     + i18n( "Your Newest Tracks" ) +
                     "</span>"
                 "</div>"
-                "<iframe name='ntframe' width='100%'></iframe>"
+                "<iframe name='ntframe' width='100%' style='vertical-align:bottom;'></iframe>"
                        );
 
     ntBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='newest_box-body' class='box-body'>" );
@@ -744,7 +744,7 @@ void ContextBrowser::showHome() //SLOT
     }
     else
     {
-        m_HTMLSource.append( "<iframe name='ltframe' width='100%'></iframe>" );
+        m_HTMLSource.append( "<iframe name='ltframe' width='100%' style='vertical-align:bottom;'></iframe>" );
         ltBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style><div id='least_box-body' class='box-body'>" );
 
         QDateTime lastPlay = QDateTime();
@@ -1109,7 +1109,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                     + i18n( "Suggested Songs" ) +
                     "</span>"
                 "</div>"
-                "<div id='T_SS'><iframe name='ssframe' height='130' width='100%'></iframe></div></div>" );
+                "<div id='T_SS'><iframe name='ssframe' height='130' width='100%' style='vertical-align:bottom;'></iframe></div></div>" );
 
             ssBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
                           "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
@@ -1163,7 +1163,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
                 + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
                 "</span>"
             "</div>"
-            "<div id='T_FT'><iframe name='fsframe' height='130' width='100%'></iframe></div></div>" );
+            "<div id='T_FT'><iframe name='fsframe' height='130' width='100%' style='vertical-align:bottom;'></iframe></div></div>" );
 
             fsBox.append( "<html><style type='text/css'>body { margin-left: 0px; margin-right: 0px; margin-top: 0px; margin-bottom: 0px }</style>"
                           "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
