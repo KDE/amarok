@@ -8,9 +8,12 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+    * fix: #42 with restore track on startup and crossfade volume starts at max and then crossfades
+               from 0 so you get a noticeable "blip" sound.
+
     * fix: #41 <mxcl> id3v2 tags append rather than write tags, ie Dr.DreDr.Dre
 
-    * fix: #40 <markey> change "EQ" button to "FX", as it is more appropriate. 
+    * fix: #40 <markey> change "EQ" button to "FX", as it is more appropriate.
 
     * fix: #38 <mxcl> saving edited-tags sometimes hangs the ui because it takes ages! Is this
                just a weak point in taglib or should we expect this and do something drastic like
@@ -44,6 +47,8 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
+    * fix: crossfading affects analyzer amplitudes. Can't decide if this is a feature or a bug!
 
     * add: #39 <markey> add playlist column for media-type (mp3, ogg, mod, etc)
 
