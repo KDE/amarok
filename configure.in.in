@@ -441,7 +441,7 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 
 if test x$PKGCONFIGFOUND = xyes; then
 
-    KDE_PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.1.6, [build_libvisual="yes"], [build_libvisual="no"])
+    KDE_PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.2.0, [build_libvisual="yes"], [build_libvisual="no"])
 
     AC_SUBST(LIBVISUAL_LIBS)
     AC_SUBST(LIBVISUAL_CFLAGS)
