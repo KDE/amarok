@@ -6,6 +6,8 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> Make it possible to auto-run scripts on amaroK startup.
+
   <markey> In the settings dialog the "Apply" button is broken (always enabled).
 
   <mxcl>   Apparently if no .kde exists prior to running amaroK, amaroK borks
