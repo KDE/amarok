@@ -106,11 +106,11 @@ scope_port_put_buffer (xine_audio_port_t *port_gen, audio_buffer_t *buf, xine_st
     {
         int x;
 
-        //printf( "unused buffers: %d\n", myEnd - myIndex );
+        /*printf( "unused buffers: %d\n", myEnd - myIndex );*/
         for( x = myIndex; x < myEnd; ++x, ++offset )
             myBuffer[offset] = myBuffer[x];
     }
-    //else printf( "all buffers used\n" );
+    /*else printf( "all buffers used\n" );*/
 
     if( port->bits == 8 )
     {
