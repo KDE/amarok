@@ -612,7 +612,7 @@ void Playlist::removeSelectedItems() //SLOT
 void Playlist::deleteSelectedPhysically() //SLOT
 {
     if ( KMessageBox::warningContinueCancel( this, i18n( "<h3>Delete selected files physically?</h3>"
-                                                         "<p>Warning: This process will be <u>irreversible!</u></p><br/>" ) )
+                                                         "<p>Warning: This process will be <u>irreversible.</u></p><br/>" ) )
        == KMessageBox::Cancel ) return;
 
     setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
