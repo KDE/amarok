@@ -71,6 +71,7 @@ class CollectionView : public KListView
             //attributes:
                 KURL m_url;
         };
+        friend class Item; // for access to m_category2
     
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
