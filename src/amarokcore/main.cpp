@@ -45,6 +45,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "Analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
     aboutData.addCredit( "Andreas Mair", I18N_NOOP( "MySQL support" ), "am_ml@linogate.com" );
+    aboutData.addCredit( "Andrew de Quincey", I18N_NOOP( "Postgresql support" ), "adq_dvb@lidskialf.net" );
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "Analyzers, Context Browser and systray eye-candy" ), "eros.kde@email.it" );
     aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
@@ -65,7 +66,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
     aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
-    aboutData.addCredit( "Andrew de Quincey", I18N_NOOP( "Postgresql support" ), "adq_dvb@lidskialf.net" );
 
     KApplication::disableAutoDcopRegistration();
 
