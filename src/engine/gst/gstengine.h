@@ -154,22 +154,23 @@ class GstEngine : public Engine::Base
         QString m_gst_debug;
 
         QPtrList<InputPipeline> m_inputs;
-        InputPipeline* m_currentInput;
+        InputPipeline*          m_currentInput;
 
         GstAdapter* m_gst_adapter;
 
-        char* m_streamBuf;
-        int m_streamBufIndex;
-        bool m_streamBufStop;
-        bool m_streamBuffering;
+        char*    m_streamBuf;
+        int      m_streamBufIndex;
+        bool     m_streamBufStop;
+        bool     m_streamBuffering;
         KIO::TransferJob* m_transferJob;
-        QMutex m_mutexScope;
+        QMutex   m_mutexScope;
 
-        bool m_pipelineFilled;
-        float m_fadeValue;
+        bool        m_pipelineFilled;
+        float       m_fadeValue;
         vector<int> m_equalizerGains;
         Engine::SimpleMetaBundle m_metaBundle;
 
+        bool m_eosReached;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
 };

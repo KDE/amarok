@@ -212,6 +212,7 @@ GstEngine::GstEngine()
         , m_transferJob( 0 )
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
+        , m_eosReached( false )
         , m_shutdown( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -343,8 +344,13 @@ GstEngine::state() const
 {
     if ( !m_pipelineFilled )
         return Engine::Empty;
-    if ( !m_currentInput )
+
+    // amaroK expects the engine to return Idle on EOS
+    if ( m_eosReached )
         return Engine::Idle;
+
+    if ( !m_currentInput )
+        return Engine::Empty;
 
     switch ( gst_element_get_state( m_currentInput->bin ) )
     {
@@ -399,7 +405,7 @@ GstEngine::scope()
     if ( offset < 0 ) offset *= -1;
     offset = QMIN( offset, available - SCOPE_VALUES*channels*sizeof( gint16 ) );
 
-    for ( ulong i = 0; i < SCOPE_VALUES; i++, data += channels ) {
+    for ( long i = 0; i < SCOPE_VALUES; i++, data += channels ) {
         long temp = 0;
 
         for ( int chan = 0; chan < channels; chan++ ) {
@@ -544,6 +550,7 @@ GstEngine::stop()  //SLOT
     DEBUG_BLOCK
 
     emit stateChanged( Engine::Empty );
+    m_eosReached = false;
 
     if ( !m_currentInput ) return;
 
@@ -826,6 +833,9 @@ GstEngine::endOfStreamReached()  //SLOT
                                 input->state() == InputPipeline::XFADE_OUT;
 
             destroyInput( input );
+
+            // Simulate Idle state on EOS, if we are not fading
+            if ( !m_currentInput ) m_eosReached = true;
 
             if ( !fading ) emit trackEnded();
         }
