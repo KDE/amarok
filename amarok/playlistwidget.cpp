@@ -416,6 +416,8 @@ void PlaylistWidget::removeSelectedItems() //SLOT
 
     QPtrList<PlaylistItem> list;
 
+    setSelected( currentItem(), true );     //remove currentItem, no matter if selected or not
+        
     for( QListViewItemIterator it( this, QListViewItemIterator::Selected ); it.current(); ++it )
         if( it.current() != m_currentTrack )
             list.append( (PlaylistItem *)it.current() );
@@ -1075,7 +1077,7 @@ void PlaylistWidget::customEvent( QCustomEvent *e )
 
 void PlaylistWidget::handleStreamMeta( const TitleProxy::metaPacket& packet )
 {
-    if ( QListViewItem* pItem = currentItem() )
+    if ( QListViewItem* pItem = m_currentTrack )
     {
         pItem->setText(  0, packet.streamUrl   );
         pItem->setText(  1, packet.streamName  );
