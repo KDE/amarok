@@ -247,7 +247,10 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
 
     QFileInfo file( dir );
     if ( file.isSymLink() )
+    {
         kdWarning() << "Skipping symlink " << dir << endl;
+        return;
+    }
 
     DIR * d = opendir( QFile::encodeName( dir ) );
     dirent *ent;
