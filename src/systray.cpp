@@ -35,6 +35,8 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
   , trackLength( 0 )
   , mergeLevel( -1 )
   , overlay( 0 )
+  , blinkTimerID( 0 )
+  , overlayVisible( false )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
@@ -213,7 +215,7 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
         QColor saturatedColor = palette().active().highlight();
         int hue, sat, value;
         saturatedColor.getHsv( &hue, &sat, &value );
-        saturatedColor.setHsv( hue, (sat + 510) / 3, value );
+        saturatedColor.setHsv( hue, sat > 200 ? 200 : sat, value < 100 ? 100 : value );
         KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
         alternateIcon = tmpTrayIcon;
     }
