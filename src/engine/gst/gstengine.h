@@ -1,6 +1,6 @@
 /***************************************************************************
-                      gstengine.h  -  GStreamer audio interface
-                         -------------------
+gstengine.h - GStreamer audio interface
+
 begin                : Jan 02 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                : markey@web.de

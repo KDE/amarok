@@ -1,6 +1,6 @@
 /***************************************************************************
-          gstengine.cpp  -  GStreamer audio interface
-             -------------------
+gstengine.cpp - GStreamer audio interface
+
 begin                : Jan 02 2003
 copyright            : (C) 2003 by Mark Kretschmann
 email                : markey@web.de
@@ -90,7 +90,7 @@ GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer )
         for ( ulong i = 0; i < GST_BUFFER_SIZE( buf ) / 2 / channels; i += channels ) {
             if ( self->m_scopeBufIndex == self->m_scopeBuf.size() ) {
                 self->m_scopeBufIndex = 0;
-//                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
+                //                 kdDebug() << k_funcinfo << "m_scopeBuf overflow!\n";
             }
 
             float temp = 0.0;
@@ -127,7 +127,7 @@ void
 GstEngine::error_cb( GstElement* /*element*/, GstElement* /*source*/, GError* error, gchar* /*debug*/, gpointer /*data*/ )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     QTimer::singleShot( 0, self, SLOT( handleError() ) );
 }
 
@@ -140,7 +140,7 @@ GstEngine::GstEngine()
         : EngineBase()
         , m_thread( NULL )
         , m_scopeBufIndex( 0 )
-        , m_streamBuf( new char[STREAMBUF_SIZE] )
+        , m_streamBuf( new char[ STREAMBUF_SIZE ] )
         , m_pipelineFilled( false )
 {
     kdDebug() << k_funcinfo << endl;
@@ -154,7 +154,7 @@ GstEngine::~GstEngine()
     stop();
     cleanPipeline();
     delete[] m_streamBuf;
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -195,7 +195,7 @@ GstEngine::initMixer( bool hardware )
 bool
 GstEngine::canDecode( const KURL &url, mode_t, mode_t )
 {
-    GstElement *pipeline, *filesrc, *typefind;
+    GstElement * pipeline, *filesrc, *typefind;
     m_typefindResult = false;
 
     /* create a new pipeline to hold the elements */
@@ -247,18 +247,18 @@ GstEngine::state() const
         return Empty;
     if ( m_playFlag )
         return Playing;
-    
+
     switch ( gst_element_get_state( GST_ELEMENT( m_thread ) ) ) {
-    case GST_STATE_NULL:
+        case GST_STATE_NULL:
         return Empty;
-    case GST_STATE_READY:
+        case GST_STATE_READY:
         return Idle;
-    case GST_STATE_PLAYING:
+        case GST_STATE_PLAYING:
         return Playing;
-    case GST_STATE_PAUSED:
+        case GST_STATE_PAUSED:
         return Paused;
 
-    default:
+        default:
         return Empty;
     }
 }
@@ -288,7 +288,7 @@ GstEngine::scope()
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::play( const KURL& url )             //SLOT
+GstEngine::play( const KURL& url )              //SLOT
 {
     stop();
     if ( m_pipelineFilled ) cleanPipeline();
@@ -297,15 +297,16 @@ GstEngine::play( const KURL& url )             //SLOT
 
     /* create a new thread to hold the elements */
     m_thread = gst_thread_new ( "thread" );
-    m_audiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
+    g_object_set( G_OBJECT( m_thread ), "priority", 2, NULL );
 
+    m_audiosink = gst_element_factory_make( m_soundOutput.latin1(), "play_audio" );
 
     kdDebug() << "DefaultSoundDevice: " << ( ( m_defaultSoundDevice ) ? "true" : "false" ) << endl;
     kdDebug() << "Sound Device:       " << m_soundDevice << endl;
 
     /* setting device property for AudioSink*/
-    if (!m_defaultSoundDevice && !m_soundDevice.isEmpty())
-        g_object_set(G_OBJECT (m_audiosink), "device", m_soundDevice.latin1(), NULL);
+    if ( !m_defaultSoundDevice && !m_soundDevice.isEmpty() )
+        g_object_set( G_OBJECT ( m_audiosink ), "device", m_soundDevice.latin1(), NULL );
 
     /* create source */
     if ( url.isLocalFile() ) {
@@ -329,8 +330,8 @@ GstEngine::play( const KURL& url )             //SLOT
                        G_CALLBACK( handoff_cb ), m_thread );
     g_signal_connect ( G_OBJECT( m_audiosink ), "eos",
                        G_CALLBACK( eos_cb ), m_thread );
-//     g_signal_connect ( G_OBJECT( m_thread ), "error",
-//                        G_CALLBACK ( error_cb ), m_thread );
+    //     g_signal_connect ( G_OBJECT( m_thread ), "error",
+    //                        G_CALLBACK ( error_cb ), m_thread );
 
     /* add objects to the main pipeline */
     gst_bin_add_many( GST_BIN( m_thread ), m_filesrc, m_spider, m_identity,
@@ -340,16 +341,15 @@ GstEngine::play( const KURL& url )             //SLOT
                            m_volumeElement, m_audioconvert, m_audioscale, m_audiosink, NULL );
 
     gst_element_set_state( GST_ELEMENT( m_thread ), GST_STATE_READY );
-    
+
     m_pipelineFilled = true;
     m_streamBufIndex = 0;
     setVolume( volume() );
-    
+
     if ( url.protocol() == "http" ) {
         kdDebug() << k_funcinfo << "Playing HTTP stream." << endl;
         m_playFlag = true;
-    }
-    else {
+    } else {
         play();
         m_playFlag = false;
     }
@@ -357,7 +357,7 @@ GstEngine::play( const KURL& url )             //SLOT
 
 
 void
-GstEngine::play()             //SLOT
+GstEngine::play()              //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
@@ -368,20 +368,20 @@ GstEngine::play()             //SLOT
 
 
 void
-GstEngine::stop()             //SLOT
+GstEngine::stop()              //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_NULL );
-    
+
     emit stopped();
 }
 
 
 void
-GstEngine::pause()             //SLOT
+GstEngine::pause()              //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
@@ -391,7 +391,7 @@ GstEngine::pause()             //SLOT
 
 
 void
-GstEngine::seek( long ms )             //SLOT
+GstEngine::seek( long ms )              //SLOT
 {
     if ( !m_pipelineFilled ) return ;
 
@@ -408,7 +408,7 @@ GstEngine::seek( long ms )             //SLOT
 
 
 void
-GstEngine::setVolume( int percent )             //SLOT
+GstEngine::setVolume( int percent )              //SLOT
 {
     m_volume = percent;
 
@@ -420,24 +420,24 @@ GstEngine::setVolume( int percent )             //SLOT
         if ( m_pipelineFilled )
             // We're using a logarithmic function to make the volume ramp more natural
             g_object_set( G_OBJECT( m_volumeElement ), "volume",
-                          (double) 1.0 - log10( (100 - percent) * 0.09 + 1.0 ), NULL );
+                          ( double ) 1.0 - log10( ( 100 - percent ) * 0.09 + 1.0 ), NULL );
     }
 }
-        
+
 
 void
-GstEngine::newStreamData( char* buf, int size )            //SLOT
+GstEngine::newStreamData( char* buf, int size )             //SLOT
 {
     if ( m_streamBufIndex + size > STREAMBUF_SIZE ) {
-        size = STREAMBUF_SIZE - m_streamBufIndex;    
-//         kdDebug() << "Stream buffer overflow!" << endl;
+        size = STREAMBUF_SIZE - m_streamBufIndex;
+        //         kdDebug() << "Stream buffer overflow!" << endl;
     }
-            
+
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, buf, size );
     // Adjust index
     m_streamBufIndex += size;
-    
+
     // Wait until buffer is partly filled, then start playback
     if ( m_playFlag && m_streamBufIndex > STREAMBUF_SIZE / 2 ) {
         play();
@@ -449,23 +449,23 @@ GstEngine::newStreamData( char* buf, int size )            //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
-    
+
 void
-GstEngine::handleError() //SLOT
+GstEngine::handleError()  //SLOT
 {
     kdDebug() << "Error message: " << static_cast<const char*>( error_msg->message ) << endl;
 }
 
 
 void
-GstEngine::stopAtEnd()             //SLOT
+GstEngine::stopAtEnd()              //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
 
     /* stop the thread */
     gst_element_set_state ( m_thread, GST_STATE_READY );
-    
+
     emit stopped();
 }
 
