@@ -180,7 +180,7 @@ CoverManager::CoverManager( QWidget *parent, const char *name )
     connect( m_artistView, SIGNAL( selectionChanged( QListViewItem * ) ), SLOT( slotArtistSelected( QListViewItem * ) ) );
     connect( m_coverView, SIGNAL( rightButtonPressed( QIconViewItem *, const QPoint & ) ),
                 SLOT( showCoverMenu(QIconViewItem *, const QPoint &) ) );
-    connect( m_coverView, SIGNAL( doubleClicked( QIconViewItem * ) ),
+    connect( m_coverView, SIGNAL( clicked( QIconViewItem * ) ),
                 SLOT( coverItemDoubleClicked( QIconViewItem * ) ) );
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
@@ -395,6 +395,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIcon("www"), i18n("Fetch selected covers"), FETCH );
         #endif
         menu.insertItem( SmallIcon("editdelete"), i18n("Delete selected covers"), DELETE );
+
     }
     else {
         menu.insertItem( SmallIcon("viewmag"), i18n("Show fullsize"), SHOW );
@@ -449,18 +450,24 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
 void CoverManager::coverItemDoubleClicked( QIconViewItem *item ) //SLOT
 {
+   //this code is duplicated in ContextBrowser::viewImage()
+
     #define item static_cast<CoverViewItem*>(item)
+
     if( !item ) return;
 
-    if( item->hasCover() ) {
-        QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-        widget->setCaption( item->album() );
-        QPixmap coverPix( item->coverImagePath() );
-        widget->setPaletteBackgroundPixmap( coverPix );
-        widget->setMinimumSize( coverPix.size() );
-        widget->setFixedSize( coverPix.size() );
-        widget->show();
+    if ( item->hasCover() ) {
+        //QDialog means "escape" works as expected
+        QDialog *dialog = new QDialog( this, 0, false, WDestructiveClose | WType_TopLevel );
+        dialog->setCaption( kapp->makeStdCaption( item->album() ) );
+        QPixmap pixmap( item->coverImagePath() );
+        dialog->setPaletteBackgroundPixmap( pixmap );
+        dialog->setFixedSize( pixmap.size() );
+        dialog->show();
     }
+    else
+        fetchSelectedCovers();
+
 
     #undef item
 }

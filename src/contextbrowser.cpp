@@ -765,15 +765,14 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
 void ContextBrowser::viewImage( const QString& artist, const QString& album )
 {
-    // Show an image viewer widget
-    QWidget *widget = new QWidget( 0, 0, WDestructiveClose );
-    widget->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
-    QPixmap pixmap( m_db->getImageForAlbum( artist, album, 0 ) );
-    widget->setPaletteBackgroundPixmap( pixmap );
-    widget->setMinimumSize( pixmap.size() );
-    widget->setFixedSize( pixmap.size() );
+   //this code is duplicated in CoverManager::coverItemDoubleClicked()
 
-    widget->show();
+    QDialog *dialog = new QDialog( this, 0, false, WDestructiveClose | WType_TopLevel );
+    dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
+    QPixmap pixmap( m_db->getImageForAlbum( artist, album, 0 ) );
+    dialog->setPaletteBackgroundPixmap( pixmap );
+    dialog->setFixedSize( pixmap.size() );
+    dialog->show();
 }
 
 namespace amaroK {
