@@ -71,119 +71,9 @@ EngineController::EngineController()
 }
 
 
-void EngineController::previous()
-{
-    emit orderPrevious();
-}
-
-void EngineController::next()
-{
-    emit orderNext();
-}
-
-void EngineController::playPause()
-{
-    //this is used by the TrayIcon, PlayPauseAction and DCOP
-
-    if( m_engine->state() == Engine::Playing )
-    {
-        pause();
-    }
-    else play();
-}
-
-void EngineController::play()
-{
-    if ( m_engine->state() == Engine::Paused )
-    {
-        m_engine->pause();
-    }
-    else emit orderCurrent();
-}
-
-void EngineController::pause()
-{
-    if ( m_engine->loaded() )
-        m_engine->pause();
-}
-
-void EngineController::stop()
-{
-    if ( m_engine->loaded() )
-        m_engine->stop();
-}
-
-
-void EngineController::play( const MetaBundle &bundle )
-{
-    const KURL &url = bundle.url();
-
-    if ( url.protocol() == "http" ) {
-        m_bundle = bundle;
-        // Detect mimetype of remote file
-        KIO::MimetypeJob* job = KIO::mimetype( url, false );
-        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( playRemote( KIO::Job* ) ) );
-        return; //don't do notify
-    }
-    else if( !m_engine->play( url ) )
-    {
-        //NOTE it is up to the engine to present a graphical error message
-        return;
-    }
-    else
-    {
-        //non stream is now playing
-        m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                           m_engine->hasXFade() &&
-                           !m_engine->isStream() &&
-                           m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
-    }
-
-    //don't assign until we are sure it is playing
-    m_bundle = bundle;
-
-    newMetaDataNotify( bundle, true /* track change */ );
-}
-
-
-void EngineController::playRemote( KIO::Job* job ) //SLOT
-{
-    const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
-    kdDebug() << "[controller] Detected mimetype: " << mimetype << endl;
-
-    const KURL &url = m_bundle.url();
-    const bool isStream = mimetype.isEmpty() || mimetype == "text/html";
-
-    if ( isStream &&
-         AmarokConfig::titleStreaming() &&
-         m_engine->streamingMode() != Engine::NoStreaming )
-    {
-        delete m_stream;
-        m_stream = new amaroK::StreamProvider( url, m_engine->streamingMode() );
-
-        if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
-            delete m_stream;
-            goto failure;
-        }
-
-        connect( m_stream,   SIGNAL( metaData( const MetaBundle& ) ),
-                 this,         SLOT( slotNewMetaData( const MetaBundle& ) ) );
-        connect( m_stream,   SIGNAL( streamData( char*, int ) ),
-                 m_engine,     SLOT( newStreamData( char*, int ) ) );
-        connect( m_stream,   SIGNAL( sigError() ),
-                 this,       SIGNAL( orderNext() ) );
-    }
-    else if( !m_engine->play( url, isStream ) )
-    {
-        failure:
-            m_bundle = MetaBundle();
-            next();
-            return; //don't notify
-    }
-
-    newMetaDataNotify( m_bundle, true /* track change */ );
-}
-
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC
+//////////////////////////////////////////////////////////////////////////////////////////
 
 EngineBase *EngineController::loadEngine() //static
 {
@@ -262,7 +152,143 @@ EngineBase *EngineController::loadEngine() //static
 }
 
 
-int EngineController::setVolume( int percent )
+#include <kfileitem.h>
+bool EngineController::canDecode( const KURL &url ) //static
+{
+    //TODO engine refactor branch has to be KURL aware for this function
+    //TODO a KFileItem version?
+
+    // Accept non-local files, since we can't test them for validity at this point
+    if ( !url.isLocalFile() ) return true;
+
+    const QString fileName = url.fileName();
+    const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
+
+    if ( extensionCache().contains( ext ) )
+        return s_extensionCache[ext];
+
+    const bool valid = engine()->canDecode( url );
+
+    // Cache this result for the next lookup
+    if ( !ext.isEmpty() )
+        extensionCache().insert( ext, valid );
+
+    return valid;
+}
+
+
+void EngineController::restoreSession()
+{
+    //here we restore the session
+    //however, do note, this is always done, KDE session management is not involved
+
+    if( !AmarokConfig::resumeTrack().isEmpty() )
+    {
+        const KURL url = AmarokConfig::resumeTrack();
+
+        if ( m_engine->load( url ) && m_engine->play( AmarokConfig::resumeTime()*1000 ) )
+            newMetaDataNotify( m_bundle = MetaBundle( url ), true );
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+void EngineController::previous() //SLOT
+{
+    emit orderPrevious();
+}
+
+
+void EngineController::next() //SLOT
+{
+    emit orderNext();
+}
+
+
+void EngineController::play() //SLOT
+{
+    if ( m_engine->state() == Engine::Paused )
+    {
+        m_engine->pause();
+    }
+    else emit orderCurrent();
+}
+
+
+void EngineController::play( const MetaBundle &bundle ) //SLOT
+{
+    const KURL &url = bundle.url();
+
+    if ( url.protocol() == "http" ) {
+        m_bundle = bundle;
+        // Detect mimetype of remote file
+        KIO::MimetypeJob* job = KIO::mimetype( url, false );
+        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( playRemote( KIO::Job* ) ) );
+        return; //don't do notify
+    }
+    else if( !m_engine->play( url ) )
+    {
+        //NOTE it is up to the engine to present a graphical error message
+        return;
+    }
+    else
+    {
+        //non stream is now playing
+        m_xFadeThisTrack = AmarokConfig::crossfade() &&
+                           m_engine->hasXFade() &&
+                           !m_engine->isStream() &&
+                           m_bundle.length()*1000 - AmarokConfig::crossfadeLength()*2 > 0;
+    }
+
+    //don't assign until we are sure it is playing
+    m_bundle = bundle;
+
+    newMetaDataNotify( bundle, true /* track change */ );
+}
+
+
+void EngineController::pause() //SLOT
+{
+    if ( m_engine->loaded() )
+        m_engine->pause();
+}
+
+
+void EngineController::stop() //SLOT
+{
+    if ( m_engine->loaded() )
+        m_engine->stop();
+}
+
+
+void EngineController::playPause() //SLOT
+{
+    //this is used by the TrayIcon, PlayPauseAction and DCOP
+
+    if( m_engine->state() == Engine::Playing )
+    {
+        pause();
+    }
+    else play();
+}
+
+
+int EngineController::increaseVolume( int ticks ) //SLOT
+{
+    return setVolume( m_engine->volume() + ticks );
+}
+
+
+int EngineController::decreaseVolume( int ticks ) //SLOT
+{
+    return setVolume( m_engine->volume() - ticks );
+}
+
+
+int EngineController::setVolume( int percent ) //SLOT
 {
     if( percent < 0 ) percent = 0;
     if( percent > 100 ) percent = 100;
@@ -281,19 +307,7 @@ int EngineController::setVolume( int percent )
 }
 
 
-int EngineController::increaseVolume( int ticks )
-{
-    return setVolume( m_engine->volume() + ticks );
-}
-
-
-int EngineController::decreaseVolume( int ticks )
-{
-    return setVolume( m_engine->volume() - ticks );
-}
-
-
-void EngineController::mute()
+void EngineController::mute() //SLOT
 {
     if( m_muteVolume == 0 )
     {
@@ -308,18 +322,57 @@ void EngineController::mute()
 }
 
 
-/////////////////////////////
-/// SLOTS
-/////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+// PRIVATE SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
 
-void EngineController::slotNewMetaData( const MetaBundle &bundle )
+void EngineController::playRemote( KIO::Job* job ) //SLOT
+{
+    const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
+    kdDebug() << "[controller] Detected mimetype: " << mimetype << endl;
+
+    const KURL &url = m_bundle.url();
+    const bool isStream = mimetype.isEmpty() || mimetype == "text/html";
+
+    if ( isStream &&
+         AmarokConfig::titleStreaming() &&
+         m_engine->streamingMode() != Engine::NoStreaming )
+    {
+        delete m_stream;
+        m_stream = new amaroK::StreamProvider( url, m_engine->streamingMode() );
+
+        if ( !m_stream->initSuccess() || !m_engine->play( m_stream->proxyUrl(), isStream ) ) {
+            delete m_stream;
+            goto failure;
+        }
+
+        connect( m_stream,   SIGNAL( metaData( const MetaBundle& ) ),
+                 this,         SLOT( slotNewMetaData( const MetaBundle& ) ) );
+        connect( m_stream,   SIGNAL( streamData( char*, int ) ),
+                 m_engine,     SLOT( newStreamData( char*, int ) ) );
+        connect( m_stream,   SIGNAL( sigError() ),
+                 this,         SLOT( streamError() ) );
+    }
+    else if( !m_engine->play( url, isStream ) )
+    {
+        failure:
+            m_bundle = MetaBundle();
+            next();
+            return; //don't notify
+    }
+
+    newMetaDataNotify( m_bundle, true /* track change */ );
+}
+
+
+void EngineController::slotNewMetaData( const MetaBundle &bundle ) //SLOT
 {
     m_bundle = bundle;
 
     newMetaDataNotify( bundle, false /* not a new track */ );
 }
 
-void EngineController::slotMainTimer()
+void EngineController::slotMainTimer() //SLOT
 {
     const uint position = m_engine->position();
 
@@ -333,7 +386,7 @@ void EngineController::slotMainTimer()
     }
 }
 
-void EngineController::slotTrackEnded()
+void EngineController::slotTrackEnded() //SLOT
 {
     if ( AmarokConfig::trackDelayLength() > 0 )
     {
@@ -343,7 +396,7 @@ void EngineController::slotTrackEnded()
     else next();
 }
 
-void EngineController::slotStateChanged( Engine::State newState )
+void EngineController::slotStateChanged( Engine::State newState ) //SLOT
 {
     switch( newState )
     {
@@ -372,42 +425,11 @@ void EngineController::slotStateChanged( Engine::State newState )
 }
 
 
-#include <kfileitem.h>
-bool EngineController::canDecode( const KURL &url ) //static
+void EngineController::streamError() //SLOT
 {
-    //TODO engine refactor branch has to be KURL aware for this function
-    //TODO a KFileItem version?
-
-    // Accept non-local files, since we can't test them for validity at this point
-    if ( !url.isLocalFile() ) return true;
-
-    const QString fileName = url.fileName();
-    const QString ext = fileName.mid( fileName.findRev( '.' ) + 1 ).lower();
-
-    if ( extensionCache().contains( ext ) )
-        return s_extensionCache[ext];
-
-    const bool valid = engine()->canDecode( url );
-
-    // Cache this result for the next lookup
-    if ( !ext.isEmpty() )
-        extensionCache().insert( ext, valid );
-
-    return valid;
+    delete m_stream;
+    next();
 }
 
-void EngineController::restoreSession()
-{
-    //here we restore the session
-    //however, do note, this is always done, KDE session management is not involved
-
-    if( !AmarokConfig::resumeTrack().isEmpty() )
-    {
-        const KURL url = AmarokConfig::resumeTrack();
-
-        if ( m_engine->load( url ) && m_engine->play( AmarokConfig::resumeTime()*1000 ) )
-            newMetaDataNotify( m_bundle = MetaBundle( url ), true );
-    }
-}
 
 #include "enginecontroller.moc"
