@@ -145,7 +145,7 @@
                                 </sizepolicy>
                             </property>
                             <property name="specialValueText">
-                                <string>.</string>
+                                <string></string>
                             </property>
                             <property name="maxValue">
                                 <number>3000</number>
@@ -233,7 +233,7 @@
                         <cstring>pushButton_musicbrainz</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Fill-In Tags Using MusicBrainz</string>
+                        <string>Fill-In Tags &amp;Using MusicBrainz</string>
                     </property>
                     <property name="autoDefault">
                         <bool>false</bool>

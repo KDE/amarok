@@ -47,7 +47,6 @@ class TagDialog : public TagDialogBase
         void saveTags();
         void saveMultipleTracks();
         bool writeTag( MetaBundle mb, bool updateCB=true );
-        bool equalString( const QString&, const QString& );
 
         MetaBundle m_bundle;
         PlaylistItem* m_playlistItem;

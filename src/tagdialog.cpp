@@ -3,6 +3,7 @@
 // See COPYING file for licensing information.
 
 #include "collectiondb.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -21,7 +22,6 @@
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kcursor.h>
-#include <kdebug.h>
 #include <kglobal.h>
 #include <klineedit.h>
 #include <kmessagebox.h>
@@ -217,9 +217,17 @@ void TagDialog::init()
     kComboBox_genre->completionObject()->insertItems( genres );
     kComboBox_genre->completionObject()->setIgnoreCase( true );
 
-    //looks better to have a blank label than 0
+    // looks better to have a blank label than 0, we can't do this in
+    // the UI file due to bug in Designer
     kIntSpinBox_track->setSpecialValueText( " " );
     kIntSpinBox_year->setSpecialValueText( " " );
+
+    //HACK due to deficiency in Qt that will be addressed in version 4
+    // QSpinBox doesn't emit valueChanged if you edit the value with
+    // the lineEdit until you change the keyboard focus
+    connect( kIntSpinBox_year->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kIntSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+
 
     // Connects for modification check
     connect( kLineEdit_title,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
@@ -345,6 +353,12 @@ TagDialog::setMultipleTracksMode()
 }
 
 
+inline bool
+equalString( const QString &a, const QString &b )
+{
+    return (a.isEmpty() && b.isEmpty()) ? true : a == b;
+}
+
 bool
 TagDialog::hasChanged()
 {
@@ -359,17 +373,6 @@ TagDialog::hasChanged()
 
     return modified;
 }
-
-
-bool
-TagDialog::equalString( const QString &a, const QString &b )
-{
-    if( a.isEmpty() && b.isEmpty() )
-        return true;
-    else
-        return a == b;
-}
-
 
 void
 TagDialog::storeTags()
