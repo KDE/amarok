@@ -120,6 +120,10 @@ public:
     private:
        PlaylistLoader *m_thread;
     };
+
+
+    friend class MakeItemEvent; //for access to m_after
+    friend class DownloadPlaylistEvent; //for access to placeHolder ctor
 };
 
 #endif
