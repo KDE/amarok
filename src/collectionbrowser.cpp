@@ -850,11 +850,16 @@ CollectionView::listSelected() {
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.addMatch( m_cat1, item->text( 0 ) );
             qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+
             qb.sortBy( m_cat1, QueryBuilder::valName );
+            if ( m_cat2 != QueryBuilder::tabSong ) qb.sortBy( m_cat2, QueryBuilder::valName );
+            if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
             values = qb.run();
 
-            for ( int i = values.count() - 1; i >= 0; --i )
+            for ( uint i = 0; i < values.count(); i++ )
             {
                 KURL tmp;
                 tmp.setPath( values[i] );
@@ -880,11 +885,16 @@ CollectionView::listSelected() {
                     qb.addMatch( m_cat1, item->text( 0 ) );
                     qb.addMatch( m_cat2, child->text( 0 ) );
                     qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+
                     qb.sortBy( m_cat1, QueryBuilder::valName );
+                    qb.sortBy( m_cat2, QueryBuilder::valName );
+                    if ( m_cat3 != QueryBuilder::tabSong ) qb.sortBy( m_cat3, QueryBuilder::valName );
+                    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
                     qb.setOptions( QueryBuilder::optRemoveDuplicates );
                     values = qb.run();
 
-                    for ( int i = values.count() - 1; i >= 0; --i )
+                    for ( uint i = 0; i < values.count(); i++ )
                     {
                         KURL tmp;
                         tmp.setPath( values[i] );
@@ -923,11 +933,16 @@ CollectionView::listSelected() {
                         qb.addMatch( m_cat2, child->text( 0 ) );
                         qb.addMatch( m_cat3, grandChild->text( 0 ) );
                         qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+
                         qb.sortBy( m_cat1, QueryBuilder::valName );
+                        qb.sortBy( m_cat2, QueryBuilder::valName );
+                        qb.sortBy( m_cat3, QueryBuilder::valName );
+                        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
                         qb.setOptions( QueryBuilder::optRemoveDuplicates );
                         values = qb.run();
 
-                        for ( int i = values.count() - 1; i >= 0; --i )
+                        for ( uint i = 0; i < values.count(); i++ )
                         {
                             KURL tmp;
                             tmp.setPath( values[i] );
