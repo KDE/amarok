@@ -212,7 +212,7 @@ void ArtsEngine::init( bool& restart, int scopeSize, bool restoreEffects )
             KMessageBox::error( 0,
                                 i18n( "<p>There was an error loading libamarokarts. First try:"
                                       "<pre>killall -9 artsd && amarok</pre>"
-                                      "If that doesn't work then amaroK was probably installed with the wrong prefix; "
+                                      "If that does not work then amaroK was probably installed with the wrong prefix; "
                                       "please re-configure amaroK using:"
                                       "<pre>./configure --prefix=`kde-config --prefix` && su -c \"make install\"</pre>" ),
                                 i18n( "Fatal Error" ) );
