@@ -17,27 +17,26 @@
 #include <kstandarddirs.h>
 #include <ksystemtray.h>
 
+#include <kurldrag.h>
+
+// this is crap - you have to include those two only for the sake of one line
+// of code: amarok APIs suck
+#include "browserwin.h"
+#include "playlistwidget.h"
 
 AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac ) : KSystemTray( playerWidget )
 {
     //    setPixmap( KSystemTray::loadIcon("amarok") ); // @since 3.2
     setPixmap( kapp->miniIcon() ); // 3.1 compatibility for 0.7
 
-    // <berkus> Since it doesn't come to you well, i'll explain it here:
-    // We put playlist actions last because: 1) you don't want to accidentally
-    // switch amaroK off by pushing rmb on tray icon and then suddenly lmb on the
-    // bottom item. 2) if you do like in case 1) the most frequent operation is to
-    // change to next track, so it must be at bottom. [usability]
-
-    //<mxcl> usability is much more than just making it so you don't have to move the mouse
-    //far, in fact that's a tiny segment of the overly broad term, "usability" and is called ergonomics.
-    //Another element of usability, and far more important here than ergonomics, is consistency.
-    //Every KDE app has the quit button at the bottom. We should do the same.
-    //Also having the actions at the bottom for the reasons described only works when the panel is
-    //at the bottom of the screen. This can not be guarenteed.
-    //Finally the reasons berkus gave are less relevant now since all the actions can be controlled by
-    //various mouse actions over the tray icon.
-
+    // Usability note:
+    // Popping up menu item has some implications..
+    //  1. you most probably would want to do track-related operations from
+    //     popup menu
+    //  2. you probably don't want to hit "quit" by accident.
+    //  3. you may have your menu popping up from bottom, top or side of
+    //     the screen - so the relative placement of items may differ.
+    
     contextMenu()->clear();
     contextMenu()->insertTitle( kapp->miniIcon(), kapp->caption() );
 
@@ -58,8 +57,7 @@ AmarokSystray::AmarokSystray( PlayerWidget *playerWidget, KActionCollection *ac 
     contextMenu()->insertItem( QIconSet( locate( "data", "amarok/images/b_next.png" ) ),
                                i18n( "[&B] Next" ), kapp, SLOT( slotNext() ) );
 
-    // don't love them just yet
-    setAcceptDrops( false );
+    setAcceptDrops( true );
 }
 
 
@@ -97,6 +95,19 @@ void AmarokSystray::mousePressEvent( QMouseEvent *e )
     }
     else
         KSystemTray::mousePressEvent( e );
+}
+
+
+void AmarokSystray::dragEnterEvent( QDragEnterEvent *e )
+{
+   e->accept( KURLDrag::canDecode(e) );
+}
+
+void AmarokSystray::dropEvent( QDropEvent *e )
+{
+   KURL::List list;
+   if (KURLDrag::decode(e, list))
+      pApp->m_pBrowserWin->m_pPlaylistWidget->insertMedia(list);
 }
 
 

@@ -14,6 +14,8 @@
     class QMouseEvent;
     class QShowEvent;
     class QWheelEvent;
+    class QDragEnterEvent;
+    class QDropEvent;
 
     class PlayerWidget;
     class KActionCollection;
@@ -29,6 +31,8 @@
             void mousePressEvent( QMouseEvent * );
             void wheelEvent( QWheelEvent * );
             void showEvent( QShowEvent * ) {} //Don't add me a Quit button automagically}
+	    void dragEnterEvent( QDragEnterEvent * );
+	    void dropEvent( QDropEvent *e );
     };
     
 #endif
