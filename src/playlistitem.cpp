@@ -228,7 +228,7 @@ PlaylistItem::seconds() const
 
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
-    setText( 1,  bundle.title() );
+    setText( 1,  bundle.prettyTitle() );
     setText( 2,  bundle.artist() );
     setText( 3,  bundle.album() );
     setText( 4,  bundle.year() );

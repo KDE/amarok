@@ -96,6 +96,7 @@ MetaBundle::prettyTitle() const
         //remove file extension and tidy
         s = fileName;
         s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
+        s = KURL::decode_string(s);
 
     } else if( !m_artist.isEmpty() ) {
 
