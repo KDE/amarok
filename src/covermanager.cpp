@@ -249,15 +249,17 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     if( !values.isEmpty() ) {
 
         for( uint i=0; i < values.count();  allAlbums ? i+=2 : i++)  {
-            if( !values[allAlbums ? i+1 : i].isEmpty() ) 
-            {
+            if( !values[allAlbums ? i+1 : i].isEmpty() ) {
                 CoverViewItem *coverItem = new CoverViewItem( m_coverView, m_coverView->lastItem(),
                                                               allAlbums ? values[i] : item->text(0), 
                                                               values[ allAlbums ? i+1 : i ] );
                 m_coverItems.append( coverItem );
-                QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), 
-                                                          values[ allAlbums ? i+1 : i ] );
-                coverItem->updateCover( QPixmap( imgPath ) );
+
+                if( coverItem->hasCover() ) {
+                    QString imgPath = m_db->getImageForAlbum( allAlbums ? values[i] : item->text(0), 
+                                                              values[ allAlbums ? i+1 : i ] );
+                    coverItem->updateCover( QPixmap( imgPath ) );
+                }
             }
         }
 
@@ -310,7 +312,8 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
             {
                 QImage img( file.directory() + "/" + file.fileName() );
                 img.save( item->albumPath(), "PNG" );
-                item->updateCover( img.smoothScale( 60, 60 ) );
+                uint thumb( AmarokConfig::coverPreviewSize() );
+                item->updateCover( img.smoothScale( thumb, thumb ) );
             }
             break;
         }
