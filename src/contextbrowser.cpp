@@ -457,8 +457,7 @@ void ContextBrowser::showHome() //SLOT
 
     browser->write( "<div class='rbcontent'>" );
     browser->write(  "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write(   "<tr><td class='head'>&nbsp;" + i18n( "Your Favorite Tracks:" ) + "</td></tr>" );
-    browser->write(   "<tr><td height='1' bgcolor='black'></td></tr>" );
+    browser->write(   "<tr><th>" + i18n( "Your Favorite Tracks" ) + "</th></tr>" );
     browser->write(  "</table>" );
     browser->write(  "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
@@ -479,16 +478,15 @@ void ContextBrowser::showHome() //SLOT
     values.clear();
     names.clear();
 
-    browser->write( "</table></div>" );
+    browser->write( "</table></div><br>" );
     // </Favorite Tracks Information>
 
     // <Recent Tracks Information>
-    browser->write( "<br><div class='rbcontent'>" );
-    browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-    browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Newest Tracks:" ) + "</td></tr>" );
-    browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
-    browser->write( "</table>" );
-    browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+    browser->write( "<div class='rbcontent'>"
+                     "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                      "<tr><th>" + i18n( "Your Newest Tracks" ) + "</th></tr>"
+                     "</table>"
+                     "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
     m_db->execSql( QString( "SELECT tags.title, tags.url, artist.name, album.name "
                             "FROM tags, artist, album "
@@ -507,10 +505,10 @@ void ContextBrowser::showHome() //SLOT
     values.clear();
     names.clear();
 
-    browser->write( "</table></div>" );
+    browser->write( "</table></div><br>" );
     // </Recent Tracks Information>
 
-    browser->write( "<br></html>" );
+    browser->write( "</html>" );
     browser->end();
 }
 
@@ -561,8 +559,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     // <Current Track Information>
     browser->write( "<div class='rbcontent'>"
                      "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                      "<tr><td class='head'>&nbsp;" + i18n( "Currently Playing:" ) + "</td></tr>"
-                      "<tr><td height='1' bgcolor='black'></td></tr>"
+                      "<tr><th>" + i18n( "Currently Playing" ) + "</th></tr>"
                      "</table>"
                      "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
@@ -661,8 +658,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         browser->write( "<br><div class='rbcontent'>" );
         browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Favorite Tracks By This Artist:" ) + "</td></tr>" );
-        browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+        browser->write( "<tr><th>" + i18n( "Favorite Tracks By This Artist" ) + "</th></tr>" );
         browser->write( "</table>" );
         browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
@@ -693,8 +689,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         {
             browser->write( "<br><div class='rbcontent'>"
                             "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                            "<tr><td class='head'>&nbsp;" + i18n( "Tracks On This Album:" ) + "</td></tr>"
-                            "<tr><td height='1' bgcolor='black'></td></tr>"
+                             "<tr><th>" + i18n( "Tracks On This Album" ) + "</th></tr>"
                             "</table>"
                             "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
 
@@ -723,10 +718,9 @@ void ContextBrowser::showCurrentTrack() //SLOT
     {
         browser->write( "<br><div class='rbcontent'>" );
         browser->write( "<table width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-        browser->write( "<tr><td class='head'>&nbsp;" + i18n( "Albums By This Artist:" ) + "</td></tr>" );
-        browser->write( "<tr><td height='1' bgcolor='black'></td></tr>" );
+        browser->write( "<tr><th>&nbsp;" + i18n( "Albums By This Artist" ) + "</th></tr>" );
         browser->write( "</table>" );
-        browser->write( "<table width='100%' border='0' cellspacing='1' cellpadding='1'>" );
+        browser->write( "<table width='100%' border='0' cellspacing='2' cellpadding='0'>" );
 
         for ( uint i = 0; i < values.count(); i += 4 )
         {
@@ -788,13 +782,13 @@ void ContextBrowser::setStyleSheet()
     m_styleSheet  = QString( "body { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     m_styleSheet += QString( "body a { color: %1; }" ).arg( text );
 
-    m_styleSheet += QString( ".menu a { padding: 0.5em 0; font-weight: bold; }" );
+    m_styleSheet += QString( ".menu { margin: 0.2em 0.8em; font-weight: bold; }" );
 
     //used in the currentlyPlaying block
     //m_styleSheet += QString( ".album { font-weight: bold; }" );
 
     //header for all sections
-    m_styleSheet += QString( ".head { color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0; }" )
+    m_styleSheet += QString( "th { color: %1; font-size: %2px; font-weight: bold; background-color: %3; padding: 1px 0.5em; border-bottom: 1px solid #000; }" )
                     .arg( fg ).arg( pxSize + 2 ).arg( bg );
 
     //rb? dunno, but this is the style for the currentlyPlaying block
