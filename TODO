@@ -12,8 +12,6 @@ SHORT-TERM:
 
     * fix: app freezing when trying to play remote file -->markey
     
-    * fix: cannot enter remote directories in filebrowser any more
-    
     * fix: <mxcl> select something in playlist, go to drag from the browser, move mouse over
            playlist, move mouse back to browser and drop, selected item from playlist disappears!
            I know what to do about this.
