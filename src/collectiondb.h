@@ -82,7 +82,7 @@ class DbConnection
         virtual QStringList query( const QString& /* statement */ ) = 0;
         virtual int insert( const QString& /* statement */ ) = 0;
         const bool isInitialized() const { return m_initialized; }
-
+        virtual bool isConnected()const = 0;
     protected:
         bool m_initialized;
         DbConfig *m_config;
@@ -97,7 +97,7 @@ class SqliteConnection : public DbConnection
 
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */ );
-
+        bool isConnected()const { return true; }
     private:
         static void sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/);
         static void sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv);
@@ -115,9 +115,11 @@ class MySqlConnection : public DbConnection
 
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */ );
-
+        bool isConnected()const { return m_connected; }
+        
     private:
         mysql::MYSQL* m_db;
+        bool m_connected;
 };
 #endif
 

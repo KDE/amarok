@@ -1617,11 +1617,11 @@ CollectionDB::initialize()
 {
     m_dbConnPool = new DbConnectionPool();
     DbConnection *dbConn = m_dbConnPool->getDbConnection();
-    bool initialized = dbConn->isInitialized();
     m_dbConnPool->putDbConnection( dbConn );
 
     KConfig* config = amaroK::config( "Collection Browser" );
-    if ( !initialized || !isValid() )
+    //TODO: somehow raise a nice GUI error here if dbConn.isConnected() is false
+    if ( !dbConn->isInitialized() || !isValid() )
     {
         createTables();
         createStatsTable();
@@ -1888,7 +1888,8 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
 {
     debug() << k_funcinfo << endl;
     m_db = mysql::mysql_init(NULL);
-
+    m_initialized = false;
+    m_connected = false;
     if (m_db)
     {
         if ( config->username().isEmpty() )
@@ -1902,10 +1903,11 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                                               NULL, CLIENT_COMPRESS ) )
         {
             m_initialized = true;
+            m_connected = true;
         }
         else
         {
-            m_initialized = false;
+
             if ( mysql::mysql_real_connect(
                     m_db,
                     config->host().latin1(),
@@ -1915,16 +1917,14 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                     config->port(),
                     NULL, CLIENT_COMPRESS))
             {
-                if ( !mysql::mysql_query(
-                        m_db,
-                        QString( "CREATE DATABASE " + config->database() ).latin1() ) )
-        //TODO: make the StatusBar accessible before the playlist window is created, 
-        //and make these longMessage's.
-        error() << i18n("The MySQL user does not have permission to create a database. Correct the MySQL permissions or use the sqlite database."); //note that this is just a guess on why it would error here
+                if ( mysql::mysql_query(m_db,
+                    QString( "CREATE DATABASE " + config->database() ).latin1() ) )
+                    { m_connected = true; }
+                else
+                    { error() << i18n("The MySQL user does not have permission to create a database. Correct the MySQL permissions or use the sqlite database."); }
             }
-            else {
-    error() << i18n("Unable to connect to the MySQL database. Ensure that MySQL is running, and the hostname, user name and password are correct. Or simply use the sqlite database instead.");
-            }
+            else 
+                error() << i18n("Unable to connect to the MySQL database. Ensure that MySQL is running, and the hostname, user name and password are correct. Or simply use the sqlite database instead.");
         }
     }
     else
