@@ -40,7 +40,6 @@ EqualizerSetup::EqualizerSetup()
 {
     s_instance = this;
 
-    setCaption( kapp->makeStdCaption( i18n( "Equalizer" ) ) );
     setMargin( 8 );
     setSpacing( 8 );
 
@@ -91,6 +90,8 @@ EqualizerSetup::EqualizerSetup()
     }
     // END
 
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Equalizer" ) ) );
     show();
 }
 

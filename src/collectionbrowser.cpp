@@ -248,7 +248,10 @@ CollectionView::~CollectionView() {
 void
 CollectionView::setupDirs()  //SLOT
 {
-    KDialogBase dialog( this, 0, false, i18n("Configure Collection") );
+    KDialogBase dialog( this, 0, false );
+    kapp->setTopWidget( &dialog );
+    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Collection") ) );
+
     CollectionSetup *setup = new CollectionSetup( &dialog );
     dialog.setMainWidget( setup );
     dialog.showButtonApply( false );

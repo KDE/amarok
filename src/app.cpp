@@ -785,6 +785,8 @@ void App::firstRunWizard()
     ///show firstRunWizard
 
     FirstRunWizard wizard;
+    setTopWidget( &wizard );
+    wizard.setCaption( makeStdCaption( i18n( "First-Run Wizard" ) ) );
 
     if( wizard.exec() != QDialog::Rejected )
     {

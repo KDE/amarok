@@ -238,8 +238,10 @@ Vis::Selector::Selector( QWidget *parent )
     //     it isn't a perfect system, but it will suffice
     //setWFlags( Qt::WDestructiveClose ); //FIXME reenable when we can
 
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
+
     setSorting( 0 );
-    setCaption( i18n( "Visualizations" ) ); //don't bother with standard caption as dialog is tiny
     setColumnWidthMode( 0, QListView::Maximum );
     QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
     addColumn( i18n( "Name" ) );
