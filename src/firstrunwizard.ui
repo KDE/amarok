@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>823</width>
-            <height>493</height>
+            <width>469</width>
+            <height>414</height>
         </rect>
     </property>
     <property name="caption">
@@ -123,7 +123,7 @@
                         </property>
                         <property name="text">
                             <string>Separate player and playlist-windows
-(like &amp;XMMS)</string>
+(like XMMS)</string>
                         </property>
                         <property name="checked">
                             <bool>true</bool>
@@ -142,7 +142,7 @@
                             </sizepolicy>
                         </property>
                         <property name="text">
-                            <string>Single window with pla&amp;yer and playlist
+                            <string>Single window with player and playlist
 functionality combined
 (like JuK)</string>
                         </property>
