@@ -162,9 +162,8 @@ Menu::slotActivated( int index )
         break;
     case ID_SHOW_WIZARD:
         pApp->firstRunWizard();
+        pApp->playlistWindow()->recreateGUI();
         pApp->applySettings();
-        pApp->playlistWindow()->reloadXML();
-        pApp->playlistWindow()->createGUI();
         break;
     #ifdef HAVE_KJSEMBED
     case ID_SHOW_SCRIPT_SELECTOR:
