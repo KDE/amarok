@@ -22,6 +22,7 @@
 #include <taglib/tstring.h>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
+#include <taglib/id3v2framefactory.h>
 
 
 static inline const TagLib::String LocaleAwareTString( const QString &s )
@@ -436,6 +437,7 @@ bool
 TagWriter::doJob()
 {
     const KURL url = m_item->url();
+    TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
     TagLib::FileRef f( QFile::encodeName( url.path() ), false );
 
     if ( !f.isNull() ) {
