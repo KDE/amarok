@@ -61,19 +61,22 @@ Scrobbler::~Scrobbler()
  */
 void Scrobbler::similarArtists( const QString & artist )
 {
-    QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
-                     .arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ) );
-
-    debug() << "Similar artists: " << url << endl;
-
-    m_similarArtistsBuffer = "";
-    m_artist = artist;
-
-    KIO::TransferJob* job = KIO::get( url, false, false );
-    connect( job, SIGNAL( result( KIO::Job* ) ),
-             this,  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
-    connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-             this,  SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
+    if ( AmarokConfig::retrieveSimilarArtists() )
+    {
+        QString url = QString( "http://www.audioscrobbler.com/similar/%1" )
+                        .arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ) );
+    
+        debug() << "Similar artists: " << url << endl;
+    
+        m_similarArtistsBuffer = "";
+        m_artist = artist;
+    
+        KIO::TransferJob* job = KIO::get( url, false, false );
+        connect( job, SIGNAL( result( KIO::Job* ) ),
+                this,  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
+        connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+                this,  SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
+    }
 }
 
 
@@ -216,11 +219,22 @@ void Scrobbler::engineTrackPositionChanged( long position )
  */
 void Scrobbler::applySettings()
 {
+    bool handshakeNeeded = false;
+    if ( m_submitter->username() != AmarokConfig::scrobblerUsername() )
+    {
+        handshakeNeeded = true;
+    }
+    else if ( m_submitter->password() != AmarokConfig::scrobblerPassword() )
+    {
+        handshakeNeeded = true;
+    }
+    
     m_submitter->setEnabled( AmarokConfig::submitPlayedSongs() );
     m_submitter->setUsername( AmarokConfig::scrobblerUsername() );
     m_submitter->setPassword( AmarokConfig::scrobblerPassword() );
 
-    m_submitter->handshake();
+    if ( handshakeNeeded )
+        m_submitter->handshake();
 }
 
 
@@ -674,7 +688,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
             m_interval = interval.mid( 9 ).toUInt();
     }
     else
-        warning() << "Unknown handshake response" << endl;
+        warning() << "Unknown handshake response: " << m_submitResultBuffer << endl;
 
     debug() << "Handshake result parsed: challenge=" << m_challenge << ", submitUrl=" << m_submitUrl << endl;
 }

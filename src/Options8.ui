@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options8</class>
 <widget class="QDialog">
     <property name="name">
@@ -17,6 +17,9 @@
             <width>1</width>
             <height>1</height>
         </size>
+    </property>
+    <property name="caption">
+        <string>Options8</string>
     </property>
     <vbox>
         <property name="name">
@@ -228,6 +231,30 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox16</cstring>
+            </property>
+            <property name="title">
+                <string>Similar Artists</string>
+            </property>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>kcfg_RetrieveSimilarArtists</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>20</x>
+                        <y>20</y>
+                        <width>290</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string>Retrieve similar artists from Audioscrobbler</string>
+                </property>
+            </widget>
+        </widget>
         <widget class="KActiveLabel">
             <property name="name">
                 <cstring>kActiveLabel2</cstring>
@@ -257,7 +284,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>140</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
