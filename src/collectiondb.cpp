@@ -127,6 +127,9 @@ CollectionDB::CollectionDB()
     m_cacheDir.cd( "albumcovers/cache" );
 
     if ( !s_emitter ) s_emitter = new CollectionEmitter();
+
+    connect( Scrobbler::instance(), SIGNAL( relatedArtistsFetched( const QString&, const QStringList& ) ),
+             this,                  SLOT( relatedArtistsFetched( const QString&, const QStringList& ) ) );
 }
 
 
@@ -828,12 +831,7 @@ CollectionDB::relatedArtists( const QString &artist, uint count )
 
     query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
     if ( m_values.isEmpty() )
-    {
-        connect( sc,   SIGNAL( relatedArtistsFetched( const QString&, const QStringList& ) ),
-                 this,   SLOT( relatedArtistsFetched( const QString&, const QStringList& ) ) );
-
         sc->similarArtists( artist );
-    }
 
     return m_values;
 }
@@ -1336,15 +1334,13 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
 void
 CollectionDB::relatedArtistsFetched( const QString& artist, const QStringList& suggestions )
 {
-    kdDebug() << "Suggestions retrieved" << endl;
-
+    kdDebug() << "Suggestions received" << endl;
     query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapeString( artist ) ) );
+
     for ( uint i = 0; i < suggestions.count(); i++ )
-    {
         query( QString( "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );" )
                   .arg( escapeString( artist ) )
                   .arg( escapeString( suggestions[ i ] ) ) );
-    }
 }
 
 

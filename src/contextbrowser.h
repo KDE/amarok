@@ -76,6 +76,7 @@ class ContextBrowser : public QVBox, public EngineObserver
         KTempFile    *m_headerGradientImage;
         KTempFile    *m_shadowGradientImage;
         QStringList   m_metadataHistory;
+        KURL          m_currentURL;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

@@ -226,7 +226,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
     switch( m_db->isEmpty() || !m_db->isValid() )
     {
         case true:  showIntroduction();
-        case false: showCurrentTrack();
+        case false: if ( m_tabBar->currentTab() != m_tabCurrent || bundle.url() != m_currentURL ) showCurrentTrack();
     }
 }
 
@@ -527,6 +527,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     m_tabBar->blockSignals( false );
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    m_currentURL = EngineController::instance()->bundle().url();
 
     browser->begin();
     browser->setUserStyleSheet( m_styleSheet );
@@ -1007,7 +1008,6 @@ void ContextBrowser::setStyleSheet_Gradient1( QString& styleSheet )
     setStyleSheet_Flat( styleSheet );
 
     //colorscheme/font dependant parameters
-    int pxSize = fontMetrics().height() - 4;
     const QColor baseColor = colorGroup().base();
     const QColor bgColor = colorGroup().highlight();
     amaroK::Color gradientColor = bgColor;

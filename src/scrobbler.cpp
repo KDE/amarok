@@ -123,6 +123,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 
     }
 
+    kdDebug() << "[AudioScrobbler] Suggestions retrieved" << endl;
     if ( suggestions.count() > 0 )
         emit relatedArtistsFetched( m_artist, suggestions );
 }
