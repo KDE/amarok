@@ -1658,8 +1658,13 @@ QueryBuilder::setOptions( int options )
 void
 QueryBuilder::sortBy( int table, int value )
 {
+    //shall we sort case-sensitively? (not for integer columns!)
+    bool b = true;
+    if ( value & valID ) b = false;
+    if ( value & valTrack ) b = false;
+
     if ( !m_sort.isEmpty() ) m_sort += ",";
-    m_sort += "LOWER(";
+    if ( b ) m_sort += "LOWER(";
 
     if ( table & tabAlbum ) m_sort += "album.";
     if ( table & tabArtist ) m_sort += "artist.";
@@ -1673,7 +1678,7 @@ QueryBuilder::sortBy( int table, int value )
     if ( value & valTitle ) m_sort += "title";
     if ( value & valTrack ) m_sort += "track";
 
-    m_sort += ")";
+    if ( b ) m_sort += ")";
 }
 
 

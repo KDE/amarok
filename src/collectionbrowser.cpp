@@ -434,10 +434,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     kdDebug() << k_funcinfo << endl;
     if ( !item ) return;
 
+    QString category;
     QStringList values;
     QueryBuilder qb;
-
-    QString category;
 
     qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong , m_filter );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
@@ -503,12 +502,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( expandable )
         pixmap = iconForCat( category );
 
-    for ( uint i = 0; i < values.count(); i += qb.countReturnValues() )
+    for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
     {
         Item* child = new Item( item );
         child->setDragEnabled( true );
         child->setDropEnabled( false );
-        child->setText( 0, values[ i + 0 ] );
+        child->setText( 0, values[ i ] );
         if ( expandable )
             child->setPixmap( 0, pixmap );
         else
