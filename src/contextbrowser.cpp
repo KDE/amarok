@@ -506,6 +506,7 @@ void ContextBrowser::showHome() //SLOT
 
     browser->write( "</html>" );
     browser->end();
+    saveHtmlData(); // Send html code to file
 }
 
 static QString
@@ -945,7 +946,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
     browser->write( "</html>" );
     browser->end();
-
     saveHtmlData(); // Send html code to file
 }
 
@@ -1118,6 +1118,7 @@ void ContextBrowser::showIntroduction()
     browser->write( "</a></div></html>");
 
     browser->end();
+    saveHtmlData(); // Send html code to file
 }
 
 
@@ -1131,6 +1132,7 @@ void ContextBrowser::showScanning()
     browser->write( "</p></html>");
 
     browser->end();
+    saveHtmlData(); // Send html code to file
 }
 
 
@@ -1226,6 +1228,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     browser->write( m_lyrics );
     browser->write( "</div></div></html>" );
     browser->end();
+    saveHtmlData(); // Send html code to file
 }
 
 

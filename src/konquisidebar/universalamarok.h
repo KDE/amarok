@@ -30,6 +30,8 @@ class KHTMLPart;
 class QVBox;
 class universalamarokwidget;
 class DCOPClient;
+class QFileInfo;
+class QDateTime;
 class UniversalAmarok : public KonqSidebarPlugin
 {
 Q_OBJECT
@@ -48,10 +50,13 @@ private:
    KHTMLPart* browser;
    QString amarokPlaying;
    DCOPClient* amarokDCOP;
+   QFileInfo* fileInfo;
+   QDateTime fileDT;
    
 public slots:
     void updateBrowser(const QString&);
     void updateStatus();
+    void sendControl();
 };
 
 #endif

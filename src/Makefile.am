@@ -6,16 +6,8 @@ endif
 
 bin_PROGRAMS = amarokapp
 
-SUBDIRS = \
-    amarokcore \
-    $(SQLITE_SUBDIR) \
-    analyzers \
-    data \
-    plugin \
-    engine \
-    images \
-    loader \
-    vis
+SUBDIRS = amarokcore $(SQLITE_SUBDIR) analyzers data plugin engine images \
+	loader vis konquisidebar
 
 INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
