@@ -260,6 +260,8 @@ PlaylistWindow::init()
     toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     toolsMenu->insertItem( i18n("&First-run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+//     toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::engine()->hasEqualizer() );
     #ifndef HAVE_XMMS
     toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
     #endif
@@ -279,8 +281,6 @@ PlaylistWindow::init()
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
     m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
-    m_settingsMenu->insertItem( i18n( "Configure E&qualizer..." ), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
-//     m_settingsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::engine()->hasEqualizer() );
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );
