@@ -70,6 +70,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void savePlaylist() const;
         void slotAddLocation();
         void slotSetFilter();
+        void clearFilter();
         void slotSetFilterTimeout();
         void setSearchField( int );
         void slotMenuActivated( int );

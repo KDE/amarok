@@ -204,13 +204,13 @@ PlaylistWindow::init()
 
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
-
         m_timer = new QTimer( this );
 
-        connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
+        connect( button, SIGNAL(clicked()), this, SLOT(clearFilter()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
+        QToolTip::add( searchButton, i18n( "Select filter category" ) );
     } //</Search LineEdit>
 
     m_playlist  = new Playlist( m_browsers->container(), actionCollection() );
@@ -461,6 +461,10 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
 
     //TODO perhaps this should be a global member of some singleton (I mean bgAlt not just the filebrowser bgAlt!)
     FileBrowser::altBgColor = bgAlt;
+
+    // set the filter-lineEdit to initial state
+    QEvent e( QEvent::FocusOut );
+    eventFilter( m_lineEdit, &e );
 }
 
 
@@ -474,6 +478,34 @@ void PlaylistWindow::setFont( const QFont &font, const QFont &contextfont )
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
+    // Handle filter default text
+
+    if( o == m_lineEdit )
+    {
+        switch( e->type() )
+        {
+           case QEvent::FocusIn:
+               if( m_lineEdit->text() == i18n("Filter here...") ) {
+                   m_lineEdit->clear();
+                   m_timer->stop();
+                   m_lineEdit->setPaletteForegroundColor( colorGroup().text() );
+                   return FALSE;
+               }
+
+            case QEvent::FocusOut:
+                if( m_lineEdit->text().isEmpty() ) {
+                    m_lineEdit->setPalette( palette() );
+                    m_lineEdit->setPaletteForegroundColor( palette().color( QPalette::Disabled, QColorGroup::Text ) );
+                    m_lineEdit->setText( i18n("Filter here...") );
+                    m_timer->stop();
+                    return FALSE;
+                }
+
+            default:
+                break;
+        }
+    }
+
     //here we filter some events for the Playlist Search LineEdit and the Playlist
     //this makes life easier since we have more useful functions available from this class
 
@@ -638,6 +670,19 @@ void PlaylistWindow::slotAddLocation() //SLOT
 void PlaylistWindow::slotSetFilter()
 {
     m_playlist->setSearchFilter( m_lineEdit->text(), m_searchField );
+}
+
+
+void PlaylistWindow::clearFilter() //SLOT
+{
+    m_lineEdit->clear();
+    m_timer->stop();
+    slotSetFilter();
+    if( !m_lineEdit->hasFocus() ) {
+        //set the lineEdit to initial state
+        QEvent e( QEvent::FocusOut );
+        eventFilter( m_lineEdit, &e);
+    }
 }
 
 
