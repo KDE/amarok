@@ -609,7 +609,7 @@ Playlist::setCurrentTrack( PlaylistItem *item )
 {
     ///mark item as the current track, it makes it glow and everything
 
-    const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2; //FIXME O(n)
+    const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2;
 
     //if nothing is current and then playback starts, we must show the currentTrack
     if( !m_currentTrack && canScroll ) ensureItemVisible( item ); //handles 0 gracefully
@@ -839,7 +839,7 @@ Playlist::appendMedia( const KURL &url )
 void
 Playlist::clear() //SLOT
 {
-    if( isLocked() ) return;
+    if( isLocked() || renameLineEdit()->isVisible() ) return;
 
     emit aboutToClear(); //will saveUndoState()
 
