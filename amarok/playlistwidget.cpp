@@ -64,7 +64,7 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     , m_weaver( new ThreadWeaver( this ) )
     , m_undoButton(  KStdAction::undo(  this, SLOT( undo() ),  ac ) )
     , m_redoButton(  KStdAction::redo(  this, SLOT( redo() ),  ac ) )
-    , m_clearButton( KStdAction::clear( this, SLOT( clear() ), ac ) )
+    , m_clearButton( 0 )
     , m_undoDir( KGlobal::dirs()->saveLocation( "data", kapp->instanceName() + '/' ) )
     , m_undoCounter( 0 )
 {
@@ -167,7 +167,8 @@ PlaylistWidget::PlaylistWidget( QWidget *parent, KActionCollection *ac, const ch
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac );
 //    new KStdAction::save( i18n( "&Save Playlist" ), "filesaveas", CTRL+Key_S, this, SLOT( saveM3U() ), ac, "save_playlist" );
     new KAction( i18n( "Shu&ffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "shuffle_playlist" );
-    action = new KAction( i18n( "&Show Playing" ), "2uparrow", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
+    m_clearButton = new KAction( i18n( "&Clear" ), "view_remove", 0, this, SLOT( clear() ), ac, "clear_playlist" );
+    action = new KAction( i18n( "&Show Playing" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "show_current_track" );
     action->setToolTip( i18n( "Ensure the currently playing track is visible" ) ); //FIXME doesn't show in toolbar!
 
     header()->installEventFilter( this );
