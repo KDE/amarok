@@ -29,11 +29,11 @@ a.each{|s|
 }
 
 # Beautify heading
-$changelog = $changelog.gsub( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</h2>" )
+$changelog.gsub!( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</h2>" )
 
-# makes an extra </ul>... meh
-['FEATURES','CHANGES','BUGFIXES'].each{ |header|
-    $changelog = $changelog.gsub( "#{header}:\n", "</ul><h4>#{header.capitalize!}</h4><ul>" )
+# Makes an extra </ul>... meh
+['FEATURES','CHANGES','BUGFIXES'].each { |header|
+    $changelog.gsub!( "#{header}:\n", "</ul><h4>#{header.capitalize!}</h4><ul>" )
 }
 $changelog.gsub!("VERSION 1.2.1:", "</ul>VERSION 1.2.1:" )
 
@@ -41,7 +41,7 @@ $changelog.gsub!("VERSION 1.2.1:", "</ul>VERSION 1.2.1:" )
 $changelog.sub!(newOldArray[1],newOldArray[1].gsub( /\n/, "</br>\n" ))
 
 
-#format version headers
+# Format version headers
 $changelog.gsub!(/(VERSION)(.*$)/, '<h3>Version\2</h3>');
 # Write destination file
 $output.write( $changelog )
