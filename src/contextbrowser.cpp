@@ -100,7 +100,15 @@ void ContextBrowser::openURLRequest(const KURL &url, const KParts::URLArgs & )
     if ( url.protocol() == "file" )
         pApp->playlist()->appendMedia( url, true, true );
 
-    render();
+    if ( m_url.protocol() == "show" )
+    {
+        if ( m_url.path() == "home" )
+            showHome();
+        if ( m_url.path() == "context" )
+            showCurrentTrack();
+           //FIXME
+//         if ( m_url.path() == "collectionSetup" )
+    }
 }
 
 
@@ -129,27 +137,13 @@ void ContextBrowser::paletteChange( const QPalette& pal )
     QVBox::paletteChange( pal );
 
     setStyleSheet();
-    render();
+    showHome();
 }
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
 //////////////////////////////////////////////////////////////////////////////////////////
-
-void ContextBrowser::render()
-{
-    if ( m_url.protocol() == "show" )
-    {
-        if ( m_url.path() == "home" )
-            showHome();
-        if ( m_url.path() == "context" )
-            showCurrentTrack();
-           //FIXME
-//         if ( m_url.path() == "collectionSetup" )
-    }
-}
-
 
 void ContextBrowser::setStyleSheet()
 {

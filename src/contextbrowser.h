@@ -32,7 +32,6 @@ class ContextBrowser : public QVBox, public EngineObserver
         void paletteChange( const QPalette& );
 
     private:
-        void render();
         void setStyleSheet();
         void showIntroduction();
         void showHome();
