@@ -66,8 +66,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
 
     public slots:
         void showHide();
-        void showMenuBar( bool enabled = true );
-	void slotToggleMenu();
 
     private slots:
         void savePlaylist() const;
@@ -75,6 +73,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
         void playAudioCD();
         void slotMenuActivated( int );
         void toolsMenuAboutToShow();
+        void slotToggleMenu();
 
     protected:
         virtual void closeEvent( QCloseEvent* );
@@ -83,7 +82,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient, public EngineObserv
     private:
         template <class B> void addBrowser( const char*, const QString&, const QString& );
 
-        enum MenuId { ID_SHOW_MENUBAR = 2000, ID_SHOW_TOOLBAR, ID_SHOW_PLAYERWINDOW, ID_RESCAN_COLLECTION };
+        enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW, ID_RESCAN_COLLECTION };
 
         KMenuBar      *m_menubar;
         KPopupMenu    *m_toolsMenu;

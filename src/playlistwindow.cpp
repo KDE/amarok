@@ -134,6 +134,7 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
+    KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
@@ -270,7 +271,8 @@ PlaylistWindow::init()
     //BEGIN Settings menu
     m_settingsMenu = new KPopupMenu( m_menubar );
     //TODO use KStdAction or KMainWindow
-    m_settingsMenu->insertItem( i18n( "Hide Menubar" ), this , SLOT ( slotToggleMenu() ), CTRL+Key_M  );
+    static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
+    actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->plug( m_settingsMenu );
     m_settingsMenu->insertItem( i18n( "Hide Toolbar" ), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
@@ -656,20 +658,21 @@ void PlaylistWindow::playAudioCD() //SLOT
 }
 
 
-void PlaylistWindow::slotToggleMenu()
+void PlaylistWindow::slotToggleMenu() //SLOT
 {
-  if ( AmarokConfig::showMenuBar() ) {
-    AmarokConfig::setShowMenuBar( false );
-    m_menubar->setShown( false );
-    recreateGUI();
-  } else {
-    AmarokConfig::setShowMenuBar( true );
-    m_menubar->setShown( true );
+    if( static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->isChecked() ) {
+        AmarokConfig::setShowMenuBar( true );
+        m_menubar->setShown( true );
 
-    if( amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
-      amaroK::actionCollection()->action( "amarok_menu" )->unplugAll();
-  }
- 
+        if( amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
+            amaroK::actionCollection()->action( "amarok_menu" )->unplugAll();
+    }
+    else
+    {
+        AmarokConfig::setShowMenuBar( false );
+        m_menubar->setShown( false );
+        recreateGUI();
+    }
 }
 
 void PlaylistWindow::slotMenuActivated( int index ) //SLOT
@@ -682,7 +685,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         break;
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
-        m_menubar->setItemEnabled( ID_SHOW_MENUBAR, m_toolbar->isShown() );
+        actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case ID_SHOW_PLAYERWINDOW:
@@ -743,11 +746,6 @@ void PlaylistWindow::showHide() //SLOT
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
-}
-
-void PlaylistWindow::showMenuBar( bool enabled ) //SLOT
-{
-    m_menubar->setShown( enabled );
 }
 
 #include "playlistwindow.moc"

@@ -15,7 +15,6 @@
 
 #include <qpixmap.h>
 #include <qtooltip.h>
-#include <qaccel.h>
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -103,13 +102,7 @@ Menu::Menu()
 //     insertItem( i18n( "&JavaScript Console" ), ID_SHOW_SCRIPT_CONSOLE );
 //     insertSeparator();
 
-    insertItem( i18n( "&Show Menubar" ), pApp->playlistWindow(), SLOT ( slotToggleMenu() ) );
-
-    //make CTRL M show the menu again, this is a ugly workaround
-    QAccel *menu_accel = new QAccel( pApp->playlistWindow() );
-    menu_accel->connectItem( menu_accel->insertItem(Key_M+CTRL),   
-			     pApp->playlistWindow(), 
-			     SLOT( slotToggleMenu() ) ); 
+    safePlug( ac, KStdAction::name(KStdAction::ShowMenubar), this );
 
     insertSeparator();
 
