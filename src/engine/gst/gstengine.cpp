@@ -76,17 +76,17 @@ void
 GstEngine::handoff_cb( GstElement*, GstBuffer* buf, gpointer ) //static
 {
     instance()->m_mutexScope.lock();
-    
+
     // Check for buffer overflow
-    uint available = gst_adapter_available( instance()->m_gst_adapter ); 
-    if ( available > SCOPEBUF_SIZE )    
+    uint available = gst_adapter_available( instance()->m_gst_adapter );
+    if ( available > SCOPEBUF_SIZE )
         gst_adapter_flush( instance()->m_gst_adapter, available - 10000 );
-    
+
     gst_buffer_ref( buf );
-    
+
     // Push buffer into adapter, where it's chopped into chunks
     gst_adapter_push( instance()->m_gst_adapter, buf );
-    
+
     instance()->m_mutexScope.unlock();
 }
 
@@ -140,25 +140,25 @@ GstEngine::~GstEngine()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
     kdDebug() << "bytes left in gst_adapter: " << gst_adapter_available( m_gst_adapter ) << endl;
-    
+
     if ( m_pipelineFilled ) {
         g_signal_connect( G_OBJECT( m_gst_thread ), "shutdown", G_CALLBACK( shutdown_cb ), m_gst_thread );
         destroyPipeline();
         // Wait for pipeline to shut down properly
         while ( !m_shutdown ) ::usleep( 20000 ); // 20 msec
     }
-    else    
+    else
         destroyPipeline();
-    
+
     delete[] m_streamBuf;
-    
+
     m_mutexScope.lock();
     g_object_unref( G_OBJECT( m_gst_adapter ) );
     m_mutexScope.unlock();
 
     // Save configuration
     GstConfig::writeConfig();
-    
+
     kdDebug() << "END " << k_funcinfo << endl;
 }
 
@@ -171,28 +171,28 @@ bool
 GstEngine::init()
 {
     kdDebug() << "BEGIN " << k_funcinfo << endl;
-    
+
     s_instance = this;
-    
+
     // GStreamer initilization
     if ( !gst_init_check( NULL, NULL ) ) {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not be initialized.</h3> "
-                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run <i>'gst-register'</i> afterwards.</p>"
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
         return false;
     }
-            
+
     // Check if registry exists
     GstElement* dummy = gst_element_factory_make ( "fakesink", "fakesink" );
     if ( !dummy || !gst_scheduler_factory_make( NULL, GST_ELEMENT ( dummy ) ) ) {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer is missing a registry.</h3> "
-                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run <i>'gst-register'</i> afterwards.</p>"
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
         return false;
     }
-                      
+
     m_gst_adapter = gst_adapter_new();
     startTimer( TIMER_INTERVAL );
     connect( this, SIGNAL( sigGstError( GError*, gchar* ) ), SLOT( handleGstError( GError*, gchar* ) ) );
@@ -208,10 +208,10 @@ GstEngine::canDecode( const KURL &url ) const
     if ( GstConfig::soundOutput().isEmpty() ) {
         QTimer::singleShot( 0, instance(), SLOT( errorNoOutput() ) );
         return false;
-    }    
+    }
     bool success = false;
     GstElement *pipeline, *filesrc, *spider, *audioconvert, *audioscale, *audiosink;
-    
+
     if ( !( pipeline = createElement( "pipeline" ) ) ) return false;
     if ( !( filesrc = createElement( "filesrc", pipeline ) ) ) return false;
     if ( !( spider = createElement( "spider", pipeline ) ) ) return false;
@@ -279,27 +279,27 @@ const Engine::Scope&
 GstEngine::scope()
 {
     m_mutexScope.lock();
-    
+
     int channels = 2;
     uint bytes = 512 * channels * sizeof( gint16 );
-    
+
     gint16* data = (gint16*) gst_adapter_peek( m_gst_adapter, bytes );
-    
+
     if ( data )
     {
         for ( ulong i = 0; i < 512; i++, data += channels ) {
             long temp = 0;
-            
+
             for ( int chan = 0; chan < channels; chan++ ) {
                 // Add all channels together so we effectively get a mono scope
                 temp += data[chan];
             }
             m_scope[i] = temp / channels;
         }
-       
+
         gst_adapter_flush( m_gst_adapter, bytes );
     }
-                
+
     m_mutexScope.unlock();
     return m_scope;
 }
@@ -309,7 +309,7 @@ amaroK::PluginConfig*
 GstEngine::configure() const
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     return new GstConfigDialog( instance() );
 }
 
@@ -323,22 +323,22 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     destroyPipeline();
     Engine::Base::load( url, stream );
     kdDebug() << "[Gst-Engine] Loading url: " << url.url() << endl;
-    
+
     if ( GstConfig::soundOutput().isEmpty() ) {
         errorNoOutput();
         return false;
-    }    
+    }
     kdDebug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
     kdDebug() << "Sound output method: " << GstConfig::soundOutput() << endl;
     kdDebug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
     kdDebug() << "Sound Device: " << GstConfig::soundDevice() << endl;
     kdDebug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
     kdDebug() << "Output Params: " << GstConfig::outputParams() << endl;
-    
+
     /* create a new pipeline (thread) to hold the elements */
     if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
     g_object_set( G_OBJECT( m_gst_thread ), "priority", GstConfig::threadPriority(), NULL );
-    
+
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
     if ( GstConfig::useCustomOutputParams() ) {
@@ -348,11 +348,11 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     GError* err;
     if ( !( m_gst_audiosink = gst_parse_launch( output, &err ) ) ) { return false; }
     gst_bin_add( GST_BIN( m_gst_thread ), m_gst_audiosink );
-    
+
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         g_object_set( G_OBJECT ( m_gst_audiosink ), "device", GstConfig::soundDevice().latin1(), NULL );
-    
+
     if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { return false; }
     if ( !( m_gst_volumeFade = createElement( "volume", m_gst_thread ) ) ) { return false; }
@@ -377,23 +377,23 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         gst_bin_add ( GST_BIN ( m_gst_thread ), m_gst_src );
         g_signal_connect( G_OBJECT( m_gst_src ), "kio_resume", G_CALLBACK( kio_resume_cb ), m_gst_thread );
     }
-    
+
     if ( !( m_gst_spider = createElement( "spider", m_gst_thread ) ) ) { return false; }
-    
+
     /* link elements */
     gst_element_link_many( m_gst_src, m_gst_spider, m_gst_volumeFade, m_gst_identity, m_gst_volume, m_gst_audioscale, m_gst_audioconvert, m_gst_audiosink, 0 );
     m_pipelineFilled = true;
-    
+
     if ( !gst_element_set_state( m_gst_thread, GST_STATE_READY ) ) {
         destroyPipeline();
         return false;
     }
     setVolume( m_volume );
-    
+
     if ( !url.isLocalFile()  ) {
         m_streamBufIndex = 0;
-        m_streamBufStop = false;  
-        
+        m_streamBufStop = false;
+
         if ( !stream ) {
             // Use KIO for non-local files, except http, which is handled by TitleProxy
             m_transferJob = KIO::get( url, false, false );
@@ -416,7 +416,7 @@ GstEngine::play( uint )  //SLOT
     /* start playing */
     if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) )
         return false;
-        
+
     emit stateChanged( Engine::Playing );
     return true;
 }
@@ -427,20 +427,20 @@ GstEngine::stop()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
     if ( !m_pipelineFilled ) return ;
-    
+
     // Is a fade running?
-    if ( m_fadeValue == 0.0 ) {   
+    if ( m_fadeValue == 0.0 ) {
         // Not fading --> start fade now
         m_fadeValue = 1.0;
     }
     else
         // Fading --> stop playback
-        destroyPipeline();        
-        
+        destroyPipeline();
+
     emit stateChanged( Engine::Empty );
 }
-                
-    
+
+
 void
 GstEngine::pause()  //SLOT
 {
@@ -451,7 +451,7 @@ GstEngine::pause()  //SLOT
         gst_element_set_state( m_gst_thread, GST_STATE_PLAYING );
     else
         gst_element_set_state( m_gst_thread, GST_STATE_PAUSED );
-    
+
     emit stateChanged( state() );
 }
 
@@ -480,7 +480,7 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
     }
 
     sendBufferStatus();
-    
+
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, buf, size );
     // Adjust index
@@ -503,19 +503,19 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 void GstEngine::timerEvent( QTimerEvent* )
 {
     // Volume fading:
-    
+
     if ( m_fadeValue > 0.0 )
     // Are we currently fading?
     {
         m_fadeValue -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
-        
+
         // Fade finished?
         if ( m_fadeValue <= 0.0 ) {
             // Fade transition has finished, stop playback
             kdDebug() << "[Gst-Engine] Fade-out finished.\n";
             destroyPipeline();
         }
-        
+
         if ( m_pipelineFilled ) {
             // Set new value for fadeout volume element
             double value = 1.0 - log10( ( 1.0 - m_fadeValue ) * 9.0 + 1.0 );
@@ -544,13 +544,13 @@ void
 GstEngine::endOfStreamReached()  //SLOT
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     if ( m_pipelineFilled )
         gst_element_set_state( m_gst_thread, GST_STATE_READY );
-    
+
     // Stop fading
     m_fadeValue = 0.0;
-    
+
     emit trackEnded();
 }
 
@@ -559,19 +559,19 @@ void
 GstEngine::newKioData( KIO::Job*, const QByteArray& array )  //SLOT
 {
     int size = array.size();
-    
+
     if ( m_streamBufIndex >= STREAMBUF_MAX ) {
         kdDebug() << "Gst-Engine: SUSPENDING kio transfer.\n";
         if ( m_transferJob ) m_transferJob->suspend();
     }
-            
+
     if ( m_streamBufIndex + size >= STREAMBUF_SIZE ) {
         m_streamBufIndex = 0;
         kdDebug() << "Gst-Engine: Stream buffer overflow!" << endl;
     }
 
     sendBufferStatus();
-    
+
     // Copy data into stream buffer
     memcpy( m_streamBuf + m_streamBufIndex, array.data(), size );
     // Adjust index
@@ -586,17 +586,17 @@ GstEngine::kioFinished()  //SLOT
 
     // KIO::Job deletes itself when finished, so we need to zero the pointer
     m_transferJob = 0;
-    
+
     // Tell streamsrc: This is the end, my friend
-    m_streamBufStop = true;  
+    m_streamBufStop = true;
 }
 
 
 void
 GstEngine::errorNoOutput() //SLOT
 {
-    KMessageBox::error( 0, i18n( "<p>Please select an <u>output plugin</u> in the engine settings dialog.</p>" ) );
-    
+    KMessageBox::information( 0, i18n( "<p>Please select a GStreamer <u>output plugin</u> in the engine settings dialog.</p>" ) );
+
     // Show engine settings dialog
     showEngineConfigDialog();
 }
@@ -659,7 +659,7 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
     else {
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not create the element: <i>%1</i></h3> "
-                  "<p>Please make sure that you have installed all necessary GStreamer plugins, and run <i>'gst-register'</i> afterwards.</p>"
+                  "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ).arg( factoryName ) );
         gst_object_unref( GST_OBJECT( bin ) );
     }
@@ -670,21 +670,21 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
 
 void
 GstEngine::destroyPipeline()
-{    
+{
     kdDebug() << k_funcinfo << endl;
-    
+
     m_fadeValue = 0.0;
-    
+
     if ( m_pipelineFilled ) {
         kdDebug() << "[Gst-Engine] Destroying pipeline.\n";
-        
+
         // Destroy the pipeline
         gst_element_set_state( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
         gst_adapter_clear( m_gst_adapter );
         m_pipelineFilled = false;
     }
-    
+
     // Destroy KIO transmission job
     if ( m_transferJob ) {
         m_transferJob->kill();
@@ -692,20 +692,20 @@ GstEngine::destroyPipeline()
     }
 }
 
-    
+
 void
 GstEngine::sendBufferStatus()
 {
-    int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );    
-    
+    int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 100 );
+
     if ( percent >= 100 && percent < 120 )
         percent = 100;
-    
+
     if ( percent <= 100 )
         emit statusText( i18n( "Buffering.. %1%" ).arg( percent ) );
-}    
+}
 
-                  
+
 #include "gstengine.moc"
 
 
