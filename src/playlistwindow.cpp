@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "config.h"             //HAVE_XMMS definition
- 
+
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
@@ -409,9 +409,9 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
     //TODO this doesn't work well with the select your own colours options. SIGH. Is it worth the trouble?
 
     //this updates all children's palettes recursively (thanks Qt!)
-    m_browsers->setPalette( pal );
+    setPalette( pal );
 
-    QObjectList* const list = m_browsers->queryList( "QWidget" );
+    QObjectList* const list = queryList( "QWidget" );
 
     //now we need to search for KListViews so we can set the alternative colours
     //also amaroK's colour scheme has a few issues
@@ -423,28 +423,28 @@ void PlaylistWindow::setColors( const QPalette &pal, const QColor &bgAlt )
         {
             static_cast<KListView*>(obj)->setAlternateBackground( bgAlt );
         }
-        else if( obj->inherits("QLabel") ) {
-            QColorGroup cg = pal.active();
-            cg.setColor( QColorGroup::Foreground, cg.text() );
-            widget->setPalette( QPalette(cg, cg, cg) );
-        }
-        else if( obj->inherits("KToolBarButton") || obj->inherits("QToolBar") )
-        {
-            QColorGroup cg = pal.active();
-            cg.setColor( QColorGroup::Button, cg.background() );
-            cg.setColor( QColorGroup::ButtonText, cg.text() );
-            widget->setPalette( QPalette(cg, cg, cg) );
-        }
-        else if( obj->isA("QSplitterHandle") || qstrcmp( obj->name(), "divider" ) == 0 )
-        {
-            widget->setPalette( QApplication::palette() );
-        }
-        else if ( qstrcmp( obj->name(), "filter_edit" ) == 0 )
-        {
-            //FIXME this is hack for our greyed out text search box thingies (eg FileBrowser)
-            QEvent e( QEvent::FocusOut );
-            kapp->sendEvent( obj, &e );
-        }
+//         else if( obj->inherits("QLabel") ) {
+//             QColorGroup cg = pal.active();
+//             cg.setColor( QColorGroup::Foreground, cg.text() );
+//             widget->setPalette( QPalette(cg, cg, cg) );
+//         }
+//         else if( obj->inherits("KToolBarButton") || obj->inherits("QToolBar") )
+//         {
+//             QColorGroup cg = pal.active();
+//             cg.setColor( QColorGroup::Button, cg.background() );
+//             cg.setColor( QColorGroup::ButtonText, cg.text() );
+//             widget->setPalette( QPalette(cg, cg, cg) );
+//         }
+//         else if( obj->isA("QSplitterHandle") || qstrcmp( obj->name(), "divider" ) == 0 )
+//         {
+//             widget->setPalette( QApplication::palette() );
+//         }
+//         else if ( qstrcmp( obj->name(), "filter_edit" ) == 0 )
+//         {
+//             //FIXME this is hack for our greyed out text search box thingies (eg FileBrowser)
+//             QEvent e( QEvent::FocusOut );
+//             kapp->sendEvent( obj, &e );
+//         }
 
         #undef widget
     }

@@ -396,7 +396,7 @@ void App::applySettings( bool firstTime )
 
 
     amaroK::OSD::instance()->applySettings();
-    
+
     Scrobbler::instance()->applySettings();
 
     playlistWindow()->setFont(
@@ -443,7 +443,8 @@ void App::applySettings( bool firstTime )
         engine->setVolume( AmarokConfig::masterVolume() );
 
         engine->setEqualizerEnabled( AmarokConfig::equalizerEnabled() );
-        engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
+        if ( AmarokConfig::equalizerEnabled() )
+            engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
     } //</Engine>
 
     { //<MySql>
@@ -515,9 +516,18 @@ void App::applyColorScheme()
 
         group.setColor( QColorGroup::Text, Qt::white );
         group.setColor( QColorGroup::Base, bg );
-        group.setColor( QColorGroup::Background, bg.light(120) );
+        group.setColor( QColorGroup::Foreground, 0xd7d7ef );
+        group.setColor( QColorGroup::Background, bgAlt );
 
-        group.setColor( QColorGroup::Dark, Qt::white );
+        group.setColor( QColorGroup::Button, bgAlt );
+        group.setColor( QColorGroup::ButtonText, 0xd7d7ef );
+
+//         group.setColor( QColorGroup::Light,    Qt::cyan   /*lighter than Button color*/ );
+//         group.setColor( QColorGroup::Midlight, Qt::blue   /*between Button and Light*/ );
+//         group.setColor( QColorGroup::Dark,     Qt::green  /*darker than Button*/ );
+//         group.setColor( QColorGroup::Mid,      Qt::red    /*between Button and Dark*/ );
+//         group.setColor( QColorGroup::Shadow,   Qt::yellow /*a very dark color. By default, the shadow color is Qt::black*/ );
+
         group.setColor( QColorGroup::Highlight, Qt::white );
         group.setColor( QColorGroup::HighlightedText, bg );
         //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
@@ -750,7 +760,12 @@ void App::slotConfigAmarok( int page )
         connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
     }
 
+    //FIXME it seems that if the dialog is on a different desktop it gets lost
+    //      what do to? detect and move it?
+
     dialog->show();
+    dialog->raise();
+    dialog->setActiveWindow();
 
     //so that if the engine page is needed to be shown it works
     kapp->processEvents();
