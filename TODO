@@ -3,11 +3,13 @@ TODO-list for amaroK
 <nick>  == reported by
 -->nick == assigned to
 #x      == sequential bug number,
-           #122 being the highest available (take this one for your next bug and increase here)
+           #123 being the highest available (take this one for your next bug and increase here)
 
 
 SHORT-TERM (URGENT):
  
+  FIX 122 <markey> Depend on GStreamer 0.8.1, since amaroK won't build with older versions any more.
+
   FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
   FIX 110 <dato>   [Don't sure if it's a bug or a "still not implemented". Written here as a reminder.]
