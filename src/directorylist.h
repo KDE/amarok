@@ -32,7 +32,7 @@ class CollectionSetup : public QVBox
 public:
     CollectionSetup( QWidget* );
 
-    QStringList dirs() const { return s_dirs; }
+    QStringList dirs() const;
     static bool recursive() { return s_recursive->isChecked(); }
     static bool monitor()   { return s_monitor->isChecked(); }
 

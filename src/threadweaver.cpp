@@ -214,7 +214,9 @@ CollectionReader::doJob()
     QStringList entries;
     //iterate over all folders
     for ( uint i = 0; i < m_folders.count(); i++ )
+    {
         readDir( m_folders[ i ], entries );
+    }
 
     if ( !entries.empty() ) {
         QApplication::postEvent( CollectionView::instance(), new ProgressEvent( ProgressEvent::Total, entries.count() ) );

@@ -55,6 +55,25 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 }
 
 
+QStringList
+CollectionSetup::dirs() const
+{
+    QStringList list;
+
+    for( QListViewItem *item = m_view->firstChild(); item; item = item->itemBelow() )
+    {
+        #define item static_cast<Item*>(item)
+        if( !item->isOn() || item->isDisabled() )
+           continue;
+
+        list += item->fullPath();
+        #undef item
+    }
+
+    return list;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Item
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +145,7 @@ Item::stateChange( bool b )
     if ( isOn() ) {
         if ( it == CollectionSetup::s_dirs.end() )
             CollectionSetup::s_dirs << m_url.path();
+            
     }
     else
         CollectionSetup::s_dirs.erase( it );
