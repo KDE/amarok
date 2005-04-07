@@ -160,37 +160,41 @@ class RSSFeedsPlugin < Plugin
 
     def watchRss(m, url, feedFormat)
         Thread.new {
+            begin
             puts 'fetching...'
             oldItems  = []
             firstRun = true
             loop {
-                title = ''
-                puts 'really fetching'
-                newItems = fetchRSS(m, url, title)
-                if( newItems.empty? )
-                    m.reply "oops"
-                    break
-                end
-                puts "new items?"
-                if(firstRun)
-                    firstRun = false
-                else
-                    newItems.each { |nItem|
-                        showItem = true;
-                        oldItems.each { |oItem|
-                            if(nItem.to_s == oItem.to_s)
-                                showItem = false
+                begin
+                    title = ''
+                    puts 'really fetching'
+                    newItems = fetchRSS(m, url, title)
+                    if( newItems.empty? )
+                        m.reply "oops"
+                        break
+                    end
+                    puts "new items?"
+                    if(firstRun)
+                        firstRun = false
+                    else
+                        newItems.each { |nItem|
+                            showItem = true;
+                            oldItems.each { |oItem|
+                                if(nItem.to_s == oItem.to_s)
+                                    showItem = false
+                                end
+                            }
+                            if showItem
+                                puts "showing #{nItem.title}"
+                                printFormatedRSS(m, nItem,feedFormat)
+                            else
+                                puts "not showing  #{nItem.title}"
+                                break
                             end
-                        }
-                        if showItem
-                            puts "showing #{nItem.title}"
-                            printFormatedRSS(m, nItem,feedFormat)
-                        else
-                            puts "not showing  #{nItem.title}"
-                            break
-                        end
-                    }
+                rescue Exception
+                    $stderr.print "IO failed: " + $!
                 end
+                    }
                 oldItems = newItems
                 puts "going to sleep..."
                 sleep 300
