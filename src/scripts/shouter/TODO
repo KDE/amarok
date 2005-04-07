@@ -6,23 +6,23 @@ Add bitrate gotcha to README
 Embedded coverart
 
 Transcoding:
-	Method 1: popen mplayer + lame/oggenc
-		Use mplayer to decode track chunks to a temp file. 
-			strip headers
-			partition into chunks
-			decode as needed
-		Use lame/oggenc to encode to memory
-		Read encoded file and stream
+    Method 1: popen mplayer + lame/oggenc
+        Use mplayer to decode track chunks to a temp file.
+            strip headers
+            partition into chunks
+            decode as needed
+        Use lame/oggenc to encode to memory
+        Read encoded file and stream
 
-	Method 2: pygst + pylame
-		Use pygst to decode to ...?
-		Use pylame to encode to ...?
-		stream encoded data
+    Method 2: pygst + pylame
+        Use pygst to decode to ...?
+        Use pylame to encode to ...?
+        stream encoded data
 
-	Method 3:
+    Method 3:
 
 
-	problems:
-		Decoding:
-			can't decode an ogg fragment that has no headers.
-			Does every chunk need headers?
+    problems:
+        Decoding:
+            can't decode an ogg fragment that has no headers.
+            Does every chunk need headers?
