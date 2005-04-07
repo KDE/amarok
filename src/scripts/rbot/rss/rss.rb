@@ -1,6 +1,9 @@
 # RSS feed plugin for RubyBot
 # (c) 2004 Stanislav Karchebny <berkus@madfire.net>
+# (c) 2005 Ian Monroe <ian@monroe.nu>
+# (c) 2005 Mark Kretschamnn <markey@web.de>
 # Licensed under MIT License.
+
 
 require 'rss/parser'
 require 'rss/1.0'
@@ -159,47 +162,45 @@ class RSSFeedsPlugin < Plugin
     private
 
     def watchRss(m, url, feedFormat)
-        Thread.new {
-            begin
-            puts 'fetching...'
-            oldItems  = []
+        Thread.new do
+            puts 'watchRss thread started.'
+            oldItems = []
             firstRun = true
-            loop {
-                begin
+            loop do
+                begin # exception
                     title = ''
-                    puts 'really fetching'
+                    puts 'Fetching rss feed..'
                     newItems = fetchRSS(m, url, title)
                     if( newItems.empty? )
-                        m.reply "oops"
+                        m.reply "Oops - Item is empty"
                         break
                     end
-                    puts "new items?"
-                    if(firstRun)
+                    puts "Checking if new items are available"
+                    if (firstRun)
                         firstRun = false
                     else
-                        newItems.each { |nItem|
-                            showItem = true;
-                            oldItems.each { |oItem|
-                                if(nItem.to_s == oItem.to_s)
-                                    showItem = false
-                                end
-                            }
-                            if showItem
-                                puts "showing #{nItem.title}"
+                        newItems.each do |nItem|
+                            if oldItems.include? nItem.to_s
+                                puts "Showing #{nItem.title}"
                                 printFormatedRSS(m, nItem,feedFormat)
                             else
-                                puts "not showing  #{nItem.title}"
+                                puts "Not showing  #{nItem.title}"
                                 break
                             end
+                        end
+                    end
                 rescue Exception
-                    $stderr.print "IO failed: " + $!
+                    $stderr.print "IO failed: " + $! + "\n"
                 end
-                    }
-                oldItems = newItems
-                puts "going to sleep..."
-                sleep 300
-            }
-        }
+                # Convert newItems to strings and copy to oldItems
+                oldItems.clear
+                newItems.each do |nItem|
+                    oldItems << nItem.to_s
+                end
+                puts "Thread going to sleep.."
+                sleep 100
+            end
+        end
     end
 
     def printRSSItem(m,item)
@@ -225,7 +226,8 @@ class RSSFeedsPlugin < Plugin
 
     def fetchRSS(m, url, title)
         begin
-            xml = Utils.http_get(url)
+            # Use 60 sec timeout, cause the default is too low
+            xml = Utils.http_get(url,60,60)
         rescue URI::InvalidURIError, URI::BadURIError => e
             m.reply("invalid rss feed #{url}")
             return
