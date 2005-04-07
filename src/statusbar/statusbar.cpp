@@ -158,7 +158,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     if ( bundle.album().isEmpty() )
 	title = "<b>" + title + "</b>";
     else
-        title = i18n( "track on album", "%1 on <b>%2</b>" ).arg( title ).arg( bundle.album() );
+        title = i18n( "track on album", "<b>%1</b> on <b>%2</b>" ).arg( title ).arg( bundle.album() );
 
     // don't show '-' or '?'
     if( length.length() > 1 ) {
