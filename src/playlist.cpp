@@ -498,6 +498,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         }
     } else {
         newQuery = queryResult;
+    }
 
     KURL::List urls = KURL::List( newQuery );
     insertMedia( urls );
