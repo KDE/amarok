@@ -159,8 +159,8 @@ class RSSFeedsPlugin < Plugin
         @watchList[url] = feedFormat;
         watchRss(m, url,feedFormat)
     end
-    private
 
+    private
     def watchRss(m, url, feedFormat)
         Thread.new do
             puts 'watchRss thread started.'
@@ -180,11 +180,17 @@ class RSSFeedsPlugin < Plugin
                         firstRun = false
                     else
                         newItems.each do |nItem|
-                            if oldItems.include? nItem.to_s
-                                puts "Showing #{nItem.title}"
+                            showItem = true;
+                            oldItems.each do |oItem|
+                                if (nItem.to_s == oItem.to_s)
+                                    showItem = false
+                                end
+                            end
+                            if showItem
+                                puts "showing #{nItem.title}"
                                 printFormatedRSS(m, nItem,feedFormat)
                             else
-                                puts "Not showing  #{nItem.title}"
+                                puts "not showing  #{nItem.title}"
                                 break
                             end
                         end
@@ -192,11 +198,7 @@ class RSSFeedsPlugin < Plugin
                 rescue Exception
                     $stderr.print "IO failed: " + $! + "\n"
                 end
-                # Convert newItems to strings and copy to oldItems
-                oldItems.clear
-                newItems.each do |nItem|
-                    oldItems << nItem.to_s
-                end
+                oldItems = newItems
                 puts "Thread going to sleep.."
                 sleep 100
             end
