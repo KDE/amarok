@@ -82,6 +82,7 @@ class Playlist : private KListView, public EngineObserver
          */
         void insertMediaSql( const QString& sql, int options = Append );
         void addSpecialTracks( uint songCount, QString type = "Random" );
+        void addSpecialCustomTracks( uint songCount, QStringList list );
 
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
@@ -155,6 +156,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );
         void addCustomColumn();
+        void setPartyMode( QString type ) { AmarokConfig::setPartyType( type ); }
 
     private slots:
         void slotGlowTimer();

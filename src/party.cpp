@@ -53,10 +53,9 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     m_suggestionRadio = new QRadioButton( i18n("Suggested Song"), selectorBox );;
     m_buttonGroup->insert( m_suggestionRadio );
 
-    QVBox *tempDisable = new QVBox( selectorBox );
-    m_playlistRadio = new QRadioButton( i18n("Random song from one of the following:"), tempDisable/*selectorBox */);
+    m_playlistRadio = new QRadioButton( i18n("Random song from one of the following:"), selectorBox );
     m_playlistRadio->setChecked( false );
-//     m_buttonGroup->insert( m_playlistRadio );
+    m_buttonGroup->insert( m_playlistRadio );
 
     if ( AmarokConfig::partyType() == "Random" )
         m_randomRadio->setChecked( true );
@@ -65,7 +64,7 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     else
         m_playlistRadio->setChecked( true );
 
-    QVBox *playlistBox = new QVBox( tempDisable/*selectorBox*/ );
+    QVBox *playlistBox = new QVBox( selectorBox );
 
     m_playlistSelector = new KActionSelector( playlistBox );
     m_playlistSelector->setShowUpDownButtons( false );
@@ -91,10 +90,16 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     if ( !m_playlistRadio->isEnabled() )
         playlistBox->setEnabled( false );
 
-    tempDisable->setEnabled( false );
-
     connect( m_partyCheck, SIGNAL( toggled(bool) ), partyGroupBox,  SLOT( setEnabled(bool) ) );
     connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox, SLOT( setEnabled(bool) ) );
+
+    if ( AmarokConfig::partyMode() ) {
+        m_partyCheck->setChecked( true );
+        partyGroupBox->setEnabled( true );
+    } else {
+        m_partyCheck->setChecked( false );
+        partyGroupBox->setEnabled( false );
+    }
 
 }
 
@@ -115,7 +120,7 @@ void Party::insertAvailablePlaylists()
     QStringList defaultPlaylists;
     defaultPlaylists << i18n( "Favorite Tracks" ) << i18n( "Most Played" )  << i18n( "Newest Tracks" )
                      << i18n( "Last Played" )     << i18n( "Never Played" ) << i18n( "Ever Played" )
-                     << i18n( "Random" );
+                     << i18n( "50 Random Tracks" );
 
 
     //FIXME: Genres?  Too many to list, need an expander.

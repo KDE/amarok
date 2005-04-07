@@ -42,6 +42,7 @@
 #include <qpen.h>            //slotGlowTimer()
 #include <qsortedlist.h>
 #include <qtimer.h>
+#include <qvaluelist.h>      //addHybridTracks()
 #include <qvaluevector.h>    //playNextTrack()
 #include <qlayout.h>
 
@@ -410,8 +411,9 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     QueryBuilder qb;
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    QString text = "track";
-    if ( songCount > 1 )    text += "s";
+
+    QString text = i18n("track");
+    if ( songCount > 1 )    text = i18n( "tracks" );
 
     if ( type == "Random" ) {
         amaroK::StatusBar::instance()->shortMessage( i18n("Adding random %1.").arg(text) );
@@ -420,7 +422,9 @@ Playlist::addSpecialTracks( uint songCount, QString type )
         qb.addMatches( QueryBuilder::tabArtist, suggestions );;
         amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested %1.").arg(text) );
     } else { //we have playlists to choose from.
-        amaroK::StatusBar::instance()->shortMessage( i18n("Not implemented") );
+        QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
+        amaroK::StatusBar::instance()->shortMessage( i18n("Adding %1 from custom filter.").arg(text) );
+        addSpecialCustomTracks( songCount, playlists );
         return;
     }
 
@@ -429,6 +433,75 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     insertMedia( KURL::List( url ), Playlist::Unique );
 }
 
+// We want to merge the smartplaylists given into one query
+void
+Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
+{
+    QString query;
+
+    SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
+    SmartPlaylist *sp;
+
+    for ( uint x=0; x < list.count(); x++ )
+    {
+        sp = spv->getSmartPlaylist( list[x] );
+        if ( !sp )
+        {
+            amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested. Bailing out.") );
+            continue;
+        }
+        query = sp->query();
+    }
+
+    QString sql;
+
+    if ( !sp )
+        return;
+    else
+    {
+        if( !sp->isCustom() && !sp->sqlForTags.isEmpty() ) {
+            kdDebug() << "[PARTY] !sp->isCustom() && !sp->sqlForTags.isEmpty()" << endl;
+            sql = sp->sqlForTags;
+        } else {
+            kdDebug() << "[PARTY] sp->isCustom() || sp->sqlForTags.isEmpty()" << endl;
+            sql = sp->sqlForUrls;
+        }
+        //Add random and limiting sql queries to the end
+        if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
+            QRegExp order( "ORDER BY.*$" );
+            sql.remove( order );
+            sql.append( ';' );
+        }
+
+        // ORDER BY RAND() breaks Newest etc
+        if ( sql.find( QString("LIMIT"), FALSE ) != -1  ) {
+            QRegExp limit( "LIMIT [\\d].*[\\d]");
+            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1").arg( songCount ) );
+        } else {
+            QRegExp limit( ";$" );
+            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
+        }
+
+        kdDebug() << "[PARTY] Songcount: " << songCount << endl;
+        kdDebug() << "[PARTY] Query has been fixed: " << sql << endl;
+    }
+
+    QStringList queryResult = CollectionDB::instance()->query( sql );
+    QStringList newQuery;
+
+    if ( !sp->isCustom() && !sp->sqlForTags.isEmpty() ) {
+        //We have to filter all the un-needed results from query( sql )
+        for (uint x=10; x < queryResult.count() ; x += 11)
+        {
+            newQuery << queryResult[x];
+            kdDebug() << "[PARTY] queryResult[" << x << "] :" << queryResult[x] << endl;
+        }
+    } else {
+        newQuery = queryResult;
+
+    KURL::List urls = KURL::List( newQuery );
+    insertMedia( urls );
+}
 
 QString
 Playlist::defaultPlaylistPath() //static
@@ -634,7 +707,6 @@ Playlist::queue( QListViewItem *item )
     updateNextPrev();
     #undef item
 }
-
 
 void
 Playlist::activate( QListViewItem *item )

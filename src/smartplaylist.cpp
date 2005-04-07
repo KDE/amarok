@@ -47,10 +47,14 @@ SmartPlaylistBox::SmartPlaylistBox( QWidget *parent, const char *name )
 //    CLASS SmartPlaylistView
 ////////////////////////////////////////////////////////////////////////////
 
+SmartPlaylistView *SmartPlaylistView::s_instance = 0;
+
 SmartPlaylistView::SmartPlaylistView( QWidget *parent, const char *name )
         : KListView( parent, name )
         , m_loaded( false )
 {
+    s_instance = this;
+
     addColumn( i18n("Smart-Playlists") );
     setSelectionMode( QListView::Extended );
     setSorting( 0 ); //enable sorting (used for custom smart playlists)
@@ -88,6 +92,18 @@ SmartPlaylistView::~SmartPlaylistView()
     }
 }
 
+// Warning - unpredictable when a smartplaylist which doesn't exist is requested.
+SmartPlaylist *
+SmartPlaylistView::getSmartPlaylist( QString name )
+{
+    QListViewItemIterator it( this );
+    for ( ; it.current(); ++it )
+        if( (*it)->text( 0 ) == name )
+            break;
+
+    return static_cast<SmartPlaylist*>(*it);
+}
+
 void SmartPlaylistView::createCustomPlaylist() //SLOT
 {
     //open a dialog to create a custom smart playlist
@@ -115,19 +131,6 @@ void SmartPlaylistView::removeSelectedPlaylists()
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
         if( static_cast<SmartPlaylist*>(item )->isCustom() )
             delete item;
-}
-
-SmartPlaylist *
-SmartPlaylistView::getPlaylist( QString name )
-{
-    QListViewItemIterator it( this );
-    for ( ; it.current(); ++it )
-        if ( (*it)->text( 0 ) == name )
-            break;
-
-    //FIXME: What if a non-valid playlist is requested? BooooM!
-    return static_cast<SmartPlaylist*>(*it);
-
 }
 
 void SmartPlaylistView::loadDefaultPlaylists()

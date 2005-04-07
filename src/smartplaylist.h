@@ -26,10 +26,12 @@ Q_OBJECT
         SmartPlaylistView( QWidget *parent, const char *name = 0 );
        ~SmartPlaylistView();
 
+       SmartPlaylist *getSmartPlaylist( QString name );
+       static SmartPlaylistView *instance() { return s_instance; }
+
     public slots:
         void createCustomPlaylist();
         void removeSelectedPlaylists();
-        SmartPlaylist *getPlaylist( QString name );
 
     protected:
         virtual class QDragObject *dragObject();
@@ -46,6 +48,8 @@ Q_OBJECT
         QString customPlaylistsFile();
 
         bool m_loaded;
+
+        static SmartPlaylistView *s_instance;
 };
 
 
@@ -61,6 +65,8 @@ class SmartPlaylist : public KListViewItem
         /// used for sorting
         void setKey( int pos ) { m_key = pos; }
         QString key( int c, bool ) const;
+
+        QString query() { return isCustom() ? sqlForUrls : sqlForTags; }
 
         KURL::List urls() const;
 
