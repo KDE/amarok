@@ -707,10 +707,23 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 
 void App::engineStateChanged( Engine::State state )
 {
+    const MetaBundle &bundle = EngineController::instance()->bundle();
     switch( state )
     {
     case Engine::Empty:
+        if ( AmarokConfig::showPlayerWindow() )
+            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
+        else m_pPlaylistWindow->setCaption( "amaroK" );
         QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
+        break;
+    case Engine::Playing:
+        if ( !bundle.prettyTitle().isEmpty() )
+            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( bundle.prettyTitle() ) );
+        break;
+    case Engine::Idle:
+        if ( AmarokConfig::showPlayerWindow() )
+            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
+        else m_pPlaylistWindow->setCaption( "amaroK" );
         break;
 
     default:
@@ -722,6 +735,8 @@ void App::engineStateChanged( Engine::State state )
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     amaroK::OSD::instance()->show( bundle );
+    if ( !bundle.prettyTitle().isEmpty() )
+        m_pPlaylistWindow->setCaption( kapp->makeStdCaption( bundle.prettyTitle() ) );
 
     TrackToolTip::add( m_pTray, bundle );
 }
