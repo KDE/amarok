@@ -1,7 +1,7 @@
 # RSS feed plugin for RubyBot
 # (c) 2004 Stanislav Karchebny <berkus@madfire.net>
 # (c) 2005 Ian Monroe <ian@monroe.nu>
-# (c) 2005 Mark Kretschamnn <markey@web.de>
+# (c) 2005 Mark Kretschmann <markey@web.de>
 # Licensed under MIT License.
 
 
