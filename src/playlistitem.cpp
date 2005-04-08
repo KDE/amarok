@@ -35,50 +35,25 @@ QColor PlaylistItem::glowBase = Qt::white;
 bool   PlaylistItem::s_pixmapChanged = false;
 
 
-// These are untranslated and used for storing/retrieving XML playlist
-const QString PlaylistItem::columnName(int col) //static
+/// These are untranslated and used for storing/retrieving XML playlist
+const QString PlaylistItem::columnName( int c ) //static
 {
-   switch(col) {
-      case TrackName:
-         return "TrackName";
-         break;
-      case Title:
-         return "Title";
-         break;
-      case Artist:
-         return "Artist";
-         break;
-      case Album:
-         return "Album";
-         break;
-      case Year:
-         return "Year";
-         break;
-      case Comment:
-         return "Comment";
-         break;
-      case Genre:
-         return "Genre";
-         break;
-      case Track:
-         return "TrackNo";
-         break;
-      case Directory:
-         return "Directory";
-         break;
-      case Length:
-         return "Length";
-         break;
-      case Bitrate:
-         return "Bitrate";
-         break;
-      case Score:
-         return "Score";
-         break;
-   }
-   return "<ERROR>";
+    switch( c ) {
+        case TrackName: return "TrackName";
+        case Title:     return "Title";
+        case Artist:    return "Artist";
+        case Album:     return "Album";
+        case Year:      return "Year";
+        case Comment:   return "Comment";
+        case Genre:     return "Genre";
+        case Track:     return "TrackNo";
+        case Directory: return "Directory";
+        case Length:    return "Length";
+        case Bitrate:   return "Bitrate";
+        case Score:     return "Score";
+    }
+    return "<ERROR>";
 }
-
 
 
 //statics
@@ -249,12 +224,16 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
     switch( col )  //we must pad numbers to sort them lexically, so we must special case those columns
     {
         case Track:
-        case Year:
         case Score:
         case Length:
         case Bitrate:
             a = a.rightJustify( b.length(), '0' ); //all these columns shouldn't become negative
             b = b.rightJustify( a.length(), '0' ); //so simply left-padding is sufficient
+            break;
+
+        case Year:
+            if( a == b )
+                return this->compare( i, Artist, ascending );
             break;
 
         case Artist:
@@ -264,7 +243,8 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
 
         case Album:
             if( a == b ) //if same album, try to sort by track
-                return this->compare( i, Track, true ) * (ascending ? 1 : -1); //only sort in ascending order
+                //TODO only sort in ascending order?
+                return this->compare( i, Track, true ) * (ascending ? 1 : -1);
             break;
 
         default:;
@@ -334,8 +314,8 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             // Draw the pixmap, if present
             int leftMargin = 1;
             if ( pixmap( column ) ) {
-                paint.drawPixmap( 0, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-                leftMargin = pixmap( column )->width();
+                paint.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
+                leftMargin += pixmap( column )->width() - 2; //-1 seems to be required
             }
 
             if( align != Qt::AlignCenter )
