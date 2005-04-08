@@ -17,7 +17,7 @@ from Encoder import *
 META = "%cStreamTitle='%s';StreamUrl='%s';%s"
 ICYRESP = 'ICY 200 OK\r\nicy-notice1:%s\r\nicy-notice2:%s\r\nicy-name:%s\r\nicy-br:%d\r\nicy-genre:%s\r\nicy-url:%s\r\nicy-metaint:%d\r\n\r\n'
 PADDING = '\x00'*16
-SILENCE_F = '../scripts/Shouter/silence/silence-%s.mp3'
+SILENCE_F = '../scripts/shouter/silence/silence-%s.mp3'
 
 class ShouterRequest(SocketServer.StreamRequestHandler):
     """ A per-thread streaming object.
@@ -67,7 +67,7 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
         
     def _check_request( self ):
         debug ('_check_request')
-        req_type, mount = findall(r'(\w*) (/\S*) ', self.req_header)[0]
+        req_type, mount = findall(r'(\w*) (/\S*?)/? ', self.req_header)[0]
         if mount != self.cfg.mount:
             if self.cfg.enable_dl and req_type == 'GET':
                 if len(self.server.playlist)>0: f = self.server.playlist[-1]
@@ -123,11 +123,13 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
                 resp = ICYRESP % (self.cfg.desc1, self.cfg.desc2, self.cfg.name, self._get_bitrate(self.server.playlist[-1]), self.cfg.genre, self.cfg.url, self.cfg.icy_interval )
                 self.request.send(resp)
             else :
+                headers = {'Content-Type': 'audio/x-mpegurl'}
                 # amarok doesn't respond well to mpegurl mimetype streams
-                if search( r'user-agent:\s?amarok', self.req_header.lower()):
-                    resp ='HTTP/1.0 200 OK\r\nContent-Type: text/html\r\n\r\n' 
-                resp ='HTTP/1.0 200 OK\r\nContent-Type: audio/x-mpegurl\r\n\r\n' 
-                self.request.send( resp )
+                if search( r'user-agent:\s?.*konqueror', self.req_header.lower()):
+                    debug('Sending special response to konqueroragent')
+                    headers = dict()
+                #self.request.send( resp )
+                self._send_status(200, headers)
 
     def _do_PROPFIND(self):
         debug( '_do_PROPFIND' )

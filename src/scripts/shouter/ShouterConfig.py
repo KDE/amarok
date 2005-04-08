@@ -33,6 +33,7 @@ class ConfigDialog( QDialog ):
             self.cfg.punc_factor     = config.getint( 'Server', 'punc_factor' )
             self.cfg.force_update     = config.getboolean( 'Server', 'force_update' )
             self.cfg.pre_seek     = config.getfloat( 'Server', 'pre_seek' )
+            self.cfg.supress_dialog     = config.getboolean( 'Server', 'supress_dialog' )
 
             self.cfg.enable_dl     = config.getboolean( 'Downloads', 'enable_dl' )
             self.cfg.dl_mount     = config.get( 'Downloads', 'dl_mount' )
@@ -112,6 +113,10 @@ class ConfigDialog( QDialog ):
         self.fForceUpdate = QCheckBox(self.fServer)
         self.fForceUpdate.setChecked( self.cfg.force_update )
 
+        QLabel( 'Supress server notification dialogs', self.fServer)
+        self.fSupressDialog = QCheckBox(self.fServer)
+        self.fSupressDialog.setChecked( self.cfg.supress_dialog )
+
         #####################
         self.fDownloads = QGroupBox(self.vbox)
         self.fDownloads.setColumns(2)
@@ -190,6 +195,7 @@ class ConfigDialog( QDialog ):
             self.config.set( 'Server', 'punc_factor', self.fPuncFactor.text() )
             self.config.set( 'Server', 'pre_seek', self.fPreSeek.text() )
             self.config.set( 'Server', 'force_update', self.fForceUpdate.isChecked() )
+            self.config.set( 'Server', 'supress_dialog', self.fSupressDialog.isChecked() )
 
             self.config.add_section( 'Downloads' )
             self.config.set( 'Downloads', 'enable_dl', self.fEnableDl.isChecked() )

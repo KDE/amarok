@@ -15,9 +15,10 @@ class StreamConfig:
     pre_seek = 2
     force_update = True
     enable_dl = True
+    supress_dialog = False
     dl_mount = '/current'
     dl_throttle = 20
-    reencoding = 1
+    reencoding = 0
     stream_format = 'mp3'
     stream_br = 192
     chunk_size = 524288

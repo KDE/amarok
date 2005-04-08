@@ -1,3 +1,4 @@
+Fix silence streaming
 Ogg transcoding
 Add typical bandwidth requirements to README
 Add ".ogg" extension for Winamp gotcha to README

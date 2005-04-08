@@ -79,6 +79,7 @@ class Shouter( QApplication ):
             self.cfg.punc_factor     = config.getint( 'Server', 'punc_factor' )
             self.cfg.force_update     = config.getboolean( 'Server', 'force_update' )
             self.cfg.pre_seek     = config.getfloat( 'Server', 'pre_seek' )
+            self.cfg.supress_dialog     = config.getboolean( 'Server', 'supress_dialog' )
 
             self.cfg.enable_dl     = config.getboolean( 'Downloads', 'enable_dl' )
             self.cfg.dl_mount     = config.get( 'Downloads', 'dl_mount' )
@@ -112,7 +113,7 @@ class Shouter( QApplication ):
 
                 debug( '%d: playlist = %s' % (self.cfg.port, str(stream_ctrl.playlist)) )
                 self.m = QMessageBox("Amarok Shouter","Starting server on http://%s:%d%s" % (socket.gethostname(), self.cfg.port, self.cfg.mount), QMessageBox.Information,QMessageBox.Ok,QMessageBox.NoButton,QMessageBox.NoButton, None, "", False, QWidget.WDestructiveClose)
-                self.m.show()
+                if not self.cfg.supress_dialog: self.m.show()
                 self.stream_ctrl = stream_ctrl
 
                 threading.Thread(target = self.stream_ctrl.run).start()
@@ -121,7 +122,8 @@ class Shouter( QApplication ):
                 debug( ex.args )
                 self.cfg.port += 1
         if self.stream_ctrl is None: 
-            QMessageBox.critical(None,"Amarok Shouter","Server failed to start")
+            if not self.cfg.supress_dialog: 
+                QMessageBox.critical(None,"Amarok Shouter","Server failed to start")
             sys.exit(1)
         
         
@@ -209,7 +211,7 @@ class Shouter( QApplication ):
         playing = Globals.PlayerDcop( "encodedURL" ).result()
         if playing.startswith( 'http' ):
             self.m = QMessageBox("Amarok Shouter", 'You appear to be playing a music stream. This script will attempt to restart after the current stream has been closed', QMessageBox.Warning,QMessageBox.Ok,QMessageBox.NoButton,QMessageBox.NoButton, None, "", False, QWidget.WDestructiveClose)
-            self.m.show()
+            if not self.cfg.supress_dialog: self.m.show()
             return None
 
         if len(playing.strip()) == 0:

@@ -17,10 +17,10 @@ been tested with:
     Winamp 5
 
 The following agents may have some trouble with a normal "live" stream, but
-work with a delayed stream (see 'Stream punctuality' in the configuration
+will work with a delayed stream (see 'Stream punctuality' in the configuration
 section)
-    ITunes 4.7 (use low stream punctuality)
-    Windows Media Player 9 (use low stream punctuality)
+    ITunes 4.7 
+    Windows Media Player 9 
     alsaplayer-0.99.76
 
 
