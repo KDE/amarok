@@ -541,10 +541,7 @@ Playlist::playNextTrack( bool forceNext )
         addSpecialTracks( songCount, AmarokConfig::partyType() );
     }
 
-    if( isEmpty() )
-        return;
-
-    if( m_stopAfterCurrent )
+    if( isEmpty() || m_stopAfterCurrent )
     {
         m_stopAfterCurrent = false;
         activate( 0 );
