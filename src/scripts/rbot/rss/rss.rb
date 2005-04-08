@@ -218,6 +218,8 @@ class RSSFeedsPlugin < Plugin
             when 'amarokblog'
                 m.reply("::#{item.category.content} just blogged at #{item.link}::")
                 m.reply("::#{item.title.chomp.riphtml.shorten(20)} - #{item.description.chomp.riphtml.shorten(60)}::")
+            when 'amarokforum'
+                m.reply("::Forum:: #{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}")
             when 'mediawiki'
                 m.reply("::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::")
                 puts "mediawiki #{item.title}"
