@@ -329,7 +329,7 @@ void ContextBrowser::renderView()
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackChanged*/ )
+void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 {
     bool newMetaData = false;
     m_dirtyHomePage = true;
@@ -344,7 +344,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool /*trackCh
         m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
     }
 
-    if ( currentPage() != m_currentTrackPage->view() || bundle.url() != m_currentURL || newMetaData )
+    if ( currentPage() != m_currentTrackPage->view() || bundle.url() != m_currentURL || newMetaData || !trackChanged )
         showCurrentTrack();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showIntroduction();
