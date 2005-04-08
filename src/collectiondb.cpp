@@ -2233,7 +2233,7 @@ QStringList PostgresqlConnection::query( const QString& statement )
     int rows = postgresql::PQntuples( result );
     QMap<int, bool> discardCols;
     for(int col=0; col< cols; col++) {
-        if (QString(PQfname(result, col)) == QString("__discard"))
+        if (QString(PQfname(result, col)) == QString("__discard") || QString(PQfname(result, col)) == QString("__random"))
         {
             discardCols[col] = true; 
         }
@@ -2790,12 +2790,19 @@ QueryBuilder::setOptions( int options )
 
     if ( options & optNoCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolF());
     if ( options & optOnlyCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolT());
-    if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
 
-    if ( options & optRandomize )
-    {
-        if ( !m_sort.isEmpty() ) m_sort += ",";
-        m_sort += CollectionDB::instance()->randomFunc() + " ";
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql && options & optRemoveDuplicates && options & optRandomize) {
+	    m_values = "DISTINCT " + CollectionDB::instance()->randomFunc() + " AS __random "+ m_values;
+	    if ( !m_sort.isEmpty() ) m_sort += ",";
+	    m_sort += CollectionDB::instance()->randomFunc() + " ";
+    } else {
+	    if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
+
+	    if ( options & optRandomize )
+	    {
+	        if ( !m_sort.isEmpty() ) m_sort += ",";
+	        m_sort += CollectionDB::instance()->randomFunc() + " ";
+	    }
     }
 }
 

@@ -192,7 +192,7 @@ QString SmartPlaylistEditor::query()
             orderStr = " ORDER BY " +  field + orderType;
         }
         else if( m_orderTypeCombo->currentItem() == 0 ) { // completely random
-            orderStr = " ORDER BY RAND()";
+            orderStr = " ORDER BY " + CollectionDB::instance()->randomFunc();
         }
         else {
             /*
@@ -207,7 +207,7 @@ QString SmartPlaylistEditor::query()
             zero, RAND() is used instead of 1-RAND() because it doesn't matter if it becomes zero (the exponent is
             always non-zero), and finally POWER(...) is used instead of 1-POWER(...) because it only changes the order type.
             */
-            orderStr = " ORDER BY POWER(RAND(),1.0/(statistics.percentage+1)) DESC";
+            orderStr = " ORDER BY POWER(" + CollectionDB::instance()->randomFunc() + ",1.0/(statistics.percentage+1)) DESC";
             if( !tables.contains( "statistics" ) ) {
                 whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
                 whereStr += "tags.url = statistics.url";
