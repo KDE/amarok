@@ -240,7 +240,7 @@ void TagDialog::init()
     //HACK due to deficiency in Qt that will be addressed in version 4
     // QSpinBox doesn't emit valueChanged if you edit the value with
     // the lineEdit until you change the keyboard focus
-    connect( kIntSpinBox_year->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( kIntSpinBox_year->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_score->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
@@ -255,7 +255,7 @@ void TagDialog::init()
     connect( kComboBox_genre,  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( kIntSpinBox_track,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
     connect( kIntSpinBox_year, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
-    connect( kIntSpinBox_score, SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
+    connect( kIntSpinBox_score,SIGNAL(valueChanged( int )),           SLOT(checkModified()) );
     connect( kLineEdit_comment,SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Remember original button text
@@ -300,6 +300,7 @@ void TagDialog::readTags()
     kComboBox_genre->setCurrentText( m_bundle.genre() );
     kIntSpinBox_track->setValue( m_bundle.track().toInt() );
     kIntSpinBox_year->setValue( m_bundle.year().toInt() );
+    kIntSpinBox_score->setValue( CollectionDB::instance()->getSongPercentage( m_bundle.url().path() ) );
     kLineEdit_comment->setText( m_bundle.comment() );
     kLineEdit_length->setText( m_bundle.prettyLength() );
     kLineEdit_bitrate->setText( m_bundle.prettyBitrate() );
@@ -307,7 +308,6 @@ void TagDialog::readTags()
     kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
     QString cover = CollectionDB::instance()->albumImage( m_bundle );
-    kIntSpinBox_score->setValue( CollectionDB::instance()->getSongPercentage( m_bundle.url().path() ) );
 
     if( m_currentCover != cover ) {
         pixmap_cover->setPixmap( QPixmap( cover, "PNG" ) );
@@ -382,11 +382,12 @@ TagDialog::readMultipleTracks()
     KURL::List::ConstIterator it = m_urlList.begin();
     MetaBundle first( *it );
     bool artist=true, album=true, genre=true, comment=true, year=true, score=true;
+    uint scoreFirst = CollectionDB::instance()->getSongPercentage( first.url().path() );
 
     for ( ; it != end; ++it ) {
         if( !(*it).isLocalFile() ) {
             // If we have a non local file, don't even lose more time comparing, just leave
-            artist=false; album=false; genre=false; comment=false, year=false;
+            artist=false; album=false; genre=false; comment=false, year=false, score=false;
             break;
         }
         MetaBundle mb( *it );
@@ -395,10 +396,10 @@ TagDialog::readMultipleTracks()
         if ( genre && mb.genre()!=first.genre() ) { genre=false; };
         if ( comment && mb.comment()!=first.comment() ) { comment=false; };
         if ( year && mb.year()!=first.year() ) { year=false; };
-        if ( score &&
-            CollectionDB::instance()->getSongPercentage( m_bundle.url().path() ) !=
-            CollectionDB::instance()->getSongPercentage( first.url().path() ) )
-                { score = false; };
+
+        uint scoreCurrent = CollectionDB::instance()->getSongPercentage( mb.url().path() );
+        if ( score && scoreFirst != scoreCurrent )
+            score = false;
 
         if (!artist && !album && !genre && !comment && !year && !score)
             break;
@@ -519,6 +520,9 @@ TagDialog::saveMultipleTracks()
 
         if( kIntSpinBox_year->value() )
             mb.setYear( QString::number( kIntSpinBox_year->value() ) );
+
+        if ( kIntSpinBox_score->value() )
+            CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
 
         if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
             Playlist::instance()->updateMetaData( mb );
