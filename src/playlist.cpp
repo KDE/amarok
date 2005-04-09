@@ -62,6 +62,8 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
+#include <stdlib.h>          //rand()
+
 extern "C"
 {
     #include <unistd.h>      //usleep()
@@ -442,16 +444,21 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
     SmartPlaylist *sp;
 
-    for ( uint x=0; x < list.count(); x++ )
+    //randomly grab a smart playlist to get a song from.
+
+    while( true )
     {
+        int x = rand() % list.count();
+
         sp = spv->getSmartPlaylist( list[x] );
-        if ( !sp )
-        {
-            amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested. Bailing out.") );
-            continue;
-        }
-        query = sp->query();
+        kdDebug() << "[PARTY]: Adding track from playlist called " << list[x] << endl;
+        if ( sp )
+            break;
+
+        kdDebug() << "[PARTY]: Invalid smartplaylist requested. Bailing out." << list[x] << endl;
+        amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Bailing out.").arg(list[x]) );
     }
+    query = sp->query();
 
     QString sql;
 
@@ -459,13 +466,11 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         return;
     else
     {
-        if( !sp->isCustom() && !sp->sqlForTags.isEmpty() ) {
-            kdDebug() << "[PARTY] !sp->isCustom() && !sp->sqlForTags.isEmpty()" << endl;
+        if( !sp->isCustom() && !sp->sqlForTags.isEmpty() )
             sql = sp->sqlForTags;
-        } else {
-            kdDebug() << "[PARTY] sp->isCustom() || sp->sqlForTags.isEmpty()" << endl;
+        else
             sql = sp->sqlForUrls;
-        }
+
         //Add random and limiting sql queries to the end
         if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
             QRegExp order( "ORDER BY.*$" );
