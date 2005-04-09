@@ -446,7 +446,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 
     //randomly grab a smart playlist to get a song from.
 
-    while( true )
+    for( uint y=0; y < list.count(); y++ )
     {
         int x = rand() % list.count();
 
