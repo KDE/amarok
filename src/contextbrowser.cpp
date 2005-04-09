@@ -80,6 +80,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
+        , m_lyricJob( NULL )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
@@ -335,6 +336,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
+    m_lyricJob = 0; //New metadata, so let's forget previous lyric-fetching jobs
 
     // Prepend stream metadata history item to list
     if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
@@ -358,6 +360,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
+    m_lyricJob = 0; //let's forget previous lyric-fetching jobs
 
     switch( state )
     {
@@ -1717,7 +1720,7 @@ void ContextBrowser::showLyrics( const QString &hash )
         blockSignals( false );
     }
 
-    if ( !m_dirtyLyricsPage ) return;
+    if ( !m_dirtyLyricsPage || m_lyricJob ) return;
 
     m_lyricsPage->begin();
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
@@ -1779,23 +1782,24 @@ void ContextBrowser::showLyrics( const QString &hash )
         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
-    KIO::TransferJob* job = KIO::get( url, false, false );
+    m_lyricJob = KIO::get( url, false, false );
 
-    amaroK::StatusBar::instance()->newProgressOperation( job )
+    amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
             .setDescription( i18n( "Fetching Lyrics" ) );
 
-    connect( job, SIGNAL( result( KIO::Job* ) ),
+    connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( lyricsResult( KIO::Job* ) ) );
-    connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+    connect( m_lyricJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
              this,  SLOT( lyricsData( KIO::Job*, const QByteArray& ) ) );
 }
 
 
 void
-ContextBrowser::lyricsData( KIO::Job*, const QByteArray& data ) //SLOT
+ContextBrowser::lyricsData( KIO::Job* job, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
-    m_lyrics += QString( data );
+    if (job == m_lyricJob)
+        m_lyrics += QString( data );
 }
 
 
@@ -1807,6 +1811,9 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
         kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
+
+    if ( job != m_lyricJob )
+        return; //not the right job, so let's ignore it
 
     /* We don't want to display any links or images in our lyrics */
     m_lyrics.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
@@ -1858,6 +1865,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     m_lyricsPage->write( m_HTMLSource );
     m_lyricsPage->end();
     m_dirtyLyricsPage = false;
+    m_lyricJob = NULL;
     saveHtmlData(); // Send html code to file
 }
 

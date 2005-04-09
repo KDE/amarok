@@ -6,6 +6,8 @@
 
 #include "engineobserver.h"
 #include <qtabwidget.h>
+#include <kio/job.h>
+
 
 class CollectionDB;
 class Color;
@@ -84,6 +86,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QStringList   m_lyricHashes;
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
+        KIO::TransferJob* m_lyricJob;
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;
