@@ -64,7 +64,7 @@ if doi18n == "yes"
         end
         docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
         cvsQuiet( "co -P #{docdirname}" )
-        if not FileTest.exists?( docdirname ) then next end
+        next unless FileTest.exists?( docdirname )
         print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R #{docdirname} doc/#{lang}`
 
@@ -89,7 +89,7 @@ if doi18n == "yes"
         lang.chomp!
         pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
         cvsQuiet( "co -P #{pofilename}" )
-        if not FileTest.exists? pofilename then next end
+        next unless FileTest.exists? pofilename
 
         dest = "po/#{lang}"
         Dir.mkdir( dest )
