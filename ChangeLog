@@ -24,6 +24,12 @@ VERSION 1.3-beta1:
       Hebrew and Arabic. Patch from Assaf Gillat <gillata@gmail.com>.
       (BR 102978)
     * Playlist playMedia now works with streams.
+    * Context Browser is updated when current track's tags are changed.
+      (BR 102839)
+    * Clearing the playlist while playing a track does not lead to a confusing
+      interface anymore. (BR 103510)
+    * Avoid weird results when fetching lyrics with slow connections.
+      (BR 103561 101327)
 
 
 ==BEGIN KDE 3.3 DEPENDENCY==
