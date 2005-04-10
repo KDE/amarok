@@ -30,6 +30,8 @@ VERSION 1.3-beta1:
 
 VERSION 1.2.4:
   BUGFIXES:
+    * Fixed crash when clicking the "clear" button in CoverManager's filter
+      widget.
     * Update lyrics page on new radio stream metadata. (BR 99725)
     * xine-engine was reporting bogus tracklengths for ogg vorbis. (BR 102547)
       Same fix applied to GStreamer-engine, where some users were having
