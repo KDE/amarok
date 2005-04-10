@@ -692,8 +692,9 @@ void ContextBrowser::showHome() //SLOT
                                             "<span class='song-artist'>" + fave[i + 3] + "</span>" );
 
             if ( !fave[i + 4].isEmpty() )
-                m_HTMLSource.append(        "<span class='song-separator'> - </span>"
-                                            "<span class='song-album'>"+ fave[i + 4] +"</span>" );
+		    m_HTMLSource.append(        "<span class='song-separator'>"
+				    + i18n("&#xa0;&#8211; ") +
+				    "</span><span class='song-album'>"+ fave[i + 4] +"</span>" );
 
             m_HTMLSource.append(        "</a>"
                                     "</td>"
@@ -737,8 +738,9 @@ void ContextBrowser::showHome() //SLOT
 
         if ( !recent[i + 3].isEmpty() )
             m_HTMLSource.append(
-                        "<span class='song-separator'> - </span>"
-                        "<span class='song-album'>" + recent[i + 3] + "</span>"
+				"<span class='song-separator'>"
+				+ i18n("&#xa0;&#8211 ") +
+				"</span><span class='song-album'>" + recent[i + 3] + "</span>"
                         );
 
         m_HTMLSource.append(
@@ -788,8 +790,9 @@ void ContextBrowser::showHome() //SLOT
 
             if ( !least[i + 3].isEmpty() )
                 m_HTMLSource.append(
-                            "<span class='song-separator'> - </span>"
-                            "<span class='song-album'>" + least[i + 3] + "</span>"
+				    "<span class='song-separator'>"
+				    + i18n("&#xa0;&#8211; ") +
+				    "</span><span class='song-album'>" + least[i + 3] + "</span>"
                             );
 
             m_HTMLSource.append(
@@ -1133,8 +1136,9 @@ bool CurrentTrackJob::doJob()
                         "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
                             "<span class='album-song-title'>"+ values[i + 2] + "</span>"
-                            "<span class='song-separator'> - </span>"
-                            "<span class='album-song-title'>" + values[i + 1] + "</span>"
+				"<span class='song-separator'>"
+				+ i18n("&#xa0;&#8211; ") +
+				"</span><span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
                         "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
@@ -1435,7 +1439,7 @@ bool CurrentTrackJob::doJob()
                         "<div class='album-song'>"
                             "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
                             + track +
-                            "<span class='album-song-title'>" + albumValues[j + 5] + " - " + albumValues[j] + "</span>&nbsp;"
+				    "<span class='album-song-title'>" + albumValues[j + 5] + i18n(" - ") + albumValues[j] + "</span>&nbsp;"
                             + length +
                             "</a>"
                         "</div>" );

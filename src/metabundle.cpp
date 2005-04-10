@@ -214,7 +214,7 @@ MetaBundle::prettyTitle() const
 
     //FIXME doesn't work for resume playback
 
-    if( !s.isEmpty() ) s += " - ";
+    if( !s.isEmpty() ) s += i18n(" - ");
     s += m_title;
     if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
     return s;

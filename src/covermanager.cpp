@@ -234,7 +234,7 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
     //QDialog means "escape" works as expected
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
     kapp->setTopWidget( dialog );
-    dialog->setCaption( kapp->makeStdCaption( artist + " - " + album ) );
+    dialog->setCaption( kapp->makeStdCaption( artist + i18n(" - ") + album ) );
 
     QPixmap pixmap( CollectionDB::instance()->albumImage( artist, album, 0 ) );
     QLabel* label = new QLabel( dialog );
@@ -328,7 +328,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 
     QProgressDialog progress( this, 0, true );
     progress.setLabelText( i18n("Loading Thumbnails...") );
-    progress.QDialog::setCaption( "..." );
+    progress.QDialog::setCaption( i18n("...") );
 
     //NOTE we MUST show the dialog, otherwise the closeEvents get processed
     // in the processEvents() calls below, GRUMBLE! Qt sux0rs
@@ -755,8 +755,8 @@ void CoverManager::updateStatusBar()
             if ( values.count() >= 2 )
             {
                 text = i18n( "Fetching cover for " );
-                if ( !values[0].isEmpty() ) text += values[0] + " - ";
-                text += values[1] + "...";
+		if ( !values[0].isEmpty() ) text += values[0] + i18n(" - ");
+		text += values[1] + i18n("...");
             }
         }
         else if( m_fetchingCovers ) {
@@ -764,7 +764,7 @@ void CoverManager::updateStatusBar()
             if( m_coversFetched )
                 text += i18n( "1 fetched", "%n fetched", m_coversFetched );
             if( m_coverErrors ) {
-                if( m_coversFetched ) text += " - ";
+		    if( m_coversFetched ) text += i18n(" - ");
                 text += i18n( "1 not found", "%n not found", m_coverErrors );
             }
             if( m_coversFetched + m_coverErrors == 0 )
@@ -916,14 +916,14 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     int nameWidth = fm.width( str );
     if( nameWidth > textRect().width() )
     {
-        QString nameJustify = "...";
+	    QString nameJustify = i18n("...");
         int i = 0;
         while ( fm.width( nameJustify + str[ i ] ) < textRect().width() )
             nameJustify += str[ i++ ];
         nameJustify.remove( 0, 3 );
         if ( nameJustify.isEmpty() )
             nameJustify = str.left( 1 );
-        nameJustify += "...";
+	nameJustify += i18n("...");
         str = nameJustify;
     }
     p->setPen( cg.text() );

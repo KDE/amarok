@@ -565,7 +565,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString text;
 
         //show "artist - title" for compilations
-        if ( c ) text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + " - ";
+	if ( c ) text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + i18n(" - ");
         text += values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ];
 
         Item* child = new Item( item );

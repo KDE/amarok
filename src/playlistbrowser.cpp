@@ -1359,7 +1359,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QString name = text(0);
     if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width ) {
-        int ellWidth = fmName.width( "..." );
+	    int ellWidth = fmName.width( i18n("...") );
         QString text = QString::fromLatin1("");
         int i = 0;
         int len = name.length();
@@ -1367,7 +1367,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
             text += name[ i ];
             i++;
         }
-        name = text + "...";
+	name = text + i18n("...");
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
@@ -1388,7 +1388,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
                 // draw the number of tracks and the total length of the playlist
                 info += i18n("1 Track", "%n Tracks", m_trackCount);
                 if( m_length )
-                    info += QString(" - [%2]").arg( MetaBundle::prettyTime( m_length ) );
+			info += QString(i18n(" - [%2]")).arg( MetaBundle::prettyTime( m_length ) );
             }
 
             pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
