@@ -3,6 +3,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "collectiondb.h"
 #include "config.h"
@@ -69,9 +70,9 @@ CoverManager::CoverManager()
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    this->setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
-    this->setWFlags( WDestructiveClose );
-    this->setMargin( 4 );
+    setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
+    setWFlags( WDestructiveClose );
+    setMargin( 4 );
 
     //artist listview
     m_artistView = new KListView( this );
@@ -97,11 +98,12 @@ CoverManager::CoverManager()
 
     { //<Search LineEdit>
         QHBox *searchBox = new QHBox( hbox );
-
-        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchBox );
-        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchBox );
+        KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
+        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
         m_searchEdit->setFrame( QFrame::Sunken );
 
+        searchToolBar->setStretchableWidget( m_searchEdit );
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
@@ -252,7 +254,7 @@ QString CoverManager::amazonTld() //static
             else if (AmarokConfig::amazonLocale() == "uk")
         return "co.uk";
             else
-        return AmarokConfig::amazonLocale(); 
+        return AmarokConfig::amazonLocale();
 }
 
 void CoverManager::fetchMissingCovers() //SLOT
@@ -652,7 +654,7 @@ void CoverManager::setCustomSelectedCovers()
     //function assumes something is selected
     QPtrList<CoverViewItem> selected = selectedItems();
     CoverViewItem* first = selected.getFirst();
-    
+
     QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( first->artist() ) );
     QString album_id; album_id.setNum( CollectionDB::instance()->albumID( first->album() ) );
     QStringList values = CollectionDB::instance()->albumTracks( artist_id, album_id );
@@ -667,7 +669,7 @@ void CoverManager::setCustomSelectedCovers()
     if ( !file.isEmpty() ) {
         qApp->processEvents();    //it may takes a while so process pending events
         QString tmpFile;
-        QImage image = CollectionDB::fetchImage(file, tmpFile);        
+        QImage image = CollectionDB::fetchImage(file, tmpFile);
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
             CollectionDB::instance()->setAlbumImage( item->artist(), item->album(), image );
             item->loadCover();
