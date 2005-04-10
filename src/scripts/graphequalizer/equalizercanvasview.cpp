@@ -285,3 +285,5 @@ void CallAmarok::updateEq()
             , data);
 }
 //include "equalizercanvasview.moc.cpp"
+
+#include "equalizercanvasview.moc"
