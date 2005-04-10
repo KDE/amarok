@@ -9,11 +9,11 @@
 #include <qlabel.h>
 #include <qcanvas.h>
 #include <qpen.h>
- 
+
 #include <dcopclient.h>
 #include <kapplication.h>
 #include <kdebug.h>
-#include <klocale.h> 
+#include <klocale.h>
 #include <kmessagebox.h>
 
 EqualizerCanvasView::EqualizerCanvasView(QWidget *parent = 0, const char *name = 0)
@@ -27,7 +27,7 @@ EqualizerCanvasView::EqualizerCanvasView(QWidget *parent = 0, const char *name =
 void
 EqualizerCanvasView::init()
 {
-    
+
 //     QCanvasLine* line = new QCanvasLine(this->canvas());
 //     line->setPoints(0,100,400,100);
 //     line->setPen(QPen(m_pen));
@@ -70,7 +70,7 @@ EqualizerCanvasView::contentsMouseDoubleClickEvent(QMouseEvent *event)
     {
         QCanvasLine* line = (QCanvasLine*) m_selectedItem;
         int y = getY(event->x());
-        
+
         EqualizerCircle* circle = new EqualizerCircle(event->x(), y
               ,canvas()
               ,makeLine(line->startPoint(),QPoint(event->x(),event->y()))
@@ -89,7 +89,7 @@ EqualizerCanvasView::contentsMouseMoveEvent(QMouseEvent *event)
 {
     if ((event->state() & LeftButton) && m_selectedItem ) {
       //  kdDebug() << "dragging " << m_selectedItem->rtti() << endl;
-        if (m_selectedItem->rtti() == QCanvasEllipse::RTTI) 
+        if (m_selectedItem->rtti() == QCanvasEllipse::RTTI)
         {
             EqualizerCircle* circle = (EqualizerCircle*) m_selectedItem;
             circle->setLocation(event->pos());
@@ -125,7 +125,7 @@ EqualizerCanvasView::getY(int xCoord)
 //     double y = double(xCoord)*slope - b;
 //     kdDebug() << y << " = " << xCoord << '*' << slope << " - " << b << endl;
     //QPointArray* yAxis = new QPointArray(canvas->height());
-    //yAxis->makeEllipse(xCoord, canvas()->height()/2,1,canvas->height());    
+    //yAxis->makeEllipse(xCoord, canvas()->height()/2,1,canvas->height());
     //canvas()->collisions(yAxis,0,false);
     //delete yAxis;
     QMemArray<int> collidedPoints(20);
@@ -175,7 +175,7 @@ EqualizerCanvasView::currentSettings()
 //////////////////////
 //EqualizerCircle
 //////////////////////
-EqualizerCircle::EqualizerCircle(int x, int y, QCanvas *canvas, QCanvasLine* line1, QCanvasLine* line2, 
+EqualizerCircle::EqualizerCircle(int x, int y, QCanvas *canvas, QCanvasLine* line1, QCanvasLine* line2,
 QPtrList<EqualizerCircle>* circleList )
 : QCanvasEllipse(15, 15, canvas)
 {
@@ -184,7 +184,7 @@ QPtrList<EqualizerCircle>* circleList )
     setBrush(QBrush(Qt::blue));
     move(x,y);
     m_circleList = circleList;
-    
+
     EqualizerCircle* it;
     int index = -1;
     bool inserted = false;
@@ -203,7 +203,7 @@ QPtrList<EqualizerCircle>* circleList )
     }
     if( !inserted )
         m_circleList->append(this);
-    
+
     //clean up the loose pointer for the line that was split
     unsigned int circleIndex = m_circleList->find(this);
     if(circleIndex > 0)
@@ -221,7 +221,7 @@ void EqualizerCircle::setLocation(const QPoint &newLocation)
     {//if the line is on the edges of the board, make it only move vertically
         correctedLoc.setX(x());
     }
-    else 
+    else
     {
         xMin = 0; xMax = canvas()->width();
         if(circleIndex > 0)
@@ -284,6 +284,6 @@ void CallAmarok::updateEq()
             "setEqualizer(int,int,int,int,int,int,int,int,int,int,int)"
             , data);
 }
-//include "equalizercanvasview.moc.cpp"
+
 
 #include "equalizercanvasview.moc"
