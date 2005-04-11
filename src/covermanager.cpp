@@ -14,7 +14,6 @@
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
-#include <qhbox.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
