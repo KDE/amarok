@@ -1,4 +1,7 @@
-# Opinion plugin
+# Plugin for the Ruby IRC bot (http://linuxbrit.co.uk/rbot/)
+# (c) 2005 Mark Kretschmann <markey@web.de>
+# Licensed under GPL V2.
+
 
 class OpinionPlugin < Plugin
     def help(plugin, topic="")
