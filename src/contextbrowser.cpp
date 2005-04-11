@@ -47,6 +47,7 @@
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
 
+typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
 
 using amaroK::QStringx;
 
@@ -605,6 +606,203 @@ verboseTimeSince( const QDateTime &datetime )
     return i18n( "The future" );
 }
 
+void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType)
+{
+    // This function create the html code used to display a list of albums. Each album
+    // is a 'toggleable' block.
+    // Parameter stID is used to diff�entiate same albums in different album list. So if this function
+    // is called multiple time in the same HTML code, stID must be different.
+    if ( !reqResult.isEmpty() )
+    {
+        for ( uint i = 0; i < reqResult.count(); i += 3 )
+        {
+            QueryBuilder qb;
+            qb.clear();
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, reqResult[i+1] );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            //qb.setOptions( QueryBuilder::optNoCompilations );
+            QStringList albumValues = qb.run();
+
+            QString albumYear;
+            if ( !albumValues.isEmpty() )
+            {
+                albumYear = albumValues[ 3 ];
+                for ( uint j = 0; j < albumValues.count(); j += 5 )
+                    if ( albumValues[j + 3] != albumYear || albumYear == "0" )
+                    {
+                        albumYear = QString::null;
+                        break;
+                    }
+            }
+
+            htmlCode.append( QStringx (
+                                 "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
+                                    "<td>"
+                                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
+                                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                                        "<tr>")
+                             .args( QStringList()
+                                    << stID + reqResult[i+1] ));
+
+            if (showAlbumType == SHOW_ALBUM_SCORE )
+            {
+                htmlCode.append(
+                                            "<td width='30' align='center' class='song-place'>" +
+                                                QString::number( ( i / 3 ) + 1 ) +
+                                            "</td>");
+            }
+
+            QString albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
+
+            if (CollectionDB::instance()->albumIsCompilation(reqResult[ i + 1 ]))
+            {
+                // Compilation image
+                htmlCode.append( QStringx (
+                                            "<td width='1'>"
+                                                "<a href='fetchcover: @@@ %1'>"
+                                                    "<img class='album-image' align='left' vspace='2' hspace='2' title='%2' src='%3'/>"
+                                                "</a>"
+                                            "</td>"
+                                            "<td valign='middle' align='left'>"
+                                                "<a href='compilation:%4'><span class='album-title'>%5</span></a>" )
+                                 .args( QStringList()
+                                        << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
+                                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                                        << escapeHTMLAttr( CollectionDB::instance()->albumImage(  albumValues[5], reqResult[ i ], 50 ) )
+                                        << reqResult[ i + 1 ] //album.id
+                                        << albumName ) );
+            }
+            else
+            {
+                QString artistName = escapeHTML( albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5] );
+
+                // Album image
+                htmlCode.append( QStringx (
+                                            "<td width='1'>"
+                                                "<a href='fetchcover:%1 @@@ %2'>"
+                                                    "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>"
+                                                "</a>"
+                                            "</td>"
+                                            "<td valign='middle' align='left'>"
+                                                "<a href='album:%5 @@@ %6'>"
+                                                    "<span class='album-title'>%7</span>"
+                                                    "<span class='song-separator'> - </span>"
+                                                    "<span class='album-title'>%8</span>"
+                                                "</a>" )
+                                 .args( QStringList()
+                                        << escapeHTMLAttr( albumValues[5] ) // artist name
+                                        << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
+                                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                                        << escapeHTMLAttr( CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 ) )
+                                        << albumValues[6]
+                                        << reqResult[ i + 1 ] //album.id
+                                        << artistName
+                                        << albumName ) );
+            }
+
+            switch (showAlbumType)
+            {
+                case SHOW_ALBUM_NORMAL :
+                {
+                    // Tracks number and year
+                    htmlCode.append( QStringx (
+                                                "<span class='album-info'>%1</span> "
+                                                "<br />"
+                                                "<span class='album-year'>%2</span>"
+                                            "</td>")
+                                    .args( QStringList()
+                                            << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
+                                            << albumYear) );
+                    break;
+                }
+                case SHOW_ALBUM_SCORE:
+                {
+                    htmlCode.append( QStringx (
+                                                "<br />"
+                                            "</td>"
+                                            "<td class='sbtext' width='1'>%1</td>"
+                                            "<td width='1' title='" + i18n( "Score" ) + "'>"
+                                                "<div class='sbouter'>"
+                                                    "<div class='sbinner' style='width: %2px;'></div>"
+                                                "</div>"
+                                            "</td>"
+                                            "<td width='1'></td>")
+                                    .args( QStringList()
+                                            << QString::number( (int)(reqResult[i + 2].toFloat()) )
+                                            << QString::number( (int)(reqResult[i + 2].toFloat() / 2 ) ) ));
+                    break;
+                }
+                case SHOW_ALBUM_LEAST_PLAY:
+                {
+                    QDateTime lastPlay = QDateTime();
+                    lastPlay.setTime_t( reqResult[i + 2].toUInt() );
+
+                    htmlCode.append( QStringx (
+                                                "<br />"
+                                                "<span class='song-time'>%1</span>"
+                                            "</td>")
+                                      .args( QStringList()
+                                              << i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) ) );
+                    break;
+                }
+            }
+
+            // Begining of the 'toggleable div' that contains the songs
+            htmlCode.append( QStringx (
+                                        "</tr>"
+                                 "</table>"
+                             "</div>"
+                             "<div class='album-body' style='display:%1;' id='IDA%2'>" )
+                             .args( QStringList()
+                                    << "none" /* shows it if it's the current track album */
+                                    << stID + reqResult[ i + 1 ] ) );
+
+            if ( !albumValues.isEmpty() )
+            {
+                for ( uint j = 0; j < albumValues.count(); j += 7 )
+                {
+                    //FIXME this seems redundant, why not just use the result of stripWhitespace?
+                    QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    if( track.length() > 0 )
+                    {
+                        if( track.length() == 1 )
+                            track.prepend( "0" );
+
+                        track = "<span class='album-song-trackno'><b>" + track + "</b>&nbsp;</span>";
+                    }
+
+                    QString length;
+                    if( albumValues[j + 4] != "0" )
+                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
+                    htmlCode.append(
+                                "<div class='album-song'>"
+                                    "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                        + track +
+                                        "<span class='album-song-title'>" + albumValues[j] + "</span>&nbsp;"
+                                        + length +
+                                    "</a>"
+                                "</div>" );
+                }
+            }
+
+            htmlCode.append(
+                            "</div>"
+                        "</td>"
+                    "</tr>" );
+        }
+        htmlCode.append(
+                "</table>"
+            "</div>" );
+    }
+}
 
 void ContextBrowser::showHome() //SLOT
 {
@@ -617,7 +815,8 @@ void ContextBrowser::showHome() //SLOT
         blockSignals( false );
     }
 
-    if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() ) {
+    if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
+    {
         //TODO show scanning message if scanning, not the introduction
         showIntroduction();
         return;
@@ -626,6 +825,25 @@ void ContextBrowser::showHome() //SLOT
     // Do we have to rebuild the page?
     if ( !m_dirtyHomePage ) return;
 
+    if (!AmarokConfig::showStatByAlbums())
+    {
+        ContextBrowser::showHomeBySongs();
+    }
+    else
+    {
+        ContextBrowser::showHomeByAlbums();
+    }
+
+    m_homePage->write( m_HTMLSource );
+    m_homePage->end();
+
+    m_dirtyHomePage = false;
+    saveHtmlData(); // Send html code to file
+
+}
+
+void ContextBrowser::showHomeBySongs()
+{
     QueryBuilder qb;
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -679,12 +897,14 @@ void ContextBrowser::showHome() //SLOT
     }
     else
     {
-        m_HTMLSource.append( "<div id='favorites_box-body' class='box-body'>"
+        m_HTMLSource.append(
+                "<div id='favorites_box-body' class='box-body'>"
                              "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
 
         for( uint i = 0; i < fave.count(); i = i + 5 )
         {
-            m_HTMLSource.append(    "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
+            m_HTMLSource.append(
+                        "<tr class='" + QString( (i % 10) ? "box-row-alt" : "box-row" ) + "'>"
                                     "<td width='30' align='center' class='song-place'>" + QString::number( ( i / 5 ) + 1 ) + "</td>"
                                     "<td>"
                                         "<a href=\"file:" + fave[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
@@ -692,11 +912,12 @@ void ContextBrowser::showHome() //SLOT
                                             "<span class='song-artist'>" + fave[i + 3] + "</span>" );
 
             if ( !fave[i + 4].isEmpty() )
-		    m_HTMLSource.append(        "<span class='song-separator'>"
-				    + i18n("&#xa0;&#8211; ") +
-				    "</span><span class='song-album'>"+ fave[i + 4] +"</span>" );
+            m_HTMLSource.append(        "<span class='song-separator'>"
+                                            + i18n("&#xa0;&#8211; ") +
+                                         "</span><span class='song-album'>"+ fave[i + 4] +"</span>" );
 
-            m_HTMLSource.append(        "</a>"
+            m_HTMLSource.append(
+                                "</a>"
                                     "</td>"
                                     "<td class='sbtext' width='1'>" + fave[i + 2] + "</td>"
                                     "<td width='1' title='" + i18n( "Score" ) + "'>"
@@ -708,15 +929,16 @@ void ContextBrowser::showHome() //SLOT
                                 "</tr>" );
         }
 
-        m_HTMLSource.append( "</table>"
+        m_HTMLSource.append(
+                    "</table>"
                              "</div>" );
     }
-
     m_HTMLSource.append(
-            "</div>"
+            "</div>");
 
     // </Favorite Tracks Information>
 
+    m_HTMLSource.append(
     // <Recent Tracks Information>
             "<div id='newest_box' class='box'>"
                 "<div id='newest_box-header' class='box-header'>"
@@ -738,26 +960,24 @@ void ContextBrowser::showHome() //SLOT
 
         if ( !recent[i + 3].isEmpty() )
             m_HTMLSource.append(
-				"<span class='song-separator'>"
-				+ i18n("&#xa0;&#8211 ") +
-				"</span><span class='song-album'>" + recent[i + 3] + "</span>"
+                "<span class='song-separator'>"
+                + i18n("&#xa0;&#8211 ") +
+                "</span><span class='song-album'>" + recent[i + 3] + "</span>"
                         );
 
         m_HTMLSource.append(
                         "</a>"
                     "</div>"
-                "</div>"
-                    );
+                    "</div>");
     }
-
     m_HTMLSource.append(
                 "</div>"
-            "</div>"
+            "</div>");
 
     // </Recent Tracks Information>
 
     // <Songs least listened Information>
-
+    m_HTMLSource.append(
             "<div id='least_box' class='box'>"
                 "<div id='least_box-header' class='box-header'>"
                     "<span id='least_box-header-title' class='box-header-title'>"
@@ -790,20 +1010,154 @@ void ContextBrowser::showHome() //SLOT
 
             if ( !least[i + 3].isEmpty() )
                 m_HTMLSource.append(
-				    "<span class='song-separator'>"
-				    + i18n("&#xa0;&#8211; ") +
-				    "</span><span class='song-album'>" + least[i + 3] + "</span>"
+                    "<span class='song-separator'>"
+                    + i18n("&#xa0;&#8211; ") +
+                    "</span><span class='song-album'>" + least[i + 3] + "</span>"
                             );
 
             m_HTMLSource.append(
                             "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
                             "</a>"
                         "</div>"
-                    "</div>"
-                        );
+                    "</div>");
         }
 
-        m_HTMLSource.append( "</div>" );
+        m_HTMLSource.append(
+                "</div>" );
+    }
+
+    m_HTMLSource.append(
+                    "</div>"
+        //"</div>"
+    "</html>"
+                        );
+
+    // </Songs least listened Information>
+}
+
+void ContextBrowser::showHomeByAlbums()
+{
+
+    QueryBuilder qb;
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue(QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage);
+    qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.setLimit( 0, 10 );
+    QStringList faveAlbums = qb.run();
+
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue(QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate);
+    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.setLimit( 0, 5 );
+    QStringList recentAlbums = qb.run();
+
+    qb.clear();
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+    qb.addReturnFunctionValue(QueryBuilder::funcMax, QueryBuilder::tabStats, QueryBuilder::valAccessDate);
+    qb.sortByFunction( QueryBuilder::funcMax, QueryBuilder::tabStats, QueryBuilder::valAccessDate, false );
+    qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
+    qb.setLimit( 0, 5 );
+    QStringList leastAlbums = qb.run();
+
+    m_homePage->begin();
+    m_HTMLSource="";
+    m_homePage->setUserStyleSheet( m_styleSheet );
+
+    m_HTMLSource.append("<html>");
+
+    // write the script to toggle blocks visibility
+    m_HTMLSource.append( "<script type='text/javascript'>"
+                         //Toggle visibility of a block. NOTE: if the block ID starts with the T
+                         //letter, 'Table' display will be used instead of the 'Block' one.
+                         "function toggleBlock(ID) {"
+                         "if ( document.getElementById(ID).style.display != 'none' ) {"
+                         "document.getElementById(ID).style.display = 'none';"
+                         "} else {"
+                         "if ( ID[0] != 'T' ) {"
+                         "document.getElementById(ID).style.display = 'block';"
+                         "} else {"
+                         "document.getElementById(ID).style.display = 'table';"
+                         "}"
+                         "}"
+                         "}"
+                         "</script>" );
+
+    // <Favorite Albums Information>
+    m_HTMLSource.append(
+        "<div id='albums_box' class='box'>"
+        "<div id='albums_box-header' class='box-header'>"
+        "<span id='albums_box-header-title' class='box-header-title'>"
+        + i18n( "Favorite Albums" ) +
+        "</span>"
+        "</div>"
+        "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
+
+    if ( faveAlbums.count() == 0 )
+    {
+        m_HTMLSource.append(
+            "<div id='favorites_box-body' class='box-body'><p>" +
+            i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) +
+            "</p></div>" );
+    }
+    else
+    {
+        ContructHTMLAlbums(faveAlbums, m_HTMLSource, "1", SHOW_ALBUM_SCORE);
+        }
+
+    m_HTMLSource.append("</div>");
+
+    // </Favorite Tracks Information>
+
+    m_HTMLSource.append(
+        "<div id='least_box' class='box'>"
+        "<div id='least_box-header' class='box-header'>"
+        "<span id='least_box-header-title' class='box-header-title'>"
+        + i18n( "Your Newest Albums" ) +
+        "</span>"
+        "</div>"
+        "<div id='least_box-body' class='box-body'>" );
+    ContructHTMLAlbums(recentAlbums, m_HTMLSource, "2", SHOW_ALBUM_NORMAL);
+
+    m_HTMLSource.append(
+        "</div>"
+        "</div>");
+
+    // </Recent Tracks Information>
+
+    // <Songs least listened Information>
+    m_HTMLSource.append(
+        "<div id='least_box' class='box'>"
+        "<div id='least_box-header' class='box-header'>"
+        "<span id='least_box-header-title' class='box-header-title'>"
+        + i18n( "Least Played Albums" ) +
+        "</span>"
+        "</div>"
+        "<div id='least_box-body' class='box-body'>" );
+
+    if (leastAlbums.count() == 0)
+    {
+        m_HTMLSource.append(
+            "<div class='info'><p>" +
+            i18n( "A list of albums, which you have not played for a long time, will appear here." ) +
+            "</p></div>"
+        );
+    }
+    else
+    {
+        ContructHTMLAlbums(leastAlbums, m_HTMLSource, "3", SHOW_ALBUM_LEAST_PLAY);
     }
 
     m_HTMLSource.append(
@@ -811,16 +1165,10 @@ void ContextBrowser::showHome() //SLOT
             "</div>"
             "</html>"
                        );
+    qDebug(m_HTMLSource.ascii());
 
     // </Songs least listened Information>
-
-    m_homePage->write( m_HTMLSource );
-    m_homePage->end();
-
-    m_dirtyHomePage = false;
-    saveHtmlData(); // Send html code to file
 }
-
 
 /** This is the slowest part of track change, so we thread it */
 class CurrentTrackJob : public ThreadWeaver::DependentJob
@@ -1136,9 +1484,9 @@ bool CurrentTrackJob::doJob()
                         "<td class='song'>"
                             "<a href=\"file:" + values[i].replace( '"', QCString( "%22" ) ) + "\">"
                             "<span class='album-song-title'>"+ values[i + 2] + "</span>"
-				"<span class='song-separator'>"
-				+ i18n("&#xa0;&#8211; ") +
-				"</span><span class='album-song-title'>" + values[i + 1] + "</span>"
+                "<span class='song-separator'>"
+                + i18n("&#xa0;&#8211; ") +
+                "</span><span class='album-song-title'>" + values[i + 1] + "</span>"
                             "</a>"
                         "</td>"
                         "<td class='sbtext' width='1'>" + values[i + 3] + "</td>"
@@ -1439,7 +1787,7 @@ bool CurrentTrackJob::doJob()
                         "<div class='album-song'>"
                             "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
                             + track +
-				    "<span class='album-song-title'>" + albumValues[j + 5] + i18n(" - ") + albumValues[j] + "</span>&nbsp;"
+                    "<span class='album-song-title'>" + albumValues[j + 5] + i18n(" - ") + albumValues[j] + "</span>&nbsp;"
                             + length +
                             "</a>"
                         "</div>" );

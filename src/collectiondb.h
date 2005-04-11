@@ -298,6 +298,7 @@ class CollectionDB : public QObject, public EngineObserver
         void checkCompilations( const QString &path, const bool temporary = false, DbConnection *conn = NULL );
         void setCompilation( const QString &album, const bool enabled, const bool updateView = true );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
+        bool albumIsCompilation( const QString &album_id );
 
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
@@ -433,6 +434,7 @@ class QueryBuilder
 
         void setOptions( int options );
         void sortBy( int table, int value, bool descending = false );
+        void sortByFunction( int function, int table, int value, bool descending = false );
         void groupBy( int table, int value );
         void setLimit( int startPos, int length );
 

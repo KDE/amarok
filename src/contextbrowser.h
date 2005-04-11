@@ -69,6 +69,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
+        void showHomeBySongs();
+        void showHomeByAlbums();
 
         KHTMLPart    *m_homePage;
         KHTMLPart    *m_currentTrackPage;

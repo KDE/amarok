@@ -628,6 +628,17 @@ CollectionDB::albumSongCount( const QString &artist_id, const QString &album_id 
     return values.first();
 }
 
+bool
+CollectionDB::albumIsCompilation( const QString &album_id )
+{
+    QStringList values =
+        query( QString(
+            "SELECT sampler FROM tags WHERE sampler=%1 AND album=%2" )
+            .arg( CollectionDB::instance()->boolT() )
+            .arg( album_id ) );
+
+    return (values.count() != 0);
+}
 
 QStringList
 CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
@@ -2537,6 +2548,8 @@ QueryBuilder::addReturnFunctionValue( int function, int table, int value)
     m_values += functionName( function ) + "(";
     m_values += tableName( table ) + ".";
     m_values += valueName( value )+ ")";
+    m_values += " AS ";
+    m_values += functionName( function )+tableName( table )+valueName( value );
 
     m_linkTables |= table;
     m_returnValues++;
@@ -2850,6 +2863,56 @@ QueryBuilder::sortBy( int table, int value, bool descending )
 }
 
 void
+QueryBuilder::sortByFunction( int function, int table, int value, bool descending )
+{
+    // This function should be used with the equivalent addReturnFunctionValue (with the same function on same values)
+    // since it uses the "func(table.value) AS functablevalue" definition.
+
+    //shall we sort case-sensitively? (not for integer columns!)
+    bool b = true;
+    if ( value & valID || value & valTrack || value & valScore || value & valLength || value & valBitrate ||
+         value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate || value & valPercentage ||
+         table & tabYear )
+        b = false;
+
+    if ( !m_sort.isEmpty() ) m_sort += ",";
+    //m_sort += functionName( function ) + "(";
+    if ( b ) m_sort += "LOWER( ";
+    if ( table & tabYear ) m_sort += "(";
+
+    QString columnName = functionName( function )+tableName( table )+valueName( value ); 
+    m_sort += columnName;
+
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    {
+        if ( table & tabYear ) m_sort += ")";
+    }
+    else
+    {
+        if ( table & tabYear ) m_sort += "+0)";
+    }
+
+    if ( b ) m_sort += " ) ";
+    //m_sort += " ) ";
+    if ( descending ) m_sort += " DESC ";
+
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    {
+        if (m_values.find(columnName) == -1)
+        {
+            if (!m_values.isEmpty()) m_values += ",";
+            if ( b ) m_values += "LOWER( ";
+            m_values += tableName( table ) + ".";
+            m_values += valueName( value );
+            if ( b ) m_values += ")";
+            m_values += " as __discard ";
+        }
+    }
+
+    m_linkTables |= table;
+}
+
+void
 QueryBuilder::groupBy( int table, int value )
 {
     if ( !m_group.isEmpty() ) m_group += ",";
@@ -2900,8 +2963,9 @@ QueryBuilder::buildQuery()
         linkTables( m_linkTables );
 
         m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE " + CollectionDB::instance()->boolT() + " " + m_where;
-        if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
+        // GROUP BY must be before ORDER BY for sqlite
         if ( !m_group.isEmpty() ) m_query += " GROUP BY " + m_group;
+        if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
         m_query += m_limit;
     }
 }
