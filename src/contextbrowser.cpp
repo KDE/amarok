@@ -768,14 +768,13 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
             {
                 for ( uint j = 0; j < albumValues.count(); j += 7 )
                 {
-                    //FIXME this seems redundant, why not just use the result of stripWhitespace?
-                    QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 )
                     {
                         if( track.length() == 1 )
                             track.prepend( "0" );
 
-                        track = "<span class='album-song-trackno'><b>" + track + "</b>&nbsp;</span>";
+                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                     }
 
                     QString length;
@@ -1649,13 +1648,12 @@ bool CurrentTrackJob::doJob()
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
-                    //FIXME this seems redundant, why not just use the result of stripWhitespace?
-                    QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
 
-                        track = "<span class='album-song-trackno'><b>" + track + "</b>&nbsp;</span>";
+                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                     }
 
                     QString length;
@@ -1772,12 +1770,12 @@ bool CurrentTrackJob::doJob()
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 {
-                    QString track = albumValues[j + 2].stripWhiteSpace().isEmpty() ? "" : albumValues[j + 2];
+                    QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
 
-                        track = "<span class='album-song-trackno'><b>" + track + "</b>&nbsp;</span>";
+                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                     }
 
                     QString length;
@@ -1908,6 +1906,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".album-image { padding-right: 4px; }" );
     styleSheet += QString( ".album-song a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }" );
     styleSheet += QString( ".album-song a:hover { color: %1; background-color: %2; }" ).arg( fg ).arg( bg );
+    styleSheet += QString( ".album-song-trackno { font-weight: bold; }" );
 
     styleSheet += QString( ".button { width: 100%; }" );
 
