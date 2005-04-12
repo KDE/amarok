@@ -65,6 +65,9 @@ class PlaylistItem : public KListViewItem
         void setText( const MetaBundle& bundle );
         void setText( int, const QString& ); //virtual
 
+        bool isHistory() { return m_history; }
+        void setHistory( bool enable ) { m_history = enable; }
+
         /// convenience functions
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }
@@ -113,6 +116,7 @@ class PlaylistItem : public KListViewItem
 
         const KURL m_url;
         bool m_missing;
+        bool m_history;
 
         static bool s_pixmapChanged;
         static const uint STRING_STORE_SIZE = 80;

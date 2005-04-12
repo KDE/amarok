@@ -70,6 +70,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
         : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( bundle.url() ) )
         , m_url( bundle.url() )
         , m_missing( false )
+        , m_history( false )
 {
     setDragEnabled( true );
 
@@ -80,6 +81,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         : KListViewItem( item->listView(), item->itemAbove() )
         , m_url( node.toElement().attribute( "url" ) )
         , m_missing( false )
+        , m_history( false )
 {
     setDragEnabled( true );
     KListViewItem::setText( TrackName, trackName( m_url ) );
@@ -334,10 +336,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     }
     else {
         QColorGroup _cg = cg;
-        if( m_missing )
-            //this file doesn't exist
-            //FIXME cg.mid() is not acceptable, it is not the disabled palette
-            _cg.setColor( QColorGroup::Text, cg.mid() );
+        //FIXME not acceptable to hardocode the colour
+        QColor disabledText = QColor( 172, 172, 172 );
+        if( m_missing || m_history )
+            _cg.setColor( QColorGroup::Text, disabledText );
 
         KListViewItem::paintCell( p, _cg, column, width, align );
     }

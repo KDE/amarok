@@ -282,6 +282,7 @@ Playlist::Playlist( QWidget *parent )
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     header()->installEventFilter( this );
+
 }
 
 Playlist::~Playlist()
@@ -669,6 +670,7 @@ Playlist::playNextTrack( bool forceNext )
             {
                 if ( *it == currentTrack() )
                 {
+                    slotMakeItemHistory( currentTrack() );
                     if ( x < 5 )
                     {
                         activate( item );
@@ -775,6 +777,8 @@ Playlist::activate( QListViewItem *item )
     if( item )
     {
         #define item static_cast<PlaylistItem*>(item)
+        if ( item->isHistory() )
+            return;
 
         m_prevTracks.append( item );
 
@@ -2433,6 +2437,19 @@ Playlist::slotGlowTimer() //SLOT
     }
 
     ++counter &= 63; //built in bounds checking with &=
+}
+
+void
+Playlist::slotMakeItemHistory( PlaylistItem *item )
+{
+    item->setHistory( true );
+
+    //Dont let the user do anything.  ANYTHING! --> All your base are belong to us!
+    static_cast<QListViewItem*>(item)->setDragEnabled( false );
+    static_cast<QListViewItem*>(item)->setDropEnabled( false );
+    static_cast<QListViewItem*>(item)->setSelectable ( false );
+
+    repaintItem( item );
 }
 
 void
