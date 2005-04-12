@@ -648,8 +648,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
-	menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        
+    menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+
 
         menu.insertSeparator();
 
@@ -1294,7 +1294,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QPainter pBuf( &buffer, true );
     // use alternate background
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor( -1 ) );
 
     if( detailedView ) {
         // draw a line at the top
@@ -1317,7 +1317,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
         pBuf.setPen( cg.mid() );
         pBuf.drawRect( rect );
         //fill the rect with base color if the item has alternate color and viceversa
-        QColor color = backgroundColor() == lv->alternateBackground() ? cg.base() : lv->alternateBackground();
+        QColor color = backgroundColor( -1 ) == lv->alternateBackground() ? cg.base() : lv->alternateBackground();
         pBuf.fillRect( rect.x()+1, rect.y()+1, rect.width()-2, rect.height()-2, color );
         // +/- drawing
         pBuf.setPen( cg.text() );
@@ -1359,7 +1359,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
 
     QString name = text(0);
     if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width ) {
-	    int ellWidth = fmName.width( i18n("...") );
+        int ellWidth = fmName.width( i18n("...") );
         QString text = QString::fromLatin1("");
         int i = 0;
         int len = name.length();
@@ -1367,7 +1367,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
             text += name[ i ];
             i++;
         }
-	name = text + i18n("...");
+    name = text + i18n("...");
     }
 
     pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
@@ -1388,7 +1388,7 @@ void PlaylistBrowserItem::paintCell( QPainter *p, const QColorGroup &cg, int col
                 // draw the number of tracks and the total length of the playlist
                 info += i18n("1 Track", "%n Tracks", m_trackCount);
                 if( m_length )
-			info += QString(i18n(" - [%2]")).arg( MetaBundle::prettyTime( m_length ) );
+            info += QString(i18n(" - [%2]")).arg( MetaBundle::prettyTime( m_length ) );
             }
 
             pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
