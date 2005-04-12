@@ -1356,7 +1356,7 @@ bool CurrentTrackJob::doJob()
             << i18n( "Look up this track at musicbrainz.org" )
             << escapeHTMLAttr( currentTrack.artist() )
             << escapeHTMLAttr( currentTrack.album() )
-        << escapeHTML( currentTrack.title() )
+            << escapeHTMLAttr( currentTrack.title() )
             << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) ) );
 
     if ( !values.isEmpty() )
