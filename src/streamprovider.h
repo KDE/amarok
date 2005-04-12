@@ -55,8 +55,9 @@ namespace amaroK {
              * @param url URL of stream server
              * @param streamingMode The class has two modes of transferring stream data to the application:
              *                      signal: Transfer the data directly via Qt SIGNAL.
-             *                              (this mode is to be preferred).
+             *                              (This mode is to be preferred.)
              *                      socket: Sets up proxy server and writes the data to the proxy.
+             *                              (This mode is only needed by aRts-engine.)
              */
             StreamProvider( KURL url, const QString& streamingMode );
             ~StreamProvider();
@@ -85,6 +86,11 @@ namespace amaroK {
             void connectError();
 
         private:
+            // const symbols
+            static const uint MIN_PROXYPORT = 6700;
+            static const uint MAX_PROXYPORT = 7777;
+            static const int  BUFSIZE       = 16384;
+
             bool processHeader( Q_LONG &index, Q_LONG bytesRead );
             void transmitData( const QString &data );
             void restartNoIcy();

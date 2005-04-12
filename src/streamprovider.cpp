@@ -30,12 +30,7 @@ email                : markey@web.de
 #include <kmdcodec.h>
 #include <kprotocolmanager.h>
 
-
 using namespace amaroK;
-
-static const uint MIN_PROXYPORT = 6700;
-static const uint MAX_PROXYPORT = 7777;
-static const int BUFSIZE = 16384;
 
 
 StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
