@@ -182,13 +182,13 @@ StatusBar::slotItemCountChanged( int newCount, int newLength, int selCount, int 
     if ( selCount > 1 ) {
         text = i18n( "Selected %1 out of %2 Tracks" ).arg( selCount ).arg( newCount );
         if ( selCount != 0 )
-            text += QString( " - [%1 / %2]" )
+           text += QString( i18n(" - [%1 / %2]") )
                     .arg( MetaBundle::prettyTime( selLength ) )
                     .arg( MetaBundle::prettyTime( newLength ) );
     } else {
         text = i18n( "1 Track", "%n Tracks", newCount );
         if ( newCount != 0 )
-            text += QString( " - [%1]" ).arg( MetaBundle::prettyTime( newLength ) );
+            text += QString( i18n(" - [%1]") ).arg( MetaBundle::prettyTime( newLength ) );
     }
 
     m_itemCountLabel->setText( ' ' + text + ' ' );
