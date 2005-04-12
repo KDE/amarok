@@ -455,8 +455,14 @@ void PlaylistWindow::configureParty()
         if ( AmarokConfig::partyType() == "Custom" )
             AmarokConfig::setPartyCustomList( dialog.customList() );
 
-        AmarokConfig::setPartyUpcomingCount( dialog.upcomingCount() );
         AmarokConfig::setPartyPreviousCount( dialog.previousCount() );
+
+        if ( AmarokConfig::partyUpcomingCount() != dialog.upcomingCount() )
+        {
+            kdDebug() << "Party Count Changed" << endl;
+            AmarokConfig::setPartyUpcomingCount( dialog.upcomingCount() );
+            Playlist::instance()->adjustPartyTracks( dialog.upcomingCount(), dialog.appendType() );
+        }
     }
 }
 

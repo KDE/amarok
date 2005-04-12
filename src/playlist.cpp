@@ -509,6 +509,58 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     insertMedia( urls );
 }
 
+void
+Playlist::adjustPartyTracks( uint songCount, QString type, bool upcoming )
+{
+    (void) upcoming; //Avoid compiler warning
+    uint count = childCount();
+
+    PlaylistItem *trackPosition  = m_currentTrack;
+    bool requireTracks = true;
+
+    uint x=0;
+    for ( ; trackPosition != lastItem(); x++ )
+    {
+        if ( x == songCount ) {
+            requireTracks = false;
+            trackPosition = trackPosition->nextSibling();
+            break;
+        }
+
+        trackPosition = trackPosition->nextSibling();
+    }
+    kdDebug() << "Tracks following current: " << x << endl;
+
+    QString writeMe = QString("Adding additional %1 tracks").arg( count - x );
+
+    if ( !requireTracks )
+        writeMe = QString( "removing %1 items" ).arg( count - x );
+
+    kdDebug() << writeMe << endl;
+
+    if ( requireTracks )
+        addSpecialTracks( songCount - x, type );
+    else {
+        if( isLocked() ) return;
+
+        //assemble a list of what needs removing
+        //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
+        QPtrList<QListViewItem> list;
+        for( QListViewItemIterator it(trackPosition); *it; list.prepend( *it ), ++it );
+
+        if( list.isEmpty() ) return;
+        saveUndoState();
+
+        //remove the items
+        for( QListViewItem *item = list.first(); item; item = list.next() )
+        {
+            removeItem( (PlaylistItem*)item );
+            delete item;
+        }
+        //NOTE no need to emit childCountChanged(), removeItem() does that for us
+    }
+}
+
 QString
 Playlist::defaultPlaylistPath() //static
 {
