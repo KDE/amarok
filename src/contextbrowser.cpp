@@ -214,8 +214,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
         return;
     }
-
-    if ( url.protocol() == "file" )
+       // here, http urls are streams. For webpages we use externalurl
+    if ( url.protocol() == "file" || url.protocol() == "http" )
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 
     if ( url.protocol() == "show" )
