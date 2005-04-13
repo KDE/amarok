@@ -62,8 +62,6 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
-#include <stdlib.h>          //rand()
-
 extern "C"
 {
     #include <unistd.h>      //usleep()
@@ -449,7 +447,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 
     for( uint y=0; y < list.count(); y++ )
     {
-        int x = rand() % list.count();
+        int x = KApplication::random() % list.count();
 
         sp = spv->getSmartPlaylist( list[x] );
         kdDebug() << "[PARTY]: Adding track from playlist called " << list[x] << endl;
