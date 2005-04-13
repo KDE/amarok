@@ -34,6 +34,7 @@
 TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle( url ) )
+    , m_score ( CollectionDB::instance()->getSongPercentage( url.path() ) )
     , m_playlistItem( 0 )
     , m_currentCover( 0 )
 {
@@ -44,6 +45,7 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
 TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle() )
+    , m_score ( 0 )
     , m_playlistItem( 0 )
     , m_urlList( list )
     , m_currentCover( 0 )
@@ -56,6 +58,7 @@ TagDialog::TagDialog( const KURL::List list, QWidget* parent )
 TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( mb )
+    , m_score ( CollectionDB::instance()->getSongPercentage( mb.url().path() ) )
     , m_playlistItem( item )
     , m_currentCover( 0 )
 {
@@ -300,7 +303,7 @@ void TagDialog::readTags()
     kComboBox_genre->setCurrentText( m_bundle.genre() );
     kIntSpinBox_track->setValue( m_bundle.track().toInt() );
     kIntSpinBox_year->setValue( m_bundle.year().toInt() );
-    kIntSpinBox_score->setValue( CollectionDB::instance()->getSongPercentage( m_bundle.url().path() ) );
+    kIntSpinBox_score->setValue( m_score );
     kLineEdit_comment->setText( m_bundle.comment() );
     kLineEdit_length->setText( m_bundle.prettyLength() );
     kLineEdit_bitrate->setText( m_bundle.prettyBitrate() );
@@ -426,7 +429,8 @@ TagDialog::readMultipleTracks()
         kIntSpinBox_year->setValue( first.year().toInt() );
     }
     if (score) {
-        kIntSpinBox_score->setValue( CollectionDB::instance()->getSongPercentage( first.url().path() ) );
+        m_score = scoreFirst;
+        kIntSpinBox_score->setValue( scoreFirst );
     }
 }
 
@@ -444,7 +448,7 @@ TagDialog::hasChanged()
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
     modified |= kIntSpinBox_year->value()  != m_bundle.year().toInt();
-    modified |= kIntSpinBox_score->value() != CollectionDB::instance()->getSongPercentage( m_bundle.url().path() );
+    modified |= kIntSpinBox_score->value() != m_score;
     modified |= !equalString( kLineEdit_comment->text(), m_bundle.comment() );
     if (!m_urlList.count()) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
@@ -506,22 +510,38 @@ TagDialog::saveMultipleTracks()
 
         MetaBundle mb( *it );
 
-        if( !kComboBox_artist->currentText().isEmpty() )
+   /* we have to update the values if they changed, so:
+   1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
+          i.e.: The user wrote something on the field, and it's different from
+          what we have in the tag.
+   2) !m_bundle.field().isEmpty() && kLineEdit_field->text().isEmpty()
+          i.e.: The user was shown some value for the field (it was the same
+          for all selected tracks), and he deliberately emptied it.
+  TODO: All this mess is because the dialog uses "" to represent what the user
+        doesn't want to change, maybe we can think of something better?
+   */
+        if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
+             kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() )
             mb.setArtist( kComboBox_artist->currentText() );
 
-        if( !kComboBox_album->currentText().isEmpty() )
+        if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
+             kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() )
             mb.setAlbum( kComboBox_album->currentText() );
 
-        if( !kComboBox_genre->currentText().isEmpty() )
+        if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
+             kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() )
             mb.setGenre( kComboBox_genre->currentText() );
 
-        if( !kLineEdit_comment->text().isEmpty() )
+        if( !kLineEdit_comment->text().isEmpty() && kLineEdit_comment->text() != mb.comment() ||
+             kLineEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() )
             mb.setComment( kLineEdit_comment->text() );
 
-        if( kIntSpinBox_year->value() )
+        if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year().toInt() ||
+            !kIntSpinBox_year->value() && m_bundle.year().toInt() )
             mb.setYear( QString::number( kIntSpinBox_year->value() ) );
 
-        if ( kIntSpinBox_score->value() )
+        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
+            !kIntSpinBox_score->value() && m_score )
             CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
 
         if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track

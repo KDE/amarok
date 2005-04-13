@@ -51,6 +51,7 @@ class TagDialog : public TagDialogBase
         bool writeTag( MetaBundle mb, bool updateCB=true );
 
         MetaBundle m_bundle;
+        int m_score;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         KURL::List m_urlList;
