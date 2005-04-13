@@ -1816,6 +1816,9 @@ Playlist::removeSelectedItems() //SLOT
         delete item;
     }
 
+    if ( AmarokConfig::partyMode() )
+        addSpecialTracks( list.count(), AmarokConfig::partyType() );
+
     updateNextPrev();
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
 }
