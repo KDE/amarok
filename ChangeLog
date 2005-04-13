@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * Show "title by artist" on playlists titlebar and taskbar. (BR 97670)
     * Option to show stats in the Home tab by album.  Patch from Cédric
       Brégardis <cedric.bregardis@free.fr>.
     * New DCOP call "script: listRunningScripts()". Returns a list of all

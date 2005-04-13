@@ -221,6 +221,22 @@ MetaBundle::prettyTitle() const
 }
 
 QString
+MetaBundle::prettyTitleSwapped() const
+{
+    QString s = m_title;
+
+    //NOTE this gets regressed often, please be careful!
+    //     whatever you do, handle the stream case, streams have no artist but have an excellent title
+
+    //FIXME doesn't work for resume playback
+
+    if( !s.isEmpty() ) s += i18n(" by ");
+    s += m_artist;
+    if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
+    return s;
+}
+
+QString
 MetaBundle::prettyTitle( QString filename ) //static
 {
     QString &s = filename; //just so the code is more readable
