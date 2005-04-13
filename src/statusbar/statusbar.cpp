@@ -136,11 +136,12 @@ StatusBar::engineStateChanged( Engine::State state )
     }
 }
 
-
 void
 StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    QString title  = bundle.prettyTitle();
+    QString title  = bundle.title();
+    QString artist = bundle.artist();
+    QString album  = bundle.album();
     QString length = bundle.prettyLength();
 
     if ( bundle.artist() == "Mike Oldfield" && bundle.title() == "Amarok" ) {
@@ -151,14 +152,24 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
                 "The many other people who have helped make amaroK what it is</p>" ) );
     }
 
+    // ugly because of translation requirements
+    if( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
+        title = i18n( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>" )
+                .arg( title, artist, album );
+
+    else if( !title.isEmpty() && !artist.isEmpty() )
+        title = i18n( "track by artist", "<b>%1</b> by <b>%2</b>" )
+                .arg( title, artist );
+
+    else if( !album.isEmpty() )
+        // we try for pretty title as it may come out better
+        title = i18n( "track on album", "<b>%1</b> on <b>%2</b>" )
+               .arg( bundle.prettyTitle(), album );
+    else
+        title = "<b>" + bundle.prettyTitle() + "</b>";
+
     if( title.isEmpty() )
         title = i18n( "Unknown track" );
-
-
-    if ( bundle.album().isEmpty() )
-	title = "<b>" + title + "</b>";
-    else
-        title = i18n( "track on album", "<b>%1</b> on <b>%2</b>" ).arg( title ).arg( bundle.album() );
 
     // don't show '-' or '?'
     if( length.length() > 1 ) {
