@@ -1280,7 +1280,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
 
-    if( static_cast<PlaylistItem *>(m_marker)->isHistory() )
+    if( m_marker && static_cast<PlaylistItem *>(m_marker)->isHistory() )
         return;
 
     if( !after ) findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
