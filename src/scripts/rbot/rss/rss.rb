@@ -195,10 +195,10 @@ class RSSFeedsPlugin < Plugin
                             end
                         end
                     end
+                oldItems = newItems
                 rescue Exception
                     $stderr.print "IO failed: " + $! + "\n"
                 end
-                oldItems = newItems
                 puts "Thread going to sleep.."
                 sleep 100
             end
@@ -223,6 +223,8 @@ class RSSFeedsPlugin < Plugin
             when 'mediawiki'
                 m.reply("::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::")
                 puts "mediawiki #{item.title}"
+            when "gmame"
+                m.reply("::amarok-devel:: Message #{item.title} sent by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::")
             else
                 printRSSItem(m,item)
         end
