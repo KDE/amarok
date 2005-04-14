@@ -349,12 +349,12 @@ ScriptManager::slotRunScript()
 
     const KURL url = m_scripts[name].url;
     KProcIO* script = new KProcIO();
-    script->setComm( KProcess::Stdin );
+    script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stderr ) );
 
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
 
-    if ( !script->start( KProcess::NotifyOnExit ) ) {
+    if ( !script->start( KProcess::NotifyOnExit, true ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
                                      "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
         delete script;
@@ -451,10 +451,16 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
         if ( it.data().process == process ) break;
 
     // Check if there was an error on exit
-    if ( process->normalExit() && process->exitStatus() != 0 )
-        KMessageBox::error( 0, i18n( "The script '%1' exited with error code: %2" )
-                                   .arg( it.key() )
-                                   .arg( process->exitStatus() ) );
+    if ( process->normalExit() && process->exitStatus() != 0 ) {
+        // Read Stderr log
+        KProcIO* proc = static_cast<KProcIO*>( process );
+        QString line, details;
+        while ( proc->readln( line ) != -1 )
+            details += line;
+
+        KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2" )
+                                           .arg( it.key() ).arg( process->exitStatus() ), details );
+    }
 
     // Destroy script process
     delete it.data().process;
