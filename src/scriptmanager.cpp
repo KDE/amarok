@@ -445,15 +445,22 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 {
     DEBUG_BLOCK
 
+    // Look up script entry in our map
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
-        if ( it.data().process == process ) {
-            delete it.data().process;
-            it.data().process = 0;
-            it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
-            slotCurrentChanged( m_base->listView->currentItem() );
-        }
-    }
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( it.data().process == process ) break;
+
+    // Check if there was an error on exit
+    if ( process->normalExit() && process->exitStatus() != 0 )
+        KMessageBox::error( 0, i18n( "The script '%1' exited with error code: %2" )
+                                   .arg( it.key() )
+                                   .arg( process->exitStatus() ) );
+
+    // Destroy script process
+    delete it.data().process;
+    it.data().process = 0;
+    it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
+    slotCurrentChanged( m_base->listView->currentItem() );
 }
 
 
