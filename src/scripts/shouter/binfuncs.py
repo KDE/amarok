@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Shamelessly ganked from eye3D
 
 def bytes2bin( bytes, size = 8 ):

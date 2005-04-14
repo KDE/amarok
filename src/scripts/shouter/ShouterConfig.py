@@ -1,3 +1,17 @@
+############################################################################
+# Configuration window for shouter script
+# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+#
+# Depends on: Python 2.2, PyQt
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
+
 from qt import *
 from StreamConfig import *
 from debug import *
@@ -19,30 +33,30 @@ class ConfigDialog( QDialog ):
             config = ConfigParser.ConfigParser()
             config.read( "shouterrc" )
 
-            self.cfg.genre     = config.get( 'Stream', 'genre' )
-            self.cfg.mount     = config.get( 'Stream', 'mount' )
-            self.cfg.name      = config.get( 'Stream', 'name' )
-            self.cfg.url    = config.get( 'Stream', 'url' )
-            self.cfg.desc1     = config.get( 'Stream', 'desc1' )
-            self.cfg.desc2     = config.get( 'Stream', 'desc2' )
+            self.cfg.genre              = config.get( 'Stream', 'genre' )
+            self.cfg.mount              = config.get( 'Stream', 'mount' )
+            self.cfg.name               = config.get( 'Stream', 'name' )
+            self.cfg.url                = config.get( 'Stream', 'url' )
+            self.cfg.desc1              = config.get( 'Stream', 'desc1' )
+            self.cfg.desc2              = config.get( 'Stream', 'desc2' )
 
-            self.cfg.icy_interval     = config.getint( 'Server', 'icy_interval' )
-            self.cfg.max_clients     = config.getint( 'Server', 'max_clients' )
-            self.cfg.port          = config.getint( 'Server', 'port' )
-            self.cfg.buf_size     = config.getint( 'Server', 'buf_size' )
-            self.cfg.punc_factor     = config.getint( 'Server', 'punc_factor' )
-            self.cfg.force_update     = config.getboolean( 'Server', 'force_update' )
-            self.cfg.pre_seek     = config.getfloat( 'Server', 'pre_seek' )
+            self.cfg.icy_interval       = config.getint( 'Server', 'icy_interval' )
+            self.cfg.max_clients        = config.getint( 'Server', 'max_clients' )
+            self.cfg.port               = config.getint( 'Server', 'port' )
+            self.cfg.buf_size           = config.getint( 'Server', 'buf_size' )
+            self.cfg.punc_factor        = config.getint( 'Server', 'punc_factor' )
+            self.cfg.force_update       = config.getboolean( 'Server', 'force_update' )
+            self.cfg.pre_seek           = config.getfloat( 'Server', 'pre_seek' )
             self.cfg.supress_dialog     = config.getboolean( 'Server', 'supress_dialog' )
 
-            self.cfg.enable_dl     = config.getboolean( 'Downloads', 'enable_dl' )
-            self.cfg.dl_mount     = config.get( 'Downloads', 'dl_mount' )
-            self.cfg.dl_throttle     = config.getint( 'Downloads', 'dl_throttle' )
+            self.cfg.enable_dl          = config.getboolean( 'Downloads', 'enable_dl' )
+            self.cfg.dl_mount           = config.get( 'Downloads', 'dl_mount' )
+            self.cfg.dl_throttle        = config.getint( 'Downloads', 'dl_throttle' )
 
-            self.cfg.reencoding     = config.getint( 'Encoding', 'reencoding' )
-            self.cfg.stream_format     = config.get( 'Encoding', 'stream_format' )
-            self.cfg.stream_br     = config.getint( 'Encoding', 'stream_br' )
-            self.cfg.chunk_size     = config.getint( 'Encoding', 'chunk_size' )
+            self.cfg.reencoding         = config.getint( 'Encoding', 'reencoding' )
+            self.cfg.format             = config.get( 'Encoding', 'stream_format' )
+            self.cfg.stream_br          = config.getint( 'Encoding', 'stream_br' )
+            self.cfg.chunk_size         = config.getint( 'Encoding', 'chunk_size' )
 
             self.cfg.chunk_size /= 1024
 
@@ -137,7 +151,7 @@ class ConfigDialog( QDialog ):
         self.fEncoding = QGroupBox(self.vbox)
         self.fEncoding.setColumns(2)
         self.fEncoding.setTitle('Encoding')
-        self.fEncoding.setDisabled(True)
+        #self.fEncoding.setDisabled(True)
 
         QLabel( 'Reencoding', self.fEncoding)
         self.fReencoding = QComboBox(self.fEncoding)
@@ -146,8 +160,10 @@ class ConfigDialog( QDialog ):
         self.fReencoding.insertItem( 'All tracks')
         self.fReencoding.setCurrentItem(self.cfg.reencoding)
 
-        QLabel( 'Stream format', self.fEncoding)
-        self.fStreamFormat = QComboBox(self.fEncoding)
+        # Disabled for now
+        #QLabel( 'Stream format', self.fEncoding)
+        #self.fStreamFormat = QComboBox(self.fEncoding)
+        self.fStreamFormat = QComboBox(None)
         self.fStreamFormat.insertItem('mp3')
         self.fStreamFormat.insertItem('ogg')
         self.fStreamFormat.setCurrentText(self.cfg.stream_format)

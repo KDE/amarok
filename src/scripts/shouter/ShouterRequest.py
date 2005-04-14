@@ -1,4 +1,16 @@
-#!/usr/bin/env python
+############################################################################
+# Request handlers. Deal with reading-writing to sockets
+# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+#
+# Depends on: Python 2.2, PyQt
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
 
 import os
 import SocketServer
@@ -13,6 +25,7 @@ import mimetypes
 from debug import *
 from StreamController import *
 from Encoder import *
+from FileProvider import *
 
 META = "%cStreamTitle='%s';StreamUrl='%s';%s"
 ICYRESP = 'ICY 200 OK\r\nicy-notice1:%s\r\nicy-notice2:%s\r\nicy-name:%s\r\nicy-br:%d\r\nicy-genre:%s\r\nicy-url:%s\r\nicy-metaint:%d\r\n\r\n'
@@ -227,6 +240,7 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
     def stream( self, file, pos=0, bitrate=0 ):
         debug('ShouterRequest.stream. This should not happen')
 
+# Do not use.
 class ReencodedRequest(ShouterRequest):
     """ Reencoding stream request handler """
 
@@ -288,7 +302,13 @@ class StreamRequest(ShouterRequest):
         size = os.stat(file)[6]
         sleep_factor = 8.0/(bitrate * 1024.0)
         
-        f = open( file, 'r' )
+        #f = open( file, 'r' )
+        f = None
+        try:
+            f = self.server.coded_files[file]
+        except KeyError:
+            debug('Caught KeyError in StreamRequest.stream. Assuming silence')
+            f = FileProvider(file)
 
         # this isn't quite right, but is of relatively little consequence
         # as the headers themselves are very small

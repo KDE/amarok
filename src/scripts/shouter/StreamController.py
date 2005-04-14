@@ -1,3 +1,18 @@
+############################################################################
+# Extension of socket server
+# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+#
+# Depends on: Python 2.2, PyQt
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
+
+
 import sys
 import os
 import SocketServer
@@ -6,7 +21,8 @@ from StreamConfig import *
 import time
 from debug import *
 from ShouterRequest import *
-from Encoder import *
+#from Encoder import *
+from FileProvider import *
 
 class StreamController (SocketServer.ThreadingTCPServer):
     """ Controls stream threads and holds socket connections. 
@@ -15,14 +31,14 @@ class StreamController (SocketServer.ThreadingTCPServer):
     sockets = dict()
     playlist = []
     coded_files = dict()
+    playlist = dict()
     cfg = None
     
     log_f = None
 
     def add(self, fname):
         self.playlist.append(fname)
-        if self.cfg.reencoding: 
-            self.coded_files[fname] = Encoder(fname)
+        self.coded_files[fname] = FileProvider(fname, self.cfg)
         
     def log( self, msg ):
         self.log_f.write( time.strftime('[%Y.%m.%d - %H:%M:%s] ') + str(msg) + '\n' )
@@ -34,14 +50,8 @@ class StreamController (SocketServer.ThreadingTCPServer):
         raise
         
     def finish_request(self, request, client_address):
-        debug( 'Finishing request, reencoding=%s' % self.cfg.reencoding )
-        sr = None
-        if self.cfg.reencoding: 
-            debug( 'Creating ReencodedRequest')
-            sr = ReencodedRequest(request, client_address, self)
-        else: 
-            debug( 'Creating StreamRequest')
-            sr = StreamRequest(request, client_address, self)
+        debug( 'Creating StreamRequest')
+        sr = StreamRequest(request, client_address, self)
 
         if len(self.sockets) < self.cfg.max_clients : 
             self.sockets[request] = sr
@@ -55,10 +65,10 @@ class StreamController (SocketServer.ThreadingTCPServer):
 
         debug( 'force_update' )
         for s in self.sockets:
-            debug( 'doing force_update on key=%s, value=%s' % (str(s), str(self.sockets[s])) )
             sr = self.sockets[s]
             sr.blind = False
             
     def run( self ):
         self.log_f = open( 'access.log', 'a' )
         self.serve_forever()
+

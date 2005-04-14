@@ -1,3 +1,18 @@
+############################################################################
+# Helpful container for configuration options 
+# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+#
+# Depends on: Python 2.2, PyQt
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
+
+
 class StreamConfig:
     """ Container for stream configuration. Values are defaults and should be
     reset when the configuration is loaded from disk """

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 ############################################################################
-# Python-Qt template script for amaroK
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# Main executable. Must be run by amaroK
+# (c) 2005 James Bellenger <jbellenger@pristine.gm>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################
@@ -65,30 +65,30 @@ class Shouter( QApplication ):
         config.read( 'shouterrc' )
 
         try:
-            self.cfg.genre     = config.get( 'Stream', 'genre' )
-            self.cfg.mount     = config.get( 'Stream', 'mount' )
-            self.cfg.name      = config.get( 'Stream', 'name' )
-            self.cfg.url    = config.get( 'Stream', 'url' )
-            self.cfg.desc1     = config.get( 'Stream', 'desc1' )
-            self.cfg.desc2     = config.get( 'Stream', 'desc2' )
+            self.cfg.genre              = config.get( 'Stream', 'genre' )
+            self.cfg.mount              = config.get( 'Stream', 'mount' )
+            self.cfg.name               = config.get( 'Stream', 'name' )
+            self.cfg.url                = config.get( 'Stream', 'url' )
+            self.cfg.desc1              = config.get( 'Stream', 'desc1' )
+            self.cfg.desc2              = config.get( 'Stream', 'desc2' )
 
-            self.cfg.icy_interval     = config.getint( 'Server', 'icy_interval' )
-            self.cfg.max_clients     = config.getint( 'Server', 'max_clients' )
-            self.cfg.port          = config.getint( 'Server', 'port' )
-            self.cfg.buf_size     = config.getint( 'Server', 'buf_size' )
-            self.cfg.punc_factor     = config.getint( 'Server', 'punc_factor' )
-            self.cfg.force_update     = config.getboolean( 'Server', 'force_update' )
-            self.cfg.pre_seek     = config.getfloat( 'Server', 'pre_seek' )
+            self.cfg.icy_interval       = config.getint( 'Server', 'icy_interval' )
+            self.cfg.max_clients        = config.getint( 'Server', 'max_clients' )
+            self.cfg.port               = config.getint( 'Server', 'port' )
+            self.cfg.buf_size           = config.getint( 'Server', 'buf_size' )
+            self.cfg.punc_factor        = config.getint( 'Server', 'punc_factor' )
+            self.cfg.force_update       = config.getboolean( 'Server', 'force_update' )
+            self.cfg.pre_seek           = config.getfloat( 'Server', 'pre_seek' )
             self.cfg.supress_dialog     = config.getboolean( 'Server', 'supress_dialog' )
 
-            self.cfg.enable_dl     = config.getboolean( 'Downloads', 'enable_dl' )
-            self.cfg.dl_mount     = config.get( 'Downloads', 'dl_mount' )
-            self.cfg.dl_throttle     = config.getint( 'Downloads', 'dl_throttle' )
+            self.cfg.enable_dl          = config.getboolean( 'Downloads', 'enable_dl' )
+            self.cfg.dl_mount           = config.get( 'Downloads', 'dl_mount' )
+            self.cfg.dl_throttle        = config.getint( 'Downloads', 'dl_throttle' )
 
-            self.cfg.reencoding     = config.getint( 'Encoding', 'reencoding' )
-            self.cfg.format     = config.get( 'Encoding', 'stream_format' )
-            self.cfg.stream_br     = config.getint( 'Encoding', 'stream_br' )
-            self.cfg.chunk_size     = config.getint( 'Encoding', 'chunk_size' )
+            self.cfg.reencoding         = config.getint( 'Encoding', 'reencoding' )
+            self.cfg.format             = config.get( 'Encoding', 'stream_format' )
+            self.cfg.stream_br          = config.getint( 'Encoding', 'stream_br' )
+            self.cfg.chunk_size         = config.getint( 'Encoding', 'chunk_size' )
 
             if self.stream_ctrl is not None: self.stream_ctrl.cfg = self.cfg
 

@@ -1,3 +1,17 @@
+############################################################################
+# Specific format handlers for de/en-coding file types
+# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+#
+# Depends on: Python 2.2, PyQt
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
+
 import os
 from binfuncs import *
 from debug import *

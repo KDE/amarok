@@ -5,6 +5,8 @@ Add ".ogg" extension for Winamp gotcha to README
 More reliable method of getting bitrate (see transcode?)
 Add bitrate gotcha to README
 Embedded coverart
+Random file injection
+Failover music directory
 
 Transcoding:
     Method 1: popen mplayer + lame/oggenc
