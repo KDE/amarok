@@ -208,15 +208,15 @@ bool
 CollectionDB::isEmpty()
 {
     QStringList values;
-    
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) 
+
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
     {
         values = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
-    } 
-    else 
+    }
+    else
     {
         values = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
-    }      
+    }
 
     return values.isEmpty() ? true : values.first() == "0";
 }
@@ -227,17 +227,17 @@ CollectionDB::isValid()
 {
     QStringList values1;
     QStringList values2;
-    
+
     if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
         values1 = query( "SELECT COUNT( url ) FROM tags OFFSET 0 LIMIT 1;" );
         values2 = query( "SELECT COUNT( url ) FROM statistics OFFSET 0 LIMIT 1;" );
-    } 
-    else 
+    }
+    else
     {
         values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 0, 1;" );
         values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 0, 1;" );
     }
-    
+
     //TODO? this returns true if value1 or value2 is not empty. Shouldn't this be and (&&)???
     return !values1.isEmpty() || !values2.isEmpty();
 }
@@ -388,7 +388,7 @@ CollectionDB::dropTables( DbConnection *conn )
     {
         query( QString( "DROP TABLE related_artists;" ) );
     }
-    
+
     if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql )
     {
         if (conn == NULL) {
@@ -1036,7 +1036,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
 QStringList
 CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool withCompilations )
 {
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) 
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
     {
         return query( "SELECT DISTINCT album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
@@ -1060,12 +1060,12 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
 QStringList
 CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
 {
-    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) 
+    if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
     {
         return query( "SELECT DISTINCT artist.name, album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
                       ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + 
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
                       " ORDER BY lower( album.name );" );
     }
     else
@@ -1073,7 +1073,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
         return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
                       ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + 
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
                       " ORDER BY lower( album.name );" );
     }
 }
@@ -1290,7 +1290,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
                             .arg( score )
                             .arg( values[0] + " + 1" )
                             .arg( escapeString( url ) ) );
-        } 
+        }
         else
         {
             query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "
@@ -1352,7 +1352,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
             query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%2';" )
                             .arg( percentage )
                             .arg( escapeString( url ) ) );
-        } 
+        }
         else
         {
             // entry exists
@@ -1440,7 +1440,7 @@ CollectionDB::isFileInCollection( const QString &url  )
 void
 CollectionDB::removeSongs( const KURL::List& urls )
 {
-    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
+    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
         query( QString( "DELETE FROM tags WHERE url = '%1';" )
             .arg( escapeString( (*it).path() ) ) );
@@ -1452,12 +1452,12 @@ QStringList
 CollectionDB::similarArtists( const QString &artist, uint count )
 {
     QStringList values;
-    
+
     if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
         values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' OFFSET 0 LIMIT %2;" )
-                                 .arg( escapeString( artist ) ).arg( count ) );  
+                                 .arg( escapeString( artist ) ).arg( count ) );
     }
-    else 
+    else
     {
         values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT 0, %2;" )
                                  .arg( escapeString( artist ) ).arg( count ) );
@@ -2183,22 +2183,22 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
     : DbConnection( config )
 {
     debug() << k_funcinfo << endl;
-    
+
     m_initialized = false;
     m_connected = false;
     if ( config->conninfo().isEmpty() )
         pApp->slotConfigAmarok("Postgresql");
 
     m_db = postgresql::PQconnectdb( config->conninfo().latin1() );
-    if (!m_db) 
+    if (!m_db)
     {
         debug() << "POSTGRESQL CONNECT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n";
         error() << "Failed to allocate/initialize Postgresql struct\n";
         setPostgresqlError();
         return;
     }
-    
-    if (postgresql::PQstatus(m_db) != postgresql::CONNECTION_OK) 
+
+    if (postgresql::PQstatus(m_db) != postgresql::CONNECTION_OK)
     {
         debug() << "POSTGRESQL CONNECT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n";
         error() << "Failed to allocate/initialize Postgresql struct\n";
@@ -2226,7 +2226,7 @@ QStringList PostgresqlConnection::query( const QString& statement )
     postgresql::ExecStatusType status;
 
     result = postgresql::PQexec(m_db, statement.utf8());
-    if (result == NULL) 
+    if (result == NULL)
     {
         debug() << "POSTGRESQL QUERY FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         return values;
@@ -2246,16 +2246,16 @@ QStringList PostgresqlConnection::query( const QString& statement )
     for(int col=0; col< cols; col++) {
         if (QString(PQfname(result, col)) == QString("__discard") || QString(PQfname(result, col)) == QString("__random"))
         {
-            discardCols[col] = true; 
+            discardCols[col] = true;
         }
     }
 
-    for(int row=0; row< rows; row++) 
+    for(int row=0; row< rows; row++)
     {
-        for(int col=0; col< cols; col++) 
+        for(int col=0; col< cols; col++)
         {
             if (discardCols[col]) continue;
-            
+
             values << QString::fromUtf8(postgresql::PQgetvalue(result, row, col));
         }
     }
@@ -2272,14 +2272,14 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
     postgresql::ExecStatusType status;
     QString curvalSql;
     int id;
-  
+
     result = postgresql::PQexec(m_db, statement.utf8());
-    if (result == NULL) 
+    if (result == NULL)
     {
         debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
         return 0;
     }
-  
+
     status = postgresql::PQresultStatus(result);
     if (status != postgresql::PGRES_COMMAND_OK)
     {
@@ -2296,7 +2296,7 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
 
     curvalSql = QString("SELECT currval('%1_seq');").arg(_table);
     result = postgresql::PQexec(m_db, curvalSql.utf8());
-    if (result == NULL) 
+    if (result == NULL)
     {
         debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
         return 0;
@@ -2310,11 +2310,11 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
         return 0;
     }
 
-    if ((postgresql::PQnfields( result ) != 1) || (postgresql::PQntuples( result ) != 1)) 
+    if ((postgresql::PQnfields( result ) != 1) || (postgresql::PQntuples( result ) != 1))
     {
         debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
         PQclear(result);
-        return 0;      
+        return 0;
     }
 
     id = QString::fromUtf8(postgresql::PQgetvalue(result, 0, 0)).toInt();
@@ -2602,7 +2602,7 @@ QueryBuilder::addFilter( int tables, const QString& filter, int /*mode*/ )
             if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
             if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
         }
-        
+
         m_where += " ) ";
     }
 
@@ -2837,13 +2837,13 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     m_sort += tableName( table ) + ".";
     m_sort += valueName( value );
 
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql) 
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
     {
         if ( table & tabYear ) m_sort += ")";
     }
     else
     {
-        if ( table & tabYear ) m_sort += "+0)";  
+        if ( table & tabYear ) m_sort += "+0)";
     }
 
     if ( b ) m_sort += " ) ";
@@ -2858,7 +2858,7 @@ QueryBuilder::sortBy( int table, int value, bool descending )
         if ( b ) m_values += ")";
         m_values += " as __discard ";
     }
-    
+
     m_linkTables |= table;
 }
 
@@ -2880,7 +2880,7 @@ QueryBuilder::sortByFunction( int function, int table, int value, bool descendin
     if ( b ) m_sort += "LOWER( ";
     if ( table & tabYear ) m_sort += "(";
 
-    QString columnName = functionName( function )+tableName( table )+valueName( value ); 
+    QString columnName = functionName( function )+tableName( table )+valueName( value );
     m_sort += columnName;
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
@@ -2926,7 +2926,7 @@ QueryBuilder::groupBy( int table, int value )
 void
 QueryBuilder::setLimit( int startPos, int length )
 {
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql) 
+    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
     {
         m_limit = QString( " OFFSET %1 LIMIT %2 " ).arg( startPos ).arg( length );
     }
