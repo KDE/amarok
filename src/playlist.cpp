@@ -508,34 +508,38 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     insertMedia( urls );
 }
 
+/**
+ *  adjustPartyTracks(...) has two slightly different methods for type of adjustment.
+ *
+ *  Adjusting Upcoming tracks: Remove tracks from the end of the list,
+    or append @param songCount tracks of type @param type as required.
+ *  Adjusting Previous tracks: We only remove tracks from the beginning.
+    @param songCount number of tracks will be removed from the front of the list.
+ *  Remember - its more efficient to remove PlaylistItems in reverse order.
+ */
+
 void
-Playlist::adjustPartyTracks( uint songCount, QString type, bool upcoming )
+Playlist::adjustPartyTracks( uint songCount, bool upcoming, QString type )
 {
-    (void) upcoming; //Avoid compiler warning
-    uint count = childCount();
-
     PlaylistItem *trackPosition  = m_currentTrack;
-    bool requireTracks = true;
-
+    bool requireTracks = upcoming;
     uint x=0;
-    for ( ; trackPosition != lastItem(); x++ )
+
+    if ( upcoming ) // upcomingTracks changed
     {
-        if ( x == songCount ) {
-            requireTracks = false;
+
+        for ( ; trackPosition != lastItem(); x++ )
+        {
+            if ( x == songCount ) {
+                //dont need to add tracks if we have reduced upcomingTracksCount().
+                requireTracks = false;
+                trackPosition = trackPosition->nextSibling();
+                break;
+            }
+
             trackPosition = trackPosition->nextSibling();
-            break;
         }
-
-        trackPosition = trackPosition->nextSibling();
     }
-    kdDebug() << "Tracks following current: " << x << endl;
-
-    QString writeMe = QString("Adding additional %1 tracks").arg( count - x );
-
-    if ( !requireTracks )
-        writeMe = QString( "removing %1 items" ).arg( count - x );
-
-    kdDebug() << writeMe << endl;
 
     if ( requireTracks )
         addSpecialTracks( songCount - x, type );
@@ -545,7 +549,16 @@ Playlist::adjustPartyTracks( uint songCount, QString type, bool upcoming )
         //assemble a list of what needs removing
         //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
         QPtrList<QListViewItem> list;
-        for( QListViewItemIterator it(trackPosition); *it; list.prepend( *it ), ++it );
+        if ( upcoming ) {
+            for( QListViewItemIterator it( trackPosition ); *it; list.prepend( *it ), ++it );
+        } else { //remove history items
+            uint i=0;
+            for( QListViewItemIterator it( firstChild() );
+                 i < songCount;
+                 list.prepend( *it ), ++it, ++i
+                );
+        }
+
 
         if( list.isEmpty() ) return;
         saveUndoState();

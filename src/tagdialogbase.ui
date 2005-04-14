@@ -488,7 +488,7 @@
                         <cstring>pushButton_ok</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Save &amp;&amp; Close</string>
+                        <string>Sa&amp;ve &amp;&amp; Close</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>

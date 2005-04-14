@@ -84,7 +84,7 @@ class Playlist : private KListView, public EngineObserver
         void addSpecialTracks( uint songCount, QString type = "Random" );
         void addSpecialCustomTracks( uint songCount, QStringList list );
 
-        void adjustPartyTracks( uint songCount, QString type = "Random", bool upcoming = true );
+        void adjustPartyTracks( uint songCount, bool upcoming = true, QString type = "Random" );
 
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
