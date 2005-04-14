@@ -47,8 +47,8 @@ PluginManager::query( const QString& constraint )
     QString
     str  = "[X-KDE-amaroK-framework-version] == ";
     str += QString::number( FrameworkVersion );
-    str += " and ";
-    str += constraint;
+    if ( !constraint.stripWhiteSpace().isEmpty() )
+        str += " and " + constraint;
     str += " and ";
     str += "[X-KDE-amaroK-rank] > 0";
 
