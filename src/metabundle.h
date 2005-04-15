@@ -98,7 +98,7 @@ public:
     const QString &streamUrl() const { return m_streamUrl; }
 
     QString prettyTitle() const;
-    QString prettyTitleSwapped() const;
+    QString veryNiceTitle() const;
     QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength() const { return prettyLength( m_length ); }

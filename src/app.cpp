@@ -718,7 +718,7 @@ void App::engineStateChanged( Engine::State state )
         break;
     case Engine::Playing:
         if ( !bundle.prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( bundle.prettyTitleSwapped() ) );
+            m_pPlaylistWindow->setCaption( "amaroK: " + bundle.veryNiceTitle() );
         break;
     case Engine::Idle:
         if ( AmarokConfig::showPlayerWindow() )
@@ -736,7 +736,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     amaroK::OSD::instance()->show( bundle );
     if ( !bundle.prettyTitle().isEmpty() )
-        m_pPlaylistWindow->setCaption( kapp->makeStdCaption( bundle.prettyTitleSwapped() ) );
+        m_pPlaylistWindow->setCaption( "amaroK: " + bundle.veryNiceTitle() );
 
     TrackToolTip::add( m_pTray, bundle );
 }

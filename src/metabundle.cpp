@@ -221,18 +221,19 @@ MetaBundle::prettyTitle() const
 }
 
 QString
-MetaBundle::prettyTitleSwapped() const
+MetaBundle::veryNiceTitle() const
 {
-    QString s = m_title;
-
-    //NOTE this gets regressed often, please be careful!
-    //     whatever you do, handle the stream case, streams have no artist but have an excellent title
-
-    //FIXME doesn't work for resume playback
-
-    if( !s.isEmpty() ) s += i18n(" by ");
-    s += m_artist;
-    if( s.isEmpty() ) s = prettyTitle( m_url.fileName() );
+    QString s;
+    //NOTE I'm not sure, but the notes and FIXME's in the prettyTitle function should be fixed now.
+    //     If not then they do apply to this function also!
+    if( !m_title.isEmpty() )
+    {
+        s = "\"" + m_title + "\"" + i18n(" by ") + m_artist;
+    }
+    else
+    {
+        s = prettyTitle( m_url.fileName() );
+    }
     return s;
 }
 
