@@ -571,13 +571,13 @@ Playlist::adjustPartyPrevious( uint songCount )
         return;
     int x = 0;
 
-    for( PlaylistItem *pos = firstChild(); pos != m_currentTrack ; pos = pos->nextSibling())
+    for( PlaylistItem *pos = firstChild(); pos != m_currentTrack; pos = pos->nextSibling())
         x++;
 
     x -= songCount;
 
     QPtrList<QListViewItem> list;
-    uint y=0;
+    int y=0;
     for( QListViewItemIterator it( firstChild() ); y < x ; list.prepend( *it ), ++it, y++ );
 
     if( list.isEmpty() ) return;

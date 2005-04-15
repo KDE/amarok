@@ -205,7 +205,6 @@ UrlLoader::customEvent( QCustomEvent *e )
     case 1001:
     {
         const QString QUEUE_INDEX = "queue_index";
-        const NodeList::ConstIterator end = e->nodes.end();
         foreachType( NodeList, e->nodes )
         {
             if( (*it).isNull() ) //safety
@@ -549,7 +548,7 @@ PlaylistFile::loadRealAudioRam( QTextStream &stream )
     //while loop adapted from Kaffeine 0.5
     while (!stream.atEnd())
     {
-        url = stream.readLine(); 
+        url = stream.readLine();
         if (url[0] == '#') continue; /* ignore comments */
         if (url == "--stop--") break; /* stop line */
         if ((url.left(7) == "rtsp://") || (url.left(6) == "pnm://") || (url.left(7) == "http://"))
@@ -559,7 +558,7 @@ PlaylistFile::loadRealAudioRam( QTextStream &stream )
             b = MetaBundle();
         }
     }
-    
+
     return true;
 }
 /// @class RemotePlaylistFetcher

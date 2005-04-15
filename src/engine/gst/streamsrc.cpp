@@ -146,10 +146,9 @@ gst_streamsrc_dispose( GObject *object )
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-gst_streamsrc_set_property ( GObject * object, guint prop_id, const GValue * value,
-                             GParamSpec * pspec )
+gst_streamsrc_set_property( GObject* object, guint prop_id, const GValue* value, GParamSpec* pspec )
 {
-    GstStreamSrc * src;
+    GstStreamSrc* src;
 
     /* it's not null if we got it, but it might not be ours */
     g_return_if_fail ( GST_IS_STREAMSRC ( object ) );
@@ -198,8 +197,6 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 GstElementStateReturn
 gst_streamsrc_change_state (GstElement * element)
 {
-//   GstStreamSrc *src = GST_STREAMSRC (element);
-
     switch (GST_STATE_TRANSITION (element)) {
         case GST_STATE_NULL_TO_READY:
             break;
@@ -213,8 +210,8 @@ gst_streamsrc_change_state (GstElement * element)
             break;
     }
 
-    if (GST_ELEMENT_CLASS (parent_class)->change_state)
-        return GST_ELEMENT_CLASS (parent_class)->change_state (element);
+    if ( parent_class->change_state )
+        return parent_class->change_state( element );
 
     return GST_STATE_SUCCESS;
 }
