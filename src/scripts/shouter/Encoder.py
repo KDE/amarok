@@ -93,7 +93,7 @@ class Chunk:
         """ Break off from main file into a temporary chunkfile """
 
         debug( 'chunking %d' % self.pos )
-        self.fd, self.fname = tempfile.mkstemp(suffix='.chunk', prefix='shouter-', dir='/tmp')
+        self.fd, self.fname = tempfile.mkstemp(suffix='.chunk%d' % self.pos, prefix='shouter-', dir='/tmp')
         try:
             helper = self.start_format.lower() + 'Helper().chunk("%s", "%s", %d, %d)'
             eval(helper % (self.fname, self.fsrc, self.pos, self.chunk_size))
@@ -218,7 +218,7 @@ class Encoder:
         temp = f.tell()
         buf = f.read(size)
         f.close()
-        debug('read_from size=%d pos=%d c_i=%d chunk.tell=%d c.pos=%d len(buf)=%d' % (size, pos, c_i, temp, c.pos, len(buf)))
+        #debug('read_from size=%d pos=%d c_i=%d chunk.tell=%d c.pos=%d len(buf)=%d' % (size, pos, c_i, temp, c.pos, len(buf)))
         return buf
     
     def clean(self):

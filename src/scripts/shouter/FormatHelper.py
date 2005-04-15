@@ -55,20 +55,22 @@ class oggHelper(GenericHelper):
         #         = pos * 8 * 44100 / (bitrate * 1024)
         #         = pos/bitrate * 344.53125
         # FIXME: Use actual bitrate and sample rate, though this doesn't
-        # really make a big difference.
-        debug( 'ogg chunk pos=%d chunk_size=%d' % (pos, chunk_size))
+        # make a big difference.
         br = 160.0
-        cut1 = pos/br * 344.53125 
-        tf = tempfile.NamedTemporaryFile(suffix='.temp', prefix='shouter-', dir='/tmp')
-        if pos:    
-            cmd = 'vcut "%s" "%s" %s %d' % (mastername, tf.name, chunkname, cut1)
-            os.popen(cmd)
+        cut1, cut2 = (pos/br * 344.53125), (chunk_size/br * 344.53125)
+        chunk_cut1 = tempfile.NamedTemporaryFile(suffix='.temp', prefix='shouter-', dir='/tmp')
+        trash = tempfile.NamedTemporaryFile(suffix='.temp', prefix='shouter-', dir='/tmp')
 
-        cut2 = (chunk_size)/br * 344.53125
-        cmd = 'vcut "%s" "%s" %s %d' % (mastername, chunkname, tf.name, cut2)
-        os.popen(cmd)
-        tf.close()
-        debug('Finished cutting ogg at %d and %d' % (cut1, cut2))
+        debug( 'pos=%d\tcut1=%d\tcut2=%d' % (pos, cut1, cut2))
+        cmd = 'vcut \'%s\' \'%s\' \'%s\' %d'
+        if pos:    
+            os.popen(cmd % (mastername, trash.name, chunk_cut1.name, cut1))
+            os.popen(cmd % (chunk_cut1.name, chunkname, trash.name, cut2))
+            chunk_cut1.close()
+        else:
+            os.popen(cmd % (mastername, chunkname, trash.name, cut2))
+
+        trash.close()
 
     def decode(self, oggname, wavname):
         debug('ogg decode: %s -> %s' % (oggname, wavname))

@@ -298,9 +298,6 @@ class StreamRequest(ShouterRequest):
     def stream( self, file, pos=0, bitrate=0 ):
         debug('stream byte_counter=%d pos=%d file=%s' % (self.byte_counter, pos, file))
         buf = 0
-        if bitrate==0: bitrate = self._get_bitrate(file)
-        size = os.stat(file)[6]
-        sleep_factor = 8.0/(bitrate * 1024.0)
         
         #f = open( file, 'r' )
         f = None
@@ -309,6 +306,13 @@ class StreamRequest(ShouterRequest):
         except KeyError:
             debug('Caught KeyError in StreamRequest.stream. Assuming silence')
             f = FileProvider(file)
+
+        if bitrate==0: 
+           if f.reencoding: bitrate = self.cfg.stream_br 
+           else: bitrate = self._get_bitrate(file)
+
+        size = os.stat(file)[6]
+        sleep_factor = 8.0/(bitrate * 1024.0)
 
         # this isn't quite right, but is of relatively little consequence
         # as the headers themselves are very small
