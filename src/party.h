@@ -41,8 +41,6 @@ class Party : public KDialogBase
         int     upcomingCount() { return m_upcomingIntSpinBox->value(); }
         QString customList();
 
-
-
     private:
         void insertAvailablePlaylists();
         void insertSelectedPlaylists();
@@ -58,6 +56,8 @@ class Party : public KDialogBase
 
         QListBox     *m_lbSelected;
         QListBox     *m_lbAvailable;
+
+        KDialogBase  *m_genreSelector;
 };
 
 #endif //AMAROK_PARTY_H

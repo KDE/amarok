@@ -179,6 +179,7 @@ Playlist::Playlist( QWidget *parent )
         , m_undoCounter( 0 )
         , m_stopAfterCurrent( false )
         , m_showHelp( true )
+        , m_partyDirt( false )
         , m_lockStack( 0 )
         , m_columnFraction( 13, 0 )
 {
@@ -443,6 +444,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
     SmartPlaylist *sp;
 
+    if ( list.isEmpty() ) return;
     //randomly grab a smart playlist to get a song from.
 
     for( uint y=0; y < list.count(); y++ )
@@ -509,36 +511,27 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 }
 
 /**
- *  adjustPartyTracks(...) has two slightly different methods for type of adjustment.
- *
- *  Adjusting Upcoming tracks: Remove tracks from the end of the list,
-    or append @param songCount tracks of type @param type as required.
- *  Adjusting Previous tracks: We only remove tracks from the beginning.
-    @param songCount number of tracks will be removed from the front of the list.
- *  Remember - its more efficient to remove PlaylistItems in reverse order.
+ *  @param songCount : Number of tracks to be shown after the current track
+ *  @param type      : Type of tracks to append if required (Random/Suggestion/Custom)
  */
 
 void
-Playlist::adjustPartyTracks( uint songCount, bool upcoming, QString type )
+Playlist::adjustPartyUpcoming( uint songCount,QString type )
 {
     PlaylistItem *trackPosition  = m_currentTrack;
-    bool requireTracks = upcoming;
+    bool requireTracks = true;
     uint x=0;
 
-    if ( upcoming ) // upcomingTracks changed
+    for ( ; trackPosition != lastItem(); x++ )
     {
-
-        for ( ; trackPosition != lastItem(); x++ )
-        {
-            if ( x == songCount ) {
-                //dont need to add tracks if we have reduced upcomingTracksCount().
-                requireTracks = false;
-                trackPosition = trackPosition->nextSibling();
-                break;
-            }
-
+        if ( x == songCount ) {
+            //dont need to add tracks if we have reduced upcomingTracksCount().
+            requireTracks = false;
             trackPosition = trackPosition->nextSibling();
+            break;
         }
+
+        trackPosition = trackPosition->nextSibling();
     }
 
     if ( requireTracks )
@@ -549,15 +542,7 @@ Playlist::adjustPartyTracks( uint songCount, bool upcoming, QString type )
         //assemble a list of what needs removing
         //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
         QPtrList<QListViewItem> list;
-        if ( upcoming ) {
-            for( QListViewItemIterator it( trackPosition ); *it; list.prepend( *it ), ++it );
-        } else { //remove history items
-            uint i=0;
-            for( QListViewItemIterator it( firstChild() );
-                 i < songCount;
-                 list.prepend( *it ), ++it, ++i
-                );
-        }
+        for( QListViewItemIterator it( trackPosition ); *it; list.prepend( *it ), ++it );
 
 
         if( list.isEmpty() ) return;
@@ -570,6 +555,54 @@ Playlist::adjustPartyTracks( uint songCount, bool upcoming, QString type )
             delete item;
         }
         //NOTE no need to emit childCountChanged(), removeItem() does that for us
+    }
+}
+
+/**
+ *  @param songCount : Number of tracks to be shown before the current track
+ *  Can only reduce, since we do not keep a history
+ */
+
+void
+Playlist::adjustPartyPrevious( uint songCount )
+{
+    //we can't make bigger history
+    if ( (int)songCount > AmarokConfig::partyPreviousCount() )
+        return;
+    int x = 0;
+
+    for( PlaylistItem *pos = firstChild(); pos != m_currentTrack ; pos = pos->nextSibling())
+        x++;
+
+    x -= songCount;
+
+    QPtrList<QListViewItem> list;
+    uint y=0;
+    for( QListViewItemIterator it( firstChild() ); y < x ; list.prepend( *it ), ++it, y++ );
+
+    if( list.isEmpty() ) return;
+    saveUndoState();
+
+    //remove the items
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+    {
+        removeItem( (PlaylistItem*)item );
+        delete item;
+    }
+}
+
+void
+Playlist::removeHistoryItems()
+{
+    MyIterator it( this, MyIterator::Visible );
+
+    for( ; *it; ++it )
+    {
+        if ( *it != currentTrack() && !(*it)->isEnabled() )
+        {
+            (*it)->setEnabled( true );
+            repaintItem( *it );
+        }
     }
 }
 
@@ -674,31 +707,7 @@ Playlist::playNextTrack( bool forceNext )
             item = *MyIt( this ); //ie. first visible item
 
         if ( AmarokConfig::partyMode() && item != firstChild() )
-        {
-            MyIterator it( this, MyIterator::Visible );
-
-            for( int x=0; *it; ++it, ++x )
-            {
-                if ( *it == currentTrack() )
-                {
-                    slotMakeItemHistory( currentTrack() );
-                    if ( x < 5 )
-                    {
-                        activate( item );
-                        return;
-                    }
-                    else if ( x > childCount() - 5 )
-                        kdDebug() << "Not implemented yet" << endl;
-                    else
-                    {
-                        PlaylistItem *first = firstChild();
-                        removeItem( first ); //first visible item
-                        delete first;
-                        addSpecialTracks( 1, AmarokConfig::partyType() );
-                    }
-                }
-            }
-        }
+            advancePartyTrack();
 
         if ( !item && AmarokConfig::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
@@ -709,6 +718,31 @@ Playlist::playNextTrack( bool forceNext )
         activate( item );
     else
         setCurrentTrack( item );
+}
+
+void
+Playlist::advancePartyTrack()
+{
+    MyIterator it( this, MyIterator::Visible );
+
+    for( uint x=0 ; *it; ++it, x++ )
+    {
+        if ( *(++it) == currentTrack() )
+            (*it)->setEnabled( false );
+
+        if ( *it == currentTrack() )
+        {
+            if ( (int)x < AmarokConfig::partyPreviousCount() )
+                break;
+            PlaylistItem *first = firstChild();
+            removeItem( first ); //first visible item
+            delete first;
+        }
+    }
+
+    //keep upcomingTracks requirement
+    addSpecialTracks( 1, AmarokConfig::partyType() );
+    m_partyDirt = true;
 }
 
 void
@@ -788,7 +822,7 @@ Playlist::activate( QListViewItem *item )
     if( item )
     {
         #define item static_cast<PlaylistItem*>(item)
-        if ( item->isHistory() )
+        if ( !item->isEnabled() )
             return;
 
         m_prevTracks.append( item );
@@ -803,6 +837,13 @@ Playlist::activate( QListViewItem *item )
         item->setSelected( false );
 
         setCurrentTrack( item );
+
+        if ( AmarokConfig::partyMode() && !m_partyDirt )
+        {
+            static_cast<QListViewItem *>(item)->moveItem( currentTrack() );
+            advancePartyTrack();
+        }
+        m_partyDirt = false;
 
         //use PlaylistItem::MetaBundle as it also updates the audioProps
         EngineController::instance()->play( item );
@@ -1293,7 +1334,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
 
-    if( m_marker && static_cast<PlaylistItem *>(m_marker)->isHistory() )
+    if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isEnabled() ) )
         return;
 
     if( !after ) findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
@@ -1831,9 +1872,16 @@ Playlist::removeSelectedItems() //SLOT
 
     if( AmarokConfig::partyMode() )
     {
-        int tracks = AmarokConfig::partyUpcomingCount() + AmarokConfig::partyPreviousCount() + 1; //+1 for current track
-        if( tracks > childCount() )
-            addSpecialTracks( tracks - childCount(), AmarokConfig::partyType() );
+        PlaylistItem *pos = m_currentTrack;
+
+        int tracks = 0;
+        for( ; pos ; tracks++ )
+            pos = pos->nextSibling();
+
+        kdDebug() << "Upcoming Count: " << tracks <<endl;
+        int upcomingCount = AmarokConfig::partyUpcomingCount() + 1;
+        if( tracks < upcomingCount )
+            addSpecialTracks( upcomingCount - tracks, AmarokConfig::partyType() );
     }
 
     updateNextPrev();
@@ -2458,19 +2506,6 @@ Playlist::slotGlowTimer() //SLOT
     }
 
     ++counter &= 63; //built in bounds checking with &=
-}
-
-void
-Playlist::slotMakeItemHistory( PlaylistItem *item )
-{
-    item->setHistory( true );
-
-    //Dont let the user do anything.  ANYTHING! --> All your base are belong to us!
-    static_cast<QListViewItem*>(item)->setDragEnabled( false );
-    static_cast<QListViewItem*>(item)->setDropEnabled( false );
-    static_cast<QListViewItem*>(item)->setSelectable ( false );
-
-    repaintItem( item );
 }
 
 void

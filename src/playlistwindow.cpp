@@ -450,25 +450,27 @@ void PlaylistWindow::configureParty()
     Party dialog( i18n("Configuring party"), this );
     if( dialog.exec() == QDialog::Accepted )
     {
-        AmarokConfig::setPartyMode( dialog.isChecked() );
+        bool partyEnabled = dialog.isChecked();
+        if ( partyEnabled != AmarokConfig::partyMode() )
+        {
+            AmarokConfig::setPartyMode( partyEnabled );
+            if ( !partyEnabled ) Playlist::instance()->removeHistoryItems();
+        }
+
         AmarokConfig::setPartyType( dialog.appendType() );
         if ( AmarokConfig::partyType() == "Custom" )
             AmarokConfig::setPartyCustomList( dialog.customList() );
 
-        if ( AmarokConfig::partyPreviousCount() > dialog.previousCount() )
-        {
-            kdDebug() << "Removing " << AmarokConfig::partyPreviousCount() - dialog.previousCount() << " history items" << endl;
-            //Adjusting previousCount will only remove items, so we don't need a partyType, hence the QString::null
-            Playlist::instance()->adjustPartyTracks( AmarokConfig::partyPreviousCount() - dialog.previousCount()
-                                                   , false );
-        }
         if ( AmarokConfig::partyPreviousCount() != dialog.previousCount() )
+        {
+            Playlist::instance()->adjustPartyPrevious( dialog.previousCount() );
             AmarokConfig::setPartyPreviousCount( dialog.previousCount() );
+        }
 
         if ( AmarokConfig::partyUpcomingCount() != dialog.upcomingCount() )
         {
             AmarokConfig::setPartyUpcomingCount( dialog.upcomingCount() );
-            Playlist::instance()->adjustPartyTracks( dialog.upcomingCount(), true, dialog.appendType() );
+            Playlist::instance()->adjustPartyUpcoming( dialog.upcomingCount(), dialog.appendType() );
         }
     }
 }

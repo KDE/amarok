@@ -84,7 +84,10 @@ class Playlist : private KListView, public EngineObserver
         void addSpecialTracks( uint songCount, QString type = "Random" );
         void addSpecialCustomTracks( uint songCount, QStringList list );
 
-        void adjustPartyTracks( uint songCount, bool upcoming = true, QString type = "Random" );
+        void adjustPartyUpcoming( uint songCount, QString type = "Random" );
+        void adjustPartyPrevious( uint songCount );
+        void advancePartyTrack();
+        void removeHistoryItems();
 
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
@@ -162,7 +165,6 @@ class Playlist : private KListView, public EngineObserver
 
     private slots:
         void slotGlowTimer();
-        void slotMakeItemHistory( PlaylistItem* item );
         void slotRepeatTrackToggled( bool enabled );
         void slotEraseMarker();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
@@ -244,6 +246,7 @@ class Playlist : private KListView, public EngineObserver
         KURL::List   m_queueList;
         bool         m_stopAfterCurrent;
         bool         m_showHelp;
+        bool         m_partyDirt;
 
         /// Check for locked status
         bool isLocked() const { return m_lockStack > 0; }
