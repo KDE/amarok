@@ -1412,13 +1412,16 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
     }
     else if( m_showHelp && isEmpty() ) {
         QPainter p( viewport() );
-        QSimpleRichText t( i18n(
+        QString minimumText(i18n(
                 "<div align=center>"
                   "<h3>The Playlist</h3>"
                     "This is the playlist. "
                     "To create a listing, "
                       "<b>drag</b> tracks from the browser-panels on the left, "
                       "<b>drop</b> them here and then <b>double-click</b> them to start playback!"
+                "</div>" ) );
+        QSimpleRichText *t = new QSimpleRichText( minimumText +
+                i18n( "<div align=center>"
                   "<h3>The Browsers</h3>"
                     "The browsers are the source of all your music. "
                     "The collection-browser holds your collection. "
@@ -1426,17 +1429,25 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
                     "The file-browser shows a file-selector which you can use to access any music on your computer. "
                 "</div>" ), QApplication::font() );
 
-        const uint wd3 = viewport()->width() / 3;
+        if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
+            // too big for the window, so let's cut part of the text
+            delete t;
+            t = new QSimpleRichText( minimumText, QApplication::font());
+            if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
+                //still too big, giving up
+                return;
+            }
+        }
 
-        t.setWidth( wd3 );
-
-        const uint w = t.width() + 30;
-        const uint h = t.height() + 30;
-        const uint y = (viewport()->height() - h) / 2;
+        const uint w = t->width();
+        const uint h = t->height();
+        const uint x = (viewport()->width() - w - 30) / 2 ;
+        const uint y = (viewport()->height() - h - 30) / 2 ;
 
         p.setBrush( colorGroup().background() );
-        p.drawRoundRect( wd3-15, y-15, w, h, (8*200)/w, (8*200)/h );
-        t.draw( &p, wd3, y, QRect(), colorGroup() );
+        p.drawRoundRect( x, y, w+30, h+30, (8*200)/w, (8*200)/h );
+        t->draw( &p, x+15, y+15, QRect(), colorGroup() );
+        delete t;
     }
 }
 
