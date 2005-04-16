@@ -44,6 +44,7 @@ int main( int argc, char *argv[] )
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "Analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
+    aboutData.addCredit( "Alexandre Oliveira", I18N_NOOP( "Improvements, Bugfixes" ), "aleprj@gmail.com" );
     aboutData.addCredit( "Andreas Mair", I18N_NOOP( "MySQL support" ), "am_ml@linogate.com" );
     aboutData.addCredit( "Andrew de Quincey", I18N_NOOP( "Postgresql support" ), "adq_dvb@lidskialf.net" );
     aboutData.addCredit( "Dan Leinir Turthra Jensen", I18N_NOOP( "First-run wizard, usability" ), "admin@REMOVEleinir.dk" );
