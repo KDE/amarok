@@ -204,10 +204,7 @@ void
 CoverFetcher::receivedXmlData( KIO::Job*, const QByteArray& data ) //SLOT
 {
     // Append new chunk of data
-    // there's no + operator for QByteArray, so we have to do it the hard way
-    int xmlSize = m_xmlRaw.size();
-    m_xmlRaw.resize( m_xmlRaw.size() + data.size() );
-    memcpy( m_xmlRaw.data()+xmlSize, data.data(), data.size() );
+    m_xml += QString::fromUtf8( data, data.size() );
 }
 
 void
@@ -215,7 +212,6 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     DEBUG_BLOCK
 
-    m_xml = QString::fromUtf8( m_xmlRaw, m_xmlRaw.size() );
     if( job && job->error() ) {
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
