@@ -351,6 +351,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
+    m_dirtyWikiPage = true;
     m_lyricJob = 0; //New metadata, so let's forget previous lyric-fetching jobs
 
     // Prepend stream metadata history item to list
@@ -2284,14 +2285,12 @@ ContextBrowser::showLyricSuggestions()
 
 void ContextBrowser::showWikipedia()
 {
-/*    if ( currentPage() != m_wikiPage->view() )
+    if ( currentPage() != m_wikiPage->view() )
     {
         blockSignals( true );
         showPage( m_homePage->view() );
         blockSignals( false );
     }
-*/
-    if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
     m_wikiPage->begin();
     m_HTMLSource="";
