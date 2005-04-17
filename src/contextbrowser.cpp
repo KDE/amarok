@@ -80,6 +80,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyHomePage( true )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
+        , m_dirtyWikiPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
         , m_bgGradientImage( 0 )
@@ -99,6 +100,10 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage->setJavaEnabled( false );
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
+    m_wikiPage = new KHTMLPart( this, "wiki_page" );
+    m_lyricsPage->setJavaEnabled( false );
+    m_lyricsPage->setPluginsEnabled( false );
+    m_lyricsPage->setDNDEnabled( true );
 
     //aesthetics - no double frame
 //     m_homePage->view()->setFrameStyle( QFrame::NoFrame );
@@ -108,9 +113,11 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
+    addTab( m_wikiPage->view(),       SmallIconSet( "document" ), i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
+    setTabEnabled( m_wikiPage->view(), false );
 
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
@@ -126,6 +133,10 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_lyricsPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                               SLOT( openURLRequest( const KURL & ) ) );
     connect( m_lyricsPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
+             this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+    connect( m_wikiPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                               SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_wikiPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
@@ -237,6 +248,8 @@ void ContextBrowser::openURLRequest( const KURL &url )
         }
         else if ( url.path() == "lyrics" )
             showLyrics();
+        else if ( url.path() == "wiki" )
+            showWikipedia();
         else if ( url.path() == "collectionSetup" )
         {
             //TODO if we do move the configuration to the main configdialog change this,
@@ -314,6 +327,7 @@ void ContextBrowser::renderView()
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
+    m_dirtyWikiPage = true;
 
     // TODO: Show CurrentTrack or Lyric tab if they were selected
     if ( CollectionDB::instance()->isEmpty() )
@@ -361,6 +375,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
+    m_dirtyWikiPage = true;
     m_lyricJob = 0; //let's forget previous lyric-fetching jobs
 
     switch( state )
@@ -371,6 +386,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), false );
             setTabEnabled( m_lyricsPage->view(), false );
+            setTabEnabled( m_wikiPage->view(), false );
             blockSignals( false );
             break;
         case Engine::Playing:
@@ -378,6 +394,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), true );
             setTabEnabled( m_lyricsPage->view(), true );
+            setTabEnabled( m_wikiPage->view(), true );
             blockSignals( false );
             break;
         default:
@@ -418,6 +435,8 @@ void ContextBrowser::tabChanged( QWidget *page )
         showCurrentTrack();
     else if ( m_dirtyLyricsPage && ( page == m_lyricsPage->view() ) )
         showLyrics();
+    else if ( m_dirtyWikiPage && ( page == m_wikiPage->view() ) )
+        showWikipedia();
 }
 
 
@@ -1823,6 +1842,7 @@ void ContextBrowser::setStyleSheet()
     m_homePage->setUserStyleSheet( m_styleSheet );
     m_currentTrackPage->setUserStyleSheet( m_styleSheet );
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
+    m_wikiPage->setUserStyleSheet( m_styleSheet );
 }
 
 
@@ -2152,6 +2172,13 @@ ContextBrowser::lyricsData( KIO::Job* job, const QByteArray& data ) //SLOT
     if (job == m_lyricJob)
         m_lyrics += QString( data );
 }
+void
+ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
+{
+    // Append new chunk of string
+    if (job == m_wikiJob)
+        m_wiki += QString( data );
+}
 
 
 void
@@ -2255,6 +2282,91 @@ ContextBrowser::showLyricSuggestions()
 
 }
 
+void ContextBrowser::showWikipedia()
+{
+    if ( currentPage() != m_wikiPage->view() )
+    {
+        blockSignals( true );
+        showPage( m_homePage->view() );
+        blockSignals( false );
+    }
+
+    if ( !m_dirtyWikiPage || m_wikiJob ) return;
+
+    m_wikiPage->begin();
+    m_HTMLSource="";
+    m_wikiPage->setUserStyleSheet( m_styleSheet );
+
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='building_box' class='box'>"
+                "<div id='building_box-header' class='box-header'>"
+                    "<span id='building_box-header-title' class='box-header-title'>"
+                    + i18n( "Wikipedia" ) +
+                    "</span>"
+                "</div>"
+                "<div id='building_box-body' class='box-body'>"
+                    "<div class='info'><p>" + i18n( "Fetchin Wikipedia" ) + " ...</p></div>"
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
+
+    m_wikiPage->write( m_HTMLSource );
+    m_wikiPage->end();
+
+    m_wiki = QString::null;
+
+    QString url = QString( "http://en.wikipedia.com/wiki/%1" )
+            .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
+
+    m_wikiJob = KIO::get( url, false, false );
+
+    amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
+            .setDescription( i18n( "Fetching Wikipedia" ) );
+
+    connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ),
+             this,  SLOT( wikiResult( KIO::Job* ) ) );
+    connect( m_wikiJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+             this,  SLOT( wikiData( KIO::Job*, const QByteArray& ) ) );
+}
+
+void
+ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
+{
+    if ( !job->error() == 0 )
+    {
+        kdWarning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
+        return;
+    }
+
+    if ( job != m_wikiJob )
+        return; //not the right job, so let's ignore it
+
+    m_wikiPage->begin();
+    m_HTMLSource="";
+    m_wikiPage->setUserStyleSheet( m_styleSheet );
+
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Wikipedia" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    + m_wiki +
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
+    m_wikiPage->write( m_HTMLSource );
+    m_wikiPage->end();
+    m_dirtyWikiPage = false;
+    m_wikiJob = NULL;
+    saveHtmlData(); // Send html code to file
+}
 
 void
 ContextBrowser::coverFetched( const QString &artist, const QString &album )

@@ -56,9 +56,12 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showCurrentTrack();
         void showLyrics( const QString& hash = QString::null );
         void showLyricSuggestions();
+        void showWikipedia();
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
+        void wikiData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
+        void wikiResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
@@ -75,20 +78,24 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KHTMLPart    *m_homePage;
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
+        KHTMLPart    *m_wikiPage;
         // These control if is needed to rewrite the html for the pages
         // true -> need rebuild
         bool          m_dirtyHomePage;
         bool          m_dirtyCurrentTrackPage;
         bool          m_dirtyLyricsPage;
+        bool          m_dirtyWikiPage;
 
         QString       m_styleSheet;
         bool          m_emptyDB;
         QString       m_lyrics;
+        QString       m_wiki;
         QStringList   m_lyricSuggestions;
         QStringList   m_lyricHashes;
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         KIO::TransferJob* m_lyricJob;
+        KIO::TransferJob* m_wikiJob;
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;
