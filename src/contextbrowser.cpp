@@ -2284,13 +2284,13 @@ ContextBrowser::showLyricSuggestions()
 
 void ContextBrowser::showWikipedia()
 {
-    if ( currentPage() != m_wikiPage->view() )
+/*    if ( currentPage() != m_wikiPage->view() )
     {
         blockSignals( true );
         showPage( m_homePage->view() );
         blockSignals( false );
     }
-
+*/
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
     m_wikiPage->begin();
