@@ -228,7 +228,7 @@ MetaBundle::veryNiceTitle() const
     //     If not then they do apply to this function also!
     if( !m_title.isEmpty() )
     {
-        s = "\"" + m_title + "\"" + i18n(" by ") + m_artist;
+        s = i18n( "'%1' by %2" ).arg( m_title ).arg( m_artist );
     }
     else
     {
