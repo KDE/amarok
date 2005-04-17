@@ -840,7 +840,8 @@ Playlist::activate( QListViewItem *item )
 
         if ( AmarokConfig::partyMode() && !m_partyDirt )
         {
-            static_cast<QListViewItem *>(item)->moveItem( currentTrack() );
+            kdDebug() << "moving item to front" << endl;
+            (static_cast<QListViewItem *>(item))->moveItem( currentTrack() );
             advancePartyTrack();
         }
         m_partyDirt = false;
@@ -1824,6 +1825,9 @@ Playlist::burnSelectedTracks( int projectType )
 void
 Playlist::shuffle() //SLOT
 {
+    if( AmarokConfig::partyMode() )
+        return;
+
     QPtrList<QListViewItem> list;
 
     setSorting( NO_SORT );
@@ -1889,7 +1893,6 @@ Playlist::removeSelectedItems() //SLOT
         for( ; pos ; tracks++ )
             pos = pos->nextSibling();
 
-        kdDebug() << "Upcoming Count: " << tracks <<endl;
         int upcomingCount = AmarokConfig::partyUpcomingCount() + 1;
         if( tracks < upcomingCount )
             addSpecialTracks( upcomingCount - tracks, AmarokConfig::partyType() );
