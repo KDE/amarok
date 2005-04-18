@@ -9,6 +9,7 @@ shouter_DATA = \
     ChangeLog \
     debug.py \
     Encoder.py \
+    FileProvider.py \
     FormatHelper.py \
     Globals.py \
     README \
