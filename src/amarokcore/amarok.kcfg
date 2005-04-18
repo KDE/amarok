@@ -192,7 +192,7 @@
     <entry key="Master Volume" type="Int">
         <label>Master volume</label>
         <whatsthis>The amaroK master volume, a value between 0 (muted) and 100.</whatsthis>
-        <default>50</default>
+        <default>100</default>
         <min>0</min>
         <max>100</max>
     </entry>
