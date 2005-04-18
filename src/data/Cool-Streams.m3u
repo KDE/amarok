@@ -36,6 +36,9 @@ http://www.hardcoreregime.co.uk/radio.m3u
 #EXTINF:-1,Indie Pop Rocks [Indie]
 http://www.somafm.com/indiepop.pls
 
+#EXTINF:-1,Kohina [Computer-Music]
+http://la.campus.ltu.se:8000/stream.ogg.m3u
+
 #EXTINF:-1,Mostly Classical [Classical]
 http://www.mostlyclassical.com/mp3/classical96k.pls
 
