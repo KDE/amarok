@@ -230,9 +230,7 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
 
                 # Roll the dice and see if we won anything
                 if self.blind:
-                    debug( 'stream is blind. rolling dice' )
                     if random.randint(0,100) <= self.cfg.inject_pct:
-                        debug( 'about to injectinate' )
                         self.meta_is_dirty = True
                         self._do_injection(self.cfg.inject_dir, self.cfg.inject_filt)
 

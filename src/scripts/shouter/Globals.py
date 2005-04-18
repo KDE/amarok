@@ -4,6 +4,9 @@
 import os
 from debug import *
 
+def status(msg):
+    PlaylistDcop( 'shortStatusMessage "%s"' % msg ).result()
+
 def queryCollection(sql):
     #sql = sql.replace("'", "\\'").replace('"', '\\"')
     return CollectionDcop('query "%s"' % sql).result().rstrip().splitlines()

@@ -48,6 +48,7 @@ class StreamController (SocketServer.ThreadingTCPServer):
     def handle_error( self, request, client_address ):
         sr = self.sockets.pop(request)
         self.log( 'Dropping socket to %s. Active sockets: %d' % (client_address[0], len(self.sockets) ))
+        Globals.status('Dropping connection to %s' % client_address[0])
         raise
         
     def finish_request(self, request, client_address):
@@ -55,6 +56,7 @@ class StreamController (SocketServer.ThreadingTCPServer):
         sr = StreamRequest(request, client_address, self)
 
         if len(self.sockets) < self.cfg.max_clients : 
+            Globals.status('Starting stream for %s' % client_address[0])
             self.sockets[request] = sr
             sr.run()
         else:

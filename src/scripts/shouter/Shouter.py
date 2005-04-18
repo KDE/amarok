@@ -120,6 +120,7 @@ class Shouter( QApplication ):
                 debug( '%d: playlist = %s' % (self.cfg.port, str(stream_ctrl.playlist)) )
                 self.m = QMessageBox("Amarok Shouter","Starting server on http://%s:%d%s" % (socket.gethostname(), self.cfg.port, self.cfg.mount), QMessageBox.Information,QMessageBox.Ok,QMessageBox.NoButton,QMessageBox.NoButton, None, "", False, QWidget.WDestructiveClose)
                 if not self.cfg.supress_dialog: self.m.show()
+                Globals.status('Starting server on http://%s:%d%s' % (socket.gethostname(), self.cfg.port, self.cfg.mount ))
                 self.stream_ctrl = stream_ctrl
 
                 threading.Thread(target = self.stream_ctrl.run).start()
