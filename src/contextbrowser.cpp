@@ -2305,7 +2305,7 @@ void ContextBrowser::showWikipedia()
                     "</span>"
                 "</div>"
                 "<div id='building_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Fetchin Wikipedia" ) + " ...</p></div>"
+                    "<div class='info'><p>" + i18n( "Fetching Wikipedia" ) + " ...</p></div>"
                 "</div>"
             "</div>"
             "</html>"
