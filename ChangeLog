@@ -39,6 +39,7 @@ VERSION 1.3-beta1:
 
 VERSION 1.2.4:
   BUGFIXES:
+    * Application freezes when switching shoutcast streams. (BR 103890)
     * MusicBrainz lookup was not escaping quote characters. (BR 103740)
     * Fixed crash when clicking the "clear" button in CoverManager's filter
       widget.

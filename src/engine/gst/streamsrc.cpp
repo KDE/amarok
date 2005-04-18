@@ -118,7 +118,7 @@ gst_streamsrc_init ( GstStreamSrc * streamsrc )
 GstStreamSrc*
 gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 {
-    GstStreamSrc * object = GST_STREAMSRC( g_object_new( GST_TYPE_STREAMSRC, NULL ) );
+    GstStreamSrc* object = GST_STREAMSRC( g_object_new( GST_TYPE_STREAMSRC, NULL ) );
     gst_object_set_name( (GstObject*) object, "StreamSrc" );
 
     object->m_buf = buf;
@@ -133,11 +133,14 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 void
 gst_streamsrc_dispose( GObject *object )
 {
-    kdDebug() << k_funcinfo << endl;
+    kdDebug() << "BEGIN: " << k_funcinfo << endl;
 
     GstStreamSrc* obj = GST_STREAMSRC( object );
     *obj->m_buffering = false;
+
     G_OBJECT_CLASS( parent_class )->dispose( object );
+
+    kdDebug() << "END: " << k_funcinfo << endl;
 }
 
 
@@ -197,6 +200,8 @@ gst_streamsrc_get_property ( GObject * object, guint prop_id, GValue * value, GP
 GstElementStateReturn
 gst_streamsrc_change_state (GstElement * element)
 {
+    kdDebug() << k_funcinfo << endl;
+
     switch (GST_STATE_TRANSITION (element)) {
         case GST_STATE_NULL_TO_READY:
             break;
@@ -237,13 +242,9 @@ gst_streamsrc_get ( GstPad* pad )
         gst_element_set_eos( GST_ELEMENT( src ) );
         return GST_DATA( gst_event_new( GST_EVENT_EOS ) );
     }
-    // When buffering, return empty buffer if buffer index is below minimum level
-    else if ( *src->m_buffering && *src->m_bufIndex < (int) src->buffer_min ) {
-        GstBuffer* const buf = gst_buffer_new_and_alloc( 0 );
-        GST_BUFFER_OFFSET( buf )     = src->curoffset;
-        GST_BUFFER_OFFSET_END( buf ) = src->curoffset;
-        return GST_DATA( buf );
-    }
+    // When buffering and buffer index is below minimum level, return filler event (dummy)
+    else if ( *src->m_buffering && *src->m_bufIndex < (int) src->buffer_min )
+        return GST_DATA( gst_event_new( GST_EVENT_FILLER ) );
 
     *src->m_buffering = *src->m_bufIndex ? false : true;
     const int readBytes = MIN( *src->m_bufIndex, src->blocksize );
