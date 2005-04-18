@@ -21,12 +21,14 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "statusbar.h"
 #include "streamprovider.h"
 
 #include <qregexp.h>
 #include <qtextcodec.h>
 #include <qtimer.h>
 
+#include <klocale.h>
 #include <kmdcodec.h>
 #include <kprotocolmanager.h>
 
@@ -227,7 +229,8 @@ void
 StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
-        warning() << "StreamProvider error: Unable to connect to this stream server. Can't play the stream!\n";
+        warning() << "Unable to connect to this stream server." << endl;
+        amaroK::StatusBar::instance()->longMessage( i18n( "Unable to connect to this stream server." ), amaroK::StatusBar::Sorry );
 
         emit sigError();
     }
