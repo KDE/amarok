@@ -113,7 +113,7 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    addTab( m_wikiPage->view(),         SmallIconSet( "document" ), i18n( "Wiki" ) );
+    addTab( m_wikiPage->view(),         SmallIconSet( "wiki" ), i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
