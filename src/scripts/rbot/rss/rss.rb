@@ -200,7 +200,7 @@ class RSSFeedsPlugin < Plugin
                     $stderr.print "IO failed: " + $! + "\n"
                 end
                 puts "Thread going to sleep.."
-                sleep 100
+                sleep 200
             end
         end
     end
