@@ -26,9 +26,21 @@ from debug import *
 from StreamController import *
 from Encoder import *
 from FileProvider import *
+from dircache import listdir
+from ShouterExceptions import *
+from xml.dom import minidom
+import random
+import glob
 
 META = "%cStreamTitle='%s';StreamUrl='%s';%s"
-ICYRESP = 'ICY 200 OK\r\nicy-notice1:%s\r\nicy-notice2:%s\r\nicy-name:%s\r\nicy-br:%d\r\nicy-genre:%s\r\nicy-url:%s\r\nicy-metaint:%d\r\n\r\n'
+ICYRESP = 'ICY 200 OK\r\n' + \
+          'icy-notice1:%s\r\n' + \
+          'icy-notice2:%s\r\n' + \
+          'icy-name:%s\r\n' + \
+          'icy-br:%d\r\n' + \
+          'icy-genre:%s\r\n' + \
+          'icy-url:%s\r\n' + \
+          'icy-metaint:%d\r\n\r\n'
 PADDING = '\x00'*16
 SILENCE_F = '../scripts/shouter/silence/silence-%s.mp3'
 
@@ -48,7 +60,7 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
     meta_is_dirty = True
     pl_pos = 0
 
-    # blind is a sentinel boolean so that the loop in the stream method is interruptible
+    # blind is a sentinel boolean allowing interruption of the streaming loop
     blind = True
 
     def __init__(self, request, client_address, stream_controller):
@@ -169,7 +181,7 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
         debug( '_do_GET' )
         if self._check_request() : 
             if self.icy:
-                resp = ICYRESP % (self.cfg.desc1, self.cfg.desc2, self.cfg.name, self._get_bitrate(self.server.playlist[-1]), self.cfg.genre, self.cfg.url, self.cfg.icy_interval )
+                resp = ICYRESP % (self.cfg.desc1, self.cfg.desc2, self.cfg.name, self.cfg.stream_br, self.cfg.genre, self.cfg.url, self.cfg.icy_interval )
                 self.request.send(resp)
             else:
                 #resp ='HTTP/1.0 200 OK\r\nContent-Type: audio/x-mpegurl\r\n\r\n' 
@@ -182,19 +194,122 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
             has_played_once = False
             while True:
                 pl = self.server.playlist
+                self.meta_is_dirty = True
+                
+                # If this request was rudely interrupted, jump to the last track
+                if not self.blind:
+                    debug('Updating interrupted stream to end of playlist: %d' % (len(pl)-1))
+                    self.pl_pos = len(pl)-1
+
                 if len(pl)==0 or self.pl_pos>=len(pl):
-                    debug('Sending silence to %s' % str(self.request.getpeername()[0]))
-                    self.stream(SILENCE_F % 160, 0, 160)
+                    do_idle = 'self._idle_%d(\'%s\')' % (self.cfg.idle_mode, self.cfg.idle_arg)
+                    while True:
+                        try:
+                            eval(do_idle)
+                            break
+                        except format_error:
+                            # Try again and hope to get a better format next time
+                            pass
+                        except NameError, invalid_param_error:
+                            self._idle_0()
+                            break
+                    #debug('Sending silence to %s' % str(self.request.getpeername()[0]))
+                    #self.stream(SILENCE_F % 160, 0, 160)
                 else:
                     self.file = pl[self.pl_pos]
-                    self.meta_is_dirty = True
-                    if has_played_once is False:
-                        pos = self._get_play_cursor()
-                        self.stream(self.file, pos)
-                    else: 
-                        self.stream(self.file)
-                    has_played_once = True
+                    try:
+                        if not has_played_once:
+                            pos = self._get_play_cursor()
+                            self.stream(self.file, pos)
+                        else: 
+                            self.stream(self.file)
+                    except format_error:
+                        pass
+                    has_played_once = 1
                     self.pl_pos += 1
+
+                # Roll the dice and see if we won anything
+                if self.blind:
+                    debug( 'stream is blind. rolling dice' )
+                    if random.randint(0,100) <= self.cfg.inject_pct:
+                        debug( 'about to injectinate' )
+                        self.meta_is_dirty = True
+                        self._do_injection(self.cfg.inject_dir, self.cfg.inject_filt)
+
+    def _idle_0(self, arg=''):
+        """ Silence """
+
+        debug('_idle_0')
+        self.stream(SILENCE_F % 160, 0, 160)
+
+    def _idle_1(self, dir, filter=None):
+        """ Directory """
+        if not filter: filter = '*.' + self.cfg.stream_format
+        debug( '_idle_1: %s %s' % (dir, filter ))
+        self._do_injection(dir, filter)
+        
+
+    def _idle_2(self, genre):
+        """ Genre """
+        debug( '_idle_2: ' + genre )
+        sql = 'SELECT url,bitrate FROM genre,tags ' + \
+              'WHERE tags.genre=genre.id AND ' + \
+              'genre.name=\'%s\' ' + \
+              'ORDER BY RAND() LIMIT 1'
+        result = Globals.queryCollection(sql % genre)
+        if not result: raise invalid_param_error
+        self.stream(result[0], 0, int(result[1]))
+
+    def _idle_3(self, year):
+        """ Year """
+        debug( '_idle_3: ' + year )
+        sql = 'SELECT url,bitrate FROM year,tags ' + \
+              'WHERE tags.year=year.id AND ' + \
+              'year.name=\'%s\' ' + \
+              'ORDER BY RAND() LIMIT 1' 
+        result = Globals.queryCollection(sql % year)
+        if not result: raise invalid_param_error
+        self.stream(result[0], 0, int(result[1]))
+
+    def _idle_4(self, bitrate):
+        """ Bitrate """
+        bitrate = int(bitrate)
+        debug( '_idle_4: ' + str(bitrate) )
+        sql = 'SELECT url, bitrate FROM tags ' + \
+              'WHERE bitrate=%d' + \
+              'ORDER BY RAND() LIMIT 1'
+        if not bitrate: bitrate = self.cfg.stream_br
+        result = Globals.queryCollection(sql % bitrate)
+        if not result: raise invalid_param_error
+        self.stream(result[0], 0, int(result[1]))
+
+    def _idle_5(self, arg=''):
+        """ Random from collection """
+        debug( '_idle_5'  )
+        sql = 'SELECT url, bitrate FROM tags ' + \
+              'ORDER BY RAND() LIMIT 1'
+        result = Globals.queryCollection(sql)
+        if not result: raise invalid_param_error
+        self.stream(result[0], 0, int(result[1]))
+
+    def _idle_6(self, arg=''):
+        """ amaroK Playlist """
+        debug( '_idle_6' )
+        Globals.PlaylistDcop('saveCurrentPlaylist')
+        doc = minidom.parse('../current.xml')
+        amarok_pl = []
+        i = doc.firstChild.firstChild.nextSibling
+        try:
+            while True:
+                amarok_pl.append(i.getAttribute('url'))
+                i = i.nextSibling.nextSibling
+        except:
+            pass
+
+        url = random.sample(amarok_pl, 1)[0]
+        fname = urllib.url2pathname(sub(r'file:/*', '/', url))
+        self.stream(fname, 0)
+               
 
     def _get_play_cursor(self):
         """ Find byte position via times returned by dcop """        
@@ -207,35 +322,61 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
         size = os.stat(self.server.playlist[-1])[6]
         return long(frac*size)
 
-    def get_meta( self ):
+    def get_meta(self, fname):
         """ Transform ID3 info into something appropriate for streams """
 
         if self.meta_is_dirty:
             debug( 'get_meta meta_is_dirty = True' )
-            title = "%s - %s" % (Globals.PlayerDcop('artist').result().rstrip(), Globals.PlayerDcop('title').result().rstrip())
+            sql = 'SELECT artist.name, title FROM tags, artist ' + \
+                  'WHERE tags.artist=artist.id AND ' + \
+                  'url=\'%s\''
+            result = Globals.queryCollection(sql % sub(r'\'', '\\\'', fname))
+
+            stream_title = ''
+            if result:  stream_title = '%s - %s' % (result[0], result[1])
+            else:       stream_title = os.path.basename(fname)
+
             addr = self.request.getsockname()
             download_url = ''
             if self.cfg.enable_dl:
                 download_url = 'http://%s:%d%s' % (addr[0], addr[1], self.cfg.dl_mount)
 
             # The literal 28 is the number of static characters in the META string (see top)
-            length = len(title) + len(download_url) + 28
+            length = len(stream_title) + len(download_url) + 28
             padding = 16 - length % 16 
-            meta = META % ( (length + padding)/16, title, download_url, PADDING[:padding] )
+            meta = META % ( (length + padding)/16, stream_title, download_url, PADDING[:padding] )
             #debug('sending meta string: %s' % meta)
             self.meta_is_dirty = False
             return meta
         else:
             return '\x00'
     
-    def _get_bitrate( self, file ):
-        temp = Globals.PlayerDcop( "bitrate" ).result().rstrip()
+    def _get_bitrate( self, fname ):
+        """ FIXME """
+
+        sql = 'SELECT bitrate FROM tags WHERE url=\'%s\''
         bitrate = 160
-        try:
-            bitrate = int(findall( r'(\d*)\skbps', temp )[0])
-        except:
-            bitrate = 160
+        result = Globals.queryCollection( sql % fname )
+        if result: bitrate = int(result[0])
+        else: 
+            debug('Couldn\'t retrieve bitrate for ' + fname)
+            temp = Globals.PlayerDcop( "bitrate" ).result().rstrip()
+            try:
+                bitrate = int(findall( r'(\d*)\skbps', temp )[0])
+            except:
+                pass
         return bitrate
+
+    def _do_injection(self, dir, filter):
+        """ Inject a random file into the music stream """ 
+
+        debug( '_do_injection' )
+        files = random.sample(glob.glob(os.path.join(dir, filter)), 1)
+        if files:
+            fname = files[0]
+            self.stream(fname, 0, self._get_bitrate(fname))
+        else: 
+            raise NameError
 
     def stream( self, file, pos=0, bitrate=0 ):
         debug('ShouterRequest.stream. This should not happen')
@@ -264,7 +405,7 @@ class ReencodedRequest(ShouterRequest):
             if bytes_till_meta == 0:
                 # send meta and reset counter
                 if self.icy:
-                    meta = self.get_meta()
+                    meta = self.get_meta(file)
                     self.request.send(meta) 
                 self.byte_counter = 0
             if bytes_till_meta < self.cfg.buf_size :
@@ -304,7 +445,7 @@ class StreamRequest(ShouterRequest):
         try:
             f = self.server.coded_files[file]
         except KeyError:
-            debug('Caught KeyError in StreamRequest.stream. Assuming silence')
+            debug('Couldn\'t retrieve FileProvider for %s. Using temporary provider' % file )
             f = FileProvider(file)
 
         if bitrate==0: 
@@ -312,9 +453,12 @@ class StreamRequest(ShouterRequest):
            else: bitrate = self._get_bitrate(file)
 
         size = os.stat(file)[6]
-        sleep_factor = 8.0/(bitrate * 1024.0)
 
-        # this isn't quite right, but is of relatively little consequence
+        #experiment with hackjob buffer underrun prevention
+        sleep_factor = 8.0/(bitrate * 1200.0) 
+        #sleep_factor = 8.0/(bitrate * 1024.0)
+
+        # this isn't quite right, but is of little consequence
         # as the headers themselves are very small
         f.seek( self._get_data_start(file) + pos  )
         self.blind = True
@@ -323,19 +467,19 @@ class StreamRequest(ShouterRequest):
             if bytes_till_meta == 0:
                 # send meta and reset counter
                 if self.icy:
-                    meta = self.get_meta()
+                    meta = self.get_meta(file)
                     self.request.send(meta) 
                 self.byte_counter = 0
-            if bytes_till_meta < self.cfg.buf_size :
-                # send whats left. Will update meta on next iteration
-                buf = f.read(bytes_till_meta)
-                self.request.send(buf)
-                self.byte_counter += len(buf)
-            else :
-                # Send a normal buffer
-                buf = f.read(self.cfg.buf_size)
-                self.request.send(buf)
-                self.byte_counter += len(buf)
-            sleep_int = len(buf) * sleep_factor
-            time.sleep(sleep_int)
-
+            else: 
+                if bytes_till_meta < self.cfg.buf_size :
+                    # send whats left. Will update meta on next iteration
+                    buf = f.read(bytes_till_meta)
+                    self.request.send(buf)
+                    self.byte_counter += len(buf)
+                else :
+                    # Send a normal buffer
+                    buf = f.read(self.cfg.buf_size)
+                    self.request.send(buf)
+                    self.byte_counter += len(buf)
+                sleep_int = len(buf) * sleep_factor
+                time.sleep(sleep_int)

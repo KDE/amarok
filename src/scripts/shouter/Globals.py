@@ -1,22 +1,13 @@
-# Written by markey, not james.
+# Originally written by markey, not james.
 #
 # for system call
 import os
+from debug import *
 
-#
-# the port number to listen to
-#
-PORT = 4774
+def queryCollection(sql):
+    #sql = sql.replace("'", "\\'").replace('"', '\\"')
+    return CollectionDcop('query "%s"' % sql).result().rstrip().splitlines()
 
-#
-# execution path of script
-#
-EXEC_PATH = None
-
-#
-# Use simple popen call in order not to depend on dcop python lib
-# (since it does currently not work on my computer :)
-#
 def _initDcopCallPlayer(call):
     return os.popen("dcop --no-user-time amarok player %s"%call)
 
@@ -37,6 +28,15 @@ def _initDcopCallPlaylistArg(call, val):
 
 def _dcopCallPlaylistArg(call, val):
     return _initDcopCallPlaylistArg(call, val).read()
+
+def _initDcopCallCollection(call):
+    return os.popen("dcop --no-user-time amarok collection %s"%call)
+
+def _initDcopCallCollectionArg(call, val):
+    return os.popen("dcop --no-user-time amarok collection %s %s"%(call,val))
+
+def _dcopCallCollectionArg(call, val):
+    return _initDcopCallCollectionArg(call, val).read()
 
 class DelayedDcop:
     def __init__(self, initcall, initcallarg, command, val = None):
@@ -73,4 +73,11 @@ class PlaylistDcop ( DelayedDcop ):
     def __init__(self, command, val = None):
         self.__super_init(_initDcopCallPlaylist,
                           _initDcopCallPlaylistArg,
+                          command, val)
+
+class CollectionDcop ( DelayedDcop ):
+    __super_init = DelayedDcop.__init__
+    def __init__(self, command, val = None):
+        self.__super_init(_initDcopCallCollection,
+                          _initDcopCallCollectionArg,
                           command, val)

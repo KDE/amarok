@@ -13,6 +13,8 @@
 ############################################################################
 
 
+IDLE_MODES = ['Silence', 'Directory', 'Genre', 'Year', 'Bitrate', 'Random collection entry', 'amaroK playlist']
+
 class StreamConfig:
     """ Container for stream configuration. Values are defaults and should be
     reset when the configuration is loaded from disk """
@@ -28,12 +30,25 @@ class StreamConfig:
     max_clients = 4
     punc_factor = 100
     pre_seek = 2
-    force_update = True
+    force_update = False
     enable_dl = True
     supress_dialog = False
     dl_mount = '/current'
     dl_throttle = 20
-    reencoding = 0
+    reencoding = 0 # 0=none | 1=dissimilar formats | 2=all tracks
     stream_format = 'mp3'
     stream_br = 192
     chunk_size = 524288
+    idle_mode = 4 # Random collection entry
+    idle_arg= ''
+    inject_dir = ''
+    inject_pct = 0
+    inject_filt = '*.mp3'
+
+def idle_mode(i):
+    try:
+        return IDLE_MODES[i]
+    except IndexError:
+        return IDLE_MODES[0]
+               
+        

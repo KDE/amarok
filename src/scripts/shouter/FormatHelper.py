@@ -19,6 +19,7 @@ import tempfile
 
 GENERICDEC = 'mplayer -really-quiet -ao pcm %s -aofile %s'
 
+FORMATS = ['mp3', 'ogg']
 OGGDEC = 'oggdec -Q %s -o %s'
 OGGENC = 'oggenc -Q -b %d -r %s -o %s'
 

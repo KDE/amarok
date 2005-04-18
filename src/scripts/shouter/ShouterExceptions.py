@@ -17,6 +17,11 @@ from exceptions import *
 class chunk_not_found_error(Exception):
     pass
 
-class chunk_exception(Exception):
+class chunk_error(Exception):
     pass
 
+class format_error(Exception):
+    pass
+
+class invalid_param_error(Exception):
+    pass

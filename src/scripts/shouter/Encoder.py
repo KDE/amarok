@@ -46,7 +46,6 @@ from ShouterExceptions import *
 # TODO:
 #     Chunks aren't cleaning themselves up
 #     mp3 chunking
-#     First activated chunk is being played endlessly, though all others are activating
 
 
 NONE, INITIALIZED, CHUNKED, DECODED, ENCODED = 'none', 'initialized', 'chunked', 'decoded', 'encoded'
@@ -117,7 +116,7 @@ class Chunk:
             eval(helper % (self.fname, fname_pcm))
 
         debug('trying to unlink %s with size %d' % (self.fname, os.stat(self.fname)[6]))
-        os.unlink(self.fname)
+        #os.unlink(self.fname)
         self.fd, self.fname = fd_pcm, fname_pcm
         self.state = DECODED
 
@@ -127,7 +126,7 @@ class Chunk:
         fd, fname = tempfile.mkstemp(suffix='.enc', prefix='shouter-', dir='/tmp')
         helper = self.end_format.lower() + 'Helper().encode("%s", "%s", %d)'
         eval(helper % (self.fname, fname, self.cfg.stream_br))
-        os.unlink(self.fname)
+        #os.unlink(self.fname)
         self.fd, self.fname = fd, fname
         self.state = ENCODED
     
@@ -191,7 +190,7 @@ class Encoder:
         c = self.chunks[c_i]
 
         # Should never happen
-        if c.state == NONE: raise chunk_exception
+        if c.state == NONE: raise chunk_error
     
          # This should only happen when the first client joins a new stream.
         if c.state == INITIALIZED: 
@@ -215,7 +214,6 @@ class Encoder:
 
         f = file(c.fname, 'r')
         f.seek(pos - c.pos)
-        temp = f.tell()
         buf = f.read(size)
         f.close()
         #debug('read_from size=%d pos=%d c_i=%d chunk.tell=%d c.pos=%d len(buf)=%d' % (size, pos, c_i, temp, c.pos, len(buf)))

@@ -17,18 +17,25 @@ from StreamConfig import *
 from debug import *
 import ConfigParser
 
-class ConfigDialog( QDialog ):
+class ConfigDialog( QTabDialog ):
     """ Configuration widget """
 
     cfg = StreamConfig
     def __init__( self ):
-        QDialog.__init__( self )
-        self.setSizePolicy( QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding))
-        self.setMinimumHeight(400)
-        self.setMinimumWidth(300)
-        self.setWFlags( Qt.WDestructiveClose )
+        QTabDialog.__init__(self)
+        self.read_cfg()
+        self.init_stream()
+        self.init_server()
+        self.init_pl()
+        self.init_dl()
+        self.init_enc()
+        self.setCancelButton("Cancel")
+        self.connect( self, SIGNAL("applyButtonPressed()"), self.save) 
+        self.connect( self, SIGNAL("okButtonPressed()"), self.on_ok) 
+        self.connect( self, SIGNAL("cancelButtonPressed()"), SLOT("reject()")) 
         self.setCaption( "Shouter - amaroK" )
 
+    def read_cfg(self):
         try:
             config = ConfigParser.ConfigParser()
             config.read( "shouterrc" )
@@ -45,9 +52,15 @@ class ConfigDialog( QDialog ):
             self.cfg.port               = config.getint( 'Server', 'port' )
             self.cfg.buf_size           = config.getint( 'Server', 'buf_size' )
             self.cfg.punc_factor        = config.getint( 'Server', 'punc_factor' )
-            self.cfg.force_update       = config.getboolean( 'Server', 'force_update' )
             self.cfg.pre_seek           = config.getfloat( 'Server', 'pre_seek' )
             self.cfg.supress_dialog     = config.getboolean( 'Server', 'supress_dialog' )
+
+            self.cfg.force_update       = config.getboolean( 'Playlist', 'force_update' )
+            self.cfg.idle_mode          = config.getint( 'Playlist', 'idle_mode' )
+            self.cfg.idle_arg           = config.get( 'Playlist', 'idle_arg' )
+            self.cfg.inject_pct         = config.getint( 'Playlist', 'inject_pct' )
+            self.cfg.inject_dir         = config.get( 'Playlist', 'inject_dir' )
+            self.cfg.inject_filt        = config.get( 'Playlist', 'inject_filt' )
 
             self.cfg.enable_dl          = config.getboolean( 'Downloads', 'enable_dl' )
             self.cfg.dl_mount           = config.get( 'Downloads', 'dl_mount' )
@@ -58,137 +71,192 @@ class ConfigDialog( QDialog ):
             self.cfg.stream_br          = config.getint( 'Encoding', 'stream_br' )
             self.cfg.chunk_size         = config.getint( 'Encoding', 'chunk_size' )
 
+
             self.cfg.chunk_size /= 1024
 
         except:
             pass
 
-        self.vbox = QVBox(self)
-        self.vbox.setMargin(4)
-        self.vbox.setSpacing(10)
-        self.vbox.setMinimumHeight(700)
-        self.vbox.setMinimumWidth(500)
+    def init_stream(self):
+        stream_lay = QGrid(2, self)
+        stream_lay.setMargin(5)
+        QLabel('Genre', stream_lay)
+        self.fGenre = QLineEdit(self.cfg.genre, stream_lay)
 
-        self.fStream = QGroupBox(self.vbox)
-        #self.fStream = QGroupBox(self)
-        self.fStream.setColumns(2)
-        self.fStream.setTitle('Stream')
-        self.fStream.setMinimumHeight(200)
-        self.fStream.setMinimumWidth(200)
+        QLabel( 'Mount point', stream_lay)
+        self.fMount = QLineEdit(self.cfg.mount, stream_lay)
 
-        QLabel('Genre', self.fStream)
-        self.fGenre = QLineEdit(self.cfg.genre, self.fStream)
+        QLabel( 'Stream name', stream_lay)
+        self.fName = QLineEdit(self.cfg.name, stream_lay)
 
-        QLabel( 'Mount point', self.fStream)
-        self.fMount = QLineEdit(self.cfg.mount, self.fStream)
+        QLabel( 'Home page', stream_lay)
+        self.fURL = QLineEdit(self.cfg.url, stream_lay)
 
-        QLabel( 'Stream name', self.fStream)
-        self.fName = QLineEdit(self.cfg.name, self.fStream)
+        QLabel( 'Description (line1)', stream_lay)
+        self.fDesc1 = QLineEdit(self.cfg.desc1, stream_lay)
 
-        QLabel( 'Home page', self.fStream)
-        self.fURL = QLineEdit(self.cfg.url, self.fStream)
+        QLabel( 'Description (line2)', stream_lay)
+        self.fDesc2 = QLineEdit(self.cfg.desc2, stream_lay)
+        self.addTab(stream_lay, '&Stream')
 
-        QLabel( 'Description (line1)', self.fStream)
-        self.fDesc1 = QLineEdit(self.cfg.desc1, self.fStream)
+    def init_server(self):
+        server_lay = QGrid(2, self)
+        server_lay.setMargin(5)
 
-        QLabel( 'Description (line2)', self.fStream)
-        self.fDesc2 = QLineEdit(self.cfg.desc2, self.fStream)
-
-        #####################
-        self.fServer = QGroupBox(self.vbox)
-        self.fServer.setColumns(2)
-        self.fServer.setTitle('Server')
-
-        QLabel('Port', self.fServer)        
-        self.fPort = QSpinBox( 1000, 36600, 1, self.fServer)
+        QLabel('Port', server_lay)        
+        self.fPort = QSpinBox( 1000, 36600, 1, server_lay)
         self.fPort.setValue(int(self.cfg.port))
 
-        QLabel('Buffer size', self.fServer)
-        self.fBufSize = QSpinBox( 0, 100000, 1024, self.fServer)
+        QLabel('Buffer size', server_lay)
+        self.fBufSize = QSpinBox( 0, 100000, 1024, server_lay)
         self.fBufSize.setValue( int(self.cfg.buf_size) )
 
-        QLabel( 'Metadata update interval (bytes)', self.fServer)
-        self.fIcyInterval = QSpinBox( 0, 100000, 4096, self.fServer)
+        QLabel( 'Metadata update interval (bytes)', server_lay)
+        self.fIcyInterval = QSpinBox( 0, 100000, 4096, server_lay)
         self.fIcyInterval.setValue(int(self.cfg.icy_interval))
 
-        QLabel( 'Maximum number of clients', self.fServer)
-        self.fMaxClients = QSpinBox( 0, 100, 1, self.fServer)
+        QLabel( 'Maximum number of clients', server_lay)
+        self.fMaxClients = QSpinBox( 0, 100, 1, server_lay)
         self.fMaxClients.setValue( int(self.cfg.max_clients) )
 
-        QLabel( 'Stream punctuality (%)', self.fServer)
-        self.fPuncFactor = QSpinBox( 0, 100, 5, self.fServer)
+        QLabel( 'Stream punctuality (%)', server_lay)
+        self.fPuncFactor = QSpinBox( 0, 100, 5, server_lay)
         self.fPuncFactor.setValue( int(self.cfg.punc_factor) )
 
-        QLabel( 'Pre seek (seconds)', self.fServer)
-        self.fPreSeek = QSpinBox( 0, 60, 1, self.fServer)
+        QLabel( 'Pre seek (seconds)', server_lay)
+        self.fPreSeek = QSpinBox( 0, 60, 1, server_lay)
         self.fPreSeek.setValue( float(self.cfg.pre_seek) )
 
-        QLabel( 'Update streams on track change', self.fServer)
-        self.fForceUpdate = QCheckBox(self.fServer)
-        self.fForceUpdate.setChecked( self.cfg.force_update )
-
-        QLabel( 'Supress server notification dialogs', self.fServer)
-        self.fSupressDialog = QCheckBox(self.fServer)
+        QLabel( 'Supress server notification dialogs', server_lay)
+        self.fSupressDialog = QCheckBox(server_lay)
         self.fSupressDialog.setChecked( self.cfg.supress_dialog )
 
-        #####################
-        self.fDownloads = QGroupBox(self.vbox)
-        self.fDownloads.setColumns(2)
-        self.fDownloads.setTitle('Downloads')
+        self.addTab(server_lay, 'Ser&ver')
 
-        QLabel( 'Allow file downloads', self.fDownloads)
-        self.fEnableDl = QCheckBox(self.fDownloads)
+    def init_pl(self):
+        pl_lay = QGrid(2, self)
+        pl_lay.setMargin(5)
+        
+        QLabel( 'Update streams on track change', pl_lay)
+        self.fForceUpdate = QCheckBox(pl_lay)
+        self.fForceUpdate.setChecked( self.cfg.force_update )
+        self.connect( self.fForceUpdate, SIGNAL('clicked()'), self.on_force_update)
+
+        QLabel( 'Idle Mode', pl_lay)
+        self.fIdleMode = QComboBox(pl_lay)
+        i = iter(IDLE_MODES)
+        while 1:
+           try:
+               self.fIdleMode.insertItem(i.next())
+           except StopIteration:
+               break
+        self.fIdleMode.setCurrentItem(self.cfg.idle_mode)
+        self.connect( self.fIdleMode, SIGNAL('activated(int)'), self.on_idle_mode )
+
+        QLabel( 'Idle Argument', pl_lay)
+        self.fIdleArg = QLineEdit(self.cfg.idle_arg, pl_lay)
+
+        self.on_idle_mode(self.fIdleMode.currentItem())
+        self.on_force_update()
+        self.addTab(pl_lay, '&Playlist')
+
+        QLabel( 'Probability of injection on track change', pl_lay )
+        self.fInjectPct = QSpinBox( 0, 100, 5, pl_lay )
+        self.fInjectPct.setValue(int(self.cfg.inject_pct))
+
+        QLabel( 'Injection directory', pl_lay )
+        self.fInjectDir = QLineEdit(self.cfg.inject_dir, pl_lay)
+
+        QLabel( 'File filter', pl_lay )
+        self.fInjectFilt = QLineEdit(self.cfg.inject_filt, pl_lay)
+
+        self.connect( self.fInjectPct, SIGNAL('valueChanged(int)'), self.on_inject_pct )
+        self.on_inject_pct(self.fInjectPct.value())
+        
+
+    def init_dl(self):
+        dl_lay = QGrid(2, self)
+
+        QLabel( 'Allow file downloads', dl_lay)
+        self.fEnableDl = QCheckBox(dl_lay)
         self.fEnableDl.setChecked( self.cfg.enable_dl )
+        self.connect( self.fEnableDl, SIGNAL('clicked()'), self.on_enable_dl)
 
-        QLabel( 'Download mount point', self.fDownloads)
-        self.fDlMount = QLineEdit(self.cfg.dl_mount, self.fDownloads)
+        QLabel( 'Download mount point', dl_lay)
+        self.fDlMount = QLineEdit(self.cfg.dl_mount, dl_lay)
 
-        QLabel( 'Max download rate per request (kB/s)', self.fDownloads)
-        self.fDlThrottle = QSpinBox(0, 1048576, 1, self.fDownloads)
+        QLabel( 'Max download rate per request (kB/s)', dl_lay)
+        self.fDlThrottle = QSpinBox(0, 1048576, 1, dl_lay)
         self.fDlThrottle.setValue( self.cfg.dl_throttle )
 
-        #####################
-        self.fEncoding = QGroupBox(self.vbox)
-        self.fEncoding.setColumns(2)
-        self.fEncoding.setTitle('Encoding')
-        #self.fEncoding.setDisabled(True)
+        self.on_enable_dl()
+        self.addTab(dl_lay, '&Downloads')
 
-        QLabel( 'Reencoding', self.fEncoding)
-        self.fReencoding = QComboBox(self.fEncoding)
+
+    def init_enc(self):
+        enc_lay = QGrid(2, self)
+
+        QLabel( 'Reencoding', enc_lay)
+        self.fReencoding = QComboBox(enc_lay)
         self.fReencoding.insertItem( 'None' )
         self.fReencoding.insertItem( 'Different formats only' )
         self.fReencoding.insertItem( 'All tracks')
         self.fReencoding.setCurrentItem(self.cfg.reencoding)
+        self.connect(self.fReencoding, SIGNAL('activated(int)'), self.on_reencoding )
 
         # Disabled for now
-        #QLabel( 'Stream format', self.fEncoding)
-        #self.fStreamFormat = QComboBox(self.fEncoding)
+        #QLabel( 'Stream format', enc_lay)
+        #self.fStreamFormat = QComboBox(enc_lay)
+
         self.fStreamFormat = QComboBox(None)
         self.fStreamFormat.insertItem('mp3')
         self.fStreamFormat.insertItem('ogg')
         self.fStreamFormat.setCurrentText(self.cfg.stream_format)
 
-        QLabel( 'Stream Bitrate (kb/s)', self.fEncoding)
-        self.fStreamBr = QSpinBox(64, 320, 1, self.fEncoding)
+        QLabel( 'Stream Bitrate (kb/s)', enc_lay)
+        self.fStreamBr = QSpinBox(64, 320, 1, enc_lay)
         self.fStreamBr.setValue( self.cfg.stream_br )
 
-        QLabel( 'Chunk size (kb. \'0\' disables chunking)', self.fEncoding)
-        self.fChunkSize = QSpinBox( 0, 1024, 32, self.fEncoding)
+        QLabel( 'Chunk size (kb. \'0\' disables chunking)', enc_lay)
+        self.fChunkSize = QSpinBox( 0, 1024, 32, enc_lay)
         self.fChunkSize.setValue( self.cfg.chunk_size )
 
-        hbox = QHBox(self.vbox)
-        self.ok = QPushButton(hbox)
-        self.ok.setText( 'Save' )
-        self.cancel = QPushButton(hbox)
-        self.cancel.setText( 'Cancel' )
+        self.on_reencoding(self.fReencoding.currentItem())
+        self.addTab(enc_lay, '&Encoding')
 
-        self.connect( self.ok,         SIGNAL( 'clicked()' ), self.save )
-        self.connect( self.cancel,     SIGNAL( 'clicked()' ), self, SLOT( 'reject()' ) )
-        self.adjustSize()
+    def on_force_update(self):
+        pass
+
+    def on_idle_mode(self, index):
+        if index==0 or index==5 or index==6:
+            self.fIdleArg.setDisabled(True)
+        else:
+            self.fIdleArg.setDisabled(False)
+
+    def on_enable_dl(self):
+        state = not self.fEnableDl.isChecked()
+        self.fDlMount.setDisabled(state)
+        self.fDlThrottle.setDisabled(state)
+
+    def on_inject_pct(self, pct):
+        self.fInjectDir.setDisabled(not bool(pct))
+        self.fInjectFilt.setDisabled(not bool(pct))
+
+    def on_reencoding(self, index):
+        state = not index
+        self.fStreamBr.setDisabled(state)
+        self.fChunkSize.setDisabled(state)
+
+    def on_ok(self):
+        debug('on_ok')
+
+        self.save()
+        self.close()
 
     def save( self ):
         """ Saves configuration to file """
 
+        debug( 'save' )
         try:
             self.file = open( 'shouterrc', 'w' )
 
@@ -210,8 +278,15 @@ class ConfigDialog( QDialog ):
             self.config.set( 'Server', 'max_clients', self.fMaxClients.text() )
             self.config.set( 'Server', 'punc_factor', self.fPuncFactor.text() )
             self.config.set( 'Server', 'pre_seek', self.fPreSeek.text() )
-            self.config.set( 'Server', 'force_update', self.fForceUpdate.isChecked() )
             self.config.set( 'Server', 'supress_dialog', self.fSupressDialog.isChecked() )
+
+            self.config.add_section( 'Playlist' )
+            self.config.set( 'Playlist', 'force_update', self.fForceUpdate.isChecked() )
+            self.config.set( 'Playlist', 'idle_mode', self.fIdleMode.currentItem() )
+            self.config.set( 'Playlist', 'idle_arg', self.fIdleArg.text() )
+            self.config.set( 'Playlist', 'inject_pct', self.fInjectPct.text() )
+            self.config.set( 'Playlist', 'inject_dir', self.fInjectDir.text() )
+            self.config.set( 'Playlist', 'inject_filt', self.fInjectFilt.text() )
 
             self.config.add_section( 'Downloads' )
             self.config.set( 'Downloads', 'enable_dl', self.fEnableDl.isChecked() )

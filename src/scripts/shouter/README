@@ -34,55 +34,77 @@ Configuration is done via ~/.kde/share/apps/amarok/scripts-data/shouterrc or
 the configuration window inside the amaroK scripts dialog. Most of the
 parameters are self explanatory. Options that I think may be vague are noted
 below:
-    Mount point:
-        The context path by which the server stream is accessed.
-        Defining a mount point of '/foo' will serve streams on
-        http://hostname:port/foo.
-    Description:
-        There is room inside of an ICY header to include several lines
-        of descriptive information. I don't know of any user agents
-        will do anything with these but they're included anyways
-    Buffer size:
-        Each request keeps a part of the file being served in memory.
-        Increasing the buffer size results in more memory needed per
-        request but more infrequent disk access. The number is
-        specified in bytes
-    Metadata update interval:
-        Some user agents like amaroK and Winamp request that
-        information about the music be embedded in the data stream
-        being served. Deciding the byte interval at which this occurs
-        is left to the server.
-    Stream punctuality:
-        When a user agent requests a new stream, the stream punctuality
-        determines what percent of the current file position they start
-        from. If there is a new stream request while amaroK is
-        currently at the 10 minute mark of a 15 minute song and
-        sporting a 80% punctuality, (all-other factors aside) the
-        request will begin streaming from 8:00.
-    Pre seek:
-        This may useful for synchronizing a client with the amaroK
-        playhead when the latency and buffering of a client is known.
-        WMP 9 doesn't allow the user to set buffering below 1 -- setting
-        the server pre-seek to 1 second can counter some of this.
-    Update streams on track change:
-        If checked, a track change in amarok will force all streams to
-        update. This may be undesirable if whole songs and smooth
-        playback are preferred.
-    Allow file downloads:
-        If checked, unmolested file downloads will be allowed. There is
-        no injection of meta-data nor stripping of id3 tags. Access can
-        be had from http://<hostname>:<port>/<download mount point>
-    Chunk size:
-        The first step of stream reencoding is the partitioning of the
-        to-be-converted file into manageable chunk sizes which are then
-        decoded to pcm data before being reencoded to their final
-        format. Specifying a chunk size isn't needed if your
-        machine has lots of disk space or your track lengths are shy of
-        epic. Using a chunk-size of n, space requirements should be in
-        the neighborhood of 10*n, possibly (a lot) more depending on
-        the number of connected clients and their relative separation
-        in the stream. All intermediate files are written to /tmp with
-        the prefix 'shouter'
+    Stream:
+        Mount point:
+            The context path by which the server stream is accessed.
+            Defining a mount point of '/foo' will serve streams on
+            http://hostname:port/foo.
+        Description:
+            There is room inside of an ICY header to include several lines
+            of descriptive information. I don't know of any user agents
+            will do anything with these but they're included anyways
+    Server:
+        Buffer size:
+            Each request keeps a part of the file being served in memory.
+            Increasing the buffer size results in more memory needed per
+            request but more infrequent disk access. The number is
+            specified in bytes
+        Metadata update interval:
+            Some user agents like amaroK and Winamp request that
+            information about the music be embedded in the data stream
+            being served. Deciding the byte interval at which this occurs
+            is left to the server.
+        Stream punctuality:
+            When a user agent requests a new stream, the stream punctuality
+            determines what percent of the current file position they start
+            from. If there is a new stream request while amaroK is
+            currently at the 10 minute mark of a 15 minute song and
+            sporting a 80% punctuality, (all-other factors aside) the
+            request will begin streaming from 8:00.
+        Pre seek:
+            This may useful for synchronizing a client with the amaroK
+            playhead when the latency and buffering of a client is known.
+            WMP 9 doesn't allow the user to set buffering below 1 -- setting
+            the server pre-seek to 1 second can counter some of this.
+    Playlist:
+        Update streams on track change:
+            If checked, a track change in amarok will force all streams to
+            update. This may be undesirable if whole songs and smooth
+            playback are preferred.
+        Idle Mode:
+            Used for defining stream behavior when it's not clear what is next
+            in the playlist. This can happen if the client user agent is
+            keeping a large buffer, the server is paused, or the server is
+            giving clients a pre-seeked stream. Options range from sending
+            silence to the client to getting a new file, by various means, from
+            the amaroK collection or playlist. In the event that the amaroK
+            collection is queried, an additional argument may need to be
+            supplied in the 'Idle Argument' field
+        Injection:
+            Some servers pepper their music streams with sound clips,
+            advertisements, text-to-speech or other informational
+            announcements. Specifying a non-zero value in the probability field
+            will allow this sort of behavior. Files are taken from the
+            specified 'Injection directory' and must match the filter
+            specified. The filter defaults to '*.mp3'. Using any other filter
+            is currently unadvisable.
+    Downloads:
+        Allow file downloads:
+            If checked, unmolested file downloads will be allowed. There is
+            no injection of meta-data nor stripping of id3 tags. Access can
+            be had from http://<hostname>:<port>/<download mount point>
+    Encoding:
+        Chunk size:
+            The first step of stream reencoding is the partitioning of the
+            to-be-converted file into manageable chunk sizes which are then
+            decoded to pcm data before being reencoded to their final
+            format. Specifying a chunk size isn't needed if your
+            machine has lots of disk space or your track lengths are shy of
+            epic. Using a chunk-size of n, space requirements should be in
+            the neighborhood of 10*n, possibly (a lot) more depending on
+            the number of connected clients and their relative separation
+            in the stream. All intermediate files are written to /tmp with
+            the prefix 'shouter'
 
 Requirements
 -------------------------

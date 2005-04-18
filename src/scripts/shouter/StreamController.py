@@ -37,8 +37,9 @@ class StreamController (SocketServer.ThreadingTCPServer):
     log_f = None
 
     def add(self, fname):
-        self.playlist.append(fname)
-        self.coded_files[fname] = FileProvider(fname, self.cfg)
+        if fname:
+            self.playlist.append(fname)
+            self.coded_files[fname] = FileProvider(fname, self.cfg)
         
     def log( self, msg ):
         self.log_f.write( time.strftime('[%Y.%m.%d - %H:%M:%s] ') + str(msg) + '\n' )

@@ -77,9 +77,15 @@ class Shouter( QApplication ):
             self.cfg.port               = config.getint( 'Server', 'port' )
             self.cfg.buf_size           = config.getint( 'Server', 'buf_size' )
             self.cfg.punc_factor        = config.getint( 'Server', 'punc_factor' )
-            self.cfg.force_update       = config.getboolean( 'Server', 'force_update' )
             self.cfg.pre_seek           = config.getfloat( 'Server', 'pre_seek' )
             self.cfg.supress_dialog     = config.getboolean( 'Server', 'supress_dialog' )
+
+            self.cfg.force_update       = config.getboolean( 'Playlist', 'force_update' )
+            self.cfg.idle_mode          = config.getint( 'Playlist', 'idle_mode' )
+            self.cfg.idle_arg           = config.get( 'Playlist', 'idle_arg' )
+            self.cfg.inject_pct         = config.getint( 'Playlist', 'inject_pct' )
+            self.cfg.inject_dir         = config.get( 'Playlist', 'inject_dir' )
+            self.cfg.inject_filt        = config.get( 'Playlist', 'inject_filt' )
 
             self.cfg.enable_dl          = config.getboolean( 'Downloads', 'enable_dl' )
             self.cfg.dl_mount           = config.get( 'Downloads', 'dl_mount' )
@@ -104,7 +110,7 @@ class Shouter( QApplication ):
         port_i = self.cfg.port
         while self.cfg.port - port_i <= 10 :
             try:
-                debug('creating StreamController: reencoding=%s' % self.cfg.reencoding)
+                debug('creating StreamController on port %d: reencoding=%s' % (self.cfg.port, self.cfg.reencoding))
                 stream_ctrl = StreamController(('', self.cfg.port), ShouterRequest)
                 stream_ctrl.cfg = self.cfg
                 stream_ctrl.playlist = []

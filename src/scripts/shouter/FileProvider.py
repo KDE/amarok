@@ -21,6 +21,8 @@ from debug import *
 from StreamConfig import *
 from Encoder import *
 from sre import *
+from FormatHelper import FORMATS
+from ShouterExceptions import *
 
 class FileProvider:
         """ Abstraction for file """
@@ -38,17 +40,26 @@ class FileProvider:
             self.fsize = os.stat(fname)[6]
             self.pos = 0
             self.cfg = cfg
-            if cfg.reencoding:
+            fext = ''
+
+            if not fname.startswith('/'): raise format_error
+
+            try:
                 fext = findall(r'.*\.(.+?)$', fname.lower())[0]
-                if (fext != cfg.stream_format) or cfg.reencoding==2:
-                    self.reencoding = True
-                    self.enc = Encoder(fname)
-                else:
-                    self.f = file(fname, 'r')
-                    self.f.seek(0)
-            else:
+            except IndexError:
+                raise format_error
+
+            if fext == cfg.stream_format:
                 self.f = file(fname, 'r')
                 self.f.seek(0)
+            else:
+                if cfg.reencoding:
+                    try:
+                        FORMATS.index(fext)
+                        self.enc = Encoder(fname)
+                    except ValueError:
+                        raise format_error
+                else: raise format_error
 
         def tell(self):
            return self.pos
@@ -66,3 +77,4 @@ class FileProvider:
                buf = self.enc.read_from(size, self.pos)
                self.pos += len(buf)
                return buf
+
