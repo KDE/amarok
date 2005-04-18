@@ -83,6 +83,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyWikiPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
+        , m_wikiJob( NULL )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
@@ -101,9 +102,9 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
     m_wikiPage = new KHTMLPart( this, "wiki_page" );
-    m_lyricsPage->setJavaEnabled( false );
-    m_lyricsPage->setPluginsEnabled( false );
-    m_lyricsPage->setDNDEnabled( true );
+    m_wikiPage->setJavaEnabled( false );
+    m_wikiPage->setPluginsEnabled( false );
+    m_wikiPage->setDNDEnabled( true );
 
     //aesthetics - no double frame
 //     m_homePage->view()->setFrameStyle( QFrame::NoFrame );
@@ -353,6 +354,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
     m_lyricJob = 0; //New metadata, so let's forget previous lyric-fetching jobs
+    m_wikiJob = 0; //New metadata, so let's forget previous wiki-fetching jobs
 
     // Prepend stream metadata history item to list
     if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
@@ -378,6 +380,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
     m_lyricJob = 0; //let's forget previous lyric-fetching jobs
+    m_wikiJob = 0; //let's forget previous wiki-fetching jobs
 
     switch( state )
     {
@@ -445,7 +448,11 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 {
     enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, INFO, MANAGER, TITLE };
 
-    if( urlString.isEmpty() || urlString.startsWith( "musicbrainz" ) || urlString.startsWith( "lyricspage" ) )
+    if( urlString.isEmpty() ||
+        urlString.startsWith( "musicbrainz" ) ||
+        // urlString.startsWith( "lyricspage" ) || < removed since nothing seems to be using it, old code.
+        urlString.startsWith( "externalurl" ) //we mostly use externalurl to open konquy with some page.
+        )
         return;
 
     KURL url( urlString );
@@ -1184,7 +1191,7 @@ void ContextBrowser::showHomeByAlbums()
             "</div>"
             "</html>"
                        );
-    qDebug(m_HTMLSource.ascii());
+     debug() << m_HTMLSource.ascii();
 
     // </Songs least listened Information>
 }
@@ -1893,6 +1900,12 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
             .arg( fontFamily );
 
     //text attributes
+    styleSheet += QString( "h1 { font-size: %1px; }" ).arg( pxSize + 8 );
+    styleSheet += QString( "h2 { font-size: %1px; }" ).arg( pxSize + 6 );
+    styleSheet += QString( "h3 { font-size: %1px; }" ).arg( pxSize + 4 );
+    styleSheet += QString( "h4 { font-size: %1px; }" ).arg( pxSize + 3 );
+    styleSheet += QString( "h5 { font-size: %1px; }" ).arg( pxSize + 2 );
+    styleSheet += QString( "h6 { font-size: %1px; }" ).arg( pxSize + 1 );
     styleSheet += QString( "a { font-size: %1px; color: %2; }" ).arg( pxSize ).arg( text );
     styleSheet += QString( ".info { display: block; margin-left: 4px; font-weight: normal; }" );
 
@@ -1902,7 +1915,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( ".song-place { font-size: %1px; font-weight: bold; }" ).arg( pxSize + 3 );
 
     //box: the base container for every block (border hilighted on hover, 'A' without underlining)
-    styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
+    styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; overflow: hidden;}" ).arg( bg );
     styleSheet += QString( ".box a { text-decoration: none; }" );
     styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
 
@@ -1947,6 +1960,9 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( "#current_box-information-td { text-align: right; vertical-align: bottom; padding: 3px; }" );
     styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 0; vertical-align: bottom; }" );
     styleSheet += QString( "#current_box-largecover-image { padding: 4px; vertical-align: bottom; }" );
+
+    styleSheet += QString( "#wiki_box-body a { color: %1; }" ).arg( bg );
+    styleSheet += QString( "#wiki_box-body a:hover { text-decoration: underline; }" );
 }
 
 
@@ -2173,13 +2189,6 @@ ContextBrowser::lyricsData( KIO::Job* job, const QByteArray& data ) //SLOT
     if (job == m_lyricJob)
         m_lyrics += QString( data );
 }
-void
-ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
-{
-    // Append new chunk of string
-    if (job == m_wikiJob)
-        m_wiki += QString( data );
-}
 
 
 void
@@ -2283,6 +2292,7 @@ ContextBrowser::showLyricSuggestions()
 
 }
 
+
 void ContextBrowser::showWikipedia()
 {
     if ( currentPage() != m_wikiPage->view() )
@@ -2291,6 +2301,7 @@ void ContextBrowser::showWikipedia()
         showPage( m_homePage->view() );
         blockSignals( false );
     }
+    if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
     m_wikiPage->begin();
     m_HTMLSource="";
@@ -2298,13 +2309,13 @@ void ContextBrowser::showWikipedia()
 
     m_HTMLSource.append(
             "<html>"
-            "<div id='building_box' class='box'>"
-                "<div id='building_box-header' class='box-header'>"
-                    "<span id='building_box-header-title' class='box-header-title'>"
+            "<div id='wiki_box' class='box'>"
+                "<div id='wiki_box-header' class='box-header'>"
+                    "<span id='wiki_box-header-title' class='box-header-title'>"
                     + i18n( "Wikipedia" ) +
                     "</span>"
                 "</div>"
-                "<div id='building_box-body' class='box-body'>"
+                "<div id='wiki_box-body' class='box-body'>"
                     "<div class='info'><p>" + i18n( "Fetching Wikipedia" ) + " ...</p></div>"
                 "</div>"
             "</div>"
@@ -2313,6 +2324,7 @@ void ContextBrowser::showWikipedia()
 
     m_wikiPage->write( m_HTMLSource );
     m_wikiPage->end();
+    saveHtmlData(); // Send html code to file
 
     m_wiki = QString::null;
 
@@ -2330,6 +2342,16 @@ void ContextBrowser::showWikipedia()
              this,  SLOT( wikiData( KIO::Job*, const QByteArray& ) ) );
 }
 
+
+void
+ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
+{
+    // Append new chunk of string
+    if (job == m_wikiJob)
+        m_wiki += QString( data );
+}
+
+
 void
 ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 {
@@ -2342,19 +2364,47 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     if ( job != m_wikiJob )
         return; //not the right job, so let's ignore it
 
+    // Ok lets remove the top and bottom parts of the page
+    m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
+    m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
+    //remove the new-lines(replace with spaces IS needed) and Wikipedia advertisement.
+    m_wiki.replace( "\n", " " );
+    m_wiki.replace( "<h3 id=\"siteSub\">From Wikipedia, the free encyclopedia.</h3>", QString::null );
+    // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
+    m_wiki.replace( QRegExp( "style=\"[^\"]*\"" ), QString::null );
+    m_wiki.replace( QRegExp( "class=\"[^\"]*\"" ), QString::null );
+    m_wiki.replace( "<a href=\"/wiki/", "<a href=\"externalurl://en.wikipedia.org/wiki/" );
+    m_wiki.replace( "<a href=\"/w/", "<a href=\"externalurl://en.wikipedia.org/w/" );
+    m_wiki.replace( "<a href=\"http:", "<a href=\"externalurl:" );
+
+    if ( m_wiki.find( "Wikipedia does not yet have an article" ) != -1 )
+    {
+        // TODO Page doesnt excists, show a pretty message, that information about the artist not found.
+        // Possibly a edit button as well?
+        kdWarning() << "[WikiFetcher] Wikipedia says no page found!" << endl;
+    }
+    else if ( m_wiki.find( "id=\"disambig\"" ) != -1 )
+    {
+        // TODO Page is disambig, we need to handle it similar to the suggested lyrics.
+        kdWarning() << "[WikiFetcher] Wikipedia says disambigaution page!" << endl;
+    }
+    else
+    {
+        // well, if the page is ok, then its ok, nothing to do more :)
+    }
     m_wikiPage->begin();
     m_HTMLSource="";
     m_wikiPage->setUserStyleSheet( m_styleSheet );
 
     m_HTMLSource.append(
             "<html>"
-            "<div id='lyrics_box' class='box'>"
-                "<div id='lyrics_box-header' class='box-header'>"
-                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+            "<div id='wiki_box' class='box'>"
+                "<div id='wiki_box-header' class='box-header'>"
+                    "<span id='wiki_box-header-title' class='box-header-title'>"
                     + i18n( "Wikipedia" ) +
                     "</span>"
                 "</div>"
-                "<div id='lyrics_box-body' class='box-body'>"
+                "<div id='wiki_box-body' class='box-body'>"
                     + m_wiki +
                 "</div>"
             "</div>"
@@ -2366,6 +2416,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wikiJob = NULL;
     saveHtmlData(); // Send html code to file
 }
+
 
 void
 ContextBrowser::coverFetched( const QString &artist, const QString &album )
