@@ -2373,6 +2373,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     m_wiki.replace( QRegExp( "style=\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class=\"[^\"]*\"" ), QString::null );
+    m_wiki.replace( "<a href= \"/wiki/", "<a href=\"externalurl://en.wikipedia.org/wiki/" );
     m_wiki.replace( "<a href=\"/wiki/", "<a href=\"externalurl://en.wikipedia.org/wiki/" );
     m_wiki.replace( "<a href=\"/w/", "<a href=\"externalurl://en.wikipedia.org/w/" );
     m_wiki.replace( "<a href=\"http:", "<a href=\"externalurl:" );
