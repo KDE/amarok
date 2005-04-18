@@ -2316,7 +2316,7 @@ void ContextBrowser::showWikipedia()
 
     m_wiki = QString::null;
 
-    QString url = QString( "http://en.wikipedia.com/wiki/%1" )
+    QString url = QString( "http://en.wikipedia.org/wiki/%1" )
             .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
 
     m_wikiJob = KIO::get( url, false, false );
