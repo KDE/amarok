@@ -60,6 +60,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Olivier Bédard", I18N_NOOP( "Website hosting" ), "paleo@pwsp.net" );
+    aboutData.addCredit( "Reigo Reinmets", I18N_NOOP( "Wikipedia support, Patches" ), "xatax@hot.ee" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
