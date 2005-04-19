@@ -454,7 +454,12 @@ void PlaylistWindow::configureParty()
         if ( partyEnabled != AmarokConfig::partyMode() )
         {
             AmarokConfig::setPartyMode( partyEnabled );
-            if ( !partyEnabled ) Playlist::instance()->removeHistoryItems();
+            if ( !partyEnabled )
+            {
+                Playlist::instance()->removeHistoryItems();
+                amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
+                return;
+            }
         }
 
         AmarokConfig::setPartyType( dialog.appendType() );
@@ -472,6 +477,8 @@ void PlaylistWindow::configureParty()
             AmarokConfig::setPartyUpcomingCount( dialog.upcomingCount() );
             Playlist::instance()->adjustPartyUpcoming( dialog.upcomingCount(), dialog.appendType() );
         }
+
+        amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
     }
 }
 

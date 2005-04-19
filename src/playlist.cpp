@@ -999,6 +999,7 @@ Playlist::updateNextPrev()
 {
     amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
     amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
 
@@ -1887,6 +1888,7 @@ Playlist::removeSelectedItems() //SLOT
 
     if( AmarokConfig::partyMode() )
     {
+        //FIXME: What happens if we remove the active item?
         PlaylistItem *pos = m_currentTrack;
 
         int tracks = 0;
