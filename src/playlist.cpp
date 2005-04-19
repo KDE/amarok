@@ -720,6 +720,7 @@ Playlist::playNextTrack( bool forceNext )
         setCurrentTrack( item );
 }
 
+//This is called before
 void
 Playlist::advancePartyTrack()
 {
@@ -727,11 +728,9 @@ Playlist::advancePartyTrack()
 
     for( uint x=0 ; *it; ++it, x++ )
     {
-        if ( *(++it) == currentTrack() )
-            (*it)->setEnabled( false );
-
         if ( *it == currentTrack() )
         {
+            (*it)->setEnabled( false );
             if ( (int)x < AmarokConfig::partyPreviousCount() )
                 break;
             PlaylistItem *first = firstChild();
@@ -819,46 +818,44 @@ Playlist::activate( QListViewItem *item )
     //All internal requests for playback should come via
     //this function please!
 
-    if( item )
-    {
-        #define item static_cast<PlaylistItem*>(item)
-        if ( !item->isEnabled() )
-            return;
-
-        m_prevTracks.append( item );
-
-        //if we are playing something from the next tracks
-        //list, remove it from the list
-        if ( m_nextTracks.removeRef( item ) )
-            refreshNextTracks();
-
-        //looks bad painting selected and glowing
-        //only do when user explicitely activates an item though
-        item->setSelected( false );
-
-        setCurrentTrack( item );
-
-        if ( AmarokConfig::partyMode() && !m_partyDirt )
-        {
-            kdDebug() << "moving item to front" << endl;
-            (static_cast<QListViewItem *>(item))->moveItem( currentTrack() );
-            advancePartyTrack();
-        }
-        m_partyDirt = false;
-
-        //use PlaylistItem::MetaBundle as it also updates the audioProps
-        EngineController::instance()->play( item );
-        #undef item
-    }
-    else
+    if ( !item )
     {
         //we have reached the end of the playlist
-
         setCurrentTrack( 0 );
         EngineController::instance()->stop();
         amaroK::OSD::instance()->OSDWidget::show( i18n("Playlist finished"),
-                                          QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ) );
+                                            QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ) );
+        return;
     }
+
+    if ( AmarokConfig::partyMode() && !m_partyDirt )
+    {
+        item->moveItem( currentTrack() );
+        advancePartyTrack();
+    }
+
+    #define item static_cast<PlaylistItem*>(item)
+    if ( !item->isEnabled() )
+        return;
+
+    m_prevTracks.append( item );
+
+    //if we are playing something from the next tracks
+    //list, remove it from the list
+    if ( m_nextTracks.removeRef( item ) )
+        refreshNextTracks();
+
+    //looks bad painting selected and glowing
+    //only do when user explicitely activates an item though
+    item->setSelected( false );
+
+    setCurrentTrack( item );
+
+    m_partyDirt = false;
+
+    //use PlaylistItem::MetaBundle as it also updates the audioProps
+    EngineController::instance()->play( item );
+    #undef item
 }
 
 void
