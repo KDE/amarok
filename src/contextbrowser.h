@@ -56,7 +56,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showCurrentTrack();
         void showLyrics( const QString& hash = QString::null );
         void showLyricSuggestions();
-        void showWikipedia();
+        void showWikipedia( const QString& url = QString::null );
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void wikiData( KIO::Job* job, const QByteArray& data );
@@ -85,16 +85,18 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         bool          m_dirtyCurrentTrackPage;
         bool          m_dirtyLyricsPage;
         bool          m_dirtyWikiPage;
+        bool          m_dirtyWikiFetching;
 
         QString       m_styleSheet;
         bool          m_emptyDB;
         QString       m_lyrics;
-        QString       m_wiki;
         QStringList   m_lyricSuggestions;
         QStringList   m_lyricHashes;
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         KIO::TransferJob* m_lyricJob;
+        QString       m_wiki;
+        QString       m_wikiArtistUrl;
         KIO::TransferJob* m_wikiJob;
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;

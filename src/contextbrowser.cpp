@@ -81,6 +81,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
         , m_dirtyWikiPage( true )
+        , m_dirtyWikiFetching( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
         , m_wikiJob( NULL )
@@ -227,12 +228,21 @@ void ContextBrowser::openURLRequest( const KURL &url )
         return;
     }
        // here, http urls are streams. For webpages we use externalurl
-    if ( url.protocol() == "file" || url.protocol() == "http" )
+       // NOTE there have been no links to streams! http now used for wiki tab.
+    if ( url.protocol() == "file" )
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
+
+    // All http links should be loaded inside wikipedia tab, as that is the only tab that should contain them.
+    // Streams should use stream:// protocol.
+    if ( url.protocol() == "http" )
+    {
+        m_dirtyWikiPage = true;
+        showWikipedia( url.url() );
+    }
 
     if ( url.protocol() == "show" )
     {
-        if ( url.path() == "home" )
+/*        if ( url.path() == "home" )
             showHome();
         else if ( url.path() == "context" || url.path() == "stream" )
         {
@@ -240,14 +250,14 @@ void ContextBrowser::openURLRequest( const KURL &url )
             m_dirtyCurrentTrackPage = true;
             showCurrentTrack();
         }
-        else if ( url.path().contains( "suggestLyric-" ) )
+        else */if ( url.path().contains( "suggestLyric-" ) )
         {
             m_lyrics = QString::null;
             QString hash = url.path().mid( url.path().find( QString( "-" ) ) +1 );
             m_dirtyLyricsPage = true;
             showLyrics( hash );
         }
-        else if ( url.path() == "lyrics" )
+/*        else if ( url.path() == "lyrics" )
             showLyrics();
         else if ( url.path() == "wiki" )
             showWikipedia();
@@ -259,7 +269,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
             if ( o )
                 static_cast<CollectionBrowser*>( o )->setupDirs();
         }
-    }
+*/    }
 
     // When left-clicking on cover image, open browser with amazon site
     if ( url.protocol() == "fetchcover" )
@@ -290,9 +300,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     if ( url.protocol() == "externalurl" )
-    {
         kapp->invokeBrowser( url.url().replace("externalurl:", "http:") );
-    }
 
     if ( url.protocol() == "togglebox" )
     {
@@ -329,6 +337,7 @@ void ContextBrowser::renderView()
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
+    m_dirtyWikiFetching = true;
 
     // TODO: Show CurrentTrack or Lyric tab if they were selected
     if ( CollectionDB::instance()->isEmpty() )
@@ -353,6 +362,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
+    m_dirtyWikiFetching = true;
     m_lyricJob = 0; //New metadata, so let's forget previous lyric-fetching jobs
     m_wikiJob = 0; //New metadata, so let's forget previous wiki-fetching jobs
 
@@ -379,6 +389,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
+    m_dirtyWikiFetching = true;
     m_lyricJob = 0; //let's forget previous lyric-fetching jobs
     m_wikiJob = 0; //let's forget previous wiki-fetching jobs
 
@@ -449,15 +460,16 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, INFO, MANAGER, TITLE };
 
     if( urlString.isEmpty() ||
-        urlString.startsWith( "musicbrainz" ) ||
         // urlString.startsWith( "lyricspage" ) || < removed since nothing seems to be using it, old code.
-        urlString.startsWith( "externalurl" ) //we mostly use externalurl to open konquy with some page.
+        urlString.startsWith( "musicbrainz" ) ||
+        urlString.startsWith( "externalurl" ) ||
+        urlString.startsWith( "show:suggest" ) ||
+        urlString.startsWith( "#" ) ||
+        urlString.startsWith( "http" )
         )
         return;
 
     KURL url( urlString );
-    if( url.path().contains( "lyric", FALSE ) )
-        return;
 
     KPopupMenu menu;
     KURL::List urls( url );
@@ -482,7 +494,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #endif
         menu.setItemEnabled( SHOW, !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" ) );
     }
-    else {
+    else if ( url.protocol() == "file" || url.protocol() == "album" )
+    {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
         menu.insertTitle( i18n("Track"), TITLE );
@@ -1892,7 +1905,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
 
     //we have to set the color for body due to a KHTML bug
     //KHTML sets the base color but not the text color
-    styleSheet = QString( "body { margin: 8px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; font-family: %5; }" )
+    styleSheet = QString( "body { margin: 4px; font-size: %1px; color: %2; background-color: %3; background-image: url( %4 ); background-repeat: repeat; font-family: %5; }" )
             .arg( pxSize )
             .arg( text )
             .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
@@ -2293,7 +2306,7 @@ ContextBrowser::showLyricSuggestions()
 }
 
 
-void ContextBrowser::showWikipedia()
+void ContextBrowser::showWikipedia( const QString &url )
 {
     if ( currentPage() != m_wikiPage->view() )
     {
@@ -2303,35 +2316,45 @@ void ContextBrowser::showWikipedia()
     }
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
-    m_wikiPage->begin();
-    m_HTMLSource="";
-    m_wikiPage->setUserStyleSheet( m_styleSheet );
+    if ( m_dirtyWikiFetching )
+    {
+        m_wikiPage->begin();
+        m_HTMLSource="";
+        m_wikiPage->setUserStyleSheet( m_styleSheet );
 
-    m_HTMLSource.append(
-            "<html>"
-            "<div id='wiki_box' class='box'>"
-                "<div id='wiki_box-header' class='box-header'>"
-                    "<span id='wiki_box-header-title' class='box-header-title'>"
-                    + i18n( "Wikipedia" ) +
-                    "</span>"
+        m_HTMLSource.append(
+                "<html>"
+                "<div id='wiki_box' class='box'>"
+                    "<div id='wiki_box-header' class='box-header'>"
+                        "<span id='wiki_box-header-title' class='box-header-title'>"
+                        + i18n( "Wikipedia" ) +
+                        "</span>"
+                    "</div>"
+                    "<div id='wiki_box-body' class='box-body'>"
+                        "<div class='info'><p>" + i18n( "Fetching Wikipedia" ) + " ...</p></div>"
+                    "</div>"
                 "</div>"
-                "<div id='wiki_box-body' class='box-body'>"
-                    "<div class='info'><p>" + i18n( "Fetching Wikipedia" ) + " ...</p></div>"
-                "</div>"
-            "</div>"
-            "</html>"
-                       );
+                "</html>"
+                        );
 
-    m_wikiPage->write( m_HTMLSource );
-    m_wikiPage->end();
-    saveHtmlData(); // Send html code to file
+        m_wikiPage->write( m_HTMLSource );
+        m_wikiPage->end();
+        saveHtmlData(); // Send html code to file
+    }
 
     m_wiki = QString::null;
-
-    QString url = QString( "http://en.wikipedia.org/wiki/%1" )
+    QString tmpurl;
+    if ( url.isEmpty() )
+    {
+        m_wikiArtistUrl = QString( "http://en.wikipedia.org/wiki/%1" )
             .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
-
-    m_wikiJob = KIO::get( url, false, false );
+        tmpurl = m_wikiArtistUrl;
+    }
+    else
+    {
+        tmpurl = url;
+    }
+    m_wikiJob = KIO::get( tmpurl, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
             .setDescription( i18n( "Fetching Wikipedia" ) );
@@ -2367,32 +2390,21 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     // Ok lets remove the top and bottom parts of the page
     m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
+    m_wiki.append( "</div>" );
     //remove the new-lines(replace with spaces IS needed) and Wikipedia advertisement.
     m_wiki.replace( "\n", " " );
     m_wiki.replace( "<h3 id=\"siteSub\">From Wikipedia, the free encyclopedia.</h3>", QString::null );
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
+    // FIXME This could be done with one line, if some regexpert would manage that space there
+    m_wiki.replace( QRegExp( "style= \"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "style=\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class=\"[^\"]*\"" ), QString::null );
-    m_wiki.replace( "<a href= \"/wiki/", "<a href=\"externalurl://en.wikipedia.org/wiki/" );
-    m_wiki.replace( "<a href=\"/wiki/", "<a href=\"externalurl://en.wikipedia.org/wiki/" );
-    m_wiki.replace( "<a href=\"/w/", "<a href=\"externalurl://en.wikipedia.org/w/" );
-    m_wiki.replace( "<a href=\"http:", "<a href=\"externalurl:" );
+    //first we convert all the links with protocol to external, as they should all be External Links.
+    m_wiki.replace( "href=\"http:", "href=\"externalurl:" );
+    // FIXME space between the = and "(didn't bothered to hassle with regexp) Same as above.
+    m_wiki.replace( "href=\"/", "href=\"http://en.wikipedia.org/" );
+    m_wiki.replace( "href= \"/", "href=\"http://en.wikipedia.org/" );
 
-    if ( m_wiki.find( "Wikipedia does not yet have an article" ) != -1 )
-    {
-        // TODO Page doesnt excists, show a pretty message, that information about the artist not found.
-        // Possibly a edit button as well?
-        kdWarning() << "[WikiFetcher] Wikipedia says no page found!" << endl;
-    }
-    else if ( m_wiki.find( "id=\"disambig\"" ) != -1 )
-    {
-        // TODO Page is disambig, we need to handle it similar to the suggested lyrics.
-        kdWarning() << "[WikiFetcher] Wikipedia says disambigaution page!" << endl;
-    }
-    else
-    {
-        // well, if the page is ok, then its ok, nothing to do more :)
-    }
     m_wikiPage->begin();
     m_HTMLSource="";
     m_wikiPage->setUserStyleSheet( m_styleSheet );
@@ -2409,13 +2421,31 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                     + m_wiki +
                 "</div>"
             "</div>"
-            "</html>"
                        );
+    if ( !m_dirtyWikiFetching )
+    {
+    m_HTMLSource.append(
+            "<div id='wiki_box' class='box'>"
+                "<div id='wiki_box-header' class='box-header'>"
+                    "<span id='wiki_box-header-title' class='box-header-title'>"
+                        + i18n( "Wikipedia - Quick Links" ) +
+                        "</span>"
+                    "</div>"
+                    "<div id='wiki_box-body' class='box-body'>"
+                        "<ul>"
+                        "<li><a href=\"" + m_wikiArtistUrl + "\">" + i18n( "Back to Artist page" ) + "</a></li>"
+                        "</ul>"
+                    "</div>"
+                "</div>"
+                       );
+    }
+    m_HTMLSource.append( "</html>" );
     m_wikiPage->write( m_HTMLSource );
     m_wikiPage->end();
+    m_dirtyWikiFetching = false;
     m_dirtyWikiPage = false;
-    m_wikiJob = NULL;
     saveHtmlData(); // Send html code to file
+    m_wikiJob = NULL;
 }
 
 
