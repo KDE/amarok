@@ -62,15 +62,13 @@ void Options2::updateStyleComboBox()
 {
     QStringList styleList = kapp->dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
     QStringList sortedList;
-    for (QStringList::Iterator it = styleList.begin(); it != styleList.end(); ++it)
+    foreach (styleList)
         {
             sortedList.append(QFileInfo( *it ).dir().dirName());
         }
     sortedList.append( "Default" );
     sortedList.sort();
-    for(QStringList::Iterator it = sortedList.begin(); it != sortedList.end(); ++it)
-       {
+    foreach(sortedList)
            styleComboBox->insertItem(*it);
-        }
     styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
 }
