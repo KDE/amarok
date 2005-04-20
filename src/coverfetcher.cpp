@@ -129,11 +129,12 @@ CoverFetcher::startFetch()
         mibenum = 106;  // utf-8
     }
     QString url;
+    // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
         + "&KeywordSearch=" + KURL::encode_string_no_slash( query, mibenum )
         + "&mode=" + musicMode
-        + "&type=heavy&locale=" + AmarokConfig::amazonLocale()
+        + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
     debug() << url << endl;
 
@@ -244,12 +245,17 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         QString url = node.namedItem( size ).firstChild().toText().nodeValue();
         QString name = node.namedItem( "ProductName" ).firstChild().toText().nodeValue();
 
-        debug() << "name:" << name << " url:" << url << endl;
+    const QDomNode  artists = node.namedItem("Artists");
+    // in most cases Amazon only sends one Artit in Artits
+    QString artist="";
+    if (!artists.isNull()) artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
+
+        debug() << "name:" << name << " artist:" << artist << " url:" << url << endl;
 
         if( !url.isEmpty() )
         {
             m_coverUrls += url;
-            m_coverNames += name;
+            m_coverNames += artist + " - " + name;
         }
     }
 
