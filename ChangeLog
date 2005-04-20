@@ -23,6 +23,7 @@ VERSION 1.3-beta1:
     * Support for PostgreSQL as database backend. (BR 99863)
 
   CHANGES:
+    * Add a label (with shortcut) to the Playlist filter
 
   BUGFIXES:
     * Avoid weird results when fetching lyrics with slow connections.

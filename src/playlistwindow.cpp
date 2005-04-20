@@ -36,6 +36,7 @@
 
 #include <qevent.h>           //eventFilter()
 #include <qlayout.h>
+#include <qlabel.h>           //search filter label
 #include <qtimer.h>           //search filter timer
 #include <qtooltip.h>         //QToolTip::add()
 #include <qvbox.h>            //contains the playlist
@@ -181,8 +182,11 @@ PlaylistWindow::init()
         bar->setMovingEnabled( false ); //removes the ugly frame
 
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
+        QLabel *filter_label = new QLabel( i18n("S&earch:"), bar );
         m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
         QWidget *party_button = new KToolBarButton( "party", 2, bar );
+
+        filter_label->setBuddy( m_lineEdit );
 
         bar->setStretchableWidget( m_lineEdit );
         m_lineEdit->setFrame( QFrame::Sunken );
@@ -192,6 +196,7 @@ PlaylistWindow::init()
         connect( party_button, SIGNAL(clicked()), this, SLOT(configureParty() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( filter_label, i18n( "Enter space-separated terms to filter playlist" ) );
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
         QToolTip::add( party_button, i18n( "Configure party" ) );
     } //</Search LineEdit>
