@@ -46,7 +46,7 @@ class Shouter( QApplication ):
 
     stream_ctrl = None
     file, oldfile = None, None
-    cfg = StreamConfig
+    cfg = StreamConfig()
 
     def __init__( self, args ):
         QApplication.__init__( self, args )
@@ -118,9 +118,19 @@ class Shouter( QApplication ):
                 stream_ctrl.add(playing)
 
                 debug( '%d: playlist = %s' % (self.cfg.port, str(stream_ctrl.playlist)) )
-                self.m = QMessageBox("Amarok Shouter","Starting server on http://%s:%d%s" % (socket.gethostname(), self.cfg.port, self.cfg.mount), QMessageBox.Information,QMessageBox.Ok,QMessageBox.NoButton,QMessageBox.NoButton, None, "", False, QWidget.WDestructiveClose)
-                if not self.cfg.supress_dialog: self.m.show()
                 Globals.status('Starting server on http://%s:%d%s' % (socket.gethostname(), self.cfg.port, self.cfg.mount ))
+                if not self.cfg.supress_dialog:
+                    self.m = QMessageBox("Amarok Shouter","Starting server on http://%s:%d%s" % 
+                        (socket.gethostname(), self.cfg.port, self.cfg.mount), 
+                        QMessageBox.Information,
+                        QMessageBox.Ok,
+                        QMessageBox.NoButton,
+                        QMessageBox.NoButton, 
+                        None, 
+                        "", 
+                        False, 
+                        QWidget.WDestructiveClose)
+                    self.m.show()
                 self.stream_ctrl = stream_ctrl
 
                 threading.Thread(target = self.stream_ctrl.run).start()
@@ -129,6 +139,7 @@ class Shouter( QApplication ):
                 debug( ex.args )
                 self.cfg.port += 1
         if self.stream_ctrl is None: 
+            Globals.status('Server failed to start')
             if not self.cfg.supress_dialog: 
                 QMessageBox.critical(None,"Amarok Shouter","Server failed to start")
             sys.exit(1)
@@ -189,18 +200,26 @@ class Shouter( QApplication ):
 
     def engineStatePlay( self ):
         """ Called when Engine state changes to Play """
-        pass
+
+        debug( 'Shouter engineStatePlay' )
+        if self.cfg.force_update: self.stream_ctrl.force_update()
 
     def engineStateIdle( self ):
         """ Called when Engine state changes to Idle """
-        pass
+
+        debug( 'Shouter engineStateIdle' )
+        if self.cfg.force_update: self.stream_ctrl.force_update()
 
     def engineStatePause( self ):
         """ Called when Engine state changes to Pause """
-        pass
+
+        debug( 'Shouter engineStatePause' )
+        if self.cfg.force_update: self.stream_ctrl.force_update()
 
     def engineStateEmpty( self ):
         """ Called when Engine state changes to Empty """
+
+        debug( 'Shouter engineStateEmpty' )
         if self.cfg.force_update: self.stream_ctrl.force_update()
 
     def trackChange( self ):
@@ -217,8 +236,10 @@ class Shouter( QApplication ):
     def get_file( self ):
         playing = Globals.PlayerDcop( "encodedURL" ).result()
         if playing.startswith( 'http' ):
-            self.m = QMessageBox("Amarok Shouter", 'You appear to be playing a music stream. This script will attempt to restart after the current stream has been closed', QMessageBox.Warning,QMessageBox.Ok,QMessageBox.NoButton,QMessageBox.NoButton, None, "", False, QWidget.WDestructiveClose)
-            if not self.cfg.supress_dialog: self.m.show()
+            Globals.status('Shouter cannot handle what is currently playing and will retry later')
+            if not self.cfg.supress_dialog:
+                self.m = QMessageBox("Amarok Shouter", 'You appear to be playing a music stream. This script will attempt to restart after the current stream has been closed', QMessageBox.Warning,QMessageBox.Ok,QMessageBox.NoButton,QMessageBox.NoButton, None, "", False, QWidget.WDestructiveClose)
+                self.m.show()
             return None
 
         if len(playing.strip()) == 0:

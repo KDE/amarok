@@ -13,7 +13,7 @@
 ############################################################################
 
 
-IDLE_MODES = ['Silence', 'Directory', 'Genre', 'Year', 'Bitrate', 'Random collection entry', 'amaroK playlist']
+IDLE_MODES = ['Silence', 'Directory', 'Genre', 'Year', 'Bitrate', 'Random collection entry', 'amaroK playlist (random)', 'amaroK playlist (next entry)']
 
 class StreamConfig:
     """ Container for stream configuration. Values are defaults and should be

@@ -229,7 +229,7 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
                     self.pl_pos += 1
 
                 # Roll the dice and see if we won anything
-                if self.blind:
+                if self.blind and self.cfg.inject_pct:
                     if random.randint(0,100) <= self.cfg.inject_pct:
                         self.meta_is_dirty = True
                         self._do_injection(self.cfg.inject_dir, self.cfg.inject_filt)
@@ -291,21 +291,52 @@ class ShouterRequest(SocketServer.StreamRequestHandler):
         self.stream(result[0], 0, int(result[1]))
 
     def _idle_6(self, arg=''):
-        """ amaroK Playlist """
+        """ amaroK Playlist (random) """
         debug( '_idle_6' )
-        Globals.PlaylistDcop('saveCurrentPlaylist')
+        Globals.PlaylistDcop('saveCurrentPlaylist').result()
         doc = minidom.parse('../current.xml')
         amarok_pl = []
-        i = doc.firstChild.firstChild.nextSibling
-        try:
-            while True:
-                amarok_pl.append(i.getAttribute('url'))
-                i = i.nextSibling.nextSibling
-        except:
-            pass
 
-        url = random.sample(amarok_pl, 1)[0]
+        def filt(node):
+            if str(node).startswith('<DOM Text node '): return False
+            else: return True
+
+        amarok_pl = filter( filt, doc.firstChild.childNodes )
+        node = random.sample(amarok_pl, 1)[0]
+        url = node.getAttribute('url')
         fname = urllib.url2pathname(sub(r'file:/*', '/', url))
+        self.stream(fname, 0)
+
+        #try:
+            #while True:
+                #amarok_pl.append(i.getAttribute('url'))
+                #i = i.nextSibling.nextSibling
+        #except:
+            #pass
+
+        #url = random.sample(amarok_pl, 1)[0]
+        #fname = urllib.url2pathname(sub(r'file:/*', '/', url))
+        #self.stream(fname, 0)
+
+    def _idle_7(self, arg=''):
+        """ amaroK Playlist (next) """
+
+        debug( '_idle_7' )
+        Globals.PlaylistDcop('saveCurrentPlaylist').result()
+        doc = minidom.parse('../current.xml')
+        amarok_pl = []
+
+        def filt(node):
+            if str(node).startswith('<DOM Text node '): return False
+            else: return True
+
+        amarok_pl = filter( filt, doc.firstChild.childNodes )
+        i = int(Globals.PlaylistDcop('getActiveIndex').result().rstrip())
+
+        node = amarok_pl[i+1]
+        url = node.getAttribute('url')
+        fname = urllib.url2pathname(sub(r'file:/*', '/', url))
+        debug('_idle_7 returning fname %s' % fname)
         self.stream(fname, 0)
                
 
@@ -453,7 +484,7 @@ class StreamRequest(ShouterRequest):
         size = os.stat(file)[6]
 
         #experiment with hackjob buffer underrun prevention
-        sleep_factor = 8.0/(bitrate * 1200.0) 
+        sleep_factor = 8.0/(bitrate * 1050.0) 
         #sleep_factor = 8.0/(bitrate * 1024.0)
 
         # this isn't quite right, but is of little consequence
