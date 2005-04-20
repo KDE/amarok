@@ -152,7 +152,7 @@ StreamProvider::sendRequest() //SLOT
     const bool auth = !( username.isEmpty() && password.isEmpty() );
 
     // Extract major+minor version number from APP_VERSION
-    QRegExp reg( "[0-9]*\.[0-9]*" );
+    QRegExp reg( "[0-9]*\\.[0-9]*" );
     reg.search( APP_VERSION );
     const QString version = reg.cap();
 
