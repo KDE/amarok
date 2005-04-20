@@ -44,6 +44,7 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     new QLabel( i18n("Type of song to append to playlist:"), partyGroupBox );
     QVBox *selectorBox = new QVBox( partyGroupBox );
     partyBox->setSpacing( 5 );
+    selectorBox->setSpacing( 5 );
 
     m_buttonGroup = new QButtonGroup( i18n("Append Song Type") );
 
@@ -57,14 +58,22 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     m_playlistRadio->setChecked( false );
     m_buttonGroup->insert( m_playlistRadio );
 
-    if ( AmarokConfig::partyType() == "Random" )
-        m_randomRadio->setChecked( true );
-    else if ( AmarokConfig::partyType() == "Suggestion" )
-        m_suggestionRadio->setChecked( true );
-    else
-        m_playlistRadio->setChecked( true );
+    if ( AmarokConfig::partyType() == "Random" ) {
+        m_randomRadio->setChecked( TRUE );
+        m_suggestionRadio->setChecked( false );
+        m_playlistRadio->setChecked( false );
+    } else if ( AmarokConfig::partyType() == "Suggestion" ) {
+        m_randomRadio->setChecked( false );
+        m_suggestionRadio->setChecked( TRUE );
+        m_playlistRadio->setChecked( false );
+    } else {
+        m_randomRadio->setChecked( false );
+        m_suggestionRadio->setChecked( false );
+        m_playlistRadio->setChecked( TRUE );
+    }
 
     QVBox *playlistBox = new QVBox( selectorBox );
+
 
     m_playlistSelector = new KActionSelector( playlistBox );
     m_playlistSelector->setShowUpDownButtons( false );
@@ -78,17 +87,16 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     insertAvailablePlaylists();  //requires that insertSelectedPlaylists() has been called first.
 
     QHBox *upcomingBox = new QHBox( partyGroupBox );
-    new QLabel( i18n("Number of upcoming songs to show:"), upcomingBox );
+    new QLabel( i18n("Minimum upcoming tracks:"), upcomingBox );
+
     m_upcomingIntSpinBox = new KIntSpinBox( upcomingBox );
     m_upcomingIntSpinBox->setValue( AmarokConfig::partyUpcomingCount() );
 
     QHBox *previousBox = new QHBox( partyGroupBox );
-    new QLabel( i18n("Number of previous songs to show:"), previousBox );
+    new QLabel( i18n("Maximum history to show:"), previousBox );
+
     m_previousIntSpinBox = new KIntSpinBox( previousBox );
     m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
-
-    if ( !m_playlistRadio->isEnabled() )
-        playlistBox->setEnabled( false );
 
     connect( m_partyCheck, SIGNAL( toggled(bool) ), partyGroupBox,  SLOT( setEnabled(bool) ) );
     connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox, SLOT( setEnabled(bool) ) );
@@ -101,6 +109,12 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
         partyGroupBox->setEnabled( false );
     }
 
+    m_playlistRadio->isEnabled() ?
+        playlistBox->setEnabled( true ) :
+        playlistBox->setEnabled( false );
+
+    upcomingBox->setStretchFactor( new QWidget( upcomingBox ), 1 );
+    previousBox->setStretchFactor( new QWidget( previousBox ), 1 );
 }
 
 QString Party::appendType()
