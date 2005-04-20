@@ -113,7 +113,6 @@ QString Party::appendType()
         return "Custom";
 }
 
-//NOTE: Maybe refactor to have a complex create smart playlist type chooser.
 void Party::insertAvailablePlaylists()
 {
     //Default playlists.

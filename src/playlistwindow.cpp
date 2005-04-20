@@ -456,7 +456,7 @@ void PlaylistWindow::configureParty()
             AmarokConfig::setPartyMode( partyEnabled );
             if ( !partyEnabled )
             {
-                Playlist::instance()->removeHistoryItems();
+                Playlist::instance()->alterHistoryItems( true, true ); //enable all items
                 amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
                 return;
             }

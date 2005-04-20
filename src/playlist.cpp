@@ -488,8 +488,6 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
         }
 
-        kdDebug() << "[PARTY] Songcount: " << songCount << endl;
-        kdDebug() << "[PARTY] Query has been fixed: " << sql << endl;
     }
 
     QStringList queryResult = CollectionDB::instance()->query( sql );
@@ -498,10 +496,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     if ( !sp->isCustom() && !sp->sqlForTags.isEmpty() ) {
         //We have to filter all the un-needed results from query( sql )
         for (uint x=10; x < queryResult.count() ; x += 11)
-        {
             newQuery << queryResult[x];
-            kdDebug() << "[PARTY] queryResult[" << x << "] :" << queryResult[x] << endl;
-        }
     } else {
         newQuery = queryResult;
     }
@@ -592,15 +587,25 @@ Playlist::adjustPartyPrevious( uint songCount )
 }
 
 void
-Playlist::removeHistoryItems()
+Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
 {
-    MyIterator it( this, MyIterator::Visible );
-
-    for( ; *it; ++it )
+    //we need a way for undo/redo to reset m_currentTrack.
+    //NOTE: we must make sure that partyMode works perfectly as we expect it to,
+    //      for this functionality to be guarranteed. <sebr>
+    int x=0;
+    for( MyIterator it( this, MyIterator::Visible ) ; *it ; ++it, x++ )
     {
-        if ( *it != currentTrack() && !(*it)->isEnabled() )
+        if( !entire )
+            if ( x < AmarokConfig::partyPreviousCount() ) break;
+        //avoid repainting if we can.
+        if( (*it)->isEnabled() && !enable )
         {
-            (*it)->setEnabled( true );
+            (*it)->setEnabled( enable );
+            repaintItem( *it );
+        }
+        else if( !(*it)->isEnabled() && enable )
+        {
+            (*it)->setEnabled( enable );
             repaintItem( *it );
         }
     }
@@ -720,7 +725,7 @@ Playlist::playNextTrack( bool forceNext )
         setCurrentTrack( item );
 }
 
-//This is called before
+//This is called before setCurrentItem( item );
 void
 Playlist::advancePartyTrack()
 {
@@ -2447,6 +2452,8 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
+
+    if( AmarokConfig::partyMode() ) alterHistoryItems();
 }
 
 void
