@@ -449,12 +449,12 @@ MediaDevice::openIPod()
 	for(; mountiter != currentmountpoints.end(); ++mountiter) {
 	    QString mountpoint = (*mountiter)->mountPoint();
 	    QString device = (*mountiter)->mountedFrom();
-	
+
 	    // only care about scsi devices (/dev/sd at the beginning or scsi somewhere in its name)
 	    if (device.find("/dev/sd") != 0 && device.find("scsi") < 0)
 	        continue;
-	
-	    if (m_ipod->open(mountpoint)) 
+
+	    if (m_ipod->open(mountpoint))
 	        break;
 	}
     }
@@ -643,10 +643,12 @@ MediaDevice::deleteFiles( const KURL::List& urls )
     //NOTE we assume that currentItem is the main target
     int count  = urls.count();
     int button = KMessageBox::warningContinueCancel( m_parent->m_parent,
-                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." )
-                        .arg( i18n( "1 file", "%n files", count ) ),
-                    QString::null,
-                    i18n("&Delete") );
+                                                     i18n( "<p>You have selected 1 file to be <b>irreversibly</b> deleted.",
+                                                           "<p>You have selected %n files to be <b>irreversibly</b> deleted.",
+                                                           count
+                                                         ),
+                                                     QString::null,
+                                                     i18n("&Delete") );
 
     if ( button == KMessageBox::Continue )
     {

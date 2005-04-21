@@ -387,11 +387,11 @@ void PlaylistBrowser::deleteSelectedPlaylists() //SLOT
 
     if ( urls.isEmpty() ) return;
 
-    int button = KMessageBox::warningContinueCancel( this, i18n(
-                        "<p>You have selected %1 to be <b>irreversibly</b> "
-                        "deleted." ).arg( i18n("1 playlist", "<u>%n playlists</u>", urls.count()) ),
-                        QString::null,
-                        i18n("&Delete") );
+    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 playlist to be <b>irreversibly</b> deleted.",
+                                                                 "<p>You have selected %n playlists to be <b>irreversibly</b> deleted.",
+                                                                 urls.count() ),
+                                                     QString::null,
+                                                     i18n("&Delete") );
 
     if ( button == KMessageBox::Continue )
     {

@@ -415,18 +415,30 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
-    QString text = i18n("track");
-    if ( songCount > 1 )    text = i18n( "tracks" );
-
+    QString text;
     if ( type == "Random" ) {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Adding random %1.").arg(text) );
+        if ( songCount > 1 )
+            text = i18n("Adding random tracks.");
+        else
+            text = i18n("Adding random track.");
+        amaroK::StatusBar::instance()->shortMessage( text );
     } else if ( type == "Suggestion" ) {
+        if ( songCount > 1 )
+            text = i18n("Adding suggested tracks.");
+        else
+            text = i18n("Adding suggested track.");
+
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
-        qb.addMatches( QueryBuilder::tabArtist, suggestions );;
-        amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested %1.").arg(text) );
+        qb.addMatches( QueryBuilder::tabArtist, suggestions );
+        amaroK::StatusBar::instance()->shortMessage( text );
     } else { //we have playlists to choose from.
+        if ( songCount > 1 )
+            text = i18n("Adding tracks from custom filter.");
+        else
+            text = i18n("Adding track from custom filter.");
+
         QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
-        amaroK::StatusBar::instance()->shortMessage( i18n("Adding %1 from custom filter.").arg(text) );
+        amaroK::StatusBar::instance()->shortMessage( text );
         addSpecialCustomTracks( songCount, playlists );
         return;
     }
@@ -1931,13 +1943,14 @@ Playlist::deleteSelectedFiles() //SLOT
 
     //NOTE we assume that currentItem is the main target
     int count  = urls.count();
+    QString text = i18n( "<p>You have selected 1 file to be <b>irreversibly</b> deleted.",
+                         "<p>You have selected %n files to be <b>irreversibly</b> deleted.",
+                         count );
     int button = KMessageBox::warningContinueCancel( this,
-                    i18n( "<p>You have selected %1 to be <b>irreversibly</b> deleted." )
-                        .arg( count > 1 ?
-                            i18n( "1 file", "<u>%n files</u>", count ) : //we must use this form of i18n()
-                            static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("<i>'").append("'</i>") ),
-                    QString::null,
-                    i18n("&Delete") );
+                                                     count > 1 ? text :
+                                                     static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("<i>'").append("'</i>"),
+                                                     QString::null,
+                                                     i18n("&Delete") );
 
     if ( button == KMessageBox::Continue )
     {
