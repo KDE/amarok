@@ -732,10 +732,6 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
     Q_UNUSED( trackInformation );
     Q_UNUSED( width );
 
-    // Deactived because TagLib (1.3.1) crashes frequently with this stuff
-
-    #if 0
-
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
     QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
@@ -763,21 +759,13 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 const TagLib::ByteVector &imgVector = ap->picture();
                 debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
 
-                QByteArray imgData;
-                const char *tempCString = imgVector.data();
-
-                // is there a better way to do this?
-                imgData.setRawData ( tempCString , imgVector.size() );
-                QImage image = QImage( imgData );
-
-                // if we don't reset, the whole system get's meesed up
-                imgData.resetRawData ( tempCString , imgVector.size() );
-                if (! image.isNull() )
+                QImage image;
+                if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
                 {
                     if ( width > 1 )
                     {
-                        image.smoothScale( width, width, QImage::ScaleMin ).save( tagCoverDir.filePath( widthKey + tagKey ), "PNG" );
-                        return tagCoverDir.filePath( widthKey + tagKey ) ;
+                        image.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
+                        return m_cacheDir.filePath( widthKey + tagKey );
                     } else
                     {
                         image.save( tagCoverDir.filePath( tagKey ), "PNG" );
@@ -787,8 +775,6 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
             } // apic list is empty
         } // tag is empty
     } // caching
-
-    #endif
 
     return QString::null;
 }
@@ -855,7 +841,11 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, const uint 
 QString
 CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 {
-    return albumImage( trackInformation.artist(), trackInformation.album(), width );
+    QString path = findImageByMetabundle( trackInformation, width );
+    if( path.isEmpty() )
+        path =albumImage( trackInformation.artist(), trackInformation.album(), width );
+
+    return path;
 }
 
 
