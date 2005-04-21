@@ -92,6 +92,7 @@ class Playlist : private KListView, public EngineObserver
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter() const;
+        bool isParty() const { return AmarokConfig::partyMode(); }
 
         /// called during initialisation
         void restoreSession();

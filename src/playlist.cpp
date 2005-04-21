@@ -628,7 +628,7 @@ Playlist::restoreSession()
     if( QFile::exists( url.path() ) )
     {
         //allows for history items to be re-enabled
-        if( AmarokConfig::partyMode() ) m_stateSwitched = true;
+        if( isParty() ) m_stateSwitched = true;
         ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
     }
 }
@@ -644,7 +644,7 @@ Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
-    if( AmarokConfig::partyMode() && childCount() < AmarokConfig::partyUpcomingCount() )
+    if( isParty() && childCount() < AmarokConfig::partyUpcomingCount() )
     {
         uint songCount = 1;
         songCount = AmarokConfig::partyUpcomingCount() - childCount();
@@ -714,7 +714,7 @@ Playlist::playNextTrack( bool forceNext )
         else
             item = *MyIt( this ); //ie. first visible item
 
-        if ( AmarokConfig::partyMode() && item != firstChild() )
+        if ( isParty() && item != firstChild() )
             advancePartyTrack();
 
         if ( !item && AmarokConfig::repeatPlaylist() )
@@ -836,7 +836,7 @@ Playlist::activate( QListViewItem *item )
         return;
     }
 
-    if ( AmarokConfig::partyMode() && !m_partyDirt )
+    if ( isParty() && !m_partyDirt )
     {
         m_currentTrack ?
             this->moveItem( item, 0, m_currentTrack ) :
@@ -1006,7 +1006,7 @@ Playlist::updateNextPrev()
 {
     amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
     amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( !isParty() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
 
@@ -1703,7 +1703,7 @@ Playlist::customEvent( QCustomEvent *e )
             m_queueList.clear();
         }
         //re-disable history items
-        if( AmarokConfig::partyMode() ) {
+        if( isParty() ) {
             if( m_stateSwitched ) {
                 alterHistoryItems( false );
                 m_stateSwitched = false;
@@ -1839,7 +1839,7 @@ Playlist::burnSelectedTracks( int projectType )
 void
 Playlist::shuffle() //SLOT
 {
-    if( AmarokConfig::partyMode() )
+    if( isParty() )
         return;
 
     QPtrList<QListViewItem> list;
@@ -1899,7 +1899,7 @@ Playlist::removeSelectedItems() //SLOT
         delete item;
     }
 
-    if( AmarokConfig::partyMode() )
+    if( isParty() )
     {
         //FIXME: What happens if we remove the active item?
         PlaylistItem *pos = m_currentTrack;
@@ -2089,7 +2089,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     #define item static_cast<PlaylistItem*>(item)
 
     enum {
-        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
+        PLAY, PLAY_NEXT, PLAY_NEXT_PARTY, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
         BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
 
@@ -2109,41 +2109,47 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     KPopupMenu popup;
     popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ) );
 
-    popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
-            ? i18n( "&Restart" )
-            : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+    if( item->isEnabled() )
+        popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
+                ? i18n( "&Restart" )
+                : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     // Begin queue context entry logic
-    popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
+    if( isParty() && item != m_currentTrack && item->isEnabled() )
+        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Move To Front"), PLAY_NEXT_PARTY );
+    else if ( !isParty() && item->isEnabled() )
+        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
-    bool queueToggle = false;
-    MyIt it( this, MyIt::Selected );
-    bool firstQueued = ( m_nextTracks.findRef( *it ) != -1 );
+    if( !isParty() )
+    {
+        bool queueToggle = false;
+        MyIt it( this, MyIt::Selected );
+        bool firstQueued = ( m_nextTracks.findRef( *it ) != -1 );
 
-    for( ++it ; *it; ++it ) {
-        if ( ( m_nextTracks.findRef( *it ) != -1 ) != firstQueued ) {
-            queueToggle = true;
-            break;
+        for( ++it ; *it; ++it ) {
+            if ( ( m_nextTracks.findRef( *it ) != -1 ) != firstQueued ) {
+                queueToggle = true;
+                break;
+            }
+        }
+        if ( itemCount == 1 )
+        {
+            if ( !firstQueued )
+                popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
+            else
+                popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
+        } else {
+            if ( queueToggle )
+                popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", (int) itemCount ) );
+            else
+                // remember, queueToggled only gets set to false if there are items queued and not queued.
+                // so, if queueToggled is false, all items have the same queue status as the first item.
+                if ( !firstQueued )
+                    popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
+                else
+                    popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Selected Tracks") );
         }
     }
-    if ( itemCount == 1 )
-    {
-        if ( !firstQueued )
-            popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
-        else
-            popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
-    } else {
-        if ( queueToggle )
-            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", (int) itemCount ) );
-        else
-            // remember, queueToggled only gets set to false if there are items queued and not queued.
-            // so, if queueToggled is false, all items have the same queue status as the first item.
-            if ( !firstQueued )
-                popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
-            else
-                popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Selected Tracks") );
-    }
-
     // End queue entry logic
 
     if( isCurrent ) {
@@ -2152,7 +2158,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
        popup.setItemChecked( STOP_DONE, m_stopAfterCurrent );
     }
 
-    popup.insertSeparator();
+    if( item->isEnabled() ) popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
@@ -2210,6 +2216,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
         for( MyIt it( this, MyIt::Selected ); *it; ++it )
             queue( *it );
+        break;
+
+    case PLAY_NEXT_PARTY:
+        m_currentTrack ?
+            this->moveItem( item, 0, m_currentTrack ) :
+            this->moveItem( item, 0, 0 );
         break;
 
     case STOP_DONE:
@@ -2479,7 +2491,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-    if( AmarokConfig::partyMode() ) alterHistoryItems();
+    if( isParty() ) alterHistoryItems();
 }
 
 void
