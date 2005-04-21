@@ -590,14 +590,17 @@ Playlist::adjustPartyPrevious( uint songCount )
 void
 Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
 {
-    //we need a way for undo/redo to reset m_currentTrack.
     //NOTE: we must make sure that partyMode works perfectly as we expect it to,
     //      for this functionality to be guarranteed. <sebr>
+
+    if( !entire && !m_currentTrack )
+        return;
+
     int x=0;
     for( MyIterator it( this, MyIterator::Visible ) ; *it ; ++it, x++ )
     {
         if( !entire )
-            if ( x >= AmarokConfig::partyPreviousCount() ) break;
+            if ( x == AmarokConfig::partyPreviousCount() ) break;
         //avoid repainting if we can.
         if( (*it)->isEnabled() != enable )
         {
@@ -623,7 +626,11 @@ Playlist::restoreSession()
     // it looks bad to show "some URLs were not suitable.." on the
     // first ever-run
     if( QFile::exists( url.path() ) )
+    {
+        //allows for history items to be re-enabled
+        if( AmarokConfig::partyMode() ) m_stateSwitched = true;
         ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
+    }
 }
 
 
@@ -1694,9 +1701,7 @@ Playlist::customEvent( QCustomEvent *e )
             m_queueList.clear();
         }
         //re-disable history items
-        kdDebug() << "items have been successfully loaded" << endl;
         if( AmarokConfig::partyMode() ) {
-            kdDebug() << "m_stateSwitched: " << m_stateSwitched << endl;
             if( m_stateSwitched ) {
                 alterHistoryItems( false );
                 m_stateSwitched = false;
