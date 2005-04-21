@@ -6,6 +6,7 @@
 #define BLOCKANALYZER_H
 
 #include "analyzerbase.h"
+#include <qcolor.h>
 
 /**
 @author Max Howell
@@ -48,6 +49,8 @@ private:
     std::vector<float> m_yscale;
 
     float m_step; //rows to fall per frame
+
+    QColor m_topBarColor;
 };
 
 #endif
