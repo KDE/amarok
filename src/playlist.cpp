@@ -179,6 +179,7 @@ Playlist::Playlist( QWidget *parent )
         , m_undoCounter( 0 )
         , m_stopAfterCurrent( false )
         , m_showHelp( true )
+        , m_stateSwitched( false )
         , m_partyDirt( false )
         , m_lockStack( 0 )
         , m_columnFraction( 13, 0 )
@@ -596,14 +597,9 @@ Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
     for( MyIterator it( this, MyIterator::Visible ) ; *it ; ++it, x++ )
     {
         if( !entire )
-            if ( x < AmarokConfig::partyPreviousCount() ) break;
+            if ( x >= AmarokConfig::partyPreviousCount() ) break;
         //avoid repainting if we can.
-        if( (*it)->isEnabled() && !enable )
-        {
-            (*it)->setEnabled( enable );
-            repaintItem( *it );
-        }
-        else if( !(*it)->isEnabled() && enable )
+        if( (*it)->isEnabled() != enable )
         {
             (*it)->setEnabled( enable );
             repaintItem( *it );
@@ -1697,7 +1693,15 @@ Playlist::customEvent( QCustomEvent *e )
             }
             m_queueList.clear();
         }
-
+        //re-disable history items
+        kdDebug() << "items have been successfully loaded" << endl;
+        if( AmarokConfig::partyMode() ) {
+            kdDebug() << "m_stateSwitched: " << m_stateSwitched << endl;
+            if( m_stateSwitched ) {
+                alterHistoryItems( false );
+                m_stateSwitched = false;
+            }
+        }
         //force redraw of currentTrack marker, play icon, etc.
         //setCurrentTrack( currentTrack() );
 
@@ -2005,8 +2009,23 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
     }
 }
 
-void Playlist::undo() { if( !isLocked() ) switchState( m_undoList, m_redoList ); } //SLOT
-void Playlist::redo() { if( !isLocked() ) switchState( m_redoList, m_undoList ); } //SLOT
+void Playlist::undo()
+{
+    if( !isLocked() )
+    {
+        switchState( m_undoList, m_redoList );
+        m_stateSwitched = true;
+    }
+} //SLOT
+
+void Playlist::redo()
+{
+    if( !isLocked() )
+    {
+        switchState( m_redoList, m_undoList );
+        m_stateSwitched = true;
+    }
+} //SLOT
 
 void
 Playlist::updateMetaData( const MetaBundle &mb ) //SLOT

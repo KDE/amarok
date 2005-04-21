@@ -246,6 +246,7 @@ class Playlist : private KListView, public EngineObserver
         KURL::List   m_queueList;
         bool         m_stopAfterCurrent;
         bool         m_showHelp;
+        bool         m_stateSwitched;
         bool         m_partyDirt;
 
         /// Check for locked status
