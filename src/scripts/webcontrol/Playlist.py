@@ -41,7 +41,11 @@ class Track(object):
         if id:
             astart += "name='nowplaying' "
         # append "#nowplaying" if we want to jump to current song.
-        astart += "class='track' href='?action=goto&value=" + trno + "&" + reqid + "&" + sesid + "'>"
+        astart += ("class='track' href='javascript:dolink(\"action=goto&value="
+                   + trno + "&"
+                   + reqid + "&"
+                   + sesid + "\");'>")
+        
         aend = "</a>"
         
         tmp = [ '<td>' + astart + i + aend +'</td>' for i in [getattr(self,f) for f in self.__slots__ ] ]
@@ -106,7 +110,8 @@ class Playlist:
 
     def _createButton(self, name, action, reqid, sesid):
         """Return a button to be used as an action"""
-        return "<a href='?action=" + action + reqid + sesid + "'><img src='player_" + name + ".png'></a>"
+        return ("<a href='javascript:dolink(\"action="
+                + action + reqid + sesid + "\");'><img src='player_" + name + ".png'></a>")
     
     def _createVolume(self, vol_val, reqid, sesid):
         """Return a HTML volume seletor."""
@@ -114,13 +119,17 @@ class Playlist:
         volume = '<table width="100%" class="volume">'
         volume += "<tr>";
 
+        button = "<div style='width:6px; height:12px;'></div>";
+
         for i in range(1,vol_val+1):
-            volume += """<td class='volumeset'>
-            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'></a></td>"
+            volume += ("<td class='volumeset'>" +
+                       "<a href='javascript:dolink(\"action=setvolume&value="
+                       + str(i*10) + reqid + sesid + "\");'>" + button + "</a></td>")
 
         for i in range(vol_val+1, 11):
-            volume += """<td class='volumeunset'>
-            <a href='?action=setvolume&value=""" + str(i*10) + reqid + sesid + "'></a></td>"
+            volume += ("<td class='volumeunset'>" +
+                       "<a href='javascript:dolink(\"action=setvolume&value="
+                       + str(i*10) + reqid + sesid + "\");'>" + button + "</a></td>")
 
         volume += "</tr></table>"
         return volume

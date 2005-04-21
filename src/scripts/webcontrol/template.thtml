@@ -11,7 +11,7 @@ code =  """ <html>\n
             <script type="text/javascript" src="main.js"></script>\n
             </head>\n
             <title>AmaroK playlist</title>\n
-            <body onload="anim(1);%s;setHeaders();" id="mybody">\n
+            <body onload="rescroll();anim(1);%s;setHeaders();" id="mybody">\n
             <div class='topfixed'>\n
 	    <table class="topnavi" width="100%%" cellpadding="0" cellspacing="0" border="0">\n
      	      <tr><td valign="top" nowrap="nowrap"><div style="text-align:left;font-size:10">\n

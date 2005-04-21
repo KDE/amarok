@@ -136,7 +136,7 @@ function countdown(value) {
 		dsecs = dateobj.getUTCSeconds();
 
 		// refresh automatically every 20 secs.
-		setTimeout("dateobj=-1;document.location=document.location", 20000);
+		setTimeout("dateobj=-1;refreshPage();", 20000);
 	}
 
 	dateobj2 = new Date();
@@ -170,8 +170,69 @@ function countdown(value) {
 	} else {
 		getById("countdown").innerHTML = "00:00";
 		// go refresh this page
-		document.location = document.location;
+		refreshPage();
 	}
+}
+
+function getPageScroll()
+{
+	var x,y;
+	if (self.pageYOffset) // all except Explorer
+	{
+	        x = self.pageXOffset;
+	        y = self.pageYOffset;
+	}
+	else if (document.documentElement && document.documentElement.scrollTop)
+	        // Explorer 6 Strict
+	{
+	        x = document.documentElement.scrollLeft;
+	        y = document.documentElement.scrollTop;
+	}
+	else if (document.body) // all other Explorers
+	{
+	        x = document.body.scrollLeft;
+	        y = document.body.scrollTop;
+	}
+	return y;
+}
+
+function setPageScroll(pxs)
+{
+	window.scrollTo(0, pxs);
+}
+
+function setScrollInUrl(newUrl)
+{
+
+	if (newUrl.match(/scroll=\d*/)) {
+		return newUrl.replace(/scroll=\d*/g, "scroll=" + getPageScroll());
+	} else {
+		if (newUrl.match(/\?/)) {
+			return newUrl + "&scroll=" + getPageScroll();
+		} else {
+			return newUrl + "?scroll=" + getPageScroll();
+		}
+	}
+}
+	
+function refreshPage() 
+{
+	document.location = setScrollInUrl("" + document.location);
+}
+
+function rescroll() 
+{
+	regex = new RegExp("scroll=[^\\&]+");
+	var match = regex.exec(document.URL);
+	scrollPos = parseInt((match+"").substring(7));
+	if (match) {
+		setPageScroll(scrollPos);
+	}
+}
+
+function dolink(qstr)
+{
+	document.location = setScrollInUrl("?" + qstr);
 }
 
 function setHeaders()
