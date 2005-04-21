@@ -32,6 +32,7 @@
 #include <qevent.h>
 #include <qobject.h>
 #include <qfile.h>
+#include <qregexp.h>
 
 #if HAVE_TUNEPIMP
 
@@ -116,6 +117,7 @@ protected:
     {
         m_pimp = tp_New("KTRM", "0.1");
         tp_SetTRMCollisionThreshold(m_pimp, 100);
+        tp_SetAutoFileLookup(m_pimp,true);
         tp_SetAutoSaveThreshold(m_pimp, -1);
         tp_SetMoveFiles(m_pimp, false);
         tp_SetRenameFiles(m_pimp, false);
@@ -282,7 +284,7 @@ public:
     QString album;
     int track;
     int year;
-    int relevance;
+    double relevance;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -372,6 +374,15 @@ bool KTRMResult::operator>(const KTRMResult &r) const
     return true;
 #endif
 }
+
+KTRMResult &KTRMResult::operator= (const KTRMResult &r)
+{
+#if HAVE_TUNEPIMP
+    d = new KTRMResultPrivate(*r.d);
+#endif
+    return *this;
+}
+
 
 bool KTRMResult::isEmpty() const
 {
@@ -490,6 +501,14 @@ void KTRMLookup::collision()
     tr_Lock(track);
     int resultCount = tr_GetNumResults(track);
 
+    QStringList strList = QStringList::split ( '/', d->file );
+
+    metadata_t *mdata = md_New();
+    strList.append( QString::fromUtf8(mdata->track) );
+    strList.append( QString::fromUtf8(mdata->artist) );
+    strList.append( QString::fromUtf8(mdata->album) );
+    md_Clear(mdata);
+
     if(resultCount > 0) {
         TPResultType type;
         result_t *results = new result_t[resultCount];
@@ -519,7 +538,10 @@ void KTRMLookup::collision()
                 result.d->album = QString::fromUtf8(tracks[i]->album->name);
                 result.d->track = tracks[i]->trackNum;
                 result.d->year = tracks[i]->album->releaseYear;
-                result.d->relevance = tracks[i]->relevance;
+                result.d->relevance =
+                    4 * stringSimilarity(strList,result.d->title) +
+                    2 * stringSimilarity(strList,result.d->artist) +
+                    1 * stringSimilarity(strList,result.d->album);
 
                 d->results.append(result);
             }
@@ -534,7 +556,7 @@ void KTRMLookup::collision()
     }
 
     tr_Unlock(track);
-
+    qHeapSort(d->results);
     finished();
 #endif
 }
@@ -572,6 +594,51 @@ void KTRMLookup::finished()
         delete this;
 #endif
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions used for sorting MusicBrainz results
+////////////////////////////////////////////////////////////////////////////////
+double stringSimilarity(QStringList &l, QString &s)
+{
+    double max = 0, current = 0;
+    for ( QStringList::Iterator it = l.begin(); it != l.end(); ++it ) {
+       if( max < (current = stringSimilarity((*it),s)))
+            max = current;
+    }
+    return max;
+}
+
+double stringSimilarity(QString s1, QString s2)
+{
+    s1.remove( QRegExp("[\\s\\t\\r\\n]") );
+    s2.remove( QRegExp("[\\s\\t\\r\\n]") );
+
+    double nCommon = 0;
+    int p1 = 0, p2 = 0, x1 = 0, x2 = 0;
+    int l1 = s1.length(), l2 = s2.length(), l3 = l1 + l2;
+    QChar c1 = 0, c2 = 0;
+
+    while(p1 < l1 && p2 < l2) {
+        c1 = s1.at(p1); c2 = s2.at(p2);
+        if( c1.upper() == c2.upper()) {
+            ++nCommon;
+            ++p1; ++p2;
+        }
+        else {
+            x1 = s1.find(c2,p1,false);
+            x2 = s2.find(c1,p2,false);
+
+            if( (x1 == x2 || -1 == x1) || (-1 != x2 && x1 > x2) )
+                ++p2;
+            else
+                ++p1;
+        }
+    }
+    return l3 ? (double)(nCommon*2) / (double)(l3) : 1;
+}
+
+
+
 
 
 #include "ktrm.moc"

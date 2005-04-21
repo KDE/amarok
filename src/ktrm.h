@@ -89,6 +89,11 @@ public:
      */
     bool operator>(const KTRMResult &r) const;
 
+    /**
+     * Basic assignment opperator; required for the QTL
+     */
+    KTRMResult &operator= (const KTRMResult &r);
+
 private:
     class KTRMResultPrivate;
     KTRMResultPrivate *d;
@@ -110,10 +115,10 @@ typedef QValueList<KTRMResult> KTRMResultList;
 class KTRMLookup : public QObject
 {
 Q_OBJECT
-    
+
 signals:
     void sigResult( KTRMResultList );
-    
+
 public:
     /**
      * Creates and starts a lookup for \a file.  If \a autoDelete is set to
@@ -131,7 +136,7 @@ public:
     /**
      * Returns the TunePimp file ID for the file.  This is of no use to the
      * public API.
-     * 
+     *
      * @internal
      */
     int fileId() const;
@@ -169,7 +174,7 @@ public:
      * results() will return an empty set.  This may be reimplemented to provide
      * specific behavion in the case of the track not being recognized.
      */
-    virtual void error(); 
+    virtual void error();
 
     /**
      * Returns the list of matches found by the lookup.  In the case that there
@@ -194,5 +199,11 @@ private:
     class KTRMLookupPrivate;
     KTRMLookupPrivate *d;
 };
+
+/**
+ * Helper Functions used for sorting MusicBrainz results
+ */
+double stringSimilarity(QString s1, QString s2);
+double stringSimilarity(QStringList &l, QString &s);
 
 #endif /*KTRM_H*/
