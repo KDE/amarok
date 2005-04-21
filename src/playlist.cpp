@@ -1427,7 +1427,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
                     "This is the playlist. "
                     "To create a listing, "
                       "<b>drag</b> tracks from the browser-panels on the left, "
-                      "<b>drop</b> them here and then <b>double-click</b> them to start playback!"
+                      "<b>drop</b> them here and then <b>double-click</b> them to start playback."
                 "</div>" ) );
         QSimpleRichText *t = new QSimpleRichText( minimumText +
                 i18n( "<div align=center>"
