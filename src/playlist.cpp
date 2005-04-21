@@ -838,7 +838,9 @@ Playlist::activate( QListViewItem *item )
 
     if ( AmarokConfig::partyMode() && !m_partyDirt )
     {
-        item->moveItem( currentTrack() );
+        m_currentTrack ?
+            this->moveItem( item, 0, m_currentTrack ) :
+            this->moveItem( item, 0, 0 );
         advancePartyTrack();
     }
 
