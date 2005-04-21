@@ -52,8 +52,6 @@ SHORT-TERM (URGENT):
   <markey> When the KDE color scheme is changed while amaroK is running, all toolbar buttons (those with text)
            lose their texts.
 
-  <muesli> Show "Artist - Song" for Various Artist folder.
-
   <markey> Ctrl-C in Playlist for copying title doesn't work, because the event gets eaten by another widget.
 
 
@@ -143,8 +141,6 @@ LONG-TERM:
                    Contra: the playlist is getting cluttered enough as it is!
 
   ADD              Make windows magnetic / sticking together (difficult).
-
-  ADD              Playlist export (generate text or html document from playlist entries)
 
   ADD              Make PlayerWidget shadeable (like XMMS)
           <mxcl>   Doesn't the systray provide this functionality already?
