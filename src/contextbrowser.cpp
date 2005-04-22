@@ -1362,9 +1362,12 @@ bool CurrentTrackJob::doJob()
     else
         albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
 
-    m_HTMLSource.append( QStringx(
-        "<div id='current_box' class='box'>"
+    m_HTMLSource.append(
+            "<div id='current_box' class='box'>"
             "<div id='current_box-header' class='box-header'>"
+            // Show "Title - Artist \n Album", or only "PrettyTitle" if there's no title tag
+            + ( !currentTrack.title().isEmpty()
+            ? QStringx(
                 "<span id='current_box-header-songname' class='box-header-title'>%1</span> "
                 "<span id='current_box-header-separator' class='box-header-title'>-</span> "
                 "<span id='current_box-header-artist' class='box-header-title'>%2</span>"
@@ -1384,20 +1387,29 @@ bool CurrentTrackJob::doJob()
                             "<img id='musicbrainz-image' src='%12' />"
                             "</a>"
                         "</div>"
-                                 )
-        .args( QStringList()
-            << escapeHTML( currentTrack.title() )
-            << escapeHTML( currentTrack.artist() )
-            << escapeHTML( currentTrack.album() )
-            << escapeHTMLAttr( currentTrack.artist() )
-            << escapeHTMLAttr( currentTrack.album() )
-            << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
-            << albumImageTitleAttr
-            << i18n( "Look up this track at musicbrainz.org" )
-            << escapeHTMLAttr( currentTrack.artist() )
-            << escapeHTMLAttr( currentTrack.album() )
-            << escapeHTMLAttr( currentTrack.title() )
-            << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) ) );
+                )
+                .args( QStringList()
+                << escapeHTML( currentTrack.title() )
+                << escapeHTML( currentTrack.artist() )
+                << escapeHTML( currentTrack.album() )
+                << escapeHTMLAttr( currentTrack.artist() )
+                << escapeHTMLAttr( currentTrack.album() )
+                << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
+                << albumImageTitleAttr
+                << i18n( "Look up this track at musicbrainz.org" )
+                << escapeHTMLAttr( currentTrack.artist() )
+                << escapeHTMLAttr( currentTrack.album() )
+                << escapeHTMLAttr( currentTrack.title() )
+                << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
+            : QString ( //no title
+                "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
+                "</div>"
+                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                    "<tr>"
+                        "<td id='current_box-information-td' align='right'>"
+                )
+                .arg( escapeHTML( currentTrack.prettyTitle() ) )
+            ) );
 
     if ( !values.isEmpty() )
     {
