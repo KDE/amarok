@@ -436,29 +436,29 @@ MediaDevice::MediaDevice( MediaDeviceView* parent )
 void
 MediaDevice::openIPod()
 {
+    if ( !m_ipod->isOpen() )
+        m_ipod->open( "/mnt/ipod" );
 
     if ( !m_ipod->isOpen() )
-	m_ipod->open( "/mnt/ipod" );
-    if ( !m_ipod->isOpen() )
-	m_ipod->open( "/media/iPod" ); // default path on SuSE 9.3
+        m_ipod->open( "/media/iPod" ); // default path on SuSE 9.3
 
     if ( !m_ipod->isOpen() ) {
-	// try to find a mounted ipod
-	KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
-	KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
-	for(; mountiter != currentmountpoints.end(); ++mountiter) {
-	    QString mountpoint = (*mountiter)->mountPoint();
-	    QString device = (*mountiter)->mountedFrom();
+        // try to find a mounted ipod
+        KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
+        KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
+        for(; mountiter != currentmountpoints.end(); ++mountiter) {
+            QString mountpoint = (*mountiter)->mountPoint();
+            QString device = (*mountiter)->mountedFrom();
 
-	    // only care about scsi devices (/dev/sd at the beginning or scsi somewhere in its name)
-	    if (device.find("/dev/sd") != 0 && device.find("scsi") < 0)
-	        continue;
+            // only care about scsi devices (/dev/sd at the beginning or scsi somewhere in its name)
+            if (device.find("/dev/sd") != 0 && device.find("scsi") < 0)
+                continue;
 
-	    if (m_ipod->open(mountpoint))
-	        break;
-	}
+            if (m_ipod->open(mountpoint))
+                break;
+        }
     }
-};
+}
 
 MediaDevice::~MediaDevice()
 {
