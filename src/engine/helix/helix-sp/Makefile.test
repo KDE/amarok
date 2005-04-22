@@ -25,7 +25,7 @@ CXX=g++
 CXXFLAGS=-g -fpic -pipe -Wall -Wreturn-type -fno-exceptions --permissive -fno-rtti -Wno-ctor-dtor-privacy -march=pentium -mcpu=pentium  -O2  $(INCLUDES) $(DEFINES)
 
 COMMON_SRCS=hspcontext.cpp hspadvisesink.cpp hsperror.cpp hspauthmgr.cpp iids.cpp print.cpp utils.cpp
-LIB_SRCS=helix-sp.cpp helix-simple.cpp $(COMMON_SRCS)
+LIB_SRCS=helix-sp.cpp $(COMMON_SRCS)
 TESTAPP_SRCS =helix-sp.cpp $(COMMON_SRCS)
 
 # sources for make depend:
@@ -35,7 +35,7 @@ COMMON_OBJS=$(COMMON_SRCS:.cpp=.o)
 LIB_OBJS=$(LIB_SRCS:.cpp=.o)
 TESTAPP_OBJS=splay.o
 
-COMPILED_OBJS=splay.o helix-sp.o helix-simple.o $(COMMON_SRCS:.cpp=.o)
+COMPILED_OBJS=splay.o helix-sp.o $(COMMON_SRCS:.cpp=.o)
 
 INCLUDES= \
 	-I/usr/X11R6/include \
@@ -161,87 +161,7 @@ helix-sp.o: helix-include/common/container/chxmapbuckets.h
 helix-sp.o: helix-include/common/container/chxmapstringtoob.h
 helix-sp.o: helix-include/common/container/chxmapstringtostring.h
 helix-sp.o: helix-include/common/container/chxmaplongtoobj.h globals.h
-helix-sp.o: helix-sp.h utils.h
-helix-simple.o: helixdefines.h helix-include/common/include/hxtypes.h
-helix-simple.o: /usr/include/sys/param.h /usr/include/limits.h
-helix-simple.o: /usr/include/features.h /usr/include/sys/cdefs.h
-helix-simple.o: /usr/include/gnu/stubs.h
-helix-simple.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
-helix-simple.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
-helix-simple.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
-helix-simple.o: /usr/include/bits/xopen_lim.h /usr/include/bits/stdio_lim.h
-helix-simple.o: /usr/include/linux/param.h /usr/include/asm/param.h
-helix-simple.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
-helix-simple.o: /usr/include/bits/environments.h /usr/include/bits/types.h
-helix-simple.o: /usr/include/bits/wordsize.h
-helix-simple.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
-helix-simple.o: /usr/include/bits/typesizes.h /usr/include/bits/confname.h
-helix-simple.o: /usr/include/getopt.h /usr/include/sys/types.h
-helix-simple.o: /usr/include/time.h /usr/include/endian.h
-helix-simple.o: /usr/include/bits/endian.h /usr/include/sys/select.h
-helix-simple.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
-helix-simple.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
-helix-simple.o: /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h
-helix-simple.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
-helix-simple.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
-helix-simple.o: /usr/include/alloca.h helix-include/runtime/hlxclib/time.h
-helix-simple.o: helix-include/common/include/hxwintyp.h
-helix-simple.o: helix-include/common/include/hxcom.h
-helix-simple.o: helix-include/common/include/hxresult.h
-helix-simple.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
-helix-simple.o: /usr/include/string.h
-helix-simple.o: helix-include/common/include/atomicbase.h
-helix-simple.o: helix-include/common/include/ihxpckts.h
-helix-simple.o: helix-include/common/include/hxvalue.h
-helix-simple.o: helix-include/common/include/hxcomm.h
-helix-simple.o: helix-include/common/include/hxengin.h
-helix-simple.o: helix-include/common/include/hxccf.h
-helix-simple.o: helix-include/common/include/hxmon.h
-helix-simple.o: helix-include/runtime/hlxclib/limits.h
-helix-simple.o: helix-include/common/include/hxfiles.h
-helix-simple.o: helix-include/runtime/hlxclib/sys/stat.h
-helix-simple.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
-helix-simple.o: helix-include/runtime/hlxclib/sys/types.h
-helix-simple.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
-helix-simple.o: helix-include/common/include/hxwin.h
-helix-simple.o: helix-include/client/include/hxclsnk.h
-helix-simple.o: helix-include/common/include/hxerror.h
-helix-simple.o: helix-include/common/include/hxauth.h
-helix-simple.o: helix-include/common/include/hxprefs.h
-helix-simple.o: helix-include/common/include/hxtbuf.h
-helix-simple.o: helix-include/common/util/hxstrutl.h
-helix-simple.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
-helix-simple.o: helix-include/runtime/hlxclib/stdlib.h
-helix-simple.o: helix-include/runtime/safestring.h /usr/include/ctype.h
-helix-simple.o: helix-include/common/include/hxvsrc.h hspadvisesink.h
-helix-simple.o: hsperror.h hspauthmgr.h hspcontext.h print.h
-helix-simple.o: /usr/X11R6/include/X11/Xlib.h /usr/X11R6/include/X11/X.h
-helix-simple.o: /usr/X11R6/include/X11/Xfuncproto.h
-helix-simple.o: /usr/X11R6/include/X11/Xosdefs.h
-helix-simple.o: helix-include/common/include/hxausvc.h
-helix-simple.o: helix-include/common/system/dllpath.h
-helix-simple.o: helix-include/common/container/hxmap.h
-helix-simple.o: helix-include/common/container/chxmapptrtoptr.h
-helix-simple.o: helix-include/common/container/carray.h
-helix-simple.o: helix-include/common/dbgtool/hxassert.h
-helix-simple.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
-helix-simple.o: helix-include/runtime/hlxclib/stdio.h /usr/include/stdio.h
-helix-simple.o: /usr/include/libio.h /usr/include/_G_config.h
-helix-simple.o: /usr/include/wchar.h /usr/include/bits/wchar.h
-helix-simple.o: /usr/include/gconv.h
-helix-simple.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
-helix-simple.o: /usr/include/bits/sys_errlist.h /usr/include/signal.h
-helix-simple.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
-helix-simple.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
-helix-simple.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
-helix-simple.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
-helix-simple.o: helix-include/common/container/hxstring.h
-helix-simple.o: helix-include/common/container/hxmaputils.h
-helix-simple.o: helix-include/common/container/chxmapbuckets.h
-helix-simple.o: helix-include/common/container/chxmapstringtoob.h
-helix-simple.o: helix-include/common/container/chxmapstringtostring.h
-helix-simple.o: helix-include/common/container/chxmaplongtoobj.h globals.h
-helix-simple.o: helix-sp.h helix-simple.h
+helix-sp.o: helix-sp.h hspvoladvise.h utils.h
 hspcontext.o: helixdefines.h helix-include/common/container/hxbuffer.h
 hspcontext.o: helix-include/common/include/ihxpckts.h
 hspcontext.o: helix-include/common/include/hxvalue.h
