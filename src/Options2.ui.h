@@ -19,6 +19,7 @@
 #include <kfiledialog.h>
 #include <kmessagebox.h>
 #include <ktar.h>
+#include <knewstuff/downloaddialog.h>
 class KArchiveDirectory;
 
 
@@ -71,4 +72,11 @@ void Options2::updateStyleComboBox()
     foreach(sortedList)
            styleComboBox->insertItem(*it);
     styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
+}
+
+void Options2::retrievePushButton_clicked()
+{
+    KNS::DownloadDialog::open("amarok/styles");
+    styleComboBox->clear();
+    updateStyleComboBox();
 }

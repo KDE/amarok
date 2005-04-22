@@ -547,6 +547,20 @@
                                 <string>Select and install a new Context Browser style.</string>
                             </property>
                         </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>retrievePushButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Get New Styles</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Click to download new Context Browser styles.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select and download new Context Browser styles.</string>
+                            </property>
+                        </widget>
                     </hbox>
                 </widget>
             </vbox>
@@ -589,12 +603,19 @@
         <receiver>Options2</receiver>
         <slot>installPushButton_clicked()</slot>
     </connection>
+    <connection>
+        <sender>retrievePushButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Options2</receiver>
+        <slot>retrievePushButton_clicked()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">Options2.ui.h</include>
 </includes>
 <slots>
     <slot>installPushButton_clicked()</slot>
+    <slot>retrievePushButton_clicked()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
