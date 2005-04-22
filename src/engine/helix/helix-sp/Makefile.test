@@ -1,0 +1,534 @@
+DEFINES=-D_UNIX
+
+RM=rm -f
+
+RM_DIR=rm -rf
+
+MAKE_DEP=
+
+MAKE_DEP_FLAGS=$(INCLUDES) $(DEFINES)
+
+RANLIB=ranlib
+
+CP=cp
+
+MAKE=make
+
+CC=gcc
+
+AR=ar
+
+CCFLAGS=-pipe -Wall -Wreturn-type -fno-exceptions -march=pentium -mcpu=pentium  -O2  $(INCLUDES) $(DEFINES)
+
+CXX=g++
+
+CXXFLAGS=-g -fpic -pipe -Wall -Wreturn-type -fno-exceptions --permissive -fno-rtti -Wno-ctor-dtor-privacy -march=pentium -mcpu=pentium  -O2  $(INCLUDES) $(DEFINES)
+
+COMMON_SRCS=hspcontext.cpp hspadvisesink.cpp hsperror.cpp hspauthmgr.cpp iids.cpp print.cpp utils.cpp
+LIB_SRCS=helix-sp.cpp helix-simple.cpp $(COMMON_SRCS)
+TESTAPP_SRCS =helix-sp.cpp $(COMMON_SRCS)
+
+# sources for make depend:
+SRC=$(LIB_SRCS)
+
+COMMON_OBJS=$(COMMON_SRCS:.cpp=.o)
+LIB_OBJS=$(LIB_SRCS:.cpp=.o)
+TESTAPP_OBJS=splay.o
+
+COMPILED_OBJS=splay.o helix-sp.o helix-simple.o $(COMMON_SRCS:.cpp=.o)
+
+INCLUDES= \
+	-I/usr/X11R6/include \
+	-Ihelix-include/runtime \
+	-Ihelix-include/common/include \
+	-Ihelix-include/client/include \
+	-Ihelix-include/common/container \
+	-Ihelix-include/common/system \
+	-Ihelix-include/common/dbgtool \
+	-Ihelix-include/common/util \
+	-I. -include helixdefines.h
+
+
+DYNAMIC_LIBS=-lstdc++ -lX11 -ldl -lm -lpthread
+
+.SUFFIXES: .cpp .so
+
+.c.o: 
+	$(CC) $(CCFLAGS) -o  $@ -c $<
+
+.cpp.o: 
+	$(CXX) $(CXXFLAGS) -o  $@ -c $<
+
+
+PROGRAM=splay
+LIBRARY=libhelix-sp.a
+#SLIBRARY=libhelix-simpleplayer.so
+
+all: $(LIBRARY) $(PROGRAM) $(COMPILED_OBJS)
+
+#$(SLIBRARY): $(LIB_OBJS) $(STATIC_LIBS)
+#	$(CXX) -shared -o $(SLIBRARY) $(LIB_OBJS) $(STATIC_LIBS) -L/usr/X11R6/lib $(DYNAMIC_LIBS)
+
+$(LIBRARY): $(LIB_OBJS) $(STATIC_LIBS)
+	$(AR) r $(LIBRARY) $(LIB_OBJS) 
+
+$(PROGRAM): $(TESTAPP_OBJS) $(STATIC_LIBS)
+	$(CXX) -o $(PROGRAM) $(TESTAPP_OBJS) $(LIBRARY) -L/usr/X11R6/lib $(DYNAMIC_LIBS)
+
+helix-sp.o: helix-sp.cpp
+	$(CXX) $(CXXFLAGS) -o helix-sp.o -c helix-sp.cpp
+
+splay.o: helix-sp.cpp
+	$(CXX) $(CXXFLAGS) -DTEST_APP -o splay.o -c helix-sp.cpp
+
+$(COMMON_OBJ):	$(COMMON_SRC)
+
+clean: 
+	$(RM) $(PROGRAM) $(SLIBRARY) $(LIBRARY) $(COMPILED_OBJS) *~
+
+depend: 
+	makedepend $(DEFINES) $(INCLUDES) -o.o -- $(SRC)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it
+
+helix-sp.o: helixdefines.h /usr/include/stdlib.h /usr/include/features.h
+helix-sp.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+helix-sp.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+helix-sp.o: /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h
+helix-sp.o: /usr/include/endian.h /usr/include/bits/endian.h
+helix-sp.o: /usr/include/xlocale.h /usr/include/sys/types.h
+helix-sp.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+helix-sp.o: /usr/include/bits/typesizes.h /usr/include/time.h
+helix-sp.o: /usr/include/sys/select.h /usr/include/bits/select.h
+helix-sp.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+helix-sp.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+helix-sp.o: /usr/include/bits/sched.h /usr/include/alloca.h
+helix-sp.o: helix-include/common/include/hxcomm.h
+helix-sp.o: helix-include/common/include/hxengin.h
+helix-sp.o: helix-include/common/include/hxcom.h
+helix-sp.o: helix-include/common/include/hxtypes.h /usr/include/sys/param.h
+helix-sp.o: /usr/include/limits.h
+helix-sp.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+helix-sp.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+helix-sp.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+helix-sp.o: /usr/include/bits/xopen_lim.h /usr/include/bits/stdio_lim.h
+helix-sp.o: /usr/include/linux/param.h /usr/include/asm/param.h
+helix-sp.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+helix-sp.o: /usr/include/bits/environments.h /usr/include/bits/confname.h
+helix-sp.o: /usr/include/getopt.h helix-include/common/include/hxresult.h
+helix-sp.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+helix-sp.o: /usr/include/string.h helix-include/common/include/atomicbase.h
+helix-sp.o: helix-include/common/include/ihxpckts.h
+helix-sp.o: helix-include/common/include/hxvalue.h
+helix-sp.o: helix-include/common/include/hxccf.h
+helix-sp.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
+helix-sp.o: helix-include/common/include/hxwin.h
+helix-sp.o: helix-include/client/include/hxclsnk.h
+helix-sp.o: helix-include/common/include/hxerror.h
+helix-sp.o: helix-include/common/include/hxauth.h
+helix-sp.o: helix-include/common/include/hxprefs.h
+helix-sp.o: helix-include/common/util/hxstrutl.h
+helix-sp.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
+helix-sp.o: helix-include/runtime/hlxclib/stdlib.h
+helix-sp.o: helix-include/runtime/safestring.h /usr/include/ctype.h
+helix-sp.o: helix-include/common/include/hxvsrc.h hspadvisesink.h hsperror.h
+helix-sp.o: hspauthmgr.h hspcontext.h print.h /usr/X11R6/include/X11/Xlib.h
+helix-sp.o: /usr/X11R6/include/X11/X.h /usr/X11R6/include/X11/Xfuncproto.h
+helix-sp.o: /usr/X11R6/include/X11/Xosdefs.h /usr/include/dlfcn.h
+helix-sp.o: /usr/include/bits/dlfcn.h /usr/include/errno.h
+helix-sp.o: /usr/include/bits/errno.h /usr/include/linux/errno.h
+helix-sp.o: /usr/include/asm/errno.h helix-include/common/include/hxausvc.h
+helix-sp.o: helix-include/common/system/dllpath.h
+helix-sp.o: helix-include/common/container/hxmap.h
+helix-sp.o: helix-include/common/container/chxmapptrtoptr.h
+helix-sp.o: helix-include/common/container/carray.h
+helix-sp.o: helix-include/common/dbgtool/hxassert.h
+helix-sp.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
+helix-sp.o: helix-include/runtime/hlxclib/limits.h
+helix-sp.o: helix-include/runtime/hlxclib/stdio.h /usr/include/stdio.h
+helix-sp.o: /usr/include/libio.h /usr/include/_G_config.h
+helix-sp.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+helix-sp.o: /usr/include/gconv.h
+helix-sp.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+helix-sp.o: /usr/include/bits/sys_errlist.h /usr/include/signal.h
+helix-sp.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
+helix-sp.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
+helix-sp.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
+helix-sp.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
+helix-sp.o: helix-include/common/container/hxstring.h
+helix-sp.o: helix-include/common/container/hxmaputils.h
+helix-sp.o: helix-include/common/container/chxmapbuckets.h
+helix-sp.o: helix-include/common/container/chxmapstringtoob.h
+helix-sp.o: helix-include/common/container/chxmapstringtostring.h
+helix-sp.o: helix-include/common/container/chxmaplongtoobj.h globals.h
+helix-sp.o: helix-sp.h utils.h
+helix-simple.o: helixdefines.h helix-include/common/include/hxtypes.h
+helix-simple.o: /usr/include/sys/param.h /usr/include/limits.h
+helix-simple.o: /usr/include/features.h /usr/include/sys/cdefs.h
+helix-simple.o: /usr/include/gnu/stubs.h
+helix-simple.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+helix-simple.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+helix-simple.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+helix-simple.o: /usr/include/bits/xopen_lim.h /usr/include/bits/stdio_lim.h
+helix-simple.o: /usr/include/linux/param.h /usr/include/asm/param.h
+helix-simple.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+helix-simple.o: /usr/include/bits/environments.h /usr/include/bits/types.h
+helix-simple.o: /usr/include/bits/wordsize.h
+helix-simple.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+helix-simple.o: /usr/include/bits/typesizes.h /usr/include/bits/confname.h
+helix-simple.o: /usr/include/getopt.h /usr/include/sys/types.h
+helix-simple.o: /usr/include/time.h /usr/include/endian.h
+helix-simple.o: /usr/include/bits/endian.h /usr/include/sys/select.h
+helix-simple.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+helix-simple.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+helix-simple.o: /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h
+helix-simple.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+helix-simple.o: /usr/include/bits/waitstatus.h /usr/include/xlocale.h
+helix-simple.o: /usr/include/alloca.h helix-include/runtime/hlxclib/time.h
+helix-simple.o: helix-include/common/include/hxwintyp.h
+helix-simple.o: helix-include/common/include/hxcom.h
+helix-simple.o: helix-include/common/include/hxresult.h
+helix-simple.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+helix-simple.o: /usr/include/string.h
+helix-simple.o: helix-include/common/include/atomicbase.h
+helix-simple.o: helix-include/common/include/ihxpckts.h
+helix-simple.o: helix-include/common/include/hxvalue.h
+helix-simple.o: helix-include/common/include/hxcomm.h
+helix-simple.o: helix-include/common/include/hxengin.h
+helix-simple.o: helix-include/common/include/hxccf.h
+helix-simple.o: helix-include/common/include/hxmon.h
+helix-simple.o: helix-include/runtime/hlxclib/limits.h
+helix-simple.o: helix-include/common/include/hxfiles.h
+helix-simple.o: helix-include/runtime/hlxclib/sys/stat.h
+helix-simple.o: /usr/include/sys/stat.h /usr/include/bits/stat.h
+helix-simple.o: helix-include/runtime/hlxclib/sys/types.h
+helix-simple.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
+helix-simple.o: helix-include/common/include/hxwin.h
+helix-simple.o: helix-include/client/include/hxclsnk.h
+helix-simple.o: helix-include/common/include/hxerror.h
+helix-simple.o: helix-include/common/include/hxauth.h
+helix-simple.o: helix-include/common/include/hxprefs.h
+helix-simple.o: helix-include/common/include/hxtbuf.h
+helix-simple.o: helix-include/common/util/hxstrutl.h
+helix-simple.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
+helix-simple.o: helix-include/runtime/hlxclib/stdlib.h
+helix-simple.o: helix-include/runtime/safestring.h /usr/include/ctype.h
+helix-simple.o: helix-include/common/include/hxvsrc.h hspadvisesink.h
+helix-simple.o: hsperror.h hspauthmgr.h hspcontext.h print.h
+helix-simple.o: /usr/X11R6/include/X11/Xlib.h /usr/X11R6/include/X11/X.h
+helix-simple.o: /usr/X11R6/include/X11/Xfuncproto.h
+helix-simple.o: /usr/X11R6/include/X11/Xosdefs.h
+helix-simple.o: helix-include/common/include/hxausvc.h
+helix-simple.o: helix-include/common/system/dllpath.h
+helix-simple.o: helix-include/common/container/hxmap.h
+helix-simple.o: helix-include/common/container/chxmapptrtoptr.h
+helix-simple.o: helix-include/common/container/carray.h
+helix-simple.o: helix-include/common/dbgtool/hxassert.h
+helix-simple.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
+helix-simple.o: helix-include/runtime/hlxclib/stdio.h /usr/include/stdio.h
+helix-simple.o: /usr/include/libio.h /usr/include/_G_config.h
+helix-simple.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+helix-simple.o: /usr/include/gconv.h
+helix-simple.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+helix-simple.o: /usr/include/bits/sys_errlist.h /usr/include/signal.h
+helix-simple.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
+helix-simple.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
+helix-simple.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
+helix-simple.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
+helix-simple.o: helix-include/common/container/hxstring.h
+helix-simple.o: helix-include/common/container/hxmaputils.h
+helix-simple.o: helix-include/common/container/chxmapbuckets.h
+helix-simple.o: helix-include/common/container/chxmapstringtoob.h
+helix-simple.o: helix-include/common/container/chxmapstringtostring.h
+helix-simple.o: helix-include/common/container/chxmaplongtoobj.h globals.h
+helix-simple.o: helix-sp.h helix-simple.h
+hspcontext.o: helixdefines.h helix-include/common/container/hxbuffer.h
+hspcontext.o: helix-include/common/include/ihxpckts.h
+hspcontext.o: helix-include/common/include/hxvalue.h
+hspcontext.o: helix-include/common/include/hxcom.h
+hspcontext.o: helix-include/common/include/hxtypes.h /usr/include/sys/param.h
+hspcontext.o: /usr/include/limits.h /usr/include/features.h
+hspcontext.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+hspcontext.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+hspcontext.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+hspcontext.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+hspcontext.o: /usr/include/bits/xopen_lim.h /usr/include/bits/stdio_lim.h
+hspcontext.o: /usr/include/linux/param.h /usr/include/asm/param.h
+hspcontext.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+hspcontext.o: /usr/include/bits/environments.h /usr/include/bits/types.h
+hspcontext.o: /usr/include/bits/wordsize.h
+hspcontext.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+hspcontext.o: /usr/include/bits/typesizes.h /usr/include/bits/confname.h
+hspcontext.o: /usr/include/getopt.h /usr/include/sys/types.h
+hspcontext.o: /usr/include/time.h /usr/include/endian.h
+hspcontext.o: /usr/include/bits/endian.h /usr/include/sys/select.h
+hspcontext.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+hspcontext.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+hspcontext.o: /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h
+hspcontext.o: helix-include/common/include/hxresult.h
+hspcontext.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+hspcontext.o: /usr/include/string.h /usr/include/xlocale.h
+hspcontext.o: helix-include/common/include/atomicbase.h
+hspcontext.o: helix-include/common/container/hxstring.h
+hspcontext.o: helix-include/common/dbgtool/hxassert.h
+hspcontext.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
+hspcontext.o: helix-include/runtime/hlxclib/limits.h
+hspcontext.o: helix-include/runtime/hlxclib/stdio.h /usr/include/stdio.h
+hspcontext.o: /usr/include/libio.h /usr/include/_G_config.h
+hspcontext.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+hspcontext.o: /usr/include/gconv.h
+hspcontext.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+hspcontext.o: /usr/include/bits/sys_errlist.h /usr/include/signal.h
+hspcontext.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
+hspcontext.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
+hspcontext.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
+hspcontext.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
+hspcontext.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+hspcontext.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
+hspcontext.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
+hspcontext.o: helix-include/common/util/hxmangle.h
+hspcontext.o: helix-include/client/include/hxclsnk.h
+hspcontext.o: helix-include/common/include/hxerror.h
+hspcontext.o: helix-include/common/include/hxprefs.h hspadvisesink.h
+hspcontext.o: hsperror.h hspauthmgr.h helix-include/common/include/hxauth.h
+hspcontext.o: hspcontext.h globals.h helix-include/common/system/dllpath.h
+hspcontext.o: helix-include/common/container/hxmap.h
+hspcontext.o: helix-include/common/container/chxmapptrtoptr.h
+hspcontext.o: helix-include/common/container/carray.h
+hspcontext.o: helix-include/common/container/hxmaputils.h
+hspcontext.o: helix-include/common/container/chxmapbuckets.h
+hspcontext.o: helix-include/common/container/chxmapstringtoob.h
+hspcontext.o: helix-include/common/container/chxmapstringtostring.h
+hspcontext.o: helix-include/common/container/chxmaplongtoobj.h
+hspcontext.o: helix-include/common/include/hxengin.h
+hspcontext.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
+hspcontext.o: helix-include/common/include/hxwin.h
+hspcontext.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+hspadvisesink.o: helixdefines.h /usr/include/stdio.h /usr/include/features.h
+hspadvisesink.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+hspadvisesink.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+hspadvisesink.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+hspadvisesink.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+hspadvisesink.o: /usr/include/_G_config.h /usr/include/wchar.h
+hspadvisesink.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+hspadvisesink.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+hspadvisesink.o: /usr/include/bits/stdio_lim.h
+hspadvisesink.o: /usr/include/bits/sys_errlist.h
+hspadvisesink.o: helix-include/common/include/hxcomm.h
+hspadvisesink.o: helix-include/common/include/hxengin.h
+hspadvisesink.o: helix-include/common/include/hxcom.h
+hspadvisesink.o: helix-include/common/include/hxtypes.h
+hspadvisesink.o: /usr/include/sys/param.h /usr/include/limits.h
+hspadvisesink.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+hspadvisesink.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+hspadvisesink.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+hspadvisesink.o: /usr/include/bits/xopen_lim.h /usr/include/linux/param.h
+hspadvisesink.o: /usr/include/asm/param.h /usr/include/unistd.h
+hspadvisesink.o: /usr/include/bits/posix_opt.h
+hspadvisesink.o: /usr/include/bits/environments.h
+hspadvisesink.o: /usr/include/bits/confname.h /usr/include/getopt.h
+hspadvisesink.o: /usr/include/sys/types.h /usr/include/time.h
+hspadvisesink.o: /usr/include/endian.h /usr/include/bits/endian.h
+hspadvisesink.o: /usr/include/sys/select.h /usr/include/bits/select.h
+hspadvisesink.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+hspadvisesink.o: /usr/include/sys/sysmacros.h
+hspadvisesink.o: /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h
+hspadvisesink.o: helix-include/common/include/hxresult.h
+hspadvisesink.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+hspadvisesink.o: /usr/include/string.h /usr/include/xlocale.h
+hspadvisesink.o: helix-include/common/include/atomicbase.h
+hspadvisesink.o: helix-include/common/include/ihxpckts.h
+hspadvisesink.o: helix-include/common/include/hxvalue.h
+hspadvisesink.o: helix-include/common/include/hxccf.h
+hspadvisesink.o: helix-include/common/include/hxmon.h
+hspadvisesink.o: helix-include/runtime/hlxclib/limits.h
+hspadvisesink.o: helix-include/common/include/hxcore.h
+hspadvisesink.o: /usr/include/sys/time.h helix-include/common/include/hxwin.h
+hspadvisesink.o: helix-include/client/include/hxclsnk.h hspadvisesink.h
+hspadvisesink.o: print.h globals.h helix-include/common/system/dllpath.h
+hspadvisesink.o: helix-include/common/container/hxmap.h
+hspadvisesink.o: helix-include/common/container/chxmapptrtoptr.h
+hspadvisesink.o: helix-include/common/container/carray.h
+hspadvisesink.o: helix-include/common/dbgtool/hxassert.h
+hspadvisesink.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
+hspadvisesink.o: helix-include/runtime/hlxclib/stdio.h /usr/include/signal.h
+hspadvisesink.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
+hspadvisesink.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
+hspadvisesink.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
+hspadvisesink.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
+hspadvisesink.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+hspadvisesink.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
+hspadvisesink.o: helix-include/common/container/hxstring.h
+hspadvisesink.o: helix-include/runtime/hlxclib/string.h
+hspadvisesink.o: /usr/include/strings.h
+hspadvisesink.o: helix-include/common/container/hxmaputils.h
+hspadvisesink.o: helix-include/common/container/chxmapbuckets.h
+hspadvisesink.o: helix-include/common/container/chxmapstringtoob.h
+hspadvisesink.o: helix-include/common/container/chxmapstringtostring.h
+hspadvisesink.o: helix-include/common/container/chxmaplongtoobj.h
+hspadvisesink.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+hsperror.o: helixdefines.h helix-include/common/include/hxcomm.h
+hsperror.o: helix-include/common/include/hxengin.h
+hsperror.o: helix-include/common/include/hxcom.h
+hsperror.o: helix-include/common/include/hxtypes.h /usr/include/sys/param.h
+hsperror.o: /usr/include/limits.h /usr/include/features.h
+hsperror.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+hsperror.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+hsperror.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+hsperror.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+hsperror.o: /usr/include/bits/xopen_lim.h /usr/include/bits/stdio_lim.h
+hsperror.o: /usr/include/linux/param.h /usr/include/asm/param.h
+hsperror.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+hsperror.o: /usr/include/bits/environments.h /usr/include/bits/types.h
+hsperror.o: /usr/include/bits/wordsize.h
+hsperror.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+hsperror.o: /usr/include/bits/typesizes.h /usr/include/bits/confname.h
+hsperror.o: /usr/include/getopt.h /usr/include/sys/types.h
+hsperror.o: /usr/include/time.h /usr/include/endian.h
+hsperror.o: /usr/include/bits/endian.h /usr/include/sys/select.h
+hsperror.o: /usr/include/bits/select.h /usr/include/bits/sigset.h
+hsperror.o: /usr/include/bits/time.h /usr/include/sys/sysmacros.h
+hsperror.o: /usr/include/bits/pthreadtypes.h /usr/include/bits/sched.h
+hsperror.o: helix-include/common/include/hxresult.h
+hsperror.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+hsperror.o: /usr/include/string.h /usr/include/xlocale.h
+hsperror.o: helix-include/common/include/atomicbase.h
+hsperror.o: helix-include/common/include/ihxpckts.h
+hsperror.o: helix-include/common/include/hxvalue.h
+hsperror.o: helix-include/common/include/hxccf.h
+hsperror.o: helix-include/common/include/hxerror.h
+hsperror.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
+hsperror.o: helix-include/common/include/hxwin.h
+hsperror.o: helix-include/common/container/hxbuffer.h
+hsperror.o: helix-include/common/container/hxstring.h
+hsperror.o: helix-include/common/dbgtool/hxassert.h
+hsperror.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
+hsperror.o: helix-include/runtime/hlxclib/limits.h
+hsperror.o: helix-include/runtime/hlxclib/stdio.h /usr/include/stdio.h
+hsperror.o: /usr/include/libio.h /usr/include/_G_config.h
+hsperror.o: /usr/include/wchar.h /usr/include/bits/wchar.h
+hsperror.o: /usr/include/gconv.h
+hsperror.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+hsperror.o: /usr/include/bits/sys_errlist.h /usr/include/signal.h
+hsperror.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
+hsperror.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
+hsperror.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
+hsperror.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
+hsperror.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+hsperror.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
+hsperror.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
+hsperror.o: hsperror.h print.h globals.h
+hsperror.o: helix-include/common/system/dllpath.h
+hsperror.o: helix-include/common/container/hxmap.h
+hsperror.o: helix-include/common/container/chxmapptrtoptr.h
+hsperror.o: helix-include/common/container/carray.h
+hsperror.o: helix-include/common/container/hxmaputils.h
+hsperror.o: helix-include/common/container/chxmapbuckets.h
+hsperror.o: helix-include/common/container/chxmapstringtoob.h
+hsperror.o: helix-include/common/container/chxmapstringtostring.h
+hsperror.o: helix-include/common/container/chxmaplongtoobj.h
+hsperror.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+hspauthmgr.o: helixdefines.h /usr/include/stdio.h /usr/include/features.h
+hspauthmgr.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+hspauthmgr.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+hspauthmgr.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+hspauthmgr.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+hspauthmgr.o: /usr/include/_G_config.h /usr/include/wchar.h
+hspauthmgr.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+hspauthmgr.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+hspauthmgr.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+hspauthmgr.o: helix-include/common/include/hxcom.h
+hspauthmgr.o: helix-include/common/include/hxtypes.h /usr/include/sys/param.h
+hspauthmgr.o: /usr/include/limits.h
+hspauthmgr.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+hspauthmgr.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+hspauthmgr.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+hspauthmgr.o: /usr/include/bits/xopen_lim.h /usr/include/linux/param.h
+hspauthmgr.o: /usr/include/asm/param.h /usr/include/unistd.h
+hspauthmgr.o: /usr/include/bits/posix_opt.h /usr/include/bits/environments.h
+hspauthmgr.o: /usr/include/bits/confname.h /usr/include/getopt.h
+hspauthmgr.o: /usr/include/sys/types.h /usr/include/time.h
+hspauthmgr.o: /usr/include/endian.h /usr/include/bits/endian.h
+hspauthmgr.o: /usr/include/sys/select.h /usr/include/bits/select.h
+hspauthmgr.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+hspauthmgr.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+hspauthmgr.o: /usr/include/bits/sched.h
+hspauthmgr.o: helix-include/common/include/hxresult.h
+hspauthmgr.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+hspauthmgr.o: /usr/include/string.h /usr/include/xlocale.h
+hspauthmgr.o: helix-include/common/include/atomicbase.h
+hspauthmgr.o: helix-include/common/include/hxauth.h hspauthmgr.h
+hspauthmgr.o: /usr/include/ctype.h print.h globals.h
+hspauthmgr.o: helix-include/common/system/dllpath.h
+hspauthmgr.o: helix-include/common/container/hxmap.h
+hspauthmgr.o: helix-include/common/container/chxmapptrtoptr.h
+hspauthmgr.o: helix-include/common/container/carray.h
+hspauthmgr.o: helix-include/common/dbgtool/hxassert.h
+hspauthmgr.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
+hspauthmgr.o: helix-include/runtime/hlxclib/limits.h
+hspauthmgr.o: helix-include/runtime/hlxclib/stdio.h /usr/include/signal.h
+hspauthmgr.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
+hspauthmgr.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
+hspauthmgr.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
+hspauthmgr.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
+hspauthmgr.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
+hspauthmgr.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
+hspauthmgr.o: helix-include/common/container/hxstring.h
+hspauthmgr.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
+hspauthmgr.o: helix-include/common/container/hxmaputils.h
+hspauthmgr.o: helix-include/common/container/chxmapbuckets.h
+hspauthmgr.o: helix-include/common/container/chxmapstringtoob.h
+hspauthmgr.o: helix-include/common/container/chxmapstringtostring.h
+hspauthmgr.o: helix-include/common/container/chxmaplongtoobj.h
+hspauthmgr.o: helix-include/common/include/hxengin.h
+hspauthmgr.o: helix-include/common/include/ihxpckts.h
+hspauthmgr.o: helix-include/common/include/hxvalue.h
+hspauthmgr.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
+hspauthmgr.o: helix-include/common/include/hxwin.h
+hspauthmgr.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+iids.o: helixdefines.h helix-include/common/include/hxtypes.h
+iids.o: /usr/include/sys/param.h /usr/include/limits.h
+iids.o: /usr/include/features.h /usr/include/sys/cdefs.h
+iids.o: /usr/include/gnu/stubs.h
+iids.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+iids.o: /usr/include/bits/posix1_lim.h /usr/include/bits/local_lim.h
+iids.o: /usr/include/linux/limits.h /usr/include/bits/posix2_lim.h
+iids.o: /usr/include/bits/xopen_lim.h /usr/include/bits/stdio_lim.h
+iids.o: /usr/include/linux/param.h /usr/include/asm/param.h
+iids.o: /usr/include/unistd.h /usr/include/bits/posix_opt.h
+iids.o: /usr/include/bits/environments.h /usr/include/bits/types.h
+iids.o: /usr/include/bits/wordsize.h
+iids.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+iids.o: /usr/include/bits/typesizes.h /usr/include/bits/confname.h
+iids.o: /usr/include/getopt.h /usr/include/sys/types.h /usr/include/time.h
+iids.o: /usr/include/endian.h /usr/include/bits/endian.h
+iids.o: /usr/include/sys/select.h /usr/include/bits/select.h
+iids.o: /usr/include/bits/sigset.h /usr/include/bits/time.h
+iids.o: /usr/include/sys/sysmacros.h /usr/include/bits/pthreadtypes.h
+iids.o: /usr/include/bits/sched.h helix-include/common/include/hxcom.h
+iids.o: helix-include/common/include/hxresult.h
+iids.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
+iids.o: /usr/include/string.h /usr/include/xlocale.h
+iids.o: helix-include/common/include/atomicbase.h
+iids.o: helix-include/common/include/hxiids.h
+iids.o: helix-include/common/include/hxpiids.h
+print.o: helixdefines.h /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+print.o: /usr/include/stdio.h /usr/include/features.h
+print.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+print.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+print.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+print.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+print.o: /usr/include/_G_config.h /usr/include/wchar.h
+print.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+print.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+print.o: print.h
+utils.o: helixdefines.h /usr/include/stdio.h /usr/include/features.h
+utils.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+utils.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+utils.o: /usr/include/bits/types.h /usr/include/bits/wordsize.h
+utils.o: /usr/include/bits/typesizes.h /usr/include/libio.h
+utils.o: /usr/include/_G_config.h /usr/include/wchar.h
+utils.o: /usr/include/bits/wchar.h /usr/include/gconv.h
+utils.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stdarg.h
+utils.o: /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h
+utils.o: /usr/include/string.h /usr/include/xlocale.h utils.h

@@ -1,0 +1,635 @@
+
+/*
+ *
+ * This software is released under the provisions of the GPL version 2.
+ * see file "COPYING".  If that file is not available, the full statement 
+ * of the license can be found at
+ *
+ * http://www.fsf.org/licensing/licenses/gpl.txt
+ *
+ * Portions Copyright (c) 1995-2002 RealNetworks, Inc. All Rights Reserved.
+ * Portions (c) Paul Cifarelli 2005
+ */
+
+#include <stdio.h>
+
+#include "hxcomm.h"
+#include "hxmon.h"
+#include "hxcore.h"
+#include "hxengin.h"
+#include "hxclsnk.h"
+#include "hspadvisesink.h"
+#include "ihxpckts.h"
+
+#include "print.h"
+
+#include "globals.h"
+
+#include "hxausvc.h"
+#include "helix-sp.h"
+#include "utils.h"
+
+#if	defined(__cplusplus)
+extern	"C"	{
+#endif	/* defined(__cplusplus) */
+
+typedef enum hookBuffering {
+	eContacting = 0,
+	eConnecting = 1,
+	eBuffering = 2,
+	ePlaying = 3
+}hookBuffering;
+
+void hookRealAudio_Buffering(hookBuffering connectState, int pct);
+
+void hookRealAudio_PlayPosition(unsigned long current,unsigned long duration);
+
+typedef enum hookState {
+	ePlay = 0,
+	ePause = 1,
+	eStop = 2,
+	eResume = 3,
+	eComplete				// Clip is done playing
+}hookState;
+void hookRealAudio_State(hookState newState);
+
+
+#if	defined(__cplusplus)
+}
+#endif	/* defined(__cplusplus) */
+
+HSPClientAdviceSink::HSPClientAdviceSink(IUnknown* pUnknown, LONG32 lClientIndex, HelixSimplePlayer *pSplay)
+    : m_lRefCount (0)
+    , m_lClientIndex (lClientIndex)
+    , m_pUnknown (NULL)
+    , m_pRegistry (NULL)
+    , m_pScheduler (NULL)
+    , m_lCurrentBandwidth(0)
+    , m_lAverageBandwidth(0)
+    , m_bOnStop(0)
+    , m_position(0)
+    , m_duration(0)
+    , m_splayer(pSplay)
+{
+    if (pUnknown)
+    {
+	m_pUnknown = pUnknown;
+	m_pUnknown->AddRef();
+
+	if (HXR_OK != m_pUnknown->QueryInterface(IID_IHXRegistry, (void**)&m_pRegistry))
+	{
+	    m_pRegistry = NULL;
+	}
+
+	if (HXR_OK != m_pUnknown->QueryInterface(IID_IHXScheduler, (void**)&m_pScheduler))
+	{
+	    m_pScheduler = NULL;
+	}
+
+	IHXPlayer* pPlayer;
+	if(HXR_OK == m_pUnknown->QueryInterface(IID_IHXPlayer,
+						(void**)&pPlayer))
+	{
+	    pPlayer->AddAdviseSink(this);
+	    pPlayer->Release();
+	}
+    }
+}
+
+HSPClientAdviceSink::~HSPClientAdviceSink(void)
+{
+    if (m_pScheduler)
+    {
+        m_pScheduler->Release();
+        m_pScheduler = NULL;
+    }
+
+    if (m_pRegistry)
+    {
+	m_pRegistry->Release();
+	m_pRegistry = NULL;
+    }
+
+    if (m_pUnknown)
+    {
+	m_pUnknown->Release();
+	m_pUnknown = NULL;
+    }
+}
+
+
+// *** IUnknown methods ***
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IUnknown::QueryInterface
+//  Purpose:
+//	Implement this to export the interfaces supported by your 
+//	object.
+//
+STDMETHODIMP HSPClientAdviceSink::QueryInterface(REFIID riid, void** ppvObj)
+{
+    if (IsEqualIID(riid, IID_IUnknown))
+    {
+	AddRef();
+	*ppvObj = (IUnknown*)(IHXClientAdviseSink*)this;
+	return HXR_OK;
+    }
+    else if (IsEqualIID(riid, IID_IHXClientAdviseSink))
+    {
+	AddRef();
+	*ppvObj = (IHXClientAdviseSink*)this;
+	return HXR_OK;
+    }
+
+    *ppvObj = NULL;
+    return HXR_NOINTERFACE;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IUnknown::AddRef
+//  Purpose:
+//	Everyone usually implements this the same... feel free to use
+//	this implementation.
+//
+STDMETHODIMP_(ULONG32) HSPClientAdviceSink::AddRef()
+{
+    return InterlockedIncrement(&m_lRefCount);
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IUnknown::Release
+//  Purpose:
+//	Everyone usually implements this the same... feel free to use
+//	this implementation.
+//
+STDMETHODIMP_(ULONG32) HSPClientAdviceSink::Release()
+{
+    if (InterlockedDecrement(&m_lRefCount) > 0)
+    {
+        return m_lRefCount;
+    }
+
+    delete this;
+    return 0;
+}
+
+/*
+ *	IHXClientAdviseSink methods
+ */
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnPosLength
+ *	Purpose:
+ *	    Called to advise the client that the position or length of the
+ *	    current playback context has changed.
+ */
+STDMETHODIMP
+HSPClientAdviceSink::OnPosLength(UINT32	  ulPosition,
+				   UINT32	  ulLength)
+{
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnPosLength(%ld, %ld)\n", ulPosition, ulLength);
+    }
+    m_position = ulPosition;
+    m_duration = ulLength;
+
+    return HXR_OK;
+}
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnPresentationOpened
+ *	Purpose:
+ *	    Called to advise the client a presentation has been opened.
+ */
+STDMETHODIMP HSPClientAdviceSink::OnPresentationOpened()
+{
+/*
+    if (m_splayer && m_splayer->xf().crossfading && m_lClientIndex == m_splayer->xf().toIndex)
+    {
+       STDERR("Crossfading...\n");
+       m_splayer->xf().toStream = 0;
+       m_splayer->xf().toStream = m_splayer->getAudioPlayer(m_lClientIndex)->GetAudioStream(0);
+       if (m_splayer->xf().toStream)
+       {
+          STDERR("Got Stream 2\n");
+          m_splayer->startCrossFade();
+       }
+       else
+          m_splayer->stop(m_lClientIndex);
+    }
+*/
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnPresentationOpened()\n");
+    }
+
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnPresentationClosed
+ *	Purpose:
+ *	    Called to advise the client a presentation has been closed.
+ */
+STDMETHODIMP HSPClientAdviceSink::OnPresentationClosed()
+{
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnPresentationClosed()\n");
+    }
+
+    return HXR_OK;
+}
+
+void HSPClientAdviceSink::GetStatistics (char* pszRegistryKey)
+{
+    char    szRegistryValue[MAX_DISPLAY_NAME] = {0}; /* Flawfinder: ignore */
+    INT32   lValue = 0;
+    INT32   i = 0;
+    INT32   lStatistics = 8;
+    UINT32 *plValue;
+    
+    // collect statistic
+    for (i = 0; i < lStatistics; i++)
+    {
+	plValue = NULL;
+	switch (i)
+	{
+	case 0:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.Normal", pszRegistryKey);
+	    break;
+	case 1:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.Recovered", pszRegistryKey);
+	    break;
+	case 2:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.Received", pszRegistryKey);
+	    break;
+	case 3:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.Lost", pszRegistryKey);
+	    break;
+	case 4:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.Late", pszRegistryKey);
+	    break;
+	case 5:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.ClipBandwidth", pszRegistryKey);
+	    break;
+	case 6:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.AverageBandwidth", pszRegistryKey);
+	    plValue = &m_lAverageBandwidth;
+	    break;
+	case 7:
+	    SafeSprintf(szRegistryValue, MAX_DISPLAY_NAME, "%s.CurrentBandwidth", pszRegistryKey);
+	    plValue = &m_lCurrentBandwidth;
+	    break;
+	default:
+	    break;
+	}
+
+	m_pRegistry->GetIntByName(szRegistryValue, lValue);
+	if (plValue)
+	{
+	    if (m_bOnStop || lValue == 0)
+	    {
+		lValue = *plValue;
+	    }
+	    else
+	    {
+		*plValue = lValue;
+	    }
+	}
+	if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink || (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode && m_bOnStop))
+	{
+	    STDOUT("%s = %ld\n", szRegistryValue, lValue);
+	}
+    }
+}
+
+void HSPClientAdviceSink::GetAllStatistics(void)
+{
+    UINT32  unPlayerIndex = 0;
+    UINT32  unSourceIndex = 0;
+    UINT32  unStreamIndex = 0;
+
+    char*   pszRegistryPrefix = "Statistics";
+    char    szRegistryName[MAX_DISPLAY_NAME] = {0}; /* Flawfinder: ignore */
+
+    // display the content of whole statistic registry
+    if (m_pRegistry)
+    {
+	// ok, let's start from the top (player)
+	SafeSprintf(szRegistryName, MAX_DISPLAY_NAME, "%s.Player%ld", pszRegistryPrefix, m_lClientIndex);
+	if (PT_COMPOSITE == m_pRegistry->GetTypeByName(szRegistryName))
+	{
+	    // display player statistic
+	    GetStatistics(szRegistryName);
+
+	    SafeSprintf(szRegistryName, MAX_DISPLAY_NAME, "%s.Source%ld", szRegistryName, unSourceIndex);
+	    while (PT_COMPOSITE == m_pRegistry->GetTypeByName(szRegistryName))
+	    {
+		// display source statistic
+		GetStatistics(szRegistryName);
+
+		SafeSprintf(szRegistryName, MAX_DISPLAY_NAME, "%s.Stream%ld", szRegistryName, unStreamIndex);
+		while (PT_COMPOSITE == m_pRegistry->GetTypeByName(szRegistryName))
+		{
+		    // display stream statistic
+		    GetStatistics(szRegistryName);
+
+		    unStreamIndex++;
+
+		    SafeSprintf(szRegistryName, MAX_DISPLAY_NAME, "%s.Player%ld.Source%ld.Stream%ld", 
+			pszRegistryPrefix, unPlayerIndex, unSourceIndex, unStreamIndex);
+		}
+
+		unSourceIndex++;
+
+		SafeSprintf(szRegistryName, MAX_DISPLAY_NAME, "%s.Player%ld.Source%ld",
+		    pszRegistryPrefix, unPlayerIndex, unSourceIndex);
+	    }
+
+	    unPlayerIndex++;
+
+	    SafeSprintf(szRegistryName, MAX_DISPLAY_NAME, "%s.Player%ld", pszRegistryPrefix, unPlayerIndex);
+	}
+    }
+}
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnStatisticsChanged
+ *	Purpose:
+ *	    Called to advise the client that the presentation statistics
+ *	    have changed. 
+ */
+STDMETHODIMP HSPClientAdviceSink::OnStatisticsChanged(void)
+{
+    char        szBuff[1024]; /* Flawfinder: ignore */
+    HX_RESULT   res     = HXR_OK;
+    UINT16      uPlayer = 0;
+
+    if(HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnStatisticsChanged():\n");
+        
+        SafeSprintf(szBuff, 1024, "Statistics.Player%u", uPlayer );
+        while( HXR_OK == res )
+        {
+            res = DumpRegTree( szBuff );
+            uPlayer++;
+            SafeSprintf(szBuff, 1024, "Statistics.Player%u", uPlayer );
+        }
+    }
+
+    return HXR_OK;
+}
+
+HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName )
+{
+    const char* pszName = NULL;
+    ULONG32     ulRegID   = 0;
+    HX_RESULT   res     = HXR_OK;
+    INT32       nVal    = 0;
+    IHXBuffer* pBuff   = NULL;
+    IHXValues* pValues = NULL;
+
+    //See if the name exists in the reg tree.
+    res = m_pRegistry->GetPropListByName( pszTreeName, pValues);
+    if( HXR_OK!=res || !pValues )
+        return HXR_FAIL;
+
+    //make sure this is a PT_COMPOSITE type reg entry.
+    if( PT_COMPOSITE != m_pRegistry->GetTypeByName(pszTreeName))
+        return HXR_FAIL;
+
+    //Print out the value of each member of this tree.
+    res = pValues->GetFirstPropertyULONG32( pszName, ulRegID );
+    while( HXR_OK == res )
+    {
+        //We have at least one entry. See what type it is.
+        HXPropType pt = m_pRegistry->GetTypeById(ulRegID);
+        switch(pt)
+        {
+           case PT_COMPOSITE:
+               DumpRegTree(pszName);
+               break;
+           case PT_INTEGER :
+               nVal = 0;
+               m_pRegistry->GetIntById( ulRegID, nVal );
+               STDOUT("%s : %d\n", pszName, nVal ); 
+               break;
+           case PT_INTREF :
+               nVal = 0;
+               m_pRegistry->GetIntById( ulRegID, nVal );
+               STDOUT("%s : %d\n", pszName, nVal ); 
+               break;
+           case PT_STRING :
+               pBuff = NULL;
+               m_pRegistry->GetStrById( ulRegID, pBuff );
+               STDOUT("%s : \"", pszName ); 
+               if( pBuff )
+                   STDOUT("%s", (const char *)(pBuff->GetBuffer()) );
+               STDOUT("\"\n" ); 
+               HX_RELEASE(pBuff);
+               break;
+           case PT_BUFFER :
+               STDOUT("%s : BUFFER TYPE NOT SHOWN\n",
+                        pszName, nVal ); 
+               break;
+           case PT_UNKNOWN:
+               STDOUT("%s Unkown registry type entry\n", pszName );
+               break;
+           default:
+               STDOUT("%s Unkown registry type entry\n", pszName );
+               break;
+        }
+        res = pValues->GetNextPropertyULONG32( pszName, ulRegID);
+    }
+
+    HX_RELEASE( pValues );
+    
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnPreSeek
+ *	Purpose:
+ *	    Called by client engine to inform the client that a seek is
+ *	    about to occur. The render is informed the last time for the 
+ *	    stream's time line before the seek, as well as the first new
+ *	    time for the stream's time line after the seek will be completed.
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnPreSeek(	ULONG32	ulOldTime,
+						ULONG32	ulNewTime)
+{
+#if !defined(__TCS__)
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnPreSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
+    }
+#endif
+
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnPostSeek
+ *	Purpose:
+ *	    Called by client engine to inform the client that a seek has
+ *	    just occured. The render is informed the last time for the 
+ *	    stream's time line before the seek, as well as the first new
+ *	    time for the stream's time line after the seek.
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnPostSeek(	ULONG32	ulOldTime,
+						ULONG32	ulNewTime)
+{
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnPostSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
+    }
+
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnStop
+ *	Purpose:
+ *	    Called by client engine to inform the client that a stop has
+ *	    just occured. 
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnStop(void)
+{
+    HXTimeval now;
+
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnStop()\n");
+    }
+
+    if (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode)
+    {
+        STDOUT("Player %ld stopped.\n", m_lClientIndex);
+        m_bOnStop = TRUE;
+	GetAllStatistics();
+    }
+
+    // Find out the current time and subtract the beginning time to
+    // figure out how many seconds we played
+    now = m_pScheduler->GetCurrentSchedulerTime();
+    m_ulStopTime = now.tv_sec;
+
+    HelixSimplePlayer::GetGlobal()->g_ulNumSecondsPlayed = m_ulStopTime - m_ulStartTime;
+
+    return HXR_OK;
+}
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnPause
+ *	Purpose:
+ *	    Called by client engine to inform the client that a pause has
+ *	    just occured. The render is informed the last time for the 
+ *	    stream's time line before the pause.
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnPause(ULONG32 ulTime)
+{
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnPause(%ld)\n", ulTime);
+    }
+
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnBegin
+ *	Purpose:
+ *	    Called by client engine to inform the client that a begin or
+ *	    resume has just occured. The render is informed the first time 
+ *	    for the stream's time line after the resume.
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnBegin(ULONG32 ulTime)
+{
+    HXTimeval now;
+
+#if !defined(__TCS__)
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnBegin(%ld)\n", ulTime);
+    }
+
+    if (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode)
+    {
+        STDOUT("Player %ld beginning playback...\n", m_lClientIndex);
+    }
+#endif
+
+    // Record the current time, so we can figure out many seconds we played
+    now = m_pScheduler->GetCurrentSchedulerTime();
+    m_ulStartTime = now.tv_sec;
+
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnBuffering
+ *	Purpose:
+ *	    Called by client engine to inform the client that buffering
+ *	    of data is occuring. The render is informed of the reason for
+ *	    the buffering (start-up of stream, seek has occured, network
+ *	    congestion, etc.), as well as percentage complete of the 
+ *	    buffering process.
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnBuffering(ULONG32	ulFlags,
+						UINT16	unPercentComplete)
+{
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnBuffering(%ld, %d)\n", ulFlags, unPercentComplete);
+    }
+
+    return HXR_OK;
+}
+
+
+/************************************************************************
+ *	Method:
+ *	    IHXClientAdviseSink::OnContacting
+ *	Purpose:
+ *	    Called by client engine to inform the client is contacting
+ *	    hosts(s).
+ *
+ */
+STDMETHODIMP HSPClientAdviceSink::OnContacting(const char* pHostName)
+{
+    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    {
+        STDOUT("OnContacting(\"%s\")\n", pHostName);
+    }
+
+    return HXR_OK;
+}
+

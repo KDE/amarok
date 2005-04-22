@@ -1,0 +1,119 @@
+DEFINES=-DTEST_APP -D_REENTRANT_ -DQT_THREAD_SUPPORT
+
+CXX=g++
+MOC=/usr/lib/qt-3.3/bin/moc
+
+CXXFLAGS=-g -fpic -pipe -Wall -Wreturn-type -fno-exceptions --permissive -fno-rtti -Wno-ctor-dtor-privacy -march=pentium -mcpu=pentium  -O2  $(INCLUDES) $(DEFINES)
+
+SRCS=main.cpp hxsplay.cpp
+LIBSRCS=helix-engine.cpp helix-config.cpp hxsplay.cpp
+MOCSRCS=helix-engine.moc helix-config.moc
+MOCHDRS=$(MOCSRCS:.moc=.h)
+
+OBJS=$(SRCS:.cpp=.o)
+LIBOBJS=$(LIBSRCS:.cpp=.o)
+
+INCLUDES=\
+	-I/usr/lib/qt-3.3/include \
+	-I/usr/include/kde \
+	-I./helix-sp \
+	-I../.. \
+	-I. \
+	-I/usr/X11R6/include \
+	-Ihelix-sp/helix-include/runtime \
+	-Ihelix-sp/helix-include/common/include \
+	-Ihelix-sp/helix-include/client/include \
+	-Ihelix-sp/helix-include/common/container \
+	-Ihelix-sp/helix-include/common/system \
+	-Ihelix-sp/helix-include/common/dbgtool \
+	-Ihelix-sp/helix-include/common/util
+
+LIBRARIES=-Lhelix-sp -lhelix-sp --lstdc++ -ldl -lm -L/usr/lib/qt-3.3/lib -lqt-mt
+
+.SUFFIXES: .cpp .so .h .moc
+
+.c.o: 
+	$(CC) $(CCFLAGS) -o  $@ -c $<
+
+.cpp.o: 
+	$(CXX) $(CXXFLAGS) -o  $@ -c $<
+
+.h.moc:
+	$(MOC) $< -o $@
+
+
+PROGRAM=splay
+SLIBRARY=libamarok_helixengine_plugin.so
+
+all: $(MOCSRCS) $(SLIBRARY) $(OBJS) $(LIBOBJS) $(PROGRAM)
+
+$(PROGRAM): $(OBJS)
+	$(CXX) -o $(PROGRAM) $(OBJS) $(LIBRARIES)
+
+$(SLIBRARY): $(LIBOBJS)
+	$(CXX) -shared -o $(SLIBRARY) $(LIBOBJS) -L/usr/X11R6/lib $(LIBRARIES)
+
+$(OBJS):	$(SRCS)
+
+$(MOCSRCS):	$(MOCHDRS)
+
+install:
+	install -p -C -m 755 $(SLIBRARY) /usr/lib/kde3/$(SLIBRARY)
+	install -p -C -m 755 $(SLIBRARY:.so=.la) /usr/lib/kde3/$(SLIBRARY:.so=.la)
+	install -p -C -m 644 amarok_helixengine_plugin.desktop /usr/share/services/amarok_helixengine_plugin.desktop
+#	kbuildsycoca
+
+uninstall:
+	rm -f /usr/lib/kde3/$(SLIBRARY:.so=.la)
+	rm -f /usr/lib/kde3/$(SLIBRARY)
+	rm -f /usr/share/services/amarok_helixengine_plugin.desktop
+
+clean: 
+	rm -f $(PROGRAM) $(SLIBRARY) $(LIBOBJS) $(OBJS) helix-engine.moc *~
+
+depend: 
+	makedepend $(DEFINES) $(INCLUDES) -o.o -- $(SRCS)
+
+# DO NOT DELETE THIS LINE -- make depend depends on it
+
+main.o: /usr/include/dlfcn.h /usr/include/features.h /usr/include/sys/cdefs.h
+main.o: /usr/include/gnu/stubs.h
+main.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+main.o: /usr/include/bits/dlfcn.h hxsplay.h /usr/lib/qt-3.3/include/qthread.h
+main.o: /usr/lib/qt-3.3/include/qwindowdefs.h
+main.o: /usr/lib/qt-3.3/include/qobjectdefs.h
+main.o: /usr/lib/qt-3.3/include/qglobal.h /usr/lib/qt-3.3/include/qstring.h
+main.o: /usr/lib/qt-3.3/include/qcstring.h
+main.o: /usr/lib/qt-3.3/include/qmemarray.h /usr/lib/qt-3.3/include/qgarray.h
+main.o: /usr/lib/qt-3.3/include/qshared.h
+main.o: /usr/lib/qt-3.3/include/qwinexport.h /usr/include/string.h
+main.o: /usr/include/limits.h
+main.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+main.o: /usr/lib/qt-3.3/include/qnamespace.h /usr/lib/qt-3.3/include/qmutex.h
+main.o: /usr/lib/qt-3.3/include/qsemaphore.h
+main.o: /usr/lib/qt-3.3/include/qwaitcondition.h
+hxsplay.o: /usr/include/dlfcn.h /usr/include/features.h
+hxsplay.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
+hxsplay.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
+hxsplay.o: /usr/include/bits/dlfcn.h /usr/include/sys/param.h
+hxsplay.o: /usr/include/limits.h
+hxsplay.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/limits.h
+hxsplay.o: /usr/include/linux/limits.h /usr/include/linux/param.h
+hxsplay.o: /usr/include/asm/param.h /usr/include/unistd.h
+hxsplay.o: /usr/include/bits/posix_opt.h /usr/include/bits/types.h
+hxsplay.o: /usr/include/bits/wordsize.h /usr/include/bits/typesizes.h
+hxsplay.o: /usr/include/bits/confname.h /usr/include/sys/types.h
+hxsplay.o: /usr/include/time.h /usr/lib/qt-3.3/include/qthread.h
+hxsplay.o: /usr/lib/qt-3.3/include/qwindowdefs.h
+hxsplay.o: /usr/lib/qt-3.3/include/qobjectdefs.h
+hxsplay.o: /usr/lib/qt-3.3/include/qglobal.h
+hxsplay.o: /usr/lib/qt-3.3/include/qstring.h
+hxsplay.o: /usr/lib/qt-3.3/include/qcstring.h
+hxsplay.o: /usr/lib/qt-3.3/include/qmemarray.h
+hxsplay.o: /usr/lib/qt-3.3/include/qgarray.h
+hxsplay.o: /usr/lib/qt-3.3/include/qshared.h
+hxsplay.o: /usr/lib/qt-3.3/include/qwinexport.h /usr/include/string.h
+hxsplay.o: /usr/lib/qt-3.3/include/qnamespace.h
+hxsplay.o: /usr/lib/qt-3.3/include/qmutex.h
+hxsplay.o: /usr/lib/qt-3.3/include/qsemaphore.h
+hxsplay.o: /usr/lib/qt-3.3/include/qwaitcondition.h hxsplay.h hxsplay.moc
