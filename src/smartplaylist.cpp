@@ -369,20 +369,34 @@ void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, i
 
     if( !item ) return;
 
-    enum Id { BURN_DATACD, BURN_AUDIOCD, EDIT, REMOVE };
+    enum Id { LOAD, ADD, BURN_DATACD, BURN_AUDIOCD, EDIT, REMOVE };
 
     KPopupMenu menu( this );
     //TODO menu.insertItem( i18n("Edit"), EDIT );
-    menu.insertItem( i18n("Burn to CD as Data"), BURN_DATACD );
+    menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+    menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+    menu.insertSeparator();
+    menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
     menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-    menu.insertItem( i18n("Burn to CD as Audio"), BURN_AUDIOCD );
+    menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
     menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
     if( item->isCustom() ) {
         menu.insertSeparator();
-        menu.insertItem( i18n("Remove"), REMOVE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n("Remove"), REMOVE );
     }
 
     switch( menu.exec( p ) ) {
+         case LOAD:
+            makePlaylist( item );
+            break;
+
+        case ADD:
+            if( !item->sqlForTags.isEmpty() )
+               Playlist::instance()->insertMediaSql( item->sqlForTags );
+            else
+               Playlist::instance()->insertMedia( item->urls() );
+            break;
+
         case BURN_DATACD:
             K3bExporter::instance()->exportTracks( item->urls(), K3bExporter::DataCD );
             break;
