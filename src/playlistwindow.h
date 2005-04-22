@@ -50,6 +50,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     public slots:
         void configureParty();
+        void queueSelected();
         void showHide();
 
     private slots:

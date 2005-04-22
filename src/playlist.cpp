@@ -804,6 +804,13 @@ Playlist::playCurrentTrack()
 }
 
 void
+Playlist::queueSelected()
+{
+    for( MyIt it( this, MyIt::Selected ); *it; ++it )
+        queue( *it );
+}
+
+void
 Playlist::queue( QListViewItem *item )
 {
     #define item static_cast<PlaylistItem*>(item)

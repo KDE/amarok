@@ -647,6 +647,11 @@ void PlaylistWindow::playAudioCD() //SLOT
     fb->setUrl( KURL("audiocd:/") );
 }
 
+void PlaylistWindow::queueSelected()
+{
+    Playlist::instance()->queueSelected();
+}
+
 
 void PlaylistWindow::showScriptSelector() //SLOT
 {

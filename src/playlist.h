@@ -157,6 +157,7 @@ class Playlist : private KListView, public EngineObserver
         void playPrevTrack();
         void playCurrentTrack();
         void playNextTrack( const bool forceNext = true );
+        void queueSelected();
         void setStopAfterCurrent( bool on ) { m_stopAfterCurrent = on; }
         void updateMetaData( const MetaBundle& );
         void setFilter( const QString &filter );
