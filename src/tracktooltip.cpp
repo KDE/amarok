@@ -27,9 +27,11 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
 
     QString image = CollectionDB::instance()->albumImage( tags );
 
-    left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" );
-    right << tags.title() << tags.artist() << tags.album();
-    
+    if ( !tags.title().isEmpty() && !tags.artist().isEmpty() ) {
+        left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" );
+        right << tags.title() << tags.artist() << tags.album();
+    }
+
     if ( tags.length() )
     {
         left << i18n( "Length" );
@@ -45,8 +47,8 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
         left << i18n( "Samplerate" );
         right << tags.prettySampleRate();
     }
-    
-        
+
+
 
     //NOTE it seems to be necessary to <center> each element indivdually
     tipBuf += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
@@ -58,11 +60,15 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
                            "</td></tr></table></td>" )
                            .arg( image )
                            );
-                           
+
     }
 
     tipBuf += "<td><table cellpadding='0' cellspacing='0'>";
 
+    if (tags.title().isEmpty() || tags.artist().isEmpty())
+    // no title or no artist, so we add prettyTitle
+        tipBuf += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
+                  .arg(tags.prettyTitle());
     for( uint x = 0; x < left.count(); ++x )
         if ( !right[x].isEmpty() )
             tipBuf += tableRow.arg( left[x] ).arg( right[x] );
