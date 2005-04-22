@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * HelixPlayer-engine.
     * 'Load' and 'Append' entries for smart playlist context menus. (BR 99213)
     * Automatic download of ContextBrowser themes using GHNS.
     * Support for reading embedded images from ID3 tags. (BR 88492)
