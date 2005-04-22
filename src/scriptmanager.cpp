@@ -42,7 +42,6 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <knewstuff/downloaddialog.h>
 #include <kprocio.h>
 #include <kpushbutton.h>
 #include <krun.h>
@@ -72,7 +71,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_base->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
 
     connect( m_base->installButton, SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
-    connect( m_base->retrieveButton, SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( m_base->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
     connect( m_base->editButton, SIGNAL( clicked() ), SLOT( slotEditScript() ) );
     connect( m_base->runButton, SIGNAL( clicked() ), SLOT( slotRunScript() ) );
@@ -266,11 +264,6 @@ ScriptManager::slotInstallScript()
     }
 }
 
-void
-ScriptManager::slotRetrieveScript()
-{
-    KNS::DownloadDialog::open("amarok/scripts");
-}
 
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )

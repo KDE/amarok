@@ -84,7 +84,6 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void slotCurrentChanged( QListViewItem* );
 
         void slotInstallScript();
-        void slotRetrieveScript();
         void slotUninstallScript();
         void slotEditScript();
         bool slotRunScript();
