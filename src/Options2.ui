@@ -533,6 +533,16 @@
                                 <string>Select the style of the Context Browser.</string>
                             </property>
                         </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
                         <widget class="QPushButton">
                             <property name="name">
                                 <cstring>installPushButton</cstring>
