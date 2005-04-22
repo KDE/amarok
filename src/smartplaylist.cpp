@@ -383,7 +383,9 @@ void SmartPlaylistView::showContextMenu( QListViewItem *item, const QPoint &p, i
     if( item->isCustom() ) {
         menu.insertSeparator();
         menu.insertItem( SmallIconSet("editdelete"), i18n("Remove"), REMOVE );
+        menu.setAccel( Key_Delete, REMOVE );
     }
+    menu.setAccel( Key_Space, LOAD );
 
     switch( menu.exec( p ) ) {
          case LOAD:
