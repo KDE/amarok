@@ -262,6 +262,7 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "Remove Duplicates / Missing" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
+    new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat_playlist" ), SIGNAL(toggled( bool )), SLOT(updateNextPrev()) );
@@ -845,7 +846,7 @@ Playlist::activate( QListViewItem *item )
     //All internal requests for playback should come via
     //this function please!
 
-    if ( !item )
+    if( !item )
     {
         //we have reached the end of the playlist
         setCurrentTrack( 0 );
@@ -855,7 +856,7 @@ Playlist::activate( QListViewItem *item )
         return;
     }
 
-    if ( isParty() && !m_partyDirt )
+    if( isParty() && !m_partyDirt )
     {
         m_currentTrack ?
             this->moveItem( item, 0, m_currentTrack ) :
@@ -864,14 +865,14 @@ Playlist::activate( QListViewItem *item )
     }
 
     #define item static_cast<PlaylistItem*>(item)
-    if ( !item->isEnabled() )
+    if( !item->isEnabled() )
         return;
 
     m_prevTracks.append( item );
 
     //if we are playing something from the next tracks
     //list, remove it from the list
-    if ( m_nextTracks.removeRef( item ) )
+    if( m_nextTracks.removeRef( item ) )
         refreshNextTracks();
 
     //looks bad painting selected and glowing

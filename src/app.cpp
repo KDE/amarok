@@ -320,8 +320,6 @@ void App::initGlobalShortcuts()
                             amaroK::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );
-    m_pGlobalAccel->insert( "queue", i18n( "Queue Selected Track" ), 0, KKey("WIN+q"), 0,
-                            m_pPlaylistWindow, SLOT( queueSelected() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( kapp->config() );
