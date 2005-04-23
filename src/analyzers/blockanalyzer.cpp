@@ -25,9 +25,12 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_columns( 0 )         //uint
         , m_rows( 0 )            //uint
         , m_y( 0 )               //uint
-        , m_glow( 1, 1 ) // null qpixmaps are crash victims
+        , m_barPixmap( 1, 1 )    //null qpixmaps cause crashes
         , m_scope( MIN_COLUMNS ) //Scope
         , m_store( 1 << 8, 0 )   //vector<uint>
+        , m_fade_color( 54 )
+        , m_fade_pos( 1 << 8, 50 ) //vector<uint>
+        , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
     changeTimeout( amaroK::config( "General" )->readNumEntry( "Timeout", 20 ) );
 
@@ -61,7 +64,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
    m_scope.resize( m_columns );
 
    if( m_rows != oldRows ) {
-      m_glow.resize( WIDTH, m_rows*(HEIGHT+1) );
+      m_barPixmap.resize( WIDTH, m_rows*(HEIGHT+1) );
       m_yscale.resize( m_rows + 1 );
 
       const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
@@ -84,7 +87,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 void
 BlockAnalyzer::determineStep()
 {
-    // falltime is dependent on rowcount due to our digital resolution
+    // falltime is dependent on rowcount due to our digital resolution (ie we have boxes/blocks of pixels)
     // I calculated the value 30 based on some trial and error
 
     const double fallTime = 30 * m_rows;
@@ -112,15 +115,15 @@ BlockAnalyzer::transform( Analyzer::Scope &s ) //pure virtual
 void
 BlockAnalyzer::analyze( const Analyzer::Scope &s )
 {
-   // z = 2 3 2 1 0 2
+   // y = 2 3 2 1 0 2
    //     . . . . # .
    //     . . . # # .
    //     # . # # # #
    //     # # # # # #
    //
    // visual aid for how this analyzer works.
-   // z represents the number of blanks
-   // z starts from the top and increases in units of blocks
+   // y represents the number of blanks
+   // y starts from the top and increases in units of blocks
 
    // m_yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
    // if it contains 6 elements there are 5 rows in the analyzer
@@ -133,25 +136,39 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
 
    for( uint y, x = 0; x < m_scope.size(); ++x )
    {
-      //determine y
+      // determine y
       for( y = 0; m_scope[x] < m_yscale[y]; ++y )
-          ;
+         ;
 
       // this is opposite to what you'd think, higher than y
       // means the bar is lower than y (physically)
       if( (float)y > m_store[x] )
-          y = int(m_store[x] += m_step);
+         y = int(m_store[x] += m_step);
       else
-          m_store[x] = y;
+         m_store[x] = y;
 
-      //we start bltting from the top and go down
-      //so blt blanks first, then blt glow blocks
+      // if y is lower than m_fade_pos, then the bar has exceeded the height of the fadeout
+      if( y <= m_fade_pos[x] ) {
+         m_fade_pos[x] = y;
+         m_fade_intensity[x] = m_fade_color.size();
+      }
+
+      if( m_fade_intensity[x] > 0 ) { //TODO don't do more drawing than necessary
+         const QColor &c = m_fade_color[ --m_fade_intensity[x] ];
+         //TODO don't draw too many (ie where you will draw the main bar)
+         for( int _x = x*(WIDTH+1), y = m_y + (m_fade_pos[x] * (HEIGHT+1)); y < height(); y += HEIGHT+1 )
+            p.fillRect( _x, y, WIDTH, HEIGHT, c );
+      }
+
+      if( m_fade_intensity[x] == 0 )
+         m_fade_pos[x] = m_rows;
+
       //REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-      p.drawPixmap( x*(WIDTH+1), y*(HEIGHT+1) + m_y, *glow(), 0, y*(HEIGHT+1) );
+      p.drawPixmap( x*(WIDTH+1), y*(HEIGHT+1) + m_y, *bar(), 0, y*(HEIGHT+1) );
    }
 
    for( uint x = 0; x < m_store.size(); ++x )
-       p.fillRect( x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, WIDTH, HEIGHT, m_topBarColor );
+      p.fillRect( x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, WIDTH, HEIGHT, m_topBarColor );
 }
 
 
@@ -308,7 +325,7 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
     debug() << "Something went wrong!\n";
 
-    return Qt::black;
+    return Qt::blue;
 
     #undef amount
     #undef STAMP
@@ -327,16 +344,32 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
    const double db = 15*double(bg.blue()  - fg.blue())  / (m_rows*16);
    const int r = fg.red(), g = fg.green(), b = fg.blue();
 
-   const double rd2 = m_rows / 2;
-   const QColor inbetween = QColor( r+int(dr*rd2), g+int(dg*rd2), b+int(db*rd2) );
+   bar()->fill( bg );
 
-   glow()->fill( bg );
-
-   QPainter p( glow() );
-   p.setPen( inbetween );
+   QPainter p( bar() );
    for( int y = 0; (uint)y < m_rows; ++y )
       //graduate the fg color
       p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
+
+   {
+      const QColor bg = palette().active().background().dark( 112 );
+
+      //make a complimentary fadebar colour
+      //TODO dark is not always correct, dumbo!
+      int h,s,v; palette().active().background().dark( 150 ).getHsv( &h, &s, &v );
+      const QColor fg( h + 120, s, v, QColor::Hsv );
+
+      const double dr = fg.red() - bg.red();
+      const double dg = fg.green() - bg.green();
+      const double db = fg.blue() - bg.blue();
+      const int r = bg.red(), g = bg.green(), b = bg.blue();
+      const uint STEPS = m_fade_color.size();
+
+      for( uint y = 0; y < STEPS; ++y ) {
+         const double Y = 1.0 - (log10( STEPS - y ) / log10( STEPS ));
+         m_fade_color[y] = QColor( r+int(dr*Y), g+int(dg*Y), b+int(db*Y) );
+      }
+   }
 
    drawBackground();
 }

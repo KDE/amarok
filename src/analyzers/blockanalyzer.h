@@ -39,14 +39,19 @@ protected:
     void determineStep();
 
 private:
-    QPixmap* const glow() { return &m_glow; }
+    QPixmap* const bar() { return &m_barPixmap; }
 
     uint m_columns, m_rows;      //number of rows and columns of blocks
     uint m_y;                    //y-offset from top of widget
-    QPixmap m_glow;
+    QPixmap m_barPixmap;
     Scope m_scope;               //so we don't create a vector every frame
     std::vector<float> m_store;  //current bar heights
     std::vector<float> m_yscale;
+
+    //FIXME why can't I namespace these? c++ issue?
+    std::vector<QColor> m_fade_color;
+    std::vector<uint>   m_fade_pos;
+    std::vector<int>    m_fade_intensity;
 
     float m_step; //rows to fall per frame
 
