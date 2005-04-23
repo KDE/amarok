@@ -44,7 +44,7 @@ VERSION 1.3-beta1:
 
 VERSION 1.2.4:
   FEATURES:
-    * New shortcut, Win+Q for queuing selected tracks. (BR 83675)
+    * Queue selected tracks shortcut, Ctrl+D. (BR 83675)
 
   BUGFIXES:
     * Updating the collection without any changes being made to it kept
