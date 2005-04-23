@@ -12,7 +12,7 @@ VERSION 1.3-beta1:
     * Wikipedia tab in ContextBrowser allows for artist biography retrieval
       and more!
     * Show "title by artist" on playlists titlebar and taskbar. (BR 97670)
-    * Option to show stats in the Home tab by album.  Patch from Cédric
+    * Option to show stats in the Home tab by album. Patch from Cédric
       Brégardis <cedric.bregardis@free.fr>.
     * New DCOP call "script: listRunningScripts()". Returns a list of all
       currently running scripts. (BR 102649)
@@ -47,6 +47,8 @@ VERSION 1.2.4:
     * New shortcut, Win+Q for queuing selected tracks. (BR 83675)
 
   BUGFIXES:
+    * Updating the collection without any changes being made to it kept
+      the Update button disabled forever.
     * Application freezes when switching shoutcast streams. (BR 103890)
     * MusicBrainz lookup was not escaping quote characters. (BR 103740)
     * Fixed crash when clicking the "clear" button in CoverManager's filter
