@@ -472,32 +472,40 @@ AC_SUBST(postgresql_libs)
 # BEGIN XMMS CHECK
 ###############################################################################
 
-AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes)
+AC_ARG_WITH(xmms,
+    AC_HELP_STRING([--without-xmms],[build amaroK without xmms visualization support]),
+    [with_xmms=$withval],
+    [with_xmms=yes]
+)
 
-if test x$XMMS_CONFIG = xyes; then
-    xmms_plugin_path=`xmms-config --visualization-plugin-dir`
-    xmms_cflags=`xmms-config --cflags`
-    xmms_libs=`xmms-config --libs`
+if test "$with_xmms" = "yes"; then
+    AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes)
+
+    if test x$XMMS_CONFIG = xyes; then
+        xmms_plugin_path=`xmms-config --visualization-plugin-dir`
+        xmms_cflags=`xmms-config --cflags`
+        xmms_libs=`xmms-config --libs`
+    fi
+
+    AC_DEFINE_UNQUOTED(XMMS_PLUGIN_PATH, "$xmms_plugin_path", [Define the path to XMMS plugins])
+    AC_SUBST(xmms_cflags)
+    AC_SUBST(xmms_libs)
+
+    ## XMMSwrapper depends on gtk/gdk headers
+    AC_CHECK_PROG(GTK_CONFIG, gtk-config, yes)
+
+    if test x$XMMS_CONFIG = xyes -a x$GTK_CONFIG = xyes; then
+        gtk_cflags=`gtk-config --cflags`
+        gtk_libs=`gtk-config --libs`
+        build_xmmswrapper=yes
+        AC_DEFINE(HAVE_XMMS, 1, [have XMMS])
+    else
+        build_xmmswrapper=no
+    fi
+
+    AC_SUBST(gtk_cflags)
+    AC_SUBST(gtk_libs)
 fi
-
-AC_DEFINE_UNQUOTED(XMMS_PLUGIN_PATH, "$xmms_plugin_path", [Define the path to XMMS plugins])
-AC_SUBST(xmms_cflags)
-AC_SUBST(xmms_libs)
-
-## XMMSwrapper depends on gtk/gdk headers
-AC_CHECK_PROG(GTK_CONFIG, gtk-config, yes)
-
-if test x$XMMS_CONFIG = xyes -a x$GTK_CONFIG = xyes; then
-    gtk_cflags=`gtk-config --cflags`
-    gtk_libs=`gtk-config --libs`
-    build_xmmswrapper=yes
-    AC_DEFINE(HAVE_XMMS, 1, [have XMMS])
-else
-    build_xmmswrapper=no
-fi
-
-AC_SUBST(gtk_cflags)
-AC_SUBST(gtk_libs)
 
 AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 
@@ -511,26 +519,34 @@ AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
 # BEGIN LIBVISUAL CHECK
 ###############################################################################
 
-## libvisual plugin depends on sdl
-AC_CHECK_PROG(SDL_CONFIG, sdl-config, yes)
+AC_ARG_WITH(libvisual,
+    AC_HELP_STRING([--without-libvisual],[build amaroK without libvisual support]),
+    [with_libvisual=$withval],
+    [with_libvisual=yes]
+)
 
-if test x$SDL_CONFIG = xyes; then
-    sdl_cflags=`sdl-config --cflags`
-    sdl_libs=`sdl-config --libs`
-fi
+if test "$with_libvisual" = "yes"; then
+    ## libvisual plugin depends on sdl
+    AC_CHECK_PROG(SDL_CONFIG, sdl-config, yes)
 
-AC_SUBST(sdl_cflags)
-AC_SUBST(sdl_libs)
+    if test x$SDL_CONFIG = xyes; then
+        sdl_cflags=`sdl-config --cflags`
+        sdl_libs=`sdl-config --libs`
+    fi
 
-if test x$PKGCONFIGFOUND = xyes -a x$SDL_CONFIG = xyes; then
+    AC_SUBST(sdl_cflags)
+    AC_SUBST(sdl_libs)
 
-    PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.2.0, [build_libvisual="yes"], [build_libvisual="no"])
+    if test x$PKGCONFIGFOUND = xyes -a x$SDL_CONFIG = xyes; then
 
-    AC_SUBST(LIBVISUAL_LIBS)
-    AC_SUBST(LIBVISUAL_CFLAGS)
+        PKG_CHECK_MODULES(LIBVISUAL, libvisual >= 0.2.0, [build_libvisual="yes"], [build_libvisual="no"])
 
-    if test x$build_libvisual = xyes; then
-        AC_DEFINE(HAVE_LIBVISUAL, 1, [have LIBVISUAL])
+        AC_SUBST(LIBVISUAL_LIBS)
+        AC_SUBST(LIBVISUAL_CFLAGS)
+
+        if test x$build_libvisual = xyes; then
+            AC_DEFINE(HAVE_LIBVISUAL, 1, [have LIBVISUAL])
+        fi
     fi
 fi
 
