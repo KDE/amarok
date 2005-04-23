@@ -157,6 +157,13 @@ if test "$build_gstreamer" != "no"; then
     fi
 fi
 
+### The gstreamer engine subdirectory equalizer/ uses
+### gst/audio/audio.h, which is in gstreamer-plugins (at least for me)
+amarok_save_cppflags="$CPPFLAGS"
+CPPFLAGS="$CPPFLAGS $CFLAGS_GST"
+AC_CHECK_HEADER(gst/audio/audio.h,[],[have_gst="no"])
+CPPFLAGS="$amarok_save_cppflags"
+
 AM_CONDITIONAL(with_gst, [test x$have_gst = xyes])
 
 ###############################################################################
