@@ -21,15 +21,18 @@
 #include <qcursor.h>       //for resize cursor
 #include <qpainter.h>
 #include <qsignalmapper.h> //m_mapper
-#include <qstyle.h>        //amaroK::Divider
+#include <qstyle.h>        //amaroK::Splitter
+
+
+// we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
+// mostly we can stop the browserbar getting resized too small so that switching browser looks wrong
 
 
 namespace amaroK
 {
-    class Divider : public QWidget {
+    class Splitter : public QWidget {
     public:
-        Divider( BrowserBar *w )
-                : QWidget( w, "divider" )
+        Splitter( BrowserBar *w ) : QWidget( w, "divider" )
         {
             setCursor( QCursor(SplitHCursor) );
             styleChange( style() );
@@ -48,7 +51,7 @@ namespace amaroK
 
         virtual void mouseMoveEvent( QMouseEvent *e )
         {
-            static_cast<BrowserBar*>(parent())->mouseMovedOverDivider( e );
+            static_cast<BrowserBar*>(parent())->mouseMovedOverSplitter( e );
         }
     };
 }
@@ -58,7 +61,7 @@ BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , EngineObserver( EngineController::instance() )
         , m_playlistBox( new QVBox( this ) )
-        , m_divider( new amaroK::Divider( this ) )
+        , m_divider( new amaroK::Splitter( this ) )
         , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
         , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
@@ -144,7 +147,7 @@ BrowserBar::adjustWidgetSizes()
 }
 
 void
-BrowserBar::mouseMovedOverDivider( QMouseEvent *e )
+BrowserBar::mouseMovedOverSplitter( QMouseEvent *e )
 {
     const uint oldPos   = m_pos;
     const uint newPos   = mapFromGlobal( e->globalPos() ).x();

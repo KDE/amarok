@@ -41,7 +41,7 @@ public:
     void addBrowser( QWidget*, const QString&, const QString& );
 
     /// for internal use
-    void mouseMovedOverDivider( QMouseEvent* );
+    void mouseMovedOverSplitter( QMouseEvent* );
 
 protected:
     virtual bool eventFilter( QObject*, QEvent* );
