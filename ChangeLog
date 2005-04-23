@@ -55,8 +55,6 @@ VERSION 1.2.4:
       widget.
     * Update lyrics page on new radio stream metadata. (BR 99725)
     * xine-engine was reporting bogus tracklengths for ogg vorbis. (BR 102547)
-      Same fix applied to GStreamer-engine, where some users were having
-      similar troubles.
 
 
 VERSION 1.2.3:
