@@ -182,7 +182,7 @@ PlaylistWindow::init()
         bar->setMovingEnabled( false ); //removes the ugly frame
 
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
-        QLabel *filter_label = new QLabel( i18n("S&earch:"), bar );
+        QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
         m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
         QWidget *party_button = new KToolBarButton( "party", 2, bar );
 

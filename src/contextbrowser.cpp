@@ -646,6 +646,7 @@ verboseTimeSince( const QDateTime &datetime )
     return i18n( "The future" );
 }
 
+
 void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType)
 {
     // This function create the html code used to display a list of albums. Each album
@@ -843,6 +844,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
     }
 }
 
+
 void ContextBrowser::showHome() //SLOT
 {
     DEBUG_BLOCK
@@ -880,6 +882,7 @@ void ContextBrowser::showHome() //SLOT
     saveHtmlData(); // Send html code to file
 
 }
+
 
 void ContextBrowser::showHomeBySongs()
 {
@@ -1074,6 +1077,7 @@ void ContextBrowser::showHomeBySongs()
     // </Songs least listened Information>
 }
 
+
 void ContextBrowser::showHomeByAlbums()
 {
 
@@ -1208,6 +1212,7 @@ void ContextBrowser::showHomeByAlbums()
 
     // </Songs least listened Information>
 }
+
 
 /** This is the slowest part of track change, so we thread it */
 class CurrentTrackJob : public ThreadWeaver::DependentJob

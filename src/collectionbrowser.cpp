@@ -86,7 +86,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     else
         m_flatViewAction->setChecked(true);
 
-    
+
     KActionMenu* tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     tagfilterMenuButton->setDelayed( false );
     m_categoryMenu = tagfilterMenuButton->popupMenu();
@@ -198,7 +198,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
     //</READ CONFIG>
-	 KActionCollection* ac = new KActionCollection( this );
+     KActionCollection* ac = new KActionCollection( this );
      KStdAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ),
@@ -565,7 +565,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString text;
 
         //show "artist - title" for compilations
-	if ( c ) text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + i18n(" - ");
+        if ( c )
+            text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + i18n(" - ");
         text += values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ];
 
         Item* child = new Item( item );
