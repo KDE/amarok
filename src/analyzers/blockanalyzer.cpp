@@ -28,7 +28,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_barPixmap( 1, 1 )    //null qpixmaps cause crashes
         , m_scope( MIN_COLUMNS ) //Scope
         , m_store( 1 << 8, 0 )   //vector<uint>
-        , m_fade_color( 54 )
+        , m_fade_color( 90 )
         , m_fade_pos( 1 << 8, 50 ) //vector<uint>
         , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
