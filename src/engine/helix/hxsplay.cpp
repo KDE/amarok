@@ -130,7 +130,7 @@ void HXSplay::play(int playerIndex)
    }
 }
 
-HXSplay::pthr_states HXSplay::state(int playerIndex)
+HXSplay::pthr_states HXSplay::state(int playerIndex) const
 {
    return m_playerPkg[playerIndex]->m_pt_state;
 }
@@ -196,4 +196,4 @@ void HXSplay::resumePlayer(int playerIndex)
 }
 
 
-#include "hxsplay.moc"
+//#include "hxsplay.moc"

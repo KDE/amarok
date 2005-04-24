@@ -1005,12 +1005,12 @@ void HelixSimplePlayer::seek(unsigned long pos, int playerIndex)
          ppPlayers[playerIndex]->Seek(pos);
 }
 
-unsigned long HelixSimplePlayer::where(int playerIndex)
+unsigned long HelixSimplePlayer::where(int playerIndex) const
 {
    return ppPlayers[playerIndex]->GetCurrentPlayTime();
 }
 
-unsigned long HelixSimplePlayer::duration(int playerIndex)
+unsigned long HelixSimplePlayer::duration(int playerIndex) const
 {
    return ppHSPContexts[playerIndex]->duration();
 }

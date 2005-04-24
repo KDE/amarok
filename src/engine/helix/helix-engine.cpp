@@ -21,10 +21,13 @@ AMAROK_EXPORT_PLUGIN( HelixEngine )
 
 #include <climits>
 #include <cmath>
-#include <iostream>
-//#include "debug.h"
+//#include <iostream>
+
+#include "debug.h"
+
 #include <klocale.h>
 #include <kmessagebox.h>
+
 #include <qapplication.h>
 #include <qdir.h>
 
@@ -64,7 +67,7 @@ HelixEngine::~HelixEngine()
 amaroK::PluginConfig*
 HelixEngine::configure() const
 {
-    return new HelixConfigDialog( this );
+    return new HelixConfigDialog( (HelixEngine *)this );
 }
 
 
@@ -81,7 +84,7 @@ HelixEngine::init()
       return false;
    }
 
-   cerr << "Succussful init\n";
+   debug() << "Succussful init\n";
    return true;
 }
 
@@ -89,7 +92,7 @@ HelixEngine::init()
 bool
 HelixEngine::load( const KURL &url, bool isStream )
 {
-   cerr << "In load " << url.url() << endl;
+   debug() << "In load " << url.url() << endl;
 
    stop();
 
@@ -101,12 +104,14 @@ HelixEngine::load( const KURL &url, bool isStream )
    // most unfortunate...KURL represents a file with no leading slash, Helix uses a leading slash 'file:///home/abc.mp3' for example
    if (url.isLocalFile())
    {
-      char tmp[MAXPATHLEN];
-      strcpy(tmp, "file://");
-      strcat(tmp, url.directory());
-      strcat(tmp, "/");
-      strcat(tmp, url.filename());
-      cerr << tmp << endl;
+      QString tmp;
+      tmp ="file://" + url.directory() + "/" + url.filename();
+      //char tmp[MAXPATHLEN];
+      //strcpy(tmp, "file://");
+      //strcat(tmp, (const char *)url.directory());
+      //strcat(tmp, "/");
+      //strcat(tmp, (const char *)url.filename());
+      debug() << tmp << endl;
       HXSplay::setURL( QFile::encodeName( tmp ) );      
    }
    else
@@ -118,7 +123,7 @@ HelixEngine::load( const KURL &url, bool isStream )
 bool
 HelixEngine::play( uint offset )
 {
-   cerr << "In play" << endl;
+   debug() << "In play" << endl;
 
    HXSplay::play();
    if (offset)
@@ -142,7 +147,7 @@ HelixEngine::play( uint offset )
 void
 HelixEngine::stop()
 {
-   cerr << "In stop\n";
+   debug() << "In stop\n";
    m_url = KURL();
    HXSplay::stop();
    m_state = Engine::Empty;
@@ -151,7 +156,7 @@ HelixEngine::stop()
 
 void HelixEngine::play_finished(int playerIndex)
 {
-   cerr << "Ok, finished playing the track, so now I'm idle\n";
+   debug() << "Ok, finished playing the track, so now I'm idle\n";
    m_state = Engine::Idle;
    startTimer( 250 ); // should be resonable until we build the crossfader
 }
@@ -159,7 +164,7 @@ void HelixEngine::play_finished(int playerIndex)
 void
 HelixEngine::pause()
 {
-   cerr << "In pause\n";
+   debug() << "In pause\n";
    
    if( HXSplay::state() == HXSplay::PLAY )
    {
@@ -178,7 +183,7 @@ HelixEngine::pause()
 Engine::State
 HelixEngine::state() const
 {
-   //cerr << "In state, state is " << m_state << endl;
+   //debug() << "In state, state is " << m_state << endl;
 
    HXSplay::pthr_states state = HXSplay::state();
    switch( state )
@@ -190,7 +195,7 @@ HelixEngine::state() const
       case HXSplay::STOP:
          return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
       default:
-         stop();
+         // stop(); shouldnt ever get here, but const nature of this function prevents us from doing this
          return Engine::Empty;
    }
 }
@@ -204,21 +209,21 @@ HelixEngine::position() const
 uint
 HelixEngine::length() const
 {
-   cerr << "In length\n";
+   debug() << "In length\n";
    return HXSplay::duration(0);
 }
 
 void
 HelixEngine::seek( uint ms )
 {
-   cerr << "In seek\n";
+   debug() << "In seek\n";
    HXSplay::seek(ms);
 }
 
 void
 HelixEngine::setVolumeSW( uint vol )
 {
-   cerr << "In setVolumeSW\n";
+   debug() << "In setVolumeSW\n";
    HXSplay::setVolume(vol);
 }
 
@@ -226,7 +231,7 @@ HelixEngine::setVolumeSW( uint vol )
 bool
 HelixEngine::canDecode( const KURL &url ) const
 {
-   cerr << "In canDecode\n";   
+   debug() << "In canDecode\n";   
     //TODO check if the url really is supported by Helix
    return true;
 }
@@ -237,7 +242,7 @@ HelixEngine::timerEvent( QTimerEvent * )
    if (state() == Engine::Idle)
    {
       killTimers();
-      cerr << "emitting trackEnded\n";
+      debug() << "emitting trackEnded\n";
       emit trackEnded();
    }
 }

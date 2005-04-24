@@ -7,7 +7,8 @@
 #include <kseparator.h>
 #include "helix-config.h"
 #include "helix-engine.h"
-#include <iostream>
+//#include <iostream>
+#include "debug.h"
 
 using namespace std;
 
@@ -152,7 +153,7 @@ HelixConfigDialog::save()
    {
       if( entry->isChanged() )
       {
-         cerr << "Apply: " << entry->key() << "\n";
+         debug() << "Apply: " << entry->key() << "\n";
 
          entry->setUnchanged();
       }

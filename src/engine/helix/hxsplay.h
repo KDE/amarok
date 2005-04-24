@@ -2,6 +2,7 @@
 #define _HXSPLAY_H_INCLUDED_
 
 #include <qthread.h>
+#include <qmutex.h>
 #include <helix-sp.h>
 
 class HXSplay : public HelixSimplePlayer
@@ -24,7 +25,7 @@ public:
    void pause(int playerIndex = 0);                        // pause the player(s)
    void resume(int playerIndex = 0);                       // resume the player(s)
 
-   pthr_states state(int playerIndex = 0);                 // returns the state of the player
+   pthr_states state(int playerIndex = 0) const;           // returns the state of the player
 
 protected:
    virtual void play_finished(int playerIndex) {}

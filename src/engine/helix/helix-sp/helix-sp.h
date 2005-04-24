@@ -20,7 +20,7 @@ class IHXErrorSinkControl;
 
 #include <limits.h>
 #include <sys/param.h>
-
+#include "hxtypes.h"
 #define MAX_PATH PATH_MAX
 
 #define MAX_PLAYERS 100 // that should do it...
@@ -60,8 +60,8 @@ public:
    void pause(int playerIndex = ALL_PLAYERS);                        // pause the player(s)
    void resume(int playerIndex = ALL_PLAYERS);                       // pause the player(s)
    void seek(unsigned long pos, int playerIndex = ALL_PLAYERS);      // seek to the pos
-   unsigned long where(int playerIndex);                             // where is the player in the playback
-   unsigned long duration(int playerIndex);                          // how long (ms) is this clip?
+   unsigned long where(int playerIndex) const;                       // where is the player in the playback
+   unsigned long duration(int playerIndex) const;                    // how long (ms) is this clip?
    unsigned long getVolume(int playerIndex);                         // get the current volume
    void initVolume(unsigned short min, unsigned short max, int playerIndex); // called to set the range of the clients volume - mapped onto the device
    void setVolume(unsigned long vol, int playerIndex = ALL_PLAYERS); // set the volume
