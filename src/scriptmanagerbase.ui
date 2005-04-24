@@ -67,7 +67,7 @@
                                 <cstring>retrieveButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Get New Script</string>
+                                <string>Download Scripts</string>
                                 </property>
                         </widget>
                         <spacer>

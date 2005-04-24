@@ -85,7 +85,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         /** Enables/disables the buttons */
         void slotCurrentChanged( QListViewItem* );
 
-        void slotInstallScript();
+        bool slotInstallScript( const QString& path = QString::null );
         void slotRetrieveScript();
         void slotUninstallScript();
         void slotEditScript();
@@ -102,9 +102,6 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         /** Adds a script to the listview */
         void loadScript( const QString& path );
-
-        /** Makes the listview empty */
-        void clearScripts();
 
         /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );

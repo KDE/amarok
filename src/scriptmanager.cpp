@@ -68,46 +68,10 @@ class AmarokScriptNewStuff : public KNewStuff
              : KNewStuff( type, parentWidget )
     {}
 
-    bool install( const QString & fileName)
+
+    bool install( const QString& fileName )
     {
-        KTar archive( fileName );
-
-        if ( !archive.open( IO_ReadOnly ) ) {
-            KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
-            return false;
-        }
-
-        QString destination = amaroK::saveLocation( "scripts/" );
-        const KArchiveDirectory* const archiveDir = archive.directory();
-
-        // Prevent installing a script that's already installed
-        const QString scriptFolder = destination + archiveDir->entries().first();
-        if ( QFile::exists( scriptFolder ) ) {
-            KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
-                                        "Please uninstall it first." ).arg( archiveDir->entries().first() ) );
-            return false;
-        }
-
-        archiveDir->copyTo( destination );
-        ScriptManager::instance()->m_installSuccess = false;
-        ScriptManager::instance()->recurseInstall( archiveDir, destination );
-
-        if ( ScriptManager::instance()->m_installSuccess )
-            KMessageBox::information( 0, i18n( "Script successfully installed." ) );
-        else {
-            KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
-                                        "<p>The package did not contain an executable file. "
-                                        "Please inform the package maintainer about this error.</p>" ) );
-
-            // Delete directory recursively
-            KIO::NetAccess::del( KURL::fromPathOrURL( scriptFolder ), 0 );
-        }
-
-        ScriptManager::instance()->clearScripts();
-        ScriptManager::instance()->findScripts();
-
-        return true;
-
+        return ScriptManager::instance()->slotInstallScript( fileName );
     }
 
 
@@ -284,22 +248,26 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
 }
 
 
-void
-ScriptManager::slotInstallScript()
+bool
+ScriptManager::slotInstallScript( const QString& path )
 {
     DEBUG_BLOCK
 
-    KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Script Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
-    kapp->setTopWidget( &dia );
-    dia.setCaption( kapp->makeStdCaption( i18n( "Select Script Package" ) ) );
-    dia.setMode( KFile::File | KFile::ExistingOnly );
-    if ( !dia.exec() ) return;
+    QString _path = path;
 
-    KTar archive( dia.selectedURL().path() );
+    if ( path.isNull() ) {
+        KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Script Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
+        kapp->setTopWidget( &dia );
+        dia.setCaption( kapp->makeStdCaption( i18n( "Select Script Package" ) ) );
+        dia.setMode( KFile::File | KFile::ExistingOnly );
+        if ( !dia.exec() ) return false;
+        _path = dia.selectedURL().path();
+    }
 
+    KTar archive( _path );
     if ( !archive.open( IO_ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
-        return;
+        return false;
     }
 
     QString destination = amaroK::saveLocation( "scripts/" );
@@ -310,16 +278,17 @@ ScriptManager::slotInstallScript()
     if ( QFile::exists( scriptFolder ) ) {
         KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
                                      "Please uninstall it first." ).arg( archiveDir->entries().first() ) );
-        return;
+        return false;
     }
 
     archiveDir->copyTo( destination );
     m_installSuccess = false;
     recurseInstall( archiveDir, destination );
 
-    if ( m_installSuccess )
+    if ( m_installSuccess ) {
         KMessageBox::information( 0, i18n( "Script successfully installed." ) );
-
+        return true;
+    }
     else {
         KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
                                      "<p>The package did not contain an executable file. "
@@ -328,22 +297,10 @@ ScriptManager::slotInstallScript()
         // Delete directory recursively
         KIO::NetAccess::del( KURL::fromPathOrURL( scriptFolder ), 0 );
     }
+
+    return false;
 }
 
-void
-ScriptManager::slotRetrieveScript()
-{
-    // we need this because KNewStuffGeneric's install function isn't clever enough
-    AmarokScriptNewStuff *kns = new AmarokScriptNewStuff( "amarok/script", this );
-    KNS::Engine *engine = new KNS::Engine( kns, "amarok/script", this );
-    KNS::DownloadDialog *d = new KNS::DownloadDialog( engine, this );
-    d->setType( "amarok/script" );
-    // you have to do this by hand when providing your own Engine
-    KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
-    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
-    p->load( "amarok/script", "http://amarok.kde.org/knewstuff/amarokscripts-providers.xml" );
-    d->exec();
-}
 
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
@@ -368,6 +325,23 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
             }
         }
     }
+}
+
+
+void
+ScriptManager::slotRetrieveScript()
+{
+    // we need this because KNewStuffGeneric's install function isn't clever enough
+    AmarokScriptNewStuff *kns = new AmarokScriptNewStuff( "amarok/script", this );
+    KNS::Engine *engine = new KNS::Engine( kns, "amarok/script", this );
+    KNS::DownloadDialog *d = new KNS::DownloadDialog( engine, this );
+    d->setType( "amarok/script" );
+    // you have to do this by hand when providing your own Engine
+    KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
+    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
+    p->load( "amarok/script", "http://amarok.kde.org/knewstuff/amarokscripts-providers.xml" );
+
+    d->exec();
 }
 
 
@@ -592,12 +566,6 @@ ScriptManager::loadScript( const QString& path )
     }
 }
 
-//Clears the KListView so that findScripts() can be called again after a KNewStuff download.
-void
-ScriptManager::clearScripts()
-{
-    m_base->listView = new KListView;
-}
 
 void
 ScriptManager::engineStateChanged( Engine::State state )
