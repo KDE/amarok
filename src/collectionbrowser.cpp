@@ -950,11 +950,11 @@ CollectionView::updateColumnHeader()
 
         for(int i = 0; i < 2; i++) {
             if (catArr[i] != CollectionBrowser::IdNone ) {
-                setColumnText( 0, columnText(0) + " / " + captionForCategory( catArr[i] ) ); 
+                setColumnText( 0, columnText(0) + " / " + captionForCategory( catArr[i] ) );
             }
         }
     }
-    
+
     m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtist, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdNone );
     m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdAlbum, m_cat1 == CollectionBrowser::IdAlbum && m_cat2 == CollectionBrowser::IdNone );
     m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtistAlbum, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdAlbum && m_cat3 == CollectionBrowser::IdNone );
@@ -1033,7 +1033,7 @@ CollectionView::listSelected()
             else
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
 
-            qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+            qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
 
             if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
             if ( m_cat2 != QueryBuilder::tabSong ) qb.sortBy( m_cat2, QueryBuilder::valName );
@@ -1075,7 +1075,7 @@ CollectionView::listSelected()
                         qb.setOptions( QueryBuilder::optOnlyCompilations );
 
                     qb.addMatch( m_cat2, child->text( 0 ) );
-                    qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+                    qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
 
                     if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                     qb.sortBy( m_cat2, QueryBuilder::valName );
@@ -1129,7 +1129,7 @@ CollectionView::listSelected()
 
                         qb.addMatch( m_cat2, child->text( 0 ) );
                         qb.addMatch( m_cat3, grandChild->text( 0 ) );
-                        qb.addFilter( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, m_filter );
+                        qb.addFilters( m_cat1 | m_cat2 | m_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
 
                         if ( !sampler ) qb.sortBy( m_cat1, QueryBuilder::valName );
                         qb.sortBy( m_cat2, QueryBuilder::valName );
