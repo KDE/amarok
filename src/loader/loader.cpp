@@ -36,7 +36,7 @@ main( int argc, char *argv[] )
     //NOTE this list doesn't include argv[0] ("amarok")
     QStringList args;
     for( int i = 1; i < argc; i++ )
-        args += argv[i];
+        args += QString::fromLocal8Bit(argv[i]);
 
     const bool isRunning = amarokIsRunning();
 
