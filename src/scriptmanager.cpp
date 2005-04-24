@@ -51,7 +51,6 @@
 
 #include <knewstuff/downloaddialog.h> // knewstuff script fetching
 #include <knewstuff/engine.h>         // "
-#include <knewstuff/entry.h>          // "
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
 #include <kfilterdev.h>
