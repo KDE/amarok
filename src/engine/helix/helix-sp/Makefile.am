@@ -11,7 +11,7 @@ AM_CPPFLAGS = \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/common/system \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/common/dbgtool \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/common/util \
-    -include helixdefines.h \
+    -include $(top_srcdir)/amarok/src/engine/helix/helix-sp/helixdefines.h \
     $(all_includes)
 
 libhelix_sp_la_SOURCES = \
