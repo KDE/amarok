@@ -102,6 +102,7 @@ class Playlist : private KListView, public EngineObserver
 
         // Used by DCOP call
         int currentTrackIndex();
+        int totalTrackCount();
 
         void burnPlaylist( int projectType=-1 );
         void burnSelectedTracks( int projectType=-1 );

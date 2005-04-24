@@ -99,6 +99,7 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual void    removeCurrentTrack();
       virtual void    playByIndex(int);
       virtual int     getActiveIndex();
+      virtual int     getTotalTrackCount();
       virtual void    setStopAfterCurrent(bool);
       virtual void    togglePlaylist();
       virtual void    playMedia(const KURL &);

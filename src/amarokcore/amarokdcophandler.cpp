@@ -419,6 +419,11 @@ namespace amaroK
     {
         return Playlist::instance()->currentTrackIndex();
     }
+    
+    int  DcopPlaylistHandler::getTotalTrackCount()
+    {
+	return Playlist::instance()->totalTrackCount();
+    }
 
     void DcopPlaylistHandler::setStopAfterCurrent( bool on )
     {

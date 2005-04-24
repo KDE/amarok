@@ -978,6 +978,12 @@ Playlist::currentTrackIndex()
     return -1;
 }
 
+int
+Playlist::totalTrackCount()
+{
+    return childCount();
+}
+
 PlaylistItem*
 Playlist::restoreCurrentTrack()
 {
