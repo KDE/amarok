@@ -49,6 +49,74 @@
 #include <ktar.h>
 #include <ktextedit.h>
 
+#include <knewstuff/downloaddialog.h> // knewstuff script fetching
+#include <knewstuff/engine.h>         // "
+#include <knewstuff/entry.h>          // "
+#include <knewstuff/knewstuff.h>      // "
+#include <knewstuff/provider.h>       // "
+#include <kfilterdev.h>
+
+
+/**
+ * GHNS Customised Download implementation.
+ * Stolen from kopete - thanks!
+ * Customised by Seb Ruiz <seb100@optusnet.com.au>
+ */
+class AmarokScriptNewStuff : public KNewStuff
+{
+    public:
+    AmarokScriptNewStuff(const QString &type, QWidget *parentWidget=0) : KNewStuff( type, parentWidget )
+    { }
+
+    bool install( const QString & fileName)
+    {
+        KTar archive( fileName );
+
+        if ( !archive.open( IO_ReadOnly ) ) {
+            KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
+            return false;
+        }
+
+        QString destination = amaroK::saveLocation( "scripts/" );
+        const KArchiveDirectory* const archiveDir = archive.directory();
+
+        // Prevent installing a script that's already installed
+        const QString scriptFolder = destination + archiveDir->entries().first();
+        if ( QFile::exists( scriptFolder ) ) {
+            KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
+                                        "Please uninstall it first." ).arg( archiveDir->entries().first() ) );
+            return false;
+        }
+
+        archiveDir->copyTo( destination );
+        recurseInstall( archiveDir, destination );
+
+        ScriptManager::instance()->clearScripts();
+        ScriptManager::instance()->findScripts();
+
+        return true;
+
+    }
+    //make executable
+    void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
+    {
+        const QStringList entries = archiveDir->entries();
+
+        QStringList::ConstIterator it;
+        for ( it = entries.begin(); it != entries.end(); ++it ) {
+            const QString entry = *it;
+            const KArchiveEntry* const archEntry = archiveDir->entry( entry );
+
+            if ( archEntry->isDirectory() ) {
+                KArchiveDirectory* const dir = (KArchiveDirectory*) archEntry;
+                recurseInstall( dir, destination + entry + "/" );
+            }
+            else
+                ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
+        }
+    }
+};
+
 
 ScriptManager* ScriptManager::s_instance = 0;
 
@@ -71,6 +139,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_base->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
 
     connect( m_base->installButton, SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( m_base->retrieveButton, SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( m_base->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
     connect( m_base->editButton, SIGNAL( clicked() ), SLOT( slotEditScript() ) );
     connect( m_base->runButton, SIGNAL( clicked() ), SLOT( slotRunScript() ) );
@@ -264,6 +333,20 @@ ScriptManager::slotInstallScript()
     }
 }
 
+void
+ScriptManager::slotRetrieveScript()
+{
+    // we need this because KNewStuffGeneric's install function isn't clever enough
+    AmarokScriptNewStuff *kns = new AmarokScriptNewStuff( "amarok/script", this );
+    KNS::Engine *engine = new KNS::Engine( kns, "amarok/script", this );
+    KNS::DownloadDialog *d = new KNS::DownloadDialog( engine, this );
+    d->setType( "amarok/script" );
+    // you have to do this by hand when providing your own Engine
+    KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
+    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
+    p->load( "amarok/script", "http://download.kde.org/khotnewstuff/amarokscripts-providers.xml" );
+    d->exec();
+}
 
 void
 ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
@@ -512,6 +595,12 @@ ScriptManager::loadScript( const QString& path )
     }
 }
 
+//Clears the KListView so that findScripts() can be called again after a KNewStuff download.
+void
+ScriptManager::clearScripts()
+{
+    m_base->listView = new KListView;
+}
 
 void
 ScriptManager::engineStateChanged( Engine::State state )

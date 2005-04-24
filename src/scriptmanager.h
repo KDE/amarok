@@ -53,6 +53,8 @@ class ScriptManager : public KDialogBase, public EngineObserver
 {
         Q_OBJECT
 
+    friend class AmarokScriptNewStuff;
+
     public:
         ScriptManager( QWidget *parent = 0, const char *name = 0 );
         virtual ~ScriptManager();
@@ -84,6 +86,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void slotCurrentChanged( QListViewItem* );
 
         void slotInstallScript();
+        void slotRetrieveScript();
         void slotUninstallScript();
         void slotEditScript();
         bool slotRunScript();
@@ -99,6 +102,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
 
         /** Adds a script to the listview */
         void loadScript( const QString& path );
+
+        /** Makes the listview empty */
+        void clearScripts();
 
         /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );

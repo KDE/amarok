@@ -868,9 +868,6 @@ Playlist::activate( QListViewItem *item )
             {
                 tmp = true;
                 for(  ; !(*it)->isEnabled() ; ++it );
-//                 {
-//                     kdDebug() << "(" << *it << ")->isEnabled: "<< (*it)->isEnabled() << endl;
-//                 }
             }
 
             tmp ?

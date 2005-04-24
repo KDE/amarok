@@ -62,6 +62,14 @@
                                 <string>Install Script</string>
                             </property>
                         </widget>
+                        <widget class="KPushButton">
+                            <property name="name">
+                                <cstring>retrieveButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Get New Script</string>
+                                </property>
+                        </widget>
                         <spacer>
                             <property name="name">
                                 <cstring>rightColumnSpacer</cstring>

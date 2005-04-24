@@ -76,7 +76,7 @@ void Options2::updateStyleComboBox()
 
 void Options2::retrievePushButton_clicked()
 {
-    KNS::DownloadDialog::open("amarok/styles");
+    KNS::DownloadDialog::open("amaroK Themes");
     styleComboBox->clear();
     updateStyleComboBox();
 }
