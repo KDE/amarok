@@ -65,8 +65,9 @@
 class AmarokScriptNewStuff : public KNewStuff
 {
     public:
-    AmarokScriptNewStuff(const QString &type, QWidget *parentWidget=0) : KNewStuff( type, parentWidget )
-    { }
+    AmarokScriptNewStuff(const QString &type, QWidget *parentWidget=0)
+             : KNewStuff( type, parentWidget )
+    {}
 
     bool install( const QString & fileName)
     {
@@ -115,6 +116,8 @@ class AmarokScriptNewStuff : public KNewStuff
                 ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
         }
     }
+
+    virtual bool createUploadFile( const QString& ) { return false; } //make compile on kde 3.5
 };
 
 
