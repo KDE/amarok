@@ -858,9 +858,17 @@ Playlist::activate( QListViewItem *item )
 
     if( isParty() && !m_partyDirt )
     {
-        m_currentTrack ?
-            this->moveItem( item, 0, m_currentTrack ) :
-            this->moveItem( item, 0, 0 );
+        if( m_currentTrack )
+            this->moveItem( item, 0, m_currentTrack );
+        else
+        {
+            MyIterator it( this, MyIterator::Visible );
+            for(  ; !(*it)->isEnabled() ; ++it ) ;
+
+            (*it) ?
+                this->moveItem( item, 0, 0 ) :
+                this->moveItem( item, *it, 0 ) ;
+        }
         advancePartyTrack();
     }
 
