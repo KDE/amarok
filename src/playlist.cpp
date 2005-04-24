@@ -862,12 +862,20 @@ Playlist::activate( QListViewItem *item )
             this->moveItem( item, 0, m_currentTrack );
         else
         {
-            MyIterator it( this, MyIterator::Visible );
-            for(  ; !(*it)->isEnabled() ; ++it ) ;
+            MyIt it( this, MyIt::Visible );
+            bool tmp = false;
+            if ( !(*it)->isEnabled() )
+            {
+                tmp = true;
+                for(  ; !(*it)->isEnabled() ; ++it );
+//                 {
+//                     kdDebug() << "(" << *it << ")->isEnabled: "<< (*it)->isEnabled() << endl;
+//                 }
+            }
 
-            (*it) ?
-                this->moveItem( item, 0, 0 ) :
-                this->moveItem( item, *it, 0 ) ;
+            tmp ?
+                this->moveItem( item, *it, 0 ) :
+                this->moveItem( item, 0,   0 );
         }
         advancePartyTrack();
     }
