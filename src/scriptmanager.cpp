@@ -90,7 +90,19 @@ class AmarokScriptNewStuff : public KNewStuff
         }
 
         archiveDir->copyTo( destination );
-        recurseInstall( archiveDir, destination );
+        ScriptManager::instance()->m_installSuccess = false;
+        ScriptManager::instance()->recurseInstall( archiveDir, destination );
+
+        if ( ScriptManager::instance()->m_installSuccess )
+            KMessageBox::information( 0, i18n( "Script successfully installed." ) );
+        else {
+            KMessageBox::sorry( 0, i18n( "<p>Script installation failed.</p>"
+                                        "<p>The package did not contain an executable file. "
+                                        "Please inform the package maintainer about this error.</p>" ) );
+
+            // Delete directory recursively
+            KIO::NetAccess::del( KURL::fromPathOrURL( scriptFolder ), 0 );
+        }
 
         ScriptManager::instance()->clearScripts();
         ScriptManager::instance()->findScripts();
@@ -98,24 +110,7 @@ class AmarokScriptNewStuff : public KNewStuff
         return true;
 
     }
-    //make executable
-    void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination )
-    {
-        const QStringList entries = archiveDir->entries();
 
-        QStringList::ConstIterator it;
-        for ( it = entries.begin(); it != entries.end(); ++it ) {
-            const QString entry = *it;
-            const KArchiveEntry* const archEntry = archiveDir->entry( entry );
-
-            if ( archEntry->isDirectory() ) {
-                KArchiveDirectory* const dir = (KArchiveDirectory*) archEntry;
-                recurseInstall( dir, destination + entry + "/" );
-            }
-            else
-                ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
-        }
-    }
 
     virtual bool createUploadFile( const QString& ) { return false; } //make compile on kde 3.5
 };
@@ -347,7 +342,7 @@ ScriptManager::slotRetrieveScript()
     // you have to do this by hand when providing your own Engine
     KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
     QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
-    p->load( "amarok/script", "http://download.kde.org/khotnewstuff/amarokscripts-providers.xml" );
+    p->load( "amarok/script", "http://amarok.kde.org/knewstuff/amarokscripts-providers.xml" );
     d->exec();
 }
 

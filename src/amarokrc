@@ -11,4 +11,4 @@ ColumnWidths=0,200,100,100,0,0,0,0,0,80,0
 [KNewStuff]
 TargetDir=amarok/themes
 Uncompress=application/x-gzip
-ProvidersUrl=http://download.kde.org/khotnewstuff/amarokthemes-providers.xml
+ProvidersUrl=http://amarok.kde.org/knewstuff/amarokthemes-providers.xml
