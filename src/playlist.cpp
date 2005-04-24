@@ -364,7 +364,8 @@ Playlist::insertMedia( KURL::List list, int options )
                 }
             }
         } else {
-            after = currentTrack();   //insert after the current track. enables the click-n-reaction feeling
+            // We add the track after the last track on queue, or after current if the queue is empty
+            after =  m_nextTracks.isEmpty() ? currentTrack() : m_nextTracks.getLast();
 
             // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
             m_queueList = list;
