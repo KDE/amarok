@@ -13,7 +13,7 @@ INCLUDES = \
 	-include helixdefines.h \
     $(all_includes)
 
-libhelix-sp_la_SOURCES = \
+libhelix_sp_la_SOURCES = \
 	iids.cpp \
     hspcontext.cpp \
     hspadvisesink.cpp \
