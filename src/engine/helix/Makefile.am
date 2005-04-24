@@ -4,7 +4,8 @@ kde_module_LTLIBRARIES = \
 SUBDIRS = \
     helix-sp
 
-INCLUDES = \
+AM_CPPFLAGS = \
+    -D_UNIX \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp \
