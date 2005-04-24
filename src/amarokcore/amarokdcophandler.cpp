@@ -28,6 +28,7 @@
 #include "osd.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "playlistwindow.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
 
@@ -245,6 +246,11 @@ namespace amaroK
     void DcopPlayerHandler::enableRepeatPlaylist(bool enable)
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_playlist" ))->setChecked( enable );
+    }
+
+     void DcopPlayerHandler::enableRepeatTrack(bool enable)
+    {
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_track" ))->setChecked( enable );
     }
 
     void DcopPlayerHandler::enablePartyMode(bool enable)

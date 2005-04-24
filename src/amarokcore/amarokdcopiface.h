@@ -42,6 +42,7 @@ k_dcop:
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
+   virtual void enableRepeatTrack(bool enable) = 0;      ///< Switch Repeat Track on or off.
    virtual void enablePartyMode(bool enable) = 0;           ///< Switch Party Mode on or off.
 
    /* These two methods return raw time in seconds, this is useful for apps like mediacontrol, which calculate
