@@ -90,9 +90,36 @@ QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
     QWidget *analyzer = 0;
     switch( AmarokConfig::currentPlaylistAnalyzer() )
     {
-        case 1:
+        case 2:
             analyzer = new Sonogram( parent );
             break;
+        case 1:
+            analyzer = new TurbineAnalyzer( parent );
+            break;
+        case 3:
+            analyzer = new BarAnalyzer( parent );
+            break;
+        case 4:
+            analyzer = new BoomAnalyzer( parent );
+            break;
+    #ifdef HAVE_QGLWIDGET
+        case 5:
+            analyzer = new GLAnalyzer( parent );
+            break;
+        case 6:
+            analyzer = new GLAnalyzer2( parent );
+            break;
+        case 7:
+            analyzer = new GLAnalyzer3( parent );
+            break;
+        case 8:
+    #else
+        case 5:
+    #endif
+        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
+        static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
+        break;
+
         default:
             AmarokConfig::setCurrentPlaylistAnalyzer( 0 );
         case 0:
