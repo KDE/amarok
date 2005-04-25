@@ -13,7 +13,7 @@ username = `kdialog --inputbox "CVS username: "`.chomp
 
 
 name     = "amarok"
-$cvsroot = ":pserver:#{username}@cvs.kde.org:/home/kde"
+$cvsroot = ":ext:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
 

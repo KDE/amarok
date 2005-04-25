@@ -84,3 +84,20 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 
     return analyzer;
 }
+
+QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
+{
+    QWidget *analyzer = 0;
+    switch( AmarokConfig::currentPlaylistAnalyzer() )
+    {
+        case 1:
+            analyzer = new Sonogram( parent );
+            break;
+        default:
+            AmarokConfig::setCurrentPlaylistAnalyzer( 0 );
+        case 0:
+            analyzer = new BlockAnalyzer( parent );
+            break;
+    }
+    return analyzer;
+}

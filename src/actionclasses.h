@@ -66,12 +66,23 @@ namespace amaroK
             virtual void engineStateChanged( Engine::State );
     };
 
+    class AnaylzerContainer : public QWidget
+    {
+        public:
+            AnaylzerContainer( QWidget *w );
+        protected:
+            void resizeEvent( QResizeEvent * );
+            void mousePressEvent( QMouseEvent *e );
+        private:
+            QWidget* m_child;
+    };
 
     class AnalyzerAction : public KAction
     {
         public:
             AnalyzerAction( KActionCollection* );
             virtual int plug( QWidget *, int index = -1 );
+        
     };
 
 

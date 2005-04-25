@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * Different analyzers available for the playlist window.
     * New DCOP call "player: enableRepeatTrack" sets repeat track on or
       off.
     * HelixPlayer-engine.

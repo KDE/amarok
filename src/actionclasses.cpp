@@ -9,6 +9,7 @@
 #include "app.h"
 #include "collectiondb.h"
 #include "covermanager.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "playlistwindow.h"
@@ -238,7 +239,7 @@ PlayPauseAction::engineStateChanged( Engine::State state )
 //////////////////////////////////////////////////////////////////////////////////////////
 // AnalyzerAction
 //////////////////////////////////////////////////////////////////////////////////////////
-#include "blockanalyzer.h"
+#include "analyzerbase.h"
 
 AnalyzerAction::AnalyzerAction( KActionCollection *ac )
   : KAction( i18n( "Analyzer" ), 0, ac, "toolbar_analyzer" )
@@ -261,18 +262,46 @@ AnalyzerAction::plug( QWidget *w, int index )
 
         addContainer( w, id );
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-
-        QWidget *block = new BlockAnalyzer( w );
+        QWidget *container = new AnaylzerContainer(w);
+        QWidget *block = Analyzer::Factory::createPlaylistAnalyzer( container );
+        container->installEventFilter(block);
         block->setName( "ToolBarAnalyzer" );
-
-        bar->insertWidget( id, 0, block, index );
+        bar->insertWidget( id, 0, container, index );
         bar->setItemAutoSized( id, true );
-
         return containerCount() - 1;
     }
     else return -1;
 }
 
+AnaylzerContainer::AnaylzerContainer( QWidget *w )
+ : QWidget(w, "AnaylzerContainer"),
+ m_child(0)
+{ }
+
+void
+AnaylzerContainer::resizeEvent( QResizeEvent *)
+{
+    debug() << "resizing to " << size().width() << endl;
+    if(!m_child)
+        m_child = childAt(0,0,false);
+    if(m_child)
+        m_child->resize(size());
+}
+
+void
+AnaylzerContainer::mousePressEvent( QMouseEvent *e)
+{
+    if(e->button()==Qt::LeftButton)
+    {
+        delete m_child;
+        AmarokConfig::setCurrentPlaylistAnalyzer( AmarokConfig::currentPlaylistAnalyzer() + 1 );
+        QWidget* newAnalyzer = Analyzer::Factory::createPlaylistAnalyzer( this );
+        newAnalyzer->resize(size());
+        newAnalyzer->installEventFilter(this);
+        newAnalyzer->show();
+        m_child=newAnalyzer;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // VolumeAction

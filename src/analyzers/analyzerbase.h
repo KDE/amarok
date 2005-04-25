@@ -135,6 +135,7 @@ class Factory
     //yet!
 public:
     static QWidget* createAnalyzer( QWidget* );
+    static QWidget* createPlaylistAnalyzer( QWidget *);
 };
 
 
