@@ -6,6 +6,10 @@ SUBDIRS = \
 
 AM_CPPFLAGS = \
     -D_UNIX \
+    -pipe \
+    -Wall -Wreturn-type \
+    -fno-exceptions --permissive -fno-rtti -Wno-ctor-dtor-privacy \
+    -march=pentium -mcpu=pentium \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp \
@@ -31,7 +35,7 @@ libamarok_helixengine_plugin_la_LIBADD = \
     -lkdeui -lkdecore
 
 libamarok_helixengine_plugin_la_LDFLAGS = \
-    -module \
+     -module \
     $(KDE_PLUGIN) \
     $(all_libraries)
 
