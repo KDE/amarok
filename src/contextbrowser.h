@@ -5,21 +5,19 @@
 #define AMAROK_CONTEXTBROWSER_H
 
 #include "engineobserver.h"
+#include <kurl.h>
 #include <qtabwidget.h>
-#include <kio/job.h>
-
 
 class CollectionDB;
 class Color;
-class MetaBundle;
-
-class QPalette;
-
 class KHTMLPart;
 class KTabBar;
 class KTempFile;
+class MetaBundle;
+class QPalette;
 
-namespace KIO { class Job; }
+namespace KIO { class Job; class TransferJob; }
+
 
 class ContextBrowser : public QTabWidget, public EngineObserver
 {
