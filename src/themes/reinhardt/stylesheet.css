@@ -1,4 +1,4 @@
-body { margin: 8px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-attachment: fixed;}
+body { margin: 4px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-attachment: fixed;}
 a { font-size: 10px; color: WindowText; }
 .button { margin: 2px; padding: 2px; border: 1px solid ButtonShadow; background-color: Window; color: WindowText; width: 100%; }
 .button:hover { color: ButtonText; background-color: ButtonFace; }
@@ -11,7 +11,7 @@ a { font-size: 10px; color: WindowText; }
 .song-time { }
 .song-place { font-size: 12px; font-weight: 900; }
 .warning { font-size: AMAROK_FONTSIZEpx; color: InfoText; background-color: InfoBackground; font-weight: bold; padding: none; margin-bottom: 1em; }
-.box { border: solid ButtonShadow 1px; text-align: left; margin-bottom: AMAROK_FONTSIZEpx; }
+.box { border: solid ButtonShadow 1px; text-align: left; margin-bottom: AMAROK_FONTSIZEpx; overflow: hidden; }
 .box a { text-decoration: none; }
 .box:hover { border: solid ButtonShadow 1px; }
 .box-header { color: ButtonText; background-color: ButtonFace; font-size: AMAROK_FONTSIZEpx; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid ButtonShadow; }
