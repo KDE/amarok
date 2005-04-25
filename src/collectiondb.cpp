@@ -732,7 +732,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
     Q_UNUSED( trackInformation );
     Q_UNUSED( width );
 
-    if( width == 1 ) width == AmarokConfig::coverPreviewSize();
+    if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
