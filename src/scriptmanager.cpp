@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004-2005 by Mark Kretschmann <markey@web.de>           *
+ *                      2005 by Seb Ruiz <seb100@optusnet.com.au>          *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -58,8 +59,6 @@
 
 /**
  * GHNS Customised Download implementation.
- * Stolen from kopete - thanks!
- * Customised by Seb Ruiz <seb100@optusnet.com.au>
  */
 class AmarokScriptNewStuff : public KNewStuff
 {
@@ -68,12 +67,10 @@ class AmarokScriptNewStuff : public KNewStuff
              : KNewStuff( type, parentWidget )
     {}
 
-
     bool install( const QString& fileName )
     {
         return ScriptManager::instance()->slotInstallScript( fileName );
     }
-
 
     virtual bool createUploadFile( const QString& ) { return false; } //make compile on kde 3.5
 };
