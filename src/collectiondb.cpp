@@ -762,7 +762,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 QImage image;
                 if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
                 {
-                    if ( width > 1 )
+                    if ( width > 0 )
                     {
                         image.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
                         return m_cacheDir.filePath( widthKey + tagKey );
