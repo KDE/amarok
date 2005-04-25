@@ -6,11 +6,11 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
+#include "playlist.h"
 #include "collectiondb.h"
 #include "config.h"
-#include "debug.h"
 #include "enginecontroller.h"
-#include "playlist.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 

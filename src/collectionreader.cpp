@@ -7,9 +7,10 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include <cerrno>
+#include "debug.h"
 #include "collectiondb.h"
 #include "collectionreader.h"
-#include "debug.h"
+
 #include <dirent.h>    //stat
 #include <kapplication.h>
 #include <kglobal.h>

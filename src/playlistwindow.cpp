@@ -20,15 +20,15 @@
 #include "amarokconfig.h"
 #include "browserbar.h"
 #include "clicklineedit.h"    //m_lineEdit
+#include "debug.h"
+#include "playlist.h"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
-#include "debug.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "party.h"
-#include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"

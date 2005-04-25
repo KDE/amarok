@@ -2,8 +2,8 @@
 // (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
 // See COPYING file for licensing information.
 
-#include "collectiondb.h"
 #include "debug.h"
+#include "collectiondb.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"

@@ -13,11 +13,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include "collectiondb.h"
-#include "k3bexporter.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "collectiondb.h"
+#include "k3bexporter.h"
+
 
 #include <kprocess.h>
 #include <kmessagebox.h>

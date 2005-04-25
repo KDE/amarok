@@ -12,8 +12,8 @@
  */
 
 #include "amarokconfig.h"
-#include "collectiondb.h"    //for albumCover location
 #include "debug.h"
+#include "collectiondb.h"    //for albumCover location
 #include <kapplication.h>
 #include <kpixmap.h>
 #include <kpixmapeffect.h>

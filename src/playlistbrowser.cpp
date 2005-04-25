@@ -4,11 +4,11 @@
 
 #include "amarok.h"            //actionCollection()
 #include "browserToolBar.h"
+#include "playlist.h"
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
 #include "k3bexporter.h"
 #include "metabundle.h"        //paintCell()
-#include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"    //PlaylistBrowserItem::load()
 #include "smartplaylist.h"

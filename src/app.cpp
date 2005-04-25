@@ -21,8 +21,9 @@ email                : markey@web.de
 #include "app.h"
 #include "config.h"
 #include "configdialog.h"
-#include "collectionbrowser.h"
 #include "debug.h"
+#include "collectionbrowser.h"
+
 #include "effectwidget.h"
 #include "enginebase.h"
 #include "enginecontroller.h"

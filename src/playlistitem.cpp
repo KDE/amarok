@@ -17,14 +17,14 @@
 
 #include "amarokconfig.h"
 #include <cmath>
-#include "collectiondb.h"
 #include "debug.h"
+#include "playlist.h"
+#include "collectiondb.h"
 #include <kfilemetainfo.h>
 #include <kiconloader.h>
 #include <kstringhandler.h>
 #include "metabundle.h"
 #include "playlistitem.h"
-#include "playlist.h"
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>

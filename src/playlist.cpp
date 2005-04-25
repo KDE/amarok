@@ -16,9 +16,9 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
-#include "debug.h"
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "metabundle.h"

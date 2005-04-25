@@ -5,11 +5,12 @@
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
+#include "debug.h"
 #include "collectiondb.h"
 #include "config.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
-#include "debug.h"
+
 
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <qfile.h>

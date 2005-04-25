@@ -5,8 +5,8 @@
 #define DEBUG_PREFIX "MetaBundle"
 
 #include "amarokconfig.h"
-#include "collectiondb.h"
 #include "debug.h"
+#include "collectiondb.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
 #include "metabundle.h"

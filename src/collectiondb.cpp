@@ -9,11 +9,12 @@
 #include "app.h"
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "collectionreader.h"
 #include "coverfetcher.h"
-#include "debug.h"
+
 #include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"

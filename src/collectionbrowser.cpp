@@ -7,10 +7,12 @@
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
+#include "debug.h"
 #include "collectionbrowser.h"
+
 #include "collectiondb.h"
 #include "collectionreader.h"
-#include "debug.h"
+
 #include "directorylist.h"
 #include "k3bexporter.h"
 #include "metabundle.h"

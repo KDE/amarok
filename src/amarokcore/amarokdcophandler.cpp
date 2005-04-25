@@ -19,9 +19,9 @@
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h" //transferCliArgs
+#include "debug.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
-#include "debug.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"

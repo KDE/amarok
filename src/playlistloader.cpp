@@ -11,13 +11,13 @@
 #define DEBUG_PREFIX "PlaylistLoader"
 
 #include "amarok.h"
-#include "collectiondb.h"
 #include "debug.h"
+#include "playlist.h"
+#include "collectiondb.h"
 #include "enginecontroller.h"
 #include <kapplication.h>
 #include <kdirlister.h>
 #include <kurl.h>
-#include "playlist.h"
 #include "playlistitem.h"
 #include "playlistloader.h"
 #include <qfile.h>       //::loadPlaylist()

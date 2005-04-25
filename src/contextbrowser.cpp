@@ -5,6 +5,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "collectionbrowser.h" //FIXME for setupDirs()
 #include "collectiondb.h"
 #include "colorgenerator.h"
@@ -12,7 +13,7 @@
 #include "contextbrowser.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
-#include "debug.h"
+
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()

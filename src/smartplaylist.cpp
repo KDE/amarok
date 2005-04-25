@@ -3,9 +3,9 @@
 
 #include "amarok.h"
 #include "browserToolBar.h"
+#include "playlist.h"
 #include "collectiondb.h"
 #include "k3bexporter.h"
-#include "playlist.h"
 #include "smartplaylist.h"
 #include "smartplaylisteditor.h"
 
