@@ -141,6 +141,11 @@
         <whatsthis>The ID of the visual analyzer to display.</whatsthis>
         <default>-1</default>
     </entry>
+    <entry key="Current Playlist Analyzer" type="Int">
+        <label>Index of analyzer displayed in playlist window</label>
+        <whatsthis>The ID of the visual analyzer to display in playlist window.</whatsthis>
+        <default>0</default>
+    </entry>
     <entry key="Remember Effects" type="Bool">
         <label>Persistent audio effects</label>
         <whatsthis>If set, amaroK remembers the audio effects set through the effects window.</whatsthis>
