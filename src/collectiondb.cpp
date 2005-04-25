@@ -732,6 +732,8 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
     Q_UNUSED( trackInformation );
     Q_UNUSED( width );
 
+    if( width == 1 ) width == AmarokConfig::coverPreviewSize();
+
     QCString widthKey = makeWidthKey( width );
     QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
     QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
@@ -762,7 +764,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 QImage image;
                 if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
                 {
-                    if ( width > 0 )
+                    if ( width > 1 )
                     {
                         image.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
                         return m_cacheDir.filePath( widthKey + tagKey );
@@ -888,7 +890,7 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 
         QCString key = md5sum( artist, album, image );
 
-        if ( width > 0 )
+        if ( width > 1 )
         {
             if ( !m_cacheDir.exists( widthKey + key ) )
             {
