@@ -268,6 +268,7 @@ AnalyzerAction::plug( QWidget *w, int index )
         block->setName( "ToolBarAnalyzer" );
         bar->insertWidget( id, 0, container, index );
         bar->setItemAutoSized( id, true );
+        QToolTip::add( container, i18n( "Click for more analyzers" ) );
         return containerCount() - 1;
     }
     else return -1;
