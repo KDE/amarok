@@ -66,15 +66,15 @@ namespace amaroK
             virtual void engineStateChanged( Engine::State );
     };
 
-    class AnaylzerContainer : public QWidget
+    class AnalyzerContainer : public QWidget
     {
         public:
-            AnaylzerContainer( QWidget *w );
+            AnalyzerContainer( QWidget *parent );
         protected:
-            void resizeEvent( QResizeEvent * );
-            void mousePressEvent( QMouseEvent *e );
+            virtual void resizeEvent( QResizeEvent* );
+            virtual void mousePressEvent( QMouseEvent* );
         private:
-            QWidget* m_child;
+            QWidget *m_child;
     };
 
     class AnalyzerAction : public KAction
@@ -82,7 +82,6 @@ namespace amaroK
         public:
             AnalyzerAction( KActionCollection* );
             virtual int plug( QWidget *, int index = -1 );
-        
     };
 
 

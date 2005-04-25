@@ -242,7 +242,7 @@ PlayPauseAction::engineStateChanged( Engine::State state )
 #include "analyzerbase.h"
 
 AnalyzerAction::AnalyzerAction( KActionCollection *ac )
-  : KAction( i18n( "Analyzer" ), 0, ac, "toolbar_analyzer" )
+        : KAction( i18n( "Analyzer" ), 0, ac, "toolbar_analyzer" )
 {
     setShortcutConfigurable( false );
 }
@@ -262,47 +262,47 @@ AnalyzerAction::plug( QWidget *w, int index )
 
         addContainer( w, id );
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-        QWidget *container = new AnaylzerContainer(w);
-        QWidget *block = Analyzer::Factory::createPlaylistAnalyzer( container );
-        container->installEventFilter(block);
-        block->setName( "ToolBarAnalyzer" );
+        QWidget *container = new AnalyzerContainer( w );
         bar->insertWidget( id, 0, container, index );
         bar->setItemAutoSized( id, true );
-        QToolTip::add( container, i18n( "Click for more analyzers" ) );
+
         return containerCount() - 1;
     }
     else return -1;
 }
 
-AnaylzerContainer::AnaylzerContainer( QWidget *w )
- : QWidget(w, "AnaylzerContainer"),
- m_child(0)
-{ }
 
-void
-AnaylzerContainer::resizeEvent( QResizeEvent *)
+AnalyzerContainer::AnalyzerContainer( QWidget *parent )
+        : QWidget( parent, "AnalyzerContainer" )
+        , m_child( 0 )
 {
-    debug() << "resizing to " << size().width() << endl;
-    if(!m_child)
-        m_child = childAt(0,0,false);
-    if(m_child)
-        m_child->resize(size());
+    QToolTip::add( this, i18n( "Click for more analyzers" ) );
+
+    QMouseEvent e( QEvent::MouseButtonPress, QPoint(), Qt::LeftButton, 0 );
+    mousePressEvent( &e );
 }
 
 void
-AnaylzerContainer::mousePressEvent( QMouseEvent *e)
+AnalyzerContainer::resizeEvent( QResizeEvent *)
 {
-    if(e->button()==Qt::LeftButton)
-    {
+    m_child->resize( size() );
+}
+
+void
+AnalyzerContainer::mousePressEvent( QMouseEvent *e)
+{
+    if( e->button() == Qt::LeftButton ) {
         delete m_child;
+
         AmarokConfig::setCurrentPlaylistAnalyzer( AmarokConfig::currentPlaylistAnalyzer() + 1 );
-        QWidget* newAnalyzer = Analyzer::Factory::createPlaylistAnalyzer( this );
-        newAnalyzer->resize(size());
-        newAnalyzer->installEventFilter(this);
-        newAnalyzer->show();
-        m_child=newAnalyzer;
+
+        m_child = Analyzer::Factory::createPlaylistAnalyzer( this );
+        m_child->setName( "ToolBarAnalyzer" );
+        m_child->resize( size() );
+        m_child->show();
     }
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // VolumeAction
