@@ -358,7 +358,7 @@ GstEngine::length() const
     if ( !m_currentInput ) return 0;
 
     GstFormat fmt = GST_FORMAT_TIME;
-    // Value will hold the current time position in nanoseconds. Must be initialized!
+    // Value will hold the track length in nanoseconds. Must be initialized!
     gint64 value = 0;
     gst_element_query( m_currentInput->decodebin, GST_QUERY_TOTAL, &fmt, &value );
 
