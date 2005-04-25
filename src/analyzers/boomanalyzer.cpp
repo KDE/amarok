@@ -2,7 +2,7 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include "boomanalyzer.h"
-#include <math.h>
+#include <cmath>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpainter.h>

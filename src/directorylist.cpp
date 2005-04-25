@@ -17,22 +17,19 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include "debug.h"
 #include "directorylist.h"
-
-#include <qlabel.h>
-#include <qtooltip.h>
-
 #include <kfileitem.h>
 #include <klocale.h>
-
-using Collection::Item;
+#include <qlabel.h>
+#include <qtooltip.h>
 
 
 CollectionSetup* CollectionSetup::s_instance;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
-    : QVBox( parent, "CollectionSetup" )
+        : QVBox( parent, "CollectionSetup" )
 {
     s_instance = this;
 
@@ -57,8 +54,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_view->addColumn( QString::null );
     m_view->setRootIsDecorated( true );
+    m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_view->setResizeMode( QListView::LastColumn );
+
     reinterpret_cast<QWidget*>(m_view->header())->hide();
-    new Item( m_view );
+    new Collection::Item( m_view );
 
     setSpacing( 6 );
 }
@@ -77,6 +77,8 @@ CollectionSetup::writeConfig()
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Item
 //////////////////////////////////////////////////////////////////////////////////////////
+
+namespace Collection {
 
 Item::Item( QListView *parent )
     : QCheckListItem( parent, "/", QCheckListItem::CheckBox  )
@@ -195,5 +197,6 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
     QCheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
 }
 
+} //namespace Collection
 
 #include "directorylist.moc"

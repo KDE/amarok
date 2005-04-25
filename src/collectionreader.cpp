@@ -6,9 +6,11 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include <cerrno>
 #include "collectiondb.h"
 #include "collectionreader.h"
 #include "debug.h"
+#include <dirent.h>    //stat
 #include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
@@ -16,15 +18,9 @@
 #include "metabundle.h"
 #include "playlistbrowser.h"
 #include "statusbar.h"
-
-extern "C"
-{
-    #include <dirent.h>    //stat
-    #include <errno.h>
-    #include <sys/types.h> //stat
-    #include <sys/stat.h>  //stat
-    #include <unistd.h>    //stat
-}
+#include <sys/stat.h>  //stat
+#include <sys/types.h> //stat
+#include <unistd.h>    //stat
 
 
 CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& folders )

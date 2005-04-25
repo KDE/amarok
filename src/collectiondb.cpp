@@ -38,15 +38,15 @@
 #include <kurl.h>
 #include <kio/netaccess.h>
 
-#include <math.h>                 //DbConnection::sqlite_power()
-#include <time.h>                 //query()
-#include <unistd.h>               //usleep()
+#include <cmath>                 //DbConnection::sqlite_power()
+#include <ctime>                 //query()
+#include <unistd.h>              //usleep()
 
-#include <mpegfile.h>
-#include <mpegfile.h>
-#include <id3v2tag.h>
-#include <attachedpictureframe.h>
-#include <tbytevector.h>
+#include <taglib/mpegfile.h>
+#include <taglib/mpegfile.h>
+#include <taglib/id3v2tag.h>
+#include <taglib/attachedpictureframe.h>
+#include <taglib/tbytevector.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB

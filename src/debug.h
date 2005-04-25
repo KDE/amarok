@@ -1,10 +1,15 @@
+// Author:    Max Howell <max.howell@methylblue.com>, (C) 2003-5
+// Copyright: See COPYING file that comes with this distribution
+//
 
 #ifndef AMAROK_DEBUG_H
 #define AMAROK_DEBUG_H
 
-#include <ctime>       //std::clock_t
 #include <kdebug.h>
 #include <qcstring.h>
+#include <sys/time.h>
+#include <sys/types.h>
+
 
 /**
  * @namespace Debug
@@ -38,8 +43,7 @@
 
 namespace Debug
 {
-    /// this is defined in app.cpp
-    extern QCString indent;
+    inline QCString &indent() { static QCString indent; return indent; }
 
     #ifdef NDEBUG
         static inline kndbgstream debug()   { return kndbgstream(); }
@@ -63,10 +67,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { return kdbgstream( indent, 0, KDEBUG_INFO  ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { return kdbgstream( indent, 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
-        static inline kdbgstream error()   { return kdbgstream( indent, 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
-        static inline kdbgstream fatal()   { return kdbgstream( indent, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
+        static inline kdbgstream debug()   { return kdbgstream( indent(), 0, KDEBUG_INFO  ) << AMK_PREFIX; }
+        static inline kdbgstream warning() { return kdbgstream( indent(), 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
+        static inline kdbgstream error()   { return kdbgstream( indent(), 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
+        static inline kdbgstream fatal()   { return kdbgstream( indent(), 0, KDEBUG_FATAL ) << AMK_PREFIX; }
 
         typedef kdbgstream DebugStream;
 
@@ -83,22 +87,23 @@ using Debug::fatal;
 using Debug::DebugStream;
 
 /// Standard function announcer
-#define DEBUG_FUNC_INFO kdDebug() << Debug::indent << k_funcinfo << endl;
+#define DEBUG_FUNC_INFO kdDebug() << Debug::indent() << k_funcinfo << endl;
 
 /// Announce a line
-#define DEBUG_LINE_INFO kdDebug() << Debug::indent << k_funcinfo << "Line: " << __LINE__ << endl;
+#define DEBUG_LINE_INFO kdDebug() << Debug::indent() << k_funcinfo << "Line: " << __LINE__ << endl;
 
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
 
-#define DEBUG_INDENT Debug::indent += "  ";
-#define DEBUG_UNINDENT Debug::indent.truncate( Debug::indent.length() - 2 );
+#define DEBUG_INDENT Debug::indent() += "  ";
+#define DEBUG_UNINDENT Debug::indent().truncate( Debug::indent().length() - 2 );
 
 /// Use this to remind yourself to finish the implementation of a function
 #define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to alert other developers to stop using a function
 #define AMAROK_DEPRECATED warning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
+
 
 namespace Debug
 {
@@ -127,64 +132,67 @@ namespace Debug
 
     class Block
     {
-        std::clock_t m_start;
-        const char  *m_label;
+        timeval     m_start;
+        const char *m_label;
 
     public:
         Block( const char *label )
-                : m_start( std::clock() )
-                , m_label( label )
+                : m_label( label )
         {
-            kdDebug() << indent << "BEGIN: " << label << "\n";
+            gettimeofday( &m_start, 0 );
+
+            kdDebug() << indent() << "BEGIN: " << label << "\n";
             DEBUG_INDENT
         }
 
-       ~Block()
+        ~Block()
         {
-            std::clock_t finish = std::clock();
-            const double duration = (double) (finish - m_start) / CLOCKS_PER_SEC;
+            timeval end;
+            gettimeofday( &end, 0 );
+
+            end.tv_sec -= m_start.tv_sec;
+            if( end.tv_usec < m_start.tv_usec) {
+                // Manually carry a one from the seconds field.
+                end.tv_usec += 1000000;
+                end.tv_sec--;
+            }
+            end.tv_usec -= m_start.tv_usec;
+
+            double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
             DEBUG_UNINDENT
-            kdDebug() << indent << "END__: " << m_label << " - Took " << duration << "s\n";
+            kdDebug() << indent() << "END__: " << m_label
+                      << " - Took " << QString::number( duration, 'g', 2 ) << "s\n";
         }
     };
 
+
     /**
-     * @class Debug::CrashHelper
+     * @name Debug::stamp()
      * @short To facilitate crash/freeze bugs, by making it easy to mark code that has been processed
      *
      * Usage:
      *
      *     {
-     *         Debug::CrashHelper d( "Crash test" );
-     *
-     *         d.stamp();
+     *         Debug::stamp();
      *         function1();
-     *         d.stamp();
+     *         Debug::stamp();
      *         function2();
-     *         d.stamp();
+     *         Debug::stamp();
      *     }
      *
      * Will output (assuming the crash occurs in function2()
      *
-     *     app: BEGIN: Crash Test
-     *     app:   [section] 1
-     *     app:   [section] 2
+     *     app: Stamp: 1
+     *     app: Stamp: 2
      *
      */
 
-    class CrashHelper : public Block
+    inline void stamp()
     {
-        int m_counter;
-
-    public:
-        CrashHelper( const char *label = 0 ) : Block( label ), m_counter( 0 ) {}
-
-        inline void stamp()
-        {
-            debug() <<  ": " << ++m_counter << endl;
-        }
-    };
+        static int n = 0;
+        debug() << "| Stamp: " << ++n << endl;
+    }
 }
 
 
@@ -193,54 +201,13 @@ namespace Debug
 namespace Debug
 {
     /**
-     * @class Debug::ListStream
+     * @class Debug::List
      * @short You can pass anything to this and it will output it as a list
      *
-     * You can't allocate one, instead use debug::list(). Usage:
-     *
-     *     {
-     *         Debug::list( "My list of stuff" )
-     *                 << anInt        //5
-     *                 << aString      //"moo"
-     *                 << aQStringList //{"baa","neigh","woof"}
-     *                 << aDouble;     //3.141
-     *     }
-     *
-     * Will output:
-     *
-     *     app: BEGIN: My list of stuff
-     *     app:   5
-     *     app:   moo
-     *     app:   { baa, neigh, woof }
-     *     app:   3.141
-     *     app: END: My list of stuff - Took 0.3s
-     *
-     * Note, don't end the sequence with endl, I couldn't get
-     * that to parse. Sorry.
+     *     debug() << (Debug::List() << anInt << aString << aQStringList << aDouble) << endl;
      */
 
-    class ListStream : private Debug::Block
-    {
-        friend ListStream list( const char* );
-
-        ListStream( const char *header ) : Block( header ), d( kdDebug() ) {}
-
-        DebugStream d;
-
-        public:
-            ~ListStream() {}
-
-            inline ListStream &operator<<( const QVariant &variant )
-            {
-                d << Debug::indent;
-                d << variant.toString();
-                d << endl;
-
-                return *this;
-            }
-    };
-
-    inline ListStream list( const char *header = "List" ) { return ListStream( header ); }
+    typedef QValueList<QVariant> List;
 }
 
 #endif

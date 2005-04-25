@@ -19,6 +19,8 @@
 
 #define DEBUG_PREFIX "Gst-Engine"
 
+#include "debug.h"
+
 #include "config/gstconfig.h"
 #include "equalizer/gstequalizer.h"
 #include "enginebase.h"
@@ -38,10 +40,6 @@
 #include <kurl.h>
 
 #include <gst/gst.h>
-
-//HACK Needed until debug.h gets fixed
-#define indent gst_indent
-#include "debug.h"
 
 #define RETURN_IF_PIPELINE_EMPTY if ( !m_pipelineFilled ) return;
 
@@ -1229,10 +1227,5 @@ InputPipeline::setState( State newState )
 }
 
 
-#undef gst_indent
-namespace Debug { QCString gst_indent; }
-
 
 #include "gstengine.moc"
-
-

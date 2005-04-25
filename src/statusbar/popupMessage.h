@@ -24,7 +24,6 @@
 #ifndef KDE_POPUPMESSAGE_H
 #define KDE_POPUPMESSAGE_H
 
- 
 #include <kactivelabel.h>
 #include <kpushbutton.h>
 #include "overlayWidget.h"
@@ -54,9 +53,9 @@ namespace KDE
             QLabel *label;
             KActiveLabel *alabel;
 
-            vbox  = new QVBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
+            vbox = new QVBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
 
-            hbox  = new QHBoxLayout( vbox, 12 );
+            hbox = new QHBoxLayout( vbox, 12 );
 
             label = new QLabel( this );
             label->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );

@@ -6,8 +6,9 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
-#include "config.h"
+#include <config.h>
 #include "engineobserver.h"
+#include <kurl.h>
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
 #include <qptrqueue.h>       //baseclass
@@ -18,16 +19,16 @@
 #include <qdatetime.h>
 namespace mysql
 {
-#include <mysql/mysql.h>
-}
-#endif
-#ifdef USE_POSTGRESQL
-namespace postgresql
-{
-#include <postgresql/pgsql/libpq-fe.h>
+    #include <mysql/mysql.h>
 }
 #endif
 
+#ifdef USE_POSTGRESQL
+namespace postgresql
+{
+    #include <postgresql/pgsql/libpq-fe.h>
+}
+#endif
 
 #include "sqlite/sqlite3.h"
 
@@ -84,9 +85,9 @@ class PostgresqlConfig : public DbConfig
     public:
         PostgresqlConfig(
             const QString& /* conninfo*/);
-    
+
         const QString conninfo() const { return m_conninfo; }
-  
+
     private:
       QString m_conninfo;
 };
@@ -154,7 +155,7 @@ class PostgresqlConnection : public DbConnection
     public:
         PostgresqlConnection( PostgresqlConfig* /* config */ );
         ~PostgresqlConnection();
-    
+
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return m_connected; }

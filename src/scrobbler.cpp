@@ -117,7 +117,7 @@ void Scrobbler::similarArtists( const QString & artist )
         QDataStream stream( postData, IO_WriteOnly );
         stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.length() );
 
-        m_similarArtistsBuffer = "";
+        m_similarArtistsBuffer = QString::null;
         m_artist = artist;
 
         KIO::TransferJob* job = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
@@ -186,7 +186,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
     }
 
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
-    if ( suggestions.count() > 0 )
+    if ( !suggestions.isEmpty() )
         emit similarArtistsFetched( m_artist, suggestions );
 }
 

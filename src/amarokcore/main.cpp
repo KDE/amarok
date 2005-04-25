@@ -33,14 +33,22 @@ KAboutData aboutData( "amarok",
 
 int main( int argc, char *argv[] )
 {
-    aboutData.addAuthor( "Christian 'Babe-Magnet' Muehlhaeuser", I18N_NOOP( "Stud (muesli)" ), "chris@chris.de", "http://www.chris.de" );
-    aboutData.addAuthor( "Frederik 'Ich bin kein Deustcher!' Holljen", I18N_NOOP( "733t code, OSD improvement, patches (Larson)" ), "fh@ez.no" );
-    aboutData.addAuthor( "Mark 'It's good, but it's not Irssi' Kretschmann", I18N_NOOP( "Project founder (markey)" ), "markey@web.de" );
-    aboutData.addAuthor( "Max 'Turtle-Power' Howell", I18N_NOOP( "Knight of the regression round-table (mxcl)" ), "max.howell@methylblue.com", "http://www.methyblue.com" );
-    aboutData.addAuthor( "Mike 'Purple is not girly!' Diehl", I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
-    aboutData.addAuthor( "Pierpaolo 'Spaghetti Coder' Di Panfilo", I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
-    aboutData.addAuthor( "Roman 'And God said, let there be Mac' Becker", I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
-    aboutData.addAuthor( "Stanislav 'All you need is DCOP' Karchebny", I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berkus@madfire.net" );
+    aboutData.addAuthor( "Christian '" I18N_NOOP("Babe-Magnet") "' Muehlhaeuser",
+            I18N_NOOP( "Stud (muesli)" ), "chris@chris.de", "http://www.chris.de" );
+    aboutData.addAuthor( "Frederik '" I18N_NOOP("Ich bin kein Deustcher!") "' Holljen",
+            I18N_NOOP( "733t code, OSD improvement, patches (Larson)" ), "fh@ez.no" );
+    aboutData.addAuthor( "Mark '"I18N_NOOP("It's good, but it's not irssi") "' Kretschmann",
+            I18N_NOOP( "Project founder (markey)" ), "markey@web.de" );
+    aboutData.addAuthor( "Max '" I18N_NOOP("Turtle-Power'") "Howell",
+            I18N_NOOP( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methyblue.com" );
+    aboutData.addAuthor( "Mike '" I18N_NOOP("Purple is not girly!") "' Diehl",
+            I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
+    aboutData.addAuthor( "Pierpaolo '" I18N_NOOP("Spaghetti Coder") "' Di Panfilo",
+            I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
+    aboutData.addAuthor( "Roman '" I18N_NOOP("And God said, let there be Mac") "' Becker",
+            I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addAuthor( "Stanislav '" I18N_NOOP("All you need is DCOP") "' Karchebny",
+            I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berkus@madfire.net" );
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "Analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
@@ -52,7 +60,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Florian 'da-flow' Egerer", I18N_NOOP( "amaroK application icon 'Blue Wolf'" ), "flo_for_never@gmx.at" );
     aboutData.addCredit( "Gérard Dürrmeyer", I18N_NOOP( "icons and image work" ), "gerard@randomtree.com" );
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Fabulous help with our pre 1.2 bug-avalanche" ), "greg@gkmweb.com" );
-    aboutData.addCredit( "Ian Monroe", I18N_NOOP( "Patches, Ruby script template" ), "ian@monroe.nu" );
+    aboutData.addCredit( "Ian Monroe", I18N_NOOP( "Patches, Ruby script template (eean)" ), "ian@monroe.nu" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Kenny Lemieux", I18N_NOOP( "amaroK webmaster" ), "swaft@pwsp.net" );
@@ -60,20 +68,16 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Olivier Bédard", I18N_NOOP( "Website hosting" ), "paleo@pwsp.net" );
-    aboutData.addCredit( "Reigo Reinmets", I18N_NOOP( "Wikipedia support, Patches" ), "xatax@hot.ee" );
+    aboutData.addCredit( "Reigo Reinmets", I18N_NOOP( "Wikipedia support, patches" ), "xatax@hot.ee" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
     aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "amaroK improvements, bug fixes, aussie" ), "seb100@optusnet.com.au" );
-    aboutData.addCredit( "Stefan 'MacroMolecularMooModeler' Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
+    aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
     aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
 
     KApplication::disableAutoDcopRegistration();
-
-    //make amarokapp into amarok
-//     for( uint x = 1, len = strlen( argv[0] ); x & 3; ++x )
-//         argv[0][len-x] = '\0';
 
     App::initCliArgs( argc, argv );
     App app;

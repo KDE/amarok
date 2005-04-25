@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"
+#include <cmath>
 #include "collectiondb.h"
 #include "debug.h"
 #include <kfilemetainfo.h>
 #include <kiconloader.h>
 #include <kstringhandler.h>
-#include <math.h>
 #include "metabundle.h"
 #include "playlistitem.h"
 #include "playlist.h"

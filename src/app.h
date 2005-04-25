@@ -40,7 +40,7 @@ class App : public KApplication, public EngineObserver
 
     public:
         App();
-        ~App();
+       ~App();
 
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );

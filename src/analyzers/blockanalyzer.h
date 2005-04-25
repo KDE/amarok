@@ -1,4 +1,4 @@
-// Maintainer: Max Howell <mac.howell@methylblue.com>, (C) 2003-4
+// Maintainer: Max Howell <mac.howell@methylblue.com>, (C) 2003-5
 // Copyright:  See COPYING file that comes with this distribution
 //
 
@@ -8,13 +8,14 @@
 #include "analyzerbase.h"
 #include <qcolor.h>
 
-/**
-@author Max Howell
-*/
-
 class QResizeEvent;
 class QMouseEvent;
 class QPalette;
+
+
+/**
+ * @author Max Howell
+ */
 
 class BlockAnalyzer : public Analyzer::Base2D
 {

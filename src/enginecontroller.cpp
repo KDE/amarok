@@ -33,7 +33,7 @@
 #include <cstdlib>
 
 
-ExtensionCache EngineController::s_extensionCache;
+EngineController::ExtensionCache EngineController::s_extensionCache;
 
 
 EngineController*

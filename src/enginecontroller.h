@@ -13,6 +13,7 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
+#include "enginebase.h"
 #include "engineobserver.h"
 #include "metabundle.h"
 
@@ -21,12 +22,11 @@
 #include <qobject.h>
 #include <qvaluelist.h>
 
-typedef QMap<QString, bool>  ExtensionCache;
-
 class QTimer;
 
 namespace amaroK { class StreamProvider; }
 namespace KIO { class Job; }
+
 
 /**
  * This class captures amaroK specific behaviour for some common features.
@@ -37,7 +37,10 @@ namespace KIO { class Job; }
 class EngineController : public QObject, public EngineSubject
 {
     Q_OBJECT
+
 public:
+    typedef QMap<QString, bool>  ExtensionCache;
+
     // plugins have their own static space, so calling instance
     // from a plugin won't do any good. you'll only get a new
     // instance with a voidEngine

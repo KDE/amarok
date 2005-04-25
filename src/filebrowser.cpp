@@ -58,7 +58,7 @@ public:
     MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) {}
 
 protected:
-    virtual bool MyDirLister::matchesMimeFilter( const KFileItem *item ) const {
+    virtual bool matchesMimeFilter( const KFileItem *item ) const {
         return
             item->isDir() ||
             EngineController::canDecode( item->url() ) ||

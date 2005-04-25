@@ -31,7 +31,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
    public:
       DcopPlayerHandler();
 
-   public /* DCOP */ slots:
+   public:
       virtual void play();
       virtual void playPause();
       virtual void stop();
@@ -80,18 +80,20 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void showOSD();
       virtual QString setContextStyle(const QString&);
       virtual void setEqualizer(int preamp, int band60, int band170, int band310, int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k);
+
+    private:
       virtual void transferCliArgs( QStringList args );
 };
 
 
 class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterface
 {
-      Q_OBJECT
+        Q_OBJECT
+
+    public:
+        DcopPlaylistHandler();
 
    public:
-      DcopPlaylistHandler();
-
-   public /* DCOP */ slots:
       virtual void    addMedia(const KURL &);
       virtual void    addMediaList(const KURL::List &);
       virtual void    clearPlaylist();

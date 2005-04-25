@@ -17,12 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <sys/stat.h>
-#include <sys/file.h>
 
 #include "itunesdb.h"
 #include "itunesdb/itunesdbparser.h"
 #include "itunesdb/itunesdbwriter.h"
+
+#include <sys/stat.h>
+#include <sys/file.h>
 
 #include <qfile.h>
 #include <qfileinfo.h>

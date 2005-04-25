@@ -11,7 +11,7 @@
 #ifndef BROWSERBAR_H
 #define BROWSERBAR_H
 
-#include <engineobserver.h> //baseclass
+#include "engineobserver.h" //baseclass
 #include <qwidget.h>        //baseclass
 #include <qvaluevector.h>   //stack allocated
 

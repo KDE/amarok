@@ -8,13 +8,6 @@
  *                                                                         *
  ***************************************************************************/
 
-extern "C"
-{
-    #include <sys/types.h> //pid_t
-    #include <sys/wait.h>  //waitpid
-    #include <unistd.h>    //write, getpid
-}
-
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
@@ -27,7 +20,12 @@ extern "C"
 #include <qfile.h>
 #include <qregexp.h>
 #include <qtextstream.h>
+#include <sys/types.h>    //pid_t
+#include <sys/wait.h>     //waitpid
 #include <taglib/taglib.h>
+#include <unistd.h>       //write, getpid
+
+
 
 
 #ifndef TAGLIB_PATCH_VERSION

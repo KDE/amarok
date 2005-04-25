@@ -19,9 +19,9 @@
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h" //transferCliArgs
-#include "debug.h"
 #include "collectiondb.h"
 #include "contextbrowser.h"
+#include "debug.h"
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
@@ -320,7 +320,7 @@ namespace amaroK
         //NOTE I have no idea why we need to do this, I never get startup notification from
         //the amarok binary anyway --mxcl
         debug() << "Startup ID: " << args.first() << endl;
-        kapp->setStartupId( args.first().local8Bit() ); //we encoded it from latin1 in the loader
+        kapp->setStartupId( args.first().local8Bit() );
         KStartupInfo::appStarted();
         args.pop_front();
 
@@ -425,7 +425,7 @@ namespace amaroK
     {
         return Playlist::instance()->currentTrackIndex();
     }
-    
+
     int  DcopPlaylistHandler::getTotalTrackCount()
     {
 	return Playlist::instance()->totalTrackCount();

@@ -51,13 +51,19 @@ email                : markey@web.de
 //simple function for fetching amarok images
 namespace amaroK
 {
+    //TODO remove these, they suck, do a generic getImage
+
     QPixmap getPNG( const QString &filename )
     {
-        return QPixmap( locate( "data", QString( "amarok/images/%1.png" ).arg( filename ) ), "PNG" );
+        QString file = !filename.endsWith( ".png", false ) ? "amarok/images/%1.png" : "amarok/images/%1";
+
+        return QPixmap( locate( "data", file.arg( filename ) ), "PNG" );
     }
 
     QPixmap getJPG( const QString &filename )
     {
+        QString file = !filename.endsWith( ".jpg", false ) ? "amarok/images/%1.jpg" : "amarok/images/%1";
+
         return QPixmap( locate( "data", QString( "amarok/images/%1.jpg" ).arg( filename ) ), "JPEG" );
     }
 }
@@ -488,15 +494,16 @@ bool PlayerWidget::event( QEvent *e )
     case 6/*QEvent::KeyPress*/:
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D/* && (m_pAnalyzer->inherits("QGLWidget")*/)
         {
-            if (m_pAnalyzer->parent() != 0)
+            if( m_pAnalyzer->parent() )
             {
-                m_pAnalyzer->reparent(0, QPoint(50,50), true);
+                m_pAnalyzer->reparent( 0, QPoint(50,50), true );
                 m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
                 m_pAnalyzer->installEventFilter( this );
                 m_pAnalyzer->setPaletteBackgroundColor( paletteBackgroundColor() );
                 QToolTip::remove( m_pAnalyzer );
             }
-            else createAnalyzer( 0 );
+            else
+                createAnalyzer( 0 );
 
             return TRUE; //eat event
         }

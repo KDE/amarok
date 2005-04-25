@@ -12,10 +12,10 @@
 //
 
 #include "baranalyzer.h"
-
-#include <math.h>     //log10(), etc.
+#include <cmath>     //log10(), etc.
+#include "debug.h"
 #include <qpainter.h>
-#include <kdebug.h>
+
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent, 12, 8 )
@@ -45,7 +45,7 @@ BarAnalyzer::BarAnalyzer( QWidget *parent )
 
 void BarAnalyzer::resizeEvent( QResizeEvent * e )
 {
-    kdDebug() << "Baranalyzer Resized(" << width() << "x" << height() << ")" << endl;
+    debug() << "Baranalyzer Resized(" << width() << "x" << height() << ")" << endl;
     Analyzer::Base2D::resizeEvent( e );
     this->init();
 }
@@ -63,7 +63,7 @@ void BarAnalyzer::init()
     MAX_DOWN = int(0 -((height() / 50)));
     MAX_UP = int((height() / 25));
 
-    kdDebug() << "BAND_COUNT = " << BAND_COUNT << " MAX_UP = " << MAX_UP << "MAX_DOWN = " << MAX_DOWN << endl;
+    debug() << "BAND_COUNT = " << BAND_COUNT << " MAX_UP = " << MAX_UP << "MAX_DOWN = " << MAX_DOWN << endl;
 
     barVector.resize( BAND_COUNT, 0 );
     roofVector.resize( BAND_COUNT, height() -5 );

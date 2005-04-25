@@ -16,15 +16,9 @@
  ***************************************************************************/
 
 #include "analyzerbase.h"
-#include "enginebase.h" //engine->state()
+#include <cmath>        //interpolate()
 #include "enginecontroller.h"
-#include <math.h>       //interpolate()
 #include <qevent.h>     //event()
-
-#ifdef DRAW_GRID
-#include <qpainter.h>
-#include <qpen.h>
-#endif
 
 
 // INSTRUCTIONS Base2D
@@ -47,9 +41,9 @@ template class Analyzer::Base<QWidget>;
 
 template<class W>
 Analyzer::Base<W>::Base( QWidget *parent, uint timeout, uint scopeSize )
-  : W( parent )
-  , m_timeout( timeout )
-  , m_fht( new FHT(scopeSize) )
+        : W( parent )
+        , m_timeout( timeout )
+        , m_fht( new FHT(scopeSize) )
 {}
 
 template<class W> bool
@@ -213,19 +207,7 @@ Analyzer::Base2D::resizeEvent( QResizeEvent *e )
 {
     m_background.resize( size() );
     m_canvas.resize( size() );
-
-    #ifdef DRAW_GRID
-    QPainter p( &m_background );
-    p.setPen( QColor( 0x20, 0x20, 0x50 ) );
-
-    for( uint x = 0, w = m_background.width(), h = m_background.height()-1;
-        x < w; x += 3 ) p.drawLine( x, 0, x, h );
-    for( uint y = 0, w = m_background.width()-1 , h = m_background.height();
-        y < h; y += 3 ) p.drawLine( 0, y, w, y );
-    #else
     m_background.fill( backgroundColor() );
-    #endif
-
     eraseCanvas(); //this is necessary
 
     QWidget::resizeEvent( e );
@@ -242,7 +224,7 @@ Analyzer::Base2D::paletteChange( const QPalette& )
 
 #ifdef HAVE_QGLWIDGET
 Analyzer::Base3D::Base3D( QWidget *parent, uint timeout, uint scopeSize )
-   : Base<QGLWidget>( parent, timeout, scopeSize )
+        : Base<QGLWidget>( parent, timeout, scopeSize )
 {
     connect( &m_timer, SIGNAL( timeout() ), SLOT( draw() ) );
 }
@@ -257,7 +239,7 @@ Analyzer::interpolate( const Scope &inVec, Scope &outVec ) //static
 
     for ( uint i = 0; i < outVec.size(); ++i, pos += step )
     {
-        const double error = pos - floor( pos );
+        const double error = pos - std::floor( pos );
         const unsigned long offset = (unsigned long)pos;
 
         unsigned long indexLeft = offset + 0;

@@ -366,7 +366,7 @@ class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
 
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
     {
-        const QCString qcs = m_codec->fromUnicode( TStringToQString( ts ) );
+        const QCString qcs = m_codec->fromUnicode( ts.toCString( true ) );
         return TagLib::ByteVector( qcs, qcs.length() );
     }
 
@@ -960,13 +960,6 @@ namespace amaroK
     {
         return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
     }
-}
-
-namespace Debug
-{
-    /// @see debug.h
-
-    QCString indent; //declared in debug.h
 }
 
 #include "app.moc"

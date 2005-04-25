@@ -299,7 +299,7 @@ StreamProvider::transmitData( const QString &data )
     // because we assumed latin1 earlier this codec conversion works
     QTextCodec *codec = ( AmarokConfig::recodeShoutcastMetadata() && AmarokConfig::recodeEncoding() )
             ? QTextCodec::codecForIndex( AmarokConfig::recodeEncoding() )
-            : QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
+            : QTextCodec::codecForName( "ISO8859-1" ); //specifying "Latin1" returns 0
 
     if ( !codec ) {
         error() << "QTextCodec* codec == NULL!" << endl;

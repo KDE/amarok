@@ -7,7 +7,7 @@
 // Copyright: like rest of amaroK
 //
 
-#include <math.h>
+#include <cmath>
 #include <qpainter.h>
 #include "turbine.h"
 

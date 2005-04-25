@@ -13,8 +13,13 @@
 
 #include "engine/enginebase.h"
 #include <qthread.h>
-#include <sys/types.h>
-#include <xine.h>
+
+extern "C"
+{
+    #include <sys/types.h>
+    #include <xine.h>
+}
+
 
 class XineEngine : public Engine::Base
 {
@@ -22,8 +27,6 @@ class XineEngine : public Engine::Base
 
     friend class Fader;
 
-public:
-    XineEngine();
    ~XineEngine();
 
     virtual bool init();
@@ -43,11 +46,8 @@ public:
 
     virtual void setEqualizerEnabled( bool );
     virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
-
-protected:
     virtual void setVolumeSW( uint );
 
-private:
     static  void XineEventListener( void*, const xine_event_t* );
     virtual void customEvent( QCustomEvent* );
     virtual void timerEvent( QTimerEvent* );
@@ -61,6 +61,9 @@ private:
     xine_post_t        *m_post;
 
     int64_t             m_currentVpts;
+
+public:
+    XineEngine();
 };
 
 class Fader : public QObject, public QThread
@@ -70,10 +73,12 @@ class Fader : public QObject, public QThread
     xine_stream_t      *m_increase;
     xine_audio_port_t  *m_port;
     xine_post_t        *m_post;
+
+    virtual void run();
+
 public:
     Fader( XineEngine* );
    ~Fader();
-    virtual void run();
 };
 
 #endif

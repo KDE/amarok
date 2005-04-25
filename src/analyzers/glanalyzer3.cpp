@@ -16,17 +16,17 @@
  ***************************************************************************/
 
 #include <config.h>
+
 #ifdef HAVE_QGLWIDGET
 
+#include <cmath>
+#include <cstdlib>
 #include "glanalyzer3.h"
-
-#include <math.h>
-#include <sys/time.h>
-#include <stdlib.h>
-
-#include <qimage.h>
-#include <kstandarddirs.h>
 #include <kdebug.h>
+#include <kstandarddirs.h>
+#include <qimage.h>
+#include <sys/time.h>
+
 
 class Ball
 {

@@ -1,11 +1,10 @@
 //Copyright: (C) 2003 Mark Kretschmann
-//           (C) 2004 Max Howell, <max.howell@methylblue.com>
+//           (C) 2004,2005 Max Howell, <max.howell@methylblue.com>
 //License:   See COPYING
 
+#include <cmath>
 #include "enginebase.h"
-
 #include <fcntl.h>
-#include <math.h>
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 #include <sys/wait.h>
@@ -91,7 +90,7 @@ void Engine::Base::setVolume( uint value )
     }
     else
         // We're using a logarithmic function to make the volume ramp more natural.
-        setVolumeSW( static_cast<uint>( 100 - 100.0 * log10( ( 100 - value ) * 0.09 + 1.0 ) ) );
+        setVolumeSW( static_cast<uint>( 100 - 100.0 * std::log10( ( 100 - value ) * 0.09 + 1.0 ) ) );
 }
 
 

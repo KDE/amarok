@@ -22,15 +22,11 @@
 #include <kstandarddirs.h>    //locateLocal()
 #include <qtooltip.h>         //Vis::Selector ctor
 #include "socketserver.h"
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
 #include <vector>
-
-extern "C"
-{
-    #include <sys/socket.h>
-    #include <sys/types.h>
-    #include <sys/un.h>
-    #include <unistd.h>
-}
+#include <unistd.h>
 
 
 

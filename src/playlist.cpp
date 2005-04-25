@@ -64,8 +64,6 @@
 
 extern "C"
 {
-    #include <unistd.h>      //usleep()
-
     #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     #include <X11/Xlib.h>    //ControlMask in contentsDragMoveEvent()
     #endif
@@ -200,6 +198,7 @@ Playlist::Playlist( QWidget *parent )
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
+    //setItemMargin( 1 ); //aesthetics
 
     #if KDE_IS_VERSION( 3, 3, 91 )
     setShadeSortColumn( true );
@@ -261,7 +260,7 @@ Playlist::Playlist( QWidget *parent )
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
-    new KAction( i18n( "Remove Duplicates / Missing" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
+    new KAction( i18n( "&Remove Duplicate And Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
 
     //ensure we update action enabled states when repeat Playlist is toggled
@@ -457,7 +456,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     QString query;
 
     SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
-    SmartPlaylist *sp;
+    SmartPlaylist *sp = 0;
 
     if ( list.isEmpty() ) return;
     //randomly grab a smart playlist to get a song from.
@@ -914,41 +913,55 @@ Playlist::activateByIndex( int index )
 void
 Playlist::setCurrentTrack( PlaylistItem *item )
 {
-    ///mark item as the current track, it makes it glow and everything
+    ///mark item as the current track and make it glow
 
-    const bool canScroll = !renameLineEdit()->isVisible() && selectedItems().count() < 2;
+    PlaylistItem *prev = m_currentTrack;
 
-    //if nothing is current and then playback starts, we must show the currentTrack
-    if( !m_currentTrack && canScroll ) ensureItemVisible( item ); //handles 0 gracefully
-
-    if( AmarokConfig::playlistFollowActive() && m_currentTrack && item && canScroll )
+    //FIXME best method would be to observe usage, especially don't shift if mouse is moving nearby
+    if( item && AmarokConfig::playlistFollowActive() && !renameLineEdit()->isVisible() && selectedItems().count() < 2 )
     {
-        // if old item in view and the new one isn't do scrolling
-        int currentY = itemPos( m_currentTrack );
+        if( !prev )
+            //if nothing is current and then playback starts, we must show the currentTrack
+            ensureItemVisible( item ); //handles 0 gracefully
 
-        if( currentY + m_currentTrack->height() <= contentsY() + visibleHeight()
-            && currentY >= contentsY() )
-        {
-            const uint scrollMax = 2 * item->height();
-            // Scroll towards the middle but no more than two lines extra
-            uint scrollAdd = viewport()->height() / 2 - item->height();
-            if( scrollAdd > scrollMax ) scrollAdd = scrollMax;
+        else {
+            const int prevY = itemPos( prev );
+            const int prevH = prev->height();
 
-            int itemY = itemPos( item );
-            int itemH = item->height();
-
-            if( itemY + itemH > contentsY() + visibleHeight() ) // scroll down
+            // check if the previous track is visible
+            if( prevY <= contentsY() + visibleHeight() && prevY + prevH >= contentsY() )
             {
-                setContentsPos( contentsX(), itemY - visibleHeight() + itemH + scrollAdd );
-            }
-            else if( itemY < contentsY() ) // scroll up
-            {
-                setContentsPos( contentsX(), itemY - scrollAdd );
+                // in random mode always jump, if previous track is visible
+                if( AmarokConfig::randomMode() )
+                    ensureItemVisible( item );
+
+                //FIXME would be better to just never be annoying
+                // so if the user caused the track change, always show the new track
+                // but if it is automatic be careful
+
+                // if old item in view then try to keep the new one near the middle
+                const int y = itemPos( item );
+                const int h = item->height();
+                const int vh = visibleHeight();
+                const int amount = h * 3;
+
+                int d = y - contentsY();
+
+                if( d > 0 ) {
+                    d += h;
+                    d -= vh;
+
+                    if( d > 0 && d <= amount )
+                        // scroll down
+                        setContentsPos( contentsX(), y - vh + amount );
+                }
+                else if( d >= -amount )
+                    // scroll up
+                    setContentsPos( contentsX(), y - amount );
             }
         }
     }
 
-    PlaylistItem *prev = m_currentTrack;
     m_currentTrack = item;
 
     if ( prev ) {
@@ -1750,8 +1763,7 @@ Playlist::customEvent( QCustomEvent *e )
             }
         }
         //force redraw of currentTrack marker, play icon, etc.
-        //setCurrentTrack( currentTrack() );
-
+        restoreCurrentTrack();
     }
 
     updateNextPrev();
@@ -2674,6 +2686,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qprocess.h>
+#include <unistd.h>      //usleep()
 
 // Moved outside the only function that uses it because
 // gcc 2.95 doesn't like class declarations there.

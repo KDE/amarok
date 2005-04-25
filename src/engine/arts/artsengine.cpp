@@ -20,6 +20,7 @@ email                : markey@web.de
 #include "amarokarts.h"
 // #include "artseffects.h"
 #include "artsengine.h"
+#include "debug.h"
 #include "enginebase.h"
 
 #include <math.h>            //setVolume(), timerEvent()
@@ -57,10 +58,6 @@ email                : markey@web.de
 #include <arts/soundserver.h>
 
 #include <sys/wait.h>
-
-//HACK
-#define indent arts_indent
-#include "debug.h"
 
 
 AMAROK_EXPORT_PLUGIN( ArtsEngine )
@@ -571,9 +568,4 @@ void ArtsEngine::timerEvent( QTimerEvent* )
 }
 
 
-#undef arts_indent
-namespace Debug { QCString arts_indent; }
-
-
 #include "artsengine.moc"
-

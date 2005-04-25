@@ -8,9 +8,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "xine-engine"
-#define indent xine_indent
-
 #include "debug.h"
 #include <kcombobox.h>
 #include <klineedit.h>
@@ -218,7 +215,5 @@ XineConfigDialog::save()
       }
    }
 }
-
-#undef xine_indent
 
 #include "xine-config.moc"

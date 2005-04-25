@@ -16,23 +16,22 @@
  ***************************************************************************/
 
 #include <config.h>
+
 #ifdef HAVE_QGLWIDGET
 
+#include <cmath>
 #include "glanalyzer.h"
-
-#include <math.h>
 #include <kdebug.h>
 
+
 GLAnalyzer::GLAnalyzer( QWidget *parent )
-  : Analyzer::Base3D(parent, 15)
-  , m_oldy(32, -10.0f)
-  , m_peaks(32)
-{
-}
+        : Analyzer::Base3D(parent, 15)
+        , m_oldy(32, -10.0f)
+        , m_peaks(32)
+{}
 
 GLAnalyzer::~GLAnalyzer()
-{
-}
+{}
 
 // METHODS =====================================================
 
@@ -52,21 +51,21 @@ void GLAnalyzer::analyze( const Scope &s )
         static float peak;
         float mfactor = 0.0;
         static int drawcount;
-        
+
         if (s.size() == 64)
         {
             offset=8;
         }
-                
+
 	glRotatef(0.25f, 0.0f, 1.0f, 0.5f); //Rotate the scene
-	drawFloor();	
+	drawFloor();
 	drawcount++;
         if (drawcount > 25)
         {
             drawcount = 0;
             peak = 0.0;
         }
-        
+
         for ( uint i = 0; i < 32; i++ )
 	{
             if (s[i] > peak)
@@ -74,25 +73,25 @@ void GLAnalyzer::analyze( const Scope &s )
                 peak = s[i];
             }
         }
-        
+
         mfactor = 20 / peak;
         for ( uint i = 0; i < 32; i++ )
 	{
-		
+
                 //kdDebug() << "Scope item " << i << " value: " << s[i] << endl;
-                
+
                 // Calculate new horizontal position (x) depending on number of samples
 		x = -16.0f + i;
 
 		// Calculating new vertical position (y) depending on the data passed by amarok
 		y = float(s[i+offset] * mfactor); //This make it kinda dynamically resize depending on the data
-		
+
 		//Some basic bounds checking
 		if (y > 30)
 			y = 30;
 		else if (y < 0)
 			y = 0;
-			
+
 		if((y - m_oldy[i]) < -0.6f) // Going Down Too Much
 		{
 			y = m_oldy[i] - 0.7f;
@@ -126,9 +125,9 @@ void GLAnalyzer::analyze( const Scope &s )
 		// Draw the bar
 		drawBar(x,y);
 		drawPeak(x, m_peaks[i].level);
-	
+
   	}
-	
+
 	updateGL();
 }
 
@@ -184,7 +183,7 @@ void GLAnalyzer::paintGL()
         glClear( GL_DEPTH_BUFFER_BIT );
 #endif
 	//swapBuffers();
-	
+
         glFlush();
 
 }

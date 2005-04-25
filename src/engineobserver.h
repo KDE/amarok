@@ -18,7 +18,7 @@ email                : fh@ez.no
 #ifndef AMAROK_ENGINEOBSERVER_H
 #define AMAROK_ENGINEOBSERVER_H
 
-#include "enginebase.h"
+#include "engine_fwd.h"
 
 class EngineSubject;
 class MetaBundle;

@@ -5,15 +5,14 @@
 #ifndef AMAROK_ENGINEBASE_H
 #define AMAROK_ENGINEBASE_H
 
+#include <kurl.h>
 #include "plugin/plugin.h" //baseclass
-
-#include <sys/types.h>
-#include <vector>
-
 #include <qobject.h>       //baseclass
 #include <qvaluelist.h>    //stack alloc
+#include <vector>
 
-#include <kurl.h>
+#include <sys/types.h>
+
 
 /**
  * @class Engine::Base
@@ -51,25 +50,11 @@
  * Only canDecode() needs to be thread-safe. Everything else is only called from the GUI thread.
  */
 
+#include "engine_fwd.h"
+
 namespace Engine
 {
     typedef std::vector<int16_t> Scope;
-
-    class SimpleMetaBundle;
-    class Effects;
-
-    /**
-     * You should return:
-     * Playing when playing,
-     * Paused when paused
-     * Idle when you still have a URL loaded (ie you have not been told to stop())
-     * Empty when you have been told to stop(), or an error occured and you stopped yourself
-     *
-     * It is vital to be Idle just after the track has ended!
-     */
-    enum State { Empty, Idle, Playing, Paused };
-    enum StreamingMode { Socket, Signal, NoStreaming };
-
 
     class Base : public QObject, public amaroK::Plugin
     {
@@ -260,7 +245,5 @@ namespace Engine
         virtual void configureEffect( long ) = 0;
     };
 }
-
-typedef Engine::Base EngineBase;
 
 #endif

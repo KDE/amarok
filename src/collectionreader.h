@@ -33,7 +33,7 @@ public:
     };
 
     CollectionReader( CollectionDB* parent, const QStringList& folders );
-    ~CollectionReader();
+   ~CollectionReader();
 
 protected:
     virtual bool doJob();

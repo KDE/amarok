@@ -4,11 +4,13 @@
 #ifndef ANALYZERBASE_H
 #define ANALYZERBASE_H
 
-#ifdef __FreeBSD__
-    #include <sys/types.h>
-#endif
 
 #include <config.h>  //HAVE_QGLWIDGET
+
+#ifdef __FreeBSD__
+#include <sys/types.h>
+#endif
+
 #include "fht.h"     //stack allocated and convenience
 #include <qpixmap.h> //stack allocated and convenience
 #include <qtimer.h>  //stack allocated
@@ -17,8 +19,8 @@
 
 #ifdef HAVE_QGLWIDGET
 #include <qgl.h>     //baseclass
-#include <GL/gl.h>  //included for convenience
-#include <GL/glu.h> //included for convenience
+#include <GL/gl.h>   //included for convenience
+#include <GL/glu.h>  //included for convenience
 #else
 //this is a workaround for compile problems due to moc
 #define QGLWidget QWidget
@@ -28,13 +30,10 @@ class QEvent;
 class QPaintEvent;
 class QResizeEvent;
 
+
 namespace Analyzer {
 
 typedef std::vector<float> Scope;
-
-//TODO what would be grand would be to get the raw scope by reference so we could hang on to it for the purpose of paused()
-//NOTE there is no virtual dtor for this template because the base class has to be a widget (it won't
-//     compile otherwise) and all Qt objects have virtual dtors.
 
 template<class W> class Base : public W
 {

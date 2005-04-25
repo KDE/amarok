@@ -188,7 +188,7 @@ PluginManager::showAbout( const QString &constraint )
 void
 PluginManager::dump( const KService::Ptr service )
 {
-    #define ENDLI endl << Debug::indent
+    #define ENDLI endl << Debug::indent()
 
     kdDebug()
       << ENDLI

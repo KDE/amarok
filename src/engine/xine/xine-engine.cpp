@@ -11,12 +11,8 @@
 
 #include "xine-config.h"
 #include "xine-engine.h"
-#include "xine-scope.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
-
-#define DEBUG_PREFIX "xine-engine"
-#define indent xine_indent
 
 #include <climits>
 #include <cmath>
@@ -29,11 +25,13 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 extern "C"
 {
     #include <unistd.h>
+    #include "xine-scope.h"
 }
 
 #ifndef LLONG_MAX
 #define LLONG_MAX 9223372036854775807LL
 #endif
+
 
 //define this to use xine in a more standard way
 //#define XINE_SAFE_MODE
@@ -195,6 +193,10 @@ XineEngine::load( const KURL &url, bool isStream )
 //        s_fader = new Fader( this );
 //     }
 
+   // for users who stubbonly refuse to use DMIX or buy a good soundcard
+   // why doesn't xine do this? I cannot say.
+   xine_close( m_stream );
+
    if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
    {
       #ifndef XINE_SAFE_MODE
@@ -309,10 +311,9 @@ XineEngine::position() const
 uint
 XineEngine::length() const
 {
-    return 0;
+    if( m_url.fileName().endsWith( ".ogg", false ) )
+        return 0;
 
-// NOTE Deactivated because xine returns bogus values for ogg vorbis
-#if 0
     int pos;
     int time;
     int length = 0;
@@ -320,19 +321,18 @@ XineEngine::length() const
     xine_get_pos_length( m_stream, &pos, &time, &length );
 
     return length;
-#endif
 }
 
 void
 XineEngine::seek( uint ms )
 {
-    if ( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
-        xine_play( m_stream, 0, (int)ms );
-    else {
-        // It was paused, then should keep paused
+    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) == XINE_SPEED_PAUSE ) {
+        // FIXME this is a xine API issue really, they need to add a seek function
         xine_play( m_stream, 0, (int)ms );
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
     }
+    else
+        xine_play( m_stream, 0, (int)ms );
 }
 
 void
@@ -458,8 +458,8 @@ XineEngine::timerEvent( QTimerEvent* )
    MyNode const * const list_end = myList;
 
    m_currentVpts = (xine_get_status( m_stream ) == XINE_STATUS_PLAY)
-      ? xine_get_current_vpts( m_stream )
-      : LLONG_MAX; //if state is not playing OR paused, empty the list
+         ? xine_get_current_vpts( m_stream )
+         : LLONG_MAX; //if state is not playing OR paused, empty the list
    //: std::numeric_limits<int64_t>::max(); //TODO don't support crappy gcc 2.95
 
    for( MyNode *prev = first_node, *node = first_node->next; node != list_end; node = node->next )
@@ -488,6 +488,8 @@ XineEngine::configure() const
 void
 XineEngine::customEvent( QCustomEvent *e )
 {
+    #define message static_cast<QString*>(e->data())
+
     switch( e->type() )
     {
     case 3000:
@@ -495,7 +497,6 @@ XineEngine::customEvent( QCustomEvent *e )
         break;
 
     case 3001:
-        #define message static_cast<QString*>(e->data())
         emit infoMessage( (*message).arg( m_url.prettyURL() ) );
         delete message;
         break;
@@ -503,7 +504,6 @@ XineEngine::customEvent( QCustomEvent *e )
     case 3002:
         emit statusText( *message );
         delete message;
-        #undef message
         break;
 
     case 3003: { //meta info has changed
@@ -516,11 +516,20 @@ XineEngine::customEvent( QCustomEvent *e )
         bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
 
         emit metaData( bundle );
-    }
+    }   break;
+
+    case 3004:
+        emit statusText( i18n("Redirecting to: ").arg( *message ) );
+        load( KURL( *message ), false );
+        play();
+        delete message;
+        break;
 
     default:
         ;
     }
+
+    #undef message
 }
 
 void
@@ -546,13 +555,12 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         QApplication::postEvent( xe, new QCustomEvent(3000) );
         break;
 
-    case XINE_EVENT_PROGRESS:
-    {
+    case XINE_EVENT_PROGRESS: {
         xine_progress_data_t* pd = (xine_progress_data_t*)xineEvent->data;
 
         QString
         msg = "%1 %2%";
-        msg = msg.arg( QString( pd->description ) )
+        msg = msg.arg( QString::fromUtf8( pd->description ) )
                  .arg( KGlobal::locale()->formatNumber( pd->percent, 0 ) );
 
         QCustomEvent *e = new QCustomEvent( 3002 );
@@ -560,8 +568,20 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
         QApplication::postEvent( xe, e );
 
-        break;
-    }
+    }   break;
+
+    case XINE_EVENT_MRL_REFERENCE: {
+        /// xine has read the stream and found it actually links to something else
+        /// so we need to play that instead
+
+        QString message = QString::fromUtf8( static_cast<xine_mrl_reference_data_t*>(xineEvent->data)->mrl );
+        QCustomEvent *e = new QCustomEvent( 3004 );
+        e->setData( new QString( message ) );
+
+        QApplication::postEvent( xe, e );
+
+    }   break;
+
     case XINE_EVENT_UI_MESSAGE:
     {
         debug() << "message received from xine\n";
@@ -621,7 +641,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             {
                 message.prepend( "<b>" );
                 message += "</b>:<p>";
-                message += ((char *) data + data->explanation);
+                message += QString::fromUtf8( (char*)data + data->explanation );
             }
             else break; //if no explanation then why bother!
 
@@ -635,7 +655,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             if(data->explanation)
             {
                 message += "xine parameters: <i>";
-                message += ((char *) data + data->parameters);
+                message += QString::fromUtf8( (char*)data + data->parameters );
                 message += "</i>";
             }
             else message += i18n("Sorry, no additional information is available.");
@@ -771,13 +791,6 @@ Fader::run()
     QThread::sleep( 5 );
 
     deleteLater();
-}
-
-
-namespace Debug
-{
-    #undef xine_indent
-    QCString xine_indent;
 }
 
 #include "xine-engine.moc"

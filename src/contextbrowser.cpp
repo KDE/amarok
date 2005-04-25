@@ -217,8 +217,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
         KURL::List urls;
         KURL url;
-
-        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+        foreach( values ) {
             url.setPath( *it );
             urls.append( url );
         }

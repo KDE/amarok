@@ -1,16 +1,16 @@
-// Author:    Max Howell <max.howell@methylblue.com>, (C) 2003-4
+// Author:    Max Howell <max.howell@methylblue.com>, (C) 2003-5
 // Copyright: See COPYING file that comes with this distribution
 //
 
 #define DEBUG_PREFIX "BlockAnalyzer"
 
 #include "blockanalyzer.h"
+#include <cmath>
 #include "debug.h"
 #include <kconfig.h>
 #include <kglobalsettings.h> //paletteChange()
 #include <klocale.h>         //mousePressEvent
 #include <kpopupmenu.h>      //mousePressEvent
-#include <math.h>            //resizeEvent()
 #include <qevent.h>          //mousePressEvent
 #include <qpainter.h>        //paletteChange()
 

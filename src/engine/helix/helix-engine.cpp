@@ -17,7 +17,6 @@
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
 #define DEBUG_PREFIX "helix-engine"
-#define indent helix_indent
 
 #include <climits>
 #include <cmath>
@@ -104,6 +103,15 @@ HelixEngine::load( const KURL &url, bool isStream )
    // most unfortunate...KURL represents a file with no leading slash, Helix uses a leading slash 'file:///home/abc.mp3' for example
    if (url.isLocalFile())
    {
+<<<<<<< helix-engine.cpp
+      char tmp[MAXPATHLEN];
+      strcpy(tmp, "file://");
+      strcat(tmp, url.directory());
+      strcat(tmp, "/");
+      strcat(tmp, url.filename());
+      cerr << tmp << endl;
+      HXSplay::setURL( QFile::encodeName( tmp ) );
+=======
       QString tmp;
       tmp ="file://" + url.directory() + "/" + url.filename();
       //char tmp[MAXPATHLEN];
@@ -113,6 +121,7 @@ HelixEngine::load( const KURL &url, bool isStream )
       //strcat(tmp, (const char *)url.filename());
       debug() << tmp << endl;
       HXSplay::setURL( QFile::encodeName( tmp ) );      
+>>>>>>> 1.2
    }
    else
       HXSplay::setURL( QFile::encodeName( url.prettyURL() ) );
@@ -128,7 +137,7 @@ HelixEngine::play( uint offset )
    HXSplay::play();
    if (offset)
       HXSplay::seek( offset );
-   
+
    if (!HXSplay::getError())
    {
       m_state = Engine::Playing;
@@ -136,11 +145,11 @@ HelixEngine::play( uint offset )
 
       return true;
    }
-   
+
    HXSplay::stop();
    m_state = Engine::Empty;
    emit stateChanged( Engine::Empty );
-   
+
    return false;
 }
 
@@ -164,14 +173,19 @@ void HelixEngine::play_finished(int playerIndex)
 void
 HelixEngine::pause()
 {
+<<<<<<< helix-engine.cpp
+   cerr << "In pause\n";
+
+=======
    debug() << "In pause\n";
    
+>>>>>>> 1.2
    if( HXSplay::state() == HXSplay::PLAY )
    {
       HXSplay::pause();
       m_state = Engine::Paused;
       emit stateChanged( Engine::Paused );
-   } 
+   }
    else if ( HXSplay::state() == HXSplay::PAUSE )
    {
       HXSplay::resume();
@@ -188,9 +202,9 @@ HelixEngine::state() const
    HXSplay::pthr_states state = HXSplay::state();
    switch( state )
    {
-      case HXSplay::PLAY:  
+      case HXSplay::PLAY:
          return Engine::Playing;
-      case HXSplay::PAUSE: 
+      case HXSplay::PAUSE:
          return Engine::Paused;
       case HXSplay::STOP:
          return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
@@ -231,12 +245,16 @@ HelixEngine::setVolumeSW( uint vol )
 bool
 HelixEngine::canDecode( const KURL &url ) const
 {
+<<<<<<< helix-engine.cpp
+   cerr << "In canDecode\n";
+=======
    debug() << "In canDecode\n";   
+>>>>>>> 1.2
     //TODO check if the url really is supported by Helix
    return true;
 }
 
-void 
+void
 HelixEngine::timerEvent( QTimerEvent * )
 {
    if (state() == Engine::Idle)
