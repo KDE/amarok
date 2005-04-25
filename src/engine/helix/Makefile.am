@@ -19,19 +19,21 @@ AM_CPPFLAGS = \
     -include $(top_srcdir)/amarok/src/engine/helix/helix-sp/helixdefines.h \
     $(all_includes)
 
-libamarok_helixengine_plugin_la_LIBADD = \
-    $(top_builddir)/amarok/src/engine/helix/helix-sp/libhelix-sp.la \
-    $(top_builddir)/amarok/src/engine/libengine.la \
-    $(top_builddir)/amarok/src/plugin/libplugin.la
-
-libamarok_helixengine_plugin_la_LDFLAGS = \
-    $(KDE_PLUGIN) \
-    $(all_libraries)
-
 libamarok_helixengine_plugin_la_SOURCES = \
     helix-engine.cpp \
     helix-config.cpp \
     hxsplay.cpp
+
+libamarok_helixengine_plugin_la_LIBADD = \
+    $(top_builddir)/amarok/src/engine/helix/helix-sp/libhelix-sp.la \
+    $(top_builddir)/amarok/src/engine/libengine.la \
+    $(top_builddir)/amarok/src/plugin/libplugin.la \
+    -lkdeui -lkdecore
+
+libamarok_helixengine_plugin_la_LDFLAGS = \
+    -module \
+    $(KDE_PLUGIN) \
+    $(all_libraries)
 
 METASOURCES = \
     AUTO

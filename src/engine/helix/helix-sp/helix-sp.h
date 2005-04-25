@@ -20,7 +20,7 @@ class IHXErrorSinkControl;
 
 #include <limits.h>
 #include <sys/param.h>
-#include "hxtypes.h"
+//#include "hxtypes.h"
 #define MAX_PATH PATH_MAX
 
 #define MAX_PLAYERS 100 // that should do it...
@@ -84,7 +84,7 @@ public:
 private:
    void  DoEvent();
    void  DoEvents(int nTimeDelta);
-   UINT32 GetTime();
+   unsigned long GetTime();
 
    char                    mCoreLibPath[MAXPATHLEN];
    char                    mPluginLibPath[MAXPATHLEN];

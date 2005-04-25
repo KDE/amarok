@@ -254,5 +254,10 @@ HelixEngine::timerEvent( QTimerEvent * )
 //    return new XineConfigDialog( m_xine );
 //}
 
+namespace Debug
+{
+    #undef helix_indent
+    QCString helix_indent;
+}
 
 #include "helix-engine.moc"

@@ -2,6 +2,7 @@ noinst_LTLIBRARIES = libhelix-sp.la
 
 AM_CPPFLAGS = \
     -D_UNIX \
+    -pipe -Wall -Wreturn-type -fno-exceptions --permissive -fno-rtti -Wno-ctor-dtor-privacy -march=pentium \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/runtime \
@@ -11,6 +12,7 @@ AM_CPPFLAGS = \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/common/system \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/common/dbgtool \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/common/util \
+    -I. \
     -include $(top_srcdir)/amarok/src/engine/helix/helix-sp/helixdefines.h \
     $(all_includes)
 

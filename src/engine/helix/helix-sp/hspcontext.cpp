@@ -12,7 +12,6 @@
  * 
  *
  */
-
 #include "hxbuffer.h"
 #include "hxmangle.h"
 

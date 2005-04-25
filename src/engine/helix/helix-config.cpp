@@ -8,6 +8,10 @@
 #include "helix-config.h"
 #include "helix-engine.h"
 //#include <iostream>
+
+#define DEBUG_PREFIX "helix-engine"
+#define indent helix_indent
+
 #include "debug.h"
 
 using namespace std;
