@@ -1,5 +1,11 @@
 body { margin: 4px; font-size: AMAROK_FONTSIZEpx; color: WindowText; background-color: Window; background-image: url( ./images/background.png ); background-repeat: no-repeat; background-attachment: fixed;}
-a { font-size: 10px; color: WindowText; }
+a { font-size: AMAROK_FONTSIZEpx; color: WindowText; }
+h1 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonText; font-weight: 900; border-top: 1px solid black; }
+h2 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonText; font-weight: 900; border-top: 1px solid #222222; }
+h3 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonText; font-weight: 900; border-top: 1px solid #444444; }
+h4 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonText; font-weight: 900; border-top: 1px solid #666666; }
+h5 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonText; font-weight: 900; border-top: 1px solid #888888; }
+h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonText; font-weight: 900; border-top: 1px solid #AAAAAA; }
 .button { margin: 2px; padding: 2px; border: 1px solid ButtonShadow; background-color: Window; color: WindowText; width: 100%; }
 .button:hover { color: ButtonText; background-color: ButtonFace; }
 .song a { display: block; padding: 1px 2px; }
