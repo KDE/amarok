@@ -18,7 +18,6 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
-#include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
@@ -92,7 +91,6 @@ class Playlist : private KListView, public EngineObserver
         bool isEmpty() const { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter() const;
-        bool isParty() const { return AmarokConfig::partyMode(); }
 
         /// called during initialisation
         void restoreSession();
@@ -164,7 +162,6 @@ class Playlist : private KListView, public EngineObserver
         void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );
         void addCustomColumn();
-        void setPartyMode( QString type ) { AmarokConfig::setPartyType( type ); }
 
     private slots:
         void slotGlowTimer();

@@ -161,6 +161,9 @@ namespace Glow
 }
 
 
+static inline bool isParty() { return AmarokConfig::partyMode(); }
+
+
 Playlist *Playlist::s_instance = 0;
 
 
