@@ -8,9 +8,8 @@
 
 #include "analyzerbase.h"
 
+typedef std::vector<uint> aroofMemVec;
 
-using std::vector;
-typedef vector<uint> aroofMemVec;
 
 class BarAnalyzer : public Analyzer::Base2D
 {
@@ -41,10 +40,10 @@ class BarAnalyzer : public Analyzer::Base2D
 
         //Scope m_bands; //copy of the Scope to prevent creating/destroying a Scope every iteration
         uint  m_lvlMapper[256];
-        vector<aroofMemVec> m_roofMem;
-        vector<uint> barVector;          //positions of bars
-        vector<int>  roofVector;         //positions of roofs
-        vector<uint> roofVelocityVector; //speed that roofs falls
+        std::vector<aroofMemVec> m_roofMem;
+        std::vector<uint> barVector;          //positions of bars
+        std::vector<int>  roofVector;         //positions of roofs
+        std::vector<uint> roofVelocityVector; //speed that roofs falls
 
         const QPixmap *gradient() const { return &m_pixBarGradient; }
 
