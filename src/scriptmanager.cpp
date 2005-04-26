@@ -96,14 +96,23 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     connect( m_base->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
 
-    connect( m_base->installButton, SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
-    connect( m_base->retrieveButton, SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
+    connect( m_base->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( m_base->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( m_base->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
-    connect( m_base->editButton, SIGNAL( clicked() ), SLOT( slotEditScript() ) );
-    connect( m_base->runButton, SIGNAL( clicked() ), SLOT( slotRunScript() ) );
-    connect( m_base->stopButton, SIGNAL( clicked() ), SLOT( slotStopScript() ) );
+    connect( m_base->editButton,      SIGNAL( clicked() ), SLOT( slotEditScript() ) );
+    connect( m_base->runButton,       SIGNAL( clicked() ), SLOT( slotRunScript() ) );
+    connect( m_base->stopButton,      SIGNAL( clicked() ), SLOT( slotStopScript() ) );
     connect( m_base->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
-    connect( m_base->aboutButton, SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
+    connect( m_base->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
+
+    m_base->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
+    m_base->retrieveButton ->setIconSet( SmallIconSet( "edit" ) );
+    m_base->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
+    m_base->editButton     ->setIconSet( SmallIconSet( "edit" ) );
+    m_base->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
+    m_base->stopButton     ->setIconSet( SmallIconSet( "player_stop" ) );
+    m_base->configureButton->setIconSet( SmallIconSet( "configure" ) );
+    m_base->aboutButton    ->setIconSet( SmallIconSet( "help" ) );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );

@@ -54,7 +54,7 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>installButton</cstring>
                             </property>
@@ -62,7 +62,7 @@
                                 <string>Install Script</string>
                             </property>
                         </widget>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>retrieveButton</cstring>
                             </property>
@@ -87,7 +87,7 @@
                                 </size>
                             </property>
                         </spacer>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>aboutButton</cstring>
                             </property>
@@ -95,7 +95,7 @@
                                 <string>About</string>
                             </property>
                         </widget>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>runButton</cstring>
                             </property>
@@ -103,7 +103,7 @@
                                 <string>Run</string>
                             </property>
                         </widget>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>stopButton</cstring>
                             </property>
@@ -111,7 +111,7 @@
                                 <string>Stop</string>
                             </property>
                         </widget>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>editButton</cstring>
                             </property>
@@ -119,7 +119,7 @@
                                 <string>Edit</string>
                             </property>
                         </widget>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>configureButton</cstring>
                             </property>
@@ -127,7 +127,7 @@
                                 <string>Configure</string>
                             </property>
                         </widget>
-                        <widget class="KPushButton">
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>uninstallButton</cstring>
                             </property>
