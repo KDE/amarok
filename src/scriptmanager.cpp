@@ -106,7 +106,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_base->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
     m_base->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
-    m_base->retrieveButton ->setIconSet( SmallIconSet( "edit" ) );
+    m_base->retrieveButton ->setIconSet( SmallIconSet( "down" ) );
     m_base->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
     m_base->editButton     ->setIconSet( SmallIconSet( "edit" ) );
     m_base->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
