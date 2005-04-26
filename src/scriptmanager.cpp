@@ -95,6 +95,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_base->listView->setFullWidth( true );
 
     connect( m_base->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
+    connect( m_base->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
 
     connect( m_base->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_base->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
@@ -406,6 +407,9 @@ ScriptManager::slotRunScript()
 
     QListViewItem* const li = m_base->listView->currentItem();
     const QString name = li->text( 0 );
+
+    // Don't start a script twice
+    if ( m_scripts[name].process ) return false;
 
     const KURL url = m_scripts[name].url;
     KProcIO* script = new KProcIO();
