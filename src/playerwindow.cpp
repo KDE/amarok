@@ -585,15 +585,6 @@ bool PlayerWidget::event( QEvent *e )
 
                 const KWin::WindowInfo info = KWin::windowInfo( winId() );
 
-                #if KDE_IS_VERSION(3,2,1)
-                if( info.hasState( NET::Shaded ) )
-                {
-                    //FIXME this works if the OSD is up, and only then sometimes
-                    //      I think it's maybe a KWin bug..
-                    parentWidget()->hide();
-                }
-                else
-                #endif
                 if( info.isMinimized() ) KWin::iconifyWindow( parentWidget()->winId(), false );
                 else
                     //this may seem strange, but it is correct
@@ -668,11 +659,7 @@ PlayerWidget::eventFilter( QObject *o, QEvent *e )
 
             KWin::WindowInfo info = KWin::windowInfo( parentWidget()->winId() );
 
-            if( !(info.isMinimized()
-            #if KDE_IS_VERSION(3,2,1)
-            || info.hasState( NET::Shaded )
-            #endif
-            ) ) break;
+            if( !info.isMinimized() ) break;
         }
 
         //FALL THROUGH
