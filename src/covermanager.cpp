@@ -52,6 +52,8 @@
 #include <kurl.h>
 #include <kurldrag.h>
 
+//Tooltips
+#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -179,16 +181,24 @@ CoverManager::CoverManager()
 
 
     // signals and slots connections
-    connect( m_artistView, SIGNAL(selectionChanged( QListViewItem* ) ), SLOT(slotArtistSelected( QListViewItem* )) );
-    connect( m_coverView, SIGNAL(rightButtonPressed( QIconViewItem*, const QPoint& )), SLOT(showCoverMenu( QIconViewItem*, const QPoint& )) );
-    connect( m_coverView, SIGNAL(executed( QIconViewItem* )), SLOT(coverItemExecuted( QIconViewItem* )) );
-    connect( m_timer, SIGNAL(timeout()), SLOT(slotSetFilter()) );
-    connect( m_searchEdit, SIGNAL(textChanged( const QString& )), SLOT(slotSetFilterTimeout()) );
+    connect( m_artistView, SIGNAL(selectionChanged( QListViewItem* ) ),
+                           SLOT(slotArtistSelected( QListViewItem* )) );
+    connect( m_coverView,  SIGNAL(rightButtonPressed( QIconViewItem*, const QPoint& )),
+                           SLOT(showCoverMenu( QIconViewItem*, const QPoint& )) );
+    connect( m_coverView,  SIGNAL(executed( QIconViewItem* )),
+                           SLOT(coverItemExecuted( QIconViewItem* )) );
+    connect( m_timer,      SIGNAL(timeout()),
+                           SLOT(slotSetFilter()) );
+    connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
+                           SLOT(slotSetFilterTimeout()) );
 
     #ifdef AMAZON_SUPPORT
-    connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )), SLOT(coverFetched( const QString&, const QString& )) );
-    connect( CollectionDB::instance(), SIGNAL(coverRemoved( const QString&, const QString& )), SLOT(coverRemoved( const QString&, const QString& )) );
-    connect( CollectionDB::instance(), SIGNAL(coverFetcherError( const QString& )), SLOT(coverFetcherError()) );
+    connect( CollectionDB::instance(), SIGNAL(coverFetched( const QString&, const QString& )),
+                                       SLOT(coverFetched( const QString&, const QString& )) );
+    connect( CollectionDB::instance(), SIGNAL(coverRemoved( const QString&, const QString& )),
+                                       SLOT(coverRemoved( const QString&, const QString& )) );
+    connect( CollectionDB::instance(), SIGNAL(coverFetcherError( const QString& )),
+                                       SLOT(coverFetcherError()) );
     #endif
 
     m_currentView = AllAlbums;
@@ -869,11 +879,30 @@ void CoverView::showToolTip( QIconViewItem *item )
     if ( !item )
     return;
 
-    //TODO: Replace with complex album stats, eg, total plays, total tracks
-    QString tipContent;
-    tipContent += item->artist();
-    tipContent += " - ";
-    tipContent += item->album();
+    QStringList values;
+    QString sql;
+
+    bool sampler = false;
+    //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
+    //FIXME: Don't rely on other independent code, use an sql query
+    if( item->artist() == "" ) sampler = true;
+
+    if( sampler ) {
+        sql = "SELECT count() FROM tags, album WHERE tags.sampler = 1 AND tags.album = album.id AND album.name = '%1';";
+        values = CollectionDB::instance()->query( sql.arg( escapeHTMLAttr( item->album() ) ) );
+    } else {
+        sql = "SELECT count() FROM tags, artist, album WHERE tags.album = album.id AND tags.artist = artist.id AND artist.name='%1' AND album.name = '%2';";
+        values = CollectionDB::instance()->query( sql.arg( escapeHTMLAttr( item->artist() ), escapeHTMLAttr( item->album() ) ) );
+    }
+
+    QString tipContent = QString("<b>%1:</b> %2<br><b>%3:</b> %4<br><b>%5:</b> %6")
+                                .arg( i18n("Artist") )
+                                .arg( sampler ? i18n("Various") : item->artist() )
+                                .arg( i18n("Album")  )
+                                .arg( item->album()  )
+                                .arg( i18n("Tracks") )
+                                .arg( values[0] );
+
 
     m_toolTip = new QLabel( tipContent, 0,
                     "myToolTip",
