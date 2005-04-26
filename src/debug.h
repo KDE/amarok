@@ -7,8 +7,11 @@
 
 #include <kdebug.h>
 #include <qcstring.h>
+#include <qobject.h>
 #include <sys/time.h>
-#include <sys/types.h>
+
+class QApplication;
+extern QApplication *qApp; ///@see Debug::Indent
 
 
 /**
@@ -43,7 +46,25 @@
 
 namespace Debug
 {
-    inline QCString &indent() { static QCString indent; return indent; }
+    // we can't use a statically instantiated QCString for the indent, because
+    // static namespaces are unique to each dlopened library. So we piggy back
+    // the QCString on the KApplication instance
+
+    #define qApp reinterpret_cast<QObject*>(qApp)
+    class Indent : QObject
+    {
+        friend QCString &indent();
+        Indent() : QObject( qApp, "DEBUG_indent" ) {}
+        QCString m_string;
+    };
+
+    inline QCString &indent()
+    {
+        QObject *o = qApp->child( "DEBUG_indent" );
+        return (o ? (Indent*)o : new Indent)->m_string;
+    }
+    #undef qApp
+
 
     #ifdef NDEBUG
         static inline kndbgstream debug()   { return kndbgstream(); }

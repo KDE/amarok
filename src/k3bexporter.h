@@ -17,7 +17,6 @@
 #ifndef K3BEXPORTER_H
 #define K3BEXPORTER_H
 
-
 #include "collectiondb.h"
 #include <kurl.h>
 

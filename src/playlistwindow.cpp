@@ -169,6 +169,8 @@ PlaylistWindow::~PlaylistWindow()
 void
 PlaylistWindow::init()
 {
+    DEBUG_BLOCK
+
     //this function is necessary because amaroK::actionCollection() returns our actionCollection
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
@@ -331,8 +333,9 @@ PlaylistWindow::init()
 
 
     //<Browsers>
-        debug() << "Creating browsers. Please report long start times!\n";
-        DEBUG_INDENT
+    {
+        Debug::Block block( "Creating browsers. Please report long start times!" );
+
         #define addBrowserMacro( Type, name, text, icon ) { \
             Debug::Block block( name ); \
             m_browsers->addBrowser( new Type( name ), text, icon ); }
@@ -347,7 +350,7 @@ PlaylistWindow::init()
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), "folder" )
 
         #undef addBrowserMacro
-        DEBUG_UNINDENT
+    }
     //</Browsers>
 
 
@@ -448,8 +451,11 @@ void PlaylistWindow::applySettings()
     }
 }
 
+
 void PlaylistWindow::configureParty()
 {
+    //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
+
     if( CollectionDB::instance()->isEmpty() )
         return;
 
@@ -487,6 +493,7 @@ void PlaylistWindow::configureParty()
         amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
     }
 }
+
 
 bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 {
