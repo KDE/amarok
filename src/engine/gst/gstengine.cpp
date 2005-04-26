@@ -220,7 +220,7 @@ GstEngine::GstEngine()
         , m_eosReached( false )
         , m_shutdown( false )
 {
-    kdDebug() << k_funcinfo << endl;
+    DEBUG_FUNC_INFO
 
     addPluginProperty( "StreamingMode", "Signal" );
     addPluginProperty( "HasConfigure",  "true" );

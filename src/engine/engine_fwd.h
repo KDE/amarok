@@ -2,7 +2,7 @@
 #ifndef ENGINE_FWD_H
 #define ENGINE_FWD_H
 
-/// If you need just the enums
+/// Used by eg engineobserver.h, and thus we reduce header dependencies on enginebase.h
 
 namespace Engine
 {
