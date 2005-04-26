@@ -675,7 +675,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += 5 )
+                for ( uint j = 0; j < albumValues.count(); j += 7 )
                     if ( albumValues[j + 3] != albumYear || albumYear == "0" )
                     {
                         albumYear = QString::null;
@@ -1208,7 +1208,7 @@ void ContextBrowser::showHomeByAlbums()
             "</div>"
             "</html>"
                        );
-     debug() << m_HTMLSource.ascii();
+     debug() << m_HTMLSource.ascii() << endl;
 
     // </Songs least listened Information>
 }
