@@ -730,16 +730,13 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 QString
 CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 {
-    Q_UNUSED( trackInformation );
-    Q_UNUSED( width );
-
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
     QCString widthKey = makeWidthKey( width );
-    QCString tagKey = md5sum( trackInformation.url().path(), trackInformation.artist() ); //what's more unique than the file name?
+    QCString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
     QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
 
-    //FIXME: the cashed versions will never be refreshed
+    //FIXME: the cached versions will never be refreshed
     if ( tagCoverDir.exists( widthKey + tagKey ) )
     {
         // cached version
@@ -761,6 +758,10 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 
                 const TagLib::ByteVector &imgVector = ap->picture();
                 debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
+
+                // ignore APIC frames without picture
+                if( imgVector.size() == 0 )
+                    return QString::null;
 
                 QImage image;
                 if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
