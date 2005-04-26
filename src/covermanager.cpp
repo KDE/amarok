@@ -26,6 +26,7 @@
 #include <qprogressdialog.h>
 #include <qrect.h>
 #include <qstringlist.h>
+#include <qtooltip.h>
 #include <qtimer.h>    //search filter timer
 #include <qtooltip.h>
 #include <qvbox.h>
@@ -245,6 +246,8 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
 
     dialog->show();
 }
+
+
 QString CoverManager::amazonTld() //static
 {
     if (AmarokConfig::amazonLocale() == "us")
@@ -256,6 +259,7 @@ QString CoverManager::amazonTld() //static
             else
         return AmarokConfig::amazonLocale();
 }
+
 
 void CoverManager::fetchMissingCovers() //SLOT
 {
@@ -475,7 +479,6 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
     #undef item
 }
-
 
 void CoverManager::coverItemExecuted( QIconViewItem *item ) //SLOT
 {
@@ -821,6 +824,15 @@ CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
     arrangeItemsInGrid();
     setAutoArrange( true );
     setItemsMovable( false );
+
+    m_toolTip = 0;
+
+    // as long as QIconView only shows tooltips when the cursor is over the
+    // icon (and not the text), we have to create our own tooltips
+    setShowToolTips( false );
+
+    connect( this, SIGNAL( onItem( QIconViewItem * ) ), SLOT( showToolTip( QIconViewItem * ) ) );
+    connect( this, SIGNAL( onViewport() ), SLOT( removeToolTip() ) );
 }
 
 
@@ -845,6 +857,55 @@ QDragObject *CoverView::dragObject()
     drag->addDragObject( new KURLDrag( urls ) );
 
     return drag;
+}
+
+/// Code from KFileIconView.cpp
+void CoverView::showToolTip( QIconViewItem *item )
+{
+    #define item static_cast<CoverViewItem *>( item )
+    delete m_toolTip;
+    m_toolTip = 0;
+
+    if ( !item )
+    return;
+
+    //TODO: Replace with complex album stats, eg, total plays, total tracks
+    QString tipContent;
+    tipContent += item->artist();
+    tipContent += " - ";
+    tipContent += item->album();
+
+    m_toolTip = new QLabel( tipContent, 0,
+                    "myToolTip",
+                    WStyle_StaysOnTop | WStyle_Customize | WStyle_NoBorder | WStyle_Tool | WX11BypassWM );
+
+    m_toolTip->setFrameStyle( QFrame::Plain | QFrame::Box );
+    m_toolTip->setLineWidth( 1 );
+    m_toolTip->setAlignment( AlignLeft | AlignTop );
+    m_toolTip->move( QCursor::pos() + QPoint( 14, 14 ) );
+    m_toolTip->adjustSize();
+    QRect screen = QApplication::desktop()->screenGeometry(
+            QApplication::desktop()->screenNumber(QCursor::pos()));
+
+    if ( m_toolTip->x()+m_toolTip->width() > screen.right() ) {
+        m_toolTip->move(m_toolTip->x()+screen.right()-m_toolTip->x()-m_toolTip->width(), m_toolTip->y());
+    }
+
+    if (m_toolTip->y()+m_toolTip->height() > screen.bottom()) {
+        m_toolTip->move(m_toolTip->x(), screen.bottom()-m_toolTip->y()-m_toolTip->height()+m_toolTip->y());
+    }
+
+    m_toolTip->setFont( QToolTip::font() );
+    m_toolTip->setPalette( QToolTip::palette(), true );
+    m_toolTip->show();
+
+     #undef item
+}
+
+void CoverView::removeToolTip()
+{
+    delete m_toolTip;
+    m_toolTip = 0;
 }
 
 //////////////////////////////////////////////////////////////////////

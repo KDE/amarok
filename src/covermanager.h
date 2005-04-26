@@ -98,11 +98,21 @@ class CoverManager : public QSplitter
 
 class CoverView : public KIconView
 {
+        Q_OBJECT
+
     public:
         CoverView( QWidget *parent = 0, const char *name = 0, WFlags f = 0 );
 
     protected:
         QDragObject *dragObject();
+
+    private slots:
+        void showToolTip( QIconViewItem *item );
+        void removeToolTip();
+
+    private:
+        QLabel *m_toolTip;
+
 };
 
 class CoverViewItem : public KIconViewItem
