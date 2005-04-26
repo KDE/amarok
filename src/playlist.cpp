@@ -397,7 +397,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
     else
-        amaroK::StatusBar::instance()->shortMessage( i18n("Cannot insert nothing into the playlist.") );
+        amaroK::StatusBar::instance()->shortMessage( i18n("Cannot insert anything into the playlist.") );
 }
 
 void
