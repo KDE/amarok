@@ -28,9 +28,10 @@ class AkodeEngine : public Engine::Base
 
     virtual bool event( QEvent* );
 
-   ~AkodeEngine();
-
     aKode::Player *m_player;
+
+protected:
+    ~AkodeEngine();
 
 public:
     AkodeEngine();
