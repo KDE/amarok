@@ -9,12 +9,12 @@
 #include "app.h"
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "config.h"
 #include "debug.h"
 #include "collectionbrowser.h"    //updateTags()
 #include "collectiondb.h"
 #include "collectionreader.h"
 #include "coverfetcher.h"
-
 #include "enginecontroller.h"
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"
@@ -49,22 +49,15 @@
 #include <taglib/attachedpictureframe.h>
 #include <taglib/tbytevector.h>
 
-extern "C"
-{
-   #include "sqlite/sqlite3.h"
+#include "sqlite/sqlite3.h"
 
-   #ifdef USE_MYSQL
-   #include <mysql/mysql.h>
-   #endif
+#ifdef USE_MYSQL
+#include <mysql/mysql.h>
+#endif
 
-   #ifdef USE_POSTGRESQL
-   #include <postgresql/pgsql/libpq-fe.h>
-   #endif
-}
-
-
-
-
+#ifdef USE_POSTGRESQL
+#include <postgresql/pgsql/libpq-fe.h>
+#endif
 
 
 
