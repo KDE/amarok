@@ -79,7 +79,7 @@ class ConfigManager:
                 if not k.startswith('_'):
                     try:
                         setattr(cfg, k, self.cfg_parser.getint('Server', k))
-                    except ValueError, AttributeError:
+                    except (ValueError, AttributeError):
                         setattr(cfg, k, self.cfg_parser.get('Server', k))
             return cfg
         except:

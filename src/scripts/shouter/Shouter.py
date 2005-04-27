@@ -105,17 +105,11 @@ class Shouter(QApplication):
         if string.contains( 'configure' ):
             self.configure()
 
-        if string.contains('engineStateChange'):
-            Amarok.on_engine_state_change(str(string))
-
-        #if string.contains('engineStateChange: playing'):
-            #Amarok.on_engine_state_change('playing')
-
-        #if string.contains('engineStateChange: paused'):
-            #Amarok.on_engine_state_change('paused')
-
         if string.contains( "trackChange" ):
             Amarok.on_track_change()
+
+        elif string.contains('engineStateChange'):
+            Amarok.on_engine_state_change(str(string))
 
     def configure(self):
         debug('configure')

@@ -69,15 +69,22 @@ class _BaseStreamService(_Service):
             length = len(stream_title) + len(url) + 28
             padding = 16 - length % 16 
             meta = META % ( (length + padding)/16, stream_title, url, PADDING[:padding] )
-            debug('sending meta string: %s' % meta)
+            #debug('sending meta string: %s' % meta)
             self.meta_is_dirty = False
             return meta
         else:
             return '\x00'
 
     # Merge this with the stream method
+    def check_format(self, fobj):
+        if fobj.url.lower().endswith('mp3'):
+            return
+        raise bad_format_error
+
     def stream_silence(self, br):
-        while Amarok.state == 0:
+        debug('stream_silence %d' % br)
+        as = Amarok.state
+        while Amarok.state == as:
             fobj = Playlist.SilentFile(br)
             self.meta_is_dirty = True
             self.stream(fobj, 0)
@@ -155,18 +162,15 @@ class Service0(_BaseStreamService):
         while True:
             try:
                 (fobj, frac) = self.pl.get_play_cursor() 
-                # TODO: add format checking
+                self.check_format(fobj)
                 self.meta_is_dirty = True
                 as = Amarok.state
                 condition = '%d == Amarok.state' % as
                 self.stream(fobj, frac, condition)
-            except amarok_not_playing_error, indeterminate_queue_error:
+            except (bad_format_error, amarok_not_playing_error, indeterminate_queue_error):
                 # FIXME: This sucks and is usable only for testing
-                br = 192
-                as = Amarok.state
-                debug('Service sees Amarok.state %d' % as)
-                condition = '%d == Amarok.state' % as
-                self.stream_silence(br)
+                #self.stream_silence(192)
+                self.stream_silence(48)
 
 
 class Service1(_BaseStreamService):
@@ -192,10 +196,15 @@ class Service1(_BaseStreamService):
             self.req.end_headers()
 
         while True:
-            (fobj, frac) = self.pl.get_play_cursor() 
-            # TODO: add format checking
-            self.meta_is_dirty = True
-            self.stream(fobj, frac)
+            try:
+                (fobj, frac) = self.pl.get_play_cursor() 
+                # TODO: add format checking
+                self.check_format(fobj)
+                self.meta_is_dirty = True
+                self.stream(fobj, frac)
+            except bad_format_error:
+                self.stream_silence(192)
+            
 
 
 class Service2(_BaseStreamService):

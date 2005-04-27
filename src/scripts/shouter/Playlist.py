@@ -27,7 +27,7 @@ import sys
 _STATIC_PLS = dict()
 _DIRECTORY_PLS = dict()
 SILENCE_F = os.path.join(os.path.dirname(sys.argv[0]), 'silence/silence-%d.mp3')
-SILENT_META = '--- Server is paused ---'
+SILENT_META = '--- Server is waiting for input ---'
 
 class XMLPlaylist:
     random    = False

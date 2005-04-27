@@ -42,3 +42,6 @@ class unknown_length_error(Exception):
 
 class playlist_empty_error(Exception):
     pass
+
+class bad_format_error(Exception):
+    pass

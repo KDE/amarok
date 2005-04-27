@@ -30,17 +30,19 @@ class _Amarok:
         self.on_engine_state_change()
 
     def on_engine_state_change(self, string = ''):
+        debug('Amarok on_engine_state_change: ' + string)
         if not string:
             playing = PlayerDcop('isPlaying').result() == 'true'
             if playing: string = 'playing'
         if string.find('playing') >= 0:
-            self.state = 1
+            if self.state < 1:
+                self.state = 1
         else:
             self.state = 0
-        debug('Amarok state = %d' % self.state)
 
     def on_track_change(self):
-        self.state += 1
+        self.state = self.state + 1
+        debug('Amarok on_track_change set state = %d' % self.state)
 
     def query(self, sql):
         #sql = sql.replace("'", "\\'").replace('"', '\\"')
