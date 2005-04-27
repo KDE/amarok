@@ -49,6 +49,25 @@
 #include <taglib/attachedpictureframe.h>
 #include <taglib/tbytevector.h>
 
+extern "C"
+{
+   #include "sqlite/sqlite3.h"
+
+   #ifdef USE_MYSQL
+   #include <mysql/mysql.h>
+   #endif
+
+   #ifdef USE_POSTGRESQL
+   #include <postgresql/pgsql/libpq-fe.h>
+   #endif
+}
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -2174,7 +2193,7 @@ MySqlConnection::setMysqlError()
 
 #ifdef USE_POSTGRESQL
 PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
-    : DbConnection( config )
+      : DbConnection( config )
 {
     debug() << k_funcinfo << endl;
 

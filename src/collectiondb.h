@@ -6,7 +6,6 @@
 #ifndef AMAROK_COLLECTIONDB_H
 #define AMAROK_COLLECTIONDB_H
 
-#include <config.h>
 #include "engineobserver.h"
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
@@ -14,16 +13,6 @@
 #include <qptrqueue.h>       //baseclass
 #include <qsemaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
-
-#ifdef USE_MYSQL
-#include <mysql/mysql.h>
-#endif
-
-#ifdef USE_POSTGRESQL
-#include <postgresql/pgsql/libpq-fe.h>
-#endif
-
-#include "sqlite/sqlite3.h"
 
 class DbConnection;
 class DbConnectionPool;
@@ -97,7 +86,7 @@ class DbConnection
         virtual QStringList query( const QString& /* statement */ ) = 0;
         virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
         const bool isInitialized() const { return m_initialized; }
-        virtual bool isConnected()const = 0;
+        virtual bool isConnected() const = 0;
         virtual const QString lastError() const { return "None"; }
     protected:
         bool m_initialized;
@@ -105,11 +94,15 @@ class DbConnection
 };
 
 
+typedef struct sqlite3 sqlite3;
+typedef struct sqlite3_context sqlite3_context;
+typedef struct Mem sqlite3_value;
+
 class SqliteConnection : public DbConnection
 {
     public:
         SqliteConnection( SqliteConfig* /* config */ );
-        ~SqliteConnection();
+       ~SqliteConnection();
 
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
@@ -123,11 +116,13 @@ class SqliteConnection : public DbConnection
 
 
 #ifdef USE_MYSQL
+typedef struct st_mysql MYSQL;
+
 class MySqlConnection : public DbConnection
 {
     public:
         MySqlConnection( MySqlConfig* /* config */ );
-        ~MySqlConnection();
+       ~MySqlConnection();
 
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
@@ -143,11 +138,13 @@ class MySqlConnection : public DbConnection
 
 
 #ifdef USE_POSTGRESQL
+typedef struct pg_conn PGconn;
+
 class PostgresqlConnection : public DbConnection
 {
     public:
         PostgresqlConnection( PostgresqlConfig* /* config */ );
-        ~PostgresqlConnection();
+       ~PostgresqlConnection();
 
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
@@ -155,7 +152,7 @@ class PostgresqlConnection : public DbConnection
         const QString lastError() const { return m_error; }
     private:
         void setPostgresqlError();
-        postgresql::PGconn* m_db;
+        PGconn* m_db;
         bool m_connected;
         QString m_error;
 };
@@ -166,7 +163,7 @@ class DbConnectionPool : QPtrQueue<DbConnection>
 {
     public:
         DbConnectionPool();
-        ~DbConnectionPool();
+       ~DbConnectionPool();
 
         const DbConnection::DbConnectionType getDbConnectionType() const { return m_dbConnType; }
         const DbConfig *getDbConfig() const { return m_dbConfig; }
