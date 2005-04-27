@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 
 ############################################################################
 # Main executable. Must be run by amaroK
