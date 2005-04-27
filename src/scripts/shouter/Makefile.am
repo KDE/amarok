@@ -11,7 +11,6 @@ shouter_DATA = \
     Makefile.am \
     Playlist.py \
     Services.py \
-    Shouter.py \
     ShouterConfig.py \
     ShouterExceptions.py \
     StreamConfig.py \
