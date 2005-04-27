@@ -90,11 +90,11 @@ QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
     QWidget *analyzer = 0;
     switch( AmarokConfig::currentPlaylistAnalyzer() )
     {
-        case 2:
-            analyzer = new Sonogram( parent );
-            break;
         case 1:
             analyzer = new TurbineAnalyzer( parent );
+            break;
+        case 2:
+            analyzer = new Sonogram( parent );
             break;
         case 3:
             analyzer = new BarAnalyzer( parent );
