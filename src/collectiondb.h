@@ -135,7 +135,7 @@ class MySqlConnection : public DbConnection
         const QString lastError() const { return m_error; }
     private:
         void setMysqlError();
-        mysql::MYSQL* m_db;
+        MYSQL* m_db;
         bool m_connected;
         QString m_error;
 };
