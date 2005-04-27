@@ -21,11 +21,12 @@ from sre import *
 import random
 import urllib
 import time
+import sys
 
 
 _STATIC_PLS = dict()
 _DIRECTORY_PLS = dict()
-SILENCE_F = '../scripts/shouter2/silence/silence-%d.mp3'
+SILENCE_F = os.path.join(os.path.dirname(sys.argv[0]), 'silence/silence-%d.mp3')
 SILENT_META = '--- Server is paused ---'
 
 class XMLPlaylist:
@@ -298,7 +299,7 @@ class SilentFile(File):
         
         # Converting a perfectly good filename to a url only so that it can be
         # converted back again may be verging on poor taste
-        self.url = 'file://' + os.path.join(os.getcwd() + '/' + SILENCE_F % br)
+        self.url = 'file://' + SILENCE_F % br
 
     def get_meta(self):
         return SILENT_META

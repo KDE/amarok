@@ -28,7 +28,6 @@ class _Amarok:
     def __init__(self):
         debug('_Amarok init')
         self.on_engine_state_change()
-        self.on_track_change()
 
     def on_engine_state_change(self, string = ''):
         if not string:
@@ -38,18 +37,10 @@ class _Amarok:
             self.state = 1
         else:
             self.state = 0
-        debug('Amarok track_state = %d' % self.state)
+        debug('Amarok state = %d' % self.state)
 
     def on_track_change(self):
         self.state += 1
-        #if self.is_playing:
-            #self.encoded_url = PlayerDcop('encodedURL').result()
-            #self.now_playing = PlayerDcop('nowPlaying').result()
-            #self.fname = urllib.url2pathname(sub('file:/*', '/', self.encoded_url))
-        #else:
-            #self.encoded_url = ''
-            #self.now_playing = ''
-            #self.fname = ''
 
     def query(self, sql):
         #sql = sql.replace("'", "\\'").replace('"', '\\"')

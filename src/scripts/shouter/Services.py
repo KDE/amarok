@@ -167,7 +167,6 @@ class Service0(_BaseStreamService):
                 debug('Service sees Amarok.state %d' % as)
                 condition = '%d == Amarok.state' % as
                 self.stream_silence(br)
-                #self.stream(SILENCE_F % br, 0, br, condition)
 
 
 class Service1(_BaseStreamService):
