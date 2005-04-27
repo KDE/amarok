@@ -2061,7 +2061,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
     : DbConnection( config )
 {
     debug() << k_funcinfo << endl;
-    m_db = mysql::mysql_init(NULL);
+    m_db = mysql_init(NULL);
     m_initialized = false;
     m_connected = false;
     if (m_db)
@@ -2069,7 +2069,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
         if ( config->username().isEmpty() )
             pApp->slotConfigAmarok("MySql");
 
-        if ( mysql::mysql_real_connect( m_db, config->host().latin1(),
+        if ( mysql_real_connect( m_db, config->host().latin1(),
                                               config->username().latin1(),
                                               config->password().latin1(),
                                               config->database().latin1(),
@@ -2082,7 +2082,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
         else
         {
 
-            if ( mysql::mysql_real_connect(
+            if ( mysql_real_connect(
                     m_db,
                     config->host().latin1(),
                     config->username().latin1(),
@@ -2091,7 +2091,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
                     config->port(),
                     NULL, CLIENT_COMPRESS))
             {
-                if ( mysql::mysql_query(m_db,
+                if ( mysql_query(m_db,
                     QString( "CREATE DATABASE " + config->database() ).latin1() ) )
                     { m_connected = true; }
                 else
@@ -2109,7 +2109,7 @@ MySqlConnection::MySqlConnection( MySqlConfig* config )
 
 MySqlConnection::~MySqlConnection()
 {
-    if ( m_db ) mysql::mysql_close( m_db );
+    if ( m_db ) mysql_close( m_db );
 }
 
 
@@ -2117,34 +2117,34 @@ QStringList MySqlConnection::query( const QString& statement )
 {
     QStringList values;
 
-    if ( !mysql::mysql_query( m_db, statement.utf8() ) )
+    if ( !mysql_query( m_db, statement.utf8() ) )
     {
-        mysql::MYSQL_RES* result;
-        if ( ( result = mysql::mysql_use_result( m_db ) ) )
+        MYSQL_RES* result;
+        if ( ( result = mysql_use_result( m_db ) ) )
         {
-            int number = mysql::mysql_field_count( m_db );
-            mysql::MYSQL_ROW row;
-            while ( ( row = mysql::mysql_fetch_row( result ) ) )
+            int number = mysql_field_count( m_db );
+            MYSQL_ROW row;
+            while ( ( row = mysql_fetch_row( result ) ) )
             {
                 for ( int i = 0; i < number; i++ )
                 {
                   values << QString::fromUtf8( (const char*)row[i] );
                 }
             }
-            mysql::mysql_free_result( result );
+            mysql_free_result( result );
         }
         else
         {
-            if ( mysql::mysql_field_count( m_db ) != 0 )
+            if ( mysql_field_count( m_db ) != 0 )
             {
-                debug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+                debug() << "MYSQL QUERY FAILED: " << mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
                 values = QStringList();
             }
         }
     }
     else
     {
-        debug() << "MYSQL QUERY FAILED: " << mysql::mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        debug() << "MYSQL QUERY FAILED: " << mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         values = QStringList();
     }
 
@@ -2154,15 +2154,15 @@ QStringList MySqlConnection::query( const QString& statement )
 
 int MySqlConnection::insert( const QString& statement, const QString& /* table */ )
 {
-    mysql::mysql_query( m_db, statement.utf8() );
-    return mysql::mysql_insert_id( m_db );
+    mysql_query( m_db, statement.utf8() );
+    return mysql_insert_id( m_db );
 }
 
 
 void
 MySqlConnection::setMysqlError()
 {
-    m_error = i18n("MySQL reported the following error:<br>") + mysql::mysql_error(m_db)
+    m_error = i18n("MySQL reported the following error:<br>") + mysql_error(m_db)
             + i18n("<p>You can configure MySQL in the Collection section under Settings->Configure amaroK</p>");
 }
 #endif
@@ -2183,18 +2183,18 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
     if ( config->conninfo().isEmpty() )
         pApp->slotConfigAmarok("Postgresql");
 
-    m_db = postgresql::PQconnectdb( config->conninfo().latin1() );
+    m_db = PQconnectdb( config->conninfo().latin1() );
     if (!m_db)
     {
-        debug() << "POSTGRESQL CONNECT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n";
+        debug() << "POSTGRESQL CONNECT FAILED: " << PQerrorMessage( m_db ) << "\n";
         error() << "Failed to allocate/initialize Postgresql struct\n";
         setPostgresqlError();
         return;
     }
 
-    if (postgresql::PQstatus(m_db) != postgresql::CONNECTION_OK)
+    if (PQstatus(m_db) != CONNECTION_OK)
     {
-        debug() << "POSTGRESQL CONNECT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n";
+        debug() << "POSTGRESQL CONNECT FAILED: " << PQerrorMessage( m_db ) << "\n";
         error() << "Failed to allocate/initialize Postgresql struct\n";
         setPostgresqlError();
         PQfinish(m_db);
@@ -2209,33 +2209,33 @@ PostgresqlConnection::PostgresqlConnection( PostgresqlConfig* config )
 
 PostgresqlConnection::~PostgresqlConnection()
 {
-    if ( m_db ) postgresql::PQfinish( m_db );
+    if ( m_db ) PQfinish( m_db );
 }
 
 
 QStringList PostgresqlConnection::query( const QString& statement )
 {
     QStringList values;
-    postgresql::PGresult* result;
-    postgresql::ExecStatusType status;
+    PGresult* result;
+    ExecStatusType status;
 
-    result = postgresql::PQexec(m_db, statement.utf8());
+    result = PQexec(m_db, statement.utf8());
     if (result == NULL)
     {
-        debug() << "POSTGRESQL QUERY FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        debug() << "POSTGRESQL QUERY FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         return values;
     }
 
-    status = postgresql::PQresultStatus(result);
-    if ((status != postgresql::PGRES_COMMAND_OK) && (status != postgresql::PGRES_TUPLES_OK))
+    status = PQresultStatus(result);
+    if ((status != PGRES_COMMAND_OK) && (status != PGRES_TUPLES_OK))
     {
-        debug() << "POSTGRESQL QUERY FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        debug() << "POSTGRESQL QUERY FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         PQclear(result);
         return values;
     }
 
-    int cols = postgresql::PQnfields( result );
-    int rows = postgresql::PQntuples( result );
+    int cols = PQnfields( result );
+    int rows = PQntuples( result );
     QMap<int, bool> discardCols;
     for(int col=0; col< cols; col++) {
         if (QString(PQfname(result, col)) == QString("__discard") || QString(PQfname(result, col)) == QString("__random"))
@@ -2250,11 +2250,11 @@ QStringList PostgresqlConnection::query( const QString& statement )
         {
             if (discardCols[col]) continue;
 
-            values << QString::fromUtf8(postgresql::PQgetvalue(result, row, col));
+            values << QString::fromUtf8(PQgetvalue(result, row, col));
         }
     }
 
-    postgresql::PQclear(result);
+    PQclear(result);
 
     return values;
 }
@@ -2262,22 +2262,22 @@ QStringList PostgresqlConnection::query( const QString& statement )
 
 int PostgresqlConnection::insert( const QString& statement, const QString& table )
 {
-    postgresql::PGresult* result;
-    postgresql::ExecStatusType status;
+    PGresult* result;
+    ExecStatusType status;
     QString curvalSql;
     int id;
 
-    result = postgresql::PQexec(m_db, statement.utf8());
+    result = PQexec(m_db, statement.utf8());
     if (result == NULL)
     {
-        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
+        debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
         return 0;
     }
 
-    status = postgresql::PQresultStatus(result);
-    if (status != postgresql::PGRES_COMMAND_OK)
+    status = PQresultStatus(result);
+    if (status != PGRES_COMMAND_OK)
     {
-        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
+        debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
         PQclear(result);
         return 0;
     }
@@ -2289,29 +2289,29 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
     if (table.find("_temp") > 0) _table = table.left(table.find("_temp"));
 
     curvalSql = QString("SELECT currval('%1_seq');").arg(_table);
-    result = postgresql::PQexec(m_db, curvalSql.utf8());
+    result = PQexec(m_db, curvalSql.utf8());
     if (result == NULL)
     {
-        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
+        debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
         return 0;
     }
 
-    status = postgresql::PQresultStatus(result);
-    if (status != postgresql::PGRES_TUPLES_OK)
+    status = PQresultStatus(result);
+    if (status != PGRES_TUPLES_OK)
     {
-        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
+        debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
         PQclear(result);
         return 0;
     }
 
-    if ((postgresql::PQnfields( result ) != 1) || (postgresql::PQntuples( result ) != 1))
+    if ((PQnfields( result ) != 1) || (PQntuples( result ) != 1))
     {
-        debug() << "POSTGRESQL INSERT FAILED: " << postgresql::PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
+        debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
         PQclear(result);
         return 0;
     }
 
-    id = QString::fromUtf8(postgresql::PQgetvalue(result, 0, 0)).toInt();
+    id = QString::fromUtf8(PQgetvalue(result, 0, 0)).toInt();
     PQclear(result);
 
     return id;
@@ -2320,7 +2320,7 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
 
 void PostgresqlConnection::setPostgresqlError()
 {
-    m_error = i18n("Postgresql reported the following error:<br>") + postgresql::PQerrorMessage(m_db)
+    m_error = i18n("Postgresql reported the following error:<br>") + PQerrorMessage(m_db)
             + i18n("<p>You can configure Postgresql in the Collection section under Settings->Configure amaroK</p>");
 }
 #endif

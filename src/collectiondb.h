@@ -16,18 +16,11 @@
 #include <qstringlist.h>     //stack allocated
 
 #ifdef USE_MYSQL
-#include <qdatetime.h>
-namespace mysql
-{
-    #include <mysql/mysql.h>
-}
+#include <mysql/mysql.h>
 #endif
 
 #ifdef USE_POSTGRESQL
-namespace postgresql
-{
-    #include <postgresql/pgsql/libpq-fe.h>
-}
+#include <postgresql/pgsql/libpq-fe.h>
 #endif
 
 #include "sqlite/sqlite3.h"
