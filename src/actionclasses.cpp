@@ -277,9 +277,7 @@ AnalyzerContainer::AnalyzerContainer( QWidget *parent )
         , m_child( 0 )
 {
     QToolTip::add( this, i18n( "Click for more analyzers" ) );
-
-    QMouseEvent e( QEvent::MouseButtonPress, QPoint(), Qt::LeftButton, 0 );
-    mousePressEvent( &e );
+    changeAnalyzer();
 }
 
 void
@@ -288,18 +286,21 @@ AnalyzerContainer::resizeEvent( QResizeEvent *)
     m_child->resize( size() );
 }
 
+void AnalyzerContainer::changeAnalyzer()
+{
+    delete m_child;
+    m_child = Analyzer::Factory::createPlaylistAnalyzer( this );
+    m_child->setName( "ToolBarAnalyzer" );
+    m_child->resize( size() );
+    m_child->show();
+}
+
 void
 AnalyzerContainer::mousePressEvent( QMouseEvent *e)
 {
     if( e->button() == Qt::LeftButton ) {
-        delete m_child;
-
         AmarokConfig::setCurrentPlaylistAnalyzer( AmarokConfig::currentPlaylistAnalyzer() + 1 );
-
-        m_child = Analyzer::Factory::createPlaylistAnalyzer( this );
-        m_child->setName( "ToolBarAnalyzer" );
-        m_child->resize( size() );
-        m_child->show();
+        changeAnalyzer();
     }
 }
 

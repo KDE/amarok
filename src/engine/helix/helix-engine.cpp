@@ -103,15 +103,6 @@ HelixEngine::load( const KURL &url, bool isStream )
    // most unfortunate...KURL represents a file with no leading slash, Helix uses a leading slash 'file:///home/abc.mp3' for example
    if (url.isLocalFile())
    {
-<<<<<<< helix-engine.cpp
-      char tmp[MAXPATHLEN];
-      strcpy(tmp, "file://");
-      strcat(tmp, url.directory());
-      strcat(tmp, "/");
-      strcat(tmp, url.filename());
-      cerr << tmp << endl;
-      HXSplay::setURL( QFile::encodeName( tmp ) );
-=======
       QString tmp;
       tmp ="file://" + url.directory() + "/" + url.filename();
       //char tmp[MAXPATHLEN];
@@ -121,7 +112,6 @@ HelixEngine::load( const KURL &url, bool isStream )
       //strcat(tmp, (const char *)url.filename());
       debug() << tmp << endl;
       HXSplay::setURL( QFile::encodeName( tmp ) );      
->>>>>>> 1.2
    }
    else
       HXSplay::setURL( QFile::encodeName( url.prettyURL() ) );
@@ -173,13 +163,7 @@ void HelixEngine::play_finished(int playerIndex)
 void
 HelixEngine::pause()
 {
-<<<<<<< helix-engine.cpp
-   cerr << "In pause\n";
-
-=======
    debug() << "In pause\n";
-   
->>>>>>> 1.2
    if( HXSplay::state() == HXSplay::PLAY )
    {
       HXSplay::pause();
@@ -245,11 +229,8 @@ HelixEngine::setVolumeSW( uint vol )
 bool
 HelixEngine::canDecode( const KURL &url ) const
 {
-<<<<<<< helix-engine.cpp
-   cerr << "In canDecode\n";
-=======
+
    debug() << "In canDecode\n";   
->>>>>>> 1.2
     //TODO check if the url really is supported by Helix
    return true;
 }

@@ -74,6 +74,7 @@ namespace amaroK
             virtual void resizeEvent( QResizeEvent* );
             virtual void mousePressEvent( QMouseEvent* );
         private:
+            void changeAnalyzer();
             QWidget *m_child;
     };
 

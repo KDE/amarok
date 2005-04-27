@@ -97,24 +97,21 @@ QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
             analyzer = new Sonogram( parent );
             break;
         case 3:
-            analyzer = new BarAnalyzer( parent );
-            break;
-        case 4:
             analyzer = new BoomAnalyzer( parent );
             break;
     #ifdef HAVE_QGLWIDGET
-        case 5:
+        case 4:
             analyzer = new GLAnalyzer( parent );
             break;
-        case 6:
+        case 5:
             analyzer = new GLAnalyzer2( parent );
             break;
-        case 7:
+        case 6:
             analyzer = new GLAnalyzer3( parent );
             break;
-        case 8:
+        case 7:
     #else
-        case 5:
+        case 4:
     #endif
         analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
         static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
