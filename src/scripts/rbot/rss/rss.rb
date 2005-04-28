@@ -50,8 +50,8 @@ class RSSFeedsPlugin < Plugin
         }
         File.open("#{@bot.botclass}/rss/watchlist", "w") { |file|
             @watchList.each { |url, d|
-		feedFormat = d[0]
-		whichChan = d[1]
+		feedFormat = d[0] || ''
+		whichChan = d[1] || 'markey'
                 file.puts(url + '|' + feedFormat + '|' + whichChan)
             }
         }
@@ -59,7 +59,7 @@ class RSSFeedsPlugin < Plugin
 
 
     def help(plugin,topic="")
-        "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed, watchrss url [type] => watch a rss feed for changes (type may be 'amarokblog', 'amarokforum', 'mediawiki', 'gmame' or empty - it defines special formatting of feed items), rewatch => restart all rss watches"
+        "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed, watchrss url [type] => watch a rss feed for changes (type may be 'amarokblog', 'amarokforum', 'mediawiki', 'gmame' or empty - it defines special formatting of feed items), rewatch => restart all rss watches, rmwatch url => stop watching for changes in url"
     end
 
     def privmsg(m)
@@ -132,6 +132,23 @@ class RSSFeedsPlugin < Plugin
     	    return
         end
         @feeds.delete(m.params)
+        @bot.okay(m.replyto)
+    end
+
+    def handle_rmwatch(m)
+        unless m.params
+            m.reply "incorrect usage: " + help(m.plugin)
+	    return
+        end
+        unless @watchList.has_key?(m.params)
+    	    m.reply("no such watch")
+    	    return
+        end
+	unless @watchList[m.params][1] == m.replyto
+	    m.reply("no such watch for this channel/nick")
+	    return
+	end
+        @watchList.delete(m.params)
         @bot.okay(m.replyto)
     end
 
@@ -329,3 +346,4 @@ plugin.register("listrss")
 plugin.register("rewatch")
 plugin.register("watchrss")
 plugin.register("listwatches")
+plugin.register("rmwatch")
