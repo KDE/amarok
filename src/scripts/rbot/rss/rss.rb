@@ -19,6 +19,7 @@ class RSSFeedsPlugin < Plugin
         "addrss" => "handle_addrss",
         "rmrss" => "handle_rmrss",
         "listrss" => "handle_listrss",
+	"listwatches" => "handle_listrsswatch",
         "rewatch" => "handle_rewatch",
         "watchrss" => "handle_watchrss"
     }
@@ -32,8 +33,9 @@ class RSSFeedsPlugin < Plugin
         [ ["#{@bot.botclass}/rss/feeds", @feeds], ["#{@bot.botclass}/rss/watchlist", @watchList] ].each { |set|
             if File.exists?(set[0])
                 IO.foreach(set[0]) { |line|
-                    s = line.chomp.split("|", 2)
+                    s = line.chomp.split("|", 3)
                     set[1][s[0]] = s[1] if s.length==2
+		    set[1][s[0]] = [ s[1], s[2] ] if s.length==3
                 }
             end
         }
@@ -43,12 +45,14 @@ class RSSFeedsPlugin < Plugin
         Dir.mkdir("#{@bot.botclass}/rss") if not FileTest.directory?("#{@bot.botclass}/rss")
         File.open("#{@bot.botclass}/rss/feeds", "w") { |file|
             @feeds.each { |k,v|
-            file.puts(k + "|" + v)
+        	file.puts(k + "|" + v)
             }
         }
         File.open("#{@bot.botclass}/rss/watchlist", "w") { |file|
-            @watchList.each { |url, feedFormat|
-                file.puts(url + '|' + feedFormat)
+            @watchList.each { |url, d|
+		feedFormat = d[0]
+		whichChan = d[1]
+                file.puts(url + '|' + feedFormat + '|' + whichChan)
             }
         }
     end
@@ -84,14 +88,14 @@ class RSSFeedsPlugin < Plugin
 
         m.reply("Please wait, querying...")
         title = ''
-        items = fetchRSS(m, @feeds[m.params], title)
+        items = fetchRSS(m.replyto, @feeds[m.params], title)
         if(items == nil)
             return
         end
         m.reply("Channel : #{title}")
         # FIXME: optional by-date sorting if dates present
         items[0...limit].each do |item|
-            printRSSItem(m,item)
+            printRSSItem(m.replyto,item)
         end
     end
 
@@ -143,6 +147,18 @@ class RSSFeedsPlugin < Plugin
         m.reply(reply)
     end
 
+    def handle_listrsswatch(m)
+        reply = ''
+        if @watchList.length == 0
+            reply = "No watched feeds yet."
+        else
+            @watchList.each { |url,v|
+                reply << k + " for " + v[1] + "(in format: " + (v[0]?v[0]:"default") + "\n"
+            }
+        end
+        m.reply(reply)
+    end
+
     def handle_rewatch(m)
 	# Abort all running threads.
 	Thread.critical=true
@@ -151,8 +167,10 @@ class RSSFeedsPlugin < Plugin
 	Thread.critical=false
 
 	# Read watches from list.
-        @watchList.each{ |url, feedFormat|
-            watchRss(m, url,feedFormat)
+        @watchList.each{ |url, d|
+	    feedFormat = d[0]
+	    whichChan = d[1]
+            watchRss(whichChan, url,feedFormat)
         }
 	@bot.okay(m.replyto)
     end
@@ -166,16 +184,16 @@ class RSSFeedsPlugin < Plugin
         url = feed[0][0]
         feedFormat = feed[0][1]
         if @watchList.has_key?(url)
-            m.reply("But there is already a watch for feed #{url}")
+            m.reply("But there is already a watch for feed #{url} on chan #{@watchList[url][1]}")
             return
         end
-        @watchList[url] = feedFormat;
-        watchRss(m, url,feedFormat)
+        @watchList[url] = [feedFormat, m.replyto]
+        watchRss(m.replyto, url,feedFormat)
 	@bot.okay(m.replyto)
     end
 
     private
-    def watchRss(m, url, feedFormat)
+    def watchRss(whichChan, url, feedFormat)
         @watchThreads << Thread.new do
             puts 'watchRss thread started.'
             oldItems = []
@@ -184,9 +202,9 @@ class RSSFeedsPlugin < Plugin
                 begin # exception
                     title = ''
                     puts 'Fetching rss feed..'
-                    newItems = fetchRSS(m, url, title)
+                    newItems = fetchRSS(whichChan, url, title)
                     if( newItems.empty? )
-                        m.reply "Oops - Item is empty"
+                        @bot.say whichChan, "Oops - Item is empty"
                         break
                     end
                     puts "Checking if new items are available"
@@ -202,7 +220,7 @@ class RSSFeedsPlugin < Plugin
                             end
                             if showItem
                                 puts "showing #{nItem.title}"
-                                printFormatedRSS(m, nItem,feedFormat)
+                                printFormatedRSS(whichChan, nItem,feedFormat)
                             else
                                 puts "not showing  #{nItem.title}"
                                 break
@@ -219,42 +237,42 @@ class RSSFeedsPlugin < Plugin
         end
     end
 
-    def printRSSItem(m,item)
+    def printRSSItem(whichChan,item)
         if item.kind_of?(RSS::RDF::Item)
-            m.reply(item.title.chomp.riphtml.shorten(20) + " @ " + item.link)
+            @bot.say whichChan, item.title.chomp.riphtml.shorten(20) + " @ " + item.link
         else
-            m.reply("#{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}")
+            @bot.say whichChan, "#{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}"
         end
     end
 
-    def printFormatedRSS(m,item, type)
+    def printFormatedRSS(whichChan,item, type)
         case type
             when 'amarokblog'
-                m.reply("::#{item.category.content} just blogged at #{item.link}::")
-                m.reply("::#{item.title.chomp.riphtml.shorten(20)} - #{item.description.chomp.riphtml.shorten(60)}::")
+                @bot.say whichChan, "::#{item.category.content} just blogged at #{item.link}::"
+                @bot.say whichChan, "::#{item.title.chomp.riphtml.shorten(20)} - #{item.description.chomp.riphtml.shorten(60)}::"
             when 'amarokforum'
-                m.reply("::Forum:: #{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}")
+                @bot.say whichChan, "::Forum:: #{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}"
             when 'mediawiki'
-                m.reply("::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::")
+                @bot.say whichChan, "::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::"
                 puts "mediawiki #{item.title}"
             when "gmame"
-                m.reply("::amarok-devel:: Message #{item.title} sent by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::")
+                @bot.say whichChan, "::amarok-devel:: Message #{item.title} sent by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::"
             else
-                printRSSItem(m,item)
+                printRSSItem(whichChan,item)
         end
     end
 
-    def fetchRSS(m, url, title)
+    def fetchRSS(whichChan, url, title)
         begin
             # Use 60 sec timeout, cause the default is too low
             xml = Utils.http_get(url,60,60)
         rescue URI::InvalidURIError, URI::BadURIError => e
-            m.reply("invalid rss feed #{url}")
+            @bot.say whichChan, "invalid rss feed #{url}"
             return
         end
         puts 'fetched'
         unless xml
-            m.reply("reading feed #{url} failed")
+            @bot.say whichChan, "reading feed #{url} failed"
             return
         end
 
@@ -267,24 +285,24 @@ class RSSFeedsPlugin < Plugin
             begin
                 rss = RSS::Parser.parse(xml, false)
             rescue RSS::Error
-                m.reply("parsing rss stream failed, whoops =(")
+                @bot.say whichChan, "parsing rss stream failed, whoops =("
                 return
             end
         rescue RSS::Error
-            m.reply("parsing rss stream failed, oioi")
+            @bot.say whichChan, "parsing rss stream failed, oioi"
             return
         rescue
-            m.reply("processing error occured, sorry =(")
+            @bot.say whichChan, "processing error occured, sorry =("
             return
         end
         items = []
         if rss.nil?
-            m.reply("#{m.params} does not include RSS 1.0 or 0.9x/2.0")
+            @bot.say whichChan, "#{m.params} does not include RSS 1.0 or 0.9x/2.0"
         else
             begin
                 rss.output_encoding = "euc-jp"
             rescue RSS::UnknownConvertMethod
-                m.reply("bah! something went wrong =(")
+                @bot.say whichChan, "bah! something went wrong =("
                 return
             end
             rss.channel.title ||= "Unknown"
@@ -296,7 +314,7 @@ class RSSFeedsPlugin < Plugin
         end
 
         if items.empty?
-            m.reply("no items found in the feed, maybe try weed?")
+            @bot.say whichChan, "no items found in the feed, maybe try weed?"
             return
         end
         return items
@@ -310,3 +328,4 @@ plugin.register("rmrss")
 plugin.register("listrss")
 plugin.register("rewatch")
 plugin.register("watchrss")
+plugin.register("listwatches")
