@@ -12,6 +12,7 @@ require 'rss/dublincore'
 require 'rss/dublincore/2.0'
 
 class RSSFeedsPlugin < Plugin
+    @@watchThreads = Hash.new
 
     # Keep a 1:1 relation between commands and handlers
     @@handlers = {
@@ -31,8 +32,6 @@ class RSSFeedsPlugin < Plugin
         @feeds = Hash.new
         @watchList = Hash.new
 
-        kill_threads
-
         IO.foreach("#{@bot.botclass}/rss/feeds") { |line|
             s = line.chomp.split("|", 2)
             @feeds[s[0]] = s[1]
@@ -42,6 +41,10 @@ class RSSFeedsPlugin < Plugin
             @watchList[s[0]] = [s[1], s[2]]
             watchRss( s[2], s[0], s[1] )
         }
+    end
+
+    def cleanup
+        kill_threads
     end
 
     def save
@@ -62,17 +65,15 @@ class RSSFeedsPlugin < Plugin
 
     def kill_threads
         Thread.critical=true
-        if @@watchThreads.kind_of? Hash
-            # Abort all running threads.
-            @@watchThreads.each { |url, thread|
-                puts "Killing thread for #{url}"
-                thread.kill
-            }
-            @@watchThreads.each { |url, thread|
-                puts "Joining on killed thread for #{url}"
-                thread.join
-            }
-        end
+        # Abort all running threads.
+        @@watchThreads.each { |url, thread|
+            puts "Killing thread for #{url}"
+            thread.kill
+        }
+#         @@watchThreads.each { |url, thread|
+#             puts "Joining on killed thread for #{url}"
+#             thread.join
+#         }
         @@watchThreads = Hash.new
         Thread.critical=false
     end
@@ -172,8 +173,8 @@ class RSSFeedsPlugin < Plugin
         if @@watchThreads[m.params].kind_of? Thread
             @@watchThreads[m.params].kill
             puts "rmwatch: Killed thread for #{m.params}"
-            @@watchThreads[m.params].join
-            puts "rmwatch: Joined killed thread for #{m.params}"
+#             @@watchThreads[m.params].join
+#             puts "rmwatch: Joined killed thread for #{m.params}"
             @@watchThreads.delete(m.params)
         end
         Thread.critical=false
