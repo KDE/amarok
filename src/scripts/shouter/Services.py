@@ -203,7 +203,7 @@ class Service1(_BaseStreamService):
                 self.meta_is_dirty = True
                 self.stream(fobj, frac)
             except bad_format_error:
-                self.stream_silence(192)
+                self.stream_silence(48)
             
 
 
