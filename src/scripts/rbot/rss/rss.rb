@@ -60,7 +60,7 @@ class RSSFeedsPlugin < Plugin
         }
     end
 
-    def self.kill_threads
+    def kill_threads
         Thread.critical=true
         if @@watchThreads.kind_of? Hash
             # Abort all running threads.
