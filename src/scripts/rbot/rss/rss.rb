@@ -30,7 +30,8 @@ class RSSFeedsPlugin < Plugin
         puts "I'm here"
         @feeds = Hash.new
         @watchList = Hash.new
-        @watchThreads = Hash.new
+
+        kill_threads
 
         IO.foreach("#{@bot.botclass}/rss/feeds") { |line|
             s = line.chomp.split("|", 2)
@@ -59,6 +60,22 @@ class RSSFeedsPlugin < Plugin
         }
     end
 
+    def self.kill_threads
+        Thread.critical=true
+        if @@watchThreads.kind_of? Hash
+            # Abort all running threads.
+            @@watchThreads.each { |url, thread|
+                puts "Killing thread for #{url}"
+                thread.kill
+            }
+            @@watchThreads.each { |url, thread|
+                puts "Joining on killed thread for #{url}"
+                thread.join
+            }
+        end
+        @@watchThreads = Hash.new
+        Thread.critical=false
+    end
 
     def help(plugin,topic="")
         "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed, watchrss url [type] => watch a rss feed for changes (type may be 'amarokblog', 'amarokforum', 'mediawiki', 'gmame' or empty - it defines special formatting of feed items), rewatch => restart all rss watches, rmwatch url => stop watching for changes in url"
@@ -152,9 +169,12 @@ class RSSFeedsPlugin < Plugin
         end
         @watchList.delete(m.params)
         Thread.critical=true
-        if @watchThreads[m.params].kind_of? Thread
-            @watchThreads[m.params].kill
+        if @@watchThreads[m.params].kind_of? Thread
+            @@watchThreads[m.params].kill
             puts "rmwatch: Killed thread for #{m.params}"
+            @@watchThreads[m.params].join
+            puts "rmwatch: Joined killed thread for #{m.params}"
+            @@watchThreads.delete(m.params)
         end
         Thread.critical=false
         @bot.okay(m.replyto)
@@ -185,18 +205,7 @@ class RSSFeedsPlugin < Plugin
     end
 
     def handle_rewatch(m)
-        # Abort all running threads.
-        Thread.critical=true
-        @watchThreads.each { |url, thread|
-            puts "Killing thread for #{url}"
-            thread.kill
-        }
-        @watchThreads.each { |url, thread|
-            puts "Joining on killed thread for #{url}"
-            thread.join
-        }
-        @watchThreads = Hash.new
-        Thread.critical=false
+        kill_threads
 
         # Read watches from list.
         @watchList.each{ |url, d|
@@ -226,11 +235,11 @@ class RSSFeedsPlugin < Plugin
 
     private
     def watchRss(whichChan, url, feedFormat)
-        if @watchThreads.has_key?(url)
-            @bot.say whichChan, "ERROR: watcher thread for #{url} is already running! #{@watchThreads[url]}"
+        if @@watchThreads.has_key?(url)
+            @bot.say whichChan, "ERROR: watcher thread for #{url} is already running! #{@@watchThreads[url]}"
             return
         end
-        @watchThreads[url] = Thread.new do
+        @@watchThreads[url] = Thread.new do
             puts 'watchRss thread started.'
             oldItems = []
             firstRun = true
