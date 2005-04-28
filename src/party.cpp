@@ -15,6 +15,7 @@
 #include "amarokconfig.h"
 #include "party.h"
 #include "smartplaylist.h"
+#include "statusbar.h"
 
 #include <qbuttongroup.h>
 #include <qfile.h>
@@ -26,6 +27,7 @@
 
 #include <kactionselector.h>
 #include <klocale.h>
+#include <kurllabel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS Party
@@ -37,7 +39,11 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     makeVBoxMainWidget();
 
     QVBox *partyBox = new QVBox( mainWidget() );
-    m_partyCheck = new QCheckBox( i18n("Enable party mode" ), partyBox );
+    QHBox *partyBoxT = new QHBox( partyBox );
+    m_partyCheck = new QCheckBox( i18n("Enable party mode" ), partyBoxT );
+
+    KURLLabel *helpButton = new KURLLabel( partyBoxT );
+    helpButton->setText( i18n("Help") );
 
     m_partyGroupBox = new QVGroupBox( QString::null, mainWidget() );
     new QLabel( i18n("Type of song to append to playlist:"), m_partyGroupBox );
@@ -91,6 +97,7 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     connect( m_partyCheck,    SIGNAL( toggled(bool) ), m_partyGroupBox, SLOT( setEnabled(bool) ) );
     connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox,     SLOT( setEnabled(bool) ) );
     connect( m_cycleTracks,   SIGNAL( toggled(bool) ), previousBox,     SLOT( setEnabled(bool) ) );
+    connect( helpButton,      SIGNAL( leftClickedURL() ), SLOT( showHelp() ) );
 
     applySettings();
 }
@@ -191,5 +198,16 @@ QString Party::customList()
     return playlists;
 }
 
+void Party::showHelp()
+{
+    amaroK::StatusBar::instance()->longMessage( i18n(
+        "<div align=\"center\"><b>Party Mode</b></div><br>"
+        "<p>Party mode is a complex playlist handling mechanism - acting "
+        "basically on the concept of a 'rotating' playlist.  The playlist can "
+        "be modelled as a queuing system, FIFO.  As a track is advanced, "
+        "the first track in the playlist is removed, and another appended to "
+        "the end.  The type of addition is selected by the user during "
+        "configuration.</p>" ) );
+}
 
 #include "party.moc"

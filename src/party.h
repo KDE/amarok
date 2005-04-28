@@ -63,6 +63,9 @@ class Party : public KDialogBase
 
         QString customList();
 
+    public slots:
+        void    showHelp();
+
     private:
         void insertAvailablePlaylists();
         void insertSelectedPlaylists();
@@ -82,7 +85,7 @@ class Party : public KDialogBase
         KIntSpinBox  *m_upcomingIntSpinBox;
         KIntSpinBox  *m_tracksToAddSpinBox;
 
-
+        QLabel *m_tooltip;
 
         //List boxes for the KActionSelector
         QListBox     *m_lbSelected;
