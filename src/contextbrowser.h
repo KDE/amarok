@@ -94,7 +94,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_lyricSearchUrl;
         KIO::TransferJob* m_lyricJob;
         QString       m_wiki;
-        QString       m_wikiArtistUrl;
+        QString       m_wikiCurrentUrl;
         KIO::TransferJob* m_wikiJob;
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;

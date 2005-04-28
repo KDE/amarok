@@ -2360,18 +2360,16 @@ void ContextBrowser::showWikipedia( const QString &url )
     }
 
     m_wiki = QString::null;
-    QString tmpurl;
     if ( url.isEmpty() )
     {
-        m_wikiArtistUrl = QString( "http://en.wikipedia.org/wiki/%1" )
+        m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" )
             .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
-        tmpurl = m_wikiArtistUrl;
     }
     else
     {
-        tmpurl = url;
+        m_wikiCurrentUrl = url;
     }
-    m_wikiJob = KIO::get( tmpurl, false, false );
+    m_wikiJob = KIO::get( m_wikiCurrentUrl, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
             .setDescription( i18n( "Fetching Wikipedia" ) );
@@ -2416,6 +2414,18 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( QRegExp( "style= \"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "style=\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class=\"[^\"]*\"" ), QString::null );
+    // let's remove the form elements, we don't want them.
+    m_wiki.replace( QRegExp( "<input[^>]*>" ), QString::null );
+    m_wiki.replace( QRegExp( "<select[^>]*>" ), QString::null );
+    m_wiki.replace( "</select>" , QString::null );
+    m_wiki.replace( QRegExp( "<option[^>]*>" ), QString::null );
+    m_wiki.replace( "</option>" , QString::null );
+    m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString::null );
+    m_wiki.replace( "</textarea>" , QString::null );
+
+    //FIXME edit buttons removal doesn't work :( Needs Regexpert!
+    m_wiki.replace( QRegExp( "<div>\[<a href[^>]*>edit</a>]</div>" ), QString::null );
+
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( "href=\"http:", "href=\"externalurl:" );
     // FIXME space between the = and "(didn't bothered to hassle with regexp) Same as above.
@@ -2439,8 +2449,6 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                 "</div>"
             "</div>"
                        );
-    if ( !m_dirtyWikiFetching )
-    {
     m_HTMLSource.append(
             "<div id='wiki_box' class='box'>"
                 "<div id='wiki_box-header' class='box-header'>"
@@ -2450,12 +2458,31 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                     "</div>"
                     "<div id='wiki_box-body' class='box-body'>"
                         "<ul>"
-                        "<li><a href=\"" + m_wikiArtistUrl + "\">" + i18n( "Back to Artist page" ) + "</a></li>"
+                        "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
+                        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) ) +
+                        "\">" + i18n( "Title page" ) + "</a></li>"
+
+                        "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
+                        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) ) +
+                        "\">" + i18n( "Artist page" ) + "</a>(default)</li>"
+
+                        "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
+                        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) ) +
+                        "\">" + i18n( "Album page" ) + "</a></li>"
+
                         "</ul>"
+
+                        "<input type='button' onClick='window.location.href=\""
+                         + m_wikiCurrentUrl.replace("http:", "externalurl:") +
+                        "\";' value='" + i18n( "Open This page in external Browser" ) + "' class='button' />"
+
+                        "<p>"
+                        "Wich ones are better, buttons or links?"
+                        "Could someone please replace this with a toolbar on top?"
+                        "</p>"
                     "</div>"
                 "</div>"
                        );
-    }
     m_HTMLSource.append( "</html>" );
     m_wikiPage->write( m_HTMLSource );
     m_wikiPage->end();
