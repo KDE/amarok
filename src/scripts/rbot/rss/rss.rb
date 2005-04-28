@@ -28,6 +28,7 @@ class RSSFeedsPlugin < Plugin
         puts "I'm here"
         @feeds = Hash.new
         @watchList = Hash.new
+	@watchThreads = []
         [ ["#{@bot.botclass}/rss/feeds", @feeds], ["#{@bot.botclass}/rss/watchlist", @watchList] ].each { |set|
             if File.exists?(set[0])
                 IO.foreach(set[0]) { |line|
@@ -143,6 +144,13 @@ class RSSFeedsPlugin < Plugin
     end
 
     def handle_rewatch(m)
+	# Abort all running threads.
+	Thread.critical=true
+	@watchThreads.each { |thread| thread.kill }
+	@watchThreads = []
+	Thread.critical=false
+
+	# Read watches from list.
         @watchList.each{ |url, feedFormat|
             watchRss(m, url,feedFormat)
         }
@@ -168,7 +176,7 @@ class RSSFeedsPlugin < Plugin
 
     private
     def watchRss(m, url, feedFormat)
-        Thread.new do
+        @watchThreads << Thread.new do
             puts 'watchRss thread started.'
             oldItems = []
             firstRun = true
