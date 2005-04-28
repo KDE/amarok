@@ -471,9 +471,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
     text = text.stripWhiteSpace();
 
-    //TODO after the freeze
-//    if( text.isEmpty() )
-//        text = i1_8n( "No track playing" );
+   if( text.isEmpty() )
+       text = i18n( "No track playing" );
 
     OSDWidget::show( text );
 }
