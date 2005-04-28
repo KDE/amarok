@@ -54,7 +54,7 @@ class RSSFeedsPlugin < Plugin
 
 
     def help(plugin,topic="")
-        "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed"
+        "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed, watchrss url [type] => watch a rss feed for changes (type may be 'amarokblog', 'amarokforum', 'mediawiki', 'gmame' or empty - it defines special formatting of feed items), rewatch => restart all rss watches"
     end
 
     def privmsg(m)
@@ -77,7 +77,7 @@ class RSSFeedsPlugin < Plugin
             m.params.gsub!(/\s+\d+$/, '')
         end
         unless @feeds.has_key?(m.params)
-            m.reply(m.params + "? whats that feed is about?")
+            m.reply(m.params + "? what is that feed about?")
             return
         end
 
@@ -109,7 +109,7 @@ class RSSFeedsPlugin < Plugin
             return
         end
         if @feeds.has_key?(feed[0][0]) && !forced
-            m.reply("But theres already a feed named #{feed[0][0]} with url #{@feeds[feed[0][0]]}")
+            m.reply("But there is already a feed named #{feed[0][0]} with url #{@feeds[feed[0][0]]}")
             return
         end
         feed[0][0].gsub!("|", '_')
@@ -118,13 +118,13 @@ class RSSFeedsPlugin < Plugin
     end
 
     def handle_rmrss(m)
-            unless m.params
-        m.reply "incorrect usage: " + help(m.plugin)
-        return
+        unless m.params
+            m.reply "incorrect usage: " + help(m.plugin)
+	    return
         end
         unless @feeds.has_key?(m.params)
-        m.reply("dunno that feed")
-        return
+    	    m.reply("dunno that feed")
+    	    return
         end
         @feeds.delete(m.params)
         @bot.okay(m.replyto)
@@ -146,6 +146,7 @@ class RSSFeedsPlugin < Plugin
         @watchList.each{ |url, feedFormat|
             watchRss(m, url,feedFormat)
         }
+	@bot.okay(m.replyto)
     end
 
     def handle_watchrss(m)
@@ -156,8 +157,13 @@ class RSSFeedsPlugin < Plugin
         feed = m.params.scan(/^(\S+)\s+(\S+)$/)
         url = feed[0][0]
         feedFormat = feed[0][1]
+        if @watchList.has_key?(url)
+            m.reply("But there is already a watch for feed #{url}")
+            return
+        end
         @watchList[url] = feedFormat;
         watchRss(m, url,feedFormat)
+	@bot.okay(m.replyto)
     end
 
     private
