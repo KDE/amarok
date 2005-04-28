@@ -19,9 +19,10 @@ class RSSFeedsPlugin < Plugin
         "addrss" => "handle_addrss",
         "rmrss" => "handle_rmrss",
         "listrss" => "handle_listrss",
-	"listwatches" => "handle_listrsswatch",
+        "listwatches" => "handle_listrsswatch",
         "rewatch" => "handle_rewatch",
-        "watchrss" => "handle_watchrss"
+        "watchrss" => "handle_watchrss",
+        "rmwatch" => "handle_rmwatch"
     }
 
     def initialize
@@ -29,13 +30,13 @@ class RSSFeedsPlugin < Plugin
         puts "I'm here"
         @feeds = Hash.new
         @watchList = Hash.new
-	@watchThreads = []
+        @watchThreads = Hash.new
         [ ["#{@bot.botclass}/rss/feeds", @feeds], ["#{@bot.botclass}/rss/watchlist", @watchList] ].each { |set|
             if File.exists?(set[0])
                 IO.foreach(set[0]) { |line|
                     s = line.chomp.split("|", 3)
                     set[1][s[0]] = s[1] if s.length==2
-		    set[1][s[0]] = [ s[1], s[2] ] if s.length==3
+                    set[1][s[0]] = [ s[1], s[2] ] if s.length==3
                 }
             end
         }
@@ -45,13 +46,13 @@ class RSSFeedsPlugin < Plugin
         Dir.mkdir("#{@bot.botclass}/rss") if not FileTest.directory?("#{@bot.botclass}/rss")
         File.open("#{@bot.botclass}/rss/feeds", "w") { |file|
             @feeds.each { |k,v|
-        	file.puts(k + "|" + v)
+                file.puts(k + "|" + v)
             }
         }
         File.open("#{@bot.botclass}/rss/watchlist", "w") { |file|
             @watchList.each { |url, d|
-		feedFormat = d[0] || ''
-		whichChan = d[1] || 'markey'
+                feedFormat = d[0] || ''
+                whichChan = d[1] || 'markey'
                 file.puts(url + '|' + feedFormat + '|' + whichChan)
             }
         }
@@ -125,11 +126,11 @@ class RSSFeedsPlugin < Plugin
     def handle_rmrss(m)
         unless m.params
             m.reply "incorrect usage: " + help(m.plugin)
-	    return
+            return
         end
         unless @feeds.has_key?(m.params)
-    	    m.reply("dunno that feed")
-    	    return
+            m.reply("dunno that feed")
+            return
         end
         @feeds.delete(m.params)
         @bot.okay(m.replyto)
@@ -138,17 +139,20 @@ class RSSFeedsPlugin < Plugin
     def handle_rmwatch(m)
         unless m.params
             m.reply "incorrect usage: " + help(m.plugin)
-	    return
+            return
         end
         unless @watchList.has_key?(m.params)
-    	    m.reply("no such watch")
-    	    return
+            m.reply("no such watch")
+            return
         end
-	unless @watchList[m.params][1] == m.replyto
-	    m.reply("no such watch for this channel/nick")
-	    return
-	end
+        unless @watchList[m.params][1] == m.replyto
+            m.reply("no such watch for this channel/nick")
+            return
+        end
         @watchList.delete(m.params)
+        Thread.critical=true
+        @watchThreads[m.params].kill if @watchThreads[m.params].kind_of? Thread
+        Thread.critical=false
         @bot.okay(m.replyto)
     end
 
@@ -170,26 +174,26 @@ class RSSFeedsPlugin < Plugin
             reply = "No watched feeds yet."
         else
             @watchList.each { |url,v|
-                reply << k + " for " + v[1] + "(in format: " + (v[0]?v[0]:"default") + "\n"
+                reply << url + " for " + v[1] + " (in format: " + (v[0]?v[0]:"default") + ")\n"
             }
         end
         m.reply(reply)
     end
 
     def handle_rewatch(m)
-	# Abort all running threads.
-	Thread.critical=true
-	@watchThreads.each { |thread| thread.kill }
-	@watchThreads = []
-	Thread.critical=false
+        # Abort all running threads.
+        Thread.critical=true
+        @watchThreads.each { |url, thread| thread.kill }
+        @watchThreads = Hash.new
+        Thread.critical=false
 
-	# Read watches from list.
+        # Read watches from list.
         @watchList.each{ |url, d|
-	    feedFormat = d[0]
-	    whichChan = d[1]
+            feedFormat = d[0]
+            whichChan = d[1]
             watchRss(whichChan, url,feedFormat)
         }
-	@bot.okay(m.replyto)
+        @bot.okay(m.replyto)
     end
 
     def handle_watchrss(m)
@@ -206,12 +210,16 @@ class RSSFeedsPlugin < Plugin
         end
         @watchList[url] = [feedFormat, m.replyto]
         watchRss(m.replyto, url,feedFormat)
-	@bot.okay(m.replyto)
+        @bot.okay(m.replyto)
     end
 
     private
     def watchRss(whichChan, url, feedFormat)
-        @watchThreads << Thread.new do
+        unless @watchThreads[url].nil?
+            @bot.say whichChan, "ERROR: watcher thread for this url is already running!"
+            return
+        end
+        @watchThreads[url] = Thread.new do
             puts 'watchRss thread started.'
             oldItems = []
             firstRun = true
