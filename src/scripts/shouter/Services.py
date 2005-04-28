@@ -82,13 +82,11 @@ class _BaseStreamService(_Service):
         raise bad_format_error
 
     def stream_silence(self, br):
-        debug('stream_silence %d' % br)
-        as = Amarok.state
-        while Amarok.state == as:
-            fobj = Playlist.SilentFile(br)
-            self.meta_is_dirty = True
-            self.stream(fobj, 0)
-        self.meta_is_dirty = True
+        #debug('stream_silence %d' % br)
+        #as = Amarok.state
+        #while Amarok.state == as:
+        fobj = Playlist.SilentFile(br)
+        self.stream(fobj, 0)
             
 
     def stream(self, fobj, pos, condition='True'):
@@ -108,7 +106,7 @@ class _BaseStreamService(_Service):
         mp3_start = binfuncs.get_mp3_start(fname)
         f.seek(fsize * pos + mp3_start)
 
-        #debug('starting stream bc=%d' % bc)
+        self.meta_is_dirty = True
         while f.tell() < fsize and eval(condition):
             bytes_till_meta = icy_int - self.byte_count
             if bytes_till_meta == 0:
@@ -130,6 +128,7 @@ class _BaseStreamService(_Service):
                     self.byte_count += len(buf)
                 sleep_int = len(buf) * sleep_factor
                 time.sleep(sleep_int)
+        self.meta_is_dirty = True
 
         
 
@@ -163,14 +162,16 @@ class Service0(_BaseStreamService):
             try:
                 (fobj, frac) = self.pl.get_play_cursor() 
                 self.check_format(fobj)
-                self.meta_is_dirty = True
                 as = Amarok.state
                 condition = '%d == Amarok.state' % as
                 self.stream(fobj, frac, condition)
             except (bad_format_error, amarok_not_playing_error, indeterminate_queue_error):
-                # FIXME: This sucks and is usable only for testing
-                #self.stream_silence(192)
-                self.stream_silence(48)
+                # FIXME:
+                # 48 seems to be the limit for a 44.1 kHz, 2-channel 2-second file
+                # Any lower and things start to mysteriously break
+                as = Amarok.state
+                while Amarok.state == as:
+                    self.stream_silence(48)
 
 
 class Service1(_BaseStreamService):
@@ -198,9 +199,7 @@ class Service1(_BaseStreamService):
         while True:
             try:
                 (fobj, frac) = self.pl.get_play_cursor() 
-                # TODO: add format checking
                 self.check_format(fobj)
-                self.meta_is_dirty = True
                 self.stream(fobj, frac)
             except bad_format_error:
                 self.stream_silence(48)
