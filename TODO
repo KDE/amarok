@@ -56,9 +56,7 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
-  <sebr>   Integrate KHotNewStuff for css styles and scripts.
-
-  <sebr>   Merge Metabar's box retraction animation to the context browser. More iCandy.
+  <sebr>   Use Metabar's box retraction animation to the context browser. More iCandy. Any Javascript experts around?
 
   <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
            artist or album that is right clicked.
