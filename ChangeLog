@@ -29,6 +29,7 @@ VERSION 1.3-beta1:
     * Support for PostgreSQL as database backend. (BR 99863)
 
   CHANGES:
+    * Append Suggestions has been superceded by Party Mode.
     * Add a label (with shortcut) to the Playlist filter.
 
   BUGFIXES:
