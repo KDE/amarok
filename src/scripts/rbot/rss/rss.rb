@@ -31,14 +31,15 @@ class RSSFeedsPlugin < Plugin
         @feeds = Hash.new
         @watchList = Hash.new
         @watchThreads = Hash.new
-        [ ["#{@bot.botclass}/rss/feeds", @feeds], ["#{@bot.botclass}/rss/watchlist", @watchList] ].each { |set|
-            if File.exists?(set[0])
-                IO.foreach(set[0]) { |line|
-                    s = line.chomp.split("|", 3)
-                    set[1][s[0]] = s[1] if s.length==2
-                    set[1][s[0]] = [ s[1], s[2] ] if s.length==3
-                }
-            end
+
+        IO.foreach("#{@bot.botclass}/rss/feeds") { |line|
+            s = line.chomp.split("|", 2)
+            @feeds[s[0]] = s[1]
+        }
+        IO.foreach("#{@bot.botclass}/rss/watchlist") { |line|
+            s = line.chomp.split("|", 3)
+            @watchList[s[0]] = [s[1], s[2]]
+            watchRss( s[2], s[0], s[1] )
         }
     end
 
@@ -151,7 +152,10 @@ class RSSFeedsPlugin < Plugin
         end
         @watchList.delete(m.params)
         Thread.critical=true
-        @watchThreads[m.params].kill if @watchThreads[m.params].kind_of? Thread
+        if @watchThreads[m.params].kind_of? Thread
+            @watchThreads[m.params].kill
+            puts "rmwatch: Killed thread for #{m.params}"
+        end
         Thread.critical=false
         @bot.okay(m.replyto)
     end
@@ -183,7 +187,14 @@ class RSSFeedsPlugin < Plugin
     def handle_rewatch(m)
         # Abort all running threads.
         Thread.critical=true
-        @watchThreads.each { |url, thread| thread.kill }
+        @watchThreads.each { |url, thread|
+            puts "Killing thread for #{url}"
+            thread.kill
+        }
+        @watchThreads.each { |url, thread|
+            puts "Joining on killed thread for #{url}"
+            thread.join
+        }
         @watchThreads = Hash.new
         Thread.critical=false
 
@@ -215,8 +226,8 @@ class RSSFeedsPlugin < Plugin
 
     private
     def watchRss(whichChan, url, feedFormat)
-        unless @watchThreads[url].nil?
-            @bot.say whichChan, "ERROR: watcher thread for this url is already running!"
+        if @watchThreads.has_key?(url)
+            @bot.say whichChan, "ERROR: watcher thread for #{url} is already running! #{@watchThreads[url]}"
             return
         end
         @watchThreads[url] = Thread.new do
@@ -256,8 +267,10 @@ class RSSFeedsPlugin < Plugin
                 rescue Exception
                     $stderr.print "IO failed: " + $! + "\n"
                 end
-                puts "Thread going to sleep.."
-                sleep 200
+
+                seconds = 150 + rand(100)
+                puts "Thread going to sleep #{seconds} seconds.."
+                sleep seconds
             end
         end
     end
