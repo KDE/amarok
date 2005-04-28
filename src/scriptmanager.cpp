@@ -338,8 +338,8 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 void
 ScriptManager::slotRetrieveScript()
 {
-    // Delete KNewStuff's configuration entries. These entries reflect what has
-    // already been installed. As we cannot yet keep them in sync after uninstalling
+    // Delete KNewStuff's configuration entries. These entries reflect which scripts
+    // are already installed. As we cannot yet keep them in sync after uninstalling
     // scripts, we deactivate the check marks entirely.
     amaroK::config()->deleteGroup( "KNewStuffStatus" );
 
