@@ -141,7 +141,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RepeatTrackAction( ac );
     new amaroK::RepeatPlaylistAction( ac );
     new amaroK::RandomAction( ac );
-    new amaroK::AppendAction( ac );
+    new amaroK::PartyAction( ac );
     new amaroK::VolumeAction( ac );
 
     if( K3bExporter::isAvailable() )
@@ -282,7 +282,7 @@ PlaylistWindow::init()
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
     actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
-    actionCollection()->action("append_mode")->plug( m_settingsMenu );
+    actionCollection()->action("party_mode")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
     m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
@@ -490,7 +490,11 @@ void PlaylistWindow::configureParty()
             Playlist::instance()->adjustPartyUpcoming( dialog.upcomingCount(), dialog.appendType() );
         }
 
+        AmarokConfig::setPartyCycleTracks( dialog.cycleTracks() );
+        AmarokConfig::setPartyAppendCount( dialog.appendCount() );
+
         amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
+        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
 }
 

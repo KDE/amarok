@@ -92,7 +92,7 @@ Menu::Menu()
     safePlug( ac, "repeat_track", this );
     safePlug( ac, "repeat_playlist", this );
     safePlug( ac, "random_mode", this );
-    safePlug( ac, "append_mode", this );
+    safePlug( ac, "party_mode", this );
 
     insertSeparator();
 
@@ -375,16 +375,6 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 {
     KToggleAction::setChecked( AmarokConfig::repeatPlaylist() );
     setIcon( "repeat_playlist" );
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// AppendAction
-//////////////////////////////////////////////////////////////////////////////////////////
-AppendAction::AppendAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "&Append Suggestions" ), &AmarokConfig::setAppendMode, ac, "append_mode" )
-{
-    KToggleAction::setChecked( AmarokConfig::appendMode() );
-    setIcon( "dynamic" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

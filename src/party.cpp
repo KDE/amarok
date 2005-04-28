@@ -38,13 +38,11 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
 
     QVBox *partyBox = new QVBox( mainWidget() );
     m_partyCheck = new QCheckBox( i18n("Enable party mode" ), partyBox );
-    m_partyCheck->setChecked( AmarokConfig::partyMode() );
 
-    QVGroupBox *partyGroupBox = new QVGroupBox( QString::null, mainWidget() );
-    new QLabel( i18n("Type of song to append to playlist:"), partyGroupBox );
-    QVBox *selectorBox = new QVBox( partyGroupBox );
+    m_partyGroupBox = new QVGroupBox( QString::null, mainWidget() );
+    new QLabel( i18n("Type of song to append to playlist:"), m_partyGroupBox );
+    QVBox *selectorBox = new QVBox( m_partyGroupBox );
     partyBox->setSpacing( 5 );
-    selectorBox->setSpacing( 5 );
 
     m_buttonGroup = new QButtonGroup( i18n("Append Song Type") );
 
@@ -55,8 +53,66 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     m_buttonGroup->insert( m_suggestionRadio );
 
     m_playlistRadio = new QRadioButton( i18n("Random song from one of the following:"), selectorBox );
-    m_playlistRadio->setChecked( false );
     m_buttonGroup->insert( m_playlistRadio );
+
+    QVBox *playlistBox = new QVBox( selectorBox );
+
+    m_playlistSelector = new KActionSelector( playlistBox );
+    m_playlistSelector->setShowUpDownButtons( false );
+    m_playlistSelector->setAvailableLabel( i18n("Available playlists:") );
+    m_playlistSelector->setSelectedLabel( i18n("Selected playlists:") );
+
+    m_lbSelected  = m_playlistSelector->selectedListBox();
+    m_lbAvailable = m_playlistSelector->availableListBox();
+
+    insertSelectedPlaylists();
+    insertAvailablePlaylists();  //requires that insertSelectedPlaylists() has been called first.
+
+    QVBox *optionBox = new QVBox( m_partyGroupBox );
+    optionBox->setSpacing( 5 );
+
+    m_cycleTracks = new QCheckBox( i18n("Cycle Tracks"), optionBox );
+
+    QHBox *previousBox = new QHBox( optionBox );
+    new QLabel( i18n("Maximum history to show:"), previousBox );
+    m_previousIntSpinBox = new KIntSpinBox( previousBox );
+
+    QHBox *upcomingBox = new QHBox( optionBox );
+    new QLabel( i18n("Minimum upcoming tracks:"), upcomingBox );
+    m_upcomingIntSpinBox = new KIntSpinBox( upcomingBox );
+
+    QHBox *appendBox = new QHBox( optionBox );
+    new QLabel( i18n("Number of tracks to append:"), appendBox );
+    m_tracksToAddSpinBox = new KIntSpinBox( appendBox );
+
+    previousBox->setEnabled( m_cycleTracks->isEnabled() );
+    playlistBox->setEnabled( m_playlistRadio->isEnabled() );
+
+    connect( m_partyCheck,    SIGNAL( toggled(bool) ), m_partyGroupBox, SLOT( setEnabled(bool) ) );
+    connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox,     SLOT( setEnabled(bool) ) );
+    connect( m_cycleTracks,   SIGNAL( toggled(bool) ), previousBox,     SLOT( setEnabled(bool) ) );
+
+    applySettings();
+}
+
+QString Party::appendType()
+{
+    if( m_buttonGroup->selectedId() == 0 )
+        return "Random";
+    else if( m_buttonGroup->selectedId() == 1 )
+        return "Suggestion";
+    else
+        return "Custom";
+}
+
+void Party::applySettings()
+{
+    m_partyCheck->setChecked( AmarokConfig::partyMode() );
+
+    m_upcomingIntSpinBox->setValue( AmarokConfig::partyUpcomingCount() );
+    m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
+    m_tracksToAddSpinBox->setValue( AmarokConfig::partyAppendCount() );
+    m_cycleTracks->setChecked( AmarokConfig::partyCycleTracks() );
 
     if ( AmarokConfig::partyType() == "Random" ) {
         m_randomRadio->setChecked( TRUE );
@@ -72,59 +128,13 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
         m_playlistRadio->setChecked( TRUE );
     }
 
-    QVBox *playlistBox = new QVBox( selectorBox );
-
-
-    m_playlistSelector = new KActionSelector( playlistBox );
-    m_playlistSelector->setShowUpDownButtons( false );
-    m_playlistSelector->setAvailableLabel( i18n("Available playlists:") );
-    m_playlistSelector->setSelectedLabel( i18n("Selected playlists:") );
-
-    m_lbSelected  = m_playlistSelector->selectedListBox();
-    m_lbAvailable = m_playlistSelector->availableListBox();
-
-    insertSelectedPlaylists();
-    insertAvailablePlaylists();  //requires that insertSelectedPlaylists() has been called first.
-
-    QHBox *upcomingBox = new QHBox( partyGroupBox );
-    new QLabel( i18n("Minimum upcoming tracks:"), upcomingBox );
-
-    m_upcomingIntSpinBox = new KIntSpinBox( upcomingBox );
-    m_upcomingIntSpinBox->setValue( AmarokConfig::partyUpcomingCount() );
-
-    QHBox *previousBox = new QHBox( partyGroupBox );
-    new QLabel( i18n("Maximum history to show:"), previousBox );
-
-    m_previousIntSpinBox = new KIntSpinBox( previousBox );
-    m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
-
-    connect( m_partyCheck, SIGNAL( toggled(bool) ), partyGroupBox,  SLOT( setEnabled(bool) ) );
-    connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox, SLOT( setEnabled(bool) ) );
-
     if ( AmarokConfig::partyMode() ) {
         m_partyCheck->setChecked( true );
-        partyGroupBox->setEnabled( true );
+        m_partyGroupBox->setEnabled( true );
     } else {
         m_partyCheck->setChecked( false );
-        partyGroupBox->setEnabled( false );
+        m_partyGroupBox->setEnabled( false );
     }
-
-    m_playlistRadio->isEnabled() ?
-        playlistBox->setEnabled( true ) :
-        playlistBox->setEnabled( false );
-
-    upcomingBox->setStretchFactor( new QWidget( upcomingBox ), 1 );
-    previousBox->setStretchFactor( new QWidget( previousBox ), 1 );
-}
-
-QString Party::appendType()
-{
-    if( m_buttonGroup->selectedId() == 0 )
-        return "Random";
-    else if( m_buttonGroup->selectedId() == 1 )
-        return "Suggestion";
-    else
-        return "Custom";
 }
 
 void Party::insertAvailablePlaylists()

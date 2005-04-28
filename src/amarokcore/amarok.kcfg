@@ -81,10 +81,15 @@
         <whatsthis>Number of previously played songs to show in the Playlist for party mode.</whatsthis>
         <default>4</default>
     </entry>
-    <entry key="Append Mode" type="Bool">
-        <label>Plays a party playlist</label>
-        <whatsthis>Party playlist which removes the played track from the playlist and appends a similar song.</whatsthis>
-        <default>false</default>
+    <entry key="Party Append Count" type="Int">
+        <label>Number of tracks to append</label>
+        <whatsthis>Number of tracks to append to the Playlist for party mode.</whatsthis>
+        <default>1</default>
+    </entry>
+    <entry key="Party Cycle Tracks" type="Bool">
+        <label>Cycle Tracks</label>
+        <whatsthis>Whether to remove first item in playlist.</whatsthis>
+        <default>true</default>
     </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>

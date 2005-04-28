@@ -47,7 +47,6 @@ class Scrobbler : public QObject, public EngineObserver
             KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
-        void appendSimilar( SubmitItem* item ) const;
         QString m_similarArtistsBuffer;
         QString m_artist;
         long m_prevPos;

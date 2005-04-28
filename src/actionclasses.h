@@ -140,12 +140,6 @@ namespace amaroK
     };
 
 
-    class AppendAction : public ToggleAction
-    {
-        public:
-            AppendAction( KActionCollection *ac );
-    };
-
     class PartyAction : public ToggleAction
     {
         public:

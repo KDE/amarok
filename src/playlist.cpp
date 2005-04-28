@@ -420,35 +420,41 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
     QString text;
-    if ( type == "Random" ) {
-        if ( songCount > 1 )
-            text = i18n("Adding random tracks.");
-        else
-            text = i18n("Adding random track.");
-        amaroK::StatusBar::instance()->shortMessage( text );
-    } else if ( type == "Suggestion" ) {
-        if ( songCount > 1 )
-            text = i18n("Adding suggested tracks.");
-        else
-            text = i18n("Adding suggested track.");
+    if ( type == "Random" )
+    {
+        songCount > 1 ?
+            amaroK::StatusBar::instance()->shortMessage( i18n("Adding random tracks.") ):
+            amaroK::StatusBar::instance()->shortMessage( i18n("Adding random track.") );
 
+    }
+    else if ( type == "Suggestion" )
+    {
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
-        amaroK::StatusBar::instance()->shortMessage( text );
-    } else { //we have playlists to choose from.
+        songCount > 1 ?
+            amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested tracks.") ):
+            amaroK::StatusBar::instance()->shortMessage( i18n("Adding suggested track.") );
+    }
+    else //we have playlists to choose from.
+    {
         if ( songCount > 1 )
             text = i18n("Adding tracks from custom filter.");
         else
             text = i18n("Adding track from custom filter.");
 
         QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
-        amaroK::StatusBar::instance()->shortMessage( text );
+
+        songCount > 1 ?
+            amaroK::StatusBar::instance()->shortMessage( i18n("Adding tracks from custom filter.") ):
+            amaroK::StatusBar::instance()->shortMessage( i18n("Adding track from custom filter.") );
+
         addSpecialCustomTracks( songCount, playlists );
         return;
     }
 
     qb.setLimit( 0, songCount );
     QStringList url = qb.run();
+    //FIXME: No items to add or if user wants non-unique entries!
     insertMedia( KURL::List( url ), Playlist::Unique );
 }
 
@@ -612,11 +618,10 @@ Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
     if( !entire && !m_currentTrack )
         return;
 
-    int x=0;
-    for( MyIterator it( this, MyIterator::Visible ) ; *it ; ++it, x++ )
+    for( MyIterator it( this, MyIterator::Visible ) ; *it ; ++it )
     {
         if( !entire )
-            if ( x == AmarokConfig::partyPreviousCount() ) break;
+            if ( *it == m_currentTrack ) break;
         //avoid repainting if we can.
         if( (*it)->isEnabled() != enable )
         {
@@ -750,21 +755,26 @@ Playlist::advancePartyTrack()
 {
     MyIterator it( this, MyIterator::Visible );
 
-    for( uint x=0 ; *it; ++it, x++ )
+    uint x;
+    for( x=0 ; *it; ++it, x++ )
     {
-        if ( *it == currentTrack() )
+        if( *it == currentTrack() )
         {
             (*it)->setEnabled( false );
-            if ( (int)x < AmarokConfig::partyPreviousCount() )
+            if( (int)x < AmarokConfig::partyPreviousCount() )
                 break;
-            PlaylistItem *first = firstChild();
-            removeItem( first ); //first visible item
-            delete first;
+
+            if( AmarokConfig::partyCycleTracks() )
+            {
+                PlaylistItem *first = firstChild();
+                removeItem( first ); //first visible item
+                delete first;
+            }
         }
     }
 
     //keep upcomingTracks requirement
-    addSpecialTracks( 1, AmarokConfig::partyType() );
+    addSpecialTracks( AmarokConfig::partyAppendCount(), AmarokConfig::partyType() );
     m_partyDirt = true;
 }
 
