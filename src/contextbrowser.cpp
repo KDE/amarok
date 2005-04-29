@@ -2423,8 +2423,10 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( QRegExp( "<textarea[^>]*>" ), QString::null );
     m_wiki.replace( "</textarea>" , QString::null );
 
-    //FIXME edit buttons removal doesn't work :( Needs Regexpert!
-    m_wiki.replace( QRegExp( "<div>\[<a href[^>]*>edit</a>]</div>" ), QString::null );
+    //remove "[edit]" links NOTE: it seems to exist some problems with detecting "]". In kate search dialog, it has
+    // to be escaped (\]), but here we get a warning saying that "\]" is an "unknown escape sequence" and it doesn't work.
+    // so we just use the [^d]*div to pass by and match the following </div>.
+    m_wiki.replace( QRegExp( "<div[^>]*>[ \n\t]*\[[ \n\t]*<[ \n\t]*a[ \n\t]*href[^>]*>[ \n\t]*edit[^d]*div[ \n\t]*>" ), QString::null );
 
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( "href=\"http:", "href=\"externalurl:" );
