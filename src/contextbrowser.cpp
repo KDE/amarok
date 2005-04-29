@@ -2435,22 +2435,9 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki.replace( "href= \"/", "href=\"http://en.wikipedia.org/" );
 
     m_wikiPage->begin();
-    m_HTMLSource="";
     m_wikiPage->setUserStyleSheet( m_styleSheet );
 
-    m_HTMLSource.append(
-            "<html>"
-            "<div id='wiki_box' class='box'>"
-                "<div id='wiki_box-header' class='box-header'>"
-                    "<span id='wiki_box-header-title' class='box-header-title'>"
-                    + i18n( "Wikipedia" ) +
-                    "</span>"
-                "</div>"
-                "<div id='wiki_box-body' class='box-body'>"
-                    + m_wiki +
-                "</div>"
-            "</div>"
-                       );
+    m_HTMLSource = "<html><body>";
     m_HTMLSource.append(
             "<div id='wiki_box' class='box'>"
                 "<div id='wiki_box-header' class='box-header'>"
@@ -2460,6 +2447,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                     "</div>"
                     "<div id='wiki_box-body' class='box-body'>"
                         "<ul>"
+
                         "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
                         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) ) +
                         "\">" + i18n( "Title page" ) + "</a></li>"
@@ -2472,20 +2460,27 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) ) +
                         "\">" + i18n( "Album page" ) + "</a></li>"
 
+                        "<li><a href=\"" + m_wikiCurrentUrl.replace("http:", "externalurl:") +
+                        "\">" + i18n( "Open This page in external Browser" ) + "</a></li>"
+
                         "</ul>"
-
-                        "<input type='button' onClick='window.location.href=\""
-                         + m_wikiCurrentUrl.replace("http:", "externalurl:") +
-                        "\";' value='" + i18n( "Open This page in external Browser" ) + "' class='button' />"
-
-                        "<p>"
-                        "Wich ones are better, buttons or links?"
-                        "Could someone please replace this with a toolbar on top?"
-                        "</p>"
                     "</div>"
                 "</div>"
                        );
-    m_HTMLSource.append( "</html>" );
+
+    m_HTMLSource.append(
+            "<div id='wiki_box' class='box'>"
+                "<div id='wiki_box-header' class='box-header'>"
+                    "<span id='wiki_box-header-title' class='box-header-title'>"
+                    + i18n( "Wikipedia" ) +
+                    "</span>"
+                "</div>"
+                "<div id='wiki_box-body' class='box-body'>"
+                    + m_wiki +
+                "</div>"
+            "</div>"
+                       );
+    m_HTMLSource.append( "</body></html>" );
     m_wikiPage->write( m_HTMLSource );
     m_wikiPage->end();
     m_dirtyWikiFetching = false;
