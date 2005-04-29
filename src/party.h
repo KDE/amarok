@@ -63,7 +63,7 @@ class Party : public KDialogBase
 
         QString customList();
 
-    public slots:
+    private slots:
         void    showHelp();
         void    updateButtons();
 
