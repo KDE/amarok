@@ -233,7 +233,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
     rect.addCoords( M, M, -M, -M );
 
-    if( !m_scaledCover.isNull() ) {
+    if( !m_cover.isNull() ) {
         QRect r( rect );
         r.setTop( (size.height() - m_scaledCover.height()) / 2 );
         r.setSize( m_scaledCover.size() );
