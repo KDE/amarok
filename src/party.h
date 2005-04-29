@@ -65,6 +65,7 @@ class Party : public KDialogBase
 
     public slots:
         void    showHelp();
+        void    updateButtons();
 
     private:
         void insertAvailablePlaylists();

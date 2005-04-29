@@ -1,5 +1,5 @@
 /***************************************************************************
-  copyright            : (C) Seb Ruiz <seb100@optusnet.com.au>
+ * copyright            : (C) 2005 Seb Ruiz <seb100@optusnet.com.au>       *
 ***************************************************************************/
 
 /***************************************************************************
@@ -98,6 +98,11 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox,     SLOT( setEnabled(bool) ) );
     connect( m_cycleTracks,   SIGNAL( toggled(bool) ), previousBox,     SLOT( setEnabled(bool) ) );
     connect( helpButton,      SIGNAL( leftClickedURL() ), SLOT( showHelp() ) );
+
+    //update buttons
+    connect( m_playlistSelector, SIGNAL( removed(QListBoxItem *) ), SLOT( updateButtons() ) );
+    connect( m_playlistSelector, SIGNAL( added(QListBoxItem *) ),   SLOT( updateButtons() ) );
+    connect( m_playlistRadio,    SIGNAL( toggled(bool) ),           SLOT( updateButtons() ) );
 
     applySettings();
 }
@@ -198,7 +203,7 @@ QString Party::customList()
     return playlists;
 }
 
-void Party::showHelp()
+void Party::showHelp() //SLOT
 {
     amaroK::StatusBar::instance()->longMessage( i18n(
         "<div align=\"center\"><b>Party Mode</b></div><br>"
@@ -210,4 +215,12 @@ void Party::showHelp()
         "configuration.</p>" ) );
 }
 
+void Party::updateButtons() //SLOT
+{
+    //disbale OK button if no item is in the selected listbox
+    if( m_playlistRadio->isChecked() )
+        enableButtonOK( m_lbSelected->firstItem() );
+    else
+        enableButtonOK( true );
+}
 #include "party.moc"
