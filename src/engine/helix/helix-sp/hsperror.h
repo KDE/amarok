@@ -17,12 +17,13 @@
 struct IUnknown;
 struct IHXErrorMessages;
 struct IHXPlayer;
+class HelixSimplePlayer;
 
 class HSPErrorSink : public IHXErrorSink
 {
 public:
 
-    HSPErrorSink(IUnknown* pUnknown);
+    HSPErrorSink(IUnknown* pUnknown, HelixSimplePlayer *pSplay);
     virtual ~HSPErrorSink();
 
     /*
@@ -60,8 +61,9 @@ public:
 				);
 
 protected:
-    LONG32 m_lRefCount;
-    IHXPlayer* m_pPlayer;
+   LONG32 m_lRefCount;
+   IHXPlayer* m_pPlayer;
+   HelixSimplePlayer *m_splayer;
 
     void   ConvertErrorToString (const ULONG32 ulHXCode, char* pszBuffer, UINT32 ulBufLen);
 };

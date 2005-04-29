@@ -23,8 +23,6 @@
 
 #include "print.h"
 
-#include "globals.h"
-
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
@@ -59,17 +57,17 @@ void hookRealAudio_State(hookState newState);
 #endif	/* defined(__cplusplus) */
 
 HSPClientAdviceSink::HSPClientAdviceSink(IUnknown* pUnknown, LONG32 lClientIndex, HelixSimplePlayer *pSplay)
-    : m_lRefCount (0)
+    : m_splayer(pSplay)
+    , m_lRefCount (0)
     , m_lClientIndex (lClientIndex)
     , m_pUnknown (NULL)
     , m_pRegistry (NULL)
     , m_pScheduler (NULL)
+    , m_position(0)
+    , m_duration(0)
     , m_lCurrentBandwidth(0)
     , m_lAverageBandwidth(0)
     , m_bOnStop(0)
-    , m_position(0)
-    , m_duration(0)
-    , m_splayer(pSplay)
 {
     if (pUnknown)
     {
@@ -191,7 +189,7 @@ STDMETHODIMP
 HSPClientAdviceSink::OnPosLength(UINT32	  ulPosition,
 				   UINT32	  ulLength)
 {
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnPosLength(%ld, %ld)\n", ulPosition, ulLength);
     }
@@ -224,7 +222,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPresentationOpened()
           m_splayer->stop(m_lClientIndex);
     }
 */
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnPresentationOpened()\n");
     }
@@ -241,7 +239,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPresentationOpened()
  */
 STDMETHODIMP HSPClientAdviceSink::OnPresentationClosed()
 {
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnPresentationClosed()\n");
     }
@@ -305,7 +303,7 @@ void HSPClientAdviceSink::GetStatistics (char* pszRegistryKey)
 		*plValue = lValue;
 	    }
 	}
-	if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink || (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode && m_bOnStop))
+	if (m_splayer->bEnableAdviceSink || (m_splayer->bEnableVerboseMode && m_bOnStop))
 	{
 	    STDOUT("%s = %ld\n", szRegistryValue, lValue);
 	}
@@ -318,7 +316,7 @@ void HSPClientAdviceSink::GetAllStatistics(void)
     UINT32  unSourceIndex = 0;
     UINT32  unStreamIndex = 0;
 
-    char*   pszRegistryPrefix = "Statistics";
+    const char*   pszRegistryPrefix = "Statistics";
     char    szRegistryName[MAX_DISPLAY_NAME] = {0}; /* Flawfinder: ignore */
 
     // display the content of whole statistic registry
@@ -375,7 +373,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStatisticsChanged(void)
     HX_RESULT   res     = HXR_OK;
     UINT16      uPlayer = 0;
 
-    if(HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if(m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnStatisticsChanged():\n");
         
@@ -473,7 +471,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPreSeek(	ULONG32	ulOldTime,
 						ULONG32	ulNewTime)
 {
 #if !defined(__TCS__)
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnPreSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
     }
@@ -496,7 +494,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPreSeek(	ULONG32	ulOldTime,
 STDMETHODIMP HSPClientAdviceSink::OnPostSeek(	ULONG32	ulOldTime,
 						ULONG32	ulNewTime)
 {
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnPostSeek(%ld, %ld)\n", ulOldTime, ulNewTime);
     }
@@ -517,12 +515,12 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
 {
     HXTimeval now;
 
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnStop()\n");
     }
 
-    if (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode)
+    if (m_splayer->bEnableVerboseMode)
     {
         STDOUT("Player %ld stopped.\n", m_lClientIndex);
         m_bOnStop = TRUE;
@@ -534,7 +532,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
     now = m_pScheduler->GetCurrentSchedulerTime();
     m_ulStopTime = now.tv_sec;
 
-    HelixSimplePlayer::GetGlobal()->g_ulNumSecondsPlayed = m_ulStopTime - m_ulStartTime;
+    m_splayer->m_ulNumSecondsPlayed = m_ulStopTime - m_ulStartTime;
 
     return HXR_OK;
 }
@@ -550,7 +548,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
  */
 STDMETHODIMP HSPClientAdviceSink::OnPause(ULONG32 ulTime)
 {
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnPause(%ld)\n", ulTime);
     }
@@ -573,12 +571,12 @@ STDMETHODIMP HSPClientAdviceSink::OnBegin(ULONG32 ulTime)
     HXTimeval now;
 
 #if !defined(__TCS__)
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnBegin(%ld)\n", ulTime);
     }
 
-    if (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode)
+    if (m_splayer->bEnableVerboseMode)
     {
         STDOUT("Player %ld beginning playback...\n", m_lClientIndex);
     }
@@ -606,7 +604,7 @@ STDMETHODIMP HSPClientAdviceSink::OnBegin(ULONG32 ulTime)
 STDMETHODIMP HSPClientAdviceSink::OnBuffering(ULONG32	ulFlags,
 						UINT16	unPercentComplete)
 {
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnBuffering(%ld, %d)\n", ulFlags, unPercentComplete);
     }
@@ -625,7 +623,7 @@ STDMETHODIMP HSPClientAdviceSink::OnBuffering(ULONG32	ulFlags,
  */
 STDMETHODIMP HSPClientAdviceSink::OnContacting(const char* pHostName)
 {
-    if (HelixSimplePlayer::GetGlobal()->bEnableAdviceSink)
+    if (m_splayer->bEnableAdviceSink)
     {
         STDOUT("OnContacting(\"%s\")\n", pHostName);
     }

@@ -20,14 +20,14 @@
 #include <stdio.h>
 #include "print.h"
 
-#include "globals.h"
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
 
-HSPErrorSink::HSPErrorSink(IUnknown* pUnknown) 
+HSPErrorSink::HSPErrorSink(IUnknown* pUnknown, HelixSimplePlayer *pSplay) 
     : m_lRefCount(0),
-      m_pPlayer(NULL)
+      m_pPlayer(NULL),
+      m_splayer(pSplay)
 {
     IHXClientEngine* pEngine = NULL;
     pUnknown->QueryInterface(IID_IHXClientEngine, (void**)&pEngine );
@@ -111,16 +111,16 @@ STDMETHODIMP_(ULONG32) HSPErrorSink::Release()
 
 STDMETHODIMP 
 HSPErrorSink::ErrorOccurred(const UINT8 unSeverity,  
-                                const ULONG32   ulHXCode,
-                                const ULONG32   ulUserCode,
-                                const char* pUserString,
-                                const char* pMoreInfoURL
-                                )
+                            const ULONG32   ulHXCode,
+                            const ULONG32   ulUserCode,
+                            const char* pUserString,
+                            const char* pMoreInfoURL
+                            )
 {
     char HXDefine[256]; /* Flawfinder: ignore */
 
     // Store the code, so we can return it from main()
-    HelixSimplePlayer::GetGlobal()->g_Error = ulHXCode;
+    m_splayer->m_Error = ulHXCode;
 
     ConvertErrorToString(ulHXCode, HXDefine, 256);
 

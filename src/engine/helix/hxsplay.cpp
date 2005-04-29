@@ -36,8 +36,6 @@ void HXSplay::init(const char *corelibpath,
                    const char *codecspath, 
                    int numPlayers)
 {
-   char tmp[MAXPATHLEN];
-
    m_Err =0;
 
    if (!m_Err)

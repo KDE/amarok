@@ -538,7 +538,7 @@ int safe_int_func_call(LONG32 f);
 #if defined (_WINDOWS)
 __inline void __cdecl HXTrace(const char* x, ...) { }
 #else
-static __inline void HXTrace(const char* x, ...) {}
+static __inline void HXTrace(const char* /* x */, ...) {}
 #endif
 
 #define HX_TRACE              		1 ? (void)0 : ::HXTrace

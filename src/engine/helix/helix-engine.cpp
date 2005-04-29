@@ -48,10 +48,10 @@ static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPat
 
 HelixEngine::HelixEngine()
    : EngineBase(), HXSplay(),
+     m_state(Engine::Empty),
      m_coredir("/usr/local/RealPlayer/common"),
      m_pluginsdir("/usr/local/RealPlayer/plugins"),
-     m_codecsdir("/usr/local/RealPlayer/codecs"),
-     m_state(Engine::Empty)
+     m_codecsdir("/usr/local/RealPlayer/codecs")
 {
     addPluginProperty( "StreamingMode", "Socket" );
     addPluginProperty( "HasConfigure", "true" );
@@ -153,7 +153,7 @@ HelixEngine::stop()
    emit stateChanged( Engine::Empty );
 }
 
-void HelixEngine::play_finished(int playerIndex)
+void HelixEngine::play_finished(int /*playerIndex*/)
 {
    debug() << "Ok, finished playing the track, so now I'm idle\n";
    m_state = Engine::Idle;
@@ -229,9 +229,8 @@ HelixEngine::setVolumeSW( uint vol )
 bool
 HelixEngine::canDecode( const KURL &url ) const
 {
-
-   debug() << "In canDecode\n";   
-    //TODO check if the url really is supported by Helix
+   debug() << "In canDecode " << url.prettyURL() << endl;   
+   //TODO check if the url really is supported by Helix
    return true;
 }
 

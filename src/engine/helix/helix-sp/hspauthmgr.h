@@ -16,16 +16,19 @@
 
 #include "hxauth.h"
 
+class HelixSimplePlayer;
+
 class HSPAuthenticationManager : public IHXAuthenticationManager
 {
 private:
     INT32 m_lRefCount;
     BOOL  m_bSentPassword;
+    HelixSimplePlayer *m_splayer;
     virtual ~HSPAuthenticationManager();
     //PRIVATE_DESTRUCTORS_ARE_NOT_A_CRIME
 
 public:
-    HSPAuthenticationManager();
+    HSPAuthenticationManager(HelixSimplePlayer *pSplay);
     STDMETHOD(QueryInterface) (THIS_ REFIID riid, void** ppvObj);
     STDMETHOD_(UINT32,AddRef) (THIS);
     STDMETHOD_(UINT32,Release) (THIS);

@@ -19,15 +19,15 @@
 #include "print.h"
 
 
-#include "globals.h"
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
 
 
-HSPAuthenticationManager::HSPAuthenticationManager() :
+HSPAuthenticationManager::HSPAuthenticationManager(HelixSimplePlayer *pSplay) :
     m_lRefCount(0),
-    m_bSentPassword(FALSE)
+    m_bSentPassword(FALSE),
+    m_splayer(pSplay)
 {
 }
 
@@ -82,11 +82,11 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
     if( !m_bSentPassword )
     {
         res = HXR_OK;
-        if (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode)
+        if (m_splayer->bEnableVerboseMode)
             STDOUT("\nSending Username and Password...\n");
 
-        SafeStrCpy(username,  HelixSimplePlayer::GetGlobal()->g_pszUsername, 1024);
-        SafeStrCpy(password,  HelixSimplePlayer::GetGlobal()->g_pszPassword, 1024);
+        SafeStrCpy(username,  m_splayer->m_pszUsername, 1024);
+        SafeStrCpy(password,  m_splayer->m_pszPassword, 1024);
 
         //strip trailing whitespace
         char* c;
@@ -105,7 +105,7 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
         m_bSentPassword = TRUE;
     }
 
-    if (HelixSimplePlayer::GetGlobal()->bEnableVerboseMode && FAILED(res) )
+    if (m_splayer->bEnableVerboseMode && FAILED(res) )
         STDOUT("\nInvalid Username and/or Password.\n");
     
     pResponse->AuthenticationRequestDone(res, username, password);

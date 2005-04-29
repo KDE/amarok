@@ -20,7 +20,6 @@ class IHXErrorSinkControl;
 
 #include <limits.h>
 #include <sys/param.h>
-//#include "hxtypes.h"
 #define MAX_PATH PATH_MAX
 
 #define MAX_PLAYERS 100 // that should do it...
@@ -38,7 +37,7 @@ class IHXAudioPlayer;
 class IHXVolume;
 class IHXPlayerNavigator;
 class IHXClientEngineSelector;
-struct _stGlobals;
+class IHXClientEngine;
 
 class HelixSimplePlayer
 {
@@ -63,23 +62,23 @@ public:
    unsigned long where(int playerIndex) const;                       // where is the player in the playback
    unsigned long duration(int playerIndex) const;                    // how long (ms) is this clip?
    unsigned long getVolume(int playerIndex);                         // get the current volume
-   void initVolume(unsigned short min, unsigned short max, int playerIndex); // called to set the range of the clients volume - mapped onto the device
+   //void initVolume(unsigned short min, unsigned short max, int playerIndex); // called to set the range of the clients volume - mapped onto the device
    void setVolume(unsigned long vol, int playerIndex = ALL_PLAYERS); // set the volume
    void setMute(bool mute, int playerIndex = ALL_PLAYERS);           // set mute: mute = true to mute the volume, false to unmute
    bool getMute(int playerIndex);                                    // get the mute state of the player
    void dispatch();                                                  // dispatch the player(s)
 
-   virtual void onVolumeChange(int playerIndex) {}                   // called when the volume is changed
-   virtual void onMuteChange(int playerIndex) {}                     // called when mute is changed
+   virtual void onVolumeChange(int) {}                   // called when the volume is changed
+   virtual void onMuteChange(int) {}                     // called when mute is changed
 
    int getError() const { return theErr; }
 
    static char* RemoveWrappingQuotes(char* str);
-   //static void  setUsername(const char *username) { GetGlobal()->g_pszUsername = username; }
-   //static void  setPassword(const char *password) { GetGlobal()->g_pszPassword = password; }
-   //static void  setGUIDFile(const char *file) { GetGlobal()->g_pszGUIDFile = file; }
-   static bool  ReadGUIDFile();
-   static struct _stGlobals*& GetGlobal();
+   //void  setUsername(const char *username) { m_pszUsername = username; }
+   //void  setPassword(const char *password) { m_pszPassword = password; }
+   //void  setGUIDFile(const char *file) { m_pszGUIDFile = file; }
+   bool  ReadGUIDFile();
+   //static struct _stGlobals*& GetGlobal();
 
 private:
    void  DoEvent();
@@ -105,7 +104,6 @@ private:
    int                     nTimeDelta;
    int                     nStopTime;
    bool		           bStopTime;
-   char*                   pszGUIDList;
    void*                   core_handle;
    bool 		   bStopping;
    int 		           nPlay;
@@ -133,8 +131,20 @@ public:
    
 private:
 
-   static struct _stGlobals* g_pstGlobals;
+   //static struct _stGlobals* g_pstGlobals;
+   bool                 bEnableAdviceSink;
+   bool                 bEnableVerboseMode;
+   IHXClientEngine*     pEngine;   
+   char*                m_pszUsername;
+   char*                m_pszPassword;
+   char*                m_pszGUIDFile;
+   char*                m_pszGUIDList;
+   int                  m_Error;
+   unsigned long        m_ulNumSecondsPlayed;
 
+   friend class HSPClientAdviceSink;
+   friend class HSPErrorSink;
+   friend class HSPAuthenticationManager;
 };
 
 #endif

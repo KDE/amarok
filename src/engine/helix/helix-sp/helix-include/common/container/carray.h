@@ -313,7 +313,7 @@ CHXPtrArray::End()
 inline 	
 CHXPtrArray::Iterator::Iterator()
     : m_pArray(0),
-      m_idx(NULL)
+      m_idx(0)
 {
 }
 

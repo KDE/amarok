@@ -1,8 +1,12 @@
 noinst_LTLIBRARIES = libhelix-sp.la
 
+# can also be pentiumpro,pentium,i486,i586,i686,amd64,x86_64,alpha,sparc,powerpc
+# need to figure out how to get automake to set this instead...
+arch=pentium
+
 AM_CPPFLAGS = \
     -D_UNIX \
-    -pipe -Wall -Wreturn-type -fno-exceptions --permissive -fno-rtti -Wno-ctor-dtor-privacy -march=pentium \
+    -Wall -Wreturn-type -fno-exceptions -march=$(arch) \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/runtime \

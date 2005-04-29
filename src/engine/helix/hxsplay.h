@@ -28,7 +28,7 @@ public:
    pthr_states state(int playerIndex = 0) const;           // returns the state of the player
 
 protected:
-   virtual void play_finished(int playerIndex) {}
+   virtual void play_finished(int) {}
 
    // play thread
    class PlayerPkg : public QThread

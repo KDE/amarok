@@ -24,7 +24,6 @@
 #include "hspauthmgr.h"
 #include "hspcontext.h"
 
-#include "globals.h"
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
@@ -53,12 +52,12 @@ void HSPClientContext::Init(IUnknown*	    pUnknown,
                             IHXPreferences* pPreferences,
                             char*	    pszGUID)
 {
-    char* pszCipher = NULL;
+   //char* pszCipher = NULL;
 
 	
     m_pClientSink	= new HSPClientAdviceSink(pUnknown, m_lClientIndex, m_splayer);
-    m_pErrorSink	= new HSPErrorSink(pUnknown);
-    m_pAuthMgr          = new HSPAuthenticationManager();
+    m_pErrorSink	= new HSPErrorSink(pUnknown, m_splayer);
+    m_pAuthMgr          = new HSPAuthenticationManager(m_splayer);
 
     if (m_pClientSink)
     {
@@ -189,7 +188,7 @@ STDMETHODIMP
 HSPClientContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 {
     HX_RESULT hResult	= HXR_OK;
-    char*     pszCipher = NULL;
+    //char*     pszCipher = NULL;
     
     if ((stricmp(pref_key, CLIENT_GUID_REGNAME) == 0) &&
 	(*m_pszGUID))

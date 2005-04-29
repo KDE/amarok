@@ -20,6 +20,7 @@
 #include "hxprefs.h"
 #include "hxstrutl.h"
 #include "hxvsrc.h"
+#include "hxresult.h"
 
 #include "hspadvisesink.h"
 #include "hsperror.h"
@@ -34,22 +35,12 @@
 
 #include "dllpath.h"
 
-#include "globals.h" //for global struct.
-
 #include "helix-sp.h"
 #include "hspvoladvise.h"
 #include "utils.h"
 
-struct _stGlobals* HelixSimplePlayer::g_pstGlobals = NULL;
+typedef HX_RESULT (HXEXPORT_PTR FPRMSETDLLACCESSPATH) (const char*);
 
-struct _stGlobals*& HelixSimplePlayer::GetGlobal()
-{
-   if( g_pstGlobals == NULL )
-   {
-      g_pstGlobals = new struct _stGlobals();
-   }
-   return g_pstGlobals;   
-}
 
 class HelixSimplePlayerAudioStreamInfoResponse : public IHXAudioStreamInfoResponse
 {
@@ -122,6 +113,7 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
 {
    m_Player->xf().toStream = pAudioStream;
    STDERR("Stream Added player %d crossfade? %d\n", m_index, m_Player->xf().crossfading);
+   return HXR_OK;
 }
 
 // Constants
@@ -199,12 +191,14 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 {
    STDERR("Volume change: %d\n", uVolume);
    m_Player->onVolumeChange(m_index);
+   return HXR_OK;
 }
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 {
    STDERR("Mute change: %d\n", bMute);
    m_Player->onMuteChange(m_index);
+   return HXR_OK;
 }
 
 /*
@@ -218,13 +212,13 @@ void HelixSimplePlayer::DoEvent()
     mtime.tv_sec  = 0;
     mtime.tv_usec = SLEEP_TIME * 1000;
     usleep(SLEEP_TIME*1000);
-    GetGlobal()->pEngine->EventOccurred(pNothing);
+    pEngine->EventOccurred(pNothing);
 }
 
 /*
  *  handle events for at most nTimeDelta milliseconds
  */
-void HelixSimplePlayer::DoEvents(int nTimeDelta)
+void HelixSimplePlayer::DoEvents(int)
 {
     DoEvent();
 }
@@ -243,7 +237,7 @@ UINT32 HelixSimplePlayer::GetTime()
    return (UINT32)((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
 
-static char* HelixSimplePlayer::RemoveWrappingQuotes(char* str)
+char* HelixSimplePlayer::RemoveWrappingQuotes(char* str)
 {
    int len = strlen(str);
    if (len > 0)
@@ -259,10 +253,10 @@ HelixSimplePlayer::HelixSimplePlayer() :
    theErr(HXR_OK),
    ppHSPContexts(NULL),
    ppPlayers(NULL),
-   pPlayerNavigator(NULL),
    pErrorSink(NULL),
    pErrorSinkControl(NULL),
    ppVolume(NULL),
+   pPlayerNavigator(NULL),
    ppszURL(NULL),
    bURLFound(FALSE),
    nNumPlayers(0),
@@ -270,9 +264,17 @@ HelixSimplePlayer::HelixSimplePlayer() :
    nTimeDelta(DEFAULT_TIME_DELTA),
    nStopTime(DEFAULT_STOP_TIME),
    bStopTime(true),
-   pszGUIDList(NULL),
    bStopping(false),
-   nPlay(0)
+   nPlay(0),
+   bEnableAdviceSink(FALSE),
+   bEnableVerboseMode(FALSE),
+   pEngine(NULL),   
+   m_pszUsername(NULL),
+   m_pszPassword(NULL),
+   m_pszGUIDFile(NULL),
+   m_pszGUIDList(NULL),
+   m_Error(0),
+   m_ulNumSecondsPlayed(0)
 {
    m_xf.crossfading = 0;
 }
@@ -392,17 +394,16 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
     XInitThreads();
 
     // create client engine
-    IHXClientEngine* pEngine;
     if (HXR_OK != fpCreateEngine((IHXClientEngine**)&pEngine))
     {
        theErr = HXR_FAILED;
        return;
     }
-    GetGlobal()->pEngine = pEngine;
+    pEngine = pEngine;
 
     // get the client engine selector
     pCEselect = 0;
-    pEngine->QueryInterface(IID_IHXClientEngineSelector, &pCEselect);
+    pEngine->QueryInterface(IID_IHXClientEngineSelector, (void **) &pCEselect);
     if (pCEselect)
        STDERR("Got the CE selector!\n");
     else
@@ -442,11 +443,10 @@ int HelixSimplePlayer::addPlayer()
    ppHSPContexts[nNumPlayers]->AddRef();
 
    //initialize the example context
-   pszGUIDList = GetGlobal()->g_pszGUIDList;
    char pszGUID[GUID_LEN + 1]; /* Flawfinder: ignore */ // add 1 for terminator
    char* token = NULL;
    IHXPreferences* pPreferences = NULL;
-   IHXClientEngine* pEngine = GetGlobal()->pEngine;
+
    if (HXR_OK != pEngine->CreatePlayer(ppPlayers[nNumPlayers]))
    {
       theErr = HXR_FAILED;
@@ -455,12 +455,12 @@ int HelixSimplePlayer::addPlayer()
    
    pszGUID[0] = '\0';
    
-   if (pszGUIDList)
+   if (m_pszGUIDList)
    {
       // Get next GUID from the GUID list
       if (nNumPlayers == 0)
       {
-         token = strtok(pszGUIDList, "\n\0");
+         token = strtok(m_pszGUIDList, "\n\0");
       }
       else
       {
@@ -597,9 +597,9 @@ HelixSimplePlayer::~HelixSimplePlayer()
       {
          if (ppPlayers[i])
          {
-            if (GetGlobal()->pEngine)
+            if (pEngine)
             {
-               GetGlobal()->pEngine->ClosePlayer(ppPlayers[i]);
+               pEngine->ClosePlayer(ppPlayers[i]);
             }
             ppPlayers[i]->Release();
             ppPlayers[i] = NULL;
@@ -610,34 +610,34 @@ HelixSimplePlayer::~HelixSimplePlayer()
    }
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
-   if (fpCloseEngine && GetGlobal()->pEngine)
+   if (fpCloseEngine && pEngine)
    {
-      fpCloseEngine(GetGlobal()->pEngine);
-      GetGlobal()->pEngine = NULL;
+      fpCloseEngine(pEngine);
+      pEngine = NULL;
    }
 
    dlclose(core_handle);
 
-   if (GetGlobal()->bEnableVerboseMode)
+   if (bEnableVerboseMode)
    {
       STDOUT("\nDone.\n");
    }
    
-   if (GetGlobal()->g_pszUsername)
+   if (m_pszUsername)
    {
-      delete [] GetGlobal()->g_pszUsername;
+      delete [] m_pszUsername;
    }
-   if (GetGlobal()->g_pszPassword)
+   if (m_pszPassword)
    {
-      delete [] GetGlobal()->g_pszPassword;
+      delete [] m_pszPassword;
    }
-   if (GetGlobal()->g_pszGUIDFile)
+   if (m_pszGUIDFile)
    {
-      delete [] GetGlobal()->g_pszGUIDFile;
+      delete [] m_pszGUIDFile;
    }
-   if (GetGlobal()->g_pszGUIDList)
+   if (m_pszGUIDList)
    {
-      delete [] GetGlobal()->g_pszGUIDList;
+      delete [] m_pszGUIDList;
    }
    
    // If an an error occurred in this function return it
@@ -646,16 +646,16 @@ HelixSimplePlayer::~HelixSimplePlayer()
       return;
    }
    // If an error occurred during playback, return that
-   else if (GetGlobal()->g_Error != HXR_OK)
+   else if (m_Error != HXR_OK)
    {
-      theErr = GetGlobal()->g_Error; 
+      theErr = m_Error; 
       return;
    }
    // If all went well, return the number of seconds played (if there
    // was only one player)...
    else if (nNumPlayers == 1)
    {
-      theErr = GetGlobal()->g_ulNumSecondsPlayed;
+      theErr = m_ulNumSecondsPlayed;
       return;
    }
    // or HXR_OK (if there was more than one player)
@@ -689,7 +689,7 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       if (!tmp)
       {
          char pszURLOrig[MAXPATHLEN];
-         char* pszAddOn;
+         const char* pszAddOn;
          
          strcpy(pszURLOrig, file);
          RemoveWrappingQuotes(pszURLOrig);
@@ -756,7 +756,7 @@ void HelixSimplePlayer::disableCrossFader()
 }
 
 // the purpose is to setup the next stream for crossfading.  the player needs to get the new stream in the AudioPlayerResponse before the cross fade can begin
-void HelixSimplePlayer::crossFade(const char *url, unsigned long startPos, unsigned long xfduration)
+void HelixSimplePlayer::crossFade(const char *url, unsigned long /*startPos*/, unsigned long xfduration)
 {
    if (m_xf.crossfading)
    {
@@ -780,7 +780,7 @@ void HelixSimplePlayer::startCrossFade()
    {
       // figure out when to start the crossfade
       int startFrom = duration(xf().fromIndex) - xf().duration;
-      int whereFrom = where(xf().fromIndex) + 1000; // 1 sec is just majic...otherwise the crossfader just doesnt work
+      //int whereFrom = where(xf().fromIndex) + 1000; // 1 sec is just majic...otherwise the crossfader just doesnt work
 
       // only fade in the new stream if we are playing one already
       if (xf().fromStream)
@@ -788,10 +788,10 @@ void HelixSimplePlayer::startCrossFade()
          STDERR("Player %d where %d  duration %d  startFrom %d\n", xf().fromIndex, where(xf().fromIndex), duration(xf().fromIndex), startFrom);
          
          // fade out the now-playing-stream
-         (getCrossFader(xf().fromIndex))->CrossFade(xf().fromStream, 0, startFrom > whereFrom ? startFrom : whereFrom, 0, xf().duration);
+         //(getCrossFader(xf().fromIndex))->CrossFade(xf().fromStream, 0, startFrom > whereFrom ? startFrom : whereFrom, 0, xf().duration);
 
          // fade in the new stream
-         (getCrossFader(xf().toIndex))->CrossFade(0, xf().toStream, 0, 0, xf().duration);
+         //(getCrossFader(xf().toIndex))->CrossFade(0, xf().toStream, 0, 0, xf().duration);
          start(xf().toIndex);
          
          // switch from and to for the next stream
@@ -827,7 +827,7 @@ void HelixSimplePlayer::play(int playerIndex)
    while(nPlay < nNumPlayRepeats) 
    {
       nPlay++;
-      if (GetGlobal()->bEnableVerboseMode)
+      if (bEnableVerboseMode)
       {
          STDOUT("Starting play #%d...\n", nPlay);
       }
@@ -866,7 +866,7 @@ void HelixSimplePlayer::play(int playerIndex)
          if (!bStopping && bStopTime && now >= endtime)
          {
 	    // Stop all of the players, as they should all be done now
-	    if (GetGlobal()->bEnableVerboseMode)
+	    if (bEnableVerboseMode)
 	    {
                STDOUT("\nEnd (Stop) time reached. Stopping...\n");
 	    }
@@ -877,7 +877,7 @@ void HelixSimplePlayer::play(int playerIndex)
       }
 
       // Stop all of the players, as they should all be done now
-      if (GetGlobal()->bEnableVerboseMode)
+      if (bEnableVerboseMode)
       {
          STDOUT("\nPlayback complete. Stopping all players...\n");
       }
@@ -900,7 +900,7 @@ void HelixSimplePlayer::start(int playerIndex)
       if (!ppszURL[playerIndex])
          return;
       
-      if (GetGlobal()->bEnableVerboseMode)
+      if (bEnableVerboseMode)
       {
          STDOUT("Starting player %d...\n", playerIndex);
       }
@@ -963,7 +963,7 @@ void HelixSimplePlayer::dispatch()
    tv.tv_sec = 0;
    tv.tv_usec = SLEEP_TIME*1000;
    pCEselect->Select(0, 0, 0, 0, &tv);
-   HelixSimplePlayer::GetGlobal()->pEngine->EventOccurred(pNothing);
+   pEngine->EventOccurred(pNothing);
    usleep(1);
 }
 
@@ -1015,8 +1015,8 @@ unsigned long HelixSimplePlayer::duration(int playerIndex) const
    return ppHSPContexts[playerIndex]->duration();
 }
 
-void HelixSimplePlayer::initVolume(unsigned short minV, unsigned short maxV, int playerIndex)
-{
+//void HelixSimplePlayer::initVolume(unsigned short minV, unsigned short maxV, int playerIndex)
+//{
 //   int i;
 //
 //   if (playerIndex == ALL_PLAYERS)
@@ -1027,7 +1027,7 @@ void HelixSimplePlayer::initVolume(unsigned short minV, unsigned short maxV, int
 //   else
 //      if (playerIndex < nNumPlayers)
 //         ppAudioDevice[playerIndex]->InitVolume(minV,maxV);
-}
+//}
 
 unsigned long HelixSimplePlayer::getVolume(int playerIndex)
 {
@@ -1082,17 +1082,17 @@ bool HelixSimplePlayer::ReadGUIDFile()
    int   readSize = 10000;
    char*  pszBuffer = new char[readSize];
 
-   if (GetGlobal()->g_pszGUIDFile)
+   if (m_pszGUIDFile)
    {
-      if((pFile = fopen(GetGlobal()->g_pszGUIDFile, "r")) != NULL)
+      if((pFile = fopen(m_pszGUIDFile, "r")) != NULL)
       {
          // Read in the entire file
          nNumRead = fread(pszBuffer, sizeof(char), readSize, pFile);
          pszBuffer[nNumRead] = '\0';
          
          // Store it for later parsing
-         GetGlobal()->g_pszGUIDList = new char[nNumRead + 1];
-         strcpy(GetGlobal()->g_pszGUIDList, pszBuffer); /* Flawfinder: ignore */
+         m_pszGUIDList = new char[nNumRead + 1];
+         strcpy(m_pszGUIDList, pszBuffer); /* Flawfinder: ignore */
          
          fclose(pFile);
          pFile = NULL;
@@ -1300,11 +1300,11 @@ int main( int argc, char *argv[] )
           }
           SafeStrCpy(pfile, HelixSimplePlayer::RemoveWrappingQuotes(argv[i]), 1024);
           //HelixSimplePlayer::setGUIDFile(pfile);
-          if (!HelixSimplePlayer::ReadGUIDFile())
-          {
-             STDOUT("\nError: Unable to read file specified by -g option.\n\n");
-             return -1;
-          }
+          //if (!HelixSimplePlayer::ReadGUIDFile())
+          //{
+          //   STDOUT("\nError: Unable to read file specified by -g option.\n\n");
+          //   return -1;
+          //}
        }
        else if (0 == stricmp(argv[i], "-l"))
        {
