@@ -4,6 +4,8 @@ def get_mp3_start(fname):
     """ Find where ID3 tags end and file data begins """
 
     f = open(fname, 'r')
+    id3 = f.read(3)
+    if not id3=="ID3": return 0
     f.seek(6)
     l = f.read(4)
     start = bin2dec(bytes2bin(l, 7)) + 10
