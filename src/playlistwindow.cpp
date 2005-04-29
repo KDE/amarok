@@ -465,7 +465,7 @@ void PlaylistWindow::configureParty()
         bool partyEnabled = dialog.isChecked();
         if ( partyEnabled != AmarokConfig::partyMode() )
         {
-            AmarokConfig::setPartyMode( partyEnabled );
+            static_cast<amaroK::PartyAction*>( actionCollection()->action("party_mode") )->setChecked( partyEnabled );
             if ( !partyEnabled )
             {
                 Playlist::instance()->alterHistoryItems( true, true ); //enable all items
