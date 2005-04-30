@@ -2348,7 +2348,7 @@ void ContextBrowser::showWikipedia( const QString &url )
                         "</span>"
                     "</div>"
                     "<div id='wiki_box-body' class='box-body'>"
-                        "<div class='info'><p>" + i18n( "Fetching Wikipedia" ) + " ...</p></div>"
+                        "<div class='info'><p>" + i18n( "Fetching Wikipedia Artist Information" ) + " ...</p></div>"
                     "</div>"
                 "</div>"
                 "</html>"
@@ -2372,7 +2372,7 @@ void ContextBrowser::showWikipedia( const QString &url )
     m_wikiJob = KIO::get( m_wikiCurrentUrl, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
-            .setDescription( i18n( "Fetching Wikipedia" ) );
+            .setDescription( i18n( "Fetching Wikipedia Artist Information" ) );
 
     connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( wikiResult( KIO::Job* ) ) );
