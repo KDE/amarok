@@ -44,7 +44,6 @@ SUBDIRS = . \
     $(ARTS_ENGINE_SUBDIR) \
     $(MAS_ENGINE_SUBDIR) \
     $(NMM_ENGINE_SUBDIR) \
-    $(AKODE_ENGINE_SUBDIR)
-
-
+    $(AKODE_ENGINE_SUBDIR) \
+    helix
 
