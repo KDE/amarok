@@ -15,6 +15,7 @@ class KTabBar;
 class KTempFile;
 class MetaBundle;
 class QPalette;
+class QVBox;
 
 namespace KIO { class Job; class TransferJob; }
 
@@ -76,6 +77,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KHTMLPart    *m_homePage;
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
+        
+        QVBox        *m_wikiTab;
         KHTMLPart    *m_wikiPage;
         // These control if is needed to rewrite the html for the pages
         // true -> need rebuild

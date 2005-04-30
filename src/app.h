@@ -61,7 +61,6 @@ class App : public KApplication, public EngineObserver
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
-        void slotConfigEffects( bool = true );
         void slotConfigEqualizer();
         void firstRunWizard();
 

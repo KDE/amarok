@@ -284,13 +284,10 @@ PlaylistWindow::init()
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
     actionCollection()->action("party_mode")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
-    m_settingsMenu->insertItem( i18n( "Configure &Effects..." ), kapp, SLOT( slotConfigEffects() ), 0, amaroK::Menu::ID_SHOW_EFFECTS );
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::Preferences))->plug( m_settingsMenu );
-
-    m_settingsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_EFFECTS, EngineController::engine()->hasEffects() );
 
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu

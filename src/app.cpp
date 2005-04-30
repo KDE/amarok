@@ -405,7 +405,6 @@ void App::applySettings( bool firstTime )
             //we need to explicately set the PL button if it's the first time
             if( !firstTime ) m_pPlayerWindow->show();
 
-            connect( m_pPlayerWindow, SIGNAL(effectsWindowToggled( bool )), SLOT(slotConfigEffects( bool )) );
             connect( m_pPlayerWindow, SIGNAL(playlistToggled( bool )), m_pPlaylistWindow, SLOT(showHide()) );
 
             //TODO get this to work!
@@ -750,28 +749,6 @@ void App::engineVolumeChanged( int newVolume )
     Engine::Playing ? osdImage = QImage::QImage()  :  osdImage = QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
     amaroK::OSD::instance()->OSDWidget::show( newVolume ? i18n("Volume: %1%").arg( newVolume ) : i18n("Mute") );
 }
-
-void App::slotConfigEffects( bool show ) //SLOT
-{
-    if( show )
-    {
-        if ( !EngineController::engine()->hasEffects() )
-            KMessageBox::sorry( 0, i18n( "Effects are not available with this engine." ) );
-
-        else if( !EffectWidget::self )
-        {
-            //safe even if m_pPlayerWindow is 0
-            connect( EffectWidget::self, SIGNAL(destroyed()), m_pPlayerWindow, SLOT(setEffectsWindowShown()) );
-            EffectWidget::self = new EffectWidget( m_pPlaylistWindow );
-        }
-        else EffectWidget::self->raise();
-    }
-    else
-        delete EffectWidget::self; //will set self = 0 in its dtor
-
-    if( m_pPlayerWindow ) m_pPlayerWindow->setEffectsWindowShown( show );
-}
-
 
 void App::slotConfigEqualizer() //SLOT
 {

@@ -5,6 +5,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "browserToolBar.h"
 #include "debug.h"
 #include "collectionbrowser.h" //FIXME for setupDirs()
 #include "collectiondb.h"
@@ -43,6 +44,7 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
+#include <ktoolbar.h>
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
@@ -103,7 +105,11 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage->setJavaEnabled( false );
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
-    m_wikiPage = new KHTMLPart( this, "wiki_page" );
+
+    m_wikiTab = new QVBox( this, "wiki_tab" );
+    KToolBar* wikiToolbar = new Browser::ToolBar(m_wikiTab);
+    m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
+    m_wikiTab->show();
     m_wikiPage->setJavaEnabled( false );
     m_wikiPage->setPluginsEnabled( false );
     m_wikiPage->setDNDEnabled( true );
@@ -116,7 +122,7 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    addTab( m_wikiPage->view(),         SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
+    addTab( m_wikiTab,         SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
