@@ -263,7 +263,7 @@ ScriptManager::slotInstallScript( const QString& path )
     QString _path = path;
 
     if ( path.isNull() ) {
-        KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Script Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
+        KFileDialog dia( QString::null, "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|" + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" ), 0, 0, true );
         kapp->setTopWidget( &dia );
         dia.setCaption( kapp->makeStdCaption( i18n( "Select Script Package" ) ) );
         dia.setMode( KFile::File | KFile::ExistingOnly );
