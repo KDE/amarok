@@ -29,7 +29,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, false, 0, Ok|Cancel )
+    : KDialogBase( parent, name, false, 0, Ok|Cancel|Help )
 {
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n("Configure Party Mode") ) );
@@ -46,10 +46,11 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
     m_base->m_playlistSelector->setEnabled( m_base->m_playlistRadio->isEnabled() );
 
-    connect( m_base->m_partyCheck,    SIGNAL( toggled(bool) ), m_base->m_partyGroupBox, SLOT( setEnabled(bool) ) );
+    // FIXME Showing a StatusBar longMessage doesn't suit very well for help texts
+    connect( this, SIGNAL( helpClicked() ), SLOT( showHelp() ) );
+
     connect( m_base->m_playlistRadio, SIGNAL( toggled(bool) ), m_base->m_playlistSelector,     SLOT( setEnabled(bool) ) );
     connect( m_base->m_cycleTracks,   SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox,     SLOT( setEnabled(bool) ) );
-    connect( m_base->helpButton,      SIGNAL( leftClickedURL() ), SLOT( showHelp() ) );
 
     //update buttons
     connect( m_base->m_playlistSelector, SIGNAL( removed(QListBoxItem *) ), SLOT( updateButtons() ) );
@@ -93,13 +94,7 @@ void Party::applySettings()
         m_base->m_playlistRadio->setChecked( TRUE );
     }
 
-    if ( AmarokConfig::partyMode() ) {
-        m_base->m_partyCheck->setChecked( true );
-        m_base->m_partyGroupBox->setEnabled( true );
-    } else {
-        m_base->m_partyCheck->setChecked( false );
-        m_base->m_partyGroupBox->setEnabled( false );
-    }
+    m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 }
 
 void Party::insertAvailablePlaylists()
