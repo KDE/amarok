@@ -492,6 +492,7 @@ void PlaylistWindow::configureParty()
 
         AmarokConfig::setPartyCycleTracks( dialog.cycleTracks() );
         AmarokConfig::setPartyAppendCount( dialog.appendCount() );
+        AmarokConfig::setPartyMarkHistory( dialog.markHistory() );
 
         amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );

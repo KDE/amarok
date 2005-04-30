@@ -91,6 +91,11 @@
         <whatsthis>Whether to remove first item in playlist.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Party Mark History" type="Bool">
+        <label>Mark History</label>
+        <whatsthis>Whether to mark items in the playlist as history once played.</whatsthis>
+        <default>true</default>
+    </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
         <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>

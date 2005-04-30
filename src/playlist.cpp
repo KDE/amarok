@@ -765,7 +765,7 @@ Playlist::advancePartyTrack()
     {
         if( *it == currentTrack() )
         {
-            (*it)->setEnabled( false );
+            if( AmarokConfig::partyMarkHistory() ) (*it)->setEnabled( false );
             if( x < AmarokConfig::partyPreviousCount() )
                 break;
 

@@ -77,6 +77,7 @@ void Party::applySettings()
     m_base->m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
     m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::partyAppendCount() );
     m_base->m_cycleTracks->setChecked( AmarokConfig::partyCycleTracks() );
+    m_base->m_markHistory->setChecked( AmarokConfig::partyMarkHistory() );
 
     if ( AmarokConfig::partyType() == "Random" ) {
         m_base->m_randomRadio->setChecked( TRUE );
@@ -181,5 +182,6 @@ int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }
 int     Party::upcomingCount() { return m_base->m_upcomingIntSpinBox->value(); }
 int     Party::appendCount()   { return m_base->m_appendCountIntSpinBox->value(); }
 bool    Party::cycleTracks()   { return m_base->m_cycleTracks->isChecked(); }
+bool    Party::markHistory()   { return m_base->m_markHistory->isChecked(); }
 
 #include "party.moc"

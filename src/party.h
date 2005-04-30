@@ -58,6 +58,7 @@ class Party : public KDialogBase
         int     upcomingCount();
         int     appendCount();
         bool    cycleTracks();
+        bool    markHistory();
 
         QString customList();
 
