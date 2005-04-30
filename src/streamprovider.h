@@ -23,10 +23,12 @@ email                : markey@web.de
 #include <qobject.h>
 #include <qserversocket.h>    //baseclass
 #include <qsocket.h>          //stack allocated
+#include <kresolver.h> // namespace
 
 
 class MetaBundle;
 
+using namespace KNetwork;
 namespace amaroK {
     /**
      * Stream radio client, receives shoutcast streams and extracts metadata.
@@ -80,6 +82,7 @@ namespace amaroK {
 
         private slots:
             void accept( int socket );
+            void resolved(KResolverResults result);
             void connectToHost();
             void sendRequest();
             void readRemote();
@@ -128,6 +131,7 @@ namespace amaroK {
 
             QSocket m_sockRemote;
             QSocket m_sockProxy;
+            KResolver m_resolver;
     };
 
 

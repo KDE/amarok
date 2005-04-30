@@ -56,6 +56,8 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
     connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
     connect( &m_sockRemote, SIGNAL( connected() ),  this, SLOT( sendRequest() ) );
     connect( &m_sockRemote, SIGNAL( readyRead() ),  this, SLOT( readRemote() ) );
+    connect( &m_resolver, SIGNAL( finished(KResolverResults) ), this,
+             SLOT(resolved(KResolverResults) ) );    
 
     if ( streamingMode == "Socket" ) {
         uint i;
@@ -136,11 +138,20 @@ StreamProvider::connectToHost() //SLOT
 
     { //connect to server
         QTimer::singleShot( KProtocolManager::connectTimeout() * 1000, this, SLOT( connectError() ) );
-        m_sockRemote.connectToHost( m_url.host(), m_url.port() );
+        m_resolver.setNodeName( m_url.host() );
+        m_resolver.setFamily( KResolver::InetFamily );
+        m_resolver.start();
     }
 }
 
-
+void
+StreamProvider::resolved( KResolverResults result) // SLOT
+{
+    DEBUG_BLOCK
+    
+    if (result.error()!= KResolver::NoError || !result.count()) connectError();
+    else m_sockRemote.connectToHost( result[0].address().asInet().nodeName(), m_url.port() );
+}
 void
 StreamProvider::sendRequest() //SLOT
 {
@@ -230,6 +241,8 @@ StreamProvider::connectError() //SLOT
 {
     if ( !m_connectSuccess ) {
         warning() << "Unable to connect to this stream server." << endl;
+        // it might have been timed out attempt to resolve host
+        m_resolver.cancel( false );
         amaroK::StatusBar::instance()->longMessage( i18n( "Unable to connect to this stream server." ), amaroK::StatusBar::Sorry );
 
         emit sigError();
@@ -299,7 +312,7 @@ StreamProvider::transmitData( const QString &data )
     // because we assumed latin1 earlier this codec conversion works
     QTextCodec *codec = ( AmarokConfig::recodeShoutcastMetadata() && AmarokConfig::recodeEncoding() )
             ? QTextCodec::codecForIndex( AmarokConfig::recodeEncoding() )
-            : QTextCodec::codecForName( "ISO8859-1" ); //specifying "Latin1" returns 0
+            : QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
 
     if ( !codec ) {
         error() << "QTextCodec* codec == NULL!" << endl;
