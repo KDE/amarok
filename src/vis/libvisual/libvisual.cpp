@@ -42,7 +42,7 @@ main( int argc, char** argv )
 
         const char *plugin = NULL;
 
-        while( plugin = visual_actor_get_next_by_name( plugin ) )
+        while( (plugin = visual_actor_get_next_by_name( plugin )) )
             std::cout << plugin << '\n';
 
         std::exit( 0 );
