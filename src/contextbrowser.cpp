@@ -2472,7 +2472,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
             "<div id='wiki_box' class='box'>"
                 "<div id='wiki_box-header' class='box-header'>"
                     "<span id='wiki_box-header-title' class='box-header-title'>"
-                    + i18n( "Wikipedia" ) +
+                    + i18n( "Wikipedia Artist Information" ) +
                     "</span>"
                 "</div>"
                 "<div id='wiki_box-body' class='box-body'>"
