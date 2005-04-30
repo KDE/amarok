@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * New ScriptManager notification: "volumeChange: int".
     * Tooltips for album covers in the CoverManager. (BR 103996)
     * Automatic download of themes and scripts via KNewStuff.
     * Different analyzers available for the playlist window.

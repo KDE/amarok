@@ -45,6 +45,7 @@ class KProcIO;
  *   configure
  *   engineStateChange: {empty|idle|paused|playing}
  *   trackChange
+ *   volumeChange: newVolume (range: 0-100)
  *
  * @see http://amarok.kde.org/wiki/index.php/Script-Writing_HowTo
  */
@@ -106,9 +107,10 @@ class ScriptManager : public KDialogBase, public EngineObserver
         /** Copies the file permissions from the tarball and loads the script */
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
-        /** Observer reimplementations **/
+        /** EngineObserver reimplementations **/
         void engineStateChanged( Engine::State state );
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ );
+        void engineVolumeChanged( int newVolume );
 
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_base;

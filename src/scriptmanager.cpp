@@ -615,4 +615,11 @@ ScriptManager::engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChan
 }
 
 
+void
+ScriptManager::engineVolumeChanged( int newVolume )
+{
+    notifyScripts( "volumeChange: " + QString::number( newVolume ) );
+}
+
+
 #include "scriptmanager.moc"
