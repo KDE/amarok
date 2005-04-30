@@ -14,17 +14,11 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "party.h"
+#include "partydialogbase.h"
 #include "smartplaylist.h"
 #include "statusbar.h"
 
-#include <qbuttongroup.h>
-#include <qfile.h>
-#include <qlabel.h>
-#include <qlistbox.h>
-#include <qradiobutton.h>
-#include <qvbox.h>
-#include <qvgroupbox.h>
-
+#include <kapplication.h>
 #include <kactionselector.h>
 #include <klocale.h>
 #include <kurllabel.h>
@@ -34,84 +28,41 @@
 ////////////////////////////////////////////////////////////////////////////
 
 Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n("Start a Party"), Ok|Cancel)
+    : KDialogBase( parent, name, false, 0, Ok|Cancel )
 {
-    makeVBoxMainWidget();
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n("Configure Party Mode") ) );
 
-    QVBox *partyBox = new QVBox( mainWidget() );
-    QHBox *partyBoxT = new QHBox( partyBox );
-    m_partyCheck = new QCheckBox( i18n("Enable party mode" ), partyBoxT );
+    m_base = new PartyDialogBase(this);
+    setMainWidget(m_base);
 
-    KURLLabel *helpButton = new KURLLabel( partyBoxT );
-    helpButton->setText( i18n("Help") );
-
-    m_partyGroupBox = new QVGroupBox( QString::null, mainWidget() );
-    new QLabel( i18n("Type of song to append to playlist:"), m_partyGroupBox );
-    QVBox *selectorBox = new QVBox( m_partyGroupBox );
-    partyBox->setSpacing( 5 );
-
-    m_buttonGroup = new QButtonGroup( i18n("Append Song Type") );
-
-    m_randomRadio = new QRadioButton( i18n("Random Song"), selectorBox );
-    m_buttonGroup->insert( m_randomRadio );
-
-    m_suggestionRadio = new QRadioButton( i18n("Suggested Song"), selectorBox );;
-    m_buttonGroup->insert( m_suggestionRadio );
-
-    m_playlistRadio = new QRadioButton( i18n("Random song from one of the following:"), selectorBox );
-    m_buttonGroup->insert( m_playlistRadio );
-
-    QVBox *playlistBox = new QVBox( selectorBox );
-
-    m_playlistSelector = new KActionSelector( playlistBox );
-    m_playlistSelector->setShowUpDownButtons( false );
-    m_playlistSelector->setAvailableLabel( i18n("Available playlists:") );
-    m_playlistSelector->setSelectedLabel( i18n("Selected playlists:") );
-
-    m_lbSelected  = m_playlistSelector->selectedListBox();
-    m_lbAvailable = m_playlistSelector->availableListBox();
+    m_lbSelected  = m_base->m_playlistSelector->selectedListBox();
+    m_lbAvailable = m_base->m_playlistSelector->availableListBox();
 
     insertSelectedPlaylists();
     insertAvailablePlaylists();  //requires that insertSelectedPlaylists() has been called first.
 
-    QVBox *optionBox = new QVBox( m_partyGroupBox );
-    optionBox->setSpacing( 5 );
+    m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
+    m_base->m_playlistSelector->setEnabled( m_base->m_playlistRadio->isEnabled() );
 
-    m_cycleTracks = new QCheckBox( i18n("Cycle Tracks"), optionBox );
-
-    QHBox *previousBox = new QHBox( optionBox );
-    new QLabel( i18n("Maximum history to show:"), previousBox );
-    m_previousIntSpinBox = new KIntSpinBox( previousBox );
-
-    QHBox *upcomingBox = new QHBox( optionBox );
-    new QLabel( i18n("Minimum upcoming tracks:"), upcomingBox );
-    m_upcomingIntSpinBox = new KIntSpinBox( upcomingBox );
-
-    QHBox *appendBox = new QHBox( optionBox );
-    new QLabel( i18n("Number of tracks to append:"), appendBox );
-    m_tracksToAddSpinBox = new KIntSpinBox( appendBox );
-
-    previousBox->setEnabled( m_cycleTracks->isEnabled() );
-    playlistBox->setEnabled( m_playlistRadio->isEnabled() );
-
-    connect( m_partyCheck,    SIGNAL( toggled(bool) ), m_partyGroupBox, SLOT( setEnabled(bool) ) );
-    connect( m_playlistRadio, SIGNAL( toggled(bool) ), playlistBox,     SLOT( setEnabled(bool) ) );
-    connect( m_cycleTracks,   SIGNAL( toggled(bool) ), previousBox,     SLOT( setEnabled(bool) ) );
-    connect( helpButton,      SIGNAL( leftClickedURL() ), SLOT( showHelp() ) );
+    connect( m_base->m_partyCheck,    SIGNAL( toggled(bool) ), m_base->m_partyGroupBox, SLOT( setEnabled(bool) ) );
+    connect( m_base->m_playlistRadio, SIGNAL( toggled(bool) ), m_base->m_playlistSelector,     SLOT( setEnabled(bool) ) );
+    connect( m_base->m_cycleTracks,   SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox,     SLOT( setEnabled(bool) ) );
+    connect( m_base->helpButton,      SIGNAL( leftClickedURL() ), SLOT( showHelp() ) );
 
     //update buttons
-    connect( m_playlistSelector, SIGNAL( removed(QListBoxItem *) ), SLOT( updateButtons() ) );
-    connect( m_playlistSelector, SIGNAL( added(QListBoxItem *) ),   SLOT( updateButtons() ) );
-    connect( m_playlistRadio,    SIGNAL( toggled(bool) ),           SLOT( updateButtons() ) );
+    connect( m_base->m_playlistSelector, SIGNAL( removed(QListBoxItem *) ), SLOT( updateButtons() ) );
+    connect( m_base->m_playlistSelector, SIGNAL( added(QListBoxItem *) ),   SLOT( updateButtons() ) );
+    connect( m_base->m_playlistRadio,    SIGNAL( toggled(bool) ),           SLOT( updateButtons() ) );
 
     applySettings();
 }
 
 QString Party::appendType()
 {
-    if( m_buttonGroup->selectedId() == 0 )
+    if( m_base->m_buttonGroup->selectedId() == 0 )
         return "Random";
-    else if( m_buttonGroup->selectedId() == 1 )
+    else if( m_base->m_buttonGroup->selectedId() == 1 )
         return "Suggestion";
     else
         return "Custom";
@@ -119,33 +70,33 @@ QString Party::appendType()
 
 void Party::applySettings()
 {
-    m_partyCheck->setChecked( AmarokConfig::partyMode() );
+    m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 
-    m_upcomingIntSpinBox->setValue( AmarokConfig::partyUpcomingCount() );
-    m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
-    m_tracksToAddSpinBox->setValue( AmarokConfig::partyAppendCount() );
-    m_cycleTracks->setChecked( AmarokConfig::partyCycleTracks() );
+    m_base->m_upcomingIntSpinBox->setValue( AmarokConfig::partyUpcomingCount() );
+    m_base->m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
+    m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::partyAppendCount() );
+    m_base->m_cycleTracks->setChecked( AmarokConfig::partyCycleTracks() );
 
     if ( AmarokConfig::partyType() == "Random" ) {
-        m_randomRadio->setChecked( TRUE );
-        m_suggestionRadio->setChecked( false );
-        m_playlistRadio->setChecked( false );
+        m_base->m_randomRadio->setChecked( TRUE );
+        m_base->m_suggestionRadio->setChecked( false );
+        m_base->m_playlistRadio->setChecked( false );
     } else if ( AmarokConfig::partyType() == "Suggestion" ) {
-        m_randomRadio->setChecked( false );
-        m_suggestionRadio->setChecked( TRUE );
-        m_playlistRadio->setChecked( false );
+        m_base->m_randomRadio->setChecked( false );
+        m_base->m_suggestionRadio->setChecked( TRUE );
+        m_base->m_playlistRadio->setChecked( false );
     } else {
-        m_randomRadio->setChecked( false );
-        m_suggestionRadio->setChecked( false );
-        m_playlistRadio->setChecked( TRUE );
+        m_base->m_randomRadio->setChecked( false );
+        m_base->m_suggestionRadio->setChecked( false );
+        m_base->m_playlistRadio->setChecked( TRUE );
     }
 
     if ( AmarokConfig::partyMode() ) {
-        m_partyCheck->setChecked( true );
-        m_partyGroupBox->setEnabled( true );
+        m_base->m_partyCheck->setChecked( true );
+        m_base->m_partyGroupBox->setEnabled( true );
     } else {
-        m_partyCheck->setChecked( false );
-        m_partyGroupBox->setEnabled( false );
+        m_base->m_partyCheck->setChecked( false );
+        m_base->m_partyGroupBox->setEnabled( false );
     }
 }
 
@@ -218,9 +169,16 @@ void Party::showHelp() //SLOT
 void Party::updateButtons() //SLOT
 {
     //disbale OK button if no item is in the selected listbox
-    if( m_playlistRadio->isChecked() )
+    if( m_base->m_playlistRadio->isChecked() )
         enableButtonOK( m_lbSelected->firstItem() );
     else
         enableButtonOK( true );
 }
+
+bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
+int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }
+int     Party::upcomingCount() { return m_base->m_upcomingIntSpinBox->value(); }
+int     Party::appendCount()   { return m_base->m_appendCountIntSpinBox->value(); }
+bool    Party::cycleTracks()   { return m_base->m_cycleTracks->isChecked(); }
+
 #include "party.moc"

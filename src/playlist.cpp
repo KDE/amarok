@@ -420,14 +420,14 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
     QString text;
-    if ( type == "Random" )
+    if( type == "Random" )
     {
         songCount > 1 ?
             amaroK::StatusBar::instance()->shortMessage( i18n("Adding random tracks.") ):
             amaroK::StatusBar::instance()->shortMessage( i18n("Adding random track.") );
 
     }
-    else if ( type == "Suggestion" )
+    else if( type == "Suggestion" )
     {
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
@@ -437,12 +437,17 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     }
     else //we have playlists to choose from.
     {
-        if ( songCount > 1 )
+        if( songCount > 1 )
             text = i18n("Adding tracks from custom filter.");
         else
             text = i18n("Adding track from custom filter.");
 
         QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
+        if( playlists.isEmpty() ) //incase the user decides to mess with amarokrc
+        {
+            amaroK::StatusBar::instance()->shortMessage( i18n("No playlists to retrieve track from, bailing out.") );
+            return;
+        }
 
         songCount > 1 ?
             amaroK::StatusBar::instance()->shortMessage( i18n("Adding tracks from custom filter.") ):
@@ -755,13 +760,13 @@ Playlist::advancePartyTrack()
 {
     MyIterator it( this, MyIterator::Visible );
 
-    uint x;
+    int x;
     for( x=0 ; *it; ++it, x++ )
     {
         if( *it == currentTrack() )
         {
             (*it)->setEnabled( false );
-            if( (int)x < AmarokConfig::partyPreviousCount() )
+            if( x < AmarokConfig::partyPreviousCount() )
                 break;
 
             if( AmarokConfig::partyCycleTracks() )
@@ -774,7 +779,9 @@ Playlist::advancePartyTrack()
     }
 
     //keep upcomingTracks requirement
-    addSpecialTracks( AmarokConfig::partyAppendCount(), AmarokConfig::partyType() );
+    int appendNo = AmarokConfig::partyAppendCount();
+    kdDebug() << "[PARTY] Appending " << appendNo << " " << AmarokConfig::partyType() << " tracks." << endl;
+    if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::partyType() );
     m_partyDirt = true;
 }
 

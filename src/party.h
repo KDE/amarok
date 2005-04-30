@@ -33,19 +33,41 @@
 #ifndef AMAROK_PARTY_H
 #define AMAROK_PARTY_H
 
+#include <qbuttongroup.h>
 #include <qcheckbox.h>
+#include <qgroupbox.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qlistbox.h>
+#include <qpushbutton.h>
+#include <qradiobutton.h>
+#include <qtooltip.h>
+#include <qvariant.h>
+#include <qwhatsthis.h>
+
 
 #include <kdialogbase.h>    //baseclass
-#include <knuminput.h>      //kintspinbox
+#include <kactionselector.h>
+#include <knuminput.h>
 
-class QButtonGroup;
-class QHBox;
-class QListBox;
-class QRadioButton;
+// #include "partydialogbase.h"
+
+class QVBoxLayout;
 class QVGroupBox;
+class QHBoxLayout;
+class QGridLayout;
+class QSpacerItem;
+class QGroupBox;
+class QCheckBox;
+class QLabel;
+class KIntSpinBox;
+class KActionSelector;
+class QButtonGroup;
+class QRadioButton;
+class QPushButton;
 
 class KActionSelector;
-
+class PartyDialogBase;
 
 class Party : public KDialogBase
 {
@@ -55,11 +77,11 @@ class Party : public KDialogBase
         Party( QString defaultName, QWidget *parent, const char *name = 0 );
 
         QString appendType();
-        bool    isChecked()     { return m_partyCheck->isChecked(); }
-        int     previousCount() { return m_previousIntSpinBox->value(); }
-        int     upcomingCount() { return m_upcomingIntSpinBox->value(); }
-        int     appendCount()   { return m_tracksToAddSpinBox->value(); }
-        bool    cycleTracks()   { return m_cycleTracks->isChecked(); }
+        bool    isChecked();
+        int     previousCount();
+        int     upcomingCount();
+        int     appendCount();
+        bool    cycleTracks();
 
         QString customList();
 
@@ -68,23 +90,13 @@ class Party : public KDialogBase
         void    updateButtons();
 
     private:
+        PartyDialogBase *m_base;
+
+        void createWidget();
         void insertAvailablePlaylists();
         void insertSelectedPlaylists();
 
         void applySettings();
-
-        QVGroupBox   *m_partyGroupBox;
-
-        QButtonGroup *m_buttonGroup;
-        QRadioButton *m_randomRadio;
-        QRadioButton *m_suggestionRadio;
-        QRadioButton *m_playlistRadio;
-        KActionSelector *m_playlistSelector;
-        QCheckBox    *m_partyCheck;
-        QCheckBox    *m_cycleTracks;
-        KIntSpinBox  *m_previousIntSpinBox;
-        KIntSpinBox  *m_upcomingIntSpinBox;
-        KIntSpinBox  *m_tracksToAddSpinBox;
 
         QLabel *m_tooltip;
 

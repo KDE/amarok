@@ -1,0 +1,414 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>PartyDialogBase</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>PartyDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>465</width>
+            <height>511</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>partyDialogBase</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout10</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>m_partyCheck</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ena&amp;ble Party Mode</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+B</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>200</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KURLLabel">
+                    <property name="name">
+                        <cstring>helpButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Help</string>
+                    </property>
+                    <property name="url" stdset="0">
+                        <string>#</string>
+                    </property>
+                    <property name="tipText">
+                        <string>Show help</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
+                <cstring>m_partyGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string></string>
+            </property>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout20</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>12</y>
+                        <width>424</width>
+                        <height>440</height>
+                    </rect>
+                </property>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout19</cstring>
+                        </property>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QButtonGroup">
+                                <property name="name">
+                                    <cstring>m_buttonGroup</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>1</hsizetype>
+                                        <vsizetype>1</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="lineWidth">
+                                    <number>0</number>
+                                </property>
+                                <property name="title">
+                                    <string>Type of song to append to playlist:</string>
+                                </property>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>m_randomRadio</cstring>
+                                    </property>
+                                    <property name="geometry">
+                                        <rect>
+                                            <x>30</x>
+                                            <y>30</y>
+                                            <width>120</width>
+                                            <height>21</height>
+                                        </rect>
+                                    </property>
+                                    <property name="text">
+                                        <string>&amp;Random song</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+R</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>m_suggestionRadio</cstring>
+                                    </property>
+                                    <property name="geometry">
+                                        <rect>
+                                            <x>30</x>
+                                            <y>60</y>
+                                            <width>120</width>
+                                            <height>21</height>
+                                        </rect>
+                                    </property>
+                                    <property name="text">
+                                        <string>S&amp;uggested song</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+U</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>m_playlistRadio</cstring>
+                                    </property>
+                                    <property name="geometry">
+                                        <rect>
+                                            <x>30</x>
+                                            <y>90</y>
+                                            <width>140</width>
+                                            <height>21</height>
+                                        </rect>
+                                    </property>
+                                    <property name="text">
+                                        <string>Ran&amp;dom song from:</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+D</string>
+                                    </property>
+                                </widget>
+                            </widget>
+                            <widget class="KActionSelector">
+                                <property name="name">
+                                    <cstring>m_playlistSelector</cstring>
+                                </property>
+                                <property name="availableLabel">
+                                    <string>A&amp;vailable playlists:</string>
+                                </property>
+                                <property name="selectedLabel">
+                                    <string>Selected pla&amp;ylists:</string>
+                                </property>
+                                <property name="selectedInsertionPolicy">
+                                    <enum>Sorted</enum>
+                                </property>
+                                <property name="showUpDownButtons">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                        </vbox>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout14</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>m_cycleTracks</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>&amp;Cycle tracks</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+C</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer6</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>191</width>
+                                        <height>21</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="QCheckBox">
+                                <property name="name">
+                                    <cstring>m_markHistory</cstring>
+                                </property>
+                                <property name="enabled">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Mar&amp;k history</string>
+                                </property>
+                                <property name="accel">
+                                    <string>Alt+K</string>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout11</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Maximum history to show:</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer3</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>180</width>
+                                        <height>21</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="KIntSpinBox">
+                                <property name="name">
+                                    <cstring>m_previousIntSpinBox</cstring>
+                                </property>
+                                <property name="buttonSymbols">
+                                    <enum>UpDownArrows</enum>
+                                </property>
+                                <property name="maxValue">
+                                    <number>100</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout12</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Minimum upcoming tracks:</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer4</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>171</width>
+                                        <height>21</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="KIntSpinBox">
+                                <property name="name">
+                                    <cstring>m_upcomingIntSpinBox</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>20</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                                <property name="base">
+                                    <number>10</number>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout13</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel3</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Tracks to append:</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer5</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>191</width>
+                                        <height>21</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                            <widget class="KIntSpinBox">
+                                <property name="name">
+                                    <cstring>m_appendCountIntSpinBox</cstring>
+                                </property>
+                                <property name="maxValue">
+                                    <number>10</number>
+                                </property>
+                                <property name="minValue">
+                                    <number>1</number>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </vbox>
+            </widget>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<slots>
+    <slot>kURLLabel2_leftClickedURL()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurllabel.h</includehint>
+    <includehint>kactionselector.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
+</UI>

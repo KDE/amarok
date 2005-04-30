@@ -78,6 +78,7 @@ amarokapp_SOURCES = \
     metabundle.cpp \
     osd.cpp \
     party.cpp \
+    partydialogbase.ui \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
