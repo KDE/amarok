@@ -238,7 +238,7 @@
                                     <cstring>m_markHistory</cstring>
                                 </property>
                                 <property name="enabled">
-                                    <bool>false</bool>
+                                    <bool>true</bool>
                                 </property>
                                 <property name="text">
                                     <string>Mar&amp;k history</string>

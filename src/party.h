@@ -35,38 +35,14 @@
 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
 #include <qlistbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qtooltip.h>
-#include <qvariant.h>
-#include <qwhatsthis.h>
 
-
-#include <kdialogbase.h>    //baseclass
 #include <kactionselector.h>
+#include <kdialogbase.h>    //baseclass
 #include <knuminput.h>
 
-// #include "partydialogbase.h"
-
-class QVBoxLayout;
-class QVGroupBox;
-class QHBoxLayout;
-class QGridLayout;
-class QSpacerItem;
-class QGroupBox;
-class QCheckBox;
-class QLabel;
-class KIntSpinBox;
-class KActionSelector;
-class QButtonGroup;
-class QRadioButton;
-class QPushButton;
-
-class KActionSelector;
 class PartyDialogBase;
 
 class Party : public KDialogBase

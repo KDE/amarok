@@ -780,7 +780,6 @@ Playlist::advancePartyTrack()
 
     //keep upcomingTracks requirement
     int appendNo = AmarokConfig::partyAppendCount();
-    kdDebug() << "[PARTY] Appending " << appendNo << " " << AmarokConfig::partyType() << " tracks." << endl;
     if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::partyType() );
     m_partyDirt = true;
 }

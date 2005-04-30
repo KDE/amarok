@@ -19,7 +19,6 @@
 #include "statusbar.h"
 
 #include <kapplication.h>
-#include <kactionselector.h>
 #include <klocale.h>
 #include <kurllabel.h>
 
