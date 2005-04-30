@@ -6,7 +6,7 @@ arch=pentium
 
 AM_CPPFLAGS = \
     -D_UNIX \
-    -Wall -Wreturn-type -fno-exceptions -march=$(arch) \
+    -Wall -Wreturn-type -fno-exceptions \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(top_srcdir)/amarok/src/engine/helix/helix-sp/helix-include/runtime \
