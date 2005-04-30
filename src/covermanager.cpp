@@ -92,6 +92,14 @@ CoverManager::CoverManager()
         item = new KListViewItem( m_artistView, item, *it );
         item->setPixmap( 0, SmallIcon("personal") );
     }
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
+    qb.setLimit( 0, 1 );
+    if ( qb.run().count() ) {
+        item = new KListViewItem( m_artistView, item, i18n( "Various Artists" ) );
+        item->setPixmap( 0, SmallIcon("personal") );
+    }
 
     QVBox *vbox = new QVBox( this );
     QHBox *hbox = new QHBox( vbox );
@@ -371,13 +379,13 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
 
     albums = qb.run();
 
-    //also retrieve compilations when we're showing all items (first treenode)
-    if ( item == m_artistView->firstChild() )
+    //also retrieve compilations when we're showing all items (first treenode) or
+    //"Various Artists" (last treenode)
+    if ( item == m_artistView->firstChild() || item == m_artistView->lastChild() )
     {
         QStringList cl;
 
         qb.clear();
-        qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
         qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
 
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
@@ -386,8 +394,10 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
         qb.setOptions( QueryBuilder::optOnlyCompilations );
         cl = qb.run();
 
-        for ( uint i = 0; i < cl.count(); i++ )
+        for ( uint i = 0; i < cl.count(); i++ ) {
+            albums.append( i18n( "Various Artists" ) );
             albums.append( cl[ i ] );
+        }
     }
 
     QApplication::restoreOverrideCursor();
