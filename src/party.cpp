@@ -18,6 +18,8 @@
 #include "smartplaylist.h"
 #include "statusbar.h"
 
+#include <qfile.h>
+
 #include <kapplication.h>
 #include <klocale.h>
 #include <kurllabel.h>
