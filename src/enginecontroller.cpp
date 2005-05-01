@@ -305,7 +305,8 @@ void EngineController::play( const MetaBundle &bundle )
     if ( m_timer->isActive() && m_bundle.length() > 0 )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
-    if ( m_engine->pluginProperty( "StreamingMode") != "NoStreaming" && url.protocol() == "http" ) {
+    if ( m_engine->pluginProperty( "StreamingMode") != "NoStreaming" && (url.protocol() == "http" ||
+        ( url.protocol() == "zeroconf" && url.path().section('/',1,1)=="_shoutcast._tcp")) ) {
         m_bundle = bundle;
         m_xFadeThisTrack = false;
         // Detect mimetype of remote file
@@ -474,8 +475,10 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     const QString mimetype = static_cast<KIO::MimetypeJob*>( job )->mimetype();
     debug() << "Detected mimetype: " << mimetype << endl;
 
-    const KURL &url = m_bundle.url();
+    const KURL &url = static_cast<KIO::MimetypeJob*>( job )->url();
 
+    debug() << "MimetypeJob returned with url: " << url.prettyURL() << endl;
+    m_bundle.setUrl(url);
     const bool isStream = mimetype.isEmpty() || mimetype == "text/html" ||
                           url.host().endsWith( "last.fm" ); // HACK last.fm uses the mimetype audio/x-mp3
 
