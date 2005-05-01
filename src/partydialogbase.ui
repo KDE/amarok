@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>324</width>
-            <height>359</height>
+            <width>368</width>
+            <height>388</height>
         </rect>
     </property>
     <property name="caption">
@@ -109,62 +109,66 @@
                                 <string>Alt+D</string>
                             </property>
                         </widget>
+                        <widget class="KActionSelector">
+                            <property name="name">
+                                <cstring>m_playlistSelector</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>120</height>
+                                </size>
+                            </property>
+                            <property name="availableLabel">
+                                <string>A&amp;vailable playlists:</string>
+                            </property>
+                            <property name="selectedLabel">
+                                <string>Selected pla&amp;ylists:</string>
+                            </property>
+                            <property name="selectedInsertionPolicy">
+                                <enum>Sorted</enum>
+                            </property>
+                            <property name="showUpDownButtons">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
                     </vbox>
                 </widget>
-                <widget class="KActionSelector">
+                <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>m_playlistSelector</cstring>
+                        <cstring>m_cycleTracks</cstring>
                     </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>120</height>
-                        </size>
+                    <property name="text">
+                        <string>&amp;Cycle tracks</string>
                     </property>
-                    <property name="availableLabel">
-                        <string>A&amp;vailable playlists:</string>
-                    </property>
-                    <property name="selectedLabel">
-                        <string>Selected pla&amp;ylists:</string>
-                    </property>
-                    <property name="selectedInsertionPolicy">
-                        <enum>Sorted</enum>
-                    </property>
-                    <property name="showUpDownButtons">
-                        <bool>false</bool>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>layout14</cstring>
+                        <cstring>m_markHistory</cstring>
                     </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>m_cycleTracks</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Cycle tracks</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>m_markHistory</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Mar&amp;k history</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+K</string>
-                            </property>
-                        </widget>
-                    </hbox>
+                    <property name="text">
+                        <string>Mar&amp;k history</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+K</string>
+                    </property>
+                </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
