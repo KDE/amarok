@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>ScriptManagerBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>369</width>
-            <height>274</height>
+            <width>371</width>
+            <height>292</height>
         </rect>
     </property>
     <property name="caption">
@@ -21,7 +21,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout12</cstring>
+                <cstring>layout6</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -48,31 +48,103 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout11</cstring>
+                        <cstring>layout5</cstring>
                     </property>
                     <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QPushButton">
+                        <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>installButton</cstring>
+                                <cstring>layout3</cstring>
                             </property>
-                            <property name="text">
-                                <string>Install Script</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>retrieveButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Download Scripts</string>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
                                 </property>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>installButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Install Script</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>retrieveButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Get More Scripts</string>
+                                    </property>
+                                </widget>
+                                <widget class="Line">
+                                    <property name="name">
+                                        <cstring>line2_2</cstring>
+                                    </property>
+                                    <property name="frameShape">
+                                        <enum>HLine</enum>
+                                    </property>
+                                    <property name="frameShadow">
+                                        <enum>Sunken</enum>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>aboutButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>About</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>runButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Run</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>stopButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Stop</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>editButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Edit</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>configureButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Configure</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>uninstallButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Uninstall</string>
+                                    </property>
+                                </widget>
+                            </vbox>
                         </widget>
                         <spacer>
                             <property name="name">
-                                <cstring>rightColumnSpacer</cstring>
+                                <cstring>spacer2</cstring>
                             </property>
                             <property name="orientation">
                                 <enum>Vertical</enum>
@@ -82,59 +154,11 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>134</width>
-                                    <height>20</height>
+                                    <width>20</width>
+                                    <height>31</height>
                                 </size>
                             </property>
                         </spacer>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>aboutButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>About</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>runButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Run</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>stopButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Stop</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>editButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Edit</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>configureButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Configure</string>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton">
-                            <property name="name">
-                                <cstring>uninstallButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Uninstall</string>
-                            </property>
-                        </widget>
                     </vbox>
                 </widget>
             </hbox>

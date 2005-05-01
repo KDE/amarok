@@ -54,8 +54,11 @@
 #include <knewstuff/engine.h>         // "
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
-#include <kfilterdev.h>
 
+
+////////////////////////////////////////////////////////////////////////////////
+// class AmarokScriptNewStuff
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * GHNS Customised Download implementation.
@@ -75,6 +78,10 @@ class AmarokScriptNewStuff : public KNewStuff
     virtual bool createUploadFile( const QString& ) { return false; } //make compile on kde 3.5
 };
 
+
+////////////////////////////////////////////////////////////////////////////////
+// class ScriptManager
+////////////////////////////////////////////////////////////////////////////////
 
 ScriptManager* ScriptManager::s_instance = 0;
 
@@ -107,7 +114,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_base->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
     m_base->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
-    m_base->retrieveButton ->setIconSet( SmallIconSet( "down" ) );
+    m_base->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
     m_base->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
     m_base->editButton     ->setIconSet( SmallIconSet( "edit" ) );
     m_base->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
