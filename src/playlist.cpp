@@ -429,6 +429,7 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     }
     else if( type == "Suggestion" )
     {
+        if( !m_currentTrack ) return;
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
         songCount > 1 ?
@@ -462,7 +463,7 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     //FIXME: No items to add or if user wants non-unique entries!
     if( url.isEmpty() )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") ):
+        amaroK::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") );
         return;
     }
     insertMedia( KURL::List( url ), Playlist::Unique );
