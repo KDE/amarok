@@ -1977,7 +1977,13 @@ Playlist::removeSelectedItems() //SLOT
     }
 
     if( isParty() )
-        addSpecialTracks( list.count(), AmarokConfig::partyType() );
+    {
+        int remainder = childCount() - list.count() - 1;
+        int required  = AmarokConfig::partyPreviousCount() + AmarokConfig::partyUpcomingCount() + 1;
+
+        if( required > remainder )
+            addSpecialTracks( required - remainder, AmarokConfig::partyType() );
+    }
 
     updateNextPrev();
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
