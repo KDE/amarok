@@ -36,6 +36,7 @@
 #include <kapplication.h>   //kapp
 #include <kconfig.h>
 #include <kdialogbase.h>
+#include <kglobal.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
 #include <kpopupmenu.h>
@@ -1186,8 +1187,7 @@ CollectionView::iconForCategory( const int cat ) const
             break;
     }
 
-    KIconLoader iconLoader;
-    return iconLoader.loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
+    return KGlobal::iconLoader()->loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
 }
 
 
