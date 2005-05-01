@@ -30,7 +30,7 @@ FirstRunWizard::init()
     using namespace amaroK;
 
     //aesthetics
-    cancelButton()->setFixedWidth( cancelButton()->width() );
+    cancelButton()->setFixedSize( cancelButton()->sizeHint() );
     helpButton()->hide();
 
     //would be better as a KConfigXT key now
@@ -99,7 +99,7 @@ FirstRunWizard::writeCollectionConfig()
 }
 
 
-void 
+void
 FirstRunWizard::openLink(const QString& s)
 {
     kapp->invokeBrowser(s);

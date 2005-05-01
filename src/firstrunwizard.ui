@@ -20,7 +20,7 @@
             <cstring>WizardPage</cstring>
         </property>
         <attribute name="title">
-            <string>[0] Introduction</string>
+            <string></string>
         </attribute>
         <grid>
             <property name="name">
@@ -81,7 +81,7 @@
             <cstring>WizardPage_1</cstring>
         </property>
         <attribute name="title">
-            <string>[1] Interface</string>
+            <string>Interface (1 of 3)</string>
         </attribute>
         <grid>
             <property name="name">
@@ -123,7 +123,7 @@
                         </property>
                         <property name="text">
                             <string>Separate player and playlist-windows
-(like XMMS)</string>
+(like XMMS or Winamp)</string>
                         </property>
                         <property name="checked">
                             <bool>true</bool>
@@ -230,7 +230,7 @@ functionality combined
             <cstring>WizardPage</cstring>
         </property>
         <attribute name="title">
-            <string>[2] Collection</string>
+            <string>Collection (2 of 3)</string>
         </attribute>
         <hbox>
             <property name="name">
@@ -260,7 +260,7 @@ Collection accordingly.&lt;/p&gt;
             <cstring>WizardPage_3</cstring>
         </property>
         <attribute name="title">
-            <string>[3] Database</string>
+            <string>Database (3 of 3)</string>
         </attribute>
         <grid>
             <property name="name">
