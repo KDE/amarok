@@ -1971,18 +1971,7 @@ Playlist::removeSelectedItems() //SLOT
     }
 
     if( isParty() )
-    {
-        //FIXME: What happens if we remove the active item?
-        PlaylistItem *pos = m_currentTrack;
-
-        int tracks = 0;
-        for( ; pos ; tracks++ )
-            pos = pos->nextSibling();
-
-        int upcomingCount = AmarokConfig::partyUpcomingCount() + 1;
-        if( tracks < upcomingCount )
-            addSpecialTracks( upcomingCount - tracks, AmarokConfig::partyType() );
-    }
+        addSpecialTracks( list.count(), AmarokConfig::partyType() );
 
     updateNextPrev();
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
