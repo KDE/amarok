@@ -298,7 +298,7 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
         QSimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>MediaDevice Browser</h3>"
-                  "Drop files here to enqueue them for transfer to your iPod."
+                  "Drop files in the section below to enqueue them for transfer to your iPod."
                 "</div>" ), QApplication::font() );
 
         t.setWidth( width() - 50 );
