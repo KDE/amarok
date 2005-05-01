@@ -150,13 +150,13 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
 
 QString SmartPlaylistEditor::query()
 {
-    QString tables = "tags";
+    QString joins;
     QString whereStr;
     QString orderStr;
 
     //where expression
     if( m_matchCheck->isChecked() ) {
-        whereStr += " WHERE ";
+        whereStr += " WHERE (";
 
         CriteriaEditor *criteria = m_criteriaEditorList.first();
         for( int i=0; criteria; criteria = m_criteriaEditorList.next(), i++ ) {
@@ -164,14 +164,22 @@ QString SmartPlaylistEditor::query()
             QString str = criteria->getSearchCriteria();
             //add the table used in the search expression to tables
             QString table = str.left( str.find('.') );
-            if( !tables.contains( table ) )
-                tables += ", " + table;
-
+             if( !joins.contains( table ) ) {
+                if( table=="statistics") 
+                   // that makes it possible to search for tracks never played. it looks ugly but is works
+	           if( str.contains(" OR statistics.playcounter IS NULL"))
+                       joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                   else
+                       joins += " INNER JOIN statistics ON statistics.url=tags.url";
+	        else if (table!="tags")
+                    joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
+            }
             if( i ) { //multiple conditions
                 QString op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
-                str.prepend( " " + op + " (" ).append( ")" );
+                str.prepend( " " + op + " (");
+               
             }
-            whereStr += str;
+            whereStr += str+")";
         }
     }
 
@@ -180,13 +188,11 @@ QString SmartPlaylistEditor::query()
         if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
             QString field = m_dbFields[ m_orderCombo->currentItem() ];
             QString table = field.left( field.find('.') );
-            if( !tables.contains( table ) ) {
-                whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
-                if( table == "statistics" )
-                    whereStr += "tags.url = statistics.url";
-                else if( table != "tags" )
-                    whereStr += "tags." + table + " = " + table + ".id";
-                tables += ", " + table;
+            if( !joins.contains( table ) ) {
+                if( table=="statistics") 
+	           joins += " INNER JOIN statistics ON statistics.url=tags.url";
+	        else if (table!="tags")
+                    joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
             }
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
@@ -207,16 +213,14 @@ QString SmartPlaylistEditor::query()
             zero, RAND() is used instead of 1-RAND() because it doesn't matter if it becomes zero (the exponent is
             always non-zero), and finally POWER(...) is used instead of 1-POWER(...) because it only changes the order type.
             */
-            orderStr = " ORDER BY POWER(" + CollectionDB::instance()->randomFunc() + ",1.0/(statistics.percentage+1)) DESC";
-            if( !tables.contains( "statistics" ) ) {
-                whereStr += whereStr.isEmpty() ? " WHERE " : " AND ";
-                whereStr += "tags.url = statistics.url";
-                tables += ", statistics";
+           orderStr = " ORDER BY POWER(" + CollectionDB::instance()->randomFunc() + ",1.0/(statistics.percentage+1)) DESC";
+            if( !joins.contains( "statistics" ) ) {
+                joins += " INNER JOIN statistics ON statistics.url=tags.url";
             }
         }
     }
 
-    QString query = "SELECT DISTINCT tags.url FROM " + tables + whereStr + orderStr;
+    QString query = "SELECT DISTINCT tags.url FROM tags" + joins + whereStr + orderStr;
 
     if( m_limitCheck->isChecked() )
         query += " LIMIT 0," + QString::number( m_limitSpin->value() );
@@ -294,12 +298,6 @@ QString CriteriaEditor::getSearchCriteria()
     if( field.isEmpty() )
         return QString::null;
 
-    QString table = field.left( field.find('.') );
-    if( table == "statistics" )
-        searchCriteria += "statistics.url = tags.url AND ";
-    else if( table != "tags" )
-        searchCriteria += table + ".id = tags." + table + " AND ";
-
     searchCriteria += field;
 
     QString value;
@@ -318,14 +316,13 @@ QString CriteriaEditor::getSearchCriteria()
         {
             if( criteria == i18n("is in the last") ) {
                 int n = m_intSpinBox1->value();
-                QDateTime time;
+                int time;
                 if( m_dateCombo->currentItem() == 0 ) //days
-                    time.addDays( n );
+                    time=86400*n;
                 else if( m_dateCombo->currentItem() == 1 ) //months
-                    time.addMonths( n );
-                else time.addYears( n ); //years
-
-                value += QString("strftime('now') - %1 AND strftime('now')").arg( time.toTime_t() );
+                    time=86400*30*n;
+                else time=86400*365*n; //years
+                value += QString("strftime('%s','now') - %1 AND strftime('%s','now')").arg( time );
             }
             else {
                 QDateTime datetime1( m_dateEdit1->date() );
@@ -342,7 +339,7 @@ QString CriteriaEditor::getSearchCriteria()
         default: ;
     };
 
-
+    
     if( criteria == i18n("contains") )
         searchCriteria += " LIKE \"%" + value + "%\"";
     else if( criteria == i18n("does not contain") )
@@ -355,6 +352,9 @@ QString CriteriaEditor::getSearchCriteria()
         if( m_currentValueType == String || m_currentValueType == AutoCompletionString )
             value.prepend("\"").append("\"");
         searchCriteria += value;
+        if (field=="statistics.playcounter" && value=="0") {
+            searchCriteria += " OR statistics.playcounter IS NULL";
+        }
     }
     else if( criteria == i18n("is not") ) {
         if( m_currentValueType == Date )
@@ -366,7 +366,7 @@ QString CriteriaEditor::getSearchCriteria()
         searchCriteria += value;
     }
     else if( criteria == i18n("starts with") )
-        searchCriteria += " LIKE \"%" + value + "\"";
+        searchCriteria += " LIKE \"" + value + "%\"";
     else if( criteria == i18n("ends with") )
         searchCriteria += " LIKE \"%" + value + "\"";
     else if( criteria == i18n("is greater than") || criteria == i18n("is after") )
@@ -375,7 +375,6 @@ QString CriteriaEditor::getSearchCriteria()
         searchCriteria += " < " + value;
     else if( criteria == i18n("is between") || criteria == i18n("is in the last") )
         searchCriteria += " BETWEEN " + value;
-
 
     return searchCriteria;
 }
