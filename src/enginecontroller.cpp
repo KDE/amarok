@@ -118,6 +118,10 @@ EngineController::loadEngine() //static
         AmarokConfig::setSoundSystem( engineName );
     }
 
+    // Important: Make sure soundSystem is not empty
+    if( AmarokConfig::soundSystem().isEmpty() )
+        AmarokConfig::setSoundSystem( engineName );
+
     return m_engine;
 }
 

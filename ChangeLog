@@ -54,6 +54,7 @@ VERSION 1.2.4:
     * Queue selected tracks shortcut, Ctrl+D. (BR 83675)
 
   BUGFIXES:
+    * The first engine entry in the config dialog was always blank.
     * If you filtered by more than one word in Collection Browser, adding
       expandable items (eg: artists or albums) wouldn't work. (BR 100150)
     * Updating the collection without any changes being made to it kept
