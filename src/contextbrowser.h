@@ -15,6 +15,7 @@ class KTabBar;
 class KTempFile;
 class MetaBundle;
 class QPalette;
+class QVBox;
 
 namespace KIO { class Job; class TransferJob; }
 
@@ -57,12 +58,14 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showWikipedia( const QString& url = QString::null );
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
-        void wikiData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
-        void wikiResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
+
+        void wikiData( KIO::Job* job, const QByteArray& data );
+        void wikiEditPage();
+        void wikiResult( KIO::Job* job );
 
     private:
         void setStyleSheet_Default( QString& styleSheet );
@@ -77,6 +80,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
         KHTMLPart    *m_wikiPage;
+        
+        QVBox        *m_wikiTab;
         // These control if is needed to rewrite the html for the pages
         // true -> need rebuild
         bool          m_dirtyHomePage;

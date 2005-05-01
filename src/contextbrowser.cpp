@@ -27,6 +27,7 @@
 #include <qimage.h>
 #include <qregexp.h>
 #include <qtextstream.h>  // External CSS reading
+#include <qvbox.h> //wiki tab
 
 #include <kapplication.h> //kapp
 #include <kcalendarsystem.h>  // for verboseTimeSince()
@@ -43,6 +44,7 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
+#include <ktoolbar.h>
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
@@ -105,10 +107,17 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
 
-    m_wikiPage = new KHTMLPart( this, "wiki_page" );
+    m_wikiTab = new QVBox(this, "wiki_tab");
+    
+    KToolBar *toolbar = new KToolBar(m_wikiTab, "wiki_toolbar");
+    toolbar->insertButton( "edit", 0, true, i18n("Edit Page") );
+    connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), this, SLOT(wikiEditPage()) );
+
+    m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
     m_wikiPage->setJavaEnabled( false );
     m_wikiPage->setPluginsEnabled( false );
     m_wikiPage->setDNDEnabled( true );
+    m_wikiPage->view()->show();
 
     //aesthetics - no double frame
 //     m_homePage->view()->setFrameStyle( QFrame::NoFrame );
@@ -118,11 +127,11 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    addTab( m_wikiPage->view(),         SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
+    addTab( m_wikiTab,                     SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
-    setTabEnabled( m_wikiPage->view(), false );
+    setTabEnabled( m_wikiTab, false );
 
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
@@ -413,7 +422,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), false );
             setTabEnabled( m_lyricsPage->view(), false );
-            setTabEnabled( m_wikiPage->view(), false );
+            setTabEnabled( m_wikiTab, false );
             blockSignals( false );
             break;
         case Engine::Playing:
@@ -421,7 +430,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), true );
             setTabEnabled( m_lyricsPage->view(), true );
-            setTabEnabled( m_wikiPage->view(), true );
+            setTabEnabled( m_wikiTab, true );
             blockSignals( false );
             break;
         default:
@@ -462,7 +471,7 @@ void ContextBrowser::tabChanged( QWidget *page )
         showCurrentTrack();
     else if ( m_dirtyLyricsPage && ( page == m_lyricsPage->view() ) )
         showLyrics();
-    else if ( m_dirtyWikiPage && ( page == m_wikiPage->view() ) )
+    else if ( m_dirtyWikiPage && ( page == m_wikiTab ) )
         showWikipedia();
 }
 
@@ -2337,7 +2346,7 @@ ContextBrowser::showLyricSuggestions()
 
 void ContextBrowser::showWikipedia( const QString &url )
 {
-    if ( currentPage() != m_wikiPage->view() )
+    if ( currentPage() != m_wikiTab )
     {
         blockSignals( true );
         showPage( m_homePage->view() );
@@ -2392,6 +2401,11 @@ void ContextBrowser::showWikipedia( const QString &url )
              this,  SLOT( wikiData( KIO::Job*, const QByteArray& ) ) );
 }
 
+void
+ContextBrowser::wikiEditPage()
+{
+    kapp->invokeBrowser("http://en.wikipedia.org/w/index.php?title=AmaroK&action=edit");
+}
 
 void
 ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
@@ -2460,12 +2474,12 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                     "</div>"
                     "<div id='wiki_box-body' class='box-body'>"
                         "<ul>"
-             "<li>Language: <select id='language' "
+             "<li>" + i18n("Language:") + " <select id='language' "
       "onchange='l= document.getElementById(\"language\"); window.location.href = \"wikilanguage:\"+l.options[l.selectedIndex].value ;'>"
     );
     // Add list of Wiki Languages
     QStringList languages, addresses;
-    languages << "Dutch" << "English" << "French" << "German" << "Italian" << "Japonese" << "Polish" << "Portuguese" << "Spanish" << "Swedish";
+    languages << "Dutch" << "English" << "French" << "German" << "Italian" << "Japanese" << "Polish" << "Portuguese" << "Spanish" << "Swedish";
     addresses << "nl"    << "en"      << "fr"     << "de"     << "it"      << "ja"       << "pl"     << "pt"         << "es"      << "sv";
 
     for( QStringList::ConstIterator language = languages.begin(), end = languages.end(), address = addresses.begin();
