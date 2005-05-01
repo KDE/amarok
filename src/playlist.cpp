@@ -460,6 +460,11 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     qb.setLimit( 0, songCount );
     QStringList url = qb.run();
     //FIXME: No items to add or if user wants non-unique entries!
+    if( url.isEmpty() )
+    {
+        amaroK::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") ):
+        return;
+    }
     insertMedia( KURL::List( url ), Playlist::Unique );
 }
 
