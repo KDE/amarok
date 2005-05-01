@@ -5,7 +5,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "browserToolBar.h"
 #include "debug.h"
 #include "collectionbrowser.h" //FIXME for setupDirs()
 #include "collectiondb.h"
@@ -44,7 +43,6 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
-#include <ktoolbar.h>
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
@@ -87,6 +85,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyWikiFetching( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
+        , m_wikiBaseUrl( "http://" + AmarokConfig::wikipediaLocale() + ".wikipedia.org/" )
         , m_wikiJob( NULL )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
@@ -106,10 +105,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
 
-    m_wikiTab = new QVBox( this, "wiki_tab" );
-    KToolBar* wikiToolbar = new Browser::ToolBar(m_wikiTab);
-    m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
-    m_wikiTab->show();
+    m_wikiPage = new KHTMLPart( this, "wiki_page" );
     m_wikiPage->setJavaEnabled( false );
     m_wikiPage->setPluginsEnabled( false );
     m_wikiPage->setDNDEnabled( true );
@@ -122,7 +118,7 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    addTab( m_wikiTab,         SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
+    addTab( m_wikiPage->view(),         SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
@@ -244,6 +240,16 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         m_dirtyWikiPage = true;
         showWikipedia( url.url() );
+    }
+
+    if ( url.protocol() == "wikilanguage" )
+    {
+        AmarokConfig::setWikipediaLocale( url.path() );
+        m_wikiBaseUrl = "http://" + url.path() + ".wikipedia.org/";
+        m_dirtyWikiPage = true;
+        m_dirtyWikiFetching = true;
+        m_wikiJob = 0;
+        showWikipedia();
     }
 
     if ( url.protocol() == "show" )
@@ -2368,7 +2374,7 @@ void ContextBrowser::showWikipedia( const QString &url )
     m_wiki = QString::null;
     if ( url.isEmpty() )
     {
-        m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" )
+        m_wikiCurrentUrl = QString( m_wikiBaseUrl + "wiki/%1" )
             .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
     }
     else
@@ -2392,7 +2398,10 @@ ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
 {
     // Append new chunk of string
     if (job == m_wikiJob)
-        m_wiki += QString( data );
+    // some wikis use UTF-8, others Iso, and we may have some using something else
+        m_wiki += (AmarokConfig::wikipediaLocale() == "en" || AmarokConfig::wikipediaLocale() == "nl" || AmarokConfig::wikipediaLocale() == "sv")
+        ?  QString( data )
+        : QString::fromUtf8( data, data.size() );
 }
 
 
@@ -2412,14 +2421,13 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
     m_wiki.append( "</div>" );
-    //remove the new-lines(replace with spaces IS needed) and Wikipedia advertisement.
+    //remove the new-lines and tabs(replace with spaces IS needed) and Wikipedia advertisement.
     m_wiki.replace( "\n", " " );
+    m_wiki.replace( "\t", " " );
     m_wiki.replace( "<h3 id=\"siteSub\">From Wikipedia, the free encyclopedia.</h3>", QString::null );
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
-    // FIXME This could be done with one line, if some regexpert would manage that space there
-    m_wiki.replace( QRegExp( "style= \"[^\"]*\"" ), QString::null );
-    m_wiki.replace( QRegExp( "style=\"[^\"]*\"" ), QString::null );
-    m_wiki.replace( QRegExp( "class=\"[^\"]*\"" ), QString::null );
+    m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
+    m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
     // let's remove the form elements, we don't want them.
     m_wiki.replace( QRegExp( "<input[^>]*>" ), QString::null );
     m_wiki.replace( QRegExp( "<select[^>]*>" ), QString::null );
@@ -2432,13 +2440,12 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     //remove "[edit]" links NOTE: it seems to exist some problems with detecting "]". In kate search dialog, it has
     // to be escaped (\]), but here we get a warning saying that "\]" is an "unknown escape sequence" and it doesn't work.
     // so we just use the [^d]*div to pass by and match the following </div>.
-    m_wiki.replace( QRegExp( "<div[^>]*>[ \n\t]*\[[ \n\t]*<[ \n\t]*a[ \n\t]*href[^>]*>[ \n\t]*edit[^d]*div[ \n\t]*>" ), QString::null );
+    // FIXME only works for english, we should stop using the edit word and get a pattern in the link or something
+    m_wiki.replace( QRegExp( "<div[^>]*>[ ]*\[[ ]*<[ ]*a[ ]*href[^>]*>[ ]*edit[^d]*div[ ]*>" ), QString::null );
 
     //first we convert all the links with protocol to external, as they should all be External Links.
-    m_wiki.replace( "href=\"http:", "href=\"externalurl:" );
-    // FIXME space between the = and "(didn't bothered to hassle with regexp) Same as above.
-    m_wiki.replace( "href=\"/", "href=\"http://en.wikipedia.org/" );
-    m_wiki.replace( "href= \"/", "href=\"http://en.wikipedia.org/" );
+    m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
+    m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl+ "\"" );
 
     m_wikiPage->begin();
     m_wikiPage->setUserStyleSheet( m_styleSheet );
@@ -2453,16 +2460,34 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                     "</div>"
                     "<div id='wiki_box-body' class='box-body'>"
                         "<ul>"
+             "<li>Language: <select id='language' "
+      "onchange='l= document.getElementById(\"language\"); window.location.href = \"wikilanguage:\"+l.options[l.selectedIndex].value ;'>"
+    );
+    // Add list of Wiki Languages
+    QStringList languages, addresses;
+    languages << "Dutch" << "English" << "French" << "German" << "Italian" << "Japonese" << "Polish" << "Portuguese" << "Spanish" << "Swedish";
+    addresses << "nl"    << "en"      << "fr"     << "de"     << "it"      << "ja"       << "pl"     << "pt"         << "es"      << "sv";
 
-                        "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
+    for( QStringList::ConstIterator language = languages.begin(), end = languages.end(), address = addresses.begin();
+          language != end; ++language, ++address ) {
+        m_HTMLSource.append( QStringx("<option value='%1' %2>%3</option>").args( QStringList()
+                << (*address)
+                << ( AmarokConfig::wikipediaLocale() == (*address) ? "selected" : QString::null )
+                << (*language) ) );
+    }
+
+    m_HTMLSource.append(
+                        "</select></li>"
+
+                        "<li><a href=\"" + QString( m_wikiBaseUrl + "wiki/%1" )
                         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) ) +
                         "\">" + i18n( "Title page" ) + "</a></li>"
 
-                        "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
+                        "<li><a href=\"" + QString( m_wikiBaseUrl + "wiki/%1" )
                         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) ) +
                         "\">" + i18n( "Artist page" ) + "</a>(default)</li>"
 
-                        "<li><a href=\"" + QString( "http://en.wikipedia.org/wiki/%1" )
+                        "<li><a href=\"" + QString( m_wikiBaseUrl + "wiki/%1" )
                         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) ) +
                         "\">" + i18n( "Album page" ) + "</a></li>"
 
@@ -2472,9 +2497,8 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
                         "</ul>"
                     "</div>"
                 "</div>"
-                       );
 
-    m_HTMLSource.append(
+
             "<div id='wiki_box' class='box'>"
                 "<div id='wiki_box-header' class='box-header'>"
                     "<span id='wiki_box-header-title' class='box-header-title'>"

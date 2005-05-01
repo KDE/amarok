@@ -253,6 +253,13 @@
         <default>us</default>
     </entry>
 </group>
+<group name="Wikipedia">
+    <entry key="Wikipedia Locale" type="String">
+        <label>Wikipedia locale for information retrieval</label>
+        <whatsthis>Determines in which language the information is retrieved from Wikipedia.</whatsthis>
+        <default>en</default>
+    </entry>
+</group>
 
 <group name="OSD">
     <entry key="Osd Enabled" type="Bool">
