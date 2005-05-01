@@ -244,12 +244,12 @@ functionality combined
                     <number>1</number>
                 </property>
                 <property name="text">
-                    <string>&lt;p&gt;Your &lt;b&gt;Collection&lt;/b&gt; is a database of media, with which you can quickly and easily find your 
+                    <string>&lt;p&gt;Your &lt;b&gt;Collection&lt;/b&gt; is a database of media, with which you can quickly and easily find your
 music using queries based on the media's tags.&lt;/p&gt;
-&lt;p&gt;Here you should select which folders to search for media, amaroK will begin the search when this wizard is complete. If you choose to 
-&lt;i&gt;Monitor Changes&lt;/i&gt;, amaroK will be notified when changes are made to the contents of these folders and will update the 
+&lt;p&gt;Here you should select which folders to search for media, amaroK will begin the search when this wizard is complete. If you choose to
+&lt;i&gt;Monitor Changes&lt;/i&gt;, amaroK will be notified when changes are made to the contents of these folders and will update the
 Collection accordingly.&lt;/p&gt;
-&lt;p&gt;You can change the configuration of the Collection at a future time from the &lt;i&gt;Actions&lt;/i&gt; menu in the 
+&lt;p&gt;You can change the configuration of the Collection at a future time from the &lt;i&gt;Actions&lt;/i&gt; menu in the
 &lt;b&gt;Collection-browser&lt;/b&gt;.&lt;/p&gt;</string>
                 </property>
             </widget>
@@ -306,7 +306,7 @@ Collection accordingly.&lt;/p&gt;
                 </property>
                 <property name="text">
                     <string>amaroK uses a database. Choose one; if not sure click next.
-&lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster then &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster than &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/index.php/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/index.php/Postgresql_HowTo"&gt;Instructions for configuring Postgresql&lt;/a&gt;.&lt;/li&gt;
