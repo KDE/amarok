@@ -285,7 +285,21 @@ public:
     int track;
     int year;
     double relevance;
+
+    bool operator== (const KTRMResultPrivate &r) const;
 };
+
+bool KTRMResult::KTRMResultPrivate::operator==(const KTRMResultPrivate &r) const
+{
+	return (
+			title == r.title &&
+			artist == r.artist &&
+			album == r.album &&
+			track == r.track &&
+			year == r.year &&
+			relevance == r.relevance
+	       );
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // KTRMResult public methods
@@ -381,6 +395,14 @@ KTRMResult &KTRMResult::operator= (const KTRMResult &r)
     d = new KTRMResultPrivate(*r.d);
 #endif
     return *this;
+}
+
+bool KTRMResult::operator== (const KTRMResult &r) const
+{
+#if HAVE_TUNEPIMP
+    return *d == *(r.d);
+#endif
+    return false;
 }
 
 
@@ -543,7 +565,7 @@ void KTRMLookup::collision()
                     2 * stringSimilarity(strList,result.d->artist) +
                     1 * stringSimilarity(strList,result.d->album);
 
-                d->results.append(result);
+                if(!d->results.contains(result)) d->results.append(result);
             }
             break;
         }
@@ -557,6 +579,7 @@ void KTRMLookup::collision()
 
     tr_Unlock(track);
     qHeapSort(d->results);
+    
     finished();
 #endif
 }

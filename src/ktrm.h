@@ -90,9 +90,14 @@ public:
     bool operator>(const KTRMResult &r) const;
 
     /**
-     * Basic assignment opperator; required for the QTL
+     * Basic assignment operator; required for the QTL
      */
     KTRMResult &operator= (const KTRMResult &r);
+
+    /**
+     * Basic comparison operator; required for the QTL
+     */
+    bool operator== (const KTRMResult &r) const;
 
 private:
     class KTRMResultPrivate;
