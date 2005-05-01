@@ -128,7 +128,12 @@ void Party::insertAvailablePlaylists()
         while( !( line = stream.readLine() ).isNull() )
         {
             if( line.startsWith( "Name=" ) )
-                m_lbAvailable->insertItem( line.mid( 5 ) );
+            {
+                QString title = line.mid( 5 );
+                if ( m_lbSelected->findItem( title ) )
+                    continue;
+                m_lbAvailable->insertItem( title );
+            }
         }
     }
 }
