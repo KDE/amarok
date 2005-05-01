@@ -305,7 +305,12 @@ Collection accordingly.&lt;/p&gt;
                     <cstring>dbActiveLabel</cstring>
                 </property>
                 <property name="text">
-                    <string>A database is needed by amaroK to store information about your &lt;b&gt;Collection&lt;/b&gt;. If your not sure what that means, do not worry as the default is &lt;b&gt;sqlite&lt;/b&gt; and requires no configuration. &lt;b&gt;MySQL or Postgresql&lt;/b&gt; are faster, but require additional setup. Detailed instructions for configuring MySQL are at the &lt;a href="http://amarok.kde.org/wiki/index.php/MySQL_HowTo"&gt;amaroK wiki&lt;/a&gt;. Detailed instructions for configuring Postgresql are at the &lt;a href="http://amarok.kde.org/wiki/index.php/Postgresql_HowTo"&gt;amaroK Postgresql wiki&lt;/a&gt;.</string>
+                    <string>amaroK uses a database. Choose one; if not sure click next.
+&lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster then &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/index.php/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/index.php/Postgresql_HowTo"&gt;Instructions for configuring Postgresql&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;</string>
                 </property>
             </widget>
             <widget class="DbSetup" row="0" column="1" rowspan="2" colspan="1">
