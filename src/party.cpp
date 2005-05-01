@@ -40,8 +40,7 @@ Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
     m_lbSelected  = m_base->m_playlistSelector->selectedListBox();
     m_lbAvailable = m_base->m_playlistSelector->availableListBox();
 
-    insertSelectedPlaylists();
-    insertAvailablePlaylists();  //requires that insertSelectedPlaylists() has been called first.
+    insertPlaylists();
 
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
     m_base->m_playlistSelector->setEnabled( m_base->m_playlistRadio->isEnabled() );
@@ -97,52 +96,26 @@ void Party::applySettings()
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 }
 
-void Party::insertAvailablePlaylists()
+void Party::insertPlaylists()
 {
-    //Default playlists.
-    QStringList defaultPlaylists;
-    defaultPlaylists << i18n( "Favorite Tracks" ) << i18n( "Most Played" )  << i18n( "Newest Tracks" )
-                     << i18n( "Last Played" )     << i18n( "Never Played" ) << i18n( "Ever Played" )
-                     << i18n( "50 Random Tracks" );
+    //BEGIN selectedListBox
+    QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
+    m_lbSelected->insertStringList( playlists );
+    //END   selectedListBox
 
-
-    //FIXME: Genres?  Too many to list, need an expander.
-    for ( uint i=0; i < defaultPlaylists.count(); i++ )
+    //BEGIN availableListBox
+    SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
+    QStringList list = spv->listItems();
+    for ( uint i=0; i < list.count(); i++ )
     {
         // dont add if in selected list.
-        // critical that insertSelectedPlaylists() is called first.
-        if ( m_lbSelected->findItem( defaultPlaylists[i] ) )
+        // critical that items are inserted into the selected qlistbox first!
+        if ( m_lbSelected->findItem( list[i] ) )
             continue;
 
-        m_lbAvailable->insertItem( defaultPlaylists[i] );
+        m_lbAvailable->insertItem( list[i] );
     }
-
-    //Custom playlists.
-    QFile file( amaroK::saveLocation() + "smartplaylists" );
-
-    if( file.open( IO_ReadOnly ) )
-    {
-        QTextStream stream( &file );
-        QString line, name, query;
-
-        while( !( line = stream.readLine() ).isNull() )
-        {
-            if( line.startsWith( "Name=" ) )
-            {
-                QString title = line.mid( 5 );
-                if ( m_lbSelected->findItem( title ) )
-                    continue;
-                m_lbAvailable->insertItem( title );
-            }
-        }
-    }
-}
-
-void Party::insertSelectedPlaylists()
-{
-    QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
-
-    m_lbSelected->insertStringList( playlists );
+    //END   availableListBox
 }
 
 QString Party::customList()

@@ -70,8 +70,7 @@ class Party : public KDialogBase
         PartyDialogBase *m_base;
 
         void createWidget();
-        void insertAvailablePlaylists();
-        void insertSelectedPlaylists();
+        void insertPlaylists();
 
         void applySettings();
 

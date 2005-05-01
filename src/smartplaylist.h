@@ -27,6 +27,8 @@ Q_OBJECT
        ~SmartPlaylistView();
 
        SmartPlaylist *getSmartPlaylist( QString name );
+       ///Returns a qstringlist of all every smartplaylist (including item children)
+       QStringList    listItems();
        static SmartPlaylistView *instance() { return s_instance; }
 
     public slots:

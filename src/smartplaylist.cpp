@@ -97,11 +97,22 @@ SmartPlaylist *
 SmartPlaylistView::getSmartPlaylist( QString name )
 {
     QListViewItemIterator it( this );
-    for ( ; it.current(); ++it )
+    for( ; it.current(); ++it )
         if( (*it)->text( 0 ) == name )
             break;
 
     return static_cast<SmartPlaylist*>(*it);
+}
+
+QStringList
+SmartPlaylistView::listItems()
+{
+    QStringList list;
+    QListViewItemIterator it( this );
+    for( ; it.current(); ++it )
+        list.append( (*it)->text( 0 ) );
+
+    return list;
 }
 
 void SmartPlaylistView::createCustomPlaylist() //SLOT
