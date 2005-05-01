@@ -94,7 +94,7 @@
     <entry key="Party Mark History" type="Bool">
         <label>Mark History</label>
         <whatsthis>Whether to mark items in the playlist as history once played.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
