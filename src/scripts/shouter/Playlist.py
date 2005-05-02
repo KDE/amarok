@@ -16,6 +16,7 @@ from debug import *
 from Amarok import *
 from xml.dom import minidom
 from Globals import *
+from shutil import copy
 import ShouterExceptions 
 from sre import *
 import random
@@ -64,6 +65,7 @@ class LivePlaylist(XMLPlaylist):
     def reload(self):
         self.random = PlayerDcop('randomModeStatus').result() == 'true'
         self.repeat_pl = PlayerDcop('repeatPlaylistStatus').result() == 'true'
+        self.save_current_playlist()
         self.load()
         
     def save_current_playlist(self):
@@ -78,7 +80,14 @@ class LivePlaylist(XMLPlaylist):
             i = PlaylistDcop('getActiveIndex').result()
             if i == -1:
                 raise ShouterExceptions.amarok_not_playing_error
-            f = self.pl[i]
+            f = None
+            try:
+                f = self.pl[i]
+            except IndexError:
+                debug('Caught index error loading i=%d len(pl)=%d. Reloading' % (i, len(self.pl)))
+                self.reload()
+                f = self.pl[i]
+            
             total = f.length
             current = PlayerDcop( 'trackCurrentTime' ).result()
             if current > total : current = total
@@ -318,9 +327,8 @@ def save_current_as(fname):
     fname_new = os.path.join( os.getcwd(), 
                               fname_new.replace('current', str(fname)))
 
-    # I thought there was a better way of copying files somewhere ...
-    debug('cp %s %s' % (fname_current, fname_new))
-    rv = os.system('cp %s %s' % (fname_current, fname_new))
-    if rv: 
+    try:
+        copy(fname_current, fname_new)
+        return fname_new
+    except:
         return False
-    return fname_new

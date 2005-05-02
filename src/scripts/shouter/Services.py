@@ -98,7 +98,7 @@ class _BaseStreamService(_Service):
         br = fobj.bitrate
         if not br:
            br = Amarok.get_bitrate(fobj.url)
-        sleep_factor = 8.0/(br * 1060.0) 
+        sleep_factor = 8.0/(br * 1024.0) 
 
         fname = fobj.get_fname()
         f = file(fname, 'r')

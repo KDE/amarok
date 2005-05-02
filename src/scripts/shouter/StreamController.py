@@ -47,7 +47,6 @@ class StreamController(BaseHTTPRequestHandler):
                 i += 1
             pls += 'Version=2\n'
             self.request.send(pls)
-            raise unmapped_mount_error
         else:
             service = None
             for sc in StreamServer.cfg_mgr.stream_cfgs:
