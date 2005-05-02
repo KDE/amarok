@@ -173,7 +173,8 @@ functionality combined
                             <enum>Manual</enum>
                         </property>
                         <property name="text">
-                            <string>&lt;p&gt;With amaroK you can use the interface that you find most comfortable. The choices are listed below and an example screenshot is shown on their right. You can change these settings at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
+                            <string>&lt;p&gt;With amaroK you can use the window layout that you find most comfortable.&lt;/p&gt;
+&lt;p&gt;You can change these settings at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
                         </property>
                         <property name="wrapPolicy">
                             <enum>AtWordBoundary</enum>
@@ -244,13 +245,8 @@ functionality combined
                     <number>1</number>
                 </property>
                 <property name="text">
-                    <string>&lt;p&gt;Your &lt;b&gt;Collection&lt;/b&gt; is a database of media, with which you can quickly and easily find your
-music using queries based on the media's tags.&lt;/p&gt;
-&lt;p&gt;Here you should select which folders to search for media, amaroK will begin the search when this wizard is complete. If you choose to
-&lt;i&gt;Monitor Changes&lt;/i&gt;, amaroK will be notified when changes are made to the contents of these folders and will update the
-Collection accordingly.&lt;/p&gt;
-&lt;p&gt;You can change the configuration of the Collection at a future time from the &lt;i&gt;Actions&lt;/i&gt; menu in the
-&lt;b&gt;Collection-browser&lt;/b&gt;.&lt;/p&gt;</string>
+                    <string>&lt;p&gt;Select the folders on the right where your music files are stored.&lt;/p&gt;
+&lt;p&gt;Doing so enables many features of amaroK.&lt;/p&gt;</string>
                 </property>
             </widget>
         </hbox>
@@ -352,7 +348,7 @@ Collection accordingly.&lt;/p&gt;
                 <property name="text">
                     <string>&lt;h1&gt;Congratulations!&lt;/h1&gt;
 &lt;p&gt;amaroK is ready for use! When you click finish amaroK will appear and begin scanning the folders in your collection.&lt;/p&gt;
-&lt;p&gt;amaroK's Playlist-window will show your &lt;b&gt;Collection&lt;/b&gt; on the left and the &lt;b&gt;Playlist&lt;/b&gt; on the right. Drag and drop music from the Collection to the Playlist and press &lt;b&gt;Play&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;amaroK's playlist-window will show your &lt;b&gt;Collection&lt;/b&gt; on the left and the &lt;b&gt;Playlist&lt;/b&gt; on the right. Drag and drop music from the Collection to the Playlist and press &lt;b&gt;Play&lt;/b&gt;.&lt;/p&gt;
 &lt;p&gt;If you want more help or a tutorial, please check out the &lt;a href="help:/amarok"&gt;amaroK handbook&lt;/a&gt;. We hope you enjoy using amaroK.&lt;/p&gt;
 &lt;p align="right"&gt;The amaroK developers&lt;/p&gt;</string>
                 </property>
