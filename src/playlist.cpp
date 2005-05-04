@@ -473,25 +473,30 @@ Playlist::addSpecialTracks( uint songCount, QString type )
 void
 Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 {
+    if ( list.isEmpty() ) return;
+
     QString query;
 
     SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
     SmartPlaylist *sp = 0;
+    QString playlistName = QString::null;
 
-    if ( list.isEmpty() ) return;
     //randomly grab a smart playlist to get a song from.
-
+    //FIXME: What if the randomiser grabs the same playlist again and again?  Lets remove the playlist from the list.
     for( uint y=0; y < list.count(); y++ )
     {
         int x = KApplication::random() % list.count();
 
-        sp = spv->getSmartPlaylist( list[x] );
-        kdDebug() << "[PARTY]: Adding track from playlist called " << list[x] << endl;
-        if ( sp )
+        QString name = list[x];
+        sp = spv->getSmartPlaylist( name );
+        kdDebug() << "[PARTY]: Adding track from playlist called " << name << endl;
+        if ( sp ) {
+            playlistName = name;
             break;
+        }
 
-        kdDebug() << "[PARTY]: Invalid smartplaylist requested. Bailing out." << list[x] << endl;
-        amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Bailing out.").arg(list[x]) );
+        kdDebug() << "[PARTY]: Invalid smartplaylist requested. Trying another source." << name << endl;
+        amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(name) );
     }
     query = sp->query();
 
@@ -536,7 +541,14 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     }
 
     KURL::List urls = KURL::List( newQuery );
-    insertMedia( urls );
+    if( urls.isEmpty() )
+        amaroK::StatusBar::instance()->longMessage( i18n(
+            "<div align=\"center\"><b>Warning</b></div>"
+            "The smart-playlist titled <i>%1</i> contains no tracks."
+            "<br><br>"
+            "Please modify your smart-playlist or choose a different source." ).arg( playlistName ) );
+    else
+        insertMedia( urls );
 }
 
 /**
