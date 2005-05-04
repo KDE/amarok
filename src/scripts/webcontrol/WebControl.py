@@ -22,12 +22,16 @@
 import ConfigParser
 import os
 import sys
+import socket
+import signal
 import threading
+from time import sleep
 
 import Globals
 from Playlist import Playlist
 import RequestHandler
 import BaseHTTPServer
+from WebPublisher import *
 
 import time
 
@@ -56,6 +60,7 @@ class ConfigDialog( QDialog ):
         self.config = ConfigParser.ConfigParser()
 
         allowControl = RequestHandler.AmarokStatus.allowControl
+	publish = RequestHandler.AmarokStatus.publish
         try:
             config = ConfigParser.ConfigParser()
             config.read( "webcontrolrc" )
@@ -121,8 +126,18 @@ class WebControl( QApplication ):
 
         RequestHandler.PLIST = Playlist()
 
-        self.srv = BaseHTTPServer.HTTPServer(('',Globals.PORT),RequestHandler.RequestHandler)
+        p_incr = 0
 
+        while p_incr < 10:
+            try:
+		p_i=p_incr+Globals.PORT
+                self.srv = BaseHTTPServer.HTTPServer(('',p_i),RequestHandler.RequestHandler)
+		publisher.port = p_i
+	        threading.Thread(target = publisher.run).start()
+        	break
+	    except socket.error:
+		p_incr+=1
+		
         self.snsrv = QSocketNotifier(self.srv.fileno(), QSocketNotifier.Read)
         self.snsrv.connect( self.snsrv, SIGNAL('activated(int)'), self.readSocket )
 
@@ -232,14 +247,20 @@ def debug( message ):
 
     print debug_prefix + " " + message
 
-def main( args ):
+def cleanup(sig,frame):
+        publisher.shutdown()
+        os._exit(0)	
 
-    Globals.EXEC_PATH = os.path.abspath(sys.path[0])
 
-    app = WebControl( args )
-    app.exec_loop()
+def guithread():
+	
+	app = WebControl( sys.argv )
+	app.exec_loop()
 
 if __name__ == "__main__":
-    main( sys.argv )
-
-
+        Globals.EXEC_PATH = os.path.abspath(sys.path[0])
+	gui = threading.Thread(target=guithread)
+	gui.start()
+	signal.signal(signal.SIGTERM,cleanup)
+# just wait quietly for the end
+	while 1: sleep(120)
