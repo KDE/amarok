@@ -1,0 +1,163 @@
+amaroK VIS_PLAN  - Created: 22-11-2003
+
+
+Abstract
+========
+In order to create a visualisation framework that is superior to anything
+popular available for Linux today we should plan amaroK's thoroughly
+before implementation. This document exists to map out our ideas and is
+available for anyone to edit, please, if you have some good suggestion, or
+experience with this kind of work, add some comments! Thanks, Max Howell
+
+
+Formatting
+==========
+The document has no regimented formatting, but do try to keep the wordwrap set
+the same! Feel free to recommend formatting if the document becomes
+unmanageable.
+
+
+Plan
+====
+My initial thoughts were to make visualisations a separate process rather than
+separate thread. The reasoning being, a crash in the vis won't crash amaroK,
+threads can be unmanageable, *nix is good for new processes, we can use DCOP to
+control the vis and presumable we just need to pass a handle to the relevant
+arts server to the vis and leave it. Since the music playing bit is already a
+separate process it makes sense to make the visualisation separate too! Also
+this may mean that these visuals could be separate from amaroK and just depend
+on KDE.
+
+I was also thinking that this means it may be possible to not use Qt to
+do rendering. There are probably better libraries for high speed graphics and if
+there isn't a way to make DCOP not depend on a QApplication, then maybe we could
+write something. It would be sorted if we could make something that can react to
+arts sound output in general.
+<markey> we could use SDL for 2d and OpenGL for 3d rendering.
+
+I was also thinking it would be neat to embed the visuals somehow into amaroK,
+so as the background in the playlist perhaps (I know, this would probably not
+work well due to the need to re-render all the AA text all the time, but still
+the idea is neat) This is similar to Sonique on Windows if anyone has ever used
+it.
+
+If we make the visualisations not amaroK specific it may be possible to embed
+visualisations into the Kicker, onto the desktop, etc.
+
+Do we want more than an FFT of the audio data? Would other data
+be useful to visuals at all? Beat detection certainly would be a useful thing to
+offer the visualisations, and it would certainly stop every visual implementing
+its own detection.
+
+
+Vis Process Architecture
+========================
+I suggest having a separate process for each visualization. Each vis process would
+only load one visualization plugin. This way we have good crash safety and it's also
+possible to develop and ship plugins separately from amaroK. So we have one "vis loader
+skeleton" in amaroK, which will be instanciated whenever we need a vis. This loader could
+get started with the vis plugin as cli argument. It would also contain all the socket and
+interface needed to communicate with amaroK.
+
+We should take care to keep the design as simple as possible.
+
+<mxcl> Why make visualisations plugins as well as binaries? It seems sensible to have
+visualisations as separate processes and then communicate with amK through the socket.
+Why have the extra layer of plugins if you're going to force each process to only load
+one plugin anyway?
+
+
+Merging Analyzer and Vis
+========================
+If we decide on unifying vis and analyzer, the question arises how to get the rendered
+bitmap graphic back into amaroK's playerwidget. It seems we have the following options:
+
+* Writing it into a shared memory buffer. amaroK must then read the buffer and bitBlt()
+  the pixmap into the framebuffer
+* Transferring the pixmap over a Unix socket (or UDP network socket). This can amount to
+  several megabytes per second. After the transfer amaroK must bitBlt() it to the
+  framebuffer.
+* Writing it directly into the framebuffer at the desired position, like a video overlay.
+  There might be technical problems doing so, and it will be difficult when the user
+  moves the window.
+
+
+
+[Comment from muesli, to be integrated into the paragraphs above]
+
+imho, it would be cool to offer this service via sockets. udp would fit per-
+fectly, since it has to be realtime, anyways (better loose a packet and show
+nothing, instead of a out-of-sync beat). e.g., you would be able to have
+various of visualizations-clients connected to amarok, showing different
+animations, at the same time. this would also remove the DCOP-dependency-chains
+for the OpenGL clients.
+
+right now, i can imagine two implementation methods:
+
+A) transmit the frequency vector of the analyzer to the vis-client. beat-detection and
+all that stuff gets done by the vis-client.
+
+B) basic beat-detection and music analysis gets done by amarok itself. the
+results of that process are sent to the vis-clients.
+
+<mxcl> IMO it would be good to offer services like beat detection. This
+way vis-writers have less to do and are more likely to write a vis since
+beat-detection is already done, also it means beat-detection is likely to be better
+as we will over time offer a really good implementation, and it means that if the user
+has many visuals running, the beat-detection is only done once for all visualisations.
+
+[/Comment by muesli]
+
+
+
+
+//FIXME <markey> beat detection code temporarily moved here
+
+        /*
+                    // Muesli's Beat Detection - A Night's Oddysee
+                    // shift old elements
+                    for ( uint x = 0; x < 18; ++x )
+                        for ( uint y = 42; y > 0; --y ) m_beatEnergy[x][y] = m_beatEnergy[x][y - 1];
+
+                    // get current energy values
+                    for ( uint x = 0; x < pScopeVector->size(); ++x ) m_beatEnergy[x][0] = pScopeVector->at(x);
+
+                    // compare to old elements and get averages
+                    double beatAvg[18];
+        //            double beatVariance[18];
+        //            double beatMood[18];
+
+                    for ( uint x = 0; x < 18; ++x )
+                    {
+                        beatAvg[x] = 0;
+                        for ( uint y = 1; y < 44; ++y )  beatAvg[x] += m_beatEnergy[x][y];
+
+                        beatAvg[x] = beatAvg[x] / 43;
+                    }
+        */
+        /*            for ( uint x = 0; x < 18; ++x )
+                    {
+                        beatVariance[x] = 0;
+                        for ( uint y = 0; y < 42; ++y )  beatVariance[x] += (pow((m_beatEnergy[x][y] - beatAvg[x]), 2) / 43);
+                    }
+
+                    for ( uint x = 0; x < 18; ++x )
+                        beatMood[x] = (-0.0025714 * beatVariance[x]) + 1.5142857;
+        */
+
+        // do we have a beat? let's dance!
+        /*            int total_hits = 0;
+                    for ( uint x = 0; x < 18; ++x )
+                    {
+                        double factor = cos( x * 4 ) * 18;
+                        factor = beatAvg[x] * factor;
+
+                        if ( m_beatEnergy[x][0] > factor )
+                        {
+                            total_hits++;
+                            kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
+                        }
+                    }
+
+                    if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
+        */
