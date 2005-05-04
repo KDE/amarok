@@ -261,7 +261,7 @@ class File:
         for t in self.tags:
             try:
                 val = node.getElementsByTagName(t)[0].childNodes[0].data
-                setattr(self, t.lower(), val)
+                setattr(self, t.lower(), val.encode('iso-8859-1'))
             except:
                 pass
         for a in self.attr:
