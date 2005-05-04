@@ -5,6 +5,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "browserToolBar.h"
 #include "debug.h"
 #include "collectiondb.h"
 #include "colorgenerator.h"
@@ -43,7 +44,6 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
-#include <ktoolbar.h>
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
@@ -107,10 +107,11 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_wikiTab = new QVBox(this, "wiki_tab");
 
-    KToolBar *toolbar = new KToolBar(m_wikiTab, "wiki_toolbar");
+    KToolBar *toolbar = new Browser::ToolBar( m_wikiTab );
     toolbar->insertButton( "personal", 0, true, i18n("Artist Page") );
     toolbar->insertButton( "cd", 1, true, i18n("Album Page") );
     toolbar->insertButton( "contents2", 2, true, i18n("Title Page") );
+    toolbar->insertLineSeparator();
     toolbar->insertButton( "browser", 3, true, i18n("Open in an external browser") );
 
     m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
