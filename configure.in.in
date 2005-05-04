@@ -433,7 +433,6 @@ if test "$enable_mysql" = "yes"; then
         enable_mysql=no
     fi
 
-    AC_DEFINE(USE_MYSQL, 1, [MySql database support enabled])
 fi
 
 AM_CONDITIONAL(enable_mysql, test x$enable_mysql = xyes)
