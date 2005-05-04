@@ -64,7 +64,10 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void similarArtistsFetched( const QString &artist );
 
         void wikiData( KIO::Job* job, const QByteArray& data );
-        void wikiEditPage();
+        void wikiArtistPage();
+        void wikiAlbumPage();
+        void wikiTitlePage();
+        void wikiExternalPage();
         void wikiResult( KIO::Job* job );
 
     private:
@@ -80,7 +83,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KHTMLPart    *m_currentTrackPage;
         KHTMLPart    *m_lyricsPage;
         KHTMLPart    *m_wikiPage;
-        
+
         QVBox        *m_wikiTab;
         // These control if is needed to rewrite the html for the pages
         // true -> need rebuild
@@ -99,6 +102,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_lyricSearchUrl;
         KIO::TransferJob* m_lyricJob;
         QString       m_wiki;
+        QString       m_wikiLanguages;
         QString       m_wikiBaseUrl;
         QString       m_wikiCurrentUrl;
         KIO::TransferJob* m_wikiJob;
