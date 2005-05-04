@@ -2439,7 +2439,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
     m_wiki.append( "</div>" );
-    m_wiki.replace( QRegexp("<h3 id=\"siteSub\">[^<]*</h3>"), QString::null );
+    m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString::null );
 
     m_wiki.replace( QRegExp( "<div class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</div>" ), QString::null );
 
