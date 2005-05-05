@@ -1,0 +1,5 @@
+Name=Live music streams
+Type=_shoutcast._tcp
+PathEntry=path
+Protocol=http
+Icon=amarok

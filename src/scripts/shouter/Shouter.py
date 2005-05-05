@@ -14,12 +14,15 @@
 #
 ############################################################################
 
+import signal
 import sys
 import threading
+from time import sleep
 from debug import *
 from StreamConfig import *
 from ShouterConfig import *
 from StreamController import *
+import StreamPublisher
 import socket
 
 try:
@@ -117,11 +120,19 @@ class Shouter(QApplication):
         self.dia.show()
         self.connect( self.dia, SIGNAL( 'destroyed()' ), self.read_settings )
 
+def cleanup(sig,frame):
+        publisher.shutdown()
+        os._exit(0)	
 
-def main(args):
-    app = Shouter(args)
-    app.exec_loop()
+def guithread():
+	
+	app = Shouter( sys.argv )
 
-if __name__ == '__main__':
-    main(sys.argv)
+	app.exec_loop()
 
+if __name__ == "__main__":
+	gui = threading.Thread(target=guithread)
+	gui.start()
+	signal.signal(signal.SIGTERM,cleanup)
+# just wait quietly for the end
+	while 1: sleep(120)

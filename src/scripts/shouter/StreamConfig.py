@@ -31,6 +31,7 @@ class ServerConfig:
     max_clients = 4
     port = 8000
     url = 'http://amarok.kde.org'
+    publish = True
 
 class StreamConfig:
     """ Container for stream configuration. Values are defaults and should be

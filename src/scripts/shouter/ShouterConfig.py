@@ -40,6 +40,7 @@ class ServerTabState(TabState):
     f_max_clients = None
     f_port = None
     f_url = None
+    f_publish = None
 
     def __init__(self, t_i):
         self.cfg = ServerConfig()
@@ -56,6 +57,8 @@ class ServerTabState(TabState):
         self.cfg.max_clients = int(self.f_max_clients.value())
         self.cfg.port = int(self.f_port.value())
         self.cfg.url = str(self.f_url.text())
+        if self.f_publish.isChecked(): self.cfg.publish = 1
+        else: self.cfg.publish = 0
         return self.cfg
 
 class StreamTabState(TabState):
@@ -155,6 +158,9 @@ class ConfigDialog(QTabDialog):
 
         QLabel('Home page', lay)
         ts.f_url = QLineEdit(server_cfg.url, lay)
+	
+        ts.f_publish = QCheckBox('Announce streams on LAN',lay)
+        ts.f_publish.setChecked(server_cfg.publish == 1)
 
         self.addTab(lay, 'Ser&ver')
 

@@ -16,9 +16,11 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 from SocketServer import ThreadingTCPServer
 from StreamConfig import *
 from debug import *
+import threading
 from httplib import *
 from ShouterExceptions import *
 from Services import *
+from StreamPublisher import *
 from sre import match
 
 INDEX_URL = 'index.pls'
@@ -124,6 +126,9 @@ class StreamServer(ThreadingTCPServer):
 
     def run(self):
         self.log_f = open('access.log', 'a')
+        publisher.cfg_mgr = self.cfg_mgr
+        publisher.port = self.server_address[1]
+        threading.Thread(target = publisher.run).start()
         self.serve_forever()
 
 class Stream:

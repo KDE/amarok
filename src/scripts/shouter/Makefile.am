@@ -14,7 +14,11 @@ shouter_DATA = \
     ShouterConfig.py \
     ShouterExceptions.py \
     StreamConfig.py \
+    StreamPublisher.py \
     StreamController.py \
     binfuncs.py \
     debug.py \
     propfind-req.xml
+
+zeroconfdir = $(kde_datadir)/zeroconf
+zeroconf_DATA = _shoutcast._tcp
