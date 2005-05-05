@@ -237,7 +237,7 @@ Playlist::Playlist( QWidget *parent )
 
 
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
-             this,       SLOT( activate( QListViewItem* ) ) );
+             this,       SLOT( doubleClicked( QListViewItem* ) ) );
     connect( this,     SIGNAL( returnPressed( QListViewItem* ) ),
              this,       SLOT( activate( QListViewItem* ) ) );
     connect( this,     SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
@@ -872,6 +872,14 @@ Playlist::queue( QListViewItem *item )
 
     updateNextPrev();
     #undef item
+}
+
+void Playlist::doubleClicked( QListViewItem *item )
+{
+    /* We have to check if the item exists before calling activate, otherwise clicking on an empty
+    playlist space would stop playing (check BR #105106)*/
+    if( item )
+        activate( item );
 }
 
 void

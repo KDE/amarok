@@ -175,6 +175,7 @@ class Playlist : private KListView, public EngineObserver
         void columnOrderChanged();
         void updateNextPrev();
         void queue( QListViewItem* );
+        void doubleClicked( QListViewItem* );
         void activate( QListViewItem* );
         void columnResizeEvent( int, int, int );
 
