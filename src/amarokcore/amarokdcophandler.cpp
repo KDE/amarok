@@ -407,6 +407,11 @@ namespace amaroK
         return Playlist::defaultPlaylistPath();
     }
 
+    void DcopPlaylistHandler::saveM3u( const QString& path, bool relativePaths )
+    {
+        Playlist::instance()->saveM3U( path, relativePaths );
+    }
+
     void DcopPlaylistHandler::removeCurrentTrack()
     {
         PlaylistItem* const item = Playlist::instance()->currentTrack();
@@ -428,7 +433,7 @@ namespace amaroK
 
     int  DcopPlaylistHandler::getTotalTrackCount()
     {
-	return Playlist::instance()->totalTrackCount();
+        return Playlist::instance()->totalTrackCount();
     }
 
     void DcopPlaylistHandler::setStopAfterCurrent( bool on )

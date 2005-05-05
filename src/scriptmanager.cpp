@@ -427,7 +427,7 @@ ScriptManager::slotRunScript()
 
     const KURL url = m_scripts[name].url;
     KProcIO* script = new KProcIO();
-    script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stdout | KProcess::Stderr ) );
+//     script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stdout | KProcess::Stderr ) );
 
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
