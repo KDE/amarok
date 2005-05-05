@@ -43,6 +43,7 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kpopupmenu.h>
 #include <kprocio.h>
 #include <kpushbutton.h>
 #include <krun.h>
@@ -89,7 +90,7 @@ ScriptManager* ScriptManager::s_instance = 0;
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
         : KDialogBase( parent, name, false, 0, 0, Ok, false )
         , EngineObserver( EngineController::instance() )
-        , m_base( new ScriptManagerBase( this ) )
+        , m_gui( new ScriptManagerBase( this ) )
 {
     DEBUG_BLOCK
 
@@ -98,29 +99,30 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
 
-    setMainWidget( m_base );
-    m_base->listView->setFullWidth( true );
+    setMainWidget( m_gui );
+    m_gui->listView->setFullWidth( true );
 
-    connect( m_base->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
-    connect( m_base->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
+    connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
+    connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
+    connect( m_gui->listView, SIGNAL( rightButtonPressed ( QListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( QListViewItem*, const QPoint& ) ) );
 
-    connect( m_base->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
-    connect( m_base->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
-    connect( m_base->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
-    connect( m_base->editButton,      SIGNAL( clicked() ), SLOT( slotEditScript() ) );
-    connect( m_base->runButton,       SIGNAL( clicked() ), SLOT( slotRunScript() ) );
-    connect( m_base->stopButton,      SIGNAL( clicked() ), SLOT( slotStopScript() ) );
-    connect( m_base->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
-    connect( m_base->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
+    connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
+    connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
+    connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
+    connect( m_gui->editButton,      SIGNAL( clicked() ), SLOT( slotEditScript() ) );
+    connect( m_gui->runButton,       SIGNAL( clicked() ), SLOT( slotRunScript() ) );
+    connect( m_gui->stopButton,      SIGNAL( clicked() ), SLOT( slotStopScript() ) );
+    connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
+    connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
-    m_base->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
-    m_base->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
-    m_base->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
-    m_base->editButton     ->setIconSet( SmallIconSet( "edit" ) );
-    m_base->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
-    m_base->stopButton     ->setIconSet( SmallIconSet( "player_stop" ) );
-    m_base->configureButton->setIconSet( SmallIconSet( "configure" ) );
-    m_base->aboutButton    ->setIconSet( SmallIconSet( "help" ) );
+    m_gui->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
+    m_gui->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
+    m_gui->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
+    m_gui->editButton     ->setIconSet( SmallIconSet( "edit" ) );
+    m_gui->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
+    m_gui->stopButton     ->setIconSet( SmallIconSet( "player_stop" ) );
+    m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );
+    m_gui->aboutButton    ->setIconSet( SmallIconSet( "help" ) );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
@@ -149,7 +151,7 @@ ScriptManager::~ScriptManager()
     // Save config
     KConfig* const config = amaroK::config( "ScriptManager" );
     config->writeEntry( "Running Scripts", runningScripts );
-    config->writeEntry( "Auto Run", m_base->checkBox_autoRun->isChecked() );
+    config->writeEntry( "Auto Run", m_gui->checkBox_autoRun->isChecked() );
 
     s_instance = 0;
 }
@@ -165,7 +167,7 @@ ScriptManager::runScript( const QString& name )
     if ( !m_scripts.contains( name ) )
         return false;
 
-    m_base->listView->setCurrentItem( m_scripts[name].li );
+    m_gui->listView->setCurrentItem( m_scripts[name].li );
     return slotRunScript();
 }
 
@@ -176,7 +178,7 @@ ScriptManager::stopScript( const QString& name )
     if ( !m_scripts.contains( name ) )
         return false;
 
-    m_base->listView->setCurrentItem( m_scripts[name].li );
+    m_gui->listView->setCurrentItem( m_scripts[name].li );
     slotStopScript();
 
     return true;
@@ -219,7 +221,7 @@ ScriptManager::findScripts() //SLOT
 
     KConfig* const config = amaroK::config( "ScriptManager" );
     const bool autoRun = config->readBoolEntry( "Auto Run", false );
-    m_base->checkBox_autoRun->setChecked( autoRun );
+    m_gui->checkBox_autoRun->setChecked( autoRun );
 
     if ( autoRun ) {
         const QStringList runningScripts = config->readListEntry( "Running Scripts" );
@@ -228,14 +230,14 @@ ScriptManager::findScripts() //SLOT
         for ( it = runningScripts.begin(); it != runningScripts.end(); ++it ) {
             if ( m_scripts.contains( *it ) ) {
                 debug() << "Auto-running script: " << *it << endl;
-                m_base->listView->setCurrentItem( m_scripts[*it].li );
+                m_gui->listView->setCurrentItem( m_scripts[*it].li );
                 slotRunScript();
             }
         }
     }
 
-    m_base->listView->setCurrentItem( m_base->listView->firstChild() );
-    slotCurrentChanged( m_base->listView->currentItem() );
+    m_gui->listView->setCurrentItem( m_gui->listView->firstChild() );
+    slotCurrentChanged( m_gui->listView->currentItem() );
 }
 
 
@@ -244,20 +246,20 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
 {
     if ( item ) {
         const QString name = item->text( 0 );
-        m_base->uninstallButton->setEnabled( true );
-        m_base->editButton->setEnabled( true );
-        m_base->runButton->setEnabled( !m_scripts[name].process );
-        m_base->stopButton->setEnabled( m_scripts[name].process );
-        m_base->configureButton->setEnabled( m_scripts[name].process );
-        m_base->aboutButton->setEnabled( true );
+        m_gui->uninstallButton->setEnabled( true );
+        m_gui->editButton->setEnabled( true );
+        m_gui->runButton->setEnabled( !m_scripts[name].process );
+        m_gui->stopButton->setEnabled( m_scripts[name].process );
+        m_gui->configureButton->setEnabled( m_scripts[name].process );
+        m_gui->aboutButton->setEnabled( true );
     }
     else {
-        m_base->uninstallButton->setEnabled( false );
-        m_base->editButton->setEnabled( false );
-        m_base->runButton->setEnabled( false );
-        m_base->stopButton->setEnabled( false );
-        m_base->configureButton->setEnabled( false );
-        m_base->aboutButton->setEnabled( false );
+        m_gui->uninstallButton->setEnabled( false );
+        m_gui->editButton->setEnabled( false );
+        m_gui->runButton->setEnabled( false );
+        m_gui->stopButton->setEnabled( false );
+        m_gui->configureButton->setEnabled( false );
+        m_gui->aboutButton->setEnabled( false );
     }
 }
 
@@ -369,7 +371,7 @@ ScriptManager::slotUninstallScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->listView->currentItem()->text( 0 );
+    const QString name = m_gui->listView->currentItem()->text( 0 );
 
     if ( KMessageBox::warningYesNo( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ) ) == KMessageBox::No )
         return;
@@ -405,7 +407,7 @@ ScriptManager::slotEditScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->listView->currentItem()->text( 0 );
+    const QString name = m_gui->listView->currentItem()->text( 0 );
     const QString cmd = "kwrite %1";
 
     KRun::runCommand( cmd.arg( m_scripts[name].url.path() ) );
@@ -417,7 +419,7 @@ ScriptManager::slotRunScript()
 {
     DEBUG_BLOCK
 
-    QListViewItem* const li = m_base->listView->currentItem();
+    QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
     // Don't start a script twice
@@ -425,7 +427,7 @@ ScriptManager::slotRunScript()
 
     const KURL url = m_scripts[name].url;
     KProcIO* script = new KProcIO();
-    script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stderr ) );
+    script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stdout | KProcess::Stderr ) );
 
     *script << url.path();
     script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
@@ -441,7 +443,8 @@ ScriptManager::slotRunScript()
     debug() << "Running script: " << url.path() << endl;
 
     m_scripts[name].process = script;
-    slotCurrentChanged( m_base->listView->currentItem() );
+    slotCurrentChanged( m_gui->listView->currentItem() );
+//     connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotReceivedStdout( KProcess*, char*, int ) ) );
     connect( script, SIGNAL( processExited( KProcess* ) ), SLOT( scriptFinished( KProcess* ) ) );
     return true;
 }
@@ -452,7 +455,7 @@ ScriptManager::slotStopScript()
 {
     DEBUG_BLOCK
 
-    QListViewItem* const li = m_base->listView->currentItem();
+    QListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
     // Kill script process (with SIGTERM)
@@ -461,7 +464,7 @@ ScriptManager::slotStopScript()
 
     delete m_scripts[name].process;
     m_scripts[name].process = 0;
-    slotCurrentChanged( m_base->listView->currentItem() );
+    slotCurrentChanged( m_gui->listView->currentItem() );
 
     li->setPixmap( 0, SmallIcon( "stop" ) );
 }
@@ -472,7 +475,7 @@ ScriptManager::slotConfigureScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->listView->currentItem()->text( 0 );
+    const QString name = m_gui->listView->currentItem()->text( 0 );
     if ( !m_scripts[name].process ) return;
 
     const KURL url = m_scripts[name].url;
@@ -489,7 +492,7 @@ ScriptManager::slotAboutScript()
 {
     DEBUG_BLOCK
 
-    const QString name = m_base->listView->currentItem()->text( 0 );
+    const QString name = m_gui->listView->currentItem()->text( 0 );
     QFile file( m_scripts[name].url.directory( false ) + "README" );
     debug() << "Path: " << file.name() << endl;
 
@@ -513,6 +516,62 @@ ScriptManager::slotAboutScript()
     editor->setTextFormat( QTextEdit::PlainText );
     editor->resize( 640, 480 );
     editor->show();
+}
+
+
+void
+ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
+{
+    DEBUG_BLOCK
+    if ( !item ) return;
+
+    // Look up script entry in our map
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( it.data().li == item ) break;
+
+    enum { SHOW_LOG };
+    KPopupMenu menu;
+    menu.insertItem( SmallIconSet( "edit" ), i18n( "Show Output Log" ), SHOW_LOG );
+    menu.setItemEnabled( SHOW_LOG, it.data().process );
+    const int id = menu.exec( pos );
+
+    switch ( id )
+    {
+        case SHOW_LOG:
+            QString line;
+            while ( it.data().process->readln( line ) != -1 )
+                it.data().log += line;
+
+            KTextEdit* editor = new KTextEdit();
+            kapp->setTopWidget( editor );
+            editor->setCaption( kapp->makeStdCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
+            editor->setReadOnly( true );
+
+            QFont font( "fixed" );
+            font.setFixedPitch( true );
+            font.setStyleHint( QFont::TypeWriter );
+            editor->setFont( font );
+
+            editor->setText( it.data().log );
+            editor->setTextFormat( QTextEdit::PlainText );
+            editor->resize( 640, 480 );
+            editor->show();
+    }
+}
+
+
+void
+ScriptManager::slotReceivedStdout( KProcess* process, char* buf, int len )
+{
+    DEBUG_BLOCK
+
+    // Look up script entry in our map
+    ScriptMap::Iterator it;
+    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+        if ( it.data().process == process ) break;
+
+    it.data().log += QString::fromLatin1( buf, len );
 }
 
 
@@ -542,7 +601,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
     delete it.data().process;
     it.data().process = 0;
     it.data().li->setPixmap( 0, SmallIcon( "stop" ) );
-    slotCurrentChanged( m_base->listView->currentItem() );
+    slotCurrentChanged( m_gui->listView->currentItem() );
 }
 
 
@@ -573,7 +632,7 @@ ScriptManager::loadScript( const QString& path )
     if ( !path.isEmpty() ) {
         const KURL url = KURL::fromPathOrURL( path );
 
-        KListViewItem* li = new KListViewItem( m_base->listView, url.fileName() );
+        KListViewItem* li = new KListViewItem( m_gui->listView, url.fileName() );
         li->setPixmap( 0, SmallIcon( "stop" ) );
 
         ScriptItem item;
@@ -584,7 +643,7 @@ ScriptManager::loadScript( const QString& path )
         m_scripts[url.fileName()] = item;
         debug() << "Loaded: " << url.fileName() << endl;
 
-        slotCurrentChanged( m_base->listView->currentItem() );
+        slotCurrentChanged( m_gui->listView->currentItem() );
     }
 }
 

@@ -94,7 +94,9 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();
+        void slotShowContextMenu( QListViewItem*, const QPoint& );
 
+        void slotReceivedStdout( KProcess*, char*, int );
         void scriptFinished( KProcess* process );
 
     private:
@@ -113,13 +115,14 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void engineVolumeChanged( int newVolume );
 
         static ScriptManager* s_instance;
-        ScriptManagerBase*    m_base;
+        ScriptManagerBase*    m_gui;
         bool                  m_installSuccess;
 
         struct ScriptItem {
             KURL           url;
             KProcIO*       process;
             QListViewItem* li;
+            QString        log;
         };
 
         typedef QMap<QString, ScriptItem> ScriptMap;
