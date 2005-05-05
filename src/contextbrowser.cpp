@@ -118,7 +118,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiPage->setJavaEnabled( false );
     m_wikiPage->setPluginsEnabled( false );
     m_wikiPage->setDNDEnabled( true );
-    m_wikiPage->view()->show();
+// why did we have this?
+//    m_wikiPage->view()->show();
 
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
@@ -247,9 +248,18 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // Streams should use stream:// protocol.
     if ( url.protocol() == "http" )
     {
-        m_dirtyWikiPage = true;
-        showWikipedia( url.url() );
+        debug() << "Recived openURLRequest for: " << url.url() << endl;
+        if ( url.hasHTMLRef() )
+        {
+            m_wikiPage->gotoAnchor( url.htmlRef() );
+        }
+        else
+        {
+            m_dirtyWikiPage = true;
+            showWikipedia( url.url() );
+        }
     }
+
 
     if ( url.protocol() == "show" )
     {
@@ -455,7 +465,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
-        urlString.startsWith( "#" ) ||
         urlString.startsWith( "http" )
         )
         return;
@@ -2353,7 +2362,7 @@ void ContextBrowser::showWikipedia( const QString &url )
     m_wiki = QString::null;
     if ( url.isEmpty() )
     {
-        m_wikiCurrentUrl = QString( "http://www.wikipedia.org/wiki/%1" )
+        m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" )
             .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
     }
     else
@@ -2361,7 +2370,6 @@ void ContextBrowser::showWikipedia( const QString &url )
         m_wikiCurrentUrl = url;
     }
     m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
-    debug() << "Using this url: " << m_wikiCurrentUrl << endl;
     m_wikiJob = KIO::get( m_wikiCurrentUrl, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
@@ -2378,7 +2386,7 @@ void
 ContextBrowser::wikiArtistPage()
 {
     m_dirtyWikiPage = true;
-    showWikipedia( QString( "http://www.wikipedia.org/wiki/%1" )
+    showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) ) );
 }
 
@@ -2386,7 +2394,7 @@ void
 ContextBrowser::wikiAlbumPage()
 {
     m_dirtyWikiPage = true;
-    showWikipedia( QString( "http://www.wikipedia.org/wiki/%1" )
+    showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) ) );
 }
 
@@ -2459,7 +2467,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
     m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl );
-    m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" + m_wikiCurrentUrl + "#" );
+    m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + "#" );
 
     m_wikiPage->begin();
     m_wikiPage->setUserStyleSheet( m_styleSheet );
