@@ -89,7 +89,6 @@ class ScriptManager : public KDialogBase, public EngineObserver
         bool slotInstallScript( const QString& path = QString::null );
         void slotRetrieveScript();
         void slotUninstallScript();
-        void slotEditScript();
         bool slotRunScript();
         void slotStopScript();
         void slotConfigureScript();

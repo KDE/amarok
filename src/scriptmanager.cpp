@@ -109,7 +109,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
     connect( m_gui->uninstallButton, SIGNAL( clicked() ), SLOT( slotUninstallScript() ) );
-    connect( m_gui->editButton,      SIGNAL( clicked() ), SLOT( slotEditScript() ) );
     connect( m_gui->runButton,       SIGNAL( clicked() ), SLOT( slotRunScript() ) );
     connect( m_gui->stopButton,      SIGNAL( clicked() ), SLOT( slotStopScript() ) );
     connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
@@ -118,7 +117,6 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
     m_gui->retrieveButton ->setIconSet( SmallIconSet( "khtml_kget" ) );
     m_gui->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
-    m_gui->editButton     ->setIconSet( SmallIconSet( "edit" ) );
     m_gui->runButton      ->setIconSet( SmallIconSet( "player_play" ) );
     m_gui->stopButton     ->setIconSet( SmallIconSet( "player_stop" ) );
     m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );
@@ -247,7 +245,6 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
     if ( item ) {
         const QString name = item->text( 0 );
         m_gui->uninstallButton->setEnabled( true );
-        m_gui->editButton->setEnabled( true );
         m_gui->runButton->setEnabled( !m_scripts[name].process );
         m_gui->stopButton->setEnabled( m_scripts[name].process );
         m_gui->configureButton->setEnabled( m_scripts[name].process );
@@ -255,7 +252,6 @@ ScriptManager::slotCurrentChanged( QListViewItem* item )
     }
     else {
         m_gui->uninstallButton->setEnabled( false );
-        m_gui->editButton->setEnabled( false );
         m_gui->runButton->setEnabled( false );
         m_gui->stopButton->setEnabled( false );
         m_gui->configureButton->setEnabled( false );
@@ -402,18 +398,6 @@ ScriptManager::slotUninstallScript()
 }
 
 
-void
-ScriptManager::slotEditScript()
-{
-    DEBUG_BLOCK
-
-    const QString name = m_gui->listView->currentItem()->text( 0 );
-    const QString cmd = "kwrite %1";
-
-    KRun::runCommand( cmd.arg( m_scripts[name].url.path() ) );
-}
-
-
 bool
 ScriptManager::slotRunScript()
 {
@@ -530,14 +514,20 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
         if ( it.data().li == item ) break;
 
-    enum { SHOW_LOG };
+    enum { SHOW_LOG, EDIT };
     KPopupMenu menu;
-    menu.insertItem( SmallIconSet( "edit" ), i18n( "Show Output Log" ), SHOW_LOG );
+    menu.insertTitle( i18n( "Debugging" ) );
+    menu.insertItem( SmallIconSet( "history" ), i18n( "Show Output Log" ), SHOW_LOG );
+    menu.insertItem( SmallIconSet( "edit" ), i18n( "Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
     const int id = menu.exec( pos );
 
     switch ( id )
     {
+        case EDIT:
+            KRun::runCommand( "kwrite " + it.data().url.path() );
+            break;
+
         case SHOW_LOG:
             QString line;
             while ( it.data().process->readln( line ) != -1 )
@@ -557,6 +547,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
             editor->setTextFormat( QTextEdit::PlainText );
             editor->resize( 640, 480 );
             editor->show();
+            break;
     }
 }
 
