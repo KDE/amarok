@@ -91,7 +91,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         bool          m_dirtyCurrentTrackPage;
         bool          m_dirtyLyricsPage;
         bool          m_dirtyWikiPage;
-        bool          m_dirtyWikiFetching;
 
         QString       m_styleSheet;
         bool          m_emptyDB;

@@ -82,7 +82,6 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
         , m_dirtyWikiPage( true )
-        , m_dirtyWikiFetching( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
         , m_wikiJob( NULL )
@@ -337,7 +336,6 @@ void ContextBrowser::renderView()
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
-    m_dirtyWikiFetching = true;
 
     // TODO: Show CurrentTrack or Lyric tab if they were selected
     if ( CollectionDB::instance()->isEmpty() )
@@ -362,7 +360,6 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
     m_dirtyWikiPage = true;
-    m_dirtyWikiFetching = true;
     m_lyricJob = 0; //New metadata, so let's forget previous lyric-fetching jobs
     m_wikiJob = 0; //New metadata, so let's forget previous wiki-fetching jobs
 
@@ -378,8 +375,8 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         showCurrentTrack();
     else if ( currentPage() == m_currentTrackPage->view() && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
         showCurrentTrack();
-    else if ( currentPage() == m_wikiPage->view() )
-        showWikipedia();
+    if ( currentPage() == m_lyricsPage->view() )
+        showLyrics();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showIntroduction();
 }
@@ -392,8 +389,6 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     m_dirtyHomePage = true;
     m_dirtyCurrentTrackPage = true;
     m_dirtyLyricsPage = true;
-    m_dirtyWikiPage = true;
-    m_dirtyWikiFetching = true;
     m_lyricJob = 0; //let's forget previous lyric-fetching jobs
     m_wikiJob = 0; //let's forget previous wiki-fetching jobs
 
@@ -406,6 +401,10 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), false );
             setTabEnabled( m_lyricsPage->view(), false );
+            if ( currentPage() != m_wikiTab ) {
+                setTabEnabled( m_wikiTab, false );
+                m_dirtyWikiPage = true;
+            }
             blockSignals( false );
             break;
         case Engine::Playing:
@@ -2336,31 +2335,28 @@ void ContextBrowser::showWikipedia( const QString &url )
     }
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
-//    if ( m_dirtyWikiFetching )
-//    {
-        m_wikiPage->begin();
-        m_HTMLSource="";
-        m_wikiPage->setUserStyleSheet( m_styleSheet );
+    m_wikiPage->begin();
+    m_HTMLSource="";
+    m_wikiPage->setUserStyleSheet( m_styleSheet );
 
-        m_HTMLSource.append(
-                "<html>"
-                "<div id='wiki_box' class='box'>"
-                    "<div id='wiki_box-header' class='box-header'>"
-                        "<span id='wiki_box-header-title' class='box-header-title'>"
-                        + i18n( "Wikipedia" ) +
-                        "</span>"
-                    "</div>"
-                    "<div id='wiki_box-body' class='box-body'>"
-                        "<div class='info'><p>" + i18n( "Fetching Wikipedia Information" ) + " ...</p></div>"
-                    "</div>"
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='wiki_box' class='box'>"
+                "<div id='wiki_box-header' class='box-header'>"
+                    "<span id='wiki_box-header-title' class='box-header-title'>"
+                    + i18n( "Wikipedia" ) +
+                    "</span>"
                 "</div>"
-                "</html>"
-                        );
+                "<div id='wiki_box-body' class='box-body'>"
+                    "<div class='info'><p>" + i18n( "Fetching Wikipedia Information" ) + " ...</p></div>"
+                "</div>"
+            "</div>"
+            "</html>"
+                    );
 
-        m_wikiPage->write( m_HTMLSource );
-        m_wikiPage->end();
-        saveHtmlData(); // Send html code to file
-//    }
+    m_wikiPage->write( m_HTMLSource );
+    m_wikiPage->end();
+    saveHtmlData(); // Send html code to file
 
     m_wiki = QString::null;
     if ( url.isEmpty() )
@@ -2389,8 +2385,7 @@ void
 ContextBrowser::wikiArtistPage()
 {
     m_dirtyWikiPage = true;
-    showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
-        .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) ) );
+    showWikipedia();
 }
 
 void
@@ -2426,6 +2421,8 @@ ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
 void
 ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 {
+    DEBUG_BLOCK
+
     if ( !job->error() == 0 )
     {
         kdWarning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
@@ -2506,7 +2503,6 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_HTMLSource.append( "</body></html>" );
     m_wikiPage->write( m_HTMLSource );
     m_wikiPage->end();
-    m_dirtyWikiFetching = false;
     m_dirtyWikiPage = false;
     saveHtmlData(); // Send html code to file
     m_wikiJob = NULL;
