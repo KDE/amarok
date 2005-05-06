@@ -517,8 +517,8 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     enum { SHOW_LOG, EDIT };
     KPopupMenu menu;
     menu.insertTitle( i18n( "Debugging" ) );
-    menu.insertItem( SmallIconSet( "history" ), i18n( "Show Output Log" ), SHOW_LOG );
-    menu.insertItem( SmallIconSet( "edit" ), i18n( "Edit" ), EDIT );
+    menu.insertItem( SmallIconSet( "history" ), i18n( "Show Output &Log" ), SHOW_LOG );
+    menu.insertItem( SmallIconSet( "edit" ), i18n( "&Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
     const int id = menu.exec( pos );
 

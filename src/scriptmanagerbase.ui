@@ -67,7 +67,10 @@
                                         <cstring>installButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Install Script</string>
+                                        <string>&amp;Install Script</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+I</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
@@ -75,7 +78,10 @@
                                         <cstring>retrieveButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Get More Scripts</string>
+                                        <string>&amp;Get More Scripts</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+G</string>
                                     </property>
                                 </widget>
                                 <widget class="Line">
@@ -97,7 +103,10 @@
                                         <cstring>aboutButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>About</string>
+                                        <string>&amp;About</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+A</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
@@ -105,7 +114,10 @@
                                         <cstring>runButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Run</string>
+                                        <string>&amp;Run</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+R</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
@@ -113,7 +125,10 @@
                                         <cstring>stopButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Stop</string>
+                                        <string>&amp;Stop</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+S</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
@@ -121,7 +136,10 @@
                                         <cstring>configureButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Configure</string>
+                                        <string>&amp;Configure</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+C</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
@@ -129,7 +147,10 @@
                                         <cstring>uninstallButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Uninstall</string>
+                                        <string>&amp;Uninstall</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+U</string>
                                     </property>
                                 </widget>
                             </vbox>
