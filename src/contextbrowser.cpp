@@ -13,7 +13,6 @@
 #include "contextbrowser.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
-
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
@@ -110,9 +109,9 @@ ContextBrowser::ContextBrowser( const char *name )
     KToolBar *toolbar = new Browser::ToolBar( m_wikiTab );
     toolbar->insertButton( "personal", 0, true, i18n("Artist Page") );
     toolbar->insertButton( "cd", 1, true, i18n("Album Page") );
-    toolbar->insertButton( "contents2", 2, true, i18n("Title Page") );
+    toolbar->insertButton( "contents", 2, true, i18n("Title Page") );
     toolbar->insertLineSeparator();
-    toolbar->insertButton( "browser", 3, true, i18n("Open in an external browser") );
+    toolbar->insertButton( "exec", 3, true, i18n("Open in an external browser") );
 
     m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
     m_wikiPage->setJavaEnabled( false );
@@ -124,7 +123,7 @@ ContextBrowser::ContextBrowser( const char *name )
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
-    addTab( m_wikiTab,                     SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
+    addTab( m_wikiTab,                  SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsPage->view(), false );
