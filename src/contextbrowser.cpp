@@ -542,7 +542,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         const int button = KMessageBox::warningContinueCancel( this,
             i18n( "Are you sure you want to remove this cover from the Collection?" ),
             QString::null,
-            i18n("&Remove") );
+            KGuiItem(i18n("&Delete"),"editdelete") );
 
         if ( button == KMessageBox::Continue )
         {
@@ -1583,7 +1583,7 @@ bool CurrentTrackJob::doJob()
         "<div id='favoritesby_box' class='box'>"
             "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>"
                 "<span id='favoritesby_box-header-title' class='box-header-title'>"
-                + i18n( "Favorite Tracks By %1" ).arg( artistName ) +
+                + i18n( "Favorite Tracks by %1" ).arg( artistName ) +
                 "</span>"
             "</div>"
             "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
@@ -1634,7 +1634,7 @@ bool CurrentTrackJob::doJob()
         "<div id='albums_box' class='box'>"
             "<div id='albums_box-header' class='box-header'>"
                 "<span id='albums_box-header-title' class='box-header-title'>"
-                + i18n( "Albums By %1" ).arg( artistName ) +
+                + i18n( "Albums by %1" ).arg( artistName ) +
                 "</span>"
             "</div>"
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );

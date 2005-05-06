@@ -391,7 +391,7 @@ void PlaylistBrowser::deleteSelectedPlaylists() //SLOT
                                                                  "<p>You have selected %n playlists to be <b>irreversibly</b> deleted.",
                                                                  urls.count() ),
                                                      QString::null,
-                                                     i18n("&Delete") );
+                                                     KGuiItem(i18n("&Delete"),"editdelete") );
 
     if ( button == KMessageBox::Continue )
     {

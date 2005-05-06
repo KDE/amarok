@@ -64,7 +64,7 @@
                         <number>1</number>
                     </property>
                     <property name="title">
-                        <string>Type of song to append to playlist:</string>
+                        <string>Type of Song to Append to Playlist</string>
                     </property>
                     <property name="checkable">
                         <bool>false</bool>

@@ -263,7 +263,7 @@ Playlist::Playlist( QWidget *parent )
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Goto Current Track" ), "today", CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
-    new KAction( i18n( "&Remove Duplicate And Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
+    new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
 
     //ensure we update action enabled states when repeat Playlist is toggled
@@ -2209,7 +2209,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     // Begin queue context entry logic
     if( isParty() && item != m_currentTrack && item->isEnabled() )
-        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Move To Front"), PLAY_NEXT_PARTY );
+        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Move to Front"), PLAY_NEXT_PARTY );
     else if ( !isParty() && item->isEnabled() )
         popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
@@ -2255,10 +2255,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
-            : i18n( "&Edit '%1' Tag For Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
+            : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
     popup.insertItem( trackColumn
             ? i18n("&Iteratively Assign Track Numbers")
-  : i18n("Write '%1' For Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
+  : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
     popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Meta-String" ), 0, 0, CTRL+Key_C, COPY );
 
     popup.insertSeparator();

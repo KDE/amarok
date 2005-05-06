@@ -725,7 +725,7 @@ void CoverManager::deleteSelectedCovers()
                                   "Are you sure you want to delete these %n covers from the Collection?",
                                   selected.count() ),
                             QString::null,
-                            i18n("&Remove") );
+                            KGuiItem(i18n("&Delete"),"editdelete") );
 
     if ( button == KMessageBox::Continue ) {
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {

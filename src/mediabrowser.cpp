@@ -648,7 +648,7 @@ MediaDevice::deleteFiles( const KURL::List& urls )
                                                            count
                                                          ),
                                                      QString::null,
-                                                     i18n("&Delete") );
+                                                     KGuiItem(i18n("&Delete"),"editdelete") );
 
     if ( button == KMessageBox::Continue )
     {
