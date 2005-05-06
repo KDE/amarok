@@ -118,18 +118,18 @@
                                 </widget>
                                 <widget class="QPushButton">
                                     <property name="name">
-                                        <cstring>editButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Edit</string>
-                                    </property>
-                                </widget>
-                                <widget class="QPushButton">
-                                    <property name="name">
                                         <cstring>configureButton</cstring>
                                     </property>
                                     <property name="text">
                                         <string>Configure</string>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>editButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Edit</string>
                                     </property>
                                 </widget>
                                 <widget class="QPushButton">
