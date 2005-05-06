@@ -374,8 +374,12 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
     }
 
-    if ( currentPage() != m_currentTrackPage->view() || bundle.url() != m_currentURL || newMetaData || !trackChanged )
+    if ( currentPage() == m_homePage->view() )
         showCurrentTrack();
+    else if ( currentPage() == m_currentTrackPage->view() && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
+        showCurrentTrack();
+    else if ( currentPage() == m_wikiPage->view() )
+        showWikipedia();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showIntroduction();
 }
@@ -397,11 +401,11 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     {
         case Engine::Empty:
             m_metadataHistory.clear();
-            showHome();
+            if ( currentPage() == m_currentTrackPage->view() )
+                showHome();
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), false );
             setTabEnabled( m_lyricsPage->view(), false );
-            setTabEnabled( m_wikiTab, false );
             blockSignals( false );
             break;
         case Engine::Playing:
