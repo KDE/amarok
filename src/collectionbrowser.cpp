@@ -563,6 +563,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     if ( expandable )
         pixmap = iconForCategory( category );
 
+    //this check avoid possible problems on database errors. FIXME: Should we add some real error handling here,
+    //like calling a collection update or something?
+    if ( values.isEmpty() ) { return; }
+
     for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
     {
         QString text;
