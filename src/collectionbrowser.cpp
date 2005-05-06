@@ -462,7 +462,7 @@ void
 CollectionView::slotExpand( QListViewItem* item )  //SLOT
 {
     DEBUG_FUNC_INFO
-    if ( !item ) return;
+    if ( !item || !item->isExpandable() ) return;
 
     int category = 0;
     QStringList values;
