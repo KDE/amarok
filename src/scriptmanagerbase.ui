@@ -182,7 +182,7 @@
                 <cstring>checkBox_autoRun</cstring>
             </property>
             <property name="text">
-                <string>Auto-run scripts on application startup</string>
+                <string>Restart running scripts on application startup</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>If enabled, amaroK will automatically restart scripts that were running when you exited the application.</string>
