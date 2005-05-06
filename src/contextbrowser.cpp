@@ -2333,8 +2333,8 @@ void ContextBrowser::showWikipedia( const QString &url )
     }
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
-    if ( m_dirtyWikiFetching )
-    {
+//    if ( m_dirtyWikiFetching )
+//    {
         m_wikiPage->begin();
         m_HTMLSource="";
         m_wikiPage->setUserStyleSheet( m_styleSheet );
@@ -2357,7 +2357,7 @@ void ContextBrowser::showWikipedia( const QString &url )
         m_wikiPage->write( m_HTMLSource );
         m_wikiPage->end();
         saveHtmlData(); // Send html code to file
-    }
+//    }
 
     m_wiki = QString::null;
     if ( url.isEmpty() )
