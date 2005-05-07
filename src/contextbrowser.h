@@ -17,6 +17,7 @@ class MetaBundle;
 class QPalette;
 class QVBox;
 
+namespace Browser { class ToolBar; }
 namespace KIO { class Job; class TransferJob; }
 
 
@@ -55,7 +56,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showCurrentTrack();
         void showLyrics( const QString& hash = QString::null );
         void showLyricSuggestions();
-        void showWikipedia( const QString& url = QString::null );
+        void showWikipedia( const QString& url = QString::null, bool fromHistory = false );
 
         void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
@@ -64,6 +65,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void similarArtistsFetched( const QString &artist );
 
         void wikiData( KIO::Job* job, const QByteArray& data );
+        void wikiHistoryBack();
         void wikiArtistPage();
         void wikiAlbumPage();
         void wikiTitlePage();
@@ -102,12 +104,16 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         KIO::TransferJob* m_lyricJob;
+
         QString       m_wiki;
         QByteArray    m_wikiRawData;
         QString       m_wikiLanguages;
         QString       m_wikiBaseUrl;
         QString       m_wikiCurrentUrl;
         KIO::TransferJob* m_wikiJob;
+        QStringList   m_wikiHistory;
+        Browser::ToolBar* m_wikiToolBar;
+
         QString       m_HTMLSource;
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;

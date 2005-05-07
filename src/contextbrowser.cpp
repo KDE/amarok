@@ -106,15 +106,15 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_wikiTab = new QVBox(this, "wiki_tab");
 
-    KToolBar *toolbar = new Browser::ToolBar( m_wikiTab );
-    toolbar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
-    toolbar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
-    toolbar->insertLineSeparator();
-    toolbar->insertButton( "personal", WIKI_ARTIST, true, i18n("Artist Page") );
-    toolbar->insertButton( "cd", WIKI_ALBUM, true, i18n("Album Page") );
-    toolbar->insertButton( "contents", WIKI_TITLE, true, i18n("Title Page") );
-    toolbar->insertLineSeparator();
-    toolbar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
+    m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
+    m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
+    m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
+    m_wikiToolBar->insertLineSeparator();
+    m_wikiToolBar->insertButton( "personal", WIKI_ARTIST, true, i18n("Artist Page") );
+    m_wikiToolBar->insertButton( "cd", WIKI_ALBUM, true, i18n("Album Page") );
+    m_wikiToolBar->insertButton( "contents", WIKI_TITLE, true, i18n("Title Page") );
+    m_wikiToolBar->insertLineSeparator();
+    m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
 
     m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
     m_wikiPage->setJavaEnabled( false );
@@ -151,10 +151,11 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                               SLOT( openURLRequest( const KURL & ) ) );
     connect( m_wikiPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
-    connect( toolbar->getButton( WIKI_ARTIST  ), SIGNAL(clicked( int )), SLOT(wikiArtistPage()) );
-    connect( toolbar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
-    connect( toolbar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
-    connect( toolbar->getButton( WIKI_BROWSER ), SIGNAL(clicked( int )), SLOT(wikiExternalPage()) );
+    connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
+    connect( m_wikiToolBar->getButton( WIKI_ARTIST  ), SIGNAL(clicked( int )), SLOT(wikiArtistPage()) );
+    connect( m_wikiToolBar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
+    connect( m_wikiToolBar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
+    connect( m_wikiToolBar->getButton( WIKI_BROWSER ), SIGNAL(clicked( int )), SLOT(wikiExternalPage()) );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
@@ -2329,7 +2330,7 @@ ContextBrowser::showLyricSuggestions()
 }
 
 
-void ContextBrowser::showWikipedia( const QString &url )
+void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
     if ( currentPage() != m_wikiTab )
     {
@@ -2372,6 +2373,14 @@ void ContextBrowser::showWikipedia( const QString &url )
     {
         m_wikiCurrentUrl = url;
     }
+
+    // Manage history
+    if ( m_wikiHistory.last() != m_wikiCurrentUrl && !fromHistory )
+        m_wikiHistory += m_wikiCurrentUrl;
+
+    debug() << "WIKI HISTORY SIZE: " << m_wikiHistory.size() << endl;
+    m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiHistory.size() > 1 );
+
     m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
     m_wikiJob = KIO::get( m_wikiCurrentUrl, false, false );
 
@@ -2379,9 +2388,20 @@ void ContextBrowser::showWikipedia( const QString &url )
             .setDescription( i18n( "Fetching Wikipedia Information" ) );
 
     connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ),
-             this,  SLOT( wikiResult( KIO::Job* ) ) );
+             this,        SLOT( wikiResult( KIO::Job* ) ) );
     connect( m_wikiJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-             this,  SLOT( wikiData( KIO::Job*, const QByteArray& ) ) );
+             this,        SLOT( wikiData( KIO::Job*, const QByteArray& ) ) );
+}
+
+
+void
+ContextBrowser::wikiHistoryBack()
+{
+    m_wikiHistory.pop_back();
+    const QString url = m_wikiHistory.last();
+
+    m_dirtyWikiPage = true;
+    showWikipedia( url, true );
 }
 
 
