@@ -71,6 +71,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void wikiResult( KIO::Job* job );
 
     private:
+        enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER };
+
         void setStyleSheet_Default( QString& styleSheet );
         void setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName );
         void showIntroduction();
