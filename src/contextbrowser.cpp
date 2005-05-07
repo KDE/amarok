@@ -151,7 +151,9 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                               SLOT( openURLRequest( const KURL & ) ) );
     connect( m_wikiPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
     connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
+    connect( m_wikiToolBar->getButton( WIKI_FORWARD ), SIGNAL(clicked( int )), SLOT(wikiHistoryForward()) );
     connect( m_wikiToolBar->getButton( WIKI_ARTIST  ), SIGNAL(clicked( int )), SLOT(wikiArtistPage()) );
     connect( m_wikiToolBar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
     connect( m_wikiToolBar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
@@ -852,6 +854,10 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// Home-Tab
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void ContextBrowser::showHome() //SLOT
 {
     DEBUG_BLOCK
@@ -1220,6 +1226,10 @@ void ContextBrowser::showHomeByAlbums()
     // </Songs least listened Information>
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// Current-Tab
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /** This is the slowest part of track change, so we thread it */
 class CurrentTrackJob : public ThreadWeaver::DependentJob
@@ -2130,6 +2140,10 @@ void ContextBrowser::showScanning()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// Lyrics-Tab
+//////////////////////////////////////////////////////////////////////////////////////////
+
 // THE FOLLOWING CODE IS COPYRIGHT BY
 // Christian Muehlhaeuser, Seb Ruiz
 // <chris at chris.de>, <seb100 at optusnet.com.au>
@@ -2330,6 +2344,10 @@ ContextBrowser::showLyricSuggestions()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// Wikipedia-Tab
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
     if ( currentPage() != m_wikiTab )
@@ -2375,11 +2393,15 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     }
 
     // Manage history
-    if ( m_wikiHistory.last() != m_wikiCurrentUrl && !fromHistory )
-        m_wikiHistory += m_wikiCurrentUrl;
+    if ( !fromHistory ) {
+        m_wikiBackHistory += m_wikiCurrentUrl;
+        m_wikiForwardHistory.clear();
+    }
 
-    debug() << "WIKI HISTORY SIZE: " << m_wikiHistory.size() << endl;
-    m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiHistory.size() > 1 );
+    debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
+    debug() << "WIKI FORWARD-HISTORY SIZE: " << m_wikiForwardHistory.size() << endl;
+    m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiBackHistory.size() > 1 );
+    m_wikiToolBar->setItemEnabled( WIKI_FORWARD, m_wikiForwardHistory.size() > 0 );
 
     m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
     m_wikiJob = KIO::get( m_wikiCurrentUrl, false, false );
@@ -2397,10 +2419,22 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 void
 ContextBrowser::wikiHistoryBack()
 {
-    m_wikiHistory.pop_back();
-    const QString url = m_wikiHistory.last();
-
     m_dirtyWikiPage = true;
+    m_wikiForwardHistory += m_wikiBackHistory.last();
+    m_wikiBackHistory.pop_back();
+
+    showWikipedia( m_wikiBackHistory.last(), true );
+}
+
+
+void
+ContextBrowser::wikiHistoryForward()
+{
+    m_dirtyWikiPage = true;
+    const QString url = m_wikiForwardHistory.last();
+    m_wikiBackHistory += url;
+    m_wikiForwardHistory.pop_back();
+
     showWikipedia( url, true );
 }
 

@@ -66,6 +66,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 
         void wikiData( KIO::Job* job, const QByteArray& data );
         void wikiHistoryBack();
+        void wikiHistoryForward();
         void wikiArtistPage();
         void wikiAlbumPage();
         void wikiTitlePage();
@@ -110,8 +111,9 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_wikiLanguages;
         QString       m_wikiBaseUrl;
         QString       m_wikiCurrentUrl;
+        QStringList   m_wikiBackHistory;
+        QStringList   m_wikiForwardHistory;
         KIO::TransferJob* m_wikiJob;
-        QStringList   m_wikiHistory;
         Browser::ToolBar* m_wikiToolBar;
 
         QString       m_HTMLSource;
