@@ -2358,7 +2358,7 @@ void ContextBrowser::showWikipedia( const QString &url )
     m_wikiPage->end();
     saveHtmlData(); // Send html code to file
 
-    m_wiki = QString::null;
+    m_wikiRawData.resize(0);
     if ( url.isEmpty() )
     {
         m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" )
@@ -2413,8 +2413,12 @@ ContextBrowser::wikiExternalPage()
 void
 ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
 {
-    if (job == m_wikiJob)
-        m_wiki += QString( data );
+    if (job == m_wikiJob) {
+        // no + operator for QByteArray in QT 3.X, so we have to do it the hard way
+        int size = m_wikiRawData.size();
+        m_wikiRawData.resize( size + data.size() );
+        memcpy( m_wikiRawData.data()+size, data.data(), data.size() );
+    }
 }
 
 
@@ -2423,6 +2427,11 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 {
     DEBUG_BLOCK
 
+    m_wiki = QString( m_wikiRawData );
+    // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
+    if ( m_wiki.contains( "charset=utf-8"  ) ) {
+         m_wiki = QString::fromUtf8( m_wikiRawData, m_wikiRawData.size() );
+    }
     if ( !job->error() == 0 )
     {
         kdWarning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
