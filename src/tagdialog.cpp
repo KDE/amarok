@@ -24,6 +24,7 @@
 #include <kcombobox.h>
 #include <kcursor.h>
 #include <kglobal.h>
+#include <kiconloader.h>
 #include <klineedit.h>
 #include <kmessagebox.h>
 #include <knuminput.h>
@@ -271,7 +272,7 @@ void TagDialog::init()
     connect( pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
 
     // draw an icon onto the open-in-konqui button
-    pushButton_open->setPixmap( QPixmap( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), "PNG" ) );
+     pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), KIcon::Small ) );
 
     if( !m_playlistItem ) {
         pushButton_previous->hide();
