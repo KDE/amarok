@@ -110,7 +110,7 @@ ContextBrowser::ContextBrowser( const char *name )
     toolbar->insertButton( "cd", 1, true, i18n("Album Page") );
     toolbar->insertButton( "contents", 2, true, i18n("Title Page") );
     toolbar->insertLineSeparator();
-    toolbar->insertButton( "exec", 3, true, i18n("Open in an external browser") );
+    toolbar->insertButton( "exec", 3, true, i18n("Open in external browser") );
 
     m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
     m_wikiPage->setJavaEnabled( false );
