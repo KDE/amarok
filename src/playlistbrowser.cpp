@@ -1093,11 +1093,14 @@ void PlaylistBrowserItem::insertTracks( QListViewItem *after, KURL::List list, Q
     }
 
     uint k = 0;
+    QString key;
+    QString str;
+    QString title;
     const KURL::List::ConstIterator end = list.end();
     for ( KURL::List::ConstIterator it = list.begin(); it != end; ++it,k++ ) {
-        QString key = (*it).isLocalFile() ? (*it).path() : (*it).url();
-        QString str = map[ key ];
-        QString title = str.section(';',0,0);
+        key = (*it).isLocalFile() ? (*it).path() : (*it).url();
+        str = map[ key ];
+        title = str.section(';',0,0);
         int length = str.section(';',1,1).toUInt();
 
         TrackItemInfo *newInfo = new TrackItemInfo( *it, title.isEmpty() ? key : title, length );

@@ -159,11 +159,15 @@ QString SmartPlaylistEditor::query()
         whereStr += " WHERE (";
 
         CriteriaEditor *criteria = m_criteriaEditorList.first();
+        QString str;
+        QString table;
+        QString op;
+
         for( int i=0; criteria; criteria = m_criteriaEditorList.next(), i++ ) {
 
-            QString str = criteria->getSearchCriteria();
+            str = criteria->getSearchCriteria();
             //add the table used in the search expression to tables
-            QString table = str.left( str.find('.') );
+            table = str.left( str.find('.') );
              if( !joins.contains( table ) ) {
                 if( table=="statistics") 
                    // that makes it possible to search for tracks never played. it looks ugly but is works
@@ -175,7 +179,7 @@ QString SmartPlaylistEditor::query()
                     joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
             }
             if( i ) { //multiple conditions
-                QString op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
+                op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
                 str.prepend( " " + op + " (");
                
             }

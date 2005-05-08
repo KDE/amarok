@@ -186,9 +186,9 @@ CollectionReader::readDir( const QString& dir, QStringList& entries )
         return;
     }
 
-
+    QCString entry;
     for( dirent *ent; (ent = readdir( d )) && !isAborted(); ) {
-        QCString entry = ent->d_name;
+        entry = ent->d_name;
 
         if ( entry == "." || entry == ".." )
             continue;
@@ -241,6 +241,7 @@ CollectionReader::readTags( const QStringList& entries )
 
     QValueList<CoverBundle> covers;
     QStringList images;
+    KURL url;
 
     foreach( entries )
     {
@@ -251,7 +252,7 @@ CollectionReader::readTags( const QStringList& entries )
         incrementProgress();
 
         const QString path = *it;
-        KURL url; url.setPath( path );
+        url.setPath( path );
         const QString ext = amaroK::extension( *it );
         const QString dir = amaroK::directory( *it );
 
