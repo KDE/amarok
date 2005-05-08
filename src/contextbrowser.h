@@ -11,6 +11,7 @@
 class CollectionDB;
 class Color;
 class KHTMLPart;
+class KPopupMenu;
 class KTabBar;
 class KTempFile;
 class MetaBundle;
@@ -113,6 +114,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_wikiCurrentUrl;
         QStringList   m_wikiBackHistory;
         QStringList   m_wikiForwardHistory;
+        KPopupMenu*   m_wikiBackPopup;
+        KPopupMenu*   m_wikiForwardPopup;
         KIO::TransferJob* m_wikiJob;
         Browser::ToolBar* m_wikiToolBar;
 

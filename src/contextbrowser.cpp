@@ -85,6 +85,8 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyWikiPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
         , m_lyricJob( NULL )
+        , m_wikiBackPopup( new KPopupMenu( this ) )
+        , m_wikiForwardPopup( new KPopupMenu( this ) )
         , m_wikiJob( NULL )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
@@ -115,6 +117,9 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "contents", WIKI_TITLE, true, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
+
+    m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
+    m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
 
     m_wikiPage = new KHTMLPart( m_wikiTab, "wiki_page" );
     m_wikiPage->setJavaEnabled( false );
@@ -2397,6 +2402,17 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         m_wikiBackHistory += m_wikiCurrentUrl;
         m_wikiForwardHistory.clear();
     }
+
+    // Remove all items from the menus
+    m_wikiBackPopup->clear();
+    m_wikiForwardPopup->clear();
+
+    // Populate button menus with URLs from the history
+    QStringList::ConstIterator it;
+    for ( it = m_wikiBackHistory.begin(); it != m_wikiBackHistory.end(); ++it )
+        m_wikiBackPopup->insertItem( *it );
+    for ( it = m_wikiForwardHistory.begin(); it != m_wikiForwardHistory.end(); ++it )
+        m_wikiForwardPopup->insertItem( *it );
 
     debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
     debug() << "WIKI FORWARD-HISTORY SIZE: " << m_wikiForwardHistory.size() << endl;
