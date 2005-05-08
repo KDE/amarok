@@ -18,7 +18,7 @@ import sys
 import string
 # find directory containing common Zeroconf files
 temp=sys.path
-if not os.getenv("KDEDIR") is None: sys.path=sys.path.insert(0,os.getenv("KDEDIR")+"/share/apps/amarok/scripts/common")
+if not os.getenv("KDEDIR") is None: sys.path.insert(0,os.getenv("KDEDIR")+"/share/apps/amarok/scripts/common")
 if not os.getenv("KDEDIRS") is None: sys.path=[p+"/share/apps/amarok/scripts/common" for p in string.split(os.getenv("KDEDIRS"),os.pathsep)]+sys.path
 from Publisher import *
 sys.path=temp
