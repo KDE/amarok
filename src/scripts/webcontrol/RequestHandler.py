@@ -40,6 +40,7 @@ class AmarokStatus:
     EnginePlay = 4
 
     allowControl = 0
+    publish = 0
     playState = -1
 
     dcop_isplaying = None

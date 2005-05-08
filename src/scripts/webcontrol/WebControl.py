@@ -65,6 +65,7 @@ class ConfigDialog( QDialog ):
             config = ConfigParser.ConfigParser()
             config.read( "webcontrolrc" )
             allowControl = string.find(config.get( "General", "allowcontrol" ), "True") >= 0
+            publish = string.find(config.get( "General", "publish" ), "True") >= 0
         except:
             pass
 
@@ -77,6 +78,11 @@ class ConfigDialog( QDialog ):
 
         self.allowControl = QCheckBox( QString("Allow control"), self.hbox1 )
         self.allowControl.setChecked(allowControl)
+
+        self.hbox1 = QHBox( self.vbox )
+
+        self.publish = QCheckBox( QString("Publish"), self.hbox1 )
+        self.publish.setChecked(publish)
 
         self.hbox = QHBox( self.vbox )
 
@@ -100,6 +106,7 @@ class ConfigDialog( QDialog ):
         self.config = ConfigParser.ConfigParser()
         self.config.add_section( "General" )
         self.config.set( "General", "allowcontrol", self.allowControl.isChecked() )
+        self.config.set( "General", "publish", self.publish.isChecked() )        
         self.config.write( self.file )
         self.file.close()
         debug( "Saved config" )
@@ -133,11 +140,11 @@ class WebControl( QApplication ):
 		p_i=p_incr+Globals.PORT
                 self.srv = BaseHTTPServer.HTTPServer(('',p_i),RequestHandler.RequestHandler)
 		publisher.port = p_i
-	        threading.Thread(target = publisher.run).start()
         	break
 	    except socket.error:
 		p_incr+=1
 		
+        self.zeroconfPublishing()
         self.snsrv = QSocketNotifier(self.srv.fileno(), QSocketNotifier.Read)
         self.snsrv.connect( self.snsrv, SIGNAL('activated(int)'), self.readSocket )
 
@@ -152,9 +159,21 @@ class WebControl( QApplication ):
 
         try:
             RequestHandler.AmarokStatus.allowControl = string.find(config.get( "General", "allowcontrol" ), "True") >= 0
+            RequestHandler.AmarokStatus.publish = string.find(config.get( "General", "publish" ), "True") >= 0
         except:
             debug( "No config file found, using defaults." )
+        
 
+    def postConfigure( self ):
+        self.readSettings()
+        self.zeroconfPublishing()
+
+    def zeroconfPublishing( self ):
+        if RequestHandler.AmarokStatus.publish:
+            if not publisher.active:
+                threading.Thread(target = publisher.run).start()
+        else:
+            publisher.shutdown()
 
 ############################################################################
 # Stdin-Reader Thread
@@ -163,7 +182,6 @@ class WebControl( QApplication ):
     def readStdin( self ):
         while True:
             line = sys.stdin.readline()
-
             if line:
                 qApp.postEvent( self, Notification(line) )
             else:
@@ -181,6 +199,9 @@ class WebControl( QApplication ):
 
         if string.contains( "configure" ):
             self.configure()
+
+        elif string.contains( "exit" ):
+            cleanup(None,None)
 
         elif string.contains( "engineStateChange: play" ):
             self.engineStatePlay()
@@ -208,7 +229,7 @@ class WebControl( QApplication ):
 
         self.dia = ConfigDialog()
         self.dia.show()
-        self.connect( self.dia, SIGNAL( "destroyed()" ), self.readSettings )
+        self.connect( self.dia, SIGNAL( "destroyed()" ), self.postConfigure )
 
     def engineStatePlay( self ):
         """ Called when Engine state changes to Play """
@@ -253,7 +274,6 @@ def cleanup(sig,frame):
 
 
 def guithread():
-	
 	app = WebControl( sys.argv )
 	app.exec_loop()
 
