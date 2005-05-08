@@ -257,7 +257,7 @@
                                 <cstring>m_upcomingIntSpinBox</cstring>
                             </property>
                             <property name="maxValue">
-                                <number>20</number>
+                                <number>50</number>
                             </property>
                             <property name="minValue">
                                 <number>1</number>
