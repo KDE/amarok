@@ -20,7 +20,7 @@ import Globals
 PLAYLISTFILE = "%s/.kde/share/apps/amarok/current.xml"%(user.home)
 
 # the fields to be shown via http
-FIELDS = ("Artist", "Title", "Album", "TrackNo", "Length", "Genre",  "Score" )
+FIELDS = ("TrackNo", "Title", "Artist", "Album", "Length")
 
 class Track(object):
     """Class that holds the information of one track in the current playlist"""
