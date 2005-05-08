@@ -1685,6 +1685,7 @@ bool CurrentTrackJob::doJob()
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optNoCompilations );
+            albumValues = qb.run();
 
             if ( !albumValues.isEmpty() )
             {
