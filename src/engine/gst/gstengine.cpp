@@ -627,7 +627,7 @@ GstEngine::seek( uint ms )  //SLOT
         const int seekType = GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH;
         GstEvent* event = gst_event_new_seek( (GstSeekType) seekType, ms * GST_MSECOND );
 
-        gst_element_send_event( m_gst_audiosink, event );
+        gst_element_send_event( m_gst_adder, event );
     }
 }
 
