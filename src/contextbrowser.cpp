@@ -2420,9 +2420,13 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 
     // Populate button menus with URLs from the history
     QStringList::ConstIterator it;
-    for ( it = m_wikiBackHistory.begin(); it != m_wikiBackHistory.end(); ++it )
+    uint count;
+    // Reverse iterate over both lists
+    count = m_wikiBackHistory.count();
+    for ( it = m_wikiBackHistory.fromLast(); count > 0; --count, --it )
         m_wikiBackPopup->insertItem( SmallIconSet( "wiki" ), *it );
-    for ( it = m_wikiForwardHistory.begin(); it != m_wikiForwardHistory.end(); ++it )
+    count = m_wikiForwardHistory.count();
+    for ( it = m_wikiForwardHistory.fromLast(); count > 0; --count, --it )
         m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it );
 
     debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
