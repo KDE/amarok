@@ -74,6 +74,7 @@ k_dcop:
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
    virtual int sampleRate() = 0;                            ///< Return the sample rate of the currently playing track.
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
+   virtual QString path() = 0;                              ///< Return the unencoded path of the currently playing track.
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual int  score() = 0;                                ///< Return the score of the currently playing track.
 

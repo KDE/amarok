@@ -192,6 +192,11 @@ namespace amaroK
         return EngineController::instance()->bundle().url().url();
     }
 
+    QString DcopPlayerHandler::path()
+    {
+        return EngineController::instance()->bundle().url().path();
+    }
+
     QString DcopPlayerHandler::coverImage()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();

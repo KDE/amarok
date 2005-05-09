@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * New DCOP call "player: path()". Returns the path of the current track.
     * New DCOP call "playlist: saveM3u(path, relativePaths)".
     * New ScriptManager notification: "volumeChange: int".
     * Tooltips for album covers in the CoverManager. (BR 103996)

@@ -60,6 +60,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual QString bitrate();
       virtual int sampleRate();
       virtual QString encodedURL();
+      virtual QString path();
       virtual QString coverImage();
       virtual int score ();
       virtual bool isPlaying();
