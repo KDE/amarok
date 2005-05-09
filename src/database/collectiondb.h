@@ -25,25 +25,6 @@ class DbConfig
 {};
 
 
-class DbConnection
-{
-    public:
-        enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
-
-        DbConnection( DbConfig* /* config */ );
-        virtual ~DbConnection() = 0;
-
-        virtual QStringList query( const QString& /* statement */ ) = 0;
-        virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
-        const bool isInitialized() const { return m_initialized; }
-        virtual bool isConnected() const = 0;
-        virtual const QString lastError() const { return "None"; }
-    protected:
-        bool m_initialized;
-        DbConfig *m_config;
-};
-
-
 class DbConnectionPool : QPtrQueue<DbConnection>
 {
     public:
