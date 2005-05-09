@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Service
+Name=SQLite DBEngine
+X-KDE-Library=libamarok_sqlite_dbengine_plugin
+Comment=Plugin for amaroK
+ServiceTypes=amaroK/Plugin
+
+X-KDE-amaroK-plugintype=dbengine
+X-KDE-amaroK-name=sqlite-dbengine
+X-KDE-amaroK-authors=Mark Kretschmann, Christian Muehlhaeuser
+X-KDE-amaroK-email=markey@web.de
+X-KDE-amaroK-rank=255
+X-KDE-amaroK-version=1
+X-KDE-amaroK-framework-version=5
+
