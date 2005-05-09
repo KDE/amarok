@@ -431,6 +431,7 @@ class QueryBuilder
 
         void initSQLDrag();
         void buildQuery();
+        QString getQuery();
         QString query() { buildQuery(); return m_query; };
         void clear();
 

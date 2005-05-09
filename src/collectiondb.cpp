@@ -2507,22 +2507,31 @@ QueryBuilder::QueryBuilder()
 void
 QueryBuilder::linkTables( int tables )
 {
-    m_tables += tableName( tables );
 
-    if ( !(tables & tabSong ) )
-        if ( m_tables.contains( ',' ) )
-        {
-            m_tables = tableName( tabSong ) + "," + m_tables;
+    m_tables = tableName( tabSong );
+    
+    if ( !(tables & tabSong ) ) 
+    {
+        // check if only one table is selected (does somebody know a better way to check that?)
+        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats)      
+            m_tables = tableName(tables);
+        else
             tables |= tabSong;
-        }
+    }
 
+    
     if ( tables & tabSong )
     {
-        if ( tables & tabAlbum ) m_where += "AND album.id=tags.album ";
-        if ( tables & tabArtist ) m_where += "AND artist.id=tags.artist ";
-        if ( tables & tabGenre ) m_where += "AND genre.id=tags.genre ";
-        if ( tables & tabYear ) m_where += "AND year.id=tags.year ";
-        if ( tables & tabStats ) m_where += "AND statistics.url=tags.url ";
+        if ( tables & tabAlbum )
+            m_tables += " INNER JOIN " + tableName( tabAlbum) + " ON album.id=tags.album";
+        if ( tables & tabArtist ) 
+            m_tables += " INNER JOIN " + tableName( tabArtist) + " ON artist.id=tags.artist";
+        if ( tables & tabGenre ) 
+            m_tables += " INNER JOIN " + tableName( tabGenre) + " ON genre.id=tags.genre";
+        if ( tables & tabYear ) 
+            m_tables += " INNER JOIN " + tableName( tabYear) + " ON year.id=tags.year";
+        if ( tables & tabStats ) 
+            m_tables += " INNER JOIN " + tableName( tabStats) + " ON statistics.url=tags.url";
     }
 }
 
@@ -2976,6 +2985,16 @@ QueryBuilder::buildQuery()
     }
 }
 
+// get the builded SQL-Query (used in smartplaylisteditor soon)
+QString
+QueryBuilder::getQuery()
+{
+    if ( m_query.isEmpty())
+    {
+        buildQuery();
+    }   
+    return m_query;
+}
 
 QStringList
 QueryBuilder::run()
