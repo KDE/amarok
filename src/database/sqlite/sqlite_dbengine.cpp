@@ -6,50 +6,20 @@
 
 #define DEBUG_PREFIX "SQLite-DBEngine"
 
-#include "app.h"
-#include "amarok.h"
-#include "amarokconfig.h"
-#include "config.h"
 #include "debug.h"
-#include "collectionbrowser.h"    //updateTags()
-#include "collectiondb.h"
-#include "collectionreader.h"
-#include "coverfetcher.h"
-#include "enginecontroller.h"
-#include "metabundle.h"           //updateTags()
-#include "playlist.h"
-#include "playlistbrowser.h"
-#include "scrobbler.h"
-#include "statusbar.h"
-#include "threadweaver.h"
+#include "sqlite_dbengine.h"
 
 #include <qfile.h>
 #include <qimage.h>
 #include <qtimer.h>
 
-#include <kapplication.h>
-#include <kconfig.h>
-#include <kglobal.h>
-#include <kinputdialog.h>         //setupCoverFetcher()
-#include <kio/job.h>
-#include <klineedit.h>            //setupCoverFetcher()
-#include <klocale.h>
-#include <kmdcodec.h>
-#include <kstandarddirs.h>
-#include <kurl.h>
-#include <kio/netaccess.h>
-
 #include <cmath>                 //DbConnection::sqlite_power()
 #include <ctime>                 //query()
 #include <unistd.h>              //usleep()
 
-#include <taglib/mpegfile.h>
-#include <taglib/mpegfile.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/attachedpictureframe.h>
-#include <taglib/tbytevector.h>
-
 #include "sqlite/sqlite3.h"
+
+AMAROK_EXPORT_PLUGIN( SqliteDbEngine )
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS SqliteConnection
