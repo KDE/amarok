@@ -14,6 +14,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qregexp.h>
+#include <qtimer.h>
 
 #include <kapplication.h>
 #include <kcursor.h> //waiting cursor
@@ -138,49 +139,6 @@ CoverFetcher::startFetch()
     amaroK::StatusBar::instance()->newProgressOperation( job );
 }
 
-void
-CoverFetcher::attemptAnotherFetch()
-{
-    DEBUG_BLOCK
-
-    if( !m_coverUrls.isEmpty() ) {
-        // Amazon suggested some more cover URLs to try before we
-        // try a different query
-
-        KIO::TransferJob* job = KIO::storedGet( KURL(m_coverUrls.front()), false, false );
-        connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
-
-        amaroK::StatusBar::instance()->newProgressOperation( job );
-
-        m_coverUrls.pop_front();
-
-        m_currentCoverName = m_coverNames.front();
-        m_coverNames.pop_front();
-    }
-
-    else if( !m_xml.isEmpty() && m_size > 0 ) {
-        // we need to try smaller sizes, this often is
-        // fruitless, but does work out sometimes.
-        m_size--;
-
-        finishedXmlFetch( 0 );
-    }
-
-    else if( !m_queries.isEmpty() ) {
-        // we have some queries left in the pot
-        startFetch();
-    }
-
-    else if( m_userCanEditQuery ) {
-        // we have exhausted all the predetermined queries
-        // so lets let the user give it a try
-        getUserQuery( i18n("You have seen all the covers Amazon returned using the query below. Perhaps you can refine it:") );
-    }
-    else
-        finishWithError( i18n("No cover found") );
-}
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
@@ -191,7 +149,7 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     DEBUG_BLOCK
 
-    if( job && job->error() ) {
+    if( !job || job->error() ) {
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
     }
@@ -240,7 +198,8 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         }
     }
 
-    attemptAnotherFetch();
+    // This call must be delayed due to KIO's job management. Otherwise we would crash.
+    QTimer::singleShot( 0, this, SLOT( attemptAnotherFetch() ) );
 }
 
 
@@ -274,6 +233,50 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
         //image loaded successfully yay!
         finish();
 }
+
+
+void
+CoverFetcher::attemptAnotherFetch() // SLOT
+{
+    DEBUG_BLOCK
+
+    if( !m_coverUrls.isEmpty() ) {
+        // Amazon suggested some more cover URLs to try before we
+        // try a different query
+
+        KIO::TransferJob* job = KIO::storedGet( KURL(m_coverUrls.front()), false, false );
+        connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
+
+        amaroK::StatusBar::instance()->newProgressOperation( job );
+
+        m_coverUrls.pop_front();
+
+        m_currentCoverName = m_coverNames.front();
+        m_coverNames.pop_front();
+    }
+
+    else if( !m_xml.isEmpty() && m_size > 0 ) {
+        // we need to try smaller sizes, this often is
+        // fruitless, but does work out sometimes.
+        m_size--;
+
+        finishedXmlFetch( 0 );
+    }
+
+    else if( !m_queries.isEmpty() ) {
+        // we have some queries left in the pot
+        startFetch();
+    }
+
+    else if( m_userCanEditQuery ) {
+        // we have exhausted all the predetermined queries
+        // so lets let the user give it a try
+        getUserQuery( i18n("You have seen all the covers Amazon returned using the query below. Perhaps you can refine it:") );
+    }
+    else
+        finishWithError( i18n("No cover found") );
+}
+
 
 // Moved outside the only function that uses it because
 // gcc 2.95 doesn't like class declarations there.

@@ -43,6 +43,9 @@ private slots:
     void finishedXmlFetch( KIO::Job* job );
     void finishedImageFetch( KIO::Job* job );
 
+    /// Will try all available queries, and then prompt the user, if allowed
+    void attemptAnotherFetch();
+
 private:
     const QString m_artist;
     const QString m_album;
@@ -68,9 +71,6 @@ private:
 
     /// The fetch failed, finish up and log an error message
     void finishWithError( const QString &message, KIO::Job *job = 0 );
-
-    /// Will try all available queries, and then prompt the user, if allowed
-    void attemptAnotherFetch();
 
     /// Prompt the user for a query
     void getUserQuery( QString explanation = QString::null );
