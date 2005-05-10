@@ -84,6 +84,7 @@ class CollectionView : public KListView
                 KURL m_url;
         };
         friend class Item; // for access to m_cat2
+        friend class ContextBrowser; // for setupDirs()
 
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();

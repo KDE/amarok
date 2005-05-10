@@ -11,6 +11,7 @@
 #include "browserToolBar.h"
 #include "debug.h"
 #include "collectiondb.h"
+#include "collectionbrowser.h"
 #include "colorgenerator.h"
 #include "config.h"        //for AMAZON_SUPPORT
 #include "contextbrowser.h"
@@ -62,6 +63,7 @@ using amaroK::QStringx;
 static inline
 void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &track )
 {
+    if ( !url.contains("@@@") ) return;
     //KHTML removes the trailing space!
     if ( url.endsWith( " @@@" ) )
         url += ' ';
@@ -285,6 +287,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
             QString hash = url.path().mid( url.path().find( QString( "-" ) ) +1 );
             m_dirtyLyricsPage = true;
             showLyrics( hash );
+        }
+        else if ( url.path() == "collectionSetup" )
+        {
+            CollectionView::instance()->setupDirs();
         }
     }
 
