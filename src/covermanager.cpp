@@ -895,7 +895,7 @@ void CoverView::showToolTip( QIconViewItem *item )
     bool sampler = false;
     //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
     //FIXME: Don't rely on other independent code, use an sql query
-    if( item->artist() == "" ) sampler = true;
+    if( item->artist().isEmpty() ) sampler = true;
 
     if( sampler ) {
         sql = "SELECT count() FROM tags, album WHERE tags.sampler = 1 AND tags.album = album.id AND album.name = '%1';";

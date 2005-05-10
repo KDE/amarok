@@ -26,7 +26,6 @@ void EqDialog::init()
     QCString reply_type;
     //kdDebug() << "continue" << endl;
     if(!KApplication::dcopClient()->call("amarok","player","equalizerEnabled()", send_data, reply_type, reply_data,true,1000));
-    // kdDebug() << "oh crap" << endl;
     //kdDebug() << "called" << endl;
     QDataStream answer(reply_data, IO_ReadOnly);
     //kdDebug() << "answer created" << answer << endl;

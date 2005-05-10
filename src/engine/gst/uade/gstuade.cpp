@@ -38,7 +38,7 @@ GstElementDetails gst_uade_details =
                           ( gchar* ) "Source",
                           ( gchar* ) "Module decoder based on UADE engine",
                           ( gchar* ) "Mark Kretschmann <markey@web.de>" );
-                          
+
 static guint gst_uade_signals[ LAST_SIGNAL ] = { 0 };
 
 #define _do_init(bla) \
@@ -159,10 +159,10 @@ static void
 gst_uade_init ( GstUade* gstuade )
 {
     gstuade->srcpad = gst_pad_new ( "src", GST_PAD_SRC );
-    
+
     gst_pad_set_get_function ( gstuade->srcpad, gst_uade_get );
     gst_element_add_pad ( GST_ELEMENT ( gstuade ), gstuade->srcpad );
-    
+
     gstuade->blocksize = DEFAULT_BLOCKSIZE;
     gstuade->timeout = 0;
     gstuade->streamBufIndex = 0;
@@ -184,7 +184,7 @@ gst_uade_init ( GstUade* gstuade )
     if ( !uadepid ) {
         char * newargv[] = { "/usr/local/bin/uade", "--xmms-slave", MAPFILE_PATH, 0 };
         execv( newargv[ 0 ], newargv );
-        kdWarning() << "uade: shit fuck. couldn't exec uade exe. not found probably\n";
+        kdWarning() << "uade: Couldn't exec uade exe. Not found probably\n";
         abort();
     }
     while ( gstuade->uade_struct->uade_inited_boolean == 0 ) {
@@ -281,7 +281,7 @@ gst_uade_get_property ( GObject * object, guint prop_id, GValue * value, GParamS
 // gst_uade_change_state ( GstElement * element )
 // {
 //     GstUade* gstuade = GST_GSTUADE ( element );
-// 
+//
 //     switch ( GST_STATE_TRANSITION ( element ) ) {
 //             case GST_STATE_NULL_TO_READY:
 //             break;
@@ -298,10 +298,10 @@ gst_uade_get_property ( GObject * object, guint prop_id, GValue * value, GParamS
 //             default:
 //             break;
 //     }
-// 
+//
 //     if ( GST_ELEMENT_CLASS ( parent_class ) ->change_state )
 //         return GST_ELEMENT_CLASS ( parent_class ) ->change_state ( element );
-// 
+//
 //     return GST_STATE_SUCCESS;
 // }
 
@@ -310,11 +310,11 @@ static GstData*
 gst_uade_get ( GstPad* pad )
 {
     kdDebug() << k_funcinfo << endl;
-    
+
     GstUade* src = GST_GSTUADE ( GST_OBJECT_PARENT ( pad ) );
     GstBuffer* buf = gst_buffer_new_and_alloc( src->blocksize );
     GstData* data = GST_DATA( buf );
-    
+
     struct uade_msgstruct *uade_struct = src->uade_struct;
     int datainbuffer;
     int read_bytes = 0;
