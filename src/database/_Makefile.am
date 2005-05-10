@@ -3,21 +3,24 @@ noinst_LTLIBRARIES = libdbengine.la
 INCLUDES = \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src \
+    -I$(top_srcdir)/amarok/src/engine \
+    -I$(top_srcdir)/amarok/src/amarokcore \
+    -I$(top_srcdir)/amarok/src/statusbar \    
     $(all_includes)
 
-if with_sqlite
+if enable_sqlite
     SQLITE_DBENGINE_SUBDIR = sqlite
 endif
 
-if with_mysql
+if enable_mysql
     MYSQL_DBENGINE_SUBDIR = mysql
 endif
 
-if with_postgresql
+if enable_postgresql
     POSTGRESQL_DBENGINE_SUBDIR = postgresql
 endif
 
-libengine_la_SOURCES = \
+libdbengine_la_SOURCES = \
     dbenginebase.cpp
 
 noinst_HEADERS = dbenginebase.h
@@ -26,7 +29,6 @@ METASOURCES = \
     AUTO
 
 SUBDIRS = . \
-    void \
     $(SQLITE_DBENGINE_SUBDIR) \
     $(MYSQL_DBENGINE_SUBDIR) \
     $(POSTGRESQL_DBENGINE_SUBDIR)

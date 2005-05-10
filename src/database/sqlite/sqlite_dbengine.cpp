@@ -249,5 +249,3 @@ SqliteConfig::SqliteConfig( const QString& dbfile )
     : m_dbfile( dbfile )
 {}
 
-
-#include "sqlite_dbengine.moc"

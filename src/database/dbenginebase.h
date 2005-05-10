@@ -23,7 +23,8 @@
 #ifndef AMAROK_DBENGINEBASE_H
 #define AMAROK_DBENGINEBASE_H
 
-#include "plugin/plugin.h" //baseclass
+#include "plugin/plugin.h" //baseclassk
+#include "collectiondb.h" //baseclassk
 #include <qobject.h>       //baseclass
 
 
