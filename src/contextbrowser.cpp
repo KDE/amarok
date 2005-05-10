@@ -2243,38 +2243,26 @@ void ContextBrowser::showLyrics( const QString &hash )
         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
-    m_lyricJob = KIO::get( url, false, false );
+    m_lyricJob = KIO::storedGet( url, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
             .setDescription( i18n( "Fetching Lyrics" ) );
 
-    connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ),
-             this,  SLOT( lyricsResult( KIO::Job* ) ) );
-    connect( m_lyricJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-             this,  SLOT( lyricsData( KIO::Job*, const QByteArray& ) ) );
-}
-
-
-void
-ContextBrowser::lyricsData( KIO::Job* job, const QByteArray& data ) //SLOT
-{
-    // Append new chunk of string
-    if (job == m_lyricJob)
-        m_lyrics += QString( data );
+    connect( m_lyricJob, SIGNAL( result( KIO::Job* ) ), SLOT( lyricsResult( KIO::Job* ) ) );
 }
 
 
 void
 ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
 {
-    if ( !job->error() == 0 )
-    {
+    if ( !job->error() == 0 ) {
         kdWarning() << "[LyricsFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
-
     if ( job != m_lyricJob )
         return; //not the right job, so let's ignore it
+
+    m_lyrics = QString( static_cast<KIO::StoredTransferJob*>( job )->data() );
 
     /* We don't want to display any links or images in our lyrics */
     m_lyrics.replace( QRegExp("<[aA][^>]*>[^<]*</[aA]>"), QString::null );
@@ -2401,7 +2389,6 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     m_wikiPage->end();
     saveHtmlData(); // Send html code to file
 
-    m_wikiRawData.resize(0);
     if ( url.isEmpty() )
     {
         m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" )
@@ -2442,15 +2429,12 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     m_wikiToolBar->setItemEnabled( WIKI_FORWARD, m_wikiForwardHistory.size() > 0 );
 
     m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
-    m_wikiJob = KIO::get( m_wikiCurrentUrl, false, false );
+    m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
             .setDescription( i18n( "Fetching Wikipedia Information" ) );
 
-    connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ),
-             this,        SLOT( wikiResult( KIO::Job* ) ) );
-    connect( m_wikiJob, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-             this,        SLOT( wikiData( KIO::Job*, const QByteArray& ) ) );
+    connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ), SLOT( wikiResult( KIO::Job* ) ) );
 }
 
 
@@ -2500,6 +2484,7 @@ ContextBrowser::wikiArtistPage() //SLOT
     showWikipedia();
 }
 
+
 void
 ContextBrowser::wikiAlbumPage() //SLOT
 {
@@ -2507,6 +2492,7 @@ ContextBrowser::wikiAlbumPage() //SLOT
     showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) ) );
 }
+
 
 void
 ContextBrowser::wikiTitlePage() //SLOT
@@ -2516,21 +2502,11 @@ ContextBrowser::wikiTitlePage() //SLOT
         .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) ) );
 }
 
+
 void
 ContextBrowser::wikiExternalPage() //SLOT
 {
     kapp->invokeBrowser( m_wikiCurrentUrl );
-}
-
-void
-ContextBrowser::wikiData( KIO::Job* job, const QByteArray& data ) //SLOT
-{
-    if (job == m_wikiJob) {
-        // no + operator for QByteArray in QT 3.X, so we have to do it the hard way
-        int size = m_wikiRawData.size();
-        m_wikiRawData.resize( size + data.size() );
-        memcpy( m_wikiRawData.data()+size, data.data(), data.size() );
-    }
 }
 
 
@@ -2539,19 +2515,20 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 {
     DEBUG_BLOCK
 
-    m_wiki = QString( m_wikiRawData );
-    // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
-    if ( m_wiki.contains( "charset=utf-8"  ) ) {
-         m_wiki = QString::fromUtf8( m_wikiRawData, m_wikiRawData.size() );
-    }
-    if ( !job->error() == 0 )
-    {
+    if ( !job->error() == 0 ) {
         kdWarning() << "[WikiFetcher] KIO error! errno: " << job->error() << endl;
         return;
     }
-
     if ( job != m_wikiJob )
         return; //not the right job, so let's ignore it
+
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    m_wiki = QString( storedJob->data() );
+
+    // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
+    if ( m_wiki.contains( "charset=utf-8"  ) ) {
+         m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+    }
 
     //remove the new-lines and tabs(replace with spaces IS needed).
     m_wiki.replace( "\n", " " );

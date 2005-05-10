@@ -15,7 +15,6 @@ class CoverFetcher : public QObject
 {
    Q_OBJECT
 
-   static const uint BUFFER_SIZE = 2000000; // 2mb
    static const uint MAX_COVERS_CHOICE = 10;
 
 public:
@@ -41,9 +40,7 @@ signals:
     void result( CoverFetcher* );
 
 private slots:
-    void receivedXmlData( KIO::Job* job, const QByteArray& data );
     void finishedXmlFetch( KIO::Job* job );
-    void receivedImageData( KIO::Job* job, const QByteArray& data );
     void finishedImageFetch( KIO::Job* job );
 
 private:
@@ -55,8 +52,6 @@ private:
     QString m_xml;
     QImage  m_image;
     QString m_amazonURL;
-    uchar  *m_buffer;
-    uint    m_bufferIndex;
     int     m_size;
 
     QStringList m_queries;

@@ -62,13 +62,11 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showLyricSuggestions();
         void showWikipedia( const QString& url = QString::null, bool fromHistory = false );
 
-        void lyricsData( KIO::Job* job, const QByteArray& data );
         void lyricsResult( KIO::Job* job );
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
 
-        void wikiData( KIO::Job* job, const QByteArray& data );
         void wikiHistoryBack();
         void wikiHistoryForward();
         void wikiBackPopupActivated( int id );
@@ -114,7 +112,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KIO::TransferJob* m_lyricJob;
 
         QString       m_wiki;
-        QByteArray    m_wikiRawData;
         QString       m_wikiLanguages;
         QString       m_wikiBaseUrl;
         QString       m_wikiCurrentUrl;

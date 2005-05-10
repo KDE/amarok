@@ -25,16 +25,12 @@
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <kcombobox.h>
-#include <qmessagebox.h>
-
 
 
 CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
         : QObject( parent, "CoverFetcher" )
         , m_artist( artist )
         , m_album( album )
-        , m_buffer( 0 )
-        , m_bufferIndex( 0 )
         , m_size( 2 )
         , m_success( true )
 {
@@ -91,8 +87,6 @@ CoverFetcher::~CoverFetcher()
     DEBUG_FUNC_INFO
 
     QApplication::restoreOverrideCursor();
-
-    delete[] m_buffer;
 }
 
 void
@@ -138,10 +132,8 @@ CoverFetcher::startFetch()
         + "&page=1&f=xml";
     debug() << url << endl;
 
-    KIO::TransferJob* job = KIO::get( url, false, false );
-
+    KIO::TransferJob* job = KIO::storedGet( url, false, false );
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
-    connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedXmlData( KIO::Job*, const QByteArray& )) );
 
     amaroK::StatusBar::instance()->newProgressOperation( job );
 }
@@ -151,19 +143,12 @@ CoverFetcher::attemptAnotherFetch()
 {
     DEBUG_BLOCK
 
-    delete[] m_buffer;
-    m_buffer = 0;
-    m_bufferIndex = 0;
-
     if( !m_coverUrls.isEmpty() ) {
         // Amazon suggested some more cover URLs to try before we
         // try a different query
 
-        m_buffer = new uchar[BUFFER_SIZE];
-
-        KIO::TransferJob* job = KIO::get( KURL(m_coverUrls.front()), false, false );
+        KIO::TransferJob* job = KIO::storedGet( KURL(m_coverUrls.front()), false, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
-        connect( job, SIGNAL(data( KIO::Job*, const QByteArray& )), SLOT(receivedImageData( KIO::Job*, const QByteArray& )) );
 
         amaroK::StatusBar::instance()->newProgressOperation( job );
 
@@ -202,13 +187,6 @@ CoverFetcher::attemptAnotherFetch()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::receivedXmlData( KIO::Job*, const QByteArray& data ) //SLOT
-{
-    // Append new chunk of data
-    m_xml += QString::fromUtf8( data, data.size() );
-}
-
-void
 CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     DEBUG_BLOCK
@@ -217,6 +195,9 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
     }
+
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
     QDomDocument doc;
     if( !doc.setContent( m_xml ) ) {
@@ -264,23 +245,6 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 
 
 void
-CoverFetcher::receivedImageData( KIO::Job*, const QByteArray& data ) //SLOT
-{
-    if( m_bufferIndex + (uint)data.size() >= BUFFER_SIZE ) {
-        m_errors += i18n(
-                "The image Amazon has sent is too large. "
-                "Please report this error to amaroK-devel@lists.sf.net.");
-        attemptAnotherFetch();
-    }
-    else {
-        // Append new chunk of data to buffer
-        memcpy( m_buffer + m_bufferIndex, data.data(), data.size() );
-        m_bufferIndex += data.size();
-    }
-}
-
-
-void
 CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
 {
     if( job->error() ) {
@@ -292,7 +256,7 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
         return;
     }
 
-    m_image.loadFromData( m_buffer, m_bufferIndex );
+    m_image.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() );
 
     if( m_image.width() <= 1 ) {
         //Amazon seems to offer images of size 1x1 sometimes
