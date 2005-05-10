@@ -1,5 +1,8 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// See COPYING file for licensing information
+// (c) 2005 Reigo Reinmets <xatax@hot.ee>
+// (c) 2005 Mark Kretschmann <markey@web.de>
+// License: GNU General Public License V2
+
 
 #ifndef AMAROK_CONTEXTBROWSER_H
 #define AMAROK_CONTEXTBROWSER_H
@@ -68,6 +71,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void wikiData( KIO::Job* job, const QByteArray& data );
         void wikiHistoryBack();
         void wikiHistoryForward();
+        void wikiBackPopupActivated( int id );
+        void wikiForwardPopupActivated( int id );
         void wikiArtistPage();
         void wikiAlbumPage();
         void wikiTitlePage();

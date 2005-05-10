@@ -1,5 +1,8 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// See COPYING file for licensing information
+// (c) 2005 Reigo Reinmets <xatax@hot.ee>
+// (c) 2005 Mark Kretschmann <markey@web.de>
+// License: GNU General Public License V2
+
 
 #define DEBUG_PREFIX "ContextBrowser"
 
@@ -163,6 +166,9 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_wikiToolBar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
     connect( m_wikiToolBar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
     connect( m_wikiToolBar->getButton( WIKI_BROWSER ), SIGNAL(clicked( int )), SLOT(wikiExternalPage()) );
+
+    connect( m_wikiBackPopup,    SIGNAL(activated( int )), SLOT(wikiBackPopupActivated( int )) );
+    connect( m_wikiForwardPopup, SIGNAL(activated( int )), SLOT(wikiForwardPopupActivated( int )) );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
@@ -2355,8 +2361,6 @@ ContextBrowser::showLyricSuggestions()
     m_lyrics += QString( "<div id='lyrics_box_searchlyrics'>"
         "<input type='button' onClick='window.location.href=\"" + m_lyricSearchUrl + "\";' value='"
         + i18n("Search Lyrics") + "' class='button' /></div>" );
-
-
 }
 
 
@@ -2408,13 +2412,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         m_wikiCurrentUrl = url;
     }
 
-    // Manage history
-    if ( !fromHistory ) {
-        m_wikiBackHistory += m_wikiCurrentUrl;
-        m_wikiForwardHistory.clear();
-    }
-
-    // Remove all items from the menus
+    // Remove all items from the button-menus
     m_wikiBackPopup->clear();
     m_wikiForwardPopup->clear();
 
@@ -2424,10 +2422,16 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     // Reverse iterate over both lists
     count = m_wikiBackHistory.count();
     for ( it = m_wikiBackHistory.fromLast(); count > 0; --count, --it )
-        m_wikiBackPopup->insertItem( SmallIconSet( "wiki" ), *it );
+        m_wikiBackPopup->insertItem( SmallIconSet( "wiki" ), *it, count - 1 );
     count = m_wikiForwardHistory.count();
     for ( it = m_wikiForwardHistory.fromLast(); count > 0; --count, --it )
-        m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it );
+        m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, count - 1 );
+
+    // Manage history
+    if ( !fromHistory ) {
+        m_wikiBackHistory += m_wikiCurrentUrl;
+        m_wikiForwardHistory.clear();
+    }
 
     debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
     debug() << "WIKI FORWARD-HISTORY SIZE: " << m_wikiForwardHistory.size() << endl;
@@ -2448,37 +2452,53 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 
 
 void
-ContextBrowser::wikiHistoryBack()
+ContextBrowser::wikiHistoryBack() //SLOT
 {
-    m_dirtyWikiPage = true;
     m_wikiForwardHistory += m_wikiBackHistory.last();
     m_wikiBackHistory.pop_back();
 
+    m_dirtyWikiPage = true;
     showWikipedia( m_wikiBackHistory.last(), true );
 }
 
 
 void
-ContextBrowser::wikiHistoryForward()
+ContextBrowser::wikiHistoryForward() //SLOT
 {
-    m_dirtyWikiPage = true;
     const QString url = m_wikiForwardHistory.last();
     m_wikiBackHistory += url;
     m_wikiForwardHistory.pop_back();
 
+    m_dirtyWikiPage = true;
     showWikipedia( url, true );
 }
 
 
 void
-ContextBrowser::wikiArtistPage()
+ContextBrowser::wikiBackPopupActivated( int id ) //SLOT
+{
+    m_dirtyWikiPage = true;
+    showWikipedia( m_wikiBackHistory[id] );
+}
+
+
+void
+ContextBrowser::wikiForwardPopupActivated( int id ) //SLOT
+{
+    m_dirtyWikiPage = true;
+    showWikipedia( m_wikiForwardHistory[id] );
+}
+
+
+void
+ContextBrowser::wikiArtistPage() //SLOT
 {
     m_dirtyWikiPage = true;
     showWikipedia();
 }
 
 void
-ContextBrowser::wikiAlbumPage()
+ContextBrowser::wikiAlbumPage() //SLOT
 {
     m_dirtyWikiPage = true;
     showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
@@ -2486,7 +2506,7 @@ ContextBrowser::wikiAlbumPage()
 }
 
 void
-ContextBrowser::wikiTitlePage()
+ContextBrowser::wikiTitlePage() //SLOT
 {
     m_dirtyWikiPage = true;
     showWikipedia( QString( "http://en.wikipedia.org/wiki/%1" )
@@ -2494,7 +2514,7 @@ ContextBrowser::wikiTitlePage()
 }
 
 void
-ContextBrowser::wikiExternalPage()
+ContextBrowser::wikiExternalPage() //SLOT
 {
     kapp->invokeBrowser( m_wikiCurrentUrl );
 }
@@ -2608,7 +2628,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
 
 void
-ContextBrowser::coverFetched( const QString &artist, const QString &album )
+ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
@@ -2623,7 +2643,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album )
 
 
 void
-ContextBrowser::coverRemoved( const QString &artist, const QString &album )
+ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
@@ -2638,7 +2658,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album )
 
 
 void
-ContextBrowser::similarArtistsFetched( const QString &artist )
+ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 {
     if ( EngineController::instance()->bundle().artist() == artist ) {
         m_dirtyCurrentTrackPage = true;
