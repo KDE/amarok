@@ -13,6 +13,7 @@
 ############################################################################
 import Zeroconf
 import socket
+from string import split
 
 publisher = None      # SIGTERM handler must be able to reach this
 
@@ -28,7 +29,7 @@ class Publisher:
     
     def run(self):	
 	
-        self.localhostname = socket.gethostname()+'.local.'
+        self.localhostname = split(socket.gethostname(),'.')[0]+'.local.'
         self.localip = socket.gethostbyname(self.localhostname)
         self.zeroconf = Zeroconf.Zeroconf(self.localip)
 	self.active = True
