@@ -95,8 +95,6 @@ IncrementalCollectionReader::doJob()
 bool
 CollectionReader::doJob()
 {
-    if ( m_folders.isEmpty() )
-        return true;
     if ( !m_db->isConnected() )
         return false;
 
