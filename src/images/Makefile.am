@@ -25,13 +25,13 @@ images_DATA = \
     folder_crystal.png \
     loading1.png \
     loading2.png \
-    logo_splash.png \
     logo_web.png \
     musicbrainz.png \
     nocover.png \
     pl_active2.png \
     pl_inactive2.png \
     sbinner_stars.png \
+    splash_screen.png \
     time_minus.png \
     time_plus.png \
     vol_speaker.png \

@@ -36,7 +36,7 @@ Splash::Splash()
             ::usleep( 100 );
 
         path += proc.readLineStdout();
-        path += "/amarok/images/logo_splash.png";
+        path += "/amarok/images/splash_screen.png";
     }
 
     QPixmap splash( path );
