@@ -81,6 +81,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 
     private:
         enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER };
+        static const uint WIKI_MAX_HISTORY = 20;
 
         void setStyleSheet_Default( QString& styleSheet );
         void setStyleSheet_ExternalStyle( QString& styleSheet, QString& themeName );

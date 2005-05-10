@@ -2427,11 +2427,14 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     for ( it = m_wikiForwardHistory.fromLast(); count > 0; --count, --it )
         m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, count - 1 );
 
-    // Manage history
+    // Append new URL to history
     if ( !fromHistory ) {
         m_wikiBackHistory += m_wikiCurrentUrl;
         m_wikiForwardHistory.clear();
     }
+    // Limit number of items in history
+    if ( m_wikiBackHistory.count() > WIKI_MAX_HISTORY )
+        m_wikiBackHistory.pop_front();
 
     debug() << "WIKI BACK-HISTORY SIZE   : " << m_wikiBackHistory.size() << endl;
     debug() << "WIKI FORWARD-HISTORY SIZE: " << m_wikiForwardHistory.size() << endl;
