@@ -43,8 +43,6 @@ class Scrobbler : public QObject, public EngineObserver
 
     private slots:
         void audioScrobblerSimilarArtistsResult( KIO::Job* /*job*/ );
-        void audioScrobblerSimilarArtistsData(
-            KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
         QString m_similarArtistsBuffer;
@@ -122,8 +120,6 @@ class ScrobblerSubmitter : public QObject
     private slots:
         void audioScrobblerHandshakeResult( KIO::Job* /*job*/ );
         void audioScrobblerSubmitResult( KIO::Job* /*job*/ );
-        void audioScrobblerSubmitData(
-            KIO::Job* /*job*/, const QByteArray& /*data*/ );
 
     private:
         bool canSubmit() const;
