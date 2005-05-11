@@ -148,6 +148,8 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     DEBUG_BLOCK
 
+    // NOTE: job can become 0 when this method is called from attemptAnotherFetch()
+
     if( job && job->error() ) {
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
