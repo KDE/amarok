@@ -14,9 +14,9 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qregexp.h>
-#include <qtimer.h>
 
 #include <kapplication.h>
+#include <kcombobox.h>
 #include <kcursor.h> //waiting cursor
 #include <kdialog.h>
 #include <kio/job.h>
@@ -25,7 +25,6 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
-#include <kcombobox.h>
 
 
 CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
@@ -149,13 +148,14 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 {
     DEBUG_BLOCK
 
-    if( !job || job->error() ) {
+    if( job && job->error() ) {
         finishWithError( i18n("There was an error communicating with Amazon."), job );
         return;
     }
-
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+    if ( job ) {
+        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+        m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+    }
 
     QDomDocument doc;
     if( !doc.setContent( m_xml ) ) {
@@ -198,8 +198,7 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         }
     }
 
-    // This call must be delayed due to KIO's job management. Otherwise we would crash.
-    QTimer::singleShot( 0, this, SLOT( attemptAnotherFetch() ) );
+    attemptAnotherFetch();
 }
 
 
@@ -236,7 +235,7 @@ CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
 
 
 void
-CoverFetcher::attemptAnotherFetch() // SLOT
+CoverFetcher::attemptAnotherFetch()
 {
     DEBUG_BLOCK
 
@@ -314,6 +313,7 @@ CoverFetcher::attemptAnotherFetch() // SLOT
         QString query() { return static_cast<KLineEdit*>(child( "Query" ))->text(); }
     };
 
+
 void
 CoverFetcher::getUserQuery( QString explanation )
 {
@@ -379,6 +379,7 @@ CoverFetcher::getUserQuery( QString explanation )
                 KDialog::accept();
         }
     };
+
 
 void
 CoverFetcher::showCover()

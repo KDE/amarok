@@ -43,9 +43,6 @@ private slots:
     void finishedXmlFetch( KIO::Job* job );
     void finishedImageFetch( KIO::Job* job );
 
-    /// Will try all available queries, and then prompt the user, if allowed
-    void attemptAnotherFetch();
-
 private:
     const QString m_artist;
     const QString m_album;
@@ -74,6 +71,9 @@ private:
 
     /// Prompt the user for a query
     void getUserQuery( QString explanation = QString::null );
+
+    /// Will try all available queries, and then prompt the user, if allowed
+    void attemptAnotherFetch();
 
     /// Show the cover that has been found
     void showCover();
