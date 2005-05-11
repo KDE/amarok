@@ -519,11 +519,8 @@ void ScrobblerSubmitter::handshake()
     m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
 
-    KIO::TransferJob* job = KIO::get( handshakeUrl, false, false );
-    connect( job, SIGNAL( result( KIO::Job* ) ),
-             this,  SLOT( audioScrobblerHandshakeResult( KIO::Job* ) ) );
-    connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
-             this,  SLOT( audioScrobblerSubmitData( KIO::Job*, const QByteArray& ) ) );
+    KIO::TransferJob* job = KIO::storedGet( handshakeUrl, false, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( audioScrobblerHandshakeResult( KIO::Job* ) ) );
 }
 
 
@@ -679,11 +676,13 @@ void ScrobblerSubmitter::setEnabled( bool enabled )
  */
 void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
 {
-    if ( job->error() )
-    {
+    if ( job->error() ) {
         warning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
+
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    m_submitResultBuffer += QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
 //     debug()
 //         << "Handshake result received: "
@@ -751,8 +750,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
  */
 void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
 {
-    if ( job->error() )
-    {
+    if ( job->error() ) {
         warning() << "KIO error! errno: " << job->error() << endl;
         enqueueJob( job );
         return;
