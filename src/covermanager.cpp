@@ -898,10 +898,10 @@ void CoverView::showToolTip( QIconViewItem *item )
     if( item->artist().isEmpty() ) sampler = true;
 
     if( sampler ) {
-        sql = "SELECT count() FROM tags, album WHERE tags.sampler = 1 AND tags.album = album.id AND album.name = '%1';";
+        sql = "SELECT count(*) FROM tags, album WHERE tags.sampler = 1 AND tags.album = album.id AND album.name = '%1';";
         values = CollectionDB::instance()->query( sql.arg( escapeHTMLAttr( item->album() ) ) );
     } else {
-        sql = "SELECT count() FROM tags, artist, album WHERE tags.album = album.id AND tags.artist = artist.id AND artist.name='%1' AND album.name = '%2';";
+        sql = "SELECT count(*) FROM tags, artist, album WHERE tags.album = album.id AND tags.artist = artist.id AND artist.name='%1' AND album.name = '%2';";
         values = CollectionDB::instance()->query( sql.arg( escapeHTMLAttr( item->artist() ), escapeHTMLAttr( item->album() ) ) );
     }
 
