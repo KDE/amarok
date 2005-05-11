@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Ruby script for generating amaroK tarball releases from CVS
+# Ruby script for generating amaroK tarball releases from KDE SVN
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # Some parts of this code taken from cvs2dist
@@ -18,16 +18,6 @@ folder   = "amarok-#{version}"
 doi18n   = "yes"
 
 
-# Some helper methods
-def cvs( command )
-    `cvs -z3 -d #{$cvsroot} #{command}`
-end
-
-def cvsQuiet( command )
-    `cvs -z3 -q -d #{$cvsroot} #{command} > /dev/null 2>&1`
-end
-
-
 # Prevent using unsermake
 oldmake = ENV["UNSERMAKE"]
 ENV["UNSERMAKE"] = "no"
@@ -39,12 +29,11 @@ ENV["UNSERMAKE"] = "no"
 Dir.mkdir( folder )
 Dir.chdir( folder )
 
-cvs( "co -l kdeextragear-1" )
-cvs( "co kdeextragear-1/amarok" )
-cvs( "co -l kdeextragear-1/doc" )
-cvs( "co kdeextragear-1/doc/amarok" )
-Dir.chdir( "kdeextragear-1" )
-cvs( "co admin" )
+`svn co -N https://svn.kde.org/home/kde/trunk/multimedia`
+Dir.chdir( "multimedia" )
+`svn up amarok`
+`svn up doc/amarok`
+`svn co https://svn.kde.org/home/kde/trunk/KDE/kde-common/admin`
 
 puts "\n"
 puts "**** i18n ****"
