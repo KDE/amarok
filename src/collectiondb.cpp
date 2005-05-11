@@ -771,8 +771,8 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 const TagLib::ByteVector &imgVector = ap->picture();
                 debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
 
-                // ignore APIC frames without picture
-                if( imgVector.size() == 0 )
+                // ignore APIC frames without picture and those with obviously bogus size
+                if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ )
                     return QString::null;
 
                 QImage image;
@@ -2509,28 +2509,28 @@ QueryBuilder::linkTables( int tables )
 {
 
     m_tables = tableName( tabSong );
-    
-    if ( !(tables & tabSong ) ) 
+
+    if ( !(tables & tabSong ) )
     {
         // check if only one table is selected (does somebody know a better way to check that?)
-        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats)      
+        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats)
             m_tables = tableName(tables);
         else
             tables |= tabSong;
     }
 
-    
+
     if ( tables & tabSong )
     {
         if ( tables & tabAlbum )
             m_tables += " INNER JOIN " + tableName( tabAlbum) + " ON album.id=tags.album";
-        if ( tables & tabArtist ) 
+        if ( tables & tabArtist )
             m_tables += " INNER JOIN " + tableName( tabArtist) + " ON artist.id=tags.artist";
-        if ( tables & tabGenre ) 
+        if ( tables & tabGenre )
             m_tables += " INNER JOIN " + tableName( tabGenre) + " ON genre.id=tags.genre";
-        if ( tables & tabYear ) 
+        if ( tables & tabYear )
             m_tables += " INNER JOIN " + tableName( tabYear) + " ON year.id=tags.year";
-        if ( tables & tabStats ) 
+        if ( tables & tabStats )
             m_tables += " INNER JOIN " + tableName( tabStats) + " ON statistics.url=tags.url";
     }
 }
@@ -2992,7 +2992,7 @@ QueryBuilder::getQuery()
     if ( m_query.isEmpty())
     {
         buildQuery();
-    }   
+    }
     return m_query;
 }
 

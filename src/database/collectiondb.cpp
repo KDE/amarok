@@ -760,8 +760,8 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 const TagLib::ByteVector &imgVector = ap->picture();
                 debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
 
-                // ignore APIC frames without picture
-                if( imgVector.size() == 0 )
+                // ignore APIC frames without picture and those with obviously bogus size
+                if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ )
                     return QString::null;
 
                 QImage image;
