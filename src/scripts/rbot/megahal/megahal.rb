@@ -10,6 +10,7 @@
 class MegaHal
 
     def initialize
+        @words = []
     end
 
 
@@ -56,7 +57,8 @@ class MegaHal
 
         loop do
             if boundary?(input, offset)
-
+                break if offset == input.length
+                input.slice!(0..offset)
                 offset = 0
             else
                 offset = offset+1
