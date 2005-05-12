@@ -120,10 +120,13 @@ void Scrobbler::similarArtists( const QString & artist )
         m_similarArtistsBuffer = QString::null;
         m_artist = artist;
 
-        KIO::TransferJob* job = KIO::storedPut( postData, "http://ws.audioscrobbler.com/xmlrpc", -1, true, false, false );
+        KIO::TransferJob* job = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
         job->addMetaData( "content-type", "Content-Type: text/xml" );
 
-        connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
+        connect( job, SIGNAL( result( KIO::Job* ) ),
+                this,  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
+        connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+                this,  SLOT( audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& ) ) );
     }
 }
 
@@ -133,13 +136,11 @@ void Scrobbler::similarArtists( const QString & artist )
  */
 void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
 {
-    if ( job->error() ) {
+    if ( job->error() )
+    {
         warning() << "KIO error! errno: " << job->error() << endl;
         return;
     }
-
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    m_similarArtistsBuffer = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
 //     Result looks like this:
 //     <?xml version="1.0" encoding="UTF-8"?>
@@ -187,6 +188,16 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
     if ( !suggestions.isEmpty() )
         emit similarArtistsFetched( m_artist, suggestions );
+}
+
+
+/**
+ * Called when similar artists data is received for the TransferJob.
+ */
+void Scrobbler::audioScrobblerSimilarArtistsData( KIO::Job*, const QByteArray& data ) //SLOT
+{
+    // Append new chunk of string
+    m_similarArtistsBuffer += QString::fromUtf8( data, data.size() );
 }
 
 
@@ -605,7 +616,7 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
     m_prevSubmitTime = currentTime;
     m_submitResultBuffer = "";
 
-    KIO::TransferJob* job = KIO::storedPut( data.utf8(), m_submitUrl, -1, true, false, false );
+    KIO::TransferJob* job = KIO::http_post( m_submitUrl, data.utf8(), false );
     job->addMetaData( "content-type", "Content-Type: application/x-www-form-urlencoded" );
 
     // Loop in reverse order, which helps when items are later fetched from
@@ -615,7 +626,10 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
         if ( items[submitCounter] != 0 )
             m_ongoingSubmits.insert( job, items[submitCounter] );
 
-    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( audioScrobblerSubmitResult( KIO::Job* ) ) );
+    connect( job, SIGNAL( result( KIO::Job* ) ),
+             this,  SLOT( audioScrobblerSubmitResult( KIO::Job* ) ) );
+    connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
+             this,  SLOT( audioScrobblerSubmitData( KIO::Job*, const QByteArray& ) ) );
 }
 
 
@@ -742,9 +756,6 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         return;
     }
 
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    m_submitResultBuffer = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-
 //     debug()
 //         << "Submit result received: "
 //         << endl << m_submitResultBuffer << endl;
@@ -794,6 +805,17 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
         warning() << "Unknown submit response" << endl;
         enqueueJob( job );
     }
+}
+
+
+/**
+ * Receives the data from the TransferJob.
+ */
+void ScrobblerSubmitter::audioScrobblerSubmitData(
+    KIO::Job*, const QByteArray& data ) //SLOT
+{
+    // Append new chunk of string
+    m_submitResultBuffer += QString::fromUtf8( data, data.size() );
 }
 
 
