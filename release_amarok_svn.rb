@@ -7,13 +7,11 @@
 # License: GPL V2
 
 
-# Ask user for app version and CVS username
+# Ask user for targeted application version
 version  = `kdialog --inputbox "amaroK version: "`.chomp
-username = `kdialog --inputbox "CVS username: "`.chomp
 
 
 name     = "amarok"
-$cvsroot = ":ext:#{username}@cvs.kde.org:/home/kde"
 folder   = "amarok-#{version}"
 doi18n   = "yes"
 
@@ -29,7 +27,7 @@ ENV["UNSERMAKE"] = "no"
 Dir.mkdir( folder )
 Dir.chdir( folder )
 
-`svn co -N https://svn.kde.org/home/kde/trunk/multimedia`
+`svn co -N https://svn.kde.org/home/kde/trunk/extragear/multimedia`
 Dir.chdir( "multimedia" )
 `svn up amarok`
 `svn up doc/amarok`
@@ -108,9 +106,8 @@ end
 
 puts "\n"
 
-# Remove CVS relevant files
-`find -name "CVS" | xargs rm -rf`
-`find -name ".cvsignore" | xargs rm`
+# Remove SVN specific folder
+`find -name ".svn" | xargs rm -rf`
 
 Dir.chdir( "amarok" )
 
@@ -132,7 +129,7 @@ Dir.chdir( ".." ) # amarok
 `rm -rf debian`
 
 
-Dir.chdir( ".." ) # kdeextragear-1
+Dir.chdir( ".." ) # multimedia
 puts( "\n" )
 
 `find | xargs touch`
@@ -149,7 +146,7 @@ puts "done.\n"
 puts "**** Compressing..  "
 `mv * ..`
 Dir.chdir( ".." ) # amaroK-foo
-`rm -rf kdeextragear-1`
+`rm -rf multimedia`
 Dir.chdir( ".." ) # root folder
 `tar -cf #{folder}.tar #{folder}`
 `bzip2 #{folder}.tar`
