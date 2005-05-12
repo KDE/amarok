@@ -211,6 +211,13 @@ namespace amaroK
         return score;
     }
 
+   void DcopPlayerHandler::setScore( int score )
+    {
+        const QString &url = EngineController::instance()->bundle().url().path();
+        CollectionDB::instance()->setSongPercentage(url, score);
+    }
+
+
     int DcopPlayerHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();
