@@ -77,7 +77,7 @@ k_dcop:
    virtual QString path() = 0;                              ///< Return the unencoded path of the currently playing track.
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual int  score() = 0;                                ///< Return the score of the currently playing track.
-   virtual void setScore( int score ) = 0;  ///< Set the score of the currently playing track.
+   virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.
