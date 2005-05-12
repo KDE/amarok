@@ -43,7 +43,7 @@ class MegaHal
             return true
         end
 
-        if digit.include?(string[pos] != digit.incldue[pos-1]
+        if digit.include?(string[pos] != digit.include[pos-1]
             return true
         end
     end
