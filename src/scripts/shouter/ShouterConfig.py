@@ -314,7 +314,8 @@ class ConfigDialog(QTabDialog):
             warnings = []
             if not Playlist.validate(arg):
                 warnings.append('Some entries in your playlist have an \
-                indeterminate length or bitrate and will be ignored')
+                indeterminate length, bad bitrate or are of an unsupported \
+                format and will be ignored')
             if not ts.get_config().repeat_pl:
                 warnings.append('You have not enabled the repeat playlist option.\
                 This could make for a rather shortlived stream')

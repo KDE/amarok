@@ -170,7 +170,9 @@ class _StaticPlaylist(XMLPlaylist):
                     files[n] = f
                     if isinstance(f.queue_index, int):
                         queue[f.queue_index] = i
-                except ShouterExceptions.unknown_length_error:
+                except (ShouterExceptions.unknown_length_error, ShouterExceptions.bad_format_error):
+                    #fobj_temp = File(n);
+                    #debug('skipping ' + fobj_temp.url)
                     skip.append(n)
 
             if c == 0:
@@ -285,12 +287,16 @@ class File:
             if strict:
                 raise ShouterExceptions.unknown_length_error
 
+        if not self.url.lower().endswith('.mp3'):
+            if strict:
+                raise ShouterExceptions.bad_format_error
+
     def get_meta(self):
         return self.artist + ' - ' + self.title
 
     def get_fname(self):
         if self.url.startswith('file:///'):
-            return urllib.url2pathname(sub('file:/*', '/', self.url))
+            return urllib.url2pathname(str(self.url)).replace('file://', '')
         raise ShouterExceptions.remote_url_error
 
 class DirFile(File):
