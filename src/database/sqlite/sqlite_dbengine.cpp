@@ -6,8 +6,13 @@
 
 #define DEBUG_PREFIX "SQLite-DBEngine"
 
+#include "app.h"
+#include "amarok.h"
+#include "amarokconfig.h"
 #include "debug.h"
 #include "sqlite_dbengine.h"
+
+#include <kapplication.h>
 
 #include <qfile.h>
 #include <qimage.h>
@@ -21,14 +26,15 @@
 
 AMAROK_EXPORT_PLUGIN( SqliteDbEngine )
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS SqliteConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SqliteConnection::SqliteConnection( SqliteConfig* config )
-    : DbConnection( config )
+SqliteDbEngine::SqliteDbEngine()
+    : DbConnection( new SqliteConfig( "collection.db" ) )
 {
-    const QCString path = (amaroK::saveLocation()+"collection.db").local8Bit();
+    const QCString path = QString(/*amaroK::saveLocation()+*/"collection.db").local8Bit();
 
     // Open database file and check for correctness
     m_initialized = false;
@@ -72,13 +78,13 @@ SqliteConnection::SqliteConnection( SqliteConfig* config )
 }
 
 
-SqliteConnection::~SqliteConnection()
+SqliteDbEngine::~SqliteDbEngine()
 {
     if ( m_db ) sqlite3_close( m_db );
 }
 
 
-QStringList SqliteConnection::query( const QString& statement )
+QStringList SqliteDbEngine::query( const QString& statement )
 {
     QStringList values;
     int error;
@@ -140,7 +146,7 @@ QStringList SqliteConnection::query( const QString& statement )
 }
 
 
-int SqliteConnection::insert( const QString& statement, const QString& /* table */ )
+int SqliteDbEngine::insert( const QString& statement, const QString& /* table */ )
 {
     int error;
     const char* tail;
@@ -192,13 +198,13 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
 
 
 // this implements a RAND() function compatible with the MySQL RAND() (0-param-form without seed)
-void SqliteConnection::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
+void SqliteDbEngine::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
 {
-    sqlite3_result_double( context, static_cast<double>(KApplication::random()) / (RAND_MAX+1.0) );
+    //sqlite3_result_double( context, static_cast<double>(KApplication::random()) / (RAND_MAX+1.0) );
 }
 
 // this implements a POWER() function compatible with the MySQL POWER()
-void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv)
+void SqliteDbEngine::sqlite_power(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     Q_ASSERT( argc==2 );
     if( sqlite3_value_type(argv[0])==SQLITE_NULL || sqlite3_value_type(argv[1])==SQLITE_NULL ) {

@@ -23,12 +23,14 @@
 #ifndef AMAROK_DBENGINEBASE_H
 #define AMAROK_DBENGINEBASE_H
 
-#include "collectiondb.h"  //baseclass
 #include "plugin/plugin.h" //baseclass
 #include <qobject.h>       //baseclass
 
 
-class DbConnection  : public QObject, public amaroK::Plugin
+class DbConfig
+{};
+
+class DbConnection : public QObject, public amaroK::Plugin
 {
     public:
         enum DbConnectionType { sqlite = 0, mysql = 1, postgresql = 2 };
@@ -63,6 +65,18 @@ class QueryBuilder
         enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
 
         QueryBuilder();
+
+        QString escapeString( QString string )
+        {
+            return
+                #ifdef USE_MYSQL
+                    // We have to escape "\" for mysql, but can't do so for sqlite
+                    (m_dbConnType == DbConnection::mysql)
+                            ? string.replace("\\", "\\\\").replace( '\'', "''" )
+                            :
+                #endif
+                    string.replace( '\'', "''" );
+        }
 
         void addReturnValue( int table, int value );
         void addReturnFunctionValue( int function, int table, int value);

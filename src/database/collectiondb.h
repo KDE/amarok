@@ -7,6 +7,7 @@
 #define AMAROK_COLLECTIONDB_H
 
 #include "engineobserver.h"
+#include "dbenginebase.h"
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
@@ -14,15 +15,9 @@
 #include <qsemaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
 
-class DbConnection;
-class DbConnectionPool;
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
-
-
-class DbConfig
-{};
 
 
 class DbConnectionPool : QPtrQueue<DbConnection>
@@ -37,18 +32,6 @@ class DbConnectionPool : QPtrQueue<DbConnection>
 
         DbConnection *getDbConnection();
         void putDbConnection( const DbConnection* /* conn */ );
-
-        QString escapeString( QString string )
-        {
-            return
-                #ifdef USE_MYSQL
-                    // We have to escape "\" for mysql, but can't do so for sqlite
-                    (m_dbConnType == DbConnection::mysql)
-                            ? string.replace("\\", "\\\\").replace( '\'', "''" )
-                            :
-                #endif
-                    string.replace( '\'', "''" );
-        }
 
     private:
         static const int POOL_SIZE = 5;
@@ -81,10 +64,6 @@ class CollectionDB : public QObject, public EngineObserver
         static CollectionDB *instance();
 
         QString escapeString( QString string ) { return m_dbConnPool->escapeString(string); }
-        QString boolT() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
-        QString boolF() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
-        QString textColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
-        QString randomFunc() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
         int getType() { return m_dbConnPool->getDbConnectionType(); }
 
 

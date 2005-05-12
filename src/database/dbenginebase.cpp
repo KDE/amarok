@@ -21,6 +21,9 @@
  ***************************************************************************/
 
 #include <dbenginebase.h>
+#include <qstringlist.h>
+
+#include <klocale.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -118,16 +121,17 @@ QueryBuilder::countReturnValues()
     return m_returnValues;
 }
 
+
 void
 QueryBuilder::addURLFilters( const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += "AND ( true ";
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
-                m_where += "OR tags.url = '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+                m_where += "OR tags.url = '" + escapeString( filter[i] ) + "' ";
         }
 
         m_where += " ) ";
@@ -142,24 +146,12 @@ QueryBuilder::addFilter( int tables, const QString& filter, int /*mode*/ )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
-
-        if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
-            if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabYear ) m_where += "OR year.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            if ( tables & tabSong ) m_where += "OR tags.title ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-        }
-        else
-        {
-            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        }
-
+        m_where += "AND ( true ";
+        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + escapeString( filter ) + "%' ";
         m_where += " ) ";
     }
 
@@ -172,26 +164,16 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += "AND ( true ";
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
-            m_where += " AND ( " + CollectionDB::instance()->boolF() + " ";
-            if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
-                if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabGenre ) m_where += "OR genre.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabYear ) m_where += "OR year.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-                if ( tables & tabSong ) m_where += "OR tags.title ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
-            }
-            else
-            {
-                if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-                if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + CollectionDB::instance()->escapeString( filter[i] ) + "%' ";
-            }
+            m_where += " AND ( true ";
+            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '%" + escapeString( filter[i] ) + "%' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '%" + escapeString( filter[i] ) + "%' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '%" + escapeString( filter[i] ) + "%' ";
+            if ( tables & tabYear ) m_where += "OR year.name LIKE '%" + escapeString( filter[i] ) + "%' ";
+            if ( tables & tabSong ) m_where += "OR tags.title LIKE '%" + escapeString( filter[i] ) + "%' ";
             m_where += " ) ";
         }
 
@@ -207,12 +189,12 @@ QueryBuilder::addMatch( int tables, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
-        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabYear ) m_where += "OR year.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
+        m_where += "AND ( true ";
+        if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + escapeString( match ) + "' ";
+        if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + escapeString( match ) + "' ";
+        if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + escapeString( match ) + "' ";
+        if ( tables & tabYear ) m_where += "OR year.name LIKE '" + escapeString( match ) + "' ";
+        if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + escapeString( match ) + "' ";
 
         if ( match == i18n( "Unknown" ) )
         {
@@ -233,8 +215,8 @@ QueryBuilder::addMatch( int tables, int value, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
-        m_where += QString( "OR %1.%2 LIKE '" ).arg( tableName( tables ) ).arg( valueName( value ) ) + CollectionDB::instance()->escapeString( match ) + "' ";
+        m_where += "AND ( true ";
+        m_where += QString( "OR %1.%2 LIKE '" ).arg( tableName( tables ) ).arg( valueName( value ) ) + escapeString( match ) + "' ";
 
         if ( ( value & valName ) && match == i18n( "Unknown" ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -251,16 +233,16 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += "AND ( true ";
 
         for ( uint i = 0; i < match.count(); i++ )
         {
-            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabYear ) m_where += "OR year.name LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
-            if ( tables & tabStats ) m_where += "OR statistics.url LIKE '" + CollectionDB::instance()->escapeString( match[i] ) + "' ";
+            if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + escapeString( match[i] ) + "' ";
+            if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + escapeString( match[i] ) + "' ";
+            if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + escapeString( match[i] ) + "' ";
+            if ( tables & tabYear ) m_where += "OR year.name LIKE '" + escapeString( match[i] ) + "' ";
+            if ( tables & tabSong ) m_where += "OR tags.title LIKE '" + escapeString( match[i] ) + "' ";
+            if ( tables & tabStats ) m_where += "OR statistics.url LIKE '" + escapeString( match[i] ) + "' ";
 
             if ( match[i] == i18n( "Unknown" ) )
             {
@@ -283,22 +265,12 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
-        if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
-          if ( tables & tabAlbum ) m_where += "AND album.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabArtist ) m_where += "AND artist.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabGenre ) m_where += "AND genre.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabYear ) m_where += "AND year.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-          if ( tables & tabSong ) m_where += "AND tags.title !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-        }
-        else
-        {
-            if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabYear ) m_where += "AND year.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabSong ) m_where += "AND tags.title <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-        }
+        m_where += "AND ( true ";
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '%" + escapeString( filter ) + "%' ";
+        if ( tables & tabSong ) m_where += "AND tags.title <> '%" + escapeString( filter ) + "%' ";
         m_where += " ) ";
     }
 
@@ -311,12 +283,12 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
-        if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabYear ) m_where += "AND year.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
-        if ( tables & tabSong ) m_where += "AND tags.title <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+        m_where += "AND ( true ";
+        if ( tables & tabAlbum ) m_where += "AND album.name <> '" + escapeString( match ) + "' ";
+        if ( tables & tabArtist ) m_where += "AND artist.name <> '" + escapeString( match ) + "' ";
+        if ( tables & tabGenre ) m_where += "AND genre.name <> '" + escapeString( match ) + "' ";
+        if ( tables & tabYear ) m_where += "AND year.name <> '" + escapeString( match ) + "' ";
+        if ( tables & tabSong ) m_where += "AND tags.title <> '" + escapeString( match ) + "' ";
 
         if ( match == i18n( "Unknown" ) )
         {
@@ -358,21 +330,14 @@ QueryBuilder::setOptions( int options )
     if ( options & optNoCompilations || options & optOnlyCompilations )
         m_linkTables |= tabSong;
 
-    if ( options & optNoCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolF());
-    if ( options & optOnlyCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolT());
+    if ( options & optNoCompilations ) m_where += "AND tags.sampler = 0 ";
+    if ( options & optOnlyCompilations ) m_where += "AND tags.sampler = 1 ";
 
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql && options & optRemoveDuplicates && options & optRandomize) {
-	    m_values = "DISTINCT " + CollectionDB::instance()->randomFunc() + " AS __random "+ m_values;
-	    if ( !m_sort.isEmpty() ) m_sort += ",";
-	    m_sort += CollectionDB::instance()->randomFunc() + " ";
-    } else {
-	    if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
-
-	    if ( options & optRandomize )
-	    {
-	        if ( !m_sort.isEmpty() ) m_sort += ",";
-	        m_sort += CollectionDB::instance()->randomFunc() + " ";
-	    }
+    if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
+    if ( options & optRandomize )
+    {
+        if ( !m_sort.isEmpty() ) m_sort += ",";
+        m_sort += "RAND() ";
     }
 }
 
@@ -394,27 +359,10 @@ QueryBuilder::sortBy( int table, int value, bool descending )
     m_sort += tableName( table ) + ".";
     m_sort += valueName( value );
 
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if ( table & tabYear ) m_sort += ")";
-    }
-    else
-    {
-        if ( table & tabYear ) m_sort += "+0)";
-    }
+    if ( table & tabYear ) m_sort += "+0)";
 
     if ( b ) m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
-
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if (!m_values.isEmpty()) m_values += ",";
-        if ( b ) m_values += "LOWER( ";
-        m_values += tableName( table ) + ".";
-        m_values += valueName( value );
-        if ( b ) m_values += ")";
-        m_values += " as __discard ";
-    }
 
     m_linkTables |= table;
 }
@@ -440,31 +388,10 @@ QueryBuilder::sortByFunction( int function, int table, int value, bool descendin
     QString columnName = functionName( function )+tableName( table )+valueName( value );
     m_sort += columnName;
 
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if ( table & tabYear ) m_sort += ")";
-    }
-    else
-    {
-        if ( table & tabYear ) m_sort += "+0)";
-    }
-
+    if ( table & tabYear ) m_sort += "+0)";
     if ( b ) m_sort += " ) ";
     //m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
-
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if (m_values.find(columnName) == -1)
-        {
-            if (!m_values.isEmpty()) m_values += ",";
-            if ( b ) m_values += "LOWER( ";
-            m_values += tableName( table ) + ".";
-            m_values += valueName( value );
-            if ( b ) m_values += ")";
-            m_values += " as __discard ";
-        }
-    }
 
     m_linkTables |= table;
 }
@@ -483,14 +410,7 @@ QueryBuilder::groupBy( int table, int value )
 void
 QueryBuilder::setLimit( int startPos, int length )
 {
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        m_limit = QString( " OFFSET %1 LIMIT %2 " ).arg( startPos ).arg( length );
-    }
-    else
-    {
-        m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
-    }
+    m_limit = QString( " LIMIT %1, %2 " ).arg( startPos ).arg( length );
 }
 
 
@@ -519,7 +439,7 @@ QueryBuilder::buildQuery()
     {
         linkTables( m_linkTables );
 
-        m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE " + CollectionDB::instance()->boolT() + " " + m_where;
+        m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE true " + m_where;
         // GROUP BY must be before ORDER BY for sqlite
         if ( !m_group.isEmpty() ) m_query += " GROUP BY " + m_group;
         if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
@@ -543,7 +463,7 @@ QueryBuilder::run()
 {
     buildQuery();
     //debug() << m_query << endl;
-    return CollectionDB::instance()->query( m_query );
+//    return query( m_query );
 }
 
 
@@ -569,19 +489,12 @@ QueryBuilder::tableName( int table )
 {
     QString tables;
 
-    if (CollectionDB::instance()->getType() != DbConnection::postgresql)
-    {
-        if ( table & tabSong )   tables += ",tags";
-    }
+    if ( table & tabSong )   tables += ",tags";
     if ( table & tabArtist ) tables += ",artist";
     if ( table & tabAlbum )  tables += ",album";
     if ( table & tabGenre )  tables += ",genre";
     if ( table & tabYear )   tables += ",year";
     if ( table & tabStats )  tables += ",statistics";
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if ( table & tabSong )   tables += ",tags";
-    }
 
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );

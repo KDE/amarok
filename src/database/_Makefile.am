@@ -8,9 +8,9 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/statusbar \    
     $(all_includes)
 
-if enable_sqlite
+#if enable_sqlite
     SQLITE_DBENGINE_SUBDIR = sqlite
-endif
+#endif
 
 if enable_mysql
     MYSQL_DBENGINE_SUBDIR = mysql

@@ -6,7 +6,7 @@
 #ifndef AMAROK_SQLITE_DBENGINE_H
 #define AMAROK_SQLITE_DBENGINE_H
 
-#include "engineobserver.h"
+#include "dbenginebase.h"
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
@@ -14,6 +14,7 @@
 #include <qsemaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
 
+class DbConfig;
 class DbConnection;
 class DbConnectionPool;
 class CoverFetcher;
@@ -37,11 +38,11 @@ typedef struct sqlite3 sqlite3;
 typedef struct sqlite3_context sqlite3_context;
 typedef struct Mem sqlite3_value;
 
-class SqliteConnection : public DbConnection
+class SqliteDbEngine : public DbConnection
 {
     public:
-        SqliteConnection( SqliteConfig* /* config */ );
-       ~SqliteConnection();
+        SqliteDbEngine();
+       ~SqliteDbEngine();
 
         QStringList query( const QString& /* statement */ );
         int insert( const QString& /* statement */, const QString& /* table */ );
