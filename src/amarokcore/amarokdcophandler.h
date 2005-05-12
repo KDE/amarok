@@ -64,6 +64,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual QString coverImage();
       virtual int score ();
       virtual void setScore( int score );
+      virtual void setScoreByPath( const QString &url, int score );
       virtual bool isPlaying();
       virtual int  status();
       virtual bool repeatTrackStatus();

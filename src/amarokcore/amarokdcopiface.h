@@ -78,6 +78,7 @@ k_dcop:
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual int  score() = 0;                                ///< Return the score of the currently playing track.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
+   virtual void setScoreByPath( const QString &url, int score ) = 0;		///< Set the score of a track by it's path.
 
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.
