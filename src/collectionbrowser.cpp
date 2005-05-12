@@ -1017,7 +1017,6 @@ CollectionView::listSelected()
     QListViewItem* item;
     QStringList values;
     QueryBuilder qb;
-    KURL tmp;
 
     if ( m_viewMode == modeFlatView )
     {
@@ -1054,6 +1053,7 @@ CollectionView::listSelected()
 
             for ( uint i = 0; i < values.count(); i++ )
             {
+                KURL tmp;
                 tmp.setPath( values[i] );
                 list << tmp;
             }
@@ -1095,6 +1095,7 @@ CollectionView::listSelected()
 
                     for ( uint i = 0; i < values.count(); i++ )
                     {
+                        KURL tmp;
                         tmp.setPath( values[i] );
                         list << tmp;
                     }
@@ -1148,6 +1149,7 @@ CollectionView::listSelected()
 
                         for ( uint i = 0; i < values.count(); i++ )
                         {
+                            KURL tmp;
                             tmp.setPath( values[i] );
                             list << tmp;
                         }

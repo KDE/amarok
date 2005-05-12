@@ -159,17 +159,13 @@ QString SmartPlaylistEditor::query()
         whereStr += " WHERE (";
 
         CriteriaEditor *criteria = m_criteriaEditorList.first();
-        QString str;
-        QString table;
-        QString op;
-
         for( int i=0; criteria; criteria = m_criteriaEditorList.next(), i++ ) {
 
-            str = criteria->getSearchCriteria();
+            QString str = criteria->getSearchCriteria();
             //add the table used in the search expression to tables
-            table = str.left( str.find('.') );
+            QString table = str.left( str.find('.') );
              if( !joins.contains( table ) ) {
-                if( table=="statistics") 
+                if( table=="statistics")
                    // that makes it possible to search for tracks never played. it looks ugly but is works
 	           if( str.contains(" OR statistics.playcounter IS NULL"))
                        joins += " LEFT JOIN statistics ON statistics.url=tags.url";
@@ -179,9 +175,9 @@ QString SmartPlaylistEditor::query()
                     joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
             }
             if( i ) { //multiple conditions
-                op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
+                QString op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
                 str.prepend( " " + op + " (");
-               
+
             }
             whereStr += str+")";
         }
@@ -193,7 +189,7 @@ QString SmartPlaylistEditor::query()
             QString field = m_dbFields[ m_orderCombo->currentItem() ];
             QString table = field.left( field.find('.') );
             if( !joins.contains( table ) ) {
-                if( table=="statistics") 
+                if( table=="statistics")
 	           joins += " INNER JOIN statistics ON statistics.url=tags.url";
 	        else if (table!="tags")
                     joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
@@ -343,7 +339,7 @@ QString CriteriaEditor::getSearchCriteria()
         default: ;
     };
 
-    
+
     if( criteria == i18n("contains") )
         searchCriteria += " LIKE \"%" + value + "%\"";
     else if( criteria == i18n("does not contain") )

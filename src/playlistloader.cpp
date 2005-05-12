@@ -371,7 +371,6 @@ PlaylistFile::loadM3u( QTextStream &stream )
 {
     const QString directory = m_path.left( m_path.findRev( '/' ) + 1 );
     MetaBundle b;
-    QString url;
 
     for( QString line; !stream.atEnd(); )
     {
@@ -387,7 +386,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
         else if( !line.startsWith( "#" ) && !line.isEmpty() )
         {
             // KURL::isRelativeURL() expects absolute URLs to start with a protocol, so prepend it if missing
-            url = line;
+            QString url = line;
             if( url.startsWith( "/" ) )
                 url.prepend( "file://" );
 

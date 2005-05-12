@@ -681,16 +681,9 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
     // is called multiple time in the same HTML code, stID must be different.
     if ( !reqResult.isEmpty() )
     {
-        QueryBuilder qb;
-        QStringList albumValues;
-        QString albumYear;
-        QString albumName;
-        QString artistName;
-        QString track;
-        QString length;
-
         for ( uint i = 0; i < reqResult.count(); i += 3 )
         {
+            QueryBuilder qb;
             qb.clear();
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -702,8 +695,9 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, reqResult[i+1] );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             //qb.setOptions( QueryBuilder::optNoCompilations );
-            albumValues = qb.run();
+            QStringList albumValues = qb.run();
 
+            QString albumYear;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
@@ -732,7 +726,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
                                             "</td>");
             }
 
-            albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
+            QString albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
 
             if (CollectionDB::instance()->albumIsCompilation(reqResult[ i + 1 ]))
             {
@@ -754,7 +748,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
             }
             else
             {
-                artistName = escapeHTML( albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5] );
+                QString artistName = escapeHTML( albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5] );
 
                 // Album image
                 htmlCode.append( QStringx (
@@ -841,7 +835,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
             {
                 for ( uint j = 0; j < albumValues.count(); j += 7 )
                 {
-                    track = albumValues[j + 2].stripWhiteSpace();
+                    QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 )
                     {
                         if( track.length() == 1 )
@@ -850,6 +844,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
                         track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                     }
 
+                    QString length;
                     if( albumValues[j + 4] != "0" )
                         length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
 
@@ -1677,11 +1672,6 @@ bool CurrentTrackJob::doJob()
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         uint vectorPlace = 0;
-        QStringList albumValues;
-        QString albumYear;
-        QString track;
-        QString length;
-
         // find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
@@ -1697,8 +1687,9 @@ bool CurrentTrackJob::doJob()
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optNoCompilations );
-            albumValues = qb.run();
+            QStringList albumValues = qb.run();
 
+            QString albumYear;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
@@ -1748,7 +1739,7 @@ bool CurrentTrackJob::doJob()
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += 5 )
                 {
-                    track = albumValues[j + 2].stripWhiteSpace();
+                    QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
@@ -1756,6 +1747,7 @@ bool CurrentTrackJob::doJob()
                         track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                     }
 
+                    QString length;
                     if( albumValues[j + 4] != "0" )
                         length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
 
@@ -1804,11 +1796,6 @@ bool CurrentTrackJob::doJob()
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
         uint vectorPlace = 0;
-        QStringList albumValues;
-        QString albumYear;
-        QString track;
-        QString length;
-
         // find album of the current track (if it exists)
         while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
             vectorPlace += 2;
@@ -1824,8 +1811,9 @@ bool CurrentTrackJob::doJob()
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             qb.setOptions( QueryBuilder::optOnlyCompilations );
-            albumValues = qb.run();
+            QStringList albumValues = qb.run();
 
+            QString albumYear;
             if ( !albumValues.isEmpty() )
             {
                 albumYear = albumValues[ 3 ];
@@ -1873,7 +1861,7 @@ bool CurrentTrackJob::doJob()
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 {
-                    track = albumValues[j + 2].stripWhiteSpace();
+                    QString track = albumValues[j + 2].stripWhiteSpace();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
@@ -1881,6 +1869,7 @@ bool CurrentTrackJob::doJob()
                         track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
                     }
 
+                    QString length;
                     if( albumValues[j + 4] != "0" )
                         length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
                     m_HTMLSource.append(
