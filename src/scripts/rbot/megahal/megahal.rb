@@ -48,11 +48,12 @@ class Quad
                tokens[3].hash()
     end
 
-    def ==(other)
-        return other.token[0] == @token[0] and
-               other.token[1] == @token[1] and
-               other.token[2] == @token[2] and
-               other.token[3] == @token[3]
+    def equals(other)
+        equal = other.token[0] == @token[0] and
+                other.token[1] == @token[1] and
+                other.token[2] == @token[2] and
+                other.token[3] == @token[3]
+        return equal
     end
 
 end
@@ -138,10 +139,10 @@ class MegaHal
             i = 0
             while i < parts.size()-3 do
                 quad = Quad.new(parts[0], parts[1], parts[2], parts[3])
-                if quads.hasKey?(quad)
-                    quad = quads[quad]
+                if @quads.has_key?(quad)
+                    quad = @quads[quad]
                 else
-                    quads[quad] = quad
+                    @quads[quad] = quad
                 end
                 if i == 0
                     quad.setCanStart(true)
@@ -150,11 +151,11 @@ class MegaHal
                     quad.setCanEnd(true)
                 end
 
-                int n = 0
+                n = 0
                 while n < 4 do
                     token = parts[i+n]
-                    if not words.hasKey?(token)
-                        words[token] = Hash.new()
+                    if not @words.has_key?(token)
+                        @words[token] = Hash.new()
                     end
 
                     n = n+1
@@ -176,7 +177,7 @@ class MegaHal
         input.upcase!
         parts = make_parts(input)
 
-#         learn(parts)
+        learn(parts)
 #
 #         output = generate_reply(@model, @words)
 #         capitalize(output)
