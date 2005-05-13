@@ -227,6 +227,7 @@ class CollectionDB : public QObject, public EngineObserver
         QString m_cacheAlbum;
         uint m_cacheAlbumID;
 
+        DBEngine* m_dbEngine;
         DbConnectionPool *m_dbConnPool;
 
         bool m_monitor;

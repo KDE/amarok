@@ -19,6 +19,7 @@
 #include "metabundle.h"           //updateTags()
 #include "playlist.h"
 #include "playlistbrowser.h"
+#include "pluginmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -77,6 +78,11 @@ CollectionDB::CollectionDB()
     if( !m_cacheDir.exists( "albumcovers/cache", false ) )
         m_cacheDir.mkdir( "albumcovers/cache", false );
     m_cacheDir.cd( "albumcovers/cache" );
+
+    // Load DBEngine plugin
+    QString query = "[X-KDE-amaroK-plugintype] == 'dbengine' and [X-KDE-amaroK-name] != '%1'";
+    KTrader::OfferList offers = PluginManager::query( query.arg( "sqlite-dbengine" ) );
+    m_dbEngine = (DBEngine*) PluginManager::createFromService( offers.first() );
 
     //<OPEN DATABASE>
     initialize();
