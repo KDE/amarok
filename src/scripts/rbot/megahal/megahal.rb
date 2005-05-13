@@ -10,7 +10,7 @@
 class MegaHal
 
     def initialize
-        @words = []
+        @words = Array.new()
     end
 
 
@@ -62,7 +62,7 @@ class MegaHal
                 # Add word to array
                 words << input.slice(0..offset-1)
 
-                break if offset == input.length
+                break if offset == input.length()
                 input.slice!(0..offset-1)
                 offset = 0
             else
@@ -86,7 +86,7 @@ class MegaHal
 #         capitalize(output)
 
         # testing
-        output = @words.join
+        output = @words.join()
 
         return output
     end
@@ -98,9 +98,9 @@ end
 # Main
 ######################################################################
 
-hal = MegaHal.new
+hal = MegaHal.new()
 puts "Enter text: \n"
-text = readline
+text = readline()
 
 puts "\n"
 puts "Words: \n"
