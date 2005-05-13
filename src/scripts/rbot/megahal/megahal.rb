@@ -135,18 +135,33 @@ class MegaHal
 
     def learn(parts)
         if parts.size() >= 4
+            i = 0
+            while i < parts.size()-3 do
+                quad = Quad.new(parts[0], parts[1], parts[2], parts[3])
+                if quads.hasKey?(quad)
+                    quad = quads[quad]
+                else
+                    quads[quad] = quad
+                end
+                if i == 0
+                    quad.setCanStart(true)
+                end
+                if i == parts.size()-4
+                    quad.setCanEnd(true)
+                end
 
-        i = 0
-        while i < parts.size()-3 do
-            quad = Quad.new(parts[0], parts[1], parts[2], parts[3])
-            if quads.containsKey(quad)
-                quad = quads[quad]
-            else
+                int n = 0
+                while n < 4 do
+                    token = parts[i+n]
+                    if not words.hasKey?(token)
+                        words[token] = Hash.new()
+                    end
 
+                    n = n+1
+                end
 
-            i = i+1
-        end
-
+                i = i+1
+            end
         else
             puts "Parts has less than 4 elements, skipping."
         end
