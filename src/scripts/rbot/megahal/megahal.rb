@@ -14,8 +14,11 @@ class MegaHal
     end
 
 
-    # Returns whether or not a word boundary exists in a string at the specified location.
+######################################################################
     private
+######################################################################
+
+    # Returns whether or not a word boundary exists in a string at the specified location.
     def boundary?(string, pos)
         alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         digit = '0123456789'
@@ -44,21 +47,23 @@ class MegaHal
             return true
         end
 
-        if digit.include?(string[pos] != digit.include[pos-1]
+        if digit.include?(string[pos]) != digit.include?(string[pos-1])
             return true
         end
     end
 
 
     # Breaks a string into an array of words.
-    private
     def make_words(input, words)
         offset = 0
 
         loop do
             if boundary?(input, offset)
+                # Add word to array
+                words << input.slice(0..offset-1)
+
                 break if offset == input.length
-                input.slice!(0..offset)
+                input.slice!(0..offset-1)
                 offset = 0
             else
                 offset = offset+1
@@ -67,16 +72,37 @@ class MegaHal
     end
 
 
+######################################################################
+    public
+######################################################################
+
     def do_reply(input)
         input.upcase!
         make_words(input, @words)
 
-        learn(@model, @words)
+#         learn(@model, @words)
+#
+#         output = generate_reply(@model, @words)
+#         capitalize(output)
 
-        output = generate_reply(@model, @words)
-        capitalize(output)
+        # testing
+        output = @words.join
+
         return output
     end
 
 end
+
+
+######################################################################
+# Main
+######################################################################
+
+hal = MegaHal.new
+puts "Enter text: \n"
+text = readline
+
+puts "\n"
+puts "Words: \n"
+puts hal.do_reply(text)
 
