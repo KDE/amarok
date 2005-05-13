@@ -154,13 +154,17 @@ class MegaHal
                 n = 0
                 while n < 4 do
                     token = parts[i+n]
-                    if not @words.has_key?(token)
-                        @words[token] = Hash.new()
-                    end
-
+                    @words[token] = quad
                     n = n+1
                 end
-
+                if i > 0
+                    previousToken = parts[i-1]
+                    @previous[quad] = previousToken
+                end
+                if i < parts.size()-4
+                    nextToken = parts[i+4]
+                    @next[quad] = nextToken
+                end
                 i = i+1
             end
         else
