@@ -3,6 +3,7 @@ Type=Service
 Name=SQLite DBEngine
 Name[da]=SQLite DB-motor
 Name[ga]=Inneall SQLite
+Name[it]=Motore DB SQLite
 Name[zh_CN]=SQLite 数据引擎
 X-KDE-Library=libamarok_sqlite_dbengine_plugin
 Comment=Plugin for amaroK
