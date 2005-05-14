@@ -131,12 +131,12 @@ Analyzer::Base3D(parent, 15)
     show.colorK = 0.0;
     show.gridScrollK = 0.0;
     show.gridEnergyK = 0.0;
-    show.cRot = 0.0;
-    show.cRoll = 0.0;
+    show.camRot = 0.0;
+    show.camRoll = 0.0;
+    show.peakEnergy = 1.0;
     frame.silence = true;
     frame.energy = 0.0;
     frame.dEnergy = 0.0;
-    frame.meanBand = 0.5;
 }
 
 GLAnalyzer3::~GLAnalyzer3()
@@ -194,28 +194,38 @@ void GLAnalyzer3::paused()
 
 void GLAnalyzer3::analyze( const Scope &s )
 {
-    // if we have got data, interpolate it (asking myself why I'm doing it here..)
+    // compute the dTime since the last call
+    timeval tv;
+    gettimeofday( &tv, NULL );
+    double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0;
+    show.dT = currentTime - show.timeStamp;
+    show.timeStamp = currentTime;
+    
+    // compute energy integrating frame's spectrum
     if ( !s.empty() )
     {
 	int bands = s.size();
 	float currentEnergy = 0,
-	      currentMeanBand = 0,
 	      maxValue = 0;
+	// integrate spectrum -> energy
 	for ( int i = 0; i < bands; i++ )
 	{
 	    float value = s[i];
 	    currentEnergy += value;
-	    currentMeanBand += (float)i * value;
 	    if ( value > maxValue )
 		maxValue = value;
 	}
-	if ( !(frame.silence = currentEnergy < 0.001) )
-	{
-	    frame.meanBand = 100.0 * currentMeanBand / (currentEnergy * bands);
-	    currentEnergy = 100.0 * currentEnergy / (float)bands;
-	    frame.dEnergy = currentEnergy - frame.energy;
-	    frame.energy = currentEnergy;
-	}
+	currentEnergy *= 100.0 / (float)bands;
+	// emulate a peak detector: currentEnergy -> peakEnergy (3tau = 30 seconds)
+	show.peakEnergy = 1.0 + ( show.peakEnergy - 1.0 ) * exp( - show.dT / 10.0 );
+	if ( currentEnergy > show.peakEnergy )
+	    show.peakEnergy = currentEnergy;
+	// check for silence
+	frame.silence = currentEnergy < 0.001;
+	// normalize frame energy against peak energy and compute frame stats
+	currentEnergy /= show.peakEnergy;
+	frame.dEnergy = currentEnergy - frame.energy;
+	frame.energy = currentEnergy;
     } else
 	frame.silence = true;
 
@@ -225,18 +235,13 @@ void GLAnalyzer3::analyze( const Scope &s )
 
 void GLAnalyzer3::paintGL()
 {
-    // Compute the dT since the last call to paintGL and update timings
-    timeval tv;
-    gettimeofday( &tv, NULL );
-    double currentTime = (double)tv.tv_sec + (double)tv.tv_usec/1000000.0;
-    show.dT = currentTime - show.timeStamp;
-    show.timeStamp = currentTime;
+    // limit max dT to 0.05 and update color and scroll constants
     if ( show.dT > 0.05 )
-	show.dT = 0.05;			// limit max dT to 0.05
+	show.dT = 0.05;			
     show.colorK += show.dT * 0.4;
     if ( show.colorK > 3.0 )
 	show.colorK -= 3.0;
-    show.gridScrollK += show.dT;
+    show.gridScrollK += 0.2 * show.peakEnergy * show.dT;
 
     // Switch to MODEL matrix and clear screen
     glMatrixMode( GL_MODELVIEW );
@@ -244,22 +249,22 @@ void GLAnalyzer3::paintGL()
     glClear( GL_COLOR_BUFFER_BIT );
 
     // Draw scrolling grid
-    if ( (!frame.silence && frame.dEnergy < -0.5) || show.gridEnergyK > 0.4 )
+    if ( (show.gridEnergyK > 0.05) || (!frame.silence && frame.dEnergy < -0.3) )
     {
+	show.gridEnergyK *= exp( -show.dT / 0.1 );
 	if ( -frame.dEnergy > show.gridEnergyK )
-	    show.gridEnergyK = -frame.dEnergy;
-	show.gridEnergyK *= (1 - 9.0 * show.dT);
-	float gridColor[4] = { 0.0, 1.0, 0.6, show.gridEnergyK * 0.1 };
+	    show.gridEnergyK = -frame.dEnergy*2.0;
+	float gridColor[4] = { 0.0, 1.0, 0.6, show.gridEnergyK };
 	drawScrollGrid( show.gridScrollK, gridColor );
     }
 
     // Roll camera up/down handling the beat
-    show.cRot += show.cRoll * show.dT;		// posision
-    show.cRoll -= 400 * show.cRot * show.dT;	// elasticity
-    show.cRoll *= (1 - 2.0 * show.dT);		// friction
-    if ( !frame.silence && frame.energy > show.cRoll )
-	show.cRoll += frame.energy;
-    glRotatef( show.cRoll / 2.0, 1,0,0 );
+    show.camRot += show.camRoll * show.dT;		// posision
+    show.camRoll -= 400 * show.camRot * show.dT;	// elasticity
+    show.camRoll *= (1 - 2.0 * show.dT);		// friction
+    if ( !frame.silence && frame.dEnergy > 0.4 )
+	show.camRoll += show.peakEnergy*2.0;
+    glRotatef( show.camRoll / 2.0, 1,0,0 );
 
     // Translate the drawing plane
     glTranslatef( 0.0f, 0.0f, -1.8f );
@@ -320,8 +325,8 @@ void GLAnalyzer3::paintGL()
     rightPaddle->updatePhysics( show.dT );
     if ( !frame.silence )
     {
-	leftPaddle->impulse( frame.energy / 4.0 );
-	rightPaddle->impulse( -frame.energy / 4.0 );
+	leftPaddle->impulse( frame.energy*3.0 + frame.dEnergy*6.0 );
+	rightPaddle->impulse( -frame.energy*3.0 - frame.dEnergy*6.0 );
     }
 }
 

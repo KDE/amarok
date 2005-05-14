@@ -49,15 +49,15 @@ private:
 	float colorK;
 	float gridScrollK;
 	float gridEnergyK;
-	float cRot;
-	float cRoll;
+	float camRot;
+	float camRoll;
+	float peakEnergy;
     } show;
 
     struct FrameProperties {
 	bool silence;
 	float energy;
 	float dEnergy;
-	float meanBand;
     } frame;
     
     static const int NUMBER_OF_BALLS = 16;
