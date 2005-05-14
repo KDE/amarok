@@ -73,10 +73,6 @@ class MegaHal
     end
 
 
-######################################################################
-    private
-######################################################################
-
     # Returns whether or not a word boundary exists in a string at the specified location.
     def boundary?(string, pos)
         alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -173,16 +169,39 @@ class MegaHal
     end
 
 
-######################################################################
-    public
-######################################################################
+    def learnFile(path)
+        file = File.new(path,  File::RDONLY)
+        sentences = file.readlines()
+        sentences.delete_if { |line| line[0] == "#" }
+        sentences.each { |line| learn(make_parts(line)) }
+    end
+
+
+    def generateReply(word)
+        parts = Array.new()
+        quads = Array.new()
+
+        if @words.has_key?(word)
+            quads = @words[word]
+        end
+        return "" if quads.empty?()
+
+        middleQuad = quads[rand(quads.size())]
+        quad = middleQuad
+
+        i = 0
+        while i < 4 do
+            parts << quad.
+        end
+
+    end
+
 
     def do_reply(input)
         input.upcase!
         parts = make_parts(input)
 
         learn(parts)
-#
 #         output = generate_reply(@model, @words)
 #         capitalize(output)
 
