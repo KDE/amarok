@@ -187,19 +187,19 @@ class MegaHal
 
     def generateReply(word)
         word.upcase!()
-#         parts = Array.new()
-#         quads = Array.new( 1, Quad.new("", "", "", "") )
+        parts = Array.new()
+        quads = Array.new()
 
         print "Keys in @words: \n"
         @words.each_key { |key| print key + "\n" }
 
         if @words.has_key?(word)
-            quads = @words[word].to_a()
+            quads << @words[word]
             print "@words has the key.\n"
         end
         return "Error: quads is empty." if quads.empty?()
 
-        middleQuad = quads[rand( quads.size() )]
+        middleQuad = quads[rand( quads.size()-1 )]
         quad = middleQuad
 
         0.upto(3) do |i|
@@ -207,24 +207,25 @@ class MegaHal
         end
 
         while not quad.canEnd()
-            nextTokens = Array.new()
             nextTokens = @next[quad]
-            nextToken = nextTokens[rand( nextTokens.size() )]
+            nextToken = nextTokens[rand( nextTokens.size()-1 )]
             quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
+            break if quad == nil
             parts << nextToken
         end
 
         quad = middleQuad
         while not quad.canStart()
-            previousTokens = Array.new()
             previousTokens = @previous[quad]
-            previousToken = previousTokens[rand( previousTokens.size() )]
+            previousToken = previousTokens[rand( previousTokens.size()-1 )]
             quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
+            break if quad == nil
             parts = previousToken + parts
         end
 
         sentence = String.new()
-        parts.each { |x| sentence << x }
+        parts.each { |x| sentence << " " << x }
+        sentence << "."
 
         return sentence
     end
