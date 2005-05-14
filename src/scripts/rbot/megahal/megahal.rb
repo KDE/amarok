@@ -186,22 +186,23 @@ class MegaHal
 
 
     def generateReply(word)
-        parts = Array.new()
-        quads = Array.new()
+        word.upcase!()
+#         parts = Array.new()
+#         quads = Array.new( 1, Quad.new("", "", "", "") )
 
         print "Keys in @words: \n"
         @words.each_key { |key| print key + "\n" }
 
         if @words.has_key?(word)
             quads = @words[word].to_a()
+            print "@words has the key.\n"
         end
         return "Error: quads is empty." if quads.empty?()
 
-        middleQuad = quads[rand(quads.size())]
+        middleQuad = quads[rand( quads.size() )]
         quad = middleQuad
 
-        i = 0
-        while i < 4 do
+        0.upto(3) do |i|
             parts << quad.getToken(i)
         end
 
@@ -230,7 +231,6 @@ class MegaHal
 
 
     def do_reply(input)
-        input.upcase!
         parts = make_parts(input)
 
         learn(parts)
@@ -253,7 +253,7 @@ end
 hal = MegaHal.new()
 hal.learnFile("megahal.trn")
 puts "Enter word: "
-text = readline()
+text = readline().chomp()
 puts "\n"
 puts "Answer: \n"
 puts hal.generateReply(text)
