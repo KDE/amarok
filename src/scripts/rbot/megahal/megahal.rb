@@ -191,9 +191,25 @@ class MegaHal
 
         i = 0
         while i < 4 do
-            parts << quad.
+            parts << quad.getToken(i)
         end
 
+        while not quad.canEnd()
+            nextTokens = Array.new()
+            nextTokens = @next[quad]
+            nextToken = nextTokens[rand(nextTokens.size()))]
+            quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
+            parts << nextToken
+        end
+
+        quad = middleQuad
+        while not quad.canStart()
+        end
+
+        sentence = String.new()
+        parts.each { |x| sentence << x }
+
+        return sentence
     end
 
 
