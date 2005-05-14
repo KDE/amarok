@@ -220,7 +220,10 @@ class MegaHal
             previousToken = previousTokens[rand( previousTokens.size()-1 )]
             quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
             break if quad == nil
-            parts = previousToken + parts
+            parts.reverse!()
+            parts.push( previousToken )
+            parts.reverse!()
+#             parts = previousToken + parts
         end
 
         sentence = String.new()
