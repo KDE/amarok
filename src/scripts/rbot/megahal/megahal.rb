@@ -86,23 +86,23 @@ class MegaHal
             return true
         end
 
-        if string[pos] == ' ' and alpha.include?(string[pos-1]) and alpha.include?(string[pos+1])
+        if string[pos, 1] == ' ' and alpha.include?(string[pos-1, 1]) and alpha.include?(string[pos+1, 1])
             return false
         end
 
-        if pos > 1 and string[pos-1] == ' ' and alpha.include?(string[pos-2]) and alpha.include?(string[pos])
+        if pos > 1 and string[pos-1, 1] == ' ' and alpha.include?(string[pos-2, 1]) and alpha.include?(string[pos, 1])
             return false
         end
 
-        if alpha.include?(string[pos]) and not alpha.include?(string[pos-1])
+        if alpha.include?(string[pos, 1]) and not alpha.include?(string[pos-1, 1])
             return true
         end
 
-        if not alpha.include?(string[pos]) and alpha.include?(string[pos-1])
+        if not alpha.include?(string[pos, 1]) and alpha.include?(string[pos-1, 1])
             return true
         end
 
-        if digit.include?(string[pos]) != digit.include?(string[pos-1])
+        if digit.include?(string[pos, 1]) != digit.include?(string[pos-1, 1])
             return true
         end
     end
@@ -172,8 +172,14 @@ class MegaHal
     def learnFile(path)
         file = File.new(path,  File::RDONLY)
         sentences = file.readlines()
-        sentences.delete_if { |line| line[0] == "#" }
-        sentences.each { |line| learn(make_parts(line)) }
+        sentences.each do |line|
+            unless line[0, 1] == "#"
+                parts = make_parts(line)
+                print parts.size()
+                print parts
+                learn(parts)
+            end
+        end
     end
 
 
@@ -197,13 +203,18 @@ class MegaHal
         while not quad.canEnd()
             nextTokens = Array.new()
             nextTokens = @next[quad]
-            nextToken = nextTokens[rand(nextTokens.size()))]
+            nextToken = nextTokens[rand( nextTokens.size() )]
             quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
             parts << nextToken
         end
 
         quad = middleQuad
         while not quad.canStart()
+            previousTokens = Array.new()
+            previousTokens = @previous[quad]
+            previousToken = previousTokens[rand( previousTokens.size() )]
+            quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
+            parts = previousToken + parts
         end
 
         sentence = String.new()
@@ -235,10 +246,18 @@ end
 ######################################################################
 
 hal = MegaHal.new()
-puts "Enter text: \n"
+hal.learnFile("megahal.trn")
+puts "Enter word: "
 text = readline()
-
 puts "\n"
-puts "Words: \n"
-puts hal.do_reply(text)
+puts "Answer: \n"
+puts hal.generateReply(text)
+
+
+# hal = MegaHal.new()
+# puts "Enter text: \n"
+# text = readline()
+# puts "\n"
+# puts "Words: \n"
+# puts hal.do_reply(text)
 
