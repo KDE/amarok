@@ -110,21 +110,23 @@ class MegaHal
 
     # Breaks a string into an array of words.
     def make_parts(input)
+        input.upcase!()
         offset = 0
         parts = Array.new()
 
-        loop do
-            if boundary?(input, offset)
-                # Add word to array
-                parts << input.slice(0..offset-1)
-
-                break if offset == input.length()
-                input.slice!(0..offset-1)
-                offset = 0
-            else
-                offset = offset+1
-            end
-        end
+        parts = input.split(' ')
+#         loop do
+#             if boundary?(input, offset)
+#                 # Add word to array
+#                 parts << input.slice(0..offset-1)
+#
+#                 break if offset == input.length()
+#                 input.slice!(0..offset-1)
+#                 offset = 0
+#             else
+#                 offset = offset+1
+#             end
+#         end
 
         return parts
     end
@@ -175,8 +177,8 @@ class MegaHal
         sentences.each do |line|
             unless line[0, 1] == "#"
                 parts = make_parts(line)
-                print parts.size()
-                print parts
+#                 print parts.size()
+#                 print parts
                 learn(parts)
             end
         end
@@ -187,10 +189,13 @@ class MegaHal
         parts = Array.new()
         quads = Array.new()
 
+        print "Keys in @words: \n"
+        @words.each_key { |key| print key + "\n" }
+
         if @words.has_key?(word)
-            quads = @words[word]
+            quads = @words[word].to_a()
         end
-        return "" if quads.empty?()
+        return "Error: quads is empty." if quads.empty?()
 
         middleQuad = quads[rand(quads.size())]
         quad = middleQuad
