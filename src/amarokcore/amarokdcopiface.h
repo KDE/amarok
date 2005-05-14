@@ -120,6 +120,7 @@ k_dcop:
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
    virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar.
+   virtual void popupMessage(const QString&) = 0;     ///< Shows a temporary popup message.
 };
 
 

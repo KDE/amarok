@@ -473,6 +473,10 @@ namespace amaroK
         StatusBar::instance()->shortMessage( msg );
     }
 
+    void DcopPlaylistHandler::popupMessage(const QString& msg)
+    {
+        StatusBar::instance()->longMessageThreadSafe( msg );
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopCollectionHandler
