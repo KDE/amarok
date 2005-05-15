@@ -517,7 +517,14 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             }
             delete item;
         }
-        else {
+        if( isStream( item ) ) {
+            if( item == m_lastPlaylist ) {
+                QListViewItem *above = item->itemAbove();
+                m_lastPlaylist = above ? (StreamEntry *)above : 0;
+            }
+            delete item;
+        }
+        else if( isPlaylistTrackItem( item ) ) {
             //remove the track
             PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
             playlist->removeTrack( item );
