@@ -4,6 +4,7 @@ Name=Helix Engine
 Name[da]=Helix motor
 Name[ga]=Inneall Helix
 Name[it]=Motore Helix
+Name[sv]=Helix-gränssnitt
 Name[zh_CN]=Helix 引擎
 X-KDE-Library=libamarok_helixengine_plugin
 Comment=Plugin for amaroK
