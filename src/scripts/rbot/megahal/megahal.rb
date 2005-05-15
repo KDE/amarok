@@ -209,21 +209,20 @@ class MegaHal
         while not quad.canEnd()
             nextTokens = @next[quad]
             nextToken = nextTokens[rand( nextTokens.size()-1 )]
-            quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
-            break if quad == nil
-            parts << nextToken
+            quad = Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)
+#             quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
+#             break if quad == nil
+            parts.push(nextToken)
         end
 
         quad = middleQuad
         while not quad.canStart()
             previousTokens = @previous[quad]
             previousToken = previousTokens[rand( previousTokens.size()-1 )]
-            quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
-            break if quad == nil
-            parts.reverse!()
-            parts.push( previousToken )
-            parts.reverse!()
-#             parts = previousToken + parts
+            quad = Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))
+#             quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
+#             break if quad == nil
+            parts.unshift(previousToken)
         end
 
         sentence = String.new()
