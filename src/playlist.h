@@ -95,7 +95,7 @@ class Playlist : private KListView, public EngineObserver
         /// called during initialisation
         void restoreSession();
 
-        void saveM3U( const QString&, bool relativePath = FALSE ) const;
+        bool saveM3U( const QString&, bool relativePath = FALSE ) const;
         void saveXML( const QString& );
 
         // Used by DCOP call

@@ -1823,37 +1823,39 @@ Playlist::customEvent( QCustomEvent *e )
 /// Misc Public Methods
 ////////////////////////////////////////////////////////////////////////////////
 
-void
+bool
 Playlist::saveM3U( const QString &path, bool relativePath ) const
 {
     QFile file( path );
 
-    if( file.open( IO_WriteOnly ) )
-    {
-        QTextStream stream( &file );
-        stream << "#EXTM3U\n";
-
-        for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
-        {
-            const KURL url = item->url();
-
-            stream << "#EXTINF:";
-            stream << item->seconds();
-            stream << ',';
-            stream << item->title();
-            stream << '\n';
-            if (url.protocol() == "file" ) {
-                if ( relativePath ) {
-                  const QFileInfo fi(file);
-                  stream << KURL::relativePath(fi.dirPath(), url.path());
-                } else
-                  stream << url.path();
-            } else {
-                stream << url.url();
-            }
-            stream << "\n";
-        }
+    if( !file.open( IO_WriteOnly ) ){
+      return false;
     }
+
+    QTextStream stream( &file );
+    stream << "#EXTM3U\n";
+
+    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
+    {
+        const KURL url = item->url();
+
+        stream << "#EXTINF:";
+        stream << item->seconds();
+        stream << ',';
+        stream << item->title();
+        stream << '\n';
+        if (url.protocol() == "file" ) {
+            if ( relativePath ) {
+                const QFileInfo fi(file);
+                stream << KURL::relativePath(fi.dirPath(), url.path());
+            } else
+                stream << url.path();
+        } else {
+            stream << url.url();
+        }
+        stream << "\n";
+    }
+    return true;
 }
 
 void

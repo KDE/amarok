@@ -49,6 +49,7 @@
 #include <kiconloader.h>      //ClearFilter button
 #include <klocale.h>
 #include <kmenubar.h>
+#include <kmessagebox.h>       //savePlaylist()
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
@@ -622,7 +623,12 @@ void PlaylistWindow::savePlaylist() const //SLOT
             static_cast<FileBrowser*>(m_browsers->browser( "FileBrowser" ))->url().path(), "*.m3u" );
 
     if( !path.isEmpty() ) {
-        Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() );
+        //Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() );
+        if ( !Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() ) ) {
+          KMessageBox::sorry( (QWidget *)this, i18n( "Cannot write playlist (%1).").arg(path) );
+          return;
+        }
+
         PlaylistBrowser::instance()->addPlaylist( path, true );
     }
 }

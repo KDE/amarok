@@ -44,6 +44,7 @@ VERSION 1.3-beta1:
     * Add a label (with shortcut) to the Playlist filter.
 
   BUGFIXES:
+    * Message box when saving of playlist failed (BR 105520)
     * Avoid weird results when fetching lyrics with slow connections.
       (BR 103561) (BR 101327)
     * Compensate for reversed slider widget in reverse layout locales, such as

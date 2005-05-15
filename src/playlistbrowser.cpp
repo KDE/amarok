@@ -442,8 +442,10 @@ void PlaylistBrowser::saveCurrentPlaylist()
 
         QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + name + ".m3u";
         kdDebug() << "[PlaylistBrowser] Saving Current-Playlist to: " << path << endl;
-        Playlist::instance()->saveM3U( path );
-
+        if ( !Playlist::instance()->saveM3U( path ) ) {
+            KMessageBox::sorry( this, i18n( "Cannot write playlist (%1).").arg(path) );
+            return;
+        }
         addPlaylist( path );
     }
 
