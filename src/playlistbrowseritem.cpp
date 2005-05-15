@@ -75,6 +75,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     KListView *lv = (KListView *)listView();
 
     QFont font( p->font() );
+    font.setPointSize( font.pointSize() + 1 );
     QFontMetrics fm( p->fontMetrics() );
 
     font.setBold( true );
@@ -421,7 +422,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     if ( m_url.protocol() == "cur" )
         font.setUnderline( true );
 
-    int text_x = lv->treeStepSize() + 3;
+    int text_x = 0;// lv->treeStepSize() + 3;
     int textHeight;
 
     if( detailedView && m_url.protocol() != "cur" )
@@ -476,7 +477,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
             if( m_loading )
                 info = i18n( "Loading..." );
             else
-            {     //playlist loaded
+            {    //playlist loaded
                 // draw the number of tracks and the total length of the playlist
                 info += i18n("1 Track", "%n Tracks", m_trackCount);
                 if( m_length )
