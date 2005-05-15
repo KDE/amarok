@@ -69,6 +69,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Smart Playlist"), SMARTPLAYLIST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
+    saveCurrentButton = new KAction( i18n("Save Current"), "filesave", 0, this, SLOT( saveCurrentPlaylist() ), m_ac, "SaveCurrent" );
+
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
     removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     deleteButton   = new KAction( i18n("Delete"), "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
@@ -91,6 +93,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     addMenuButton->plug( m_toolbar );
+
+    m_toolbar->insertLineSeparator();
+    saveCurrentButton->plug( m_toolbar );
 
     m_toolbar->insertLineSeparator();
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
@@ -136,11 +141,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Parties" ) );
 
     // Create item representing the current playlist
-    KURL url;
-    url.setPath( i18n( "Current Playlist" ) );
-    url.setProtocol( "cur" );
-    m_lastPlaylist = new PlaylistEntry( m_playlistCategory, 0, url );
-    currentItemChanged( m_lastPlaylist );
+//     KURL url;
+//     url.setPath( i18n( "Current Playlist" ) );
+//     url.setProtocol( "cur" );
+//     m_lastPlaylist = new PlaylistEntry( m_playlistCategory, 0, url );
+//     currentItemChanged( m_lastPlaylist );
 
     loadPlaylists();
     loadStreams();
@@ -174,7 +179,7 @@ PlaylistBrowser::~PlaylistBrowser()
                 streamStream << "Url="  + item->url().prettyURL();
                 streamStream << "\n";
             }
-            else if( isPlaylist( *it ) && !isCurrentPlaylist( *it ) && playlistWrite )
+            else if( isPlaylist( *it ) && playlistWrite )
             {
                 PlaylistEntry *item = (PlaylistEntry*)*it;
                 playlistStream << "File=" + item->url().path();
@@ -252,9 +257,8 @@ void PlaylistBrowser::addStream()
     StreamEditor dialog( i18n("Stream"), this );
 
     if( dialog.exec() == QDialog::Accepted )
-    {
         new StreamEntry( m_streamsCategory, 0, dialog.url(), dialog.name() );
-    }
+
 }
 
 void PlaylistBrowser::editStreamURL( StreamEntry *item )
@@ -408,7 +412,6 @@ void PlaylistBrowser::addPlaylist( QString path, bool force )
         }
         KURL auxKURL;
         auxKURL.setPath(path);
-        kdDebug() << "[PLAYLIST BROWSER] Inserting playlist (" << path << ") into playlistCategory" << endl;
         m_lastPlaylist = new PlaylistEntry( m_playlistCategory, m_lastPlaylist, auxKURL );
         m_playlistCategory->setOpen( true );
     }
@@ -430,6 +433,28 @@ void PlaylistBrowser::openPlaylist() //SLOT
  *  General Methods
  *************************************************************************
  **/
+
+void PlaylistBrowser::saveCurrentPlaylist()
+{
+    PlaylistSaver dialog( i18n("Current Playlist"), this );
+
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        QString name = dialog.title();
+
+        // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
+        QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
+        QFileInfo info( folder );
+        if ( !info.isDir() ) QFile::remove( folder );
+
+        QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + name + ".m3u";
+        kdDebug() << "[PlaylistBrowser] Saving Current-Playlist to: " << path << endl;
+        Playlist::instance()->saveM3U( path );
+
+        addPlaylist( path );
+    }
+
+}
 
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
 {
@@ -484,8 +509,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
 
-        if ( isCurrentPlaylist( item ) ) continue;
-
         if( isPlaylist( item ) ) {
             //remove the playlist
             if( item == m_lastPlaylist ) {
@@ -518,21 +541,6 @@ void PlaylistBrowser::renameSelectedPlaylist() //SLOT
 void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newName, int ) //SLOT
 {
     #define item static_cast<PlaylistEntry*>(item)
-
-    // Current playlist saving
-    if ( isCurrentPlaylist( item ) ) {
-        // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
-        QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
-        QFileInfo info( folder );
-        if ( !info.isDir() ) QFile::remove( folder );
-
-        QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + newName + ".m3u";
-        kdDebug() << "[PlaylistBrowser] Saving Current-Playlist to: " << path << endl;
-        Playlist::instance()->saveM3U( path );
-        item->setText( 0, i18n( "Current Playlist" ) );
-        addPlaylist( path );
-        return;
-    }
 
     QString oldPath = item->url().path();
     QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
@@ -660,15 +668,17 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     if( !item )
         goto enable_buttons;
 
-    else if( isPlaylist( item ) || isStream( item ) )
+    else if( isPlaylist( item ) )
     {
-        if ( isCurrentPlaylist( item ) )
-            enable_rename = true;
-        else {
-            enable_remove = true;
-            enable_rename = true;
-            enable_delete = true;
-        }
+        enable_remove = true;
+        enable_rename = true;
+        enable_delete = true;
+    }
+    else if( isStream( item ) )
+    {
+        enable_remove = true;
+        enable_rename = true;
+        enable_delete = false;
     }
     else
         enable_remove = true;
@@ -764,84 +774,51 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     KPopupMenu menu( this );
 
     if( isPlaylist( item ) ) {
-        if ( isCurrentPlaylist( item ) )
+        #define item static_cast<PlaylistEntry*>(item)
+        enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
+
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertSeparator();
+        if( item->isModified() )
         {
-        //************* Current Playlist menu ***********
-            enum Id { SAVE, CLEAR, BURN_DATACD, BURN_AUDIOCD };
-
-            menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save" ), SAVE );
-            menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear" ), CLEAR );
-            amaroK::actionCollection()->action( "playlist_remove_duplicates" )->plug( &menu );
-
+            menu.insertItem( SmallIconSet("filesave"), i18n( "&Save" ), SAVE );
+            menu.insertItem( i18n( "Res&tore" ), RESTORE );
             menu.insertSeparator();
-
-            menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BURN_DATACD );
-            menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-            menu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BURN_AUDIOCD );
-            menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
-
-            switch( menu.exec( p ) )
-            {
-                case SAVE:
-                    renameSelectedPlaylist();
-                    break;
-                case CLEAR:
-                    Playlist::instance()->clear();
-                case BURN_DATACD:
-                    K3bExporter::instance()->exportCurrentPlaylist( K3bExporter::DataCD );
-                    break;
-                case BURN_AUDIOCD:
-                    K3bExporter::instance()->exportCurrentPlaylist( K3bExporter::AudioCD );
-                    break;
-            }
         }
-        else {
-            #define item static_cast<PlaylistEntry*>(item)
-            enum Id { LOAD, ADD, SAVE, RESTORE, RENAME, REMOVE, DELETE };
+        menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
+        menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
+        menu.insertItem( SmallIconSet("editdelete"), i18n( "&Delete" ), DELETE );
+        menu.setAccel( Key_Space, LOAD );
+        menu.setAccel( Key_F2, RENAME );
+        menu.setAccel( Key_Delete, REMOVE );
+        menu.setAccel( SHIFT+Key_Delete, DELETE );
 
-            menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
-            menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
-            menu.insertSeparator();
-            if( item->isModified() )
-            {
-                menu.insertItem( SmallIconSet("filesave"), i18n( "&Save" ), SAVE );
-                menu.insertItem( i18n( "Res&tore" ), RESTORE );
-                menu.insertSeparator();
-            }
-            menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
-            menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
-            menu.insertItem( SmallIconSet("editdelete"), i18n( "&Delete" ), DELETE );
-            menu.setAccel( Key_Space, LOAD );
-            menu.setAccel( Key_F2, RENAME );
-            menu.setAccel( Key_Delete, REMOVE );
-            menu.setAccel( SHIFT+Key_Delete, DELETE );
-
-            switch( menu.exec( p ) )
-            {
-                case LOAD:
-                    slotDoubleClicked( item );
-                    break;
-                case ADD:
-                    Playlist::instance()->insertMedia( item->tracksURL() );
-                    break;
-                case SAVE:
-                    savePlaylist( item );
-                    break;
-                case RESTORE:
-                    item->restore();
-                    break;
-                case RENAME:
-                    renameSelectedPlaylist();
-                    break;
-                case REMOVE:
-                    removeSelectedItems();
-                    break;
-                case DELETE:
-                    deleteSelectedPlaylists();
-                    break;
-            }
-            #undef item
+        switch( menu.exec( p ) )
+        {
+            case LOAD:
+                slotDoubleClicked( item );
+                break;
+            case ADD:
+                Playlist::instance()->insertMedia( item->tracksURL() );
+                break;
+            case SAVE:
+                savePlaylist( item );
+                break;
+            case RESTORE:
+                item->restore();
+                break;
+            case RENAME:
+                renameSelectedPlaylist();
+                break;
+            case REMOVE:
+                removeSelectedItems();
+                break;
+            case DELETE:
+                deleteSelectedPlaylists();
+                break;
         }
+        #undef item
     }
     else if( isStream( item ) )
     {
@@ -898,7 +875,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
-    menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
 
         menu.insertSeparator();
@@ -1192,10 +1169,7 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 {
     switch( e->key() ) {
          case Key_Space:    //load
-            if ( isCurrentPlaylist( currentItem() ) )
-                rename( currentItem(), 0 );
-            else
-                PlaylistBrowser::instance()->slotDoubleClicked( currentItem() );
+            PlaylistBrowser::instance()->slotDoubleClicked( currentItem() );
             break;
 
         case Key_Delete:    //remove

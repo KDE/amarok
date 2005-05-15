@@ -91,6 +91,18 @@ class PlaylistEntry :  public QObject, public KListViewItem
         PlaylistTrackItem   *m_lastTrack;
 };
 
+// For saving the current playlist
+class PlaylistSaver : public KDialogBase
+{
+    public:
+        PlaylistSaver( QString title, QWidget *parent, const char *name=0 );
+
+        QString title() const { return m_nameLineEdit->text(); }
+
+    private:
+        KLineEdit *m_nameLineEdit;
+
+};
 
 class PlaylistTrackItem : public KListViewItem
 {
@@ -148,8 +160,6 @@ class StreamEntry : public KListViewItem
 
 class StreamEditor : public KDialogBase
 {
-        Q_OBJECT
-
     public:
         StreamEditor( QString name, QWidget *parent, const char *name=0 );
         StreamEditor( QWidget *parent, QString title, QString url, const char *name=0 );

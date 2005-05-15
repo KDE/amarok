@@ -492,7 +492,18 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     p->drawPixmap( 0, 0, buffer );
 }
 
+PlaylistSaver::PlaylistSaver(  QString title, QWidget *parent, const char *name )
+    : KDialogBase( parent, name, true, i18n("Save Current Playlist"), Ok|Cancel)
+{
+    makeVBoxMainWidget();
 
+    QHBox *nameBox = new QHBox( mainWidget() );
+    nameBox->setSpacing( 5 );
+    new QLabel( i18n("Name:"), nameBox );
+    m_nameLineEdit = new KLineEdit( title, nameBox );
+
+    m_nameLineEdit->setFocus();
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //    CLASS PlaylistTrackItem

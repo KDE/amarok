@@ -74,6 +74,7 @@ class PlaylistBrowser : public QVBox
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedPlaylist();
+        void saveCurrentPlaylist();
         void slotDoubleClicked( QListViewItem *item );
 
         void slotAddMenu( int id );
@@ -99,6 +100,7 @@ class PlaylistBrowser : public QVBox
         SmartPlaylistView   *m_smartlistview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton, *deleteButton;
+        KAction             *saveCurrentButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
@@ -175,15 +177,6 @@ isStream( QListViewItem *item )
     if( !item )
         return false;
     return item->rtti() == StreamEntry::RTTI ? true : false;
-}
-
-inline bool
-isCurrentPlaylist( QListViewItem *item )
-{
-    if( isPlaylist( item ) )
-        return static_cast<PlaylistEntry*>( item )->url().protocol() == "cur";
-
-    return false;
 }
 
 inline QString
