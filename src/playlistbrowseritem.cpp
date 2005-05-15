@@ -70,7 +70,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 
     QPainter pBuf( &buffer, true );
     // use alternate background
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor( -1 ) );
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
 
     KListView *lv = (KListView *)listView();
 
@@ -388,7 +388,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     QPainter pBuf( &buffer, true );
     // use alternate background
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor( -1 ) );
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
 
     KListView *lv = (KListView *)listView();
 
