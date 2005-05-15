@@ -57,7 +57,7 @@ class PlaylistEntry :  public QObject, public KListViewItem
         void        setModified( bool );
         void        setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
 
-        int         compare( QListViewItem* i, int col, bool ascending ) const; //reimpl.
+        int         compare( QListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
         void        insertTracks( QListViewItem *after, KURL::List list, QMap<QString,QString> map );
         void        removeTrack( QListViewItem *item );

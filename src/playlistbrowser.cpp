@@ -247,7 +247,7 @@ void PlaylistBrowser::loadStreams()
     if( defaults.open( IO_ReadOnly ) )
     {
         m_lastPlaylist = 0;
-        PlaylistCategory *defaultFolder = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
+        m_lastStream = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
 
         QTextStream stream( &defaults );
         QString str, file, name = QString::null;
@@ -262,7 +262,7 @@ void PlaylistBrowser::loadStreams()
                 file = str.mid( 4 );
 
                 auxKURL = KURL::KURL(file);
-                m_lastPlaylist = new StreamEntry( defaultFolder, m_lastPlaylist, auxKURL, name );
+                m_lastPlaylist = new StreamEntry( m_lastStream, m_lastPlaylist, auxKURL, name );
             }
         }
     }
@@ -275,8 +275,7 @@ void PlaylistBrowser::addStream()
     StreamEditor dialog( i18n("Stream"), this );
 
     if( dialog.exec() == QDialog::Accepted )
-        new StreamEntry( m_streamsCategory, 0, dialog.url(), dialog.name() );
-
+        m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, dialog.url(), dialog.name() );
 }
 
 void PlaylistBrowser::editStreamURL( StreamEntry *item )

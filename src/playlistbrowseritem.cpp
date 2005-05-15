@@ -53,9 +53,6 @@ PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, con
     setRenameEnabled( 0, isFolder );
     setExpandable( true );
 
-    if( isFolder )
-        setPixmap( 0, SmallIcon("folder") );
-
     setText( 0, t );
 }
 
@@ -67,9 +64,6 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
     setExpandable( true );
-
-    if( isFolder )
-        setPixmap( 0, SmallIcon("folder") );
 
     setText( 0, t );
 }
@@ -329,7 +323,7 @@ void PlaylistEntry::setOpen( bool open )
 }
 
 
-int PlaylistEntry::compare( QListViewItem* i, int /*col*/, bool ascending ) const
+int PlaylistEntry::compare( QListViewItem* i, int /*col*/ ) const
 {
     PlaylistEntry* item = static_cast<PlaylistEntry*>(i);
 

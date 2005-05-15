@@ -89,6 +89,7 @@ class PlaylistBrowser : public QVBox
         static PlaylistBrowser *s_instance;
 
         KListViewItem       *m_lastPlaylist;
+        KListViewItem       *m_lastStream;
         PlaylistCategory    *m_playlistCategory;
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
@@ -140,10 +141,10 @@ class PlaylistBrowserView : public KListView
         void viewportPaintEvent( QPaintEvent* );
         void eraseMarker();
 
-        QListViewItem *m_marker;       //track that has the drag/drop marker under it
-        QTimer *m_animationTimer;
+        QListViewItem   *m_marker;       //track that has the drag/drop marker under it
+        QTimer          *m_animationTimer;
         QPtrList<QListViewItem> m_loadingItems;
-        QPixmap *m_loading1, *m_loading2;    //icons for loading animation
+        QPixmap         *m_loading1, *m_loading2;    //icons for loading animation
 };
 
 
