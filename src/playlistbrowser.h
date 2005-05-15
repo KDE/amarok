@@ -1,13 +1,16 @@
 // (c) Pierpaolo Di Panfilo 2004
+// (c) 2005 Seb Ruiz <me@sebruiz.net>
 // See COPYING file for licensing information
 
 #ifndef PLAYLISTBROWSER_H
 #define PLAYLISTBROWSER_H
 
-#include <qvbox.h>
+#include "playlistbrowseritem.h"
+
 #include <klistview.h>
 #include <kurl.h>
 #include <qptrlist.h>
+#include <qvbox.h>
 
 class KAction;
 class KActionMenu;
@@ -24,68 +27,98 @@ class QTimer;
 
 class PlaylistBrowser : public QVBox
 {
-Q_OBJECT
-   friend class PlaylistBrowserView;
-   friend class PlaylistBrowserItem;
-   friend class SmartPlaylistView;
+        Q_OBJECT
 
-   public:
-       enum ViewMode { DetailedView, ListView, Unsorted, SortAscending, SortDescending };
+    friend class PlaylistBrowserView;
+    friend class PlaylistEntry;
+    friend class SmartPlaylistView;
 
-       PlaylistBrowser( const char* );
-       ~PlaylistBrowser();
-       void loadPlaylists();
-       void addPlaylist( QString path, bool force=false );
-       void savePlaylist( PlaylistBrowserItem * );
-       QString playlistCacheFile();    //return the playlists stats cache file
-       ViewMode viewMode() { return m_viewMode; }
+    public:
+        enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
+        enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST };
 
-       static PlaylistBrowser *instance() { return s_instance; }
+        PlaylistBrowser( const char* );
+        ~PlaylistBrowser();
 
-   public slots:
-       void openPlaylist();
+        void loadStreams();
+        void addStream();
 
-   private slots:
-       void slotViewMenu( int id );
-       void showContextMenu( QListViewItem*, const QPoint&, int );
-       void removeSelectedItems();
-       void renameSelectedPlaylist();
-       void deleteSelectedPlaylists();
-       void renamePlaylist( QListViewItem*, const QString&, int );
-       void slotDoubleClicked( QListViewItem *item );
-       void currentItemChanged( QListViewItem * );
+        void loadSmartPlaylists();
+        void addSmartPlaylist();
+        void editSmartPlaylist();
 
-   private:
-       void customEvent( QCustomEvent* e );
-       void saveM3U( PlaylistBrowserItem *, bool append );
-       void savePLS( PlaylistBrowserItem *, bool append );
+        void loadPartyConfigs();
+        void addPartyConfig();
+        void editPartyConfig();
 
-       static PlaylistBrowser *s_instance;
+        void loadPlaylists();
+        void addPlaylist( QString path, bool force=false );
+        void savePlaylist( PlaylistEntry * );
 
-       QSplitter *m_splitter;
-       PlaylistBrowserView *m_listview;
-       PlaylistBrowserItem *lastPlaylist;
-       SmartPlaylistView *m_smartlistview;
-       KActionCollection *m_ac;
-       KAction *removeButton, *renameButton, *deleteButton;
-       KActionMenu *viewMenuButton;
-       KToolBar *m_toolbar;
-       ViewMode m_viewMode;
-       int m_sortMode;
+        QString partyCacheFile();
+        QString playlistCacheFile();
+        QString smartCacheFile();
+        QString streamCacheFile();
+
+        ViewMode viewMode() { return m_viewMode; }
+
+        static PlaylistBrowser *instance() { return s_instance; }
+
+    public slots:
+        void openPlaylist();
+
+    private slots:
+        void currentItemChanged( QListViewItem * );
+        void deleteSelectedPlaylists();
+        void editStreamURL( StreamEntry *item );
+        void removeSelectedItems();
+        void renamePlaylist( QListViewItem*, const QString&, int );
+        void renameSelectedPlaylist();
+        void slotDoubleClicked( QListViewItem *item );
+
+        void slotAddMenu( int id );
+        void slotViewMenu( int id );
+        void showContextMenu( QListViewItem*, const QPoint&, int );
+
+    private:
+        void customEvent( QCustomEvent* e );
+        void saveM3U( PlaylistEntry *, bool append );
+        void savePLS( PlaylistEntry *, bool append );
+
+        static PlaylistBrowser *s_instance;
+
+        KListViewItem       *m_lastPlaylist;
+        PlaylistCategory    *m_playlistCategory;
+        PlaylistCategory    *m_streamsCategory;
+        PlaylistCategory    *m_smartCategory;
+        PlaylistCategory    *m_partyCategory;
+
+
+        QSplitter *m_splitter;
+        PlaylistBrowserView *m_listview;
+        SmartPlaylistView   *m_smartlistview;
+        KActionCollection   *m_ac;
+        KAction             *removeButton, *renameButton, *deleteButton;
+        KActionMenu         *viewMenuButton;
+        KActionMenu         *addMenuButton;
+        KToolBar            *m_toolbar;
+        ViewMode             m_viewMode;
+        int                  m_sortMode;
 };
 
 
 
 class PlaylistBrowserView : public KListView
 {
-Q_OBJECT
-    friend class PlaylistBrowserItem;
+        Q_OBJECT
+
+    friend class PlaylistEntry;
 
     public:
         PlaylistBrowserView( QWidget *parent, const char *name=0 );
         ~PlaylistBrowserView();
-        void startAnimation( PlaylistBrowserItem * );
-        void stopAnimation( PlaylistBrowserItem * );
+        void startAnimation( PlaylistEntry * );
+        void stopAnimation( PlaylistEntry * );
 
         void rename( QListViewItem *item, int c );
 
@@ -112,110 +145,43 @@ Q_OBJECT
 };
 
 
-class PlaylistBrowserItem :  public QObject, public KListViewItem
+inline bool
+isCategory( QListViewItem *item )
 {
-Q_OBJECT
-    friend class PlaylistTrackItem;
-    friend class TrackItemInfo;
-
-    public:
-        PlaylistBrowserItem( KListView *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
-        ~PlaylistBrowserItem();
-        void load();
-        void restore();
-
-        const KURL &url() const { return m_url; }
-        void setUrl( const QString &u ) { m_url.setPath( u ); }
-        int trackCount() { return m_trackCount; }
-        int length() { return m_length; }
-        bool isModified() { return m_modified; }
-        void setModified( bool );
-        void setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
-
-        int compare( QListViewItem* i, int col, bool ascending ) const; //reimpl.
-        KURL::List tracksURL();    //returns the list of tracks url
-        QPtrList<TrackItemInfo> trackList() { return m_trackList; }    //returns the list of tracks information
-        QPtrList<TrackItemInfo> droppedTracks() { return tmp_droppedTracks; }
-        void insertTracks( QListViewItem *after, KURL::List list, QMap<QString,QString> map );
-        void removeTrack( QListViewItem *item );
-
-        void setOpen( bool );
-        void setup();
-        void paintCell( QPainter*, const QColorGroup&, int, int, int );
-
-        //rtti is used to distinguish different kinds of list view items
-        //in this case playlist items or track items
-        int rtti() const { return RTTI; }
-        static const int RTTI = 1001;    //playlist item
-
-    signals:
-        void startingLoading();
-        void loaded();
-
-    private:
-        void customEvent( QCustomEvent* e );
-
-        KURL m_url;  //playlist url
-        int m_length;    //total length in seconds
-        int m_trackCount;    //track counter
-        QPtrList<TrackItemInfo> m_trackList;    //tracks in playlist
-        QPtrList<TrackItemInfo> tmp_droppedTracks;    //tracks dropped to the playlist while it wasn't been loaded
-        bool m_loading;
-        bool m_loaded;    //playlist loaded
-        bool m_modified;    //the playlist has been modified
-        QPixmap *m_savePix;
-        QPixmap *m_loadingPix;
-        PlaylistTrackItem *m_lastTrack;
-};
-
-
-class PlaylistTrackItem : public KListViewItem
-{
-    friend class TrackItemInfo;
-    public:
-        PlaylistTrackItem( QListViewItem *parent, QListViewItem *after, TrackItemInfo *info );
-        const KURL &url();
-        TrackItemInfo *trackInfo() { return m_trackInfo; }
-
-        int rtti() const { return RTTI; }
-        static const int RTTI = 1002;    //track item
-
-    private:
-        TrackItemInfo *m_trackInfo;
-};
-
-
-//this class is used to store information (url, title and length) of a playlist track
-class TrackItemInfo {
-public:
-    TrackItemInfo( const KURL &u, const QString &t, const int l );
-    ~TrackItemInfo() {}
-    const KURL &url() { return m_url; }
-    const QString &title() { return m_title; }
-    const int length() { return m_length; }
-
-private:
-    KURL m_url;
-    QString m_title;
-    int m_length;
-};
-
-
+    if( !item )
+        return false;
+    return item->rtti() == PlaylistCategory::RTTI ? true : false;
+}
 
 inline bool
 isPlaylist( QListViewItem *item )
 {
-    //this function, using rtti, checks if the list view item is a playlist
     if( !item )
         return false;
-    return item->rtti() == PlaylistBrowserItem::RTTI ? true : false;
+    return item->rtti() == PlaylistEntry::RTTI ? true : false;
+}
+
+inline bool
+isPlaylistTrackItem( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == PlaylistTrackItem::RTTI ? true : false;
+}
+
+inline bool
+isStream( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == StreamEntry::RTTI ? true : false;
 }
 
 inline bool
 isCurrentPlaylist( QListViewItem *item )
 {
     if( isPlaylist( item ) )
-        return static_cast<PlaylistBrowserItem*>( item )->url().protocol() == "cur";
+        return static_cast<PlaylistEntry*>( item )->url().protocol() == "cur";
 
     return false;
 }

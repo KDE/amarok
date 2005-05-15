@@ -113,9 +113,9 @@ QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
     #else
         case 4:
     #endif
-        analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
-        static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
-        break;
+            analyzer = new QLabel( i18n( "Click for Analyzers" ), parent ); //blank analyzer to satisfy Grue
+            static_cast<QLabel *>(analyzer)->setAlignment( Qt::AlignCenter );
+            break;
 
         default:
             AmarokConfig::setCurrentPlaylistAnalyzer( 0 );

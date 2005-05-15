@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * Ability to save streams to the PlaylistBrowser (BR 91075, BR 104139)
     * New DCOP call "playlist: popupMessage" Displays a popup message box
        in the playlist window..
     * New "year - album" - group by mode for collection browser. (BR 94845)

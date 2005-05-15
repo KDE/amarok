@@ -82,6 +82,7 @@ amarokapp_SOURCES = \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
+    playlistbrowseritem.cpp \
     playlistitem.cpp \
     playlistloader.cpp \
     playlistwindow.cpp \
