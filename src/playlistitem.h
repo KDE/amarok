@@ -38,10 +38,11 @@ class PlaylistItem : public KListViewItem
             Length    = 9,
             Bitrate   = 10,
             Score     = 11,
-            Extension     = 12
+            Extension     = 12,
+            Playcount    =13
         };
 
-        static const int NUM_COLUMNS = 13;
+        static const int NUM_COLUMNS = 14;
 
         /// Indicates that the current-track pixmap has changed. Animation must be redrawn.
         static void setPixmapChanged() { s_pixmapChanged = true; }

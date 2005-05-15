@@ -1384,6 +1384,17 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
     emit scoreChanged( url, percentage );
 }
 
+int
+CollectionDB::getPlayCount( const QString &url  )
+{
+    QStringList values = query( QString( "SELECT playcounter FROM statistics WHERE url = '%1';" )
+                                         .arg( escapeString( url ) ) );
+
+    if( values.count() )
+        return values.first().toInt();
+
+    return 0;
+}
 
 void
 CollectionDB::updateDirStats( QString path, const long datetime, DbConnection *conn )

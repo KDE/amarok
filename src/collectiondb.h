@@ -204,7 +204,6 @@ class CollectionDB : public QObject, public EngineObserver
         void databaseEngineChanged();
 
         void scoreChanged( const QString &url, int score );
-
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );
         void coverFetcherError( const QString &error );
@@ -280,6 +279,7 @@ class CollectionDB : public QObject, public EngineObserver
         //statistics methods
         int addSongPercentage( const QString &url, int percentage );
         int getSongPercentage( const QString &url  );
+        int getPlayCount( const QString &url );
         void setSongPercentage( const QString &url , int percentage );
 
         //artist methods

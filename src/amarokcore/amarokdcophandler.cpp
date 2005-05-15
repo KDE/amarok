@@ -234,13 +234,9 @@ namespace amaroK
 
     int DcopPlayerHandler::trackPlayCounter()
     {
-      const MetaBundle &bundle = EngineController::instance()->bundle();
-      QueryBuilder qb;
-      qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-      qb.addMatches( QueryBuilder::tabStats, bundle.url().path() );
-      QStringList values = qb.run();
-      return values.first().toInt();
-    }
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        int count = CollectionDB::instance()->getPlayCount( bundle.url().path() );
+        return count;    }
 
     void DcopPlayerHandler::seek(int s)
     {

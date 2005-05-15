@@ -5,6 +5,9 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * New playlist column "Playcount" for track play counts.
+    * New playlist column "Extension" allows easy sorting of playlist for 
+       compatible file types for portable media players.
     * Ability to save streams to the PlaylistBrowser (BR 91075, BR 104139)
     * New DCOP call "playlist: popupMessage" Displays a popup message box
        in the playlist window..

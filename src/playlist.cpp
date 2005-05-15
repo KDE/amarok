@@ -221,6 +221,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Bitrate"    ),   0 );
     addColumn( i18n( "Score"      ),   0 );
     addColumn( i18n( "Extension"      ),   0 );
+    addColumn( i18n( "Playcount"      ),   0 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );
@@ -232,11 +233,13 @@ Playlist::Playlist( QWidget *parent )
     setRenameable( 7 );
     setRenameable( 11 );
     setRenameable( 12, false );
+    setRenameable( 13, false );
     setColumnAlignment(  7, Qt::AlignCenter ); //track
     setColumnAlignment(  9, Qt::AlignRight );  //length
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
     setColumnAlignment( 11, Qt::AlignCenter ); //score
     setColumnAlignment( 12, Qt::AlignCenter ); //extension
+    setColumnAlignment( 13, Qt::AlignCenter ); //playcount
 
 
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),

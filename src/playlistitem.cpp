@@ -52,6 +52,7 @@ const QString PlaylistItem::columnName( int c ) //static
         case Bitrate:   return "Bitrate";
         case Score:     return "Score";
         case Extension:    return "Extension";
+        case Playcount:    return "Playcount";
     }
     return "<ERROR>";
 }
@@ -103,7 +104,11 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             KListViewItem::setText( x,
                     QString::number( CollectionDB::instance()->getSongPercentage( m_url.path() ) ) );
             continue;
-         case Extension:
+        case Playcount:
+            KListViewItem::setText( x,
+                    QString::number( CollectionDB::instance()->getPlayCount( m_url.path() ) ) );
+            continue;
+        case Extension:
         default:
             KListViewItem::setText( x, text );
         }
@@ -178,6 +183,10 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
     if ( score )
         setText( Score, QString::number( score ) );
+
+    const int playcount = CollectionDB::instance()->getPlayCount( bundle.url().path() );
+    if ( playcount )
+        setText( Playcount, QString::number( playcount ) );
 }
 
 
@@ -209,6 +218,7 @@ void PlaylistItem::setText( int column, const QString &newText )
         break;
 
      case Extension:
+     case Playcount:
 
     default:
         KListViewItem::setText( column, newText );
@@ -244,6 +254,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Score:
         case Length:
         case Extension:
+        case Playcount:
         case Bitrate:
             a = a.rightJustify( b.length(), '0' ); //all these columns shouldn't become negative
             b = b.rightJustify( a.length(), '0' ); //so simply left-padding is sufficient
