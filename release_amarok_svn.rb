@@ -4,16 +4,31 @@
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # Some parts of this code taken from cvs2dist
-# License: GPL V2
+# License: GNU General Public License V2
+
+
+branch = ""
+tag = ""
+
+unless $*.empty?()
+    case $*[0]
+        when "--branch"
+            branch = `kdialog --inputbox "Enter branch name: "`.chomp
+        when "--tag"
+            tag = `kdialog --inputbox "Enter tag name: "`.chomp
+        else
+            puts("Unknown option #{$1}. Use --branch or --tag.\n")
+    end
+end
 
 
 # Ask user for targeted application version
-version  = `kdialog --inputbox "amaroK version: "`.chomp
+version  = `kdialog --inputbox "Enter amaroK version: "`.chomp
 
 
 name     = "amarok"
 folder   = "amarok-#{version}"
-doi18n   = "yes"
+doi18n   = "no"  #i18n part is not yet ported to svn. Must be fetched manually
 
 
 # Prevent using unsermake
@@ -27,7 +42,15 @@ ENV["UNSERMAKE"] = "no"
 Dir.mkdir( folder )
 Dir.chdir( folder )
 
-`svn co -N https://svn.kde.org/home/kde/trunk/extragear/multimedia`
+
+if not branch.empty?()
+    `svn co -N https://svn.kde.org/home/kde/branches/amarok/#{branch}`
+elsif not tag.empty?()
+    `svn co -N https://svn.kde.org/home/kde/tags/amarok/#{tag}`
+else
+    `svn co -N https://svn.kde.org/home/kde/trunk/extragear/multimedia`
+end
+
 Dir.chdir( "multimedia" )
 `svn up amarok`
 `svn up doc/amarok`
@@ -38,7 +61,13 @@ puts "**** i18n ****"
 puts "\n"
 
 
-# we check out kde-i18n/subdirs in kde-i18n..
+puts "Please copy i18n files into the folder, then press return.."
+readline()
+
+
+# TODO Port i18n stuff to svn
+
+#we check out kde-i18n/subdirs in kde-i18n..
 if doi18n == "yes"
     cvs( "co -P kde-i18n/subdirs" )
     i18nlangs = `cat kde-i18n/subdirs`
@@ -103,6 +132,7 @@ if doi18n == "yes"
 
     `rm -rf kde-i18n`
 end
+
 
 puts "\n"
 
