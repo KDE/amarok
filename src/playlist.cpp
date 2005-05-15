@@ -183,7 +183,7 @@ Playlist::Playlist( QWidget *parent )
         , m_stateSwitched( false )
         , m_partyDirt( false )
         , m_lockStack( 0 )
-        , m_columnFraction( 13, 0 )
+        , m_columnFraction( 14, 0 )
 {
     s_instance = this;
 
