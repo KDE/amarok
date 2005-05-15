@@ -236,6 +236,7 @@ Playlist::Playlist( QWidget *parent )
     setColumnAlignment(  9, Qt::AlignRight );  //length
     setColumnAlignment( 10, Qt::AlignCenter ); //bitrate
     setColumnAlignment( 11, Qt::AlignCenter ); //score
+    setColumnAlignment( 12, Qt::AlignCenter ); //extension
 
 
     connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
