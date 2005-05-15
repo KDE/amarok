@@ -140,13 +140,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_smartCategory    = new PlaylistCategory( m_listview, m_streamsCategory,  i18n( "Smart Playlists" ) );
     m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Parties" ) );
 
-    // Create item representing the current playlist
-//     KURL url;
-//     url.setPath( i18n( "Current Playlist" ) );
-//     url.setProtocol( "cur" );
-//     m_lastPlaylist = new PlaylistEntry( m_playlistCategory, 0, url );
-//     currentItemChanged( m_lastPlaylist );
-
     loadPlaylists();
     loadStreams();
     loadSmartPlaylists();
