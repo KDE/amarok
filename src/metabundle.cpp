@@ -250,6 +250,16 @@ MetaBundle::prettyTitle( QString filename ) //static
 }
 
 QString
+MetaBundle::fileExtension() const
+{
+	QString file = m_url.fileName();
+	QString lower = file.right( file.length() - file.findRev('.') - 1 );
+        QString s = lower.upper(); //make pretty
+
+    return s;
+}
+
+QString
 MetaBundle::prettyLength( int seconds ) //static
 {
     if( seconds > 0 ) return prettyTime( seconds, false );

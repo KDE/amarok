@@ -51,6 +51,7 @@ const QString PlaylistItem::columnName( int c ) //static
         case Length:    return "Length";
         case Bitrate:   return "Bitrate";
         case Score:     return "Score";
+        case Extension:    return "Extension";
     }
     return "<ERROR>";
 }
@@ -102,6 +103,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             KListViewItem::setText( x,
                     QString::number( CollectionDB::instance()->getSongPercentage( m_url.path() ) ) );
             continue;
+         case Extension:
         default:
             KListViewItem::setText( x, text );
         }
@@ -169,6 +171,7 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     setText( Directory, bundle.url().isLocalFile() ? bundle.url().directory() : bundle.prettyURL() );
     setText( Length,    bundle.prettyLength() );
     setText( Bitrate,   bundle.prettyBitrate() );
+    setText( Extension,    bundle.fileExtension() );
 
     m_missing = !bundle.exists();
 
@@ -205,6 +208,8 @@ void PlaylistItem::setText( int column, const QString &newText )
         KListViewItem::setText( column, newText == "0" ? QString::null : attemptStore( newText ) );
         break;
 
+     case Extension:
+
     default:
         KListViewItem::setText( column, newText );
         break;
@@ -238,6 +243,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Track:
         case Score:
         case Length:
+        case Extension:
         case Bitrate:
             a = a.rightJustify( b.length(), '0' ); //all these columns shouldn't become negative
             b = b.rightJustify( a.length(), '0' ); //so simply left-padding is sufficient

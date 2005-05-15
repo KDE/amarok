@@ -99,6 +99,7 @@ public:
 
     QString prettyTitle() const;
     QString veryNiceTitle() const;
+    QString fileExtension() const;
     QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength() const { return prettyLength( m_length ); }
