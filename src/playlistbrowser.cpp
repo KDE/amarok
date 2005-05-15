@@ -164,6 +164,19 @@ PlaylistBrowser::~PlaylistBrowser()
         QListViewItemIterator it( m_listview );
 
         while( it.current() ) {
+
+            if( !isCategory( *it ) )
+            {
+                PlaylistCategory *cat=0;
+                // We know that the item is not a category, so this should be safe.
+                cat = static_cast<PlaylistCategory*>((*it)->parent());
+
+                if( cat->title() == "Cool-Streams" )
+                {
+                    ++it;
+                    continue;
+                }
+            }
             if( isStream( *it ) && streamWrite )
             {
                 StreamEntry *item = (StreamEntry*)*it;
@@ -219,8 +232,34 @@ void PlaylistBrowser::loadStreams()
 {
     QFile custom( streamCacheFile() );
 
-    m_lastPlaylist = 0;
+    PlaylistCategory *folder = 0;
+    m_lastStream = 0;
 
+    // Defaults
+    QFile defaults( locate( "data","amarok/data/Cool-Streams" ) );
+    if( defaults.open( IO_ReadOnly ) )
+    {
+        folder = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
+
+        QTextStream stream( &defaults );
+        QString str, file, name = QString::null;
+        QString protocol;
+        KURL auxKURL;
+
+        while ( !( str = stream.readLine() ).isNull() ) {
+            if ( str.startsWith( "Name=" ) ) {
+                name = str.mid( 5 );
+            }
+            else if ( str.startsWith( "Url=" ) ) {
+                file = str.mid( 4 );
+
+                auxKURL = KURL::KURL(file);
+                m_lastStream = new StreamEntry( folder, m_lastStream, auxKURL, name );
+            }
+        }
+    }
+
+    m_lastStream = folder;
     //read playlists stats cache containing the number of tracks, the total length in secs and the last modified date
     if( custom.open( IO_ReadOnly ) )
     {
@@ -237,32 +276,7 @@ void PlaylistBrowser::loadStreams()
                 file = str.mid( 4 );
 
                 auxKURL = KURL::KURL(file);
-                m_lastPlaylist = new StreamEntry( m_streamsCategory, m_lastPlaylist, auxKURL, name );
-            }
-        }
-    }
-
-    // Defaults
-    QFile defaults( locate( "data","amarok/data/Cool-Streams" ) );
-    if( defaults.open( IO_ReadOnly ) )
-    {
-        m_lastPlaylist = 0;
-        m_lastStream = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
-
-        QTextStream stream( &defaults );
-        QString str, file, name = QString::null;
-        QString protocol;
-        KURL auxKURL;
-
-        while ( !( str = stream.readLine() ).isNull() ) {
-            if ( str.startsWith( "Name=" ) ) {
-                name = str.mid( 5 );
-            }
-            else if ( str.startsWith( "Url=" ) ) {
-                file = str.mid( 4 );
-
-                auxKURL = KURL::KURL(file);
-                m_lastPlaylist = new StreamEntry( m_lastStream, m_lastPlaylist, auxKURL, name );
+                m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, auxKURL, name );
             }
         }
     }
