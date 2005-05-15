@@ -44,13 +44,32 @@ class PlaylistReader : public ThreadWeaver::DependentJob
 //    CLASS PlaylistCategory
 ////////////////////////////////////////////////////////////////////////////
 
-PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, const QString &t )
+PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, const QString &t, bool isFolder )
     : KListViewItem( parent, after )
     , m_title( t )
+    , m_folder( isFolder )
 {
     setDragEnabled( false );
-    setRenameEnabled( 0, false );
+    setRenameEnabled( 0, isFolder );
     setExpandable( true );
+
+    if( isFolder )
+        setPixmap( 0, SmallIcon("folder") );
+
+    setText( 0, t );
+}
+
+PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, bool isFolder )
+    : KListViewItem( parent, after )
+    , m_title( t )
+    , m_folder( isFolder )
+{
+    setDragEnabled( false );
+    setRenameEnabled( 0, isFolder );
+    setExpandable( true );
+
+    if( isFolder )
+        setPixmap( 0, SmallIcon("folder") );
 
     setText( 0, t );
 }
@@ -60,7 +79,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 {
     //flicker-free drawing
     static QPixmap buffer;
-    buffer.resize( width, 2*height() );
+    buffer.resize( width, height() );
 
     if( buffer.isNull() )
     {
@@ -75,7 +94,9 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     KListView *lv = (KListView *)listView();
 
     QFont font( p->font() );
-    font.setPointSize( font.pointSize() + 1 );
+    if( !m_folder ) // increase font size for base categories
+        font.setPointSize( font.pointSize() + 1 );
+
     QFontMetrics fm( p->fontMetrics() );
 
     font.setBold( true );
@@ -107,7 +128,6 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 //    CLASS PlaylistEntry
 ////////////////////////////////////////////////////////////////////////////
 
-
 PlaylistEntry::PlaylistEntry( KListViewItem *parent, QListViewItem *after, const KURL &url, int tracks, int length )
     : KListViewItem( parent, after )
     , m_url( url )
@@ -128,8 +148,7 @@ PlaylistEntry::PlaylistEntry( KListViewItem *parent, QListViewItem *after, const
     setExpandable(true);
 
     setText(0, fileBaseName( url.path() ) );
-    if( m_url.protocol() != "cur" )
-        setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon("player_playlist_2") );
 
     if( !m_trackCount )
         load();   //load the playlist file
@@ -314,13 +333,6 @@ int PlaylistEntry::compare( QListViewItem* i, int /*col*/, bool ascending ) cons
 {
     PlaylistEntry* item = static_cast<PlaylistEntry*>(i);
 
-    // Special case for "Current Playlist", to keep it always at first position
-
-    if ( url().protocol() == "cur" )
-        return ascending ? -1 : 1;
-    else if ( item->url().protocol() == "cur" )
-        return ascending ? 1 : -1;
-
     // Compare case-insensitive
     return QString::localeAwareCompare( text( 0 ).lower(), item->text( 0 ).lower() );
 }
@@ -418,14 +430,10 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
 
-    // Use underlined font for "Current Playlist"
-    if ( m_url.protocol() == "cur" )
-        font.setUnderline( true );
-
     int text_x = 0;// lv->treeStepSize() + 3;
     int textHeight;
 
-    if( detailedView && m_url.protocol() != "cur" )
+    if( detailedView )
         textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
     else
         textHeight = height();
@@ -472,20 +480,17 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
         font.setBold( false );
         pBuf.setFont( font );
 
-        if ( m_url.protocol() != "cur" )
-        {
-            if( m_loading )
-                info = i18n( "Loading..." );
-            else
-            {    //playlist loaded
-                // draw the number of tracks and the total length of the playlist
-                info += i18n("1 Track", "%n Tracks", m_trackCount);
-                if( m_length )
-            info += QString(i18n(" - [%2]")).arg( MetaBundle::prettyTime( m_length ) );
-            }
-
-            pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
+        if( m_loading )
+            info = i18n( "Loading..." );
+        else
+        {    //playlist loaded
+            // draw the number of tracks and the total length of the playlist
+            info += i18n("1 Track", "%n Tracks", m_trackCount);
+            if( m_length )
+        info += QString(i18n(" - [%2]")).arg( MetaBundle::prettyTime( m_length ) );
         }
+
+        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
     }
 
     pBuf.end();

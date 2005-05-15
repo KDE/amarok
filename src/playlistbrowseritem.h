@@ -17,7 +17,8 @@
 class PlaylistCategory : public KListViewItem
 {
     public:
-        PlaylistCategory( KListView *parent, QListViewItem *after, const QString & );
+        PlaylistCategory( KListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
+        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
         ~PlaylistCategory() { };
 
         const QString &title() const { return m_title; }
@@ -29,6 +30,7 @@ class PlaylistCategory : public KListViewItem
 
     private:
         QString m_title;
+        bool    m_folder;
 
 };
 

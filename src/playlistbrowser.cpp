@@ -217,14 +217,14 @@ QString PlaylistBrowser::streamCacheFile()
 
 void PlaylistBrowser::loadStreams()
 {
-    QFile file( streamCacheFile() );
+    QFile custom( streamCacheFile() );
 
     m_lastPlaylist = 0;
 
     //read playlists stats cache containing the number of tracks, the total length in secs and the last modified date
-    if( file.open( IO_ReadOnly ) )
+    if( custom.open( IO_ReadOnly ) )
     {
-        QTextStream stream( &file );
+        QTextStream stream( &custom );
         QString str, file, name = QString::null;
         QString protocol;
         KURL auxKURL;
@@ -238,6 +238,31 @@ void PlaylistBrowser::loadStreams()
 
                 auxKURL = KURL::KURL(file);
                 m_lastPlaylist = new StreamEntry( m_streamsCategory, m_lastPlaylist, auxKURL, name );
+            }
+        }
+    }
+
+    // Defaults
+    QFile defaults( locate( "data","amarok/data/Cool-Streams" ) );
+    if( defaults.open( IO_ReadOnly ) )
+    {
+        m_lastPlaylist = 0;
+        PlaylistCategory *defaultFolder = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
+
+        QTextStream stream( &defaults );
+        QString str, file, name = QString::null;
+        QString protocol;
+        KURL auxKURL;
+
+        while ( !( str = stream.readLine() ).isNull() ) {
+            if ( str.startsWith( "Name=" ) ) {
+                name = str.mid( 5 );
+            }
+            else if ( str.startsWith( "Url=" ) ) {
+                file = str.mid( 4 );
+
+                auxKURL = KURL::KURL(file);
+                m_lastPlaylist = new StreamEntry( defaultFolder, m_lastPlaylist, auxKURL, name );
             }
         }
     }
