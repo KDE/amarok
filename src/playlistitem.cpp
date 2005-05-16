@@ -187,6 +187,8 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     const int playcount = CollectionDB::instance()->getPlayCount( bundle.url().path() );
     if ( playcount )
         setText( Playcount, QString::number( playcount ) );
+    else
+          setText( Playcount, QString::number( 0 ) );  //Never played before.
 }
 
 
