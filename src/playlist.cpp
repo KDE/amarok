@@ -256,6 +256,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( saveUndoState() ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( scoreChanged( const QString&, int ) ) );
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
+             this,       SLOT( countChanged( const QString& ) ) );
 
 
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
@@ -2181,6 +2183,17 @@ Playlist::scoreChanged( const QString &path, int score )
         PlaylistItem *item = (PlaylistItem*)*it;
         if ( item->url().path() == path )
             item->setText( PlaylistItem::Score, QString::number( score ) );
+    }
+}
+
+void
+Playlist::countChanged( const QString &path )
+{
+    for( MyIt it( this, MyIt::All ); *it; ++it )
+    {
+        PlaylistItem *item = (PlaylistItem*)*it;
+        if ( item->url().path() == path )
+            item->setText( PlaylistItem::Playcount, QString::number( CollectionDB::instance()->getPlayCount( path ) ) );
     }
 }
 

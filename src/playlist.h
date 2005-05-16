@@ -161,6 +161,7 @@ class Playlist : private KListView, public EngineObserver
         void updateMetaData( const MetaBundle& );
         void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );
+        void countChanged( const QString &path );
         void addCustomColumn();
 
     private slots:
