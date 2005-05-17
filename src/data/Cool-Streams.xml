@@ -46,7 +46,7 @@
   <url>http://stream.mth-house.de:8500/listen.pls</url>
  </stream>
  <stream name="Nectarine Demoscene Radio [Computer-Music]">
-  <url>http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls</url>
+  <url>http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&amp;file=filename.pls</url>
  </stream>
  <stream name="Philosomatika [Goa]">
   <url>http://philosomatika.com/Philosomatika.pls</url>
