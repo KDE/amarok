@@ -2,7 +2,7 @@ amarokdatadir = \
     $(kde_datadir)/amarok/data
 
 amarokdata_DATA = \
-    Cool-Streams \
+    Cool-Streams.xml \
     ball.png \
     dot.png \
     grid.png \

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coolstreams version="1.3-SVN" product="amaroK" >
+ <stream name="Bassdrive [Drum 'n Bass]">
+  <url>http://www.bassdrive.com/BassDrive.m3u</url>
+ </stream>
+ <stream name="Bluemars [Ambient/Space-Music]">
+  <url>http://207.200.96.225:8020/listen.pls</url>
+ </stream>
+ <stream name="Digitally Imported - Classic Techno [Techno]">
+  <url>http://www.digitallyimported.com/mp3/classictechno96k.pls</url>
+ </stream>
+ <stream name="Digitally Imported - Deep House [Deep House]">
+  <url>http://www.digitallyimported.com/mp3/deephouse96k.pls</url>
+ </stream>
+ <stream name="Digitally Imported - Progressive [Progressive Techno]">
+  <url>http://www.digitallyimported.com/mp3/progressive96k.pls</url>
+ </stream>
+ <stream name="Digitally Imported - Trance [Trance]">
+  <url>http://www.digitallyimported.com/mp3/trance96k.pls</url>
+ </stream>
+ <stream name="Electronic Culture [Minimal Techno]">
+  <url>http://radio.electronic-culture.org/listen.pls</url>
+ </stream>
+ <stream name="Frequence 3 [Pop]">
+  <url>http://streams.frequence3.net/hd-mp3.m3u</url>
+ </stream>
+ <stream name="Gaming FM [Computer-Music]">
+  <url>http://www.gamingfm.com:7500/listen.pls</url>
+ </stream>
+ <stream name="Groove Salad [Chill-Out]">
+  <url>http://www.somafm.com/groovesalad.pls</url>
+ </stream>
+ <stream name="Hardcore Regime [Techno]">
+  <url>http://www.hardcoreregime.co.uk/radio.m3u</url>
+ </stream>
+ <stream name="Indie Pop Rocks [Indie]">
+  <url>http://www.somafm.com/indiepop.pls</url>
+ </stream>
+ <stream name="Kohina [Computer-Music]">
+  <url>http://la.campus.ltu.se:8000/stream.ogg.m3u</url>
+ </stream>
+ <stream name="Mostly Classical [Classical]">
+  <url>http://www.mostlyclassical.com/mp3/classical96k.pls</url>
+ </stream>
+ <stream name="MTH.House [House]">
+  <url>http://stream.mth-house.de:8500/listen.pls</url>
+ </stream>
+ <stream name="Nectarine Demoscene Radio [Computer-Music]">
+  <url>http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&file=filename.pls</url>
+ </stream>
+ <stream name="Philosomatika [Goa]">
+  <url>http://philosomatika.com/Philosomatika.pls</url>
+ </stream>
+ <stream name="Proton Radio [House/Dance]">
+  <url>http://protonradio.com/proton.m3u</url>
+ </stream>
+ <stream name="Pure DJ [House]">
+  <url>http://www.puredj.com/etc/pls/128K.pls</url>
+ </stream>
+ <stream name="Radio Paradise [Rock/Pop/Alternative]">
+  <url>http://www.radioparadise.com/musiclinks/rp_128.m3u</url>
+ </stream>
+ <stream name="Secret Agent [Downtempo/Lounge]">
+  <url>http://somafm.com/secretagent.pls</url>
+ </stream>
+ <stream name="Virgin Radio [Rock/Pop]">
+  <url>http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb</url>
+ </stream>
+ <stream name="X T C Radio [Techno/Trance]">
+  <url>http://stream.xtcradio.com:8069/listen.pls</url>
+ </stream>
+</coolstreams>

@@ -40,25 +40,13 @@ class PlaylistBrowser : public QVBox
         PlaylistBrowser( const char* );
         ~PlaylistBrowser();
 
-        void loadStreams();
         void addStream();
-
-        void loadSmartPlaylists();
         void addSmartPlaylist();
-        void editSmartPlaylist();
-
-        void loadPartyConfigs();
         void addPartyConfig();
-        void editPartyConfig();
-
-        void loadPlaylists();
         void addPlaylist( QString path, bool force=false );
-        void savePlaylist( PlaylistEntry * );
 
-        QString partyCacheFile();
-        QString playlistCacheFile();
-        QString smartCacheFile();
-        QString streamCacheFile();
+        QString playlistBrowserCache();
+        QString streamBrowserCache();
 
         ViewMode viewMode() { return m_viewMode; }
 
@@ -82,6 +70,22 @@ class PlaylistBrowser : public QVBox
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
     private:
+        void loadStreams();
+        void loadCoolStreams();
+        void saveStreams();
+
+        void loadSmartPlaylists();
+        void editSmartPlaylist();
+        void saveSmartPlaylists();
+
+        void loadParties();
+        void editPartyConfig();
+        void saveParties();
+
+        void loadPlaylists();
+        void savePlaylists();
+        void savePlaylist( PlaylistEntry * );
+
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
         void savePLS( PlaylistEntry *, bool append );
