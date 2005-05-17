@@ -145,8 +145,11 @@ class StreamEntry : public KListViewItem
         StreamEntry( KListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
         ~StreamEntry() { };
 
-        void    setURL  ( KURL u )    { m_url = u; }
-        void    setTitle( QString t ) { m_title = t; }
+        void  setURL  ( KURL u )    { m_url = u; }
+        void  setTitle( QString t ) { m_title = t; }
+
+        void  setup();
+        void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         const KURL &url()      { return m_url; }
         const QString &title() { return m_title; }

@@ -399,27 +399,11 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     KListView *lv = (KListView *)listView();
 
-//     QRect rect( ((lv->treeStepSize()-9) / 2) + 1, (height()-9) / 2, 9, 9 );
-
     if( m_loading && m_loadingPix ) {
         pBuf.drawPixmap( (lv->treeStepSize() - m_loadingPix->width())/2,
                          (height() - m_loadingPix->height())/2,
                          *m_loadingPix );
     }
-//     else if( m_trackCount ) {
-//         //draw +/- symbol to expande/collapse the playlist
-//
-//         pBuf.setPen( cg.mid() );
-//         pBuf.drawRect( rect );
-//         //fill the rect with base color if the item has alternate color and viceversa
-//         QColor color = backgroundColor( -1 ) == lv->alternateBackground() ? cg.base() : lv->alternateBackground();
-//         pBuf.fillRect( rect.x()+1, rect.y()+1, rect.width()-2, rect.height()-2, color );
-//         // +/- drawing
-//         pBuf.setPen( cg.text() );
-//         pBuf.drawLine( rect.x()+2, rect.y()+4, rect.x()+6, rect.y()+4 );
-//         if( !isOpen() )
-//             pBuf.drawLine( rect.x()+4, rect.y()+2, rect.x()+4, rect.y()+6 );
-//     }
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
@@ -491,6 +475,10 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     p->drawPixmap( 0, 0, buffer );
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+//    CLASS PlaylistSaver
+////////////////////////////////////////////////////////////////////////////////
+
 PlaylistSaver::PlaylistSaver(  QString title, QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n("Save Current Playlist"), Ok|Cancel)
 {
@@ -560,6 +548,99 @@ StreamEntry::StreamEntry( KListViewItem *parent, QListViewItem *after, const KUR
     setText( 0, m_title );
 }
 
+void StreamEntry::setup()
+{
+    QFontMetrics fm( listView()->font() );
+    int margin = listView()->itemMargin()*2;
+    int h = fm.lineSpacing();
+    if ( h % 2 > 0 )
+        h++;
+    if( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW )
+        setHeight( h + fm.lineSpacing() + margin );
+    else
+        setHeight( h + margin );
+}
+
+void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    bool detailedView = PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW;
+
+    //flicker-free drawing
+    static QPixmap buffer;
+    buffer.resize( width, height() );
+
+    if( buffer.isNull() )
+    {
+        KListViewItem::paintCell( p, cg, column, width, align );
+        return;
+    }
+
+    QPainter pBuf( &buffer, true );
+    // use alternate background
+    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
+
+    KListView *lv = (KListView *)listView();
+
+    QFont font( p->font() );
+    QFontMetrics fm( p->fontMetrics() );
+
+    int text_x = 0;// lv->treeStepSize() + 3;
+    int textHeight;
+
+    if( detailedView )
+        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
+    else
+        textHeight = height();
+
+    pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
+
+    if( pixmap(0) ) {
+        int y = (textHeight - pixmap(0)->height())/2;
+        if( detailedView ) y++;
+        pBuf.drawPixmap( text_x, y, *pixmap(0) );
+        text_x += pixmap(0)->width()+4;
+    }
+
+    font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
+    font.setItalic( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
+    pBuf.setFont( font );
+    QFontMetrics fmName( font );
+
+    QString name = text(0);
+    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    {
+        int ellWidth = fmName.width( i18n("...") );
+        QString text = QString::fromLatin1("");
+        int i = 0;
+        int len = name.length();
+        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
+            text += name[ i ];
+            i++;
+        }
+        name = text + i18n("...");
+    }
+
+    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+
+    if( detailedView ) {
+        QString info;
+
+        text_x = lv->treeStepSize() + 3;
+        font.setBold( false );
+        font.setItalic( true );
+        pBuf.setFont( font );
+
+        info += m_url.prettyURL();
+
+        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
+    }
+
+    pBuf.end();
+    p->drawPixmap( 0, 0, buffer );
+}
+
+
+// For creating
 StreamEditor::StreamEditor( QString defaultName, QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n("Stream Editor"), Ok|Cancel)
 {
@@ -582,6 +663,7 @@ StreamEditor::StreamEditor( QString defaultName, QWidget *parent, const char *na
 
 }
 
+// For editing
 StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const char *name )
     : KDialogBase( parent, name, true, i18n("Stream Editor"), Ok|Cancel)
 {

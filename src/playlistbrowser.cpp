@@ -9,7 +9,6 @@
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
 #include "k3bexporter.h"
-#include "metabundle.h"        //paintCell()
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "smartplaylist.h"
