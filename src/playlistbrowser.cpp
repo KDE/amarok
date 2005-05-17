@@ -806,6 +806,17 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
         enable_rename = ( item->parent()->text(0) != i18n("Cool-Streams") );
         enable_delete = false;
     }
+    else if( isCategory( item ) )
+    {
+        if( static_cast<PlaylistCategory*>(item)->isFolder() )
+        {
+            if( item->text(0) != i18n("Cool-Streams") ) {
+                enable_remove = true;
+                enable_rename = true;
+                enable_delete = true;
+            }
+        }
+    }
     else
         enable_remove = true;
 

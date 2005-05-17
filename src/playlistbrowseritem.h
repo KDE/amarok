@@ -22,6 +22,7 @@ class PlaylistCategory : public KListViewItem
         ~PlaylistCategory() { };
 
         const QString &title() const { return m_title; }
+        bool  isFolder() { return m_folder; }
 
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
