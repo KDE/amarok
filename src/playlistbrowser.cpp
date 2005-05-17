@@ -617,9 +617,17 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         QListViewItem *parent = it.current()->parent();
         if( parent && parent->isSelected() )
             continue;
-        else if( (*it)->text(0) == i18n("Cool-Streams")
-                 || parent->text(0) == i18n("Cool-Streams") )
-            continue;
+
+        if( isCategory( *it ) )
+        {
+            if( static_cast<PlaylistCategory*>(*it)->isFolder() )
+            {
+                if( (*it)->parent()->text(0) == i18n("Cool-Streams") )
+                    continue;
+            }
+            else
+                continue;
+        }
 
         selected.append( it.current() );
     }
@@ -654,10 +662,18 @@ void PlaylistBrowser::renameSelectedPlaylist() //SLOT
 {
     QListViewItem *item = m_listview->currentItem();
     if( !item ) return;
-    if( item->parent()->text(0) == i18n("Cool-Streams") )
-            return;
 
-    if( isPlaylist( item ) || isStream( item ) ) {
+    if( isCategory( item ) )
+    {
+        if( static_cast<PlaylistCategory*>(item)->isFolder() )
+        {
+            if( item->parent()->text(0) == i18n("Cool-Streams") )
+                return;
+            item->setRenameEnabled( 0, true );
+            m_listview->rename( item, 0 );
+        }
+    }
+    else if( isPlaylist( item ) || isStream( item ) ) {
         item->setRenameEnabled( 0, true );
         m_listview->rename( item, 0 );
     }
