@@ -42,9 +42,9 @@
 
 #include <stdio.h>             //rename() in renamePlaylist()
 
+#define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
-
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
@@ -140,9 +140,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_smartCategory    = new PlaylistCategory( m_listview, m_streamsCategory,  i18n( "Smart Playlists" ) );
     m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Parties" ) );
 
-    m_lastPlaylist = 0;
-    m_lastStream   = 0;
-
     loadPlaylists();
     loadStreams();
     loadSmartPlaylists();
@@ -207,9 +204,10 @@ void PlaylistBrowser::loadStreams()
         if( n.nodeName() != STREAM ) continue;
 
         QDomElement e = n.toElement();
+        QString name  = e.attribute( "name" );
+        e = n.namedItem( "url" ).toElement();
+        KURL url  = KURL::KURL( e.text() );
 
-        KURL    url  = KURL::KURL( e.attribute( "url" ) );
-        QString name = e.attribute( "name" );
         m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, url, name );
     }
     m_streamsCategory->setOpen( true );
@@ -229,19 +227,26 @@ void PlaylistBrowser::loadCoolStreams()
     QDomDocument d;
 
     if( !d.setContent( stream.read() ) )
+    {
+        kdDebug() << "Bad Cool Streams XML file" << endl;
         return;
+    }
 
     PlaylistCategory *folder = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
+    KListViewItem *last = 0;
 
-    for( QDomNode n = d.namedItem( "coolstreams" ).firstChild(); !n.isNull(); n = n.nextSibling() )
+    QDomNode n = d.namedItem( "coolstreams" ).firstChild();
+
+    for( ; !n.isNull(); n = n.nextSibling() )
     {
         QDomElement e = n.toElement();
-
-        KURL    url  = KURL::KURL( e.attribute( "url" ) );
         QString name = e.attribute( "name" );
-        m_lastStream = new StreamEntry( folder, m_lastStream, url, name );
+        e = n.namedItem( "url" ).toElement();
+        KURL url  = KURL::KURL( e.text() );
+        last = new StreamEntry( folder, last, url, name );
     }
 }
+
 
 void PlaylistBrowser::addStream()
 {
@@ -250,6 +255,7 @@ void PlaylistBrowser::addStream()
     if( dialog.exec() == QDialog::Accepted )
         m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, dialog.url(), dialog.name() );
 }
+
 
 void PlaylistBrowser::editStreamURL( StreamEntry *item )
 {
@@ -301,7 +307,7 @@ void PlaylistBrowser::saveStreams()
             i.appendChild( attr );
 
             attr = doc.createElement( "url" );
-            t = doc.createTextNode( item->url().prettyURL() );
+            t = doc.createTextNode( escapeHTML( item->url().prettyURL() ) );
             attr.appendChild( t );
             i.appendChild( attr );
         }
@@ -416,8 +422,12 @@ void PlaylistBrowser::loadPlaylists()
 
         KURL url;
         url.setPath( e.attribute( "file" ) );
-        int tracks = e.attribute( "tracks", "0" ).toInt();
-        int length = e.attribute( "length", "0" ).toInt();
+
+        e = n.namedItem( "tracks" ).toElement();
+        int tracks = e.text().toInt();
+
+        e = n.namedItem( "length" ).toElement();
+        int length = e.text().toInt();
 
         m_lastPlaylist = new PlaylistEntry( m_playlistCategory, m_lastPlaylist, url, tracks, length );
 
