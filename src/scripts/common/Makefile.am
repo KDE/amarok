@@ -1,5 +1,5 @@
 commondir = $(kde_datadir)/amarok/scripts/common
 
-common_SCRIPTS = Zeroconf.py Publisher.py
+common_DATA = Zeroconf.py Publisher.py
 
 
