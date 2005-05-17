@@ -575,6 +575,9 @@ StreamEditor::StreamEditor( QString defaultName, QWidget *parent, const char *na
     new QLabel( i18n("Url:"), urlBox );
     m_urlLineEdit = new KLineEdit( defaultName, urlBox );
 
+    QSize min( 480, 110 );
+    setInitialSize( min );
+
     m_nameLineEdit->setFocus();
 
 }
@@ -593,6 +596,9 @@ StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const c
     urlBox->setSpacing( 5 );
     new QLabel( i18n("Url:"), urlBox );
     m_urlLineEdit = new KLineEdit( url, urlBox );
+
+    QSize min( 480, 110 );
+    setInitialSize( min );
 
     m_nameLineEdit->setFocus();
 
