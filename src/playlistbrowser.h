@@ -47,6 +47,7 @@ class PlaylistBrowser : public QVBox
 
         QString playlistBrowserCache();
         QString streamBrowserCache();
+        QString smartplaylistBrowserCache();
 
         ViewMode viewMode() { return m_viewMode; }
 
@@ -75,6 +76,8 @@ class PlaylistBrowser : public QVBox
         void saveStreams();
 
         void loadSmartPlaylists();
+        void loadOldSmartPlaylists();
+        void loadDefaultSmartPlaylists();
         void editSmartPlaylist();
         void saveSmartPlaylists();
 
@@ -95,6 +98,7 @@ class PlaylistBrowser : public QVBox
 
         KListViewItem       *m_lastPlaylist;
         KListViewItem       *m_lastStream;
+        KListViewItem       *m_lastSmart;
         PlaylistCategory    *m_playlistCategory;
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
@@ -152,6 +156,15 @@ class PlaylistBrowserView : public KListView
         QPixmap         *m_loading1, *m_loading2;    //icons for loading animation
 };
 
+// Returns true if item is Playlist, Stream, Smart Playlist or Party.
+inline bool
+isElement( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == ( PlaylistEntry::RTTI || StreamEntry::RTTI ||
+                             SmartPlaylist::RTTI /*|| PartyEntry::RTTI */) ? true : false;
+}
 
 inline bool
 isCategory( QListViewItem *item )
@@ -167,6 +180,14 @@ isPlaylist( QListViewItem *item )
     if( !item )
         return false;
     return item->rtti() == PlaylistEntry::RTTI ? true : false;
+}
+
+inline bool
+isSmartPlaylist( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == SmartPlaylist::RTTI ? true : false;
 }
 
 inline bool

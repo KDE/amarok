@@ -11,7 +11,7 @@
 #include "k3bexporter.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
-#include "smartplaylist.h"
+#include "smartplaylisteditor.h"
 #include "statusbar.h"         //For notifications, TODO:Remove me once all completed.
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
@@ -110,7 +110,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     //</Toolbar>
 
     m_listview = new PlaylistBrowserView( browserBox );
-    new SmartPlaylistBox( m_splitter );
+//     new SmartPlaylistBox( m_splitter );
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
@@ -330,6 +330,11 @@ void PlaylistBrowser::saveStreams()
  *************************************************************************
  **/
 
+QString PlaylistBrowser::smartplaylistBrowserCache()
+{
+    return amaroK::saveLocation() + "smartplaylist+browser_save.xml";
+}
+
 void PlaylistBrowser::addSmartPlaylist() //SLOT
 {
     //open a dialog to create a custom smart playlist
@@ -337,7 +342,153 @@ void PlaylistBrowser::addSmartPlaylist() //SLOT
 
 void PlaylistBrowser::loadSmartPlaylists()
 {
-    // Logic for loading smart playlists should go here
+    QFile file( smartplaylistBrowserCache() );
+
+    if( !file.open( IO_ReadOnly ) )
+    {
+        loadDefaultSmartPlaylists();
+        loadOldSmartPlaylists();
+        m_smartCategory->setOpen( true );
+        return;
+    }
+
+}
+
+void PlaylistBrowser::loadDefaultSmartPlaylists()
+{
+    const QStringList genres  = CollectionDB::instance()->query( "SELECT DISTINCT name FROM genre;" );
+    const QStringList artists = CollectionDB::instance()->artistList();
+    SmartPlaylist *item;
+    QueryBuilder qb;
+    m_lastSmart = 0;
+
+    PlaylistCategory *folder = new PlaylistCategory( m_smartCategory, 0, i18n("Collection") );
+
+    /********** All Collection **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
+    item = new SmartPlaylist( folder, m_lastSmart, i18n( "All Collection" ), qb.query() );
+    item->setPixmap( 0, SmallIcon("kfm") );
+
+    /********** Favorite Tracks **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( folder, item, i18n( "Favorite Tracks" ), qb.query() );
+    foreach( artists ) {
+        qb.initSQLDrag();
+        qb.addMatch( QueryBuilder::tabArtist, *it );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setLimit( 0, 15 );
+
+        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+    }
+
+    /********** Most Played **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( folder, item, i18n( "Most Played" ), qb.query() );
+    m_lastSmart = 0;
+    foreach( artists ) {
+        qb.initSQLDrag();
+        qb.addMatch( QueryBuilder::tabArtist, *it );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
+        qb.setLimit( 0, 15 );
+
+        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+    }
+
+    /********** Newest Tracks **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( folder, item, i18n( "Newest Tracks" ), qb.query() );
+    m_lastSmart = 0;
+    foreach( artists ) {
+        qb.initSQLDrag();
+        qb.addMatch( QueryBuilder::tabArtist, *it );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+        qb.setLimit( 0, 15 );
+
+        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+    }
+
+    /********** Last Played **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
+    qb.setLimit( 0, 15 );
+
+    item = new SmartPlaylist( folder, item, i18n( "Last Played" ), qb.query() );
+
+    /********** Never Played **************/
+    qb.initSQLDrag();
+    qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
+    item = new SmartPlaylist( folder, item, i18n( "Never Played" ), qb.query() );
+
+    /********** Ever Played **************/
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore );
+
+    item = new SmartPlaylist( folder, item, i18n( "Ever Played" ), qb.query() );
+
+    /********** Genres **************/
+    item = new SmartPlaylist( folder, item, i18n( "Genres" ), QString() );
+    m_lastSmart = 0;
+    foreach( genres ) {
+        qb.initSQLDrag();
+        qb.addMatch( QueryBuilder::tabGenre, *it );
+        qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+
+        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+    }
+
+    /********** 50 Random Tracks **************/
+    qb.initSQLDrag();
+    qb.setOptions( QueryBuilder::optRandomize );
+    qb.setLimit( 0, 50 );
+    item = new SmartPlaylist( folder, item, i18n( "50 Random Tracks" ), qb.query() );
+
+    m_lastSmart = folder;
+
+}
+
+void PlaylistBrowser::loadOldSmartPlaylists()
+{
+    QFile file( smartplaylistBrowserCache() );
+
+    if( file.open( IO_ReadOnly ) )
+    {
+        QTextStream stream( &file );
+        QString line, name, query;
+
+        while( !( line = stream.readLine() ).isNull() )
+        {
+            if( line.startsWith( "Name=" ) )
+                name = line.mid( 5 );
+            else {
+                query = line;
+                SmartPlaylist *item = new SmartPlaylist( m_smartCategory, m_lastSmart, name, QString() );
+                item->sqlForUrls = query;
+                item->setCustom( true );
+            }
+        }
+    }
 }
 
 void PlaylistBrowser::editSmartPlaylist()
@@ -627,6 +778,15 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     {
         Playlist::instance()->insertMedia( static_cast<StreamEntry *>(item)->url(), Playlist::Replace );
     }
+    else if( isSmartPlaylist( item ) )
+    {
+        #define item static_cast<SmartPlaylist *>(item)
+        if( !item->sqlForTags.isEmpty() )
+            Playlist::instance()->insertMediaSql( item->sqlForTags, Playlist::Clear );
+        else
+            Playlist::instance()->insertMedia( item->urlList(), Playlist::Clear );
+        #undef item
+    }
     else if( isCategory( item ) )
     {
         item->setOpen( !item->isOpen() );
@@ -683,13 +843,21 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             }
             delete item;
         }
-        if( isStream( item ) ) {
-            if( item == m_lastPlaylist ) {
+        else if( isStream( item ) ) {
+            if( item == m_lastStream ) {
                 QListViewItem *above = item->itemAbove();
                 m_lastPlaylist = above ? (StreamEntry *)above : 0;
             }
             delete item;
         }
+        else if( isSmartPlaylist( item ) ) {
+            if( item == m_lastSmart ) {
+                QListViewItem *above = item->itemAbove();
+                m_lastPlaylist = above ? (SmartPlaylist *)above : 0;
+            }
+            delete item;
+        }
+
         else if( isPlaylistTrackItem( item ) ) {
             //remove the track
             PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
@@ -714,7 +882,7 @@ void PlaylistBrowser::renameSelectedPlaylist() //SLOT
             m_listview->rename( item, 0 );
         }
     }
-    else if( isPlaylist( item ) || isStream( item ) ) {
+    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) ) {
         item->setRenameEnabled( 0, true );
         m_listview->rename( item, 0 );
     }

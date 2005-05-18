@@ -4,6 +4,7 @@
 // License: GPL V2. See COPYING file for information.
 
 #include "amarok.h"
+#include "collectiondb.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
@@ -19,7 +20,7 @@
 #include <klocale.h>
 
 /////////////////////////////////////////////////////////////////////////////
-//    CLASS PlaylistReader
+///    CLASS PlaylistReader
 ////////////////////////////////////////////////////////////////////////////
 
 class PlaylistReader : public ThreadWeaver::DependentJob
@@ -41,7 +42,7 @@ class PlaylistReader : public ThreadWeaver::DependentJob
 };
 
 /////////////////////////////////////////////////////////////////////////////
-//    CLASS PlaylistCategory
+///    CLASS PlaylistCategory
 ////////////////////////////////////////////////////////////////////////////
 
 PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, const QString &t, bool isFolder )
@@ -119,7 +120,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 }
 
 /////////////////////////////////////////////////////////////////////////////
-//    CLASS PlaylistEntry
+///    CLASS PlaylistEntry
 ////////////////////////////////////////////////////////////////////////////
 
 PlaylistEntry::PlaylistEntry( KListViewItem *parent, QListViewItem *after, const KURL &url, int tracks, int length )
@@ -476,7 +477,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-//    CLASS PlaylistSaver
+///    CLASS PlaylistSaver
 ////////////////////////////////////////////////////////////////////////////////
 
 PlaylistSaver::PlaylistSaver(  QString title, QWidget *parent, const char *name )
@@ -493,7 +494,7 @@ PlaylistSaver::PlaylistSaver(  QString title, QWidget *parent, const char *name 
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-//    CLASS PlaylistTrackItem
+///    CLASS PlaylistTrackItem
 ////////////////////////////////////////////////////////////////////////////////
 
 PlaylistTrackItem::PlaylistTrackItem( QListViewItem *parent, QListViewItem *after, TrackItemInfo *info )
@@ -512,7 +513,7 @@ const KURL &PlaylistTrackItem::url()
 
 
 //////////////////////////////////////////////////////////////////////////////////
-//    CLASS TrackItemInfo
+///    CLASS TrackItemInfo
 ////////////////////////////////////////////////////////////////////////////////
 
 TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
@@ -528,7 +529,7 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
 }
 
 /////////////////////////////////////////////////////////////////////////////
-//    CLASS StreamEntry
+///    CLASS StreamEntry
 ////////////////////////////////////////////////////////////////////////////
 
 StreamEntry::StreamEntry( KListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
@@ -639,6 +640,9 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     p->drawPixmap( 0, 0, buffer );
 }
 
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS StreamEditory
+////////////////////////////////////////////////////////////////////////////
 
 // For creating
 StreamEditor::StreamEditor( QString defaultName, QWidget *parent, const char *name )
@@ -684,6 +688,34 @@ StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const c
 
     m_nameLineEdit->setFocus();
 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS SmartPlaylist
+////////////////////////////////////////////////////////////////////////////
+
+SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &query )
+        : KListViewItem( parent, after, name )
+        , sqlForTags( query )
+        , m_custom( false )
+{
+    setPixmap( 0, SmallIcon( "player_playlist_2" ) );
+    setDragEnabled( query.isEmpty() ? false : true );
+}
+
+KURL::List
+SmartPlaylist::urlList() const
+{
+    KURL url;
+    KURL::List urls;
+    const QStringList paths = CollectionDB::instance()->query( sqlForUrls );
+
+    foreach( paths ) {
+        url.setPath( *it );
+        urls += url;
+    }
+
+    return urls;
 }
 
 #include "playlistbrowseritem.moc"

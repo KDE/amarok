@@ -179,5 +179,27 @@ class StreamEditor : public KDialogBase
 
 };
 
+class SmartPlaylist : public KListViewItem
+{
+    public:
+        SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
+
+        void setCustom( bool b ) { m_custom = b; setDragEnabled( true ); }
+        bool isCustom() const { return m_custom; }
+
+        QString query() { return isCustom() ? sqlForUrls : sqlForTags; }
+
+        KURL::List urlList() const;
+
+        QString sqlForUrls;
+        QString sqlForTags;
+
+        int   rtti() const { return RTTI; }
+        static const int RTTI = 1004;    //smart playlist item
+
+    private:
+        bool m_custom;
+};
+
 #endif
 
