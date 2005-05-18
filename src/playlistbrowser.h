@@ -83,6 +83,7 @@ class PlaylistBrowser : public QVBox
         void saveParties();
 
         void loadPlaylists();
+        void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
 
