@@ -3,12 +3,15 @@
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
 // License: GPL V2. See COPYING file for information.
 
+#define DEBUG_PREFIX "PlaylistBrowser"
+
 #include "amarok.h"            //actionCollection()
 #include "browserToolBar.h"
-#include "playlist.h"
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
+#include "debug.h"
 #include "k3bexporter.h"
+#include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "smartplaylisteditor.h"
@@ -28,7 +31,6 @@
 #include <kactionclasses.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kfiledialog.h>       //openPlaylist()
 #include <kio/job.h>           //deleteSelectedPlaylists()
 #include <kiconloader.h>       //smallIcon
@@ -227,7 +229,7 @@ void PlaylistBrowser::loadCoolStreams()
 
     if( !d.setContent( stream.read() ) )
     {
-        kdDebug() << "Bad Cool Streams XML file" << endl;
+        error() << "Bad Cool Streams XML file" << endl;
         return;
     }
 
@@ -559,7 +561,7 @@ void PlaylistBrowser::loadPlaylists()
 
     if( !d.setContent( pStream.read() ) )
     {
-        kdDebug() << "[PLAYLISTBROWSER] Bad XML file" << endl;
+        error() << "Bad XML file" << endl;
         return;
     }
 
@@ -752,7 +754,7 @@ void PlaylistBrowser::saveCurrentPlaylist()
         if ( !info.isDir() ) QFile::remove( folder );
 
         QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + name + ".m3u";
-        kdDebug() << "[PlaylistBrowser] Saving Current-Playlist to: " << path << endl;
+        debug() << "Saving Current-Playlist to: " << path << endl;
         if ( !Playlist::instance()->saveM3U( path ) ) {
             KMessageBox::sorry( this, i18n( "Cannot write playlist (%1).").arg(path) );
             return;

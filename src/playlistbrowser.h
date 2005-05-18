@@ -1,6 +1,7 @@
-// (c) Pierpaolo Di Panfilo 2004
+// (c) 2004 Pierpaolo Di Panfilo
+// (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
-// See COPYING file for licensing information
+// License: GPL V2. See COPYING file for information.
 
 #ifndef PLAYLISTBROWSER_H
 #define PLAYLISTBROWSER_H
