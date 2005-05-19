@@ -156,17 +156,17 @@ EngineController::loadEngine( const QString &engineName )
             EngineBase *engine = (EngineBase*)plugin;
 
             connect( engine, SIGNAL(stateChanged( Engine::State )),
-                       this, SLOT(slotStateChanged( Engine::State )) );
+                       this,   SLOT(slotStateChanged( Engine::State )) );
             connect( engine, SIGNAL(trackEnded()),
-                       this, SLOT(slotTrackEnded()) );
+                       this,   SLOT(slotTrackEnded()) );
             connect( engine, SIGNAL(statusText( const QString& )),
-                        bar, SLOT(shortMessage( const QString& )) );
+                        bar,   SLOT(shortMessage( const QString& )) );
             connect( engine, SIGNAL(infoMessage( const QString& )),
-                        bar, SLOT(longMessage( const QString& )) );
+                        bar,   SLOT(longMessage( const QString& )) );
             connect( engine, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
-                       this, SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
+                       this,   SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
             connect( engine, SIGNAL(showConfigDialog( const QCString& )),
-                       kapp, SLOT(slotConfigAmarok( const QCString& )) );
+                       kapp,   SLOT(slotConfigAmarok( const QCString& )) );
 
             if( engine->init() )
                 return engine;
