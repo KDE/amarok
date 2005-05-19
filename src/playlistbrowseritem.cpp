@@ -49,6 +49,7 @@ PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, con
     : KListViewItem( parent, after )
     , m_title( t )
     , m_folder( isFolder )
+    , m_folderCount( 0 )
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
@@ -61,13 +62,36 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     : KListViewItem( parent, after )
     , m_title( t )
     , m_folder( isFolder )
+    , m_folderCount( 0 )
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
     setExpandable( true );
 
+    setPixmap( 0, SmallIcon("folder") );
+
+    parent->setFolderCount( parent->folderCount() + 1 );
+
     setText( 0, t );
 }
+
+void
+PlaylistCategory::setup()
+{
+    QFont font( listView()->font() );
+    if( !isFolder() )
+        font.setPointSize( font.pointSize() + 1 );
+
+    QFontMetrics fm( font );
+    int h = fm.lineSpacing();
+    if ( h % 2 > 0 )
+        h++;
+    if( !isFolder() )
+        setHeight( h + fm.lineSpacing());
+    else
+        setHeight( h );
+}
+
 
 void
 PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
@@ -89,31 +113,67 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     KListView *lv = (KListView *)listView();
 
     QFont font( p->font() );
+    font.setBold( true );
+
     if( !m_folder ) // increase font size for base categories
         font.setPointSize( font.pointSize() + 1 );
 
     QFontMetrics fm( p->fontMetrics() );
 
-    font.setBold( true );
+    int textHeight;
+    if( !isFolder() )
+        textHeight = fm.lineSpacing() + lv->itemMargin() + 1;
+    else
+        textHeight = height();
+
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
+
+    int text_x=0;
+    if( pixmap(0) ) {
+        int y = (textHeight - pixmap(0)->height())/2 + 1;
+        pBuf.drawPixmap( 0, y, *pixmap(0) );
+        text_x += pixmap(0)->width()+4;
+    }
 
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
     QString name = text(0);
-    if( fmName.width( name ) + 0 + lv->itemMargin()*2 > width ) {
+    if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
+    {
         int ellWidth = fmName.width( i18n("...") );
         QString text = QString::fromLatin1("");
         int i = 0;
         int len = name.length();
-        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - lv->itemMargin()*2  ) {
+        while ( i < len && fmName.width( text + name[ i ] ) + ellWidth < width - text_x - lv->itemMargin()*2  ) {
             text += name[ i ];
             i++;
         }
-    name = text + i18n("...");
+        name = text + i18n("...");
     }
 
-    pBuf.drawText( 0, 0, width, height(), AlignBottom, name );
+    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+
+    if( !isFolder() )
+    {
+        QString info;
+
+        font.setBold( false );
+        font.setItalic( true );
+        font.setPointSize( font.pointSize() - 1 );
+
+        pBuf.setFont( font );
+
+        if( m_folderCount )
+            info += QString(i18n("1 Folder", "%n Folders", m_folderCount ) );
+        else
+            info += QString(i18n("No Folders") );
+
+        if( childCount() > m_folderCount )
+            info += i18n(" - 1 Item", " - %n Items", childCount() - m_folderCount );
+
+        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, info);
+    }
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );

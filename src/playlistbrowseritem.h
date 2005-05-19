@@ -23,7 +23,10 @@ class PlaylistCategory : public KListViewItem
 
         const QString &title() const { return m_title; }
         bool  isFolder() { return m_folder; }
+        uint  folderCount() { return m_folderCount; }
+        void  setFolderCount( uint i ) { m_folderCount = i; }
 
+        void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         int   rtti() const { return RTTI; }
@@ -32,6 +35,7 @@ class PlaylistCategory : public KListViewItem
     private:
         QString m_title;
         bool    m_folder;
+        uint    m_folderCount;
 
 };
 
