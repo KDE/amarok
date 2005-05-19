@@ -334,7 +334,7 @@ void PlaylistBrowser::saveStreams()
 
 QString PlaylistBrowser::smartplaylistBrowserCache()
 {
-    return amaroK::saveLocation() + "smartplaylist+browser_save.xml";
+    return amaroK::saveLocation() + "smartplaylistbrowser_save.xml";
 }
 
 void PlaylistBrowser::addSmartPlaylist() //SLOT
@@ -380,7 +380,7 @@ void PlaylistBrowser::loadSmartPlaylists()
         QString sqlForUrls = n.namedItem( "sqlForUrls" ).toElement().text();
         QString sqlForTags = n.namedItem( "sqlForTags" ).toElement().text();
 
-        m_lastStream = new SmartPlaylist( m_streamsCategory, m_lastStream, name, sqlForUrls, sqlForTags );
+        m_lastStream = new SmartPlaylist( m_smartCategory, m_lastSmart, name, sqlForUrls, sqlForTags );
     }
     m_streamsCategory->setOpen( true );
 
@@ -502,7 +502,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
 void PlaylistBrowser::loadOldSmartPlaylists()
 {
-    QFile file( smartplaylistBrowserCache() );
+    QFile file( amaroK::saveLocation() + "smartplaylists" );
 
     if( file.open( IO_ReadOnly ) )
     {
@@ -515,7 +515,7 @@ void PlaylistBrowser::loadOldSmartPlaylists()
                 name = line.mid( 5 );
             else {
                 query = line;
-                SmartPlaylist *item = new SmartPlaylist( m_smartCategory, m_lastSmart, name, QString() );
+                SmartPlaylist *item = new SmartPlaylist( m_smartCategory, m_lastSmart, name, query );
                 item->sqlForUrls = query;
                 item->setCustom( true );
             }
@@ -1655,8 +1655,27 @@ void PlaylistBrowserView::startDrag()
     for( ; it.current(); ++it ) {
         if( isPlaylist( *it ) )
             urls += ((PlaylistEntry*)*it)->tracksURL();
+
         else if( isStream( *it ) )
             urls += ((StreamEntry*)*it)->url();
+
+        else if( isSmartPlaylist( *it ) )
+        {
+            SmartPlaylist *item = (SmartPlaylist*)*it;
+            if( !item->isCustom() && !item->sqlForTags.isEmpty() )
+            {
+                QStringList list = CollectionDB::instance()->query( item->sqlForTags );
+                for( uint c=0; c < list.count(); c++ )
+                    urls += KURL( list[c] );
+            }
+            else
+            {
+                QStringList list = CollectionDB::instance()->query( item->sqlForUrls );
+                KURL::List smartList( list );
+                for( uint c=0; c < list.count(); c++ )
+                    urls += KURL( list[c] );
+            }
+        }
         else if( isPlaylistTrackItem( *it ) )
             urls += ((PlaylistTrackItem*)*it)->url();
     }
