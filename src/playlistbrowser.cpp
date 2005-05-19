@@ -382,7 +382,7 @@ void PlaylistBrowser::loadSmartPlaylists()
 
         m_lastStream = new SmartPlaylist( m_smartCategory, m_lastSmart, name, sqlForUrls, sqlForTags );
     }
-    m_streamsCategory->setOpen( true );
+    m_smartCategory->setOpen( true );
 
 }
 
@@ -535,10 +535,10 @@ void PlaylistBrowser::saveSmartPlaylists()
     if( !file.open( IO_WriteOnly ) ) return;
 
     QDomDocument doc;
-    QDomElement streamB = doc.createElement( "smartplaylists" );
-    streamB.setAttribute( "product", "amaroK" );
-    streamB.setAttribute( "version", APP_VERSION );
-    doc.appendChild( streamB );
+    QDomElement smartB = doc.createElement( "smartplaylists" );
+    smartB.setAttribute( "product", "amaroK" );
+    smartB.setAttribute( "version", APP_VERSION );
+    doc.appendChild( smartB );
 
     PlaylistCategory *currentCat=0;
 
@@ -555,7 +555,7 @@ void PlaylistBrowser::saveSmartPlaylists()
         if( !isCategory( it ) )
             currentCat = static_cast<PlaylistCategory*>(it->parent() );
 
-        if( isStream( it ) )
+        if( isSmartPlaylist( it ) )
         {
             i = doc.createElement("smartplaylist");
             SmartPlaylist *item = (SmartPlaylist*)it;
@@ -567,17 +567,17 @@ void PlaylistBrowser::saveSmartPlaylists()
             i.appendChild( attr );
 
             attr = doc.createElement( "sqlForUrls" );
-            t = doc.createTextNode( escapeHTML( item->sqlForUrls ) );
+            t = doc.createTextNode( item->sqlForUrls );
             attr.appendChild( t );
             i.appendChild( attr );
 
             attr = doc.createElement( "sqlForTags" );
-            t = doc.createTextNode( escapeHTML( item->sqlForTags ) );
+            t = doc.createTextNode( item->sqlForTags );
             attr.appendChild( t );
             i.appendChild( attr );
         }
 
-        streamB.appendChild( i );
+        smartB.appendChild( i );
 
         it = it->nextSibling();
     }
