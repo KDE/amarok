@@ -184,7 +184,14 @@ void PlaylistBrowser::loadStreams()
     QFile file( streamBrowserCache() );
 
     if( !file.open( IO_ReadOnly ) )
+    {
+        loadCoolStreams();
+        m_streamsCategory->setOpen( true );
         return;
+    }
+
+    m_lastStream = 0;
+    loadCoolStreams();
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -193,8 +200,6 @@ void PlaylistBrowser::loadStreams()
 
     if( !d.setContent( stream.read() ) )
         return;
-
-    m_lastStream = 0;
 
     const QString STREAM( "stream" );
 
@@ -212,8 +217,6 @@ void PlaylistBrowser::loadStreams()
         m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, url, name );
     }
     m_streamsCategory->setOpen( true );
-
-    loadCoolStreams();
 }
 
 void PlaylistBrowser::loadCoolStreams()
@@ -246,6 +249,8 @@ void PlaylistBrowser::loadCoolStreams()
         KURL url  = KURL::KURL( e.text() );
         last = new StreamEntry( folder, last, url, name );
     }
+
+    m_lastStream = folder;
 }
 
 
@@ -352,6 +357,9 @@ void PlaylistBrowser::addSmartPlaylist() //SLOT
 
 void PlaylistBrowser::loadSmartPlaylists()
 {
+    if( CollectionDB::instance()->isEmpty() )
+        return;
+
     QFile file( smartplaylistBrowserCache() );
 
     if( !file.open( IO_ReadOnly ) )
@@ -380,7 +388,7 @@ void PlaylistBrowser::loadSmartPlaylists()
         QString sqlForUrls = n.namedItem( "sqlForUrls" ).toElement().text();
         QString sqlForTags = n.namedItem( "sqlForTags" ).toElement().text();
 
-        m_lastStream = new SmartPlaylist( m_smartCategory, m_lastSmart, name, sqlForUrls, sqlForTags );
+        m_lastSmart = new SmartPlaylist( m_smartCategory, m_lastSmart, name, sqlForUrls, sqlForTags );
     }
     m_smartCategory->setOpen( true );
 
