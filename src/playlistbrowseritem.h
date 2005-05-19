@@ -26,7 +26,6 @@ class PlaylistCategory : public KListViewItem
         uint  folderCount() { return m_folderCount; }
         void  setFolderCount( uint i ) { m_folderCount = i; }
 
-        void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
         int   rtti() const { return RTTI; }

@@ -1386,6 +1386,7 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     addColumn( i18n("Playlists") );
     setSelectionMode( QListView::Extended );
     setShowSortIndicator( true );
+    setRootIsDecorated( true );
 
     setDropVisualizer( true );    //the visualizer (a line marker) is drawn when dragging over tracks
     setDropHighlighter( true );    //and the highligther (a focus rect) is drawn when dragging over playlists
