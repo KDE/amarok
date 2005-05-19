@@ -371,7 +371,7 @@ void PlaylistBrowser::loadSmartPlaylists()
     if( !d.setContent( stream.read() ) )
         return;
 
-    QDomNode n = d.namedItem( "smartplaylists" );
+    QDomNode n = d.namedItem( "smartplaylists" ).firstChild();
 
     for( ; !n.isNull(); n = n.nextSibling() )
     {
@@ -559,7 +559,7 @@ void PlaylistBrowser::saveSmartPlaylists()
         {
             i = doc.createElement("smartplaylist");
             SmartPlaylist *item = (SmartPlaylist*)it;
-            i.setAttribute( "name", item->text(0) );
+            i.setAttribute( "name", item->title() );
 
             QDomElement attr = doc.createElement( "parent" );
             QDomText t = doc.createTextNode( currentCat->title() );

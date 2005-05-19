@@ -190,6 +190,7 @@ class SmartPlaylist : public KListViewItem
         bool isCustom() const { return m_custom; }
 
         QString query() { return isCustom() ? sqlForUrls : sqlForTags; }
+        QString title() { return m_title; }
 
         KURL::List urlList() const;
 
@@ -201,6 +202,7 @@ class SmartPlaylist : public KListViewItem
 
     private:
         bool m_custom;
+        QString m_title;
 };
 
 #endif

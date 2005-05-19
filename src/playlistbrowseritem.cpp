@@ -698,9 +698,12 @@ SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const
         : KListViewItem( parent, after, name )
         , sqlForTags( query )
         , m_custom( false )
+        , m_title( name )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setDragEnabled( query.isEmpty() ? false : true );
+
+    setText( 0, name );
 }
 
 SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
@@ -708,9 +711,12 @@ SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const
         , sqlForUrls( urls )
         , sqlForTags( tags )
         , m_custom( false )
+        , m_title( name )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setDragEnabled( !urls.isEmpty() && !tags.isEmpty() );
+
+    setText( 0, name );
 }
 
 KURL::List
