@@ -7,7 +7,6 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
-#include "enginecontroller.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
 #include "metabundle.h"
@@ -255,7 +254,7 @@ MetaBundle::fileExtension() const
 {
     QString s;
 
-    if ( EngineController::engine()->isStream() ) //catch streams
+    if ( m_url.protocol() == "http" ) //catch streams
     {
         s = i18n( "Stream " ) ;
     }
