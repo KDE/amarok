@@ -2038,7 +2038,7 @@ Playlist::deleteSelectedFiles() //SLOT
                          count );
     int button = KMessageBox::warningContinueCancel( this,
                                                      count > 1 ? text :
-                                                     static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend("<i>'").append("'</i>"),
+                                                     text + static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend(" <i>'").append("'</i>"),
                                                      QString::null,
                                                      i18n("&Delete") );
 
