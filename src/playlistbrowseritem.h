@@ -183,6 +183,8 @@ class SmartPlaylist : public KListViewItem
 {
     public:
         SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
+        SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name,
+                                                        const QString &urls, const QString &tags );
 
         void setCustom( bool b ) { m_custom = b; setDragEnabled( true ); }
         bool isCustom() const { return m_custom; }

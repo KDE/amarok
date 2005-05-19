@@ -339,7 +339,15 @@ QString PlaylistBrowser::smartplaylistBrowserCache()
 
 void PlaylistBrowser::addSmartPlaylist() //SLOT
 {
-    //open a dialog to create a custom smart playlist
+    if( CollectionDB::instance()->isEmpty() )
+        return;
+
+    SmartPlaylistEditor dialog( i18n("Untitled"), this );
+    if( dialog.exec() == QDialog::Accepted ) {
+        SmartPlaylist *item = new SmartPlaylist( m_smartCategory, m_lastSmart, dialog.name(), QString() );
+        item->setCustom( true );
+        item->sqlForUrls = dialog.query();
+    }
 }
 
 void PlaylistBrowser::loadSmartPlaylists()
@@ -353,6 +361,28 @@ void PlaylistBrowser::loadSmartPlaylists()
         m_smartCategory->setOpen( true );
         return;
     }
+    loadDefaultSmartPlaylists();
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+
+    if( !d.setContent( stream.read() ) )
+        return;
+
+    QDomNode n = d.namedItem( "smartplaylists" );
+
+    for( ; !n.isNull(); n = n.nextSibling() )
+    {
+        QDomElement e = n.toElement();
+        QString name  = e.attribute( "name" );
+        QString sqlForUrls = n.namedItem( "sqlForUrls" ).toElement().text();
+        QString sqlForTags = n.namedItem( "sqlForTags" ).toElement().text();
+
+        m_lastStream = new SmartPlaylist( m_streamsCategory, m_lastStream, name, sqlForUrls, sqlForTags );
+    }
+    m_streamsCategory->setOpen( true );
 
 }
 
@@ -500,7 +530,64 @@ void PlaylistBrowser::editSmartPlaylist()
 
 void PlaylistBrowser::saveSmartPlaylists()
 {
-    // Called by the dtor
+    QFile file( smartplaylistBrowserCache() );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QDomDocument doc;
+    QDomElement streamB = doc.createElement( "smartplaylists" );
+    streamB.setAttribute( "product", "amaroK" );
+    streamB.setAttribute( "version", APP_VERSION );
+    doc.appendChild( streamB );
+
+    PlaylistCategory *currentCat=0;
+
+    #define m_smartCategory static_cast<QListViewItem *>(m_smartCategory)
+
+    QListViewItem *it = m_smartCategory->firstChild();
+    // First child is ALWAYS collection category, we dont want to save it.
+    it = it->nextSibling();
+
+    for( int count = 1; count < m_smartCategory->childCount(); count++ )
+    {
+        QDomElement i;
+
+        if( !isCategory( it ) )
+            currentCat = static_cast<PlaylistCategory*>(it->parent() );
+
+        if( isStream( it ) )
+        {
+            i = doc.createElement("smartplaylist");
+            SmartPlaylist *item = (SmartPlaylist*)it;
+            i.setAttribute( "name", item->text(0) );
+
+            QDomElement attr = doc.createElement( "parent" );
+            QDomText t = doc.createTextNode( currentCat->title() );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "sqlForUrls" );
+            t = doc.createTextNode( escapeHTML( item->sqlForUrls ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "sqlForTags" );
+            t = doc.createTextNode( escapeHTML( item->sqlForTags ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+        }
+
+        streamB.appendChild( i );
+
+        it = it->nextSibling();
+    }
+
+    #undef m_streamsCategory
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << doc.toString();
 }
 
 /**
@@ -1568,9 +1655,9 @@ void PlaylistBrowserView::startDrag()
     for( ; it.current(); ++it ) {
         if( isPlaylist( *it ) )
             urls += ((PlaylistEntry*)*it)->tracksURL();
-        else if ( isStream( *it ) )
+        else if( isStream( *it ) )
             urls += ((StreamEntry*)*it)->url();
-        else
+        else if( isPlaylistTrackItem( *it ) )
             urls += ((PlaylistTrackItem*)*it)->url();
     }
 

@@ -703,6 +703,16 @@ SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const
     setDragEnabled( query.isEmpty() ? false : true );
 }
 
+SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
+        : KListViewItem( parent, after, name )
+        , sqlForUrls( urls )
+        , sqlForTags( tags )
+        , m_custom( false )
+{
+    setPixmap( 0, SmallIcon( "player_playlist_2" ) );
+    setDragEnabled( !urls.isEmpty() && !tags.isEmpty() );
+}
+
 KURL::List
 SmartPlaylist::urlList() const
 {
