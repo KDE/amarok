@@ -7,6 +7,7 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
+#include "enginecontroller.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
 #include "metabundle.h"
@@ -254,14 +255,14 @@ MetaBundle::fileExtension() const
 {
     QString s;
 
-    if ( m_url.protocol() == "http" ) //catch streams
+    if ( EngineController::engine()->isStream() ) //catch streams
     {
         s = i18n( "Stream " ) ;
     }
     else
     {
-	QString file = m_url.fileName();
-	QString lower = file.right( file.length() - file.findRev('.') - 1 );
+        const QString file = m_url.fileName();
+        const QString lower = file.right( file.length() - file.findRev('.') - 1 );
         s = lower.upper(); //make pretty
     }
 
