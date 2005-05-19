@@ -49,7 +49,6 @@ PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, con
     : KListViewItem( parent, after )
     , m_title( t )
     , m_folder( isFolder )
-    , m_folderCount( 0 )
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
@@ -63,15 +62,12 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     : KListViewItem( parent, after )
     , m_title( t )
     , m_folder( isFolder )
-    , m_folderCount( 0 )
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
     setExpandable( true );
 
     setPixmap( 0, SmallIcon("folder") );
-
-    parent->setFolderCount( parent->folderCount() + 1 );
 
     setText( 0, t );
 }
@@ -84,7 +80,11 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     font.setBold( true );
 
     if( !m_folder ) // increase font size for base categories
-        font.setPointSize( font.pointSize() + 2 );
+    {
+        font.setUnderline( true );
+        font.setItalic( true );
+//         font.setPointSize( font.pointSize() + 2 );
+    }
 
     p->setFont( font );
 
