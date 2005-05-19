@@ -252,9 +252,18 @@ MetaBundle::prettyTitle( QString filename ) //static
 QString
 MetaBundle::fileExtension() const
 {
+    QString s;
+
+    if ( m_url.protocol() == "http" ) //catch streams
+    {
+        s = i18n( "Stream " ) ;
+    }
+    else
+    {
 	QString file = m_url.fileName();
 	QString lower = file.right( file.length() - file.findRev('.') - 1 );
-        QString s = lower.upper(); //make pretty
+        s = lower.upper(); //make pretty
+    }
 
     return s;
 }
