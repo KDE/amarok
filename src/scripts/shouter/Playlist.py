@@ -26,7 +26,6 @@ import sys
 
 
 _STATIC_PLS = dict()
-_DIRECTORY_PLS = dict()
 SILENCE_F = os.path.join(os.path.dirname(sys.argv[0]), 'silence/silence-%d.mp3')
 SILENT_META = '--- Server is waiting for input ---'
 
@@ -136,7 +135,6 @@ def StaticPlaylist(fname, random=0, repeat=1):
     return _STATIC_PLS[fname]
 
 class _StaticPlaylist(XMLPlaylist):
-    start_time = 0
     queue = None
     skip = []
 
@@ -144,7 +142,6 @@ class _StaticPlaylist(XMLPlaylist):
         debug('_StaticPlaylist init %s' % fname)
         XMLPlaylist.__init__(self, random, repeat, fname)
         self.process()
-        self.start_time = int(time.time())
         
 
     def process(self):
@@ -171,8 +168,6 @@ class _StaticPlaylist(XMLPlaylist):
                     if isinstance(f.queue_index, int):
                         queue[f.queue_index] = i
                 except (ShouterExceptions.unknown_length_error, ShouterExceptions.bad_format_error):
-                    #fobj_temp = File(n);
-                    #debug('skipping ' + fobj_temp.url)
                     skip.append(n)
 
             if c == 0:
@@ -206,7 +201,7 @@ class _StaticPlaylist(XMLPlaylist):
     def get_play_cursor(self):
         debug('StaticPlayList get_play_cursor')
         now = int(time.time())
-        dt = now - self.start_time
+        dt = now - Amarok.start_time
         pl = self.pl
 
         for i in self.queue:
@@ -218,7 +213,7 @@ class _StaticPlaylist(XMLPlaylist):
 
         # If we've made it this far, drop the queue, it isn't needed anymore
         self.queue = []
-        self.start_time = now - dt
+        Amarok.start_time = now - dt
 
         while True:
             for f in pl:
@@ -227,34 +222,10 @@ class _StaticPlaylist(XMLPlaylist):
                 else:
                     return (f, float(dt)/f.length)
             if self.repeat_pl:
-                self.start_time = now - dt
+                Amarok.start_time = now - dt
             else:
                 raise ShouterExceptions.playlist_empty_error
 
-def DirectoryPlaylist(dirname, random=1, repeat=1):
-    if not _DIRECTORY_PLS.has_key(dirname):
-        debug('Creating directory playlist for %s' % dirname)
-        _DIRECTORY_PLS[fname] = _DirectoryPlaylist(dirname, random, repeat)
-    return _DIRECTORY_PLS[dirname]
-
-class _DirectoryPlaylist:
-    start_time = 0
-    queue = None
-    skip = []
-    pl = []
-
-    def __init__(self, dirname, random=1, repeat=1):
-        gen = os.walk(dirname)
-        files = []
-        try:
-            while True:
-                files.extend(gen.next()[2])
-        except StopIteration:
-            pass
-                
-        debug('_DirectoryPlaylist init %s' % fname)
-        self.start_time = int(time.time())
-        
 class File:
     tags = ['Artist', 'Title', 'Length', 'Genre', 'Album', 'Year', 'TrackNo', 'Bitrate']
     attr = ['url', 'queue_index']
@@ -299,9 +270,6 @@ class File:
             return urllib.url2pathname(str(self.url)).replace('file://', '')
         raise ShouterExceptions.remote_url_error
 
-class DirFile(File):
-    def __init__(self, fname):
-        pass
 
 class SilentFile(File):
     def __init__(self, br):

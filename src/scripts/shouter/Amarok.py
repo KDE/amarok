@@ -17,6 +17,7 @@ import urllib
 from sre import *
 from debug import *
 from xml.dom import minidom
+import time
 
 class _Amarok:
     is_playing = False
@@ -24,10 +25,12 @@ class _Amarok:
     encoded_url = ''
     fname = ''
     state = 0
+    start_time = 0
 
     def __init__(self):
         debug('_Amarok init')
         self.on_engine_state_change()
+        self.start_time = int(time.time())
 
     def on_engine_state_change(self, string = ''):
         debug('Amarok on_engine_state_change: ' + string)
