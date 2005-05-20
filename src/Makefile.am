@@ -91,7 +91,6 @@ amarokapp_SOURCES = \
     scriptmanagerbase.ui \
     scrobbler.cpp \
     sliderwidget.cpp \
-    smartplaylist.cpp \
     smartplaylisteditor.cpp \
     socketserver.cpp \
     streamprovider.cpp \

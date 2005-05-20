@@ -491,7 +491,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "%1" ).arg( *it ), qb.query() );
     }
 
     /********** 50 Random Tracks **************/
@@ -586,6 +586,22 @@ void PlaylistBrowser::saveSmartPlaylists()
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
+}
+
+// Warning - unpredictable when a smartplaylist which doesn't exist is requested.
+SmartPlaylist *
+PlaylistBrowser::getSmartPlaylist( QString name )
+{
+    QListViewItemIterator it( m_smartCategory );
+
+    for( ; it.current(); ++it )
+    {
+        kdDebug() << "Visiting smart playlist: "<< (*it)->text(0) << endl;
+        if( (*it)->text( 0 ) == name )
+            break;
+    }
+
+    return static_cast<SmartPlaylist*>(*it);
 }
 
 
@@ -1044,8 +1060,14 @@ PlaylistBrowser::selectedList()
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
     while( *it )
     {
-        if( !isCategory( *it ) )
+        if( !isCategory( *it ) && !isPlaylistTrackItem( *it ) )
+        {
             selected << (*it)->text(0);
+            if( isPlaylist( *it ) )
+                selected << i18n("Playlist");
+            else if( isSmartPlaylist( *it ) )
+                selected << i18n("Smart Playlist");
+        }
         ++it;
     }
 

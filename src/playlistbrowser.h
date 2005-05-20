@@ -38,7 +38,7 @@ class PlaylistBrowser : public QVBox
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST };
 
-        PlaylistBrowser( const char* );
+        PlaylistBrowser( const char* name=0 );
         ~PlaylistBrowser();
 
         void addStream();
@@ -49,6 +49,8 @@ class PlaylistBrowser : public QVBox
         QString playlistBrowserCache();
         QString streamBrowserCache();
         QString smartplaylistBrowserCache();
+
+        SmartPlaylist *getSmartPlaylist( QString name ); //For party mode
 
         QStringList selectedList();
 

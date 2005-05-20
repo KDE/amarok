@@ -25,8 +25,8 @@
 #include "osd.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "playlistbrowser.h"
 #include "playlistloader.h"
-#include "smartplaylist.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadweaver.h"
@@ -485,7 +485,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 
     QString query;
 
-    SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
+    PlaylistBrowser *pb = PlaylistBrowser::instance() ? PlaylistBrowser::instance() : new PlaylistBrowser();
     SmartPlaylist *sp = 0;
     QString playlistName = QString::null;
 
@@ -496,7 +496,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         int x = KApplication::random() % list.count();
 
         QString name = list[x];
-        sp = spv->getSmartPlaylist( name );
+        sp = pb->getSmartPlaylist( name );
         kdDebug() << "[PARTY]: Adding track from playlist called " << name << endl;
         if ( sp ) {
             playlistName = name;

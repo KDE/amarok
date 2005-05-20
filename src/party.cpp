@@ -49,7 +49,7 @@ Party::Party( QWidget *parent, const char *name )
 
     connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
     connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
-//     connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
+//     connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( saveToBrowser() ) );
     connect( (QObject*)toolbar->getButton( 3 ), SIGNAL(clicked( int )), SLOT( startParty() ) );
 
     m_base = new PartyDialogBase(this);
@@ -57,6 +57,7 @@ Party::Party( QWidget *parent, const char *name )
     m_playlists = m_base->m_playlistSelector;
     m_playlists->setSorting( 0 );
     m_playlists->addColumn( i18n("Playlists") );
+    m_playlists->addColumn( i18n("Type") );
     m_playlists->setSelectionModeExt( KListView::Extended ); // Allow many files to be selected
 
     insertPlaylists();
@@ -121,8 +122,8 @@ Party::addPlaylists() //SLOT
     QStringList selected = PlaylistBrowser::instance()->selectedList();
 
     QListViewItem *last = 0;
-    for( uint i=0; i < selected.count(); i++ )
-        last = new KListViewItem( m_playlists, 0, selected[i] );
+    for( uint i=0; i < selected.count(); i = i+2 )
+        last = new KListViewItem( m_playlists, 0, selected[i], selected[i+1] );
 }
 
 void
@@ -159,6 +160,8 @@ Party::startParty() //SLOT
     if( CollectionDB::instance()->isEmpty() )
         return;
 
+    amaroK::StatusBar::instance()->shortMessage( i18n("Party Configuration Saved.") );
+
     bool partyEnabled = isChecked();
     if ( partyEnabled != AmarokConfig::partyMode() )
     {
@@ -173,9 +176,9 @@ Party::startParty() //SLOT
     QString type;
     if( appendType() == RANDOM )
         type = "Random";
-    else if( appendType() == RANDOM )
+    else if( appendType() == SUGGESTION )
         type = "Suggestion";
-    else if( appendType() == RANDOM )
+    else if( appendType() == CUSTOM )
         type = "Custom";
 
     AmarokConfig::setPartyType( type );
