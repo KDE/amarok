@@ -609,7 +609,7 @@ void PlaylistWindow::playAudioCD() //SLOT
 {
     m_browsers->showBrowser( "FileBrowser" );
     FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
-    fb->setUrl( KURL("audiocd:/") );
+    fb->setUrl( KURL("audiocd:/Wav/") );
 }
 
 void PlaylistWindow::showScriptSelector() //SLOT
