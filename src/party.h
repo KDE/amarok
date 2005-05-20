@@ -48,6 +48,7 @@ class PartyDialogBase;
 class Party : public QVBox
 {
         Q_OBJECT
+    friend class PlaylistBrowser;
 
     public:
         Party( QWidget *parent, const char *name = 0 );

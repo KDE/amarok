@@ -73,7 +73,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     saveCurrentButton = new KAction( i18n("Save Current"), "filesave", 0, this, SLOT( saveCurrentPlaylist() ), m_ac, "SaveCurrent" );
 
-    renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedPlaylist() ), m_ac, "Rename" );
+    renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
     removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
     deleteButton   = new KAction( i18n("Delete"), "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
 
@@ -308,13 +308,8 @@ void PlaylistBrowser::saveStreams()
             StreamEntry *item = (StreamEntry*)it;
             i.setAttribute( "name", item->title() );
 
-            QDomElement attr = doc.createElement( "parent" );
-            QDomText t = doc.createTextNode( currentCat->title() );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "url" );
-            t = doc.createTextNode( escapeHTML( item->url().prettyURL() ) );
+            QDomElement attr = doc.createElement( "url" );
+            QDomText t = doc.createTextNode( escapeHTML( item->url().prettyURL() ) );
             attr.appendChild( t );
             i.appendChild( attr );
         }
@@ -554,10 +549,9 @@ void PlaylistBrowser::saveSmartPlaylists()
     #define m_smartCategory static_cast<QListViewItem *>(m_smartCategory)
 
     QListViewItem *it = m_smartCategory->firstChild();
-    // First child is ALWAYS collection category, we dont want to save it.
     it = it->nextSibling();
 
-    for( int count = 1; count < m_smartCategory->childCount(); count++ )
+    for( int count = 1 ; count < m_smartCategory->childCount(); count++ )
     {
         QDomElement i;
 
@@ -570,13 +564,8 @@ void PlaylistBrowser::saveSmartPlaylists()
             SmartPlaylist *item = (SmartPlaylist*)it;
             i.setAttribute( "name", item->title() );
 
-            QDomElement attr = doc.createElement( "parent" );
-            QDomText t = doc.createTextNode( currentCat->title() );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "sqlForUrls" );
-            t = doc.createTextNode( item->sqlForUrls );
+            QDomElement attr = doc.createElement( "sqlForUrls" );
+            QDomText t = doc.createTextNode( item->sqlForUrls );
             attr.appendChild( t );
             i.appendChild( attr );
 
@@ -598,6 +587,7 @@ void PlaylistBrowser::saveSmartPlaylists()
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
 }
+
 
 /**
  *************************************************************************
@@ -795,13 +785,8 @@ void PlaylistBrowser::savePlaylists()
             PlaylistEntry *item = (PlaylistEntry*)it;
             i.setAttribute( "file", item->url().path() );
 
-            QDomElement attr = doc.createElement( "parent" );
-            QDomText t = doc.createTextNode( currentCat->title() );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "tracks" );
-            t = doc.createTextNode( QString::number(item->trackCount()) );
+            QDomElement attr = doc.createElement( "tracks" );
+            QDomText t = doc.createTextNode( QString::number(item->trackCount()) );
             attr.appendChild( t );
             i.appendChild( attr );
 
@@ -944,18 +929,30 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         else if( isStream( item ) ) {
             if( item == m_lastStream ) {
                 QListViewItem *above = item->itemAbove();
-                m_lastPlaylist = above ? (StreamEntry *)above : 0;
+                m_lastStream = above ? (StreamEntry *)above : 0;
             }
             delete item;
         }
         else if( isSmartPlaylist( item ) ) {
             if( item == m_lastSmart ) {
                 QListViewItem *above = item->itemAbove();
-                m_lastPlaylist = above ? (SmartPlaylist *)above : 0;
+                m_lastSmart = above ? (SmartPlaylist *)above : 0;
             }
             delete item;
         }
-
+        else if( isCategory( item ) ) {
+            if( item == m_lastSmart ) {
+                QListViewItem *above = item->itemAbove();
+                m_lastSmart = above ? (SmartPlaylist *)above : 0;
+            } else if( item == m_lastStream ) {
+                QListViewItem *above = item->itemAbove();
+                m_lastStream = above ? (StreamEntry *)above : 0;
+            } else if( item == m_lastPlaylist ) {
+                QListViewItem *above = item->itemAbove();
+                m_lastPlaylist = above ? (PlaylistEntry *)above : 0;
+            }
+            delete item;
+        }
         else if( isPlaylistTrackItem( item ) ) {
             //remove the track
             PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
@@ -965,7 +962,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 }
 
 
-void PlaylistBrowser::renameSelectedPlaylist() //SLOT
+void PlaylistBrowser::renameSelectedItem() //SLOT
 {
     QListViewItem *item = m_listview->currentItem();
     if( !item ) return;
@@ -989,19 +986,22 @@ void PlaylistBrowser::renameSelectedPlaylist() //SLOT
 
 void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newName, int ) //SLOT
 {
-    #define item static_cast<PlaylistEntry*>(item)
+    if( isPlaylist( item ) )
+    {
+        #define item static_cast<PlaylistEntry*>(item)
 
-    QString oldPath = item->url().path();
-    QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
+        QString oldPath = item->url().path();
+        QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
 
-    if ( rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
-        KMessageBox::error( this, i18n("Error renaming the file.") );
-    else
-        item->setUrl( newPath );
+        if ( rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
+            KMessageBox::error( this, i18n("Error renaming the file.") );
+        else
+            item->setUrl( newPath );
+
+        #undef item
+    }
 
     item->setRenameEnabled( 0, false );
-
-    #undef item
 }
 
 
@@ -1036,6 +1036,20 @@ void PlaylistBrowser::deleteSelectedPlaylists() //SLOT
     }
 }
 
+QStringList
+PlaylistBrowser::selectedList()
+{
+    QStringList selected;
+
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
+    while( *it )
+    {
+        selected << (*it)->text(0);
+        ++it;
+    }
+
+    return selected;
+}
 
 void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
 {
@@ -1270,7 +1284,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 item->restore();
                 break;
             case RENAME:
-                renameSelectedPlaylist();
+                renameSelectedItem();
                 break;
             case REMOVE:
                 removeSelectedItems();
@@ -1312,24 +1326,48 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
     }
     else if( isCategory( item ) ) {
+        #define item static_cast<PlaylistCategory*>(item)
+        enum Actions { RENAME, REMOVE, CREATE, FOLDER };
 
-        enum Actions { EXPAND, COLLAPSE };
+        //HACK!
+        if( item->text(0) == i18n("Cool-Streams") && item->parent()->text(0) == i18n("Streams") ) return;
+        if( item->text(0) == i18n("Collection") && item->parent()->text(0) == i18n("Smart Playlists") ) return;
 
-        if( !item->isExpandable() || !item->childCount() )
-            return;
+        if( item->isFolder() ) {
+            menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
+            menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
+            menu.insertSeparator();
+        }
 
-        item->isOpen() ?
-            menu.insertItem( SmallIconSet( "back" ), i18n("Collapse"), COLLAPSE ) :
-            menu.insertItem( SmallIconSet( "forward" ), i18n("Expand"), EXPAND );
+        menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         switch( menu.exec( p ) ) {
-            case EXPAND:
-                item->setOpen( true );
+            case RENAME:
+                renameSelectedItem();
                 break;
-            case COLLAPSE:
-                item->setOpen( false );
+
+            case REMOVE:
+                removeSelectedItems();
+                break;
+
+            case CREATE:
+                QListViewItem *tracker = item->firstChild();
+                uint c=0;
+                for(  ; isCategory( tracker ); tracker = tracker->nextSibling() )
+                {
+                    if( tracker->text(0).startsWith("Folder") )
+                        c++;
+                    if( !isCategory( tracker->nextSibling() ) )
+                        break;
+                }
+                QString name = i18n("Folder");
+                if( c ) name = i18n("Folder %1").arg(c);
+
+                new PlaylistCategory( item, tracker, name, true );
+
                 break;
         }
+        #undef item
     }
     else if( isPlaylistTrackItem( item ) )
     {
@@ -1643,7 +1681,7 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
             break;
 
         case Key_F2:    //rename
-            PlaylistBrowser::instance()->renameSelectedPlaylist();
+            PlaylistBrowser::instance()->renameSelectedItem();
             break;
 
         case SHIFT+Key_Delete:    //delete

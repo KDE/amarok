@@ -50,6 +50,8 @@ class PlaylistBrowser : public QVBox
         QString streamBrowserCache();
         QString smartplaylistBrowserCache();
 
+        QStringList selectedList();
+
         ViewMode viewMode() { return m_viewMode; }
 
         static PlaylistBrowser *instance() { return s_instance; }
@@ -63,7 +65,7 @@ class PlaylistBrowser : public QVBox
         void editStreamURL( StreamEntry *item );
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
-        void renameSelectedPlaylist();
+        void renameSelectedItem();
         void saveCurrentPlaylist();
         void slotDoubleClicked( QListViewItem *item );
 
