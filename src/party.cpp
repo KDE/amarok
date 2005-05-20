@@ -56,6 +56,8 @@ Party::Party( QWidget *parent, const char *name )
 
     m_playlists = m_base->m_playlistSelector;
     m_playlists->setSorting( 0 );
+    m_playlists->addColumn( i18n("Playlists") );
+    m_playlists->setSelectionModeExt( KListView::Extended ); // Allow many files to be selected
 
     insertPlaylists();
 
@@ -63,7 +65,6 @@ Party::Party( QWidget *parent, const char *name )
     m_base->m_playlistSelector->setEnabled( m_base->m_appendType->currentItem() == 2 );
 
     connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( setAppendMode(int) ) );
-//     connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( updateButtons(int) ) );
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
     applySettings();
@@ -127,7 +128,18 @@ Party::addPlaylists() //SLOT
 void
 Party::subPlaylists() //SLOT
 {
+    //assemble a list of what needs removing
+    //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
+    QPtrList<QListViewItem> list;
+    QListViewItemIterator it( m_playlists, QListViewItemIterator::Selected);
 
+    for( ; *it; list.prepend( *it ), ++it );
+
+    if( list.isEmpty() ) return;
+
+    //remove the items
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+        delete item;
 }
 
 void

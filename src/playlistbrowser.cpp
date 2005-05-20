@@ -1044,7 +1044,8 @@ PlaylistBrowser::selectedList()
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
     while( *it )
     {
-        selected << (*it)->text(0);
+        if( !isCategory( *it ) )
+            selected << (*it)->text(0);
         ++it;
     }
 
