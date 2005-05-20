@@ -16,7 +16,7 @@
 class Quad
 
     def initialize(s1, s2, s3, s4)
-        @tokens = Array[s1, s2, s3, s4]
+        @tokens = [s1, s2, s3, s4]
         @canStart = false
         @canEnd = false
     end
@@ -135,8 +135,8 @@ class MegaHal
     def learn(parts)
         if parts.size() >= 4
             i = 0
-            while i < parts.size()-3 do
-                quad = Quad.new(parts[0], parts[1], parts[2], parts[3])
+            while i < parts.size()-3
+                quad = Quad.new(parts[i+0], parts[i+1], parts[i+2], parts[i+3])
                 if @quads.has_key?(quad)
                     quad = @quads[quad]
                 else
@@ -150,18 +150,27 @@ class MegaHal
                 end
 
                 n = 0
-                while n < 4 do
+                while n < 4
                     token = parts[i+n]
-                    @words[token] = quad
+                    if not @words.has_key?(token)
+                        @words[token] = Array.new()
+                    end
+                    @words[token].push(quad)
                     n = n+1
                 end
                 if i > 0
                     previousToken = parts[i-1]
-                    @previous[quad] = previousToken
+                    if not @previous.has_key?(quad)
+                        @previous[quad] = Array.new()
+                    end
+                    @previous[quad].push(previousToken)
                 end
                 if i < parts.size()-4
                     nextToken = parts[i+4]
-                    @next[quad] = nextToken
+                    if not @next.has_key?(quad)
+                        @next[quad] = Array.new()
+                    end
+                    @next[quad].push(nextToken)
                 end
                 i = i+1
             end
@@ -194,9 +203,10 @@ class MegaHal
         @words.each_key { |key| print key + "\n" }
 
         if @words.has_key?(word)
-            quads << @words[word]
+            quads = @words[word]
             print "@words has the key.\n"
         end
+
         return "Error: quads is empty." if quads.empty?()
 
         middleQuad = quads[rand( quads.size()-1 )]
@@ -206,22 +216,24 @@ class MegaHal
             parts << quad.getToken(i)
         end
 
+        count = 0
         while not quad.canEnd()
+            print "Count: #{count}\n"
+            count = count + 1
             nextTokens = @next[quad]
             nextToken = nextTokens[rand( nextTokens.size()-1 )]
-            quad = Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)
-#             quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
-#             break if quad == nil
+            quad = @quads[Quad.new(quad.getToken(1), quad.getToken(2), quad.getToken(3), nextToken)]
             parts.push(nextToken)
         end
 
         quad = middleQuad
+        count = 0
         while not quad.canStart()
+            print "Count: #{count}\n"
+            count = count + 1
             previousTokens = @previous[quad]
             previousToken = previousTokens[rand( previousTokens.size()-1 )]
-            quad = Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))
-#             quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
-#             break if quad == nil
+            quad = @quads[Quad.new(previousToken, quad.getToken(0), quad.getToken(1), quad.getToken(2))]
             parts.unshift(previousToken)
         end
 
