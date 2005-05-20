@@ -54,6 +54,8 @@ PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, con
     setRenameEnabled( 0, isFolder );
     setExpandable( true );
 
+    setPixmap( 0, SmallIcon("folder_red") );
+
     setText( 0, t );
 }
 
@@ -77,14 +79,9 @@ void
 PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
     QFont font( p->font() );
-    font.setBold( true );
 
     if( !m_folder ) // increase font size for base categories
-    {
-        font.setUnderline( true );
-        font.setItalic( true );
-//         font.setPointSize( font.pointSize() + 2 );
-    }
+        font.setBold( true );
 
     p->setFont( font );
 

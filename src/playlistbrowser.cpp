@@ -11,6 +11,7 @@
 #include "collectionreader.h"
 #include "debug.h"
 #include "k3bexporter.h"
+#include "party.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
@@ -112,7 +113,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     //</Toolbar>
 
     m_listview = new PlaylistBrowserView( browserBox );
-//     new SmartPlaylistBox( m_splitter );
+    new Party( m_splitter );
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );

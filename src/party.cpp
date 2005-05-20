@@ -11,65 +11,128 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "browserToolBar.h"
+#include "collectiondb.h"
 #include "party.h"
 #include "partydialogbase.h"
+#include "playlist.h"
 #include "smartplaylist.h"
 #include "statusbar.h"
 
 #include <qfile.h>
 
+#include <kaction.h>
 #include <kapplication.h>
 #include <klocale.h>
+#include <ktoolbar.h>
 #include <kurllabel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS Party
 ////////////////////////////////////////////////////////////////////////////
 
-Party::Party( QString /*defaultName*/, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, false, 0, Ok|Cancel|Help )
+Party::Party( QWidget *parent, const char *name )
+    : QVBox( parent, name )
 {
-    kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("Configure Party Mode") ) );
+    KToolBar *toolbar = new Browser::ToolBar( this );
+
+    toolbar->setIconText( KToolBar::IconTextRight, false ); //text on right
+    toolbar->insertButton( "edit_add", 0, true, i18n("Add Selected") );
+    toolbar->insertButton( "edit_remove", 1, true, i18n("Remove") );
+    toolbar->insertLineSeparator();
+    toolbar->setIconText( KToolBar::IconOnly, false ); //the "remove" button will have default appearance
+    toolbar->insertButton( "filesave", 2, true, i18n("Save") );
+
+    connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
+    connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
+    connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( startParty() ) );
 
     m_base = new PartyDialogBase(this);
-    setMainWidget(m_base);
 
-    m_lbSelected  = m_base->m_playlistSelector->selectedListBox();
-    m_lbAvailable = m_base->m_playlistSelector->availableListBox();
+    m_playlists = m_base->m_playlistSelector;
+    m_playlists->setSorting( 0 );
 
     insertPlaylists();
 
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
-    m_base->m_playlistSelector->setEnabled( m_base->m_playlistRadio->isEnabled() );
+    m_base->m_playlistSelector->setEnabled( m_base->m_appendType->currentItem() == 2 );
 
     // FIXME Showing a StatusBar longMessage doesn't suit very well for help texts
     connect( this, SIGNAL( helpClicked() ), SLOT( showHelp() ) );
 
-    connect( m_base->m_playlistRadio, SIGNAL( toggled(bool) ), m_base->m_playlistSelector,     SLOT( setEnabled(bool) ) );
-    connect( m_base->m_cycleTracks,   SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox,     SLOT( setEnabled(bool) ) );
-
-    //update buttons
-    connect( m_base->m_playlistSelector, SIGNAL( removed(QListBoxItem *) ), SLOT( updateButtons() ) );
-    connect( m_base->m_playlistSelector, SIGNAL( added(QListBoxItem *) ),   SLOT( updateButtons() ) );
-    connect( m_base->m_playlistRadio,    SIGNAL( toggled(bool) ),           SLOT( updateButtons() ) );
+    connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( setAppendMode(int) ) );
+    connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
     applySettings();
 }
 
-QString Party::appendType()
+void
+Party::startParty()
 {
-    if( m_base->m_buttonGroup->selectedId() == 0 )
-        return "Random";
-    else if( m_base->m_buttonGroup->selectedId() == 1 )
-        return "Suggestion";
-    else
-        return "Custom";
+    //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
+
+    if( CollectionDB::instance()->isEmpty() )
+        return;
+
+    bool partyEnabled = isChecked();
+    if ( partyEnabled != AmarokConfig::partyMode() )
+    {
+        static_cast<amaroK::PartyAction*>( amaroK::actionCollection()->action("party_mode") )->setChecked( partyEnabled );
+        if ( !partyEnabled )
+        {
+            Playlist::instance()->alterHistoryItems( true, true ); //enable all items
+            amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
+            return;
+        }
+    }
+    QString type;
+    if( appendType() == RANDOM )
+        type = "Random";
+    else if( appendType() == RANDOM )
+        type = "Suggestion";
+    else if( appendType() == RANDOM )
+        type = "Custom";
+
+    AmarokConfig::setPartyType( type );
+
+    if ( AmarokConfig::partyType() == "Custom" )
+        AmarokConfig::setPartyCustomList( customList() );
+
+    if ( AmarokConfig::partyPreviousCount() != previousCount() )
+    {
+        Playlist::instance()->adjustPartyPrevious( previousCount() );
+        AmarokConfig::setPartyPreviousCount( previousCount() );
+    }
+
+    if ( AmarokConfig::partyUpcomingCount() != upcomingCount() )
+    {
+        AmarokConfig::setPartyUpcomingCount( upcomingCount() );
+        Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
+    }
+
+    AmarokConfig::setPartyCycleTracks( cycleTracks() );
+    AmarokConfig::setPartyAppendCount( appendCount() );
+    AmarokConfig::setPartyMarkHistory( markHistory() );
+
+    amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
+    amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
+
 }
 
-void Party::applySettings()
+void
+Party::setAppendMode( int id )
+{
+    bool enable = false;
+    if( id == 2 ) enable = true;
+
+    m_playlists->setEnabled( enable );
+}
+
+void
+Party::applySettings()
 {
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 
@@ -79,81 +142,58 @@ void Party::applySettings()
     m_base->m_cycleTracks->setChecked( AmarokConfig::partyCycleTracks() );
     m_base->m_markHistory->setChecked( AmarokConfig::partyMarkHistory() );
 
-    if ( AmarokConfig::partyType() == "Random" ) {
-        m_base->m_randomRadio->setChecked( TRUE );
-        m_base->m_suggestionRadio->setChecked( false );
-        m_base->m_playlistRadio->setChecked( false );
-    } else if ( AmarokConfig::partyType() == "Suggestion" ) {
-        m_base->m_randomRadio->setChecked( false );
-        m_base->m_suggestionRadio->setChecked( TRUE );
-        m_base->m_playlistRadio->setChecked( false );
-    } else {
-        m_base->m_randomRadio->setChecked( false );
-        m_base->m_suggestionRadio->setChecked( false );
-        m_base->m_playlistRadio->setChecked( TRUE );
-    }
+    if ( AmarokConfig::partyType() == "Random" )
+        m_base->m_appendType->setCurrentItem( RANDOM );
+
+    else if ( AmarokConfig::partyType() == "Suggestion" )
+        m_base->m_appendType->setCurrentItem( SUGGESTION );
+
+    else // Custom
+        m_base->m_appendType->setCurrentItem( CUSTOM );
 
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 }
 
-void Party::insertPlaylists()
+void
+Party::insertPlaylists()
 {
-    //BEGIN selectedListBox
     QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
-    m_lbSelected->insertStringList( playlists );
-    //END   selectedListBox
+    QListViewItem *last=0;
 
-    //BEGIN availableListBox
-    SmartPlaylistView *spv = SmartPlaylistView::instance() ? SmartPlaylistView::instance() : new SmartPlaylistView( this );
-    QStringList list = spv->listItems();
-    for ( uint i=0; i < list.count(); i++ )
-    {
-        // dont add if in selected list.
-        // critical that items are inserted into the selected qlistbox first!
-        if ( m_lbSelected->findItem( list[i] ) )
-            continue;
-
-        m_lbAvailable->insertItem( list[i] );
-    }
-    //END   availableListBox
+    for( uint i=0; i < playlists.count(); i++ )
+        last = new QListViewItem( m_playlists, last, playlists[i] );
 }
 
 QString Party::customList()
 {
     QString playlists;
-    for ( uint i=0; i < m_lbSelected->count(); ++i )
+
+    for( QListViewItem *it = m_playlists->firstChild(); it != m_playlists->lastItem(); it = it->nextSibling() )
     {
-        playlists.append( m_lbSelected->text( i ) );
-        if ( i != m_lbSelected->count() - 1 )  playlists.append( ',' );
+        playlists.append( it->text(0) );
+        if ( it != m_playlists->lastItem() )  playlists.append( ',' );
     }
     return playlists;
 }
 
-void Party::showHelp() //SLOT
+void
+Party::addPlaylists()
 {
-    amaroK::StatusBar::instance()->longMessage( i18n(
-        "<div align=\"center\"><b>Party Mode</b></div><br>"
-        "<p>Party mode is a complex playlist handling mechanism - acting "
-        "basically on the concept of a 'rotating' playlist.  The playlist can "
-        "be modelled as a queuing system, FIFO.  As a track is advanced, "
-        "the first track in the playlist is removed, and another appended to "
-        "the end.  The type of addition is selected by the user during "
-        "configuration.</p>" ) );
+
 }
 
-void Party::updateButtons() //SLOT
+void
+Party::subPlaylists()
 {
-    //disbale OK button if no item is in the selected listbox
-    if( m_base->m_playlistRadio->isChecked() )
-        enableButtonOK( m_lbSelected->firstItem() );
-    else
-        enableButtonOK( true );
+
 }
+
 
 bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
 int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }
 int     Party::upcomingCount() { return m_base->m_upcomingIntSpinBox->value(); }
 int     Party::appendCount()   { return m_base->m_appendCountIntSpinBox->value(); }
+int     Party::appendType()    { return m_base->m_appendType->currentItem(); }
 bool    Party::cycleTracks()   { return m_base->m_cycleTracks->isChecked(); }
 bool    Party::markHistory()   { return m_base->m_markHistory->isChecked(); }
 

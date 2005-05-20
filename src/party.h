@@ -35,36 +35,39 @@
 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qlistbox.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
+#include <qvbox.h>    //baseclass
 
-#include <kactionselector.h>
-#include <kdialogbase.h>    //baseclass
 #include <knuminput.h>
+#include <klistview.h>
 
 class PartyDialogBase;
 
-class Party : public KDialogBase
+class Party : public QVBox
 {
         Q_OBJECT
 
     public:
-        Party( QString defaultName, QWidget *parent, const char *name = 0 );
+        Party( QWidget *parent, const char *name = 0 );
 
-        QString appendType();
+        enum    Mode  { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
+
         bool    isChecked();
         int     previousCount();
         int     upcomingCount();
         int     appendCount();
+        int     appendType();
         bool    cycleTracks();
         bool    markHistory();
-
         QString customList();
 
     private slots:
-        void    showHelp();
-        void    updateButtons();
+        void    addPlaylists();
+        void    subPlaylists();
+        void    setAppendMode( int id );
+        void    startParty();
 
     private:
         PartyDialogBase *m_base;
@@ -76,9 +79,7 @@ class Party : public KDialogBase
 
         QLabel *m_tooltip;
 
-        //List boxes for the KActionSelector
-        QListBox     *m_lbSelected;
-        QListBox     *m_lbAvailable;
+        KListView *m_playlists;
 };
 
 #endif //AMAROK_PARTY_H

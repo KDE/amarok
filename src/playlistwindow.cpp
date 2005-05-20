@@ -187,7 +187,6 @@ PlaylistWindow::init()
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         QLabel *filter_label = new QLabel( i18n("S&earch:") + " ", bar );
         m_lineEdit = new ClickLineEdit( i18n( "Filter here..." ), bar );
-        QWidget *party_button = new KToolBarButton( "party", 2, bar );
 
         filter_label->setBuddy( m_lineEdit );
 
@@ -196,12 +195,10 @@ PlaylistWindow::init()
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
-        connect( party_button, SIGNAL(clicked()), this, SLOT(configureParty() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( filter_label, i18n( "Enter space-separated terms to filter playlist" ) );
         QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
-        QToolTip::add( party_button, i18n( "Configure party" ) );
     } //</Search LineEdit>
 
 
@@ -446,54 +443,6 @@ void PlaylistWindow::applySettings()
         Playlist::instance()->unsetFont();
         ContextBrowser::instance()->unsetFont();
         break;
-    }
-}
-
-
-void PlaylistWindow::configureParty()
-{
-    //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
-
-    if( CollectionDB::instance()->isEmpty() )
-        return;
-
-    Party dialog( i18n("Configuring party"), this );
-    if( dialog.exec() == QDialog::Accepted )
-    {
-        bool partyEnabled = dialog.isChecked();
-        if ( partyEnabled != AmarokConfig::partyMode() )
-        {
-            static_cast<amaroK::PartyAction*>( actionCollection()->action("party_mode") )->setChecked( partyEnabled );
-            if ( !partyEnabled )
-            {
-                Playlist::instance()->alterHistoryItems( true, true ); //enable all items
-                amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
-                return;
-            }
-        }
-
-        AmarokConfig::setPartyType( dialog.appendType() );
-        if ( AmarokConfig::partyType() == "Custom" )
-            AmarokConfig::setPartyCustomList( dialog.customList() );
-
-        if ( AmarokConfig::partyPreviousCount() != dialog.previousCount() )
-        {
-            Playlist::instance()->adjustPartyPrevious( dialog.previousCount() );
-            AmarokConfig::setPartyPreviousCount( dialog.previousCount() );
-        }
-
-        if ( AmarokConfig::partyUpcomingCount() != dialog.upcomingCount() )
-        {
-            AmarokConfig::setPartyUpcomingCount( dialog.upcomingCount() );
-            Playlist::instance()->adjustPartyUpcoming( dialog.upcomingCount(), dialog.appendType() );
-        }
-
-        AmarokConfig::setPartyCycleTracks( dialog.cycleTracks() );
-        AmarokConfig::setPartyAppendCount( dialog.appendCount() );
-        AmarokConfig::setPartyMarkHistory( dialog.markHistory() );
-
-        amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
 }
 
