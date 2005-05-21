@@ -301,7 +301,7 @@ class RSSFeedsPlugin < Plugin
             when 'amarokforum'
                 @bot.say whichChan, "::Forum:: #{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}"
             when 'mediawiki'
-                @bot.say whichChan, "::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::"
+                @bot.say whichChan, "::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)} #{item.link} ::"
                 puts "mediawiki #{item.title}"
             when "gmame"
                 @bot.say whichChan, "::amarok-devel:: Message #{item.title} sent by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)}::"
