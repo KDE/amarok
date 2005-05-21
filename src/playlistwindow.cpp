@@ -578,7 +578,7 @@ void PlaylistWindow::savePlaylist() const //SLOT
           return;
         }
 
-        PlaylistBrowser::instance()->addPlaylist( path, true );
+        PlaylistBrowser::instance()->addPlaylist( path, 0, true );
     }
 }
 

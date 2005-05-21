@@ -255,12 +255,18 @@ void PlaylistBrowser::loadCoolStreams()
 }
 
 
-void PlaylistBrowser::addStream()
+void PlaylistBrowser::addStream( QListViewItem *parent )
 {
     StreamEditor dialog( i18n("Stream"), this );
 
+    if( !parent ) parent = static_cast<QListViewItem*>(m_streamsCategory);
+
     if( dialog.exec() == QDialog::Accepted )
-        m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, dialog.url(), dialog.name() );
+    {
+        m_lastStream = new StreamEntry( parent, m_lastStream, dialog.url(), dialog.name() );
+        parent->setOpen( true );
+    }
+
 }
 
 
@@ -338,16 +344,19 @@ QString PlaylistBrowser::smartplaylistBrowserCache()
     return amaroK::saveLocation() + "smartplaylistbrowser_save.xml";
 }
 
-void PlaylistBrowser::addSmartPlaylist() //SLOT
+void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
 {
     if( CollectionDB::instance()->isEmpty() )
         return;
 
+    if( !parent ) parent = static_cast<QListViewItem*>(m_smartCategory);
+
     SmartPlaylistEditor dialog( i18n("Untitled"), this );
     if( dialog.exec() == QDialog::Accepted ) {
-        SmartPlaylist *item = new SmartPlaylist( m_smartCategory, m_lastSmart, dialog.name(), QString() );
+        SmartPlaylist *item = new SmartPlaylist( parent, m_lastSmart, dialog.name(), QString() );
         item->setCustom( true );
         item->sqlForUrls = dialog.query();
+        parent->setOpen( true );
     }
 }
 
@@ -731,7 +740,7 @@ void PlaylistBrowser::loadOldPlaylists()
     m_playlistCategory->setOpen( true );
 }
 
-void PlaylistBrowser::addPlaylist( QString path, bool force )
+void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool force )
 {
     // this function adds a playlist to the playlist browser
 
@@ -752,14 +761,17 @@ void PlaylistBrowser::addPlaylist( QString path, bool force )
             renameButton->setEnabled( true );
             deleteButton->setEnabled( true );
         }
+
+        if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
+
         KURL auxKURL;
         auxKURL.setPath(path);
-        m_lastPlaylist = new PlaylistEntry( m_playlistCategory, m_lastPlaylist, auxKURL );
-        m_playlistCategory->setOpen( true );
+        m_lastPlaylist = new PlaylistEntry( parent, m_lastPlaylist, auxKURL );
+        parent->setOpen( true );
     }
 }
 
-void PlaylistBrowser::openPlaylist() //SLOT
+void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
 {
     // open a file selector to add playlists to the playlist browser
     QStringList files;
@@ -767,7 +779,7 @@ void PlaylistBrowser::openPlaylist() //SLOT
 
     const QStringList::ConstIterator end  = files.constEnd();
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
-        addPlaylist( *it );
+        addPlaylist( *it, parent );
 }
 
 void PlaylistBrowser::savePlaylists()
@@ -1350,9 +1362,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, FOLDER };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, FOLDER };
 
-        //HACK!
+        QListViewItem *parentCat = item;
+
+        while( parentCat->parent() )
+            parentCat = parentCat->parent();
+
         if( item->text(0) == i18n("Cool-Streams") && item->parent()->text(0) == i18n("Streams") ) return;
         if( item->text(0) == i18n("Collection") && item->parent()->text(0) == i18n("Smart Playlists") ) return;
 
@@ -1361,6 +1377,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
             menu.insertSeparator();
         }
+
+        if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Playlist"), PLAYLIST );
+
+        else if( parentCat == static_cast<QListViewItem*>(m_smartCategory) )
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Smart-Playlist"), SMART );
+
+        else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Stream"), STREAM );
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
@@ -1371,6 +1396,18 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case REMOVE:
                 removeSelectedItems();
+                break;
+
+            case PLAYLIST:
+                openPlaylist( item );
+                break;
+
+            case SMART:
+                addSmartPlaylist( item );
+                break;
+
+            case STREAM:
+                addStream( item );
                 break;
 
             case CREATE:

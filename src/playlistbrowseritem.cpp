@@ -45,7 +45,7 @@ class PlaylistReader : public ThreadWeaver::DependentJob
 ///    CLASS PlaylistCategory
 ////////////////////////////////////////////////////////////////////////////
 
-PlaylistCategory::PlaylistCategory( KListView *parent, QListViewItem *after, const QString &t, bool isFolder )
+PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QString &t, bool isFolder )
     : KListViewItem( parent, after )
     , m_title( t )
     , m_folder( isFolder )
@@ -93,7 +93,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 ///    CLASS PlaylistEntry
 ////////////////////////////////////////////////////////////////////////////
 
-PlaylistEntry::PlaylistEntry( KListViewItem *parent, QListViewItem *after, const KURL &url, int tracks, int length )
+PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &url, int tracks, int length )
     : KListViewItem( parent, after )
     , m_url( url )
     , m_length( length )
@@ -502,7 +502,7 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
 ///    CLASS StreamEntry
 ////////////////////////////////////////////////////////////////////////////
 
-StreamEntry::StreamEntry( KListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
+StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
     : KListViewItem( parent, after )
     , m_title( t )
     , m_url( u )
@@ -664,7 +664,7 @@ StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const c
 ///    CLASS SmartPlaylist
 ////////////////////////////////////////////////////////////////////////////
 
-SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &query )
+SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query )
         : KListViewItem( parent, after, name )
         , sqlForTags( query )
         , m_custom( false )
@@ -676,7 +676,7 @@ SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const
     setText( 0, name );
 }
 
-SmartPlaylist::SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
+SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
         : KListViewItem( parent, after, name )
         , sqlForUrls( urls )
         , sqlForTags( tags )

@@ -17,7 +17,7 @@
 class PlaylistCategory : public KListViewItem
 {
     public:
-        PlaylistCategory( KListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
+        PlaylistCategory( QListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
         PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
         ~PlaylistCategory() { };
 
@@ -44,7 +44,7 @@ class PlaylistEntry :  public QObject, public KListViewItem
     friend class PlaylistCategory;
 
     public:
-        PlaylistEntry( KListViewItem *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
+        PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
         ~PlaylistEntry();
         void load();
         void restore();
@@ -142,7 +142,7 @@ class TrackItemInfo
 class StreamEntry : public KListViewItem
 {
     public:
-        StreamEntry( KListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
+        StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
         ~StreamEntry() { };
 
         void  setURL  ( KURL u )    { m_url = u; }
@@ -181,8 +181,8 @@ class StreamEditor : public KDialogBase
 class SmartPlaylist : public KListViewItem
 {
     public:
-        SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
-        SmartPlaylist( KListViewItem *parent, QListViewItem *after, const QString &name,
+        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
+        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
                                                         const QString &urls, const QString &tags );
 
         void setCustom( bool b ) { m_custom = b; setDragEnabled( true ); }

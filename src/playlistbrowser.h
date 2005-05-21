@@ -41,10 +41,10 @@ class PlaylistBrowser : public QVBox
         PlaylistBrowser( const char* name=0 );
         ~PlaylistBrowser();
 
-        void addStream();
-        void addSmartPlaylist();
+        void addStream( QListViewItem *parent = 0 );
+        void addSmartPlaylist( QListViewItem *parent = 0 );
         void addPartyConfig();
-        void addPlaylist( QString path, bool force=false );
+        void addPlaylist( QString path, QListViewItem *parent = 0, bool force=false );
 
         QString playlistBrowserCache();
         QString streamBrowserCache();
@@ -59,7 +59,7 @@ class PlaylistBrowser : public QVBox
         static PlaylistBrowser *instance() { return s_instance; }
 
     public slots:
-        void openPlaylist();
+        void openPlaylist( QListViewItem *parent = 0 );
 
     private slots:
         void currentItemChanged( QListViewItem * );
