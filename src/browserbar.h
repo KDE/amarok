@@ -19,7 +19,7 @@
 typedef QValueVector<QWidget*> BrowserList;
 
 class KURL;
-class QSignalMapper;
+class QSplitter;
 class QToolBox;
 class QVBox;
 
@@ -40,14 +40,8 @@ public:
 
     void addBrowser( QWidget*, const QString&, const QString& );
 
-    /// for internal use
-    void mouseMovedOverSplitter( QMouseEvent* );
-
 protected:
-    virtual bool eventFilter( QObject*, QEvent* );
-    virtual bool event( QEvent* );
     virtual void polish();
-    virtual void timerEvent( QTimerEvent* );
 
 protected:
     virtual void engineStateChanged( Engine::State );
@@ -61,17 +55,15 @@ public slots:
 private:
     int indexForName( const QString& ) const;
 
-    void adjustWidgetSizes();
     uint maxBrowserWidth() const { return width() / 2; }
 
     static const int DEFAULT_HEIGHT = 50;
 
-    uint           m_pos;         ///the x-axis position of m_divider
+    QSplitter     *m_splitter;
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
-    QWidget       *m_divider;     ///a qsplitter like widget
     QToolBox      *m_toolBox;
     BrowserList    m_browsers;
-    QWidget       *m_browserBox;  ///parent widget to the browsers
+    QVBox         *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
     int            m_lastIndex;
 };

@@ -22,67 +22,27 @@
 
 #include <qcursor.h>       //for resize cursor
 #include <qlayout.h>
-#include <qpainter.h>
-#include <qstyle.h>        //amaroK::Splitter
+#include <qsplitter.h>
 #include <qtoolbox.h>
 #include <qvbox.h>
-
-
-// we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
-// mostly we can stop the browserbar getting resized too small so that switching browser looks wrong
-
-namespace amaroK
-{
-    class Splitter : public QWidget {
-    public:
-        Splitter( BrowserBar *w ) : QWidget( w, "divider" )
-        {
-            setCursor( QCursor(SplitHCursor) );
-            styleChange( style() );
-        }
-
-        virtual void paintEvent( QPaintEvent* )
-        {
-            QPainter p( this );
-            parentWidget()->style().drawPrimitive( QStyle::PE_Splitter, &p, rect(), colorGroup(), QStyle::Style_Horizontal );
-        }
-
-        virtual void styleChange( QStyle& )
-        {
-            setFixedWidth( style().pixelMetric( QStyle::PM_SplitterWidth, this ) );
-        }
-
-        virtual void mouseMoveEvent( QMouseEvent *e )
-        {
-            static_cast<BrowserBar*>(parent())->mouseMovedOverSplitter( e );
-        }
-    };
-}
 
 
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , EngineObserver( EngineController::instance() )
-        , m_playlistBox( new QVBox( this ) )
-        , m_divider( new amaroK::Splitter( this ) )
-        , m_toolBox( new QToolBox( this ) )
-        , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
 {
-//     m_pos = m_toolBox->sizeHint().width() + 5; //5 = aesthetic spacing
-    m_pos = 300;
-
-    m_toolBox->setFixedWidth( m_pos );
-    m_toolBox->move( 0, 3 );
-
-    QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
+    QVBoxLayout *layout = new QVBoxLayout( this );
     layout->addSpacing( 3 ); // aesthetics
     layout->setAutoAdd( true );
 
-    m_browserBox->move( m_pos, 0 );
-    m_browserBox->hide();
-    m_divider->hide();
+    m_splitter = new QSplitter( QSplitter::Horizontal, this );
+    m_splitter->setOpaqueResize( true );
+    m_browserBox = new QVBox( m_splitter );
+    m_playlistBox = new QVBox( m_splitter );
+
+    m_toolBox = new QToolBox( m_browserBox );
     m_playlistBox->setSpacing( 1 );
 }
 
@@ -121,79 +81,6 @@ BrowserBar::polish()
     if( index != -1 )
         // if we did it for -1 it ruins the browserBox size
         showHideBrowser( index );
-}
-
-void
-BrowserBar::adjustWidgetSizes()
-{
-    //TODO set the geometry of the PlaylistWindow before
-    // the browsers are loaded so this isn't called twice
-
-    const uint w   = width();
-    const uint h   = height();
-    const uint mxW = maxBrowserWidth();
-    const uint p   = (m_pos < mxW) ? m_pos : mxW;
-    const uint ppw = p + m_divider->width();
-    const uint tbw = m_toolBox->width();
-
-    m_divider->move( p, 0 );
-
-    const uint offset = !m_divider->isHidden() ? ppw : tbw;
-
-    m_browserBox->resize( p - tbw, h );
-    m_playlistBox->setGeometry( offset, 0, w - offset, h );
-}
-
-void
-BrowserBar::mouseMovedOverSplitter( QMouseEvent *e )
-{
-    const uint oldPos   = m_pos;
-    const uint newPos   = mapFromGlobal( e->globalPos() ).x();
-    const uint minWidth = m_toolBox->width() + m_browserBox->minimumWidth();
-    const uint maxWidth = maxBrowserWidth();
-
-    if( newPos < minWidth )
-        m_pos = minWidth;
-
-    else if( newPos > maxWidth )
-        m_pos = maxWidth;
-
-    else
-        m_pos = newPos;
-
-    if( m_pos != oldPos )
-        adjustWidgetSizes();
-}
-
-bool
-BrowserBar::event( QEvent *e )
-{
-    switch( e->type() )
-    {
-    case QEvent::LayoutHint:
-        //FIXME include browserholder width
-        setMinimumWidth(
-                m_toolBox->minimumWidth() +
-                m_divider->minimumWidth() +
-                m_browserBox->width() +
-                m_playlistBox->minimumWidth() );
-        break;
-
-    case QEvent::Resize:
-        DEBUG_LINE_INFO
-
-        m_divider->resize( 0, height() ); //Qt will set width
-        m_toolBox->resize( 0, height() ); //Qt will set width
-
-        adjustWidgetSizes();
-
-        return true;
-
-    default:
-        ;
-    }
-
-    return QWidget::event( e );
 }
 
 void
@@ -266,49 +153,5 @@ BrowserBar::engineStateChanged( Engine::State state )
     }
 }
 
-bool
-BrowserBar::eventFilter( QObject *o, QEvent *e )
-{
-    DEBUG_FUNC_INFO;
-
-    switch( e->type() )
-    {
-    case QEvent::MouseMove:
-    case QEvent::MouseButtonRelease:
-    case QEvent::MouseButtonPress:
-    case QEvent::FocusIn:
-    case QEvent::KeyPress:
-    case QEvent::KeyRelease:
-
-        debug() << "HELLO\n";
-
-        // we put an event filter on this browser to check
-        // if it is still being used within 5 seconds of
-        // playback starting. If so we shouldn't auto-switch
-        // to the context browser
-        o->removeEventFilter( this );
-        killTimers();
-        break;
-
-    default:
-        ;
-    }
-
-    return false;
-}
-
-void
-BrowserBar::timerEvent( QTimerEvent* )
-{
-    if( m_currentIndex != -1 ) //means the browsers are closed
-        showBrowser( "ContextBrowser" );
-
-    // it might be bad to leave excess filters running
-    // so just in case
-    foreachType( BrowserList, m_browsers )
-        (*it)->removeEventFilter( this );
-
-    killTimers();
-}
 
 #include "browserbar.moc"
