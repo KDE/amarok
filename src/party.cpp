@@ -105,7 +105,7 @@ QString Party::customList()
 {
     QString playlists;
 
-    for( QListViewItem *it = m_playlists->firstChild(); it != m_playlists->lastItem(); it = it->nextSibling() )
+    for( QListViewItem *it = m_playlists->firstChild(); it ; it = it->nextSibling() )
     {
         playlists.append( it->text(0) );
         if ( it != m_playlists->lastItem() )  playlists.append( ',' );
