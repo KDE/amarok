@@ -514,10 +514,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         return;
     else
     {
-        if( !sp->isCustom() && !sp->sqlForTags.isEmpty() )
-            sql = sp->sqlForTags;
-        else
-            sql = sp->sqlForUrls;
+        sql = sp->sqlForTags;
 
         //Add random and limiting sql queries to the end
         if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
@@ -540,7 +537,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     QStringList queryResult = CollectionDB::instance()->query( sql );
     QStringList newQuery;
 
-    if ( !sp->isCustom() && !sp->sqlForTags.isEmpty() ) {
+    if ( !sp->sqlForTags.isEmpty() ) {
         //We have to filter all the un-needed results from query( sql )
         for (uint x=10; x < queryResult.count() ; x += 11)
             newQuery << queryResult[x];

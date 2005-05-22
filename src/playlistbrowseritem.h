@@ -11,6 +11,7 @@
 #include <kurl.h>
 
 #include <qptrlist.h>
+#include <qdom.h>
 
 // Simple subclass for categories/folders and other structures for organising data
 
@@ -184,24 +185,26 @@ class SmartPlaylist : public KListViewItem
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
                                                         const QString &urls, const QString &tags );
+        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &tags,
+                                                        QDomElement xmlDefinition );
 
-        void setCustom( bool b ) { m_custom = b; setDragEnabled( true ); }
-        bool isCustom() const { return m_custom; }
+        bool isEditable() const { return !m_xml.isNull(); }
 
-        QString query() { return isCustom() ? sqlForUrls : sqlForTags; }
+        QString query() { return sqlForTags; }
         QString title() { return m_title; }
 
-        KURL::List urlList() const;
-
-        QString sqlForUrls;
         QString sqlForTags;
+
+        QDomElement xml() { return m_xml; }
+        void setXml( QDomElement xml );
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1004;    //smart playlist item
 
     private:
-        bool m_custom;
         QString m_title;
+        QDomElement m_xml;
+        QListViewItem *m_after;
 };
 
 #endif

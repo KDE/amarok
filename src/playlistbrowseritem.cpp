@@ -5,6 +5,7 @@
 
 #include "amarok.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
@@ -667,7 +668,6 @@ StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const c
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query )
         : KListViewItem( parent, after, name )
         , sqlForTags( query )
-        , m_custom( false )
         , m_title( name )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
@@ -678,9 +678,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
         : KListViewItem( parent, after, name )
-        , sqlForUrls( urls )
         , sqlForTags( tags )
-        , m_custom( false )
         , m_title( name )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
@@ -689,19 +687,82 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
     setText( 0, name );
 }
 
-KURL::List
-SmartPlaylist::urlList() const
-{
-    KURL url;
-    KURL::List urls;
-    const QStringList paths = CollectionDB::instance()->query( sqlForUrls );
 
-    foreach( paths ) {
-        url.setPath( *it );
-        urls += url;
+SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &tags,
+                                                                            QDomElement xmlDefinition )
+        : KListViewItem( parent, after, name )
+        , sqlForTags( tags )
+        , m_title( name )
+        , m_xml ( xmlDefinition )
+        , m_after ( after )
+{
+    setPixmap( 0, SmallIcon( "player_playlist_2" ) );
+    setDragEnabled( tags.isEmpty() );
+    debug() << "tags: " << tags << endl;
+    setText( 0, name );
+    setXml( xmlDefinition );
+}
+
+void SmartPlaylist::setXml( QDomElement xml ) {
+    m_xml = xml;
+    static QStringList genres;  //= CollectionDB::instance()->genreList();
+    static QStringList artists; //= CollectionDB::instance()->artistList();
+    static QStringList albums;   //= CollectionDB::instance()->albumList();
+    static QStringList years;    //= CollectionDB::instance()->yearList();
+
+    debug() << "About to delete" << endl;
+    //Delete all children before
+    QListViewItem *child, *next;
+    if ( (child = firstChild()) ) {
+        while ( (next = child->nextSibling()) ) {
+            delete child;
+            child=next;
+            debug() << "deleting" << endl;
+        }
+        delete child;
+    }
+    debug() << "Deleted" << endl;
+
+    QDomNode expandN = xml.namedItem( "expandby" );
+    if ( !expandN.isNull() ) {
+        QDomElement expand = expandN.toElement();
+
+        QString field = expand.attribute( "field" );
+        SmartPlaylist *item = this;
+        if ( field == i18n("Genre") ) {
+            if ( genres.isEmpty() ) {
+                genres = CollectionDB::instance()->genreList();
+            }
+            foreach( genres ) {
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+            }
+        }
+        if ( field == i18n("Artist") ) {
+            if ( artists.isEmpty() ) {
+                artists = CollectionDB::instance()->artistList();
+            }
+            foreach( artists ) {
+                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+            }
+        }
+        if ( field == i18n("Album") ) {
+            if ( albums.isEmpty() ) {
+                albums = CollectionDB::instance()->albumList();
+            }
+            foreach( albums ) {
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+            }
+        }
+        if ( field == i18n("Year") ) {
+            if ( years.isEmpty() ) {
+                years = CollectionDB::instance()->yearList();
+            }
+            foreach( years ) {
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+            }
+        }
     }
 
-    return urls;
 }
 
 #include "playlistbrowseritem.moc"

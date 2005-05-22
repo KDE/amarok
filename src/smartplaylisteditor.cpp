@@ -1,7 +1,10 @@
 // (c) Pierpaolo Di Panfilo 2004
+// (c) Alexandre Pereira de Oliveira 2005
 // See COPYING file for licensing information
 
+#include "amarok.h" //foreach
 #include "collectiondb.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "smartplaylisteditor.h"
 
@@ -26,10 +29,73 @@
 
 QStringList m_fields;
 QStringList m_dbFields;
+QStringList m_expandableFields;
+QStringList m_expandableDbFields;
+
 
 
 SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n("Create Smart Playlist"), Ok|Cancel)
+{
+    init(defaultName);
+    addCriteria();
+}
+
+
+SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name)
+    : KDialogBase( parent, name, true, i18n("Edit Smart Playlist"), Ok|Cancel)
+{
+    init( xml.attribute( "name" ) );
+    // matches
+    QDomNodeList matchesList =  xml.elementsByTagName( "matches" );
+    if ( matchesList.count() ) {
+        m_matchCheck->setChecked( true );
+
+        QDomElement matches = matchesList.item(0).toElement(); // we only allow one matches node
+        QDomNodeList criteriaList =  matches.elementsByTagName( "criteria" );
+        for (int i = 0, c=criteriaList.count() ; i<c; ++i ) {
+
+            QDomElement criteria = criteriaList.item(i).toElement();
+            addCriteria( criteria );
+        }
+    }
+    else {
+        addCriteria();
+        m_matchCheck->setChecked( false );
+    }
+    // orderby
+    QDomNodeList orderbyList =  xml.elementsByTagName( "orderby" );
+    if ( orderbyList.count() ) {
+        m_orderCheck->setChecked( true );
+        QDomElement orderby = orderbyList.item(0).toElement(); // we only allow one orderby node
+
+        int dbfield = m_dbFields.findIndex( orderby.attribute( "field" ) );
+        m_orderCombo->setCurrentItem( dbfield );
+        updateOrderTypes( dbfield );
+        if ( orderby.attribute( "order" ) == "DESC" || orderby.attribute( "order" ) == "weighted" )
+            m_orderTypeCombo->setCurrentItem( 1 );
+        else
+            m_orderTypeCombo->setCurrentItem( 0 );
+    }
+    // limit
+    if  ( xml.hasAttribute( "maxresults" ) ) {
+        m_limitCheck->setChecked( true );
+        m_limitSpin->setValue( xml.attribute( "maxresults" ).toInt() );
+    }
+
+    // expand by
+    QDomNodeList expandbyList =  xml.elementsByTagName( "expandby" );
+    if ( expandbyList.count() ) {
+        m_expandCheck->setChecked( true );
+        QDomElement expandby = expandbyList.item(0).toElement(); // we only allow one orderby node
+
+        int dbfield = m_expandableDbFields.findIndex( expandby.attribute( "field" ) );
+        m_expandCombo->setCurrentItem( dbfield );
+    }
+}
+
+
+void SmartPlaylistEditor::init(QString defaultName)
 {
     makeVBoxMainWidget();
 
@@ -43,6 +109,12 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.createdate" << "statistics.accessdate"
                << "tags.createdate";
+
+    m_expandableFields.clear();
+    m_expandableFields << i18n("Artist") << i18n("Album") << i18n("Genre") <<  i18n("Year");
+
+    m_expandableDbFields.clear();
+    m_expandableDbFields << "artist.name" << "album.name" << "genre.name" << "year.name";
 
     QHBox *hbox = new QHBox( mainWidget() );
     hbox->setSpacing( 5 );
@@ -64,7 +136,6 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 
     //criteria box
     m_criteriaGroupBox = new QVGroupBox( QString::null, mainWidget() );
-    addCriteria();
 
     //order box
     QHBox *hbox2 = new QHBox( mainWidget() );
@@ -92,16 +163,27 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
     new QLabel( i18n("tracks"), limitBox );
     hbox1->setStretchFactor( new QWidget( hbox1 ), 1 );
 
+    //Expand By
+    QHBox *hbox3 = new QHBox( mainWidget() );
+    m_expandCheck = new QCheckBox( i18n("Expand By"), hbox3 );
+    QHBox *expandBox = new QHBox( hbox3 );
+    expandBox->setSpacing( 5 );
+    m_expandCombo = new KComboBox( expandBox );
+    m_expandCombo->insertStringList( m_expandableFields );
+    hbox3->setStretchFactor( new QWidget( hbox3 ), 1 );
+
     //add stretch
     static_cast<QHBox *>(mainWidget())->setStretchFactor(new QWidget(mainWidget()), 1);
 
     connect( m_matchCheck, SIGNAL( toggled(bool) ), m_criteriaGroupBox, SLOT( setEnabled(bool) ) );
     connect( m_orderCheck, SIGNAL( toggled(bool) ), orderBox, SLOT( setEnabled(bool) ) );
     connect( m_limitCheck, SIGNAL( toggled(bool) ), limitBox, SLOT(  setEnabled(bool) ) );
+    connect( m_expandCheck, SIGNAL( toggled(bool) ), expandBox, SLOT( setEnabled(bool) ) );
     connect( m_orderCombo, SIGNAL( activated(int) ), this, SLOT( updateOrderTypes(int) ) );
 
     orderBox->setEnabled( false );
     limitBox->setEnabled( false );
+    expandBox->setEnabled( false );
 
     m_nameLineEdit->setFocus();
 
@@ -112,6 +194,14 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 void SmartPlaylistEditor::addCriteria()
 {
     CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaGroupBox );
+    m_criteriaEditorList.append( criteria );
+    updateMatchWidgets();
+    m_criteriaEditorList.first()->enableRemove( m_criteriaEditorList.count() > 1 );
+}
+
+void SmartPlaylistEditor::addCriteria( QDomElement &xml )
+{
+    CriteriaEditor *criteria = new CriteriaEditor( this, m_criteriaGroupBox, xml );
     m_criteriaEditorList.append( criteria );
     updateMatchWidgets();
     m_criteriaEditorList.first()->enableRemove( m_criteriaEditorList.count() > 1 );
@@ -148,11 +238,71 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
     m_orderTypeCombo->updateGeometry();
 }
 
-QString SmartPlaylistEditor::query()
+QDomElement SmartPlaylistEditor::result( QDomDocument &doc ) {
+    QDomNode node = doc.namedItem( "smartplaylists" );
+    QDomElement nodeE;
+    nodeE = node.toElement();
+
+    QDomElement smartplaylist = doc.createElement( "smartplaylist" );
+
+    smartplaylist.setAttribute( "name", name() );
+
+    // Limit
+    if ( m_limitCheck->isChecked() )
+        smartplaylist.setAttribute( "maxresults", m_limitSpin->value() );
+
+    nodeE.appendChild( smartplaylist );
+    // Matches
+    if( m_matchCheck->isChecked() ) {
+        QDomElement matches = doc.createElement("matches");
+        smartplaylist.appendChild( matches );
+        // Iterate through all criteria list
+        CriteriaEditor *criteriaeditor = m_criteriaEditorList.first();
+        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorList.next(), ++i ) {
+            matches.appendChild( criteriaeditor->getDomSearchCriteria( doc ) );
+        }
+        if ( m_criteriaEditorList.count() > 1 ) {
+            matches.setAttribute( "glue", m_matchCombo->currentItem() == 0 ? "AND" : "OR" );
+        }
+        smartplaylist.appendChild( matches );
+    }
+    // Order By
+    if( m_orderCheck->isChecked() ) {
+        QDomElement orderby = doc.createElement("orderby");
+        if (m_orderCombo->currentItem() != m_orderCombo->count()-1) {
+            orderby.setAttribute( "field", m_dbFields[ m_orderCombo->currentItem() ] );
+            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "DESC" : "ASC" );
+        } else {
+            orderby.setAttribute( "field", "random" );
+            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "weighted" : "random" );
+        }
+
+        smartplaylist.appendChild( orderby );
+    }
+    QDomElement Sql = doc.createElement("sqlquery");
+    buildQuery();
+    Sql.appendChild( doc.createTextNode( m_query ) );
+    smartplaylist.appendChild( Sql );
+
+    if( m_expandCheck->isChecked() ) {
+        QDomElement expandBy = doc.createElement("expandby");
+        expandBy.setAttribute( "field", m_expandableFields[ m_expandCombo->currentItem() ] );
+        QDomText t = doc.createTextNode( m_expandQuery );
+        expandBy.appendChild( t );
+        smartplaylist.appendChild( expandBy );
+    }
+    return (smartplaylist);
+}
+
+
+void SmartPlaylistEditor::buildQuery()
 {
-    QString joins;
+
+    QString joins = "tags INNER JOIN year ON year.id=tags.year INNER JOIN genre ON genre.id=tags.genre"
+                    " INNER JOIN artist ON artist.id=tags.artist INNER JOIN album ON album.id=tags.album";
     QString whereStr;
     QString orderStr;
+    QString limitStr;
 
     //where expression
     if( m_matchCheck->isChecked() ) {
@@ -165,14 +315,11 @@ QString SmartPlaylistEditor::query()
             //add the table used in the search expression to tables
             QString table = str.left( str.find('.') );
              if( !joins.contains( table ) ) {
-                if( table=="statistics")
-                   // that makes it possible to search for tracks never played. it looks ugly but is works
-	           if( str.contains(" OR statistics.playcounter IS NULL"))
-                       joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-                   else
-                       joins += " INNER JOIN statistics ON statistics.url=tags.url";
-	        else if (table!="tags")
-                    joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
+                // that makes it possible to search for tracks never played. it looks ugly but is works
+                if( str.contains(" OR statistics.playcounter IS NULL"))
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                else
+                    joins += " INNER JOIN statistics ON statistics.url=tags.url";
             }
             if( i ) { //multiple conditions
                 QString op = m_matchCombo->currentItem() == 0 ? "AND" : "OR";
@@ -191,8 +338,6 @@ QString SmartPlaylistEditor::query()
             if( !joins.contains( table ) ) {
                 if( table=="statistics")
 	           joins += " INNER JOIN statistics ON statistics.url=tags.url";
-	        else if (table!="tags")
-                    joins += " INNER JOIN " + table+" ON " + table + ".id=tags."+table;
             }
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
@@ -220,14 +365,26 @@ QString SmartPlaylistEditor::query()
         }
     }
 
-    QString query = "SELECT DISTINCT tags.url FROM tags" + joins + whereStr + orderStr;
-
     if( m_limitCheck->isChecked() )
-        query += " LIMIT 0," + QString::number( m_limitSpin->value() );
+        limitStr = " LIMIT 0," + QString::number( m_limitSpin->value() );
 
-    query += ";";
+    // album / artist / genre / title / year / comment / track / bitrate / length / samplerate / path
+    m_query = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
+                    "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.url"
+                    " FROM " + joins + whereStr + orderStr + limitStr + ";";
 
-    return query;
+    if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album has this bizarre name, it won't work.
+        QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
+        QString table = field.left( field.find('.') );
+        if( !joins.contains( table ) ) {
+            joins += " INNER JOIN statistics ON statistics.url=tags.url";
+        }
+        whereStr = QString("%1 AND %1 = \"(*ExpandString*)\"").arg(whereStr).arg(field);
+
+        m_expandQuery = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
+                            "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.url"
+                            " FROM " + joins + whereStr + orderStr + limitStr + ";";
+    }
 }
 
 
@@ -251,7 +408,7 @@ void SmartPlaylistEditor::updateMatchWidgets()
 //    CLASS CriteriaEditor
 ////////////////////////////////////////////////////////////////////////////
 
-CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent )
+CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QDomElement criteria )
     : QHBox( parent )
     , m_playlistEditor( editor )
     , m_currentValueType( -1 )
@@ -279,13 +436,123 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent )
     connect( m_addButton, SIGNAL( clicked() ), editor, SLOT( addCriteria() ) );
     connect( m_removeButton, SIGNAL( clicked() ), SLOT( slotRemoveCriteria() ) );
 
-    slotFieldSelected( 0 );
+    if ( !criteria.isNull() ) {
+        int field = m_dbFields.findIndex( criteria.attribute( "field" ) );
+        QString condition = criteria.attribute("condition");
+
+
+        QStringList values; //List of the values (only one item, unless condition is "is between")
+        QDomNodeList domvalueList = criteria.elementsByTagName( "value" );
+        for (int j = 0, c=domvalueList.count() ; j<c; ++j ) {
+                values << domvalueList.item(j).toElement().text();
+        }
+
+
+        debug() << "Criteria Editor: field: " << field << " condition " << condition << endl;
+
+        //Set the selected field
+
+        m_fieldCombo->setCurrentItem( field );
+        slotFieldSelected( field );
+        int valueType = getValueType( field );
+        //Load the right set of criterias for this type, in the dialog
+        loadCriteriaList( valueType, condition );
+
+        loadEditWidgets();
+
+        switch( valueType ) {
+            case String: //fall through
+            case AutoCompletionString:
+            {
+                m_lineEdit->setText( values.first() );
+                break;
+            }
+            case Year:    //fall through
+            case Number:
+            {
+                m_intSpinBox1->setValue( values.first().toInt() );
+                if( condition == i18n("is between") )
+                    m_intSpinBox2->setValue( values.last().toInt() );
+                break;
+            }
+            case Date:
+            {
+                if( condition == i18n("is in the last") ) {
+                    m_intSpinBox1->setValue( values.first().toInt() );
+                    QString period = criteria.attribute("period");
+                    if (period=="days")
+                        m_dateCombo->setCurrentItem(0);
+                    else if (period=="months")
+                        m_dateCombo->setCurrentItem(1);
+                    else
+                        m_dateCombo->setCurrentItem(2);
+                }
+                else {
+                    m_dateEdit1->setDate( QDate::fromString( values.first() ) );
+                    if( condition == i18n("is between") )
+                        m_dateEdit2->setDate( QDate::fromString( values.last() ) );
+                }
+                break;
+            }
+            default: ;
+        };
+    }
+    else
+        slotFieldSelected( 0 );
     show();
 }
 
 
 CriteriaEditor::~CriteriaEditor()
 {
+}
+
+QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
+{
+    QDomElement criteria = doc.createElement( "criteria" );
+    QString field = m_dbFields[ m_fieldCombo->currentItem() ];
+    QString condition = m_criteriaCombo->currentText();
+
+    criteria.setAttribute( "condition", condition );
+    criteria.setAttribute( "field", field );
+
+    QStringList values;
+    // Get the proper value(s)
+    switch( getValueType( m_fieldCombo->currentItem() ) ) {
+         case String: // fall through
+         case AutoCompletionString:
+            values << m_lineEdit->text();
+            break;
+         case Year: // fall through
+         case Number:
+            values << QString::number( m_intSpinBox1->value() );
+            if( condition == i18n("is between")  )
+                values << QString::number( m_intSpinBox2->value() );
+            break;
+         case Date:
+         {
+            if( condition == i18n("is in the last") ) {
+                values << QString::number( m_intSpinBox1->value() );
+                // 0 = days; 1=months; 2=years
+                criteria.setAttribute( "period", !m_dateCombo->currentItem() ? "days" : (m_dateCombo->currentItem() == 1 ? "months" : "years") );
+            }
+            else {
+                values << QString::number( QDateTime( m_dateEdit1->date() ).toTime_t() );
+                if( condition == i18n("is between")  ) {
+                    values << QString::number( QDateTime( m_dateEdit2->date() ).toTime_t() );
+               }
+            }
+            break;
+         }
+         default: ;
+    }
+    foreach( values ) {
+        QDomElement value = doc.createElement( "value" );
+        QDomText t = doc.createTextNode( *it );
+        value.appendChild( t );
+        criteria.appendChild( value );
+    }
+    return (criteria);
 }
 
 
@@ -531,9 +798,9 @@ void CriteriaEditor::loadEditWidgets()
 }
 
 
-void CriteriaEditor::loadCriteriaList( int valueType )
+void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
 {
-    if( m_currentValueType == valueType )
+    if( m_currentValueType == valueType && condition == QString::null )
         return;
 
     QStringList items;
@@ -560,6 +827,12 @@ void CriteriaEditor::loadCriteriaList( int valueType )
 
     m_criteriaCombo->clear();
     m_criteriaCombo->insertStringList( items );
+
+    if ( !condition.isEmpty() ) {
+        int index = items.findIndex( condition );
+        if (index!=-1)
+            m_criteriaCombo->setCurrentItem( index );
+    }
 }
 
 

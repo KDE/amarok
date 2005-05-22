@@ -83,9 +83,8 @@ class PlaylistBrowser : public QVBox
         void saveStreams();
 
         void loadSmartPlaylists();
-        void loadOldSmartPlaylists();
         void loadDefaultSmartPlaylists();
-        void editSmartPlaylist();
+        void editSmartPlaylist( SmartPlaylist* );
         void saveSmartPlaylists();
 
         void loadParties();
@@ -110,6 +109,8 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
         PlaylistCategory    *m_partyCategory;
+
+        QDomDocument m_smartXml;
 
 
         QSplitter *m_splitter;

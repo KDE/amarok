@@ -359,9 +359,7 @@ void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
 
     SmartPlaylistEditor dialog( i18n("Untitled"), this );
     if( dialog.exec() == QDialog::Accepted ) {
-        SmartPlaylist *item = new SmartPlaylist( parent, m_lastSmart, dialog.name(), QString() );
-        item->setCustom( true );
-        item->sqlForUrls = dialog.query();
+        /*SmartPlaylist *item = */ new SmartPlaylist( parent, m_lastSmart, dialog.name(), dialog.query(), dialog.result( m_smartXml ) );
         parent->setOpen( true );
     }
 }
@@ -370,13 +368,11 @@ void PlaylistBrowser::loadSmartPlaylists()
 {
     if( CollectionDB::instance()->isEmpty() )
         return;
-
     QFile file( smartplaylistBrowserCache() );
 
     if( !file.open( IO_ReadOnly ) )
     {
         loadDefaultSmartPlaylists();
-        loadOldSmartPlaylists();
         m_smartCategory->setOpen( true );
         return;
     }
@@ -385,24 +381,29 @@ void PlaylistBrowser::loadSmartPlaylists()
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
-    QDomDocument d;
-
-    if( !d.setContent( stream.read() ) )
+    if( !m_smartXml.setContent( stream.read() ) )
         return;
 
-    QDomNode n = d.namedItem( "smartplaylists" ).firstChild();
+    if ( m_smartXml.namedItem( "smartplaylists" ).toElement().attribute("formatversion") == "1.0" ) {
+        QDomNode n =  m_smartXml.namedItem( "smartplaylists" ).firstChild();
 
-    for( ; !n.isNull(); n = n.nextSibling() )
-    {
-        QDomElement e = n.toElement();
-        QString name  = e.attribute( "name" );
-        QString sqlForUrls = n.namedItem( "sqlForUrls" ).toElement().text();
-        QString sqlForTags = n.namedItem( "sqlForTags" ).toElement().text();
-
-        m_lastSmart = new SmartPlaylist( m_smartCategory, m_lastSmart, name, sqlForUrls, sqlForTags );
+        for( ; !n.isNull(); n = n.nextSibling() )
+        {
+            QDomElement e = n.toElement();
+            QDomElement query = e.elementsByTagName( "sqlquery" ).item(0).toElement();
+            m_lastSmart = new SmartPlaylist( m_smartCategory, m_lastSmart, e.attribute( "name" ), query.text(), e );
+        }
+        m_smartCategory->setOpen( true );
     }
-    m_smartCategory->setOpen( true );
-
+    else {
+        //This is the first version of the format, so I'm setting this only to avoid problems for people that
+        //was using CVS (and sebr's xml) before. FIXME: Load a set of defaults here?
+        QDomElement smartB = m_smartXml.createElement( "smartplaylists" );
+        m_smartXml.appendChild( smartB );
+        smartB.setAttribute( "product", "amaroK" );
+        smartB.setAttribute( "version", APP_VERSION );
+        smartB.setAttribute( "formatversion", "1.0" );
+    }
 }
 
 void PlaylistBrowser::loadDefaultSmartPlaylists()
@@ -519,32 +520,15 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
 }
 
-void PlaylistBrowser::loadOldSmartPlaylists()
+void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
 {
-    QFile file( amaroK::saveLocation() + "smartplaylists" );
-
-    if( file.open( IO_ReadOnly ) )
-    {
-        QTextStream stream( &file );
-        QString line, name, query;
-
-        while( !( line = stream.readLine() ).isNull() )
-        {
-            if( line.startsWith( "Name=" ) )
-                name = line.mid( 5 );
-            else {
-                query = line;
-                SmartPlaylist *item = new SmartPlaylist( m_smartCategory, m_lastSmart, name, query );
-                item->sqlForUrls = query;
-                item->setCustom( true );
-            }
-        }
+    SmartPlaylistEditor dialog( this, item->xml() );
+    if( dialog.exec() == QDialog::Accepted ) {
+        item->setXml( dialog.result( m_smartXml ) );
+        item->sqlForTags = dialog.query();
+        item->setText(0, dialog.name());
     }
-}
 
-void PlaylistBrowser::editSmartPlaylist()
-{
-    // Logic for editing smart playlists should go here
 }
 
 void PlaylistBrowser::saveSmartPlaylists()
@@ -553,11 +537,20 @@ void PlaylistBrowser::saveSmartPlaylists()
 
     if( !file.open( IO_WriteOnly ) ) return;
 
-    QDomDocument doc;
-    QDomElement smartB = doc.createElement( "smartplaylists" );
+    QDomNode node = m_smartXml.namedItem( "smartplaylists" );
+    if ( !node.isNull() ) {
+        m_smartXml.removeChild (node);
+    }
+    node = m_smartXml.namedItem( "xml" );
+    if ( !node.isNull() ) {
+        m_smartXml.removeChild (node);
+    }
+    QDomElement smartB = m_smartXml.createElement( "smartplaylists" );
+    m_smartXml.appendChild( smartB );
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
-    doc.appendChild( smartB );
+    smartB.setAttribute( "formatversion", "1.0" );
+
 
     PlaylistCategory *currentCat=0;
 
@@ -568,29 +561,20 @@ void PlaylistBrowser::saveSmartPlaylists()
 
     for( int count = 1 ; count < m_smartCategory->childCount(); count++ )
     {
-        QDomElement i;
+
 
         if( !isCategory( it ) )
             currentCat = static_cast<PlaylistCategory*>(it->parent() );
 
         if( isSmartPlaylist( it ) )
         {
-            i = doc.createElement("smartplaylist");
+
             SmartPlaylist *item = (SmartPlaylist*)it;
-            i.setAttribute( "name", item->title() );
-
-            QDomElement attr = doc.createElement( "sqlForUrls" );
-            QDomText t = doc.createTextNode( item->sqlForUrls );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "sqlForTags" );
-            t = doc.createTextNode( item->sqlForTags );
-            attr.appendChild( t );
-            i.appendChild( attr );
+            QDomElement i = m_smartXml.createElement( "smartplaylist" );
+            smartB.appendChild( item->xml() );
         }
 
-        smartB.appendChild( i );
+
 
         it = it->nextSibling();
     }
@@ -600,7 +584,7 @@ void PlaylistBrowser::saveSmartPlaylists()
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << doc.toString();
+    stream << m_smartXml.toString();
 }
 
 // Warning - unpredictable when a smartplaylist which doesn't exist is requested.
@@ -900,8 +884,6 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         #define item static_cast<SmartPlaylist *>(item)
         if( !item->sqlForTags.isEmpty() )
             Playlist::instance()->insertMediaSql( item->sqlForTags, Playlist::Clear );
-        else
-            Playlist::instance()->insertMedia( item->urlList(), Playlist::Clear );
         #undef item
     }
     else if( isCategory( item ) )
@@ -1352,6 +1334,37 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
         #undef item
     }
+    else if( isSmartPlaylist( item ) )
+    {
+        enum Actions { LOAD, ADD, EDIT, REMOVE };
+
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertSeparator();
+        // Forbid removal of Cool-Streams
+        if( item->parent()->text(0) != i18n("Collection") )
+        {
+            if ( static_cast<SmartPlaylist *>(item)->isEditable() )
+                menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit" ), EDIT );
+            menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
+        }
+
+        switch( menu.exec( p ) )
+        {
+            case LOAD:
+                slotDoubleClicked( item );
+                break;
+            case ADD:
+                Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist *>(item)->sqlForTags, Playlist::Clear );
+                break;
+            case EDIT:
+                editSmartPlaylist( static_cast<SmartPlaylist *>(item) );
+                break;
+            case REMOVE:
+                removeSelectedItems();
+                break;
+        }
+    }
     else if( isStream( item ) )
     {
         enum Actions { LOAD, ADD, EDIT, REMOVE };
@@ -1793,17 +1806,9 @@ void PlaylistBrowserView::startDrag()
         {
             kdDebug() << "{PLAYLIST BROWSER] DRAGGING A SMARTPLAYLIST!" << endl;
             SmartPlaylist *item = (SmartPlaylist*)*it;
-            if( !item->isCustom() && !item->sqlForTags.isEmpty() )
+            if( !item->sqlForTags.isEmpty() )
             {
                 QStringList list = CollectionDB::instance()->query( item->sqlForTags );
-                if( list.isEmpty() ) kdDebug() << "Query returned nothing" << endl;
-                for( uint c=0; c < list.count(); c++ )
-                    urls += KURL( list[c] );
-            }
-            else
-            {
-                QStringList list = CollectionDB::instance()->query( item->sqlForUrls );
-                KURL::List smartList( list );
                 if( list.isEmpty() ) kdDebug() << "Query returned nothing" << endl;
                 for( uint c=0; c < list.count(); c++ )
                     urls += KURL( list[c] );
