@@ -197,6 +197,15 @@ ScriptManager::listRunningScripts()
 }
 
 
+void
+ScriptManager::customMenuClicked( const KURL::List &list )
+{
+    QString urls;
+    urls = list.toStringList().join( " " );
+    notifyScripts( "customMenuClicked:" + urls );
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // private slots
 ////////////////////////////////////////////////////////////////////////////////

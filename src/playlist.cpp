@@ -27,6 +27,7 @@
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
+#include "scriptmanager.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadweaver.h"
@@ -182,6 +183,7 @@ Playlist::Playlist( QWidget *parent )
         , m_showHelp( true )
         , m_stateSwitched( false )
         , m_partyDirt( false )
+        , m_customItemTitle( 0 )
         , m_lockStack( 0 )
         , m_columnFraction( 14, 0 )
 {
@@ -1941,6 +1943,33 @@ Playlist::burnSelectedTracks( int projectType )
 }
 
 void
+Playlist::addCustomMenuItem( QString itemTitle )  //for dcop 
+{
+    m_customItemTitle =  itemTitle;
+}
+
+void
+Playlist::removeCustomMenuItem()  //for dcop
+{
+        m_customItemTitle = QString::null;
+}
+
+void
+Playlist::customMenuClicked()  //adapted from burnSelectedTracks
+{
+    KURL::List list;
+
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it ) {
+        PlaylistItem *item = static_cast<PlaylistItem*>(*it);
+        KURL url = item->url().url();
+        if( url.isLocalFile() )
+            list << url;
+    }
+    ScriptManager::instance()->customMenuClicked( list );
+}
+
+void
 Playlist::shuffle() //SLOT
 {
     if( isParty() )
@@ -2202,7 +2231,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     enum {
         PLAY, PLAY_NEXT, PLAY_NEXT_PARTY, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
-        BURN_ARTIST_DATA, BURN_ARTIST_AUDIO };
+        BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, CUSTOM_ITEM };
 
     if( item == 0 ) return; //technically we should show "Remove" but this is far neater
 
@@ -2304,13 +2333,16 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
 
-
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename && itemCount > 1 );
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
 
+    if ( !m_customItemTitle.isEmpty() ){  //we only provide basic functionality, currently one one item possible
+        popup.insertSeparator();
+        popup.insertItem ( SmallIconSet( "pencil"), ( m_customItemTitle ), CUSTOM_ITEM );
+    }
 
     switch( popup.exec( p ) )
     {
@@ -2422,6 +2454,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case BURN_ARTIST_AUDIO:
         K3bExporter::instance()->exportArtist( item->artist(), K3bExporter::AudioCD );
+        break;
+
+    case CUSTOM_ITEM:
+        customMenuClicked();
         break;
     }
 

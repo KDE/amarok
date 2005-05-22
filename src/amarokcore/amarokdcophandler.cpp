@@ -518,6 +518,15 @@ namespace amaroK
         return ScriptManager::instance()->listRunningScripts();
     }
 
+    void DcopScriptHandler::addCustomMenuItem( QString itemTitle )
+    {
+        Playlist::instance()->addCustomMenuItem( itemTitle );
+    }
+
+    void DcopScriptHandler::removeCustomMenuItem()
+    {
+        Playlist::instance()->removeCustomMenuItem();
+    }
 
 } //namespace amaroK
 

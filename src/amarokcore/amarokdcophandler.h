@@ -139,6 +139,8 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual bool runScript(const QString&);
       virtual bool stopScript(const QString&);
       virtual QStringList listRunningScripts();
+      virtual void addCustomMenuItem( QString itemTitle );
+      virtual void removeCustomMenuItem();
 };
 
 

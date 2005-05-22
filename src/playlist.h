@@ -105,6 +105,10 @@ class Playlist : private KListView, public EngineObserver
         void burnPlaylist( int projectType=-1 );
         void burnSelectedTracks( int projectType=-1 );
 
+        void addCustomMenuItem( QString itemTitle );
+        void removeCustomMenuItem();
+        void customMenuClicked();
+
         class QDragObject *dragObject();
 
         //made public for convenience
@@ -250,6 +254,8 @@ class Playlist : private KListView, public EngineObserver
         bool         m_showHelp;
         bool         m_stateSwitched;
         bool         m_partyDirt;
+
+        QString         m_customItemTitle;
 
         /// Check for locked status
         bool isLocked() const { return m_lockStack > 0; }
