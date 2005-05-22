@@ -86,7 +86,10 @@ Party::applySettings()
         m_base->m_appendType->setCurrentItem( SUGGESTION );
 
     else // Custom
+    {
         m_base->m_appendType->setCurrentItem( CUSTOM );
+        m_playlists->setEnabled( true );
+    }
 
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 }
@@ -97,8 +100,8 @@ Party::insertPlaylists()
     QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
     QListViewItem *last=0;
 
-    for( uint i=0; i < playlists.count(); i++ )
-        last = new QListViewItem( m_playlists, last, playlists[i] );
+    for( uint i=0; i < playlists.count(); i = i+2 )
+        last = new QListViewItem( m_playlists, last, playlists[i], playlists[i+1] );
 }
 
 QString Party::customList()
@@ -108,8 +111,13 @@ QString Party::customList()
     for( QListViewItem *it = m_playlists->firstChild(); it ; it = it->nextSibling() )
     {
         playlists.append( it->text(0) );
-        if ( it != m_playlists->lastItem() )  playlists.append( ',' );
+        playlists.append( it->text(1) );
+        if ( it != m_playlists->lastItem() )
+            playlists.append( ',' );
     }
+    playlists.append( m_playlists->lastItem()->text(0) );
+    playlists.append( ',' );
+    playlists.append( m_playlists->lastItem()->text(1) );
     return playlists;
 }
 
