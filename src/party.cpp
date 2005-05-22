@@ -111,13 +111,11 @@ QString Party::customList()
     for( QListViewItem *it = m_playlists->firstChild(); it ; it = it->nextSibling() )
     {
         playlists.append( it->text(0) );
+        playlists.append( ',' );
         playlists.append( it->text(1) );
         if ( it != m_playlists->lastItem() )
             playlists.append( ',' );
     }
-    playlists.append( m_playlists->lastItem()->text(0) );
-    playlists.append( ',' );
-    playlists.append( m_playlists->lastItem()->text(1) );
     return playlists;
 }
 
