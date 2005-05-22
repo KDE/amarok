@@ -71,7 +71,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Smart Playlist"), SMARTPLAYLIST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
-    saveCurrentButton = new KAction( i18n("Save Current"), "filesave", 0, this, SLOT( saveCurrentPlaylist() ), m_ac, "SaveCurrent" );
+    saveMenuButton = new KActionMenu( i18n("Save"), "filesave", m_ac );
+    saveMenuButton->setDelayed( false );
+
+    KPopupMenu *saveMenu = saveMenuButton->popupMenu();
+    saveMenu->insertItem( i18n("Current Playlist"), CURRENT );
+    saveMenu->insertItem( i18n("Current Party"), PARTY );
+    connect( saveMenu, SIGNAL( activated(int) ), SLOT( slotSaveMenu(int) ) );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
     removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
@@ -97,7 +103,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenuButton->plug( m_toolbar );
 
     m_toolbar->insertLineSeparator();
-    saveCurrentButton->plug( m_toolbar );
+    saveMenuButton->plug( m_toolbar );
 
     m_toolbar->insertLineSeparator();
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
@@ -1231,7 +1237,23 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
     }
 }
 
-void PlaylistBrowser::slotViewMenu( int id )  //SL0T
+void PlaylistBrowser::slotSaveMenu( int id ) // SLOT
+{
+    switch( id )
+    {
+        case PLAYLIST:
+            saveCurrentPlaylist();
+            break;
+
+        case PARTY:
+            break;
+
+        default:
+            break;
+    }
+}
+
+void PlaylistBrowser::slotViewMenu( int id ) //SL0T
 {
     if( m_viewMode == (ViewMode) id )
         return;

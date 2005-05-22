@@ -43,14 +43,11 @@ Party::Party( QWidget *parent, const char *name )
     toolbar->insertButton( "edit_add", 0, true, i18n("Add Selected") );
     toolbar->insertButton( "edit_remove", 1, true, i18n("Remove") );
     toolbar->insertLineSeparator();
-    toolbar->setIconText( KToolBar::IconOnly, false );
-    toolbar->insertButton( "filesave", 2, true, i18n("Save Configuration") );
-    toolbar->insertButton( "apply", 3, true, i18n("Apply Settings") );
+    toolbar->insertButton( "filesave", 2, true, i18n("Apply") );
 
     connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
     connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
-//     connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( saveToBrowser() ) );
-    connect( (QObject*)toolbar->getButton( 3 ), SIGNAL(clicked( int )), SLOT( startParty() ) );
+    connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( startParty() ) );
 
     m_base = new PartyDialogBase(this);
 

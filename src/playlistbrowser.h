@@ -37,6 +37,7 @@ class PlaylistBrowser : public QVBox
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST };
+        enum SaveMode { CURRENT, PARTY };
 
         PlaylistBrowser( const char* name=0 );
         ~PlaylistBrowser();
@@ -72,6 +73,7 @@ class PlaylistBrowser : public QVBox
         void slotDoubleClicked( QListViewItem *item );
 
         void slotAddMenu( int id );
+        void slotSaveMenu( int id );
         void slotViewMenu( int id );
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
@@ -115,8 +117,8 @@ class PlaylistBrowser : public QVBox
         SmartPlaylistView   *m_smartlistview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton, *deleteButton;
-        KAction             *saveCurrentButton;
         KActionMenu         *viewMenuButton;
+        KActionMenu         *saveMenuButton;
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
         ViewMode             m_viewMode;
