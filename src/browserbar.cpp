@@ -41,6 +41,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_splitter->setOpaqueResize( true );
     m_browserBox = new QVBox( m_splitter );
     m_playlistBox = new QVBox( m_splitter );
+    m_splitter->setResizeMode( m_browserBox, QSplitter::KeepSize );
 
     m_toolBox = new QToolBox( m_browserBox );
     m_playlistBox->setSpacing( 1 );
