@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
+ *   Copyright (C)       2005 Mark Kretschmann <markey@web.de>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,10 +18,9 @@
 
 typedef QValueVector<QWidget*> BrowserList;
 
-class KMultiTabBar;
-class KMultiTabBarTab;
 class KURL;
 class QSignalMapper;
+class QToolBox;
 class QVBox;
 
 
@@ -69,12 +69,11 @@ private:
     uint           m_pos;         ///the x-axis position of m_divider
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
     QWidget       *m_divider;     ///a qsplitter like widget
-    KMultiTabBar  *m_tabBar;
+    QToolBox      *m_toolBox;
     BrowserList    m_browsers;
     QWidget       *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
     int            m_lastIndex;
-    QSignalMapper *m_mapper;      ///maps tab clicks to browsers
 };
 
 #endif

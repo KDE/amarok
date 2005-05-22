@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
+ *   Copyright (C)       2005 Mark Kretschmann <markey@web.de>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -13,20 +14,22 @@
 #include "browserbar.h"
 #include "debug.h"
 #include "enginecontroller.h"
+
 #include <kapplication.h>  //kapp
 #include <kconfig.h>
 #include <kiconloader.h>   //multiTabBar icons
 #include <klocale.h>
-#include <kmultitabbar.h>  //m_tabBar
+
 #include <qcursor.h>       //for resize cursor
+#include <qlayout.h>
 #include <qpainter.h>
-#include <qsignalmapper.h> //m_mapper
 #include <qstyle.h>        //amaroK::Splitter
+#include <qtoolbox.h>
+#include <qvbox.h>
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
 // mostly we can stop the browserbar getting resized too small so that switching browser looks wrong
-
 
 namespace amaroK
 {
@@ -62,19 +65,16 @@ BrowserBar::BrowserBar( QWidget *parent )
         , EngineObserver( EngineController::instance() )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new amaroK::Splitter( this ) )
-        , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
+        , m_toolBox( new QToolBox( this ) )
         , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
-        , m_mapper( new QSignalMapper( this ) )
 {
-    m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
+//     m_pos = m_toolBox->sizeHint().width() + 5; //5 = aesthetic spacing
+    m_pos = 300;
 
-    m_tabBar->setStyle( KMultiTabBar::VSNET );
-    m_tabBar->setPosition( KMultiTabBar::Left );
-    m_tabBar->showActiveTabTexts( true );
-    m_tabBar->setFixedWidth( m_pos );
-    m_tabBar->move( 0, 3 );
+    m_toolBox->setFixedWidth( m_pos );
+    m_toolBox->move( 0, 3 );
 
     QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
     layout->addSpacing( 3 ); // aesthetics
@@ -84,8 +84,6 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_browserBox->hide();
     m_divider->hide();
     m_playlistBox->setSpacing( 1 );
-
-    connect( m_mapper, SIGNAL(mapped( int )), SLOT(showHideBrowser( int )) );
 }
 
 BrowserBar::~BrowserBar()
@@ -136,7 +134,7 @@ BrowserBar::adjustWidgetSizes()
     const uint mxW = maxBrowserWidth();
     const uint p   = (m_pos < mxW) ? m_pos : mxW;
     const uint ppw = p + m_divider->width();
-    const uint tbw = m_tabBar->width();
+    const uint tbw = m_toolBox->width();
 
     m_divider->move( p, 0 );
 
@@ -151,7 +149,7 @@ BrowserBar::mouseMovedOverSplitter( QMouseEvent *e )
 {
     const uint oldPos   = m_pos;
     const uint newPos   = mapFromGlobal( e->globalPos() ).x();
-    const uint minWidth = m_tabBar->width() + m_browserBox->minimumWidth();
+    const uint minWidth = m_toolBox->width() + m_browserBox->minimumWidth();
     const uint maxWidth = maxBrowserWidth();
 
     if( newPos < minWidth )
@@ -175,7 +173,7 @@ BrowserBar::event( QEvent *e )
     case QEvent::LayoutHint:
         //FIXME include browserholder width
         setMinimumWidth(
-                m_tabBar->minimumWidth() +
+                m_toolBox->minimumWidth() +
                 m_divider->minimumWidth() +
                 m_browserBox->width() +
                 m_playlistBox->minimumWidth() );
@@ -185,7 +183,7 @@ BrowserBar::event( QEvent *e )
         DEBUG_LINE_INFO
 
         m_divider->resize( 0, height() ); //Qt will set width
-        m_tabBar->resize( 0, height() ); //Qt will set width
+        m_toolBox->resize( 0, height() ); //Qt will set width
 
         adjustWidgetSizes();
 
@@ -201,66 +199,20 @@ BrowserBar::event( QEvent *e )
 void
 BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& icon )
 {
-    const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
-    QWidget *tab;
 
     widget->reparent( m_browserBox, QPoint() );
     widget->hide();
 
-    m_tabBar->appendTab( SmallIcon( icon ), id, title );
-    tab = m_tabBar->tab( id );
-    tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
-
-    //we use a SignalMapper to show/hide the corresponding browser when tabs are clicked
-    connect( tab, SIGNAL(clicked()), m_mapper, SLOT(map()) );
-    m_mapper->setMapping( tab, id );
-
+    m_toolBox->addItem( widget, SmallIconSet( icon ), title );
     m_browsers.push_back( widget );
 }
 
 void
 BrowserBar::showHideBrowser( int index )
 {
-    const int prevIndex = m_currentIndex;
-
-    if( m_currentIndex != -1 ) {
-        ///first we need to hide the currentBrowser
-
-        m_currentIndex = -1; //to prevent race condition, see CVS history
-
-        m_browsers[prevIndex]->hide();
-        m_tabBar->setTab( prevIndex, false );
-    }
-
-    if( index == prevIndex ) {
-        ///close the BrowserBar
-
-        m_browserBox->hide();
-        m_divider->hide();
-
-        adjustWidgetSizes();
-    }
-
-    else if( (uint)index < m_browsers.count() ) {
-        ///open up target
-
-        QWidget* const target = m_browsers[index];
-        m_currentIndex = index;
-
-        m_divider->show();
-        target->show();
-        target->setFocus();
-        m_browserBox->show();
-        m_tabBar->setTab( index, true );
-
-        if( prevIndex == -1 ) {
-            // we need to show the browserBox
-            // m_pos dictates how everything will be sized in adjustWidgetSizes()
-            m_pos = m_browserBox->width() + m_tabBar->width();
-            adjustWidgetSizes();
-        }
-    }
+    m_toolBox->setCurrentIndex( index );
+    m_currentIndex = index;
 }
 
 QWidget*
