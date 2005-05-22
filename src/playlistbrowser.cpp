@@ -141,7 +141,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
              this,         SLOT( currentItemChanged( QListViewItem * ) ) );
 
-   // setMinimumWidth( m_toolbar->sizeHint().width() );
+    setMinimumWidth( m_toolbar->sizeHint().width() );
 
     m_playlistCategory = new PlaylistCategory( m_listview, 0, i18n( "Playlists" ) );
     m_streamsCategory  = new PlaylistCategory( m_listview, m_playlistCategory, i18n( "Streams" ) );
