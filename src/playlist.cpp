@@ -504,36 +504,34 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
             playlistName = name;
             break;
         }
-
+        //FIXME: If the smartplaylist doesn't exist, we should remove it.
         kdDebug() << "[PARTY]: Invalid smartplaylist requested. Trying another source." << name << endl;
         amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(name) );
     }
+
+    if ( !sp )
+        return;
+
     query = sp->query();
 
     QString sql;
 
-    if ( !sp )
-        return;
-    else
-    {
-        sql = sp->sqlForTags;
+    sql = sp->sqlForTags;
 
-        //Add random and limiting sql queries to the end
-        if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
-            QRegExp order( "ORDER BY.*$" );
-            sql.remove( order );
-            sql.append( ';' );
-        }
+    //Add random and limiting sql queries to the end
+    if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
+        QRegExp order( "ORDER BY.*$" );
+        sql.remove( order );
+        sql.append( ';' );
+    }
 
-        // ORDER BY RAND() breaks Newest etc
-        if ( sql.find( QString("LIMIT"), FALSE ) != -1  ) {
-            QRegExp limit( "LIMIT [\\d].*[\\d]");
-            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1").arg( songCount ) );
-        } else {
-            QRegExp limit( ";$" );
-            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
-        }
-
+    // ORDER BY RAND() breaks Newest etc
+    if ( sql.find( QString("LIMIT"), FALSE ) != -1  ) {
+        QRegExp limit( "LIMIT [\\d].*[\\d]");
+        sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1").arg( songCount ) );
+    } else {
+        QRegExp limit( ";$" );
+        sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
     }
 
     QStringList queryResult = CollectionDB::instance()->query( sql );
@@ -1943,7 +1941,7 @@ Playlist::burnSelectedTracks( int projectType )
 }
 
 void
-Playlist::addCustomMenuItem( QString itemTitle )  //for dcop 
+Playlist::addCustomMenuItem( QString itemTitle )  //for dcop
 {
     m_customItemTitle =  itemTitle;
 }
