@@ -67,6 +67,10 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
 
+        void lyricsAdd();
+        void lyricsSearch();
+        void lyricsRefresh();
+
         void wikiHistoryBack();
         void wikiHistoryForward();
         void wikiBackPopupActivated( int id );
@@ -78,6 +82,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void wikiResult( KIO::Job* job );
 
     private:
+        enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH };
         enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER };
         static const uint WIKI_MAX_HISTORY = 20;
 
@@ -94,6 +99,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KHTMLPart    *m_lyricsPage;
         KHTMLPart    *m_wikiPage;
 
+        QVBox        *m_lyricsTab;
         QVBox        *m_wikiTab;
         // These control if is needed to rewrite the html for the pages
         // true -> need rebuild
@@ -110,6 +116,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
         KIO::TransferJob* m_lyricJob;
+        Browser::ToolBar* m_lyricsToolBar;
 
         QString       m_wiki;
         QString       m_wikiLanguages;

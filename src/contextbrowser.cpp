@@ -106,7 +106,15 @@ ContextBrowser::ContextBrowser( const char *name )
     m_currentTrackPage = new KHTMLPart( this, "current_track_page" );
     m_currentTrackPage->setJScriptEnabled( true );
     m_currentTrackPage->setDNDEnabled( true );
-    m_lyricsPage = new KHTMLPart( this, "lyrics_page" );
+
+    m_lyricsTab = new QVBox(this, "lyrics_tab");
+
+    m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
+    m_lyricsToolBar->insertButton( "editadd", LYRICS_ADD, true, i18n("Add Lyrics") );
+    m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search Lyrics") );
+    m_lyricsToolBar->insertButton( "reload", LYRICS_REFRESH, true, i18n("Refresh") );
+
+    m_lyricsPage = new KHTMLPart( m_lyricsTab, "lyrics_page" );
     m_lyricsPage->setJavaEnabled( false );
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
@@ -130,16 +138,14 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiPage->setJavaEnabled( false );
     m_wikiPage->setPluginsEnabled( false );
     m_wikiPage->setDNDEnabled( true );
-// why did we have this?
-//    m_wikiPage->view()->show();
 
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
-    addTab( m_lyricsPage->view(),       SmallIconSet( "document" ), i18n( "Lyrics" ) );
+    addTab( m_lyricsTab,                SmallIconSet( "document" ), i18n( "Lyrics" ) );
     addTab( m_wikiTab,                  SmallIconSet( "wiki" ),     i18n( "Wiki" ) );
 
     setTabEnabled( m_currentTrackPage->view(), false );
-    setTabEnabled( m_lyricsPage->view(), false );
+    setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
 
 
@@ -161,6 +167,10 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                               SLOT( openURLRequest( const KURL & ) ) );
     connect( m_wikiPage,                     SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,                               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
+
+    connect( m_lyricsToolBar->getButton( LYRICS_ADD    ), SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_SEARCH    ), SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_REFRESH    ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
 
     connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
     connect( m_wikiToolBar->getButton( WIKI_FORWARD ), SIGNAL(clicked( int )), SLOT(wikiHistoryForward()) );
@@ -399,7 +409,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         showCurrentTrack();
     else if ( currentPage() == m_currentTrackPage->view() && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
         showCurrentTrack();
-    if ( currentPage() == m_lyricsPage->view() )
+    if ( currentPage() == m_lyricsTab )
         showLyrics();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showIntroduction();
@@ -424,7 +434,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
                 showHome();
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), false );
-            setTabEnabled( m_lyricsPage->view(), false );
+            setTabEnabled( m_lyricsTab, false );
             if ( currentPage() != m_wikiTab ) {
                 setTabEnabled( m_wikiTab, false );
                 m_dirtyWikiPage = true;
@@ -435,7 +445,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             m_metadataHistory.clear();
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), true );
-            setTabEnabled( m_lyricsPage->view(), true );
+            setTabEnabled( m_lyricsTab, true );
             setTabEnabled( m_wikiTab, true );
             blockSignals( false );
             break;
@@ -475,7 +485,7 @@ void ContextBrowser::tabChanged( QWidget *page )
         showHome();
     else if ( m_dirtyCurrentTrackPage && ( page == m_currentTrackPage->view() ) )
         showCurrentTrack();
-    else if ( m_dirtyLyricsPage && ( page == m_lyricsPage->view() ) )
+    else if ( m_dirtyLyricsPage && ( page == m_lyricsTab ) )
         showLyrics();
     else if ( m_dirtyWikiPage && ( page == m_wikiTab ) )
         showWikipedia();
@@ -2169,7 +2179,7 @@ void ContextBrowser::showScanning()
 
 void ContextBrowser::showLyrics( const QString &hash )
 {
-    if ( currentPage() != m_lyricsPage->view() )
+    if ( currentPage() != m_lyricsTab )
     {
         blockSignals( true );
         showPage( m_homePage->view() );
@@ -2229,12 +2239,12 @@ void ContextBrowser::showLyrics( const QString &hash )
     debug() << "Using this url: " << url << endl;
 
     m_lyrics = QString::null;
-    m_lyricAddUrl = QString( "externalurl://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
+    m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
             KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
             KURL::encode_string_no_slash( title ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ),
             KURL::encode_string_no_slash( EngineController::instance()->bundle().year() ) );
-    m_lyricSearchUrl = QString( "externalurl://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
+    m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
@@ -2279,12 +2289,6 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     else
     {
         m_lyrics = i18n( "Lyrics not found." );
-        m_lyrics += QString( "<div id='lyrics_box_addlyrics'>"
-            "<input type='button' onClick='window.location.href=\"" + m_lyricAddUrl + "\";' value='"
-            + i18n("Add Lyrics") + "' class='button' /></div>" );
-        m_lyrics += QString( "<div id='lyrics_box_searchlyrics'>"
-            "<input type='button' onClick='window.location.href=\"" + m_lyricSearchUrl + "\";' value='"
-            + i18n("Search Lyrics") + "' class='button' /></div>" );
     }
 
 
@@ -2338,12 +2342,27 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics += QString( "<a href='show:suggestLyric-%1'>" ).arg( m_lyricHashes[i] );
         m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
-    m_lyrics += QString( "<div id='lyrics_box_addlyrics'>"
-        "<input type='button' onClick='window.location.href=\"" + m_lyricAddUrl + "\";' value='"
-        + i18n("Add Lyrics") + "' class='button' /></div>" );
-    m_lyrics += QString( "<div id='lyrics_box_searchlyrics'>"
-        "<input type='button' onClick='window.location.href=\"" + m_lyricSearchUrl + "\";' value='"
-        + i18n("Search Lyrics") + "' class='button' /></div>" );
+}
+
+void
+ContextBrowser::lyricsAdd() //SLOT
+{
+    kapp->invokeBrowser( m_lyricAddUrl );
+}
+
+
+void
+ContextBrowser::lyricsSearch() //SLOT
+{
+    kapp->invokeBrowser( m_lyricSearchUrl );
+}
+
+
+void
+ContextBrowser::lyricsRefresh() //SLOT
+{
+    m_dirtyLyricsPage = true;
+    showLyrics();
 }
 
 
