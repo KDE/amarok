@@ -57,6 +57,7 @@ class PlaylistEntry :  public QObject, public KListViewItem
         void        setUrl( const QString &u )    { m_url.setPath( u ); }
         int         trackCount()                  { return m_trackCount; }
         int         length()                      { return m_length; }
+        bool        isLoaded()                    { return m_loaded; }
         bool        isModified()                  { return m_modified; }
         void        setModified( bool );
         void        setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}

@@ -425,6 +425,8 @@ Playlist::insertMediaSql( const QString& sql, int options )
 void
 Playlist::addSpecialTracks( uint songCount, QString type )
 {
+    if( !songCount ) return;
+
     QueryBuilder qb;
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -483,77 +485,119 @@ Playlist::addSpecialTracks( uint songCount, QString type )
 void
 Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 {
-    if ( list.isEmpty() ) return;
+    if( list.isEmpty() ) return;
 
-    QString query;
+    QStringList listItems;
+    QStringList listTypes;
+    for( uint i=0; i < list.count(); i++ )
+        ( i % 2 ) ?
+            listTypes << list[i] :
+            listItems << list[i] ;
 
     PlaylistBrowser *pb = PlaylistBrowser::instance() ? PlaylistBrowser::instance() : new PlaylistBrowser();
     SmartPlaylist *sp = 0;
+    PlaylistEntry *pl = 0;
     QString playlistName = QString::null;
 
-    //randomly grab a smart playlist to get a song from.
     //FIXME: What if the randomiser grabs the same playlist again and again?  Lets remove the playlist from the list.
-    for( uint y=0; y < list.count(); y++ )
+    for( uint y=0; y < listItems.count(); y++ )
     {
-        int x = KApplication::random() % list.count();
+        int x = KApplication::random() % listItems.count();
 
-        QString name = list[x];
-        sp = pb->getSmartPlaylist( name );
-        kdDebug() << "[PARTY]: Adding track from playlist called " << name << endl;
-        if ( sp ) {
-            playlistName = name;
-            break;
+        playlistName = list[x];
+
+        if( listTypes[x] == i18n("Playlist") )
+        {
+            pl = pb->getPlaylist( playlistName );
+            if( pl )
+                break;
         }
-        //FIXME: If the smartplaylist doesn't exist, we should remove it.
-        kdDebug() << "[PARTY]: Invalid smartplaylist requested. Trying another source." << name << endl;
-        amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(name) );
+        else if( listTypes[x] == i18n("Smart Playlist") )
+        {
+            sp = pb->getSmartPlaylist( playlistName );
+            if ( sp )
+                break;
+        }
+
+        //FIXME: If the source doesn't exist, we should remove it.
+        kdDebug() << "[PARTY]: Invalid source (" << playlistName << ") requested. Trying another source." << endl;
+        amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(playlistName) );
     }
 
-    if ( !sp )
-        return;
+    if( pl )
+    {
+        //FIXME: only works on loaded playlists.
+        if( !pl->isLoaded() )
+            return;
 
-    query = sp->query();
+        KURL::List urls;
+        KURL::List trackList;
+        trackList = pl->tracksURL();
 
-    QString sql;
+        for( uint i=0; i < songCount; i++ )
+        {
+            int x = KApplication::random() % trackList.count();
+            KURL::List::Iterator it = trackList.at( x );
 
-    sql = sp->sqlForTags;
+            if( (*it).isValid() )
+            {
+                kdDebug() << "\t[PARTY] " << i << ": Adding track '"<< (*it).path() << "'" << endl;
+                urls << (*it).path();
+            }
+        }
+        if( urls.isEmpty() )
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                "<div align=\"center\"><b>Warning</b></div>"
+                "The playlist titled <i>%1</i> contains no tracks."
+                "<br><br>"
+                "Please modify your playlist or choose a different source." ).arg( playlistName ) );
+        else
+            insertMedia( urls );
 
-    //Add random and limiting sql queries to the end
-    if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
-        QRegExp order( "ORDER BY.*$" );
-        sql.remove( order );
-        sql.append( ';' );
     }
+    else if( sp )
+    {
+        QString query = sp->query();
 
-    // ORDER BY RAND() breaks Newest etc
-    if ( sql.find( QString("LIMIT"), FALSE ) != -1  ) {
-        QRegExp limit( "LIMIT [\\d].*[\\d]");
-        sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1").arg( songCount ) );
-    } else {
-        QRegExp limit( ";$" );
-        sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
+        QString sql = sp->sqlForTags;
+
+        //Add random and limiting sql queries to the end
+        if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
+            QRegExp order( "ORDER BY.*$" );
+            sql.remove( order );
+            sql.append( ';' );
+        }
+
+        // ORDER BY RAND() breaks Newest etc
+        if ( sql.find( QString("LIMIT"), FALSE ) != -1  ) {
+            QRegExp limit( "LIMIT [\\d].*[\\d]");
+            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1").arg( songCount ) );
+        } else {
+            QRegExp limit( ";$" );
+            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
+        }
+
+        QStringList queryResult = CollectionDB::instance()->query( sql );
+        QStringList newQuery;
+
+        if ( !sp->sqlForTags.isEmpty() ) {
+            //We have to filter all the un-needed results from query( sql )
+            for (uint x=10; x < queryResult.count() ; x += 11)
+                newQuery << queryResult[x];
+        } else {
+            newQuery = queryResult;
+        }
+
+        KURL::List urls = KURL::List( newQuery );
+        if( urls.isEmpty() )
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                "<div align=\"center\"><b>Warning</b></div>"
+                "The smart-playlist titled <i>%1</i> contains no tracks."
+                "<br><br>"
+                "Please modify your smart-playlist or choose a different source." ).arg( playlistName ) );
+        else
+            insertMedia( urls );
     }
-
-    QStringList queryResult = CollectionDB::instance()->query( sql );
-    QStringList newQuery;
-
-    if ( !sp->sqlForTags.isEmpty() ) {
-        //We have to filter all the un-needed results from query( sql )
-        for (uint x=10; x < queryResult.count() ; x += 11)
-            newQuery << queryResult[x];
-    } else {
-        newQuery = queryResult;
-    }
-
-    KURL::List urls = KURL::List( newQuery );
-    if( urls.isEmpty() )
-        amaroK::StatusBar::instance()->longMessage( i18n(
-            "<div align=\"center\"><b>Warning</b></div>"
-            "The smart-playlist titled <i>%1</i> contains no tracks."
-            "<br><br>"
-            "Please modify your smart-playlist or choose a different source." ).arg( playlistName ) );
-    else
-        insertMedia( urls );
 }
 
 /**

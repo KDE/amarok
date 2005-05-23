@@ -56,6 +56,7 @@ class PlaylistBrowser : public QVBox
         QString smartplaylistBrowserCache();
 
         SmartPlaylist *getSmartPlaylist( QString name ); //For party mode
+        PlaylistEntry *getPlaylist( QString name ); //For party mode
 
         QStringList selectedList();
 

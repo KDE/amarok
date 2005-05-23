@@ -595,7 +595,6 @@ PlaylistBrowser::getSmartPlaylist( QString name )
 
     for( ; it.current(); ++it )
     {
-        kdDebug() << "Visiting smart playlist: "<< (*it)->text(0) << endl;
         if( (*it)->text( 0 ) == name )
             break;
     }
@@ -830,6 +829,20 @@ void PlaylistBrowser::savePlaylists()
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
 
+}
+
+PlaylistEntry *
+PlaylistBrowser::getPlaylist( QString name )
+{
+    QListViewItemIterator it( m_playlistCategory );
+
+    for( ; it.current(); ++it )
+    {
+        if( (*it)->text( 0 ) == name )
+            break;
+    }
+
+    return static_cast<PlaylistEntry*>(*it);
 }
 
 

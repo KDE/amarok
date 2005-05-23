@@ -33,6 +33,7 @@ class KAction;
 class KActionCollection;
 class MetaBundle;
 class PlaylistItem;
+class PlaylistEntry;
 class PlaylistLoader;
 class QBoxLayout;
 class QLabel;
