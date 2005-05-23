@@ -540,10 +540,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
             KURL::List::Iterator it = trackList.at( x );
 
             if( (*it).isValid() )
-            {
-                kdDebug() << "\t[PARTY] " << i << ": Adding track '"<< (*it).path() << "'" << endl;
                 urls << (*it).path();
-            }
         }
         if( urls.isEmpty() )
             amaroK::StatusBar::instance()->longMessage( i18n(
@@ -2067,13 +2064,6 @@ Playlist::removeSelectedItems() //SLOT
     if( list.isEmpty() ) return;
     saveUndoState();
 
-    //remove the items
-    for( QListViewItem *item = list.first(); item; item = list.next() )
-    {
-        removeItem( (PlaylistItem*)item );
-        delete item;
-    }
-
     if( isParty() )
     {
         int remainder = childCount() - list.count() - 1;
@@ -2081,6 +2071,13 @@ Playlist::removeSelectedItems() //SLOT
 
         if( required > remainder )
             addSpecialTracks( required - remainder, AmarokConfig::partyType() );
+    }
+
+    //remove the items
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+    {
+        removeItem( (PlaylistItem*)item );
+        delete item;
     }
 
     updateNextPrev();
