@@ -110,7 +110,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsTab = new QVBox(this, "lyrics_tab");
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
-    m_lyricsToolBar->insertButton( "editadd", LYRICS_ADD, true, i18n("Add Lyrics") );
+    m_lyricsToolBar->insertButton( "edit_add", LYRICS_ADD, true, i18n("Add Lyrics") );
     m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search Lyrics") );
     m_lyricsToolBar->insertButton( "reload", LYRICS_REFRESH, true, i18n("Refresh") );
 
