@@ -693,35 +693,31 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         : KListViewItem( parent, after, name )
         , sqlForTags( tags )
         , m_title( name )
-        , m_xml ( xmlDefinition )
         , m_after ( after )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setDragEnabled( tags.isEmpty() );
-    debug() << "tags: " << tags << endl;
     setText( 0, name );
     setXml( xmlDefinition );
 }
 
 void SmartPlaylist::setXml( QDomElement xml ) {
     m_xml = xml;
-    static QStringList genres;  //= CollectionDB::instance()->genreList();
-    static QStringList artists; //= CollectionDB::instance()->artistList();
-    static QStringList albums;   //= CollectionDB::instance()->albumList();
-    static QStringList years;    //= CollectionDB::instance()->yearList();
+    static QStringList genres;
+    static QStringList artists;
+    static QStringList albums;
+    static QStringList years;
 
-    debug() << "About to delete" << endl;
+    debug() << "Removing old children from smartplaylist..." << endl;
     //Delete all children before
     QListViewItem *child, *next;
     if ( (child = firstChild()) ) {
         while ( (next = child->nextSibling()) ) {
             delete child;
             child=next;
-            debug() << "deleting" << endl;
         }
         delete child;
     }
-    debug() << "Deleted" << endl;
 
     QDomNode expandN = xml.namedItem( "expandby" );
     if ( !expandN.isNull() ) {
