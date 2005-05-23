@@ -28,6 +28,8 @@ class KRadioAction;
 class KPopupMenu;
 class KProgress;
 
+class CollectionView;
+
 class CollectionBrowser: public QVBox
 {
     Q_OBJECT

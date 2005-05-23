@@ -20,6 +20,7 @@ class QLabel;
 class QToolButton;
 class QVGroupBox;
 
+class CriteriaEditor;
 
 class SmartPlaylistEditor : public KDialogBase
 {

@@ -13,6 +13,9 @@
 #include <qptrlist.h>
 #include <qdom.h>
 
+class PlaylistTrackItem;
+class TrackItemInfo;
+
 // Simple subclass for categories/folders and other structures for organising data
 
 class PlaylistCategory : public KListViewItem

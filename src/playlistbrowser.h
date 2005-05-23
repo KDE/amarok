@@ -26,6 +26,10 @@ class QPoint;
 class QSplitter;
 class QTimer;
 
+class PlaylistBrowserView;
+class PlaylistTrackItem;
+class SmartPlaylistView;
+
 class PlaylistBrowser : public QVBox
 {
         Q_OBJECT

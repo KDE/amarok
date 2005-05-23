@@ -14,7 +14,8 @@
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
 
-
+class MediaDevice;
+class MediaDeviceView;
 class MetaBundle;
 
 class KProgress;
