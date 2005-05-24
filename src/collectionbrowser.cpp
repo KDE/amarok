@@ -260,32 +260,32 @@ CollectionView::renderView()  //SLOT
     //query database for all records with the specified category
     QStringList values;
     QueryBuilder qb;
-    
+
     int VisYearAlbum = -1;
     int q_cat1=m_cat1;
     int q_cat2=m_cat2;
     int q_cat3=m_cat3;
     if (m_cat1 == CollectionBrowser::IdVisYearAlbum || m_cat2 == CollectionBrowser::IdVisYearAlbum || m_cat3 == CollectionBrowser::IdVisYearAlbum)
     {
-        if (m_cat1==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat1==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 1;
             q_cat1 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat2==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat2==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 2;
             q_cat2 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat3==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat3==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 3;
             q_cat3 = CollectionBrowser::IdAlbum;
         }
     }
-   
-    
-    
+
+
+
     // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
@@ -294,7 +294,7 @@ CollectionView::renderView()  //SLOT
             triggerUpdate();
             return;
         }
-          
+
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( q_cat1, QueryBuilder::valName );
@@ -311,9 +311,9 @@ CollectionView::renderView()  //SLOT
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         values = qb.run();
-        
-            
-        
+
+
+
         //add items to the view
         for ( int i = values.count() - qb.countReturnValues(); i >= 0; i -= qb.countReturnValues() )
         {
@@ -325,20 +325,20 @@ CollectionView::renderView()  //SLOT
             item->setDropEnabled( false );
 
             item->setUrl( values[ i ] );
-            
-            if (VisYearAlbum!=0) 
+
+            if (VisYearAlbum!=0)
             {
                  for ( uint j = 1; j < qb.countReturnValues()-1; j++ )
                  {
                     QString value;
-                    if (j==qb.countReturnValues()-2) 
+                    if (j==qb.countReturnValues()-2)
                         value =  (values [i+j+1].isEmpty() ? "?" : values [i+j+1] ) + i18n( " - " ) +(values[i+j].isEmpty() ? i18n( "Unknown" ) : values[i+j]);
                     else
                         value = values[i + j];
                     item->setText( j - 1, value );
                  }
             }
-            else 
+            else
             {
                 for ( uint j = 1; j < qb.countReturnValues(); j++ )
                     item->setText( j - 1, values[ i + j ] );
@@ -349,7 +349,7 @@ CollectionView::renderView()  //SLOT
     // MODE TREEVIEW
     if ( m_viewMode == modeTreeView )
     {
-    
+
         qb.addReturnValue( q_cat1, QueryBuilder::valName );
         if (VisYearAlbum==1) qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
         qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
@@ -363,9 +363,9 @@ CollectionView::renderView()  //SLOT
         values = qb.run();
 
         //add items to the view
-        
+
         // if year - artist is cat 1 rebuild the list
-        if (VisYearAlbum==1) 
+        if (VisYearAlbum==1)
         {
             QStringList tmpvalues;
             for (unsigned int i=0; i<values.count()-1 ; i+=2)
@@ -374,8 +374,8 @@ CollectionView::renderView()  //SLOT
             }
             values = tmpvalues;
         }
-        
-        
+
+
         if ( values.count() )
             for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
             {
@@ -535,7 +535,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
     QueryBuilder qb;
     bool c = false;
-    
+
     // initalization for year - album mode
     QString tmptext;
     int VisYearAlbum = -1;
@@ -544,17 +544,17 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     int q_cat3=m_cat3;
     if (m_cat1 == CollectionBrowser::IdVisYearAlbum || m_cat2 == CollectionBrowser::IdVisYearAlbum || m_cat3 == CollectionBrowser::IdVisYearAlbum)
     {
-        if (m_cat1==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat1==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 1;
             q_cat1 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat2==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat2==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 2;
             q_cat2 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat3==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat3==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 3;
             q_cat3 = CollectionBrowser::IdAlbum;
@@ -569,11 +569,11 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 QString tmptext = item->text( 0 );
                 if (VisYearAlbum==1)
-                { 
+                {
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                     year = year=="?" ? "" : year;
                     tmptext = tmptext.right(tmptext.length()-tmptext.find(i18n(" - "))-(i18n(" - ").length()));
-                    
+
                     qb.addMatch( QueryBuilder::tabYear, year );
                 }
                 qb.addMatch( q_cat1, tmptext );
@@ -596,7 +596,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 c = false;
                 qb.addReturnValue( q_cat2, QueryBuilder::valName );
-                if (VisYearAlbum==2) 
+                if (VisYearAlbum==2)
                 {
                     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
                     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
@@ -613,7 +613,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 tmptext = item->parent()->text( 0 );
                 if (VisYearAlbum==1)
-                { 
+                {
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                     year = year=="?" ? "" : year;
                     tmptext = tmptext.right(tmptext.length()-tmptext.find(i18n(" - "))-(i18n(" - ").length()));
@@ -626,9 +626,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
                 c = true;
             }
-            
+
             tmptext = item->text( 0 );
-            if (VisYearAlbum==2) 
+            if (VisYearAlbum==2)
             {
                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                 year = year=="?" ? "" : year;
@@ -650,7 +650,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 c = false;
                 qb.addReturnValue( q_cat3, QueryBuilder::valName );
-                if (VisYearAlbum==3) 
+                if (VisYearAlbum==3)
                 {
                     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
                     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
@@ -666,7 +666,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             if ( item->parent()->parent()->text( 0 ) != i18n( "Various Artists" ) )
             {
                 tmptext = item->parent()->parent()->text( 0 );
-                if (VisYearAlbum==1) 
+                if (VisYearAlbum==1)
                 {
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                     year = year=="?" ? "" : year;
@@ -682,7 +682,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             }
 
             tmptext = item->parent()->text( 0 );
-            if (VisYearAlbum==2) 
+            if (VisYearAlbum==2)
             {
                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                 year = year=="?" ? "" : year;
@@ -690,9 +690,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.addMatch( QueryBuilder::tabYear, year );
             }
             qb.addMatch( q_cat2, tmptext );
-            
+
             tmptext = item->text( 0 );
-            if (VisYearAlbum==3) 
+            if (VisYearAlbum==3)
             {
                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                 year = year=="?" ? "" : year;
@@ -716,8 +716,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
     int countReturnValues = qb.countReturnValues();
-    
-    
+
+
     if (category==CollectionBrowser::IdVisYearAlbum)
     {
         QStringList tmpvalues;
@@ -1083,7 +1083,7 @@ CollectionView::fetchCover() //SLOT
             "SELECT DISTINCT artist.name FROM artist, album, tags "
             "WHERE artist.id = tags.artist AND tags.album = album.id "
             "AND album.name = '%1';" )
-            .arg( album ) );
+            .arg( CollectionDB::instance()->escapeString( album ) ) );
 
     if ( !values.isEmpty() )
         CollectionDB::instance()->fetchCover( this, values[0], album, false );
@@ -1195,7 +1195,7 @@ CollectionView::listSelected()
     QListViewItem* item;
     QStringList values;
     QueryBuilder qb;
-    
+
     // initalization for year - album mode
     QString tmptext;
     int VisYearAlbum = -1;
@@ -1204,17 +1204,17 @@ CollectionView::listSelected()
     int q_cat3=m_cat3;
     if (m_cat1 == CollectionBrowser::IdVisYearAlbum || m_cat2 == CollectionBrowser::IdVisYearAlbum || m_cat3 == CollectionBrowser::IdVisYearAlbum)
     {
-        if (m_cat1==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat1==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 1;
             q_cat1 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat2==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat2==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 2;
             q_cat2 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat3==CollectionBrowser::IdVisYearAlbum) 
+        if (m_cat3==CollectionBrowser::IdVisYearAlbum)
         {
             VisYearAlbum = 3;
             q_cat3 = CollectionBrowser::IdAlbum;
@@ -1241,7 +1241,7 @@ CollectionView::listSelected()
             if ( !sampler )
             {
                 tmptext = item->text( 0 );
-                if (VisYearAlbum==1) 
+                if (VisYearAlbum==1)
                 {
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                     year = year=="?" ? "" : year;
@@ -1295,7 +1295,7 @@ CollectionView::listSelected()
                     if ( !sampler )
                     {
                         tmptext = item->text( 0 );
-                        if (VisYearAlbum==1) 
+                        if (VisYearAlbum==1)
                         {
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             year = year=="?" ? "" : year;
@@ -1308,7 +1308,7 @@ CollectionView::listSelected()
                         qb.setOptions( QueryBuilder::optOnlyCompilations );
 
                     tmptext = child->text( 0 );
-                    if (VisYearAlbum==2) 
+                    if (VisYearAlbum==2)
                     {
                         QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                         year = year=="?" ? "" : year;
@@ -1316,7 +1316,7 @@ CollectionView::listSelected()
                         qb.addMatch( QueryBuilder::tabYear, year );
                     }
                     qb.addMatch( q_cat2, tmptext );
-                    
+
                     qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
 
                     if ( VisYearAlbum==1) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
@@ -1370,7 +1370,7 @@ CollectionView::listSelected()
                         if ( !sampler )
                         {
                             tmptext = item->text( 0 );
-                            if (VisYearAlbum==1) 
+                            if (VisYearAlbum==1)
                             {
                                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                                 year = year=="?" ? "" : year;
@@ -1383,7 +1383,7 @@ CollectionView::listSelected()
                             qb.setOptions( QueryBuilder::optOnlyCompilations );
 
                         tmptext = child->text( 0 );
-                        if (VisYearAlbum==2) 
+                        if (VisYearAlbum==2)
                         {
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             year = year=="?" ? "" : year;
@@ -1391,9 +1391,9 @@ CollectionView::listSelected()
                             qb.addMatch( QueryBuilder::tabYear, year );
                         }
                         qb.addMatch( q_cat2, tmptext );
-                    
+
                         tmptext = grandChild->text( 0 );
-                        if (VisYearAlbum==3) 
+                        if (VisYearAlbum==3)
                         {
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             year = year=="?" ? "" : year;
@@ -1401,9 +1401,9 @@ CollectionView::listSelected()
                             qb.addMatch( QueryBuilder::tabYear, year );
                         }
                         qb.addMatch( q_cat3, tmptext );
-                        
+
                         qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
-                        
+
                         if ( VisYearAlbum==1) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
                         if ( !sampler ) qb.sortBy( q_cat1, QueryBuilder::valName );
                         if ( VisYearAlbum==2) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
@@ -1532,5 +1532,3 @@ CollectionView::viewportResizeEvent( QResizeEvent* )
 
 
 #include "collectionbrowser.moc"
-
-
