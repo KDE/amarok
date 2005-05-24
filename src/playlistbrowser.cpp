@@ -1817,13 +1817,13 @@ void PlaylistBrowserView::startDrag()
 
         else if( isSmartPlaylist( *it ) )
         {
-            kdDebug() << "{PLAYLIST BROWSER] DRAGGING A SMARTPLAYLIST!" << endl;
             SmartPlaylist *item = (SmartPlaylist*)*it;
-            if( !item->sqlForTags.isEmpty() )
+            QString query = item->sqlForTags;
+            if( !query.isEmpty() )
             {
-                QStringList list = CollectionDB::instance()->query( item->sqlForTags );
-                if( list.isEmpty() ) kdDebug() << "Query returned nothing" << endl;
-                for( uint c=0; c < list.count(); c++ )
+                QStringList list = CollectionDB::instance()->query( query );
+
+                for( uint c=10; c < list.count(); c += 11 )
                     urls += KURL( list[c] );
             }
         }
