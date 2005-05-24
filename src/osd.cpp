@@ -428,14 +428,15 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
            << "%artist" << "%album" << "%title" << "%genre"
            << "%year" << "%track" << "%bitrate" << "%length"
            << "%file" << "%comment"
-           << "%score";
+           << "%score"<< "%playcount";
 
     tags   << bundle.prettyTitle()
            << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
            << bundle.year() << bundle.track() << bundle.prettyBitrate()
            << (bundle.length() > 0 ? bundle.prettyLength() : QString::null) //ignore '-' and '?'
            << bundle.url().fileName() << bundle.comment()
-           << QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) );
+           << QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) )
+           << QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
 
     for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
     {

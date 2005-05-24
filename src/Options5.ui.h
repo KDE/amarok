@@ -63,6 +63,7 @@ void Options5::init()
                 "<li>Filename - %9"
                 "<li>Comment - %10"
                 "<li>Score - %11"
+                "<li>Playcount - %12"
                 "</ul>"
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
                 "<pre>%11</pre>"
@@ -72,6 +73,7 @@ void Options5::init()
             // we don't translate these, it is not sensible to do so
             << "%title" << "%album"  << "%artist" << "%genre" << "%bitrate"
             << "%year " << "%length" << "%track"  << "%file"  << "%comment" << "%score"
+            << "%playcount"
             << "%title {Score: %score}" ) );
 }
 
