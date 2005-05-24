@@ -1,6 +1,5 @@
 /***************************************************************************
  *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
- *   Copyright (C)       2005 Mark Kretschmann <markey@web.de>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,37 +13,79 @@
 #include "browserbar.h"
 #include "debug.h"
 #include "enginecontroller.h"
-
 #include <kapplication.h>  //kapp
 #include <kconfig.h>
 #include <kiconloader.h>   //multiTabBar icons
-#include <kjanuswidget.h>
 #include <klocale.h>
-
+#include <kmultitabbar.h>  //m_tabBar
 #include <qcursor.h>       //for resize cursor
-#include <qlayout.h>
-#include <qsplitter.h>
-#include <qvbox.h>
+#include <qpainter.h>
+#include <qsignalmapper.h> //m_mapper
+#include <qstyle.h>        //amaroK::Splitter
+
+
+// we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
+// mostly we can stop the browserbar getting resized too small so that switching browser looks wrong
+
+
+namespace amaroK
+{
+    class Splitter : public QWidget {
+    public:
+        Splitter( BrowserBar *w ) : QWidget( w, "divider" )
+        {
+            setCursor( QCursor(SplitHCursor) );
+            styleChange( style() );
+        }
+
+        virtual void paintEvent( QPaintEvent* )
+        {
+            QPainter p( this );
+            parentWidget()->style().drawPrimitive( QStyle::PE_Splitter, &p, rect(), colorGroup(), QStyle::Style_Horizontal );
+        }
+
+        virtual void styleChange( QStyle& )
+        {
+            setFixedWidth( style().pixelMetric( QStyle::PM_SplitterWidth, this ) );
+        }
+
+        virtual void mouseMoveEvent( QMouseEvent *e )
+        {
+            static_cast<BrowserBar*>(parent())->mouseMovedOverSplitter( e );
+        }
+    };
+}
 
 
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , EngineObserver( EngineController::instance() )
+        , m_playlistBox( new QVBox( this ) )
+        , m_divider( new amaroK::Splitter( this ) )
+        , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
+        , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
+        , m_mapper( new QSignalMapper( this ) )
 {
-    QVBoxLayout *layout = new QVBoxLayout( this );
+    m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
+
+    m_tabBar->setStyle( KMultiTabBar::KDEV3ICON );
+    m_tabBar->setPosition( KMultiTabBar::Left );
+    m_tabBar->showActiveTabTexts( true );
+    m_tabBar->setFixedWidth( m_pos );
+    m_tabBar->move( 0, 3 );
+
+    QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
     layout->addSpacing( 3 ); // aesthetics
     layout->setAutoAdd( true );
 
-    m_splitter = new QSplitter( QSplitter::Horizontal, this );
-    m_splitter->setOpaqueResize( true );
-    m_browserBox = new QVBox( m_splitter );
-    m_playlistBox = new QVBox( m_splitter );
-    m_splitter->setResizeMode( m_browserBox, QSplitter::KeepSize );
-
-    m_janusWidget = new KJanusWidget( m_browserBox, 0, KJanusWidget::IconList );
+    m_browserBox->move( m_pos, 0 );
+    m_browserBox->hide();
+    m_divider->hide();
     m_playlistBox->setSpacing( 1 );
+
+    connect( m_mapper, SIGNAL(mapped( int )), SLOT(showHideBrowser( int )) );
 }
 
 BrowserBar::~BrowserBar()
@@ -85,12 +126,95 @@ BrowserBar::polish()
 }
 
 void
+BrowserBar::adjustWidgetSizes()
+{
+    //TODO set the geometry of the PlaylistWindow before
+    // the browsers are loaded so this isn't called twice
+
+    const uint w   = width();
+    const uint h   = height();
+    const uint mxW = maxBrowserWidth();
+    const uint p   = (m_pos < mxW) ? m_pos : mxW;
+    const uint ppw = p + m_divider->width();
+    const uint tbw = m_tabBar->width();
+
+    m_divider->move( p, 0 );
+
+    const uint offset = !m_divider->isHidden() ? ppw : tbw;
+
+    m_browserBox->resize( p - tbw, h );
+    m_playlistBox->setGeometry( offset, 0, w - offset, h );
+}
+
+void
+BrowserBar::mouseMovedOverSplitter( QMouseEvent *e )
+{
+    const uint oldPos   = m_pos;
+    const uint newPos   = mapFromGlobal( e->globalPos() ).x();
+    const uint minWidth = m_tabBar->width() + m_browserBox->minimumWidth();
+    const uint maxWidth = maxBrowserWidth();
+
+    if( newPos < minWidth )
+        m_pos = minWidth;
+
+    else if( newPos > maxWidth )
+        m_pos = maxWidth;
+
+    else
+        m_pos = newPos;
+
+    if( m_pos != oldPos )
+        adjustWidgetSizes();
+}
+
+bool
+BrowserBar::event( QEvent *e )
+{
+    switch( e->type() )
+    {
+    case QEvent::LayoutHint:
+        //FIXME include browserholder width
+        setMinimumWidth(
+                m_tabBar->minimumWidth() +
+                m_divider->minimumWidth() +
+                m_browserBox->width() +
+                m_playlistBox->minimumWidth() );
+        break;
+
+    case QEvent::Resize:
+        DEBUG_LINE_INFO
+
+        m_divider->resize( 0, height() ); //Qt will set width
+        m_tabBar->resize( 0, height() ); //Qt will set width
+
+        adjustWidgetSizes();
+
+        return true;
+
+    default:
+        ;
+    }
+
+    return QWidget::event( e );
+}
+
+void
 BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& icon )
 {
+    const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
+    QWidget *tab;
 
-    QVBox* page = m_janusWidget->addVBoxPage( title, title, DesktopIcon( icon ) );
-    widget->reparent( page, QPoint() );
+    widget->reparent( m_browserBox, QPoint() );
+    widget->hide();
+
+    m_tabBar->appendTab( SmallIcon( icon ), id, title );
+    tab = m_tabBar->tab( id );
+    tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
+
+    //we use a SignalMapper to show/hide the corresponding browser when tabs are clicked
+    connect( tab, SIGNAL(clicked()), m_mapper, SLOT(map()) );
+    m_mapper->setMapping( tab, id );
 
     m_browsers.push_back( widget );
 }
@@ -98,8 +222,45 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 void
 BrowserBar::showHideBrowser( int index )
 {
-    m_janusWidget->showPage( index );
-    m_currentIndex = index;
+    const int prevIndex = m_currentIndex;
+
+    if( m_currentIndex != -1 ) {
+        ///first we need to hide the currentBrowser
+
+        m_currentIndex = -1; //to prevent race condition, see CVS history
+
+        m_browsers[prevIndex]->hide();
+        m_tabBar->setTab( prevIndex, false );
+    }
+
+    if( index == prevIndex ) {
+        ///close the BrowserBar
+
+        m_browserBox->hide();
+        m_divider->hide();
+
+        adjustWidgetSizes();
+    }
+
+    else if( (uint)index < m_browsers.count() ) {
+        ///open up target
+
+        QWidget* const target = m_browsers[index];
+        m_currentIndex = index;
+
+        m_divider->show();
+        target->show();
+        target->setFocus();
+        m_browserBox->show();
+        m_tabBar->setTab( index, true );
+
+        if( prevIndex == -1 ) {
+            // we need to show the browserBox
+            // m_pos dictates how everything will be sized in adjustWidgetSizes()
+            m_pos = m_browserBox->width() + m_tabBar->width();
+            adjustWidgetSizes();
+        }
+    }
 }
 
 QWidget*
@@ -153,5 +314,49 @@ BrowserBar::engineStateChanged( Engine::State state )
     }
 }
 
+bool
+BrowserBar::eventFilter( QObject *o, QEvent *e )
+{
+    DEBUG_FUNC_INFO;
+
+    switch( e->type() )
+    {
+    case QEvent::MouseMove:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseButtonPress:
+    case QEvent::FocusIn:
+    case QEvent::KeyPress:
+    case QEvent::KeyRelease:
+
+        debug() << "HELLO\n";
+
+        // we put an event filter on this browser to check
+        // if it is still being used within 5 seconds of
+        // playback starting. If so we shouldn't auto-switch
+        // to the context browser
+        o->removeEventFilter( this );
+        killTimers();
+        break;
+
+    default:
+        ;
+    }
+
+    return false;
+}
+
+void
+BrowserBar::timerEvent( QTimerEvent* )
+{
+    if( m_currentIndex != -1 ) //means the browsers are closed
+        showBrowser( "ContextBrowser" );
+
+    // it might be bad to leave excess filters running
+    // so just in case
+    foreachType( BrowserList, m_browsers )
+        (*it)->removeEventFilter( this );
+
+    killTimers();
+}
 
 #include "browserbar.moc"

@@ -1,6 +1,5 @@
 /***************************************************************************
  *   Copyright (C) 2004, 2005 Max Howell <max.howell@methylblue.com>       *
- *   Copyright (C)       2005 Mark Kretschmann <markey@web.de>             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,9 +17,10 @@
 
 typedef QValueVector<QWidget*> BrowserList;
 
-class KJanusWidget;
+class KMultiTabBar;
+class KMultiTabBarTab;
 class KURL;
-class QSplitter;
+class QSignalMapper;
 class QVBox;
 
 
@@ -40,8 +40,14 @@ public:
 
     void addBrowser( QWidget*, const QString&, const QString& );
 
+    /// for internal use
+    void mouseMovedOverSplitter( QMouseEvent* );
+
 protected:
+    virtual bool eventFilter( QObject*, QEvent* );
+    virtual bool event( QEvent* );
     virtual void polish();
+    virtual void timerEvent( QTimerEvent* );
 
 protected:
     virtual void engineStateChanged( Engine::State );
@@ -55,17 +61,20 @@ public slots:
 private:
     int indexForName( const QString& ) const;
 
+    void adjustWidgetSizes();
     uint maxBrowserWidth() const { return width() / 2; }
 
     static const int DEFAULT_HEIGHT = 50;
 
-    QSplitter     *m_splitter;
+    uint           m_pos;         ///the x-axis position of m_divider
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
-    KJanusWidget  *m_janusWidget;
+    QWidget       *m_divider;     ///a qsplitter like widget
+    KMultiTabBar  *m_tabBar;
     BrowserList    m_browsers;
-    QVBox         *m_browserBox;  ///parent widget to the browsers
+    QWidget       *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
     int            m_lastIndex;
+    QSignalMapper *m_mapper;      ///maps tab clicks to browsers
 };
 
 #endif
