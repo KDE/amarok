@@ -2564,6 +2564,8 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     m_wiki.replace( QRegExp( "<div class=\"editsection\"[^>]*>[^<]*<[^>]*>[^<]*<[^>]*>[^<]*</div>" ), QString::null );
 
+    m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
+
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
