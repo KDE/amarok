@@ -89,7 +89,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         m_expandCheck->setChecked( true );
         QDomElement expandby = expandbyList.item(0).toElement(); // we only allow one orderby node
 
-        int dbfield = m_expandableDbFields.findIndex( expandby.attribute( "field" ) );
+        int dbfield = m_expandableFields.findIndex( expandby.attribute( "field" ) );
         m_expandCombo->setCurrentItem( dbfield );
     }
 }
@@ -337,7 +337,7 @@ void SmartPlaylistEditor::buildQuery()
             QString table = field.left( field.find('.') );
             if( !joins.contains( table ) ) {
                 if( table=="statistics")
-	           joins += " INNER JOIN statistics ON statistics.url=tags.url";
+                    joins += " INNER JOIN statistics ON statistics.url=tags.url";
             }
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
