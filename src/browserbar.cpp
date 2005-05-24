@@ -18,12 +18,12 @@
 #include <kapplication.h>  //kapp
 #include <kconfig.h>
 #include <kiconloader.h>   //multiTabBar icons
+#include <kjanuswidget.h>
 #include <klocale.h>
 
 #include <qcursor.h>       //for resize cursor
 #include <qlayout.h>
 #include <qsplitter.h>
-#include <qtoolbox.h>
 #include <qvbox.h>
 
 
@@ -43,7 +43,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_playlistBox = new QVBox( m_splitter );
     m_splitter->setResizeMode( m_browserBox, QSplitter::KeepSize );
 
-    m_toolBox = new QToolBox( m_browserBox );
+    m_janusWidget = new KJanusWidget( m_browserBox, 0, KJanusWidget::IconList );
     m_playlistBox->setSpacing( 1 );
 }
 
@@ -89,17 +89,16 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 {
     const QString name( widget->name() );
 
-    widget->reparent( m_browserBox, QPoint() );
-    widget->hide();
+    QVBox* page = m_janusWidget->addVBoxPage( title, title, DesktopIcon( icon ) );
+    widget->reparent( page, QPoint() );
 
-    m_toolBox->addItem( widget, SmallIconSet( icon ), title );
     m_browsers.push_back( widget );
 }
 
 void
 BrowserBar::showHideBrowser( int index )
 {
-    m_toolBox->setCurrentIndex( index );
+    m_janusWidget->showPage( index );
     m_currentIndex = index;
 }
 

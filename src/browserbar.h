@@ -18,9 +18,9 @@
 
 typedef QValueVector<QWidget*> BrowserList;
 
+class KJanusWidget;
 class KURL;
 class QSplitter;
-class QToolBox;
 class QVBox;
 
 
@@ -61,7 +61,7 @@ private:
 
     QSplitter     *m_splitter;
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
-    QToolBox      *m_toolBox;
+    KJanusWidget  *m_janusWidget;
     BrowserList    m_browsers;
     QVBox         *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
