@@ -76,6 +76,9 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         else if( protocol == "fetchcover" )
             continue;
 
+        else if( protocol == "seek" )
+            continue;
+
         else if( protocol == "album" ) {
            // url looks like:   album:<artist_id> @@@ <album_id>
            QString myUrl = url.path();
