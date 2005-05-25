@@ -62,7 +62,7 @@ public:
     * KONQSBC == konqy's classic sidebar style (unthemed), this one is disabled
     * 	at the moment, but will be renabled soon too
     */
-    enum MultiTabBarStyle{VSNET=0, KDEV3=1, KONQSBC=2, KDEV3ICON=3, STYLELAST=0xffff};
+    enum MultiTabBarStyle{VSNET=0, KDEV3=1, KONQSBC=2, KDEV3ICON=3, AMAROK=4, STYLELAST=0xffff};
 
     MultiTabBar(MultiTabBarMode bm,QWidget *parent=0,const char *name=0);
     virtual ~MultiTabBar();
@@ -234,6 +234,7 @@ protected:
     virtual void drawButtonLabel(QPainter *);
     void drawButtonStyled(QPainter *);
     void drawButtonClassic(QPainter *);
+    void drawButtonAmarok(QPainter *);
 protected slots:
     virtual void slotClicked();
     void setTabsPosition(MultiTabBar::MultiTabBarPosition);

@@ -72,7 +72,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 {
     m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
 
-    m_tabBar->setStyle( MultiTabBar::KDEV3ICON );
+    m_tabBar->setStyle( MultiTabBar::AMAROK );
     m_tabBar->setPosition( MultiTabBar::Left );
     m_tabBar->showActiveTabTexts( true );
     m_tabBar->setFixedWidth( m_pos );

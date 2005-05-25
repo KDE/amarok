@@ -86,7 +86,8 @@ void MultiTabBarInternal::setStyle(enum MultiTabBar::MultiTabBarStyle style)
                 m_tabs.at(i)->setStyle(m_style);
 
     if  ( (m_style==MultiTabBar::KDEV3) ||
-        (m_style==MultiTabBar::KDEV3ICON ) ) {
+        (m_style==MultiTabBar::KDEV3ICON ) ||
+        (m_style==MultiTabBar::AMAROK ) ) {
         delete mainLayout;
         mainLayout=0;
         resizeEvent(0);
@@ -194,7 +195,8 @@ void MultiTabBarInternal::resizeEvent(QResizeEvent *ev) {
     if (ev) QScrollView::resizeEvent(ev);
 
     if ( (m_style==MultiTabBar::KDEV3) ||
-        (m_style==MultiTabBar::KDEV3ICON) ){
+        (m_style==MultiTabBar::KDEV3ICON) ||
+        (m_style==MultiTabBar::AMAROK) ){
         box->setGeometry(0,0,width(),height());
         int lines=1;
         uint space;
@@ -494,7 +496,7 @@ QSize MultiTabBarButton::sizeHint() const
     }
 
     //PATCH by markey
-    if ( ( m_style==MultiTabBar::KDEV3ICON ) )
+    if ( ( m_style==MultiTabBar::AMAROK ) )
         h = ( parentWidget()->height() - 3 ) / NUM_TABS;
 
     return (style().sizeFromContents(QStyle::CT_ToolButton, this, QSize(w, h)).
@@ -573,7 +575,7 @@ void MultiTabBarTab::updateState()
 {
 
     if (m_style!=MultiTabBar::KONQSBC) {
-        if ((m_style==MultiTabBar::KDEV3) || (m_style==MultiTabBar::KDEV3ICON) || (isOn())) {
+        if ((m_style==MultiTabBar::KDEV3) || (m_style==MultiTabBar::KDEV3ICON) || (m_style==MultiTabBar::AMAROK) || (isOn())) {
             QPushButton::setText(m_text);
         } else {
             kdDebug()<<"MultiTabBarTab::updateState(): setting text to an empty QString***************"<<endl;
@@ -582,12 +584,12 @@ void MultiTabBarTab::updateState()
 
         if ((m_position==MultiTabBar::Right || m_position==MultiTabBar::Left)) {
             setFixedWidth(24);
-            if ((m_style==MultiTabBar::KDEV3)  || (m_style==MultiTabBar::KDEV3ICON) || (isOn())) {
+            if ((m_style==MultiTabBar::KDEV3)  || (m_style==MultiTabBar::KDEV3ICON) || (m_style==MultiTabBar::AMAROK) || (isOn())) {
                 setFixedHeight(MultiTabBarButton::sizeHint().width());
             } else setFixedHeight(36);
         } else {
             setFixedHeight(24);
-            if ((m_style==MultiTabBar::KDEV3)  || (m_style==MultiTabBar::KDEV3ICON) || (isOn())) {
+            if ((m_style==MultiTabBar::KDEV3)  || (m_style==MultiTabBar::KDEV3ICON) || (m_style==MultiTabBar::AMAROK) || (isOn())) {
                 setFixedWidth(MultiTabBarButton::sizeHint().width());
             } else setFixedWidth(36);
         }
@@ -610,9 +612,10 @@ void MultiTabBarTab::updateState()
 int MultiTabBarTab::neededSize()
 {
     //PATCH by markey
-    return ( parentWidget()->height() - 3 ) / NUM_TABS;
-
-//     return (((m_style!=MultiTabBar::KDEV3)?24:0)+QFontMetrics(QFont()).width(m_text)+6);
+    if ( m_style == MultiTabBar::AMAROK )
+        return ( parentWidget()->height() - 3 ) / NUM_TABS;
+    else
+        return (((m_style!=MultiTabBar::KDEV3)?24:0)+QFontMetrics(QFont()).width(m_text)+6);
 }
 
 void MultiTabBarTab::setSize(int size)
@@ -640,7 +643,7 @@ void MultiTabBarTab::drawButtonStyled(QPainter *paint) {
     QSize sh;
     const int width = 36; // rotated
     const int height = 24;
-    if ((m_style==MultiTabBar::KDEV3) || (m_style==MultiTabBar::KDEV3ICON) || (isOn())) {
+    if ((m_style==MultiTabBar::KDEV3) || (m_style==MultiTabBar::KDEV3ICON) || (m_style==MultiTabBar::AMAROK) || (isOn())) {
         if ((m_position==MultiTabBar::Left) || (m_position==MultiTabBar::Right))
             sh=QSize(this->height(),this->width());//MultiTabBarButton::sizeHint();
             else sh=QSize(this->width(),this->height());
@@ -835,8 +838,9 @@ void MultiTabBarTab::drawButtonClassic(QPainter *paint)
     }
 }
 
-
-
+void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
+{
+}
 
 
 
