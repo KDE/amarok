@@ -21,6 +21,8 @@ class MetaBundle;
 class QPalette;
 class QVBox;
 
+class CueFile;
+
 namespace Browser { class ToolBar; }
 namespace KIO { class Job; class TransferJob; }
 
@@ -138,6 +140,9 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 
         bool          m_suggestionsOpen;
         bool          m_favouritesOpen;
+
+        CueFile      *m_cuefile;
+        bool          m_cuedFile;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

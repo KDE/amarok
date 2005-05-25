@@ -62,6 +62,7 @@ amarokapp_SOURCES = \
     contextbrowser.cpp \
     coverfetcher.cpp \
     covermanager.cpp \
+    cuefile.cpp \
     directorylist.cpp \
     effectwidget.cpp \
     enginecontroller.cpp \

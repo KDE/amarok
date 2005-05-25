@@ -17,6 +17,7 @@
 #include "contextbrowser.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
+#include "cuefile.h"
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
@@ -194,6 +195,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
+
+    m_cuefile = new CueFile();
 }
 
 
@@ -202,6 +205,8 @@ ContextBrowser::~ContextBrowser()
     delete m_bgGradientImage;
     delete m_headerGradientImage;
     delete m_shadowGradientImage;
+
+    delete m_cuefile;
 }
 
 
@@ -340,6 +345,11 @@ void ContextBrowser::openURLRequest( const KURL &url )
         if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
         if ( url.path() == "ft" ) m_favouritesOpen ^= true;
     }
+
+    if ( url.protocol() == "seek" )
+    {
+        EngineController::engine()->seek(url.path().toLong());
+    }
 }
 
 
@@ -413,6 +423,18 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         showLyrics();
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showIntroduction();
+
+
+    // cue
+    if (trackChanged && bundle.url().isLocalFile()) {
+        // look if there is a cue-file
+        QString path    = bundle.url().path();
+        QString cueFile = path.left( path.findRev('.') ) + ".cue";
+
+        m_cuefile->setCueFileName( cueFile );
+        m_cuedFile = m_cuefile->load();
+        if( m_cuedFile ) debug () << "[CUEFILE]: " << cueFile << " found and loaded." << endl;
+    }
 }
 
 
@@ -453,7 +475,6 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             ;
     }
 }
-
 
 void ContextBrowser::saveHtmlData()
 {
@@ -501,7 +522,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
-        urlString.startsWith( "http" )
+        urlString.startsWith( "http" ) ||
+        urlString.startsWith( "seek" )
         )
         return;
 
@@ -1527,6 +1549,45 @@ bool CurrentTrackJob::doJob()
         "</div>"
                            );
     }
+
+    /* cue file code */
+    if (b->m_cuedFile) {
+        m_HTMLSource.append(
+        "<div id='cue_box' class='box'>"
+            "<div id='cue_box-header' class='box-header'>"
+                    "<span id='cue_box-header-title' class='box-header-title' onClick=\"toggleBlock('T_CC'); window.location.href='togglebox:cc';\" style='cursor: pointer;'>"
+                    + i18n( "Cue File" ) +
+                    "</span>"
+            "</div>"
+            "<table class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                CueFile::Iterator it;
+                uint i = 0;
+                for ( it = b->m_cuefile->begin(); it != b->m_cuefile->end(); ++it ) {
+                    m_HTMLSource.append(
+                    "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<td class='song'>"
+                            "<a href=\"seek: " + QString::number(it.key()) + "\">"
+                            "<span class='album-song-title'>" + QString::number(it.data().getTrackNumber()) + "</span>"
+                            "<span class='song-separator'>"
+                            + i18n("&#xa0;&#8211; ") +
+                            "</span>"
+                            "<span class='album-song-title'>" + it.data().getArtist() + "</span>"
+                            "<span class='song-separator'>"
+                            + i18n("&#xa0;&#8211; ") +
+                            "</span>"
+                            "<span class='album-song-title'>" + it.data().getTitle() + "</span>"
+                            "</a>"
+                        "</td>"
+                    ""
+                    );
+                }
+            m_HTMLSource.append(
+            "</table>"
+        "</div>"
+        );
+    }
+
+
 
     // <Suggested Songs>
     QStringList relArtists;

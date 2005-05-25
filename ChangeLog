@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * Cue file sheet support. Patch from Martin Ehmke <ehmke@gmx.de>.
+      (BR92271).
     * New OSD text token, %playcount, will write the playcount.
     * SmartPlaylists are editable. (BR 91036)
     * PlaylistBrowser gets a makeover!
