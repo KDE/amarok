@@ -62,7 +62,7 @@ public:
     * KONQSBC == konqy's classic sidebar style (unthemed), this one is disabled
     * 	at the moment, but will be renabled soon too
     */
-    enum MultiTabBarStyle{VSNET=0, KDEV3=1, KONQSBC=2, KDEV3ICON=3,STYLELAST=0xffff};
+    enum MultiTabBarStyle{VSNET=0, KDEV3=1, KONQSBC=2, KDEV3ICON=3, STYLELAST=0xffff};
 
     MultiTabBar(MultiTabBarMode bm,QWidget *parent=0,const char *name=0);
     virtual ~MultiTabBar();
@@ -180,6 +180,8 @@ public slots:
     QSize sizeHint() const;
 
 protected:
+    static const int NUM_TABS = 5; //HACK
+
     MultiTabBar::MultiTabBarPosition m_position;
     MultiTabBar::MultiTabBarStyle m_style;
     QString m_text;

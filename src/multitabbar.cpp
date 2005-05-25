@@ -493,6 +493,10 @@ QSize MultiTabBarButton::sizeHint() const
             h = QMAX(h, sz.height());
     }
 
+    //PATCH by markey
+    if ( ( m_style==MultiTabBar::KDEV3ICON ) )
+        h = ( parentWidget()->height() - 3 ) / NUM_TABS;
+
     return (style().sizeFromContents(QStyle::CT_ToolButton, this, QSize(w, h)).
             expandedTo(QApplication::globalStrut()));
 }
@@ -605,7 +609,10 @@ void MultiTabBarTab::updateState()
 
 int MultiTabBarTab::neededSize()
 {
-    return (((m_style!=MultiTabBar::KDEV3)?24:0)+QFontMetrics(QFont()).width(m_text)+6);
+    //PATCH by markey
+    return ( parentWidget()->height() - 3 ) / NUM_TABS;
+
+//     return (((m_style!=MultiTabBar::KDEV3)?24:0)+QFontMetrics(QFont()).width(m_text)+6);
 }
 
 void MultiTabBarTab::setSize(int size)
