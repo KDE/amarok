@@ -17,8 +17,8 @@
 
 typedef QValueVector<QWidget*> BrowserList;
 
-class KMultiTabBar;
-class KMultiTabBarTab;
+class MultiTabBar;
+class MultiTabBarTab;
 class KURL;
 class QSignalMapper;
 class QVBox;
@@ -69,7 +69,7 @@ private:
     uint           m_pos;         ///the x-axis position of m_divider
     QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
     QWidget       *m_divider;     ///a qsplitter like widget
-    KMultiTabBar  *m_tabBar;
+    MultiTabBar   *m_tabBar;
     BrowserList    m_browsers;
     QWidget       *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;

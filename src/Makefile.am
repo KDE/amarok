@@ -76,6 +76,7 @@ amarokapp_SOURCES = \
     ktrm.cpp \
     mediabrowser.cpp \
     metabundle.cpp \
+    multitabbar.cpp \
     osd.cpp \
     party.cpp \
     partydialogbase.ui \

@@ -13,11 +13,13 @@
 #include "browserbar.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "multitabbar.h"   //m_tabBar
+
 #include <kapplication.h>  //kapp
 #include <kconfig.h>
 #include <kiconloader.h>   //multiTabBar icons
 #include <klocale.h>
-#include <kmultitabbar.h>  //m_tabBar
+
 #include <qcursor.h>       //for resize cursor
 #include <qpainter.h>
 #include <qsignalmapper.h> //m_mapper
@@ -62,7 +64,7 @@ BrowserBar::BrowserBar( QWidget *parent )
         , EngineObserver( EngineController::instance() )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new amaroK::Splitter( this ) )
-        , m_tabBar( new KMultiTabBar( KMultiTabBar::Vertical, this ) )
+        , m_tabBar( new MultiTabBar( MultiTabBar::Vertical, this ) )
         , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
@@ -70,8 +72,8 @@ BrowserBar::BrowserBar( QWidget *parent )
 {
     m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
 
-    m_tabBar->setStyle( KMultiTabBar::KDEV3ICON );
-    m_tabBar->setPosition( KMultiTabBar::Left );
+    m_tabBar->setStyle( MultiTabBar::KDEV3ICON );
+    m_tabBar->setPosition( MultiTabBar::Left );
     m_tabBar->showActiveTabTexts( true );
     m_tabBar->setFixedWidth( m_pos );
     m_tabBar->move( 0, 3 );
