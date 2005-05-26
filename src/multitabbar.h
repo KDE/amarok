@@ -185,10 +185,10 @@ protected:
     MultiTabBar::MultiTabBarPosition m_position;
     MultiTabBar::MultiTabBarStyle m_style;
     QString m_text;
+    int m_id;
     virtual void hideEvent( class QHideEvent*);
     virtual void showEvent( class QShowEvent*);
 private:
-    int m_id;
     MultiTabBarButtonPrivate *d;
 signals:
     /**

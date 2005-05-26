@@ -634,8 +634,9 @@ void MultiTabBarTab::drawButtonLabel(QPainter *p) {
 }
 void MultiTabBarTab::drawButton(QPainter *paint)
 {
-    if (m_style!=MultiTabBar::KONQSBC) drawButtonStyled(paint);
-    else  drawButtonClassic(paint);
+    if      (m_style==MultiTabBar::AMAROK)  drawButtonAmarok(paint);
+    else if (m_style!=MultiTabBar::KONQSBC) drawButtonStyled(paint);
+    else    drawButtonClassic(paint);
 }
 
 void MultiTabBarTab::drawButtonStyled(QPainter *paint) {
@@ -687,7 +688,7 @@ void MultiTabBarTab::drawButtonStyled(QPainter *paint) {
 
 void MultiTabBarTab::drawButtonClassic(QPainter *paint)
 {
-        QPixmap pixmap;
+    QPixmap pixmap;
     if ( iconSet())
             pixmap = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
     paint->fillRect(0, 0, 24, 24, colorGroup().background());
@@ -840,6 +841,51 @@ void MultiTabBarTab::drawButtonClassic(QPainter *paint)
 
 void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
 {
+    // Draw the button
+    QPixmap pixmap( height(), width() );
+    pixmap.fill( isOn() ? colorGroup().light() : colorGroup().background() );
+    QPainter painter( &pixmap );
+
+    QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
+
+    // Draw the frame
+    painter.setPen( colorGroup().shadow() );
+    if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+    painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
+
+    // Draw the text
+    const int textX = pixmap.width() / 2 - QFontMetrics( QFont() ).width( m_text ) / 2;
+    painter.setPen(colorGroup().text());
+    painter.drawText( textX + icon.width() / 2 + 2,
+                      pixmap.height() / 2 + QFontMetrics( QFont() ).height() / 2 - 1,
+                      m_text );
+
+    // Draw the icon
+    painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
+
+    // Paint to widget
+    paint->rotate(-90);
+    paint->drawPixmap( 1 - pixmap.width(), 0, pixmap );
+
+
+
+//     painter.drawLine( pixmap.width() - 1, 0, pixmap.width() -1, pixmap.height() - 1 );
+
+/*    // Draw the button
+    QPixmap bufpixmap(height(), width());
+    QPainter painter(&bufpixmap);
+    style().drawControl(QStyle::CE_PushButton,&painter,this, QRect(0,0,tpixmap.width(),tpixmap.height()), colorGroup(),st);
+
+    // Draw the pixmap
+    QPixmap pixmap = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
+    paint->drawPixmap(10-pixmap.width()/2,10-pixmap.height()/2,pixmap);
+
+    // Draw the text
+    painter.setPen(colorGroup().text());
+    painter.drawText(tpixmap.width()-QFontMetrics(QFont()).width(m_text),+width()/2+QFontMetrics(QFont()).height()/2,m_text);
+
+    paint->rotate(-90);
+    paint->drawPixmap(-24-tpixmap.width(),2,tpixmap);*/
 }
 
 
