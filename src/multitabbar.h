@@ -188,6 +188,8 @@ protected:
     int m_id;
     virtual void hideEvent( class QHideEvent*);
     virtual void showEvent( class QShowEvent*);
+    virtual void enterEvent( class QEvent* );
+    virtual void leaveEvent( class QEvent* );
 private:
     MultiTabBarButtonPrivate *d;
 signals:
