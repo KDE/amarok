@@ -37,6 +37,7 @@
 
 #include <kiconloader.h>
 #include <kdebug.h>
+#include <kstringhandler.h>
 #include <qapplication.h>
 #include <math.h>
 
@@ -868,10 +869,12 @@ void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
     QFont font;
     font.setBold( isOn() );
     painter.setFont( font );
-    const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( m_text ) / 2;
-    painter.setPen(colorGroup().text());
+    QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
+    text.replace( "...", ".." );
+    const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
+    painter.setPen( colorGroup().text() );
     const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
-    painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, m_text );
+    painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
 
     // Draw the icon
     painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );

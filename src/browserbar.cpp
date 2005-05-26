@@ -184,7 +184,7 @@ BrowserBar::event( QEvent *e )
         break;
 
     case QEvent::Resize:
-        DEBUG_LINE_INFO
+//         DEBUG_LINE_INFO
 
         m_divider->resize( 0, height() ); //Qt will set width
         m_tabBar->resize( 0, height() ); //Qt will set width
