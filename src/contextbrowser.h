@@ -142,7 +142,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         bool          m_favouritesOpen;
 
         CueFile      *m_cuefile;
-        bool          m_cuedFile;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */

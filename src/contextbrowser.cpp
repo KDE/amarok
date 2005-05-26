@@ -99,6 +99,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_shadowGradientImage( 0 )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
+        , m_cuefile( NULL )
 {
     s_instance = this;
 
@@ -195,8 +196,6 @@ ContextBrowser::ContextBrowser( const char *name )
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
-
-    m_cuefile = new CueFile();
 }
 
 
@@ -431,9 +430,15 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         QString path    = bundle.url().path();
         QString cueFile = path.left( path.findRev('.') ) + ".cue";
 
+        m_cuefile = new CueFile;
         m_cuefile->setCueFileName( cueFile );
-        m_cuedFile = m_cuefile->load();
-        if( m_cuedFile ) debug () << "[CUEFILE]: " << cueFile << " found and loaded." << endl;
+
+        if( m_cuefile->load() )
+            debug () << "[CUEFILE]: " << cueFile << " found and loaded." << endl;
+        else {
+            delete m_cuefile;
+            m_cuefile = 0;
+        }
     }
 }
 
@@ -1551,7 +1556,7 @@ bool CurrentTrackJob::doJob()
     }
 
     /* cue file code */
-    if (b->m_cuedFile) {
+    if ( b->m_cuefile ) {
         m_HTMLSource.append(
         "<div id='cue_box' class='box'>"
             "<div id='cue_box-header' class='box-header'>"
@@ -1567,10 +1572,10 @@ bool CurrentTrackJob::doJob()
                     "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
                             "<a href=\"seek: " + QString::number(it.key()) + "\">"
-                            "<span class='album-song-title'>" + QString::number(it.data().getTrackNumber()) + "</span>"
-                            "<span class='song-separator'>"
-                            + i18n("&#xa0;&#8211; ") +
-                            "</span>"
+                            "<span class='album-song-trackno'>" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>"
+//                             "<span class='song-separator'>"
+//                             + i18n("&#xa0;&#8211; ") +
+//                             "</span>"
                             "<span class='album-song-title'>" + it.data().getArtist() + "</span>"
                             "<span class='song-separator'>"
                             + i18n("&#xa0;&#8211; ") +
