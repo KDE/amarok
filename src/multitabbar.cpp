@@ -871,7 +871,7 @@ void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
     const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( m_text ) / 2;
     painter.setPen(colorGroup().text());
     painter.drawText( textX + icon.width() / 2 + 2,
-                      pixmap.height() / 2 + QFontMetrics( font ).height() / 2 - 1,
+                      pixmap.height() / 2 + QFontMetrics( font ).height() / 2 - 2,
                       m_text );
 
     // Draw the icon
