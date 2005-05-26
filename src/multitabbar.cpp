@@ -870,9 +870,8 @@ void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
     painter.setFont( font );
     const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( m_text ) / 2;
     painter.setPen(colorGroup().text());
-    painter.drawText( textX + icon.width() / 2 + 2,
-                      pixmap.height() / 2 + QFontMetrics( font ).height() / 2 - 2,
-                      m_text );
+    const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
+    painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, m_text );
 
     // Draw the icon
     painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
