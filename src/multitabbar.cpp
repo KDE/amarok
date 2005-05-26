@@ -849,7 +849,7 @@ void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
     QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
 
     // Draw the frame
-    painter.setPen( colorGroup().shadow() );
+    painter.setPen( colorGroup().mid() );
     if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
     painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
