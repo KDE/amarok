@@ -674,12 +674,12 @@ void PlaylistBrowser::loadParties()
         e = n.namedItem( "cycleTracks" ).toElement();
         QString t = e.text();
         bool cycled = true;
-        if( t == "false" ) cycled = false;
+        if( t == QString("false") ) cycled = false;
 
         e = n.namedItem( "markHistory" ).toElement();
         t = e.text();
         bool marked = true;
-        if( t == "false" ) marked = false;
+        if( t == QString("false") ) marked = false;
 
         e = n.namedItem( "upcoming" ).toElement();
         int upcoming = e.text().toInt();
@@ -696,17 +696,17 @@ void PlaylistBrowser::loadParties()
         e = n.namedItem( "items" ).toElement();
         QStringList items = QStringList::split( ',', e.text() );
 
-        m_lastParty = new PartyEntry( m_partyCategory, m_lastParty, name );
-        #define m_lastParty static_cast<PartyEntry *>(m_lastPlaylist)
-        m_lastParty->setCycled( cycled );
-        m_lastParty->setMarked( marked );
-        m_lastParty->setUpcoming( upcoming );
-        m_lastParty->setPrevious( previous );
-        m_lastParty->setAppendCount( appendCount );
-        m_lastParty->setAppendType( appendType );
+        PartyEntry *newParty = new PartyEntry( m_partyCategory, m_lastParty, name );
+        newParty->setCycled( cycled );
+        newParty->setMarked( marked );
+        newParty->setUpcoming( upcoming );
+        newParty->setPrevious( previous );
+        newParty->setAppendCount( appendCount );
+        newParty->setAppendType( appendType );
         if( appendType == 2 )
-            m_lastParty->setItems( items );
-        #undef m_lastParty
+            newParty->setItems( items );
+
+        m_lastParty = newParty;
     }
     m_partyCategory->setOpen( true );
 }
