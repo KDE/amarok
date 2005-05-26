@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <seb100@optusnet.com.au>       *
+ * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
 ***************************************************************************/
 
 /***************************************************************************
@@ -34,9 +34,13 @@
 ///    CLASS Party
 ////////////////////////////////////////////////////////////////////////////
 
+Party *Party::s_instance = 0;
+
 Party::Party( QWidget *parent, const char *name )
     : QVBox( parent, name )
 {
+    s_instance = this;
+
     KToolBar *toolbar = new Browser::ToolBar( this );
 
     toolbar->setIconText( KToolBar::IconTextRight, false ); //text on right

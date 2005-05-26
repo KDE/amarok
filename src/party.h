@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <seb100@optusnet.com.au>       *
+ * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net                *
 ****************************************************************************/
 
 /***************************************************************************
@@ -53,7 +53,7 @@ class Party : public QVBox
     public:
         Party( QWidget *parent, const char *name = 0 );
 
-        enum    Mode  { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
+        enum    Mode{ RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
         bool    isChecked();
         int     previousCount();
@@ -63,6 +63,8 @@ class Party : public QVBox
         bool    cycleTracks();
         bool    markHistory();
         QString customList();
+
+        static  Party *instance() { return s_instance; }
 
     private slots:
         void    addPlaylists();
@@ -81,6 +83,8 @@ class Party : public QVBox
         QLabel *m_tooltip;
 
         KListView *m_playlists;
+
+        static Party *s_instance;
 };
 
 #endif //AMAROK_PARTY_H

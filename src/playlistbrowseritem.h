@@ -16,7 +16,70 @@
 class PlaylistTrackItem;
 class TrackItemInfo;
 
-// Simple subclass for categories/folders and other structures for organising data
+/**
+ *  RTTI VALUES
+ *  1000 - PlaylistCategory
+ *  1001 - PlaylistEntry
+ *  1002 - PlaylistTrackItem
+ *  1003 - StreamEntry
+ *  1004 - SmartPlaylist
+ *  1005 - PartyEntry
+ */
+
+
+// For saving the current playlist, party
+class ItemSaver : public KDialogBase
+{
+    public:
+        ItemSaver( QString title, QWidget *parent, const char *name=0 );
+
+        QString title() const { return m_nameLineEdit->text(); }
+
+    private:
+        KLineEdit *m_nameLineEdit;
+};
+
+class PartyEntry : public KListViewItem
+{
+    public:
+        PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
+        ~PartyEntry() { };
+
+        enum  Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
+
+        const QString &title() const { return m_title; }
+
+        QStringList items() { return m_items; }
+
+        void  setItems( QStringList list ) { m_items = list; }
+        void  setCycled( bool e )  { m_cycled = e; }
+        void  setMarked( bool e )  { m_marked = e; }
+        void  setUpcoming( int c ) { m_upcoming = c; }
+        void  setPrevious( int c ) { m_previous = c; }
+        void  setAppendCount( int c ) { m_appendCount = c; }
+        void  setAppendType( int type ) { m_appendType = type; }
+
+        bool  isCycled() { return m_cycled; }
+        bool  isMarked() { return m_marked; }
+        int   upcoming() { return m_upcoming; }
+        int   previous() { return m_previous; }
+        int   appendCount() { return m_appendCount; }
+        int   appendType() { return m_appendType; }
+
+        int   rtti() const { return RTTI; }
+        static const int RTTI = 1005;
+
+    private:
+        QString m_title;
+        QStringList m_items;
+
+        bool    m_cycled;
+        bool    m_marked;
+        int     m_upcoming;
+        int     m_previous;
+        int     m_appendCount;
+        int     m_appendType;
+};
 
 class PlaylistCategory : public KListViewItem
 {
@@ -98,19 +161,6 @@ class PlaylistEntry :  public QObject, public KListViewItem
         PlaylistTrackItem   *m_lastTrack;
 };
 
-// For saving the current playlist
-class PlaylistSaver : public KDialogBase
-{
-    public:
-        PlaylistSaver( QString title, QWidget *parent, const char *name=0 );
-
-        QString title() const { return m_nameLineEdit->text(); }
-
-    private:
-        KLineEdit *m_nameLineEdit;
-
-};
-
 class PlaylistTrackItem : public KListViewItem
 {
     friend class TrackItemInfo;
@@ -127,22 +177,6 @@ class PlaylistTrackItem : public KListViewItem
         TrackItemInfo *m_trackInfo;
 };
 
-
-//this class is used to store information (url, title and length) of a playlist track
-class TrackItemInfo
-{
-    public:
-        TrackItemInfo( const KURL &u, const QString &t, const int l );
-        ~TrackItemInfo() {}
-        const KURL &url() { return m_url; }
-        const QString &title() { return m_title; }
-        const int length() { return m_length; }
-
-    private:
-        KURL m_url;
-        QString m_title;
-        int m_length;
-};
 
 class StreamEntry : public KListViewItem
 {
@@ -209,6 +243,22 @@ class SmartPlaylist : public KListViewItem
         QString m_title;
         QDomElement m_xml;
         QListViewItem *m_after;
+};
+
+//this class is used to store information (url, title and length) of a playlist track
+class TrackItemInfo
+{
+    public:
+        TrackItemInfo( const KURL &u, const QString &t, const int l );
+        ~TrackItemInfo() {}
+        const KURL &url() { return m_url; }
+        const QString &title() { return m_title; }
+        const int length() { return m_length; }
+
+    private:
+        KURL m_url;
+        QString m_title;
+        int m_length;
 };
 
 #endif

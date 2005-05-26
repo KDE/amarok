@@ -48,9 +48,10 @@ class PlaylistBrowser : public QVBox
 
         void addStream( QListViewItem *parent = 0 );
         void addSmartPlaylist( QListViewItem *parent = 0 );
-        void addPartyConfig();
+        void addPartyConfig( QListViewItem *parent = 0 );
         void addPlaylist( QString path, QListViewItem *parent = 0, bool force=false );
 
+        QString partyBrowserCache();
         QString playlistBrowserCache();
         QString streamBrowserCache();
         QString smartplaylistBrowserCache();
@@ -74,7 +75,6 @@ class PlaylistBrowser : public QVBox
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
-        void saveCurrentPlaylist();
         void slotDoubleClicked( QListViewItem *item );
 
         void slotAddMenu( int id );
@@ -93,13 +93,13 @@ class PlaylistBrowser : public QVBox
         void saveSmartPlaylists();
 
         void loadParties();
-        void editPartyConfig();
         void saveParties();
 
         void loadPlaylists();
         void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
+        void saveCurrentPlaylist();
 
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
@@ -107,9 +107,10 @@ class PlaylistBrowser : public QVBox
 
         static PlaylistBrowser *s_instance;
 
-        KListViewItem       *m_lastPlaylist;
-        KListViewItem       *m_lastStream;
-        KListViewItem       *m_lastSmart;
+        QListViewItem       *m_lastParty;
+        QListViewItem       *m_lastPlaylist;
+        QListViewItem       *m_lastStream;
+        QListViewItem       *m_lastSmart;
         PlaylistCategory    *m_playlistCategory;
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
@@ -185,6 +186,14 @@ isCategory( QListViewItem *item )
     if( !item )
         return false;
     return item->rtti() == PlaylistCategory::RTTI ? true : false;
+}
+
+inline bool
+isParty( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == PartyEntry::RTTI ? true : false;
 }
 
 inline bool

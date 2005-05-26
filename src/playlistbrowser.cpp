@@ -609,26 +609,204 @@ PlaylistBrowser::getSmartPlaylist( QString name )
  *************************************************************************
  **/
 
-void PlaylistBrowser::addPartyConfig()
+QString PlaylistBrowser::partyBrowserCache()
 {
-    // Save the current party information for later use
+    return amaroK::saveLocation() + "partybrowser_save.xml";
+}
+
+void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
+{
+    Party *current = Party::instance();
+
+    if( !parent ) parent = m_partyCategory;
+
+    ItemSaver dialog( i18n("My Party"), this );
+
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        QString name = dialog.title();
+
+        PartyEntry *saveMe = new PartyEntry( parent, m_lastParty, name );
+
+        saveMe->setCycled( current->cycleTracks() );
+        saveMe->setMarked( current->markHistory() );
+        saveMe->setUpcoming( current->upcomingCount() );
+        saveMe->setPrevious( current->previousCount() );
+        saveMe->setAppendCount( current->appendCount() );
+        saveMe->setAppendType( current->appendType() );
+
+        QString list = current->customList();
+        QStringList newList = QStringList::split( ',', list );
+        saveMe->setItems( newList );
+    }
 }
 
 void PlaylistBrowser::loadParties()
 {
-    // We can't dance if we have no legs!
-}
+    m_lastParty = 0;
 
-void PlaylistBrowser::editPartyConfig()
-{
-    // Edit the chosen party
+    QFile file( partyBrowserCache() );
+
+    if( !file.open( IO_ReadOnly ) )
+        return;
+
+    m_lastParty = 0;
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+
+    if( !d.setContent( stream.read() ) )
+        return;
+
+    const QString PARTY( "party" );
+
+    QDomNode n = d.namedItem( "partybrowser" ).firstChild();
+
+    for( ; !n.isNull(); n = n.nextSibling() )
+    {
+        if( n.nodeName() != PARTY ) continue;
+
+        QDomElement e = n.toElement();
+        QString name  = e.attribute( "name" );
+
+        e = n.namedItem( "cycleTracks" ).toElement();
+        QString t = e.text();
+        bool cycled = true;
+        if( t == "false" ) cycled = false;
+
+        e = n.namedItem( "markHistory" ).toElement();
+        t = e.text();
+        bool marked = true;
+        if( t == "false" ) marked = false;
+
+        e = n.namedItem( "upcoming" ).toElement();
+        int upcoming = e.text().toInt();
+
+        e = n.namedItem( "previous" ).toElement();
+        int previous = e.text().toInt();
+
+        e = n.namedItem( "appendType" ).toElement();
+        int appendType = e.text().toInt();
+
+        e = n.namedItem( "appendCount" ).toElement();
+        int appendCount = e.text().toInt();
+
+        e = n.namedItem( "items" ).toElement();
+        QStringList items = QStringList::split( ',', e.text() );
+
+        m_lastParty = new PartyEntry( m_partyCategory, m_lastParty, name );
+        #define m_lastParty static_cast<PartyEntry *>(m_lastPlaylist)
+        m_lastParty->setCycled( cycled );
+        m_lastParty->setMarked( marked );
+        m_lastParty->setUpcoming( upcoming );
+        m_lastParty->setPrevious( previous );
+        m_lastParty->setAppendCount( appendCount );
+        m_lastParty->setAppendType( appendType );
+        if( appendType == 2 )
+            m_lastParty->setItems( items );
+        #undef m_lastParty
+    }
+    m_partyCategory->setOpen( true );
 }
 
 void PlaylistBrowser::saveParties()
 {
-    // Called by the dtor
-}
+    QFile file( partyBrowserCache() );
 
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QDomDocument doc;
+    QDomElement partyB = doc.createElement( "partybrowser" );
+    partyB.setAttribute( "product", "amaroK" );
+    partyB.setAttribute( "version", APP_VERSION );
+    doc.appendChild( partyB );
+
+    PlaylistCategory *currentCat=0;
+
+    #define m_partyCategory static_cast<QListViewItem *>(m_partyCategory)
+
+    QListViewItem *it = m_partyCategory->firstChild();
+    for( int count = 0; count < m_partyCategory->childCount(); count++ )
+    {
+        QDomElement i;
+
+        if( !isCategory( it ) )
+            currentCat = static_cast<PlaylistCategory*>(it->parent() );
+
+        if( isParty( it ) )
+        {
+            PartyEntry *item = (PartyEntry*)it;
+
+            i = doc.createElement("party");
+            i.setAttribute( "name", item->title() );
+
+            QDomElement attr = doc.createElement( "cycleTracks" );
+            QDomText t = doc.createTextNode( item->isCycled() ? "true" : "false" );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "markHistory" );
+            t = doc.createTextNode( item->isMarked() ? "true" : "false" );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "upcoming" );
+            t = doc.createTextNode( QString::number( item->upcoming() ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "previous" );
+            t = doc.createTextNode( QString::number( item->previous() ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "appendCount" );
+            t = doc.createTextNode( QString::number( item->appendCount() ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            attr = doc.createElement( "appendType" );
+            t = doc.createTextNode( QString::number( item->appendType() ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+
+            QString list;
+            if( item->appendType() == 2 )
+            {
+                QStringList items = item->items();
+                uint c = 0;
+                while( c < items.count() );
+                {
+                    list.append( items[c] );
+                    list.append( ',' );
+                    c++;
+                    list.append( items[c] );
+                    c++;
+                    if ( c < items.count() )
+                        list.append( ',' );
+                }
+            }
+
+            attr = doc.createElement( "items" );
+            t = doc.createTextNode( list );
+            attr.appendChild( t );
+            i.appendChild( attr );
+        }
+
+        partyB.appendChild( i );
+
+        it = it->nextSibling();
+    }
+
+    #undef m_partyCategory
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << doc.toString();
+}
 
 /**
  *************************************************************************
@@ -854,7 +1032,7 @@ PlaylistBrowser::getPlaylist( QString name )
 
 void PlaylistBrowser::saveCurrentPlaylist()
 {
-    PlaylistSaver dialog( i18n("Current Playlist"), this );
+    ItemSaver dialog( i18n("Current Playlist"), this );
 
     if( dialog.exec() == QDialog::Accepted )
     {
@@ -1241,6 +1419,7 @@ void PlaylistBrowser::slotSaveMenu( int id ) // SLOT
             break;
 
         case PARTY:
+            addPartyConfig();
             break;
 
         default:

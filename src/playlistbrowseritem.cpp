@@ -448,10 +448,10 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-///    CLASS PlaylistSaver
+///    CLASS ItemSaver
 ////////////////////////////////////////////////////////////////////////////////
 
-PlaylistSaver::PlaylistSaver(  QString title, QWidget *parent, const char *name )
+ItemSaver::ItemSaver(  QString title, QWidget *parent, const char *name )
     : KDialogBase( parent, name, true, i18n("Save Current Playlist"), Ok|Cancel)
 {
     makeVBoxMainWidget();
@@ -463,7 +463,6 @@ PlaylistSaver::PlaylistSaver(  QString title, QWidget *parent, const char *name 
 
     m_nameLineEdit->setFocus();
 }
-
 //////////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistTrackItem
 ////////////////////////////////////////////////////////////////////////////////
@@ -659,6 +658,26 @@ StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const c
 
     m_nameLineEdit->setFocus();
 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS PartyEntry
+////////////////////////////////////////////////////////////////////////////
+PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
+        : KListViewItem( parent, after, name )
+        , m_title( name )
+        , m_items( NULL )
+        , m_cycled( true )
+        , m_marked( true )
+        , m_upcoming( 20 )
+        , m_previous( 5 )
+        , m_appendCount( 1 )
+        , m_appendType( RANDOM )
+{
+    setPixmap( 0, SmallIcon( "party" ) );
+    setDragEnabled( false );
+
+    setText( 0, name );
 }
 
 /////////////////////////////////////////////////////////////////////////////
