@@ -776,15 +776,12 @@ void PlaylistBrowser::saveParties()
             if( item->appendType() == 2 )
             {
                 QStringList items = item->items();
-                uint c = 0;
-                while( c < items.count() );
+                for( uint c = 0; c < items.count(); c = c + 2 )
                 {
                     list.append( items[c] );
                     list.append( ',' );
-                    c++;
-                    list.append( items[c] );
-                    c++;
-                    if ( c < items.count() )
+                    list.append( items[c+1] );
+                    if ( c < items.count()-1 )
                         list.append( ',' );
                 }
             }
