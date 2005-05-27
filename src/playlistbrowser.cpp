@@ -16,7 +16,6 @@
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "smartplaylisteditor.h"
-#include "statusbar.h"         //For notifications, TODO:Remove me once all completed.
 #include "tagdialog.h"         //showContextMenu()
 #include "threadweaver.h"
 
@@ -1061,7 +1060,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         //don't replace, it generally makes people think amaroK behaves like JuK
         //and we don't so they then get really confused about things
         Playlist::instance()->insertMedia( item->tracksURL(), Playlist::Replace );
-        #undef item
+        #undef  item
     }
     else if( isStream( item ) )
     {
@@ -1072,7 +1071,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         #define item static_cast<SmartPlaylist *>(item)
         if( !item->sqlForTags.isEmpty() )
             Playlist::instance()->insertMediaSql( item->sqlForTags, Playlist::Clear );
-        #undef item
+        #undef  item
     }
     else if( isCategory( item ) )
     {
@@ -1083,9 +1082,14 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         KURL::List list( static_cast<PlaylistTrackItem *>(item)->url() );
         Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
     }
+    else if( isParty( item ) )
+    {
+        #define item static_cast<PartyEntry *>(item)
+        Party::instance()->loadConfig( item );
+        #undef  item
+    }
     else
-        //If you remove this, please also remove #include "statusbar.h", thanks.
-        amaroK::StatusBar::instance()->shortMessage( i18n("No functionality for item double click implemented") );
+        kdDebug() << "No functionality for item double click implemented" << endl;
 }
 
 
@@ -1181,7 +1185,7 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
             m_listview->rename( item, 0 );
         }
     }
-    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) ) {
+    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) || isParty( item ) ) {
         item->setRenameEnabled( 0, true );
         m_listview->rename( item, 0 );
     }
@@ -1583,6 +1587,28 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 removeSelectedItems();
                 break;
         }
+    }
+    else if( isParty( item ) ) {
+        #define item static_cast<PartyEntry*>(item)
+        enum Actions { LOAD, RENAME, REMOVE };
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
+        menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
+
+        switch( menu.exec( p ) )
+        {
+            case LOAD:
+                slotDoubleClicked( item );
+                break;
+            case RENAME:
+                renameSelectedItem();
+                break;
+            case REMOVE:
+                removeSelectedItems();
+                break;
+        }
+        #undef  item
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)

@@ -99,6 +99,27 @@ Party::applySettings()
 }
 
 void
+Party::loadConfig( PartyEntry *config )
+{
+    m_base->m_partyCheck->setChecked( true );
+
+    m_base->m_upcomingIntSpinBox->setValue( config->upcoming() );
+    m_base->m_previousIntSpinBox->setValue( config->previous() );
+    m_base->m_appendCountIntSpinBox->setValue( config->appendCount() );
+    m_base->m_cycleTracks->setChecked( config->isCycled() );
+    m_base->m_markHistory->setChecked( config->isMarked() );
+    m_base->m_appendType->setCurrentItem( config->appendType() );
+
+    QStringList items = config->items();
+    m_playlists->clear();
+    QListViewItem *last=0;
+    for( uint i=0; i < items.count(); i = i+2 )
+        last = new QListViewItem( m_playlists, last, items[i], items[i+1] );
+
+    startParty();
+}
+
+void
 Party::insertPlaylists()
 {
     QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );

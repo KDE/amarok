@@ -44,6 +44,7 @@
 #include <klistview.h>
 
 class PartyDialogBase;
+class PartyEntry;
 
 class Party : public QVBox
 {
@@ -54,6 +55,8 @@ class Party : public QVBox
         Party( QWidget *parent, const char *name = 0 );
 
         enum    Mode{ RANDOM=0, SUGGESTION=1, CUSTOM=2 };
+
+        void    loadConfig( PartyEntry *config );
 
         bool    isChecked();
         int     previousCount();
