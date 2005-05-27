@@ -1241,14 +1241,14 @@ void PlaylistBrowser::deleteSelectedPlaylists() //SLOT
 }
 
 QStringList
-PlaylistBrowser::selectedList()
+PlaylistBrowser::selectedList()  // For party mode, we only want playlists and smarties.
 {
     QStringList selected;
 
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
     while( *it )
     {
-        if( !isCategory( *it ) && !isPlaylistTrackItem( *it ) )
+        if( !isCategory( *it ) && !isPlaylistTrackItem( *it ) && !isStream( *it ) && !isParty( *it ) )
         {
             selected << (*it)->text(0);
             if( isPlaylist( *it ) )
