@@ -532,20 +532,10 @@ void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
 
 void PlaylistBrowser::saveSmartPlaylists()
 {
-    QFile file( smartplaylistBrowserCache() );
 
-    if( !file.open( IO_WriteOnly ) ) return;
-
-    QDomNode node = m_smartXml.namedItem( "smartplaylists" );
-    if ( !node.isNull() ) {
-        m_smartXml.removeChild (node);
-    }
-    node = m_smartXml.namedItem( "xml" );
-    if ( !node.isNull() ) {
-        m_smartXml.removeChild (node);
-    }
-    QDomElement smartB = m_smartXml.createElement( "smartplaylists" );
-    m_smartXml.appendChild( smartB );
+    QDomDocument xml;
+    QDomElement smartB = xml.createElement( "smartplaylists" );
+    xml.appendChild( smartB );
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
     smartB.setAttribute( "formatversion", "1.0" );
@@ -555,35 +545,29 @@ void PlaylistBrowser::saveSmartPlaylists()
 
     #define m_smartCategory static_cast<QListViewItem *>(m_smartCategory)
 
-    QListViewItem *it = m_smartCategory->firstChild();
-    it = it->nextSibling();
-
-    for( int count = 1 ; count < m_smartCategory->childCount(); count++ )
+    for( QListViewItem *it = m_smartCategory->firstChild(); it ; it = it->nextSibling() )
     {
-
-
-        if( !isCategory( it ) )
-            currentCat = static_cast<PlaylistCategory*>(it->parent() );
-
+        currentCat = static_cast<PlaylistCategory*>( isCategory( it ) ? it : it->parent() );
+        //we don't want to save the default smartplaylists
+        if ( currentCat->title() == i18n("Collection") )
+            continue;
         if( isSmartPlaylist( it ) )
         {
-
             SmartPlaylist *item = (SmartPlaylist*)it;
-            QDomElement i = m_smartXml.createElement( "smartplaylist" );
+            QDomElement i = xml.createElement( "smartplaylist" );
             smartB.appendChild( item->xml() );
         }
-
-
-
-        it = it->nextSibling();
     }
 
     #undef m_streamsCategory
 
+    // Only open the file after everything was done. It avoids losing the file if something fails
+    QFile file( smartplaylistBrowserCache() );
+    if( !file.open( IO_WriteOnly ) ) return;
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << m_smartXml.toString();
+    stream << xml.toString();
 }
 
 // Warning - unpredictable when a smartplaylist which doesn't exist is requested.
