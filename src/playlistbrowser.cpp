@@ -380,10 +380,7 @@ void PlaylistBrowser::loadSmartPlaylists()
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
-    if( !m_smartXml.setContent( stream.read() ) )
-        return;
-
-    if ( m_smartXml.namedItem( "smartplaylists" ).toElement().attribute("formatversion") == "1.0" ) {
+    if ( m_smartXml.setContent( stream.read() ) && m_smartXml.namedItem( "smartplaylists" ).toElement().attribute("formatversion") == "1.0" ) {
         QDomNode n =  m_smartXml.namedItem( "smartplaylists" ).firstChild();
 
         for( ; !n.isNull(); n = n.nextSibling() )
@@ -392,17 +389,20 @@ void PlaylistBrowser::loadSmartPlaylists()
             QDomElement query = e.elementsByTagName( "sqlquery" ).item(0).toElement();
             m_lastSmart = new SmartPlaylist( m_smartCategory, m_lastSmart, e.attribute( "name" ), query.text(), e );
         }
-        m_smartCategory->setOpen( true );
+
     }
     else {
-        //This is the first version of the format, so I'm setting this only to avoid problems for people that
-        //was using CVS (and sebr's xml) before. FIXME: Load a set of defaults here?
+        //This is the first version of the format, but in the future we should always add backward compatibility reading
+        //FIXME: Load a set of defaults here?
+        debug() << "Invalid XML" << endl;
         QDomElement smartB = m_smartXml.createElement( "smartplaylists" );
         m_smartXml.appendChild( smartB );
         smartB.setAttribute( "product", "amaroK" );
         smartB.setAttribute( "version", APP_VERSION );
         smartB.setAttribute( "formatversion", "1.0" );
     }
+
+    m_smartCategory->setOpen( true );
 }
 
 void PlaylistBrowser::loadDefaultSmartPlaylists()
