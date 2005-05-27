@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net                *
-****************************************************************************/
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -73,7 +73,7 @@ class Party : public QVBox
         void    addPlaylists();
         void    subPlaylists();
         void    setAppendMode( int id );
-        void    startParty();
+        void    applySettings();
 
     private:
         PartyDialogBase *m_base;
@@ -81,7 +81,7 @@ class Party : public QVBox
         void createWidget();
         void insertPlaylists();
 
-        void applySettings();
+        void restoreSettings();
 
         QLabel *m_tooltip;
 

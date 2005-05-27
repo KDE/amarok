@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>PartyDialogBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -124,9 +124,6 @@
                             <property name="text">
                                 <string>&amp;Cycle tracks</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
-                            </property>
                         </widget>
                         <spacer>
                             <property name="name">
@@ -151,9 +148,6 @@
                             </property>
                             <property name="text">
                                 <string>Mar&amp;k history</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+K</string>
                             </property>
                         </widget>
                     </hbox>

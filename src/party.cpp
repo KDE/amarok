@@ -1,6 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
-***************************************************************************/
+ **************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -51,7 +51,7 @@ Party::Party( QWidget *parent, const char *name )
 
     connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
     connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
-    connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( startParty() ) );
+    connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( applySettings() ) );
 
     m_base = new PartyDialogBase(this);
 
@@ -60,6 +60,8 @@ Party::Party( QWidget *parent, const char *name )
     m_playlists->addColumn( i18n("Playlists") );
     m_playlists->addColumn( i18n("Type") );
     m_playlists->setSelectionModeExt( KListView::Extended ); // Allow many files to be selected
+    m_playlists->setColumnWidthMode( 0, QListView::Maximum );
+    m_playlists->setColumnWidthMode( 1, QListView::Maximum );
 
     insertPlaylists();
 
@@ -69,11 +71,11 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( setAppendMode(int) ) );
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
-    applySettings();
+    restoreSettings();
 }
 
 void
-Party::applySettings()
+Party::restoreSettings()
 {
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 
@@ -116,7 +118,7 @@ Party::loadConfig( PartyEntry *config )
     for( uint i=0; i < items.count(); i = i+2 )
         last = new QListViewItem( m_playlists, last, items[i], items[i+1] );
 
-    startParty();
+    applySettings();
 }
 
 void
@@ -181,7 +183,7 @@ Party::setAppendMode( int id ) //SLOT
 }
 
 void
-Party::startParty() //SLOT
+Party::applySettings() //SLOT
 {
     //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
 
