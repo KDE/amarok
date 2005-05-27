@@ -181,15 +181,20 @@ public slots:
 
 protected:
     static const int NUM_TABS = 5; //HACK
+    static const int ANIM_INTERVAL = 20;
+    static const int ANIM_MAX = 20;
 
     MultiTabBar::MultiTabBarPosition m_position;
     MultiTabBar::MultiTabBarStyle m_style;
     QString m_text;
     int m_id;
+    bool m_animUp;
+    int m_animCount;
     virtual void hideEvent( class QHideEvent*);
     virtual void showEvent( class QShowEvent*);
     virtual void enterEvent( class QEvent* );
     virtual void leaveEvent( class QEvent* );
+    virtual void timerEvent( class QTimerEvent* );
 private:
     MultiTabBarButtonPrivate *d;
 signals:

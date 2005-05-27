@@ -404,7 +404,8 @@ MultiTabBarButton::MultiTabBarButton(const QPixmap& pic,const QString& text, QPo
 
 MultiTabBarButton::MultiTabBarButton(const QString& text, QPopupMenu *popup,
         int id,QWidget *parent,MultiTabBar::MultiTabBarPosition pos,MultiTabBar::MultiTabBarStyle style)
-    :QPushButton(QIconSet(),text,parent),m_style(style)
+    : QPushButton(QIconSet(),text,parent),m_style(style)
+    , m_animCount( 0 )
 {
     setText(text);
     m_position=pos;
@@ -462,12 +463,38 @@ void MultiTabBarButton::showEvent( QShowEvent* he) {
 
 void MultiTabBarButton::enterEvent( QEvent* )
 {
-    update();
+    m_animUp = true;
+    m_animCount = 0;
+
+    killTimers();
+    startTimer( ANIM_INTERVAL );
 }
 
 void MultiTabBarButton::leaveEvent( QEvent* )
 {
-    update();
+    m_animUp = false;
+
+    killTimers();
+    startTimer( ANIM_INTERVAL );
+}
+
+void MultiTabBarButton::timerEvent( QTimerEvent* )
+{
+    if ( m_animUp ) {
+        m_animCount += 1;
+        if ( m_animCount >= ANIM_MAX ) {
+            killTimers();
+            return;
+        }
+    } else {
+        m_animCount -= 1;
+        if ( m_animCount <= 0 ) {
+            killTimers();
+            return;
+        }
+    }
+
+    repaint( false );
 }
 
 QSize MultiTabBarButton::sizeHint() const
@@ -855,13 +882,14 @@ void MultiTabBarTab::drawButtonClassic(QPainter *paint)
 void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
 {
     QPixmap pixmap( height(), width() );
-    pixmap.fill( isOn() ? colorGroup().light() : colorGroup().background() );
+    const QColor fillColor = isOn() ? colorGroup().light() : colorGroup().background();
+    pixmap.fill( fillColor.light( 92 + m_animCount ) );
     QPainter painter( &pixmap );
 
     const QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
 
     // Draw the frame
-    painter.setPen( hasMouse() ? colorGroup().highlight() : colorGroup().mid() );
+    painter.setPen( colorGroup().mid() );
     if ( m_id != NUM_TABS - 1 ) painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
     painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
