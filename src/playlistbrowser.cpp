@@ -739,7 +739,7 @@ void PlaylistBrowser::saveParties()
             PartyEntry *item = (PartyEntry*)it;
 
             i = doc.createElement("party");
-            i.setAttribute( "name", item->title() );
+            i.setAttribute( "name", item->text(0) );
 
             QDomElement attr = doc.createElement( "cycleTracks" );
             QDomText t = doc.createTextNode( item->isCycled() ? "true" : "false" );
@@ -1143,6 +1143,13 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         }
         else if( isSmartPlaylist( item ) ) {
             if( item == m_lastSmart ) {
+                QListViewItem *above = item->itemAbove();
+                m_lastSmart = above ? (SmartPlaylist *)above : 0;
+            }
+            delete item;
+        }
+        else if( isParty( item ) ) {
+            if( item == m_lastParty ) {
                 QListViewItem *above = item->itemAbove();
                 m_lastSmart = above ? (SmartPlaylist *)above : 0;
             }
