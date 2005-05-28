@@ -242,6 +242,7 @@ protected:
     void drawButtonStyled(QPainter *);
     void drawButtonClassic(QPainter *);
     void drawButtonAmarok(QPainter *);
+    QColor blendColors( const QColor& color1, const QColor& color2, int percent );
 protected slots:
     virtual void slotClicked();
     void setTabsPosition(MultiTabBar::MultiTabBarPosition);

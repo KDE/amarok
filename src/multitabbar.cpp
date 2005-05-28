@@ -881,9 +881,17 @@ void MultiTabBarTab::drawButtonClassic(QPainter *paint)
 
 void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
 {
+    QColor fillColor, textColor;
+    if ( isOn() ) {
+        fillColor = blendColors( colorGroup().highlight(), colorGroup().highlight().light( 60 ), m_animCount * 3 );
+        textColor = colorGroup().highlightedText();
+    } else {
+        fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), m_animCount * 3 );
+        textColor = colorGroup().text();
+    }
+
     QPixmap pixmap( height(), width() );
-    const QColor fillColor = isOn() ? colorGroup().light() : colorGroup().background();
-    pixmap.fill( fillColor.light( 92 + m_animCount ) );
+    pixmap.fill( fillColor );
     QPainter painter( &pixmap );
 
     const QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
@@ -900,7 +908,7 @@ void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
     QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
     text.replace( "...", ".." );
     const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
-    painter.setPen( colorGroup().text() );
+    painter.setPen( textColor );
     const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
     painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
 
@@ -910,6 +918,21 @@ void MultiTabBarTab::drawButtonAmarok(QPainter *paint)
     // Paint to widget
     paint->rotate(-90);
     paint->drawPixmap( 1 - pixmap.width(), 0, pixmap );
+}
+
+QColor MultiTabBarTab::blendColors( const QColor& color1, const QColor& color2, int percent )
+{
+    const float factor1 = ( 100 - (float) percent ) / 100;
+    const float factor2 = (float) percent / 100;
+
+    const int r = static_cast<int>( color1.red() * factor1 + color2.red() * factor2 );
+    const int g = static_cast<int>( color1.green() * factor1 + color2.green() * factor2 );
+    const int b = static_cast<int>( color1.blue() * factor1 + color2.blue() * factor2 );
+
+    QColor result;
+    result.setRgb( r, g, b );
+
+    return result;
 }
 
 
