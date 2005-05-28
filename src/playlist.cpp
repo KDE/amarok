@@ -2066,8 +2066,8 @@ Playlist::removeSelectedItems() //SLOT
 
     if( isParty() )
     {
-        int remainder = childCount() - list.count() - 1;
-        int required  = AmarokConfig::partyPreviousCount() + AmarokConfig::partyUpcomingCount() + 1;
+        int remainder = childCount() - list.count();
+        int required  = AmarokConfig::partyPreviousCount() + AmarokConfig::partyUpcomingCount() + 1; // +1 for current track
 
         if( required > remainder )
             addSpecialTracks( required - remainder, AmarokConfig::partyType() );
