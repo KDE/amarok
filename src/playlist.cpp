@@ -2412,7 +2412,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case VIEW:
     {
-        showTagDialog( selectedItems() );
+        if( selectedItems().isEmpty() )
+        {
+            QPtrList<QListViewItem> list;
+            list.append( item );
+            showTagDialog( list );
+        } else
+            showTagDialog( selectedItems() );
         break;
     }
 
