@@ -181,7 +181,7 @@ public slots:
 
 protected:
     static const int NUM_TABS = 5; //HACK
-    static const int ANIM_INTERVAL = 20;
+    static const int ANIM_INTERVAL = 18;
     static const int ANIM_MAX = 20;
 
     MultiTabBar::MultiTabBarPosition m_position;
