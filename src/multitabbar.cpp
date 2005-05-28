@@ -482,19 +482,16 @@ void MultiTabBarButton::timerEvent( QTimerEvent* )
 {
     if ( m_animUp ) {
         m_animCount += 1;
-        if ( m_animCount >= ANIM_MAX ) {
+        repaint( false );
+        if ( m_animCount >= ANIM_MAX )
             killTimers();
-            return;
-        }
-    } else {
-        m_animCount -= 1;
-        if ( m_animCount <= 0 ) {
-            killTimers();
-            return;
-        }
     }
-
-    repaint( false );
+    else {
+        m_animCount -= 1;
+        repaint( false );
+        if ( m_animCount <= 0 )
+            killTimers();
+    }
 }
 
 QSize MultiTabBarButton::sizeHint() const
