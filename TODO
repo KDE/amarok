@@ -5,6 +5,17 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
+
+** Before 1.3 beta-1 !!! **
+  <sebr>   Save and restore custom folders in the playlist browser. no point in creating them if they are thrown away.
+
+  <sebr>   Expand/Collapse button for the party mode configuration.
+
+  <sebr>   Reduce party config height.
+
+  <sebr>   Some sort of explanation, introduction to party mode.  Very important.
+**  end 1.3 requirement  **
+  
   <sebr>   Party mode will only retrieve from static playlists if the playlist is 'opened' in the playlist
            browser.  Using playlist->load() does not work because it is threaded, and we end up with no restults.
            
