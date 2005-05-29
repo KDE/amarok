@@ -71,6 +71,8 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( setAppendMode(int) ) );
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
+    connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ), SLOT( statusChanged( bool ) ) );
+
     restoreSettings();
 }
 
@@ -236,6 +238,14 @@ Party::applySettings() //SLOT
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
 }
 
+void
+Party::statusChanged( bool enable ) // SLOT
+{
+    enable ?
+        applySettings() :
+        Playlist::instance()->alterHistoryItems( true, true ); //enable all items
+
+}
 
 bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
 int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }

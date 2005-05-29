@@ -69,6 +69,9 @@ class Party : public QVBox
 
         static  Party *instance() { return s_instance; }
 
+    public  slots:
+        void    statusChanged( bool status );
+
     private slots:
         void    addPlaylists();
         void    subPlaylists();
