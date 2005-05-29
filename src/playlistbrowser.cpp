@@ -1539,7 +1539,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist *>(item)->sqlForTags, Playlist::Clear );
+                Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist *>(item)->sqlForTags, Playlist::Append );
                 break;
             case EDIT:
                 editSmartPlaylist( static_cast<SmartPlaylist *>(item) );

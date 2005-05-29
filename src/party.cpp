@@ -38,7 +38,7 @@ Party *Party::s_instance = 0;
 
 Party::Party( QWidget *parent, const char *name )
     : QVBox( parent, name )
-    , m_visible( false )
+    , m_visible( true )
 {
     s_instance = this;
 
@@ -50,7 +50,7 @@ Party::Party( QWidget *parent, const char *name )
     toolbar->insertLineSeparator();
     toolbar->insertButton( "filesave", 2, true, i18n("Apply") );
     toolbar->insertLineSeparator();
-    toolbar->insertButton( "up", 3, true, i18n("Show") );
+    toolbar->insertButton( "up", 3, true, i18n("Hide") );
 
     connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
     connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );

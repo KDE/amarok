@@ -414,12 +414,15 @@ void
 Playlist::insertMediaSql( const QString& sql, int options )
 {
     // TODO Implement more options
+    PlaylistItem *after = 0;
 
     if ( options & Replace )
         clear();
+    if ( options & Append )
+        after = lastItem();
 
     setSorting( NO_SORT );
-    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, 0 ) );
+    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, after ) );
 }
 
 void
