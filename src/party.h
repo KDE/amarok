@@ -74,21 +74,21 @@ class Party : public QVBox
 
     private slots:
         void    addPlaylists();
-        void    subPlaylists();
-        void    setAppendMode( int id );
         void    applySettings();
+        void    setAppendMode( int id );
+        void    subPlaylists();
+        void    toggleVisibility();
 
     private:
         PartyDialogBase *m_base;
 
         void createWidget();
         void insertPlaylists();
-
         void restoreSettings();
 
-        QLabel *m_tooltip;
-
-        KListView *m_playlists;
+        QLabel     *m_tooltip;
+        KListView  *m_playlists;
+        bool        m_visible;
 
         static Party *s_instance;
 };
