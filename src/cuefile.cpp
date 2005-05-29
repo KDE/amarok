@@ -21,8 +21,8 @@ bool CueFile::load()
 
         QFile file( m_cueFileName );
         int track = 0;
-        QString artist;
-        QString title;
+        QString artist = QString::null;
+        QString title = QString::null;
         long index = 0;
 
         // for a valid cuefile at least TRACK and INDEX is required
@@ -66,7 +66,7 @@ bool CueFile::load()
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, track, index ) );
                         index    = 0;
-                        title  = "";
+                        title  = QString::null;
                         artist = QString::null;
                         track    = 0;
                     }
@@ -79,7 +79,7 @@ bool CueFile::load()
                     if( mode ) {
                         QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
 
-                        index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*10;
+                        index = (time[0].toLong()*60 + time[1].toLong())*1000 + time[2].toLong()*1000/75; //75 frames per second
                         mode = 2;
                     }
                     kdDebug() << "[CUEFILE]: index: " << index << endl;
