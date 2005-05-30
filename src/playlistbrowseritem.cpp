@@ -674,7 +674,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
         , m_appendCount( 1 )
         , m_appendType( RANDOM )
 {
-    setPixmap( 0, SmallIcon( "party" ) );
+    setPixmap( 0, SmallIcon("player_playlist_2") );
     setDragEnabled( false );
 
     setText( 0, name );

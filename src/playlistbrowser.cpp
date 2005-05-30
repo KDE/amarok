@@ -66,7 +66,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
     addMenu->insertItem( i18n("Playlist"), PLAYLIST );
-    addMenu->insertItem( i18n("Stream"), STREAM );
+    addMenu->insertItem( i18n("Radio Streams"), STREAM );
     addMenu->insertItem( i18n("Smart Playlist"), SMARTPLAYLIST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
