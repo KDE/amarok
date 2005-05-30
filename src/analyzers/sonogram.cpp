@@ -39,7 +39,7 @@ void Sonogram::resizeEvent(QResizeEvent *e)
 
 //only for gcc < 4.0
 #if !( __GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 0 ) )
-	resizeForBands(height());
+	resizeForBands(height() < 128 ? 128 : height());
 #endif
 
 	background()->fill(backgroundColor());
