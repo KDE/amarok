@@ -523,9 +523,9 @@ namespace amaroK
         Playlist::instance()->addCustomMenuItem( itemTitle );
     }
 
-    void DcopScriptHandler::removeCustomMenuItem()
+    void DcopScriptHandler::removeCustomMenuItem( QString itemTitle )
     {
-        Playlist::instance()->removeCustomMenuItem();
+        Playlist::instance()->removeCustomMenuItem( itemTitle );
     }
 
 } //namespace amaroK

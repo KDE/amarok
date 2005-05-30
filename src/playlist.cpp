@@ -183,7 +183,6 @@ Playlist::Playlist( QWidget *parent )
         , m_showHelp( true )
         , m_stateSwitched( false )
         , m_partyDirt( false )
-        , m_customItemTitle( 0 )
         , m_lockStack( 0 )
         , m_columnFraction( 14, 0 )
 {
@@ -1987,13 +1986,13 @@ Playlist::burnSelectedTracks( int projectType )
 void
 Playlist::addCustomMenuItem( QString itemTitle )  //for dcop
 {
-    m_customItemTitle =  itemTitle;
+    m_customItemTitle.append( itemTitle );
 }
 
 void
-Playlist::removeCustomMenuItem()  //for dcop
+Playlist::removeCustomMenuItem( QString itemTitle)  //for dcop
 {
-        m_customItemTitle = QString::null;
+    m_customItemTitle.remove( itemTitle );
 }
 
 void
@@ -2381,9 +2380,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
 
-    if ( !m_customItemTitle.isEmpty() ){  //we only provide basic functionality, currently one one item possible
-        popup.insertSeparator();
-        popup.insertItem ( SmallIconSet( "pencil"), ( m_customItemTitle ), CUSTOM_ITEM );
+    if ( !m_customItemTitle.isEmpty() ){
+    popup.insertSeparator();
+        for ( QStringList::Iterator it = m_customItemTitle.begin(); it != m_customItemTitle.end(); ++it ) {
+            popup.insertItem ( SmallIconSet( "pencil"), ( *it ), CUSTOM_ITEM );
+        }
     }
 
     switch( popup.exec( p ) )
