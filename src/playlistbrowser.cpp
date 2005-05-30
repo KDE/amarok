@@ -143,7 +143,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
     m_playlistCategory = new PlaylistCategory( m_listview, 0, i18n( "Playlists" ) );
-    m_streamsCategory  = new PlaylistCategory( m_listview, m_playlistCategory, i18n( "Streams" ) );
+    m_streamsCategory  = new PlaylistCategory( m_listview, m_playlistCategory, i18n( "Radio Streams" ) );
     m_smartCategory    = new PlaylistCategory( m_listview, m_streamsCategory,  i18n( "Smart Playlists" ) );
     m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Parties" ) );
 
