@@ -76,6 +76,7 @@ class PlaylistBrowser : public QVBox
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
         void slotDoubleClicked( QListViewItem *item );
+        void togglePartyConfig();
 
         void slotAddMenu( int id );
         void slotSaveMenu( int id );
@@ -124,12 +125,15 @@ class PlaylistBrowser : public QVBox
         SmartPlaylistView   *m_smartlistview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton, *deleteButton;
+        KAction             *partyButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *saveMenuButton;
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
         ViewMode             m_viewMode;
         int                  m_sortMode;
+        bool                 m_partyConfig;
+        QValueList<int>      m_partySizeSave;
 };
 
 

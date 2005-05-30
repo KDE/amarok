@@ -111,6 +111,12 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     deleteButton->plug( m_toolbar);
     m_toolbar->insertLineSeparator();
     viewMenuButton->plug( m_toolbar );
+    m_toolbar->insertLineSeparator();
+
+    m_partyConfig = true;
+    m_toolbar->setIconText( KToolBar::IconTextRight, false );
+    partyButton = new KAction( i18n("Hide Party"), "party", 0, this, SLOT( togglePartyConfig() ), m_ac, "Configure and start a party" );
+    partyButton->plug( m_toolbar );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
@@ -129,6 +135,16 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     QString str = config->readEntry( "Splitter", "[228,121]" );    //default splitter position
     QTextStream stream( &str, IO_ReadOnly );
     stream >> *m_splitter;     //this sets the splitters position
+
+    m_partySizeSave = m_splitter->sizes();
+    if( ! *(m_partySizeSave.at( 1 ) ) )
+    {
+        m_partySizeSave.clear();
+        m_partySizeSave.append(228); //defaults
+        m_partySizeSave.append(121); //defaults
+        m_partyConfig = false;
+        partyButton->setText( i18n("Show Party") );
+    }
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -1379,6 +1395,27 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     // the CollectionReader sends a PlaylistFoundEvent when a playlist is found
     CollectionReader::PlaylistFoundEvent* p = (CollectionReader::PlaylistFoundEvent*)e;
     addPlaylist( p->path() );
+}
+
+void PlaylistBrowser::togglePartyConfig() //SLOT
+{
+    if( m_partyConfig )
+    {
+        m_partySizeSave = m_splitter->sizes();
+        QValueList<int> newSizes;
+
+        newSizes.append( *( m_partySizeSave.at( 0 ) ) + *(m_partySizeSave.at( 1 ) ) );
+        newSizes.append( 0 );
+        m_splitter->setSizes( newSizes );
+        partyButton->setText( i18n("Show Party") );
+    }
+    else
+    {
+        m_splitter->setSizes( m_partySizeSave );
+        partyButton->setText( i18n("Hide Party") );
+    }
+
+    m_partyConfig = !m_partyConfig;
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT

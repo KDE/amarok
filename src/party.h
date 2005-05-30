@@ -77,7 +77,6 @@ class Party : public QVBox
         void    applySettings();
         void    setAppendMode( int id );
         void    subPlaylists();
-        void    toggleVisibility();
 
     private:
         PartyDialogBase *m_base;

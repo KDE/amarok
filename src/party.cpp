@@ -49,13 +49,10 @@ Party::Party( QWidget *parent, const char *name )
     toolbar->insertButton( "edit_remove", 1, true, i18n("Remove") );
     toolbar->insertLineSeparator();
     toolbar->insertButton( "filesave", 2, true, i18n("Apply") );
-    toolbar->insertLineSeparator();
-    toolbar->insertButton( "up", 3, true, i18n("Hide") );
 
     connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
     connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
     connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( applySettings() ) );
-    connect( (QObject*)toolbar->getButton( 3 ), SIGNAL(clicked( int )), SLOT( toggleVisibility() ) );
 
     m_base = new PartyDialogBase(this);
 
@@ -250,21 +247,6 @@ Party::statusChanged( bool enable ) // SLOT
 
     m_base->m_partyCheck->setChecked( enable );
     applySettings();
-}
-
-void
-Party::toggleVisibility()
-{
-    if( m_visible )
-    {
-        m_base->setHidden( true );
-        m_visible = false;
-    }
-    else
-    {
-        m_base->setShown( true );
-        m_visible = true;
-    }
 }
 
 bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
