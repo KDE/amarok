@@ -43,7 +43,7 @@
 
 #include <kaction.h>          //m_actionCollection
 #include <kapplication.h>     //kapp
-#include <kfiledialog.h>      //savePlaylist()
+#include <kfiledialog.h>      //savePlaylist(), openPlaylist()
 #include <kglobal.h>
 #include <khtml_part.h>       //Welcome Tab
 #include <kiconloader.h>      //ClearFilter button
@@ -54,8 +54,6 @@
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>   //createGUI()
-#include <kurlrequester.h>    //slotAddLocation()
-#include <kurlrequesterdlg.h> //slotAddLocation()
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
 
@@ -592,14 +590,19 @@ void PlaylistWindow::slotPlayMedia() //SLOT
 
 void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 {
-    KURLRequesterDlg dialog( QString::null, this, 0 );
-    dialog.setCaption( kapp->makeStdCaption( i18n( "Enter File, URL or Directory" ) ) );
-    dialog.urlRequester()->setMode( KFile::File | KFile::Directory | KFile::ExistingOnly );
-    dialog.exec();
+    // open a file selector to add media to the playlist
+    QStringList files;
+    files = KFileDialog::getOpenFileNames( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
 
-    if( !dialog.selectedURL().isEmpty() ) {
-        const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
-        Playlist::instance()->insertMedia( dialog.selectedURL(), options );
+    if( files.isEmpty() ) return;
+    const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
+
+    const QStringList::ConstIterator end  = files.constEnd();
+
+    for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
+    {
+        kdDebug() << "\tAdding file found at path " << *it << endl;
+        Playlist::instance()->insertMedia( KURL(*it), options );
     }
 
 }

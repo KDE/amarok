@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta1:
   FEATURES:
+    * Add Media dialog allows for multiple file selection. (BR 105903)
     * The browser-sidebar has been redesigned for improved usability.
     * Cue file sheet support. Patch from Martin Ehmke <ehmke@gmx.de>.
       (BR 92271).

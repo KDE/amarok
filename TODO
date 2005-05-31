@@ -136,8 +136,6 @@ MID-TERM:
 
   ADD              Option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
 
-  ADD              "Add item"-dialog should support multiple selections.
-
   ADD     <berkus> Playmode indication button in main widget (repeat track/pl/shuffle), clickable.
 
 
