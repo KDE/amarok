@@ -100,12 +100,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     addMenuButton->plug( m_toolbar );
-
-    m_toolbar->insertLineSeparator();
+    m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     saveMenuButton->plug( m_toolbar );
 
     m_toolbar->insertLineSeparator();
-    m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );
     deleteButton->plug( m_toolbar);
@@ -280,7 +278,7 @@ void PlaylistBrowser::loadCoolStreams()
 
 void PlaylistBrowser::addStream( QListViewItem *parent )
 {
-    StreamEditor dialog( i18n("Stream"), this );
+    StreamEditor dialog( i18n("Radio Stream"), this );
 
     if( !parent ) parent = static_cast<QListViewItem*>(m_streamsCategory);
 
@@ -1665,7 +1663,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Smart-Playlist"), SMART );
 
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Stream"), STREAM );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream"), STREAM );
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
