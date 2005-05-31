@@ -155,6 +155,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
              this,         SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
              this,         SLOT( currentItemChanged( QListViewItem * ) ) );
+    connect( m_listview, SIGNAL( selectionChanged() ),
+             this,         SLOT( emit selectionChanged() ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 

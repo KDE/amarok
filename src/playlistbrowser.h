@@ -33,7 +33,7 @@ class SmartPlaylistView;
 class PlaylistBrowser : public QVBox
 {
         Q_OBJECT
-
+    friend class Party;
     friend class PlaylistBrowserView;
     friend class PlaylistEntry;
     friend class SmartPlaylistView;
@@ -64,6 +64,9 @@ class PlaylistBrowser : public QVBox
         ViewMode viewMode() { return m_viewMode; }
 
         static PlaylistBrowser *instance() { return s_instance; }
+
+    signals:
+        void selectionChanged();
 
     public slots:
         void openPlaylist( QListViewItem *parent = 0 );

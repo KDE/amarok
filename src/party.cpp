@@ -45,8 +45,8 @@ Party::Party( QWidget *parent, const char *name )
     //<Toolbar>
     m_ac = new KActionCollection( this );
 
-    m_addButton  = new KAction( i18n("Rename"), "edit_add", 0, this, SLOT( addPlaylists() ), m_ac, "Add Selected" );
-    m_subButton  = new KAction( i18n("Rename"), "edit_remove", 0, this, SLOT( addPlaylists() ), m_ac, "Remove" );
+    m_addButton  = new KAction( i18n("Add Selected"), "edit_add", 0, this, SLOT( addPlaylists() ), m_ac, "Add Selected" );
+    m_subButton  = new KAction( i18n("Remove"), "edit_remove", 0, this, SLOT( subPlaylists() ), m_ac, "Remove" );
 
     m_applyButton = new KAction( i18n("Apply"), "apply", 0, this, SLOT( applySettings() ), m_ac, "Apply Settings" );
 
@@ -78,13 +78,16 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
     //Update buttons
-    connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( updateButtons() ) );
-    connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateButtons() ) );
-    connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateButtons() ) );
-    connect( m_base->m_partyCheck,    SIGNAL( toggled( bool ) ),     SLOT( updateButtons() ) );
-    connect( m_base->m_cycleTracks,   SIGNAL( stateChanged( int ) ), SLOT( updateButtons() ) );
-    connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateButtons() ) );
-    connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateButtons() ) );
+    connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_partyCheck,    SIGNAL( toggled( bool ) ),     SLOT( updateApplyButton() ) );
+    connect( m_base->m_cycleTracks,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
+
+    connect( m_playlists,                             SIGNAL( selectionChanged() ), SLOT( updateRemoveButton() ) );
+    connect( PlaylistBrowser::instance()->m_listview, SIGNAL( selectionChanged() ), SLOT( updateAddButton() ) );
 
     connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ), SLOT( statusChanged( bool ) ) );
 
@@ -117,6 +120,8 @@ Party::restoreSettings()
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
 
     m_applyButton->setEnabled( false );
+    m_addButton->setEnabled( false );
+    m_subButton->setEnabled( false );
 }
 
 void
@@ -175,20 +180,14 @@ Party::addPlaylists() //SLOT
         last = new KListViewItem( m_playlists, 0, selected[i], selected[i+1] );
 }
 
+/// We must make sure that we set m_selected accordingly prior to calling this function.
 void
 Party::subPlaylists() //SLOT
 {
-    //assemble a list of what needs removing
-    //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
-    QPtrList<QListViewItem> list;
-    QListViewItemIterator it( m_playlists, QListViewItemIterator::Selected);
-
-    for( ; *it; list.prepend( *it ), ++it );
-
-    if( list.isEmpty() ) return;
+    if( m_selected.isEmpty() ) return;
 
     //remove the items
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( QListViewItem *item = m_selected.first(); item; item = m_selected.next() )
         delete item;
 }
 
@@ -266,7 +265,7 @@ Party::statusChanged( bool enable ) // SLOT
 }
 
 void
-Party::updateButtons() //SLOT
+Party::updateApplyButton() //SLOT
 {
     if( isChecked() != AmarokConfig::partyMode() ||
         cycleTracks() != AmarokConfig::partyCycleTracks() ||
@@ -289,6 +288,31 @@ Party::updateButtons() //SLOT
     else
         m_applyButton->setEnabled( false );
 
+}
+
+void
+Party::updateAddButton() //SLOT
+{
+    if( !PlaylistBrowser::instance()->selectedList().isEmpty() )
+        m_addButton->setEnabled( true );
+    else
+        m_addButton->setEnabled( false );
+}
+
+void
+Party::updateRemoveButton() //SLOT
+{
+    //assemble a list of what needs removing
+    //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
+    m_selected.clear();
+    QListViewItemIterator it( m_playlists, QListViewItemIterator::Selected);
+
+    for( ; *it; m_selected.prepend( *it ), ++it );
+
+    if( m_selected.isEmpty() )
+        m_subButton->setEnabled( false );
+    else
+        m_subButton->setEnabled( true );
 }
 
 bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
