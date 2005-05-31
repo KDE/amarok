@@ -13,10 +13,12 @@ SHORT-TERM (URGENT):
 
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 **  end 1.3 requirement  **
-  
+
+  <markey> Mouse wheel support for sidebar, for switching tabs.
+
   <sebr>   Party mode will only retrieve from static playlists if the playlist is 'opened' in the playlist
            browser.  Using playlist->load() does not work because it is threaded, and we end up with no restults.
-           
+
   <mxcl>   With retrieve similar artists amaroK hangs just after song-change. Disabling this feature removes
            the hang. This is annoying me so much now I've disabled the feature. I use sqlite.
 
