@@ -159,7 +159,6 @@ void PlaylistItem::setEnabled( bool enabled )
     m_enabled = enabled;
     setDragEnabled( enabled );
     setDropEnabled( enabled );
-    setSelectable ( enabled );
 
     repaint();
 }
