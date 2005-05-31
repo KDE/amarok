@@ -71,8 +71,9 @@ class Party : public QVBox
 
         static  Party *instance() { return s_instance; }
 
-    public  slots:
+    public slots:
         void    statusChanged( bool status );
+        void    updateAddButton();
 
     private slots:
         void    addPlaylists();
@@ -80,7 +81,6 @@ class Party : public QVBox
         void    setAppendMode( int id );
         void    subPlaylists();
         void    updateApplyButton();
-        void    updateAddButton();
         void    updateRemoveButton();
 
     private:

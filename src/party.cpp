@@ -86,8 +86,7 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
 
-    connect( m_playlists,                             SIGNAL( selectionChanged() ), SLOT( updateRemoveButton() ) );
-    connect( PlaylistBrowser::instance()->m_listview, SIGNAL( selectionChanged() ), SLOT( updateAddButton() ) );
+    connect( m_playlists, SIGNAL( selectionChanged() ), SLOT( updateRemoveButton() ) );
 
     connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ), SLOT( statusChanged( bool ) ) );
 
