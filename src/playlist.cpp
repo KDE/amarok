@@ -1490,7 +1490,10 @@ Playlist::contentsDropEvent( QDropEvent *e )
     QListViewItem *after  = m_marker;
 
     if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isEnabled() ) )
+    {
+        slotEraseMarker();
         return;
+    }
 
     if( !after ) findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
 
