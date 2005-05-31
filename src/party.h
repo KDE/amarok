@@ -43,6 +43,8 @@
 #include <knuminput.h>
 #include <klistview.h>
 
+class KAction;
+class KActionCollection;
 class PartyDialogBase;
 class PartyEntry;
 
@@ -71,6 +73,7 @@ class Party : public QVBox
 
     public  slots:
         void    statusChanged( bool status );
+        void    updateButtons();
 
     private slots:
         void    addPlaylists();
@@ -79,12 +82,19 @@ class Party : public QVBox
         void    subPlaylists();
 
     private:
+        enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
+
         PartyDialogBase *m_base;
 
-        void createWidget();
-        void insertPlaylists();
-        void restoreSettings();
+        void    createWidget();
+        void    insertPlaylists();
+        void    restoreSettings();
 
+        KActionCollection *m_ac;
+        KAction    *m_applyButton;
+        KAction    *m_addButton;
+        KAction    *m_subButton;
+        KToolBar   *m_toolbar;
         QLabel     *m_tooltip;
         KListView  *m_playlists;
         bool        m_visible;

@@ -42,17 +42,22 @@ Party::Party( QWidget *parent, const char *name )
 {
     s_instance = this;
 
-    KToolBar *toolbar = new Browser::ToolBar( this );
+    //<Toolbar>
+    m_ac = new KActionCollection( this );
 
-    toolbar->setIconText( KToolBar::IconTextRight, false ); //text on right
-    toolbar->insertButton( "edit_add", 0, true, i18n("Add Selected") );
-    toolbar->insertButton( "edit_remove", 1, true, i18n("Remove") );
-    toolbar->insertLineSeparator();
-    toolbar->insertButton( "filesave", 2, true, i18n("Apply") );
+    m_addButton  = new KAction( i18n("Rename"), "edit_add", 0, this, SLOT( addPlaylists() ), m_ac, "Add Selected" );
+    m_subButton  = new KAction( i18n("Rename"), "edit_remove", 0, this, SLOT( addPlaylists() ), m_ac, "Remove" );
 
-    connect( (QObject*)toolbar->getButton( 0 ), SIGNAL(clicked( int )), SLOT( addPlaylists() ) );
-    connect( (QObject*)toolbar->getButton( 1 ), SIGNAL(clicked( int )), SLOT( subPlaylists() ) );
-    connect( (QObject*)toolbar->getButton( 2 ), SIGNAL(clicked( int )), SLOT( applySettings() ) );
+    m_applyButton = new KAction( i18n("Apply"), "apply", 0, this, SLOT( applySettings() ), m_ac, "Apply Settings" );
+
+    m_toolbar = new Browser::ToolBar( this );
+    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
+
+    m_addButton->plug( m_toolbar );
+    m_subButton->plug( m_toolbar );
+    m_toolbar->insertLineSeparator();
+    m_applyButton->plug( m_toolbar );
+
 
     m_base = new PartyDialogBase(this);
 
@@ -71,6 +76,15 @@ Party::Party( QWidget *parent, const char *name )
 
     connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( setAppendMode(int) ) );
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
+
+    //Update buttons
+    connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( updateButtons() ) );
+    connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateButtons() ) );
+    connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateButtons() ) );
+    connect( m_base->m_partyCheck,    SIGNAL( toggled( bool ) ),     SLOT( updateButtons() ) );
+    connect( m_base->m_cycleTracks,   SIGNAL( stateChanged( int ) ), SLOT( updateButtons() ) );
+    connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateButtons() ) );
+    connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateButtons() ) );
 
     connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ), SLOT( statusChanged( bool ) ) );
 
@@ -101,6 +115,8 @@ Party::restoreSettings()
     }
 
     m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
+
+    m_applyButton->setEnabled( false );
 }
 
 void
@@ -247,6 +263,32 @@ Party::statusChanged( bool enable ) // SLOT
 
     m_base->m_partyCheck->setChecked( enable );
     applySettings();
+}
+
+void
+Party::updateButtons() //SLOT
+{
+    if( isChecked() != AmarokConfig::partyMode() ||
+        cycleTracks() != AmarokConfig::partyCycleTracks() ||
+        markHistory() != AmarokConfig::partyMarkHistory() ||
+        previousCount() != AmarokConfig::partyPreviousCount() ||
+        upcomingCount() != AmarokConfig::partyUpcomingCount() )
+    {
+        m_applyButton->setEnabled( true );
+        return;
+    }
+
+    QString type = AmarokConfig::partyType();
+    int typeValue = CUSTOM;
+
+    if( type == "Random" )          typeValue = RANDOM;
+    else if( type == "Suggestion" ) typeValue = SUGGESTION;
+
+    if( typeValue != appendType() )
+        m_applyButton->setEnabled( true );
+    else
+        m_applyButton->setEnabled( false );
+
 }
 
 bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
