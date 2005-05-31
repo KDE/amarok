@@ -2412,7 +2412,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
         for( MyIt it( this, MyIt::Selected ); *it; ++it )
         {
-            if( (*it)->isEnabled() )
+            if( (*it)->isEnabled() && (*it) != m_currentTrack )
                 this->moveItem( *it, 0, after );
             else
                 insertMediaInternal( (*it)->url(), after );
