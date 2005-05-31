@@ -2405,20 +2405,22 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case PLAY_NEXT_PARTY:
-        if( item->isEnabled() )
+    {
+        PlaylistItem *after = 0;
+        if( m_currentTrack )
+            after = m_currentTrack;
+
+        for( MyIt it( this, MyIt::Selected ); *it; ++it )
         {
-            m_currentTrack ?
-                this->moveItem( item, 0, m_currentTrack ) :
-                this->moveItem( item, 0, 0 );
-        }
-        else
-        {
-            m_currentTrack ?
-                insertMediaInternal( item->url(), m_currentTrack ):
-                insertMediaInternal( item->url(), 0 );
+            if( (*it)->isEnabled() )
+                this->moveItem( *it, 0, after );
+            else
+                insertMediaInternal( (*it)->url(), after );
+
+            after = after->nextSibling();
         }
         break;
-
+    }
     case STOP_DONE:
         m_stopAfterCurrent = !popup.isItemChecked( STOP_DONE );
         break;

@@ -157,8 +157,7 @@ PlaylistItem::seconds() const
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;
-    setDragEnabled( enabled );
-    setDropEnabled( enabled );
+    setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
 
     repaint();
 }
