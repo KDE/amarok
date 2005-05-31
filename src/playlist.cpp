@@ -2296,8 +2296,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     // Begin queue context entry logic
-    if( isParty() && item != m_currentTrack && item->isEnabled() && item != m_currentTrack->nextSibling() )
-        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Move to Front"), PLAY_NEXT_PARTY );
+    if( isParty() && item != m_currentTrack && item != m_currentTrack->nextSibling() )
+        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Play Next"), PLAY_NEXT_PARTY );
     else if ( !isParty() && item->isEnabled() )
         popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
@@ -2405,9 +2405,18 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case PLAY_NEXT_PARTY:
-        m_currentTrack ?
-            this->moveItem( item, 0, m_currentTrack ) :
-            this->moveItem( item, 0, 0 );
+        if( item->isEnabled() )
+        {
+            m_currentTrack ?
+                this->moveItem( item, 0, m_currentTrack ) :
+                this->moveItem( item, 0, 0 );
+        }
+        else
+        {
+            m_currentTrack ?
+                insertMediaInternal( item->url(), m_currentTrack ):
+                insertMediaInternal( item->url(), 0 );
+        }
         break;
 
     case STOP_DONE:
