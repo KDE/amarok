@@ -2415,16 +2415,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case VIEW:
-    {
-        if( selectedItems().isEmpty() )
-        {
-            QPtrList<QListViewItem> list;
-            list.append( item );
-            showTagDialog( list );
-        } else
-            showTagDialog( selectedItems() );
+        showTagDialog( selectedItems() );
         break;
-    }
 
     case EDIT:
         // do this because QListView sucks, if track change occurs during
