@@ -600,11 +600,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     const QStringList::ConstIterator end  = files.constEnd();
 
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
-    {
-        kdDebug() << "\tAdding file found at path " << *it << endl;
         Playlist::instance()->insertMedia( KURL(*it), options );
-    }
-
 }
 
 
