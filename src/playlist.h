@@ -86,7 +86,7 @@ class Playlist : private KListView, public EngineObserver
 
         void adjustPartyUpcoming( uint songCount, QString type = "Random" );
         void adjustPartyPrevious( uint songCount );
-        void advancePartyTrack();
+        void advancePartyTrack( PlaylistItem *item = 0 );
         void alterHistoryItems( bool enable = FALSE, bool entire = FALSE );
 
         bool isEmpty() const { return childCount() == 0; }

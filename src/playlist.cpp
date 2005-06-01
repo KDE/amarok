@@ -326,7 +326,6 @@ Playlist::insertMedia( KURL::List list, int options )
     if( options & Unique ) {
         //passing by value is quick for QValueLists, though it is slow
         //if we change the list, but this is unlikely
-
         KURL::List::Iterator jt;
 
         for( MyIt it( this, MyIt::All ); *it; ++it ) {
@@ -736,17 +735,14 @@ Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
-    if( isParty() && childCount() < AmarokConfig::partyUpcomingCount() )
-    {
-        uint songCount = 1;
-        songCount = AmarokConfig::partyUpcomingCount() - childCount();
-        addSpecialTracks( songCount, AmarokConfig::partyType() );
-    }
-
     if( isEmpty() || m_stopAfterCurrent )
     {
+        if( isParty() && !isEmpty() )
+            advancePartyTrack( item );
+
         m_stopAfterCurrent = false;
         activate( 0 );
+
         return;
     }
 
@@ -822,14 +818,16 @@ Playlist::playNextTrack( bool forceNext )
 
 //This is called before setCurrentItem( item );
 void
-Playlist::advancePartyTrack()
+Playlist::advancePartyTrack( PlaylistItem *item )
 {
     MyIterator it( this, MyIterator::Visible );
+
+    if( !item ) item = currentTrack();
 
     int x;
     for( x=0 ; *it; ++it, x++ )
     {
-        if( *it == currentTrack() )
+        if( *it == item )
         {
             if( AmarokConfig::partyMarkHistory() ) (*it)->setEnabled( false );
             if( x < AmarokConfig::partyPreviousCount() )
@@ -845,9 +843,12 @@ Playlist::advancePartyTrack()
         }
     }
 
-    //keep upcomingTracks requirement
-    int appendNo = AmarokConfig::partyAppendCount();
-    if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::partyType() );
+    //keep upcomingTracks requirement, this seems to break StopAfterCurrent
+    if( !m_stopAfterCurrent )
+    {
+        int appendNo = AmarokConfig::partyAppendCount();
+        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::partyType() );
+    }
     m_partyDirt = true;
 }
 
@@ -943,8 +944,8 @@ Playlist::activate( QListViewItem *item )
     if( !item )
     {
         //we have reached the end of the playlist
-        setCurrentTrack( 0 );
         EngineController::instance()->stop();
+        setCurrentTrack( 0 );
         amaroK::OSD::instance()->OSDWidget::show( i18n("Playlist finished"),
                                             QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ) );
         return;
