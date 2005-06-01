@@ -420,7 +420,7 @@ int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item 
 
 QString ScrobblerSubmitter::PROTOCOL_VERSION = "1.1";
 QString ScrobblerSubmitter::CLIENT_ID = "ark";
-QString ScrobblerSubmitter::CLIENT_VERSION = "0.1";
+QString ScrobblerSubmitter::CLIENT_VERSION = APP_VERSION;
 QString ScrobblerSubmitter::HANDSHAKE_URL = "http://post.audioscrobbler.com/?hs=true";
 
 
