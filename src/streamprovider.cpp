@@ -53,11 +53,10 @@ StreamProvider::StreamProvider( KURL url, const QString& streamingMode )
     // If no port is specified, use default shoutcast port
     if ( !m_url.port() ) m_url.setPort( 80 );
 
-    connect( &m_sockRemote, SIGNAL( error( int ) ), this, SLOT( connectError() ) );
-    connect( &m_sockRemote, SIGNAL( connected() ),  this, SLOT( sendRequest() ) );
-    connect( &m_sockRemote, SIGNAL( readyRead() ),  this, SLOT( readRemote() ) );
-    connect( &m_resolver, SIGNAL( finished(KResolverResults) ), this,
-             SLOT(resolved(KResolverResults) ) );    
+    connect( &m_sockRemote, SIGNAL( error( int ) ),                 SLOT( connectError() ) );
+    connect( &m_sockRemote, SIGNAL( connected() ),                  SLOT( sendRequest() ) );
+    connect( &m_sockRemote, SIGNAL( readyRead() ),                  SLOT( readRemote() ) );
+    connect( &m_resolver,   SIGNAL( finished( KResolverResults ) ), SLOT( resolved( KResolverResults ) ) );
 
     if ( streamingMode == "Socket" ) {
         uint i;
@@ -144,14 +143,19 @@ StreamProvider::connectToHost() //SLOT
     }
 }
 
+
 void
 StreamProvider::resolved( KResolverResults result) // SLOT
 {
     DEBUG_BLOCK
-    
-    if (result.error()!= KResolver::NoError || !result.count()) connectError();
-    else m_sockRemote.connectToHost( result[0].address().asInet().nodeName(), m_url.port() );
+
+    if ( result.error() != KResolver::NoError || result.isEmpty() )
+        connectError();
+    else
+        m_sockRemote.connectToHost( result[0].address().asInet().nodeName(), m_url.port() );
 }
+
+
 void
 StreamProvider::sendRequest() //SLOT
 {

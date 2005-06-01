@@ -522,7 +522,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         }
 
         //FIXME: If the source doesn't exist, we should remove it.
-        kdDebug() << "[PARTY]: Invalid source (" << playlistName << ") requested. Trying another source." << endl;
+        debug() << "[PARTY]: Invalid source (" << playlistName << ") requested. Trying another source." << endl;
         amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(playlistName) );
     }
 
