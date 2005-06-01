@@ -2470,7 +2470,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     {
         QString tmpWikiStr;
 
-        if ( !EngineController::instance()->bundle().isStream() )
+        if ( !EngineController::engine()->isStream() )
         {
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
@@ -2482,12 +2482,12 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
             }
             else
             {
-                tmpWikiStr KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
+                tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
             }
         }
         else
         {
-            tmpWikiStr KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
+            tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
         }
 
         m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" ).arg( tmpWikiStr );
