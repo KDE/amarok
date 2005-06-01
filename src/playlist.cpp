@@ -84,13 +84,14 @@ public:
     MyIterator( QListViewItem *item, int flags = 0 )
         //QListViewItemIterator is not great and doesn't allow you to see everything if you
         //mask both Visible and Invisible :( instead just visible items are returned
-        : QListViewItemIterator( item, flags == All ? 0 : flags | Visible )
+        : QListViewItemIterator( item, flags == All ? 0 : flags | Visible  )
     {}
 
     MyIterator( QListView *view, int flags = 0 )
         : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
     {}
 
+    //FIXME! Dirty hack for enabled/disabled items.
     enum IteratorFlag {
         Visible = QListViewItemIterator::Visible,
         All = QListViewItemIterator::Invisible
@@ -104,6 +105,7 @@ public:
         MyIterator it( item );
         return (*it == item) ? *(MyIterator&)(++it) : *it;
     }
+
 };
 
 typedef MyIterator MyIt;
@@ -800,7 +802,12 @@ Playlist::playNextTrack( bool forceNext )
         else if( item )
             item = MyIt::nextVisible( item );
         else
+        {
             item = *MyIt( this ); //ie. first visible item
+            while( !item->isEnabled() )
+                item = item->nextSibling();
+        }
+
 
         if ( isParty() && item != firstChild() )
             advancePartyTrack();
@@ -929,7 +936,8 @@ void Playlist::doubleClicked( QListViewItem *item )
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
     playlist space would stop playing (check BR #105106)*/
     if( item )
-        activate( item );
+        if( item->isEnabled() )
+            activate( item );
 }
 
 void
@@ -958,14 +966,14 @@ Playlist::activate( QListViewItem *item )
         else
         {
             MyIt it( this, MyIt::Visible );
-            bool tmp = false;
+            bool hasHistory = false;
             if ( !(*it)->isEnabled() )
             {
-                tmp = true;
+                hasHistory = true;
                 for(  ; !(*it)->isEnabled() ; ++it );
             }
 
-            tmp ?
+            hasHistory ?
                 this->moveItem( item, *it, 0 ) :
                 this->moveItem( item, 0,   0 );
         }
