@@ -16,8 +16,6 @@ SHORT-TERM (URGENT):
 
   <markey> Figure out why ScriptManager can't read from stdout.
 
-  <markey> Mouse wheel support for sidebar, for switching tabs.
-
   <sebr>   Party mode will only retrieve from static playlists if the playlist is 'opened' in the playlist
            browser.  Using playlist->load() does not work because it is threaded, and we end up with no restults.
 

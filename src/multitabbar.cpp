@@ -327,7 +327,31 @@ MultiTabBarTab* MultiTabBarInternal::tab( int id ) const
 
 bool MultiTabBarInternal::eventFilter( QObject *, QEvent *e )
 {
-    if ( e->type() == QEvent::Resize ) resizeEvent( 0 );
+    if ( e->type() == QEvent::Resize )
+        resizeEvent( 0 );
+
+    //PATCH by markey: Allow switching of tabs with mouse wheel
+    if ( e->type() == QEvent::Wheel ) {
+        QWheelEvent* event = static_cast<QWheelEvent*>( e );
+        const int delta = event->delta() / 120;
+
+        // Determine which tab is currently active
+        uint i;
+        for( i = 0; i < m_tabs.count(); i++ )
+            if ( m_tabs.at( i )->isOn() ) break;
+
+        // Calculate index of the new tab to activate
+        int newTab = i - delta;
+        if ( newTab < 0 ) newTab = 0;
+        if ( newTab > (int)m_tabs.count() - 1 ) newTab = m_tabs.count() - 1;
+
+        if ( i < m_tabs.count() && newTab != (int)i )
+            m_tabs.at( newTab )->animateClick();
+
+        // Must return true here for the wheel to work properly
+        return true;
+    }
+
     return false;
 }
 
