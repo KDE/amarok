@@ -2468,8 +2468,29 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 
     if ( url.isEmpty() )
     {
-        m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" )
-            .arg( KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
+        QString tmpWikiStr;
+
+        if ( !EngineController::instance()->bundle().isStream() )
+        {
+            if ( !EngineController::instance()->bundle().artist().isEmpty() )
+            {
+                tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() );
+            }
+            else if ( !EngineController::instance()->bundle().artist().isEmpty() )
+            {
+                tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().title() );
+            }
+            else
+            {
+                tmpWikiStr KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
+            }
+        }
+        else
+        {
+            tmpWikiStr KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
+        }
+
+        m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" ).arg( tmpWikiStr );
     }
     else
     {
@@ -2558,7 +2579,7 @@ void
 ContextBrowser::wikiArtistPage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipedia();
+    showWikipedia(); // Will fall back to title, if artist is empty(streams!).
 }
 
 
