@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
- * Copyright 2005 Seb Ruiz
+ * Copyright 2005 Seb Ruiz, Mike Diehl
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -2383,11 +2383,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
 
+    KPopupMenu customMenu;
     if ( !m_customItemTitle.isEmpty() ){
-    popup.insertSeparator();
         for ( QStringList::Iterator it = m_customItemTitle.begin(); it != m_customItemTitle.end(); ++it ) {
-            popup.insertItem ( SmallIconSet( "pencil"), ( *it ), CUSTOM_ITEM );
+            customMenu.insertItem ( SmallIconSet( "pencil"), ( *it ), CUSTOM_ITEM );
         }
+    popup.insertSeparator();
+    popup.insertItem( SmallIconSet( "pencil" ), i18n("Scripts"), &customMenu );
     }
 
     switch( popup.exec( p ) )
