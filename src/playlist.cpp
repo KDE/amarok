@@ -841,6 +841,7 @@ Playlist::advancePartyTrack()
                 removeItem( first ); //first visible item
                 delete first;
             }
+            break;
         }
     }
 
