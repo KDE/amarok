@@ -15,26 +15,7 @@
     <property name="caption">
         <string>partyDialogBase</string>
     </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>m_partyCheck</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="title">
-                <string>Enable Dynamic Mode</string>
-            </property>
-            <property name="checkable">
-                <bool>true</bool>
-            </property>
-            <property name="checked">
-                <bool>false</bool>
-            </property>
+
             <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
@@ -311,8 +292,7 @@
                     </hbox>
                 </widget>
             </vbox>
-        </widget>
-    </vbox>
+        
 </widget>
 <customwidgets>
 </customwidgets>

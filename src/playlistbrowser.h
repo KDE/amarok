@@ -8,15 +8,13 @@
 
 #include "playlistbrowseritem.h"
 
+#include <kaction.h>
 #include <klistview.h>
 #include <kurl.h>
+
 #include <qptrlist.h>
 #include <qvbox.h>
 
-class KAction;
-class KActionMenu;
-class KActionCollection;
-class KToggleAction;
 class KToolBar;
 class QCustomEvent;
 class QColorGroup;
@@ -60,6 +58,7 @@ class PlaylistBrowser : public QVBox
         PlaylistEntry *getPlaylist( QString name ); //For party mode
 
         QStringList selectedList();
+        bool    partyEnabled() { return partyButton->isChecked(); }
 
         ViewMode viewMode() { return m_viewMode; }
 

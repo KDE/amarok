@@ -6,6 +6,7 @@
 #define DEBUG_PREFIX "PlaylistBrowser"
 
 #include "amarok.h"            //actionCollection()
+#include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
@@ -132,19 +133,21 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenu->setItemChecked( m_viewMode, true );
     m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
     slotViewMenu( m_sortMode );
-    QString str = config->readEntry( "Splitter", "[228,121]" );    //default splitter position
+
+    QString size = QString("[%1,%2]").arg( QString::number(m_listview->height() - 353) )
+                                     .arg( QString::number(353) );
+
+    QString str = config->readEntry( "Splitter", size );
+
     QTextStream stream( &str, IO_ReadOnly );
     stream >> *m_splitter;     //this sets the splitters position
 
     m_partySizeSave = m_splitter->sizes();
-    if( ! *(m_partySizeSave.at( 1 ) ) )
-    {
-        m_partySizeSave.clear();
-        m_partySizeSave.append(228); //defaults
-        m_partySizeSave.append(121); //defaults
-        m_partyConfig = false;
-        partyButton->setChecked( false );
-    }
+
+    // togglePartyConfig() will correctly setup the gui, and also negate m_partyConfig
+    m_partyConfig = !AmarokConfig::partyMode();
+    partyButton->setChecked( AmarokConfig::partyMode() );
+    togglePartyConfig();
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -1401,23 +1404,28 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
 
 void PlaylistBrowser::togglePartyConfig() //SLOT
 {
+    m_partyConfig = !m_partyConfig;
+
+    Party::instance()->statusChanged( m_partyConfig );
+
     if( m_partyConfig )
     {
-        m_partySizeSave = m_splitter->sizes();
         QValueList<int> newSizes;
+        int partyMinHeight = 353;
 
-        newSizes.append( *( m_partySizeSave.at( 0 ) ) + *(m_partySizeSave.at( 1 ) ) );
-        newSizes.append( 0 );
+        newSizes.append( m_listview->height() - partyMinHeight );
+        newSizes.append( partyMinHeight );
         m_splitter->setSizes( newSizes );
-        partyButton->setChecked( false );
+        kdDebug() << "Playlistbrowser height: " << newSizes[0] << endl;
     }
     else
     {
-        m_splitter->setSizes( m_partySizeSave );
-        partyButton->setChecked( true );
-    }
+        QValueList<int> newSizes;
 
-    m_partyConfig = !m_partyConfig;
+        newSizes.append( m_listview->height() );
+        newSizes.append( 0 );
+        m_splitter->setSizes( newSizes );
+    }
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT

@@ -81,7 +81,6 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_partyCheck,    SIGNAL( toggled( bool ) ),     SLOT( updateApplyButton() ) );
     connect( m_base->m_cycleTracks,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
@@ -96,8 +95,6 @@ Party::Party( QWidget *parent, const char *name )
 void
 Party::restoreSettings()
 {
-    m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
-
     m_base->m_upcomingIntSpinBox->setValue( AmarokConfig::partyUpcomingCount() );
     m_base->m_previousIntSpinBox->setValue( AmarokConfig::partyPreviousCount() );
     m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::partyAppendCount() );
@@ -116,8 +113,6 @@ Party::restoreSettings()
         m_playlists->setEnabled( true );
     }
 
-    m_base->m_partyCheck->setChecked( AmarokConfig::partyMode() );
-
     m_applyButton->setEnabled( false );
     m_addButton->setEnabled( false );
     m_subButton->setEnabled( false );
@@ -126,8 +121,6 @@ Party::restoreSettings()
 void
 Party::loadConfig( PartyEntry *config )
 {
-    m_base->m_partyCheck->setChecked( true );
-
     m_base->m_upcomingIntSpinBox->setValue( config->upcoming() );
     m_base->m_previousIntSpinBox->setValue( config->previous() );
     m_base->m_appendCountIntSpinBox->setValue( config->appendCount() );
@@ -207,9 +200,7 @@ Party::applySettings() //SLOT
     if( CollectionDB::instance()->isEmpty() )
         return;
 
-    amaroK::StatusBar::instance()->shortMessage( i18n("Party Configuration Saved.") );
-
-    bool partyEnabled = isChecked();
+    bool partyEnabled = PlaylistBrowser::instance()->partyEnabled();
     if ( partyEnabled != AmarokConfig::partyMode() )
     {
         static_cast<amaroK::PartyAction*>( amaroK::actionCollection()->action("party_mode") )->setChecked( partyEnabled );
@@ -259,15 +250,13 @@ Party::statusChanged( bool enable ) // SLOT
     if( !enable )
         Playlist::instance()->alterHistoryItems( true, true ); //enable all items
 
-    m_base->m_partyCheck->setChecked( enable );
     applySettings();
 }
 
 void
 Party::updateApplyButton() //SLOT
 {
-    if( isChecked() != AmarokConfig::partyMode() ||
-        cycleTracks() != AmarokConfig::partyCycleTracks() ||
+    if( cycleTracks() != AmarokConfig::partyCycleTracks() ||
         markHistory() != AmarokConfig::partyMarkHistory() ||
         previousCount() != AmarokConfig::partyPreviousCount() ||
         upcomingCount() != AmarokConfig::partyUpcomingCount() )
@@ -314,7 +303,6 @@ Party::updateRemoveButton() //SLOT
         m_subButton->setEnabled( true );
 }
 
-bool    Party::isChecked()     { return m_base->m_partyCheck->isChecked(); }
 int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }
 int     Party::upcomingCount() { return m_base->m_upcomingIntSpinBox->value(); }
 int     Party::appendCount()   { return m_base->m_appendCountIntSpinBox->value(); }
