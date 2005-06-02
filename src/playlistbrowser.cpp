@@ -75,7 +75,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KPopupMenu *saveMenu = saveMenuButton->popupMenu();
     saveMenu->insertItem( i18n("Current Playlist"), CURRENT );
-    saveMenu->insertItem( i18n("Current Party"), PARTY );
+    saveMenu->insertItem( i18n("Dynamic Playlist"), PARTY );
     connect( saveMenu, SIGNAL( activated(int) ), SLOT( slotSaveMenu(int) ) );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
@@ -113,7 +113,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_partyConfig = true;
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    partyButton = new KAction( i18n("Hide Party"), "party", 0, this, SLOT( togglePartyConfig() ), m_ac, "Configure and start a party" );
+    partyButton = new KAction( i18n("Dynamic Mode"), "party", 0, this, SLOT( togglePartyConfig() ), m_ac, "Configure and start dynamic playmode" );
     partyButton->plug( m_toolbar );
 
     renameButton->setEnabled( false );
@@ -161,7 +161,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_playlistCategory = new PlaylistCategory( m_listview, 0, i18n( "Playlists" ) );
     m_streamsCategory  = new PlaylistCategory( m_listview, m_playlistCategory, i18n( "Radio Streams" ) );
     m_smartCategory    = new PlaylistCategory( m_listview, m_streamsCategory,  i18n( "Smart Playlists" ) );
-    m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Parties" ) );
+    m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Dynamic Playlists" ) );
 
     loadPlaylists();
     loadStreams();
@@ -619,7 +619,7 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
 
     if( !parent ) parent = m_partyCategory;
 
-    ItemSaver dialog( i18n("My Party"), this );
+    ItemSaver dialog( i18n("Untitiled"), this );
 
     if( dialog.exec() == QDialog::Accepted )
     {

@@ -27,7 +27,7 @@
                 <number>0</number>
             </property>
             <property name="title">
-                <string>Enable Party Mode</string>
+                <string>Enable Dynamic Mode</string>
             </property>
             <property name="checkable">
                 <bool>true</bool>
