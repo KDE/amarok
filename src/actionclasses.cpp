@@ -379,7 +379,7 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 // PartyAction
 //////////////////////////////////////////////////////////////////////////////////////////
 PartyAction::PartyAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "&Party Mode" ), &AmarokConfig::setPartyMode, ac, "party_mode" )
+    ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setPartyMode, ac, "party_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::partyMode() );
     setIcon( "party" );
