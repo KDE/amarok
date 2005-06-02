@@ -28,7 +28,7 @@ version  = `kdialog --inputbox "Enter amaroK version: "`.chomp
 
 name     = "amarok"
 folder   = "amarok-#{version}"
-doi18n   = "no"  #i18n part is not yet ported to svn. Must be fetched manually
+do_l10n  = "yes"
 
 
 # Prevent using unsermake
@@ -57,29 +57,23 @@ Dir.chdir( "multimedia" )
 `svn co https://svn.kde.org/home/kde/trunk/KDE/kde-common/admin`
 
 puts "\n"
-puts "**** i18n ****"
+puts "**** l10n ****"
 puts "\n"
 
 
-puts "Please copy i18n files into the folder, then press return.."
-readline()
-
-
-# TODO Port i18n stuff to svn
-
 #we check out kde-i18n/subdirs in kde-i18n..
-if doi18n == "yes"
-    cvs( "co -P kde-i18n/subdirs" )
+if do_l10n == "yes"
+    `svn co https://svn.kde.org/home/kde/trunk/l10n/subdirs`
     i18nlangs = `cat kde-i18n/subdirs`
 
     # docs
     for lang in i18nlangs
         lang.chomp!
-        if FileTest.exists? "doc/#{lang}"
+        if FileTest.exists?( "doc/#{lang}" )
             `rm -Rf doc/#{lang}`
         end
-        docdirname = "kde-i18n/#{lang}/docs/kdeextragear-1/amarok"
-        cvsQuiet( "co -P #{docdirname}" )
+        docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
+        `svn co -q https://svn.kde.org/home/kde/trunk/#{docdirname}`
         next unless FileTest.exists?( docdirname )
         print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R #{docdirname} doc/#{lang}`
@@ -103,9 +97,9 @@ if doi18n == "yes"
 
     for lang in i18nlangs
         lang.chomp!
-        pofilename = "kde-i18n/#{lang}/messages/kdeextragear-1/amarok.po"
-        cvsQuiet( "co -P #{pofilename}" )
-        next unless FileTest.exists? pofilename
+        pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
+        `svn co -q https://svn.kde.org/home/kde/trunk/#{pofilename}`
+        next unless FileTest.exists?( pofilename )
 
         dest = "po/#{lang}"
         Dir.mkdir( dest )
@@ -136,7 +130,7 @@ end
 
 puts "\n"
 
-# Remove SVN specific folder
+# Remove SVN data folder
 `find -name ".svn" | xargs rm -rf`
 
 Dir.chdir( "amarok" )
