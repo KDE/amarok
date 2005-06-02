@@ -53,6 +53,7 @@ end
 
 Dir.chdir( "multimedia" )
 `svn up amarok`
+`svn up -N doc`
 `svn up doc/amarok`
 `svn co https://svn.kde.org/home/kde/trunk/KDE/kde-common/admin`
 
