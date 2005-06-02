@@ -16,6 +16,7 @@
 class KAction;
 class KActionMenu;
 class KActionCollection;
+class KToggleAction;
 class KToolBar;
 class QCustomEvent;
 class QColorGroup;
@@ -127,7 +128,7 @@ class PlaylistBrowser : public QVBox
         SmartPlaylistView   *m_smartlistview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton, *deleteButton;
-        KAction             *partyButton;
+        KToggleAction       *partyButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *saveMenuButton;
         KActionMenu         *addMenuButton;

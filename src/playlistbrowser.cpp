@@ -113,8 +113,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_partyConfig = true;
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    partyButton = new KAction( i18n("Dynamic Mode"), "party", 0, this, SLOT( togglePartyConfig() ), m_ac, "Configure and start dynamic playmode" );
+    partyButton = new KToggleAction( i18n("Dynamic Mode"), "party", 0, this,
+                         SLOT( togglePartyConfig() ), m_ac, "Configure and start dynamic playmode" );
     partyButton->plug( m_toolbar );
+    partyButton->setChecked( true );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
@@ -141,7 +143,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         m_partySizeSave.append(228); //defaults
         m_partySizeSave.append(121); //defaults
         m_partyConfig = false;
-        partyButton->setText( i18n("Show Party") );
+        partyButton->setChecked( false );
     }
 
     // signals and slots connections
@@ -1407,12 +1409,12 @@ void PlaylistBrowser::togglePartyConfig() //SLOT
         newSizes.append( *( m_partySizeSave.at( 0 ) ) + *(m_partySizeSave.at( 1 ) ) );
         newSizes.append( 0 );
         m_splitter->setSizes( newSizes );
-        partyButton->setText( i18n("Show Party") );
+        partyButton->setChecked( false );
     }
     else
     {
         m_splitter->setSizes( m_partySizeSave );
-        partyButton->setText( i18n("Hide Party") );
+        partyButton->setChecked( true );
     }
 
     m_partyConfig = !m_partyConfig;
