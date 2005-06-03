@@ -260,9 +260,8 @@ MetaBundle::fileExtension() const
     }
     else
     {
-        const QString file = m_url.fileName();
-        const QString lower = file.right( file.length() - file.findRev('.') - 1 );
-        s = lower.upper(); //make pretty
+        QFileInfo  file( m_url.fileName() );
+        s = file.extension( FALSE ).upper();
     }
 
     return s;
