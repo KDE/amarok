@@ -873,7 +873,7 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 {
     QColor fillColor, textColor;
     if ( isOn() ) {
-        fillColor = blendColors( colorGroup().highlight(), colorGroup().highlight().light( 60 ), m_animCount * 3 );
+        fillColor = blendColors( colorGroup().highlight(), colorGroup().background(), m_animCount * 3 );
         textColor = colorGroup().highlightedText();
     } else {
         fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), m_animCount * 3 );
@@ -893,7 +893,7 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 
     // Draw the text
     QFont font;
-//     font.setBold( isOn() );
+    font.setBold( isOn() );
     painter.setFont( font );
     QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
     text.replace( "...", ".." );
