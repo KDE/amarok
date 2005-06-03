@@ -627,7 +627,7 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
 
     if( !parent ) parent = m_partyCategory;
 
-    ItemSaver dialog( i18n("Untitiled"), this );
+    ItemSaver dialog( i18n("Untitled"), this );
 
     if( dialog.exec() == QDialog::Accepted )
     {
