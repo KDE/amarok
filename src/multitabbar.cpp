@@ -484,6 +484,10 @@ void MultiTabBarButton::enterEvent( QEvent* )
 
 void MultiTabBarButton::leaveEvent( QEvent* )
 {
+    // This can happen if you enter and leave the tab quickly
+    if ( m_animCount == 0 )
+        m_animCount = 1;
+
     m_animUp = false;
 
     killTimers();
