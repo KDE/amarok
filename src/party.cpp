@@ -87,8 +87,6 @@ Party::Party( QWidget *parent, const char *name )
 
     connect( m_playlists, SIGNAL( selectionChanged() ), SLOT( updateRemoveButton() ) );
 
-    connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ), SLOT( statusChanged( bool ) ) );
-
     restoreSettings();
 }
 
@@ -241,7 +239,7 @@ Party::applySettings() //SLOT
     AmarokConfig::setPartyMarkHistory( markHistory() );
 
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
-    amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
+    amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::partyMode() );
 }
 
 void

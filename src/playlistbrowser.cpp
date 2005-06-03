@@ -6,7 +6,6 @@
 #define DEBUG_PREFIX "PlaylistBrowser"
 
 #include "amarok.h"            //actionCollection()
-#include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"      //smart playlists
 #include "collectionreader.h"
@@ -112,12 +111,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenuButton->plug( m_toolbar );
     m_toolbar->insertLineSeparator();
 
-    m_partyConfig = true;
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    partyButton = new KToggleAction( i18n("Dynamic Mode"), "party", 0, this,
-                         SLOT( togglePartyConfig() ), m_ac, "Configure and start dynamic playmode" );
+    partyButton = new KToggleAction( i18n("Dynamic Mode"), 0, m_ac, "Configure and start dynamic playmode" );
+    partyButton->setIcon( "party" );
     partyButton->plug( m_toolbar );
-    partyButton->setChecked( true );
+    partyButton->setChecked( AmarokConfig::partyMode() );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
@@ -125,7 +123,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     //</Toolbar>
 
     m_listview = new PlaylistBrowserView( browserBox );
-    new Party( m_splitter );
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
@@ -134,20 +131,17 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
     slotViewMenu( m_sortMode );
 
-    QString size = QString("[%1,%2]").arg( QString::number(m_listview->height() - 353) )
-                                     .arg( QString::number(353) );
+    new Party( m_splitter );
 
-    QString str = config->readEntry( "Splitter", size );
+    int partyMinHeight = 353;
+
+    QString sizes = QString( "[%1,%2]" ).arg( this->height() )
+                                        .arg( partyMinHeight );
+
+    QString str = config->readEntry( "Splitter", sizes );
 
     QTextStream stream( &str, IO_ReadOnly );
     stream >> *m_splitter;     //this sets the splitters position
-
-    m_partySizeSave = m_splitter->sizes();
-
-    // togglePartyConfig() will correctly setup the gui, and also negate m_partyConfig
-    m_partyConfig = !AmarokConfig::partyMode();
-    partyButton->setChecked( AmarokConfig::partyMode() );
-    togglePartyConfig();
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -160,6 +154,15 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
              this,         SLOT( currentItemChanged( QListViewItem * ) ) );
     connect( m_listview, SIGNAL( selectionChanged() ),
              Party::instance(), SLOT( updateAddButton() ) );
+
+    connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ),
+             this,          SLOT( enablePartyConfig( bool ) ) );
+
+    connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ),
+             partyButton,   SLOT( setChecked( bool ) ) );
+
+    connect( partyButton, SIGNAL( toggled( bool ) ),
+             amaroK::actionCollection()->action( "party_mode" ), SLOT( setChecked( bool ) ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
@@ -1094,7 +1097,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         #undef  item
     }
     else
-        kdDebug() << "No functionality for item double click implemented" << endl;
+        debug() << "No functionality for item double click implemented" << endl;
 }
 
 
@@ -1402,30 +1405,28 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     addPlaylist( p->path() );
 }
 
-void PlaylistBrowser::togglePartyConfig() //SLOT
+void PlaylistBrowser::enablePartyConfig( bool enable ) //SLOT
 {
-    m_partyConfig = !m_partyConfig;
-
-    Party::instance()->statusChanged( m_partyConfig );
-
-    if( m_partyConfig )
+    if( enable )
     {
         QValueList<int> newSizes;
         int partyMinHeight = 353;
 
-        newSizes.append( m_listview->height() - partyMinHeight );
+        newSizes.append( this->height() - partyMinHeight );
         newSizes.append( partyMinHeight );
         m_splitter->setSizes( newSizes );
-        kdDebug() << "Playlistbrowser height: " << newSizes[0] << endl;
     }
     else
     {
         QValueList<int> newSizes;
-
-        newSizes.append( m_listview->height() );
+        newSizes.append( this->height() );
         newSizes.append( 0 );
         m_splitter->setSizes( newSizes );
+
+        Playlist::instance()->alterHistoryItems( true, true ); //enable all items
     }
+
+    amaroK::actionCollection()->action( "random_mode" )->setEnabled( !enable );
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT
