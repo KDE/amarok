@@ -83,7 +83,7 @@ class ToggleLabel : public QLabel
             }
         }
 
-        void setEnabled( bool on )
+        void setEnabled( bool /*on*/ )
         {
             setToolTip();
         }
