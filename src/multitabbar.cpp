@@ -28,19 +28,19 @@
 #include "multitabbar_p.h"
 #include "multitabbar_p.moc"
 
+#include <math.h>
+
+#include <qapplication.h>
 #include <qbutton.h>
-#include <qpopupmenu.h>
+#include <qfontmetrics.h>
 #include <qlayout.h>
 #include <qpainter.h>
-#include <qtooltip.h>
-#include <qfontmetrics.h>
+#include <qpopupmenu.h>
 #include <qstyle.h>
 
-#include <kiconloader.h>
 #include <kdebug.h>
+#include <kiconloader.h>
 #include <kstringhandler.h>
-#include <qapplication.h>
-#include <math.h>
 
 #define NEARBYINT(i) ((int(float(i) + 0.5)))
 
@@ -407,7 +407,7 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
     setFixedHeight( 24 );
     setFixedWidth( 24 );
     m_id = id;
-    QToolTip::add( this, text );
+//     QToolTip::add( this, text );
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
 }
 
@@ -423,7 +423,7 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
     setFixedHeight( 24 );
     setFixedWidth( 24 );
     m_id = id;
-    QToolTip::add( this, text );
+//     QToolTip::add( this, text );
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
 }
 
@@ -439,7 +439,7 @@ void MultiTabBarButton::setText( const QString& text )
 {
     QPushButton::setText( text );
     m_text = text;
-    QToolTip::add( this, text );
+//     QToolTip::add( this, text );
 }
 
 void MultiTabBarButton::slotClicked()
