@@ -873,11 +873,11 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 {
     QColor fillColor, textColor;
     if ( isOn() ) {
-        fillColor = blendColors( colorGroup().highlight(), colorGroup().background(), m_animCount * 3 );
-        textColor = colorGroup().highlightedText();
+        fillColor = blendColors( colorGroup().highlight(), colorGroup().background(), m_animCount * 4 );
+        textColor = blendColors( colorGroup().highlightedText(), colorGroup().text(), m_animCount * 4 );
     } else {
-        fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), m_animCount * 3 );
-        textColor = colorGroup().text();
+        fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), m_animCount * 4 );
+        textColor = blendColors( colorGroup().text(), colorGroup().highlightedText(), m_animCount * 4 );
     }
 
     QPixmap pixmap( height(), width() );
