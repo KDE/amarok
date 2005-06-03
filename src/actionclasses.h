@@ -113,6 +113,15 @@ namespace amaroK
                 if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
             }
 
+            virtual void setEnabled( bool b )
+            {
+                const bool announce = b != isEnabled();
+
+                m_function( b );
+                KToggleAction::setEnabled( b );
+                if( announce ) emit enabled( b );
+            }
+
         private:
             void ( *m_function ) ( bool );
     };

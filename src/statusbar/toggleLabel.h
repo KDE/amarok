@@ -37,56 +37,72 @@ class ToggleLabel : public QLabel
 
     KToggleAction const*const m_action;
 
-signals:
-    void toggled( bool );
+    signals:
+        void toggled( bool );
 
-public:
-    ToggleLabel( KToggleAction const*const action, QWidget *parent )
-            : QLabel( parent )
-            , m_action( action )
-    {
-        connect( this,   SIGNAL(toggled( bool )), action, SLOT(setChecked( bool )) );
-        connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
+    public:
+        ToggleLabel( KToggleAction const*const action, QWidget *parent )
+                : QLabel( parent )
+                , m_action( action )
+        {
+            connect( this,   SIGNAL(toggled( bool )), action, SLOT(setChecked( bool )) );
+            connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
+            connect( action, SIGNAL(enabled( bool )), this,   SLOT(setEnabled( bool )) );
 
-        setChecked( isChecked() );
-        setToolTip();
-    }
+            setChecked( isChecked() );
+            setToolTip();
+        }
 
-    inline bool isChecked() const { return m_action->isChecked(); }
+        inline bool isChecked() const { return m_action->isChecked(); }
+        inline bool isEnabled() const { return m_action->isEnabled(); }
 
-protected:
-    void mousePressEvent( QMouseEvent* )
-    {
-        if( KGlobalSettings::singleClick() )
-            mouseDoubleClickEvent( 0 );
-    }
+    protected:
+        void mousePressEvent( QMouseEvent* )
+        {
+            if( KGlobalSettings::singleClick() )
+                mouseDoubleClickEvent( 0 );
+        }
 
-    void mouseDoubleClickEvent( QMouseEvent* )
-    {
-        const bool b = !isChecked();
+        void mouseDoubleClickEvent( QMouseEvent* )
+        {
+            const bool b = !isChecked();
+            if( isEnabled() )
+            {
+                setChecked( b );
+                emit toggled( b );
+            }
+        }
 
-        setChecked( b );
-        emit toggled( b );
-    }
+    public slots:
+        void setChecked( bool on )
+        {
+            if( isEnabled() )
+            {
+                setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
+                setToolTip();
+            }
+        }
 
-public slots:
-    void setChecked( bool on )
-    {
-        setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
-        setToolTip();
-    }
+        void setEnabled( bool on )
+        {
+            setToolTip();
+        }
 
-private:
-    void setToolTip()
-    {
-        QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
-        tip += m_action->isChecked() ? i18n("%2: on") : i18n("%2: off");
-        tip += "&nbsp;";
-        const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
+    private:
+        void setToolTip()
+        {
+            QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
+            tip += m_action->isChecked() ? i18n("%2: on") : i18n("%2: off");
 
-        QToolTip::remove( this );
-        QToolTip::add( this, tip.arg( path ).arg( m_action->text().remove('&') ) );
-    }
+            if( !isEnabled() )
+                tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
+
+            tip += "&nbsp;";
+            const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
+
+            QToolTip::remove( this );
+            QToolTip::add( this, tip.arg( path ).arg( m_action->text().remove('&') ) );
+        }
 
 };
 
