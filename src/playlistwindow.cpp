@@ -591,16 +591,20 @@ void PlaylistWindow::slotPlayMedia() //SLOT
 void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
-    QStringList files;
-    files = KFileDialog::getOpenFileNames( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
-
+    KURL::List files;
+    //files = KFileDialog::getOpenURLs( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
+    KFileDialog dlg(QString::null, "*.*|", this, "openMediaDialog", true);
+    dlg.setCaption(directPlay ? i18n("Play Media") : i18n("Add Media"));
+    dlg.setMode( KFile::Files | KFile::Directory );
+    dlg.exec();
+    files = dlg.selectedURLs();
     if( files.isEmpty() ) return;
     const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
 
-    const QStringList::ConstIterator end  = files.constEnd();
+    const KURL::List::ConstIterator end  = files.constEnd();
 
-    for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
-        Playlist::instance()->insertMedia( KURL(*it), options );
+    for(  KURL::List::ConstIterator it = files.constBegin(); it != end; ++it )
+        Playlist::instance()->insertMedia( *it, options );
 }
 
 
