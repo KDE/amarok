@@ -148,10 +148,10 @@ namespace amaroK
     };
 
 
-    class PartyAction : public ToggleAction
+    class DynamicAction : public ToggleAction
     {
         public:
-            PartyAction( KActionCollection *ac );
+            DynamicAction( KActionCollection *ac );
     };
 
     class BurnMenu : public KPopupMenu

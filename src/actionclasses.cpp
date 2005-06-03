@@ -92,7 +92,7 @@ Menu::Menu()
     safePlug( ac, "repeat_track", this );
     safePlug( ac, "repeat_playlist", this );
     safePlug( ac, "random_mode", this );
-    safePlug( ac, "party_mode", this );
+    safePlug( ac, "dynamic_mode", this );
 
     insertSeparator();
 
@@ -378,8 +378,8 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 //////////////////////////////////////////////////////////////////////////////////////////
 // PartyAction
 //////////////////////////////////////////////////////////////////////////////////////////
-PartyAction::PartyAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setPartyMode, ac, "party_mode" )
+DynamicAction::DynamicAction( KActionCollection *ac ) :
+    ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setPartyMode, ac, "dynamic_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::partyMode() );
     setIcon( "party" );

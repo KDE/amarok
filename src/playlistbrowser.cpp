@@ -112,10 +112,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar->insertLineSeparator();
 
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    partyButton = new KToggleAction( i18n("Dynamic Mode"), 0, m_ac, "Configure and start dynamic playmode" );
-    partyButton->setIcon( "party" );
-    partyButton->plug( m_toolbar );
-    partyButton->setChecked( AmarokConfig::partyMode() );
+    dynamicButton = new KToggleAction( i18n("Dynamic Mode"), 0, m_ac, "Configure and start dynamic playmode" );
+    dynamicButton->setIcon( "party" );
+    dynamicButton->plug( m_toolbar );
+    dynamicButton->setChecked( AmarokConfig::partyMode() );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
@@ -133,10 +133,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     new Party( m_splitter );
 
-    int partyMinHeight = 353;
+    int dynamicMinHeight = 353;
 
     QString sizes = QString( "[%1,%2]" ).arg( this->height() )
-                                        .arg( partyMinHeight );
+                                        .arg( dynamicMinHeight );
 
     QString str = config->readEntry( "Splitter", sizes );
 
@@ -155,21 +155,21 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_listview, SIGNAL( selectionChanged() ),
              Party::instance(), SLOT( updateAddButton() ) );
 
-    connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ),
-             this,          SLOT( enablePartyConfig( bool ) ) );
+    connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
+             this,          SLOT( enableDynamicConfig( bool ) ) );
 
-    connect( amaroK::actionCollection()->action( "party_mode" ), SIGNAL( toggled( bool ) ),
-             partyButton,   SLOT( setChecked( bool ) ) );
+    connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
+             dynamicButton, SLOT( setChecked( bool ) ) );
 
-    connect( partyButton, SIGNAL( toggled( bool ) ),
-             amaroK::actionCollection()->action( "party_mode" ), SLOT( setChecked( bool ) ) );
+    connect( dynamicButton, SIGNAL( toggled( bool ) ),
+             amaroK::actionCollection()->action( "dynamic_mode" ), SLOT( setChecked( bool ) ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
     m_playlistCategory = new PlaylistCategory( m_listview, 0, i18n( "Playlists" ) );
     m_streamsCategory  = new PlaylistCategory( m_listview, m_playlistCategory, i18n( "Radio Streams" ) );
     m_smartCategory    = new PlaylistCategory( m_listview, m_streamsCategory,  i18n( "Smart Playlists" ) );
-    m_partyCategory    = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Dynamic Playlists" ) );
+    m_dynamicCategory  = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Dynamic Playlists" ) );
 
     loadPlaylists();
     loadStreams();
@@ -625,7 +625,7 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
 {
     Party *current = Party::instance();
 
-    if( !parent ) parent = m_partyCategory;
+    if( !parent ) parent = m_dynamicCategory;
 
     ItemSaver dialog( i18n("Untitled"), this );
 
@@ -703,7 +703,7 @@ void PlaylistBrowser::loadParties()
         e = n.namedItem( "items" ).toElement();
         QStringList items = QStringList::split( ',', e.text() );
 
-        PartyEntry *newParty = new PartyEntry( m_partyCategory, m_lastParty, name );
+        PartyEntry *newParty = new PartyEntry( m_dynamicCategory, m_lastParty, name );
         newParty->setCycled( cycled );
         newParty->setMarked( marked );
         newParty->setUpcoming( upcoming );
@@ -715,7 +715,7 @@ void PlaylistBrowser::loadParties()
 
         m_lastParty = newParty;
     }
-    m_partyCategory->setOpen( true );
+    m_dynamicCategory->setOpen( true );
 }
 
 void PlaylistBrowser::saveParties()
@@ -732,10 +732,10 @@ void PlaylistBrowser::saveParties()
 
     PlaylistCategory *currentCat=0;
 
-    #define m_partyCategory static_cast<QListViewItem *>(m_partyCategory)
+    #define m_dynamicCategory static_cast<QListViewItem *>(m_dynamicCategory)
 
-    QListViewItem *it = m_partyCategory->firstChild();
-    for( int count = 0; count < m_partyCategory->childCount(); count++ )
+    QListViewItem *it = m_dynamicCategory->firstChild();
+    for( int count = 0; count < m_dynamicCategory->childCount(); count++ )
     {
         QDomElement i;
 
@@ -804,7 +804,7 @@ void PlaylistBrowser::saveParties()
         it = it->nextSibling();
     }
 
-    #undef m_partyCategory
+    #undef m_dynamicCategory
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -1405,7 +1405,7 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     addPlaylist( p->path() );
 }
 
-void PlaylistBrowser::enablePartyConfig( bool enable ) //SLOT
+void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
 {
     if( enable )
     {
@@ -1573,7 +1573,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
         menu.insertSeparator();
-        // Forbid removal of Cool-Streams
+        // Forbid removal of Collection
         if( item->parent()->text(0) != i18n("Collection") )
         {
             if ( static_cast<SmartPlaylist *>(item)->isEditable() )

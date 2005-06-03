@@ -267,7 +267,7 @@ namespace amaroK
 
     void DcopPlayerHandler::enablePartyMode(bool enable)
     {
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "party_mode" ))->setChecked( enable );
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( enable );
     }
 
     void DcopPlayerHandler::setVolume(int volume)

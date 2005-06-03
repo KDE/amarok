@@ -59,7 +59,7 @@ class PlaylistBrowser : public QVBox
         PlaylistEntry *getPlaylist( QString name ); //For party mode
 
         QStringList selectedList();
-        bool    partyEnabled() { return partyButton->isChecked(); }
+        bool    dynamicEnabled() { return dynamicButton->isChecked(); }
 
         ViewMode viewMode() { return m_viewMode; }
 
@@ -75,7 +75,7 @@ class PlaylistBrowser : public QVBox
         void currentItemChanged( QListViewItem * );
         void deleteSelectedPlaylists();
         void editStreamURL( StreamEntry *item );
-        void enablePartyConfig( bool enable );
+        void enableDynamicConfig( bool enable );
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
@@ -119,7 +119,7 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_playlistCategory;
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
-        PlaylistCategory    *m_partyCategory;
+        PlaylistCategory    *m_dynamicCategory;
 
         QDomDocument m_smartXml;
 
@@ -129,7 +129,7 @@ class PlaylistBrowser : public QVBox
         SmartPlaylistView   *m_smartlistview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton, *deleteButton;
-        KToggleAction       *partyButton;
+        KToggleAction       *dynamicButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *saveMenuButton;
         KActionMenu         *addMenuButton;

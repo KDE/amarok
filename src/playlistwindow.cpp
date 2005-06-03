@@ -140,7 +140,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RepeatTrackAction( ac );
     new amaroK::RepeatPlaylistAction( ac );
     new amaroK::RandomAction( ac );
-    new amaroK::PartyAction( ac );
+    new amaroK::DynamicAction( ac );
     new amaroK::VolumeAction( ac );
 
     if( K3bExporter::isAvailable() )
@@ -278,7 +278,7 @@ PlaylistWindow::init()
     actionCollection()->action("repeat_track")->plug( m_settingsMenu );
     actionCollection()->action("repeat_playlist")->plug( m_settingsMenu );
     actionCollection()->action("random_mode")->plug( m_settingsMenu );
-    actionCollection()->action("party_mode")->plug( m_settingsMenu );
+    actionCollection()->action("dynamic_mode")->plug( m_settingsMenu );
     m_settingsMenu->insertSeparator();
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );

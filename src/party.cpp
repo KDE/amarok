@@ -198,10 +198,10 @@ Party::applySettings() //SLOT
     if( CollectionDB::instance()->isEmpty() )
         return;
 
-    bool partyEnabled = PlaylistBrowser::instance()->partyEnabled();
+    bool partyEnabled = PlaylistBrowser::instance()->dynamicEnabled();
     if ( partyEnabled != AmarokConfig::partyMode() )
     {
-        static_cast<amaroK::PartyAction*>( amaroK::actionCollection()->action("party_mode") )->setChecked( partyEnabled );
+        static_cast<amaroK::DynamicAction*>( amaroK::actionCollection()->action("dynamic_mode") )->setChecked( partyEnabled );
         if ( !partyEnabled )
         {
             Playlist::instance()->alterHistoryItems( true, true ); //enable all items
