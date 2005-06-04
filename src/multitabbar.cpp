@@ -617,9 +617,11 @@ void MultiTabBarTab::setIcon( const QPixmap& icon )
 
 void MultiTabBarTab::slotClicked()
 {
-    m_animCount = ANIM_MAX;
-    m_animTimer->stop();
-    repaint();
+    if ( m_animTimer->isActive() ) {
+        m_animCount = ANIM_MAX;
+        m_animTimer->stop();
+        repaint();
+    }
 
     updateState();
     MultiTabBarButton::slotClicked();
