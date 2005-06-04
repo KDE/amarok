@@ -1415,6 +1415,10 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         newSizes.append( this->height() - partyMinHeight );
         newSizes.append( partyMinHeight );
         m_splitter->setSizes( newSizes );
+
+        // uncheck before disabling
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
+        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
     else
     {
@@ -1424,11 +1428,11 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         m_splitter->setSizes( newSizes );
 
         Playlist::instance()->alterHistoryItems( true, true ); //enable all items
-    }
 
-    amaroK::actionCollection()->action( "random_mode" )->setEnabled( !enable );
-    // Random mode was being enabled without notification on leaving party mode.
-    static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
+        // Random mode was being enabled without notification on leaving party mode.  Remember to renable first!
+        amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
+    }
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT
