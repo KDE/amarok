@@ -189,13 +189,15 @@ class MultiTabBarButton: public QPushButton
         MultiTabBar::MultiTabBarStyle m_style;
         QString m_text;
         int m_id;
-        bool m_animUp;
+
+        bool m_animEnter;
         int m_animCount;
+        class QTimer* m_animTimer;
+
         virtual void hideEvent( class QHideEvent* );
         virtual void showEvent( class QShowEvent* );
         virtual void enterEvent( class QEvent* );
         virtual void leaveEvent( class QEvent* );
-        virtual void timerEvent( class QTimerEvent* );
     private:
         MultiTabBarButtonPrivate *d;
     signals:
@@ -206,6 +208,7 @@ class MultiTabBarButton: public QPushButton
         void clicked( int id );
     protected slots:
         virtual void slotClicked();
+        virtual void slotAnimTimer();
 };
 
 /**

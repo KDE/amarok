@@ -37,6 +37,7 @@
 #include <qpainter.h>
 #include <qpopupmenu.h>
 #include <qstyle.h>
+#include <qtimer.h>
 
 #include <kdebug.h>
 #include <kiconloader.h>
@@ -398,6 +399,8 @@ void MultiTabBarInternal::setPosition( enum MultiTabBar::MultiTabBarPosition pos
 MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, QPopupMenu *popup,
                                       int id, QWidget *parent, MultiTabBar::MultiTabBarPosition pos, MultiTabBar::MultiTabBarStyle style )
         : QPushButton( QIconSet(), text, parent ), m_style( style )
+        , m_animCount( 0 )
+        , m_animTimer( new QTimer( this ) )
 {
     setIconSet( pic );
     setText( text );
@@ -409,12 +412,14 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
     m_id = id;
 //     QToolTip::add( this, text );
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
+    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
 }
 
 MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
                                       int id, QWidget *parent, MultiTabBar::MultiTabBarPosition pos, MultiTabBar::MultiTabBarStyle style )
         : QPushButton( QIconSet(), text, parent ), m_style( style )
         , m_animCount( 0 )
+        , m_animTimer( new QTimer( this ) )
 {
     setText( text );
     m_position = pos;
@@ -425,6 +430,7 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
     m_id = id;
 //     QToolTip::add( this, text );
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
+    connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
 }
 
 MultiTabBarButton::~MultiTabBarButton()
@@ -475,11 +481,10 @@ void MultiTabBarButton::showEvent( QShowEvent* he )
 
 void MultiTabBarButton::enterEvent( QEvent* )
 {
-    m_animUp = true;
+    m_animEnter = true;
     m_animCount = 0;
 
-    killTimers();
-    startTimer( ANIM_INTERVAL );
+    m_animTimer->start( ANIM_INTERVAL );
 }
 
 void MultiTabBarButton::leaveEvent( QEvent* )
@@ -488,24 +493,22 @@ void MultiTabBarButton::leaveEvent( QEvent* )
     if ( m_animCount == 0 )
         m_animCount = 1;
 
-    m_animUp = false;
-
-    killTimers();
-    startTimer( ANIM_INTERVAL );
+    m_animEnter = false;
+    m_animTimer->start( ANIM_INTERVAL );
 }
 
-void MultiTabBarButton::timerEvent( QTimerEvent* )
+void MultiTabBarButton::slotAnimTimer()
 {
-    if ( m_animUp ) {
+    if ( m_animEnter ) {
         m_animCount += 1;
         repaint( false );
         if ( m_animCount >= ANIM_MAX )
-            killTimers();
+            m_animTimer->stop();
     } else {
         m_animCount -= 1;
         repaint( false );
         if ( m_animCount <= 0 )
-            killTimers();
+            m_animTimer->stop();
     }
 }
 
@@ -614,6 +617,10 @@ void MultiTabBarTab::setIcon( const QPixmap& icon )
 
 void MultiTabBarTab::slotClicked()
 {
+    m_animCount = ANIM_MAX;
+    m_animTimer->stop();
+    repaint();
+
     updateState();
     MultiTabBarButton::slotClicked();
 }
@@ -877,11 +884,11 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 {
     QColor fillColor, textColor;
     if ( isOn() ) {
-        fillColor = blendColors( colorGroup().highlight(), colorGroup().background(), m_animCount * 4 );
-        textColor = blendColors( colorGroup().highlightedText(), colorGroup().text(), m_animCount * 4 );
+        fillColor = blendColors( colorGroup().highlight(), colorGroup().background(), static_cast<int>( m_animCount * 3.5 ) );
+        textColor = blendColors( colorGroup().highlightedText(), colorGroup().text(), static_cast<int>( m_animCount * 4.5 ) );
     } else {
-        fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), m_animCount * 4 );
-        textColor = blendColors( colorGroup().text(), colorGroup().highlightedText(), m_animCount * 4 );
+        fillColor = blendColors( colorGroup().background(), colorGroup().highlight(), static_cast<int>( m_animCount * 3.5 ) );
+        textColor = blendColors( colorGroup().text(), colorGroup().highlightedText(), static_cast<int>( m_animCount * 4.5 ) );
     }
 
     QPixmap pixmap( height(), width() );
