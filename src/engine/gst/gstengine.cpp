@@ -301,9 +301,12 @@ GstEngine::canDecode( const KURL &url ) const
 {
     // TODO Consider using decodebin here as well
 
-    // We had some bug reports claiming that .mov files cause crashes in canDecode(),
+    // We had some bug reports claiming that video files cause crashes in canDecode(),
     // so don't try to decode them
-    if ( url.fileName().lower().endsWith( ".mov" ) ) return false;
+    if ( url.fileName().lower().endsWith( ".mov" ) ||
+         url.fileName().lower().endsWith( ".avi" ) ||
+         url.fileName().lower().endsWith( ".wmv" ) )
+        return false;
 
     int count = 0;
     m_canDecodeSuccess = false;
