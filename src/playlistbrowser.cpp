@@ -1427,6 +1427,8 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
     }
 
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !enable );
+    // Random mode was being enabled without notification on leaving party mode.
+    static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT
