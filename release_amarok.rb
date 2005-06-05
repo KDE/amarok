@@ -62,10 +62,10 @@ puts "**** l10n ****"
 puts "\n"
 
 
-#we check out kde-i18n/subdirs in kde-i18n..
 if do_l10n == "yes"
-    `svn co https://svn.kde.org/home/kde/trunk/l10n/subdirs`
-    i18nlangs = `cat kde-i18n/subdirs`
+    `svn co -N https://svn.kde.org/home/kde/trunk/l10n`
+    i18nlangs = `cat l10n/subdirs`
+    `rm -rf l10n`
 
     # docs
     for lang in i18nlangs
@@ -125,7 +125,7 @@ if do_l10n == "yes"
         `rm -Rf po`
     end
 
-    `rm -rf kde-i18n`
+    `rm -rf l10n`
 end
 
 
