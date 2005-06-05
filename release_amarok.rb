@@ -63,8 +63,8 @@ puts "\n"
 
 
 if do_l10n == "yes"
-    `svn co -N https://svn.kde.org/home/kde/trunk/l10n`
-    i18nlangs = `cat l10n/subdirs`
+    i18nlangs = `svn cat https://svn.kde.org/home/kde/trunk/l10n/subdirs`
+    Dir.mkdir( "l10n" )
     Dir.chdir( "l10n" )
 
     # docs
@@ -73,7 +73,7 @@ if do_l10n == "yes"
        `rm -Rf ../doc/#{lang}`
         `rm -rf amarok`
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
-        `svn co -q https://svn.kde.org/home/kde/trunk/#{docdirname}`
+        `svn co -q https://svn.kde.org/home/kde/trunk/#{docdirname} > /dev/null 2>&1`
         next unless FileTest.exists?( "amarok" )
         print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R amarok/ ../doc/#{lang}`
@@ -90,6 +90,7 @@ if do_l10n == "yes"
         puts( "done.\n" )
     end
 
+    Dir.chdir( ".." ) # multimedia
     puts "\n"
 
     $subdirs = false
@@ -98,13 +99,13 @@ if do_l10n == "yes"
     for lang in i18nlangs
         lang.chomp!
         pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
-        `svn co -q https://svn.kde.org/home/kde/trunk/#{pofilename}`
-        next unless FileTest.exists?( pofilename )
+        `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} | tee amarok.po > /dev/null 2>&1`
+        next unless FileTest.exists?( "amarok.po" )
 
         dest = "po/#{lang}"
         Dir.mkdir( dest )
         print "Copying #{lang}'s #{name}.po over..  "
-        `cp #{pofilename} #{dest}`
+        `mv amarok.po #{dest}`
         puts( "done.\n" )
 
         makefile = File.new( "#{dest}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
@@ -115,10 +116,6 @@ if do_l10n == "yes"
 
         $subdirs = true
     end
-
-
-    quit()
-
 
     if $subdirs
         makefile = File.new( "po/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
@@ -132,6 +129,7 @@ if do_l10n == "yes"
 end
 
 puts "\n"
+
 
 # Remove SVN data folder
 `find -name ".svn" | xargs rm -rf`
