@@ -12,6 +12,12 @@ SHORT-TERM (URGENT):
   <sebr>   Reduce party config height.
 
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
+
+  <sebr>   The new party dialog breaks Loading saved parties.
+
+  <sebr>   Starting parties from empty playlists, or changing the party type, we should repopulate the upcoming tracks
+           to reflect this change.
+  
 **  end 1.3 requirement  **
 
   <markey> Figure out why ScriptManager can't read from stdout.
