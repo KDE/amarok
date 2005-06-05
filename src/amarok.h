@@ -145,6 +145,6 @@ namespace amaroK
 
 
 /// Update this when necessary
-#define APP_VERSION "1.3-beta1"
+#define APP_VERSION "1.3-SVN"
 
 #endif
