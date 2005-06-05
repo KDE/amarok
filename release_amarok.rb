@@ -65,25 +65,24 @@ puts "\n"
 if do_l10n == "yes"
     `svn co -N https://svn.kde.org/home/kde/trunk/l10n`
     i18nlangs = `cat l10n/subdirs`
-    `rm -rf l10n`
+    Dir.chdir( "l10n" )
 
     # docs
     for lang in i18nlangs
         lang.chomp!
-        if FileTest.exists?( "doc/#{lang}" )
-            `rm -Rf doc/#{lang}`
-        end
+       `rm -Rf ../doc/#{lang}`
+        `rm -rf amarok`
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
         `svn co -q https://svn.kde.org/home/kde/trunk/#{docdirname}`
-        next unless FileTest.exists?( docdirname )
+        next unless FileTest.exists?( "amarok" )
         print "Copying #{lang}'s #{name} documentation over..  "
-        `cp -R #{docdirname} doc/#{lang}`
+        `cp -R amarok/ ../doc/#{lang}`
 
         # we don't want KDE_DOCS = AUTO, cause that makes the
         # build system assume that the name of the app is the
         # same as the name of the dir the Makefile.am is in.
         # Instead, we explicitly pass the name..
-        makefile = File.new( "doc/#{lang}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
+        makefile = File.new( "../doc/#{lang}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "KDE_LANG = #{lang}\n"
         makefile << "KDE_DOCS = #{name}\n"
         makefile.close
@@ -117,6 +116,10 @@ if do_l10n == "yes"
         $subdirs = true
     end
 
+
+    quit()
+
+
     if $subdirs
         makefile = File.new( "po/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "SUBDIRS = $(AUTODIRS)\n"
@@ -127,7 +130,6 @@ if do_l10n == "yes"
 
     `rm -rf l10n`
 end
-
 
 puts "\n"
 
