@@ -1362,13 +1362,10 @@ Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //
     {
         const QString &oldTag = item == qitem ? m_editOldTag : item->exactText(column);
 
-        if( oldTag != newTag && !(oldTag.isEmpty() && newTag.isEmpty()) )
-        {
-            if( column == PlaylistItem::Score )
-                CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
-            else
-                ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
-        }
+        if( column == PlaylistItem::Score )
+            CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
+        else
+            ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
     }
 
     m_itemsToChangeTagsFor.clear();
