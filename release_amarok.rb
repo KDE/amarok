@@ -99,8 +99,9 @@ if do_l10n == "yes"
     for lang in i18nlangs
         lang.chomp!
         pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
-        `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} | tee amarok.po > /dev/null 2>&1`
-        next unless FileTest.exists?( "amarok.po" )
+        `rm -f amarok.po`
+        `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} | tee amarok.po`
+        next if FileTest.size( "amarok.po" ) == 0
 
         dest = "po/#{lang}"
         Dir.mkdir( dest )
