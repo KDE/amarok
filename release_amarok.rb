@@ -148,8 +148,14 @@ Dir.chdir( "amarok" )
 
 Dir.chdir( "src" )
 
-# Exchange APP_VERSION string with new version
-`cat amarok.h | sed -e 's/APP_VERSION \".*\"/APP_VERSION \"#{version}\"/' | tee amarok.h > /dev/null`
+# Exchange APP_VERSION string with targetted version
+file = File.new( "amarok.h", File::RDWR )
+str = file.read()
+file.rewind()
+str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{version}\"" )
+file.write( str )
+file.close()
+
 
 Dir.chdir( ".." ) # amarok
 `rm -rf debian`
