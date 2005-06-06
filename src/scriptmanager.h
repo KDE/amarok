@@ -80,7 +80,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         QStringList listRunningScripts();
 
        /** Custom Menu Click */
-       void customMenuClicked( const KURL::List &list );
+       void customMenuClicked( const QString& message );
 
     private slots:
         /** Finds all installed scripts and adds them to the listview */

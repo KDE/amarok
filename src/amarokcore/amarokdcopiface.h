@@ -142,8 +142,8 @@ k_dcop:
    virtual bool runScript(const QString& name) = 0;         ///< Starts the script with the given name. Returns true on success.
    virtual bool stopScript(const QString& name) = 0;        ///< Stops the script with the given name. Returns true on success.
    virtual QStringList listRunningScripts() = 0;            ///< Returns a list of all currently running scripts.
-   virtual void addCustomMenuItem( QString itemTitle ) = 0;    ///<Enables and sets custom menu item title.
-   virtual void removeCustomMenuItem( QString itemTitle ) = 0;                  ///<Removes the custom menu item.
+   virtual void addCustomMenuItem(QString submenu, QString itemTitle ) = 0;    ///<Enables and sets custom menu item title.
+   virtual void removeCustomMenuItem(QString submenu, QString itemTitle ) = 0;                  ///<Removes the custom menu item.
 };
 
 

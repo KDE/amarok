@@ -3,7 +3,7 @@
                             -------------------
     begin                : Don Dez 5 2002
     copyright            : (C) 2002 by Mark Kretschmann
-    email                :
+                            2005 Ian Monroe
 ***************************************************************************/
 
 /***************************************************************************
@@ -38,7 +38,6 @@ class PlaylistLoader;
 class QBoxLayout;
 class QLabel;
 class QTimer;
-
 
 /*
  * @authors Mark Kretschmann && Max Howell
@@ -106,9 +105,9 @@ class Playlist : private KListView, public EngineObserver
         void burnPlaylist( int projectType=-1 );
         void burnSelectedTracks( int projectType=-1 );
 
-        void addCustomMenuItem( QString itemTitle );
-        void removeCustomMenuItem( QString itemTitle );
-        void customMenuClicked();
+        void addCustomMenuItem(QString submenu, QString itemTitle );
+        bool removeCustomMenuItem(QString submenu, QString itemTitle );
+        void customMenuClicked(int id);
 
         class QDragObject *dragObject();
 
@@ -256,8 +255,8 @@ class Playlist : private KListView, public EngineObserver
         bool         m_stateSwitched;
         bool         m_partyDirt;
 
-        QStringList  m_customItemTitle;
-
+        QMap<QString, QStringList>  m_customSubmenuItem;
+        QMap<int, QString> m_customIdItem;
         /// Check for locked status
         bool isLocked() const { return m_lockStack > 0; }
 

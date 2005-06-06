@@ -518,14 +518,14 @@ namespace amaroK
         return ScriptManager::instance()->listRunningScripts();
     }
 
-    void DcopScriptHandler::addCustomMenuItem( QString itemTitle )
+    void DcopScriptHandler::addCustomMenuItem(QString submenu, QString itemTitle )
     {
-        Playlist::instance()->addCustomMenuItem( itemTitle );
+        Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
     }
 
-    void DcopScriptHandler::removeCustomMenuItem( QString itemTitle )
+    void DcopScriptHandler::removeCustomMenuItem(QString submenu, QString itemTitle )
     {
-        Playlist::instance()->removeCustomMenuItem( itemTitle );
+        Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
     }
 
 } //namespace amaroK

@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
- * Copyright 2005 Seb Ruiz, Mike Diehl
+ * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -1994,30 +1994,34 @@ Playlist::burnSelectedTracks( int projectType )
 }
 
 void
-Playlist::addCustomMenuItem( QString itemTitle )  //for dcop
+Playlist::addCustomMenuItem(QString submenu, QString itemTitle )  //for dcop
 {
-    m_customItemTitle.append( itemTitle );
+        m_customSubmenuItem[submenu] << itemTitle;
+}
+
+bool
+Playlist::removeCustomMenuItem( QString submenu, QString itemTitle)  //for dcop
+{
+    if(!m_customSubmenuItem.contains(submenu))
+        return false;
+    if(m_customSubmenuItem[submenu].remove( itemTitle ) != 0)
+        return true;
+    else
+        return false;
 }
 
 void
-Playlist::removeCustomMenuItem( QString itemTitle)  //for dcop
+Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 {
-    m_customItemTitle.remove( itemTitle );
-}
-
-void
-Playlist::customMenuClicked()  //adapted from burnSelectedTracks
-{
-    KURL::List list;
-
+    QString message = m_customIdItem[id];
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
         KURL url = item->url().url();
         if( url.isLocalFile() )
-            list << url;
+            message += " " + url.path();
     }
-    ScriptManager::instance()->customMenuClicked( list );
+    ScriptManager::instance()->customMenuClicked( message );
 }
 
 void
@@ -2282,7 +2286,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     enum {
         PLAY, PLAY_NEXT, PLAY_NEXT_PARTY, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
-        BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, CUSTOM_ITEM };
+        BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, LAST }; //keep LAST last
 
     if( item == 0 ) return; //technically we should show "Remove" but this is far neater
 
@@ -2370,9 +2374,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     burnMenu.insertSeparator();
     burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
     burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
-
     popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
-
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
@@ -2390,16 +2392,37 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
 
-    KPopupMenu customMenu;
-    if ( !m_customItemTitle.isEmpty() ){
-        for ( QStringList::Iterator it = m_customItemTitle.begin(); it != m_customItemTitle.end(); ++it ) {
-            customMenu.insertItem ( SmallIconSet( "pencil"), ( *it ), CUSTOM_ITEM );
+//    if ( !m_customItemTitle.isEmpty() ){
+//        for ( QStringList::Iterator it = m_customItemTitle.begin(); it != m_customItemTitle.end(); ++it ) {
+//            customMenu.insertItem ( SmallIconSet( "pencil"), ( *it ), CUSTOM_ITEM );
+//        }
+//    popup.insertSeparator();
+//    popup.insertItem( SmallIconSet( "pencil" ), i18n("Scripts"), &customMenu );
+// }
+    QValueList<QString> submenuTexts = m_customSubmenuItem.keys();
+    for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
+    {
+        KPopupMenu* menu;
+        if( (*keyIt) == "root") 
+            menu = &popup;
+        else
+        {
+            menu = new KPopupMenu(); 
+            popup.insertItem( *keyIt, menu); 
         }
-    popup.insertSeparator();
-    popup.insertItem( SmallIconSet( "pencil" ), i18n("Scripts"), &customMenu );
+        foreach(m_customSubmenuItem[*keyIt])
+        {
+            int id;
+            if(m_customIdItem.isEmpty())
+                id=LAST;
+            else
+                id=m_customIdItem.keys().last()+1;
+            menu->insertItem( (*it), id );
+            m_customIdItem[id]= (*keyIt) + ' ' + (*it);
+        }
     }
-
-    switch( popup.exec( p ) )
+    int menuItemId= popup.exec( p );
+    switch( menuItemId )
     {
     case PLAY:
         activate( item );
@@ -2520,8 +2543,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         K3bExporter::instance()->exportArtist( item->artist(), K3bExporter::AudioCD );
         break;
 
-    case CUSTOM_ITEM:
-        customMenuClicked();
+    default:
+        if(menuItemId < LAST)
+            break;
+        customMenuClicked(menuItemId);
         break;
     }
 

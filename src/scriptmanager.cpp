@@ -198,11 +198,9 @@ ScriptManager::listRunningScripts()
 
 
 void
-ScriptManager::customMenuClicked( const KURL::List &list )
+ScriptManager::customMenuClicked( const QString& message )
 {
-    QString urls;
-    urls = list.toStringList().join( " " );
-    notifyScripts( "customMenuClicked:" + urls );
+    notifyScripts( "customMenuClicked: " + message );
 }
 
 
