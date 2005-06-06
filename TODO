@@ -6,7 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-** Before 1.3 beta-1 !!! **
   <sebr>   Save and restore custom folders in the playlist browser. no point in creating them if they are thrown away.
 
   <sebr>   Reduce party config height.
@@ -18,7 +17,7 @@ SHORT-TERM (URGENT):
   <sebr>   Starting parties from empty playlists, or changing the party type, we should repopulate the upcoming tracks
            to reflect this change.
   
-**  end 1.3 requirement  **
+  <sebr>   FileBrowser steals the delete button from the playlist. Teach filebrowser some manners.
 
   <markey> Figure out why ScriptManager can't read from stdout.
 

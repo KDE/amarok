@@ -58,8 +58,13 @@
     </entry>
     <entry key="Party Mode" type="Bool">
         <label>Plays a party playlist</label>
-        <whatsthis>Party playlist which removes the played track from the playlist and appends a similar song.</whatsthis>
+        <whatsthis>Party playlist which removes the played track from the playlist and appends another song.</whatsthis>
         <default>false</default>
+    </entry>
+    <entry key="Party Info" type="Bool">
+        <label>Shows help</label>
+        <whatsthis>Whether to show or hide the party information dialog</whatsthis>
+        <default>true</default>
     </entry>
     <entry key="Party Type" type="String">
         <label>Adds this type of song</label>
