@@ -4,6 +4,8 @@
     begin                : Don Dez 5 2002
     copyright            : (C) 2002 by Mark Kretschmann
                             2005 Ian Monroe
+    copyright            : (C) 2005 by Gábor Lehel
+    email                : illissius@gmail.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -163,12 +165,15 @@ class Playlist : private KListView, public EngineObserver
         void queueSelected();
         void setStopAfterCurrent( bool on ) { m_stopAfterCurrent = on; }
         void updateMetaData( const MetaBundle& );
-        void setFilter( const QString &filter );
         void scoreChanged( const QString &path, int score );
         void countChanged( const QString &path );
         void addCustomColumn();
+        void setFilterSlot( const QString &filter );                       //uses a delay where applicable
+        void setFilter( const QString &filter );                           //for the entire playlist
+        void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
 
     private slots:
+        void setDelayedFilter();                                           //after the delay is over
         void slotGlowTimer();
         void slotRepeatTrackToggled( bool enabled );
         void slotEraseMarker();
@@ -204,6 +209,10 @@ class Playlist : private KListView, public EngineObserver
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State );
 
+        typedef QMap<QString, QString> QStringMap;
+        bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
+        bool isAdvancedQuery( const QString &query );
+
 // REIMPLEMENTED ------
         void contentsDropEvent( QDropEvent* );
         void contentsDragEnterEvent( QDragEnterEvent* );
@@ -229,9 +238,11 @@ class Playlist : private KListView, public EngineObserver
         QListViewItem *m_marker;       //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
-        QString                m_lastSearch; //the last search token
         QPtrList<PlaylistItem> m_prevTracks; //the previous history
         QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
+        
+        QString m_filter;
+        QTimer *m_filtertimer;
 
         QPtrList<PlaylistItem> m_itemsToChangeTagsFor;
 

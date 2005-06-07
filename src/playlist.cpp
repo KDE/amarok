@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
- * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe
+ * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -296,7 +296,9 @@ Playlist::Playlist( QWidget *parent )
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     header()->installEventFilter( this );
-
+    
+    m_filtertimer = new QTimer( this );
+    connect( m_filtertimer, SIGNAL(timeout()), this, SLOT(setDelayedFilter()) );
 }
 
 Playlist::~Playlist()
@@ -1196,6 +1198,7 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
     else
         //ensure the currentTrack is set correctly and highlight it
         restoreCurrentTrack();
+        setFilterForItem( m_filter, m_currentTrack );
 }
 
 void
@@ -1835,6 +1838,8 @@ Playlist::customEvent( QCustomEvent *e )
         if ( !isEmpty() )
             m_showHelp = false;
 
+        setFilter( m_filter );
+
         //necessary usually
         m_totalLength = 0;
         int itemCount = 0;
@@ -2223,37 +2228,246 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 {
     for( MyIt it( this, MyIt::All ); *it; ++it )
         if( mb.url() == (*it)->url() )
+        {
             (*it)->setText( mb );
+            setFilterForItem( m_filter, *it );
+        }
+}
+
+
+bool
+Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringMap &all )
+{
+    if( query.contains( "\"" ) % 2 == 1 ) query += "\""; //make an even number of "s
+
+    //something like thingy"bla"stuff -> thingy "bla" stuff
+    bool odd = false;
+    for( int pos = query.find( "\"" ); pos >= 0 && pos <= query.length(); pos = query.find( "\"", pos + 1 ) )
+    {
+        query = query.insert( odd ? ++pos : pos++, " " );
+        odd = !odd;
+    }
+    query = query.simplifyWhiteSpace();
+
+    int x; //position in string of the end of the next element
+    bool OR = false, minus = false; //whether the next element is to be OR, and/or negated
+    QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
+    QStringList tmpl; //list of elements of which at least one has to match (OR)
+    QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
+    while( !query.isEmpty() )  //seperate query into parts which all have to match
+    {
+        if( query.startsWith( " " ) )
+            query = query.mid( 1 ); //cuts off the first character
+        if( query.startsWith( "\"" ) ) //take stuff in "s literally (basically just ends up ignoring spaces)
+        {
+            query = query.mid( 1 );
+            x = query.find( "\"" );
+        }
+        else
+            x = query.find( " " );
+        if( x < 0 )
+            x = query.length();
+        s = query.left( x ); //get the element
+        query = query.mid( x + 1 ); //move on
+    
+        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
+                                  !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
+        {
+            if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
+            {
+                allof += tmpl;
+                tmpl.clear();
+            }
+            else
+                OR = false;
+            tmp = field + s;
+            if( minus )
+            {
+                tmp = "-" + tmp;
+                minus = false;
+            }
+            tmpl += tmp;
+            tmp = field = "";
+        }
+        else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
+            field = s;
+        else if( s == "OR" )
+            OR = true;
+        else if( s == "-" )
+            minus = true;
+        else
+            OR = false;
+    }
+    if( !tmpl.isEmpty() )
+        allof += tmpl;
+    
+    const uint allofcount = allof.count();
+    for( uint i = 0; i < allofcount; ++i ) //check each part for matchiness
+    {
+        uint count = allof[i].count();
+        bool b = false; //whether at least one matches
+        for( uint ii = 0; ii < count; ++ii )
+        {
+            s = allof[i][ii];
+            bool neg = s.startsWith( "-" );
+            if ( neg )
+                s = s.mid( 1 ); //cut off the -
+            x = s.find( ":" ); //where the field ends and the thing-to-match begins
+            if( x > 0 && all.contains( s.left( x ).lower() ) ) //a field was specified and it exists
+            {
+                QString f = s.left(x).lower(), q = s.mid(x + 1), v = all[f].lower(), w = q.lower();
+                //f = field, q = query, v = contents of the field, w = match against it
+                bool condition; //whether it matches, not taking negation into account
+                if (q.startsWith(">"))
+                {
+                    w = w.mid( 1 );
+                    if( f == "score" || f == "year" || f == "track" || f == "playcount" )
+                        condition = v.toInt() > w.toInt();
+                    else if( f == "length" )
+                    {
+                        int g = v.find( ":" ), h = w.find( ":" );
+                        condition = v.left( g ).toInt() > w.left( h ).toInt() ||
+                                    ( v.left( g ).toInt() == w.left( h ).toInt() &&
+                                      v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
+                    }
+                    else if( f == "bitrate" )
+                    {
+                        if( v.contains( "?" ) )
+                            condition = false;
+                        else                      //cut off " kbps"
+                            condition = v.left( v.length() - 5 ).toInt() > w.left( w.length() - 5 ).toInt();
+                    }
+                    else
+                        condition = v > w; //compare the strings
+                }
+                else if( q.startsWith( "<" ) )
+                {
+                    w = w.mid(1);
+                    if( f == "score" || f == "year" || f == "track" || f == "playcount" )
+                        condition = v.toInt() < w.toInt();
+                    else if( f == "length" )
+                    {
+                        int g = v.find( ":" ), h = w.find( ":" );
+                        condition = v.left( g ).toInt() < w.left( h ).toInt() ||
+                                    ( v.left( g ).toInt() == w.left( h ).toInt() &&
+                                      v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
+                    }
+                    else if( f == "bitrate" )
+                    {
+                        if( v.contains( "?" ) )
+                            condition = true;
+                        else
+                            condition = v.left( v.length() - 5 ).toInt() < w.left( w.length() - 5 ).toInt();
+                    }
+                    else
+                        condition = v < w;
+                }
+                else
+                    condition = v.contains( q, false );
+                if( condition == ( neg ? false : true ) )
+                {
+                    b = true;
+                    break;
+                }
+            }
+            else //check just the default fields
+            {
+                QStringMap::ConstIterator end = defaults.constEnd();
+                for( QStringMap::ConstIterator it = defaults.constBegin(); it != end; ++it )
+                {
+                    b = it.data().contains( s, false ) == ( neg ? false : true );
+                    if( ( neg && !b ) || ( !neg && b ) )
+                        break;
+                }
+                if( b )
+                    break;
+            }
+        }
+        if( !b )
+            return false;
+    }
+    return true;
+}
+
+void
+Playlist::setFilterSlot( const QString &query ) //SLOT
+{
+    m_filtertimer->stop();
+    if( isAdvancedQuery( query ) )
+    {
+        m_filter = query;
+        m_filtertimer->start( 50, true );
+    }
+    else
+        setFilter( query );
+}
+
+void
+Playlist::setDelayedFilter() //SLOT
+{
+    setFilter( m_filter );
 }
 
 void
 Playlist::setFilter( const QString &query ) //SLOT
 {
-    //TODO if we provided the lineEdit m_lastSearch would be unecessary
+    MyIt it( this, ( !isAdvancedQuery( query ) && query.lower().startsWith( m_filter.lower() ) )
+                   ? MyIt::Visible
+                   : MyIt::All );
 
-    const QString loweredQuery = query.lower();
-    const QStringList terms = QStringList::split( ' ', loweredQuery );
-    MyIt it( this, loweredQuery.startsWith( m_lastSearch ) ? MyIt::Visible : MyIt::All );
-    int y;
-
-    for( ;*it; ++it ) {
-        bool visible = true;
-
-        for( uint x = 0; visible && x < terms.count(); ++x ) {
-            for( y = 0; y < columns(); ++y )
-                if ( columnWidth( y ) && (*it)->exactText( y ).lower().contains( terms[x] ) )
-                    break;
-            visible = ( y < columns() );
-        }
-
-        (*it)->setVisible( visible );
-    }
-
-    m_lastSearch = loweredQuery;
-
-    // to me it seems sensible to do this, BUT if it seems annoying to you, remove it
+    for( ;*it; ++it )
+        setFilterForItem( query, *it );
+    
+    m_filter = query;
+    
+    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
     triggerUpdate();
+}
+
+void
+Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
+{
+    bool visible = true;
+    uint x, n = columns();
+    if( isAdvancedQuery( query ) )
+    {
+        QStringMap defaults, all;
+        for( x = 0; x < n; ++x ) {
+            if ( columnWidth( x ) ) defaults[columnText( x ).lower()] = item->exactText( x );
+            all[columnText( x ).lower()] = item->exactText( x );
+        }
+
+        visible = googleMatch( query, defaults, all );
+    }
+    else
+    {
+        const QStringList terms = QStringList::split( ' ', query.lower() );
+        uint y;
+        for( x = 0; visible && x < terms.count(); ++x )
+        {
+            for( y = 0; y < n; ++y )
+                if ( columnWidth( y ) && item->exactText( y ).lower().contains( terms[x] ) )
+                    break;
+            visible = ( y < n );
+        }
+    }
+    
+    item->setVisible( visible );
+}
+
+bool
+Playlist::isAdvancedQuery( const QString &query )
+{
+    if( query.contains( "\""  ) ||
+        query.contains( ":"   ) ||
+        query.contains( "-"   ) ||
+        query.contains( "AND" ) ||
+        query.contains( "OR"  ) )
+        
+        return true;
+        
+    return false;
 }
 
 void
@@ -2263,7 +2477,10 @@ Playlist::scoreChanged( const QString &path, int score )
     {
         PlaylistItem *item = (PlaylistItem*)*it;
         if ( item->url().path() == path )
+        {
             item->setText( PlaylistItem::Score, QString::number( score ) );
+            setFilterForItem( m_filter, item );
+        }
     }
 }
 

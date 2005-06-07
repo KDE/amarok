@@ -2,6 +2,7 @@
   begin                : Fre Nov 15 2002
   copyright            : (C) Mark Kretschmann <markey@web.de>
                        : (C) Max Howell <max.howell@methylblue.com>
+                       : (C) Gábor Lehel <illissius@gmail.com>
 ***************************************************************************/
 
 /***************************************************************************
@@ -209,7 +210,7 @@ PlaylistWindow::init()
     KAction* repeatTrackAction = amaroK::actionCollection()->action( "repeat_track" );
     connect( repeatTrackAction, SIGNAL( toggled( bool ) ), playlist, SLOT( slotRepeatTrackToggled( bool ) ) );
 
-    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilter( const QString& )) );
+    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilterSlot( const QString& )) );
 
     m_menubar = new KMenuBar( this );
     m_menubar->setShown( AmarokConfig::showMenuBar() );
