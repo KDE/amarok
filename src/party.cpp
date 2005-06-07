@@ -179,6 +179,8 @@ Party::subPlaylists() //SLOT
     //remove the items
     for( QListViewItem *item = m_selected.first(); item; item = m_selected.next() )
         delete item;
+
+    m_subButton->setEnabled( false );
 }
 
 void
