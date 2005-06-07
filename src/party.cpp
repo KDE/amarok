@@ -240,6 +240,8 @@ Party::applySettings() //SLOT
 
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::partyMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::partyMode() );
+
+    m_applyButton->setEnabled( false );
 }
 
 void
