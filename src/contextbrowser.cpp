@@ -127,9 +127,9 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
     m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( "personal", WIKI_ARTIST, true, i18n("Artist Page") );
-    m_wikiToolBar->insertButton( "cd", WIKI_ALBUM, true, i18n("Album Page") );
-    m_wikiToolBar->insertButton( "contents", WIKI_TITLE, true, i18n("Title Page") );
+    m_wikiToolBar->insertButton( "personal", WIKI_ARTIST, false, i18n("Artist Page") );
+    m_wikiToolBar->insertButton( "cd", WIKI_ALBUM, false, i18n("Album Page") );
+    m_wikiToolBar->insertButton( "contents", WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( "exec", WIKI_BROWSER, true, i18n("Open in external browser") );
 
@@ -466,6 +466,12 @@ void ContextBrowser::engineStateChanged( Engine::State state )
                 setTabEnabled( m_wikiTab, false );
                 m_dirtyWikiPage = true;
             }
+            else // current tab is wikitab, disable some buttons.
+            {
+                m_wikiToolBar->setItemEnabled( WIKI_ARTIST, false );
+                m_wikiToolBar->setItemEnabled( WIKI_ALBUM, false );
+                m_wikiToolBar->setItemEnabled( WIKI_TITLE, false );
+            }
             blockSignals( false );
             break;
         case Engine::Playing:
@@ -474,6 +480,9 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             setTabEnabled( m_currentTrackPage->view(), true );
             setTabEnabled( m_lyricsTab, true );
             setTabEnabled( m_wikiTab, true );
+            m_wikiToolBar->setItemEnabled( WIKI_ARTIST, true );
+            m_wikiToolBar->setItemEnabled( WIKI_ALBUM, true );
+            m_wikiToolBar->setItemEnabled( WIKI_TITLE, true );
             blockSignals( false );
             break;
         default:
@@ -2262,8 +2271,8 @@ void ContextBrowser::showLyrics( const QString &hash )
                 "</span>"
             "</div>"
             "<div id='lyrics_box-body' class='box-body'>"
-                + i18n( "Fetching Lyrics" ) +
-            " ...</div>"
+                "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
+            "</div>"
         "</div>"
         "</html>"
                            );
@@ -2351,7 +2360,7 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
     }
     else
     {
-        m_lyrics = i18n( "Lyrics not found." );
+        m_lyrics = "<div class='info'><p>" + i18n( "Lyrics not found." ) + "</p></div>";
     }
 
 
@@ -2442,6 +2451,9 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         blockSignals( false );
     }
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
+
+    // Disable the Open in a Brower button, because while loading it would open wikipedia main page.
+    m_wikiToolBar->setItemEnabled( WIKI_BROWSER, false );
 
     m_wikiPage->begin();
     m_HTMLSource="";
@@ -2622,6 +2634,9 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     m_wiki = QString( storedJob->data() );
+
+    // Enable the Open in a Brower button, Disabled while loading, guz it would open wikipedia main page.
+    m_wikiToolBar->setItemEnabled( WIKI_BROWSER, true );
 
     // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
     if ( m_wiki.contains( "charset=utf-8"  ) ) {
