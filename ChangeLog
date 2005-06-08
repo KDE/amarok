@@ -5,7 +5,9 @@ amaroK ChangeLog
 
 VERSION 1.3-beta2:
   FEATURES:
-    * Added advanced, Google-esque syntax to the playlist filter. Lets you do things like artist:sirenia, "pink floyd", artist:"pink floyd", or even score:>50. (When just typing words, it works as before.)
+    * Added advanced, Google-esque syntax to the playlist filter. Lets you do
+      things like artist:sirenia, "pink floyd", artist:"pink floyd", or even
+      score:>50. (When just typing words, it works as before.)
 
   CHANGES:
 
