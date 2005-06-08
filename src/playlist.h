@@ -150,6 +150,7 @@ class Playlist : private KListView, public EngineObserver
         void appendMedia( const KURL &url );
         void clear();
         void shuffle();
+        void repopulate();
         void removeSelectedItems();
         void deleteSelectedFiles();
         void removeDuplicates();

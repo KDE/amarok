@@ -126,6 +126,7 @@ Party::loadConfig( PartyEntry *config )
     m_base->m_markHistory->setChecked( config->isMarked() );
     m_base->m_appendType->setCurrentItem( config->appendType() );
 
+    // Load the listview
     QStringList items = config->items();
     m_playlists->clear();
     QListViewItem *last=0;
@@ -133,6 +134,8 @@ Party::loadConfig( PartyEntry *config )
         last = new QListViewItem( m_playlists, last, items[i], items[i+1] );
 
     applySettings();
+
+    Playlist::instance()->repopulate();
 }
 
 void

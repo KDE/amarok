@@ -1429,7 +1429,7 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
 
         Playlist::instance()->alterHistoryItems( true, true ); //enable all items
 
-        // Random mode was being enabled without notification on leaving party mode.  Remember to renable first!
+        // Random mode was being enabled without notification on leaving dynamic mode.  Remember to renable first!
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
     }

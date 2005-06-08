@@ -12,8 +12,6 @@ SHORT-TERM (URGENT):
 
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
-  <sebr>   The new party dialog breaks Loading saved parties.
-
   <sebr>   Starting parties from empty playlists, or changing the party type, we should repopulate the upcoming tracks
            to reflect this change.
   

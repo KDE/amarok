@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
- * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel
+ * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gï¿½or Lehel
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -296,7 +296,7 @@ Playlist::Playlist( QWidget *parent )
     connect( header(), SIGNAL(sizeChange( int, int, int )), SLOT(columnResizeEvent( int, int, int )) );
 
     header()->installEventFilter( this );
-    
+
     m_filtertimer = new QTimer( this );
     connect( m_filtertimer, SIGNAL(timeout()), this, SLOT(setDelayedFilter()) );
 }
@@ -845,8 +845,11 @@ Playlist::advancePartyTrack( PlaylistItem *item )
             if( AmarokConfig::partyCycleTracks() )
             {
                 PlaylistItem *first = firstChild();
-                removeItem( first ); //first visible item
-                delete first;
+                if( first )
+                {
+                    removeItem( first ); //first visible item
+                    delete first;
+                }
             }
             break;
         }
@@ -2030,6 +2033,36 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 }
 
 void
+Playlist::repopulate() //SLOT
+{
+    // Repopulate the upcoming tracks
+    MyIt it( this, MyIt::All );
+    QPtrList<QListViewItem> list;
+    uint counter = 0;
+
+    for( ; *it; ++it )
+    {
+        PlaylistItem *item = (PlaylistItem *)(*it);
+
+        if( !item->isEnabled() || item == m_currentTrack )
+            continue;
+
+        list.prepend( *it );
+        counter++;
+    }
+
+    //remove the items
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+    {
+        removeItem( (PlaylistItem*)item );
+        delete item;
+    }
+
+    //calling advancePartyTrack will remove an item too, which is undesirable
+    addSpecialTracks( counter, AmarokConfig::partyType() );
+}
+
+void
 Playlist::shuffle() //SLOT
 {
     if( isParty() )
@@ -2269,7 +2302,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
             x = query.length();
         s = query.left( x ); //get the element
         query = query.mid( x + 1 ); //move on
-    
+
         if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
                                   !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
         {
@@ -2300,7 +2333,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
     }
     if( !tmpl.isEmpty() )
         allof += tmpl;
-    
+
     const uint allofcount = allof.count();
     for( uint i = 0; i < allofcount; ++i ) //check each part for matchiness
     {
@@ -2417,9 +2450,9 @@ Playlist::setFilter( const QString &query ) //SLOT
 
     for( ;*it; ++it )
         setFilterForItem( query, *it );
-    
+
     m_filter = query;
-    
+
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
     triggerUpdate();
@@ -2428,6 +2461,9 @@ Playlist::setFilter( const QString &query ) //SLOT
 void
 Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
 {
+    if( query.isEmpty() )
+        return;
+
     bool visible = true;
     uint x, n = columns();
     if( isAdvancedQuery( query ) )
@@ -2452,7 +2488,7 @@ Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
             visible = ( y < n );
         }
     }
-    
+
     item->setVisible( visible );
 }
 
@@ -2464,9 +2500,9 @@ Playlist::isAdvancedQuery( const QString &query )
         query.contains( "-"   ) ||
         query.contains( "AND" ) ||
         query.contains( "OR"  ) )
-        
+
         return true;
-        
+
     return false;
 }
 
@@ -2620,12 +2656,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
     {
         KPopupMenu* menu;
-        if( (*keyIt) == "root") 
+        if( (*keyIt) == "root")
             menu = &popup;
         else
         {
-            menu = new KPopupMenu(); 
-            popup.insertItem( *keyIt, menu); 
+            menu = new KPopupMenu();
+            popup.insertItem( *keyIt, menu);
         }
         foreach(m_customSubmenuItem[*keyIt])
         {
