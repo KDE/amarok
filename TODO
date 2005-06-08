@@ -6,6 +6,11 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <illissius> "Copy Meta-String" (in the playlist item context menu) is completely incomprehensible to the
+              average person. String is something you sew with (or knit? I lack expertise in the area).
+              Physicists will think we are referring to superstrings, which the universe is supposedly made
+              out of. "Copy Track Information to Clipboard", maybe? (Something shorter would be better.)
+
   <sebr>   Save and restore custom folders in the playlist browser. no point in creating them if they are thrown away.
 
   <sebr>   Reduce party config height.
@@ -69,6 +74,17 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+  <illissius> Port Google-syntax to other places you can search in (most notably collection browser, possibly
+              also file browser and cover manager. Anywhere else?)
+
+  <illissius> Make "stop playing after track" work also on queued items. Maybe add a little 'stop' icon next
+              to it as well, as with the play, pause and repeat track icons?
+
+  <illissius> Option to "fill in tags from filename" in the meta-information dialog. Perhaps steal some (more)
+              code from JuK.
+
+  <illissius> Make the systray tooltip show the elapsed / length updating in realtime, a la Rhythmbox.
+
   <sebr>   Use Metabar's box retraction animation to the context browser. More iCandy. Any Javascript experts around?
 
   <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
