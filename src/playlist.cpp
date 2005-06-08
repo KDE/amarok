@@ -2461,9 +2461,6 @@ Playlist::setFilter( const QString &query ) //SLOT
 void
 Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
 {
-    if( query.isEmpty() )
-        return;
-
     bool visible = true;
     uint x, n = columns();
     if( isAdvancedQuery( query ) )
