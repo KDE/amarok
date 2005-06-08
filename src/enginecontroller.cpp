@@ -438,6 +438,10 @@ int EngineController::setVolume( int percent ) //SLOT
         volumeChangedNotify( percent );
         return percent;
     }
+    else // Still notify
+    {
+	volumeChangedNotify( percent );
+    }
 
     return m_engine->volume();
 }
