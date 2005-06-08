@@ -14,6 +14,7 @@ VERSION 1.3-beta2:
   BUGFIXES:
     * Crash after clicking on remove playlists in dynamic mode.
 
+
 VERSION 1.3-beta1:
   FEATURES:
     * Add Media dialog allows for multiple file selection. (BR 105903)
