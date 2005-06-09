@@ -10,6 +10,7 @@ VERSION 1.3-beta2:
       score:>50. (When just typing words, it works as before.)
 
   CHANGES:
+    * Akode-engine was disabled (too buggy/incomplete).
     * Repopulate upcoming tracks when loading a saved dynamic mode.
 
   BUGFIXES:
