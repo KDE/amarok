@@ -196,8 +196,21 @@ PlaylistWindow::init()
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( filter_label, i18n( "Enter space-separated terms to filter playlist" ) );
-        QToolTip::add( m_lineEdit, i18n( "Enter space-separated terms to filter playlist" ) );
+        QString filtertip = i18n( "Enter space-separated terms to filter the playlist.\n"
+                                  "For example: one two three, will search for anything that contains one, two, and three.\n\n"
+                                  "You can put OR between terms to search for items that match either.\n"
+                                  "Like this: one OR two OR three\n\n"
+                                  "Use quotes to match terms with spaces in them.\n"
+                                  "For example: \"Mike Oldfield\"\n\n"
+                                  "Use field:term to search in a specific field (even a hidden one).\n"
+                                  "Like: title:amarok\n\n"
+                                  "Put a minus sign (-) before things you don't want: -thing\n\n"
+                                  "When specifying a field, you can search for items less or greater than a term.\n"
+                                  "For example: score:>50\n\n"
+                                  "Combine all that: \"mike oldfield\" OR score:>50 -comment:bad" );
+                                  
+        QToolTip::add( filter_label, filtertip );
+        QToolTip::add( m_lineEdit, filtertip );
     } //</Search LineEdit>
 
 
