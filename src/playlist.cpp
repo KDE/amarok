@@ -806,7 +806,7 @@ Playlist::playNextTrack( bool forceNext )
         else
         {
             item = *MyIt( this ); //ie. first visible item
-            while( !item->isEnabled() )
+            while( item && !item->isEnabled() )
                 item = item->nextSibling();
         }
 
@@ -972,10 +972,10 @@ Playlist::activate( QListViewItem *item )
         {
             MyIt it( this, MyIt::Visible );
             bool hasHistory = false;
-            if ( !(*it)->isEnabled() )
+            if ( *it && !(*it)->isEnabled() )
             {
                 hasHistory = true;
-                for(  ; !(*it)->isEnabled() ; ++it );
+                for(  ; *it && !(*it)->isEnabled() ; ++it );
             }
 
             hasHistory ?
