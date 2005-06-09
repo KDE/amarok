@@ -1419,6 +1419,7 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         // uncheck before disabling
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
+        amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( false );
     }
     else
     {
@@ -1429,9 +1430,10 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
 
         Playlist::instance()->alterHistoryItems( true, true ); //enable all items
 
-        // Random mode was being enabled without notification on leaving dynamic mode.  Remember to renable first!
+        // Random mode was being enabled without notification on leaving dynamic mode.  Remember to re-enable first!
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
+        amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
     }
 }
 
