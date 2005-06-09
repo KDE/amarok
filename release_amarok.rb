@@ -70,7 +70,7 @@ if do_l10n == "yes"
     # docs
     for lang in i18nlangs
         lang.chomp!
-       `rm -Rf ../doc/#{lang}`
+        `rm -Rf ../doc/#{lang}`
         `rm -rf amarok`
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
         `svn co -q https://svn.kde.org/home/kde/trunk/#{docdirname} > /dev/null 2>&1`
@@ -85,7 +85,7 @@ if do_l10n == "yes"
         makefile = File.new( "../doc/#{lang}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "KDE_LANG = #{lang}\n"
         makefile << "KDE_DOCS = #{name}\n"
-        makefile.close
+        makefile.close()
 
         puts( "done.\n" )
     end
@@ -99,21 +99,20 @@ if do_l10n == "yes"
     for lang in i18nlangs
         lang.chomp!
         pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
-        `rm -f amarok.po`
-        `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} | tee amarok.po`
-        next if FileTest.size( "amarok.po" ) == 0
+        `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} 2> /dev/null | tee l10n/amarok.po`
+        next if FileTest.size( "l10n/amarok.po" ) == 0
 
         dest = "po/#{lang}"
         Dir.mkdir( dest )
-        print "Copying #{lang}'s #{name}.po over..  "
-        `mv amarok.po #{dest}`
+        print "Copying #{lang}'s #{name}.po over ..  "
+        `mv l10n/amarok.po #{dest}`
         puts( "done.\n" )
 
         makefile = File.new( "#{dest}/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "KDE_LANG = #{lang}\n"
         makefile << "SUBDIRS  = $(AUTODIRS)\n"
         makefile << "POFILES  = AUTO\n"
-        makefile.close
+        makefile.close()
 
         $subdirs = true
     end
@@ -121,7 +120,7 @@ if do_l10n == "yes"
     if $subdirs
         makefile = File.new( "po/Makefile.am", File::CREAT | File::RDWR | File::TRUNC )
         makefile << "SUBDIRS = $(AUTODIRS)\n"
-        makefile.close
+        makefile.close()
     else
         `rm -Rf po`
     end
@@ -153,7 +152,7 @@ file = File.new( "amarok.h", File::RDWR )
 str = file.read()
 file.rewind()
 str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{version}\"" )
-file.write( str )
+file << str
 file.close()
 
 
