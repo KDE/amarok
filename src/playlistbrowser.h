@@ -12,10 +12,11 @@
 #include <kaction.h>
 #include <klistview.h>
 #include <kurl.h>
-
+#include <qdom.h>
 #include <qptrlist.h>
 #include <qvbox.h>
 
+#define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 class KToolBar;
 class QCustomEvent;
 class QColorGroup;
@@ -88,19 +89,19 @@ class PlaylistBrowser : public QVBox
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
     private:
-        void loadStreams();
+        PlaylistCategory* loadStreams();
         void loadCoolStreams();
         void saveStreams();
 
-        void loadSmartPlaylists();
+        PlaylistCategory* loadSmartPlaylists();
         void loadDefaultSmartPlaylists();
         void editSmartPlaylist( SmartPlaylist* );
         void saveSmartPlaylists();
 
-        void loadParties();
+        PlaylistCategory* loadParties();
         void saveParties();
 
-        void loadPlaylists();
+        PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
@@ -112,17 +113,10 @@ class PlaylistBrowser : public QVBox
 
         static PlaylistBrowser *s_instance;
 
-        QListViewItem       *m_lastParty;
-        QListViewItem       *m_lastPlaylist;
-        QListViewItem       *m_lastStream;
-        QListViewItem       *m_lastSmart;
         PlaylistCategory    *m_playlistCategory;
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
         PlaylistCategory    *m_dynamicCategory;
-
-        QDomDocument m_smartXml;
-
 
         QSplitter *m_splitter;
         PlaylistBrowserView *m_listview;
@@ -255,5 +249,6 @@ fileDirPath( const QString &filePath )
 {
     return filePath.left( filePath.findRev( '/' )+1 );
 }
+
 
 #endif

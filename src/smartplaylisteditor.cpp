@@ -239,7 +239,8 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
     m_orderTypeCombo->updateGeometry();
 }
 
-QDomElement SmartPlaylistEditor::result( QDomDocument &doc ) {
+QDomElement SmartPlaylistEditor::result() {
+    QDomDocument doc;
     QDomNode node = doc.namedItem( "smartplaylists" );
     QDomElement nodeE;
     nodeE = node.toElement();

@@ -39,10 +39,26 @@ class ItemSaver : public KDialogBase
         KLineEdit *m_nameLineEdit;
 };
 
-class PartyEntry : public KListViewItem
+
+/* A base class to be able to use polymorphism and avoid tons of casts */
+class PlaylistBrowserEntry : public KListViewItem
+{
+    public:
+        PlaylistBrowserEntry(QListViewItem *parent, QListViewItem *after)
+            :KListViewItem(parent, after) {};
+        PlaylistBrowserEntry(QListView *parent, QListViewItem *after)
+            :KListViewItem(parent, after) {};
+        PlaylistBrowserEntry(QListViewItem *parent, QListViewItem *after, const QString &name )
+            :KListViewItem(parent, after, name) {};
+
+        virtual QDomElement xml() { return QDomElement(); };
+};
+
+class PartyEntry : public PlaylistBrowserEntry
 {
     public:
         PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
+        PartyEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
         ~PartyEntry() { };
 
         enum  Mode { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
@@ -66,6 +82,8 @@ class PartyEntry : public KListViewItem
         int   appendCount() { return m_appendCount; }
         int   appendType() { return m_appendType; }
 
+        QDomElement xml();
+
         int   rtti() const { return RTTI; }
         static const int RTTI = 1005;
 
@@ -81,11 +99,14 @@ class PartyEntry : public KListViewItem
         int     m_appendType;
 };
 
-class PlaylistCategory : public KListViewItem
+class PlaylistCategory : public PlaylistBrowserEntry
 {
     public:
         PlaylistCategory( QListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
         PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
+        PlaylistCategory( QListView *parent, QListViewItem *after, QDomElement xmlDefinition, bool isFolder=false);
+        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, QDomElement xmlDefinition );
+
         ~PlaylistCategory() { };
 
         const QString &title() const { return m_title; }
@@ -93,16 +114,21 @@ class PlaylistCategory : public KListViewItem
 
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
+        QDomElement xml();
+
         int   rtti() const { return RTTI; }
         static const int RTTI = 1000;    //category item
 
     private:
+
+        void setXml( QDomElement xml );
+
         QString m_title;
         bool    m_folder;
 };
 
 
-class PlaylistEntry :  public QObject, public KListViewItem
+class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
 {
         Q_OBJECT
 
@@ -112,6 +138,7 @@ class PlaylistEntry :  public QObject, public KListViewItem
 
     public:
         PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
+        PlaylistEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
         ~PlaylistEntry();
         void load();
         void restore();
@@ -137,6 +164,8 @@ class PlaylistEntry :  public QObject, public KListViewItem
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
+        QDomElement xml();
+
         //rtti is used to distinguish different kinds of list view items
         int   rtti() const { return RTTI; }
         static const int RTTI = 1001;    //playlist item
@@ -161,7 +190,7 @@ class PlaylistEntry :  public QObject, public KListViewItem
         PlaylistTrackItem   *m_lastTrack;
 };
 
-class PlaylistTrackItem : public KListViewItem
+class PlaylistTrackItem : public PlaylistBrowserEntry
 {
     friend class TrackItemInfo;
 
@@ -178,10 +207,11 @@ class PlaylistTrackItem : public KListViewItem
 };
 
 
-class StreamEntry : public KListViewItem
+class StreamEntry : public PlaylistBrowserEntry
 {
     public:
         StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
+        StreamEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
         ~StreamEntry() { };
 
         void  setURL  ( KURL u )    { m_url = u; }
@@ -192,6 +222,8 @@ class StreamEntry : public KListViewItem
 
         const KURL &url()      { return m_url; }
         const QString &title() { return m_title; }
+
+        QDomElement xml();
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1003;    //stream item
@@ -217,14 +249,13 @@ class StreamEditor : public KDialogBase
 
 };
 
-class SmartPlaylist : public KListViewItem
+class SmartPlaylist : public PlaylistBrowserEntry
 {
     public:
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
                                                         const QString &urls, const QString &tags );
-        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &tags,
-                                                        QDomElement xmlDefinition );
+        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement xmlDefinition );
 
         bool isEditable() const { return !m_xml.isNull(); }
 

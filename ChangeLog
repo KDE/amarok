@@ -14,7 +14,9 @@ VERSION 1.3-beta2:
     * Repopulate upcoming tracks when loading a saved dynamic mode.
 
   BUGFIXES:
+    * Sub-Folders in Playlist Browser are correctly saved and restored.
     * Crash after clicking on remove playlists in dynamic mode.
+    * Crash on Context Menu in dynamic mode.
 
 
 VERSION 1.3-beta1:

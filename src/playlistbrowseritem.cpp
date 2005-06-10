@@ -47,7 +47,7 @@ class PlaylistReader : public ThreadWeaver::DependentJob
 ////////////////////////////////////////////////////////////////////////////
 
 PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, const QString &t, bool isFolder )
-    : KListViewItem( parent, after )
+    : PlaylistBrowserEntry( parent, after )
     , m_title( t )
     , m_folder( isFolder )
 {
@@ -62,7 +62,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 
 
 PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, bool isFolder )
-    : KListViewItem( parent, after )
+    : PlaylistBrowserEntry( parent, after )
     , m_title( t )
     , m_folder( isFolder )
 {
@@ -75,6 +75,75 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     setText( 0, t );
 }
 
+
+PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, QDomElement xmlDefinition, bool isFolder )
+    : PlaylistBrowserEntry( parent, after )
+    , m_folder( isFolder )
+{
+    setXml( xmlDefinition );
+    setDragEnabled( false );
+    setRenameEnabled( 0, isFolder );
+    setExpandable( true );
+
+    setPixmap( 0, SmallIcon("folder_red") );
+}
+
+
+PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, QDomElement xmlDefinition )
+    : PlaylistBrowserEntry( parent, after )
+    , m_folder( true )
+{
+    setXml( xmlDefinition );
+    setDragEnabled( false );
+    setRenameEnabled( 0, true );
+    setExpandable( true );
+
+    setPixmap( 0, SmallIcon("folder") );
+}
+
+
+void PlaylistCategory::setXml( QDomElement xml )
+{
+    QString tname = xml.tagName();
+    if ( tname == "category" ) {
+        QListViewItem *last = 0;
+        for( QDomNode n = xml.firstChild() ; !n.isNull(); n = n.nextSibling() )
+        {
+            QDomElement e = n.toElement();
+            if ( e.tagName() == "category" ) {
+                last = new PlaylistCategory( this, last, e);
+            }
+            else if ( e.tagName() == "stream" ) {
+                last = new StreamEntry( this, last, e );
+            }
+            else if ( e.tagName() == "smartplaylist" ) {
+                last = new SmartPlaylist( this, last, e );
+            }
+            else if ( e.tagName() == "playlist" ) {
+                last = new PlaylistEntry( this, last, e );
+            }
+            else if ( e.tagName() == "party" ) {
+                last = new PartyEntry( this, last, e );
+            }
+        }
+        setText( 0, xml.attribute("name") );
+    }
+}
+
+
+QDomElement PlaylistCategory::xml()
+{
+        QDomDocument d;
+        QDomElement i = d.createElement("category");
+        i.setAttribute( "name", text(0) );
+        for( PlaylistBrowserEntry *it = (PlaylistBrowserEntry*)firstChild(); it; it = (PlaylistBrowserEntry*)it->nextSibling() ) {
+          //FIXME: this is a very ugly and bad hack not to save the default smart and stream lists.
+            if ( it->text(0) == i18n("Cool-Streams") || it->text(0) == i18n("Collection") )
+                continue;
+            i.appendChild( it->xml() );
+        }
+        return i;
+}
 
 void
 PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
@@ -97,7 +166,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 ////////////////////////////////////////////////////////////////////////////
 
 PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &url, int tracks, int length )
-    : KListViewItem( parent, after )
+    : PlaylistBrowserEntry( parent, after )
     , m_url( url )
     , m_length( length )
     , m_trackCount( tracks )
@@ -117,6 +186,35 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
 
     setText(0, fileBaseName( url.path() ) );
     setPixmap( 0, SmallIcon("player_playlist_2") );
+
+    if( !m_trackCount )
+        load();   //load the playlist file
+}
+
+
+PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+    : PlaylistBrowserEntry( parent, after )
+    , m_loading( false )
+    , m_loaded( false )
+    , m_modified( false )
+    , m_savePix( 0 )
+    , m_loadingPix( 0 )
+    , m_lastTrack( 0 )
+{
+    m_url.setPath( xmlDefinition.attribute( "file" ) );
+    m_trackCount = xmlDefinition.namedItem( "tracks" ).toElement().text().toInt();
+    m_length = xmlDefinition.namedItem( "length" ).toElement().text().toInt();
+
+    m_trackList.setAutoDelete( true );
+    tmp_droppedTracks.setAutoDelete( false );
+
+    setDragEnabled( true );
+    setRenameEnabled( 0, false );
+    setExpandable(true);
+
+    setText(0, fileBaseName( m_url.path() ) );
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+
 
     if( !m_trackCount )
         load();   //load the playlist file
@@ -449,6 +547,32 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     p->drawPixmap( 0, 0, buffer );
 }
 
+
+QDomElement PlaylistEntry::xml() {
+        QDomDocument doc;
+        QDomElement i = doc.createElement("playlist");
+        i.setAttribute( "file", url().path() );
+
+        QDomElement attr = doc.createElement( "tracks" );
+        QDomText t = doc.createTextNode( QString::number( trackCount() ) );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "length" );
+        t = doc.createTextNode( QString::number( length() ) );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        QFileInfo fi( url().path() );
+        attr = doc.createElement( "modified" );
+        t = doc.createTextNode( QString::number( fi.lastModified().toTime_t() ) );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        return i;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////
 ///    CLASS ItemSaver
 ////////////////////////////////////////////////////////////////////////////////
@@ -470,7 +594,7 @@ ItemSaver::ItemSaver(  QString title, QWidget *parent, const char *name )
 ////////////////////////////////////////////////////////////////////////////////
 
 PlaylistTrackItem::PlaylistTrackItem( QListViewItem *parent, QListViewItem *after, TrackItemInfo *info )
-    : KListViewItem( parent, after )
+    : PlaylistBrowserEntry( parent, after )
     , m_trackInfo( info )
 {
     setDragEnabled( true );
@@ -505,7 +629,7 @@ TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
 ////////////////////////////////////////////////////////////////////////////
 
 StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
-    : KListViewItem( parent, after )
+    : PlaylistBrowserEntry( parent, after )
     , m_title( t )
     , m_url( u )
 {
@@ -520,6 +644,38 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KUR
 
     setText( 0, m_title );
 }
+
+StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+    : PlaylistBrowserEntry( parent, after )
+{
+    setDragEnabled( true );
+    setRenameEnabled( 0, true );
+    setExpandable( false );
+
+    m_title = xmlDefinition.attribute( "name" );
+    QDomElement e = xmlDefinition.namedItem( "url" ).toElement();
+    m_url  = KURL::KURL( e.text() );
+
+
+    if( m_title.isEmpty() )
+        m_title = fileBaseName( m_url.prettyURL() );
+
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+
+    setText( 0, m_title );
+}
+
+
+QDomElement StreamEntry::xml() {
+        QDomDocument doc;
+        QDomElement i = doc.createElement("stream");
+        i.setAttribute( "name", m_title );
+        QDomElement url = doc.createElement( "url" );
+        url.appendChild( doc.createTextNode( escapeHTML( m_url.prettyURL() ) ));
+        i.appendChild( url );
+        return i;
+}
+
 
 void StreamEntry::setup()
 {
@@ -666,7 +822,7 @@ StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const c
 ///    CLASS PartyEntry
 ////////////////////////////////////////////////////////////////////////////
 PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
-        : KListViewItem( parent, after, name )
+        : PlaylistBrowserEntry( parent, after, name )
         , m_title( name )
         , m_items( NULL )
         , m_cycled( true )
@@ -676,10 +832,92 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
         , m_appendCount( 1 )
         , m_appendType( RANDOM )
 {
-    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setPixmap( 0, SmallIcon("party") );
     setDragEnabled( false );
 
     setText( 0, name );
+}
+
+PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+        : PlaylistBrowserEntry( parent, after )
+{
+    setPixmap( 0, SmallIcon( "party" ) );
+    setDragEnabled( false );
+
+    m_title  = xmlDefinition.attribute( "name" );
+
+    QDomElement e;
+
+    setCycled( xmlDefinition.namedItem( "cycleTracks" ).toElement().text() == "true" );
+    setMarked( xmlDefinition.namedItem( "markHistory" ).toElement().text() == "true" );
+
+    setUpcoming( xmlDefinition.namedItem( "upcoming" ).toElement().text().toInt() );
+    setPrevious( xmlDefinition.namedItem( "previous" ).toElement().text().toInt() );
+
+    setAppendType( xmlDefinition.namedItem( "appendType" ).toElement().text().toInt() );
+    setAppendCount( xmlDefinition.namedItem( "appendCount" ).toElement().text().toInt() );
+
+    if ( m_appendType == 2 ) {
+        setItems( QStringList::split( ',', xmlDefinition.namedItem( "items" ).toElement().text() ) );
+    }
+    setText( 0, m_title );
+}
+
+
+QDomElement PartyEntry::xml() {
+    QDomDocument doc;
+    QDomElement i;
+
+    i = doc.createElement("party");
+    i.setAttribute( "name", text(0) );
+
+    QDomElement attr = doc.createElement( "cycleTracks" );
+    QDomText t = doc.createTextNode( isCycled() ? "true" : "false" );
+    attr.appendChild( t );
+    i.appendChild( attr );
+
+    attr = doc.createElement( "markHistory" );
+    t = doc.createTextNode( isMarked() ? "true" : "false" );
+    attr.appendChild( t );
+    i.appendChild( attr );
+
+    attr = doc.createElement( "upcoming" );
+    t = doc.createTextNode( QString::number( upcoming() ) );
+    attr.appendChild( t );
+    i.appendChild( attr );
+
+    attr = doc.createElement( "previous" );
+    t = doc.createTextNode( QString::number( previous() ) );
+    attr.appendChild( t );
+    i.appendChild( attr );
+
+    attr = doc.createElement( "appendCount" );
+    t = doc.createTextNode( QString::number( appendCount() ) );
+    attr.appendChild( t );
+    i.appendChild( attr );
+
+    attr = doc.createElement( "appendType" );
+    t = doc.createTextNode( QString::number( appendType() ) );
+    attr.appendChild( t );
+    i.appendChild( attr );
+
+    QString list;
+    if( appendType() == 2 ) {
+        QStringList itemsl = items();
+        for( uint c = 0; c < itemsl.count(); c = c + 2 ) {
+            list.append( itemsl[c] );
+            list.append( ',' );
+            list.append( itemsl[c+1] );
+            if ( c < itemsl.count()-1 )
+                list.append( ',' );
+        }
+    }
+
+    attr = doc.createElement( "items" );
+    t = doc.createTextNode( list );
+    attr.appendChild( t );
+    i.appendChild( attr );
+    return i;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -687,7 +925,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
 ////////////////////////////////////////////////////////////////////////////
 
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query )
-        : KListViewItem( parent, after, name )
+        : PlaylistBrowserEntry( parent, after, name )
         , sqlForTags( query )
         , m_title( name )
 {
@@ -698,7 +936,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 }
 
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
-        : KListViewItem( parent, after, name )
+        : PlaylistBrowserEntry( parent, after, name )
         , sqlForTags( tags )
         , m_title( name )
 {
@@ -709,25 +947,25 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 }
 
 
-SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &tags,
-                                                                            QDomElement xmlDefinition )
-        : KListViewItem( parent, after, name )
-        , sqlForTags( tags )
-        , m_title( name )
+SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
+        : PlaylistBrowserEntry( parent, after )
         , m_after ( after )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
-    setDragEnabled( tags.isEmpty() );
-    setText( 0, name );
     setXml( xmlDefinition );
+    setDragEnabled( !sqlForTags.isEmpty() );
 }
 
 void SmartPlaylist::setXml( QDomElement xml ) {
     m_xml = xml;
+    m_title = xml.attribute( "name" );
+    setText( 0, m_title );
+    sqlForTags = xml.namedItem( "sqlquery" ).toElement().text();
     static QStringList genres;
     static QStringList artists;
     static QStringList albums;
     static QStringList years;
+
 
     debug() << "Removing old children from smartplaylist..." << endl;
     //Delete all children before

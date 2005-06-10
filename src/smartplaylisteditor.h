@@ -31,7 +31,7 @@ Q_OBJECT
         SmartPlaylistEditor( QString name, QWidget *parent, const char *name=0 );
         SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name=0 );
 
-        QDomElement result( QDomDocument &doc );
+        QDomElement result();
 
         QString name() const { return m_nameLineEdit->text(); }
         QString query() const { return m_query; }

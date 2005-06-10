@@ -43,13 +43,10 @@
 
 #include <stdio.h>             //rename() in renamePlaylist()
 
-#define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
-        , m_lastPlaylist( 0 )
 {
     s_instance = this;
 
@@ -166,15 +163,21 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
-    m_playlistCategory = new PlaylistCategory( m_listview, 0, i18n( "Playlists" ) );
-    m_streamsCategory  = new PlaylistCategory( m_listview, m_playlistCategory, i18n( "Radio Streams" ) );
-    m_smartCategory    = new PlaylistCategory( m_listview, m_streamsCategory,  i18n( "Smart Playlists" ) );
-    m_dynamicCategory  = new PlaylistCategory( m_listview, m_smartCategory,    i18n( "Dynamic Playlists" ) );
+    m_playlistCategory = loadPlaylists();
+    m_streamsCategory  = loadStreams();
+    loadCoolStreams();
 
-    loadPlaylists();
-    loadStreams();
-    loadSmartPlaylists();
-    loadParties();
+    if( !CollectionDB::instance()->isEmpty() ) {
+        m_smartCategory = loadSmartPlaylists();
+        loadDefaultSmartPlaylists();
+        m_smartCategory->setOpen( true );
+    }
+
+    m_dynamicCategory  = loadParties();
+
+    m_playlistCategory->setOpen( true );
+    m_streamsCategory->setOpen( true );
+    m_dynamicCategory->setOpen( true );
 }
 
 
@@ -198,6 +201,7 @@ PlaylistBrowser::~PlaylistBrowser()
     config->writeEntry( "Splitter", str );
 }
 
+
 /**
  *************************************************************************
  *  STREAMS
@@ -209,44 +213,36 @@ QString PlaylistBrowser::streamBrowserCache()
     return amaroK::saveLocation() + "streambrowser_save.xml";
 }
 
-void PlaylistBrowser::loadStreams()
+
+PlaylistCategory* PlaylistBrowser::loadStreams()
 {
     QFile file( streamBrowserCache() );
-
-    if( !file.open( IO_ReadOnly ) )
-    {
-        loadCoolStreams();
-        m_streamsCategory->setOpen( true );
-        return;
-    }
-
-    m_lastStream = 0;
-    loadCoolStreams();
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
+    QDomElement e;
 
-    if( !d.setContent( stream.read() ) )
-        return;
-
-    const QString STREAM( "stream" );
-
-    QDomNode n = d.namedItem( "streambrowser" ).namedItem("stream");
-
-    for( ; !n.isNull(); n = n.nextSibling() )
-    {
-        if( n.nodeName() != STREAM ) continue;
-
-        QDomElement e = n.toElement();
-        QString name  = e.attribute( "name" );
-        e = n.namedItem( "url" ).toElement();
-        KURL url  = KURL::KURL( e.text() );
-
-        m_lastStream = new StreamEntry( m_streamsCategory, m_lastStream, url, name );
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
+        return new PlaylistCategory(m_listview, 0 , "Radio Streams" );
     }
-    m_streamsCategory->setOpen( true );
+    else {
+        e = d.namedItem( "category" ).toElement();
+        if ( e.attribute("formatversion") =="1.1" ) {
+            return new PlaylistCategory(m_listview, 0 , e );
+        }
+        else { // Old unversioned format
+            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Radio Streams" );
+            QListViewItem *last = 0;
+            QDomNode n = d.namedItem( "streambrowser" ).namedItem("stream");
+            for( ; !n.isNull();  n = n.nextSibling() ) {
+                last = new StreamEntry( p, last, n.toElement() );
+            }
+            return p;
+        }
+    }
 }
 
 void PlaylistBrowser::loadCoolStreams()
@@ -279,8 +275,6 @@ void PlaylistBrowser::loadCoolStreams()
         KURL url  = KURL::KURL( e.text() );
         last = new StreamEntry( folder, last, url, name );
     }
-
-    m_lastStream = folder;
 }
 
 
@@ -292,7 +286,7 @@ void PlaylistBrowser::addStream( QListViewItem *parent )
 
     if( dialog.exec() == QDialog::Accepted )
     {
-        m_lastStream = new StreamEntry( parent, m_lastStream, dialog.url(), dialog.name() );
+        new StreamEntry( parent, 0, dialog.url(), dialog.name() );
         parent->setOpen( true );
     }
 
@@ -319,42 +313,11 @@ void PlaylistBrowser::saveStreams()
     if( !file.open( IO_WriteOnly ) ) return;
 
     QDomDocument doc;
-    QDomElement streamB = doc.createElement( "streambrowser" );
+    QDomElement streamB = m_streamsCategory->xml();
     streamB.setAttribute( "product", "amaroK" );
     streamB.setAttribute( "version", APP_VERSION );
+    streamB.setAttribute( "formatversion", "1.1" );
     doc.appendChild( streamB );
-
-    PlaylistCategory *currentCat=0;
-
-    #define m_streamsCategory static_cast<QListViewItem *>(m_streamsCategory)
-
-    QListViewItem *it = m_streamsCategory->firstChild();
-
-    for( int count = 0; count < m_streamsCategory->childCount(); count++ )
-    {
-        QDomElement i;
-
-        if( !isCategory( it ) )
-            currentCat = static_cast<PlaylistCategory*>(it->parent() );
-
-        if( isStream( it ) )
-        {
-            i = doc.createElement("stream");
-            StreamEntry *item = (StreamEntry*)it;
-            i.setAttribute( "name", item->title() );
-
-            QDomElement attr = doc.createElement( "url" );
-            QDomText t = doc.createTextNode( escapeHTML( item->url().prettyURL() ) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-        }
-
-        streamB.appendChild( i );
-
-        it = it->nextSibling();
-    }
-
-    #undef m_streamsCategory
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -382,51 +345,40 @@ void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
 
     SmartPlaylistEditor dialog( i18n("Untitled"), this );
     if( dialog.exec() == QDialog::Accepted ) {
-        /*SmartPlaylist *item = */ new SmartPlaylist( parent, m_lastSmart, dialog.name(), dialog.query(), dialog.result( m_smartXml ) );
+        new SmartPlaylist( parent, 0, dialog.result() );
         parent->setOpen( true );
     }
 }
 
-void PlaylistBrowser::loadSmartPlaylists()
+PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
 {
-    if( CollectionDB::instance()->isEmpty() )
-        return;
+
     QFile file( smartplaylistBrowserCache() );
-
-    if( !file.open( IO_ReadOnly ) )
-    {
-        loadDefaultSmartPlaylists();
-        m_smartCategory->setOpen( true );
-        return;
-    }
-    loadDefaultSmartPlaylists();
-
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
-    if ( m_smartXml.setContent( stream.read() ) && m_smartXml.namedItem( "smartplaylists" ).toElement().attribute("formatversion") == "1.0" ) {
-        QDomNode n =  m_smartXml.namedItem( "smartplaylists" ).firstChild();
+    QDomDocument d;
+    QDomElement e;
 
-        for( ; !n.isNull(); n = n.nextSibling() )
-        {
-            QDomElement e = n.toElement();
-            QDomElement query = e.elementsByTagName( "sqlquery" ).item(0).toElement();
-            m_lastSmart = new SmartPlaylist( m_smartCategory, m_lastSmart, e.attribute( "name" ), query.text(), e );
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
+        return new PlaylistCategory(m_listview, 0 , "Smart Playlists" );
+    }
+   else {
+        e = d.namedItem( "category" ).toElement();
+        if ( e.attribute("formatversion") =="1.1" ) {
+            return new PlaylistCategory(m_listview, 0 , e );
         }
-
+        else { // Old unversioned format
+            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Smart Playlists" );
+            QListViewItem *last = 0;
+            QDomNode n = d.namedItem( "smartplaylists" ).namedItem("smartplaylist");
+            for( ; !n.isNull();  n = n.nextSibling() ) {
+                last = new SmartPlaylist( p, last, n.toElement() );
+            }
+            return p;
+        }
     }
-    else {
-        //This is the first version of the format, but in the future we should always add backward compatibility reading
-        //FIXME: Load a set of defaults here?
-        debug() << "Invalid XML" << endl;
-        QDomElement smartB = m_smartXml.createElement( "smartplaylists" );
-        m_smartXml.appendChild( smartB );
-        smartB.setAttribute( "product", "amaroK" );
-        smartB.setAttribute( "version", APP_VERSION );
-        smartB.setAttribute( "formatversion", "1.0" );
-    }
-
-    m_smartCategory->setOpen( true );
 }
 
 void PlaylistBrowser::loadDefaultSmartPlaylists()
@@ -435,7 +387,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     const QStringList artists = CollectionDB::instance()->artistList();
     SmartPlaylist *item;
     QueryBuilder qb;
-    m_lastSmart = 0;
+    QListViewItem *last = 0;
 
     PlaylistCategory *folder = new PlaylistCategory( m_smartCategory, 0, i18n("Collection") );
 
@@ -445,7 +397,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-    item = new SmartPlaylist( folder, m_lastSmart, i18n( "All Collection" ), qb.query() );
+    item = new SmartPlaylist( folder, 0, i18n( "All Collection" ), qb.query() );
     item->setPixmap( 0, SmallIcon("kfm") );
 
     /********** Favorite Tracks **************/
@@ -454,13 +406,14 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( folder, item, i18n( "Favorite Tracks" ), qb.query() );
+    last = 0;
     foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
         qb.setLimit( 0, 15 );
 
-        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qb.query() );
     }
 
     /********** Most Played **************/
@@ -469,14 +422,14 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( folder, item, i18n( "Most Played" ), qb.query() );
-    m_lastSmart = 0;
+    last = 0;
     foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 15 );
 
-        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qb.query() );
     }
 
     /********** Newest Tracks **************/
@@ -485,14 +438,14 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.setLimit( 0, 15 );
 
     item = new SmartPlaylist( folder, item, i18n( "Newest Tracks" ), qb.query() );
-    m_lastSmart = 0;
+    last = 0;
     foreach( artists ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabArtist, *it );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
         qb.setLimit( 0, 15 );
 
-        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "By %1" ).arg( *it ), qb.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qb.query() );
     }
 
     /********** Last Played **************/
@@ -522,7 +475,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
     /********** Genres **************/
     item = new SmartPlaylist( folder, item, i18n( "Genres" ), QString() );
-    m_lastSmart = 0;
+    last = 0;
     foreach( genres ) {
         qb.initSQLDrag();
         qb.addMatch( QueryBuilder::tabGenre, *it );
@@ -530,7 +483,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-        m_lastSmart = new SmartPlaylist( item, m_lastSmart, i18n( "%1" ).arg( *it ), qb.query() );
+        last = new SmartPlaylist( item, last, i18n( "%1" ).arg( *it ), qb.query() );
     }
 
     /********** 50 Random Tracks **************/
@@ -538,60 +491,35 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 50 );
     item = new SmartPlaylist( folder, item, i18n( "50 Random Tracks" ), qb.query() );
-
-    m_lastSmart = folder;
-
 }
 
 void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
 {
     SmartPlaylistEditor dialog( this, item->xml() );
     if( dialog.exec() == QDialog::Accepted ) {
-        item->setXml( dialog.result( m_smartXml ) );
+        item->setXml( dialog.result() );
         item->sqlForTags = dialog.query();
         item->setText(0, dialog.name());
     }
-
 }
 
 void PlaylistBrowser::saveSmartPlaylists()
 {
+    QFile file( smartplaylistBrowserCache() );
 
-    QDomDocument xml;
-    QDomElement smartB = xml.createElement( "smartplaylists" );
-    xml.appendChild( smartB );
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QDomDocument doc;
+    QDomElement smartB = m_smartCategory->xml();
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.0" );
+    smartB.setAttribute( "formatversion", "1.1" );
+    doc.appendChild( smartB );
 
-
-    PlaylistCategory *currentCat=0;
-
-    #define m_smartCategory static_cast<QListViewItem *>(m_smartCategory)
-
-    for( QListViewItem *it = m_smartCategory->firstChild(); it ; it = it->nextSibling() )
-    {
-        currentCat = static_cast<PlaylistCategory*>( isCategory( it ) ? it : it->parent() );
-        //we don't want to save the default smartplaylists
-        if ( currentCat->title() == i18n("Collection") )
-            continue;
-        if( isSmartPlaylist( it ) )
-        {
-            SmartPlaylist *item = (SmartPlaylist*)it;
-            QDomElement i = xml.createElement( "smartplaylist" );
-            smartB.appendChild( item->xml() );
-        }
-    }
-
-    #undef m_streamsCategory
-
-    // Only open the file after everything was done. It avoids losing the file if something fails
-    QFile file( smartplaylistBrowserCache() );
-    if( !file.open( IO_WriteOnly ) ) return;
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
-    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    stream << xml.toString();
+    QTextStream smart( &file );
+    smart.setEncoding( QTextStream::UnicodeUTF8 );
+    smart << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    smart << doc.toString();
 }
 
 // Warning - unpredictable when a smartplaylist which doesn't exist is requested.
@@ -633,7 +561,7 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
     {
         QString name = dialog.title();
 
-        PartyEntry *saveMe = new PartyEntry( parent, m_lastParty, name );
+        PartyEntry *saveMe = new PartyEntry( parent, 0, name );
 
         saveMe->setCycled( current->cycleTracks() );
         saveMe->setMarked( current->markHistory() );
@@ -648,74 +576,35 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
     }
 }
 
-void PlaylistBrowser::loadParties()
+PlaylistCategory* PlaylistBrowser::loadParties()
 {
-    m_lastParty = 0;
-
     QFile file( partyBrowserCache() );
-
-    if( !file.open( IO_ReadOnly ) )
-        return;
-
-    m_lastParty = 0;
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
+    QDomElement e;
 
-    if( !d.setContent( stream.read() ) )
-        return;
-
-    const QString PARTY( "party" );
-
-    QDomNode n = d.namedItem( "partybrowser" ).firstChild();
-
-    for( ; !n.isNull(); n = n.nextSibling() )
-    {
-        if( n.nodeName() != PARTY ) continue;
-
-        QDomElement e = n.toElement();
-        QString name  = e.attribute( "name" );
-
-        e = n.namedItem( "cycleTracks" ).toElement();
-        QString t = e.text();
-        bool cycled = true;
-        if( t == QString("false") ) cycled = false;
-
-        e = n.namedItem( "markHistory" ).toElement();
-        t = e.text();
-        bool marked = true;
-        if( t == QString("false") ) marked = false;
-
-        e = n.namedItem( "upcoming" ).toElement();
-        int upcoming = e.text().toInt();
-
-        e = n.namedItem( "previous" ).toElement();
-        int previous = e.text().toInt();
-
-        e = n.namedItem( "appendType" ).toElement();
-        int appendType = e.text().toInt();
-
-        e = n.namedItem( "appendCount" ).toElement();
-        int appendCount = e.text().toInt();
-
-        e = n.namedItem( "items" ).toElement();
-        QStringList items = QStringList::split( ',', e.text() );
-
-        PartyEntry *newParty = new PartyEntry( m_dynamicCategory, m_lastParty, name );
-        newParty->setCycled( cycled );
-        newParty->setMarked( marked );
-        newParty->setUpcoming( upcoming );
-        newParty->setPrevious( previous );
-        newParty->setAppendCount( appendCount );
-        newParty->setAppendType( appendType );
-        if( appendType == 2 )
-            newParty->setItems( items );
-
-        m_lastParty = newParty;
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
+        return new PlaylistCategory(m_listview, 0 , "Dynamic Playlists" );
     }
-    m_dynamicCategory->setOpen( true );
+    else {
+        e = d.namedItem( "category" ).toElement();
+        if ( e.attribute("formatversion") =="1.1" ) {
+            return new PlaylistCategory(m_listview, 0 , e );
+        }
+        else { // Old unversioned format
+            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Dynamic Playlists" );
+            QListViewItem *last = 0;
+            QDomNode n = d.namedItem( "partybrowser" ).namedItem("party");
+            for( ; !n.isNull();  n = n.nextSibling() ) {
+                last = new PartyEntry( p, last, n.toElement() );
+            }
+            return p;
+        }
+    }
 }
 
 void PlaylistBrowser::saveParties()
@@ -824,53 +713,35 @@ QString PlaylistBrowser::playlistBrowserCache()
     return amaroK::saveLocation() + "playlistbrowser_save.xml";
 }
 
-void PlaylistBrowser::loadPlaylists()
+PlaylistCategory* PlaylistBrowser::loadPlaylists()
 {
     QFile file( playlistBrowserCache() );
 
-    m_lastPlaylist = 0;
-
-    if( !file.open( IO_ReadOnly ) )
-    {
-        loadOldPlaylists();
-        return;
-    }
-
-    QTextStream pStream( &file );
-    pStream.setEncoding( QTextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
+    QDomElement e;
 
-    if( !d.setContent( pStream.read() ) )
-    {
-        error() << "Bad XML file" << endl;
-        return;
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
+        return new PlaylistCategory(m_listview, 0 , "Playlists" );
     }
-
-    //so we don't construct these QString all the time
-    const QString PLAYLIST( "playlist" );
-
-    QDomNode n = d.namedItem( "playlistbrowser" ).namedItem("playlist");
-
-    for( ; !n.isNull(); n = n.nextSibling() )
-    {
-        if( n.nodeName() != PLAYLIST ) continue;
-        QDomElement e = n.toElement();
-
-        KURL url;
-        url.setPath( e.attribute( "file" ) );
-
-        e = n.namedItem( "tracks" ).toElement();
-        int tracks = e.text().toInt();
-
-        e = n.namedItem( "length" ).toElement();
-        int length = e.text().toInt();
-
-        m_lastPlaylist = new PlaylistEntry( m_playlistCategory, m_lastPlaylist, url, tracks, length );
-
+    else {
+        e = d.namedItem( "category" ).toElement();
+        if ( e.attribute("formatversion") =="1.1" ) {
+            return new PlaylistCategory(m_listview, 0 , e );
+        }
+        else { // Old unversioned format
+            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Playlists" );
+            QListViewItem *last = 0;
+            QDomNode n = d.namedItem( "playlistbrowser" ).namedItem("playlist");
+            for( ; !n.isNull();  n = n.nextSibling() ) {
+                last = new PlaylistEntry( p, last, n.toElement() );
+            }
+            return p;
+        }
     }
-
-    m_playlistCategory->setOpen( true );
 }
 
 // In case this is the first run using the QDomDocument, for users upgrading from amaroK < 1.3
@@ -899,11 +770,12 @@ void PlaylistBrowser::loadOldPlaylists()
 
             QFileInfo fi( file );
             if( fi.exists() ) {
+                QListViewItem *last = 0;
                 if( fi.lastModified() != lastModified )
                     addPlaylist( file ); //load the playlist
                 else {
                     url.setPath(file);
-                    m_lastPlaylist = new PlaylistEntry( m_playlistCategory, m_lastPlaylist, url, tracks, length );
+                    last = new PlaylistEntry( m_playlistCategory, last, url, tracks, length );
                 }
             }
         }
@@ -927,7 +799,7 @@ void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool for
         }
 
     if( !exists ) {
-        if( m_lastPlaylist == 0 ) {    //first child
+        if( !m_playlistCategory || !m_playlistCategory->childCount() ) {    //first child
             removeButton->setEnabled( true );
             renameButton->setEnabled( true );
             deleteButton->setEnabled( true );
@@ -937,7 +809,7 @@ void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool for
 
         KURL auxKURL;
         auxKURL.setPath(path);
-        m_lastPlaylist = new PlaylistEntry( parent, m_lastPlaylist, auxKURL );
+        new PlaylistEntry( parent, 0, auxKURL );
         parent->setOpen( true );
     }
 }
@@ -960,57 +832,16 @@ void PlaylistBrowser::savePlaylists()
     if( !file.open( IO_WriteOnly ) ) return;
 
     QDomDocument doc;
-    QDomElement playlistB = doc.createElement( "playlistbrowser" );
-    playlistB.setAttribute( "product", "amaroK" );
-    playlistB.setAttribute( "version", APP_VERSION );
-    doc.appendChild( playlistB );
+    QDomElement playlistsB = m_playlistCategory->xml();
+    playlistsB.setAttribute( "product", "amaroK" );
+    playlistsB.setAttribute( "version", APP_VERSION );
+    playlistsB.setAttribute( "formatversion", "1.1" );
+    doc.appendChild( playlistsB );
 
-    PlaylistCategory *currentCat=0;
-
-    #define m_playlistCategory static_cast<QListViewItem *>(m_playlistCategory)
-
-    QListViewItem *it = m_playlistCategory->firstChild();
-
-    for( int count = 0; count < m_playlistCategory->childCount(); count++ )
-    {
-        QDomElement i;
-
-        if( !isCategory( it ) )
-            currentCat = static_cast<PlaylistCategory*>(it->parent() );
-
-        if( isPlaylist( it ) )
-        {
-            i = doc.createElement("playlist");
-            PlaylistEntry *item = (PlaylistEntry*)it;
-            i.setAttribute( "file", item->url().path() );
-
-            QDomElement attr = doc.createElement( "tracks" );
-            QDomText t = doc.createTextNode( QString::number(item->trackCount()) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "length" );
-            t = doc.createTextNode( QString::number(item->length()) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            QFileInfo fi( item->url().path() );
-            attr = doc.createElement( "modified" );
-            t = doc.createTextNode( QString::number(fi.lastModified().toTime_t()) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-        }
-
-        playlistB.appendChild( i );
-
-        it = it->nextSibling();
-    }
-    #undef m_playlistCategory
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
-
 }
 
 PlaylistEntry *
@@ -1133,55 +964,14 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     }
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
-
-        if( isPlaylist( item ) ) {
-            //remove the playlist
-            if( item == m_lastPlaylist ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastPlaylist = above ? (PlaylistEntry *)above : 0;
-            }
+        if( isPlaylistTrackItem( item ) ) {
+                //remove the track
+                PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
+                playlist->removeTrack( item );
+        }
+        else
             delete item;
-        }
-        else if( isStream( item ) ) {
-            if( item == m_lastStream ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastStream = above ? (StreamEntry *)above : 0;
-            }
-            delete item;
-        }
-        else if( isSmartPlaylist( item ) ) {
-            if( item == m_lastSmart ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastSmart = above ? (SmartPlaylist *)above : 0;
-            }
-            delete item;
-        }
-        else if( isParty( item ) ) {
-            if( item == m_lastParty ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastSmart = above ? (SmartPlaylist *)above : 0;
-            }
-            delete item;
-        }
-        else if( isCategory( item ) ) {
-            if( item == m_lastSmart ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastSmart = above ? (SmartPlaylist *)above : 0;
-            } else if( item == m_lastStream ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastStream = above ? (StreamEntry *)above : 0;
-            } else if( item == m_lastPlaylist ) {
-                QListViewItem *above = item->itemAbove();
-                m_lastPlaylist = above ? (PlaylistEntry *)above : 0;
-            }
-            delete item;
-        }
-        else if( isPlaylistTrackItem( item ) ) {
-            //remove the track
-            PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
-            playlist->removeTrack( item );
-        }
-    }
+   }
 }
 
 
