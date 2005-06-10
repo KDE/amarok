@@ -2275,7 +2275,9 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
 
     //something like thingy"bla"stuff -> thingy "bla" stuff
     bool odd = false;
-    for( int pos = query.find( "\"" ); pos >= 0 && pos <= query.length(); pos = query.find( "\"", pos + 1 ) )
+    for( int pos = query.find( "\"" );
+         pos >= 0 && pos <= (int)query.length();
+         pos = query.find( "\"", pos + 1 ) )
     {
         query = query.insert( odd ? ++pos : pos++, " " );
         odd = !odd;
@@ -2461,6 +2463,9 @@ Playlist::setFilter( const QString &query ) //SLOT
 void
 Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
 {
+    if( !item )
+        return;
+
     bool visible = true;
     uint x, n = columns();
     if( isAdvancedQuery( query ) )
