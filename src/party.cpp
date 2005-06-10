@@ -265,7 +265,8 @@ Party::updateApplyButton() //SLOT
     if( cycleTracks() != AmarokConfig::partyCycleTracks() ||
         markHistory() != AmarokConfig::partyMarkHistory() ||
         previousCount() != AmarokConfig::partyPreviousCount() ||
-        upcomingCount() != AmarokConfig::partyUpcomingCount() )
+        upcomingCount() != AmarokConfig::partyUpcomingCount() ||
+        appendCount() != AmarokConfig::partyAppendCount() )
     {
         m_applyButton->setEnabled( true );
         return;
