@@ -2488,7 +2488,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
             {
                 tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() );
             }
-            else if ( !EngineController::instance()->bundle().artist().isEmpty() )
+            else if ( !EngineController::instance()->bundle().title().isEmpty() )
             {
                 tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().title() );
             }
