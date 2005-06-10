@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta2:
   FEATURES:
+    *Per track scripting via custom playlist context menu items.
     * Added advanced, Google-esque syntax to the playlist filter. Lets you do
       things like artist:sirenia, "pink floyd", artist:"pink floyd", or even
       score:>50. (When just typing words, it works as before.)
