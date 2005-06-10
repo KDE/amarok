@@ -2647,13 +2647,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
 
-//    if ( !m_customItemTitle.isEmpty() ){
-//        for ( QStringList::Iterator it = m_customItemTitle.begin(); it != m_customItemTitle.end(); ++it ) {
-//            customMenu.insertItem ( SmallIconSet( "pencil"), ( *it ), CUSTOM_ITEM );
-//        }
-//    popup.insertSeparator();
-//    popup.insertItem( SmallIconSet( "pencil" ), i18n("Scripts"), &customMenu );
-// }
     QValueList<QString> submenuTexts = m_customSubmenuItem.keys();
     for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
     {
