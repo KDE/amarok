@@ -226,15 +226,15 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, 0 , "Radio Streams" );
+        return new PlaylistCategory(m_listview, m_playlistCategory , "Radio Streams" );
     }
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, 0 , e );
+            return new PlaylistCategory(m_listview, m_playlistCategory, e );
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Radio Streams" );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, "Radio Streams" );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "streambrowser" ).namedItem("stream");
             for( ; !n.isNull();  n = n.nextSibling() ) {
@@ -362,15 +362,15 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, 0 , "Smart Playlists" );
+        return new PlaylistCategory(m_listview, m_streamsCategory , "Smart Playlists" );
     }
    else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, 0 , e );
+            return new PlaylistCategory(m_listview, m_streamsCategory, e );
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Smart Playlists" );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, m_streamsCategory , "Smart Playlists" );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "smartplaylists" ).namedItem("smartplaylist");
             for( ; !n.isNull();  n = n.nextSibling() ) {
@@ -586,17 +586,21 @@ PlaylistCategory* PlaylistBrowser::loadParties()
     QDomDocument d;
     QDomElement e;
 
+    PlaylistCategory *after = m_smartCategory;
+    if( !m_smartCategory ) // incase of no collection
+        after = m_streamsCategory;
+
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, 0 , "Dynamic Playlists" );
+        return new PlaylistCategory( m_listview, after, "Dynamic Playlists" );
     }
     else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, 0 , e );
+            return new PlaylistCategory( m_listview, after , e );
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Dynamic Playlists" );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after, "Dynamic Playlists" );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "partybrowser" ).namedItem("party");
             for( ; !n.isNull();  n = n.nextSibling() ) {
