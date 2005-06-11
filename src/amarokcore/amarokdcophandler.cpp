@@ -122,7 +122,7 @@ namespace amaroK
         return AmarokConfig::randomMode();
     }
 
-    bool DcopPlayerHandler::partyModeStatus()
+    bool DcopPlayerHandler::dynamicModeStatus()
     {
         return AmarokConfig::partyMode();
     }
@@ -265,7 +265,7 @@ namespace amaroK
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_track" ))->setChecked( enable );
     }
 
-    void DcopPlayerHandler::enablePartyMode(bool enable)
+    void DcopPlayerHandler::enableDynamicMode(bool enable)
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( enable );
     }
