@@ -17,8 +17,6 @@ SHORT-TERM (URGENT):
 
   <sebr>   Starting parties from empty playlists, or changing the party type, we should repopulate the upcoming tracks
            to reflect this change.
-  
-  <sebr>   FileBrowser steals the delete button from the playlist. Teach filebrowser some manners.
 
   <markey> Figure out why ScriptManager can't read from stdout.
 
