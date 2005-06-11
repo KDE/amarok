@@ -171,6 +171,8 @@ Party::addPlaylists() //SLOT
     QListViewItem *last = 0;
     for( uint i=0; i < selected.count(); i = i+2 )
         last = new KListViewItem( m_playlists, 0, selected[i], selected[i+1] );
+
+    m_applyButton->setEnabled( true );
 }
 
 /// We must make sure that we set m_selected accordingly prior to calling this function.
@@ -184,6 +186,7 @@ Party::subPlaylists() //SLOT
         delete item;
 
     m_subButton->setEnabled( false );
+    m_applyButton->setEnabled( true );
 }
 
 void
