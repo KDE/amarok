@@ -2655,9 +2655,23 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
         m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.find("<ul>") );
         m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.find( "</div>" ) );
     }
+
+    QString copyright;
+    QString copyrightMark = "<li id=\"f-copyright\">";
+    if ( m_wiki.find( copyrightMark ) != -1 )
+    {
+        copyright = m_wiki.mid( m_wiki.find(copyrightMark) + copyrightMark.length() );
+        copyright = copyright.mid( 0, copyright.find( "</li>" ) );
+        copyright.replace( "<br />", QString::null );
+        //only one br at the beginning
+        copyright.prepend( "<br />" );
+    }
+
     // Ok lets remove the top and bottom parts of the page
     m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
+    // Adding back license information
+    m_wiki += copyright;
     m_wiki.append( "</div>" );
     m_wiki.replace( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>"), QString::null );
 
