@@ -7,6 +7,7 @@
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "trackpickerdialog.h"
 
@@ -497,6 +498,9 @@ TagDialog::saveTags()
         for( it = storedTags.begin(); it != storedTags.end(); ++it ) {
             if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
                 Playlist::instance()->updateMetaData( it.data() );
+            else
+                amaroK::StatusBar::instance()->longMessage( i18n(
+                    "Sorry, the tag for %1 could not be changed." ).arg( it.data().url().path() ) );
         }
     }
 }
@@ -547,6 +551,9 @@ TagDialog::saveMultipleTracks()
 
         if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
             Playlist::instance()->updateMetaData( mb );
+        else
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                "Sorry, the tag for %1 could not be changed." ).arg( mb.url().path() ) );
     }
 }
 
@@ -555,9 +562,10 @@ bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
 {
     QCString path = QFile::encodeName( mb.url().path() );
-
     if ( !TagLib::File::isWritable( path ) ) {
-        KMessageBox::sorry( this, i18n( "TagLib claims this file is not writable." ) );
+        amaroK::StatusBar::instance()->longMessage( i18n(
+           "TagLib claims %1 file is not writable." ).arg( path ) );
+
         return false;
     }
 
