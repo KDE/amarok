@@ -500,7 +500,7 @@ TagDialog::saveTags()
                 Playlist::instance()->updateMetaData( it.data() );
             else
                 amaroK::StatusBar::instance()->longMessage( i18n(
-                    "Sorry, the tag for %1 could not be changed." ).arg( it.data().url().path() ) );
+                    "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ) );
         }
     }
 }
@@ -553,7 +553,7 @@ TagDialog::saveMultipleTracks()
             Playlist::instance()->updateMetaData( mb );
         else
             amaroK::StatusBar::instance()->longMessage( i18n(
-                "Sorry, the tag for %1 could not be changed." ).arg( mb.url().path() ) );
+                "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ) );
     }
 }
 
