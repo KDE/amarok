@@ -103,13 +103,13 @@ void SmartPlaylistEditor::init(QString defaultName)
     m_fields.clear();
     m_fields << i18n("Artist") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Track #") << i18n("Year")
              << i18n("Comment") << i18n("Play Counter") << i18n("Score") << i18n("First Play") << i18n("Last Play")
-             << i18n("Modified Date");
+             << i18n("Modified Date") << i18n("File Path");
 
     m_dbFields.clear();
     m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.createdate" << "statistics.accessdate"
-               << "tags.createdate";
+               << "tags.createdate" << "tags.url";
 
     m_expandableFields.clear();
     m_expandableFields << i18n("Artist") << i18n("Album") << i18n("Genre") <<  i18n("Year");
@@ -850,6 +850,7 @@ int CriteriaEditor::getValueType( int index )
             break;
         case 3:
         case 6:
+        case 12:
             valueType = String;
             break;
         case 4:
