@@ -549,7 +549,7 @@ QSize MultiTabBarButton::sizeHint() const
 
     //PATCH by markey
     if ( ( m_style == MultiTabBar::AMAROK ) )
-        h = ( parentWidget() ->height() - 3 ) / NUM_TABS;
+        w = ( parentWidget()->height() - 3 ) / NUM_TABS;
 
     return ( style().sizeFromContents( QStyle::CT_ToolButton, this, QSize( w, h ) ).
              expandedTo( QApplication::globalStrut() ) );
