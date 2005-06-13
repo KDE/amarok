@@ -11,12 +11,9 @@ SHORT-TERM (URGENT):
               Physicists will think we are referring to superstrings, which the universe is supposedly made
               out of. "Copy Track Information to Clipboard", maybe? (Something shorter would be better.)
 
-  <sebr>   Reduce party config height.
-
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
-  <sebr>   Starting parties from empty playlists, or changing the party type, we should repopulate the upcoming tracks
-           to reflect this change.
+  <sebr>   Starting parties from empty playlists should auto generate required upcoming tracks
 
   <markey> Figure out why ScriptManager can't read from stdout.
 
