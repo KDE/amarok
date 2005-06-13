@@ -1262,7 +1262,8 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         for( uint i=0; i < playlists.count(); i++ )
         {
             item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-            item->setPixmap( 1, SmallIcon("apply") );
+            if( item )
+                item->setPixmap( 1, SmallIcon("apply") );
         }
 
         // uncheck before disabling
