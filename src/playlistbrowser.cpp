@@ -161,6 +161,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( dynamicButton, SIGNAL( toggled( bool ) ),
              amaroK::actionCollection()->action( "dynamic_mode" ), SLOT( setChecked( bool ) ) );
 
+    if( isDynamic() )
+    {
+        //Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
+        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
+    }
+
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
     m_playlistCategory = loadPlaylists();
