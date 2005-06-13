@@ -5,8 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta2:
   FEATURES:
-    * File path is another option for the conditions in Smart Playlists.
-      (BR 92467)
+    * Ability to create Smart Playlists based on file path. (BR 92467)
     * Per track scripting via custom playlist context menu items.
     * Added advanced, Google-esque syntax to the playlist filter. Lets you do
       things like artist:sirenia, "pink floyd", artist:"pink floyd", or even
