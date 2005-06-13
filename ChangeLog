@@ -13,7 +13,7 @@ VERSION 1.3-beta2:
       score:>50. When just typing words, it works as before. (BR 99312)
 
   CHANGES:
-    * Akode-engine has been disabled (too buggy/incomplete).
+    * aKode-engine has been disabled (too buggy/incomplete).
     * Repopulate upcoming tracks when loading a saved dynamic mode.
     * Remodel the playlist browser to incorporate dynamic mode more fully.
 
