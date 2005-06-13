@@ -46,7 +46,7 @@ Party::Party( QWidget *parent, const char *name )
 
     //<Toolbar>
     m_ac = new KActionCollection( this );
-    KAction *repopulate = new KAction( i18n("Repopulate"), "mix_cd", 0,
+    KAction *repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
                                        this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
     m_applyButton = new KAction( i18n("Apply"), "apply", 0, this, SLOT( applySettings() ), m_ac, "Apply Settings" );

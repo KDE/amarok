@@ -1270,6 +1270,8 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( false );
+
+        Playlist::instance()->repopulate();
     }
     else
     {

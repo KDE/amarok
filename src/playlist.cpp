@@ -1302,6 +1302,9 @@ Playlist::clear() //SLOT
     KListView::clear();
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
+
+    if( isParty() )
+        repopulate();
 }
 
 void
@@ -2033,6 +2036,9 @@ Playlist::repopulate() //SLOT
     MyIt it( this, MyIt::All );
     QPtrList<QListViewItem> list;
     uint counter = 0;
+
+    if( isEmpty() )
+        counter = AmarokConfig::partyUpcomingCount();
 
     for( ; *it; ++it )
     {
