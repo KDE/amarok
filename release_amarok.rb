@@ -57,12 +57,12 @@ Dir.chdir( "multimedia" )
 `svn up doc/amarok`
 `svn co https://svn.kde.org/home/kde/trunk/KDE/kde-common/admin`
 
-puts "\n"
-puts "**** l10n ****"
-puts "\n"
-
 
 if do_l10n == "yes"
+    puts "\n"
+    puts "**** l10n ****"
+    puts "\n"
+
     i18nlangs = `svn cat https://svn.kde.org/home/kde/trunk/l10n/subdirs`
     Dir.mkdir( "l10n" )
     Dir.chdir( "l10n" )
