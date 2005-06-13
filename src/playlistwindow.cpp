@@ -2,7 +2,7 @@
   begin                : Fre Nov 15 2002
   copyright            : (C) Mark Kretschmann <markey@web.de>
                        : (C) Max Howell <max.howell@methylblue.com>
-                       : (C) Gábor Lehel <illissius@gmail.com>
+                       : (C) Gï¿½or Lehel <illissius@gmail.com>
 ***************************************************************************/
 
 /***************************************************************************
@@ -21,15 +21,15 @@
 #include "amarokconfig.h"
 #include "browserbar.h"
 #include "clicklineedit.h"    //m_lineEdit
-#include "debug.h"
-#include "playlist.h"
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
+#include "debug.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "party.h"
+#include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "scriptmanager.h"
@@ -88,8 +88,6 @@ namespace amaroK
     };
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS PlaylistWindow
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +124,7 @@ PlaylistWindow::PlaylistWindow()
     new KAction( i18n("Play Media..."), "fileopen", 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
     new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
     new KAction( i18n("Scripts..."), "pencil", 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
+    new KAction( i18n("Queue Manager..."), "goto", 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
@@ -208,7 +207,7 @@ PlaylistWindow::init()
                                   "When specifying a field, you can search for items less or greater than a term.\n"
                                   "For example: score:>50\n\n"
                                   "Combine all that: \"mike oldfield\" OR score:>50 -comment:bad" );
-                                  
+
         QToolTip::add( filter_label, filtertip );
         QToolTip::add( m_lineEdit, filtertip );
     } //</Search LineEdit>
@@ -263,6 +262,7 @@ PlaylistWindow::init()
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
     m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    actionCollection()->action("queue_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
@@ -635,6 +635,10 @@ void PlaylistWindow::showScriptSelector() //SLOT
     ScriptManager::instance()->raise();
 }
 
+void PlaylistWindow::showQueueManager() //SLOT
+{
+    Playlist::instance()->showQueueManager();
+}
 
 void PlaylistWindow::slotToggleMenu() //SLOT
 {

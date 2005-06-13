@@ -27,6 +27,7 @@
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
+#include "queuemanager.h"
 #include "scriptmanager.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
@@ -50,6 +51,7 @@
 #include <kaction.h>
 #include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
+#include <kdialogbase.h>
 #include <kglobalsettings.h> //rename()
 #include <kiconloader.h>     //slotShowContextMenu()
 #include <kio/job.h>         //deleteSelectedFiles()
@@ -111,9 +113,9 @@ public:
 typedef MyIterator MyIt;
 
 
-/**
- * Threaded tag-updating
- */
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS TagWriter : Threaded tag-updating
+//////////////////////////////////////////////////////////////////////////////////////////
 
 class TagWriter : public ThreadWeaver::Job
 { //TODO make this do all tags at once when you split playlist.cpp up
@@ -132,6 +134,9 @@ private:
     bool    m_updateView;
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// Glow
+//////////////////////////////////////////////////////////////////////////////////////////
 
 namespace Glow
 {
@@ -163,9 +168,11 @@ namespace Glow
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS Playlist
+//////////////////////////////////////////////////////////////////////////////////////////
 
 static inline bool isParty() { return AmarokConfig::partyMode(); }
-
 
 Playlist *Playlist::s_instance = 0;
 
@@ -2269,6 +2276,15 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
         }
 }
 
+void
+Playlist::showQueueManager()
+{
+    QueueManager dialog( this );
+
+    if( dialog.exec() == QDialog::Accepted )
+        ;
+
+}
 
 bool
 Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringMap &all )
@@ -3319,5 +3335,6 @@ TagWriter::completeJob()
         CollectionDB::instance()->updateURL( m_item->url().path(), m_updateView );
     }
 }
+
 
 #include "playlist.moc"

@@ -4,7 +4,7 @@
     begin                : Don Dez 5 2002
     copyright            : (C) 2002 by Mark Kretschmann
                             2005 Ian Monroe
-    copyright            : (C) 2005 by Gábor Lehel
+    copyright            : (C) 2005 by Gï¿½or Lehel
     email                : illissius@gmail.com
 ***************************************************************************/
 
@@ -136,6 +136,7 @@ class Playlist : private KListView, public EngineObserver
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
 
         friend class PlaylistItem;
+        friend class QueueManager;
         friend class UrlLoader;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void PlaylistWindow::init(); //setting up connections etc.
@@ -172,6 +173,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setFilter( const QString &filter );                           //for the entire playlist
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
+        void showQueueManager();
 
     private slots:
         void setDelayedFilter();                                           //after the delay is over
@@ -241,7 +243,7 @@ class Playlist : private KListView, public EngineObserver
         //NOTE these container types were carefully chosen
         QPtrList<PlaylistItem> m_prevTracks; //the previous history
         QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
-        
+
         QString m_filter;
         QTimer *m_filtertimer;
 

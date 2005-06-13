@@ -56,6 +56,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void playAudioCD();
+        void showQueueManager();
         void showScriptSelector();
         void slotMenuActivated( int );
         void toolsMenuAboutToShow();
@@ -82,5 +83,6 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
         static PlaylistWindow *s_instance;
 };
+
 
 #endif //AMAROK_PLAYLISTWINDOW_H
