@@ -147,7 +147,7 @@ Dir.chdir( "amarok" )
 
 Dir.chdir( "src" )
 
-# Exchange APP_VERSION string with targetted version
+# Exchange APP_VERSION string with targeted version
 file = File.new( "amarok.h", File::RDWR )
 str = file.read()
 file.rewind()
