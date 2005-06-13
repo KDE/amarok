@@ -685,7 +685,8 @@ Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
     if( !entire && !m_currentTrack )
         return;
 
-    for( MyIterator it( this, MyIterator::Visible ) ; *it ; ++it )
+    // Disable all items, since we should be leaving dynamic mode.
+    for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
     {
         if( !entire )
             if ( *it == m_currentTrack ) break;
