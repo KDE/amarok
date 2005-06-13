@@ -2039,23 +2039,25 @@ Playlist::repopulate() //SLOT
 
     if( isEmpty() )
         counter = AmarokConfig::partyUpcomingCount();
-
-    for( ; *it; ++it )
+    else
     {
-        PlaylistItem *item = (PlaylistItem *)(*it);
+        for( ; *it; ++it )
+        {
+            PlaylistItem *item = (PlaylistItem *)(*it);
 
-        if( !item->isEnabled() || item == m_currentTrack )
-            continue;
+            if( !item->isEnabled() || item == m_currentTrack )
+                continue;
 
-        list.prepend( *it );
-        counter++;
-    }
+            list.prepend( *it );
+            counter++;
+        }
 
-    //remove the items
-    for( QListViewItem *item = list.first(); item; item = list.next() )
-    {
-        removeItem( (PlaylistItem*)item );
-        delete item;
+        //remove the items
+        for( QListViewItem *item = list.first(); item; item = list.next() )
+        {
+            removeItem( (PlaylistItem*)item );
+            delete item;
+        }
     }
 
     //calling advancePartyTrack will remove an item too, which is undesirable
