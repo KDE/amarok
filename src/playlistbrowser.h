@@ -29,14 +29,13 @@ class QTimer;
 
 class PlaylistBrowserView;
 class PlaylistTrackItem;
-class SmartPlaylistView;
 
 class PlaylistBrowser : public QVBox
 {
         Q_OBJECT
+    friend class Party;
     friend class PlaylistBrowserView;
     friend class PlaylistEntry;
-    friend class SmartPlaylistView;
 
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
@@ -56,10 +55,8 @@ class PlaylistBrowser : public QVBox
         QString streamBrowserCache();
         QString smartplaylistBrowserCache();
 
-        SmartPlaylist *getSmartPlaylist( QString name ); //For party mode
-        PlaylistEntry *getPlaylist( QString name ); //For party mode
+        PlaylistBrowserEntry *findItem( QString &t, int c );
 
-        QStringList selectedList();
         bool    dynamicEnabled() { return dynamicButton->isChecked(); }
 
         ViewMode viewMode() { return m_viewMode; }
@@ -73,6 +70,7 @@ class PlaylistBrowser : public QVBox
         void openPlaylist( QListViewItem *parent = 0 );
 
     private slots:
+        void addToDynamic();
         void currentItemChanged( QListViewItem * );
         void deleteSelectedPlaylists();
         void editStreamURL( StreamEntry *item );
@@ -81,6 +79,7 @@ class PlaylistBrowser : public QVBox
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
         void slotDoubleClicked( QListViewItem *item );
+        void subFromDynamic();
 
 
         void slotAddMenu( int id );
@@ -120,7 +119,6 @@ class PlaylistBrowser : public QVBox
 
         QSplitter *m_splitter;
         PlaylistBrowserView *m_listview;
-        SmartPlaylistView   *m_smartlistview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton, *deleteButton;
         KToggleAction       *dynamicButton;
@@ -131,6 +129,7 @@ class PlaylistBrowser : public QVBox
         ViewMode             m_viewMode;
         int                  m_sortMode;
         QValueList<int>      m_partySizeSave;
+        QPtrList<QListViewItem> m_dynamicEntries;
 };
 
 

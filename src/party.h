@@ -72,16 +72,12 @@ class Party : public QVBox
         static  Party *instance() { return s_instance; }
 
     public slots:
+        void    repopulate();
         void    statusChanged( bool status );
-        void    updateAddButton();
 
     private slots:
-        void    addPlaylists();
         void    applySettings();
-        void    setAppendMode( int id );
-        void    subPlaylists();
         void    updateApplyButton();
-        void    updateRemoveButton();
 
     private:
         enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
@@ -89,16 +85,12 @@ class Party : public QVBox
         PartyDialogBase *m_base;
 
         void    createWidget();
-        void    insertPlaylists();
         void    restoreSettings();
 
         KActionCollection *m_ac;
         KAction    *m_applyButton;
-        KAction    *m_addButton;
-        KAction    *m_subButton;
         KToolBar   *m_toolbar;
         QLabel     *m_tooltip;
-        KListView  *m_playlists;
         bool        m_visible;
 
         QPtrList<QListViewItem> m_selected;

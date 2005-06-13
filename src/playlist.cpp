@@ -460,7 +460,7 @@ Playlist::addSpecialTracks( uint songCount, QString type )
         else
             text = i18n("Adding track from custom filter.");
 
-        QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
+        QStringList playlists = AmarokConfig::partyCustomList();
         if( playlists.isEmpty() ) //incase the user decides to mess with amarokrc
         {
             amaroK::StatusBar::instance()->shortMessage( i18n("No playlists to retrieve track from, bailing out.") );
@@ -492,48 +492,37 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 {
     if( list.isEmpty() ) return;
 
-    QStringList listItems;
-    QStringList listTypes;
-    for( uint i=0; i < list.count(); i++ )
-        ( i % 2 ) ?
-            listTypes << list[i] :
-            listItems << list[i] ;
-
     PlaylistBrowser *pb = PlaylistBrowser::instance() ? PlaylistBrowser::instance() : new PlaylistBrowser();
-    SmartPlaylist *sp = 0;
-    PlaylistEntry *pl = 0;
+
+    PlaylistBrowserEntry *pl = 0;
     QString playlistName = QString::null;
 
     //FIXME: What if the randomiser grabs the same playlist again and again?  Lets remove the playlist from the list.
-    for( uint y=0; y < listItems.count(); y++ )
+    for( uint y=0; y < list.count(); y++ )
     {
-        int x = KApplication::random() % listItems.count();
+        int x = KApplication::random() % list.count();
 
         playlistName = list[x];
 
-        if( listTypes[x] == i18n("Playlist") )
-        {
-            pl = pb->getPlaylist( playlistName );
-            if( pl )
-                break;
-        }
-        else if( listTypes[x] == i18n("Smart Playlist") )
-        {
-            sp = pb->getSmartPlaylist( playlistName );
-            if ( sp )
-                break;
-        }
+        pl = pb->findItem( playlistName, 0 );
+
+        if( pl )
+            break;
 
         //FIXME: If the source doesn't exist, we should remove it.
         debug() << "[PARTY]: Invalid source (" << playlistName << ") requested. Trying another source." << endl;
         amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(playlistName) );
     }
 
-    if( pl )
+    if( pl->rtti() == PlaylistEntry::RTTI )
     {
+        #define pl static_cast<PlaylistEntry *>(pl)
         //FIXME: only works on loaded playlists.
         if( !pl->isLoaded() )
+        {
+            debug() << "Playlist is not loaded" << endl;
             return;
+        }
 
         KURL::List urls;
         KURL::List trackList;
@@ -556,12 +545,14 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         else
             insertMedia( urls );
 
+        #undef pl
     }
-    else if( sp )
+    else if( pl->rtti() == SmartPlaylist::RTTI  )
     {
-        QString query = sp->query();
+        #define pl static_cast<SmartPlaylist *>(pl)
+        QString query = pl->query();
 
-        QString sql = sp->sqlForTags;
+        QString sql = pl->sqlForTags;
 
         //Add random and limiting sql queries to the end
         if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
@@ -582,7 +573,7 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         QStringList queryResult = CollectionDB::instance()->query( sql );
         QStringList newQuery;
 
-        if ( !sp->sqlForTags.isEmpty() ) {
+        if ( !pl->sqlForTags.isEmpty() ) {
             //We have to filter all the un-needed results from query( sql )
             for (uint x=10; x < queryResult.count() ; x += 11)
                 newQuery << queryResult[x];
@@ -599,6 +590,8 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
                 "Please modify your smart-playlist or choose a different source." ).arg( playlistName ) );
         else
             insertMedia( urls );
+
+        #undef pl
     }
 }
 

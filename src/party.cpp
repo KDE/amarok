@@ -26,8 +26,10 @@
 
 #include <kaction.h>
 #include <kapplication.h>
+#include <kiconloader.h>       //smallIcon
 #include <klocale.h>
 #include <ktoolbar.h>
+#include <kurldrag.h>          //dragObject()
 #include <kurllabel.h>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -44,37 +46,22 @@ Party::Party( QWidget *parent, const char *name )
 
     //<Toolbar>
     m_ac = new KActionCollection( this );
-
-    m_addButton  = new KAction( i18n("Add Selected"), "edit_add", 0, this, SLOT( addPlaylists() ), m_ac, "Add Selected" );
-    m_subButton  = new KAction( i18n("Remove"), "edit_remove", 0, this, SLOT( subPlaylists() ), m_ac, "Remove" );
+    KAction *repopulate = new KAction( i18n("Repopulate"), "mix_cd", 0,
+                                       this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
     m_applyButton = new KAction( i18n("Apply"), "apply", 0, this, SLOT( applySettings() ), m_ac, "Apply Settings" );
 
     m_toolbar = new Browser::ToolBar( this );
-    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
-
-    m_addButton->plug( m_toolbar );
-    m_subButton->plug( m_toolbar );
+    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the buttons to have text on right
+    repopulate->plug( m_toolbar );
     m_toolbar->insertLineSeparator();
     m_applyButton->plug( m_toolbar );
 
 
     m_base = new PartyDialogBase(this);
 
-    m_playlists = m_base->m_playlistSelector;
-    m_playlists->setSorting( 0 );
-    m_playlists->addColumn( i18n("Playlists") );
-    m_playlists->addColumn( i18n("Type") );
-    m_playlists->setSelectionModeExt( KListView::Extended ); // Allow many files to be selected
-    m_playlists->setColumnWidthMode( 0, QListView::Maximum );
-    m_playlists->setColumnWidthMode( 1, QListView::Maximum );
-
-    insertPlaylists();
-
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
-    m_base->m_playlistSelector->setEnabled( m_base->m_appendType->currentItem() == 2 );
 
-    connect( m_base->m_appendType,  SIGNAL( activated(int) ), SLOT( setAppendMode(int) ) );
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
     //Update buttons
@@ -84,8 +71,6 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_cycleTracks,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
-
-    connect( m_playlists, SIGNAL( selectionChanged() ), SLOT( updateRemoveButton() ) );
 
     restoreSettings();
 }
@@ -106,14 +91,9 @@ Party::restoreSettings()
         m_base->m_appendType->setCurrentItem( SUGGESTION );
 
     else // Custom
-    {
         m_base->m_appendType->setCurrentItem( CUSTOM );
-        m_playlists->setEnabled( true );
-    }
 
     m_applyButton->setEnabled( false );
-    m_addButton->setEnabled( false );
-    m_subButton->setEnabled( false );
 }
 
 void
@@ -126,76 +106,9 @@ Party::loadConfig( PartyEntry *config )
     m_base->m_markHistory->setChecked( config->isMarked() );
     m_base->m_appendType->setCurrentItem( config->appendType() );
 
-    // Load the listview
-    QStringList items = config->items();
-    m_playlists->clear();
-    QListViewItem *last=0;
-    for( uint i=0; i < items.count(); i = i+2 )
-        last = new QListViewItem( m_playlists, last, items[i], items[i+1] );
-
     applySettings();
 
     Playlist::instance()->repopulate();
-}
-
-void
-Party::insertPlaylists()
-{
-    QStringList playlists = QStringList::split( ',' , AmarokConfig::partyCustomList() );
-    QListViewItem *last=0;
-
-    for( uint i=0; i < playlists.count(); i = i+2 )
-        last = new QListViewItem( m_playlists, last, playlists[i], playlists[i+1] );
-}
-
-QString Party::customList()
-{
-    QString playlists;
-
-    for( QListViewItem *it = m_playlists->firstChild(); it ; it = it->nextSibling() )
-    {
-        playlists.append( it->text(0) );
-        playlists.append( ',' );
-        playlists.append( it->text(1) );
-        if ( it != m_playlists->lastItem() )
-            playlists.append( ',' );
-    }
-    return playlists;
-}
-
-void
-Party::addPlaylists() //SLOT
-{
-    QStringList selected = PlaylistBrowser::instance()->selectedList();
-
-    QListViewItem *last = 0;
-    for( uint i=0; i < selected.count(); i = i+2 )
-        last = new KListViewItem( m_playlists, 0, selected[i], selected[i+1] );
-
-    m_applyButton->setEnabled( true );
-}
-
-/// We must make sure that we set m_selected accordingly prior to calling this function.
-void
-Party::subPlaylists() //SLOT
-{
-    if( m_selected.isEmpty() ) return;
-
-    //remove the items
-    for( QListViewItem *item = m_selected.first(); item; item = m_selected.next() )
-        delete item;
-
-    m_subButton->setEnabled( false );
-    m_applyButton->setEnabled( true );
-}
-
-void
-Party::setAppendMode( int id ) //SLOT
-{
-    bool enable = false;
-    if( id == 2 ) enable = true;
-
-    m_playlists->setEnabled( enable );
 }
 
 void
@@ -226,9 +139,6 @@ Party::applySettings() //SLOT
         type = "Custom";
 
     AmarokConfig::setPartyType( type );
-
-    if ( AmarokConfig::partyType() == "Custom" )
-        AmarokConfig::setPartyCustomList( customList() );
 
     if ( AmarokConfig::partyPreviousCount() != previousCount() )
     {
@@ -263,6 +173,12 @@ Party::statusChanged( bool enable ) // SLOT
 }
 
 void
+Party::repopulate() // SLOT
+{
+    Playlist::instance()->repopulate();
+}
+
+void
 Party::updateApplyButton() //SLOT
 {
     if( cycleTracks() != AmarokConfig::partyCycleTracks() ||
@@ -288,36 +204,12 @@ Party::updateApplyButton() //SLOT
 
 }
 
-void
-Party::updateAddButton() //SLOT
-{
-    if( !PlaylistBrowser::instance()->selectedList().isEmpty() )
-        m_addButton->setEnabled( true );
-    else
-        m_addButton->setEnabled( false );
-}
-
-void
-Party::updateRemoveButton() //SLOT
-{
-    //assemble a list of what needs removing
-    //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
-    m_selected.clear();
-    QListViewItemIterator it( m_playlists, QListViewItemIterator::Selected);
-
-    for( ; *it; m_selected.prepend( *it ), ++it );
-
-    if( m_selected.isEmpty() )
-        m_subButton->setEnabled( false );
-    else
-        m_subButton->setEnabled( true );
-}
-
 int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }
 int     Party::upcomingCount() { return m_base->m_upcomingIntSpinBox->value(); }
 int     Party::appendCount()   { return m_base->m_appendCountIntSpinBox->value(); }
 int     Party::appendType()    { return m_base->m_appendType->currentItem(); }
 bool    Party::cycleTracks()   { return m_base->m_cycleTracks->isChecked(); }
 bool    Party::markHistory()   { return m_base->m_markHistory->isChecked(); }
+
 
 #include "party.moc"

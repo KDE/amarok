@@ -58,6 +58,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
     setPixmap( 0, SmallIcon("folder_red") );
 
     setText( 0, t );
+    setText( 1, "" );
 }
 
 
@@ -73,6 +74,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     setPixmap( 0, SmallIcon("folder") );
 
     setText( 0, t );
+    setText( 1, "" );
 }
 
 
@@ -86,6 +88,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, QDo
     setExpandable( true );
 
     setPixmap( 0, SmallIcon("folder_red") );
+    setText( 1, "" );
 }
 
 
@@ -364,7 +367,7 @@ void PlaylistEntry::setOpen( bool open )
     if( open == isOpen())
         return;
 
-    if( open ) {    //expande
+    if( open ) {    //expand
 
         if( m_loaded ) {
             //create track items
@@ -491,14 +494,17 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
     //if the playlist has been modified a save icon is shown
-    if( m_modified && m_savePix ) {
+    if( m_modified && m_savePix )
+    {
         pBuf.drawPixmap( text_x, (textHeight - m_savePix->height())/2, *m_savePix );
         text_x += m_savePix->width()+4;
-    } else if( pixmap(0) ) {
-        int y = (textHeight - pixmap(0)->height())/2;
+    }
+    else if( pixmap( column ) )
+    {
+        int y = (textHeight - pixmap(column)->height())/2;
         if( detailedView ) y++;
-        pBuf.drawPixmap( text_x, y, *pixmap(0) );
-        text_x += pixmap(0)->width()+4;
+        pBuf.drawPixmap( text_x, y, *pixmap(column) );
+        text_x += pixmap(column)->width()+4;
     }
 
     // draw the playlist name in italics
@@ -507,7 +513,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
-    QString name = text(0);
+    QString name = text(column);
     if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
     {
         int ellWidth = fmName.width( i18n("...") );
@@ -723,11 +729,11 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
-    if( pixmap(0) ) {
-        int y = (textHeight - pixmap(0)->height())/2;
+    if( pixmap(column) ) {
+        int y = (textHeight - pixmap(column)->height())/2;
         if( detailedView ) y++;
-        pBuf.drawPixmap( text_x, y, *pixmap(0) );
-        text_x += pixmap(0)->width()+4;
+        pBuf.drawPixmap( text_x, y, *pixmap(column) );
+        text_x += pixmap(column)->width()+4;
     }
 
     font.setBold( PlaylistBrowser::instance()->viewMode() == PlaylistBrowser::DETAILEDVIEW );
@@ -735,7 +741,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     pBuf.setFont( font );
     QFontMetrics fmName( font );
 
-    QString name = text(0);
+    QString name = text(column);
     if( fmName.width( name ) + text_x + lv->itemMargin()*2 > width )
     {
         int ellWidth = fmName.width( i18n("...") );

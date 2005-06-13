@@ -71,7 +71,7 @@
         <whatsthis>Party mode will append this type of song to the end of the playlist.</whatsthis>
         <default>Suggestion</default>
     </entry>
-    <entry key="Party Custom List" type="String">
+    <entry key="Party Custom List" type="StringList">
         <label>List of smart playlists to be appended for party mode.</label>
         <whatsthis>List of smart playlists to be appended for party mode.</whatsthis>
         <default></default>
