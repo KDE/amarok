@@ -213,7 +213,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
 
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n("Queue Manager") ) );
-    setInitialSize( QSize( 480, 260 ) );
+    setInitialSize( QSize( 400, 260 ) );
 
     QVBox *mainBox = new QVBox( this );
     setMainWidget( mainBox );
