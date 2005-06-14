@@ -2284,7 +2284,7 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 void
 Playlist::showQueueManager()
 {
-    QueueManager dialog( this );
+    QueueManager dialog( 0 );
 
     dialog.setInitialSize( QSize( 480, 260 ) );
 

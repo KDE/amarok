@@ -11,6 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include "queuemanager.h"
 
 #include <kapplication.h>
@@ -89,6 +90,14 @@ QueueList::keyPressEvent( QKeyEvent *e )
         case Key_Delete:    //remove
             removeSelected();
             break;
+
+        case CTRL+Key_Up:
+            moveSelectedUp();
+            break;
+
+        case CTRL+Key_Down:
+            moveSelectedDown();
+            break;
     }
 }
 
@@ -121,22 +130,26 @@ QueueList::hasSelection()
 void
 QueueList::moveSelectedUp() // SLOT
 {
+    QPtrList<QListViewItem> selected;
     QListViewItemIterator it( this, QListViewItemIterator::Selected);
+
+    for( ; it.current(); ++it )
+        selected.append( it.current() );
 
     // Whilst it would be substantially faster to do this: ((*it)->itemAbove())->move( *it ),
     // this would only work for sequentially ordered items
-    for( ; it.current(); ++it )
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
-        if( (*it) == firstChild() )
+        if( item == itemAtIndex(0) )
             continue;
 
-        QListViewItem *after = 0;
+        QListViewItem *after;
 
-        if( (*it) != firstChild()->nextSibling() )
-            (*it)->itemAbove()->itemAbove();
+        item == itemAtIndex(1) ?
+            after = 0:
+            after = ( item->itemAbove() )->itemAbove();
 
-
-        (*it)->moveItem( after );
+        moveItem( item, 0, after );
     }
 }
 
@@ -157,8 +170,43 @@ QueueList::moveSelectedDown() // SLOT
         if( !after )
             continue;
 
-        item->moveItem( after );
+        moveItem( item, 0, after );
     }
+}
+
+void
+QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
+{
+    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+}
+
+void
+QueueList::contentsDropEvent( QDropEvent *e )
+{
+    if( e->source() == viewport() )
+        KListView::contentsDropEvent( e );
+
+//     else
+//     {
+//         KURL::List list;
+//         QMap<QString, QString> map;
+//         if( KURLDrag::decode( e, list, map ) ) {
+//             if( parent ) {
+//                 //insert the dropped tracks
+//                 PlaylistEntry *playlist = (PlaylistEntry *)parent;
+//                 playlist->insertTracks( after, list, map );
+//             }
+//             else //dropped on a playlist item
+//             {
+//                 PlaylistEntry *playlist = (PlaylistEntry *)item;
+//                 //append the dropped tracks
+//                 playlist->insertTracks( 0, list, map );
+//             }
+//         }
+//         else
+//             e->ignore();
+//     }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -168,6 +216,8 @@ QueueList::moveSelectedDown() // SLOT
 QueueManager::QueueManager( QWidget *parent, const char *name )
                     : KDialogBase( parent, name, false, i18n("Queue Manager"), Ok|Cancel )
 {
+    setWFlags( WX11BypassWM | WStyle_StaysOnTop );
+
     makeVBoxMainWidget();
 
     QHBox *box = new QHBox( mainWidget() );
@@ -190,6 +240,8 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     connect( m_listview, SIGNAL( selectionChanged() ),  SLOT( updateButtons()  ) );
 
     insertItems();
+
+    show();
 }
 
 QPtrList<PlaylistItem>

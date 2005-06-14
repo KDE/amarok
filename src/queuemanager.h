@@ -40,6 +40,8 @@ class QueueList : public KListView
         void    removeSelected();
 
     private:
+        void    contentsDragEnterEvent( QDragEnterEvent *e );
+        void    contentsDropEvent( QDropEvent *e );
         void    keyPressEvent( QKeyEvent *e );
         void    viewportPaintEvent( QPaintEvent* );
 };
