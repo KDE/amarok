@@ -80,6 +80,30 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
     }
 }
 
+void QueueList::keyPressEvent( QKeyEvent *e )
+{
+    switch( e->key() ) {
+
+        case Key_Delete:    //remove
+            removeSelected();
+            break;
+    }
+}
+
+void QueueList::removeSelected()
+{
+    setSelected( currentItem(), true );
+
+    QPtrList<QListViewItem> selected;
+    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+
+    for( ; it.current(); ++it )
+        selected.append( it.current() );
+
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+        delete item;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS QueueManager
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,8 @@ class QueueList : public KListView
         ~QueueList() {};
 
     private:
+        void keyPressEvent( QKeyEvent *e );
+        void removeSelected();
         void viewportPaintEvent( QPaintEvent* );
 };
 
