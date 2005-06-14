@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta2:
   FEATURES:
+    * Support for scope in the Helix engine.
     * Queue manager to help organise your queued tracks. (BR 90594)
     * Ability to create Smart Playlists based on file path. (BR 92467)
     * Per track scripting via custom playlist context menu items.
