@@ -521,6 +521,12 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
         amaroK::StatusBar::instance()->shortMessage( i18n("Invalid smartplaylist requested (%1). Trying another source.").arg(playlistName) );
     }
 
+    if ( !pl ) {
+        debug() << "[PARTY]: No valid source found." << endl;
+        amaroK::StatusBar::instance()->shortMessage( i18n("No valid sources set for this Dynamic Playlist.") );
+        return;
+    }
+
     if( pl->rtti() == PlaylistEntry::RTTI )
     {
         #define pl static_cast<PlaylistEntry *>(pl)
@@ -1167,8 +1173,7 @@ void
 Playlist::updateNextPrev()
 {
     amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( !isParty() );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() && !isParty() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
 
