@@ -14,6 +14,7 @@
 #include "queuemanager.h"
 
 #include <kapplication.h>
+#include <kguiitem.h>
 #include <klocale.h>
 #include <kurldrag.h>
 
@@ -80,7 +81,8 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
     }
 }
 
-void QueueList::keyPressEvent( QKeyEvent *e )
+void
+QueueList::keyPressEvent( QKeyEvent *e )
 {
     switch( e->key() ) {
 
@@ -90,7 +92,8 @@ void QueueList::keyPressEvent( QKeyEvent *e )
     }
 }
 
-void QueueList::removeSelected()
+void
+QueueList::removeSelected()
 {
     setSelected( currentItem(), true );
 
@@ -102,6 +105,60 @@ void QueueList::removeSelected()
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
         delete item;
+}
+
+bool
+QueueList::hasSelection()
+{
+    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+
+    if( !it.current() )
+        return false;
+
+    return true;
+}
+
+void
+QueueList::moveSelectedUp() // SLOT
+{
+    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+
+    // Whilst it would be substantially faster to do this: ((*it)->itemAbove())->move( *it ),
+    // this would only work for sequentially ordered items
+    for( ; it.current(); ++it )
+    {
+        if( (*it) == firstChild() )
+            continue;
+
+        QListViewItem *after = 0;
+
+        if( (*it) != firstChild()->nextSibling() )
+            (*it)->itemAbove()->itemAbove();
+
+
+        (*it)->moveItem( after );
+    }
+}
+
+void
+QueueList::moveSelectedDown() // SLOT
+{
+    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+
+    QPtrList<QListViewItem> list;
+
+    for( ; it.current(); ++it )
+        list.append( *it );
+
+    for( QListViewItem *item  = list.last(); item; item = list.prev() )
+    {
+        QListViewItem *after = item->nextSibling();
+
+        if( !after )
+            continue;
+
+        item->moveItem( after );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -116,6 +173,21 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     QHBox *box = new QHBox( mainWidget() );
     box->setSpacing( 5 );
     m_listview = new QueueList( box );
+
+    QVBox *buttonBox = new QVBox( box );
+    m_up     = new KPushButton( KGuiItem( QString::null, "up"), buttonBox );
+    m_down   = new KPushButton( KGuiItem( QString::null, "down"), buttonBox  );
+    m_remove = new KPushButton( KGuiItem( QString::null, "edittrash"), buttonBox );
+
+    m_up->setEnabled( false );
+    m_down->setEnabled( false );
+    m_remove->setEnabled( false );
+
+    connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
+    connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
+    connect( m_remove, SIGNAL( clicked() ), m_listview, SLOT( removeSelected() ) );
+
+    connect( m_listview, SIGNAL( selectionChanged() ),  SLOT( updateButtons()  ) );
 
     insertItems();
 }
@@ -144,10 +216,20 @@ QueueManager::insertItems()
         title.append( item->title() );
 
         last = new QListViewItem( m_listview, last, title );
-//         last->setDragEnabled( true );
-//         last->setDropEnabled( true );
         m_map[ last ] = item;
     }
 }
 
+void
+QueueManager::updateButtons() //SLOT
+{
+    bool enable = false;
+    if( m_listview->hasSelection() ) enable = true;
+
+    m_up->setEnabled( enable );
+    m_down->setEnabled( enable );
+    m_remove->setEnabled( enable );
+}
+
 #include "queuemanager.moc"
+
