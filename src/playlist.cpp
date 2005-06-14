@@ -2288,7 +2288,14 @@ Playlist::showQueueManager()
 
     if( dialog.exec() == QDialog::Accepted )
     {
+        QPtrList<PlaylistItem> newQueue = m_nextTracks;
         m_nextTracks = dialog.newQueue();
+
+        // make sure we repaint items no longer queued
+        for( PlaylistItem* item = newQueue.getFirst(); item; item = newQueue.next() )
+            repaintItem( item );
+
+        // repaint newly queued or altered queue items
         refreshNextTracks();
     }
 
