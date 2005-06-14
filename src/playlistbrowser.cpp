@@ -937,14 +937,11 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     {
         #define item static_cast<PartyEntry *>(item)
         Party::instance()->loadConfig( item );
-        debug() << "Removing items..." << endl;
         for( uint i=0; i < m_dynamicEntries.count(); i++ )
         {
-            debug() << "Remove attempt: " << m_dynamicEntries.at( i )->text(0) << endl;
             QListViewItem *it = m_dynamicEntries.at( i );
             if( it )
             {
-                debug() << "Removing: " << it->text(0) << endl;
                 m_dynamicEntries.remove( it );
                 it->setPixmap( 1, QPixmap() );
             }
@@ -952,14 +949,11 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         if( item->appendType() == 2 )
         {
             QStringList playlists = item->items();
-            debug() << "Loading items... (" << playlists.count() << ")" << endl;
             for( uint i=0; i < playlists.count(); i++ )
             {
-                debug() << "Load attempt: " << playlists[i] << endl;
                 QListViewItem *it = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
                 if( it )
                 {
-                    debug() << "Checked: " << it->text(0) << endl;
                     it->setPixmap( 1, SmallIcon("apply") );
                     m_dynamicEntries.append( it );
                 }
