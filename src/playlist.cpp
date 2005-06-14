@@ -2283,10 +2283,15 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 void
 Playlist::showQueueManager()
 {
-    QueueManager dialog( 0 );
+    DEBUG_BLOCK
 
-    dialog.setInitialSize( QSize( 480, 260 ) );
+    // Only show the dialog once
+    if( QueueManager::instance() ) {
+        QueueManager::instance()->raise();
+        return;
+    }
 
+    QueueManager dialog;
     if( dialog.exec() == QDialog::Accepted )
     {
         QPtrList<PlaylistItem> newQueue = m_nextTracks;
@@ -2299,7 +2304,6 @@ Playlist::showQueueManager()
         // repaint newly queued or altered queue items
         refreshNextTracks();
     }
-
 }
 
 bool

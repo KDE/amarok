@@ -11,18 +11,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QUEUEMANAGER_H
-#define QUEUEMANAGER_H
+#ifndef AMAROK_QUEUEMANAGER_H
+#define AMAROK_QUEUEMANAGER_H
 
-
-#include <playlist.h>
-#include <playlistitem.h>
+#include "playlistitem.h"
 
 #include <kdialogbase.h>    //baseclass
 #include <klistview.h>      //baseclass
-#include <kpushbutton.h>
 
 #include <qmap.h>
+
+class KPushButton;
 
 class QueueList : public KListView
 {
@@ -52,7 +51,7 @@ class QueueManager : public KDialogBase
 
     public:
         QueueManager( QWidget *parent = 0, const char *name = 0 );
-        ~QueueManager() {};
+        ~QueueManager();
 
         QPtrList<PlaylistItem> newQueue();
 
@@ -77,4 +76,4 @@ class QueueManager : public KDialogBase
         static QueueManager *s_instance;
 };
 
-#endif /* QUEUEMANAGER_H */
+#endif /* AMAROK_QUEUEMANAGER_H */

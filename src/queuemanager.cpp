@@ -11,12 +11,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "debug.h"
+#include "playlist.h"
 #include "queuemanager.h"
 
 #include <kapplication.h>
 #include <kguiitem.h>
 #include <klocale.h>
+#include <kpushbutton.h>
 #include <kurldrag.h>
 
 #include <qpainter.h>
@@ -205,13 +206,17 @@ QueueList::contentsDropEvent( QDropEvent *e )
 QueueManager *QueueManager::s_instance = 0;
 
 QueueManager::QueueManager( QWidget *parent, const char *name )
-                    : KDialogBase( parent, name, false, i18n("Queue Manager"), Ok|Cancel )
+    : KDialogBase( KDialogBase::Swallow, WType_Dialog|WStyle_Customize|WStyle_DialogBorder|WStyle_StaysOnTop,
+                   parent, name, false, 0, Ok|Cancel )
 {
     s_instance = this;
 
-    setWFlags( WX11BypassWM | WStyle_StaysOnTop );
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n("Queue Manager") ) );
+    setInitialSize( QSize( 480, 260 ) );
 
-    makeVBoxMainWidget();
+    QVBox *mainBox = new QVBox( this );
+    setMainWidget( mainBox );
 
     QHBox *box = new QHBox( mainWidget() );
     box->setSpacing( 5 );
@@ -235,11 +240,14 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
 
     Playlist *pl = Playlist::instance();
     connect( pl,         SIGNAL( selectionChanged() ), SLOT( updateButtons() ) );
-    connect( m_listview, SIGNAL( selectionChanged() ),  SLOT( updateButtons()  ) );
+    connect( m_listview, SIGNAL( selectionChanged() ), SLOT( updateButtons()  ) );
 
     insertItems();
+}
 
-    show();
+QueueManager::~QueueManager()
+{
+    s_instance = 0;
 }
 
 void
@@ -305,9 +313,8 @@ QueueManager::insertItems()
 void
 QueueManager::updateButtons() //SLOT
 {
-    bool enablePL = false, enableQL = false;
-    if( m_listview->hasSelection() ) enableQL = true;
-    if( !( Playlist::instance()->selectedItems() ).isEmpty() ) enablePL = true;
+    const bool enablePL = !Playlist::instance()->selectedItems().isEmpty();
+    const bool enableQL = m_listview->hasSelection();
 
     m_up->setEnabled( enableQL );
     m_down->setEnabled( enableQL );
