@@ -28,7 +28,6 @@
 
 QueueList::QueueList( QWidget *parent, const char *name )
             : KListView( parent, name )
-            , m_marker( 0 )
 {
     addColumn( i18n("Name") );
     setResizeMode( QListView::LastColumn );
@@ -46,14 +45,7 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
 {
     if( e ) KListView::viewportPaintEvent( e );
 
-    if( m_marker )
-    {
-        QPainter painter( viewport() );
-        painter.fillRect( drawDropVisualizer( 0, 0, m_marker ),
-                                QBrush( colorGroup().highlight(), QBrush::Dense4Pattern ) );
-    }
-
-    else if( !childCount() && e )
+    if( !childCount() && e )
     {
         QPainter p( viewport() );
         QString minimumText(i18n(
@@ -87,20 +79,6 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
         delete t;
     }
 }
-
-void
-QueueList::eraseMarker()
-{
-    if( m_marker )
-    {
-        QRect spot;
-        spot = drawDropVisualizer( 0, 0, m_marker );
-
-        m_marker = 0;
-        viewport()->repaint( spot, false );
-    }
-}
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS QueueManager

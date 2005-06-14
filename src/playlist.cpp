@@ -2287,7 +2287,10 @@ Playlist::showQueueManager()
     QueueManager dialog( this );
 
     if( dialog.exec() == QDialog::Accepted )
-        ;
+    {
+        m_nextTracks = dialog.newQueue();
+        refreshNextTracks();
+    }
 
 }
 

@@ -33,9 +33,6 @@ class QueueList : public KListView
 
     private:
         void viewportPaintEvent( QPaintEvent* );
-        void eraseMarker();
-
-        QListViewItem *m_marker;
 };
 
 class QueueManager : public KDialogBase
