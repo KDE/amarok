@@ -38,9 +38,9 @@
 #include "helix-sp.h"
 #include "hspvoladvise.h"
 #include "utils.h"
+#include "hsphook.h"
 
 typedef HX_RESULT (HXEXPORT_PTR FPRMSETDLLACCESSPATH) (const char*);
-
 
 class HelixSimplePlayerAudioStreamInfoResponse : public IHXAudioStreamInfoResponse
 {
@@ -68,8 +68,10 @@ public:
                         );
 private:
    HelixSimplePlayer *m_Player;
+   IHXAudioStream    *m_Stream;
    int                m_index;
    LONG32             m_lRefCount;
+   HXAudioFormat      m_audiofmt;
 };
 
 STDMETHODIMP
@@ -84,7 +86,7 @@ HelixSimplePlayerAudioStreamInfoResponse::QueryInterface(REFIID riid, void**ppvO
     else if(IsEqualIID(riid, IID_IHXAudioStreamInfoResponse))
     {
         AddRef();
-        *ppvObj = (IHXVolume*)this;
+        *ppvObj = (IHXAudioStreamInfoResponse*)this;
         return HXR_OK;
     }
     *ppvObj = NULL;
@@ -112,6 +114,33 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
 STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
 {
    m_Player->xf().toStream = pAudioStream;
+
+   IHXAudioStream2 *is2 = 0;
+   pAudioStream->QueryInterface(IID_IHXAudioStream2, (void **) &is2);
+   if (is2)
+   {
+      STDERR("Got AudioStream2 interface\n");
+      // get the audiostream info
+      is2->GetAudioFormat(&m_audiofmt);
+   }
+
+   IHXValues *pvalues = pAudioStream->GetStreamInfo();
+ 
+   m_Player->ppAudioPlayer[0]->CreateAudioStream(&m_Stream);
+   m_Stream->Init(&m_audiofmt, pvalues);
+
+   STDERR("AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", m_audiofmt.uChannels,
+          m_audiofmt.uBitsPerSample,
+          m_audiofmt.ulSamplesPerSec,
+          m_audiofmt.uMaxBlockSize);
+
+
+   HXAudioData ad;
+   ad.pData = 0;
+   ad.ulAudioTime = 0;
+   ad.uAudioStreamType = INSTANTANEOUS_AUDIO;
+   m_Stream->Write(&ad);
+
    STDERR("Stream Added player %d crossfade? %d\n", m_index, m_Player->xf().crossfading);
    return HXR_OK;
 }
@@ -274,9 +303,18 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_pszGUIDFile(NULL),
    m_pszGUIDList(NULL),
    m_Error(0),
-   m_ulNumSecondsPlayed(0)
+   m_ulNumSecondsPlayed(0),
+   scopecount(0),
+   scopebufhead(0),
+   scopebuftail(0)
 {
    m_xf.crossfading = 0;
+
+   pthread_mutexattr_t ma;
+
+   pthread_mutexattr_init(&ma);
+   pthread_mutexattr_settype(&ma, PTHREAD_MUTEX_FAST_NP); // note this is not portable outside linux and a few others
+   pthread_mutex_init(&m_scope_m, &ma);
 }
 
 void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome, const char *codecshome, int numPlayers)
@@ -531,7 +569,11 @@ int HelixSimplePlayer::addPlayer()
       HelixSimplePlayerAudioStreamInfoResponse *pASIR = new HelixSimplePlayerAudioStreamInfoResponse(this, nNumPlayers);
       ppAudioPlayer[nNumPlayers]->SetStreamInfoResponse(pASIR);
 
-      // ...and the CrossFader
+      // add the post-mix hook (for the scope)
+      HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
+      ppAudioPlayer[nNumPlayers]->AddPostMixHook(pPMAH, false /* DisableWrite */, true /* final hook */);
+
+      // ...and get the CrossFader
       ppAudioPlayer[nNumPlayers]->QueryInterface(IID_IHXAudioCrossFade,
                                                  (void **) &ppCrossFader[nNumPlayers]);
       if (!ppCrossFader[nNumPlayers])
@@ -1109,6 +1151,65 @@ bool HelixSimplePlayer::ReadGUIDFile()
    return bSuccess;
 }
 
+
+void HelixSimplePlayer::addScopeBuf(struct DelayQueue *item) 
+{
+   pthread_mutex_lock(&m_scope_m);
+   
+   if (scopebuftail)
+   {
+      item->fwd = 0;
+      scopebuftail->fwd = item;
+      scopebuftail = item;
+      scopecount++;
+   }
+   else
+   {
+      item->fwd = 0;
+      scopebufhead = item;
+      scopebuftail = item;
+      scopecount = 1;
+   }
+   pthread_mutex_unlock(&m_scope_m);
+}
+
+struct DelayQueue *HelixSimplePlayer::getScopeBuf()
+{
+   pthread_mutex_lock(&m_scope_m);
+   
+   struct DelayQueue *item = scopebufhead;
+   
+   if (item)
+   {
+      scopebufhead = item->fwd;
+      scopecount--;
+      if (!scopebufhead)
+         scopebuftail = 0;
+   }
+   
+   pthread_mutex_unlock(&m_scope_m);
+   
+   return item;
+}
+
+int HelixSimplePlayer::peekScopeTime(unsigned long &t) 
+{
+   if (scopebufhead)
+      t = scopebufhead->time;
+   else
+      return -1;
+   return 0;
+}
+
+void HelixSimplePlayer::clearScopeQ()
+{
+   struct DelayQueue *item;
+   while (item = getScopeBuf())
+      delete item;
+}
+
+
+
 #ifdef TEST_APP
 char* GetAppName(char* pszArgv0)
 {
@@ -1155,6 +1256,23 @@ void PrintUsage(const char* pszAppName)
     STDOUT("       -p : password to use in authentication response\n");
     STDOUT("\n");
 }
+
+#include <pthread.h>
+
+struct pt_t
+{
+   int playerIndex;
+   HelixSimplePlayer *splay;
+};
+
+void *play_thread(void *arg)
+{
+   struct pt_t *pt = (struct pt_t *) arg;
+   
+   STDERR("play_thread started for player %d\n",pt->playerIndex);
+   pt->splay->play(pt->playerIndex);
+}
+
 
 int main( int argc, char *argv[] )
 {
@@ -1342,45 +1460,52 @@ int main( int argc, char *argv[] )
     // start first player
     
     HelixSimplePlayer splay;
+    pthread_t thr1, thr2;
+    struct pt_t x = { 1, &splay };
 
     splay.init("/usr/local/RealPlayer/common","/usr/local/RealPlayer/plugins","/usr/local/RealPlayer/codecs", 2);
     
-    splay.enableCrossFader(0, 1);
-    splay.setURL(argv[i-2],0);
+    pthread_create(&thr1, 0, play_thread, (void *) &x);
+
+    //splay.enableCrossFader(0, 1);
+    splay.setURL(argv[1],1);
     bool xfstart = 0, didseek = 0, xfsetup = 0;
     unsigned long d = 15000;
     unsigned long xfpos;
     unsigned long counter = 0;
     int nowplayingon = 0;
 
-    splay.dispatch();
+    //splay.dispatch();
     STDERR("Before sleep\n");
     sleep(2);
 
-    splay.start(splay.xf().fromIndex);
+    //splay.start(0);
     while (!splay.done())
     {
-       splay.dispatch();
-       
-       if (!(counter % 1000))
+       //splay.dispatch();
+       sleep(1);
+       if (!(counter % 10))
           STDERR("time: %ld/%ld %ld/%ld count %d\n", splay.where(0), splay.duration(0), splay.where(1), splay.duration(1), counter);
        
        counter++;
        
-       if (splay.duration(splay.xf().fromIndex))
-          xfpos = splay.duration(0) - d;
+       if (splay.duration(x.playerIndex))
+          xfpos = splay.duration(x.playerIndex) - d;
 
-       if (!xfsetup && splay.where(splay.xf().fromIndex) > xfpos - 2000)
+       if (!xfsetup && splay.where(x.playerIndex) > xfpos - 2000)
        {
           xfsetup = 1;
-          splay.crossFade(argv[i-1], splay.where(splay.xf().fromIndex), d);
+          //splay.crossFade(argv[i-1], splay.where(splay.xf().fromIndex), d);
+          x.playerIndex = 0;
+          splay.setURL(argv[i-1],1);
+          pthread_create(&thr2, 0, play_thread, (void *) &x);
        }
 
-       if (!xfstart && splay.where(splay.xf().fromIndex) > xfpos - 1000)
-       {
-          xfstart = 1;
-          splay.startCrossFade();
-       }
+       //if (!xfstart && splay.where(splay.xf().fromIndex) > xfpos - 1000)
+       //{
+       //   xfstart = 1;
+       //   splay.startCrossFade();
+       //}
     }
 
 
@@ -1401,4 +1526,6 @@ int main( int argc, char *argv[] )
 //       splay.play(argv[i-1]);
 //    }
 }
+
+
 #endif // TEST_APP

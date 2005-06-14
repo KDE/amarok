@@ -38,7 +38,7 @@ public:
    virtual Engine::State state() const;
 
    virtual void play_finished(int playerIndex);
-   //virtual const Engine::Scope &scope();
+   virtual const Engine::Scope &scope();
 
    virtual amaroK::PluginConfig *configure() const;
 

@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libhelix-sp.la
 
 AM_CPPFLAGS = \
     -D_UNIX \
-    -Wall -Wreturn-type \
+    -Wall -Wreturn-type -DHELIX_CONFIG_DISABLE_ATOMIC_OPERATORS \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(srcdir)/helix-include/runtime \
@@ -20,6 +20,7 @@ libhelix_sp_la_SOURCES = \
     hspadvisesink.cpp \
     hsperror.cpp \
     hspauthmgr.cpp \
+    hsphook.cpp \
     iids.cpp \
     print.cpp \
     utils.cpp \

@@ -160,8 +160,8 @@ helix-sp.o: helix-include/common/container/hxmaputils.h
 helix-sp.o: helix-include/common/container/chxmapbuckets.h
 helix-sp.o: helix-include/common/container/chxmapstringtoob.h
 helix-sp.o: helix-include/common/container/chxmapstringtostring.h
-helix-sp.o: helix-include/common/container/chxmaplongtoobj.h globals.h
-helix-sp.o: helix-sp.h hspvoladvise.h utils.h
+helix-sp.o: helix-include/common/container/chxmaplongtoobj.h helix-sp.h
+helix-sp.o: hspvoladvise.h utils.h
 hspcontext.o: helixdefines.h helix-include/common/container/hxbuffer.h
 hspcontext.o: helix-include/common/include/ihxpckts.h
 hspcontext.o: helix-include/common/include/hxvalue.h
@@ -211,19 +211,8 @@ hspcontext.o: helix-include/client/include/hxclsnk.h
 hspcontext.o: helix-include/common/include/hxerror.h
 hspcontext.o: helix-include/common/include/hxprefs.h hspadvisesink.h
 hspcontext.o: hsperror.h hspauthmgr.h helix-include/common/include/hxauth.h
-hspcontext.o: hspcontext.h globals.h helix-include/common/system/dllpath.h
-hspcontext.o: helix-include/common/container/hxmap.h
-hspcontext.o: helix-include/common/container/chxmapptrtoptr.h
-hspcontext.o: helix-include/common/container/carray.h
-hspcontext.o: helix-include/common/container/hxmaputils.h
-hspcontext.o: helix-include/common/container/chxmapbuckets.h
-hspcontext.o: helix-include/common/container/chxmapstringtoob.h
-hspcontext.o: helix-include/common/container/chxmapstringtostring.h
-hspcontext.o: helix-include/common/container/chxmaplongtoobj.h
-hspcontext.o: helix-include/common/include/hxengin.h
-hspcontext.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
-hspcontext.o: helix-include/common/include/hxwin.h
-hspcontext.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+hspcontext.o: hspcontext.h helix-include/common/include/hxausvc.h helix-sp.h
+hspcontext.o: utils.h
 hspadvisesink.o: helixdefines.h /usr/include/stdio.h /usr/include/features.h
 hspadvisesink.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
 hspadvisesink.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
@@ -265,28 +254,8 @@ hspadvisesink.o: helix-include/runtime/hlxclib/limits.h
 hspadvisesink.o: helix-include/common/include/hxcore.h
 hspadvisesink.o: /usr/include/sys/time.h helix-include/common/include/hxwin.h
 hspadvisesink.o: helix-include/client/include/hxclsnk.h hspadvisesink.h
-hspadvisesink.o: print.h globals.h helix-include/common/system/dllpath.h
-hspadvisesink.o: helix-include/common/container/hxmap.h
-hspadvisesink.o: helix-include/common/container/chxmapptrtoptr.h
-hspadvisesink.o: helix-include/common/container/carray.h
-hspadvisesink.o: helix-include/common/dbgtool/hxassert.h
-hspadvisesink.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
-hspadvisesink.o: helix-include/runtime/hlxclib/stdio.h /usr/include/signal.h
-hspadvisesink.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
-hspadvisesink.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
-hspadvisesink.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
-hspadvisesink.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
-hspadvisesink.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
-hspadvisesink.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-hspadvisesink.o: helix-include/common/container/hxstring.h
-hspadvisesink.o: helix-include/runtime/hlxclib/string.h
-hspadvisesink.o: /usr/include/strings.h
-hspadvisesink.o: helix-include/common/container/hxmaputils.h
-hspadvisesink.o: helix-include/common/container/chxmapbuckets.h
-hspadvisesink.o: helix-include/common/container/chxmapstringtoob.h
-hspadvisesink.o: helix-include/common/container/chxmapstringtostring.h
-hspadvisesink.o: helix-include/common/container/chxmaplongtoobj.h
-hspadvisesink.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+hspadvisesink.o: print.h helix-include/common/include/hxausvc.h helix-sp.h
+hspadvisesink.o: utils.h
 hsperror.o: helixdefines.h helix-include/common/include/hxcomm.h
 hsperror.o: helix-include/common/include/hxengin.h
 hsperror.o: helix-include/common/include/hxcom.h
@@ -337,17 +306,8 @@ hsperror.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
 hsperror.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
 hsperror.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
 hsperror.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
-hsperror.o: hsperror.h print.h globals.h
-hsperror.o: helix-include/common/system/dllpath.h
-hsperror.o: helix-include/common/container/hxmap.h
-hsperror.o: helix-include/common/container/chxmapptrtoptr.h
-hsperror.o: helix-include/common/container/carray.h
-hsperror.o: helix-include/common/container/hxmaputils.h
-hsperror.o: helix-include/common/container/chxmapbuckets.h
-hsperror.o: helix-include/common/container/chxmapstringtoob.h
-hsperror.o: helix-include/common/container/chxmapstringtostring.h
-hsperror.o: helix-include/common/container/chxmaplongtoobj.h
-hsperror.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
+hsperror.o: hsperror.h print.h helix-include/common/include/hxausvc.h
+hsperror.o: helix-sp.h utils.h
 hspauthmgr.o: helixdefines.h /usr/include/stdio.h /usr/include/features.h
 hspauthmgr.o: /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h
 hspauthmgr.o: /usr/lib/gcc/i386-redhat-linux/3.4.3/include/stddef.h
@@ -378,33 +338,7 @@ hspauthmgr.o: helix-include/runtime/hlxclib/memory.h /usr/include/memory.h
 hspauthmgr.o: /usr/include/string.h /usr/include/xlocale.h
 hspauthmgr.o: helix-include/common/include/atomicbase.h
 hspauthmgr.o: helix-include/common/include/hxauth.h hspauthmgr.h
-hspauthmgr.o: /usr/include/ctype.h print.h globals.h
-hspauthmgr.o: helix-include/common/system/dllpath.h
-hspauthmgr.o: helix-include/common/container/hxmap.h
-hspauthmgr.o: helix-include/common/container/chxmapptrtoptr.h
-hspauthmgr.o: helix-include/common/container/carray.h
-hspauthmgr.o: helix-include/common/dbgtool/hxassert.h
-hspauthmgr.o: helix-include/runtime/hlxclib/assert.h /usr/include/assert.h
-hspauthmgr.o: helix-include/runtime/hlxclib/limits.h
-hspauthmgr.o: helix-include/runtime/hlxclib/stdio.h /usr/include/signal.h
-hspauthmgr.o: /usr/include/bits/signum.h /usr/include/bits/siginfo.h
-hspauthmgr.o: /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h
-hspauthmgr.o: /usr/include/asm/sigcontext.h /usr/include/bits/sigstack.h
-hspauthmgr.o: /usr/include/sys/ucontext.h /usr/include/bits/sigthread.h
-hspauthmgr.o: /usr/include/stdlib.h /usr/include/bits/waitflags.h
-hspauthmgr.o: /usr/include/bits/waitstatus.h /usr/include/alloca.h
-hspauthmgr.o: helix-include/common/container/hxstring.h
-hspauthmgr.o: helix-include/runtime/hlxclib/string.h /usr/include/strings.h
-hspauthmgr.o: helix-include/common/container/hxmaputils.h
-hspauthmgr.o: helix-include/common/container/chxmapbuckets.h
-hspauthmgr.o: helix-include/common/container/chxmapstringtoob.h
-hspauthmgr.o: helix-include/common/container/chxmapstringtostring.h
-hspauthmgr.o: helix-include/common/container/chxmaplongtoobj.h
-hspauthmgr.o: helix-include/common/include/hxengin.h
-hspauthmgr.o: helix-include/common/include/ihxpckts.h
-hspauthmgr.o: helix-include/common/include/hxvalue.h
-hspauthmgr.o: helix-include/common/include/hxcore.h /usr/include/sys/time.h
-hspauthmgr.o: helix-include/common/include/hxwin.h
+hspauthmgr.o: /usr/include/ctype.h print.h
 hspauthmgr.o: helix-include/common/include/hxausvc.h helix-sp.h utils.h
 iids.o: helixdefines.h helix-include/common/include/hxtypes.h
 iids.o: /usr/include/sys/param.h /usr/include/limits.h

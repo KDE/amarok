@@ -17,12 +17,15 @@
 class HSPClientAdviceSink;
 class HSPClientContext;
 class IHXErrorSinkControl;
+class HelixSimplePlayerAudioStreamInfoResponse;
 
 #include <limits.h>
 #include <sys/param.h>
+#include <pthread.h>
 #define MAX_PATH PATH_MAX
 
 #define MAX_PLAYERS 100 // that should do it...
+#define MAX_SCOPE_SAMPLES 5120
 
 class HelixSimplePlayer;
 class CHXURL;
@@ -38,6 +41,13 @@ class IHXVolume;
 class IHXPlayerNavigator;
 class IHXClientEngineSelector;
 class IHXClientEngine;
+
+struct DelayQueue
+{
+   struct DelayQueue *fwd;
+   unsigned long time;
+   int buf[512];
+};
 
 class HelixSimplePlayer
 {
@@ -128,10 +138,16 @@ public:
    const IHXAudioPlayer *getAudioPlayer(int playerIndex) const { return ppAudioPlayer[playerIndex]; }
    const IHXAudioCrossFade *getCrossFader(int playerIndex) const { return ppCrossFader[playerIndex]; }
    void startCrossFade();
-   
+
+   // scope
+   void addScopeBuf(struct DelayQueue *item);
+   struct DelayQueue *getScopeBuf();
+   int getScopeCount() { return scopecount; }
+   int peekScopeTime(unsigned long &t);
+   void clearScopeQ();
+
 private:
 
-   //static struct _stGlobals* g_pstGlobals;
    bool                 bEnableAdviceSink;
    bool                 bEnableVerboseMode;
    IHXClientEngine*     pEngine;   
@@ -142,9 +158,14 @@ private:
    int                  m_Error;
    unsigned long        m_ulNumSecondsPlayed;
 
+   int                  scopecount;
+   struct DelayQueue   *scopebufhead;
+   struct DelayQueue   *scopebuftail;
+   pthread_mutex_t      m_scope_m;
    friend class HSPClientAdviceSink;
    friend class HSPErrorSink;
    friend class HSPAuthenticationManager;
+   friend class HelixSimplePlayerAudioStreamInfoResponse;
 };
 
 #endif

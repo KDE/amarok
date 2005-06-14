@@ -149,6 +149,7 @@ HelixEngine::stop()
    debug() << "In stop\n";
    m_url = KURL();
    HXSplay::stop();
+   clearScopeQ();
    m_state = Engine::Empty;
    emit stateChanged( Engine::Empty );
 }
@@ -246,11 +247,42 @@ HelixEngine::timerEvent( QTimerEvent * )
 }
 
 
-//amaroK::PluginConfig*
-//HelixEngine::configure() const
-//{
-//    return new XineConfigDialog( m_xine );
-//}
+#include <iostream>
+using namespace std;
+
+const Engine::Scope &HelixEngine::scope()
+{
+   int i, err;
+   struct DelayQueue *item = 0;
+
+   debug() << "In Scope\n";
+
+   unsigned long w = position();
+   unsigned long p;
+   err = peekScopeTime(p);
+
+   if (err || !w || w < p) // not enough buffers in the queue yet
+      return m_scope;
+
+   while (!err && p < w)
+   {
+      if (item)
+         delete item;
+      
+      item = getScopeBuf();
+      err = peekScopeTime(p);
+   }
+
+   if (!item)
+      return m_scope;
+
+   for (i=0; i < 512; i++)
+      m_scope[i] = (short int) item->buf[i];
+   
+   delete item;
+   return m_scope;
+}
+
 
 namespace Debug
 {
