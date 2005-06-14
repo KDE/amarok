@@ -3,9 +3,8 @@
                             -------------------
     begin                : Don Dez 5 2002
     copyright            : (C) 2002 by Mark Kretschmann
-                            2005 Ian Monroe
-    copyright            : (C) 2005 by G�or Lehel
-    email                : illissius@gmail.com
+                           (C) 2005 Ian Monroe
+                           (C) 2005 by G�or Lehel
 ***************************************************************************/
 
 /***************************************************************************
