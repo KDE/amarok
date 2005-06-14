@@ -535,7 +535,8 @@ void PlaylistBrowser::saveSmartPlaylists()
 {
     QFile file( smartplaylistBrowserCache() );
 
-    if( !file.open( IO_WriteOnly ) ) return;
+    // If the user hadn't set a collection, we didn't create the Smart Playlist Item
+    if( !m_smartCategory || !file.open( IO_WriteOnly ) ) return;
 
     QDomDocument doc;
     QDomElement smartB = m_smartCategory->xml();
