@@ -177,7 +177,7 @@ QueueList::moveSelectedDown() // SLOT
 void
 QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() != viewport() && KURLDrag::canDecode( e ) );
+    e->accept( e->source() != viewport() );
 }
 
 void
@@ -186,26 +186,15 @@ QueueList::contentsDropEvent( QDropEvent *e )
     if( e->source() == viewport() )
         KListView::contentsDropEvent( e );
 
-//     else
-//     {
-//         KURL::List list;
-//         QMap<QString, QString> map;
-//         if( KURLDrag::decode( e, list, map ) ) {
-//             if( parent ) {
-//                 //insert the dropped tracks
-//                 PlaylistEntry *playlist = (PlaylistEntry *)parent;
-//                 playlist->insertTracks( after, list, map );
-//             }
-//             else //dropped on a playlist item
-//             {
-//                 PlaylistEntry *playlist = (PlaylistEntry *)item;
-//                 //append the dropped tracks
-//                 playlist->insertTracks( 0, list, map );
-//             }
-//         }
-//         else
-//             e->ignore();
-//     }
+    else
+    {
+        QListViewItem *parent = 0;
+        QListViewItem *after;
+
+        findDrop( e->pos(), parent, after );
+
+        QueueManager::instance()->addItems( after );
+    }
 
 }
 
@@ -213,9 +202,13 @@ QueueList::contentsDropEvent( QDropEvent *e )
 /// CLASS QueueManager
 //////////////////////////////////////////////////////////////////////////////////////////
 
+QueueManager *QueueManager::s_instance = 0;
+
 QueueManager::QueueManager( QWidget *parent, const char *name )
                     : KDialogBase( parent, name, false, i18n("Queue Manager"), Ok|Cancel )
 {
+    s_instance = this;
+
     setWFlags( WX11BypassWM | WStyle_StaysOnTop );
 
     makeVBoxMainWidget();
@@ -228,20 +221,57 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_up     = new KPushButton( KGuiItem( QString::null, "up"), buttonBox );
     m_down   = new KPushButton( KGuiItem( QString::null, "down"), buttonBox  );
     m_remove = new KPushButton( KGuiItem( QString::null, "edittrash"), buttonBox );
+    m_add    = new KPushButton( KGuiItem( QString::null, "edit_add"), buttonBox );
 
     m_up->setEnabled( false );
     m_down->setEnabled( false );
     m_remove->setEnabled( false );
+    m_add->setEnabled( false );
 
     connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
     connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
     connect( m_remove, SIGNAL( clicked() ), m_listview, SLOT( removeSelected() ) );
+    connect( m_add,    SIGNAL( clicked() ), SLOT( addItems() ) );
 
+    Playlist *pl = Playlist::instance();
+    connect( pl,         SIGNAL( selectionChanged() ), SLOT( updateButtons() ) );
     connect( m_listview, SIGNAL( selectionChanged() ),  SLOT( updateButtons()  ) );
 
     insertItems();
 
     show();
+}
+
+void
+QueueManager::addItems( QListViewItem *after )
+{
+    /*HACK!!!!! We can know which items where dragged since they should still be selected
+      I do this, because:
+        - Dragging items from the playlist provides urls
+        - Providing urls, requires iterating through the entire list in order to find which
+          item was selected.  Possibly a very expensive task
+        - After a drag, those items are still selected in the playlist, so we can find out
+          which PlaylistItems were dragged by selectedItems();
+
+        */
+
+    if( !after )
+        after = m_listview->lastChild();
+
+    QPtrList<QListViewItem> list = Playlist::instance()->selectedItems();
+
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+    {
+        #define item static_cast<PlaylistItem*>(item)
+        QString title = item->artist();
+        title.append( i18n(" - " ) );
+        title.append( item->title() );
+
+        after = new QListViewItem( m_listview, after, title );
+        m_map[ after ] = item;
+        #undef item
+    }
+
 }
 
 QPtrList<PlaylistItem>
@@ -275,12 +305,14 @@ QueueManager::insertItems()
 void
 QueueManager::updateButtons() //SLOT
 {
-    bool enable = false;
-    if( m_listview->hasSelection() ) enable = true;
+    bool enablePL = false, enableQL = false;
+    if( m_listview->hasSelection() ) enableQL = true;
+    if( !( Playlist::instance()->selectedItems() ).isEmpty() ) enablePL = true;
 
-    m_up->setEnabled( enable );
-    m_down->setEnabled( enable );
-    m_remove->setEnabled( enable );
+    m_up->setEnabled( enableQL );
+    m_down->setEnabled( enableQL );
+    m_remove->setEnabled( enableQL );
+    m_add->setEnabled( enablePL );
 }
 
 #include "queuemanager.moc"

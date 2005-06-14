@@ -176,7 +176,6 @@ static inline bool isParty() { return AmarokConfig::partyMode(); }
 
 Playlist *Playlist::s_instance = 0;
 
-
 Playlist::Playlist( QWidget *parent )
         : KListView( parent, "ThePlaylist" )
         , EngineObserver( EngineController::instance() )

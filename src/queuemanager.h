@@ -56,6 +56,11 @@ class QueueManager : public KDialogBase
 
         QPtrList<PlaylistItem> newQueue();
 
+        static QueueManager *instance() { return s_instance; }
+
+    public  slots:
+        void    addItems( QListViewItem *after = 0 );
+
     private slots:
         void    updateButtons();
 
@@ -67,6 +72,9 @@ class QueueManager : public KDialogBase
         KPushButton *m_up;
         KPushButton *m_down;
         KPushButton *m_remove;
+        KPushButton *m_add;
+
+        static QueueManager *s_instance;
 };
 
 #endif /* QUEUEMANAGER_H */
