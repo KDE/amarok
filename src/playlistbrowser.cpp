@@ -569,6 +569,8 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
 
     ItemSaver dialog( i18n("Untitled"), this );
 
+    dialog.setInitialSize( QSize( 380, 80 ) );
+
     if( dialog.exec() == QDialog::Accepted )
     {
         QString name = dialog.title();
@@ -880,6 +882,8 @@ PlaylistBrowser::findItem( QString &t, int c )
 void PlaylistBrowser::saveCurrentPlaylist()
 {
     ItemSaver dialog( i18n("Current Playlist"), this );
+
+    dialog.setInitialSize( QSize( 380, 80 ) );
 
     if( dialog.exec() == QDialog::Accepted )
     {

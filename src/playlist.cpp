@@ -2286,6 +2286,8 @@ Playlist::showQueueManager()
 {
     QueueManager dialog( this );
 
+    dialog.setInitialSize( QSize( 480, 260 ) );
+
     if( dialog.exec() == QDialog::Accepted )
     {
         QPtrList<PlaylistItem> newQueue = m_nextTracks;
