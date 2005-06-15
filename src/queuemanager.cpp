@@ -172,7 +172,7 @@ QueueList::moveSelectedDown() // SLOT
 void
 QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() == static_cast<KListView*>( Playlist::instance() )->viewport() );
+    e->accept( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() );
 }
 
 void
@@ -180,7 +180,7 @@ QueueList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
     // Must be overloaded for dnd to work
 
-    e->accept( e->source() == static_cast<KListView*>( Playlist::instance() )->viewport() );
+    e->accept( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() );
 }
 
 void
