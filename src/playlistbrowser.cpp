@@ -79,7 +79,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
     removeButton   = new KAction( i18n("Remove"), "edittrash", 0, this, SLOT( removeSelectedItems() ), m_ac, "Remove" );
-    deleteButton   = new KAction( i18n("Delete"), "editdelete", 0, this, SLOT( deleteSelectedPlaylists() ), m_ac, "Delete" );
 
     viewMenuButton = new KActionMenu( i18n("View"), "configure", m_ac );
     viewMenuButton->setDelayed( false );
@@ -105,10 +104,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar->insertLineSeparator();
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );
-    deleteButton->plug( m_toolbar);
     m_toolbar->insertLineSeparator();
     viewMenuButton->plug( m_toolbar );
-
+    m_toolbar->insertSeparator();
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
     dynamicButton = new KToggleAction( i18n("Dynamic"), 0, m_ac, "Configure and start dynamic playmode" );
     dynamicButton->setIcon( "party" );
@@ -117,7 +115,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
-    deleteButton->setEnabled( false );
     //</Toolbar>
 
     m_listview = new PlaylistBrowserView( browserBox );
@@ -825,7 +822,6 @@ void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool for
         if( !m_playlistCategory || !m_playlistCategory->childCount() ) {    //first child
             removeButton->setEnabled( true );
             renameButton->setEnabled( true );
-            deleteButton->setEnabled( true );
         }
 
         if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
@@ -1192,7 +1188,6 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
 
     bool enable_remove = false;
     bool enable_rename = false;
-    bool enable_delete = false;
 
     if( !item )
         goto enable_buttons;
@@ -1201,13 +1196,21 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     {
         enable_remove = true;
         enable_rename = true;
-        enable_delete = true;
     }
     else if( isStream( item ) )
     {
         enable_remove = ( item->parent()->text(0) != i18n("Cool-Streams") );
         enable_rename = ( item->parent()->text(0) != i18n("Cool-Streams") );
-        enable_delete = false;
+    }
+    else if( isSmartPlaylist( item ) )
+    {
+        enable_remove = ( item->parent()->text(0) != i18n("Collection") );
+        enable_rename = ( item->parent()->text(0) != i18n("Collection") );
+    }
+    else if( isParty( item ) )
+    {
+        enable_remove = true;
+        enable_rename = true;
     }
     else if( isCategory( item ) )
     {
@@ -1216,7 +1219,10 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
             if( item->text(0) != i18n("Cool-Streams") ) {
                 enable_remove = true;
                 enable_rename = true;
-                enable_delete = true;
+            }
+            else if( item->text(0) != i18n("Collection") ) {
+                enable_remove = true;
+                enable_rename = true;
             }
         }
     }
@@ -1228,7 +1234,6 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
 
     removeButton->setEnabled( enable_remove );
     renameButton->setEnabled( enable_rename );
-    deleteButton->setEnabled( enable_delete );
 }
 
 

@@ -120,7 +120,7 @@ class PlaylistBrowser : public QVBox
         QSplitter *m_splitter;
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;
-        KAction             *removeButton, *renameButton, *deleteButton;
+        KAction             *removeButton, *renameButton;
         KToggleAction       *dynamicButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *saveMenuButton;
