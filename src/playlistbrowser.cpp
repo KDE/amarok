@@ -108,10 +108,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     deleteButton->plug( m_toolbar);
     m_toolbar->insertLineSeparator();
     viewMenuButton->plug( m_toolbar );
-    m_toolbar->insertLineSeparator();
 
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    dynamicButton = new KToggleAction( i18n("Dynamic Mode"), 0, m_ac, "Configure and start dynamic playmode" );
+    dynamicButton = new KToggleAction( i18n("Dynamic"), 0, m_ac, "Configure and start dynamic playmode" );
     dynamicButton->setIcon( "party" );
     dynamicButton->plug( m_toolbar );
     dynamicButton->setChecked( isDynamic() );
