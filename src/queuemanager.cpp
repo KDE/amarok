@@ -60,21 +60,20 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
                     "<b>drop</b> them here.<br><br>"
                     "Drag and drop tracks within the manager to resort queue orders."
                 "</div>" ) );
-        QSimpleRichText *t = new QSimpleRichText( minimumText, QApplication::font() );
+        QSimpleRichText t( minimumText, QApplication::font() );
 
-        if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() )
+        if ( t.width()+30 >= viewport()->width() || t.height()+30 >= viewport()->height() )
             //too big, giving up
             return;
 
-        const uint w = t->width();
-        const uint h = t->height();
+        const uint w = t.width();
+        const uint h = t.height();
         const uint x = (viewport()->width() - w - 30) / 2 ;
         const uint y = (viewport()->height() - h - 30) / 2 ;
 
         p.setBrush( colorGroup().background() );
         p.drawRoundRect( x, y, w+30, h+30, (8*200)/w, (8*200)/h );
-        t->draw( &p, x+15, y+15, QRect(), colorGroup() );
-        delete t;
+        t.draw( &p, x+15, y+15, QRect(), colorGroup() );
     }
 }
 
