@@ -1841,18 +1841,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         PlaylistItem *item = (PlaylistItem*)itemAt( me->pos() );
 
         if( item )
-        {
-            if( m_nextTracks.removeRef( item ) )
-            {
-                //m_nextTracks.current() is now item
-                refreshNextTracks(); //will repaint from current()
-            }
-            else m_nextTracks.append( item );
-
-            item->repaint(); //we need to repaint item in both cases
-
-            updateNextPrev();
-        }
+            queue( item );
 
         return TRUE; //yum!
     }
@@ -2647,7 +2636,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
-            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (%n tracks)", (int)itemCount ) );
+            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (%1 tracks)").arg( (int)itemCount ) );
         else
             // remember, queueToggled only gets set to false if there are items queued and not queued.
             // so, if queueToggled is false, all items have the same queue status as the first item.
