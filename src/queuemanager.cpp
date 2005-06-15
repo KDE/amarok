@@ -19,6 +19,7 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kurldrag.h>
+#include <kwin.h>
 
 #include <qpainter.h>
 #include <qptrlist.h>
@@ -204,6 +205,9 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
                    parent, name, false, 0, Ok|Cancel )
 {
     s_instance = this;
+
+    KWin::setType( winId(), NET::Utility );
+    KWin::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n("Queue Manager") ) );
