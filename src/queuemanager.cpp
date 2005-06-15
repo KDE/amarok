@@ -54,9 +54,9 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
         QString minimumText(i18n(
                 "<div align=center>"
                 "<h3>The Queue Manager</h3>"
-                    "<br>To create a queue, "
-                    "<b>drag</b> tracks from the playlist window, "
-                    "<b>drop</b> them here to queue them.<br>"
+                    "To create a queue, "
+                    "<b>drag</b> tracks from the playlist, and "
+                    "<b>drop</b> them here.<br><br>"
                     "Drag and drop tracks within the manager to resort queue orders."
                 "</div>" ) );
         QSimpleRichText *t = new QSimpleRichText( minimumText, QApplication::font() );
