@@ -6,11 +6,6 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
-  <illissius> "Copy Meta-String" (in the playlist item context menu) is completely incomprehensible to the
-              average person. String is something you sew with (or knit? I lack expertise in the area).
-              Physicists will think we are referring to superstrings, which the universe is supposedly made
-              out of. "Copy Track Information to Clipboard", maybe? (Something shorter would be better.)
-
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
   <sebr>   Starting parties from empty playlists should auto generate required upcoming tracks
@@ -67,82 +62,82 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
-  <illissius> Port Google-syntax to other places you can search in (most notably collection browser, possibly
-              also file browser and cover manager. Anywhere else?)
+  <illiss.>Port Google-syntax to other places you can search in (most notably collection browser, possibly
+           also file browser and cover manager. Anywhere else?)
 
-  <illissius> Make "stop playing after track" work also on queued items. Maybe add a little 'stop' icon next
-              to it as well, as with the play, pause and repeat track icons?
+  <illiss.>Make "stop playing after track" work also on queued items. Maybe add a little 'stop' icon next
+           to it as well, as with the play, pause and repeat track icons?
 
-  <illissius> Option to "fill in tags from filename" in the meta-information dialog. Perhaps steal some (more)
-              code from JuK.
+  <illiss.>Option to "fill in tags from filename" in the meta-information dialog. Perhaps steal some (more)
+           code from JuK.
 
-  <illissius> Make the systray tooltip show the elapsed / length updating in realtime, a la Rhythmbox.
+  <illiss.>Make the systray tooltip show the elapsed / length updating in realtime, a la Rhythmbox.
 
   <sebr>   Use Metabar's box retraction animation to the context browser. More iCandy. Any Javascript experts around?
 
   <mxcl>   Should be able to open collection browser by right clicking on stuff in contextB, so show the
            artist or album that is right clicked.
 
-  ADD 148 <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
+  <markey> AudioCD support for gst engine (cdparanoia ! *sink). -->markey
 
-  ADD 143 <mxcl>   DCOP interface for ContextBrowser
+  <mxcl>   DCOP interface for ContextBrowser
 
-  FIX 121 <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
+  <markey> We should cut down on unnecessary/redundant debug output/warnings (noise).
 
-  ADD 105 <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
-                   since arts itself contains these crappy decoders and ppl come complain about bad sound.
-                   Update: Would be even better to detect the mpeglib arts-plugins directly, since some
-                   distros offer them as a separate package.
+  <markey> Make ArtsEngine depend not only on kdemultimedia-devel, but also on kdemultimedia,
+           since arts itself contains these crappy decoders and ppl come complain about bad sound.
+           Update: Would be even better to detect the mpeglib arts-plugins directly, since some
+           distros offer them as a separate package.
 
-  ADD 104 <mxcl>   Perhaps a nice idea: when you drag playlistItems to a branch in the collection browser
-                   it prompts to change the track's tags, so drag a track to the "moolaaa" album and that
-                   track get's it's album tag changed to "moolaaa" and is inserted into the branch, so the user
-                   know's what has happened.
+  <mxcl>   Perhaps a nice idea: when you drag playlistItems to a branch in the collection browser
+           it prompts to change the track's tags, so drag a track to the "moolaaa" album and that
+           track get's it's album tag changed to "moolaaa" and is inserted into the branch, so the user
+           know's what has happened.
 
-  ADD  96 <mxcl>   User asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
-                   of a track. I'll see if I can do it with tiny amount of code -->mxcl
+  <mxcl>   User asked for a CTRL-J itty-bitty dialog that allows you to jump to a specific part
+           of a track. I'll see if I can do it with tiny amount of code -->mxcl
 
-  FIX  87 <muesli> Don't rely on KDE timeouts to see whether a file is accessible or not,
-                   since this really sucks for disconnected network shares. XMMS handles
-                   this way better and it really is a problem in userland. maybe a thread
-                   helps, which simply tries to fopen() the file. if this task hasn't been
-                   finished in (let's say) 3 seconds, jump to the next song. XMMS even
-                   remembers such files and their folders, so that it's not going to open
-                   another file from that folder for the next few minutes. what about hdd
-                   sleep-timeouts? opinions?
+  <muesli> Don't rely on KDE timeouts to see whether a file is accessible or not,
+           since this really sucks for disconnected network shares. XMMS handles
+           this way better and it really is a problem in userland. maybe a thread
+           helps, which simply tries to fopen() the file. if this task hasn't been
+           finished in (let's say) 3 seconds, jump to the next song. XMMS even
+           remembers such files and their folders, so that it's not going to open
+           another file from that folder for the next few minutes. what about hdd
+           sleep-timeouts? opinions?
 
-  CHG  78 <mxcl>   Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
-                   clear   -> only clear the stuff that was searched for?
-                   shuffle -> stop the search and do normal shuffle?
-                   ADDitionally what to do when user rearranges a set of items that are the search result?
-          <larson> No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
-                   the search, then clear should clear the search only, and visa versa.
+  <mxcl>   Determine some behavior for the clear/shuffle/etc. buttons when a search is in action
+           clear   -> only clear the stuff that was searched for?
+           shuffle -> stop the search and do normal shuffle?
+           ADDitionally what to do when user rearranges a set of items that are the search result?
+  <larson> No big deal to me as long as the behaviour is consistent. I.e. if shuffle shuffles
+           the search, then clear should clear the search only, and visa versa.
 
-  FIX  76 <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
+  <larson> Make playlist toolbar buttons toggle like the playerwidget buttons.
 
-  ADD  75          Toolbar button in FileBrowser for switching recursive directory reading.
+           Toolbar button in FileBrowser for switching recursive directory reading.
 
-  FIX  73 <mxcl>   Can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
+  <mxcl>   Can't resize newly displayed columns if they are hidden at beginning of session -->mxcl
 
-  ADD  28 <muesli> Add an option "clean up playlist on startup".
-          <mxcl>   Do you mean remove duplicates or dead entries etc. ? Cool.
+  <muesli> Add an option "clean up playlist on startup".
+  <mxcl>   Do you mean remove duplicates or dead entries etc. ? Cool.
 
-  ADD     <mxcl>   Option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
-                   Of course, there would still be the up to 150ms gap, but we can fix that some other time..
-          <markey> Please clarify: is this the same as BR #75388 ?
-          <mxcl>   No, this is just to make crossfading not ruin album transitions
+  <mxcl>   Option: don't crossfade for sequential tracks on same album. Comments? -->mxcl
+           Of course, there would still be the up to 150ms gap, but we can fix that some other time..
+  <markey> Please clarify: is this the same as BR #75388 ?
+  <mxcl>   No, this is just to make crossfading not ruin album transitions
 
-  FIX              Add dirs to combo history when user adds a track from that dir to the playlist.
+           Add dirs to combo history when user adds a track from that dir to the playlist.
 
-  ADD              "Show playlist" to the right click menu, redundant but necessary.
+           "Show playlist" to the right click menu, redundant but necessary.
 
-  ADD              More KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
+           More KTips, better KTips, somehow use the "Did you know" tip dialog (eg kmail, gideon, etc.) -->mxcl
 
-  ADD              Option to automatically adjust column widths.
+           Option to automatically adjust column widths.
 
-  ADD              Option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
+           Option to implicitly sort playlist by { track, album } (on drop only) -->mxcl
 
-  ADD     <berkus> Playmode indication button in main widget (repeat track/pl/shuffle), clickable.
+  <berkus> Playmode indication button in main widget (repeat track/pl/shuffle), clickable.
 
 
 LONG-TERM:
