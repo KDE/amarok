@@ -61,15 +61,9 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
                 "</div>" ) );
         QSimpleRichText *t = new QSimpleRichText( minimumText, QApplication::font() );
 
-        if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
-            // too big for the window, so let's cut part of the text
-            delete t;
-            t = new QSimpleRichText( minimumText, QApplication::font());
-            if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
-                //still too big, giving up
-                return;
-            }
-        }
+        if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() )
+            //too big, giving up
+            return;
 
         const uint w = t->width();
         const uint h = t->height();
