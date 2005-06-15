@@ -47,8 +47,11 @@ int main( int argc, char *argv[] )
             I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman '" I18N_NOOP("And God said, let there be Mac") "' Becker",
             I18N_NOOP( "amaroK logo, splash screen, icons" ), "roman@formmorf.de", "http://www.formmorf.de" );
+    aboutData.addAuthor( "Seb '" I18N_NOOP("Surfin' down under") "' Ruiz",
+            I18N_NOOP( "Playlist-browser, Dynamic-mode, Queue-manager (sebr)" ), "seb100@optusnet.com.au" );
     aboutData.addAuthor( "Stanislav '" I18N_NOOP("All you need is DCOP") "' Karchebny",
             I18N_NOOP( "DCOP, improvements, cleanups, i18n (berkus)" ), "berkus@madfire.net" );
+
 
     aboutData.addCredit( "Adam Pigg", I18N_NOOP( "Analyzers, patches" ), "adam@piggz.fsnet.co.uk" );
     aboutData.addCredit( "Adeodato Simó", I18N_NOOP( "Patches" ), "asp16@alu.ua.es" );
@@ -73,7 +76,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
     aboutData.addCredit( "Sami Nieminen", I18N_NOOP( "Audioscrobbler support" ), "sami.nieminen@iki.fi" );
     aboutData.addCredit( "Scott Wheeler", I18N_NOOP( "TagLib & ktrm code" ), "wheeler@kde.org" );
-    aboutData.addCredit( "Seb Ruiz", I18N_NOOP( "amaroK improvements, bug fixes, aussie" ), "seb100@optusnet.com.au" );
     aboutData.addCredit( "Stefan Bogner", I18N_NOOP( "Loadsa stuff" ), "bochi@online.ms" );
     aboutData.addCredit( "Stefan Siegel", I18N_NOOP( "Patches, Bugfixes" ), "kde@sdas.de" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
