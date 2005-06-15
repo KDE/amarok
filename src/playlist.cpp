@@ -927,9 +927,18 @@ Playlist::queue( QListViewItem *item )
     item->setSelected( false ); //for prettiness
 
     if( isQueued )
+    {
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
 
+        if( isParty() ) // we move the item after the last queued item to preserve the ordered 'queue'.
+        {
+            PlaylistItem *after = m_nextTracks.last();
+
+            if( after )
+                this->moveItem( item, 0, after );
+        }
+    }
     else if( !isParty() )
         m_nextTracks.append( item );
 
@@ -2617,38 +2626,35 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 ? i18n( "&Restart" )
                 : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
-    // Begin queue context entry logic
+    // Begin queue entry logic
     popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
-    if( !isParty() )
-    {
-        bool queueToggle = false;
-        MyIt it( this, MyIt::Selected );
-        bool firstQueued = ( m_nextTracks.findRef( *it ) != -1 );
+    bool queueToggle = false;
+    MyIt it( this, MyIt::Selected );
+    bool firstQueued = ( m_nextTracks.findRef( *it ) != -1 );
 
-        for( ++it ; *it; ++it ) {
-            if ( ( m_nextTracks.findRef( *it ) != -1 ) != firstQueued ) {
-                queueToggle = true;
-                break;
-            }
+    for( ++it ; *it; ++it ) {
+        if ( ( m_nextTracks.findRef( *it ) != -1 ) != firstQueued ) {
+            queueToggle = true;
+            break;
         }
-        if ( itemCount == 1 )
-        {
+    }
+    if( itemCount == 1 )
+    {
+        if ( !firstQueued )
+            popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
+        else
+            popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
+    } else {
+        if ( queueToggle )
+            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (%n tracks)", (int)itemCount ) );
+        else
+            // remember, queueToggled only gets set to false if there are items queued and not queued.
+            // so, if queueToggled is false, all items have the same queue status as the first item.
             if ( !firstQueued )
-                popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
+                popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
             else
-                popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
-        } else {
-            if ( queueToggle )
-                popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", (int) itemCount ) );
-            else
-                // remember, queueToggled only gets set to false if there are items queued and not queued.
-                // so, if queueToggled is false, all items have the same queue status as the first item.
-                if ( !firstQueued )
-                    popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
-                else
-                    popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Selected Tracks") );
-        }
+                popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Selected Tracks") );
     }
     // End queue entry logic
 
