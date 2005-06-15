@@ -50,6 +50,7 @@
 #include <kstandarddirs.h>
 #include <ktar.h>
 #include <ktextedit.h>
+#include <kwin.h>
 
 #include <knewstuff/downloaddialog.h> // knewstuff script fetching
 #include <knewstuff/engine.h>         // "
@@ -98,6 +99,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
+
+    // Gives the queuemanager a small title bar, and skips a taskbar entry
+    KWin::setType( winId(), NET::Utility );
+    KWin::setState( winId(), NET::SkipTaskbar );
 
     setMainWidget( m_gui );
     m_gui->listView->setFullWidth( true );

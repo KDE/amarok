@@ -19,6 +19,7 @@
 #include <klocale.h>
 #include <kpopupmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
+#include <kwin.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
 #include <qtooltip.h>         //Vis::Selector ctor
 #include "socketserver.h"
@@ -158,6 +159,10 @@ Vis::Selector::Selector( QWidget *parent )
     amaroK::OverrideCursor waitcursor;
 
     setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
+
+    // Gives the queuemanager a small title bar, and skips a taskbar entry
+    KWin::setType( winId(), NET::Utility );
+    KWin::setState( winId(), NET::SkipTaskbar );
 
     setSorting( 0 );
     setColumnWidthMode( 0, QListView::Maximum );

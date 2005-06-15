@@ -22,19 +22,24 @@
 
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qslider.h> 
+#include <qslider.h>
 
 EqualizerDialog::EqualizerDialog()
 {
     QBoxLayout* overallLayout = new QHBoxLayout(this, 5, -1, "overallLayout");
-    QBoxLayout* sliderLayout = new QVBoxLayout(this, 5, -1, "sliderLayout");
-    QSlider* preampSlider = new QSlider(-100,100,1,0,QSlider::Vertical,this, "preampSlider");
-    QLabel* preampLabel = new QLabel("Pre-amp",this,"preampLabel");
+    QBoxLayout* sliderLayout  = new QVBoxLayout(this, 5, -1, "sliderLayout");
+
+    QSlider*    preampSlider  = new QSlider(-100,100,1,0,QSlider::Vertical,this, "preampSlider");
+    QLabel*     preampLabel   = new QLabel("Pre-amp",this,"preampLabel");
+
     sliderLayout->addWidget(preampSlider);
     sliderLayout->addWidget(preampLabel);
+
     QCanvas* canvas = new QCanvas();
     canvas->resize(400, 200);
+
     EqualizerCanvasView* canvasView = new EqualizerCanvasView(canvas, this, "canvasView");
+
     overallLayout->addLayout(sliderLayout);
     overallLayout->addWidget(canvasView);
 }

@@ -32,7 +32,7 @@
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
-
+#include <kwin.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
 
@@ -41,6 +41,10 @@ EqualizerSetup::EqualizerSetup()
         : QVBox( amaroK::mainWindow(), 0, Qt::WType_Dialog | Qt::WDestructiveClose )
 {
     using amaroK::Slider;
+
+    // Gives the queuemanager a small title bar, and skips a taskbar entry
+    KWin::setType( winId(), NET::Utility );
+    KWin::setState( winId(), NET::SkipTaskbar );
 
     s_instance = this;
 
