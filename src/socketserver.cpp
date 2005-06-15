@@ -160,7 +160,7 @@ Vis::Selector::Selector( QWidget *parent )
 
     setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
 
-    // Gives the queuemanager a small title bar, and skips a taskbar entry
+    // Gives the window a small title bar, and skips a taskbar entry
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
