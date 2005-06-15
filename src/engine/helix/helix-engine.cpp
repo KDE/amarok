@@ -216,6 +216,7 @@ void
 HelixEngine::seek( uint ms )
 {
    debug() << "In seek\n";
+   clearScopeQ();
    HXSplay::seek(ms);
 }
 
@@ -246,9 +247,6 @@ HelixEngine::timerEvent( QTimerEvent * )
    }
 }
 
-
-#include <iostream>
-using namespace std;
 
 const Engine::Scope &HelixEngine::scope()
 {
