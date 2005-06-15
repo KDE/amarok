@@ -930,8 +930,23 @@ Playlist::queue( QListViewItem *item )
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
 
-    else
+    else if( !isParty() )
         m_nextTracks.append( item );
+
+    else
+    {
+        PlaylistItem *after;
+        m_nextTracks.isEmpty() ?
+            after = m_currentTrack :
+            after = m_nextTracks.last();
+
+        if( item->isEnabled() && item != m_currentTrack )
+            this->moveItem( item, 0, after );
+        else
+            insertMediaInternal( item->url(), after );
+
+        m_nextTracks.append( item );
+    }
 
     refreshNextTracks(); // from current()
 
@@ -2577,7 +2592,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     #define item static_cast<PlaylistItem*>(item)
 
     enum {
-        PLAY, PLAY_NEXT, PLAY_NEXT_PARTY, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
+        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
         BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, LAST }; //keep LAST last
 
@@ -2603,10 +2618,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     // Begin queue context entry logic
-    if( isParty() && m_currentTrack && item != m_currentTrack && item != m_currentTrack->nextSibling() )
-        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Play Next"), PLAY_NEXT_PARTY );
-    else if ( !isParty() && item->isEnabled() )
-        popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
+    popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
     if( !isParty() )
     {
@@ -2725,23 +2737,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             queue( *it );
         break;
 
-    case PLAY_NEXT_PARTY:
-    {
-        PlaylistItem *after = 0;
-        if( m_currentTrack )
-            after = m_currentTrack;
-
-        for( MyIt it( this, MyIt::Selected ); *it; ++it )
-        {
-            if( (*it)->isEnabled() && (*it) != m_currentTrack )
-                this->moveItem( *it, 0, after );
-            else
-                insertMediaInternal( (*it)->url(), after );
-
-            after = after->nextSibling();
-        }
-        break;
-    }
     case STOP_DONE:
         m_stopAfterCurrent = !popup.isItemChecked( STOP_DONE );
         break;
