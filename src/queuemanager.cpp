@@ -11,6 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "debug.h"
 #include "playlist.h"
 #include "queuemanager.h"
 
@@ -172,7 +173,15 @@ QueueList::moveSelectedDown() // SLOT
 void
 QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
+    DEBUG_FUNC_INFO
+
     e->accept( e->source() != viewport() );
+}
+
+void
+QueueList::contentsDragMoveEvent( QDragMoveEvent* )
+{
+    // Must be overloaded for dnd to work
 }
 
 void

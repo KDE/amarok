@@ -40,6 +40,7 @@ class QueueList : public KListView
 
     private:
         void    contentsDragEnterEvent( QDragEnterEvent *e );
+        void    contentsDragMoveEvent( QDragMoveEvent* e );
         void    contentsDropEvent( QDropEvent *e );
         void    keyPressEvent( QKeyEvent *e );
         void    viewportPaintEvent( QPaintEvent* );
