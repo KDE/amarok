@@ -8,8 +8,6 @@ SHORT-TERM (URGENT):
 
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
-  <sebr>   Starting parties from empty playlists should auto generate required upcoming tracks
-
   <markey> Figure out why ScriptManager can't read from stdout.
 
   <sebr>   Party mode will only retrieve from static playlists if the playlist is 'opened' in the playlist

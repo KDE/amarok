@@ -109,6 +109,9 @@ QueueList::removeSelected()
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
         delete item;
+
+    if( isEmpty() )
+        QueueManager::instance()->updateButtons();
 }
 
 bool
@@ -180,7 +183,8 @@ QueueList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
     // Must be overloaded for dnd to work
 
-    e->accept( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() );
+    e->accept( ( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() ) ||
+                 e->source() == viewport() );
 }
 
 void
@@ -246,7 +250,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
 
     Playlist *pl = Playlist::instance();
     connect( pl,         SIGNAL( selectionChanged() ), SLOT( updateButtons() ) );
-    connect( m_listview, SIGNAL( selectionChanged() ), SLOT( updateButtons()  ) );
+    connect( m_listview, SIGNAL( selectionChanged() ), SLOT( updateButtons() ) );
 
     insertItems();
 }
@@ -259,15 +263,15 @@ QueueManager::~QueueManager()
 void
 QueueManager::addItems( QListViewItem *after )
 {
-    /*HACK!!!!! We can know which items where dragged since they should still be selected
-      I do this, because:
+    /*
+        HACK!!!!! We can know which items where dragged since they should still be selected
+        I do this, because:
         - Dragging items from the playlist provides urls
         - Providing urls, requires iterating through the entire list in order to find which
-          item was selected.  Possibly a very expensive task
+          item was selected.  Possibly a very expensive task - worst case: O(n)
         - After a drag, those items are still selected in the playlist, so we can find out
           which PlaylistItems were dragged by selectedItems();
-
-        */
+    */
 
     if( !after )
         after = m_listview->lastChild();
@@ -320,7 +324,7 @@ void
 QueueManager::updateButtons() //SLOT
 {
     const bool enablePL = !Playlist::instance()->selectedItems().isEmpty();
-    const bool enableQL = m_listview->hasSelection();
+    const bool enableQL = m_listview->hasSelection() && !m_listview->isEmpty();
 
     m_up->setEnabled( enableQL );
     m_down->setEnabled( enableQL );

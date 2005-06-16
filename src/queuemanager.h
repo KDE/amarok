@@ -32,6 +32,7 @@ class QueueList : public KListView
         ~QueueList() {};
 
         bool    hasSelection();
+        bool    isEmpty() { return ( childCount() == 0 ); }
 
     public slots:
         void    moveSelectedUp();
@@ -60,8 +61,6 @@ class QueueManager : public KDialogBase
 
     public  slots:
         void    addItems( QListViewItem *after = 0 );
-
-    private slots:
         void    updateButtons();
 
     private:
