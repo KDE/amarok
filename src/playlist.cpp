@@ -966,6 +966,20 @@ Playlist::queue( QListViewItem *item )
     #undef item
 }
 
+void
+Playlist::sortQueuedItems()
+{
+    PlaylistItem *last = m_currentTrack;
+    for( PlaylistItem *item = m_nextTracks.getFirst(); item; item = m_nextTracks.next() )
+    {
+        if( item->itemAbove() != last )
+            this->moveItem( item, 0, last );
+
+        last = item;
+    }
+
+}
+
 void Playlist::doubleClicked( QListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
@@ -2307,15 +2321,18 @@ Playlist::showQueueManager()
     QueueManager dialog;
     if( dialog.exec() == QDialog::Accepted )
     {
-        QPtrList<PlaylistItem> newQueue = m_nextTracks;
+        QPtrList<PlaylistItem> oldQueue = m_nextTracks;
         m_nextTracks = dialog.newQueue();
 
         // make sure we repaint items no longer queued
-        for( PlaylistItem* item = newQueue.getFirst(); item; item = newQueue.next() )
+        for( PlaylistItem* item = oldQueue.getFirst(); item; item = oldQueue.next() )
             repaintItem( item );
 
         // repaint newly queued or altered queue items
-        refreshNextTracks();
+        if( isParty() )
+            sortQueuedItems();
+        else
+            refreshNextTracks();
     }
 }
 

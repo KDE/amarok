@@ -73,67 +73,51 @@ class Playlist : private KListView, public EngineObserver
 
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
-         */
+         *  @param sql     Sql program to execute */
         void insertMedia( KURL::List, int options = Append );
-
-        /** Add media to the playlist, using SqlLoader
-         *  @param sql     Sql program to execute
-         *  @param options you can OR these together, see the enum
-         */
         void insertMediaSql( const QString& sql, int options = Append );
+
+        /// Dynamic mode functions
         void addSpecialTracks( uint songCount, QString type = "Random" );
         void addSpecialCustomTracks( uint songCount, QStringList list );
-
         void adjustPartyUpcoming( uint songCount, QString type = "Random" );
         void adjustPartyPrevious( uint songCount );
         void advancePartyTrack( PlaylistItem *item = 0 );
         void alterHistoryItems( bool enable = FALSE, bool entire = FALSE );
 
-        bool isEmpty() const { return childCount() == 0; }
+
+        void burnPlaylist      ( int projectType=-1 );
+        void burnSelectedTracks( int projectType=-1 );
+        int  currentTrackIndex();
+        bool isEmpty()       const  { return childCount() == 0; }
         bool isTrackBefore() const;
-        bool isTrackAfter() const;
-
-        /// called during initialisation
-        void restoreSession();
-
+        bool isTrackAfter()  const;
+        void restoreSession();          // called during initialisation
         bool saveM3U( const QString&, bool relativePath = FALSE ) const;
         void saveXML( const QString& );
+        int  totalTrackCount();
 
-        // Used by DCOP call
-        int currentTrackIndex();
-        int totalTrackCount();
+        void addCustomMenuItem ( QString submenu, QString itemTitle );
+        void customMenuClicked ( int id );
+        bool removeCustomMenuItem( QString submenu, QString itemTitle );
 
-        void burnPlaylist( int projectType=-1 );
-        void burnSelectedTracks( int projectType=-1 );
+        void setFont( const QFont &f ) { KListView::setFont( f ); } //made public for convenience
+        void unsetFont()               { KListView::unsetFont(); }
 
-        void addCustomMenuItem(QString submenu, QString itemTitle );
-        bool removeCustomMenuItem(QString submenu, QString itemTitle );
-        void customMenuClicked(int id);
+        int  mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
 
-        class QDragObject *dragObject();
-
-        //made public for convenience
-        void setFont( const QFont &f ) { KListView::setFont( f ); }
-        void unsetFont() { KListView::unsetFont(); }
-
-        /** Converts physical PlaylistItem column position to logical */
-        int mapToLogicalColumn( int physical );
-
-
-        /// Call this to prevent items being removed from the playlist, it is mostly for internal use only
+        /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
+         *  Dont forget to unlock() !! */
         void lock();
-
-        /// You must call this for everytime you called lock() or the playlist will remain locked!
         void unlock();
 
-        //static
         static const int NO_SORT = 200;
         static QString defaultPlaylistPath();
         static Playlist *instance() { return s_instance; }
 
-        //enums, typedefs and friends
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
 
+        class QDragObject *dragObject();
         friend class PlaylistItem;
         friend class QueueManager;
         friend class UrlLoader;
@@ -146,50 +130,51 @@ class Playlist : private KListView, public EngineObserver
         void itemCountChanged( int newCount, int newLength, int selCount, int selLength );
 
     public slots:
-        void appendMedia( const QString &path );
-        void appendMedia( const KURL &url );
-        void clear();
-        void shuffle();
-        void repopulate();
-        void removeSelectedItems();
-        void deleteSelectedFiles();
-        void removeDuplicates();
-        void copyToClipboard( const QListViewItem* = 0 ) const;
-        void showCurrentTrack() { ensureItemVisible( reinterpret_cast<QListViewItem*>(m_currentTrack) ); }
-        void undo();
-        void redo();
-        void selectAll() { QListView::selectAll( true ); }
         void activateByIndex(int);
-        void playPrevTrack();
+        void addCustomColumn();
+        void appendMedia( const KURL &url );
+        void appendMedia( const QString &path );
+        void clear();
+        void copyToClipboard( const QListViewItem* = 0 ) const;
+        void countChanged( const QString &path );
+        void deleteSelectedFiles();
         void playCurrentTrack();
         void playNextTrack( const bool forceNext = true );
+        void playPrevTrack();
         void queueSelected();
-        void setStopAfterCurrent( bool on ) { m_stopAfterCurrent = on; }
-        void updateMetaData( const MetaBundle& );
+        void redo();
+        void removeDuplicates();
+        void removeSelectedItems();
+        void repopulate();
         void scoreChanged( const QString &path, int score );
-        void countChanged( const QString &path );
-        void addCustomColumn();
-        void setFilterSlot( const QString &filter );                       //uses a delay where applicable
+        void selectAll() { QListView::selectAll( true ); }
         void setFilter( const QString &filter );                           //for the entire playlist
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
+        void setFilterSlot( const QString &filter );                       //uses a delay where applicable
+        void setStopAfterCurrent( bool on ) { m_stopAfterCurrent = on; }
+        void showCurrentTrack() { ensureItemVisible( reinterpret_cast<QListViewItem*>(m_currentTrack) ); }
         void showQueueManager();
+        void shuffle();
+        void undo();
+        void updateMetaData( const MetaBundle& );
 
     private slots:
-        void setDelayedFilter();                                           //after the delay is over
-        void slotGlowTimer();
-        void slotRepeatTrackToggled( bool enabled );
-        void slotEraseMarker();
-        void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
-        void slotSelectionChanged();
-        void showContextMenu( QListViewItem*, const QPoint&, int );
-        void writeTag( QListViewItem*, const QString&, int );
-        void saveUndoState();
-        void columnOrderChanged();
-        void updateNextPrev();
-        void queue( QListViewItem* );
-        void doubleClicked( QListViewItem* );
         void activate( QListViewItem* );
+        void columnOrderChanged();
         void columnResizeEvent( int, int, int );
+        void doubleClicked( QListViewItem* );
+        void queue( QListViewItem* );
+        void saveUndoState();
+        void setDelayedFilter();                                           //after the delay is over
+        void showContextMenu( QListViewItem*, const QPoint&, int );
+        void slotEraseMarker();
+        void slotGlowTimer();
+        void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
+        void slotRepeatTrackToggled( bool enabled );
+        void slotSelectionChanged();
+        void updateNextPrev();
+        void writeTag( QListViewItem*, const QString&, int );
+
 
     private:
         Playlist( QWidget* );
@@ -197,65 +182,72 @@ class Playlist : private KListView, public EngineObserver
 
         static Playlist *s_instance;
 
-        PlaylistItem *restoreCurrentTrack();
+        typedef QMap<QString, QString> QStringMap;
+
         PlaylistItem *currentTrack() const { return m_currentTrack; }
-        void setCurrentTrack( PlaylistItem* );
+        PlaylistItem *restoreCurrentTrack();
+
+        PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
+        PlaylistItem *lastItem()   const { return (PlaylistItem*)KListView::lastItem(); }
+
         void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
-        bool saveState( QStringList& );
-        void switchState( QStringList&, QStringList& );
+        bool isAdvancedQuery( const QString &query );
+        bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
+        void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem* );
-        void refreshNextTracks( int=-1 );
+        bool saveState( QStringList& );
+        void setCurrentTrack( PlaylistItem* );
         void showTagDialog( QPtrList<QListViewItem> items );
+        void sortQueuedItems();
+        void switchState( QStringList&, QStringList& );
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State );
 
-        typedef QMap<QString, QString> QStringMap;
-        bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
-        bool isAdvancedQuery( const QString &query );
-
-// REIMPLEMENTED ------
-        void contentsDropEvent( QDropEvent* );
+        /// KListView Overloaded functions
+        void contentsDropEvent     ( QDropEvent* );
         void contentsDragEnterEvent( QDragEnterEvent* );
-        void contentsDragMoveEvent( QDragMoveEvent* );
+        void contentsDragMoveEvent ( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
-        #ifdef PURIST
-        //KListView imposes hand cursor so override it
+
+        #ifdef PURIST //KListView imposes hand cursor so override it
         void contentsMouseMoveEvent( QMouseEvent *e ) { QListView::contentsMouseMoveEvent( e ); }
         #endif
-        void paletteChange( const QPalette& );
-        void viewportPaintEvent( QPaintEvent* );
-        void viewportResizeEvent( QResizeEvent* );
+
         void customEvent( QCustomEvent* );
         bool eventFilter( QObject*, QEvent* );
-        void setSorting( int, bool=true );
-        void setColumnWidth( int, int );
+        void paletteChange( const QPalette& );
         void rename( QListViewItem*, int );
-        PlaylistItem *firstChild() const { return (PlaylistItem*)KListView::firstChild(); }
-        PlaylistItem *lastItem() const { return (PlaylistItem*)KListView::lastItem(); }
+        void setColumnWidth( int, int );
+        void setSorting( int, bool=true );
 
-// ATTRIBUTES ------
-        PlaylistItem  *m_currentTrack; //the track that is playing
-        QListViewItem *m_marker;       //track that has the drag/drop marker under it
+        void viewportPaintEvent( QPaintEvent* );
+        void viewportResizeEvent( QResizeEvent* );
+
+
+        /// ATTRIBUTES
+
+        PlaylistItem  *m_currentTrack;          //the track that is playing
+        QListViewItem *m_marker;                //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
-        QPtrList<PlaylistItem> m_prevTracks; //the previous history
-        QPtrList<PlaylistItem> m_nextTracks; //the tracks to be played after the current track
+        QPtrList<PlaylistItem> m_prevTracks;    //the previous history
+        QPtrList<PlaylistItem> m_nextTracks;    //the tracks to be played after the current track
 
         QString m_filter;
         QTimer *m_filtertimer;
 
         QPtrList<PlaylistItem> m_itemsToChangeTagsFor;
 
-        int m_firstColumn;
-        int m_totalLength;
-        int m_selectCounter;
-        int m_selectLength;
+        int          m_firstColumn;
+        int          m_totalLength;
+        int          m_selectCounter;
+        int          m_selectLength;
 
-        KAction *m_undoButton;
-        KAction *m_redoButton;
-        KAction *m_clearButton;
+        KAction     *m_undoButton;
+        KAction     *m_redoButton;
+        KAction     *m_clearButton;
 
         QDir         m_undoDir;
         QStringList  m_undoList;
@@ -268,16 +260,15 @@ class Playlist : private KListView, public EngineObserver
         bool         m_stateSwitched;
         bool         m_partyDirt;
 
-        QMap<QString, QStringList>  m_customSubmenuItem;
-        QMap<int, QString> m_customIdItem;
-        /// Check for locked status
+        QMap<QString, QStringList> m_customSubmenuItem;
+        QMap<int, QString>         m_customIdItem;
+
         bool isLocked() const { return m_lockStack > 0; }
 
         /// stack counter for PLaylist::lock() and unlock()
         int m_lockStack;
 
-        //text before inline editing ( the new tag is written only if it's changed )
-        QString m_editOldTag;
+        QString m_editOldTag; //text before inline editing ( the new tag is written only if it's changed )
 
         std::vector<double> m_columnFraction;
 };
