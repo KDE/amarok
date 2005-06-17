@@ -457,7 +457,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
     {
         case Engine::Empty:
             m_metadataHistory.clear();
-            if ( currentPage() == m_currentTrackPage->view() )
+            if ( currentPage() == m_currentTrackPage->view() || currentPage() == m_lyricsTab )
                 showHome();
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), false );
@@ -2771,7 +2771,8 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 {
     if ( EngineController::instance()->bundle().artist() == artist ) {
         m_dirtyCurrentTrackPage = true;
-        showCurrentTrack();
+        if ( currentPage() == m_currentTrackPage->view() )
+            showCurrentTrack();
     }
 }
 
