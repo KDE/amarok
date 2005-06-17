@@ -829,6 +829,12 @@ void CoverManager::updateStatusBar()
     m_statusLabel->setText( text );
 }
 
+void CoverManager::setStatusText( QString text )
+{
+    m_oldStatusText = m_statusLabel->text();
+    m_statusLabel->setText( text );
+}
+
 //////////////////////////////////////////////////////////////////////
 //    CLASS CoverView
 /////////////////////////////////////////////////////////////////////
@@ -845,14 +851,12 @@ CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
     setAutoArrange( true );
     setItemsMovable( false );
 
-    m_toolTip = 0;
-
     // as long as QIconView only shows tooltips when the cursor is over the
     // icon (and not the text), we have to create our own tooltips
     setShowToolTips( false );
 
-    connect( this, SIGNAL( onItem( QIconViewItem * ) ), SLOT( showToolTip( QIconViewItem * ) ) );
-    connect( this, SIGNAL( onViewport() ), SLOT( removeToolTip() ) );
+    connect( this, SIGNAL( onItem( QIconViewItem * ) ), SLOT( setStatusText( QIconViewItem * ) ) );
+    connect( this, SIGNAL( onViewport() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
 }
 
 
@@ -879,72 +883,23 @@ QDragObject *CoverView::dragObject()
     return drag;
 }
 
-/// Code from KFileIconView.cpp
-void CoverView::showToolTip( QIconViewItem *item )
+void CoverView::setStatusText( QIconViewItem *item )
 {
     #define item static_cast<CoverViewItem *>( item )
-    delete m_toolTip;
-    m_toolTip = 0;
-
     if ( !item )
-    return;
-
-    QStringList values;
-    QString sql;
+        return;
 
     bool sampler = false;
     //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
     //FIXME: Don't rely on other independent code, use an sql query
     if( item->artist().isEmpty() ) sampler = true;
 
-    if( sampler ) {
-        sql = "SELECT count(*) FROM tags, album WHERE tags.sampler = 1 AND tags.album = album.id AND album.name = '%1';";
-        values = CollectionDB::instance()->query( sql.arg( escapeHTMLAttr( item->album() ) ) );
-    } else {
-        sql = "SELECT count(*) FROM tags, artist, album WHERE tags.album = album.id AND tags.artist = artist.id AND artist.name='%1' AND album.name = '%2';";
-        values = CollectionDB::instance()->query( sql.arg( escapeHTMLAttr( item->artist() ), escapeHTMLAttr( item->album() ) ) );
-    }
+    QString tipContent = i18n( "%1 - %2" ).arg( sampler ? i18n("Various Artists") : item->artist() )
+                                          .arg( item->album() );
 
-    QString tipContent = QString("<b>%1:</b> %2<br><b>%3:</b> %4<br><b>%5:</b> %6")
-                                .arg( i18n("Artist") )
-                                .arg( sampler ? i18n("Various") : item->artist() )
-                                .arg( i18n("Album")  )
-                                .arg( item->album()  )
-                                .arg( i18n("Tracks") )
-                                .arg( values[0] );
+    CoverManager::instance()->setStatusText( tipContent );
 
-
-    m_toolTip = new QLabel( tipContent, 0,
-                    "myToolTip",
-                    WStyle_StaysOnTop | WStyle_Customize | WStyle_NoBorder | WStyle_Tool | WX11BypassWM );
-
-    m_toolTip->setFrameStyle( QFrame::Plain | QFrame::Box );
-    m_toolTip->setLineWidth( 1 );
-    m_toolTip->setAlignment( AlignLeft | AlignTop );
-    m_toolTip->move( QCursor::pos() + QPoint( 14, 14 ) );
-    m_toolTip->adjustSize();
-    QRect screen = QApplication::desktop()->screenGeometry(
-            QApplication::desktop()->screenNumber(QCursor::pos()));
-
-    if ( m_toolTip->x()+m_toolTip->width() > screen.right() ) {
-        m_toolTip->move(m_toolTip->x()+screen.right()-m_toolTip->x()-m_toolTip->width(), m_toolTip->y());
-    }
-
-    if (m_toolTip->y()+m_toolTip->height() > screen.bottom()) {
-        m_toolTip->move(m_toolTip->x(), screen.bottom()-m_toolTip->y()-m_toolTip->height()+m_toolTip->y());
-    }
-
-    m_toolTip->setFont( QToolTip::font() );
-    m_toolTip->setPalette( QToolTip::palette(), true );
-    m_toolTip->show();
-
-     #undef item
-}
-
-void CoverView::removeToolTip()
-{
-    delete m_toolTip;
-    m_toolTip = 0;
+    #undef item
 }
 
 //////////////////////////////////////////////////////////////////////

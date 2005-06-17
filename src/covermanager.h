@@ -31,12 +31,21 @@ class CoverManager : public QSplitter
         CoverManager();
        ~CoverManager();
 
+        static CoverManager *instance() { return s_instance; }
+
         static void showOnce( const QString &artist = QString::null );
         static void viewCover( const QString& artist, const QString& album, QWidget *parent=0 );
+
+        void setStatusText( QString text );
+
          /**
          * Return the top level domain for the current locale
          **/
         static QString amazonTld();
+
+    public slots:
+        void updateStatusBar();
+
     private slots:
         void slotArtistSelected( QListViewItem* );
         void coverItemExecuted( QIconViewItem *item );
@@ -51,7 +60,6 @@ class CoverManager : public QSplitter
         void coverRemoved( const QString&, const QString& );
         void coverFetcherError();
         void stopFetching();
-        void updateStatusBar();
 
         void init();
 
@@ -80,6 +88,7 @@ class CoverManager : public QSplitter
         QLabel         *m_statusLabel;
         QHBox          *m_progressBox;
         KProgress      *m_progress;
+        QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
         QPtrList<QIconViewItem> m_coverItems; //used for filtering
@@ -102,18 +111,13 @@ class CoverView : public KIconView
 
     public:
         CoverView( QWidget *parent = 0, const char *name = 0, WFlags f = 0 );
-        ~CoverView() { if( m_toolTip ) removeToolTip(); }
+        ~CoverView() { }
 
     protected:
         QDragObject *dragObject();
 
     private slots:
-        void showToolTip( QIconViewItem *item );
-        void removeToolTip();
-
-    private:
-        QLabel *m_toolTip;
-
+        void setStatusText( QIconViewItem *item );
 };
 
 class CoverViewItem : public KIconViewItem
