@@ -19,6 +19,8 @@ VERSION 1.3-beta2:
     * Remodel the playlist browser to incorporate dynamic mode more fully.
 
   BUGFIXES:
+    * Covermanager tooltips were persistent even when window closed. Tooltips
+      have now been replaced with statusbar text. (BR 106976)
     * Turning of dynamic mode when items were filtered only 're-enabled' the
       visible items.
     * Disable random mode on startup if dynamic mode is on. (BR 107311)
