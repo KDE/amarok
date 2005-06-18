@@ -627,7 +627,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 
             popup.insertItem( i18n( "&Append to Playlist" ), Playlist::Append );
             popup.insertItem( i18n( "Append && &Play" ), Playlist::DirectPlay | Playlist::Append );
-            if( b ) popup.insertItem( i18n( "&Queue After Current Track" ), Playlist::Queue );
+            if( b ) popup.insertItem( i18n( "&Queue Track" ), Playlist::Queue );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 

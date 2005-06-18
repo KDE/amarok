@@ -956,7 +956,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
 
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue After Current Track" ), QUEUE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
         menu.insertSeparator();
@@ -1546,7 +1546,7 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
         else if( s == "-" )
             minus = true;
     }
-    
+
     const uint count = list.count();
     for( uint i = 0; i < count; ++i )
     {
@@ -1561,7 +1561,7 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
             field = s.left( x ).lower();
             s = s.mid( x + 1 );
         }
-        
+
         int table = -1;
         if( field == "artist" )
             table = QueryBuilder::tabArtist;
@@ -1573,12 +1573,12 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
             table = QueryBuilder::tabGenre;
         else if( field == "year" )
             table = QueryBuilder::tabYear;
-        
+
         if( neg )
             qb.excludeFilter( table >= 0 ? table : defaults, s );
         else
             qb.addFilter( table >= 0 ? table : defaults, s );
-    }   
+    }
 }
 
 
