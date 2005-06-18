@@ -779,20 +779,24 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 ////////////////////////////////////////////////////////////////////////////
 
 // For creating
-StreamEditor::StreamEditor( QString defaultName, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n("Stream Editor"), Ok|Cancel)
+StreamEditor::StreamEditor( QWidget *parent, const char *name )
+    : KDialogBase( parent, name, true, i18n("Add Radio Stream"), Ok|Cancel)
 {
     makeVBoxMainWidget();
 
     QHBox *nameBox = new QHBox( mainWidget() );
     nameBox->setSpacing( 5 );
-    new QLabel( i18n("Name:"), nameBox );
-    m_nameLineEdit = new KLineEdit( defaultName, nameBox );
+    QLabel *nameLabel = new QLabel( i18n("&Name:"), nameBox );
+    nameLabel->setMinimumWidth( 60 );
+    m_nameLineEdit = new KLineEdit( i18n("Radio Stream"), nameBox );
+    nameLabel->setBuddy( m_nameLineEdit );
 
     QHBox *urlBox = new QHBox( mainWidget() );
     urlBox->setSpacing( 5 );
-    new QLabel( i18n("Url:"), urlBox );
-    m_urlLineEdit = new KLineEdit( defaultName, urlBox );
+    QLabel *urlLabel = new QLabel( i18n("&Url:"), urlBox );
+    urlLabel->setMinimumWidth( 60 );
+    m_urlLineEdit = new KLineEdit( "", urlBox );
+    urlLabel->setBuddy( m_urlLineEdit );
 
     QSize min( 480, 110 );
     setInitialSize( min );
@@ -803,19 +807,23 @@ StreamEditor::StreamEditor( QString defaultName, QWidget *parent, const char *na
 
 // For editing
 StreamEditor::StreamEditor( QWidget *parent, QString title, QString url, const char *name )
-    : KDialogBase( parent, name, true, i18n("Stream Editor"), Ok|Cancel)
+    : KDialogBase( parent, name, true, i18n("Edit Radio Stream"), Ok|Cancel)
 {
     makeVBoxMainWidget();
 
     QHBox *nameBox = new QHBox( mainWidget() );
     nameBox->setSpacing( 5 );
-    new QLabel( i18n("Name:"), nameBox );
+    QLabel *nameLabel = new QLabel( i18n("&Name:"), nameBox );
+    nameLabel->setMinimumWidth( 60 );
     m_nameLineEdit = new KLineEdit( title, nameBox );
+    nameLabel->setBuddy( m_nameLineEdit );
 
     QHBox *urlBox = new QHBox( mainWidget() );
     urlBox->setSpacing( 5 );
-    new QLabel( i18n("Url:"), urlBox );
+    QLabel *urlLabel = new QLabel( i18n("&Url:"), urlBox );
+    urlLabel->setMinimumWidth( 60 );
     m_urlLineEdit = new KLineEdit( url, urlBox );
+    urlLabel->setBuddy( m_urlLineEdit );
 
     QSize min( 480, 110 );
     setInitialSize( min );

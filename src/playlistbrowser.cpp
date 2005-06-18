@@ -304,7 +304,7 @@ void PlaylistBrowser::loadCoolStreams()
 
 void PlaylistBrowser::addStream( QListViewItem *parent )
 {
-    StreamEditor dialog( i18n("Radio Stream"), this );
+    StreamEditor dialog( this );
 
     if( !parent ) parent = static_cast<QListViewItem*>(m_streamsCategory);
 

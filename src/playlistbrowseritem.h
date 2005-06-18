@@ -237,7 +237,7 @@ class StreamEntry : public PlaylistBrowserEntry
 class StreamEditor : public KDialogBase
 {
     public:
-        StreamEditor( QString name, QWidget *parent, const char *name=0 );
+        StreamEditor( QWidget *parent, const char *name=0 );
         StreamEditor( QWidget *parent, QString title, QString url, const char *name=0 );
 
         KURL    url()  const { return KURL::KURL( m_urlLineEdit->text() ); }
