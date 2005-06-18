@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> Consider moving the GHNS provider list to a different server than amarok.kde.org,
+           possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
+           to work entirely)
+
   <markey> The default analyzer (BlockAnalyzer) uses way too much CPU, since mxcl added
            the "fading" effect. We must either optimize it before 1.3-final, or revert the
            fading effect.
