@@ -1,6 +1,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
+// (c) 2005 Gábor Lehel <illissius@gmail.com>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
