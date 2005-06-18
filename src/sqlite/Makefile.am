@@ -17,6 +17,7 @@ libsqlite_la_SOURCES = \
     auth.c \
     btree.c \
     build.c \
+    callback.c \
     date.c \
     delete.c \
     expr.c \
@@ -31,6 +32,7 @@ libsqlite_la_SOURCES = \
     pager.c \
     parse.c \
     pragma.c \
+    prepare.c \
     printf.c \
     random.c \
     select.c \

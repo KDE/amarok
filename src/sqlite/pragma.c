@@ -19,7 +19,7 @@
 
 /* Ignore this whole file if pragmas are disabled
 */
-#ifndef SQLITE_OMIT_PRAGMA
+#if !defined(SQLITE_OMIT_PRAGMA) && !defined(SQLITE_OMIT_PARSER)
 
 #if defined(SQLITE_DEBUG) || defined(SQLITE_TEST)
 # include "pager.h"
@@ -645,6 +645,8 @@ void sqlite3Pragma(
       HashElem *x;
       int cnt = 0;
 
+      if( OMIT_TEMPDB && i==1 ) continue;
+
       sqlite3CodeVerifySchema(pParse, i);
 
       /* Do an integrity check of the B-Tree
@@ -691,7 +693,7 @@ void sqlite3Pragma(
           static const VdbeOpList idxErr[] = {
             { OP_MemIncr,     0,  0,  0},
             { OP_String8,     0,  0,  "rowid "},
-            { OP_Recno,       1,  0,  0},
+            { OP_Rowid,       1,  0,  0},
             { OP_String8,     0,  0,  " missing from index "},
             { OP_String8,     0,  0,  0},    /* 4 */
             { OP_Concat,      2,  0,  0},
@@ -903,6 +905,17 @@ void sqlite3Pragma(
   }else
 #endif
 
+#ifdef SQLITE_SSE
+  /*
+  ** Check to see if the sqlite_statements table exists.  Create it
+  ** if it does not.
+  */
+  if( sqlite3StrICmp(zLeft, "create_sqlite_statement_table")==0 ){
+    extern int sqlite3CreateStatementsTable(Parse*);
+    sqlite3CreateStatementsTable(pParse);
+  }else
+#endif
+
   {}
 
   if( v ){
@@ -917,4 +930,4 @@ pragma_out:
   sqliteFree(zRight);
 }
 
-#endif /* SQLITE_OMIT_PRAGMA */
+#endif /* SQLITE_OMIT_PRAGMA || SQLITE_OMIT_PARSER */

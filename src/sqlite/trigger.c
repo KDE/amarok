@@ -197,9 +197,9 @@ void sqlite3FinishTrigger(
   sqlite3 *db = pParse->db;  /* The database */
   DbFixer sFix;
 
-  if( pParse->nErr || pParse->pNewTrigger==0 ) goto triggerfinish_cleanup;
   pTrig = pParse->pNewTrigger;
   pParse->pNewTrigger = 0;
+  if( pParse->nErr || pTrig==0 ) goto triggerfinish_cleanup;
   pTrig->step_list = pStepList;
   while( pStepList ){
     pStepList->pTrig = pTrig;
@@ -215,7 +215,7 @@ void sqlite3FinishTrigger(
   */
   if( !db->init.busy ){
     static const VdbeOpList insertTrig[] = {
-      { OP_NewRecno,   0, 0,  0          },
+      { OP_NewRowid,   0, 0,  0          },
       { OP_String8,    0, 0,  "trigger"  },
       { OP_String8,    0, 0,  0          },  /* 2: trigger name */
       { OP_String8,    0, 0,  0          },  /* 3: table name */
@@ -224,7 +224,7 @@ void sqlite3FinishTrigger(
       { OP_String8,    0, 0,  0          },  /* 6: SQL */
       { OP_Concat,     0, 0,  0          }, 
       { OP_MakeRecord, 5, 0,  "tttit"    },
-      { OP_PutIntKey,  0, 0,  0          },
+      { OP_Insert,     0, 0,  0          },
     };
     int addr;
     Vdbe *v;
@@ -439,7 +439,7 @@ void sqlite3DropTrigger(Parse *pParse, SrcList *pName){
   zDb = pName->a[0].zDatabase;
   zName = pName->a[0].zName;
   nName = strlen(zName);
-  for(i=0; i<db->nDb; i++){
+  for(i=OMIT_TEMPDB; i<db->nDb; i++){
     int j = (i<2) ? i^1 : i;  /* Search TEMP before MAIN */
     if( zDb && sqlite3StrICmp(db->aDb[j].zName, zDb) ) continue;
     pTrigger = sqlite3HashFind(&(db->aDb[j].trigHash), zName, nName+1);

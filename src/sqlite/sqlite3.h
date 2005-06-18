@@ -31,7 +31,7 @@ extern "C" {
 #ifdef SQLITE_VERSION
 # undef SQLITE_VERSION
 #endif
-#define SQLITE_VERSION         "3.2.0"
+#define SQLITE_VERSION         "3.2.2"
 
 /*
 ** The format of the version string is "X.Y.Z<trailing string>", where
@@ -48,7 +48,7 @@ extern "C" {
 #ifdef SQLITE_VERSION_NUMBER
 # undef SQLITE_VERSION_NUMBER
 #endif
-#define SQLITE_VERSION_NUMBER 3002000
+#define SQLITE_VERSION_NUMBER 3002002
 
 /*
 ** The version string is also compiled into the library so that a program
@@ -688,8 +688,6 @@ int sqlite3_bind_parameter_index(sqlite3_stmt*, const char *zName);
 
 /*
 ** Set all the parameters in the compiled SQL statement to NULL.
-**
-******* THIS IS AN EXPERIMENTAL API AND IS SUBJECT TO CHANGE ******
 */
 int sqlite3_clear_bindings(sqlite3_stmt*);
 
@@ -1191,22 +1189,28 @@ int sqlite3_rekey(
 ** milisecond time resolution, then the time will be rounded up to 
 ** the nearest second. The number of miliseconds of sleep actually 
 ** requested from the operating system is returned.
-**
-******* THIS IS AN EXPERIMENTAL API AND IS SUBJECT TO CHANGE ******
 */
 int sqlite3_sleep(int);
 
 /*
-** Return TRUE (non-zero) of the statement supplied as an argument needs
+** Return TRUE (non-zero) if the statement supplied as an argument needs
 ** to be recompiled.  A statement needs to be recompiled whenever the
 ** execution environment changes in a way that would alter the program
 ** that sqlite3_prepare() generates.  For example, if new functions or
 ** collating sequences are registered or if an authorizer function is
 ** added or changed.
 **
-******* THIS IS AN EXPERIMENTAL API AND IS SUBJECT TO CHANGE ******
 */
 int sqlite3_expired(sqlite3_stmt*);
+
+/*
+** Move all bindings from the first prepared statement over to the second.
+** This routine is useful, for example, if the first prepared statement
+** fails with an SQLITE_SCHEMA error.  The same SQL can be prepared into
+** the second prepared statement then all of the bindings transfered over
+** to the second statement before the first statement is finalized.
+*/
+int sqlite3_transfer_bindings(sqlite3_stmt*, sqlite3_stmt*);
 
 /*
 ** If the following global variable is made to point to a
@@ -1224,7 +1228,7 @@ extern char *sqlite3_temp_directory;
 ** This function is called to recover from a malloc() failure that occured
 ** within the SQLite library. Normally, after a single malloc() fails the 
 ** library refuses to function (all major calls return SQLITE_NOMEM).
-** This function library state so that it can be used again.
+** This function restores the library state so that it can be used again.
 **
 ** All existing statements (sqlite3_stmt pointers) must be finalized or
 ** reset before this call is made. Otherwise, SQLITE_BUSY is returned.
@@ -1240,6 +1244,22 @@ extern char *sqlite3_temp_directory;
 ** SQLITE_OMIT_GLOBALRECOVER at compile time.
 */
 int sqlite3_global_recover();
+
+/*
+** Test to see whether or not the database connection is in autocommit
+** mode.  Return TRUE if it is and FALSE if not.  Autocommit mode is on
+** by default.  Autocommit is disabled by a BEGIN statement and reenabled
+** by the next COMMIT or ROLLBACK.
+*/
+int sqlite3_get_autocommit(sqlite3*);
+
+/*
+** Return the sqlite3* database handle to which the prepared statement given
+** in the argument belongs.  This is the same database handle that was
+** the first argument to the sqlite3_prepare() that was used to create
+** the statement in the first place.
+*/
+sqlite3 *sqlite3_db_handle(sqlite3_stmt*);
 
 #ifdef __cplusplus
 }  /* End of the 'extern "C"' block */

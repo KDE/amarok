@@ -38,7 +38,7 @@ struct VdbeOp {
   int p1;             /* First operand */
   int p2;             /* Second parameter (often the jump destination) */
   char *p3;           /* Third parameter */
-  int p3type;         /* P3_STATIC, P3_DYNAMIC or P3_POINTER */
+  int p3type;         /* One of the P3_xxx constants defined below */
 #ifdef VDBE_PROFILE
   int cnt;            /* Number of times this instruction was executed */
   long long cycles;   /* Total time spend executing this instruction */
@@ -64,7 +64,6 @@ typedef struct VdbeOpList VdbeOpList;
 #define P3_NOTUSED    0   /* The P3 parameter is not used */
 #define P3_DYNAMIC  (-1)  /* Pointer to a string obtained from sqliteMalloc() */
 #define P3_STATIC   (-2)  /* Pointer to a static string */
-#define P3_POINTER  (-3)  /* P3 is a pointer to some structure or object */
 #define P3_COLLSEQ  (-4)  /* P3 is a pointer to a CollSeq structure */
 #define P3_FUNCDEF  (-5)  /* P3 is a pointer to a FuncDef structure */
 #define P3_KEYINFO  (-6)  /* P3 is a pointer to a KeyInfo structure */
@@ -78,7 +77,7 @@ typedef struct VdbeOpList VdbeOpList;
 ** from a single sqliteMalloc().  But no copy is made and the calling
 ** function should *not* try to free the KeyInfo.
 */
-#define P3_KEYINFO_HANDOFF (-7)
+#define P3_KEYINFO_HANDOFF (-9)
 
 /*
 ** The following macro converts a relative address in the p2 field
