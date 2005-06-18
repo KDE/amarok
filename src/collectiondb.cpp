@@ -2762,11 +2762,11 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
         }
         else
         {
-            if ( tables & tabAlbum ) m_where += "AND album.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabArtist ) m_where += "AND artist.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabGenre ) m_where += "AND genre.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabYear ) m_where += "AND year.name <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
-            if ( tables & tabSong ) m_where += "AND tags.title <> '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabAlbum ) m_where += "AND album.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabArtist ) m_where += "AND artist.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabGenre ) m_where += "AND genre.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabYear ) m_where += "AND year.name NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
+            if ( tables & tabSong ) m_where += "AND tags.title NOT LIKE '%" + CollectionDB::instance()->escapeString( filter ) + "%' ";
         }
         m_where += " ) ";
     }
