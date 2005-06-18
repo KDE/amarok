@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <markey> The default analyzer (BlockAnalyzer) uses way too much CPU, since mxcl added
+           the "fading" effect. We must either optimize it before 1.3-final, or revert the
+           fading effect.
+
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
   <markey> Figure out why ScriptManager can't read from stdout.
@@ -60,6 +64,7 @@ SHORT-TERM (URGENT):
 
 
 MID-TERM:
+
   <illiss.>Port Google-syntax to other places you can search in (most notably collection browser, possibly
            also file browser and cover manager. Anywhere else?)
 
@@ -139,70 +144,71 @@ MID-TERM:
 
 
 LONG-TERM:
-  <sebr>           Support multiple collections.  This could be really powerful, and could be handled
-                   with the collection browser.  We could support non-local collections, audio cd/dvds,
-                   NFS/Samba etc.  This would also allow us to retrieve tracks from other networked pcs.
-                   Auto-polling of added collections for a 'hot-sync' style detection of collections.
 
-  CHG  21 <markey> Use more accurate interpolation for analyzers (cubic or spline)
+  <sebr>   Support multiple collections.  This could be really powerful, and could be handled
+           with the collection browser.  We could support non-local collections, audio cd/dvds,
+           NFS/Samba etc.  This would also allow us to retrieve tracks from other networked pcs.
+           Auto-polling of added collections for a 'hot-sync' style detection of collections.
 
-  ADD              Tabbed playlists.
-                   Pro: it's convenient to have several playlists
-                   Contra: the playlist is getting cluttered enough as it is!
+  <markey> Use more accurate interpolation for analyzers (cubic or spline)
 
-  ADD              Make windows magnetic / sticking together (difficult).
+           Tabbed playlists.
+           Pro: it's convenient to have several playlists
+           Contra: the playlist is getting cluttered enough as it is!
 
-  ADD              Make PlayerWidget shadeable (like XMMS)
-          <mxcl>   Doesn't the systray provide this functionality already?
-          <berkus> No it doesn't, double click the winamp/xmms window and see for yourself
-          <larson> How do you propose this should work? Since we are handled by kwin and have
-                   normal window borders, double clicking the titlebar is handled by kwin. Also, should
-                   the playlist be shadable?
+           Make windows magnetic / sticking together (difficult).
 
-  ADD              Support for compressed archives / tarballs
+           Make PlayerWidget shadeable (like XMMS)
+  <mxcl>   Doesn't the systray provide this functionality already?
+  <berkus> No it doesn't, double click the winamp/xmms window and see for yourself
+  <larson> How do you propose this should work? Since we are handled by kwin and have
+           normal window borders, double clicking the titlebar is handled by kwin. Also, should
+           the playlist be shadable?
 
-  ADD     <mxcl>   Implement beat detection (thread?), interface should glow/move to
-                   the beat, visualisations have access to beat/bpm info.
+           Support for compressed archives / tarballs
 
-  ADD              Audio system info widget, showing all available codecs and similar info.
+  <mxcl>   Implement beat detection (thread?), interface should glow/move to
+           the beat, visualisations have access to beat/bpm info.
 
-  CHG              Resizable playerwidget, like in Winamp3.
+           Audio system info widget, showing all available codecs and similar info.
+
+           Resizable playerwidget, like in Winamp3.
 
 
 IDEAS:
 
-  ADD              Bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
+           Bookmarks inside of tracks (good for very long tracks), and nifty bookmark browser
 
-  ADD              Using filelight (as a kpart maybe) for a graphical representation of the playlist. so
-                   you could see at first glance how the altogether playing time is divided into different
-                   albums, tunes and so on.
+           Using filelight (as a kpart maybe) for a graphical representation of the playlist. so
+           you could see at first glance how the altogether playing time is divided into different
+           albums, tunes and so on.
 
 
 DISCUSSING:
 
-          <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
-                   at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when
-                   you only have limited screen width, like in console or kdevelop. pretty please with icing =)
-          <mxcl>   I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
-                   Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
+  <markey> I'd very much appreciate people keeping line length in all amaroK sources/textfiles
+           at 110 characters max. Longer lines cause horrible dynamic line breaks or scrolling when
+           you only have limited screen width, like in console or kdevelop. pretty please with icing =)
+  <mxcl>   I added a 110 char marker to my editor (since ages ago). However I don't always keep to it.
+           Breaking lines is most often ugly :( Mostly I do though. You can praise me now ;)
 
 
-DO-NOT-IMPLEMENT:
+DO-NOT-IMPLEMENT (stuff that was rejected):
 
-  FIX  61 <markey> Allow removing of playlist items by dragging back into browser.
-          <larson> I think this is really weird. When I drag something I expect that someting to be
-                   ADDed or opened in the target. Not removed from the sender.
-                   (RFC: is this still appropriate or would it be misleading?)
-          <muesli> imho, it's misleading and not hid-compatible. i would rather
-                   expect that file to be copied to the browser's current directory.
+  <markey> Allow removing of playlist items by dragging back into browser.
+  <larson> I think this is really weird. When I drag something I expect that someting to be
+           ADDed or opened in the target. Not removed from the sender.
+           (RFC: is this still appropriate or would it be misleading?)
+  <muesli> imho, it's misleading and not hid-compatible. i would rather
+           expect that file to be copied to the browser's current directory.
 
-  ADD              "Hide playlist when main widget is not active" option (?? comments please: )
-          <berkus> Noo, we have it hiding into tray, thats enough (imagine how much flashing will be
-                   if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
-          <mxcl>   Hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
-                   anyway.. dunno if I like the sound of it anymore either.
+          "Hide playlist when main widget is not active" option (?? comments please: )
+  <berkus> Noo, we have it hiding into tray, thats enough (imagine how much flashing will be
+           if i drag mouse around with "focus follows mouse" on - this is the one i use all the time)
+  <mxcl>   Hence it's an option, you'd not use it with focus follows mouse. But it was just an idea
+           anyway.. dunno if I like the sound of it anymore either.
 
 
-BACKTRACE/DEBUG
+BACKTRACES/DEBUG
 
 
