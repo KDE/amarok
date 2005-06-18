@@ -1,5 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2005 Gábor Lehel <illissius@gmail.com>
 // See COPYING file for licensing information.
 
 #include <config.h>
@@ -307,7 +308,7 @@ CollectionView::renderView()  //SLOT
         if ( q_cat2 != CollectionBrowser::IdNone ) qb.sortBy( q_cat2, QueryBuilder::valName );
         if (VisYearAlbum==3) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
         if ( q_cat3 != CollectionBrowser::IdNone ) qb.sortBy( q_cat3, QueryBuilder::valName );
-        qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+        setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         values = qb.run();
@@ -352,7 +353,7 @@ CollectionView::renderView()  //SLOT
 
         qb.addReturnValue( q_cat1, QueryBuilder::valName );
         if (VisYearAlbum==1) qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-        qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+        setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
         if (VisYearAlbum==1) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
         qb.sortBy( q_cat1, QueryBuilder::valName );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
@@ -401,7 +402,7 @@ CollectionView::renderView()  //SLOT
         {
             qb.clear();
             qb.addReturnValue( q_cat1, QueryBuilder::valName );
-            qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+            setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
             qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
             qb.setLimit( 0, 1 );
             values = qb.run();
@@ -712,7 +713,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             break;
     }
 
-    qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+    setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
     int countReturnValues = qb.countReturnValues();
@@ -1253,7 +1254,7 @@ CollectionView::listSelected()
             else
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
 
-            qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+            setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
 
             if ( VisYearAlbum==1) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
             if ( !sampler ) qb.sortBy( q_cat1, QueryBuilder::valName );
@@ -1317,7 +1318,7 @@ CollectionView::listSelected()
                     }
                     qb.addMatch( q_cat2, tmptext );
 
-                    qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+                    setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
 
                     if ( VisYearAlbum==1) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
                     if ( !sampler ) qb.sortBy( q_cat1, QueryBuilder::valName );
@@ -1402,7 +1403,7 @@ CollectionView::listSelected()
                         }
                         qb.addMatch( q_cat3, tmptext );
 
-                        qb.addFilters( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, QStringList::split( " ", m_filter ) );
+                        setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
 
                         if ( VisYearAlbum==1) qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
                         if ( !sampler ) qb.sortBy( q_cat1, QueryBuilder::valName );
@@ -1491,6 +1492,93 @@ CollectionView::captionForCategory( const int cat ) const
     }
 
     return QString::null;
+}
+
+void
+CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaults )
+{
+    if( query.contains( "\"" ) % 2 == 1 ) query += "\""; //make an even number of "s
+
+    //something like thingy"bla"stuff -> thingy "bla" stuff
+    bool odd = false;
+    for( int pos = query.find( "\"" );
+         pos >= 0 && pos <= (int)query.length();
+         pos = query.find( "\"", pos + 1 ) )
+    {
+        query = query.insert( odd ? ++pos : pos++, " " );
+        odd = !odd;
+    }
+    query = query.simplifyWhiteSpace();
+
+    int x; //position in string of the end of the next element
+    bool minus = false; //whether the next element is to be negated
+    QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
+    QStringList list; //list of elements of which at least one has to match (OR)
+    while( !query.isEmpty() )  //seperate query into parts which all have to match
+    {
+        if( query.startsWith( " " ) )
+            query = query.mid( 1 ); //cuts off the first character
+        if( query.startsWith( "\"" ) ) //take stuff in "s literally (basically just ends up ignoring spaces)
+        {
+            query = query.mid( 1 );
+            x = query.find( "\"" );
+        }
+        else
+            x = query.find( " " );
+        if( x < 0 )
+            x = query.length();
+        s = query.left( x ); //get the element
+        query = query.mid( x + 1 ); //move on
+
+        if( !field.isEmpty() || ( s != "-" && !s.endsWith( ":" ) ) )
+        {
+            tmp = field + s;
+            if( minus )
+            {
+                tmp = "-" + tmp;
+                minus = false;
+            }
+            list += tmp;
+            tmp = field = "";
+        }
+        else if( s.endsWith( ":" ) )
+            field = s;
+        else if( s == "-" )
+            minus = true;
+    }
+    
+    const uint count = list.count();
+    for( uint i = 0; i < count; ++i )
+    {
+        field = QString::null;
+        s = list[i];
+        bool neg = s.startsWith( "-" );
+        if ( neg )
+            s = s.mid( 1 ); //cut off the -
+        x = s.find( ":" ); //where the field ends and the thing-to-match begins
+        if( x > 0 )
+        {
+            field = s.left( x ).lower();
+            s = s.mid( x + 1 );
+        }
+        
+        int table = -1;
+        if( field == "artist" )
+            table = QueryBuilder::tabArtist;
+        else if( field == "album" )
+            table = QueryBuilder::tabAlbum;
+        else if( field == "title" )
+            table = QueryBuilder::tabSong;
+        else if( field == "genre" )
+            table = QueryBuilder::tabGenre;
+        else if( field == "year" )
+            table = QueryBuilder::tabYear;
+        
+        if( neg )
+            qb.excludeFilter( table >= 0 ? table : defaults, s );
+        else
+            qb.addFilter( table >= 0 ? table : defaults, s );
+    }   
 }
 
 

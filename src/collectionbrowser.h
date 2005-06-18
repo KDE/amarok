@@ -1,5 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2005 Gábor Lehel <illissius@gmail.com>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONBROWSER_H
@@ -138,6 +139,8 @@ class CollectionView : public KListView
         // Reimplemented from KListView
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
+        
+        void setQBFilters( QueryBuilder &qb, QString query, const int &defaults );
 
     //attributes:
         static CollectionView* m_instance;
