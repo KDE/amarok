@@ -45,6 +45,7 @@
 
 #include <taglib/mpegfile.h>
 #include <taglib/mpegfile.h>
+#include <taglib/flacfile.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/attachedpictureframe.h>
 #include <taglib/tbytevector.h>
@@ -409,7 +410,7 @@ CollectionDB::dropTables( DbConnection *conn )
             query( QString( "DROP SEQUENCE artist_seq;" ), conn );
             query( QString( "DROP SEQUENCE genre_seq;" ), conn );
             query( QString( "DROP SEQUENCE year_seq;" ), conn );
-	}
+        }
     }
 }
 
@@ -753,15 +754,22 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
     {
         // cached version
         return tagCoverDir.filePath( widthKey + tagKey );
-    } else
+    }
+    else
     {
-        // look into the tag
-        TagLib::MPEG::File f( QFile::encodeName( trackInformation.url().path() ) );
-        TagLib::ID3v2::Tag *tag = f.ID3v2Tag();
-
+        TagLib::File *f = 0;
+        TagLib::ID3v2::Tag *tag = 0;
+        if ( trackInformation.url().path().endsWith( ".mp3", false ) ) {
+            f = new TagLib::MPEG::File( QFile::encodeName( trackInformation.url().path() ) );
+            tag = ( (TagLib::MPEG::File*)f )->ID3v2Tag();
+        }
+        else if ( trackInformation.url().path().endsWith( ".flac", false ) ) {
+            f = new TagLib::FLAC::File( QFile::encodeName( trackInformation.url().path() ) );
+            tag = ( (TagLib::FLAC::File*)f )->ID3v2Tag();
+        }
         if ( tag )
         {
-            TagLib::ID3v2::FrameList l = f.ID3v2Tag()->frameListMap()[ "APIC" ];
+            TagLib::ID3v2::FrameList l = tag->frameListMap()[ "APIC" ];
             if ( !l.isEmpty() )
             {
                 debug() << "Found APIC frame(s)" << endl;
@@ -790,6 +798,8 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 } // image.isNull
             } // apic list is empty
         } // tag is empty
+        if ( f )
+            delete f; // destroying f will destroy the tag it generated, according to taglib docs
     } // caching
 
     return QString::null;
@@ -2831,17 +2841,17 @@ QueryBuilder::setOptions( int options )
     if ( options & optOnlyCompilations ) m_where += QString("AND tags.sampler = %1 ").arg(CollectionDB::instance()->boolT());
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql && options & optRemoveDuplicates && options & optRandomize) {
-	    m_values = "DISTINCT " + CollectionDB::instance()->randomFunc() + " AS __random "+ m_values;
-	    if ( !m_sort.isEmpty() ) m_sort += ",";
-	    m_sort += CollectionDB::instance()->randomFunc() + " ";
+            m_values = "DISTINCT " + CollectionDB::instance()->randomFunc() + " AS __random "+ m_values;
+            if ( !m_sort.isEmpty() ) m_sort += ",";
+            m_sort += CollectionDB::instance()->randomFunc() + " ";
     } else {
-	    if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
+            if ( options & optRemoveDuplicates ) m_values = "DISTINCT " + m_values;
 
-	    if ( options & optRandomize )
-	    {
-	        if ( !m_sort.isEmpty() ) m_sort += ",";
-	        m_sort += CollectionDB::instance()->randomFunc() + " ";
-	    }
+            if ( options & optRandomize )
+            {
+                if ( !m_sort.isEmpty() ) m_sort += ",";
+                m_sort += CollectionDB::instance()->randomFunc() + " ";
+            }
     }
 }
 
