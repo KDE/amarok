@@ -106,6 +106,8 @@ Party::loadConfig( PartyEntry *config )
     m_base->m_markHistory->setChecked( config->isMarked() );
     m_base->m_appendType->setCurrentItem( config->appendType() );
 
+    AmarokConfig::setPartyCustomList( config->items() );
+
     applySettings();
 
     Playlist::instance()->repopulate();
@@ -139,6 +141,7 @@ Party::applySettings() //SLOT
         type = "Custom";
 
     AmarokConfig::setPartyType( type );
+    PlaylistBrowser::instance()->loadDynamicItems();
 
     if ( AmarokConfig::partyPreviousCount() != previousCount() )
     {

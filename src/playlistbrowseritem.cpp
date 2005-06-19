@@ -176,6 +176,8 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     , m_loading( false )
     , m_loaded( false )
     , m_modified( false )
+    , m_dynamic( false )
+    , m_dynamicPix( 0 )
     , m_savePix( 0 )
     , m_loadingPix( 0 )
     , m_lastTrack( 0 )
@@ -200,6 +202,8 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, QDomE
     , m_loading( false )
     , m_loaded( false )
     , m_modified( false )
+    , m_dynamic( false )
+    , m_dynamicPix( 0 )
     , m_savePix( 0 )
     , m_loadingPix( 0 )
     , m_lastTrack( 0 )
@@ -421,6 +425,22 @@ KURL::List PlaylistEntry::tracksURL()
     return list;
 }
 
+void PlaylistEntry::setDynamic( bool enable )
+{
+    debug() << "Setting dynamic of item '" << text(0) << "' as " << enable << endl;
+    if( enable != m_dynamic )
+    {
+        if( enable )
+            m_dynamicPix = new QPixmap( KGlobal::iconLoader()->loadIcon( "favorites", KIcon::NoGroup, 16 ) );
+        else {
+            delete m_dynamicPix;
+            m_dynamicPix = 0;
+        }
+        m_dynamic = enable;
+    }
+
+    repaint();
+}
 
 void PlaylistEntry::setModified( bool chg )
 {
@@ -493,11 +513,15 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     pBuf.setPen( isSelected() ? cg.highlightedText() : cg.text() );
 
-    //if the playlist has been modified a save icon is shown
     if( m_modified && m_savePix )
     {
         pBuf.drawPixmap( text_x, (textHeight - m_savePix->height())/2, *m_savePix );
         text_x += m_savePix->width()+4;
+    }
+    else if( m_dynamic && m_dynamicPix && AmarokConfig::partyMode() )
+    {
+        pBuf.drawPixmap( text_x, (textHeight - m_dynamicPix->height())/2, *m_dynamicPix );
+        text_x += m_dynamicPix->width()+4;
     }
     else if( pixmap( column ) )
     {
@@ -930,6 +954,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         : PlaylistBrowserEntry( parent, after, name )
         , sqlForTags( query )
         , m_title( name )
+        , m_dynamic( false )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setDragEnabled( query.isEmpty() ? false : true );
@@ -941,6 +966,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         : PlaylistBrowserEntry( parent, after, name )
         , sqlForTags( tags )
         , m_title( name )
+        , m_dynamic( false )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setDragEnabled( !urls.isEmpty() && !tags.isEmpty() );
@@ -1021,5 +1047,18 @@ void SmartPlaylist::setXml( QDomElement xml ) {
     }
 
 }
+
+void SmartPlaylist::setDynamic( bool enable )
+{
+    if( enable != m_dynamic )
+    {
+        enable ?
+            setPixmap( 0, SmallIcon( "favorites" ) ) :
+            setPixmap( 0, SmallIcon( "player_playlist_2" ) );
+        m_dynamic = enable;
+    }
+
+}
+
 
 #include "playlistbrowseritem.moc"

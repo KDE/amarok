@@ -694,10 +694,13 @@ void PlaylistBrowser::saveParties()
             QString list;
             if( item->appendType() == 2 )
             {
-                for( uint c = 0; c < m_dynamicEntries.count(); c = c++ )
+                QStringList items = item->items();
+                for( uint c = 0; c < items.count(); c++ )
                 {
-                    list.append( ( m_dynamicEntries.at(c) )->text(0) );
-                    if ( c < m_dynamicEntries.count()-1 )
+                    PlaylistBrowserEntry *saveMe = findItem( *(items.at(c)), 0 );
+                    debug() << "Saving item (" << item->text(0) << ") with " << saveMe->text(0) << endl;
+                    list.append( saveMe->text(0) );
+                    if ( c < items.count()-1 )
                         list.append( ',' );
                 }
             }
@@ -719,6 +722,57 @@ void PlaylistBrowser::saveParties()
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
+}
+
+void PlaylistBrowser::loadDynamicItems()
+{
+    debug() << "Removing dynamic entries" << endl;
+    // Make sure all items are unmarked
+    for( uint i=0; i < m_dynamicEntries.count(); i++ )
+    {
+        QListViewItem *it = m_dynamicEntries.at( i );
+
+        if( it )
+        {
+            if( isPlaylist( it ) )
+            {
+                PlaylistEntry *item = static_cast<PlaylistEntry*>(it);
+                item->setDynamic( false );
+            }
+            else if( isSmartPlaylist( it ) )
+            {
+                SmartPlaylist *item = static_cast<SmartPlaylist*>(it);
+                item->setDynamic( false );
+            }
+        }
+    }
+    m_dynamicEntries.clear();  // Dont use remove(), since we do i++, which would cause skip overs!!!
+
+    // Mark appropriate items as used
+    if( AmarokConfig::partyType() == "Custom" )
+    {
+        debug() << "Loading entries" << endl;
+        QStringList playlists = AmarokConfig::partyCustomList();
+        for( uint i=0; i < playlists.count(); i++ )
+        {
+            QListViewItem *it = findItem( playlists[i], 0 );
+
+            if( it )
+            {
+                m_dynamicEntries.append( it );
+                if( isPlaylist( it ) )
+                {
+                    PlaylistEntry *item = static_cast<PlaylistEntry*>(it);
+                    item->setDynamic( true );
+                }
+                else if( isSmartPlaylist( it ) )
+                {
+                    SmartPlaylist *item = static_cast<SmartPlaylist*>(it);
+                    item->setDynamic( true );
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -935,31 +989,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     }
     else if( isParty( item ) )
     {
-        #define item static_cast<PartyEntry *>(item)
-        Party::instance()->loadConfig( item );
-        for( uint i=0; i < m_dynamicEntries.count(); i++ )
-        {
-            QListViewItem *it = m_dynamicEntries.at( i );
-            if( it )
-            {
-                m_dynamicEntries.remove( it );
-                it->setPixmap( 1, QPixmap() );
-            }
-        }
-        if( item->appendType() == 2 )
-        {
-            QStringList playlists = item->items();
-            for( uint i=0; i < playlists.count(); i++ )
-            {
-                QListViewItem *it = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-                if( it )
-                {
-                    it->setPixmap( 1, SmallIcon("apply") );
-                    m_dynamicEntries.append( it );
-                }
-            }
-        }
-        #undef  item
+        Party::instance()->loadConfig( static_cast<PartyEntry *>(item) );
     }
     else
         debug() << "No functionality for item double click implemented" << endl;
@@ -974,11 +1004,18 @@ void PlaylistBrowser::addToDynamic()
         if( m_dynamicEntries.find( *it ) < 0 ) // check that it is not there
         {
             m_dynamicEntries.append( *it );
-            (*it)->setPixmap( 1, SmallIcon( "apply" ) );
+            if( isPlaylist( *it ) )
+            {
+                PlaylistEntry *item = static_cast<PlaylistEntry*>(*it);
+                item->setDynamic( true );
+            }
+            else if( isSmartPlaylist( *it ) )
+            {
+                SmartPlaylist *item = static_cast<SmartPlaylist*>(*it);
+                item->setDynamic( true );
+            }
         }
     }
-
-    Party::instance()->applySettings();
 }
 
 void PlaylistBrowser::subFromDynamic()
@@ -990,11 +1027,18 @@ void PlaylistBrowser::subFromDynamic()
         if( m_dynamicEntries.find( *it ) >= 0 ) // check if it is already present
         {
             m_dynamicEntries.remove( *it );
-            (*it)->setPixmap( 1, QPixmap() );
+            if( isPlaylist( *it ) )
+            {
+                PlaylistEntry *item = static_cast<PlaylistEntry*>(*it);
+                item->setDynamic( false );
+            }
+            else if( isSmartPlaylist( *it ) )
+            {
+                SmartPlaylist *item = static_cast<SmartPlaylist*>(*it);
+                item->setDynamic( false );
+            }
         }
     }
-
-    Party::instance()->applySettings();
 }
 
 void PlaylistBrowser::removeSelectedItems() //SLOT
@@ -1257,16 +1301,21 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         newSizes.append( partyMinHeight );
         m_splitter->setSizes( newSizes );
 
-        QStringList playlists = AmarokConfig::partyCustomList();
-        QListViewItem *item = 0;
-
-        m_listview->setColumnWidth( 1, 25 );
-
-        for( uint i=0; i < playlists.count(); i++ )
+        if( AmarokConfig::partyType() == "Custom" )
         {
-            item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-            if( item )
-                item->setPixmap( 1, SmallIcon("apply") );
+            QStringList playlists = AmarokConfig::partyCustomList();
+            m_dynamicEntries.clear();
+
+            for( uint i=0; i < playlists.count(); i++ )
+            {
+                QListViewItem *it = m_dynamicEntries.at( i );
+
+                if( it )
+                {
+                    static_cast<PlaylistEntry *>(it)->setDynamic( true );
+                    m_dynamicEntries.append( it );
+                }
+            }
         }
 
         // uncheck before disabling
@@ -1284,8 +1333,6 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
         m_splitter->setSizes( newSizes );
 
         Playlist::instance()->alterHistoryItems( true, true ); //enable all items
-
-        m_listview->hideColumn( 1 );
 
         // Random mode was being enabled without notification on leaving dynamic mode.  Remember to re-enable first!
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
@@ -1393,7 +1440,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         if( isDynamic() )
         {
-            if( item->pixmap(1) )
+            if( static_cast<PlaylistEntry*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from dynamic mode" ), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to dynamic mode" ), DYNADD );
@@ -1455,7 +1502,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         if( isDynamic() )
         {
-            if( item->pixmap(1) )
+            if( static_cast<SmartPlaylist*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from dynamic mode" ), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to from dynamic mode" ), DYNADD );
@@ -1675,13 +1722,9 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     , m_marker( 0 )
 {
     addColumn( i18n("Playlists") );
-    addColumn( i18n("Dynamic") );
-
-    if( !isDynamic() )
-        hideColumn( 1 );
 
     setSelectionMode( QListView::Extended );
-    setResizeMode( QListView::LastColumn );
+    setResizeMode( QListView::AllColumns );
     setShowSortIndicator( true );
     setRootIsDecorated( true );
 
@@ -1690,7 +1733,6 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
     setDropVisualizerWidth( 3 );
     setAcceptDrops( true );
 
-    setFullWidth( true );
     setTreeStepSize( 20 );
 
     //<loading animation>

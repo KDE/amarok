@@ -98,6 +98,7 @@ class PlaylistBrowser : public QVBox
         void saveSmartPlaylists();
 
         PlaylistCategory* loadParties();
+        void loadDynamicItems();
         void saveParties();
 
         PlaylistCategory* loadPlaylists();

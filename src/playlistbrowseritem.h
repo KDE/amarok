@@ -147,10 +147,13 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         void        setUrl( const QString &u )    { m_url.setPath( u ); }
         int         trackCount()                  { return m_trackCount; }
         int         length()                      { return m_length; }
+        bool        isDynamic()                  { return m_dynamic; }
         bool        isLoaded()                    { return m_loaded; }
         bool        isModified()                  { return m_modified; }
-        void        setModified( bool );
+
+        void        setDynamic( bool );
         void        setLoadingPix( QPixmap *pix ) { m_loadingPix = pix; repaint();}
+        void        setModified( bool );
 
         int         compare( QListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
@@ -177,14 +180,16 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
     private:
         void customEvent( QCustomEvent* e );
 
-        KURL                 m_url;  //playlist url
-        int                  m_length;    //total length in seconds
-        int                  m_trackCount;    //track counter
-        QPtrList<TrackItemInfo> m_trackList;    //tracks in playlist
-        QPtrList<TrackItemInfo> tmp_droppedTracks;    //tracks dropped to the playlist while it wasn't been loaded
+        KURL                 m_url;                 //playlist url
+        int                  m_length;              //total length in seconds
+        int                  m_trackCount;          //track counter
+        QPtrList<TrackItemInfo> m_trackList;        //tracks in playlist
+        QPtrList<TrackItemInfo> tmp_droppedTracks;  //tracks dropped to the playlist while it wasn't been loaded
         bool                 m_loading;
-        bool                 m_loaded;    //playlist loaded
-        bool                 m_modified;    //the playlist has been modified
+        bool                 m_loaded;              //playlist loaded
+        bool                 m_modified;            //the playlist has been modified
+        bool                 m_dynamic;             //the playlist is scheduled for dynamic mode rotation
+        QPixmap             *m_dynamicPix;
         QPixmap             *m_savePix;
         QPixmap             *m_loadingPix;
         PlaylistTrackItem   *m_lastTrack;
@@ -267,6 +272,9 @@ class SmartPlaylist : public PlaylistBrowserEntry
         QDomElement xml() { return m_xml; }
         void setXml( QDomElement xml );
 
+        bool  isDynamic() { return m_dynamic; }
+        void  setDynamic( bool );
+
         int   rtti() const { return RTTI; }
         static const int RTTI = 1004;    //smart playlist item
 
@@ -274,6 +282,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
         QString m_title;
         QDomElement m_xml;
         QListViewItem *m_after;
+        bool m_dynamic;
 };
 
 //this class is used to store information (url, title and length) of a playlist track
