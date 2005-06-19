@@ -1,4 +1,5 @@
 // Author:    Max Howell <max.howell@methylblue.com>, (C) 2003-5
+//            Mark Kretschmann <markey@web.de>, (C) 2005
 // Copyright: See COPYING file that comes with this distribution
 //
 
