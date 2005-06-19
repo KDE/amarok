@@ -147,7 +147,7 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         void        setUrl( const QString &u )    { m_url.setPath( u ); }
         int         trackCount()                  { return m_trackCount; }
         int         length()                      { return m_length; }
-        bool        isDynamic()                  { return m_dynamic; }
+        bool        isDynamic()                   { return m_dynamic; }
         bool        isLoaded()                    { return m_loaded; }
         bool        isModified()                  { return m_modified; }
 

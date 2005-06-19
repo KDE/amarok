@@ -529,12 +529,6 @@ Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
     if( pl->rtti() == PlaylistEntry::RTTI )
     {
         #define pl static_cast<PlaylistEntry *>(pl)
-        //FIXME: only works on loaded playlists.
-        if( !pl->isLoaded() )
-        {
-            debug() << "Playlist is not loaded" << endl;
-            return;
-        }
 
         KURL::List urls;
         KURL::List trackList;

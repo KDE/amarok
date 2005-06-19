@@ -237,6 +237,7 @@ PlaylistEntry::~PlaylistEntry()
 
 void PlaylistEntry::load()
 {
+    debug() << "Loading playlist" << endl;
     m_trackList.clear();
     m_length = 0;
     m_loaded = false;
@@ -358,13 +359,18 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
         m_loaded = true;
         ((PlaylistBrowserView *)listView())->stopAnimation( this );  //stops the loading animation
 
-        if( m_trackCount ) setOpen( true );
+        if( m_trackCount && !m_dynamic && !isDynamic() ) setOpen( true );
         else repaint();
 
         m_trackCount = m_trackList.count();
     }
 }
 
+/**
+ *  We destroy the tracks on collapsing the entry.  However, if we are using dynamic mode, then we leave them
+ *  because adding from a custom list is problematic if the entry has no children.  Using load() is not effective
+ *  since this is a threaded operation and would require pulling apart the entire class to make it work.
+ */
 
 void PlaylistEntry::setOpen( bool open )
 {
@@ -378,13 +384,13 @@ void PlaylistEntry::setOpen( bool open )
             for ( TrackItemInfo *info = m_trackList.first(); info; info = m_trackList.next() )
                 m_lastTrack = new PlaylistTrackItem( this, m_lastTrack, info );
         }
-        else {
+        else if( !isDynamic() || !m_dynamic ) {
             load();
             return;
         }
 
     }
-    else {    //collapse
+    else if( !isDynamic() || !m_dynamic ) {    //collapse
 
         QListViewItem* child = firstChild();
         QListViewItem* childTmp;
@@ -427,11 +433,13 @@ KURL::List PlaylistEntry::tracksURL()
 
 void PlaylistEntry::setDynamic( bool enable )
 {
-    debug() << "Setting dynamic of item '" << text(0) << "' as " << enable << endl;
     if( enable != m_dynamic )
     {
         if( enable )
+        {
             m_dynamicPix = new QPixmap( KGlobal::iconLoader()->loadIcon( "favorites", KIcon::NoGroup, 16 ) );
+            if( !m_loaded ) load();
+        }
         else {
             delete m_dynamicPix;
             m_dynamicPix = 0;

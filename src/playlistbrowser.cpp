@@ -1312,7 +1312,11 @@ void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
 
                 if( it )
                 {
-                    static_cast<PlaylistEntry *>(it)->setDynamic( true );
+                    if( isPlaylist( it ) )
+                        static_cast<PlaylistEntry *>(it)->setDynamic( true );
+                    else if( isSmartPlaylist( it ) )
+                        static_cast<SmartPlaylist *>(it)->setDynamic( true );
+
                     m_dynamicEntries.append( it );
                 }
             }
