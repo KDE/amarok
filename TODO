@@ -10,10 +10,6 @@ SHORT-TERM (URGENT):
            possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
            to work entirely)
 
-  <markey> The default analyzer (BlockAnalyzer) uses way too much CPU, since mxcl added
-           the "fading" effect. We must either optimize it before 1.3-final, or revert the
-           fading effect.
-
   <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
   <markey> Figure out why ScriptManager can't read from stdout.

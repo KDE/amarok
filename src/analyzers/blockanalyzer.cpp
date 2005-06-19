@@ -26,9 +26,10 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_rows( 0 )            //uint
         , m_y( 0 )               //uint
         , m_barPixmap( 1, 1 )    //null qpixmaps cause crashes
+        , m_fadePixmap( 1, 1 )   //null qpixmaps cause crashes
+        , m_topBarPixmap( WIDTH, HEIGHT )
         , m_scope( MIN_COLUMNS ) //Scope
         , m_store( 1 << 8, 0 )   //vector<uint>
-        , m_fade_color( 90 )
         , m_fade_pos( 1 << 8, 50 ) //vector<uint>
         , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
@@ -65,6 +66,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
    if( m_rows != oldRows ) {
       m_barPixmap.resize( WIDTH, m_rows*(HEIGHT+1) );
+      m_fadePixmap.resize( WIDTH, FADE_SIZE*(HEIGHT+1) );
       m_yscale.resize( m_rows + 1 );
 
       const uint PRE = 1, PRO = 1; //PRE and PRO allow us to restrict the range somewhat
@@ -150,14 +152,14 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
       // if y is lower than m_fade_pos, then the bar has exceeded the height of the fadeout
       if( y <= m_fade_pos[x] ) {
          m_fade_pos[x] = y;
-         m_fade_intensity[x] = m_fade_color.size();
+         m_fade_intensity[x] = FADE_SIZE;
       }
 
       if( m_fade_intensity[x] > 0 ) { //TODO don't do more drawing than necessary
-         const QColor &c = m_fade_color[ --m_fade_intensity[x] ];
+         const uint offset = --m_fade_intensity[x];
          //TODO don't draw too many (ie where you will draw the main bar)
          for( int _x = x*(WIDTH+1), y = m_y + (m_fade_pos[x] * (HEIGHT+1)); y < height(); y += HEIGHT+1 )
-            p.fillRect( _x, y, WIDTH, HEIGHT, c );
+            p.drawPixmap( _x, y, m_fadePixmap, 0, offset*(HEIGHT+1), WIDTH, HEIGHT );
       }
 
       if( m_fade_intensity[x] == 0 )
@@ -168,7 +170,7 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
    }
 
    for( uint x = 0; x < m_store.size(); ++x )
-      p.fillRect( x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, WIDTH, HEIGHT, m_topBarColor );
+      p.drawPixmap( x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, m_topBarPixmap );
 }
 
 
@@ -337,7 +339,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
    const QColor bg = palette().active().background();
    const QColor fg = ensureContrast( bg, KGlobalSettings::activeTitleColor() );
 
-   m_topBarColor = fg;
+   m_topBarPixmap.fill( fg );
 
    const double dr = 15*double(bg.red()   - fg.red())   / (m_rows*16);
    const double dg = 15*double(bg.green() - fg.green()) / (m_rows*16);
@@ -347,6 +349,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
    bar()->fill( bg );
 
    QPainter p( bar() );
+   QPainter f( &m_fadePixmap );
    for( int y = 0; (uint)y < m_rows; ++y )
       //graduate the fg color
       p.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*y), g+int(dg*y), b+int(db*y) ) );
@@ -363,11 +366,10 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
       const double dg = fg.green() - bg.green();
       const double db = fg.blue() - bg.blue();
       const int r = bg.red(), g = bg.green(), b = bg.blue();
-      const uint STEPS = m_fade_color.size();
 
-      for( uint y = 0; y < STEPS; ++y ) {
-         const double Y = 1.0 - (log10( STEPS - y ) / log10( STEPS ));
-         m_fade_color[y] = QColor( r+int(dr*Y), g+int(dg*Y), b+int(db*Y) );
+      for( uint y = 0; y < FADE_SIZE; ++y ) {
+         const double Y = 1.0 - (log10( FADE_SIZE - y ) / log10( FADE_SIZE ));
+         f.fillRect( 0, y*(HEIGHT+1), WIDTH, HEIGHT, QColor( r+int(dr*Y), g+int(dg*Y), b+int(db*Y) ) );
       }
    }
 
