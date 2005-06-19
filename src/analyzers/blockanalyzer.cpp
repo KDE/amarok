@@ -133,9 +133,8 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
 
    Analyzer::interpolate( s, m_scope );
 
-   //TODO return to bitBlits before release - they are faster
-   QPainter p( canvas() );
-   p.drawPixmap( 0, 0, *background() );
+   // Paint the background
+   bitBlt( canvas(), 0, 0, background() );
 
    for( uint y, x = 0; x < m_scope.size(); ++x )
    {
@@ -160,18 +159,18 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
          const uint offset = --m_fade_intensity[x];
          //TODO don't draw too many (ie where you will draw the main bar)
          for( int _x = x*(WIDTH+1), y = m_y + (m_fade_pos[x] * (HEIGHT+1)); y < height(); y += HEIGHT+1 )
-            p.drawPixmap( _x, y, m_fadePixmap, 0, offset*(HEIGHT+1), WIDTH, HEIGHT );
+            bitBlt( canvas(), _x, y, &m_fadePixmap, 0, offset*(HEIGHT+1), WIDTH, HEIGHT );
       }
 
       if( m_fade_intensity[x] == 0 )
          m_fade_pos[x] = m_rows;
 
       //REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-      p.drawPixmap( x*(WIDTH+1), y*(HEIGHT+1) + m_y, *bar(), 0, y*(HEIGHT+1) );
+      bitBlt( canvas(), x*(WIDTH+1), y*(HEIGHT+1) + m_y, bar(), 0, y*(HEIGHT+1) );
    }
 
    for( uint x = 0; x < m_store.size(); ++x )
-      p.drawPixmap( x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, m_topBarPixmap );
+      bitBlt( canvas(), x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, &m_topBarPixmap );
 }
 
 
