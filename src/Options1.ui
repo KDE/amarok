@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -140,7 +140,10 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Default size for cover previews:</string>
+                                <string>Default size for &amp;cover previews:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_CoverPreviewSize</cstring>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Size of the cover image in the context viewer in pixels.</string>
@@ -239,6 +242,9 @@
                     <property name="text">
                         <string>&amp;Keep the active song visible on track changes</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+K</string>
+                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.&lt;br&gt;</string>
                     </property>
@@ -251,7 +257,10 @@
                         <cstring>kcfg_ShowStatusBar</cstring>
                     </property>
                     <property name="text">
-                        <string>Show statusbar</string>
+                        <string>Show s&amp;tatusbar</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+T</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the statusbar on the playlist window.&lt;br&gt;</string>
@@ -265,7 +274,10 @@
                         <cstring>kcfg_AutoShowContextBrowser</cstring>
                     </property>
                     <property name="text">
-                        <string>Switch to Context Browser when appropriate</string>
+                        <string>Switch to Context Browser when &amp;appropriate</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
@@ -279,10 +291,10 @@
                         <cstring>kcfg_ShowStatByAlbums</cstring>
                     </property>
                     <property name="text">
-                        <string>Show statistics by albums</string>
+                        <string>Show statistics by a&amp;lbums</string>
                     </property>
                     <property name="accel">
-                        <string></string>
+                        <string>Alt+L</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Show statistics by albums in the context browser.&lt;br&gt;</string>
@@ -390,10 +402,13 @@
                                 <cstring>textLabel1_3</cstring>
                             </property>
                             <property name="text">
-                                <string>Instead decode using this character set:</string>
+                                <string>Instead &amp;decode using this character set:</string>
                             </property>
                             <property name="alignment">
                                 <set>AlignVCenter</set>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_RecodeEncoding</cstring>
                             </property>
                         </widget>
                         <widget class="QComboBox">

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options4</class>
 <widget class="QWidget">
     <property name="name">
@@ -19,6 +19,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Options4</string>
     </property>
     <vbox>
         <property name="name">
@@ -95,6 +98,12 @@
                                             <horstretch>0</horstretch>
                                             <verstretch>0</verstretch>
                                         </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>130</width>
+                                            <height>0</height>
+                                        </size>
                                     </property>
                                     <property name="text">
                                         <string>Insert &amp;gap:</string>
@@ -191,6 +200,12 @@
                                             <horstretch>0</horstretch>
                                             <verstretch>0</verstretch>
                                         </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>130</width>
+                                            <height>0</height>
+                                        </size>
                                     </property>
                                     <property name="text">
                                         <string>Crossover &amp;period:</string>

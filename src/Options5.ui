@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options5</class>
 <widget class="QWidget">
     <property name="name">
@@ -11,6 +11,9 @@
             <width>412</width>
             <height>451</height>
         </rect>
+    </property>
+    <property name="caption">
+        <string>Options5</string>
     </property>
     <vbox>
         <property name="name">
@@ -124,7 +127,10 @@
                                         <cstring>kcfg_OsdDrawShadow</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Draw shadow</string>
+                                        <string>Draw &amp;shadow</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+S</string>
                                     </property>
                                 </widget>
                             </vbox>
@@ -323,7 +329,10 @@
                                         <cstring>kcfg_OsdUseFakeTranslucency</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Make the background translucent</string>
+                                        <string>Make the &amp;background translucent</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+B</string>
                                     </property>
                                 </widget>
                             </vbox>
@@ -385,7 +394,10 @@
                                         <cstring>textLabel1</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Duration:</string>
+                                        <string>&amp;Duration:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>kcfg_OsdDuration</cstring>
                                     </property>
                                 </widget>
                                 <widget class="KIntSpinBox" row="0" column="1">
@@ -452,7 +464,10 @@
                                         <cstring>textLabel2_3</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Screen:</string>
+                                        <string>Sc&amp;reen:</string>
+                                    </property>
+                                    <property name="buddy" stdset="0">
+                                        <cstring>kcfg_OsdScreen</cstring>
                                     </property>
                                 </widget>
                             </grid>
@@ -463,6 +478,8 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_OsdUseCustomColors</sender>
@@ -505,11 +522,6 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kfontrequester.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
-    <includehint>kcolorbutton.h</includehint>
     <includehint>ktextedit.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kcombobox.h</includehint>
 </includehints>
 </UI>

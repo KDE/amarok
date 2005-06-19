@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>Options8</class>
 <widget class="QDialog">
     <property name="name">
@@ -17,6 +17,9 @@
             <width>1</width>
             <height>1</height>
         </size>
+    </property>
+    <property name="caption">
+        <string>Options8</string>
     </property>
     <vbox>
         <property name="name">
@@ -143,7 +146,10 @@
                                 </sizepolicy>
                             </property>
                             <property name="text">
-                                <string>Password:</string>
+                                <string>&amp;Password:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_ScrobblerPassword</cstring>
                             </property>
                         </widget>
                         <widget class="QLabel" row="0" column="0">
@@ -159,7 +165,10 @@
                                 </sizepolicy>
                             </property>
                             <property name="text">
-                                <string>Username:</string>
+                                <string>&amp;Username:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_ScrobblerUsername</cstring>
                             </property>
                         </widget>
                         <widget class="KLineEdit" row="1" column="1">
@@ -220,7 +229,10 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Improve my profile by submitting the tracks I play</string>
+                        <string>&amp;Improve my profile by submitting the tracks I play</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+I</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -228,7 +240,10 @@
                         <cstring>kcfg_RetrieveSimilarArtists</cstring>
                     </property>
                     <property name="text">
-                        <string>Retrieve similar artists</string>
+                        <string>&amp;Retrieve similar artists</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
                     </property>
                 </widget>
             </vbox>
