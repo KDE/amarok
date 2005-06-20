@@ -23,6 +23,17 @@
 
 class KPushButton;
 
+class QueueItem : public KListViewItem
+{
+    public:
+        QueueItem( QListView *parent, QListViewItem *after, QString t )
+            : KListViewItem( parent, after, t )
+        { };
+
+        void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
+
+};
+
 class QueueList : public KListView
 {
         Q_OBJECT

@@ -492,7 +492,6 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     insertMedia( KURL::List( url ), Playlist::Unique );
 }
 
-// We want to merge the smartplaylists given into one query
 void
 Playlist::addSpecialCustomTracks( uint songCount, QStringList list )
 {

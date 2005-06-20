@@ -27,6 +27,35 @@
 #include <qvbox.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS QueueItem
+//////////////////////////////////////////////////////////////////////////////////////////
+void
+QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
+{
+    KListViewItem::paintCell( p, cg, column, width, align );
+
+    QString str = QString::number( ( (KListView *)listView() )->itemIndex( this ) + 1 );
+
+    //draw the symbol's outline
+            uint fw = p->fontMetrics().width( str ) + 2;
+    const uint w  = 16; //keep this even
+    const uint h  = height() - 2;
+
+    p->setBrush( cg.highlight() );
+    p->setPen( cg.highlight().dark() ); //TODO blend with background color
+    p->drawEllipse( width - fw - w/2, 1, w, h );
+    p->drawRect( width - fw, 1, fw, h );
+    p->setPen( cg.highlight() );
+    p->drawLine( width - fw, 2, width - fw, h - 1 );
+
+    fw += 2; //add some more padding
+    p->setPen( cg.highlightedText() );
+    p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS QueueList
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -285,7 +314,7 @@ QueueManager::addItems( QListViewItem *after )
         title.append( i18n(" - " ) );
         title.append( item->title() );
 
-        after = new QListViewItem( m_listview, after, title );
+        after = new QueueItem( m_listview, after, title );
         m_map[ after ] = item;
         #undef item
     }
