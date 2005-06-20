@@ -155,6 +155,15 @@ LONG-TERM:
            Tabbed playlists.
            Pro: it's convenient to have several playlists
            Contra: the playlist is getting cluttered enough as it is!
+           <illissius> I already added a comment wrt this to the b.k.o bug, but here's the idea:
+                       switch between playlists with the playlist browser -- that's what it's there for.
+                       This avoids the clutter. The way it'd work is the currently playing playlist would
+                       have the same fancy fading thing the current track has. The context menu for playlists
+                       would have two seperate items, one for showing and one for playing. When just showing,
+                       the previous playlist would continue playing while you view/edit the other one.
+                       (If you doubleclick a song in the new playlist, it would naturally start playing that
+                       one instead). What to do when the user doubleclicks a playlist -- show, play, or both
+                       -- is TBD.
 
            Make windows magnetic / sticking together (difficult).
 
