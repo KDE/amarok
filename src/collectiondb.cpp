@@ -1982,7 +1982,6 @@ QStringList SqliteConnection::query( const QString& statement )
             {
                 if ( busyCnt++ > 20 ) {
                     Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
-                    sqlite3_interrupt( m_db );
                     break;
                 }
                 ::usleep( 100000 ); // Sleep 100 msec
