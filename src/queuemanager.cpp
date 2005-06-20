@@ -210,8 +210,9 @@ QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 void
 QueueList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-    // Must be overloaded for dnd to work
+    KListView::contentsDragMoveEvent( e );
 
+    // Must be overloaded for dnd to work
     e->accept( ( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() ) ||
                  e->source() == viewport() );
 }
