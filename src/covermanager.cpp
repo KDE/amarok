@@ -11,7 +11,6 @@
 #include "coverfetcher.h"
 #include "covermanager.h"
 
-
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <qfile.h>
 #include <qfontmetrics.h>    //paintItem()
@@ -51,6 +50,8 @@
 #include <ktoolbarbutton.h>    //clear filter button
 #include <kurl.h>
 #include <kurldrag.h>
+#include <kwin.h>
+
 
 //Tooltips
 #define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
@@ -254,6 +255,9 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
     QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
     kapp->setTopWidget( dialog );
     dialog->setCaption( kapp->makeStdCaption( artist + i18n(" - ") + album ) );
+
+    // Gives the window a small title bar
+    KWin::setType( dialog->winId(), NET::Utility );
 
     QPixmap pixmap( CollectionDB::instance()->albumImage( artist, album, 0 ) );
     QLabel* label = new QLabel( dialog );
