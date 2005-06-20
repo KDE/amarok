@@ -2630,7 +2630,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             popup.changeItem( PLAY_NEXT, SmallIconSet( "2leftarrow" ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
-            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (%1 tracks)").arg( (int)itemCount ) );
+            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
         else
             // remember, queueToggled only gets set to false if there are items queued and not queued.
             // so, if queueToggled is false, all items have the same queue status as the first item.
