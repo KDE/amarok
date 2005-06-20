@@ -948,7 +948,8 @@ Playlist::queue( QListViewItem *item )
             insertMediaInternal( item->url(), after );
 
         m_nextTracks.append( item );
-        emit queued( item );
+        if( QueueManager::instance() )
+            emit queued( item );
     }
 
     refreshNextTracks(); // from current()
