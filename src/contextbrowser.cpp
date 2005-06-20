@@ -831,7 +831,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
                                                 "<span class='album-year'>%2</span>"
                                             "</td>")
                                     .args( QStringList()
-                                            << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
+                                            << i18n( "Single", "%n Tracks",  albumValues.count() / 7 )
                                             << albumYear) );
                     break;
                 }
@@ -1234,7 +1234,7 @@ void ContextBrowser::showHomeByAlbums()
     else
     {
         ContructHTMLAlbums(faveAlbums, m_HTMLSource, "1", SHOW_ALBUM_SCORE);
-        }
+    }
 
     m_HTMLSource.append("</div>");
 
