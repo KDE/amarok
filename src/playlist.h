@@ -79,7 +79,7 @@ class Playlist : private KListView, public EngineObserver
 
         /// Dynamic mode functions
         void addSpecialTracks( uint songCount, QString type = "Random" );
-        void addSpecialCustomTracks( uint songCount, QStringList list );
+        void addSpecialCustomTracks( uint songCount );
         void adjustPartyUpcoming( uint songCount, QString type = "Random" );
         void adjustPartyPrevious( uint songCount );
         void advancePartyTrack( PlaylistItem *item = 0 );

@@ -58,6 +58,7 @@ class PlaylistBrowser : public QVBox
         PlaylistBrowserEntry *findItem( QString &t, int c );
 
         bool    dynamicEnabled() { return dynamicButton->isChecked(); }
+        QPtrList<QListViewItem> dynamicEntries() { return m_dynamicEntries; }
 
         ViewMode viewMode() { return m_viewMode; }
 
