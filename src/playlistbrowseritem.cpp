@@ -986,6 +986,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
         , m_after ( after )
+        , m_dynamic( false )
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setXml( xmlDefinition );
