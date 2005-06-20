@@ -46,15 +46,15 @@ private:
     uint m_columns, m_rows;      //number of rows and columns of blocks
     uint m_y;                    //y-offset from top of widget
     QPixmap m_barPixmap;
-    QPixmap m_fadePixmap;
     QPixmap m_topBarPixmap;
     Scope m_scope;               //so we don't create a vector every frame
     std::vector<float> m_store;  //current bar heights
     std::vector<float> m_yscale;
 
     //FIXME why can't I namespace these? c++ issue?
-    std::vector<uint>   m_fade_pos;
-    std::vector<int>    m_fade_intensity;
+    std::vector<QPixmap> m_fade_bars;
+    std::vector<uint>    m_fade_pos;
+    std::vector<int>     m_fade_intensity;
 
     float m_step; //rows to fall per frame
 };
