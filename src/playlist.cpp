@@ -2168,13 +2168,13 @@ Playlist::deleteSelectedFiles() //SLOT
          urls << static_cast<PlaylistItem*>( *it )->url(), ++it );
 
     //NOTE we assume that currentItem is the main target
-    int count  = urls.count();
-    QString text = i18n( "<p>You have selected 1 file to be <b>irreversibly</b> deleted.",
-                         "<p>You have selected %n files to be <b>irreversibly</b> deleted.",
-                         count );
+    const int count  = urls.count();
+    QString text = i18n( "<p>You have selected the file <i>'%1'</i> to be <b>irreversibly</b> deleted.",
+                         "<p>You have selected %n files to be <b>irreversibly</b> deleted.", count )
+                         .arg( static_cast<PlaylistItem*>( currentItem() )->url().fileName() );
+
     int button = KMessageBox::warningContinueCancel( this,
-                                                     count > 1 ? text :
-                                                     text + static_cast<PlaylistItem*>(currentItem())->url().prettyURL().prepend(" <i>'").append("'</i>"),
+                                                     text,
                                                      QString::null,
                                                      i18n("&Delete") );
 
