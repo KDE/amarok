@@ -128,6 +128,7 @@ class Playlist : private KListView, public EngineObserver
     signals:
         void aboutToClear();
         void itemCountChanged( int newCount, int newLength, int selCount, int selLength );
+        void queued( PlaylistItem *item );
 
     public slots:
         void activateByIndex(int);

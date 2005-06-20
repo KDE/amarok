@@ -279,8 +279,9 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     connect( m_add,    SIGNAL( clicked() ), SLOT( addItems() ) );
 
     Playlist *pl = Playlist::instance();
-    connect( pl,         SIGNAL( selectionChanged() ), SLOT( updateButtons() ) );
-    connect( m_listview, SIGNAL( selectionChanged() ), SLOT( updateButtons() ) );
+    connect( pl,         SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
+    connect( m_listview, SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
+    connect( pl,         SIGNAL( queued(PlaylistItem*) ), SLOT( addQueuedItem(PlaylistItem*) ) );
 
     insertItems();
 }
@@ -311,13 +312,50 @@ QueueManager::addItems( QListViewItem *after )
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
         #define item static_cast<PlaylistItem*>(item)
+        QValueList<PlaylistItem*> current = m_map.values();
+
+        if( current.find( item ) == current.end() ) //avoid duplication
+        {
+            QString title = item->artist();
+            title.append( i18n(" - " ) );
+            title.append( item->title() );
+
+            after = new QueueItem( m_listview, after, title );
+            m_map[ after ] = item;
+        }
+        #undef item
+    }
+
+}
+
+void
+QueueManager::addQueuedItem( PlaylistItem *item ) //SLOT
+{
+    Playlist *pl = Playlist::instance();
+    if( !pl ) return; //should never happen
+
+    const int index = pl->m_nextTracks.findRef( item );
+
+    QListViewItem *after;
+    if( !index ) after = 0;
+    else
+    {
+        int find = m_listview->childCount();
+        if( index - 1 <= find )
+            find = index - 1;
+        after = m_listview->itemAtIndex( find );
+    }
+
+    QValueList<PlaylistItem*> current = m_map.values();
+
+    if( current.find( item ) == current.end() ) //avoid duplication
+    {
         QString title = item->artist();
         title.append( i18n(" - " ) );
         title.append( item->title() );
 
         after = new QueueItem( m_listview, after, title );
         m_map[ after ] = item;
-        #undef item
     }
 
 }
@@ -345,7 +383,7 @@ QueueManager::insertItems()
         title.append( i18n(" - " ) );
         title.append( item->title() );
 
-        last = new QListViewItem( m_listview, last, title );
+        last = new QueueItem( m_listview, last, title );
         m_map[ last ] = item;
     }
 }

@@ -70,8 +70,9 @@ class QueueManager : public KDialogBase
 
         static QueueManager *instance() { return s_instance; }
 
-    public  slots:
+    public slots:
         void    addItems( QListViewItem *after = 0 );
+        void    addQueuedItem( PlaylistItem *item );
         void    updateButtons();
 
     private:
