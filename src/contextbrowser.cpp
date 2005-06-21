@@ -1474,7 +1474,7 @@ bool CurrentTrackJob::doJob()
             "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                 "<tr>"
             // show AlbumCover only, if we have artist and album
-            + ( ( !currentTrack.artist().isEmpty() && !currentTrack.artist().isEmpty() )
+            + ( ( !(currentTrack.artist().isEmpty() || currentTrack.album().isEmpty()) )
             ? QStringx(
                     "<td id='current_box-largecover-td'>"
                         "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
