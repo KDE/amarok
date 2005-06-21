@@ -53,7 +53,7 @@
         <name>Show OSD display</name>
         <comment>Works only if OSD is enabled</comment>
     </action>
-    <action objid="player" prototype="void togglePlaylist()">
+    <action objid="playlist" prototype="void togglePlaylist()">
         <name>Toggles the playlist window</name>
         <comment></comment>
     </action>
