@@ -227,7 +227,7 @@ Party::toggle( bool enable ) //SLOT
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( false );
-        amaroK::actionCollection()->action( "dynamic_mode" )->setEnabled( true );
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
 
         Playlist::instance()->repopulate();
     }
@@ -239,7 +239,7 @@ Party::toggle( bool enable ) //SLOT
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
-        amaroK::actionCollection()->action( "dynamic_mode" )->setEnabled( false );
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
 }
 
