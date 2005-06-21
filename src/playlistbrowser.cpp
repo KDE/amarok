@@ -1759,16 +1759,18 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
         KURL::List list;
         QMap<QString, QString> map;
         if( KURLDrag::decode( e, list, map ) ) {
-            if( parent ) {
+            if( parent && isPlaylist( parent ) ) {
                 //insert the dropped tracks
                 PlaylistEntry *playlist = (PlaylistEntry *)parent;
                 playlist->insertTracks( after, list, map );
             }
             else //dropped on a playlist item
             {
-                PlaylistEntry *playlist = (PlaylistEntry *)item;
-                //append the dropped tracks
-                playlist->insertTracks( 0, list, map );
+                if ( isPlaylist( item ) ) {
+                    PlaylistEntry *playlist = (PlaylistEntry *)item;
+                    //append the dropped tracks
+                    playlist->insertTracks( 0, list, map );
+                }
             }
         }
         else
