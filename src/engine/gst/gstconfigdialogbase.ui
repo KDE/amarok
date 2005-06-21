@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>GstConfigDialogBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -164,9 +164,6 @@
                     <property name="text">
                         <string>&amp;Device:</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Use custom sound device</string>
                     </property>
@@ -261,9 +258,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Parameters:</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+P</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Use custom sink parameters</string>

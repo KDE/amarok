@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>Options1</class>
 <widget class="QWidget">
     <property name="name">
@@ -242,9 +242,6 @@
                     <property name="text">
                         <string>&amp;Keep the active song visible on track changes</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+K</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.&lt;br&gt;</string>
                     </property>
@@ -258,9 +255,6 @@
                     </property>
                     <property name="text">
                         <string>Show s&amp;tatusbar</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+T</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the statusbar on the playlist window.&lt;br&gt;</string>
@@ -276,9 +270,6 @@
                     <property name="text">
                         <string>Switch to Context Browser when &amp;appropriate</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
                     </property>
@@ -292,9 +283,6 @@
                     </property>
                     <property name="text">
                         <string>Show statistics by a&amp;lbums</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+L</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Show statistics by albums in the context browser.&lt;br&gt;</string>

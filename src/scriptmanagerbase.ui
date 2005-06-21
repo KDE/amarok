@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>ScriptManagerBase</class>
 <widget class="QWidget">
     <property name="name">
@@ -175,9 +175,6 @@
             </property>
             <property name="text">
                 <string>R&amp;estart running scripts on application startup</string>
-            </property>
-            <property name="accel">
-                <string>Alt+E</string>
             </property>
             <property name="toolTip" stdset="0">
                 <string>If enabled, amaroK will automatically restart scripts that were running when you exited the application.</string>
