@@ -116,6 +116,8 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
         PlaylistCategory    *m_dynamicCategory;
+        PlaylistCategory    *m_coolStreams;
+        PlaylistCategory    *m_smartDefaults;
 
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;

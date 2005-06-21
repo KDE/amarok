@@ -133,6 +133,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
+    m_smartDefaults = 0;
+    m_coolStreams   = 0;
+
     m_playlistCategory = loadPlaylists();
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
@@ -247,7 +250,7 @@ void PlaylistBrowser::loadCoolStreams()
         return;
     }
 
-    PlaylistCategory *folder = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
+    m_coolStreams = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
     KListViewItem *last = 0;
 
     QDomNode n = d.namedItem( "coolstreams" ).firstChild();
@@ -258,7 +261,7 @@ void PlaylistBrowser::loadCoolStreams()
         QString name = e.attribute( "name" );
         e = n.namedItem( "url" ).toElement();
         KURL url  = KURL::KURL( e.text() );
-        last = new StreamEntry( folder, last, url, name );
+        last = new StreamEntry( m_coolStreams, last, url, name );
     }
 }
 
@@ -373,7 +376,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     QueryBuilder qb;
     QListViewItem *last = 0;
 
-    PlaylistCategory *folder = new PlaylistCategory( m_smartCategory, 0, i18n("Collection") );
+    m_smartDefaults = new PlaylistCategory( m_smartCategory, 0, i18n("Collection") );
 
     /********** All Collection **************/
     qb.initSQLDrag();
@@ -381,7 +384,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-    item = new SmartPlaylist( folder, 0, i18n( "All Collection" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, 0, i18n( "All Collection" ), qb.query() );
     item->setPixmap( 0, SmallIcon("kfm") );
 
     /********** Favorite Tracks **************/
@@ -389,7 +392,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( folder, item, i18n( "Favorite Tracks" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Favorite Tracks" ), qb.query() );
     last = 0;
     foreach( artists ) {
         qb.initSQLDrag();
@@ -405,7 +408,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( folder, item, i18n( "Most Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Most Played" ), qb.query() );
     last = 0;
     foreach( artists ) {
         qb.initSQLDrag();
@@ -421,7 +424,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( folder, item, i18n( "Newest Tracks" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Newest Tracks" ), qb.query() );
     last = 0;
     foreach( artists ) {
         qb.initSQLDrag();
@@ -437,7 +440,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( folder, item, i18n( "Last Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Last Played" ), qb.query() );
 
     /********** Never Played **************/
     qb.initSQLDrag();
@@ -446,7 +449,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-    item = new SmartPlaylist( folder, item, i18n( "Never Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Never Played" ), qb.query() );
 
     /********** Ever Played **************/
     qb.initSQLDrag();
@@ -455,10 +458,10 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore );
 
-    item = new SmartPlaylist( folder, item, i18n( "Ever Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Ever Played" ), qb.query() );
 
     /********** Genres **************/
-    item = new SmartPlaylist( folder, item, i18n( "Genres" ), QString() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Genres" ), QString() );
     last = 0;
     foreach( genres ) {
         qb.initSQLDrag();
@@ -474,7 +477,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 50 );
-    item = new SmartPlaylist( folder, item, i18n( "50 Random Tracks" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "50 Random Tracks" ), qb.query() );
 }
 
 void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
@@ -1203,13 +1206,13 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     }
     else if( isStream( item ) )
     {
-        enable_remove = ( item->parent()->text(0) != i18n("Cool-Streams") );
-        enable_rename = ( item->parent()->text(0) != i18n("Cool-Streams") );
+        enable_remove = ( item->parent() != m_coolStreams );
+        enable_rename = ( item->parent() != m_coolStreams );
     }
     else if( isSmartPlaylist( item ) )
     {
-        enable_remove = ( item->parent()->text(0) != i18n("Collection") );
-        enable_rename = ( item->parent()->text(0) != i18n("Collection") );
+        enable_remove = ( item->parent() != m_smartDefaults  );
+        enable_rename = ( item->parent() != m_smartDefaults  );
     }
     else if( isParty( item ) )
     {
@@ -1220,11 +1223,7 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     {
         if( static_cast<PlaylistCategory*>(item)->isFolder() )
         {
-            if( item->text(0) != i18n("Cool-Streams") ) {
-                enable_remove = true;
-                enable_rename = true;
-            }
-            else if( item->text(0) != i18n("Collection") ) {
+            if( item != m_coolStreams && item != m_smartDefaults ) {
                 enable_remove = true;
                 enable_rename = true;
             }
@@ -1509,8 +1508,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         while( parentCat->parent() )
             parentCat = parentCat->parent();
 
-        if( item->text(0) == i18n("Cool-Streams") && item->parent()->text(0) == i18n("Streams") ) return;
-        if( item->text(0) == i18n("Collection") && item->parent()->text(0) == i18n("Smart Playlists") ) return;
+        if( item == m_coolStreams || item == m_smartDefaults ) return;
 
         if( item->isFolder() ) {
             menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
