@@ -1211,8 +1211,13 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     }
     else if( isSmartPlaylist( item ) )
     {
-        enable_remove = ( item->parent() != m_smartDefaults  );
-        enable_rename = ( item->parent() != m_smartDefaults  );
+        QListViewItem *parent = item->parent();
+
+        while( parent != m_smartCategory && parent != m_smartDefaults )
+            parent = parent->parent();
+
+        enable_remove = ( parent != m_smartDefaults );
+        enable_rename = ( parent != m_smartDefaults );
     }
     else if( isParty( item ) )
     {
