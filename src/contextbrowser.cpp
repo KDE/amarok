@@ -475,7 +475,6 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( false );
             break;
         case Engine::Playing:
-            m_metadataHistory.clear();
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), true );
             setTabEnabled( m_lyricsTab, true );
