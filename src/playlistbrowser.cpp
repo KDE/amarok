@@ -23,7 +23,6 @@
 #include <qheader.h>           //mousePressed()
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
-#include <qsplitter.h>
 #include <qtextstream.h>       //loadPlaylists(), saveM3U(), savePLS()
 #include <qtimer.h>            //loading animation
 
@@ -52,9 +51,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 {
     s_instance = this;
 
-    m_splitter = new QSplitter( Vertical, this );
-
-    QVBox *browserBox = new QVBox( m_splitter );
+    QVBox *browserBox = new QVBox( this );
     browserBox->setSpacing( 3 );
 
     //<Toolbar>
@@ -98,9 +95,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     addMenuButton->plug( m_toolbar );
-    m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     saveMenuButton->plug( m_toolbar );
 
+    m_toolbar->setIconText( KToolBar::IconOnly, false );      //default appearance
     m_toolbar->insertLineSeparator();
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );
@@ -108,10 +105,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     viewMenuButton->plug( m_toolbar );
     m_toolbar->insertSeparator();
     m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    dynamicButton = new KToggleAction( i18n("Dynamic"), 0, m_ac, "Configure and start dynamic playmode" );
-    dynamicButton->setIcon( "party" );
-    dynamicButton->plug( m_toolbar );
-    dynamicButton->setChecked( isDynamic() );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
@@ -126,17 +119,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
     slotViewMenu( m_sortMode );
 
-    new Party( m_splitter );
-
-    int dynamicMinHeight = 227;
-
-    QString sizes = QString( "[%1,%2]" ).arg( this->height() )
-                                        .arg( dynamicMinHeight );
-
-    QString str = config->readEntry( "Splitter", sizes );
-
-    QTextStream stream( &str, IO_ReadOnly );
-    stream >> *m_splitter;     //this sets the splitters position
+    new Party( browserBox );
 
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
@@ -147,22 +130,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
              this,         SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
              this,         SLOT( currentItemChanged( QListViewItem * ) ) );
-
-    connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
-             this,          SLOT( enableDynamicConfig( bool ) ) );
-
-    connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
-             dynamicButton, SLOT( setChecked( bool ) ) );
-
-    connect( dynamicButton, SIGNAL( toggled( bool ) ),
-             amaroK::actionCollection()->action( "dynamic_mode" ), SLOT( setChecked( bool ) ) );
-
-    if( isDynamic() )
-    {
-        //Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
-    }
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
@@ -189,7 +156,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
         if( item )
         {
-            item->setPixmap( 1, SmallIcon("apply") );
+            item->setPixmap( 1, SmallIcon("favorites") );
             m_dynamicEntries.append( item );
         }
     }
@@ -218,12 +185,6 @@ PlaylistBrowser::~PlaylistBrowser()
     config->setGroup( "PlaylistBrowser" );
     config->writeEntry( "View", m_viewMode );
     config->writeEntry( "Sorting", m_sortMode );
-
-    QString str;
-
-    QTextStream stream( &str, IO_WriteOnly );
-    stream << *m_splitter;
-    config->writeEntry( "Splitter", str );
 }
 
 /**
@@ -313,7 +274,6 @@ void PlaylistBrowser::addStream( QListViewItem *parent )
         new StreamEntry( parent, 0, dialog.url(), dialog.name() );
         parent->setOpen( true );
     }
-
 }
 
 
@@ -1288,61 +1248,6 @@ void PlaylistBrowser::customEvent( QCustomEvent *e )
     // the CollectionReader sends a PlaylistFoundEvent when a playlist is found
     CollectionReader::PlaylistFoundEvent* p = (CollectionReader::PlaylistFoundEvent*)e;
     addPlaylist( p->path() );
-}
-
-void PlaylistBrowser::enableDynamicConfig( bool enable ) //SLOT
-{
-    if( enable )
-    {
-        QValueList<int> newSizes;
-        int partyMinHeight = 227;
-
-        newSizes.append( this->height() - partyMinHeight );
-        newSizes.append( partyMinHeight );
-        m_splitter->setSizes( newSizes );
-
-        if( AmarokConfig::partyType() == "Custom" )
-        {
-            QStringList playlists = AmarokConfig::partyCustomList();
-            m_dynamicEntries.clear();
-
-            for( uint i=0; i < playlists.count(); i++ )
-            {
-                QListViewItem *it = m_dynamicEntries.at( i );
-
-                if( it )
-                {
-                    if( isPlaylist( it ) )
-                        static_cast<PlaylistEntry *>(it)->setDynamic( true );
-                    else if( isSmartPlaylist( it ) )
-                        static_cast<SmartPlaylist *>(it)->setDynamic( true );
-
-                    m_dynamicEntries.append( it );
-                }
-            }
-        }
-
-        // uncheck before disabling
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
-        amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( false );
-
-        Playlist::instance()->repopulate();
-    }
-    else
-    {
-        QValueList<int> newSizes;
-        newSizes.append( this->height() );
-        newSizes.append( 0 );
-        m_splitter->setSizes( newSizes );
-
-        Playlist::instance()->alterHistoryItems( true, true ); //enable all items
-
-        // Random mode was being enabled without notification on leaving dynamic mode.  Remember to re-enable first!
-        amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
-        amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
-    }
 }
 
 void PlaylistBrowser::slotAddMenu( int id ) //SLOT

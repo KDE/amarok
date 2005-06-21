@@ -57,7 +57,6 @@ class PlaylistBrowser : public QVBox
 
         PlaylistBrowserEntry *findItem( QString &t, int c );
 
-        bool    dynamicEnabled() { return dynamicButton->isChecked(); }
         QPtrList<QListViewItem> dynamicEntries() { return m_dynamicEntries; }
 
         ViewMode viewMode() { return m_viewMode; }
@@ -75,7 +74,6 @@ class PlaylistBrowser : public QVBox
         void currentItemChanged( QListViewItem * );
         void deleteSelectedPlaylists();
         void editStreamURL( StreamEntry *item );
-        void enableDynamicConfig( bool enable );
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
@@ -119,11 +117,9 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_smartCategory;
         PlaylistCategory    *m_dynamicCategory;
 
-        QSplitter *m_splitter;
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;
         KAction             *removeButton, *renameButton;
-        KToggleAction       *dynamicButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *saveMenuButton;
         KActionMenu         *addMenuButton;
