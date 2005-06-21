@@ -228,8 +228,6 @@ Party::toggle( bool enable ) //SLOT
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( false );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
-
-        Playlist::instance()->repopulate();
     }
     else
     {

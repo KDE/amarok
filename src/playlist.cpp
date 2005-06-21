@@ -489,7 +489,6 @@ void
 Playlist::addSpecialCustomTracks( uint songCount )
 {
     PlaylistBrowser *pb = PlaylistBrowser::instance() ? PlaylistBrowser::instance() : new PlaylistBrowser();
-    PlaylistBrowserEntry *pl = 0;
     QListViewItem *item = 0;
 
     QPtrList<QListViewItem> dynamicEntries = pb->dynamicEntries();
