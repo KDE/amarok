@@ -230,6 +230,8 @@ namespace Engine
         QString artist;
         QString album;
         QString comment;
+        QString genre;
+        QString bitrate;
     };
 
 

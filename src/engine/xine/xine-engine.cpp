@@ -526,6 +526,8 @@ XineEngine::customEvent( QCustomEvent *e )
         bundle.artist  = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
         bundle.album   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
         bundle.comment = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_COMMENT ) );
+        bundle.genre   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_GENRE ) );
+        bundle.bitrate = QString::number( xine_get_stream_info( m_stream, XINE_STREAM_INFO_BITRATE ) / 1000 );
 
         emit metaData( bundle );
     }   break;

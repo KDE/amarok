@@ -21,6 +21,7 @@ VERSION 1.3-beta2:
     * Remodel the playlist browser to incorporate dynamic mode more fully.
 
   BUGFIXES:
+    * Improved context display when playing radio streams with xine-engine.
     * Number of album tracks was incorrect when showing statistics by album.
       (BR 107762)
     * Massive performance speedup for the default analyzer (BlockAnalyzer).

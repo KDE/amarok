@@ -544,6 +544,11 @@ void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpl
         bundle.setComment( simpleBundle.comment );
         bundle.setAlbum( simpleBundle.album );
 
+        if( !simpleBundle.genre.isEmpty() )
+            bundle.setGenre( simpleBundle.genre );
+        if( !simpleBundle.bitrate.isEmpty() )
+            bundle.setBitrate( simpleBundle.bitrate.toInt() );
+
         slotStreamMetaData( bundle );
     }
 }
