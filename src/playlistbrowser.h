@@ -40,14 +40,14 @@ class PlaylistBrowser : public QVBox
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
         enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST };
-        enum SaveMode { CURRENT, PARTY };
+        enum SaveMode { CURRENT, DYNAMIC };
 
         PlaylistBrowser( const char* name=0 );
         ~PlaylistBrowser();
 
         void addStream( QListViewItem *parent = 0 );
         void addSmartPlaylist( QListViewItem *parent = 0 );
-        void addPartyConfig( QListViewItem *parent = 0 );
+        void addDynamic( QListViewItem *parent = 0 );
         void addPlaylist( QString path, QListViewItem *parent = 0, bool force=false );
 
         QString partyBrowserCache();
@@ -96,9 +96,9 @@ class PlaylistBrowser : public QVBox
         void editSmartPlaylist( SmartPlaylist* );
         void saveSmartPlaylists();
 
-        PlaylistCategory* loadParties();
+        PlaylistCategory* loadDynamics();
         void loadDynamicItems();
-        void saveParties();
+        void saveDynamics();
 
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();
@@ -189,7 +189,7 @@ isCategory( QListViewItem *item )
 }
 
 inline bool
-isParty( QListViewItem *item )
+isDynamic( QListViewItem *item )
 {
     if( !item )
         return false;

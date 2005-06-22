@@ -44,7 +44,7 @@
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
-static inline bool isDynamic() { return AmarokConfig::partyMode(); }
+static inline bool isDynamicEnabled() { return AmarokConfig::partyMode(); }
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
@@ -71,7 +71,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KPopupMenu *saveMenu = saveMenuButton->popupMenu();
     saveMenu->insertItem( i18n("Current Playlist"), CURRENT );
-    saveMenu->insertItem( i18n("Dynamic Playlist"), PARTY );
+    saveMenu->insertItem( i18n("Dynamic Playlist"), DYNAMIC );
     connect( saveMenu, SIGNAL( activated(int) ), SLOT( slotSaveMenu(int) ) );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
@@ -146,7 +146,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         m_smartCategory->setOpen( true );
     }
 
-    m_dynamicCategory  = loadParties();
+    m_dynamicCategory  = loadDynamics();
 
     m_playlistCategory->setOpen( true );
     m_streamsCategory->setOpen( true );
@@ -172,7 +172,7 @@ PlaylistBrowser::~PlaylistBrowser()
     savePlaylists();
     saveStreams();
     saveSmartPlaylists();
-    saveParties();
+    saveDynamics();
 
     QStringList list;
     for( uint i=0; i < m_dynamicEntries.count(); i++ )
@@ -521,7 +521,7 @@ QString PlaylistBrowser::partyBrowserCache()
     return amaroK::saveLocation() + "partybrowser_save.xml";
 }
 
-void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
+void PlaylistBrowser::addDynamic( QListViewItem *parent )
 {
     Party *current = Party::instance();
 
@@ -558,7 +558,7 @@ void PlaylistBrowser::addPartyConfig( QListViewItem *parent )
     }
 }
 
-PlaylistCategory* PlaylistBrowser::loadParties()
+PlaylistCategory* PlaylistBrowser::loadDynamics()
 {
     QFile file( partyBrowserCache() );
 
@@ -593,7 +593,7 @@ PlaylistCategory* PlaylistBrowser::loadParties()
     }
 }
 
-void PlaylistBrowser::saveParties()
+void PlaylistBrowser::saveDynamics()
 {
     QFile file( partyBrowserCache() );
 
@@ -617,7 +617,7 @@ void PlaylistBrowser::saveParties()
         if( !isCategory( it ) )
             currentCat = static_cast<PlaylistCategory*>(it->parent() );
 
-        if( isParty( it ) )
+        if( isDynamic( it ) )
         {
             PartyEntry *item = (PartyEntry*)it;
 
@@ -950,7 +950,7 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         KURL::List list( static_cast<PlaylistTrackItem *>(item)->url() );
         Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
     }
-    else if( isParty( item ) )
+    else if( isDynamic( item ) )
     {
         Party::instance()->loadConfig( static_cast<PartyEntry *>(item) );
     }
@@ -1061,7 +1061,7 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
             m_listview->rename( item, 0 );
         }
     }
-    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) || isParty( item ) ) {
+    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) || isDynamic( item ) ) {
         item->setRenameEnabled( 0, true );
         m_listview->rename( item, 0 );
     }
@@ -1219,7 +1219,7 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
         enable_remove = ( parent != m_smartDefaults );
         enable_rename = ( parent != m_smartDefaults );
     }
-    else if( isParty( item ) )
+    else if( isDynamic( item ) )
     {
         enable_remove = true;
         enable_rename = true;
@@ -1283,8 +1283,8 @@ void PlaylistBrowser::slotSaveMenu( int id ) // SLOT
             saveCurrentPlaylist();
             break;
 
-        case PARTY:
-            addPartyConfig();
+        case DYNAMIC:
+            addDynamic();
             break;
 
         default:
@@ -1351,7 +1351,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamic() )
+        if( isDynamicEnabled() )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from dynamic mode" ), DYNSUB );
@@ -1413,7 +1413,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamic() )
+        if( isDynamicEnabled() )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from dynamic mode" ), DYNSUB );
@@ -1482,7 +1482,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
         }
     }
-    else if( isParty( item ) ) {
+    else if( isDynamic( item ) ) {
         #define item static_cast<PartyEntry*>(item)
         enum Actions { LOAD, RENAME, REMOVE };
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
