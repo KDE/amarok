@@ -145,7 +145,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         loadDefaultSmartPlaylists();
         m_smartCategory->setOpen( true );
     }
-
+    // must be loaded after streams
     m_dynamicCategory  = loadDynamics();
 
     m_playlistCategory->setOpen( true );
@@ -569,7 +569,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
     QDomElement e;
 
     PlaylistCategory *after = m_smartCategory;
-    if( !m_smartCategory ) // incase of no collection
+    if( CollectionDB::instance()->isEmpty() || !m_smartCategory ) // incase of no collection
         after = m_streamsCategory;
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
