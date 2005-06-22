@@ -325,7 +325,7 @@ QString PlaylistBrowser::smartplaylistBrowserCache()
 
 void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
 {
-    if( CollectionDB::instance()->isEmpty() )
+    if( CollectionDB::instance()->isEmpty() || !m_smartCategory )
         return;
 
     if( !parent ) parent = static_cast<QListViewItem*>(m_smartCategory);
