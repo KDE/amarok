@@ -1283,8 +1283,6 @@ void ContextBrowser::showHomeByAlbums()
             "</div>"
             "</html>"
                        );
-     debug() << m_HTMLSource.ascii() << endl;
-
     // </Songs least listened Information>
 }
 

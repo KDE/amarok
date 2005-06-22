@@ -33,7 +33,7 @@ CollectionReader::CollectionReader( CollectionDB* parent, const QStringList& fol
         , m_incremental( false )
         , log( QFile::encodeName( amaroK::saveLocation( QString::null ) + "collection_scan.log" ) )
 {
-    setDescription( i18n( "Building collection" ) );
+    setDescription( i18n( "Building Collection" ) );
 }
 
 
@@ -50,7 +50,7 @@ IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
     m_importPlaylists = false;
     m_incremental     = true;
 
-    setDescription( i18n( "Updating collection" ) );
+    setDescription( i18n( "Updating Collection" ) );
 }
 
 bool
