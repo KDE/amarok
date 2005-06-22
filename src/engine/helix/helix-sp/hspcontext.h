@@ -39,7 +39,8 @@ public:
     HSPClientContext(LONG32 lClientIndex, HelixSimplePlayer *pSplay);
     virtual ~HSPClientContext();
 
-    unsigned long duration() { return m_pClientSink->duration(); }
+    unsigned long position() { return m_pClientSink ? m_pClientSink->position() : 0; }
+    unsigned long duration() { return m_pClientSink ? m_pClientSink->duration() : 0; }
 
     void Init(IUnknown*	       /*IN*/ pUnknown,
 	      IHXPreferences* /*IN*/ pPreferences,

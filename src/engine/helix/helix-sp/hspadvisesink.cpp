@@ -31,27 +31,6 @@
 extern	"C"	{
 #endif	/* defined(__cplusplus) */
 
-typedef enum hookBuffering {
-	eContacting = 0,
-	eConnecting = 1,
-	eBuffering = 2,
-	ePlaying = 3
-}hookBuffering;
-
-void hookRealAudio_Buffering(hookBuffering connectState, int pct);
-
-void hookRealAudio_PlayPosition(unsigned long current,unsigned long duration);
-
-typedef enum hookState {
-	ePlay = 0,
-	ePause = 1,
-	eStop = 2,
-	eResume = 3,
-	eComplete				// Clip is done playing
-}hookState;
-void hookRealAudio_State(hookState newState);
-
-
 #if	defined(__cplusplus)
 }
 #endif	/* defined(__cplusplus) */
@@ -534,6 +513,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
 
     m_splayer->m_ulNumSecondsPlayed = m_ulStopTime - m_ulStartTime;
 
+    m_position = m_duration = 0;
     return HXR_OK;
 }
 

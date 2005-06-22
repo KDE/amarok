@@ -41,6 +41,8 @@ class IHXVolume;
 class IHXPlayerNavigator;
 class IHXClientEngineSelector;
 class IHXClientEngine;
+class IHXAudioHook;
+class IHXAudioStreamInfoResponse;
 
 struct DelayQueue
 {
@@ -95,19 +97,25 @@ private:
    void  DoEvents(int nTimeDelta);
    unsigned long GetTime();
 
-   char                    mCoreLibPath[MAXPATHLEN];
-   char                    mPluginLibPath[MAXPATHLEN];
-   int                     theErr;
-   HSPClientContext**      ppHSPContexts;
-   IHXPlayer**             ppPlayers;
-   IHXErrorSink*           pErrorSink;
-   IHXErrorSinkControl*    pErrorSinkControl;
-   IHXAudioPlayer**        ppAudioPlayer;
-   IHXAudioCrossFade**     ppCrossFader;
-   IHXVolume**             ppVolume;
-   IHXPlayerNavigator*     pPlayerNavigator;
-   IHXClientEngineSelector *pCEselect;
-   char**                  ppszURL;
+   char                     mCoreLibPath[MAXPATHLEN];
+   char                     mPluginLibPath[MAXPATHLEN];
+   int                      theErr;
+   IHXErrorSink*            pErrorSink;
+   IHXErrorSinkControl*     pErrorSinkControl;
+   IHXClientEngineSelector* pCEselect;
+   struct playerCtrl
+   {
+      HSPClientContext*           pHSPContext;
+      IHXPlayer*                  pPlayer;
+      IHXAudioPlayer*             pAudioPlayer;
+      IHXAudioCrossFade*          pCrossFader;
+      IHXVolume*                  pVolume;
+      IHXVolumeAdviseSink*        pVolumeAdvise;
+      IHXAudioHook*               pPostMixHook;
+      IHXAudioStreamInfoResponse* pStreamInfoResponse;
+      char*                       pszURL;
+   } **ppctrl;
+
    bool                    bURLFound;
    int                     nNumPlayers;
    int                     nNumPlayRepeats;
@@ -135,8 +143,8 @@ public:
    void disableCrossFader();
    void crossFade(const char *url, unsigned long startPos, unsigned long xfduration);
    inline struct xfade &xf() { return m_xf; }
-   const IHXAudioPlayer *getAudioPlayer(int playerIndex) const { return ppAudioPlayer[playerIndex]; }
-   const IHXAudioCrossFade *getCrossFader(int playerIndex) const { return ppCrossFader[playerIndex]; }
+   const IHXAudioPlayer *getAudioPlayer(int playerIndex) const { return ppctrl[playerIndex]->pAudioPlayer; }
+   const IHXAudioCrossFade *getCrossFader(int playerIndex) const { return ppctrl[playerIndex]->pCrossFader; }
    void startCrossFade();
 
    // scope

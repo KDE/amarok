@@ -111,8 +111,10 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
     return 0;
 }
 
-STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
+STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream * /*pAudioStream*/)
 {
+/* we'll play with this later... I think it may be causing instability
+
    m_Player->xf().toStream = pAudioStream;
 
    IHXAudioStream2 *is2 = 0;
@@ -126,7 +128,7 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
 
    IHXValues *pvalues = pAudioStream->GetStreamInfo();
  
-   m_Player->ppAudioPlayer[0]->CreateAudioStream(&m_Stream);
+   m_Player->ppctrl[m_index]->pAudioPlayer->CreateAudioStream(&m_Stream);
    m_Stream->Init(&m_audiofmt, pvalues);
 
    STDERR("AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", m_audiofmt.uChannels,
@@ -142,6 +144,7 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
    m_Stream->Write(&ad);
 
    STDERR("Stream Added player %d crossfade? %d\n", m_index, m_Player->xf().crossfading);
+*/
    return HXR_OK;
 }
 
@@ -235,13 +238,13 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
  */
 void HelixSimplePlayer::DoEvent()
 {
-    struct _HXxEvent* pNothing = 0;
-    struct timeval    mtime;
-
-    mtime.tv_sec  = 0;
-    mtime.tv_usec = SLEEP_TIME * 1000;
-    usleep(SLEEP_TIME*1000);
-    pEngine->EventOccurred(pNothing);
+   struct _HXxEvent *pNothing = 0x0;
+   struct timeval    mtime;
+   
+   mtime.tv_sec  = 0;
+   mtime.tv_usec = SLEEP_TIME * 1000;
+   usleep(SLEEP_TIME*1000);
+   pEngine->EventOccurred(pNothing);
 }
 
 /*
@@ -280,13 +283,9 @@ char* HelixSimplePlayer::RemoveWrappingQuotes(char* str)
 
 HelixSimplePlayer::HelixSimplePlayer() :
    theErr(HXR_OK),
-   ppHSPContexts(NULL),
-   ppPlayers(NULL),
    pErrorSink(NULL),
    pErrorSinkControl(NULL),
-   ppVolume(NULL),
-   pPlayerNavigator(NULL),
-   ppszURL(NULL),
+   ppctrl(NULL),
    bURLFound(FALSE),
    nNumPlayers(0),
    nNumPlayRepeats(1),
@@ -324,134 +323,117 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    FPRMCREATEENGINE        fpCreateEngine;
    FPRMSETDLLACCESSPATH    fpSetDLLAccessPath;
 
-    SafeSprintf(mCoreLibPath, MAX_PATH, "%s/%s", corelibhome, "clntcore.so");
+   SafeSprintf(mCoreLibPath, MAX_PATH, "%s/%s", corelibhome, "clntcore.so");
 
-    // Allocate arrays to keep track of players and client
-    // context pointers
-    ppHSPContexts   = new HSPClientContext*[MAX_PLAYERS];
-    memset(ppHSPContexts, 0, sizeof(HSPClientContext *) * MAX_PLAYERS);
-    ppPlayers      = new IHXPlayer*[MAX_PLAYERS];
-    memset(ppPlayers, 0, sizeof(IHXPlayer *) * MAX_PLAYERS);
-    ppAudioPlayer      = new IHXAudioPlayer*[MAX_PLAYERS];
-    memset(ppAudioPlayer, 0, sizeof(IHXPlayer *) * MAX_PLAYERS);
-    ppVolume       = new IHXVolume*[MAX_PLAYERS];
-    memset(ppVolume, 0, sizeof(IHXVolume *) * MAX_PLAYERS);
-    ppCrossFader       = new IHXAudioCrossFade*[MAX_PLAYERS];
-    memset(ppCrossFader, 0, sizeof(IHXVolume *) * MAX_PLAYERS);
-    ppszURL        = new char *[MAX_PLAYERS];
-    memset(ppszURL, 0, sizeof(char *) * MAX_PLAYERS);
+   // Allocate arrays to keep track of players and client
+   // context pointers
+   ppctrl = new struct playerCtrl *[MAX_PLAYERS];
+   memset(ppctrl, 0, sizeof(struct playerCtrl *) * MAX_PLAYERS);
 
-    if (!ppHSPContexts || !ppPlayers || !ppszURL)
-    {
-       if (numPlayers > MAX_PLAYERS)
-       {
-          STDOUT("Error: Out of Memory. Perhaps you are trying to launch too many players at once.\n");
-       }
-       else
-       {
-          STDOUT("Error: Out of Memory.\n");
-       }
-       theErr = HXR_UNEXPECTED;
-       return;
-    }
+   if (!ppctrl)
+   {
+      STDOUT("Error: Out of Memory.\n");
+      theErr = HXR_UNEXPECTED;
+      return;
+   }
 
-    fpCreateEngine    = NULL;
+   fpCreateEngine    = NULL;
 
-    // prepare/load the HXCore module
-    STDOUT("Simpleplayer is looking for the client core at %s\n", mCoreLibPath );
+   // prepare/load the HXCore module
+   STDOUT("Simpleplayer is looking for the client core at %s\n", mCoreLibPath );
 
-    core_handle = dlopen(mCoreLibPath, RTLD_LAZY | RTLD_GLOBAL);
-    if (!core_handle)
-    {
-       STDERR("splayer: failed to open corelib, errno %d\n", errno);
-       theErr = HXR_FAILED;
-       return;
-    }
-    fpCreateEngine = (FPRMCREATEENGINE) dlsym(core_handle, "CreateEngine");
-    fpSetDLLAccessPath = (FPRMSETDLLACCESSPATH) dlsym(core_handle, "SetDLLAccessPath");
+   core_handle = dlopen(mCoreLibPath, RTLD_LAZY | RTLD_GLOBAL);
+   if (!core_handle)
+   {
+      STDERR("splayer: failed to open corelib, errno %d\n", errno);
+      theErr = HXR_FAILED;
+      return;
+   }
+   fpCreateEngine = (FPRMCREATEENGINE) dlsym(core_handle, "CreateEngine");
+   fpSetDLLAccessPath = (FPRMSETDLLACCESSPATH) dlsym(core_handle, "SetDLLAccessPath");
 
-    if (fpCreateEngine == NULL ||
-        fpSetDLLAccessPath == NULL )
-    {
-       theErr = HXR_FAILED;
-       return;
-    }
+   if (fpCreateEngine == NULL ||
+       fpSetDLLAccessPath == NULL )
+   {
+      theErr = HXR_FAILED;
+      return;
+   }
 
-    //Now tell the client core where to find the plugins and codecs it
-    //will be searching for.
-    if (NULL != fpSetDLLAccessPath)
-    {
-       //Create a null delimited, double-null terminated string
-       //containing the paths to the encnet library (DT_Common) and
-       //the sdpplin library (DT_Plugins)...
-       char pPaths[256]; /* Flawfinder: ignore */
-       char* pPathNextPosition = pPaths;
-       memset(pPaths, 0, 256);
-       UINT32 ulBytesLeft = 256;
+   //Now tell the client core where to find the plugins and codecs it
+   //will be searching for.
+   if (NULL != fpSetDLLAccessPath)
+   {
+      //Create a null delimited, double-null terminated string
+      //containing the paths to the encnet library (DT_Common) and
+      //the sdpplin library (DT_Plugins)...
+      char pPaths[256]; /* Flawfinder: ignore */
+      char* pPathNextPosition = pPaths;
+      memset(pPaths, 0, 256);
+      UINT32 ulBytesLeft = 256;
 
-       char* pNextPath = new char[256];
-       memset(pNextPath, 0, 256);
+      char* pNextPath = new char[256];
+      memset(pNextPath, 0, 256);
 
-       SafeSprintf(pNextPath, 256, "DT_Common=%s", corelibhome);
-       STDERR("Common DLL path %s\n", pNextPath );
-       UINT32 ulBytesToCopy = strlen(pNextPath) + 1;
-       if (ulBytesToCopy <= ulBytesLeft)
-       {
-          memcpy(pPathNextPosition, pNextPath, ulBytesToCopy);
-          pPathNextPosition += ulBytesToCopy;
-          ulBytesLeft -= ulBytesToCopy;
-       }
+      SafeSprintf(pNextPath, 256, "DT_Common=%s", corelibhome);
+      STDERR("Common DLL path %s\n", pNextPath );
+      UINT32 ulBytesToCopy = strlen(pNextPath) + 1;
+      if (ulBytesToCopy <= ulBytesLeft)
+      {
+         memcpy(pPathNextPosition, pNextPath, ulBytesToCopy);
+         pPathNextPosition += ulBytesToCopy;
+         ulBytesLeft -= ulBytesToCopy;
+      }
 
-       SafeSprintf(pNextPath, 256, "DT_Plugins=%s", pluginslibhome);
-       STDERR("Plugin path %s\n", pNextPath );
-       ulBytesToCopy = strlen(pNextPath) + 1;
-       if (ulBytesToCopy <= ulBytesLeft)
-       {
-          memcpy(pPathNextPosition, pNextPath, ulBytesToCopy);
-          pPathNextPosition += ulBytesToCopy;
-          ulBytesLeft -= ulBytesToCopy;
-       }
+      SafeSprintf(pNextPath, 256, "DT_Plugins=%s", pluginslibhome);
+      STDERR("Plugin path %s\n", pNextPath );
+      ulBytesToCopy = strlen(pNextPath) + 1;
+      if (ulBytesToCopy <= ulBytesLeft)
+      {
+         memcpy(pPathNextPosition, pNextPath, ulBytesToCopy);
+         pPathNextPosition += ulBytesToCopy;
+         ulBytesLeft -= ulBytesToCopy;
+      }
+      
+      SafeSprintf(pNextPath, 256, "DT_Codecs=%s", codecshome);
+      STDERR("Codec path %s\n", pNextPath );
+      ulBytesToCopy = strlen(pNextPath) + 1;
+      if (ulBytesToCopy <= ulBytesLeft)
+      {
+         memcpy(pPathNextPosition, pNextPath, ulBytesToCopy);
+         pPathNextPosition += ulBytesToCopy;
+         ulBytesLeft -= ulBytesToCopy;
+         *pPathNextPosition='\0';
+      }
+
+      fpSetDLLAccessPath((char*)pPaths);
        
-       SafeSprintf(pNextPath, 256, "DT_Codecs=%s", codecshome);
-       STDERR("Codec path %s\n", pNextPath );
-       ulBytesToCopy = strlen(pNextPath) + 1;
-       if (ulBytesToCopy <= ulBytesLeft)
-       {
-          memcpy(pPathNextPosition, pNextPath, ulBytesToCopy);
-          pPathNextPosition += ulBytesToCopy;
-          ulBytesLeft -= ulBytesToCopy;
-          *pPathNextPosition='\0';
-       }
+      HX_VECTOR_DELETE(pNextPath);
+   }
 
-       fpSetDLLAccessPath((char*)pPaths);
-       
-       HX_VECTOR_DELETE(pNextPath);
-    }
+   // do I need to do this???
+   XInitThreads();
 
-    // do I need to do this???
-    XInitThreads();
+   // create client engine
+   if (HXR_OK != fpCreateEngine((IHXClientEngine**)&pEngine))
+   {
+      theErr = HXR_FAILED;
+      return;
+   }
+   pEngine = pEngine;
 
-    // create client engine
-    if (HXR_OK != fpCreateEngine((IHXClientEngine**)&pEngine))
-    {
-       theErr = HXR_FAILED;
-       return;
-    }
-    pEngine = pEngine;
-
-    // get the client engine selector
-    pCEselect = 0;
-    pEngine->QueryInterface(IID_IHXClientEngineSelector, (void **) &pCEselect);
-    if (pCEselect)
-       STDERR("Got the CE selector!\n");
-    else
-       STDERR("no CE selector\n");
+   // get the client engine selector
+   pCEselect = 0;
+   pEngine->QueryInterface(IID_IHXClientEngineSelector, (void **) &pCEselect);
+   if (pCEselect)
+      STDERR("Got the CE selector!\n");
+   else
+      STDERR("no CE selector\n");
     
-    // create players
-    for (i = 0; i < numPlayers; i++)
-    {
-       addPlayer();
-    }
+   // create players
+   for (i = 0; i < numPlayers; i++)
+   {
+      addPlayer();
+   }
 }
 
 int HelixSimplePlayer::addPlayer()
@@ -462,37 +444,34 @@ int HelixSimplePlayer::addPlayer()
       return -1;
    }
 
-   ppHSPContexts[nNumPlayers] = new HSPClientContext(nNumPlayers, this);
+   ppctrl[nNumPlayers] = new struct playerCtrl;
+   memset(ppctrl[nNumPlayers], 0, sizeof(struct playerCtrl));
 
-   if (!ppHSPContexts[nNumPlayers])
+   ppctrl[nNumPlayers]->pHSPContext = new HSPClientContext(nNumPlayers, this);
+   if (!ppctrl[nNumPlayers]->pHSPContext)
    {
-      if (nNumPlayers > MAX_PLAYERS)
-      {
-         STDOUT("Error: Out of Memory. Perhaps you are trying to launch too many players at once.\n");
-      }
-      else
-      {
-         STDOUT("Error: Out of Memory.\n");
-      }
+      STDOUT("Error: Out of Memory. num players is %d\n", nNumPlayers);
       theErr = HXR_UNEXPECTED;
       return -1;
    }
-   
-   ppHSPContexts[nNumPlayers]->AddRef();
+   ppctrl[nNumPlayers]->pHSPContext->AddRef();
 
-   //initialize the example context
+   //initialize the example context  
+
    char pszGUID[GUID_LEN + 1]; /* Flawfinder: ignore */ // add 1 for terminator
-   char* token = NULL;
+   //char* token = NULL;
    IHXPreferences* pPreferences = NULL;
 
-   if (HXR_OK != pEngine->CreatePlayer(ppPlayers[nNumPlayers]))
+   if (HXR_OK != pEngine->CreatePlayer(ppctrl[nNumPlayers]->pPlayer))
    {
       theErr = HXR_FAILED;
       return -1;
    }
    
-   pszGUID[0] = '\0';
-   
+   pszGUID[0] = '\0';   
+
+// disable for now - I dont know what I was thinking
+#ifdef _DISABLE_CUZ_I_MUST_HAVE_BEEN_NUTS_
    if (m_pszGUIDList)
    {
       // Get next GUID from the GUID list
@@ -510,80 +489,55 @@ int HelixSimplePlayer::addPlayer()
          pszGUID[GUID_LEN] = '\0';
       }
    }
+#endif
    
-   ppPlayers[nNumPlayers]->QueryInterface(IID_IHXPreferences,
-                                          (void**) &pPreferences);
-
-   ppHSPContexts[nNumPlayers]->Init(ppPlayers[nNumPlayers], pPreferences, pszGUID);
-   
-   ppPlayers[nNumPlayers]->SetClientContext(ppHSPContexts[nNumPlayers]);
-   
+   ppctrl[nNumPlayers]->pPlayer->QueryInterface(IID_IHXPreferences, (void**) &pPreferences);
+   ppctrl[nNumPlayers]->pHSPContext->Init(ppctrl[nNumPlayers]->pPlayer, pPreferences, pszGUID);
+   ppctrl[nNumPlayers]->pPlayer->SetClientContext(ppctrl[nNumPlayers]->pHSPContext);
    HX_RELEASE(pPreferences);
    
-   if (!nNumPlayers) // the first player is the parent
-   {
-      ppPlayers[nNumPlayers]->QueryInterface(IID_IHXPlayerNavigator, (void **) &pPlayerNavigator);
-      pPlayerNavigator->SetParentPlayer(ppPlayers[nNumPlayers]);
-   }
-   
-   if (pPlayerNavigator && nNumPlayers)
-   {
-      STDERR("Got the navigator!\n");
-      pPlayerNavigator->AddChildPlayer(ppPlayers[nNumPlayers]);
-   }
-
-   ppPlayers[nNumPlayers]->QueryInterface(IID_IHXErrorSinkControl,
-                                          (void**) &pErrorSinkControl);
+   ppctrl[nNumPlayers]->pPlayer->QueryInterface(IID_IHXErrorSinkControl, (void**) &pErrorSinkControl);
    if (pErrorSinkControl)
    {
-      ppHSPContexts[nNumPlayers]->QueryInterface(IID_IHXErrorSink,
-                                                (void**) &pErrorSink);
-      
+      ppctrl[nNumPlayers]->pHSPContext->QueryInterface(IID_IHXErrorSink, (void**) &pErrorSink);
       if (pErrorSink)
-      {
          pErrorSinkControl->AddErrorSink(pErrorSink, HXLOG_EMERG, HXLOG_INFO);
-      }
-      
       HX_RELEASE(pErrorSink);
    }
    
    HX_RELEASE(pErrorSinkControl);
    
    // Get the Audio Player
-   ppPlayers[nNumPlayers]->QueryInterface(IID_IHXAudioPlayer,
-                                          (void**) &ppAudioPlayer[nNumPlayers]);
-   
-   if (ppAudioPlayer[nNumPlayers])
+   ppctrl[nNumPlayers]->pPlayer->QueryInterface(IID_IHXAudioPlayer, (void**) &ppctrl[nNumPlayers]->pAudioPlayer);
+   if (ppctrl[nNumPlayers]->pAudioPlayer)
    {
       // ...and now the volume interface
-      ppVolume[nNumPlayers] = ppAudioPlayer[nNumPlayers]->GetAudioVolume();
-      if (!ppVolume[nNumPlayers])
+      ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetAudioVolume();
+      if (!ppctrl[nNumPlayers]->pVolume)
          STDERR("No Volume Interface - how can we play music!!\n");
       else
       {
          HelixSimplePlayerVolumeAdvice *pVA = new HelixSimplePlayerVolumeAdvice(this, nNumPlayers);
-         ppVolume[nNumPlayers]->AddAdviseSink((IHXVolumeAdviseSink *)pVA);
+         ppctrl[nNumPlayers]->pVolume->AddAdviseSink((IHXVolumeAdviseSink *)pVA);
+         ppctrl[nNumPlayers]->pVolumeAdvise = pVA;
       }
 
       // add the IHXAudioStreamInfoResponse it the AudioPlayer
       HelixSimplePlayerAudioStreamInfoResponse *pASIR = new HelixSimplePlayerAudioStreamInfoResponse(this, nNumPlayers);
-      ppAudioPlayer[nNumPlayers]->SetStreamInfoResponse(pASIR);
+      ppctrl[nNumPlayers]->pAudioPlayer->SetStreamInfoResponse(pASIR);
+      ppctrl[nNumPlayers]->pStreamInfoResponse = pASIR;
 
       // add the post-mix hook (for the scope)
       HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
-      ppAudioPlayer[nNumPlayers]->AddPostMixHook(pPMAH, false /* DisableWrite */, true /* final hook */);
+      ppctrl[nNumPlayers]->pAudioPlayer->AddPostMixHook(pPMAH, false /* DisableWrite */, true /* final hook */);
+      ppctrl[nNumPlayers]->pPostMixHook = pPMAH;
 
       // ...and get the CrossFader
-      ppAudioPlayer[nNumPlayers]->QueryInterface(IID_IHXAudioCrossFade,
-                                                 (void **) &ppCrossFader[nNumPlayers]);
-      if (!ppCrossFader[nNumPlayers])
+      ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
+      if (!ppctrl[nNumPlayers]->pCrossFader)
          STDERR("CrossFader not available\n");
       else
-      {
          STDERR("Got the CrossFader device!\n");
-         STDERR("AudioPlayer 0x%lx\n", ppAudioPlayer[nNumPlayers]);
-         STDERR("CrossFader 0x%lx\n", ppCrossFader[nNumPlayers]);
-      }
    }
    else
       STDERR("No AudioPlayer Found - how can we play music!!\n");
@@ -598,57 +552,38 @@ HelixSimplePlayer::~HelixSimplePlayer()
 {
    int i;
    FPRMCLOSEENGINE         fpCloseEngine;
-  
-   if ( ppszURL )
+   
+   for (i=nNumPlayers-1; i>=0; i--)
    {
-      for (i=0; i<nNumPlayers; i++)
-         delete [] ppszURL[i];
-   }
+      if (ppctrl[i]->pCrossFader)
+         ppctrl[i]->pCrossFader->Release();
 
-   if (ppVolume)
-   {
-      for (i=0; i<nNumPlayers; i++)
+      if (ppctrl[i]->pAudioPlayer)
       {
-         if (ppVolume[i])
+         ppctrl[i]->pAudioPlayer->RemovePostMixHook((IHXAudioHook *)ppctrl[i]->pPostMixHook);
+
+
+         ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
+         delete ppctrl[i]->pStreamInfoResponse;
+
+         if (ppctrl[i]->pVolume && ppctrl[i]->pVolumeAdvise)
          {
-            ppVolume[i]->Release();
-            ppVolume[i] = NULL;
+            ppctrl[i]->pVolume->RemoveAdviseSink(ppctrl[i]->pVolumeAdvise);
+            ppctrl[i]->pVolume->Release();
          }
       }
-      delete []ppVolume;
-   }
 
-   if (ppHSPContexts)
-   {
-      for (i = 0; i < nNumPlayers; i++)
-      {
-         if (ppHSPContexts[i])
-         {
-            ppHSPContexts[i]->Release();
-            ppHSPContexts[i] = NULL;
-         }
-      }
-      
-      delete []ppHSPContexts;
-      ppHSPContexts = NULL;
-   }
+      if ( ppctrl[i]->pszURL )
+         delete [] ppctrl[i]->pszURL;
 
-   if (ppPlayers)
-   {
-      for (i = 0; i < nNumPlayers; i++)
+      if (ppctrl[i]->pHSPContext)
+         ppctrl[i]->pHSPContext->Release();
+
+      if (ppctrl[i]->pPlayer && pEngine)
       {
-         if (ppPlayers[i])
-         {
-            if (pEngine)
-            {
-               pEngine->ClosePlayer(ppPlayers[i]);
-            }
-            ppPlayers[i]->Release();
-            ppPlayers[i] = NULL;
-         }
+         pEngine->ClosePlayer(ppctrl[i]->pPlayer);
+         ppctrl[i]->pPlayer->Release();
       }
-      delete []ppPlayers;
-      ppPlayers = NULL;
    }
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
@@ -660,11 +595,6 @@ HelixSimplePlayer::~HelixSimplePlayer()
 
    dlclose(core_handle);
 
-   if (bEnableVerboseMode)
-   {
-      STDOUT("\nDone.\n");
-   }
-   
    if (m_pszUsername)
    {
       delete [] m_pszUsername;
@@ -680,6 +610,11 @@ HelixSimplePlayer::~HelixSimplePlayer()
    if (m_pszGUIDList)
    {
       delete [] m_pszGUIDList;
+   }
+   
+   if (bEnableVerboseMode)
+   {
+      STDOUT("\nDone.\n");
    }
    
    // If an an error occurred in this function return it
@@ -723,8 +658,8 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       if (len >= MAXPATHLEN)
          return -1;;
       
-      if (ppszURL[playerIndex])
-         delete [] ppszURL[playerIndex];
+      if (ppctrl[playerIndex]->pszURL)
+         delete [] ppctrl[playerIndex]->pszURL;
       
       // see if the file is already in the form of a url
       char *tmp = strstr(file, "://");
@@ -737,28 +672,29 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          RemoveWrappingQuotes(pszURLOrig);
          pszAddOn = "file://";
          
-         ppszURL[playerIndex] = new char[strlen(pszURLOrig)+strlen(pszAddOn)+1];
+         ppctrl[playerIndex]->pszURL = new char[strlen(pszURLOrig)+strlen(pszAddOn)+1];
          if ( (len + strlen(pszAddOn)) < MAXPATHLEN )
-            sprintf( ppszURL[playerIndex], "%s%s", pszAddOn, pszURLOrig ); /* Flawfinder: ignore */
+            sprintf( ppctrl[playerIndex]->pszURL, "%s%s", pszAddOn, pszURLOrig );
          else
             return -1;
       }
       else
       {
-         ppszURL[playerIndex] = new char[len + 1];
-         if (ppszURL[playerIndex])
-            strcpy(ppszURL[playerIndex], file);
+         ppctrl[playerIndex]->pszURL = new char[len + 1];
+         if (ppctrl[playerIndex]->pszURL)
+            strcpy(ppctrl[playerIndex]->pszURL, file);
          else
             return -1;
       }
       
-      STDERR("opening %s on player %d, src cnt %d\n", ppszURL[playerIndex], playerIndex, ppPlayers[playerIndex]->GetSourceCount());
-      if (HXR_OK == ppPlayers[playerIndex]->OpenURL(ppszURL[playerIndex]))
+      STDERR("opening %s on player %d, src cnt %d\n", 
+             ppctrl[playerIndex]->pszURL, playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());
+      if (HXR_OK == ppctrl[playerIndex]->pPlayer->OpenURL(ppctrl[playerIndex]->pszURL))
       {
-         STDERR("opened player on %d src cnt %d\n", playerIndex, ppPlayers[playerIndex]->GetSourceCount());
+         STDERR("opened player on %d src cnt %d\n", playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());
 //         IHXStreamSource *pStreamSource = 0;
 //         IHXStream *pStream = 0;
-//         ppPlayers[playerIndex]->GetSource(0, (IUnknown *&)pStreamSource);
+//         ppctrl[playerIndex]->pPlayer->GetSource(0, (IUnknown *&)pStreamSource);
 //         if (pStreamSource)
 //         {
 //            STDERR("Got StreamSource, stream count is %d!!\n", pStreamSource->GetStreamCount());
@@ -804,7 +740,7 @@ void HelixSimplePlayer::crossFade(const char *url, unsigned long /*startPos*/, u
    {
       m_xf.duration = xfduration;
       m_xf.fromStream = 0;
-      m_xf.fromStream = ppAudioPlayer[m_xf.fromIndex]->GetAudioStream(0);
+      m_xf.fromStream = ppctrl[m_xf.fromIndex]->pAudioPlayer->GetAudioStream(0);
       if (m_xf.fromStream)
       {
          STDERR("Got Stream 1\n");
@@ -939,14 +875,14 @@ void HelixSimplePlayer::start(int playerIndex)
    }
    else
    {
-      if (!ppszURL[playerIndex])
+      if (!ppctrl[playerIndex]->pszURL)
          return;
       
       if (bEnableVerboseMode)
       {
          STDOUT("Starting player %d...\n", playerIndex);
       }
-      ppPlayers[playerIndex]->Begin();
+      ppctrl[playerIndex]->pPlayer->Begin();
    }
 }
 
@@ -969,7 +905,7 @@ bool HelixSimplePlayer::done(int playerIndex)
       // finished yet.
       for (int i = nNumPlayers - 1; i >= 0 && bAllDone; i--)
       {
-         if (!ppPlayers[i]->IsDone())
+         if (!ppctrl[i]->pPlayer->IsDone())
          {
             bAllDone = FALSE;
          }
@@ -977,7 +913,7 @@ bool HelixSimplePlayer::done(int playerIndex)
    else
    {
       if (playerIndex < nNumPlayers)
-         bAllDone = ppPlayers[playerIndex]->IsDone();
+         bAllDone = ppctrl[playerIndex]->pPlayer->IsDone();
    }
    
    return bAllDone;
@@ -988,23 +924,22 @@ void HelixSimplePlayer::stop(int playerIndex)
    if (playerIndex == ALL_PLAYERS)
       for (int i = 0; i < nNumPlayers; i++)
       {
-         ppPlayers[i]->Stop();
+         ppctrl[i]->pPlayer->Stop();
       }
    else
    {
       if (playerIndex < nNumPlayers)
-         ppPlayers[playerIndex]->Stop();
+         ppctrl[playerIndex]->pPlayer->Stop();
    }
 }
 
 void HelixSimplePlayer::dispatch()
 {
-   struct _HXxEvent* pNothing = 0;
+   struct _HXxEvent *pNothing = 0x0;
    struct timeval tv;
    
    tv.tv_sec = 0;
    tv.tv_usec = SLEEP_TIME*1000;
-   pCEselect->Select(0, 0, 0, 0, &tv);
    pEngine->EventOccurred(pNothing);
    usleep(1);
 }
@@ -1019,7 +954,7 @@ void HelixSimplePlayer::pause(int playerIndex)
          pause(i);
    else
       if (playerIndex < nNumPlayers)
-         ppPlayers[playerIndex]->Pause();
+         ppctrl[playerIndex]->pPlayer->Pause();
 }
 
 void HelixSimplePlayer::resume(int playerIndex)
@@ -1031,7 +966,7 @@ void HelixSimplePlayer::resume(int playerIndex)
          resume(i);
    else
       if (playerIndex < nNumPlayers)
-         ppPlayers[playerIndex]->Begin();
+         ppctrl[playerIndex]->pPlayer->Begin();
 }
 
 
@@ -1044,37 +979,29 @@ void HelixSimplePlayer::seek(unsigned long pos, int playerIndex)
          seek(pos, i);
    else
       if (playerIndex < nNumPlayers)
-         ppPlayers[playerIndex]->Seek(pos);
+         ppctrl[playerIndex]->pPlayer->Seek(pos);
 }
 
 unsigned long HelixSimplePlayer::where(int playerIndex) const
 {
-   return ppPlayers[playerIndex]->GetCurrentPlayTime();
+   if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pHSPContext)
+      return ppctrl[playerIndex]->pHSPContext->position();
+   else
+      return 0;
 }
 
 unsigned long HelixSimplePlayer::duration(int playerIndex) const
 {
-   return ppHSPContexts[playerIndex]->duration();
+   if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pHSPContext)
+      return ppctrl[playerIndex]->pHSPContext->duration();
+   else
+      return 0;
 }
-
-//void HelixSimplePlayer::initVolume(unsigned short minV, unsigned short maxV, int playerIndex)
-//{
-//   int i;
-//
-//   if (playerIndex == ALL_PLAYERS)
-//   {
-//      for (i=0; i<nNumPlayers; i++)
-//         initVolume(minV, maxV, i);
-//   }
-//   else
-//      if (playerIndex < nNumPlayers)
-//         ppAudioDevice[playerIndex]->InitVolume(minV,maxV);
-//}
 
 unsigned long HelixSimplePlayer::getVolume(int playerIndex)
 {
-   if (playerIndex < nNumPlayers)
-      return (ppVolume[playerIndex]->GetVolume());
+   if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pVolume)
+      return (ppctrl[playerIndex]->pVolume->GetVolume());
    else
       return 0;
 }
@@ -1090,7 +1017,7 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
    }
    else
       if (playerIndex < nNumPlayers)
-         ppVolume[playerIndex]->SetVolume(vol);
+         ppctrl[playerIndex]->pVolume->SetVolume(vol);
 }
 
 void HelixSimplePlayer::setMute(bool mute, int playerIndex)
@@ -1104,14 +1031,14 @@ void HelixSimplePlayer::setMute(bool mute, int playerIndex)
    }
    else
       if (playerIndex < nNumPlayers)
-         ppVolume[playerIndex]->SetMute(mute);
+         ppctrl[playerIndex]->pVolume->SetMute(mute);
 }
 
 
 bool HelixSimplePlayer::getMute(int playerIndex)
 {
    if (playerIndex < nNumPlayers)
-      return ppVolume[playerIndex]->GetMute();
+      return ppctrl[playerIndex]->pVolume->GetMute();
    else
       return false;
 }
