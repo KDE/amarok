@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Mark '"I18N_NOOP("It's good, but it's not irssi") "' Kretschmann",
             I18N_NOOP( "Project founder (markey)" ), "markey@web.de" );
     aboutData.addAuthor( "Max '" I18N_NOOP("Turtle-Power'") "Howell",
-            I18N_NOOP( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methyblue.com" );
+            I18N_NOOP( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methylblue.com" );
     aboutData.addAuthor( "Mike '" I18N_NOOP("Purple is not girly!") "' Diehl",
             I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
     aboutData.addAuthor( "Pierpaolo '" I18N_NOOP("Spaghetti Coder") "' Di Panfilo",
