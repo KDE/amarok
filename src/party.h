@@ -38,7 +38,7 @@
 #include <qcombobox.h>
 #include <qlistbox.h>
 #include <qpushbutton.h>
-#include <qvbox.h>    //baseclass
+#include <qvbox.h>          //baseclass
 
 #include <knuminput.h>
 #include <klistview.h>

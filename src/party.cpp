@@ -18,6 +18,7 @@
 #include "collectiondb.h"
 #include "party.h"
 #include "partydialogbase.h"
+#include "partyinfobox.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "statusbar.h"
@@ -223,6 +224,13 @@ Party::toggle( bool enable ) //SLOT
 
     if( enable )
     {
+        if( AmarokConfig::partyInfo() )
+        {
+            PartyInfoBox dialog( this );
+            if( dialog.exec() == QDialog::Accepted )
+                AmarokConfig::setPartyInfo( !dialog.m_showInfo->isChecked() );
+        }
+
         // uncheck before disabling
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
