@@ -114,7 +114,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KConfig *config = kapp->config();
     config->setGroup( "PlaylistBrowser" );
-    m_viewMode = (ViewMode)config->readNumEntry( "View", DETAILEDVIEW );  //restore the view mode
+    m_viewMode = (ViewMode)config->readNumEntry( "View", LISTVIEW );  //restore the view mode
     viewMenu->setItemChecked( m_viewMode, true );
     m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
     slotViewMenu( m_sortMode );
