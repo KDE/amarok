@@ -33,20 +33,15 @@
 #ifndef AMAROK_PARTY_H
 #define AMAROK_PARTY_H
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qlistbox.h>
-#include <qpushbutton.h>
+#include <qlistview.h>
 #include <qvbox.h>          //baseclass
 
-#include <knuminput.h>
-#include <klistview.h>
-
+class QLabel;
 class KAction;
 class KActionCollection;
 class PartyDialogBase;
 class PartyEntry;
+
 
 class Party : public QVBox
 {
@@ -95,7 +90,6 @@ class Party : public QVBox
         bool        m_visible;
 
         QPtrList<QListViewItem> m_selected;
-
 
 
         static Party *s_instance;

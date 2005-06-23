@@ -23,12 +23,14 @@
 #include "playlistbrowser.h"
 #include "statusbar.h"
 
+#include <qcheckbox.h>
 #include <qfile.h>
 
 #include <kaction.h>
 #include <kapplication.h>
 #include <kiconloader.h>       //smallIcon
 #include <klocale.h>
+#include <knuminput.h>
 #include <kpushbutton.h>
 #include <ktoolbar.h>
 #include <kurldrag.h>          //dragObject()
@@ -42,6 +44,7 @@ Party *Party::s_instance = 0;
 
 Party::Party( QWidget *parent, const char *name )
     : QVBox( parent, name )
+    , m_ac( new KActionCollection( this ) )
     , m_visible( true )
 {
     s_instance = this;
@@ -50,7 +53,6 @@ Party::Party( QWidget *parent, const char *name )
     container->hide();
 
     //<Toolbar>
-    m_ac = new KActionCollection( this );
     KAction *repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
                                        this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
@@ -64,7 +66,6 @@ Party::Party( QWidget *parent, const char *name )
 
 
     m_base = new PartyDialogBase( container );
-
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
 
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
@@ -73,9 +74,9 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_cycleTracks,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_markHistory,   SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_appendType,    SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
+    connect( m_base->m_cycleTracks,           SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_markHistory,           SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
+    connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
 
     KPushButton *button = new KPushButton( KGuiItem( i18n("Enable Dynamic Mode..."), "party" ), this );
     button->setToggleButton( true );
@@ -227,6 +228,9 @@ Party::toggle( bool enable ) //SLOT
         if( AmarokConfig::partyInfo() )
         {
             PartyInfoBox dialog( this );
+            kapp->setTopWidget( &dialog );
+            dialog.setCaption( kapp->makeStdCaption( i18n("Dynamic Mode Introduction") ) );
+
             if( dialog.exec() == QDialog::Accepted )
                 AmarokConfig::setPartyInfo( !dialog.m_showInfo->isChecked() );
         }
