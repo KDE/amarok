@@ -21,6 +21,7 @@ VERSION 1.3-beta2:
     * Remodel the playlist browser to incorporate dynamic mode more fully.
 
   BUGFIXES:
+    * Automatic theme download with KNewStuff works now. (BR 107313)
     * Clicking on "Lookup track at musicbrainz" use %2520 for spaces in URL.
       (BR 107946)
     * Crash when loading dynamic playlists without a collection.
