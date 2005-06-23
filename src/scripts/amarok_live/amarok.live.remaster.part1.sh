@@ -17,9 +17,9 @@ if [ $? = 0 ] ; then
 
 iso=`kdialog --getopenfilename /home "*.iso"`
 
-ROOT=`kdialog --title "Choose working directory" --getexistingdirectory .`
+WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
 
-if [ $ROOT = 0 ] ; then
+if [ $WORK = 0 ] ; then
     exit;
 fi
 
@@ -27,17 +27,13 @@ fi
 
 redo=0
 enough=0
-tmp=$ROOT
+tmp=$WORK
 while [ "$redo" = "0" ]; do
     while [ "$enough" = "0" ]; do # loops until found something
         if [[ -n  `df | grep $tmp` ]] ; then # we got it in df, find the space left
-            free=0
-            if [[ "$tmp" = "/" ]]; then # can't just grep, multiple /s in df
-                anotmp=`df | grep / |  sed "s~^\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\(/\)$~\4~"`  # now we have a string, first item is free space in /
-                free=`echo $anotmp  | sed "s~^\([^ ]*\) \(.*\)~\1~"` # get first space-delimited item
-            else
-                free=`df -k | grep $tmp |  sed "s~^\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\)\(.*\)~\4~"`
-            fi
+            anotmp=`df | grep $tmp |  sed "s~^\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *\([^ ]*\)$~\4~"`  # now we have a string, first item is free space in /
+            free=`echo $anotmp  | sed "s~^\([^ ]*\) \(.*\)~\1~"` # get first space-delimited item
+			echo "comparing" $free "to 1572864"
             if [[ $free -gt 1572864 ]] ; then
                 enough=1
                 redo=1
@@ -57,30 +53,35 @@ while [ "$redo" = "0" ]; do
         fi
     done
     if [[ "$redo" = "0" ]]; then
-        ROOT=`kdialog --title "Choose working directory" --getexistingdirectory .`
+        WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
+		tmp=$WORK
+		if [[ "$?" == 0 ]]; then
+			break
+        else
+           exit 
+		fi
+		enough=0
     fi
 done
 
-
-
 # Mount the iso if not already mounted
 if [ ! -d "$DATADIR" ]; then
-   DATADIR=$ROOT/livecd_data$$
+   DATADIR=$WORK/livecd_data$$
    mkdir -p "$DATADIR"
    mount -o loop "$iso" "$DATADIR"
 fi
 
 # Make the working directories and blow out the initrd.gz into a separate directory 
  
-mkdir -p $ROOT/mklivecd/livecd
-cp -a --preserve "$DATADIR"/* $ROOT/mklivecd/livecd/
-mkdir -p $ROOT/mklivecd/initrd.dir
-mkdir -p $ROOT/mklivecd/initrd.mnt
-gunzip -c $ROOT/mklivecd/livecd/isolinux/initrd.gz > $ROOT/mklivecd/livecd/isolinux/initrd
-mount -o loop $ROOT/mklivecd/livecd/isolinux/initrd $ROOT/mklivecd/initrd.mnt
-(cd $ROOT/mklivecd/initrd.mnt ; tar cf - .) | (cd $ROOT/mklivecd/initrd.dir ; tar xf -)
-umount $ROOT/mklivecd/initrd.mnt
-rm -f $ROOT/mklivecd/livecd/isolinux/initrd
+mkdir -p $WORK/mklivecd/livecd
+cp -a --preserve "$DATADIR"/* $WORK/mklivecd/livecd/
+mkdir -p $WORK/mklivecd/initrd.dir
+mkdir -p $WORK/mklivecd/initrd.mnt
+gunzip -c $WORK/mklivecd/livecd/isolinux/initrd.gz > $WORK/mklivecd/livecd/isolinux/initrd
+mount -o loop $WORK/mklivecd/livecd/isolinux/initrd $WORK/mklivecd/initrd.mnt
+(cd $WORK/mklivecd/initrd.mnt ; tar cf - .) | (cd $WORK/mklivecd/initrd.dir ; tar xf -)
+umount $WORK/mklivecd/initrd.mnt
+rm -f $WORK/mklivecd/livecd/isolinux/initrd
 
 
 # cleanup all temporary files and directories
@@ -96,19 +97,23 @@ if [[  `cat /proc/filesystems | grep squash | wc -l` = 0 ]]; then
 
     	kdialog --title "amaroK livecd remaster" --error "You do not have squashfs support enabled. You need to have a patched kernel with squashfs. You can find more info about squashfs, and how to patch your kernel, here: http://tldp.org/HOWTO/SquashFS-HOWTO/"
 	
-		rm -rf $ROOT/mklivecd
+		rm -rf $WORK/mklivecd
 	fi
 fi
 
-mkdir $ROOT/amarok.livecd/
-mount -o loop -t squashfs $ROOT/mklivecd/livecd/livecd.sqfs $ROOT/amarok.livecd/
+mkdir $WORK/amarok.livecd/
+mount -o loop -t squashfs $WORK/mklivecd/livecd/livecd.sqfs $WORK/amarok.livecd/
 
 # gotta copy it locally so the user can add files to it
 
-mkdir $ROOT/amarok.live/
-kfmclient --title "amaroK livecd remaster" copy $ROOT/amarok.livecd/* $ROOT/amarok.live/
-umount $ROOT/amarok.livecd/
-rmdir $ROOT/amarok.livecd
+mkdir $WORK/amarok.live/
+kdialog --title "amaroK livecd remaster" --msgbox "Copying files now. Please be patient, this step takes a long time."
+echo
+echo "Please wait, copying in progress."
+echo
+cp -a $WORK/amarok.livecd/* $WORK/amarok.live/
+umount $WORK/amarok.livecd/
+rmdir $WORK/amarok.livecd
 
 kdialog --title "amaroK livecd remaster" --msgbox "Copying done. To add music to the amaroK livecd, place additional music in /tmp/amarok.live/music/ Please do not add more than about 380 mb, as then the resulting ISO will be too large to fit on a CD-ROM. Once you are done, run the amarok.live.remaster.part2.sh script and you are finished!."
 
