@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>PartyInfoBox</class>
 <author>Seb Ruiz</author>
 <widget class="QDialog">
@@ -61,10 +61,10 @@
                                     </property>
                                     <property name="text">
                                         <string>&lt;p align="center"&gt;&lt;b&gt;Dynamic Mode&lt;/b&gt;&lt;/p&gt;
-Dynamic mode is a powerful method to manipulate your playlist. amaroK can automatically remove played 
+Dynamic mode is a powerful method to manipulate your playlist. amaroK can automatically remove played
 items and insert new ones to suit your taste!&lt;br&gt;
 &lt;br&gt;
-If you select &lt;i&gt;Playlist Shuffle&lt;/i&gt;, make sure you choose some playlists or smart playlists by right-clicking 
+If you select &lt;i&gt;Playlist Shuffle&lt;/i&gt;, make sure you choose some playlists or smart playlists by right-clicking
 on the items in the playlist browser</string>
                                     </property>
                                 </widget>
