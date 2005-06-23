@@ -2042,7 +2042,7 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
         KURL url = item->url().url();
         if( url.isLocalFile() )
-            message += " " + url.path();
+            message += " " + url.url();
     }
     ScriptManager::instance()->customMenuClicked( message );
 }
