@@ -253,11 +253,12 @@ UrlLoader::completeJob()
 {
     if ( !m_badURLs.isEmpty() ) {
         amaroK::StatusBar::instance()->shortLongMessage(
-                i18n("Some URLs were not suitable for the playlist."),
-                i18n("These URLs could not be loaded into the playlist: " ) );
-        kdDebug() << "The following urls were not suitable for the playlist:" << endl;
+                i18n("Some media could not be loaded (not playable)."),
+                i18n("These media could not be loaded into the playlist: " ) );
+
+        debug() << "The following urls were not suitable for the playlist:" << endl;
         for ( uint it = 0; it < m_badURLs.count(); it++  )
-            kdDebug() << "\t" << m_badURLs[it] << endl;
+            debug() << "\t" << m_badURLs[it] << endl;
     }
 
     // delete now or the playlist count in the statusbar will be wrong
