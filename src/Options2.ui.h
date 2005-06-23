@@ -17,7 +17,7 @@
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kmessagebox.h>
-#include <knewstuff/downloaddialog.h> // knewstuff script fetching
+#include <knewstuff/downloaddialog.h> // knewstuff theme fetching
 #include <knewstuff/engine.h>         // "
 #include <knewstuff/knewstuff.h>      // "
 #include <knewstuff/provider.h>       // "
@@ -28,10 +28,8 @@
 #include <qfileinfo.h>
 
 
-static Options2* s_Options2_instance = 0;
-
 ////////////////////////////////////////////////////////////////////////////////
-// class AmarokScriptNewStuff
+// class AmarokThemeNewStuff
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -58,7 +56,6 @@ class AmarokThemeNewStuff : public KNewStuff
         const KArchiveDirectory* archiveDir = archive.directory();
         archiveDir->copyTo( destination, true );
 
-        s_Options2_instance->styleComboBox->clear();
         return true;
     }
 
@@ -72,8 +69,6 @@ class AmarokThemeNewStuff : public KNewStuff
 
 void Options2::init()
 {
-    s_Options2_instance = this;
-
     updateStyleComboBox();
 }
 
