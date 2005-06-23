@@ -281,16 +281,20 @@ void ContextBrowser::openURLRequest( const KURL &url )
     // Streams should use stream:// protocol.
     if ( url.protocol() == "http" )
     {
-        debug() << "Recived openURLRequest for: " << url.url() << endl;
+        debug() << "Received openURLRequest for: " << url.url() << endl;
         if ( url.hasHTMLRef() )
         {
-            m_wikiPage->gotoAnchor( url.htmlRef() );
+            KURL base = url;
+            base.setRef(QString::null);
+            // Wikipedia also has links to otherpages with Anchors, so we have to check if it's for the current one
+            if ( m_wikiCurrentUrl == base.url() ) {
+                m_wikiPage->gotoAnchor( url.htmlRef() );
+                return;
+            }
         }
-        else
-        {
-            m_dirtyWikiPage = true;
-            showWikipedia( url.url() );
-        }
+        // new page
+        m_dirtyWikiPage = true;
+        showWikipedia( url.url() );
     }
 
 
