@@ -27,6 +27,7 @@ VERSION 1.3-beta2:
     * Crash when saving smart playlist without a collection.
     * Do not call TagLib::MPEG::File for non-mpeg files - some FLAC files
       would cause the CPU to start running in circles. (BR 107029)
+    * Many Helix engine improvements.
     * Crash when dragging playlist items into Playlist Browser. (BR 107709)
     * Improved context display when playing radio streams with xine-engine.
     * Number of album tracks was incorrect when showing statistics by album.
