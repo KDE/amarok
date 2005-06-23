@@ -52,7 +52,8 @@
 #include <kurl.h>
 
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-#define escapeHTMLAttr(s) QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" )
+// .replace( "%", "%25" ) has to be the last one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
+#define escapeHTMLAttr(s) QString(s).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" ).replace( "%", "%25" )
 
 typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
 
