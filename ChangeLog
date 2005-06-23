@@ -21,7 +21,11 @@ VERSION 1.3-beta2:
     * Remodel the playlist browser to incorporate dynamic mode more fully.
 
   BUGFIXES:
-    * Crash when dragging playlist items into Playlist Browser (BR 107709)
+    * Clicking on "Lookup track at musicbrainz" use %2520 for spaces in URL.
+      (BR 107946)
+    * Crash when loading dynamic playlists without a collection.
+    * Crash when saving smart playlist without a collection.
+    * Crash when dragging playlist items into Playlist Browser. (BR 107709)
     * Improved context display when playing radio streams with xine-engine.
     * Number of album tracks was incorrect when showing statistics by album.
       (BR 107762)
