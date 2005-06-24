@@ -548,7 +548,7 @@
                                 <cstring>installPushButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Install New Style</string>
+                                <string>Install New Style...</string>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Click to install a new Context Browser style.&lt;br&gt;Tip: More styles can be found on &lt;a href='http://kde-look.org'&gt;http://kde-look.org&lt;/a&gt;</string>
@@ -562,7 +562,7 @@
                                 <cstring>retrievePushButton</cstring>
                             </property>
                             <property name="text">
-                                <string>Download Styles</string>
+                                <string>Download Styles...</string>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Click to download new Context Browser styles.</string>

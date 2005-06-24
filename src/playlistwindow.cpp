@@ -261,11 +261,11 @@ PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager..."), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     actionCollection()->action("queue_manager")->plug( m_toolsMenu );
-    m_toolsMenu->insertItem( i18n("&First-Run Wizard..."), amaroK::Menu::ID_SHOW_WIZARD );
-    m_toolsMenu->insertItem( i18n("&Visualizations..."), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( i18n("&Equalizer..."), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertItem( i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
+    m_toolsMenu->insertItem( i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );

@@ -1559,7 +1559,7 @@ bool CurrentTrackJob::doJob()
                 "</p></div>"
                 "<div align='center'>"
                 "<input type='button' onClick='window.location.href=\"show:collectionSetup\";' value='"
-                + i18n( "Change Collection Setup" ) +
+                + i18n( "Change Collection Setup..." ) +
                 "' class='button' /></div><br />"
             "</div>"
         "</div>"

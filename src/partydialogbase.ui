@@ -69,7 +69,7 @@
                     </item>
                     <item>
                         <property name="text">
-                            <string>Playlist shuffle</string>
+                            <string>Playlist Shuffle</string>
                         </property>
                     </item>
                     <property name="name">

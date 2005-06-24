@@ -1525,10 +1525,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Playlist"), PLAYLIST );
 
         else if( parentCat == static_cast<QListViewItem*>(m_smartCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Smart-Playlist"), SMART );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Smart-Playlist..."), SMART );
 
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream"), STREAM );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
