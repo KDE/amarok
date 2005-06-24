@@ -1461,23 +1461,8 @@ bool CurrentTrackJob::doJob()
                 "<br />"
                 "<span id='current_box-header-album' class='box-header-title'>%3</span>"
             "</div>"
-            )
-            .args( QStringList()
-                << escapeHTML( currentTrack.title() )
-                << escapeHTML( currentTrack.artist() )
-                << escapeHTML( currentTrack.album() ) )
-            : QString ( //no title
-                "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
-                "</div>"
-                )
-                .arg( escapeHTML( currentTrack.prettyTitle() ) )
-            )
-            +
             "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                 "<tr>"
-            // show AlbumCover only, if we have artist and album
-            + ( ( !(currentTrack.artist().isEmpty() || currentTrack.album().isEmpty()) )
-            ? QStringx(
                     "<td id='current_box-largecover-td'>"
                         "<a id='current_box-largecover-a' href='fetchcover:%4 @@@ %5'>"
                             "<img id='current_box-largecover-image' src='%6' title='%7'>"
@@ -1491,6 +1476,9 @@ bool CurrentTrackJob::doJob()
                         "</div>"
                 )
                 .args( QStringList()
+                << escapeHTML( currentTrack.title() )
+                << escapeHTML( currentTrack.artist() )
+                << escapeHTML( currentTrack.album() )
                 << escapeHTMLAttr( currentTrack.artist() )
                 << escapeHTMLAttr( currentTrack.album() )
                 << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
@@ -1500,9 +1488,14 @@ bool CurrentTrackJob::doJob()
                 << escapeHTMLAttr( currentTrack.album() )
                 << escapeHTMLAttr( currentTrack.title() )
                 << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
-            : QString ( //no artist and album
+            : QString ( //no title
+                "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
+                "</div>"
+                "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
+                    "<tr>"
                         "<td id='current_box-information-td' align='right'>"
                 )
+                .arg( escapeHTML( currentTrack.prettyTitle() ) )
             ) );
 
     if ( !values.isEmpty() )
