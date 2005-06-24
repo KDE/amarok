@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3-beta2:
   FEATURES:
+    * Support for "media:" URLs. Patch by Sergio Cambra <sergio@ensanjose.net>
+      (BR 102668)
     * Support for visualizations in the Helix engine.
     * Queue manager to help organise your queued tracks. (BR 90594)
     * Ability to create Smart Playlists based on file path. (BR 92467)

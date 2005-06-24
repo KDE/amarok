@@ -26,6 +26,7 @@
 #include <qstringlist.h>
 #include <qtextstream.h> //::loadPlaylist()
 #include "statusbar.h"
+#include <dcopref.h>
 
 
 typedef QValueList<QDomNode> NodeList;
@@ -66,6 +67,28 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
                 m_URLs += recurse( url );
             else
                 m_URLs += url;
+        }
+
+       else if( protocol == "media" ) {
+            // url looks like media:/device/path
+            DCOPRef mediamanager( "kded", "mediamanager" );
+            QString device = url.path( -1 ).mid( 1 ); // remove first slash
+            const int slash = device.find( '/' );
+            const QString filePath = device.mid( slash ); // extract relative path
+            device = device.left( slash ); // extract device
+            DCOPReply reply = mediamanager.call( "properties(QString)", device );
+
+            if( reply.isValid() ) {
+                const QStringList properties = reply;
+                // properties[6] is the mount point
+                KURL localUrl = KURL( properties[6] + filePath );
+
+                // add urls
+                if( QFileInfo( localUrl.path() ).isDir() )
+                    m_URLs += recurse( localUrl );
+                else
+                    m_URLs += localUrl;
+            }
         }
 
         else if( PlaylistFile::isPlaylistFile( url ) ) {
