@@ -115,7 +115,7 @@ on the items in the playlist browser</string>
                                                 <cstring>m_showInfo</cstring>
                                             </property>
                                             <property name="text">
-                                                <string>&amp;Don't show this message again</string>
+                                                <string>&amp;Do not show this message again</string>
                                             </property>
                                         </widget>
                                         <spacer>
