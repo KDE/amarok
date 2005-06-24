@@ -2681,6 +2681,9 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     m_wiki.replace( QRegExp( "<a href=\"[^\"]*\" class=\"new\"[^>]*>([^<]*)</a>" ), "\\1" );
 
+    // Remove anything inside of a class called urlexpansion, as it's pointless for us
+    m_wiki.replace( QRegExp( "<span class= *'urlexpansion'>[^(]*[(][^)]*[)]</span>" ), QString::null );
+
     // we want to keep our own style (we need to modify the stylesheet a bit to handle things nicely)
     m_wiki.replace( QRegExp( "style= *\"[^\"]*\"" ), QString::null );
     m_wiki.replace( QRegExp( "class= *\"[^\"]*\"" ), QString::null );
