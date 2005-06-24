@@ -1,3 +1,3 @@
-SUBDIRS = alarm graphequalizer templates playlist2html webcontrol shouter common
+SUBDIRS = alarm amarok_live graphequalizer templates playlist2html webcontrol shouter common
 
 
