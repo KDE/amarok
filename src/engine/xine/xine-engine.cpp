@@ -546,9 +546,14 @@ XineEngine::customEvent( QCustomEvent *e )
     #undef message
 }
 
+static time_t last_error_time = 0; // hysteresis on xine errors
+static int    last_error = XINE_MSG_NO_ERROR;
+
 void
 XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 {
+    time_t current;
+
     if( !p ) return;
 
     #define xe static_cast<XineEngine*>(p)
@@ -651,7 +656,17 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 
         explain:
 
-            if(data->explanation)
+            // Don't flood the user with error messages
+            if((last_error_time + 10) > time(&current) &&
+               data->type == last_error)
+            {
+                last_error_time = current;
+                return;
+            }
+            last_error_time = current;
+            last_error = data->type;
+
+             if(data->explanation)
             {
                 message.prepend( "<b>" );
                 message += "</b>:<p>";
@@ -662,6 +677,16 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             //FALL THROUGH
 
         param:
+
+            // Don't flood the user with error messages
+            if((last_error_time + 10) > time(&current) &&
+               data->type == last_error)
+            {
+                last_error_time = current;
+                return;
+            }
+            last_error_time = current;
+            last_error = data->type;
 
             message.prepend( "<p>" );
             message += "<p>";
