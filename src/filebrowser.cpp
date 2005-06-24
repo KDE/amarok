@@ -427,7 +427,7 @@ SearchPane::SearchPane( FileBrowser *parent )
         connect( m_listView, SIGNAL(executed( QListViewItem* )), SLOT(activate( QListViewItem* )) );
     }
 
-    KPushButton *button = new KPushButton( KGuiItem( i18n("Perform Search..."), "find" ), this );
+    KPushButton *button = new KPushButton( KGuiItem( i18n("Find Files"), "find" ), this );
     button->setToggleButton( true );
     connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 

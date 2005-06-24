@@ -61,17 +61,17 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenuButton->setDelayed( false );
 
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
-    addMenu->insertItem( i18n("Playlist"), PLAYLIST );
-    addMenu->insertItem( i18n("Radio Stream"), STREAM );
-    addMenu->insertItem( i18n("Smart Playlist"), SMARTPLAYLIST );
+    addMenu->insertItem( i18n("Playlist..."), PLAYLIST );
+    addMenu->insertItem( i18n("Radio Stream..."), STREAM );
+    addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
     saveMenuButton = new KActionMenu( i18n("Save"), "filesave", m_ac );
     saveMenuButton->setDelayed( false );
 
     KPopupMenu *saveMenu = saveMenuButton->popupMenu();
-    saveMenu->insertItem( i18n("Current Playlist"), CURRENT );
-    saveMenu->insertItem( i18n("Dynamic Playlist"), DYNAMIC );
+    saveMenu->insertItem( i18n("Current Playlist..."), CURRENT );
+    saveMenu->insertItem( i18n("Dynamic Playlist..."), DYNAMIC );
     connect( saveMenu, SIGNAL( activated(int) ), SLOT( slotSaveMenu(int) ) );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac, "Rename" );
@@ -1594,7 +1594,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet("edittrash"), i18n( "&Remove" ), REMOVE );
-        menu.insertItem( SmallIconSet("info"), i18n( "&View/Edit Meta Information" ), INFO );
+        menu.insertItem( SmallIconSet("info"), i18n( "&View/Edit Meta Information..." ), INFO );
 
         switch( menu.exec( p ) ) {
             case MAKE:

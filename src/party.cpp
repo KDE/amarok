@@ -78,7 +78,7 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_markHistory,           SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
 
-    KPushButton *button = new KPushButton( KGuiItem( i18n("Enable Dynamic Mode..."), "party" ), this );
+    KPushButton *button = new KPushButton( KGuiItem( i18n("Enable Dynamic Mode"), "party" ), this );
     button->setToggleButton( true );
     connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 

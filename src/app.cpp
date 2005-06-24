@@ -256,7 +256,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 
     static KCmdLineOptions options[] =
         {
-            { "+[URL(s)]", I18N_NOOP( "Files/URLs to Open" ), 0 },
+            { "+[URL(s)]", I18N_NOOP( "Files/URLs to open" ), 0 },
             { "r", 0, 0 },
             { "previous", I18N_NOOP( "Skip backwards in playlist" ), 0 },
             { "p", 0, 0 },
@@ -276,7 +276,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "queue", I18N_NOOP("Queue URLs after the currently playing track"), 0 },
             { "m", 0, 0 },
             { "toggle-playlist-window", I18N_NOOP("Toggle the Playlist-window"), 0 },
-            { "wizard", I18N_NOOP( "Run First-run Wizard" ), 0 },
+            { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
             { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
             { 0, 0, 0 }
         };
