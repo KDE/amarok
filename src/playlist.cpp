@@ -2168,9 +2168,13 @@ Playlist::deleteSelectedFiles() //SLOT
 
     //NOTE we assume that currentItem is the main target
     const int count  = urls.count();
-    QString text = i18n( "<p>You have selected the file <i>'%1'</i> to be <b>irreversibly</b> deleted.",
-                         "<p>You have selected %n files to be <b>irreversibly</b> deleted.", count )
-                         .arg( static_cast<PlaylistItem*>( currentItem() )->url().fileName() );
+    QString text;
+    if (count == 1) { // remember: there are languages that use singular also for 0 or 2 
+	text = i18n("<p>You have selected the file <i>'%1'</i> to be <b>irreversibly</b> deleted.")
+		     .arg(static_cast<PlaylistItem*>( currentItem() )->url().fileName() );
+    else
+        text = i18n( "<p>You have selected one file to be <b>irreversibly</b> deleted.",
+                     "<p>You have selected %n files to be <b>irreversibly</b> deleted.", count );
 
     int button = KMessageBox::warningContinueCancel( this,
                                                      text,
