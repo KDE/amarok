@@ -46,9 +46,10 @@ CollectionReader::~CollectionReader()
 
 IncrementalCollectionReader::IncrementalCollectionReader( CollectionDB *parent )
         : CollectionReader( parent, QStringList() )
+        , m_hasChanged( false )
 {
     m_importPlaylists = false;
-    m_incremental     = true;
+    m_incremental = true;
 
     setDescription( i18n( "Updating Collection" ) );
 }
@@ -86,8 +87,10 @@ IncrementalCollectionReader::doJob()
         }
     }
 
-    if ( !m_folders.isEmpty() )
+    if ( !m_folders.isEmpty() ) {
+        m_hasChanged = true;
         amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+    }
 
     return CollectionReader::doJob();
 }

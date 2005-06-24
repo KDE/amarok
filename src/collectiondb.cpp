@@ -1878,7 +1878,7 @@ void
 CollectionDB::customEvent( QCustomEvent *e )
 {
     if ( e->type() == (int)CollectionReader::JobFinishedEvent )
-        emit scanDone( static_cast<ThreadWeaver::Job*>(e)->wasSuccessful() );
+        emit scanDone( static_cast<IncrementalCollectionReader*>(e)->hasChanged() );
 }
 
 

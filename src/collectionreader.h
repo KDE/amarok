@@ -13,7 +13,7 @@ class DbConnection;
 
 
 /**
- * @class IncrementalCollectionReader
+ * @class CollectionReader
  * @short Scans directories and builds the Collection
  */
 
@@ -64,8 +64,12 @@ class IncrementalCollectionReader : public CollectionReader
 public:
     IncrementalCollectionReader( CollectionDB* );
 
+    bool hasChanged() const { return m_hasChanged; }
+
 protected:
     virtual bool doJob();
+
+    bool m_hasChanged;
 };
 
 #endif
