@@ -2179,7 +2179,7 @@ Playlist::deleteSelectedFiles() //SLOT
     int button = KMessageBox::warningContinueCancel( this,
                                                      text,
                                                      QString::null,
-                                                     i18n("&Delete") );
+                                                     KGuiItem( i18n("&Delete"), "editdelete") );
 
     if ( button == KMessageBox::Continue )
     {
