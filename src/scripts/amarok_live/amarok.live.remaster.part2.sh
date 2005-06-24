@@ -28,9 +28,7 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 	cd $olddir
 	mv $WORK/amaroK.live.custom.iso .
 	
-	kdialog --title "amaroK livecd remaster" --yesno "Livecd creation is done. The new amaroK live image is in `pwd`, called amaroK.live.custom.iso. You can burn that with any standard burner and enjoy.
-	
-	Do you want to make more cds later? If so, please click yes, and you can simply re-run part2 of this script. If you are done, click no and the temporary files will be erased. You will need to rerun part1 to make another cd."
+	kdialog --title "amaroK livecd remaster" --yesno "Livecd creation is done. The new amaroK live image is in `pwd`, called amaroK.live.custom.iso. You can burn that with any standard burner and enjoy.\nDo you want to make more cds later? If so, please click yes, and you can simply re-run part2 of this script. If you are done, click no and the temporary files will be erased. You will need to rerun part1 to make another cd."
 	
 	if [[ $? = 1 ]]; then
 		rm -rf $WORK/mklivecd/
