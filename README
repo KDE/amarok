@@ -21,6 +21,7 @@ interface, that really makes playlist handling easy.
     * The unique and powerful context browser
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
+    * Learn about your music with integrated Wikipedia
     * Full Audioscrobbler support
     * Visualisations with libvisual
     * Streaming from any KIO source
