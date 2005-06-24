@@ -1354,9 +1354,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( isDynamicEnabled() )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from dynamic mode" ), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to dynamic mode" ), DYNADD );
+                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to Dynamic Mode" ), DYNADD );
         }
 
         menu.insertSeparator();
@@ -1416,9 +1416,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( isDynamicEnabled() )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from dynamic mode" ), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to from dynamic mode" ), DYNADD );
+                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to From Dynamic Mode" ), DYNADD );
         }
 
         menu.insertSeparator();
@@ -1522,7 +1522,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Playlist"), PLAYLIST );
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Playlist..."), PLAYLIST );
 
         else if( parentCat == static_cast<QListViewItem*>(m_smartCategory) )
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Smart-Playlist..."), SMART );

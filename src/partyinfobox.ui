@@ -171,7 +171,7 @@ on the items in the playlist browser</string>
                                 <cstring>pushButton_ok</cstring>
                             </property>
                             <property name="text">
-                                <string>O&amp;K</string>
+                                <string>&amp;OK</string>
                             </property>
                             <property name="autoDefault">
                                 <bool>true</bool>

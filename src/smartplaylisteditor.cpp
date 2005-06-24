@@ -166,7 +166,7 @@ void SmartPlaylistEditor::init(QString defaultName)
 
     //Expand By
     QHBox *hbox3 = new QHBox( mainWidget() );
-    m_expandCheck = new QCheckBox( i18n("Expand By"), hbox3 );
+    m_expandCheck = new QCheckBox( i18n("Expand by"), hbox3 );
     QHBox *expandBox = new QHBox( hbox3 );
     expandBox->setSpacing( 5 );
     m_expandCombo = new KComboBox( expandBox );
