@@ -488,6 +488,8 @@ CollectionView::scanStarted() // SLOT
 void
 CollectionView::scanDone( bool changed ) //SLOT
 {
+    DEBUG_BLOCK
+
     if ( changed )
     {
         renderView();

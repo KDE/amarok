@@ -1877,8 +1877,18 @@ CollectionDB::scanModifiedDirs()
 void
 CollectionDB::customEvent( QCustomEvent *e )
 {
-    if ( e->type() == (int)CollectionReader::JobFinishedEvent )
-        emit scanDone( static_cast<IncrementalCollectionReader*>(e)->hasChanged() );
+    DEBUG_BLOCK
+
+    if ( e->type() == (int)CollectionReader::JobFinishedEvent ) {
+        if ( dynamic_cast<IncrementalCollectionReader*>( e ) ) {
+            debug() << "Event from IncrementalCollectionReader received.\n";
+            emit scanDone( static_cast<IncrementalCollectionReader*>(e)->hasChanged() );
+        }
+        else {
+            debug() << "Event from CollectionReader received.\n";
+            emit scanDone( static_cast<CollectionReader*>(e)->wasSuccessful() );
+        }
+    }
 }
 
 
