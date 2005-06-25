@@ -1,0 +1,29 @@
+AMAROK LIVE
+===========
+
+ABOUT
+-----
+This script lets you create your own amaroK live! cd with music on it. It is very simple to use: click configure, and follow the instructions. When it is done, you can add music to the cd by selecting tracks and using the right click menu.
+
+When you are done selecting tracks, click Create Remastered CD. the iso will be created in the work dir that you selected during configure.
+
+DEPENDENCIES
+------------
+A kernel with squashfs as either a module or compiled in
+Python 2.2
+PyQt
+1.5 gb of free space
+Original amaroK live! iso
+
+LICENSE
+-------
+GPL V2
+
+AUTHOR
+-----
+Leo Franchi <lfranchi at gmail dot com>
+Greg Meyer  <greg at gkmweb dot com>
+Mike Diehl  <madpenguin8 at yahoo dot com>
+
+based on a script by:
+Ivan Kerekes <ikerekes at gmail dot com>
