@@ -15,6 +15,10 @@ dcop --all-users amarok playlist popupMessage "Welcome to the amaroK live cd rem
 
 iso=`kdialog --getopenfilename /home "*.iso"`
 
+if [ $iso = 0 ] ; then
+    exit;
+fi
+
 WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
 
 if [ $WORK = 0 ] ; then

@@ -19,6 +19,14 @@ LICENSE
 -------
 GPL V2
 
+CHANGELOG
+--------
+
+Version 0.1:
+    First released version
+    Support for most features.
+    BUG: If cancel is clicked on the initial dialogs, does not exit cleanly
+
 AUTHOR
 -----
 Leo Franchi <lfranchi at gmail dot com>
