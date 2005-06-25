@@ -42,11 +42,12 @@ public:
 
    virtual amaroK::PluginConfig *configure() const;
 
-   //virtual void setEqualizerEnabled( bool );
-   //virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
+   virtual void setEqualizerEnabled( bool );
+   virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
 
 protected:
    virtual void setVolumeSW( uint );
+   // TODO: implement HW Volume (GetDeviceVolume)
 
 private:
    Engine::State m_state;

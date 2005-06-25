@@ -22,6 +22,9 @@ class HelixSimplePlayerAudioStreamInfoResponse;
 #include <limits.h>
 #include <sys/param.h>
 #include <pthread.h>
+#include <vector>
+using std::vector;
+
 #define MAX_PATH PATH_MAX
 
 #define MAX_PLAYERS 100 // that should do it...
@@ -43,6 +46,7 @@ class IHXClientEngineSelector;
 class IHXClientEngine;
 class IHXAudioHook;
 class IHXAudioStreamInfoResponse;
+class IHXCommonClassFactory;
 
 struct DelayQueue
 {
@@ -90,7 +94,6 @@ public:
    //void  setPassword(const char *password) { m_pszPassword = password; }
    //void  setGUIDFile(const char *file) { m_pszGUIDFile = file; }
    bool  ReadGUIDFile();
-   //static struct _stGlobals*& GetGlobal();
 
 private:
    void  DoEvent();
@@ -103,6 +106,8 @@ private:
    IHXErrorSink*            pErrorSink;
    IHXErrorSinkControl*     pErrorSinkControl;
    IHXClientEngineSelector* pCEselect;
+   IHXCommonClassFactory*   pCommonClassFactory;
+
    struct playerCtrl
    {
       HSPClientContext*           pHSPContext;
@@ -154,6 +159,11 @@ public:
    int peekScopeTime(unsigned long &t);
    void clearScopeQ();
 
+   // equalizer
+   void enableEQ(bool enabled) { m_eq_enabled = enabled; }
+   bool isEQenabled() { return m_eq_enabled; }
+   void updateEQgains();
+
 private:
 
    bool                 bEnableAdviceSink;
@@ -166,14 +176,23 @@ private:
    int                  m_Error;
    unsigned long        m_ulNumSecondsPlayed;
 
+   // scope
    int                  scopecount;
    struct DelayQueue   *scopebufhead;
    struct DelayQueue   *scopebuftail;
    pthread_mutex_t      m_scope_m;
+
+   // equalizer
+   bool                 m_eq_enabled;
+protected:
+   int                  m_preamp;
+   vector<int>          m_equalizerGains;
+
    friend class HSPClientAdviceSink;
    friend class HSPErrorSink;
    friend class HSPAuthenticationManager;
    friend class HelixSimplePlayerAudioStreamInfoResponse;
+   friend class HSPPostMixAudioHook;
 };
 
 #endif

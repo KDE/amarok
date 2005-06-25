@@ -55,7 +55,7 @@ HelixEngine::HelixEngine()
 {
     addPluginProperty( "StreamingMode", "Socket" );
     addPluginProperty( "HasConfigure", "true" );
-    //addPluginProperty( "HasEqualizer", "false" );
+    addPluginProperty( "HasEqualizer", "true" );
     //addPluginProperty( "HasCrossfade", "true" );
 }
 
@@ -279,6 +279,26 @@ const Engine::Scope &HelixEngine::scope()
    
    delete item;
    return m_scope;
+}
+
+void
+HelixEngine::setEqualizerEnabled( bool enabled ) //SLOT
+{
+   enableEQ(enabled);
+}
+
+
+// ok, this is lifted from gst... but why mess with what works?
+void
+HelixEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains ) //SLOT
+{
+   m_preamp = ( preamp + 100 ) / 2;
+
+   m_equalizerGains.resize( bandGains.count() );
+   for ( uint i = 0; i < bandGains.count(); i++ )
+      m_equalizerGains[i] = ( *bandGains.at( i ) + 100 ) / 2;
+
+   updateEQgains();
 }
 
 

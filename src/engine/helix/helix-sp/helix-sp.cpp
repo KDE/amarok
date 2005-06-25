@@ -233,6 +233,14 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
    return HXR_OK;
 }
 
+
+
+void HelixSimplePlayer::updateEQgains()
+{
+   for (int i = 0; i<nNumPlayers; i++)
+      ((HSPPostMixAudioHook *)ppctrl[i]->pPostMixHook)->updateEQgains(m_preamp, m_equalizerGains);
+}
+
 /*
  *  handle one event
  */
@@ -305,7 +313,8 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_ulNumSecondsPlayed(0),
    scopecount(0),
    scopebufhead(0),
-   scopebuftail(0)
+   scopebuftail(0),
+   m_preamp(0)
 {
    m_xf.crossfading = 0;
 
@@ -428,6 +437,13 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       STDERR("Got the CE selector!\n");
    else
       STDERR("no CE selector\n");
+
+   // get the common class factory
+   pEngine->QueryInterface(IID_IHXCommonClassFactory, (void **) &pCommonClassFactory);
+   if (pCommonClassFactory)
+      STDERR("Got the CommonClassFactory!\n");
+   else
+      STDERR("no CommonClassFactory\n");
     
    // create players
    for (i = 0; i < numPlayers; i++)
@@ -561,16 +577,18 @@ HelixSimplePlayer::~HelixSimplePlayer()
       if (ppctrl[i]->pAudioPlayer)
       {
          ppctrl[i]->pAudioPlayer->RemovePostMixHook((IHXAudioHook *)ppctrl[i]->pPostMixHook);
-
+         // ppctrl[i]->pPostMixHook->Release(); Helix release it when it is removed???
 
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
-         delete ppctrl[i]->pStreamInfoResponse;
+         ppctrl[i]->pStreamInfoResponse->Release();
 
          if (ppctrl[i]->pVolume && ppctrl[i]->pVolumeAdvise)
          {
             ppctrl[i]->pVolume->RemoveAdviseSink(ppctrl[i]->pVolumeAdvise);
             ppctrl[i]->pVolume->Release();
          }
+
+         ppctrl[i]->pAudioPlayer->Release();
       }
 
       if ( ppctrl[i]->pszURL )
@@ -585,6 +603,9 @@ HelixSimplePlayer::~HelixSimplePlayer()
          ppctrl[i]->pPlayer->Release();
       }
    }
+
+   pCommonClassFactory->Release();
+   pCEselect->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
    if (fpCloseEngine && pEngine)
