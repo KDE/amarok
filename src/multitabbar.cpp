@@ -906,7 +906,6 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 
     // Draw the text
     QFont font;
-    font.setBold( isOn() );
     painter.setFont( font );
     QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
     text.replace( "...", ".." );
