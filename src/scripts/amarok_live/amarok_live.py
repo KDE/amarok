@@ -230,6 +230,10 @@ def debug( message ):
 def main( args ):
     app = Remasterer( args )
 
+    dia = ConfigDialog()
+    if dia.readConfig() == "":
+        app.configure()
+
     app.exec_loop()
 
 if __name__ == "__main__":
