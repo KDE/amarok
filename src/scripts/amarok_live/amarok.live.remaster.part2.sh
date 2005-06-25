@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 
-#first, resquash the users' new fs
+############################################################################
+# Second part of the amaroK LiveCD remastering scripts
+# Reassemble the iso after adding media files
+#
+# Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
+# and modified by Leo Franchi <lfranchi@gmail.com>, Mike Diehl 
+# <madpenguin8@yahoon.com> and Greg Meyer <greg@gkmweb.com> 
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
+
+# script must be run as root, first check for and exit if not
+# then resquash the users' new fs
 
 if [ `/usr/bin/whoami` = 'root' ]; then
 
