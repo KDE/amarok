@@ -6,8 +6,8 @@
  *
  * http://www.fsf.org/licensing/licenses/gpl.txt
  *
+ * Copyright (c) Paul Cifarelli 2005
  * Portions Copyright (c) 1995-2002 RealNetworks, Inc. All Rights Reserved.
- * Portions (c) Paul Cifarelli 2005
  *
  */
 
@@ -37,6 +37,7 @@ class IHXAudioPlayer;
 class IHXAudioStream;
 class IHXAudioCrossFade;
 class IHXPlayer;
+class IHXPlayer2;
 class IHXErrorSink;
 class IHXErrorSinkControl;
 class IHXAudioPlayer;
@@ -78,7 +79,6 @@ public:
    unsigned long where(int playerIndex) const;                       // where is the player in the playback
    unsigned long duration(int playerIndex) const;                    // how long (ms) is this clip?
    unsigned long getVolume(int playerIndex);                         // get the current volume
-   //void initVolume(unsigned short min, unsigned short max, int playerIndex); // called to set the range of the clients volume - mapped onto the device
    void setVolume(unsigned long vol, int playerIndex = ALL_PLAYERS); // set the volume
    void setMute(bool mute, int playerIndex = ALL_PLAYERS);           // set mute: mute = true to mute the volume, false to unmute
    bool getMute(int playerIndex);                                    // get the mute state of the player
@@ -112,6 +112,7 @@ private:
    {
       HSPClientContext*           pHSPContext;
       IHXPlayer*                  pPlayer;
+      IHXPlayer2*                 pPlayer2;
       IHXAudioPlayer*             pAudioPlayer;
       IHXAudioCrossFade*          pCrossFader;
       IHXVolume*                  pVolume;

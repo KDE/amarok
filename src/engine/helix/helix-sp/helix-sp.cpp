@@ -522,6 +522,13 @@ int HelixSimplePlayer::addPlayer()
    }
    
    HX_RELEASE(pErrorSinkControl);
+
+   // Get the Player2 interface
+   ppctrl[nNumPlayers]->pPlayer->QueryInterface(IID_IHXPlayer2, (void**) &ppctrl[nNumPlayers]->pPlayer2);
+   if (ppctrl[nNumPlayers]->pPlayer2)
+      STDERR("Got the Player2 interface!\n");
+   else
+      STDERR("no player2 device\n");
    
    // Get the Audio Player
    ppctrl[nNumPlayers]->pPlayer->QueryInterface(IID_IHXAudioPlayer, (void**) &ppctrl[nNumPlayers]->pAudioPlayer);
@@ -596,6 +603,9 @@ HelixSimplePlayer::~HelixSimplePlayer()
 
       if (ppctrl[i]->pHSPContext)
          ppctrl[i]->pHSPContext->Release();
+
+      if (ppctrl[i]->pPlayer2)
+         ppctrl[i]->pPlayer2->Release();
 
       if (ppctrl[i]->pPlayer && pEngine)
       {

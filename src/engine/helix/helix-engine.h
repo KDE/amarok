@@ -47,7 +47,6 @@ public:
 
 protected:
    virtual void setVolumeSW( uint );
-   // TODO: implement HW Volume (GetDeviceVolume)
 
 private:
    Engine::State m_state;
