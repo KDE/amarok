@@ -85,6 +85,9 @@ class Remasterer( QApplication ):
 
         self.readSettings()
 
+        # ugly hack, thanks mp8 anyway
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
         os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Add to livecd\"")
         os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
 
