@@ -6,8 +6,10 @@
 # for the purpose of adding a users own music and putting it back together
 #
 # Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
-# and modified by Leo Franchi <lfranchi@gmail.com>, Mike Diehl 
-# <madpenguin8@yahoon.com> and Greg Meyer <greg@gkmweb.com> 
+# and modified by Leo Franchi <lfranchi at gmaildotcom>, Mike Diehl 
+# <madpenguin8 at yahoodotcom> and Greg Meyer <greg at gkmwebdotcom> 
+#
+# See the file called README for more information
 ############################################################################
 #
 # This program is free software; you can redistribute it and/or modify

@@ -5,8 +5,10 @@
 # Reassemble the iso after adding media files
 #
 # Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
-# and modified by Leo Franchi <lfranchi@gmail.com>, Mike Diehl 
-# <madpenguin8@yahoon.com> and Greg Meyer <greg@gkmweb.com> 
+# and modified by Leo Franchi <lfranchi at gmail.com>, Mike Diehl 
+# <madpenguin8 at yahoo.com> and Greg Meyer <greg at gkmweb.com> 
+#
+# See the file called README for more information
 ############################################################################
 #
 # This program is free software; you can redistribute it and/or modify
