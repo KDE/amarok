@@ -33,6 +33,7 @@
 #include <kfiledialog.h>       //openPlaylist()
 #include <kio/job.h>           //deleteSelectedPlaylists()
 #include <kiconloader.h>       //smallIcon
+#include <kinputdialog.h>
 #include <klineedit.h>         //rename()
 #include <klocale.h>
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
@@ -527,14 +528,11 @@ void PlaylistBrowser::addDynamic( QListViewItem *parent )
 
     if( !parent ) parent = m_dynamicCategory;
 
-    ItemSaver dialog( i18n("Untitled"), this );
+    bool ok;
+    QString name = KInputDialog::getText(i18n("Save Dynamic Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this); 
 
-    dialog.setInitialSize( QSize( 380, 80 ) );
-
-    if( dialog.exec() == QDialog::Accepted )
+    if( ok )
     {
-        QString name = dialog.title();
-
         PartyEntry *saveMe = new PartyEntry( parent, 0, name );
 
         saveMe->setCycled( current->cycleTracks() );
@@ -894,14 +892,11 @@ PlaylistBrowser::findItem( QString &t, int c )
 
 void PlaylistBrowser::saveCurrentPlaylist()
 {
-    ItemSaver dialog( i18n("Current Playlist"), this );
+    bool ok;
+    QString name = KInputDialog::getText(i18n("Save Current Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this); 
 
-    dialog.setInitialSize( QSize( 380, 80 ) );
-
-    if( dialog.exec() == QDialog::Accepted )
+    if( ok )
     {
-        QString name = dialog.title();
-
         // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
         QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
         QFileInfo info( folder );

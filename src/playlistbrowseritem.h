@@ -27,19 +27,6 @@ class TrackItemInfo;
  */
 
 
-// For saving the current playlist, party
-class ItemSaver : public KDialogBase
-{
-    public:
-        ItemSaver( QString title, QWidget *parent, const char *name=0 );
-
-        QString title() const { return m_nameLineEdit->text(); }
-
-    private:
-        KLineEdit *m_nameLineEdit;
-};
-
-
 /* A base class to be able to use polymorphism and avoid tons of casts */
 class PlaylistBrowserEntry : public KListViewItem
 {

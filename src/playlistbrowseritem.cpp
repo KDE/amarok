@@ -612,22 +612,6 @@ QDomElement PlaylistEntry::xml() {
 
 
 //////////////////////////////////////////////////////////////////////////////////
-///    CLASS ItemSaver
-////////////////////////////////////////////////////////////////////////////////
-
-ItemSaver::ItemSaver(  QString title, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n("Save Current Playlist"), Ok|Cancel)
-{
-    makeVBoxMainWidget();
-
-    QHBox *nameBox = new QHBox( mainWidget() );
-    nameBox->setSpacing( 5 );
-    new QLabel( i18n("Name:"), nameBox );
-    m_nameLineEdit = new KLineEdit( title, nameBox );
-
-    m_nameLineEdit->setFocus();
-}
-//////////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistTrackItem
 ////////////////////////////////////////////////////////////////////////////////
 
