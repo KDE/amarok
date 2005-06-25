@@ -10,10 +10,13 @@ When you are done selecting tracks, click Create Remastered CD. the iso will be 
 DEPENDENCIES
 ------------
 A kernel with squashfs as either a module or compiled in
+squashfs-tools
+cdrtools (for mkisofs)
 Python 2.2
 PyQt
 1.5 gb of free space
 Original amaroK live! iso
+K3b (optional) for automatic burning
 
 LICENSE
 -------
@@ -25,6 +28,7 @@ CHANGELOG
 Version 0.1:
     First released version
     Support for most features.
+    K3B support.
     BUG: If cancel is clicked on the initial dialogs, does not exit cleanly
 
 AUTHOR

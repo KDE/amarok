@@ -8,8 +8,13 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 
 	dcop --all-users amarok playlist shortStatusMessage "The music that you added is now being squashed and added to the livecd. Please be VERY patient as this step can take a LONG time."
 	
-	mksquashfs $WORK/amarok.live/ $WORK/mklivecd/livecd/livecd.sqfs -noappend
-
+	which mksquashfs
+    if [[ $? == 0 ]]; then
+        mksquashfs $WORK/amarok.live/ $WORK/mklivecd/livecd/livecd.sqfs -noappend
+    else
+        dcop --all-users amarok playlist popupMessage "Squashfs-tools not found! Make sure mksquashfs is in your root \$PATH"
+        exit
+    fi
 
 	olddir=`pwd`
 	cd $WORK/mklivecd
@@ -27,9 +32,15 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 	mkisofs -J -R -V "Livecd Test" -o $WORK/amaroK.live.custom.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table .
 	cd $olddir
 #	mv $WORK/amaroK.live.custom.iso .
-	
-	kdialog --title "amaroK livecd remaster" --yesno "Livecd creation is done. The new amaroK live image is in `pwd`, called amaroK.live.custom.iso. You can burn that with any standard burner and enjoy.\nDo you want to make more cds later? If so, please click yes, and you can simply re-run part2 of this script. If you are done, click no and the temporary files will be erased. You will need to rerun part1 to make another cd."
-	
+
+    which k3b
+
+	if [[ $? == 0 ]] ; then
+        k3b --cdimage $WORK/amaroK.live.custom.iso
+    else 
+        kdialog --title "amaroK livecd remaster" --yesno "Livecd creation is done. The new amaroK live image is in `pwd`, called amaroK.live.custom.iso. You can burn that with any standard burner and enjoy.\nDo you want to make more cds later? If so, please click yes, and you can simply re-run part2 of this script. If you are done, click no and the temporary files will be erased. You will need to rerun part1 to make another cd."
+    fi
+
 	if [[ $? = 1 ]]; then
 		rm -rf $WORK/mklivecd/
 		rm -rf $WORK/amarok.live/
