@@ -21,6 +21,7 @@
 
 # We need to be root to mount the loopback
 # check for root and exit if not
+
 if [ `/usr/bin/whoami` = 'root' ]; then
 
 dcop --all-users amarok playlist popupMessage "Welcome to the amaroK live cd remaster utility. The first step is to select the iso image"
@@ -30,8 +31,6 @@ iso=`kdialog --getopenfilename /home "*.iso"`
 if [ $iso = 0 ] ; then
     exit;
 fi
-
-dcop --all-users amarok playlist popupMessage "Now please select a working directory. You will need 1.5 GB of free space in this dir."
 
 WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
 
@@ -90,8 +89,6 @@ if [ ! -d "$DATADIR" ]; then
 fi
 
 # Make the working directories and blow out the initrd.gz into a separate directory 
-
-dcop --all-users amarok playlist popupMessage "Unpacking started. Please be patient."
  
 mkdir -p $WORK/mklivecd/livecd
 cp -a --preserve "$DATADIR"/* $WORK/mklivecd/livecd/
@@ -128,6 +125,9 @@ mount -o loop -t squashfs $WORK/mklivecd/livecd/livecd.sqfs $WORK/amarok.livecd/
 
 mkdir $WORK/amarok.live/
 dcop --all-users amarok playlist shortStatusMessage "Copying files now. Please be patient, this step takes a long time."
+#echo
+#echo "Please wait, copying in progress."
+#echo
 cp -a $WORK/amarok.livecd/* $WORK/amarok.live/
 umount $WORK/amarok.livecd/
 rmdir $WORK/amarok.livecd

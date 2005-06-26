@@ -52,6 +52,11 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 	cd $olddir
 #	mv $WORK/amaroK.live.custom.iso .
 
+
+# Let's test for the presence of k3b, and if it is there load it up 
+# and burn the cd iso right away.  If k3b is not present, show a kde 
+# dialog telling the user where the iso is.
+
     which k3b
 
 	if [[ $? == 0 ]] ; then
