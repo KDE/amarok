@@ -69,7 +69,7 @@
     <entry key="Dynamic Type" type="String">
         <label>Adds this type of song</label>
         <whatsthis>Dynamic mode will append this type of song to the end of the playlist.</whatsthis>
-        <default>Suggestion</default>
+        <default>Random</default>
     </entry>
     <entry key="Dynamic Custom List" type="StringList">
         <label>List of smart playlists to be appended for dynamic mode.</label>
