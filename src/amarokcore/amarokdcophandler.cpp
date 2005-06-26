@@ -493,6 +493,10 @@ namespace amaroK
         CollectionDB::instance()->startScan();
     }
 
+    void DcopCollectionHandler::scanCollectionChanges()
+    {
+        CollectionDB::instance()->scanMonitor();
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler

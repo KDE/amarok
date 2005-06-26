@@ -131,6 +131,7 @@ class AmarokCollectionInterface : virtual public DCOPObject
 k_dcop:
    virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
    virtual void scanCollection() = 0;                       ///< Scan the collection.
+   virtual void scanCollectionChanges() = 0;                       ///< Scan the collection for changes only.
 };
 
 

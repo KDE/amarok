@@ -125,6 +125,7 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
    public /* DCOP */ slots:
       virtual QStringList query(const QString& sql);
       virtual void scanCollection();
+      virtual void scanCollectionChanges();
 };
 
 
