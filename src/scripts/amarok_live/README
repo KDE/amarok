@@ -25,6 +25,10 @@ GPL V2
 CHANGELOG
 --------
 
+Version 0.2:
+    Support for playlist transferring - shows up as a playlist on the livecd too!
+    Added Clear Music menu option
+
 Version 0.1:
     First released version
     Support for most features.

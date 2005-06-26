@@ -88,10 +88,15 @@ class Remasterer( QApplication ):
         self.readSettings()
 
         # ugly hack, thanks mp8 anyway
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
         os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
-        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Add to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
+        
+        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
+        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
         os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
+        os.system("dcop amarok script addCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
 
 
     def readSettings( self ):
@@ -137,10 +142,14 @@ class Remasterer( QApplication ):
             self.stop()
 
         elif string.contains( "customMenuClicked" ):
-            if "livecd" in string:
-                self.customMenuClicked( string )
+            if "selected" in string:
+                self.copyTrack( string )
+            elif "playlist" in string:
+                self.copyPlaylist()
             elif "Create" in string:
                 self.createCD()
+            elif "Clear" in string:
+                self.clearCD()
 
 
 # Notification callbacks. Implement these functions to react to specific notification
@@ -169,16 +178,81 @@ class Remasterer( QApplication ):
 
         self.dia.save(path)
 
+    def clearCD( self ):
+        
+        self.dia = ConfigDialog()
+        path = self.dia.readConfig()
+
+        os.system("kdesu 'rm -rf %s/amarok.live/music/*'" % path)
+
     def stop( self ):
         
         fd = open("/tmp/amarok.stop", "w")
         fd.write( "stopping")
         fd.close()
 
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
         os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add to livecd\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"") 
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
 
-    def customMenuClicked( self, menuEvent ):
+
+    def copyPlaylist( self ):
+
+        self.dia = ConfigDialog()
+        path = self.dia.readConfig()
+        if path == "":
+            os.system("dcop amarok playlist popupMessage 'Please run configure first.'")
+            return
+
+        tmpfileloc = os.tmpnam()
+        os.system("dcop amarok playlist saveM3u '%s' false" % tmpfileloc)
+        tmpfile = open(tmpfileloc)
+
+        import urllib
+
+        files = ""
+        m3u = ""
+        for line in tmpfile.readlines():
+            if line[0] != "#":
+                
+                line = line.strip()
+
+                # get filename
+                name = line.split("/")[-1]
+
+               #make url
+                url = "file://" + urllib.quote(line)
+
+               #make path on livecd
+                livecdpath = "/music/" + name
+
+                files += url + " "
+                m3u += livecdpath + "\n"
+
+        tmpfile.close()
+
+        files = files.strip()
+
+        os.system("kdesu kfmclient copy %s file://%s/amarok.live/music/" % (files, path))
+
+        import random
+        suffix = random.randint(0,10000)
+        os.system("kdesu mkdir %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % path)
+        m3uOut = open("/tmp/amarok.live.%s.m3u" % suffix, 'w')
+
+        m3u = m3u.strip()
+        m3uOut.write(m3u)
+
+        m3uOut.close()
+        
+        os.system("kdesu mv /tmp/amarok.live.%s.m3u %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % (suffix,path))
+        os.system("rm /tmp/amarok.live.%s.m3u" % suffix)
+
+
+        os.remove(tmpfileloc)
+
+    def copyTrack( self, menuEvent ):
 
         event = str( menuEvent )
         debug( event )
@@ -235,9 +309,12 @@ def debug( message ):
 def main( args ):
     app = Remasterer( args )
 
+    # not sure if it works or not...  playing it safe
     dia = ConfigDialog()
     if dia.readConfig() == "":
-        app.configure()
+        #app.configure()
+        os.system("dcop amarok playlist popupMessage 'Please click configure to begin.'")
+
 
     app.exec_loop()
 
