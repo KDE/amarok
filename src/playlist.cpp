@@ -172,7 +172,7 @@ namespace Glow
 /// CLASS Playlist
 //////////////////////////////////////////////////////////////////////////////////////////
 
-static inline bool isParty() { return AmarokConfig::dynamicMode(); }
+static inline bool isDynamic() { return AmarokConfig::dynamicMode(); }
 
 Playlist *Playlist::s_instance = 0;
 
@@ -707,7 +707,7 @@ Playlist::restoreSession()
     if( QFile::exists( url.path() ) )
     {
         //allows for history items to be re-enabled
-        if( isParty() ) m_stateSwitched = true;
+        if( isDynamic() ) m_stateSwitched = true;
         ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
     }
 }
@@ -725,7 +725,7 @@ Playlist::playNextTrack( bool forceNext )
 
     if( isEmpty() || m_stopAfterCurrent )
     {
-        if( isParty() && !isEmpty() )
+        if( isDynamic() && !isEmpty() )
             advancePartyTrack( item );
 
         m_stopAfterCurrent = false;
@@ -795,7 +795,7 @@ Playlist::playNextTrack( bool forceNext )
         }
 
 
-        if ( isParty() && item != firstChild() )
+        if ( isDynamic() && item != firstChild() )
             advancePartyTrack();
 
         if ( !item && AmarokConfig::repeatPlaylist() )
@@ -909,7 +909,7 @@ Playlist::queue( QListViewItem *item )
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
 
-        if( isParty() ) // we move the item after the last queued item to preserve the ordered 'queue'.
+        if( isDynamic() ) // we move the item after the last queued item to preserve the ordered 'queue'.
         {
             PlaylistItem *after = m_nextTracks.last();
 
@@ -917,7 +917,7 @@ Playlist::queue( QListViewItem *item )
                 this->moveItem( item, 0, after );
         }
     }
-    else if( !isParty() )
+    else if( !isDynamic() )
         m_nextTracks.append( item );
 
     else
@@ -988,7 +988,7 @@ Playlist::activate( QListViewItem *item )
         return;
     }
 
-    if( isParty() && !m_partyDirt )
+    if( isDynamic() && !m_partyDirt )
     {
         if( m_currentTrack )
             this->moveItem( item, 0, m_currentTrack );
@@ -1190,7 +1190,7 @@ void
 Playlist::updateNextPrev()
 {
     amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() && !isParty() );
+    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() && !isDynamic() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
 
@@ -1332,7 +1332,7 @@ Playlist::clear() //SLOT
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
 
-    if( isParty() )
+    if( isDynamic() )
         repopulate();
 }
 
@@ -1882,7 +1882,7 @@ Playlist::customEvent( QCustomEvent *e )
             m_queueList.clear();
         }
         //re-disable history items
-        if( isParty() ) {
+        if( isDynamic() ) {
             if( m_stateSwitched ) {
                 alterHistoryItems( false );
                 m_stateSwitched = false;
@@ -2053,9 +2053,6 @@ Playlist::repopulate() //SLOT
     // Repopulate the upcoming tracks
     MyIt it( this, MyIt::All );
     QPtrList<QListViewItem> list;
-    uint counter;
-
-    counter = AmarokConfig::dynamicUpcomingCount();
 
     for( ; *it; ++it )
     {
@@ -2067,6 +2064,9 @@ Playlist::repopulate() //SLOT
         list.prepend( *it );
     }
 
+    if( list.isEmpty() ) return;
+    saveUndoState();
+
     //remove the items
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
@@ -2075,13 +2075,16 @@ Playlist::repopulate() //SLOT
     }
 
     //calling advancePartyTrack will remove an item too, which is undesirable
-    addSpecialTracks( counter, AmarokConfig::dynamicType() );
+    //block signals to avoid saveUndoState being called
+    blockSignals( true );
+    addSpecialTracks( AmarokConfig::dynamicUpcomingCount(), AmarokConfig::dynamicType() );
+    blockSignals( false );
 }
 
 void
 Playlist::shuffle() //SLOT
 {
-    if( isParty() )
+    if( isDynamic() )
         return;
 
     QPtrList<QListViewItem> list;
@@ -2134,7 +2137,7 @@ Playlist::removeSelectedItems() //SLOT
     if( list.isEmpty() ) return;
     saveUndoState();
 
-    if( isParty() )
+    if( isDynamic() )
     {
         int remainder = childCount() - list.count();
         int required  = AmarokConfig::dynamicPreviousCount() + AmarokConfig::dynamicUpcomingCount() + 1; // +1 for current track
@@ -2309,7 +2312,7 @@ Playlist::showQueueManager()
             repaintItem( item );
 
         // repaint newly queued or altered queue items
-        if( isParty() )
+        if( isDynamic() )
             sortQueuedItems();
         else
             refreshNextTracks();
@@ -3000,7 +3003,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-    if( isParty() ) alterHistoryItems();
+    if( isDynamic() ) alterHistoryItems();
 }
 
 void
