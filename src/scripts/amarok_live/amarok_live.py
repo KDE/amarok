@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 ############################################################################
-# Python-Qt template script for amaroK
+# Python wrapper script for running the amaroK LiveCD remastering scripts
+# from within amaroK.  Based on the Python-Qt template script for amaroK
 # (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005 Leo Franchi <lfranchi@gmail.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################
