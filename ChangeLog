@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3-beta2:
   FEATURES:
+    * New DCOP call "collection: scanCollectionChanges" Scans for changes made
+      to the collection.
     * Support for "media:" URLs. Patch by Sergio Cambra <sergio@ensanjose.net>
       (BR 102668)
     * Support for visualizations in the Helix engine.
