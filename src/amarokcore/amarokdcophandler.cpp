@@ -124,7 +124,7 @@ namespace amaroK
 
     bool DcopPlayerHandler::dynamicModeStatus()
     {
-        return AmarokConfig::partyMode();
+        return AmarokConfig::dynamicMode();
     }
 
     QString DcopPlayerHandler::nowPlaying()

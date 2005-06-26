@@ -526,7 +526,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
         pBuf.drawPixmap( text_x, (textHeight - m_savePix->height())/2, *m_savePix );
         text_x += m_savePix->width()+4;
     }
-    else if( m_dynamic && m_dynamicPix && AmarokConfig::partyMode() )
+    else if( m_dynamic && m_dynamicPix && AmarokConfig::dynamicMode() )
     {
         pBuf.drawPixmap( text_x, (textHeight - m_dynamicPix->height())/2, *m_dynamicPix );
         text_x += m_dynamicPix->width()+4;

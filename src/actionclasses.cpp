@@ -379,9 +379,9 @@ RepeatPlaylistAction::RepeatPlaylistAction( KActionCollection *ac ) :
 // PartyAction
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicAction::DynamicAction( KActionCollection *ac ) :
-    ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setPartyMode, ac, "dynamic_mode" )
+    ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
 {
-    KToggleAction::setChecked( AmarokConfig::partyMode() );
+    KToggleAction::setChecked( AmarokConfig::dynamicMode() );
     setIcon( "party" );
 }
 

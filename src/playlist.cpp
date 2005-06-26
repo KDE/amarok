@@ -172,7 +172,7 @@ namespace Glow
 /// CLASS Playlist
 //////////////////////////////////////////////////////////////////////////////////////////
 
-static inline bool isParty() { return AmarokConfig::partyMode(); }
+static inline bool isParty() { return AmarokConfig::dynamicMode(); }
 
 Playlist *Playlist::s_instance = 0;
 
@@ -642,7 +642,7 @@ void
 Playlist::adjustPartyPrevious( uint songCount )
 {
     //we can't make bigger history
-    if ( (int)songCount > AmarokConfig::partyPreviousCount() )
+    if ( (int)songCount > AmarokConfig::dynamicPreviousCount() )
         return;
     int x = 0;
 
@@ -822,11 +822,11 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     {
         if( *it == item )
         {
-            if( AmarokConfig::partyMarkHistory() ) (*it)->setEnabled( false );
-            if( x < AmarokConfig::partyPreviousCount() )
+            if( AmarokConfig::dynamicMarkHistory() ) (*it)->setEnabled( false );
+            if( x < AmarokConfig::dynamicPreviousCount() )
                 break;
 
-            if( AmarokConfig::partyCycleTracks() )
+            if( AmarokConfig::dynamicCycleTracks() )
             {
                 PlaylistItem *first = firstChild();
                 if( first )
@@ -842,8 +842,8 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !m_stopAfterCurrent )
     {
-        int appendNo = AmarokConfig::partyAppendCount();
-        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::partyType() );
+        int appendNo = AmarokConfig::dynamicAppendCount();
+        if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
     }
     m_partyDirt = true;
 }
@@ -2055,7 +2055,7 @@ Playlist::repopulate() //SLOT
     QPtrList<QListViewItem> list;
     uint counter;
 
-    counter = AmarokConfig::partyUpcomingCount();
+    counter = AmarokConfig::dynamicUpcomingCount();
 
     for( ; *it; ++it )
     {
@@ -2075,7 +2075,7 @@ Playlist::repopulate() //SLOT
     }
 
     //calling advancePartyTrack will remove an item too, which is undesirable
-    addSpecialTracks( counter, AmarokConfig::partyType() );
+    addSpecialTracks( counter, AmarokConfig::dynamicType() );
 }
 
 void
@@ -2137,10 +2137,10 @@ Playlist::removeSelectedItems() //SLOT
     if( isParty() )
     {
         int remainder = childCount() - list.count();
-        int required  = AmarokConfig::partyPreviousCount() + AmarokConfig::partyUpcomingCount() + 1; // +1 for current track
+        int required  = AmarokConfig::dynamicPreviousCount() + AmarokConfig::dynamicUpcomingCount() + 1; // +1 for current track
 
         if( required > remainder )
-            addSpecialTracks( required - remainder, AmarokConfig::partyType() );
+            addSpecialTracks( required - remainder, AmarokConfig::dynamicType() );
     }
 
     //remove the items

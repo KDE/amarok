@@ -56,47 +56,47 @@
         <whatsthis>If set, amaroK plays the tracks in the playlist in random order.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Party Mode" type="Bool">
-        <label>Plays a party playlist</label>
-        <whatsthis>Party playlist which removes the played track from the playlist and appends another song.</whatsthis>
+    <entry key="Dynamic Mode" type="Bool">
+        <label>Plays a dynamic playlist</label>
+        <whatsthis>Dynamic playlist which removes the played track from the playlist and appends another song.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Party Info" type="Bool">
+    <entry key="Dynamic Info" type="Bool">
         <label>Shows help</label>
-        <whatsthis>Whether to show or hide the party information dialog</whatsthis>
+        <whatsthis>Whether to show or hide the dynamic information dialog</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Party Type" type="String">
+    <entry key="Dynamic Type" type="String">
         <label>Adds this type of song</label>
-        <whatsthis>Party mode will append this type of song to the end of the playlist.</whatsthis>
+        <whatsthis>Dynamic mode will append this type of song to the end of the playlist.</whatsthis>
         <default>Suggestion</default>
     </entry>
-    <entry key="Party Custom List" type="StringList">
-        <label>List of smart playlists to be appended for party mode.</label>
-        <whatsthis>List of smart playlists to be appended for party mode.</whatsthis>
+    <entry key="Dynamic Custom List" type="StringList">
+        <label>List of smart playlists to be appended for dynamic mode.</label>
+        <whatsthis>List of smart playlists to be appended for dynamic mode.</whatsthis>
         <default></default>
     </entry>
-    <entry key="Party Upcoming Count" type="Int">
+    <entry key="Dynamic Upcoming Count" type="Int">
         <label>Number of upcoming songs to show</label>
-        <whatsthis>Number of upcoming songs to show in the Playlist for party mode.</whatsthis>
+        <whatsthis>Number of upcoming songs to show in the Playlist for dynamic mode.</whatsthis>
         <default>15</default>
     </entry>
-    <entry key="Party Previous Count" type="Int">
+    <entry key="Dynamic Previous Count" type="Int">
         <label>History of songs count</label>
-        <whatsthis>Number of previously played songs to show in the Playlist for party mode.</whatsthis>
+        <whatsthis>Number of previously played songs to show in the Playlist for dynamic mode.</whatsthis>
         <default>4</default>
     </entry>
-    <entry key="Party Append Count" type="Int">
+    <entry key="Dynamic Append Count" type="Int">
         <label>Number of tracks to append</label>
-        <whatsthis>Number of tracks to append to the Playlist for party mode.</whatsthis>
+        <whatsthis>Number of tracks to append to the Playlist for dynamic mode.</whatsthis>
         <default>1</default>
     </entry>
-    <entry key="Party Cycle Tracks" type="Bool">
+    <entry key="Dynamic Cycle Tracks" type="Bool">
         <label>Cycle Tracks</label>
         <whatsthis>Whether to remove first item in playlist.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Party Mark History" type="Bool">
+    <entry key="Dynamic Mark History" type="Bool">
         <label>Mark History</label>
         <whatsthis>Whether to mark items in the playlist as history once played.</whatsthis>
         <default>false</default>

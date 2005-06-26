@@ -45,7 +45,7 @@
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
-static inline bool isDynamicEnabled() { return AmarokConfig::partyMode(); }
+static inline bool isDynamicEnabled() { return AmarokConfig::dynamicMode(); }
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
@@ -153,7 +153,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_streamsCategory->setOpen( true );
     m_dynamicCategory->setOpen( true );
 
-    QStringList playlists = AmarokConfig::partyCustomList();
+    QStringList playlists = AmarokConfig::dynamicCustomList();
 
     for( uint i=0; i < playlists.count(); i++ )
     {
@@ -182,7 +182,7 @@ PlaylistBrowser::~PlaylistBrowser()
         list.append( item->text(0) );
     }
 
-    AmarokConfig::setPartyCustomList( list );
+    AmarokConfig::setDynamicCustomList( list );
 
     KConfig *config = kapp->config();
 
@@ -529,7 +529,7 @@ void PlaylistBrowser::addDynamic( QListViewItem *parent )
     if( !parent ) parent = m_dynamicCategory;
 
     bool ok;
-    QString name = KInputDialog::getText(i18n("Save Dynamic Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this); 
+    QString name = KInputDialog::getText(i18n("Save Dynamic Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
 
     if( ok )
     {
@@ -710,10 +710,10 @@ void PlaylistBrowser::loadDynamicItems()
     m_dynamicEntries.clear();  // Dont use remove(), since we do i++, which would cause skip overs!!!
 
     // Mark appropriate items as used
-    if( AmarokConfig::partyType() == "Custom" )
+    if( AmarokConfig::dynamicType() == "Custom" )
     {
         debug() << "Loading entries" << endl;
-        QStringList playlists = AmarokConfig::partyCustomList();
+        QStringList playlists = AmarokConfig::dynamicCustomList();
         for( uint i=0; i < playlists.count(); i++ )
         {
             QListViewItem *it = findItem( playlists[i], 0 );
@@ -893,7 +893,7 @@ PlaylistBrowser::findItem( QString &t, int c )
 void PlaylistBrowser::saveCurrentPlaylist()
 {
     bool ok;
-    QString name = KInputDialog::getText(i18n("Save Current Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this); 
+    QString name = KInputDialog::getText(i18n("Save Current Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
 
     if( ok )
     {
