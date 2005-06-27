@@ -1,14 +1,27 @@
 #!/usr/bin/env bash
 #set -x 
-# Disassemble a mklivecd iso file into the /tmp/mklivecd directory
-# Author: Ivan Kerekes <ikerekes@gmail.com>
+
+############################################################################
+# Disassemble an amaroK LiveCD iso file into a specified directory
+# for the purpose of adding a users own music and putting it back together
 #
 # Based on a script authored by Ivan Kerekes <ikerekes@gmail.com>
-# and modified by Leo Franchi, Mike Diehl and Greg Meyer 
+# and modified by Leo Franchi <lfranchi at gmaildotcom>, Mike Diehl 
+# <madpenguin8 at yahoodotcom> and Greg Meyer <greg at gkmwebdotcom> 
+#
+# See the file called README for more information
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
 
 # We need to be root to mount the loopback
-
 # check for root and exit if not
+
 if [ `/usr/bin/whoami` = 'root' ]; then
 
 kdialog --title "amaroK livecd remaster" --yesno "Welcome to the amaroK live cd remaster utility. The first step is to select the iso image, would you like to continue."
