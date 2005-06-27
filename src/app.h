@@ -53,6 +53,7 @@ class App : public KApplication, public EngineObserver
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Engine::State state );
         void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
+        void engineTrackPositionChanged( long position );
         void engineVolumeChanged( int );
 
     public slots:

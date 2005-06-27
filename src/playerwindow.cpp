@@ -364,7 +364,7 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
     setScroll( list );
 
     //update image tooltip
-    TrackToolTip::add( m_pScrollFrame, bundle );
+    TrackToolTip::add( m_pScrollFrame, bundle, EngineController::instance()->engine()->position() );
 
     update(); //we need to update rateString
 }
@@ -375,6 +375,8 @@ void PlayerWidget::engineTrackPositionChanged( long position )
     m_pSlider->setValue( position );
 
     if( !m_pSlider->isEnabled() ) timeDisplay( position );
+    
+    TrackToolTip::add( m_pScrollFrame, EngineController::instance()->bundle(), position );
 }
 
 

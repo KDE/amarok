@@ -18,8 +18,7 @@
 #include <qtooltip.h>
 #include <qapplication.h>
 
-
-void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
+void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, const int &pos )
 {
     QString tipBuf;
     QStringList left, right;
@@ -35,7 +34,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags )
     if ( tags.length() )
     {
         left << i18n( "Length" );
-        right << tags.prettyLength();
+        right << MetaBundle::prettyLength( pos / 1000 ) + " / " + tags.prettyLength();
     }
     if ( tags.bitrate() )
     {

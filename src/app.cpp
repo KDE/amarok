@@ -738,9 +738,13 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     if ( !bundle.prettyTitle().isEmpty() )
         m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
 
-    TrackToolTip::add( m_pTray, bundle );
+    TrackToolTip::add( m_pTray, bundle, EngineController::instance()->engine()->position() );
 }
 
+void App::engineTrackPositionChanged( long position )
+{
+    TrackToolTip::add( m_pTray, EngineController::instance()->bundle(), position );
+}
 
 void App::engineVolumeChanged( int newVolume )
 {

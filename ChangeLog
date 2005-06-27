@@ -31,6 +31,7 @@ VERSION 1.3-beta2:
     * aKode-engine has been disabled (too buggy/incomplete).
     * Repopulate upcoming tracks on demand when using dynamic mode.
     * Remodel the playlist browser to incorporate dynamic mode more fully.
+    * Systray tooltip now shows "elapsed time / total time" for the length.
 
   BUGFIXES:
     * Don't show textual URLs in Wikipedia Tab. (BR 108031)

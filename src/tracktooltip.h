@@ -20,7 +20,7 @@ class QWidget;
 
 namespace TrackToolTip
 {
-    void add( QWidget * widget, const MetaBundle & tags );
+    void add( QWidget * widget, const MetaBundle & tags, const int &pos );
 }
 
 #endif
