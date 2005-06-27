@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Max '" I18N_NOOP("Turtle-Power'") "Howell",
             I18N_NOOP( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methylblue.com" );
     aboutData.addAuthor( "Mike '" I18N_NOOP("Purple is not girly!") "' Diehl",
-            I18N_NOOP( "Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
+            I18N_NOOP( "DCOP, improvements, Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
     aboutData.addAuthor( "Pierpaolo '" I18N_NOOP("Spaghetti Coder") "' Di Panfilo",
             I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman '" I18N_NOOP("And God said, let there be Mac") "' Becker",
