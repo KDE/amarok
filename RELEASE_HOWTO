@@ -53,3 +53,7 @@ This is what the release_amarok script does:
  8. $ pushd amarok; mv README TODO INSTALL ChangeLog AUTHORS COPYING amarok.lsm ..; popd
  9. $ mv ../multimedia ../amarok-VERSION
 10. $ tar cjf ../amarok-VERSION.tar.bz2 ../amarok-VERSION
+
+APPENDIX B
+
+To create a changelog in html format for updating the various articles and websites, run generate_changelog.rb.  It will output a file called ChangeLog.html.
