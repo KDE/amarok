@@ -597,7 +597,7 @@ Playlist::adjustPartyUpcoming( uint songCount,QString type )
     bool requireTracks = true;
     uint x=0;
 
-    for ( ; trackPosition != lastItem(); x++ )
+    for ( ; trackPosition && trackPosition != lastItem(); x++ )
     {
         if ( x == songCount ) {
             //dont need to add tracks if we have reduced upcomingTracksCount().
