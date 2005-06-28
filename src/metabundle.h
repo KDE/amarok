@@ -62,6 +62,7 @@ public:
     MetaBundle( const PlaylistItem *item );
 
     bool operator==( const MetaBundle& bundle );
+    bool operator!=( const MetaBundle& bundle ) { return !operator==(bundle); }
 
 
     /** Test for an empty metabundle */

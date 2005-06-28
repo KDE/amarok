@@ -24,7 +24,13 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, const int &po
     QStringList left, right;
     const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
-    QString image = CollectionDB::instance()->albumImage( tags );
+    static MetaBundle cachedtags = MetaBundle();
+    static QString image = QString::null;
+    if( cachedtags != tags || image.isNull() )
+    {
+        image = CollectionDB::instance()->albumImage( tags );
+        cachedtags = tags;
+    }
 
     if ( !tags.title().isEmpty() && !tags.artist().isEmpty() ) {
         left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" );
