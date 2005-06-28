@@ -211,6 +211,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         // Tags were changed, update them if not yet submitted.
         // TODO: In this case submit could be enabled if the artist or title
         // tag was missing initially and disabled submit
+        debug() << "It's still the same track." << endl;
         if ( m_item != NULL )
         {
             m_item->setArtist( bundle.artist() );
@@ -224,8 +225,10 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 
     // Plugins must not submit tracks played from online radio stations, even
     // if they appear to be providing correct metadata.
-    if ( bundle.streamUrl() != NULL )
+    if ( bundle.streamUrl() != NULL ) {
+        debug() << "Won't submit: It's a stream." << endl;
         m_validForSending = false;
+    }
     else
     {
         if ( m_item != NULL )
@@ -242,6 +245,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         {
             m_item = NULL;
             m_validForSending = false;
+            debug() << "Won't submit: No artist, no title, or less than 30 seconds." << endl;;
         }
     }
 }
@@ -267,6 +271,7 @@ void Scrobbler::engineTrackPositionChanged( long position )
             // Position has changed more than it would during normal
             // playback.
             m_validForSending = false;
+            debug() << "Won't submit: Seek of " << posChange << "ms detected." << endl;
             return;
         }
     }
