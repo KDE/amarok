@@ -1170,7 +1170,7 @@ void ContextBrowser::showHomeByAlbums()
     qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID);
     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName);
-    qb.setLimit( 0, 10 );
+    qb.setLimit( 0, 5 );
     QStringList faveAlbums = qb.run();
 
     qb.clear();
