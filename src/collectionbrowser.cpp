@@ -1592,9 +1592,9 @@ CollectionView::manipulateThe( QString &str, bool reverse )
 }
 
 bool
-CollectionView::endsInThe( QString text )
+CollectionView::endsInThe( const QString & text )
 {
-    return text.endsWith( i18n(", the"), false );
+    return text.endsWith( ", the", false );
 }
 
 // avoid code duplication

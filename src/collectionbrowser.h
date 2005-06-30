@@ -137,7 +137,7 @@ class CollectionView : public KListView
 
         // avoid duplicated code
         void    manipulateThe( QString &original, bool reverse = false );
-        bool    endsInThe( QString text );
+        bool    endsInThe( const QString & text );
         void    yearAlbumCalc( QString &year, QString &text );
 
         /**Call when a category has changed **/
