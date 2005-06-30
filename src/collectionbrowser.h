@@ -134,7 +134,10 @@ class CollectionView : public KListView
 
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
+
+        // avoid duplicated code
         void    manipulateThe( QString &original, bool reverse = false );
+        void    yearAlbumCalc( QString &year, QString &text );
 
         /**Call when a category has changed **/
         void updateColumnHeader();
