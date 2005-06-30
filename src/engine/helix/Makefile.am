@@ -23,8 +23,7 @@ AM_CPPFLAGS = \
 
 libamarok_helixengine_plugin_la_SOURCES = \
     helix-engine.cpp \
-    helix-config.cpp \
-    hxsplay.cpp
+    helix-config.cpp
 
 libamarok_helixengine_plugin_la_LIBADD = \
     $(top_builddir)/amarok/src/engine/helix/helix-sp/libhelix-sp.la \

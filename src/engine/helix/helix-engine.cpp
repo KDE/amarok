@@ -11,7 +11,6 @@
 #include <sys/param.h>
 
 #include "helix-engine.h"
-#include "hxsplay.h"
 #include "helix-config.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
