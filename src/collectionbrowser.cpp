@@ -597,7 +597,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     switch ( item->depth() )
     {
         case 0:
-            if( item->text( 0 ).endsWith( ", the", false ) )
+            if( endsInThe( item->text( 0 ) ) )
             {
                 tmptext = item->text( 0 );
                 manipulateThe( tmptext );
@@ -644,7 +644,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             break;
 
         case 1:
-            if( item->text( 0 ).endsWith( ", the", false ) )
+            if( endsInThe( item->text( 0 ) ) )
             {
                 tmptext = item->text( 0 );
                 manipulateThe( tmptext );
@@ -654,7 +654,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 tmptext = item->parent()->text( 0 );
 
-                if( tmptext.endsWith( ", the", false ) )
+                if( endsInThe( tmptext ) )
                     manipulateThe( tmptext );
 
                 if( VisYearAlbum == 1 )
@@ -707,7 +707,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
         case 2:
             // check for compilations
-            if( item->text( 0 ).endsWith( ", the", false ) )
+            if( endsInThe( item->text( 0 ) ) )
             {
                 tmptext = item->text( 0 );
                 manipulateThe( tmptext );
@@ -717,7 +717,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 tmptext = item->parent()->parent()->text( 0 );
 
-                if( tmptext.endsWith( ", the", false ) )
+                if( endsInThe( tmptext ) )
                     manipulateThe( tmptext );
 
                 if (VisYearAlbum==1)
@@ -736,7 +736,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             tmptext = item->parent()->text( 0 );
 
-            if( tmptext.endsWith( ", the", false ) )
+            if( endsInThe( tmptext ) )
                 manipulateThe( tmptext );
 
             if( VisYearAlbum == 2 )
@@ -749,7 +749,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             tmptext = item->text( 0 );
 
-            if( tmptext.endsWith( ", the", false ) )
+            if( endsInThe( tmptext ) )
                 manipulateThe( tmptext );
 
             if( VisYearAlbum == 3 )
@@ -1575,20 +1575,26 @@ CollectionView::manipulateThe( QString &str, bool reverse )
     if( reverse )
     {
         QString begin = str.left( 3 );
-        str = str.append( ", %1" ).arg( begin );
+        str = str.append( i18n(", %1") ).arg( begin );
         str = str.mid( 4 );
         return;
     }
 
-    if( !str.endsWith( ", the", false ) )
+    if( !endsInThe( str ) )
         return;
 
     QString end = str.right( 3 );
     str = str.prepend( "%1 " ).arg( end );
 
-    uint newLen = str.length() - 5;
+    uint newLen = str.length() - end.length() - 2;
 
     str.truncate( newLen );
+}
+
+bool
+CollectionView::endsInThe( QString text )
+{
+    return text.endsWith( i18n(", the"), false );
 }
 
 // avoid code duplication
