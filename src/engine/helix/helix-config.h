@@ -28,14 +28,14 @@ class HelixConfigEntry : public QObject
 Q_OBJECT
 public:
     HelixConfigEntry( QWidget *parent, amaroK::PluginConfig*, 
-                      int row, const char *description, const char *defaultvalue, const char *tooltip );
+                      int row, const QString & description, const char *defaultvalue, const QString & tooltip );
     HelixConfigEntry( QWidget *parent, QCString &str, amaroK::PluginConfig*, 
-                      int row, const char *description, const char *defaultvalue, const char *tooltip );
+                      int row, const QString & description, const char *defaultvalue, const QString & tooltip );
 
     bool isChanged() const { return m_valueChanged; }
     void setUnchanged() { m_valueChanged = false; }
     const QCString& key() const { return m_key; }
-    const QCString& stringValue() const { return m_stringValue; }
+    QString stringValue() const { return m_stringValue; }
     int numValue() const { return m_numValue; }
 
 private slots:
@@ -45,8 +45,7 @@ private:
    bool     m_valueChanged;
    int      m_numValue;
    QCString m_key;
-   QCString m_stringValue;
-   QCString &m_str;
+   QString m_stringValue;
 };
 
 

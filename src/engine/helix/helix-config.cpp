@@ -3,8 +3,11 @@
 #include <qscrollview.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
+
 #include <klineedit.h>
 #include <kseparator.h>
+#include <klocale.h>
+
 #include "helix-config.h"
 #include "helix-engine.h"
 //#include <iostream>
@@ -21,12 +24,11 @@ using namespace std;
 HelixConfigEntry::HelixConfigEntry( QWidget *parent, 
                                     amaroK::PluginConfig *pluginConfig, 
                                     int row, 
-                                    const char *description, 
+				    const QString & description, 
                                     const char *defaultvalue,
-                                    const char *tooltip)
+                                    const QString & tooltip)
    : m_valueChanged( false )
      , m_stringValue( defaultvalue )
-     , m_str(m_stringValue)
 {
     QGridLayout *grid = (QGridLayout*)parent->layout();
     QWidget *w = 0;
@@ -35,9 +37,9 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
     connect( w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
     connect( w, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
     
-    QToolTip::add( w, "<qt>" + QString( tooltip ) );
+    QToolTip::add( w, "<qt>" + tooltip );
     
-    QLabel* d = new QLabel( QString::fromLocal8Bit( description ) + ':', parent );
+    QLabel* d = new QLabel( description + ':', parent );
     d->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
     
     grid->addWidget( w, row, 1 );
@@ -48,24 +50,22 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
                                     QCString &str,
                                     amaroK::PluginConfig *pluginConfig, 
                                     int row, 
-                                    const char *description, 
+                                    const QString & description, 
                                     const char *defaultvalue,
-                                    const char *tooltip)
+                                    const QString & tooltip)
    : m_valueChanged( false )
      , m_stringValue( defaultvalue )
-     , m_str(str)
 {
     QGridLayout *grid = (QGridLayout*)parent->layout();
     QWidget *w = 0;
 
-    m_str = str;
     w = new KLineEdit( str, parent );
     connect( w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
     connect( w, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
     
-    QToolTip::add( w, "<qt>" + QString( tooltip ) );
+    QToolTip::add( w, "<qt>" + tooltip );
     
-    QLabel* d = new QLabel( QString::fromLocal8Bit( description ) + ':', parent );
+    QLabel* d = new QLabel( description + ':', parent );
     d->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
     
     grid->addWidget( w, row, 1 );
@@ -76,7 +76,6 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
 inline void
 HelixConfigEntry::slotStringChanged( const QString& val )
 {
-    m_str  = val.utf8();
     m_valueChanged = true;
 }
 
@@ -114,19 +113,19 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
 
     // TODO: these 3 config items need to be stored persistently somewhere
     entries.append( new HelixConfigEntry( parent, engine->m_coredir, this, row, 
-                                          "Helix/Realplay core directory", 
+                                          i18n("Helix/Realplay core directory"), 
                                           "/usr/local/RealPlayer/common",
-                                          "This is the directory where clntcore.so is located") );
+                                          i18n("This is the directory where clntcore.so is located")) );
     ++row;
     entries.append( new HelixConfigEntry( parent, engine->m_pluginsdir, this, row, 
-                                          "Helix/Realplay plugins directory", 
+                                          i18n("Helix/Realplay plugins directory"), 
                                           "/usr/local/RealPlayer/plugins",
-                                          "This is the directory where, for example, vorbisrend.so is located") );
+                                          i18n("This is the directory where, for example, vorbisrend.so is located")) );
     ++row;
     entries.append( new HelixConfigEntry( parent, engine->m_codecsdir, this, row, 
-                                          "Helix/Realplay codecs directory", 
+                                          i18n("Helix/Realplay codecs directory"), 
                                           "/usr/local/RealPlayer/codecs",
-                                          "This is the directory where, for example, cvt1.so is located") );
+                                          i18n("This is the directory where, for example, cvt1.so is located")) );
     ++row;
     grid->addMultiCellWidget( new KSeparator( KSeparator::Horizontal, parent ), row, row, 0, 1 );
 
