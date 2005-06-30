@@ -58,7 +58,6 @@ HelixEngine::HelixEngine()
    addPluginProperty( "HasEqualizer", "true" );
    //addPluginProperty( "HasCrossfade", "true" );
 
-   startTimer( 10 );
 }
 
 HelixEngine::~HelixEngine()
@@ -89,6 +88,8 @@ HelixEngine::init()
    }
 
    debug() << "Succussful init\n";
+   startTimer( 20 );
+
    return true;
 }
 

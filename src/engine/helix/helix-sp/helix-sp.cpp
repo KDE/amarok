@@ -599,8 +599,8 @@ HelixSimplePlayer::~HelixSimplePlayer()
       }
    }
 
-   pCommonClassFactory->Release();
-   pCEselect->Release();
+   //pCommonClassFactory->Release();
+   //pCEselect->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
    if (fpCloseEngine && pEngine)
