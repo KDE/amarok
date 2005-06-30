@@ -183,7 +183,7 @@ class Remasterer( QApplication ):
         self.dia = ConfigDialog()
         path = self.dia.readConfig()
 
-        os.system("kdesu 'rm -rf %s/amarok.live/music/*'" % path)
+        os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists" % path)
 
     def stop( self ):
         
@@ -234,11 +234,11 @@ class Remasterer( QApplication ):
 
         files = files.strip()
 
-        os.system("kdesu kfmclient copy %s file://%s/amarok.live/music/" % (files, path))
+        os.system("kfmclient copy %s file://%s/amarok.live/music/" % (files, path))
 
         import random
         suffix = random.randint(0,10000)
-        os.system("kdesu mkdir %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % path)
+        os.system("mkdir %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % path)
         m3uOut = open("/tmp/amarok.live.%s.m3u" % suffix, 'w')
 
         m3u = m3u.strip()
@@ -246,7 +246,7 @@ class Remasterer( QApplication ):
 
         m3uOut.close()
         
-        os.system("kdesu mv /tmp/amarok.live.%s.m3u %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % (suffix,path))
+        os.system("mv /tmp/amarok.live.%s.m3u %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % (suffix,path))
         os.system("rm /tmp/amarok.live.%s.m3u" % suffix)
 
 
@@ -274,8 +274,7 @@ class Remasterer( QApplication ):
             for file in files:
                 allfiles += file + " "
             allfiles = allfiles.strip()
-            os.system("kdesu -t kfmclient copy %s file://%s/amarok.live/music/" % (allfiles, path))
-            #print "kdesu -t kfmclient copy %s file://%s/amarok.live/music/" % (allfiles, path)
+            os.system("kfmclient copy %s file://%s/amarok.live/music/" % (allfiles, path))
 
     def createCD( self ):
         
@@ -297,6 +296,7 @@ class Remasterer( QApplication ):
         y = y.strip()
         if y == "end": # user said no more, clear path
             self.dia.save("")
+        fd.close()
 
 
 ############################################################################

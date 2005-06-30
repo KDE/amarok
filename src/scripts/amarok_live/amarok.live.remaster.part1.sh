@@ -19,6 +19,13 @@
 #
 ############################################################################
 
+
+cleanup () {
+    rm -rf $WORK/mklivecd
+    rm -rf $WORK/amarok.live
+    rm -rf $WORK/livecd_data*
+}
+
 # We need to be root to mount the loopback
 # check for root and exit if not
 
@@ -29,13 +36,13 @@ dcop --all-users amarok playlist popupMessage "Welcome to the amaroK live cd rem
 iso=`kdialog --getopenfilename /home "*.iso"`
 
 if [ $iso = 0 ] ; then
-    exit;
+    exit
 fi
 
 WORK=`kdialog --title "Choose working directory" --getexistingdirectory .`
 
 if [ $WORK = 0 ] ; then
-    exit;
+    exit
 fi
 
 # Determine if enough space
@@ -131,6 +138,13 @@ dcop --all-users amarok playlist shortStatusMessage "Copying files now. Please b
 cp -a $WORK/amarok.livecd/* $WORK/amarok.live/
 umount $WORK/amarok.livecd/
 rmdir $WORK/amarok.livecd
+
+mkdir $WORK/amarok.live/home/amarok/.kde/share/apps/amarok/playlists
+chown 500:500 $WORK/amarok.live/home/amarok/.kde/share/apps/amarok/playlists
+find $WORK/amarok.live/home/amarok/.kde/share/apps/ -type d -print0 | xargs -0 chmod +x
+chmod -R 777 $WORK/amarok.live/music/
+chmod -R 777 $WORK/amarok.live/home/amarok/.kde/share/apps/amarok
+#chmod -R 777 $WORK/mklivecd/
 
 dcop --all-users amarok playlist popupMessage "Copying done. To add music to the amaroK livecd, select the tracks you wish to add in the playlist, and select \"Add to livecd\" from the right click menu. Please do not add more than about 380 mb, as then the resulting ISO will be too large to fit on a CD-ROM. Once you are done, select Create Remastered CD. Enjoy!"
 

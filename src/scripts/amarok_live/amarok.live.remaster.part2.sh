@@ -76,5 +76,4 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 	
 else
 	kdialog --title "amaroK livecd remaster" --sorry "You must run this script as root. Try running 'kdesu sh amarok.live.remaster.part1.sh' instead."
-
 fi
