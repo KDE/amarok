@@ -16,6 +16,42 @@
 #ifndef _HSPHOOK_H_INCLUDED_
 #define _HSPHOOK_H_INCLUDED_
 
+class HSPPreMixAudioHook : public IHXAudioHook
+{
+public:
+   HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream);
+   virtual ~HSPPreMixAudioHook();
+   /*
+    *  IUnknown methods
+    */
+   STDMETHOD(QueryInterface)   (THIS_
+                               REFIID riid,
+                               void** ppvObj);
+   STDMETHOD_(ULONG32,AddRef)  (THIS);
+   STDMETHOD_(ULONG32,Release) (THIS);
+   /*
+    * IHXAudioHook methods
+    */
+   STDMETHOD(OnBuffer) (THIS_
+                        HXAudioData *pAudioInData,
+                        HXAudioData *pAudioOutData);
+   STDMETHOD(OnInit) (THIS_
+                      HXAudioFormat *pFormat);
+
+
+private:
+   HSPPreMixAudioHook();
+
+   HelixSimplePlayer *m_Player;
+   LONG32             m_lRefCount;
+   int                m_index;
+   IHXAudioStream    *m_stream;
+   HXAudioFormat      m_format;
+   int                m_count;
+};
+
+
+
 #define BAND_NUM 10
 #define EQ_MAX_BANDS 10
 #define EQ_CHANNELS 7   // anyone try this?  should work, but I only have a stereo card...

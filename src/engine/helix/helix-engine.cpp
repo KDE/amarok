@@ -20,7 +20,7 @@ AMAROK_EXPORT_PLUGIN( HelixEngine )
 
 #include <climits>
 #include <cmath>
-//#include <iostream>
+#include <iostream>
 
 #include "debug.h"
 
@@ -47,16 +47,19 @@ static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPat
 
 
 HelixEngine::HelixEngine()
-   : EngineBase(), HXSplay(),
+   : EngineBase(), HelixSimplePlayer(),
      m_state(Engine::Empty),
      m_coredir("/usr/local/RealPlayer/common"),
      m_pluginsdir("/usr/local/RealPlayer/plugins"),
-     m_codecsdir("/usr/local/RealPlayer/codecs")
+     m_codecsdir("/usr/local/RealPlayer/codecs"),
+     m_xfadeLength(0)
 {
-    addPluginProperty( "StreamingMode", "Socket" );
-    addPluginProperty( "HasConfigure", "true" );
-    addPluginProperty( "HasEqualizer", "true" );
-    //addPluginProperty( "HasCrossfade", "true" );
+   addPluginProperty( "StreamingMode", "Socket" );
+   addPluginProperty( "HasConfigure", "true" );
+   addPluginProperty( "HasEqualizer", "true" );
+   //addPluginProperty( "HasCrossfade", "true" );
+
+   startTimer( 10 );
 }
 
 HelixEngine::~HelixEngine()
@@ -75,9 +78,12 @@ HelixEngine::init()
 {
    //debug() << "Initializing HelixEngine\n";
 
+   m_numPlayers = 2;
+   m_current = 1;
+
    // TODO: more intelligent path determination
-   HXSplay::init(m_coredir, m_pluginsdir, m_codecsdir);
-   if (HXSplay::getError())
+   HelixSimplePlayer::init(m_coredir, m_pluginsdir, m_codecsdir, 2);
+   if (HelixSimplePlayer::getError())
    {
       KMessageBox::error( 0, i18n("amaroK could not initialize helix-engine.") );
       return false;
@@ -93,7 +99,13 @@ HelixEngine::load( const KURL &url, bool isStream )
 {
    debug() << "In load " << url.url() << endl;
 
+   cerr << "XFadeLength " << m_xfadeLength << endl;
+
    stop();
+
+   int nextPlayer;
+
+   nextPlayer = m_current ? 0 : 1;
 
    Engine::Base::load( url, isStream || url.protocol() == "http" );
    m_state = Engine::Idle;
@@ -105,16 +117,12 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
       QString tmp;
       tmp ="file://" + url.directory() + "/" + url.filename();
-      //char tmp[MAXPATHLEN];
-      //strcpy(tmp, "file://");
-      //strcat(tmp, (const char *)url.directory());
-      //strcat(tmp, "/");
-      //strcat(tmp, (const char *)url.filename());
+
       debug() << tmp << endl;
-      HXSplay::setURL( QFile::encodeName( tmp ) );      
+      HelixSimplePlayer::setURL( QFile::encodeName( tmp ), nextPlayer );      
    }
    else
-      HXSplay::setURL( QFile::encodeName( url.prettyURL() ) );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.prettyURL() ), nextPlayer );
 
    return true;
 }
@@ -123,20 +131,27 @@ bool
 HelixEngine::play( uint offset )
 {
    debug() << "In play" << endl;
+   int nextPlayer;
 
-   HXSplay::play();
+   nextPlayer = m_current ? 0 : 1;
+
+   HelixSimplePlayer::start(nextPlayer);
    if (offset)
-      HXSplay::seek( offset );
+      HelixSimplePlayer::seek( offset, nextPlayer );
 
-   if (!HXSplay::getError())
+   if (!HelixSimplePlayer::getError())
    {
-      m_state = Engine::Playing;
-      emit stateChanged( Engine::Playing );
+      if (m_state != Engine::Playing)
+      {
+         m_state = Engine::Playing;
+         emit stateChanged( Engine::Playing );
+      }
 
+      m_current = nextPlayer;
       return true;
    }
 
-   HXSplay::stop();
+   HelixSimplePlayer::stop(); // stop all players
    m_state = Engine::Empty;
    emit stateChanged( Engine::Empty );
 
@@ -148,7 +163,7 @@ HelixEngine::stop()
 {
    debug() << "In stop\n";
    m_url = KURL();
-   HXSplay::stop();
+   HelixSimplePlayer::stop(m_current);
    clearScopeQ();
    m_state = Engine::Empty;
    emit stateChanged( Engine::Empty );
@@ -158,22 +173,23 @@ void HelixEngine::play_finished(int /*playerIndex*/)
 {
    debug() << "Ok, finished playing the track, so now I'm idle\n";
    m_state = Engine::Idle;
-   startTimer( 250 ); // should be resonable until we build the crossfader
+   emit trackEnded();
+   //startTimer( 250 ); // should be resonable until we build the crossfader
 }
 
 void
 HelixEngine::pause()
 {
    debug() << "In pause\n";
-   if( HXSplay::state() == HXSplay::PLAY )
+   if( m_state == Engine::Playing )
    {
-      HXSplay::pause();
+      HelixSimplePlayer::pause(m_current);
       m_state = Engine::Paused;
       emit stateChanged( Engine::Paused );
    }
-   else if ( HXSplay::state() == HXSplay::PAUSE )
+   else if ( m_state == Engine::Paused )
    {
-      HXSplay::resume();
+      HelixSimplePlayer::resume(m_current);
       m_state = Engine::Playing;
       emit stateChanged( Engine::Playing );
    }
@@ -184,32 +200,23 @@ HelixEngine::state() const
 {
    //debug() << "In state, state is " << m_state << endl;
 
-   HXSplay::pthr_states state = HXSplay::state();
-   switch( state )
-   {
-      case HXSplay::PLAY:
-         return Engine::Playing;
-      case HXSplay::PAUSE:
-         return Engine::Paused;
-      case HXSplay::STOP:
-         return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
-      default:
-         // stop(); shouldnt ever get here, but const nature of this function prevents us from doing this
-         return Engine::Empty;
-   }
+   if (m_url.isEmpty())
+      return (Engine::Empty);
+
+   return m_state;
 }
 
 uint
 HelixEngine::position() const
 {
-   return HXSplay::where(0);
+   return HelixSimplePlayer::where(m_current);
 }
 
 uint
 HelixEngine::length() const
 {
    debug() << "In length\n";
-   return HXSplay::duration(0);
+   return HelixSimplePlayer::duration(m_current);
 }
 
 void
@@ -217,14 +224,14 @@ HelixEngine::seek( uint ms )
 {
    debug() << "In seek\n";
    clearScopeQ();
-   HXSplay::seek(ms);
+   HelixSimplePlayer::seek(ms, m_current);
 }
 
 void
 HelixEngine::setVolumeSW( uint vol )
 {
    debug() << "In setVolumeSW\n";
-   HXSplay::setVolume(vol);
+   HelixSimplePlayer::setVolume(vol, m_current);
 }
 
 
@@ -239,12 +246,17 @@ HelixEngine::canDecode( const KURL &url ) const
 void
 HelixEngine::timerEvent( QTimerEvent * )
 {
+   HelixSimplePlayer::dispatch(); // dispatch the players
+   if (m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
+      play_finished(m_current);
+/*
    if (state() == Engine::Idle)
    {
       killTimers();
       debug() << "emitting trackEnded\n";
       emit trackEnded();
    }
+*/
 }
 
 
@@ -252,8 +264,6 @@ const Engine::Scope &HelixEngine::scope()
 {
    int i, err;
    struct DelayQueue *item = 0;
-
-   debug() << "In Scope\n";
 
    unsigned long w = position();
    unsigned long p;

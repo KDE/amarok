@@ -66,12 +66,20 @@ public:
 
    void init(const char *corelibpath, const char *pluginslibpath, const char *codecspath, int numPlayers = 1);
    int  addPlayer();                                                 // add another player
-   void play(int playerIndex = ALL_PLAYERS);                         // play the current url, waiting for it to finish
-   void play(const char *url, int playerIndex = ALL_PLAYERS);        // play the file, setting it as the current url; wait for it to finish
+   void play(int playerIndex = ALL_PLAYERS, 
+             bool fadein = false, bool fadout = false,
+             unsigned long fadetime = 0);                            // play the current url, waiting for it to finish
+   void play(const char *url, int playerIndex = ALL_PLAYERS,
+             bool fadein = false, bool fadeout = false,
+             unsigned long fadetime = 0);                            // play the file, setting it as the current url; wait for it to finish
    int  setURL(const char *url, int playerIndex = ALL_PLAYERS);      // set the current url
    bool done(int playerIndex = ALL_PLAYERS);                         // test to see if the player(s) is(are) done
-   void start(int playerIndex = ALL_PLAYERS);                        // start the player
-   void start(const char *file, int playerIndex = ALL_PLAYERS);      // start the player, setting the current url first
+   void start(int playerIndex = ALL_PLAYERS, 
+              bool fadein = false, bool fadeout = false,
+              unsigned long fadetime = 0);                           // start the player
+   void start(const char *file, int playerIndex = ALL_PLAYERS,
+              bool fadein = false, bool fadeout = false,
+              unsigned long fadetime = 0);                           // start the player, setting the current url first
    void stop(int playerIndex = ALL_PLAYERS);                         // stop the player(s)
    void pause(int playerIndex = ALL_PLAYERS);                        // pause the player(s)
    void resume(int playerIndex = ALL_PLAYERS);                       // pause the player(s)
@@ -110,6 +118,12 @@ private:
 
    struct playerCtrl
    {
+      bool                        bPlaying;
+      bool                        bStarting;
+      bool                        bFadeIn;
+      bool                        bFadeOut;
+      unsigned long               ulFadeTime;
+      IHXAudioStream*             pStream;
       HSPClientContext*           pHSPContext;
       IHXPlayer*                  pPlayer;
       IHXPlayer2*                 pPlayer2;
@@ -177,6 +191,8 @@ private:
    int                  m_Error;
    unsigned long        m_ulNumSecondsPlayed;
 
+   pthread_mutex_t      m_engine_m;
+
    // scope
    int                  scopecount;
    struct DelayQueue   *scopebufhead;
@@ -193,6 +209,7 @@ protected:
    friend class HSPErrorSink;
    friend class HSPAuthenticationManager;
    friend class HelixSimplePlayerAudioStreamInfoResponse;
+   friend class HSPPreMixAudioHook;
    friend class HSPPostMixAudioHook;
 };
 

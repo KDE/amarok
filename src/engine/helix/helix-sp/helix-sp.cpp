@@ -39,6 +39,8 @@
 #include "hspvoladvise.h"
 #include "utils.h"
 #include "hsphook.h"
+#include "hxfiles.h"
+
 
 typedef HX_RESULT (HXEXPORT_PTR FPRMSETDLLACCESSPATH) (const char*);
 
@@ -111,40 +113,14 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
     return 0;
 }
 
-STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream * /*pAudioStream*/)
+STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
 {
-/* we'll play with this later... I think it may be causing instability
+   STDERR("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
+   m_Player->ppctrl[m_index]->pStream = pAudioStream;
 
-   m_Player->xf().toStream = pAudioStream;
+   pAudioStream->AddPreMixHook(new HSPPreMixAudioHook(m_Player, m_index, pAudioStream), false);
+   m_Player->ppctrl[m_index]->bStarting = false;
 
-   IHXAudioStream2 *is2 = 0;
-   pAudioStream->QueryInterface(IID_IHXAudioStream2, (void **) &is2);
-   if (is2)
-   {
-      STDERR("Got AudioStream2 interface\n");
-      // get the audiostream info
-      is2->GetAudioFormat(&m_audiofmt);
-   }
-
-   IHXValues *pvalues = pAudioStream->GetStreamInfo();
- 
-   m_Player->ppctrl[m_index]->pAudioPlayer->CreateAudioStream(&m_Stream);
-   m_Stream->Init(&m_audiofmt, pvalues);
-
-   STDERR("AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", m_audiofmt.uChannels,
-          m_audiofmt.uBitsPerSample,
-          m_audiofmt.ulSamplesPerSec,
-          m_audiofmt.uMaxBlockSize);
-
-
-   HXAudioData ad;
-   ad.pData = 0;
-   ad.ulAudioTime = 0;
-   ad.uAudioStreamType = INSTANTANEOUS_AUDIO;
-   m_Stream->Write(&ad);
-
-   STDERR("Stream Added player %d crossfade? %d\n", m_index, m_Player->xf().crossfading);
-*/
    return HXR_OK;
 }
 
@@ -322,6 +298,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
 
    pthread_mutexattr_init(&ma);
    pthread_mutexattr_settype(&ma, PTHREAD_MUTEX_FAST_NP); // note this is not portable outside linux and a few others
+   pthread_mutex_init(&m_engine_m, &ma);
    pthread_mutex_init(&m_scope_m, &ma);
 }
 
@@ -420,7 +397,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    }
 
    // do I need to do this???
-   XInitThreads();
+   //XInitThreads();
 
    // create client engine
    if (HXR_OK != fpCreateEngine((IHXClientEngine**)&pEngine))
@@ -462,6 +439,14 @@ int HelixSimplePlayer::addPlayer()
 
    ppctrl[nNumPlayers] = new struct playerCtrl;
    memset(ppctrl[nNumPlayers], 0, sizeof(struct playerCtrl));
+
+   ppctrl[nNumPlayers]->bPlaying  = false;
+   ppctrl[nNumPlayers]->bStarting = false;
+   ppctrl[nNumPlayers]->bFadeIn   = false;
+   ppctrl[nNumPlayers]->bFadeOut  = false;
+   ppctrl[nNumPlayers]->ulFadeTime = 0;
+   ppctrl[nNumPlayers]->pStream = 0;
+   ppctrl[nNumPlayers]->pszURL = 0;
 
    ppctrl[nNumPlayers]->pHSPContext = new HSPClientContext(nNumPlayers, this);
    if (!ppctrl[nNumPlayers]->pHSPContext)
@@ -584,7 +569,7 @@ HelixSimplePlayer::~HelixSimplePlayer()
       if (ppctrl[i]->pAudioPlayer)
       {
          ppctrl[i]->pAudioPlayer->RemovePostMixHook((IHXAudioHook *)ppctrl[i]->pPostMixHook);
-         // ppctrl[i]->pPostMixHook->Release(); Helix release it when it is removed???
+         ppctrl[i]->pPostMixHook->Release(); 
 
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
          ppctrl[i]->pStreamInfoResponse->Release();
@@ -717,32 +702,31 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          else
             return -1;
       }
-      
+
+#ifdef __NOCROSSFADER__
       STDERR("opening %s on player %d, src cnt %d\n", 
              ppctrl[playerIndex]->pszURL, playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());
+
       if (HXR_OK == ppctrl[playerIndex]->pPlayer->OpenURL(ppctrl[playerIndex]->pszURL))
       {
-         STDERR("opened player on %d src cnt %d\n", playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());
-//         IHXStreamSource *pStreamSource = 0;
-//         IHXStream *pStream = 0;
-//         ppctrl[playerIndex]->pPlayer->GetSource(0, (IUnknown *&)pStreamSource);
-//         if (pStreamSource)
-//         {
-//            STDERR("Got StreamSource, stream count is %d!!\n", pStreamSource->GetStreamCount());
-//            pStreamSource->GetStream(0, (IUnknown *&)pStream);
-//            if (pStream)
-//            {
-//               STDERR("Got Stream!!\n");
-//
-//               HX_RELEASE(pStream);
-//            }
-//
-//            HX_RELEASE(pStreamSource);
-//         }
-//         else
-//            STDERR("guess again, no stream source\n");
-         
+         STDERR("opened player on %d src cnt %d\n", playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());         
       }
+#else
+      /* try OpenRequest instead... */
+      IHXRequest *ireq = 0;
+      pthread_mutex_lock(&m_engine_m);
+      pCommonClassFactory->CreateInstance(CLSID_IHXRequest, (void **)&ireq);
+      if (ireq)
+      {
+         STDERR("GOT THE IHXRequest Interface!!\n");
+         ireq->SetURL(ppctrl[playerIndex]->pszURL);
+         ppctrl[playerIndex]->pPlayer2->OpenRequest(ireq);
+         ireq->Release();
+      }
+      pthread_mutex_unlock(&m_engine_m);
+
+#endif
+      
    }
    
    return 0;
@@ -819,13 +803,13 @@ void HelixSimplePlayer::startCrossFade()
 }
 
 
-void HelixSimplePlayer::play(const char *file, int playerIndex)
+void HelixSimplePlayer::play(const char *file, int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
 {
    if (!setURL(file, playerIndex))
-      play(playerIndex);
+      play(playerIndex, fadein, fadeout, fadetime);
 }
 
-void HelixSimplePlayer::play(int playerIndex)
+void HelixSimplePlayer::play(int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
 {
    int i;
    int firstPlayer = playerIndex == ALL_PLAYERS ? 0 : playerIndex;
@@ -845,13 +829,16 @@ void HelixSimplePlayer::play(int playerIndex)
       UINT32 starttime, endtime, now;
       for (i = firstPlayer; i < lastPlayer; i++)
       {
-         start(i);
+         // start is already protected...
+         start(i, fadein, fadeout, fadetime);
 
          starttime = GetTime();
          endtime = starttime + nTimeDelta;
          while (1)
          {
+            pthread_mutex_lock(&m_engine_m);
             DoEvents(nTimeDelta);
+            pthread_mutex_unlock(&m_engine_m);
             now = GetTime();
             if (now >= endtime)
                break;
@@ -882,7 +869,9 @@ void HelixSimplePlayer::play(int playerIndex)
 	    stop(playerIndex);
             bStopping = true;
          }
+         pthread_mutex_lock(&m_engine_m);
          DoEvent();
+         pthread_mutex_unlock(&m_engine_m);
       }
 
       // Stop all of the players, as they should all be done now
@@ -896,13 +885,13 @@ void HelixSimplePlayer::play(int playerIndex)
    }
 }
 
-void HelixSimplePlayer::start(int playerIndex)
+void HelixSimplePlayer::start(int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
 {
    if (playerIndex == ALL_PLAYERS)
    {
       int i;
       for (i=0; i<nNumPlayers; i++)
-         start(i);
+         start(i, fadein, fadeout, fadetime);
    }
    else
    {
@@ -913,15 +902,28 @@ void HelixSimplePlayer::start(int playerIndex)
       {
          STDOUT("Starting player %d...\n", playerIndex);
       }
-      ppctrl[playerIndex]->pPlayer->Begin();
+
+      ppctrl[playerIndex]->bFadeIn = fadein;
+      ppctrl[playerIndex]->bFadeOut = fadeout;
+      ppctrl[playerIndex]->ulFadeTime = fadetime;
+      if (!ppctrl[playerIndex]->bPlaying)
+      {
+         pthread_mutex_lock(&m_engine_m);
+         ppctrl[playerIndex]->pPlayer->Begin();
+         pthread_mutex_unlock(&m_engine_m);
+
+         ppctrl[playerIndex]->bPlaying = true;
+         ppctrl[playerIndex]->bStarting = true;
+         STDERR("Begin player %d\n", playerIndex);
+      }
    }
 }
 
 
-void HelixSimplePlayer::start(const char *file, int playerIndex)
+void HelixSimplePlayer::start(const char *file, int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
 {
    setURL(file, playerIndex);
-   start(playerIndex);
+   start(playerIndex, fadein, fadeout, fadetime);
 }
 
 
@@ -929,24 +931,29 @@ void HelixSimplePlayer::start(const char *file, int playerIndex)
 bool HelixSimplePlayer::done(int playerIndex)
 {
    BOOL bAllDone = TRUE;
-   
+
    if (playerIndex == ALL_PLAYERS)
       // Start checking at the end of the array since those players
       // were started last and are therefore more likely to not be
       // finished yet.
       for (int i = nNumPlayers - 1; i >= 0 && bAllDone; i--)
       {
-         if (!ppctrl[i]->pPlayer->IsDone())
-         {
-            bAllDone = FALSE;
-         }
+         pthread_mutex_lock(&m_engine_m);
+         if (ppctrl[i]->bStarting || !ppctrl[i]->pPlayer->IsDone())
+            ppctrl[i]->bPlaying = bAllDone = false;
+         pthread_mutex_unlock(&m_engine_m);
       }
    else
    {
       if (playerIndex < nNumPlayers)
-         bAllDone = ppctrl[playerIndex]->pPlayer->IsDone();
+      {
+         pthread_mutex_lock(&m_engine_m);
+         if (bAllDone = (!ppctrl[playerIndex]->bStarting && ppctrl[playerIndex]->pPlayer->IsDone()))
+            ppctrl[playerIndex]->bPlaying = false;
+         pthread_mutex_unlock(&m_engine_m);
+      }
    }
-   
+
    return bAllDone;
 }
 
@@ -955,12 +962,23 @@ void HelixSimplePlayer::stop(int playerIndex)
    if (playerIndex == ALL_PLAYERS)
       for (int i = 0; i < nNumPlayers; i++)
       {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[i]->pPlayer->Stop();
+         pthread_mutex_unlock(&m_engine_m);
+
+         ppctrl[i]->bPlaying = false;
+         ppctrl[i]->bStarting = false;
       }
    else
    {
       if (playerIndex < nNumPlayers)
+      {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[playerIndex]->pPlayer->Stop();
+         pthread_mutex_unlock(&m_engine_m);
+         ppctrl[playerIndex]->bPlaying = false;
+         ppctrl[playerIndex]->bStarting = false;
+      }
    }
 }
 
@@ -971,8 +989,10 @@ void HelixSimplePlayer::dispatch()
    
    tv.tv_sec = 0;
    tv.tv_usec = SLEEP_TIME*1000;
+   pthread_mutex_lock(&m_engine_m);
    pEngine->EventOccurred(pNothing);
-   usleep(1);
+   pthread_mutex_unlock(&m_engine_m);
+   //usleep(10000);
 }
 
 
@@ -985,7 +1005,12 @@ void HelixSimplePlayer::pause(int playerIndex)
          pause(i);
    else
       if (playerIndex < nNumPlayers)
+      {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[playerIndex]->pPlayer->Pause();
+         pthread_mutex_unlock(&m_engine_m);
+         ppctrl[playerIndex]->bPlaying = false;
+      }
 }
 
 void HelixSimplePlayer::resume(int playerIndex)
@@ -997,7 +1022,12 @@ void HelixSimplePlayer::resume(int playerIndex)
          resume(i);
    else
       if (playerIndex < nNumPlayers)
+      {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[playerIndex]->pPlayer->Begin();
+         pthread_mutex_unlock(&m_engine_m);
+         ppctrl[playerIndex]->bPlaying = true;
+      }
 }
 
 
@@ -1010,7 +1040,11 @@ void HelixSimplePlayer::seek(unsigned long pos, int playerIndex)
          seek(pos, i);
    else
       if (playerIndex < nNumPlayers)
+      {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[playerIndex]->pPlayer->Seek(pos);
+         pthread_mutex_unlock(&m_engine_m);
+      }
 }
 
 unsigned long HelixSimplePlayer::where(int playerIndex) const
@@ -1031,8 +1065,16 @@ unsigned long HelixSimplePlayer::duration(int playerIndex) const
 
 unsigned long HelixSimplePlayer::getVolume(int playerIndex)
 {
+   unsigned long vol;
+
    if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pVolume)
-      return (ppctrl[playerIndex]->pVolume->GetVolume());
+   {
+      pthread_mutex_lock(&m_engine_m);
+      vol = ppctrl[playerIndex]->pVolume->GetVolume();
+      pthread_mutex_unlock(&m_engine_m);
+
+      return (vol);
+   }
    else
       return 0;
 }
@@ -1048,7 +1090,11 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
    }
    else
       if (playerIndex < nNumPlayers)
+      {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[playerIndex]->pVolume->SetVolume(vol);
+         pthread_mutex_unlock(&m_engine_m);
+      }
 }
 
 void HelixSimplePlayer::setMute(bool mute, int playerIndex)
@@ -1062,14 +1108,26 @@ void HelixSimplePlayer::setMute(bool mute, int playerIndex)
    }
    else
       if (playerIndex < nNumPlayers)
+      {
+         pthread_mutex_lock(&m_engine_m);
          ppctrl[playerIndex]->pVolume->SetMute(mute);
+         pthread_mutex_unlock(&m_engine_m);
+      }
 }
 
 
 bool HelixSimplePlayer::getMute(int playerIndex)
 {
+   bool ismute;
+
    if (playerIndex < nNumPlayers)
-      return ppctrl[playerIndex]->pVolume->GetMute();
+   {
+      pthread_mutex_lock(&m_engine_m);
+      ismute = ppctrl[playerIndex]->pVolume->GetMute();
+      pthread_mutex_unlock(&m_engine_m);
+      
+      return ismute;
+   }
    else
       return false;
 }

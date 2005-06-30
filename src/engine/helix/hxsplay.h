@@ -10,22 +10,22 @@ class HXSplay : public HelixSimplePlayer
 public:
    enum pthr_states { STOP, PAUSE, PLAY };
 
-   HXSplay();
+   HXSplay(int &);
    virtual ~HXSplay();
 
    int getError() const { return m_Err; }
    void init(const char *corelibpath, 
              const char *pluginslibpath, 
-             const char *codecspath, 
-             int numPlayers = 1);
-   int  addPlayer();                                       // add another player
-   void play(int playerIndex = 0);                         // play the current url, waiting for it to finish
-   int  setURL(const char *file, int playerIndex = 0);     // set the current url
-   void stop(int playerIndex = 0);                         // stop the player(s)
-   void pause(int playerIndex = 0);                        // pause the player(s)
-   void resume(int playerIndex = 0);                       // resume the player(s)
-
-   pthr_states state(int playerIndex = 0) const;           // returns the state of the player
+             const char *codecspath);
+   void play();                         // play the current url, waiting for it to finish
+   int  setURL(const char *file);       // set the current url
+   void stop();                         // stop the player
+   void pause();                        // pause the player
+   void resume();                       // resume the player
+   void seek(unsigned long ms);         // seek player
+   unsigned long where() const;         // return where we are in the timeline of the current player
+   unsigned long duration() const;      // get the duration of the current player
+   pthr_states state() const;           // returns the state of the player
 
 protected:
    virtual void play_finished(int) {}
@@ -46,14 +46,20 @@ protected:
 
 
 private:
+   HXSplay();
    void      *handle;
    int        m_Err;
    int        m_numPlayers;
+   int        m_current;
+   int       &m_xfadeLength;
 
-   void startPlayer(int playerIndex = ALL_PLAYERS);                  // start playing the current url
-   void stopPlayer(int playerIndex = ALL_PLAYERS);                   // start playing the current url
-   void pausePlayer(int playerIndex = ALL_PLAYERS);                  // pause the player(s)
-   void resumePlayer(int playerIndex = ALL_PLAYERS);                 // pause the player(s)
+   int  addPlayer();                                       // add another player
+   void stop(int playerIndex);                             // stop the player(s)
+
+   void startPlayer(int playerIndex = ALL_PLAYERS);        // start playing the current url
+   void stopPlayer(int playerIndex = ALL_PLAYERS);         // start playing the current url
+   void pausePlayer(int playerIndex = ALL_PLAYERS);        // pause the player(s)
+   void resumePlayer(int playerIndex = ALL_PLAYERS);       // pause the player(s)
 
 };
 

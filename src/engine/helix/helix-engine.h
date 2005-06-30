@@ -15,9 +15,9 @@
 #include <qthread.h>
 #include <qobject.h>
 #include <sys/types.h>
-#include "hxsplay.h"
+#include <helix-sp.h>
 
-class HelixEngine : public Engine::Base, public HXSplay
+class HelixEngine : public Engine::Base, public HelixSimplePlayer
 {
    Q_OBJECT
 
@@ -56,6 +56,10 @@ private:
    QCString      m_pluginsdir;
    QCString      m_codecsdir;
 
+   int           m_numPlayers;
+   int           m_current;  // the current player
+   int           m_xfadeLength;
+   
    void timerEvent( QTimerEvent * );
 
    friend class HelixConfigDialog;

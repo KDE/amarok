@@ -19,7 +19,7 @@ HXSplay::PlayerPkg::PlayerPkg(HXSplay *player, int playerIndex) :
 }
 
 
-HXSplay::HXSplay() : handle(0),m_Err(0),m_numPlayers(0)
+HXSplay::HXSplay(int &xflength) : handle(0),m_Err(0),m_numPlayers(0), m_xfadeLength(xflength)
 {
 }
 
@@ -33,15 +33,15 @@ HXSplay::~HXSplay()
 
 void HXSplay::init(const char *corelibpath, 
                    const char *pluginslibpath, 
-                   const char *codecspath, 
-                   int numPlayers)
+                   const char *codecspath)
 {
    m_Err =0;
 
    if (!m_Err)
    {
-      m_numPlayers = numPlayers;
-      HelixSimplePlayer::init(corelibpath, pluginslibpath, codecspath, numPlayers);
+      m_numPlayers = 2;
+      m_current = 1;
+      HelixSimplePlayer::init(corelibpath, pluginslibpath, codecspath, 2);
       
       int i;
       
@@ -75,12 +75,11 @@ void HXSplay::PlayerPkg::run()
    splay->startPlayer(playerIndex);
    while (!splay->done(playerIndex))
    {
-      usleep(10000);
       m_ptm.lock();  // this mutex is probably overkill, since we only read state
       switch (m_pt_state)
       {
          case HXSplay::STOP:
-            if (state != HXSplay::STOP) // pretty much has to be true
+            if (state != HXSplay::STOP) 
                splay->stopPlayer(playerIndex);
             cerr << "Play thread was stopped for player " << playerIndex << endl;
             m_ptm.unlock();
@@ -100,7 +99,7 @@ void HXSplay::PlayerPkg::run()
       }
       m_ptm.unlock();
       splay->dispatch();
-   }
+   } 
    m_ptm.lock();
    splay->stopPlayer(playerIndex);
    m_pt_state = HXSplay::STOP;
@@ -112,30 +111,39 @@ void HXSplay::PlayerPkg::run()
 }
 
 
-void HXSplay::play(int playerIndex)
+void HXSplay::play()
 {
-   PlayerPkg *pkg = m_playerPkg[playerIndex];
+   PlayerPkg *pkg;
+   int nextPlayer;
 
-   if (playerIndex < m_numPlayers)
+   cerr << "HXXFadeLength " << m_xfadeLength << endl;
+
+   nextPlayer = m_current ? 0 : 1;
+   pkg = m_playerPkg[nextPlayer];
+
+   pkg->m_ptm.lock();
+   if (!m_Err && pkg->m_pt_state == HXSplay::STOP )
    {
-      pkg->m_ptm.lock();
-      if (!m_Err && pkg->m_pt_state == HXSplay::STOP )
-      {
-         pkg->m_pt_state = HXSplay::PLAY;
-         pkg->start();
-      }
-      pkg->m_ptm.unlock();
+      pkg->m_pt_state = HXSplay::PLAY;
+      pkg->start();
    }
+   pkg->m_ptm.unlock();
+
+   m_current = nextPlayer;
 }
 
-HXSplay::pthr_states HXSplay::state(int playerIndex) const
+HXSplay::pthr_states HXSplay::state() const
 {
-   return m_playerPkg[playerIndex]->m_pt_state;
+   return m_playerPkg[m_current]->m_pt_state;
 }
 
-void HXSplay::stop(int playerIndex)
+void HXSplay::stop()
 {
-   PlayerPkg *pkg = m_playerPkg[playerIndex];
+   PlayerPkg *pkg;
+
+   cerr << "In STOP " << m_current << endl;
+
+   pkg = m_playerPkg[m_current];
    HXSplay::pthr_states state;
 
    pkg->m_ptm.lock();
@@ -147,9 +155,27 @@ void HXSplay::stop(int playerIndex)
       pkg->wait();
 }
 
-void HXSplay::pause(int playerIndex)
+void HXSplay::stop(int playerIndex)
 {
-   PlayerPkg *pkg = m_playerPkg[playerIndex];
+   PlayerPkg *pkg;
+
+   pkg = m_playerPkg[playerIndex];
+   HXSplay::pthr_states state;
+
+   pkg->m_ptm.lock();
+   state = pkg->m_pt_state;
+   pkg->m_pt_state = STOP;
+   pkg->m_ptm.unlock();
+
+   if (state != HXSplay::STOP)
+      pkg->wait();   
+}
+
+void HXSplay::pause()
+{
+   PlayerPkg *pkg;
+
+   pkg = m_playerPkg[m_current];
 
    pkg->m_ptm.lock();
    if (pkg->m_pt_state == HXSplay::PLAY)
@@ -157,9 +183,11 @@ void HXSplay::pause(int playerIndex)
    pkg->m_ptm.unlock();
 }
 
-void HXSplay::resume(int playerIndex)
+void HXSplay::resume()
 {
-   PlayerPkg *pkg = m_playerPkg[playerIndex];
+   PlayerPkg *pkg;
+
+   pkg = m_playerPkg[m_current];
 
    pkg->m_ptm.lock();
    if (pkg->m_pt_state == HXSplay::PAUSE)
@@ -167,15 +195,31 @@ void HXSplay::resume(int playerIndex)
    pkg->m_ptm.unlock();
 }
 
-
-void HXSplay::startPlayer(int playerIndex)
+unsigned long HXSplay::where() const
 {
-   HelixSimplePlayer::start(playerIndex);
+   return HelixSimplePlayer::where(m_current);
 }
 
-int HXSplay::setURL(const char *file, int playerIndex)
+unsigned long HXSplay::duration() const
 {
-   return HelixSimplePlayer::setURL(file, playerIndex);
+   return HelixSimplePlayer::duration(m_current);
+}
+
+void HXSplay::seek(unsigned long ms)
+{
+   HelixSimplePlayer::seek(ms, m_current);
+}
+
+int HXSplay::setURL(const char *file)
+{
+   return HelixSimplePlayer::setURL(file, m_current ? 0 : 1); // we only actually flip the player if we actually play
+}
+
+
+////////////////////////////////////////////////////////////////
+void HXSplay::startPlayer(int playerIndex)
+{
+   HelixSimplePlayer::start(playerIndex, false, false, 30000);
 }
 
 void HXSplay::stopPlayer(int playerIndex)

@@ -48,29 +48,31 @@ HSPClientAdviceSink::HSPClientAdviceSink(IUnknown* pUnknown, LONG32 lClientIndex
     , m_lAverageBandwidth(0)
     , m_bOnStop(0)
 {
-    if (pUnknown)
-    {
-	m_pUnknown = pUnknown;
-	m_pUnknown->AddRef();
+   //m_splayer->bEnableAdviceSink = true;
 
-	if (HXR_OK != m_pUnknown->QueryInterface(IID_IHXRegistry, (void**)&m_pRegistry))
-	{
-	    m_pRegistry = NULL;
-	}
-
-	if (HXR_OK != m_pUnknown->QueryInterface(IID_IHXScheduler, (void**)&m_pScheduler))
-	{
-	    m_pScheduler = NULL;
-	}
-
-	IHXPlayer* pPlayer;
-	if(HXR_OK == m_pUnknown->QueryInterface(IID_IHXPlayer,
-						(void**)&pPlayer))
-	{
-	    pPlayer->AddAdviseSink(this);
-	    pPlayer->Release();
-	}
-    }
+   if (pUnknown)
+   {
+      m_pUnknown = pUnknown;
+      m_pUnknown->AddRef();
+      
+      if (HXR_OK != m_pUnknown->QueryInterface(IID_IHXRegistry, (void**)&m_pRegistry))
+      {
+         m_pRegistry = NULL;
+      }
+      
+      if (HXR_OK != m_pUnknown->QueryInterface(IID_IHXScheduler, (void**)&m_pScheduler))
+      {
+         m_pScheduler = NULL;
+      }
+      
+      IHXPlayer* pPlayer;
+      if(HXR_OK == m_pUnknown->QueryInterface(IID_IHXPlayer,
+                                              (void**)&pPlayer))
+      {
+         pPlayer->AddAdviseSink(this);
+         pPlayer->Release();
+      }
+   }
 }
 
 HSPClientAdviceSink::~HSPClientAdviceSink(void)

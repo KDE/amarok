@@ -27,9 +27,118 @@
 
 #include "hsphook.h"
 
+HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream) : 
+   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_stream(pAudioStream), m_count(0)
+{
+   AddRef();
+}
+
+HSPPreMixAudioHook::~HSPPreMixAudioHook()
+{
+}
+
+STDMETHODIMP
+HSPPreMixAudioHook::QueryInterface(REFIID riid, void**ppvObj)
+{
+    if(IsEqualIID(riid, IID_IUnknown))
+    {
+        AddRef();
+        *ppvObj = (IUnknown*)(IHXAudioHook *)this;
+        return HXR_OK;
+    }
+    else if(IsEqualIID(riid, IID_IHXAudioHook))
+    {
+        AddRef();
+        *ppvObj = (IHXAudioHook *)this;
+        return HXR_OK;
+    }
+    *ppvObj = NULL;
+    return HXR_NOINTERFACE;
+}
+
+STDMETHODIMP_(UINT32)
+HSPPreMixAudioHook::AddRef()
+{
+    return InterlockedIncrement(&m_lRefCount);
+}
+
+STDMETHODIMP_(UINT32)
+HSPPreMixAudioHook::Release()
+{
+    if (InterlockedDecrement(&m_lRefCount) > 0)
+    {
+        return m_lRefCount;
+    }
+
+    delete this;
+    return 0;
+}
+
+STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData *pAudioOutData)
+{
+   m_count++;
+
+//#ifdef DEBUG_PURPOSES_ONLY
+   if (!(m_count % 100))
+   {
+      STDERR("PRE: time: %d  ", pAudioInData->ulAudioTime);
+      switch (pAudioInData->uAudioStreamType)
+      {
+         case INSTANTANEOUS_AUDIO:
+            STDERR(" INSTANTANEOUS_AUDIO ");
+            break;
+         case STREAMING_AUDIO:
+            STDERR(" STREAMING_AUDIO ");
+            break;
+         case TIMED_AUDIO:
+            STDERR(" TIMED_AUDIO ");
+            break;
+         case STREAMING_INSTANTANEOUS_AUDIO:
+            STDERR(" STREAMING_INSTANTANEOUS_AUDIO ");
+            break;
+      }
+      STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
+   }
+//#endif
+
+   unsigned char *outbuf, *data;
+   unsigned long len;
+   IHXBuffer *ibuf;
+
+   m_Player->pCommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+   if (ibuf)
+   {
+      pAudioInData->pData->Get(data, len);
+      ibuf->SetSize(len);
+      outbuf = ibuf->GetBuffer();
+      memcpy(outbuf, data, len);
+      pAudioOutData->pData = ibuf;
+      pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
+      pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
+   }
+
+   return 0;
+}
+
+STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
+{
+   STDERR("PRE MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
+          pFormat->uBitsPerSample,
+          pFormat->ulSamplesPerSec,
+          pFormat->uMaxBlockSize);
+
+   m_format = *pFormat;
+
+   return 0;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) : 
    m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_i(0), m_j(2), m_k(1)
 {
+   AddRef();
    memset(&m_format, 0, sizeof(m_format));
 }
 
@@ -83,10 +192,10 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
    m_count++;
 
-#ifdef DEBUG_PURPOSES_ONLY
+//#ifdef DEBUG_PURPOSES_ONLY
    if (!(m_count % 100))
    {
-      STDERR("time: %d  ", pAudioInData->ulAudioTime);
+      STDERR("POST: time: %d  ", pAudioInData->ulAudioTime);
       switch (pAudioInData->uAudioStreamType)
       {
          case INSTANTANEOUS_AUDIO:
@@ -105,7 +214,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
       STDERR("len %d\n", len);
       STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
    }
-#endif
+//#endif
 
    scopeify(pAudioInData->ulAudioTime, data, len);
    if (m_Player->isEQenabled() && m_format.uBitsPerSample == 16)
@@ -130,7 +239,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
 STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   STDERR("HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
+   STDERR("POST MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);
