@@ -33,7 +33,7 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 
 dcop --all-users amarok playlist popupMessage "Welcome to the amaroK live cd remaster utility. The first step is to select the iso image"
 
-iso=`kdialog --getopenfilename /home "*.iso"`
+iso=`kdialog --title "Choose the amaroK Live ISO" --getopenfilename /home "*.iso"`
 
 if [ $iso = 0 ] ; then
     exit
