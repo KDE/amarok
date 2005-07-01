@@ -1780,7 +1780,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                     PlaylistBrowser *pb = PlaylistBrowser::instance();
                     pb->createPlaylist( false );
                     pb->m_lastPlaylist->insertTracks( 0, list, map );
-                    pb->savePlaylist( pb->m_lastPlaylist );
+//                     pb->savePlaylist( pb->m_lastPlaylist );
                 }
             }
         }
