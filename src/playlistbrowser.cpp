@@ -843,7 +843,7 @@ void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool for
 
         KURL auxKURL;
         auxKURL.setPath(path);
-        new PlaylistEntry( parent, 0, auxKURL );
+        m_lastPlaylist = new PlaylistEntry( parent, 0, auxKURL );
         parent->setOpen( true );
     }
 }
@@ -890,10 +890,10 @@ PlaylistBrowser::findItem( QString &t, int c )
     return (PlaylistBrowserEntry *)m_listview->findItem( t, c, Qt::ExactMatch );
 }
 
-void PlaylistBrowser::saveCurrentPlaylist()
+void PlaylistBrowser::createPlaylist( bool current )
 {
     bool ok;
-    QString name = KInputDialog::getText(i18n("Save Current Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
+    QString name = KInputDialog::getText(i18n("Save Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
 
     if( ok )
     {
@@ -903,12 +903,20 @@ void PlaylistBrowser::saveCurrentPlaylist()
         if ( !info.isDir() ) QFile::remove( folder );
 
         QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + name + ".m3u";
-        debug() << "Saving Current-Playlist to: " << path << endl;
-        if ( !Playlist::instance()->saveM3U( path ) ) {
-            KMessageBox::sorry( this, i18n( "Cannot write playlist (%1).").arg(path) );
-            return;
+        debug() << "Saving Playlist to: " << path << endl;
+
+        if( current )
+        {
+            if ( !Playlist::instance()->saveM3U( path ) ) {
+                KMessageBox::sorry( this, i18n( "Cannot write playlist (%1).").arg(path) );
+                return;
+            }
+            addPlaylist( path );
         }
-        addPlaylist( path );
+        else
+        {
+            m_lastPlaylist = new PlaylistEntry( static_cast<QListViewItem*>(m_playlistCategory), 0, path );
+        }
     }
 
 }
@@ -1275,7 +1283,7 @@ void PlaylistBrowser::slotSaveMenu( int id ) // SLOT
     switch( id )
     {
         case PLAYLIST:
-            saveCurrentPlaylist();
+            createPlaylist();
             break;
 
         case DYNAMIC:
@@ -1761,10 +1769,18 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
             }
             else //dropped on a playlist item
             {
-                if ( isPlaylist( item ) ) {
+                if( isPlaylist( item ) ) {
                     PlaylistEntry *playlist = (PlaylistEntry *)item;
                     //append the dropped tracks
                     playlist->insertTracks( 0, list, map );
+                }
+                else if( isCategory( item ) &&
+                         item == PlaylistBrowser::instance()->m_playlistCategory )
+                {
+                    PlaylistBrowser *pb = PlaylistBrowser::instance();
+                    pb->createPlaylist( false );
+                    pb->m_lastPlaylist->insertTracks( 0, list, map );
+                    pb->savePlaylist( pb->m_lastPlaylist );
                 }
             }
         }

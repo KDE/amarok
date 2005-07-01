@@ -104,7 +104,7 @@ class PlaylistBrowser : public QVBox
         void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
-        void saveCurrentPlaylist();
+        void createPlaylist( bool current = true );
 
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
@@ -118,6 +118,7 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_dynamicCategory;
         PlaylistCategory    *m_coolStreams;
         PlaylistCategory    *m_smartDefaults;
+        PlaylistEntry       *m_lastPlaylist;
 
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;
