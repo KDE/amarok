@@ -43,7 +43,9 @@
 #include <kimageeffect.h> // gradient background image
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <kio/netaccess.h>
 #include <klocale.h>
+#include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
@@ -98,7 +100,6 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
-        , m_shadowAlbumImage( 0 )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
         , m_cuefile( NULL )
@@ -151,6 +152,9 @@ ContextBrowser::ContextBrowser( const char *name )
     setTabEnabled( m_currentTrackPage->view(), false );
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
+
+    // Delete folder with the cached coverimage shadow pixmaps
+    KIO::NetAccess::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), 0 );
 
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
@@ -1788,6 +1792,10 @@ bool CurrentTrackJob::doJob()
                     }
             }
 
+            QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
+            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                albumImage = ContextBrowser::makeShadowedImage( albumImage );
+
             m_HTMLSource.append( QStringx (
             "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
                 "<td>"
@@ -1814,7 +1822,7 @@ bool CurrentTrackJob::doJob()
                     << escapeHTMLAttr( currentTrack.artist() ) // artist name
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
-                    << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
+                    << escapeHTMLAttr( albumImage )
                     << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
                     << QString::number( artist_id )
                     << values[ i + 1 ] //album.id
@@ -2788,28 +2796,35 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 QString
 ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
 {
-    const uint shadowSize = 6;
-
     // Hold toolkit lock, to make the pixmap operations threadsafe
     kapp->lock();
 
-    QPixmap original( albumImage );
-    QImage shadowed( locate( "data", "amarok/images/shadow_albumcover.png" ) );
-    shadowed = shadowed.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
+    const uint shadowSize = 6;
+    const QPixmap original( albumImage );
+    QImage shadow;
 
-    QPixmap target( shadowed );
+    const QString folder = amaroK::saveLocation( "covershadow-cache/" );
+    const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( original.width() + shadowSize ).arg( original.height() + shadowSize  );
+    if ( QFile::exists( folder + file ) )
+        shadow.load( folder + file );
+    else {
+        shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+        shadow = shadow.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
+        shadow.save( folder + file, "PNG" );
+    }
+
+    QPixmap target( shadow );
     bitBlt( &target, 0, 0, &original );
 
-    ContextBrowser* const cb = ContextBrowser::instance();
-    delete cb->m_shadowAlbumImage;
-    cb->m_shadowAlbumImage = new KTempFile( QString::null, "png" );
-    cb->m_shadowAlbumImage->setAutoDelete( true );
-    target.save( cb->m_shadowAlbumImage->name(), "PNG" );
+    QByteArray ba;
+    QBuffer buffer( ba );
+    buffer.open( IO_WriteOnly );
+    target.save( &buffer, "PNG" ); // writes image into ba in PNG format
 
     // Release toolkit lock
     kapp->unlock();
 
-    return cb->m_shadowAlbumImage->name();
+    return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );
 }
 
 

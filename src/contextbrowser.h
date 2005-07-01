@@ -136,7 +136,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         KTempFile    *m_bgGradientImage;
         KTempFile    *m_headerGradientImage;
         KTempFile    *m_shadowGradientImage;
-        KTempFile    *m_shadowAlbumImage;
         QStringList   m_metadataHistory;
         KURL          m_currentURL;
 
