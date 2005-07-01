@@ -716,10 +716,18 @@ void App::engineStateChanged( Engine::State state )
         else m_pPlaylistWindow->setCaption( "amaroK" );
         QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
         break;
+
     case Engine::Playing:
+        if ( m_oldState == Engine::Paused )
+            amaroK::OSD::instance()->OSDWidget::show( i18n("Unpaused" ) );
         if ( !bundle.prettyTitle().isEmpty() )
             m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
         break;
+
+    case Engine::Paused:
+        amaroK::OSD::instance()->OSDWidget::show( i18n("Paused") );
+        break;
+
     case Engine::Idle:
         if ( AmarokConfig::showPlayerWindow() )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
@@ -729,6 +737,8 @@ void App::engineStateChanged( Engine::State state )
     default:
         ;
     }
+
+    m_oldState = state;
 }
 
 

@@ -41,7 +41,7 @@ class OSDWidget : public QWidget
         virtual void show();
 
         /**
-         * For the sake of somplicity, when these settings are
+         * For the sake of simplicity, when these settings are
          * changed they do not take effect until the next time
          * the OSD is shown!
          *
