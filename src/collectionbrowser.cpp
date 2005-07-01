@@ -1575,7 +1575,7 @@ CollectionView::manipulateThe( QString &str, bool reverse )
     if( reverse )
     {
         QString begin = str.left( 3 );
-        str = str.append( i18n(", %1") ).arg( begin );
+        str = str.append( ", %1" ).arg( begin );
         str = str.mid( 4 );
         return;
     }
