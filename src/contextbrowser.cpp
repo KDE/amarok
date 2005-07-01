@@ -44,6 +44,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
+#include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
@@ -2801,9 +2802,15 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
     delete cb->m_shadowAlbumImage;
     cb->m_shadowAlbumImage = new KTempFile( QString::null, "png" );
     cb->m_shadowAlbumImage->setAutoDelete( true );
-    target.save( cb->m_shadowAlbumImage->name(), "PNG" );
+    target.convertToImage().save( cb->m_shadowAlbumImage->name(), "PNG" );
 
     return cb->m_shadowAlbumImage->name();
+
+/*    QByteArray ba;
+    QBuffer buffer( ba );
+    buffer.open( IO_WriteOnly );
+    target.save( &buffer, "PNG" ); // writes image into ba in PNG format
+    return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );*/
 }
 
 
