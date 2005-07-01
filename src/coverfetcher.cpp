@@ -25,6 +25,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
+#include <kwin.h>
 
 
 CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
@@ -346,6 +347,10 @@ CoverFetcher::getUserQuery( QString explanation )
         CoverFoundDialog( QWidget *parent, const QImage &cover, const QString &productname )
                 : KDialog( parent )
         {
+            // Gives the window a small title bar, and skips a taskbar entry
+            KWin::setType( winId(), NET::Utility );
+            KWin::setState( winId(), NET::SkipTaskbar );
+
             (new QVBoxLayout( this ))->setAutoAdd( true );
 
             QLabel      *labelPix  = new QLabel( this );

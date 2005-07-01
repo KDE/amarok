@@ -98,6 +98,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_bgGradientImage( 0 )
         , m_headerGradientImage( 0 )
         , m_shadowGradientImage( 0 )
+        , m_shadowAlbumImage( 0 )
         , m_suggestionsOpen( true )
         , m_favouritesOpen( true )
         , m_cuefile( NULL )
@@ -1446,8 +1447,10 @@ bool CurrentTrackJob::doJob()
     QString albumImage = CollectionDB::instance()->albumImage( currentTrack );
     if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
         albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
-    else
+    else {
         albumImageTitleAttr = i18n( "Click for information from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
+        albumImage = ContextBrowser::makeShadowedImage( albumImage );
+    }
 
     m_HTMLSource.append(
             "<div id='current_box' class='box'>"
@@ -1481,7 +1484,7 @@ bool CurrentTrackJob::doJob()
                 << escapeHTML( currentTrack.album() )
                 << escapeHTMLAttr( currentTrack.artist() )
                 << escapeHTMLAttr( currentTrack.album() )
-                << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack ) )
+                << escapeHTMLAttr( albumImage )
                 << albumImageTitleAttr
                 << i18n( "Look up this track at musicbrainz.org" )
                 << escapeHTMLAttr( currentTrack.artist() )
@@ -2779,6 +2782,28 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
         if ( currentPage() == m_currentTrackPage->view() )
             showCurrentTrack();
     }
+}
+
+
+QString
+ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
+{
+    const uint shadowSize = 6;
+
+    QPixmap original( albumImage );
+    QImage shadowed( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+    shadowed = shadowed.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
+
+    QPixmap target( shadowed );
+    bitBlt( &target, 0, 0, &original );
+
+    ContextBrowser* const cb = ContextBrowser::instance();
+    delete cb->m_shadowAlbumImage;
+    cb->m_shadowAlbumImage = new KTempFile( QString::null, "png" );
+    cb->m_shadowAlbumImage->setAutoDelete( true );
+    target.save( cb->m_shadowAlbumImage->name(), "PNG" );
+
+    return cb->m_shadowAlbumImage->name();
 }
 
 

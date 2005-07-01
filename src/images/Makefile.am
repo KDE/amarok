@@ -30,6 +30,7 @@ images_DATA = \
     nocover.png \
     pl_active2.png \
     pl_inactive2.png \
+    shadow_albumcover.png \
     sbinner_stars.png \
     splash_screen.png \
     time_minus.png \
