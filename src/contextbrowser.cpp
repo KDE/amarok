@@ -44,7 +44,6 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
-#include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
@@ -2791,6 +2790,9 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
 {
     const uint shadowSize = 6;
 
+    // Hold toolkit lock, to make the pixmap operations threadsafe
+    kapp->lock();
+
     QPixmap original( albumImage );
     QImage shadowed( locate( "data", "amarok/images/shadow_albumcover.png" ) );
     shadowed = shadowed.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
@@ -2802,15 +2804,12 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
     delete cb->m_shadowAlbumImage;
     cb->m_shadowAlbumImage = new KTempFile( QString::null, "png" );
     cb->m_shadowAlbumImage->setAutoDelete( true );
-    target.convertToImage().save( cb->m_shadowAlbumImage->name(), "PNG" );
+    target.save( cb->m_shadowAlbumImage->name(), "PNG" );
+
+    // Release toolkit lock
+    kapp->unlock();
 
     return cb->m_shadowAlbumImage->name();
-
-/*    QByteArray ba;
-    QBuffer buffer( ba );
-    buffer.open( IO_WriteOnly );
-    target.save( &buffer, "PNG" ); // writes image into ba in PNG format
-    return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );*/
 }
 
 
