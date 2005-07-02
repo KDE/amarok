@@ -2807,10 +2807,7 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
 QString
 ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
 {
-    // Hold toolkit lock, to make the pixmap operations threadsafe
-    kapp->lock();
-
-    const QPixmap original( albumImage );
+    const QImage original( albumImage );
     QImage shadow;
     const uint shadowSize = static_cast<uint>( original.width() / 100.0 * 6.0 );
 
@@ -2824,16 +2821,13 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
         shadow.save( folder + file, "PNG" );
     }
 
-    QPixmap target( shadow );
+    QImage target( shadow );
     bitBlt( &target, 0, 0, &original );
 
     QByteArray ba;
     QBuffer buffer( ba );
     buffer.open( IO_WriteOnly );
     target.save( &buffer, "PNG" ); // writes image into ba in PNG format
-
-    // Release toolkit lock
-    kapp->unlock();
 
     return QString("data:image/png;base64,%1").arg( KCodecs::base64Encode( ba ) );
 }
