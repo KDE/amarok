@@ -2810,9 +2810,9 @@ ContextBrowser::makeShadowedImage( const QString& albumImage ) //static
     // Hold toolkit lock, to make the pixmap operations threadsafe
     kapp->lock();
 
-    const uint shadowSize = 6;
     const QPixmap original( albumImage );
     QImage shadow;
+    const uint shadowSize = static_cast<uint>( original.width() / 100.0 * 6.0 );
 
     const QString folder = amaroK::saveLocation( "covershadow-cache/" );
     const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( original.width() + shadowSize ).arg( original.height() + shadowSize  );
