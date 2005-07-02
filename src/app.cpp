@@ -477,7 +477,7 @@ void App::applySettings( bool firstTime )
     } //</Engine>
 
     { //<Collection>
-        CollectionView::instance()->renderView();
+
     } //</Collection>
 
     {   // delete unneeded cover images from cache
