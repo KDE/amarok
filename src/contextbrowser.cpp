@@ -57,8 +57,6 @@
 // .replace( "%", "%25" ) has to be the last one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
 #define escapeHTMLAttr(s) QString(s).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" ).replace( "%", "%25" )
 
-typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
-
 using amaroK::QStringx;
 
 /**
@@ -728,7 +726,8 @@ verboseTimeSince( const QDateTime &datetime )
 }
 
 
-void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType)
+void
+ContextBrowser::ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType)
 {
     // This function create the html code used to display a list of albums. Each album
     // is a 'toggleable' block.
@@ -785,6 +784,10 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
 
             if (CollectionDB::instance()->albumIsCompilation(reqResult[ i + 1 ]))
             {
+                QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
+                if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                    albumImage = ContextBrowser::makeShadowedImage( albumImage );
+
                 // Compilation image
                 htmlCode.append( QStringx (
                                             "<td width='1'>"
@@ -797,13 +800,17 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
                                  .args( QStringList()
                                         << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
                                         << i18n( "Click for information from amazon.com, right-click for menu." )
-                                        << escapeHTMLAttr( CollectionDB::instance()->albumImage(  albumValues[5], reqResult[ i ], 50 ) )
+                                        << escapeHTMLAttr( albumImage )
                                         << reqResult[ i + 1 ] //album.id
                                         << albumName ) );
             }
             else
             {
                 QString artistName = escapeHTML( albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5] );
+
+                QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 );
+                if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                    albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
                 // Album image
                 htmlCode.append( QStringx (
@@ -822,7 +829,7 @@ void ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QStri
                                         << escapeHTMLAttr( albumValues[5] ) // artist name
                                         << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
                                         << i18n( "Click for information from amazon.com, right-click for menu." )
-                                        << escapeHTMLAttr( CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], 50 ) )
+                                        << escapeHTMLAttr( albumImage )
                                         << albumValues[6]
                                         << reqResult[ i + 1 ] //album.id
                                         << artistName
@@ -1920,6 +1927,10 @@ bool CurrentTrackJob::doJob()
                     }
             }
 
+            QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
+            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                albumImage = ContextBrowser::makeShadowedImage( albumImage );
+
             m_HTMLSource.append( QStringx (
             "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
                 "<td>"
@@ -1945,7 +1956,7 @@ bool CurrentTrackJob::doJob()
                     << values[ i + 1 ]
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
-                    << escapeHTMLAttr( CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 ) )
+                    << escapeHTMLAttr( albumImage )
                     << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
                     << values[ i + 1 ] //album.id
                     << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )

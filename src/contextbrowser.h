@@ -86,6 +86,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
     private:
         enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH };
         enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER };
+        typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
         static const uint WIKI_MAX_HISTORY = 20;
 
         void setStyleSheet_Default( QString& styleSheet );
@@ -96,6 +97,8 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void showHomeBySongs();
         void showHomeByAlbums();
         static QString makeShadowedImage( const QString& albumImage );
+
+        void   ContructHTMLAlbums(const QStringList & reqResult, QString & htmlCode, QString stID, T_SHOW_ALBUM_TYPE showAlbumType);
 
         KHTMLPart    *m_homePage;
         KHTMLPart    *m_currentTrackPage;
