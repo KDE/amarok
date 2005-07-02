@@ -402,7 +402,6 @@ CollectionView::renderView()  //SLOT
             values = tmpvalues;
         }
 
-
         if( values.count() )
             for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
             {
@@ -577,17 +576,17 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         m_cat2 == CollectionBrowser::IdVisYearAlbum ||
         m_cat3 == CollectionBrowser::IdVisYearAlbum )
     {
-        if (m_cat1==CollectionBrowser::IdVisYearAlbum)
+        if( m_cat1 == CollectionBrowser::IdVisYearAlbum )
         {
             VisYearAlbum = 1;
             q_cat1 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat2==CollectionBrowser::IdVisYearAlbum)
+        if( m_cat2 == CollectionBrowser::IdVisYearAlbum )
         {
             VisYearAlbum = 2;
             q_cat2 = CollectionBrowser::IdAlbum;
         }
-        if (m_cat3==CollectionBrowser::IdVisYearAlbum)
+        if( m_cat3 == CollectionBrowser::IdVisYearAlbum )
         {
             VisYearAlbum = 3;
             q_cat3 = CollectionBrowser::IdAlbum;
@@ -632,7 +631,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             {
                 c = false;
                 qb.addReturnValue( q_cat2, QueryBuilder::valName );
-                if (VisYearAlbum==2)
+                if( VisYearAlbum == 2 )
                 {
                     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
                     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
@@ -784,7 +783,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QStringList tmpvalues;
         for( unsigned int i=0; i<=values.count() - countReturnValues; i += countReturnValues )
         {
-            tmpvalues += (values[i+1].isEmpty() ? "?" : values[i+1]) + i18n( " - " ) + (values[i].isEmpty() ? i18n( "Unknown" ) : values[i]);
+            tmpvalues += ( values[i+1].isEmpty() ? "?" : values[i+1]) +
+                           i18n( " - " ) +
+                         ( values[i].isEmpty() ? i18n( "Unknown" ) : values[i] );
         }
         values = tmpvalues;
         countReturnValues--;
