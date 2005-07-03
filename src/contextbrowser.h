@@ -72,6 +72,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void lyricsAdd();
         void lyricsSearch();
         void lyricsRefresh();
+        void lyricsExternalPage();
 
         void wikiHistoryBack();
         void wikiHistoryForward();
@@ -84,7 +85,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void wikiResult( KIO::Job* job );
 
     private:
-        enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH };
+        enum { LYRICS_ADD, LYRICS_SEARCH, LYRICS_REFRESH, LYRICS_BROWSER };
         enum { WIKI_BACK, WIKI_FORWARD, WIKI_ARTIST, WIKI_ALBUM, WIKI_TITLE, WIKI_BROWSER };
         typedef enum {SHOW_ALBUM_NORMAL, SHOW_ALBUM_SCORE, SHOW_ALBUM_LEAST_PLAY} T_SHOW_ALBUM_TYPE;
         static const uint WIKI_MAX_HISTORY = 20;
@@ -121,6 +122,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         QStringList   m_lyricHashes;
         QString       m_lyricAddUrl;
         QString       m_lyricSearchUrl;
+        QString       m_lyricCurrentUrl;
         KIO::TransferJob* m_lyricJob;
         Browser::ToolBar* m_lyricsToolBar;
 

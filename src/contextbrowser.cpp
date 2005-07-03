@@ -116,6 +116,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->insertButton( "edit_add", LYRICS_ADD, true, i18n("Add Lyrics") );
     m_lyricsToolBar->insertButton( "find", LYRICS_SEARCH, true, i18n("Search For Lyrics") );
     m_lyricsToolBar->insertButton( "reload", LYRICS_REFRESH, true, i18n("Refresh") );
+    m_lyricsToolBar->insertLineSeparator();
+    m_lyricsToolBar->insertButton( "exec", LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     m_lyricsPage = new KHTMLPart( m_lyricsTab, "lyrics_page" );
     m_lyricsPage->setJavaEnabled( false );
@@ -177,6 +179,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_lyricsToolBar->getButton( LYRICS_ADD    ), SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
     connect( m_lyricsToolBar->getButton( LYRICS_SEARCH    ), SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
     connect( m_lyricsToolBar->getButton( LYRICS_REFRESH    ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
 
     connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
     connect( m_wikiToolBar->getButton( WIKI_FORWARD ), SIGNAL(clicked( int )), SLOT(wikiHistoryForward()) );
@@ -2321,18 +2324,16 @@ void ContextBrowser::showLyrics( const QString &hash )
         title.remove( re );
     }
 
-    QString url;
     if ( !hash.isEmpty() )
-        url = QString( "http://lyrc.com.ar/en/tema1en.php?hash=%1" )
+        m_lyricCurrentUrl = QString( "http://lyrc.com.ar/en/tema1en.php?hash=%1" )
                   .arg( hash );
     else
-        url = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
+        m_lyricCurrentUrl = QString( "http://lyrc.com.ar/en/tema1en.php?artist=%1&songname=%2" )
                 .arg(
                 KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ),
                 KURL::encode_string_no_slash( title ) );
 
-
-    debug() << "Using this url: " << url << endl;
+    debug() << "Using this url: " << m_lyricCurrentUrl << endl;
 
     m_lyrics = QString::null;
     m_lyricAddUrl = QString( "http://lyrc.com.ar/en/add/add.php?grupo=%1&tema=%2&disco=%3&ano=%4" ).arg(
@@ -2344,7 +2345,7 @@ void ContextBrowser::showLyrics( const QString &hash )
         .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
 
-    m_lyricJob = KIO::storedGet( url, false, false );
+    m_lyricJob = KIO::storedGet( m_lyricCurrentUrl, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_lyricJob )
             .setDescription( i18n( "Fetching Lyrics" ) );
@@ -2439,6 +2440,14 @@ ContextBrowser::showLyricSuggestions()
         m_lyrics += QString( "%1</a><br />" ).arg( m_lyricSuggestions[i] );
     }
 }
+
+
+void
+ContextBrowser::lyricsExternalPage() //SLOT
+{
+    kapp->invokeBrowser( m_lyricCurrentUrl );
+}
+
 
 void
 ContextBrowser::lyricsAdd() //SLOT
