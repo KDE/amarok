@@ -11,13 +11,17 @@
  *            (C) 2004, 2005 Max Howell
  */
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"    //for albumCover location
+#include "osd.h"
+
 #include <kapplication.h>
 #include <kpixmap.h>
 #include <kpixmapeffect.h>
-#include "osd.h"
+#include <kstandarddirs.h>   //locate
+
 #include <qbitmap.h>
 #include <qpainter.h>
 #include <qregexp.h>
@@ -132,8 +136,13 @@ OSDWidget::determineMetrics( const uint M )
                 QMIN( rect.height(), m_cover.height() ),
                 QImage::ScaleMin ); //this will force us to be with our bounds
 
+        int shadowWidth = 0;
+        if( m_drawShadow && !m_scaledCover.hasAlpha() )
+            shadowWidth = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
+
         const int widthIncludingImage = rect.width()
                 + m_scaledCover.width()
+                + shadowWidth
                 + M; //margin between text + image
 
         rect.setWidth( widthIncludingImage );
@@ -237,14 +246,32 @@ OSDWidget::render( const uint M, const QSize &size )
         QRect r( rect );
         r.setTop( (size.height() - m_scaledCover.height()) / 2 );
         r.setSize( m_scaledCover.size() );
-        p.drawPixmap( r.topLeft(), m_scaledCover );
 
-        if( !m_scaledCover.hasAlpha() ) {
-            // don't draw a border for eg, the amaroK icon
-            r.addCoords( -1, -1, 1, 1 );
-            p.setPen( shadowColor );
-            p.drawRect( r );
+        if( !m_scaledCover.hasAlpha() && m_drawShadow ) {
+            // don't draw a shadow for eg, the amaroK icon
+            QImage shadow;
+            const uint shadowSize = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
+
+            const QString folder = amaroK::saveLocation( "covershadow-cache/" );
+            const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( m_scaledCover.width()  + shadowSize )
+                                                                        .arg( m_scaledCover.height() + shadowSize );
+            if ( QFile::exists( folder + file ) )
+                shadow.load( folder + file );
+            else {
+                shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+                shadow = shadow.smoothScale( m_scaledCover.width() + shadowSize, m_scaledCover.height() + shadowSize );
+                shadow.save( folder + file, "PNG" );
+            }
+
+            QPixmap target;
+            target.convertFromImage( shadow ); //FIXME slow
+            copyBlt( &target, 0, 0, &m_scaledCover );
+            m_scaledCover = target;
+            r.setTop( (size.height() - m_scaledCover.height()) / 2 );
+            r.setSize( m_scaledCover.size() );
         }
+
+        p.drawPixmap( r.topLeft(), m_scaledCover );
 
         rect.rLeft() += m_scaledCover.width() + M;
     }
@@ -309,8 +336,6 @@ OSDWidget::setScreen( int screen )
     const int n = QApplication::desktop()->numScreens();
     m_screen = (screen >= n) ? n-1 : screen;
 }
-
-
 
 
 //////  OSDPreviewWidget below /////////////////////
