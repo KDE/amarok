@@ -25,10 +25,6 @@ if with_mas
     MAS_ENGINE_SUBDIR = mas
 endif
 
-if with_akode
-    AKODE_ENGINE_SUBDIR = akode
-endif
-
 libengine_la_SOURCES = \
     enginebase.cpp
 
