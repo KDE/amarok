@@ -5,7 +5,6 @@
 #define DEBUG_PREFIX "MetaBundle"
 
 #include "amarokconfig.h"
-#include "debug.h"
 #include "collectiondb.h"
 #include <kfilemetainfo.h>
 #include <kmimetype.h>
@@ -52,12 +51,12 @@ MetaBundle::MetaBundle( const QString& title,
         , m_isValidMedia( true )
 {
    if( title.contains( '-' ) ) {
-      m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
-      m_artist = title.section( '-', 0, 0 ).stripWhiteSpace();
+       m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
+       m_artist = title.section( '-', 0, 0 ).stripWhiteSpace();
    }
    else {
-      m_title  = title;
-      m_artist = streamName; //which is sort of correct..
+       m_title  = title;
+       m_artist = streamName; //which is sort of correct..
    }
 }
 

@@ -76,7 +76,7 @@ void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QStr
 
     artist = list[0];
     album  = list[1];
-    track = list[2];
+    track  = list[2];
 }
 
 
