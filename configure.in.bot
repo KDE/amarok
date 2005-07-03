@@ -175,10 +175,6 @@ else
         echo " =   + xine-engine"
     fi
 
-    if test x$have_kde34 = xyes -a x$have_akode = xyes; then
-        echo " =   + aKode-engine"
-    fi
-
     if test x$build_nmm = xyes; then
         echo " =   + NMM-engine"
     fi

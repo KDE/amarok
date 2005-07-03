@@ -182,62 +182,6 @@ AC_SUBST(LIBS_XINE)
 
 
 ###############################################################################
-# BEGIN AKODE CHECK
-###############################################################################
-
-AC_ARG_WITH(akode,
-    AC_HELP_STRING([--without-akode],[build amaroK without aKode-engine]),
-    [build_akode=$withval],
-    [build_akode=yes]
-)
-
-if test "$build_akode" != "no" ; then
-    KDE_CHECK_HEADER(akode/player.h, have_akode=yes, have_akode=no)
-
-    #####################################
-    # BEGIN Check for KDE >= 3.4-beta2
-    #####################################
-
-    AC_MSG_CHECKING([for KDE 3.4-beta2 availability])
-
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
-    amarok_save_CXXFLAGS="$CXXFLAGS"
-    amarok_save_LIBS="$LIBS"
-    LIBS="$LIBS $X_EXTRA_LIBS"
-    CXXFLAGS="$CXXFLAGS $all_includes"
-
-    AC_TRY_COMPILE(
-        [
-            #include <kdeversion.h>
-            #if !( KDE_IS_VERSION( 3, 3, 92 ) )
-            #error aKode-engine requires KDE 3.4-beta2!
-            #endif
-        ],
-        [],
-        AC_MSG_RESULT( yes )
-        have_kde34=yes,
-        AC_MSG_RESULT( no )
-    )
-
-    CXXFLAGS="$amarok_save_CXXFLAGS"
-    LIBS="$amarok_save_LIBS"
-    AC_LANG_RESTORE
-
-    ###################################
-    # END Check for KDE >= 3.4-beta2
-    ###################################
-fi
-
-AM_CONDITIONAL(with_akode, test x$have_akode = xyes -a x$have_kde34 = xyes)
-
-###############################################################################
-# END AKODE CHECK
-###############################################################################
-
-
-
-###############################################################################
 # BEGIN NMM CHECK
 ###############################################################################
 
