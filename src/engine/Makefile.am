@@ -39,5 +39,6 @@ SUBDIRS = . \
     $(XINE_ENGINE_SUBDIR) \
     $(ARTS_ENGINE_SUBDIR) \
     $(MAS_ENGINE_SUBDIR) \
-    $(NMM_ENGINE_SUBDIR)
+    $(NMM_ENGINE_SUBDIR) \
+    helix
 

@@ -719,7 +719,7 @@ void App::engineStateChanged( Engine::State state )
 
     case Engine::Playing:
         if ( m_oldState == Engine::Paused )
-            amaroK::OSD::instance()->OSDWidget::show( i18n("Unpaused" ) );
+            amaroK::OSD::instance()->OSDWidget::show( i18n("Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
             m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
         break;
