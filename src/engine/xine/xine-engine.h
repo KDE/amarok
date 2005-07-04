@@ -61,6 +61,7 @@ class XineEngine : public Engine::Base
     xine_post_t        *m_post;
 
     int64_t             m_currentVpts;
+    float               m_preamp;
 
 public:
     XineEngine();

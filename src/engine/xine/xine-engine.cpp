@@ -56,6 +56,7 @@ XineEngine::XineEngine()
         , m_audioPort( 0 )
         , m_eventQueue( 0 )
         , m_post( 0 )
+        , m_preamp( 1.0 )
 {
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
@@ -350,7 +351,7 @@ XineEngine::seek( uint ms )
 void
 XineEngine::setVolumeSW( uint vol )
 {
-    xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, vol );
+    xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol * m_preamp ) );
 }
 
 void
@@ -360,12 +361,12 @@ XineEngine::setEqualizerEnabled( bool enable )
       QValueList<int> gains;
       for( uint x = 0; x < 10; x++ )
          gains += 0;
-      setEqualizerParameters( 0, gains );
+      setEqualizerParameters( -100, gains );
    }
 }
 
 void
-XineEngine::setEqualizerParameters( int /*preamp*/, const QValueList<int> &gains )
+XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 {
    QValueList<int>::ConstIterator it = gains.begin();
 
@@ -379,6 +380,9 @@ XineEngine::setEqualizerParameters( int /*preamp*/, const QValueList<int> &gains
    xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ, *++it );
    xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ, *++it );
    xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, *++it );
+
+   m_preamp = ( preamp / 2 + 150 ) / 100.0;
+   setVolume( m_volume );
 }
 
 bool
