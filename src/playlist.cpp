@@ -2064,7 +2064,6 @@ Playlist::repopulate() //SLOT
         list.prepend( *it );
     }
 
-    if( list.isEmpty() ) return;
     saveUndoState();
 
     //remove the items
