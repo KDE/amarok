@@ -294,7 +294,7 @@ CoverFetcher::attemptAnotherFetch()
             QHBoxLayout *hbox = new QHBoxLayout( 8 );
 
             KPushButton* cancelButton = new KPushButton( KStdGuiItem::cancel(), this );
-            KPushButton* searchButton = new KPushButton( i18n("Search"), this );
+            KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
 
             hbox->addItem( new QSpacerItem( 80, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
             hbox->addWidget( searchButton );
