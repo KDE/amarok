@@ -267,8 +267,8 @@ class Remasterer( QApplication ):
             #trying out a new one 
          #files = event.split(":")[-1][3:-2].replace("\"amaroK live!\" \"add to livecd\" ", "").split("\" \"")
             #and another
-            
-            files = event.replace("customMenuClicked: amaroK live Add to livecd ", "").split(" ")
+          
+            files = event.replace("customMenuClicked: amaroK live Add selected to livecd", "").split
 
             allfiles = ""
             for file in files:
