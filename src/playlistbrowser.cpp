@@ -1027,7 +1027,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         {
             if( static_cast<PlaylistCategory*>(*it)->isFolder() )
             {
-                if( (*it)->parent()->text(0) == i18n("Cool-Streams") )
+                if( (*it)->parent() == m_streamsCategory )
                     continue;
             }
             else
@@ -1058,7 +1058,7 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
     {
         if( static_cast<PlaylistCategory*>(item)->isFolder() )
         {
-            if( item->parent()->text(0) == i18n("Cool-Streams") )
+            if( item == m_streamsCategory || item->parent() == m_streamsCategory )
                 return;
             item->setRenameEnabled( 0, true );
             m_listview->rename( item, 0 );
@@ -1463,7 +1463,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
         menu.insertSeparator();
         // Forbid removal of Cool-Streams
-        if( item->parent()->text(0) != i18n("Cool-Streams") )
+        if( item->parent() != m_coolStreams )
         {
             menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit" ), EDIT );
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );

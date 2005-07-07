@@ -6,11 +6,12 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <sebr>   Using the tag dialog on a never before played song causes the score to be changed to 1, and amaroK
+           thinks the song has been played before.  This causes the score to bump to 98-100 for the first play
+
   <markey> Consider moving the GHNS provider list to a different server than amarok.kde.org,
            possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
            to work entirely)
-
-  <sebr>   Some sort of explanation, introduction to party mode.  Very important.
 
   <markey> Figure out why ScriptManager can't read from stdout.
 
@@ -44,8 +45,6 @@ SHORT-TERM (URGENT):
            whatever is selected there. Nice!
 
   <mxcl>   Tabbing in inline-edit mode in playlist visits hidden columns and invisible ones. - KDElibs bug
-
-  <mxcl>   If you drag and drop the cool-streams playlist without expanding it first, it doesn't work properly
 
   <mxcl>   Playlist with files that exist that gst can't play + repeat-playlist = infinite loop - presumably
            load() and play() return true so the controller doesn't stop the playback
