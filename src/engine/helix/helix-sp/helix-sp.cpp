@@ -41,6 +41,9 @@
 #include "hsphook.h"
 #include "hxfiles.h"
 
+#ifdef __FreeBSD__
+#define PTHREAD_MUTEX_FAST_NP PTHREAD_MUTEX_NORMAL
+#endif
 
 typedef HX_RESULT (HXEXPORT_PTR FPRMSETDLLACCESSPATH) (const char*);
 
