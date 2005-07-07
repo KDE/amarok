@@ -238,43 +238,43 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     if ( url.protocol() == "album" )
     {
-        QueryBuilder qb;
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
-        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
-        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-        QStringList values = qb.run();
-
-        KURL::List urls;
-        KURL url;
-
-        for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-            url.setPath( *it );
-            urls.append( url );
-        }
-
-        Playlist::instance()->insertMedia( urls, Playlist::Unique );
+//         QueryBuilder qb;
+//         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+//         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artist );
+//         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, album );
+//         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+//         QStringList values = qb.run();
+//
+//         KURL::List urls;
+//         KURL url;
+//
+//         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
+//             url.setPath( *it );
+//             urls.append( url );
+//         }
+//
+//         Playlist::instance()->insertMedia( urls, Playlist::Unique );
 
         return;
     }
 
     if ( url.protocol() == "compilation" )
     {
-        QueryBuilder qb;
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
-        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-        qb.setOptions( QueryBuilder::optOnlyCompilations );
-        QStringList values = qb.run();
-
-        KURL::List urls;
-        KURL url;
-        foreach( values ) {
-            url.setPath( *it );
-            urls.append( url );
-        }
-
-        Playlist::instance()->insertMedia( urls, Playlist::Unique );
+//         QueryBuilder qb;
+//         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+//         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+//         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+//         qb.setOptions( QueryBuilder::optOnlyCompilations );
+//         QStringList values = qb.run();
+//
+//         KURL::List urls;
+//         KURL url;
+//         foreach( values ) {
+//             url.setPath( *it );
+//             urls.append( url );
+//         }
+//
+//         Playlist::instance()->insertMedia( urls, Playlist::Unique );
 
         return;
     }
