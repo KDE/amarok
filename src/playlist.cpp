@@ -187,7 +187,7 @@ Playlist::Playlist( QWidget *parent )
         , m_selectLength( 0 )
         , m_undoDir( amaroK::saveLocation( "undo/" ) )
         , m_undoCounter( 0 )
-        , m_stopAfterCurrent( false )
+        , m_stopAfterTrack( 0 )
         , m_showHelp( true )
         , m_stateSwitched( false )
         , m_partyDirt( false )
@@ -723,12 +723,12 @@ Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
-    if( isEmpty() || m_stopAfterCurrent )
+    if( isEmpty() || ( m_currentTrack && m_stopAfterTrack == m_currentTrack ) )
     {
         if( isDynamic() && !isEmpty() )
             advancePartyTrack( item );
 
-        m_stopAfterCurrent = false;
+        m_stopAfterTrack = 0;
         activate( 0 );
 
         return;
@@ -840,7 +840,7 @@ Playlist::advancePartyTrack( PlaylistItem *item )
     }
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
-    if( !m_stopAfterCurrent )
+    if( m_stopAfterTrack != m_currentTrack )
     {
         int appendNo = AmarokConfig::dynamicAppendCount();
         if( appendNo ) addSpecialTracks( appendNo, AmarokConfig::dynamicType() );
@@ -908,6 +908,9 @@ Playlist::queue( QListViewItem *item )
     {
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
+        
+        if( m_stopAfterTrack == item )
+            m_stopAfterTrack = 0;
 
         if( isDynamic() ) // we move the item after the last queued item to preserve the ordered 'queue'.
         {
@@ -958,6 +961,14 @@ Playlist::sortQueuedItems()
         last = item;
     }
 
+}
+
+void Playlist::setStopAfterCurrent( bool on )
+{
+    if( on )
+        m_stopAfterTrack = m_currentTrack;
+    else
+        m_stopAfterTrack = 0;
 }
 
 void Playlist::doubleClicked( QListViewItem *item )
@@ -2598,6 +2609,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
+    const bool isQueued    = m_nextTracks.containsRef( item );
     const bool trackColumn = col == PlaylistItem::Track;
     const QString tagName  = columnText( col );
     const QString tag      = item->exactText( col );
@@ -2648,8 +2660,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( isCurrent ) {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
+    }
+
+    if( isCurrent || isQueued ) {
        popup.insertItem( i18n( "&Stop Playing After Track" ), STOP_DONE );
-       popup.setItemChecked( STOP_DONE, m_stopAfterCurrent );
+       popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
     }
 
     if( item->isEnabled() ) popup.insertSeparator();
@@ -2732,7 +2747,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case STOP_DONE:
-        m_stopAfterCurrent = !popup.isItemChecked( STOP_DONE );
+        if( m_stopAfterTrack == item )
+            m_stopAfterTrack = 0;
+        else
+            m_stopAfterTrack = item;
         break;
 
     case VIEW:

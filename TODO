@@ -65,8 +65,7 @@ MID-TERM:
   <illiss.>Port Google-syntax to other places you can search in (most notably collection browser, possibly
            also file browser and cover manager. Anywhere else?)
 
-  <illiss.>Make "stop playing after track" work also on queued items. Maybe add a little 'stop' icon next
-           to it as well, as with the play, pause and repeat track icons?
+  <illiss.>Add a little 'stop' icon next to the playlist item to stop playing after.
 
   <illiss.>Option to "fill in tags from filename" in the meta-information dialog. Perhaps steal some (more)
            code from JuK.

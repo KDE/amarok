@@ -152,7 +152,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilter( const QString &filter );                           //for the entire playlist
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
-        void setStopAfterCurrent( bool on ) { m_stopAfterCurrent = on; }
+        void setStopAfterCurrent( bool on );
         void showCurrentTrack() { ensureItemVisible( reinterpret_cast<QListViewItem*>(m_currentTrack) ); }
         void showQueueManager();
         void shuffle();
@@ -241,25 +241,25 @@ class Playlist : private KListView, public EngineObserver
 
         QPtrList<PlaylistItem> m_itemsToChangeTagsFor;
 
-        int          m_firstColumn;
-        int          m_totalLength;
-        int          m_selectCounter;
-        int          m_selectLength;
+        int           m_firstColumn;
+        int           m_totalLength;
+        int           m_selectCounter;
+        int           m_selectLength;
 
-        KAction     *m_undoButton;
-        KAction     *m_redoButton;
-        KAction     *m_clearButton;
+        KAction      *m_undoButton;
+        KAction      *m_redoButton;
+        KAction      *m_clearButton;
 
-        QDir         m_undoDir;
-        QStringList  m_undoList;
-        QStringList  m_redoList;
-        uint         m_undoCounter;
+        QDir          m_undoDir;
+        QStringList   m_undoList;
+        QStringList   m_redoList;
+        uint          m_undoCounter;
 
-        KURL::List   m_queueList;
-        bool         m_stopAfterCurrent;
-        bool         m_showHelp;
-        bool         m_stateSwitched;
-        bool         m_partyDirt;
+        KURL::List    m_queueList;
+        PlaylistItem *m_stopAfterTrack;
+        bool          m_showHelp;
+        bool          m_stateSwitched;
+        bool          m_partyDirt;
 
         QMap<QString, QStringList> m_customSubmenuItem;
         QMap<int, QString>         m_customIdItem;
