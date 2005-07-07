@@ -240,13 +240,27 @@
                         <cstring>kcfg_PlaylistFollowActive</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Keep the active song visible on track changes</string>
+                        <string>&amp;Keep the active song visible on track change</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.&lt;br&gt;</string>
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>If checked, the playlist scrolls on song change to make the currently playing item visible in the playlist. Measures are taken not to scroll if inappropriate.</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>kcfg_AutoShowContextBrowser</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Switch to Context Browser on track ch&amp;ange</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Switch to the context browser, when playing a track.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -261,20 +275,6 @@
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Check to enable the statusbar on the playlist window.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_AutoShowContextBrowser</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Switch to Context Browser when &amp;playing</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Switch to the context browser, when playing a track.</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
