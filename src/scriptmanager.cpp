@@ -381,7 +381,7 @@ ScriptManager::slotUninstallScript()
 
     const QString name = m_gui->listView->currentItem()->text( 0 );
 
-    if ( KMessageBox::warningYesNo( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ) ) == KMessageBox::No )
+    if ( KMessageBox::warningContinueCancel( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), i18n("Uninstall") ) == KMessageBox::Cancel )
         return;
 
     const QString directory = m_scripts[name].url.directory();
