@@ -908,7 +908,7 @@ Playlist::queue( QListViewItem *item )
     {
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
-        
+
         if( m_stopAfterTrack == item )
             m_stopAfterTrack = 0;
 
@@ -2260,7 +2260,7 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         // For streams add the streamtitle too
         //TODO make prettyTitle do this
         if ( playlistItem->url().protocol() == "http" )
-            text.prepend( playlistItem->title() + " :: " );
+            text.append( " :: " + playlistItem->url().url() );
 
         // Copy both to clipboard and X11-selection
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );

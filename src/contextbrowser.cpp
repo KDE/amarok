@@ -485,6 +485,11 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             }
             blockSignals( false );
             break;
+
+        case Engine::Idle:
+            m_metadataHistory.clear();
+            break;
+
         case Engine::Playing:
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), true );
@@ -495,6 +500,7 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             m_wikiToolBar->setItemEnabled( WIKI_TITLE, true );
             blockSignals( false );
             break;
+
         default:
             ;
     }
