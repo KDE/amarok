@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta3:
   FEATURES:
+    * Context menu of compilations was empty in context browser.
     * Don't append albums and compilations when clicking on text in the
       context browser. (BR 98797)
     * "Stop Playing After Track" now also works for queued tracks.

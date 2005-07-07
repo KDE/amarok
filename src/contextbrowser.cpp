@@ -582,7 +582,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #endif
         menu.setItemEnabled( SHOW, !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" ) );
     }
-    else if ( url.protocol() == "file" || url.protocol() == "album" )
+    else if ( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
@@ -613,6 +613,24 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             }
 
             menu.changeTitle( TITLE, i18n("Album") );
+        }
+        if ( url.protocol() == "compilation" )
+        {
+            QueryBuilder qb;
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+            qb.setOptions( QueryBuilder::optOnlyCompilations );
+            QStringList values = qb.run();
+
+            urls.clear();
+            KURL url;
+            foreach( values ) {
+                url.setPath( *it );
+                urls.append( url );
+            }
+
+            menu.changeTitle( TITLE, i18n("Compilation") );
         }
     }
 
