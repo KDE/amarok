@@ -183,7 +183,7 @@ class Remasterer( QApplication ):
         self.dia = ConfigDialog()
         path = self.dia.readConfig()
 
-        os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists" % (path, path))
+        os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists %s/amarok.live/home/amarok/.kde/share/apps/amarok/current.xml" % (path, path, path))
 
     def stop( self ):
         
