@@ -268,7 +268,7 @@
                         <cstring>kcfg_AutoShowContextBrowser</cstring>
                     </property>
                     <property name="text">
-                        <string>Switch to Context Browser when &amp;appropriate</string>
+                        <string>Switch to Context Browser when &amp;playing</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
