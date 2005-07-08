@@ -201,6 +201,7 @@ class Playlist : private KListView, public EngineObserver
         void showTagDialog( QPtrList<QListViewItem> items );
         void sortQueuedItems();
         void switchState( QStringList&, QStringList& );
+        void setCurrentTrackPixmap();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );

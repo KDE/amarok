@@ -969,6 +969,8 @@ void Playlist::setStopAfterCurrent( bool on )
         m_stopAfterTrack = m_currentTrack;
     else
         m_stopAfterTrack = 0;
+
+    setCurrentTrackPixmap();
 }
 
 void Playlist::doubleClicked( QListViewItem *item )
@@ -1141,6 +1143,26 @@ Playlist::totalTrackCount()
     return childCount();
 }
 
+void
+Playlist::setCurrentTrackPixmap()
+{
+    if( !m_currentTrack )
+        return;
+
+    QString pixmap = QString::null;
+    if( EngineController::engine()->state() == Engine::Paused )
+        pixmap = "currenttrack_pause";
+    else if( m_stopAfterTrack == m_currentTrack )
+        pixmap = "currenttrack_stop";
+    else if( AmarokConfig::repeatTrack() )
+        pixmap = "currenttrack_repeat";
+    else if( EngineController::engine()->state() == Engine::Playing )
+        pixmap = "currenttrack_play";
+
+    m_currentTrack->setPixmap( m_firstColumn, pixmap.isNull() ? QPixmap() : amaroK::getPNG( pixmap ) );
+    PlaylistItem::setPixmapChanged();
+}
+
 PlaylistItem*
 Playlist::restoreCurrentTrack()
 {
@@ -1160,12 +1182,7 @@ Playlist::restoreCurrentTrack()
 
         setCurrentTrack( item ); //set even if NULL
 
-        if( item )
-        {
-           //display "Play" icon
-           item->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-           PlaylistItem::setPixmapChanged();
-        }
+        setCurrentTrackPixmap();
     }
 
     return m_currentTrack;
@@ -1250,12 +1267,6 @@ Playlist::engineStateChanged( Engine::State state )
 
         Glow::startTimer();
 
-        if( m_currentTrack ) {
-            m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( AmarokConfig::repeatTrack()
-                ? "currenttrack_repeat"
-                : "currenttrack_play" ) );
-            PlaylistItem::setPixmapChanged();
-        }
         break;
 
     case Engine::Paused:
@@ -1265,12 +1276,9 @@ Playlist::engineStateChanged( Engine::State state )
 
         Glow::reset();
 
-        if( m_currentTrack ) {
-            m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_pause" ) );
-            PlaylistItem::setPixmapChanged();
-
+        if( m_currentTrack )
             slotGlowTimer(); //update glow state
-        }
+
         break;
 
     case Engine::Empty:
@@ -1297,6 +1305,8 @@ Playlist::engineStateChanged( Engine::State state )
     case Engine::Idle:
         ;
     }
+
+    setCurrentTrackPixmap();
 }
 
 
@@ -1432,8 +1442,7 @@ Playlist::columnOrderChanged() //SLOT
     if( m_currentTrack )
     {
         m_currentTrack->setPixmap( prevColumn, QPixmap() );
-        m_currentTrack->setPixmap( m_firstColumn, locate( "data", QString( "amarok/images/currenttrack_play.png" ) ) );
-        PlaylistItem::setPixmapChanged();
+        setCurrentTrackPixmap();
     }
 }
 
@@ -2751,6 +2760,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             m_stopAfterTrack = 0;
         else
             m_stopAfterTrack = item;
+        setCurrentTrackPixmap();
         break;
 
     case VIEW:
@@ -2923,6 +2933,9 @@ Playlist::removeItem( PlaylistItem *item )
             repaintItem( next );
         }
     }
+    
+    if( m_stopAfterTrack == item )
+        m_stopAfterTrack = 0; //to be safe
 
     //keep m_nextTracks queue synchronised
     if( m_nextTracks.removeRef( item ) )
@@ -3096,17 +3109,9 @@ Playlist::slotGlowTimer() //SLOT
 }
 
 void
-Playlist::slotRepeatTrackToggled( bool enabled )
+Playlist::slotRepeatTrackToggled( bool /* enabled */ )
 {
-    if ( !m_currentTrack || EngineController::engine()->state() == Engine::Idle )
-        return;
-
-    if ( enabled ) {
-        m_currentTrack->setPixmap( m_firstColumn, amaroK::getPNG( "currenttrack_repeat" ) );
-        PlaylistItem::setPixmapChanged();
-    }
-    else
-        engineStateChanged( EngineController::engine()->state() );
+    setCurrentTrackPixmap();
 }
 
 void
