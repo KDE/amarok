@@ -62,6 +62,12 @@ private:
    
    void timerEvent( QTimerEvent * );
 
+#ifdef DEBUG_PURPOSES_ONLY
+   int m_scopebufwaste;
+   int m_scopebufnone;
+   int m_scopebuftotal;
+#endif
+
    friend class HelixConfigDialog;
 };
 

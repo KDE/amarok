@@ -52,6 +52,9 @@ HelixEngine::HelixEngine()
      m_pluginsdir("/usr/local/RealPlayer/plugins"),
      m_codecsdir("/usr/local/RealPlayer/codecs"),
      m_xfadeLength(0)
+#ifdef DEBUG_PURPOSES_ONLY
+     ,m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0)
+#endif
 {
    addPluginProperty( "StreamingMode", "Socket" );
    addPluginProperty( "HasConfigure", "true" );
@@ -269,9 +272,10 @@ const Engine::Scope &HelixEngine::scope()
    unsigned long p;
    err = peekScopeTime(p);
 
-   if (err || !w || w < p) // not enough buffers in the queue yet
+   if (err || !w || w < p) // not enough buffers in the delay queue yet
       return m_scope;
 
+   i = 0;
    while (!err && p < w)
    {
       if (item)
@@ -279,15 +283,34 @@ const Engine::Scope &HelixEngine::scope()
       
       item = getScopeBuf();
       err = peekScopeTime(p);
+
+      i++;
    }
 
+#ifdef DEBUG_PURPOSES_ONLY
+   m_scopebuftotal += i;
+   if (i > 1)
+      m_scopebufwaste += (i-1);
+#endif
+
    if (!item)
+   {
+#ifdef DEBUG_PURPOSES_ONLY
+      m_scopebufnone++; // for tuning the scope... (scope is tuned for 44.1kHz sample rate)
+#endif
       return m_scope;
+   }
 
    for (i=0; i < 512; i++)
       m_scope[i] = (short int) item->buf[i];
    
    delete item;
+
+#ifdef DEBUG_PURPOSES_ONLY
+   if (!(m_scopebuftotal %100))
+      cerr << "total " << m_scopebuftotal << " waste " << m_scopebufwaste << " no bufs " << m_scopebufnone << endl;
+#endif
+
    return m_scope;
 }
 

@@ -27,6 +27,9 @@
 
 #include "hsphook.h"
 
+#define SCOPE_BUF_PER_BLOCK 2
+#define SCOPESIZE 512
+
 HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream) : 
    m_Player(player), m_lRefCount(0), m_index(playerIndex), m_stream(pAudioStream), m_count(0)
 {
@@ -101,6 +104,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
    }
 //#endif
 
+/*
    unsigned char *outbuf, *data;
    unsigned long len;
    IHXBuffer *ibuf;
@@ -116,6 +120,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
       pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
       pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
    }
+*/
 
    return 0;
 }
@@ -278,12 +283,12 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
 void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size_t len)
 {
    // since this is a postmix hook, we get the samples in CD quality (2 channels would have ~4400 samples at 16 bits/sample for a 44.1kHz sample rate)
-   // for the scope we want only 512 samples, so we downsample here.
+   // for the scope we want only SCOPESIZE samples, so we downsample here.
 
-   struct DelayQueue *item = new struct DelayQueue;
-   int *buf = item->buf;
-   item->time = time;
+   struct DelayQueue *item;
+   int *buf;
    int bytes_per_sample = m_format.uBitsPerSample / 8;
+   int scopebufs_per_block = SCOPE_BUF_PER_BLOCK;
 
    // TODO: 32 bit samples
    if (bytes_per_sample != 1 && bytes_per_sample != 2)
@@ -295,54 +300,64 @@ void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size
    int j,k=0;
    short *pint;
 
-   if (samples_per_block > 512)
-      inc = samples_per_block / 512;
+   if (samples_per_block / scopebufs_per_block > SCOPESIZE)
+      inc = samples_per_block / (SCOPESIZE * scopebufs_per_block);
    else
+   {
       inc = 1;
+      scopebufs_per_block = 1; // for safety sake...
+   }
 
    // convert to mono and resample
    int a;
    unsigned char b[4];
+   int index;
 
-   current = 0;
-   while (k < (int) len)
+   for (index=0; index < scopebufs_per_block; index++)
    {
-      a = 0;
-      for (j=0; j<m_format.uChannels; j++)
+      item = new struct DelayQueue;
+      buf = item->buf;
+      item->time = time + index * (samples_per_block / (m_format.ulSamplesPerSec * scopebufs_per_block));
+
+      current = 0;
+      while (k < (int) len)
       {
-         switch (bytes_per_sample)
+         a = 0;
+         for (j=0; j<m_format.uChannels; j++)
          {
-            case 1:
-               b[1] = 0;
-               b[0] = data[k];
-               break;
-            case 2:
-               b[1] = data[k+1];
-               b[0] = data[k];
-               break;
+            switch (bytes_per_sample)
+            {
+               case 1:
+                  b[1] = 0;
+                  b[0] = data[k];
+                  break;
+               case 2:
+                  b[1] = data[k+1];
+                  b[0] = data[k];
+                  break;
+            }
+            
+            pint = (short *) &b[0];
+            
+            a += (int) *pint;
+            k += bytes_per_sample;
          }
-
-         pint = (short *) &b[0];
+         a /= m_format.uChannels;
          
-         a += (int) *pint;
-         k += bytes_per_sample;
-      }
-      a /= m_format.uChannels;
-
-      buf[current] = a;
-      current++;
-      if (current >= 512)
-      {
-         current = 511;
-         break;
+         buf[current] = a;
+         current++;
+         if (current >= SCOPESIZE)
+         {
+            current = SCOPESIZE - 1;
+            break;
+         }
+         
+         k += m_format.uChannels * bytes_per_sample * (inc - 1);
       }
 
-      k += m_format.uChannels * bytes_per_sample * (inc - 1);
+      m_Player->addScopeBuf(item);
    }
 
-#ifndef TEST_APP
-   m_Player->addScopeBuf(item);
-#endif
 }
 
 #ifdef __i386__
