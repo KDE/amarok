@@ -1017,22 +1017,24 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     QPtrList<QListViewItem> selected;
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
     for( ; it.current(); ++it ) {
+        if( (*it) == m_coolStreams || (*it) == m_smartDefaults )
+            continue;
+
         // if the playlist containing this item is already selected the current item will be skipped
         // it will be deleted from the parent
         QListViewItem *parent = it.current()->parent();
+
+        if( !static_cast<PlaylistCategory*>(*it)->isFolder() )
+            continue;
+
         if( parent && parent->isSelected() )
             continue;
 
-        if( isCategory( *it ) )
-        {
-            if( static_cast<PlaylistCategory*>(*it)->isFolder() )
-            {
-                if( (*it)->parent() == m_streamsCategory )
-                    continue;
-            }
-            else
-                continue;
-        }
+        while( parent->parent() || parent == m_coolStreams || parent == m_smartDefaults )
+            parent = parent->parent();
+
+        if( parent == m_coolStreams || parent == m_smartDefaults )
+            continue;
 
         selected.append( it.current() );
     }
@@ -1058,8 +1060,20 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
     {
         if( static_cast<PlaylistCategory*>(item)->isFolder() )
         {
-            if( item == m_streamsCategory || item->parent() == m_streamsCategory )
+            if( (*it) == m_coolStreams || (*it) == m_smartDefaults )
                 return;
+
+            QListViewItem *parent = item->parent();
+
+            while( parent->parent() || parent == m_coolStreams || parent == m_smartDefaults )
+                parent = parent->parent();
+
+            if( parent == m_coolStreams || parent == m_smartDefaults )
+                return;
+
+            if( !static_cast<PlaylistCategory*>(item)->isFolder() )
+                return;
+
             item->setRenameEnabled( 0, true );
             m_listview->rename( item, 0 );
         }
