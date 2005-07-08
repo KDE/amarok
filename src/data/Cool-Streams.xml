@@ -54,6 +54,9 @@
  <stream name="Pure DJ [House]">
   <url>http://www.puredj.com/etc/pls/128K.pls</url>
  </stream>
+ <stream name="Radio.BMJ.net [Trance/Livesets]">
+  <url>http://radio.bmj.net:8000/listen.pls</url>
+ </stream>
  <stream name="Radio Paradise [Rock/Pop/Alternative]">
   <url>http://www.radioparadise.com/musiclinks/rp_128.m3u</url>
  </stream>
