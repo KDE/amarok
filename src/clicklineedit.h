@@ -32,6 +32,8 @@
 */
 class ClickLineEdit : public KLineEdit
 {
+    Q_OBJECT
+    Q_PROPERTY( QString clickMessage READ clickMessage WRITE setClickMessage )
     public:
         ClickLineEdit( const QString &msg, QWidget *parent, const char* name = 0 );
 
