@@ -1060,7 +1060,7 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
     {
         if( static_cast<PlaylistCategory*>(item)->isFolder() )
         {
-            if( (*it) == m_coolStreams || (*it) == m_smartDefaults )
+            if( item == m_coolStreams || item == m_smartDefaults )
                 return;
 
             QListViewItem *parent = item->parent();
