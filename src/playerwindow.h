@@ -91,6 +91,9 @@ class PlayerWidget : public QWidget, public EngineObserver
         /** Call after some amaroK setting have changed */
         void applySettings();
 
+        bool isMinimalView() { return m_minimalView; }
+        void setMinimalView( bool enable );
+
         virtual void startDrag();
 
         /** Determines amaroK colours for current KDE scheme */
@@ -99,9 +102,11 @@ class PlayerWidget : public QWidget, public EngineObserver
     public slots:
         void createAnalyzer( int = 0 );
         void setEffectsWindowShown( bool );
+        void toggleView() { setMinimalView( !m_minimalView ); }
+
 
     protected:
-    /** Observer reimpls **/
+        /** Observer reimpls **/
         void engineStateChanged( Engine::State state );
         void engineVolumeChanged( int percent );
         void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
@@ -133,9 +138,9 @@ class PlayerWidget : public QWidget, public EngineObserver
         static const int ANIM_TIMER  = 30;
 
         // ATTRIBUTES ------
+        bool     m_minimalView;
 
         QTimer  *m_pAnimTimer;
-        QString  m_rateString;
 
         QPixmap m_scrollTextPixmap;
         QPixmap m_scrollBuffer;
@@ -146,15 +151,18 @@ class PlayerWidget : public QWidget, public EngineObserver
         QPoint  m_startDragPos; //for drag behaviour
 
         //widgets
-        QWidget *m_pAnalyzer;
+        QString      m_rateString;
+        QWidget     *m_pAnalyzer;
+        IconButton  *m_pButtonEq;
+        IconButton  *m_pPlaylistButton;
+        QLabel      *m_pTimeLabel;
+        QLabel      *m_pTimeSign;
+
         QFrame  *m_pScrollFrame;
-        QLabel  *m_pTimeLabel;
-        QLabel  *m_pTimeSign;
         QLabel  *m_pVolSign;
         QLabel  *m_pDescription;
         QHBox   *m_pFrameButtons;
-        IconButton     *m_pButtonEq;
-        IconButton     *m_pPlaylistButton;
+
         amaroK::Slider *m_pSlider;
         amaroK::Slider *m_pVolSlider;
         QToolButton    *m_pButtonPlay;

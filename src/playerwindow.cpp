@@ -40,6 +40,7 @@ email                : markey@web.de
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kpushbutton.h>
 #include <kstandarddirs.h>
 #include <kurldrag.h>
 #include <kwin.h>            //eventFilter()
@@ -86,6 +87,7 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlaylist )
     : QWidget( parent, name, Qt::WType_TopLevel )
     , EngineObserver( EngineController::instance() )
+    , m_minimalView( false )
     , m_pAnimTimer( new QTimer( this ) )
     , m_scrollBuffer( 291, 16 )
     , m_plusPixmap( getPNG( "time_plus" ) )
@@ -97,6 +99,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
+    // utility title bar, ie small text/buttons etc, reduce widget overheard, and looks sexy/elegant
+    KWin::setType( winId(), NET::Utility );
 
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
@@ -131,6 +135,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         m_pButtonPause = new NavButton( m_pFrameButtons, "pause", ac->action( "pause" ) );
                          new NavButton( m_pFrameButtons, "stop", ac->action( "stop" ) );
                          new NavButton( m_pFrameButtons, "next", ac->action( "next" ) );
+
+        KPushButton *switchView = new KPushButton( KGuiItem( "", "mini_dock" ), m_pFrameButtons );
+        connect( switchView, SIGNAL( clicked() ), SLOT( toggleView() ) );
+
 
         m_pButtonPlay->setToggleButton( true );
         m_pButtonPause->setToggleButton( true );
@@ -320,8 +328,11 @@ void PlayerWidget::engineStateChanged( Engine::State state )
             break;
 
         case Engine::Playing:
-            m_pTimeLabel->show();
-            m_pTimeSign->show();
+            if( !m_minimalView )
+            {
+                m_pTimeLabel->show();
+                m_pTimeSign->show();
+            }
             m_pButtonPlay->setOn( true );
             m_pButtonPause->setOn( false );
             break;
@@ -375,7 +386,7 @@ void PlayerWidget::engineTrackPositionChanged( long position )
     m_pSlider->setValue( position );
 
     if( !m_pSlider->isEnabled() ) timeDisplay( position );
-    
+
     TrackToolTip::add( m_pScrollFrame, EngineController::instance()->bundle(), position );
 }
 
@@ -465,6 +476,37 @@ void PlayerWidget::applySettings()
     default:
         engineNewMetaData( EngineController::instance()->bundle(), false );
     }
+}
+
+void PlayerWidget::setMinimalView( bool enable )
+{
+    m_pAnalyzer->setHidden( enable );
+    m_pTimeLabel->setHidden( enable );
+    m_pTimeSign->setHidden( enable );
+    m_pDescription->setHidden( enable );
+    m_pButtonEq->setHidden( enable );
+    m_pPlaylistButton->setHidden( enable );
+    m_pVolSlider->setHidden( enable );
+
+    if( enable )
+    {
+        uint space = 2;
+        m_pScrollFrame->setGeometry ( 6,space,  m_pScrollFrame->width(),  m_pScrollFrame->height() );
+        m_pSlider->setGeometry      ( 4,space + m_pScrollFrame->height(), 303,12 );
+        m_pFrameButtons->setGeometry( 0,space + m_pScrollFrame->height() + m_pSlider->height(), 311,22 );
+        uint height = m_pFrameButtons->height() + m_pScrollFrame->height() + m_pSlider->height() + space;
+        setFixedSize( 311, height );
+    }
+    else
+    {
+        m_pScrollFrame->setGeometry( 6,18, m_pScrollFrame->width(),m_pScrollFrame->height() );
+        m_pSlider->setGeometry( 4,103, 303,12 );
+        m_pFrameButtons->setGeometry(0, 118, 311,22);
+        setFixedSize( 311, 140 );
+    }
+
+    m_minimalView = enable;
+    update();
 }
 
 
@@ -692,7 +734,8 @@ void PlayerWidget::paintEvent( QPaintEvent* )
 {
     //uses widget's font and foregroundColor() - see ctor
     QPainter p( this );
-    p.drawText( 6, 68, m_rateString );
+    if( !m_minimalView )
+        p.drawText( 6, 68, m_rateString );
 
     bitBlt( m_pScrollFrame, 0, 0, &m_scrollBuffer );
     bitBlt( m_pTimeLabel,   0, 0, &m_timeBuffer );
