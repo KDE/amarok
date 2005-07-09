@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell
- * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, G�or Lehel
+ * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 

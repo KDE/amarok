@@ -1,6 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 G�or Lehel <illissius@gmail.com>
+// (c) 2005 Gábor Lehel <illissius@gmail.com>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONBROWSER_H

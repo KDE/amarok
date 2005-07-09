@@ -2,7 +2,7 @@
   begin                : Fre Nov 15 2002
   copyright            : (C) Mark Kretschmann <markey@web.de>
                        : (C) Max Howell <max.howell@methylblue.com>
-                       : (C) G�or Lehel <illissius@gmail.com>
+                       : (C) Gábor Lehel <illissius@gmail.com>
 ***************************************************************************/
 
 /***************************************************************************
