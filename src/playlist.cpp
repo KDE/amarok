@@ -965,12 +965,16 @@ Playlist::sortQueuedItems()
 
 void Playlist::setStopAfterCurrent( bool on )
 {
+    PlaylistItem *prev_stopafter = m_stopAfterTrack;
+
     if( on )
         m_stopAfterTrack = m_currentTrack;
     else
         m_stopAfterTrack = 0;
 
     setCurrentTrackPixmap();
+    if( prev_stopafter && m_nextTracks.containsRef( prev_stopafter ) )
+        prev_stopafter->repaint();
 }
 
 void Playlist::doubleClicked( QListViewItem *item )
@@ -1119,6 +1123,8 @@ Playlist::setCurrentTrack( PlaylistItem *item )
 
     updateNextPrev();
 
+    setCurrentTrackPixmap();
+
     Glow::reset();
     slotGlowTimer();
 }
@@ -1144,19 +1150,23 @@ Playlist::totalTrackCount()
 }
 
 void
-Playlist::setCurrentTrackPixmap()
+Playlist::setCurrentTrackPixmap( int state )
 {
     if( !m_currentTrack )
         return;
 
     QString pixmap = QString::null;
-    if( EngineController::engine()->state() == Engine::Paused )
+
+    if( state < 0 )
+        state = EngineController::engine()->state();
+
+    if( state == Engine::Paused )
         pixmap = "currenttrack_pause";
     else if( m_stopAfterTrack == m_currentTrack )
         pixmap = "currenttrack_stop";
     else if( AmarokConfig::repeatTrack() )
         pixmap = "currenttrack_repeat";
-    else if( EngineController::engine()->state() == Engine::Playing )
+    else if( state == Engine::Playing )
         pixmap = "currenttrack_play";
 
     m_currentTrack->setPixmap( m_firstColumn, pixmap.isNull() ? QPixmap() : amaroK::getPNG( pixmap ) );
@@ -1181,8 +1191,6 @@ Playlist::restoreCurrentTrack()
         {}
 
         setCurrentTrack( item ); //set even if NULL
-
-        setCurrentTrackPixmap();
     }
 
     return m_currentTrack;
@@ -1298,6 +1306,9 @@ Playlist::engineStateChanged( Engine::State state )
 
             PlaylistItem::setPixmapChanged();
 
+            if( m_stopAfterTrack == m_currentTrack )
+                m_stopAfterTrack = 0; //we just stopped
+
             //reset glow state
             slotGlowTimer();
         }
@@ -1306,7 +1317,9 @@ Playlist::engineStateChanged( Engine::State state )
         ;
     }
 
-    setCurrentTrackPixmap();
+    //POSSIBLYAHACK
+    //apparently you can't rely on EngineController::engine()->state() == state here, so pass it explicitly
+    setCurrentTrackPixmap( state );
 }
 
 
@@ -2756,11 +2769,16 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case STOP_DONE:
+        PlaylistItem *prev_stopafter = m_stopAfterTrack;
+
         if( m_stopAfterTrack == item )
             m_stopAfterTrack = 0;
         else
             m_stopAfterTrack = item;
+
         setCurrentTrackPixmap();
+        if( prev_stopafter && m_nextTracks.containsRef( prev_stopafter ) )
+            prev_stopafter->repaint();
         break;
 
     case VIEW:

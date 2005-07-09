@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "amarokconfig.h"
 #include <cmath>
 #include "debug.h"
@@ -310,8 +311,14 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         if ( !cacheValid )
         {
             paintCache[column].map.clear();
-            //So we don't regenerate all pixmap without really having to do it.
-            s_pixmapChanged = false;
+            if( s_pixmapChanged )
+            {
+                if( column != listView()->m_firstColumn )
+                    paintCache[listView()->m_firstColumn].map.clear();
+
+                //So we don't regenerate all pixmap without really having to do it.
+                s_pixmapChanged = false;
+            }
         }
 
         // Determine if we need to repaint the pixmap, or paint from cache
@@ -379,9 +386,15 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         QString str = QString::number( playNext );
 
         //draw the symbol's outline
+        const bool stopafter = ( this == listView()->m_stopAfterTrack ) &&
+                               ( this != listView()->m_currentTrack );
+                               //if it's already indicated by the currenttrack pixmap, don't.
               uint fw = p->fontMetrics().width( str ) + 2;
         const uint w  = 16; //keep this even
         const uint h  = height() - 2;
+
+        if( stopafter )
+            fw += 10;
 
         p->setBrush( cg.highlight() );
         p->setPen( cg.highlight().dark() ); //TODO blend with background color
@@ -400,6 +413,12 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         //p->setPen( cg.highlightedText().dark() );
         //p->drawText( width - w + 2, 3, w, h-1, Qt::AlignCenter, str );
         fw += 2; //add some more padding
+        if( stopafter )
+        {
+            static QPixmap pixstop = amaroK::getPNG( "currenttrack_stop_small" );
+            p->drawPixmap( QRect( width - fw + 1, (height() - 8) / 2, 8, 8 ), pixstop );
+            fw -= 10;
+        }
         p->setPen( cg.highlightedText() );
         p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
     }

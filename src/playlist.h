@@ -198,10 +198,10 @@ class Playlist : private KListView, public EngineObserver
         void removeItem( PlaylistItem* );
         bool saveState( QStringList& );
         void setCurrentTrack( PlaylistItem* );
+        void setCurrentTrackPixmap( int state = -1 );
         void showTagDialog( QPtrList<QListViewItem> items );
         void sortQueuedItems();
         void switchState( QStringList&, QStringList& );
-        void setCurrentTrackPixmap();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
