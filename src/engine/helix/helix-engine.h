@@ -52,9 +52,9 @@ private:
    Engine::State m_state;
    KURL          m_url;
 
-   QCString      m_coredir;
-   QCString      m_pluginsdir;
-   QCString      m_codecsdir;
+   QString      m_coredir;
+   QString      m_pluginsdir;
+   QString      m_codecsdir;
 
    int           m_numPlayers;
    int           m_current;  // the current player

@@ -9,9 +9,12 @@
  ***************************************************************************/
 #include <qthread.h>
 #include <sys/param.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "helix-engine.h"
-#include "helix-config.h"
+#include "helix-configdialog.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
@@ -78,13 +81,19 @@ bool
 HelixEngine::init()
 {
    //debug() << "Initializing HelixEngine\n";
+   struct stat s;
+   bool exists = false;
 
    m_numPlayers = 2;
    m_current = 1;
 
-   // TODO: more intelligent path determination
-   HelixSimplePlayer::init(m_coredir, m_pluginsdir, m_codecsdir, 2);
-   if (HelixSimplePlayer::getError())
+   if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
+   {
+      HelixSimplePlayer::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
+      exists = true;
+   }
+
+   if (!exists || HelixSimplePlayer::getError())
    {
       KMessageBox::error( 0, i18n("amaroK could not initialize helix-engine.") );
       return false;

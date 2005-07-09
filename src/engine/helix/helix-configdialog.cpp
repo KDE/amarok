@@ -8,8 +8,11 @@
 #include <kseparator.h>
 #include <klocale.h>
 
-#include "helix-config.h"
+#include "helix-configdialog.h"
 #include "helix-engine.h"
+
+#include "config/helixconfig.h"
+
 //#include <iostream>
 
 #define DEBUG_PREFIX "helix-engine"
@@ -18,8 +21,6 @@
 #include "debug.h"
 
 using namespace std;
-
-// this code is obviously derived from xine-config :-)
 
 HelixConfigEntry::HelixConfigEntry( QWidget *parent, 
                                     amaroK::PluginConfig *pluginConfig, 
@@ -47,7 +48,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
 }
 
 HelixConfigEntry::HelixConfigEntry( QWidget *parent, 
-                                    QCString &str,
+                                    QString &str,
                                     amaroK::PluginConfig *pluginConfig, 
                                     int row, 
                                     const QString & description, 
@@ -58,6 +59,8 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
 {
     QGridLayout *grid = (QGridLayout*)parent->layout();
     QWidget *w = 0;
+
+    m_key = str;
 
     w = new KLineEdit( str, parent );
     connect( w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
@@ -74,7 +77,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
 
 
 inline void
-HelixConfigEntry::slotStringChanged( const QString& val )
+HelixConfigEntry::slotStringChanged( const QString& )
 {
     m_valueChanged = true;
 }
@@ -83,6 +86,9 @@ HelixConfigEntry::slotStringChanged( const QString& val )
 HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
    : amaroK::PluginConfig()
      , QTabWidget( p )
+     , m_core(0)
+     , m_plugin(0)
+     , m_codecs(0)
      , m_engine( engine )
 {
     int row = 0;
@@ -110,22 +116,26 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
        //TODO is the viewport() not better?
        sv->setMinimumWidth( grid->sizeHint().width() + 20 );
 
-
-    // TODO: these 3 config items need to be stored persistently somewhere
-    entries.append( new HelixConfigEntry( parent, engine->m_coredir, this, row, 
-                                          i18n("Helix/Realplay core directory"), 
-                                          "/usr/local/RealPlayer/common",
-                                          i18n("This is the directory where clntcore.so is located")) );
+    engine->m_coredir = HelixConfig::coreDirectory();
+    m_core = new HelixConfigEntry( parent, engine->m_coredir, 
+                                   this, row, 
+                                   i18n("Helix/Realplay core directory"), 
+                                   HelixConfig::coreDirectory().utf8(),
+                                   i18n("This is the directory where clntcore.so is located"));
     ++row;
-    entries.append( new HelixConfigEntry( parent, engine->m_pluginsdir, this, row, 
-                                          i18n("Helix/Realplay plugins directory"), 
-                                          "/usr/local/RealPlayer/plugins",
-                                          i18n("This is the directory where, for example, vorbisrend.so is located")) );
+    engine->m_pluginsdir = HelixConfig::pluginDirectory();
+    m_plugin = new HelixConfigEntry( parent, engine->m_pluginsdir, 
+                                     this, row, 
+                                     i18n("Helix/Realplay plugins directory"), 
+                                     HelixConfig::pluginDirectory().utf8(),
+                                     i18n("This is the directory where, for example, vorbisrend.so is located"));
     ++row;
-    entries.append( new HelixConfigEntry( parent, engine->m_codecsdir, this, row, 
-                                          i18n("Helix/Realplay codecs directory"), 
-                                          "/usr/local/RealPlayer/codecs",
-                                          i18n("This is the directory where, for example, cvt1.so is located")) );
+    engine->m_codecsdir = HelixConfig::codecsDirectory();
+    m_codecs = new HelixConfigEntry( parent, engine->m_codecsdir, 
+                                     this, row, 
+                                     i18n("Helix/Realplay codecs directory"), 
+                                     HelixConfig::codecsDirectory().utf8(),
+                                     i18n("This is the directory where, for example, cvt1.so is located"));
     ++row;
     grid->addMultiCellWidget( new KSeparator( KSeparator::Horizontal, parent ), row, row, 0, 1 );
 
@@ -138,6 +148,8 @@ HelixConfigDialog::hasChanged() const
    for( QPtrListIterator<HelixConfigEntry> it( entries ); *it != 0; ++it )
       if ( (*it)->isChanged() )
          return true;
+   if (m_core->isChanged() || m_plugin->isChanged() || m_codecs->isChanged())
+      return true;
 
    return false;
 }
@@ -157,10 +169,11 @@ HelixConfigDialog::save()
       if( entry->isChanged() )
       {
          debug() << "Apply: " << entry->key() << "\n";
+         //if (!strcmp(entry->key(), "
 
          entry->setUnchanged();
       }
    }
 }
 
-#include "helix-config.moc"
+#include "helix-configdialog.moc"

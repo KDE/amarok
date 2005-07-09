@@ -29,12 +29,12 @@ Q_OBJECT
 public:
     HelixConfigEntry( QWidget *parent, amaroK::PluginConfig*, 
                       int row, const QString & description, const char *defaultvalue, const QString & tooltip );
-    HelixConfigEntry( QWidget *parent, QCString &str, amaroK::PluginConfig*, 
+    HelixConfigEntry( QWidget *parent, QString &str, amaroK::PluginConfig*, 
                       int row, const QString & description, const char *defaultvalue, const QString & tooltip );
 
     bool isChanged() const { return m_valueChanged; }
     void setUnchanged() { m_valueChanged = false; }
-    const QCString& key() const { return m_key; }
+    const QString& key() const { return m_key; }
     QString stringValue() const { return m_stringValue; }
     int numValue() const { return m_numValue; }
 
@@ -44,7 +44,7 @@ private slots:
 private:
    bool     m_valueChanged;
    int      m_numValue;
-   QCString m_key;
+   QString m_key;
    QString m_stringValue;
 };
 
@@ -62,8 +62,11 @@ public:
     virtual void save();
 
 private:
-    QPtrList<HelixConfigEntry> entries;
-    HelixEngine *m_engine;
+   QPtrList<HelixConfigEntry> entries;
+   HelixConfigEntry *m_core;
+   HelixConfigEntry *m_plugin;
+   HelixConfigEntry *m_codecs;
+   HelixEngine *m_engine;
 };
 
 #endif

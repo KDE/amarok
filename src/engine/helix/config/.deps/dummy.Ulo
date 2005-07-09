@@ -1,0 +1,4 @@
+builddir=$(top_builddir)/amarok/src/engine/helix/config
+top_builddir=.
+targetfile=$(top_builddir)/amarok/src/engine/helix/config/dummy.lo
+/mnt/develop/multimedia/amarok/src/engine/helix/config/dummy.cpp
