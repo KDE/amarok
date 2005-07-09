@@ -95,3 +95,4 @@ void ClickLineEdit::focusOutEvent( QFocusEvent *ev )
     QLineEdit::focusOutEvent( ev );
 }
 
+#include "clicklineedit.moc"
