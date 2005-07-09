@@ -49,6 +49,7 @@ static inline bool isDynamicEnabled() { return AmarokConfig::dynamicMode(); }
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
+        , m_smartCategory (0)
 {
     s_instance = this;
 
