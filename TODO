@@ -6,6 +6,10 @@ TODO-list for amaroK
 
 SHORT-TERM (URGENT):
 
+  <illis.> A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
+           certainly an ID3v1 vs 2 issue, v2 I think allows for unlimited length (or at least very very
+           long), why don't we use it? (not sure whether the problem is in taglib or amarok...)
+  
   <sebr>   Using the tag dialog on a never before played song causes the score to be changed to 1, and amaroK
            thinks the song has been played before.  This causes the score to bump to 98-100 for the first play
 
