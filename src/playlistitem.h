@@ -26,7 +26,7 @@ class PlaylistItem : public KListViewItem
 {
     public:
         enum Column {
-            TrackName = 0,
+            Filename = 0,
             Title     = 1,
             Artist    = 2,
             Album     = 3,
@@ -76,7 +76,7 @@ class PlaylistItem : public KListViewItem
 
         /// some accessors
         const KURL &url() const { return m_url; }
-        QString trackName() const { return KListViewItem::text( TrackName ); }
+        QString filename() const { return KListViewItem::text( Filename ); }
         QString title() const { return KListViewItem::text( Title ); }
         QString artist() const { return KListViewItem::text( Artist ); }
         QString album() const { return KListViewItem::text( Album ); }
@@ -105,7 +105,7 @@ class PlaylistItem : public KListViewItem
 
         /**
         * @return The text of the column @p column. If there is no text set for
-        * the title this method returns a pretty version of the track name
+        * the title this method returns a pretty version of the filename
         */
         virtual QString text( int column ) const;
 
@@ -114,7 +114,7 @@ class PlaylistItem : public KListViewItem
         // Used for sorting
         virtual int  compare( QListViewItem*, int, bool ) const;
 
-        static QString trackName( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
+        static QString filename( const KURL &u ) { return u.protocol() == "http" ? u.prettyURL() : u.fileName(); }
 
         const KURL m_url;
         bool m_missing;

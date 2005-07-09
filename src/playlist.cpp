@@ -217,8 +217,8 @@ Playlist::Playlist( QWidget *parent )
     #endif
 
     //NOTE order is critical because we can't set indexes or ids
-    addColumn( i18n( "Track Name" ),   0 );
-    addColumn( i18n( "Title"      ), 200 ); //displays trackname if no title tag
+    addColumn( i18n( "Filename" ),   0 );
+    addColumn( i18n( "Title"      ), 200 ); //displays filename if no title tag
     addColumn( i18n( "Artist"     ), 100 );
     addColumn( i18n( "Album"      ), 100 );
     addColumn( i18n( "Year"       ),   0 ); //0 means hidden
@@ -230,7 +230,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Bitrate"    ),   0 );
     addColumn( i18n( "Score"      ),   0 );
     addColumn( i18n( "Extension"  ),   0 );
-    addColumn( i18n( "Play Count"  ),   0 );
+    addColumn( i18n( "Playcount"  ),   0 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename
     setRenameable( 1 );

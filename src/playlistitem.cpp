@@ -40,7 +40,7 @@ bool   PlaylistItem::s_pixmapChanged = false;
 const QString PlaylistItem::columnName( int c ) //static
 {
     switch( c ) {
-        case TrackName: return "TrackName";
+        case Filename: return "Filename";
         case Title:     return "Title";
         case Artist:    return "Artist";
         case Album:     return "Album";
@@ -70,7 +70,7 @@ PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
 }
 
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
-        : KListViewItem( lvi->listView(), lvi->itemAbove(), trackName( bundle.url() ) )
+        : KListViewItem( lvi->listView(), lvi->itemAbove(), filename( bundle.url() ) )
         , m_url( bundle.url() )
         , m_missing( false )
         , m_enabled( true )
@@ -87,7 +87,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
         , m_enabled( true )
 {
     setDragEnabled( true );
-    KListViewItem::setText( TrackName, trackName( m_url ) );
+    KListViewItem::setText( Filename, filename( m_url ) );
 
     //NOTE we use base versions to speed this up (this function is called 100s of times during startup)
     for( uint x = 1, n = listView()->columns(); x < n; ++x ) {
@@ -124,13 +124,13 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
 
 QString PlaylistItem::text( int column ) const
 {
-    //if there is no text set for the title, return a pretty version of the track name
+    //if there is no text set for the title, return a pretty version of the filename
 
     if( column == Title && KListViewItem::text( Title ).isEmpty()
-            // this is important, as we don't want to show the trackname twice
-            && listView()->columnWidth( TrackName ) == 0 )
+            // this is important, as we don't want to show the filename twice
+            && listView()->columnWidth( Filename ) == 0 )
     {
-        return MetaBundle::prettyTitle( KListViewItem::text( TrackName ) );
+        return MetaBundle::prettyTitle( KListViewItem::text( Filename ) );
     }
 
     return KListViewItem::text( column );
