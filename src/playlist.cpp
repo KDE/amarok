@@ -2750,7 +2750,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             m_customIdItem[id]= (*keyIt) + ' ' + (*it);
         }
     }
+
     int menuItemId= popup.exec( p );
+    PlaylistItem *prev_stopafter = m_stopAfterTrack;
+
     switch( menuItemId )
     {
     case PLAY:
@@ -2769,8 +2772,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case STOP_DONE:
-        PlaylistItem *prev_stopafter = m_stopAfterTrack;
-
         if( m_stopAfterTrack == item )
             m_stopAfterTrack = 0;
         else
@@ -2951,7 +2952,7 @@ Playlist::removeItem( PlaylistItem *item )
             repaintItem( next );
         }
     }
-    
+
     if( m_stopAfterTrack == item )
         m_stopAfterTrack = 0; //to be safe
 
