@@ -2685,7 +2685,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
 
     if( isCurrent || isQueued ) {
-       popup.insertItem( i18n( "&Stop Playing After Track" ), STOP_DONE );
+       popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
        popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
     }
 
