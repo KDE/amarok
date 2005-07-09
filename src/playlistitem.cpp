@@ -415,7 +415,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         fw += 2; //add some more padding
         if( stopafter )
         {
-            static QPixmap pixstop = amaroK::getPNG( "currenttrack_stop_small" );
+            static const QPixmap pixstop = amaroK::getPNG( "currenttrack_stop_small" );
             p->drawPixmap( QRect( width - fw + 1, (height() - 8) / 2, 8, 8 ), pixstop );
             fw -= 10;
         }
@@ -423,7 +423,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
     }
 
-    if( !isSelected() )
+    if( this != listView()->currentTrack() && !isSelected() )
     {
         p->setPen( QPen( cg.mid(), 0, Qt::SolidLine ) );
         p->drawLine( width - 1, 0, width - 1, height() - 1 );
