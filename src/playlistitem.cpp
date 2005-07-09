@@ -40,20 +40,20 @@ bool   PlaylistItem::s_pixmapChanged = false;
 const QString PlaylistItem::columnName( int c ) //static
 {
     switch( c ) {
-        case Filename: return "Filename";
+        case Filename:  return "Filename";
         case Title:     return "Title";
         case Artist:    return "Artist";
         case Album:     return "Album";
         case Year:      return "Year";
         case Comment:   return "Comment";
         case Genre:     return "Genre";
-        case Track:     return "TrackNo";
+        case Track:     return "Track";
         case Directory: return "Directory";
         case Length:    return "Length";
         case Bitrate:   return "Bitrate";
         case Score:     return "Score";
-        case Extension:    return "Extension";
-        case Playcount:    return "Playcount";
+        case Extension: return "Extension";
+        case Playcount: return "Playcount";
     }
     return "<ERROR>";
 }

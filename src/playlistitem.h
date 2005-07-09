@@ -38,8 +38,8 @@ class PlaylistItem : public KListViewItem
             Length    = 9,
             Bitrate   = 10,
             Score     = 11,
-            Extension     = 12,
-            Playcount    =13
+            Extension = 12,
+            Playcount = 13
         };
 
         static const int NUM_COLUMNS = 14;

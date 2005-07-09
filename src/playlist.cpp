@@ -2436,19 +2436,28 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 QString f = s.left(x).lower(), q = s.mid(x + 1), v = all[f].lower(), w = q.lower();
                 //f = field, q = query, v = contents of the field, w = match against it
                 bool condition; //whether it matches, not taking negation into account
+                
+                static const QString
+                    Score     = PlaylistItem::columnName( PlaylistItem::Score     ).lower(),
+                    Year      = PlaylistItem::columnName( PlaylistItem::Year      ).lower(),
+                    Track     = PlaylistItem::columnName( PlaylistItem::Track     ).lower(),
+                    Playcount = PlaylistItem::columnName( PlaylistItem::Playcount ).lower(),
+                    Length    = PlaylistItem::columnName( PlaylistItem::Length    ).lower(),
+                    Bitrate   = PlaylistItem::columnName( PlaylistItem::Bitrate   ).lower();
+                    
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
-                    if( f == "score" || f == "year" || f == "track" || f == "playcount" )
+                    if( f == Score || f == Year || f == Track || f == Playcount )
                         condition = v.toInt() > w.toInt();
-                    else if( f == "length" )
+                    else if( f == Length )
                     {
                         int g = v.find( ":" ), h = w.find( ":" );
                         condition = v.left( g ).toInt() > w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
                     }
-                    else if( f == "bitrate" )
+                    else if( f == Bitrate )
                     {
                         if( v.contains( "?" ) )
                             condition = false;
@@ -2461,16 +2470,16 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 else if( q.startsWith( "<" ) )
                 {
                     w = w.mid(1);
-                    if( f == "score" || f == "year" || f == "track" || f == "playcount" )
+                    if( f == Score || f == Year || f == Track || f == Playcount )
                         condition = v.toInt() < w.toInt();
-                    else if( f == "length" )
+                    else if( f == Length )
                     {
                         int g = v.find( ":" ), h = w.find( ":" );
                         condition = v.left( g ).toInt() < w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
                     }
-                    else if( f == "bitrate" )
+                    else if( f == Bitrate )
                     {
                         if( v.contains( "?" ) )
                             condition = true;
@@ -2555,8 +2564,8 @@ Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
     {
         QStringMap defaults, all;
         for( x = 0; x < n; ++x ) {
-            if ( columnWidth( x ) ) defaults[columnText( x ).lower()] = item->exactText( x );
-            all[columnText( x ).lower()] = item->exactText( x );
+            if ( columnWidth( x ) ) defaults[PlaylistItem::columnName( x ).lower()] = item->exactText( x );
+            all[PlaylistItem::columnName( x ).lower()] = item->exactText( x );
         }
 
         visible = googleMatch( query, defaults, all );
