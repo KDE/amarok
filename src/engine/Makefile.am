@@ -25,6 +25,10 @@ if with_mas
     MAS_ENGINE_SUBDIR = mas
 endif
 
+if with_helix
+    HELIX_ENGINE_SUBDIR = helix
+endif
+
 libengine_la_SOURCES = \
     enginebase.cpp
 
@@ -40,5 +44,5 @@ SUBDIRS = . \
     $(ARTS_ENGINE_SUBDIR) \
     $(MAS_ENGINE_SUBDIR) \
     $(NMM_ENGINE_SUBDIR) \
-    helix
+    $(HELIX_ENGINE_SUBDIR)
 

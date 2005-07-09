@@ -183,6 +183,10 @@ else
         echo " =   + MAS-engine"
     fi
 
+    if test x$build_helix = xyes; then
+        echo " =   + Helix-engine"
+    fi
+
     if test x$build_libvisual = xyes; then
         echo " =   + libvisual Support"
     fi
