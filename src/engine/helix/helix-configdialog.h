@@ -1,5 +1,5 @@
-
 /***************************************************************************
+ *   Copyright (C) 2005 Paul Cifarelli <paul@cifarelli.net>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -27,25 +27,26 @@ class HelixConfigEntry : public QObject
 {
 Q_OBJECT
 public:
-    HelixConfigEntry( QWidget *parent, amaroK::PluginConfig*, 
-                      int row, const QString & description, const char *defaultvalue, const QString & tooltip );
-    HelixConfigEntry( QWidget *parent, QString &str, amaroK::PluginConfig*, 
-                      int row, const QString & description, const char *defaultvalue, const QString & tooltip );
+   HelixConfigEntry( QWidget *parent, amaroK::PluginConfig*, 
+                     int row, const QString & description, const char *defaultvalue, const QString & tooltip );
+   HelixConfigEntry( QWidget *parent, QString &str, amaroK::PluginConfig*, 
+                     int row, const QString & description, const char *defaultvalue, const QString & tooltip );
 
-    bool isChanged() const { return m_valueChanged; }
-    void setUnchanged() { m_valueChanged = false; }
-    const QString& key() const { return m_key; }
-    QString stringValue() const { return m_stringValue; }
-    int numValue() const { return m_numValue; }
+   bool isChanged() const { return m_valueChanged; }
+   void setUnchanged() { m_valueChanged = false; }
+   const QString& key() const { return m_key; }
+   QString stringValue() const { return m_stringValue; }
+   int numValue() const { return m_numValue; }
 
 private slots:
     void slotStringChanged( const QString& );
 
 private:
-   bool     m_valueChanged;
-   int      m_numValue;
-   QString m_key;
-   QString m_stringValue;
+   KLineEdit *m_w;
+   bool       m_valueChanged;
+   int        m_numValue;
+   QString    m_key;
+   QString    m_stringValue;
 };
 
 
@@ -65,7 +66,7 @@ private:
    QPtrList<HelixConfigEntry> entries;
    HelixConfigEntry *m_core;
    HelixConfigEntry *m_plugin;
-   HelixConfigEntry *m_codecs;
+   HelixConfigEntry *m_codec;
    HelixEngine *m_engine;
 };
 

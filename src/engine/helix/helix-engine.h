@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005 Paul Cifarelli <paulc2@optonline.net>              *
+ *   Copyright (C) 2005 Paul Cifarelli <paul@cifarelli.net>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -55,6 +55,7 @@ private:
    QString      m_coredir;
    QString      m_pluginsdir;
    QString      m_codecsdir;
+   bool         m_inited;
 
    int           m_numPlayers;
    int           m_current;  // the current player

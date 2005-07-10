@@ -15,6 +15,7 @@
 
 #include "helix-engine.h"
 #include "helix-configdialog.h"
+#include "config/helixconfig.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
@@ -54,6 +55,7 @@ HelixEngine::HelixEngine()
      m_coredir("/usr/local/RealPlayer/common"),
      m_pluginsdir("/usr/local/RealPlayer/plugins"),
      m_codecsdir("/usr/local/RealPlayer/codecs"),
+     m_inited(false),
      m_xfadeLength(0)
 #ifdef DEBUG_PURPOSES_ONLY
      ,m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0)
@@ -87,16 +89,33 @@ HelixEngine::init()
    m_numPlayers = 2;
    m_current = 1;
 
+   m_coredir = HelixConfig::coreDirectory();
+   if (!m_coredir.length())
+      m_coredir = "/usr/local/RealPlayer/common";
+
+   m_pluginsdir = HelixConfig::pluginDirectory();
+   if (!m_pluginsdir.length())
+      m_pluginsdir = "/usr/local/RealPlayer/plugins";
+   
+   m_codecsdir = HelixConfig::codecsDirectory();
+   if (!m_codecsdir.length())
+      m_codecsdir = "/usr/local/RealPlayer/codecs";
+
    if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
    {
+      if (m_inited)
+         HelixSimplePlayer::tearDown();
+
       HelixSimplePlayer::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
-      exists = true;
+      m_inited = exists = true;
    }
 
    if (!exists || HelixSimplePlayer::getError())
    {
-      KMessageBox::error( 0, i18n("amaroK could not initialize helix-engine.") );
-      return false;
+      KMessageBox::error( 0, i18n("amaroK could not initialize the helix-engine. Please check the paths in \"amaroK Settings\" -> \"Engine\"") );
+      // we need to return true here so that the user has an oppportunity to change the directory
+      //return false;
+      return true;
    }
 
    debug() << "Succussful init\n";
@@ -112,6 +131,9 @@ HelixEngine::load( const KURL &url, bool isStream )
    debug() << "In load " << url.url() << endl;
 
    cerr << "XFadeLength " << m_xfadeLength << endl;
+
+   if (!m_inited)
+      return false;
 
    stop();
 
@@ -145,6 +167,9 @@ HelixEngine::play( uint offset )
    debug() << "In play" << endl;
    int nextPlayer;
 
+   if (!m_inited)
+      return false;
+
    nextPlayer = m_current ? 0 : 1;
 
    HelixSimplePlayer::start(nextPlayer);
@@ -173,6 +198,9 @@ HelixEngine::play( uint offset )
 void
 HelixEngine::stop()
 {
+   if (!m_inited)
+      return;
+
    debug() << "In stop\n";
    m_url = KURL();
    HelixSimplePlayer::stop(m_current);
@@ -192,6 +220,9 @@ void HelixEngine::play_finished(int /*playerIndex*/)
 void
 HelixEngine::pause()
 {
+   if (!m_inited)
+      return;
+
    debug() << "In pause\n";
    if( m_state == Engine::Playing )
    {
@@ -212,7 +243,7 @@ HelixEngine::state() const
 {
    //debug() << "In state, state is " << m_state << endl;
 
-   if (m_url.isEmpty())
+   if (!m_inited || m_url.isEmpty())
       return (Engine::Empty);
 
    return m_state;
@@ -221,12 +252,18 @@ HelixEngine::state() const
 uint
 HelixEngine::position() const
 {
+   if (!m_inited)
+      return 0;
+
    return HelixSimplePlayer::where(m_current);
 }
 
 uint
 HelixEngine::length() const
 {
+   if (!m_inited)
+      return 0;
+
    debug() << "In length\n";
    return HelixSimplePlayer::duration(m_current);
 }
@@ -234,6 +271,9 @@ HelixEngine::length() const
 void
 HelixEngine::seek( uint ms )
 {
+   if (!m_inited)
+      return;
+
    debug() << "In seek\n";
    clearScopeQ();
    HelixSimplePlayer::seek(ms, m_current);
@@ -242,6 +282,9 @@ HelixEngine::seek( uint ms )
 void
 HelixEngine::setVolumeSW( uint vol )
 {
+   if (!m_inited)
+      return;
+
    debug() << "In setVolumeSW\n";
    HelixSimplePlayer::setVolume(vol, m_current);
 }
@@ -250,6 +293,9 @@ HelixEngine::setVolumeSW( uint vol )
 bool
 HelixEngine::canDecode( const KURL &url ) const
 {
+   if (!m_inited)
+      return false;
+
    debug() << "In canDecode " << url.prettyURL() << endl;   
    //TODO check if the url really is supported by Helix
    return true;
@@ -276,6 +322,9 @@ const Engine::Scope &HelixEngine::scope()
 {
    int i, err;
    struct DelayQueue *item = 0;
+
+   if (!m_inited)
+      return m_scope;
 
    unsigned long w = position();
    unsigned long p;

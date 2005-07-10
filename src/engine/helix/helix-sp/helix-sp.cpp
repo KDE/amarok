@@ -21,6 +21,7 @@
 #include "hxstrutl.h"
 #include "hxvsrc.h"
 #include "hxresult.h"
+#include "hxplugn.h"
 
 #include "hspadvisesink.h"
 #include "hsperror.h"
@@ -272,6 +273,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    theErr(HXR_OK),
    pErrorSink(NULL),
    pErrorSinkControl(NULL),
+   pPluginE(0),
    ppctrl(NULL),
    bURLFound(FALSE),
    nNumPlayers(0),
@@ -425,6 +427,13 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    else
       STDERR("no CommonClassFactory\n");
     
+   // get the plugin enumerator
+   pEngine->QueryInterface(IID_IHXPluginEnumerator, (void **) &pPluginE);
+   if (pPluginE)
+      STDERR("Got the Plugin Enumerator!\n");
+   else
+      STDERR("no plugin enumerator\n");
+    
    // create players
    for (i = 0; i < numPlayers; i++)
    {
@@ -561,6 +570,12 @@ int HelixSimplePlayer::addPlayer()
 
 HelixSimplePlayer::~HelixSimplePlayer()
 {
+   tearDown();
+}
+
+
+void HelixSimplePlayer::tearDown()
+{
    int i;
    FPRMCLOSEENGINE         fpCloseEngine;
    
@@ -604,6 +619,7 @@ HelixSimplePlayer::~HelixSimplePlayer()
 
    //pCommonClassFactory->Release();
    //pCEselect->Release();
+   pPluginE->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
    if (fpCloseEngine && pEngine)
@@ -636,30 +652,32 @@ HelixSimplePlayer::~HelixSimplePlayer()
       STDOUT("\nDone.\n");
    }
    
-   // If an an error occurred in this function return it
-   if (theErr != HXR_OK)
-   {
-      return;
-   }
-   // If an error occurred during playback, return that
-   else if (m_Error != HXR_OK)
-   {
-      theErr = m_Error; 
-      return;
-   }
-   // If all went well, return the number of seconds played (if there
-   // was only one player)...
-   else if (nNumPlayers == 1)
-   {
-      theErr = m_ulNumSecondsPlayed;
-      return;
-   }
-   // or HXR_OK (if there was more than one player)
-   else
-   {
-      theErr = HXR_OK;
-      return;
-   }
+   theErr = HXR_OK;
+   pErrorSink = NULL;
+   pErrorSinkControl = NULL;
+   pPluginE = 0;
+   ppctrl = NULL;
+   bURLFound = FALSE;
+   nNumPlayers = 0;
+   nNumPlayRepeats = 1;
+   nTimeDelta = DEFAULT_TIME_DELTA;
+   nStopTime = DEFAULT_STOP_TIME;
+   bStopTime = true; 
+   bStopping = false;
+   nPlay = 0;
+   bEnableAdviceSink = FALSE;
+   bEnableVerboseMode = FALSE;
+   pEngine = NULL;
+   m_pszUsername = NULL;
+   m_pszPassword = NULL;
+   m_pszGUIDFile = NULL;
+   m_pszGUIDList = NULL;
+   m_Error = 0;
+   m_ulNumSecondsPlayed = 0;
+   scopecount = 0;
+   scopebufhead = 0;
+   scopebuftail = 0;
+   m_preamp = 0;
 }
 
 int HelixSimplePlayer::setURL(const char *file, int playerIndex)
@@ -735,6 +753,34 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
    return 0;
 }
 
+int HelixSimplePlayer::numPlugins() const
+{
+   if (pPluginE)
+   {
+      return ((int)pPluginE->GetNumOfPlugins());
+   }
+
+   return 0;
+}
+
+int HelixSimplePlayer::getPluginInfo(int index, 
+                                     const char *&description, 
+                                     const char *&copyright, 
+                                     const char *&moreinfourl, 
+                                     unsigned long &ver) const
+{
+   IHXPlugin *p = 0;
+   HXBOOL mult;
+
+   
+   pPluginE->GetPlugin((ULONG32)index, (IUnknown *&)p);
+   if (p)
+   {
+      p->AddRef();
+      p->GetPluginInfo(mult, description, copyright, moreinfourl, (ULONG32 &) ver);
+      p->Release();
+   }
+}
 
 void HelixSimplePlayer::enableCrossFader(int playerFrom, int playerTo)
 {

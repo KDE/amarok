@@ -48,6 +48,7 @@ class IHXClientEngine;
 class IHXAudioHook;
 class IHXAudioStreamInfoResponse;
 class IHXCommonClassFactory;
+class IHXPluginEnumerator;
 
 struct DelayQueue
 {
@@ -65,6 +66,7 @@ public:
    virtual ~HelixSimplePlayer();
 
    void init(const char *corelibpath, const char *pluginslibpath, const char *codecspath, int numPlayers = 1);
+   void tearDown();
    int  addPlayer();                                                 // add another player
    void play(int playerIndex = ALL_PLAYERS, 
              bool fadein = false, bool fadout = false,
@@ -115,6 +117,7 @@ private:
    IHXErrorSinkControl*     pErrorSinkControl;
    IHXClientEngineSelector* pCEselect;
    IHXCommonClassFactory*   pCommonClassFactory;
+   IHXPluginEnumerator*     pPluginE;
 
    struct playerCtrl
    {
@@ -178,6 +181,13 @@ public:
    void enableEQ(bool enabled) { m_eq_enabled = enabled; }
    bool isEQenabled() { return m_eq_enabled; }
    void updateEQgains();
+
+   int numPlugins() const;
+   int getPluginInfo(int index, 
+                     const char *&description, 
+                     const char *&copyright, 
+                     const char *&moreinfourl, 
+                     unsigned long &ver) const;
 
 private:
 
