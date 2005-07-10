@@ -47,6 +47,7 @@ Recommended
     * GStreamer-0.8.6 + GStreamer-Plugins-0.8.6
       (multimedia framework)
       http://gstreamer.net
+      (Note: GStreamer 0.9.x is incompatible with amaroK)
 
       OR
 
