@@ -106,6 +106,6 @@ protected:
     unsigned char compilation;  // iscompiltaion=1, 0 otherwise
 };
 
-};
+}
 
 #endif
