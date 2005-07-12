@@ -171,6 +171,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
 PlaylistBrowser::~PlaylistBrowser()
 {
+    // <markey> Not sure if these calls are still needed, now that we're saving
+    //          the state after each change.
     savePlaylists();
     saveStreams();
     saveSmartPlaylists();
@@ -1049,15 +1051,33 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         selected.append( it.current() );
     }
 
+
+    bool playlistsChanged = false;
+    bool streamsChanged = false;
+    bool smartPlaylistsChanged = false;
+    bool dynamicsChanged = false;
+
     for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
+        if( isPlaylist( item ) )      playlistsChanged = true;
+        if( isCategory( item ) )      playlistsChanged = true;
+        if( isStream( item ) )        streamsChanged = true;
+        if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
+        if( isDynamic( item ) )       dynamicsChanged = true;
+
         if( isPlaylistTrackItem( item ) ) {
-                //remove the track
-                PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
-                playlist->removeTrack( item );
+            playlistsChanged = true;
+            //remove the track
+            PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
+            playlist->removeTrack( item );
         }
         else
             delete item;
-   }
+    }
+
+    if( playlistsChanged )      savePlaylists();
+    if( streamsChanged )        saveStreams();
+    if( smartPlaylistsChanged ) saveSmartPlaylists();
+    if( dynamicsChanged )       saveDynamics();
 }
 
 
