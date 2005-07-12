@@ -909,7 +909,7 @@ Playlist::queue( QListViewItem *item )
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
 
-        if( m_stopAfterTrack == item )
+        if( item == m_stopAfterTrack && item != m_currentTrack )
             m_stopAfterTrack = 0;
 
         if( isDynamic() ) // we move the item after the last queued item to preserve the ordered 'queue'.
