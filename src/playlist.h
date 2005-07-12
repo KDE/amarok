@@ -64,6 +64,10 @@ class Playlist : private KListView, public EngineObserver
     public:
         ~Playlist();
 
+        static Playlist *instance() { return s_instance; }
+        static QString defaultPlaylistPath();
+        static const int NO_SORT = 200;
+
         static const int Append     = 1;     /// inserts media after the last item in the playlist
         static const int Queue      = 2;     /// inserts media after the currentTrack
         static const int Clear      = 4;     /// clears the playlist first
@@ -110,10 +114,6 @@ class Playlist : private KListView, public EngineObserver
          *  Dont forget to unlock() !! */
         void lock();
         void unlock();
-
-        static const int NO_SORT = 200;
-        static QString defaultPlaylistPath();
-        static Playlist *instance() { return s_instance; }
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
 
