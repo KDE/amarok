@@ -198,7 +198,7 @@ PlaylistBrowser::~PlaylistBrowser()
  *************************************************************************
  **/
 
-QString PlaylistBrowser::streamBrowserCache()
+QString PlaylistBrowser::streamBrowserCache() const
 {
     return amaroK::saveLocation() + "streambrowser_save.xml";
 }
@@ -278,6 +278,8 @@ void PlaylistBrowser::addStream( QListViewItem *parent )
     {
         new StreamEntry( parent, 0, dialog.url(), dialog.name() );
         parent->setOpen( true );
+
+        saveStreams();
     }
 }
 
@@ -320,7 +322,7 @@ void PlaylistBrowser::saveStreams()
  *************************************************************************
  **/
 
-QString PlaylistBrowser::smartplaylistBrowserCache()
+QString PlaylistBrowser::smartplaylistBrowserCache() const
 {
     return amaroK::saveLocation() + "smartplaylistbrowser_save.xml";
 }
@@ -336,6 +338,8 @@ void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
     if( dialog.exec() == QDialog::Accepted ) {
         new SmartPlaylist( parent, 0, dialog.result() );
         parent->setOpen( true );
+
+        saveSmartPlaylists();
     }
 }
 
@@ -518,7 +522,7 @@ void PlaylistBrowser::saveSmartPlaylists()
  *************************************************************************
  **/
 
-QString PlaylistBrowser::partyBrowserCache()
+QString PlaylistBrowser::partyBrowserCache() const
 {
     return amaroK::saveLocation() + "partybrowser_save.xml";
 }
@@ -554,6 +558,8 @@ void PlaylistBrowser::addDynamic( QListViewItem *parent )
             }
         }
         saveMe->setItems( list );
+
+        saveDynamics();
     }
 }
 
@@ -743,7 +749,7 @@ void PlaylistBrowser::loadDynamicItems()
  *************************************************************************
  **/
 
-QString PlaylistBrowser::playlistBrowserCache()
+QString PlaylistBrowser::playlistBrowserCache() const
 {
     //returns the playlists stats cache file
     return amaroK::saveLocation() + "playlistbrowser_save.xml";
@@ -858,6 +864,8 @@ void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
     const QStringList::ConstIterator end  = files.constEnd();
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
         addPlaylist( *it, parent );
+
+    savePlaylists();
 }
 
 void PlaylistBrowser::savePlaylists()
@@ -886,7 +894,7 @@ void PlaylistBrowser::savePlaylists()
  **/
 
 PlaylistBrowserEntry *
-PlaylistBrowser::findItem( QString &t, int c )
+PlaylistBrowser::findItem( QString &t, int c ) const
 {
     return (PlaylistBrowserEntry *)m_listview->findItem( t, c, Qt::ExactMatch );
 }
@@ -894,7 +902,7 @@ PlaylistBrowser::findItem( QString &t, int c )
 void PlaylistBrowser::createPlaylist( bool current )
 {
     bool ok;
-    QString name = KInputDialog::getText(i18n("Save Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
+    const QString name = KInputDialog::getText(i18n("Save Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
 
     if( ok )
     {
@@ -918,8 +926,9 @@ void PlaylistBrowser::createPlaylist( bool current )
         {
             m_lastPlaylist = new PlaylistEntry( static_cast<QListViewItem*>(m_playlistCategory), 0, path );
         }
-    }
 
+        savePlaylists();
+    }
 }
 
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT

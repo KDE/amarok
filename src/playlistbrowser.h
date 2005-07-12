@@ -50,16 +50,16 @@ class PlaylistBrowser : public QVBox
         void addDynamic( QListViewItem *parent = 0 );
         void addPlaylist( QString path, QListViewItem *parent = 0, bool force=false );
 
-        QString partyBrowserCache();
-        QString playlistBrowserCache();
-        QString streamBrowserCache();
-        QString smartplaylistBrowserCache();
+        QString partyBrowserCache() const;
+        QString playlistBrowserCache() const;
+        QString streamBrowserCache() const;
+        QString smartplaylistBrowserCache() const;
 
-        PlaylistBrowserEntry *findItem( QString &t, int c );
+        PlaylistBrowserEntry *findItem( QString &t, int c ) const;
 
-        QPtrList<QListViewItem> dynamicEntries() { return m_dynamicEntries; }
+        QPtrList<QListViewItem> dynamicEntries() const { return m_dynamicEntries; }
 
-        ViewMode viewMode() { return m_viewMode; }
+        ViewMode viewMode() const { return m_viewMode; }
 
         static PlaylistBrowser *instance() { return s_instance; }
 
