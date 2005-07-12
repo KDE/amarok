@@ -105,6 +105,15 @@ public:
    //void  setGUIDFile(const char *file) { m_pszGUIDFile = file; }
    bool  ReadGUIDFile();
 
+   struct metaData
+   {
+      char title[512];
+      char artist[512];
+      unsigned long bitrate;
+   };
+
+   typedef struct metaData;
+
 private:
    void  DoEvent();
    void  DoEvents(int nTimeDelta);
@@ -136,6 +145,7 @@ private:
       IHXVolumeAdviseSink*        pVolumeAdvise;
       IHXAudioHook*               pPostMixHook;
       IHXAudioStreamInfoResponse* pStreamInfoResponse;
+      struct metaData             md;
       char*                       pszURL;
    } **ppctrl;
 
@@ -188,6 +198,9 @@ public:
                      const char *&copyright, 
                      const char *&moreinfourl, 
                      unsigned long &ver) const;
+
+
+   metaData *getMetaData(int playerIndex);
 
 private:
 

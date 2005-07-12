@@ -81,7 +81,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
 {
    m_count++;
 
-//#ifdef DEBUG_PURPOSES_ONLY
+#ifdef DEBUG_PURPOSES_ONLY
    if (!(m_count % 100))
    {
       STDERR("PRE: time: %d  ", pAudioInData->ulAudioTime);
@@ -102,7 +102,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
       }
       STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
    }
-//#endif
+#endif
 
 /*
    unsigned char *outbuf, *data;
@@ -197,7 +197,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
    m_count++;
 
-//#ifdef DEBUG_PURPOSES_ONLY
+#ifdef DEBUG_PURPOSES_ONLY
    if (!(m_count % 100))
    {
       STDERR("POST: time: %d  ", pAudioInData->ulAudioTime);
@@ -219,7 +219,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
       STDERR("len %d\n", len);
       STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
    }
-//#endif
+#endif
 
    scopeify(pAudioInData->ulAudioTime, data, len);
    if (m_Player->isEQenabled() && m_format.uBitsPerSample == 16)

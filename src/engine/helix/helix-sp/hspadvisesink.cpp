@@ -203,12 +203,14 @@ STDMETHODIMP HSPClientAdviceSink::OnPresentationOpened()
           m_splayer->stop(m_lClientIndex);
     }
 */
-    if (m_splayer->bEnableAdviceSink)
-    {
-        STDOUT("OnPresentationOpened()\n");
-    }
+   //m_splayer->bEnableAdviceSink = true;
 
-    return HXR_OK;
+   if (m_splayer->bEnableAdviceSink)
+   {
+      STDOUT("OnPresentationOpened()\n");
+   }
+
+   return HXR_OK;
 }
 
 
@@ -354,14 +356,21 @@ STDMETHODIMP HSPClientAdviceSink::OnStatisticsChanged(void)
     HX_RESULT   res     = HXR_OK;
     UINT16      uPlayer = 0;
 
-    if(m_splayer->bEnableAdviceSink)
+    //if(m_splayer->bEnableAdviceSink)
     {
-        STDOUT("OnStatisticsChanged():\n");
+       if(m_splayer->bEnableAdviceSink)
+          STDOUT("OnStatisticsChanged():\n");
         
         SafeSprintf(szBuff, 1024, "Statistics.Player%u", uPlayer );
         while( HXR_OK == res )
         {
-            res = DumpRegTree( szBuff );
+            res = DumpRegTree( szBuff, uPlayer );
+            if ( HXR_OK == res )
+            {
+               //STDERR("%d Title: %s\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.title);
+               //STDERR("%d Author: %s\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.artist);
+               //STDERR("%d Bitrate: %ld\n", uPlayer, m_splayer->ppctrl[uPlayer]->md.bitrate);
+            }
             uPlayer++;
             SafeSprintf(szBuff, 1024, "Statistics.Player%u", uPlayer );
         }
@@ -370,7 +379,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStatisticsChanged(void)
     return HXR_OK;
 }
 
-HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName )
+HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index )
 {
     const char* pszName = NULL;
     ULONG32     ulRegID   = 0;
@@ -378,6 +387,11 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName )
     INT32       nVal    = 0;
     IHXBuffer* pBuff   = NULL;
     IHXValues* pValues = NULL;
+
+    int len;
+    bool title = false;
+    bool bw = false;
+    bool author = false;
 
     //See if the name exists in the reg tree.
     res = m_pRegistry->GetPropListByName( pszTreeName, pValues);
@@ -392,41 +406,81 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName )
     res = pValues->GetFirstPropertyULONG32( pszName, ulRegID );
     while( HXR_OK == res )
     {
+       title = false;
+       bw = false;
+       author = false;
+
+       len = strlen(pszName);
+       len -= strlen("Title");
+       if (len > 0 && !strcmp(&pszName[len], "Title"))
+          title = true;
+       len += strlen("Title");
+       len -= strlen("Author");
+       if (len > 0 && !strcmp(&pszName[len], "Author"))
+          author = true;
+       len += strlen("Author");
+       len -= strlen("AverageBandwidth");
+       if (len > 0 && !strcmp(&pszName[len], "AverageBandwidth"))
+           bw = true;
+
         //We have at least one entry. See what type it is.
         HXPropType pt = m_pRegistry->GetTypeById(ulRegID);
         switch(pt)
         {
            case PT_COMPOSITE:
-               DumpRegTree(pszName);
+               DumpRegTree(pszName, index);
                break;
            case PT_INTEGER :
                nVal = 0;
                m_pRegistry->GetIntById( ulRegID, nVal );
-               STDOUT("%s : %d\n", pszName, nVal ); 
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("%s : %d\n", pszName, nVal ); 
+               if (bw)
+                  m_splayer->ppctrl[index]->md.bitrate = nVal;
                break;
            case PT_INTREF :
                nVal = 0;
                m_pRegistry->GetIntById( ulRegID, nVal );
-               STDOUT("%s : %d\n", pszName, nVal ); 
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("%s : %d\n", pszName, nVal ); 
+               if (bw)
+                  m_splayer->ppctrl[index]->md.bitrate = nVal;
                break;
            case PT_STRING :
                pBuff = NULL;
                m_pRegistry->GetStrById( ulRegID, pBuff );
-               STDOUT("%s : \"", pszName ); 
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("%s : \"", pszName ); 
                if( pBuff )
-                   STDOUT("%s", (const char *)(pBuff->GetBuffer()) );
-               STDOUT("\"\n" ); 
+                  if(m_splayer->bEnableAdviceSink)
+                     STDOUT("%s", (const char *)(pBuff->GetBuffer()) );
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("\"\n" ); 
+
+               if (title && pBuff)
+               {
+                  strncpy(m_splayer->ppctrl[index]->md.title, (const char *) (pBuff->GetBuffer()), 512);
+                  m_splayer->ppctrl[index]->md.title[511] = '\0';
+               }
+               if (author && pBuff)
+               {
+                  strncpy(m_splayer->ppctrl[index]->md.artist, (const char *) (pBuff->GetBuffer()), 512);
+                  m_splayer->ppctrl[index]->md.artist[511] = '\0';
+               }
                HX_RELEASE(pBuff);
                break;
            case PT_BUFFER :
-               STDOUT("%s : BUFFER TYPE NOT SHOWN\n",
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("%s : BUFFER TYPE NOT SHOWN\n",
                         pszName, nVal ); 
                break;
            case PT_UNKNOWN:
-               STDOUT("%s Unkown registry type entry\n", pszName );
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("%s Unkown registry type entry\n", pszName );
                break;
            default:
-               STDOUT("%s Unkown registry type entry\n", pszName );
+               if(m_splayer->bEnableAdviceSink)
+                  STDOUT("%s Unkown registry type entry\n", pszName );
                break;
         }
         res = pValues->GetNextPropertyULONG32( pszName, ulRegID);

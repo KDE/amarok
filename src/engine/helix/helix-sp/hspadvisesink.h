@@ -42,7 +42,7 @@ class HSPClientAdviceSink : public IHXClientAdviseSink
     BOOL      m_bOnStop;
     
     virtual ~HSPClientAdviceSink();
-    HX_RESULT DumpRegTree(const char* pszTreeName );
+    HX_RESULT DumpRegTree(const char* pszTreeName, UINT16 index );
 
     //PRIVATE_DESTRUCTORS_ARE_NOT_A_CRIME
 

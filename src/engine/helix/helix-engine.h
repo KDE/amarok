@@ -60,7 +60,10 @@ private:
    int           m_numPlayers;
    int           m_current;  // the current player
    int           m_xfadeLength;
-   
+
+   bool          m_isStream;
+   metaData      m_md;
+
    void timerEvent( QTimerEvent * );
 
 #ifdef DEBUG_PURPOSES_ONLY

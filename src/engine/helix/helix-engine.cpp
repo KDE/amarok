@@ -61,10 +61,12 @@ HelixEngine::HelixEngine()
      ,m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0)
 #endif
 {
-   addPluginProperty( "StreamingMode", "Socket" );
+   addPluginProperty( "StreamingMode", "NoStreaming" ); // this is counter intuitive :-)
    addPluginProperty( "HasConfigure", "true" );
    addPluginProperty( "HasEqualizer", "true" );
    //addPluginProperty( "HasCrossfade", "true" );
+
+   memset(&m_md, 0, sizeof(m_md));
 
 }
 
@@ -130,13 +132,12 @@ HelixEngine::load( const KURL &url, bool isStream )
 {
    debug() << "In load " << url.url() << endl;
 
-   cerr << "XFadeLength " << m_xfadeLength << endl;
-
    if (!m_inited)
       return false;
 
    stop();
 
+   m_isStream = isStream;
    int nextPlayer;
 
    nextPlayer = m_current ? 0 : 1;
@@ -156,7 +157,10 @@ HelixEngine::load( const KURL &url, bool isStream )
       HelixSimplePlayer::setURL( QFile::encodeName( tmp ), nextPlayer );      
    }
    else
+   {
+      m_isStream = true;
       HelixSimplePlayer::setURL( QFile::encodeName( url.prettyURL() ), nextPlayer );
+   }
 
    return true;
 }
@@ -206,6 +210,8 @@ HelixEngine::stop()
    HelixSimplePlayer::stop(m_current);
    clearScopeQ();
    m_state = Engine::Empty;
+   m_isStream = false;
+   memset(&m_md, 0, sizeof(m_md));
    emit stateChanged( Engine::Empty );
 }
 
@@ -214,7 +220,6 @@ void HelixEngine::play_finished(int /*playerIndex*/)
    debug() << "Ok, finished playing the track, so now I'm idle\n";
    m_state = Engine::Idle;
    emit trackEnded();
-   //startTimer( 250 ); // should be resonable until we build the crossfader
 }
 
 void
@@ -307,14 +312,38 @@ HelixEngine::timerEvent( QTimerEvent * )
    HelixSimplePlayer::dispatch(); // dispatch the players
    if (m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
       play_finished(m_current);
-/*
-   if (state() == Engine::Idle)
+
+   metaData *md = getMetaData(m_current);
+   if (m_isStream && 
+       (strcmp(m_md.title, md->title) || strcmp(m_md.artist, md->artist) || m_md.bitrate != md->bitrate))
    {
-      killTimers();
-      debug() << "emitting trackEnded\n";
-      emit trackEnded();
+      memcpy(&m_md, md, sizeof(m_md));
+
+      // Ok, helix sends the title of the song in the artist string for streams.
+      // this prevents context lookup, so we split it here (the artist and title are separated by a '-'
+      // we'll put the 'title' in album instead...
+      Engine::SimpleMetaBundle bndl;
+      bndl.album = QString::fromUtf8( m_md.title );
+      char c,*tmp = strchr(m_md.artist, '-');
+      if (tmp)
+      {
+         tmp--;
+         c = *tmp;
+         *tmp = '\0';
+         bndl.artist = QString::fromUtf8( m_md.artist );
+         *tmp = c;
+         tmp+=3;
+         bndl.title = QString::fromUtf8( tmp );
+         bndl.album = QString::fromUtf8( m_md.title );
+      }
+      else // just copy them as is...
+      {
+         bndl.title = QString::fromUtf8( m_md.title );
+         bndl.artist = QString::fromUtf8( m_md.artist );         
+      }
+      bndl.bitrate = QString::number( m_md.bitrate / 1000 );
+      emit EngineBase::metaData( bndl );
    }
-*/
 }
 
 

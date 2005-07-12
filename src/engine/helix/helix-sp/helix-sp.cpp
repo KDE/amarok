@@ -39,7 +39,9 @@
 #include "helix-sp.h"
 #include "hspvoladvise.h"
 #include "utils.h"
+#ifndef TEST_APP
 #include "hsphook.h"
+#endif
 #include "hxfiles.h"
 
 #ifdef __FreeBSD__
@@ -122,7 +124,9 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
    STDERR("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
 
+#ifndef TEST_APP
    pAudioStream->AddPreMixHook(new HSPPreMixAudioHook(m_Player, m_index, pAudioStream), false);
+#endif
    m_Player->ppctrl[m_index]->bStarting = false;
 
    return HXR_OK;
@@ -217,8 +221,10 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 
 void HelixSimplePlayer::updateEQgains()
 {
+#ifndef TEST_APP
    for (int i = 0; i<nNumPlayers; i++)
       ((HSPPostMixAudioHook *)ppctrl[i]->pPostMixHook)->updateEQgains(m_preamp, m_equalizerGains);
+#endif
 }
 
 /*
@@ -460,6 +466,8 @@ int HelixSimplePlayer::addPlayer()
    ppctrl[nNumPlayers]->pStream = 0;
    ppctrl[nNumPlayers]->pszURL = 0;
 
+   memset(&ppctrl[nNumPlayers]->md, 0, sizeof(ppctrl[nNumPlayers]->md));
+
    ppctrl[nNumPlayers]->pHSPContext = new HSPClientContext(nNumPlayers, this);
    if (!ppctrl[nNumPlayers]->pHSPContext)
    {
@@ -547,10 +555,12 @@ int HelixSimplePlayer::addPlayer()
       ppctrl[nNumPlayers]->pAudioPlayer->SetStreamInfoResponse(pASIR);
       ppctrl[nNumPlayers]->pStreamInfoResponse = pASIR;
 
-      // add the post-mix hook (for the scope)
+#ifndef TEST_APP
+      // add the post-mix hook (for the scope and the equalizer)
       HSPPostMixAudioHook *pPMAH = new HSPPostMixAudioHook(this, nNumPlayers);
       ppctrl[nNumPlayers]->pAudioPlayer->AddPostMixHook(pPMAH, false /* DisableWrite */, true /* final hook */);
       ppctrl[nNumPlayers]->pPostMixHook = pPMAH;
+#endif
 
       // ...and get the CrossFader
       ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
@@ -615,7 +625,11 @@ void HelixSimplePlayer::tearDown()
          pEngine->ClosePlayer(ppctrl[i]->pPlayer);
          ppctrl[i]->pPlayer->Release();
       }
-   }
+ 
+      delete ppctrl[i];
+  }
+
+   delete [] ppctrl;
 
    //pCommonClassFactory->Release();
    //pCEselect->Release();
@@ -694,6 +708,8 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       int len = strlen(file);
       if (len >= MAXPATHLEN)
          return -1;;
+
+      STDERR("Trying to play: %s\n", file);
       
       if (ppctrl[playerIndex]->pszURL)
          delete [] ppctrl[playerIndex]->pszURL;
@@ -1027,9 +1043,16 @@ void HelixSimplePlayer::stop(int playerIndex)
          pthread_mutex_unlock(&m_engine_m);
          ppctrl[playerIndex]->bPlaying = false;
          ppctrl[playerIndex]->bStarting = false;
+         memset(&ppctrl[playerIndex]->md, 0, sizeof(ppctrl[playerIndex]->md));
       }
    }
 }
+
+HelixSimplePlayer::metaData *HelixSimplePlayer::getMetaData(int playerIndex)
+{
+   return &ppctrl[playerIndex]->md;
+}
+
 
 void HelixSimplePlayer::dispatch()
 {
