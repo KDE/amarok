@@ -5,7 +5,6 @@
 
 #include "actionclasses.h"
 #include "amarok.h"
-#include "amarokconfig.h"
 #include "app.h"
 #include "debug.h"
 #include "collectiondb.h"
@@ -19,7 +18,6 @@
 #include <qtooltip.h>
 
 #include <kaction.h>
-#include <kapplication.h>
 #include <khelpmenu.h>
 #include <kiconloader.h>
 #include <klocale.h>

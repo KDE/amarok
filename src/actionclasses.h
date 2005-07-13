@@ -7,6 +7,7 @@
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
 
+#include "amarokconfig.h"
 #include "engineobserver.h"
 #include "sliderwidget.h"
 
@@ -110,6 +111,7 @@ namespace amaroK
 
                 m_function( b );
                 KToggleAction::setChecked( b );
+                AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
                 if( announce ) emit toggled( b ); //KToggleAction doesn't do this for us. How gay!
             }
 
@@ -119,6 +121,7 @@ namespace amaroK
 
                 m_function( b );
                 KToggleAction::setEnabled( b );
+                AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
                 if( announce ) emit enabled( b );
             }
 
