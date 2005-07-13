@@ -85,7 +85,10 @@ void HelixEngine::onContacting(const char *host)
 
 void HelixEngine::onBuffering(const int pcnt)
 {
-   QString message( i18n("Buffering...").sprintf("%d%%",pcnt) );
+   char buf[128];
+   QString message( i18n("Buffering...") );
+   sprintf(buf,"%d%%",pcnt);
+   message.append( buf );
    emit statusText( message );
 }
 
