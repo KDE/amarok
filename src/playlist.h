@@ -161,6 +161,7 @@ class Playlist : private KListView, public EngineObserver
 
     private slots:
         void activate( QListViewItem* );
+        void clearAndSave();
         void columnOrderChanged();
         void columnResizeEvent( int, int, int );
         void doubleClicked( QListViewItem* );

@@ -275,7 +275,7 @@ Playlist::Playlist( QWidget *parent )
     KActionCollection* const ac = amaroK::actionCollection();
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
-    m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
+    m_clearButton = KStdAction::clear( this, SLOT( clearAndSave() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
@@ -311,7 +311,10 @@ Playlist::~Playlist()
 {
     saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-    if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
+    if( AmarokConfig::savePlaylist() )
+        saveXML( defaultPlaylistPath() );
+    else
+        QFile::remove( defaultPlaylistPath() );
 
     //clean undo directory
     QStringList list = m_undoDir.entryList();
@@ -1371,6 +1374,13 @@ Playlist::clear() //SLOT
 }
 
 void
+Playlist::clearAndSave() //SLOT
+{
+    clear();
+    saveXML( defaultPlaylistPath() );
+}
+
+void
 Playlist::setSorting( int col, bool b )
 {
     saveUndoState();
@@ -1923,6 +1933,8 @@ Playlist::customEvent( QCustomEvent *e )
         }
         //force redraw of currentTrack marker, play icon, etc.
         restoreCurrentTrack();
+
+        saveXML( defaultPlaylistPath() );
     }
 
     updateNextPrev();
@@ -2441,7 +2453,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                 QString f = s.left(x).lower(), q = s.mid(x + 1), v = all[f].lower(), w = q.lower();
                 //f = field, q = query, v = contents of the field, w = match against it
                 bool condition; //whether it matches, not taking negation into account
-                
+
                 static const QString
                     Score     = PlaylistItem::columnName( PlaylistItem::Score     ).lower(),
                     Year      = PlaylistItem::columnName( PlaylistItem::Year      ).lower(),
@@ -2449,7 +2461,7 @@ Playlist::googleMatch( QString query, const QStringMap &defaults, const QStringM
                     Playcount = PlaylistItem::columnName( PlaylistItem::Playcount ).lower(),
                     Length    = PlaylistItem::columnName( PlaylistItem::Length    ).lower(),
                     Bitrate   = PlaylistItem::columnName( PlaylistItem::Bitrate   ).lower();
-                    
+
                 if (q.startsWith(">"))
                 {
                     w = w.mid( 1 );
@@ -3036,7 +3048,11 @@ Playlist::saveState( QStringList &list )
          list.pop_front();
       }
 
-      saveXML( fileName );
+      // Copy current playlist to undo folder
+      KIO::file_copy( KURL::fromPathOrURL( defaultPlaylistPath() ),
+                      KURL::fromPathOrURL( fileName ),
+                      -1, true, false, false );
+
       list.append( fileName );
 
       return true;
