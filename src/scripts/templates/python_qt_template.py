@@ -18,6 +18,7 @@ import ConfigParser
 import os
 import sys
 import threading
+from time import sleep
 
 try:
     from qt import *
@@ -174,11 +175,18 @@ def debug( message ):
 
     print debug_prefix + " " + message
 
-def main( args ):
-    app = Test( args )
+def main( ):
+    app = Test( sys.argv )
 
     app.exec_loop()
 
-if __name__ == "__main__":
-    main( sys.argv )
+def onStop(signum, stackframe):
+    """ Called when script is stopped by user """
+    pass
 
+if __name__ == "__main__":
+    mainapp = threading.Thread(target=main)
+    mainapp.start()
+    signal.signal(15, onStop)
+    # necessary for signal catching
+    while 1: sleep(120)
