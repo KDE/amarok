@@ -46,7 +46,7 @@ public:
    virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
 
    virtual void onContacting(const char *host);
-   virtual void onBuffering(const int pcnt);
+   virtual void onBuffering(int pcnt);
 
 protected:
    virtual void setVolumeSW( uint );

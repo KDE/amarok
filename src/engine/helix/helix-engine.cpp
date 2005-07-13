@@ -83,9 +83,9 @@ void HelixEngine::onContacting(const char *host)
    emit statusText( i18n("Contacting: ").arg( QString(host) ) );
 }
 
-void HelixEngine::onBuffering(const int pcnt)
+void HelixEngine::onBuffering(int pcnt)
 {
-   emit statusText( i18n( "Buffering %1 %%" ).arg( pcnt ) );
+   emit statusText( i18n( "Buffering %1%%" ).arg( pcnt ) );
 }
 
 
