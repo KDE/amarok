@@ -4,6 +4,7 @@
 # Python wrapper script for running the amaroK LiveCD remastering scripts
 # from within amaroK.  Based on the Python-Qt template script for amaroK
 # (c) 2005 Mark Kretschmann <markey@web.de>
+# 
 # (c) 2005 Leo Franchi <lfranchi@gmail.com>
 #
 # Depends on: Python 2.2, PyQt
@@ -20,6 +21,8 @@ import ConfigParser
 import os
 import sys
 import threading
+import signal
+from time import sleep
 
 try:
     from qt import *
@@ -71,6 +74,8 @@ class ConfigDialog:
 class Notification( QCustomEvent ):
     __super_init = QCustomEvent.__init__
     def __init__( self, str ):
+        
+
         self.__super_init(QCustomEvent.User + 1)
         self.string = str
 
@@ -86,6 +91,7 @@ class Remasterer( QApplication ):
         self.stdinReader.start()
 
         self.readSettings()
+
 
         # ugly hack, thanks mp8 anyway
         os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
@@ -185,6 +191,9 @@ class Remasterer( QApplication ):
 
         os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists %s/amarok.live/home/amarok/.kde/share/apps/amarok/current.xml" % (path, path, path))
 
+    def onSignal( self, signum, stackframe ):
+        stop()
+
     def stop( self ):
         
         fd = open("/tmp/amarok.stop", "w")
@@ -192,7 +201,7 @@ class Remasterer( QApplication ):
         fd.close()
 
         os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
-        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add to livecd\"")
+        os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
         os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
         os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
 
@@ -268,7 +277,7 @@ class Remasterer( QApplication ):
          #files = event.split(":")[-1][3:-2].replace("\"amaroK live!\" \"add to livecd\" ", "").split("\" \"")
             #and another
           
-            files = event.replace("customMenuClicked: amaroK live Add selected to livecd", "").split
+            files = event.replace("customMenuClicked: amaroK live Add selected to livecd", "").split()
 
             allfiles = ""
             for file in files:
@@ -301,13 +310,26 @@ class Remasterer( QApplication ):
 
 ############################################################################
 
+def onSignal( signum, stackframe ):
+    fd = open("/tmp/amarok.stop", "w")
+    fd.write( "stopping")
+    fd.close()
+
+    print 'STOPPING'
+
+    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add playlist to livecd\"")
+    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Add selected to livecd\"")
+    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Create Remastered CD\"")
+    os.system("dcop amarok script removeCustomMenuItem \"amaroK live\" \"Clear Music on livecd\"")
+
+
 def debug( message ):
     """ Prints debug message to stdout """
 
     print debug_prefix + " " + message
 
-def main( args ):
-    app = Remasterer( args )
+def main():
+    app = Remasterer( sys.argv )
 
     # not sure if it works or not...  playing it safe
     dia = ConfigDialog()
@@ -319,5 +341,12 @@ def main( args ):
     app.exec_loop()
 
 if __name__ == "__main__":
-    main( sys.argv )
+
+    mainapp = threading.Thread(target=main)
+    mainapp.start()
+    signal.signal(15, onSignal)
+    print signal.getsignal(15)
+    while 1: sleep(120)
+
+    #main( sys.argv )
 
