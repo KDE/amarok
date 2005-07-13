@@ -2056,12 +2056,17 @@ Playlist::addCustomMenuItem(QString submenu, QString itemTitle )  //for dcop
 }
 
 bool
-Playlist::removeCustomMenuItem( QString submenu, QString itemTitle)  //for dcop
+Playlist::removeCustomMenuItem( QString submenu, QString itemTitle )  //for dcop
 {
-    if(!m_customSubmenuItem.contains(submenu))
+    if( !m_customSubmenuItem.contains(submenu) )
         return false;
-    if(m_customSubmenuItem[submenu].remove( itemTitle ) != 0)
+    if( m_customSubmenuItem[submenu].remove( itemTitle ) != 0 )
+    {
+       if( m_customSubmenuItem[submenu].count() == 0 )
+            m_customSubmenuItem.remove( submenu );
+            return true;
         return true;
+    }
     else
         return false;
 }
