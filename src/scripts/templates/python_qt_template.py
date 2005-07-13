@@ -18,6 +18,7 @@ import ConfigParser
 import os
 import sys
 import threading
+import signal
 from time import sleep
 
 try:
