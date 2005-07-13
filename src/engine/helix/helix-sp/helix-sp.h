@@ -96,6 +96,8 @@ public:
 
    virtual void onVolumeChange(int) {}                   // called when the volume is changed
    virtual void onMuteChange(int) {}                     // called when mute is changed
+   virtual void onContacting(const char */*host*/) {}    // called when contacting a host
+   virtual void onBuffering(const int /*percentage*/) {} // called when buffering
 
    int getError() const { return theErr; }
 

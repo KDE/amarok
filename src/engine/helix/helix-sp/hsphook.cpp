@@ -27,7 +27,7 @@
 
 #include "hsphook.h"
 
-#define SCOPE_BUF_PER_BLOCK 2
+#define SCOPE_BUF_PER_BLOCK 8
 #define SCOPESIZE 512
 
 HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream) : 

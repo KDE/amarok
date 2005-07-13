@@ -45,6 +45,9 @@ public:
    virtual void setEqualizerEnabled( bool );
    virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
 
+   virtual void onContacting(const char *host);
+   virtual void onBuffering(const int pcnt);
+
 protected:
    virtual void setVolumeSW( uint );
 
@@ -67,6 +70,9 @@ private:
    void timerEvent( QTimerEvent * );
 
 #ifdef DEBUG_PURPOSES_ONLY
+   double m_fps;
+   int    m_fcount;
+   double m_ftime;
    int m_scopebufwaste;
    int m_scopebufnone;
    int m_scopebuftotal;

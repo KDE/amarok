@@ -644,6 +644,7 @@ STDMETHODIMP HSPClientAdviceSink::OnBuffering(ULONG32	ulFlags,
     {
         STDOUT("OnBuffering(%ld, %d)\n", ulFlags, unPercentComplete);
     }
+    m_splayer->onBuffering(unPercentComplete);
 
     return HXR_OK;
 }
@@ -663,7 +664,7 @@ STDMETHODIMP HSPClientAdviceSink::OnContacting(const char* pHostName)
     {
         STDOUT("OnContacting(\"%s\")\n", pHostName);
     }
-
+    m_splayer->onContacting(pHostName);
     return HXR_OK;
 }
 

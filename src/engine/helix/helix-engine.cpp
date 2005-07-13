@@ -20,6 +20,7 @@
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
 #define DEBUG_PREFIX "helix-engine"
+#define SCOPE_DELAY_TOLERANCE 200 // milliseconds
 
 #include <climits>
 #include <cmath>
@@ -40,6 +41,9 @@ extern "C"
     #include <unistd.h>
 }
 
+#define HELIX_ENGINE_TIMER 20
+
+
 #ifndef LLONG_MAX
 #define LLONG_MAX 9223372036854775807LL
 #endif
@@ -58,7 +62,7 @@ HelixEngine::HelixEngine()
      m_inited(false),
      m_xfadeLength(0)
 #ifdef DEBUG_PURPOSES_ONLY
-     ,m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0)
+     ,m_fps(0.0),m_fcount(0),m_ftime(0.0),m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0)
 #endif
 {
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this is counter intuitive :-)
@@ -73,6 +77,18 @@ HelixEngine::HelixEngine()
 HelixEngine::~HelixEngine()
 {
 }
+
+void HelixEngine::onContacting(const char *host)
+{
+   emit statusText( i18n("Contacting: ").arg( QString(host) ) );
+}
+
+void HelixEngine::onBuffering(const int pcnt)
+{
+   QString message( i18n("Buffering...").sprintf("%d%%",pcnt) );
+   emit statusText( message );
+}
+
 
 amaroK::PluginConfig*
 HelixEngine::configure() const
@@ -121,7 +137,7 @@ HelixEngine::init()
    }
 
    debug() << "Succussful init\n";
-   startTimer( 20 );
+   startTimer( HELIX_ENGINE_TIMER );
 
    return true;
 }
@@ -313,6 +329,19 @@ HelixEngine::timerEvent( QTimerEvent * )
    if (m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
       play_finished(m_current);
 
+#ifdef DEBUG_PURPOSES_ONLY
+   // calculate the frame rate of the scope
+   m_ftime += HELIX_ENGINE_TIMER;
+   if (m_ftime > 10000)
+   {
+      m_ftime /= 1000;
+      m_fps = (double) m_fcount / m_ftime;
+      cerr << "SCOPE FPS: " << m_fps << endl;
+      m_ftime = 0;
+      m_fcount = 0;
+   }
+#endif
+
    metaData *md = getMetaData(m_current);
    if (m_isStream && 
        (strcmp(m_md.title, md->title) || strcmp(m_md.artist, md->artist) || m_md.bitrate != md->bitrate))
@@ -352,6 +381,10 @@ const Engine::Scope &HelixEngine::scope()
    int i, err;
    struct DelayQueue *item = 0;
 
+#ifdef DEBUG_PURPOSES_ONLY
+   m_fcount++;
+#endif
+
    if (!m_inited)
       return m_scope;
 
@@ -362,16 +395,21 @@ const Engine::Scope &HelixEngine::scope()
    if (err || !w || w < p) // not enough buffers in the delay queue yet
       return m_scope;
 
-   i = 0;
-   while (!err && p < w)
+   item = getScopeBuf();
+   i = 1;
+   if (::abs(w - item->time) > SCOPE_DELAY_TOLERANCE) 
    {
-      if (item)
-         delete item;
-      
-      item = getScopeBuf();
-      err = peekScopeTime(p);
-
-      i++;
+      // need to prune some buffers
+      while (!err && p < w)
+      {
+         if (item)
+            delete item;
+         
+         item = getScopeBuf();
+         err = peekScopeTime(p);
+         
+         i++;
+      }
    }
 
 #ifdef DEBUG_PURPOSES_ONLY
