@@ -795,7 +795,9 @@ int HelixSimplePlayer::getPluginInfo(int index,
       p->AddRef();
       p->GetPluginInfo(mult, description, copyright, moreinfourl, (ULONG32 &) ver);
       p->Release();
+      return 0;
    }
+   return -1;
 }
 
 void HelixSimplePlayer::enableCrossFader(int playerFrom, int playerTo)
