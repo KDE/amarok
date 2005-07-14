@@ -85,7 +85,7 @@ void HelixEngine::onContacting(const char *host)
 
 void HelixEngine::onBuffering(int pcnt)
 {
-   emit statusText( i18n( "Buffering %1%%" ).arg( pcnt ) );
+   emit statusText( i18n( "Buffering %1%" ).arg( pcnt ) );
 }
 
 
@@ -113,7 +113,7 @@ HelixEngine::init()
    m_pluginsdir = HelixConfig::pluginDirectory();
    if (!m_pluginsdir.length())
       m_pluginsdir = "/usr/local/RealPlayer/plugins";
-   
+
    m_codecsdir = HelixConfig::codecsDirectory();
    if (!m_codecsdir.length())
       m_codecsdir = "/usr/local/RealPlayer/codecs";
@@ -169,7 +169,7 @@ HelixEngine::load( const KURL &url, bool isStream )
       tmp ="file://" + url.directory() + "/" + url.filename();
 
       debug() << tmp << endl;
-      HelixSimplePlayer::setURL( QFile::encodeName( tmp ), nextPlayer );      
+      HelixSimplePlayer::setURL( QFile::encodeName( tmp ), nextPlayer );
    }
    else
    {
@@ -316,7 +316,7 @@ HelixEngine::canDecode( const KURL &url ) const
    if (!m_inited)
       return false;
 
-   debug() << "In canDecode " << url.prettyURL() << endl;   
+   debug() << "In canDecode " << url.prettyURL() << endl;
    //TODO check if the url really is supported by Helix
    return true;
 }
@@ -342,7 +342,7 @@ HelixEngine::timerEvent( QTimerEvent * )
 #endif
 
    metaData *md = getMetaData(m_current);
-   if (m_isStream && 
+   if (m_isStream &&
        (strcmp(m_md.title, md->title) || strcmp(m_md.artist, md->artist) || m_md.bitrate != md->bitrate))
    {
       memcpy(&m_md, md, sizeof(m_md));
@@ -367,7 +367,7 @@ HelixEngine::timerEvent( QTimerEvent * )
       else // just copy them as is...
       {
          bndl.title = QString::fromUtf8( m_md.title );
-         bndl.artist = QString::fromUtf8( m_md.artist );         
+         bndl.artist = QString::fromUtf8( m_md.artist );
       }
       bndl.bitrate = QString::number( m_md.bitrate / 1000 );
       emit EngineBase::metaData( bndl );
@@ -396,17 +396,17 @@ const Engine::Scope &HelixEngine::scope()
 
    item = getScopeBuf();
    i = 1;
-   if (::abs(w - item->time) > SCOPE_DELAY_TOLERANCE) 
+   if (::abs(w - item->time) > SCOPE_DELAY_TOLERANCE)
    {
       // need to prune some buffers
       while (!err && p < w)
       {
          if (item)
             delete item;
-         
+
          item = getScopeBuf();
          err = peekScopeTime(p);
-         
+
          i++;
       }
    }
@@ -427,7 +427,7 @@ const Engine::Scope &HelixEngine::scope()
 
    for (i=0; i < 512; i++)
       m_scope[i] = (short int) item->buf[i];
-   
+
    delete item;
 
 #ifdef DEBUG_PURPOSES_ONLY
