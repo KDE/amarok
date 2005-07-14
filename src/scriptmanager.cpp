@@ -106,6 +106,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     setMainWidget( m_gui );
     m_gui->listView->setFullWidth( true );
+    m_gui->listView->setShowSortIndicator( true );
 
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
     connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
