@@ -83,9 +83,8 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 }
 
 
-
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlaylist )
-    : QWidget( parent, name, Qt::WType_TopLevel|WStyle_Customize|WStyle_StaysOnTop|WStyle_DialogBorder )
+    : QWidget( parent, name, Qt::WType_TopLevel|WStyle_Customize|WStyle_DialogBorder|WStyle_StaysOnTop )
     , EngineObserver( EngineController::instance() )
     , m_minimalView( false )
     , m_pAnimTimer( new QTimer( this ) )
@@ -99,8 +98,6 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    // utility title bar, ie small text/buttons etc, reduce widget overheard, and looks sexy/elegant
-    KWin::setType( winId(), NET::Utility );
 
     parent->installEventFilter( this ); //for hidePLaylistWithMainWindow mode
 
