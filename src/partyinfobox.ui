@@ -59,6 +59,14 @@
                                     <property name="name">
                                         <cstring>m_text</cstring>
                                     </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>3</hsizetype>
+                                            <vsizetype>3</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
                                     <property name="text">
                                         <string>&lt;p align="center"&gt;&lt;b&gt;Dynamic Mode&lt;/b&gt;&lt;/p&gt;
 Dynamic mode is a powerful method to manipulate your playlist. amaroK can automatically remove played
@@ -76,7 +84,7 @@ on the items in the playlist browser</string>
                                         <enum>Vertical</enum>
                                     </property>
                                     <property name="sizeType">
-                                        <enum>Expanding</enum>
+                                        <enum>MinimumExpanding</enum>
                                     </property>
                                     <property name="sizeHint">
                                         <size>
