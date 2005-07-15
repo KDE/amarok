@@ -43,7 +43,6 @@
 #include <kimageeffect.h> // gradient background image
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-#include <kio/netaccess.h>
 #include <klocale.h>
 #include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
@@ -154,7 +153,7 @@ ContextBrowser::ContextBrowser( const char *name )
     setTabEnabled( m_wikiTab, false );
 
     // Delete folder with the cached coverimage shadow pixmaps
-    KIO::NetAccess::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), 0 );
+    KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
 
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
