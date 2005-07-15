@@ -341,7 +341,7 @@ HelixEngine::timerEvent( QTimerEvent * )
    }
 #endif
 
-   metaData *md = getMetaData(m_current);
+   HelixSimplePlayer::metaData *md = getMetaData(m_current);
    if (m_isStream &&
        (strcmp(m_md.title, md->title) || strcmp(m_md.artist, md->artist) || m_md.bitrate != md->bitrate))
    {

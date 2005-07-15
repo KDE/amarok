@@ -54,7 +54,7 @@ private:
 
 #define BAND_NUM 10
 #define EQ_MAX_BANDS 10
-#define EQ_CHANNELS 7   // anyone try this?  should work, but I only have a stereo card...
+#define EQ_CHANNELS 2 // Helix DNA currently only supports stereo
 
 // Floating point
 typedef struct
@@ -72,6 +72,8 @@ typedef struct
 } sXYData;
 
 #include "iir_cf.h"         // IIR filter coefficients
+
+struct DelayQueue;
 
 class HSPPostMixAudioHook : public IHXAudioHook
 {
@@ -109,6 +111,11 @@ private:
    HXAudioFormat      m_format;
    int                m_count;
 
+   // scope
+   struct DelayQueue *m_item;
+   int                m_current;
+   unsigned long      m_prevtime;
+
    // equalizer
 
    // Gain for each band
@@ -125,9 +132,6 @@ private:
    int                m_j;
    int                m_k;
 
-#ifdef TEST_APP
-   int                buf[MAX_SCOPE_SAMPLES];
-#endif
 };
 
 

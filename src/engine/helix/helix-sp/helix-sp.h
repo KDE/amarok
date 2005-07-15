@@ -107,14 +107,12 @@ public:
    //void  setGUIDFile(const char *file) { m_pszGUIDFile = file; }
    bool  ReadGUIDFile();
 
-   struct metaData
+   typedef struct
    {
       char title[512];
       char artist[512];
       unsigned long bitrate;
-   };
-
-   typedef struct metaData;
+   } metaData;
 
 private:
    void  DoEvent();
@@ -147,8 +145,10 @@ private:
       IHXVolumeAdviseSink*        pVolumeAdvise;
       IHXAudioHook*               pPostMixHook;
       IHXAudioStreamInfoResponse* pStreamInfoResponse;
-      struct metaData             md;
+      metaData                    md;
       char*                       pszURL;
+      unsigned short              volume;
+      bool                        ismute;
    } **ppctrl;
 
    bool                    bURLFound;
@@ -236,6 +236,7 @@ protected:
    friend class HelixSimplePlayerAudioStreamInfoResponse;
    friend class HSPPreMixAudioHook;
    friend class HSPPostMixAudioHook;
+   friend class HelixSimplePlayerVolumeAdvice;
 };
 
 #endif

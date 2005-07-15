@@ -207,6 +207,7 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 {
    STDERR("Volume change: %d\n", uVolume);
    m_Player->onVolumeChange(m_index);
+   m_Player->ppctrl[m_index]->volume = uVolume;
    return HXR_OK;
 }
 
@@ -214,6 +215,7 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 {
    STDERR("Mute change: %d\n", bMute);
    m_Player->onMuteChange(m_index);
+   m_Player->ppctrl[m_index]->ismute = bMute;
    return HXR_OK;
 }
 
@@ -583,7 +585,6 @@ HelixSimplePlayer::~HelixSimplePlayer()
    tearDown();
 }
 
-
 void HelixSimplePlayer::tearDown()
 {
    int i;
@@ -631,7 +632,7 @@ void HelixSimplePlayer::tearDown()
 
    delete [] ppctrl;
 
-   //pCommonClassFactory->Release();
+   pCommonClassFactory->Release();
    //pCEselect->Release();
    pPluginE->Release();
 
@@ -1144,7 +1145,8 @@ unsigned long HelixSimplePlayer::getVolume(int playerIndex)
    if (playerIndex < nNumPlayers && ppctrl[playerIndex]->pVolume)
    {
       pthread_mutex_lock(&m_engine_m);
-      vol = ppctrl[playerIndex]->pVolume->GetVolume();
+      vol = ppctrl[playerIndex]->volume;
+//pVolume->GetVolume();
       pthread_mutex_unlock(&m_engine_m);
 
       return (vol);
@@ -1197,7 +1199,8 @@ bool HelixSimplePlayer::getMute(int playerIndex)
    if (playerIndex < nNumPlayers)
    {
       pthread_mutex_lock(&m_engine_m);
-      ismute = ppctrl[playerIndex]->pVolume->GetMute();
+      ismute = ppctrl[playerIndex]->ismute;
+//pVolume->GetMute();
       pthread_mutex_unlock(&m_engine_m);
       
       return ismute;

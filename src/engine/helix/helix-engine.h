@@ -65,7 +65,7 @@ private:
    int           m_xfadeLength;
 
    bool          m_isStream;
-   metaData      m_md;
+   HelixSimplePlayer::metaData m_md;
 
    void timerEvent( QTimerEvent * );
 

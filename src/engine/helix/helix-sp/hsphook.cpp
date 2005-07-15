@@ -141,7 +141,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) : 
-   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_i(0), m_j(2), m_k(1)
+   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_item(0), m_current(0), m_prevtime(0), m_i(0), m_j(2), m_k(1)
 {
    AddRef();
    memset(&m_format, 0, sizeof(m_format));
@@ -221,6 +221,10 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
    }
 #endif
 
+   //int mute = m_Player->getMute(m_index);
+   //int vol  = m_Player->getVolume(m_index);
+   //STDERR("INDEX: %d, MUTE , VOL \n", m_index);
+
    scopeify(pAudioInData->ulAudioTime, data, len);
    if (m_Player->isEQenabled() && m_format.uBitsPerSample == 16)
    {
@@ -285,8 +289,6 @@ void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size
    // since this is a postmix hook, we get the samples in CD quality (2 channels would have ~4400 samples at 16 bits/sample for a 44.1kHz sample rate)
    // for the scope we want only SCOPESIZE samples, so we downsample here.
 
-   struct DelayQueue *item;
-   int *buf;
    int bytes_per_sample = m_format.uBitsPerSample / 8;
    int scopebufs_per_block = SCOPE_BUF_PER_BLOCK;
 
@@ -294,32 +296,43 @@ void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size
    if (bytes_per_sample != 1 && bytes_per_sample != 2)
       return; // no scope
 
-   int current = 0;
    int samples_per_block = len / (m_format.uChannels * bytes_per_sample);
    int inc;
    int j,k=0;
    short *pint;
 
-   if (samples_per_block / scopebufs_per_block > SCOPESIZE)
-      inc = samples_per_block / (SCOPESIZE * scopebufs_per_block);
-   else
-   {
+   // no resampling, let's feed all the data to the scope and let it decide what to use
+   // ideally we would know the scope frame rate and use it to sample at the right rate...
+   // we'll try that as an improvement later - the frame rate is easy to calculate on our own.
+   //if (samples_per_block / scopebufs_per_block > SCOPESIZE)
+   //   inc = samples_per_block / (SCOPESIZE * scopebufs_per_block);
+   //else
+   //{
       inc = 1;
-      scopebufs_per_block = 1; // for safety sake...
-   }
+      //scopebufs_per_block = 1; // for safety sake...
+   //}
 
    // convert to mono and resample
    int a;
    unsigned char b[4];
    int index;
+   unsigned long scopebuf_timeinc = (unsigned long)(1000.0 * (double)SCOPESIZE / (double)m_format.ulSamplesPerSec);
 
-   for (index=0; index < scopebufs_per_block; index++)
+   m_prevtime = time;
+   m_current = 0;
+
+   k = 0;
+   index = 0;
+   while (len - k > SCOPESIZE)
    {
-      item = new struct DelayQueue;
-      buf = item->buf;
-      item->time = time + index * (samples_per_block / (m_format.ulSamplesPerSec * scopebufs_per_block));
+      if (!m_item)
+      {
+         m_item = new struct DelayQueue;
+         m_current = 0;
+         m_item->time = m_prevtime + scopebuf_timeinc;
+         m_prevtime = m_item->time;
+      }
 
-      current = 0;
       while (k < (int) len)
       {
          a = 0;
@@ -344,20 +357,19 @@ void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size
          }
          a /= m_format.uChannels;
          
-         buf[current] = a;
-         current++;
-         if (current >= SCOPESIZE)
+         m_item->buf[m_current] = a;
+         m_current++;
+         if (m_current >= SCOPESIZE)
          {
-            current = SCOPESIZE - 1;
+            m_Player->addScopeBuf(m_item);
+            m_item = 0;
+            index++;
             break;
          }
          
          k += m_format.uChannels * bytes_per_sample * (inc - 1);
       }
-
-      m_Player->addScopeBuf(item);
    }
-
 }
 
 #ifdef __i386__

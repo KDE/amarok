@@ -18,6 +18,7 @@
 #include <qtooltip.h>
 #include <qtextedit.h>
 #include <qtextview.h>
+#include <qfileinfo.h>
 
 #include <klineedit.h>
 #include <kseparator.h>
@@ -113,8 +114,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     QGridLayout *grid = 0;
     QScrollView *sv = 0;
 
-    QString pageName( "Main" );
-    pageName = pageName.left( pageName.find( '.' ) );
+    QString pageName( i18n("Main") );
 
     addTab( sv = new QScrollView, pageName );
     parent = new QWidget( sv->viewport() );
@@ -162,10 +162,9 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     else
        logo.append("/../share/");
 
-    struct stat s;
     QString tmp = logo;
     tmp.append("hxplay/logo.png");
-    if (!stat(tmp.utf8(), &s))
+    if (QFileInfo(tmp).exists())
     {
        logo = tmp;
        pm = new QPixmap(logo);
@@ -174,7 +173,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     {
        tmp = logo;
        tmp.append("realplay/logo.png");
-       if (!stat(tmp.utf8(), &s))
+       if (QFileInfo(tmp).exists())
        {
           logo = tmp;
           pm = new QPixmap(logo);
@@ -190,8 +189,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
 
     entries.setAutoDelete( true );
 
-    pageName = "Plugins";
-    pageName = pageName.left( pageName.find( '.' ) );
+    pageName = i18n("Plugins");
 
     addTab( sv = new QScrollView, pageName );
     parent = new QWidget( sv->viewport() );
@@ -206,7 +204,7 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     grid = new QGridLayout( parent, /*rows*/1, /*cols*/1, /*margin*/2, /*spacing*/1 );
     grid->addMultiCellWidget( le, 0, 1, 0, 1, 0 );
     le->setWordWrap(QTextEdit::NoWrap);
-    //QLabel *label;
+
     int n = engine->numPlugins();
     const char *description, *copyright, *moreinfourl;
     unsigned long ver;

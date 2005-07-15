@@ -6,7 +6,7 @@ SUBDIRS = \
     config
 
 AM_CPPFLAGS = \
-    -D_UNIX \
+    -D_UNIX -DDEBUG_PURPOSES_ONLY \
     -Wall -Wreturn-type \
     -fno-exceptions \
     -I$(top_srcdir)/amarok/src/engine \
