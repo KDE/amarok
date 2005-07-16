@@ -705,7 +705,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 }
 
 
-void App::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+void App::engineStateChanged( Engine::State state, Engine::State oldState )
 {
     const MetaBundle &bundle = EngineController::instance()->bundle();
     switch( state )
@@ -718,7 +718,7 @@ void App::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         break;
 
     case Engine::Playing:
-        if ( m_oldState == Engine::Paused )
+        if ( oldState == Engine::Paused )
             amaroK::OSD::instance()->OSDWidget::show( i18n("Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
             m_pPlaylistWindow->setCaption( "amaroK - " + bundle.veryNiceTitle() );
@@ -737,8 +737,6 @@ void App::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     default:
         ;
     }
-
-    m_oldState = state;
 }
 
 

@@ -80,7 +80,6 @@ class App : public KApplication, public EngineObserver
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
         amaroK::TrayIcon    *m_pTray;
-        Engine::State        m_oldState;
 };
 
 #define pApp static_cast<App*>(kapp)
