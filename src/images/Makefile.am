@@ -6,7 +6,6 @@ imagesdir = \
 images_DATA = \
     amarok_cut.png \
     amarok_rocks.jpg \
-    audioscrobbler.png \
     b_next.png \
     b_pause.png \
     b_play.png \

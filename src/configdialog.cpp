@@ -126,7 +126,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
     addPage( m_opt7, i18n( "Collection" ), "connect_creating", i18n( "Configure Collection" ) );
-    addPage( opt8,   i18n( "Scrobbler" ), locate( "data", "amarok/images/audioscrobbler.png" ), i18n( "Configure Audioscrobbler" ) );
+    addPage( opt8,   i18n( "Scrobbler" ), "audioscrobbler", i18n( "Configure Audioscrobbler" ) );
 
     // Show information labels (must be done after insertions)
     QObjectList *list = queryList( "QLabel", "infoPixmap" );
