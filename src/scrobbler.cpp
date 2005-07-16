@@ -41,7 +41,6 @@ Scrobbler* Scrobbler::instance()
 
 Scrobbler::Scrobbler() :
     EngineObserver( EngineController::instance() ),
-    m_prevPos( 0 ),
     m_validForSending( true ),
     m_submitter( new ScrobblerSubmitter() ),
     m_item( NULL )
@@ -221,8 +220,6 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
         return;
     }
 
-    m_prevPos = 0;
-
     // Plugins must not submit tracks played from online radio stations, even
     // if they appear to be providing correct metadata.
     if ( bundle.streamUrl() != NULL ) {
@@ -254,26 +251,16 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 /**
  * Called when the signal is received.
  */
-void Scrobbler::engineTrackPositionChanged( long position )
+void Scrobbler::engineTrackPositionChanged( long position, bool userSeek )
 {
     if ( !m_validForSending )
         return;
 
-    long posChange = position - m_prevPos;
-    // If this is not the first position changed signal for this song.
-    if ( m_prevPos != 0 )
+    if ( userSeek )
     {
-        // TODO: It would be nice to have some more accurate method for
-        // detecting user seek. Now use MAIN_TIMER events with 2 sec
-        // tolerance.
-        if ( posChange > 2000 + EngineController::MAIN_TIMER )
-        {
-            // Position has changed more than it would during normal
-            // playback.
-            m_validForSending = false;
-            debug() << "Won't submit: Seek of " << posChange << "ms detected." << endl;
-            return;
-        }
+        m_validForSending = false;
+        debug() << "Won't submit: Seek detected." << endl;
+        return;
     }
 
     // Each track must be submitted to the server when it is 50% or 240
@@ -284,8 +271,6 @@ void Scrobbler::engineTrackPositionChanged( long position )
         m_item = NULL;
         m_validForSending = false;
     }
-
-    m_prevPos = position;
 }
 
 

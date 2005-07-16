@@ -38,7 +38,7 @@ public:
     virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
     virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
-    virtual void engineTrackPositionChanged( long /*position*/ ) {}
+    virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ ) {}
 
 private:
     EngineSubject *m_subject;
@@ -62,7 +62,8 @@ protected:
     void newMetaDataNotify( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
     void trackEnded( int /*finalPosition*/, int /*trackLength*/ );
     void volumeChangedNotify( int /*percent*/ );
-    void trackPositionChangedNotify( long /*position*/ );
+    /* userSeek means the position didn't change due to normal playback */
+    void trackPositionChangedNotify( long /*position*/ , bool userSeek=false );
 
 private:
     QPtrList<EngineObserver> Observers;

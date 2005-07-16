@@ -24,7 +24,7 @@ protected:
     // reimpl from engineobserver
     virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
     virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
-    virtual void engineTrackPositionChanged( long position );
+    virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );
 

@@ -379,7 +379,7 @@ void PlayerWidget::engineNewMetaData( const MetaBundle &bundle, bool )
 }
 
 
-void PlayerWidget::engineTrackPositionChanged( long position )
+void PlayerWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     m_pSlider->setValue( position );
 

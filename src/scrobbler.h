@@ -39,7 +39,7 @@ class Scrobbler : public QObject, public EngineObserver
         ~Scrobbler();
 
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*state*/ );
-        void engineTrackPositionChanged( long /*position*/ );
+        void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ );
 
     private slots:
         void audioScrobblerSimilarArtistsResult( KIO::Job* /*job*/ );
@@ -49,7 +49,6 @@ class Scrobbler : public QObject, public EngineObserver
     private:
         QString m_similarArtistsBuffer;
         QString m_artist;
-        long m_prevPos;
         bool m_validForSending;
         ScrobblerSubmitter* m_submitter;
         SubmitItem* m_item;

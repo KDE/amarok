@@ -145,7 +145,7 @@ amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChang
 }
 
 void
-amaroK::TrayIcon::engineTrackPositionChanged( long position )
+amaroK::TrayIcon::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
     paintIcon( mergeLevel );

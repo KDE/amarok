@@ -749,7 +749,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     TrackToolTip::add( m_pTray, bundle, EngineController::instance()->engine()->position() );
 }
 
-void App::engineTrackPositionChanged( long position )
+void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     TrackToolTip::add( m_pTray, EngineController::instance()->bundle(), position );
 }

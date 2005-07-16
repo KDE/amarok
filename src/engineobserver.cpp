@@ -102,14 +102,14 @@ void EngineSubject::volumeChangedNotify( int percent )
 }
 
 
-void EngineSubject::trackPositionChangedNotify( long position )
+void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 {
     QPtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )
     {
         ++it;
-        observer->engineTrackPositionChanged( position );
+        observer->engineTrackPositionChanged( position, userSeek );
     }
 }
 

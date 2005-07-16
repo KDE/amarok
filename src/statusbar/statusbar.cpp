@@ -205,7 +205,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength, int selCount, int 
 }
 
 void
-StatusBar::engineTrackPositionChanged( long position )
+StatusBar::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     m_slider->setValue( position );
 

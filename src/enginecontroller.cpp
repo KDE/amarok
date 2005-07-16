@@ -390,6 +390,13 @@ void EngineController::playPause() //SLOT
 }
 
 
+void EngineController::seek( int ms ) //SLOT
+{
+    trackPositionChangedNotify( ms, true ); /* User seek */
+    engine()->seek( ms );
+}
+
+
 void EngineController::seekRelative( int ms ) //SLOT
 {
   if( m_engine->state() == Engine::Playing )
@@ -440,7 +447,7 @@ int EngineController::setVolume( int percent ) //SLOT
     }
     else // Still notify
     {
-	volumeChangedNotify( percent );
+        volumeChangedNotify( percent );
     }
 
     return m_engine->volume();

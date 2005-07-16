@@ -48,7 +48,7 @@ namespace amaroK
 
     protected:  /* reimpl from engineobserver */
         virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
-        virtual void engineTrackPositionChanged( long position );
+        virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
         virtual void engineNewMetaData( const MetaBundle &bundle, bool trackChanged );
 
     private slots:
