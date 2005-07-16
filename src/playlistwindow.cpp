@@ -252,7 +252,7 @@ PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( SmallIconSet( "covermanager" ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
     actionCollection()->action("queue_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertItem( i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
     m_toolsMenu->insertItem( i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );

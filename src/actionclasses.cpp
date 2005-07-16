@@ -94,7 +94,7 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
+    insertItem( SmallIconSet( "covermanager" ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     insertItem( i18n( "First-Run &Wizard" ), ID_SHOW_WIZARD );
     insertItem( i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
     insertItem( i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );

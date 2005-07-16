@@ -572,7 +572,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
         menu.insertItem( SmallIconSet( "editdelete" ), i18n("&Unset Cover"), DELETE );
         menu.insertSeparator();
-        menu.insertItem( QPixmap( locate( "data", "amarok/images/covermanager.png" ) ), i18n( "Cover Manager" ), MANAGER );
+        menu.insertItem( SmallIconSet( "covermanager" ), i18n( "Cover Manager" ), MANAGER );
 
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
