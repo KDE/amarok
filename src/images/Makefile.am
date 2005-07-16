@@ -14,7 +14,6 @@ images_DATA = \
     babelfish.png \
     back_stars_grey.png \
     bucky.png \
-    covermanager.png \
     currenttrack_play.png \
     currenttrack_pause.png \
     currenttrack_stop.png \
