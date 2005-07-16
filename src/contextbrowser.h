@@ -52,7 +52,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
-        void engineStateChanged( Engine::State );
+        void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void paletteChange( const QPalette& );
 
     private slots:

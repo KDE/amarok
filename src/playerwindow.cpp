@@ -305,7 +305,7 @@ void PlayerWidget::drawScroll()
 }
 
 
-void PlayerWidget::engineStateChanged( Engine::State state )
+void PlayerWidget::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     DEBUG_BLOCK
 

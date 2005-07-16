@@ -34,7 +34,7 @@ public:
     EngineObserver();
     EngineObserver( EngineSubject* );
     virtual ~EngineObserver();
-    virtual void engineStateChanged( Engine::State /*state*/ ) {}
+    virtual void engineStateChanged( Engine::State /*state*/, Engine::State /*oldState*/ = Engine::Empty ) {}
     virtual void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ ) {}
     virtual void engineTrackEnded( int /*finalPosition*/, int /*trackLength*/ ) {}
     virtual void engineVolumeChanged( int /*percent*/ ) {}
@@ -66,6 +66,7 @@ protected:
 
 private:
     QPtrList<EngineObserver> Observers;
+    Engine::State m_oldEngineState;
 };
 
 #endif // AMAROK_ENGINEOBSERVER_H

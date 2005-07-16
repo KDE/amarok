@@ -107,7 +107,7 @@ class PlayerWidget : public QWidget, public EngineObserver
 
     protected:
         /** Observer reimpls **/
-        void engineStateChanged( Engine::State state );
+        void engineStateChanged( Engine::State state, Engine::State state = Engine::Empty );
         void engineVolumeChanged( int percent );
         void engineNewMetaData( const MetaBundle &/*bundle*/, bool /*trackChanged*/ );
         void engineTrackPositionChanged( long /*position*/ );

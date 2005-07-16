@@ -50,7 +50,7 @@ protected:
     virtual void timerEvent( QTimerEvent* );
 
 protected:
-    virtual void engineStateChanged( Engine::State );
+    virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
 
 public slots:
     void showBrowser( const QString& name ) { showBrowser( indexForName( name ) ); }

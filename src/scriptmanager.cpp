@@ -653,7 +653,7 @@ ScriptManager::loadScript( const QString& path )
 
 
 void
-ScriptManager::engineStateChanged( Engine::State state )
+ScriptManager::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     DEBUG_BLOCK
 

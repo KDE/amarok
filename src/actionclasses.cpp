@@ -197,7 +197,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 }
 
 void
-PlayPauseAction::engineStateChanged( Engine::State state )
+PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldState*/ )
 {
     QString text;
 

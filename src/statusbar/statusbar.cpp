@@ -107,7 +107,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 }
 
 void
-StatusBar::engineStateChanged( Engine::State state )
+StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     m_pauseTimer->stop();
 

@@ -102,7 +102,7 @@ amaroK::TrayIcon::event( QEvent *e )
 }
 
 void
-amaroK::TrayIcon::engineStateChanged( Engine::State state )
+amaroK::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     // stop timer
     if ( blinkTimerID )

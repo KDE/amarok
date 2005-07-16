@@ -63,7 +63,7 @@ namespace amaroK
     {
         public:
             PlayPauseAction( KActionCollection* );
-            virtual void engineStateChanged( Engine::State );
+            virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
     };
 
     class AnalyzerContainer : public QWidget

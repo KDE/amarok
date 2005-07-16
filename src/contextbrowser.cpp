@@ -453,7 +453,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
 }
 
 
-void ContextBrowser::engineStateChanged( Engine::State state )
+void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldState )
 {
     DEBUG_BLOCK
 
@@ -485,11 +485,9 @@ void ContextBrowser::engineStateChanged( Engine::State state )
             blockSignals( false );
             break;
 
-        case Engine::Idle:
-            m_metadataHistory.clear();
-            break;
-
         case Engine::Playing:
+            if ( oldState != Engine::Paused )
+                m_metadataHistory.clear();
             blockSignals( true );
             setTabEnabled( m_currentTrackPage->view(), true );
             setTabEnabled( m_lyricsTab, true );

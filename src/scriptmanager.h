@@ -112,7 +112,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void recurseInstall( const KArchiveDirectory* archiveDir, const QString& destination );
 
         /** EngineObserver reimplementations **/
-        void engineStateChanged( Engine::State state );
+        void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
         void engineNewMetaData( const MetaBundle& /*bundle*/, bool /*trackChanged*/ );
         void engineVolumeChanged( int newVolume );
 

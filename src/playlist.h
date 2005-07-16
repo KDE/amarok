@@ -206,7 +206,7 @@ class Playlist : private KListView, public EngineObserver
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );
-        void engineStateChanged( Engine::State );
+        void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
 
         /// KListView Overloaded functions
         void contentsDropEvent     ( QDropEvent* );

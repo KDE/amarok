@@ -1267,7 +1267,7 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 }
 
 void
-Playlist::engineStateChanged( Engine::State state )
+Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     switch( state )
     {

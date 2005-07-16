@@ -705,7 +705,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
 }
 
 
-void App::engineStateChanged( Engine::State state )
+void App::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     const MetaBundle &bundle = EngineController::instance()->bundle();
     switch( state )

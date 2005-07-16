@@ -19,6 +19,11 @@ email                : fh@ez.no
 #include "engineobserver.h"
 #include <qptrlist.h>
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS EngineObserver
+//////////////////////////////////////////////////////////////////////////////////////////
+
 EngineObserver::EngineObserver()
     : m_subject( 0 )
 {}
@@ -36,7 +41,12 @@ EngineObserver::~EngineObserver()
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS EngineSubject
+//////////////////////////////////////////////////////////////////////////////////////////
+
 EngineSubject::EngineSubject()
+    : m_oldEngineState( Engine::Empty )
 {}
 
 EngineSubject::~EngineSubject()
@@ -52,8 +62,10 @@ void EngineSubject::stateChangedNotify( Engine::State state )
     while( ( observer = it.current() ) != 0 )
     {
         ++it;
-        observer->engineStateChanged( state );
+        observer->engineStateChanged( state, m_oldEngineState );
     }
+
+    m_oldEngineState = state;
 }
 
 
