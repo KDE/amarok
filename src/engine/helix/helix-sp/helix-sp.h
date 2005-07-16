@@ -52,9 +52,17 @@ class IHXPluginEnumerator;
 
 struct DelayQueue
 {
+   DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0),buf(0) { buf = new unsigned char [ bufsize ]; }
+   ~DelayQueue() { delete [] buf; }
    struct DelayQueue *fwd;
-   unsigned long time;
-   int buf[512];
+   int           len;      // len of the buffer
+   unsigned long time;     // start time of the buffer
+   unsigned long etime;    // end time of the buffer
+   int           nchan;    // number of channels
+   int           bps;      // bytes per sample
+   double        tps;      // time per sample
+   int           spb;      // samples per buffer
+   unsigned char *buf;
 };
 
 class HelixSimplePlayer

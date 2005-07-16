@@ -69,6 +69,7 @@ private:
 
    void timerEvent( QTimerEvent * );
 
+   DelayQueue *m_item;
 #ifdef DEBUG_PURPOSES_ONLY
    double m_fps;
    int    m_fcount;
@@ -77,6 +78,8 @@ private:
    int m_scopebufnone;
    int m_scopebuftotal;
 #endif
+   unsigned long m_lasttime;
+   unsigned long m_lastpos;
 
    friend class HelixConfigDialog;
 };

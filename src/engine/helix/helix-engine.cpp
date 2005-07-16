@@ -41,7 +41,7 @@ extern "C"
     #include <unistd.h>
 }
 
-#define HELIX_ENGINE_TIMER 20
+#define HELIX_ENGINE_TIMER 10  // 10 ms timer
 
 
 #ifndef LLONG_MAX
@@ -60,10 +60,12 @@ HelixEngine::HelixEngine()
      m_pluginsdir("/usr/local/RealPlayer/plugins"),
      m_codecsdir("/usr/local/RealPlayer/codecs"),
      m_inited(false),
-     m_xfadeLength(0)
+     m_xfadeLength(0),
+     m_item(0),
 #ifdef DEBUG_PURPOSES_ONLY
-     ,m_fps(0.0),m_fcount(0),m_ftime(0.0),m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0)
+     m_fps(0.0),m_fcount(0),m_ftime(0.0),m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0),
 #endif
+     m_lasttime(0), m_lastpos(0)
 {
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this is counter intuitive :-)
    addPluginProperty( "HasConfigure", "true" );
@@ -136,7 +138,6 @@ HelixEngine::init()
    }
 
    debug() << "Succussful init\n";
-   startTimer( HELIX_ENGINE_TIMER );
 
    return true;
 }
@@ -189,6 +190,7 @@ HelixEngine::play( uint offset )
    if (!m_inited)
       return false;
 
+   startTimer(HELIX_ENGINE_TIMER);
    nextPlayer = m_current ? 0 : 1;
 
    HelixSimplePlayer::start(nextPlayer);
@@ -224,6 +226,9 @@ HelixEngine::stop()
    m_url = KURL();
    HelixSimplePlayer::stop(m_current);
    clearScopeQ();
+   killTimers();
+   m_lasttime = 0;
+   m_lastpos = 0;
    m_state = Engine::Empty;
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
@@ -328,6 +333,8 @@ HelixEngine::timerEvent( QTimerEvent * )
    if (m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
       play_finished(m_current);
 
+   m_lasttime += HELIX_ENGINE_TIMER;
+
 #ifdef DEBUG_PURPOSES_ONLY
    // calculate the frame rate of the scope
    m_ftime += HELIX_ENGINE_TIMER;
@@ -377,8 +384,7 @@ HelixEngine::timerEvent( QTimerEvent * )
 
 const Engine::Scope &HelixEngine::scope()
 {
-   int i, err;
-   struct DelayQueue *item = 0;
+   int i, sb = 0;
 
 #ifdef DEBUG_PURPOSES_ONLY
    m_fcount++;
@@ -387,37 +393,44 @@ const Engine::Scope &HelixEngine::scope()
    if (!m_inited)
       return m_scope;
 
-   unsigned long w = position();
-   unsigned long p;
-   err = peekScopeTime(p);
-
-   if (err || !w || w < p) // not enough buffers in the delay queue yet
-      return m_scope;
-
-   item = getScopeBuf();
-   i = 1;
-   if (::abs(w - item->time) > SCOPE_DELAY_TOLERANCE)
+   if (!m_item)
    {
-      // need to prune some buffers
-      while (!err && p < w)
-      {
-         if (item)
-            delete item;
-
-         item = getScopeBuf();
-         err = peekScopeTime(p);
-
-         i++;
-      }
+      m_item = getScopeBuf();
+      if (m_item)
+         sb++;
    }
 
-#ifdef DEBUG_PURPOSES_ONLY
-   m_scopebuftotal += i;
-   if (i > 1)
-      m_scopebufwaste += (i-1);
-#endif
+   //
+   // this bit is to help us keep more accurate time than helix provides
+   // our metronome
+   /////////////////////////////////////////////////////////////////////
+   unsigned long w;
+   unsigned long hpos = position();
+   if (hpos == m_lastpos)
+   {
+      if (m_item && hpos >= m_item->time && hpos <= m_item->etime && (m_lasttime < m_item->time || m_lasttime > m_item->etime) )
+      {
+         w = hpos;
+         m_lasttime = hpos;
+      }
+      else
+         w = m_lasttime;
+   }
+   else
+   {
+      w = hpos;
+      m_lasttime = hpos;
+   }
+   m_lastpos = hpos;
 
-   if (!item)
+   //cerr << "w: " << w << " hpos " << hpos;
+   //if (m_item)
+   //   cerr << " time " << m_item->time << " etime " << m_item->etime;
+   //cerr << endl;
+   /////////////////////////////////////////////////////////////////////
+
+
+   if (!w || !m_item)
    {
 #ifdef DEBUG_PURPOSES_ONLY
       m_scopebufnone++; // for tuning the scope... (scope is tuned for 44.1kHz sample rate)
@@ -425,14 +438,92 @@ const Engine::Scope &HelixEngine::scope()
       return m_scope;
    }
 
-   for (i=0; i < 512; i++)
-      m_scope[i] = (short int) item->buf[i];
+   while (m_item && w > m_item->etime)
+   {
+      // need to prune some buffers
+      delete m_item;
+      m_item = getScopeBuf();
 
-   delete item;
+      sb++;
+   }
 
 #ifdef DEBUG_PURPOSES_ONLY
-   if (!(m_scopebuftotal %100))
-      cerr << "total " << m_scopebuftotal << " waste " << m_scopebufwaste << " no bufs " << m_scopebufnone << endl;
+   m_scopebuftotal += sb;
+   if (sb > 1)
+      m_scopebufwaste += (sb-1);
+#endif
+
+   if (!m_item)
+   {
+#ifdef DEBUG_PURPOSES_ONLY
+      m_scopebufnone++;
+#endif
+      return m_scope;
+   }
+
+   int j,k=0;
+   short int *pint;
+   unsigned char b[4];
+
+   // convert to mono
+   int a;
+   i=0;
+   // calculate the starting offset into the buffer
+   int off =  (m_item->spb * (w - m_item->time) / (m_item->etime - m_item->time)) * m_item->nchan * m_item->bps;
+   k = off;
+   while (m_item && i < 512)
+   {
+      while (k < (int) m_item->len)
+      {
+         a = 0;
+         for (j=0; j<m_item->nchan; j++)
+         {
+            switch (m_item->bps)
+            {
+               case 1:
+                  b[1] = 0;
+                  b[0] = m_item->buf[k];
+                  break;
+               case 2:
+                  b[1] = m_item->buf[k+1];
+                  b[0] = m_item->buf[k];
+                  break;
+            }
+            
+            pint = (short *) &b[0];
+         
+            a += (int) *pint;
+            k += m_item->bps;
+         }
+         a /= m_item->nchan;
+         
+         m_scope[i] = a;
+         i++;
+         if (i >= 512)
+            break;
+      }
+      if (i < 512)
+      {
+         delete m_item;
+         m_item = getScopeBuf();
+         k = 0;
+
+#ifdef DEBUG_PURPOSES_ONLY
+         if (m_item)
+            m_scopebuftotal++;
+#endif
+         if (!m_item)
+         {
+#ifdef DEBUG_PURPOSES_ONLY
+            m_scopebufnone++;
+#endif
+            return m_scope;
+         }
+      }
+   }
+
+#ifdef DEBUG_PURPOSES_ONLY
+   //cerr << "total " << m_scopebuftotal << " waste " << m_scopebufwaste << " no bufs " << m_scopebufnone << endl;
 #endif
 
    return m_scope;
