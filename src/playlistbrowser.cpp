@@ -769,7 +769,7 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, 0 , "Playlists" );
+        return new PlaylistCategory(m_listview, 0 , i18n("Playlists") );
     }
     else {
         e = d.namedItem( "category" ).toElement();
@@ -777,7 +777,7 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
             return new PlaylistCategory(m_listview, 0 , e );
         }
         else { // Old unversioned format
-            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , "Playlists" );
+            PlaylistCategory* p = new PlaylistCategory(m_listview, 0 , i18n("Playlists") );
             QListViewItem *last = 0;
             QDomNode n = d.namedItem( "playlistbrowser" ).namedItem("playlist");
             for( ; !n.isNull();  n = n.nextSibling() ) {
