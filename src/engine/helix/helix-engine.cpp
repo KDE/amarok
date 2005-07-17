@@ -497,7 +497,10 @@ const Engine::Scope &HelixEngine::scope()
          m_currentScope[m_scopeindex] = a;
          m_scopeindex++;
          if (m_scopeindex >= 512)
+         {
+            m_scopeindex = 512;
             break;
+         }
       }
       if (m_scopeindex < 512 && !peekScopeTime(t)) // as long as we know there's another buffer...otherwise we need to wait for another
       {
@@ -517,10 +520,12 @@ const Engine::Scope &HelixEngine::scope()
             return m_scope; // wait until there are some more buffers available
          }
       }
+      else
+         break;
    }
 
    // ok, we must have a full buffer here, give it to the scope
-   for (i=0; i<m_scopeindex; i++)
+   for (i=0; i<512; i++)
       m_scope[i] = m_currentScope[i];
    m_scopeindex = 0;
    
