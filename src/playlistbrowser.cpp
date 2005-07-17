@@ -166,6 +166,23 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         }
     }
 
+    // Restore open/closed state of each listview item
+    QValueList<int> stateList = config->readIntListEntry( "Item State" );
+    QListViewItemIterator it( m_listview );
+    uint count = 0;
+    while ( it.current() ) {
+        ++count;
+        ++it;
+    }
+    if ( count == stateList.count() ) {
+        uint index = 0;
+        it = QListViewItemIterator( m_listview );
+        while ( it.current() ) {
+            it.current()->setOpen( stateList[index] );
+            ++index;
+            ++it;
+        }
+    }
 }
 
 
@@ -192,6 +209,15 @@ PlaylistBrowser::~PlaylistBrowser()
     config->setGroup( "PlaylistBrowser" );
     config->writeEntry( "View", m_viewMode );
     config->writeEntry( "Sorting", m_sortMode );
+
+    // Save open/closed state of each listview item
+    QValueList<int> stateList;
+    QListViewItemIterator it( m_listview );
+    while ( it.current() ) {
+        stateList.append( it.current()->isOpen() ? 1 : 0 );
+        ++it;
+    }
+    config->writeEntry( "Item State", stateList );
 }
 
 /**
