@@ -423,13 +423,6 @@ const Engine::Scope &HelixEngine::scope()
    }
    m_lastpos = hpos;
 
-   cerr << "w: " << w << " hpos " << hpos;
-   if (m_item)
-      cerr << " time " << m_item->time << " etime " << m_item->etime;
-   cerr << endl;
-   /////////////////////////////////////////////////////////////////////
-
-
    if (!w || !m_item)
    {
 #ifdef DEBUG_PURPOSES_ONLY
