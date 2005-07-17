@@ -64,7 +64,7 @@ HelixEngine::HelixEngine()
 #ifdef DEBUG_PURPOSES_ONLY
      m_fps(0.0),m_fcount(0),m_ftime(0.0),m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0),
 #endif
-     m_lasttime(0), m_lastpos(0)
+     m_lasttime(0), m_lastpos(0), m_scopeindex(0)
 {
    addPluginProperty( "StreamingMode", "NoStreaming" ); // this is counter intuitive :-)
    addPluginProperty( "HasConfigure", "true" );
@@ -224,10 +224,11 @@ HelixEngine::stop()
    debug() << "In stop\n";
    m_url = KURL();
    HelixSimplePlayer::stop(m_current);
-   clearScopeQ();
+   resetScope();
    killTimers();
    m_lasttime = 0;
    m_lastpos = 0;
+   m_scopeindex = 0;
    m_state = Engine::Empty;
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
@@ -299,7 +300,7 @@ HelixEngine::seek( uint ms )
       return;
 
    debug() << "In seek\n";
-   clearScopeQ();
+   resetScope();
    HelixSimplePlayer::seek(ms, m_current);
 }
 
@@ -384,6 +385,7 @@ HelixEngine::timerEvent( QTimerEvent * )
 const Engine::Scope &HelixEngine::scope()
 {
    int i, sb = 0;
+   unsigned long t;
 
 #ifdef DEBUG_PURPOSES_ONLY
    m_fcount++;
@@ -392,13 +394,12 @@ const Engine::Scope &HelixEngine::scope()
    if (!m_inited)
       return m_scope;
 
-   if (!m_item)
+   if (!m_item && !peekScopeTime(t))
    {
       m_item = getScopeBuf();
       if (m_item)
          sb++;
    }
-
    //
    // this bit is to help us keep more accurate time than helix provides
    // our metronome
@@ -422,10 +423,10 @@ const Engine::Scope &HelixEngine::scope()
    }
    m_lastpos = hpos;
 
-   //cerr << "w: " << w << " hpos " << hpos;
-   //if (m_item)
-   //   cerr << " time " << m_item->time << " etime " << m_item->etime;
-   //cerr << endl;
+   cerr << "w: " << w << " hpos " << hpos;
+   if (m_item)
+      cerr << " time " << m_item->time << " etime " << m_item->etime;
+   cerr << endl;
    /////////////////////////////////////////////////////////////////////
 
 
@@ -460,17 +461,20 @@ const Engine::Scope &HelixEngine::scope()
       return m_scope;
    }
 
+   if (w < m_item->time) // wait for the player to catchup
+      return m_scope;
+
    int j,k=0;
    short int *pint;
    unsigned char b[4];
 
    // convert to mono
    int a;
-   i=0;
+   //i=0;
    // calculate the starting offset into the buffer
    int off =  (m_item->spb * (w - m_item->time) / (m_item->etime - m_item->time)) * m_item->nchan * m_item->bps;
    k = off;
-   while (m_item && i < 512)
+   while (m_item && m_scopeindex < 512)
    {
       while (k < (int) m_item->len)
       {
@@ -496,12 +500,13 @@ const Engine::Scope &HelixEngine::scope()
          }
          a /= m_item->nchan;
          
-         m_scope[i] = a;
-         i++;
-         if (i >= 512)
+         //m_scope[i] = a;
+         m_currentScope[m_scopeindex] = a;
+         m_scopeindex++;
+         if (m_scopeindex >= 512)
             break;
       }
-      if (i < 512)
+      if (m_scopeindex < 512 && !peekScopeTime(t)) // as long as we know there's another buffer...otherwise we need to wait for another
       {
          delete m_item;
          m_item = getScopeBuf();
@@ -516,17 +521,33 @@ const Engine::Scope &HelixEngine::scope()
 #ifdef DEBUG_PURPOSES_ONLY
             m_scopebufnone++;
 #endif
-            return m_scope;
+            return m_scope; // wait until there are some more buffers available
          }
       }
    }
 
+   // ok, we must have a full buffer here, give it to the scope
+   for (i=0; i<m_scopeindex; i++)
+      m_scope[i] = m_currentScope[i];
+   m_scopeindex = 0;
+   
 #ifdef DEBUG_PURPOSES_ONLY
    //cerr << "total " << m_scopebuftotal << " waste " << m_scopebufwaste << " no bufs " << m_scopebufnone << endl;
 #endif
 
    return m_scope;
 }
+
+void
+HelixEngine::resetScope()
+{
+   // make sure the scope is clear of old buffers
+   clearScopeQ();
+   m_scopeindex = 0;
+   delete m_item;
+   m_item = 0;
+}
+
 
 void
 HelixEngine::setEqualizerEnabled( bool enabled ) //SLOT

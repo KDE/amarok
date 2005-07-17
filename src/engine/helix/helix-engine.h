@@ -67,8 +67,6 @@ private:
    bool          m_isStream;
    HelixSimplePlayer::metaData m_md;
 
-   void timerEvent( QTimerEvent * );
-
    DelayQueue *m_item;
 #ifdef DEBUG_PURPOSES_ONLY
    double m_fps;
@@ -78,8 +76,13 @@ private:
    int m_scopebufnone;
    int m_scopebuftotal;
 #endif
-   unsigned long m_lasttime;
-   unsigned long m_lastpos;
+   unsigned long  m_lasttime;
+   unsigned long  m_lastpos;
+   unsigned short m_currentScope[512];
+   int            m_scopeindex;
+
+   void timerEvent( QTimerEvent * );
+   void resetScope();
 
    friend class HelixConfigDialog;
 };
