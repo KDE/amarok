@@ -104,6 +104,7 @@ private:
 
    void scopeify(unsigned long time, unsigned char *data, size_t len);
    void equalize(unsigned char *datain, unsigned char *dataout, size_t len);
+   void volumeize(unsigned char *data, size_t len);
 
    HelixSimplePlayer *m_Player;
    LONG32             m_lRefCount;

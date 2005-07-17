@@ -542,9 +542,9 @@ int HelixSimplePlayer::addPlayer()
    if (ppctrl[nNumPlayers]->pAudioPlayer)
    {
       // ...and now the volume interface
-      //ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetAudioVolume();
+      ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetAudioVolume();
       // let's get the Device Volume (like realplayer/helixplayer does)
-      ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetDeviceVolume();
+      //ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetDeviceVolume();
       if (!ppctrl[nNumPlayers]->pVolume)
          STDERR("No Volume Interface - how can we play music!!\n");
       else

@@ -20,7 +20,6 @@
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
 #define DEBUG_PREFIX "helix-engine"
-#define SCOPE_DELAY_TOLERANCE 200 // milliseconds
 
 #include <climits>
 #include <cmath>

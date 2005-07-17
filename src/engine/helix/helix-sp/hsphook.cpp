@@ -222,7 +222,8 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 #endif
 
    scopeify(pAudioInData->ulAudioTime, data, len);
-   if (m_Player->isEQenabled() && m_format.uBitsPerSample == 16)
+
+   if (m_Player->ppctrl[m_index]->volume && m_Player->isEQenabled() && m_format.uBitsPerSample == 16)
    {
       unsigned char *outbuf;
       IHXBuffer *ibuf;
@@ -420,3 +421,4 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
       else m_k = 0;
    }/* For each pair of samples */
 }
+
