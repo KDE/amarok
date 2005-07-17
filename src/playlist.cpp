@@ -1263,7 +1263,8 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
     else
         //ensure the currentTrack is set correctly and highlight it
         restoreCurrentTrack();
-        setFilterForItem( m_filter, m_currentTrack );
+
+    setFilterForItem( m_filter, m_currentTrack );
 }
 
 void
