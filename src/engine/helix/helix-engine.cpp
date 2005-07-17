@@ -311,7 +311,7 @@ HelixEngine::setVolumeSW( uint vol )
       return;
 
    debug() << "In setVolumeSW\n";
-   HelixSimplePlayer::setVolume(vol, m_current);
+   HelixSimplePlayer::setVolume(vol); // set the volume in all players!
 }
 
 

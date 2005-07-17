@@ -205,7 +205,7 @@ STDMETHODIMP_(ULONG32) HelixSimplePlayerVolumeAdvice::Release()
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 {
-   STDERR("Volume change: %d\n", uVolume);
+   //STDERR("Volume change: %d\n", uVolume);
    m_Player->onVolumeChange(m_index);
    m_Player->ppctrl[m_index]->volume = uVolume;
    return HXR_OK;
@@ -213,7 +213,7 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 {
-   STDERR("Mute change: %d\n", bMute);
+   //STDERR("Mute change: %d\n", bMute);
    m_Player->onMuteChange(m_index);
    m_Player->ppctrl[m_index]->ismute = bMute;
    return HXR_OK;
@@ -339,7 +339,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    fpCreateEngine    = NULL;
 
    // prepare/load the HXCore module
-   STDOUT("Simpleplayer is looking for the client core at %s\n", mCoreLibPath );
+   //STDOUT("Simpleplayer is looking for the client core at %s\n", mCoreLibPath );
 
    core_handle = dlopen(mCoreLibPath, RTLD_LAZY | RTLD_GLOBAL);
    if (!core_handle)
@@ -374,7 +374,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       memset(pNextPath, 0, 256);
 
       SafeSprintf(pNextPath, 256, "DT_Common=%s", corelibhome);
-      STDERR("Common DLL path %s\n", pNextPath );
+      //STDERR("Common DLL path %s\n", pNextPath );
       UINT32 ulBytesToCopy = strlen(pNextPath) + 1;
       if (ulBytesToCopy <= ulBytesLeft)
       {
@@ -384,7 +384,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       }
 
       SafeSprintf(pNextPath, 256, "DT_Plugins=%s", pluginslibhome);
-      STDERR("Plugin path %s\n", pNextPath );
+      //STDERR("Plugin path %s\n", pNextPath );
       ulBytesToCopy = strlen(pNextPath) + 1;
       if (ulBytesToCopy <= ulBytesLeft)
       {
@@ -394,7 +394,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       }
       
       SafeSprintf(pNextPath, 256, "DT_Codecs=%s", codecshome);
-      STDERR("Codec path %s\n", pNextPath );
+      //STDERR("Codec path %s\n", pNextPath );
       ulBytesToCopy = strlen(pNextPath) + 1;
       if (ulBytesToCopy <= ulBytesLeft)
       {
@@ -423,23 +423,17 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    // get the client engine selector
    pCEselect = 0;
    pEngine->QueryInterface(IID_IHXClientEngineSelector, (void **) &pCEselect);
-   if (pCEselect)
-      STDERR("Got the CE selector!\n");
-   else
+   if (!pCEselect)
       STDERR("no CE selector\n");
 
    // get the common class factory
    pEngine->QueryInterface(IID_IHXCommonClassFactory, (void **) &pCommonClassFactory);
-   if (pCommonClassFactory)
-      STDERR("Got the CommonClassFactory!\n");
-   else
+   if (!pCommonClassFactory)
       STDERR("no CommonClassFactory\n");
     
    // get the plugin enumerator
    pEngine->QueryInterface(IID_IHXPluginEnumerator, (void **) &pPluginE);
-   if (pPluginE)
-      STDERR("Got the Plugin Enumerator!\n");
-   else
+   if (!pPluginE)
       STDERR("no plugin enumerator\n");
     
    // create players
@@ -532,9 +526,7 @@ int HelixSimplePlayer::addPlayer()
 
    // Get the Player2 interface
    ppctrl[nNumPlayers]->pPlayer->QueryInterface(IID_IHXPlayer2, (void**) &ppctrl[nNumPlayers]->pPlayer2);
-   if (ppctrl[nNumPlayers]->pPlayer2)
-      STDERR("Got the Player2 interface!\n");
-   else
+   if (!ppctrl[nNumPlayers]->pPlayer2)
       STDERR("no player2 device\n");
    
    // Get the Audio Player
@@ -552,6 +544,8 @@ int HelixSimplePlayer::addPlayer()
          HelixSimplePlayerVolumeAdvice *pVA = new HelixSimplePlayerVolumeAdvice(this, nNumPlayers);
          ppctrl[nNumPlayers]->pVolume->AddAdviseSink((IHXVolumeAdviseSink *)pVA);
          ppctrl[nNumPlayers]->pVolumeAdvise = pVA;
+
+         ppctrl[nNumPlayers]->volume = 50; // should get volume advise, which will set this properly
       }
 
       // add the IHXAudioStreamInfoResponse it the AudioPlayer
@@ -570,15 +564,13 @@ int HelixSimplePlayer::addPlayer()
       ppctrl[nNumPlayers]->pAudioPlayer->QueryInterface(IID_IHXAudioCrossFade, (void **) &(ppctrl[nNumPlayers]->pCrossFader));
       if (!ppctrl[nNumPlayers]->pCrossFader)
          STDERR("CrossFader not available\n");
-      else
-         STDERR("Got the CrossFader device!\n");
    }
    else
       STDERR("No AudioPlayer Found - how can we play music!!\n");
    
    ++nNumPlayers;
 
-   STDERR("Added player, total is %d\n",nNumPlayers);
+   //STDERR("Added player, total is %d\n",nNumPlayers);
    return 0;
 }
 
@@ -591,7 +583,10 @@ void HelixSimplePlayer::tearDown()
 {
    int i;
    FPRMCLOSEENGINE         fpCloseEngine;
-   
+
+   // make sure all players are stopped,
+   stop();
+
    for (i=nNumPlayers-1; i>=0; i--)
    {
       if (ppctrl[i]->pCrossFader)
@@ -635,7 +630,7 @@ void HelixSimplePlayer::tearDown()
    delete [] ppctrl;
 
    pCommonClassFactory->Release();
-   //pCEselect->Release();
+   pCEselect->Release();
    pPluginE->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
@@ -712,7 +707,7 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       if (len >= MAXPATHLEN)
          return -1;;
 
-      STDERR("Trying to play: %s\n", file);
+      //STDERR("Trying to play: %s\n", file);
       
       if (ppctrl[playerIndex]->pszURL)
          delete [] ppctrl[playerIndex]->pszURL;
@@ -758,7 +753,7 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       pCommonClassFactory->CreateInstance(CLSID_IHXRequest, (void **)&ireq);
       if (ireq)
       {
-         STDERR("GOT THE IHXRequest Interface!!\n");
+         //STDERR("GOT THE IHXRequest Interface!!\n");
          ireq->SetURL(ppctrl[playerIndex]->pszURL);
          ppctrl[playerIndex]->pPlayer2->OpenRequest(ireq);
          ireq->Release();
@@ -894,7 +889,7 @@ void HelixSimplePlayer::play(int playerIndex, bool fadein, bool fadeout, unsigne
       {
          STDOUT("Starting play #%d...\n", nPlay);
       }
-      STDERR("firstplayer = %d  lastplayer=%d\n",firstPlayer,lastPlayer);
+      //STDERR("firstplayer = %d  lastplayer=%d\n",firstPlayer,lastPlayer);
       
       UINT32 starttime, endtime, now;
       for (i = firstPlayer; i < lastPlayer; i++)
@@ -984,7 +979,7 @@ void HelixSimplePlayer::start(int playerIndex, bool fadein, bool fadeout, unsign
 
          ppctrl[playerIndex]->bPlaying = true;
          ppctrl[playerIndex]->bStarting = true;
-         STDERR("Begin player %d\n", playerIndex);
+         //STDERR("Begin player %d\n", playerIndex);
       }
    }
 }
