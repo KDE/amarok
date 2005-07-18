@@ -145,9 +145,6 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
     logo->setFrameShadow( QFrame::Raised );
 
     m_tabWidget = new QTabWidget( this );
-//     QVBoxLayout *vLayout = new QVBoxLayout( p );
-//     vLayout->addWidget( logo );
-//     vLayout->addWidget( this );
 
     xine_config_get_first_entry( m_xine, ent );
 
