@@ -137,6 +137,8 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
     xine_cfg_entry_t *ent = &entry;
     QScrollView *sv = 0;
 
+    setSpacing( 2 );
+
     QLabel *logo = new QLabel( this );
     logo->setPixmap( locate( "data", "amarok/images/xine_logo.png" ) );
     logo->setPaletteBackgroundColor( Qt::black );
