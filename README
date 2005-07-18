@@ -44,16 +44,16 @@ Required
       http://freshmeat.net/projects/taglib
 
 Recommended
+    * xine 1.0.0
+      (multimedia framework)
+      http://xine.sourceforge.net
+
+      OR
+
     * GStreamer-0.8.6 + GStreamer-Plugins-0.8.6
       (multimedia framework)
       http://gstreamer.net
       (Note: GStreamer 0.9.x is incompatible with amaroK)
-
-      OR
-
-    * xine 1.0.0
-      (multimedia framework)
-      http://xine.sourceforge.net
 
 Optional
     * aRts 1.3 + KDE-Multimedia 3.3
