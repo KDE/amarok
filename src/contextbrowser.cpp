@@ -1412,7 +1412,7 @@ bool CurrentTrackJob::doJob()
                     "<div id='current_box-header' class='box-header'>"
                         "<span id='current_box-header-stream' class='box-header-title'>%1</span> "
                     "</div>"
-                    "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
+                    "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>"
                         "<tr class='box-row'>"
                             "<td height='42' valign='top' width='90%'>"
                                 "<b>%2</b>"
@@ -1444,9 +1444,9 @@ bool CurrentTrackJob::doJob()
         if ( b->m_metadataHistory.count() > 2 )
         {
             m_HTMLSource.append(
-                "<div class='box'>"
-                 "<div class='box-header'>" + i18n( "Metadata History" ) + "</div>"
-                 "<table class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+                "<div id='stream-history_box' class='box'>"
+                 "<div id='stream-history_box-header' class='box-header'>" + i18n( "Metadata History" ) + "</div>"
+                 "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
             // Ignore last two items, as they don't belong in the history
             for ( uint i = 0; i < b->m_metadataHistory.count() - 2; ++i )
@@ -1613,7 +1613,7 @@ bool CurrentTrackJob::doJob()
                     + i18n( "Cue File" ) +
                     "</span>"
             "</div>"
-            "<table class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
+            "<table id='cue_box-body' class='box-body' id='T_CC' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
                 CueFile::Iterator it;
                 uint i = 0;
                 for ( it = b->m_cuefile->begin(); it != b->m_cuefile->end(); ++it ) {
