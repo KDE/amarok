@@ -36,4 +36,5 @@ images_DATA = \
     time_plus.png \
     vol_speaker.png \
     wizard_compact.png \
-    wizard_xmms.png
+    wizard_xmms.png \
+    xine_logo.png

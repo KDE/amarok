@@ -9,16 +9,21 @@
  ***************************************************************************/
 
 #include "debug.h"
+
 #include <kcombobox.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <kseparator.h>
+#include <kstandarddirs.h>
+
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qscrollview.h>
 #include <qspinbox.h>
+#include <qtabwidget.h>
 #include <qtooltip.h>
+
 #include <xine.h>
 #include "xine-config.h"
 
@@ -121,7 +126,7 @@ XineConfigEntry::slotStringChanged( const QString& val )
 
 XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
         : amaroK::PluginConfig()
-        , QTabWidget( p )
+        , QVBox( p )
         , m_xine( (xine_t*)xine )
 {
     int row = 0;
@@ -131,6 +136,18 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
     xine_cfg_entry_t entry;
     xine_cfg_entry_t *ent = &entry;
     QScrollView *sv = 0;
+
+    QLabel *logo = new QLabel( this );
+    logo->setPixmap( locate( "data", "amarok/images/xine_logo.png" ) );
+    logo->setPaletteBackgroundColor( Qt::black );
+    logo->setAlignment( AlignHCenter | AlignVCenter );
+    logo->setFrameShape( QFrame::Box );
+    logo->setFrameShadow( QFrame::Raised );
+
+    m_tabWidget = new QTabWidget( this );
+//     QVBoxLayout *vLayout = new QVBoxLayout( p );
+//     vLayout->addWidget( logo );
+//     vLayout->addWidget( this );
 
     xine_config_get_first_entry( m_xine, ent );
 
@@ -151,7 +168,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine, QWidget *p )
                     //TODO is the viewport() not better?
                     sv->setMinimumWidth( grid->sizeHint().width() + 20 );
 
-                addTab( sv = new QScrollView, pageName );
+                m_tabWidget->addTab( sv = new QScrollView( m_tabWidget ), pageName );
                 parent = new QWidget( sv->viewport() );
 
                 sv->setResizePolicy( QScrollView::AutoOneFit );

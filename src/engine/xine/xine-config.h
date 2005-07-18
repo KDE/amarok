@@ -15,14 +15,14 @@
 
 #include "plugin/pluginconfig.h"
 #include <qptrlist.h>
-#include <qtabwidget.h>
 #include <qvbox.h>
 
-class QGridLayout;
-class KLineEdit;
 class KComboBox;
-class QSpinBox;
+class KLineEdit;
 class QCheckBox;
+class QGridLayout;
+class QSpinBox;
+class QTabWidget;
 
 typedef struct xine_s xine_t;
 typedef struct xine_cfg_entry_s xine_cfg_entry_t;
@@ -55,7 +55,7 @@ private:
 };
 
 
-class XineConfigDialog : public amaroK::PluginConfig, public QTabWidget
+class XineConfigDialog : public amaroK::PluginConfig, public QVBox
 {
 public:
     XineConfigDialog( const xine_t* const xine, QWidget *parent = 0 );
@@ -70,6 +70,7 @@ public:
 private:
     QPtrList<XineConfigEntry> entrys;
     xine_t *m_xine;
+    QTabWidget *m_tabWidget;
 };
 
 #endif
