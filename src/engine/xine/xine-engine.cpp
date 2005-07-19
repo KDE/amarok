@@ -358,6 +358,7 @@ XineEngine::setVolumeSW( uint vol )
 void
 XineEngine::setEqualizerEnabled( bool enable )
 {
+   m_equalizerEnabled = enable;
    if( !enable ) {
       QValueList<int> gains;
       for( uint x = 0; x < 10; x++ )
@@ -369,6 +370,7 @@ XineEngine::setEqualizerEnabled( bool enable )
 void
 XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 {
+   m_equalizerGains = gains;
    QValueList<int>::ConstIterator it = gains.begin();
 
    xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, *it );
@@ -555,6 +557,7 @@ XineEngine::customEvent( QCustomEvent *e )
 //SLOT
 void XineEngine::configChanged()
 {
+    //reset xine to load new audio plugin
     xine_config_save( m_xine, configPath() );
 
     if( m_stream )     xine_close( m_stream );
@@ -569,6 +572,9 @@ void XineEngine::configChanged()
     if( m_xine )       xine_exit( m_xine );
     m_xine = NULL;
     init();
+    setEqualizerEnabled( m_equalizerEnabled );
+    if ( m_equalizerEnabled )
+            setEqualizerParameters( m_preamp, m_equalizerGains );
 }
 
 static time_t last_error_time = 0; // hysteresis on xine errors
