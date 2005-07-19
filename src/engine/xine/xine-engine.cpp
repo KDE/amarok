@@ -358,34 +358,36 @@ XineEngine::setVolumeSW( uint vol )
 void
 XineEngine::setEqualizerEnabled( bool enable )
 {
-   m_equalizerEnabled = enable;
-   if( !enable ) {
-      QValueList<int> gains;
-      for( uint x = 0; x < 10; x++ )
-         gains << 0;
-      setEqualizerParameters( -100, gains );
+    m_equalizerEnabled = enable;
+
+    if( !enable ) {
+        QValueList<int> gains;
+        for( uint x = 0; x < 10; x++ )
+            gains << 0;
+
+        setEqualizerParameters( -100, gains );
    }
 }
 
 void
 XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 {
-   m_equalizerGains = gains;
-   QValueList<int>::ConstIterator it = gains.begin();
+    m_equalizerGains = gains;
+    QValueList<int>::ConstIterator it = gains.begin();
 
-   xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, *it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_60HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_125HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_250HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_500HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ, *++it );
-   xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, *it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_60HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_125HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_250HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_500HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_1000HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_2000HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_4000HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_8000HZ, *++it );
+    xine_set_param( m_stream, XINE_PARAM_EQ_16000HZ, *++it );
 
-   m_preamp = ( preamp / 2 + 150 ) / 100.0;
-   setVolume( m_volume );
+    m_preamp = ( preamp / 2 + 150 ) / 100.0;
+    setVolume( m_volume );
 }
 
 bool
