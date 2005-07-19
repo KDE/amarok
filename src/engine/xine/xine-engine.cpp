@@ -361,7 +361,7 @@ XineEngine::setEqualizerEnabled( bool enable )
    if( !enable ) {
       QValueList<int> gains;
       for( uint x = 0; x < 10; x++ )
-         gains += 0;
+         gains << 0;
       setEqualizerParameters( -100, gains );
    }
 }
