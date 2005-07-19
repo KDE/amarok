@@ -290,17 +290,6 @@
                         <string>If checked, the volume slider&lt;br&gt;sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_RememberEffects</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Remem&amp;ber effects</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, amaroK remembers&lt;br&gt;the audio effects set through the effects window between sessions.</string>
-                    </property>
-                </widget>
             </vbox>
         </widget>
         <spacer>
