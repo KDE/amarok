@@ -110,6 +110,7 @@ class Playlist : private KListView, public EngineObserver
 
         int visibleColumns() const;
         int mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
+        QString columnText( int c ) const { return KListView::columnText( c ); };
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
          *  Dont forget to unlock() !! */

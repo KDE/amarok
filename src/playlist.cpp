@@ -2950,11 +2950,18 @@ Playlist::mapToLogicalColumn( int physical )
     int logical = header()->mapToSection( physical );
 
     //skip hidden columns
-    int n;
-    for( n = 0; !header()->sectionSize( header()->mapToSection( physical - n ) ); ++n );
+    int n = 0;
+    for( int i = 0; i <= physical; ++i )
+        if( !header()->sectionSize( header()->mapToSection( physical - i ) ) )
+            ++n;
     while( n )
     {
         logical = header()->mapToSection( ++physical );
+        if( logical < 0 )
+        {
+            logical = header()->mapToSection( physical - 1 );
+            break;
+        }
         if( header()->sectionSize( logical ) )
             --n;
     }
