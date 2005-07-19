@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 #include "xine-config.h"
+#include "xinecfg.h"
 #include "xine-engine.h"
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
@@ -141,7 +142,7 @@ XineEngine::makeNewStream()
       xine_stream_t     *stream;
       xine_audio_port_t *port;
 
-      port = xine_open_audio_driver( m_xine, "auto", NULL );
+      port = xine_open_audio_driver( m_xine, XineCfg::outputPlugin().local8Bit(), NULL );
       if( !port ) {
          //TODO make engine method that is the same but parents the dialog for us
          KMessageBox::error( 0, i18n("xine was unable to initialize any audio-drivers.") );
@@ -498,7 +499,9 @@ XineEngine::timerEvent( QTimerEvent* )
 amaroK::PluginConfig*
 XineEngine::configure() const
 {
-    return new XineConfigDialog( m_xine );
+    XineConfigDialog* xcf = new XineConfigDialog( m_xine );
+    connect(xcf, SIGNAL( settingsSaved() ), this, SLOT( configChanged() ));
+    return xcf;
 }
 
 void
@@ -548,6 +551,24 @@ XineEngine::customEvent( QCustomEvent *e )
     }
 
     #undef message
+}
+//SLOT
+void XineEngine::configChanged()
+{
+    xine_config_save( m_xine, configPath() );
+
+    if( m_stream )     xine_close( m_stream );
+    if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
+    m_eventQueue = NULL;
+    if( m_stream )     xine_dispose( m_stream );
+    m_stream = NULL;
+    if( m_audioPort )  xine_close_audio_driver( m_xine, m_audioPort );
+    m_audioPort = NULL;
+    if( m_post )       xine_post_dispose( m_xine, m_post );
+    m_post = NULL;
+    if( m_xine )       xine_exit( m_xine );
+    m_xine = NULL;
+    init();
 }
 
 static time_t last_error_time = 0; // hysteresis on xine errors

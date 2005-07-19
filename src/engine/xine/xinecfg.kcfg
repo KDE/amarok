@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: Ian Monroe, ian@monroe.nu -->
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+    <kcfgfile name="amarokrc"/>
+
+    <group name="Xine-Engine">
+        <entry key="Output Plugin" type="String">
+            <label>Sound output method to use</label>
+            <whatsthis>Select the sound output plugin.</whatsthis>
+            <default>auto</default>
+        </entry>
+    </group>
+
+</kcfg>
+

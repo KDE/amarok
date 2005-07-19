@@ -43,7 +43,6 @@ class XineEngine : public Engine::Base
     virtual const Engine::Scope &scope();
 
     virtual amaroK::PluginConfig *configure() const;
-
     virtual void setEqualizerEnabled( bool );
     virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
     virtual void setVolumeSW( uint );
@@ -62,6 +61,9 @@ class XineEngine : public Engine::Base
 
     int64_t             m_currentVpts;
     float               m_preamp;
+
+private slots:
+    void configChanged();
 
 public:
     XineEngine();

@@ -1,0 +1,7 @@
+# Code generation options for kconfig_compiler
+File=xinecfg.kcfg
+ClassName=XineCfg
+Singleton=true
+Mutators=true
+MemberVariables=private
+
