@@ -108,7 +108,8 @@ class Playlist : private KListView, public EngineObserver
         void setFont( const QFont &f ) { KListView::setFont( f ); } //made public for convenience
         void unsetFont()               { KListView::unsetFont(); }
 
-        int  mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
+        int visibleColumns() const;
+        int mapToLogicalColumn( int physical ); // Converts physical PlaylistItem column position to logical
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
          *  Dont forget to unlock() !! */

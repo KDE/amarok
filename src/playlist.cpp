@@ -2935,13 +2935,29 @@ Playlist::unlock()
 }
 
 int
+Playlist::visibleColumns() const
+{
+    int r = 0, i = 1;
+    for( const int n = columns(); i <= n; ++i)
+        if( columnWidth( i - 1 ) )
+            ++r;
+    return r;
+}
+
+int
 Playlist::mapToLogicalColumn( int physical )
 {
-    int logical;
+    int logical = header()->mapToSection( physical );
 
     //skip hidden columns
-    do logical = header()->mapToSection( physical++ );
-    while ( !header()->sectionSize( logical ) );
+    int n;
+    for( n = 0; !header()->sectionSize( header()->mapToSection( physical - n ) ); ++n );
+    while( n )
+    {
+        logical = header()->mapToSection( ++physical );
+        if( header()->sectionSize( logical ) )
+            --n;
+    }
 
     return logical;
 }
