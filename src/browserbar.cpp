@@ -286,7 +286,7 @@ BrowserBar::indexForName( const QString &name ) const
 }
 
 void
-BrowserBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
 {
     if( !AmarokConfig::autoShowContextBrowser() || m_currentIndex == -1 )
         return;
@@ -294,7 +294,7 @@ BrowserBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ 
     switch( state ) {
     case Engine::Playing:
 
-        if( m_currentIndex != -1 ) {
+        if( oldState != Engine::Paused && m_currentIndex != -1 ) {
             m_lastIndex = m_currentIndex;
             showBrowser( "ContextBrowser" );
         }
