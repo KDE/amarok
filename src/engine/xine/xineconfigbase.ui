@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>549</width>
-            <height>268</height>
+            <width>424</width>
+            <height>263</height>
         </rect>
     </property>
     <property name="caption">
@@ -87,6 +87,14 @@
                     <property name="name">
                         <cstring>textLabel3</cstring>
                     </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>1</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
                     <property name="text">
                         <string>You may select which audio device to use when the OSS or ALSA output plugins are selected.</string>
                     </property>
@@ -108,20 +116,15 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>440</width>
+                    <width>250</width>
                     <height>31</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
-<tabstops>
-</tabstops>
 <includes>
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kcombobox.h</includehint>
-</includehints>
 </UI>
