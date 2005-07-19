@@ -272,6 +272,11 @@
         <whatsthis>Enable/Disable the On-Screen Display.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="Osd Use Playlist Columns" type="Bool">
+        <label>Display the same information in the OSD as in the playlist columns.</label>
+        <whatsthis>If enabled, the OSD will display the same information and in the same order as the columns in the playlist.</whatsthis>
+        <default>true</default>
+    </entry>
     <entry key="Osd Text" type="String">
         <label>The OSD text to show</label>
         <whatsthis>Customise the OSD display text.</whatsthis>

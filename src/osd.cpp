@@ -16,6 +16,7 @@
 #include "debug.h"
 #include "collectiondb.h"    //for albumCover location
 #include "osd.h"
+#include "playlist.h"        //if osdUsePlaylistColumns()
 
 #include <kapplication.h>
 #include <kpixmap.h>
@@ -26,6 +27,7 @@
 #include <qpainter.h>
 #include <qregexp.h>
 #include <qtimer.h>
+#include <qvaluevector.h>
 
 namespace ShadowEngine
 {
@@ -444,45 +446,93 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 void
 amaroK::OSD::show( const MetaBundle &bundle ) //slot
 {
-    QString text = AmarokConfig::osdText();
-    QStringList tags, tokens;
+    QString text = "";
+    QValueVector<QString> tags, tokens;
 
     // we special case prettyTitle and put it first
     // so that we handle things like streams better
-    tokens << "%artist - %title"
-           << "%artist" << "%album" << "%title" << "%genre"
-           << "%year" << "%track" << "%bitrate" << "%length"
-           << "%file" << "%comment"
-           << "%score"<< "%playcount";
+    // try and keep these 1:1 with the playlist's columns otherwise
+    tokens.append( "%artist - %title" );
+    tokens.append( "%file" );
+    tokens.append( "%title" );
+    tokens.append( "%artist" );
+    tokens.append( "%album" );
+    tokens.append( "%year" );
+    tokens.append( "%comment" );           //fucking QValueVector doesn't have operator<<, wtf?
+    tokens.append( "%genre" );
+    tokens.append( "%track" );
+    tokens.append( QString::null );
+    tokens.append( "%length" );
+    tokens.append( "%bitrate" );
+    tokens.append( "%score" );
+    tokens.append( QString::null );
+    tokens.append( "%playcount" );
 
-    tags   << bundle.prettyTitle()
-           << bundle.artist() << bundle.album() << bundle.title() << bundle.genre()
-           << bundle.year() << bundle.track() << bundle.prettyBitrate()
-           << (bundle.length() > 0 ? bundle.prettyLength() : QString::null) //ignore '-' and '?'
-           << bundle.url().fileName() << bundle.comment()
-           << QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) )
-           << QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
+    tags.append( bundle.prettyTitle() );
+    tags.append( bundle.url().fileName() );
+    tags.append( bundle.title() );
+    tags.append( bundle.artist() );
+    tags.append( bundle.album() );
+    tags.append( bundle.year() );
+    tags.append( bundle.comment() );
+    tags.append( bundle.genre() );
+    tags.append( bundle.track() );
+    tags.append( QString::null );
+    tags.append( ( bundle.length() > 0 ? bundle.prettyLength() : QString::null ) ); //ignore '-' and '?'
+    tags.append( bundle.prettyBitrate() );
+    tags.append( QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) ) );
+    tags.append( QString::null );
+    tags.append( QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) ) );
 
-    for( QStringList::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
+    if( AmarokConfig::osdUsePlaylistColumns() )
     {
-        if( (*tag).isEmpty() ) {
-            text.remove( QRegExp(QString("\\{[^}]*%1[^{]*\\}").arg( *tok )) );
-            text.remove( *tok ); //above only works if {} surround the token
+        const int n = Playlist::instance()->visibleColumns();
+        int i = 1;
+        QString tag;
+
+        do tag = tags.at( Playlist::instance()->mapToLogicalColumn( i++ ) + 1);
+        while( tag.isNull() && i <= n );
+
+        if( !tag.isNull() )
+            text.append( tag );
+
+        while( i <= n )
+        {
+            tag = tags.at( Playlist::instance()->mapToLogicalColumn( i++ ) + 1 );
+            if( !tag.isNull() )
+            {
+                text.append( " - " );
+                text.append( tag );
+            }
         }
-        else
-            //NOTE leaves the {} braces
-            text.replace( *tok, *tag );
     }
+    else
+    {
+        text = AmarokConfig::osdText();
 
-    text.remove( '{' );
-    text.remove( '}' );
-    text.replace( QRegExp("\n{2,}"), "\n" ); //multiple \n characters may remain
-    text.replace( "&lt;",  "<" );
-    text.replace( "&gt;",  ">" );
-    text.replace( "&amp;", "&" ); //replace some common HTML type stuff
+        for( QValueVector<QString>::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
+        {
+            if( (*tok).isNull() )
+                continue;
+            if( (*tag).isEmpty() ) {
+                text.remove( QRegExp(QString("\\{[^}]*%1[^{]*\\}").arg( *tok )) );
+                text.remove( *tok ); //above only works if {} surround the token
+            }
+            else
+                //NOTE leaves the {} braces
+                text.replace( *tok, *tag );
+        }
 
-    // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
-    text.replace( "\\n", "\n" );
+        text.remove( '{' );
+        text.remove( '}' );
+        text.replace( QRegExp("\n{2,}"), "\n" ); //multiple \n characters may remain
+        text.replace( "&lt;",  "<" );
+        text.replace( "&gt;",  ">" );
+        text.replace( "&amp;", "&" ); //replace some common HTML type stuff
+
+        // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
+        text.replace( "\\n", "\n" );
+    }
 
     if ( AmarokConfig::osdCover() ) {
         //avoid showing the generic cover.  we can overwrite this by passing an arg.
@@ -497,8 +547,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
     text = text.stripWhiteSpace();
 
-   if( text.isEmpty() )
-       text = i18n( "No track playing" );
+    if( text.isEmpty() )
+        text = i18n( "No track playing" );
 
     OSDWidget::show( text );
 }
