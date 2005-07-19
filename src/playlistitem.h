@@ -26,7 +26,7 @@ class PlaylistItem : public KListViewItem
 {
     public:
         enum Column {
-            Filename = 0,
+            Filename  = 0,
             Title     = 1,
             Artist    = 2,
             Album     = 3,
