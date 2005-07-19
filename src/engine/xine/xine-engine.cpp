@@ -52,6 +52,8 @@ namespace Log
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
 static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "xine-config"); }
 
+static Fader *s_fader = 0;
+
 
 XineEngine::XineEngine()
         : EngineBase()
@@ -65,11 +67,13 @@ XineEngine::XineEngine()
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
     addPluginProperty( "HasEqualizer", "true" );
-    //addPluginProperty( "HasCrossfade", "true" );
+    addPluginProperty( "HasCrossfade", "true" );
 }
 
 XineEngine::~XineEngine()
 {
+    delete s_fader;
+
 //     if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
 //     {
 //         const int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
@@ -183,9 +187,6 @@ XineEngine::makeNewStream()
    return true;
 }
 
-
-static Fader *s_fader = 0;
-
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
@@ -196,10 +197,10 @@ XineEngine::load( const KURL &url, bool isStream )
 
    Engine::Base::load( url, isStream || url.protocol() == "http" );
 
-//     if( false && m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
-//     {
-//        s_fader = new Fader( this );
-//     }
+    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    {
+       s_fader = new Fader( this );
+    }
 
    // for users who stubbonly refuse to use DMIX or buy a good soundcard
    // why doesn't xine do this? I cannot say.
@@ -230,7 +231,7 @@ XineEngine::play( uint offset )
     if( xine_play( m_stream, 0, offset ) )
     {
         if( s_fader )
-           s_fader->start();
+           s_fader->start( QThread::LowestPriority );
 
         emit stateChanged( Engine::Playing );
 
@@ -806,7 +807,7 @@ Fader::run()
 
     for( int v = 99; v >= 0; --v ) {
         data.push_back( fade_s( sleeps[v], v, m_decrease ) );
-        kdDebug() << v << ": " << sleeps[v] << endl;
+//         kdDebug() << v << ": " << sleeps[v] << endl;
     }
 
     {
@@ -822,7 +823,7 @@ Fader::run()
             tu += (*it).sleep;
 
             while ( tu > td ) {
-                kdDebug() << tu << ", " << td << " for v=" << v << endl;
+//                 kdDebug() << tu << ", " << td << " for v=" << v << endl;
 
                 //this is the sleeptime for the structure we are about to insert
                 const int newsleep = tu - td;
@@ -834,7 +835,7 @@ Fader::run()
                 //insert the new structure for the increasing stream
                 data.insert( it, fade_s( newsleep, v, m_increase ) );
 
-                kdDebug() << "new: " << newsleep << endl;
+//                 kdDebug() << "new: " << newsleep << endl;
 
                 //decrease the contextual volume
                 if ( ++v > 99 )
@@ -844,7 +845,7 @@ Fader::run()
                 td += sleeps[v];
             }
 
-            kdDebug() << tu << ", " << td << " for v=" << v << endl;
+//             kdDebug() << tu << ", " << td << " for v=" << v << endl;
         }
 
         done: ;
@@ -853,7 +854,7 @@ Fader::run()
     // perform the fading operations
     for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it )
     {
-        debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
+//         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
 
         if( (*it).sleep > 0 ) //FIXME
            QThread::usleep( (*it).sleep );
