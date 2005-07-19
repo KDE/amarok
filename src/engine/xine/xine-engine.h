@@ -63,7 +63,8 @@ class XineEngine : public Engine::Base
     float               m_preamp;
     //need to save these for when the audio plugin is changed and xine reloaded
     bool                m_equalizerEnabled;
-    QValueList<int>     m_equalizerGains;
+    int                 m_intPreamp;
+    QValueList<int>     m_equalizerGains; 
 
 private slots:
     void configChanged();

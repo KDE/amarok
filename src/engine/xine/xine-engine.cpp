@@ -18,8 +18,11 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <climits>
 #include <cmath>
 #include "debug.h"
+
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kstandarddirs.h>
+
 #include <qapplication.h>
 #include <qdir.h>
 
@@ -46,8 +49,8 @@ namespace Log
     static uint noSuitableBuffer = 0;
 };
 
-///returns the configuration we will use
-static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPath() + "/.xine/config" ); }
+///returns the configuration we will use. there is no KInstance, so using this hacked up method.
+static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "xine-config"); }
 
 
 XineEngine::XineEngine()
@@ -121,6 +124,7 @@ XineEngine::init()
    #endif
 
    xine_config_load( m_xine, configPath() );
+   debug() << "w00t" << configPath() << endl;
 
    xine_init( m_xine );
 
@@ -373,6 +377,7 @@ void
 XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 {
     m_equalizerGains = gains;
+    m_intPreamp = preamp;
     QValueList<int>::ConstIterator it = gains.begin();
 
     xine_set_param( m_stream, XINE_PARAM_EQ_30HZ, *it );
@@ -561,7 +566,6 @@ void XineEngine::configChanged()
 {
     //reset xine to load new audio plugin
     xine_config_save( m_xine, configPath() );
-
     if( m_stream )     xine_close( m_stream );
     if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
     m_eventQueue = NULL;
@@ -576,7 +580,7 @@ void XineEngine::configChanged()
     init();
     setEqualizerEnabled( m_equalizerEnabled );
     if ( m_equalizerEnabled )
-            setEqualizerParameters( m_preamp, m_equalizerGains );
+            setEqualizerParameters( m_intPreamp, m_equalizerGains );
 }
 
 static time_t last_error_time = 0; // hysteresis on xine errors
