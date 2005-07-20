@@ -13,16 +13,97 @@
 #include "xineconfigbase.h"
 #include "xinecfg.h"
 
-#include <kstandarddirs.h>
 #include <kcombobox.h>
 #include <klocale.h>
+#include <knuminput.h>
+#include <kstandarddirs.h>
 
 #include <qlabel.h>
 #include <qpixmap.h>
 
 
 #include <xine.h>
+////////////////////
+/// XineGeneralEntry
+////////////////////
+XineGeneralEntry::XineGeneralEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf)
+    : m_valueChanged(false)
+    , m_key(key)
+    , m_xine(xine)
+{
+    debug() << "new entry " << m_key << endl;
+    connect(this, SIGNAL(viewChanged()), xcf, SIGNAL(viewChanged() ) );
+}
+////////////////////
+/// XineStrEntry
+////////////////////
+XineStrEntry::XineStrEntry(QLineEdit* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
+    : XineGeneralEntry(key,xine,xcf)
+{
+    xine_cfg_entry_t ent;
+    if( xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent) )
+    {
+        input->setText(ent.str_value);
+        m_val = ent.str_value; 
+    }
+     connect( input, SIGNAL( textChanged( const QString & ) ), this, SLOT( entryChanged(const QString &) ) );
+}
 
+void XineStrEntry::save()
+{
+    if(m_xine) debug() << "its not null " << m_key << ' ' << m_val << endl;
+    xine_cfg_entry_t ent;
+    if(xine_config_lookup_entry(m_xine, m_key.ascii(), &ent))
+    {
+        ent.str_value = const_cast<char*>(m_val.ascii());
+        xine_config_update_entry(m_xine, &ent);
+        m_valueChanged = false;
+    }
+    else
+        debug()<<"Error saving " << m_val << " with key " << m_key;
+}
+
+void XineStrEntry::entryChanged(const QString & val)
+{
+    emit viewChanged();
+    m_valueChanged = true;
+    m_val = val;
+}
+
+////////////////////
+/// XineIntEntry
+////////////////////
+XineIntEntry::XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
+    : XineGeneralEntry(key,xine,xcf)
+{
+    xine_cfg_entry_t ent;
+    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent)) 
+        {
+            input->setValue(ent.num_value);
+            m_val = ent.num_value;
+        }
+     connect( input,  SIGNAL( valueChanged( int ) ), this, SLOT( entryChanged( int ) ) );
+}
+
+void XineIntEntry::save()
+{
+    xine_cfg_entry_t ent;
+    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent))
+    {
+        ent.num_value = m_val;
+        xine_config_update_entry(m_xine, &ent);
+        m_valueChanged = false;
+    }
+    else
+        debug()<<"Error saving " << m_val << " with key " << m_key;
+}
+
+void XineIntEntry::entryChanged(int val)
+{
+    emit viewChanged();
+    m_valueChanged = true;
+    m_val = val;
+}
 ///////////////////////
 /// XineConfigDialog
 ///////////////////////
@@ -35,20 +116,16 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
     m_view->xineLogo->setPixmap( QPixmap( locate( "data", "amarok/images/xine_logo.png" ) ) );
     //sound output combo box
     m_view->deviceComboBox->insertItem(i18n("Autodetect"));
-    if(m_xine) debug() << "its not null\n";
     const char* const* drivers = xine_list_audio_output_plugins(m_xine);
     for(int i =0; drivers[i]; ++i)
     {
         m_view->deviceComboBox->insertItem(drivers[i]);
     }
-     //xine_cfg_entry_t ent;
-     //if(xine_config_lookup_entry(m_xine, "audio.driver", &ent)) 
-     //   for( int i = 0; ent.enum_values[i]; ++i )
-     //       m_view->deviceComboBox->insertItem( QString::fromLocal8Bit( ent.enum_values[i] ) );
-    //else
-     //   debug() << "unsuccessful lookup\n";
+    
     connect( m_view->deviceComboBox, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
+    m_entries.setAutoDelete(TRUE);
     m_view->deviceComboBox->setCurrentItem( (XineCfg::outputPlugin() == "auto" ) ? "Autodetect" : XineCfg::outputPlugin() );
+    init();
 }
 
 XineConfigDialog::~XineConfigDialog()
@@ -56,11 +133,30 @@ XineConfigDialog::~XineConfigDialog()
     XineCfg::writeConfig();
     delete m_view;
 }
+void XineConfigDialog::init()
+{
+    #define add(X) m_entries.append(X)
+    add(new XineStrEntry(m_view->hostLineEdit, "media.network.http_proxy_host", m_xine, this));
+    add(new XineIntEntry(m_view->portIntBox,"media.network.http_proxy_port", m_xine, this));
+    add(new XineStrEntry(m_view->userLineEdit, "media.network.http_proxy_user", m_xine, this));
+    add(new XineStrEntry(m_view->passLineEdit, "media.network.http_proxy_password", m_xine, this));
+    #undef add
+}
 
 bool
 XineConfigDialog::hasChanged() const
 {
-	return XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentItem() == 0) ? "auto" : m_view->deviceComboBox->currentText());
+	if(XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentItem() == 0) ? "auto" : m_view->deviceComboBox->currentText()))
+        return true;
+    QPtrListIterator<XineGeneralEntry> it( m_entries );
+    XineGeneralEntry* entry;
+    while( (entry = it.current()) != 0 )
+    {
+        ++it;
+        if(entry->hasChanged())
+            return true; 
+    }
+    return false;
 }
 
 bool
@@ -68,16 +164,32 @@ XineConfigDialog::isDefault() const
 {
     return false;
 }
+void
+XineConfigDialog::reset(xine_t* xine) //SLOT
+{
+    debug() << &m_xine << " " << &xine << endl;
+    m_entries.clear();
+    m_xine = xine;
+    debug() << "m_entries now empty " << m_entries.isEmpty() << endl;
+    init();
+}
 
 void
-XineConfigDialog::save()
+XineConfigDialog::save()//SLOT
 {
-    bool changed =  hasChanged();
-    //its not Autodetect really, its just auto
-    debug() << XineCfg::outputPlugin() << endl;
-    XineCfg::setOutputPlugin( (m_view->deviceComboBox->currentItem() == 0) ? "auto" : m_view->deviceComboBox->currentText() );
-    debug() << XineCfg::outputPlugin() << changed << endl;
-    if(changed) emit settingsSaved();
+    if(hasChanged())
+    {
+        //its not Autodetect really, its just auto
+        XineCfg::setOutputPlugin((m_view->deviceComboBox->currentItem() == 0) 
+            ? "auto" : m_view->deviceComboBox->currentText());
+        XineGeneralEntry* entry;
+        for(entry = m_entries.first(); entry; entry=m_entries.next())
+        {
+            if(entry->hasChanged())
+                entry->save();
+        }
+        emit settingsSaved();
+    }
 }
 
 #include "xine-config.moc"

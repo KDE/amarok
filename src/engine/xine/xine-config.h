@@ -20,6 +20,48 @@
 
 #include <xine.h>
 
+class XineConfigDialog;
+class KLineEdit;
+
+class XineGeneralEntry : public QObject
+{
+Q_OBJECT
+    public:
+        virtual void save() = 0;
+        bool hasChanged()  const { return m_valueChanged; };
+    signals:
+        void viewChanged();
+    protected:
+        XineGeneralEntry(const QString& key, xine_t *m_xine, XineConfigDialog* xcf);
+        bool m_valueChanged;
+        QString m_key;
+        xine_t *m_xine;
+};
+
+class XineStrEntry : public XineGeneralEntry
+{
+Q_OBJECT
+    public:
+        XineStrEntry(QLineEdit* input, const QCString & key, xine_t *m_xine, XineConfigDialog* xcf);
+        void save();
+    private slots:
+        void entryChanged(const QString& newEntry);
+    private:
+        QString m_val;
+};
+
+class XineIntEntry : public XineGeneralEntry
+{
+Q_OBJECT
+    public:
+        XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
+        void save();
+    private slots:
+        void entryChanged(int newEntry);
+    private:
+        int m_val; 
+};
+
 class XineConfigDialog : public amaroK::PluginConfig
 {
 Q_OBJECT
@@ -34,8 +76,12 @@ Q_OBJECT
     public slots:
         /** Save view state using, eg KConfig */
         void save();
+        void reset(xine_t *xine);
     private:
+        /** All data structures with m_xine initiated **/
+        void init();
         xine_t *m_xine;
+        QPtrList<XineGeneralEntry> m_entries;
         XineConfigBase* m_view;
 };
 

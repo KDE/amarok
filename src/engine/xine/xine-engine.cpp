@@ -50,8 +50,8 @@ namespace Log
 };
 
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
-static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "xine-config"); }
-
+//static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
+static inline QCString configPath() { return QFile::encodeName(locate( "data", "amarok/xine-config" )); }
 static Fader *s_fader = 0;
 
 
@@ -149,6 +149,7 @@ XineEngine::init()
 bool
 XineEngine::makeNewStream()
 {
+    m_currentAudioPlugin = XineCfg::outputPlugin();
    {
       ///this block is so we don't crash if we fail to allocate a thingy
       xine_stream_t     *stream;
@@ -515,6 +516,7 @@ XineEngine::configure() const
 {
     XineConfigDialog* xcf = new XineConfigDialog( m_xine );
     connect(xcf, SIGNAL( settingsSaved() ), this, SLOT( configChanged() ));
+    connect(this, SIGNAL( resetConfig(xine_t*) ), xcf, SLOT( reset(xine_t*) ));
     return xcf;
 }
 
@@ -570,22 +572,26 @@ XineEngine::customEvent( QCustomEvent *e )
 void XineEngine::configChanged()
 {
     //reset xine to load new audio plugin
-    xine_config_save( m_xine, configPath() );
-    if( m_stream )     xine_close( m_stream );
-    if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
-    m_eventQueue = NULL;
-    if( m_stream )     xine_dispose( m_stream );
-    m_stream = NULL;
-    if( m_audioPort )  xine_close_audio_driver( m_xine, m_audioPort );
-    m_audioPort = NULL;
-    if( m_post )       xine_post_dispose( m_xine, m_post );
-    m_post = NULL;
-    if( m_xine )       xine_exit( m_xine );
-    m_xine = NULL;
-    init();
-    setEqualizerEnabled( m_equalizerEnabled );
-    if ( m_equalizerEnabled )
-            setEqualizerParameters( m_intPreamp, m_equalizerGains );
+    if( m_currentAudioPlugin != XineCfg::outputPlugin() )
+    {
+        xine_config_save( m_xine, configPath() );
+        if( m_stream )     xine_close( m_stream );
+        if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
+        m_eventQueue = NULL;
+        if( m_stream )     xine_dispose( m_stream );
+        m_stream = NULL;
+        if( m_audioPort )  xine_close_audio_driver( m_xine, m_audioPort );
+        m_audioPort = NULL;
+        if( m_post )       xine_post_dispose( m_xine, m_post );
+        m_post = NULL;
+        if( m_xine )       xine_exit( m_xine );
+        m_xine = NULL;
+        init();
+        setEqualizerEnabled( m_equalizerEnabled );
+        if ( m_equalizerEnabled )
+                setEqualizerParameters( m_intPreamp, m_equalizerGains );
+        emit resetConfig(m_xine);
+    }
 }
 
 static time_t last_error_time = 0; // hysteresis on xine errors

@@ -61,6 +61,9 @@ class XineEngine : public Engine::Base
 
     int64_t             m_currentVpts;
     float               m_preamp;
+
+    QString             m_currentAudioPlugin; //to see if audio plugin has been changed
+    XineConfigDialog*   m_configDialog;
     //need to save these for when the audio plugin is changed and xine reloaded
     bool                m_equalizerEnabled;
     int                 m_intPreamp;
@@ -71,6 +74,8 @@ private slots:
 
 public:
     XineEngine();
+signals:
+    void resetConfig(xine_t *xine);
 };
 
 class Fader : public QObject, public QThread
