@@ -65,9 +65,9 @@ void XineStrEntry::save()
 
 void XineStrEntry::entryChanged(const QString & val)
 {
-    emit viewChanged();
     m_valueChanged = true;
     m_val = val;
+    emit viewChanged();
 }
 
 ////////////////////
@@ -100,9 +100,10 @@ void XineIntEntry::save()
 
 void XineIntEntry::entryChanged(int val)
 {
-    emit viewChanged();
+    debug() << m_key << " is now set to " << val << endl;
     m_valueChanged = true;
     m_val = val;
+    emit viewChanged();
 }
 ///////////////////////
 /// XineConfigDialog
