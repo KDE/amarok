@@ -120,7 +120,8 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
     const char* const* drivers = xine_list_audio_output_plugins(m_xine);
     for(int i =0; drivers[i]; ++i)
     {
-        m_view->deviceComboBox->insertItem(drivers[i]);
+        if(qstrcmp(drivers[i],"none") != 0) //returns 0 if equal
+            m_view->deviceComboBox->insertItem(drivers[i]);
     }
     
     connect( m_view->deviceComboBox, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
