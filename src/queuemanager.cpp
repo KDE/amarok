@@ -25,6 +25,7 @@
 #include <qpainter.h>
 #include <qptrlist.h>
 #include <qsimplerichtext.h>
+#include <qtooltip.h>
 #include <qvbox.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -282,11 +283,17 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_listview = new QueueList( box );
 
     QVBox *buttonBox = new QVBox( box );
-    m_up     = new KPushButton( KGuiItem( QString::null, "up"), buttonBox );
-    m_down   = new KPushButton( KGuiItem( QString::null, "down"), buttonBox  );
-    m_mix    = new KPushButton( KGuiItem( QString::null, "rebuild"), buttonBox );
-    m_remove = new KPushButton( KGuiItem( QString::null, "edittrash"), buttonBox );
-    m_add    = new KPushButton( KGuiItem( QString::null, "edit_add"), buttonBox );
+    m_up     = new KPushButton( KGuiItem( QString::null, "up" ), buttonBox );
+    m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
+    m_mix    = new KPushButton( KGuiItem( QString::null, "rebuild" ), buttonBox );
+    m_remove = new KPushButton( KGuiItem( QString::null, "edittrash" ), buttonBox );
+    m_add    = new KPushButton( KGuiItem( QString::null, "edit_add" ), buttonBox );
+
+    QToolTip::add( m_up,     i18n( "Move Up" ) );
+    QToolTip::add( m_down,   i18n( "Move Down" ) );
+    QToolTip::add( m_mix,    i18n( "Mix" ) );
+    QToolTip::add( m_remove, i18n( "Remove" ) );
+    QToolTip::add( m_add,    i18n( "Enqueue Track" ) );
 
     m_up->setEnabled( false );
     m_down->setEnabled( false );
