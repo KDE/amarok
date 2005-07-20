@@ -443,6 +443,17 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 #include "metabundle.h"
 #include <qregexp.h>
 
+template<class T>
+class MyVector: public QValueVector<T> //fucking QValueVector doesn't have operator<<, wtf?
+{
+    public:
+    MyVector<T> &operator<< (const T &x)
+    {
+        append( x );
+        return *this;
+    }
+};
+
 void
 amaroK::OSD::show( const MetaBundle &bundle ) //slot
 {
@@ -452,43 +463,28 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
     else
     {
-        QValueVector<QString> tags, tokens;
+        MyVector<QString> tags, tokens;
+        const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
 
         // we special case prettyTitle and put it first
         // so that we handle things like streams better
         // try and keep these 1:1 with the playlist's columns otherwise
-        tokens.append( "%artist - %title" );
-        tokens.append( "%file" );
-        tokens.append( "%title" );
-        tokens.append( "%artist" );
-        tokens.append( "%album" );
-        tokens.append( "%year" );
-        tokens.append( "%comment" );           //fucking QValueVector doesn't have operator<<, wtf?
-        tokens.append( "%genre" );
-        tokens.append( "%track" );
-        tokens.append( QString::null );
-        tokens.append( "%length" );
-        tokens.append( "%bitrate" );
-        tokens.append( "%score" );
-        tokens.append( QString::null );
-        tokens.append( "%playcount" );
+        tokens <<  "%artist - %title"  <<         "%file"         <<    "%title"    << "%artist";
+        tags   << bundle.prettyTitle() << bundle.url().fileName() << bundle.title() << bundle.artist();
 
-        tags.append( bundle.prettyTitle() );
-        tags.append( bundle.url().fileName() );
-        tags.append( bundle.title() );
-        tags.append( bundle.artist() );
-        tags.append( bundle.album() );
-        tags.append( bundle.year() );
-        tags.append( bundle.comment() );
-        tags.append( bundle.genre() );
-        tags.append( bundle.track() );
-        tags.append( QString::null );
-        tags.append( ( bundle.length() > 0 ? bundle.prettyLength() : QString::null ) ); //ignore '-' and '?'
-        tags.append( bundle.prettyBitrate() );
-        const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
-        tags.append( score > 0 ? QString::number( score ) : QString::null );
-        tags.append( QString::null );
-        tags.append( QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) ) );
+        tokens <<    "%album"    <<    "%year"    <<    "%comment"    <<    "%genre"    << "%track";
+        tags   << bundle.album() << bundle.year() << bundle.comment() << bundle.genre() << bundle.track();
+
+
+        tokens << QString::null << "%length";                //ignore '-' and '?'
+        tags   << QString::null << ( bundle.length() > 0 ? bundle.prettyLength() : QString::null );
+
+
+        tokens <<        "%bitrate"      << "%score";
+        tags   << bundle.prettyBitrate() << ( score > 0 ? QString::number( score ) : QString::null );
+
+        tokens << QString::null << "%playcount";
+        tags   << QString::null << QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
 
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
