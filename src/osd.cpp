@@ -485,7 +485,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         tags.append( QString::null );
         tags.append( ( bundle.length() > 0 ? bundle.prettyLength() : QString::null ) ); //ignore '-' and '?'
         tags.append( bundle.prettyBitrate() );
-        tags.append( QString::number( CollectionDB::instance()->getSongPercentage( bundle.url().path() ) ) );
+        const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
+        tags.append( score > 0 ? QString::number( score ) : QString::null );
         tags.append( QString::null );
         tags.append( QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) ) );
 
