@@ -267,6 +267,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( scoreChanged( const QString&, int ) ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
              this,       SLOT( countChanged( const QString& ) ) );
+    connect( header(), SIGNAL( indexChange( int, int, int ) ),
+             this,       SLOT( columnOrderChanged() ) ),
 
 
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
