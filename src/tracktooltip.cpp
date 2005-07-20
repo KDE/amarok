@@ -104,7 +104,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
                     if( tags.length() > 0 )
                     {
                         hasLength = true;
-                        right << "%1 / " + tags.prettyLength();
+                        right << "%9 / " + tags.prettyLength();
                         left << playlist->columnText( column );
                     }
                     break;
