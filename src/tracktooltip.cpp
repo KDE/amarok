@@ -10,76 +10,157 @@
   begin:     Tue 10 Feb 2004
   copyright: (C) 2004 by Christian Muehlhaeuser
   email:     chris@chris.de
+
+  copyright: (C) 2005 by Gábor Lehel
+  email:     illissius@gmail.com
 */
 
 #include "tracktooltip.h"
 #include "metabundle.h"
 #include "collectiondb.h"
+#include "playlist.h"
+#include "playlistitem.h"
 #include <qtooltip.h>
 #include <qapplication.h>
 
-void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, const int &pos )
+void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
 {
-    QString tipBuf;
-    QStringList left, right;
-    const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
-
     static MetaBundle cachedtags = MetaBundle();
-    static QString image = QString::null;
-    if( cachedtags != tags || image.isNull() )
+    static QString tipBuf = QString::null;
+    static bool hasLength = true;
+    if( cachedtags != tags || tipBuf.isNull() ) //we don't autoupdate when the columns change, but *blahrg*.
     {
-        image = CollectionDB::instance()->albumImage( tags );
+        QStringList left, right;
+        const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
+
+        hasLength = false;
+
+        Playlist *playlist = Playlist::instance();
+        const int n = playlist->visibleColumns();
+        for( int i = 0; i < n; ++i )
+        {
+            const int column = playlist->mapToLogicalColumn( i );
+            int tmp;
+            switch( column )
+            {
+                case PlaylistItem::Filename:
+                    if( !tags.url().fileName().isNull() )
+                    {
+                        right << tags.url().fileName();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Title:
+                    if( !tags.title().isNull() )
+                    {
+                        right << tags.title();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Artist:
+                    if( !tags.artist().isNull() )
+                    {
+                        right << tags.artist();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Album:
+                    if( !tags.album().isNull() )
+                    {
+                        right << tags.album();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Year:
+                    if( !tags.year().isNull() )
+                    {
+                        right << tags.year();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Comment:
+                    if( !tags.comment().isNull() )
+                    {
+                        right << tags.comment();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Genre:
+                    if( !tags.genre().isNull() )
+                    {
+                        right << tags.genre();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Track:
+                    if( !tags.track().isNull() )
+                    {
+                        right << tags.track();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Length:
+                    if( tags.length() > 0 )
+                    {
+                        hasLength = true;
+                        right << "%1 / " + tags.prettyLength();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Bitrate:
+                    if( tags.bitrate() )
+                    {
+                        right << tags.prettyBitrate();
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Score:
+                    tmp = CollectionDB::instance()->getSongPercentage( tags.url().path() );
+                    if( tmp > 0 )
+                    {
+                        right << QString::number( tmp );
+                        left << playlist->columnText( column );
+                    }
+                    break;
+                case PlaylistItem::Playcount:
+                    tmp = CollectionDB::instance()->getPlayCount( tags.url().path() );
+                    {
+                        right << QString::number( tmp );
+                        left << playlist->columnText( column );
+                    }
+                    break;
+            }
+        }
+
+        //NOTE it seems to be necessary to <center> each element indivdually
+        tipBuf += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
+
+        QString image = CollectionDB::instance()->albumImage( tags );
+        if ( !image.isEmpty() && image.find( QString("nocover") ) == -1 )
+        {
+            tipBuf +=( QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
+                               "<img src='%1'>"
+                               "</td></tr></table></td>" )
+                               .arg( image )
+                               );
+
+        }
+
+        tipBuf += "<td><table cellpadding='0' cellspacing='0'>";
+
+        if (tags.title().isEmpty() || tags.artist().isEmpty())
+        // no title or no artist, so we add prettyTitle
+            tipBuf += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
+                      .arg(tags.prettyTitle());
+        for( uint x = 0; x < left.count(); ++x )
+            if ( !right[x].isEmpty() )
+                tipBuf += tableRow.arg( left[x] ).arg( right[x] );
+
+        tipBuf += "</table></td>";
+        tipBuf += "</tr></table></center>";
+
         cachedtags = tags;
     }
 
-    if ( !tags.title().isEmpty() && !tags.artist().isEmpty() ) {
-        left  << i18n( "Title" ) << i18n( "Artist" ) << i18n( "Album" );
-        right << tags.title() << tags.artist() << tags.album();
-    }
-
-    if ( tags.length() )
-    {
-        left << i18n( "Length" );
-        right << MetaBundle::prettyLength( pos / 1000 ) + " / " + tags.prettyLength();
-    }
-    if ( tags.bitrate() )
-    {
-        left << i18n( "Bitrate" );
-        right << tags.prettyBitrate();
-    }
-    if ( tags.sampleRate() )
-    {
-        left << i18n( "Samplerate" );
-        right << tags.prettySampleRate();
-    }
-
-
-
-    //NOTE it seems to be necessary to <center> each element indivdually
-    tipBuf += "<center><b>amaroK</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
-
-    if ( !image.isEmpty() && image.find( QString("nocover") ) == -1 )
-    {
-        tipBuf +=( QString( "<td><table cellpadding='0' cellspacing='0'><tr><td>"
-                           "<img src='%1'>"
-                           "</td></tr></table></td>" )
-                           .arg( image )
-                           );
-
-    }
-
-    tipBuf += "<td><table cellpadding='0' cellspacing='0'>";
-
-    if (tags.title().isEmpty() || tags.artist().isEmpty())
-    // no title or no artist, so we add prettyTitle
-        tipBuf += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
-                  .arg(tags.prettyTitle());
-    for( uint x = 0; x < left.count(); ++x )
-        if ( !right[x].isEmpty() )
-            tipBuf += tableRow.arg( left[x] ).arg( right[x] );
-
-    tipBuf += "</table></td>";
-    tipBuf += "</tr></table></center>";
-
-    QToolTip::add( widget, tipBuf );
+    QToolTip::add( widget, hasLength ? tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) : tipBuf );
 }

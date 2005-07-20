@@ -5,8 +5,6 @@ amaroK ChangeLog
 
 VERSION 1.3-beta3:
   FEATURES:
-    * OSD now shows the same infos in the same order as the columns in the
-      playlist by default.
     * The audio plugin (autodetect, ALSA, esd etc.) for xine-engine is now 
       configurable. 
     * Playlist-Browser now remembers the state and layout of its tree view.
@@ -24,6 +22,8 @@ VERSION 1.3-beta3:
       browser and sort accordingly. (BR 85959)
 
   CHANGES:
+    * The OSD (by default) and systray tooltip now show the same infos in
+      the same order as the columns in the playlist.
     * xine-engine's configuration dialog has been reworked and simplified.
     * xine-engine has been given the highest engine plugin rank.
     * Systray tooltip now shows "elapsed time / total time" for the length.
