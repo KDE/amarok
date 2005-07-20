@@ -219,7 +219,7 @@
     <entry key="Crossfade" type="Bool">
         <label>Whether to crossfade between tracks</label>
         <whatsthis>Enable/Disable crossfading between track changes.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Crossfade Length" type="Int">
         <label>Length of crossfade, in milliseconds</label>
