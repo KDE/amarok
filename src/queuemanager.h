@@ -49,6 +49,7 @@ class QueueList : public KListView
         void    moveSelectedUp();
         void    moveSelectedDown();
         void    removeSelected();
+        void    shuffle();
 
     private:
         void    contentsDragEnterEvent( QDragEnterEvent *e );
@@ -79,11 +80,12 @@ class QueueManager : public KDialogBase
         void    insertItems();
 
         QMap<QListViewItem*, PlaylistItem*> m_map;
-        QueueList *m_listview;
+        QueueList   *m_listview;
         KPushButton *m_up;
         KPushButton *m_down;
         KPushButton *m_remove;
         KPushButton *m_add;
+        KPushButton *m_mix;
 
         static QueueManager *s_instance;
 };

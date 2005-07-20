@@ -18,6 +18,7 @@
 #include <kguiitem.h>
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <krandomsequence.h> //shuffle()
 #include <kurldrag.h>
 #include <kwin.h>
 
@@ -37,7 +38,7 @@ QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
     QString str = QString::number( ( (KListView *)listView() )->itemIndex( this ) + 1 );
 
     //draw the symbol's outline
-            uint fw = p->fontMetrics().width( str ) + 2;
+          uint fw = p->fontMetrics().width( str ) + 2;
     const uint w  = 16; //keep this even
     const uint h  = height() - 2;
 
@@ -125,24 +126,6 @@ QueueList::keyPressEvent( QKeyEvent *e )
     }
 }
 
-void
-QueueList::removeSelected()
-{
-    setSelected( currentItem(), true );
-
-    QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( this, QListViewItemIterator::Selected);
-
-    for( ; it.current(); ++it )
-        selected.append( it.current() );
-
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
-        delete item;
-
-    if( isEmpty() )
-        QueueManager::instance()->updateButtons();
-}
-
 bool
 QueueList::hasSelection()
 {
@@ -199,6 +182,42 @@ QueueList::moveSelectedDown() // SLOT
 
         moveItem( item, 0, after );
     }
+}
+
+void
+QueueList::removeSelected() //SLOT
+{
+    setSelected( currentItem(), true );
+
+    QPtrList<QListViewItem> selected;
+    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+
+    for( ; it.current(); ++it )
+        selected.append( it.current() );
+
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+        delete item;
+
+    if( isEmpty() )
+        QueueManager::instance()->updateButtons();
+}
+
+void
+QueueList::shuffle() //SLOT
+{
+    QPtrList<QListViewItem> list;
+
+    for( QListViewItem *it = firstChild(); it; it = it->nextSibling() )
+        list.append( it );
+
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+        takeItem( item );
+
+    // shuffle then reinsert
+    KRandomSequence( (long)KApplication::random() ).randomize( &list );
+
+    for( QListViewItem *item = list.first(); item; item = list.next() )
+        insertItem( item );
 }
 
 void
@@ -265,6 +284,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     QVBox *buttonBox = new QVBox( box );
     m_up     = new KPushButton( KGuiItem( QString::null, "up"), buttonBox );
     m_down   = new KPushButton( KGuiItem( QString::null, "down"), buttonBox  );
+    m_mix    = new KPushButton( KGuiItem( QString::null, "rebuild"), buttonBox );
     m_remove = new KPushButton( KGuiItem( QString::null, "edittrash"), buttonBox );
     m_add    = new KPushButton( KGuiItem( QString::null, "edit_add"), buttonBox );
 
@@ -272,11 +292,13 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_down->setEnabled( false );
     m_remove->setEnabled( false );
     m_add->setEnabled( false );
+    m_mix->setEnabled( false );
 
     connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
     connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
     connect( m_remove, SIGNAL( clicked() ), m_listview, SLOT( removeSelected() ) );
     connect( m_add,    SIGNAL( clicked() ), SLOT( addItems() ) );
+    connect( m_mix,    SIGNAL( clicked() ), m_listview, SLOT( shuffle() ) );
 
     Playlist *pl = Playlist::instance();
     connect( pl,         SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
@@ -386,6 +408,8 @@ QueueManager::insertItems()
         last = new QueueItem( m_listview, last, title );
         m_map[ last ] = item;
     }
+
+    updateButtons();
 }
 
 void
@@ -398,6 +422,7 @@ QueueManager::updateButtons() //SLOT
     m_down->setEnabled( enableQL );
     m_remove->setEnabled( enableQL );
     m_add->setEnabled( enablePL );
+    m_mix->setEnabled( !m_listview->isEmpty() );
 }
 
 #include "queuemanager.moc"
