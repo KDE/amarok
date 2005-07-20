@@ -282,6 +282,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    pErrorSink(NULL),
    pErrorSinkControl(NULL),
    pPluginE(0),
+   pPlugin2Handler(0),
    ppctrl(NULL),
    bURLFound(FALSE),
    nNumPlayers(0),
@@ -300,6 +301,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_pszGUIDList(NULL),
    m_Error(0),
    m_ulNumSecondsPlayed(0),
+   mimehead(0),
    scopecount(0),
    scopebufhead(0),
    scopebuftail(0),
@@ -436,12 +438,70 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    if (!pPluginE)
       STDERR("no plugin enumerator\n");
     
+   // get the plugin2handler
+   pEngine->QueryInterface(IID_IHXPlugin2Handler, (void **) &pPlugin2Handler);
+   if (!pPlugin2Handler)
+      STDERR("no plugin enumerator\n");
+    
    // create players
    for (i = 0; i < numPlayers; i++)
    {
       addPlayer();
    }
+
+   if (pPlugin2Handler)
+   {
+      IHXValues* pPluginProps;
+      const char* szPropName;
+      IHXBuffer* pPropValue;
+      char *value;
+      HX_RESULT ret;
+      MimeList *ml;
+      mimehead = 0;
+      char mime[1024];
+      char ext[1024];
+      bool hasmime, hasexts;
+
+      pPluginProps = 0;
+      int n = pPlugin2Handler->GetNumOfPlugins2();
+      STDERR("Got the plugin2 handler: numplugins =  %d\n", n);
+      for (int i=0; i<n; i++)
+      {
+         hasmime = hasexts = false;
+         pPlugin2Handler->GetPluginInfo(i, pPluginProps);
+         if (pPluginProps)
+         {
+            ret = pPluginProps->GetFirstPropertyCString(szPropName, pPropValue);
+            while(SUCCEEDED(ret))
+            {
+               if (!strcmp(szPropName, "FileMime"))
+               {
+                  value = (char*)pPropValue->GetBuffer();
+                  strcpy(mime, value);
+                  hasmime = true;
+               }
+
+               if (!strcmp(szPropName, "FileExtensions"))
+               {
+                  value = (char*)pPropValue->GetBuffer();
+                  strcpy(ext, value);
+                  hasexts = true;
+               }
+
+               ret = pPluginProps->GetNextPropertyCString(szPropName, pPropValue);
+            }
+            HX_RELEASE(pPluginProps);
+            if (hasmime && hasexts)
+            {
+               ml = new MimeList(mime, ext);
+               ml->fwd = mimehead;
+               mimehead = ml;
+            }
+         }
+      }
+   }
 }
+
 
 int HelixSimplePlayer::addPlayer()
 {
@@ -632,6 +692,7 @@ void HelixSimplePlayer::tearDown()
    pCommonClassFactory->Release();
    pCEselect->Release();
    pPluginE->Release();
+   pPlugin2Handler->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
    if (fpCloseEngine && pEngine)
@@ -668,6 +729,7 @@ void HelixSimplePlayer::tearDown()
    pErrorSink = NULL;
    pErrorSinkControl = NULL;
    pPluginE = 0;
+   pPlugin2Handler = 0;
    ppctrl = NULL;
    bURLFound = FALSE;
    nNumPlayers = 0;
@@ -686,6 +748,7 @@ void HelixSimplePlayer::tearDown()
    m_pszGUIDList = NULL;
    m_Error = 0;
    m_ulNumSecondsPlayed = 0;
+   mimehead = 0;
    scopecount = 0;
    scopebufhead = 0;
    scopebuftail = 0;
@@ -786,7 +849,9 @@ int HelixSimplePlayer::getPluginInfo(int index,
    IHXPlugin *p = 0;
    HXBOOL mult;
 
-   
+   description = "";
+   copyright = "";
+   moreinfourl = "";
    pPluginE->GetPlugin((ULONG32)index, (IUnknown *&)p);
    if (p)
    {

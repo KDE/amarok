@@ -49,7 +49,9 @@ class IHXAudioHook;
 class IHXAudioStreamInfoResponse;
 class IHXCommonClassFactory;
 class IHXPluginEnumerator;
+class IHXPlugin2Handler;
 
+// scope delay queue
 struct DelayQueue
 {
    DelayQueue(int bufsize) : fwd(0), len(bufsize), time(0), etime(0), nchan(0), bps(0),buf(0) { buf = new unsigned char [ bufsize ]; }
@@ -63,6 +65,18 @@ struct DelayQueue
    double        tps;      // time per sample
    int           spb;      // samples per buffer
    unsigned char *buf;
+};
+
+
+// simple list of supported mime type
+struct MimeList
+{
+   MimeList(char *mimestr, char *ext) : mimetypes(0), mimeexts(0)
+      { mimetypes = new char[strlen(mimestr)+1]; strcpy(mimetypes,mimestr); mimeexts = new char[strlen(ext)+1]; strcpy(mimeexts,ext); }
+   ~MimeList() { delete [] mimetypes; delete [] mimeexts; }
+   struct MimeList *fwd;
+   char *mimetypes;
+   char *mimeexts;
 };
 
 class HelixSimplePlayer
@@ -135,6 +149,7 @@ private:
    IHXClientEngineSelector* pCEselect;
    IHXCommonClassFactory*   pCommonClassFactory;
    IHXPluginEnumerator*     pPluginE;
+   IHXPlugin2Handler*       pPlugin2Handler;
 
    struct playerCtrl
    {
@@ -212,6 +227,7 @@ public:
 
    metaData *getMetaData(int playerIndex);
 
+   const MimeList *getMimeList() const { return mimehead; }
 private:
 
    bool                 bEnableAdviceSink;
@@ -225,6 +241,9 @@ private:
    unsigned long        m_ulNumSecondsPlayed;
 
    pthread_mutex_t      m_engine_m;
+
+   // supported mime type list
+   MimeList            *mimehead;
 
    // scope
    int                  scopecount;
