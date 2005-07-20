@@ -72,7 +72,11 @@ XineEngine::XineEngine()
 
 XineEngine::~XineEngine()
 {
-    delete s_fader;
+    // Wait until the fader thread is done
+    if ( s_fader ) {
+        s_fader->wait();
+        delete s_fader;
+    }
 
 //     if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
 //     {
@@ -753,17 +757,19 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
 Fader::Fader( XineEngine *engine )
    : QObject( engine )
    , QThread()
+   , m_engine( engine )
    , m_xine( engine->m_xine )
    , m_decrease( engine->m_stream )
    , m_increase( 0 )
    , m_port( engine->m_audioPort )
    , m_post( engine->m_post )
+   , m_volume( 100 - 100.0 * std::log10( ( 100 - engine->m_volume ) * 0.09 + 1.0 ) )
 {
     if( engine->makeNewStream() )
     {
         m_increase = engine->m_stream;
 
-        xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, 100 );
+        xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( m_volume * engine->m_preamp ) );
         xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
     }
     else {
@@ -782,6 +788,8 @@ Fader::~Fader()
      xine_dispose( m_decrease );
      xine_close_audio_driver( m_xine, m_port );
      if( m_post ) xine_post_dispose( m_xine, m_post );
+
+     s_fader = 0;
 }
 
 struct fade_s {
@@ -805,9 +813,11 @@ Fader::run()
         //the usleep time for this volume
         sleeps[v] = int(120000.0 * (-log10( v+1 ) + 2));
 
+    float vol = m_volume;
+    const float step = vol / 100;
     for( int v = 99; v >= 0; --v ) {
-        data.push_back( fade_s( sleeps[v], v, m_decrease ) );
-//         kdDebug() << v << ": " << sleeps[v] << endl;
+        data.push_back( fade_s( sleeps[v], (uint) vol, m_decrease ) );
+        vol -= step;
     }
 
     {
@@ -816,7 +826,8 @@ Fader::run()
          * inbetween each volume increase/decrease
          */
 
-        int v = 0;
+        vol = 0;
+        uint v = 0;
         int tu = 0;
         int td = sleeps[0];
         for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it ) {
@@ -833,11 +844,12 @@ Fader::run()
                 (*jt).sleep -= newsleep;
 
                 //insert the new structure for the increasing stream
-                data.insert( it, fade_s( newsleep, v, m_increase ) );
+                data.insert( it, fade_s( newsleep, (uint) vol, m_increase ) );
 
 //                 kdDebug() << "new: " << newsleep << endl;
 
                 //decrease the contextual volume
+                vol += step;
                 if ( ++v > 99 )
                     goto done;
 
@@ -859,7 +871,8 @@ Fader::run()
         if( (*it).sleep > 0 ) //FIXME
            QThread::usleep( (*it).sleep );
 
-        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, (*it).volume );
+        const uint vol = static_cast<uint>( (*it).volume * m_engine->m_preamp );
+        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, vol );
     }
 
     //stop using cpu!
