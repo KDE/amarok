@@ -51,7 +51,7 @@ namespace Log
 
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
 //static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
-static inline QCString configPath() { return QFile::encodeName(locate( "data", "amarok/xine-config" )); }
+static inline QCString configPath() { return QFile::encodeName(locate( "data", "amarok/") + "xine-config" ); }
 static Fader *s_fader = 0;
 
 
