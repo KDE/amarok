@@ -9,6 +9,7 @@
  * copyright: (C) 2004 Christian Muehlhaeuser <chris@chris.de>
  *            (C) 2004 Seb Ruiz <me@sebruiz.net>
  *            (C) 2004, 2005 Max Howell
+ *            (C) 2005 Gábor Lehel <illissius@gmail.com>
  */
 
 #include "amarok.h"
@@ -17,6 +18,7 @@
 #include "collectiondb.h"    //for albumCover location
 #include "osd.h"
 #include "playlist.h"        //if osdUsePlaylistColumns()
+#include "playlistitem.h"    //ditto
 
 #include <kapplication.h>
 #include <kpixmap.h>
@@ -221,12 +223,7 @@ OSDWidget::render( const uint M, const QSize &size )
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
-    int align = Qt::AlignVCenter | WordBreak;
-    switch( m_alignment ) {
-        case Left:  align |= Qt::AlignLeft; break;
-        case Right: align |= Qt::AlignRight; break;
-        default:    align |= Qt::AlignHCenter; break;
-    }
+    int align = Qt::AlignCenter | WordBreak;
 
     m_buffer.resize( rect.size() );
     QPainter p( &m_buffer );
@@ -447,7 +444,7 @@ template<class T>
 class MyVector: public QValueVector<T> //fucking QValueVector doesn't have operator<<, wtf?
 {
     public:
-    MyVector<T> &operator<< (const T &x)
+    inline MyVector<T> &operator<< (const T &x)
     {
         append( x );
         return *this;
@@ -464,22 +461,20 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
     else
     {
         MyVector<QString> tags, tokens;
-        const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
 
         // we special case prettyTitle and put it first
         // so that we handle things like streams better
-        // try and keep these 1:1 with the playlist's columns otherwise
+        // keep these 1:1 with the playlist's columns otherwise
         tokens <<  "%artist - %title"  <<         "%file"         <<    "%title"    << "%artist";
         tags   << bundle.prettyTitle() << bundle.url().fileName() << bundle.title() << bundle.artist();
 
         tokens <<    "%album"    <<    "%year"    <<    "%comment"    <<    "%genre"    << "%track";
         tags   << bundle.album() << bundle.year() << bundle.comment() << bundle.genre() << bundle.track();
 
-
         tokens << QString::null << "%length";                //ignore '-' and '?'
         tags   << QString::null << ( bundle.length() > 0 ? bundle.prettyLength() : QString::null );
 
-
+        const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         tokens <<        "%bitrate"      << "%score";
         tags   << bundle.prettyBitrate() << ( score > 0 ? QString::number( score ) : QString::null );
 
@@ -488,24 +483,29 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
-            const int n = Playlist::instance()->visibleColumns();
-            int i = 0;
             QString tag;
+            MyVector<int> availableTags; //eg, ones that aren't null
+            static const QValueList<int> parens = //display these in parentheses
+                QValueList<int>() << PlaylistItem::Filename << PlaylistItem::Year   << PlaylistItem::Comment
+                                  << PlaylistItem::Genre    << PlaylistItem::Length << PlaylistItem::Bitrate
+                                  << PlaylistItem::Score    << PlaylistItem::Playcount;
 
-            do tag = tags.at( Playlist::instance()->mapToLogicalColumn( i++ ) + 1);
-            while( tag.isNull() && i < n );
-
-            if( !tag.isNull() )
-                text.append( tag );
-
-            while( i < n )
+            for( int n = Playlist::instance()->visibleColumns(), i = 0, column; i < n; ++i )
             {
-                tag = tags.at( Playlist::instance()->mapToLogicalColumn( i++ ) + 1 );
-                if( !tag.isNull() )
-                {
-                    text.append( " - " );
-                    text.append( tag );
-                }
+                column = Playlist::instance()->mapToLogicalColumn( i );
+                if( !tags.at( column + 1 ).isNull() )
+                    availableTags << column;
+            }
+
+            for( int n = availableTags.count(), i = 0; i < n; ++i )
+            {
+                const int column = availableTags.at( i );
+                QString append = ( i == 0 ) ? ""
+                               : ( n > 1 && i == n / 2 ) ? "\n"
+                               : ( parens.contains( column ) || parens.contains( availableTags.at( i - 1 ) ) ) ? " "
+                               : " - ";
+                append += ( parens.contains( column ) ? "(%1)" : "%1" );
+                text += append.arg( tags.at( column + 1 ) );
             }
         }
         else
@@ -549,6 +549,12 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
         text = text.stripWhiteSpace();
     }
+
+    if( text.isEmpty() )
+        text = MetaBundle::prettyTitle( bundle.url().fileName() );
+
+    if( text.isEmpty() ) //still
+        text = "No information available for this track";
 
     OSDWidget::show( text );
 }
