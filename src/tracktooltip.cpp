@@ -30,6 +30,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
     static bool hasLength = true;
     if( cachedtags != tags || tipBuf.isNull() ) //we don't autoupdate when the columns change, but *blahrg*.
     {
+        tipBuf = "";
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
