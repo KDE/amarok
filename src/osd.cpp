@@ -447,7 +447,7 @@ void
 amaroK::OSD::show( const MetaBundle &bundle ) //slot
 {
     QString text = "";
-    if( bundle == MetaBundle() )
+    if( MetaBundle() == bundle )
         text = i18n( "No track playing" );
 
     else
