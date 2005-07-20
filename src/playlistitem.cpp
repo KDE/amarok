@@ -310,15 +310,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         // If any parameter changed, we must regenerate all pixmaps
         if ( !cacheValid )
         {
-            paintCache[column].map.clear();
-            if( s_pixmapChanged )
-            {
-                if( column != listView()->m_firstColumn )
-                    paintCache[listView()->m_firstColumn].map.clear();
-
-                //So we don't regenerate all pixmap without really having to do it.
-                s_pixmapChanged = false;
-            }
+            for( int i = 0; i < NUM_COLUMNS; ++i)
+                paintCache[i].map.clear();
+            s_pixmapChanged = false;
         }
 
         // Determine if we need to repaint the pixmap, or paint from cache
