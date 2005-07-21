@@ -141,7 +141,8 @@ OSDWidget::determineMetrics( const uint M )
                 QImage::ScaleMin ); //this will force us to be with our bounds
 
         int shadowWidth = 0;
-        if( m_drawShadow && !m_scaledCover.hasAlpha() )
+        if( m_drawShadow && !m_scaledCover.hasAlpha() &&
+          ( m_scaledCover.width() > 22 || m_scaledCover.height() > 22 ) )
             shadowWidth = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
 
         const int widthIncludingImage = rect.width()
@@ -246,7 +247,8 @@ OSDWidget::render( const uint M, const QSize &size )
         r.setTop( (size.height() - m_scaledCover.height()) / 2 );
         r.setSize( m_scaledCover.size() );
 
-        if( !m_scaledCover.hasAlpha() && m_drawShadow ) {
+        if( !m_scaledCover.hasAlpha() && m_drawShadow &&
+          ( m_scaledCover.width() > 22 || m_scaledCover.height() > 22 ) ) {
             // don't draw a shadow for eg, the amaroK icon
             QImage shadow;
             const uint shadowSize = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
