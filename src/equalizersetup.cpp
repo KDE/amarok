@@ -2,6 +2,7 @@
  Setup dialog for equalizer
 
  (c) 2004 Mark Kretschmann <markey@web.de>
+ (c) 2005 Seb Ruiz <me@sebruiz.net>
 ***************************************************************************/
 
 /***************************************************************************
@@ -22,16 +23,21 @@
 #include "sliderwidget.h"
 
 #include <qcheckbox.h>
+#include <qdom.h>
 #include <qgroupbox.h>
 #include <qhbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qstringlist.h>
+#include <qtextstream.h>   //presets
 #include <qvbox.h>
 
 #include <kapplication.h>
 #include <kdebug.h>
 #include <klocale.h>
+#include <kpopupmenu.h>
+#include <kstandarddirs.h> //locate()
+#include <ktoolbar.h>      //presets
 #include <kwin.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
@@ -51,9 +57,23 @@ EqualizerSetup::EqualizerSetup()
     setMargin( 8 );
     setSpacing( 8 );
 
+    QHBox *header = new QHBox( this );
     // BEGIN Equalizer Graph Widget
-    m_equalizerGraph = new EqualizerGraph( new QHBox( this ) );
-    //END
+    m_equalizerGraph = new EqualizerGraph( header );
+    // END Graph Widget
+
+    // BEGIN Presets
+    m_equalizerPresets = new KPopupMenu( header );
+    loadPresets();
+    connect( m_equalizerPresets, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
+
+    KToolBar* toolBar = new KToolBar( header );
+    toolBar->setIconText( KToolBar::IconTextRight );
+    toolBar->setIconSize( 16 );
+    toolBar->setBarPos( KToolBar::Right );
+    toolBar->setFrameShape( QFrame::NoFrame );
+    toolBar->insertButton( "configure", 0, m_equalizerPresets, true, i18n( "Presets" ) );
+    // END Presets
 
     // BEGIN GroupBox
     QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, i18n("Enable Equalizer"), this );
@@ -120,9 +140,57 @@ EqualizerSetup::updateSliders(int preamp, QValueList<int> gains)
     m_equalizerGraph->update();
 }
 
+void
+EqualizerSetup::loadPresets()
+{
+    QFile file( locate( "data","amarok/data/equalizer_presets.xml" ) );
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+        return;
+
+    QDomNode n = d.namedItem( "equalizerpresets" ).namedItem("preset");
+
+    for( ; !n.isNull();  n = n.nextSibling(), m_totalPresets++ )
+    {
+        QDomElement e = n.toElement();
+        QString title = e.attribute( "name" );
+
+        QValueList<int> gains;
+        gains << e.namedItem( "preamp" ).toElement().text().toInt();
+        gains << e.namedItem( "b0" ).toElement().text().toInt();
+        gains << e.namedItem( "b1" ).toElement().text().toInt();
+        gains << e.namedItem( "b2" ).toElement().text().toInt();
+        gains << e.namedItem( "b3" ).toElement().text().toInt();
+        gains << e.namedItem( "b4" ).toElement().text().toInt();
+        gains << e.namedItem( "b5" ).toElement().text().toInt();
+        gains << e.namedItem( "b6" ).toElement().text().toInt();
+        gains << e.namedItem( "b7" ).toElement().text().toInt();
+        gains << e.namedItem( "b8" ).toElement().text().toInt();
+        gains << e.namedItem( "b9" ).toElement().text().toInt();
+
+        m_presets[ m_totalPresets ] = gains;
+        m_equalizerPresets->insertItem( title, m_totalPresets );
+    }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
+
+void
+EqualizerSetup::presetChanged( int id ) //SLOT
+{
+    QValueList<int> gains = m_presets[ id ];
+    int preamp = gains.first();
+    gains.pop_front();
+
+    updateSliders( preamp, gains );
+}
 
 void
 EqualizerSetup::setEqualizerEnabled( bool active ) //SLOT

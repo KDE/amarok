@@ -2,6 +2,7 @@
  Setup dialog for equalizer
 
  (c) 2004 Mark Kretschmann <markey@web.de>
+ (c) 2005 Seb Ruiz <me@sebruiz.net>
 ***************************************************************************/
 
 /***************************************************************************
@@ -21,6 +22,7 @@
 
 class EqualizerGraph;
 class QCheckBox;
+class KPopupMenu;
 
 namespace amaroK { class Slider; }
 
@@ -39,6 +41,7 @@ class EqualizerSetup : public QVBox
         void updateSliders(int, QValueList<int>);
 
     private slots:
+        void presetChanged( int id );
         void setEqualizerEnabled( bool );
         void setEqualizerParameters();
 
@@ -47,8 +50,13 @@ class EqualizerSetup : public QVBox
 
         amaroK::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
-
         QPtrList<amaroK::Slider> m_bandSliders;
+
+        void    loadPresets();
+        KPopupMenu*     m_equalizerPresets;
+        int             m_currentPreset;
+        uint            m_totalPresets;
+        QMap< int, QValueList<int> > m_presets;
 };
 
 
