@@ -362,7 +362,8 @@ XineEngine::seek( uint ms )
 void
 XineEngine::setVolumeSW( uint vol )
 {
-    xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol * m_preamp ) );
+    if ( !s_fader )
+        xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol * m_preamp ) );
 }
 
 void
@@ -769,13 +770,11 @@ Fader::Fader( XineEngine *engine )
    , m_increase( 0 )
    , m_port( engine->m_audioPort )
    , m_post( engine->m_post )
-   , m_volume( 100 - 100.0 * std::log10( ( 100 - engine->m_volume ) * 0.09 + 1.0 ) )
 {
     if( engine->makeNewStream() )
     {
         m_increase = engine->m_stream;
 
-        xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( m_volume * engine->m_preamp ) );
         xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
     }
     else {
@@ -819,12 +818,8 @@ Fader::run()
         //the usleep time for this volume
         sleeps[v] = int(120000.0 * (-log10( v+1 ) + 2));
 
-    float vol = m_volume;
-    const float step = vol / 100;
-    for( int v = 99; v >= 0; --v ) {
-        data.push_back( fade_s( sleeps[v], (uint) vol, m_decrease ) );
-        vol -= step;
-    }
+    for( int v = 99; v >= 0; --v )
+        data.push_back( fade_s( sleeps[v], v, m_decrease ) );
 
     {
         /**
@@ -832,7 +827,6 @@ Fader::run()
          * inbetween each volume increase/decrease
          */
 
-        vol = 0;
         uint v = 0;
         int tu = 0;
         int td = sleeps[0];
@@ -850,12 +844,11 @@ Fader::run()
                 (*jt).sleep -= newsleep;
 
                 //insert the new structure for the increasing stream
-                data.insert( it, fade_s( newsleep, (uint) vol, m_increase ) );
+                data.insert( it, fade_s( newsleep, v, m_increase ) );
 
 //                 kdDebug() << "new: " << newsleep << endl;
 
                 //decrease the contextual volume
-                vol += step;
                 if ( ++v > 99 )
                     goto done;
 
@@ -877,8 +870,10 @@ Fader::run()
         if( (*it).sleep > 0 ) //FIXME
            QThread::usleep( (*it).sleep );
 
-        const uint vol = static_cast<uint>( (*it).volume * m_engine->m_preamp );
-        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, vol );
+        float vol = 100 - 100.0 * std::log10( ( 100 - m_engine->m_volume ) * 0.09 + 1.0 );
+        vol = vol * m_engine->m_preamp * ( (*it).volume * 0.01 );
+
+        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol ) );
     }
 
     //stop using cpu!

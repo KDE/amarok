@@ -86,7 +86,6 @@ class Fader : public QObject, public QThread
     xine_stream_t      *m_increase;
     xine_audio_port_t  *m_port;
     xine_post_t        *m_post;
-    float               m_volume;
 
     virtual void run();
 
