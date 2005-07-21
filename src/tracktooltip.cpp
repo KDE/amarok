@@ -11,7 +11,7 @@
   copyright: (C) 2004 by Christian Muehlhaeuser
   email:     chris@chris.de
 
-  copyright: (C) 2005 by Gábor Lehel
+  copyright: (C) 2005 by GÃ¡bor Lehel
   email:     illissius@gmail.com
 */
 
@@ -27,14 +27,11 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
 {
     static MetaBundle cachedtags = MetaBundle();
     static QString tipBuf = QString::null;
-    static bool hasLength = true;
     if( cachedtags != tags || tipBuf.isNull() ) //we don't autoupdate when the columns change, but *blahrg*.
     {
         tipBuf = "";
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
-
-        hasLength = false;
 
         Playlist *playlist = Playlist::instance();
         const int n = playlist->visibleColumns();
@@ -100,14 +97,6 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
                         left << playlist->columnText( column );
                     }
                     break;
-                case PlaylistItem::Length:
-                    if( tags.length() > 0 )
-                    {
-                        hasLength = true;
-                        right << "%9 / " + tags.prettyLength();
-                        left << playlist->columnText( column );
-                    }
-                    break;
                 case PlaylistItem::Bitrate:
                     if( tags.bitrate() )
                     {
@@ -131,6 +120,12 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
                     }
                     break;
             }
+        }
+
+        if( tags.length() > 0 )
+        {
+            right << "%9 / " + tags.prettyLength();
+            left << playlist->columnText( PlaylistItem::Length );
         }
 
         //NOTE it seems to be necessary to <center> each element indivdually
@@ -163,5 +158,5 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
         cachedtags = tags;
     }
 
-    QToolTip::add( widget, hasLength ? tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) : tipBuf );
+    QToolTip::add( widget, tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) );
 }
