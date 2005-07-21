@@ -131,12 +131,12 @@ EqualizerSetup::~EqualizerSetup()
 }
 
 void
-EqualizerSetup::updateSliders(int preamp, QValueList<int> gains)
+EqualizerSetup::updateSliders( int preamp, QValueList<int> gains )
 {
-    m_slider_preamp->setValue(preamp);
+    m_slider_preamp->setValue( preamp );
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
     {
-        m_bandSliders.at(i)->setValue((*gains.at(i)));
+        m_bandSliders.at(i)->setValue( ( *gains.at(i) ) );
     }
     m_equalizerGraph->update();
 }
@@ -161,7 +161,6 @@ EqualizerSetup::loadPresets()
         QString title = e.attribute( "name" );
 
         QValueList<int> gains;
-        gains << e.namedItem( "preamp" ).toElement().text().toInt();
         gains << e.namedItem( "b0" ).toElement().text().toInt();
         gains << e.namedItem( "b1" ).toElement().text().toInt();
         gains << e.namedItem( "b2" ).toElement().text().toInt();
@@ -187,10 +186,9 @@ void
 EqualizerSetup::presetChanged( int id ) //SLOT
 {
     QValueList<int> gains = m_presets[ id ];
-    int preamp = gains.first();
     gains.pop_front();
 
-    updateSliders( preamp, gains );
+    updateSliders( m_slider_preamp->value(), gains );
 }
 
 void

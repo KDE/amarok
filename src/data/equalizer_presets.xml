@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <equalizerpresets version="1.3-SVN" product="amaroK" >
   <preset name="Classical" >
-        <preamp>0</preamp>
         <b0>0</b0>
         <b1>0</b1>
         <b2>0</b2>
@@ -14,7 +13,6 @@
         <b9>-50</b9>
  </preset>
  <preset name="Club" >
-        <preamp>0</preamp>
         <b0>0</b0>
         <b1>0</b1>
         <b2>20</b2>
@@ -27,7 +25,6 @@
         <b9>0</b9>
  </preset>
  <preset name="Dance" >
-        <preamp>0</preamp>
         <b0>50</b0>
         <b1>35</b1>
         <b2>10</b2>
@@ -40,7 +37,6 @@
         <b9>0</b9>
  </preset>
  <preset name="Full Bass" >
-        <preamp>0</preamp>
         <b0>70</b0>
         <b1>70</b1>
         <b2>70</b2>
@@ -53,7 +49,6 @@
         <b9>-55</b9>
  </preset>
  <preset name="Full Treble" >
-        <preamp>0</preamp>
         <b0>-50</b0>
         <b1>-50</b1>
         <b2>-50</b2>
@@ -66,7 +61,6 @@
         <b9>85</b9>
  </preset>
  <preset name="Full Bass + Treble" >
-        <preamp>0</preamp>
         <b0>35</b0>
         <b1>30</b1>
         <b2>0</b2>
@@ -79,7 +73,6 @@
         <b9>60</b9>
  </preset>
  <preset name="Laptop/Headphones" >
-        <preamp>0</preamp>
         <b0>25</b0>
         <b1>50</b1>
         <b2>25</b2>
@@ -92,7 +85,6 @@
         <b9>0</b9>
  </preset>
  <preset name="Large Hall" >
-        <preamp>0</preamp>
         <b0>50</b0>
         <b1>50</b1>
         <b2>30</b2>
@@ -105,7 +97,6 @@
         <b9>0</b9>
  </preset>
  <preset name="Live" >
-        <preamp>0</preamp>
         <b0>-25</b0>
         <b1>0</b1>
         <b2>20</b2>
@@ -118,7 +109,6 @@
         <b9>10</b9>
  </preset>
  <preset name="Party" >
-        <preamp>0</preamp>
         <b0>35</b0>
         <b1>35</b1>
         <b2>0</b2>
@@ -131,7 +121,6 @@
         <b9>35</b9>
  </preset>
  <preset name="Pop" >
-        <preamp>0</preamp>
         <b0>-10</b0>
         <b1>25</b1>
         <b2>35</b2>
@@ -144,7 +133,6 @@
         <b9>-10</b9>
  </preset>
  <preset name="Reggae" >
-        <preamp>0</preamp>
         <b0>0</b0>
         <b1>0</b1>
         <b2>-5</b2>
@@ -157,7 +145,6 @@
         <b9>0</b9>
  </preset>
  <preset name="Rock" >
-        <preamp>0</preamp>
         <b0>40</b0>
         <b1>25</b1>
         <b2>-30</b2>
@@ -170,7 +157,6 @@
         <b9>55</b9>
  </preset>
  <preset name="Soft" >
-        <preamp>0</preamp>
         <b0>25</b0>
         <b1>10</b1>
         <b2>-5</b2>
@@ -183,7 +169,6 @@
         <b9>60</b9>
  </preset>
  <preset name="Ska" >
-        <preamp>0</preamp>
         <b0>-15</b0>
         <b1>-25</b1>
         <b2>-25</b2>
@@ -196,7 +181,6 @@
         <b9>50</b9>
  </preset>
  <preset name="Soft Rock" >
-        <preamp>0</preamp>
         <b0>20</b0>
         <b1>20</b1>
         <b2>10</b2>
@@ -209,7 +193,6 @@
         <b9>45</b9>
  </preset>
  <preset name="Techno" >
-        <preamp>0</preamp>
         <b0>40</b0>
         <b1>30</b1>
         <b2>0</b2>
@@ -222,7 +205,6 @@
         <b9>45</b9>
     </preset>
   <preset name="Zero" >
-        <preamp>0</preamp>
         <b0>0</b0>
         <b1>0</b1>
         <b2>0</b2>

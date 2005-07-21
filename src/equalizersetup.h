@@ -38,7 +38,7 @@ class EqualizerSetup : public QVBox
         EqualizerSetup();
        ~EqualizerSetup();
         //for use by DCOP to update GUI
-        void updateSliders(int, QValueList<int>);
+        void updateSliders( int, QValueList<int> );
 
     private slots:
         void presetChanged( int id );
@@ -48,11 +48,12 @@ class EqualizerSetup : public QVBox
     private:
         static EqualizerSetup* s_instance;
 
+        void loadPresets();
+
         amaroK::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
         QPtrList<amaroK::Slider> m_bandSliders;
 
-        void    loadPresets();
         KPopupMenu*     m_equalizerPresets;
         int             m_currentPreset;
         uint            m_totalPresets;
