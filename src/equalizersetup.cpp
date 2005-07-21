@@ -136,6 +136,7 @@ EqualizerSetup::~EqualizerSetup()
     s_instance = 0;
 }
 
+
 void
 EqualizerSetup::updateSliders( int preamp, QValueList<int> gains )
 {
@@ -157,6 +158,7 @@ EqualizerSetup::presetsCache() const
     //returns the playlists stats cache file
     return amaroK::saveLocation() + "equalizerpresets_save.xml";
 }
+
 
 void
 EqualizerSetup::loadPresets()
@@ -249,10 +251,7 @@ EqualizerSetup::savePresets()
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
-
-
 }
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +294,7 @@ EqualizerSetup::presetChanged( int id ) //SLOT
     m_currentPreset = id;
 }
 
+
 void
 EqualizerSetup::setEqualizerEnabled( bool active ) //SLOT
 {
@@ -322,11 +322,13 @@ EqualizerSetup::setEqualizerParameters() //SLOT
     m_equalizerGraph->update();
 }
 
+
 void
 EqualizerSetup::sliderChanged() //SLOT
 {
     m_equalizerPresets->setItemChecked( m_currentPreset, false );
     m_currentPreset = -1;
 }
+
 
 #include "equalizersetup.moc"

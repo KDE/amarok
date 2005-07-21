@@ -42,6 +42,7 @@ class EqualizerSetup : public QVBox
 
     private slots:
         void presetChanged( int id );
+        void sliderChanged();
         void setEqualizerEnabled( bool );
         void setEqualizerParameters();
 
