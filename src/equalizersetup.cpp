@@ -27,12 +27,10 @@
 #include <qdom.h>
 #include <qfile.h>
 #include <qgroupbox.h>
-#include <qhbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qstringlist.h>
 #include <qtextstream.h>   //presets
-#include <qvbox.h>
 
 #include <kapplication.h>
 #include <kdebug.h>
@@ -62,23 +60,28 @@ EqualizerSetup::EqualizerSetup()
     setMargin( 8 );
     setSpacing( 8 );
 
-    QHBox *header = new QHBox( this );
+    QWidget* container = new QWidget( this );
+    QHBoxLayout* headerLayout = new QHBoxLayout( container );
+
     // BEGIN Equalizer Graph Widget
-    m_equalizerGraph = new EqualizerGraph( header );
+    m_equalizerGraph = new EqualizerGraph( container );
     // END Graph Widget
 
     // BEGIN Presets
-    m_equalizerPresets = new KPopupMenu( header );
+    m_equalizerPresets = new KPopupMenu( container );
     m_equalizerPresets->setCheckable( true );
     loadPresets();
     connect( m_equalizerPresets, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
 
-    KToolBar* toolBar = new KToolBar( header );
+    KToolBar* toolBar = new KToolBar( container );
     toolBar->setIconText( KToolBar::IconTextRight );
     toolBar->setIconSize( 16 );
     toolBar->setFrameShape( QFrame::NoFrame );
     toolBar->insertButton( "configure", 0, m_equalizerPresets, true, i18n( "Presets" ) );
     // END Presets
+
+    headerLayout->addWidget( m_equalizerGraph, 0, Qt::AlignLeft );
+    headerLayout->addWidget( toolBar, 0, Qt::AlignRight  );
 
     // BEGIN GroupBox
     QGroupBox* groupBox_sliders = new QGroupBox( 11, Qt::Horizontal, i18n("Enable Equalizer"), this );
