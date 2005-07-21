@@ -144,10 +144,10 @@ void
 EqualizerSetup::updateSliders( int preamp, QValueList<int> gains )
 {
     m_slider_preamp->setValue( preamp );
+
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
-    {
         m_bandSliders.at(i)->setValue( ( *gains.at(i) ) );
-    }
+
     m_equalizerGraph->update();
 }
 
@@ -225,7 +225,7 @@ EqualizerSetup::savePresets()
 
     for( uint x = 1; x < keys.count(); x++ ) // dont save 'ZERO' or 'SAVE' presets
     {
-        QString title = m_equalizerPresets->text( x );
+        const QString title = m_equalizerPresets->text( x );
         QValueList<int> gains = values[x];
 
         QDomElement i = doc.createElement("preset");
@@ -288,8 +288,7 @@ EqualizerSetup::presetChanged( int id ) //SLOT
     }
 
 
-    QValueList<int> gains = m_presets[ id ];
-
+    const QValueList<int> gains = m_presets[ id ];
     updateSliders( m_slider_preamp->value(), gains );
 
     m_equalizerPresets->setItemChecked( m_currentPreset, false );
@@ -320,7 +319,9 @@ EqualizerSetup::setEqualizerParameters() //SLOT
     AmarokConfig::setEqualizerPreamp( m_slider_preamp->value() );
     AmarokConfig::setEqualizerGains( gains );
 
-    EngineController::engine()->setEqualizerParameters( m_slider_preamp->value(), gains );
+    // Transfer values to the engine if the EQ is enabled
+    if ( AmarokConfig::equalizerEnabled() )
+        EngineController::engine()->setEqualizerParameters( m_slider_preamp->value(), gains );
 
     m_equalizerGraph->update();
 }
