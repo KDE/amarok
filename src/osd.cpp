@@ -309,7 +309,7 @@ OSDWidget::event( QEvent *e )
             unsetColors(); //use new palette's colours
         return true;
     case QEvent::Paint:
-        //bitBlt( this, 0, 0, &m_buffer );
+        bitBlt( this, 0, 0, &m_buffer );
         return true;
     default:
         return QWidget::event( e );
