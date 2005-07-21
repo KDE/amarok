@@ -481,6 +481,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         tokens << QString::null << "%playcount";
         tags   << QString::null << QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
 
+        for( int i = 0, n = tags.count(); i < n; ++i )
+            tags[i] = tags[i].stripWhiteSpace();
+
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
             QString tag;
@@ -493,7 +496,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             for( int n = Playlist::instance()->visibleColumns(), i = 0, column; i < n; ++i )
             {
                 column = Playlist::instance()->mapToLogicalColumn( i );
-                if( !tags.at( column + 1 ).isNull() )
+                if( !tags.at( column + 1 ).isEmpty() )
                     availableTags << column;
             }
 
