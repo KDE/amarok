@@ -1,5 +1,5 @@
 /***************************************************************************
- Setup dialog for equalizer
+ Setup dialog for the equalizer
 
  (c) 2004 Mark Kretschmann <markey@web.de>
  (c) 2005 Seb Ruiz <me@sebruiz.net>
@@ -24,6 +24,7 @@
 
 #include <qcheckbox.h>
 #include <qdom.h>
+#include <qfile.h>
 #include <qgroupbox.h>
 #include <qhbox.h>
 #include <qlabel.h>
