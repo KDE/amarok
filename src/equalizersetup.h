@@ -48,7 +48,9 @@ class EqualizerSetup : public QVBox
     private:
         static EqualizerSetup* s_instance;
 
-        void loadPresets();
+        void    loadPresets();
+        void    savePresets();
+        QString presetsCache() const;
 
         amaroK::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;

@@ -16,6 +16,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizergraph.h"
@@ -35,6 +36,7 @@
 
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kinputdialog.h>  //presets
 #include <klocale.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate()
@@ -46,6 +48,8 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 EqualizerSetup::EqualizerSetup()
         : QVBox( amaroK::mainWindow(), 0, Qt::WType_Dialog | Qt::WDestructiveClose )
+        , m_currentPreset( -1 )
+        , m_totalPresets( 0 )
 {
     using amaroK::Slider;
 
@@ -65,13 +69,13 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN Presets
     m_equalizerPresets = new KPopupMenu( header );
+    m_equalizerPresets->setCheckable( true );
     loadPresets();
     connect( m_equalizerPresets, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
 
     KToolBar* toolBar = new KToolBar( header );
     toolBar->setIconText( KToolBar::IconTextRight );
     toolBar->setIconSize( 16 );
-    toolBar->setBarPos( KToolBar::Right );
     toolBar->setFrameShape( QFrame::NoFrame );
     toolBar->insertButton( "configure", 0, m_equalizerPresets, true, i18n( "Presets" ) );
     // END Presets
@@ -116,6 +120,7 @@ EqualizerSetup::EqualizerSetup()
         m_bandSliders.append( slider );
 
         connect( slider, SIGNAL( valueChanged( int ) ), SLOT( setEqualizerParameters() ) );
+        connect( slider, SIGNAL( valueChanged( int ) ), SLOT( sliderChanged() ) );
     }
     // END
 
@@ -127,6 +132,7 @@ EqualizerSetup::EqualizerSetup()
 
 EqualizerSetup::~EqualizerSetup()
 {
+//     savePresets();
     s_instance = 0;
 }
 
@@ -141,9 +147,24 @@ EqualizerSetup::updateSliders( int preamp, QValueList<int> gains )
     m_equalizerGraph->update();
 }
 
+/////////////////////////////////////////////////////////////////////////////////////
+// EQUALIZER PRESETS
+/////////////////////////////////////////////////////////////////////////////////////
+
+QString
+EqualizerSetup::presetsCache() const
+{
+    //returns the playlists stats cache file
+    return amaroK::saveLocation() + "equalizerpresets_save.xml";
+}
+
 void
 EqualizerSetup::loadPresets()
 {
+    m_equalizerPresets->insertItem( i18n("Save"), 0 );
+    m_equalizerPresets->insertSeparator();
+    m_totalPresets++;
+
     QFile file( locate( "data","amarok/data/equalizer_presets.xml" ) );
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -178,6 +199,62 @@ EqualizerSetup::loadPresets()
 }
 
 
+void
+EqualizerSetup::savePresets()
+{
+    QFile file( presetsCache() );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QDomDocument doc;
+    QDomElement e;
+    e.setAttribute( "name", "equalizerpresets" );
+    e.setAttribute( "product", "amaroK" );
+    e.setAttribute( "version", APP_VERSION );
+    e.setAttribute( "formatversion", "1.1" );
+
+    doc.appendChild( e );
+
+    QValueList<int>               keys   = m_presets.keys();
+    QValueList< QValueList<int> > values = m_presets.values();
+
+    for( uint x = 1; x < keys.count(); x++ ) // dont save 'ZERO' or 'SAVE' presets
+    {
+        QString title = m_equalizerPresets->text( x );
+        QValueList<int> gains = values[x];
+
+        QDomElement i = doc.createElement("preset");
+        i.setAttribute( "name", title );
+        debug() << "Title: " << title << endl;
+
+        QStringList info;
+        info << "b0" << "b1" << "b2" << "b3" << "b4"
+             << "b5" << "b6" << "b7" << "b8" << "b9";
+
+        QDomElement attr;
+        QDomText t;
+        for( uint y=0; y < info.count(); y++ )
+        {
+            attr = doc.createElement( info[y] );
+            t    = doc.createTextNode( QString::number( gains.first() ) );
+            attr.appendChild( t );
+            i.appendChild( attr );
+            debug() << "\t" << info[y] << ": " << gains.first() << endl;
+            gains.pop_front();
+        }
+        e.appendChild( i );
+    }
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << doc.toString();
+
+
+}
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC SLOTS
 /////////////////////////////////////////////////////////////////////////////////////
@@ -185,10 +262,37 @@ EqualizerSetup::loadPresets()
 void
 EqualizerSetup::presetChanged( int id ) //SLOT
 {
+    if( id == 0 ) // Saving
+    {
+        bool ok;
+        const QString title = KInputDialog::getText( i18n("Save Equalizer Preset"),
+                                                     i18n("Enter preset name:"), i18n("Untitled"), &ok, this);
+
+        if( ok )
+        {
+            QValueList<int> gains;
+            gains += m_slider_preamp->value();
+            for ( uint i = 0; i < m_bandSliders.count(); i++ )
+                gains += m_bandSliders.at( i )->value();
+
+            m_totalPresets++;
+            m_presets[ m_totalPresets ] = gains;
+            m_equalizerPresets->insertItem( title, m_totalPresets );
+            m_equalizerPresets->setItemChecked( m_currentPreset, false );
+            m_equalizerPresets->setItemChecked( m_totalPresets, true );
+            m_currentPreset = m_totalPresets;
+        }
+        return;
+    }
+
+
     QValueList<int> gains = m_presets[ id ];
-    gains.pop_front();
 
     updateSliders( m_slider_preamp->value(), gains );
+
+    m_equalizerPresets->setItemChecked( m_currentPreset, false );
+    m_equalizerPresets->setItemChecked( id, true );
+    m_currentPreset = id;
 }
 
 void
@@ -216,6 +320,13 @@ EqualizerSetup::setEqualizerParameters() //SLOT
     EngineController::engine()->setEqualizerParameters( m_slider_preamp->value(), gains );
 
     m_equalizerGraph->update();
+}
+
+void
+EqualizerSetup::sliderChanged() //SLOT
+{
+    m_equalizerPresets->setItemChecked( m_currentPreset, false );
+    m_currentPreset = -1;
 }
 
 #include "equalizersetup.moc"
