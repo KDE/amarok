@@ -447,6 +447,12 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
+    int required  = AmarokConfig::dynamicPreviousCount() + AmarokConfig::dynamicUpcomingCount() + 1; // +1 for current track
+    int remainder = childCount();
+
+    if( required > remainder )
+        songCount = required - remainder;
+
     QString text;
     if( type == "Random" )
     {

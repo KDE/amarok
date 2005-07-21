@@ -197,7 +197,7 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Minimum upcoming tracks:</string>
+                        <string>Minimum tracks to show:</string>
                     </property>
                 </widget>
                 <spacer>
