@@ -279,7 +279,7 @@ EqualizerSetup::presetChanged( int id ) //SLOT
         if( ok )
         {
             QValueList<int> gains;
-            gains += m_slider_preamp->value();
+
             for ( uint i = 0; i < m_bandSliders.count(); i++ )
                 gains += m_bandSliders.at( i )->value();
 
