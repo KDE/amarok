@@ -1184,8 +1184,6 @@ Playlist::setCurrentTrackPixmap( int state )
 
     if( state == Engine::Paused )
         pixmap = "currenttrack_pause";
-    else if( m_stopAfterTrack == m_currentTrack )
-        pixmap = "currenttrack_stop";
     else if( AmarokConfig::repeatTrack() )
         pixmap = "currenttrack_repeat";
     else if( state == Engine::Playing )
