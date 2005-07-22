@@ -35,6 +35,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
 
         Playlist *playlist = Playlist::instance();
         const int n = playlist->visibleColumns();
+        QString filename = "", title = ""; //special case these, put the first one encountered on top
         for( int i = 0; i < n; ++i )
         {
             const int column = playlist->mapToLogicalColumn( i );
@@ -44,15 +45,25 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
                 case PlaylistItem::Filename:
                     if( !tags.url().fileName().isNull() )
                     {
-                        right << tags.url().fileName();
-                        left << playlist->columnText( column );
+                        if( !title.isEmpty() )
+                        {
+                            right << tags.url().fileName();
+                            left << playlist->columnText( column );
+                        }
+                        else
+                            filename = tags.url().fileName();
                     }
                     break;
                 case PlaylistItem::Title:
                     if( !tags.title().isNull() )
                     {
-                        right << tags.title();
-                        left << playlist->columnText( column );
+                        if( !filename.isEmpty() )
+                        {
+                            right << tags.title();
+                            left << playlist->columnText( column );
+                        }
+                        else
+                            title = tags.title();
                     }
                     break;
                 case PlaylistItem::Artist:
@@ -122,7 +133,18 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
             }
         }
 
-        if( tags.length() > 0 )
+        if( !filename.isEmpty() )
+        {
+            right.prepend( filename );
+            left.prepend( playlist->columnText( PlaylistItem::Filename ) );
+        }
+        else if( !title.isEmpty() )
+        {
+            right.prepend( title );
+            left.prepend( playlist->columnText( PlaylistItem::Title ) );
+        }
+
+        if( tags.length() > 0 ) //special case this too, always on the bottom
         {
             right << "%9 / " + tags.prettyLength();
             left << playlist->columnText( PlaylistItem::Length );
