@@ -226,6 +226,7 @@ GstEngine::GstEngine()
     addPluginProperty( "HasConfigure",  "true" );
     addPluginProperty( "HasCrossfade",  "true" );
     addPluginProperty( "HasEqualizer",  "true" );
+    addPluginProperty( "HasKIO",        "true" );
 
     m_inputs.setAutoDelete( true );
 }

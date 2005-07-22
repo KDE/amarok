@@ -229,7 +229,9 @@ PlaylistWindow::init()
     actionCollection()->action("next")->plug( actionsMenu );
     actionsMenu->insertSeparator();
     actionCollection()->action(KStdAction::name(KStdAction::Quit))->plug( actionsMenu );
-    //END Play menu
+
+    connect( actionsMenu, SIGNAL( aboutToShow() ), SLOT( actionsMenuAboutToShow() ) );
+    //END Actions menu
 
     //BEGIN Playlist menu
     KPopupMenu *playlistMenu = new KPopupMenu( m_menubar );
@@ -269,7 +271,7 @@ PlaylistWindow::init()
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
     connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
-    //END
+    //END Tools menu
 
     //BEGIN Settings menu
     m_settingsMenu = new KPopupMenu( m_menubar );
@@ -673,8 +675,12 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     }
 }
 
+void PlaylistWindow::actionsMenuAboutToShow() //SLOT
+{
+    actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) );
+}
 
-void PlaylistWindow::toolsMenuAboutToShow()
+void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 {
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
 }

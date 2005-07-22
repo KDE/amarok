@@ -59,6 +59,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void showQueueManager();
         void showScriptSelector();
         void slotMenuActivated( int );
+        void actionsMenuAboutToShow();
         void toolsMenuAboutToShow();
         void slotToggleMenu();
 

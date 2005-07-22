@@ -79,6 +79,7 @@ ArtsEngine::ArtsEngine()
 
     addPluginProperty( "StreamingMode", "Socket" );
     addPluginProperty( "HasCrossfade",  "true" );
+    addPluginProperty( "HasKIO",        "true" );
 }
 
 
