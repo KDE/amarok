@@ -372,20 +372,20 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         KListViewItem::paintCell( p, _cg, column, width, align );
     }
 
-    // Here we draw the "Play as next" symbol:
+    /// Track action symbols
+    const bool stopafter = ( this == listView()->m_stopAfterTrack );
 
     //figure out if we are in the actual physical first column
-    if( playNext && column == listView()->m_firstColumn )
+    if( column == listView()->m_firstColumn && (playNext || stopafter) )
     {
-        QString str = QString::number( playNext );
+        const uint w = 16;
+        const uint h = height() - 2;
+        QString str;
 
-        //draw the symbol's outline
-        const bool stopafter = ( this == listView()->m_stopAfterTrack ) &&
-                               ( this != listView()->m_currentTrack );
-                               //if it's already indicated by the currenttrack pixmap, don't.
-              uint fw = p->fontMetrics().width( str ) + 2;
-        const uint w  = 16; //keep this even
-        const uint h  = height() - 2;
+        if( playNext )
+            str = QString::number( playNext );
+
+        uint fw = p->fontMetrics().width( str ) + 2;
 
         if( stopafter )
             fw += 10;
@@ -413,8 +413,11 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             p->drawPixmap( QRect( width - fw + 1, (height() - 8) / 2, 8, 8 ), pixstop );
             fw -= 10;
         }
-        p->setPen( cg.highlightedText() );
-        p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
+        if( playNext )
+        {
+            p->setPen( cg.highlightedText() );
+            p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
+        }
     }
 
     if( this != listView()->currentTrack() && !isSelected() )

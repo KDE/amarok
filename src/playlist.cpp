@@ -929,9 +929,6 @@ Playlist::queue( QListViewItem *item )
         //remove the item, this is better way than remove( item )
         m_nextTracks.remove( queueIndex ); //sets current() to next item
 
-        if( item == m_stopAfterTrack && item != m_currentTrack )
-            m_stopAfterTrack = 0;
-
         if( isDynamic() ) // we move the item after the last queued item to preserve the ordered 'queue'.
         {
             PlaylistItem *after = m_nextTracks.last();
@@ -2756,10 +2753,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
     }
 
-    if( isCurrent || isQueued ) {
-       popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
-       popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
-    }
+    popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
+    popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
 
     if( item->isEnabled() ) popup.insertSeparator();
 
