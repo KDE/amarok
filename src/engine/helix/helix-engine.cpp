@@ -172,7 +172,7 @@ HelixEngine::load( const KURL &url, bool isStream )
    {
       const QString path = url.path();
       const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
-      emit statusText( i18n("%1 format is not supported by this engine").arg(ext) );
+      emit statusText( i18n("No plugin found for the %1 format").arg(ext) );
       return false;
    }
 
