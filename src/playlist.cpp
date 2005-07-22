@@ -499,6 +499,9 @@ Playlist::addSpecialTracks( uint songCount, QString type )
 void
 Playlist::addSpecialCustomTracks( uint songCount )
 {
+    if( !songCount )
+        return;
+
     PlaylistBrowser *pb = PlaylistBrowser::instance() ? PlaylistBrowser::instance() : new PlaylistBrowser();
     QListViewItem *item = 0;
 
@@ -537,6 +540,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
             if( (*it).isValid() )
                 urls << (*it).path();
         }
+
         if( urls.isEmpty() )
             amaroK::StatusBar::instance()->longMessage( i18n(
                 "<div align=\"center\"><b>Warning</b></div>"
@@ -797,7 +801,11 @@ Playlist::playNextTrack( bool forceNext )
             else item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
         }
         else if( item )
+        {
             item = MyIt::nextVisible( item );
+            while( item && !item->isEnabled() )
+                item = MyIt::nextVisible( item );
+        }
         else
         {
             item = *MyIt( this ); //ie. first visible item
