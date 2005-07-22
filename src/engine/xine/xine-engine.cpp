@@ -795,6 +795,7 @@ Fader::~Fader()
      if( m_post ) xine_post_dispose( m_xine, m_post );
 
      s_fader = 0;
+     m_engine->setVolume( m_engine->volume() );
 }
 
 struct fade_s {
@@ -866,14 +867,13 @@ Fader::run()
     for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it )
     {
 //         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
-
         if( (*it).sleep > 0 ) //FIXME
            QThread::usleep( (*it).sleep );
 
-        float vol = 100 - 100.0 * std::log10( ( 100 - m_engine->m_volume ) * 0.09 + 1.0 );
+        float vol = Engine::Base::makeVolumeLogarithmic( m_engine->m_volume );
         vol = vol * m_engine->m_preamp * ( (*it).volume * 0.01 );
 
-        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol ) );
+        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint) vol );
     }
 
     //stop using cpu!

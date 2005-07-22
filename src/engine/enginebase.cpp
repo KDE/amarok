@@ -89,8 +89,7 @@ void Engine::Base::setVolume( uint value )
         setVolumeSW( 100 );
     }
     else
-        // We're using a logarithmic function to make the volume ramp more natural.
-        setVolumeSW( static_cast<uint>( 100 - 100.0 * std::log10( ( 100 - value ) * 0.09 + 1.0 ) ) );
+        setVolumeSW( makeVolumeLogarithmic( value ) );
 }
 
 
@@ -102,6 +101,14 @@ Engine::Base::setVolumeHW( uint percent )
         percent = percent + ( percent << 8 );
         ioctl( m_mixer, MIXER_WRITE( 4 ), &percent );
     }
+}
+
+
+uint
+Engine::Base::makeVolumeLogarithmic( uint volume ) // static
+{
+    // We're using a logarithmic function to make the volume ramp more natural.
+    return static_cast<uint>( 100 - 100.0 * std::log10( ( 100 - volume ) * 0.09 + 1.0 ) );
 }
 
 

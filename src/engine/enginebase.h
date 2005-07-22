@@ -199,13 +199,16 @@ namespace Engine
     protected:
         Base( Effects* = 0 );
 
-        /** shows the amaroK configuration dialog at the engine page */
+        /** Shows the amaroK configuration dialog at the engine page */
         void showEngineConfigDialog() { emit showConfigDialog( "Engine" ); }
 
         virtual void setVolumeSW( uint percent ) = 0;
         void setVolumeHW( uint percent );
 
         void setEffects( Effects *e ) { m_effects = e; }
+
+        /** Converts master volume to a logarithmic scale */
+        static uint makeVolumeLogarithmic( uint volume );
 
         Base( const Base& ); //disable copy constructor
         const Base &operator=( const Base& ); //disable copy constructor
