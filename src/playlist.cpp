@@ -191,6 +191,7 @@ Playlist::Playlist( QWidget *parent )
         , m_showHelp( true )
         , m_stateSwitched( false )
         , m_partyDirt( false )
+        , m_queueDirt( false )
         , m_lockStack( 0 )
         , m_columnFraction( 14, 0 )
 {
@@ -950,14 +951,19 @@ Playlist::queue( QListViewItem *item )
             after = m_nextTracks.last();
 
         if( item->isEnabled() && item != m_currentTrack )
+        {
             this->moveItem( item, 0, after );
+            m_nextTracks.append( item );
+        }
         else
+        {
+            m_queueDirt = true;
             insertMediaInternal( item->url(), after );
-
-        m_nextTracks.append( item );
-        if( QueueManager::instance() )
-            emit queued( item );
+        }
     }
+
+    if( QueueManager::instance() )
+        emit queued( item );
 
     refreshNextTracks(); // from current()
 
@@ -1948,6 +1954,29 @@ Playlist::customEvent( QCustomEvent *e )
                 m_stateSwitched = false;
             }
         }
+
+        if( m_queueDirt )
+        {
+            PlaylistItem *after = 0;
+
+            m_nextTracks.isEmpty() ?
+                after = m_currentTrack :
+                after = m_nextTracks.last();
+
+            after = (PlaylistItem *)after->itemBelow();
+            if( after )
+            {
+                m_nextTracks.append( after );
+
+                if( QueueManager::instance() )
+                    emit queued( after );
+
+                refreshNextTracks();
+            }
+
+            m_queueDirt = false;
+        }
+
         //force redraw of currentTrack marker, play icon, etc.
         restoreCurrentTrack();
 

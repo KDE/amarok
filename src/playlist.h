@@ -264,6 +264,7 @@ class Playlist : private KListView, public EngineObserver
         bool          m_showHelp;
         bool          m_stateSwitched;
         bool          m_partyDirt;
+        bool          m_queueDirt;
 
         QMap<QString, QStringList> m_customSubmenuItem;
         QMap<int, QString>         m_customIdItem;
