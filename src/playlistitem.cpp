@@ -346,7 +346,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             int leftMargin = 1;
             if ( pixmap( column ) ) {
                 paint.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-                leftMargin += pixmap( column )->width() - 2; //-1 seems to be required
+                leftMargin += pixmap( column )->width() + 1; //+1 seems to be required
             }
 
             if( align != Qt::AlignCenter )
@@ -365,7 +365,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     }
     else {
         QColorGroup _cg = cg;
-        //FIXME not acceptable to hardocode the colour
+        //FIXME not acceptable to hardcode the colour
         QColor disabledText = QColor( 172, 172, 172 );
         if( m_missing || !m_enabled )
             _cg.setColor( QColorGroup::Text, disabledText );
