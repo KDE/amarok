@@ -1184,8 +1184,6 @@ Playlist::setCurrentTrackPixmap( int state )
 
     if( state == Engine::Paused )
         pixmap = "currenttrack_pause";
-    else if( AmarokConfig::repeatTrack() )
-        pixmap = "currenttrack_repeat";
     else if( state == Engine::Playing )
         pixmap = "currenttrack_play";
 
@@ -2698,7 +2696,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
-    const bool isQueued    = m_nextTracks.containsRef( item );
     const bool trackColumn = col == PlaylistItem::Track;
     const QString tagName  = columnText( col );
     const QString tag      = item->exactText( col );

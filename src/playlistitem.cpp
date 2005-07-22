@@ -289,8 +289,9 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //p->translate( 2, 0 ); width -= 3;
 
     const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
+    const bool isCurrent = this == listView()->currentTrack();
 
-    if( this == listView()->currentTrack() && !isSelected() )
+    if( isCurrent && !isSelected() )
     {
         static paintCacheItem paintCache[NUM_COLUMNS];
 
@@ -373,13 +374,17 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     }
 
     /// Track action symbols
-    const bool stopafter = ( this == listView()->m_stopAfterTrack );
+    const bool stopafter   = ( this == listView()->m_stopAfterTrack );
+    const bool repeatTrack = AmarokConfig::repeatTrack() && isCurrent;
 
     //figure out if we are in the actual physical first column
-    if( column == listView()->m_firstColumn && (playNext || stopafter) )
+    if( column == listView()->m_firstColumn && (playNext || stopafter || repeatTrack ) )
     {
         const uint w = 16;
         const uint h = height() - 2;
+        uint currentWidth = 0;
+
+        if( isCurrent ) currentWidth = 8;
         QString str;
 
         if( playNext )
@@ -388,7 +393,10 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         uint fw = p->fontMetrics().width( str ) + 2;
 
         if( stopafter )
-            fw += 10;
+            fw = fw + currentWidth + 10;
+
+        if( repeatTrack )
+            fw = fw + currentWidth + 10;
 
         p->setBrush( cg.highlight() );
         p->setPen( cg.highlight().dark() ); //TODO blend with background color
@@ -409,9 +417,23 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         fw += 2; //add some more padding
         if( stopafter )
         {
-            static const QPixmap pixstop = amaroK::getPNG( "currenttrack_stop_small" );
-            p->drawPixmap( QRect( width - fw + 1, (height() - 8) / 2, 8, 8 ), pixstop );
-            fw -= 10;
+            if( isCurrent )
+            {
+                static const QPixmap pix = amaroK::getPNG( "currenttrack_stop" );
+                p->drawPixmap( QRect( width - fw + 1, (height() - pix.height()) / 2, pix.width(), pix.height() ), pix );
+            }
+            else
+            {
+                static const QPixmap pix = amaroK::getPNG( "currenttrack_stop_small" );
+                p->drawPixmap( QRect( width - fw + 1, (height() - 8) / 2, 8, 8 ), pix );
+            }
+            fw = fw - currentWidth - 10;
+        }
+        if( repeatTrack ) //only occurs on isCurrent
+        {
+            static const QPixmap pix = amaroK::getPNG( "currenttrack_repeat" );
+            p->drawPixmap( QRect( width - fw + 1, (height() - pix.height()) / 2, pix.width(), pix.height() ), pix );
+            fw = fw - currentWidth - 10;
         }
         if( playNext )
         {
