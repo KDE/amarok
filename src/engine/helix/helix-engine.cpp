@@ -349,6 +349,9 @@ HelixEngine::canDecode( const KURL &url ) const
 
    debug() << "In canDecode " << url.prettyURL() << endl;
 
+   if (url.protocol() == "http" || url.protocol() == "rtsp")
+      return true;
+
    const QString path = url.path();
    const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
 
