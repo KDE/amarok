@@ -302,6 +302,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    m_Error(0),
    m_ulNumSecondsPlayed(0),
    mimehead(0),
+   mimelistlen(0),
    scopecount(0),
    scopebufhead(0),
    scopebuftail(0),
@@ -493,6 +494,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
             HX_RELEASE(pPluginProps);
             if (hasmime && hasexts)
             {
+               mimelistlen++;
                ml = new MimeList(mime, ext);
                ml->fwd = mimehead;
                mimehead = ml;

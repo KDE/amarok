@@ -12,10 +12,11 @@
 #define _HELIX_ENGINE_H_
 
 #include "engine/enginebase.h"
-#include <qthread.h>
 #include <qobject.h>
 #include <sys/types.h>
 #include <helix-sp.h>
+
+class QStringList;
 
 class HelixEngine : public Engine::Base, public HelixSimplePlayer
 {
@@ -80,6 +81,14 @@ private:
    unsigned long  m_lastpos;
    unsigned short m_currentScope[512];
    int            m_scopeindex;
+
+   typedef struct MimeEntry
+   {
+      QStringList type;
+      QStringList ext;
+   };
+
+   std::vector<MimeEntry> m_mimes;
 
    void timerEvent( QTimerEvent * );
    void resetScope();

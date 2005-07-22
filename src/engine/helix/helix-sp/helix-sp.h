@@ -228,6 +228,7 @@ public:
    metaData *getMetaData(int playerIndex);
 
    const MimeList *getMimeList() const { return mimehead; }
+   int getMimeListLen() const { return mimelistlen; }
 private:
 
    bool                 bEnableAdviceSink;
@@ -244,6 +245,7 @@ private:
 
    // supported mime type list
    MimeList            *mimehead;
+   int                  mimelistlen;
 
    // scope
    int                  scopecount;

@@ -12,15 +12,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-#include "helix-engine.h"
-#include "helix-configdialog.h"
-#include "config/helixconfig.h"
-
-AMAROK_EXPORT_PLUGIN( HelixEngine )
-
-#define DEBUG_PREFIX "helix-engine"
-
 #include <climits>
 #include <cmath>
 #include <iostream>
@@ -32,6 +23,15 @@ AMAROK_EXPORT_PLUGIN( HelixEngine )
 
 #include <qapplication.h>
 #include <qdir.h>
+#include <qstringlist.h>
+
+#include "helix-engine.h"
+#include "helix-configdialog.h"
+#include "config/helixconfig.h"
+
+AMAROK_EXPORT_PLUGIN( HelixEngine )
+
+#define DEBUG_PREFIX "helix-engine"
 
 using namespace std;
 
@@ -136,6 +136,24 @@ HelixEngine::init()
       return true;
    }
 
+   // create a list of mime types and ext for use in canDecode()
+   m_mimes.resize( getMimeListLen() );
+   int i = 0;
+   const MimeList *ml = getMimeList();
+   MimeEntry *entry;
+   while (ml)
+   {
+      QString mt = ml->mimetypes;
+      QString me = ml->mimeexts;
+
+      entry = new MimeEntry;
+      entry->type = QStringList::split('|', mt);
+      entry->ext = QStringList::split('|', me);
+      m_mimes[i] = *entry;
+      i++;
+      ml = ml->fwd;
+   }
+
    debug() << "Succussful init\n";
 
    return true;
@@ -149,6 +167,14 @@ HelixEngine::load( const KURL &url, bool isStream )
 
    if (!m_inited)
       return false;
+
+   if (!canDecode(url))
+   {
+      const QString path = url.path();
+      const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
+      emit statusText( i18n("%1 format is not supported by this engine").arg(ext) );
+      return false;
+   }
 
    stop();
 
@@ -322,8 +348,19 @@ HelixEngine::canDecode( const KURL &url ) const
       return false;
 
    debug() << "In canDecode " << url.prettyURL() << endl;
-   //TODO check if the url really is supported by Helix
-   return true;
+
+   const QString path = url.path();
+   const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
+
+   if (ext != "txt")
+      for (int i=0; i<(int)m_mimes.size(); i++)
+      {
+         if (m_mimes[i].type.grep("audio").count() || m_mimes[i].type.grep("video").count())
+            if (m_mimes[i].ext.grep(ext).count())
+               return true;
+      }
+
+   return false;
 }
 
 void
