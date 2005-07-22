@@ -68,16 +68,16 @@ EqualizerSetup::EqualizerSetup()
     // END Graph Widget
 
     // BEGIN Presets
-    m_equalizerPresets = new KPopupMenu( container );
-    m_equalizerPresets->setCheckable( true );
+    m_presetPopup = new KPopupMenu( container );
+    m_presetPopup->setCheckable( true );
     loadPresets();
-    connect( m_equalizerPresets, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
+    connect( m_presetPopup, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
 
     KToolBar* toolBar = new KToolBar( container );
     toolBar->setIconText( KToolBar::IconTextRight );
     toolBar->setIconSize( 16 );
     toolBar->setFrameShape( QFrame::NoFrame );
-    toolBar->insertButton( "configure", 0, m_equalizerPresets, true, i18n( "Presets" ) );
+    toolBar->insertButton( "configure", 0, m_presetPopup, true, i18n( "Presets" ) );
     // END Presets
 
     headerLayout->addWidget( m_equalizerGraph, 0, Qt::AlignLeft );
@@ -166,9 +166,12 @@ EqualizerSetup::presetsCache() const
 void
 EqualizerSetup::loadPresets()
 {
-    m_equalizerPresets->insertItem( i18n("Save"), 0 );
-    m_equalizerPresets->insertSeparator();
+    m_presetPopup->insertItem( i18n("Save"), 0 );
+    m_presetPopup->insertSeparator();
     m_totalPresets++;
+
+    KPopupMenu *m_presetDefaultPopup = new KPopupMenu( this );
+
 
     QFile file( locate( "data","amarok/data/equalizer_presets.xml" ) );
     QTextStream stream( &file );
@@ -199,8 +202,11 @@ EqualizerSetup::loadPresets()
         gains << e.namedItem( "b9" ).toElement().text().toInt();
 
         m_presets[ m_totalPresets ] = gains;
-        m_equalizerPresets->insertItem( title, m_totalPresets );
+        m_presetDefaultPopup->insertItem( title, m_totalPresets );
     }
+    m_presetPopup->insertItem( "Defaults", m_presetDefaultPopup );
+
+    connect( m_presetDefaultPopup, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
 }
 
 
@@ -225,7 +231,7 @@ EqualizerSetup::savePresets()
 
     for( uint x = 1; x < keys.count(); x++ ) // dont save 'ZERO' or 'SAVE' presets
     {
-        const QString title = m_equalizerPresets->text( x );
+        const QString title = m_presetPopup->text( x );
         QValueList<int> gains = values[x];
 
         QDomElement i = doc.createElement("preset");
@@ -279,9 +285,9 @@ EqualizerSetup::presetChanged( int id ) //SLOT
 
             m_totalPresets++;
             m_presets[ m_totalPresets ] = gains;
-            m_equalizerPresets->insertItem( title, m_totalPresets );
-            m_equalizerPresets->setItemChecked( m_currentPreset, false );
-            m_equalizerPresets->setItemChecked( m_totalPresets, true );
+            m_presetPopup->insertItem( title, m_totalPresets );
+            m_presetPopup->setItemChecked( m_currentPreset, false );
+            m_presetPopup->setItemChecked( m_totalPresets, true );
             m_currentPreset = m_totalPresets;
         }
         return;
@@ -291,8 +297,8 @@ EqualizerSetup::presetChanged( int id ) //SLOT
     const QValueList<int> gains = m_presets[ id ];
     updateSliders( m_slider_preamp->value(), gains );
 
-    m_equalizerPresets->setItemChecked( m_currentPreset, false );
-    m_equalizerPresets->setItemChecked( id, true );
+    m_presetPopup->setItemChecked( m_currentPreset, false );
+    m_presetPopup->setItemChecked( id, true );
     m_currentPreset = id;
 }
 
@@ -330,7 +336,7 @@ EqualizerSetup::setEqualizerParameters() //SLOT
 void
 EqualizerSetup::sliderChanged() //SLOT
 {
-    m_equalizerPresets->setItemChecked( m_currentPreset, false );
+    m_presetPopup->setItemChecked( m_currentPreset, false );
     m_currentPreset = -1;
 }
 

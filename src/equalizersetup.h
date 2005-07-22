@@ -57,7 +57,7 @@ class EqualizerSetup : public QVBox
         EqualizerGraph* m_equalizerGraph;
         QPtrList<amaroK::Slider> m_bandSliders;
 
-        KPopupMenu*     m_equalizerPresets;
+        KPopupMenu*     m_presetPopup;
         int             m_currentPreset;
         uint            m_totalPresets;
         QMap< int, QValueList<int> > m_presets;
