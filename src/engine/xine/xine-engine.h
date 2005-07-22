@@ -62,6 +62,8 @@ class XineEngine : public Engine::Base
     int64_t             m_currentVpts;
     float               m_preamp;
 
+    bool                m_stopFader;
+
     QString             m_currentAudioPlugin; //to see if audio plugin has been changed
     XineConfigDialog*   m_configDialog;
     //need to save these for when the audio plugin is changed and xine reloaded

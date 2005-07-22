@@ -63,6 +63,7 @@ XineEngine::XineEngine()
         , m_eventQueue( 0 )
         , m_post( 0 )
         , m_preamp( 1.0 )
+        , m_stopFader( false )
 {
     addPluginProperty( "StreamingMode", "NoStreaming" );
     addPluginProperty( "HasConfigure", "true" );
@@ -74,28 +75,28 @@ XineEngine::~XineEngine()
 {
     // Wait until the fader thread is done
     if ( s_fader ) {
+        m_stopFader = true;
         s_fader->wait();
         delete s_fader;
     }
 
-//     if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
-//     {
-//         const int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
-//         const double D = 300000 * std::pow( (double)volume, -0.4951 );
-//
-//         debug() << "Sleeping: " << D << ", " << volume << endl;
-//
-//         for( int v = volume - 1; v >= 1; v-- ) {
-//             xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
-//
-//             const int sleep = int(D * (-log10( v + 1 ) + 2));
-//
-//             ::usleep( sleep );
-//
+    if( m_stream && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    {
+        const int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
+        const double D = 300000 * std::pow( (double)volume, -0.4951 );
+
+        debug() << "Sleeping: " << D << ", " << volume << endl;
+
+        for( int v = volume - 1; v >= 1; v-- ) {
+            xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
+
+            const int sleep = int(D * (-log10( v + 1 ) + 2));
+
+            ::usleep( sleep );
 //             debug() << v << ": " << sleep << "us\n";
-//         }
-//         xine_stop( m_stream );
-//     }
+        }
+        xine_stop( m_stream );
+    }
 
     xine_config_save( m_xine, configPath() );
 
@@ -794,8 +795,11 @@ Fader::~Fader()
      xine_close_audio_driver( m_xine, m_port );
      if( m_post ) xine_post_dispose( m_xine, m_post );
 
+     if ( !m_engine->m_stopFader )
+         m_engine->setVolume( m_engine->volume() );
+
+     m_engine->m_stopFader = false;
      s_fader = 0;
-     m_engine->setVolume( m_engine->volume() );
 }
 
 struct fade_s {
@@ -864,7 +868,8 @@ Fader::run()
     }
 
     // perform the fading operations
-    for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it )
+    list<fade_s>::iterator it, end;
+    for( it = data.begin(), end = data.end(); it != end && !m_engine->m_stopFader; ++it )
     {
 //         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
         if( (*it).sleep > 0 ) //FIXME
