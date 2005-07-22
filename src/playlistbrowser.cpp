@@ -1096,8 +1096,10 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
             playlist->removeTrack( item );
         }
-        else
+        else {
+            m_dynamicEntries.remove(item); // if it's not there, no problem, it just returns false.
             delete item;
+        }
     }
 
     if( playlistsChanged )      savePlaylists();
