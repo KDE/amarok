@@ -195,6 +195,7 @@ PlaylistBrowser::~PlaylistBrowser()
     // <markey> Not sure if these calls are still needed, now that we're saving
     //          the state after each change.
     savePlaylists();
+    savePodcasts();
     saveStreams();
     saveSmartPlaylists();
     saveDynamics();
@@ -798,28 +799,50 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
+        return new PlaylistCategory( m_listview, m_playlistCategory, i18n("Podcasts") );
     }
     else {
-        e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") =="1.1" ) {
-            return new PlaylistCategory(m_listview, 0 , e );
+        PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
+        QListViewItem *last = 0;
+        QDomNode n = d.namedItem( "category" ).namedItem("podcast");
+
+        for( ; !n.isNull();  n = n.nextSibling() )
+        {
+            KURL url( n.namedItem( "url").toElement().text() );
+
+            QString xmlLocation = amaroK::saveLocation( "podcasts/" );
+            xmlLocation        += n.namedItem( "cache" ).toElement().text();
+
+            QDomDocument xml;
+            QFile xmlFile( xmlLocation );
+            QTextStream stream( &xmlFile );
+
+            if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
+                continue;
+
+            last = new PodcastChannel( p, last, url, xml );
         }
-        else {
-            PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
-            QListViewItem *last = 0;
-            QDomNode n = d.namedItem( "podcastbrowser" ).namedItem("feed");
-            for( ; !n.isNull();  n = n.nextSibling() ) {
-                KURL url( n.toElement().text() );
-                last = new PodcastChannel( p, last, url );
-            }
-            return p;
-        }
+        return p;
     }
 }
 
 void PlaylistBrowser::savePodcasts()
 {
+    QFile file( podcastBrowserCache() );
+    QTextStream stream( &file );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    QDomDocument doc;
+    QDomElement podcastB = m_podcastCategory->xml();
+    podcastB.setAttribute( "product", "amaroK" );
+    podcastB.setAttribute( "version", APP_VERSION );
+    podcastB.setAttribute( "formatversion", "1.1" );
+    doc.appendChild( podcastB );
+
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << doc.toString();
 
 }
 
@@ -836,7 +859,7 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
 
         parent->setOpen( true );
 
-//         savePodcasts();
+        savePodcasts();
     }
 }
 

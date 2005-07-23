@@ -969,9 +969,10 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 }
 
 
-PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, QDomDocument xmlDefinition )
+PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
+                                const KURL &url, QDomDocument xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
-    , m_url( 0 )
+    , m_url( url )
     , m_loading1( 0 )
     , m_loading2( 0 )
     , m_availablePix( 0 )
@@ -1000,7 +1001,6 @@ PodcastChannel::fetch()
     startAnimation();
     connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
-    debug() << "[PODCAST] Fetching '" << m_title << "' from: " << m_url.prettyURL() << endl;
     m_podcastJob = KIO::storedGet( m_url, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastJob )
@@ -1034,6 +1034,17 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     }
 
     setXml( d.namedItem("rss").namedItem("channel") );
+
+    ///BEGIN Cache the xml
+    QFile file( amaroK::saveLocation( "podcasts/" ) + m_cache );
+
+    QTextStream stream( &file );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << d.toString();
+    ///END Cache the xml
 }
 
 void
@@ -1056,12 +1067,16 @@ PodcastChannel::setNew( bool n )
     m_new = n;
 }
 
-
+/// DONT TOUCH m_url!!!  The podcast has no mention to the location of the xml file, idiots.
 void
 PodcastChannel::setXml( QDomNode xml )
 {
     m_title = xml.namedItem( "title" ).toElement().text();
     setText( 0, m_title );
+
+    m_cache = m_title;
+    m_cache.replace( " ", "_" );
+    m_cache += "_" + m_url.fileName();
 
     QDomNode n = xml.namedItem( "item" );
 
@@ -1083,8 +1098,28 @@ PodcastChannel::setXml( QDomNode xml )
     if( static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
         setNew();
-        amaroK::StatusBar::instance()->longMessage( i18n("New podcast's have been retrieved") );
+        amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved") );
     }
+}
+
+QDomElement
+PodcastChannel::xml()
+{
+        QDomDocument doc;
+        QDomElement i = doc.createElement("podcast");
+        i.setAttribute( "title", m_title );
+
+        QDomElement attr = doc.createElement( "url" );
+        QDomText t = doc.createTextNode( m_url.prettyURL() );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "cache" );
+        t = doc.createTextNode( m_cache );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        return i;
 }
 
 void

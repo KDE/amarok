@@ -224,8 +224,6 @@ class PodcastItem : public PlaylistBrowserEntry
         const QString &description() { return m_description; }
         const int     &duration() { return m_duration; }
 
-//         QDomElement xml();
-
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
 
@@ -247,7 +245,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
     public:
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, QDomDocument xml );
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, QDomDocument xml );
 
         void setNew( bool n = true );
         bool hasNew() { return m_new; }
@@ -258,7 +256,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const QString &title() { return m_title; }
 
         void setXml( QDomNode xml );
-//         QDomElement xml();
+        QDomElement xml();
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1006;              //podcastchannel
@@ -274,6 +272,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         KURL        m_url;                         //xml url
         QString     m_title;
+        QString     m_cache;                       //filename for caching
         QString     m_description;
         QString     m_copyright;
         QPixmap    *m_loading1;
