@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=SQLite DBEngine
+Name[br]=Keflusker DB SQLite
 Name[da]=SQLite DB-motor
 Name[de]=SQLite
 Name[et]=SQLite'i andmebaasimootor
