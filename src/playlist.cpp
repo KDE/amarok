@@ -183,8 +183,10 @@ Playlist::Playlist( QWidget *parent )
         , m_marker( 0 )
         , m_firstColumn( 0 )
         , m_totalLength( 0 )
-        , m_selectCounter( 0 )
-        , m_selectLength( 0 )
+        , m_selCount( 0 )
+        , m_selLength( 0 )
+        , m_visCount( 0 )
+        , m_visLength( 0 )
         , m_undoDir( amaroK::saveLocation( "undo/" ) )
         , m_undoCounter( 0 )
         , m_stopAfterTrack( 0 )
@@ -1280,6 +1282,7 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
         restoreCurrentTrack();
 
     setFilterForItem( m_filter, m_currentTrack );
+    emit itemCountChanged( childCount(), m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 }
 
 void
@@ -1368,7 +1371,7 @@ Playlist::clear() //SLOT
     setCurrentTrack( 0 );
     m_prevTracks.clear();
     m_nextTracks.clear();
-    m_totalLength = 0;
+    m_totalLength = m_visLength = m_visCount = 0;
 
     // Update player button states
     amaroK::actionCollection()->action( "play" )->setEnabled( false );
@@ -1383,7 +1386,7 @@ Playlist::clear() //SLOT
     // never unlock() the Playlist until it is safe!
     KListView::clear();
 
-    emit itemCountChanged( childCount(), m_totalLength, 0, 0 );
+    emit itemCountChanged( childCount(), m_totalLength, 0, 0, 0, 0 );
 
     if( isDynamic() )
         repopulate();
@@ -1918,15 +1921,21 @@ Playlist::customEvent( QCustomEvent *e )
         setFilter( m_filter );
 
         //necessary usually
-        m_totalLength = 0;
+        m_totalLength = m_visLength = m_visCount = 0;
         int itemCount = 0;
         QListViewItemIterator it( this );
         for( ; it.current(); ++it, itemCount++ ) {
             int length = static_cast<PlaylistItem *>(*it)->seconds().toInt();
             if( length > 0 )
                 m_totalLength += length;
+            if( (*it)->isVisible() )
+            {
+                if( length > 0 )
+                    m_visLength += length;
+                ++m_visCount;
+            }
         }
-        emit itemCountChanged( itemCount, m_totalLength, m_selectCounter, m_selectLength );
+        emit itemCountChanged( itemCount, m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 
         if ( !m_queueList.isEmpty() ) {
             KURL::List::Iterator jt;
@@ -2375,6 +2384,7 @@ Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
         {
             (*it)->setText( mb );
             setFilterForItem( m_filter, *it );
+            emit itemCountChanged( childCount(), m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
         }
 }
 
@@ -2606,6 +2616,7 @@ Playlist::setFilter( const QString &query ) //SLOT
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
     triggerUpdate();
+    emit itemCountChanged( childCount(), m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 }
 
 void
@@ -2639,6 +2650,27 @@ Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
         }
     }
 
+    int length = item->seconds().toInt();
+    if( visible && !item->isVisible() )
+    {
+        ++m_visCount;
+        m_visLength += length;
+        if( item->isSelected() )
+        {
+            ++m_selCount;
+            m_selLength += length;
+        }
+    }
+    else if( !visible && item->isVisible() )
+    {
+        --m_visCount;
+        m_visLength -= length;
+        if( item->isSelected() )
+        {
+            --m_selCount;
+            m_selLength -= length;
+        }
+    }
     item->setVisible( visible );
 }
 
@@ -2666,6 +2698,7 @@ Playlist::scoreChanged( const QString &path, int score )
         {
             item->setText( PlaylistItem::Score, QString::number( score ) );
             setFilterForItem( m_filter, item );
+            emit itemCountChanged( childCount(), m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
         }
     }
 }
@@ -3050,10 +3083,16 @@ Playlist::removeItem( PlaylistItem *item )
 
     int length = item->seconds().toInt();
     if( length > 0 ) m_totalLength -= length;
-    if( m_selectCounter > 0 ) m_selectCounter--;
-    if( m_selectLength > 0 ) m_selectLength -= length;
+    if( m_selCount > 0 ) m_selCount--;
+    if( m_selLength > 0 ) m_selLength -= length;
+    if( item->isVisible() )
+    {
+        m_visCount--;
+        if( length > 0 )
+            m_visLength -= length;
+    }
 
-    emit itemCountChanged( childCount()-1, m_totalLength, m_selectCounter, m_selectLength );
+    emit itemCountChanged( childCount()-1, m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 }
 
 void
@@ -3174,18 +3213,18 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
 void
 Playlist::slotSelectionChanged() //SLOT
 {
-    m_selectCounter = 0;
-    m_selectLength = 0;
+    m_selCount = 0;
+    m_selLength = 0;
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
-        ++m_selectCounter;
+        ++m_selCount;
         int length = static_cast<PlaylistItem *>(*it)->seconds().toInt();
         if( length > 0 )
-            m_selectLength += length;
+            m_selLength += length;
     }
 
-    emit itemCountChanged( childCount(), m_totalLength, m_selectCounter, m_selectLength );
+    emit itemCountChanged( childCount(), m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 }
 
 void

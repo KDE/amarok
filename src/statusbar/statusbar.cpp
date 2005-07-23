@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2005 Max Howell <max.howell@methylblue.com>             *
  *             (C) 2004 Frederik Holljen <fh@ez.no>                        *
+ *             (C) 2005 Gábor Lehel <illissius@gmail.com>                  *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -97,7 +98,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // for great justice!
     connect( m_pauseTimer, SIGNAL(timeout()), SLOT(slotPauseTimer()) );
 
-    slotItemCountChanged( 0, 0, 0, 0 );
+    slotItemCountChanged( 0, 0, 0, 0, 0, 0 );
 
     //see statupTips.h
     //KDE::showNextTip( this );
@@ -186,22 +187,31 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 }
 
 void
-StatusBar::slotItemCountChanged( int newCount, int newLength, int selCount, int selLength )
+StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
+                                 int visCount, int visLength,  //visible
+                                 int selCount, int selLength ) //selected
 {
-    QString text;
+    const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
 
-    if ( selCount > 1 ) {
-        text = i18n( "Selected %1 out of %2 Tracks" ).arg( selCount ).arg( newCount );
-        if ( selCount != 0 )
-           text += i18n(" - [%1 / %2]")
-                   .arg( MetaBundle::prettyTime( selLength ), MetaBundle::prettyTime( newLength ) );
-    } else {
-        text = i18n( "1 Track", "%n Tracks", newCount );
-        if ( newCount != 0 )
-            text += i18n(" - [%1]").arg( MetaBundle::prettyTime( newLength ) );
-    }
+    QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible of %3 tracks" )
+                                          .arg( selCount ).arg( visCount ).arg( newCount )
+                 : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
+                 : ( hasVis ) ? i18n( "%1 visible of %2 tracks" ).arg( visCount).arg( newCount )
+                 : ( hasSel ) ? i18n( "%1 selected of %2 tracks" ).arg( selCount ).arg( newCount )
+                 : i18n( "1 track", "%n tracks", newCount );
 
-    m_itemCountLabel->setText( ' ' + text + ' ' );
+    QString time = ( hasSel && hasVis ) ? i18n( " - [ %1 / %2 / %3 ]" )
+                                          .arg( MetaBundle::prettyLength( selLength ) )
+                                          .arg( MetaBundle::prettyLength( visLength ) )
+                                          .arg( MetaBundle::prettyLength( newLength ) )
+                 : ( ( hasSel || hasVis ) && visCount > 0 ) ? i18n( " - [ %1 / %2 ]" )
+                                                              .arg( hasVis ? MetaBundle::prettyLength( visLength )
+                                                                           : MetaBundle::prettyLength( selLength ) )
+                                                              .arg( MetaBundle::prettyLength( newLength ) )
+                 : ( newCount ) ? i18n( " - [ %1 ]" ).arg( MetaBundle::prettyLength( newLength ) )
+                 : "";
+
+    m_itemCountLabel->setText( ' ' + text + time + ' ' );
 }
 
 void

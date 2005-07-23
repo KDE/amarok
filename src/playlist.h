@@ -129,7 +129,7 @@ class Playlist : private KListView, public EngineObserver
 
     signals:
         void aboutToClear();
-        void itemCountChanged( int newCount, int newLength, int selCount, int selLength );
+        void itemCountChanged( int newCount, int newLength, int visCount, int visLength, int selCount, int selLength );
         void queued( PlaylistItem *item );
 
     public slots:
@@ -247,8 +247,10 @@ class Playlist : private KListView, public EngineObserver
 
         int           m_firstColumn;
         int           m_totalLength;
-        int           m_selectCounter;
-        int           m_selectLength;
+        int           m_selCount;
+        int           m_selLength;
+        int           m_visCount;
+        int           m_visLength;
 
         KAction      *m_undoButton;
         KAction      *m_redoButton;
