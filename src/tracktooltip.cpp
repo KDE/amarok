@@ -27,9 +27,11 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
 {
     static MetaBundle cachedtags = MetaBundle();
     static QString tipBuf = QString::null;
+    static bool hasLength = true;
     if( cachedtags != tags || tipBuf.isNull() ) //we don't autoupdate when the columns change, but *blahrg*.
     {
         tipBuf = "";
+        hasLength = false;
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
@@ -146,6 +148,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
 
         if( tags.length() > 0 ) //special case this too, always on the bottom
         {
+            hasLength = true;
             right << "%9 / " + tags.prettyLength();
             left << playlist->columnText( PlaylistItem::Length );
         }
@@ -180,5 +183,5 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
         cachedtags = tags;
     }
 
-    QToolTip::add( widget, tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) );
+    QToolTip::add( widget, hasLength ? tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) : tipBuf );
 }
