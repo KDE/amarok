@@ -2873,7 +2873,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             m_stopAfterTrack = item;
 
         setCurrentTrackPixmap();
-        if( prev_stopafter && m_nextTracks.containsRef( prev_stopafter ) )
+        if( prev_stopafter )
             prev_stopafter->repaint();
         break;
 
