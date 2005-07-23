@@ -1752,7 +1752,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, FOLDER };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, PODCAST, FOLDER };
 
         QListViewItem *parentCat = item;
 
@@ -1776,6 +1776,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
 
+        else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
+
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         switch( menu.exec( p ) ) {
@@ -1797,6 +1800,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case STREAM:
                 addStream( item );
+                break;
+
+            case PODCAST:
+                addPodcast( item );
                 break;
 
             case CREATE:
