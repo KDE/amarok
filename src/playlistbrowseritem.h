@@ -12,9 +12,12 @@
 
 #include <qptrlist.h>
 #include <qdom.h>
+#include <qtimer.h>     // Podcast loading animation
 
 class PlaylistTrackItem;
 class TrackItemInfo;
+
+namespace KIO { class Job; class TransferJob; } //podcast downloads
 
 /**
  *  RTTI VALUES
@@ -24,6 +27,8 @@ class TrackItemInfo;
  *  1003 - StreamEntry
  *  1004 - SmartPlaylist
  *  1005 - PartyEntry
+ *  1006 - PodcastChannel
+ *  1007 - PodcastItem
  */
 
 
@@ -198,6 +203,92 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
         TrackItemInfo *m_trackInfo;
 };
 
+
+
+
+class PodcastItem : public PlaylistBrowserEntry
+{
+    public:
+        PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml );
+
+        bool hasXml( const QDomNode &xml );
+
+        void setNew( bool n = true );
+        bool isNew() { return m_new; }
+
+        const KURL    &url() { return m_url; }
+        const QString &title() { return m_title; }
+        const QString &author() { return m_author; }
+        const QString &date() { return m_date; }
+        const QString &type() { return m_type; }
+        const QString &description() { return m_description; }
+        const int     &duration() { return m_duration; }
+
+//         QDomElement xml();
+
+        int rtti() const { return RTTI; }
+        static const int RTTI = 1007;              //podcastitem
+
+    private:
+        QString     m_author;
+        QString     m_description;
+        QString     m_date;
+        int         m_duration;
+        QString     m_title;
+        QString     m_type;
+        KURL        m_url;                         //mp3 url
+
+        bool        m_new;
+};
+
+class PodcastChannel : public QObject, public PlaylistBrowserEntry
+{
+        Q_OBJECT
+
+    public:
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, QDomDocument xml );
+
+        void setNew( bool n = true );
+        bool hasNew() { return m_new; }
+
+        void  fetch();
+        void  rescan();
+        const KURL &url() { return m_url; }
+        const QString &title() { return m_title; }
+
+        void setXml( QDomNode xml );
+//         QDomElement xml();
+
+        int rtti() const { return RTTI; }
+        static const int RTTI = 1006;              //podcastchannel
+
+    private slots:
+        void fetchResult( KIO::Job* job );
+        void slotAnimation();
+
+    private:
+        bool containsItem( QDomElement xml );
+        void startAnimation();
+        void stopAnimation();
+
+        KURL        m_url;                         //xml url
+        QString     m_title;
+        QString     m_description;
+        QString     m_copyright;
+        QPixmap    *m_loading1;
+        QPixmap    *m_loading2;
+        QPixmap    *m_availablePix;
+        bool        m_fetching;
+        bool        m_updating;
+        QTimer     *m_animationTimer;
+        bool        m_new;
+        bool        m_hasProblem;
+
+        PodcastItem         *m_last;
+        KIO::TransferJob    *m_podcastJob;
+        QString              m_podcastCurrentUrl;
+};
 
 class StreamEntry : public PlaylistBrowserEntry
 {

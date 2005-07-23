@@ -10,6 +10,7 @@
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
 #include "metabundle.h"
+#include "statusbar.h"
 #include "threadweaver.h"
 
 #include <qfile.h>             //loadPlaylists(), renamePlaylist()
@@ -18,7 +19,9 @@
 #include <qpixmap.h>           //paintCell()
 
 #include <kiconloader.h>       //smallIcon
+#include <kio/job.h>           //podcast retrieval
 #include <klocale.h>
+#include <kstandarddirs.h>     //podcast loading icons
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistReader
@@ -937,6 +940,224 @@ QDomElement PartyEntry::xml() {
     i.appendChild( attr );
     return i;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS PodcastChannel
+////////////////////////////////////////////////////////////////////////////
+
+PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
+    : PlaylistBrowserEntry( parent, after )
+    , m_url( url )
+    , m_loading1( 0 )
+    , m_loading2( 0 )
+    , m_availablePix( 0 )
+    , m_fetching( false )
+    , m_updating( false )
+    , m_new( false )
+    , m_hasProblem( false )
+    , m_last( 0 )
+{
+    setDragEnabled( true );
+    setRenameEnabled( 0, false );
+    setExpandable(true);
+
+    setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+
+    fetch();
+}
+
+
+PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, QDomDocument xmlDefinition )
+    : PlaylistBrowserEntry( parent, after )
+    , m_url( 0 )
+    , m_loading1( 0 )
+    , m_loading2( 0 )
+    , m_availablePix( 0 )
+    , m_fetching( false )
+    , m_updating( false )
+    , m_new( false )
+    , m_hasProblem( false )
+    , m_last( 0 )
+{
+    setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
+
+    setDragEnabled( true );
+    setRenameEnabled( 0, false );
+    setExpandable(true);
+
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+}
+
+void
+PodcastChannel::fetch()
+{
+    m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
+    m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
+    m_animationTimer = new QTimer();
+
+    startAnimation();
+    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+
+    debug() << "[PODCAST] Fetching '" << m_title << "' from: " << m_url.prettyURL() << endl;
+    m_podcastJob = KIO::storedGet( m_url, false, false );
+
+    amaroK::StatusBar::instance()->newProgressOperation( m_podcastJob )
+            .setDescription( i18n( "Fetching Podcast" ) );
+
+    connect( m_podcastJob, SIGNAL( result( KIO::Job* ) ), SLOT( fetchResult( KIO::Job* ) ) );
+
+}
+
+
+void
+PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
+{
+    stopAnimation();
+    if ( !job->error() == 0 ) {
+        amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server" ) );
+        debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
+        return;
+    }
+
+    QString xml = QString( static_cast<KIO::StoredTransferJob*>( job )->data() );
+
+    QDomDocument d;
+
+    if( !d.setContent( xml ) )
+    {
+        amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data") );
+        setText( 0, m_url.prettyURL() );
+        setPixmap( 0, SmallIcon("cancel") );
+        return;
+    }
+
+    setXml( d.namedItem("rss").namedItem("channel") );
+}
+
+void
+PodcastChannel::rescan()
+{
+    m_updating = true;
+    fetch();
+}
+
+void
+PodcastChannel::setNew( bool n )
+{
+    if( n )
+        setPixmap( 0, SmallIcon("favorites") );
+    else if( m_hasProblem )
+        setPixmap( 0, SmallIcon("cancel") );
+    else
+        setPixmap( 0, SmallIcon("player_playlist_2") );
+
+    m_new = n;
+}
+
+
+void
+PodcastChannel::setXml( QDomNode xml )
+{
+    m_title = xml.namedItem( "title" ).toElement().text();
+    setText( 0, m_title );
+
+    QDomNode n = xml.namedItem( "item" );
+
+    PodcastItem *updatingLast = 0;
+    PodcastItem *first = (PodcastItem *)firstChild();
+
+    for( ; !n.isNull(); n = n.nextSibling() )
+    {
+        if( m_updating )
+        {
+            if( first->hasXml( n ) )        // podcasts get inserted in a chronological order,
+                break;                          // no need to continue traversing, we must have them already
+            updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
+            updatingLast->setNew();
+        }
+        else
+            m_last = new PodcastItem( this, m_last, n.toElement() );
+    }
+    if( static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
+    {
+        setNew();
+        amaroK::StatusBar::instance()->longMessage( i18n("New podcast's have been retrieved") );
+    }
+}
+
+void
+PodcastChannel::startAnimation()
+{
+    if( !m_animationTimer->isActive() )
+        m_animationTimer->start( 100 );
+}
+
+void
+PodcastChannel::stopAnimation()
+{
+    m_animationTimer->stop();
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+}
+
+void
+PodcastChannel::slotAnimation()
+{
+    static uint iconCounter = 1;
+
+    iconCounter % 2 ?
+        setPixmap( 0, *m_loading1 ):
+        setPixmap( 0, *m_loading2 );
+
+    iconCounter++;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS PodcastItem
+////////////////////////////////////////////////////////////////////////////
+PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml )
+    : PlaylistBrowserEntry( parent, after )
+      , m_new( false )
+{
+    m_title       = xml.namedItem( "title" ).toElement().text();
+    m_description = xml.namedItem( "description" ).toElement().text();
+    m_author      = xml.namedItem( "author" ).toElement().text();
+    m_date        = xml.namedItem( "pubDate" ).toElement().text();
+    m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
+    m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
+    const QString url   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+    m_url = KURL::KURL( url );
+
+    setText( 0, m_title );
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+    setDragEnabled( true );
+    setRenameEnabled( 0, false );
+}
+
+bool
+PodcastItem::hasXml( const QDomNode& xml )
+{
+    return m_title           == xml.namedItem( "title" ).toElement().text() &&
+           m_description     == xml.namedItem( "description" ).toElement().text() &&
+           m_author          == xml.namedItem( "author" ).toElement().text() &&
+           m_date            == xml.namedItem( "pubDate" ).toElement().text() &&
+           m_duration        == xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt() &&
+           m_type            == xml.namedItem( "enclosure" ).toElement().attribute( "type" ) &&
+           m_url.prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+}
+
+void
+PodcastItem::setNew( bool n )
+{
+    if( n )
+        setPixmap( 0, SmallIcon("favorites") );
+    else
+        setPixmap( 0, SmallIcon("player_playlist_2") );
+
+    m_new = n;
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS SmartPlaylist

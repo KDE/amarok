@@ -66,6 +66,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Playlist..."), PLAYLIST );
     addMenu->insertItem( i18n("Radio Stream..."), STREAM );
     addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
+    addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
     saveMenuButton = new KActionMenu( i18n("Save"), "filesave", m_ac );
@@ -148,9 +149,12 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         m_smartCategory->setOpen( true );
     }
     // must be loaded after streams
-    m_dynamicCategory  = loadDynamics();
+    m_podcastCategory = loadPodcasts();
+
+    m_dynamicCategory = loadDynamics();
 
     m_playlistCategory->setOpen( true );
+    m_podcastCategory->setOpen( true );
     m_streamsCategory->setOpen( true );
     m_dynamicCategory->setOpen( true );
 
@@ -219,6 +223,7 @@ PlaylistBrowser::~PlaylistBrowser()
     }
     config->writeEntry( "Item State", stateList );
 }
+
 
 /**
  *************************************************************************
@@ -773,6 +778,70 @@ void PlaylistBrowser::loadDynamicItems()
 
 /**
  *************************************************************************
+ *  PODCASTS
+ *************************************************************************
+ **/
+
+QString PlaylistBrowser::podcastBrowserCache() const
+{
+    //returns the playlists stats cache file
+    return amaroK::saveLocation() + "podcastbrowser_save.xml";
+}
+
+PlaylistCategory* PlaylistBrowser::loadPodcasts()
+{
+    QFile file( podcastBrowserCache() );
+    QTextStream stream( &file );
+
+    QDomDocument d;
+    QDomElement e;
+
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
+        return new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
+    }
+    else {
+        e = d.namedItem( "category" ).toElement();
+        if ( e.attribute("formatversion") =="1.1" ) {
+            return new PlaylistCategory(m_listview, 0 , e );
+        }
+        else {
+            PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
+            QListViewItem *last = 0;
+            QDomNode n = d.namedItem( "podcastbrowser" ).namedItem("feed");
+            for( ; !n.isNull();  n = n.nextSibling() ) {
+                KURL url( n.toElement().text() );
+                last = new PodcastChannel( p, last, url );
+            }
+            return p;
+        }
+    }
+}
+
+void PlaylistBrowser::savePodcasts()
+{
+
+}
+
+void PlaylistBrowser::addPodcast( QListViewItem *parent )
+{
+    bool ok;
+    const QString name = KInputDialog::getText(i18n("Add Podcast"), i18n("Enter podcast URL:"), QString::null, &ok, this);
+
+    if( ok && !name.isEmpty() )
+    {
+        if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+
+        new PodcastChannel( parent, 0, KURL( name ) );
+
+        parent->setOpen( true );
+
+//         savePodcasts();
+    }
+}
+
+/**
+ *************************************************************************
  *  PLAYLISTS
  *************************************************************************
  **/
@@ -970,6 +1039,33 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         //and we don't so they then get really confused about things
         Playlist::instance()->insertMedia( item->tracksURL(), Playlist::Replace );
         #undef  item
+    }
+    else if( isPodcastChannel( item ) )
+    {
+        #define item static_cast<PodcastChannel *>(item)
+        KURL::List list;
+        QListViewItem *child = item->firstChild();
+        while( child )
+        {
+            list.append( static_cast<PodcastItem*>( child )->url() );
+            static_cast<PodcastItem *>( child )->setNew( false );
+            child = child->nextSibling();
+        }
+
+        Playlist::instance()->insertMedia( list, Playlist::Replace );
+        item->setNew( false );
+
+        #undef item
+    }
+    else if( isPodcastItem( item ) )
+    {
+        #define item static_cast<PodcastItem *>(item)
+
+        KURL::List list( static_cast<PodcastItem*>(item)->url() );
+        Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
+        item->setNew( false );
+
+        #undef item
     }
     else if( isStream( item ) )
     {
@@ -1345,6 +1441,10 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
             addSmartPlaylist();
             break;
 
+        case PODCAST:
+            addPodcast();
+            break;
+
         default:
             break;
     }
@@ -1577,7 +1677,55 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 removeSelectedItems();
                 break;
         }
-        #undef  item
+        #undef item
+    }
+    else if( isPodcastChannel( item ) ) {
+        #define item static_cast<PodcastChannel*>(item)
+        enum Actions { LOAD, ADD, REMOVE, RESCAN };
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "edittrash" ), i18n( "R&emove" ), REMOVE );
+
+        switch( menu.exec( p ) )
+        {
+            case LOAD:
+                slotDoubleClicked( item );
+                break;
+
+            case ADD:
+            {
+                KURL::List list;
+                QListViewItem *child = item->firstChild();
+                while( child )
+                {
+                    list.append( static_cast<PodcastItem*>( child )->url() );
+                    child = child->nextSibling();
+                }
+                Playlist::instance()->insertMedia( list );
+                break;
+            }
+            case RESCAN:
+                item->rescan();
+                break;
+
+            case REMOVE:
+                removeSelectedItems();
+                break;
+        }
+        #undef item
+    }
+    else if( isPodcastItem( item ) ) {
+        enum Actions { LOAD };
+        menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
+
+        switch( menu.exec( p ) )
+        {
+            case LOAD:
+                slotDoubleClicked( item );
+                break;
+        }
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
@@ -1988,12 +2136,36 @@ void PlaylistBrowserView::startDrag()
     KURL::List urls;
 
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
-    for( ; it.current(); ++it ) {
+
+    for( ; it.current(); ++it )
+    {
         if( isPlaylist( *it ) )
             urls += ((PlaylistEntry*)*it)->tracksURL();
 
         else if( isStream( *it ) )
             urls += ((StreamEntry*)*it)->url();
+
+        else if( isPodcastItem( *it ) )
+        {
+            urls += ((PodcastItem*)*it)->url();
+            ((PodcastItem*)*it)->setNew( false );
+        }
+        else if( isPodcastChannel( *it ) )
+        {
+            #define item static_cast<PodcastChannel *>(*it)
+            KURL::List list;
+            QListViewItem *child = item->firstChild();
+            while( child )
+            {
+                list.append( static_cast<PodcastItem*>( child )->url() );
+                static_cast<PodcastItem*>( child )->setNew( false );
+                child = child->nextSibling();
+            }
+
+            item->setNew( false );
+
+            #undef item
+        }
 
         else if( isSmartPlaylist( *it ) )
         {

@@ -39,7 +39,7 @@ class PlaylistBrowser : public QVBox
 
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
-        enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST };
+        enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST };
         enum SaveMode { CURRENT, DYNAMIC };
 
         PlaylistBrowser( const char* name=0 );
@@ -49,9 +49,11 @@ class PlaylistBrowser : public QVBox
         void addSmartPlaylist( QListViewItem *parent = 0 );
         void addDynamic( QListViewItem *parent = 0 );
         void addPlaylist( QString path, QListViewItem *parent = 0, bool force=false );
+        void addPodcast( QListViewItem *parent = 0 );
 
         QString partyBrowserCache() const;
         QString playlistBrowserCache() const;
+        QString podcastBrowserCache() const;
         QString streamBrowserCache() const;
         QString smartplaylistBrowserCache() const;
 
@@ -100,6 +102,9 @@ class PlaylistBrowser : public QVBox
         void loadDynamicItems();
         void saveDynamics();
 
+        PlaylistCategory* loadPodcasts();
+        void savePodcasts();
+
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();
         void savePlaylists();
@@ -116,6 +121,7 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_streamsCategory;
         PlaylistCategory    *m_smartCategory;
         PlaylistCategory    *m_dynamicCategory;
+        PlaylistCategory    *m_podcastCategory;
         PlaylistCategory    *m_coolStreams;
         PlaylistCategory    *m_smartDefaults;
         PlaylistEntry       *m_lastPlaylist;
@@ -219,6 +225,22 @@ isPlaylistTrackItem( QListViewItem *item )
     if( !item )
         return false;
     return item->rtti() == PlaylistTrackItem::RTTI ? true : false;
+}
+
+inline bool
+isPodcastChannel( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == PodcastChannel::RTTI ? true : false;
+}
+
+inline bool
+isPodcastItem( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == PodcastItem::RTTI ? true : false;
 }
 
 inline bool
