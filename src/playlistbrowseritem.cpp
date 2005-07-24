@@ -1011,10 +1011,17 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
 void
 PodcastChannel::configure()
 {
+    QString url    = m_url.prettyURL();
+    bool purge     = m_purgeItems;
+    int purgeCount = m_purgeCount;
+
     PodcastSettings *settings = new PodcastSettings( m_url, m_autoScan, m_interval,
                                                      m_mediaFetch, m_purgeItems, m_purgeCount );
+
     settings->show();
 
+    if( url != m_url.prettyURL() )
+        refetch()
 }
 
 void
