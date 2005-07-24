@@ -9,6 +9,7 @@
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
+#include "podcastsettings.h"
 #include "metabundle.h"
 #include "statusbar.h"
 #include "threadweaver.h"
@@ -956,6 +957,11 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
+    , m_autoScan( true )
+    , m_interval( 4 )
+    , m_mediaFetch( DOWNLOAD )
+    , m_purgeItems( false )
+    , m_purgeCount( 20 )
     , m_last( 0 )
 {
     setDragEnabled( true );
@@ -970,7 +976,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
-                                const KURL &url, QDomDocument xmlDefinition )
+                                const KURL &url, QDomNode channelSettings, QDomDocument xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
     , m_loading1( 0 )
@@ -984,11 +990,31 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
 {
     setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
 
+    m_autoScan   = ( channelSettings.namedItem( "autoscan").toElement().text() == "true" );
+    m_interval   =   channelSettings.namedItem( "scaninterval").toElement().text().toInt();
+
+    if( channelSettings.namedItem( "fetch").toElement().text() == "download" )
+        m_mediaFetch = DOWNLOAD;
+    else
+        m_mediaFetch = STREAM;
+
+    m_purgeItems = ( channelSettings.namedItem( "purge").toElement().text() == "true" );
+    m_purgeCount =   channelSettings.namedItem( "purgecount").toElement().text().toInt();
+
     setDragEnabled( true );
     setRenameEnabled( 0, false );
     setExpandable(true);
 
     setPixmap( 0, SmallIcon("player_playlist_2") );
+}
+
+void
+PodcastChannel::configure()
+{
+    PodcastSettings *settings = new PodcastSettings( m_url, m_autoScan, m_interval,
+                                                     m_mediaFetch, m_purgeItems, m_purgeCount );
+    settings->show();
+
 }
 
 void
@@ -1078,6 +1104,9 @@ PodcastChannel::setXml( QDomNode xml )
     m_cache.replace( " ", "_" );
     m_cache += "_" + m_url.fileName();
 
+    QString weblink = xml.namedItem( "link" ).toElement().text();
+    KURL m_link( weblink );
+
     QDomNode n = xml.namedItem( "item" );
 
     PodcastItem *updatingLast = 0;
@@ -1116,6 +1145,31 @@ PodcastChannel::xml()
 
         attr = doc.createElement( "cache" );
         t = doc.createTextNode( m_cache );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "autoscan" );
+        t = doc.createTextNode( m_autoScan ? "true" : "false" );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "scaninterval" );
+        t = doc.createTextNode( QString::number( m_interval ) );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "fetch" );
+        t = doc.createTextNode( ( m_mediaFetch == DOWNLOAD ) ? "download" : "stream" );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "purge" );
+        t = doc.createTextNode( m_purgeItems ? "true" : "false" );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
+        attr = doc.createElement( "purgecount" );
+        t = doc.createTextNode( QString::number( m_purgeCount ) );
         attr.appendChild( t );
         i.appendChild( attr );
 

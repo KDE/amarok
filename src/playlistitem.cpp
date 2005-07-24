@@ -417,22 +417,32 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
         fw += 2; //add some more padding
         if( stopafter )
         {
-            if( isCurrent )
-            {
-                static const QPixmap pix = amaroK::getPNG( "currenttrack_stop" );
-                p->drawPixmap( QRect( width - fw + 1, (height() - pix.height()) / 2, pix.width(), pix.height() ), pix );
-            }
-            else
-            {
-                static const QPixmap pix = amaroK::getPNG( "currenttrack_stop_small" );
-                p->drawPixmap( QRect( width - fw + 1, (height() - 8) / 2, 8, 8 ), pix );
-            }
-            fw = fw - currentWidth - 10;
+            static const QPixmap pix = amaroK::getPNG( "currenttrack_stop_small" );
+
+            uint top = (height() - 8) / 2;
+
+            if( repeatTrack )
+                 top = (height() - 16) / 2 - 1;
+
+            p->drawPixmap( QRect( width - fw + 1, top, 8, 8 ), pix );
+
+            if( !repeatTrack )
+                fw = fw - currentWidth - 10;
         }
         if( repeatTrack ) //only occurs on isCurrent
         {
-            static const QPixmap pix = amaroK::getPNG( "currenttrack_repeat" );
-            p->drawPixmap( QRect( width - fw + 1, (height() - pix.height()) / 2, pix.width(), pix.height() ), pix );
+            static const QPixmap pix = amaroK::getPNG( "currenttrack_repeat_small" );
+
+            uint top  = (height() - 8) / 2;
+            uint left = width - fw + 1;
+
+            if( stopafter )
+            {
+                 top  = (height() - 16) / 2 + 9;
+                 left = 0;
+            }
+
+            p->drawPixmap( QRect( left, top, 8, 8 ), pix );
             fw = fw - currentWidth - 10;
         }
         if( playNext )

@@ -90,6 +90,8 @@ amarokapp_SOURCES = \
     playlistloader.cpp \
     playlistwindow.cpp \
     pluginmanager.cpp \
+    podcastsettings.cpp \
+    podcastsettingsbase.ui \
     queuemanager.cpp \
     scriptmanager.cpp \
     scriptmanagerbase.ui \

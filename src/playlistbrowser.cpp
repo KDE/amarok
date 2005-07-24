@@ -820,7 +820,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
                 continue;
 
-            last = new PodcastChannel( p, last, url, xml );
+            last = new PodcastChannel( p, last, url, n, xml );
         }
         return p;
     }
@@ -1704,12 +1704,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastChannel( item ) ) {
         #define item static_cast<PodcastChannel*>(item)
-        enum Actions { LOAD, ADD, REMOVE, RESCAN };
+        enum Actions { LOAD, ADD, REMOVE, RESCAN, CONFIG };
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
-        menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
-        menu.insertSeparator();
         menu.insertItem( SmallIconSet( "edittrash" ), i18n( "R&emove" ), REMOVE );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
+        menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure" ), CONFIG );
+
 
         switch( menu.exec( p ) )
         {
@@ -1735,6 +1737,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case REMOVE:
                 removeSelectedItems();
+                break;
+
+            case CONFIG:
+                item->configure();
                 break;
         }
         #undef item

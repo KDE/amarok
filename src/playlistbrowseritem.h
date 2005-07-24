@@ -245,11 +245,13 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
     public:
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, QDomDocument xml );
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
+                        QDomNode channelSettings, QDomDocument xml );
 
         void setNew( bool n = true );
         bool hasNew() { return m_new; }
 
+        void  configure();
         void  fetch();
         void  rescan();
         const KURL &url() { return m_url; }
@@ -266,11 +268,14 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void slotAnimation();
 
     private:
+        enum MediaFetch{ STREAM=0, DOWNLOAD=1 };
+
         bool containsItem( QDomElement xml );
         void startAnimation();
         void stopAnimation();
 
         KURL        m_url;                         //xml url
+        KURL        m_link;                        //webpage
         QString     m_title;
         QString     m_cache;                       //filename for caching
         QString     m_description;
@@ -283,6 +288,14 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         QTimer     *m_animationTimer;
         bool        m_new;
         bool        m_hasProblem;
+
+        // Configuration
+        bool        m_autoScan;
+        int         m_interval;                     //how many hours to wait b/w scans
+        int         m_mediaFetch;                   //Download or stream?
+        bool        m_purgeItems;
+        int         m_purgeCount;
+
 
         PodcastItem         *m_last;
         KIO::TransferJob    *m_podcastJob;
