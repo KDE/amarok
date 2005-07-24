@@ -95,7 +95,7 @@ PodcastSettings::accept()       //slot
 {
     pushButton_ok->setEnabled( false ); //visual feedback
 
-    m_url             = KURL( m_urlLine->text() );
+    m_url             = KURL::fromPathOrURL( m_urlLine->text() );
     m_autoScan        = m_autoFetchCheck->isChecked();
     m_interval        = m_intervalSpinBox->value();
     m_purge           = m_purgeCheck->isChecked();

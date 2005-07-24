@@ -680,7 +680,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, QDomEleme
 
     m_title = xmlDefinition.attribute( "name" );
     QDomElement e = xmlDefinition.namedItem( "url" ).toElement();
-    m_url  = KURL::KURL( e.text() );
+    m_url  = KURL::fromPathOrURL( e.text() );
 
 
     if( m_title.isEmpty() )
@@ -1269,7 +1269,8 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
     m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
     m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
     const QString url   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
-    m_url = KURL::KURL( url );
+
+    m_url = KURL::fromPathOrURL( url );
 
     setText( 0, m_title );
     setPixmap( 0, SmallIcon("player_playlist_2") );
