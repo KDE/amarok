@@ -92,6 +92,8 @@ k_dcop:
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual QString setContextStyle(const QString& ) =0;     ///< Set the CSS style for the context browser
    virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;      ///< Set the equalizer bands
+   virtual void transferDeviceFiles() = 0;              ///<Transfer files to media device.
+   virtual void queueForTransfer( KURL url ) = 0; ///<Queue file for transfer to Media Device.
 
    virtual void transferCliArgs( QStringList args ) = 0;
 };

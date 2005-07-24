@@ -25,6 +25,7 @@
 #include "engine/enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
+#include "mediabrowser.h"
 #include "osd.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -322,6 +323,17 @@ namespace amaroK
     void DcopPlayerHandler::showOSD()
     {
         amaroK::OSD::instance()->forceToggleOSD();
+    }
+
+    void DcopPlayerHandler::queueForTransfer( KURL url )
+    {
+        MediaDevice::instance()->addURL( url );
+    }
+
+
+    void DcopPlayerHandler::transferDeviceFiles()
+    {
+        MediaDevice::instance()->transferFiles();
     }
 
     void DcopPlayerHandler::transferCliArgs( QStringList args )
