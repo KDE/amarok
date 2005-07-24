@@ -271,6 +271,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         enum MediaFetch{ STREAM=0, DOWNLOAD=1 };
 
         bool containsItem( QDomElement xml );
+        void purge();
         void startAnimation();
         void stopAnimation();
 
@@ -288,6 +289,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         QTimer     *m_animationTimer;
         bool        m_new;
         bool        m_hasProblem;
+        bool        m_dirtyFeed;
 
         // Configuration
         bool        m_autoScan;

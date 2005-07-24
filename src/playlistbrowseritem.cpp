@@ -957,6 +957,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
+    , m_dirtyFeed( false )
     , m_autoScan( true )
     , m_interval( 4 )
     , m_mediaFetch( DOWNLOAD )
@@ -986,6 +987,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
+    , m_dirtyFeed( false )
     , m_last( 0 )
 {
     setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
@@ -1012,8 +1014,6 @@ void
 PodcastChannel::configure()
 {
     QString url    = m_url.prettyURL();
-    bool purge     = m_purgeItems;
-    int purgeCount = m_purgeCount;
 
     PodcastSettings *settings = new PodcastSettings( m_url, m_autoScan, m_interval,
                                                      m_mediaFetch, m_purgeItems, m_purgeCount );
@@ -1021,12 +1021,16 @@ PodcastChannel::configure()
     settings->show();
 
     if( url != m_url.prettyURL() )
-        refetch()
+    {
+        m_dirtyFeed = true;
+        fetch();
+    }
 }
 
 void
 PodcastChannel::fetch()
 {
+    setText(0, i18n( "Retrieving Podcast..." ) );
     m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
     m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
     m_animationTimer = new QTimer();
@@ -1119,22 +1123,64 @@ PodcastChannel::setXml( QDomNode xml )
     PodcastItem *updatingLast = 0;
     PodcastItem *first = (PodcastItem *)firstChild();
 
+    if( m_dirtyFeed )
+    {
+        QListViewItem *child, *next;
+        if ( (child = firstChild()) )
+        {
+            while ( (next = child->nextSibling()) )
+            {
+                delete child;
+                child=next;
+            }
+            delete child;
+        }
+        m_dirtyFeed = false;
+        first = 0;
+    }
+
     for( ; !n.isNull(); n = n.nextSibling() )
     {
         if( m_updating )
         {
-            if( first->hasXml( n ) )        // podcasts get inserted in a chronological order,
-                break;                          // no need to continue traversing, we must have them already
+            // podcasts get inserted in a chronological order,
+            // no need to continue traversing, we must have them already
+            if( first && first->hasXml( n ) )
+                break;
             updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
             updatingLast->setNew();
         }
         else
             m_last = new PodcastItem( this, m_last, n.toElement() );
+
     }
+
+    if( childCount() > m_purgeCount )
+        purge();
+
     if( static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
         setNew();
         amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved") );
+    }
+}
+
+//maintain max items property
+void
+PodcastChannel::purge()
+{
+    uint removeCount = childCount() - m_purgeCount;
+
+    for( uint i=0; i < removeCount; i++ )
+    {
+        PodcastItem *newLast = 0;
+
+        if( m_last && m_last != firstChild() )
+            newLast = (PodcastItem *)m_last->itemAbove();
+
+
+        delete m_last;
+        m_last = newLast;
     }
 }
 
