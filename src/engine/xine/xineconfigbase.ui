@@ -23,15 +23,22 @@
             <property name="name">
                 <cstring>xineLogo</cstring>
             </property>
-            <property name="paletteBackgroundColor">
+            <property name="paletteForegroundColor">
                 <color>
                     <red>0</red>
                     <green>0</green>
                     <blue>0</blue>
                 </color>
             </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
             <property name="frameShape">
-                <enum>Box</enum>
+                <enum>StyledPanel</enum>
             </property>
             <property name="frameShadow">
                 <enum>Raised</enum>
@@ -206,8 +213,14 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <includes>
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcombobox.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
 </UI>

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>239</width>
-            <height>249</height>
+            <width>438</width>
+            <height>284</height>
         </rect>
     </property>
     <property name="caption">
@@ -34,7 +34,7 @@
                 </color>
             </property>
             <property name="frameShape">
-                <enum>Box</enum>
+                <enum>StyledPanel</enum>
             </property>
             <property name="frameShadow">
                 <enum>Raised</enum>
@@ -308,6 +308,9 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>klineedit.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>
