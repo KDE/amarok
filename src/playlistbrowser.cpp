@@ -849,7 +849,7 @@ void PlaylistBrowser::savePodcasts()
 void PlaylistBrowser::addPodcast( QListViewItem *parent )
 {
     bool ok;
-    const QString name = KInputDialog::getText(i18n("Add Podcast"), i18n("Enter podcast URL:"), QString::null, &ok, this);
+    const QString name = KInputDialog::getText(i18n("Add Podcast"), i18n("Enter Podcast URL:"), QString::null, &ok, this);
 
     if( ok && !name.isEmpty() )
     {
