@@ -41,15 +41,28 @@
 #include <kstandarddirs.h>     //KGlobal::dirs()
 #include <kurldrag.h>          //dragObject()
 
-#include <stdio.h>             //rename() in renamePlaylist()
+#include <cstdio>              //rename() in renamePlaylist()
+
+
+inline QString
+fileExtension( const QString &fileName )
+{
+    return amaroK::extension( fileName );
+}
+
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
+
 static inline bool isDynamicEnabled() { return AmarokConfig::dynamicMode(); }
+
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
-        , m_smartCategory (0)
+        , m_smartCategory( 0 )
+        , m_polished( false )
+        , m_smartDefaults( 0 )
+        , m_coolStreams( 0 )
 {
     s_instance = this;
 
@@ -115,8 +128,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_listview = new PlaylistBrowserView( browserBox );
 
-    KConfig *config = kapp->config();
-    config->setGroup( "PlaylistBrowser" );
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
     m_viewMode = (ViewMode)config->readNumEntry( "View", LISTVIEW );  //restore the view mode
     viewMenu->setItemChecked( m_viewMode, true );
     m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
@@ -135,9 +147,21 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
              this,         SLOT( currentItemChanged( QListViewItem * ) ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
+}
 
-    m_smartDefaults = 0;
-    m_coolStreams   = 0;
+void
+PlaylistBrowser::polish()
+{
+    // we make startup faster by doing the slow bits for this
+    // only when we are shown on screen
+
+    DEBUG_BLOCK
+
+    QVBox::polish();
+
+    m_polished = true;
+
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
 
     m_playlistCategory = loadPlaylists();
     m_streamsCategory  = loadStreams();
@@ -192,6 +216,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
 PlaylistBrowser::~PlaylistBrowser()
 {
+    if( !m_polished )
+       return;
+
     // <markey> Not sure if these calls are still needed, now that we're saving
     //          the state after each change.
     savePlaylists();
@@ -949,6 +976,9 @@ void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool for
 {
     // this function adds a playlist to the playlist browser
 
+    if( !m_polished )
+       polish();
+
     QFile file( path );
     if( !file.exists() ) return;
 
@@ -1271,7 +1301,7 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
         QString oldPath = item->url().path();
         QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
 
-        if ( rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
+        if ( std::rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
             KMessageBox::error( this, i18n("Error renaming the file.") );
         else
             item->setUrl( newPath );

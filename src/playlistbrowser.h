@@ -89,6 +89,10 @@ class PlaylistBrowser : public QVBox
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
     private:
+        void polish();
+
+        bool m_polished;
+
         PlaylistCategory* loadStreams();
         void loadCoolStreams();
         void saveStreams();
@@ -258,12 +262,6 @@ fileBaseName( const QString &filePath )
     // (e.g. if the file path is "/home/user/playlist.m3u", "playlist" is returned
     QString fileName = filePath.right( filePath.length() - filePath.findRev( '/' ) - 1 );
     return fileName.mid( 0, fileName.findRev( '.' ) );
-}
-
-inline QString
-fileExtension( const QString &fileName )
-{
-    return fileName.right( 4 );
 }
 
 inline QString
