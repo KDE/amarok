@@ -442,7 +442,6 @@ const Engine::Scope &HelixEngine::scope()
    }
    //
    // this bit is to help us keep more accurate time than helix provides
-   // our metronome
    /////////////////////////////////////////////////////////////////////
    unsigned long w;
    unsigned long hpos = position();

@@ -16,6 +16,10 @@
 #ifndef _HSPHOOK_H_INCLUDED_
 #define _HSPHOOK_H_INCLUDED_
 
+#ifndef HELIX_SW_VOLUME_INTERFACE
+struct GAIN_STATE;
+#endif
+
 class HSPPreMixAudioHook : public IHXAudioHook
 {
 public:
@@ -99,12 +103,23 @@ public:
 
    void updateEQgains(int preamp, vector<int> &equalizerGains);
 
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   void setGain(int volume);
+#endif
+
 private:
    HSPPostMixAudioHook();
 
    void scopeify(unsigned long time, unsigned char *data, size_t len);
    void equalize(unsigned char *datain, unsigned char *dataout, size_t len);
-   void volumeize(unsigned char *data, size_t len);
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   int volumeize(unsigned char *data, size_t len);
+   int volumeize(unsigned char *data, unsigned char *outbuf, size_t len);
+   // returns samples (not bytes)
+   int unpack(unsigned char *data, size_t len, /*out*/ INT32 *signal);
+   // returns bytes (siglen is in samples)
+   int pack(INT32 *signal, size_t siglen, /*out*/ unsigned char *data);
+#endif
 
    HelixSimplePlayer *m_Player;
    LONG32             m_lRefCount;
@@ -133,6 +148,11 @@ private:
    int                m_j;
    int                m_k;
 
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   // volume stuff
+   GAIN_STATE        *m_gaintool;
+   float              m_gaindB;
+#endif
 };
 
 

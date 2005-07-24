@@ -24,7 +24,9 @@
 #include "hxausvc.h"
 #include "print.h"
 #include "helix-sp.h"
-
+#ifndef HELIX_SW_VOLUME_INTERFACE
+#include "gain.h"
+#endif
 #include "hsphook.h"
 
 #define SCOPE_BUF_PER_BLOCK 8
@@ -77,7 +79,7 @@ HSPPreMixAudioHook::Release()
     return 0;
 }
 
-STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData *pAudioOutData)
+STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData */*pAudioOutData*/)
 {
    m_count++;
 
@@ -141,7 +143,11 @@ STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) : 
-   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_item(0), m_current(0), m_prevtime(0), m_i(0), m_j(2), m_k(1)
+   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_item(0), 
+   m_current(0), m_prevtime(0), m_i(0), m_j(2), m_k(1)
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   , m_gaintool(0), m_gaindB(0.0)
+#endif
 {
    AddRef();
    memset(&m_format, 0, sizeof(m_format));
@@ -149,6 +155,10 @@ HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIn
 
 HSPPostMixAudioHook::~HSPPostMixAudioHook()
 {
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   if (m_gaintool)
+      gainFree(m_gaintool);
+#endif
 }
 
 STDMETHODIMP
@@ -221,8 +231,38 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
    }
 #endif
 
+   // feed the visualizations
    scopeify(pAudioInData->ulAudioTime, data, len);
 
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   unsigned char *outbuf;
+   IHXBuffer *ibuf;
+
+   m_Player->pCommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+   if (ibuf)
+   {
+      ibuf->SetSize(len);
+      outbuf = ibuf->GetBuffer();
+
+      // equalize
+      if (m_Player->ppctrl[m_index]->volume && m_Player->isEQenabled() && m_format.uBitsPerSample == 16)
+      {
+         equalize(data, outbuf, len);
+
+         // finally adjust the volume
+         len = volumeize(outbuf, len);
+      }
+      else
+         // finally adjust the volume
+         len = volumeize(data, outbuf, len);
+
+
+      pAudioOutData->pData = ibuf;
+      pAudioOutData->ulAudioTime = pAudioInData->ulAudioTime;
+      pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
+   }
+#else
+   // equalize
    if (m_Player->ppctrl[m_index]->volume && m_Player->isEQenabled() && m_format.uBitsPerSample == 16)
    {
       unsigned char *outbuf;
@@ -239,6 +279,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
          pAudioOutData->uAudioStreamType = pAudioInData->uAudioStreamType;
       }
    }
+#endif
 
    return 0;
 }
@@ -277,8 +318,39 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
    m_j = 2;
    m_k = 1;
 
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+   // setup the gain tool for volume
+   if (m_gaintool)
+      gainFree(m_gaintool);
+
+   int bps = pFormat->uBitsPerSample / 8;
+   m_gaintool = gainInit(pFormat->ulSamplesPerSec, pFormat->uChannels, bps);
+   setGain(m_Player->ppctrl[m_index]->volume);
+#endif
+
    return 0;
 }
+
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+void HSPPostMixAudioHook::setGain(int volume)
+{
+   if (m_gaintool)
+   {
+      if (volume == 0)
+         gainSetMute(m_gaintool);
+      else
+      {
+         //m_gaindB = GAIN_MIN_dB + (GAIN_MAX_dB - GAIN_MIN_dB) * (float) volume / 100.0;
+         //STDERR("GAIN set to %f\n", m_gaindB);
+         //gainSetImmediatedB(m_gaindB, m_gaintool);
+
+         gainSetImmediate( (float) volume / 100.0, m_gaintool );
+      }
+   }
+}
+#endif
 
 
 void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size_t len)
@@ -422,3 +494,26 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
    }/* For each pair of samples */
 }
 
+
+#ifndef HELIX_SW_VOLUME_INTERFACE
+int HSPPostMixAudioHook::volumeize(unsigned char *data, size_t len)
+{
+   INT32 signal[ len + 1 ]; // cant be any bigger than that, after all
+   int samples;
+
+   gainFeed(data, data, len, m_gaintool);
+
+   return len;
+}
+
+
+int HSPPostMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
+{
+   INT32 signal[ len + 1 ]; // cant be any bigger than that, after all
+   int samples;
+
+   gainFeed(data, outbuf, len, m_gaintool);
+
+   return len;
+}
+#endif

@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/ \
     -I$(srcdir)/helix-include/runtime \
+    -I$(srcdir)/helix-include/audio/fixptutil \
     -I$(srcdir)/helix-include/common/include \
     -I$(srcdir)/helix-include/client/include \
     -I$(srcdir)/helix-include/common/container \
@@ -24,6 +25,7 @@ libhelix_sp_la_SOURCES = \
     iids.cpp \
     print.cpp \
     utils.cpp \
+    gain.cpp \
     helix-sp.cpp
 
 METASOURCES = \

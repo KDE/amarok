@@ -205,9 +205,11 @@ STDMETHODIMP_(ULONG32) HelixSimplePlayerVolumeAdvice::Release()
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 {
-   //STDERR("Volume change: %d\n", uVolume);
+   STDERR("Volume change: %d\n", uVolume);
    m_Player->onVolumeChange(m_index);
+#ifdef HELIX_SW_VOLUME_INTERFACE
    m_Player->ppctrl[m_index]->volume = uVolume;
+#endif
    return HXR_OK;
 }
 
@@ -606,8 +608,13 @@ int HelixSimplePlayer::addPlayer()
          HelixSimplePlayerVolumeAdvice *pVA = new HelixSimplePlayerVolumeAdvice(this, nNumPlayers);
          ppctrl[nNumPlayers]->pVolume->AddAdviseSink((IHXVolumeAdviseSink *)pVA);
          ppctrl[nNumPlayers]->pVolumeAdvise = pVA;
-
+#ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[nNumPlayers]->volume = 50; // should get volume advise, which will set this properly
+#else
+         // set the helix sw interface volume to 100, we'll control the volume either ourselves post equalization or by
+         // amaorok using direct hardware volume
+         ppctrl[nNumPlayers]->pVolume->SetVolume(100);
+#endif
       }
 
       // add the IHXAudioStreamInfoResponse it the AudioPlayer
@@ -1232,7 +1239,15 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
       if (playerIndex < nNumPlayers)
       {
          pthread_mutex_lock(&m_engine_m);
+#ifndef HELIX_SW_VOLUME_INTERFACE
+         ppctrl[playerIndex]->volume = vol;
+#ifndef TEST_APP
+         STDERR("setVolume to %d\n", vol);
+         ((HSPPostMixAudioHook *)ppctrl[playerIndex]->pPostMixHook)->setGain(vol);
+#endif
+#else
          ppctrl[playerIndex]->pVolume->SetVolume(vol);
+#endif
          pthread_mutex_unlock(&m_engine_m);
       }
 }
