@@ -213,14 +213,8 @@
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <includes>
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kcombobox.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
 </UI>
