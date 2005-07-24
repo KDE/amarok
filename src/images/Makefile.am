@@ -18,6 +18,7 @@ images_DATA = \
     currenttrack_stop.png \
     currenttrack_stop_small.png \
     currenttrack_repeat.png \
+    currenttrack_repeat_small.png \
     description.png \
     eq_active2.png \
     eq_inactive2.png \
