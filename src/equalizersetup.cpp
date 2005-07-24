@@ -166,11 +166,11 @@ EqualizerSetup::presetsCache() const
 void
 EqualizerSetup::loadPresets()
 {
-    m_presetPopup->insertItem( i18n("Save"), 0 );
-    m_presetPopup->insertSeparator();
-    m_totalPresets++;
+//     m_presetPopup->insertItem( i18n("Save"), 0 );
+//     m_presetPopup->insertSeparator();
+//     m_totalPresets++;
 
-    KPopupMenu *m_presetDefaultPopup = new KPopupMenu( this );
+//     KPopupMenu *m_presetDefaultPopup = new KPopupMenu( this );
 
 
     QFile file( locate( "data","amarok/data/equalizer_presets.xml" ) );
@@ -202,11 +202,11 @@ EqualizerSetup::loadPresets()
         gains << e.namedItem( "b9" ).toElement().text().toInt();
 
         m_presets[ m_totalPresets ] = gains;
-        m_presetDefaultPopup->insertItem( title, m_totalPresets );
+        m_presetPopup->insertItem( title, m_totalPresets );
     }
-    m_presetPopup->insertItem( "Defaults", m_presetDefaultPopup );
+//     m_presetPopup->insertItem( "Defaults", m_presetDefaultPopup );
 
-    connect( m_presetDefaultPopup, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
+//     connect( m_presetDefaultPopup, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
 }
 
 
