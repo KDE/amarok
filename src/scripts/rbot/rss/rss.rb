@@ -79,7 +79,7 @@ class RSSFeedsPlugin < Plugin
     end
 
     def help(plugin,topic="")
-        "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed, watchrss url [type] => watch a rss feed for changes (type may be 'amarokblog', 'amarokforum', 'mediawiki', 'gmame' or empty - it defines special formatting of feed items), rewatch => restart all rss watches, rmwatch url => stop watching for changes in url"
+        "RSS Reader: rss name [limit] => read a named feed [limit maximum posts, default 5], addrss [force] name url => add a feed, listrss => list all available feeds, rmrss name => remove the named feed, watchrss url [type] => watch a rss feed for changes (type may be 'amarokblog', 'amarokforum', 'mediawiki', 'gmame' or empty - it defines special formatting of feed items), rewatch => restart all rss watches, rmwatch url => stop watching for changes in url, listwatches => see a list of watched feeds"
     end
 
     def privmsg(m)
@@ -101,14 +101,21 @@ class RSSFeedsPlugin < Plugin
             end
             m.params.gsub!(/\s+\d+$/, '')
         end
-        unless @feeds.has_key?(m.params)
-            m.reply(m.params + "? what is that feed about?")
-            return
-        end
+	
+	url = ''
+	if m.params =~ /^http:\/\//
+	    url = m.params
+	else
+    	    unless @feeds.has_key?(m.params)
+        	m.reply(m.params + "? what is that feed about?")
+        	return
+    	    end
+	    url = @feeds[m.params]
+	end
 
         m.reply("Please wait, querying...")
         title = ''
-        items = fetchRSS(m.replyto, @feeds[m.params], title)
+        items = fetchRSS(m.replyto, url, title)
         if(items == nil)
             return
         end
