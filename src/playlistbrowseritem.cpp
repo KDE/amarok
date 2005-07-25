@@ -1147,11 +1147,22 @@ PodcastChannel::setXml( QDomNode xml )
             // no need to continue traversing, we must have them already
             if( first && first->hasXml( n ) )
                 break;
-            updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
-            updatingLast->setNew();
+
+            if( !n.namedItem( "title" ).toElement().text().isEmpty() &&
+                !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            {
+                updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
+                updatingLast->setNew();
+            }
         }
         else
-            m_last = new PodcastItem( this, m_last, n.toElement() );
+        {
+            if( !n.namedItem( "title" ).toElement().text().isEmpty() &&
+                !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            {
+                m_last = new PodcastItem( this, m_last, n.toElement() );
+            }
+        }
 
     }
 
