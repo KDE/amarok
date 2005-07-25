@@ -16,14 +16,25 @@ file = File.new( "src/pluginmanager.h", File::RDWR )
 str = file.read()
 file.rewind()
 temp = str.scan( /static const int FrameworkVersion = [0-9]*;/ )
-version = temp.join().scan( /[0-9]*/ ).join().to_i()
-version = version + 1
+@version = temp.join().scan( /[0-9]*/ ).join().to_i()
+@version = @version + 1
 
-print "Bumping the plugin framework version to: #{version}"
+print "Bumping the plugin framework version to: #{@version}"
 
-str.sub!( /static const int FrameworkVersion = [0-9]*;/, "static const int FrameworkVersion = #{version};" )
+str.sub!( /static const int FrameworkVersion = [0-9]*;/, "static const int FrameworkVersion = #{@version};" )
 file << str
 file.close()
+
+
+# Bump engine desktop files
+print "\n"
+Dir.chdir( "src" )
+Dir.foreach( "engine" ) do |x|
+    next if x[0, 1] == "."
+    if FileTest.directory?( "engine/#{x}" )
+        print x + "\n"
+    end
+end
 
 
 print "\n"
