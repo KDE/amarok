@@ -156,7 +156,8 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
          m_store[x] = y;
 
       // if y is lower than m_fade_pos, then the bar has exceeded the height of the fadeout
-      if( y <= m_fade_pos[x] ) {
+      // if the fadeout is quite faded now, then display the new one
+      if( y <= m_fade_pos[x] /*|| m_fade_intensity[x] < FADE_SIZE / 3*/ ) {
          m_fade_pos[x] = y;
          m_fade_intensity[x] = FADE_SIZE;
       }
@@ -185,7 +186,8 @@ BlockAnalyzer::analyze( const Analyzer::Scope &s )
 static inline void
 adjustToLimits( int &b, int &f, uint &amount )
 {
-    // try to acheive a maximum difference to the two values
+    // with a range of 0-255 and maximum adjustment of amount,
+    // maximise the difference between f and b
 
     if( b < f ) {
         if( b > 255 - f ) {
@@ -227,7 +229,9 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
     // hack so I don't have to cast everywhere
     #define amount static_cast<int>(_amount)
-    #define STAMP debug() << "  " << __LINE__ << ": " << (QValueList<int>() << fh << fs << fv) << endl;
+    #define STAMP debug() << (QValueList<int>() << fh << fs << fv) << endl;
+    #define STAMP1( string ) debug() << string << ": " << (QValueList<int>() << fh << fs << fv) << endl;
+    #define STAMP2( string, value ) debug() << string << "=" << value << ": " << (QValueList<int>() << fh << fs << fv) << endl;
 
     DEBUG_BLOCK
     OutputOnExit allocateOnTheStack( fg );
@@ -243,24 +247,24 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
     int dv = abs( bv - fv );
 
-    STAMP
+    STAMP2( "DV", dv );
 
     // value is the best measure of contrast
     // if there is enough difference in value already, return fg unchanged
     if( dv > amount )
         return fg;
 
-    STAMP
-
     int ds = abs( bs - fs );
+
+    STAMP2( "DS", ds );
 
     // saturation is good enough too. But not as good. TODO adapt this a little
     if( ds > amount )
         return fg;
 
-    STAMP
-
     int dh = abs( bh - fh );
+
+    STAMP2( "DH", dh );
 
     if( dh > 120 ) {
         // a third of the colour wheel automatically guarentees contrast
@@ -270,24 +274,32 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
         // check the saturation for the two colours is sufficient that hue alone can
         // provide sufficient contrast
         if( ds > amount / 2 && (bs > 125 && fs > 125) ) {
-            STAMP
+            STAMP1( "Sufficient saturation difference, and hues are compliemtary" );
             return fg; }
         else if( dv > amount / 2 && (bv > 125 && fv > 125) ) {
-            STAMP
+            STAMP1( "Sufficient value difference, and hues are compliemtary" );
             return fg; }
 
-        STAMP
+        STAMP1( "Hues are complimentary but we must modify the value or saturation of the contrasting colour" );
 
         //but either the colours are two desaturated, or too dark
         //so we need to adjust the system, although not as much
-        _amount /= 2;
+        ///_amount /= 2;
+    }
+
+    if( fs < 50 && ds < 40 ) {
+       // low saturation on a low saturation is sad
+       const int tmp = 50 - fs;
+       fs = 50;
+       if( amount > tmp )
+          _amount -= tmp;
+       else
+          _amount = 0;
     }
 
     // test that there is available value to honour our contrast requirement
     if( 255 - dv < amount )
     {
-        STAMP
-
         // we have to modify the value and saturation of fg
         //adjustToLimits( bv, fv, amount );
 
