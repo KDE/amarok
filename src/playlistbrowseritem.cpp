@@ -1118,8 +1118,6 @@ PodcastChannel::setXml( QDomNode xml )
     QString weblink = xml.namedItem( "link" ).toElement().text();
     KURL m_link( weblink );
 
-    QDomNode n = xml.namedItem( "item" );
-
     PodcastItem *updatingLast = 0;
     PodcastItem *first = (PodcastItem *)firstChild();
 
@@ -1138,6 +1136,8 @@ PodcastChannel::setXml( QDomNode xml )
         m_dirtyFeed = false;
         first = 0;
     }
+
+    QDomNode n = xml.namedItem( "item" );
 
     for( ; !n.isNull(); n = n.nextSibling() )
     {

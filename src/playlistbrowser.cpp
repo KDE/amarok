@@ -1263,29 +1263,30 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
     QListViewItem *item = m_listview->currentItem();
     if( !item ) return;
 
-    if( isCategory( item ) )
+    if( isCategory( item ) && static_cast<PlaylistCategory*>(item)->isFolder() )
     {
-        if( static_cast<PlaylistCategory*>(item)->isFolder() )
+        if( item == m_coolStreams || item == m_smartDefaults )
+            return;
+
+        item->setRenameEnabled( 0, true );
+        m_listview->rename( item, 0 );
+    }
+
+    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) || isDynamic( item ) )
+    {
+        QListViewItem *parent = item->parent();
+
+        while( parent )
         {
-            if( item == m_coolStreams || item == m_smartDefaults )
-                return;
-
-            QListViewItem *parent = item->parent();
-
-            while( parent->parent() || parent == m_coolStreams || parent == m_smartDefaults )
-                parent = parent->parent();
-
             if( parent == m_coolStreams || parent == m_smartDefaults )
                 return;
 
-            if( !static_cast<PlaylistCategory*>(item)->isFolder() )
-                return;
+            if( !parent->parent() )
+                break;
 
-            item->setRenameEnabled( 0, true );
-            m_listview->rename( item, 0 );
+            parent = parent->parent();
         }
-    }
-    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) || isDynamic( item ) ) {
+
         item->setRenameEnabled( 0, true );
         m_listview->rename( item, 0 );
     }
@@ -1860,7 +1861,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 uint c=0;
                 for(  ; isCategory( tracker ); tracker = tracker->nextSibling() )
                 {
-                    if( tracker->text(0).startsWith("Folder") )
+                    if( tracker->text(0).startsWith( i18n("Folder") ) )
                         c++;
                     if( !isCategory( tracker->nextSibling() ) )
                         break;
