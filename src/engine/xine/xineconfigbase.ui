@@ -43,6 +43,9 @@
             <property name="frameShadow">
                 <enum>Raised</enum>
             </property>
+            <property name="margin">
+                <number>1</number>
+            </property>
             <property name="text">
                 <string></string>
             </property>
