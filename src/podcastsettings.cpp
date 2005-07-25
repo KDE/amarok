@@ -5,6 +5,7 @@
 
 #include <klineedit.h>
 #include <knuminput.h>
+#include <kwin.h>
 
 #include <qcheckbox.h>
 #include <qpushbutton.h>
@@ -20,6 +21,10 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
 {
+    // Gives the window a small title bar, and skips a taskbar entry
+    KWin::setType( winId(), NET::Utility );
+    KWin::setState( winId(), NET::SkipTaskbar );
+
     m_urlLine->setText( url.prettyURL() );
     m_autoFetchCheck->setChecked( autoScan );
     m_intervalSpinBox->setValue( interval );
