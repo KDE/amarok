@@ -59,10 +59,10 @@ static inline bool isDynamicEnabled() { return AmarokConfig::dynamicMode(); }
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
-        , m_smartCategory( 0 )
         , m_polished( false )
-        , m_smartDefaults( 0 )
+        , m_smartCategory( 0 )
         , m_coolStreams( 0 )
+        , m_smartDefaults( 0 )
 {
     s_instance = this;
 
@@ -1788,7 +1788,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, PODCAST, FOLDER };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, PODCAST, REFRESH };
 
         QListViewItem *parentCat = item;
 
@@ -1813,7 +1813,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
+        {
+            menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
+            menu.insertSeparator();
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
+
+        }
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
@@ -1840,6 +1845,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case PODCAST:
                 addPodcast( item );
+                break;
+
+            case REFRESH:
+                PodcastChannel *child = (PodcastChannel*)item->firstChild();
+                for( ; child; child = (PodcastChannel*)child->nextSibling() )
+                {
+                    child->rescan();
+                }
                 break;
 
             case CREATE:
