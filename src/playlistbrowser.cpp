@@ -1823,6 +1823,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
+        PodcastChannel *child = 0;
+
         switch( menu.exec( p ) ) {
             case RENAME:
                 renameSelectedItem();
@@ -1849,7 +1851,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case REFRESH:
-                PodcastChannel *child = (PodcastChannel*)item->firstChild();
+                child = (PodcastChannel*)item->firstChild();
                 for( ; child; child = (PodcastChannel*)child->nextSibling() )
                 {
                     child->rescan();
