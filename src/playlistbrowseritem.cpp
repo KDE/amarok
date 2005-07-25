@@ -1055,6 +1055,12 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     if ( !job->error() == 0 ) {
         amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server" ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
+
+        if( !m_title )
+            setText( 0, m_url.prettyURL() );
+
+        setPixmap( 0, SmallIcon("cancel") );
+
         return;
     }
 
@@ -1065,7 +1071,10 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     if( !d.setContent( xml ) )
     {
         amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data") );
-        setText( 0, m_url.prettyURL() );
+
+        if( !m_title )
+            setText( 0, m_url.prettyURL() );
+
         setPixmap( 0, SmallIcon("cancel") );
         return;
     }
