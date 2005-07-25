@@ -80,6 +80,7 @@ Q_OBJECT
     private:
         /** All data structures with m_xine initiated **/
         void init();
+        void showHidePluginConfigs() const;
         xine_t *m_xine;
         QPtrList<XineGeneralEntry> m_entries;
         XineConfigBase* m_view;

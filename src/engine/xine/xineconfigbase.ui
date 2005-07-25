@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>418</width>
-            <height>349</height>
+            <height>535</height>
         </rect>
     </property>
     <property name="caption">
@@ -57,11 +57,11 @@
             <property name="name">
                 <cstring>layout2</cstring>
             </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>textLabel2</cstring>
                     </property>
@@ -69,64 +69,122 @@
                         <string>Output Plugin</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="2" column="1">
+                <widget class="KComboBox">
                     <property name="name">
-                        <cstring>deviceLineEdit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
+                        <cstring>deviceComboBox</cstring>
                     </property>
                 </widget>
-                <widget class="QCheckBox" row="2" column="0">
+            </hbox>
+        </widget>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel3</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="text">
+                <string>You may select which audio device to use when the OSS or ALSA output plugins are selected.</string>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>alsaGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>ALSA Device Configuration</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>deviceCheckBox</cstring>
+                        <cstring>textLabel2_3</cstring>
                     </property>
-                    <property name="enabled">
-                        <bool>false</bool>
+                    <property name="text">
+                        <string>Mono</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel3_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Stereo</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel4_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>4 Channel</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>monoLineEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>stereoLineEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>chan4LineEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>chan5Label</cstring>
+                    </property>
+                    <property name="text">
+                        <string>5 Channel</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="4" column="1">
+                    <property name="name">
+                        <cstring>chan5LineEdit</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>ossGroupBox</cstring>
+            </property>
+            <property name="title">
+                <string>OSS Device Configuration</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
                         <string>Device</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+                <widget class="QLineEdit">
                     <property name="name">
-                        <cstring>textLabel3</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>1</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>You may select which audio device to use when the OSS or ALSA output plugins are selected.</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
+                        <cstring>ossDeviceLineEdit</cstring>
                     </property>
                 </widget>
-                <widget class="KComboBox" row="0" column="1">
-                    <property name="name">
-                        <cstring>deviceComboBox</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
+            </hbox>
         </widget>
         <widget class="QGroupBox">
             <property name="name">
@@ -210,7 +268,7 @@
             <property name="sizeHint">
                 <size>
                     <width>250</width>
-                    <height>31</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
@@ -220,4 +278,8 @@
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kcombobox.h</includehint>
+    <includehint>knuminput.h</includehint>
+</includehints>
 </UI>

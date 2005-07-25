@@ -12,6 +12,11 @@
             <whatsthis>Select the sound output plugin.</whatsthis>
             <default>auto</default>
         </entry>
+        <entry key="Custom Device" type="Bool">
+            <label>Enable a custom device</label>
+            <whatsthis>If selected, enables the setting of a custom audio device. Otherwise the default is used.</whatsthis>
+            <default>false</default>
+        </entry>
     </group>
 
 </kcfg>

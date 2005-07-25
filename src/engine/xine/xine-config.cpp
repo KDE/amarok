@@ -20,6 +20,7 @@
 
 #include <qlabel.h>
 #include <qpixmap.h>
+#include <qgroupbox.h>
 
 
 #include <xine.h>
@@ -128,6 +129,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
     m_entries.setAutoDelete(TRUE);
     m_view->deviceComboBox->setCurrentItem( (XineCfg::outputPlugin() == "auto" ) ? "Autodetect" : XineCfg::outputPlugin() );
     init();
+    showHidePluginConfigs();
 }
 
 XineConfigDialog::~XineConfigDialog()
@@ -142,14 +144,42 @@ void XineConfigDialog::init()
     add(new XineIntEntry(m_view->portIntBox,"media.network.http_proxy_port", m_xine, this));
     add(new XineStrEntry(m_view->userLineEdit, "media.network.http_proxy_user", m_xine, this));
     add(new XineStrEntry(m_view->passLineEdit, "media.network.http_proxy_password", m_xine, this));
+    //alsaGroupBox
+    add(new XineStrEntry(m_view->monoLineEdit, "audio.device.alsa_default_device", m_xine,this));
+    add(new XineStrEntry(m_view->stereoLineEdit, "audio.device.alsa_front_device", m_xine,this));
+    add(new XineStrEntry(m_view->chan4LineEdit, "audio.device.alsa_surround40_device", m_xine, this));
+    add(new XineStrEntry(m_view->chan5LineEdit, "audio.device.alsa_surround51_device", m_xine, this));
+    //ossGroupBox
+    add(new XineStrEntry(m_view->ossDeviceLineEdit, "audio.device.oss_device_name", m_xine,this));
     #undef add
+}
+
+void XineConfigDialog::showHidePluginConfigs() const
+{
+    if(m_view->deviceComboBox->currentText() == "alsa")
+    {
+        m_view->alsaGroupBox->show();
+        m_view->ossGroupBox->hide();
+    }
+    else if(m_view->deviceComboBox->currentText() == "oss")
+    {
+        m_view->alsaGroupBox->hide();
+        m_view->ossGroupBox->show();        
+    }
+    else
+    {
+        m_view->alsaGroupBox->hide();
+        m_view->ossGroupBox->hide();
+    }
 }
 
 bool
 XineConfigDialog::hasChanged() const
 {
+    showHidePluginConfigs();
 	if(XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentItem() == 0) ? "auto" : m_view->deviceComboBox->currentText()))
         return true;
+
     QPtrListIterator<XineGeneralEntry> it( m_entries );
     XineGeneralEntry* entry;
     while( (entry = it.current()) != 0 )
