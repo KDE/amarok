@@ -31,16 +31,24 @@ class RSSFeedsPlugin < Plugin
         puts "I'm here"
         @feeds = Hash.new
         @watchList = Hash.new
-
-        IO.foreach("#{@bot.botclass}/rss/feeds") { |line|
-            s = line.chomp.split("|", 2)
-            @feeds[s[0]] = s[1]
-        }
-        IO.foreach("#{@bot.botclass}/rss/watchlist") { |line|
-            s = line.chomp.split("|", 3)
-            @watchList[s[0]] = [s[1], s[2]]
-            watchRss( s[2], s[0], s[1] )
-        }
+        begin
+            IO.foreach("#{@bot.botclass}/rss/feeds") { |line|
+                s = line.chomp.split("|", 2)
+                @feeds[s[0]] = s[1]
+            }
+        rescue
+            puts "no feeds";
+        end
+        begin
+            IO.foreach("#{@bot.botclass}/rss/watchlist") { |line|
+                s = line.chomp.split("|", 3)
+                @watchList[s[0]] = [s[1], s[2]]
+                watchRss( s[2], s[0], s[1] )
+            }
+        rescue
+            puts "no watchlist"
+        end
+        
     end
 
     def cleanup
