@@ -1217,7 +1217,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( parent && parent->isSelected() )
             continue;
 
-        while( parent->parent() || parent == m_coolStreams || parent == m_smartDefaults )
+        while( parent->parent() && parent != m_coolStreams && parent != m_smartDefaults )
             parent = parent->parent();
 
         if( parent == m_coolStreams || parent == m_smartDefaults )
