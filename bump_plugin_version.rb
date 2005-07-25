@@ -27,12 +27,18 @@ file.close()
 
 
 # Bump engine desktop files
-print "\n"
+print "\n\n"
 Dir.chdir( "src" )
 Dir.foreach( "engine" ) do |x|
     next if x[0, 1] == "."
     if FileTest.directory?( "engine/#{x}" )
         print x + "\n"
+        file = File.new( Dir["engine/#{x}/*.desktop"].join(), File::RDWR )
+        str = file.read()
+        file.rewind()
+        str.sub!( /X-KDE-amaroK-framework-version=[0-9]*/, "X-KDE-amaroK-framework-version=#{@version}" )
+        file << str
+        file.close()
     end
 end
 
