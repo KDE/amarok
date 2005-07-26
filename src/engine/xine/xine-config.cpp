@@ -133,6 +133,7 @@ void XineIntEntry::entryChanged(int val)
 XineEnumEntry::XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
     : XineIntEntry(key,xine,xcf)
 {
+    input->clear();
     xine_cfg_entry_t ent;
     if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent)) 
     {
