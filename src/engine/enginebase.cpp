@@ -6,7 +6,9 @@
 #include "enginebase.h"
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#ifndef __APPLE__
 #include <sys/soundcard.h>
+#endif // __APPLE__
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -53,13 +55,17 @@ Engine::Base::setHardwareMixer( bool useHardware )
 
         if ( m_mixer >= 0 )
         {
+#ifdef OPEN_SOUND_SYSTEM
             int devmask, recmask, i_recsrc, stereodevs;
             if ( ioctl( m_mixer, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) goto failure;
             if ( ioctl( m_mixer, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) goto failure;
             if ( ioctl( m_mixer, SOUND_MIXER_READ_RECSRC, &i_recsrc )       == -1 ) goto failure;
             if ( ioctl( m_mixer, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) goto failure;
             if ( !devmask )                                                         goto failure;
-
+#else 
+            goto failure;
+            
+#endif // OPEN_SOUND_SYSTEM
             setVolumeSW( 100 ); //seems sensible
 
             return true;
@@ -98,8 +104,10 @@ Engine::Base::setVolumeHW( uint percent )
 {
     if ( isMixerHW() )
     {
+#ifdef OPEN_SOUND_SYSTEM
         percent = percent + ( percent << 8 );
         ioctl( m_mixer, MIXER_WRITE( 4 ), &percent );
+#endif // OPEN_SOUND_SYSTEM
     }
 }
 
