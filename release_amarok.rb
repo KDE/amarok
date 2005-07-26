@@ -157,9 +157,6 @@ file.close()
 
 
 Dir.chdir( ".." ) # amarok
-`rm -rf debian`
-
-
 Dir.chdir( ".." ) # multimedia
 puts( "\n" )
 
