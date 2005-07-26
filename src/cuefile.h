@@ -9,28 +9,6 @@
 
 #include <qobject.h>
 
-class CueFileItem;
-
-
-class CueFile : public QObject, public QMap<long, CueFileItem>
-{
-        Q_OBJECT
-
-    public:
-
-        CueFile() { };
-
-        ~CueFile(){ };
-        void setCueFileName( QString name ) { m_cueFileName = name; };
-        bool load();
-
-
-    private:
-        QString m_cueFileName;
-};
-
-
-
 class CueFileItem {
     public:
         CueFileItem (const QString& title, const QString& artist, const int trackNumber, const long index)
@@ -54,5 +32,23 @@ class CueFileItem {
         int     m_trackNumber;
         long    m_index;
 };
+
+class CueFile : public QObject, public QMap<long, CueFileItem>
+{
+        Q_OBJECT
+
+    public:
+
+        CueFile() { };
+
+        ~CueFile(){ };
+        void setCueFileName( QString name ) { m_cueFileName = name; };
+        bool load();
+
+
+    private:
+        QString m_cueFileName;
+};
+
 
 #endif

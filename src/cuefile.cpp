@@ -41,14 +41,14 @@ bool CueFile::load()
                 {
                     if( mode )
                         title = line.mid( 6 ).remove( '"' );
-                    kdDebug() << "[CUEFILE]: Title: " << title << endl;
+                    debug() << "[CUEFILE]: Title: " << title << endl;
                 }
 
                 else if( line.startsWith( "performer", false ))
                 {
                     if( mode )
                         artist = line.mid( 10 ).remove( '"' );
-                    kdDebug() << "[CUEFILE]: artist: " << artist << endl;
+                    debug() << "[CUEFILE]: artist: " << artist << endl;
                 }
 
                 else if( line.startsWith( "track", false ) )
@@ -57,12 +57,12 @@ bool CueFile::load()
                     {
                         // not valid, because we have to have an index for the previous track
                         file.close();
-                        kdDebug() << "[CUEFILE]: Mode is 1, abort." << endl;
+                        debug() << "[CUEFILE]: Mode is 1, abort." << endl;
                         return false;
                     }
                     if( mode == 2 )
                     {
-                        kdDebug() << "[CUEFILE]: Inserting item: " << title << " - " << artist << " (" << track << ")" << endl;
+                        debug() << "[CUEFILE]: Inserting item: " << title << " - " << artist << " (" << track << ")" << endl;
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, track, index ) );
                         index    = 0;
@@ -71,7 +71,7 @@ bool CueFile::load()
                         track    = 0;
                     }
                     track = line.section (' ',1,1).toInt();
-                    kdDebug() << "[CUEFILE]: Track: " << track << endl;
+                    debug() << "[CUEFILE]: Track: " << track << endl;
                     mode = 1;
                 }
                 else if( line.startsWith( "index", false ) )
@@ -82,10 +82,10 @@ bool CueFile::load()
                         index = (time[0].toLong()*60 + time[1].toLong())*1000 + time[2].toLong()*1000/75; //75 frames per second
                         mode = 2;
                     }
-                    kdDebug() << "[CUEFILE]: index: " << index << endl;
+                    debug() << "[CUEFILE]: index: " << index << endl;
                 }
             }
-            kdDebug() << "[CUEFILE]: Inserting item: " << title << " - " << artist << " (" << track << ")" << endl;
+            debug() << "[CUEFILE]: Inserting item: " << title << " - " << artist << " (" << track << ")" << endl;
             // add previous entry to map
             insert( index, CueFileItem( title, artist, track, index ) );
             file.close();
