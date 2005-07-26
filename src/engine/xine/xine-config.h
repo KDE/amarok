@@ -1,6 +1,6 @@
 //Copyright: (C) 2004 Max Howell, <max.howell@methylblue.com>
 //Copyright: (C) 2003-2004 J. Kofler, <kaffeine@gmx.net>
-
+//Copyright: (C) 2005 Ian Monroe
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,11 +32,28 @@ Q_OBJECT
     signals:
         void viewChanged();
     protected:
-        XineGeneralEntry(const QString& key, xine_t *m_xine, XineConfigDialog* xcf);
+        XineGeneralEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
+        void entryChanged();
+
         bool m_valueChanged;
         QString m_key;
         xine_t *m_xine;
 };
+
+class XineStrFunctor
+{
+    public:
+        void operator()( xine_cfg_entry_t* ent, const QString& val );
+};
+
+class XineIntFunctor
+{
+    public:
+        void operator()( xine_cfg_entry_t* ent, int val );
+};
+
+template<class T, class Functor>
+void saveXineEntry(Functor& storeEntry, T val, const QString& key, xine_t *xine);
 
 class XineStrEntry : public XineGeneralEntry
 {
@@ -59,7 +76,7 @@ Q_OBJECT
     private slots:
         void entryChanged(int newEntry);
     private:
-        int m_val; 
+        int m_val;
 };
 
 class XineConfigDialog : public amaroK::PluginConfig

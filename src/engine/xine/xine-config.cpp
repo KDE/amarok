@@ -35,6 +35,40 @@ XineGeneralEntry::XineGeneralEntry(const QString& key, xine_t *xine, XineConfigD
     debug() << "new entry " << m_key << endl;
     connect(this, SIGNAL(viewChanged()), xcf, SIGNAL(viewChanged() ) );
 }
+void XineGeneralEntry::entryChanged()
+{
+    m_valueChanged = true;
+    emit viewChanged();
+}
+/////////////////
+/// Function saveXineEntry
+/////////////////
+template<class T, class Functor>
+void saveXineEntry(Functor& storeEntry, T val, const QString& key, xine_t *xine)
+{
+    if(xine) debug() << "its not null " << key << ' ' << val << endl;
+    xine_cfg_entry_t ent;
+    if(xine_config_lookup_entry(xine, key.ascii(), &ent))
+    {
+        storeEntry(&ent, val);
+        xine_config_update_entry(xine, &ent);
+    }
+    else
+        debug()<<"Error saving " << val << " with key " << key;
+
+}
+//////////////////
+/// Functors
+//////////////////
+void XineIntFunctor::operator()( xine_cfg_entry_t* ent, int val )
+{
+    ent->num_value = val;
+}
+
+void XineStrFunctor::operator()( xine_cfg_entry_t* ent, const QString& val )
+{
+    ent->str_value = const_cast<char*>(val.ascii());
+}
 ////////////////////
 /// XineStrEntry
 ////////////////////
@@ -52,23 +86,15 @@ XineStrEntry::XineStrEntry(QLineEdit* input, const QCString & key, xine_t *xine,
 
 void XineStrEntry::save()
 {
-    if(m_xine) debug() << "its not null " << m_key << ' ' << m_val << endl;
-    xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(m_xine, m_key.ascii(), &ent))
-    {
-        ent.str_value = const_cast<char*>(m_val.ascii());
-        xine_config_update_entry(m_xine, &ent);
-        m_valueChanged = false;
-    }
-    else
-        debug()<<"Error saving " << m_val << " with key " << m_key;
+    XineStrFunctor func;
+    saveXineEntry(func, m_val, m_key, m_xine);
+    m_valueChanged = false;
 }
 
 void XineStrEntry::entryChanged(const QString & val)
 {
-    m_valueChanged = true;
     m_val = val;
-    emit viewChanged();
+    XineGeneralEntry::entryChanged();
 }
 
 ////////////////////
@@ -86,25 +112,18 @@ XineIntEntry::XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xin
      connect( input,  SIGNAL( valueChanged( int ) ), this, SLOT( entryChanged( int ) ) );
 }
 
+
 void XineIntEntry::save()
 {
-    xine_cfg_entry_t ent;
-    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent))
-    {
-        ent.num_value = m_val;
-        xine_config_update_entry(m_xine, &ent);
-        m_valueChanged = false;
-    }
-    else
-        debug()<<"Error saving " << m_val << " with key " << m_key;
+    XineIntFunctor func;
+    saveXineEntry(func, m_val, m_key, m_xine);
+    m_valueChanged = false;
 }
 
 void XineIntEntry::entryChanged(int val)
 {
-    debug() << m_key << " is now set to " << val << endl;
-    m_valueChanged = true;
     m_val = val;
-    emit viewChanged();
+    XineGeneralEntry::entryChanged();
 }
 ///////////////////////
 /// XineConfigDialog
