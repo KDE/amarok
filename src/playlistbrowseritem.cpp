@@ -1178,7 +1178,7 @@ PodcastChannel::setXml( QDomNode xml )
     if( childCount() > m_purgeCount )
         purge();
 
-    if( static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
+    if( firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
         setNew();
         amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved") );
