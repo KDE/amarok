@@ -8,9 +8,17 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>418</width>
-            <height>535</height>
+            <width>342</width>
+            <height>429</height>
         </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>5</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
     </property>
     <property name="caption">
         <string>Xine Configure</string>
@@ -66,7 +74,10 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Output Plugin</string>
+                        <string>&amp;Output plugin:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>deviceComboBox</cstring>
                     </property>
                 </widget>
                 <widget class="KComboBox">
@@ -111,7 +122,10 @@
                         <cstring>textLabel2_3</cstring>
                     </property>
                     <property name="text">
-                        <string>Mono</string>
+                        <string>&amp;Mono:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>monoLineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -119,7 +133,10 @@
                         <cstring>textLabel3_3</cstring>
                     </property>
                     <property name="text">
-                        <string>Stereo</string>
+                        <string>&amp;Stereo:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>stereoLineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="2" column="0">
@@ -127,7 +144,10 @@
                         <cstring>textLabel4_2</cstring>
                     </property>
                     <property name="text">
-                        <string>4 Channel</string>
+                        <string>&amp;4 Channel:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>chan4LineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="0" column="1">
@@ -150,7 +170,10 @@
                         <cstring>chan5Label</cstring>
                     </property>
                     <property name="text">
-                        <string>5 Channel</string>
+                        <string>&amp;5 Channel:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>chan5LineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="4" column="1">
@@ -176,7 +199,10 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Device</string>
+                        <string>&amp;Device:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>ossDeviceComboBox</cstring>
                     </property>
                 </widget>
                 <widget class="QComboBox">
@@ -207,7 +233,10 @@
                         <cstring>textLabel2_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Host</string>
+                        <string>&amp;Host:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>hostLineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="1" column="1">
@@ -220,7 +249,10 @@
                         <cstring>textLabel4</cstring>
                     </property>
                     <property name="text">
-                        <string>Password</string>
+                        <string>&amp;Password:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>passLineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -228,7 +260,10 @@
                         <cstring>textLabel3_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Username</string>
+                        <string>&amp;Username:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>userLineEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLineEdit" row="2" column="1">
@@ -278,8 +313,4 @@
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kcombobox.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
 </UI>
