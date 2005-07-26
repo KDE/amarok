@@ -11,6 +11,13 @@
 # License: GNU General Public License V2
 
 
+# Make sure the current working directory is amarok
+if not Dir::getwd().split( "/" ).last() == "amarok"
+    print "ERROR: This script must be started from the amarok/ folder. Aborting.\n\n"
+    exit()
+end
+
+
 # Bump FrameworkVersion in pluginmanager.h
 file = File.new( "src/pluginmanager.h", File::RDWR )
 str = file.read()
