@@ -227,7 +227,7 @@ MetaBundle::veryNiceTitle() const
     //     If not then they do apply to this function also!
     if( !m_title.isEmpty() )
     {
-        s = i18n( "'%1' by %2" ).arg( m_title ).arg( m_artist );
+        s = i18n( "%1 by %2" ).arg( m_title ).arg( m_artist );
     }
     else
     {
@@ -267,9 +267,9 @@ MetaBundle::fileExtension() const
 }
 
 QString
-MetaBundle::prettyLength( int seconds ) //static
+MetaBundle::prettyLength( int seconds, bool showHours ) //static
 {
-    if( seconds > 0 ) return prettyTime( seconds, false );
+    if( seconds > 0 ) return prettyTime( seconds, showHours );
     if( seconds == Undetermined ) return "?";
     if( seconds == Irrelevant  ) return "-";
 

@@ -62,7 +62,7 @@ public:
     MetaBundle( const PlaylistItem *item );
 
     bool operator==( const MetaBundle& bundle );
-    bool operator!=( const MetaBundle& bundle ) { return !operator==(bundle); }
+    inline bool operator!=( const MetaBundle& bundle ) { return !operator==( bundle ); }
 
 
     /** Test for an empty metabundle */
@@ -116,7 +116,7 @@ public:
     // these are helpful statics, don't use these in preference
     // to the ones above!
     static QString prettyBitrate( int );
-    static QString prettyLength( int ); //must be int, see Unavailable, etc. above
+    static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
     static QString prettyTime( uint, bool showHours = true );
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
     static QString prettyTitle( QString );

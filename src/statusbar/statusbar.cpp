@@ -201,14 +201,14 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
                  : i18n( "1 track", "%n tracks", newCount );
 
     QString time = ( hasSel && hasVis ) ? i18n( " - [ %1 / %2 / %3 ]" )
-                                          .arg( MetaBundle::prettyLength( selLength ) )
-                                          .arg( MetaBundle::prettyLength( visLength ) )
-                                          .arg( MetaBundle::prettyLength( newLength ) )
+                                          .arg( MetaBundle::prettyLength( selLength, true ) )
+                                          .arg( MetaBundle::prettyLength( visLength, true ) )
+                                          .arg( MetaBundle::prettyLength( newLength, true ) )
                  : ( ( hasSel || hasVis ) && visCount > 0 ) ? i18n( " - [ %1 / %2 ]" )
-                                                              .arg( hasVis ? MetaBundle::prettyLength( visLength )
-                                                                           : MetaBundle::prettyLength( selLength ) )
-                                                              .arg( MetaBundle::prettyLength( newLength ) )
-                 : ( newCount ) ? i18n( " - [ %1 ]" ).arg( MetaBundle::prettyLength( newLength ) )
+                                                  .arg( hasVis ? MetaBundle::prettyLength( visLength, true )
+                                                               : MetaBundle::prettyLength( selLength, true ) )
+                                                  .arg( MetaBundle::prettyLength( newLength, true ) )
+                 : ( newCount ) ? i18n( " - [ %1 ]" ).arg( MetaBundle::prettyLength( newLength, true ) )
                  : "";
 
     m_itemCountLabel->setText( ' ' + text + time + ' ' );
