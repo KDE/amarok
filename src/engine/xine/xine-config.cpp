@@ -101,7 +101,7 @@ void XineStrEntry::entryChanged(const QString & val)
 /// XineIntEntry
 ////////////////////
 XineIntEntry::XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
-    : XineGeneralEntry(key,xine,xcf)
+  : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;
     if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent)) 
@@ -111,8 +111,9 @@ XineIntEntry::XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xin
         }
      connect( input,  SIGNAL( valueChanged( int ) ), this, SLOT( entryChanged( int ) ) );
 }
-
-
+XineIntEntry::XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf)
+    : XineGeneralEntry(key,xine,xcf)
+{ }
 void XineIntEntry::save()
 {
     XineIntFunctor func;
@@ -125,6 +126,26 @@ void XineIntEntry::entryChanged(int val)
     m_val = val;
     XineGeneralEntry::entryChanged();
 }
+
+////////////////////
+/// XineEnumEntry
+////////////////////
+XineEnumEntry::XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
+    : XineIntEntry(key,xine,xcf)
+{
+    xine_cfg_entry_t ent;
+    if(xine_config_lookup_entry(m_xine,  m_key.ascii(), &ent)) 
+    {
+        for( int i = 0; ent.enum_values[i]; ++i )
+        {
+            input->insertItem( QString::fromLocal8Bit( ent.enum_values[i] ) );
+            input->setCurrentItem( ent.num_value );
+            m_val = ent.num_value;
+        }
+    }
+     connect( input,  SIGNAL( activated( int ) ), this, SLOT( entryChanged( int ) ) );
+}
+
 ///////////////////////
 /// XineConfigDialog
 ///////////////////////
@@ -169,7 +190,7 @@ void XineConfigDialog::init()
     add(new XineStrEntry(m_view->chan4LineEdit, "audio.device.alsa_surround40_device", m_xine, this));
     add(new XineStrEntry(m_view->chan5LineEdit, "audio.device.alsa_surround51_device", m_xine, this));
     //ossGroupBox
-    add(new XineStrEntry(m_view->ossDeviceLineEdit, "audio.device.oss_device_name", m_xine,this));
+    add(new XineEnumEntry(m_view->ossDeviceComboBox, "audio.device.oss_device_name", m_xine,this));
     #undef add
 }
 

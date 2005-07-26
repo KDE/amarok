@@ -179,9 +179,9 @@
                         <string>Device</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit">
+                <widget class="QComboBox">
                     <property name="name">
-                        <cstring>ossDeviceLineEdit</cstring>
+                        <cstring>ossDeviceComboBox</cstring>
                     </property>
                 </widget>
             </hbox>

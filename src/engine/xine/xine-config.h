@@ -72,11 +72,19 @@ class XineIntEntry : public XineGeneralEntry
 Q_OBJECT
     public:
         XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
+        XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void save();
-    private slots:
+    protected slots:
         void entryChanged(int newEntry);
-    private:
+    protected:
         int m_val;
+};
+
+class XineEnumEntry : public XineIntEntry
+{
+Q_OBJECT
+public:
+    XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
 };
 
 class XineConfigDialog : public amaroK::PluginConfig
