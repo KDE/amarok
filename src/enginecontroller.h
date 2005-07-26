@@ -55,7 +55,7 @@ public:
 
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;
-    const KURL &playingURL() const { return m_bundle.url(); }
+    const KURL &playingURL() const { return bundle().url(); }
 
     void restoreSession();
     void endSession();
