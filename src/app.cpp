@@ -714,7 +714,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         if ( AmarokConfig::showPlayerWindow() )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
         else m_pPlaylistWindow->setCaption( "amaroK" );
-        QToolTip::add( m_pTray, i18n( "amaroK - Audio Player" ) );
+        QToolTip::add( m_pTray, i18n( "amaroK - rediscover your music" ) );
         break;
 
     case Engine::Playing:
