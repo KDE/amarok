@@ -196,8 +196,8 @@ PlaylistWindow::init()
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QString filtertip = i18n( "Enter space-separated terms to filter the playlist.\n\n"
-                                  "(Advanced, Google-esque syntax is also available;\n"
-                                  "see the handbook (in the \"The Playlist\" section of chapter 4) for more.)" );
+                                  "Advanced, Google-esque syntax is also available;\n"
+                                  "see the handbook (in the \"The Playlist\" section of chapter 4) for details." );
 
         QToolTip::add( filter_label, filtertip );
         QToolTip::add( m_lineEdit, filtertip );
