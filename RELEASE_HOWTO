@@ -2,6 +2,8 @@ SECTION 1: Preparation
 
  * Check the README file is still relevant
  * Run the "fixuifiles" script from the source-root
+ * Run the "bump_plugin_version.rb" script from the folder amarok/
+ * Commit the source to SVN
 --------------------------------------------------------------------------------
 
 SECTION 2: Creating and Testing the Tarball
