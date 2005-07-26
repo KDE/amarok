@@ -172,7 +172,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
         if (tags.title().isEmpty() || tags.artist().isEmpty())
         // no title or no artist, so we add prettyTitle
             tipBuf += QString ("<tr><td align=center colspan='2'>%1</td></tr>")
-                      .arg(tags.prettyTitle());
+                      .arg(tags.veryNiceTitle());
         for( uint x = 0; x < left.count(); ++x )
             if ( !right[x].isEmpty() )
                 tipBuf += tableRow.arg( left[x] ).arg( right[x] );
