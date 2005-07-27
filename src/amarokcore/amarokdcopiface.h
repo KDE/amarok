@@ -52,6 +52,7 @@ k_dcop:
    virtual QString artist() = 0;                            ///< Return the artist of the currently playing track.
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
    virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
+   virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
@@ -83,7 +84,7 @@ k_dcop:
    virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;      ///< Set the equalizer bands
    virtual void setEqualizerEnabled( bool active ) = 0;     ///< Toggle equalizer.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
-   virtual void setScoreByPath( const QString &url, int score ) = 0;		///< Set the score of a track by it's path.
+   virtual void setScoreByPath( const QString &url, int score ) = 0;        ///< Set the score of a track by it's path.
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual void stop() = 0;                                 ///< Equivalent to pressing "Stop" button.

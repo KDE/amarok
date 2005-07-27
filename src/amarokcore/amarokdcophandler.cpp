@@ -160,6 +160,11 @@ namespace amaroK
         return EngineController::instance()->bundle().comment();
     }
 
+    QString DcopPlayerHandler::lyrics()
+    {
+        return CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
+    }
+
     QString DcopPlayerHandler::coverImage()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
