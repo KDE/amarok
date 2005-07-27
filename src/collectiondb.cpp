@@ -146,10 +146,12 @@ CollectionDB::returnStaticDbConnection( DbConnection *conn )
 QStringList
 CollectionDB::query( const QString& statement, DbConnection *conn )
 {
+    clock_t start;
     if ( DEBUG )
+    {
         debug() << "Query-start: " << statement << endl;
-
-    clock_t start = clock();
+        start = clock();
+    }
 
     DbConnection *dbConn;
     if ( conn != NULL )
@@ -186,10 +188,12 @@ CollectionDB::query( const QString& statement, DbConnection *conn )
 int
 CollectionDB::insert( const QString& statement, const QString& table, DbConnection *conn )
 {
+    clock_t start;
     if ( DEBUG )
+    {
         debug() << "insert-start: " << statement << endl;
-
-    clock_t start = clock();
+        start = clock();
+    }
 
     DbConnection *dbConn;
     if ( conn != NULL )
@@ -273,6 +277,7 @@ CollectionDB::createTables( DbConnection *conn )
                     "title " + textColumnType() + ","
                     "year INTEGER,"
                     "comment " + textColumnType() + ","
+                    "lyrics " + longTextColumnType() + ","
                     "track NUMERIC(4),"
                     "bitrate INTEGER,"
                     "length INTEGER,"
@@ -1592,6 +1597,20 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
     bundle.readTags( TagLib::AudioProperties::Fast );
 
     updateTags( url, bundle, updateView );
+}
+
+
+void
+CollectionDB::setLyrics( const QString &url, const QString &lyrics )
+{
+    query( QString( "UPDATE tags SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), url ) );
+}
+
+QString
+CollectionDB::getLyrics( const QString &url )
+{
+    QStringList values = query( QString( "SELECT lyrics FROM tags WHERE url = '%1';" ).arg( url ) );
+    return values[0];
 }
 
 
@@ -2993,6 +3012,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLyrics );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
@@ -3089,6 +3109,7 @@ QueryBuilder::valueName( int value )
     if ( value & valTrack )       values += "track";
     if ( value & valScore )       values += "percentage";
     if ( value & valComment )     values += "comment";
+    if ( value & valLyrics )      values += "lyrics";
     if ( value & valBitrate )     values += "bitrate";
     if ( value & valLength )      values += "length";
     if ( value & valSamplerate )  values += "samplerate";

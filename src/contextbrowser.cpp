@@ -2306,26 +2306,55 @@ void ContextBrowser::showLyrics( const QString &hash )
         blockSignals( false );
     }
 
+    m_lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
+
     if ( !m_dirtyLyricsPage || m_lyricJob ) return;
 
     m_lyricsPage->begin();
     m_lyricsPage->setUserStyleSheet( m_styleSheet );
-    m_HTMLSource = QString (
-        "<html>"
-        "<div id='lyrics_box' class='box'>"
-            "<div id='lyrics_box-header' class='box-header'>"
-                "<span id='lyrics_box-header-title' class='box-header-title'>"
-                + i18n( "Fetching Lyrics" ) +
-                "</span>"
+
+    if ( !m_lyrics.isEmpty() && hash.isEmpty() )
+    {
+        m_HTMLSource = QString (
+            "<html>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    + "<h1>CACHED:</h1>" +m_lyrics +
+                "</div>"
             "</div>"
-            "<div id='lyrics_box-body' class='box-body'>"
-                "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
+            "</html>"
+            );
+        m_lyricsPage->write( m_HTMLSource );
+        m_lyricsPage->end();
+        m_dirtyLyricsPage = false;
+        m_lyricJob = NULL;
+        saveHtmlData(); // Send html code to file
+        return;
+    }
+    else
+    {
+        m_HTMLSource = QString (
+            "<html>"
+            "<div id='lyrics_box' class='box'>"
+                "<div id='lyrics_box-header' class='box-header'>"
+                    "<span id='lyrics_box-header-title' class='box-header-title'>"
+                    + i18n( "Fetching Lyrics" ) +
+                    "</span>"
+                "</div>"
+                "<div id='lyrics_box-body' class='box-body'>"
+                    "<div class='info'><p>" + i18n( "Fetching Lyrics" ) + "</p></div>"
+                "</div>"
             "</div>"
-        "</div>"
-        "</html>"
-                           );
-    m_lyricsPage->write( m_HTMLSource );
-    m_lyricsPage->end();
+            "</html>"
+            );
+        m_lyricsPage->write( m_HTMLSource );
+        m_lyricsPage->end();
+    }
 
     //remove all matches to the regExp and the song production type.
     //NOTE: use i18n'd and english equivalents since they are very common int'lly.
@@ -2345,7 +2374,7 @@ void ContextBrowser::showLyrics( const QString &hash )
         title.remove( re );
     }
 
-    if ( !hash.isEmpty() )
+    if ( !hash.isEmpty() && hash != QString( "reload" ) )
         m_lyricCurrentUrl = QString( "http://lyrc.com.ar/en/tema1en.php?hash=%1" )
                   .arg( hash );
     else
@@ -2398,6 +2427,11 @@ ContextBrowser::lyricsResult( KIO::Job* job ) //SLOT
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<p><hr" ) );
         else
             m_lyrics = m_lyrics.mid( 0, m_lyrics.find( "<br /><br />" ) );
+        if ( CollectionDB::instance()->isFileInCollection( EngineController::instance()->bundle().url().path() ) )
+        {
+            debug() << "Writing Lyrics..." << endl;
+            CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), m_lyrics );
+        }
     }
     else if ( m_lyrics.find( "Suggestions : " ) != -1 )
     {
@@ -2488,7 +2522,7 @@ void
 ContextBrowser::lyricsRefresh() //SLOT
 {
     m_dirtyLyricsPage = true;
-    showLyrics();
+    showLyrics( "reload" );
 }
 
 

@@ -217,6 +217,8 @@ class CollectionDB : public QObject, public EngineObserver
         QString boolT() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
         QString boolF() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
         QString textColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
+        // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
+        QString longTextColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
         int getType() { return m_dbConnPool->getDbConnectionType(); }
 
@@ -328,6 +330,9 @@ class CollectionDB : public QObject, public EngineObserver
 
         void applySettings();
 
+        void setLyrics( const QString& url, const QString& lyrics );
+        QString getLyrics( const QString& url );
+
     protected:
         CollectionDB();
         ~CollectionDB();
@@ -350,7 +355,7 @@ class CollectionDB : public QObject, public EngineObserver
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 18;
+        static const int DATABASE_VERSION = 19;
         static const int DATABASE_STATS_VERSION = 3;
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
@@ -397,9 +402,9 @@ class QueryBuilder
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32, tabStats = 64, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4, optRandomize = 8 };
         enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32, valComment = 64,
-                               valBitrate = 128, valLength = 256, valSamplerate = 512, valPlayCounter = 1024,
-                               valCreateDate = 2048, valAccessDate = 4096, valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
-                               valYearID = 65536, valGenreID = 131072, valDummy = 0 };
+                               valLyrics = 128, valBitrate = 256, valLength = 512, valSamplerate = 1024, valPlayCounter = 2048,
+                               valCreateDate = 4096, valAccessDate = 8192, valPercentage = 16384, valArtistID = 32768, valAlbumID = 65536,
+                               valYearID = 131072, valGenreID = 262144, valDummy = 0 };
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
