@@ -466,8 +466,6 @@ void App::applySettings( bool firstTime )
             engine = EngineController::instance()->loadEngine();
         }
 
-        AmarokConfig::setHardwareMixer( engine->setHardwareMixer( AmarokConfig::hardwareMixer() ) );
-
         engine->setXfadeLength( AmarokConfig::crossfade() ? AmarokConfig::crossfadeLength() : 0 );
         engine->setVolume( AmarokConfig::masterVolume() );
 

@@ -211,11 +211,6 @@
         <min>0</min>
         <max>100</max>
     </entry>
-    <entry key="Hardware Mixer" type="Bool">
-        <label>Use soundcard hardware mixer for volume</label>
-        <whatsthis>Enable/Disable soundcard hardware mixer. If set, the volume slider sets the master volume on the soundcard which affects the whole system. If not set, the volume slider only affects the amaroK output.</whatsthis>
-        <default>false</default>
-    </entry>
     <entry key="Crossfade" type="Bool">
         <label>Whether to crossfade between tracks</label>
         <whatsthis>Enable/Disable crossfading between track changes.</whatsthis>

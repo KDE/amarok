@@ -279,17 +279,6 @@
                         <string>If checked, amaroK will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
                     </property>
                 </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_HardwareMixer</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Use hardware volume mixer</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, the volume slider&lt;br&gt;sets the master volume on the soundcard which affects the whole system. If not checked, the volume slider only affects the amaroK output.</string>
-                    </property>
-                </widget>
             </vbox>
         </widget>
         <spacer>

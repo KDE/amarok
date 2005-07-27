@@ -2,30 +2,22 @@
 //           (C) 2004,2005 Max Howell, <max.howell@methylblue.com>
 //License:   See COPYING
 
-#include <cmath>
 #include "enginebase.h"
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#ifndef __APPLE__
-#include <sys/soundcard.h>
-#endif // __APPLE__
-#include <sys/wait.h>
-#include <unistd.h>
+
+#include <cmath>
 
 
 Engine::Base::Base( Effects *effects )
         : amaroK::Plugin()
         , m_effects( effects )
-        , m_mixer( -1 )
         , m_volume( 50 )
         , m_scope( 512 )
         , m_isStream( false )
 {}
 
+
 Engine::Base::~Base()
 {
-    setHardwareMixer( false );
-
     delete m_effects;
 }
 
@@ -42,73 +34,11 @@ Engine::Base::load( const KURL &url, bool stream )
 }
 
 
-bool
-Engine::Base::setHardwareMixer( bool useHardware )
-{
-    //TODO optimise the applySettings section too
-
-    if ( useHardware )
-    {
-        if ( isMixerHW() ) return true;
-
-        m_mixer = ::open( "/dev/mixer", O_RDWR );
-
-        if ( m_mixer >= 0 )
-        {
-#ifdef OPEN_SOUND_SYSTEM
-            int devmask, recmask, i_recsrc, stereodevs;
-            if ( ioctl( m_mixer, SOUND_MIXER_READ_DEVMASK, &devmask )       == -1 ) goto failure;
-            if ( ioctl( m_mixer, SOUND_MIXER_READ_RECMASK, &recmask )       == -1 ) goto failure;
-            if ( ioctl( m_mixer, SOUND_MIXER_READ_RECSRC, &i_recsrc )       == -1 ) goto failure;
-            if ( ioctl( m_mixer, SOUND_MIXER_READ_STEREODEVS, &stereodevs ) == -1 ) goto failure;
-            if ( !devmask )                                                         goto failure;
-#else 
-            goto failure;
-            
-#endif // OPEN_SOUND_SYSTEM
-            setVolumeSW( 100 ); //seems sensible
-
-            return true;
-        }
-    }
-
-    //otherwise lets close the mixer
-
-    if ( isMixerHW() )
-    {
-        ::close( m_mixer );   //close /dev/mixer device
-
-    failure:
-        m_mixer = -1;
-    }
-
-    return false;
-}
-
-
 void Engine::Base::setVolume( uint value )
 {
     m_volume = value;
 
-    if( isMixerHW() ) {
-        setVolumeHW( value );
-        setVolumeSW( 100 );
-    }
-    else
-        setVolumeSW( makeVolumeLogarithmic( value ) );
-}
-
-
-void
-Engine::Base::setVolumeHW( uint percent )
-{
-    if ( isMixerHW() )
-    {
-#ifdef OPEN_SOUND_SYSTEM
-        percent = percent + ( percent << 8 );
-        ioctl( m_mixer, MIXER_WRITE( 4 ), &percent );
-#endif // OPEN_SOUND_SYSTEM
-    }
+    setVolumeSW( makeVolumeLogarithmic( value ) );
 }
 
 

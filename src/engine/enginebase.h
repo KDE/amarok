@@ -152,9 +152,6 @@ namespace Engine
          */
         virtual void seek( uint ms ) = 0;
 
-        /** Returns whether we are using the hardware volume mixer */
-        inline bool isMixerHW() const { return m_mixer != -1; }
-
         /**
          * Determines whether media is currently loaded.
          * @return True if media is loaded, system is ready to play.
@@ -171,8 +168,6 @@ namespace Engine
          * @return Audio sample buffer.
          */
         virtual const Scope &scope() { return m_scope; };
-
-        bool setHardwareMixer( bool );
 
         /**
          * Set new volume value.
@@ -203,7 +198,6 @@ namespace Engine
         void showEngineConfigDialog() { emit showConfigDialog( "Engine" ); }
 
         virtual void setVolumeSW( uint percent ) = 0;
-        void setVolumeHW( uint percent );
 
         void setEffects( Effects *e ) { m_effects = e; }
 
@@ -217,7 +211,6 @@ namespace Engine
 
     private:
         Effects      *m_effects;
-        int           m_mixer;
 
     protected:
         uint  m_volume;
