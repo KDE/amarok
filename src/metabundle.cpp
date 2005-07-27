@@ -237,6 +237,27 @@ MetaBundle::veryNiceTitle() const
 }
 
 QString
+MetaBundle::infoByColumn( int column, bool pretty ) const
+{
+    switch( column )
+    {
+        case PlaylistItem::Filename:  return filename();
+        case PlaylistItem::Title:     return title();
+        case PlaylistItem::Artist:    return artist();
+        case PlaylistItem::Album:     return album();
+        case PlaylistItem::Year:      return year();
+        case PlaylistItem::Comment:   return comment();
+        case PlaylistItem::Genre:     return genre();
+        case PlaylistItem::Track:     return track();
+        case PlaylistItem::Directory: return directory();
+        case PlaylistItem::Length:    return pretty ? prettyLength() : QString::number( length() );
+        case PlaylistItem::Bitrate:   return pretty ? prettyBitrate() : QString::number( bitrate() );
+        case PlaylistItem::Type:      return type( pretty );
+    }
+    return QString::null;
+}
+
+QString
 MetaBundle::prettyTitle( QString filename ) //static
 {
     QString &s = filename; //just so the code is more readable
@@ -244,24 +265,6 @@ MetaBundle::prettyTitle( QString filename ) //static
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
     s = KURL::decode_string( s );
-
-    return s;
-}
-
-QString
-MetaBundle::fileExtension() const
-{
-    QString s;
-
-    if ( m_url.protocol() == "http" ) //catch streams
-    {
-        s = i18n( "Stream " ) ;
-    }
-    else
-    {
-        QFileInfo  file( m_url.fileName() );
-        s = file.extension( FALSE ).upper();
-    }
 
     return s;
 }

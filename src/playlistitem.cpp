@@ -52,7 +52,7 @@ const QString PlaylistItem::columnName( int c ) //static
         case Length:    return "Length";
         case Bitrate:   return "Bitrate";
         case Score:     return "Score";
-        case Extension: return "Extension";
+        case Type:      return "Type";
         case Playcount: return "Playcount";
     }
     return "<ERROR>";
@@ -109,7 +109,7 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             KListViewItem::setText( x,
                     QString::number( CollectionDB::instance()->getPlayCount( m_url.path() ) ) );
             continue;
-        case Extension:
+        case Type:
         default:
             KListViewItem::setText( x, text );
         }
@@ -165,17 +165,8 @@ void PlaylistItem::setEnabled( bool enabled )
 
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
-    setText( Title,     bundle.title() );
-    setText( Artist,    bundle.artist() );
-    setText( Album,     bundle.album() );
-    setText( Year,      bundle.year() );
-    setText( Comment,   bundle.comment() );
-    setText( Genre,     bundle.genre() );
-    setText( Track,     bundle.track() );
-    setText( Directory, bundle.url().isLocalFile() ? bundle.url().directory() : bundle.prettyURL() );
-    setText( Length,    bundle.prettyLength() );
-    setText( Bitrate,   bundle.prettyBitrate() );
-    setText( Extension,    bundle.fileExtension() );
+    for( int i = 0; i < NUM_COLUMNS; ++i )
+        setText( i, bundle.infoByColumn( i, true ) );
 
     m_missing = !bundle.exists();
 
@@ -218,7 +209,7 @@ void PlaylistItem::setText( int column, const QString &newText )
         KListViewItem::setText( column, newText == "0" ? QString::null : attemptStore( newText ) );
         break;
 
-     case Extension:
+     case Type:
      case Playcount:
 
     default:
@@ -254,7 +245,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Track:
         case Score:
         case Length:
-        case Extension:
+        case Type:
         case Playcount:
         case Bitrate:
             a = a.rightJustify( b.length(), '0' ); //all these columns shouldn't become negative
@@ -343,20 +334,29 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             }
 
             // Draw the pixmap, if present
-            int leftMargin = 1;
+            const int margin = listView()->itemMargin();
+            int leftMargin = margin;
             if ( pixmap( column ) ) {
                 paint.drawPixmap( leftMargin, height() / 2 - pixmap( column )->height() / 2, *pixmap( column ) );
-                leftMargin += pixmap( column )->width() + 1; //+1 seems to be required
+                leftMargin += pixmap( column )->width() + margin;
             }
 
             if( align != Qt::AlignCenter )
                align |= Qt::AlignVCenter;
 
             // Draw the text
-            paint.setFont( p->font() );
+            static QFont font;
+            static int minbearing = 1337 + 666;
+            if( minbearing == 2003 || font != p->font() )
+            {
+                font = p->font();
+                minbearing = p->fontMetrics().minLeftBearing() + p->fontMetrics().minRightBearing();
+            }
+            paint.setFont( font );
             paint.setPen( glowText );
-            const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), width - 5 );
-            paint.drawText( leftMargin, 0, width, height(), align, _text );
+            const int _width = width - leftMargin - margin + minbearing - 1;
+            const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), _width );
+            paint.drawText( leftMargin, 0, _width, height(), align, _text );
 
             paint.end();
         }

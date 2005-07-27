@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3-beta3:
   FEATURES:
+    * New OSD tokens: %directory and %type (shows whether it's a stream, or
+      otherwise the extension).
     * New DCOP call "lyrics" and Lyrics Caching!
     * New DCOP call "player: transferDeviceFiles". Transfers queued files to
       the Media Device.
@@ -32,6 +34,7 @@ VERSION 1.3-beta3:
       browser and sort accordingly. (BR 85959)
 
   CHANGES:
+    * Renamed "Track Name" column to "Filename", "Extension" to "Type".
     * "Use hardware volume mixer" option has been removed.
     * "Play AudioCD" gets disabled for engines that don't support KIO.
     * The OSD (by default) and systray tooltip now show the same infos in
@@ -41,6 +44,8 @@ VERSION 1.3-beta3:
     * Systray tooltip now shows "elapsed time / total time" for the length.
 
   BUGFIXES:
+    * When playing, the text in the current track's columns wouldn't get
+      ellipsii added if the column was too short.
     * Dragging 'All Collection' smart playlist made amaroK hang.
     * Compilations reported incorrect number of tracks in the Context
       Browser. (BR 109651)

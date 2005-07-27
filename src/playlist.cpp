@@ -232,7 +232,7 @@ Playlist::Playlist( QWidget *parent )
     addColumn( i18n( "Length"     ),  80 );
     addColumn( i18n( "Bitrate"    ),   0 );
     addColumn( i18n( "Score"      ),   0 );
-    addColumn( i18n( "Extension"  ),   0 );
+    addColumn( i18n( "Type"       ),   0 );
     addColumn( i18n( "Playcount"  ),   0 );
 
     setRenameable( 0, false ); //TODO allow renaming of the filename

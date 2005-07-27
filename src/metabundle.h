@@ -87,20 +87,28 @@ public:
     int bitrate()    const { return m_bitrate; }
     int sampleRate() const { return m_sampleRate; }
 
-    const KURL &url() const { return m_url; }
-    const QString &title() const { return m_title; }
-    const QString &artist() const { return m_artist; }
-    const QString &album() const { return m_album; }
-    const QString &year() const { return m_year; }
-    const QString &comment() const { return m_comment; }
-    const QString &genre() const { return m_genre; }
-    const QString &track() const { return m_track; }
+    const KURL    &url()        const { return m_url; }
+          QString  filename()   const { return m_url.fileName(); }
+          QString  directory()  const { return m_url.isLocalFile() ? m_url.directory()
+                                                                   : m_url.upURL().prettyURL(); }
+    const QString &title()      const { return m_title; }
+    const QString &artist()     const { return m_artist; }
+    const QString &album()      const { return m_album; }
+    const QString &year()       const { return m_year; }
+    const QString &comment()    const { return m_comment; }
+    const QString &genre()      const { return m_genre; }
+    const QString &track()      const { return m_track; }
     const QString &streamName() const { return m_streamName; }
-    const QString &streamUrl() const { return m_streamUrl; }
+    const QString &streamUrl()  const { return m_streamUrl; }
+    QString type( bool detectstream = true ) const
+    {
+        return ( detectstream && m_url.protocol() == "http" )
+               ? i18n( "Stream" )
+               : filename().mid( filename().findRev( '.' ) + 1 );
+    }
 
     QString prettyTitle() const;
     QString veryNiceTitle() const;
-    QString fileExtension() const;
     QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
     QString prettyLength() const { return prettyLength( m_length ); }
@@ -112,6 +120,7 @@ public:
             return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate );
     }
 
+    QString infoByColumn( int column, bool pretty = false ) const;
 
     // these are helpful statics, don't use these in preference
     // to the ones above!

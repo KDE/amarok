@@ -27,111 +27,52 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
 {
     static MetaBundle cachedtags = MetaBundle();
     static QString tipBuf = QString::null;
-    static bool hasLength = true;
+    static bool hasLength = true; //needed to know whether to .arg() in the current pos
     if( cachedtags != tags || tipBuf.isNull() ) //we don't autoupdate when the columns change, but *blahrg*.
     {
         tipBuf = "";
-        hasLength = false;
         QStringList left, right;
         const QString tableRow = "<tr><td width=70 align=right>%1:</td><td align=left>%2</td></tr>";
 
+        QString filename = "", title = ""; //special case these, put the first one encountered on top
+        hasLength = false;
+
         Playlist *playlist = Playlist::instance();
         const int n = playlist->visibleColumns();
-        QString filename = "", title = ""; //special case these, put the first one encountered on top
         for( int i = 0; i < n; ++i )
         {
             const int column = playlist->mapToLogicalColumn( i );
-            int tmp;
-            switch( column )
+
+            if( column == PlaylistItem::Score )
             {
-                case PlaylistItem::Filename:
-                    if( !tags.url().fileName().isNull() )
-                    {
-                        if( !title.isEmpty() )
-                        {
-                            right << tags.url().fileName();
-                            left << playlist->columnText( column );
-                        }
-                        else
-                            filename = tags.url().fileName();
-                    }
-                    break;
-                case PlaylistItem::Title:
-                    if( !tags.title().isNull() )
-                    {
-                        if( !filename.isEmpty() )
-                        {
-                            right << tags.title();
-                            left << playlist->columnText( column );
-                        }
-                        else
-                            title = tags.title();
-                    }
-                    break;
-                case PlaylistItem::Artist:
-                    if( !tags.artist().isNull() )
-                    {
-                        right << tags.artist();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Album:
-                    if( !tags.album().isNull() )
-                    {
-                        right << tags.album();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Year:
-                    if( !tags.year().isNull() )
-                    {
-                        right << tags.year();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Comment:
-                    if( !tags.comment().isNull() )
-                    {
-                        right << tags.comment();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Genre:
-                    if( !tags.genre().isNull() )
-                    {
-                        right << tags.genre();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Track:
-                    if( !tags.track().isNull() )
-                    {
-                        right << tags.track();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Bitrate:
-                    if( tags.bitrate() )
-                    {
-                        right << tags.prettyBitrate();
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Score:
-                    tmp = CollectionDB::instance()->getSongPercentage( tags.url().path() );
-                    if( tmp > 0 )
-                    {
-                        right << QString::number( tmp );
-                        left << playlist->columnText( column );
-                    }
-                    break;
-                case PlaylistItem::Playcount:
-                    tmp = CollectionDB::instance()->getPlayCount( tags.url().path() );
-                    {
-                        right << QString::number( tmp );
-                        left << playlist->columnText( column );
-                    }
-                    break;
+                const int score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
+                if( score > 0 )
+                {
+                    right << QString::number( score );
+                    left << playlist->columnText( column );
+                }
+            }
+            else if( column == PlaylistItem::Playcount )
+            {
+                const int count = CollectionDB::instance()->getPlayCount( tags.url().path() );
+                if( count > 0 )
+                {
+                    right << QString::number( count );
+                    left << playlist->columnText( column );
+                }
+            }
+            else if( column == PlaylistItem::Filename && title.isEmpty() )
+                filename = tags.infoByColumn( column, true );
+            else if( column == PlaylistItem::Title && filename.isEmpty() )
+                title = tags.infoByColumn( column, true );
+            else if( column != PlaylistItem::Length )
+            {
+                const QString tag = tags.infoByColumn( column, true );
+                if( !tag.isEmpty() )
+                {
+                    right << tag;
+                    left << playlist->columnText( column );
+                }
             }
         }
 

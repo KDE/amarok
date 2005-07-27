@@ -462,38 +462,27 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 
     else
     {
-        MyVector<QString> tags, tokens;
-
-        // we special case prettyTitle and put it first
-        // so that we handle things like streams better
-        // keep these 1:1 with the playlist's columns otherwise
-        tokens <<  "%artist - %title"  <<         "%file"         <<    "%title"    << "%artist";
-        tags   << bundle.prettyTitle() << bundle.url().fileName() << bundle.title() << bundle.artist();
-
-        tokens <<    "%album"    <<    "%year"    <<    "%comment"    <<    "%genre"    << "%track";
-        tags   << bundle.album() << bundle.year() << bundle.comment() << bundle.genre() << bundle.track();
-
-        tokens << QString::null << "%length";                //ignore '-' and '?'
-        tags   << QString::null << ( bundle.length() > 0 ? bundle.prettyLength() : QString::null );
+        MyVector<QString> tags;
+        tags << bundle.prettyTitle();
+        for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
+            tags << bundle.infoByColumn( i, true ).stripWhiteSpace();
 
         const int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
-        tokens <<        "%bitrate"      << "%score";
-        tags   << bundle.prettyBitrate() << ( score > 0 ? QString::number( score ) : QString::null );
-
-        tokens << QString::null << "%playcount";
-        tags   << QString::null << QString::number( CollectionDB::instance()->getPlayCount( bundle.url().path() ) );
-
-        for( int i = 0, n = tags.count(); i < n; ++i )
-            tags[i] = tags[i].stripWhiteSpace();
+        if( score > 0 )
+            tags[PlaylistItem::Score+1] = QString::number( score );
+        tags[PlaylistItem::Playcount+1] = QString::number( CollectionDB::instance()
+                                                           ->getPlayCount( bundle.url().path() ) );
+        if( bundle.length() <= 0 )
+            tags[PlaylistItem::Length+1] = QString::null;
 
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
             QString tag;
-            MyVector<int> availableTags; //eg, ones that aren't null
+            MyVector<int> availableTags; //eg, ones that aren't empty
             static const QValueList<int> parens = //display these in parentheses
-                QValueList<int>() << PlaylistItem::Filename << PlaylistItem::Year   << PlaylistItem::Comment
-                                  << PlaylistItem::Genre    << PlaylistItem::Length << PlaylistItem::Bitrate
-                                  << PlaylistItem::Score    << PlaylistItem::Playcount;
+                QValueList<int>() << PlaylistItem::Playcount << PlaylistItem::Year   << PlaylistItem::Comment
+                                  << PlaylistItem::Genre     << PlaylistItem::Length << PlaylistItem::Bitrate
+                                  << PlaylistItem::Score;
 
             for( int n = Playlist::instance()->visibleColumns(), i = 0, column; i < n; ++i )
             {
@@ -515,9 +504,18 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         }
         else
         {
+            // we special case prettyTitle and put it first
+            // so that we handle things like streams better
+            // keep these 1:1 with the playlist's columns otherwise
+            static const MyVector<QString> tokens =
+                MyVector<QString>() << "%artist - %title" << "%file"     << "%title"     << "%artist"
+                                    << "%album"           << "year"      << "%comment"   << "%genre"
+                                    << "%track"           << "directory" << "length"     << "bitrate"
+                                    << "%score"           << "%type"     << "%playcount";
+
             text = AmarokConfig::osdText();
 
-            for( QValueVector<QString>::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
+            for( MyVector<QString>::ConstIterator tok = tokens.begin(), end = tokens.end(), tag = tags.begin(); tok != end; ++tok, ++tag )
             {
                 if( (*tok).isNull() )
                     continue;
@@ -556,7 +554,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
     }
 
     if( text.isEmpty() )
-        text = MetaBundle::prettyTitle( bundle.url().fileName() );
+        text = MetaBundle::prettyTitle( bundle.url().fileName() ).stripWhiteSpace();
 
     if( text.isEmpty() ) //still
         text = "No information available for this track";
