@@ -17,7 +17,7 @@
 class PlaylistTrackItem;
 class TrackItemInfo;
 
-namespace KIO { class Job; class TransferJob; } //podcast downloads
+namespace KIO { class Job; class TransferJob; class StoredTransferJob; } //podcast downloads
 
 /**
  *  RTTI VALUES
@@ -206,11 +206,15 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
 
 
 
-class PodcastItem : public PlaylistBrowserEntry
+class PodcastItem : public QObject, public PlaylistBrowserEntry
 {
+        Q_OBJECT
+
     public:
         PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml );
 
+        void downloadMedia();
+        bool hasDownloaded() { return m_downloaded; }
         bool hasXml( const QDomNode &xml );
 
         void setNew( bool n = true );
@@ -223,11 +227,19 @@ class PodcastItem : public PlaylistBrowserEntry
         const QString &type() { return m_type; }
         const QString &description() { return m_description; }
         const int     &duration() { return m_duration; }
+        const KURL    &localUrl() { return m_localUrl; }
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
 
+    private slots:
+        void downloadResult( KIO::Job* job );
+        void slotAnimation();
+
     private:
+        void startAnimation();
+        void stopAnimation();
+
         QString     m_author;
         QString     m_description;
         QString     m_date;
@@ -235,6 +247,16 @@ class PodcastItem : public PlaylistBrowserEntry
         QString     m_title;
         QString     m_type;
         KURL        m_url;                         //mp3 url
+        KURL        m_localUrl;
+
+        QPixmap    *m_loading1;
+        QPixmap    *m_loading2;
+        bool        m_fetching;
+        QTimer     *m_animationTimer;
+        bool        m_downloaded;
+
+        //potentially uses a lot of memory - is there a better solution than QByteArray?
+        KIO::StoredTransferJob* m_podcastItemJob;
 
         bool        m_new;
 };
@@ -256,6 +278,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  rescan();
         const KURL &url() { return m_url; }
         const QString &title() { return m_title; }
+        const int timeout() { return m_interval; }
 
         void setXml( QDomNode xml );
         QDomElement xml();
@@ -268,7 +291,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void slotAnimation();
 
     private:
-        enum MediaFetch{ STREAM=0, DOWNLOAD=1 };
+        enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
 
         bool containsItem( QDomElement xml );
         void purge();

@@ -33,12 +33,21 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
     {
         m_streamRadio->setChecked( true );
         m_downloadRadio->setChecked( false );
+        m_downloadRequestRadio->setChecked( false );
+    }
+    else if( fetch == DOWNLOAD )
+    {
+        m_streamRadio->setChecked( false );
+        m_downloadRadio->setChecked( true );
+        m_downloadRequestRadio->setChecked( false );
     }
     else
     {
         m_streamRadio->setChecked( false );
-        m_downloadRadio->setChecked( true );
+        m_downloadRadio->setChecked( false );
+        m_downloadRequestRadio->setChecked( true );
     }
+
 
     m_purgeCheck->setChecked( purge );
     m_purgeCountSpinBox->setValue( purgeCount );
@@ -59,6 +68,7 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
     connect( m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
+    connect( m_downloadRequestRadio,  SIGNAL(clicked()),              SLOT(checkModified()) );
     connect( m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
 
 
@@ -69,10 +79,12 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
 bool
 PodcastSettings::hasChanged()
 {
-    bool fetchTypeChanged = false;
+    bool fetchTypeChanged = true;
 
-    if( m_streamRadio->isChecked() && m_fetch == DOWNLOAD )
-        fetchTypeChanged = true;
+    if( m_streamRadio->isChecked()          && m_fetch == STREAM   ||
+        m_downloadRadio->isChecked()        && m_fetch == DOWNLOAD ||
+        m_downloadRequestRadio->isChecked() && m_fetch == AVAILABLE   )
+        fetchTypeChanged = false;
 
     return ( m_url.prettyURL() != m_urlLine->text() ||
              m_autoScan        != m_autoFetchCheck->isChecked() ||
@@ -105,6 +117,13 @@ PodcastSettings::accept()       //slot
     m_interval        = m_intervalSpinBox->value();
     m_purge           = m_purgeCheck->isChecked();
     m_purgeCount      = m_purgeCountSpinBox->value();
+
+    if( m_streamRadio->isChecked() )
+        m_fetch = STREAM;
+    else if( m_downloadRadio->isChecked() )
+        m_fetch = DOWNLOAD;
+    else
+        m_fetch = AVAILABLE;
 
     QDialog::accept();
 }

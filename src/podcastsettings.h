@@ -34,7 +34,7 @@ class PodcastSettings : public PodcastSettingsDialogBase
         void    checkModified();
 
     private:
-        enum MediaFetch{ STREAM=0, DOWNLOAD=1 };
+        enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
 
         bool    hasChanged();
 

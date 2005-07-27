@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>480</width>
-            <height>270</height>
+            <height>323</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -28,9 +28,9 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="4" column="0">
+        <widget class="QLayoutWidget" row="2" column="0">
             <property name="name">
-                <cstring>layout34</cstring>
+                <cstring>layout32</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -38,15 +38,21 @@
                 </property>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>m_purgeCheck</cstring>
+                        <cstring>m_autoFetchCheck</cstring>
                     </property>
                     <property name="text">
-                        <string>Limit number of episodes</string>
+                        <string>Enable auto-fetching</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>When checked, amaroK will automatically scan the podcast for updates</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>When checked, amaroK will automatically scan the podcast for updates</string>
                     </property>
                 </widget>
                 <spacer>
                     <property name="name">
-                        <cstring>spacer16</cstring>
+                        <cstring>spacer8</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -56,95 +62,124 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>60</width>
+                            <width>156</width>
                             <height>21</height>
                         </size>
                     </property>
                 </spacer>
                 <widget class="QLabel">
                     <property name="name">
-                        <cstring>textLabel8</cstring>
+                        <cstring>textLabel7</cstring>
                     </property>
                     <property name="text">
-                        <string>Keep maximum of:</string>
+                        <string>Fetch interval:</string>
                     </property>
                 </widget>
                 <widget class="QSpinBox">
                     <property name="name">
-                        <cstring>m_purgeCountSpinBox</cstring>
+                        <cstring>m_intervalSpinBox</cstring>
                     </property>
                     <property name="suffix">
-                        <string> Episodes</string>
+                        <string> Hours</string>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
                     </property>
                     <property name="minValue">
                         <number>1</number>
                     </property>
+                    <property name="lineStep">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>1</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>How often checking for updates should occur</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>How often checking for updates should occur</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
-        <widget class="QButtonGroup" row="3" column="0">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>buttonGroup1</cstring>
+                <cstring>layout6</cstring>
             </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="margin">
-                <number>6</number>
-            </property>
-            <property name="title">
-                <string>Media Download</string>
-            </property>
-            <grid>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget" row="0" column="0">
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>layout27</cstring>
+                        <cstring>textLabel9</cstring>
                     </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QRadioButton" row="0" column="0">
-                            <property name="name">
-                                <cstring>m_streamRadio</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Stream on request</string>
-                            </property>
-                        </widget>
-                        <widget class="QRadioButton" row="0" column="2">
-                            <property name="name">
-                                <cstring>m_downloadRadio</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Download when available</string>
-                            </property>
-                        </widget>
-                        <spacer row="0" column="1">
-                            <property name="name">
-                                <cstring>spacer9</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>88</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </grid>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="text">
+                        <string>URL:</string>
+                    </property>
                 </widget>
-            </grid>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>m_urlLine</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Location of the podcast</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Location of the podcast</string>
+                    </property>
+                </widget>
+            </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="7" column="0">
+        <spacer row="1" column="0">
+            <property name="name">
+                <cstring>spacer18_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>31</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="Line" row="8" column="0">
+            <property name="name">
+                <cstring>line6</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="9" column="0">
             <property name="name">
                 <cstring>layout35</cstring>
             </property>
@@ -193,6 +228,9 @@
                     <property name="text">
                         <string>&amp;Cancel</string>
                     </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
                     <property name="autoDefault">
                         <bool>true</bool>
                     </property>
@@ -205,115 +243,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="Line" row="6" column="0">
-            <property name="name">
-                <cstring>line6</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
-            <property name="name">
-                <cstring>layout32</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>m_autoFetchCheck</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Enable auto-fetching</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer8</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>156</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel7</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Fetch interval:</string>
-                    </property>
-                </widget>
-                <widget class="QSpinBox">
-                    <property name="name">
-                        <cstring>m_intervalSpinBox</cstring>
-                    </property>
-                    <property name="suffix">
-                        <string> Hours</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>100</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>1</number>
-                    </property>
-                    <property name="value">
-                        <number>1</number>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>layout6</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel9</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>URL:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>m_urlLine</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <spacer row="5" column="0">
+        <spacer row="7" column="0">
             <property name="name">
                 <cstring>spacer18</cstring>
             </property>
@@ -326,13 +256,79 @@
             <property name="sizeHint">
                 <size>
                     <width>31</width>
-                    <height>30</height>
+                    <height>40</height>
                 </size>
             </property>
         </spacer>
-        <spacer row="1" column="0">
+        <widget class="QLayoutWidget" row="6" column="0">
             <property name="name">
-                <cstring>spacer18_2</cstring>
+                <cstring>layout34</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>m_purgeCheck</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Limit number of items</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>If checked, amaroK will throw away old podcasts</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>If checked, amaroK will throw away old podcasts</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer16</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>38</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel8</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Keep maximum of:</string>
+                    </property>
+                </widget>
+                <widget class="QSpinBox">
+                    <property name="name">
+                        <cstring>m_purgeCountSpinBox</cstring>
+                    </property>
+                    <property name="suffix">
+                        <string> Items</string>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>The maximum number of podcast items to store</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The maximum number of podcast items to store</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer row="5" column="0">
+            <property name="name">
+                <cstring>spacer7_2</cstring>
             </property>
             <property name="orientation">
                 <enum>Vertical</enum>
@@ -342,8 +338,86 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>31</width>
-                    <height>16</height>
+                    <width>20</width>
+                    <height>5</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QButtonGroup" row="4" column="0">
+            <property name="name">
+                <cstring>buttonGroup1</cstring>
+            </property>
+            <property name="lineWidth">
+                <number>1</number>
+            </property>
+            <property name="margin">
+                <number>6</number>
+            </property>
+            <property name="title">
+                <string>Media Download</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>m_downloadRequestRadio</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Download on request</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>m_streamRadio</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Stream on request</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Play media from remote location, but do not save to disk</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Play media from remote location, but do not save to disk</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="2" column="0">
+                    <property name="name">
+                        <cstring>m_downloadRadio</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Download when available</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Download media as soon as it becomes available</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Download media as soon as it becomes available</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer row="3" column="0">
+            <property name="name">
+                <cstring>spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>5</height>
                 </size>
             </property>
         </spacer>

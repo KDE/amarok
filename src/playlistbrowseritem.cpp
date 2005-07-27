@@ -22,6 +22,7 @@
 #include <kiconloader.h>       //smallIcon
 #include <kio/job.h>           //podcast retrieval
 #include <klocale.h>
+#include <kmdcodec.h>          //podcast media saving
 #include <kstandarddirs.h>     //podcast loading icons
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1053,7 +1054,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 {
     stopAnimation();
     if ( !job->error() == 0 ) {
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server" ) );
+        amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
         if( !m_title )
@@ -1070,7 +1071,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 
     if( !d.setContent( xml ) )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data") );
+        amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
 
         if( !m_title )
             setText( 0, m_url.prettyURL() );
@@ -1147,7 +1148,8 @@ PodcastChannel::setXml( QDomNode xml )
     }
 
     QDomNode n = xml.namedItem( "item" );
-
+    uint children = 0;
+    bool downloadMedia = ( m_mediaFetch == AVAILABLE );
     for( ; !n.isNull(); n = n.nextSibling() )
     {
         if( m_updating )
@@ -1161,15 +1163,26 @@ PodcastChannel::setXml( QDomNode xml )
                 !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
+                if( downloadMedia )
+                    updatingLast->downloadMedia();
+
                 updatingLast->setNew();
             }
         }
         else
         {
+            //only download two episodes initially -> current and 1 back issue
+            //Make configurable?
+            if( children > 2 )
+                break;
+
             if( !n.namedItem( "title" ).toElement().text().isEmpty() &&
                 !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 m_last = new PodcastItem( this, m_last, n.toElement() );
+                if( downloadMedia )
+                    m_last->downloadMedia();
+                children++;
             }
         }
 
@@ -1181,7 +1194,7 @@ PodcastChannel::setXml( QDomNode xml )
     if( firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
         setNew();
-        amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved") );
+        amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved!") );
     }
 }
 
@@ -1280,6 +1293,11 @@ PodcastChannel::slotAnimation()
 ////////////////////////////////////////////////////////////////////////////
 PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml )
     : PlaylistBrowserEntry( parent, after )
+      , m_localUrl( 0 )
+      , m_loading1( 0 )
+      , m_loading2( 0 )
+      , m_fetching( false )
+      , m_downloaded( false )
       , m_new( false )
 {
     m_title       = xml.namedItem( "title" ).toElement().text();
@@ -1290,13 +1308,82 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
     m_type        = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
     const QString url   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
-    m_url = KURL::fromPathOrURL( url );
+    m_url         = KURL::fromPathOrURL( url );
+
+    QString savePath = amaroK::saveLocation( "podcasts/data/" );
+
+    savePath += m_title;
+    savePath.replace( " ", "_" );
+    savePath += "_" + m_url.fileName();
+
+    m_localUrl = KURL::fromPathOrURL( savePath );
+
+    debug() << "m_localUrl: " << m_localUrl.prettyURL() << endl;
 
     setText( 0, m_title );
     setPixmap( 0, SmallIcon("player_playlist_2") );
     setDragEnabled( true );
     setRenameEnabled( 0, false );
 }
+
+
+void
+PodcastItem::downloadMedia()
+{
+    setText(0, i18n( "Downloading Media..." ) );
+    m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
+    m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
+    m_animationTimer = new QTimer();
+
+    startAnimation();
+    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+
+    m_podcastItemJob = KIO::storedGet( m_url, false, false );
+
+    amaroK::StatusBar::instance()->newProgressOperation( m_podcastItemJob )
+            .setDescription( i18n( "Downloading Podcast Media" ) );
+
+    connect( m_podcastItemJob, SIGNAL( result( KIO::Job* ) ), SLOT( downloadResult( KIO::Job* ) ) );
+}
+
+void
+PodcastItem::downloadResult( KIO::Job* job ) //SLOT
+{
+    stopAnimation();
+    setText( 0, m_title );
+    if ( !job->error() == 0 ) {
+        amaroK::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
+        debug() << "Unable to retrieve podcast media. KIO Error: " << job->error() << endl;
+
+        setPixmap( 0, SmallIcon("cancel") );
+
+        return;
+    }
+
+    m_downloaded = true;
+
+    ///BEGIN store the file
+    QByteArray ba = m_podcastItemJob->data();
+
+    QString savePath = amaroK::saveLocation( "podcasts/data/" );
+
+    savePath += m_title;
+    savePath.replace( " ", "_" );
+    savePath += "_" + m_url.fileName();
+
+    QFile file( savePath );
+
+    QTextStream stream( &file );
+
+    if( !file.open( IO_WriteOnly ) ) return;
+
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream.writeRawBytes( ba, ba.size() );
+
+    file.close();
+    ///END store the file
+}
+
 
 bool
 PodcastItem::hasXml( const QDomNode& xml )
@@ -1321,6 +1408,31 @@ PodcastItem::setNew( bool n )
     m_new = n;
 }
 
+void
+PodcastItem::startAnimation()
+{
+    if( !m_animationTimer->isActive() )
+        m_animationTimer->start( 100 );
+}
+
+void
+PodcastItem::stopAnimation()
+{
+    m_animationTimer->stop();
+    setPixmap( 0, SmallIcon("player_playlist_2") );
+}
+
+void
+PodcastItem::slotAnimation()
+{
+    static uint iconCounter = 1;
+
+    iconCounter % 2 ?
+        setPixmap( 0, *m_loading1 ):
+        setPixmap( 0, *m_loading2 );
+
+    iconCounter++;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS SmartPlaylist

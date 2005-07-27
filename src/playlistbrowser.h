@@ -141,6 +141,7 @@ class PlaylistBrowser : public QVBox
         int                  m_sortMode;
         QValueList<int>      m_partySizeSave;
         QPtrList<QListViewItem> m_dynamicEntries;
+
 };
 
 

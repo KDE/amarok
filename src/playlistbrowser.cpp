@@ -1580,7 +1580,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamicEnabled() )
+        if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
@@ -1642,7 +1642,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
 
-        if( isDynamicEnabled() )
+        if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
@@ -1777,15 +1777,26 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         #undef item
     }
     else if( isPodcastItem( item ) ) {
-        enum Actions { LOAD };
+        #define item static_cast<PodcastItem*>(item)
+        enum Actions { LOAD, GET };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
+
+        if( item->hasDownloaded() )
+            menu.setItemEnabled( GET, false );
 
         switch( menu.exec( p ) )
         {
             case LOAD:
                 slotDoubleClicked( item );
                 break;
+
+            case GET:
+                static_cast<PodcastItem*>(item)->downloadMedia();
+                break;
         }
+        #undef item
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
@@ -2229,8 +2240,15 @@ void PlaylistBrowserView::startDrag()
 
         else if( isPodcastItem( *it ) )
         {
-            urls += ((PodcastItem*)*it)->url();
-            ((PodcastItem*)*it)->setNew( false );
+            #define item static_cast<PodcastItem *>(*it)
+            if( item->hasDownloaded() )
+                urls += item->localUrl();
+            else
+                urls += item->url();
+
+            item->setNew( false );
+
+            #undef item
         }
         else if( isPodcastChannel( *it ) )
         {
