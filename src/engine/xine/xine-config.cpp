@@ -201,16 +201,26 @@ void XineConfigDialog::showHidePluginConfigs() const
     {
         m_view->alsaGroupBox->show();
         m_view->ossGroupBox->hide();
+        if(XineCfg::outputPlugin() == "alsa")
+            m_view->alsaGroupBox->setEnabled(true);
+        else
+            m_view->alsaGroupBox->setEnabled(false);
     }
     else if(m_view->deviceComboBox->currentText() == "oss")
     {
         m_view->alsaGroupBox->hide();
-        m_view->ossGroupBox->show();        
+        m_view->ossGroupBox->show();
+       if(XineCfg::outputPlugin() == "oss")
+            m_view->ossGroupBox->setEnabled(true);
+        else
+            m_view->ossGroupBox->setEnabled(false); 
     }
     else
     {
         m_view->alsaGroupBox->hide();
         m_view->ossGroupBox->hide();
+        m_view->alsaGroupBox->setEnabled(false);
+        m_view->ossGroupBox->setEnabled(false);
     }
 }
 
