@@ -18,10 +18,8 @@
 #include <knuminput.h>
 #include <kstandarddirs.h>
 
-
 #include <qgroupbox.h>
 #include <qlabel.h>
-#include <qlayout.h>
 #include <qpixmap.h>
 
 #include <xine.h>
