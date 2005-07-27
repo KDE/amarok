@@ -18,10 +18,11 @@
 #include <knuminput.h>
 #include <kstandarddirs.h>
 
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qgroupbox.h>
 
+#include <qgroupbox.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qpixmap.h>
 
 #include <xine.h>
 ////////////////////
@@ -222,6 +223,10 @@ void XineConfigDialog::showHidePluginConfigs() const
         m_view->alsaGroupBox->setEnabled(false);
         m_view->ossGroupBox->setEnabled(false);
     }
+    //the following two lines shouldn't be necessary, layouts are supposed to
+    //to be able to handle show and hides just fine.
+    m_view->adjustSize();
+    m_view->updateGeometry();
 }
 
 bool
