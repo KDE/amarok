@@ -1981,7 +1981,7 @@ bool CurrentTrackJob::doJob()
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( albumImage )
-                    << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
+                    << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                     << values[ i + 1 ] //album.id
                     << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                     << albumYear
