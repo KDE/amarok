@@ -297,18 +297,31 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
    // set the filter coefficients, in case we need to use the equalizer
    switch(pFormat->ulSamplesPerSec)
    {
+      case 8000:
+         iir_cf = iir_cf10_8000;
+         break;
+
       case 11025:
-         iir_cf = iir_cf10_11k_11025;
+         iir_cf = iir_cf10_11025;
+         break;
+         
+      case 16000:
+         iir_cf = iir_cf10_16000;
          break;
          
       case 22050:
-         iir_cf = iir_cf10_22k_22050;
+         iir_cf = iir_cf10_22050;
+         break;
+
+      case 32000:
+         iir_cf = iir_cf10_32000;
          break;
          
       case 48000:
          iir_cf = iir_cf10_48000;
          break;
-         
+
+      case 48100:
       default:
          iir_cf = iir_cf10_44100;
          break;
