@@ -191,6 +191,7 @@ void XineConfigDialog::init()
     add(new XineStrEntry(m_view->chan5LineEdit, "audio.device.alsa_surround51_device", m_xine, this));
     //ossGroupBox
     add(new XineEnumEntry(m_view->ossDeviceComboBox, "audio.device.oss_device_name", m_xine,this));
+    add(new XineEnumEntry(m_view->speakerComboBox, "audio.output.speaker_arrangement", m_xine, this));
     #undef add
 }
 
