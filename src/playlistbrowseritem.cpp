@@ -1310,15 +1310,13 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
 
     m_url         = KURL::fromPathOrURL( url );
 
-    QString savePath = amaroK::saveLocation( "podcasts/data/" );
+    m_localUrlString = amaroK::saveLocation( "podcasts/data/" );
 
-    savePath += m_title;
-    savePath.replace( " ", "_" );
-    savePath += "_" + m_url.fileName();
+    m_localUrlString += m_title;
+    m_localUrlString.replace( " ", "_" );
+    m_localUrlString += "_" + m_url.fileName();
 
-    m_localUrl = KURL::fromPathOrURL( savePath );
-
-    debug() << "m_localUrl: " << m_localUrl.prettyURL() << endl;
+    m_localUrl = KURL::fromPathOrURL( m_localUrlString );
 
     setText( 0, m_title );
     setPixmap( 0, SmallIcon("player_playlist_2") );
@@ -1330,6 +1328,9 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
 void
 PodcastItem::downloadMedia()
 {
+    if( QFile::exists( m_localUrlString ) )
+        return;
+
     setText(0, i18n( "Downloading Media..." ) );
     m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
     m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
@@ -1365,13 +1366,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     ///BEGIN store the file
     QByteArray ba = m_podcastItemJob->data();
 
-    QString savePath = amaroK::saveLocation( "podcasts/data/" );
-
-    savePath += m_title;
-    savePath.replace( " ", "_" );
-    savePath += "_" + m_url.fileName();
-
-    QFile file( savePath );
+    QFile file( m_localUrlString );
 
     QTextStream stream( &file );
 

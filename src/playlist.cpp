@@ -949,6 +949,17 @@ Playlist::queue( QListViewItem *item )
             after = m_currentTrack :
             after = m_nextTracks.last();
 
+        if( !after )
+        {
+            after = firstChild();
+            while( after && !after->isEnabled() )
+            {
+                if( after->nextSibling()->isEnabled() )
+                    break;
+                after = after->nextSibling();
+            }
+        }
+
         if( item->isEnabled() && item != m_currentTrack )
         {
             this->moveItem( item, 0, after );
@@ -1965,7 +1976,15 @@ Playlist::customEvent( QCustomEvent *e )
                 after = m_currentTrack :
                 after = m_nextTracks.last();
 
-            after = (PlaylistItem *)after->itemBelow();
+            if( !after )
+            {
+                after = firstChild();
+                while( after && !after->isEnabled() )
+                    after = after->nextSibling();
+            }
+            else
+                after = (PlaylistItem *)after->itemBelow();
+
             if( after )
             {
                 m_nextTracks.append( after );

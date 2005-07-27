@@ -248,6 +248,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         QString     m_type;
         KURL        m_url;                         //mp3 url
         KURL        m_localUrl;
+        QString     m_localUrlString;              //convenience for QFile()
 
         QPixmap    *m_loading1;
         QPixmap    *m_loading2;
