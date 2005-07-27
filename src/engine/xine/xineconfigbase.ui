@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>358</width>
-            <height>410</height>
+            <height>520</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -144,7 +144,7 @@
                         <cstring>textLabel4_2</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;4 Channel:</string>
+                        <string>&amp;4 Channels:</string>
                     </property>
                     <property name="buddy" stdset="0">
                         <cstring>chan4LineEdit</cstring>
@@ -170,7 +170,7 @@
                         <cstring>chan5Label</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;5 Channel:</string>
+                        <string>&amp;6 Channels:</string>
                     </property>
                     <property name="buddy" stdset="0">
                         <cstring>chan5LineEdit</cstring>
