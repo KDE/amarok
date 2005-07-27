@@ -39,6 +39,9 @@ VERSION 1.3-beta3:
     * Systray tooltip now shows "elapsed time / total time" for the length.
 
   BUGFIXES:
+    * Compilations reported incorrect number of tracks in the Context
+      Browser. (BR 109651)
+    * Track play icon remains even when stopped playing. (BR 107284)
     * Sometimes valid tracks were not submitted to AudioScrobbler. (BR 100278)
     * Current playlist is now being remembered when amaroK crashes. (BR 98689)
     * Playlist-Browser saves its state after each change, so that no data
