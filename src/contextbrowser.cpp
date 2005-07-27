@@ -2320,11 +2320,11 @@ void ContextBrowser::showLyrics( const QString &hash )
             "<div id='lyrics_box' class='box'>"
                 "<div id='lyrics_box-header' class='box-header'>"
                     "<span id='lyrics_box-header-title' class='box-header-title'>"
-                    + i18n( "Lyrics" ) +
+                    + i18n( "Cached Lyrics" ) +
                     "</span>"
                 "</div>"
                 "<div id='lyrics_box-body' class='box-body'>"
-                    + "<h1>CACHED:</h1>" +m_lyrics +
+                    + m_lyrics +
                 "</div>"
             "</div>"
             "</html>"
