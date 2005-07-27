@@ -37,6 +37,7 @@
 #include <klineedit.h>         //rename()
 #include <klocale.h>
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
+#include <kmultipledrag.h>     //dragObject()
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
 #include <kurldrag.h>          //dragObject()
@@ -2228,6 +2229,8 @@ void PlaylistBrowserView::startDrag()
 {
     KURL::List urls;
 
+    KMultipleDrag *drag = new KMultipleDrag( this );
+
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
 
     for( ; it.current(); ++it )
@@ -2270,21 +2273,21 @@ void PlaylistBrowserView::startDrag()
         else if( isSmartPlaylist( *it ) )
         {
             SmartPlaylist *item = (SmartPlaylist*)*it;
-            QString query = item->sqlForTags;
-            if( !query.isEmpty() )
-            {
-                QStringList list = CollectionDB::instance()->query( query );
 
-                for( uint c=10; c < list.count(); c += 11 )
-                    urls += KURL( list[c] );
+            if( !item->sqlForTags.isEmpty() )
+            {
+                QTextDrag *textdrag = new QTextDrag( item->sqlForTags, 0 );
+                textdrag->setSubtype( "amarok-sql" );
+                drag->addDragObject( textdrag );
             }
+
         }
         else if( isPlaylistTrackItem( *it ) )
             urls += ((PlaylistTrackItem*)*it)->url();
     }
 
-    KURLDrag *d = new KURLDrag( urls, viewport() );
-    d->dragCopy();
+    drag->addDragObject( new KURLDrag( urls, viewport() ) );
+    drag->dragCopy();
 
 }
 
