@@ -871,7 +871,7 @@ ContextBrowser::ContructHTMLAlbums(const QStringList & reqResult, QString & html
                                                 "<span class='album-year'>%2</span>"
                                             "</td>")
                                     .args( QStringList()
-                                            << i18n( "Single", "%n Tracks",  albumValues.count() / 7 )
+                                            << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                                             << albumYear) );
                     break;
                 }
@@ -1854,7 +1854,7 @@ bool CurrentTrackJob::doJob()
                     << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                     << i18n( "Click for information from amazon.com, right-click for menu." )
                     << escapeHTMLAttr( albumImage )
-                    << i18n( "Single", "%n Tracks",  albumValues.count() / 5 )
+                    << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                     << QString::number( artist_id )
                     << values[ i + 1 ] //album.id
                     << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
