@@ -508,10 +508,10 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             // so that we handle things like streams better
             // keep these 1:1 with the playlist's columns otherwise
             static const MyVector<QString> tokens =
-                MyVector<QString>() << "%artist - %title" << "%file"     << "%title"     << "%artist"
-                                    << "%album"           << "year"      << "%comment"   << "%genre"
-                                    << "%track"           << "directory" << "length"     << "bitrate"
-                                    << "%score"           << "%type"     << "%playcount";
+                MyVector<QString>() << "%artist - %title" << "%file"      << "%title"      << "%artist"
+                                    << "%album"           << "%year"      << "%comment"    << "%genre"
+                                    << "%track"           << "%directory" << "%length"     << "%bitrate"
+                                    << "%score"           << "%type"      << "%playcount";
 
             text = AmarokConfig::osdText();
 
