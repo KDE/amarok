@@ -134,7 +134,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
                          new NavButton( m_pFrameButtons, "next", ac->action( "next" ) );
 
         KPushButton *switchView = new KPushButton( KGuiItem( "", "mini_dock" ), m_pFrameButtons );
-        switchView->setFixedWidth( switchView->width() / 4 ); // too big!
+        switchView->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed ); // too big!
+        switchView->setFocusPolicy( QWidget::NoFocus );
         connect( switchView, SIGNAL( clicked() ), SLOT( toggleView() ) );
 
 
