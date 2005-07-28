@@ -3012,7 +3012,6 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
-    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLyrics );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBitrate );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
@@ -3109,7 +3108,6 @@ QueryBuilder::valueName( int value )
     if ( value & valTrack )       values += "track";
     if ( value & valScore )       values += "percentage";
     if ( value & valComment )     values += "comment";
-    if ( value & valLyrics )      values += "lyrics";
     if ( value & valBitrate )     values += "bitrate";
     if ( value & valLength )      values += "length";
     if ( value & valSamplerate )  values += "samplerate";
