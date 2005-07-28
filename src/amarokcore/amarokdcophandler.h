@@ -49,11 +49,12 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual QString artist();
       virtual QString bitrate();
       virtual QString comment();
-      virtual QString lyrics();
       virtual QString coverImage();
       virtual QString currentTime();
       virtual QString encodedURL();
       virtual QString genre();
+      virtual QString lyrics();
+      virtual QString lyricsByPath( QString path );
       virtual QString nowPlaying();
       virtual QString path();
       virtual QString setContextStyle(const QString&);

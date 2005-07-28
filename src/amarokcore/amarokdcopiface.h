@@ -52,11 +52,12 @@ k_dcop:
    virtual QString artist() = 0;                            ///< Return the artist of the currently playing track.
    virtual QString bitrate() = 0;                           ///< Return the bitrate of the currently playing track (XX kbps).
    virtual QString comment() = 0;                           ///< Return the comment of the currently playing track.
-   virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
    virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
+   virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
+   virtual QString lyricsByPath( QString path ) = 0;   ///< Return the lyrics of a track by path.
 
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
