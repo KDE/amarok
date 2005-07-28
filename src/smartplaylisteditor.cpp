@@ -479,7 +479,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QD
             }
             case Date:
             {
-                if( condition == i18n("is in the last") ) {
+                if( condition == i18n("is in the last") || condition == i18n("is not in the last") ) {
                     m_intSpinBox1->setValue( values.first().toInt() );
                     QString period = criteria.attribute("period");
                     if (period=="days")
@@ -533,7 +533,7 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
             break;
          case Date:
          {
-            if( condition == i18n("is in the last") ) {
+            if( condition == i18n("is in the last") || condition == i18n("is not in the last") ) {
                 values << QString::number( m_intSpinBox1->value() );
                 // 0 = days; 1=months; 2=years
                 criteria.setAttribute( "period", !m_dateCombo->currentItem() ? "days" : (m_dateCombo->currentItem() == 1 ? "months" : "years") );
@@ -583,7 +583,7 @@ QString CriteriaEditor::getSearchCriteria()
             break;
         case Date:
         {
-            if( criteria == i18n("is in the last") ) {
+            if( criteria == i18n("is in the last") || criteria == i18n("is not in the last") ) {
                 int n = m_intSpinBox1->value();
                 int time;
                 if( m_dateCombo->currentItem() == 0 ) //days
@@ -644,6 +644,8 @@ QString CriteriaEditor::getSearchCriteria()
         searchCriteria += " < " + value;
     else if( criteria == i18n("is between") || criteria == i18n("is in the last") )
         searchCriteria += " BETWEEN " + value;
+    else if( criteria == i18n("is not in the last") )
+        searchCriteria += " NOT BETWEEN " + value;
 
     return searchCriteria;
 }
@@ -704,8 +706,10 @@ void CriteriaEditor::loadEditWidgets()
     if( m_currentValueType == valueType && !(
         m_criteriaCombo->currentText() == i18n( "is between" ) ||
         m_criteriaCombo->currentText() == i18n( "is in the last" ) ||
+        m_criteriaCombo->currentText() == i18n( "is not in the last" ) ||
         m_lastCriteria == i18n( "is between" ) ||
-        m_lastCriteria == i18n( "is in the last" ) ) )
+        m_lastCriteria == i18n( "is in the last" ) ||
+        m_lastCriteria == i18n( "is not in the last" ) ) )
         return;
 
     /* Store lastCriteria. This information is used above to decide whether it's necessary to change the Widgets */
@@ -768,7 +772,8 @@ void CriteriaEditor::loadEditWidgets()
 
         case Date:
         {
-            if( m_criteriaCombo->currentText() == i18n("is in the last") ) {
+            if( m_criteriaCombo->currentText() == i18n("is in the last") ||
+                m_criteriaCombo->currentText() == i18n("is not in the last") ) {
                 m_intSpinBox1 = new KIntSpinBox( m_editBox );
                 m_intSpinBox1->setMinValue( 1 );
                 m_intSpinBox1->show();
@@ -822,7 +827,7 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
         case Year: //fall through
         case Date:
             items << i18n( "is" ) << i18n( "is not" ) << i18n( "is before" ) << i18n( "is after" )
-                  << i18n( "is in the last" ) << i18n( "is between" );
+                  << i18n( "is in the last" ) << i18n( "is not in the last" ) << i18n( "is between" );
             break;
         default: ;
     };
