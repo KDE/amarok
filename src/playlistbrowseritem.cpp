@@ -21,6 +21,7 @@
 
 #include <kiconloader.h>       //smallIcon
 #include <kio/job.h>           //podcast retrieval
+#include <kio/jobclasses.h>    //podcast retrieval
 #include <klocale.h>
 #include <kmdcodec.h>          //podcast media saving
 #include <kstandarddirs.h>     //podcast loading icons
@@ -1338,8 +1339,9 @@ PodcastItem::downloadMedia()
 
     startAnimation();
     connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+    KURL::List list( m_url );
 
-    m_podcastItemJob = KIO::storedGet( m_url, false, false );
+    m_podcastItemJob = new KIO::CopyJob( list, m_localUrl, KIO::CopyJob::Copy, false, true );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastItemJob )
             .setDescription( i18n( "Downloading Podcast Media" ) );
@@ -1362,21 +1364,6 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
     }
 
     m_downloaded = true;
-
-    ///BEGIN store the file
-    QByteArray ba = m_podcastItemJob->data();
-
-    QFile file( m_localUrlString );
-
-    QTextStream stream( &file );
-
-    if( !file.open( IO_WriteOnly ) ) return;
-
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
-    stream.writeRawBytes( ba, ba.size() );
-
-    file.close();
-    ///END store the file
 }
 
 

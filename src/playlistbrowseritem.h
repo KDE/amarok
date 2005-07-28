@@ -17,7 +17,7 @@
 class PlaylistTrackItem;
 class TrackItemInfo;
 
-namespace KIO { class Job; class TransferJob; class StoredTransferJob; } //podcast downloads
+namespace KIO { class Job; class TransferJob; class CopyJob; } //podcast downloads
 
 /**
  *  RTTI VALUES
@@ -256,8 +256,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         QTimer     *m_animationTimer;
         bool        m_downloaded;
 
-        //potentially uses a lot of memory - is there a better solution than QByteArray?
-        KIO::StoredTransferJob* m_podcastItemJob;
+        KIO::CopyJob* m_podcastItemJob;
 
         bool        m_new;
 };
