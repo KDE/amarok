@@ -1018,23 +1018,62 @@ void ContextBrowser::showHomeBySongs()
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
     qb.setLimit( 0, 10 );
-    QStringList recent = qb.run();
+    QStringList lastplayed = qb.run();
 
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
     qb.setLimit( 0, 10 );
-    QStringList least = qb.run();
+    QStringList newest = qb.run();
 
     m_homePage->begin();
     m_HTMLSource="";
     m_homePage->setUserStyleSheet( m_styleSheet );
+
+    // <Recent Tracks Information>
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='newest_box' class='box'>"
+                "<div id='newest_box-header' class='box-header'>"
+                    "<span id='newest_box-header-title' class='box-header-title'>"
+                    + i18n( "Recently Played Tracks" ) +
+                    "</span>"
+                "</div>"
+                "<div id='newest_box-body' class='box-body'>" );
+
+    for( uint i = 0; i < lastplayed.count(); i = i + 4 )
+    {
+        m_HTMLSource.append(
+                 "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<div class='song'>"
+                        "<a href=\"file:" + lastplayed[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                        "<span class='song-title'>" + lastplayed[i] + "</span><br />"
+                        "<span class='song-artist'>" + lastplayed[i + 2] + "</span>"
+                    );
+
+        if ( !lastplayed[i + 3].isEmpty() )
+            m_HTMLSource.append(
+                "<span class='song-separator'>"
+                + i18n("&#xa0;&#8211 ") +
+                "</span><span class='song-album'>" + lastplayed[i + 3] + "</span>"
+                        );
+
+        m_HTMLSource.append(
+                        "</a>"
+                    "</div>"
+                    "</div>");
+    }
+    m_HTMLSource.append(
+                "</div>"
+            "</div>");
+
+    // </Recent Tracks Information>
+
 
     // <Favorite Tracks Information>
     m_HTMLSource.append(
@@ -1096,8 +1135,8 @@ void ContextBrowser::showHomeBySongs()
 
     // </Favorite Tracks Information>
 
+    // <Newest Tracks Information>
     m_HTMLSource.append(
-    // <Recent Tracks Information>
             "<div id='newest_box' class='box'>"
                 "<div id='newest_box-header' class='box-header'>"
                     "<span id='newest_box-header-title' class='box-header-title'>"
@@ -1106,21 +1145,21 @@ void ContextBrowser::showHomeBySongs()
                 "</div>"
                 "<div id='newest_box-body' class='box-body'>" );
 
-    for( uint i = 0; i < recent.count(); i = i + 4 )
+    for( uint i = 0; i < newest.count(); i = i + 4 )
     {
         m_HTMLSource.append(
                  "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
                     "<div class='song'>"
-                        "<a href=\"file:" + recent[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                        "<span class='song-title'>" + recent[i] + "</span><br />"
-                        "<span class='song-artist'>" + recent[i + 2] + "</span>"
+                        "<a href=\"file:" + newest[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                        "<span class='song-title'>" + newest[i] + "</span><br />"
+                        "<span class='song-artist'>" + newest[i + 2] + "</span>"
                     );
 
-        if ( !recent[i + 3].isEmpty() )
+        if ( !newest[i + 3].isEmpty() )
             m_HTMLSource.append(
                 "<span class='song-separator'>"
                 + i18n("&#xa0;&#8211 ") +
-                "</span><span class='song-album'>" + recent[i + 3] + "</span>"
+                "</span><span class='song-album'>" + newest[i + 3] + "</span>"
                         );
 
         m_HTMLSource.append(
@@ -1130,67 +1169,10 @@ void ContextBrowser::showHomeBySongs()
     }
     m_HTMLSource.append(
                 "</div>"
-            "</div>");
+            "</div>"
+            "</html>" );
 
-    // </Recent Tracks Information>
-
-    // <Songs least listened Information>
-    m_HTMLSource.append(
-            "<div id='least_box' class='box'>"
-                "<div id='least_box-header' class='box-header'>"
-                    "<span id='least_box-header-title' class='box-header-title'>"
-                    + i18n( "Least Played Tracks" ) +
-                    "</span>"
-                "</div>"
-                "<div id='least_box-body' class='box-body'>" );
-
-    if ( least.count() == 0 )
-    {
-        m_HTMLSource.append(
-                    "<div class='info'><p>" +
-                    i18n( "A list of songs, which you have not played for a long time, will appear here." ) +
-                    "</p></div>"
-                           );
-    }
-    else
-    {
-        QDateTime lastPlay = QDateTime();
-        for( uint i = 0; i < least.count(); i = i + 5 )
-        {
-            lastPlay.setTime_t( least[i + 4].toUInt() );
-            m_HTMLSource.append(
-                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                        "<div class='song'>"
-                            "<a href=\"file:" + least[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                            "<span class='song-title'>" + least[i] + "</span><br />"
-                            "<span class='song-artist'>" + least[i + 2] + "</span>"
-                        );
-
-            if ( !least[i + 3].isEmpty() )
-                m_HTMLSource.append(
-                    "<span class='song-separator'>"
-                    + i18n("&#xa0;&#8211; ") +
-                    "</span><span class='song-album'>" + least[i + 3] + "</span>"
-                            );
-
-            m_HTMLSource.append(
-                            "<br /><span class='song-time'>" + i18n( "Last played: %1" ).arg( verboseTimeSince( lastPlay ) ) + "</span>"
-                            "</a>"
-                        "</div>"
-                    "</div>");
-        }
-
-        m_HTMLSource.append(
-                "</div>" );
-    }
-
-    m_HTMLSource.append(
-                    "</div>"
-        //"</div>"
-    "</html>"
-                        );
-
-    // </Songs least listened Information>
+    // </Newest Tracks Information>
 }
 
 
