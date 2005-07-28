@@ -93,12 +93,11 @@ XineEngine::~XineEngine()
             const int sleep = int(D * (-log10( v + 1 ) + 2));
 
             ::usleep( sleep );
-//             debug() << v << ": " << sleep << "us\n";
         }
         xine_stop( m_stream );
     }
 
-    xine_config_save( m_xine, configPath() );
+    if( m_xine )       xine_config_save( m_xine, configPath() );
 
     if( m_stream )     xine_close( m_stream );
     if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
@@ -716,8 +715,8 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         explain:
 
             // Don't flood the user with error messages
-            if((last_error_time + 10) > time(&current) &&
-               data->type == last_error)
+            if( (last_error_time + 10) > time( &current ) &&
+                   data->type == last_error )
             {
                 last_error_time = current;
                 return;
@@ -725,7 +724,7 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
             last_error_time = current;
             last_error = data->type;
 
-             if(data->explanation)
+            if( data->explanation )
             {
                 message.prepend( "<b>" );
                 message += "</b>:<p>";
@@ -797,7 +796,7 @@ Fader::~Fader()
 {
      wait();
 
-     debug() << k_funcinfo << endl;
+     DEBUG_FUNC_INFO
 
      xine_close( m_decrease );
      xine_dispose( m_decrease );
