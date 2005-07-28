@@ -158,6 +158,8 @@ PlaylistBrowser::polish()
 
     DEBUG_BLOCK
 
+    amaroK::OverrideCursor allocate_on_stack;
+
     QVBox::polish();
 
     m_polished = true;
@@ -237,9 +239,7 @@ PlaylistBrowser::~PlaylistBrowser()
 
     AmarokConfig::setDynamicCustomList( list );
 
-    KConfig *config = kapp->config();
-
-    config->setGroup( "PlaylistBrowser" );
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
     config->writeEntry( "View", m_viewMode );
     config->writeEntry( "Sorting", m_sortMode );
 
