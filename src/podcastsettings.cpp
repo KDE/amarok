@@ -26,27 +26,32 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
     KWin::setState( winId(), NET::SkipTaskbar );
 
     m_urlLine->setText( url.prettyURL() );
-    m_autoFetchCheck->setChecked( autoScan );
     m_intervalSpinBox->setValue( interval );
 
-    if( fetch == STREAM )
+    //NOT IMPLEMENTED, SO DISABLE
+    m_autoFetchCheck->setChecked( false /*autoScan*/ );
+    m_autoFetchCheck->setEnabled( false );
+    m_intervalSpinBox->setEnabled( false );
+
+    if( fetch == DOWNLOAD )
     {
+        m_downloadRequestRadio->setChecked( true );
+        m_streamRadio->setChecked( false );
+        m_downloadRadio->setChecked( false );
+    }
+    else if( fetch == STREAM )
+    {
+        m_downloadRequestRadio->setChecked( false );
         m_streamRadio->setChecked( true );
         m_downloadRadio->setChecked( false );
-        m_downloadRequestRadio->setChecked( false );
     }
-    else if( fetch == DOWNLOAD )
+    else if( fetch == AVAILABLE )
     {
+        m_downloadRequestRadio->setChecked( false );
         m_streamRadio->setChecked( false );
         m_downloadRadio->setChecked( true );
-        m_downloadRequestRadio->setChecked( false );
     }
-    else
-    {
-        m_streamRadio->setChecked( false );
-        m_downloadRadio->setChecked( false );
-        m_downloadRequestRadio->setChecked( true );
-    }
+
 
 
     m_purgeCheck->setChecked( purge );
@@ -81,9 +86,10 @@ PodcastSettings::hasChanged()
 {
     bool fetchTypeChanged = true;
 
-    if( m_streamRadio->isChecked()          && m_fetch == STREAM   ||
-        m_downloadRadio->isChecked()        && m_fetch == DOWNLOAD ||
-        m_downloadRequestRadio->isChecked() && m_fetch == AVAILABLE   )
+    if( m_downloadRequestRadio->isChecked() && m_fetch == DOWNLOAD  ||
+        m_streamRadio->isChecked()          && m_fetch == STREAM    ||
+        m_downloadRadio->isChecked()        && m_fetch == AVAILABLE  )
+
         fetchTypeChanged = false;
 
     return ( m_url.prettyURL() != m_urlLine->text() ||
@@ -120,7 +126,7 @@ PodcastSettings::accept()       //slot
 
     if( m_streamRadio->isChecked() )
         m_fetch = STREAM;
-    else if( m_downloadRadio->isChecked() )
+    else if( m_downloadRequestRadio->isChecked() )
         m_fetch = DOWNLOAD;
     else
         m_fetch = AVAILABLE;

@@ -1341,7 +1341,7 @@ PodcastItem::downloadMedia()
     connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( m_url );
 
-    m_podcastItemJob = new KIO::CopyJob( list, m_localUrl, KIO::CopyJob::Copy, false, true );
+    m_podcastItemJob = new KIO::CopyJob( list, m_localUrl, KIO::CopyJob::Copy, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastItemJob )
             .setDescription( i18n( "Downloading Podcast Media" ) );
