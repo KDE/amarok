@@ -225,7 +225,10 @@
                         <cstring>textLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Speaker Arrangement:</string>
+                        <string>Speaker &amp;arrangement:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>speakerComboBox</cstring>
                     </property>
                 </widget>
                 <widget class="QComboBox">
@@ -240,7 +243,7 @@
                 <cstring>groupBox1</cstring>
             </property>
             <property name="title">
-                <string>HTTP Proxy</string>
+                <string>HTTP Proxy for Streaming</string>
             </property>
             <vbox>
                 <property name="name">
@@ -356,8 +359,4 @@
     <include location="local" impldecl="in declaration">plugin/pluginconfig.h</include>
 </includes>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kcombobox.h</includehint>
-    <includehint>knuminput.h</includehint>
-</includehints>
 </UI>
