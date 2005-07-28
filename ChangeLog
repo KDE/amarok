@@ -5,7 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3-beta3:
   FEATURES:
-    * New "not in the last" option for the date fields in Smart Playlists
+    * New "not in the last" option for the date fields in Smart Playlists.
       (BR 107725)
     * New OSD tokens: %directory and %type (shows whether it's a stream, or
       otherwise the extension).
@@ -26,7 +26,7 @@ VERSION 1.3-beta3:
     * Miniature player window for the minimalists out there! (BR 85876)
     * "Stop Playing After Track" now also works for queued tracks.
     * "Open in External Browser" button for Lyrics Tab, patch from Nick
-      Tryon (Dhraakellian) <dhraak@gmail.com>
+      Tryon (Dhraakellian). <dhraak@gmail.com>
     * Funky shadow effect for the album cover @ Context-Browser and OSD.
       (BR 108334)
     * Create playlists by dragging tracks onto the Playlist Category in the
@@ -63,7 +63,7 @@ VERSION 1.3-beta3:
       context browser. (BR 98797)
     * xine-engine: pre-amp for the equalizer works now. (BR 104882)
     * Crash when changing the number of minimum upcoming tracks right after
-      starting amaroK (BR 108251)
+      starting amaroK. (BR 108251)
 
 
 VERSION 1.3-beta2:
