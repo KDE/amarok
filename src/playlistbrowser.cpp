@@ -150,6 +150,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     setMinimumWidth( m_toolbar->sizeHint().width() );
 }
 
+
 void
 PlaylistBrowser::polish()
 {
@@ -219,38 +220,40 @@ PlaylistBrowser::polish()
 
 PlaylistBrowser::~PlaylistBrowser()
 {
-    if( !m_polished )
-       return;
+    DEBUG_BLOCK
 
-    // <markey> Not sure if these calls are still needed, now that we're saving
-    //          the state after each change.
-    savePlaylists();
-    savePodcasts();
-    saveStreams();
-    saveSmartPlaylists();
-    saveDynamics();
-
-    QStringList list;
-    for( uint i=0; i < m_dynamicEntries.count(); i++ )
+    if( m_polished )
     {
-        QListViewItem *item = m_dynamicEntries.at( i );
-        list.append( item->text(0) );
+        // <markey> Not sure if these calls are still needed, now that we're saving
+        //          the state after each change.
+        savePlaylists();
+        savePodcasts();
+        saveStreams();
+        saveSmartPlaylists();
+        saveDynamics();
+
+        QStringList list;
+        for( uint i=0; i < m_dynamicEntries.count(); i++ )
+        {
+            QListViewItem *item = m_dynamicEntries.at( i );
+            list.append( item->text(0) );
+        }
+
+        AmarokConfig::setDynamicCustomList( list );
+
+        KConfig *config = amaroK::config( "PlaylistBrowser" );
+        config->writeEntry( "View", m_viewMode );
+        config->writeEntry( "Sorting", m_sortMode );
+
+        // Save open/closed state of each listview item
+        QValueList<int> stateList;
+        QListViewItemIterator it( m_listview );
+        while ( it.current() ) {
+            stateList.append( it.current()->isOpen() ? 1 : 0 );
+            ++it;
+        }
+        config->writeEntry( "Item State", stateList );
     }
-
-    AmarokConfig::setDynamicCustomList( list );
-
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-    config->writeEntry( "View", m_viewMode );
-    config->writeEntry( "Sorting", m_sortMode );
-
-    // Save open/closed state of each listview item
-    QValueList<int> stateList;
-    QListViewItemIterator it( m_listview );
-    while ( it.current() ) {
-        stateList.append( it.current()->isOpen() ? 1 : 0 );
-        ++it;
-    }
-    config->writeEntry( "Item State", stateList );
 }
 
 
