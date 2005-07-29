@@ -37,7 +37,10 @@ void
 amaroK::Slider::wheelEvent( QWheelEvent *e )
 {
     uint step = e->delta() / 18;
+    // Volume Slider
     if( orientation() == Vertical ) step = -step;
+    // Position Slider
+    else step = step * 1500;
     QSlider::setValue( QSlider::value() + step );
 
     emit sliderReleased( value() );
