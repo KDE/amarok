@@ -901,7 +901,7 @@ void
 Playlist::playCurrentTrack()
 {
     if ( !currentTrack() )
-        playNextTrack(false);
+        playNextTrack( AmarokConfig::repeatTrack() ? true : false );
 
     //we must do this even if the above is correct
     //since the engine is not loaded the first time the user presses play
@@ -1007,8 +1007,9 @@ void Playlist::setStopAfterCurrent( bool on )
     else
         m_stopAfterTrack = 0;
 
-    setCurrentTrackPixmap();
-    if( prev_stopafter && m_nextTracks.containsRef( prev_stopafter ) )
+    if( m_stopAfterTrack )
+        m_stopAfterTrack->repaint();
+    if( prev_stopafter )
         prev_stopafter->repaint();
 }
 
@@ -2889,9 +2890,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         if( m_stopAfterTrack == item )
             m_stopAfterTrack = 0;
         else
+        {
             m_stopAfterTrack = item;
+            item->repaint();
+        }
 
-        setCurrentTrackPixmap();
         if( prev_stopafter )
             prev_stopafter->repaint();
         break;
@@ -3277,7 +3280,8 @@ Playlist::slotGlowTimer() //SLOT
 void
 Playlist::slotRepeatTrackToggled( bool /* enabled */ )
 {
-    setCurrentTrackPixmap();
+    if( m_currentTrack )
+        m_currentTrack->repaint();
 }
 
 void

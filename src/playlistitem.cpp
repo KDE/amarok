@@ -24,6 +24,7 @@
 #include <kfilemetainfo.h>
 #include <kiconloader.h>
 #include <kstringhandler.h>
+#include <kglobal.h>
 #include "metabundle.h"
 #include "playlistitem.h"
 #include <qpainter.h>
@@ -279,7 +280,6 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     //TODO add spacing on either side of items
     //p->translate( 2, 0 ); width -= 3;
 
-    const int playNext = listView()->m_nextTracks.findRef( this ) + 1;
     const bool isCurrent = this == listView()->currentTrack();
 
     if( isCurrent && !isSelected() )
@@ -354,7 +354,7 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
             }
             paint.setFont( font );
             paint.setPen( glowText );
-            const int _width = width - leftMargin - margin + minbearing - 1;
+            const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary *shrug*
             const QString _text = KStringHandler::rPixelSqueeze( text( column ), p->fontMetrics(), _width );
             paint.drawText( leftMargin, 0, _width, height(), align, _text );
 
@@ -374,81 +374,98 @@ void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, in
     }
 
     /// Track action symbols
-    const bool stopafter   = ( this == listView()->m_stopAfterTrack );
-    const bool repeatTrack = AmarokConfig::repeatTrack() && isCurrent;
+    const int  queue       = listView()->m_nextTracks.findRef( this ) + 1;
+    const bool stop        = ( this == listView()->m_stopAfterTrack );
+    const bool repeat      = AmarokConfig::repeatTrack() && isCurrent;
+
+    const uint num = ( queue ? 1 : 0 ) + ( stop ? 1 : 0 ) + ( repeat ? 1 : 0 );
+
+    static const QPixmap pixstop   = amaroK::getPNG(  "currenttrack_stop_small"  ),
+                         pixrepeat = amaroK::getPNG( "currenttrack_repeat_small" );
 
     //figure out if we are in the actual physical first column
-    if( column == listView()->m_firstColumn && (playNext || stopafter || repeatTrack ) )
+    if( column == listView()->m_firstColumn && num )
     {
-        const uint w = 16;
-        const uint h = height() - 2;
-        uint currentWidth = 0;
+        //margin, height
+        const uint m = 2, h = height() - m;
 
-        if( isCurrent ) currentWidth = 8;
-        QString str;
+        const QString str = QString::number( queue );
 
-        if( playNext )
-            str = QString::number( playNext );
+        const uint qw = p->fontMetrics().width( str ), sw = pixstop.width(),  rw = pixrepeat.width(),
+                   qh = p->fontMetrics().height(),     sh = pixstop.height(), rh = pixrepeat.height();
 
-        uint fw = p->fontMetrics().width( str ) + 2;
+        //maxwidth
+        const uint mw = kMax( qw, kMax( rw, sw ) );
 
-        if( stopafter )
-            fw = fw + currentWidth + 10;
+        //width of first & second column of pixmaps
+        const uint w1 = ( num == 3 ) ? kMax( qw, rw )
+                      : ( num == 2 && isCurrent ) ? kMax( repeat ? rw : 0, kMax( stop ? sw : 0, queue ? qw : 0 ) )
+                      : ( num == 2 ) ? qw
+                      : queue ? qw : repeat ? rw : stop ? sw : 0,
+                   w2 = ( num == 3 ) ? sw
+                      : ( num == 2 && !isCurrent ) ? sw
+                      : 0; //phew
 
-        if( repeatTrack )
-            fw = fw + currentWidth + 10;
-
+        //ellipse width, total width
+        const uint ew = 16, tw = w1 + w2 + m * ( w2 ? 2 : 1 );
         p->setBrush( cg.highlight() );
         p->setPen( cg.highlight().dark() ); //TODO blend with background color
-        p->drawEllipse( width - fw - w/2, 1, w, h );
-        p->drawRect( width - fw, 1, fw, h );
+        p->drawEllipse( width - tw - ew/2, m / 2, ew, h );
+        p->drawRect( width - tw, m / 2, tw, h );
         p->setPen( cg.highlight() );
-        p->drawLine( width - fw, 2, width - fw, h - 1 );
+        p->drawLine( width - tw, m/2 + 1, width - tw, h - m/2 );
 
-        //draw the shadowed inner text
-        //NOTE we can't set an arbituary font size or family, these settings are already optional
-        //and user defaults should also take presidence if no playlist font has been selected
-        //const QFont smallFont( "Arial", (playNext > 9) ? 9 : 12 );
-        //p->setFont( smallFont );
-        //TODO the shadow is hard to do well when using a dark font color
-        //TODO it also looks cluttered for small font sizes
-        //p->setPen( cg.highlightedText().dark() );
-        //p->drawText( width - w + 2, 3, w, h-1, Qt::AlignCenter, str );
-        fw += 2; //add some more padding
-        if( stopafter )
+        int x = width - m - mw, y = height() / 2, tmp = 0;
+        const bool multi = ( isCurrent && num >= 2 );
+        if( queue )
         {
-            static const QPixmap pix = amaroK::getPNG( "currenttrack_stop_small" );
+            //draw the shadowed inner text
+            //NOTE we can't set an arbituary font size or family, these settings are already optional
+            //and user defaults should also take presidence if no playlist font has been selected
+            //const QFont smallFont( "Arial", (playNext > 9) ? 9 : 12 );
+            //p->setFont( smallFont );
+            //TODO the shadow is hard to do well when using a dark font color
+            //TODO it also looks cluttered for small font sizes
+            //p->setPen( cg.highlightedText().dark() );
+            //p->drawText( width - w + 2, 3, w, h-1, Qt::AlignCenter, str );
 
-            uint top = (height() - 8) / 2;
-
-            if( repeatTrack )
-                 top = (height() - 16) / 2 - 1;
-
-            p->drawPixmap( QRect( width - fw + 1, top, 8, 8 ), pix );
-
-            if( !repeatTrack )
-                fw = fw - currentWidth - 10;
-        }
-        if( repeatTrack ) //only occurs on isCurrent
-        {
-            static const QPixmap pix = amaroK::getPNG( "currenttrack_repeat_small" );
-
-            uint top  = (height() - 8) / 2;
-            uint left = width - fw + 1;
-
-            if( stopafter )
-            {
-                 top  = (height() - 16) / 2 + 9;
-                 left = 0;
-            }
-
-            p->drawPixmap( QRect( left, top, 8, 8 ), pix );
-            fw = fw - currentWidth - 10;
-        }
-        if( playNext )
-        {
+            if( !multi )
+                tmp = -(qh / 2);
+            y += tmp;
             p->setPen( cg.highlightedText() );
-            p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
+            p->drawText( x, y, -x + width, multi ? h/2 : qh, Qt::AlignCenter, str );
+            y -= tmp;
+            if( isCurrent )
+                y -= height() / 2;
+            else
+                x -= m + w2;
+        }
+        if( repeat )
+        {
+            if( multi )
+                tmp = (h/2 - rh)/2 + ( num == 2 && stop ? 0 : 1 );
+            else
+                tmp = -(rh / 2);
+            y += tmp;
+            p->drawPixmap( x, y, pixrepeat );
+            y -= tmp;
+            if( num == 3 )
+            {
+                x -= m + w2 + 2;
+                y = height() / 2;
+            }
+            else
+                y -= height() / 2;
+        }
+        if( stop )
+        {
+            if( multi && num != 3 )
+                tmp = m + (h/2 - sh)/2;
+            else
+                tmp = -(sh / 2);
+            y += tmp;
+            p->drawPixmap( x, y, pixstop );
+            y -= tmp;
         }
     }
 
