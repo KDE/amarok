@@ -469,6 +469,9 @@ CollectionView::renderView()  //SLOT
         }
         // we sort because of the items which should begin with 'the' are at the 't' location
         setSorting( 0 );
+        sort();
+        // we then disable it, as we don't want the childs being sorted later as well
+        setSorting( -1 );
     }
 
 }

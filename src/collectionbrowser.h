@@ -121,7 +121,7 @@ class CollectionView : public KListView
         void enableCat3Menu( bool );
         void invokeItem( QListViewItem* );
         void rmbPressed( QListViewItem*, const QPoint&, int );
-		void selectAll() {QListView::selectAll(true); }
+        void selectAll() {QListView::selectAll(true); }
         /** Tries to download the cover image from Amazon.com */
         void fetchCover();
         /** Shows dialog with information on selected track */
