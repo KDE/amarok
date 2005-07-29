@@ -92,7 +92,8 @@ PodcastSettings::hasChanged()
 
         fetchTypeChanged = false;
 
-    return ( m_url.prettyURL() != m_urlLine->text() ||
+    return  !m_urlLine->text().isEmpty() &&
+           ( m_url.prettyURL() != m_urlLine->text() ||
              m_autoScan        != m_autoFetchCheck->isChecked() ||
              m_interval        != m_intervalSpinBox->value() ||
              m_purge           != m_purgeCheck->isChecked() ||
