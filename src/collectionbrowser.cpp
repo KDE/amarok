@@ -663,9 +663,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             else if( item->parent()->text( 0 ) != i18n( "Various Artists" ) )
             {
                 tmptext = item->parent()->text( 0 );
+                QStringList matches( item->parent()->text( 0 ) ) ;
 
-                if( endsInThe( tmptext ) )
+                if( endsInThe( tmptext ) ) {
                     manipulateThe( tmptext );
+                    matches << tmptext;
+                }
 
                 if( VisYearAlbum == 1 )
                 {
@@ -673,8 +676,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year );
                 }
-                QStringList matches;
-                matches << item->parent()->text( 0 ) << tmptext;
 
                 qb.addMatches( q_cat1, matches );
             }
@@ -731,10 +732,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             }
             else if ( item->parent()->parent()->text( 0 ) != i18n( "Various Artists" ) )
             {
-                tmptext = item->parent()->parent()->text( 0 );
 
-                if( endsInThe( tmptext ) )
+                tmptext = item->parent()->parent()->text( 0 );
+                QStringList matches( item->parent()->parent()->text( 0 ) ) ;
+
+                if( endsInThe( tmptext ) ) {
                     manipulateThe( tmptext );
+                    matches << tmptext;
+                }
 
                 if (VisYearAlbum==1)
                 {
@@ -742,8 +747,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year );
                 }
-                QStringList matches;
-                matches << item->parent()->parent()->text( 0 ) << tmptext;
 
                 qb.addMatches( q_cat1, matches );
             }
@@ -754,9 +757,12 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             }
 
             tmptext = item->parent()->text( 0 );
+            QStringList matches( item->parent()->text( 0 ) ) ;
 
-            if( endsInThe( tmptext ) )
+            if( endsInThe( tmptext ) ) {
                 manipulateThe( tmptext );
+                matches << tmptext;
+            }
 
             if( VisYearAlbum == 2 )
             {
@@ -764,15 +770,16 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 yearAlbumCalc( year, tmptext );
                 qb.addMatch( QueryBuilder::tabYear, year );
             }
-            QStringList matches;
-            matches << item->parent()->text( 0 ) << tmptext;
 
-            qb.addMatches( q_cat1, matches );
+            qb.addMatches( q_cat2, matches );
 
             tmptext = item->text( 0 );
+            matches.clear();
 
-            if( endsInThe( tmptext ) )
+            if( endsInThe( tmptext ) ) {
                 manipulateThe( tmptext );
+                matches << tmptext;
+            }
 
             if( VisYearAlbum == 3 )
             {
@@ -780,10 +787,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 yearAlbumCalc( year, tmptext );
                 qb.addMatch( QueryBuilder::tabYear, year );
             }
-            matches.clear();
-            matches << item->text( 0 ) << tmptext;
 
-            qb.addMatches( q_cat1, matches );
+            qb.addMatches( q_cat3, matches );
 
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -1183,6 +1188,7 @@ CollectionView::showTrackInfo() //SLOT
 {
      KURL::List urls = listSelected();
      int selectedTracksNumber = urls.count();
+
      //If we have only one, call the full dialog. Otherwise, the multiple tracks one.
      if (selectedTracksNumber == 1) {
           TagDialog* dialog = new TagDialog( urls.first() );
@@ -1329,9 +1335,12 @@ CollectionView::listSelected()
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
             tmptext = item->text( 0 );
+            QStringList matches( item->text( 0 ) );
 
-            if( endsInThe( tmptext ) )
+            if( endsInThe( tmptext ) ) {
                 manipulateThe( tmptext );
+                matches << tmptext;
+            }
 
             if ( !sampler )
             {
@@ -1341,8 +1350,7 @@ CollectionView::listSelected()
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year );
                 }
-                QStringList matches;
-                matches << item->text( 0 ) << tmptext;
+
 
                 qb.addMatches( q_cat1, matches );
             }
@@ -1401,9 +1409,14 @@ CollectionView::listSelected()
 
                     if ( !sampler )
                     {
+
                         tmptext = item->text( 0 );
-                        if( endsInThe( tmptext ) )
+                        QStringList matches( item->text( 0 ) );
+
+                        if( endsInThe( tmptext ) ) {
                             manipulateThe( tmptext );
+                            matches << tmptext;
+                        }
 
                         if( VisYearAlbum == 1 )
                         {
@@ -1411,18 +1424,20 @@ CollectionView::listSelected()
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year );
                         }
-                        QStringList matches;
-                        matches << item->text( 0 ) << tmptext;
 
                         qb.addMatches( q_cat1, matches );
                     }
                     else
                         qb.setOptions( QueryBuilder::optOnlyCompilations );
 
-                    tmptext = child->text( 0 );
 
-                    if( endsInThe( tmptext ) )
+                    tmptext = child->text( 0 );
+                    QStringList matches( child->text( 0 ) );
+
+                    if( endsInThe( tmptext ) ) {
                         manipulateThe( tmptext );
+                        matches << tmptext;
+                    }
 
                     if( VisYearAlbum == 2 )
                     {
@@ -1430,10 +1445,8 @@ CollectionView::listSelected()
                         yearAlbumCalc( year, tmptext );
                         qb.addMatch( QueryBuilder::tabYear, year );
                     }
-                    QStringList matches;
-                    matches << child->text( 0 ) << tmptext;
 
-                    qb.addMatches( q_cat1, matches );
+                    qb.addMatches( q_cat2, matches );
 
                     setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
 
@@ -1498,9 +1511,14 @@ CollectionView::listSelected()
 
                         if ( !sampler )
                         {
+
                             tmptext = item->text( 0 );
-                            if( endsInThe( tmptext ) )
+                            QStringList matches( item->text( 0 ) );
+
+                            if( endsInThe( tmptext ) ) {
                                 manipulateThe( tmptext );
+                                matches << tmptext;
+                            }
 
                             if( VisYearAlbum == 1 )
                             {
@@ -1508,8 +1526,6 @@ CollectionView::listSelected()
                                 yearAlbumCalc( year, tmptext );
                                 qb.addMatch( QueryBuilder::tabYear, year );
                             }
-                            QStringList matches;
-                            matches << item->text( 0 ) << tmptext;
 
                             qb.addMatches( q_cat1, matches );
                         }
@@ -1517,8 +1533,12 @@ CollectionView::listSelected()
                             qb.setOptions( QueryBuilder::optOnlyCompilations );
 
                         tmptext = child->text( 0 );
-                        if( endsInThe( tmptext ) )
+                        QStringList matches( child->text( 0 ) );
+
+                        if( endsInThe( tmptext ) ) {
                             manipulateThe( tmptext );
+                            matches << tmptext;
+                        }
 
                         if( VisYearAlbum == 2 )
                         {
@@ -1526,14 +1546,17 @@ CollectionView::listSelected()
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year );
                         }
-                        QStringList matches;
-                        matches << child->text( 0 ) << tmptext;
 
-                        qb.addMatches( q_cat1, matches );
+                        qb.addMatches( q_cat2, matches );
 
+                        matches.clear();
                         tmptext = grandChild->text( 0 );
-                        if( endsInThe( tmptext ) )
+                        matches << grandChild->text( 0 );
+
+                        if( endsInThe( tmptext ) ) {
                             manipulateThe( tmptext );
+                            matches << tmptext;
+                        }
 
                         if( VisYearAlbum == 3 )
                         {
@@ -1544,7 +1567,7 @@ CollectionView::listSelected()
                         matches.clear();
                         matches << grandChild->text( 0 ) << tmptext;
 
-                        qb.addMatches( q_cat1, matches );
+                        qb.addMatches( q_cat3, matches );
 
                         setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
 
