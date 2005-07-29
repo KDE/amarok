@@ -1,6 +1,6 @@
 // IIR filter coefficient tables
 
-
+#ifdef _UNUSED_
 /* BETA, ALPHA, GAMMA */
 static sIIRCoefficients iir_cf10_11k_11025[] __attribute__((aligned)) = {
 	/* 31 Hz*/
@@ -90,6 +90,7 @@ static sIIRCoefficients iir_cforiginal10_48000[] __attribute__((aligned)) = {
 	/* 16k Hz*/
 { 2.5620076154e-01, 3.7189961923e-01, -6.2810038077e-01 },
 };
+#endif
 static sIIRCoefficients iir_cf10_8000[] __attribute__((aligned)) = {
 	/* 31 Hz*/
 { 9.8293118010e-01, 8.5344099512e-03, 1.9823434752e+00 },
@@ -244,6 +245,7 @@ static sIIRCoefficients iir_cf10_48000[] __attribute__((aligned)) = {
 	/* 16k Hz*/
 { 2.5620076154e-01, 3.7189961923e-01, -6.2810038077e-01 },
 };
+#ifdef _UNUSED_
 static sIIRCoefficients iir_cf15_44100[] __attribute__((aligned)) = {
 	/* 25 Hz*/
 { 9.9834072702e-01, 8.2963648917e-04, 1.9983280505e+00 },
@@ -541,3 +543,4 @@ static sIIRCoefficients iir_cf31_48000[] __attribute__((aligned)) = {
 { 6.0884213704e-01, 1.9557893148e-01, -1.3932981614e+00 },
 };
 
+#endif

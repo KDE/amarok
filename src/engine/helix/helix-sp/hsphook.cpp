@@ -28,6 +28,7 @@
 #include "gain.h"
 #endif
 #include "hsphook.h"
+#include "iir_cf.h"         // IIR filter coefficients
 
 #define SCOPE_BUF_PER_BLOCK 8
 #define SCOPESIZE 512
@@ -79,7 +80,7 @@ HSPPreMixAudioHook::Release()
     return 0;
 }
 
-STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData */*pAudioOutData*/)
+STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData */*pAudioInData*/, HXAudioData */*pAudioOutData*/)
 {
    m_count++;
 
@@ -321,7 +322,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
          iir_cf = iir_cf10_48000;
          break;
 
-      case 48100:
+      case 44100:
       default:
          iir_cf = iir_cf10_44100;
          break;
@@ -441,7 +442,7 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
     * the buffer (length is in bytes)
     */
    halflength = (length >> 1);
-   for (index = 0; index < halflength; index+=2)
+   for (index = 0; index < halflength; index+=m_format.uChannels)
    {
       /* For each channel */
       for (channel = 0; channel < m_format.uChannels; channel++)
@@ -511,9 +512,6 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
 #ifndef HELIX_SW_VOLUME_INTERFACE
 int HSPPostMixAudioHook::volumeize(unsigned char *data, size_t len)
 {
-   INT32 signal[ len + 1 ]; // cant be any bigger than that, after all
-   int samples;
-
    gainFeed(data, data, len, m_gaintool);
 
    return len;
@@ -522,9 +520,6 @@ int HSPPostMixAudioHook::volumeize(unsigned char *data, size_t len)
 
 int HSPPostMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, size_t len)
 {
-   INT32 signal[ len + 1 ]; // cant be any bigger than that, after all
-   int samples;
-
    gainFeed(data, outbuf, len, m_gaintool);
 
    return len;

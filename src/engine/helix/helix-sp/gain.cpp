@@ -74,7 +74,6 @@ float gainSetSmoothdB(float dB, GAIN_STATE* g)
 
     g->isMute = false;
 
-    STDERR("In setSmooth db = %f gain = %f\n", dB, gain);
     g->tgtGain = gain ;
 
     return dB ;
@@ -97,7 +96,6 @@ float gainSetSmooth(float percent, GAIN_STATE* g)
 
     g->isMute = false;
 
-    STDERR("In setSmooth = %f gain = %f\n", percent, gain);
     g->tgtGain = gain ;
 
     return gain;

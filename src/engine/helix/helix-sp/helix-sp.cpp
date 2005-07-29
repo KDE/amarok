@@ -1242,7 +1242,6 @@ void HelixSimplePlayer::setVolume(unsigned long vol, int playerIndex)
 #ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[playerIndex]->volume = vol;
 #ifndef TEST_APP
-         STDERR("setVolume to %d\n", vol);
          ((HSPPostMixAudioHook *)ppctrl[playerIndex]->pPostMixHook)->setGain(vol);
 #endif
 #else

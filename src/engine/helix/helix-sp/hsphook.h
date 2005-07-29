@@ -75,7 +75,6 @@ typedef struct
    float y[3]; /* y[n], y[n-1], y[n-2] */
 } sXYData;
 
-#include "iir_cf.h"         // IIR filter coefficients
 
 struct DelayQueue;
 
