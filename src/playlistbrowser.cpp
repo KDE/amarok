@@ -342,6 +342,7 @@ void PlaylistBrowser::addStream( QListViewItem *parent )
     if( dialog.exec() == QDialog::Accepted )
     {
         new StreamEntry( parent, 0, dialog.url(), dialog.name() );
+        parent->sortChildItems( 0, true );
         parent->setOpen( true );
 
         saveStreams();
@@ -402,6 +403,7 @@ void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
     SmartPlaylistEditor dialog( i18n("Untitled"), this );
     if( dialog.exec() == QDialog::Accepted ) {
         new SmartPlaylist( parent, 0, dialog.result() );
+        parent->sortChildItems( 0, true );
         parent->setOpen( true );
 
         saveSmartPlaylists();
@@ -623,6 +625,8 @@ void PlaylistBrowser::addDynamic( QListViewItem *parent )
             }
         }
         saveMe->setItems( list );
+        parent->sortChildItems( 0, true );
+        parent->setOpen( true );
 
         saveDynamics();
     }
@@ -887,7 +891,7 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
         if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
 
         new PodcastChannel( parent, 0, KURL( name ) );
-
+        parent->sortChildItems( 0, true );
         parent->setOpen( true );
 
         savePodcasts();
@@ -1006,6 +1010,7 @@ void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool for
         auxKURL.setPath(path);
         m_lastPlaylist = new PlaylistEntry( parent, 0, auxKURL );
         parent->setOpen( true );
+        parent->sortChildItems( 0, true );
     }
 }
 
