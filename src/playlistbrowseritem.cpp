@@ -1312,9 +1312,9 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
     m_url         = KURL::fromPathOrURL( url );
 
     m_localUrlString = amaroK::saveLocation( "podcasts/data/" );
+    QString filename = m_title.replace( " ", "_" ).replace( "/", "_" );
 
-    m_localUrlString += m_title;
-    m_localUrlString.replace( " ", "_" );
+    m_localUrlString += filename;
     m_localUrlString += "_" + m_url.fileName();
 
     m_localUrl = KURL::fromPathOrURL( m_localUrlString );
