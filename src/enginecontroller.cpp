@@ -491,7 +491,6 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     const KURL &url = static_cast<KIO::MimetypeJob*>( job )->url();
 
     debug() << "MimetypeJob returned with url: " << url.prettyURL() << endl;
-//     m_bundle.setUrl( url );  //NOTE <markey> This breaks playlist current-track handling
 
     const bool isStream = mimetype.isEmpty() || mimetype == "text/html" ||
                           url.host().endsWith( "last.fm" ); // HACK last.fm uses the mimetype audio/x-mp3
