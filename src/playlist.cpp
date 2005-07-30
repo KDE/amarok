@@ -697,7 +697,10 @@ Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
     for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
     {
         if( !entire )
-            if ( *it == m_currentTrack ) break;
+            if( *it == m_currentTrack ) break;
+
+        if( !enable )
+            if( (*it)->isEnabled() ) break;
         //avoid repainting if we can.
         if( (*it)->isEnabled() != enable )
         {
@@ -725,7 +728,8 @@ Playlist::restoreSession()
     if( QFile::exists( url.path() ) )
     {
         //allows for history items to be re-enabled
-        if( isDynamic() ) m_stateSwitched = true;
+        if( isDynamic() && AmarokConfig::dynamicMarkHistory() )
+            m_stateSwitched = true;
         ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
     }
 }
@@ -1964,7 +1968,7 @@ Playlist::customEvent( QCustomEvent *e )
         //re-disable history items
         if( isDynamic() ) {
             if( m_stateSwitched ) {
-                alterHistoryItems( false );
+                alterHistoryItems( false, true ); // if resume on start is disabled, m_currentTrack == 0;
                 m_stateSwitched = false;
             }
         }
