@@ -697,10 +697,12 @@ Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
     for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
     {
         if( !entire )
-            if( *it == m_currentTrack ) break;
+        {
+            if( *it == m_currentTrack )  break;
+            if( !enable )
+                if( (*it)->isEnabled() ) break;
+        }
 
-        if( !enable )
-            if( (*it)->isEnabled() ) break;
         //avoid repainting if we can.
         if( (*it)->isEnabled() != enable )
         {
@@ -1968,7 +1970,7 @@ Playlist::customEvent( QCustomEvent *e )
         //re-disable history items
         if( isDynamic() ) {
             if( m_stateSwitched ) {
-                alterHistoryItems( false, true ); // if resume on start is disabled, m_currentTrack == 0;
+                alterHistoryItems( false );
                 m_stateSwitched = false;
             }
         }
