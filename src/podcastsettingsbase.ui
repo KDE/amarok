@@ -50,57 +50,6 @@
                         <string>When checked, amaroK will automatically scan the podcast for updates</string>
                     </property>
                 </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer8</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>156</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel7</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Fetch interval:</string>
-                    </property>
-                </widget>
-                <widget class="QSpinBox">
-                    <property name="name">
-                        <cstring>m_intervalSpinBox</cstring>
-                    </property>
-                    <property name="suffix">
-                        <string> Hours</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>100</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>1</number>
-                    </property>
-                    <property name="value">
-                        <number>1</number>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>How often checking for updates should occur</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>How often checking for updates should occur</string>
-                    </property>
-                </widget>
             </hbox>
         </widget>
         <widget class="QLayoutWidget" row="0" column="0">
@@ -437,12 +386,6 @@
         <sender>m_purgeCheck</sender>
         <signal>toggled(bool)</signal>
         <receiver>m_purgeCountSpinBox</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>m_autoFetchCheck</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>m_intervalSpinBox</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>

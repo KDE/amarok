@@ -79,6 +79,7 @@ class PlaylistBrowser : public QVBox
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
+        void scanPodcasts();
         void slotDoubleClicked( QListViewItem *item );
         void subFromDynamic();
 
@@ -141,6 +142,10 @@ class PlaylistBrowser : public QVBox
         int                  m_sortMode;
         QValueList<int>      m_partySizeSave;
         QPtrList<QListViewItem> m_dynamicEntries;
+
+        QTimer              *m_podcastTimer;
+        int                  m_podcastTimerInterval;        //in ms
+        QPtrList<PodcastChannel> m_podcastItemsToScan;
 
 };
 

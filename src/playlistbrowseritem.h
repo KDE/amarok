@@ -279,6 +279,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const KURL &url() { return m_url; }
         const QString &title() { return m_title; }
         const int timeout() { return m_interval; }
+        const bool autoScan() { return m_autoScan; }
 
         void setXml( QDomNode xml );
         QDomElement xml();

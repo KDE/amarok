@@ -26,12 +26,8 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
     KWin::setState( winId(), NET::SkipTaskbar );
 
     m_urlLine->setText( url.prettyURL() );
-    m_intervalSpinBox->setValue( interval );
 
-    //NOT IMPLEMENTED, SO DISABLE
-    m_autoFetchCheck->setChecked( false /*autoScan*/ );
-    m_autoFetchCheck->setEnabled( false );
-    m_intervalSpinBox->setEnabled( false );
+    m_autoFetchCheck->setChecked( autoScan );
 
     if( fetch == DOWNLOAD )
     {
@@ -59,14 +55,10 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
 
     if( !purge )
         m_purgeCountSpinBox->setEnabled( false );
-    if( !autoScan )
-        m_intervalSpinBox->setEnabled( false );
 
     pushButton_ok->setEnabled( false );
 
     connect( m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( m_intervalSpinBox->child( "qt_spinbox_edit" ),    SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-
 
     // Connects for modification check
     connect( m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
@@ -95,7 +87,6 @@ PodcastSettings::hasChanged()
     return  !m_urlLine->text().isEmpty() &&
            ( m_url.prettyURL() != m_urlLine->text() ||
              m_autoScan        != m_autoFetchCheck->isChecked() ||
-             m_interval        != m_intervalSpinBox->value() ||
              m_purge           != m_purgeCheck->isChecked() ||
              m_purgeCount      != m_purgeCountSpinBox->value() ||
              fetchTypeChanged );
@@ -121,7 +112,6 @@ PodcastSettings::accept()       //slot
 
     m_url             = KURL::fromPathOrURL( m_urlLine->text() );
     m_autoScan        = m_autoFetchCheck->isChecked();
-    m_interval        = m_intervalSpinBox->value();
     m_purge           = m_purgeCheck->isChecked();
     m_purgeCount      = m_purgeCountSpinBox->value();
 

@@ -839,6 +839,13 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     }
     else {
         PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
+
+        m_podcastTimer = new QTimer();
+        m_podcastItemsToScan.clear();
+        m_podcastTimerInterval = 14400000;  // 4 hours
+
+        connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
+
         QListViewItem *last = 0;
         QDomNode n = d.namedItem( "category" ).namedItem("podcast");
 
@@ -858,7 +865,15 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
                 continue;
 
             last = new PodcastChannel( p, last, url, n, xml );
+            #define item static_cast<PodcastChannel*>(last)
+            if( item->autoScan() )
+                m_podcastItemsToScan.append( item );
+            #undef  item
         }
+
+        if( !m_podcastItemsToScan.isEmpty() )
+            m_podcastTimer->start( m_podcastTimerInterval );
+
         return p;
     }
 }
@@ -883,6 +898,19 @@ void PlaylistBrowser::savePodcasts()
 
 }
 
+void PlaylistBrowser::scanPodcasts()
+{
+    //restart timer
+    m_podcastTimer->start( m_podcastTimerInterval );
+
+    for( uint i=0; i < m_podcastItemsToScan.count(); i++ )
+    {
+        QListViewItem  *item = m_podcastItemsToScan.at( i );
+        PodcastChannel *pc   = static_cast<PodcastChannel*>(item);
+        pc->rescan();
+    }
+}
+
 void PlaylistBrowser::addPodcast( QListViewItem *parent )
 {
     bool ok;
@@ -892,7 +920,18 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
     {
         if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
 
-        new PodcastChannel( parent, 0, KURL( name ) );
+        PodcastChannel *pc = new PodcastChannel( parent, 0, KURL( name ) );
+
+        if( m_podcastItemsToScan.isEmpty() )
+        {
+            m_podcastItemsToScan.append( pc );
+            m_podcastTimer->start( m_podcastTimerInterval );
+        }
+        else
+        {
+            m_podcastItemsToScan.append( pc );
+        }
+
         parent->sortChildItems( 0, true );
         parent->setOpen( true );
 
@@ -1783,6 +1822,22 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case CONFIG:
                 item->configure();
+
+                if( item->autoScan() && m_podcastItemsToScan.find( *it ) < 0 ) // check that it is not there
+                {
+                    m_podcastItemsToScan.append( item );
+                }
+                else if( item->!autoScan() && m_podcastItemsToScan.find( *it ) !< 0 )
+                {
+                    m_podcastItemsToScan.remove( item );
+                }
+
+                if( m_podcastItemsToScan.isEmpty() )
+                    m_podcastTimer->stop();
+                else if( m_podcastItemsToScan.count() == 1 )
+                    m_podcastTimer->start( m_podcastTimerInterval );
+                // else timer is already running
+
                 break;
         }
         #undef item
