@@ -698,9 +698,8 @@ Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
     {
         if( !entire )
         {
-            if( *it == m_currentTrack )  break;
-            if( !enable )
-                if( (*it)->isEnabled() ) break;
+            if( *it == m_currentTrack )          break;
+            if( !enable && !(*it)->isEnabled() ) break;
         }
 
         //avoid repainting if we can.
@@ -730,7 +729,7 @@ Playlist::restoreSession()
     if( QFile::exists( url.path() ) )
     {
         //allows for history items to be re-enabled
-        if( isDynamic() && AmarokConfig::dynamicMarkHistory() )
+        if( isDynamic() )
             m_stateSwitched = true;
         ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
     }
@@ -1047,9 +1046,11 @@ Playlist::activate( QListViewItem *item )
         return;
     }
 
+    #define item static_cast<PlaylistItem*>(item)
+
     if( isDynamic() && !m_partyDirt )
     {
-        if( m_currentTrack )
+        if( m_currentTrack && item->isEnabled() )
             this->moveItem( item, 0, m_currentTrack );
         else
         {
@@ -1061,14 +1062,26 @@ Playlist::activate( QListViewItem *item )
                 for(  ; *it && !(*it)->isEnabled() ; ++it );
             }
 
-            hasHistory ?
-                this->moveItem( item, *it, 0 ) :
-                this->moveItem( item, 0,   0 );
+            if( item->isEnabled() )
+            {
+                hasHistory ?
+                    this->moveItem( item, *it, 0 ) :
+                    this->moveItem( item, 0,   0 );
+            }
+            else // !item->isEnabled()
+            {
+                hasHistory ?
+                    insertMediaInternal( item->url(), *it ):
+                    insertMediaInternal( item->url(), 0 );
+                m_partyDirt = true;
+                return;
+            }
+
         }
         advancePartyTrack();
     }
 
-    #define item static_cast<PlaylistItem*>(item)
+
     if( !item->isEnabled() )
         return;
 
@@ -1968,11 +1981,29 @@ Playlist::customEvent( QCustomEvent *e )
             m_queueList.clear();
         }
         //re-disable history items
-        if( isDynamic() ) {
-            if( m_stateSwitched ) {
-                alterHistoryItems( false );
-                m_stateSwitched = false;
+        if( isDynamic() && m_stateSwitched )
+        {
+            alterHistoryItems( !AmarokConfig::dynamicMarkHistory() );
+            m_stateSwitched = false;
+        }
+
+        if( m_partyDirt )
+        {
+            PlaylistItem *after = m_currentTrack;
+            if( !after )
+            {
+                after = firstChild();
+                while( after && !after->isEnabled() )
+                    after = after->nextSibling();
             }
+            else
+                after = (PlaylistItem *)after->itemBelow();
+
+            PlaylistItem *prev = (PlaylistItem *)after->itemAbove();
+            if( prev )
+                prev->setEnabled( false );
+
+            activate( after );
         }
 
         if( m_queueDirt )
