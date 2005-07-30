@@ -828,6 +828,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 {
     QFile file( podcastBrowserCache() );
     QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QDomElement e;
@@ -851,6 +852,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             QDomDocument xml;
             QFile xmlFile( xmlLocation );
             QTextStream stream( &xmlFile );
+            stream.setEncoding( QTextStream::UnicodeUTF8 );
 
             if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
                 continue;
