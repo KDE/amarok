@@ -1086,8 +1086,20 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         setPixmap( 0, SmallIcon("cancel") );
         return;
     }
+    QDomNode type = d.namedItem("rss");
+    if( type.isNull() || type.toElement().attribute( "version" ) != "2.0" )
+    {
+        amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 feeds for podcasts!") );
 
-    setXml( d.namedItem("rss").namedItem("channel") );
+        if( !m_title )
+            setText( 0, m_url.prettyURL() );
+
+        setPixmap( 0, SmallIcon("cancel") );
+        return;
+    }
+
+
+    setXml( type.namedItem("channel") );
 
     ///BEGIN Cache the xml
     QFile file( amaroK::saveLocation( "podcasts/" ) +  m_cache );

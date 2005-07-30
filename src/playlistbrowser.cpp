@@ -1823,11 +1823,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case CONFIG:
                 item->configure();
 
-                if( item->autoScan() && m_podcastItemsToScan.find( *it ) < 0 ) // check that it is not there
+                if( item->autoScan() && m_podcastItemsToScan.find( item ) < 0 ) // check that it is not there
                 {
                     m_podcastItemsToScan.append( item );
                 }
-                else if( item->!autoScan() && m_podcastItemsToScan.find( *it ) !< 0 )
+                else if( !item->autoScan() && m_podcastItemsToScan.find( item ) >= 0 )
                 {
                     m_podcastItemsToScan.remove( item );
                 }
