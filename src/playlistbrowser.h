@@ -109,6 +109,7 @@ class PlaylistBrowser : public QVBox
 
         PlaylistCategory* loadPodcasts();
         void savePodcasts();
+        void changePodcastInterval();
 
         PlaylistCategory* loadPlaylists();
         void loadOldPlaylists();

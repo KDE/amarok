@@ -215,6 +215,8 @@ PlaylistBrowser::polish()
             ++it;
         }
     }
+
+    m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
 }
 
 
@@ -253,6 +255,7 @@ PlaylistBrowser::~PlaylistBrowser()
             ++it;
         }
         config->writeEntry( "Item State", stateList );
+        config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
     }
 }
 
@@ -842,7 +845,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
         m_podcastTimer = new QTimer();
         m_podcastItemsToScan.clear();
-        m_podcastTimerInterval = 14400000;  // 4 hours
+        if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
         connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
@@ -937,6 +940,25 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
 
         savePodcasts();
     }
+}
+
+void PlaylistBrowser::changePodcastInterval()
+{
+    int time = m_podcastTimerInterval / ( 60 * 60 * 1000 );
+    bool ok;
+    int interval = KInputDialog::getInteger( i18n("Download Interval"),
+                                            i18n("Scan interval (hours):"), time,
+                                            1, 1000, 1, 10, // min, max, step, base
+                                            &ok, this);
+    if( ok )
+    {
+        if( interval != m_podcastTimerInterval )
+        {
+            m_podcastTimerInterval = interval * 60 * 60 * 1000;
+            m_podcastTimer->changeInterval( m_podcastTimerInterval );
+        }
+    }
+
 }
 
 /**
@@ -1866,7 +1888,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, PODCAST, REFRESH };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, PODCAST, REFRESH, INTERVAL };
 
         QListViewItem *parentCat = item;
 
@@ -1895,12 +1917,16 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
             menu.insertSeparator();
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
+            menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan interval..."), INTERVAL );
 
         }
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         PodcastChannel *child = 0;
+        bool ok;
+        int time, c;
+        QString name;
 
         switch( menu.exec( p ) ) {
             case RENAME:
@@ -1937,19 +1963,23 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case CREATE:
                 QListViewItem *tracker = item->firstChild();
-                uint c=0;
-                for(  ; isCategory( tracker ); tracker = tracker->nextSibling() )
+
+                for( c = 0 ; isCategory( tracker ); tracker = tracker->nextSibling() )
                 {
                     if( tracker->text(0).startsWith( i18n("Folder") ) )
                         c++;
                     if( !isCategory( tracker->nextSibling() ) )
                         break;
                 }
-                QString name = i18n("Folder");
+                name = i18n("Folder");
                 if( c ) name = i18n("Folder %1").arg(c);
 
                 new PlaylistCategory( item, tracker, name, true );
 
+                break;
+
+            case INTERVAL:
+                changePodcastInterval();
                 break;
         }
         #undef item
