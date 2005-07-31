@@ -1924,8 +1924,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         QListViewItem *tracker = 0;
-        bool ok;
-        int time, c;
+        int c;
         QString name;
 
         switch( menu.exec( p ) ) {
