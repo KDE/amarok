@@ -1924,6 +1924,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         PodcastChannel *child = 0;
+        QListViewItem *tracker = 0;
         bool ok;
         int time, c;
         QString name;
@@ -1962,7 +1963,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case CREATE:
-                QListViewItem *tracker = item->firstChild();
+                tracker = item->firstChild();
 
                 for( c = 0 ; isCategory( tracker ); tracker = tracker->nextSibling() )
                 {
