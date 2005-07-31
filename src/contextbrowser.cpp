@@ -1518,7 +1518,7 @@ bool CurrentTrackJob::doJob()
                 .arg( escapeHTML( currentTrack.prettyTitle() ) )
             ) );
 
-    if ( !values.isEmpty() )
+    if ( !values.isEmpty() && values[2].toInt() )
     {
         QDateTime firstPlay = QDateTime();
         firstPlay.setTime_t( values[0].toUInt() );
