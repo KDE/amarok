@@ -87,17 +87,17 @@ class Playlist : private KListView, public EngineObserver
         void adjustPartyUpcoming( uint songCount, QString type = "Random" );
         void adjustPartyPrevious( uint songCount );
         void advancePartyTrack( PlaylistItem *item = 0 );
-        void alterHistoryItems( bool enable = FALSE, bool entire = FALSE );
+        void alterHistoryItems( bool enable = false, bool entire = false );
 
 
-        void burnPlaylist      ( int projectType=-1 );
-        void burnSelectedTracks( int projectType=-1 );
+        void burnPlaylist      ( int projectType = -1 );
+        void burnSelectedTracks( int projectType = -1 );
         int  currentTrackIndex();
         bool isEmpty()       const  { return childCount() == 0; }
         bool isTrackBefore() const;
         bool isTrackAfter()  const;
         void restoreSession();          // called during initialisation
-        bool saveM3U( const QString&, bool relativePath = FALSE ) const;
+        bool saveM3U( const QString&, bool relativePath = false ) const;
         void saveXML( const QString& );
         int  totalTrackCount();
 
@@ -225,7 +225,7 @@ class Playlist : private KListView, public EngineObserver
         void paletteChange( const QPalette& );
         void rename( QListViewItem*, int );
         void setColumnWidth( int, int );
-        void setSorting( int, bool=true );
+        void setSorting( int, bool = true );
 
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
