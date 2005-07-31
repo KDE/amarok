@@ -265,8 +265,9 @@ class Playlist : private KListView, public EngineObserver
         PlaylistItem *m_stopAfterTrack;
         bool          m_showHelp;
         bool          m_stateSwitched;
-        bool          m_partyDirt;
-        bool          m_queueDirt;
+        bool          m_partyDirt;          //So we dont call advancePartyTrack() on activate()
+        bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
+        bool          m_undoDirt;           //Make sure we dont repopulate the playlist when dynamic mode and undo()
 
         QMap<QString, QStringList> m_customSubmenuItem;
         QMap<int, QString>         m_customIdItem;

@@ -194,6 +194,7 @@ Playlist::Playlist( QWidget *parent )
         , m_stateSwitched( false )
         , m_partyDirt( false )
         , m_queueDirt( false )
+        , m_undoDirt( false )
         , m_lockStack( 0 )
         , m_columnFraction( 14, 0 )
 {
@@ -685,7 +686,7 @@ Playlist::adjustPartyPrevious( uint songCount )
 }
 
 void
-Playlist::alterHistoryItems( bool enable, bool entire /*FALSE*/ )
+Playlist::alterHistoryItems( bool enable /*FALSE*/, bool entire /*FALSE*/ )
 {
     //NOTE: we must make sure that partyMode works perfectly as we expect it to,
     //      for this functionality to be guarranteed. <sebr>
@@ -1419,7 +1420,7 @@ Playlist::clear() //SLOT
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0, 0, 0 );
 
-    if( isDynamic() )
+    if( isDynamic() && !m_undoDirt )
         repopulate();
 }
 
@@ -3221,6 +3222,7 @@ Playlist::saveState( QStringList &list )
 void
 Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
+    m_undoDirt = true;
     //switch to a previously saved state, remember current state
     KURL url; url.setPath( loadFromMe.last() );
     loadFromMe.pop_back();
@@ -3239,7 +3241,8 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-    if( isDynamic() ) alterHistoryItems();
+    if( isDynamic() ) alterHistoryItems( !AmarokConfig::dynamicMarkHistory() );
+    m_undoDirt = false;
 }
 
 void
