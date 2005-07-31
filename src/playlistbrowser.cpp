@@ -1923,7 +1923,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
-        PodcastChannel *child = 0;
         QListViewItem *tracker = 0;
         bool ok;
         int time, c;
@@ -1955,10 +1954,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case REFRESH:
-                child = (PodcastChannel*)item->firstChild();
-                for( ; child; child = (PodcastChannel*)child->nextSibling() )
+                tracker = item->firstChild();
+                for( ; tracker; tracker = tracker->nextSibling() )
                 {
-                    child->rescan();
+                    static_cast<PodcastChannel*>( tracker )->rescan();
                 }
                 break;
 
