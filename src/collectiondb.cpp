@@ -1303,9 +1303,13 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
 
     if ( !values.isEmpty() )
     {
-        // entry exists, increment playcounter and update accesstime
-        score = ( ( values[2].toDouble() * values.first().toInt() ) + percentage ) / ( values.first().toInt() + 1 );
-
+        if ( values.first().toInt() )
+            // had already been played
+            score = ( ( values[2].toDouble() * values.first().toInt() ) + percentage ) / ( values.first().toInt() + 1 );
+        else
+            // it's the first time track is played
+            score = ( ( 50 + percentage ) / 2 );
+        // increment playcounter and update accesstime
         if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
             query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2+1 WHERE url='%3';" )
                             .arg( score )
