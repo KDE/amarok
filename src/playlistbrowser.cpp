@@ -1813,7 +1813,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "edittrash" ), i18n( "R&emove" ), REMOVE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
-        menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure" ), CONFIG );
+        menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure..." ), CONFIG );
 
 
         switch( menu.exec( p ) )
@@ -1917,7 +1917,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
             menu.insertSeparator();
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
-            menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan interval..."), INTERVAL );
+            menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
 
         }
 

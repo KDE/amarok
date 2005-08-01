@@ -324,7 +324,7 @@ VolumeAction::plug( QWidget *w, int index )
     m_slider->setMinimumHeight( 35 );
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 
-    QToolTip::add( m_slider, i18n( "Volume Control" ) );
+    QToolTip::add( m_slider, i18n( "Volume control" ) );
 
     EngineController* const ec = EngineController::instance();
     connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );

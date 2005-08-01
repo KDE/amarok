@@ -1005,8 +1005,8 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
        if( hasCover() ) {
            int button = KMessageBox::warningContinueCancel( iconView(),
                             i18n( "Are you sure you want to overwrite this cover?"),
-                            QString::null,
-                            i18n("&Overwrite Confirmation") );
+                            i18n("Overwrite Confirmation"),
+                            i18n("&Overwrite") );
            if( button == KMessageBox::Cancel )
                return;
        }
