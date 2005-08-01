@@ -1607,13 +1607,13 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
-    query( QString( "UPDATE tags SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), url ) );
+    query( QString( "UPDATE tags SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics ), escapeString( url ) ) );
 }
 
 QString
 CollectionDB::getLyrics( const QString &url )
 {
-    QStringList values = query( QString( "SELECT lyrics FROM tags WHERE url = '%1';" ).arg( url ) );
+    QStringList values = query( QString( "SELECT lyrics FROM tags WHERE url = '%1';" ).arg( escapeString( url ) ) );
     return values[0];
 }
 
