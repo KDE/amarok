@@ -227,7 +227,10 @@ MetaBundle::veryNiceTitle() const
     //     If not then they do apply to this function also!
     if( !m_title.isEmpty() )
     {
-        s = i18n( "%1 by %2" ).arg( m_title ).arg( m_artist );
+        if( !m_artist.isEmpty() )
+            s = i18n( "%1 by %2" ).arg( m_title ).arg( m_artist );
+        else
+            s = m_title;
     }
     else
     {
