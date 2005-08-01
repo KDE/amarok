@@ -177,6 +177,7 @@ PlaylistBrowser::polish()
         m_smartCategory->setOpen( true );
     }
     // must be loaded after streams
+    m_podcastTimer    = new QTimer();
     m_podcastCategory = loadPodcasts();
 
     m_dynamicCategory = loadDynamics();
@@ -843,7 +844,6 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     else {
         PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
 
-        m_podcastTimer = new QTimer();
         m_podcastItemsToScan.clear();
         if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
