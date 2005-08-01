@@ -21,6 +21,7 @@ SECTION 2: Creating and Testing the Tarball
 SECTION 3: Once Happy with the Tarball
 
  * Ftp the tarball to upload.sf.net/incoming
+ * Tag the sourcecode in SVN
  * Use the admin system at sourceforge to register the release
  * Update the amarok.kde.org front-page before anything else!
  * Update kde-apps.org and freshmeat.net
