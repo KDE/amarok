@@ -1727,7 +1727,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( item->parent()->text(0) != i18n("Collection") )
         {
             if ( static_cast<SmartPlaylist *>(item)->isEditable() )
-                menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit" ), EDIT );
+                menu.insertItem( SmallIconSet("editclear"), i18n( "E&dit..." ), EDIT );
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
         }
 
