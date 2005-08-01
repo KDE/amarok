@@ -75,6 +75,12 @@
                     <property name="name">
                         <cstring>m_appendType</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Select which type of song you would like to add to the playlist</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Select which type of song you would like to add to the playlist</string>
+                    </property>
                 </widget>
             </vbox>
         </widget>
@@ -92,6 +98,15 @@
                     </property>
                     <property name="text">
                         <string>&amp;Cycle tracks</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Automatically remove played tracks to the playlist</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Automatically remove played tracks to the playlist</string>
                     </property>
                 </widget>
                 <spacer>
@@ -117,6 +132,15 @@
                     </property>
                     <property name="text">
                         <string>Mar&amp;k history</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+K</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Once played, tracks will be greyed out</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Once played, tracks will be greyed out</string>
                     </property>
                 </widget>
             </hbox>
@@ -150,6 +174,12 @@
                     <property name="text">
                         <string>Maximum history to show:</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>How many played items to show before removal</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>How many played items to show before removal</string>
+                    </property>
                 </widget>
                 <spacer>
                     <property name="name">
@@ -181,6 +211,12 @@
                     <property name="minValue">
                         <number>1</number>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>How many played items to show before removal</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>How many played items to show before removal</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -198,6 +234,12 @@
                     </property>
                     <property name="text">
                         <string>Minimum tracks to show:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Minimum number of upcoming tracks to keep in the playlist</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Minimum number of upcoming tracks to keep in the playlist</string>
                     </property>
                 </widget>
                 <spacer>
@@ -230,6 +272,12 @@
                     <property name="base">
                         <number>10</number>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Minimum number of upcoming tracks to keep in the playlist</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Minimum number of upcoming tracks to keep in the playlist</string>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -247,6 +295,12 @@
                     </property>
                     <property name="text">
                         <string>Tracks to append:</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>How many tracks to add to the playlist after each song</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>How many tracks to add to the playlist after each song</string>
                     </property>
                 </widget>
                 <spacer>
@@ -275,6 +329,12 @@
                     </property>
                     <property name="minValue">
                         <number>1</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>How many tracks to add to the playlist after each song</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>How many tracks to add to the playlist after each song</string>
                     </property>
                 </widget>
             </hbox>
