@@ -78,17 +78,22 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_markHistory,           SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
     connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
 
-    KPushButton *button = new KPushButton( KGuiItem( i18n("Enable Dynamic Mode"), "party" ), this );
-    button->setToggleButton( true );
-    connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+    QHBox *buttonBox = new QHBox( this );
+    KPushButton *enable = new KPushButton( KGuiItem( i18n("Enable Dynamic Mode"), "party" ), buttonBox );
+    KPushButton *config = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
+
+    enable->setToggleButton( true );
+    config->setToggleButton( true );
+    connect( enable, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+    connect( config, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
 
     connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
-             button, SLOT( setOn( bool ) ) );
+             enable, SLOT( setOn( bool ) ) );
 
     restoreSettings();
-    button->setOn( AmarokConfig::dynamicMode() );
+    enable->setOn( AmarokConfig::dynamicMode() );
 
-    if( button->isOn() )
+    if( enable->isOn() )
     {
 //         Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
@@ -221,8 +226,6 @@ Party::updateApplyButton() //SLOT
 void
 Party::toggle( bool enable ) //SLOT
 {
-    static_cast<QWidget*>(child("container"))->setShown( enable );
-
     if( enable )
     {
         if( AmarokConfig::dynamicInfo() )
@@ -251,6 +254,12 @@ Party::toggle( bool enable ) //SLOT
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
+}
+
+void
+Party::showConfig( bool show ) //SLOT
+{
+    static_cast<QWidget*>(child("container"))->setShown( show );
 }
 
 int     Party::previousCount() { return m_base->m_previousIntSpinBox->value(); }

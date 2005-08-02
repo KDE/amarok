@@ -72,6 +72,7 @@ class Party : public QVBox
 
     private slots:
         void    applySettings();
+        void    showConfig( bool show );
         void    toggle( bool enable );
         void    updateApplyButton();
 
