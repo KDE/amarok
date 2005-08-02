@@ -1043,33 +1043,41 @@ void ContextBrowser::showHomeBySongs()
                     "<span id='newest_box-header-title' class='box-header-title'>"
                     + i18n( "Recently Played Tracks" ) +
                     "</span>"
-                "</div>"
-                "<div id='newest_box-body' class='box-body'>" );
+                "</div>" );
 
-    for( uint i = 0; i < lastplayed.count(); i = i + 4 )
+    if ( lastplayed.count() == 0 )
     {
         m_HTMLSource.append(
-                 "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<div class='song'>"
-                        "<a href=\"file:" + lastplayed[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                        "<span class='song-title'>" + lastplayed[i] + "</span><br />"
-                        "<span class='song-artist'>" + lastplayed[i + 2] + "</span>"
-                    );
-
-        if ( !lastplayed[i + 3].isEmpty() )
+                "<div id='newest_box-body' class='box-body'><p>" +
+                i18n( "A list of your recently played tracks will appear here, once you have played a few of your songs." ) +
+                "</p></div>" );
+    }
+    else
+    {
+        for( uint i = 0; i < lastplayed.count(); i = i + 4 )
+        {
             m_HTMLSource.append(
-                "<span class='song-separator'>"
-                + i18n("&#xa0;&#8211 ") +
-                "</span><span class='song-album'>" + lastplayed[i + 3] + "</span>"
+                    "<div class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<div class='song'>"
+                            "<a href=\"file:" + lastplayed[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='song-title'>" + lastplayed[i] + "</span><br />"
+                            "<span class='song-artist'>" + lastplayed[i + 2] + "</span>"
                         );
 
-        m_HTMLSource.append(
-                        "</a>"
-                    "</div>"
-                    "</div>");
+            if ( !lastplayed[i + 3].isEmpty() )
+                m_HTMLSource.append(
+                    "<span class='song-separator'>"
+                    + i18n("&#xa0;&#8211 ") +
+                    "</span><span class='song-album'>" + lastplayed[i + 3] + "</span>"
+                            );
+
+            m_HTMLSource.append(
+                            "</a>"
+                        "</div>"
+                        "</div>");
+        }
     }
     m_HTMLSource.append(
-                "</div>"
             "</div>");
 
     // </Recent Tracks Information>
