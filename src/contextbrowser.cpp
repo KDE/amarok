@@ -1054,6 +1054,10 @@ void ContextBrowser::showHomeBySongs()
     }
     else
     {
+        m_HTMLSource.append(
+                "<div id='newest_box-body' class='box-body'>"
+                             "<table border='0' cellspacing='0' cellpadding='0' width='100%' class='song'>" );
+
         for( uint i = 0; i < lastplayed.count(); i = i + 4 )
         {
             m_HTMLSource.append(
