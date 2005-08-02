@@ -52,7 +52,7 @@ TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     , m_urlList( list )
     , m_currentCover( 0 )
 {
-    setCaption( kapp->makeStdCaption( i18n( "Meta Information (Multiple Files)" ) ) );
+    setCaption( kapp->makeStdCaption( i18n("Information for %1 Tracks").arg(list.count()) ) );
     init();
 }
 

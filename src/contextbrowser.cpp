@@ -590,7 +590,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), INFO );
+        menu.insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "album" )
         {

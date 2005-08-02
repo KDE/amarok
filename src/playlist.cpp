@@ -2872,8 +2872,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
 
     popup.insertSeparator();
-
-    popup.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), VIEW ); //TODO rename properties
+    popup.insertItem( SmallIconSet( "info" ), itemCount == 1
+            ? i18n( "Edit Track &Information..." ) 
+            : i18n( "Edit &Information for %1 Tracks..." ).arg(itemCount), VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename && itemCount > 1 );

@@ -2005,7 +2005,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet("edittrash"), i18n( "&Remove" ), REMOVE );
-        menu.insertItem( SmallIconSet("info"), i18n( "&View/Edit Meta Information..." ), INFO );
+        menu.insertItem( SmallIconSet("info"), i18n( "Edit Track &Information..." ), INFO );
 
         switch( menu.exec( p ) ) {
             case MAKE:

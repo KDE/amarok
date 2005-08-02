@@ -1078,7 +1078,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
         #endif
-        menu.insertItem( SmallIconSet( "info" ), i18n( "&View/Edit Meta Information..." ), this, SLOT( showTrackInfo() ), 0, INFO );
+        KURL::List selection = listSelected();
+        menu.insertItem( SmallIconSet( "info" ), selection.count() == 1
+            ? i18n( "Edit Track &Information..." )
+            : i18n( "Edit &Information for %1 Tracks..." ).arg( selection.count() ), this, SLOT( showTrackInfo() ), 0, INFO );
 
         if ( cat == CollectionBrowser::IdAlbum )
         {
@@ -1090,13 +1093,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         switch( menu.exec( point ) )
         {
             case APPEND:
-                Playlist::instance()->insertMedia( listSelected(), Playlist::Append );
+                Playlist::instance()->insertMedia( selection, Playlist::Append );
                 break;
             case MAKE:
-                Playlist::instance()->insertMedia( listSelected(), Playlist::Replace );
+                Playlist::instance()->insertMedia( selection, Playlist::Replace );
                 break;
             case QUEUE:
-                Playlist::instance()->insertMedia( listSelected(), Playlist::Queue );
+                Playlist::instance()->insertMedia( selection, Playlist::Queue );
                 break;
             case BURN_ARTIST:
                 K3bExporter::instance()->exportArtist( item->text(0) );
@@ -1105,10 +1108,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportAlbum( item->text(0) );
                 break;
             case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( listSelected(), K3bExporter::DataCD );
+                K3bExporter::instance()->exportTracks( selection, K3bExporter::DataCD );
                 break;
             case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( listSelected(), K3bExporter::AudioCD );
+                K3bExporter::instance()->exportTracks( selection, K3bExporter::AudioCD );
                 break;
             case COMPILATION_SET:
                 CollectionDB::instance()->setCompilation( item->text(0), true );
