@@ -111,7 +111,7 @@ public:
     QString veryNiceTitle() const;
     QString prettyURL() const { return m_url.prettyURL(); }
     QString prettyBitrate() const { return prettyBitrate( m_bitrate ); }
-    QString prettyLength() const { return prettyLength( m_length ); }
+    QString prettyLength() const { return prettyLength( m_length, true ); }
     QString prettySampleRate( bool shortened = false ) const
     {
         if ( shortened )

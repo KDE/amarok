@@ -288,8 +288,8 @@ MetaBundle::prettyTime( uint seconds, bool showHours ) //static
     QString s = QChar( ':' );
     s.append( zeroPad( seconds % 60 ) ); //seconds
     seconds /= 60;
-
-    if( showHours )
+    
+    if( showHours && seconds >= 60)
     {
         s.prepend( zeroPad( seconds % 60 ) ); //minutes
         s.prepend( ':' );
