@@ -87,7 +87,7 @@ Party::Party( QWidget *parent, const char *name )
     restoreSettings();
     enable->setChecked( AmarokConfig::dynamicMode() );
 
-    if( enable->isOn() )
+    if( enable->isChecked() )
     {
 //         Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
