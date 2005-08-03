@@ -1475,6 +1475,7 @@ bool CurrentTrackJob::doJob()
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImageTitleAttr;
     QString albumImage = CollectionDB::instance()->albumImage( currentTrack );
+
     if ( albumImage == CollectionDB::instance()->notAvailCover( 0 ) )
         albumImageTitleAttr = i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() );
     else {
@@ -1526,9 +1527,18 @@ bool CurrentTrackJob::doJob()
                 "</div>"
                 "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>"
                     "<tr>"
+                        "<td id='current_box-largecover-td'>"
+                            "<a id='current_box-largecover-a' href='fetchcover:%2 @@@ %3'>"
+                                "<img id='current_box-largecover-image' src='%4' title='%5'>"
+                            "</a>"
+                        "</td>"
                         "<td id='current_box-information-td' align='right'>"
                 )
                 .arg( escapeHTML( currentTrack.prettyTitle() ) )
+                .arg( escapeHTMLAttr( currentTrack.artist() ) )
+                .arg( escapeHTMLAttr( currentTrack.album() ) )
+                .arg( escapeHTMLAttr( albumImage ) )
+                .arg( albumImageTitleAttr )
             ) );
 
     if ( !values.isEmpty() && values[2].toInt() )
