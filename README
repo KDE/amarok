@@ -43,6 +43,8 @@ Required
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
+    * One of the multimedia frameworks listed below
+
 Recommended
     * xine 1.0.0
       (multimedia framework)
@@ -60,6 +62,10 @@ Optional
       (multimedia framework)
       http://www.kde.org
 
+    * Real Player 10
+      (multimedia framework)
+      http://www.real.com
+
     * MAS 0.6.3
       (multimedia framework)
       http://www.mediaapplicationserver.net
@@ -72,6 +78,10 @@ Optional
       (needed for Konqueror Sidebar)
       http://www.kde.org
 
+    * MySQL 4
+      (faster database support)
+      http://www.mysql.com
+
     * OpenGL accelerated X-Server
       (visualization rendering)
 
@@ -79,6 +89,10 @@ Optional
       (visualization framework)
       http://libvisual.sf.net
       http://www.libsdl.org
+
+    * ProjectM 0.96
+      (visualization plugins for Libvisual or XMMS)
+      http://xmms-projectm.sourceforge.net/
 
     * libtunepimp 0.3
       (automatic tagging support)
