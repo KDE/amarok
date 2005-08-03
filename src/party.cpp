@@ -56,14 +56,9 @@ Party::Party( QWidget *parent, const char *name )
     KAction *repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
                                        this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
-    m_applyButton = new KAction( i18n("Apply"), "apply", 0, this, SLOT( applySettings() ), m_ac, "Apply Settings" );
-
     m_toolbar = new Browser::ToolBar( container );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the buttons to have text on right
     repopulate->plug( m_toolbar );
-    m_toolbar->insertLineSeparator();
-    m_applyButton->plug( m_toolbar );
-
 
     m_base = new PartyDialogBase( container );
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
@@ -71,18 +66,17 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_cycleTracks, SIGNAL( toggled(bool) ), m_base->m_previousIntSpinBox, SLOT( setEnabled(bool) ) );
 
     //Update buttons
-    connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_cycleTracks,           SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_markHistory,           SIGNAL( stateChanged( int ) ), SLOT( updateApplyButton() ) );
-    connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( updateApplyButton() ) );
+    connect( m_base->m_appendCountIntSpinBox, SIGNAL( valueChanged( int ) ), SLOT( applySettings() ) );
+    connect( m_base->m_previousIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( applySettings() ) );
+    connect( m_base->m_upcomingIntSpinBox,    SIGNAL( valueChanged( int ) ), SLOT( applySettings() ) );
+    connect( m_base->m_cycleTracks,           SIGNAL( stateChanged( int ) ), SLOT( applySettings() ) );
+    connect( m_base->m_markHistory,           SIGNAL( stateChanged( int ) ), SLOT( applySettings() ) );
+    connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( applySettings() ) );
 
-    QHBox *buttonBox = new QHBox( this );
-    KPushButton *enable = new KPushButton( KGuiItem( i18n("Enable Dynamic Mode"), "party" ), buttonBox );
+    QHBox *buttonBox = new QVBox( this );
+    QCheckBox *enable = new QCheckBox( i18n("Enable Dynamic Mode"), buttonBox, "party" );
     KPushButton *config = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
 
-    enable->setToggleButton( true );
     config->setToggleButton( true );
     connect( enable, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
     connect( config, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
@@ -91,7 +85,7 @@ Party::Party( QWidget *parent, const char *name )
              enable, SLOT( setOn( bool ) ) );
 
     restoreSettings();
-    enable->setOn( AmarokConfig::dynamicMode() );
+    enable->setChecked( AmarokConfig::dynamicMode() );
 
     if( enable->isOn() )
     {
@@ -118,9 +112,6 @@ Party::restoreSettings()
 
     else // Custom
         m_base->m_appendType->setCurrentItem( CUSTOM );
-
-    m_applyButton->setEnabled( false );
-
 }
 
 void
@@ -178,8 +169,6 @@ Party::applySettings() //SLOT
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !AmarokConfig::dynamicMode() );
-
-    m_applyButton->setEnabled( false );
 }
 
 void
@@ -195,32 +184,6 @@ void
 Party::repopulate() // SLOT
 {
     Playlist::instance()->repopulate();
-}
-
-void
-Party::updateApplyButton() //SLOT
-{
-    if( cycleTracks()   != AmarokConfig::dynamicCycleTracks()   ||
-        markHistory()   != AmarokConfig::dynamicMarkHistory()   ||
-        previousCount() != AmarokConfig::dynamicPreviousCount() ||
-        upcomingCount() != AmarokConfig::dynamicUpcomingCount() ||
-        appendCount()   != AmarokConfig::dynamicAppendCount() )
-    {
-        m_applyButton->setEnabled( true );
-        return;
-    }
-
-    QString type = AmarokConfig::dynamicType();
-    int typeValue = CUSTOM;
-
-    if( type == "Random" )          typeValue = RANDOM;
-    else if( type == "Suggestion" ) typeValue = SUGGESTION;
-
-    if( typeValue != appendType() )
-        m_applyButton->setEnabled( true );
-    else
-        m_applyButton->setEnabled( false );
-
 }
 
 void

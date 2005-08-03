@@ -74,7 +74,6 @@ class Party : public QVBox
         void    applySettings();
         void    showConfig( bool show );
         void    toggle( bool enable );
-        void    updateApplyButton();
 
     private:
         enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };
@@ -85,7 +84,6 @@ class Party : public QVBox
         void    restoreSettings();
 
         KActionCollection *m_ac;
-        KAction    *m_applyButton;
         KToolBar   *m_toolbar;
         QLabel     *m_tooltip;
         bool        m_visible;
