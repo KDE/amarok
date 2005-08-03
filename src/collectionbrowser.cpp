@@ -1079,9 +1079,9 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
         #endif
         KURL::List selection = listSelected();
-        menu.insertItem( SmallIconSet( "info" ), selection.count() == 1
-            ? i18n( "Edit Track &Information..." )
-            : i18n( "Edit &Information for %1 Tracks..." ).arg( selection.count() ), this, SLOT( showTrackInfo() ), 0, INFO );
+        menu.insertItem( SmallIconSet( "info" )
+            , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
+            , this, SLOT( showTrackInfo() ), 0, INFO );
 
         if ( cat == CollectionBrowser::IdAlbum )
         {

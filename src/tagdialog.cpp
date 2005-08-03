@@ -52,7 +52,8 @@ TagDialog::TagDialog( const KURL::List list, QWidget* parent )
     , m_urlList( list )
     , m_currentCover( 0 )
 {
-    setCaption( kapp->makeStdCaption( i18n("Information for %1 Tracks").arg(list.count()) ) );
+    //i18n has crappy syntax for pluralization of always-plurals (apparently needed for wacky languages).
+    setCaption( kapp->makeStdCaption( i18n("Information for %n Tracks", "Information for %n Tracks", list.count()) ) );
     init();
 }
 
