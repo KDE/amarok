@@ -202,7 +202,7 @@ splitting amaroK into the following packages:
    4. aRts-engine
    5. amarok_xmmswrapper + amarok_libvisual
 
-amaroK is modular and wil be fully functional as long as one of 2, 3, or 4 is
+amaroK is modular and will be fully functional as long as one of 2, 3, or 4 is
 also installed. Hence we suggest amaroK + one backend. Feel free to include the
 MAS and NMM engines if you can satisfy their dependencies.
 
