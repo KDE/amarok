@@ -653,7 +653,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
                 m_dirtyHomePage = true;
                 showHome();
             }
-            else if( currentPage() != m_currentTrackPage->view() )
+            else if( currentPage() == m_currentTrackPage->view() )
             {
                 m_dirtyCurrentTrackPage = true;
                 showCurrentTrack();
@@ -708,8 +708,17 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n("Select Cover Image File") );
         if ( !file.isEmpty() ) {
             CollectionDB::instance()->setAlbumImage( artist, album, file );
-            m_dirtyCurrentTrackPage = true;
-            showCurrentTrack();
+
+            if( currentPage() == m_homePage->view() )
+            {
+                m_dirtyHomePage = true;
+                showHome();
+            }
+            else if( currentPage() == m_currentTrackPage->view() )
+            {
+                m_dirtyCurrentTrackPage = true;
+                showCurrentTrack();
+            }
         }
         break;
     }
@@ -2848,10 +2857,19 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
 
-    if ( currentTrack.artist() == artist || currentTrack.album() == album ) // this is for compilations or artist == ""
+    if( currentPage() == m_homePage->view() )
     {
-        m_dirtyCurrentTrackPage = true;
-        showCurrentTrack();
+        m_dirtyHomePage = true;
+        showHome();
+    }
+    else if ( currentPage() == m_currentTrackPage->view() &&
+       ( currentTrack.artist() == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
+    {
+        if( currentPage() == m_currentTrackPage->view() )
+        {
+            m_dirtyCurrentTrackPage = true;
+            showCurrentTrack();
+        }
     }
 }
 
@@ -2863,10 +2881,19 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
     if ( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
         return;
 
-    if ( currentTrack.artist() == artist || currentTrack.album() == album ) // this is for compilations or artist == ""
+    if( currentPage() == m_homePage->view() )
     {
-        m_dirtyCurrentTrackPage = true;
-        showCurrentTrack();
+        m_dirtyHomePage = true;
+        showHome();
+    }
+    else if ( currentPage() == m_currentTrackPage->view() &&
+       ( currentTrack.artist() == artist || currentTrack.album() == album ) ) // this is for compilations or artist == ""
+    {
+        if( currentPage() == m_currentTrackPage->view() )
+        {
+            m_dirtyCurrentTrackPage = true;
+            showCurrentTrack();
+        }
     }
 }
 
