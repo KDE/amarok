@@ -68,7 +68,6 @@ class Party : public QVBox
 
     public slots:
         void    repopulate();
-        void    statusChanged( bool status );
 
     private slots:
         void    applySettings();

@@ -16,6 +16,7 @@
 #include "amarokconfig.h"
 #include "browserToolBar.h"
 #include "collectiondb.h"
+#include "debug.h"
 #include "party.h"
 #include "partydialogbase.h"
 #include "partyinfobox.h"
@@ -82,7 +83,7 @@ Party::Party( QWidget *parent, const char *name )
     connect( config, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
 
     connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
-             enable, SLOT( setOn( bool ) ) );
+             enable, SLOT( setChecked( bool ) ) );
 
     restoreSettings();
     enable->setChecked( AmarokConfig::dynamicMode() );
@@ -135,7 +136,6 @@ void
 Party::applySettings() //SLOT
 {
     //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
-
     if( CollectionDB::instance()->isEmpty() )
         return;
 
@@ -161,23 +161,15 @@ Party::applySettings() //SLOT
         AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
         Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
     }
-
+    debug() << "Cycle tracks was " << AmarokConfig::dynamicCycleTracks() << endl; 
     AmarokConfig::setDynamicCycleTracks( cycleTracks() );
+    debug() << "And is now " << AmarokConfig::dynamicCycleTracks() << endl;
     AmarokConfig::setDynamicAppendCount( appendCount() );
     AmarokConfig::setDynamicMarkHistory( markHistory() );
 
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !AmarokConfig::dynamicMode() );
-}
-
-void
-Party::statusChanged( bool enable ) // SLOT
-{
-    if( !enable )
-        Playlist::instance()->alterHistoryItems( true, true ); //enable all items
-
-    applySettings();
 }
 
 void
