@@ -37,13 +37,18 @@ class PlaylistBrowserEntry : public KListViewItem
 {
     public:
         PlaylistBrowserEntry(QListViewItem *parent, QListViewItem *after)
-            :KListViewItem(parent, after) {};
+            :KListViewItem(parent, after) { m_notify = false; }
         PlaylistBrowserEntry(QListView *parent, QListViewItem *after)
-            :KListViewItem(parent, after) {};
+            :KListViewItem(parent, after) { m_notify = false; }
         PlaylistBrowserEntry(QListViewItem *parent, QListViewItem *after, const QString &name )
-            :KListViewItem(parent, after, name) {};
+            :KListViewItem(parent, after, name) { m_notify = false; }
 
         virtual QDomElement xml() { return QDomElement(); };
+        bool    notify() { return m_notify; }           // use as you like ;-).  eg:
+        void    setNotify( bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
+
+    private:
+        bool    m_notify;
 };
 
 class PartyEntry : public PlaylistBrowserEntry

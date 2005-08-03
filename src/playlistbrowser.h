@@ -147,7 +147,6 @@ class PlaylistBrowser : public QVBox
         QTimer              *m_podcastTimer;
         int                  m_podcastTimerInterval;        //in ms
         QPtrList<PodcastChannel> m_podcastItemsToScan;
-
 };
 
 

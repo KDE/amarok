@@ -964,7 +964,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_interval( 4 )
     , m_mediaFetch( DOWNLOAD )
     , m_purgeItems( false )
-    , m_purgeCount( 20 )
+    , m_purgeCount( 2 ) // we do a small hack here to make sure we only download the first 2 items of a new pc.
     , m_last( 0 )
 {
     setDragEnabled( true );
@@ -975,6 +975,8 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setPixmap( 0, SmallIcon("player_playlist_2") );
 
     fetch();
+
+    m_purgeCount = 20; // restore default value
 }
 
 
@@ -1167,7 +1169,7 @@ PodcastChannel::setXml( QDomNode xml )
     }
 
     QDomNode n = xml.namedItem( "item" );
-    uint children = 0;
+    int  children = 0;
     bool downloadMedia = ( m_mediaFetch == AVAILABLE );
     for( ; !n.isNull(); n = n.nextSibling() )
     {
@@ -1182,6 +1184,7 @@ PodcastChannel::setXml( QDomNode xml )
                 !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
+
                 if( downloadMedia )
                     updatingLast->downloadMedia();
 
@@ -1192,7 +1195,7 @@ PodcastChannel::setXml( QDomNode xml )
         {
             //only download two episodes initially -> current and 1 back issue
             //Make configurable?
-            if( children > 2 )
+            if( children > m_purgeCount )
                 break;
 
             if( !n.namedItem( "title" ).toElement().text().isEmpty() &&
@@ -1213,7 +1216,17 @@ PodcastChannel::setXml( QDomNode xml )
     if( firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
         setNew();
-        amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved!") );
+        /// Don't show multiple pop-ups
+        QListViewItem *parent = this->QListViewItem::parent();
+        while( parent->parent() )
+            parent = parent->parent();
+
+        bool notify = static_cast<PlaylistBrowserEntry*>(parent)->notify();
+        if( !notify )
+        {
+            amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved!") );
+            static_cast<PlaylistBrowserEntry*>(parent)->setNotify( true );
+        }
     }
 }
 
