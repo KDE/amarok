@@ -10,7 +10,7 @@ VERSION 1.3:
     * Removed 'Apply' button from dynamic config, all config options are now
       hot! (Automatically applied on alteration)
     * Minimum score changed from 1 to 0. (BR 107944)
-
+    * Playlist item lengths now shown with hours when necessary.
   BUGFIXES:
     * Cover image shown if track has no title.
     * Statusbar cancel button will terminate a podcast download.
