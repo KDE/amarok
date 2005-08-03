@@ -75,20 +75,22 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( applySettings() ) );
 
     QHBox *buttonBox = new QVBox( this );
-    QCheckBox *enable = new QCheckBox( i18n("Enable Dynamic Mode"), buttonBox, "party" );
-    KPushButton *config = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
+    QCheckBox   *enableButton = new QCheckBox( i18n("Enable Dynamic Mode"), buttonBox, "party" );
+    KPushButton *configButton = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
 
-    config->setToggleButton( true );
-    connect( enable, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
-    connect( config, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
+    configButton->setToggleButton( true );
+    connect( enableButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+    connect( configButton, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
 
     connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
-             enable, SLOT( setChecked( bool ) ) );
+             enableButton, SLOT( setChecked( bool ) ) );
 
-    restoreSettings();
-    enable->setChecked( AmarokConfig::dynamicMode() );
+    debug() << "[DYNAMIC] Attempt restore..." << endl;
+    loadConfig();
+    debug() << "[DYNAMIC] Restored!" << endl;
+    enableButton->setChecked( AmarokConfig::dynamicMode() );
 
-    if( enable->isChecked() )
+    if( enableButton->isChecked() )
     {
 //         Although random mode should be off, we uncheck it, just in case (eg amarokrc tinkering)
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
@@ -97,39 +99,38 @@ Party::Party( QWidget *parent, const char *name )
 }
 
 void
-Party::restoreSettings()
-{
-    m_base->m_upcomingIntSpinBox->setValue( AmarokConfig::dynamicUpcomingCount() );
-    m_base->m_previousIntSpinBox->setValue( AmarokConfig::dynamicPreviousCount() );
-    m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::dynamicAppendCount() );
-    m_base->m_cycleTracks->setChecked( AmarokConfig::dynamicCycleTracks() );
-    m_base->m_markHistory->setChecked( AmarokConfig::dynamicMarkHistory() );
-
-    if ( AmarokConfig::dynamicType() == "Random" )
-        m_base->m_appendType->setCurrentItem( RANDOM );
-
-    else if ( AmarokConfig::dynamicType() == "Suggestion" )
-        m_base->m_appendType->setCurrentItem( SUGGESTION );
-
-    else // Custom
-        m_base->m_appendType->setCurrentItem( CUSTOM );
-}
-
-void
 Party::loadConfig( PartyEntry *config )
 {
-    m_base->m_upcomingIntSpinBox->setValue( config->upcoming() );
-    m_base->m_previousIntSpinBox->setValue( config->previous() );
-    m_base->m_appendCountIntSpinBox->setValue( config->appendCount() );
-    m_base->m_cycleTracks->setChecked( config->isCycled() );
-    m_base->m_markHistory->setChecked( config->isMarked() );
-    m_base->m_appendType->setCurrentItem( config->appendType() );
+    if( !config )
+    {
+        m_base->m_upcomingIntSpinBox->setValue( AmarokConfig::dynamicUpcomingCount() );
+        m_base->m_previousIntSpinBox->setValue( AmarokConfig::dynamicPreviousCount() );
+        m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::dynamicAppendCount() );
+        m_base->m_cycleTracks->setChecked( AmarokConfig::dynamicCycleTracks() );
+        m_base->m_markHistory->setChecked( AmarokConfig::dynamicMarkHistory() );
 
-    AmarokConfig::setDynamicCustomList( config->items() );
+        if ( AmarokConfig::dynamicType() == "Random" )
+            m_base->m_appendType->setCurrentItem( RANDOM );
 
-    applySettings();
+        else if ( AmarokConfig::dynamicType() == "Suggestion" )
+            m_base->m_appendType->setCurrentItem( SUGGESTION );
 
-    Playlist::instance()->repopulate();
+        else // Custom
+            m_base->m_appendType->setCurrentItem( CUSTOM );
+    }
+    else
+    {
+        m_base->m_upcomingIntSpinBox->setValue( config->upcoming() );
+        m_base->m_previousIntSpinBox->setValue( config->previous() );
+        m_base->m_appendCountIntSpinBox->setValue( config->appendCount() );
+        m_base->m_cycleTracks->setChecked( config->isCycled() );
+        m_base->m_markHistory->setChecked( config->isMarked() );
+        m_base->m_appendType->setCurrentItem( config->appendType() );
+
+        AmarokConfig::setDynamicCustomList( config->items() );
+
+        applySettings();
+    }
 }
 
 void
@@ -161,7 +162,7 @@ Party::applySettings() //SLOT
         AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
         Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
     }
-    debug() << "Cycle tracks was " << AmarokConfig::dynamicCycleTracks() << endl; 
+    debug() << "Cycle tracks was " << AmarokConfig::dynamicCycleTracks() << endl;
     AmarokConfig::setDynamicCycleTracks( cycleTracks() );
     debug() << "And is now " << AmarokConfig::dynamicCycleTracks() << endl;
     AmarokConfig::setDynamicAppendCount( appendCount() );
@@ -170,12 +171,6 @@ Party::applySettings() //SLOT
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !AmarokConfig::dynamicMode() );
-}
-
-void
-Party::repopulate() // SLOT
-{
-    Playlist::instance()->repopulate();
 }
 
 void

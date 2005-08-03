@@ -1,5 +1,5 @@
 /***************************************************************************
- * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net                *
+ * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
  ***************************************************************************/
 
 /***************************************************************************
@@ -33,6 +33,8 @@
 #ifndef AMAROK_PARTY_H
 #define AMAROK_PARTY_H
 
+#include "playlist.h"
+
 #include <qlistview.h>
 #include <qvbox.h>          //baseclass
 
@@ -41,7 +43,6 @@ class KAction;
 class KActionCollection;
 class PartyDialogBase;
 class PartyEntry;
-
 
 class Party : public QVBox
 {
@@ -53,7 +54,7 @@ class Party : public QVBox
 
         enum    Mode{ RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
-        void    loadConfig( PartyEntry *config );
+        void    loadConfig( PartyEntry *config = 0 ); // 0 -> load amarokrc config
 
         bool    isChecked();
         int     previousCount();
@@ -67,7 +68,7 @@ class Party : public QVBox
         static  Party *instance() { return s_instance; }
 
     public slots:
-        void    repopulate();
+        void    repopulate()      { Playlist::instance()->repopulate(); }
 
     private slots:
         void    applySettings();
@@ -80,7 +81,6 @@ class Party : public QVBox
         PartyDialogBase *m_base;
 
         void    createWidget();
-        void    restoreSettings();
 
         KActionCollection *m_ac;
         KToolBar   *m_toolbar;
