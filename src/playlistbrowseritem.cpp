@@ -1375,9 +1375,18 @@ PodcastItem::downloadMedia()
     m_podcastItemJob = new KIO::CopyJob( list, m_localUrl, KIO::CopyJob::Copy, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastItemJob )
-            .setDescription( i18n( "Downloading Podcast Media" ) );
+            .setDescription( i18n( "Downloading Podcast Media" ) )
+            .setAbortSlot( this, SLOT(abortDownload()) );
 
     connect( m_podcastItemJob, SIGNAL( result( KIO::Job* ) ), SLOT( downloadResult( KIO::Job* ) ) );
+}
+
+void
+PodcastItem::abortDownload() //SLOT
+{
+    stopAnimation();
+    setText( 0, m_title );
+    m_downloaded = false;
 }
 
 void
