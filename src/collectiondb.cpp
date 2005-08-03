@@ -1369,7 +1369,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage )
 
     // check boundaries
     if ( percentage > 100 ) percentage = 100;
-    if ( percentage < 1 )   percentage = 1;
+    if ( percentage < 0 )   percentage = 0;
 
     if ( !values.isEmpty() )
     {
