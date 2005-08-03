@@ -648,7 +648,16 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if ( button == KMessageBox::Continue )
         {
             CollectionDB::instance()->removeAlbumImage( artist, album );
-            showCurrentTrack();
+            if( currentPage() == m_homePage->view() )
+            {
+                m_dirtyHomePage = true;
+                showHome();
+            }
+            else if( currentPage() != m_currentTrackPage->view() )
+            {
+                m_dirtyCurrentTrackPage = true;
+                showCurrentTrack();
+            }
         }
         break;
     }
