@@ -401,6 +401,31 @@ void ContextBrowser::renderView()
     }
 }
 
+void ContextBrowser::tagsChanged( MetaBundle &bundle )
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+
+    if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+        return;
+
+    if( bundle.artist() != currentTrack.artist() && bundle.album() != currentTrack.album() )
+        return;
+
+    if( currentPage() == m_homePage->view() )
+    {
+        m_dirtyHomePage = true;
+        showHome();
+    }
+    else if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
+    {
+        if( currentPage() == m_currentTrackPage->view() )
+        {
+            m_dirtyCurrentTrackPage = true;
+            showCurrentTrack();
+        }
+    }
+
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED
@@ -545,7 +570,6 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, INFO, MANAGER, TITLE };
 
     if( urlString.isEmpty() ||
-        // urlString.startsWith( "lyricspage" ) || < removed since nothing seems to be using it, old code.
         urlString.startsWith( "musicbrainz" ) ||
         urlString.startsWith( "externalurl" ) ||
         urlString.startsWith( "show:suggest" ) ||
@@ -668,10 +692,13 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case INFO:
     {
-        if ( urls.count() > 1 ) {
-          TagDialog* dialog = new TagDialog( urls, instance() );
-          dialog->show();
-        } else if ( !urls.isEmpty() ) {
+        if ( urls.count() > 1 )
+        {
+            TagDialog* dialog = new TagDialog( urls, instance() );
+            dialog->show();
+        }
+        else if ( !urls.isEmpty() )
+        {
             TagDialog* dialog = new TagDialog( urls.first() );
             dialog->show();
         }

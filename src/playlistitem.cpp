@@ -179,7 +179,7 @@ void PlaylistItem::setText( const MetaBundle &bundle )
     if ( playcount )
         setText( Playcount, QString::number( playcount ) );
     else
-          setText( Playcount, QString::number( 0 ) );  //Never played before.
+        setText( Playcount, QString::number( 0 ) );  //Never played before.
 }
 
 

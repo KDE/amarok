@@ -49,6 +49,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void collectionScanStarted();
         void collectionScanDone();
         void renderView();
+        void tagsChanged( MetaBundle &bundle );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );

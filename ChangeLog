@@ -11,7 +11,9 @@ VERSION 1.3:
       hot! (Automatically applied on alteration)
     * Minimum score changed from 1 to 0. (BR 107944)
     * Playlist item lengths now shown with hours when necessary.
+
   BUGFIXES:
+    * Refresh the context browser as appropriate when editing tags.
     * Cover image shown if track has no title.
     * Statusbar cancel button will terminate a podcast download.
     * Don't show multiple popup messages when retrieving podcast information.
