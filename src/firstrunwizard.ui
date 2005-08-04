@@ -111,6 +111,23 @@
                     </property>
                     <widget class="QRadioButton">
                         <property name="name">
+                            <cstring>option_compact</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>5</hsizetype>
+                                <vsizetype>5</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="text">
+                            <string>Single window with player and playlist functionality
+combined (like JuK)</string>
+                        </property>
+                    </widget>
+                    <widget class="QRadioButton">
+                        <property name="name">
                             <cstring>option_xmms</cstring>
                         </property>
                         <property name="sizePolicy">
@@ -127,24 +144,6 @@
                         </property>
                         <property name="checked">
                             <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>option_compact</cstring>
-                        </property>
-                        <property name="sizePolicy">
-                            <sizepolicy>
-                                <hsizetype>5</hsizetype>
-                                <vsizetype>5</vsizetype>
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                            </sizepolicy>
-                        </property>
-                        <property name="text">
-                            <string>Single window with player and playlist
-functionality combined
-(like JuK)</string>
                         </property>
                     </widget>
                 </vbox>
