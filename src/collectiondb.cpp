@@ -57,10 +57,8 @@
 #endif
 
 #ifdef USE_POSTGRESQL
-#include <postgresql/pgsql/libpq-fe.h>
+#include <libpq-fe.h>
 #endif
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
