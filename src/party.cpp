@@ -85,9 +85,7 @@ Party::Party( QWidget *parent, const char *name )
     connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
              enableButton, SLOT( setChecked( bool ) ) );
 
-    debug() << "[DYNAMIC] Attempt restore..." << endl;
     loadConfig();
-    debug() << "[DYNAMIC] Restored!" << endl;
     enableButton->setChecked( AmarokConfig::dynamicMode() );
 
     if( enableButton->isChecked() )
@@ -103,12 +101,13 @@ Party::loadConfig( PartyEntry *config )
 {
     if( !config )
     {
+        blockSignals(true); // else valueChanged() etc get connected
+
         m_base->m_upcomingIntSpinBox->setValue( AmarokConfig::dynamicUpcomingCount() );
         m_base->m_previousIntSpinBox->setValue( AmarokConfig::dynamicPreviousCount() );
         m_base->m_appendCountIntSpinBox->setValue( AmarokConfig::dynamicAppendCount() );
         m_base->m_cycleTracks->setChecked( AmarokConfig::dynamicCycleTracks() );
         m_base->m_markHistory->setChecked( AmarokConfig::dynamicMarkHistory() );
-
         if ( AmarokConfig::dynamicType() == "Random" )
             m_base->m_appendType->setCurrentItem( RANDOM );
 
@@ -117,9 +116,13 @@ Party::loadConfig( PartyEntry *config )
 
         else // Custom
             m_base->m_appendType->setCurrentItem( CUSTOM );
+
+        blockSignals(false);
     }
     else
     {
+        blockSignals(true);
+
         m_base->m_upcomingIntSpinBox->setValue( config->upcoming() );
         m_base->m_previousIntSpinBox->setValue( config->previous() );
         m_base->m_appendCountIntSpinBox->setValue( config->appendCount() );
@@ -129,6 +132,8 @@ Party::loadConfig( PartyEntry *config )
 
         AmarokConfig::setDynamicCustomList( config->items() );
 
+        blockSignals(false);
+
         applySettings();
     }
 }
@@ -136,6 +141,7 @@ Party::loadConfig( PartyEntry *config )
 void
 Party::applySettings() //SLOT
 {
+    debug() << "applySettings() got called" << endl;
     //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
     if( CollectionDB::instance()->isEmpty() )
         return;
@@ -171,6 +177,17 @@ Party::applySettings() //SLOT
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !AmarokConfig::dynamicMode() );
+}
+
+void
+Party::blockSignals( const bool b )
+{
+    m_base->m_upcomingIntSpinBox->blockSignals( b );
+    m_base->m_previousIntSpinBox->blockSignals( b );
+    m_base->m_appendCountIntSpinBox->blockSignals( b );
+    m_base->m_cycleTracks->blockSignals( b );
+    m_base->m_markHistory->blockSignals( b );
+    m_base->m_appendType->blockSignals( b );
 }
 
 void

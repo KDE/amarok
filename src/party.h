@@ -80,6 +80,7 @@ class Party : public QVBox
 
         PartyDialogBase *m_base;
 
+        void    blockSignals( const bool b );
         void    createWidget();
 
         KActionCollection *m_ac;
