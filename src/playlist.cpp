@@ -2213,8 +2213,10 @@ Playlist::repopulate() //SLOT
     for( ; *it; ++it )
     {
         PlaylistItem *item = (PlaylistItem *)(*it);
+        int     queueIndex = m_nextTracks.findRef( item );
+        bool    isQueued   = queueIndex != -1;
 
-        if( !item->isEnabled() || item == m_currentTrack )
+        if( !item->isEnabled() || item == m_currentTrack || isQueued )
             continue;
 
         list.prepend( *it );
@@ -2873,7 +2875,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertSeparator();
     popup.insertItem( SmallIconSet( "info" )
-        , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount) 
+        , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount)
         , VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
