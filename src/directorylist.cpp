@@ -42,7 +42,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_playlists = new QCheckBox( i18n("&Import playlists"), this );
 
-    QToolTip::add( m_recursive, i18n( "If selected, amaroK reads all folders recursively." ) );
+    QToolTip::add( m_recursive, i18n( "If selected, amaroK will read all subfolders." ) );
     QToolTip::add( m_monitor,   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
     QToolTip::add( m_playlists, i18n( "If selected, playlist files (.m3u) will automatically be added to the Playlist-Browser." ) );
 
