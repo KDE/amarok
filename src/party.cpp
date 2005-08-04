@@ -185,6 +185,8 @@ Party::blockSignals( const bool b )
     m_base->m_cycleTracks->blockSignals( b );
     m_base->m_markHistory->blockSignals( b );
     m_base->m_appendType->blockSignals( b );
+
+    blockSignals( b );  // respect inheritance
 }
 
 void
