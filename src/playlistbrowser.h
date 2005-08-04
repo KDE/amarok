@@ -73,6 +73,7 @@ class PlaylistBrowser : public QVBox
 
     private slots:
         void addToDynamic();
+        void collectionScanDone();
         void currentItemChanged( QListViewItem * );
         void deleteSelectedPlaylists();
         void editStreamURL( StreamEntry *item );

@@ -146,6 +146,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
              this,         SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
              this,         SLOT( currentItemChanged( QListViewItem * ) ) );
+    connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 }
@@ -1218,6 +1219,20 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     }
     else
         debug() << "No functionality for item double click implemented" << endl;
+}
+
+void PlaylistBrowser::collectionScanDone()
+{
+    if( !m_polished || CollectionDB::instance()->isEmpty() )
+    {
+        return;
+    }
+    else if( !m_smartCategory )
+    {
+        m_smartCategory = loadSmartPlaylists();
+        loadDefaultSmartPlaylists();
+        m_smartCategory->setOpen( true );
+    }
 }
 
 void PlaylistBrowser::addToDynamic()
