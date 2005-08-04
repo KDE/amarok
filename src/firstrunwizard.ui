@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>828</width>
+            <width>830</width>
             <height>414</height>
         </rect>
     </property>
@@ -26,7 +26,7 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="KActiveLabel" row="0" column="0" rowspan="2" colspan="1">
+            <widget class="KActiveLabel" row="0" column="0">
                 <property name="name">
                     <cstring>text1</cstring>
                 </property>
@@ -38,24 +38,7 @@
 &lt;p&gt;This wizard will help you setup amaroK in three easy steps. Click &lt;i&gt;Next&lt;/i&gt; to begin, or if you do not like wizards, click &lt;i&gt;Skip&lt;/i&gt;.&lt;/p&gt;</string>
                 </property>
             </widget>
-            <spacer row="1" column="1">
-                <property name="name">
-                    <cstring>spacer3_2</cstring>
-                </property>
-                <property name="orientation">
-                    <enum>Vertical</enum>
-                </property>
-                <property name="sizeType">
-                    <enum>Expanding</enum>
-                </property>
-                <property name="sizeHint">
-                    <size>
-                        <width>20</width>
-                        <height>141</height>
-                    </size>
-                </property>
-            </spacer>
-            <widget class="QLabel" row="0" column="1">
+            <widget class="QLabel" row="0" column="2">
                 <property name="name">
                     <cstring>picture1</cstring>
                 </property>
@@ -74,6 +57,23 @@
                     <bool>false</bool>
                 </property>
             </widget>
+            <spacer row="0" column="1">
+                <property name="name">
+                    <cstring>spacer3_2</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>320</height>
+                    </size>
+                </property>
+            </spacer>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -87,7 +87,7 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="QButtonGroup" row="1" column="0">
+            <widget class="QButtonGroup" row="2" column="0">
                 <property name="name">
                     <cstring>group1</cstring>
                 </property>
@@ -105,9 +105,15 @@
                 <property name="title">
                     <string></string>
                 </property>
+                <property name="selectedId" stdset="0">
+                    <number>0</number>
+                </property>
                 <vbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
+                    </property>
+                    <property name="spacing">
+                        <number>20</number>
                     </property>
                     <widget class="QRadioButton">
                         <property name="name">
@@ -143,7 +149,7 @@ combined (like JuK)</string>
 (like XMMS or Winamp)</string>
                         </property>
                         <property name="checked">
-                            <bool>true</bool>
+                            <bool>false</bool>
                         </property>
                     </widget>
                 </vbox>
@@ -173,7 +179,7 @@ combined (like JuK)</string>
                         </property>
                         <property name="text">
                             <string>&lt;p&gt;With amaroK you can use the window layout that you find most comfortable.&lt;/p&gt;
-&lt;p&gt;You can change these settings at a later time using the amaroK configuration dialog.&lt;/p&gt;</string>
+&lt;p&gt;You can change these settings at a later time using the configuration dialog.&lt;/p&gt;</string>
                         </property>
                         <property name="wrapPolicy">
                             <enum>AtWordBoundary</enum>
@@ -198,7 +204,7 @@ combined (like JuK)</string>
                     </spacer>
                 </hbox>
             </widget>
-            <widget class="QLabel" row="1" column="1">
+            <widget class="QLabel" row="2" column="1">
                 <property name="name">
                     <cstring>picture_modePreview</cstring>
                 </property>
@@ -223,6 +229,40 @@ combined (like JuK)</string>
                     <set>AlignTop|AlignLeft</set>
                 </property>
             </widget>
+            <spacer row="1" column="0">
+                <property name="name">
+                    <cstring>spacer16</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Fixed</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>20</height>
+                    </size>
+                </property>
+            </spacer>
+            <spacer row="3" column="0">
+                <property name="name">
+                    <cstring>spacer17</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="sizeType">
+                    <enum>Expanding</enum>
+                </property>
+                <property name="sizeHint">
+                    <size>
+                        <width>21</width>
+                        <height>16</height>
+                    </size>
+                </property>
+            </spacer>
         </grid>
     </widget>
     <widget class="QWidget">
@@ -244,8 +284,9 @@ combined (like JuK)</string>
                     <number>1</number>
                 </property>
                 <property name="text">
-                    <string>&lt;p&gt;Select the folders on the right where your music files are stored.&lt;/p&gt;
-&lt;p&gt;Doing so enables many features of amaroK.&lt;/p&gt;</string>
+                    <string>&lt;p&gt;Please select the folders on the right where your music files are stored.&lt;/p&gt;
+&lt;p&gt;Doing so is highly recommended, and will enhance the features available to you.&lt;/p&gt;
+&lt;p&gt;If you wish, amaroK is able to monitor these folders for new files and can automatically add them to the collection.&lt;/p&gt;</string>
                 </property>
             </widget>
         </hbox>
@@ -300,7 +341,7 @@ combined (like JuK)</string>
                     <cstring>dbActiveLabel</cstring>
                 </property>
                 <property name="text">
-                    <string>amaroK uses a database. Choose one; if not sure click next.
+                    <string>amaroK uses a database to store information about your music. If you are not sure which to use, press next.
 &lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster than &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/index.php/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
