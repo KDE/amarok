@@ -377,9 +377,10 @@ void ContextBrowser::collectionScanDone()
     {
         showIntroduction();
         m_emptyDB = true;
-    } else if ( m_emptyDB )
+    }
+    else if ( m_emptyDB )
     {
-        showHome();
+        PlaylistWindow::self()->showBrowser("CollectionBrowser");
         m_emptyDB = false;
     }
 }

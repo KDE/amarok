@@ -583,7 +583,6 @@ Playlist::addSpecialCustomTracks( uint songCount )
         }
 
         KURL::List urls = KURL::List( items );
-
         KURL::List addMe;
 
         for( uint i=0; !useDirect && i < songCount; i++ )

@@ -16,10 +16,11 @@
 #ifndef AMAROK_PLAYLISTWINDOW_H
 #define AMAROK_PLAYLISTWINDOW_H
 
+#include "browserbar.h"
+
 #include <qwidget.h>        //baseclass
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
-class BrowserBar;
 class ClickLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
@@ -42,6 +43,9 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
         void createGUI(); //should be private but App::slowConfigToolbars requires it
         void recreateGUI();
+
+        //allows us to switch browsers from within other browsers etc
+        void showBrowser( const QString& name ) { m_browsers->showBrowser( name ); }
 
         virtual bool eventFilter( QObject*, QEvent* );
 
