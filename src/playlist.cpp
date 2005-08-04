@@ -654,21 +654,13 @@ Playlist::adjustPartyUpcoming( uint songCount,QString type )
 
 /**
  *  @param songCount : Number of tracks to be shown before the current track
- *  Can only reduce, since we do not keep a history
- */
+  */
 
 void
 Playlist::adjustPartyPrevious( uint songCount )
 {
-    //we can't make bigger history
-    if ( (int)songCount > AmarokConfig::dynamicPreviousCount() )
-        return;
-    int x = 0;
-
-    for( PlaylistItem *pos = firstChild(); pos != m_currentTrack; pos = pos->nextSibling())
-        x++;
-
-    x -= songCount;
+    int current = currentTrackIndex();
+    int x = current - songCount;
 
     QPtrList<QListViewItem> list;
     int y=0;
