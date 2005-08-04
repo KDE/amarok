@@ -560,37 +560,38 @@ Playlist::addSpecialCustomTracks( uint songCount )
     {
         #define sp static_cast<SmartPlaylist *>(item)
         QString query = sp->query();
+        bool useDirect = false;
 
         QString sql = sp->sqlForTags;
 
-        //Add random and limiting sql queries to the end
-        if ( sql.find( QString("ORDER BY"), FALSE ) != -1 ) {
-            QRegExp order( "ORDER BY.*$" );
-            sql.remove( order );
-            sql.append( ';' );
-        }
-
-        // ORDER BY RAND() breaks Newest etc
-        if ( sql.find( QString("LIMIT"), FALSE ) != -1  ) {
-            QRegExp limit( "LIMIT [\\d].*[\\d]");
-            sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1").arg( songCount ) );
-        } else {
+        if ( sql.find( QString("ORDER BY"), FALSE ) == -1 ) {
             QRegExp limit( ";$" );
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
+            useDirect = true;
         }
 
         QStringList queryResult = CollectionDB::instance()->query( sql );
-        QStringList newQuery;
+
+        QStringList items;
 
         if ( !sp->sqlForTags.isEmpty() ) {
             //We have to filter all the un-needed results from query( sql )
             for (uint x=10; x < queryResult.count() ; x += 11)
-                newQuery << queryResult[x];
+                items << queryResult[x];
         } else {
-            newQuery = queryResult;
+            items = queryResult;
         }
 
-        KURL::List urls = KURL::List( newQuery );
+        KURL::List urls = KURL::List( items );
+
+        KURL::List addMe;
+
+        for( uint i=0; !useDirect && i < songCount; i++ )
+        {
+            int x = KApplication::random() % urls.count();
+            addMe << urls[x];
+        }
+
         if( urls.isEmpty() )
             amaroK::StatusBar::instance()->longMessage( i18n(
                 "<div align=\"center\"><b>Warning</b></div>"
@@ -598,7 +599,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 "<br><br>"
                 "Please modify your smart-playlist or choose a different source." ).arg( item->text(0) ) );
         else
-            insertMedia( urls );
+            insertMedia( useDirect ? urls : addMe );
 
         #undef sp
     }
