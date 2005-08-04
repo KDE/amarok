@@ -141,7 +141,6 @@ Party::loadConfig( PartyEntry *config )
 void
 Party::applySettings() //SLOT
 {
-    debug() << "applySettings() got called" << endl;
     //TODO this should be in app.cpp or the dialog's class implementation, here is not the right place
     if( CollectionDB::instance()->isEmpty() )
         return;
@@ -168,9 +167,7 @@ Party::applySettings() //SLOT
         AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
         Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
     }
-    debug() << "Cycle tracks was " << AmarokConfig::dynamicCycleTracks() << endl;
     AmarokConfig::setDynamicCycleTracks( cycleTracks() );
-    debug() << "And is now " << AmarokConfig::dynamicCycleTracks() << endl;
     AmarokConfig::setDynamicAppendCount( appendCount() );
     AmarokConfig::setDynamicMarkHistory( markHistory() );
 
