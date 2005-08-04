@@ -1216,17 +1216,7 @@ PodcastChannel::setXml( QDomNode xml )
     if( firstChild() && static_cast<PodcastItem *>( firstChild() )->isNew() && m_updating )
     {
         setNew();
-        /// Don't show multiple pop-ups
-        QListViewItem *parent = this->QListViewItem::parent();
-        while( parent->parent() )
-            parent = parent->parent();
-
-        bool notify = static_cast<PlaylistBrowserEntry*>(parent)->notify();
-        if( !notify )
-        {
-            amaroK::StatusBar::instance()->longMessage( i18n("New podcasts have been retrieved!") );
-            static_cast<PlaylistBrowserEntry*>(parent)->setNotify( true );
-        }
+        amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
     }
 }
 
