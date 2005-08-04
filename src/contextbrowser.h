@@ -49,7 +49,6 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void collectionScanStarted();
         void collectionScanDone();
         void renderView();
-        void tagsChanged( MetaBundle &bundle );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
@@ -69,6 +68,7 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );
         void similarArtistsFetched( const QString &artist );
+        void tagsChanged( const MetaBundle &bundle );
 
         void lyricsAdd();
         void lyricsSearch();

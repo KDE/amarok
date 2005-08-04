@@ -1589,6 +1589,8 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     // using QTimer to make sure we don't manipulate the GUI from a thread
     if ( updateView )
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+
+    emit tagsChanged( bundle );
 }
 
 

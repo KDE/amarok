@@ -199,6 +199,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this,                       SLOT( coverRemoved( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( similarArtistsFetched( const QString& ) ),
              this,                       SLOT( similarArtistsFetched( const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
+             this,                       SLOT( tagsChanged( const MetaBundle& ) ) );
 
     //the stylesheet will be set up and home will be shown later due to engine signals and doodaa
     //if we call it here setStyleSheet is called 3 times during startup!!
@@ -399,32 +401,6 @@ void ContextBrowser::renderView()
     {
         showHome();
     }
-}
-
-void ContextBrowser::tagsChanged( MetaBundle &bundle )
-{
-    const MetaBundle &currentTrack = EngineController::instance()->bundle();
-
-    if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
-        return;
-
-    if( bundle.artist() != currentTrack.artist() && bundle.album() != currentTrack.album() )
-        return;
-
-    if( currentPage() == m_homePage->view() )
-    {
-        m_dirtyHomePage = true;
-        showHome();
-    }
-    else if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
-    {
-        if( currentPage() == m_currentTrackPage->view() )
-        {
-            m_dirtyCurrentTrackPage = true;
-            showCurrentTrack();
-        }
-    }
-
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -2932,6 +2908,31 @@ ContextBrowser::similarArtistsFetched( const QString &artist ) //SLOT
         m_dirtyCurrentTrackPage = true;
         if ( currentPage() == m_currentTrackPage->view() )
             showCurrentTrack();
+    }
+}
+
+void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+
+    if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+        return;
+
+    if( bundle.artist() != currentTrack.artist() && bundle.album() != currentTrack.album() )
+        return;
+
+    if( currentPage() == m_homePage->view() )
+    {
+        m_dirtyHomePage = true;
+        showHome();
+    }
+    else if ( currentPage() == m_currentTrackPage->view() ) // this is for compilations or artist == ""
+    {
+        if( currentPage() == m_currentTrackPage->view() )
+        {
+            m_dirtyCurrentTrackPage = true;
+            showCurrentTrack();
+        }
     }
 }
 

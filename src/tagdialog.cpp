@@ -4,7 +4,6 @@
 
 #include "debug.h"
 #include "collectiondb.h"
-#include "contextbrowser.h"
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -589,11 +588,8 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
 
         bool result = f.save();
         if( result )
-        {
             //update the collection db
             CollectionDB::instance()->updateTags( path, mb, updateCB );
-            ContextBrowser::instance()->tagsChanged( mb );
-        }
 
         QApplication::restoreOverrideCursor();
 

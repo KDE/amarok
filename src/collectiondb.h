@@ -209,6 +209,7 @@ class CollectionDB : public QObject, public EngineObserver
         void coverFetcherError( const QString &error );
 
         void similarArtistsFetched( const QString &artist );
+        void tagsChanged( const MetaBundle &bundle );
 
     public:
         static CollectionDB *instance();
