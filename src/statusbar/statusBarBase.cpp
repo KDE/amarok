@@ -484,6 +484,8 @@ StatusBar::updateTotalProgress()
 
     m_mainProgressBar->setTotalSteps( totalSteps );
     m_mainProgressBar->setProgress( progress );
+
+    pruneProgressBars();
 }
 
 void
