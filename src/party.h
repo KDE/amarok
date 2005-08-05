@@ -51,6 +51,7 @@ class Party : public QVBox
 
     public:
         Party( QWidget *parent, const char *name = 0 );
+       ~Party();
 
         enum    Mode{ RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 

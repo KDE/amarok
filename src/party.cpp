@@ -94,6 +94,20 @@ Party::Party( QWidget *parent, const char *name )
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
+
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
+    bool showDynamicConfig = config->readBoolEntry( "Show Dynamic Config", false );
+    if( showDynamicConfig )
+    {
+        showConfig( true );
+    }
+}
+
+Party::~Party()
+{
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
+    bool isShown = static_cast<QWidget*>(child("container"))->isShown();
+    config->writeEntry( "Show Dynamic Config", isShown );
 }
 
 void
