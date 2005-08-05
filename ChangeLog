@@ -13,6 +13,9 @@ VERSION 1.3:
     * Playlist item lengths now shown with hours when necessary.
 
   BUGFIXES:
+    * Edit Track Information dialog wouldn't update collection database if
+      filename contained non latin1 characters. Patch by Andrey Yasniy
+      <yasniy@gmail.com> (BR 110030)
     * SmartPlaylist category created in the PlaylistBrowser once the
       collection has been built for the first time.
     * Refresh the context browser as appropriate when editing tags. (BR 108884)

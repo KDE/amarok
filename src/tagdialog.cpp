@@ -589,7 +589,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
         bool result = f.save();
         if( result )
             //update the collection db
-            CollectionDB::instance()->updateTags( path, mb, updateCB );
+            CollectionDB::instance()->updateTags( mb.url().path(), mb, updateCB );
 
         QApplication::restoreOverrideCursor();
 
