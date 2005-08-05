@@ -16,6 +16,12 @@
 
 void DbSetup::init()
 {
+    //Assume no db connections, disable all!
+    static_cast<QWidget*>(child("mySqlFrame"))->setShown( false );
+    static_cast<QWidget*>(child("postgreSqlFrame"))->setShown( false );
+    mysqlConfig->setEnabled( false );
+    postgresqlConfig->setEnabled( false );
+    
 #ifdef USE_MYSQL
     databaseEngine->insertItem( "MySQL", -1 );
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql))
@@ -24,7 +30,6 @@ void DbSetup::init()
     }
     mysqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql));
 #else 
-    mysqlConfig->hide();
 #endif
 
 #ifdef USE_POSTGRESQL
@@ -35,7 +40,6 @@ void DbSetup::init()
     }
     postgresqlConfig->setEnabled(AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql));
 #else
-    postgresqlConfig->hide();
 #endif
    
     connect(databaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
@@ -43,6 +47,12 @@ void DbSetup::init()
 
 void DbSetup::databaseEngineChanged()
 {
-    mysqlConfig->setEnabled(databaseEngine->currentText() == "MySQL");
-    postgresqlConfig->setEnabled(databaseEngine->currentText() == "Postgresql");
+    bool pg = ( databaseEngine->currentText() == "Postgresql" );
+    bool sq = ( databaseEngine->currentText() == "MySQL" );
+    
+    static_cast<QWidget*>(child("mySqlFrame"))->setShown( sq );
+    mysqlConfig->setEnabled( sq );
+    
+    static_cast<QWidget*>(child("postgreSqlFrame"))->setShown( pg );
+    postgresqlConfig->setEnabled( pg );
 }
