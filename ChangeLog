@@ -13,6 +13,7 @@ VERSION 1.3:
     * Playlist item lengths now shown with hours when necessary.
 
   BUGFIXES:
+    * Mark/Unmark as compilation wouldn't work with SQLite. (BR 109275)
     * Album Covers whose name or artist contained "'" wouldn't show up when
       fetched from Amazon. (BR 109700)
     * Edit Track Information dialog wouldn't update collection database if

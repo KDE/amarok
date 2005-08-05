@@ -1539,10 +1539,13 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary, DbCo
 void
 CollectionDB::setCompilation( const QString &album, const bool enabled, const bool updateView )
 {
-    query( QString( "UPDATE tags, album SET tags.sampler = %1 WHERE tags.album = album.id AND album.name = '%2';" )
-              .arg( enabled ? "1" : "0" )
+    QStringList values = query( QString( "SELECT album.id FROM album WHERE album.name = '%1';" )
               .arg( escapeString( album ) ) );
-
+    if ( values.count() ) {
+        query( QString( "UPDATE tags SET sampler = %1 WHERE tags.album = %2;" )
+                .arg( enabled ? "1" : "0" )
+                .arg( values[0] ) ) ;
+    }
     // Update the Collection-Browser view,
     // using QTimer to make sure we don't manipulate the GUI from a thread
     if ( updateView )
