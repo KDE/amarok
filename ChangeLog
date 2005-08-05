@@ -13,6 +13,8 @@ VERSION 1.3:
     * Playlist item lengths now shown with hours when necessary.
 
   BUGFIXES:
+    * Album Covers whose name or artist contained "'" wouldn't show up when
+      fetched from Amazon. (BR 109700)
     * Edit Track Information dialog wouldn't update collection database if
       filename contained non latin1 characters. Patch by Andrey Yasniy
       <yasniy@gmail.com> (BR 110030)

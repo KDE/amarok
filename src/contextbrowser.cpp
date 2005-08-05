@@ -55,6 +55,7 @@
 #define escapeHTML(s)     QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
 // .replace( "%", "%25" ) has to be the last one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
 #define escapeHTMLAttr(s) QString(s).replace( "'", "%27" ).replace( "#", "%23" ).replace( "?", "%3F" ).replace( "%", "%25" )
+#define unEscapeHTMLAttr(s) QString(s).replace( "%25", "%" ).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%27", "'" )
 
 using amaroK::QStringx;
 
@@ -73,9 +74,9 @@ void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QStr
 
     Q_ASSERT( !list.isEmpty() );
 
-    artist = list[0];
-    album  = list[1];
-    track  = list[2];
+    artist = unEscapeHTMLAttr( list[0] );
+    album  = unEscapeHTMLAttr( list[1] );
+    track  = unEscapeHTMLAttr( list[2] );
 }
 
 
