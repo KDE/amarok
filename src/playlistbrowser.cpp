@@ -1318,6 +1318,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     bool streamsChanged = false;
     bool smartPlaylistsChanged = false;
     bool dynamicsChanged = false;
+    bool podcastsChanged = false;
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
         if( isPlaylist( item ) )      playlistsChanged = true;
@@ -1325,12 +1326,17 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( isStream( item ) )        streamsChanged = true;
         if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
         if( isDynamic( item ) )       dynamicsChanged = true;
+        if( isPodcastChannel(item) )  podcastsChanged = true;
 
         if( isPlaylistTrackItem( item ) ) {
             playlistsChanged = true;
             //remove the track
             PlaylistEntry *playlist = (PlaylistEntry *)item->parent();
             playlist->removeTrack( item );
+        }
+        else if( isPodcastChannel( item ) ) {
+            m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
+            delete item;
         }
         else {
             m_dynamicEntries.remove(item); // if it's not there, no problem, it just returns false.
@@ -1342,6 +1348,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( streamsChanged )        saveStreams();
     if( smartPlaylistsChanged ) saveSmartPlaylists();
     if( dynamicsChanged )       saveDynamics();
+    if( podcastsChanged )       savePodcasts();
 }
 
 
