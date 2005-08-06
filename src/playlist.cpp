@@ -1484,7 +1484,8 @@ Playlist::writeTag( QListViewItem *qitem, const QString &newTag, int column ) //
         if( column == PlaylistItem::Score )
             CollectionDB::instance()->setSongPercentage( item->url().path(), newTag.toInt() );
         else
-            ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
+            if (oldTag != newTag)
+                ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
     }
 
     m_itemsToChangeTagsFor.clear();
