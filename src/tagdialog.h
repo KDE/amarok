@@ -22,6 +22,9 @@ class TagDialog : public TagDialogBase
     Q_OBJECT
 
     public:
+
+        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2 };
+
         TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const KURL::List list, QWidget* parent = 0 );
         TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent = 0 );
@@ -45,6 +48,7 @@ class TagDialog : public TagDialogBase
         void readMultipleTracks();
         void setMultipleTracksMode();
         bool hasChanged();
+        int changes();
         void storeTags();
         void saveTags();
         void saveMultipleTracks();
@@ -54,6 +58,7 @@ class TagDialog : public TagDialogBase
         int m_score;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
+        QMap<QString, int> storedScores;
         KURL::List m_urlList;
         QString m_buttonMbText;
         QString m_path;
