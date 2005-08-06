@@ -64,6 +64,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         , m_smartCategory( 0 )
         , m_coolStreams( 0 )
         , m_smartDefaults( 0 )
+        , m_ac( new KActionCollection( this ) )
+        , m_podcastTimer( new QTimer( this ) )
 {
     s_instance = this;
 
@@ -71,8 +73,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     browserBox->setSpacing( 3 );
 
     //<Toolbar>
-    m_ac = new KActionCollection( this );
-
     addMenuButton  = new KActionMenu( i18n("Add"), "fileopen", m_ac );
     addMenuButton->setDelayed( false );
 
@@ -178,7 +178,6 @@ PlaylistBrowser::polish()
         m_smartCategory->setOpen( true );
     }
     // must be loaded after streams
-    m_podcastTimer    = new QTimer();
     m_podcastCategory = loadPodcasts();
 
     m_dynamicCategory = loadDynamics();
@@ -200,20 +199,30 @@ PlaylistBrowser::polish()
         }
     }
 
-    // Restore open/closed state of each listview item
+    // ListView item state restoration:
+    // First we check if the number of items in the listview is the same as it was on last
+    // application exit. If true, we iterate over all items and restore their open/closed state.
+    // Note: We ignore podcast items, because they are added dynamically added to the ListView.
+
     QValueList<int> stateList = config->readIntListEntry( "Item State" );
     QListViewItemIterator it( m_listview );
     uint count = 0;
     while ( it.current() ) {
-        ++count;
+        if( !isPodcastItem( it.current() ) )
+            ++count;
         ++it;
     }
+    debug() << "Restoring ListView, items saved      : " << stateList.count() << endl;
+    debug() << "Restoring ListView, items in ListView: " << count << endl;
+
     if ( count == stateList.count() ) {
         uint index = 0;
         it = QListViewItemIterator( m_listview );
         while ( it.current() ) {
-            it.current()->setOpen( stateList[index] );
-            ++index;
+            if( !isPodcastItem( it.current() ) ) {
+                it.current()->setOpen( stateList[index] );
+                ++index;
+            }
             ++it;
         }
     }
@@ -253,7 +262,8 @@ PlaylistBrowser::~PlaylistBrowser()
         QValueList<int> stateList;
         QListViewItemIterator it( m_listview );
         while ( it.current() ) {
-            stateList.append( it.current()->isOpen() ? 1 : 0 );
+            if( !isPodcastItem( it.current() ) )
+                stateList.append( it.current()->isOpen() ? 1 : 0 );
             ++it;
         }
         config->writeEntry( "Item State", stateList );
@@ -1326,7 +1336,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( isStream( item ) )        streamsChanged = true;
         if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
         if( isDynamic( item ) )       dynamicsChanged = true;
-        if( isPodcastChannel(item) )  podcastsChanged = true;
 
         if( isPlaylistTrackItem( item ) ) {
             playlistsChanged = true;
@@ -1335,6 +1344,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             playlist->removeTrack( item );
         }
         else if( isPodcastChannel( item ) ) {
+            podcastsChanged = true;
             m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(item) );
             delete item;
         }
