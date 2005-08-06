@@ -162,7 +162,9 @@ PlaylistBrowser::polish()
 
     amaroK::OverrideCursor allocate_on_stack;
 
+    const uint width = QVBox::width();
     QVBox::polish();
+    resize( width, height() );
 
     m_polished = true;
 
@@ -212,8 +214,6 @@ PlaylistBrowser::polish()
             ++count;
         ++it;
     }
-    debug() << "Restoring ListView, items saved      : " << stateList.count() << endl;
-    debug() << "Restoring ListView, items in ListView: " << count << endl;
 
     if ( count == stateList.count() ) {
         uint index = 0;
