@@ -13,6 +13,15 @@ VERSION 1.3:
     * Playlist item lengths now shown with hours when necessary.
 
   BUGFIXES:
+    * When there's no artist tag, don't show tons of unrelated songs and
+      albums in Context Browser. (BR 110319)
+    * Advertisements were showing up in Lyrics Tab for some songs.
+    * When editing tags in Playlist Window, only try to write the new tag if
+      it's different from the old one. (BR 110299)
+    * Changes to the score in the Edit Track Information dialog should only be
+      applied after clicking on the "Save and Close" button.
+    * When only the score is changed, amaroK shouldn't complain if the file is
+      read-only. (BR 109054)
     * Mark/Unmark as compilation wouldn't work with SQLite. (BR 109275)
     * Album Covers whose name or artist contained "'" wouldn't show up when
       fetched from Amazon. (BR 109700)
