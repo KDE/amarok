@@ -1460,7 +1460,7 @@ void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
 
     //save the modified playlist in m3u or pls format
     const QString ext = fileExtension( item->url().path() );
-    if( ext.lower() == ".m3u" )
+    if( ext.lower() == "m3u" )
         saveM3U( item, append );
     else
         savePLS( item, append );
