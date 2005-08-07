@@ -13,6 +13,7 @@ VERSION 1.3:
     * Playlist item lengths now shown with hours when necessary.
 
   BUGFIXES:
+    * M3U playlists would be broken after editing. (BR 109774)
     * When there's no artist tag, don't show tons of unrelated songs and
       albums in Context Browser. (BR 110319)
     * Advertisements were showing up in Lyrics Tab for some songs.
