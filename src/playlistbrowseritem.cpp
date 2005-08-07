@@ -1400,13 +1400,14 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
 bool
 PodcastItem::hasXml( const QDomNode& xml )
 {
-    return m_title           == xml.namedItem( "title" ).toElement().text() &&
-           m_description     == xml.namedItem( "description" ).toElement().text() &&
-           m_author          == xml.namedItem( "author" ).toElement().text() &&
-           m_date            == xml.namedItem( "pubDate" ).toElement().text() &&
-           m_duration        == xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt() &&
-           m_type            == xml.namedItem( "enclosure" ).toElement().attribute( "type" ) &&
-           m_url.prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+    bool a = m_title           == xml.namedItem( "title" ).toElement().text();
+    bool b = m_author          == xml.namedItem( "author" ).toElement().text();
+    bool c = m_date            == xml.namedItem( "pubDate" ).toElement().text();
+    bool d = m_duration        == xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
+    bool e = m_type            == xml.namedItem( "enclosure" ).toElement().attribute( "type" );
+    bool f = m_url.prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+
+    return a && b && c && d && e && f;
 }
 
 void
