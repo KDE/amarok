@@ -524,14 +524,11 @@ StatusBar::pruneProgressBars()
             ++it;
             ++count;
         }
-    if(count>=1 && removedBar) //if its gone from 2 or more bars to one bar...
+    if(count==1 && removedBar) //if its gone from 2 or more bars to one bar...
     {
         resetMainText();
-        if(count==1)
-        {
-            static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->hide();
-            m_popupProgress->setShown(false);
-        }
+        static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->hide();
+        m_popupProgress->setShown(false);
     }
 }
 
