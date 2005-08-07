@@ -62,9 +62,10 @@ Optional
       (multimedia framework)
       http://www.kde.org
 
-    * Real Player 10
+    * RealPlayer 10 or HelixPlayer 1.0
       (multimedia framework)
       http://www.real.com
+      (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
 
     * MAS 0.6.3
       (multimedia framework)
@@ -204,7 +205,7 @@ splitting amaroK into the following packages:
 
 amaroK is modular and will be fully functional as long as one of 2, 3, or 4 is
 also installed. Hence we suggest amaroK + one backend. Feel free to include the
-MAS and NMM engines if you can satisfy their dependencies.
+helix, MAS and NMM engines if you can satisfy their dependencies.
 
 amaroK ships with two binaries: amarok and amarokapp. The amarok binary is a
 wrapper designed to speed up command line argument passing. amarokapp is the
