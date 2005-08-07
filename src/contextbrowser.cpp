@@ -1748,309 +1748,310 @@ bool CurrentTrackJob::doJob()
     }
     // </Suggested Songs>
 
-    // <Favourite Tracks Information>
     QString artistName = currentTrack.artist().isEmpty() ? i18n( "This Artist" ) : escapeHTML( currentTrack.artist() );
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
-    qb.setLimit( 0, 10 );
-    values = qb.run();
+    if ( !currentTrack.artist().isEmpty() ) {
+    // <Favourite Tracks Information>
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+        qb.setLimit( 0, 10 );
+        values = qb.run();
 
-    if ( !values.isEmpty() )
-    {
-        m_HTMLSource.append(
-        "<div id='favoritesby_box' class='box'>"
-            "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>"
-                "<span id='favoritesby_box-header-title' class='box-header-title'>"
-                + i18n( "Favorite Tracks by %1" ).arg( artistName ) +
-                "</span>"
-            "</div>"
-            "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
-
-        for ( uint i = 0; i < values.count(); i += 3 )
+        if ( !values.isEmpty() )
+        {
             m_HTMLSource.append(
-                "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
-                    "<td class='song'>"
-                        "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
-                        "<span class='album-song-title'>" + values[i] + "</span>"
-                        "</a>"
-                    "</td>"
-                    "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
-                    "<td width='1' title='" + i18n( "Score" ) + "'>"
-                        "<div class='sbouter'>"
-                            "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
-                        "</div>"
-                    "</td>"
-                    "<td width='1'></td>"
-                "</tr>"
-                               );
+            "<div id='favoritesby_box' class='box'>"
+                "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>"
+                    "<span id='favoritesby_box-header-title' class='box-header-title'>"
+                    + i18n( "Favorite Tracks by %1" ).arg( artistName ) +
+                    "</span>"
+                "</div>"
+                "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='1'>" );
 
-        m_HTMLSource.append(
-                "</table>"
-            "</div>" );
+            for ( uint i = 0; i < values.count(); i += 3 )
+                m_HTMLSource.append(
+                    "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>"
+                        "<td class='song'>"
+                            "<a href=\"file:" + values[i + 1].replace( '"', QCString( "%22" ) ) + "\">"
+                            "<span class='album-song-title'>" + values[i] + "</span>"
+                            "</a>"
+                        "</td>"
+                        "<td class='sbtext' width='1'>" + values[i + 2] + "</td>"
+                        "<td width='1' title='" + i18n( "Score" ) + "'>"
+                            "<div class='sbouter'>"
+                                "<div class='sbinner' style='width: " + QString::number( values[i + 2].toInt() / 2 ) + "px;'></div>"
+                            "</div>"
+                        "</td>"
+                        "<td width='1'></td>"
+                    "</tr>"
+                                );
 
-        if ( !b->m_favouritesOpen )
-            m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
+            m_HTMLSource.append(
+                    "</table>"
+                "</div>" );
 
-    }
+            if ( !b->m_favouritesOpen )
+                m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>" );
+
+        }
     // </Favourite Tracks Information>
 
     // <Albums by this artist>
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.setOptions( QueryBuilder::optNoCompilations );
-    values = qb.run();
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+        qb.setOptions( QueryBuilder::optNoCompilations );
+        values = qb.run();
 
-    if ( !values.isEmpty() )
-    {
-        // write the script to toggle blocks visibility
-        m_HTMLSource.append(
-        "<div id='albums_box' class='box'>"
-            "<div id='albums_box-header' class='box-header'>"
-                "<span id='albums_box-header-title' class='box-header-title'>"
-                + i18n( "Albums by %1" ).arg( artistName ) +
-                "</span>"
-            "</div>"
-            "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-
-        uint vectorPlace = 0;
-        // find album of the current track (if it exists)
-        while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
-            vectorPlace += 2;
-        for ( uint i = 0; i < values.count(); i += 2 )
+        if ( !values.isEmpty() )
         {
-            qb.clear();
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.setOptions( QueryBuilder::optNoCompilations );
-            QStringList albumValues = qb.run();
+            // write the script to toggle blocks visibility
+            m_HTMLSource.append(
+            "<div id='albums_box' class='box'>"
+                "<div id='albums_box-header' class='box-header'>"
+                    "<span id='albums_box-header-title' class='box-header-title'>"
+                    + i18n( "Albums by %1" ).arg( artistName ) +
+                    "</span>"
+                "</div>"
+                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
-            QString albumYear;
-            if ( !albumValues.isEmpty() )
+            uint vectorPlace = 0;
+            // find album of the current track (if it exists)
+            while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
+                vectorPlace += 2;
+            for ( uint i = 0; i < values.count(); i += 2 )
             {
-                albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += 5 )
-                    if ( albumValues[j + 3] != albumYear || albumYear == "0" )
-                    {
-                        albumYear = QString::null;
-                        break;
-                    }
-            }
+                qb.clear();
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+                qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
+                qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                qb.setOptions( QueryBuilder::optNoCompilations );
+                QStringList albumValues = qb.run();
 
-            QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
-            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
-                albumImage = ContextBrowser::makeShadowedImage( albumImage );
-
-            m_HTMLSource.append( QStringx (
-            "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
-                "<td>"
-                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr>"
-                        "<td width='1'>"
-                            "<a href='fetchcover:%2 @@@ %3'>"
-                            "<img class='album-image' align='left' vspace='2' hspace='2' title='%4' src='%5'/>"
-                            "</a>"
-                        "</td>"
-                        "<td valign='middle' align='left'>"
-                            "<span class='album-info'>%6</span> "
-                            "<a href='album:%7 @@@ %8'><span class='album-title'>%9</span></a>"
-                            "<br />"
-                            "<span class='album-year'>%10</span>"
-                        "</td>"
-                    "</tr>"
-                    "</table>"
-                    "</div>"
-                    "<div class='album-body' style='display:%11;' id='IDA%12'>" )
-                .args( QStringList()
-                    << values[ i + 1 ]
-                    << escapeHTMLAttr( currentTrack.artist() ) // artist name
-                    << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
-                    << i18n( "Click for information from amazon.com, right-click for menu." )
-                    << escapeHTMLAttr( albumImage )
-                    << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
-                    << QString::number( artist_id )
-                    << values[ i + 1 ] //album.id
-                    << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
-                    << albumYear
-                    << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
-                    << values[ i + 1 ] ) );
-
-            if ( !albumValues.isEmpty() )
-                for ( uint j = 0; j < albumValues.count(); j += 5 )
+                QString albumYear;
+                if ( !albumValues.isEmpty() )
                 {
-                    QString track = albumValues[j + 2].stripWhiteSpace();
-                    if( track.length() > 0 ) {
-                        if( track.length() == 1 )
-                            track.prepend( "0" );
-
-                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
-                    }
-
-                    QString length;
-                    if( albumValues[j + 4] != "0" )
-                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
-
-                    m_HTMLSource.append(
-                        "<div class='album-song'>"
-                            "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                            + track +
-                            "<span class='album-song-title'>" + albumValues[j] + "</span>&nbsp;"
-                            + length +
-                            "</a>"
-                        "</div>" );
+                    albumYear = albumValues[ 3 ];
+                    for ( uint j = 0; j < albumValues.count(); j += 5 )
+                        if ( albumValues[j + 3] != albumYear || albumYear == "0" )
+                        {
+                            albumYear = QString::null;
+                            break;
+                        }
                 }
 
+                QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
+                if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                    albumImage = ContextBrowser::makeShadowedImage( albumImage );
+
+                m_HTMLSource.append( QStringx (
+                "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<td>"
+                        "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
+                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                        "<tr>"
+                            "<td width='1'>"
+                                "<a href='fetchcover:%2 @@@ %3'>"
+                                "<img class='album-image' align='left' vspace='2' hspace='2' title='%4' src='%5'/>"
+                                "</a>"
+                            "</td>"
+                            "<td valign='middle' align='left'>"
+                                "<span class='album-info'>%6</span> "
+                                "<a href='album:%7 @@@ %8'><span class='album-title'>%9</span></a>"
+                                "<br />"
+                                "<span class='album-year'>%10</span>"
+                            "</td>"
+                        "</tr>"
+                        "</table>"
+                        "</div>"
+                        "<div class='album-body' style='display:%11;' id='IDA%12'>" )
+                    .args( QStringList()
+                        << values[ i + 1 ]
+                        << escapeHTMLAttr( currentTrack.artist() ) // artist name
+                        << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
+                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                        << escapeHTMLAttr( albumImage )
+                        << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                        << QString::number( artist_id )
+                        << values[ i + 1 ] //album.id
+                        << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
+                        << albumYear
+                        << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
+                        << values[ i + 1 ] ) );
+
+                if ( !albumValues.isEmpty() )
+                    for ( uint j = 0; j < albumValues.count(); j += 5 )
+                    {
+                        QString track = albumValues[j + 2].stripWhiteSpace();
+                        if( track.length() > 0 ) {
+                            if( track.length() == 1 )
+                                track.prepend( "0" );
+
+                            track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
+                        }
+
+                        QString length;
+                        if( albumValues[j + 4] != "0" )
+                            length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+
+                        m_HTMLSource.append(
+                            "<div class='album-song'>"
+                                "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                + track +
+                                "<span class='album-song-title'>" + albumValues[j] + "</span>&nbsp;"
+                                + length +
+                                "</a>"
+                            "</div>" );
+                    }
+
+                m_HTMLSource.append(
+                    "</div>"
+                    "</td>"
+                    "</tr>" );
+            }
             m_HTMLSource.append(
-                  "</div>"
-                 "</td>"
-                "</tr>" );
+                "</table>"
+                "</div>" );
         }
-        m_HTMLSource.append(
-               "</table>"
-              "</div>" );
-    }
     // </Albums by this artist>
 
     // <Compilations with this artist>
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
-    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    qb.setOptions( QueryBuilder::optOnlyCompilations );
-    values = qb.run();
+        qb.clear();
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
+        qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName, true );
+        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+        qb.setOptions( QueryBuilder::optOnlyCompilations );
+        values = qb.run();
 
-    if ( !values.isEmpty() )
-    {
-        // write the script to toggle blocks visibility
-        m_HTMLSource.append(
-        "<div id='albums_box' class='box'>"
-            "<div id='albums_box-header' class='box-header'>"
-                "<span id='albums_box-header-title' class='box-header-title'>"
-                + i18n( "Compilations with %1" ).arg( artistName ) +
-                "</span>"
-            "</div>"
-            "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
-
-        uint vectorPlace = 0;
-        // find album of the current track (if it exists)
-        while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
-            vectorPlace += 2;
-        for ( uint i = 0; i < values.count(); i += 2 )
+        if ( !values.isEmpty() )
         {
-            qb.clear();
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
-            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.setOptions( QueryBuilder::optOnlyCompilations );
-            QStringList albumValues = qb.run();
+            // write the script to toggle blocks visibility
+            m_HTMLSource.append(
+            "<div id='albums_box' class='box'>"
+                "<div id='albums_box-header' class='box-header'>"
+                    "<span id='albums_box-header-title' class='box-header-title'>"
+                    + i18n( "Compilations with %1" ).arg( artistName ) +
+                    "</span>"
+                "</div>"
+                "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>" );
 
-            QString albumYear;
-            if ( !albumValues.isEmpty() )
+            uint vectorPlace = 0;
+            // find album of the current track (if it exists)
+            while ( vectorPlace < values.count() && values[ vectorPlace+1 ] != QString::number( album_id ) )
+                vectorPlace += 2;
+            for ( uint i = 0; i < values.count(); i += 2 )
             {
-                albumYear = albumValues[ 3 ];
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
-                    if ( albumValues[j + 3] != albumYear || albumYear == "0" )
-                    {
-                        albumYear = QString::null;
-                        break;
-                    }
-            }
+                qb.clear();
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
+                qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
+                qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+                qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, values[ i + 1 ] );
+                qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                qb.setOptions( QueryBuilder::optOnlyCompilations );
+                QStringList albumValues = qb.run();
 
-            QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
-            if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
-                albumImage = ContextBrowser::makeShadowedImage( albumImage );
-
-            m_HTMLSource.append( QStringx (
-            "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
-                "<td>"
-                    "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
-                    "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
-                    "<tr>"
-                        "<td width='1'>"
-                            "<a href='fetchcover: @@@ %2'>"
-                            "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>"
-                            "</a>"
-                        "</td>"
-                        "<td valign='middle' align='left'>"
-                            "<span class='album-info'>%5</span> "
-                            "<a href='compilation:%6'><span class='album-title'>%7</span></a>"
-                            "<br />"
-                            "<span class='album-year'>%8</span>"
-                        "</td>"
-                    "</tr>"
-                    "</table>"
-                    "</div>"
-                    "<div class='album-body' style='display:%9;' id='IDA%10'>" )
-                .args( QStringList()
-                    << values[ i + 1 ]
-                    << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
-                    << i18n( "Click for information from amazon.com, right-click for menu." )
-                    << escapeHTMLAttr( albumImage )
-                    << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
-                    << values[ i + 1 ] //album.id
-                    << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
-                    << albumYear
-                    << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
-                    << values[ i + 1 ] ) );
-
-            if ( !albumValues.isEmpty() )
-                for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
+                QString albumYear;
+                if ( !albumValues.isEmpty() )
                 {
-                    QString track = albumValues[j + 2].stripWhiteSpace();
-                    if( track.length() > 0 ) {
-                        if( track.length() == 1 )
-                            track.prepend( "0" );
-
-                        track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
-                    }
-
-                    QString length;
-                    if( albumValues[j + 4] != "0" )
-                        length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
-                    m_HTMLSource.append(
-                        "<div class='album-song'>"
-                            "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
-                            + track +
-                    "<span class='album-song-title'>" + albumValues[j + 5] + i18n(" - ") + albumValues[j] + "</span>&nbsp;"
-                            + length +
-                            "</a>"
-                        "</div>" );
+                    albumYear = albumValues[ 3 ];
+                    for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
+                        if ( albumValues[j + 3] != albumYear || albumYear == "0" )
+                        {
+                            albumYear = QString::null;
+                            break;
+                        }
                 }
 
-            m_HTMLSource.append(
-                  "</div>"
-                 "</td>"
-                "</tr>" );
-        }
-        m_HTMLSource.append(
-               "</table>"
-              "</div>" );
-    }
-    // </Compilations with this artist>
+                QString albumImage = CollectionDB::instance()->albumImage( currentTrack.artist(), values[ i ], 50 );
+                if ( albumImage != CollectionDB::instance()->notAvailCover( 50 ) )
+                    albumImage = ContextBrowser::makeShadowedImage( albumImage );
 
+                m_HTMLSource.append( QStringx (
+                "<tr class='" + QString( (i % 4) ? "box-row-alt" : "box-row" ) + "'>"
+                    "<td>"
+                        "<div class='album-header' onClick=\"toggleBlock('IDA%1')\">"
+                        "<table width='100%' border='0' cellspacing='0' cellpadding='0'>"
+                        "<tr>"
+                            "<td width='1'>"
+                                "<a href='fetchcover: @@@ %2'>"
+                                "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>"
+                                "</a>"
+                            "</td>"
+                            "<td valign='middle' align='left'>"
+                                "<span class='album-info'>%5</span> "
+                                "<a href='compilation:%6'><span class='album-title'>%7</span></a>"
+                                "<br />"
+                                "<span class='album-year'>%8</span>"
+                            "</td>"
+                        "</tr>"
+                        "</table>"
+                        "</div>"
+                        "<div class='album-body' style='display:%9;' id='IDA%10'>" )
+                    .args( QStringList()
+                        << values[ i + 1 ]
+                        << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
+                        << i18n( "Click for information from amazon.com, right-click for menu." )
+                        << escapeHTMLAttr( albumImage )
+                        << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                        << values[ i + 1 ] //album.id
+                        << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
+                        << albumYear
+                        << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
+                        << values[ i + 1 ] ) );
+
+                if ( !albumValues.isEmpty() )
+                    for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
+                    {
+                        QString track = albumValues[j + 2].stripWhiteSpace();
+                        if( track.length() > 0 ) {
+                            if( track.length() == 1 )
+                                track.prepend( "0" );
+
+                            track = "<span class='album-song-trackno'>" + track + "&nbsp;</span>";
+                        }
+
+                        QString length;
+                        if( albumValues[j + 4] != "0" )
+                            length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), false ) + ")</span>";
+                        m_HTMLSource.append(
+                            "<div class='album-song'>"
+                                "<a href=\"file:" + albumValues[j + 1].replace( "\"", QCString( "%22" ) ) + "\">"
+                                + track +
+                        "<span class='album-song-title'>" + albumValues[j + 5] + i18n(" - ") + albumValues[j] + "</span>&nbsp;"
+                                + length +
+                                "</a>"
+                            "</div>" );
+                    }
+
+                m_HTMLSource.append(
+                    "</div>"
+                    "</td>"
+                    "</tr>" );
+            }
+            m_HTMLSource.append(
+                "</table>"
+                "</div>" );
+        }
+    // </Compilations with this artist>
+    }
     m_HTMLSource.append( "</html>" );
 
     return true;
