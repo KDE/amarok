@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
+ *   Copyright (C) 2005 by Ian Monroe <ian@monroe.nu>                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -313,7 +314,8 @@ StatusBar::newProgressOperation( QObject *owner )
         // if we're allDone then we need to remove the old progressBars before
         // we start anything new or the total progress will not be accurate
         pruneProgressBars();
-
+    else
+        static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->show();
     QLabel *label = new QLabel( m_popupProgress );
     m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
@@ -335,6 +337,8 @@ StatusBar::newProgressOperation( KIO::Job *job )
     ProgressBar & bar = newProgressOperation( (QObject*)job );
     bar.setTotalSteps( 100 );
 
+    if(!allDone())
+        static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->show();
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(endProgressOperation()) );
     //TODO connect( job, SIGNAL(infoMessage( KIO::Job *job, const QString& )), SLOT() );
     connect( job, SIGNAL(percent( KIO::Job*, unsigned long )), SLOT(setProgress( KIO::Job*, unsigned long )) );
@@ -503,6 +507,8 @@ StatusBar::pruneProgressBars()
 {
     ProgressMap::Iterator it = m_progressMap.begin();
     const ProgressMap::Iterator end = m_progressMap.end();
+    int count = 0;
+    bool removedBar = false;
     while( it != end )
         if( (*it)->m_done == true ) {
             delete (*it)->m_label;
@@ -512,9 +518,21 @@ StatusBar::pruneProgressBars()
             ProgressMap::Iterator jt = it;
             ++it;
             m_progressMap.erase( jt );
+            removedBar = true;
         }
-        else
+        else {
             ++it;
+            ++count;
+        }
+    if(count>=1 && removedBar) //if its gone from 2 or more bars to one bar...
+    {
+        resetMainText();
+        if(count==1)
+        {
+            static_cast<QWidget*>(progressBox()->child("showAllProgressDetails"))->hide();
+            m_popupProgress->setShown(false);
+        }
+    }
 }
 
 } //namespace KDE
