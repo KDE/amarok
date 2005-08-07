@@ -44,7 +44,6 @@
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 
-
 namespace amaroK { extern KConfig *config( const QString& ); }
 
 CollectionBrowser::CollectionBrowser( const char* name )
@@ -1047,9 +1046,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                        BURN_DATACD, BURN_AUDIOCD, INFO,
                        COMPILATION_SET, COMPILATION_UNSET };
         #endif
-
+        KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), QUEUE );
+        menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" ) 
+            : i18n( "&Queue Tracks" ), QUEUE );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 
         menu.insertSeparator();
@@ -1078,7 +1078,6 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
         #endif
-        KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "info" )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );

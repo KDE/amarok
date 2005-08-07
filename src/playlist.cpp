@@ -2791,7 +2791,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         itemCount++;
 
     KPopupMenu popup;
-    popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ) );
+
+    if(itemCount==1)
+        popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ));
+    else
+        popup.insertTitle(i18n(" ", "%n Selected Tracks", itemCount));
 
     if( item->isEnabled() )
         popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
@@ -2833,8 +2837,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if( isCurrent ) {
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
     }
-
-    popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
+    if(itemCount == 1)
+        popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
     popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
 
     if( item->isEnabled() ) popup.insertSeparator();
