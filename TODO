@@ -5,8 +5,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
-  <sebr>   Individual podcast channel download intervals
-  
   <illis.> A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
            certainly an ID3v1 vs 2 issue, v2 I think allows for unlimited length (or at least very very
            long), why don't we use it? (not sure whether the problem is in taglib or amarok...)
@@ -16,9 +14,6 @@ SHORT-TERM (URGENT):
                        make it not do unexpected things in the first place (eg, make id3v1 suck less,
                        but don't make it the default).
   
-  <sebr>   Using the tag dialog on a never before played song causes the score to be changed to 1, and amaroK
-           thinks the song has been played before.  This causes the score to bump to 98-100 for the first play
-
   <markey> Consider moving the GHNS provider list to a different server than amarok.kde.org,
            possibly download.kde.org or similar. (When our site is down, the GHNS feature fails
            to work entirely)
