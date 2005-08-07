@@ -12,6 +12,8 @@
 #include <qapplication.h>
 #include <qpixmap.h>
 #include <qprocess.h>
+
+#include <kstandarddirs.h>
 #include "splash.h"
 
 extern "C"
@@ -22,22 +24,7 @@ extern "C"
 Splash::Splash()
         : QWidget( 0, 0, WType_TopLevel | WX11BypassWM | WStyle_StaysOnTop )
 {
-    QString path;
-    {
-        //FIXME won't work if there are multiple KDEDIRS
-        //FIXME kde-config is not installed when there is no kdelibs-devel package
-
-        QProcess proc( QString( "kde-config" ) );
-        proc.addArgument( "--install=data" );
-        proc.addArgument( "--expandvars" );
-        proc.start();
-
-        while( proc.isRunning() )
-            ::usleep( 100 );
-
-        path += proc.readLineStdout();
-        path += "/amarok/images/splash_screen.png";
-    }
+    QString path = KStandardDirs().findResource("data", "amarok/images/splash_screen.png");
 
     QPixmap splash( path );
     resize( splash.size() );

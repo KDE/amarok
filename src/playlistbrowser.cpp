@@ -1225,6 +1225,8 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     }
     else if( isDynamic( item ) )
     {
+        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
+        Playlist::instance()->repopulate();
         Party::instance()->loadConfig( static_cast<PartyEntry *>(item) );
     }
     else
