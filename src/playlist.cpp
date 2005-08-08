@@ -2795,7 +2795,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if(itemCount==1)
         popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ));
     else
-        popup.insertTitle(i18n(" ", "%n Selected Tracks", itemCount));
+        popup.insertTitle(i18n("1 Track", "%n Selected Tracks", itemCount));
 
     if( item->isEnabled() )
         popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
