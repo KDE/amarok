@@ -1,5 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
+// (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
 #include "debug.h"
@@ -555,35 +556,44 @@ TagDialog::saveMultipleTracks()
   TODO: All this mess is because the dialog uses "" to represent what the user
         doesn't want to change, maybe we can think of something better?
    */
+        bool tagsChanged = false;
         if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
-             kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() )
+             kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
             mb.setArtist( kComboBox_artist->currentText() );
+            tagsChanged = true;
+        }
 
         if( !kComboBox_album->currentText().isEmpty() && kComboBox_album->currentText() != mb.album() ||
-             kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() )
+             kComboBox_album->currentText().isEmpty() && !m_bundle.album().isEmpty() ) {
             mb.setAlbum( kComboBox_album->currentText() );
-
+            tagsChanged = true;
+        }
         if( !kComboBox_genre->currentText().isEmpty() && kComboBox_genre->currentText() != mb.genre() ||
-             kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() )
+             kComboBox_genre->currentText().isEmpty() && !m_bundle.genre().isEmpty() ) {
             mb.setGenre( kComboBox_genre->currentText() );
-
+            tagsChanged = true;
+        }
         if( !kLineEdit_comment->text().isEmpty() && kLineEdit_comment->text() != mb.comment() ||
-             kLineEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() )
+             kLineEdit_comment->text().isEmpty() && !m_bundle.comment().isEmpty() ) {
             mb.setComment( kLineEdit_comment->text() );
-
+            tagsChanged = true;
+        }
         if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year().toInt() ||
-            !kIntSpinBox_year->value() && m_bundle.year().toInt() )
+            !kIntSpinBox_year->value() && m_bundle.year().toInt() ) {
             mb.setYear( QString::number( kIntSpinBox_year->value() ) );
-
+            tagsChanged = true;
+        }
         if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != m_score ||
             !kIntSpinBox_score->value() && m_score )
             CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
 
-        if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
-            Playlist::instance()->updateMetaData( mb );
-        else
-            amaroK::StatusBar::instance()->longMessage( i18n(
-                "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ) );
+        if ( tagsChanged ) { // We only try to update the file if one of the tracks changed
+            if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
+                Playlist::instance()->updateMetaData( mb );
+            else
+                amaroK::StatusBar::instance()->longMessage( i18n(
+                    "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ) );
+        }
     }
 }
 
