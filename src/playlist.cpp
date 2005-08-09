@@ -443,7 +443,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
 }
 
 void
-Playlist::addSpecialTracks( uint songCount, QString type )
+Playlist::addSpecialTracks( uint songCount, const QString type, const bool overrideCount )
 {
     if( !songCount ) return;
 
@@ -451,11 +451,14 @@ Playlist::addSpecialTracks( uint songCount, QString type )
     qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
-    int required  = AmarokConfig::dynamicPreviousCount() + AmarokConfig::dynamicUpcomingCount() + 1; // +1 for current track
-    int remainder = childCount();
+    if( !overrideCount )
+    {
+        int required  = AmarokConfig::dynamicPreviousCount() + AmarokConfig::dynamicUpcomingCount() + 1; // +1 for current track
+        int remainder = childCount();
 
-    if( required > remainder )
-        songCount = required - remainder;
+        if( required > remainder )
+            songCount = required - remainder;
+    }
 
     QString text;
     if( type == "Random" )
@@ -610,33 +613,59 @@ Playlist::addSpecialCustomTracks( uint songCount )
  */
 
 void
-Playlist::adjustPartyUpcoming( uint songCount,QString type )
+Playlist::adjustPartyUpcoming( uint songCount, const QString type )
 {
-    PlaylistItem *trackPosition  = m_currentTrack;
-    bool requireTracks = true;
-    uint x=0;
+    bool requireTracks = false;
+    int  currentPos = 0;
+    int  x = 0;
 
-    for ( ; trackPosition && trackPosition != lastItem(); x++ )
+    /**
+     *  If m_currentTrack exists, we iterate until we find it
+     *  Else, we iterate until we find an item which is enabled
+     **/
+    for( MyIt it( this, MyIt::Visible ); *it; ++it )
     {
-        if ( x == songCount ) {
-            //dont need to add tracks if we have reduced upcomingTracksCount().
-            requireTracks = false;
-            trackPosition = trackPosition->nextSibling();
+        if( m_currentTrack && *it == m_currentTrack )
             break;
-        }
+        else if( !m_currentTrack && (*it)->isEnabled() )
+            break;
 
-        trackPosition = trackPosition->nextSibling();
+        ++currentPos;
     }
+    currentPos++;
+
+    if( childCount() - currentPos < (int)songCount )
+    {
+        x = (int)songCount + currentPos - childCount() ;
+        requireTracks = true;
+    }
+    else
+    {
+        x = childCount() - (int)songCount - currentPos;
+    }
+    debug() << "x: " << x << "; Require tracks? " << requireTracks << endl;
 
     if ( requireTracks )
-        addSpecialTracks( songCount - x, type );
-    else {
+    {
+        addSpecialTracks( x, type, true );
+    }
+    else
+    {
         if( isLocked() ) return;
 
         //assemble a list of what needs removing
         //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
         QPtrList<QListViewItem> list;
-        for( QListViewItemIterator it( trackPosition ); *it; list.prepend( *it ), ++it );
+        QListViewItem *item = lastItem();
+
+        for( int y = x; y != 0; y-- )
+        {
+            list.append( item );
+
+            if( !item->itemAbove() )
+                break;
+            item = item->itemAbove();
+        }
 
 
         if( list.isEmpty() ) return;
@@ -2282,7 +2311,14 @@ Playlist::removeSelectedItems() //SLOT
     //assemble a list of what needs removing
     //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
     QPtrList<QListViewItem> list;
-    for( MyIterator it( this, MyIt::Selected ); *it; list.prepend( *it ), ++it );
+    int dontReplaceDynamic = 0;
+
+    for( MyIterator it( this, MyIt::Selected ); *it; ++it )
+    {
+        if( !(*it)->isEnabled() )
+            dontReplaceDynamic++;
+        list.prepend( *it );
+    }
 
     if( list.isEmpty() ) return;
     saveUndoState();
@@ -2293,7 +2329,7 @@ Playlist::removeSelectedItems() //SLOT
         int required  = AmarokConfig::dynamicPreviousCount() + AmarokConfig::dynamicUpcomingCount() + 1; // +1 for current track
 
         if( required > remainder )
-            addSpecialTracks( required - remainder, AmarokConfig::dynamicType() );
+            addSpecialTracks( required - remainder - dontReplaceDynamic, AmarokConfig::dynamicType() );
     }
 
     //remove the items

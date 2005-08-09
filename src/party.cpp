@@ -182,8 +182,8 @@ Party::applySettings() //SLOT
 
     if ( AmarokConfig::dynamicUpcomingCount() != upcomingCount() )
     {
-        AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
         Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
+        AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
     }
     AmarokConfig::setDynamicCycleTracks( cycleTracks() );
     AmarokConfig::setDynamicAppendCount( appendCount() );
