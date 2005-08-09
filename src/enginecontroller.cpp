@@ -222,6 +222,12 @@ bool EngineController::canDecode( const KURL &url ) //static
     if ( extensionCache().contains( ext ) )
         return s_extensionCache[ext];
 
+    // If file has 0 bytes, ignore it and return false, not to infect the cache with corrupt files.
+    // TODO also ignore files that are too small?
+    QFile f( url.url() );
+    if ( !f.size() )
+        return false;
+
     const bool valid = engine()->canDecode( url );
 
     //we special case this as otherwise users hate us
