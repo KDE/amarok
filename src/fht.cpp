@@ -156,7 +156,7 @@ void FHT::power2(float *p)
 	*p = (*p * *p), *p += *p, p++;
 
 	for (i = 1, q = p + m_num - 2; i < (m_num / 2); i++, --q)
-		*p++ = (*p * *p) + (*q * *q);
+		*p = (*p * *p) + (*q * *q), p++;
 }
 
 
