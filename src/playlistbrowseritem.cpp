@@ -1018,16 +1018,22 @@ void
 PodcastChannel::configure()
 {
     QString url    = m_url.prettyURL();
+    int purgeCount = m_purgeCount;
 
     PodcastSettings *settings = new PodcastSettings( m_url, m_autoScan, m_interval,
                                                      m_mediaFetch, m_purgeItems, m_purgeCount );
 
-    settings->show();
-
-    if( url != m_url.prettyURL() )
+    if( settings->exec() == QDialog::Accepted )
     {
-        m_dirtyFeed = true;
-        fetch();
+        if( url != m_url.prettyURL() )
+        {
+            m_dirtyFeed = true;
+            fetch();
+        }
+        else if( m_purgeItems && ( m_purgeCount < purgeCount ) ) //fetch() will purge, so no need to fall through
+        {
+            purge();
+        }
     }
 }
 
@@ -1152,7 +1158,7 @@ PodcastChannel::setXml( QDomNode xml )
     PodcastItem *updatingLast = 0;
     PodcastItem *first = (PodcastItem *)firstChild();
 
-    if( m_dirtyFeed )
+    if( m_dirtyFeed ) // the url has changed and hence we need to delete the children
     {
         QListViewItem *child, *next;
         if ( (child = firstChild()) )

@@ -28,6 +28,9 @@ class PodcastSettings : public PodcastSettingsDialogBase
         bool    hasPurge()    { return m_purge; }
         int     purgeCount()  { return m_purgeCount; }
 
+    signals:
+        void    acceptPressed();
+
     private slots:
         void    accept();
         void    cancelPressed();
