@@ -25,6 +25,7 @@
 #include <qtimer.h>
 
 #include <kapplication.h>
+#include <kfileitem.h>
 #include <kio/global.h>
 #include <kio/job.h>
 #include <kmessagebox.h>
@@ -224,7 +225,7 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     // If file has 0 bytes, ignore it and return false, not to infect the cache with corrupt files.
     // TODO also ignore files that are too small?
-    QFile f( url.url() );
+    KFileItem f( KFileItem::Unknown, KFileItem::Unknown, url, false );
     if ( !f.size() )
         return false;
 
