@@ -587,7 +587,7 @@ TagDialog::saveMultipleTracks()
             !kIntSpinBox_score->value() && m_score )
             CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
 
-        if ( tagsChanged ) { // We only try to update the file if one of the tracks changed
+        if ( tagsChanged ) { // We only try to update the file if one of the tags changed
             if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
                 Playlist::instance()->updateMetaData( mb );
             else
