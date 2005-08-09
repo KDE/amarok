@@ -13,12 +13,12 @@ interface, that really makes playlist handling easy.
 ==========
 
     * Quick and simple drag and drop playlist creation
-    * Music library (built-in sqlite or MySQL)
-    * Multiple backends supported (GStreamer, xine, NMM, MAS and aRts)
+    * Music library (built-in sqlite, MySQL or PostgreSQL )
+    * Multiple backends supported (GStreamer, xine, NMM, Helix, MAS and aRts)
     * Plays all audio formats known to man
     * 10 band equalizer
     * Automatic cover art download using Amazon services
-    * The unique and powerful context browser
+    * The unique and powerful stylable context browser
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
     * Learn about your music with integrated Wikipedia
@@ -29,6 +29,8 @@ interface, that really makes playlist handling easy.
     * Fully configurable OSD for track changes
     * K3B (CD-burning) integration
     * Podcast support
+    * Powerful scripting interface
+    * Complete DCOP Access
     * KDE integration
 --------------------------------------------------------------------------------
 
