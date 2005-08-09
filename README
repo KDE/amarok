@@ -28,6 +28,7 @@ interface, that really makes playlist handling easy.
     * Crossfading
     * Fully configurable OSD for track changes
     * K3B (CD-burning) integration
+    * Podcast support
     * KDE integration
 --------------------------------------------------------------------------------
 
