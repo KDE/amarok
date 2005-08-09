@@ -1103,7 +1103,7 @@ void ContextBrowser::showHomeBySongs()
                         "</div>"
                         "</div>");
         }
-        m_HTMLSource.append("</div> </table>");
+        m_HTMLSource.append("</table> </div>");
     }
     m_HTMLSource.append(
             "</div>");
