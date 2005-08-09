@@ -100,6 +100,7 @@ Party::Party( QWidget *parent, const char *name )
     if( showDynamicConfig )
     {
         showConfig( true );
+        enableButton->setChecked( true );
     }
 }
 
@@ -167,8 +168,11 @@ Party::applySettings() //SLOT
     else if( appendType() == CUSTOM )
         type = "Custom";
 
-    AmarokConfig::setDynamicType( type );
-    PlaylistBrowser::instance()->loadDynamicItems();
+    if( type != AmarokConfig::dynamicType() )
+    {
+        AmarokConfig::setDynamicType( type );
+        PlaylistBrowser::instance()->loadDynamicItems();
+    }
 
     if ( AmarokConfig::dynamicPreviousCount() != previousCount() )
     {
