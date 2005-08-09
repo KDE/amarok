@@ -579,7 +579,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
         #endif
-        menu.setItemEnabled( SHOW, !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" ) );
+        bool disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
+        menu.setItemEnabled( SHOW, disable );
+        menu.setItemEnabled( DELETE, disable );
     }
     else if ( url.protocol() == "file" || url.protocol() == "album" || url.protocol() == "compilation" )
     {
