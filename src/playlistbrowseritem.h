@@ -302,6 +302,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         bool containsItem( QDomElement xml );
         void purge();
+        void removeChildren();
         void startAnimation();
         void stopAnimation();
 

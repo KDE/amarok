@@ -1027,7 +1027,7 @@ PodcastChannel::configure()
     {
         if( url != m_url.prettyURL() )
         {
-            m_dirtyFeed = true;
+            removeChildren();
             fetch();
         }
         else if( m_purgeItems && ( m_purgeCount < purgeCount ) ) //fetch() will purge, so no need to fall through
@@ -1122,6 +1122,22 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 }
 
 void
+PodcastChannel::removeChildren()
+{
+    QListViewItem *child, *next;
+    if ( (child = firstChild()) )
+    {
+        while ( (next = child->nextSibling()) )
+        {
+            delete child;
+            child=next;
+        }
+        delete child;
+    }
+    m_dirtyFeed = false;
+}
+
+void
 PodcastChannel::rescan()
 {
     m_updating = true;
@@ -1160,17 +1176,7 @@ PodcastChannel::setXml( QDomNode xml )
 
     if( m_dirtyFeed ) // the url has changed and hence we need to delete the children
     {
-        QListViewItem *child, *next;
-        if ( (child = firstChild()) )
-        {
-            while ( (next = child->nextSibling()) )
-            {
-                delete child;
-                child=next;
-            }
-            delete child;
-        }
-        m_dirtyFeed = false;
+        removeChildren();
         first = 0;
     }
 
