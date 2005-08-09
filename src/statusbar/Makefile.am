@@ -14,4 +14,5 @@ libstatusbar_la_SOURCES = \
     statusBarBase.cpp \
     statusbar.cpp \
     overlayWidget.cpp \
-    progressBar.cpp
+    progressBar.cpp \
+    squeezedtextlabel.cpp

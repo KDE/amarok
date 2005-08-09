@@ -91,7 +91,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
-    // set up us the bomb
+    // set us up the bomb
     engineStateChanged( Engine::Empty );
     //slotItemCountChanged( 0 );
 
