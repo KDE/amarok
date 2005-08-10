@@ -135,6 +135,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     m_sortMode = config->readNumEntry( "Sorting", ASCENDING );
     slotViewMenu( m_sortMode );
 
+    m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
+
     new Party( browserBox );
 
     // signals and slots connections
@@ -226,8 +228,6 @@ PlaylistBrowser::polish()
             ++it;
         }
     }
-
-    m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
 }
 
 
