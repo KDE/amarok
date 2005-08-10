@@ -361,6 +361,7 @@ void HSPPostMixAudioHook::setGain(int volume)
          //gainSetImmediatedB(m_gaindB, m_gaintool);
 
          gainSetImmediate( (float) volume / 100.0, m_gaintool );
+         STDERR("GAIN set to %f\n", (float) volume);
       }
    }
 }
