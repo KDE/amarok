@@ -38,7 +38,7 @@ ItunesDBWriter::~ItunesDBWriter()
 }
 
 
-};
+}
 
 
 /*!

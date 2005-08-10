@@ -74,6 +74,6 @@ public:
     virtual void parseFinished() = 0;
 };
 
-};
+}
 
 #endif

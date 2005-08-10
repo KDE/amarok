@@ -146,8 +146,8 @@ QDataStream & Track::readFromStream(QDataStream& instream) {
     // TODO make this more forgiving
     if(blocklen < 148) {
         // insufficient information
-        char buffer[blocklen];
-        instream.readRawBytes(buffer, blocklen);
+        QByteArray buffer( blocklen );
+        instream.readRawBytes(buffer.data(), blocklen);
         return instream;
     }
     
@@ -192,8 +192,8 @@ QDataStream & Track::readFromStream(QDataStream& instream) {
     
     // seek to the end of the block
     if (blocklen > 148) {
-        char buffer[blocklen - 148];
-        instream.readRawBytes(buffer, blocklen - 148);
+        QByteArray buffer( blocklen - 148 );
+        instream.readRawBytes(buffer.data(), blocklen - 148);
     }
     
     return instream;
@@ -407,6 +407,6 @@ void Track::doneAddingData() {
     if( getItemProperty(MHOD_TITLE).isEmpty())
         setItemProperty("_no_title_", MHOD_TITLE);
 }
-};
+}
 
 

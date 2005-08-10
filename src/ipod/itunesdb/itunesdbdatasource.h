@@ -89,6 +89,6 @@ public:
     virtual void handleError( const QString& message) = 0;
 };
 
-};
+}
 
 #endif

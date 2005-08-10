@@ -187,4 +187,4 @@ QDataStream & IPodPlaylist::writeToStream(QDataStream & outstream, bool isMainli
     return outstream;
 }
 
-};
+}

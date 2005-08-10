@@ -50,6 +50,6 @@ private:
     void fillPlaylistBuffer( QByteArray& buffer);
 };
 
-};
+}
 
 #endif

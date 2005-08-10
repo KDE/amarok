@@ -60,6 +60,6 @@ private:
     void seekRelative(QDataStream& stream, uint numbytes);
 };
 
-};
+}
 
 #endif

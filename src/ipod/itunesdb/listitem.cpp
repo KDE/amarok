@@ -56,4 +56,4 @@ void ListItem::doneAddingData() {
     // Does nothing here.
 }
 
-};
+}

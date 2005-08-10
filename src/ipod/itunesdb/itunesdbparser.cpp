@@ -33,9 +33,13 @@ ItunesDBParser::~ItunesDBParser()
 }
 
 
-void ItunesDBParser::seekRelative(QDataStream& stream, uint numbytes) {
-    char buffer[numbytes];
-    stream.readRawBytes(buffer, numbytes);
+void ItunesDBParser::seekRelative(QDataStream& stream, uint numbytes) 
+{
+    if ( numbytes ) {
+        char* buffer = new char[ numbytes ];
+        stream.readRawBytes(buffer, numbytes);
+        delete [] buffer;
+    }
 }
 
 /*!
@@ -122,12 +126,12 @@ void ItunesDBParser::parse(QFile& file)
             stream >> blocklen;
             
             uint datalen = blocklen - 40;
-            char buffer[datalen + 2];
+            QByteArray buffer( datalen+2 );
             
             stream >> type;
             
             seekRelative(stream, 24);    // skip stuff
-            stream.readRawBytes(buffer, datalen);
+            stream.readRawBytes(buffer.data(), datalen);
             buffer[datalen] = 0;
             buffer[datalen + 1] = 0;
             
@@ -135,7 +139,7 @@ void ItunesDBParser::parse(QFile& file)
                 break;    // ignore
             
             if( listitem != NULL)
-                listitem->setItemProperty( QString::fromUcs2( (unsigned short *)buffer), (ItemProperty)type);
+                listitem->setItemProperty( QString::fromUcs2( (unsigned short *)buffer.data()), (ItemProperty)type);
             }
             break;
         
@@ -203,7 +207,7 @@ ItunesDBParser_parse_cleanup:    // !!! only cleanup code from here on !!!
     file.close();
 }
 
-};
+}
 
 
 /*!

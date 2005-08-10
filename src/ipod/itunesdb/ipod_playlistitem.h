@@ -41,6 +41,6 @@ protected:
     Q_UINT32 id;
 };
 
-};
+}
 
 #endif

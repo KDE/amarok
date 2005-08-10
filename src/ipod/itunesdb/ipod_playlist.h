@@ -78,6 +78,6 @@ protected:
     TrackList_T tracklist;
 };
 
-};
+}
 
 #endif
