@@ -54,7 +54,7 @@ GstStaticPadTemplate src_template =
 #define _do_init(bla) \
     GST_DEBUG_CATEGORY_INIT (gst_equalizer_debug, "equalizer", 0, "equalizer element");
 
-GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstElement, (GTypeFlags) GST_TYPE_ELEMENT, _do_init );
+GST_BOILERPLATE_FULL ( GstEqualizer, gst_equalizer, GstElement, GST_TYPE_ELEMENT, _do_init );
 
 
 /////////////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,7 @@ static guint gst_streamsrc_signals[ LAST_SIGNAL ] = { 0 };
     GST_DEBUG_CATEGORY_INIT (gst_streamsrc_debug, "streamsrc", 0, "streamsrc element");
 
 
-GST_BOILERPLATE_FULL ( GstStreamSrc, gst_streamsrc, GstElement, (GTypeFlags) GST_TYPE_ELEMENT, _do_init );
+GST_BOILERPLATE_FULL ( GstStreamSrc, gst_streamsrc, GstElement, GST_TYPE_ELEMENT, _do_init );
 
 
 /////////////////////////////////////////////////////////////////////////////////////

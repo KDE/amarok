@@ -45,7 +45,7 @@ static guint gst_uade_signals[ LAST_SIGNAL ] = { 0 };
     GST_DEBUG_CATEGORY_INIT (gst_uade_debug, "uade", 0, "uade element");
 
 
-GST_BOILERPLATE_FULL ( GstUade, gst_uade, GstElement, ( GTypeFlags ) GST_TYPE_ELEMENT, _do_init );
+GST_BOILERPLATE_FULL ( GstUade, gst_uade, GstElement, GST_TYPE_ELEMENT, _do_init );
 
 
 static void gst_uade_set_property ( GObject * object, guint prop_id,
