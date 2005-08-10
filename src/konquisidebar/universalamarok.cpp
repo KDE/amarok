@@ -128,17 +128,20 @@ UniversalAmarok::~UniversalAmarok()
 #include "universalamarok.moc"
 
 
-extern "C"
-{
-    void* create_konqsidebar_universalamarok(KInstance *instance,QObject *par,QWidget *widp,QString &desktopname,const char *name)
-    {
-        return new UniversalAmarok(instance,par,widp,desktopname,name);
-    }
-};
+// FIXME: is this referenced from anywhere ??!
 
 extern "C"
 {
-    bool add_konqsidebar_universalamarok(QString* fn, QString* param, QMap<QString,QString> *map)
+    void* KDE_EXPORT create_konqsidebar_universalamarok(KInstance *instance,QObject *par,QWidget *widp,QString &desktopname,const char *name)
+    {
+        return new UniversalAmarok(instance,par,widp,desktopname,name);
+    }
+}
+
+// FIXME: Is this referenced from anywhere ??!
+extern "C"
+{
+    KDE_EXPORT bool add_konqsidebar_universalamarok(QString* fn, QString* param, QMap<QString,QString> *map)
         {
         Q_UNUSED(param);
 
@@ -151,7 +154,7 @@ extern "C"
         fn->setLatin1 ("amarok.desktop");
         return true;
     }
-};
+}
 
 
 /*!
