@@ -274,7 +274,7 @@ if test "$RPLAY" != "" -a -x "$RPLAY"; then
          echo "found RealPlayer"
          build_helix=yes
       fi
-elif [ "$HXPLAY" != "" -a -x "$HXPLAY" ]; then
+elif test "$HXPLAY" != "" -a -x "$HXPLAY"; then
       HELIX_LIBS=`grep 'HELIX_LIBS=/' $HXPLAY|cut -d';' -f1|cut -d'=' -f2|cut -d' ' -f1`
       if test -e "$HELIX_LIBS/common/clntcore.so"; then
          echo "found HelixPlayer"
