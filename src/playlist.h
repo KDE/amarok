@@ -82,7 +82,7 @@ class Playlist : private KListView, public EngineObserver
         void insertMediaSql( const QString& sql, int options = Append );
 
         /// Dynamic mode functions
-        void addSpecialTracks( uint songCount, const QString type = "Random", const bool overrideCount = false );
+        void addSpecialTracks( uint songCount, const QString type = "Random" );
         void addSpecialCustomTracks( uint songCount );
         void adjustPartyUpcoming( uint songCount, const QString type = "Random" );
         void adjustPartyPrevious( uint songCount );
