@@ -121,6 +121,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsPage = new KHTMLPart( m_lyricsTab, "lyrics_page" );
     m_lyricsPage->setJavaEnabled( false );
+    m_lyricsPage->setJScriptEnabled( false );
     m_lyricsPage->setPluginsEnabled( false );
     m_lyricsPage->setDNDEnabled( true );
 
