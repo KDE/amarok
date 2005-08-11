@@ -20,9 +20,9 @@
 
 #include "squeezedtextlabel.h"
 #include <qsimplerichtext.h>
+#include <qwindowdefs.h> //QCOORD_MAX
 #include <qtooltip.h>
 #include <kdebug.h>
-#include <limits.h>
 
 namespace KDE {
 
@@ -68,7 +68,7 @@ class MySimpleRichText: public QSimpleRichText
     MySimpleRichText( const QString &text, const QFont &font )
         : QSimpleRichText( text, font )
     {
-        setWidth( INT_MAX ); //by default it's like 150-something, always. wtf?
+        setWidth( QCOORD_MAX ); //by default it's like 150-something, always. wtf?
     }
 };
 
@@ -90,20 +90,27 @@ void SqueezedTextLabel::squeezeTextToLabel()
             do
             {
                 int pos = text.length() - 1;
-                if( text[pos] == '>' ) //don't remove parts of <tags>, it's not nice
+                bool breakagain = false; //isn't there a better way to handle this?
+                while( text[pos] == '>' ) //don't remove parts of <tags>, it's not nice
                 {
                     const int lpos = pos;
                     while( text[pos] != '<' && pos >= 0  )
                         --pos;
-                    if( pos == 0 ) //text is only a tag
+                    if( pos == 0 ) //text is only tags
+                    {
+                        breakagain = true;
                         break;
+                    }
                     else
                         --pos;
-                    if( pos < 0 )
-                        pos = lpos - 1;
-                    if( pos < 0 ) //still
+                    if( pos < 0 ) //didn't find an opening <
+                    {
                         pos = lpos;
+                        break;
+                    }
                 }
+                if( breakagain )
+                    break;
                 text.remove( pos, 1 );                                    //paranoia
             } while( MySimpleRichText( text, font() ).widthUsed() > w && !text.isEmpty() );
             text += "...";
