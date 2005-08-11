@@ -88,7 +88,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QBoxLayout *layout = new QHBoxLayout( mainlayout, /*spacing*/5 );
 
     m_mainTextLabel = new KDE::SqueezedTextLabel( this, "mainTextLabel" );
-    m_mainTextLabel->setMinimumWidth( 100 ); //FIXME KSqueezedTextLabel sucks
 
     QHBox *mainProgressBarBox = new QHBox( this, "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
