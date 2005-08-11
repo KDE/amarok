@@ -405,7 +405,12 @@ ScriptManager::slotUninstallScript()
     QStringList::Iterator itKeys;
     for ( itKeys = keys.begin(); itKeys != keys.end(); ++itKeys ) {
         delete m_scripts[*itKeys].li;
-        delete m_scripts[*itKeys].process;
+        if ( m_scripts[*itKeys].process ) {
+            // Kill script process (with SIGTERM)
+            m_scripts[*itKeys].process->kill();
+            m_scripts[*itKeys].process->detach();
+            delete m_scripts[*itKeys].process;
+        }
         m_scripts.erase( *itKeys );
     }
 }
