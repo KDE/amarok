@@ -99,8 +99,8 @@ Party::Party( QWidget *parent, const char *name )
     bool showDynamicConfig = config->readBoolEntry( "Show Dynamic Config", false );
     if( showDynamicConfig )
     {
-        showConfig( true );
         enableButton->setChecked( true );
+        configButton->toggle();
     }
 }
 
@@ -185,9 +185,15 @@ Party::applySettings() //SLOT
         Playlist::instance()->adjustPartyUpcoming( upcomingCount(), type );
         AmarokConfig::setDynamicUpcomingCount( upcomingCount() );
     }
+
+    if ( AmarokConfig::dynamicMarkHistory() != markHistory() )
+    {
+        Playlist::instance()->alterHistoryItems( !markHistory() ); // markHistory() means NOT enabled
+        AmarokConfig::setDynamicMarkHistory( markHistory() );
+    }
+
     AmarokConfig::setDynamicCycleTracks( cycleTracks() );
     AmarokConfig::setDynamicAppendCount( appendCount() );
-    AmarokConfig::setDynamicMarkHistory( markHistory() );
 
     amaroK::actionCollection()->action( "prev" )->setEnabled( !AmarokConfig::dynamicMode() );
     amaroK::actionCollection()->action( "random_mode" )->setEnabled( !AmarokConfig::dynamicMode() );
