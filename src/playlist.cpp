@@ -651,7 +651,7 @@ Playlist::adjustPartyUpcoming( uint songCount, const QString type )
     }
     else
     {
-        x = AmarokConfig::dynamicUpcomingCount() - songCount;
+        x = childCount() - songCount - currentPos;
     }
     debug() << "x: " << x << "; Require tracks? " << requireTracks << endl;
 
