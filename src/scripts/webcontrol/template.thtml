@@ -17,7 +17,7 @@ code =  """ <html>\n
      	      <tr><td valign="top" nowrap="nowrap"><div style="text-align:left;font-size:10">\n
 	    %s</div>\n
             </td><td align="right">\n
-            <div style="text-align:right;font-size:16pt;" >current
+            <div style="text-align:right;font-size:16pt; font-family: 'times new roman'">current
             <a id="amaroklink" href="http://amarok.kde.org" title="visit amarok hompage">amarok</a>
             playlist of %s</div>\n
             </td></tr></table>\n
@@ -34,9 +34,9 @@ tblhead = """<table class="%s" width="100%%" cellpadding="5px" cellspacing="2">
 
 actions = """<table><tr>\n
 		<td width="100">%s</td>\n
-                <td width="9"><img border="0" width='9' height='8' src='vol_speaker.png'></td>\n
-           	<td width="120">%s</td>
+                <td width="9"><img border="0" width='22' height='22' src='vol_speaker.png'></td>\n
+           	<td width="150">%s</td>
 		<td width="40"></td>
-                <td width='16'>Time:<td>\n
+                <td width='16' class='countdown'>Time:<td>\n
 		<td id='countdown'>%s</td>
 	     </tr></table>\n """
