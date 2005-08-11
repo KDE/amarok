@@ -11,18 +11,20 @@
 # Ask user for tag name
 tagname  = `kdialog --inputbox "Enter tag name (e.g. "1.3-beta3"): "`.chomp()
 
-
+# Show safety check dialog
 `kdialog --warningcontinuecancel "Really create the tag '#{tagname}' NOW in the svn repository?"`
 if $?.exitstatus() == 2
     print "Aborted.\n"
     exit()
 end
 
-
+# Create folder
 `svn mkdir https://svn.kde.org/home/kde/tags/amarok/#{tagname}`
 
+# Copy the code in the repository
 source = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
 target = "https://svn.kde.org/home/kde/tags/amarok/#{tagname}/"
 `svn cp -m "Create new tag for amaroK." #{source} #{target}`
+
 
 print "Tag created.\n"
