@@ -23,6 +23,6 @@ end
 
 source = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
 target = "https://svn.kde.org/home/kde/tags/amarok/#{tagname}/"
-`svn cp #{source} #{target}`
+`svn cp -m "Create new tag for amaroK." #{source} #{target}`
 
 print "Tag created.\n"
