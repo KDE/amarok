@@ -119,6 +119,7 @@ FileBrowser::FileBrowser( const char * name )
         //folder selection combo box
         m_combo = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
         m_combo->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+        m_combo->setAutoDeleteCompletionObject( true );
         m_combo->setMaxItems( 9 );
         m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
         m_combo->lineEdit()->setText( currentLocation );
