@@ -9,15 +9,20 @@
 
 
 # Ask user for tag name
-# tagname  = `kdialog --inputbox "Enter tag name (e.g. "1.3-beta3"): "`.chomp()
+tagname  = `kdialog --inputbox "Enter tag name (e.g. "1.3-beta3"): "`.chomp()
 
-tagname = "foo"
 
-text = "Really create the tag '#{tagname}' NOW in the SVN repository?"
-
-`kdialog --warningcontinuecancel #{text}`
+`kdialog --warningcontinuecancel "Really create the tag '#{tagname}' NOW in the svn repository?"`
 if $?.exitstatus() == 2
     print "Aborted.\n"
     exit()
 end
 
+
+`svn mkdir https://svn.kde.org/home/kde/tags/amarok/#{tagname}`
+
+source = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
+target = "https://svn.kde.org/home/kde/tags/amarok/#{tagname}/"
+`svn cp #{source} #{target}`
+
+print "Tag created.\n"
