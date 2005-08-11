@@ -653,7 +653,6 @@ Playlist::adjustPartyUpcoming( uint songCount, const QString type )
     {
         x = childCount() - songCount - currentPos;
     }
-    debug() << "x: " << x << "; Require tracks? " << requireTracks << endl;
 
     if ( requireTracks )
     {
