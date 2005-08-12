@@ -256,10 +256,10 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         KURL        m_localUrl;
         QString     m_localUrlString;              //convenience for QFile()
 
-        QPixmap    *m_loading1;
-        QPixmap    *m_loading2;
+        QPixmap     m_loading1;
+        QPixmap     m_loading2;
         bool        m_fetching;
-        QTimer     *m_animationTimer;
+        QTimer      m_animationTimer;
         bool        m_downloaded;
 
         KIO::CopyJob* m_podcastItemJob;
@@ -312,12 +312,12 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         QString     m_cache;                       //filename for caching
         QString     m_description;
         QString     m_copyright;
-        QPixmap    *m_loading1;
-        QPixmap    *m_loading2;
+        QPixmap     m_loading1;
+        QPixmap     m_loading2;
         QPixmap    *m_availablePix;
         bool        m_fetching;
         bool        m_updating;
-        QTimer     *m_animationTimer;
+        QTimer      m_animationTimer;
         bool        m_new;
         bool        m_hasProblem;
         bool        m_dirtyFeed;

@@ -952,8 +952,8 @@ QDomElement PartyEntry::xml() {
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_loading1( 0 )
-    , m_loading2( 0 )
+    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_availablePix( 0 )
     , m_fetching( false )
     , m_updating( false )
@@ -984,28 +984,26 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
                                 const KURL &url, QDomNode channelSettings, QDomDocument xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
-    , m_loading1( 0 )
-    , m_loading2( 0 )
+    , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_availablePix( 0 )
     , m_fetching( false )
     , m_updating( false )
     , m_new( false )
     , m_hasProblem( false )
     , m_dirtyFeed( false )
+    , m_autoScan( channelSettings.namedItem( "autoscan").toElement().text() == "true" )
+    , m_interval( channelSettings.namedItem( "scaninterval").toElement().text().toInt() )
+    , m_purgeItems( channelSettings.namedItem( "purge").toElement().text() == "true" )
+    , m_purgeCount( channelSettings.namedItem( "purgecount").toElement().text().toInt() )
     , m_last( 0 )
 {
-    setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
-
-    m_autoScan   = ( channelSettings.namedItem( "autoscan").toElement().text() == "true" );
-    m_interval   =   channelSettings.namedItem( "scaninterval").toElement().text().toInt();
-
     if( channelSettings.namedItem( "fetch").toElement().text() == "download" )
         m_mediaFetch = DOWNLOAD;
     else
         m_mediaFetch = STREAM;
 
-    m_purgeItems = ( channelSettings.namedItem( "purge").toElement().text() == "true" );
-    m_purgeCount =   channelSettings.namedItem( "purgecount").toElement().text().toInt();
+    setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
@@ -1041,12 +1039,9 @@ void
 PodcastChannel::fetch()
 {
     setText(0, i18n( "Retrieving Podcast..." ) );
-    m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
-    m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
-    m_animationTimer = new QTimer();
 
     startAnimation();
-    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
     m_podcastJob = KIO::storedGet( m_url, false, false );
 
@@ -1299,14 +1294,14 @@ PodcastChannel::xml()
 void
 PodcastChannel::startAnimation()
 {
-    if( !m_animationTimer->isActive() )
-        m_animationTimer->start( 100 );
+    if( !m_animationTimer.isActive() )
+        m_animationTimer.start( 100 );
 }
 
 void
 PodcastChannel::stopAnimation()
 {
-    m_animationTimer->stop();
+    m_animationTimer.stop();
     setPixmap( 0, SmallIcon("player_playlist_2") );
 }
 
@@ -1316,8 +1311,8 @@ PodcastChannel::slotAnimation()
     static uint iconCounter = 1;
 
     iconCounter % 2 ?
-        setPixmap( 0, *m_loading1 ):
-        setPixmap( 0, *m_loading2 );
+        setPixmap( 0, m_loading1 ):
+        setPixmap( 0, m_loading2 );
 
     iconCounter++;
 }
@@ -1328,8 +1323,8 @@ PodcastChannel::slotAnimation()
 PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml )
     : PlaylistBrowserEntry( parent, after )
       , m_localUrl( 0 )
-      , m_loading1( 0 )
-      , m_loading2( 0 )
+      , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+      , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
       , m_fetching( false )
       , m_downloaded( false )
       , m_new( false )
@@ -1366,12 +1361,9 @@ PodcastItem::downloadMedia()
         return;
 
     setText(0, i18n( "Downloading Media..." ) );
-    m_loading1 = new QPixmap( locate("data", "amarok/images/loading1.png" ) );
-    m_loading2 = new QPixmap( locate("data", "amarok/images/loading2.png" ) );
-    m_animationTimer = new QTimer();
 
     startAnimation();
-    connect( m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( m_url );
 
     m_podcastItemJob = new KIO::CopyJob( list, m_localUrl, KIO::CopyJob::Copy, false, false );
@@ -1436,14 +1428,14 @@ PodcastItem::setNew( bool n )
 void
 PodcastItem::startAnimation()
 {
-    if( !m_animationTimer->isActive() )
-        m_animationTimer->start( 100 );
+    if( !m_animationTimer.isActive() )
+        m_animationTimer.start( 100 );
 }
 
 void
 PodcastItem::stopAnimation()
 {
-    m_animationTimer->stop();
+    m_animationTimer.stop();
     setPixmap( 0, SmallIcon("player_playlist_2") );
 }
 
@@ -1453,8 +1445,8 @@ PodcastItem::slotAnimation()
     static uint iconCounter = 1;
 
     iconCounter % 2 ?
-        setPixmap( 0, *m_loading1 ):
-        setPixmap( 0, *m_loading2 );
+        setPixmap( 0, m_loading1 ):
+        setPixmap( 0, m_loading2 );
 
     iconCounter++;
 }
