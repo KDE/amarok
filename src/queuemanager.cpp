@@ -11,6 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarokconfig.h"     //check if dynamic mode
 #include "playlist.h"
 #include "queuemanager.h"
 
@@ -130,7 +131,7 @@ QueueList::keyPressEvent( QKeyEvent *e )
 bool
 QueueList::hasSelection()
 {
-    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
 
     if( !it.current() )
         return false;
@@ -138,14 +139,22 @@ QueueList::hasSelection()
     return true;
 }
 
-void
-QueueList::moveSelectedUp() // SLOT
+QPtrList<QListViewItem>
+QueueList::selectedItems()
 {
     QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( this, QListViewItemIterator::Selected);
+    QListViewItemIterator it( this, QListViewItemIterator::Selected );
 
     for( ; it.current(); ++it )
         selected.append( it.current() );
+
+    return selected;
+}
+
+void
+QueueList::moveSelectedUp() // SLOT
+{
+    QPtrList<QListViewItem> selected = selectedItems();
 
     // Whilst it would be substantially faster to do this: ((*it)->itemAbove())->move( *it ),
     // this would only work for sequentially ordered items
@@ -167,12 +176,7 @@ QueueList::moveSelectedUp() // SLOT
 void
 QueueList::moveSelectedDown() // SLOT
 {
-    QListViewItemIterator it( this, QListViewItemIterator::Selected);
-
-    QPtrList<QListViewItem> list;
-
-    for( ; it.current(); ++it )
-        list.append( *it );
+    QPtrList<QListViewItem> selected = selectedItems();
 
     for( QListViewItem *item  = list.last(); item; item = list.prev() )
     {
@@ -190,11 +194,7 @@ QueueList::removeSelected() //SLOT
 {
     setSelected( currentItem(), true );
 
-    QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( this, QListViewItemIterator::Selected);
-
-    for( ; it.current(); ++it )
-        selected.append( it.current() );
+    QPtrList<QListViewItem> selected = selectedItems();
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
         delete item;
@@ -303,7 +303,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
 
     connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
     connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
-    connect( m_remove, SIGNAL( clicked() ), m_listview, SLOT( removeSelected() ) );
+    connect( m_remove, SIGNAL( clicked() ), this,       SLOT( removeSelected() ) );
     connect( m_add,    SIGNAL( clicked() ), SLOT( addItems() ) );
     connect( m_mix,    SIGNAL( clicked() ), m_listview, SLOT( shuffle() ) );
 
@@ -376,8 +376,9 @@ QueueManager::addQueuedItem( PlaylistItem *item ) //SLOT
     }
 
     QValueList<PlaylistItem*> current = m_map.values();
+    QValueListIterator<PlaylistItem*>   newItem = current.find( item );
 
-    if( current.find( item ) == current.end() ) //avoid duplication
+    if( newItem == current.end() ) //avoid duplication
     {
         QString title = item->artist();
         title.append( i18n(" - " ) );
@@ -386,8 +387,15 @@ QueueManager::addQueuedItem( PlaylistItem *item ) //SLOT
         after = new QueueItem( m_listview, after, title );
         m_map[ after ] = item;
     }
+    else if( !AmarokConfig::dynamicMode() )
+    {
+        current.remove( newItem );
+        delete *newItem;
+    }
 
 }
+
+/// Playlist uses this to determine the altered queue and reflect the changes.
 
 QPtrList<PlaylistItem>
 QueueManager::newQueue()
@@ -417,6 +425,18 @@ QueueManager::insertItems()
     }
 
     updateButtons();
+}
+
+void
+QueueManager::removeSelected() //SLOT
+{
+    QPtrList<QListViewItem>  selected = m_listview->selectedItems();
+
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    {
+        m_map.remove( (PlaylistItem*)item );
+    }
+    m_listview->removeSelected();
 }
 
 void

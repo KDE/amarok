@@ -44,6 +44,7 @@ class QueueList : public KListView
 
         bool    hasSelection();
         bool    isEmpty() { return ( childCount() == 0 ); }
+        QPtrList<QListViewItem>  selectedItems();
 
     public slots:
         void    moveSelectedUp();
@@ -72,9 +73,12 @@ class QueueManager : public KDialogBase
         static QueueManager *instance() { return s_instance; }
 
     public slots:
-        void    addItems( QListViewItem *after = 0 );
-        void    addQueuedItem( PlaylistItem *item );
+        void    addItems( QListViewItem *after = 0 ); /// For the add button (uses selected playlist tracks)
+        void    addQueuedItem( PlaylistItem *item );  /// For keeping queue/dequeue in sync
         void    updateButtons();
+
+    private slots:
+        void    removeSelected();
 
     private:
         void    insertItems();
