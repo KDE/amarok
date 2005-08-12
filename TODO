@@ -217,5 +217,51 @@ DO-NOT-IMPLEMENT (stuff that was rejected):
            anyway.. dunno if I like the sound of it anymore either.
 
 
-BACKTRACES/DEBUG
+BACKTRACES/DEBUG/VALGRIND:
+
+<markey> This is rather nasty. I think we should change the SubmitItem handling in scrobbler.cpp
+         from heap-allocated to stack-allocated to fix it:
+==16118== 5628 (540 direct, 5088 indirect) bytes in 27 blocks are definitely lost in loss record 291 of 383
+==16118==    at 0x1B904471: operator new(unsigned) (vg_replace_malloc.c:132)
+==16118==    by 0x81815C6: Scrobbler::engineNewMetaData(MetaBundle const&, bool) (scrobbler.cpp:238)
+==16118==    by 0x80FABDF: EngineSubject::newMetaDataNotify(MetaBundle const&, bool) (engineobserver.cpp:81)
+==16118==    by 0x80F7F30: EngineController::play(MetaBundle const&) (enginecontroller.cpp:352)
+==16118==    by 0x8130A02: Playlist::activate(QListViewItem*) (playlist.cpp:1126)
+==16118==    by 0x812FF1C: Playlist::playNextTrack(bool) (playlist.cpp:856)
+==16118==    by 0x813C55F: Playlist::qt_invoke(int, QUObject*) (playlist.moc:313)
+==16118==    by 0x1CB4AD91: QObject::activate_signal(QConnectionList*, QUObject*) (in /usr/qt/3/lib/libqt-mt.so.3.3.4)
+==16118==    by 0x1CB4B859: QObject::activate_signal_bool(int, bool) (in /usr/qt/3/lib/libqt-mt.so.3.3.4)
+==16118==    by 0x80F8E08: EngineController::orderNext(bool) (enginecontroller.moc:212)
+==16118==    by 0x80F790A: EngineController::next(bool) (enginecontroller.cpp:288)
+==16118==    by 0x80F8B8B: EngineController::slotTrackEnded() (enginecontroller.cpp:597)
+
+
+==16118== 3839 (2579 direct, 1260 indirect) bytes in 130 blocks are definitely lost in loss record 272 of 383
+==16118==    at 0x1B9042F5: malloc (vg_replace_malloc.c:130)
+==16118==    by 0x232BB946: g_malloc (in /usr/lib/libglib-2.0.so.0.600.4)
+==16118==    by 0x232CC0C8: g_strdup (in /usr/lib/libglib-2.0.so.0.600.4)
+==16118==    by 0x23082ADF: gst_tag_list_get_string (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x2301189C: GstEngine::found_tag_cb(_GstElement*, _GstElement*, _GstStructure*, void*) (gstengine.cpp:140)
+==16118==    by 0x23091D09: gst_marshal_VOID__OBJECT_BOXED (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x2315B0A8: g_closure_invoke (in /usr/lib/libgobject-2.0.so.0.600.4)
+==16118==    by 0x2316FA42: (within /usr/lib/libgobject-2.0.so.0.600.4)
+==16118==    by 0x23170AEB: g_signal_emit_valist (in /usr/lib/libgobject-2.0.so.0.600.4)
+==16118==    by 0x23170DC5: g_signal_emit (in /usr/lib/libgobject-2.0.so.0.600.4)
+==16118==    by 0x2305A431: (within /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x23091D09: gst_marshal_VOID__OBJECT_BOXED (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+
+
+==16118== 2876 (1096 direct, 1780 indirect) bytes in 14 blocks are definitely lost in loss record 274 of 383
+==16118==    at 0x1B904CA0: calloc (vg_replace_malloc.c:175)
+==16118==    by 0x232BB9BE: g_malloc0 (in /usr/lib/libglib-2.0.so.0.600.4)
+==16118==    by 0x2309A1A3: (within /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x2308E94D: gst_registry_load (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x2308F7C8: (within /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x232B32FE: g_list_foreach (in /usr/lib/libglib-2.0.so.0.600.4)
+==16118==    by 0x2308F801: gst_registry_pool_load_all (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x23044E74: (within /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x230453BD: gst_init_check_with_popt_table (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x2304553B: gst_init_check (in /usr/lib/libgstreamer-0.8.so.1.4.0)
+==16118==    by 0x23012CCC: GstEngine::init() (gstengine.cpp:271)
+==16118==    by 0x80F71DC: EngineController::loadEngine(QString const&) (enginecontroller.cpp:172)
 
