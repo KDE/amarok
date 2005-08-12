@@ -96,12 +96,8 @@ Party::Party( QWidget *parent, const char *name )
     }
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
-    bool showDynamicConfig = config->readBoolEntry( "Show Dynamic Config", false );
-    if( showDynamicConfig )
-    {
-        enableButton->setChecked( true );
+    if( config->readBoolEntry( "Show Dynamic Config", false ) )
         configButton->toggle();
-    }
 }
 
 Party::~Party()
