@@ -8,6 +8,7 @@ VERSION 1.3:
     * The tyranny of deleting covers every 90 days is over. Instead, amaroK now
       automatically downloads the covers every 80 days to comply with
       Amazon.com requirements.
+
   CHANGES:
     * Removed 'Apply' button from dynamic config, all config options are now
       hot! (Automatically applied on alteration)
