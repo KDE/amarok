@@ -75,7 +75,7 @@ Party::Party( QWidget *parent, const char *name )
     connect( m_base->m_appendType,            SIGNAL( activated( int ) ),    SLOT( applySettings() ) );
 
     QHBox *buttonBox = new QVBox( this );
-    QCheckBox   *enableButton = new QCheckBox( i18n("Enable dynamic mode"), buttonBox, "party" );
+    QCheckBox   *enableButton = new QCheckBox( i18n("Enable Dynamic Mode"), buttonBox, "party" );
     KPushButton *configButton = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
 
     configButton->setToggleButton( true );
