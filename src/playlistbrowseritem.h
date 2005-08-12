@@ -314,7 +314,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         QString     m_copyright;
         QPixmap     m_loading1;
         QPixmap     m_loading2;
-        QPixmap    *m_availablePix;
         bool        m_fetching;
         bool        m_updating;
         QTimer      m_animationTimer;
