@@ -1653,10 +1653,8 @@ void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& loca
 
 QStringList CollectionDB::staleImages()
 {
-    DbConnection *conn = m_dbConnPool->getDbConnection();
     return query(QString("SELECT asin, locale, filename FROM amazon WHERE refetchdate < %1 ;")
             .arg(QDateTime::currentDateTime().toTime_t() ));
-    m_dbConnPool->putDbConnection(conn);
 }
 
 void
