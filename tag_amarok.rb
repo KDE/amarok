@@ -18,13 +18,16 @@ if $?.exitstatus() == 2
     exit()
 end
 
-# Create folder
+# Create destination folder
 `svn mkdir https://svn.kde.org/home/kde/tags/amarok/#{tagname}`
 
-# Copy the code in the repository
 source = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
+docs   = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/doc/amarok"
 target = "https://svn.kde.org/home/kde/tags/amarok/#{tagname}/"
-`svn cp -m "Create new tag for amaroK." #{source} #{target}`
+
+# Copy the files in the repository
+`svn cp -m "Tag amaroK." #{source} #{target}`
+`svn cp -m "Tag amaroK docs." #{docs} #{target}`
 
 
 print "Tag created.\n"
