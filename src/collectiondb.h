@@ -1,6 +1,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
+// (c) 2005 Ian Monroe <ian@monroe.nu>
 // See COPYING file for licensing information.
 
 #ifndef AMAROK_COLLECTIONDB_H
@@ -218,6 +219,7 @@ class CollectionDB : public QObject, public EngineObserver
         QString boolT() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
         QString boolF() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
         QString textColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
+        QString textColumnType(int length){ if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         QString longTextColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
@@ -313,7 +315,7 @@ class CollectionDB : public QObject, public EngineObserver
         /** Saves images located on the user's filesystem */
         bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
         /** Saves images obtained from CoverFetcher */
-        bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null );
+        bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null, const QString& asin = QString::null );
 
         QString findImageByMetabundle( MetaBundle trackInformation, const uint = 1 );
         QString findImageByArtistAlbum( const QString &artist, const QString &album, const uint width = 1 );
@@ -333,6 +335,9 @@ class CollectionDB : public QObject, public EngineObserver
 
         void setLyrics( const QString& url, const QString& lyrics );
         QString getLyrics( const QString& url );
+
+        void newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum );
+        QStringList staleImages();
 
     protected:
         CollectionDB();
@@ -356,7 +361,7 @@ class CollectionDB : public QObject, public EngineObserver
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made. will remove old db file.
-        static const int DATABASE_VERSION = 19;
+        static const int DATABASE_VERSION = 20;
         static const int DATABASE_STATS_VERSION = 3;
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;

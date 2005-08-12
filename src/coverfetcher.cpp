@@ -171,6 +171,19 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 
     // the url for the Amazon product info page
     m_amazonURL = details.attributes().namedItem( "url" ).toAttr().value();
+    QDomNode it = details.firstChild();
+    while ( !it.isNull() ) {
+        if ( it.isElement() ) {
+            QDomElement e = it.toElement();
+            if(e.tagName()=="Asin")
+            {   
+                m_asin = e.firstChild().toText().data();
+                debug() << "setting the ASIN as" << m_asin << endl; 
+                break;
+            }
+        }
+        it = it.nextSibling();
+    }
 
     QString size = "ImageUrl";
     switch( m_size ) {

@@ -30,6 +30,7 @@ public:
     QString artist() const { return m_artist; }
     QString album() const { return m_album; }
     QString amazonURL() const { return m_amazonURL; }
+    QString asin() const { return m_asin; }
     QImage image() const { return m_image; }
 
     bool wasError() const { return !m_success; }
@@ -52,6 +53,7 @@ private:
     QString m_xml;
     QImage  m_image;
     QString m_amazonURL;
+    QString m_asin;
     int     m_size;
 
     QStringList m_queries;

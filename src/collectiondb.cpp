@@ -60,6 +60,8 @@
 #include <libpq-fe.h>
 #endif
 
+#define DEBUG 1
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionDB
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +355,11 @@ CollectionDB::createTables( DbConnection *conn )
                     "changedate INTEGER );" )
                     .arg( conn ? "TEMPORARY" : "" )
                     .arg( conn ? "_temp" : "" ), conn );
-
+    query(          "CREATE TABLE amazon ( "
+                    "asin " + textColumnType(20) + ", "
+                    "locale " + textColumnType(2) + ", "
+                    "filename " + textColumnType(33) + ", "
+                    "refetchdate INTEGER );", conn );
 
     //create indexes
     query( QString( "CREATE INDEX album_idx%1 ON album%2( name );" )
@@ -722,7 +728,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, const 
 
 
 bool
-CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl )
+CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl, const QString& asin )
 {
     debug() << "Saving cover for: " << artist << " - " << album << endl;
 
@@ -734,7 +740,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
 
     QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
     QCString key = md5sum( artist, album );
-
+    newAmazonReloadDate(asin, AmarokConfig::amazonLocale(), key);
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
         img.setText( "amazon-url", 0, amazonUrl );
@@ -942,6 +948,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     QCString widthKey = "*@";
     QCString key = md5sum( artist, album );
+    query("DELETE FROM amazon WHERE filename='" + key + "' LIMIT 1");
 
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key );
@@ -1620,6 +1627,37 @@ CollectionDB::getLyrics( const QString &url )
     return values[0];
 }
 
+void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& locale, const QString& md5sum )
+{
+    DbConnection *conn = m_dbConnPool->getDbConnection();
+    QStringList values = query(QString("SELECT filename FROM amazon WHERE filename = '%1'")
+        .arg(md5sum));
+    if(values.count() > 0)
+    {
+        query( QString("UPDATE amazon SET asin = '%1', locale = '%2', refetchdate = '%3' WHERE filename = '%4'")
+            .arg(asin)
+            .arg(locale)
+            .arg(QDateTime::currentDateTime().addDays(80).toTime_t())
+            .arg(md5sum));
+    }
+    else
+    {
+        insert( QString( "INSERT INTO amazon ( asin, locale, filename, refetchdate ) VALUES ( '%1', '%2', '%3', '%4');" ) 
+         .arg(asin)
+         .arg(locale)
+         .arg(md5sum)
+         .arg(QDateTime::currentDateTime().addDays(80).toTime_t()), NULL, conn );
+    }
+    m_dbConnPool->putDbConnection(conn);
+}
+
+QStringList CollectionDB::staleImages()
+{
+    DbConnection *conn = m_dbConnPool->getDbConnection();
+    return query(QString("SELECT asin, locale, filename FROM amazon WHERE refetchdate < %1 ;")
+            .arg(QDateTime::currentDateTime().toTime_t() ));
+    m_dbConnPool->putDbConnection(conn);
+}
 
 void
 CollectionDB::applySettings()
@@ -1793,7 +1831,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
     }
 
     else {
-        setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL() );
+        setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL(), fetcher->asin() );
         emit coverFetched( fetcher->artist(), fetcher->album() );
     }
 }

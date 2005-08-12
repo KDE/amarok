@@ -16,19 +16,15 @@
 
 void DbSetup::init()
 {
-    //Assume no db connections, disable all!
+    //Assume no db connections, hide all!
     mySqlFrame->setShown( false );
     postgreSqlFrame->setShown( false );
-    mysqlConfig->setEnabled( false );
-    postgresqlConfig->setEnabled( false );
-    
 #ifdef USE_MYSQL
     databaseEngine->insertItem( "MySQL", -1 );
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql))
     {
         databaseEngine->setCurrentItem("MySQL");
         mySqlFrame->setShown( true );
-        mysqlConfig->setEnabled(true);
     }
 #endif
 
@@ -38,7 +34,6 @@ void DbSetup::init()
     {
         databaseEngine->setCurrentItem("Postgresql");
         mySqlFrame->setShown( true );
-        postgresqlConfig->setEnabled(true);
     }
 #endif
  
@@ -51,8 +46,5 @@ void DbSetup::databaseEngineChanged()
     bool sq = ( databaseEngine->currentText() == "MySQL" );
 
     mySqlFrame->setShown( sq );
-    mysqlConfig->setEnabled( sq );
-
     postgreSqlFrame->setShown( pg );
-    postgresqlConfig->setEnabled( pg );
 }

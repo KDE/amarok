@@ -93,6 +93,7 @@ amarokapp_SOURCES = \
     podcastsettings.cpp \
     podcastsettingsbase.ui \
     queuemanager.cpp \
+	refreshimages.cpp \
     scriptmanager.cpp \
     scriptmanagerbase.ui \
     scrobbler.cpp \

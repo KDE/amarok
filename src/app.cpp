@@ -35,6 +35,7 @@ email                : markey@web.de
 #include "playlist.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
+#include "refreshimages.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
@@ -139,8 +140,9 @@ App::App()
         EngineController::instance()->restoreSession();
     }
 
-    // Remove amazon cover images older than 90 days, to comply with licensing terms
+    // Refetch covers every 80 days or delete every 90 days to comply with Amazon license
     #ifdef AMAZON_SUPPORT
+    RefreshImages* refresh = new RefreshImages();
     pruneCoverImages();
     #endif
 
