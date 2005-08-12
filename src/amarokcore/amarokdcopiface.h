@@ -33,14 +33,14 @@ class AmarokPlayerInterface : virtual public DCOPObject
 
 k_dcop:
 
-   virtual bool dynamicModeStatus() = 0;                      ///< Return dynamic mode status.
-   virtual bool equalizerEnabled() = 0;             ///<Return the equalizer status.
+   virtual bool dynamicModeStatus() = 0;                    ///< Return dynamic mode status.
+   virtual bool equalizerEnabled() = 0;                     ///< Return the equalizer status.
    virtual bool isPlaying() = 0;                            ///< Return true if something is playing now.
    virtual bool randomModeStatus() = 0;                     ///< Return random mode status.
    virtual bool repeatPlaylistStatus() = 0;                 ///< Return repeat playlist status.
    virtual bool repeatTrackStatus() = 0;                    ///< Return repeat track status.
    virtual int  getVolume() = 0;                            ///< Return volume in range 0-100%.
-   virtual int sampleRate() = 0;                            ///< Return the sample rate of the currently playing track.
+   virtual int  sampleRate() = 0;                           ///< Return the sample rate of the currently playing track.
    virtual int  score() = 0;                                ///< Return the score of the currently playing track.
    virtual int  status() = 0;                               ///< Return playback status: 0 - stopped, 1 - paused, 2 - playing. < 0 - error
    virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
@@ -57,7 +57,7 @@ k_dcop:
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
    virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
    virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
-   virtual QString lyricsByPath( QString path ) = 0;   ///< Return the lyrics of a track by path.
+   virtual QString lyricsByPath( QString path ) = 0;        ///< Return the lyrics of a track by path.
 
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
@@ -68,28 +68,28 @@ k_dcop:
    virtual QString track() = 0;                             ///< Return the track number.
    virtual QString year() = 0;                              ///< Return the year of the currently playing track.
    virtual void configEqualizer() = 0;                      ///< Toggle equalizer config dialog.
-   virtual void enableDynamicMode(bool enable) = 0;           ///< Switch Dynamic Mode on or off.
+   virtual void enableDynamicMode(bool enable) = 0;         ///< Switch Dynamic Mode on or off.
    virtual void enableOSD(bool enable) = 0;                 ///< Switch OSD display on or off.
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
-   virtual void enableRepeatTrack(bool enable) = 0;      ///< Switch Repeat Track on or off.
+   virtual void enableRepeatTrack(bool enable) = 0;         ///< Switch Repeat Track on or off.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.
    virtual void play() = 0;                                 ///< Equivalent to pressing "Play" button.
    virtual void playPause() = 0;                            ///< Toggle play/pause state (good for mm keyboard users)
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
-   virtual void queueForTransfer( KURL url ) = 0; ///<Queue file for transfer to Media Device.
+   virtual void queueForTransfer( KURL url ) = 0;           ///< Queue file for transfer to Media Device.
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
-   virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;      ///< Set the equalizer bands
+   virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;  ///< Set the equalizer bands
    virtual void setEqualizerEnabled( bool active ) = 0;     ///< Toggle equalizer.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
-   virtual void setScoreByPath( const QString &url, int score ) = 0;        ///< Set the score of a track by it's path.
+   virtual void setScoreByPath( const QString &url, int score ) = 0;  ///< Set the score of a track by it's path.
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual void stop() = 0;                                 ///< Equivalent to pressing "Stop" button.
-   virtual void transferDeviceFiles() = 0;              ///<Transfer files to media device.
+   virtual void transferDeviceFiles() = 0;                  ///< Transfer files to media device.
    virtual void volumeDown() = 0;                           ///< Decrease volume by a reasonable step.
    virtual void volumeUp() = 0;                             ///< Increase volume by a reasonable step.
    virtual void transferCliArgs( QStringList args ) = 0;
@@ -112,9 +112,9 @@ k_dcop:
    virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
    virtual void playByIndex(int) = 0;                       ///< Starts playing the track at the specified index.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
-   virtual void popupMessage(const QString&) = 0;     ///< Shows a temporary popup message.
+   virtual void popupMessage(const QString&) = 0;           ///< Shows a temporary popup message.
    virtual void removeCurrentTrack() = 0;                   ///< Removes the current-track item from the playlist.
-   virtual void saveM3u(const QString& path, bool relativePaths) = 0;    ///< Saves the current playlist as m3u.
+   virtual void saveM3u(const QString& path, bool relativePaths) = 0;  ///< Saves the current playlist as m3u.
                                                             ///< path = path for saving,  relativePaths = whether to write relative paths.
    virtual void setStopAfterCurrent( bool ) = 0;            ///< Enables/disables the "Stop After Current Track" feature.
    virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar.
@@ -130,7 +130,7 @@ class AmarokCollectionInterface : virtual public DCOPObject
 k_dcop:
    virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
    virtual void scanCollection() = 0;                       ///< Scan the collection.
-   virtual void scanCollectionChanges() = 0;                       ///< Scan the collection for changes only.
+   virtual void scanCollectionChanges() = 0;                ///< Scan the collection for changes only.
 };
 
 
@@ -142,8 +142,8 @@ k_dcop:
    virtual bool runScript(const QString& name) = 0;         ///< Starts the script with the given name. Returns true on success.
    virtual bool stopScript(const QString& name) = 0;        ///< Stops the script with the given name. Returns true on success.
    virtual QStringList listRunningScripts() = 0;            ///< Returns a list of all currently running scripts.
-   virtual void addCustomMenuItem(QString submenu, QString itemTitle ) = 0;    ///<Enables and sets custom menu item title.
-   virtual void removeCustomMenuItem(QString submenu, QString itemTitle ) = 0;                  ///<Removes the custom menu item.
+   virtual void addCustomMenuItem(QString submenu, QString itemTitle ) = 0;  ///< Enables and sets custom menu item title.
+   virtual void removeCustomMenuItem(QString submenu, QString itemTitle ) = 0;  ///< Removes the custom menu item.
 };
 
 
