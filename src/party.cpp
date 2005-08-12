@@ -94,6 +94,8 @@ Party::Party( QWidget *parent, const char *name )
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
+    else
+        m_base->setEnabled( false );
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
     if( config->readBoolEntry( "Show Dynamic Config", false ) )
@@ -240,6 +242,8 @@ Party::toggle( bool enable ) //SLOT
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
+
+    m_base->setEnabled( enable );
 }
 
 void
