@@ -265,3 +265,30 @@ BACKTRACES/DEBUG/VALGRIND:
 ==16118==    by 0x23012CCC: GstEngine::init() (gstengine.cpp:271)
 ==16118==    by 0x80F71DC: EngineController::loadEngine(QString const&) (enginecontroller.cpp:172)
 
+
+amarokapp gets stuck on exit:
+
+amarok: [ThreadWeaver] Waiting on thread...finished
+amarok: END__: virtual ThreadWeaver::~ThreadWeaver() - Took 0.00047s
+amarok: [virtual CollectionDB::~CollectionDB()]
+
+Program received signal SIGINT, Interrupt.
+[Switching to Thread 1024 (LWP 4407)]
+0x41bd5f19 in sigsuspend () from /lib/libc.so.6
+(gdb) bt
+#0  0x41bd5f19 in sigsuspend () from /lib/libc.so.6
+#1  0x41a26d38 in __pthread_wait_for_restart_signal () from /lib/libpthread.so.0
+#2  0x41a2314b in pthread_cond_wait () from /lib/libpthread.so.0
+#3  0x41374bdf in QWaitCondition::wait(QMutex*, unsigned long) () from /usr/lib/./libqt-mt.so.3
+#4  0x413b484e in QSemaphore::operator+=(int) () from /usr/lib/./libqt-mt.so.3
+#5  0x080c4aa6 in ~DbConnectionPool (this=0x838a0b8)
+    at /home/mark/mysource/kdesvn/extragear/multimedia/amarok/src/collectiondb.cpp:2534
+#6  0x080c30e7 in CollectionDB::destroy() (this=0x8299f20)
+    at /home/mark/mysource/kdesvn/extragear/multimedia/amarok/src/collectiondb.cpp:1926
+#7  0x080b5ecb in ~CollectionDB (this=0x8299f20)
+    at /home/mark/mysource/kdesvn/extragear/multimedia/amarok/src/collectiondb.cpp:113
+#8  0x080cb0b1 in __tcf_1 ()
+    at /home/mark/mysource/kdesvn/extragear/multimedia/amarok/src/collectiondb.cpp:71
+#9  0x41bd86a1 in exit () from /lib/libc.so.6
+#10 0x41bc44fa in __libc_start_main () from /lib/libc.so.6
+
