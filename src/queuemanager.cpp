@@ -176,7 +176,7 @@ QueueList::moveSelectedUp() // SLOT
 void
 QueueList::moveSelectedDown() // SLOT
 {
-    QPtrList<QListViewItem> selected = selectedItems();
+    QPtrList<QListViewItem> list = selectedItems();
 
     for( QListViewItem *item  = list.last(); item; item = list.prev() )
     {
@@ -375,22 +375,38 @@ QueueManager::addQueuedItem( PlaylistItem *item ) //SLOT
         after = m_listview->itemAtIndex( find );
     }
 
-    QValueList<PlaylistItem*> current = m_map.values();
-    QValueListIterator<PlaylistItem*>   newItem = current.find( item );
+    QValueList<PlaylistItem*>         current = m_map.values();
+    QValueListIterator<PlaylistItem*> newItem = current.find( item );
+
+    QString title = item->artist();
+    title.append( i18n(" - " ) );
+    title.append( item->title() );
 
     if( newItem == current.end() ) //avoid duplication
     {
-        QString title = item->artist();
-        title.append( i18n(" - " ) );
-        title.append( item->title() );
-
         after = new QueueItem( m_listview, after, title );
         m_map[ after ] = item;
     }
-    else if( !AmarokConfig::dynamicMode() )
+    else //track is in the queue, remove it.
     {
-        current.remove( newItem );
-        delete *newItem;
+        QListViewItem *removableItem = m_listview->findItem( title, 0 );
+
+        if( removableItem )
+        {
+            //Remove the key from the map, so we can re-queue the item
+            for( QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.begin(); it != m_map.end(); it++ )
+            {
+                if( it.data() == item )
+                {
+                    m_map.remove( it );
+
+                    //Remove the item from the queuelist
+                    m_listview->takeItem( removableItem );
+                    delete removableItem;
+                    return;
+                }
+            }
+        }
     }
 
 }
@@ -434,9 +450,15 @@ QueueManager::removeSelected() //SLOT
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
-        m_map.remove( (PlaylistItem*)item );
+        //Remove the key from the map, so we can re-queue the item
+        QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.find( item );
+
+        m_map.remove( it );
+
+        //Remove the item from the queuelist
+        m_listview->takeItem( item );
+        delete item;
     }
-    m_listview->removeSelected();
 }
 
 void
