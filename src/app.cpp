@@ -142,7 +142,7 @@ App::App()
 
     // Refetch covers every 80 days or delete every 90 days to comply with Amazon license
     #ifdef AMAZON_SUPPORT
-    RefreshImages* refresh = new RefreshImages();
+    new RefreshImages();
     pruneCoverImages();
     #endif
 
