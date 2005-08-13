@@ -584,6 +584,7 @@ void XineEngine::configChanged()
     //reset xine to load new audio plugin
     if( m_currentAudioPlugin != XineCfg::outputPlugin() )
     {
+        stop();
         xine_config_save( m_xine, configPath() );
         if( m_stream )     xine_close( m_stream );
         if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
