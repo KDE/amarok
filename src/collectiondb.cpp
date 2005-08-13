@@ -948,7 +948,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     QCString widthKey = "*@";
     QCString key = md5sum( artist, album );
-    query("DELETE FROM amazon WHERE filename='" + key + "' LIMIT 1");
+    query("DELETE FROM amazon WHERE filename='" + key + "'");
 
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key );
