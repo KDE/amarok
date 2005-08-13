@@ -1,0 +1,76 @@
+Shouter
+=========================
+
+About
+-------------------------
+This script was written as a vehicle for learning python, I'm open to
+suggestions, comments and anything not overly abusive. With disclaimer out of
+the way, forward with the details: this script will start a small server from
+within amaroK and serve music streams on a specified port. The stream is taken
+from what is currently being listened to in amaroK. This does not extend to
+other streams. No streams are served while amaroK is in an idle state. This has
+been tested with a bevy of user agents.
+
+Server log messages are appended to
+~/.kde/share/apps/amarok/scripts-data/access.log Debugging output is put in
+~/.kde/share/apps/amarok/scripts-data/shouter.debug
+
+Configuration
+-------------------------
+Service configuration is done via the configuartion menu in the amaroK script
+manager. Streams can be added via the Add/Drop stream buttons at the bottom of
+the window. 
+
+Note that many of the options from previous versions have been removed from the
+configuration dialog. The 1% of users who have a compelling reason to adjust
+some of these system variables can accomplish this by editing their shouterrc
+file.
+
+
+Requirements
+-------------------------
+python >= 2.3 
+PyQt
+
+
+Gotchas
+-------------------------
+The script will fail to start if there it finds a shouterrc file from a previous
+version. 
+
+Complaints about non-repeating snapshotted playlists can be resolved by
+enabling the repeat playlist option before hitting the 'Configure...' button.
+
+The port set in the configuration is more of a strong suggestion than a rule.
+The stream server will bind to another port if the requested one is
+unavailable.
+
+
+Todo
+-------------------------
+Ogg support
+Cleaner disconnection of sockets
+Remote collection browsing/downloading
+File uploads
+IP allow/deny list
+
+
+
+License
+-------------------------
+GPL V2
+
+
+Thanks
+-------------------------
+binary functions in binfuncs taken from eye3D <http://eyed3.nicfit.net>
+shoutcast protocol documentation taken from ample <http://ample.sf.net>
+Jakub Stachowski
+David Rousselie
+#amarok on freenode.net 
+
+
+Author
+-------------------------
+James Bellenger <jbellenger@pristine.gm>
+May 17th 2005
