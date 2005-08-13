@@ -8,8 +8,8 @@ shouter_DATA = \
     Amarok.py \
     ChangeLog \
     Globals.py \
-    Makefile.am \
     Playlist.py \
+    README \
     Services.py \
     ShouterConfig.py \
     ShouterExceptions.py \
