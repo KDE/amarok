@@ -202,7 +202,7 @@ XineEngine::load( const KURL &url, bool isStream )
 
    Engine::Base::load( url, isStream || url.protocol() == "http" );
 
-    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    if( m_xfadeLength > 0 && !s_fader && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
     {
        s_fader = new Fader( this );
     }
