@@ -27,7 +27,6 @@ Name[sr@Latn]=Motor KDEMM
 Name[sv]=KDEMM-gränssnitt
 Name[ta]=KDEMM என்ஜின்
 Name[tr]=KDEMM Motoru
-Name[uk]=KDEMM
 Name[uz]=KDEMM тизими
 Name[zh_CN]=KDEMM 引擎
 Comment=Plugin for amaroK
@@ -59,7 +58,6 @@ Comment[sv]=Insticksprogram för amaroK
 Comment[ta]=amaroKகான சொருகி
 Comment[tg]=Гузоштани дастаи иттисол барои амароК
 Comment[tr]=amaroK için eklenti
-Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[zh_CN]=amaroK 插件
 
