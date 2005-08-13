@@ -151,6 +151,69 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
+
+
+    // FIXME the following code moved here from polish(), until the width
+    // forgetting issue is fixed:
+
+    m_polished = true;
+
+    m_playlistCategory = loadPlaylists();
+    m_streamsCategory  = loadStreams();
+    loadCoolStreams();
+
+    if( !CollectionDB::instance()->isEmpty() ) {
+        m_smartCategory = loadSmartPlaylists();
+        loadDefaultSmartPlaylists();
+        m_smartCategory->setOpen( true );
+    }
+    // must be loaded after streams
+    m_podcastCategory = loadPodcasts();
+
+    m_dynamicCategory = loadDynamics();
+
+    m_playlistCategory->setOpen( true );
+    m_podcastCategory->setOpen( true );
+    m_streamsCategory->setOpen( true );
+    m_dynamicCategory->setOpen( true );
+
+    QStringList playlists = AmarokConfig::dynamicCustomList();
+
+    for( uint i=0; i < playlists.count(); i++ )
+    {
+        QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
+        if( item )
+        {
+            item->setPixmap( 1, SmallIcon("favorites") );
+            m_dynamicEntries.append( item );
+        }
+    }
+
+    // ListView item state restoration:
+    // First we check if the number of items in the listview is the same as it was on last
+    // application exit. If true, we iterate over all items and restore their open/closed state.
+    // Note: We ignore podcast items, because they are added dynamically added to the ListView.
+
+    QValueList<int> stateList = config->readIntListEntry( "Item State" );
+    QListViewItemIterator it( m_listview );
+    uint count = 0;
+    while ( it.current() ) {
+        if( !isPodcastItem( it.current() ) )
+            ++count;
+        ++it;
+    }
+
+    if ( count == stateList.count() ) {
+        uint index = 0;
+        it = QListViewItemIterator( m_listview );
+        while ( it.current() ) {
+            if( !isPodcastItem( it.current() ) ) {
+                it.current()->setOpen( stateList[index] );
+                ++index;
+            }
+            ++it;
+        }
+    }
 }
 
 
@@ -162,13 +225,14 @@ PlaylistBrowser::polish()
 
     DEBUG_BLOCK
 
-    amaroK::OverrideCursor allocate_on_stack;
+//     amaroK::OverrideCursor allocate_on_stack;
 
-    const uint width = QVBox::width();
     QVBox::polish();
-    resize( width, height() );
 
-    m_polished = true;
+    // FIXME the following code moved to the ctor, until the width forgetting
+    // issue is fixed:
+
+/*    m_polished = true;
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
 
@@ -227,7 +291,7 @@ PlaylistBrowser::polish()
             }
             ++it;
         }
-    }
+    }*/
 }
 
 
