@@ -74,7 +74,7 @@ XineEngine::XineEngine()
 XineEngine::~XineEngine()
 {
     // Wait until the fader thread is done
-    if ( s_fader ) {
+    if( s_fader ) {
         m_stopFader = true;
         s_fader->wait();
         delete s_fader;
@@ -202,7 +202,7 @@ XineEngine::load( const KURL &url, bool isStream )
 
    Engine::Base::load( url, isStream || url.protocol() == "http" );
 
-    if( m_xfadeLength > 0 && !s_fader && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
     {
        s_fader = new Fader( this );
     }
@@ -362,7 +362,7 @@ XineEngine::seek( uint ms )
 void
 XineEngine::setVolumeSW( uint vol )
 {
-    if ( !s_fader )
+    if( !s_fader )
         xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol * m_preamp ) );
 }
 
@@ -598,8 +598,8 @@ void XineEngine::configChanged()
         m_xine = NULL;
         init();
         setEqualizerEnabled( m_equalizerEnabled );
-        if ( m_equalizerEnabled )
-                setEqualizerParameters( m_intPreamp, m_equalizerGains );
+        if( m_equalizerEnabled )
+                           setEqualizerParameters( m_intPreamp, m_equalizerGains );
         emit resetConfig(m_xine);
     }
 }
@@ -803,7 +803,7 @@ Fader::~Fader()
      xine_close_audio_driver( m_xine, m_port );
      if( m_post ) xine_post_dispose( m_xine, m_post );
 
-     if ( !m_engine->m_stopFader )
+     if( !m_engine->m_stopFader )
          m_engine->setVolume( m_engine->volume() );
 
      m_engine->m_stopFader = false;
@@ -862,7 +862,7 @@ Fader::run()
 //                 kdDebug() << "new: " << newsleep << endl;
 
                 //decrease the contextual volume
-                if ( ++v > 99 )
+                if( ++v > 99 )
                     goto done;
 
                 //update td
