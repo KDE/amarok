@@ -319,7 +319,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         QTimer      m_animationTimer;
         bool        m_new;
         bool        m_hasProblem;
-        bool        m_dirtyFeed;
 
         // Configuration
         bool        m_autoScan;
@@ -328,7 +327,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         bool        m_purgeItems;
         int         m_purgeCount;
 
-
+        PodcastItem         *m_first;
         PodcastItem         *m_last;
         KIO::TransferJob    *m_podcastJob;
         QString              m_podcastCurrentUrl;
