@@ -189,7 +189,7 @@ class Remasterer( QApplication ):
         self.dia = ConfigDialog()
         path = self.dia.readConfig()
 
-        os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists %s/amarok.live/home/amarok/.kde/share/apps/amarok/current.xml" % (path, path, path))
+        os.system("rm -rf %s/amarok.live/music/* %s/amarok.live/playlist/* %s/amarok.live/home/amarok/.kde/share/apps/amarok/current.xml" % (path, path, path))
 
     def onSignal( self, signum, stackframe ):
         stop()
@@ -247,7 +247,7 @@ class Remasterer( QApplication ):
 
         import random
         suffix = random.randint(0,10000)
-        os.system("mkdir %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % path)
+#        os.system("mkdir %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % path)
         m3uOut = open("/tmp/amarok.live.%s.m3u" % suffix, 'w')
 
         m3u = m3u.strip()
@@ -255,7 +255,7 @@ class Remasterer( QApplication ):
 
         m3uOut.close()
         
-        os.system("mv /tmp/amarok.live.%s.m3u %s/amarok.live/home/amarok/.kde/share/apps/amarok/playlists/" % (suffix,path))
+        os.system("mv /tmp/amarok.live.%s.m3u %s/amarok.live/playlist/" % (suffix,path))
         os.system("rm /tmp/amarok.live.%s.m3u" % suffix)
 
 
