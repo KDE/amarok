@@ -151,6 +151,7 @@ Dir.chdir( "src" )
 file = File.new( "amarok.h", File::RDWR )
 str = file.read()
 file.rewind()
+file.truncate(0)
 str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{version}\"" )
 file << str
 file.close()
