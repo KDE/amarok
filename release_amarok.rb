@@ -55,7 +55,7 @@ Dir.chdir( "multimedia" )
 `svn up amarok`
 `svn up -N doc`
 `svn up doc/amarok`
-`svn co https://svn.kde.org/home/kde/branches/KDE/3.5/kde-common/admin`
+`svn co -r 442226 https://svn.kde.org/home/kde/branches/KDE/3.5/kde-common/admin`
 
 
 if do_l10n == "yes"
