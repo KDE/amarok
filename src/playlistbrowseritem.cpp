@@ -1164,6 +1164,7 @@ PodcastChannel::setXml( QDomNode xml )
     KURL m_link( weblink );
 
     PodcastItem *updatingLast = 0;
+    PodcastItem *nextFirst = 0;
 
     QDomNode n = xml.namedItem( "item" );
     int  children = 0;
@@ -1175,6 +1176,8 @@ PodcastChannel::setXml( QDomNode xml )
             // podcasts get inserted in a chronological order,
             // no need to continue traversing, we must have them already
             if( m_first && m_first->hasXml( n ) ) {
+                if (nextFirst)
+                    m_first = nextFirst;
                 debug() << "breaking" << endl;
                 break;
             }
@@ -1187,8 +1190,8 @@ PodcastChannel::setXml( QDomNode xml )
                     updatingLast->downloadMedia();
 
                 updatingLast->setNew();
-                if (!m_first) {
-                    m_first = updatingLast;
+                if (!nextFirst) {
+                    nextFirst = updatingLast;
                 }
             }
         }
