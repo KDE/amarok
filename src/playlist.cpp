@@ -3227,7 +3227,7 @@ Playlist::ensureItemCentered( PlaylistItem *item )
         return;
 
     ensureVisible( contentsX(), item->itemPos() + item->height() / 2, 0, visibleHeight() / 2 );
-    updateContents();
+    triggerUpdate();
 }
 
 void
