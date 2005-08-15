@@ -22,6 +22,7 @@
 
 #include <kactivelabel.h>
 #include <kpushbutton.h>
+#include <kstdguiitem.h>
 
 #include <qfont.h>
 #include <qframe.h>
