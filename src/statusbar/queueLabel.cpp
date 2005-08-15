@@ -99,13 +99,13 @@ void QueueLabel::setNum( int num )
 
 void QueueLabel::enterEvent( QEvent* )
 {
-    if( !isHidden() )
+    if( !tooltip )
         showToolTip();
 }
 
 void QueueLabel::leaveEvent( QEvent* )
 {
-    if( !isHidden() )
+    if( tooltip )
         tooltip->close();
 }
 
