@@ -1440,7 +1440,11 @@ Playlist::clear() //SLOT
 
     setCurrentTrack( 0 );
     m_prevTracks.clear();
+
+    const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
+    emit queueChanged( PLItemList(), prev );
+
     m_totalLength = m_visLength = m_visCount = 0;
 
     // Update player button states
