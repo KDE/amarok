@@ -22,6 +22,7 @@
 
 #include "engineobserver.h" //baseclass
 #include "statusBarBase.h"  //baseclass
+#include "queueLabel.h"
 
 #include <qvaluestack.h>
 
@@ -45,6 +46,7 @@ namespace amaroK
     public slots:
         /** update total song count */
         void slotItemCountChanged( int newCount, int newLength, int, int, int, int ); //TODO improve
+        void updateQueueLabel() { m_queueLabel->update(); }
 
     protected:  /* reimpl from engineobserver */
         virtual void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
@@ -58,6 +60,7 @@ namespace amaroK
     private:
         QLabel *m_timeLabel;
         QLabel *m_itemCountLabel;
+        QueueLabel *m_queueLabel;
         amaroK::Slider *m_slider;
         QTimer *m_pauseTimer;
     };

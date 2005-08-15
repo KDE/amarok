@@ -263,6 +263,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
     connect( this,     SIGNAL( selectionChanged() ),
              this,       SLOT( slotSelectionChanged() ) );
+    connect( this,     SIGNAL( queueChanged(     const PLItemList &, const PLItemList & ) ),
+             this,       SLOT( slotQueueChanged( const PLItemList &, const PLItemList & ) ) );
     connect( this,     SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
              this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
@@ -794,6 +796,7 @@ Playlist::playNextTrack( bool forceNext )
         {
             item = m_nextTracks.first();
             m_nextTracks.remove();
+            emit queueChanged( PLItemList(), PLItemList( item ) );
         }
 
         else if( AmarokConfig::randomMode() )
@@ -948,12 +951,18 @@ Playlist::playCurrentTrack()
 void
 Playlist::queueSelected()
 {
+    PLItemList in, out;
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
-        queue( *it );
+    {
+        queue( *it, true );
+        ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+    }
+
+    emit queueChanged( in, out );
 }
 
 void
-Playlist::queue( QListViewItem *item )
+Playlist::queue( QListViewItem *item, bool multi )
 {
     #define item static_cast<PlaylistItem*>(item)
 
@@ -1008,15 +1017,14 @@ Playlist::queue( QListViewItem *item )
         }
     }
 
-    if( QueueManager::instance() )
-        emit queued( item );
+    if( !multi )
+    {
+        if( isQueued ) //no longer
+            emit queueChanged( PLItemList(), PLItemList( item ) );
+        else
+            emit queueChanged( PLItemList( item ), PLItemList() );
+    }
 
-    refreshNextTracks(); // from current()
-
-    //NOTE "item" is repainted due to the setSelected() call
-    // ^__ not if called in bulk by context/collection browsers
-
-    updateNextPrev();
     #undef item
 }
 
@@ -1044,9 +1052,9 @@ void Playlist::setStopAfterCurrent( bool on )
         m_stopAfterTrack = 0;
 
     if( m_stopAfterTrack )
-        m_stopAfterTrack->repaint();
+        repaintItem( m_stopAfterTrack );
     if( prev_stopafter )
-        prev_stopafter->repaint();
+        repaintItem( prev_stopafter );
 }
 
 void Playlist::doubleClicked( QListViewItem *item )
@@ -1121,7 +1129,7 @@ Playlist::activate( QListViewItem *item )
     //if we are playing something from the next tracks
     //list, remove it from the list
     if( m_nextTracks.removeRef( item ) )
-        refreshNextTracks();
+        emit queueChanged( PLItemList(), PLItemList( item ) );
 
     //looks bad painting selected and glowing
     //only do when user explicitely activates an item though
@@ -1168,7 +1176,7 @@ Playlist::setCurrentTrack( PlaylistItem *item )
             {
                 // in random mode always jump, if previous track is visible
                 if( AmarokConfig::randomMode() )
-                    ensureItemVisible( item );
+                    ensureItemCentered( item );
 
                 //FIXME would be better to just never be annoying
                 // so if the user caused the track change, always show the new track
@@ -1976,6 +1984,7 @@ Playlist::customEvent( QCustomEvent *e )
 {
     if( e->type() == (int)UrlLoader::JobFinishedEvent ) {
         refreshNextTracks( 0 );
+        PLItemList in, out;
 
         // Disable help if playlist is populated
         if ( !isEmpty() )
@@ -2007,6 +2016,7 @@ Playlist::customEvent( QCustomEvent *e )
 
                 if ( jt != m_queueList.end() ) {
                     queue( *it );
+                    ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
                     m_queueList.remove( jt );
                 }
             }
@@ -2059,14 +2069,14 @@ Playlist::customEvent( QCustomEvent *e )
             {
                 m_nextTracks.append( after );
 
-                if( QueueManager::instance() )
-                    emit queued( after );
-
-                refreshNextTracks();
+                in.append( after );
             }
 
             m_queueDirt = false;
         }
+
+        if( !in.isEmpty() || !out.isEmpty() )
+            emit queueChanged( in, out );
 
         //force redraw of currentTrack marker, play icon, etc.
         restoreCurrentTrack();
@@ -2496,12 +2506,19 @@ Playlist::showQueueManager()
     QueueManager dialog;
     if( dialog.exec() == QDialog::Accepted )
     {
-        QPtrList<PlaylistItem> oldQueue = m_nextTracks;
+        PLItemList oldQueue = m_nextTracks;
         m_nextTracks = dialog.newQueue();
 
+        PLItemList in, out;
         // make sure we repaint items no longer queued
-        for( PlaylistItem* item = oldQueue.getFirst(); item; item = oldQueue.next() )
-            repaintItem( item );
+        for( PlaylistItem* item = oldQueue.first(); item; item = oldQueue.next() )
+            if( !m_nextTracks.containsRef( item ) )
+                out << item;
+        for( PlaylistItem* item = m_nextTracks.first(); item; item = m_nextTracks.next() )
+            if( !oldQueue.containsRef( item ) )
+                in << item;
+
+        emit queueChanged( in, out );
 
         // repaint newly queued or altered queue items
         if( isDynamic() )
@@ -2947,6 +2964,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     int menuItemId= popup.exec( p );
     PlaylistItem *prev_stopafter = m_stopAfterTrack;
+    PLItemList in, out;
 
     switch( menuItemId )
     {
@@ -2961,8 +2979,14 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             // the user is queueing a selection, otherwise it feels wrong
             // m_nextTracks.clear();
 
+
         for( MyIt it( this, MyIt::Selected ); *it; ++it )
-            queue( *it );
+        {
+            queue( *it, true );
+            ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+        }
+
+        emit queueChanged( in, out );
         break;
 
     case STOP_DONE:
@@ -2971,11 +2995,11 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         else
         {
             m_stopAfterTrack = item;
-            item->repaint();
+            repaintItem( item );
         }
 
         if( prev_stopafter )
-            prev_stopafter->repaint();
+            repaintItem( prev_stopafter );
         break;
 
     case VIEW:
@@ -3177,7 +3201,7 @@ Playlist::removeItem( PlaylistItem *item )
 
     //keep m_nextTracks queue synchronised
     if( m_nextTracks.removeRef( item ) )
-       refreshNextTracks();
+       emit queueChanged( PLItemList(), PLItemList( item ) );
 
     //keep recent buffer synchronised
     m_prevTracks.removeRef( item ); //removes all pointers to item
@@ -3194,6 +3218,16 @@ Playlist::removeItem( PlaylistItem *item )
     }
 
     emit itemCountChanged( childCount()-1, m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
+}
+
+void
+Playlist::ensureItemCentered( PlaylistItem *item )
+{
+    if( !item )
+        return;
+
+    ensureVisible( contentsX(), item->itemPos() + item->height() / 2, 0, visibleHeight() / 2 );
+    updateContents();
 }
 
 void
@@ -3331,6 +3365,16 @@ Playlist::slotSelectionChanged() //SLOT
 }
 
 void
+Playlist::slotQueueChanged( const PLItemList &, const PLItemList &out)
+{
+    QPtrListIterator<PlaylistItem> it( out );
+    for( it.toFirst(); *it; ++it )
+        repaintItem( *it );
+    refreshNextTracks( 0 );
+    updateNextPrev();
+}
+
+void
 Playlist::slotGlowTimer() //SLOT
 {
     if( !currentTrack() || currentTrack()->isSelected() ) return;
@@ -3362,7 +3406,7 @@ void
 Playlist::slotRepeatTrackToggled( bool /* enabled */ )
 {
     if( m_currentTrack )
-        m_currentTrack->repaint();
+        repaintItem( m_currentTrack );
 }
 
 void

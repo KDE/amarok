@@ -44,6 +44,9 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 {
     DEBUG_BLOCK
 
+    connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
+             Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
+
     Playlist::instance()->lock(); // prevent user removing items as this could be bad
 
     amaroK::OverrideCursor cursor;
@@ -250,7 +253,7 @@ UrlLoader::customEvent( QCustomEvent *e )
                     Playlist::instance()->setCurrentTrack( item );
 
                 else if( index > 0 ) {
-                    QPtrList<PlaylistItem> &m_nextTracks = Playlist::instance()->m_nextTracks;
+                    PLItemList &m_nextTracks = Playlist::instance()->m_nextTracks;
                     int count = m_nextTracks.count();
 
                     for( int c = count; c < index; c++ )
@@ -345,6 +348,7 @@ UrlLoader::loadXml( const KURL &url )
         return;
     }
 
+    const PLItemList oldQueue = Playlist::instance()->m_nextTracks;
     NodeList nodes;
     TagsEvent *e = new TagsEvent;
     const QString ITEM( "item" ); //so we don't construct this QString all the time
@@ -356,12 +360,21 @@ UrlLoader::loadXml( const KURL &url )
             e->nodes += n;
 
         if( e->nodes.count() == OPTIMUM_BUNDLE_COUNT ) {
-            QApplication::postEvent( this, e );
+            QApplication::sendEvent( this, e );
             e = new TagsEvent;
         }
     }
+    QApplication::sendEvent( this, e );
 
-    QApplication::postEvent( this, e );
+    const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
+    QPtrListIterator<PlaylistItem> it( newQueue );
+    PLItemList added;
+    for( it.toFirst(); *it; ++it )
+        if( !oldQueue.containsRef( *it ) )
+            added << (*it);
+
+    if( !added.isEmpty() )
+        emit queueChanged( added, PLItemList() );
 };
 
 

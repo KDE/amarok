@@ -15,6 +15,7 @@ class QDomNode;
 class QListViewItem;
 class QTextStream;
 class PlaylistItem;
+class PLItemList;
 
 namespace KIO { class Job; }
 
@@ -88,11 +89,16 @@ PlaylistFile::format( const QString &fileName )
  */
 class UrlLoader : public ThreadWeaver::DependentJob
 {
+Q_OBJECT
+
 public:
     UrlLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
    ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
+
+signals:
+    void queueChanged( const PLItemList &, const PLItemList & );
 
 protected:
     /// reimplemented from ThreadWeaver::Job

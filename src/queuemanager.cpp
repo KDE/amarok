@@ -310,7 +310,8 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     Playlist *pl = Playlist::instance();
     connect( pl,         SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
     connect( m_listview, SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
-    connect( pl,         SIGNAL( queued(PlaylistItem*) ), SLOT( addQueuedItem(PlaylistItem*) ) );
+    connect( pl,         SIGNAL( queueChanged(const PLItemList &, const PLItemList &) ),
+                         SLOT( addQueuedItems(const PLItemList &, const PLItemList &) ) );
 
     insertItems();
 }
@@ -358,7 +359,16 @@ QueueManager::addItems( QListViewItem *after )
 }
 
 void
-QueueManager::addQueuedItem( PlaylistItem *item ) //SLOT
+QueueManager::addQueuedItems( const PLItemList &in, const PLItemList &out ) //SLOT
+{
+    QPtrListIterator<PlaylistItem> it(in);
+    for( it.toFirst(); it; ++it ) addQueuedItem( *it );
+    it = QPtrListIterator<PlaylistItem>(out);
+    for( it.toFirst(); it; ++it ) addQueuedItem( *it );
+}
+
+void
+QueueManager::addQueuedItem( PlaylistItem *item )
 {
     Playlist *pl = Playlist::instance();
     if( !pl ) return; //should never happen

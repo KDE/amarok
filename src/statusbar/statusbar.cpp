@@ -31,6 +31,7 @@
 #include <qtimer.h>
 #include "sliderwidget.h"
 #include "statusbar.h"
+#include "queueLabel.h"
 
 // stuff that must be included last
 //#include "startupTips.h"
@@ -74,6 +75,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QWidget *hbox = new QWidget( this );
     QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
     layout->addSpacing( 3 );
+    layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "random_mode" ), hbox ) );
     layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "repeat_playlist" ), hbox ) );
     layout->addWidget( new ToggleLabel( (KToggleAction*)amaroK::action( "dynamic_mode" ), hbox ) );

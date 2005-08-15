@@ -2,6 +2,16 @@ amaroK ChangeLog
 ================
 (C) 2002-2005 the amaroK authors.
 
+VERSION 1.3.1:
+  FEATURES:
+    * Add an icon in the statusbar displaying the number of queued tracks;
+      click on it to pop up a menu letting you jump to their locations in
+      the playlist.
+
+  CHANGES:
+
+  BUGFIXES:
+    * Dequeued items sometimes weren't being repainted properly.
 
 VERSION 1.3:
   FEATURES:

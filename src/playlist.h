@@ -22,6 +22,7 @@
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
+#include "playlistitem.h"
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //KURL::List
@@ -121,8 +122,9 @@ class Playlist : private KListView, public EngineObserver
 
         class QDragObject *dragObject();
         friend class PlaylistItem;
-        friend class QueueManager;
         friend class UrlLoader;
+        friend class QueueManager;
+        friend class QueueLabel;
         friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend bool PlaylistWindow::eventFilter( QObject*, QEvent* ); //for convenience we handle some playlist events here
@@ -130,7 +132,7 @@ class Playlist : private KListView, public EngineObserver
     signals:
         void aboutToClear();
         void itemCountChanged( int newCount, int newLength, int visCount, int visLength, int selCount, int selLength );
-        void queued( PlaylistItem *item );
+        void queueChanged( const PLItemList &queued, const PLItemList &dequeued );
 
     public slots:
         void activateByIndex(int);
@@ -155,7 +157,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
-        void showCurrentTrack() { ensureItemVisible( reinterpret_cast<QListViewItem*>(m_currentTrack) ); }
+        void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
         void shuffle();
         void undo();
@@ -167,7 +169,11 @@ class Playlist : private KListView, public EngineObserver
         void columnOrderChanged();
         void columnResizeEvent( int, int, int );
         void doubleClicked( QListViewItem* );
-        void queue( QListViewItem* );
+
+        void queue( QListViewItem*, bool multi = false );
+           /* the only difference multi makes is whether it emits queueChanged(). (if multi, then no)
+              if you're queue()ing many items, consider passing true and emitting queueChanged() yourself. */
+
         void saveUndoState();
         void setDelayedFilter();                                           //after the delay is over
         void showContextMenu( QListViewItem*, const QPoint&, int );
@@ -176,6 +182,7 @@ class Playlist : private KListView, public EngineObserver
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void slotRepeatTrackToggled( bool enabled );
         void slotSelectionChanged();
+        void slotQueueChanged( const PLItemList &in, const PLItemList &out);
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
 
@@ -199,6 +206,7 @@ class Playlist : private KListView, public EngineObserver
         bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
         void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem* );
+        void ensureItemCentered( PlaylistItem* item );
         bool saveState( QStringList& );
         void setCurrentTrack( PlaylistItem* );
         void setCurrentTrackPixmap( int state = -1 );
@@ -237,13 +245,13 @@ class Playlist : private KListView, public EngineObserver
         QListViewItem *m_marker;                //track that has the drag/drop marker under it
 
         //NOTE these container types were carefully chosen
-        QPtrList<PlaylistItem> m_prevTracks;    //the previous history
-        QPtrList<PlaylistItem> m_nextTracks;    //the tracks to be played after the current track
+        PLItemList m_prevTracks;    //the previous history
+        PLItemList m_nextTracks;    //the tracks to be played after the current track
 
         QString m_filter;
         QTimer *m_filtertimer;
 
-        QPtrList<PlaylistItem> m_itemsToChangeTagsFor;
+        PLItemList m_itemsToChangeTagsFor;
 
         int           m_firstColumn;
         int           m_totalLength;

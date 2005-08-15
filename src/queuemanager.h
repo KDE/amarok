@@ -74,7 +74,7 @@ class QueueManager : public KDialogBase
 
     public slots:
         void    addItems( QListViewItem *after = 0 ); /// For the add button (uses selected playlist tracks)
-        void    addQueuedItem( PlaylistItem *item );  /// For keeping queue/dequeue in sync
+        void    addQueuedItems( const PLItemList &in, const PLItemList &out );  /// For keeping queue/dequeue in sync
         void    updateButtons();
 
     private slots:
@@ -82,6 +82,7 @@ class QueueManager : public KDialogBase
 
     private:
         void    insertItems();
+        void    addQueuedItem( PlaylistItem *item );
 
         QMap<QListViewItem*, PlaylistItem*> m_map;
         QueueList   *m_listview;

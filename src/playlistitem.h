@@ -126,4 +126,14 @@ class PlaylistItem : public KListViewItem
         static const QString& attemptStore( const QString &candidate);
 };
 
+class PLItemList: public QPtrList<PlaylistItem>
+{
+    public:
+        PLItemList() : QPtrList<PlaylistItem>() { }
+        PLItemList( const QPtrList<PlaylistItem> &list ) : QPtrList<PlaylistItem>( list ) { }
+        PLItemList( PlaylistItem *item ) : QPtrList<PlaylistItem>() { append( item ); }
+
+        inline PLItemList &operator<<( PlaylistItem *item ) { append( item ); return *this; }
+};
+
 #endif
