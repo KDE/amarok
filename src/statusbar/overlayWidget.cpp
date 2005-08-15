@@ -17,21 +17,21 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <kdebug.h>
 #include "overlayWidget.h"
+#include "statusbar.h"
+
 #include <qpoint.h>
 
 
 namespace KDE {
 
 
-OverlayWidget::OverlayWidget( KDE::StatusBar *statusbar, QWidget *anchor, const char* name )
-    #define statusbar reinterpret_cast<QWidget*>(statusbar)
-        : QFrame( statusbar->parentWidget(), name )
+OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name )
+        : QFrame( parent->parentWidget(), name )
         , m_anchor( anchor )
+        , m_parent( parent )
 {
-    statusbar->installEventFilter( this );
-    #undef statusbar
+    parent->installEventFilter( this );
 
     hide();
 }
@@ -44,16 +44,19 @@ OverlayWidget::reposition()
 
     // p is in the alignWidget's coordinates
     QPoint p;
-    // We are always above the alignWidget, right-aligned with it.
+
     p.setX( m_anchor->width() - width() );
     p.setY( -height() );
+
     // Position in the toplevelwidget's coordinates
     QPoint pTopLevel = m_anchor->mapTo( topLevelWidget(), p );
+
     // Position in the widget's parentWidget coordinates
     QPoint pParent = parentWidget() ->mapFrom( topLevelWidget(), pTopLevel );
     // keep it on the screen
     if ( pParent.x() < 0 )
         pParent.rx() = 0;
+
     // Move 'this' to that position.
     move( pParent );
 }

@@ -24,8 +24,6 @@
 
 namespace KDE
 {
-    class StatusBar;
-
     class OverlayWidget : public QFrame
     {
     public:
@@ -33,7 +31,7 @@ namespace KDE
          * The widget is parented to the toplevelwidget of alignWidget,
          * this could be an issue if that widget has an autoAdd Layout
          */
-        OverlayWidget( StatusBar *statusbar, QWidget *anchor, const char *name = 0 );
+        OverlayWidget( QWidget *parent, QWidget *anchor, const char *name = 0 );
 
     protected:
         virtual void resizeEvent( QResizeEvent* );
@@ -45,6 +43,7 @@ namespace KDE
 
     private:
         QWidget *m_anchor;
+        QWidget *m_parent;
     };
 }
 

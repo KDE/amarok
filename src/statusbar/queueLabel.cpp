@@ -21,10 +21,11 @@
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
+
 #include <qlabel.h>
-#include <qtooltip.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+
 #include <kpopupmenu.h>
 #include <kiconloader.h>
 #include <kstringhandler.h>
@@ -39,24 +40,12 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
              Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
 }
 
-void QueueLabel::update()
+
+void QueueLabel::update() //SLOT
 {
     Playlist *pl = Playlist::instance();
     const uint count = pl->m_nextTracks.count();
     setNum( count );
-    if( pl->m_nextTracks.isEmpty() )
-    {
-        QToolTip::remove( this );
-        QToolTip::add( this, i18n( "No tracks queued" ) );
-    }
-    else
-    {
-        PlaylistItem *item = pl->m_nextTracks.getFirst();
-        QString text = i18n( "1 track queued: %1", "%n tracks queued, next one is: %1", count )
-                       .arg( veryNiceTitle( item ) );
-        QToolTip::remove( this );
-        QToolTip::add( this, text );
-    }
 }
 
 void QueueLabel::setNum( int num )
@@ -108,11 +97,23 @@ void QueueLabel::setNum( int num )
     }
 }
 
+void QueueLabel::enterEvent( QEvent* )
+{
+    if( !isHidden() )
+        showToolTip();
+}
+
+void QueueLabel::leaveEvent( QEvent* )
+{
+    if( !isHidden() )
+        tooltip->close();
+}
+
 void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 {
     Playlist *pl = Playlist::instance();
     PLItemList &queue = pl->m_nextTracks;
-    if( pl->m_nextTracks.isEmpty() )
+    if( queue.isEmpty() )
         return;
 
     QPtrList<KPopupMenu> menus;
@@ -129,11 +130,13 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     uint i = 1;
     QPtrListIterator<PlaylistItem> it( queue );
     it.toFirst();
-    do
+
+    while( i <= count )
     {
         for( uint n = kMin( i + MAX_TO_SHOW - 1, count ); i <= n; ++i, ++it )
             menu->insertItem(
                 KStringHandler::rsqueeze( i18n( "%1. %2" ).arg( i ).arg( veryNiceTitle( *it ) ), 50 ), i );
+
         if( i < count )
         {
             menus.append( new KPopupMenu );
@@ -141,7 +144,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
             menu->insertItem( i18n( "%1 More Tracks" ).arg( count - i + 1 ), menus.getLast() );
             menu = menus.getLast();
         }
-    } while( i <= count );
+    }
 
     int id = menus.getFirst()->exec( mapToGlobal( mouseEvent->pos() ) );
     if( id == 0 ) //dequeue
@@ -157,6 +160,27 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         if( selected )
             pl->ensureItemCentered( selected );
     }
+}
+
+void QueueLabel::showToolTip()
+{
+    Playlist     *pl    = Playlist::instance();
+    const uint    count = pl->m_nextTracks.count();
+    PlaylistItem *item  = pl->m_nextTracks.getFirst();
+
+    if( !item )
+        return;
+
+    QString text = i18n( "1 track queued: %1", "%n tracks queued, next one is: %1", count )
+                    .arg( veryNiceTitle( item ) );
+
+    tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 5000 );
+    tooltip->showCloseButton( false );
+    tooltip->showCounter( false );
+    tooltip->setText( text );
+
+    tooltip->move( this->x(), this->y() + tooltip->height() );
+    tooltip->show();
 }
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item ) const

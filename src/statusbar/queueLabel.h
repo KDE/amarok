@@ -20,8 +20,10 @@
 #ifndef AMAROK_QUEUELABEL_H
 #define AMAROK_QUEUELABEL_H
 
-#include <qlabel.h>
 #include "playlistitem.h"
+#include "popupMessage.h"
+
+#include <qlabel.h>
 
 class QueueLabel: public QLabel //homonym, heh heh
 {
@@ -35,14 +37,18 @@ class QueueLabel: public QLabel //homonym, heh heh
 
     public slots:
         virtual void update();
-
         virtual void setNum( int num );
+        void enterEvent( QEvent * );
+        void leaveEvent( QEvent * );
 
     protected:
         virtual void mousePressEvent( QMouseEvent* e );
 
     private:
+        void    showToolTip();
         QString veryNiceTitle( PlaylistItem * item ) const;
+
+        KDE::PopupMessage *tooltip;
 };
 
 #endif

@@ -24,9 +24,10 @@
 #ifndef KDE_POPUPMESSAGE_H
 #define KDE_POPUPMESSAGE_H
 
-#include <kactivelabel.h>
-#include <kpushbutton.h>
 #include "overlayWidget.h"
+
+#include <qlayout.h>
+#include <qpixmap.h>
 
 namespace KDE
 {
@@ -34,94 +35,45 @@ namespace KDE
      * @class PopupMessage
      * @short Widget that animates itself into a position relative to an anchor widget
      */
-
     class PopupMessage : public OverlayWidget
     {
         Q_OBJECT
 
     public:
-        PopupMessage( StatusBar *statusbar, QWidget *anchor )
-                : OverlayWidget( statusbar, anchor )
-                , m_statusBar( statusbar )
-                , m_offset( 0 )
-        {
-            setPalette( QToolTip::palette() );
-            setFrameStyle( QFrame::Panel | QFrame::Sunken );
+        /**
+         * @param anchor  : which widget to tie the popup widget to.
+         * @param timeout : how long to wait before auto closing. A value of 0 means close
+         *                  only on pressing the closeButton or close() is called.
+         */
+        PopupMessage( QWidget *parent, QWidget *anchor, int timeout = 5000 /*milliseconds*/ );
 
-            QVBoxLayout *vbox;
-            QHBoxLayout *hbox;
-            QLabel *label;
-            KActiveLabel *alabel;
+        void addWidget( QWidget *widget );
+        void showCloseButton( const bool show );
+        void showCounter( const bool show );
+        void setImage( const QString &location );
+        void setText( const QString &text );
+        void setTimeout( const int time ) { m_timeout = time; }
 
-            vbox = new QVBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
-
-            hbox = new QHBoxLayout( vbox, 12 );
-
-            label = new QLabel( this );
-            label->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );
-            hbox->add( label );
-
-            alabel = new KActiveLabel( this, "label" );
-            alabel->setTextFormat( Qt::RichText );
-            alabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-            alabel->setPalette( QToolTip::palette() );
-            hbox->add( alabel );
-
-            hbox = new QHBoxLayout( vbox );
-            hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-            hbox->add( new KPushButton( KStdGuiItem::close(), this, "closeButton" ) );
-
-            connect( child( "closeButton" ), SIGNAL(clicked()), SLOT(animate()) );
-        }
-
-        void setText( const QString &text )
-        {
-            static_cast<KActiveLabel*>(child( "label" ))->setText( text );
-            adjustSize();
-        }
 
     public slots:
-        void animate()
-        {
-            m_timer.disconnect( this );
-
-            if( isHidden() ) {
-                show();
-                connect( &m_timer, SIGNAL(timeout()), SLOT(showing()) );
-                m_timer.start( 10 );
-            }
-            else {
-                m_offset = height();
-                connect( &m_timer, SIGNAL(timeout()), SLOT(hiding()) );
-                m_timer.start( 5 );
-            }
-        }
+        void close();
 
     private slots:
-        void showing()
-        {
-            m_offset +=2;
-
-            move( 0, m_statusBar->y() - m_offset );
-
-            if( m_offset >= height() )
-                m_timer.stop();
-        }
-
-        void hiding()
-        {
-            m_offset -= 2;
-
-            move( 0, m_statusBar->y() - m_offset );
-
-            if( m_offset <= 0 )
-                delete this;
-        }
+        void timerEvent( QTimerEvent* );
 
     private:
-        QWidget *m_statusBar;
-        QTimer   m_timer;
+        QVBoxLayout *m_layout;
+        QFrame  *m_countdownFrame;
+        QWidget *m_anchor;
+        QWidget *m_parent;
+
         int      m_offset;
+        int      m_counter;
+        int      m_stage;
+        int      m_timeout;
+        int      m_timerId;
+
+        bool     m_showCounter;
     };
 }
 

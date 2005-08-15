@@ -22,13 +22,17 @@
 
 #include "amarok.h"
 #include "debug.h"
+#include "overlayWidget.h"
+#include "squeezedtextlabel.h"
+#include "statusBarBase.h"
+
 #include <kio/job.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kstdguiitem.h>
-#include "squeezedtextlabel.h"
-#include "overlayWidget.h"
+
 #include <qapplication.h>
+#include <qpushbutton.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
@@ -41,11 +45,9 @@
 #include <qtoolbutton.h>
 #include <qtooltip.h> //QToolTip::palette()
 #include <qvbox.h>
-#include "statusBarBase.h"
 
 //segregated classes
 #include "popupMessage.h"
-#include "popupMessage.moc"
 #include "progressBar.h"
 
 
@@ -262,7 +264,7 @@ StatusBar::longMessage( const QString &text, int /*type*/ )
     message->setText( text );
 
     if ( m_messageQueue.isEmpty() )
-        message->animate();
+        message->show();
     else {
         message->stackUnder( m_messageQueue.last() );
         message->show();

@@ -16,6 +16,7 @@ libstatusbar_la_SOURCES = \
     statusBarBase.cpp \
     statusbar.cpp \
     overlayWidget.cpp \
+    popupMessage.cpp \
     progressBar.cpp \
     squeezedtextlabel.cpp \
     queueLabel.cpp

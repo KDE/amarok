@@ -23,13 +23,16 @@
 #ifndef AMAROK_TOGGLELABEL_H
 #define AMAROK_TOGGLELABEL_H
 
+#include "debug.h"
+#include "overlayWidget.h"
+#include "popupMessage.h"
+
 #include <kactionclasses.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
 #include <qiconset.h>
 #include <qlabel.h>
 #include <qtooltip.h>
-
 
 class ToggleLabel : public QLabel
 {
@@ -50,7 +53,6 @@ class ToggleLabel : public QLabel
             connect( action, SIGNAL(enabled( bool )), this,   SLOT(setEnabled( bool )) );
 
             setChecked( isChecked() );
-            setToolTip();
         }
 
         inline bool isChecked() const { return m_action->isChecked(); }
@@ -73,26 +75,32 @@ class ToggleLabel : public QLabel
             }
         }
 
+        void enterEvent( QEvent* )
+        {
+            showToolTip();
+        }
+
+        void leaveEvent( QEvent* )
+        {
+            tooltip->close();
+//             tooltip->deleteLater(); //return to the main event loop, then delete
+        }
+
     public slots:
         void setChecked( bool on )
         {
             if( isEnabled() )
             {
                 setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
-                setToolTip();
             }
         }
 
-        void setEnabled( bool /*on*/ )
-        {
-            setToolTip();
-        }
+        void setEnabled( bool /*on*/ ) { }
 
     private:
-        void setToolTip()
+        void showToolTip()
         {
-            QString tip = "<qt><img src='%1' style='margin:auto'><br>&nbsp;";
-            tip += m_action->isChecked() ? i18n("%2: on") : i18n("%2: off");
+            QString tip = m_action->isChecked() ? i18n("%1: on") : i18n("%1: off");
 
             if( !isEnabled() )
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
@@ -100,10 +108,19 @@ class ToggleLabel : public QLabel
             tip += "&nbsp;";
             const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
 
-            QToolTip::remove( this );
-            QToolTip::add( this, tip.arg( path ).arg( m_action->text().remove('&') ) );
+
+            tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timout*/ );
+            tooltip->showCloseButton( false );
+            tooltip->showCounter( false );
+            tooltip->setText( tip.arg(m_action->text().remove('&') ) );
+            tooltip->setImage( path );
+
+            tooltip->move( this->x(), this->y() + tooltip->height() );
+            tooltip->show();
         }
 
+        KDE::PopupMessage *tooltip;
 };
+
 
 #endif
