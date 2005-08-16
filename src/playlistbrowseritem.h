@@ -137,6 +137,9 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
         PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
         PlaylistEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition );
         ~PlaylistEntry();
+
+        void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
+
         void load();
         void restore();
 
@@ -275,6 +278,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
                         QDomNode channelSettings, QDomDocument xml );
+
+        void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
 
         void setNew( bool n = true );
         bool hasNew() { return m_new; }
