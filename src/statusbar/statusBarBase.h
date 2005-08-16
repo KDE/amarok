@@ -35,7 +35,7 @@ namespace KIO { class Job; }
 
 namespace KDE
 {
-    class OverlayWidget;
+    class PopupMessage;
     typedef QMap<const QObject*, ProgressBar*> ProgressMap;
 
     /**
@@ -211,7 +211,7 @@ namespace KDE
         QWidget *toggleProgressWindowButton() { return (QWidget*)child( "showAllProgressDetails" ); }
         QWidget *progressBox() { return (QWidget*)child( "progressBox" ); }
 
-        OverlayWidget *m_popupProgress;
+        PopupMessage  *m_popupProgress;
         QProgressBar  *m_mainProgressBar;
 
         ProgressMap m_progressMap;

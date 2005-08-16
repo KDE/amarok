@@ -34,8 +34,8 @@
 namespace KDE
 {
 
-PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout )
-                : OverlayWidget( parent, anchor )
+PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const char *name )
+                : OverlayWidget( parent, anchor, name )
                 , m_anchor( anchor )
                 , m_parent( parent )
                 , m_offset( 0 )

@@ -45,7 +45,7 @@ namespace KDE
          * @param timeout : how long to wait before auto closing. A value of 0 means close
          *                  only on pressing the closeButton or close() is called.
          */
-        PopupMessage( QWidget *parent, QWidget *anchor, int timeout = 5000 /*milliseconds*/ );
+        PopupMessage( QWidget *parent, QWidget *anchor, int timeout = 5000 /*milliseconds*/, const char* name = 0 );
 
         void addWidget( QWidget *widget );
         void showCloseButton( const bool show );

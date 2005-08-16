@@ -32,6 +32,7 @@
 #include <kiconloader.h>
 #include <qiconset.h>
 #include <qlabel.h>
+#include <qtimer.h>
 #include <qtooltip.h>
 
 class ToggleLabel : public QLabel
@@ -47,6 +48,8 @@ class ToggleLabel : public QLabel
         ToggleLabel( KToggleAction const*const action, QWidget *parent )
                 : QLabel( parent )
                 , m_action( action )
+                , m_tooltip( 0 )
+                , m_tooltipShowing( false )
         {
             connect( this,   SIGNAL(toggled( bool )), action, SLOT(setChecked( bool )) );
             connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
@@ -77,13 +80,17 @@ class ToggleLabel : public QLabel
 
         void enterEvent( QEvent* )
         {
-            showToolTip();
+            //Show the tooltip after 2 seconds
+            QTimer::singleShot( 1000, this, SLOT(aboutToShow()) );
         }
 
         void leaveEvent( QEvent* )
         {
-            tooltip->close();
-//             tooltip->deleteLater(); //return to the main event loop, then delete
+            if( m_tooltipShowing )
+            {
+                m_tooltip->close();
+                m_tooltipShowing = false;
+            }
         }
 
     public slots:
@@ -97,6 +104,16 @@ class ToggleLabel : public QLabel
 
         void setEnabled( bool /*on*/ ) { }
 
+    private slots:
+        void aboutToShow()
+        {
+            m_tooltipShowing = false;
+            if( hasMouse() )
+            {
+                showToolTip();
+            }
+        }
+
     private:
         void showToolTip()
         {
@@ -109,17 +126,19 @@ class ToggleLabel : public QLabel
             const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
 
 
-            tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timout*/ );
-            tooltip->showCloseButton( false );
-            tooltip->showCounter( false );
-            tooltip->setText( tip.arg(m_action->text().remove('&') ) );
-            tooltip->setImage( path );
+            m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timout*/ );
+            m_tooltip->showCloseButton( false );
+            m_tooltip->showCounter( false );
+            m_tooltip->setText( tip.arg(m_action->text().remove('&') ) );
+            m_tooltip->setImage( path );
 
-            tooltip->move( this->x(), this->y() + tooltip->height() );
-            tooltip->show();
+            m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
+            m_tooltipShowing = true;
+            m_tooltip->show();
         }
 
-        KDE::PopupMessage *tooltip;
+        KDE::PopupMessage *m_tooltip;
+        bool               m_tooltipShowing;
 };
 
 

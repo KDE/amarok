@@ -41,6 +41,9 @@ class QueueLabel: public QLabel //homonym, heh heh
         void enterEvent( QEvent * );
         void leaveEvent( QEvent * );
 
+    private slots:
+        void aboutToShow();
+
     protected:
         virtual void mousePressEvent( QMouseEvent* e );
 
@@ -48,7 +51,8 @@ class QueueLabel: public QLabel //homonym, heh heh
         void    showToolTip();
         QString veryNiceTitle( PlaylistItem * item ) const;
 
-        KDE::PopupMessage *tooltip;
+        KDE::PopupMessage *m_tooltip;
+        bool               m_tooltipShowing;
 };
 
 #endif

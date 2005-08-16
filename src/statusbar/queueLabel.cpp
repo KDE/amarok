@@ -25,6 +25,7 @@
 #include <qlabel.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qtimer.h>
 
 #include <kpopupmenu.h>
 #include <kiconloader.h>
@@ -35,6 +36,8 @@ static const uint MAX_TO_SHOW = 20;
 
 QueueLabel::QueueLabel( QWidget *parent, const char *name )
     : QLabel( parent, name )
+    , m_tooltip( 0 )
+    , m_tooltipShowing( false )
 {
     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
              Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
@@ -99,14 +102,24 @@ void QueueLabel::setNum( int num )
 
 void QueueLabel::enterEvent( QEvent* )
 {
-    if( !tooltip )
-        showToolTip();
+    QTimer::singleShot( 1000, this, SLOT(aboutToShow()) );
 }
 
 void QueueLabel::leaveEvent( QEvent* )
 {
-    if( tooltip )
-        tooltip->close();
+    if( m_tooltipShowing )
+    {
+        m_tooltip->close();
+        m_tooltipShowing = false;
+    }
+}
+
+void QueueLabel::aboutToShow()
+{
+    m_tooltipShowing = false;
+
+    if( hasMouse() )
+        showToolTip();
 }
 
 void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
@@ -174,13 +187,15 @@ void QueueLabel::showToolTip()
     QString text = i18n( "1 track queued: %1", "%n tracks queued, next one is: %1", count )
                     .arg( veryNiceTitle( item ) );
 
-    tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 5000 );
-    tooltip->showCloseButton( false );
-    tooltip->showCounter( false );
-    tooltip->setText( text );
+    m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
+    m_tooltip->showCloseButton( false );
+    m_tooltip->showCounter( false );
+    m_tooltip->setText( text );
 
-    tooltip->move( this->x(), this->y() + tooltip->height() );
-    tooltip->show();
+    m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
+
+    m_tooltipShowing = true;
+    m_tooltip->show();
 }
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item ) const
