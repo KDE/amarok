@@ -669,15 +669,16 @@ Playlist::adjustPartyUpcoming( uint songCount, const QString type )
         QPtrList<QListViewItem> list;
         QListViewItem *item = lastItem();
 
-        for( int y = x; y != 0; y-- )
-        {
-            list.append( item );
+        if (item) {
+            for( int y = x; y != 0; y-- )
+            {
+                list.append( item );
 
-            if( !item->itemAbove() )
-                break;
-            item = item->itemAbove();
+                if( !item->itemAbove() )
+                    break;
+                item = item->itemAbove();
+            }
         }
-
 
         if( list.isEmpty() ) return;
         saveUndoState();
