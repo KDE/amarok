@@ -128,7 +128,7 @@ base directory of the amaroK distribution:
                 % make install
 
 
-Note: --enable-final may not work for beta releases
+Note: --enable-final is not guaranteed to work
 
 Note: amaroK-1.3 will not compile on Mandriva LE2005 with KDE 3.3.2.  This is not
 an amaroK related problem, and unfortunately we are powerless to help.  Mandriva
