@@ -1,6 +1,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
+// (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
 #include <config.h>
@@ -731,7 +732,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             }
             else if ( item->parent()->parent()->text( 0 ) != i18n( "Various Artists" ) )
             {
-
                 tmptext = item->parent()->parent()->text( 0 );
                 QStringList matches( item->parent()->parent()->text( 0 ) ) ;
 
@@ -774,18 +774,19 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             tmptext = item->text( 0 );
             matches.clear();
-            matches << item->text( 0 );
-
-            if( endsInThe( tmptext ) ) {
-                manipulateThe( tmptext );
-                matches << tmptext;
-            }
 
             if( VisYearAlbum == 3 )
             {
                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                 yearAlbumCalc( year, tmptext );
                 qb.addMatch( QueryBuilder::tabYear, year );
+            }
+
+            matches << tmptext;
+
+            if( endsInThe( tmptext ) ) {
+                manipulateThe( tmptext );
+                matches << tmptext;
             }
 
             qb.addMatches( q_cat3, matches );
@@ -1048,7 +1049,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         #endif
         KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" ) 
+        menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" )
             : i18n( "&Queue Tracks" ), QUEUE );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
 

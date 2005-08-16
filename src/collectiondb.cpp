@@ -1642,7 +1642,7 @@ void CollectionDB::newAmazonReloadDate( const QString& asin, const QString& loca
     }
     else
     {
-        insert( QString( "INSERT INTO amazon ( asin, locale, filename, refetchdate ) VALUES ( '%1', '%2', '%3', '%4');" ) 
+        insert( QString( "INSERT INTO amazon ( asin, locale, filename, refetchdate ) VALUES ( '%1', '%2', '%3', '%4');" )
          .arg(asin)
          .arg(locale)
          .arg(md5sum)
