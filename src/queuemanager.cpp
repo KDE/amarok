@@ -14,7 +14,7 @@
 #include "amarokconfig.h"     //check if dynamic mode
 #include "playlist.h"
 #include "queuemanager.h"
-
+#include "debug.h"
 #include <kapplication.h>
 #include <kguiitem.h>
 #include <klocale.h>
@@ -285,27 +285,31 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     QVBox *buttonBox = new QVBox( box );
     m_up     = new KPushButton( KGuiItem( QString::null, "up" ), buttonBox );
     m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
-    m_mix    = new KPushButton( KGuiItem( QString::null, "rebuild" ), buttonBox );
-    m_remove = new KPushButton( KGuiItem( QString::null, "edittrash" ), buttonBox );
+    m_remove = new KPushButton( KGuiItem( QString::null, "edit_remove" ), buttonBox );
     m_add    = new KPushButton( KGuiItem( QString::null, "edit_add" ), buttonBox );
+    m_mix    = new KPushButton( KGuiItem( QString::null, "rebuild" ), buttonBox );
+    m_clear  = new KPushButton( KGuiItem( QString::null, "view_remove" ), buttonBox );
 
     QToolTip::add( m_up,     i18n( "Move up" ) );
     QToolTip::add( m_down,   i18n( "Move down" ) );
-    QToolTip::add( m_mix,    i18n( "Shuffle queue" ) );
     QToolTip::add( m_remove, i18n( "Remove" ) );
     QToolTip::add( m_add,    i18n( "Enqueue track" ) );
+    QToolTip::add( m_mix,    i18n( "Shuffle queue" ) );
+    QToolTip::add( m_clear,  i18n( "Clear queue" ) );
 
     m_up->setEnabled( false );
     m_down->setEnabled( false );
     m_remove->setEnabled( false );
     m_add->setEnabled( false );
     m_mix->setEnabled( false );
+    m_clear->setEnabled( false );
 
     connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
     connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
     connect( m_remove, SIGNAL( clicked() ), this,       SLOT( removeSelected() ) );
-    connect( m_add,    SIGNAL( clicked() ), SLOT( addItems() ) );
+    connect( m_add,    SIGNAL( clicked() ), this,       SLOT( addItems() ) );
     connect( m_mix,    SIGNAL( clicked() ), m_listview, SLOT( shuffle() ) );
+    connect( m_clear,  SIGNAL( clicked() ), m_listview, SLOT( clear() ) );
 
     Playlist *pl = Playlist::instance();
     connect( pl,         SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
@@ -475,13 +479,15 @@ void
 QueueManager::updateButtons() //SLOT
 {
     const bool enablePL = !Playlist::instance()->selectedItems().isEmpty();
-    const bool enableQL = m_listview->hasSelection() && !m_listview->isEmpty();
+    const bool emptyLV  = m_listview->isEmpty();
+    const bool enableQL = m_listview->hasSelection() && !emptyLV;
 
     m_up->setEnabled( enableQL );
     m_down->setEnabled( enableQL );
     m_remove->setEnabled( enableQL );
     m_add->setEnabled( enablePL );
-    m_mix->setEnabled( !m_listview->isEmpty() );
+    m_mix->setEnabled( !emptyLV );
+    m_clear->setEnabled( !emptyLV );
 }
 
 #include "queuemanager.moc"

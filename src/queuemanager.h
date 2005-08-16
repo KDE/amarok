@@ -91,6 +91,7 @@ class QueueManager : public KDialogBase
         KPushButton *m_remove;
         KPushButton *m_add;
         KPushButton *m_mix;
+        KPushButton *m_clear;
 
         static QueueManager *s_instance;
 };
