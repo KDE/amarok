@@ -4,7 +4,6 @@
 
 #include "amarok.h" //foreach
 #include "collectiondb.h"
-#include "debug.h"
 #include "metabundle.h"
 #include "smartplaylisteditor.h"
 
@@ -58,6 +57,10 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
             QDomElement criteria = criteriaList.item(i).toElement();
             addCriteria( criteria );
         }
+        if ( matches.attribute( "glue" ) == "AND" )
+            m_matchCombo->setCurrentItem( 0 );
+        else
+            m_matchCombo->setCurrentItem( 1 );
     }
     else {
         addCriteria();
@@ -448,9 +451,6 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, QD
         for (int j = 0, c=domvalueList.count() ; j<c; ++j ) {
                 values << domvalueList.item(j).toElement().text();
         }
-
-
-        debug() << "Criteria Editor: field: " << field << " condition " << condition << endl;
 
         //Set the selected field
 
