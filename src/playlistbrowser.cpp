@@ -1366,18 +1366,18 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     QPtrList<QListViewItem> selected;
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
-    for( ; it.current(); ++it ) {
+    for( ; it.current(); ++it )
+    {
         if( (*it) == m_coolStreams || (*it) == m_smartDefaults )
             continue;
-
         // if the playlist containing this item is already selected the current item will be skipped
         // it will be deleted from the parent
         QListViewItem *parent = it.current()->parent();
 
-        if( !static_cast<PlaylistCategory*>(*it)->isFolder() )
+        if( isCategory( *it ) && !static_cast<PlaylistCategory*>(*it)->isFolder() ) //its a base category
             continue;
 
-        if( parent && parent->isSelected() )
+        if( parent && parent->isSelected() ) //parent will remove children
             continue;
 
         while( parent->parent() && parent != m_coolStreams && parent != m_smartDefaults )
@@ -1396,7 +1396,8 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     bool dynamicsChanged = false;
     bool podcastsChanged = false;
 
-    for( QListViewItem *item = selected.first(); item; item = selected.next() ) {
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    {
         if( isPlaylist( item ) )      playlistsChanged = true;
         if( isCategory( item ) )      playlistsChanged = true;
         if( isStream( item ) )        streamsChanged = true;
