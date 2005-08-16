@@ -79,6 +79,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void seekRelative( int s );
       virtual void setEqualizer(int preamp, int band60, int band170, int band310, int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k);
       virtual void setEqualizerEnabled( bool active );
+      virtual void setLyricsByPath( const QString& url, const QString& lyrics );
       virtual void setScore( int score );
       virtual void setScoreByPath( const QString &url, int score );
       virtual void setVolume( int );

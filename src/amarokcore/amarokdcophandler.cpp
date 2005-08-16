@@ -331,6 +331,11 @@ namespace amaroK
         AmarokConfig::setEqualizerEnabled( active );
     }
 
+    void DcopPlayerHandler::setLyricsByPath( const QString& url, const QString& lyrics )
+    {
+        CollectionDB::instance()->setLyrics( url, lyrics );
+    }
+
     void DcopPlayerHandler::setScore( int score )
     {
         const QString &url = EngineController::instance()->bundle().url().path();
