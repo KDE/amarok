@@ -127,6 +127,9 @@ UniversalAmarok::~UniversalAmarok()
 
 #include "universalamarok.moc"
 
+#if ! KDE_IS_VERSION(3,4,0)
+#define KDE_EXPORT __attribute__ ((visibility("default"))) 
+#endif
 
 // FIXME: is this referenced from anywhere ??!
 
