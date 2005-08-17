@@ -431,16 +431,19 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    if (!pCEselect)
       STDERR("no CE selector\n");
 
+   pCommonClassFactory = 0;
    // get the common class factory
    pEngine->QueryInterface(IID_IHXCommonClassFactory, (void **) &pCommonClassFactory);
    if (!pCommonClassFactory)
       STDERR("no CommonClassFactory\n");
-    
+
+   pPluginE = 0;
    // get the plugin enumerator
    pEngine->QueryInterface(IID_IHXPluginEnumerator, (void **) &pPluginE);
    if (!pPluginE)
       STDERR("no plugin enumerator\n");
-    
+
+   pPlugin2Handler = 0;
    // get the plugin2handler
    pEngine->QueryInterface(IID_IHXPlugin2Handler, (void **) &pPlugin2Handler);
    if (!pPlugin2Handler)
