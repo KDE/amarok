@@ -375,7 +375,7 @@ UrlLoader::loadXml( const KURL &url )
 
     if( !added.isEmpty() )
         emit queueChanged( added, PLItemList() );
-};
+}
 
 
 
