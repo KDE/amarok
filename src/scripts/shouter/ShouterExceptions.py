@@ -1,5 +1,6 @@
 ############################################################################
-# Binfuncs, taken from eye3D <http://eye3d.nicfit.net>
+# Exception classes
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2
 ############################################################################

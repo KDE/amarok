@@ -13,6 +13,7 @@ shouter_DATA = \
     Services.py \
     ShouterConfig.py \
     ShouterExceptions.py \
+    SocketErrors.py \
     StreamConfig.py \
     StreamPublisher.py \
     StreamController.py \

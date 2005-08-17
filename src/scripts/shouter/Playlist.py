@@ -1,6 +1,6 @@
 ############################################################################
 # Implementation of playlist models
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################
@@ -23,6 +23,7 @@ import random
 import urllib
 import time
 import sys
+from xml.parsers.expat import ExpatError
 
 
 _STATIC_PLS = dict()
@@ -43,7 +44,11 @@ class XMLPlaylist:
         self.load()
 
     def load(self):
-        self.items = minidom.parse(self.fname).getElementsByTagName('item')
+        try:
+            self.items = minidom.parse(self.fname).getElementsByTagName('item')
+        except ExpatError:
+            debug(sys.exc_info()[1])
+            debug('*** Caught error while parsing xml file. Check the tags of the item listed at the above line in the file ~/.kde/share/apps/amarok/current.xml')
 
 
 class LivePlaylist(XMLPlaylist):
@@ -72,6 +77,7 @@ class LivePlaylist(XMLPlaylist):
 
     def get_play_cursor(self):
         """ Returns the tuple (File, time fraction) """
+
         debug('LivePlaylist get_play_cursor')
 
         if Amarok.state:
@@ -89,6 +95,13 @@ class LivePlaylist(XMLPlaylist):
             
             total = f.length
             current = PlayerDcop( 'trackCurrentTime' ).result()
+            
+            # In case Amarok is playing a stream and it wasn't caught before,
+            # total may come back as '-'
+            if total == '-':
+                debug('total = %s raising exception' % str(total))
+                raise ShouterExceptions.amarok_not_playing_error
+
             if current > total : current = total
             if total == 0:
                 raise ShouterExceptions.amarok_not_playing_error
@@ -96,37 +109,7 @@ class LivePlaylist(XMLPlaylist):
             return (f, frac)
         raise ShouterExceptions.amarok_not_playing_error
 
-    #def get_next_url(self):
-        #""" Returns -- at the time of invocation -- the url that is
-        #guaranteed to be played next pending no future adjustments to the
-        #playlist order or queueing """
-        #self.reload()
-#
-        #queued = dict()
-        #for i in range(len(self.pl)):
-            #n = self.pl[i]
-            #if n.hasAttribute('queue_index'):
-                #q_i = int(n.getAttribute('queue_index'))
-                #url = n.getAttribute('url')
-                #queued[q_i] = (i, url)
-        #try:
-            #return queued[1][1]
-        #except KeyError:
-            #if not self.random:
-                #try:
-                    #n = self.pl[queued[0][0] + 1]
-                    #return n.getAttribute('url')
-                #except IndexError:
-                    #if self.repeat_pl:
-                        #n = self.pl[0]
-                        #return n.getAttribute('url')
-                    #elif self.repeat_tr:
-                        #try:
-                            #return queued[0][1]
-                        #except:
-                            #pass
-        #raise ShouterExceptions.indeterminate_queue_error
-            
+
 # Masked to keep instances unique for fnames
 def StaticPlaylist(fname, random=0, repeat=1):
     if not _STATIC_PLS.has_key(fname):
@@ -226,6 +209,19 @@ class _StaticPlaylist(XMLPlaylist):
             else:
                 raise ShouterExceptions.playlist_empty_error
 
+    def get_next_file(self, current):
+        debug('StaticPlaylist get_next_file')
+        for i,f in enumerate(self.pl):
+            if f is current:
+                try:
+                    return self.pl[i+1]
+                except IndexError:
+                    if self.repeat_pl:
+                        return self.pl[0]
+                    else:
+                        raise ShouterExceptions.playlist_empty_error
+        raise ShouterExceptions.playlist_empty_error
+
 class File:
     tags = ['Artist', 'Title', 'Length', 'Genre', 'Album', 'Year', 'TrackNo', 'Bitrate']
     attr = ['url', 'queue_index']
@@ -263,7 +259,16 @@ class File:
                 raise ShouterExceptions.bad_format_error
 
     def get_meta(self):
-        return self.artist + ' - ' + self.title
+        meta = ''
+        if self.artist:
+            meta += self.artist
+            if self.title:
+                meta += ' - ' + self.title
+        elif self.title:
+            meta += self.title
+        if not meta:
+            meta = 'Unknown Artist and Album'
+        return meta
 
     def get_fname(self):
         if self.url.startswith('file:///'):

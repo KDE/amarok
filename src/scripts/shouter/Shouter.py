@@ -2,7 +2,7 @@
 
 ############################################################################
 # Main executable. Must be run by amaroK
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################
@@ -121,13 +121,11 @@ class Shouter(QApplication):
         self.connect( self.dia, SIGNAL( 'destroyed()' ), self.read_settings )
 
 def cleanup(sig,frame):
-        publisher.shutdown()
-        os._exit(0)	
+    publisher.shutdown()
+    os._exit(0)	
 
 def guithread():
-	
 	app = Shouter( sys.argv )
-
 	app.exec_loop()
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 ############################################################################
 # Dumping ground for any and everything that is part of the amarok interface
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################

@@ -1,6 +1,6 @@
 ############################################################################
 # Configuration window for shouter script
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################

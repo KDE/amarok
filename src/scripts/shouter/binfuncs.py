@@ -1,4 +1,16 @@
-# Shamelessly ganked from eye3D
+############################################################################
+# Binary file functions. On loan from eye3D <http://eye3d.nicfit.net>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
+#
+# Depends on: Python 2.2 
+############################################################################
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+############################################################################
 
 def get_mp3_start(fname):
     """ Find where ID3 tags end and file data begins """
@@ -45,5 +57,3 @@ def bin2dec(x):
         value += b * multi
         multi *= 2
     return value
-
-

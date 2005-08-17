@@ -1,6 +1,6 @@
 ############################################################################
 # Implementation of services
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################
@@ -20,16 +20,21 @@ import urllib
 from ShouterExceptions import *
 import Playlist
 import time
+import socket
+import SocketErrors
 
 META = "%cStreamTitle='%s';StreamUrl='%s';%s"
 ICYRESP = 'ICY 200 OK\r\n' + \
-          'icy-notice1:%s\r\n' + \
-          'icy-notice2:%s\r\n' + \
-          'icy-name:%s\r\n' + \
-          'icy-genre:%s\r\n' + \
-          'icy-url:%s\r\n' + \
-          'icy-metaint:%d\r\n\r\n'
+          'icy-notice1: %s\r\n' + \
+          'icy-notice2: %s\r\n' + \
+          'icy-name: %s\r\n' + \
+          'icy-genre: %s\r\n' + \
+          'icy-url: %s\r\n' + \
+          'icy-metaint: %d\r\n\r\n'
 PADDING = '\x00'*16
+BURST_CREDIT_INIT = 100 * 1024
+MIN_SILENT_BR = 48
+MAX_STALL_INT = .4
 
 class _Service:
     cfg = None
@@ -45,16 +50,20 @@ class _BaseStreamService(_Service):
     meta_is_dirty = True
     icy = False
     pl = None
+    burst_credit = 0
 
     def __init__(self, stream_ctrl, cfg, server_cfg):
         debug('init _BaseStreamService on %s' % cfg.mount)
         self.socket = stream_ctrl.request
+        
+        #self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
         self.headers = stream_ctrl.headers
         self.path = stream_ctrl.path
         self.req = stream_ctrl
         self.cfg = cfg
         self.server_cfg = server_cfg
         self.byte_counter = 0
+        self.burst_credit = BURST_CREDIT_INIT
         if self.headers.get('Icy-Metadata'):
             self.icy = True
 
@@ -69,7 +78,6 @@ class _BaseStreamService(_Service):
             length = len(stream_title) + len(url) + 28
             padding = 16 - length % 16 
             meta = META % ( (length + padding)/16, stream_title, url, PADDING[:padding] )
-            #debug('sending meta string: %s' % meta)
             self.meta_is_dirty = False
             return meta
         else:
@@ -81,10 +89,10 @@ class _BaseStreamService(_Service):
             return
         raise bad_format_error
 
+    def stall(self, stall_int):
+        time.sleep(stall_int)
+
     def stream_silence(self, br):
-        #debug('stream_silence %d' % br)
-        #as = Amarok.state
-        #while Amarok.state == as:
         fobj = Playlist.SilentFile(br)
         self.stream(fobj, 0)
             
@@ -126,20 +134,23 @@ class _BaseStreamService(_Service):
                     buf = f.read(bufsize)
                     self.socket.send(buf)
                     self.byte_count += len(buf)
-                sleep_int = len(buf) * sleep_factor
-                time.sleep(sleep_int)
+
+                if self.burst_credit > 0:
+                    self.burst_credit = self.burst_credit - len(buf)
+                else:
+                    sleep_int = len(buf) * sleep_factor
+                    time.sleep(sleep_int)
+
         self.meta_is_dirty = True
 
         
-
 class Service0(_BaseStreamService):
     """ Live stream """
+    astate = None
+    astate_old = None
 
     def __init__(self, stream_ctrl, cfg, server_cfg):
-        try:
-            self.pl = Playlist.LivePlaylist()
-        except:
-            pass
+        self.pl = Playlist.LivePlaylist()
         _BaseStreamService.__init__(self, stream_ctrl, cfg, server_cfg)
 
     def start(self):
@@ -159,23 +170,26 @@ class Service0(_BaseStreamService):
             self.req.end_headers()
 
         while True:
-            try:
-                (fobj, frac) = self.pl.get_play_cursor() 
-                self.check_format(fobj)
-                as = Amarok.state
-                condition = '%d == Amarok.state' % as
-                self.stream(fobj, frac, condition)
-            except (bad_format_error, amarok_not_playing_error, indeterminate_queue_error):
-                # FIXME:
-                # 48 seems to be the limit for a 44.1 kHz, 2-channel 2-second file
-                # Any lower and things start to mysteriously break
-                as = Amarok.state
-                while Amarok.state == as:
-                    self.stream_silence(48)
+            self.astate = Amarok.state
+            if self.astate_old and (self.astate_old == self.astate):
+                debug('Buffer overrun in request %s. Stalling' % str(self.socket))
+                self.stall(MAX_STALL_INT)
+            else: 
+                try:
+                    (fobj, frac) = self.pl.get_play_cursor() 
+                    self.check_format(fobj)
+                    condition = '%d == Amarok.state' % self.astate
+                    self.stream(fobj, frac, condition)
+                    self.astate_old = self.astate
+                except (bad_format_error, amarok_not_playing_error, indeterminate_queue_error):
+                    while Amarok.state == self.astate:
+                        self.stream_silence(MIN_SILENT_BR)
 
 
 class Service1(_BaseStreamService):
     """ Playlist snapshot """
+    fobj = None
+    fobj_old = None
     def __init__(self, stream_ctrl, cfg, server_cfg):
         self.pl = Playlist.StaticPlaylist(cfg.stream_type1_arg, cfg.random, cfg.repeat_pl)
         _BaseStreamService.__init__(self, stream_ctrl, cfg, server_cfg)
@@ -197,13 +211,23 @@ class Service1(_BaseStreamService):
             self.req.end_headers()
 
         while True:
+            self.fobj, frac = self.pl.get_play_cursor()
+            if self.fobj_old and (self.fobj_old is self.fobj):
+                self.fobj = self.pl.get_next_file(self.fobj)
+                frac = 0.0
             try:
-                (fobj, frac) = self.pl.get_play_cursor() 
-                self.check_format(fobj)
-                self.stream(fobj, frac)
+                self.check_format(self.fobj)
+                self.stream(self.fobj, frac)
+                self.fobj_old = self.fobj
             except bad_format_error:
-                self.stream_silence(48)
-            
+                self.stream_silence(MIN_SILENT_BR)
+            #except socket.error: 
+            except:
+                errno = sys.exc_info()[1][0]
+                if errno == SocketErrors.RESOURCE_UNAVAILBLE:
+                    debug('Caught error ' + str(sys.exc_info()[1]) + ' and doing nothing')
+                else:
+                    raise
 
 
 class Service2(_BaseStreamService):

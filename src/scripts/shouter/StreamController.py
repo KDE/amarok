@@ -1,6 +1,6 @@
 ############################################################################
 # Root server and initial request binning
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################
@@ -22,6 +22,7 @@ from ShouterExceptions import *
 from Services import *
 from StreamPublisher import *
 from sre import match
+import traceback
 
 INDEX_URL = 'index.pls'
 
@@ -110,10 +111,12 @@ class StreamServer(ThreadingTCPServer):
 
     def handle_error(self, request, client_address):
         try:
-            debug('handle_error trying to remove request')
+            debug('StreamServer error encountered. Removing request')
+            st = traceback.format_exception(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2])
+            for l in st: debug(l.rstrip())
+
             self.sockets.remove(request)
             self.log( 'Dropping socket to %s. Active sockets: %d' % (client_address[0], len(self.sockets)))
-            #Amarok.status('Dropping connection to %s' % client_address[0])
         except:
             debug('error in handle_error')
         # FIXME: Don't do this if error came from an unmapped mount or the death

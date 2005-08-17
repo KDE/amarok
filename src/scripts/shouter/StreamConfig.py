@@ -1,6 +1,6 @@
 ############################################################################
-# Configuration dialog
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# Configuration containers for streams and server
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
 ############################################################################

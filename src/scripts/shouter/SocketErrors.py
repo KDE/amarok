@@ -1,5 +1,5 @@
 ############################################################################
-# Debug output
+# List of socket errors
 # (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Depends on: Python 2.2, PyQt
@@ -12,16 +12,6 @@
 #
 ############################################################################
 
-
-import sys
-import traceback
-import datetime
-
-DEBUG_FNAME = 'shouter.debug'
-debug_prefix = "[Shouter] "
-debug_h = open(DEBUG_FNAME, 'a')
-def debug( message ):
-    dt = datetime.datetime.now()
-    now = '%s:%s:%s.%s' % (str(dt.hour).zfill(2), str(dt.minute).zfill(2), str(dt.second).zfill(2), str(dt.microsecond / 1000).zfill(3))
-    debug_h.write( '%s %s %s\n' % (debug_prefix.strip(), now, str(message)))
-    debug_h.flush()
+RESOURCE_UNAVAILBLE = 11
+BROKEN_PIPE = 32
+CONNECTION_RESET_BY_PEER = 104

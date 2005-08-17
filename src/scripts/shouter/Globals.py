@@ -1,6 +1,6 @@
 ############################################################################
 # Global utility functions
-# (c) 2005 James Bellenger <jbellenger@pristine.gm>
+# (c) 2005 James Bellenger <jamesb@squaretrade.com>
 #
 # Adapted from Globals.py written by
 # Jonas Christian Drewsen and André Kelpe
