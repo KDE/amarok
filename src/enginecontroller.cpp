@@ -522,7 +522,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         connect( m_stream, SIGNAL(streamData( char*, int )),
                  m_engine,   SLOT(newStreamData( char*, int )) );
         connect( m_stream, SIGNAL(sigError()),
-                 this,     SIGNAL(orderNext()) );
+                 this,     SLOT(slotSigError()));
     }
     else if( !m_engine->play( url, isStream ) && !AmarokConfig::repeatPlaylist() )
     {
@@ -531,6 +531,11 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     }
 
     newMetaDataNotify( m_bundle, true /* track change */ );
+}
+
+void EngineController::slotSigError()
+{
+	emit orderNext( true );
 }
 
 void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT

@@ -101,7 +101,7 @@ private slots:
     void slotTrackEnded();
     void slotStateChanged( Engine::State );
     void streamError();
-
+	void slotSigError();
 protected:
     EngineController();
    ~EngineController();
