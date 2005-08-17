@@ -13,9 +13,9 @@ tag = ""
 unless $*.empty?()
     case $*[0]
         when "--branch"
-            branch = `kdialog --inputbox "Enter branch name: "`.chomp
+            branch = `kdialog --inputbox "Enter branch name: "`.chomp()
         when "--tag"
-            tag = `kdialog --inputbox "Enter tag name: "`.chomp
+            tag = `kdialog --inputbox "Enter tag name: "`.chomp()
         else
             puts("Unknown option #{$1}. Use --branch or --tag.\n")
     end
@@ -23,7 +23,7 @@ end
 
 
 # Ask user for targeted application version
-version  = `kdialog --inputbox "Enter amaroK version: "`.chomp
+version  = `kdialog --inputbox "Enter amaroK version: "`.chomp()
 
 
 name     = "amarok"
@@ -69,7 +69,7 @@ if do_l10n == "yes"
 
     # docs
     for lang in i18nlangs
-        lang.chomp!
+        lang.chomp!()
         `rm -Rf ../doc/#{lang}`
         `rm -rf amarok`
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
@@ -97,7 +97,7 @@ if do_l10n == "yes"
     Dir.mkdir( "po" )
 
     for lang in i18nlangs
-        lang.chomp!
+        lang.chomp!()
         pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
         `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} 2> /dev/null | tee l10n/amarok.po`
         next if FileTest.size( "l10n/amarok.po" ) == 0
@@ -151,7 +151,7 @@ Dir.chdir( "src" )
 file = File.new( "amarok.h", File::RDWR )
 str = file.read()
 file.rewind()
-file.truncate(0)
+file.truncate( 0 )
 str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{version}\"" )
 file << str
 file.close()
