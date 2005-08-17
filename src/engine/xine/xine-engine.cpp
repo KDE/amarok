@@ -196,12 +196,7 @@ XineEngine::makeNewStream()
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
-   if( XINE_VERSION == "1-rc6a" && url.protocol() == "http" ) {
-      emit infoMessage( i18n("Sorry xine 1-rc6a cannot play remote streams, please upgrade to 1-rc7") );
-      return false;
-   }
-
-   Engine::Base::load( url, isStream || url.protocol() == "http" );
+    Engine::Base::load( url, isStream || url.protocol() == "http" );
 
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
     {
