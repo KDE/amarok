@@ -283,7 +283,7 @@ Playlist::Playlist( QWidget *parent )
     KActionCollection* const ac = amaroK::actionCollection();
     KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
-    m_clearButton = KStdAction::clear( this, SLOT( clearAndSave() ), ac, "playlist_clear" );
+    m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
@@ -1465,13 +1465,6 @@ Playlist::clear() //SLOT
 
     if( isDynamic() && !m_undoDirt )
         repopulate();
-}
-
-void
-Playlist::clearAndSave() //SLOT
-{
-    clear();
-    saveXML( defaultPlaylistPath() );
 }
 
 void
