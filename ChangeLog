@@ -12,12 +12,14 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * The bundled "Shouter" AmarokScript (for radio stream serving) was
+      updated and improved.
 
   BUGFIXES:
     * On Collection Browser, when grouping by Genre/Artist/Year-Album it
       wouldn't show the tracks. (BR 110890)
-    * SmartPlaylist Editor would reset "Match Any" to "Match All" when editing.
-      Patch by Kevin Henderson <pyspud@hotmail.com> (BR 110918).
+    * SmartPlaylist Editor would reset "Match Any" to "Match All" when
+      editing. Patch by Kevin Henderson <pyspud@hotmail.com> (BR 110918).
     * Podcasts and playlist tracks would be sorted lexicography (BR 97297).
     * Saved dynamic playlists were not removable.
     * xine-engine: amaroK would get stuck on exit if the Equalizer was enabled
