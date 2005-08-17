@@ -280,7 +280,7 @@ char* HelixSimplePlayer::RemoveWrappingQuotes(char* str)
 
 
 HelixSimplePlayer::HelixSimplePlayer() :
-   theErr(HXR_OK),
+   theErr(HXR_FAILED),
    pErrorSink(NULL),
    pErrorSinkControl(NULL),
    pPluginE(0),
@@ -323,6 +323,8 @@ HelixSimplePlayer::HelixSimplePlayer() :
 void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome, const char *codecshome, int numPlayers)
 {
    int i;
+
+   theErr = HXR_OK;
 
    FPRMCREATEENGINE        fpCreateEngine;
    FPRMSETDLLACCESSPATH    fpSetDLLAccessPath;
@@ -655,6 +657,9 @@ void HelixSimplePlayer::tearDown()
 {
    int i;
    FPRMCLOSEENGINE         fpCloseEngine;
+
+   if (theErr != HXR_OK) // failed to initialize properly
+      return;
 
    // make sure all players are stopped,
    stop();
