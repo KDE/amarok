@@ -147,6 +147,7 @@ HelixEngine::init()
       QString me = ml->mimeexts;
 
       entry = new MimeEntry;
+      //cerr << "mt <" << mt.utf8() << "> me <" << me.utf8() << ">\n";
       entry->type = QStringList::split('|', mt);
       entry->ext = QStringList::split('|', me);
       m_mimes[i] = *entry;
@@ -358,9 +359,16 @@ HelixEngine::canDecode( const KURL &url ) const
    if (ext != "txt")
       for (int i=0; i<(int)m_mimes.size(); i++)
       {
-         if (m_mimes[i].type.grep("audio").count() || m_mimes[i].type.grep("video").count())
+         //for (int j=0; j<m_mimes[i].ext.count(); j++)
+         //   cerr << "canDecode(" << ext.utf8() << "): " << m_mimes[i].ext[j].utf8() << endl;
+         if (m_mimes[i].type.grep("audio").count() || 
+             m_mimes[i].type.grep("video").count() || 
+             m_mimes[i].type.grep("application").count())
             if (m_mimes[i].ext.grep(ext).count())
+            {
+               //cerr << "canDecode returns true\n";
                return true;
+            }
       }
 
    return false;
