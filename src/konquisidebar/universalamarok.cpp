@@ -93,7 +93,8 @@ browser->view()->installEventFilter(widget);
     playlistStub=new AmarokPlaylistInterface_stub( amarokDCOP, "amarok", "playlist");
 
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
-    toolBar->setMaximumHeight(48);
+//     toolBar->setMaximumHeight(48);
+    toolBar->setIconSize(16);
     toolBar->insertButton("player_start",0,SIGNAL(clicked() ),this, SLOT(sendPrev() ) );
     toolBar->insertButton("player_play",0,SIGNAL(clicked() ),this, SLOT(sendPlay() ) );
     toolBar->insertButton("player_pause",0,SIGNAL(clicked() ),this, SLOT(sendPause() ) );
@@ -102,13 +103,15 @@ browser->view()->installEventFilter(widget);
 
     toolBar->insertSeparator();
     toolBar->insertButton("arts",0,SIGNAL(clicked() ),this, SLOT(sendMute() ) );
-    toolBar->insertSeparator();
+/*    toolBar->insertSeparator();
     toolBar->insertButton("gohome",0,SIGNAL(clicked() ),this, SLOT(cbHome() ) );
     toolBar->insertButton("today",0,SIGNAL(clicked() ),this, SLOT(currentTrack() ) );
     toolBar->insertButton("document",0,SIGNAL(clicked() ),this, SLOT(lyrics() ) );
 
-
-    vol_slider=new QSlider(0,100,1,0,Qt::Vertical, toolBar,"volume");
+*/
+    vol_slider=new QSlider(0,100,1,0,Qt::Horizontal, toolBar,"volume");
+    vol_slider->setLineStep(2);
+//    vol_slider->resize( 32, vol_slider->height() );
     connect(vol_slider, SIGNAL( valueChanged(int) ), this, SLOT(volChanged(int ) ) );
     toolBar->insertWidget(1,2, vol_slider);
 
@@ -186,7 +189,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
  */
 void UniversalAmarok::updateStatus()
 {
-    vol_slider->setValue( 100-playerStub->getVolume() );
+    vol_slider->setValue( playerStub->getVolume() );
     fileInfo->refresh();
     if( fileInfo->lastModified() != fileDT )
     {
@@ -228,7 +231,7 @@ void UniversalAmarok::checkForAmarok()
 void UniversalAmarok::volChanged(int vol)
 {
     checkForAmarok();
-    playerStub->setVolume(100-vol);
+    playerStub->setVolume(vol);
 }
 
 void UniversalAmarok::showIntroduction()

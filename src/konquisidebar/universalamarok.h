@@ -82,12 +82,12 @@ private:
 public slots:
     void updateBrowser(const QString&);
     void updateStatus();
-    void sendPrev() { checkForAmarok(); amarokDCOP->send("amarok", "player", "prev()", ""); }
-    void sendPlay() { checkForAmarok(); amarokDCOP->send("amarok", "player", "play()", ""); }
-    void sendPause() { checkForAmarok(); amarokDCOP->send("amarok", "player", "pause()", ""); }
-    void sendStop() { checkForAmarok(); amarokDCOP->send("amarok", "player", "stop()", ""); }
-    void sendNext() { checkForAmarok(); amarokDCOP->send("amarok", "player", "next()", ""); }
-    void sendMute() { checkForAmarok(); amarokDCOP->send("amarok", "player", "mute()", ""); }
+    void sendPrev() { checkForAmarok(); playerStub->prev(); }
+    void sendPlay() { checkForAmarok(); playerStub->play(); }
+    void sendPause() { checkForAmarok(); playerStub->pause(); }
+    void sendStop() { checkForAmarok(); playerStub->stop(); }
+    void sendNext() { checkForAmarok(); playerStub->next(); }
+    void sendMute() { checkForAmarok(); playerStub->mute(); }
     void volChanged(int vol);
     void openURLRequest( const KURL & );
     void checkForAmarok();
