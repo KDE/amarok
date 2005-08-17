@@ -193,10 +193,11 @@ void QueueLabel::showToolTip()
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
     m_tooltip->showCloseButton( false );
     m_tooltip->showCounter( false );
+    m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
     m_tooltip->setText( text );
 
     m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
-    m_tooltip->show();
+    m_tooltip->display();
 }
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item ) const

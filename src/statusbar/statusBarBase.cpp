@@ -265,10 +265,12 @@ StatusBar::longMessage( const QString &text, int /*type*/ )
     message->setText( text );
 
     if ( m_messageQueue.isEmpty() )
-        message->show();
-    else {
+    {
+        message->move( 0, this->y() - message->height() );
+        message->display();
+    } else {
         message->stackUnder( m_messageQueue.last() );
-        message->show();
+        message->display();
         message->move( 0, this->y() - message->height() );
     }
 

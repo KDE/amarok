@@ -27,6 +27,7 @@
 
 #include "overlayWidget.h"
 
+#include <qbitmap.h>
 #include <qlayout.h>
 #include <qpixmap.h>
 
@@ -48,25 +49,51 @@ namespace KDE
          */
         PopupMessage( QWidget *parent, QWidget *anchor, int timeout = 5000 /*milliseconds*/, const char* name = 0 );
 
+        enum MaskEffect { Plain, Slide, Dissolve };
+
         void addWidget( QWidget *widget );
         void showCloseButton( const bool show );
         void showCounter( const bool show );
         void setImage( const QString &location );
+        void setMaskEffect( const MaskEffect type ) { m_maskEffect = type; }
         void setText( const QString &text );
         void setTimeout( const int time ) { m_timeout = time; }
 
-
     public slots:
         void close();
+        void display();
 
     private slots:
         void timerEvent( QTimerEvent* );
 
+    protected:
+        void countDown();
+
+        /**
+        * @short Gradually show widget by dissolving from background
+        */
+        void dissolveMask();
+
+        /**
+        * @short instantly display widget
+        */
+        void plainMask();
+
+        /**
+        * @short animation to slide the widget into view
+        */
+        void slideMask();
+
     private:
         QVBoxLayout *m_layout;
-        QFrame  *m_countdownFrame;
-        QWidget *m_anchor;
-        QWidget *m_parent;
+        QFrame      *m_countdownFrame;
+        QWidget     *m_anchor;
+        QWidget     *m_parent;
+        QBitmap      m_mask;
+        MaskEffect   m_maskEffect;
+
+        int      m_dissolveSize;
+        int      m_dissolveDelta;
 
         int      m_offset;
         int      m_counter;

@@ -2,6 +2,8 @@
  *   Copyright (C) 2005 by Max Howell <max.howell@methylblue.com>          *
  *                 2005 by Seb Ruiz <me@sebruiz.net>                       *
  *                                                                         *
+ *   Dissolve Mask (c) Kicker Authors kickertip.cpp, 2005/08/17            *
+ *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
@@ -19,7 +21,7 @@
  ***************************************************************************/
 
 #include "popupMessage.h"
-
+#include "debug.h"
 #include <kactivelabel.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
@@ -38,6 +40,9 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
                 : OverlayWidget( parent, anchor, name )
                 , m_anchor( anchor )
                 , m_parent( parent )
+                , m_maskEffect( Slide )
+                , m_dissolveSize( 0 )
+                , m_dissolveDelta( -1 )
                 , m_offset( 0 )
                 , m_counter( 0 )
                 , m_stage( 1 )
@@ -75,8 +80,6 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox->add( new KPushButton( KStdGuiItem::close(), this, "closeButton" ) );
 
     connect( child( "closeButton" ), SIGNAL(clicked()), SLOT(close()) );
-
-    m_timerId = startTimer( 6 );
 }
 
 void PopupMessage::addWidget( QWidget *widget )
@@ -107,6 +110,10 @@ void PopupMessage::setImage( const QString &location )
 }
 
 
+////////////////////////////////////////////////////////////////////////
+//     Public Slots
+////////////////////////////////////////////////////////////////////////
+
 void PopupMessage::close() //SLOT
 {
     m_stage = 3;
@@ -114,10 +121,163 @@ void PopupMessage::close() //SLOT
     m_timerId = startTimer( 6 );
 }
 
+void PopupMessage::display() //SLOT
+{
+    m_dissolveSize = 24;
+    m_dissolveDelta = -1;
+
+    if( m_maskEffect == Dissolve )
+    {
+        m_mask.resize( sizeHint() ); // Important, creates a valid pixmap
+        debug() << "Size: " << m_mask.height() << " x " << m_mask.width() << endl;
+        m_timerId = startTimer( 100 );
+    }
+    else
+        m_timerId = startTimer( 6 );
+    show();
+}
+
+////////////////////////////////////////////////////////////////////////
+//     Private Slots
+////////////////////////////////////////////////////////////////////////
+
 void PopupMessage::timerEvent( QTimerEvent* )
 {
+    switch( m_maskEffect )
+    {
+        case Plain:
+            plainMask();
+            break;
+
+        case Slide:
+            slideMask();
+            break;
+
+        case Dissolve:
+            dissolveMask();
+            break;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+//     Protected
+////////////////////////////////////////////////////////////////////////
+
+void PopupMessage::countDown()
+{
+    if( !m_timeout )
+    {
+        killTimer( m_timerId );
+        return;
+    }
+
     QFrame *&h = m_countdownFrame;
 
+    if( m_counter < h->height() - 3 )
+        QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, palette().active().highlight() );
+
+    if( !hasMouse() )
+        m_counter++;
+
+    if( m_counter > h->height() )
+    {
+        m_stage = 3;
+        killTimer( m_timerId );
+        m_timerId = startTimer( 6 );
+    }
+    else
+    {
+        killTimer( m_timerId );
+        m_timerId = startTimer( m_timeout / h->height() );
+    }
+}
+
+void PopupMessage::dissolveMask()
+{
+    repaint( false );
+    if( m_stage == 1 )
+    {
+        QPainter maskPainter(&m_mask);
+        m_mask.fill(Qt::red);
+        maskPainter.setBrush(Qt::red);
+        maskPainter.setPen(Qt::red);
+        maskPainter.drawRect( m_mask.rect() );
+        m_dissolveSize += m_dissolveDelta;
+
+        debug() << "m_dissolveSize: " << m_dissolveSize << endl;
+        if( m_dissolveSize > 0 )
+        {
+            maskPainter.setRasterOp( Qt::EraseROP );
+
+            int x, y, s;
+            const int size = 16;
+
+            for (y = 0; y < height() + size; y += size)
+            {
+                x = width();
+                s = m_dissolveSize * x / 128;
+                for (; x > -size; x -= size, s -= 2)
+                {
+                    if (s < 0)
+                    {
+                        s = 0;
+                    }
+                    maskPainter.drawEllipse(x - s / 2, y - s / 2, s, s);
+                }
+            }
+        }
+        else if( m_dissolveSize < 0 )
+        {
+
+            m_dissolveDelta = 1;
+            killTimer( m_timerId );
+
+            if( m_timeout )
+            {
+                m_timerId = startTimer( 40 );
+                m_stage = 2;
+            }
+        }
+
+        setMask(m_mask);
+    }
+    else if ( m_stage == 2 )
+    {
+        countDown();
+    }
+    else
+    {
+        deleteLater();
+    }
+}
+
+
+void PopupMessage::plainMask()
+{
+    switch( m_stage )
+    {
+        case 1: // Raise
+            killTimer( m_timerId );
+            if( m_timeout )
+            {
+                m_timerId = startTimer( 40 );
+                m_stage = 2;
+            }
+
+            break;
+
+        case 2: // Counter
+            countDown();
+            break;
+
+        case 3: // Lower/Remove
+            deleteLater();
+    }
+}
+
+
+void PopupMessage::slideMask()
+{
     switch( m_stage )
     {
         case 1: //raise
@@ -138,35 +298,17 @@ void PopupMessage::timerEvent( QTimerEvent* )
             break;
 
         case 2: //fill in pause timer bar
-            if( m_counter < h->height() - 3 )
-                QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, palette().active().highlight() );
-
-            if( !hasMouse() )
-                m_counter++;
-
-            if( m_counter > h->height() )
-            {
-                m_stage = 3;
-                killTimer( m_timerId );
-                m_timerId = startTimer( 6 );
-            }
-            else
-            {
-                killTimer( m_timerId );
-                m_timerId = startTimer( m_timeout / h->height() );
-            }
-
+            countDown();
             break;
 
         case 3: //lower
             m_offset--;
-            move( 0, m_parent->y() - m_offset);
+            move( 0, m_parent->y() - m_offset );
 
             if( m_offset < 0 )
                 deleteLater();
     }
 }
-
 
 }
 
