@@ -698,10 +698,14 @@ void HelixSimplePlayer::tearDown()
 
    delete [] ppctrl;
 
-   pCommonClassFactory->Release();
-   pCEselect->Release();
-   pPluginE->Release();
-   pPlugin2Handler->Release();
+   if (pCommonClassFactory)
+      pCommonClassFactory->Release();
+   if (pCEselect)
+      pCEselect->Release();
+   if (pPluginE)
+      pPluginE->Release();
+   if (pPlugin2Handler)
+      pPlugin2Handler->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
    if (fpCloseEngine && pEngine)
