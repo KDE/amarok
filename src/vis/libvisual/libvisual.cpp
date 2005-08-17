@@ -354,18 +354,18 @@ namespace LibVisual
 
         SDL_WM_SetCaption( plugin, 0 );
 
-        /* Called so the flag is set to FALSE, seen we create the initial environment here */
+        /* Called so the flag is set to false, seen we create the initial environment here */
         visual_bin_depth_changed( bin );
 
         VisInput *input = visual_bin_get_input( bin );
         if( visual_input_set_callback( input, upload_callback, NULL ) < 0 ) exit( "Cannot set input plugin callback" );
 
         visual_bin_switch_set_style( bin, VISUAL_SWITCH_STYLE_MORPH );
-        visual_bin_switch_set_automatic( bin, TRUE );
+        visual_bin_switch_set_automatic( bin, true );
         visual_bin_switch_set_steps( bin, 100 );
 
         visual_bin_realize( bin );
-        visual_bin_sync( bin, FALSE );
+        visual_bin_sync( bin, false );
 
         std::cout << "[amK] Libvisual version " << visual_get_version() << '\n';
         std::cout << "[amK] bpp: " << video->bpp << std::endl;

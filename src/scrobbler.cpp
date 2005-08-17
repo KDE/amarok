@@ -431,9 +431,9 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
 {
     saveSubmitQueue();
 
-    m_ongoingSubmits.setAutoDelete( TRUE );
+    m_ongoingSubmits.setAutoDelete( true );
     m_ongoingSubmits.clear();
-    m_submitQueue.setAutoDelete( TRUE );
+    m_submitQueue.setAutoDelete( true );
     m_submitQueue.clear();
 }
 
@@ -651,12 +651,12 @@ void ScrobblerSubmitter::setEnabled( bool enabled )
     if ( !enabled )
     {
         // If submit is disabled, clear submitqueue.
-        m_ongoingSubmits.setAutoDelete( TRUE );
+        m_ongoingSubmits.setAutoDelete( true );
         m_ongoingSubmits.clear();
-        m_ongoingSubmits.setAutoDelete( FALSE );
-        m_submitQueue.setAutoDelete( TRUE );
+        m_ongoingSubmits.setAutoDelete( false );
+        m_submitQueue.setAutoDelete( true );
         m_submitQueue.clear();
-        m_submitQueue.setAutoDelete( FALSE );
+        m_submitQueue.setAutoDelete( false );
     }
 }
 

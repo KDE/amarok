@@ -579,7 +579,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
         QString sql = sp->sqlForTags;
 
-        if ( sql.find( QString("ORDER BY"), FALSE ) == -1 ) {
+        if ( sql.find( QString("ORDER BY"), false ) == -1 ) {
             QRegExp limit( ";$" );
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
             useDirect = true;
@@ -719,7 +719,7 @@ Playlist::adjustPartyPrevious( uint songCount )
 }
 
 void
-Playlist::alterHistoryItems( bool enable /*FALSE*/, bool entire /*FALSE*/ )
+Playlist::alterHistoryItems( bool enable /*false*/, bool entire /*FALSE*/ )
 {
     //NOTE: we must make sure that partyMode works perfectly as we expect it to,
     //      for this functionality to be guarranteed. <sebr>
@@ -1957,7 +1957,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         //determine first visible column again, since it has changed
         columnOrderChanged();
         //eat event
-        return TRUE;
+        return true;
     }
 
     // not in slotMouseButtonPressed because we need to disable normal usage.
@@ -1968,7 +1968,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         if( item )
             queue( item );
 
-        return TRUE; //yum!
+        return true; //yum!
     }
 
     //allow the header to process this

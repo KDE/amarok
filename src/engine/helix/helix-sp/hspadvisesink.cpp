@@ -558,7 +558,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
     if (m_splayer->bEnableVerboseMode)
     {
         STDOUT("Player %ld stopped.\n", m_lClientIndex);
-        m_bOnStop = TRUE;
+        m_bOnStop = true;
 	GetAllStatistics();
     }
 

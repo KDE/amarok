@@ -482,7 +482,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             // NOTE: column 0 cannot be edited currently, hence we pick column 1
             Playlist::instance()->rename( item, 1 ); //TODO what if this column is hidden?
 
-            return TRUE;
+            return true;
         }
 
         if( o == m_lineEdit ) //the search lineedit
@@ -492,7 +492,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             // If ctrl key is pressed, propagate keyEvent to the playlist
             if ( e->key() & Qt::CTRL ) {
                 QApplication::sendEvent( Playlist::instance(), e );
-                return TRUE;
+                return true;
             }
 
             switch( e->key() )
@@ -503,28 +503,28 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                     Playlist::instance()->setFocus();
                     Playlist::instance()->setCurrentItem( item );
                     item->setSelected( true );
-                    return TRUE;
+                    return true;
                 }
-                return FALSE;
+                return false;
 
             case Key_PageDown:
             case Key_PageUp:
                 QApplication::sendEvent( Playlist::instance(), e );
-                return TRUE;
+                return true;
 
             case Key_Return:
             case Key_Enter:
                 Playlist::instance()->activate( *It( Playlist::instance(), It::Visible ) );
                 Playlist::instance()->showCurrentTrack();
                 m_lineEdit->clear();
-                return TRUE;
+                return true;
 
             case Key_Escape:
                 m_lineEdit->clear();
-                return TRUE;
+                return true;
 
             default:
-                return FALSE;
+                return false;
             }
         }
 
@@ -535,20 +535,20 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         {
             Playlist::instance()->currentItem()->setSelected( false );
             m_lineEdit->setFocus();
-            return TRUE;
+            return true;
         }
 
         if( e->key() == Key_Delete )
         {
             Playlist::instance()->removeSelectedItems();
-            return TRUE;
+            return true;
         }
 
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
         {
             m_lineEdit->setFocus();
             QApplication::sendEvent( m_lineEdit, e );
-            return TRUE;
+            return true;
         }
         #undef e
         break;

@@ -120,7 +120,7 @@ main( int argc, char** argv )
 
     while( nbytes != -1 )
     {
-        gtk_main_iteration_do( FALSE );
+        gtk_main_iteration_do( false );
 
         //set the time to wait, we have to do this everytime on linux
         tv.tv_sec  = 0;

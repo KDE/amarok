@@ -523,7 +523,7 @@ bool PlayerWidget::event( QEvent *e )
     case QEvent::Close:
 
         amaroK::genericEventHandler( this, e );
-        return TRUE; //we handled it
+        return true; //we handled it
 
     case QEvent::ApplicationPaletteChange:
 
@@ -532,7 +532,7 @@ bool PlayerWidget::event( QEvent *e )
             determineAmarokColors();
             applySettings();
         }
-        return TRUE;
+        return true;
 
     case 6/*QEvent::KeyPress*/:
         if (static_cast<QKeyEvent*>(e)->key() == Qt::Key_D/* && (m_pAnalyzer->inherits("QGLWidget")*/)
@@ -548,9 +548,9 @@ bool PlayerWidget::event( QEvent *e )
             else
                 createAnalyzer( 0 );
 
-            return TRUE; //eat event
+            return true; //eat event
         }
-        return FALSE; //don't eat event
+        return false; //don't eat event
 
     case QEvent::Show:
 
@@ -609,7 +609,7 @@ bool PlayerWidget::event( QEvent *e )
             }
         }
 
-        return FALSE;
+        return false;
 
     case QEvent::Hide:
         m_pAnimTimer->stop();
@@ -642,7 +642,7 @@ bool PlayerWidget::event( QEvent *e )
                 parentWidget()->hide();
         }
 
-        return FALSE;
+        return false;
 
     default:
         return QWidget::event( e );
@@ -672,9 +672,9 @@ PlayerWidget::eventFilter( QObject *o, QEvent *e )
         if( e->type() == QEvent::Close )
         {
             createAnalyzer( 0 );
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     switch( e->type() )
@@ -682,7 +682,7 @@ PlayerWidget::eventFilter( QObject *o, QEvent *e )
     case QEvent::Close:
 
         static_cast<QCloseEvent*>(e)->accept(); //close the window!
-        return TRUE; //don't let PlaylistWindow have the event - see PlaylistWindow::closeEvent()
+        return true; //don't let PlaylistWindow have the event - see PlaylistWindow::closeEvent()
 
     case QEvent::Hide:
 
@@ -725,7 +725,7 @@ PlayerWidget::eventFilter( QObject *o, QEvent *e )
         break;
     }
 
-    return FALSE;
+    return false;
 }
 
 

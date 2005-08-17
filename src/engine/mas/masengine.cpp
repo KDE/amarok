@@ -93,7 +93,7 @@ bool MasEngine::init()
                         "<p>Check for a running mas daemon.</p>") );
         error() << "  connecting to MAS daemon failed. Aborting. " << endl;
         debug() << "  Please restart amarok." << endl;
-        debug() << k_funcinfo << "  returns FALSE !" << endl;
+        debug() << k_funcinfo << "  returns false !" << endl;
         return false;
     }
     m_inited=true;              // we connected to MAS

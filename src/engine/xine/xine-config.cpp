@@ -166,7 +166,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
     }
     
     connect( m_view->deviceComboBox, SIGNAL( activated( int ) ), SIGNAL( viewChanged() ) );
-    m_entries.setAutoDelete(TRUE);
+    m_entries.setAutoDelete(true);
     m_view->deviceComboBox->setCurrentItem( (XineCfg::outputPlugin() == "auto" ) ? "Autodetect" : XineCfg::outputPlugin() );
     init();
     showHidePluginConfigs();

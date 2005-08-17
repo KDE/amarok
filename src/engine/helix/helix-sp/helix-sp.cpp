@@ -286,7 +286,7 @@ HelixSimplePlayer::HelixSimplePlayer() :
    pPluginE(0),
    pPlugin2Handler(0),
    ppctrl(NULL),
-   bURLFound(FALSE),
+   bURLFound(false),
    nNumPlayers(0),
    nNumPlayRepeats(1),
    nTimeDelta(DEFAULT_TIME_DELTA),
@@ -294,8 +294,8 @@ HelixSimplePlayer::HelixSimplePlayer() :
    bStopTime(true),
    bStopping(false),
    nPlay(0),
-   bEnableAdviceSink(FALSE),
-   bEnableVerboseMode(FALSE),
+   bEnableAdviceSink(false),
+   bEnableVerboseMode(false),
    pEngine(NULL),   
    m_pszUsername(NULL),
    m_pszPassword(NULL),
@@ -740,7 +740,7 @@ void HelixSimplePlayer::tearDown()
    pPluginE = 0;
    pPlugin2Handler = 0;
    ppctrl = NULL;
-   bURLFound = FALSE;
+   bURLFound = false;
    nNumPlayers = 0;
    nNumPlayRepeats = 1;
    nTimeDelta = DEFAULT_TIME_DELTA;
@@ -748,8 +748,8 @@ void HelixSimplePlayer::tearDown()
    bStopTime = true; 
    bStopping = false;
    nPlay = 0;
-   bEnableAdviceSink = FALSE;
-   bEnableVerboseMode = FALSE;
+   bEnableAdviceSink = false;
+   bEnableVerboseMode = false;
    pEngine = NULL;
    m_pszUsername = NULL;
    m_pszPassword = NULL;
@@ -1069,7 +1069,7 @@ void HelixSimplePlayer::start(const char *file, int playerIndex, bool fadein, bo
 
 bool HelixSimplePlayer::done(int playerIndex)
 {
-   BOOL bAllDone = TRUE;
+   BOOL bAllDone = true;
 
    if (playerIndex == ALL_PLAYERS)
       // Start checking at the end of the array since those players
@@ -1289,7 +1289,7 @@ bool HelixSimplePlayer::getMute(int playerIndex)
 
 bool HelixSimplePlayer::ReadGUIDFile()
 {
-   BOOL  bSuccess = FALSE;
+   BOOL  bSuccess = false;
    FILE* pFile    = NULL;
    int   nNumRead = 0;
    int   readSize = 10000;
@@ -1312,7 +1312,7 @@ bool HelixSimplePlayer::ReadGUIDFile()
 
          if (nNumRead > 0)
          {
-            bSuccess = TRUE;
+            bSuccess = true;
          }
       }
    }
@@ -1607,7 +1607,7 @@ int main( int argc, char *argv[] )
        }
        else if (!bURLFound)
        {
-          bURLFound  = TRUE;
+          bURLFound  = true;
           //if no "://" was found lets add file:// by default so that you
           //can refer to local content as just ./splay ~/Content/startrek.rm,
           //for example, and not ./splay file:///home/gregory/Content/startrek.rm

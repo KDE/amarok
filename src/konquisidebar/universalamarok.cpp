@@ -110,7 +110,7 @@ browser->view()->installEventFilter(widget);
     fileInfo = new QFileInfo(HTML_FILE);
     QTimer *t = new QTimer( this );
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
-    t->start( 2000, FALSE );
+    t->start( 2000, false );
 kdDebug() << "Connecting widget signal" << endl;
     connect( widget, SIGNAL(emitURL( const KURL &)), this, SLOT(openURLRequest( const KURL &) ) );
         connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),

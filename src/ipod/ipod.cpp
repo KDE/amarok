@@ -187,7 +187,7 @@ IPod::IPodError IPod::renamePlaylist(const QString& title, const QString& newtit
     if( playlist == NULL) {
         return Err_DoesNotExist;
     }
-    itunesdb.removePlaylist(title, FALSE);
+    itunesdb.removePlaylist(title, false);
     playlist->setTitle(newtitle);
     itunesdb.handlePlaylist(*playlist);
     delete playlist;

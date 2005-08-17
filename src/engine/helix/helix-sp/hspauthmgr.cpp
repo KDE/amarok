@@ -26,7 +26,7 @@
 
 HSPAuthenticationManager::HSPAuthenticationManager(HelixSimplePlayer *pSplay) :
     m_lRefCount(0),
-    m_bSentPassword(FALSE),
+    m_bSentPassword(false),
     m_splayer(pSplay)
 {
 }
@@ -102,7 +102,7 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
             ;
         *(c+1) = 0;
         
-        m_bSentPassword = TRUE;
+        m_bSentPassword = true;
     }
 
     if (m_splayer->bEnableVerboseMode && FAILED(res) )
