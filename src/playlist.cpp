@@ -1462,9 +1462,6 @@ Playlist::clear() //SLOT
     KListView::clear();
 
     emit itemCountChanged( childCount(), m_totalLength, 0, 0, 0, 0 );
-
-    if( isDynamic() && !m_undoDirt )
-        repopulate();
 }
 
 void
