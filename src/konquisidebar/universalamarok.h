@@ -27,6 +27,8 @@
 #include <qvbox.h>
 #include <khtmlview.h>
 #include <kurl.h>
+#include "amarokdcopiface_stub.h"
+
 /**
 @author Marco Gulino
 */
@@ -74,6 +76,8 @@ private:
    QFileInfo* fileInfo;
    QDateTime fileDT;
    QSlider* vol_slider;
+   AmarokPlayerInterface_stub *playerStub;
+   AmarokPlaylistInterface_stub *playlistStub;
    
 public slots:
     void updateBrowser(const QString&);

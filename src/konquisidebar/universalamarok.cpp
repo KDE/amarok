@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include "universalamarok.h"
+#include "amarokdcopiface_stub.h"
+
 
 #include <qlabel.h>
 #include <kinstance.h>
@@ -87,6 +89,9 @@ kdDebug() << "parentPart() << " << browser->parentPart() << endl;
 browser->view()->installEventFilter(widget);
     amarokDCOP=new DCOPClient();
     amarokDCOP->attach();
+    playerStub=new AmarokPlayerInterface_stub( amarokDCOP, "amarok", "player");
+    playlistStub=new AmarokPlaylistInterface_stub( amarokDCOP, "amarok", "playlist");
+
     KToolBar* toolBar=new KToolBar(widget, "PlayerControls");
     toolBar->setMaximumHeight(48);
     toolBar->insertButton("player_start",0,SIGNAL(clicked() ),this, SLOT(sendPrev() ) );
@@ -128,7 +133,9 @@ UniversalAmarok::~UniversalAmarok()
 #include "universalamarok.moc"
 
 #if ! KDE_IS_VERSION(3,4,0)
-#define KDE_EXPORT __attribute__ ((visibility("default"))) 
+#ifdef __KDE_HAVE_GCC_VISIBILITY
+#define KDE_EXPORT __attribute__ ((visibility("default")))
+#endif
 #endif
 
 // FIXME: is this referenced from anywhere ??!
@@ -179,6 +186,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
  */
 void UniversalAmarok::updateStatus()
 {
+    vol_slider->setValue( 100-playerStub->getVolume() );
     fileInfo->refresh();
     if( fileInfo->lastModified() != fileDT )
     {
@@ -193,14 +201,7 @@ void UniversalAmarok::updateStatus()
  */
 QString UniversalAmarok::getCurrentPlaying()
 {
-    QCString returnType;
-    QByteArray returnData;
-    QString result;
-    if(! amarokDCOP->call("amarok", "player", "nowPlaying()", QByteArray(), returnType, returnData) ) return NULL;
-    if(returnType!="QString") return NULL;
-    QDataStream dataparsing(returnData, IO_ReadOnly);
-    dataparsing >> result;
-    return result;
+    return playerStub->nowPlaying();
 }
 
 
@@ -209,12 +210,9 @@ QString UniversalAmarok::getCurrentPlaying()
  */
 void UniversalAmarok::openURLRequest( const KURL &url )
 {
-   kdDebug() << "amarok-sidebar: Catched url request: " << url << endl;
+    if( ! url.isValid() ) return;
    checkForAmarok();
-   QByteArray data;
-   QDataStream arg(data, IO_WriteOnly);
-   arg << url;
-   amarokDCOP->send("amarok", "playlist", "playMedia(KURL)", data);
+   playlistStub->playMedia(url);
 }
 
 
@@ -230,10 +228,7 @@ void UniversalAmarok::checkForAmarok()
 void UniversalAmarok::volChanged(int vol)
 {
     checkForAmarok();
-    QByteArray data;
-    QDataStream arg(data, IO_WriteOnly);
-    arg << 100-vol;
-    amarokDCOP->send("amarok", "player", "setVolume(int)", data );
+    playerStub->setVolume(100-vol);
 }
 
 void UniversalAmarok::showIntroduction()
