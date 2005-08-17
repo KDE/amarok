@@ -557,7 +557,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         text = MetaBundle::prettyTitle( bundle.url().fileName() ).stripWhiteSpace();
 
     if( text.isEmpty() ) //still
-        text = "No information available for this track";
+        text = i18n("No information available for this track");
 
     OSDWidget::show( text );
 }
