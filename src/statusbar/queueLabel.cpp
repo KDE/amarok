@@ -116,8 +116,6 @@ void QueueLabel::leaveEvent( QEvent* )
 
 void QueueLabel::aboutToShow()
 {
-    m_tooltipShowing = false;
-
     if( hasMouse() )
         showToolTip();
 }
@@ -177,6 +175,11 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
 void QueueLabel::showToolTip()
 {
+    if( m_tooltipShowing )
+        return;
+
+    m_tooltipShowing = true;
+
     Playlist     *pl    = Playlist::instance();
     const uint    count = pl->m_nextTracks.count();
     PlaylistItem *item  = pl->m_nextTracks.getFirst();
@@ -193,8 +196,6 @@ void QueueLabel::showToolTip()
     m_tooltip->setText( text );
 
     m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
-
-    m_tooltipShowing = true;
     m_tooltip->show();
 }
 

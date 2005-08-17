@@ -107,16 +107,18 @@ class ToggleLabel : public QLabel
     private slots:
         void aboutToShow()
         {
-            m_tooltipShowing = false;
             if( hasMouse() )
-            {
                 showToolTip();
-            }
         }
 
     private:
         void showToolTip()
         {
+            if( m_tooltipShowing )
+                return;
+
+            m_tooltipShowing = true;
+
             QString tip = m_action->isChecked() ? i18n("%1: on") : i18n("%1: off");
 
             if( !isEnabled() )
@@ -133,7 +135,6 @@ class ToggleLabel : public QLabel
             m_tooltip->setImage( path );
 
             m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
-            m_tooltipShowing = true;
             m_tooltip->show();
         }
 
