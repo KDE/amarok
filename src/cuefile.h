@@ -8,6 +8,7 @@
 #include <qmap.h>
 
 #include <qobject.h>
+#include "engineobserver.h"
 
 class CueFileItem {
     public:
@@ -33,21 +34,29 @@ class CueFileItem {
         long    m_index;
 };
 
-class CueFile : public QObject, public QMap<long, CueFileItem>
+class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObserver
 {
         Q_OBJECT
 
     public:
 
-        CueFile() { };
+        CueFile() : EngineObserver(), m_lastSeekPos(-1) { };
+        CueFile(EngineSubject *s) : EngineObserver(s), m_lastSeekPos(-1) { };
 
         ~CueFile(){ };
         void setCueFileName( QString name ) { m_cueFileName = name; };
         bool load();
 
+        // EngineObserver
+        virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ );
+
+    signals:
+        /** Transmits new metadata bundle */
+        void metaData( const MetaBundle& );
 
     private:
         QString m_cueFileName;
+        int m_lastSeekPos; // in seconds
 };
 
 

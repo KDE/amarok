@@ -8,6 +8,8 @@
 #include <qstringlist.h>
 
 #include "cuefile.h"
+#include "metabundle.h"
+#include "enginecontroller.h"
 #include "debug.h"
 
 
@@ -95,6 +97,30 @@ bool CueFile::load()
     else {
         return false;
     }
+}
+
+void CueFile::engineTrackPositionChanged( long position, bool userSeek )
+{
+    position /= 1000;
+    if(userSeek || position > m_lastSeekPos)
+    {
+//         debug() << "[CUEFILE]: received new seek notify to pos " << position << endl;
+        CueFile::Iterator it;
+        for ( it = begin(); it != end(); ++it )
+        {
+//             debug() << "[CUEFILE]: checking against pos " << it.key()/1000 << endl;
+            if(it.key()/1000 == position)
+            {
+                MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it
+                bundle.setTitle(it.data().getTitle());
+                bundle.setArtist(it.data().getArtist());
+                emit metaData(bundle);
+                break;
+            }
+        }
+    }
+
+    m_lastSeekPos = position;
 }
 
 

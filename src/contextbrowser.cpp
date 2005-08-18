@@ -449,7 +449,9 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         QString path    = bundle.url().path();
         QString cueFile = path.left( path.findRev('.') ) + ".cue";
 
-        m_cuefile = new CueFile;
+        m_cuefile = new CueFile(EngineController::instance()); // FIXME berkus: le grand borkage (if engine is changed, e.g.)?
+        connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
+                 EngineController::instance(), SLOT(slotStreamMetaData( const MetaBundle& )) );
         m_cuefile->setCueFileName( cueFile );
 
         if( m_cuefile->load() )
@@ -1657,7 +1659,7 @@ bool CurrentTrackJob::doJob()
                     m_HTMLSource.append(
                     "<tr class='" + QString( (i++ % 2) ? "box-row-alt" : "box-row" ) + "'>"
                         "<td class='song'>"
-                            "<a href=\"seek: " + QString::number(it.key()) + "\">"
+                            "<a href=\"seek:" + QString::number(it.key()) + "\">"
                             "<span class='album-song-trackno'>" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>"
                             "<span class='album-song-title'>" + it.data().getArtist() + "</span>"
                             "<span class='song-separator'>"
