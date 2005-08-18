@@ -28,7 +28,7 @@
 #include <kwin.h>
 
 
-CoverFetcher::CoverFetcher( QWidget *parent, QString artist, QString album )
+CoverFetcher::CoverFetcher( QWidget *parent, const QString &artist, QString album )
         : QObject( parent, "CoverFetcher" )
         , m_artist( artist )
         , m_album( album )

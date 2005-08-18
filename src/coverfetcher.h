@@ -18,7 +18,7 @@ class CoverFetcher : public QObject
    static const uint MAX_COVERS_CHOICE = 10;
 
 public:
-    CoverFetcher( QWidget *parent, QString artist, QString album );
+    CoverFetcher( QWidget *parent, const QString &artist, QString album );
    ~CoverFetcher();
 
     /// allow the user to edit the query?
