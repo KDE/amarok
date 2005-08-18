@@ -62,7 +62,8 @@ void amarokWidget::dropEvent(QDropEvent* event)
     if( KURLDrag::decode(event, urlList) )
     {
         KURL::List::iterator it;
-        for (it = urlList.begin(); it != urlList.end(); ++it )
+        KURL::List::iterator end( urlList.end() );
+        for (it = urlList.begin(); it != end; ++it )
             emit emitURL(*it);
     }
 }

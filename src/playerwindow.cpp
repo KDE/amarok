@@ -227,8 +227,8 @@ void PlayerWidget::setScroll( const QStringList &list )
 {
     QString text;
     QStringList list2( list );
-
-    for( QStringList::Iterator it = list2.begin(); it != list2.end(); )
+    QStringList::Iterator end( list2.end() );
+    for( QStringList::Iterator it = list2.begin(); it != end; )
     {
         if( !(*it).isEmpty() )
         {

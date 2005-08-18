@@ -521,16 +521,16 @@ TagDialog::saveTags()
     {
 
         storeTags();
-
-        for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != storedTags.end(); ++it ) {
+        QMap<QString, MetaBundle>::ConstIterator endStore( storedTags.end() );
+        for(QMap<QString, MetaBundle>::ConstIterator it = storedTags.begin(); it != endStore; ++it ) {
             if( writeTag( it.data(), it == --storedTags.end() ) )    //update the collection browser if it's the last track
                 Playlist::instance()->updateMetaData( it.data() );
             else
                 amaroK::StatusBar::instance()->longMessage( i18n(
                     "Sorry, the tag for %1 could not be changed." ).arg( it.data().prettyURL() ) );
         }
-
-        for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != storedScores.end(); ++it ) {
+        QMap<QString, int>::ConstIterator end( storedScores.end() );
+        for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != end; ++it ) {
             CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
         }
     }

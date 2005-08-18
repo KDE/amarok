@@ -87,8 +87,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
 
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-amaroK-plugintype] == 'engine'" );
-
-    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != offers.end(); ++it ) {
+    KTrader::OfferList::ConstIterator end( offers.end() );
+    for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
         m_soundSystem->insertItem( (*it)->name() );
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-amaroK-name" ).toString();

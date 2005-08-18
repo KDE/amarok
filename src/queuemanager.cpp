@@ -408,7 +408,8 @@ QueueManager::addQueuedItem( PlaylistItem *item )
         if( removableItem )
         {
             //Remove the key from the map, so we can re-queue the item
-            for( QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.begin(); it != m_map.end(); ++it )
+            QMapIterator<QListViewItem*, PlaylistItem*> end(  m_map.end() );
+            for( QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.begin(); it != end; ++it )
             {
                 if( it.data() == item )
                 {

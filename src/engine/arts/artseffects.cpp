@@ -85,8 +85,8 @@ void ArtsEngine::saveEffects()
     QDomDocument doc;
     QDomElement root = doc.createElement( "aRts-Effects" );
     doc.appendChild( root );
-
-    for ( QMap<long, EffectContainer>::Iterator it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
+    QMap<long, EffectContainer>::Iterator end( m_effectMap.end() );
+    for ( QMap<long, EffectContainer>::Iterator it = m_effectMap.begin(); it != end; ++it )
     {
         QDomElement tagEffect = doc.createElement( "effect" );
         root.appendChild( tagEffect );
@@ -173,8 +173,8 @@ std::vector<long> ArtsEngine::activeEffects() const
 {
     std::vector<long> vec;
     QMap<long, EffectContainer>::ConstIterator it;
-
-    for ( it = m_effectMap.begin(); it != m_effectMap.end(); ++it )
+    QMap<long, EffectContainer>::ConstIterator end(m_effectMap.end() );
+    for ( it = m_effectMap.begin(); it != end; ++it )
     {
         vec.push_back( it.key() );
     }

@@ -613,7 +613,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
             urls.clear(); //remove urlString
             KURL url;
-            for( QStringList::ConstIterator it = values.begin(); it != values.end(); ++it )
+            QStringList::ConstIterator end ( values.begin() );
+            for( QStringList::ConstIterator it = values.begin(); it != end; ++it )
             {
                 url.setPath( *it );
                 urls.append( url );

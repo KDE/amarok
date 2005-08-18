@@ -145,7 +145,8 @@ ScriptManager::~ScriptManager()
 
     QStringList runningScripts;
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
+    ScriptMap::Iterator end( m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it ) {
         if ( it.data().process ) {
             delete it.data().process;
             runningScripts << it.key();
@@ -194,8 +195,8 @@ ScriptManager::listRunningScripts()
 {
     QStringList runningScripts;
     ScriptMap::ConstIterator it;
-
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+    ScriptMap::ConstIterator end(m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it )
         if ( it.data().process )
             runningScripts << it.key();
 
@@ -224,7 +225,8 @@ ScriptManager::findScripts() //SLOT
     // Add found scripts to listview:
 
     QStringList::ConstIterator it;
-    for ( it = allFiles.begin(); it != allFiles.end(); ++it )
+    QStringList::ConstIterator end( allFiles.end() );
+    for ( it = allFiles.begin(); it != end; ++it )
         if ( QFileInfo( *it ).isExecutable() )
             loadScript( *it );
 
@@ -238,7 +240,8 @@ ScriptManager::findScripts() //SLOT
         const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
         QStringList::ConstIterator it;
-        for ( it = runningScripts.begin(); it != runningScripts.end(); ++it ) {
+        QStringList::ConstIterator end( runningScripts.end() );
+        for ( it = runningScripts.begin(); it != end; ++it ) {
             if ( m_scripts.contains( *it ) ) {
                 debug() << "Auto-running script: " << *it << endl;
                 m_gui->listView->setCurrentItem( m_scripts[*it].li );
@@ -333,7 +336,8 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
     const QStringList entries = archiveDir->entries();
 
     QStringList::ConstIterator it;
-    for ( it = entries.begin(); it != entries.end(); ++it ) {
+    QStringList::ConstIterator end( entries.end() );
+    for ( it = entries.begin(); it != end; ++it ) {
         const QString entry = *it;
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
@@ -397,7 +401,8 @@ ScriptManager::slotUninstallScript()
     // Find all scripts that were in the uninstalled folder
     QStringList keys;
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+    ScriptMap::Iterator end( m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it )
         if ( it.data().url.directory() == directory )
             keys << it.key();
 
@@ -529,7 +534,8 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
 
     // Look up script entry in our map
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+    ScriptMap::Iterator end( m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it )
         if ( it.data().li == item ) break;
 
     enum { SHOW_LOG, EDIT };
@@ -577,7 +583,8 @@ ScriptManager::slotReceivedStdout( KProcess* process, char* buf, int len )
 
     // Look up script entry in our map
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+    ScriptMap::Iterator end( m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it )
         if ( it.data().process == process ) break;
 
     it.data().log += QString::fromLatin1( buf, len );
@@ -591,7 +598,8 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 
     // Look up script entry in our map
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it )
+    ScriptMap::Iterator end( m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it )
         if ( it.data().process == process ) break;
 
     // Check if there was an error on exit
@@ -626,7 +634,8 @@ ScriptManager::notifyScripts( const QString& message )
     debug() << "Sending notification: " << message << endl;
 
     ScriptMap::Iterator it;
-    for ( it = m_scripts.begin(); it != m_scripts.end(); ++it ) {
+    ScriptMap::Iterator end( m_scripts.end() );
+    for ( it = m_scripts.begin(); it != end; ++it ) {
         KProcIO* const proc = it.data().process;
         if ( proc ) proc->writeStdin( message );
     }
