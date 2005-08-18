@@ -63,12 +63,12 @@ void QueueLabel::setNum( int num )
         show();
 
         const QString text = QString::number( num );
-        const int th = height() - 4;
         QFont f = font();
-        f.setPixelSize( th );
-        const int tw = QFontMetrics( f ).width( text );
+        if( QFontMetrics( f ).height() > height() - 2 )
+            f.setPixelSize( height() - 2 );
+        const int th = QFontMetrics( f ).height(),      h = th,
+                  tw = QFontMetrics( f ).width( text ), w = kMax( h, tw + h/4 + 2 );
 
-        const int h = height(), w = kMax( h, tw + h/4 + 2 );
         QPixmap pix( w, h );
         QPainter p( &pix );
 
