@@ -17,6 +17,7 @@ VERSION 1.3.1:
       updated and improved.
 
   BUGFIXES:
+    * Selecting Classical equalizer preset prompted for name.
     * Fixed konqueror sidebar compilation with kde <= 3.3 and gcc patched for
     visibility.
     * Konqueror sidebar can switch again between tabs.

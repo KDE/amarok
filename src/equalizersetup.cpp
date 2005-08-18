@@ -270,28 +270,28 @@ EqualizerSetup::savePresets()
 void
 EqualizerSetup::presetChanged( int id ) //SLOT
 {
-    if( id == 0 ) // Saving
-    {
-        bool ok;
-        const QString title = KInputDialog::getText( i18n("Save Equalizer Preset"),
-                                                     i18n("Enter preset name:"), i18n("Untitled"), &ok, this);
-
-        if( ok )
-        {
-            QValueList<int> gains;
-
-            for ( uint i = 0; i < m_bandSliders.count(); i++ )
-                gains += m_bandSliders.at( i )->value();
-
-            m_totalPresets++;
-            m_presets[ m_totalPresets ] = gains;
-            m_presetPopup->insertItem( title, m_totalPresets );
-            m_presetPopup->setItemChecked( m_currentPreset, false );
-            m_presetPopup->setItemChecked( m_totalPresets, true );
-            m_currentPreset = m_totalPresets;
-        }
-        return;
-    }
+//     if( id == 0 ) // Saving
+//     {
+//         bool ok;
+//         const QString title = KInputDialog::getText( i18n("Save Equalizer Preset"),
+//                                                      i18n("Enter preset name:"), i18n("Untitled"), &ok, this);
+//
+//         if( ok )
+//         {
+//             QValueList<int> gains;
+//
+//             for ( uint i = 0; i < m_bandSliders.count(); i++ )
+//                 gains += m_bandSliders.at( i )->value();
+//
+//             m_totalPresets++;
+//             m_presets[ m_totalPresets ] = gains;
+//             m_presetPopup->insertItem( title, m_totalPresets );
+//             m_presetPopup->setItemChecked( m_currentPreset, false );
+//             m_presetPopup->setItemChecked( m_totalPresets, true );
+//             m_currentPreset = m_totalPresets;
+//         }
+//         return;
+//     }
 
 
     const QValueList<int> gains = m_presets[ id ];
