@@ -62,7 +62,7 @@ k_dcop:
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
    virtual QString path() = 0;                              ///< Return the unencoded path of the currently playing track.
-   virtual QString setContextStyle(const QString& ) =0;     ///< Set the CSS style for the context browser
+   virtual QString setContextStyle(const QString& ) = 0;     ///< Set the CSS style for the context browser
    virtual QString title() = 0;                             ///< Return the title of the currently playing track.
    virtual QString totalTime() = 0;                         ///< Return the total length of the currently playing track ([h:]mm:ss format).
    virtual QString track() = 0;                             ///< Return the track number.
@@ -82,7 +82,7 @@ k_dcop:
    virtual void queueForTransfer( KURL url ) = 0;           ///< Queue file for transfer to Media Device.
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
-   virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) =0;  ///< Set the equalizer bands
+   virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) = 0;  ///< Set the equalizer bands
    virtual void setEqualizerEnabled( bool active ) = 0;     ///< Toggle equalizer.
    virtual void setLyricsByPath( const QString& url, const QString& lyrics ) = 0;   ///< Set the lyrics of a track by it's path.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
