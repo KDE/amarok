@@ -12,12 +12,14 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * Improved Konqueror Sidebar.
     * The bundled "Shouter" AmarokScript (for radio stream serving) was
       updated and improved.
 
   BUGFIXES:
     * Fixed konqueror sidebar compilation with kde <= 3.3 and gcc patched for
     visibility.
+    * Konqueror sidebar can switch again between tabs.
     * Fixed playing of oggs in helix engine.
     * Fixed crash in helix engine when switching engines if helix/realplayer not installed
     * Undo/Redo for the playlist was broken in some cases.
