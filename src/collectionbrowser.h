@@ -6,6 +6,7 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
+#include "qlabel.h"
 #include "qvbox.h"           //baseclass
 
 #include <klistview.h>       //baseclass
@@ -38,6 +39,7 @@ class CollectionBrowser: public QVBox
 
     public:
         CollectionBrowser( const char* name );
+        void refreshInfo();
 
     public slots:
         void setupDirs();
@@ -60,9 +62,11 @@ class CollectionBrowser: public QVBox
         KPopupMenu* m_cat1Menu;
         KPopupMenu* m_cat2Menu;
         KPopupMenu* m_cat3Menu;
-        KLineEdit* m_searchEdit;
+        KLineEdit*  m_searchEdit;
         CollectionView* m_view;
-        QTimer* m_timer;
+        QLabel*     m_infoTracks;
+        QLabel*     m_infoAlbums;
+        QTimer*     m_timer;
 };
 
 

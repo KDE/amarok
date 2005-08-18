@@ -27,6 +27,7 @@
 #include <qapplication.h>
 #include <qcstring.h>
 #include <qdragobject.h>
+#include <qlayout.h>        //infobox
 #include <qpainter.h>
 #include <qptrlist.h>
 #include <qpushbutton.h>
@@ -153,8 +154,48 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
+//     QHBoxLayout *info = new QHBoxLayout( this, 0, 2, "infobox" );
+    QHBox *hb = new QHBox( this );
+    m_infoTracks = new QLabel( hb/*this*/ );
+    m_infoAlbums = new QLabel( hb/*this*/ );
+
+//     info->addWidget( m_infoAlbums );
+//     info->addWidget( m_infoTracks );
+
+    refreshInfo();
+
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
+}
+
+void
+CollectionBrowser::refreshInfo()
+{
+    QStringList a = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
+    QStringList b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
+
+    if( a.isEmpty() )
+    {
+        m_infoTracks->hide();
+    }
+    else
+    {
+        const QString count = a[0];
+        const QString textTracks = count + i18n(" Tracks");
+        m_infoTracks->show();
+        m_infoTracks->setText( textTracks );
+    }
+    if( b.isEmpty() )
+    {
+        m_infoAlbums->hide();
+    }
+    else
+    {
+        const QString count = b[0];
+        const QString textAlbums = count + i18n(" Albums");
+        m_infoAlbums->show();
+        m_infoAlbums->setText( textAlbums );
+    }
 }
 
 void
@@ -523,6 +564,7 @@ CollectionView::scanDone( bool changed ) //SLOT
     if ( changed )
     {
         renderView();
+        m_parent->refreshInfo();
 
         //restore cached item
         if ( !m_cacheItem.isEmpty() )
