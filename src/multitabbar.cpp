@@ -710,7 +710,8 @@ void MultiTabBarTab::drawButtonStyled( QPainter *paint )
     if ( ( m_style == MultiTabBar::KDEV3 ) || ( m_style == MultiTabBar::KDEV3ICON ) || ( m_style == MultiTabBar::AMAROK ) || ( isOn() ) ) {
         if ( ( m_position == MultiTabBar::Left ) || ( m_position == MultiTabBar::Right ) )
             sh = QSize( this->height(), this->width() ); //MultiTabBarButton::sizeHint();
-        else sh = QSize( this->width(), this->height() );
+        else
+            sh = QSize( this->width(), this->height() );
     } else
         sh = QSize( width, height );
 

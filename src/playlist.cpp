@@ -982,7 +982,7 @@ Playlist::queue( QListViewItem *item, bool multi )
             PlaylistItem *after = m_nextTracks.last();
 
             if( after )
-                this->moveItem( item, 0, after );
+                moveItem( item, 0, after );
         }
     }
     else if( !isDynamic() )

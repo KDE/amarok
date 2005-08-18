@@ -535,7 +535,7 @@ void CoverManager::slotSetFilter() //SLOT
     m_coverView->setAutoArrange( false );
     for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
-        if( coverItem->album().contains( m_filter, false ) || coverItem->artist().contains( m_filter, FALSE ) )
+        if( coverItem->album().contains( m_filter, false ) || coverItem->artist().contains( m_filter, false ) )
             m_coverView->insertItem( item, m_coverView->lastItem() );
     }
     m_coverView->setAutoArrange( true );
@@ -570,7 +570,7 @@ void CoverManager::changeView( int id  ) //SLOT
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( !m_filter.isEmpty() ) {
-            if( !coverItem->album().contains( m_filter, false ) && !coverItem->artist().contains( m_filter, FALSE ) )
+            if( !coverItem->album().contains( m_filter, false ) && !coverItem->artist().contains( m_filter, false ) )
                 continue;
         }
 

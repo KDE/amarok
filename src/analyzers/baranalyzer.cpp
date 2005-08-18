@@ -47,7 +47,7 @@ void BarAnalyzer::resizeEvent( QResizeEvent * e )
 {
     debug() << "Baranalyzer Resized(" << width() << "x" << height() << ")" << endl;
     Analyzer::Base2D::resizeEvent( e );
-    this->init();
+    init();
 }
 
 // METHODS =====================================================

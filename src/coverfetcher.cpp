@@ -176,9 +176,9 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         if ( it.isElement() ) {
             QDomElement e = it.toElement();
             if(e.tagName()=="Asin")
-            {   
+            {
                 m_asin = e.firstChild().toText().data();
-                debug() << "setting the ASIN as" << m_asin << endl; 
+                debug() << "setting the ASIN as" << m_asin << endl;
                 break;
             }
         }

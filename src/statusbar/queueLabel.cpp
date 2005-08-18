@@ -196,7 +196,7 @@ void QueueLabel::showToolTip()
     m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
     m_tooltip->setText( text );
 
-    m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
+    m_tooltip->move( x(), y() + m_tooltip->height() );
     m_tooltip->display();
 }
 
