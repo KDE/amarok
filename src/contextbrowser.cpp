@@ -320,6 +320,11 @@ void ContextBrowser::openURLRequest( const KURL &url )
         {
             CollectionView::instance()->setupDirs();
         }
+        // Konqueror sidebar needs these
+        if( url.path() == "home") { m_dirtyHomePage=true; showHome(); saveHtmlData(); }
+        if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showCurrentTrack(); saveHtmlData(); }
+        if (url.path() == "wiki") { m_dirtyLyricsPage=true; showWikipedia(); saveHtmlData(); }
+        if (url.path() == "lyrics") { m_dirtyWikiPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
     }
 
     // When left-clicking on cover image, open browser with amazon site

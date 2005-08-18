@@ -94,6 +94,7 @@ public slots:
     void cbHome() { openURLRequest( KURL("show:home") ) ; }
     void lyrics() { openURLRequest( KURL("show:lyrics") ) ; }
     void currentTrack() { openURLRequest( KURL("show:context") ) ; }
+    void wiki() { openURLRequest( KURL("show:wiki") ) ; }
 };
 
 #endif

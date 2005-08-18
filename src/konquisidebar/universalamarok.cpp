@@ -78,8 +78,16 @@ bool amarokWidget::eventFilter( QObject *, QEvent *e )
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
+    KGlobal::iconLoader()->addAppDir("amarok");
     widget=new amarokWidget(widgetParent);
 //    widgetParent->resize(580,300);
+    KToolBar *topBar=new KToolBar(widget, "Topbar");
+    topBar->setIconSize(16);
+    topBar->insertButton("gohome",0,SIGNAL(clicked() ),this, SLOT(cbHome() ) );
+    topBar->insertButton("today",0,SIGNAL(clicked() ),this, SLOT(currentTrack() ) );
+    topBar->insertButton("document",0,SIGNAL(clicked() ),this, SLOT(lyrics() ) );
+    topBar->insertButton( "wiki" ,0,SIGNAL(clicked() ),this, SLOT(wiki() ) );
+
     browser = new KHTMLPart(widget, "widget-browser");
 //browser=new KHTMLPart(widget);
 kdDebug() << "parentPart() << " << browser->parentPart() << endl;
