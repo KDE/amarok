@@ -215,7 +215,7 @@ class CollectionDB : public QObject, public EngineObserver
     public:
         static CollectionDB *instance();
 
-        QString escapeString( QString string ) { return m_dbConnPool->escapeString(string); }
+        QString escapeString( const QString &string ) { return m_dbConnPool->escapeString(string); }
         QString boolT() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'t'"; else return "1"; }
         QString boolF() { if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) return "'f'"; else return "0"; }
         QString textColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }

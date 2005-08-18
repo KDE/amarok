@@ -261,9 +261,9 @@ MetaBundle::infoByColumn( int column, bool pretty ) const
 }
 
 QString
-MetaBundle::prettyTitle( QString filename ) //static
+MetaBundle::prettyTitle( const QString &filename ) //static
 {
-    QString &s = filename; //just so the code is more readable
+    QString s = filename; //just so the code is more readable
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
@@ -288,7 +288,7 @@ MetaBundle::prettyTime( uint seconds, bool showHours ) //static
     QString s = QChar( ':' );
     s.append( zeroPad( seconds % 60 ) ); //seconds
     seconds /= 60;
-    
+
     if( showHours && seconds >= 60)
     {
         s.prepend( zeroPad( seconds % 60 ) ); //minutes

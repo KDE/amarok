@@ -128,7 +128,7 @@ public:
     static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
     static QString prettyTime( uint, bool showHours = true );
     static QString zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }
-    static QString prettyTitle( QString );
+    static QString prettyTitle( const QString &filename );
     static QStringList genreList();
 
 public:

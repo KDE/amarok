@@ -910,7 +910,7 @@ void CoverView::setStatusText( QIconViewItem *item )
 //    CLASS CoverViewItem
 /////////////////////////////////////////////////////////////////////
 
-CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, QString artist, QString album )
+CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, const QString &artist, const QString &album )
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )

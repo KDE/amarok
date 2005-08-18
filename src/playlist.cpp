@@ -2204,13 +2204,13 @@ Playlist::burnSelectedTracks( int projectType )
 }
 
 void
-Playlist::addCustomMenuItem(QString submenu, QString itemTitle )  //for dcop
+Playlist::addCustomMenuItem( const QString &submenu, const QString &itemTitle )  //for dcop
 {
         m_customSubmenuItem[submenu] << itemTitle;
 }
 
 bool
-Playlist::removeCustomMenuItem( QString submenu, QString itemTitle )  //for dcop
+Playlist::removeCustomMenuItem( const QString &submenu, const QString &itemTitle )  //for dcop
 {
     if( !m_customSubmenuItem.contains(submenu) )
         return false;

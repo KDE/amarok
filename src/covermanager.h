@@ -122,7 +122,7 @@ class CoverView : public KIconView
 class CoverViewItem : public KIconViewItem
 {
     public:
-        CoverViewItem( QIconView *parent, QIconViewItem *after, QString artist, QString album );
+        CoverViewItem( QIconView *parent, QIconViewItem *after, const QString &artist, const QString &album );
 
         void loadCover();
         bool hasCover() const;

@@ -102,9 +102,9 @@ class Playlist : private KListView, public EngineObserver
         void saveXML( const QString& );
         int  totalTrackCount();
 
-        void addCustomMenuItem ( QString submenu, QString itemTitle );
+        void addCustomMenuItem ( const QString &submenu, const QString &itemTitle );
         void customMenuClicked ( int id );
-        bool removeCustomMenuItem( QString submenu, QString itemTitle );
+        bool removeCustomMenuItem( const QString &submenu, const QString &itemTitle );
 
         void setFont( const QFont &f ) { KListView::setFont( f ); } //made public for convenience
         void unsetFont()               { KListView::unsetFont(); }
