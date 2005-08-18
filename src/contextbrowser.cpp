@@ -444,6 +444,12 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
 
 
     // cue
+    if(m_cuefile)
+    {
+        delete m_cuefile;
+        m_cuefile = 0;
+    }
+
     if (trackChanged && bundle.url().isLocalFile()) {
         // look if there is a cue-file
         QString path    = bundle.url().path();

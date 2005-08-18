@@ -108,7 +108,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
         CueFile::Iterator it;
         for ( it = begin(); it != end(); ++it )
         {
-//             debug() << "[CUEFILE]: checking against pos " << it.key()/1000 << endl;
+//             debug() << "[CUEFILE]: checking against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
             if(it.key()/1000 == position)
             {
                 MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it
