@@ -1118,7 +1118,7 @@ void PlaylistBrowser::loadOldPlaylists()
     m_playlistCategory->setOpen( true );
 }
 
-void PlaylistBrowser::addPlaylist( QString path, QListViewItem *parent, bool force )
+void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, bool force )
 {
     // this function adds a playlist to the playlist browser
 

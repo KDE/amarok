@@ -48,7 +48,7 @@ class PlaylistBrowser : public QVBox
         void addStream( QListViewItem *parent = 0 );
         void addSmartPlaylist( QListViewItem *parent = 0 );
         void addDynamic( QListViewItem *parent = 0 );
-        void addPlaylist( QString path, QListViewItem *parent = 0, bool force=false );
+        void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
 
         QString partyBrowserCache() const;
