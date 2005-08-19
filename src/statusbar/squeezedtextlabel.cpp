@@ -116,6 +116,7 @@ void SqueezedTextLabel::squeezeTextToLabel()
             text += "...";
         }
         QLabel::setText( text );
+	QToolTip::remove( this );
         QToolTip::add( this, fullText );
     }
     else
