@@ -5,8 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.1:
   FEATURES:
-    * New DCOP call "playlist::repopulate". Repopulates the playlist with
-       tracks from dynamic mode.
+    * New DCOP call "playlist: repopulate". Repopulates the playlist with
+      tracks from dynamic mode.
     * New DCOP call "player: showBrowser". Allows for showing of playlist
       window browser, see the handbook for useage.
     * New DCOP call "player: setLyricsByPath". Allows adding custom lyrics
