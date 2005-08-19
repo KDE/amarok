@@ -239,7 +239,7 @@ namespace amaroK
             EqualizerSetup::instance()->raise();
     }
 
-    void DcopPlayerHandler::enableDynamicMode(bool enable)
+    void DcopPlayerHandler::enableDynamicMode( bool enable )
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( enable );
     }
@@ -250,17 +250,17 @@ namespace amaroK
         AmarokConfig::setOsdEnabled( enable );
     }
 
-    void DcopPlayerHandler::enableRandomMode(bool enable)
+    void DcopPlayerHandler::enableRandomMode( bool enable )
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( enable );
     }
 
-    void DcopPlayerHandler::enableRepeatPlaylist(bool enable)
+    void DcopPlayerHandler::enableRepeatPlaylist( bool enable )
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_playlist" ))->setChecked( enable );
     }
 
-     void DcopPlayerHandler::enableRepeatTrack(bool enable)
+     void DcopPlayerHandler::enableRepeatTrack( bool enable)
     {
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_track" ))->setChecked( enable );
     }
@@ -350,6 +350,20 @@ namespace amaroK
     void DcopPlayerHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
+    }
+
+    void DcopPlayerHandler::showBrowser( QString browser )
+    {
+        if ( browser == "context" )
+            PlaylistWindow::self()->showBrowser( "ContextBrowser" );
+        if ( browser == "collection" )
+            PlaylistWindow::self()->showBrowser( "CollectionBrowser" );
+        if ( browser == "playlist" )
+            PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+        if ( browser == "media" )
+            PlaylistWindow::self()->showBrowser( "MediaBrowser" );
+        if ( browser == "file" )
+            PlaylistWindow::self()->showBrowser( "FileBrowser" );
     }
 
     void DcopPlayerHandler::showOSD()
@@ -477,6 +491,11 @@ namespace amaroK
             Playlist::instance()->removeItem( item );
             delete item;
         }
+    }
+
+    void DcopPlaylistHandler::repopulate()
+    {
+        Playlist::instance()->repopulate();
     }
 
     void DcopPlaylistHandler::saveM3u( const QString& path, bool relativePaths )

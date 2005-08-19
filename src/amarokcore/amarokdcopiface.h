@@ -88,6 +88,7 @@ k_dcop:
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
    virtual void setScoreByPath( const QString &url, int score ) = 0;  ///< Set the score of a track by it's path.
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.
+   virtual void showBrowser( QString browser ) = 0;   ///<Shows browsers in the playlist window.
    virtual void showOSD() = 0;                              ///< Show the OSD display on the screen.
    virtual void stop() = 0;                                 ///< Equivalent to pressing "Stop" button.
    virtual void transferDeviceFiles() = 0;                  ///< Transfer files to media device.
@@ -115,6 +116,7 @@ k_dcop:
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
    virtual void popupMessage(const QString&) = 0;           ///< Shows a temporary popup message.
    virtual void removeCurrentTrack() = 0;                   ///< Removes the current-track item from the playlist.
+   virtual void repopulate() = 0;               ///< Repopulate the playlist with random tracks.
    virtual void saveM3u(const QString& path, bool relativePaths) = 0;  ///< Saves the current playlist as m3u.
                                                             ///< path = path for saving,  relativePaths = whether to write relative paths.
    virtual void setStopAfterCurrent( bool ) = 0;            ///< Enables/disables the "Stop After Current Track" feature.
