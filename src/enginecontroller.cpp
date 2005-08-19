@@ -160,13 +160,13 @@ EngineController::loadEngine( const QString &engineName )
                        this,   SLOT(slotStateChanged( Engine::State )) );
             connect( engine, SIGNAL(trackEnded()),
                        this,   SLOT(slotTrackEnded()) );
-			if( bar )
-			{
-            	connect( engine, SIGNAL(statusText( const QString& )),
-                	        bar,   SLOT(shortMessage( const QString& )) );
-	            connect( engine, SIGNAL(infoMessage( const QString& )),
-    	                    bar,   SLOT(longMessage( const QString& )) );
-			}
+            if( bar )
+            {
+                connect( engine, SIGNAL(statusText( const QString& )),
+                            bar,   SLOT(shortMessage( const QString& )) );
+                connect( engine, SIGNAL(infoMessage( const QString& )),
+                            bar,   SLOT(longMessage( const QString& )) );
+            }
             connect( engine, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
                        this,   SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
             connect( engine, SIGNAL(showConfigDialog( const QCString& )),
@@ -315,10 +315,9 @@ void EngineController::play( const MetaBundle &bundle )
     if ( m_timer->isActive() && m_bundle.length() > 0 )
         trackEnded( m_engine->position(), m_bundle.length() * 1000 );
 
-    if ( m_engine->pluginProperty( "StreamingMode") != "NoStreaming" && (url.protocol() == "http" ||
-        ( url.protocol() == "zeroconf" && url.path().section( '/',1,1 ) == "_shoutcast._tcp" ) ) ) {
+    if ( url.protocol() == "http" ||
+        ( url.protocol() == "zeroconf" && url.path().section( '/',1,1 ) == "_shoutcast._tcp" ) ) {
         m_bundle = bundle;
-        m_xFadeThisTrack = false;
         // Detect mimetype of remote file
         KIO::MimetypeJob* job = KIO::mimetype( url, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(playRemote( KIO::Job* )) );
@@ -507,6 +506,8 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
     if ( isStream && m_engine->pluginProperty( "StreamingMode" ) != "NoStreaming" )
     {
+        m_xFadeThisTrack = false;
+
         delete m_stream;
         m_stream = new amaroK::StreamProvider( url, m_engine->pluginProperty( "StreamingMode" ) );
 
@@ -522,7 +523,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         connect( m_stream, SIGNAL(streamData( char*, int )),
                  m_engine,   SLOT(newStreamData( char*, int )) );
         connect( m_stream, SIGNAL(sigError()),
-                 this,     SLOT(slotSigError()));
+                 this,       SLOT(slotSigError()));
     }
     else if( !m_engine->play( url, isStream ) && !AmarokConfig::repeatPlaylist() )
     {

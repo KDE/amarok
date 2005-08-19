@@ -196,7 +196,7 @@ XineEngine::makeNewStream()
 bool
 XineEngine::load( const KURL &url, bool isStream )
 {
-    Engine::Base::load( url, isStream || url.protocol() == "http" );
+    Engine::Base::load( url, isStream );
 
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
     {
