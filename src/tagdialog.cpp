@@ -4,6 +4,7 @@
 // See COPYING file for licensing information.
 
 #include "debug.h"
+#include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "metabundle.h"
 #include "playlist.h"
@@ -540,6 +541,7 @@ TagDialog::saveTags()
 void
 TagDialog::saveMultipleTracks()
 {
+    bool tagsChanged = false, anyTrack = false;
     const KURL::List::ConstIterator end = m_urlList.end();
     for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
         if( !(*it).isLocalFile() ) continue;
@@ -556,7 +558,6 @@ TagDialog::saveMultipleTracks()
   TODO: All this mess is because the dialog uses "" to represent what the user
         doesn't want to change, maybe we can think of something better?
    */
-        bool tagsChanged = false;
         if( !kComboBox_artist->currentText().isEmpty() && kComboBox_artist->currentText() != mb.artist() ||
              kComboBox_artist->currentText().isEmpty() && !m_bundle.artist().isEmpty() ) {
             mb.setArtist( kComboBox_artist->currentText() );
@@ -588,13 +589,17 @@ TagDialog::saveMultipleTracks()
             CollectionDB::instance()->setSongPercentage( mb.url().path(), kIntSpinBox_score->value() );
 
         if ( tagsChanged ) { // We only try to update the file if one of the tags changed
-            if( writeTag( mb, it == --m_urlList.end() ) )    //update the collection browser if it's the last track
+            if( writeTag( mb, false ) ) //leave the Collection Browser update to be made after all changes
                 Playlist::instance()->updateMetaData( mb );
             else
                 amaroK::StatusBar::instance()->longMessage( i18n(
                     "Sorry, the tag for %1 could not be changed." ).arg( mb.prettyURL() ) );
         }
+        anyTrack |= tagsChanged;
     }
+    // if any change was really made for any of the tracks, update Collection Browser.
+    if (anyTrack)
+        CollectionView::instance()->renderView();
 }
 
 
