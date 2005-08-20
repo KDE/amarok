@@ -55,6 +55,7 @@ k_dcop:
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
+   virtual QString engine() = 0;                        ///<Return the current sound engine. 
    virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
    virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
    virtual QString lyricsByPath( QString path ) = 0;        ///< Return the lyrics of a track by path.

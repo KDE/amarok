@@ -177,6 +177,11 @@ namespace amaroK
         return EngineController::instance()->bundle().url().url();
     }
 
+    QString DcopPlayerHandler::engine()
+    {
+        return AmarokConfig::soundSystem();
+    }
+
     QString DcopPlayerHandler::genre()
     {
         return EngineController::instance()->bundle().genre();
