@@ -5,6 +5,18 @@ amaroK ChangeLog
 
 VERSION 1.3.1:
   FEATURES:
+    * New DCOP call "collection: totalTracks". Returns the total number of
+      tracks in the collection.
+    * New DCOP call "collection: totalGenres". Returns the total number of
+      genres in the collection.
+    * New DCOP call "collection: totalCompilations". Returns the total number
+      of compilations in the collection.
+    * New DCOP call "collection: totalArtists". Returns the total number of
+      artists in the collection.
+    * New DCOP call "collection: totalAlbums". Returns the total number of
+      tracks in the collection.
+    * New DCOP call "collection: similarArtists(int artists)". Returns the
+      similar artists of the current track, results are limited by 'artists'.
     * New DCOP call "playlist: repopulate". Repopulates the playlist with
       tracks from dynamic mode.
     * New DCOP call "player: showBrowser". Allows for showing of playlist
