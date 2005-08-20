@@ -15,7 +15,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.             *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
 /** WARNING this is not meant for use outside this unit! */
@@ -63,12 +63,6 @@ class ToggleLabel : public QLabel
 
     protected:
         void mousePressEvent( QMouseEvent* )
-        {
-            if( KGlobalSettings::singleClick() )
-                mouseDoubleClickEvent( 0 );
-        }
-
-        void mouseDoubleClickEvent( QMouseEvent* )
         {
             const bool b = !isChecked();
             if( isEnabled() )
