@@ -22,6 +22,7 @@ end
 file = File.new( "src/pluginmanager.h", File::RDWR )
 str = file.read()
 file.rewind()
+file.truncate( 0 )
 temp = str.scan( /static const int FrameworkVersion = [0-9]*;/ )
 @version = temp.join().scan( /[0-9]*/ ).join().to_i()
 @version = @version + 1
@@ -43,6 +44,7 @@ Dir.foreach( "engine" ) do |x|
         file = File.new( Dir["engine/#{x}/*.desktop"].join(), File::RDWR )
         str = file.read()
         file.rewind()
+        file.truncate( 0 )
         str.sub!( /X-KDE-amaroK-framework-version=[0-9]*/, "X-KDE-amaroK-framework-version=#{@version}" )
         file << str
         file.close()
