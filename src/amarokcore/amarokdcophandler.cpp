@@ -537,9 +537,43 @@ namespace amaroK
         , QObject( kapp )
     {}
 
+    int DcopCollectionHandler::totalAlbums()
+    {
+        QStringList albums = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
+        QString total = albums[0];
+        return total.toInt();
+    }
+
+    int DcopCollectionHandler::totalArtists()
+    {
+        QStringList artists = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
+        QString total = artists[0];
+        return total.toInt();
+    }
+
+    int DcopCollectionHandler::totalGenres()
+    {
+        QStringList genres = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM genre;" );
+        QString total = genres[0];
+        return total.toInt();
+    }
+
+    int DcopCollectionHandler::totalTracks()
+    {
+        QStringList tracks = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
+        QString total = tracks[0];
+        int final = total.toInt();
+        return final;
+    }
+
     QStringList DcopCollectionHandler::query( const QString& sql )
     {
         return CollectionDB::instance()->query( sql );
+    }
+ 
+   QStringList DcopCollectionHandler::similarArtists( int artists )
+    {
+        return CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), artists );
     }
 
     void DcopCollectionHandler::scanCollection()

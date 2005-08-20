@@ -131,7 +131,12 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
        DcopCollectionHandler();
 
    public /* DCOP */ slots:
+      virtual int totalAlbums();
+      virtual int totalArtists();
+      virtual int totalGenres();
+      virtual int totalTracks();
       virtual QStringList query(const QString& sql);
+      virtual QStringList similarArtists( int artists );
       virtual void scanCollection();
       virtual void scanCollectionChanges();
 };
