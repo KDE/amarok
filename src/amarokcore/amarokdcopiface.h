@@ -134,6 +134,7 @@ class AmarokCollectionInterface : virtual public DCOPObject
 k_dcop:
    virtual int totalAlbums() = 0;                       ///< Returns the total of albums in the collection.
    virtual int totalArtists() = 0;                       ///< Returns the total of artists in the collection.
+   virtual int totalCompilations() = 0;                       ///< Returns the total of compilations in the collection.
    virtual int totalGenres() = 0;                       ///< Returns the total of genres in the collection.
    virtual int totalTracks() = 0;                       ///< Returns the total of tracks in the collection.
    virtual QStringList query(const QString& sql) = 0;       ///< Queries the database via SQL.
