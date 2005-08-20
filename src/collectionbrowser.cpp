@@ -172,7 +172,7 @@ void
 CollectionBrowser::refreshInfo()
 {
     QStringList a = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
-    QStringList b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
+    QStringList b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
 
     if( a.isEmpty() )
     {
@@ -192,7 +192,7 @@ CollectionBrowser::refreshInfo()
     else
     {
         const QString count = b[0];
-        const QString textAlbums = count + i18n(" Albums");
+        const QString textAlbums = count + i18n(" Artists");
         m_infoAlbums->show();
         m_infoAlbums->setText( textAlbums );
     }
