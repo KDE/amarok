@@ -121,10 +121,10 @@
                         <string>Show player window (like &amp;XMMS)</string>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Check to enable a extra player window.</string>
+                        <string>Check to enable an extra player window.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Check to enable a extra player window.</string>
+                        <string>Check to enable an extra player window.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
