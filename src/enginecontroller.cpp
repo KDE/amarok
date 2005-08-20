@@ -504,7 +504,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
     const bool isStream = mimetype.isEmpty() || mimetype == "text/html" ||
                           url.host().endsWith( "last.fm" ); // HACK last.fm uses the mimetype audio/x-mp3
 
-    if ( isStream && m_engine->pluginProperty( "StreamingMode" ) != "NoStreaming" )
+    if( isStream && m_engine->pluginProperty( "StreamingMode" ) != "NoStreaming" )
     {
         m_xFadeThisTrack = false;
 
@@ -525,7 +525,13 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
         connect( m_stream, SIGNAL(sigError()),
                  this,       SLOT(slotSigError()));
     }
-    else if( !m_engine->play( url, isStream ) && !AmarokConfig::repeatPlaylist() )
+    else if( m_engine->play( url, isStream ) )
+    {
+        // Ask engine for track length, if available.
+        const uint trackLength = m_engine->length();
+        if ( trackLength ) m_bundle.setLength( trackLength / 1000 );
+    }
+    else if( !AmarokConfig::repeatPlaylist() )
     {
         next();
         return; //don't notify
