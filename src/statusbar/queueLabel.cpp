@@ -152,7 +152,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         {
             menus.append( new KPopupMenu );
             menu->insertSeparator();
-            menu->insertItem( i18n( "%1 More Tracks" ).arg( count - i + 1 ), menus.getLast() );
+            menu->insertItem( i18n( "1 More Track", "%n More Tracks", count - i + 1 ), menus.getLast() );
             menu = menus.getLast();
         }
     }
