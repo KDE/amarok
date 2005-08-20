@@ -1810,9 +1810,10 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
     query = query.simplifyWhiteSpace();
 
     int x; //position in string of the end of the next element
-    bool minus = false; //whether the next element is to be negated
+    bool OR = false, minus = false; //whether the next element is to be OR, and/or negated
     QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
-    QStringList list; //list of elements of which at least one has to match (OR)
+    QStringList tmpl; //list of elements of which at least one has to match (OR)
+    QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
     while( !query.isEmpty() )  //seperate query into parts which all have to match
     {
         if( query.startsWith( " " ) )
@@ -1829,54 +1830,73 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
         s = query.left( x ); //get the element
         query = query.mid( x + 1 ); //move on
 
-        if( !field.isEmpty() || ( s != "-" && !s.endsWith( ":" ) ) )
+        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" && !s.endsWith( ":" ) ) )
         {
+            if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
+            {
+                allof += tmpl;
+                tmpl.clear();
+            }
+            else
+                OR = false;
             tmp = field + s;
             if( minus )
             {
                 tmp = "-" + tmp;
                 minus = false;
             }
-            list += tmp;
+            tmpl += tmp;
             tmp = field = "";
         }
         else if( s.endsWith( ":" ) )
             field = s;
+        else if( s == "OR" )
+            OR = true;
         else if( s == "-" )
             minus = true;
-    }
-
-    const uint count = list.count();
-    for( uint i = 0; i < count; ++i )
-    {
-        field = QString::null;
-        s = list[i];
-        bool neg = s.startsWith( "-" );
-        if ( neg )
-            s = s.mid( 1 ); //cut off the -
-        x = s.find( ":" ); //where the field ends and the thing-to-match begins
-        if( x > 0 )
-        {
-            field = s.left( x ).lower();
-            s = s.mid( x + 1 );
-        }
-
-        int table = -1;
-        if( field == "artist" )
-            table = QueryBuilder::tabArtist;
-        else if( field == "album" )
-            table = QueryBuilder::tabAlbum;
-        else if( field == "title" )
-            table = QueryBuilder::tabSong;
-        else if( field == "genre" )
-            table = QueryBuilder::tabGenre;
-        else if( field == "year" )
-            table = QueryBuilder::tabYear;
-
-        if( neg )
-            qb.excludeFilter( table >= 0 ? table : defaults, s );
         else
-            qb.addFilter( table >= 0 ? table : defaults, s );
+            OR = false;
+    }
+    if( !tmpl.isEmpty() )
+        allof += tmpl;
+
+    const uint allofcount = allof.count();
+    for( uint i = 0; i < allofcount; ++i ) //check each part for matchiness
+    {
+        qb.beginOR();
+        uint count = allof[i].count();
+        for( uint ii = 0; ii < count; ++ii )
+        {
+            field = QString::null;
+            s = allof[i][ii];
+            bool neg = s.startsWith( "-" );
+            if ( neg )
+                s = s.mid( 1 ); //cut off the -
+            x = s.find( ":" ); //where the field ends and the thing-to-match begins
+            if( x > 0 )
+            {
+                field = s.left( x ).lower();
+                s = s.mid( x + 1 );
+            }
+
+            int table = -1;
+            if( field == "artist" )
+                table = QueryBuilder::tabArtist;
+            else if( field == "album" )
+                table = QueryBuilder::tabAlbum;
+            else if( field == "title" )
+                table = QueryBuilder::tabSong;
+            else if( field == "genre" )
+                table = QueryBuilder::tabGenre;
+            else if( field == "year" )
+                table = QueryBuilder::tabYear;
+
+            if( neg )
+                qb.excludeFilter( table >= 0 ? table : defaults, s );
+            else
+                qb.addFilter( table >= 0 ? table : defaults, s );
+        }
+        qb.endOR();
     }
 }
 

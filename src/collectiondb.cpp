@@ -2592,6 +2592,7 @@ void DbConnectionPool::putDbConnection( const DbConnection *conn )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QueryBuilder::QueryBuilder()
+    : m_OR( false )
 {
     clear();
 }
@@ -2674,7 +2675,7 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
@@ -2693,7 +2694,7 @@ QueryBuilder::addFilter( int tables, const QString& filter, int /*mode*/ )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
         if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
             if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
@@ -2723,11 +2724,11 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
-            m_where += " AND ( " + CollectionDB::instance()->boolF() + " ";
+            m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
             if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
                 if ( tables & tabAlbum ) m_where += "OR album.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
                 if ( tables & tabArtist ) m_where += "OR artist.name ~* '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
@@ -2758,7 +2759,7 @@ QueryBuilder::addMatch( int tables, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
         if ( tables & tabAlbum ) m_where += "OR album.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabArtist ) m_where += "OR artist.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabGenre ) m_where += "OR genre.name LIKE '" + CollectionDB::instance()->escapeString( match ) + "' ";
@@ -2784,7 +2785,7 @@ QueryBuilder::addMatch( int tables, int value, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
         m_where += QString( "OR %1.%2 LIKE '" ).arg( tableName( tables ) ).arg( valueName( value ) ) + CollectionDB::instance()->escapeString( match ) + "' ";
 
         if ( ( value & valName ) && match == i18n( "Unknown" ) )
@@ -2802,7 +2803,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
 
         for ( uint i = 0; i < match.count(); i++ )
         {
@@ -2834,7 +2835,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
         if (CollectionDB::instance()->getType() == DbConnection::postgresql) {
           if ( tables & tabAlbum ) m_where += "AND album.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
           if ( tables & tabArtist ) m_where += "AND artist.name !~* '" + CollectionDB::instance()->escapeString( filter ) + "' ";
@@ -2862,7 +2863,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 {
     if ( !match.isEmpty() )
     {
-        m_where += "AND ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
         if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
         if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";

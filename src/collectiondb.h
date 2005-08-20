@@ -421,6 +421,9 @@ class QueryBuilder
         void addReturnFunctionValue( int function, int table, int value);
         uint countReturnValues();
 
+        void beginOR(); //filters will be ORed instead of ANDed
+        void endOR();   //don't forget to end it!
+
         void addURLFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter, int mode = modeNormal );
@@ -455,6 +458,9 @@ class QueryBuilder
 
         void linkTables( int tables );
 
+        bool m_OR;
+        QString ANDslashOR() const;
+
         QString m_query;
         QString m_values;
         QString m_tables;
@@ -467,6 +473,18 @@ class QueryBuilder
         int m_linkTables;
         uint m_returnValues;
 };
+
+inline void QueryBuilder::beginOR()
+{
+    m_OR = true;
+    m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+}
+inline void QueryBuilder::endOR()
+{
+    m_OR = false;
+    m_where += " ) ";
+}
+inline QString QueryBuilder::ANDslashOR() const { return m_OR ? "OR" : "AND"; }
 
 
 #endif /* AMAROK_COLLECTIONDB_H */

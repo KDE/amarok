@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.1:
   FEATURES:
+    * You can use OR in the collection browser filter now, like in the
+      playlist filter.
     * New DCOP call "collection: totalTracks". Returns the total number of
       tracks in the collection.
     * New DCOP call "collection: totalGenres". Returns the total number of
