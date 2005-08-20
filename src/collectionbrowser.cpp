@@ -156,13 +156,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
 //     QHBoxLayout *info = new QHBoxLayout( this, 0, 2, "infobox" );
     QHBox *hb = new QHBox( this );
-    m_infoTracks = new QLabel( hb/*this*/ );
-    m_infoAlbums = new QLabel( hb/*this*/ );
+    m_infoA = new QLabel( hb/*this*/ );
+    m_infoB = new QLabel( hb/*this*/ );
 
 //     info->addWidget( m_infoAlbums );
 //     info->addWidget( m_infoTracks );
-
-    refreshInfo();
+    refreshInfo(); // Need to call this here because collectionview is ctor'd before the labels
 
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
@@ -171,30 +170,53 @@ CollectionBrowser::CollectionBrowser( const char* name )
 void
 CollectionBrowser::refreshInfo()
 {
+    if( !m_infoA || !m_infoB )
+        return;
+
     QStringList a = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
-    QStringList b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
+
+    QStringList b;
+    QString descriptor;
+    if( m_view )
+    {
+        switch( m_view->m_cat1 )
+        {
+            case IdArtist:
+                b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
+                descriptor = i18n(" Artists");
+                break;
+            case IdAlbum:
+                b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
+                descriptor = i18n(" Albums");
+                break;
+            case IdGenre:
+                b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM genre;" );
+                descriptor = i18n(" Genres");
+                break;
+        }
+    }
 
     if( a.isEmpty() )
     {
-        m_infoTracks->hide();
+        m_infoA->hide();
     }
     else
     {
         const QString count = a[0];
         const QString textTracks = count + i18n(" Tracks");
-        m_infoTracks->show();
-        m_infoTracks->setText( textTracks );
+        m_infoA->show();
+        m_infoA->setText( textTracks );
     }
     if( b.isEmpty() )
     {
-        m_infoAlbums->hide();
+        m_infoB->hide();
     }
     else
     {
         const QString count = b[0];
-        const QString textAlbums = count + i18n(" Artists");
-        m_infoAlbums->show();
-        m_infoAlbums->setText( textAlbums );
+        const QString secondaryText = count + descriptor;
+        m_infoB->show();
+        m_infoB->setText( secondaryText );
     }
 }
 
@@ -289,6 +311,8 @@ void
 CollectionView::renderView()  //SLOT
 {
     DEBUG_FUNC_INFO
+
+    m_parent->refreshInfo();
 
     //we use this list to show the bits the user was looking at again
     QStringList currentItemPath;
