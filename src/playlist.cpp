@@ -2692,13 +2692,12 @@ void
 Playlist::setFilterSlot( const QString &query ) //SLOT
 {
     m_filtertimer->stop();
-    if( isAdvancedQuery( query ) )
+    if( m_filter != query )
     {
+        m_prevfilter = m_filter;
         m_filter = query;
-        m_filtertimer->start( 50, true );
     }
-    else
-        setFilter( query );
+    m_filtertimer->start( 50, true );
 }
 
 void
@@ -2710,14 +2709,18 @@ Playlist::setDelayedFilter() //SLOT
 void
 Playlist::setFilter( const QString &query ) //SLOT
 {
-    MyIt it( this, ( !isAdvancedQuery( query ) && query.lower().startsWith( m_filter.lower() ) )
+    MyIt it( this, ( !isAdvancedQuery( query ) && query.lower().contains( m_prevfilter.lower() ) )
                    ? MyIt::Visible
                    : MyIt::All );
 
     for( ;*it; ++it )
         setFilterForItem( query, *it );
 
-    m_filter = query;
+    if( m_filter != query )
+    {
+        m_prevfilter = m_filter;
+        m_filter = query;
+    }
 
     //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
     showCurrentTrack();
@@ -2783,15 +2786,11 @@ Playlist::setFilterForItem( const QString &query, PlaylistItem *item )
 bool
 Playlist::isAdvancedQuery( const QString &query )
 {
-    if( query.contains( "\""  ) ||
-        query.contains( ":"   ) ||
-        query.contains( "-"   ) ||
-        query.contains( "AND" ) ||
-        query.contains( "OR"  ) )
-
-        return true;
-
-    return false;
+    return ( query.contains( "\""  ) ||
+             query.contains( ":"   ) ||
+             query.contains( "-"   ) ||
+             query.contains( "AND" ) ||
+             query.contains( "OR"  ) );
 }
 
 void

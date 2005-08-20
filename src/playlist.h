@@ -248,6 +248,7 @@ class Playlist : private KListView, public EngineObserver
         PLItemList m_nextTracks;    //the tracks to be played after the current track
 
         QString m_filter;
+        QString m_prevfilter;
         QTimer *m_filtertimer;
 
         PLItemList m_itemsToChangeTagsFor;
