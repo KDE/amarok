@@ -80,8 +80,8 @@ class ToggleLabel : public QLabel
 
         void enterEvent( QEvent* )
         {
-            //Show the tooltip after 2 seconds
-            QTimer::singleShot( 1000, this, SLOT(aboutToShow()) );
+            //Show the tooltip after 1/2 second
+            QTimer::singleShot( 500, this, SLOT(aboutToShow()) );
         }
 
         void leaveEvent( QEvent* )
