@@ -28,7 +28,7 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
     static MetaBundle cachedtags = MetaBundle();
     static QString tipBuf = QString::null;
     static bool hasLength = true; //needed to know whether to .arg() in the current pos
-    if( cachedtags != tags || tipBuf.isNull() ) //we don't autoupdate when the columns change, but *blahrg*.
+    if( cachedtags != tags || cachedtags.url() != tags.url() || tipBuf.isNull() )
     {
         tipBuf = "";
         QStringList left, right;
@@ -124,5 +124,6 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
         cachedtags = tags;
     }
 
+    QToolTip::remove( widget );
     QToolTip::add( widget, hasLength ? tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) : tipBuf );
 }
