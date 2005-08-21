@@ -402,12 +402,13 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_transferList->setAcceptDrops( true );
     m_transferList->addColumn( i18n( "URL" ) );
 
-    QHBox* hb( this );
-    hb->setSpacing( 4 );
-    m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), hb );
-    m_progress = new KProgress( hb );
+    m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), this );
+    m_progress = new KProgress( this );
+
+    QHBox* hb = new QHBox( this );
+    hb->setSpacing( 2 );
     m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
-    m_connectButton = new QPushButton( i18n( "Open"), hb );
+    m_connectButton = new QPushButton( SmallIconSet( "fileopen" ), i18n( "Open"), hb );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
