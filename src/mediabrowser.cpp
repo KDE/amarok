@@ -407,8 +407,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     QHBox* hb = new QHBox( this );
     hb->setSpacing( 2 );
+    m_connectButton = new QPushButton( SmallIconSet( "reload" ), i18n( "Refresh view"), hb );
     m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
-    m_connectButton = new QPushButton( SmallIconSet( "fileopen" ), i18n( "Open"), hb );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
