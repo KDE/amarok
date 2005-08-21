@@ -154,13 +154,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
-//     QHBoxLayout *info = new QHBoxLayout( this, 0, 2, "infobox" );
     QHBox *hb = new QHBox( this );
-    m_infoA = new QLabel( hb/*this*/ );
-    m_infoB = new QLabel( hb/*this*/ );
+    m_infoA = new QLabel( hb );
+    m_infoB = new QLabel( hb );
+    m_infoB->setAlignment( Qt::AlignRight );
 
-//     info->addWidget( m_infoAlbums );
-//     info->addWidget( m_infoTracks );
     refreshInfo(); // Need to call this here because collectionview is ctor'd before the labels
 
     setFocusProxy( m_view ); //default object to get focus
