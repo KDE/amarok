@@ -407,16 +407,20 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     QHBox* hb = new QHBox( this );
     hb->setSpacing( 2 );
-    m_connectButton = new QPushButton( SmallIconSet( "reload" ), i18n( "Refresh view"), hb );
+    m_connectButton = new QPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
     m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+    m_disconnectButton = new QPushButton( SmallIconSet( "usbpendrive_unmount" ), i18n( "Disconnect"), hb );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
 
     m_connectButton->setDisabled( m_deviceList->childCount() != 0 );
+    m_transferButton->setDisabled( true );
+    m_disconnectButton->setDisabled( m_deviceList->childCount() == 0 );
 
-    connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     connect( m_connectButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectIpod() ) );
+    connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
+    connect( m_disconnectButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( disconnectIpod() ) );
 }
 
 
@@ -471,7 +475,6 @@ MediaDevice::~MediaDevice()
     delete m_ipod;
 }
 
-
 void
 MediaDevice::addURL( const KURL& url )
 {
@@ -486,10 +489,18 @@ MediaDevice::addURL( const KURL& url )
 
         m_transferURLs << url;
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
+        m_parent->m_transferButton->setDisabled( false );
     } else
         amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
 
+void
+MediaDevice::addURLs( const KURL::List urls )
+{
+        KURL::List::ConstIterator it = urls.begin();
+        for ( ; it != urls.end(); ++it )
+            addURL( (*it).path() );
+}
 
 QStringList
 MediaDevice::items( QListViewItem* item )
@@ -741,9 +752,37 @@ MediaDevice::connectIpod() //SLOT
 {
     m_ipod = new IPod::IPod();
     openIPod();
-
     m_parent->m_deviceList->renderView( 0 );
-    m_parent->m_connectButton->setDisabled( m_parent->m_deviceList->childCount() != 0 );
+
+    if( m_parent->m_deviceList->childCount() != 0 )
+    {
+        m_parent->m_connectButton->setDisabled( true );
+        m_parent->m_disconnectButton->setDisabled( false );
+    }
+    else
+    {
+    KMessageBox::error( m_parent->m_parent,
+        i18n( "Could not find iPod, please mount it and try again." ),
+        i18n( "MediaDevice Browser" ) );
+    }
+}
+
+void
+MediaDevice::disconnectIpod() //SLOT
+{
+    if ( m_parent->m_transferList->childCount() != 0 &&  m_ipod->isStillConnected() )
+    {
+            transferFiles();
+    }
+    fileTransferFinished();
+    m_ipod->close();
+    m_ipod = new IPod::IPod();
+    m_parent->m_deviceList->renderView( 0 );
+    m_parent->m_connectButton->setDisabled( false );
+    m_parent->m_disconnectButton->setDisabled( true );
+    KMessageBox::error( m_parent->m_parent,
+        i18n( "Your iPod is now in sync, please unmount it and disconnect now." ),
+        i18n( "MediaDevice Browser" ) );
 }
 
 bool
@@ -783,6 +822,7 @@ MediaDevice::fileTransferFinished()  //SLOT
 
     m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
     m_parent->m_progress->hide();
+    m_parent->m_transferButton->setDisabled( true );
 }
 
 

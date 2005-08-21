@@ -110,6 +110,7 @@ class MediaDeviceView : public QVBox
         KListView*       m_transferList;
         QPushButton*     m_transferButton;
         QPushButton*     m_connectButton;
+        QPushButton*     m_disconnectButton;
 
         MediaBrowser* m_parent;
 };
@@ -126,6 +127,7 @@ class MediaDevice : public QObject
         ~MediaDevice();
 
         void addURL( const KURL& url );
+        void addURLs( const KURL::List urls );
         QStringList items( QListViewItem* item );
         KURL::List songsByArtist( const QString& artist );
         KURL::List songsByArtistAlbum( const QString& artist, const QString& album );
@@ -137,6 +139,7 @@ class MediaDevice : public QObject
         void deleteFiles( const KURL::List& urls );
         void deleteFromIPod( MediaItem* item );
         void connectIpod();
+        void disconnectIpod();
 
     private slots:
         void fileTransferred();

@@ -17,6 +17,7 @@
 
 #include "directorylist.h"
 #include "k3bexporter.h"
+#include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia()
 #include "statusbar.h"
@@ -1045,19 +1046,20 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
 
         #ifdef AMAZON_SUPPORT
-        enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
+        enum Actions { APPEND, MAKE, QUEUE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM,
                        BURN_DATACD, BURN_AUDIOCD, COVER, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET };
+                       COMPILATION_SET, COMPILATION_UNSET  };
         #else
         enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
                        BURN_DATACD, BURN_AUDIOCD, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET };
+                       COMPILATION_SET, COMPILATION_UNSET, MEDIA_DEVICE };
         #endif
         KURL::List selection = listSelected();
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" )
             : i18n( "&Queue Tracks" ), QUEUE );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to MediaDevice Queue" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
 
@@ -1101,11 +1103,14 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             case APPEND:
                 Playlist::instance()->insertMedia( selection, Playlist::Append );
                 break;
-            case MAKE:
+           case MAKE:
                 Playlist::instance()->insertMedia( selection, Playlist::Replace );
                 break;
             case QUEUE:
                 Playlist::instance()->insertMedia( selection, Playlist::Queue );
+                break;
+             case MEDIA_DEVICE:
+                MediaDevice::instance()->addURLs( selection );
                 break;
             case BURN_ARTIST:
                 K3bExporter::instance()->exportArtist( item->text(0) );
