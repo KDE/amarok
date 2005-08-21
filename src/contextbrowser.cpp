@@ -1658,11 +1658,11 @@ bool CurrentTrackJob::doJob()
                         "<td class='song'>"
                             "<a href=\"seek:" + QString::number(it.key()) + "\">"
                             "<span class='album-song-trackno'>" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>"
-                            "<span class='album-song-title'>" + it.data().getArtist() + "</span>"
+                            "<span class='album-song-title'>" + it.data().getTitle() + "</span>"
                             "<span class='song-separator'>"
                             + i18n("&#xa0;&#8211; ") +
                             "</span>"
-                            "<span class='album-song-title'>" + it.data().getTitle() + "</span>"
+                            "<span class='album-song-title'>" + it.data().getArtist() + "</span>"
                             "</a>"
                         "</td>"
                     ""
