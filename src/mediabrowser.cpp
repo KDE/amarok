@@ -407,11 +407,13 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_stats = new QLabel( i18n( "1 track in queue", "%n tracks in queue", m_transferList->childCount() ), hb );
     m_progress = new KProgress( hb );
     m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+    m_connectButton = new QPushButton( i18n( "Open"), hb );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
 
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
+    connect( m_connectButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectIpod() ) );
 }
 
 
@@ -731,6 +733,14 @@ MediaDevice::deleteFromIPod( MediaItem* item )
     }
 }
 
+void
+MediaDevice::connectIpod() //SLOT
+{
+    m_ipod = new IPod::IPod();
+    openIPod();
+
+    m_parent->m_deviceList->renderView( 0 );
+}
 
 bool
 MediaDevice::fileExists( const MetaBundle& bundle )
