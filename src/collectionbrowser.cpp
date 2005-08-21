@@ -277,8 +277,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ),
              this,                      SLOT( scanDone( bool ) ) );
 
-    connect( this,           SIGNAL( currentChanged( QListViewItem* ) ),
-             this,             SLOT( cacheItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( expanded( QListViewItem* ) ),
              this,             SLOT( slotExpand( QListViewItem* ) ) );
     connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
@@ -314,11 +312,8 @@ CollectionView::renderView()  //SLOT
 
     m_parent->refreshInfo();
 
-    //we use this list to show the bits the user was looking at again
-    QStringList currentItemPath;
-    if ( m_viewMode == modeTreeView )
-        for( QListViewItem *item = currentItem(); item; item = item->parent() )
-            currentItemPath.prepend( item->text( 0 ) );
+    if ( childCount() )
+        cacheView();
 
     clear();
     QPixmap pixmap = iconForCategory( m_cat1 );
@@ -508,37 +503,13 @@ CollectionView::renderView()  //SLOT
             }
         }
 
-        //open up tree that contains the previous currentItem
-        QListViewItem *item = firstChild();
-        for( QStringList::ConstIterator it = currentItemPath.begin(); item && it != currentItemPath.end(); )
-        {
-            if ( item->text( 0 ) == *it )
-            {
-                if ( ++it == currentItemPath.end() )
-                    break;
-                if ( !item->isExpandable() )
-                    break;
-                item->setOpen( true );
-                item = item->firstChild();
-            }
-            else
-                item = item->nextSibling();
-        }
-
-        //ensure the previous currentItem is set current and visible
-        if ( item )
-        {
-            item->setSelected( true );
-            setCurrentItem( item );
-            ensureItemVisible( item );
-        }
         // we sort because of the items which should begin with 'the' are at the 't' location
         setSorting( 0 );
         sort();
         // we then disable it, as we don't want the children being sorted later as well
         setSorting( -1 );
     }
-
+    restoreView();
 }
 
 
@@ -589,35 +560,6 @@ CollectionView::scanDone( bool changed ) //SLOT
     {
         renderView();
         m_parent->refreshInfo();
-
-        //restore cached item
-        if ( !m_cacheItem.isEmpty() )
-        {
-            QListViewItem* item = this->findItem( m_cacheItem[ 0 ], 0 );
-            if ( item )
-            {
-                item->setOpen( true );
-                for ( uint i = 1; i < m_cacheItem.count() && item; i++ )
-                {
-                    item = item->firstChild();
-                    while ( item )
-                    {
-                        if ( item->text( 0 ) == m_cacheItem[ i ] )
-                        {
-                            item->setOpen( true );
-                            break;
-                        }
-                        item = item->nextSibling();
-                    }
-                }
-
-                if ( item )
-                {
-                    item->setSelected( true );
-                    this->ensureItemVisible( item );
-                }
-            }
-        }
     }
     m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
 }
@@ -1320,37 +1262,6 @@ CollectionView::startDrag()
 }
 
 
-void
-CollectionView::cacheItem( QListViewItem* item )
-{
-    m_cacheItem.clear();
-
-    if ( item )
-    {
-        switch ( item->depth() )
-        {
-            case 0: m_cacheItem << item->text( 0 );
-                    break;
-
-            case 1: m_cacheItem << item->parent()->text( 0 );
-                    m_cacheItem << item->text( 0 );
-                    break;
-
-            case 2: m_cacheItem << item->parent()->parent()->text( 0 );
-                    m_cacheItem << item->parent()->text( 0 );
-                    m_cacheItem << item->text( 0 );
-                    break;
-
-            case 3: m_cacheItem << item->parent()->parent()->parent()->text( 0 );
-                    m_cacheItem << item->parent()->parent()->text( 0 );
-                    m_cacheItem << item->parent()->text( 0 );
-                    m_cacheItem << item->text( 0 );
-                    break;
-            }
-        }
-}
-
-
 KURL::List
 CollectionView::listSelected()
 {
@@ -1750,6 +1661,79 @@ CollectionView::captionForCategory( const int cat ) const
 
     return QString::null;
 }
+
+void
+CollectionView::cacheView()
+{
+    //free cache
+    m_cacheOpenItemPaths.clear();
+    m_cacheViewportTopItem = QString::null;
+
+    m_cacheCurrentItem = currentItem() ? currentItem()->text( 0 ) : QString::null;
+
+    //cache expanded/open items
+    if ( m_viewMode == modeTreeView ) {
+        QListViewItemIterator it( this );
+        while ( it.current() ) {
+            QListViewItem *item = it.current();
+            if ( item->isOpen() ) {
+                //construct path to item
+                QStringList itemPath;
+                for( const QListViewItem *i = item; i; i = i->parent() )
+                    itemPath.prepend( i->text( 0 ) );
+
+                m_cacheOpenItemPaths.append ( itemPath );
+            }
+            ++it;
+        }
+    }
+
+    //cache viewport's top item
+    QListViewItem* item = itemAt( QPoint(0, 0) );
+    if ( item )
+        m_cacheViewportTopItem = item->text(0);
+}
+
+
+void
+CollectionView::restoreView()
+{
+    //expand cached items
+    if ( m_viewMode == modeTreeView ) {
+        QValueList<QStringList>::const_iterator it;
+        for ( it = m_cacheOpenItemPaths.begin(); it != m_cacheOpenItemPaths.end(); ++it ) {
+            QListViewItem* item = findItem( (*it)[0], 0 );
+            if ( item )
+                item->setOpen ( true );
+
+            for ( uint i = 1; i < (*it).count() && item; ++i ) {
+                item = item->firstChild();
+                while ( item ) {
+                    if ( item->text(0) == (*it)[ i ] )
+                        item->setOpen ( true );
+                    item = item->nextSibling();
+                }
+            }
+        }
+    }
+
+    //scroll to previous viewport top item
+    QListViewItem* item = findItem( m_cacheViewportTopItem, 0 );
+    if ( item )
+        setContentsPos( 0, itemPos(item) );
+
+    item = findItem( m_cacheCurrentItem, 0 );
+    if ( item ) {
+        setCurrentItem( item );
+        item->setSelected( true );
+    }
+
+    //free cache
+    m_cacheOpenItemPaths.clear();
+    m_cacheViewportTopItem = QString::null;
+    m_cacheCurrentItem = QString::null;
+}
+
 
 // Small function aimed to convert Eagles, The -> The Eagles
 void

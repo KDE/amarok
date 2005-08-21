@@ -119,7 +119,6 @@ class CollectionView : public KListView
         void scanStarted();
         void scanDone( bool changed = true );
 
-        void cacheItem( QListViewItem* item );
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );
         void enableCat3Menu( bool );
@@ -138,6 +137,10 @@ class CollectionView : public KListView
 
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
+
+        /** Rebuild selections, viewport and expanded items after reloads */
+        void cacheView();
+        void restoreView();
 
         // avoid duplicated code
         inline void manipulateThe( QString &original, bool reverse = false );
@@ -162,7 +165,9 @@ class CollectionView : public KListView
         int m_cat3;
         int m_viewMode;
 
-        QStringList m_cacheItem;
+        QValueList<QStringList> m_cacheOpenItemPaths;
+        QString                 m_cacheViewportTopItem;
+        QString                 m_cacheCurrentItem;
 };
 
 
