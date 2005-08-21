@@ -12,24 +12,68 @@
 #include "enginecontroller.h"
 #include "debug.h"
 
+CueFile *CueFile::instance()
+{
+    static CueFile *s_instance = 0;
+
+    if(!s_instance)
+    {
+        s_instance = new CueFile(EngineController::instance()); // FIXME berkus: le grand borkage (if engine is changed, e.g.)?
+    }
+
+    return s_instance;
+}
+
+CueFile::~CueFile()
+{
+    debug() << "shmack! destructed" << endl;
+}
+
+
+/*
++ - set and continue in the same state
+x - cannot happen
+track - switch to new state
+
+state/next token >
+ v         PERFORMER               TITLE           FILE            TRACK            INDEX          PREGAP
+begin         +                      +             file              x                x              x
+file          x                      x             file            track              x              x
+track         +                      +             file              x                +              +
+index         x                      x             file            track              +              x
+
+1. Ignore FILE completely.
+2. INDEX 00 is gap, just remember it and add to next track offset.
+3. Ignore subsequent INDEX entries (INDEX 02, INDEX 03 etc). - FIXME? this behavior is different from state chart above.
+4. For a valid cuefile at least TRACK and INDEX are required.
+*/
+enum {
+    BEGIN = 0,
+    TRACK_FOUND, // track found, index not yet found
+    INDEX_FOUND
+};
+
 
 /**
 * @return true if the cuefile could be successfully loaded
 */
 bool CueFile::load()
 {
-    if( QFile::exists( m_cueFileName ) ) {
-        clear();
+    clear();
+    m_lastSeekPos = -1;
 
+    if( QFile::exists( m_cueFileName ) )
+    {
         QFile file( m_cueFileName );
         int track = 0;
+        QString defaultArtist = QString::null;
+        QString defaultAlbum = QString::null;
         QString artist = QString::null;
         QString title = QString::null;
+        long pregap = 0;
         long index = 0;
 
-        // for a valid cuefile at least TRACK and INDEX is required
-        // mode = 0: beginning, mode = 1: track found, index not yet found, mode = 2: index already found
-        int mode = 0;
+        int mode = BEGIN;
         if( file.open( IO_ReadOnly ) )
         {
             QTextStream stream( &file );
@@ -41,55 +85,97 @@ bool CueFile::load()
 
                 if( line.startsWith( "title", false ) )
                 {
-                    if( mode )
-                        title = line.mid( 6 ).remove( '"' );
-                    debug() << "[CUEFILE]: Title: " << title << endl;
+                    title = line.mid( 6 ).remove( '"' );
+                    if( mode == BEGIN )
+                    {
+                        defaultAlbum = title;
+                        title = QString::null;
+                        debug() << "Album: " << defaultAlbum << endl;
+                    }
+                    else
+                        debug() << "Title: " << title << endl;
                 }
 
                 else if( line.startsWith( "performer", false ))
                 {
-                    if( mode )
-                        artist = line.mid( 10 ).remove( '"' );
-                    debug() << "[CUEFILE]: artist: " << artist << endl;
+                    artist = line.mid( 10 ).remove( '"' );
+                    if( mode == BEGIN )
+                    {
+                        defaultArtist = artist;
+                        artist = QString::null;
+                        debug() << "Album Artist: " << defaultArtist << endl;
+                    }
+                    else
+                        debug() << "Artist: " << artist << endl;
                 }
 
                 else if( line.startsWith( "track", false ) )
                 {
-                    if( mode == 1 )
+                    if( mode == TRACK_FOUND )
                     {
                         // not valid, because we have to have an index for the previous track
                         file.close();
-                        debug() << "[CUEFILE]: Mode is 1, abort." << endl;
+                        debug() << "Mode is TRACK_FOUND, abort." << endl;
                         return false;
                     }
-                    if( mode == 2 )
+                    if( mode == INDEX_FOUND )
                     {
-                        debug() << "[CUEFILE]: Inserting item: " << title << " - " << artist << " (" << track << ")" << endl;
+                        if(artist.isNull())
+                            artist = defaultArtist;
+
+                        debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")" << endl;
                         // add previous entry to map
-                        insert( index, CueFileItem( title, artist, track, index ) );
+                        insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
                         index    = 0;
                         title  = QString::null;
                         artist = QString::null;
                         track    = 0;
                     }
                     track = line.section (' ',1,1).toInt();
-                    debug() << "[CUEFILE]: Track: " << track << endl;
-                    mode = 1;
+                    debug() << "Track: " << track << endl;
+                    mode = TRACK_FOUND;
                 }
                 else if( line.startsWith( "index", false ) )
                 {
-                    if( mode ) {
-                        QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
+                    if( mode == TRACK_FOUND)
+                    {
+                        int indexNo = line.section(' ',1,1).toInt();
 
-                        index = (time[0].toLong()*60 + time[1].toLong())*1000 + time[2].toLong()*1000/75; //75 frames per second
-                        mode = 2;
+                        if(indexNo == 1)
+                        {
+                            QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
+
+                            index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75 + pregap; //75 frames per second
+                            mode = INDEX_FOUND;
+                            pregap = 0;
+                        }
+                        else if(indexNo == 0) // gap, remember and add to next track offset
+                        {
+                            QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
+                            pregap = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
+                        }
+                        else
+                        {
+                            debug() << "Skipping unsupported INDEX " << indexNo << endl;
+                        }
                     }
-                    debug() << "[CUEFILE]: index: " << index << endl;
+                    else
+                    {
+                        // not valid, because we don't have an associated track
+                        file.close();
+                        debug() << "Mode is not TRACK_FOUND but encountered INDEX, abort." << endl;
+                        return false;
+                    }
+                    debug() << "index: " << index << endl;
                 }
             }
-            debug() << "[CUEFILE]: Inserting item: " << title << " - " << artist << " (" << track << ")" << endl;
+
+            if(artist.isNull())
+                artist = defaultArtist;
+
+            debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")" << endl;
             // add previous entry to map
-            insert( index, CueFileItem( title, artist, track, index ) );
+            insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
             file.close();
         }
         return true;
@@ -104,16 +190,17 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
     position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
-//         debug() << "[CUEFILE]: received new seek notify to pos " << position << endl;
+        debug() << "Received new seek notify to pos " << position << endl;
         CueFile::Iterator it;
         for ( it = begin(); it != end(); ++it )
         {
-//             debug() << "[CUEFILE]: checking against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
+            debug() << "Checking against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
             if(it.key()/1000 == position)
             {
                 MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it
                 bundle.setTitle(it.data().getTitle());
                 bundle.setArtist(it.data().getArtist());
+                bundle.setAlbum(it.data().getAlbum());
                 emit metaData(bundle);
                 break;
             }

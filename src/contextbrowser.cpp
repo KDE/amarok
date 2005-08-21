@@ -145,6 +145,10 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiPage->setPluginsEnabled( false );
     m_wikiPage->setDNDEnabled( true );
 
+    m_cuefile = CueFile::instance();
+    connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
+             EngineController::instance(), SLOT(slotStreamMetaData( const MetaBundle& )) );
+
     addTab( m_homePage->view(),         SmallIconSet( "gohome" ),   i18n( "Home" ) );
     addTab( m_currentTrackPage->view(), SmallIconSet( "today" ),    i18n( "Current" ) );
     addTab( m_lyricsTab,                SmallIconSet( "document" ), i18n( "Lyrics" ) );
@@ -214,8 +218,7 @@ ContextBrowser::~ContextBrowser()
     delete m_bgGradientImage;
     delete m_headerGradientImage;
     delete m_shadowGradientImage;
-
-    delete m_cuefile;
+    m_cuefile->clear();
 }
 
 
@@ -366,6 +369,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     if ( url.protocol() == "seek" )
     {
+        debug() << "[ContextBrowser] Seek requested to pos " << url.path().toLong() << endl;
         EngineController::engine()->seek(url.path().toLong());
     }
 }
@@ -443,29 +447,16 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
         showIntroduction();
 
 
-    // cue
-    if(m_cuefile)
+    if (trackChanged && bundle.url().isLocalFile())
     {
-        delete m_cuefile;
-        m_cuefile = 0;
-    }
-
-    if (trackChanged && bundle.url().isLocalFile()) {
         // look if there is a cue-file
         QString path    = bundle.url().path();
         QString cueFile = path.left( path.findRev('.') ) + ".cue";
 
-        m_cuefile = new CueFile(EngineController::instance()); // FIXME berkus: le grand borkage (if engine is changed, e.g.)?
-        connect( m_cuefile, SIGNAL(metaData( const MetaBundle& )),
-                 EngineController::instance(), SLOT(slotStreamMetaData( const MetaBundle& )) );
         m_cuefile->setCueFileName( cueFile );
 
         if( m_cuefile->load() )
-            debug () << "[CUEFILE]: " << cueFile << " found and loaded." << endl;
-        else {
-            delete m_cuefile;
-            m_cuefile = 0;
-        }
+            debug() << "[CUEFILE]: " << cueFile << " found and loaded." << endl;
     }
 }
 
@@ -1650,7 +1641,7 @@ bool CurrentTrackJob::doJob()
     }
 
     /* cue file code */
-    if ( b->m_cuefile ) {
+    if ( b->m_cuefile && (b->m_cuefile->count() > 0) ) {
         m_HTMLSource.append(
         "<div id='cue_box' class='box'>"
             "<div id='cue_box-header' class='box-header'>"
