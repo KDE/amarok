@@ -584,6 +584,12 @@ Playlist::addSpecialCustomTracks( uint songCount )
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
             useDirect = true;
         }
+        // if we do not limit the sql, it takes a long time to populate for large collections
+        if ( sql.find( QString("LIMIT"), false ) == -1 ) {
+            QRegExp limit( ";$" );
+            sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( songCount ) );
+            useDirect = true;
+        }
 
         QStringList queryResult = CollectionDB::instance()->query( sql );
 
