@@ -60,9 +60,9 @@ bool IPod::ensureConsistency() {
         flushLog();
         return false;
     }
-    
+
     replayLog();
-        
+
     return true;
 }
 
@@ -70,16 +70,16 @@ bool IPod::ensureConsistency() {
 TrackMetadata IPod::createNewTrackMetadata() {
     Q_UINT32 trackid = itunesdb.getMaxTrackID();
     while (itunesdb.getTrackByID( ++trackid) != NULL);    // look for the next free number
-    
+
     TrackMetadata track( trackid);
     // calculate the directory
     Q_UINT32 dir = trackid % 20;
-    
+
     // form the trackpath
     QString trackpath;
     trackpath.sprintf( ":iPod_Control:Music:F%02d:%s", dir, (QString("kpod") + QString::number(trackid)).latin1());
     track.setPath(trackpath);
-    
+ 
     return track;
 }
 
@@ -87,13 +87,13 @@ IPod::IPodError IPod::deleteArtist(const QString& artistname, bool log) {
     if (!itunesdb.removeArtist(artistname)) {
         return Err_NotEmpty;    // dirty since false is also emmitted if the artist doesn't exist
     }
-    
+
     if (log) {
         QStringList actions;
         actions << artistname;
         appendLogEntry(ACT_DELETE_ARTIST, actions);
     }
-    
+
     return Err_None;
 }
 
@@ -103,32 +103,32 @@ IPod::IPodError IPod::deleteArtist(const QString& artistname, bool log) {
 IPod::IPodError IPod::renameAlbum(const QString& artistname, const QString& title, const QString& newartistname, const QString& newtitle, bool log)
 {
     kdDebug() << "IPod::renameAlbum() " << title << endl;
-    
+
     if (!itunesdb.isOpen()) {
         return Err_NotOpen;
     }
     if (itunesdb.getAlbum(newartistname, newtitle)) {    // does it already exist?
         return Err_AlreadyExists;
     }
-    
+
     TrackList * album = itunesdb.getAlbum(artistname, title);
     if (album == NULL) {
         return Err_DoesNotExist;
     }
-    
+
     if(!itunesdb.renameAlbum(*album, newartistname, newtitle)) {
         kdDebug() << "IPod::renameAlbum() issued an internal error" << endl;
         return Err_Internal;
     }
-        
+
     if (log) {
         QStringList actions;
         actions << artistname << title << newartistname << newtitle;
         appendLogEntry(ACT_RENAME_ALBUM, actions);
     }
-    
+
     pendingchanges = true;
-    
+
     kdDebug() << "IPod::renameAlbum() finished" << endl;
     return Err_None;
 }
@@ -138,12 +138,12 @@ IPod::IPodError IPod::deleteAlbum(const QString& artistname, const QString& titl
     TrackList * album = getAlbum(artistname, title);
     if (album == NULL)
         return Err_DoesNotExist;
-    
+
     TrackList::Iterator trackiter = album->getTrackIDs();
     while (trackiter.hasNext()) {
         TrackMetadata * track = getTrackByID(trackiter.next());
         album->removeTrackAt(trackiter);
-        
+
         if (track == NULL) {
             continue;
         }
@@ -152,17 +152,17 @@ IPod::IPodError IPod::deleteAlbum(const QString& artistname, const QString& titl
             QFile::remove(filename);
         itunesdb.removeTrack(track->getID());
     }
-    
+
     Artist * artist = getArtistByName(artistname);
     if (artist != NULL)
         artist->remove(album->getTitle());
-    
+
     if (log) {
         QStringList actions;
         actions << artistname << title;
         appendLogEntry(ACT_REM_ALBUM, actions);
     }
-        
+
     return Err_None;
 }
 
@@ -191,14 +191,14 @@ IPod::IPodError IPod::renamePlaylist(const QString& title, const QString& newtit
     playlist->setTitle(newtitle);
     itunesdb.handlePlaylist(*playlist);
     delete playlist;
-    
+
     if (log) {
         QStringList actions;
         actions << title << newtitle;
         appendLogEntry( ACT_RENAME_PLAYLIST, actions);
     }
     pendingchanges = true;
-    
+
     return Err_None;
 }
 
@@ -210,7 +210,7 @@ IPod::IPodError IPod::deletePlaylist(const QString& title, bool log)
 {
     if(!itunesdb.removePlaylist(title, true))
         return Err_DoesNotExist;
-    
+
     if (log) appendLogEntry(ACT_REM_PLAYLIST, QStringList(title));
     pendingchanges = true;
     return Err_None;
@@ -264,14 +264,14 @@ IPod::IPodError IPod::createPlaylist(const QString& playlisttitle, bool log) {
     if(itunesdb.getPlaylistByTitle(playlisttitle) != NULL) {
         return Err_AlreadyExists;
     }
-    
+
     IPodPlaylist playlist;
     playlist.setTitle(playlisttitle);
     itunesdb.handlePlaylist(playlist);
-    
+
     if (log) appendLogEntry( ACT_ADD_PLAYLIST, QStringList(playlist.getTitle()));
     pendingchanges = true;
-    
+
     return Err_None;
 }
 
@@ -302,16 +302,16 @@ IPod::IPodError IPod::addTrackToPlaylist(const TrackMetadata& track, const QStri
     if(playlist == NULL) {
         return Err_DoesNotExist;
     }
-    
+
     playlist->addPlaylistItem(track);
     pendingchanges = true;
-    
+
     if (log) {
         QStringList actions;
         actions << playlist->getTitle() << QString::number(track.getID());
         appendLogEntry(ACT_ADD_TO_PLAYLIST, actions);
     }
-    
+
     return Err_None;
 }
 
@@ -320,29 +320,29 @@ IPod::IPodError IPod::removeFromPlaylist(Q_UINT32 position, const QString& playl
     if(playlist == NULL) {
         return Err_DoesNotExist;
     }
-    
+
     playlist->setTrackIDAt(position, LISTITEM_DELETED);
     pendingchanges = true;
-    
+
     if (log) {
         QStringList actions;
         actions << playlist->getTitle() << QString::number(position);
         appendLogEntry(ACT_REM_FROM_PLAYLIST, actions);
     }
-    
+
     return Err_None;
 }
 
 
 void IPod::addTrack(const TrackMetadata& track, bool log) {
     itunesdb.addTrack(track);
-    
+
     if (log) {
         QStringList actions;
         actions = track.toLogEntry(actions);
         appendLogEntry( ACT_ADD_TRACK, actions);
     }
-    
+
     pendingchanges = true;
 }
 
@@ -350,14 +350,14 @@ IPod::IPodError IPod::moveTrack(TrackMetadata& track, const QString& newartist, 
     if (!itunesdb.moveTrack(track, newartist, newalbum)) {
         return Err_DoesNotExist;
     }
-    
+
     if (log) {
         QStringList actions;
         actions << QString::number(track.getID()) << newartist << newalbum;
         appendLogEntry(ACT_MOV_TRACK, actions);
     }
     pendingchanges = true;
-    
+
     return Err_None;
 }
 
@@ -371,7 +371,7 @@ IPod::IPodError IPod::deleteTrack(Q_UINT32 trackid, bool log) {
         actions << QString::number(trackid);
         appendLogEntry(ACT_REM_TRACK, actions);
     }
-    
+
     pendingchanges = true;
     return Err_None;
 }
@@ -407,34 +407,34 @@ bool IPod::appendLogEntry(IPod::LogActionType type, const QStringList& values)
     if (!logfile.open(IO_ReadWrite | IO_Append)) {
         return false;
     }
-    
+
     if (!isLocked()) {
         lock(true);
         _unlock_ = true;
     }
-    
+
     QByteArray logentry;
     QDataStream stream(logentry, IO_WriteOnly);
     stream.setByteOrder(QDataStream::LittleEndian);
     for (QStringList::const_iterator value_it = values.constBegin(); value_it != values.constEnd(); ++value_it) {
         stream << *value_it;
     }
-    
+
     QDataStream logstream(&logfile);
     logstream.setByteOrder(QDataStream::LittleEndian);
     logstream << type;
     logstream << logentry;
-    
+
     logstream.unsetDevice();
-    
+
     logfileentrypos++;
-    
+
     logfile.flush();
     logfile.close();
 
     if(_unlock_)
         unlock();
-        
+
     return true;
 }
 
@@ -450,33 +450,33 @@ void IPod::replayLog()
         lock(false);
         _unlock_ = true;
     }
-    
+
     // kdDebug() << "IPod::replayLog() locked!" << endl;
-    
+
     QFile logfile(getLogfileName());
     if (!logfile.open(IO_ReadOnly)) {
         if(_unlock_)
             unlock();
         return;
     }
-    
+
     // kdDebug() << "IPod::replayLog() logfile opened!" << endl;
-    
+
     QDataStream logstream(&logfile);
     logstream.setByteOrder(QDataStream::LittleEndian);
-    
+
     // ignore the changes we already know about
     for (uint i= 0; i< logfileentrypos; i++) {
         Q_UINT32 type;
         QByteArray buffer;
         if( logstream.atEnd()) {    // ick
             logfileentrypos= i;
-            break;                                            
+            break;
         }
         logstream >> type;
         logstream >> buffer;
     }
-        
+
     while (!logstream.atEnd()) {    // read new log entries
         QByteArray entrydata;
         Q_UINT32 type;
@@ -484,16 +484,16 @@ void IPod::replayLog()
 
         logstream >> type;
         logstream >> entrydata;
-        
+
         if (type >= NUM_ACTIONS) {
             continue;
         }
-        
+
         logfileentrypos++;
-        
+
         if( entrydata.isEmpty())
             continue;
-        
+
         // parse entry elements
         QDataStream entrystream(entrydata, IO_ReadOnly);
         entrystream.setByteOrder( QDataStream::LittleEndian);
@@ -502,7 +502,7 @@ void IPod::replayLog()
             entrystream >> value;
             values.push_back(value);
         }
-        
+
         switch( type) {    // handle logfile entry
         case ACT_ADD_PLAYLIST:
             // add playlist
@@ -589,7 +589,7 @@ void IPod::replayLog()
             break;
         }
     }
-    
+
     if(_unlock_)
         unlock();
 }
@@ -605,4 +605,3 @@ void IPod::flushLog()
     }
     logfileentrypos = 0;
 }
-

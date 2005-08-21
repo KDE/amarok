@@ -34,15 +34,15 @@ public:
     TrackList();
     TrackList(const IPodPlaylist& playlist);
     ~TrackList();
-    
+
     uint addPlaylistItem(const TrackMetadata& track);
-    
+
     Q_UINT32 removeTrackAt(Iterator& pos);
     Q_UINT32 setTrackIDAt( uint pos, Q_UINT32 newtrackid);
     void removeAll(Q_UINT32 trackid);
-    
+
     void setTitle( const QString& newtitle);
-    
+
     Q_UINT32 getMaxTrackNumber() const;
     void setMaxTrackNumber(Q_UINT32 max_tracknum) { max_tracknumber = max_tracknum; }
     bool unsavedChanges() const { return unsaved_changes; }

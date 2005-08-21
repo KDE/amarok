@@ -40,7 +40,7 @@ uint TrackList::addPlaylistItem(const TrackMetadata& track)
 {
     if(max_tracknumber < track.getTrackNumber())
         max_tracknumber = track.getTrackNumber();
-    
+
     return addPlaylistItem(track.getID());
 }
 

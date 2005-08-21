@@ -140,7 +140,7 @@ QStringList& TrackMetadata::toLogEntry(QStringList& valuebuffer) const
   valuebuffer << QString().setNum( compilation);
   valuebuffer << QString().setNum( rating);
   valuebuffer << QString().setNum( playcount);
-    
+
   return valuebuffer;
 }
 
@@ -153,7 +153,7 @@ bool TrackMetadata::readFromLogEntry(const QStringList& values)
     // some sanity checks first
   if (values.size() < 19)
     return false;    // wtf?
-    
+
   for( uint i= 0; i < values.size(); i++) {
     QString data( values[ i ]);
     switch( i) {
@@ -187,9 +187,9 @@ bool TrackMetadata::readFromLogEntry(const QStringList& values)
         case 23: playcount = data.toUInt(); break;
     }
   }
-    
+
   doneAddingData();
-    
+
   return true;
 }
 
