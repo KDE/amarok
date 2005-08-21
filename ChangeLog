@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.1:
   FEATURES:
+    * Display short statistics in the collection browser depending on the
+      categorisation method.
     * You can use OR in the collection browser filter now, like in the
       playlist filter.
     * New DCOP call "collection: totalTracks". Returns the total number of
@@ -30,11 +32,15 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * No need to restart amaroK to use your iPod!
     * Improved Konqueror Sidebar.
-    * The bundled "Shouter" AmarokScript (for radio stream serving) was
+    * The bundled "Shouter" AmarokScript (for radio stream serving) has been
       updated and improved.
 
   BUGFIXES:
+    * Sometimes the system tray tooltip did not update on song change.
+    * Polishing for the collection browser and expanded item states. Patch
+      by Christian Baumgart <christianbaumgart@web.de>.
     * With xine-engine amaroK always treated remote media like radio streams.
     * Selecting Classical equalizer preset prompted for name.
     * Fixed konqueror sidebar compilation with kde <= 3.3 and gcc patched for
@@ -48,7 +54,8 @@ VERSION 1.3.1:
       wouldn't show the tracks. (BR 110890)
     * SmartPlaylist Editor would reset "Match Any" to "Match All" when
       editing. Patch by Kevin Henderson <pyspud@hotmail.com> (BR 110918).
-    * Podcasts and playlist tracks would be sorted lexicography (BR 97297).
+    * Podcasts and playlist tracks would be sorted lexicographically 
+      (BR 97297).
     * Saved dynamic playlists were not removable.
     * xine-engine: amaroK would get stuck on exit if the Equalizer was enabled
       and the engine playing. (BR 110791)
