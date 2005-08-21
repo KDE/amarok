@@ -124,6 +124,5 @@ void TrackToolTip::add( QWidget * widget, const MetaBundle & tags, int pos )
         cachedtags = tags;
     }
 
-    QToolTip::remove( widget );
     QToolTip::add( widget, hasLength ? tipBuf.arg( MetaBundle::prettyLength( pos / 1000 ) ) : tipBuf );
 }
