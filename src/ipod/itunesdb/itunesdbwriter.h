@@ -36,16 +36,16 @@ public:
     ItunesDBWriter(ItunesDBDataSource& trackdatasource);
 
     ~ItunesDBWriter();
-    
+
     /**
      * Writes the contents of the ItunesDBDataSource to the given file
      * @param file the file to write the information to
      */
     void write(QFile& file);
-    
+
 private:
     ItunesDBDataSource * datasource;
-    
+
     void fillTrackBuffer( QByteArray& buffer);
     void fillPlaylistBuffer( QByteArray& buffer);
 };

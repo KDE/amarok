@@ -53,24 +53,24 @@ public:
             return *_iterator++;
         }
     };
-    
+
     IPodPlaylist();
     virtual ~IPodPlaylist();
 
     const QString& getTitle() const;
     void setTitle( const QString& newtitle);
     void doneAddingData();
-    
+
     virtual uint addPlaylistItem(const IPodPlaylistItem& item);
     virtual uint addPlaylistItem(const Q_UINT32& trackid);
     virtual Q_UINT32 removeTrackAt( Iterator& pos);
     virtual Q_UINT32 setTrackIDAt( uint pos, Q_UINT32 trackid);
-    
+
     Iterator getTrackIDs();
     uint getNumTracks() const;
-    
+
     void clear();
-    
+
     void writeData( QByteArray& data, bool isMainlist);
     QDataStream & writeToStream (QDataStream & outstream, bool isMainlist);
 

@@ -38,22 +38,22 @@ public:
      * called when the ItunesDBWriter starts to write
      */
     virtual void writeInit() = 0;
-    
+
     /**
      * called when the ItunesDBWriter is done writing the database
      */
     virtual void writeFinished() = 0;
-    
+
     /**
      * returns the number of playlists that need to be written
      */
     virtual Q_UINT32 getNumPlaylists() = 0;
-    
+
     /**
      * returns the number of tracks that need to be written
      */
     virtual Q_UINT32 getNumTracks() = 0;
-    
+
     /**
      * returns the main playlist. This playlist is special since every track needs to be in there
      */
@@ -62,26 +62,26 @@ public:
     /**
      * returns the first playlist and sets the playlist position for nextPlaylist() to the first
      * playlist
-     * 
+     *
      */
     virtual IPodPlaylist * firstPlaylist() = 0;
-    
+
     /**
      * returns the next playlist (see firstPlaylist())
      */
     virtual IPodPlaylist * nextPlaylist() = 0;
-    
+
     /**
      * returns the first Track that needs to be written and sets the track position for nextTrack()
      * to the first track.
      */
     virtual Track * firstTrack() = 0;
-    
+
     /**
      * returns the next Track (see firstTrack())
      */
     virtual Track * nextTrack() = 0;
-    
+
     /**
      * gets called if an error occured during the write process.
      * The write process ends after a call to this method.

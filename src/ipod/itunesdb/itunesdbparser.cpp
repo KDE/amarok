@@ -33,7 +33,7 @@ ItunesDBParser::~ItunesDBParser()
 }
 
 
-void ItunesDBParser::seekRelative(QDataStream& stream, uint numbytes) 
+void ItunesDBParser::seekRelative(QDataStream& stream, uint numbytes)
 {
     if ( numbytes ) {
         char* buffer = new char[ numbytes ];
@@ -48,41 +48,41 @@ void ItunesDBParser::seekRelative(QDataStream& stream, uint numbytes)
 void ItunesDBParser::parse(QFile& file)
 {
     Q_UINT32 magic, headerlen, filesize;
-    
+
     IPodPlaylistItem current_playlistitem;
     Track current_track;
-    
+
     ListItem * listitem = NULL;
-    
+
     listener->parseStarted();
-    
+
     if( !file.exists() || !file.open( IO_ReadOnly)) {
         listener->handleError( file.name()+ " could not be opened!");
         return;    // no need to cleanup
     }
-    
+
     QDataStream stream( &file);
     stream.setByteOrder( QDataStream::LittleEndian);
-    
+
     stream >> magic;
     if( magic != 0x6462686D) {
         listener->handleError( file.name() + " is not an itunesDB file");
         goto ItunesDBParser_parse_cleanup;
     }
-    
+
     stream >> headerlen;
     stream >> filesize;
-    
+
     // skip the rest of the header
     seekRelative(stream, headerlen- 12);
-    
+
     // begin with actual parsing
     while( !stream.atEnd()) {
         Q_UINT32 blocktype;
         Q_UINT32 blocklen;
-        
+
         stream >> blocktype;
-                
+
         switch( blocktype) {
         case 0x6473686D:    // mhsd - yeah, good to know
             stream >> blocklen;
@@ -95,7 +95,7 @@ void ItunesDBParser::parse(QFile& file)
             }
             seekRelative(stream, blocklen- 8);
             break;
-        
+
         case 0x746C686D: {    // mhlt: number of tracks (and other metainfo?)
             Q_UINT32 numtracks;
             stream >> blocklen;
@@ -108,41 +108,41 @@ void ItunesDBParser::parse(QFile& file)
             seekRelative(stream, blocklen- 12);    // skip the rest
             }
             break;
-        
+
         case 0x7469686D: {    // mhit - start of a track
             if( listitem != NULL) {
                 handleItem( *listitem);
             }
-            
+
             current_track = Track();
             current_track.readFromStream(stream);
             listitem = &current_track;
             }
             break;
-            
+
         case 0x646F686D: {    // mhod
             Q_UINT32 type;
             stream >> blocklen;
             stream >> blocklen;
-            
+
             uint datalen = blocklen - 40;
             QByteArray buffer( datalen+2 );
-            
+
             stream >> type;
-            
+
             seekRelative(stream, 24);    // skip stuff
             stream.readRawBytes(buffer.data(), datalen);
             buffer[datalen] = 0;
             buffer[datalen + 1] = 0;
-            
+
             if( type == itunesdb::MHOD_PLAYLIST)
                 break;    // ignore
-            
+
             if( listitem != NULL)
                 listitem->setItemProperty( QString::fromUcs2( (unsigned short *)buffer.data()), (ItemProperty)type);
             }
             break;
-        
+
         case 0x706C686D: {    // mhlp
             Q_UINT32 numplaylists;
             if( listitem != NULL) {
@@ -155,7 +155,7 @@ void ItunesDBParser::parse(QFile& file)
             seekRelative(stream, blocklen- 12);
             }
             break;
-        
+
         case 0x7079686D: {    // mhyp: Playlist
             stream >> blocklen;
             if( listitem != NULL) {
@@ -172,18 +172,18 @@ void ItunesDBParser::parse(QFile& file)
             break;
         case 0x7069686D: {    // mhip: PlaylistItem
             Q_UINT32 itemid;
-            
+
             stream >> blocklen;
             if( listitem != NULL) {
                 handleItem( *listitem);
             }
-            
+
             seekRelative(stream, 16);
             stream >> itemid;
-            
+
             current_playlistitem = IPodPlaylistItem( itemid);
             listitem = &current_playlistitem;
-            
+
             seekRelative(stream, blocklen- 28);
             }
             break;
@@ -192,7 +192,7 @@ void ItunesDBParser::parse(QFile& file)
             goto ItunesDBParser_parse_cleanup;
         }
     }
-    
+
     if( listitem != NULL) {
         handleItem( *listitem);
         listitem = NULL;
@@ -202,7 +202,7 @@ void ItunesDBParser::parse(QFile& file)
         listener->handlePlaylist( current_playlist);
     }
     listener->parseFinished();
-    
+
 ItunesDBParser_parse_cleanup:    // !!! only cleanup code from here on !!!
     file.close();
 }

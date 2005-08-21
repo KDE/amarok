@@ -45,7 +45,7 @@ public:
     virtual const QString & getGenre() const;
     virtual const QString & getPath() const;
     virtual const QString & getComposer() const;
-    
+
     virtual Q_UINT32 getNumMhod() const;
     virtual unsigned char getRating() const;
     virtual Q_UINT32 getLastModified() const;
@@ -61,7 +61,7 @@ public:
     virtual Q_UINT32 getLastPlayed() const;
     virtual Q_UINT32 getCdNumber() const;
     virtual Q_UINT32 getCdCount() const;
-    
+
     virtual void setAlbum(const QString& album);
     virtual void setArtist(const QString& artist);
     virtual void setPath(const QString& encodedpath);
@@ -74,15 +74,15 @@ public:
     virtual void setNumTracksInAlbum(Q_UINT32 newnumtracks);
 
     void doneAddingData();
-    
+
     void writeData( QByteArray& data) const;
-    
+
     QDataStream & writeToStream(QDataStream & outstream);
     QDataStream & readFromStream(QDataStream & instream);
-    
+
 protected:
     Q_UINT32 id;
-    
+
     // attributes
     Q_UINT32 num_mhod;    // number of data items
     Q_UINT32 lastmodified;    // last modified date

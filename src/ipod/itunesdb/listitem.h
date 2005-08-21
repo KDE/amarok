@@ -54,33 +54,33 @@ public:
     ListItem();
     ListItem( int type);
     virtual ~ListItem();
-    
+
     /**
      * returns the type ofthis item
      * possible values from the known implementors are ITEMTYPE_PLAYLIST, ITEMTYPE_PLAYLISTITEM
      * and ITEMTYPE_TRACK
      */
     int getType() const;
-    
+
     /**
      * sets a given itunesDB item property
      * @param data value for the property to be set
      * @param field propertyID of the property to be set
      */
     void setItemProperty(const QString& data, ItemProperty field);
-    
+
     /**
      * Returns the value for the given property.
      * @param field PropertyID of the property to be returned.
      * @return the value for the given property.
      */
     const QString& getItemProperty( ItemProperty field) const;
-    
+
     /**
      * Returns the number of properties.
      */
     int getNumComponents() const;
-    
+
     /**
      * This method may be overridden for consistency checks after all properties have been set.
      */

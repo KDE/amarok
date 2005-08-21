@@ -81,7 +81,7 @@ Q_UINT32 IPodPlaylist::setTrackIDAt( uint pos, Q_UINT32 newtrackid) {
     } else {
         retval= TRACKLIST_UNDEFINED;
     }
-    
+
     return retval;
 }
 
@@ -113,13 +113,13 @@ void IPodPlaylist::writeData( QByteArray& data, bool isMainlist)
     buffer.open(IO_WriteOnly);
     QDataStream stream( &buffer);
     stream.setByteOrder( QDataStream::LittleEndian);
-    
+
     /** Write the header **/
-    
+
     stream << (Q_UINT32) 0x7079686D;    // mhyp
     stream << (Q_UINT32) 0x6C;    // headerlen
     stream << (Q_UINT32) 0x0;    // length - set later
-    
+
     stream << (Q_UINT32) 2;    // 2 mhods (const)
     stream << (Q_UINT32) getNumTracks();
     stream << (Q_UINT32) (isMainlist ? 1 : 0);
@@ -130,9 +130,9 @@ void IPodPlaylist::writeData( QByteArray& data, bool isMainlist)
         const char *data= (const char *)getTitle().ucs2();
         if( data == NULL)
             continue;
-        
+
         int datalen= 2* getTitle().length();
-        
+
         stream << (Q_UINT32) 0x646F686D;    // mhod
         stream << (Q_UINT32) 0x18;
         stream << (Q_UINT32) 40+ datalen;
@@ -145,13 +145,13 @@ void IPodPlaylist::writeData( QByteArray& data, bool isMainlist)
         stream << (Q_UINT32) 0;
         stream.writeRawBytes( data, datalen);
     }
-    
+
     // write playlist items
     // TODO this line causes non const of this function, 'cause tracklist::Iterator is non const (mutable?)
     Iterator trackiterator= getTrackIDs();
     while( trackiterator.hasNext()) {
         Q_UINT32 trackid= trackiterator.next();
-        
+
         stream << (Q_UINT32) 0x7069686D;    // mhip
         stream << (Q_UINT32) 0x4C;    // headerlen
         stream << (Q_UINT32) 0x4C;    // datalen
@@ -161,7 +161,7 @@ void IPodPlaylist::writeData( QByteArray& data, bool isMainlist)
         stream << (Q_UINT32) trackid;
         for( int i= 0; i<12; i++)
             stream << (Q_UINT32) 0;
-        
+
         stream << (Q_UINT32) 0x646F686D;
         stream << (Q_UINT32) 0x18;
         stream << (Q_UINT32) 0x2C;
@@ -172,7 +172,7 @@ void IPodPlaylist::writeData( QByteArray& data, bool isMainlist)
         for( int i= 0; i< 4; i++)
             stream << (Q_UINT32) 0;
     }
-        
+
     buffer.at( 8);
     stream << (Q_UINT32)data.size();
     buffer.close();
@@ -183,7 +183,7 @@ QDataStream & IPodPlaylist::writeToStream(QDataStream & outstream, bool isMainli
     QByteArray buffer;
     writeData(buffer, isMainlist);
     outstream.writeRawBytes( buffer.data(), buffer.size());
-    
+
     return outstream;
 }
 

@@ -34,7 +34,7 @@ public:
     IPodPlaylistItem();
     IPodPlaylistItem( Q_UINT32 ipod_id);
     virtual ~IPodPlaylistItem();
-    
+
     const Q_UINT32& getID() const;
     void doneAddingData();
 protected:

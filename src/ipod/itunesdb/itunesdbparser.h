@@ -39,7 +39,7 @@ class ItunesDBParser{
 private:
     ItunesDBListener * listener;
     IPodPlaylist current_playlist;
-    
+
 public:
     /**
      * creates a new parser that calls the appropriate methods on the given listener during the parse process
@@ -47,7 +47,7 @@ public:
     ItunesDBParser(ItunesDBListener& listener);
 
     virtual ~ItunesDBParser();
-    
+
     /**
      * parses the given iTunesDB file
      * @param file the file that should be parsed.

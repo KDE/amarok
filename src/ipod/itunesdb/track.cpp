@@ -61,7 +61,7 @@ void Track::writeData( QByteArray& data) const {
     buffer.open(IO_WriteOnly);
     QDataStream stream( &buffer);
     stream.setByteOrder( QDataStream::LittleEndian);
-    
+
     /** Write the track header **/
     stream << (Q_UINT32) 0x7469686D;        // 0x00 mhit
     stream << (Q_UINT32) 0x9C;              // 0x04 headerlen
@@ -108,9 +108,9 @@ void Track::writeData( QByteArray& data) const {
         const char *data= (const char *)(*element).ucs2();
         if( data == NULL)
             continue;
-        
+
         int datalen= 2* (*element).length();
-        
+
         stream << (Q_UINT32) 0x646F686D;    // mhod
         stream << (Q_UINT32) 0x18;    // headerlen
         stream << (Q_UINT32) 40+ datalen;
@@ -134,7 +134,7 @@ QDataStream & Track::writeToStream(QDataStream & outstream) {
     QByteArray buffer;
     writeData(buffer);
     outstream.writeRawBytes( buffer.data(), buffer.size());
-    
+
     return outstream;
 }
 
@@ -142,7 +142,7 @@ QDataStream & Track::writeToStream(QDataStream & outstream) {
 QDataStream & Track::readFromStream(QDataStream& instream) {
     Q_UINT32 dummy, blocklen;
     instream >> blocklen;
-    
+
     // TODO make this more forgiving
     if(blocklen < 148) {
         // insufficient information
@@ -150,11 +150,11 @@ QDataStream & Track::readFromStream(QDataStream& instream) {
         instream.readRawBytes(buffer.data(), blocklen);
         return instream;
     }
-    
+
     instream >> dummy;
     instream >> num_mhod;
     instream >> id;
-    
+
     instream >> dummy;
     instream >> dummy;
     instream >> vbr;
@@ -164,38 +164,38 @@ QDataStream & Track::readFromStream(QDataStream& instream) {
     instream >> lastmodified;
     lastmodified-= MAC_EPOCH_DELTA;
     instream >> file_size;
-    
+
     instream >> tracklen;
     instream >> tracknum;
     instream >> numtracks;
     instream >> year;
     instream >> bitrate;
-    
+
     instream >> samplerate;
     instream >> volumeadjust;
     instream >> dummy;
     instream >> dummy;
     instream >> dummy;
-    
+
     instream >> playcount;
     instream >> dummy;
     instream >> last_played_at;
     instream >> cdnum;
     instream >> numcds;
-    
+
     instream >> dummy;
     instream >> date_added;
-    
+
     for (int i= 0; i< 9; i++)
         instream >> dummy;
     instream >> file_format_code;
-    
+
     // seek to the end of the block
     if (blocklen > 148) {
         QByteArray buffer( blocklen - 148 );
         instream.readRawBytes(buffer.data(), blocklen - 148);
     }
-    
+
     return instream;
 }
 
