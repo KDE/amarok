@@ -413,6 +413,8 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
 
+    m_connectButton->setDisabled( m_deviceList->childCount() != 0 );
+
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     connect( m_connectButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( connectIpod() ) );
 }
@@ -741,6 +743,7 @@ MediaDevice::connectIpod() //SLOT
     openIPod();
 
     m_parent->m_deviceList->renderView( 0 );
+    m_parent->m_connectButton->setDisabled( m_parent->m_deviceList->childCount() != 0 );
 }
 
 bool
