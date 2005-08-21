@@ -380,7 +380,7 @@ DynamicAction::DynamicAction( KActionCollection *ac ) :
     ToggleAction( i18n( "&Dynamic Mode" ), &AmarokConfig::setDynamicMode, ac, "dynamic_mode" )
 {
     KToggleAction::setChecked( AmarokConfig::dynamicMode() );
-    setIcon( "party" );
+    setIcon( "dynamic" );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -856,7 +856,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
         , m_appendCount( 1 )
         , m_appendType( RANDOM )
 {
-    setPixmap( 0, SmallIcon("party") );
+    setPixmap( 0, SmallIcon("dynamic") );
     setDragEnabled( false );
 
     setText( 0, name );
@@ -865,7 +865,7 @@ PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, const QStri
 PartyEntry::PartyEntry( QListViewItem *parent, QListViewItem *after, QDomElement xmlDefinition )
         : PlaylistBrowserEntry( parent, after )
 {
-    setPixmap( 0, SmallIcon( "party" ) );
+    setPixmap( 0, SmallIcon( "dynamic" ) );
     setDragEnabled( false );
 
     m_title  = xmlDefinition.attribute( "name" );
