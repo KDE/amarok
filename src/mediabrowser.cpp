@@ -764,7 +764,7 @@ MediaDevice::connectIpod() //SLOT
     {
     KMessageBox::error( m_parent->m_parent,
         i18n( "Could not find iPod, please mount it and try again." ),
-        i18n( "MediaDevice Browser" ) );
+        i18n( "Media Device Browser" ) );
     }
 }
 
@@ -773,6 +773,13 @@ MediaDevice::disconnectIpod() //SLOT
 {
     if ( m_parent->m_transferList->childCount() != 0 &&  m_ipod->isStillConnected() )
     {
+        int button = KMessageBox::warningContinueCancel( m_parent->m_parent,
+                                                     i18n( "There are tracks queued for transfer."
+                                                      " Would you like to transfer them before disconnecting?"),
+                                                     i18n( "Media Device Browser" ),
+                                                     KGuiItem(i18n("&Transfer"),"rebuild") );
+
+        if ( button == KMessageBox::Continue )
             transferFiles();
     }
     fileTransferFinished();
@@ -783,7 +790,7 @@ MediaDevice::disconnectIpod() //SLOT
     m_parent->m_disconnectButton->setDisabled( true );
     KMessageBox::error( m_parent->m_parent,
         i18n( "Your iPod is now in sync, please unmount it and disconnect now." ),
-        i18n( "MediaDevice Browser" ) );
+        i18n( "Media Device Browser" ) );
 }
 
 bool
