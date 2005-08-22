@@ -2125,7 +2125,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 removeSelectedItems();
                 break;
             case INFO:
-                if( QFile::exists( item->url().path() ) ) {
+                if( !item->url().isLocalFile() )
+                    KMessageBox::sorry( this, i18n( "Track information is not available for remote media." ) );
+                else if( QFile::exists( item->url().path() ) ) {
                     TagDialog* dialog = new TagDialog( item->url() );
                     dialog->show();
                 }
