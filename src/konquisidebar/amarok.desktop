@@ -39,6 +39,7 @@ GenericName[tr]=Ses Çalıcısı
 GenericName[uk]=Аудіо-програвач
 GenericName[uz]=Аудио плейер
 GenericName[zh_CN]=音频播放器
+GenericName[zh_TW]=音樂播放器
 Comment=Uncle Rodney says, "10/10, amaroK is seriously super!"
 Comment[bg]=Аудио плеър с много възможности
 Comment[cs]=Strýček Rodney říká, "10/10, amaroK je vážně super!"
@@ -69,6 +70,7 @@ Comment[tg]=Амаки Рудней мегӯяд, ки "10/10, амароК хе
 Comment[tr]=Rodney amca der ki, "10/10, amaroK cidden süper!"
 Comment[uk]=Дядько Rodney каже: "10/10, amaroK - це дійсно супер!"
 Comment[zh_CN]=amaroK，开启您的音乐探秘之旅
+Comment[zh_TW]=Uncle Rodney 說："10/10, amaroK is seriously super!"
 Icon=amarok
 
 Open=true

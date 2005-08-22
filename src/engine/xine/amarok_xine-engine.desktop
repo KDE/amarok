@@ -32,6 +32,7 @@ Name[tr]=xine Motoru
 Name[uk]=xine
 Name[uz]=xine тизими
 Name[zh_CN]=xine 引擎
+Name[zh_TW]=xine 解碼引擎
 X-KDE-Library=libamarok_xine-engine
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
@@ -66,6 +67,7 @@ Comment[tr]=amaroK için eklenti
 Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[zh_CN]=amaroK 插件
+Comment[zh_TW]=amaroK 的外掛程式
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine

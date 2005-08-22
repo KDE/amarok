@@ -30,6 +30,7 @@ Name[tr]=NMM Motoru
 Name[uk]=NMM
 Name[uz]=NMM тизими
 Name[zh_CN]=NMM 引擎
+Name[zh_TW]=NMM 解碼引擎
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=amaroK plugin
 Comment[bg]=Приставка за amaroK
@@ -65,6 +66,7 @@ Comment[tr]=amaroK eklentisi
 Comment[uk]=Втулок amaroK
 Comment[uz]=amaroK плагини
 Comment[zh_CN]=amaroK 插件
+Comment[zh_TW]=amaroK 外掛程式
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine

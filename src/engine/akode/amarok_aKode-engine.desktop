@@ -28,6 +28,7 @@ Name[ta]=aKode என்ஜின்
 Name[tr]=aKode Motoru
 Name[uk]=Рушій aKode
 Name[zh_CN]=aKode 引擎
+Name[zh_TW]=aKode 解碼引擎
 ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for amaroK
@@ -57,6 +58,7 @@ Comment[ta]=amaroK க்கான aKode கேட்பொலி என்ஜ�
 Comment[tr]=amaroK için aKode ses-motoru
 Comment[uk]=Аудіо-рушій aKode для amaroK
 Comment[zh_CN]=amaroK 的 aKode 音频引擎
+Comment[zh_TW]=amaroK 的 aKode 音訊解碼引擎
 
 X-KDE-amaroK-plugintype=engine
 X-KDE-amaroK-name=akode-engine

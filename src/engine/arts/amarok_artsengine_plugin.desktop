@@ -31,6 +31,7 @@ Name[tr]=aRts Motoru
 Name[uk]=aRts
 Name[uz]=aRts тизими
 Name[zh_CN]=aRts 引擎
+Name[zh_TW]=aRts 解碼引擎
 X-KDE-Library=libamarok_artsengine_plugin
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
@@ -65,6 +66,7 @@ Comment[tr]=amaroK için eklenti
 Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[zh_CN]=amaroK 插件
+Comment[zh_TW]=amaroK 的外掛程式
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine

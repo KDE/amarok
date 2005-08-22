@@ -30,6 +30,7 @@ Name[tr]=KDEMM Motoru
 Name[uk]=KDEMM
 Name[uz]=KDEMM тизими
 Name[zh_CN]=KDEMM 引擎
+Name[zh_TW]=KDEMM 引擎
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
 Comment[br]=Lugent evit amaroK
@@ -63,6 +64,7 @@ Comment[tr]=amaroK için eklenti
 Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[zh_CN]=amaroK 插件
+Comment[zh_TW]=amaroK 的外掛程式
 
 ServiceTypes=amaroK/Plugin
 X-KDE-Library=libamarok_kdemmengine_plugin

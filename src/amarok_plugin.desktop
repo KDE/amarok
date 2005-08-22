@@ -34,6 +34,7 @@ Comment[tr]=amaroK için eklenti
 Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[zh_CN]=amaroK 插件
+Comment[zh_TW]=amaroK 的外掛程式
 
 # Type of plugin, e.g. "engine".
 [PropertyDef::X-KDE-amaroK-plugintype]

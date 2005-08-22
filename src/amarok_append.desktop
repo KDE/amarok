@@ -36,6 +36,7 @@ Name[tr]=amaroK çalma listesine ekle
 Name[uk]=Додати у список композицій amaroK
 Name[uz]=amaroK қўшиқ рўйхатига қўшиш
 Name[zh_CN]=添加到 amaroK 播放列表
+Name[zh_TW]=加入到 amaroK 播放清單
 Icon=amarok
 Exec=amarok -e %U
 

@@ -29,6 +29,7 @@ Name[tr]=<motor yok>
 Name[uk]=<немає рушія>
 Name[uz]=<йўқ>
 Name[zh_CN]=<无引擎>
+Name[zh_TW]=<不使用解碼引擎>
 X-KDE-Library=libamarok_void-engine_plugin
 Comment=Plugin for amaroK
 Comment[bg]=Приставка за amaroK
@@ -63,6 +64,7 @@ Comment[tr]=amaroK için eklenti
 Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[zh_CN]=amaroK 插件
+Comment[zh_TW]=amaroK 的外掛程式
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=engine
