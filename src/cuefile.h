@@ -55,11 +55,12 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
         /** Transmits new metadata bundle */
         void metaData( const MetaBundle& );
 
-    private:
+    protected:
         CueFile() : EngineObserver(), m_lastSeekPos(-1) { };
         CueFile(EngineSubject *s) : EngineObserver(s), m_lastSeekPos(-1) { };
         ~CueFile();
 
+    private:
         QString m_cueFileName;
         int m_lastSeekPos; // in seconds
 };
