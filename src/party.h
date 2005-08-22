@@ -73,8 +73,8 @@ class Party : public QVBox
 
     private slots:
         void    applySettings();
+        void    setDynamicMode( bool enable, bool showDialog = true );
         void    showConfig( bool show );
-        void    toggle( bool enable );
 
     private:
         enum    UpdateMe{ PARTY, CYCLE, HISTORY, PREVIOUS, UPCOMING, APPEND, TYPE };

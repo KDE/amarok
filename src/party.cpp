@@ -79,14 +79,19 @@ Party::Party( QWidget *parent, const char *name )
     KPushButton *configButton = new KPushButton( KGuiItem( i18n("Show Options"), "configure" ), buttonBox );
 
     configButton->setToggleButton( true );
-    connect( enableButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
     connect( configButton, SIGNAL(toggled( bool )), SLOT(showConfig( bool )) );
 
     connect( amaroK::actionCollection()->action( "dynamic_mode" ), SIGNAL( toggled( bool ) ),
              enableButton, SLOT( setChecked( bool ) ) );
 
     loadConfig();
+    /*
+     * We don't want to show the info dialog on startup, so we set the dynamic parameter manually and connect
+     * the signal afterwards
+     */
     enableButton->setChecked( AmarokConfig::dynamicMode() );
+    setDynamicMode( AmarokConfig::dynamicMode() );
+    connect( enableButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 
     if( enableButton->isChecked() )
     {
@@ -212,11 +217,11 @@ Party::blockSignals( const bool b )
 }
 
 void
-Party::toggle( bool enable ) //SLOT
+Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
 {
     if( enable )
     {
-        if( AmarokConfig::dynamicInfo() )
+        if( showDialog && AmarokConfig::dynamicInfo() )
         {
             PartyInfoBox dialog( this );
             kapp->setTopWidget( &dialog );
