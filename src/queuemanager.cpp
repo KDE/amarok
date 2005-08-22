@@ -12,14 +12,14 @@
  ***************************************************************************/
 
 #include "amarokconfig.h"     //check if dynamic mode
+#include "debug.h"
 #include "playlist.h"
 #include "queuemanager.h"
-#include "debug.h"
+
 #include <kapplication.h>
 #include <kguiitem.h>
 #include <klocale.h>
 #include <kpushbutton.h>
-#include <krandomsequence.h> //shuffle()
 #include <kurldrag.h>
 #include <kwin.h>
 
@@ -54,7 +54,6 @@ QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
     fw += 2; //add some more padding
     p->setPen( cg.highlightedText() );
     p->drawText( width - fw, 2, fw, h-1, Qt::AlignCenter, str );
-
 }
 
 
@@ -204,24 +203,6 @@ QueueList::removeSelected() //SLOT
 }
 
 void
-QueueList::shuffle() //SLOT
-{
-    QPtrList<QListViewItem> list;
-
-    for( QListViewItem *it = firstChild(); it; it = it->nextSibling() )
-        list.append( it );
-
-    for( QListViewItem *item = list.first(); item; item = list.next() )
-        takeItem( item );
-
-    // shuffle then reinsert
-    KRandomSequence( (long)KApplication::random() ).randomize( &list );
-
-    for( QListViewItem *item = list.first(); item; item = list.next() )
-        insertItem( item );
-}
-
-void
 QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     e->accept( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() );
@@ -252,8 +233,8 @@ QueueList::contentsDropEvent( QDropEvent *e )
 
         QueueManager::instance()->addItems( after );
     }
-
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS QueueManager
@@ -287,28 +268,24 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
     m_remove = new KPushButton( KGuiItem( QString::null, "edit_remove" ), buttonBox );
     m_add    = new KPushButton( KGuiItem( QString::null, "edit_add" ), buttonBox );
-    m_mix    = new KPushButton( KGuiItem( QString::null, "rebuild" ), buttonBox );
     m_clear  = new KPushButton( KGuiItem( QString::null, "view_remove" ), buttonBox );
 
     QToolTip::add( m_up,     i18n( "Move up" ) );
     QToolTip::add( m_down,   i18n( "Move down" ) );
     QToolTip::add( m_remove, i18n( "Remove" ) );
     QToolTip::add( m_add,    i18n( "Enqueue track" ) );
-    QToolTip::add( m_mix,    i18n( "Shuffle queue" ) );
     QToolTip::add( m_clear,  i18n( "Clear queue" ) );
 
     m_up->setEnabled( false );
     m_down->setEnabled( false );
     m_remove->setEnabled( false );
     m_add->setEnabled( false );
-    m_mix->setEnabled( false );
     m_clear->setEnabled( false );
 
     connect( m_up,     SIGNAL( clicked() ), m_listview, SLOT( moveSelectedUp() ) );
     connect( m_down,   SIGNAL( clicked() ), m_listview, SLOT( moveSelectedDown() ) );
     connect( m_remove, SIGNAL( clicked() ), this,       SLOT( removeSelected() ) );
     connect( m_add,    SIGNAL( clicked() ), this,       SLOT( addItems() ) );
-    connect( m_mix,    SIGNAL( clicked() ), m_listview, SLOT( shuffle() ) );
     connect( m_clear,  SIGNAL( clicked() ), m_listview, SLOT( clear() ) );
 
     Playlist *pl = Playlist::instance();
@@ -487,7 +464,6 @@ QueueManager::updateButtons() //SLOT
     m_down->setEnabled( enableQL );
     m_remove->setEnabled( enableQL );
     m_add->setEnabled( enablePL );
-    m_mix->setEnabled( !emptyLV );
     m_clear->setEnabled( !emptyLV );
 }
 

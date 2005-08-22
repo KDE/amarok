@@ -50,7 +50,6 @@ class QueueList : public KListView
         void    moveSelectedUp();
         void    moveSelectedDown();
         void    removeSelected();
-        void    shuffle();
 
     private:
         void    contentsDragEnterEvent( QDragEnterEvent *e );
@@ -90,7 +89,6 @@ class QueueManager : public KDialogBase
         KPushButton *m_down;
         KPushButton *m_remove;
         KPushButton *m_add;
-        KPushButton *m_mix;
         KPushButton *m_clear;
 
         static QueueManager *s_instance;
