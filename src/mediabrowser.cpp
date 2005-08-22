@@ -407,7 +407,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_progress = new KProgress( this );
 
     QHBox* hb = new QHBox( this );
-    hb->setSpacing( 2 );
+    hb->setSpacing( 1 );
     m_connectButton = new QPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
     m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
     m_disconnectButton = new QPushButton( SmallIconSet( "usbpendrive_unmount" ), i18n( "Disconnect"), hb );
