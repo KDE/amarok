@@ -10,6 +10,7 @@
 #include "engineobserver.h"
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
+#include <qimage.h>
 #include <qobject.h>         //baseclass
 #include <qptrqueue.h>       //baseclass
 #include <qsemaphore.h>      //stack allocated
@@ -398,6 +399,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool m_monitor;
         QDir m_cacheDir;
         QDir m_coverDir;
+        QImage m_noCover;
 };
 
 

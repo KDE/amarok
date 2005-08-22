@@ -24,7 +24,6 @@
 #include "threadweaver.h"
 
 #include <qfile.h>
-#include <qimage.h>
 #include <qtimer.h>
 
 #include <kapplication.h>
@@ -77,6 +76,7 @@ CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
         , m_cacheDir( amaroK::saveLocation() )
         , m_coverDir( amaroK::saveLocation() )
+        , m_noCover ( locate( "data", "amarok/images/nocover.png" ) )
 {
     DEBUG_BLOCK
 
@@ -984,8 +984,7 @@ CollectionDB::notAvailCover( int width )
         return m_cacheDir.filePath( widthKey + "nocover.png" );
     else
     {
-        QImage nocover( locate( "data", "amarok/images/nocover.png" ) );
-        nocover.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
+        m_noCover.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + "nocover.png" ), "PNG" );
         return m_cacheDir.filePath( widthKey + "nocover.png" );
     }
 }
