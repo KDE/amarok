@@ -653,7 +653,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         const int button = KMessageBox::warningContinueCancel( this,
             i18n( "Are you sure you want to remove this cover from the Collection?" ),
             QString::null,
-            KGuiItem(i18n("&Delete"),"editdelete") );
+            KStdGuiItem::del() );
 
         if ( button == KMessageBox::Continue )
         {
