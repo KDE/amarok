@@ -158,7 +158,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     QHBox *hb = new QHBox( this );
     m_infoA = new QLabel( hb );
     m_infoB = new QLabel( hb );
-    m_infoB->setAlignment( Qt::AlignRight );
+    m_infoA->setAlignment( Qt::AlignCenter );
+    m_infoB->setAlignment( Qt::AlignCenter );
 
     refreshInfo(); // Need to call this here because collectionview is ctor'd before the labels
 
