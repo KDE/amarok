@@ -32,6 +32,9 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * GStreamer-engine was rewritten. The crossfading feature was removed, as
+      this didn't work properly with recent GStreamer versions. Improvements:
+      1) Much less CPU usage 2) More stable 3) Less latency
     * No need to restart amaroK to use your iPod!
     * Improved Konqueror Sidebar.
     * The bundled "Shouter" AmarokScript (for radio stream serving) has been
@@ -56,7 +59,7 @@ VERSION 1.3.1:
       wouldn't show the tracks. (BR 110890)
     * SmartPlaylist Editor would reset "Match Any" to "Match All" when
       editing. Patch by Kevin Henderson <pyspud@hotmail.com> (BR 110918).
-    * Podcasts and playlist tracks would be sorted lexicographically 
+    * Podcasts and playlist tracks would be sorted lexicographically
       (BR 97297).
     * Saved dynamic playlists were not removable.
     * xine-engine: amaroK would get stuck on exit if the Equalizer was enabled
