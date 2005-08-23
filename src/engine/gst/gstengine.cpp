@@ -72,7 +72,7 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
 {
     DEBUG_BLOCK
 
-    GstPad* const audiopad = gst_element_get_pad( instance()->m_gst_equalizer, "sink" );
+    GstPad* const audiopad = gst_element_get_pad( instance()->m_gst_audioconvert, "sink" );
 
     if ( GST_PAD_IS_LINKED( audiopad ) ) {
         debug() << "audiopad is already linked. Unlinking old pad." << endl;
@@ -845,8 +845,8 @@ GstEngine::createPipeline()
 //     g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( outputError_cb ), NULL );
 
     /* link elements */
-    gst_element_link_many( m_gst_equalizer, m_gst_identity, m_gst_volume,
-                           m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, NULL );
+    gst_element_link_many( m_gst_audioconvert, m_gst_audioscale, m_gst_equalizer,
+                           m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
 
     m_pipelineFilled = true;
     setVolume( m_volume );
