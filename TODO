@@ -5,10 +5,7 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <markey> The Visualization and Equalizer tool windows always come up in the top left corner.
-          Annoying.
-
- <illis.> A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
+ <illis.>  A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
            certainly an ID3v1 vs 2 issue, v2 I think allows for unlimited length (or at least very very
            long), why don't we use it? (not sure whether the problem is in taglib or amarok...)
            <illissius> just found out via leinir that this was caused by the recoding id3v1 tags option.
