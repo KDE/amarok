@@ -214,6 +214,7 @@ class GstEngine : public Engine::Base
         vector<int> m_equalizerGains;
         Engine::SimpleMetaBundle m_metaBundle;
 
+        bool m_eosReached;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
 };

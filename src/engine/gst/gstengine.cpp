@@ -198,6 +198,7 @@ GstEngine::GstEngine()
         , m_transferJob( 0 )
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
+        , m_eosReached( false )
         , m_shutdown( false )
 {
     DEBUG_FUNC_INFO
@@ -315,6 +316,8 @@ GstEngine::canDecode( const KURL &url ) const
 uint
 GstEngine::position() const
 {
+    if ( !m_pipelineFilled ) return 0;
+
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the current time position in nanoseconds. Must be initialized!
     gint64 value = 0;
@@ -329,6 +332,8 @@ GstEngine::length() const
 {
     DEBUG_BLOCK
 
+    if ( !m_pipelineFilled ) return 0;
+
     GstFormat fmt = GST_FORMAT_TIME;
     // Value will hold the track length in nanoseconds. Must be initialized!
     gint64 value = 0;
@@ -341,6 +346,10 @@ GstEngine::length() const
 Engine::State
 GstEngine::state() const
 {
+    // amaroK expects the engine to return Idle on EOS
+    if ( m_eosReached )
+        return Engine::Idle;
+
     if ( !m_pipelineFilled )
         return Engine::Empty;
 
@@ -444,8 +453,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
 
-    // Make sure we have a functional output pipeline
-    if ( !m_pipelineFilled && !createPipeline() )
+    if ( !createPipeline() )
         return false;
 
     if ( url.isLocalFile() ) {
@@ -488,6 +496,8 @@ GstEngine::play( uint offset )  //SLOT
 {
     DEBUG_BLOCK
 
+    m_eosReached = false;
+
     // Try to play input pipeline; if fails, destroy input bin
     if ( !gst_element_set_state( m_gst_thread, GST_STATE_PLAYING ) ) {
         warning() << "Could not set thread to PLAYING.\n";
@@ -507,6 +517,8 @@ void
 GstEngine::stop()  //SLOT
 {
     DEBUG_BLOCK
+
+    m_eosReached = false;
 
     destroyPipeline();
     emit stateChanged( Engine::Empty );
@@ -539,7 +551,7 @@ GstEngine::seek( uint ms )  //SLOT
         const int seekType = GST_FORMAT_TIME | GST_SEEK_METHOD_SET | GST_SEEK_FLAG_FLUSH;
         GstEvent* event = gst_event_new_seek( (GstSeekType) seekType, ms * GST_MSECOND );
 
-        gst_element_send_event( m_gst_src, event );
+        gst_element_send_event( m_gst_audiosink, event );
     }
 }
 
@@ -634,6 +646,12 @@ void
 GstEngine::endOfStreamReached()  //SLOT
 {
     DEBUG_BLOCK
+
+    // Simulate Idle state on EOS
+    m_eosReached = true;
+
+    destroyPipeline();
+    emit trackEnded();
 }
 
 
@@ -827,8 +845,8 @@ GstEngine::createPipeline()
 //     g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( outputError_cb ), NULL );
 
     /* link elements */
-    gst_element_link_many( m_gst_equalizer,  m_gst_identity, m_gst_audioconvert,
-                           m_gst_audioscale, m_gst_volume, m_gst_audiosink, NULL );
+    gst_element_link_many( m_gst_equalizer, m_gst_identity, m_gst_volume,
+                           m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, NULL );
 
     setVolume( m_volume );
 
