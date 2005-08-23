@@ -196,6 +196,8 @@ Vis::Selector::Selector( QWidget *parent )
         new Item( this, "amarok_libvisual", *it, "libvisual" );
 
     resize( sizeHint() + QSize(20,0) );
+    // Center the widget on screen
+    move( parentWidget()->width()/2 - width()/2, parentWidget()->height()/2 - height()/2 );
 }
 
 void

@@ -24,6 +24,7 @@
 #include "sliderwidget.h"
 
 #include <qcheckbox.h>
+#include <qdesktopwidget.h>
 #include <qdom.h>
 #include <qfile.h>
 #include <qgroupbox.h>
@@ -39,23 +40,22 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate()
 #include <ktoolbar.h>      //presets
-#include <kwin.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
-        : QVBox( amaroK::mainWindow(), 0, Qt::WType_Dialog | Qt::WDestructiveClose )
+        : QVBox( amaroK::mainWindow(), 0, WType_TopLevel|WDestructiveClose|WStyle_Customize|
+                                          WStyle_DialogBorder|WStyle_StaysOnTop|WStyle_Tool )
         , m_currentPreset( -1 )
         , m_totalPresets( 0 )
 {
     using amaroK::Slider;
 
-    // Gives the window a small title bar, and skips a taskbar entry
-    KWin::setType( winId(), NET::Utility );
-    KWin::setState( winId(), NET::SkipTaskbar );
-
     s_instance = this;
+
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( i18n( "Equalizer" ) ) );
 
     setMargin( 8 );
     setSpacing( 8 );
@@ -127,8 +127,12 @@ EqualizerSetup::EqualizerSetup()
     }
     // END
 
-    kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Equalizer" ) ) );
+    // Center the widget on screen
+    const QDesktopWidget dw;
+    const int w = dw.screenGeometry().width();
+    const int h = dw.screenGeometry().height();
+    move( w / 2 - width() / 2, h / 2 - height() / 2 );
+
     show();
 }
 
