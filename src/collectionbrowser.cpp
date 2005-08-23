@@ -54,6 +54,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
+    , m_infoA( 0 )
+    , m_infoB( 0 )
     , m_timer( new QTimer( this ) )
 {
     setSpacing( 4 );
@@ -161,7 +163,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_infoA->setAlignment( Qt::AlignCenter );
     m_infoB->setAlignment( Qt::AlignCenter );
 
-    refreshInfo(); // Need to call this here because collectionview is ctor'd before the labels
+    refreshInfo(); // Need to call this here because CollectionView is created before the labels
 
     setFocusProxy( m_view ); //default object to get focus
     setMinimumWidth( toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
