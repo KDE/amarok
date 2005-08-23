@@ -90,8 +90,8 @@ Party::Party( QWidget *parent, const char *name )
      * the signal afterwards
      */
     enableButton->setChecked( AmarokConfig::dynamicMode() );
-    setDynamicMode( AmarokConfig::dynamicMode() );
-    connect( enableButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+    setDynamicMode( AmarokConfig::dynamicMode(), false );
+    connect( enableButton, SIGNAL(toggled( bool )), SLOT(setDynamicMode( bool )) );
 
     if( enableButton->isChecked() )
     {
