@@ -39,7 +39,6 @@ using std::vector;
 class QTimerEvent;
 class KURL;
 
-class InputPipeline;
 
 /**
  * @class GstEngine
@@ -63,7 +62,6 @@ class InputPipeline;
 class GstEngine : public Engine::Base
 {
         friend class GstConfigDialog;
-        friend class InputPipeline;
 
         Q_OBJECT
 
@@ -102,11 +100,9 @@ class GstEngine : public Engine::Base
 
     protected:
         void setVolumeSW( uint percent );
-        void timerEvent( QTimerEvent* );
 
     private slots:
         void handleOutputError();
-        void handleInputError();
         void endOfStreamReached();
         void kioFinished();
 
@@ -142,9 +138,9 @@ class GstEngine : public Engine::Base
 
         // CALLBACKS:
         /** Called at end of track */
-        static void eos_cb( GstElement*, InputPipeline* );
+        static void eos_cb( GstElement*, gpointer );
         /** Called when decodebin has generated a new pad */
-        static void newPad_cb( GstElement*, GstPad*, gboolean, InputPipeline* );
+        static void newPad_cb( GstElement*, GstPad*, gboolean, gpointer );
         /** Duplicates audio data for application side processing */
         static void handoff_cb( GstElement*, GstBuffer*, gpointer );
         /** Used by canDecode(). When called, the format can be decoded */
@@ -153,8 +149,6 @@ class GstEngine : public Engine::Base
         static void found_tag_cb( GstElement*, GstElement*, GstTagList*, gpointer );
         /** Called when the output pipeline signals an error */
         static void outputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
-        /** Called when the input pipeline signals an error */
-        static void inputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         /** Called when the KIO buffer is empty */
         static void kio_resume_cb();
         /** Called after the pipeline is shut down */
@@ -169,9 +163,6 @@ class GstEngine : public Engine::Base
 
         /** Stops playback, destroys all input pipelines, destroys output pipeline, and frees ressources */
         void destroyPipeline();
-
-        /** Deletes the current input pipeline and frees ressources */
-        void destroyInput( InputPipeline* input );
 
         /** Beams the streaming buffer status to amaroK */
         void sendBufferStatus();
@@ -193,16 +184,12 @@ class GstEngine : public Engine::Base
 
         static GstEngine* s_instance;
 
-        // Root bin
-        GstElement* m_gst_rootBin;
+        GstElement* m_gst_thread;
 
-        // Input thread
-        GstElement* m_gst_inputThread;
-        GstElement* m_gst_adder;
-
-        // Output thread
-        GstElement* m_gst_outputThread;
-        GstElement* m_gst_queue;
+        GstElement* m_gst_src;
+        GstElement* m_gst_decodebin;
+        GstElement* m_gst_audioconvert;
+        GstElement* m_gst_audioscale;
         GstElement* m_gst_equalizer;
         GstElement* m_gst_identity;
         GstElement* m_gst_volume;
@@ -210,10 +197,6 @@ class GstEngine : public Engine::Base
 
         QString m_gst_error;
         QString m_gst_debug;
-
-        typedef QPtrList<InputPipeline> InputList;
-        InputList       m_inputs;
-        InputPipeline*  m_currentInput;
 
         GstAdapter* m_gst_adapter;
 
@@ -231,44 +214,8 @@ class GstEngine : public Engine::Base
         vector<int> m_equalizerGains;
         Engine::SimpleMetaBundle m_metaBundle;
 
-        bool m_eosReached;
-        bool m_inputError;
         bool m_shutdown;
         mutable bool m_canDecodeSuccess;
-};
-
-
-/**
- * @class InputPipeline
- * @short Wraps input-pipeline tracks
- * @author Mark Kretschmann <markey@web.de>
- */
-class InputPipeline
-{
-    public:
-        enum State { NO_FADE, FADE_IN, FADE_OUT, XFADE_IN, XFADE_OUT };
-
-        InputPipeline();
-        ~InputPipeline();
-
-        State state() const { return m_state; }
-        void setState( State newState );
-
-        float fade() const { return m_fade; }
-        void setFade( float newFade) { m_fade = newFade; }
-
-        State m_state;
-        float m_fade;
-
-        bool m_error;
-        bool m_eos;
-
-        GstElement* bin;
-        GstElement* src;
-        GstElement* decodebin;
-        GstElement* audioconvert;
-        GstElement* audioscale;
-        GstElement* volume;
 };
 
 

@@ -40,13 +40,14 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate()
 #include <ktoolbar.h>      //presets
+#include <kwin.h>
 
 EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
         : QVBox( amaroK::mainWindow(), 0, WType_TopLevel|WDestructiveClose|WStyle_Customize|
-                                          WStyle_DialogBorder|WStyle_StaysOnTop|WStyle_Tool )
+                                          WStyle_DialogBorder|WStyle_StaysOnTop )
         , m_currentPreset( -1 )
         , m_totalPresets( 0 )
 {
@@ -56,6 +57,10 @@ EqualizerSetup::EqualizerSetup()
 
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Equalizer" ) ) );
+
+    // Gives the window a small title bar, and skips a taskbar entry
+    KWin::setType( winId(), NET::Utility );
+    KWin::setState( winId(), NET::SkipTaskbar );
 
     setMargin( 8 );
     setSpacing( 8 );
