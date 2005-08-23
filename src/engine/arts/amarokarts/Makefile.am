@@ -26,4 +26,4 @@ amarokmcop_DATA = Synth_STEREO_XFADE.mcopclass RawScope.mcopclass
 CLEANFILES = amarokarts.cc amarokarts.h amarokarts.mcopclass amarokarts.mcoptype
 #noinst_HEADERS =  amarokconfig.h
 
-rawscope_impl.cpp : amarokarts.h
+rawscope_impl.o : amarokarts.h
