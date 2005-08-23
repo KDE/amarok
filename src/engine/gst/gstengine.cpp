@@ -848,9 +848,9 @@ GstEngine::createPipeline()
     gst_element_link_many( m_gst_equalizer, m_gst_identity, m_gst_volume,
                            m_gst_audioconvert, m_gst_audioscale, m_gst_audiosink, NULL );
 
+    m_pipelineFilled = true;
     setVolume( m_volume );
 
-    m_pipelineFilled = true;
     return true;
 }
 
