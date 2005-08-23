@@ -190,7 +190,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
     position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
-        debug() << "Received new seek notify to pos " << position << endl;
+//         debug() << "Received new seek notify to pos " << position << endl;
         CueFile::Iterator it;
         for ( it = begin(); it != end(); ++it )
         {
