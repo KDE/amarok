@@ -72,7 +72,7 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
 {
     DEBUG_BLOCK
 
-    GstPad* const audiopad = gst_element_get_pad( instance()->m_gst_audioconvert, "sink" );
+    GstPad* const audiopad = gst_element_get_pad( instance()->m_gst_equalizer, "sink" );
 
     if ( GST_PAD_IS_LINKED( audiopad ) ) {
         debug() << "audiopad is already linked. Unlinking old pad." << endl;
