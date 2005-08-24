@@ -6,6 +6,7 @@
 #include "gstengine.h"
 
 #include <qcheckbox.h>
+#include <qlabel.h>
 
 #include <kcombobox.h>
 #include <kdebug.h>
@@ -46,6 +47,14 @@ GstConfigDialog::GstConfigDialog( GstEngine const * const engine )
     connect( m_view->kLineEdit_outputParams, SIGNAL( textChanged( const QString& ) ), SIGNAL( viewChanged() ) );
     connect( m_view->kIntSpinBox_fadein, SIGNAL( valueChanged( int ) ), SIGNAL( viewChanged() ) );
     connect( m_view->kIntSpinBox_fadeout, SIGNAL( valueChanged( int ) ), SIGNAL( viewChanged() ) );
+
+
+    // HACK Hide fading options until we readd this feature
+    m_view->line1->hide();
+    m_view->textLabel1_2_2->hide();
+    m_view->kIntSpinBox_fadein->hide();
+    m_view->textLabel1_2->hide();
+    m_view->kIntSpinBox_fadeout->hide();
 }
 
 
