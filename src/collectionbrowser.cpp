@@ -1820,7 +1820,8 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
         s = query.left( x ); //get the element
         query = query.mid( x + 1 ); //move on
 
-        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" && !s.endsWith( ":" ) ) )
+        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
+                                  !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
         {
             if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
             {
@@ -1838,7 +1839,7 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
             tmpl += tmp;
             tmp = field = "";
         }
-        else if( s.endsWith( ":" ) )
+        else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
             field = s;
         else if( s == "OR" )
             OR = true;
@@ -1869,7 +1870,19 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
                 s = s.mid( x + 1 );
             }
 
-            int table = -1;
+            int mode = QueryBuilder::modeNormal;
+            if( !field.isEmpty() && s.startsWith( ">" ) )
+            {
+                s = s.mid( 1 );
+                mode = QueryBuilder::modeGreater;
+            }
+            else if( !field.isEmpty() && s.startsWith( "<" ) )
+            {
+                s = s.mid( 1 );
+                mode = QueryBuilder::modeLess;
+            }
+
+            int table = -1, value = -1;
             if( field == "artist" )
                 table = QueryBuilder::tabArtist;
             else if( field == "album" )
@@ -1880,11 +1893,71 @@ CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaul
                 table = QueryBuilder::tabGenre;
             else if( field == "year" )
                 table = QueryBuilder::tabYear;
+            else if( field == "score" )
+            {
+                table = QueryBuilder::tabStats;
+                value = QueryBuilder::valScore;
+            }
+            else if( field == "directory" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valDirectory;
+            }
+            else if( field == "length" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valLength;
+            }
+            else if( field == "playcount" )
+            {
+                table = QueryBuilder::tabStats;
+                value = QueryBuilder::valPlayCounter;
+            }
+            else if( field == "samplerate" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valSamplerate;
+            }
+            else if( field == "track" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valTrack;
+            }
+            else if( field == "filename" || field == "url" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valURL;
+            }
+            else if( field == "bitrate" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valBitrate;
+            }
+            else if( field == "comment" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valComment;
+            }
+            else if( field == "lyrics" )
+            {
+                table = QueryBuilder::tabSong;
+                value = QueryBuilder::valLyrics;
+            }
 
             if( neg )
-                qb.excludeFilter( table >= 0 ? table : defaults, s );
+            {
+                if( value >= 0 )
+                    qb.excludeFilter( table, value, s, mode );
+                else
+                    qb.excludeFilter( table >= 0 ? table : defaults, s );
+            }
             else
-                qb.addFilter( table >= 0 ? table : defaults, s );
+            {
+                if( value >= 0 )
+                    qb.addFilter( table, value, s, mode );
+                else
+                    qb.addFilter( table >= 0 ? table : defaults, s );
+            }
         }
         qb.endOR();
     }

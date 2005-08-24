@@ -407,15 +407,19 @@ class QueryBuilder
 {
     public:
         //attributes:
-        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32, tabStats = 64, tabDummy = 0 };
-        enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4, optRandomize = 8 };
-        enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32, valComment = 64,
-                               valBitrate = 128, valLength = 256, valSamplerate = 512, valPlayCounter = 1024,
-                               valCreateDate = 2048, valAccessDate = 4096, valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
-                               valYearID = 65536, valGenreID = 131072, valDummy = 0 };
+        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32,
+                               tabStats = 64, tabDummy = 0 };
+        enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
+                               optRandomize = 8 };
+        enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32, 
+                               valComment = 64, valBitrate = 128, valLength = 256, valSamplerate = 512,
+                               valPlayCounter = 1024, valCreateDate = 2048, valAccessDate = 4096,
+                               valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
+                               valYearID = 65536, valGenreID = 131072, valDirectory = 262144,
+                               valLyrics = 524288, valDummy = 0 };
         enum qBuilderFunctions  { funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
-        enum qBuilderFilter  { modeNormal = 0, modeFuzzy = 1 };
+        enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2 };
 
         QueryBuilder();
 
@@ -428,9 +432,11 @@ class QueryBuilder
 
         void addURLFilters( const QStringList& filter );
 
-        void addFilter( int tables, const QString& filter, int mode = modeNormal );
+        void addFilter( int tables, const QString& filter);
+        void addFilter( int tables, int value, const QString& filter, int mode = modeNormal );
         void addFilters( int tables, const QStringList& filter );
         void excludeFilter( int tables, const QString& filter );
+        void excludeFilter( int tables, int value, const QString& filter, int mode = modeNormal );
 
         void addMatch( int tables, const QString& match );
         void addMatch( int tables, int value, const QString& match );

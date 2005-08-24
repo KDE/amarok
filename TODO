@@ -68,10 +68,6 @@ MID-TERM:
   <sebr>   Make the player window scroll the text in the opposite direction if using right-2-left text
            (eg hebrew or arabic)
 
-
-  <illiss.>Port Google-syntax to other places you can search in (most notably collection browser, possibly
-           also file browser and cover manager. Anywhere else?)
-
   <illiss.>Option to "fill in tags from filename" in the meta-information dialog. Perhaps steal some (more)
            code from JuK.
 
