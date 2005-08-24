@@ -460,6 +460,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
     //here we filter some events for the Playlist Search LineEdit and the Playlist
     //this makes life easier since we have more useful functions available from this class
 
+    Playlist *pl = Playlist::instance();
+    typedef QListViewItemIterator It;
+
     switch( e->type() )
     {
     case 6/*QEvent::KeyPress*/:
@@ -471,7 +474,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         if( e->key() == Key_F2 )
         {
             // currentItem is ALWAYS visible.
-            QListViewItem *item = Playlist::instance()->currentItem();
+            QListViewItem *item = pl->currentItem();
 
             // intercept F2 for inline tag renaming
             // NOTE: tab will move to the next tag
@@ -480,43 +483,68 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
             // item may still be null, but this is safe
             // NOTE: column 0 cannot be edited currently, hence we pick column 1
-            Playlist::instance()->rename( item, 1 ); //TODO what if this column is hidden?
+            pl->rename( item, 1 ); //TODO what if this column is hidden?
 
             return true;
         }
 
         if( o == m_lineEdit ) //the search lineedit
         {
-            typedef QListViewItemIterator It;
-
             // If ctrl key is pressed, propagate keyEvent to the playlist
-            if ( e->key() & Qt::CTRL ) {
-                QApplication::sendEvent( Playlist::instance(), e );
+            if ( e->state() & ControlButton ) {
+                QApplication::sendEvent( pl, e );
                 return true;
             }
 
+            QListViewItem *item;
             switch( e->key() )
             {
-            case Key_Down:
-                if( QListViewItem *item = *It( Playlist::instance(), It::Visible ) )
+            case Key_Up:
+                item = *It( pl, It::Visible );
+                if( item )
+                    while( item->itemBelow() )
+                        item = item->itemBelow();
+                if( item )
                 {
-                    Playlist::instance()->setFocus();
-                    Playlist::instance()->setCurrentItem( item );
+                    pl->setFocus();
+                    pl->setCurrentItem( item );
                     item->setSelected( true );
+                    pl->ensureItemVisible( item );
+                    return true;
+                }
+                return false;
+            case Key_Down:
+                if( item = *It( pl, It::Visible ) )
+                {
+                    pl->setFocus();
+                    pl->setCurrentItem( item );
+                    item->setSelected( true );
+                    pl->ensureItemVisible( item );
                     return true;
                 }
                 return false;
 
             case Key_PageDown:
             case Key_PageUp:
-                QApplication::sendEvent( Playlist::instance(), e );
+                QApplication::sendEvent( pl, e );
                 return true;
 
             case Key_Return:
             case Key_Enter:
-                Playlist::instance()->activate( *It( Playlist::instance(), It::Visible ) );
-                Playlist::instance()->showCurrentTrack();
+                item = *It( pl, It::Visible );
                 m_lineEdit->clear();
+                pl->m_filtertimer->stop(); //HACK HACK HACK
+                pl->setFilter( "" );       //SLASH
+                if( ( e->state() & ShiftButton ) && item )
+                {
+                    pl->queue( item );
+                    pl->ensureItemCentered( item );
+                }
+                else
+                {
+                    pl->activate( item );
+                    pl->showCurrentTrack();
+                }
                 return true;
 
             case Key_Escape:
@@ -531,16 +559,18 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         //following are for Playlist::instance() only
         //we don't handle these in the playlist because often we manipulate the lineEdit too
 
-        if( e->key() == Key_Up && Playlist::instance()->currentItem()->itemAbove() == 0 )
+        if( pl->currentItem() && ( ( e->key() == Key_Up   && pl->currentItem()->itemAbove() == 0 )
+                                || ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 ) ) )
         {
-            Playlist::instance()->currentItem()->setSelected( false );
+            pl->currentItem()->setSelected( false );
             m_lineEdit->setFocus();
+            pl->ensureItemVisible( *It( pl, It::Visible ) );
             return true;
         }
 
         if( e->key() == Key_Delete )
         {
-            Playlist::instance()->removeSelectedItems();
+            pl->removeSelectedItems();
             return true;
         }
 

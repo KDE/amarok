@@ -195,6 +195,7 @@ Playlist::Playlist( QWidget *parent )
         , m_partyDirt( false )
         , m_queueDirt( false )
         , m_undoDirt( false )
+        , m_itemToReallyCenter( 0 )
         , m_lockStack( 0 )
         , m_columnFraction( 14, 0 )
 {
@@ -2710,6 +2711,9 @@ void
 Playlist::setDelayedFilter() //SLOT
 {
     setFilter( m_filter );
+
+    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
+    showCurrentTrack();
 }
 
 void
@@ -2728,9 +2732,6 @@ Playlist::setFilter( const QString &query ) //SLOT
         m_filter = query;
     }
 
-    //to me it seems sensible to do this, BUT if it seems annoying to you, remove it
-    showCurrentTrack();
-    triggerUpdate();
     emit itemCountChanged( childCount(), m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 }
 
@@ -3220,14 +3221,25 @@ Playlist::removeItem( PlaylistItem *item )
     emit itemCountChanged( childCount()-1, m_totalLength, m_visCount, m_visLength, m_selCount, m_selLength );
 }
 
-void
-Playlist::ensureItemCentered( PlaylistItem *item )
+void Playlist::ensureItemCentered( QListViewItem *item )
 {
     if( !item )
         return;
 
-    ensureVisible( contentsX(), item->itemPos() + item->height() / 2, 0, visibleHeight() / 2 );
-    triggerUpdate();
+    //HACK -- apparently the various metrics aren't reliable while the UI is still updating & stuff
+    m_itemToReallyCenter = item;
+    QTimer::singleShot( 0, this, SLOT( reallyEnsureItemCentered() ) );
+}
+
+void
+Playlist::reallyEnsureItemCentered()
+{
+    if( QListViewItem *item = m_itemToReallyCenter )
+    {
+        m_itemToReallyCenter = 0;
+        ensureVisible( contentsX(), item->itemPos() + item->height() / 2, 0, visibleHeight() / 2 );
+        triggerUpdate();
+    }
 }
 
 void

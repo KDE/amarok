@@ -157,6 +157,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
+        void ensureItemCentered( QListViewItem* item );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
         void shuffle();
@@ -178,6 +179,7 @@ class Playlist : private KListView, public EngineObserver
         void showContextMenu( QListViewItem*, const QPoint&, int );
         void slotEraseMarker();
         void slotGlowTimer();
+        void reallyEnsureItemCentered();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void slotRepeatTrackToggled( bool enabled );
         void slotSelectionChanged();
@@ -205,7 +207,6 @@ class Playlist : private KListView, public EngineObserver
         bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
         void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem* );
-        void ensureItemCentered( PlaylistItem* item );
         bool saveState( QStringList& );
         void setCurrentTrack( PlaylistItem* );
         void setCurrentTrackPixmap( int state = -1 );
@@ -276,6 +277,8 @@ class Playlist : private KListView, public EngineObserver
         bool          m_partyDirt;          //So we dont call advancePartyTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
         bool          m_undoDirt;           //Make sure we dont repopulate the playlist when dynamic mode and undo()
+
+        QListViewItem *m_itemToReallyCenter;
 
         QMap<QString, QStringList> m_customSubmenuItem;
         QMap<int, QString>         m_customIdItem;
