@@ -2091,6 +2091,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     int pxSize = fontMetrics().height() - 4;
     const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
     const QString text = colorGroup().text().name();
+    const QString link = colorGroup().link().name();
     const QString fg   = colorGroup().highlightedText().name();
     const QString bg   = colorGroup().highlight().name();
     const QColor baseColor = colorGroup().base();
@@ -2192,7 +2193,7 @@ void ContextBrowser::setStyleSheet_Default( QString& styleSheet )
     styleSheet += QString( "#current_box-largecover-td { text-align: left; width: 100px; padding: 0; vertical-align: bottom; }" );
     styleSheet += QString( "#current_box-largecover-image { padding: 4px; vertical-align: bottom; }" );
 
-    styleSheet += QString( "#wiki_box-body a { color: %1; }" ).arg( bg );
+    styleSheet += QString( "#wiki_box-body a { color: %1; }" ).arg( link );
     styleSheet += QString( "#wiki_box-body a:hover { text-decoration: underline; }" );
 }
 

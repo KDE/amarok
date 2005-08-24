@@ -522,6 +522,7 @@ App::applyColorScheme()
         AltBase.setRgb( 57, 64, 98 );
 
         group.setColor( QColorGroup::Text, Qt::white );
+        group.setColor( QColorGroup::Link, 0xCCCCCC );
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Foreground, 0xd7d7ef );
         group.setColor( QColorGroup::Background, AltBase );
@@ -579,6 +580,7 @@ App::applyColorScheme()
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
         group.setColor( QColorGroup::Text, fg );
+        group.setColor( QColorGroup::Link, fg.light( 120 ) );
         group.setColor( QColorGroup::Highlight, highlight );
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
