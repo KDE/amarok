@@ -490,12 +490,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == m_lineEdit ) //the search lineedit
         {
-            // If ctrl key is pressed, propagate keyEvent to the playlist
-            if ( e->state() & ControlButton ) {
-                QApplication::sendEvent( pl, e );
-                return true;
-            }
-
             QListViewItem *item;
             switch( e->key() )
             {
