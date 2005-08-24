@@ -341,7 +341,7 @@ PlaylistWindow::init()
             m_browsers->addBrowser( new Type( name ), text, icon ); }
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), "info" )
-        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "kfm" )
+        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), "collection" )
         addBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), "player_playlist_2" )
 
         if( MediaBrowser::isAvailable() )

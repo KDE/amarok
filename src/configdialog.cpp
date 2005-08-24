@@ -125,7 +125,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( m_opt4, i18n( "Playback" ), "kmix", i18n( "Configure Playback" ) );
     addPage( opt5,   i18n( "OSD" ), "tv", i18n( "Configure On-Screen-Display" ) );
     addPage( opt6,   i18n( "Engine" ), "amarok", i18n( "Configure Engine" ) );
-    addPage( m_opt7, i18n( "Collection" ), "connect_creating", i18n( "Configure Collection" ) );
+    addPage( m_opt7, i18n( "Collection" ), "collection", i18n( "Configure Collection" ) );
     addPage( opt8,   i18n( "Scrobbler" ), "audioscrobbler", i18n( "Configure Audioscrobbler" ) );
 
     // Show information labels (must be done after insertions)

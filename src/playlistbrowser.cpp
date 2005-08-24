@@ -537,7 +537,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
     item = new SmartPlaylist( m_smartDefaults, 0, i18n( "All Collection" ), qb.query() );
-    item->setPixmap( 0, SmallIcon("kfm") );
+    item->setPixmap( 0, SmallIcon("collection") );
 
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
