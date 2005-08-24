@@ -32,9 +32,9 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
-    * GStreamer-engine was rewritten. The crossfading feature was removed, as
-      this didn't work properly with recent GStreamer versions. Improvements:
-      1) Reduced CPU usage 2) Increased Stability 3) Reduced latency
+    * GStreamer-engine was rewritten. The crossfading feature was removed for
+      now (it didn't work right with recent GStreamer versions). Improvements:
+      1) Reduced CPU usage 2) Reduced latency 3) Increased stability
     * No need to restart amaroK to use your iPod!
     * Improved Konqueror Sidebar.
     * The bundled "Shouter" AmarokScript (for radio stream serving) has been
