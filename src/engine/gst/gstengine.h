@@ -102,9 +102,6 @@ class GstEngine : public Engine::Base
         /** Called when no output sink was selected. Shows the GStreamer engine settings dialog. */
         void errorNoOutput();
 
-        /** Rebuilds the pipeline after configuration changes */
-        void configChanged();
-
         /** Transmits new decoded metadata to the application */
         void newMetaData();
 

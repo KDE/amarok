@@ -432,7 +432,7 @@ GstEngine::configure() const
     DEBUG_FUNC_INFO
 
     GstConfigDialog* dialog = new GstConfigDialog( this );
-    connect( dialog, SIGNAL( settingsSaved() ), SLOT( configChanged() ) );
+    connect( dialog, SIGNAL( settingsSaved() ), SLOT( stop() ) );
 
     return dialog;
 }
@@ -480,7 +480,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     // Link all elements. The link from decodebin to audioconvert will be made in the newPad-callback
     gst_element_link( m_gst_src, m_gst_decodebin );
 
-    // Prepare bin for playing
+    setVolume( m_volume );
+
+    // Prepare pipeline for playing
     gst_element_set_state( m_gst_thread, GST_STATE_READY );
 
     return true;
@@ -703,18 +705,6 @@ GstEngine::errorNoOutput() //SLOT
 }
 
 
-void
-GstEngine::configChanged() //SLOT
-{
-    debug() << "Rebuilding output pipeline with new settings.\n";
-
-    // Stop playback and rebuild output pipeline, in order to apply new settings
-    createPipeline();
-
-    emit stateChanged( Engine::Empty );
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 /////////////////////////////////////////////////////////////////////////////////////
@@ -843,8 +833,6 @@ GstEngine::createPipeline()
                            m_gst_identity, m_gst_volume, m_gst_audiosink, NULL );
 
     m_pipelineFilled = true;
-    setVolume( m_volume );
-
     return true;
 }
 
