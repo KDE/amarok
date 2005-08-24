@@ -156,7 +156,7 @@ GstEngine::found_tag_cb( GstElement*, GstElement*, GstTagList* taglist, gpointer
 
 
 void
-GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
+GstEngine::pipelineError_cb( GstElement* /*element*/, GstElement* /*domain*/, GError* error, gchar* debug, gpointer /*data*/ ) //static
 {
     DEBUG_FUNC_INFO
 
@@ -164,7 +164,7 @@ GstEngine::outputError_cb( GstElement* /*element*/, GstElement* /*domain*/, GErr
     instance()->m_gst_debug = QString::fromAscii( debug );
 
     // Process error message in application thread
-    QTimer::singleShot( 0, instance(), SLOT( handleOutputError() ) );
+    QTimer::singleShot( 0, instance(), SLOT( handlePipelineError() ) );
 }
 
 
@@ -619,7 +619,7 @@ GstEngine::setVolumeSW( uint percent )  //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::handleOutputError()  //SLOT
+GstEngine::handlePipelineError()  //SLOT
 {
     DEBUG_BLOCK
 
@@ -635,9 +635,7 @@ GstEngine::handleOutputError()  //SLOT
     emit statusText( text );
     error() << text << endl;
 
-    // Destroy all pipelines
     destroyPipeline();
-
     emit trackEnded();
 }
 
@@ -842,7 +840,7 @@ GstEngine::createPipeline()
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "eos", G_CALLBACK( eos_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
-//     g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( outputError_cb ), NULL );
+    g_signal_connect ( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
 
     /* link elements */
     gst_element_link_many( m_gst_audioconvert, m_gst_audioscale, m_gst_equalizer,

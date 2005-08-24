@@ -45,19 +45,9 @@ class KURL;
  * @short GStreamer engine plugin
  * @author Mark Kretschmann <markey@web.de>
  *
- * GStreamer-Engine implements an N-track (unlimited number of tracks) crossfader
- * design. Fading to the next track starts at an adjustable time before the current
- * track ends. Additionally, separate values for volume fade-in and fade-out can be
- * specified.
- * Note that the engine cannot do true gapless play at this point. This is a
- * planned feature.
- *
  * GstEngine uses following pipeline for playing (syntax used by gst-launch):
  * { filesrc location=file.ext ! decodebin ! audioconvert ! audioscale ! volume
  * ! adder } ! { queue ! equalizer ! identity ! volume ! audiosink }
- * Part of pipeline between filesrc and first volume is double while
- * crossfading. First pair of curly braces encloses m_gst_inputThread, second
- * m_gst_outputThread
  */
 class GstEngine : public Engine::Base
 {
@@ -102,7 +92,7 @@ class GstEngine : public Engine::Base
         void setVolumeSW( uint percent );
 
     private slots:
-        void handleOutputError();
+        void handlePipelineError();
         void endOfStreamReached();
         void kioFinished();
 
@@ -147,8 +137,8 @@ class GstEngine : public Engine::Base
         static void candecode_handoff_cb( GstElement*, GstBuffer*, gpointer );
         /** Called when new metadata tags have been found */
         static void found_tag_cb( GstElement*, GstElement*, GstTagList*, gpointer );
-        /** Called when the output pipeline signals an error */
-        static void outputError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
+        /** Called when the GStreamer pipeline signals an error */
+        static void pipelineError_cb( GstElement*, GstElement*, GError*, gchar*, gpointer );
         /** Called when the KIO buffer is empty */
         static void kio_resume_cb();
         /** Called after the pipeline is shut down */
@@ -174,7 +164,7 @@ class GstEngine : public Engine::Base
         static const int  TIMER_INTERVAL = 40; //msec
 
         #define KB 1000
-        static const uint SCOPEBUF_SIZE  = 400*KB;
+        static const uint SCOPEBUF_SIZE  = 600*KB;
         static const int  SCOPE_VALUES   = 512;
         static const int  STREAMBUF_SIZE = 600*KB;
         static const uint STREAMBUF_MIN  = 100*KB;
