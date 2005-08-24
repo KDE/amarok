@@ -780,8 +780,7 @@ GstEngine::createPipeline()
 {
     DEBUG_BLOCK
 
-    if ( m_pipelineFilled )
-        destroyPipeline();
+    destroyPipeline();
 
     if ( GstConfig::soundOutput().isEmpty() ) {
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
