@@ -90,6 +90,7 @@ class GstEngine : public Engine::Base
 
     protected:
         void setVolumeSW( uint percent );
+        void timerEvent( QTimerEvent* );
 
     private slots:
         void handlePipelineError();
@@ -158,7 +159,7 @@ class GstEngine : public Engine::Base
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
         // Interval of main timer, handles the crossfading
-        static const int  TIMER_INTERVAL = 40; //msec
+        static const int  TIMER_INTERVAL = 50; //msec
 
         #define KB 1000
         static const uint SCOPEBUF_SIZE  = 600*KB;

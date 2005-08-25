@@ -262,6 +262,8 @@ GstEngine::init()
         return false;
     }
 
+    startTimer( TIMER_INTERVAL );
+
     return true;
 }
 
@@ -515,10 +517,19 @@ void
 GstEngine::stop()  //SLOT
 {
     DEBUG_BLOCK
+    if ( !m_pipelineFilled ) return ;
 
     m_eosReached = false;
 
-    destroyPipeline();
+    // Is a fade running?
+    if ( m_fadeValue == 0.0 ) {
+        // Not fading --> start fade now
+        m_fadeValue = 1.0;
+    }
+    else
+        // Fading --> stop playback
+        destroyPipeline();
+
     emit stateChanged( Engine::Empty );
 }
 
@@ -604,11 +615,38 @@ GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains 
 /////////////////////////////////////////////////////////////////////////////////////
 
 void
-GstEngine::setVolumeSW( uint percent )  //SLOT
+GstEngine::setVolumeSW( uint percent )
 {
     RETURN_IF_PIPELINE_EMPTY
 
-    gst_element_set( m_gst_volume, "volume", (double) percent * 0.01, NULL );
+    double fade;
+    if ( m_fadeValue > 0.0 )
+        fade = 1.0 - log10( ( 1.0 - m_fadeValue ) * 9.0 + 1.0 );
+    else
+        fade = 1.0;
+
+    gst_element_set( m_gst_volume, "volume", (double) percent * fade * 0.01, NULL );
+}
+
+
+void GstEngine::timerEvent( QTimerEvent* )
+{
+    // *** Volume fading ***
+
+    // Are we currently fading?
+    if ( m_fadeValue > 0.0 )
+    {
+        m_fadeValue -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
+
+        // Fade finished?
+        if ( m_fadeValue <= 0.0 ) {
+            // Fade transition has finished, stop playback
+            debug() << "[Gst-Engine] Fade-out finished.\n";
+            destroyPipeline();
+        }
+
+        setVolume( volume() );
+    }
 }
 
 
@@ -786,7 +824,6 @@ GstEngine::createPipeline()
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
-    debug() << "Thread scheduling priority: " << GstConfig::threadPriority() << endl;
     debug() << "Sound output method: " << GstConfig::soundOutput() << endl;
     debug() << "CustomSoundDevice: " << ( GstConfig::useCustomSoundDevice() ? "true" : "false" ) << endl;
     debug() << "Sound Device: " << GstConfig::soundDevice() << endl;

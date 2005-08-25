@@ -28,19 +28,6 @@
         <entry key="Output Params" type="String">
             <label>The custom sink parameters.</label>
         </entry>
-        <entry key="Thread Priority" type="Int">
-            <label>Priority of GStreamer pipeline thread</label>
-            <whatsthis>The priority of the thread for GStreamer, a value between 0 (low) and 3 (high).</whatsthis>
-            <default>2</default>
-            <min>0</min>
-            <max>3</max>
-        </entry>
-        <entry key="Fadein Duration" type="Int">
-            <label>Duration of Fade-in when starting a track</label>
-            <default>0</default>
-            <min>0</min>
-            <max>10000</max>
-        </entry>
         <entry key="Fadeout Duration" type="Int">
             <label>Duration of Fade-out at trackend</label>
             <default>2000</default>
