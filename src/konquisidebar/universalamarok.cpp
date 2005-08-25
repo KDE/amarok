@@ -187,6 +187,22 @@ void UniversalAmarok::updateBrowser(const QString& file)
         showIntroduction();
         return;
     }
+    QString text;
+    QFile f_file(file);
+    if( f_file.open(IO_ReadOnly) )
+    {
+	    QTextStream stream( &f_file );
+	    QString line;
+	    int i = 1;
+	    while ( !stream.atEnd() ) {
+		    line = stream.readLine(); // line of text excluding '\n'
+		     text += QString("\n") + line;
+	    } f_file.close();
+            text=text.replace("<img id='current_box-largecover-image' ", "<img id='current_box-largecover-image' width=70 heigth=70 ");
+	    browser->begin();
+	    browser->write(text);
+	    browser->end();
+    } else
     browser->openURL(file);
 }
 
