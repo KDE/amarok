@@ -273,7 +273,7 @@ char* HelixSimplePlayer::RemoveWrappingQuotes(char* str)
    if (len > 0)
    {
       if (str[len-1] == '"') str[--len] = 0;
-      if (str[0] == '"') { int i = 0; do { str[i++] = str[i+1]; } while(--len); }
+      if (str[0] == '"') {int i = 0; do { str[i++] = str[i+1]; } while(--len); }
    }
    return str;
 }
@@ -1091,7 +1091,7 @@ bool HelixSimplePlayer::done(int playerIndex)
       {
          pthread_mutex_lock(&m_engine_m);
          if (ppctrl[i]->bStarting || !ppctrl[i]->pPlayer->IsDone())
-            ppctrl[i]->bPlaying = bAllDone = false;
+            ppctrl[i]->bPlaying = (bAllDone = false);
          pthread_mutex_unlock(&m_engine_m);
       }
    else
@@ -1099,7 +1099,7 @@ bool HelixSimplePlayer::done(int playerIndex)
       if (playerIndex < nNumPlayers)
       {
          pthread_mutex_lock(&m_engine_m);
-         if (bAllDone = (!ppctrl[playerIndex]->bStarting && ppctrl[playerIndex]->pPlayer->IsDone()))
+         if ((bAllDone = (!ppctrl[playerIndex]->bStarting && ppctrl[playerIndex]->pPlayer->IsDone())))
             ppctrl[playerIndex]->bPlaying = false;
          pthread_mutex_unlock(&m_engine_m);
       }
@@ -1387,7 +1387,7 @@ int HelixSimplePlayer::peekScopeTime(unsigned long &t)
 void HelixSimplePlayer::clearScopeQ()
 {
    struct DelayQueue *item;
-   while (item = getScopeBuf())
+   while ((item = getScopeBuf()))
       delete item;
 }
 

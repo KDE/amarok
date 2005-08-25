@@ -485,7 +485,7 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
          out[channel] += pcm[channel]*0.25;
          
          /* Round and convert to integer */
-#ifdef __i386__
+#if __i386__ && __GNUC__ < 4
          tempint = round_trick(out[channel]);
 #else
          tempint = (int)out[channel];
