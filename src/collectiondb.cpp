@@ -1315,9 +1315,10 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
             score = ( ( 50 + percentage ) / 2 );
         // increment playcounter and update accesstime
         if (m_dbConnPool->getDbConnectionType() == DbConnection::postgresql) {
-            query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2+1 WHERE url='%3';" )
+            query( QString( "UPDATE statistics SET percentage=%1, playcounter=%2, accessdate=%3 WHERE url='%4';" )
                             .arg( score )
                             .arg( values[0] + " + 1" )
+                            .arg( QDateTime::currentDateTime().toTime_t() )
                             .arg( escapeString( url ) ) );
         }
         else
