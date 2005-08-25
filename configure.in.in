@@ -285,6 +285,8 @@ fi
 
 if test "$build_helix" != "no"; then
     AC_DEFINE(HAVE_HELIX, 1, [have HELIX])
+else
+    echo "no"
 fi
 
 AM_CONDITIONAL(with_helix, test x$build_helix = xyes)
