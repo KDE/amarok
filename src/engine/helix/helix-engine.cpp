@@ -147,7 +147,6 @@ HelixEngine::init()
       QString me = ml->mimeexts;
 
       entry = new MimeEntry;
-      //cerr << "mt <" << mt.utf8() << "> me <" << me.utf8() << ">\n";
       entry->type = QStringList::split('|', mt);
       entry->ext = QStringList::split('|', me);
       m_mimes[i] = *entry;
@@ -359,14 +358,11 @@ HelixEngine::canDecode( const KURL &url ) const
    if (ext != "txt")
       for (int i=0; i<(int)m_mimes.size(); i++)
       {
-         //for (int j=0; j<m_mimes[i].ext.count(); j++)
-         //   cerr << "canDecode(" << ext.utf8() << "): " << m_mimes[i].ext[j].utf8() << endl;
          if (m_mimes[i].type.grep("audio").count() || 
              m_mimes[i].type.grep("video").count() || 
              m_mimes[i].type.grep("application").count())
             if (m_mimes[i].ext.grep(ext).count())
             {
-               //cerr << "canDecode returns true\n";
                return true;
             }
       }
@@ -390,7 +386,6 @@ HelixEngine::timerEvent( QTimerEvent * )
    {
       m_ftime /= 1000;
       m_fps = (double) m_fcount / m_ftime;
-      cerr << "SCOPE FPS: " << m_fps << endl;
       m_ftime = 0;
       m_fcount = 0;
    }
@@ -576,10 +571,6 @@ const Engine::Scope &HelixEngine::scope()
       m_scope[i] = m_currentScope[i];
    m_scopeindex = 0;
    
-#ifdef DEBUG_PURPOSES_ONLY
-   //cerr << "total " << m_scopebuftotal << " waste " << m_scopebufwaste << " no bufs " << m_scopebufnone << endl;
-#endif
-
    return m_scope;
 }
 
