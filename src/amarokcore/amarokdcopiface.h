@@ -55,7 +55,7 @@ k_dcop:
    virtual QString coverImage() = 0;                        ///< Return the encoded URL of the current track's cover image
    virtual QString currentTime() = 0;                       ///< Return the position of the currently playing track ([h:]mm:ss format).
    virtual QString encodedURL() = 0;                        ///< Return the encoded URL of the currently playing track.
-   virtual QString engine() = 0;                        ///<Return the current sound engine. 
+   virtual QString engine() = 0;                        ///<Return the current sound engine.
    virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
    virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
    virtual QString lyricsByPath( QString path ) = 0;        ///< Return the lyrics of a track by path.
@@ -74,6 +74,8 @@ k_dcop:
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
    virtual void enableRepeatTrack(bool enable) = 0;         ///< Switch Repeat Track on or off.
+   virtual void mdMountCommand( QString cmd ) = 0;      ///< Sets the command used for mounting media device.
+   virtual void mdUmountCommand( QString cmd ) = 0;   ///< Sets the comment used for umounting media device.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.

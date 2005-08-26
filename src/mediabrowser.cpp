@@ -25,6 +25,7 @@
 #include <qtooltip.h>       //QToolTip::add()
 
 #include <kapplication.h> //kapp
+#include <kdebug.h>
 #include <kdirlister.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
@@ -436,9 +437,14 @@ MediaDevice::MediaDevice( MediaDeviceView* parent )
 {
     s_instance = this;
 
+    sysProc = new KShellProcess(); Q_CHECK_PTR(sysProc);
+
     m_ipod = new IPod::IPod();
 
     openIPod();
+
+    //m_mntcmd = "mount /mnt/ipod";
+    //m_umntcmd = "umount /mnt/ipod";
 }
 
 void
@@ -591,6 +597,49 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
     return items;
 }
 
+void MediaDevice::setMountCommand(const QString & mnt)
+{
+    m_mntcmd=mnt;
+}
+
+void MediaDevice::setUmountCommand(const QString & umnt)
+{
+    m_umntcmd=umnt;
+}
+
+int MediaDevice::mount()
+{
+    QString cmdS=m_mntcmd;
+
+    kdDebug() << "attempting mount with command: [" << cmdS << "]" << endl;
+    int e=sysCall(cmdS);
+    kdDebug() << "mount-cmd: e=" << e << endl;
+    return e;
+}
+
+int MediaDevice::umount()
+{
+    kdDebug() << "umounting" << endl;
+    QString cmdS=m_umntcmd;
+
+    kdDebug() << "attempting umount with command: [" << cmdS << "]" << endl;
+    int e=sysCall(cmdS);
+    kdDebug() << "umount-cmd: e=" << e << endl;
+
+    return e;
+}
+
+int MediaDevice::sysCall(const QString & command)
+{
+    if ( sysProc->isRunning() )  return -1;
+
+        sysProc->clearArguments();
+        (*sysProc) << command;
+        if (!sysProc->start( KProcess::Block, KProcess::AllOutput ))
+            kdFatal() << i18n("could not execute %1").arg(command.local8Bit().data()) << endl;
+
+    return (sysProc->exitStatus());
+}
 
 void
 MediaDevice::transferFiles()  //SLOT
@@ -750,6 +799,10 @@ void
 MediaDevice::ipodConnection() //SLOT
 {
     if ( m_parent->m_connectButton->isOn() ){
+        if ( !m_mntcmd.isEmpty() )
+        {
+            mount();
+        }
         m_ipod = new IPod::IPod();
         openIPod();
         m_parent->m_deviceList->renderView( 0 );
@@ -761,7 +814,7 @@ MediaDevice::ipodConnection() //SLOT
         else
         {
             KMessageBox::error( m_parent->m_parent,
-                i18n( "Could not find iPod, please mount it and try again." ),
+                i18n( "Could not find device, please mount it and try again." ),
                 i18n( "Media Device Browser" ) );
             m_parent->m_connectButton->setOn( false );
         }
@@ -780,11 +833,15 @@ MediaDevice::ipodConnection() //SLOT
       }
         fileTransferFinished();
         m_ipod->close();
+        if ( !m_umntcmd.isEmpty() )
+        {
+            umount();
+        }
         m_ipod = new IPod::IPod();
         m_parent->m_deviceList->renderView( 0 );
         m_parent->m_connectButton->setOn( false );
         KMessageBox::error( m_parent->m_parent,
-            i18n( "Your iPod is now in sync, please unmount it and disconnect now." ),
+            i18n( "Your device is now in sync, please unmount it and disconnect now." ),
             i18n( "Media Device Browser" ) );
     }
 }

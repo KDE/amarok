@@ -12,6 +12,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klistview.h>       //baseclass
+#include <kprocess.h>
 #include <kurl.h>            //stack allocated
 
 class MediaDevice;
@@ -130,10 +131,16 @@ class MediaDevice : public QObject
         QStringList items( QListViewItem* item );
         KURL::List songsByArtist( const QString& artist );
         KURL::List songsByArtistAlbum( const QString& artist, const QString& album );
+        QString m_mntcmd;
+        QString m_umntcmd;
 
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
+        void setMountCommand(const QString & mnt);
+        void setUmountCommand(const QString & umnt);
+        int mount();
+        int umount();
         void transferFiles();
         void deleteFiles( const KURL::List& urls );
         void deleteFromIPod( MediaItem* item );
@@ -145,9 +152,11 @@ class MediaDevice : public QObject
         void syncIPod();
 
     private:
+        int sysCall(const QString & command);
         void openIPod();
         bool fileExists( const MetaBundle& bundle );
         KURL::List m_transferURLs;
+        KShellProcess     *sysProc;
 
         bool m_wait;
 

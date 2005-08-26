@@ -270,6 +270,16 @@ namespace amaroK
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_track" ))->setChecked( enable );
     }
 
+    void DcopPlayerHandler::mdMountCommand( QString cmd )
+    {
+        MediaDevice::instance()->setMountCommand( cmd );
+    }
+
+    void DcopPlayerHandler::mdUmountCommand( QString cmd )
+    {
+        MediaDevice::instance()->setUmountCommand( cmd );
+    }
+
     void DcopPlayerHandler::mute()
     {
         EngineController::instance()->mute();
@@ -577,7 +587,7 @@ namespace amaroK
     {
         return CollectionDB::instance()->query( sql );
     }
- 
+
    QStringList DcopCollectionHandler::similarArtists( int artists )
     {
         return CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), artists );

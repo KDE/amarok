@@ -69,6 +69,8 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void enableRandomMode( bool enable );
       virtual void enableRepeatPlaylist( bool enable );
       virtual void enableRepeatTrack( bool enable );
+      virtual void mdMountCommand( QString cmd );
+      virtual void mdUmountCommand( QString cmd );
       virtual void mute();
       virtual void next();
       virtual void pause();
