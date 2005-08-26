@@ -24,6 +24,7 @@
 #include "popupMessage.h"
 
 #include <qlabel.h>
+#include <qtimer.h>
 
 class QueueLabel: public QLabel //homonym, heh heh
 {
@@ -50,6 +51,8 @@ class QueueLabel: public QLabel //homonym, heh heh
     private:
         void    showToolTip();
         QString veryNiceTitle( PlaylistItem * item ) const;
+
+        QTimer m_timer;
 
         KDE::PopupMessage *m_tooltip;
         bool               m_tooltipShowing;

@@ -36,6 +36,7 @@ static const uint MAX_TO_SHOW = 20;
 
 QueueLabel::QueueLabel( QWidget *parent, const char *name )
     : QLabel( parent, name )
+    , m_timer( this )
     , m_tooltip( 0 )
     , m_tooltipShowing( false )
 {
@@ -122,6 +123,12 @@ void QueueLabel::aboutToShow()
 
 void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 {
+    if( m_timer.isActive() )  // if the user clicks again when (right after) the menu is open,
+    {                         // (s)he probably wants to close it
+        m_timer.stop();
+        return;
+    }
+
     Playlist *pl = Playlist::instance();
     PLItemList &queue = pl->m_nextTracks;
     if( queue.isEmpty() )
@@ -158,7 +165,9 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     }
 
     int id = menus.getFirst()->exec( mapToGlobal( mouseEvent->pos() ) );
-    if( id == 0 ) //dequeue
+    if( id < 0 )
+        m_timer.start( 1000, true );
+    else if( id == 0 ) //dequeue
     {
         const PLItemList dequeued = queue;
         while( !queue.isEmpty() )
