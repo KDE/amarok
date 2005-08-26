@@ -455,6 +455,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
 
+    m_eosReached = false;
+
     if ( !createPipeline() )
         return false;
 
@@ -509,8 +511,6 @@ GstEngine::play( uint offset )  //SLOT
         destroyPipeline();
         return false;
     }
-
-    m_eosReached = false;
 
     g_signal_connect( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "eos", G_CALLBACK( eos_cb ), NULL );
