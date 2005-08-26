@@ -52,7 +52,10 @@ class QueueLabel: public QLabel //homonym, heh heh
         void    showToolTip();
         QString veryNiceTitle( PlaylistItem * item ) const;
 
-        QTimer m_timer;
+        inline int mapXToGlobal( int x ) { return mapToGlobal( QPoint( x, 0 ) ).x(); }
+        inline int mapYToGlobal( int y ) { return mapToGlobal( QPoint( 0, y ) ).y(); }
+
+        QTimer  m_timer;
 
         KDE::PopupMessage *m_tooltip;
         bool               m_tooltipShowing;

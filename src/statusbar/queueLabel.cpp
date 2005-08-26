@@ -21,7 +21,9 @@
 #include "metabundle.h"
 #include "playlist.h"
 #include "playlistitem.h"
+#include "statusbar.h"
 
+#include <qapplication.h>
 #include <qlabel.h>
 #include <qpainter.h>
 #include <qpixmap.h>
@@ -164,7 +166,25 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         }
     }
 
-    int id = menus.getFirst()->exec( mapToGlobal( mouseEvent->pos() ) );
+    menu = menus.getFirst();
+
+    int mx, my;
+    const int   mw      = menu->sizeHint().width(),
+                mh      = menu->sizeHint().height(),
+                sy      = mapFrom( amaroK::StatusBar::instance(), QPoint( 0, 0 ) ).y(),
+                sheight = amaroK::StatusBar::instance()->height();
+    const QRect dr      = QApplication::desktop()->availableGeometry( this );
+
+    if( mapYToGlobal( sy ) - mh > dr.y() )
+       my = mapYToGlobal( sy ) - mh;
+    else if( mapYToGlobal( sy + sheight ) + mh < dr.y() + dr.height() )
+       my = mapYToGlobal( sy + sheight );
+    else
+       my = mapToGlobal( mouseEvent->pos() ).y();
+
+    mx = mapXToGlobal( 0 ) - ( mw - width() ) / 2;
+
+    int id = menu->exec( QPoint( mx, my ) );
     if( id < 0 )
         m_timer.start( 50, true );
     else if( id == 0 ) //dequeue
