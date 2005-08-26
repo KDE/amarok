@@ -243,7 +243,7 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
 
         // Random mode was being enabled without notification on leaving dynamic mode.  Remember to re-enable first!
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( true );
-        static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
+        //static_cast<KToggleAction*>(amaroK::actionCollection()->action( "random_mode" ))->setChecked( false );
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
