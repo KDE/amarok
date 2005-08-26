@@ -241,6 +241,10 @@
         <label>Band gains for equalizer, 10 values, range -100..100, 0 is normal.</label>
         <default>0, 0, 0, 0, 0, 0, 0, 0, 0, 0</default>
     </entry>
+    <entry key="Equalizer Preset" type="String">
+        <label>Equalizer preset name.</label>
+        <default>Zero</default>
+    </entry>
 </group>
 <group name="Cover Manager">
     <entry key="Amazon Locale" type="String">

@@ -3,6 +3,7 @@
 
  (c) 2004 Mark Kretschmann <markey@web.de>
  (c) 2005 Seb Ruiz <me@sebruiz.net>
+ (c) 2005 Markus Brueffer <markus@brueffer.de>
 ***************************************************************************/
 
 /***************************************************************************
@@ -22,6 +23,7 @@
 
 class EqualizerGraph;
 class QCheckBox;
+class KComboBox;
 class KPopupMenu;
 
 namespace amaroK { class Slider; }
@@ -37,31 +39,35 @@ class EqualizerSetup : public QVBox
 
         EqualizerSetup();
        ~EqualizerSetup();
-        //for use by DCOP to update GUI
-        void updateSliders( int, QValueList<int> );
+
+        // for use by DCOP
+        void setPreset( QString name );
+        void setBands( int preamp, QValueList<int> gains );
 
     private slots:
         void presetChanged( int id );
+        void presetChanged( QString title );
         void sliderChanged();
         void setEqualizerEnabled( bool );
         void setEqualizerParameters();
+        void editPresets();
+        void addPreset();
 
     private:
         static EqualizerSetup* s_instance;
 
         void    loadPresets();
         void    savePresets();
+        void    updatePresets(QString selectTitle = QString::null);
         QString presetsCache() const;
 
         amaroK::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
         QPtrList<amaroK::Slider> m_bandSliders;
 
-        KPopupMenu*     m_presetPopup;
-        int             m_currentPreset;
-        uint            m_totalPresets;
-        QMap< int, QValueList<int> > m_presets;
+        KComboBox*      m_presetCombo;
+        uint            m_manualPos;
+        QMap< QString, QValueList<int> > m_presets;
 };
-
 
 #endif /*AMAROK_EQUALIZERSETUP_H*/

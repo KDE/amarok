@@ -766,6 +766,7 @@ void App::engineVolumeChanged( int newVolume )
 
 void App::slotConfigEqualizer() //SLOT
 {
+    EqualizerSetup::instance()->show();
     EqualizerSetup::instance()->raise();
 }
 

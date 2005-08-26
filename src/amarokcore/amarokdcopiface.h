@@ -87,6 +87,7 @@ k_dcop:
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) = 0;  ///< Set the equalizer bands
    virtual void setEqualizerEnabled( bool active ) = 0;     ///< Toggle equalizer.
+   virtual void setEqualizerPreset( QString name ) = 0;     ///< Set the equalizer preset
    virtual void setLyricsByPath( const QString& url, const QString& lyrics ) = 0;   ///< Set the lyrics of a track by it's path.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
    virtual void setScoreByPath( const QString &url, int score ) = 0;  ///< Set the score of a track by it's path.

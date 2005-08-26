@@ -28,11 +28,11 @@ class EqualizerGraph : public QWidget
     public:
         EqualizerGraph( QWidget* parent );
         ~EqualizerGraph();
+        QSize sizeHint() const;
 
     protected:
         void resizeEvent( QResizeEvent* );
         void paintEvent( QPaintEvent* );
-        QSize sizeHint() const;
 
     private:
         static const int NUM_BANDS = 10;

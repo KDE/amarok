@@ -68,6 +68,7 @@ amarokapp_SOURCES = \
     enginecontroller.cpp \
     engineobserver.cpp \
     equalizergraph.cpp \
+    equalizerpresetmanager.cpp \
     equalizersetup.cpp \
     fht.cpp \
     filebrowser.cpp \
@@ -93,7 +94,7 @@ amarokapp_SOURCES = \
     podcastsettings.cpp \
     podcastsettingsbase.ui \
     queuemanager.cpp \
-	refreshimages.cpp \
+    refreshimages.cpp \
     scriptmanager.cpp \
     scriptmanagerbase.ui \
     scrobbler.cpp \

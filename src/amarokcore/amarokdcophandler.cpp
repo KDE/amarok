@@ -241,6 +241,7 @@ namespace amaroK
     void DcopPlayerHandler::configEqualizer()
     {
         if(EngineController::hasEngineProperty( "HasEqualizer" ))
+            EqualizerSetup::instance()->show();
             EqualizerSetup::instance()->raise();
     }
 
@@ -330,20 +331,35 @@ namespace amaroK
     void DcopPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
         int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k)
     {
-        QValueList<int> gains;
-        gains << band60 << band170 << band310 << band600 << band1k
-            << band3k << band6k << band12k << band14k << band16k;
-        AmarokConfig::setEqualizerGains( gains );
-        AmarokConfig::setEqualizerPreamp( preamp );
-        EngineController::engine()->setEqualizerParameters(preamp, gains);
-        if (EqualizerSetup::isInstantiated())
-            EqualizerSetup::instance()->updateSliders(preamp,gains);
+        if( EngineController::hasEngineProperty( "HasEqualizer" ) ) {
+            bool instantiated = EqualizerSetup::isInstantiated();
+            EqualizerSetup* eq = EqualizerSetup::instance();
+
+            QValueList<int> gains;
+            gains << band60 << band170 << band310 << band600 << band1k
+                  << band3k << band6k << band12k << band14k << band16k;
+
+            eq->setBands( preamp, gains );
+            if( !instantiated )
+                delete eq;
+        }
     }
 
     void DcopPlayerHandler::setEqualizerEnabled( bool active )
     {
         EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
+    }
+
+    void DcopPlayerHandler::setEqualizerPreset( QString name )
+    {
+        if( EngineController::hasEngineProperty( "HasEqualizer" ) ) {
+            bool instantiated = EqualizerSetup::isInstantiated();
+            EqualizerSetup* eq = EqualizerSetup::instance();
+            eq->setPreset( name );
+            if ( !instantiated )
+                delete eq;
+        }
     }
 
     void DcopPlayerHandler::setLyricsByPath( const QString& url, const QString& lyrics )

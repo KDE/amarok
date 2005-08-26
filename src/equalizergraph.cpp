@@ -2,6 +2,7 @@
  Graphical spline display for equalizer
 
  (c) 2004 Mark Kretschmann <markey@web.de>
+ (c) 2005 Markus Brueffer <markus@brueffer.de>
  Based on code from XMMS
  (c) 1998-2000 Peter Alm, Mikael Alm, Olle Hallnas, Thomas Nilsson and 4Front Technologies
 ***************************************************************************/
@@ -24,13 +25,11 @@
 
 #include <kapplication.h>
 
-
 EqualizerGraph::EqualizerGraph( QWidget* parent )
     : QWidget( parent, 0, Qt::WNoAutoErase )
     , m_backgroundPixmap( new QPixmap() )
     , m_composePixmap( new QPixmap() )
 {
-    setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 }
 
 
@@ -54,7 +53,7 @@ EqualizerGraph::resizeEvent( QResizeEvent* )
 QSize
 EqualizerGraph::sizeHint() const
 {
-   return QSize( 113, 19 );
+   return QSize( 100, 60 );
 }
 
 void
@@ -64,28 +63,44 @@ EqualizerGraph::paintEvent( QPaintEvent* )
 
     QPainter p( m_composePixmap );
 
+    // Draw middle line
+    int middleLineY = (int) ( ( height() - 1 ) / 2.0 + AmarokConfig::equalizerPreamp() * ( height() - 1 ) / 200.0 );
+    QPen pen( colorGroup().dark(), 0, Qt::DotLine);
+    p.setPen( pen );
+    p.drawLine( 8, middleLineY, width() - 1, middleLineY );
+
     QColor color( colorGroup().highlight() );
     int h, s, v;
     color.getHsv( &h, &s, &v );
 
     int i, y, ymin, ymax, py = 0;
-    float x[] = {0, 11, 23, 35, 47, 59, 71, 83, 97, 109}, yf[ 10 ];
+    float x[NUM_BANDS], yf[NUM_BANDS];
+    float gains[NUM_BANDS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    float gains[NUM_BANDS];
+    // Don't calculate 0 and NUM_BANDS-1 for accuracy reasons
+    for ( i = 1; i < NUM_BANDS -1 ; i++)
+        x[i] = ( width() - 8 ) * i / ( NUM_BANDS -1 ) + 8;
+    x[ 0 ] = 8;
+    x[ NUM_BANDS - 1 ] = width() - 1;
 
-    for ( int count = 0; count < NUM_BANDS; count++ )
-        gains[count] = 0.15 * AmarokConfig::equalizerGains()[ count ];
+    if ( AmarokConfig::equalizerEnabled() )
+        for ( i = 0; i < NUM_BANDS; i++ )
+            gains[i] = ( height() - 1 ) * AmarokConfig::equalizerGains()[i] / 200.0;
 
     init_spline( x, gains, NUM_BANDS, yf );
 
-    for ( i = 0; i < 109; i++ ) {
-        y = 9 - ( int ) ( ( eval_spline( x, gains, yf, NUM_BANDS, i ) * 9.0 ) / 20.0 );
+    for ( i = 8; i < width(); i++ ) {
+        y = (int) ( ( height() - 1 ) / 2 - eval_spline( x, gains, yf, NUM_BANDS, i ) );
+
         if ( y < 0 )
             y = 0;
-        if ( y > 18 )
-            y = 18;
-        if ( !i )
+
+        if ( y > height() - 1 )
+            y = height() - 1;
+
+        if ( i == 8 )
             py = y;
+
         if ( y < py ) {
             ymin = y;
             ymax = py;
@@ -96,9 +111,15 @@ EqualizerGraph::paintEvent( QPaintEvent* )
 
         py = y;
         for ( y = ymin; y <= ymax; y++ ) {
-            s = y - height() / 2;
-            if ( s < 0 ) s *= -1;
-            color.setHsv( h, 255 - s * 23, v );
+            // Absolute carthesian coordinate
+            s = y - ( height() - 1 ) / 2;
+            s = QABS(s);
+
+            // Normalise to a base of 256
+            // short for: s / ( ( height() / 2.0 ) * 255;
+            s = (int) ( s * 510.0 / height() );
+
+            color.setHsv( h, 255 - s, v );
             p.setPen( color );
 
             p.drawPoint( i, y );
@@ -123,14 +144,15 @@ EqualizerGraph::drawBackground()
     m_backgroundPixmap->fill( colorGroup().background().dark( 105 ) );
     QPainter p( m_backgroundPixmap );
 
-    // Draw frame
-    p.setPen( colorGroup().shadow() );
-    p.drawRect( 0, 0, width() - 1, height() - 1 );
+    // Erase background for scale
+    p.fillRect( 0, 0, 7, height() -1, colorGroup().background());
 
-    // Draw middle line
-    QPen pen( colorGroup().dark(), 0, Qt::DotLine);
-    p.setPen( pen );
-    p.drawLine( 0, height() / 2 - 1, width() - 1, height() / 2 - 1 );
+    // Draw scale
+    p.setPen( colorGroup().shadow() );
+    p.drawLine( 7, 0, 7, height() - 1 );
+    p.drawLine( 0, 0, 7, 0 );
+    p.drawLine( 0, height() / 2 - 1, 7, height() / 2 - 1 );
+    p.drawLine( 0, height() - 1, 7, height() - 1 );
 }
 
 
