@@ -80,10 +80,6 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
     }
 
     gst_pad_link( pad, audiopad );
-
-    gst_element_unlink( instance()->m_gst_volume, instance()->m_gst_audiosink );
-    gst_element_link( instance()->m_gst_volume, instance()->m_gst_audiosink );
-
     gst_bin_sync_children_state( GST_BIN( instance()->m_gst_thread ) );
 }
 
