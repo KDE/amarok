@@ -61,6 +61,10 @@ MediaBrowser::MediaBrowser( const char *name )
 {
     setSpacing( 4 );
 
+    KToolBar* toolbar = new Browser::ToolBar( this );
+    KToolBarButton *config = new KToolBarButton( "configure", 0, toolbar );
+    QToolTip::add( config, i18n( "Configure media device" ) );
+
     { //<Search LineEdit>
         KToolBar* searchToolBar = new Browser::ToolBar( this );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
@@ -77,9 +81,10 @@ MediaBrowser::MediaBrowser( const char *name )
 
     m_view = new MediaDeviceView( this );
 
+    connect( config, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
+
     setFocusProxy( m_view ); //default object to get focus
 }
-
 
 MediaBrowser::~MediaBrowser()
 {
@@ -443,8 +448,8 @@ MediaDevice::MediaDevice( MediaDeviceView* parent )
 
     openIPod();
 
-    //m_mntcmd = "mount /mnt/ipod";
-    //m_umntcmd = "umount /mnt/ipod";
+    m_mntcmd = AmarokConfig::mountCommand();
+    m_umntcmd = AmarokConfig::umountCommand();
 }
 
 void
@@ -597,14 +602,21 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
     return items;
 }
 
+void
+MediaDevice::config()
+{
+}
+
 void MediaDevice::setMountCommand(const QString & mnt)
 {
-    m_mntcmd=mnt;
+    AmarokConfig::setMountCommand( mnt );
+    m_mntcmd = mnt;             //Update for mount()
 }
 
 void MediaDevice::setUmountCommand(const QString & umnt)
 {
-    m_umntcmd=umnt;
+    AmarokConfig::setUmountCommand( umnt);
+    m_umntcmd = umnt;        //Update for umount()
 }
 
 int MediaDevice::mount()
@@ -697,7 +709,7 @@ MediaDevice::transferFiles()  //SLOT
     else
         debug() << "iPod inconsistent!" << endl;
 
-    m_parent->m_transferButton->setEnabled( true );
+    m_parent->m_transferButton->setEnabled( false );
 }
 
 

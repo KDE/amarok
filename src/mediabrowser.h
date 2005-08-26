@@ -137,6 +137,7 @@ class MediaDevice : public QObject
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
+        void config();
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);
         int mount();

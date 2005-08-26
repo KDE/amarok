@@ -503,4 +503,15 @@
         </entry>
 </group>
 
+<group name="MediaDevice">
+    <entry key="MountCommand" type="String">
+        <label>MountCommand</label>
+        <whatsthis>The mount command used for the media device connection.</whatsthis>
+    </entry>
+    <entry key="UmountCommand" type="String">
+        <label>UmountCommand</label>
+        <whatsthis>The umount command used for the media device connection.</whatsthis>
+    </entry>
+</group>
+
 </kcfg>
