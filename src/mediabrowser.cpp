@@ -833,16 +833,17 @@ MediaDevice::ipodConnection() //SLOT
       }
         fileTransferFinished();
         m_ipod->close();
+        QString text=i18n( "Your device is now in sync, please unmount it and disconnect now." );
         if ( !m_umntcmd.isEmpty() )
         {
             umount();
+            text=i18n( "Your device is now in sync, you can disconnect now." );
         }
         m_ipod = new IPod::IPod();
         m_parent->m_deviceList->renderView( 0 );
         m_parent->m_connectButton->setOn( false );
         KMessageBox::error( m_parent->m_parent,
-            i18n( "Your device is now in sync, please unmount it and disconnect now." ),
-            i18n( "Media Device Browser" ) );
+            text, i18n( "Media Device Browser" ) );
     }
 }
 
