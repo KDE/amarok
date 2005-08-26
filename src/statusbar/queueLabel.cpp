@@ -166,7 +166,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
     int id = menus.getFirst()->exec( mapToGlobal( mouseEvent->pos() ) );
     if( id < 0 )
-        m_timer.start( 1000, true );
+        m_timer.start( 50, true );
     else if( id == 0 ) //dequeue
     {
         const PLItemList dequeued = queue;
