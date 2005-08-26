@@ -84,7 +84,7 @@ createWidget( const QRect &r, QWidget *parent, const char *name = 0, Qt::WFlags 
 
 
 PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlaylist )
-    : QWidget( parent, name, Qt::WType_TopLevel|WStyle_Customize|WStyle_DialogBorder|WStyle_StaysOnTop )
+    : QWidget( parent, name, Qt::WType_TopLevel|WStyle_Customize|WStyle_DialogBorder )
     , EngineObserver( EngineController::instance() )
     , m_minimalView( false )
     , m_pAnimTimer( new QTimer( this ) )
