@@ -185,6 +185,35 @@ namespace amaroK
             virtual int plug( QWidget*, int index = -1 );
     };
 
+    class StopMenu : public KPopupMenu
+    {
+            Q_OBJECT
+
+        public:
+            enum MenuIds {
+                NOW,
+                AFTER_TRACK,
+                AFTER_QUEUE
+            };
+
+            static KPopupMenu *instance();
+
+        private slots:
+            void slotAboutToShow();
+            void slotActivated( int index );
+
+        private:
+            StopMenu();
+    };
+
+
+    class StopMenuAction : public KAction
+    {
+        public:
+            StopMenuAction( KActionCollection* );
+            virtual int plug( QWidget*, int index = -1 );
+    };
+
 } /* namespace amaroK */
 
 

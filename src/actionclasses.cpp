@@ -12,6 +12,7 @@
 #include "enginecontroller.h"
 #include "k3bexporter.h"
 #include "playlistwindow.h"
+#include "playlist.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
 
 #include <qpixmap.h>
@@ -451,6 +452,90 @@ BurnMenu::slotActivated( int index )
     case SELECTED_TRACKS:
         K3bExporter::instance()->exportSelectedTracks();
         break;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// StopMenuAction
+//////////////////////////////////////////////////////////////////////////////////////////
+
+StopMenuAction::StopMenuAction( KActionCollection *ac )
+  : KAction( i18n( "Super Stop Button" ), "player_stop", 0, ac, "stop_menu" )
+{
+}
+
+int
+StopMenuAction::plug( QWidget *w, int index )
+{
+    KToolBar *bar = dynamic_cast<KToolBar*>(w);
+
+    if( bar && kapp->authorizeKAction( name() ) )
+    {
+        const int id = KAction::getToolButtonID();
+
+        addContainer( bar, id );
+        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+
+        bar->insertButton( QString::null, id, true, i18n( "Stop" ), index );
+
+        KToolBarButton* button = bar->getButton( id );
+        button->setPopup( amaroK::StopMenu::instance() );
+        button->setName( "toolbutton_stop_menu" );
+        button->setIcon( "player_stop" );
+
+        return containerCount() - 1;
+    }
+    else return -1;
+}
+
+StopMenu::StopMenu()
+{
+    insertTitle( i18n( "Stop" ) );
+    insertItem( i18n("Now"), NOW );
+    insertItem( i18n("After This Track"), AFTER_TRACK );
+    insertItem( i18n("After Queue"), AFTER_QUEUE );
+
+    connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
+    connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
+}
+
+KPopupMenu*
+StopMenu::instance()
+{
+    static StopMenu menu;
+    return &menu;
+}
+
+void
+StopMenu::slotAboutToShow()
+{
+    setItemChecked( AFTER_TRACK, Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent );
+    setItemChecked( AFTER_QUEUE, Playlist::instance()->stopAfterMode() == Playlist::StopAfterQueue );
+}
+
+void
+StopMenu::slotActivated( int index )
+{
+    Playlist* pl = Playlist::instance();
+    const int mode = pl->stopAfterMode();
+
+    switch( index )
+    {
+        case NOW:
+            amaroK::actionCollection()->action( "stop" )->activate();
+            if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
+                pl->setStopAfterMode( Playlist::DoNotStop );
+            break;
+        case AFTER_TRACK:
+            pl->setStopAfterMode( mode == Playlist::StopAfterCurrent
+                                ? Playlist::DoNotStop
+                                : Playlist::StopAfterCurrent );
+            break;
+        case AFTER_QUEUE:
+            pl->setStopAfterMode( mode == Playlist::StopAfterQueue
+                                ? Playlist::DoNotStop
+                                : Playlist::StopAfterQueue );
+            break;
     }
 }
 

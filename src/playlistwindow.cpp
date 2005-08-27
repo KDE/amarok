@@ -142,6 +142,7 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RandomAction( ac );
     new amaroK::DynamicAction( ac );
     new amaroK::VolumeAction( ac );
+    new amaroK::StopMenuAction( ac );
 
     if( K3bExporter::isAvailable() )
         new amaroK::BurnMenuAction( ac );

@@ -1065,6 +1065,43 @@ void Playlist::setStopAfterCurrent( bool on )
         repaintItem( prev_stopafter );
 }
 
+void Playlist::setStopAfterMode( int mode )
+{
+    PlaylistItem *prevStopAfter = m_stopAfterTrack;
+
+    switch( mode )
+    {
+        case DoNotStop:
+            m_stopAfterTrack = 0;
+            break;
+        case StopAfterCurrent:
+            m_stopAfterTrack = m_currentTrack;
+            break;
+        case StopAfterQueue:
+            m_stopAfterTrack = m_nextTracks.count() ? m_nextTracks.getLast() : m_currentTrack;
+            break;
+    }
+
+    if( prevStopAfter )
+        repaintItem( prevStopAfter );
+    if( m_stopAfterTrack )
+        repaintItem( m_stopAfterTrack );
+}
+
+int Playlist::stopAfterMode() const
+{
+    if( !m_stopAfterTrack )
+        return DoNotStop;
+    else if( m_stopAfterTrack == m_currentTrack )
+        return StopAfterCurrent;
+    else if( m_stopAfterTrack == m_nextTracks.getLast() )
+        return StopAfterQueue;
+    else if( m_stopAfterTrack )
+        return StopAfterOther;
+    else
+        return DoNotStop;
+}
+
 void Playlist::doubleClicked( QListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty

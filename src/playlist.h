@@ -102,6 +102,8 @@ class Playlist : private KListView, public EngineObserver
         void saveXML( const QString& );
         int  totalTrackCount();
 
+        int  stopAfterMode() const;
+
         void addCustomMenuItem ( const QString &submenu, const QString &itemTitle );
         void customMenuClicked ( int id );
         bool removeCustomMenuItem( const QString &submenu, const QString &itemTitle );
@@ -119,6 +121,7 @@ class Playlist : private KListView, public EngineObserver
         void unlock();
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
+        enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 
         class QDragObject *dragObject();
         friend class PlaylistItem;
@@ -157,6 +160,7 @@ class Playlist : private KListView, public EngineObserver
         void setFilterForItem( const QString &query, PlaylistItem *item ); //for a single item
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
+        void setStopAfterMode( int mode );
         void ensureItemCentered( QListViewItem* item );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
