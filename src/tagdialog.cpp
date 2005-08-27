@@ -287,7 +287,7 @@ void TagDialog::init()
     connect( pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
 
     // draw an icon onto the open-in-konqui button
-     pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( locate( "data", QString( "amarok/images/folder_crystal.png" ) ), KIcon::Small ) );
+     pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( "fileopen", KIcon::Small ) );
 
     if( !m_playlistItem ) {
         pushButton_previous->hide();
