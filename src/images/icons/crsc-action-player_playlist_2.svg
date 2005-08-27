@@ -9,19 +9,19 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="crsc-action-player_playlist_2.svg"
-   sodipodi:docbase="/usr/src/packages/BUILD/svn-amaroK/multimedia/amarok/src/images/icons"
+   sodipodi:docname="playlist.svg"
+   sodipodi:docbase="/home/me/Documents/updated_collection_playlist_icons/playlist_icon"
    inkscape:version="0.41"
    sodipodi:version="0.32"
    id="svg2"
-   height="335.00000pt"
-   width="332.50000pt">
+   height="437.00000px"
+   width="434.00000px">
   <defs
      id="defs4">
     <linearGradient
        id="linearGradient2222">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.81568629;"
+         style="stop-color:#ffffff;stop-opacity:1.0000000;"
          offset="0.0000000"
          id="stop2224" />
       <stop
@@ -43,7 +43,7 @@
     <linearGradient
        id="linearGradient2204">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.81568629;"
+         style="stop-color:#ffffff;stop-opacity:1.0000000;"
          offset="0.0000000"
          id="stop2206" />
       <stop
@@ -89,7 +89,7 @@
       <stop
          id="stop2118"
          offset="0.0000000"
-         style="stop-color:#a5b4d3;stop-opacity:0.81568629;" />
+         style="stop-color:#c3d5fa;stop-opacity:1.0000000;" />
       <stop
          id="stop2120"
          offset="1.0000000"
@@ -110,12 +110,12 @@
        id="linearGradient2050">
       <stop
          id="stop2052"
-         offset="0"
-         style="stop-color:#0004cd;stop-opacity:1;" />
+         offset="0.0000000"
+         style="stop-color:#2ba3cf;stop-opacity:1.0000000;" />
       <stop
          id="stop2054"
          offset="1.0000000"
-         style="stop-color:#000274;stop-opacity:1.0000000;" />
+         style="stop-color:#245aad;stop-opacity:1.0000000;" />
     </linearGradient>
     <radialGradient
        gradientTransform="matrix(1.473629,-0.169147,8.785089e-2,0.908723,44.91220,7.928287)"
@@ -129,7 +129,7 @@
        xlink:href="#linearGradient2116"
        inkscape:collect="always" />
     <linearGradient
-       gradientTransform="matrix(1.158721,0.000000,0.000000,1.000000,-122.4919,415.7143)"
+       gradientTransform="matrix(1.158721,0.000000,0.000000,1.000000,-16.77765,0.000000)"
        gradientUnits="userSpaceOnUse"
        y2="609.94598"
        x2="449.80826"
@@ -139,7 +139,7 @@
        xlink:href="#linearGradient2182"
        inkscape:collect="always" />
     <linearGradient
-       gradientTransform="matrix(1.076431,0.000000,0.000000,1.076431,-109.4348,387.3100)"
+       gradientTransform="matrix(1.076431,0.000000,0.000000,1.076431,-3.720561,-28.40424)"
        gradientUnits="userSpaceOnUse"
        y2="319.11700"
        x2="270.21143"
@@ -149,7 +149,7 @@
        xlink:href="#linearGradient2222"
        inkscape:collect="always" />
     <linearGradient
-       gradientTransform="matrix(1.158721,0.000000,0.000000,0.759283,-127.4579,481.8582)"
+       gradientTransform="matrix(1.158721,0.000000,0.000000,0.759283,-21.74361,66.14395)"
        gradientUnits="userSpaceOnUse"
        y2="318.79074"
        x2="446.58481"
@@ -164,7 +164,7 @@
        x2="-56.090500"
        y1="507.59042"
        x1="-32.221645"
-       gradientTransform="matrix(1.268065,-0.166342,0.166342,1.268065,179.7525,371.1327)"
+       gradientTransform="matrix(1.268065,-0.166342,0.166342,1.268065,285.4668,-44.58162)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient2198"
        xlink:href="#linearGradient2050"
@@ -179,7 +179,7 @@
        xlink:href="#linearGradient2204"
        inkscape:collect="always" />
     <linearGradient
-       gradientTransform="translate(-103.6940,419.7549)"
+       gradientTransform="translate(2.020305,4.040610)"
        gradientUnits="userSpaceOnUse"
        y2="413.22253"
        x2="283.05798"
@@ -189,13 +189,23 @@
        xlink:href="#linearGradient2214"
        inkscape:collect="always" />
     <linearGradient
+       y2="609.94598"
+       x2="449.80826"
+       y1="290.73776"
+       x1="133.74213"
+       gradientTransform="matrix(1.158721,0.000000,0.000000,1.000000,468.9366,265.7143)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient2194"
+       xlink:href="#linearGradient2182"
+       inkscape:collect="always" />
+    <linearGradient
        y2="318.79074"
        x2="446.58481"
        y1="318.79074"
        x1="120.55804"
-       gradientTransform="matrix(1.158721,0.000000,0.000000,0.759283,-127.4579,481.8582)"
+       gradientTransform="matrix(1.158721,0.000000,0.000000,0.759283,-21.74361,66.14395)"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient1360"
+       id="linearGradient1357"
        xlink:href="#linearGradient2172"
        inkscape:collect="always" />
     <linearGradient
@@ -203,9 +213,9 @@
        x2="449.80826"
        y1="290.73776"
        x1="133.74213"
-       gradientTransform="matrix(1.158721,0.000000,0.000000,1.000000,-122.4919,415.7143)"
+       gradientTransform="matrix(1.158721,0.000000,0.000000,1.000000,-16.77765,0.000000)"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient1362"
+       id="linearGradient1359"
        xlink:href="#linearGradient2182"
        inkscape:collect="always" />
     <linearGradient
@@ -214,9 +224,9 @@
        y1="507.59042"
        x1="-32.221645"
        spreadMethod="reflect"
-       gradientTransform="matrix(1.268065,-0.166342,0.166342,1.268065,179.7525,371.1327)"
+       gradientTransform="matrix(1.268065,-0.166342,0.166342,1.268065,285.4668,-44.58162)"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient1364"
+       id="linearGradient1361"
        xlink:href="#linearGradient2050"
        inkscape:collect="always" />
     <radialGradient
@@ -227,7 +237,7 @@
        cx="-128.01088"
        gradientTransform="matrix(1.473629,-0.169147,8.785089e-2,0.908723,44.91220,7.928287)"
        gradientUnits="userSpaceOnUse"
-       id="radialGradient1366"
+       id="radialGradient1363"
        xlink:href="#linearGradient2116"
        inkscape:collect="always" />
     <linearGradient
@@ -235,9 +245,9 @@
        x2="270.21143"
        y1="221.29817"
        x1="254.63544"
-       gradientTransform="matrix(1.076431,0.000000,0.000000,1.076431,-109.4348,387.3100)"
+       gradientTransform="matrix(1.076431,0.000000,0.000000,1.076431,-3.720561,-28.40424)"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient1368"
+       id="linearGradient1365"
        xlink:href="#linearGradient2222"
        inkscape:collect="always" />
     <linearGradient
@@ -246,7 +256,7 @@
        y1="312.81665"
        x1="-117.00233"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient1370"
+       id="linearGradient1367"
        xlink:href="#linearGradient2204"
        inkscape:collect="always" />
     <linearGradient
@@ -254,22 +264,22 @@
        x2="283.05798"
        y1="396.07968"
        x1="335.40170"
-       gradientTransform="translate(-103.6940,419.7549)"
+       gradientTransform="translate(2.020305,4.040610)"
        gradientUnits="userSpaceOnUse"
-       id="linearGradient1372"
+       id="linearGradient1369"
        xlink:href="#linearGradient2214"
        inkscape:collect="always" />
   </defs>
   <sodipodi:namedview
      inkscape:window-y="0"
-     inkscape:window-x="0"
-     inkscape:window-height="955"
+     inkscape:window-x="3"
+     inkscape:window-height="957"
      inkscape:window-width="1272"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:cy="226.67171"
-     inkscape:cx="237.92969"
-     inkscape:zoom="1.4000000"
+     inkscape:cy="213.23890"
+     inkscape:cx="409.73403"
+     inkscape:zoom="1.1203939"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -279,14 +289,14 @@
   <metadata
      id="metadata7">
     <rdf:RDF
-       id="RDF40">
+       id="RDF41">
       <cc:Work
-         id="Work42"
+         id="Work43"
          rdf:about="">
         <dc:format
-           id="format44">image/svg+xml</dc:format>
+           id="format45">image/svg+xml</dc:format>
         <dc:type
-           id="type46"
+           id="type47"
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
       </cc:Work>
     </rdf:RDF>
@@ -296,113 +306,121 @@
      inkscape:groupmode="layer"
      inkscape:label="Calque 1">
     <g
-       transform="translate(-0.665862,-629.2025)"
-       id="g1346">
+       transform="translate(-106.3801,-213.4882)"
+       id="g1342">
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
+         sodipodi:nodetypes="cccccc"
+         id="rect2192"
+         d="M 500.15895,306.10736 C 514.98946,306.10736 526.92881,317.38673 526.92881,331.39745 L 526.92881,613.32691 C 526.92881,627.33764 514.98946,638.61701 500.15895,638.61701 L 168.41245,638.61701 C 153.58194,638.61701 141.64259,627.33764 141.64259,613.32691"
+         style="color:#000000;fill:none;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#064a7c;stroke-width:24.810678;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible" />
+      <path
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          id="path2180"
-         d="M 13.483714,706.42145 L 13.483714,1031.6906 L 397.34168,1031.6906 L 397.34168,704.40115 L 13.483714,706.42145 z "
+         d="M 119.19800,290.70716 L 119.19800,615.97628 L 503.05597,615.97628 L 503.05597,288.68686 L 119.19800,290.70716 z "
          style="fill:#ffffff;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:0.25000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          id="path2044"
-         d="M 15.727014,963.76827 L 396.44988,963.76827"
+         d="M 121.44130,548.05398 L 502.16417,548.05398"
          style="color:#000000;fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#919191;stroke-width:22.743931;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          id="path2042"
-         d="M 22.348284,896.26824 L 403.07117,896.26824"
+         d="M 128.06257,480.55395 L 508.78546,480.55395"
          style="color:#000000;fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#919191;stroke-width:22.743931;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          id="path2040"
-         d="M 14.071704,828.76826 L 394.79458,828.76826"
+         d="M 119.78599,413.05397 L 500.50887,413.05397"
          style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#919191;stroke-width:22.743931;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-opacity:1.0000000" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          sodipodi:nodetypes="ccccccc"
          id="rect2037"
-         d="M 41.674184,703.79077 L 372.21010,703.79077 C 389.78192,703.79077 403.92821,716.05502 403.92821,731.28909 L 403.92821,767.29337 L 9.9560943,767.29337 L 9.9560943,731.28909 C 9.9560943,716.05502 24.102324,703.79077 41.674184,703.79077 z "
+         d="M 147.38847,288.07648 L 477.92439,288.07648 C 495.49621,288.07648 509.64250,300.34073 509.64250,315.57480 L 509.64250,351.57908 L 115.67038,351.57908 L 115.67038,315.57480 C 115.67038,300.34073 129.81661,288.07648 147.38847,288.07648 z "
          style="color:#000000;fill:#9cbff9;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#919191;stroke-width:17.896660;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          sodipodi:nodetypes="ccccsc"
          id="path2170"
-         d="M 27.314234,750.48546 L 12.416394,699.50505 L 390.65628,702.21678 L 391.48393,717.94477 C 391.48393,717.94477 101.38597,722.64695 52.143994,721.19884 C 19.534894,720.23989 27.314234,750.48546 27.314234,750.48546 z "
-         style="fill:url(#linearGradient1360);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:0.25000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+         d="M 133.02852,334.77117 L 118.13068,283.79076 L 496.37057,286.50249 L 497.19822,302.23048 C 497.19822,302.23048 207.10026,306.93266 157.85828,305.48455 C 125.24918,304.52560 133.02852,334.77117 133.02852,334.77117 z "
+         style="fill:url(#linearGradient1357);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:0.25000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
       <rect
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          ry="25.642496"
          rx="27.142862"
-         y="699.50500"
-         x="13.244058"
+         y="283.79074"
+         x="118.95834"
          height="337.14285"
          width="390.65479"
          id="rect2035"
-         style="color:#000000;fill:none;fill-opacity:1.0000000;fill-rule:evenodd;stroke:url(#linearGradient1362);stroke-width:25.156391;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible" />
+         style="color:#000000;fill:none;fill-opacity:1.0000000;fill-rule:evenodd;stroke:url(#linearGradient1359);stroke-width:25.156391;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          id="path2048"
-         d="M 121.66071,632.99554 C 106.23680,634.93501 98.452544,654.13662 105.67592,667.20059 C 128.09793,739.43432 150.51995,811.66806 172.94196,883.90179 C 132.42935,876.76304 86.084644,900.39456 74.490694,941.22685 C 65.996794,971.40030 83.209934,1005.3234 111.28363,1018.4040 C 153.01487,1040.7311 212.46774,1024.2094 233.11662,980.63111 C 243.04098,960.42195 239.94184,935.94879 229.14575,916.75917 C 211.42157,859.60879 193.69739,802.45842 175.97321,745.30804 C 208.62674,740.44032 242.63342,725.65031 260.07175,696.22367 C 266.64088,684.27408 273.67883,667.83923 263.28807,655.89213 C 254.85570,645.53837 239.48465,648.02037 229.26631,654.04306 C 202.71064,664.50084 173.54048,654.93951 149.10539,643.20193 C 140.56169,638.56182 131.89679,632.19111 121.66071,632.99554 z "
-         style="color:#000000;fill:url(#linearGradient1364);fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000045;stroke-width:7.4475002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible" />
+         d="M 227.37500,217.28125 C 211.95109,219.22072 204.16683,238.42233 211.39021,251.48630 C 233.81222,323.72003 256.23424,395.95377 278.65625,468.18750 C 238.14364,461.04875 191.79893,484.68027 180.20498,525.51256 C 171.71108,555.68601 188.92422,589.60912 216.99792,602.68974 C 258.72916,625.01678 318.18203,608.49508 338.83091,564.91682 C 348.75527,544.70766 345.65613,520.23450 334.86004,501.04488 C 317.13586,443.89450 299.41168,386.74413 281.68750,329.59375 C 314.34103,324.72603 348.34771,309.93602 365.78604,280.50938 C 372.35517,268.55979 379.39312,252.12494 369.00236,240.17784 C 360.56999,229.82408 345.19894,232.30608 334.98060,238.32877 C 308.42493,248.78655 279.25477,239.22522 254.81968,227.48764 C 246.27598,222.84753 237.61108,216.47682 227.37500,217.28125 z "
+         style="color:#000000;fill:url(#linearGradient1361);fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000045;stroke-width:7.4475002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:block;overflow:visible" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
-         transform="matrix(1.370086,-0.483357,0.443594,1.257378,206.7166,573.8517)"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
+         transform="matrix(1.370086,-0.483357,0.443594,1.257378,312.4309,158.1374)"
          d="M -78.791901 262.42288 A 42.426407 42.426407 0 1 1  -163.64471,262.42288 A 42.426407 42.426407 0 1 1  -78.791901 262.42288 z"
          sodipodi:ry="42.426407"
          sodipodi:rx="42.426407"
          sodipodi:cy="262.42288"
          sodipodi:cx="-121.21831"
          id="path2114"
-         style="color:#000000;fill:url(#radialGradient1366);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:11.760000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible"
+         style="color:#000000;fill:url(#radialGradient1363);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:11.760000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible"
          sodipodi:type="arc" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          sodipodi:nodetypes="czszzz"
          id="path2166"
-         d="M 134.83080,715.98447 C 126.50301,694.15711 111.49838,655.46937 120.99098,649.18542 C 129.03320,643.86160 155.95101,663.51357 174.54567,665.86240 C 209.48956,670.27642 223.36083,660.28423 239.44003,674.24790 C 256.63981,689.18470 228.99812,689.38046 215.31845,694.99163 C 199.89312,701.31885 143.44164,738.55369 134.83080,715.98447 z "
-         style="color:#000000;fill:url(#linearGradient1368);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:13.999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible" />
+         d="M 240.54509,300.27018 C 232.21730,278.44282 217.21267,239.75508 226.70527,233.47113 C 234.74749,228.14731 261.66530,247.79928 280.25996,250.14811 C 315.20385,254.56213 329.07512,244.56994 345.15432,258.53361 C 362.35410,273.47041 334.71241,273.66617 321.03274,279.27734 C 305.60741,285.60456 249.15593,322.83940 240.54509,300.27018 z "
+         style="color:#000000;fill:url(#linearGradient1365);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:13.999998;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
-         transform="matrix(-0.924423,0.459928,-0.415284,-0.862286,129.6047,1207.659)"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
+         transform="matrix(-0.924423,0.459928,-0.415284,-0.862286,235.3190,791.9451)"
          d="M -71.479694 262.42288 A 49.738613 28.327747 0 1 1  -170.95692,262.42288 A 49.738613 28.327747 0 1 1  -71.479694 262.42288 z"
          sodipodi:ry="28.327747"
          sodipodi:rx="49.738613"
          sodipodi:cy="262.42288"
          sodipodi:cx="-121.21831"
          id="path2200"
-         style="color:#000000;fill:url(#linearGradient1370);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:1.9823042;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible"
+         style="color:#000000;fill:url(#linearGradient1367);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:1.9823042;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000;marker:none;marker-start:none;marker-mid:none;marker-end:none;visibility:visible;display:inline;overflow:visible"
          sodipodi:type="arc" />
       <path
-         inkscape:export-ydpi="13.850000"
-         inkscape:export-xdpi="13.850000"
-         inkscape:export-filename="/home/kant/Desktop/playlist64.png"
+         inkscape:export-ydpi="3.3299999"
+         inkscape:export-xdpi="3.3299999"
+         inkscape:export-filename="/home/kant/Desktop/playlist16.png"
          sodipodi:nodetypes="cscc"
          id="path2212"
-         d="M 181.30602,894.25993 C 181.30602,894.25993 211.30602,898.54565 217.02030,907.11708 C 222.73459,915.68851 167.02030,742.83137 167.02030,742.83137 C 145.59173,745.68851 181.30602,894.25993 181.30602,894.25993 z "
-         style="fill:url(#linearGradient1372);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:0.25000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
+         d="M 287.02031,478.54564 C 287.02031,478.54564 317.02031,482.83136 322.73459,491.40279 C 328.44888,499.97422 272.73459,327.11708 272.73459,327.11708 C 251.30602,329.97422 287.02031,478.54564 287.02031,478.54564 z "
+         style="fill:url(#linearGradient1369);fill-opacity:1.0000000;fill-rule:evenodd;stroke:none;stroke-width:0.25000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000" />
     </g>
   </g>
 </svg>
