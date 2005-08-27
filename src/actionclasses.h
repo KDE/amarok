@@ -119,7 +119,7 @@ namespace amaroK
             {
                 const bool announce = b != isEnabled();
 
-                m_function( b );
+                //m_function( b );
                 KToggleAction::setEnabled( b );
                 AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
                 if( announce ) emit enabled( b );
