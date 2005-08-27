@@ -74,8 +74,8 @@ k_dcop:
    virtual void enableRandomMode(bool enable) = 0;          ///< Switch Random Mode on or off.
    virtual void enableRepeatPlaylist(bool enable) = 0;      ///< Switch Repeat Playlist on or off.
    virtual void enableRepeatTrack(bool enable) = 0;         ///< Switch Repeat Track on or off.
-   virtual void mdMountCommand( QString cmd ) = 0;      ///< Sets the command used for mounting media device.
-   virtual void mdUmountCommand( QString cmd ) = 0;   ///< Sets the comment used for umounting media device.
+   virtual void mediaDeviceMount() = 0;               ///< Sets the command used for mounting media device.
+   virtual void mediaDeviceUmount() = 0;             ///< Sets the comment used for umounting media device.
    virtual void mute() = 0;                                 ///< Toggle mute.
    virtual void next() = 0;                                 ///< Equivalent to pressing "Next" button.
    virtual void pause() = 0;                                ///< Equivalent to pressing "Pause" button.

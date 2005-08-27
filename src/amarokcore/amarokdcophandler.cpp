@@ -271,14 +271,14 @@ namespace amaroK
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "repeat_track" ))->setChecked( enable );
     }
 
-    void DcopPlayerHandler::mdMountCommand( QString cmd )
+    void DcopPlayerHandler::mediaDeviceMount()
     {
-        MediaDevice::instance()->setMountCommand( cmd );
+        MediaDevice::instance()->mount();
     }
 
-    void DcopPlayerHandler::mdUmountCommand( QString cmd )
+    void DcopPlayerHandler::mediaDeviceUmount()
     {
-        MediaDevice::instance()->setUmountCommand( cmd );
+        MediaDevice::instance()->umount();
     }
 
     void DcopPlayerHandler::mute()
