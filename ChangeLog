@@ -5,8 +5,9 @@ amaroK ChangeLog
 
 VERSION 1.3.1:
   FEATURES:
-    * Added a "Super Stop Button", lets you stop either now, after the
-      current track, or after the end of the queue.
+    * Holding down the stop button (as opposed to just clicking it) pops
+      up a menu letting you stop either now, after the current track, or
+      after the end of the queue.
     * Collection browser filter now supports fully supports the same
       Google-esque syntax as the playlist filter, plus one extra:
       lyrics:"stuff to search for" to search in cached lyrics.

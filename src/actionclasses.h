@@ -207,10 +207,10 @@ namespace amaroK
     };
 
 
-    class StopMenuAction : public KAction
+    class StopAction : public KAction
     {
         public:
-            StopMenuAction( KActionCollection* );
+            StopAction( KActionCollection* );
             virtual int plug( QWidget*, int index = -1 );
     };
 

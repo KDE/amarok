@@ -130,11 +130,11 @@ PlaylistWindow::PlaylistWindow()
 
     new KAction( i18n( "Previous Track" ), "player_start", 0, ec, SLOT( previous() ), ac, "prev" );
     new KAction( i18n( "Play" ), "player_play", 0, ec, SLOT( play() ), ac, "play" );
-    new KAction( i18n( "Stop" ), "player_stop", 0, ec, SLOT( stop() ), ac, "stop" );
     new KAction( i18n( "Pause" ), "player_pause", 0, ec, SLOT( pause() ), ac, "pause" );
     new KAction( i18n( "Next Track" ), "player_end", 0, ec, SLOT( next() ), ac, "next" );
 
     new amaroK::MenuAction( ac );
+    new amaroK::StopAction( ac );
     new amaroK::PlayPauseAction( ac );
     new amaroK::AnalyzerAction( ac );
     new amaroK::RepeatTrackAction( ac );
@@ -142,7 +142,6 @@ PlaylistWindow::PlaylistWindow()
     new amaroK::RandomAction( ac );
     new amaroK::DynamicAction( ac );
     new amaroK::VolumeAction( ac );
-    new amaroK::StopMenuAction( ac );
 
     if( K3bExporter::isAvailable() )
         new amaroK::BurnMenuAction( ac );

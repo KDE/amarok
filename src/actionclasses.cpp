@@ -459,13 +459,13 @@ BurnMenu::slotActivated( int index )
 // StopMenuAction
 //////////////////////////////////////////////////////////////////////////////////////////
 
-StopMenuAction::StopMenuAction( KActionCollection *ac )
-  : KAction( i18n( "Super Stop Button" ), "player_stop", 0, ac, "stop_menu" )
+StopAction::StopAction( KActionCollection *ac )
+  : KAction( i18n( "Stop" ), "player_stop", 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
 {
 }
 
 int
-StopMenuAction::plug( QWidget *w, int index )
+StopAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
@@ -476,16 +476,17 @@ StopMenuAction::plug( QWidget *w, int index )
         addContainer( bar, id );
         connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-        bar->insertButton( QString::null, id, true, i18n( "Stop" ), index );
+        bar->insertButton( QString::null, id, SIGNAL( clicked() ), EngineController::instance(), SLOT( stop() ),
+                           true, i18n( "Stop" ), index );
 
         KToolBarButton* button = bar->getButton( id );
-        button->setPopup( amaroK::StopMenu::instance() );
+        button->setDelayedPopup( amaroK::StopMenu::instance() );
         button->setName( "toolbutton_stop_menu" );
         button->setIcon( "player_stop" );
 
         return containerCount() - 1;
     }
-    else return -1;
+    else return KAction::plug( w, index );
 }
 
 StopMenu::StopMenu()
