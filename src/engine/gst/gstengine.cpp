@@ -481,8 +481,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         }
     }
 
-    // Link all elements. The link from decodebin to audioconvert will be made in the newPad-callback
-    gst_element_link( m_gst_src, m_gst_decodebin );
+    // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
+    gst_element_link_many( m_gst_src, m_gst_decodebin, m_gst_audioconvert, NULL );
 
     setVolume( m_volume );
 
@@ -864,15 +864,14 @@ GstEngine::createPipeline()
     if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { return false; }
     if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { return false; }
     if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_audioconvert2 = createElement( "audioconvert", m_gst_thread, "audioconvert2" ) ) ) { return false; }
 
     g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
 
     /* link elements */
-    gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity, m_gst_volume,
-                           m_gst_audioscale, m_gst_audioconvert2, m_gst_audiosink, NULL );
+    gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity,
+                           m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
 
     m_pipelineFilled = true;
     return true;
