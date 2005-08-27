@@ -341,7 +341,7 @@ combined (like JuK)</string>
                     <cstring>dbActiveLabel</cstring>
                 </property>
                 <property name="text">
-                    <string>amaroK uses a database to store information about your music. If you are not sure which to use, press next.
+                    <string>amaroK uses a database to store information about your music. If you are not sure which to use, press Next.
 &lt;p&gt;&lt;b&gt;MySQL&lt;/b&gt; or &lt;b&gt;Postgresql&lt;/b&gt; are faster than &lt;b&gt;sqlite&lt;/b&gt;, but require additional setup.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="http://amarok.kde.org/wiki/index.php/MySQL_HowTo"&gt;Instructions for configuring MySQL&lt;/a&gt;.&lt;/li&gt;
