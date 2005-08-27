@@ -16,6 +16,7 @@
 #include "mediabrowser.h"
 
 #include <qdatetime.h>
+#include <qgroupbox.h>
 #include <qimage.h>
 #include <qlabel.h>
 #include <qpainter.h>
@@ -605,6 +606,23 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
 void
 MediaDevice::config()
 {
+    KDialogBase dialog( m_parent, 0, false );
+    kapp->setTopWidget( &dialog );
+    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
+    dialog.showButtonApply( false );
+    QVBox *box = dialog.makeVBoxMainWidget();
+    QLabel *mntLabel = new QLabel( box );
+    mntLabel->setText( i18n ( "Mount Command:" ) );
+    QLineEdit *mntcmd = new QLineEdit( m_mntcmd, box );
+    QLabel *umntLabel = new QLabel( box );
+    umntLabel->setText( i18n ( "Unmount Command:" ) );
+    QLineEdit *umntcmd = new QLineEdit( m_umntcmd, box );
+
+       if ( dialog.exec() != QDialog::Rejected )
+    {
+        setMountCommand( mntcmd->text() );
+        setUmountCommand( umntcmd->text() );
+    }
 }
 
 void MediaDevice::setMountCommand(const QString & mnt)
@@ -615,7 +633,7 @@ void MediaDevice::setMountCommand(const QString & mnt)
 
 void MediaDevice::setUmountCommand(const QString & umnt)
 {
-    AmarokConfig::setUmountCommand( umnt);
+    AmarokConfig::setUmountCommand( umnt );
     m_umntcmd = umnt;        //Update for umount()
 }
 
