@@ -35,6 +35,7 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * The Equalizer widget has been pimped.
     * Pressing 'up' in the playlist filter will now take you to the end of
       the playlist, in addition to down going to the beginning, as before.
     * When jumping to the current track, it now gets centered instead of only
