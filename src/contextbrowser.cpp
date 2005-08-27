@@ -2204,6 +2204,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     const QString pxSize = QString::number( fontMetrics().height() - 4 );
     const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
     const QString text = colorGroup().text().name();
+    const QString link = colorGroup().link().name();
     const QString fg   = colorGroup().highlightedText().name();
     const QString bg   = colorGroup().highlight().name();
     const QString base   = colorGroup().base().name();
@@ -2234,6 +2235,7 @@ void ContextBrowser::setStyleSheet_ExternalStyle( QString& styleSheet, QString& 
     tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
     tmpCSS.replace( "AMAROK_FONTFAMILY", fontFamily );
     tmpCSS.replace( "AMAROK_TEXTCOLOR", text );
+    tmpCSS.replace( "AMAROK_LINKCOLOR", link );
     tmpCSS.replace( "AMAROK_BGCOLOR", bg );
     tmpCSS.replace( "AMAROK_FGCOLOR", fg );
     tmpCSS.replace( "AMAROK_BASECOLOR", base );
