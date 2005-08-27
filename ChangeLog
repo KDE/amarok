@@ -37,6 +37,9 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * Wiki Tab links use the color set for links, instead of "Selected
+      Background". Style Authors can use "AMAROK_LINKCOLOR" if they want that
+      color. (BR 111228)
     * The Equalizer widget has been pimped.
     * Pressing 'up' in the playlist filter will now take you to the end of
       the playlist, in addition to down going to the beginning, as before.
@@ -51,6 +54,10 @@ VERSION 1.3.1:
       updated and improved.
 
   BUGFIXES:
+    * Playcouter and Access Date wouldn't be updated properly for PostgreSQL.
+      Patch by Tonton <tonton-lists@team1664.org>. (BR 111519)
+    * Clicking twice on the uninstall button for the same script, would make
+      amaroK crash.
     * Fixed an obscure crash when you emptied the playlist, had the focus on
       it, and pressed up.
     * No longer show dynamic info popup on application startup.  Patch by
