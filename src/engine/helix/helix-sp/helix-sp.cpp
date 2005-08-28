@@ -122,6 +122,7 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
 STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
 {
    STDERR("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
+
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
 
 #ifndef TEST_APP
@@ -215,7 +216,7 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 {
-   //STDERR("Mute change: %d\n", bMute);
+   STDERR("Mute change: %d\n", bMute);
    m_Player->onMuteChange(m_index);
    m_Player->ppctrl[m_index]->ismute = bMute;
    return HXR_OK;
@@ -603,9 +604,9 @@ int HelixSimplePlayer::addPlayer()
    if (ppctrl[nNumPlayers]->pAudioPlayer)
    {
       // ...and now the volume interface
-      ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetAudioVolume();
+      //ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetAudioVolume();
       // let's get the Device Volume (like realplayer/helixplayer does)
-      //ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetDeviceVolume();
+      ppctrl[nNumPlayers]->pVolume = ppctrl[nNumPlayers]->pAudioPlayer->GetDeviceVolume();
       if (!ppctrl[nNumPlayers]->pVolume)
          STDERR("No Volume Interface - how can we play music!!\n");
       else
@@ -1147,10 +1148,8 @@ void HelixSimplePlayer::dispatch()
    
    tv.tv_sec = 0;
    tv.tv_usec = SLEEP_TIME*1000;
-   pthread_mutex_lock(&m_engine_m);
+
    pEngine->EventOccurred(pNothing);
-   pthread_mutex_unlock(&m_engine_m);
-   //usleep(10000);
 }
 
 

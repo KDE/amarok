@@ -152,6 +152,9 @@ HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIn
 {
    AddRef();
    memset(&m_format, 0, sizeof(m_format));
+
+   // zero the data_history, to eliminate the buzz on playing the first track after enabling the equalizer
+   memset(&data_history, 0, sizeof(data_history));
 }
 
 HSPPostMixAudioHook::~HSPPostMixAudioHook()
