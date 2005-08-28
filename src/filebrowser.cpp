@@ -74,6 +74,12 @@ public:
     MyDirOperator( const KURL &url, QWidget *parent ) : KDirOperator( url, parent ) {
         setDirLister( new MyDirLister( true ) );
     }
+public slots:
+    //reimplemented due to a bug in KDirOperator::activatedMenu ( KDE 3.4.2 ) - See Bug #103305
+    virtual void activatedMenu (const KFileItem *item, const QPoint &pos) {
+        updateSelectionDependentActions();
+        ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu()->popup( pos );
+    }
 };
 
 
