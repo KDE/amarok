@@ -493,7 +493,7 @@ StopMenu::StopMenu()
 {
     insertTitle( i18n( "Stop" ) );
     insertItem( i18n("Now"), NOW );
-    insertItem( i18n("After This Track"), AFTER_TRACK );
+    insertItem( i18n("After Current Track"), AFTER_TRACK );
     insertItem( i18n("After Queue"), AFTER_QUEUE );
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
