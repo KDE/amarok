@@ -40,6 +40,7 @@ class CollectionBrowser: public QVBox
     public:
         CollectionBrowser( const char* name );
         void refreshInfo();
+        virtual bool eventFilter( QObject*, QEvent* );
 
     public slots:
         void setupDirs();

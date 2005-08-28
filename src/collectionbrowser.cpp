@@ -69,6 +69,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Filter here..." ), searchToolBar );
+        m_searchEdit->installEventFilter( this );
         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( QFrame::Sunken );
@@ -83,6 +84,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
+    m_view->installEventFilter( this );
 
     m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
     m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
@@ -242,6 +244,88 @@ CollectionBrowser::setupDirs()  //SLOT
 {
     m_view->setupDirs();
 }
+
+bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
+{
+    typedef QListViewItemIterator It;
+
+    switch( e->type() )
+    {
+    case 6/*QEvent::KeyPress*/:
+
+        //there are a few keypresses that we intercept
+
+        #define e static_cast<QKeyEvent*>(e)
+
+        if( o == m_searchEdit ) //the search lineedit
+        {
+            QListViewItem *item;
+            switch( e->key() )
+            {
+            case Key_Up:
+                item = *It( m_view, It::Visible );
+                if( item )
+                    while( item->itemBelow() )
+                        item = item->itemBelow();
+                if( item )
+                {
+                    m_view->setFocus();
+                    m_view->setCurrentItem( item );
+                    item->setSelected( true );
+                    m_view->ensureItemVisible( item );
+                    return true;
+                }
+                return false;
+            case Key_Down:
+                if( item = *It( m_view, It::Visible ) )
+                {
+                    m_view->setFocus();
+                    m_view->setCurrentItem( item );
+                    item->setSelected( true );
+                    m_view->ensureItemVisible( item );
+                    return true;
+                }
+                return false;
+
+            case Key_PageDown:
+            case Key_PageUp:
+                QApplication::sendEvent( m_view, e );
+                return true;
+
+            case Key_Escape:
+                m_searchEdit->clear();
+                return true;
+
+            default:
+                return false;
+            }
+        }
+
+        if( m_view->currentItem() && ( ( e->key() == Key_Up   && m_view->currentItem()->itemAbove() == 0 )
+                                || ( e->key() == Key_Down && m_view->currentItem()->itemBelow() == 0 ) ) )
+        {
+            m_view->currentItem()->setSelected( false );
+            m_searchEdit->setFocus();
+            m_view->ensureItemVisible( *It( m_view, It::Visible ) );
+            return true;
+        }
+
+        if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
+        {
+            m_searchEdit->setFocus();
+            QApplication::sendEvent( m_searchEdit, e );
+            return true;
+        }
+        #undef e
+        break;
+
+    default:
+        break;
+    }
+
+    return QVBox::eventFilter( o, e );
+}
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
