@@ -1071,7 +1071,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
-        else if( cat == CollectionBrowser::IdAlbum )
+        else if( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum )
         {
             menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
@@ -1119,7 +1119,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportArtist( item->text(0) );
                 break;
             case BURN_ALBUM:
-                K3bExporter::instance()->exportAlbum( item->text(0) );
+                if ( cat == CollectionBrowser::IdVisYearAlbum )
+                    K3bExporter::instance()->exportAlbum(
+                        item->text(0).right( item->text(0).length() - item->text(0).find( i18n(" - ") ) - i18n(" - ").length() )
+                    );
+                else
+                    K3bExporter::instance()->exportAlbum( item->text(0) );
                 break;
             case BURN_DATACD:
                 K3bExporter::instance()->exportTracks( selection, K3bExporter::DataCD );

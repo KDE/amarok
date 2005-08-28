@@ -8,9 +8,9 @@ VERSION 1.3.1:
     * Holding down the stop button (as opposed to just clicking it) pops
       up a menu letting you stop either now, after the current track, or
       after the end of the queue.
-    * Collection browser filter now supports fully supports the same
-      Google-esque syntax as the playlist filter, plus one extra:
-      lyrics:"stuff to search for" to search in cached lyrics.
+    * Collection browser filter now fully supports the same Google-esque
+      syntax as the playlist filter, plus one extra: lyrics:"stuff to search
+      for" to search in cached lyrics.
     * Pressing Shift+Enter after filtering the playlist will now queue
       the first track. (BR 111054)
     * Display short statistics in the collection browser depending on the
@@ -55,6 +55,10 @@ VERSION 1.3.1:
       updated and improved.
 
   BUGFIXES:
+    * Burn option wouldn't show up for "Year - Album" items on Collection
+      Browser.
+    * Tray's tooltip would show things like 69:40 of 1:12:01.
+    * Wiki Tab wouldn't work for names that contained "/". (BR 111634)
     * With KDE 3.4, the proper context menu wouldn't be shown for File
       Browser. Patch by Christian Baumgart <christianbaumgart@web.de>.
       (BR 103305)
