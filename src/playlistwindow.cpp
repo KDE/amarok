@@ -508,7 +508,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 }
                 return false;
             case Key_Down:
-                if( item = *It( pl, It::Visible ) )
+                if( ( item = *It( pl, It::Visible ) ) )
                 {
                     pl->setFocus();
                     pl->setCurrentItem( item );
