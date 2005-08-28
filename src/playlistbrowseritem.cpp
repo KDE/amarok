@@ -59,7 +59,6 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setExpandable( true );
 
     setPixmap( 0, SmallIcon("folder_red") );
 
@@ -75,7 +74,6 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setExpandable( true );
 
     setPixmap( 0, SmallIcon("folder") );
 
@@ -91,7 +89,6 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, QDo
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setExpandable( true );
 
     setPixmap( 0, SmallIcon("folder_red") );
     setText( 1, "" );
@@ -105,7 +102,6 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, true );
-    setExpandable( true );
 
     setPixmap( 0, SmallIcon("folder") );
 }
@@ -968,7 +964,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setExpandable(true);
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
     setPixmap( 0, SmallIcon("player_playlist_2") );
@@ -1005,7 +1000,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setExpandable(true);
 
     setPixmap( 0, SmallIcon("player_playlist_2") );
 }
