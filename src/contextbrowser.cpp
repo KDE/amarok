@@ -2615,20 +2615,20 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         {
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
-                tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() );
+                tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().artist() );
             }
             else if ( !EngineController::instance()->bundle().title().isEmpty() )
             {
-                tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().title() );
+                tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().title() );
             }
             else
             {
-                tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
+                tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().prettyTitle() );
             }
         }
         else
         {
-            tmpWikiStr = KURL::encode_string_no_slash( EngineController::instance()->bundle().prettyTitle() );
+            tmpWikiStr = KURL::encode_string( EngineController::instance()->bundle().prettyTitle() );
         }
 
         m_wikiCurrentUrl = QString( "http://en.wikipedia.org/wiki/%1" ).arg( tmpWikiStr );
