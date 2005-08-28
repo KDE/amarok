@@ -234,6 +234,7 @@ UrlLoader::customEvent( QCustomEvent *e )
     case 1001:
     {
         const QString QUEUE_INDEX = "queue_index";
+        const QString STOP_AFTER = "stop_after";
         foreachType( NodeList, e->nodes )
         {
             if( (*it).isNull() ) //safety
@@ -263,6 +264,8 @@ UrlLoader::customEvent( QCustomEvent *e )
                     m_nextTracks.replace( index - 1, item );
                 }
             }
+            if( element.hasAttribute( STOP_AFTER ) )
+                Playlist::instance()->m_stopAfterTrack = item;
         }
         break;
     }

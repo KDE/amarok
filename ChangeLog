@@ -38,6 +38,8 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * 'Stop after track' is now saved (and so remembered across amaroK
+      restarts).
     * Ported playlist + filter-lineedit behaviour to collection browser as
       well: you can move between the view and the filter with the up/down
       buttons, and just typing into the view will set the filter. (BR 108656)

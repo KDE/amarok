@@ -2195,6 +2195,9 @@ Playlist::saveXML( const QString &path )
             i.setAttribute( "queue_index", 0 );
         }
 
+        if( m_stopAfterTrack == item )
+            i.setAttribute( "stop_after", 1 );
+
         for( int x = 1; x < columns(); ++x )
         {
             if( !item->exactText(x).isEmpty() )
