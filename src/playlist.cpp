@@ -1288,6 +1288,15 @@ Playlist::totalTrackCount()
     return childCount();
 }
 
+BundleList
+Playlist::nextTracks() const
+{
+    BundleList list;
+    for( QPtrListIterator<PlaylistItem> it( m_nextTracks ); *it; ++it )
+        list << MetaBundle( *it );
+    return list;
+}
+
 void
 Playlist::setCurrentTrackPixmap( int state )
 {
@@ -3036,6 +3045,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         else
         {
             m_stopAfterTrack = item;
+            item->setSelected( false );
             repaintItem( item );
         }
 

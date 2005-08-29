@@ -510,8 +510,15 @@ StopMenu::instance()
 void
 StopMenu::slotAboutToShow()
 {
-    setItemChecked( AFTER_TRACK, Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent );
-    setItemChecked( AFTER_QUEUE, Playlist::instance()->stopAfterMode() == Playlist::StopAfterQueue );
+    Playlist *pl = Playlist::instance();
+
+    setItemEnabled( NOW,         amaroK::actionCollection()->action( "stop" )->isEnabled() );
+
+    setItemEnabled( AFTER_TRACK, pl->currentTrackIndex() >= 0 );
+    setItemChecked( AFTER_TRACK, pl->stopAfterMode() == Playlist::StopAfterCurrent );
+
+    setItemEnabled( AFTER_QUEUE, pl->nextTracks().count() );
+    setItemChecked( AFTER_QUEUE, pl->stopAfterMode() == Playlist::StopAfterQueue );
 }
 
 void

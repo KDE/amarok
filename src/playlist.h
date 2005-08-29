@@ -23,6 +23,7 @@
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
 #include "playlistitem.h"
+#include "metabundle.h"
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //KURL::List
@@ -33,7 +34,6 @@
 
 class KAction;
 class KActionCollection;
-class MetaBundle;
 class PlaylistItem;
 class PlaylistEntry;
 class PlaylistLoader;
@@ -101,6 +101,7 @@ class Playlist : private KListView, public EngineObserver
         bool saveM3U( const QString&, bool relativePath = false ) const;
         void saveXML( const QString& );
         int  totalTrackCount();
+        BundleList nextTracks() const;
 
         int  stopAfterMode() const;
 
