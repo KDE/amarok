@@ -50,6 +50,7 @@ class ToggleLabel : public QLabel
                 , m_action( action )
                 , m_tooltip( 0 )
                 , m_tooltipShowing( false )
+                , m_tooltipHidden( false )
         {
             connect( this,   SIGNAL(toggled( bool )), action, SLOT(setChecked( bool )) );
             connect( action, SIGNAL(toggled( bool )), this,   SLOT(setChecked( bool )) );
@@ -64,6 +65,7 @@ class ToggleLabel : public QLabel
     protected:
         void mousePressEvent( QMouseEvent* )
         {
+            hideToolTip();
             const bool b = !isChecked();
             if( isEnabled() )
             {
@@ -75,16 +77,13 @@ class ToggleLabel : public QLabel
         void enterEvent( QEvent* )
         {
             //Show the tooltip after 1/2 second
+            m_tooltipHidden = false;
             QTimer::singleShot( 500, this, SLOT(aboutToShow()) );
         }
 
         void leaveEvent( QEvent* )
         {
-            if( m_tooltipShowing )
-            {
-                m_tooltip->close();
-                m_tooltipShowing = false;
-            }
+            hideToolTip();
         }
 
     public slots:
@@ -101,7 +100,7 @@ class ToggleLabel : public QLabel
     private slots:
         void aboutToShow()
         {
-            if( hasMouse() )
+            if( hasMouse() && !m_tooltipHidden )
                 showToolTip();
         }
 
@@ -133,8 +132,19 @@ class ToggleLabel : public QLabel
             m_tooltip->display();
         }
 
+        void hideToolTip()
+        {
+            m_tooltipHidden = true;
+            if( m_tooltipShowing )
+            {
+                m_tooltip->close();
+                m_tooltipShowing = false;
+            }
+        }
+
         KDE::PopupMessage *m_tooltip;
         bool               m_tooltipShowing;
+        bool               m_tooltipHidden;
 };
 
 

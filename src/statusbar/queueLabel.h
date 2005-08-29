@@ -50,6 +50,7 @@ class QueueLabel: public QLabel //homonym, heh heh
 
     private:
         void    showToolTip();
+        void    hideToolTip();
         QString veryNiceTitle( PlaylistItem * item ) const;
 
         inline int mapXToGlobal( int x ) { return mapToGlobal( QPoint( x, 0 ) ).x(); }
@@ -59,6 +60,7 @@ class QueueLabel: public QLabel //homonym, heh heh
 
         KDE::PopupMessage *m_tooltip;
         bool               m_tooltipShowing;
+        bool               m_tooltipHidden;
 };
 
 #endif

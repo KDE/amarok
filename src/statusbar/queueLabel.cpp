@@ -41,6 +41,7 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
     , m_timer( this )
     , m_tooltip( 0 )
     , m_tooltipShowing( false )
+    , m_tooltipHidden( false )
 {
     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
              Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
@@ -105,26 +106,26 @@ void QueueLabel::setNum( int num )
 
 void QueueLabel::enterEvent( QEvent* )
 {
+    m_tooltipHidden = false;
     QTimer::singleShot( 1000, this, SLOT(aboutToShow()) );
 }
 
 void QueueLabel::leaveEvent( QEvent* )
 {
-    if( m_tooltipShowing )
-    {
-        m_tooltip->close();
-        m_tooltipShowing = false;
-    }
+    hideToolTip();
 }
+
 
 void QueueLabel::aboutToShow()
 {
-    if( hasMouse() )
+    if( hasMouse() && !m_tooltipHidden )
         showToolTip();
 }
 
 void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 {
+    hideToolTip();
+
     if( m_timer.isActive() )  // if the user clicks again when (right after) the menu is open,
     {                         // (s)he probably wants to close it
         m_timer.stop();
@@ -227,6 +228,16 @@ void QueueLabel::showToolTip()
 
     m_tooltip->move( x(), y() + m_tooltip->height() );
     m_tooltip->display();
+}
+
+void QueueLabel::hideToolTip()
+{
+    m_tooltipHidden = true;
+    if( m_tooltipShowing )
+    {
+        m_tooltip->close();
+        m_tooltipShowing = false;
+    }
 }
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item ) const
