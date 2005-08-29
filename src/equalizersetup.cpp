@@ -35,6 +35,7 @@
 #include <qpushbutton.h>
 #include <qstringlist.h>
 #include <qtextstream.h>   //presets
+#include <qtooltip.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -81,10 +82,12 @@ EqualizerSetup::EqualizerSetup()
 
     QPushButton* presetAdd = new QPushButton( presetBox );
     presetAdd->setIconSet( KGlobal::iconLoader()->loadIconSet("filenew", KIcon::Small) );
+    QToolTip::add( presetAdd, i18n("Add new preset") );
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
     QPushButton* presetConf = new QPushButton( presetBox );
     presetConf->setIconSet( KGlobal::iconLoader()->loadIconSet("configure", KIcon::Small) );
+    QToolTip::add( presetConf, i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 
     layout->addWidget( presetBox );
