@@ -165,6 +165,9 @@ EqualizerSetup::EqualizerSetup()
     // Fill the combobox
     updatePresets( AmarokConfig::equalizerPreset() );
 
+    // make sure to restore the current preset value
+    m_slider_preamp->setValue( AmarokConfig::equalizerPreamp() );
+
     // Init sliders
     presetChanged( AmarokConfig::equalizerPreset() );
 
