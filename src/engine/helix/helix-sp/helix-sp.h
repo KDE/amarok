@@ -116,6 +116,8 @@ public:
    bool getMute(int playerIndex);                                    // get the mute state of the player
    void dispatch();                                                  // dispatch the player(s)
 
+   void cleanUpStream(int playerIndex);                              // cleanup after stream complete
+
    virtual void onVolumeChange(int) {}                   // called when the volume is changed
    virtual void onMuteChange(int) {}                     // called when mute is changed
    virtual void onContacting(const char */*host*/) {}    // called when contacting a host
@@ -168,6 +170,7 @@ private:
       IHXVolumeAdviseSink*        pVolumeAdvise;
       IHXAudioHook*               pPostMixHook;
       IHXAudioStreamInfoResponse* pStreamInfoResponse;
+      IHXAudioHook*               pPreMixHook;
       metaData                    md;
       char*                       pszURL;
       unsigned short              volume;

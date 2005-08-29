@@ -54,6 +54,7 @@ class HelixConfigDialog : public amaroK::PluginConfig, public QTabWidget
 {
 public:
     HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );
+    ~HelixConfigDialog();
 
     virtual QWidget *view() { return this; }
     virtual bool hasChanged() const;

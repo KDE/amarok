@@ -222,6 +222,13 @@ HelixConfigDialog::HelixConfigDialog( HelixEngine *engine, QWidget *p )
     le->setContentsPos(0,0);
 }
 
+HelixConfigDialog::~HelixConfigDialog()
+{
+   delete m_core;
+   delete m_plugin;
+   delete m_codec;
+}
+
 bool
 HelixConfigDialog::hasChanged() const
 {
@@ -272,7 +279,6 @@ HelixConfigDialog::save()
       if( entry->isChanged() )
       {
          debug() << "Apply: " << entry->key() << "\n";
-         //if (!strcmp(entry->key(), "
 
          entry->setUnchanged();
       }

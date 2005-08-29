@@ -124,9 +124,10 @@ STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *
    STDERR("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
 
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
+   m_Player->ppctrl[m_index]->pPreMixHook = new HSPPreMixAudioHook(m_Player, m_index, pAudioStream);
 
 #ifndef TEST_APP
-   pAudioStream->AddPreMixHook(new HSPPreMixAudioHook(m_Player, m_index, pAudioStream), false);
+   pAudioStream->AddPreMixHook(m_Player->ppctrl[m_index]->pPreMixHook, false);
 #endif
    m_Player->ppctrl[m_index]->bStarting = false;
 
@@ -144,7 +145,6 @@ const int GUID_LEN           = 64;
 void  PrintUsage(const char* pszAppName);
 char* GetAppName(char* pszArgv0);
 #endif
-
 
 // *** IUnknown methods ***
 
@@ -222,6 +222,11 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
    return HXR_OK;
 }
 
+
+void HelixSimplePlayer::cleanUpStream(int playerIndex)
+{
+   ppctrl[playerIndex]->pPreMixHook->Release();
+}
 
 
 void HelixSimplePlayer::updateEQgains()
@@ -612,6 +617,7 @@ int HelixSimplePlayer::addPlayer()
       else
       {
          HelixSimplePlayerVolumeAdvice *pVA = new HelixSimplePlayerVolumeAdvice(this, nNumPlayers);
+         pVA->AddRef();
          ppctrl[nNumPlayers]->pVolume->AddAdviseSink((IHXVolumeAdviseSink *)pVA);
          ppctrl[nNumPlayers]->pVolumeAdvise = pVA;
 #ifndef HELIX_SW_VOLUME_INTERFACE
@@ -681,6 +687,7 @@ void HelixSimplePlayer::tearDown()
          if (ppctrl[i]->pVolume && ppctrl[i]->pVolumeAdvise)
          {
             ppctrl[i]->pVolume->RemoveAdviseSink(ppctrl[i]->pVolumeAdvise);
+            ppctrl[i]->pVolumeAdvise->Release();
             ppctrl[i]->pVolume->Release();
          }
 
@@ -745,6 +752,14 @@ void HelixSimplePlayer::tearDown()
    if (bEnableVerboseMode)
    {
       STDOUT("\nDone.\n");
+   }
+
+   MimeList *ml = mimehead, *mh;
+   while (ml)
+   {
+      mh = ml->fwd;
+      delete ml;
+      ml = mh;
    }
    
    theErr = HXR_OK;

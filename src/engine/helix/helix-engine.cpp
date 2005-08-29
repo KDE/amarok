@@ -77,6 +77,7 @@ HelixEngine::HelixEngine()
 
 HelixEngine::~HelixEngine()
 {
+   m_mimes.clear();
 }
 
 void HelixEngine::onContacting(const char *host)
@@ -265,6 +266,7 @@ void HelixEngine::play_finished(int /*playerIndex*/)
 {
    debug() << "Ok, finished playing the track, so now I'm idle\n";
    m_state = Engine::Idle;
+   cleanUpStream(m_current);
    emit trackEnded();
 }
 
