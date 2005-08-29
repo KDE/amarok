@@ -42,6 +42,7 @@ class EqualizerPresetManager : public KDialogBase
     private slots:
         void slotRename();
         void slotDelete();
+        void slotDefault();
 
         void updateButtonState();
 

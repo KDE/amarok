@@ -19,6 +19,8 @@
 
 #include "equalizerpresetmanager.h"
 
+#include <qdom.h>
+#include <qfile.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qvbox.h>
@@ -28,9 +30,10 @@
 #include <klistview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kstandarddirs.h> //locate()
 
 EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *name )
-        : KDialogBase( parent, name, true, i18n("Presets"), Ok | Cancel, Ok, true )
+        : KDialogBase( parent, name, true, i18n("Presets"), Ok | Cancel | Default, Ok, true )
 {
     QWidget *mainWidget = new QWidget( this );
     setMainWidget( mainWidget );
@@ -51,9 +54,9 @@ EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *nam
     buttonsLayout->addWidget( m_renameBtn );
     buttonsLayout->addWidget( m_deleteBtn );
 
-    //connect(m_addBtn, SIGNAL( clicked() ), SLOT( slotAdd() ));
     connect(m_renameBtn, SIGNAL( clicked() ), SLOT( slotRename() ));
     connect(m_deleteBtn, SIGNAL( clicked() ), SLOT( slotDelete() ));
+    connect(this, SIGNAL( defaultClicked() ), SLOT( slotDefault() ));
 
     QSpacerItem* spacer = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
     buttonsLayout->addItem( spacer );
@@ -75,6 +78,7 @@ EqualizerPresetManager::setPresets(QMap< QString, QValueList<int> > presets)
         return;
 
     m_presets = presets;
+    m_presetsView->clear();
 
     QMap< QString, QValueList<int> >::Iterator end = presets.end();
     for ( QMap< QString, QValueList<int> >::Iterator it = presets.begin(); it != end; ++it )
@@ -109,6 +113,65 @@ EqualizerPresetManager::slotRename()
         m_presets.remove( item->text(0) );
         item->setText(0, title);
     }
+}
+
+void
+EqualizerPresetManager::slotDefault()
+{
+    int button = KMessageBox::warningYesNo( this, i18n( "Resettings to defaults will delete all present presets. Are you sure?" ) );
+
+    if ( button != KMessageBox::Yes )
+        return;
+
+    // Preserve the 'Manual' preset
+    QValueList<int> manualGains = m_presets[ i18n("Manual") ];
+
+    // Delete all presets
+    m_presets.clear();
+
+    // Create predefined presets 'Zero' and 'Manual'
+    QValueList<int> zeroGains;
+    zeroGains << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0;
+    m_presets[ i18n("Zero") ] = zeroGains;
+    m_presets[ i18n("Manual") ] = manualGains;
+
+    // Load the default presets
+    QFile file( locate( "data", "amarok/data/equalizer_presets.xml" ) );
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+        return;
+
+    QDomNode n = d.namedItem( "equalizerpresets" ).namedItem("preset");
+
+    for( ; !n.isNull();  n = n.nextSibling() )
+    {
+        QDomElement e = n.toElement();
+        QString title = e.attribute( "name" );
+
+        QValueList<int> gains;
+        gains << e.namedItem( "b0" ).toElement().text().toInt();
+        gains << e.namedItem( "b1" ).toElement().text().toInt();
+        gains << e.namedItem( "b2" ).toElement().text().toInt();
+        gains << e.namedItem( "b3" ).toElement().text().toInt();
+        gains << e.namedItem( "b4" ).toElement().text().toInt();
+        gains << e.namedItem( "b5" ).toElement().text().toInt();
+        gains << e.namedItem( "b6" ).toElement().text().toInt();
+        gains << e.namedItem( "b7" ).toElement().text().toInt();
+        gains << e.namedItem( "b8" ).toElement().text().toInt();
+        gains << e.namedItem( "b9" ).toElement().text().toInt();
+
+        m_presets[ title ] = gains;
+    }
+
+    file.close();
+
+    // Update listview
+    setPresets( m_presets );
 }
 
 void
