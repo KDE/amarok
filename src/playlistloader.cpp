@@ -369,6 +369,8 @@ UrlLoader::loadXml( const KURL &url )
     }
     QApplication::sendEvent( this, e );
 
+    delete e;
+
     const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
     QPtrListIterator<PlaylistItem> it( newQueue );
     PLItemList added;

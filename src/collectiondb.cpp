@@ -789,8 +789,10 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 debug() << "Size of image: " <<  imgVector.size() << " byte" << endl;
 
                 // ignore APIC frames without picture and those with obviously bogus size
-                if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ )
+                if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ ) {
+                    delete f;
                     return QString::null;
+                }
 
                 QImage image;
                 if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
@@ -798,10 +800,12 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                     if ( width > 1 )
                     {
                         image.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
+                        delete f;
                         return m_cacheDir.filePath( widthKey + tagKey );
                     } else
                     {
                         image.save( tagCoverDir.filePath( tagKey ), "PNG" );
+                        delete f;
                         return tagCoverDir.filePath( tagKey );
                     }
                 } // image.isNull
