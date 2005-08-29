@@ -364,11 +364,11 @@ UrlLoader::loadXml( const KURL &url )
 
         if( e->nodes.count() == OPTIMUM_BUNDLE_COUNT ) {
             QApplication::sendEvent( this, e );
+            delete e;
             e = new TagsEvent;
         }
     }
     QApplication::sendEvent( this, e );
-
     delete e;
 
     const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
