@@ -277,7 +277,7 @@ bool CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                 }
                 return false;
             case Key_Down:
-                if( item = *It( m_view, It::Visible ) )
+                if( ( item = *It( m_view, It::Visible ) ) )
                 {
                     m_view->setFocus();
                     m_view->setCurrentItem( item );

@@ -98,7 +98,7 @@ EqualizerCanvasView::contentsMouseMoveEvent(QMouseEvent *event)
     }
 }
 void
-EqualizerCanvasView::contentsMouseReleaseEvent(QMouseEvent *event)
+EqualizerCanvasView::contentsMouseReleaseEvent(QMouseEvent */*event*/)
 {
     if (m_selectedItem && m_selectedItem->rtti() == QCanvasEllipse::RTTI)
     {
@@ -219,7 +219,7 @@ void EqualizerCircle::setLocation(const QPoint &newLocation)
     QPoint correctedLoc(newLocation);
     if(m_line1 == 0 || m_line2 == 0)
     {//if the line is on the edges of the board, make it only move vertically
-        correctedLoc.setX(x());
+        correctedLoc.setX( (int) x());
     }
     else
     {
@@ -237,12 +237,12 @@ void EqualizerCircle::setLocation(const QPoint &newLocation)
         if(newLocation.x() < xMin)
         {
             //kdDebug() << "set " << newLocation.x() << " to xMin " << xMin << endl;
-            correctedLoc.setX(xMin + 1.0);
+            correctedLoc.setX( (int) (xMin + 1.0) );
         }
         else if (newLocation.x() > xMax)
         {
         //kdDebug() << "set " << newLocation.x() << " to xMax " << xMax << endl;
-            correctedLoc.setX(xMax - 1.0);
+            correctedLoc.setX( (int) (xMax - 1.0) );
         }
     }
     if(newLocation.y() > canvas()->height())
