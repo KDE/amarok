@@ -1247,8 +1247,15 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         QListViewItem *child = item->firstChild();
         while( child )
         {
-            list.append( static_cast<PodcastItem*>( child )->url() );
-            static_cast<PodcastItem *>( child )->setNew( false );
+            #define child static_cast<PodcastItem *>(child)
+
+            child->hasDownloaded() ?
+                list.append( child->localUrl() ):
+                list.append( child->url()      );
+
+            child->setNew( false );
+
+            #undef child
             child = child->nextSibling();
         }
 
@@ -1260,8 +1267,12 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     else if( isPodcastItem( item ) )
     {
         #define item static_cast<PodcastItem *>(item)
+        KURL::List list;
 
-        KURL::List list( static_cast<PodcastItem*>(item)->url() );
+        item->hasDownloaded() ?
+            list.append( item->localUrl() ):
+            list.append( item->url()      );
+
         Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
         item->setNew( false );
 
