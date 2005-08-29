@@ -1341,12 +1341,14 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
 
     m_localUrl = KURL::fromPathOrURL( m_localUrlString );
 
+    if( QFile::exists( m_localUrlString ) )
+        m_downloaded = true;
+
     setText( 0, m_title );
     setPixmap( 0, SmallIcon("player_playlist_2") );
     setDragEnabled( true );
     setRenameEnabled( 0, false );
 }
-
 
 void
 PodcastItem::downloadMedia()
@@ -1395,7 +1397,7 @@ PodcastItem::downloadResult( KIO::Job* job ) //SLOT
 }
 
 
-bool
+const bool
 PodcastItem::hasXml( const QDomNode& xml )
 {
     bool a = m_title           == xml.namedItem( "title" ).toElement().text();

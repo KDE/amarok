@@ -222,8 +222,8 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml );
 
         void downloadMedia();
-        bool hasDownloaded() { return m_downloaded; }
-        bool hasXml( const QDomNode &xml );
+        const bool hasDownloaded() { return m_downloaded; }
+        const bool hasXml( const QDomNode &xml );
 
         void setNew( bool n = true );
         bool isNew() { return m_new; }
