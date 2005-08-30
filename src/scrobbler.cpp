@@ -616,6 +616,9 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
         if ( items[submitCounter] != 0 )
             m_ongoingSubmits.insert( job, items[submitCounter] );
 
+    amaroK::StatusBar::instance()->newProgressOperation( job )
+            .setDescription( i18n( "Submitting to AudioScrobbler" ) );
+
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( audioScrobblerSubmitResult( KIO::Job* ) ) );
     connect( job, SIGNAL( data( KIO::Job*, const QByteArray& ) ),
