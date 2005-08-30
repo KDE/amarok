@@ -161,10 +161,11 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
     const QString path = m_url.path();
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
+    TagLib::MPEG::File *mpeg = 0;
 
     if( AmarokConfig::recodeID3v1Tags() && path.endsWith( ".mp3", false ) )
     {
-        TagLib::MPEG::File *mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
+        mpeg = new TagLib::MPEG::File( QFile::encodeName( path ), true, readStyle );
         fileref = TagLib::FileRef( mpeg );
 
         if( mpeg->isValid() )
@@ -197,6 +198,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle )
 
         init( fileref.audioProperties() );
     }
+
+    delete mpeg;
 
     //FIXME disabled for beta4 as it's simpler to not got 100 bug reports
     //else if( KMimeType::findByUrl( m_url )->is( "audio" ) )
