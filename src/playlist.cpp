@@ -320,10 +320,7 @@ Playlist::~Playlist()
 {
     saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-    if( AmarokConfig::savePlaylist() )
-        saveXML( defaultPlaylistPath() );
-    else
-        QFile::remove( defaultPlaylistPath() );
+    if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
 
     //clean undo directory
     QStringList list = m_undoDir.entryList();
@@ -2128,8 +2125,6 @@ Playlist::customEvent( QCustomEvent *e )
 
         //force redraw of currentTrack marker, play icon, etc.
         restoreCurrentTrack();
-
-        saveXML( defaultPlaylistPath() );
     }
 
     updateNextPrev();
@@ -3343,11 +3338,7 @@ Playlist::saveState( QStringList &list )
          list.pop_front();
       }
 
-      // Copy current playlist to undo folder
-      KIO::file_copy( KURL::fromPathOrURL( defaultPlaylistPath() ),
-                      KURL::fromPathOrURL( fileName ),
-                      -1, true, false, false );
-
+      saveXML( fileName );
       list.append( fileName );
 
       return true;
