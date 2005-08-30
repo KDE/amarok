@@ -12,6 +12,8 @@
  * 
  *
  */
+#include "hxcomm.h"
+#include "hxcore.h"
 #include "hxbuffer.h"
 #include "hxmangle.h"
 
@@ -27,8 +29,137 @@
 #include "hxausvc.h"
 #include "helix-sp.h"
 #include "utils.h"
+#include "print.h"
 
 extern BOOL bEnableAdviceSink;
+
+HSPEngineContext::HSPEngineContext(IHXCommonClassFactory *pCommonClassFactory) : m_lRefCount(0), m_CommonClassFactory(pCommonClassFactory)
+{
+}
+
+HSPEngineContext::~HSPEngineContext()
+{
+    Close();
+};
+
+void HSPEngineContext::Close()
+{
+   // you dont own the common class factory, so dont even think about it...
+}
+
+// *** IUnknown methods ***
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IUnknown::QueryInterface
+//  Purpose:
+//	Implement this to export the interfaces supported by your 
+//	object.
+//
+STDMETHODIMP HSPEngineContext::QueryInterface(REFIID riid, void** ppvObj)
+{
+    if (IsEqualIID(riid, IID_IUnknown))
+    {
+	AddRef();
+	*ppvObj = this;
+	return HXR_OK;
+    }
+    else if (IsEqualIID(riid, IID_IHXPreferences))
+    {
+	AddRef();
+	*ppvObj = (IHXPreferences*)this;
+	return HXR_OK;
+    }
+    *ppvObj = NULL;
+    return HXR_NOINTERFACE;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IUnknown::AddRef
+//  Purpose:
+//	Everyone usually implements this the same... feel free to use
+//	this implementation.
+//
+STDMETHODIMP_(ULONG32) HSPEngineContext::AddRef()
+{
+    return InterlockedIncrement(&m_lRefCount);
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IUnknown::Release
+//  Purpose:
+//	Everyone usually implements this the same... feel free to use
+//	this implementation.
+//
+STDMETHODIMP_(ULONG32) HSPEngineContext::Release()
+{
+    if (InterlockedDecrement(&m_lRefCount) > 0)
+    {
+        return m_lRefCount;
+    }
+
+    delete this;
+    return 0;
+}
+
+
+// *** IHXPreference methods ***
+void HSPEngineContext::Init(IUnknown* /*pUnknown*/)
+{
+   // nothing to do yet...
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IHXPreferences::ReadPref
+//  Purpose:
+//	Read a Preference from the registry.
+//
+STDMETHODIMP
+HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
+{
+    HX_RESULT hResult	= HXR_OK;
+    
+    //STDERR("in engine context, key is <%s>\n", pref_key);
+    if ((stricmp(pref_key, "OpenAudioDeviceOnPlayback") == 0))
+    {
+       unsigned char *outbuf;
+       IHXBuffer *ibuf;
+
+       m_CommonClassFactory->CreateInstance(CLSID_IHXBuffer, (void **) &ibuf);
+       if (ibuf)
+       {
+          ibuf->SetSize(2);
+          outbuf = ibuf->GetBuffer();
+          strcpy((char *)outbuf, "0");
+          buffer = ibuf;
+
+          //STDERR("value = %d\n",atol((const char*) buffer->GetBuffer()));
+       }
+    }
+    else
+    {
+	hResult = HXR_NOTIMPL;
+    }
+
+    return hResult;
+}
+
+/////////////////////////////////////////////////////////////////////////
+//  Method:
+//	IHXPreferences::WritePref
+//  Purpose:
+//	Write a Preference to the registry.
+//
+STDMETHODIMP
+HSPEngineContext::WritePref(const char* /*pref_key*/, IHXBuffer* /*buffer*/)
+{
+   //STDERR("In EngineContext, WritePref, key %s\n", pref_key);
+   return HXR_OK; // for now, no one allowed to change it
+}
+
 
 
 HSPClientContext::HSPClientContext(LONG32 lClientIndex, HelixSimplePlayer *pSplay)
@@ -176,7 +307,7 @@ STDMETHODIMP_(ULONG32) HSPClientContext::Release()
 }
 
 
-// *** IUnknown methods ***
+// *** IHXPreference methods ***
 
 /////////////////////////////////////////////////////////////////////////
 //  Method:

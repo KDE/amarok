@@ -302,7 +302,8 @@ HelixSimplePlayer::HelixSimplePlayer() :
    nPlay(0),
    bEnableAdviceSink(false),
    bEnableVerboseMode(false),
-   pEngine(NULL),   
+   pEngine(NULL),
+   pEngineContext(NULL),
    m_pszUsername(NULL),
    m_pszPassword(NULL),
    m_pszGUIDFile(NULL),
@@ -431,19 +432,30 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
       theErr = HXR_FAILED;
       return;
    }
-   pEngine = pEngine;
-
-   // get the client engine selector
-   pCEselect = 0;
-   pEngine->QueryInterface(IID_IHXClientEngineSelector, (void **) &pCEselect);
-   if (!pCEselect)
-      STDERR("no CE selector\n");
 
    pCommonClassFactory = 0;
    // get the common class factory
    pEngine->QueryInterface(IID_IHXCommonClassFactory, (void **) &pCommonClassFactory);
    if (!pCommonClassFactory)
       STDERR("no CommonClassFactory\n");
+
+   // get the engine setup interface
+   IHXClientEngineSetup *pEngineSetup = 0;
+   pEngine->QueryInterface(IID_IHXClientEngineSetup, (void **) &pEngineSetup);
+   if (!pEngineSetup)
+      STDERR("no engine setup interface\n");
+   else
+   {
+      pEngineContext = new HSPEngineContext(pCommonClassFactory);
+      pEngineContext->AddRef();
+      pEngineSetup->Setup(pEngineContext);
+   }
+
+   // get the client engine selector
+   pCEselect = 0;
+   pEngine->QueryInterface(IID_IHXClientEngineSelector, (void **) &pCEselect);
+   if (!pCEselect)
+      STDERR("no CE selector\n");
 
    pPluginE = 0;
    // get the plugin enumerator
@@ -722,6 +734,8 @@ void HelixSimplePlayer::tearDown()
       pPluginE->Release();
    if (pPlugin2Handler)
       pPlugin2Handler->Release();
+   if (pEngineContext)
+      pEngineContext->Release();
 
    fpCloseEngine  = (FPRMCLOSEENGINE) dlsym(core_handle, "CloseEngine");
    if (fpCloseEngine && pEngine)

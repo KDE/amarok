@@ -232,7 +232,10 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
       }
       STDERR("len %d\n", len);
       STDERR("pAudioOutData %lx, data %lx\n", pAudioOutData, pAudioOutData->pData);
+
+      STDERR("Volume is %d\n",m_Player->ppctrl[m_index]->pVolume->GetVolume());
    }
+   
 #endif
 
    // feed the visualizations

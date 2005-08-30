@@ -50,6 +50,7 @@ class IHXAudioStreamInfoResponse;
 class IHXCommonClassFactory;
 class IHXPluginEnumerator;
 class IHXPlugin2Handler;
+class IHXPreferences;
 
 // scope delay queue
 struct DelayQueue
@@ -237,6 +238,7 @@ private:
    bool                 bEnableAdviceSink;
    bool                 bEnableVerboseMode;
    IHXClientEngine*     pEngine;   
+   IHXPreferences*      pEngineContext;   
    char*                m_pszUsername;
    char*                m_pszPassword;
    char*                m_pszGUIDFile;

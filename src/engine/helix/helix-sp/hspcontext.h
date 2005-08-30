@@ -16,10 +16,41 @@
 struct IUnknown;
 struct IHXPreferences;
 struct IHXVolume;
+class IHXCommonClassFactory;
 class HSPClientAdviceSink;
 class HSPErrorMessages;
 class HSPAuthenticationManager;
 class HelixSimplePlayer;
+
+class HSPEngineContext : public IHXPreferences
+{
+public:
+   HSPEngineContext(IHXCommonClassFactory *pCommonClassFactory);
+   virtual ~HSPEngineContext();
+   void Init(IUnknown*	       /*IN*/ pUnknown);
+   void Close();
+    /*
+     * IUnknown methods
+     */
+    STDMETHOD(QueryInterface)	(THIS_
+				REFIID riid,
+				void** ppvObj);
+
+    STDMETHOD_(ULONG32,AddRef)	(THIS);
+    STDMETHOD_(ULONG32,Release)	(THIS);
+
+    /*
+     * IHXPreferences methods
+     */
+    STDMETHOD(ReadPref)		(THIS_ const char* pref_key, 
+				 IHXBuffer*& buffer);
+    STDMETHOD(WritePref)	(THIS_ const char* pref_key,
+				 IHXBuffer* buffer);
+
+private:
+   LONG32			 m_lRefCount;
+   IHXCommonClassFactory        *m_CommonClassFactory;
+};
 
 class HSPClientContext : public IHXPreferences
 {
