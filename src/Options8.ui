@@ -18,6 +18,9 @@
             <height>1</height>
         </size>
     </property>
+    <property name="caption">
+        <string>Options8</string>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -77,7 +80,7 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>amaroK can send the name of every song you play to Audioscrobbler. The system automatically matches you to people with similar musical tastes, and generates personalized recommendations. To learn more about Audioscrobbler, &lt;A href='http://www.audioscrobbler.com'&gt;visit the homepage&lt;/A&gt;.</string>
+                        <string>amaroK can send the name of every song you play to last.fm. The system automatically matches you to people with similar musical tastes, and creates personalized recommendations. To learn more about last.fm, &lt;A href='http://www.last.fm'&gt;visit the homepage&lt;/A&gt;.</string>
                     </property>
                 </widget>
             </hbox>
@@ -87,7 +90,7 @@
                 <cstring>groupBox3</cstring>
             </property>
             <property name="title">
-                <string>Audioscrobbler Profile</string>
+                <string>last.fm Profile</string>
             </property>
             <vbox>
                 <property name="name">
@@ -106,7 +109,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>&lt;P&gt;To use Audioscrobbler with amaroK, you need an &lt;A href='http://www.audioscrobbler.com:80/signup.php'&gt;Audioscrobbler profile&lt;/A&gt;.</string>
+                        <string>&lt;P&gt;To use last.fm with amaroK, you need an &lt;A href='http://www.last.fm:80/signup.php'&gt;last.fm profile&lt;/A&gt;.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -193,7 +196,7 @@
                 <cstring>groupBox2</cstring>
             </property>
             <property name="title">
-                <string>Audioscrobbler Services</string>
+                <string>last.fm Services</string>
             </property>
             <vbox>
                 <property name="name">
@@ -204,7 +207,7 @@
                         <cstring>textLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Once registered, amaroK can tell Audioscrobbler about your listening habits; your profile can then provide statistics and recommendations. A profile is not required to retrieve similar-artists for display in the Context Browser.</string>
+                        <string>Once registered, amaroK can tell the last.fm service about your listening habits; your profile can then provide statistics and recommendations. A profile is not required to retrieve similar-artists for display in the Context Browser.</string>
                     </property>
                     <property name="textFormat">
                         <enum>RichText</enum>
@@ -226,7 +229,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>&amp;Improve my profile by submitting the tracks I play</string>
+                        <string>Improve my profile &amp;by submitting the tracks I play</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -252,7 +255,7 @@
                 </sizepolicy>
             </property>
             <property name="text">
-                <string>Why not join the &lt;A href='http://www.audioscrobbler.com:80/group/amaroK+users'&gt;amaroK Audioscrobbler group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
+                <string>Why not join the &lt;A href='http://www.last.fm.com:80/group/amaroK+users'&gt;amaroK last.fm group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
             </property>
         </widget>
         <spacer>
