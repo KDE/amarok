@@ -229,7 +229,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>Improve my profile &amp;by submitting the tracks I play</string>
+                        <string>Improve m&amp;y profile by submitting the tracks I play</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -255,7 +255,7 @@
                 </sizepolicy>
             </property>
             <property name="text">
-                <string>Why not join the &lt;A href='http://www.last.fm.com:80/group/amaroK+users'&gt;amaroK last.fm group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
+                <string>Why not join the &lt;A href='http://www.last.fm:80/group/amaroK+users'&gt;amaroK last.fm group&lt;/A&gt; and share your musical tastes with other amaroK users?</string>
             </property>
         </widget>
         <spacer>
@@ -277,8 +277,6 @@
         </spacer>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kactivelabel.h</includehint>
