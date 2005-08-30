@@ -1917,11 +1917,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastChannel( item ) ) {
         #define item static_cast<PodcastChannel*>(item)
-        enum Actions { LOAD, ADD, REMOVE, RESCAN, CONFIG };
+        enum Actions { LOAD, ADD, REMOVE, INFO, RESCAN, CONFIG};
         menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
         menu.insertItem( SmallIconSet( "edittrash" ), i18n( "R&emove" ), REMOVE );
         menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
         menu.insertItem( SmallIconSet( "reload" ), i18n( "&Check for Updates" ), RESCAN );
         menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure..." ), CONFIG );
 
@@ -1944,6 +1945,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 Playlist::instance()->insertMedia( list );
                 break;
             }
+
+            case INFO:
+                item->showAbout();
+                break;
+
             case RESCAN:
                 item->rescan();
                 break;
@@ -1976,9 +1982,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastItem( item ) ) {
         #define item static_cast<PodcastItem*>(item)
-        enum Actions { LOAD, GET };
+        enum Actions { LOAD, INFO, GET };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
         menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
 
         if( item->hasDownloaded() )
@@ -1990,8 +1997,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
 
+            case INFO:
+                item->showAbout();
+                break;
+
             case GET:
-                static_cast<PodcastItem*>(item)->downloadMedia();
+                item->downloadMedia();
                 break;
         }
         #undef item

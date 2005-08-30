@@ -24,6 +24,7 @@
 #include <kio/jobclasses.h>    //podcast retrieval
 #include <klocale.h>
 #include <kmdcodec.h>          //podcast media saving
+#include <kmessagebox.h>       //podcast info box
 #include <kstandarddirs.h>     //podcast loading icons
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1131,6 +1132,24 @@ PodcastChannel::rescan()
 }
 
 void
+PodcastChannel::showAbout()
+{
+    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
+
+    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
+
+    str += body.arg( i18n( "Title" ),       m_title );
+    str += body.arg( i18n( "Url" ),         m_url.prettyURL() );
+    str += body.arg( i18n( "Website" ),     m_link.prettyURL() );
+    str += body.arg( i18n( "Copyright" ),   m_copyright );
+    str += body.arg( i18n( "Description" ), m_description );
+
+    str += "</table></body></html>";
+
+    KMessageBox::information( 0, str, i18n( "Podcast Information" ) );
+}
+
+void
 PodcastChannel::setNew( bool n )
 {
     if( n )
@@ -1155,7 +1174,10 @@ PodcastChannel::setXml( QDomNode xml )
     m_cache += "_" + m_url.fileName();
 
     QString weblink = xml.namedItem( "link" ).toElement().text();
-    KURL m_link( weblink );
+    m_link = KURL::fromPathOrURL( weblink );
+
+    m_description = xml.namedItem( "description" ).toElement().text();
+    m_copyright   = xml.namedItem( "copyright" ).toElement().text();
 
     PodcastItem *updatingLast = 0;
     PodcastItem *nextFirst = 0;
@@ -1220,6 +1242,7 @@ PodcastChannel::setXml( QDomNode xml )
         amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
     }
 }
+
 
 //maintain max items property
 void
@@ -1325,6 +1348,10 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
 {
     m_title       = xml.namedItem( "title" ).toElement().text();
     m_description = xml.namedItem( "description" ).toElement().text();
+
+    if( m_description.isEmpty() )
+        m_description = xml.namedItem( "itunes:summary" ).toElement().text();
+
     m_author      = xml.namedItem( "author" ).toElement().text();
     m_date        = xml.namedItem( "pubDate" ).toElement().text();
     m_duration    = xml.namedItem( "enclosure" ).toElement().attribute( "length" ).toInt();
@@ -1419,6 +1446,24 @@ PodcastItem::setNew( bool n )
         setPixmap( 0, SmallIcon("player_playlist_2") );
 
     m_new = n;
+}
+
+void
+PodcastItem::showAbout()
+{
+    const QString body = "<tr><td>%1</td><td>%2</td></tr>";
+
+    QString str  = "<html><body><table width=\"100%\" border=\"1\">";
+
+    str += body.arg( i18n( "Title" ),       m_title );
+    str += body.arg( i18n( "Author" ),      m_author );
+    str += body.arg( i18n( "Date" ),        m_date );
+
+    str += body.arg( i18n( "Type" ),        m_type );
+    str += body.arg( i18n( "Description" ), m_description );
+    str += "</table></body></html>";
+
+    KMessageBox::information( 0, str, i18n( "Podcast Information" ) );
 }
 
 void

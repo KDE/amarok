@@ -221,9 +221,10 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
     public:
         PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml );
 
-        void downloadMedia();
+        void  downloadMedia();
         const bool hasDownloaded() { return m_downloaded; }
         const bool hasXml( const QDomNode &xml );
+        void  showAbout();
 
         void setNew( bool n = true );
         bool isNew() { return m_new; }
@@ -287,6 +288,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  configure();
         void  fetch();
         void  rescan();
+        void  showAbout();
         const KURL &url() { return m_url; }
         const QString &title() { return m_title; }
         const int timeout() { return m_interval; }
