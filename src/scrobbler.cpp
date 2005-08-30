@@ -617,7 +617,7 @@ void ScrobblerSubmitter::submitItem( SubmitItem* item )
             m_ongoingSubmits.insert( job, items[submitCounter] );
 
     amaroK::StatusBar::instance()->newProgressOperation( job )
-            .setDescription( i18n( "Submitting to Audioscrobbler" ) );
+            .setDescription( i18n( "Submitting to last.fm" ) );
 
     connect( job, SIGNAL( result( KIO::Job* ) ),
              this,  SLOT( audioScrobblerSubmitResult( KIO::Job* ) ) );
@@ -930,10 +930,10 @@ void ScrobblerSubmitter::announceSubmit(
     if ( success )
     {
         if ( tracks == 1 )
-            _short = i18n( "'%1' submitted to Audioscrobbler" ).arg( item->title() );
+            _short = i18n( "'%1' submitted to last.fm" ).arg( item->title() );
         else
         {
-            _short = i18n( "Several tracks submitted to Audioscrobbler" );
+            _short = i18n( "Several tracks submitted to last.fm" );
 
             _long = "<p>";
             _long  = i18n( "'%1' and one other track submitted",
@@ -944,10 +944,10 @@ void ScrobblerSubmitter::announceSubmit(
     else
     {
         if ( tracks == 1 )
-            _short = i18n( "Failed to submit '%1' to Audioscrobbler" ).arg( item->title() );
+            _short = i18n( "Failed to submit '%1' to last.fm" ).arg( item->title() );
         else
         {
-            _short = i18n( "Failed to submit several tracks to Audioscrobbler" );
+            _short = i18n( "Failed to submit several tracks to last.fm" );
             _long  = "<p>";
             _long  = i18n( "Failed to submit '%1' and one other track",
                            "Failed to submit '%1' and %n other tracks", tracks-1 )

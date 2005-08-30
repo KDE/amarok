@@ -109,7 +109,7 @@
                         </sizepolicy>
                     </property>
                     <property name="text">
-                        <string>&lt;P&gt;To use last.fm with amaroK, you need an &lt;A href='http://www.last.fm:80/signup.php'&gt;last.fm profile&lt;/A&gt;.</string>
+                        <string>&lt;P&gt;To use last.fm with amaroK, you need a &lt;A href='http://www.last.fm:80/signup.php'&gt;last.fm profile&lt;/A&gt;.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
