@@ -894,6 +894,7 @@ GstEngine::destroyPipeline()
 
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
+        gst_element_set_state( m_gst_rootbin, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_rootbin ) );
 
         m_pipelineFilled = false;
