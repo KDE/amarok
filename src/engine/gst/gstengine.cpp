@@ -893,11 +893,6 @@ GstEngine::destroyPipeline()
 
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
-
-        GstPad* const audiopad = gst_element_get_pad( m_gst_audioconvert, "sink" );
-        if ( GST_PAD_IS_LINKED( audiopad ) )
-            gst_pad_unlink( audiopad, GST_PAD_PEER( audiopad ) );
-
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
 
         m_pipelineFilled = false;
