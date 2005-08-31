@@ -217,7 +217,7 @@ FileBrowser::~FileBrowser()
 
     m_dir->writeConfig( c ); //uses currently set group
 
-    c->writePathEntry( "Location", m_dir->url().prettyURL() );
+    c->writePathEntry( "Location", m_dir->url().url() );
     c->writePathEntry( "Dir History", m_combo->urls() );
 }
 
