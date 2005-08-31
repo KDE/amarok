@@ -460,6 +460,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( !createPipeline() )
         return false;
 
+    m_gst_thread = gst_thread_new( "thread" );
+    g_signal_connect( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
+
     if ( url.isLocalFile() ) {
         // Use gst's filesrc element for local files, cause it's less overhead than KIO
         if ( !( m_gst_src = createElement( "filesrc", m_gst_thread ) ) ) { destroyPipeline(); return false; }
@@ -863,15 +866,11 @@ GstEngine::createPipeline()
     if ( !( m_gst_volume = createElement( "volume", m_gst_audiobin ) ) ) { return false; }
     if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_audiobin ) ) ) { return false; }
 
+    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
+
     /* link elements */
     gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity,
                            m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
-
-    m_gst_rootbin = gst_bin_new( "root_bin" );
-    m_gst_thread = createElement( "thread", m_gst_rootbin );
-
-    g_signal_connect( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
-    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
 
     gst_element_set_state( m_gst_audiobin, GST_STATE_PAUSED );
 
@@ -894,8 +893,7 @@ GstEngine::destroyPipeline()
 
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
-        gst_element_set_state( m_gst_rootbin, GST_STATE_NULL );
-        gst_object_unref( GST_OBJECT( m_gst_rootbin ) );
+        gst_object_unref( GST_OBJECT( m_gst_thread ) );
 
         m_pipelineFilled = false;
     }

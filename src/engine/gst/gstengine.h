@@ -172,7 +172,6 @@ class GstEngine : public Engine::Base
 
         static GstEngine* s_instance;
 
-        GstElement* m_gst_rootbin;
         GstElement* m_gst_thread;
 
         GstElement* m_gst_src;
