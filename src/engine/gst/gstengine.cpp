@@ -80,6 +80,10 @@ GstEngine::newPad_cb( GstElement*, GstPad* pad, gboolean, gpointer ) //static
     }
 
     gst_pad_link( pad, audiopad );
+
+    if ( gst_element_get_parent( instance()->m_gst_audiobin ) == NULL )
+        gst_bin_add( GST_BIN( instance()->m_gst_thread ), instance()->m_gst_audiobin );
+
     gst_bin_sync_children_state( GST_BIN( instance()->m_gst_thread ) );
 }
 
@@ -481,16 +485,14 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
         }
     }
 
+    if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_thread ) ) ) { destroyPipeline(); return false; }
+    g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
+    g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
+
     // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
-    gst_element_link_many( m_gst_src, m_gst_decodebin, m_gst_audioconvert, NULL );
+    gst_element_link( m_gst_src, m_gst_decodebin );
 
     setVolume( m_volume );
-
-    if ( !gst_element_set_state( m_gst_thread, GST_STATE_READY ) ) {
-        warning() << "Could not set thread to READY.\n";
-        destroyPipeline();
-        return false;
-    }
 
     return true;
 }
@@ -508,7 +510,6 @@ GstEngine::play( uint offset )  //SLOT
         return false;
     }
 
-    g_signal_connect( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "eos", G_CALLBACK( eos_cb ), NULL );
 
     // If "Resume playback on start" is enabled, we must seek to the last position
@@ -679,7 +680,6 @@ GstEngine::handlePipelineError()  //SLOT
 
     m_eosReached = true;
     destroyPipeline();
-    emit trackEnded();
 }
 
 
@@ -837,8 +837,7 @@ GstEngine::createPipeline()
     debug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
     debug() << "Output Params: " << GstConfig::outputParams() << endl;
 
-    /* create a new pipeline (thread) to hold the elements */
-    if ( !( m_gst_thread = createElement( "thread" ) ) ) { return false; }
+    m_gst_audiobin = gst_bin_new( "audiobin" );
 
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
@@ -851,27 +850,30 @@ GstEngine::createPipeline()
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
-    gst_bin_add( GST_BIN( m_gst_thread ), m_gst_audiosink );
+    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_audiosink );
 
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
         gst_element_set( m_gst_audiosink, "device", GstConfig::soundDevice().latin1(), NULL );
 
     m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
-    gst_bin_add( GST_BIN( m_gst_thread ), m_gst_equalizer );
-    if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_identity = createElement( "identity", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_volume = createElement( "volume", m_gst_thread ) ) ) { return false; }
-    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_thread ) ) ) { return false; }
-
-    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
-    g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
-    g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
+    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_equalizer );
+    if ( !( m_gst_audioconvert = createElement( "audioconvert", m_gst_audiobin ) ) ) { return false; }
+    if ( !( m_gst_identity = createElement( "identity", m_gst_audiobin ) ) ) { return false; }
+    if ( !( m_gst_volume = createElement( "volume", m_gst_audiobin ) ) ) { return false; }
+    if ( !( m_gst_audioscale = createElement( "audioscale", m_gst_audiobin ) ) ) { return false; }
 
     /* link elements */
     gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity,
                            m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
+
+    m_gst_rootbin = gst_bin_new( "root_bin" );
+    m_gst_thread = createElement( "thread", m_gst_rootbin );
+
+    g_signal_connect( G_OBJECT( m_gst_thread ), "error", G_CALLBACK ( pipelineError_cb ), NULL );
+    g_signal_connect( G_OBJECT( m_gst_identity ), "handoff", G_CALLBACK( handoff_cb ), NULL );
+
+    gst_element_set_state( m_gst_audiobin, GST_STATE_PAUSED );
 
     m_pipelineFilled = true;
     return true;
@@ -892,7 +894,7 @@ GstEngine::destroyPipeline()
 
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
-        gst_object_unref( GST_OBJECT( m_gst_thread ) );
+        gst_object_unref( GST_OBJECT( m_gst_rootbin ) );
 
         m_pipelineFilled = false;
     }
