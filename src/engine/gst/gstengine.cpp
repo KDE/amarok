@@ -266,8 +266,6 @@ GstEngine::init()
         return false;
     }
 
-    startTimer( TIMER_INTERVAL );
-
     return true;
 }
 
@@ -535,6 +533,7 @@ GstEngine::stop()  //SLOT
     if ( m_fadeValue == 0.0 ) {
         // Not fading --> start fade now
         m_fadeValue = 1.0;
+        startTimer( TIMER_INTERVAL );
     }
     else
         // Fading --> stop playback
@@ -654,9 +653,10 @@ void GstEngine::timerEvent( QTimerEvent* )
             debug() << "[Gst-Engine] Fade-out finished.\n";
             destroyPipeline();
         }
-
         setVolume( volume() );
     }
+    else
+        killTimers();
 }
 
 

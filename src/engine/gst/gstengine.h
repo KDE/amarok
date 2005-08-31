@@ -158,8 +158,8 @@ class GstEngine : public Engine::Base
         /////////////////////////////////////////////////////////////////////////////////////
         // DATA MEMBERS
         /////////////////////////////////////////////////////////////////////////////////////
-        // Interval of main timer, handles the crossfading
-        static const int  TIMER_INTERVAL = 50; //msec
+        // Interval of main timer, handles the volume fading
+        static const int  TIMER_INTERVAL = 40; //msec
 
         #define KB 1000
         static const uint SCOPEBUF_SIZE  = 600*KB;
