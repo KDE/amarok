@@ -111,6 +111,7 @@ class MediaDeviceView : public QVBox
         KListView*       m_transferList;
         QPushButton*     m_transferButton;
         QPushButton*     m_connectButton;
+        QPushButton*     m_configButton;
 
         MediaBrowser* m_parent;
 };

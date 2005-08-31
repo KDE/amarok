@@ -62,10 +62,6 @@ MediaBrowser::MediaBrowser( const char *name )
 {
     setSpacing( 4 );
 
-    KToolBar* toolbar = new Browser::ToolBar( this );
-    KToolBarButton *config = new KToolBarButton( "configure", 0, toolbar );
-    QToolTip::add( config, i18n( "Configure media device" ) );
-
     { //<Search LineEdit>
         KToolBar* searchToolBar = new Browser::ToolBar( this );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
@@ -81,8 +77,6 @@ MediaBrowser::MediaBrowser( const char *name )
     } //</Search LineEdit>
 
     m_view = new MediaDeviceView( this );
-
-    connect( config, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
 
     setFocusProxy( m_view ); //default object to get focus
 }
@@ -417,6 +411,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     hb->setSpacing( 1 );
     m_connectButton = new QPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
     m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+    m_configButton = new QPushButton( SmallIconSet( "configure" ), i18n( "Configure" ), hb );
 
     m_connectButton->setToggleButton( true );
     m_connectButton->setOn( m_deviceList->childCount() != 0 );
@@ -427,6 +422,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     connect( m_connectButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( ipodConnection() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
+    connect( m_configButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
 }
 
 
