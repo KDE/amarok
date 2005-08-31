@@ -353,23 +353,21 @@ UrlLoader::loadXml( const KURL &url )
 
     const PLItemList oldQueue = Playlist::instance()->m_nextTracks;
     NodeList nodes;
-    TagsEvent *e = new TagsEvent;
+    TagsEvent e;
     const QString ITEM( "item" ); //so we don't construct this QString all the time
     for( QDomNode n = d.namedItem( "playlist" ).firstChild(); !n.isNull(); n = n.nextSibling() )
     {
         if( n.nodeName() != ITEM ) continue;
 
         if( !n.toElement().isNull() )
-            e->nodes += n;
+            e.nodes += n;
 
-        if( e->nodes.count() == OPTIMUM_BUNDLE_COUNT ) {
-            QApplication::sendEvent( this, e );
-            delete e;
-            e = new TagsEvent;
+        if( e.nodes.count() == OPTIMUM_BUNDLE_COUNT ) {
+            QApplication::sendEvent( this, &e );
+            e = TagsEvent();
         }
     }
-    QApplication::sendEvent( this, e );
-    delete e;
+    QApplication::sendEvent( this, &e );
 
     const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
     QPtrListIterator<PlaylistItem> it( newQueue );
