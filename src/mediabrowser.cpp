@@ -607,14 +607,18 @@ MediaDevice::config()
     dialog.setCaption( kapp->makeStdCaption( i18n("Configure Media Device") ) );
     dialog.showButtonApply( false );
     QVBox *box = dialog.makeVBoxMainWidget();
-    QLabel *mntLabel = new QLabel( box );
-    mntLabel->setText( i18n ( "Mount Command:" ) );
-    QLineEdit *mntcmd = new QLineEdit( m_mntcmd, box );
-    QLabel *umntLabel = new QLabel( box );
-    umntLabel->setText( i18n ( "Unmount Command:" ) );
-    QLineEdit *umntcmd = new QLineEdit( m_umntcmd, box );
 
-       if ( dialog.exec() != QDialog::Rejected )
+    QLabel *mntLabel = new QLabel( box );
+    mntLabel->setText( i18n( "&Mount command:" ) );
+    QLineEdit *mntcmd = new QLineEdit( m_mntcmd, box );
+    mntLabel->setBuddy( mntcmd );
+
+    QLabel *umntLabel = new QLabel( box );
+    umntLabel->setText( i18n( "&Unmount command:" ) );
+    QLineEdit *umntcmd = new QLineEdit( m_umntcmd, box );
+    umntLabel->setBuddy( umntcmd );
+
+    if ( dialog.exec() != QDialog::Rejected )
     {
         setMountCommand( mntcmd->text() );
         setUmountCommand( umntcmd->text() );
