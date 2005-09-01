@@ -20,10 +20,9 @@ class MediaDeviceView;
 class MetaBundle;
 
 class KProgress;
+class KPushButton;
 class QLabel;
 class QPalette;
-class QPushButton;
-
 
 class MediaItem : public KListViewItem
 {
@@ -109,9 +108,9 @@ class MediaDeviceView : public QVBox
         MediaDevice*     m_device;
         MediaDeviceList* m_deviceList;
         KListView*       m_transferList;
-        QPushButton*     m_transferButton;
-        QPushButton*     m_connectButton;
-        QPushButton*     m_configButton;
+        KPushButton*     m_transferButton;
+        KPushButton*     m_connectButton;
+        KPushButton*     m_configButton;
 
         MediaBrowser* m_parent;
 };

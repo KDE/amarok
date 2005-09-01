@@ -20,7 +20,6 @@
 #include <qimage.h>
 #include <qlabel.h>
 #include <qpainter.h>
-#include <qpushbutton.h>
 #include <qregexp.h>
 #include <qsimplerichtext.h>
 #include <qtooltip.h>       //QToolTip::add()
@@ -34,10 +33,11 @@
 #include <kio/netaccess.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kmountpoint.h>
 #include <kpopupmenu.h>
 #include <kprogress.h>
+#include <kpushbutton.h>
 #include <krun.h>
-#include <kmountpoint.h>
 #include <kstandarddirs.h> //locate file
 #include <ktabbar.h>
 #include <ktempfile.h>
@@ -409,9 +409,14 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
 
     QHBox* hb = new QHBox( this );
     hb->setSpacing( 1 );
-    m_connectButton = new QPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
-    m_transferButton = new QPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
-    m_configButton = new QPushButton( SmallIconSet( "configure" ), i18n( "Configure" ), hb );
+    m_connectButton  = new KPushButton( SmallIconSet( "usbpendrive_mount" ), i18n( "Connect"), hb );
+    m_transferButton = new KPushButton( SmallIconSet( "rebuild" ), i18n( "Transfer" ), hb );
+    m_configButton   = new KPushButton( KGuiItem( QString::null, "configure" ), hb );
+    m_configButton->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
+
+    QToolTip::add( m_connectButton,  i18n( "Connect media device" ) );
+    QToolTip::add( m_transferButton, i18n( "Transfer tracks to media device" ) );
+    QToolTip::add( m_configButton,   i18n( "Configure mount commands" ) );
 
     m_connectButton->setToggleButton( true );
     m_connectButton->setOn( m_deviceList->childCount() != 0 );
@@ -420,9 +425,9 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
     m_progress->hide();
 
-    connect( m_connectButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( ipodConnection() ) );
+    connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( ipodConnection() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
-    connect( m_configButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
+    connect( m_configButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
 }
 
 
