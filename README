@@ -35,6 +35,14 @@ interface, that really makes playlist handling easy.
 --------------------------------------------------------------------------------
 
 
+ RELEASE NOTES FOR VERSION 1.3.1
+=================================
+
+The alsasink output plugin for GStreamer may not work correctly. We believe
+this is a bug in GStreamer. For the time being we recommend to use osssink.
+--------------------------------------------------------------------------------
+
+
  DEPENDENCIES
 ==============
 
