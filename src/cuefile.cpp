@@ -43,7 +43,7 @@ track         +                      +             file              x          
 index         x                      x             file            track              +              x
 
 1. Ignore FILE completely.
-2. INDEX 00 is gap, just remember it and add to next track offset.
+2. INDEX 00 is gap abs position in cue formats we care about (use it to calc length of prev track and then drop on the floor).
 3. Ignore subsequent INDEX entries (INDEX 02, INDEX 03 etc). - FIXME? this behavior is different from state chart above.
 4. For a valid cuefile at least TRACK and INDEX are required.
 */
@@ -70,8 +70,9 @@ bool CueFile::load()
         QString defaultAlbum = QString::null;
         QString artist = QString::null;
         QString title = QString::null;
-        long pregap = 0;
-        long index = 0;
+        long length = 0;
+        long prevIndex = -1;
+        long index = -1;
 
         int mode = BEGIN;
         if( file.open( IO_ReadOnly ) )
@@ -126,10 +127,11 @@ bool CueFile::load()
                         debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")" << endl;
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
-                        index    = 0;
+                        prevIndex = index;
+                        index  = -1;
                         title  = QString::null;
                         artist = QString::null;
-                        track    = 0;
+                        track  = 0;
                     }
                     track = line.section (' ',1,1).toInt();
                     debug() << "Track: " << track << endl;
@@ -145,14 +147,24 @@ bool CueFile::load()
                         {
                             QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
 
-                            index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75 + pregap; //75 frames per second
+                            index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
                             mode = INDEX_FOUND;
-                            pregap = 0;
+                            length = 0;
                         }
-                        else if(indexNo == 0) // gap, remember and add to next track offset
+                        else if(indexNo == 0) // gap, use to calc prev track length
                         {
                             QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
-                            pregap = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
+                            length = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
+
+                            if(prevIndex != -1)
+                            {
+                            	length -= prevIndex; //this[prevIndex].getIndex();
+                            	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs." << endl;
+                            	(*this)[prevIndex].setLength(length);
+                            	prevIndex = -1; // FIXME safety?
+                            }
+                            else
+                            	length = 0;
                         }
                         else
                         {
@@ -190,11 +202,10 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
     position /= 1000;
     if(userSeek || position > m_lastSeekPos)
     {
-//         debug() << "Received new seek notify to pos " << position << endl;
         CueFile::Iterator it;
         for ( it = begin(); it != end(); ++it )
         {
-            debug() << "Checking against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
+//             debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << it.data().getTitle() << endl;
             if(it.key()/1000 == position)
             {
                 MetaBundle bundle = EngineController::instance()->bundle(); // take current one and modify it

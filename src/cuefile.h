@@ -23,11 +23,14 @@ class CueFileItem {
 
         CueFileItem () {};
 
+		void setLength(const long length) { m_length = length; }
+
         const QString getTitle () const { return m_title; }
         const QString getArtist () const { return m_artist; }
         const QString getAlbum () const { return m_album; }
         const int getTrackNumber () const { return m_trackNumber; }
         const long getIndex () const { return m_index; }
+        const long getLength () const { return m_length; }
 
     private:
         QString m_title;
@@ -35,6 +38,7 @@ class CueFileItem {
         QString m_album;
         int     m_trackNumber;
         long    m_index;
+        long    m_length;
 };
 
 // <<Singleton>>
