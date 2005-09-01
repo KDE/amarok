@@ -31,6 +31,7 @@ Name[tg]=MAS муҳандис
 Name[tr]=MAS Motoru
 Name[uk]=MAS
 Name[uz]=MAS тизими
+Name[xx]=xxMAS Enginexx
 Name[zh_CN]=MAS 引擎
 Name[zh_TW]=MAS 解碼引擎
 Comment=Plugin for amaroK
@@ -66,6 +67,7 @@ Comment[tg]=Гузоштани дастаи иттисол барои амаро
 Comment[tr]=amaroK için eklenti
 Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
+Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=amaroK 插件
 Comment[zh_TW]=amaroK 的外掛程式
 

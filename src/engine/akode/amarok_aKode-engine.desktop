@@ -28,6 +28,7 @@ Name[sv]=aKode-gränssnitt
 Name[ta]=aKode என்ஜின்
 Name[tr]=aKode Motoru
 Name[uk]=Рушій aKode
+Name[xx]=xxaKode Enginexx
 Name[zh_CN]=aKode 引擎
 Name[zh_TW]=aKode 解碼引擎
 ServiceTypes=amaroK/Plugin
@@ -59,6 +60,7 @@ Comment[sv]=aKode ljudgränssnitt för amaroK
 Comment[ta]=amaroK க்கான aKode கேட்பொலி என்ஜின்
 Comment[tr]=amaroK için aKode ses-motoru
 Comment[uk]=Аудіо-рушій aKode для amaroK
+Comment[xx]=xxaKode audio-engine for amaroKxx
 Comment[zh_CN]=amaroK 的 aKode 音频引擎
 Comment[zh_TW]=amaroK 的 aKode 音訊解碼引擎
 
