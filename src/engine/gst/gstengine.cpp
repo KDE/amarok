@@ -198,7 +198,6 @@ GstEngine::GstEngine()
         , m_transferJob( 0 )
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
-        , m_eosReached( false )
         , m_shutdown( false )
 {
     DEBUG_FUNC_INFO
@@ -346,12 +345,8 @@ GstEngine::length() const
 Engine::State
 GstEngine::state() const
 {
-    // amaroK expects the engine to return Idle on EOS
-    if ( m_eosReached )
-        return Engine::Idle;
-
     if ( !m_pipelineFilled )
-        return Engine::Empty;
+        return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
 
     switch ( gst_element_get_state( m_gst_thread ) )
     {
@@ -453,8 +448,6 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
 
-    m_eosReached = false;
-
     if ( !createPipeline() )
         return false;
 
@@ -524,19 +517,21 @@ void
 GstEngine::stop()  //SLOT
 {
     DEBUG_BLOCK
-    if ( !m_pipelineFilled ) return ;
 
-    m_eosReached = false;
+    m_url = KURL(); // To ensure we return Empty from state()
 
-    // Is a fade running?
-    if ( m_fadeValue == 0.0 ) {
-        // Not fading --> start fade now
-        m_fadeValue = 1.0;
-        startTimer( TIMER_INTERVAL );
+    if ( m_pipelineFilled )
+    {
+        // Is a fade running?
+        if ( m_fadeValue == 0.0 ) {
+            // Not fading --> start fade now
+            m_fadeValue = 1.0;
+            startTimer( TIMER_INTERVAL );
+        }
+        else
+            // Fading --> stop playback
+            destroyPipeline();
     }
-    else
-        // Fading --> stop playback
-        destroyPipeline();
 
     emit stateChanged( Engine::Empty );
 }
@@ -680,7 +675,6 @@ GstEngine::handlePipelineError()  //SLOT
     emit statusText( text );
     error() << text << endl;
 
-    m_eosReached = true;
     destroyPipeline();
 }
 
@@ -689,9 +683,6 @@ void
 GstEngine::endOfStreamReached()  //SLOT
 {
     DEBUG_BLOCK
-
-    // Simulate Idle state on EOS
-    m_eosReached = true;
 
     destroyPipeline();
     emit trackEnded();
