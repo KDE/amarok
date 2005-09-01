@@ -489,6 +489,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_thread ) ) ) { destroyPipeline(); return false; }
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
     g_signal_connect( G_OBJECT( m_gst_decodebin ), "found-tag", G_CALLBACK( found_tag_cb ), NULL );
+    g_signal_connect( G_OBJECT( m_gst_decodebin ), "eos", G_CALLBACK( eos_cb ), NULL );
 
     // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
     gst_element_link( m_gst_src, m_gst_decodebin );
@@ -510,8 +511,6 @@ GstEngine::play( uint offset )  //SLOT
         destroyPipeline();
         return false;
     }
-
-    g_signal_connect( G_OBJECT( m_gst_decodebin ), "eos", G_CALLBACK( eos_cb ), NULL );
 
     // If "Resume playback on start" is enabled, we must seek to the last position
     if ( offset ) seek( offset );
@@ -893,6 +892,7 @@ GstEngine::destroyPipeline()
 
     if ( m_pipelineFilled ) {
         debug() << "Unreffing pipeline." << endl;
+        gst_element_set_state( m_gst_thread, GST_STATE_NULL );
         gst_object_unref( GST_OBJECT( m_gst_thread ) );
 
         m_pipelineFilled = false;
