@@ -187,15 +187,15 @@ CollectionBrowser::refreshInfo()
         {
             case IdArtist:
                 b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
-                descriptor = i18n(" Artists");
+                descriptor = i18n( "1 Artist", "%n Artists", b[0].toInt() );
                 break;
             case IdAlbum:
                 b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
-                descriptor = i18n(" Albums");
+                descriptor = i18n( "1 Album", "%n Albums", b[0].toInt() );
                 break;
             case IdGenre:
                 b = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM genre;" );
-                descriptor = i18n(" Genres");
+                descriptor = i18n( "1 Genre", "%n Genres", b[0].toInt() );
                 break;
         }
     }
@@ -206,10 +206,8 @@ CollectionBrowser::refreshInfo()
     }
     else
     {
-        const QString count = a[0];
-        const QString textTracks = count + i18n(" Tracks");
-        m_infoA->show();
-        m_infoA->setText( textTracks );
+        m_infoA->setText( i18n("1 Track","%n Tracks", a[0].toInt()) );
+	m_infoA->show();
     }
     if( b.isEmpty() )
     {
@@ -217,10 +215,8 @@ CollectionBrowser::refreshInfo()
     }
     else
     {
-        const QString count = b[0];
-        const QString secondaryText = count + descriptor;
+	m_infoB->setText( descriptor );
         m_infoB->show();
-        m_infoB->setText( secondaryText );
     }
 }
 
