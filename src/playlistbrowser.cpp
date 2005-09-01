@@ -726,8 +726,13 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
         after = m_streamsCategory;
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
-    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
+    { /*Couldn't open the file or it had invalid content, so let's create some defaults*/
+        PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
+        QListViewItem *random = new PartyEntry( p, 0, i18n("Random Mix") );
+        //new PartyEntry has all the features we want for random mix
+        PartyEntry *suggested = new PartyEntry( p, random, i18n("Suggested Songs" ) );
+        suggested->setAppendType( PartyEntry::SUGGESTION );
+        return p;
     }
     else {
         e = d.namedItem( "category" ).toElement();
