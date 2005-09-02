@@ -23,8 +23,6 @@
 #include "gstconfigdialog.h"
 #include "enginebase.h"
 
-#include <vector>
-
 #include <qmutex.h>
 #include <qptrlist.h>
 #include <qstringlist.h>
@@ -33,8 +31,6 @@
 
 #include <gst/gst.h>
 #include "adapter.h"
-
-using std::vector;
 
 class QTimerEvent;
 class KURL;
@@ -199,10 +195,13 @@ class GstEngine : public Engine::Base
 
         KIO::TransferJob* m_transferJob;
         QMutex            m_mutexScope;
+        bool              m_pipelineFilled;
+        float             m_fadeValue;
 
-        bool        m_pipelineFilled;
-        float       m_fadeValue;
-        vector<int> m_equalizerGains;
+        bool              m_equalizerEnabled;
+        int               m_equalizerPreamp;
+        QValueList<int>   m_equalizerGains;
+
         Engine::SimpleMetaBundle m_metaBundle;
 
         bool m_shutdown;

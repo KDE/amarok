@@ -29,6 +29,7 @@
 
 #include <math.h>
 #include <unistd.h>
+#include <vector>
 
 #include <qfile.h>
 #include <qtimer.h>
@@ -198,6 +199,7 @@ GstEngine::GstEngine()
         , m_transferJob( 0 )
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
+        , m_equalizerEnabled( false )
         , m_shutdown( false )
 {
     DEBUG_FUNC_INFO
@@ -488,6 +490,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     gst_element_link( m_gst_src, m_gst_decodebin );
 
     setVolume( m_volume );
+    setEqualizerEnabled( m_equalizerEnabled );
+    setEqualizerParameters( m_equalizerPreamp, m_equalizerGains );
 
     return true;
 }
@@ -588,6 +592,8 @@ GstEngine::newStreamData( char* buf, int size )  //SLOT
 void
 GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
 {
+    m_equalizerEnabled = enabled;
+
     RETURN_IF_PIPELINE_EMPTY
 
     gst_element_set( m_gst_equalizer, "active", enabled, NULL );
@@ -597,6 +603,9 @@ GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
 void
 GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains ) //SLOT
 {
+    m_equalizerPreamp = preamp;
+    m_equalizerGains = bandGains;
+
     RETURN_IF_PIPELINE_EMPTY
 
     // BEGIN Preamp
@@ -604,11 +613,12 @@ GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains 
     // END
 
     // BEGIN Gains
-    m_equalizerGains.resize( bandGains.count() );
+    vector<int> gainsTemp;
+    gainsTemp.resize( bandGains.count() );
     for ( uint i = 0; i < bandGains.count(); i++ )
-        m_equalizerGains[i] = ( *bandGains.at( i ) + 100 ) / 2;
+        gainsTemp[i] = ( *bandGains.at( i ) + 100 ) / 2;
 
-    gst_element_set( m_gst_equalizer, "gain", &m_equalizerGains, NULL );
+    gst_element_set( m_gst_equalizer, "gain", &gainsTemp, NULL );
     // END
 }
 
