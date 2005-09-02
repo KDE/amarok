@@ -17,6 +17,7 @@
 #include <taglib/tag.h>
 #include <taglib/tfile.h>
 #include <taglib/tstring.h>
+#include <taglib/id3v2framefactory.h>
 
 #include <qfile.h>
 #include <qlabel.h>
@@ -606,6 +607,9 @@ TagDialog::saveMultipleTracks()
 bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
 {
+    //Set default codec to UTF-8 (see bugs 111246 and 111232)
+    TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
+
     QCString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         amaroK::StatusBar::instance()->longMessage( i18n(
