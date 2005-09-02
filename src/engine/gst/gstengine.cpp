@@ -200,6 +200,7 @@ GstEngine::GstEngine()
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
         , m_equalizerEnabled( false )
+        , m_equalizerPreamp( 0 )
         , m_shutdown( false )
 {
     DEBUG_FUNC_INFO

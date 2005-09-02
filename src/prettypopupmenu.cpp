@@ -31,13 +31,19 @@
 
 PrettyPopupMenu::PrettyPopupMenu( QWidget* parent, const char* name )
     : KPopupMenu( parent, name )
-    , m_sidePixmap( locate( "data","amarok/data/menu_sidepixmap.png" ) )
+    , m_sidePixmap( locate( "data","amarok/images/menu_sidepixmap.png" ) )
 {}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // private
 ////////////////////////////////////////////////////////////////////////////////
+
+QRect PrettyPopupMenu::sideImageRect()
+{
+    return QStyle::visualRect( QRect( frameWidth(), frameWidth(), m_sidePixmap.width(),
+                                      height() - 2*frameWidth() ), this );
+}
 
 void
 PrettyPopupMenu::setMinimumSize(const QSize & s)
@@ -66,8 +72,8 @@ PrettyPopupMenu::setMaximumSize(int w, int h)
 void
 PrettyPopupMenu::paintEvent( QPaintEvent* e )
 {
-    if (sidePixmap.isNull()) {
-        PanelServiceMenu::paintEvent(e);
+    if ( m_sidePixmap.isNull()) {
+        KPopupMenu::paintEvent(e);
         return;
     }
 
@@ -80,20 +86,13 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
                            QStyleOption( frameWidth(), 0 ) );
 
     QRect r = sideImageRect();
-    r.setBottom( r.bottom() - sidePixmap.height() );
-    if ( r.intersects( e->rect() ) )
-    {
-        p.drawTiledPixmap( r, sideTilePixmap );
-    }
-
-    r = sideImageRect();
-    r.setTop( r.bottom() - sidePixmap.height() );
+    r.setTop( r.bottom() - m_sidePixmap.height() );
     if ( r.intersects( e->rect() ) )
     {
         QRect drawRect = r.intersect( e->rect() );
         QRect pixRect = drawRect;
         pixRect.moveBy( -r.left(), -r.top() );
-        p.drawPixmap( drawRect.topLeft(), sidePixmap, pixRect );
+        p.drawPixmap( drawRect.topLeft(), m_sidePixmap, pixRect );
     }
 
     drawContents( &p );

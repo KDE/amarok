@@ -23,6 +23,7 @@
 #include <kpopupmenu.h>
 
 #include <qpixmap.h>
+#include <qrect.h>
 
 class QSize;
 
@@ -34,6 +35,8 @@ public:
     PrettyPopupMenu( QWidget *parent = 0, const char *name = 0 );
 
 private:
+    QRect sideImageRect();
+
     void setMinimumSize( const QSize& s );
     void setMaximumSize( const QSize& s );
     void setMinimumSize( int w, int h );

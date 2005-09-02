@@ -28,6 +28,7 @@
 #include "playlistbrowser.h"
 #include "playlistloader.h"
 #include "queuemanager.h"
+#include "prettypopupmenu.h"
 #include "scriptmanager.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
@@ -2893,7 +2894,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
         itemCount++;
 
-    KPopupMenu popup;
+    PrettyPopupMenu popup;
 
     if(itemCount==1)
         popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ));
