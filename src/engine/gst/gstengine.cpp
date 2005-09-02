@@ -796,7 +796,7 @@ GstEngine::getPluginList( const QCString& classname ) const
 
                     if ( g_strrstr ( factory->details.klass, classname ) ) {
                         name = g_strdup ( GST_OBJECT_NAME ( factory ) );
-                        /*if ( name != "artsdsink" )*/
+                        if ( name != "alsasink" )
                         results << name;
                     }
                 }
@@ -820,7 +820,7 @@ GstEngine::createPipeline()
 
     destroyPipeline();
 
-    if ( GstConfig::soundOutput().isEmpty() ) {
+    if ( GstConfig::soundOutput().isEmpty() || GstConfig::soundOutput() == "alsasink" ) {
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
@@ -829,8 +829,6 @@ GstEngine::createPipeline()
     debug() << "Sound Device: " << GstConfig::soundDevice() << endl;
     debug() << "CustomOutputParams: " << ( GstConfig::useCustomOutputParams() ? "true" : "false" ) << endl;
     debug() << "Output Params: " << GstConfig::outputParams() << endl;
-
-    m_gst_audiobin = gst_bin_new( "audiobin" );
 
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
@@ -843,6 +841,8 @@ GstEngine::createPipeline()
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
+
+    m_gst_audiobin = gst_bin_new( "audiobin" );
     gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_audiosink );
 
     /* setting device property for AudioSink*/
