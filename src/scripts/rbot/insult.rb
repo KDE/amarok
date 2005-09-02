@@ -67,7 +67,7 @@ class ShakespeareInsultPlugin < Plugin
                     "measle"]
     end
   def listen(m)
-    if(m.message =~ /#{@bot.nick}/)
+    if(m.message =~ /#{@bot.nick}/i || m.message =~ /latex/i || m.message =~ /xmms/i || m.message =~ /itunes/i || m.message =~ /winamp/i || m.message =~ /windows media player/i || m.message =~ /rhythmbox/i || m.message =~ /muine/i)
         response = m.sourcenick + ": "
         response += "you are a "
         response += @rowone[rand(@rowone.size)] + ' ' + @rowtwo[rand(@rowtwo.size)] + ' '
