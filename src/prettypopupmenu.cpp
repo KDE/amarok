@@ -69,6 +69,21 @@ PrettyPopupMenu::setMaximumSize(int w, int h)
   KPopupMenu::setMaximumSize(w + m_sidePixmap.width(), h);
 }
 
+void PrettyPopupMenu::resizeEvent(QResizeEvent * e)
+{
+    KPopupMenu::resizeEvent( e );
+
+    setFrameRect( QStyle::visualRect( QRect( m_sidePixmap.width(), 0,
+                                      width() - m_sidePixmap.width(), height() ), this ) );
+}
+
+//Workaround Qt3.3.x sizing bug, by ensuring we're always wide enough.
+void PrettyPopupMenu::resize( int width, int height )
+{
+    width = kMax(width, maximumSize().width());
+    KPopupMenu::resize(width, height);
+}
+
 void
 PrettyPopupMenu::paintEvent( QPaintEvent* e )
 {

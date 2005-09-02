@@ -42,6 +42,9 @@ private:
     void setMinimumSize( int w, int h );
     void setMaximumSize( int w, int h );
 
+    void resizeEvent( QResizeEvent* e );
+    void resize( int width, int height );
+
     void paintEvent( QPaintEvent* e );
 
     QPixmap m_sidePixmap;
