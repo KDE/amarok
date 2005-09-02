@@ -25,6 +25,7 @@ images_DATA = \
     loading1.png \
     loading2.png \
     logo_web.png \
+    menu_sidepixmap.png \
     musicbrainz.png \
     nocover.png \
     pl_active2.png \
