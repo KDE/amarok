@@ -1,7 +1,7 @@
 /* **********
  *
  * This software is released under the provisions of the GPL version 2.
- * see file "COPYING".  If that file is not available, the full statement 
+ * see file "COPYING".  If that file is not available, the full statement
  * of the license can be found at
  *
  * http://www.fsf.org/licensing/licenses/gpl.txt
@@ -13,6 +13,7 @@
  *    (c) 2004 Mark Kretschmann <markey@web.de>
  *
  * ********** */
+#include <math.h>
 #include <stdlib.h>
 
 #include "hxcomm.h"
@@ -33,7 +34,7 @@
 #define SCOPE_BUF_PER_BLOCK 8
 #define SCOPESIZE 512
 
-HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream) : 
+HSPPreMixAudioHook::HSPPreMixAudioHook(HelixSimplePlayer *player, int playerIndex, IHXAudioStream *pAudioStream) :
    m_Player(player), m_lRefCount(0), m_index(playerIndex), m_stream(pAudioStream), m_count(0)
 {
    AddRef();
@@ -143,8 +144,8 @@ STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) : 
-   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_item(0), 
+HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) :
+   m_Player(player), m_lRefCount(0), m_index(playerIndex), m_count(0), m_item(0),
    m_current(0), m_prevtime(0), m_i(0), m_j(2), m_k(1)
 #ifndef HELIX_SW_VOLUME_INTERFACE
    , m_gaintool(0), m_gaindB(0.0)
@@ -235,7 +236,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
       STDERR("Volume is %d\n",m_Player->ppctrl[m_index]->pVolume->GetVolume());
    }
-   
+
 #endif
 
    // feed the visualizations
@@ -311,11 +312,11 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
       case 11025:
          iir_cf = iir_cf10_11025;
          break;
-         
+
       case 16000:
          iir_cf = iir_cf10_16000;
          break;
-         
+
       case 22050:
          iir_cf = iir_cf10_22050;
          break;
@@ -323,7 +324,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
       case 32000:
          iir_cf = iir_cf10_32000;
          break;
-         
+
       case 48000:
          iir_cf = iir_cf10_48000;
          break;
@@ -395,23 +396,6 @@ void HSPPostMixAudioHook::scopeify(unsigned long time, unsigned char *data, size
    m_Player->addScopeBuf(item);
 }
 
-#ifdef __i386__
-/* Round function provided by Frank Klemm which saves around 100K
- * CPU cycles in my PIII for each call to the IIR function with 4K samples
- */
-__inline__ static int round_trick(float floatvalue_to_round)
-{
-    float   floattmp;
-    int     rounded_value;
-
-    floattmp      = (int) 0x00FD8000L + (floatvalue_to_round);
-    rounded_value = *(int*)(&floattmp) - (int)0x4B7D8000L;
-
-    if ( rounded_value != (short) rounded_value )
-        rounded_value = ( rounded_value >> 31 ) ^ 0x7FFF;
-    return rounded_value;
-}
-#endif
 
 void HSPPostMixAudioHook::updateEQgains(int pamp, vector<int> &equalizerGains)
 {
@@ -421,7 +405,7 @@ void HSPPostMixAudioHook::updateEQgains(int pamp, vector<int> &equalizerGains)
 
 
       for (int j=0; j<EQ_MAX_BANDS; j++)
-         gain[j][i] = (float)(equalizerGains[j]) * 0.012 - 0.2;         
+         gain[j][i] = (float)(equalizerGains[j]) * 0.012 - 0.2;
    }
 }
 
@@ -454,10 +438,10 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
       for (channel = 0; channel < m_format.uChannels; channel++)
       {
          pcm[channel] = (float) data[index+channel];
-         
+
          /* Preamp gain */
          pcm[channel] *= preamp[channel];
-         
+
          out[channel] = 0.;
          /* For each band */
          for (band = 0; band < BAND_NUM; band++)
@@ -481,7 +465,7 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
             /* Apply the gain  */
             out[channel] +=  data_history[band][channel].y[m_i]*gain[band][channel]; // * 2.0;
          } /* For each band */
-         
+
          /* Volume stuff
             Scale down original PCM sample and add it to the filters
             output. This substitutes the multiplication by 0.25
@@ -489,13 +473,10 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
             conversion to give more dynamic range
          */
          out[channel] += pcm[channel]*0.25;
-         
+
          /* Round and convert to integer */
-#if __i386__ && __GNUC__ < 4
-         tempint = round_trick(out[channel]);
-#else
-         tempint = (int)out[channel];
-#endif
+         tempint = lrintf(out[channel]);
+
          /* Limit the output */
          if (tempint < -32768)
             dataout[index+channel] = -32768;
@@ -504,9 +485,9 @@ void HSPPostMixAudioHook::equalize(unsigned char *inbuf, unsigned char *outbuf, 
          else
             dataout[index+channel] = tempint;
       } /* For each channel */
-      
+
       m_i++; m_j++; m_k++;
-      
+
       /* Wrap around the indexes */
       if (m_i == 3) m_i = 0;
       else if (m_j == 3) m_j = 0;

@@ -7,8 +7,10 @@
 #include "gstequalizer.h"
 #include "iir_cf.h"         // IIR filter coefficients
 
+#include <math.h>
 #include <string.h>
 #include <vector>
+
 #include <gst/audio/audio.h>
 
 #include <kdebug.h>
@@ -245,25 +247,6 @@ set_filters( GstEqualizer* obj )
 }
 
 
-#ifdef __i386__
-/* Round function provided by Frank Klemm which saves around 100K
- * CPU cycles in my PIII for each call to the IIR function with 4K samples
- */
-__inline__ static int round_trick(float floatvalue_to_round)
-{
-    float   floattmp;
-    int     rounded_value;
-
-    floattmp      = (int) 0x00FD8000L + (floatvalue_to_round);
-    rounded_value = *(int*)(&floattmp) - (int)0x4B7D8000L;
-
-    if ( rounded_value != (short) rounded_value )
-        rounded_value = ( rounded_value >> 31 ) ^ 0x7FFF;
-    return rounded_value;
-}
-#endif
-
-
 void
 gst_equalizer_chain ( GstPad* pad, GstData* data_in )
 {
@@ -343,11 +326,8 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
             out[channel] += pcm[channel]*0.25;
 
             /* Round and convert to integer */
-#if __i386__ && __GNUC__ < 4
-            tempgint = round_trick(out[channel]);
-#else
-            tempgint = (int)out[channel];
-#endif
+            tempgint = lrintf(out[channel]);
+
             /* Limit the output */
             if (tempgint < -32768)
                 data[index+channel] = -32768;
