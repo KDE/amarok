@@ -19,6 +19,8 @@
 
 #include "prettypopupmenu.h"
 
+#include <qpainter.h>
+#include <qstyle.h>
 
 #include <kstandarddirs.h>
 

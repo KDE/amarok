@@ -24,6 +24,7 @@
 
 #include <qpixmap.h>
 
+class QSize;
 
 class PrettyPopupMenu : public KPopupMenu
 {
@@ -33,6 +34,11 @@ public:
     PrettyPopupMenu( QWidget *parent = 0, const char *name = 0 );
 
 private:
+    void setMinimumSize( const QSize& s );
+    void setMaximumSize( const QSize& s );
+    void setMinimumSize( int w, int h );
+    void setMaximumSize( int w, int h );
+
     void paintEvent( QPaintEvent* e );
 
     QPixmap m_sidePixmap;
