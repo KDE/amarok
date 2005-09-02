@@ -1197,8 +1197,7 @@ PodcastChannel::setXml( QDomNode xml )
                 debug() << "breaking" << endl;
                 break;
             }
-            if( !n.namedItem( "title" ).toElement().text().isEmpty() &&
-                !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
 
@@ -1218,8 +1217,7 @@ PodcastChannel::setXml( QDomNode xml )
             if( children > m_purgeCount )
                 break;
 
-            if( !n.namedItem( "title" ).toElement().text().isEmpty() &&
-                !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 m_last = new PodcastItem( this, m_last, n.toElement() );
                 if( downloadMedia )
@@ -1347,6 +1345,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
       , m_new( false )
 {
     m_title       = xml.namedItem( "title" ).toElement().text();
+
     m_description = xml.namedItem( "description" ).toElement().text();
 
     if( m_description.isEmpty() )
@@ -1359,6 +1358,9 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
     const QString url   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
     m_url         = KURL::fromPathOrURL( url );
+
+    if( m_title.isEmpty() )
+        m_title = m_url.fileName();
 
     m_localUrlString = amaroK::saveLocation( "podcasts/data/" );
     QString filename = m_title;
