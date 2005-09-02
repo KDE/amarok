@@ -200,7 +200,6 @@ GstEngine::GstEngine()
         , m_pipelineFilled( false )
         , m_fadeValue( 0.0 )
         , m_equalizerEnabled( false )
-        , m_equalizerPreamp( 0 )
         , m_shutdown( false )
 {
     DEBUG_FUNC_INFO
@@ -492,7 +491,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 
     setVolume( m_volume );
     setEqualizerEnabled( m_equalizerEnabled );
-    setEqualizerParameters( m_equalizerPreamp, m_equalizerGains );
+    if ( m_equalizerEnabled ) setEqualizerParameters( m_equalizerPreamp, m_equalizerGains );
 
     return true;
 }
