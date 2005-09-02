@@ -343,7 +343,7 @@ gst_equalizer_chain ( GstPad* pad, GstData* data_in )
             out[channel] += pcm[channel]*0.25;
 
             /* Round and convert to integer */
-#ifdef __i386__
+#if __i386__ && __GNUC__ < 4
             tempgint = round_trick(out[channel]);
 #else
             tempgint = (int)out[channel];
