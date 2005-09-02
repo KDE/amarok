@@ -116,7 +116,7 @@ class PlaylistBrowser : public QVBox
         void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
-        void createPlaylist( bool current = true );
+        bool createPlaylist( bool current = true );
 
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );

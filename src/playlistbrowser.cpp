@@ -1201,7 +1201,7 @@ PlaylistBrowser::findItem( QString &t, int c ) const
     return (PlaylistBrowserEntry *)m_listview->findItem( t, c, Qt::ExactMatch );
 }
 
-void PlaylistBrowser::createPlaylist( bool current )
+bool PlaylistBrowser::createPlaylist( bool current )
 {
     bool ok;
     const QString name = KInputDialog::getText(i18n("Save Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
@@ -1220,7 +1220,7 @@ void PlaylistBrowser::createPlaylist( bool current )
         {
             if ( !Playlist::instance()->saveM3U( path ) ) {
                 KMessageBox::sorry( this, i18n( "Cannot write playlist (%1).").arg(path) );
-                return;
+                return false;
             }
             addPlaylist( path );
         }
@@ -1231,6 +1231,7 @@ void PlaylistBrowser::createPlaylist( bool current )
 
         savePlaylists();
     }
+    return ok;
 }
 
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
@@ -2314,8 +2315,8 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                          item == PlaylistBrowser::instance()->m_playlistCategory )
                 {
                     PlaylistBrowser *pb = PlaylistBrowser::instance();
-                    pb->createPlaylist( false );
-                    pb->m_lastPlaylist->insertTracks( 0, list, map );
+                    if ( pb->createPlaylist( false ) )
+                        pb->m_lastPlaylist->insertTracks( 0, list, map );
                 }
             }
         }
