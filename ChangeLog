@@ -5,6 +5,11 @@ amaroK ChangeLog
 
 VERSION 1.3.1:
   FEATURES:
+    * Support for iPod shuffle devices. Patch by Guenter Schwann
+      <harry.w@gmx.at>.
+    * Media Device browser now has a connect button for connecting
+      your iPod after amaroK has already been started. Also includes
+      configurable mounting/unmounting options.
     * Holding down the stop button (as opposed to just clicking it) pops
       up a menu letting you stop either now, after the current track, or
       after the end of the queue.
