@@ -36,6 +36,8 @@ class PrettyPopupMenu : public KPopupMenu
 public:
     PrettyPopupMenu( QWidget *parent = 0, const char *name = 0 );
 
+    int sidePixmapWidth() const { return s_sidePixmap.width(); }
+
 private:
     void generateSidePixmap();
     QRect sideImageRect();
