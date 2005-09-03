@@ -43,6 +43,8 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
+    * New "Blue Danna" splash screen. Created by Nenad Grujicic, modified by 
+      Nathan Adolph.
     * 'Stop after track' is now saved (and so remembered across amaroK
       restarts).
     * Ported playlist + filter-lineedit behaviour to collection browser as
