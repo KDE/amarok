@@ -63,7 +63,7 @@ PrettyPopupMenu::generateSidePixmap()
 }
 
 QRect
-PrettyPopupMenu::sideImageRect()
+PrettyPopupMenu::sideImageRect() const
 {
     return QStyle::visualRect( QRect( frameWidth(), frameWidth(), s_sidePixmap.width(),
                                       height() - 2*frameWidth() ), this );
