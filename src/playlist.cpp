@@ -1323,7 +1323,7 @@ Playlist::restoreCurrentTrack()
 
     const KURL &url = EngineController::instance()->playingURL();
 
-    if( !(m_currentTrack && m_currentTrack->url() == url) )
+    if ( !(m_currentTrack && ( m_currentTrack->url() == url  || !m_currentTrack->url().isEmpty() && url.isEmpty() ) ) )
     {
         PlaylistItem* item;
 
