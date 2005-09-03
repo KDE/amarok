@@ -28,6 +28,8 @@ namespace itunesdb {
 
 /**
 Writes an iTunesDB file
+Documentation about the iTunesDB and iTunesSD formats from 
+http://www.ipodlinux.org/ITunesDB
 
 @author Michael Schulze
 */
@@ -42,12 +44,21 @@ public:
      * @param file the file to write the information to
      */
     void write(QFile& file);
+    /**
+     * Writes the iTunesSD contents to the given file
+     * @param file the file to write the information to
+     */
+    void writeSD( QFile& file );
 
 private:
     ItunesDBDataSource * datasource;
 
     void fillTrackBuffer( QByteArray& buffer);
+    //void fillPodcastBuffer( QByteArray& buffer );
     void fillPlaylistBuffer( QByteArray& buffer);
+    void fillTrackBufferSD( QByteArray& buffer );
+
+    void write3ByteLittle( QDataStream &stream, int v );
 };
 
 }

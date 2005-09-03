@@ -224,6 +224,7 @@ private:
     TrackMap::iterator trackiterator;
     PlaylistMapIterator playlistiterator;
     QFile itunesdbfile;
+    QFile itunessdfile;
     QDateTime timestamp;
 };
 

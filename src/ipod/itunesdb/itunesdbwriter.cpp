@@ -70,14 +70,15 @@ void itunesdb::ItunesDBWriter::write(QFile& file)
     QDataStream stream( &file);
     stream.setByteOrder( QDataStream::LittleEndian);
 
-    // write mhbd header
-    stream << (Q_UINT32) 0x6462686D;    // write magic
-    stream << (Q_UINT32) 0x68;    // headerlen
+    stream << (Q_UINT32) 0x6462686D;    // write magic = mhbd
+    stream << (Q_UINT32) 0x68;    // headerlen = 104 byte
     stream << (Q_UINT32) 0x0;    // length of the whole file - set at the end
     stream << (Q_UINT32) 0x1;
-    stream << (Q_UINT32) 0x1;
-    stream << (Q_UINT32) 0x2;    // iTunes version
-    for( int i= 0; i< 20; i++)
+    stream << (Q_UINT32) 0x0d;    // iTunes version 4.9
+    stream << (Q_UINT32) 0x2;   // iTunes 4.x has 2 MHSD children (4.9 has can have a third for podcasts )
+    stream << (Q_UINT64) 0x0; // unkown 64 bit 
+    stream << (Q_UINT32) 0x2;
+    for( int i= 0; i< 17; i++)
         stream << (Q_UINT32) 0;
 
     // write track data
@@ -91,6 +92,43 @@ void itunesdb::ItunesDBWriter::write(QFile& file)
 
     file.close();
     datasource->writeFinished();
+}
+
+
+/*!
+    \fn itunesdb::ItunesDBWriter::writeSD(QFile& file)
+ */
+void itunesdb::ItunesDBWriter::writeSD( QFile& file )
+{
+    if( datasource->getMainplaylist() == NULL) {
+        datasource->handleError("Main Tracklist could not be found!");
+        return;    // ick
+    }
+
+    if( !file.open( IO_WriteOnly)) {
+        datasource->handleError(file.name()+ " could not be opened for writing!");
+        return;
+    }
+
+    // write to file
+    QDataStream stream( &file );
+    stream.setByteOrder( QDataStream::BigEndian );
+
+    //stream << (Q_UINT8) 0 << (Q_UINT16) datasource->getNumTracks(); // limited to 64k songs
+    //stream << (Q_UINT8) 0x01 << (Q_UINT16) 0x0600;
+    //stream << (Q_UINT8) 0x00 << (Q_UINT16) 0x0012;
+    write3ByteLittle( stream, datasource->getNumTracks() );
+    write3ByteLittle( stream, 0x010600 );
+    write3ByteLittle( stream, 0x000012 );
+    for( int i= 0; i< 9; i++)
+        stream << (Q_UINT8) 0;
+
+    QByteArray trackdata;
+    fillTrackBufferSD( trackdata );
+    // write track data
+    stream.writeRawBytes( trackdata.data(), trackdata.size());
+
+    file.close();
 }
 
 
@@ -129,6 +167,36 @@ void itunesdb::ItunesDBWriter::fillTrackBuffer( QByteArray& buffer)
 
     io_buffer.close();
 }
+
+
+/**
+ *
+void itunesdb::ItunesDBWriter::fillPodcastBuffer( QByteArray& buffer )
+{
+    QBuffer io_buffer( buffer);
+    io_buffer.open(IO_WriteOnly);
+    QDataStream stream( &io_buffer);
+    stream.setByteOrder( QDataStream::LittleEndian);
+
+    stream << (Q_UINT32) 0x6473686D;    // "mhsd"
+    stream << (Q_UINT32) MHSD_HEADERLEN;    // headerlen
+    stream << (Q_UINT32) 0x0;    // length - set when we're done
+    stream << (Q_UINT32) 3;        // type: podcastlist
+    for( int i= 0; i< 20; i++)
+        stream << (Q_UINT32) 0;    // pad the rest (80 bytes)
+    
+    stream << (Q_UINT32) 0x706C686D;     // "mhlp"
+    stream << (Q_UINT32) 0x5C;    // headerlen
+    stream << (Q_UINT32) 1;          // one podlist
+    for( int i= 0; i< 20; i++)
+        stream << (Q_UINT32) 0;    // pad the rest (80 bytes)
+    // ???
+    
+    io_buffer.at( 8);
+    stream << (Q_UINT32)io_buffer.size();    // write the length
+    
+    io_buffer.close();
+}*/
 
 
 /*!
@@ -172,3 +240,69 @@ void itunesdb::ItunesDBWriter::fillPlaylistBuffer( QByteArray& buffer)
 
     io_buffer.close();
 }
+
+
+/*!
+    \fn itunesdb::ItunesDBWriter::writeTracks( QDataStream& stream)
+ */
+void itunesdb::ItunesDBWriter::fillTrackBufferSD( QByteArray& buffer)
+{
+    QBuffer io_buffer( buffer);
+    io_buffer.open(IO_WriteOnly);
+    QDataStream stream( &io_buffer);
+    stream.setByteOrder( QDataStream::BigEndian);
+
+    // list the tracks
+    for( Track * track= datasource->firstTrack(); track != NULL; track= datasource->nextTrack()) 
+    {
+        //track->writeToStream(stream);
+        write3ByteLittle( stream, 0x22e );
+        write3ByteLittle( stream, 0x5aa501 );
+        write3ByteLittle( stream, 0 ); // starttime
+        write3ByteLittle( stream, 0 );
+        write3ByteLittle( stream, 0 );
+        write3ByteLittle( stream, 0 ); // stoptime
+        write3ByteLittle( stream, 0 );
+        write3ByteLittle( stream, 0 );
+        write3ByteLittle( stream, 0x64 ); // volume=0
+        write3ByteLittle( stream, 0x01 ); // FIXME only MP3 currently
+        write3ByteLittle( stream, 0x200 );
+
+        // filename
+        QString filename = track->getItemProperty( MHOD_PATH );
+        // make "/" out of ":"
+        int idx = filename.find( ':' );
+        while ( idx>-1 )
+        {
+            filename[idx] = '/';
+            idx = filename.find( ':' );
+        }
+        
+        const char *data= (const char *)filename.ucs2();
+        int datalen = 0;
+        if( data != NULL)
+        {
+            datalen = 2* filename.length();
+            stream.writeRawBytes( data, datalen );
+        }
+        int padlength = 522 - datalen;
+        for ( int i=0; i<padlength; i++ )
+            stream << (Q_UINT8) 0;
+
+        stream << (Q_UINT8) 0x01;
+        stream << (Q_UINT8) 0;
+        stream << (Q_UINT8) 0;
+    }
+    io_buffer.close();
+}
+
+
+/**
+ */
+void itunesdb::ItunesDBWriter::write3ByteLittle( QDataStream &stream, int v )
+{
+    stream << (Q_UINT8) ((v>>16) & 0xff);
+    stream << (Q_UINT8) ((v>>8) & 0xff);
+    stream << (Q_UINT8) (v & 0xff);
+}
+

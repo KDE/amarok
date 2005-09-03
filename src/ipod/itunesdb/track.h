@@ -45,7 +45,7 @@ public:
     virtual const QString & getGenre() const;
     virtual const QString & getPath() const;
     virtual const QString & getComposer() const;
-
+    virtual Q_UINT64 getDBID() const;
     virtual Q_UINT32 getNumMhod() const;
     virtual unsigned char getRating() const;
     virtual Q_UINT32 getLastModified() const;
@@ -61,6 +61,8 @@ public:
     virtual Q_UINT32 getLastPlayed() const;
     virtual Q_UINT32 getCdNumber() const;
     virtual Q_UINT32 getCdCount() const;
+
+    virtual void setDBID( Q_UINT64 id );
 
     virtual void setAlbum(const QString& album);
     virtual void setArtist(const QString& artist);
@@ -104,6 +106,7 @@ protected:
     unsigned char vbr;          // vbr=1, cbr=0
     unsigned char type;         // mp3=1, aac+audible=0
     unsigned char compilation;  // iscompiltaion=1, 0 otherwise
+    Q_UINT64 dbid;
 };
 
 }

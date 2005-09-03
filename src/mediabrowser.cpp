@@ -23,6 +23,8 @@
 #include <qregexp.h>
 #include <qsimplerichtext.h>
 #include <qtooltip.h>       //QToolTip::add()
+#include <qfileinfo.h>
+#include <qdir.h>
 
 #include <kapplication.h> //kapp
 #include <kdebug.h>
@@ -702,6 +704,17 @@ MediaDevice::transferFiles()  //SLOT
                 track.setPath( track.getPath() + ".mp3" );
                 QString trackpath = m_ipod->getRealPath( track.getPath() );
 
+                // check if path exists and make the path if needed
+                QFileInfo finfo( trackpath );
+                QDir dir = finfo.dir();
+                if ( !dir.exists() )
+                {
+                    QDir parentdir = dir;
+                    parentdir.cdUp();
+                    if ( parentdir.exists() )
+                        dir.mkdir( finfo.dirPath() );
+                }
+                
                 m_wait = true;
 
                 KIO::CopyJob *job = KIO::copy( *it, KURL( trackpath ), false );

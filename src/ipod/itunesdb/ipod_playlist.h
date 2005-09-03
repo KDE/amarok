@@ -75,7 +75,21 @@ public:
     QDataStream & writeToStream (QDataStream & outstream, bool isMainlist);
 
 protected:
+    void writeHeader( QDataStream& stream, bool isMainlist );
+    void writeTitle( QDataStream& stream );
+    void writeLongPlaylist( QDataStream& stream );
+    void writeTracks( QDataStream& stream );
+
     TrackList_T tracklist;
+    //bool isLibraryList;         // PL_TYPE_MPL: master play list
+    bool isSmartList;      // smart playlist?
+    Q_INT32 timeStamp;     // some timestamp
+    Q_INT64 id;            // playlist ID
+    Q_INT32 unk3;
+    Q_INT32 sCount;
+    Q_INT32 lCount;
+    //SPLPref splpref;      /* smart playlist prefs          */
+    //SPLRules splrules;    /* rules for smart playlists     */
 };
 
 }

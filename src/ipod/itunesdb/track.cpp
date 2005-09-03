@@ -49,6 +49,7 @@ Track::Track()
     id             = 0;
     date_added     = QDateTime::currentDateTime().toTime_t()+ MAC_EPOCH_DELTA;
     file_format_code = 0xC;
+    dbid = 0;
 }
 
 
@@ -64,12 +65,13 @@ void Track::writeData( QByteArray& data) const {
 
     /** Write the track header **/
     stream << (Q_UINT32) 0x7469686D;        // 0x00 mhit
-    stream << (Q_UINT32) 0x9C;              // 0x04 headerlen
+    stream << (Q_UINT32) 0xf4;              // 0x04 headerlen
     stream << (Q_UINT32) 0x0;               // 0x08 length - set later
     stream << (Q_UINT32) 0x0;               // 0x0C number of mhods
     stream << (Q_UINT32) getID();           // 0x10
     stream << (Q_UINT32) 1;                 // 0x14
-    stream << (Q_UINT32) 0;                 // 0x18
+    //stream << (Q_UINT32) 0;                 // 0x18
+    stream << (Q_UINT32) 0x4d503320;        // ipod shiffle wants a "MP3 " here
     stream << vbr;                          // 0x1C
     stream << type;                         // 0x1D
     stream << compilation;                  // 0x1E
@@ -84,21 +86,37 @@ void Track::writeData( QByteArray& data) const {
     stream << (Q_UINT32) getSamplerate();   // 0x3C
     stream << (Q_UINT32) getVolumeAdjust(); // 0x40
     stream << (Q_UINT32) 0;                 // 0x44 empty space
-    stream << (Q_UINT32) getTrackLength();  // 0x48 empty space
+    //stream << (Q_UINT32) getTrackLength();  // 0x48 empty space
+    stream << (Q_UINT32) 0;  // 0x48 empty space
     stream << (Q_UINT32) 0;                 // 0x4C empty space
     stream << (Q_UINT32) getPlayCount();    // 0x50
     stream << (Q_UINT32) getPlayCount();    // 0x54
     stream << (Q_UINT32) getLastPlayed();   // 0x58
     stream << (Q_UINT32) getCdNumber();     // 0x5C
     stream << (Q_UINT32) getCdCount();      // 0x60
-    stream << (Q_UINT32) 0;                 // 0x64 empty space
+    stream << (Q_UINT32) 0;                 // 0x64 empty space //userid from apple store
     stream << (Q_UINT32) date_added;        // 0x68
-    for( int i= 0; i< 9; i++)
+    stream << (Q_UINT32) 0;                 // boockmarktime
+    stream << (Q_UINT64) dbid;              // unique bit (64 bit)
+    stream << (Q_UINT8) 0;                 // checked in iTZnes
+    stream << (Q_UINT8) 0;                 // application rating
+    stream << (Q_UINT16) 0;                 // BPM
+    stream << (Q_UINT16) 0;                 // artworkcount
+    stream << (Q_UINT16) 0xffff;            // unkown
+    stream << (Q_UINT32) 0;                 // artwork size
+    stream << (Q_UINT32) 0;                 // unkown
+    stream << (float) -getSamplerate();      // samplerate as floating point "-"?!?
+    stream << (Q_UINT32) 0;                 // date/time added
+    stream << (Q_UINT32) file_format_code;  // unkown, but 0x0000000c for MP3 ?
+    stream << (Q_UINT32) 0;                 // unkown
+    stream << (Q_UINT32) 0;                 // unkown
+    stream << (Q_UINT32) 0;                 // unkown
+    stream << (Q_UINT32) 0;                 // unkown
+    stream << (Q_UINT32) 0x02;              // unknown
+    stream << (Q_UINT64) dbid; // same unique id as above
+    for( int i= 0; i< 17; i++)
         stream << (Q_UINT32) 0;
-    stream << (Q_UINT32) file_format_code;  // 0x90
-    stream << (Q_UINT32) 0;                 // 0x94 empty space
-    stream << (Q_UINT32) 0;                 // 0x98 empty space
-                                            // 0x9C
+    
     /** Write Track contents **/
     Q_UINT32 num_mhods = 0;
     for( PropertyMap::const_iterator element= properties.begin(); element!= properties.end(); ++element) {
@@ -186,16 +204,37 @@ QDataStream & Track::readFromStream(QDataStream& instream) {
     instream >> dummy;
     instream >> date_added;
 
-    for (int i= 0; i< 9; i++)
-        instream >> dummy;
-    instream >> file_format_code;
+    // 108 byte read so far
 
-    // seek to the end of the block
-    if (blocklen > 148) {
-        QByteArray buffer( blocklen - 148 );
-        instream.readRawBytes(buffer.data(), blocklen - 148);
+    if ( blocklen==156 ) // iTunes 4.7
+    {
+        for (int i= 0; i< 9; i++)
+            instream >> dummy;
+        instream >> file_format_code;
+        QByteArray buffer(8);
+        instream.readRawBytes(buffer.data(), 8);
     }
-
+    else
+    {
+        if ( blocklen==244 ) // iTunes 4.9
+        {
+            instream >> dummy;
+            instream >> dbid;
+            for (int i= 0; i< 6; i++)
+                instream >> dummy;
+            instream >> file_format_code;
+            QByteArray buffer(96);
+            instream.readRawBytes(buffer.data(), 96);
+        }
+        else
+        {
+            // seek to the end of the block
+            if (blocklen > 108) {
+                QByteArray buffer(blocklen - 108);
+                instream.readRawBytes(buffer.data(), blocklen - 108);
+            }
+        }
+    }
     return instream;
 }
 
@@ -325,6 +364,14 @@ Q_UINT32 Track::getCdCount() const {
 }
 
 
+/**
+ */
+Q_UINT64 Track::getDBID() const
+{
+    return dbid;
+}
+
+
 /*!
     \fn TrackMetadata::setAlbum(QString& album)
  */
@@ -379,6 +426,15 @@ void Track::setTrackNumber(Q_UINT32 tracknumber) {
 void itunesdb::Track::setNumTracksInAlbum(Q_UINT32 newnumtracks) {
     numtracks = newnumtracks;
 }
+
+
+/**
+ */
+void Track::setDBID( Q_UINT64 id )
+{
+    dbid = id;
+}
+
 
 /*!
     \fn TrackMetadata::setComment(QString& comment)

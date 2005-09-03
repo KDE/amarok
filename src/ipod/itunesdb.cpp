@@ -43,6 +43,7 @@ ITunesDB::ITunesDB(bool resolve_slashes)
 bool ITunesDB::open(const QString& ipod_base) {
     // TODO remove trailing slash from ipod_base if there is one
     itunesdbfile.setName(ipod_base + "/iPod_Control/iTunes/iTunesDB");
+    itunessdfile.setName(ipod_base + "/iPod_Control/iTunes/iTunesSD");
     if(itunesdbfile.exists()) {
         timestamp = QFileInfo(itunesdbfile).lastModified();
         ItunesDBParser parser(*this);
@@ -65,6 +66,9 @@ bool ITunesDB::writeDatabase(const QString& filename) const {
 
     ItunesDBWriter writer((ItunesDBDataSource&)*this);
     writer.write(outfile);
+
+    QFile outfilesd( itunessdfile.name() );
+    writer.writeSD( outfilesd );
 
     return true;
 }
