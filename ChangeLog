@@ -60,6 +60,8 @@ VERSION 1.3.1:
       updated and improved.
 
   BUGFIXES:
+    * amaroK wouldn't remember current track when restarting. (BR 110282)
+    * Some memory leaks found and fixed.
     * Fix buzz and subsequent clicking when equalizer enabled in Helix and
       GStreamer engines compiled with GCC 4.0.1.
     * Burn option wouldn't show up for "Year - Album" items on Collection
