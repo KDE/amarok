@@ -3008,7 +3008,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         }
     }
 
-    const QPoint pos( p.x() - popup.sidePixmapWidth(), p.y() );
+    const QPoint pos( p.x() - popup.sidePixmapWidth(), p.y() + 3 );
     int menuItemId = popup.exec( pos );
     PlaylistItem *prev_stopafter = m_stopAfterTrack;
     PLItemList in, out;
