@@ -1,9 +1,9 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="amarok" version="14">
+<kpartgui name="amarok" version="15">
 <ToolBar name="mainToolBar"><Text>Playlist Toolbar</Text>
 
- <Action name="play_pause" />
  <Action name="prev" />
+ <Action name="play_pause" />
  <Action name="stop" />
  <Action name="next" />
 
