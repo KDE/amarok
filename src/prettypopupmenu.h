@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Mark Kretschmann <markey@web.de>                *
+ *   Copyright (C) 1996-2000 the kicker authors.                           *
+ *   Copyright (C) 2005 Mark Kretschmann <markey@web.de>                   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,7 +23,8 @@
 
 #include <kpopupmenu.h>
 
-#include <qpixmap.h>
+#include <qcolor.h>
+#include <qimage.h>
 #include <qrect.h>
 
 class QSize;
@@ -35,7 +37,9 @@ public:
     PrettyPopupMenu( QWidget *parent = 0, const char *name = 0 );
 
 private:
+    void generateSidePixmap();
     QRect sideImageRect();
+    QColor calcPixmapColor();
 
     void setMinimumSize( const QSize& s );
     void setMaximumSize( const QSize& s );
@@ -47,7 +51,8 @@ private:
 
     void paintEvent( QPaintEvent* e );
 
-    QPixmap m_sidePixmap;
+    static QImage s_sidePixmap;
+    static QColor s_sidePixmapColor;
 };
 
 
