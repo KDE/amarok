@@ -83,7 +83,7 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
     {
         res = HXR_OK;
         if (m_splayer->bEnableVerboseMode)
-            STDOUT("\nSending Username and Password...\n");
+            m_splayer->STDOUT("\nSending Username and Password...\n");
 
         SafeStrCpy(username,  m_splayer->m_pszUsername, 1024);
         SafeStrCpy(password,  m_splayer->m_pszPassword, 1024);
@@ -106,7 +106,7 @@ HSPAuthenticationManager::HandleAuthenticationRequest(IHXAuthenticationManagerRe
     }
 
     if (m_splayer->bEnableVerboseMode && FAILED(res) )
-        STDOUT("\nInvalid Username and/or Password.\n");
+        m_splayer->STDOUT("\nInvalid Username and/or Password.\n");
     
     pResponse->AuthenticationRequestDone(res, username, password);
     return res;

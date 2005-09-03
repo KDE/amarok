@@ -121,7 +121,7 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
 
 STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
 {
-   STDERR("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
+   m_Player->STDERR("Stream Added on player %d, stream duration %d, sources %d\n", m_index, m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
 
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
    m_Player->ppctrl[m_index]->pPreMixHook = new HSPPreMixAudioHook(m_Player, m_index, pAudioStream);
@@ -206,7 +206,7 @@ STDMETHODIMP_(ULONG32) HelixSimplePlayerVolumeAdvice::Release()
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 {
-   STDERR("Volume change: %d\n", uVolume);
+   m_Player->STDERR("Volume change: %d\n", uVolume);
    m_Player->onVolumeChange(m_index);
 #ifdef HELIX_SW_VOLUME_INTERFACE
    m_Player->ppctrl[m_index]->volume = uVolume;
@@ -216,7 +216,7 @@ STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnVolumeChange(const UINT16 uVolume)
 
 STDMETHODIMP HelixSimplePlayerVolumeAdvice::OnMuteChange(const BOOL bMute)
 {
-   STDERR("Mute change: %d\n", bMute);
+   m_Player->STDERR("Mute change: %d\n", bMute);
    m_Player->onMuteChange(m_index);
    m_Player->ppctrl[m_index]->ismute = bMute;
    return HXR_OK;
@@ -805,6 +805,7 @@ void HelixSimplePlayer::tearDown()
    scopebuftail = 0;
    m_preamp = 0;
 }
+
 
 int HelixSimplePlayer::setURL(const char *file, int playerIndex)
 {

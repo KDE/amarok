@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include <climits>
 #include <cmath>
+#include <stdarg.h>
+
 #include <iostream>
 
 #include "debug.h"
@@ -79,6 +81,38 @@ HelixEngine::~HelixEngine()
 {
    m_mimes.clear();
 }
+
+int HelixEngine::print2stdout(const char *fmt, ...)
+{
+    va_list args;
+    char buf[1024];
+    
+    va_start(args, fmt);
+
+    int ret = vsprintf(buf, fmt, args);
+    debug() << buf;
+
+    va_end(args);
+
+    return ret;
+}
+
+
+int HelixEngine::print2stderr(const char *fmt, ...)
+{
+    va_list args;
+    char buf[1024];
+    
+    va_start(args, fmt);
+
+    int ret = vsprintf(buf, fmt, args);
+    debug() << buf;
+
+    va_end(args);
+
+    return ret;
+}
+
 
 void HelixEngine::onContacting(const char *host)
 {

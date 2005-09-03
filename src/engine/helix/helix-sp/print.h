@@ -18,8 +18,8 @@
 extern "C" {
 #endif
 
-int print2stdout(const char* pFmt, ...);
-int print2stderr(const char* pFmt, ...);
+//int print2stdout(const char* pFmt, ...);
+//int print2stderr(const char* pFmt, ...);
 #define STDOUT print2stdout
 #define STDERR print2stderr
 

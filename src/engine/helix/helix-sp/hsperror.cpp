@@ -124,13 +124,13 @@ HSPErrorSink::ErrorOccurred(const UINT8 unSeverity,
 
     ConvertErrorToString(ulHXCode, HXDefine, 256);
 
-    STDOUT("Report(%d, %ld, \"%s\", %ld, \"%s\", \"%s\")\n",
-           unSeverity,
-           ulHXCode,
-           (pUserString && *pUserString) ? pUserString : "(NULL)",
-           ulUserCode,
-           (pMoreInfoURL && *pMoreInfoURL) ? pMoreInfoURL : "(NULL)",
-           HXDefine);
+    m_splayer->STDOUT("Report(%d, %ld, \"%s\", %ld, \"%s\", \"%s\")\n",
+                      unSeverity,
+                      ulHXCode,
+                      (pUserString && *pUserString) ? pUserString : "(NULL)",
+                      ulUserCode,
+                      (pMoreInfoURL && *pMoreInfoURL) ? pMoreInfoURL : "(NULL)",
+                      HXDefine);
 
     return HXR_OK;
 }

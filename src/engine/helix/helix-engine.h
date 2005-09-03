@@ -93,6 +93,9 @@ private:
    void timerEvent( QTimerEvent * );
    void resetScope();
 
+   int print2stdout(const char *fmt, ...);
+   int print2stderr(const char *fmt, ...);
+
    friend class HelixConfigDialog;
 };
 

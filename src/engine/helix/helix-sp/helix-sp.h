@@ -9,6 +9,7 @@
  * Copyright (c) Paul Cifarelli 2005
  * Portions Copyright (c) 1995-2002 RealNetworks, Inc. All Rights Reserved.
  *
+ * at this point, this class should be HelixNotSoSimplePlayer...
  */
 
 #ifndef _HELIX_SIMPLEPLAYER_LIB_H_INCLUDED_
@@ -263,6 +264,8 @@ private:
 protected:
    int                  m_preamp;
    vector<int>          m_equalizerGains;
+   virtual int print2stdout(const char *fmt, ...);
+   virtual int print2stderr(const char *fmt, ...);
 
    friend class HSPClientAdviceSink;
    friend class HSPErrorSink;

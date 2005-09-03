@@ -122,7 +122,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 {
     HX_RESULT hResult	= HXR_OK;
     
-    //STDERR("in engine context, key is <%s>\n", pref_key);
+    //m_splayer->STDERR("in engine context, key is <%s>\n", pref_key);
     if ((stricmp(pref_key, "OpenAudioDeviceOnPlayback") == 0))
     {
        unsigned char *outbuf;
@@ -136,7 +136,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           strcpy((char *)outbuf, "0");
           buffer = ibuf;
 
-          //STDERR("value = %d\n",atol((const char*) buffer->GetBuffer()));
+          //m_splayer->STDERR("value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
     else
@@ -156,7 +156,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 STDMETHODIMP
 HSPEngineContext::WritePref(const char* /*pref_key*/, IHXBuffer* /*buffer*/)
 {
-   //STDERR("In EngineContext, WritePref, key %s\n", pref_key);
+   //m_splayer->STDERR("In EngineContext, WritePref, key %s\n", pref_key);
    return HXR_OK; // for now, no one allowed to change it
 }
 

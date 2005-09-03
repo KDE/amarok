@@ -13,9 +13,10 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include "helix-sp.h"
 #include "print.h"
 
-int print2stdout(const char* pFmt, ...)
+int HelixSimplePlayer::print2stdout(const char* pFmt, ...)
 {
     va_list args;
     
@@ -28,7 +29,7 @@ int print2stdout(const char* pFmt, ...)
     return ret;
 }
 
-int print2stderr(const char* pFmt, ...)
+int HelixSimplePlayer::print2stderr(const char* pFmt, ...)
 {
     va_list args;
     
