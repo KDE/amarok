@@ -42,7 +42,7 @@ PrettyPopupMenu::PrettyPopupMenu( QWidget* parent, const char* name )
 {
     // Must be initialized so that we know the size on first invocation
     if ( s_sidePixmap.isNull() )
-        s_sidePixmap.load( locate( "data","amarok/images/menu_sidepixmap.png" ) );
+        generateSidePixmap();
 }
 
 
@@ -155,12 +155,8 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
     generateSidePixmap();
 
     QPainter p( this );
-    p.setClipRegion( e->region() );
-
-    style().drawPrimitive( QStyle::PE_PanelPopup, &p,
-                           QRect( 0, 0, width(), height() ),
-                           colorGroup(), QStyle::Style_Default,
-                           QStyleOption( frameWidth(), 0 ) );
+    const QRect rect( frameWidth(), frameWidth(), width(), height() - 2 * frameWidth() );
+    p.setClipRegion( QStyle::visualRect( rect, this ) );
 
     QRect r = sideImageRect();
     r.setTop( r.bottom() - s_sidePixmap.height() );
@@ -171,6 +167,13 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
         pixRect.moveBy( -r.left(), -r.top() );
         p.drawImage( drawRect.topLeft(), s_sidePixmap, pixRect );
     }
+
+    p.setClipRegion( e->region() );
+
+    style().drawPrimitive( QStyle::PE_PanelPopup, &p,
+                           QRect( 0, 0, width(), height() ),
+                           colorGroup(), QStyle::Style_Default,
+                           QStyleOption( frameWidth(), 0 ) );
 
     drawContents( &p );
 }
