@@ -619,11 +619,13 @@ MediaDevice::config()
     mntLabel->setText( i18n( "&Mount command:" ) );
     QLineEdit *mntcmd = new QLineEdit( m_mntcmd, box );
     mntLabel->setBuddy( mntcmd );
+    QToolTip::add( mntcmd, i18n( "Set the command to mount your device here, empty commands are not executed." ) );
 
     QLabel *umntLabel = new QLabel( box );
     umntLabel->setText( i18n( "&Unmount command:" ) );
     QLineEdit *umntcmd = new QLineEdit( m_umntcmd, box );
     umntLabel->setBuddy( umntcmd );
+    QToolTip::add( umntcmd, i18n( "Set the command to unmount your device here, empty commands are not executed." ) );
 
     if ( dialog.exec() != QDialog::Rejected )
     {
@@ -714,7 +716,7 @@ MediaDevice::transferFiles()  //SLOT
                     if ( parentdir.exists() )
                         dir.mkdir( finfo.dirPath() );
                 }
-                
+
                 m_wait = true;
 
                 KIO::CopyJob *job = KIO::copy( *it, KURL( trackpath ), false );
