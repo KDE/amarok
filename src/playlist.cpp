@@ -2376,17 +2376,17 @@ Playlist::removeSelectedItems() //SLOT
 
     //assemble a list of what needs removing
     //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
-    QPtrList<QListViewItem> list;
+    PLItemList queued, list;
     int dontReplaceDynamic = 0;
 
     for( MyIterator it( this, MyIt::Selected ); *it; ++it )
     {
         if( !(*it)->isEnabled() )
             dontReplaceDynamic++;
-        list.prepend( *it );
+        ( m_nextTracks.contains( *it ) ? queued : list ).prepend( *it );
     }
 
-    if( list.isEmpty() ) return;
+    if( list.isEmpty() && queued.isEmpty() ) return;
     saveUndoState();
 
     if( isDynamic() )
@@ -2395,6 +2395,11 @@ Playlist::removeSelectedItems() //SLOT
     }
 
     //remove the items
+    for( QListViewItem *item = queued.first(); item; item = queued.next() )
+        removeItem( (PlaylistItem*)item, true );
+    emit queueChanged( PLItemList(), queued );
+    for( QListViewItem *item = queued.first(); item; item = queued.next() )
+        delete item;
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
         removeItem( (PlaylistItem*)item );
