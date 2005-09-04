@@ -155,14 +155,12 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
     generateSidePixmap();
 
     QPainter p( this );
-    const QRect rect( frameWidth(), frameWidth(), width(), height() - 2 * frameWidth() );
-    p.setClipRegion( QStyle::visualRect( rect, this ) );
 
     QRect r = sideImageRect();
-    r.setTop( r.bottom() - s_sidePixmap.height() );
+    r.setTop( r.bottom() - s_sidePixmap.height() + 1 ); //TODO Find reason for the off-by-one bug
     if ( r.intersects( e->rect() ) )
     {
-        QRect drawRect = r.intersect( e->rect() );
+        QRect drawRect = r.intersect( e->rect() ).intersect( sideImageRect() );
         QRect pixRect = drawRect;
         pixRect.moveBy( -r.left(), -r.top() );
         p.drawImage( drawRect.topLeft(), s_sidePixmap, pixRect );
