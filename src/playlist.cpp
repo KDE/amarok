@@ -100,7 +100,7 @@ public:
         All = QListViewItemIterator::Invisible
     };
 
-    PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
+    inline PlaylistItem *operator*() { return (PlaylistItem*)QListViewItemIterator::operator*(); }
 
     /// @return the next visible PlaylistItem after item
     static PlaylistItem *nextVisible( PlaylistItem *item )
@@ -2877,7 +2877,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     #define item static_cast<PlaylistItem*>(item)
 
     enum {
-        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, REMOVE, DELETE,
+        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
         BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, LAST }; //keep LAST last
 
@@ -2941,8 +2941,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
        amaroK::actionCollection()->action( "pause" )->plug( &popup );
     }
     if(itemCount == 1)
+    {
         popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
-    popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
+        popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
+    }
 
     popup.insertSeparator();
 
@@ -2952,7 +2954,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( trackColumn
             ? i18n("&Iteratively Assign Track Numbers")
   : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
-    popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Tags to Clipboard" ), 0, 0, CTRL+Key_C, COPY );
+
+    if( itemCount == 1 )
+        popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Tags to Clipboard" ), 0, 0, CTRL+Key_C, COPY );
 
     popup.insertSeparator();
 
@@ -2967,6 +2971,13 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
     popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
     popup.insertSeparator();
+
+    if( itemCount > 1 )
+    {
+        popup.insertItem( SmallIconSet( "player_playlist_2" ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
+        popup.insertItem( SmallIconSet( "filesave" ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
+        popup.insertSeparator();
+    }
 
     popup.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
@@ -3108,6 +3119,37 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         copyToClipboard( item );
         break;
 
+    case CROP_PLAYLIST:
+        if( !isLocked() )
+        {
+            //use "in" for the other just because it's there and not used otherwise
+            for( MyIt it( this, MyIt::Unselected | MyIt::Visible ); *it; ++it )
+                ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+
+            if( !in.isEmpty() || !out.isEmpty() )
+            {
+                saveUndoState();
+
+                for( PlaylistItem *it = out.first(); it; it = out.next() )
+                    removeItem( it, true );
+                if( !out.isEmpty() )
+                    emit queueChanged( PLItemList(), out );
+                for( PlaylistItem *it = out.first(); it; it = out.next() )
+                    delete it;
+
+                for( PlaylistItem *it = in.first(); it; it = in.next() )
+                {
+                    removeItem( it );
+                    delete it;
+                }
+            }
+        }
+        break;
+
+    case SAVE_PLAYLIST:
+        saveSelectedAsPlaylist();
+        break;
+
     case BURN_SELECTION_DATA:
         burnSelectedTracks( K3bExporter::DataCD );
         break;
@@ -3210,7 +3252,7 @@ Playlist::mapToLogicalColumn( int physical )
 }
 
 void
-Playlist::removeItem( PlaylistItem *item )
+Playlist::removeItem( PlaylistItem *item, bool multi )
 {
     // NOTE we don't check isLocked() here as it is assumed that if you call this function you
     // really want to remove the item, there is no way the user can reach here without passing
@@ -3247,7 +3289,7 @@ Playlist::removeItem( PlaylistItem *item )
         m_stopAfterTrack = 0; //to be safe
 
     //keep m_nextTracks queue synchronised
-    if( m_nextTracks.removeRef( item ) )
+    if( m_nextTracks.removeRef( item ) && !multi )
        emit queueChanged( PLItemList(), PLItemList( item ) );
 
     //keep recent buffer synchronised
@@ -3372,6 +3414,49 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 
     if( isDynamic() ) alterHistoryItems( !AmarokConfig::dynamicMarkHistory() );
     m_undoDirt = false;
+}
+
+void
+Playlist::saveSelectedAsPlaylist()
+{
+    QString path = PlaylistDialog::getSaveFileName();
+    if( path.isEmpty() )
+        return;
+
+    QFile file( path );
+
+    if( !file.open( IO_WriteOnly ) )
+    {
+        KMessageBox::sorry( PlaylistWindow::self(), i18n( "Cannot write playlist (%1).").arg(path) );
+        return;
+    }
+
+    QTextStream stream( &file );
+    stream << "#EXTM3U\n";
+
+    for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
+    {
+        const KURL url = (*it)->url();
+
+        stream << "#EXTINF:";
+        stream << (*it)->seconds();
+        stream << ',';
+        stream << (*it)->title();
+        stream << '\n';
+        if (url.protocol() == "file" ) {
+            if ( AmarokConfig::relativePlaylist() ) {
+                const QFileInfo fi(file);
+                stream << KURL::relativePath(fi.dirPath(), url.path());
+            } else
+                stream << url.path();
+        } else {
+            stream << url.url();
+        }
+        stream << "\n";
+    }
+
+    PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+    PlaylistBrowser::instance()->addPlaylist( path, 0, true );
 }
 
 void

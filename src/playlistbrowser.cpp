@@ -1,6 +1,7 @@
 // (c) 2004 Pierpaolo Di Panfilo
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005 Gábor Lehel <illissius@gmail.com>
 // License: GPL V2. See COPYING file for information.
 
 #define DEBUG_PREFIX "PlaylistBrowser"
@@ -21,6 +22,7 @@
 
 #include <qevent.h>            //customEvent()
 #include <qheader.h>           //mousePressed()
+#include <qlabel.h>
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 #include <qtextstream.h>       //loadPlaylists(), saveM3U(), savePLS()
@@ -1133,28 +1135,33 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
     QFile file( path );
     if( !file.exists() ) return;
 
-    bool exists = false;
+    PlaylistEntry *playlist = 0;
     for( QListViewItemIterator it( m_listview ); *it; ++it )
         if( isPlaylist( *it ) && path == ((PlaylistEntry *)*it)->url().path() ) {
-            exists = true; //the playlist is already in the playlist browser
+            playlist = ((PlaylistEntry *)*it); //the playlist is already in the playlist browser
+            parent = (*it)->parent();
             if( force )
-                ((PlaylistEntry *)*it)->load(); //reload the playlist
+                playlist->load(); //reload the playlist
+            break;
         }
 
-    if( !exists ) {
+    if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
+
+    if( !playlist ) {
         if( !m_playlistCategory || !m_playlistCategory->childCount() ) {    //first child
             removeButton->setEnabled( true );
             renameButton->setEnabled( true );
         }
 
-        if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
-
         KURL auxKURL;
         auxKURL.setPath(path);
-        m_lastPlaylist = new PlaylistEntry( parent, 0, auxKURL );
-        parent->setOpen( true );
-        parent->sortChildItems( 0, true );
+        m_lastPlaylist = playlist = new PlaylistEntry( parent, 0, auxKURL );
     }
+
+    parent->setOpen( true );
+    parent->sortChildItems( 0, true );
+    m_listview->clearSelection();
+    playlist->setSelected( true );
 }
 
 void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
@@ -2512,6 +2519,63 @@ void PlaylistBrowserView::startDrag()
     drag->addDragObject( new KURLDrag( urls, viewport() ) );
     drag->dragCopy();
 
+}
+
+QString PlaylistDialog::getSaveFileName() //static
+{
+    PlaylistDialog dialog;
+    if( dialog.exec() == Accepted )
+        return dialog.result;
+    return QString::null;
+}
+
+PlaylistDialog::PlaylistDialog()
+    : KDialogBase( PlaylistWindow::self(), "saveplaylist", true /*modal*/,
+                   i18n( "Save as Playlist" ), Ok | Cancel | User1, Ok, false /*seperator*/,
+                   KGuiItem( i18n( "Custom location..." ), SmallIconSet( "folder" ) ) )
+    , customChosen( false )
+{
+    QVBox *vbox = makeVBoxMainWidget();
+    QLabel *label = new QLabel( i18n( "&Enter a name for the playlist:" ), vbox );
+    edit = new KLineEdit( vbox );
+    edit->setFocus();
+    label->setBuddy( edit );
+    enableButtonOK( false );
+    connect( edit, SIGNAL( textChanged( const QString & ) ),
+             this, SLOT( slotTextChanged( const QString& ) ) );
+    connect( this, SIGNAL( user1Clicked() ), SLOT( slotCustomPath() ) );
+}
+
+void PlaylistDialog::slotOk()
+{
+    if( !customChosen && !edit->text().isEmpty() )
+        result = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + edit->text() + ".m3u";
+
+    if( !QFileInfo( result ).exists() ||
+        KMessageBox::warningContinueCancel(
+            PlaylistWindow::self(),
+            i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( edit->text() ),
+            i18n( "Overwrite Playlist?" ), i18n( "Overwrite" ) ) == KMessageBox::Continue )
+    {
+        KDialogBase::slotOk();
+    }
+}
+
+void PlaylistDialog::slotTextChanged( const QString &s )
+{
+   enableButtonOK( !s.isEmpty() );
+}
+
+void PlaylistDialog::slotCustomPath()
+{
+   result = KFileDialog::getSaveFileName( ":saveplaylists", "*.m3u" );
+   if( !result.isNull() )
+   {
+      edit->setText( result );
+      edit->setReadOnly( true );
+      enableButtonOK( true );
+      customChosen = true;
+   }
 }
 
 #include "playlistbrowser.moc"

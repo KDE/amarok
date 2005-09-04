@@ -211,13 +211,14 @@ class Playlist : private KListView, public EngineObserver
         bool isAdvancedQuery( const QString &query );
         bool googleMatch( QString query, const QStringMap &all, const QStringMap &defaults );
         void refreshNextTracks( int = -1 );
-        void removeItem( PlaylistItem* );
+        void removeItem( PlaylistItem*, bool = false );
         bool saveState( QStringList& );
         void setCurrentTrack( PlaylistItem* );
         void setCurrentTrackPixmap( int state = -1 );
         void showTagDialog( QPtrList<QListViewItem> items );
         void sortQueuedItems();
         void switchState( QStringList&, QStringList& );
+        void saveSelectedAsPlaylist();
 
         //engine observer functions
         void engineNewMetaData( const MetaBundle&, bool );

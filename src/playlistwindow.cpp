@@ -261,7 +261,7 @@ PlaylistWindow::init()
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
     m_toolsMenu->insertItem( SmallIconSet( "wizard"), i18n("&First-Run Wizard"), amaroK::Menu::ID_SHOW_WIZARD );
-    m_toolsMenu->insertItem( i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
+    m_toolsMenu->insertItem( SmallIconSet( "reload" ), i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
 
     #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
     m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
@@ -600,8 +600,7 @@ QSize PlaylistWindow::sizeHint() const
 
 void PlaylistWindow::savePlaylist() const //SLOT
 {
-    QString path = KFileDialog::getSaveFileName(
-            static_cast<FileBrowser*>(m_browsers->browser( "FileBrowser" ))->url().path(), "*.m3u" );
+    QString path = KFileDialog::getSaveFileName( ":saveplaylists", "*.m3u" );
 
     if( !path.isEmpty() ) {
         //Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() );

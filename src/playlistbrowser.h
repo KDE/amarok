@@ -1,6 +1,7 @@
 // (c) 2004 Pierpaolo Di Panfilo
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2005 Gábor Lehel <illissius@gmail.com>
 // License: GPL V2. See COPYING file for information.
 
 #ifndef PLAYLISTBROWSER_H
@@ -186,6 +187,26 @@ class PlaylistBrowserView : public KListView
         QTimer          *m_animationTimer;
         QPtrList<QListViewItem> m_loadingItems;
         QPixmap         *m_loading1, *m_loading2;    //icons for loading animation
+};
+
+class PlaylistDialog: public KDialogBase
+{
+    Q_OBJECT
+    public:
+        static QString getSaveFileName();
+
+    private:
+        KLineEdit *edit;
+        bool customChosen;
+        QString result;
+        PlaylistDialog();
+
+    private slots:
+       void slotOk();
+
+       void slotTextChanged( const QString &s );
+
+       void slotCustomPath();
 };
 
 // Returns true if item is Playlist, Stream, Smart Playlist or Party.
