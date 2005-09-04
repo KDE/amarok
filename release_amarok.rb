@@ -21,10 +21,10 @@ unless $*.empty?()
     end
 end
 
-
 # Ask user for targeted application version
 version  = `kdialog --inputbox "Enter amaroK version: "`.chomp()
-
+user = `kdialog --inputbox "Your SVN user:"`.chomp()
+protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
 name     = "amarok"
 folder   = "amarok-#{version}"
@@ -44,18 +44,18 @@ Dir.chdir( folder )
 
 
 if not branch.empty?()
-    `svn co -N https://svn.kde.org/home/kde/branches/amarok/#{branch}`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/branches/amarok/#{branch}`
 elsif not tag.empty?()
-    `svn co -N https://svn.kde.org/home/kde/tags/amarok/#{tag}`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}`
 else
-    `svn co -N https://svn.kde.org/home/kde/trunk/extragear/multimedia`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
 end
 
 Dir.chdir( "multimedia" )
 `svn up amarok`
 `svn up -N doc`
 `svn up doc/amarok`
-`svn co https://svn.kde.org/home/kde/branches/KDE/3.5/kde-common/admin`
+`svn co #{protocol}://#{user}@svn.kde.org/home/kde/branches/KDE/3.5/kde-common/admin`
 
 
 if do_l10n == "yes"
@@ -63,7 +63,7 @@ if do_l10n == "yes"
     puts "**** l10n ****"
     puts "\n"
 
-    i18nlangs = `svn cat https://svn.kde.org/home/kde/trunk/l10n/subdirs`
+    i18nlangs = `svn cat #{protocol}://#{user}@svn.kde.org/home/kde/trunk/l10n/subdirs`
     Dir.mkdir( "l10n" )
     Dir.chdir( "l10n" )
 
@@ -73,7 +73,7 @@ if do_l10n == "yes"
         `rm -Rf ../doc/#{lang}`
         `rm -rf amarok`
         docdirname = "l10n/#{lang}/docs/extragear-multimedia/amarok"
-        `svn co -q https://svn.kde.org/home/kde/trunk/#{docdirname} > /dev/null 2>&1`
+        `svn co -q #{protocol}://#{user}@svn.kde.org/home/kde/trunk/#{docdirname} > /dev/null 2>&1`
         next unless FileTest.exists?( "amarok" )
         print "Copying #{lang}'s #{name} documentation over..  "
         `cp -R amarok/ ../doc/#{lang}`
@@ -99,7 +99,7 @@ if do_l10n == "yes"
     for lang in i18nlangs
         lang.chomp!()
         pofilename = "l10n/#{lang}/messages/extragear-multimedia/amarok.po"
-        `svn cat https://svn.kde.org/home/kde/trunk/#{pofilename} 2> /dev/null | tee l10n/amarok.po`
+        `svn cat #{protocol}://#{user}@svn.kde.org/home/kde/trunk/#{pofilename} 2> /dev/null | tee l10n/amarok.po`
         next if FileTest.size( "l10n/amarok.po" ) == 0
 
         dest = "po/#{lang}"
