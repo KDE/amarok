@@ -52,6 +52,10 @@ class PlaylistBrowser : public QVBox
         void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false );
         void addPodcast( QListViewItem *parent = 0 );
 
+        static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
+                                  const QValueList<QString> &titles, const QValueList<QString> &seconds,
+                                  bool relative = AmarokConfig::relativePlaylist() );
+
         QString partyBrowserCache() const;
         QString playlistBrowserCache() const;
         QString podcastBrowserCache() const;
@@ -193,7 +197,7 @@ class PlaylistDialog: public KDialogBase
 {
     Q_OBJECT
     public:
-        static QString getSaveFileName();
+        static QString getSaveFileName( const QString &suggestion = QString::null );
 
     private:
         KLineEdit *edit;

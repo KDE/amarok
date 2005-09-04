@@ -600,17 +600,10 @@ QSize PlaylistWindow::sizeHint() const
 
 void PlaylistWindow::savePlaylist() const //SLOT
 {
-    QString path = KFileDialog::getSaveFileName( ":saveplaylists", "*.m3u" );
+    QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
 
-    if( !path.isEmpty() ) {
-        //Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() );
-        if ( !Playlist::instance()->saveM3U( path, AmarokConfig::relativePlaylist() ) ) {
-          KMessageBox::sorry( (QWidget *)this, i18n( "Cannot write playlist (%1).").arg(path) );
-          return;
-        }
-
-        PlaylistBrowser::instance()->addPlaylist( path, 0, true );
-    }
+    if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
+        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 
 

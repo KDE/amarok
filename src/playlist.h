@@ -19,6 +19,7 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
+#include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "playlistwindow.h"  //friend
@@ -98,7 +99,7 @@ class Playlist : private KListView, public EngineObserver
         bool isTrackBefore() const;
         bool isTrackAfter()  const;
         void restoreSession();          // called during initialisation
-        bool saveM3U( const QString&, bool relativePath = false ) const;
+        bool saveM3U( const QString&, bool relative = AmarokConfig::relativePlaylist() ) const;
         void saveXML( const QString& );
         int  totalTrackCount();
         BundleList nextTracks() const;

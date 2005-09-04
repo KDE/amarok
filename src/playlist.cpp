@@ -2138,38 +2138,18 @@ Playlist::customEvent( QCustomEvent *e )
 ////////////////////////////////////////////////////////////////////////////////
 
 bool
-Playlist::saveM3U( const QString &path, bool relativePath ) const
+Playlist::saveM3U( const QString &path, bool relative ) const
 {
-    QFile file( path );
-
-    if( !file.open( IO_WriteOnly ) ){
-      return false;
-    }
-
-    QTextStream stream( &file );
-    stream << "#EXTM3U\n";
-
+    QValueList<KURL> urls;
+    QValueList<QString> titles;
+    QValueList<QString> seconds;
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
-        const KURL url = item->url();
-
-        stream << "#EXTINF:";
-        stream << item->seconds();
-        stream << ',';
-        stream << item->title();
-        stream << '\n';
-        if (url.protocol() == "file" ) {
-            if ( relativePath ) {
-                const QFileInfo fi(file);
-                stream << KURL::relativePath(fi.dirPath(), url.path());
-            } else
-                stream << url.path();
-        } else {
-            stream << url.url();
-        }
-        stream << "\n";
+        urls << item->url();
+        titles << item->title();
+        seconds << item->seconds();
     }
-    return true;
+    return PlaylistBrowser::savePlaylist( path, urls, titles, seconds, relative );
 }
 
 void
@@ -3424,44 +3404,23 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 void
 Playlist::saveSelectedAsPlaylist()
 {
-    QString path = PlaylistDialog::getSaveFileName();
+    QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+
     if( path.isEmpty() )
         return;
 
-    QFile file( path );
-
-    if( !file.open( IO_WriteOnly ) )
-    {
-        KMessageBox::sorry( PlaylistWindow::self(), i18n( "Cannot write playlist (%1).").arg(path) );
-        return;
-    }
-
-    QTextStream stream( &file );
-    stream << "#EXTM3U\n";
-
+    QValueList<KURL> urls;
+    QValueList<QString> titles;
+    QValueList<QString> seconds;
     for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
     {
-        const KURL url = (*it)->url();
-
-        stream << "#EXTINF:";
-        stream << (*it)->seconds();
-        stream << ',';
-        stream << (*it)->title();
-        stream << '\n';
-        if (url.protocol() == "file" ) {
-            if ( AmarokConfig::relativePlaylist() ) {
-                const QFileInfo fi(file);
-                stream << KURL::relativePath(fi.dirPath(), url.path());
-            } else
-                stream << url.path();
-        } else {
-            stream << url.url();
-        }
-        stream << "\n";
+        urls << (*it)->url();
+        titles << (*it)->title();
+        seconds << (*it)->seconds();
     }
 
-    PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
-    PlaylistBrowser::instance()->addPlaylist( path, 0, true );
+    if( PlaylistBrowser::savePlaylist( path, urls, titles, seconds ) )
+        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
 }
 
 void

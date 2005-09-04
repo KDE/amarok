@@ -1164,6 +1164,50 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
     playlist->setSelected( true );
 }
 
+bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> &urls,
+                                    const QValueList<QString> &titles, const QValueList<QString> &seconds,
+                                    bool relative )
+{
+    if( path.isEmpty() )
+        return false;
+
+    QFile file( path );
+
+    if( !file.open( IO_WriteOnly ) )
+    {
+        KMessageBox::sorry( PlaylistWindow::self(), i18n( "Cannot write playlist (%1).").arg(path) );
+        return false;
+    }
+
+    QTextStream stream( &file );
+    stream << "#EXTM3U\n";
+
+    for( int i = 0, n = urls.count(); i < n; ++i )
+    {
+        const KURL url = urls[i];
+
+        stream << "#EXTINF:";
+        stream << seconds[i];
+        stream << ',';
+        stream << titles[i];
+        stream << '\n';
+        if (url.protocol() == "file" ) {
+            if ( relative ) {
+                const QFileInfo fi(file);
+                stream << KURL::relativePath(fi.dirPath(), url.path());
+            } else
+                stream << url.path();
+        } else {
+            stream << url.url();
+        }
+        stream << "\n";
+    }
+
+    PlaylistBrowser::instance()->addPlaylist( path, 0, true );
+
+    return true;
+}
+
 void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
 {
     // open a file selector to add playlists to the playlist browser
@@ -1210,26 +1254,17 @@ PlaylistBrowser::findItem( QString &t, int c ) const
 
 bool PlaylistBrowser::createPlaylist( bool current )
 {
-    bool ok;
-    const QString name = KInputDialog::getText(i18n("Save Playlist"), i18n("Enter playlist name:"), i18n("Untitled"), &ok, this);
+    const QString path = PlaylistDialog::getSaveFileName( i18n("Untitled") );
 
-    if( ok )
+    if( !path.isEmpty() )
     {
-        // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
-        QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
-        QFileInfo info( folder );
-        if ( !info.isDir() ) QFile::remove( folder );
-
-        QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + name + ".m3u";
         debug() << "Saving Playlist to: " << path << endl;
 
         if( current )
         {
             if ( !Playlist::instance()->saveM3U( path ) ) {
-                KMessageBox::sorry( this, i18n( "Cannot write playlist (%1).").arg(path) );
                 return false;
             }
-            addPlaylist( path );
         }
         else
         {
@@ -1237,8 +1272,11 @@ bool PlaylistBrowser::createPlaylist( bool current )
         }
 
         savePlaylists();
+
+        return true;
     }
-    return ok;
+    else
+        return false;
 }
 
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
@@ -2521,9 +2559,11 @@ void PlaylistBrowserView::startDrag()
 
 }
 
-QString PlaylistDialog::getSaveFileName() //static
+QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
 {
     PlaylistDialog dialog;
+    if( !suggestion.isEmpty() )
+        dialog.edit->setText( suggestion );
     if( dialog.exec() == Accepted )
         return dialog.result;
     return QString::null;
@@ -2531,7 +2571,7 @@ QString PlaylistDialog::getSaveFileName() //static
 
 PlaylistDialog::PlaylistDialog()
     : KDialogBase( PlaylistWindow::self(), "saveplaylist", true /*modal*/,
-                   i18n( "Save as Playlist" ), Ok | Cancel | User1, Ok, false /*seperator*/,
+                   i18n( "Save Playlist" ), Ok | Cancel | User1, Ok, false /*seperator*/,
                    KGuiItem( i18n( "Custom location..." ), SmallIconSet( "folder" ) ) )
     , customChosen( false )
 {
@@ -2548,6 +2588,11 @@ PlaylistDialog::PlaylistDialog()
 
 void PlaylistDialog::slotOk()
 {
+    // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
+    QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
+    QFileInfo info( folder );
+    if ( !info.isDir() ) QFile::remove( folder );
+
     if( !customChosen && !edit->text().isEmpty() )
         result = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + edit->text() + ".m3u";
 
