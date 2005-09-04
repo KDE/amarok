@@ -2901,10 +2901,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 //     else
 //         popup.insertTitle(i18n("1 Track", "%n Selected Tracks", itemCount));
 
-    if( item->isEnabled() )
-        popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
-                ? i18n( "&Restart" )
-                : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+    popup.insertItem( SmallIconSet( "player_play" ), isCurrent && isPlaying
+            ? i18n( "&Restart" )
+            : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
 
     // Begin queue entry logic
     popup.insertItem( SmallIconSet( "2rightarrow" ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
@@ -2945,7 +2944,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertItem( SmallIconSet( "player_stop" ), i18n( "&Stop Playing After Track" ), STOP_DONE );
     popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
 
-    if( item->isEnabled() ) popup.insertSeparator();
+    popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
