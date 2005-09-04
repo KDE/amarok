@@ -10,6 +10,8 @@
 
 # Ask user for tag name
 tagname  = `kdialog --inputbox "Enter tag name (e.g. "1.3-beta3"): "`.chomp()
+user = `kdialog --inputbox "Your SVN user:"`.chomp()
+protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
 # Show safety check dialog
 `kdialog --warningcontinuecancel "Really create the tag '#{tagname}' NOW in the svn repository?"`
@@ -19,15 +21,18 @@ if $?.exitstatus() == 2
 end
 
 # Create destination folder
-`svn mkdir https://svn.kde.org/home/kde/tags/amarok/#{tagname}`
+target = "#{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tagname}/"
+`svn mkdir #{target}`
+`svn mkdir #{target}/multimedia`
+`svn mkdir #{target}/multimedia/doc`
 
-source = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
-docs   = "https://svn.kde.org/home/kde/trunk/extragear/multimedia/doc/amarok"
-target = "https://svn.kde.org/home/kde/tags/amarok/#{tagname}/"
+source = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
+docs   = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia/doc/amarok"
+
 
 # Copy the files in the repository
-`svn cp -m "Tag amaroK." #{source} #{target}`
-`svn cp -m "Tag amaroK docs." #{docs} #{target}`
+`svn cp -m "Tag amaroK." #{source} #{target}/multimedia`
+`svn cp -m "Tag amaroK docs." #{docs} #{target}/multimedia/doc`
 
 
 print "Tag created.\n"
