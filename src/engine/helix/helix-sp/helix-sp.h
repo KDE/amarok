@@ -234,6 +234,7 @@ public:
 
    const MimeList *getMimeList() const { return mimehead; }
    int getMimeListLen() const { return mimelistlen; }
+
 private:
 
    bool                 bEnableAdviceSink;
@@ -261,6 +262,24 @@ private:
 
    // equalizer
    bool                 m_eq_enabled;
+
+   enum AUDIOAPI
+   {
+      OSS,
+      ALSA
+   };
+
+   // work around the annoying problem of the core reseting the PCM volume on every url change
+   void openAudioDevice();
+   void closeAudioDevice();
+   int getDirectHWVolume();
+   void setDirectHWVolume(int vol);
+   AUDIOAPI m_direct;
+   int m_nDevID;
+   bool m_urlchanged;
+   int m_volBefore;
+   int m_volAtStart;
+
 protected:
    int                  m_preamp;
    vector<int>          m_equalizerGains;

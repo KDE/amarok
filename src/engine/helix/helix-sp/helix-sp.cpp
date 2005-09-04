@@ -31,6 +31,8 @@
 #include <X11/Xlib.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #include "hxausvc.h"
 
@@ -46,6 +48,12 @@
 
 #ifdef __FreeBSD__
 #define PTHREAD_MUTEX_FAST_NP PTHREAD_MUTEX_NORMAL
+#endif
+
+#if !defined(__NetBSD__) && !defined(__OpenBSD__)
+	#include <sys/soundcard.h>
+#else
+	#include <soundcard.h>
 #endif
 
 typedef HX_RESULT (HXEXPORT_PTR FPRMSETDLLACCESSPATH) (const char*);
@@ -315,6 +323,11 @@ HelixSimplePlayer::HelixSimplePlayer() :
    scopecount(0),
    scopebufhead(0),
    scopebuftail(0),
+   m_direct(OSS),
+   m_nDevID(-1),
+   m_urlchanged(0),
+   m_volBefore(-1),
+   m_volAtStart(-1),
    m_preamp(0)
 {
    m_xf.crossfading = 0;
@@ -468,7 +481,7 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
    pEngine->QueryInterface(IID_IHXPlugin2Handler, (void **) &pPlugin2Handler);
    if (!pPlugin2Handler)
       STDERR("no plugin enumerator\n");
-    
+
    // create players
    for (i = 0; i < numPlayers; i++)
    {
@@ -527,6 +540,10 @@ void HelixSimplePlayer::init(const char *corelibhome, const char *pluginslibhome
          }
       }
    }
+
+   openAudioDevice();
+   m_volBefore = m_volAtStart = getDirectHWVolume();
+   STDERR("***VolAtStart is %d\n", m_volAtStart);
 }
 
 
@@ -775,6 +792,8 @@ void HelixSimplePlayer::tearDown()
       delete ml;
       ml = mh;
    }
+
+   closeAudioDevice();
    
    theErr = HXR_OK;
    pErrorSink = NULL;
@@ -804,6 +823,118 @@ void HelixSimplePlayer::tearDown()
    scopebufhead = 0;
    scopebuftail = 0;
    m_preamp = 0;
+}
+
+#define MAX_DEV_NAME 255
+#define HX_VOLUME  SOUND_MIXER_PCM
+void HelixSimplePlayer::openAudioDevice()
+{
+   switch (m_direct)
+   {
+      case OSS:
+      {
+         //Check the environmental variable to let user overide default device.
+         char *pszOverrideName = getenv( "AUDIO" ); /* Flawfinder: ignore */
+         char szDevName[MAX_DEV_NAME]; /* Flawfinder: ignore */
+         
+         // Use defaults if no environment variable is set.
+         if ( pszOverrideName && strlen(pszOverrideName)>0 )
+         {
+            SafeStrCpy( szDevName, pszOverrideName, MAX_DEV_NAME );
+         }
+         else
+         {
+            SafeStrCpy( szDevName, "/dev/mixer", MAX_DEV_NAME );
+         }
+         
+         // Open the audio device if it isn't already open
+         if ( m_nDevID < 0 )
+         {
+            m_nDevID = ::open( szDevName, O_WRONLY );
+         }
+         
+         if ( m_nDevID < 0 )
+         {
+            STDERR("Failed to open audio(%s)!!!!!!! Code is: %d  errno: %d\n",
+                   szDevName, m_nDevID, errno );
+        
+            //Error opening device.
+         }
+      }
+      break;
+
+      default:
+         STDERR("Unknown audio interface in openAudioDevice()\n");
+   }
+}
+
+void HelixSimplePlayer::closeAudioDevice()
+{
+   switch (m_direct)
+   {
+      case OSS:
+      {
+         if( m_nDevID >= 0 )
+            ::close( m_nDevID );
+      }
+      break;
+
+      default:
+         STDERR("Unknown audio interface in openAudioDevice()\n");
+   }
+}
+
+int HelixSimplePlayer::getDirectHWVolume()
+{
+   int nRetVolume   = 0;
+
+   switch (m_direct)
+   {
+      case OSS:
+      {
+         int nVolume      = 0;
+         int nLeftVolume  = 0;
+         int nRightVolume = 0;
+    
+         if (m_nDevID < 0 || (::ioctl( m_nDevID, MIXER_READ(HX_VOLUME), &nVolume) < 0))
+         {
+            STDERR("ioctl fails when reading HW volume\n");
+            nRetVolume = -1;
+         }
+         nLeftVolume  = (nVolume & 0x000000ff); 
+         nRightVolume = (nVolume & 0x0000ff00) >> 8;
+         
+         //Which one to use? Average them?
+         nRetVolume = nLeftVolume ;
+      }
+      break;
+
+      default:
+         STDERR("Unknown audio interface in getDirectHWVolume()\n");
+   }
+
+   return nRetVolume; 
+}
+
+void HelixSimplePlayer::setDirectHWVolume(int vol)
+{
+   switch (m_direct)
+   {
+      case OSS:
+      {
+         int nNewVolume=0;
+
+         //Set both left and right volumes.
+         nNewVolume = (vol & 0xff) | ((vol & 0xff) << 8);
+    
+         if (::ioctl( m_nDevID, MIXER_WRITE(HX_VOLUME), &nNewVolume) < 0)
+            STDERR("Unable to set direct HW volume\n");
+      }
+      break;
+
+      default:
+         STDERR("Unknown audio interface in setDirectHWVolume()\n");
+   }
 }
 
 
@@ -860,6 +991,7 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       if (HXR_OK == ppctrl[playerIndex]->pPlayer->OpenURL(ppctrl[playerIndex]->pszURL))
       {
          STDERR("opened player on %d src cnt %d\n", playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());         
+         m_urlchanged = true;
       }
 #else
       /* try OpenRequest instead... */
@@ -871,6 +1003,7 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
          //STDERR("GOT THE IHXRequest Interface!!\n");
          ireq->SetURL(ppctrl[playerIndex]->pszURL);
          ppctrl[playerIndex]->pPlayer2->OpenRequest(ireq);
+         m_urlchanged = true;
          ireq->Release();
       }
       pthread_mutex_unlock(&m_engine_m);
@@ -1175,11 +1308,25 @@ void HelixSimplePlayer::dispatch()
 {
    struct _HXxEvent *pNothing = 0x0;
    struct timeval tv;
+   int volAfter = 0;
    
    tv.tv_sec = 0;
    tv.tv_usec = SLEEP_TIME*1000;
 
+   if (m_urlchanged)
+   {
+      m_volBefore = getDirectHWVolume();
+      m_urlchanged = false;
+      STDERR("Volume is: %d\n", m_volBefore);
+   }
    pEngine->EventOccurred(pNothing);
+   if (m_volBefore > 0 && m_volAtStart != m_volBefore && (volAfter = getDirectHWVolume()) != m_volBefore)
+   {
+      STDERR("RESETTING VOLUME TO: %d\n", m_volBefore);
+      setDirectHWVolume(m_volBefore);
+      STDERR("Now Volume is %d\n", getDirectHWVolume());
+      m_volBefore = -1;
+   }
 }
 
 
