@@ -27,7 +27,6 @@
 #include <qdir.h>
 
 #include <kapplication.h> //kapp
-#include <kdebug.h>
 #include <kdirlister.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
@@ -648,22 +647,23 @@ void MediaDevice::setUmountCommand(const QString & umnt)
 
 int MediaDevice::mount()
 {
+    debug() << "mounting" << endl;
     QString cmdS=m_mntcmd;
 
-    kdDebug() << "attempting mount with command: [" << cmdS << "]" << endl;
+    debug() << "attempting mount with command: [" << cmdS << "]" << endl;
     int e=sysCall(cmdS);
-    kdDebug() << "mount-cmd: e=" << e << endl;
+    debug() << "mount-cmd: e=" << e << endl;
     return e;
 }
 
 int MediaDevice::umount()
 {
-    kdDebug() << "umounting" << endl;
+    debug() << "umounting" << endl;
     QString cmdS=m_umntcmd;
 
-    kdDebug() << "attempting umount with command: [" << cmdS << "]" << endl;
+    debug() << "attempting umount with command: [" << cmdS << "]" << endl;
     int e=sysCall(cmdS);
-    kdDebug() << "umount-cmd: e=" << e << endl;
+    debug() << "umount-cmd: e=" << e << endl;
 
     return e;
 }
