@@ -9,11 +9,11 @@
 
 #include "amarokconfig.h"
 #include "engineobserver.h"
+#include "prettypopupmenu.h"
 #include "sliderwidget.h"
 
 #include <kaction.h>
 #include <kactionclasses.h>
-#include <kpopupmenu.h>
 #include <qguardedptr.h>
 
 class KActionCollection;
@@ -22,7 +22,7 @@ class KHelpMenu;
 
 namespace amaroK
 {
-    class Menu : public KPopupMenu
+    class Menu : public PrettyPopupMenu
     {
         Q_OBJECT
         public:
