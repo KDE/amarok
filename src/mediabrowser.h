@@ -102,6 +102,9 @@ class MediaDeviceView : public QVBox
         MediaDeviceView( MediaBrowser* parent );
         ~MediaDeviceView();
 
+    private slots:
+        void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
+
     private:
         QLabel*          m_stats;
         KProgress*       m_progress;
@@ -137,6 +140,8 @@ class MediaDevice : public QObject
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
+        void clearItems();
+        void removeSelected();
         void config();
         void setMountCommand(const QString & mnt);
         void setUmountCommand(const QString & umnt);

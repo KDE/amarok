@@ -429,6 +429,31 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     connect( m_connectButton,  SIGNAL( clicked() ), MediaDevice::instance(), SLOT( ipodConnection() ) );
     connect( m_transferButton, SIGNAL( clicked() ), MediaDevice::instance(), SLOT( transferFiles() ) );
     connect( m_configButton,   SIGNAL( clicked() ), MediaDevice::instance(), SLOT( config() ) );
+    connect( m_transferList, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );}
+
+void
+MediaDeviceView::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
+{
+    if ( item )
+    {
+        KPopupMenu menu( this );
+
+        enum Actions { REMOVE_SELECTED, CLEAR_ALL };
+
+        menu.insertItem( SmallIconSet( "edittrash" ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
+        menu.insertItem( SmallIconSet( "view_remove" ), i18n( "&Clear Queue" ), CLEAR_ALL );
+
+        switch( menu.exec( point ) )
+        {
+            case REMOVE_SELECTED:
+                m_device->removeSelected();
+                break;
+            case CLEAR_ALL:
+                m_device->clearItems();
+                break;
+        }
+    }
 }
 
 
@@ -603,6 +628,30 @@ MediaDevice::songsByArtistAlbum( const QString& artist, const QString& album )
     }
 
     return items;
+}
+
+void
+MediaDevice::clearItems()
+{
+    m_parent->m_transferList->clear();
+    m_transferURLs.clear();
+    m_parent->m_stats->setText( i18n( "0 tracks in queue" ) );
+    m_parent->m_transferButton->setEnabled( false );
+}
+
+void
+MediaDevice::removeSelected()
+{
+    QPtrList<QListViewItem>  selected = m_parent->m_transferList->selectedItems();
+
+    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    {
+        m_transferURLs.remove( item->text( 0 ) );
+        m_parent->m_transferList->takeItem( item );
+        delete item;
+    }
+    m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
+    m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
 }
 
 void
