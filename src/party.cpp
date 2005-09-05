@@ -220,6 +220,9 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
 {
     if( enable )
     {
+        KConfig *config = amaroK::config( "Notification Messages" );
+        showDialog &= config->readBoolEntry( "showDynamicInfo", true );
+
         if( showDialog )
         {
             QString text = i18n( "<p align=\"center\"><b>Dynamic Mode</b></p>"
@@ -232,7 +235,7 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
             int info = KMessageBox::messageBox( this, KMessageBox::Information, text, i18n("Dynamic Mode Introduction"),
                                                 i18n("Continue"), i18n("Cancel"), "showDynamicInfo" );
 
-            if( info != KMessageBox::Yes )
+            if( info != KMessageBox::Ok )
                 return;
         }
 
