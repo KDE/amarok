@@ -5,7 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.2:
   FEATURES:
-    * New "Save as Playlist" option in the collection browser context menu.
+    * Added "Save as Playlist" option to the collection browser context
+      menu.
     * Allow removing of items in the Media Device browser transfer
       queue.
 
