@@ -3,6 +3,15 @@ amaroK ChangeLog
 (C) 2002-2005 the amaroK authors.
 
 
+VERSION 1.3.2:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+
+
+
 VERSION 1.3.1:
   FEATURES:
     * Added 'Set as Playlist (Crop)' and 'Save as Playlist' options in the
@@ -45,7 +54,7 @@ VERSION 1.3.1:
       the playlist.
 
   CHANGES:
-    * New "Blue Danna" splash screen. Created by Nenad Grujicic, modified by 
+    * New "Blue Danna" splash screen. Created by Nenad Grujicic, modified by
       Nathan Adolph.
     * 'Stop after track' is now saved (and so remembered across amaroK
       restarts).
