@@ -334,18 +334,16 @@ void TagDialog::readTags()
         m_currentCover = cover;
     }
 
-    // Disable the tag editor for streams
-    if ( !m_bundle.url().isLocalFile() )
-    {
-          kLineEdit_title->setReadOnly( true );
-          kComboBox_artist->setEnabled( false );
-          kComboBox_album->setEnabled( false );
-          kComboBox_genre->setEnabled( false );
-          kIntSpinBox_track->setEnabled( false );
-          kIntSpinBox_year->setEnabled( false );
-          kIntSpinBox_score->setEnabled( false );
-          kLineEdit_comment->setEnabled( false );
-    }
+    // enable only for local files
+    bool local = !m_bundle.url().isLocalFile();
+    kLineEdit_title->setReadOnly( local );
+    kComboBox_artist->setEnabled( !local );
+    kComboBox_album->setEnabled( !local );
+    kComboBox_genre->setEnabled( !local );
+    kIntSpinBox_track->setEnabled( !local );
+    kIntSpinBox_year->setEnabled( !local );
+    kIntSpinBox_score->setEnabled( !local );
+    kLineEdit_comment->setEnabled( !local );
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     if ( m_bundle.url().isLocalFile() )
