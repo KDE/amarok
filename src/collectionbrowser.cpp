@@ -20,6 +20,7 @@
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"       //insertMedia()
+#include "playlistbrowser.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 
@@ -1129,11 +1130,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
 
         #ifdef AMAZON_SUPPORT
-        enum Actions { APPEND, MAKE, QUEUE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM,
+        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM,
                        BURN_DATACD, BURN_AUDIOCD, COVER, INFO,
                        COMPILATION_SET, COMPILATION_UNSET  };
         #else
-        enum Actions { APPEND, MAKE, QUEUE, BURN_ARTIST, BURN_ALBUM,
+        enum Actions { APPEND, QUEUE, MAKE, SAVE, BURN_ARTIST, BURN_ALBUM,
                        BURN_DATACD, BURN_AUDIOCD, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, MEDIA_DEVICE };
         #endif
@@ -1141,7 +1142,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" )
             : i18n( "&Queue Tracks" ), QUEUE );
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+
+        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MAKE );
+        if( selection.count() > 1 )
+            menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SAVE );
         menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
@@ -1186,13 +1190,16 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             case APPEND:
                 Playlist::instance()->insertMedia( selection, Playlist::Append );
                 break;
-           case MAKE:
+            case MAKE:
                 Playlist::instance()->insertMedia( selection, Playlist::Replace );
+                break;
+            case SAVE:
+                playlistFromURLs( selection );
                 break;
             case QUEUE:
                 Playlist::instance()->insertMedia( selection, Playlist::Queue );
                 break;
-             case MEDIA_DEVICE:
+            case MEDIA_DEVICE:
                 MediaDevice::instance()->addURLs( selection );
                 break;
             case BURN_ARTIST:
@@ -1696,6 +1703,28 @@ CollectionView::listSelected()
     return list;
 }
 
+void
+CollectionView::playlistFromURLs( const KURL::List &urls )
+{
+    const QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+
+    if( path.isEmpty() )
+        return;
+
+    QValueList<QString> titles;
+    QValueList<QString> seconds;
+    MetaBundle bundle;
+    for( KURL::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
+    {
+        bundle.setUrl( *it );
+        CollectionDB::instance()->bundleForUrl( &bundle );
+        titles << bundle.title();
+        seconds << QString::number( bundle.length() );
+    }
+
+    if( PlaylistBrowser::savePlaylist( path, urls, titles, seconds ) )
+        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+}
 
 QPixmap
 CollectionView::iconForCategory( const int cat ) const

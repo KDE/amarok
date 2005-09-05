@@ -136,6 +136,8 @@ class CollectionView : public KListView
         void startDrag();
         KURL::List listSelected();
 
+        void playlistFromURLs( const KURL::List &urls );
+
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
 
