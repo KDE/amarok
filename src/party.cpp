@@ -19,7 +19,6 @@
 #include "debug.h"
 #include "party.h"
 #include "partydialogbase.h"
-#include "partyinfobox.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "statusbar.h"
@@ -32,6 +31,7 @@
 #include <kiconloader.h>       //smallIcon
 #include <klocale.h>
 #include <knuminput.h>
+#include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <ktoolbar.h>
 #include <kurldrag.h>          //dragObject()
@@ -220,14 +220,20 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
 {
     if( enable )
     {
-        if( showDialog && AmarokConfig::dynamicInfo() )
+        if( showDialog )
         {
-            PartyInfoBox dialog( this );
-            kapp->setTopWidget( &dialog );
-            dialog.setCaption( kapp->makeStdCaption( i18n("Dynamic Mode Introduction") ) );
+            QString text = i18n( "<p align=\"center\"><b>Dynamic Mode</b></p>"
+                           "Dynamic mode is a powerful method to manipulate your playlist. amaroK can automatically remove played"
+                           "items and insert new ones to suit your taste!<br>"
+                           "<br>"
+                           "If you select <i>Playlist Shuffle</i>, make sure you choose some playlists or smart playlists by right-clicking"
+                           "on the items in the playlist browser" );
 
-            if( dialog.exec() == QDialog::Accepted )
-                AmarokConfig::setDynamicInfo( !dialog.m_showInfo->isChecked() );
+            int info = KMessageBox::messageBox( this, KMessageBox::Information, text, i18n("Dynamic Mode Introduction"),
+                                                i18n("Continue"), i18n("Cancel"), "showDynamicInfo" );
+
+            if( info != KMessageBox::Yes )
+                return;
         }
 
         // uncheck before disabling

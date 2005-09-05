@@ -82,7 +82,6 @@ amarokapp_SOURCES = \
     osd.cpp \
     party.cpp \
     partydialogbase.ui \
-    partyinfobox.ui \
     playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
