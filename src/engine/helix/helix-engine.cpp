@@ -223,19 +223,12 @@ HelixEngine::load( const KURL &url, bool isStream )
    emit stateChanged( Engine::Idle );
    m_url = url;
 
-   // most unfortunate...KURL represents a file with no leading slash, Helix uses a leading slash 'file:///home/abc.mp3' for example
    if (url.isLocalFile())
-   {
-      QString tmp;
-      tmp ="file://" + url.directory() + "/" + url.filename();
-
-      debug() << tmp << endl;
-      HelixSimplePlayer::setURL( QFile::encodeName( tmp ), nextPlayer );
-   }
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
    else
    {
       m_isStream = true;
-      HelixSimplePlayer::setURL( QFile::encodeName( url.prettyURL() ), nextPlayer );
+      HelixSimplePlayer::setURL( QFile::encodeName( url.url() ), nextPlayer );
    }
 
    return true;

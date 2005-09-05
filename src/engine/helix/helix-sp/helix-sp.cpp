@@ -953,7 +953,7 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex)
       if (len >= MAXPATHLEN)
          return -1;;
 
-      //STDERR("Trying to play: %s\n", file);
+      STDERR("Trying to setURL: %s\n", file);
       
       if (ppctrl[playerIndex]->pszURL)
          delete [] ppctrl[playerIndex]->pszURL;
