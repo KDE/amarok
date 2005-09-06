@@ -13,6 +13,8 @@ VERSION 1.3.2:
   CHANGES:
 
   BUGFIXES:
+    * Fixed playing of files that have special characters like '#' in 
+      helix engine 
     * Fixed issue where selecting multiple items after filtering the
       playlist would cause all the other items 'between' them (but
       invisible due to the filter) to also get selected.
