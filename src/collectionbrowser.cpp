@@ -1144,7 +1144,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             : i18n( "&Queue Tracks" ), QUEUE );
 
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MAKE );
-        if( selection.count() > 1 )
+        if( selection.count() > 1 || item->isExpandable() )
             menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SAVE );
         menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 

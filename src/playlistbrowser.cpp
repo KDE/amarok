@@ -1164,7 +1164,7 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
     playlist->setSelected( true );
 }
 
-bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> &urls,
+bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> &in_urls,
                                     const QValueList<QString> &titles, const QValueList<QString> &seconds,
                                     bool relative )
 {
@@ -1182,15 +1182,28 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> 
     QTextStream stream( &file );
     stream << "#EXTM3U\n";
 
+    KURL::List urls;
+    for( int i = 0, n = in_urls.count(); i < n; ++i )
+    {
+        const KURL &url = in_urls[i];
+        if( QFileInfo( url.path() ).isDir() )
+            urls += recurse( url );
+        else
+            urls += url;
+    }
+
     for( int i = 0, n = urls.count(); i < n; ++i )
     {
-        const KURL url = urls[i];
+        const KURL &url = urls[i];
 
-        stream << "#EXTINF:";
-        stream << seconds[i];
-        stream << ',';
-        stream << titles[i];
-        stream << '\n';
+        if( !titles.isEmpty() && !seconds.isEmpty() )
+        {
+            stream << "#EXTINF:";
+            stream << seconds[i];
+            stream << ',';
+            stream << titles[i];
+            stream << '\n';
+        }
         if (url.protocol() == "file" ) {
             if ( relative ) {
                 const QFileInfo fi(file);
@@ -1643,6 +1656,40 @@ void PlaylistBrowser::savePLS( PlaylistEntry *item, bool append )
 
         file.close();
     }
+}
+
+#include <kdirlister.h>
+#include <qeventloop.h>
+#include "playlistloader.h"
+//this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
+KURL::List PlaylistBrowser::recurse( const KURL &url )
+{
+    typedef QMap<QString, KURL> FileMap;
+
+    KDirLister lister( false );
+    lister.setAutoUpdate( false );
+    lister.setAutoErrorHandlingEnabled( false, 0 );
+    lister.openURL( url );
+
+    while( !lister.isFinished() )
+        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+
+    KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
+    KURL::List urls;
+    FileMap files;
+    for( KFileItem *item = items.first(); item; item = items.next() ) {
+        if( item->isFile() ) { files[item->name()] = item->url(); continue; }
+        if( item->isDir() ) urls += recurse( item->url() );
+    }
+
+    foreachType( FileMap, files )
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+        if( !PlaylistFile::isPlaylistFile( (*it).fileName() ) )
+            urls += *it;
+
+    return urls;
 }
 
 

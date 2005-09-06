@@ -53,7 +53,7 @@ class FileBrowser : public QVBox
 {
     Q_OBJECT
 
-    enum MenuId { MakePlaylist, AppendToPlaylist, SelectAllFiles, BurnAudioCd, BurnDataCd };
+    enum MenuId { MakePlaylist, SavePlaylist, AppendToPlaylist, SelectAllFiles, BurnAudioCd, BurnDataCd };
 
 public:
     FileBrowser( const char *name = 0 );
@@ -74,6 +74,7 @@ private slots:
 
 private:
     KURL::List selectedItems();
+    void playlistFromURLs( const KURL::List &urls );
 
     KURLComboBox  *m_combo;
     KDirOperator  *m_dir;

@@ -53,7 +53,8 @@ class PlaylistBrowser : public QVBox
         void addPodcast( QListViewItem *parent = 0 );
 
         static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
-                                  const QValueList<QString> &titles, const QValueList<QString> &seconds,
+                                  const QValueList<QString> &titles = QValueList<QString>(),
+                                  const QValueList<QString> &seconds = QValueList<QString>(),
                                   bool relative = AmarokConfig::relativePlaylist() );
 
         QString partyBrowserCache() const;
@@ -126,6 +127,8 @@ class PlaylistBrowser : public QVBox
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
         void savePLS( PlaylistEntry *, bool append );
+
+        static KURL::List recurse( const KURL &url );
 
         static PlaylistBrowser *s_instance;
 

@@ -40,7 +40,9 @@
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
 #include "playlist.h"
+#include "playlistbrowser.h"
 #include "playlistloader.h"
+#include "playlistwindow.h"
 #include <qdir.h>
 #include <qhbox.h>
 #include <qiconview.h>
@@ -76,7 +78,7 @@ public:
     }
 public slots:
     //reimplemented due to a bug in KDirOperator::activatedMenu ( KDE 3.4.2 ) - See Bug #103305
-    virtual void activatedMenu (const KFileItem *item, const QPoint &pos) {
+    virtual void activatedMenu (const KFileItem *, const QPoint &pos) {
         updateSelectionDependentActions();
         ((KActionMenu*)actionCollection()->action("popupMenu"))->popupMenu()->popup( pos );
     }
@@ -155,7 +157,8 @@ FileBrowser::FileBrowser( const char * name )
         menu->clear();
 
         menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), AppendToPlaylist );
-        menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MakePlaylist );
+        menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MakePlaylist );
+        menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BurnDataCd );
         menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BurnAudioCd );
@@ -235,6 +238,17 @@ KURL::List FileBrowser::selectedItems()
     return list;
 }
 
+void FileBrowser::playlistFromURLs( const KURL::List &urls )
+{
+    const QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+    if( path.isEmpty() )
+        return;
+
+    if( PlaylistBrowser::savePlaylist( path, urls ) )
+        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+}
+
+
 //END Private Methods
 
 
@@ -304,6 +318,10 @@ FileBrowser::contextMenuActivated( int id )
     {
     case MakePlaylist:
         Playlist::instance()->insertMedia( selectedItems(), Playlist::Replace );
+        break;
+
+    case SavePlaylist:
+        playlistFromURLs( selectedItems() );
         break;
 
     case AppendToPlaylist:
