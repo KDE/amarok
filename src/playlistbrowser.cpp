@@ -948,7 +948,11 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             stream.setEncoding( QTextStream::UnicodeUTF8 );
 
             if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
+            {
+                // Invalid podcasts should still be added to the browser, which means there is no cached xml.
+                last = new PodcastChannel( p, last, url );
                 continue;
+            }
 
             last = new PodcastChannel( p, last, url, n, xml );
             #define item static_cast<PodcastChannel*>(last)
