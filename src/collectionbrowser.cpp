@@ -1711,15 +1711,17 @@ CollectionView::playlistFromURLs( const KURL::List &urls )
     if( path.isEmpty() )
         return;
 
+    CollectionDB* db = CollectionDB::instance();
+
     QValueList<QString> titles;
     QValueList<QString> seconds;
-    MetaBundle bundle;
     for( KURL::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
     {
-        bundle.setUrl( *it );
-        CollectionDB::instance()->bundleForUrl( &bundle );
-        titles << bundle.title();
-        seconds << QString::number( bundle.length() );
+        const QString query = QString("SELECT title, length FROM tags WHERE url = '%1';")
+                              .arg( db->escapeString( (*it).path() ) ); //no operator->, how suck!
+        QStringList result = db->query( query );
+        titles << result[0];
+        seconds << result[1];
     }
 
     if( PlaylistBrowser::savePlaylist( path, urls, titles, seconds ) )
