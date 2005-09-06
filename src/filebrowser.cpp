@@ -39,6 +39,7 @@
 #include <ktoolbarbutton.h>  ///@see ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
+#include "mediabrowser.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistloader.h"
@@ -159,6 +160,7 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), AppendToPlaylist );
         menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MakePlaylist );
         menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
+        menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
         menu->insertSeparator();
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BurnDataCd );
         menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BurnAudioCd );
@@ -326,6 +328,10 @@ FileBrowser::contextMenuActivated( int id )
 
     case AppendToPlaylist:
         Playlist::instance()->insertMedia( selectedItems() );
+        break;
+
+    case MediaDevice:
+        MediaDevice::instance()->addURLs( selectedItems() );
         break;
 
     case SelectAllFiles:

@@ -527,7 +527,7 @@ MediaDevice::addURL( const KURL& url )
 
         m_transferURLs << url;
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
-        m_parent->m_transferButton->setDisabled( false );
+        m_parent->m_transferButton->setEnabled( m_parent->m_deviceList->childCount() != 0 );
     } else
         amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
@@ -909,6 +909,7 @@ MediaDevice::ipodConnection() //SLOT
         if( m_parent->m_deviceList->childCount() != 0 )
         {
             m_parent->m_connectButton->setOn( true );
+            m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
         }
         else
         {
