@@ -430,6 +430,8 @@ class QueryBuilder
         void beginOR(); //filters will be ORed instead of ANDed
         void endOR();   //don't forget to end it!
 
+        void setGoogleFilter( int defaultTables, QString query );
+
         void addURLFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter);

@@ -471,7 +471,7 @@ CollectionView::renderView()  //SLOT
         if( q_cat3 != CollectionBrowser::IdNone )
             qb.sortBy( q_cat3, QueryBuilder::valName );
 
-        setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+        qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
         values = qb.run();
@@ -517,7 +517,7 @@ CollectionView::renderView()  //SLOT
         if( VisYearAlbum == 1 )
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
 
-        setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+        qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
         if( VisYearAlbum == 1 )
             qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
@@ -570,7 +570,7 @@ CollectionView::renderView()  //SLOT
         {
             qb.clear();
             qb.addReturnValue( q_cat1, QueryBuilder::valName );
-            setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+            qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
             qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
             qb.setLimit( 0, 1 );
             values = qb.run();
@@ -895,7 +895,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             break;
     }
 
-    setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     values = qb.run();
     int countReturnValues = qb.countReturnValues();
@@ -1437,7 +1437,7 @@ CollectionView::listSelected()
             else
                 qb.setOptions( QueryBuilder::optOnlyCompilations );
 
-            setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+            qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
             if( VisYearAlbum == 1 )
                 qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
@@ -1532,7 +1532,7 @@ CollectionView::listSelected()
                     else
                         qb.addMatches( q_cat2, matches );
 
-                    setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+                    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
                     if( VisYearAlbum == 1 )
                         qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
@@ -1660,7 +1660,7 @@ CollectionView::listSelected()
 
                             qb.addMatches( q_cat3, matches );
                         }
-                        setQBFilters( qb, m_filter, q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong );
+                        qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
 
                         if( VisYearAlbum == 1 )
                             qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName);
@@ -1897,188 +1897,6 @@ CollectionView::yearAlbumCalc( QString &year, QString &text )
                        text.find( i18n(" - ") ) -
                        i18n(" - ").length() );
 }
-
-
-void
-CollectionView::setQBFilters( QueryBuilder &qb, QString query, const int &defaults )
-{
-    if( query.contains( "\"" ) % 2 == 1 ) query += "\""; //make an even number of "s
-
-    //something like thingy"bla"stuff -> thingy "bla" stuff
-    bool odd = false;
-    for( int pos = query.find( "\"" );
-         pos >= 0 && pos <= (int)query.length();
-         pos = query.find( "\"", pos + 1 ) )
-    {
-        query = query.insert( odd ? ++pos : pos++, " " );
-        odd = !odd;
-    }
-    query = query.simplifyWhiteSpace();
-
-    int x; //position in string of the end of the next element
-    bool OR = false, minus = false; //whether the next element is to be OR, and/or negated
-    QString tmp, s = "", field = ""; //the current element, a tempstring, and the field: of the next element
-    QStringList tmpl; //list of elements of which at least one has to match (OR)
-    QValueList<QStringList> allof; //list of all the tmpls, of which all have to match
-    while( !query.isEmpty() )  //seperate query into parts which all have to match
-    {
-        if( query.startsWith( " " ) )
-            query = query.mid( 1 ); //cuts off the first character
-        if( query.startsWith( "\"" ) ) //take stuff in "s literally (basically just ends up ignoring spaces)
-        {
-            query = query.mid( 1 );
-            x = query.find( "\"" );
-        }
-        else
-            x = query.find( " " );
-        if( x < 0 )
-            x = query.length();
-        s = query.left( x ); //get the element
-        query = query.mid( x + 1 ); //move on
-
-        if( !field.isEmpty() || ( s != "-" && s != "AND" && s != "OR" &&
-                                  !s.endsWith( ":" ) && !s.endsWith( ":>" ) && !s.endsWith( ":<" ) ) )
-        {
-            if( !OR && !tmpl.isEmpty() ) //add the OR list to the AND list
-            {
-                allof += tmpl;
-                tmpl.clear();
-            }
-            else
-                OR = false;
-            tmp = field + s;
-            if( minus )
-            {
-                tmp = "-" + tmp;
-                minus = false;
-            }
-            tmpl += tmp;
-            tmp = field = "";
-        }
-        else if( s.endsWith( ":" ) || s.endsWith( ":>" ) || s.endsWith( ":<" ) )
-            field = s;
-        else if( s == "OR" )
-            OR = true;
-        else if( s == "-" )
-            minus = true;
-        else
-            OR = false;
-    }
-    if( !tmpl.isEmpty() )
-        allof += tmpl;
-
-    const uint allofcount = allof.count();
-    for( uint i = 0; i < allofcount; ++i ) //check each part for matchiness
-    {
-        qb.beginOR();
-        uint count = allof[i].count();
-        for( uint ii = 0; ii < count; ++ii )
-        {
-            field = QString::null;
-            s = allof[i][ii];
-            bool neg = s.startsWith( "-" );
-            if ( neg )
-                s = s.mid( 1 ); //cut off the -
-            x = s.find( ":" ); //where the field ends and the thing-to-match begins
-            if( x > 0 )
-            {
-                field = s.left( x ).lower();
-                s = s.mid( x + 1 );
-            }
-
-            int mode = QueryBuilder::modeNormal;
-            if( !field.isEmpty() && s.startsWith( ">" ) )
-            {
-                s = s.mid( 1 );
-                mode = QueryBuilder::modeGreater;
-            }
-            else if( !field.isEmpty() && s.startsWith( "<" ) )
-            {
-                s = s.mid( 1 );
-                mode = QueryBuilder::modeLess;
-            }
-
-            int table = -1, value = -1;
-            if( field == "artist" )
-                table = QueryBuilder::tabArtist;
-            else if( field == "album" )
-                table = QueryBuilder::tabAlbum;
-            else if( field == "title" )
-                table = QueryBuilder::tabSong;
-            else if( field == "genre" )
-                table = QueryBuilder::tabGenre;
-            else if( field == "year" )
-                table = QueryBuilder::tabYear;
-            else if( field == "score" )
-            {
-                table = QueryBuilder::tabStats;
-                value = QueryBuilder::valScore;
-            }
-            else if( field == "directory" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valDirectory;
-            }
-            else if( field == "length" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valLength;
-            }
-            else if( field == "playcount" )
-            {
-                table = QueryBuilder::tabStats;
-                value = QueryBuilder::valPlayCounter;
-            }
-            else if( field == "samplerate" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valSamplerate;
-            }
-            else if( field == "track" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valTrack;
-            }
-            else if( field == "filename" || field == "url" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valURL;
-            }
-            else if( field == "bitrate" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valBitrate;
-            }
-            else if( field == "comment" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valComment;
-            }
-            else if( field == "lyrics" )
-            {
-                table = QueryBuilder::tabSong;
-                value = QueryBuilder::valLyrics;
-            }
-
-            if( neg )
-            {
-                if( value >= 0 )
-                    qb.excludeFilter( table, value, s, mode );
-                else
-                    qb.excludeFilter( table >= 0 ? table : defaults, s );
-            }
-            else
-            {
-                if( value >= 0 )
-                    qb.addFilter( table, value, s, mode );
-                else
-                    qb.addFilter( table >= 0 ? table : defaults, s );
-            }
-        }
-        qb.endOR();
-    }
-}
-
 
 void
 CollectionView::viewportPaintEvent( QPaintEvent *e )

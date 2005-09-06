@@ -156,8 +156,6 @@ class CollectionView : public KListView
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
 
-        void setQBFilters( QueryBuilder &qb, QString query, const int &defaults );
-
     //attributes:
         static CollectionView* m_instance;
 
