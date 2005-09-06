@@ -202,6 +202,8 @@ class Playlist : private KListView, public EngineObserver
 
         typedef QMap<QString, QString> QStringMap;
 
+        void setSelected( QListViewItem *item, bool selected );
+
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         PlaylistItem *restoreCurrentTrack();
 

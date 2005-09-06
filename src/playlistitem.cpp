@@ -164,6 +164,20 @@ void PlaylistItem::setEnabled( bool enabled )
     repaint();
 }
 
+void PlaylistItem::setSelected( bool selected )
+{
+    if( isVisible() )
+        KListViewItem::setSelected( selected );
+}
+
+void PlaylistItem::setVisible( bool visible )
+{
+    if( !visible )
+        KListViewItem::setSelected( false );
+
+    KListViewItem::setVisible( visible );
+}
+
 void PlaylistItem::setText( const MetaBundle &bundle )
 {
     for( int i = 0; i < NUM_COLUMNS; ++i )

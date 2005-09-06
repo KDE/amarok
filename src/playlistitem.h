@@ -70,6 +70,9 @@ class PlaylistItem : public KListViewItem
         bool isEnabled() { return m_enabled; }
         void setEnabled( bool enable );
 
+        void setSelected( bool selected );
+        void setVisible( bool visible );
+
         /// convenience functions
         Playlist *listView() const { return (Playlist*)KListViewItem::listView(); }
         PlaylistItem *nextSibling() const { return (PlaylistItem*)KListViewItem::nextSibling(); }

@@ -1338,6 +1338,14 @@ Playlist::restoreCurrentTrack()
     return m_currentTrack;
 }
 
+void
+Playlist::setSelected( QListViewItem *item, bool selected )
+{
+    if( item && item->isVisible() )
+        KListView::setSelected( item, selected );
+}
+
+
 bool
 Playlist::isTrackAfter() const
 {
