@@ -12,6 +12,7 @@
 #include "collectionreader.h"
 #include "debug.h"
 #include "k3bexporter.h"
+#include "mediabrowser.h"
 #include "party.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
@@ -2080,14 +2081,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isPodcastItem( item ) ) {
         #define item static_cast<PodcastItem*>(item)
-        enum Actions { LOAD, INFO, GET };
+        enum Actions { LOAD, INFO, GET, MEDIA_DEVICE };
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
+        menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
-        if( item->hasDownloaded() )
-            menu.setItemEnabled( GET, false );
+        menu.setItemEnabled( GET, !item->hasDownloaded() );
+        menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
 
         switch( menu.exec( p ) )
         {
@@ -2102,7 +2104,11 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case GET:
                 item->downloadMedia();
                 break;
-        }
+
+            case MEDIA_DEVICE:
+                MediaDevice::instance()->addURLs( item->localUrl() );
+                break;
+       }
         #undef item
     }
     else if( isCategory( item ) ) {
