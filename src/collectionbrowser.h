@@ -31,6 +31,7 @@ class KPopupMenu;
 class KProgress;
 
 class CollectionView;
+class CollectionItem;
 
 class CollectionBrowser: public QVBox
 {
@@ -52,7 +53,7 @@ class CollectionBrowser: public QVBox
     private:
         //attributes:
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
-                         IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256, IdVisYearAlbum = 512, IdArtistVisYearAlbum = 1024 };
+                    IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256, IdVisYearAlbum = 512, IdArtistVisYearAlbum = 1024 };
 
         KAction* m_configureAction;
         KAction* m_scanAction;
@@ -68,6 +69,33 @@ class CollectionBrowser: public QVBox
         QLabel*     m_infoA;
         QLabel*     m_infoB;
         QTimer*     m_timer;
+
+    friend class CollectionItem; // for CatMenuId
+};
+
+
+class CollectionItem : public KListViewItem {
+    public:
+        CollectionItem( QListView* parent, int cat )
+            : KListViewItem( parent )
+            , m_cat( cat ) {};
+        CollectionItem( QListView* parent )
+            : KListViewItem( parent ) {};
+        CollectionItem( QListViewItem* parent, int cat )
+            : KListViewItem( parent )
+            , m_cat( cat ) {};
+        CollectionItem( QListViewItem* parent )
+            : KListViewItem( parent ) {};
+        void setUrl( const QString& url ) { m_url.setPath( url ); }
+        const KURL& url() const { return m_url; }
+
+    private:
+        //for sorting
+        virtual int compare( QListViewItem*, int, bool ) const;
+
+    //attributes:
+        KURL m_url;
+        int m_cat;
 };
 
 
@@ -79,19 +107,7 @@ class CollectionView : public KListView
     public:
         enum ViewMode  { modeTreeView, modeFlatView };
 
-        class Item : public KListViewItem {
-            public:
-                Item( QListView* parent )
-                    : KListViewItem( parent ) {};
-                Item( QListViewItem* parent )
-                    : KListViewItem( parent ) {};
-                void setUrl( const QString& url ) { m_url.setPath( url ); }
-                const KURL& url() const { return m_url; }
-
-            //attributes:
-                KURL m_url;
-        };
-        friend class Item; // for access to m_cat2
+        friend class CollectionItem; // for access to m_cat2
         friend class ContextBrowser; // for setupDirs()
 
         CollectionView( CollectionBrowser* parent );
@@ -100,7 +116,7 @@ class CollectionView : public KListView
         static CollectionView* instance() { return m_instance; }
         void setFilter( const QString &filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
-        Item* currentItem() { return static_cast<Item*>( KListView::currentItem() ); }
+        CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
 
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */

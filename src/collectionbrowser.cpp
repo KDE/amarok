@@ -208,7 +208,7 @@ CollectionBrowser::refreshInfo()
     else
     {
         m_infoA->setText( i18n("1 Track","%n Tracks", a[0].toInt()) );
-	m_infoA->show();
+    m_infoA->show();
     }
     if( b.isEmpty() )
     {
@@ -216,7 +216,7 @@ CollectionBrowser::refreshInfo()
     }
     else
     {
-	m_infoB->setText( descriptor );
+    m_infoB->setText( descriptor );
         m_infoB->show();
     }
 }
@@ -341,6 +341,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     setSelectionMode( QListView::Extended );
     setItemsMovable( false );
+    setSorting( 0 );
     setShowSortIndicator( true );
     setAcceptDrops( false );
     setAllColumnsShowFocus( true );
@@ -482,7 +483,7 @@ CollectionView::renderView()  //SLOT
             if( values[i].stripWhiteSpace().isEmpty() )
                 values[i] = i18n( "Unknown" );
 
-            Item* item = new Item( this );
+            CollectionItem* item = new CollectionItem( this );
             item->setDragEnabled( true );
             item->setDropEnabled( false );
 
@@ -554,7 +555,7 @@ CollectionView::renderView()  //SLOT
                 if ( (*it).startsWith( "the ", false ) )
                     manipulateThe( *it, true );
 
-                KListViewItem* item = new KListViewItem( this );
+                KListViewItem* item = new CollectionItem( this, m_cat1 );
                 item->setExpandable( true );
                 item->setDragEnabled( true );
                 item->setDropEnabled( false );
@@ -577,20 +578,14 @@ CollectionView::renderView()  //SLOT
 
             if ( values.count() )
             {
-                KListViewItem* item = new KListViewItem( this, lastItem() );
+                KListViewItem* item = new CollectionItem( this, m_cat1 );
                 item->setExpandable( true );
                 item->setDragEnabled( true );
                 item->setDropEnabled( false );
-                item->setText( 0, i18n( "Various Artists" ) );
+                    item->setText( 0, i18n( "Various Artists" ) );
                 item->setPixmap( 0, pixmap );
             }
         }
-
-        // we sort because of the items which should begin with 'the' are at the 't' location
-        setSorting( 0 );
-        sort();
-        // we then disable it, as we don't want the children being sorted later as well
-        setSorting( -1 );
     }
     restoreView();
 }
@@ -932,7 +927,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             text = values[ i + 2 ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i + 2 ] + i18n(" - ");
         text += values[ i ].stripWhiteSpace().isEmpty() ? i18n( "Unknown" ) : values[ i ];
 
-        Item* child = new Item( item );
+        CollectionItem* child = new CollectionItem( item, category );
         child->setDragEnabled( true );
         child->setDropEnabled( false );
         child->setText( 0, text );
@@ -1104,7 +1099,7 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
         item->setOpen( !item->isOpen() );
     else
         //direct play & prevent doubles in playlist
-        Playlist::instance()->insertMedia( static_cast<Item*>( item )->url(), Playlist::Unique | Playlist::DirectPlay );
+        Playlist::instance()->insertMedia( static_cast<CollectionItem*>( item )->url(), Playlist::Unique | Playlist::DirectPlay );
 
 }
 
@@ -1251,7 +1246,6 @@ CollectionView::setViewMode( int mode, bool rerender )
         setResizeMode( QListView::LastColumn );
         setRootIsDecorated( true );
         setFullWidth( true );
-        setSorting( -1 ); //disables sorting
     }
     else
     {
@@ -1262,7 +1256,6 @@ CollectionView::setViewMode( int mode, bool rerender )
 
         setResizeMode( QListView::AllColumns );
         setRootIsDecorated( false );
-        setSorting( 0 );
     }
 
     m_viewMode = mode;
@@ -1275,7 +1268,7 @@ void
 CollectionView::fetchCover() //SLOT
 {
     #ifdef AMAZON_SUPPORT
-    Item* item = static_cast<Item*>( currentItem() );
+    CollectionItem* item = static_cast<CollectionItem*>( currentItem() );
     if ( !item ) return;
 
     QString album = item->text(0);
@@ -1400,7 +1393,7 @@ CollectionView::listSelected()
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
             if ( item->isSelected() )
-                list << static_cast<Item*>( item ) ->url();
+                list << static_cast<CollectionItem*>( item ) ->url();
 
         return list;
     }
@@ -1476,7 +1469,7 @@ CollectionView::listSelected()
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() && !child->parent()->isSelected() )
-                    list << static_cast<Item*>( child ) ->url();
+                    list << static_cast<CollectionItem*>( child ) ->url();
     }
     else {
         for ( item = firstChild(); item; item = item->nextSibling() )
@@ -1571,7 +1564,7 @@ CollectionView::listSelected()
         for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
             for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                 if ( grandChild->isSelected() && !grandChild->isExpandable() && !child->parent()->isSelected() && !child->isSelected() )
-                    list << static_cast<Item*>( grandChild ) ->url();
+                    list << static_cast<CollectionItem*>( grandChild ) ->url();
 
     //category 3
     if ( m_cat3 == CollectionBrowser::IdNone )
@@ -1581,7 +1574,7 @@ CollectionView::listSelected()
                 for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                     for ( QListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
                         if ( grandChild2->isSelected() && !child->parent()->isSelected() && !child->isSelected() && !grandChild->isSelected() )
-                            list << static_cast<Item*>( grandChild2 ) ->url();
+                            list << static_cast<CollectionItem*>( grandChild2 ) ->url();
     }
     else {
         for ( item = firstChild(); item; item = item->nextSibling() )
@@ -1698,7 +1691,7 @@ CollectionView::listSelected()
                 for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                     for ( QListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
                         if ( grandChild2->isSelected() && !child->parent()->isSelected() && !child->isSelected() && !grandChild->isSelected() )
-                            list << static_cast<Item*>( grandChild2 ) ->url();
+                            list << static_cast<CollectionItem*>( grandChild2 ) ->url();
 
     return list;
 }
@@ -1932,6 +1925,40 @@ CollectionView::viewportResizeEvent( QResizeEvent* )
 {
     // Needed for correct redraw of bubble help
     triggerUpdate();
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// CLASS CollectionItem
+//////////////////////////////////////////////////////////////////////////////////////////
+int
+CollectionItem::compare( QListViewItem* i, int col, bool /* ascending */) const
+{
+    QString a =    text( col );
+    QString b = i->text( col );
+
+    switch( m_cat ) {
+        // Don't change the order of year categories and tracks
+        case CollectionBrowser::IdNone:
+        case CollectionBrowser::IdVisYearAlbum:
+        case CollectionBrowser::IdYear:
+            return 0;
+        // Various Artists is always the last one
+        case CollectionBrowser::IdArtist:
+            if ( b == i18n("Various Artists") )
+                return -1;
+            if ( a == i18n("Various Artists") )
+                return 1;
+        default:
+        // Unknown is always the first one
+            if ( a == i18n("Unknown") )
+                return -1;
+            if ( b == i18n("Unknown") )
+                return 1;
+        // No special case, then fall on default
+            return QString::localeAwareCompare( a.lower(), b.lower() );
+    }
+
 }
 
 
