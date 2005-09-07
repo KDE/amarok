@@ -506,7 +506,7 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         return new PlaylistCategory(m_listview, m_streamsCategory , i18n("Smart Playlists") );
     }
-   else {
+    else {
         e = d.namedItem( "category" ).toElement();
         if ( e.attribute("formatversion") =="1.1" ) {
             return new PlaylistCategory(m_listview, m_streamsCategory, e );
@@ -933,7 +933,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
         QListViewItem *last = 0;
-        QDomNode n = d.namedItem( "category" ).namedItem("podcast");
+        QDomNode n = d.namedItem( "category" ).namedItem( "podcast" );
 
         for( ; !n.isNull();  n = n.nextSibling() )
         {
@@ -1270,31 +1270,35 @@ PlaylistBrowser::findItem( QString &t, int c ) const
     return (PlaylistBrowserEntry *)m_listview->findItem( t, c, Qt::ExactMatch );
 }
 
-bool PlaylistBrowser::createPlaylist( bool current )
+bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current )
 {
     const QString path = PlaylistDialog::getSaveFileName( i18n("Untitled") );
+    debug() << "Creating playlist" << endl;
+    if( path.isEmpty() )
+        return false;
 
-    if( !path.isEmpty() )
+    if( !parent )
+        parent = static_cast<QListViewItem *>( m_playlistCategory );
+
+    debug() << "Saving Playlist to: " << path << endl;
+
+    if( current )
     {
-        debug() << "Saving Playlist to: " << path << endl;
-
-        if( current )
-        {
-            if ( !Playlist::instance()->saveM3U( path ) ) {
-                return false;
-            }
+        if ( !Playlist::instance()->saveM3U( path ) ) {
+            return false;
         }
-        else
-        {
-            m_lastPlaylist = new PlaylistEntry( static_cast<QListViewItem*>(m_playlistCategory), 0, path );
-        }
-
-        savePlaylists();
-
-        return true;
     }
     else
-        return false;
+    {
+        debug() << "not current!" << endl;
+        m_lastPlaylist = new PlaylistEntry( parent, 0, path );
+        parent->setOpen( true );
+        parent->sortChildItems( 0, true );
+    }
+
+    savePlaylists();
+
+    return true;
 }
 
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
@@ -2200,6 +2204,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 }
                 name = i18n("Folder");
                 if( c ) name = i18n("Folder %1").arg(c);
+                if( tracker == item->firstChild() && !isCategory( tracker ) ) tracker = 0;
 
                 new PlaylistCategory( item, tracker, name, true );
 
@@ -2407,16 +2412,28 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
             }
             else //dropped on a playlist item
             {
+                QListViewItem *parent = item;
+
+                bool isPlaylistFolder = false;
+                while( parent )
+                {
+                    if( parent == PlaylistBrowser::instance()->m_playlistCategory )
+                    {
+                        isPlaylistFolder = true;
+                        break;
+                    }
+                    parent = parent->parent();
+                }
+
                 if( isPlaylist( item ) ) {
                     PlaylistEntry *playlist = (PlaylistEntry *)item;
                     //append the dropped tracks
                     playlist->insertTracks( 0, list, map );
                 }
-                else if( isCategory( item ) &&
-                         item == PlaylistBrowser::instance()->m_playlistCategory )
+                else if( isCategory( item ) && isPlaylistFolder )
                 {
                     PlaylistBrowser *pb = PlaylistBrowser::instance();
-                    if ( pb->createPlaylist( false ) )
+                    if ( pb->createPlaylist( item, false ) )
                         pb->m_lastPlaylist->insertTracks( 0, list, map );
                 }
             }
