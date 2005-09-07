@@ -757,95 +757,21 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 void PlaylistBrowser::saveDynamics()
 {
     QFile file( partyBrowserCache() );
+    QTextStream stream( &file );
 
     if( !file.open( IO_WriteOnly ) ) return;
 
     QDomDocument doc;
-    QDomElement partyB = doc.createElement( "partybrowser" );
-    partyB.setAttribute( "product", "amaroK" );
-    partyB.setAttribute( "version", APP_VERSION );
-    doc.appendChild( partyB );
+    QDomElement dynamicB = m_dynamicCategory->xml();
+    dynamicB.setAttribute( "product", "amaroK" );
+    dynamicB.setAttribute( "version", APP_VERSION );
+    dynamicB.setAttribute( "formatversion", "1.1" );
+    doc.appendChild( dynamicB );
 
-    PlaylistCategory *currentCat=0;
-
-    #define m_dynamicCategory static_cast<QListViewItem *>(m_dynamicCategory)
-
-    QListViewItem *it = m_dynamicCategory->firstChild();
-    for( int count = 0; count < m_dynamicCategory->childCount(); count++ )
-    {
-        QDomElement i;
-
-        if( !isCategory( it ) )
-            currentCat = static_cast<PlaylistCategory*>(it->parent() );
-
-        if( isDynamic( it ) )
-        {
-            PartyEntry *item = (PartyEntry*)it;
-
-            i = doc.createElement("party");
-            i.setAttribute( "name", item->text(0) );
-
-            QDomElement attr = doc.createElement( "cycleTracks" );
-            QDomText t = doc.createTextNode( item->isCycled() ? "true" : "false" );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "markHistory" );
-            t = doc.createTextNode( item->isMarked() ? "true" : "false" );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "upcoming" );
-            t = doc.createTextNode( QString::number( item->upcoming() ) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "previous" );
-            t = doc.createTextNode( QString::number( item->previous() ) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "appendCount" );
-            t = doc.createTextNode( QString::number( item->appendCount() ) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            attr = doc.createElement( "appendType" );
-            t = doc.createTextNode( QString::number( item->appendType() ) );
-            attr.appendChild( t );
-            i.appendChild( attr );
-
-            QString list;
-            if( item->appendType() == 2 )
-            {
-                QStringList items = item->items();
-                for( uint c = 0; c < items.count(); c++ )
-                {
-                    PlaylistBrowserEntry *saveMe = findItem( *(items.at(c)), 0 );
-                    debug() << "Saving item (" << item->text(0) << ") with " << saveMe->text(0) << endl;
-                    list.append( saveMe->text(0) );
-                    if ( c < items.count()-1 )
-                        list.append( ',' );
-                }
-            }
-
-            attr = doc.createElement( "items" );
-            t = doc.createTextNode( list );
-            attr.appendChild( t );
-            i.appendChild( attr );
-        }
-
-        partyB.appendChild( i );
-
-        it = it->nextSibling();
-    }
-
-    #undef m_dynamicCategory
-
-    QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
+
 }
 
 void PlaylistBrowser::loadDynamicItems()
@@ -2091,7 +2017,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, PODCAST, REFRESH, INTERVAL };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC, PODCAST, REFRESH, INTERVAL };
 
         QListViewItem *parentCat = item;
 
@@ -2103,6 +2029,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( item->isFolder() ) {
             menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
+            menu.insertSeparator();
         }
 
         if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
@@ -2114,14 +2041,17 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
 
+        else if( parentCat == static_cast<QListViewItem*>(m_dynamicCategory) )
+            menu.insertItem( SmallIconSet("edit_add"), i18n("Save Dynamic Configuration..."), DYNAMIC );
+
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
             menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             if( parentCat == item )
                 menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
-
         }
+
         menu.insertSeparator();
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
@@ -2148,6 +2078,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case STREAM:
                 addStream( item );
+                break;
+
+            case DYNAMIC:
+                addDynamic( item );
                 break;
 
             case PODCAST:
