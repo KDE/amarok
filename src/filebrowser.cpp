@@ -95,7 +95,13 @@ FileBrowser::FileBrowser( const char * name )
     KConfig* const config = amaroK::config( "Filebrowser" );
     SearchPane *searchPane;
 
-    const QString currentLocation = config->readPathEntry( "Location", QDir::homeDirPath() );
+    KURL location( config->readPathEntry( "Location", QDir::homeDirPath() ) );
+
+    KFileItem currentFolder( KFileItem::Unknown, KFileItem::Unknown, location );
+    if ( !currentFolder.isReadable() ) {
+        location.setPath( QDir::homeDirPath() );
+    }
+
 
     KToolBar *toolbar = new Browser::ToolBar( this );
 
@@ -131,10 +137,10 @@ FileBrowser::FileBrowser( const char * name )
         m_combo->setAutoDeleteCompletionObject( true );
         m_combo->setMaxItems( 9 );
         m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
-        m_combo->lineEdit()->setText( currentLocation );
+        m_combo->lineEdit()->setText( location.path() );
 
         //The main widget with file listings and that
-        m_dir = new MyDirOperator( KURL(currentLocation), container );
+        m_dir = new MyDirOperator( location, container );
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
