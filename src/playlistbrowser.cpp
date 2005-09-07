@@ -925,46 +925,16 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         return new PlaylistCategory( m_listview, m_playlistCategory, i18n("Podcasts") );
     }
     else {
-        PlaylistCategory* p = new PlaylistCategory(m_listview, m_playlistCategory, i18n("Podcasts") );
-
         m_podcastItemsToScan.clear();
         if( !m_podcastTimerInterval ) m_podcastTimerInterval = 14400000;  // 4 hours
 
         connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
-        QListViewItem *last = 0;
-        QDomNode n = d.namedItem( "category" ).namedItem( "podcast" );
-
-        for( ; !n.isNull();  n = n.nextSibling() )
-        {
-            KURL url( n.namedItem( "url").toElement().text() );
-
-            QString xmlLocation = amaroK::saveLocation( "podcasts/" );
-            xmlLocation        += n.namedItem( "cache" ).toElement().text();
-
-            QDomDocument xml;
-            QFile xmlFile( xmlLocation );
-            QTextStream stream( &xmlFile );
-            stream.setEncoding( QTextStream::UnicodeUTF8 );
-
-            if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
-            {
-                // Invalid podcasts should still be added to the browser, which means there is no cached xml.
-                last = new PodcastChannel( p, last, url );
-                continue;
-            }
-
-            last = new PodcastChannel( p, last, url, n, xml );
-            #define item static_cast<PodcastChannel*>(last)
-            if( item->autoScan() )
-                m_podcastItemsToScan.append( item );
-            #undef  item
-        }
+        e = d.namedItem( "category" ).toElement();
+        return new PlaylistCategory( m_listview, m_playlistCategory , e );
 
         if( !m_podcastItemsToScan.isEmpty() )
             m_podcastTimer->start( m_podcastTimerInterval );
-
-        return p;
     }
 }
 

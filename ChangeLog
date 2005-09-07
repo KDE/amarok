@@ -13,6 +13,8 @@ VERSION 1.3.2:
   CHANGES:
 
   BUGFIXES:
+    * Podcast subfolders are correctly restored on application start.
+      (BR 112162)
     * Dropping tracks onto playlist browser folders will work correctly.
     * Invalid podcasts are no longer discarded on quit. (BR 112116)
     * Fixed playing of files that have special characters like '#' in

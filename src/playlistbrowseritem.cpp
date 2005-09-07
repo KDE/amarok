@@ -110,6 +110,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 
 void PlaylistCategory::setXml( QDomElement xml )
 {
+    PlaylistBrowser *pb = PlaylistBrowser::instance();
     QString tname = xml.tagName();
     if ( tname == "category" ) {
         QListViewItem *last = 0;
@@ -130,6 +131,31 @@ void PlaylistCategory::setXml( QDomElement xml )
             }
             else if ( e.tagName() == "party" ) {
                 last = new PartyEntry( this, last, e );
+            }
+            else if ( e.tagName() == "podcast" )
+            {
+                const KURL url( n.namedItem( "url").toElement().text() );
+                QString xmlLocation = amaroK::saveLocation( "podcasts/" );
+                xmlLocation        += n.namedItem( "cache" ).toElement().text();
+
+                QDomDocument xml;
+                QFile xmlFile( xmlLocation );
+                QTextStream stream( &xmlFile );
+                stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+                if( !xmlFile.open( IO_ReadOnly ) || !xml.setContent( stream.read() ) )
+                {
+                    // Invalid podcasts should still be added to the browser, which means there is no cached xml.
+                    last = new PodcastChannel( this, last, url );
+                    continue;
+                }
+
+                last = new PodcastChannel( this, last, url, n, xml );
+
+                #define item static_cast<PodcastChannel*>(last)
+                if( item->autoScan() )
+                    pb->m_podcastItemsToScan.append( item );
+                #undef  item
             }
         }
         setText( 0, xml.attribute("name") );
