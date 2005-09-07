@@ -14,12 +14,11 @@ VERSION 1.3.2:
 
   BUGFIXES:
     * Invalid podcasts where discarded on quit. (BR 112116)
-    * Fixed playing of files that have special characters like '#' in 
-      helix engine 
+    * Fixed playing of files that have special characters like '#' in
+      helix engine
     * Fixed issue where selecting multiple items after filtering the
       playlist would cause all the other items 'between' them (but
       invisible due to the filter) to also get selected.
-
 
 
 VERSION 1.3.1:
