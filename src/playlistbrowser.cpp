@@ -2129,7 +2129,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( item->isFolder() ) {
             menu.insertItem( SmallIconSet("editclear"), i18n( "&Rename" ), RENAME );
             menu.insertItem( SmallIconSet("edittrash"), i18n( "R&emove" ), REMOVE );
-            menu.insertSeparator();
         }
 
         if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
@@ -2144,12 +2143,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
             menu.insertItem( SmallIconSet("reload"), i18n("Refresh All Podcasts"), REFRESH );
-            menu.insertSeparator();
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
-            menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
+            if( parentCat == item )
+                menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
 
         }
-
+        menu.insertSeparator();
         menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
 
         QListViewItem *tracker = 0;
