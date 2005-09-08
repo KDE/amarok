@@ -1699,7 +1699,14 @@ CollectionView::listSelected()
 void
 CollectionView::playlistFromURLs( const KURL::List &urls )
 {
-    const QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+    QString suggestion;
+    typedef QListViewItemIterator It;
+    It it( this, It::Visible | It::Selected );
+    if( (*it) && !(*(++it)) )
+        suggestion = (*It( this, It::Visible | It::Selected ))->text( 0 );
+    else
+        suggestion = i18n( "Untitled" );
+    const QString path = PlaylistDialog::getSaveFileName( suggestion );
 
     if( path.isEmpty() )
         return;

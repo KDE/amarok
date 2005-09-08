@@ -3361,7 +3361,27 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 void
 Playlist::saveSelectedAsPlaylist()
 {
-    QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+    MyIt it( this, MyIt::Visible | MyIt::Selected );
+    if( !(*it) )
+        return; //safety
+    const QString album = (*it)->exactText( PlaylistItem::Album ),
+                  artist = (*it)->exactText( PlaylistItem::Artist );
+    int suggestion = !album.stripWhiteSpace().isEmpty() ? 1 : !artist.stripWhiteSpace().isEmpty() ? 2 : 3;
+    while( *it )
+    {
+        if( suggestion == 1 && (*it)->exactText( PlaylistItem::Album ).lower().stripWhiteSpace()
+                                                              != album.lower().stripWhiteSpace() )
+            suggestion = 2;
+        if( suggestion == 2 && (*it)->exactText( PlaylistItem::Artist ).lower().stripWhiteSpace()
+                                                              != artist.lower().stripWhiteSpace() )
+            suggestion = 3;
+        if( suggestion == 3 )
+            break;
+        ++it;
+    }
+    QString path = PlaylistDialog::getSaveFileName( suggestion == 1 ? album
+                                                  : suggestion == 2 ? artist
+                                                  : i18n( "Untitled" ) );
 
     if( path.isEmpty() )
         return;
@@ -3369,7 +3389,7 @@ Playlist::saveSelectedAsPlaylist()
     QValueList<KURL> urls;
     QValueList<QString> titles;
     QValueList<QString> seconds;
-    for( MyIt it( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
+    for( it = MyIt( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
     {
         urls << (*it)->url();
         titles << (*it)->title();

@@ -248,7 +248,12 @@ KURL::List FileBrowser::selectedItems()
 
 void FileBrowser::playlistFromURLs( const KURL::List &urls )
 {
-    const QString path = PlaylistDialog::getSaveFileName( i18n( "Untitled" ) );
+    QString suggestion;
+    if( urls.count() == 1 && QFileInfo( urls.first().path() ).isDir() )
+        suggestion = urls.first().fileName();
+    else
+        suggestion = i18n( "Untitled" );
+    const QString path = PlaylistDialog::getSaveFileName( suggestion );
     if( path.isEmpty() )
         return;
 
