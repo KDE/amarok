@@ -925,17 +925,18 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
 
 void PlaylistBrowser::changePodcastInterval()
 {
-    int time = m_podcastTimerInterval / ( 60 * 60 * 1000 );
+    double time = static_cast<double>(m_podcastTimerInterval / ( 60 * 60 * 1000 ));
     bool ok;
-    int interval = KInputDialog::getInteger( i18n("Download Interval"),
+    double interval = KInputDialog::getDouble( i18n("Download Interval"),
                                             i18n("Scan interval (hours):"), time,
-                                            1, 1000, 1, 10, // min, max, step, base
+                                            0.5, 100.0, .5, 1, // min, max, step, base
                                             &ok, this);
+    int milliseconds = static_cast<int>(interval*60.0*60.0*1000.0);
     if( ok )
     {
-        if( interval != m_podcastTimerInterval )
+        if( milliseconds != m_podcastTimerInterval )
         {
-            m_podcastTimerInterval = interval * 60 * 60 * 1000;
+            m_podcastTimerInterval = milliseconds;
             m_podcastTimer->changeInterval( m_podcastTimerInterval );
         }
     }

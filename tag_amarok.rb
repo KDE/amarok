@@ -22,9 +22,9 @@ end
 
 # Create destination folder
 target = "#{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tagname}/"
-`svn mkdir #{target}`
-`svn mkdir #{target}/multimedia`
-`svn mkdir #{target}/multimedia/doc`
+`svn mkdir -m "Create tag #{tagname} root directory" #{target}`
+`svn mkdir -m "Create tag #{tagname} multimedia directory" #{target}/multimedia`
+`svn mkdir -m "Create tag #{tagname} doc directory" #{target}/multimedia/doc`
 
 source = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia/amarok"
 docs   = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia/doc/amarok"
