@@ -104,7 +104,15 @@ CollectionDB::CollectionDB()
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
              this,                  SLOT( similarArtistsFetched( const QString&, const QStringList& ) ) );
 }
-
+const QString CollectionDB::nowFunc() 
+{ 
+    if(m_dbConnPool->getDbConnectionType() == DbConnection::sqlite)
+        return "strftime('%s','now')";
+    else if(m_dbConnPool->getDbConnectionType() == DbConnection::mysql)
+        return "NOW()";
+    else if(m_dbConnPool->getDbConnectionType() == DbConnection::postgresql)
+        return "now()";
+}
 
 CollectionDB::~CollectionDB()
 {

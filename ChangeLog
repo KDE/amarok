@@ -13,6 +13,8 @@ VERSION 1.3.2:
   CHANGES:
 
   BUGFIXES:
+    * "Last played - not in the last" smart playlists would only work for 
+      sqlite. (BR 112248)
     * Podcast and Dynamic subfolders are correctly restored on application 
       start. (BR 112162)
     * Dropping tracks onto playlist browser folders will work correctly.
