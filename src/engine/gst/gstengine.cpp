@@ -806,7 +806,7 @@ GstEngine::getPluginList( const QCString& classname ) const
 
                     if ( g_strrstr ( factory->details.klass, classname ) ) {
                         name = g_strdup ( GST_OBJECT_NAME ( factory ) );
-                        if ( name != "alsasink" )
+                        if ( name != "alsasink" && name != "autoaudiosink" && name != "gconfaudiosink")
                         results << name;
                     }
                 }
@@ -830,7 +830,10 @@ GstEngine::createPipeline()
 
     destroyPipeline();
 
-    if ( GstConfig::soundOutput().isEmpty() || GstConfig::soundOutput() == "alsasink" ) {
+    if ( GstConfig::soundOutput().isEmpty() 
+        || GstConfig::soundOutput() == "alsasink" 
+        || GstConfig::soundOutput() ==  "autoaudiosink" 
+        || GstConfig::soundOutput() ==  "gconfaudiosink") {
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
