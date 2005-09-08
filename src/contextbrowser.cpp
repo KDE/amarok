@@ -19,6 +19,7 @@
 #include "covermanager.h"
 #include "cuefile.h"
 #include "enginecontroller.h"
+#include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
 #include "qstringx.h"
@@ -550,7 +551,7 @@ void ContextBrowser::tabChanged( QWidget *page )
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, INFO, MANAGER, TITLE };
+    enum { SHOW, FETCH, CUSTOM, DELETE, APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, MANAGER, TITLE };
 
     if( urlString.isEmpty() ||
         urlString.startsWith( "musicbrainz" ) ||
@@ -597,6 +598,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), ASNEXT );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
+        menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), INFO );
@@ -697,6 +699,10 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case APPEND:
         Playlist::instance()->insertMedia( urls, Playlist::Unique );
+        break;
+
+    case MEDIA_DEVICE:
+        MediaDevice::instance()->addURLs( urls );
         break;
 
     case FETCH:
