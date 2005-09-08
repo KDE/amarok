@@ -776,7 +776,6 @@ void PlaylistBrowser::saveDynamics()
 
 void PlaylistBrowser::loadDynamicItems()
 {
-    debug() << "Removing dynamic entries" << endl;
     // Make sure all items are unmarked
     for( uint i=0; i < m_dynamicEntries.count(); i++ )
     {
@@ -801,7 +800,6 @@ void PlaylistBrowser::loadDynamicItems()
     // Mark appropriate items as used
     if( AmarokConfig::dynamicType() == "Custom" )
     {
-        debug() << "Loading entries" << endl;
         QStringList playlists = AmarokConfig::dynamicCustomList();
         for( uint i=0; i < playlists.count(); i++ )
         {
