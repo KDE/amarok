@@ -264,6 +264,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         QPixmap     m_loading2;
         bool        m_fetching;
         QTimer      m_animationTimer;
+        uint        m_iconCounter;
         bool        m_downloaded;
 
         KIO::CopyJob* m_podcastItemJob;
@@ -324,6 +325,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         bool        m_fetching;
         bool        m_updating;
         QTimer      m_animationTimer;
+        uint        m_iconCounter;
         bool        m_new;
         bool        m_hasProblem;
 

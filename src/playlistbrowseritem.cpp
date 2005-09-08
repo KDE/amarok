@@ -1059,6 +1059,7 @@ PodcastChannel::fetch()
 {
     setText(0, i18n( "Retrieving Podcast..." ) );
 
+    m_iconCounter = 1;
     startAnimation();
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
@@ -1349,13 +1350,11 @@ PodcastChannel::stopAnimation()
 void
 PodcastChannel::slotAnimation()
 {
-    static uint iconCounter = 1;
-
-    iconCounter % 2 ?
+    m_iconCounter % 2 ?
         setPixmap( 0, m_loading1 ):
         setPixmap( 0, m_loading2 );
 
-    iconCounter++;
+    m_iconCounter++;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1413,6 +1412,7 @@ PodcastItem::downloadMedia()
 
     setText(0, i18n( "Downloading Media..." ) );
 
+    m_iconCounter = 1;
     startAnimation();
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
     KURL::List list( m_url );
@@ -1511,13 +1511,11 @@ PodcastItem::stopAnimation()
 void
 PodcastItem::slotAnimation()
 {
-    static uint iconCounter = 1;
-
-    iconCounter % 2 ?
+    m_iconCounter % 2 ?
         setPixmap( 0, m_loading1 ):
         setPixmap( 0, m_loading2 );
 
-    iconCounter++;
+    m_iconCounter++;
 }
 
 /////////////////////////////////////////////////////////////////////////////
