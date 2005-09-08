@@ -56,6 +56,7 @@ class PlaylistItem : public KListViewItem
         PlaylistItem( QListView*, QListViewItem* ); //used by PlaylistLoader
         PlaylistItem( const MetaBundle&, QListViewItem* );
         PlaylistItem( QDomNode, QListViewItem* );
+        ~PlaylistItem();
 
         QString exactText( int col ) const { return KListViewItem::text( col ); }
 

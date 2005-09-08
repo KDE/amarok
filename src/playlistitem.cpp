@@ -67,7 +67,7 @@ QString PlaylistItem::stringStore[STRING_STORE_SIZE];
 PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
         : KListViewItem( listview, item )
 {
-    setVisible( false );
+    KListViewItem::setVisible( false );
 }
 
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
@@ -79,6 +79,24 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi )
     setDragEnabled( true );
 
     setText( bundle );
+
+    const int length = seconds().toInt();
+    listView()->m_totalCount++;
+    listView()->m_totalLength += length;
+    if( isSelected() )
+    {
+        listView()->m_selCount++;
+        listView()->m_selLength += length;
+    }
+    if( isVisible() )
+    {
+        listView()->m_visCount++;
+        listView()->m_visLength += length;
+    }
+
+    listView()->setFilterForItem( listView()->m_filter, this );
+
+    listView()->countChanged();
 }
 
 PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
@@ -115,6 +133,46 @@ PlaylistItem::PlaylistItem( QDomNode node, QListViewItem *item )
             KListViewItem::setText( x, text );
         }
     }
+
+    const int length = seconds().toInt();
+    listView()->m_totalCount++;
+    listView()->m_totalLength += length;
+    if( isSelected() )
+    {
+        listView()->m_selCount++;
+        listView()->m_selLength += length;
+    }
+    if( isVisible() )
+    {
+        listView()->m_visCount++;
+        listView()->m_visLength += length;
+    }
+
+    listView()->setFilterForItem( listView()->m_filter, this );
+
+    listView()->countChanged();
+}
+
+PlaylistItem::~PlaylistItem()
+{
+    if( text( 0 ) == "MARKERITEM" )
+        return;
+
+    const int length = seconds().toInt();
+    listView()->m_totalCount--;
+    listView()->m_totalLength -= length;
+    if( isSelected() )
+    {
+        listView()->m_selCount--;
+        listView()->m_selLength -= length;
+    }
+    if( isVisible() )
+    {
+        listView()->m_visCount--;
+        listView()->m_visLength -= length;
+    }
+
+    listView()->countChanged();
 }
 
 
@@ -167,15 +225,50 @@ void PlaylistItem::setEnabled( bool enabled )
 void PlaylistItem::setSelected( bool selected )
 {
     if( isVisible() )
+    {
+        const bool prevSelected = isSelected();
+        const int length = seconds().toInt();
         KListViewItem::setSelected( selected );
+        if( prevSelected && !isSelected() )
+        {
+            listView()->m_selCount--;
+            listView()->m_selLength -= length;
+            listView()->countChanged();
+        }
+        else if( !prevSelected && isSelected() )
+        {
+            listView()->m_selCount++;
+            listView()->m_selLength += length;
+            listView()->countChanged();
+        }
+    }
 }
 
 void PlaylistItem::setVisible( bool visible )
 {
-    if( !visible )
+    const int length = seconds().toInt();
+    if( !visible && isSelected() )
+    {
+        listView()->m_selCount--;
+        listView()->m_selLength -= length;
         KListViewItem::setSelected( false );
+        listView()->countChanged();
+    }
 
+    const bool prevVisible = isVisible();
     KListViewItem::setVisible( visible );
+    if( prevVisible && !isVisible() )
+    {
+        listView()->m_visCount--;
+        listView()->m_visLength -= length;
+        listView()->countChanged();
+    }
+    else if( !prevVisible && isVisible() )
+    {
+        listView()->m_visCount++;
+        listView()->m_visLength += length;
+        listView()->countChanged();
+    }
 }
 
 void PlaylistItem::setText( const MetaBundle &bundle )

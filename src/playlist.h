@@ -101,7 +101,7 @@ class Playlist : private KListView, public EngineObserver
         void restoreSession();          // called during initialisation
         bool saveM3U( const QString&, bool relative = AmarokConfig::relativePlaylist() ) const;
         void saveXML( const QString& );
-        int  totalTrackCount();
+        int  totalTrackCount() const;
         BundleList nextTracks() const;
 
         int  stopAfterMode() const;
@@ -171,6 +171,7 @@ class Playlist : private KListView, public EngineObserver
         void updateMetaData( const MetaBundle& );
 
     private slots:
+        void slotCountChanged();
         void activate( QListViewItem* );
         void columnOrderChanged();
         void columnResizeEvent( int, int, int );
@@ -188,7 +189,6 @@ class Playlist : private KListView, public EngineObserver
         void reallyEnsureItemCentered();
         void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
         void slotRepeatTrackToggled( bool enabled );
-        void slotSelectionChanged();
         void slotQueueChanged( const PLItemList &in, const PLItemList &out);
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
@@ -202,7 +202,7 @@ class Playlist : private KListView, public EngineObserver
 
         typedef QMap<QString, QString> QStringMap;
 
-        void setSelected( QListViewItem *item, bool selected );
+        void countChanged();
 
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         PlaylistItem *restoreCurrentTrack();
@@ -264,11 +264,13 @@ class Playlist : private KListView, public EngineObserver
         PLItemList m_itemsToChangeTagsFor;
 
         int           m_firstColumn;
+        int           m_totalCount;
         int           m_totalLength;
         int           m_selCount;
         int           m_selLength;
         int           m_visCount;
         int           m_visLength;
+        bool          m_itemCountDirty;
 
         KAction      *m_undoButton;
         KAction      *m_redoButton;

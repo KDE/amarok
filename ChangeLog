@@ -13,6 +13,10 @@ VERSION 1.3.2:
   CHANGES:
 
   BUGFIXES:
+    * Robustified the code for handling the '# of tracks in the playlist'
+      part of the statusbar, it should not ever get out of sync with
+      reality now. Nice side effect is you can see the track count
+      increase while a playlist is loading.
     * "Last played - not in the last" smart playlists would only work for 
       sqlite. (BR 112248)
     * Podcast and Dynamic subfolders are correctly restored on application 
