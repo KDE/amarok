@@ -28,7 +28,7 @@ class PluginManager
 {
     public:
         /** Bump this number whenever the plugin framework gets incompatible with older versions */
-        static const int FrameworkVersion = 10;
+        static const int FrameworkVersion = 11;
 
         /**
          * It will return a list of services that match your
