@@ -1450,7 +1450,7 @@ void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newNam
         #define item static_cast<PlaylistEntry*>(item)
 
         QString oldPath = item->url().path();
-        QString newPath = fileDirPath( oldPath ) + newName + fileExtension( oldPath );
+        QString newPath = fileDirPath( oldPath ) + newName + "." + fileExtension( oldPath );
 
         if ( std::rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
             KMessageBox::error( this, i18n("Error renaming the file.") );
