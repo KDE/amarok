@@ -16,6 +16,7 @@ VERSION 1.3.2:
       it'll now play the first and queue the rest.
 
   BUGFIXES:
+    * Dynamic playlist shuffle had some incorrect smart playlist handling.
     * Robustified the code for handling the '# of tracks in the playlist'
       part of the statusbar, it should not ever get out of sync with
       reality now. Nice side effect is you can see the track count

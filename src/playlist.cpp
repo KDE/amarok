@@ -584,9 +584,18 @@ Playlist::addSpecialCustomTracks( uint songCount )
             useDirect = true;
         }
         // if we do not limit the sql, it takes a long time to populate for large collections
-        if ( sql.find( QString("LIMIT"), false ) == -1 ) {
+        // we also dont want stupid limits such as LIMIT 0, 5 which would return the same results always
+        QRegExp limitSearch( "LIMIT.*\\d.*\\d" );
+        int findLocation = sql.find( limitSearch, false );
+        if( findLocation == -1 ) //not found, add to end
+        {
             QRegExp limit( ";$" );
-            sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( songCount ) );
+             //increase the limit to ensure that we get a good selection.
+            sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( songCount * 35 ) );
+        }
+        else //LIMIT found
+        {
+            sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( songCount * 35 ) );
         }
 
         QStringList queryResult = CollectionDB::instance()->query( sql );
