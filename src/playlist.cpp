@@ -2906,9 +2906,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( SmallIconSet( "edit" ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
             : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
-    popup.insertItem( trackColumn
-            ? i18n("&Iteratively Assign Track Numbers")
-  : i18n("Write '%1' for Selected Tracks").arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
+
+    if( itemCount > 1 )
+        popup.insertItem( trackColumn
+                        ? i18n("&Iteratively Assign Track Numbers")
+                        : i18n("Write '%1' for Selected Tracks")
+                        .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
 
     if( itemCount == 1 )
         popup.insertItem( SmallIconSet( "editcopy" ), i18n( "&Copy Tags to Clipboard" ), 0, 0, CTRL+Key_C, COPY );
@@ -2938,14 +2941,14 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertItem( SmallIconSet( "editdelete" ), itemCount == 1
             ? i18n("&Delete File")
             : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
-
     popup.insertSeparator();
+
     popup.insertItem( SmallIconSet( "info" )
         , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount)
         , VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
-    popup.setItemEnabled( FILL_DOWN, canRename && itemCount > 1 );
+    popup.setItemEnabled( FILL_DOWN, canRename );
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() ); // that's the whole point
@@ -2981,7 +2984,20 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     switch( menuItemId )
     {
     case PLAY:
-        activate( item );
+        if( itemCount == 1 )
+            activate( item );
+        else
+        {
+            MyIt it( this, MyIt::Selected );
+            activate( *it );
+            ++it;
+            for( int i = 0; *it; ++i, ++it )
+            {
+                in.append( *it );
+                m_nextTracks.insert( i, *it );
+            }
+            emit queueChanged( in, out );
+        }
         break;
 
     case PLAY_NEXT:

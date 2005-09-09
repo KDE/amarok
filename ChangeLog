@@ -11,6 +11,8 @@ VERSION 1.3.2:
       queue.
 
   CHANGES:
+    * When selecting 'Play' from the context menu on multiple items,
+      it'll now play the first and queue the rest.
 
   BUGFIXES:
     * Robustified the code for handling the '# of tracks in the playlist'
