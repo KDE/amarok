@@ -4,6 +4,8 @@
   begin                : Dec 15 2003
   copyright            : (C) 2003 by Mark Kretschmann
   email                : markey@web.de
+  copyright            : (C) 2005 by Gábor Lehel
+  email                : illissius@gmail.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -18,10 +20,13 @@
 #include "sliderwidget.h"
 
 #include <qapplication.h>
+#include <qbitmap.h>
 #include <qbrush.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qsize.h>
+#include <kpixmap.h>
+#include <kpixmapeffect.h>
 
 
 amaroK::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
@@ -204,5 +209,100 @@ amaroK::PrettySlider::sizeHint() const
              : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
 }
 #endif
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// CLASS VolumeSlider
+//////////////////////////////////////////////////////////////////////////////////////////
+
+amaroK::VolumeSlider::VolumeSlider( Qt::Orientation orientation, QWidget *parent, uint max )
+    : amaroK::PrettySlider( orientation, parent, max )
+{
+    drawGradients();
+}
+
+void amaroK::VolumeSlider::drawGradients()
+{
+    m_lightGradient.resize( size() );
+    m_darkGradient.resize( size() );
+    m_lightMask.resize( size() );
+    m_darkMask.resize( size() );
+
+    KPixmapEffect::gradient( m_darkGradient, colorGroup().background(), colorGroup().foreground(), KPixmapEffect::HorizontalGradient );
+    KPixmapEffect::fade( m_darkGradient, 0.5, colorGroup().highlight() );
+
+    m_lightGradient = m_darkGradient;
+
+    KPixmapEffect::fade( m_lightGradient, 0.5, colorGroup().background() );
+
+    m_lightMask.fill( Qt::color0 );
+
+    QPainter p( &m_lightMask );
+    p.setPen( Qt::color1 );
+    p.setBrush( Qt::color1 );
+    QPointArray pa( 3 );
+    pa.setPoint( 0, 0, height() - 1 );
+    pa.setPoint( 1, width()-1, height() - 1 );
+    pa.setPoint( 2, width()-1, 0 );
+    p.drawConvexPolygon( pa );
+    p.end();
+
+    m_lightGradient.setMask( m_lightMask );
+
+    setValue( value() );
+}
+
+void amaroK::VolumeSlider::setValue( int value )
+{
+    m_lightMask.fill( Qt::color0 );
+    m_darkMask.fill( Qt::color0 );
+
+    QPainter p( &m_darkMask );
+    const int w   = orientation() == Qt::Horizontal ? width() : height();
+    const int x   = int(double((w-2) * value) / maxValue());
+    const int h   = orientation() == Qt::Horizontal ? height() : width();
+    const int y   = h - int(double((h-2) * value) / maxValue()) - 1;
+    if ( orientation() == Qt::Vertical )
+    {
+        p.translate( 0, height()-1 );
+        p.rotate( -90 ); //90 degrees clockwise
+    }
+
+    p.setPen( Qt::color1 );
+    p.setBrush( Qt::color1 );
+
+    QPointArray pa( 3 );
+    pa.setPoint( 0, 0, h-1 );
+    pa.setPoint( 1, x, h-1 );
+    pa.setPoint( 2, x, y );
+
+    p.drawConvexPolygon( pa );
+
+    p.end();
+
+    m_darkGradient.setMask( m_darkMask );
+
+    Slider::setValue( value );
+}
+
+void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
+{
+    QPixmap buf( size() );
+
+    QPainter p( &buf );
+    p.setPen( colorGroup().button() );
+    p.setBrush( colorGroup().button() );
+    p.drawRect( rect() );
+    p.end();
+
+    bitBlt( &buf, 0, 0, &m_lightGradient );
+    bitBlt( &buf, 0, 0, &m_darkGradient );
+
+    bitBlt( this, 0, 0, &buf );
+}
+
+void amaroK::VolumeSlider::resizeEvent( QResizeEvent * )
+{
+    drawGradients();
+}
 
 #include "sliderwidget.moc"

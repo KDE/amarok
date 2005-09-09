@@ -93,7 +93,7 @@ namespace amaroK
             virtual int plug( QWidget *, int index = -1 );
         private:
             void engineVolumeChanged( int value );
-            QGuardedPtr<amaroK::Slider> m_slider;
+            QGuardedPtr<amaroK::VolumeSlider> m_slider;
     };
 
 

@@ -3,7 +3,9 @@
                           -------------------
  begin                : Dec 15 2003
  copyright            : (C) 2003 by Mark Kretschmann
- email                :
+ email                : markey@web.de
+ copyright            : (C) 2005 by Gábor Lehel
+ email                : illissius@gmail.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -18,7 +20,9 @@
 #ifndef AMAROKSLIDER_H
 #define AMAROKSLIDER_H
 
+#include <qbitmap.h>
 #include <qslider.h>
+#include <kpixmap.h>
 
 namespace amaroK
 {
@@ -80,6 +84,28 @@ namespace amaroK
         private:
             PrettySlider( const PrettySlider& ); //undefined
             PrettySlider &operator=( const PrettySlider& ); //undefined
+    };
+
+    class VolumeSlider: public PrettySlider
+    {
+        public:
+            VolumeSlider( Qt::Orientation orientation, QWidget *parent, uint max = 0 );
+            virtual void setValue( int );
+
+        protected:
+            virtual void paintEvent( QPaintEvent* );
+            virtual void resizeEvent( QResizeEvent* );
+
+        private:
+            void drawGradients();
+
+            KPixmap m_lightGradient;
+            KPixmap m_darkGradient;
+            QBitmap m_lightMask;
+            QBitmap m_darkMask;
+
+            VolumeSlider( const VolumeSlider& ); //undefined
+            VolumeSlider &operator=( const VolumeSlider& ); //undefined
     };
 }
 

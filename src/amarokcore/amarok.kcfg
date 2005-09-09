@@ -201,6 +201,11 @@
         <whatsthis>If set, amaroK manually saved playlists will contain a relative path to the tracks, not absolute.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Volume Slider Width" type="Int">
+        <label>The width of the volume slider</label>
+        <whatsthis>This sets the width in pixels of the volume slider in amaroK's toolbar</whatsthis>
+        <default>100</default>
+    </entry>
 </group>
 
 <group name="Playback">

@@ -5,6 +5,7 @@
 
 #include "actionclasses.h"
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "app.h"
 #include "debug.h"
 #include "collectiondb.h"
@@ -318,12 +319,13 @@ VolumeAction::plug( QWidget *w, int index )
 {
     //NOTE we only support one plugging currently
 
-    delete (amaroK::Slider*) m_slider; //just in case, remember, we only support one plugging!
+    delete (amaroK::VolumeSlider*) m_slider; //just in case, remember, we only support one plugging!
 
-    m_slider = new amaroK::Slider( Qt::Vertical, w, amaroK::VOLUME_MAX );
+    m_slider = new amaroK::VolumeSlider( Qt::Horizontal, w, amaroK::VOLUME_MAX );
     m_slider->setName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setMinimumHeight( 35 );
+    m_slider->setMaximumWidth( AmarokConfig::volumeSliderWidth() );
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 
     QToolTip::add( m_slider, i18n( "Volume control" ) );
