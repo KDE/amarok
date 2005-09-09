@@ -3323,6 +3323,7 @@ QueryBuilder::buildQuery()
         if ( !m_group.isEmpty() ) m_query += " GROUP BY " + m_group;
         if ( !m_sort.isEmpty() ) m_query += " ORDER BY " + m_sort;
         m_query += m_limit;
+        m_query += ";";
     }
 }
 
