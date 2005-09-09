@@ -587,7 +587,6 @@ Playlist::addSpecialCustomTracks( uint songCount )
         if ( sql.find( QString("LIMIT"), false ) == -1 ) {
             QRegExp limit( ";$" );
             sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( songCount ) );
-            useDirect = true;
         }
 
         QStringList queryResult = CollectionDB::instance()->query( sql );
