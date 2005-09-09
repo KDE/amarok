@@ -46,7 +46,7 @@ amaroK::Slider::wheelEvent( QWheelEvent *e )
     if( orientation() == Vertical ) step = -step;
     // Position Slider
     else step = step * 1500;
-    QSlider::setValue( QSlider::value() + step );
+    setValue( QSlider::value() + step );
 
     emit sliderReleased( value() );
 }
@@ -61,7 +61,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 
         if ( orientation() == Horizontal && !rect.contains( e->pos() ) ) {
             if ( !m_outside )
-                QSlider::setValue( m_prevValue );
+                setValue( m_prevValue );
             m_outside = true;
         } else {
             m_outside = false;
@@ -75,7 +75,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 amaroK::Slider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( orientation() == Horizontal
+    setValue( orientation() == Horizontal
         ? ((QApplication::reverseLayout())
           ? QRangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
           : QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
@@ -139,7 +139,7 @@ amaroK::PrettySlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::PrettySlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( orientation() == Horizontal
+    setValue( orientation() == Horizontal
         ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
         : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
 }
@@ -283,7 +283,7 @@ void amaroK::VolumeSlider::setValue( int value )
 
     m_darkGradient.setMask( m_darkMask );
 
-    PrettySlider::setValue( value );
+    QSlider::setValue( value );
 }
 
 void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
