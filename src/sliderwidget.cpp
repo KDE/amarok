@@ -227,12 +227,14 @@ void amaroK::VolumeSlider::drawGradients()
     m_lightMask.resize( size() );
     m_darkMask.resize( size() );
 
-    KPixmapEffect::gradient( m_darkGradient, colorGroup().background(), colorGroup().foreground(), KPixmapEffect::HorizontalGradient );
-    KPixmapEffect::fade( m_darkGradient, 0.5, colorGroup().highlight() );
+    int h, s, v;
+    QColor c1, c2;
+    colorGroup().highlight().getHsv( h, s, v );
+    c1.setHsv( h, 255/2, v );
+    c2.setHsv( h, 255, v );
 
-    m_lightGradient = m_darkGradient;
-
-    KPixmapEffect::fade( m_lightGradient, 0.5, colorGroup().background() );
+    KPixmapEffect::gradient( m_lightGradient, colorGroup().background(), c1, KPixmapEffect::HorizontalGradient );
+    KPixmapEffect::gradient( m_darkGradient, colorGroup().background(), c2, KPixmapEffect::HorizontalGradient );
 
     m_lightMask.fill( Qt::color0 );
 
@@ -281,7 +283,7 @@ void amaroK::VolumeSlider::setValue( int value )
 
     m_darkGradient.setMask( m_darkMask );
 
-    Slider::setValue( value );
+    PrettySlider::setValue( value );
 }
 
 void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
@@ -289,8 +291,8 @@ void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     QPixmap buf( size() );
 
     QPainter p( &buf );
-    p.setPen( colorGroup().button() );
-    p.setBrush( colorGroup().button() );
+    p.setPen( colorGroup().background() );
+    p.setBrush( colorGroup().background() );
     p.drawRect( rect() );
     p.end();
 
