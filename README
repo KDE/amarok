@@ -35,14 +35,6 @@ interface, that really makes playlist handling easy.
 --------------------------------------------------------------------------------
 
 
- RELEASE NOTES FOR VERSION 1.3.1
-=================================
-
-The "alsasink" output plugin for GStreamer has currently been disabled for
-stability reasons. For the time being we recommend using "osssink" instead.
---------------------------------------------------------------------------------
-
-
  DEPENDENCIES
 ==============
 
