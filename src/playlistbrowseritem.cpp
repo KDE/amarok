@@ -1176,6 +1176,7 @@ void
 PodcastChannel::removeChildren()
 {
     QListViewItem *child, *next;
+    m_first = 0;
     if ( (child = firstChild()) )
     {
         while ( (next = child->nextSibling()) )
@@ -1320,7 +1321,8 @@ PodcastChannel::purge()
         if( m_last && m_last != firstChild() )
             newLast = (PodcastItem *)m_last->itemAbove();
 
-
+        if ( m_last == m_first ) //just to make sure m_first is always valid
+            m_first = 0;
         delete m_last;
         m_last = newLast;
     }
