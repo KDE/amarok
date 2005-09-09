@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.2:
   FEATURES:
+    * Podcasts can be saved to any location. (BR 111059)
     * Added "Save as Playlist" option to the collection and file browser
       context menus as well.
     * Allow removing of items in the Media Device browser transfer
