@@ -640,7 +640,6 @@ void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
     SmartPlaylistEditor dialog( this, item->xml() );
     if( dialog.exec() == QDialog::Accepted ) {
         item->setXml( dialog.result() );
-        item->sqlForTags = dialog.query();
         item->setText(0, dialog.name());
     }
 }
@@ -1253,8 +1252,8 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     else if( isSmartPlaylist( item ) )
     {
         #define item static_cast<SmartPlaylist *>(item)
-        if( !item->sqlForTags.isEmpty() )
-            Playlist::instance()->insertMediaSql( item->sqlForTags, Playlist::Clear );
+        if( !item->query().isEmpty() )
+            Playlist::instance()->insertMediaSql( item->query(), Playlist::Clear );
         #undef  item
     }
     else if( isCategory( item ) )
@@ -1849,7 +1848,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist *>(item)->sqlForTags, Playlist::Append );
+                Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist *>(item)->query(), Playlist::Append );
                 break;
             case DYNADD:
                 addToDynamic();
@@ -2518,9 +2517,9 @@ void PlaylistBrowserView::startDrag()
         {
             SmartPlaylist *item = (SmartPlaylist*)*it;
 
-            if( !item->sqlForTags.isEmpty() )
+            if( !item->query().isEmpty() )
             {
-                QTextDrag *textdrag = new QTextDrag( item->sqlForTags, 0 );
+                QTextDrag *textdrag = new QTextDrag( item->query(), 0 );
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }

@@ -1579,7 +1579,7 @@ PodcastItem::slotAnimation()
 
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query )
         : PlaylistBrowserEntry( parent, after, name )
-        , sqlForTags( query )
+        , m_sqlForTags( query )
         , m_title( name )
         , m_dynamic( false )
 {
@@ -1591,7 +1591,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 
 SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &urls, const QString &tags )
         : PlaylistBrowserEntry( parent, after, name )
-        , sqlForTags( tags )
+        , m_sqlForTags( tags )
         , m_title( name )
         , m_dynamic( false )
 {
@@ -1609,14 +1609,14 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, QDomE
 {
     setPixmap( 0, SmallIcon( "player_playlist_2" ) );
     setXml( xmlDefinition );
-    setDragEnabled( !sqlForTags.isEmpty() );
+    setDragEnabled( !m_sqlForTags.isEmpty() );
 }
 
 void SmartPlaylist::setXml( QDomElement xml ) {
     m_xml = xml;
     m_title = xml.attribute( "name" );
     setText( 0, m_title );
-    sqlForTags = xml.namedItem( "sqlquery" ).toElement().text();
+    m_sqlForTags = xml.namedItem( "sqlquery" ).toElement().text();
     static QStringList genres;
     static QStringList artists;
     static QStringList albums;
@@ -1675,6 +1675,13 @@ void SmartPlaylist::setXml( QDomElement xml ) {
     }
 
 }
+
+
+QString SmartPlaylist::query()
+{
+    return m_sqlForTags.replace("(*CurrentTimeT*)" , QString::number(QDateTime::currentDateTime().toTime_t()) );
+}
+
 
 void SmartPlaylist::setDynamic( bool enable )
 {

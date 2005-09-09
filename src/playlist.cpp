@@ -573,10 +573,8 @@ Playlist::addSpecialCustomTracks( uint songCount )
     else if( item->rtti() == SmartPlaylist::RTTI  )
     {
         #define sp static_cast<SmartPlaylist *>(item)
-        QString query = sp->query();
         bool useDirect = false;
-
-        QString sql = sp->sqlForTags;
+        QString sql = sp->query();
 
         if ( sql.find( QString("ORDER BY"), false ) == -1 ) {
             QRegExp limit( ";$" );
@@ -602,7 +600,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
         QStringList items;
 
-        if ( !sp->sqlForTags.isEmpty() ) {
+        if ( !sp->query().isEmpty() ) {
             //We have to filter all the un-needed results from query( sql )
             for (uint x=10; x < queryResult.count() ; x += 11)
                 items << queryResult[x];

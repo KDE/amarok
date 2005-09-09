@@ -395,10 +395,8 @@ class SmartPlaylist : public PlaylistBrowserEntry
 
         bool isEditable() const { return !m_xml.isNull(); }
 
-        QString query() { return sqlForTags; }
+        QString query();
         QString title() { return m_title; }
-
-        QString sqlForTags;
 
         QDomElement xml() { return m_xml; }
         void setXml( QDomElement xml );
@@ -410,6 +408,8 @@ class SmartPlaylist : public PlaylistBrowserEntry
         static const int RTTI = 1004;    //smart playlist item
 
     private:
+        QString m_sqlForTags;
+
         QString m_title;
         QDomElement m_xml;
         QListViewItem *m_after;

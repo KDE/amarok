@@ -591,7 +591,7 @@ QString CriteriaEditor::getSearchCriteria()
                 else if( m_dateCombo->currentItem() == 1 ) //months
                     time=86400*30*n;
                 else time=86400*365*n; //years
-                value += CollectionDB::instance()->nowFunc() + QString(" - %1 +  AND ").arg(time) + CollectionDB::instance()->nowFunc(); 
+                value += "(*CurrentTimeT*)" + QString(" - %1 AND ").arg(time) + "(*CurrentTimeT*)";
             }
             else {
                 QDateTime datetime1( m_dateEdit1->date() );

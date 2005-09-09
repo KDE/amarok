@@ -224,7 +224,6 @@ class CollectionDB : public QObject, public EngineObserver
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         const QString longTextColumnType() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         const QString randomFunc() { if ( m_dbConnPool->getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
-        const QString nowFunc(); 
 
         int getType() { return m_dbConnPool->getDbConnectionType(); }
 
@@ -413,7 +412,7 @@ class QueryBuilder
                                tabStats = 64, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8 };
-        enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32, 
+        enum qBuilderValues  { valID = 1, valName = 2, valURL = 4, valTitle = 8, valTrack = 16, valScore = 32,
                                valComment = 64, valBitrate = 128, valLength = 256, valSamplerate = 512,
                                valPlayCounter = 1024, valCreateDate = 2048, valAccessDate = 4096,
                                valPercentage = 8192, valArtistID = 16384, valAlbumID = 32768,
