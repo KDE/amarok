@@ -5,16 +5,18 @@
 
 #include <klineedit.h>
 #include <knuminput.h>
+#include <kurlrequester.h>
 #include <kwin.h>
 
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 
-PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
+PodcastSettings::PodcastSettings( QString& url, QString& save, bool &autoScan, int &interval,
                                   int &fetch, bool &purge, int &purgeCount, QWidget* parent )
                     : PodcastSettingsDialogBase( parent )
                     , m_url( url )
+                    , m_save( save )
                     , m_autoScan( autoScan )
                     , m_interval( interval )
                     , m_fetch( fetch )
@@ -25,7 +27,9 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
-    m_urlLine->setText( url.prettyURL() );
+    m_urlLine->setText( url );
+    m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
+    m_saveLocation->setURL( save );
 
     m_autoFetchCheck->setChecked( autoScan );
 
@@ -62,6 +66,7 @@ PodcastSettings::PodcastSettings( KURL& url, bool &autoScan, int &interval,
 
     // Connects for modification check
     connect( m_urlLine,        SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
     connect( m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );
     connect( m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
@@ -85,10 +90,11 @@ PodcastSettings::hasChanged()
         fetchTypeChanged = false;
 
     return  !m_urlLine->text().isEmpty() &&
-           ( m_url.prettyURL() != m_urlLine->text() ||
+           ( m_url             != m_urlLine->text()             ||
+             m_save            != m_saveLocation->url()         ||
              m_autoScan        != m_autoFetchCheck->isChecked() ||
-             m_purge           != m_purgeCheck->isChecked() ||
-             m_purgeCount      != m_purgeCountSpinBox->value() ||
+             m_purge           != m_purgeCheck->isChecked()     ||
+             m_purgeCount      != m_purgeCountSpinBox->value()  ||
              fetchTypeChanged );
 
 }
@@ -110,7 +116,8 @@ PodcastSettings::accept()       //slot
 {
     pushButton_ok->setEnabled( false ); //visual feedback
 
-    m_url             = KURL::fromPathOrURL( m_urlLine->text() );
+    m_url             = m_urlLine->text();
+    m_save            = m_saveLocation->url();
     m_autoScan        = m_autoFetchCheck->isChecked();
     m_purge           = m_purgeCheck->isChecked();
     m_purgeCount      = m_purgeCountSpinBox->value();

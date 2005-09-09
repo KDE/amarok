@@ -16,12 +16,13 @@ class PodcastSettings : public PodcastSettingsDialogBase
     Q_OBJECT
 
     public:
-        PodcastSettings( KURL &url, bool &autoScan, int &interval,
+        PodcastSettings( QString &url, QString &save, bool &autoScan, int &interval,
                          int &fetch, bool &purge, int &purgeCount, QWidget* parent = 0 );
 
 
 
-        KURL    url()         { return m_url; }
+        QString url()         { return m_url; }
+        QString saveLocation(){ return m_save; }
         bool    hasAutoScan() { return m_autoScan; }
         int     interval()    { return m_interval; }
         int     fetch()       { return m_fetch; }
@@ -38,7 +39,8 @@ class PodcastSettings : public PodcastSettingsDialogBase
 
         bool    hasChanged();
 
-        KURL    &m_url;
+        QString &m_url;
+        QString &m_save;
         bool    &m_autoScan;
         int     &m_interval;
         int     &m_fetch;

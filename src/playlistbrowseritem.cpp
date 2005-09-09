@@ -1005,6 +1005,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
                                 const KURL &url, QDomNode channelSettings, QDomDocument xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
+    , m_saveLocation( channelSettings.namedItem( "savelocation").toElement().text() )
     , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
     , m_fetching( false )
@@ -1023,6 +1024,9 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     else
         m_mediaFetch = STREAM;
 
+    if( m_saveLocation.isEmpty() )
+        m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/data/" ) );
+
     setXml( xmlDefinition.namedItem("rss").namedItem("channel") );
 
     setDragEnabled( true );
@@ -1035,9 +1039,10 @@ void
 PodcastChannel::configure()
 {
     QString url    = m_url.prettyURL();
+    QString save   = m_saveLocation.prettyURL();
     int purgeCount = m_purgeCount;
 
-    PodcastSettings *settings = new PodcastSettings( m_url, m_autoScan, m_interval,
+    PodcastSettings *settings = new PodcastSettings( url, save, m_autoScan, m_interval,
                                                      m_mediaFetch, m_purgeItems, m_purgeCount );
 
     if( settings->exec() == QDialog::Accepted )
@@ -1047,9 +1052,39 @@ PodcastChannel::configure()
             removeChildren();
             fetch();
         }
-        else if( m_purgeItems && ( m_purgeCount < purgeCount ) ) //fetch() will purge, so no need to fall through
+
+        if( m_purgeItems && ( m_purgeCount < purgeCount ) ) //fetch() will purge, so no need to fall through
         {
             purge();
+        }
+
+        /**
+         * Rewrite local url
+         * Move any downloaded media to the new location
+         */
+        if( save != m_saveLocation.prettyURL() )
+        {
+            KURL::List copyList;
+            m_saveLocation = KURL::fromPathOrURL( save );
+
+            PodcastItem *item = static_cast<PodcastItem*>( firstChild() );
+            while( item )
+            {
+                if( item->hasDownloaded() )
+                {
+                    debug() << "About to move: " << item->localUrl().prettyURL() << endl;
+                    copyList << item->localUrl();
+                }
+
+                item->setLocalUrlBase( save );
+                item = static_cast<PodcastItem*>( item->nextSibling() );
+            }
+            if( !copyList.isEmpty() )
+            {
+                KIO::CopyJob* m_podcastMoveJob = new KIO::CopyJob( copyList, m_saveLocation, KIO::CopyJob::Move, false, false );
+                amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
+                        .setDescription( i18n( "Moving Podcasts" ) );
+            }
         }
     }
 }
@@ -1081,8 +1116,9 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
-        if( !m_title )
-            setText( 0, m_url.prettyURL() );
+        m_title.isEmpty() ?
+            setText( 0, m_url.prettyURL() ) :
+            setText( 0, m_title );
 
         setPixmap( 0, SmallIcon("cancel") );
 
@@ -1218,12 +1254,14 @@ PodcastChannel::setXml( QDomNode xml )
         {
             // podcasts get inserted in a chronological order,
             // no need to continue traversing, we must have them already
-            if( m_first && m_first->hasXml( n ) ) {
+            if( m_first && m_first->hasXml( n ) )
+            {
                 if (nextFirst)
                     m_first = nextFirst;
                 debug() << "breaking" << endl;
                 break;
             }
+
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
                 updatingLast = new PodcastItem( this, updatingLast, n.toElement() );
@@ -1300,6 +1338,11 @@ PodcastChannel::xml()
         attr.appendChild( t );
         i.appendChild( attr );
 
+        attr = doc.createElement( "savelocation" );
+        t = doc.createTextNode( m_saveLocation.prettyURL() );
+        attr.appendChild( t );
+        i.appendChild( attr );
+
         attr = doc.createElement( "cache" );
         t = doc.createTextNode( m_cache );
         attr.appendChild( t );
@@ -1359,9 +1402,12 @@ PodcastChannel::slotAnimation()
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PodcastItem
+///    @note we fucking hate itunes for taking over podcasts and inserting
+///          their own attributes.
 ////////////////////////////////////////////////////////////////////////////
 PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomElement xml )
     : PlaylistBrowserEntry( parent, after )
+      , m_parent( parent )
       , m_localUrl( 0 )
       , m_loading1( QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
       , m_loading2( QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
@@ -1387,7 +1433,7 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
     if( m_title.isEmpty() )
         m_title = m_url.fileName();
 
-    m_localUrlString = amaroK::saveLocation( "podcasts/data/" );
+    m_localUrlString = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation().prettyURL();
     QString filename = m_title;
 
     m_localUrlString += filename.replace( " ", "_" ).replace( "/", "_" );;
@@ -1463,6 +1509,15 @@ PodcastItem::hasXml( const QDomNode& xml )
     bool f = m_url.prettyURL() == xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
     return a && b && c && d && e && f;
+}
+
+void
+PodcastItem::setLocalUrlBase( QString &s )
+{
+    QString filename = m_localUrl.filename();
+    QString newL = s + filename;
+    debug() << "[PodcastItem] Setting new location for " << m_title << ": " << newL << endl;
+    m_localUrl = KURL::fromPathOrURL( newL );
 }
 
 void

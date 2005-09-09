@@ -211,9 +211,6 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
         TrackItemInfo *m_trackInfo;
 };
 
-
-
-
 class PodcastItem : public QObject, public PlaylistBrowserEntry
 {
         Q_OBJECT
@@ -237,6 +234,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         const QString &description() { return m_description; }
         const int     &duration() { return m_duration; }
         const KURL    &localUrl() { return m_localUrl; }
+        void  setLocalUrlBase( QString &s );
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1007;              //podcastitem
@@ -250,6 +248,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
 
+        QListViewItem *m_parent;
         QString     m_author;
         QString     m_description;
         QString     m_date;
@@ -294,6 +293,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const QString &title() { return m_title; }
         const int timeout() { return m_interval; }
         const bool autoScan() { return m_autoScan; }
+        const KURL &saveLocation() { return m_saveLocation; }
 
         void setXml( QDomNode xml );
         QDomElement xml();
@@ -316,6 +316,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         KURL        m_url;                         //xml url
         KURL        m_link;                        //webpage
+        KURL        m_saveLocation;
         QString     m_title;
         QString     m_cache;                       //filename for caching
         QString     m_description;

@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>480</width>
-            <height>323</height>
+            <width>481</width>
+            <height>399</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -28,7 +28,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="2" column="0">
+        <widget class="QLayoutWidget" row="4" column="0">
             <property name="name">
                 <cstring>layout32</cstring>
             </property>
@@ -110,11 +110,11 @@
             <property name="sizeHint">
                 <size>
                     <width>31</width>
-                    <height>16</height>
+                    <height>5</height>
                 </size>
             </property>
         </spacer>
-        <widget class="Line" row="8" column="0">
+        <widget class="Line" row="10" column="0">
             <property name="name">
                 <cstring>line6</cstring>
             </property>
@@ -128,7 +128,7 @@
                 <enum>Horizontal</enum>
             </property>
         </widget>
-        <widget class="QLayoutWidget" row="9" column="0">
+        <widget class="QLayoutWidget" row="11" column="0">
             <property name="name">
                 <cstring>layout35</cstring>
             </property>
@@ -189,7 +189,125 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="7" column="0">
+        <widget class="QButtonGroup" row="6" column="0">
+            <property name="name">
+                <cstring>buttonGroup1</cstring>
+            </property>
+            <property name="lineWidth">
+                <number>1</number>
+            </property>
+            <property name="margin">
+                <number>6</number>
+            </property>
+            <property name="title">
+                <string>Media Download</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>m_downloadRequestRadio</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Download on request</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>m_streamRadio</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Stream on request</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Play media from remote location, but do not save to disk</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Play media from remote location, but do not save to disk</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="2" column="0">
+                    <property name="name">
+                        <cstring>m_downloadRadio</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Download when available</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Download media as soon as it becomes available</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Download media as soon as it becomes available</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer row="5" column="0">
+            <property name="name">
+                <cstring>spacer7</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+        <spacer row="3" column="0">
+            <property name="name">
+                <cstring>spacer18_2_2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>31</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget" row="2" column="0">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Save location:</string>
+                    </property>
+                </widget>
+                <widget class="KURLRequester">
+                    <property name="name">
+                        <cstring>m_saveLocation</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer row="9" column="0">
             <property name="name">
                 <cstring>spacer18</cstring>
             </property>
@@ -202,11 +320,11 @@
             <property name="sizeHint">
                 <size>
                     <width>31</width>
-                    <height>40</height>
+                    <height>38</height>
                 </size>
             </property>
         </spacer>
-        <widget class="QLayoutWidget" row="6" column="0">
+        <widget class="QLayoutWidget" row="8" column="0">
             <property name="name">
                 <cstring>layout34</cstring>
             </property>
@@ -272,7 +390,7 @@
                 </widget>
             </hbox>
         </widget>
-        <spacer row="5" column="0">
+        <spacer row="7" column="0">
             <property name="name">
                 <cstring>spacer7_2</cstring>
             </property>
@@ -285,90 +403,14 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>5</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QButtonGroup" row="4" column="0">
-            <property name="name">
-                <cstring>buttonGroup1</cstring>
-            </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="margin">
-                <number>6</number>
-            </property>
-            <property name="title">
-                <string>Media Download</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton" row="0" column="0">
-                    <property name="name">
-                        <cstring>m_downloadRequestRadio</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Download on request</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Download media and save to disk only when asked.  An entry will not be playable until the file has been explicitly saved.</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>m_streamRadio</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Stream on request</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Play media from remote location, but do not save to disk</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Play media from remote location, but do not save to disk</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="2" column="0">
-                    <property name="name">
-                        <cstring>m_downloadRadio</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Download when available</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Download media as soon as it becomes available</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Download media as soon as it becomes available</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <spacer row="3" column="0">
-            <property name="name">
-                <cstring>spacer7</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Fixed</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>5</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>pushButton_cancel</sender>
@@ -390,4 +432,9 @@
     </connection>
 </connections>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kurlrequester.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>
