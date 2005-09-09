@@ -89,9 +89,11 @@ class CollectionItem : public KListViewItem {
         void setUrl( const QString& url ) { m_url.setPath( url ); }
         const KURL& url() const { return m_url; }
 
+        virtual void sortChildItems ( int column, bool ascending ); //reimplemented
+
     private:
         //for sorting
-        virtual int compare( QListViewItem*, int, bool ) const;
+        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
 
     //attributes:
         KURL m_url;
@@ -117,6 +119,8 @@ class CollectionView : public KListView
         void setFilter( const QString &filter ) { m_filter = filter; }
         QString filter() { return m_filter; }
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
+
+        int trackDepth() { return m_trackDepth; }
 
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */
@@ -165,6 +169,7 @@ class CollectionView : public KListView
         inline void manipulateThe( QString &original, bool reverse = false );
         inline bool endsInThe( const QString & text );
         inline void yearAlbumCalc( QString &year, QString &text );
+        inline void updateTrackDepth();
 
         /**Call when a category has changed **/
         void updateColumnHeader();
@@ -180,6 +185,7 @@ class CollectionView : public KListView
         int m_cat1;
         int m_cat2;
         int m_cat3;
+        int m_trackDepth;
         int m_viewMode;
 
         QValueList<QStringList> m_cacheOpenItemPaths;

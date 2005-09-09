@@ -352,6 +352,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat2 = config->readNumEntry( "Category2", CollectionBrowser::IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
+        updateTrackDepth();
     //</READ CONFIG>
      KActionCollection* ac = new KActionCollection( this );
      KStdAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
@@ -1026,7 +1027,7 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
         m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
         m_cat3 = CollectionBrowser::IdNone;
     }
-
+    updateTrackDepth();
     if ( rerender )
         renderView();
 }
@@ -1053,7 +1054,7 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
         m_parent->m_cat3Menu->setItemChecked( id, false );
         enableCat3Menu( false );
     }
-
+    updateTrackDepth();
     if ( rerender )
         renderView();
 }
@@ -1066,7 +1067,7 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
     m_cat3 = id;
     m_parent->m_cat3Menu->setItemChecked( m_cat3, true );
     updateColumnHeader();
-
+    updateTrackDepth();
     if ( rerender )
         renderView();
 }
@@ -1086,6 +1087,7 @@ CollectionView::enableCat3Menu( bool enable )
         m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
         m_cat3 = CollectionBrowser::IdNone;
     }
+    updateTrackDepth();
 }
 
 
@@ -1928,6 +1930,24 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
 
 
 void
+CollectionView::updateTrackDepth() {
+    bool m3 = (m_cat3 == CollectionBrowser::IdNone);
+    bool m2 = (m_cat2 == CollectionBrowser::IdNone);
+    bool m1 = (m_cat1 == CollectionBrowser::IdNone);
+    if ( m3 || m2 || m1) {
+        //The wanted depth, is the lowest IdNone
+        if (m3)
+            m_trackDepth = 2;
+        if (m2)
+            m_trackDepth = 1;
+        if (m1)
+            m_trackDepth = 0;
+    }
+    else // If there's no IdNone, then it's 3
+        m_trackDepth = 3;
+}
+
+void
 CollectionView::viewportResizeEvent( QResizeEvent* )
 {
     // Needed for correct redraw of bubble help
@@ -1943,13 +1963,28 @@ CollectionItem::compare( QListViewItem* i, int col, bool /* ascending */) const
 {
     QString a =    text( col );
     QString b = i->text( col );
+    int ia, ib;
 
     switch( m_cat ) {
-        // Don't change the order of year categories and tracks
-        case CollectionBrowser::IdNone:
         case CollectionBrowser::IdVisYearAlbum:
+            a = a.left( a.find( i18n(" - ") ) );
+            b = b.left( b.find( i18n(" - ") ) );
+            // "?" are the last ones
+            if ( a == "?" )
+                return 1;
+            if ( b == "?" )
+                return -1;
+        //fall through
         case CollectionBrowser::IdYear:
-            return 0;
+            ia = a.toInt();
+            ib = b.toInt();
+            if (ia==ib)
+                return 0;
+            if (ia<ib)
+                return 1;
+            else
+                return -1;
+
         // Various Artists is always the last one
         case CollectionBrowser::IdArtist:
             if ( b == i18n("Various Artists") )
@@ -1962,10 +1997,17 @@ CollectionItem::compare( QListViewItem* i, int col, bool /* ascending */) const
                 return -1;
             if ( b == i18n("Unknown") )
                 return 1;
-        // No special case, then fall on default
-            return QString::localeAwareCompare( a.lower(), b.lower() );
     }
+    // No special case, then fall on default
+    return QString::localeAwareCompare( a.lower(), b.lower() );
+}
 
+void
+CollectionItem::sortChildItems ( int column, bool ascending ) {
+    CollectionView* view = static_cast<CollectionView*>( listView() );
+    // Sort only if it's not the tracks
+    if ( depth() + 1 < view->trackDepth())
+        QListViewItem::sortChildItems( column, ascending );
 }
 
 
