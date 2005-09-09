@@ -806,7 +806,6 @@ GstEngine::getPluginList( const QCString& classname ) const
 
                     if ( g_strrstr ( factory->details.klass, classname ) ) {
                         name = g_strdup ( GST_OBJECT_NAME ( factory ) );
-                        if ( name != "alsasink" && name != "autoaudiosink" && name != "gconfaudiosink")
                         results << name;
                     }
                 }
@@ -830,10 +829,7 @@ GstEngine::createPipeline()
 
     destroyPipeline();
 
-    if ( GstConfig::soundOutput().isEmpty() 
-        || GstConfig::soundOutput() == "alsasink" 
-        || GstConfig::soundOutput() ==  "autoaudiosink" 
-        || GstConfig::soundOutput() ==  "gconfaudiosink") {
+    if ( GstConfig::soundOutput().isEmpty()) {
         QTimer::singleShot( 0, this, SLOT( errorNoOutput() ) );
         return false;
     }
@@ -856,7 +852,6 @@ GstEngine::createPipeline()
     }
 
     m_gst_audiobin = gst_bin_new( "audiobin" );
-    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_audiosink );
 
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
@@ -875,6 +870,7 @@ GstEngine::createPipeline()
     gst_element_link_many( m_gst_audioconvert, m_gst_equalizer, m_gst_identity,
                            m_gst_volume, m_gst_audioscale, m_gst_audiosink, NULL );
 
+    gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_audiosink );
     gst_element_set_state( m_gst_audiobin, GST_STATE_PAUSED );
 
     m_pipelineFilled = true;

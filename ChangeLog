@@ -16,6 +16,8 @@ VERSION 1.3.2:
       it'll now play the first and queue the rest.
 
   BUGFIXES:
+    * Fix issues with the GStreamer engine and alsasink, and reenable it.
+      Patch by Vincent Tondellier <tonton-lists@team1664.org>. (BR 112103)
     * Dynamic playlist shuffle had some incorrect smart playlist handling.
     * Robustified the code for handling the '# of tracks in the playlist'
       part of the statusbar, it should not ever get out of sync with
