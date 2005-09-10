@@ -61,7 +61,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 
         if ( orientation() == Horizontal && !rect.contains( e->pos() ) ) {
             if ( !m_outside )
-                setValue( m_prevValue );
+                QSlider::setValue( m_prevValue );
             m_outside = true;
         } else {
             m_outside = false;
@@ -75,7 +75,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 amaroK::Slider::slideEvent( QMouseEvent *e )
 {
-    setValue( orientation() == Horizontal
+    QSlider::setValue( orientation() == Horizontal
         ? ((QApplication::reverseLayout())
           ? QRangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
           : QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
@@ -215,12 +215,10 @@ amaroK::PrettySlider::sizeHint() const
 //////////////////////////////////////////////////////////////////////////////////////////
 
 amaroK::VolumeSlider::VolumeSlider( Qt::Orientation orientation, QWidget *parent, uint max )
-    : amaroK::Slider( orientation, parent, max )
+    : amaroK::PrettySlider( orientation, parent, max )
 {
-    setWFlags( Qt::WNoAutoErase );
-    setFocusPolicy( QWidget::NoFocus );
-
     drawGradients();
+    connect( this, SIGNAL( valueChanged( int ) ), SLOT( slotValueChanged( int ) ) );
 }
 
 void amaroK::VolumeSlider::drawGradients()
@@ -236,8 +234,10 @@ void amaroK::VolumeSlider::drawGradients()
     c1.setHsv( h, 255/2, v );
     c2.setHsv( h, 255, v );
 
-    KPixmapEffect::gradient( m_lightGradient, colorGroup().background(), c1, KPixmapEffect::HorizontalGradient );
-    KPixmapEffect::gradient( m_darkGradient, colorGroup().background(), c2, KPixmapEffect::HorizontalGradient );
+    KPixmapEffect::gradient( m_lightGradient, colorGroup().background(), c1,
+        orientation() == Vertical ? KPixmapEffect::VerticalGradient : KPixmapEffect::HorizontalGradient );
+    KPixmapEffect::gradient( m_darkGradient, colorGroup().background(), c2,
+        orientation() == Vertical ? KPixmapEffect::VerticalGradient : KPixmapEffect::HorizontalGradient );
 
     m_lightMask.fill( Qt::color0 );
 
@@ -253,10 +253,10 @@ void amaroK::VolumeSlider::drawGradients()
 
     m_lightGradient.setMask( m_lightMask );
 
-    setValue( value() );
+    slotValueChanged( value() );
 }
 
-void amaroK::VolumeSlider::setValue( int value )
+void amaroK::VolumeSlider::slotValueChanged( int value )
 {
     m_lightMask.fill( Qt::color0 );
     m_darkMask.fill( Qt::color0 );
@@ -286,31 +286,7 @@ void amaroK::VolumeSlider::setValue( int value )
 
     m_darkGradient.setMask( m_darkMask );
 
-    QSlider::setValue( value );
-}
-
-void amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
-{
-    amaroK::Slider::mousePressEvent( e );
-
-    slideEvent( e );
-}
-
-void amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
-{
-    setValue( orientation() == Horizontal
-        ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
-        : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
-}
-
-void amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
-{
-    uint step = e->delta() / 18;
-    // Volume Slider
-    if( orientation() == Vertical ) step = -step;
-    setValue( QSlider::value() + step );
-
-    emit sliderReleased( value() );
+    update();
 }
 
 void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
@@ -332,6 +308,15 @@ void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 void amaroK::VolumeSlider::resizeEvent( QResizeEvent * )
 {
     drawGradients();
+}
+
+void amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
+{
+    uint step = e->delta() / 18;
+    if( orientation() == Vertical ) step = -step;
+    QSlider::setValue( QSlider::value() + step );
+
+    emit sliderReleased( value() );
 }
 
 #include "sliderwidget.moc"
