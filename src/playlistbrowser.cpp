@@ -187,8 +187,11 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
         if( item )
         {
-            item->setPixmap( 1, SmallIcon("favorites") );
             m_dynamicEntries.append( item );
+            if ( item->rtti() == PlaylistEntry::RTTI )
+                static_cast<PlaylistEntry*>( item )->setDynamic( true );
+            if ( item->rtti() == SmartPlaylist::RTTI )
+                static_cast<SmartPlaylist*>( item )->setDynamic( true );
         }
     }
 
