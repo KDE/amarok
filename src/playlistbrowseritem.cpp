@@ -1241,7 +1241,6 @@ PodcastChannel::setXml( QDomNode xml )
     m_copyright   = xml.namedItem( "copyright" ).toElement().text();
 
     PodcastItem *updatingLast = 0;
-    PodcastItem *nextFirst = 0;
 
     PodcastItem* first = (PodcastItem*)firstChild();
 
