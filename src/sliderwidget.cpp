@@ -268,7 +268,7 @@ amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    const double x = e->x() + 1, h = height(), w = width();
+    const double x = e->x(), h = height() - 1, w = width() - 1;
     QSlider::setValue( int( maxValue() * ( ( x * ( ( h / w ) * x ) ) / ( h * w ) ) ) );
 }
 
@@ -291,7 +291,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.fillRect( rect(), colorGroup().background() );
     p.end();
 
-    const int offset = int( sqrt( double( width() * width() * value() ) / maxValue() ) );
+    const int offset = int( sqrt( double( (width()-1) * (width()-1) * value() ) / maxValue() ) );
 
     bitBlt( &buf, offset, 0, &m_lightGradient, offset, 0, width() - offset  );
     bitBlt( &buf, 0, 0, &m_darkGradient, 0, 0, offset );
