@@ -279,7 +279,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 
     bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_inset, 0, 0 );
     bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_gradient, 0, 0, offset );
-    bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, h - m_volumeslider_handle.height() / 2, &m_volumeslider_handle );
+    bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, h - m_volumeslider_handle.height() / 2 - 3, &m_volumeslider_handle );
 
     p.begin( &buf );
     p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
