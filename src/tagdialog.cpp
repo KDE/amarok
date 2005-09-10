@@ -40,6 +40,7 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( MetaBundle( url ) )
     , m_score ( CollectionDB::instance()->getSongPercentage( url.path() ) )
+    , m_playcount( CollectionDB::instance()->getPlayCount( url.path() ) )
     , m_playlistItem( 0 )
     , m_currentCover( 0 )
 {
@@ -64,6 +65,7 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
     : TagDialogBase( parent )
     , m_bundle( mb )
     , m_score ( CollectionDB::instance()->getSongPercentage( mb.url().path() ) )
+    , m_playcount( CollectionDB::instance()->getPlayCount( mb.url().path() ) )
     , m_playlistItem( item )
     , m_currentCover( 0 )
 {
@@ -122,6 +124,7 @@ TagDialog::previousTrack()
         ? itScores.data()
         : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
 
+    m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
     readTags();
 }
 
@@ -144,6 +147,7 @@ TagDialog::nextTrack()
     m_score = itScores != storedScores.end()
         ? itScores.data()
         : CollectionDB::instance()->getSongPercentage( m_playlistItem->url().path() );
+    m_playcount = CollectionDB::instance()->getPlayCount( m_playlistItem->url().path() );
 
     readTags();
 }
@@ -323,6 +327,7 @@ void TagDialog::readTags()
     kIntSpinBox_score->setValue( m_score );
     kLineEdit_comment->setText( m_bundle.comment() );
     kLineEdit_length->setText( m_bundle.prettyLength() );
+    kLineEdit_playcount->setText( QString::number( m_playcount ) );
     kLineEdit_bitrate->setText( m_bundle.prettyBitrate() );
     kLineEdit_samplerate->setText( m_bundle.prettySampleRate() );
     kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
@@ -381,6 +386,7 @@ TagDialog::setMultipleTracksMode()
     line1->hide();
     lengthLabel->hide();
     kLineEdit_length->hide();
+    kLineEdit_playcount->hide();
     bitrateLabel->hide();
     kLineEdit_bitrate->hide();
     samplerateLabel->hide();

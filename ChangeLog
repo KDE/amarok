@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.2:
   FEATURES:
+    * Playcount is shown in the tag dialog.
     * New volume slider, both better looking and better working than
       the old one.
     * Podcasts can be saved to any location. (BR 111059)

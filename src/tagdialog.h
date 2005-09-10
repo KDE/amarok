@@ -56,6 +56,7 @@ class TagDialog : public TagDialogBase
 
         MetaBundle m_bundle;
         int m_score;
+        int m_playcount;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         QMap<QString, int> storedScores;
