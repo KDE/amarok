@@ -101,7 +101,7 @@ namespace amaroK
         private:
             void drawGradients();
 
-            int drawHeight() const { return height() / 2; }
+            int drawHeight() const { return height() / 4 * 3; }
 
             KPixmap m_lightGradient;
             KPixmap m_darkGradient;
