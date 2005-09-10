@@ -61,7 +61,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 
         if ( orientation() == Horizontal && !rect.contains( e->pos() ) ) {
             if ( !m_outside )
-                setValue( m_prevValue );
+                QSlider::setValue( m_prevValue );
             m_outside = true;
         } else {
             m_outside = false;
@@ -75,7 +75,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 amaroK::Slider::slideEvent( QMouseEvent *e )
 {
-    setValue( orientation() == Horizontal
+    QSlider::setValue( orientation() == Horizontal
         ? ((QApplication::reverseLayout())
           ? QRangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
           : QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
@@ -266,7 +266,7 @@ amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    setValue( QRangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
+    QSlider::setValue( QRangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
 }
 
 void
