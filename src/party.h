@@ -85,6 +85,7 @@ class Party : public QVBox
         void    createWidget();
 
         KActionCollection *m_ac;
+        KAction    *m_repopulate;
         KToolBar   *m_toolbar;
         QLabel     *m_tooltip;
         bool        m_visible;

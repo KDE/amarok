@@ -54,12 +54,12 @@ Party::Party( QWidget *parent, const char *name )
     container->hide();
 
     //<Toolbar>
-    KAction *repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
+    m_repopulate = new KAction( i18n("Repopulate"), "rebuild", 0,
                                        this, SLOT( repopulate() ), m_ac, "Repopulate Upcoming Tracks" );
 
     m_toolbar = new Browser::ToolBar( container );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the buttons to have text on right
-    repopulate->plug( m_toolbar );
+    m_repopulate->plug( m_toolbar );
 
     m_base = new PartyDialogBase( container );
     m_base->m_previousIntSpinBox->setEnabled( m_base->m_cycleTracks->isEnabled() );
@@ -102,7 +102,10 @@ Party::Party( QWidget *parent, const char *name )
         amaroK::actionCollection()->action( "random_mode" )->setEnabled( false );
     }
     else
+    {
+        m_repopulate->setEnabled( false );
         m_base->setEnabled( false );
+    }
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
     if( config->readBoolEntry( "Show Dynamic Config", false ) )
@@ -258,7 +261,7 @@ Party::setDynamicMode( bool enable, bool showDialog ) //SLOT
         amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( true );
         static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( false );
     }
-
+    m_repopulate->setEnabled( enable );
     m_base->setEnabled( enable );
 }
 
