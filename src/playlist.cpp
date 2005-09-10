@@ -2991,7 +2991,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     {
     case PLAY:
         if( itemCount == 1 )
+        {
+            //Restarting track on dynamic mode
+            if( isCurrent && isPlaying && isDynamic() )
+                m_partyDirt = true;
             activate( item );
+        }
         else
         {
             MyIt it( this, MyIt::Selected );
