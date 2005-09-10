@@ -2845,14 +2845,34 @@ Playlist::countChanged( const QString &path )
 void
 Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
 {
+    //if clicked on an empty area
+    enum { REPOPULATE, ENABLEDYNAMIC };
+    if( item == 0 ) {
+       KPopupMenu popup;
+       amaroK::actionCollection()->action("playlist_save")->plug( &popup );
+       amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
+       amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
+       if(AmarokConfig::dynamicMode())
+            popup.insertItem( SmallIconSet( "rebuild" ), i18n("Repopulate"), REPOPULATE); 
+       else
+            popup.insertItem( SmallIconSet( "dynamic" ), i18n("Enable Dynamic Mode && Repopulate"), ENABLEDYNAMIC);
+       switch(popup.exec(p))
+       {
+           case  ENABLEDYNAMIC:
+                static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
+                repopulate();
+                break;
+           case REPOPULATE: repopulate(); break;
+       }
+       return;
+    }
+
     #define item static_cast<PlaylistItem*>(item)
 
     enum {
         PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
         BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
         BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, LAST }; //keep LAST last
-
-    if( item == 0 ) return; //technically we should show "Remove" but this is far neater
 
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
