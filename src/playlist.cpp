@@ -591,19 +591,17 @@ Playlist::addSpecialCustomTracks( uint songCount )
         int findLocation = sql.find( limitSearch, false );
         if( findLocation == -1 ) //not found, add to end
         {
-            uint tmpSongCount;
-            if( songCount < 10 ) tmpSongCount = 10; // increase range to min of 350 songs
+            uint tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
             QRegExp limit( ";$" );
              //increase the limit to ensure that we get a good selection.
             sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( tmpSongCount * 35 ) );
         }
         else //LIMIT found
         {
-            uint tmpSongCount;
-            tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
+            uint tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
             sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount * 35 ) );
         }
-
+        debug() << "\n\n\n\n\n"<< sql << endl;
         QStringList queryResult = CollectionDB::instance()->query( sql );
 
         QStringList items;
