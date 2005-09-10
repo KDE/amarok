@@ -1168,7 +1168,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Images" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
         #endif
         menu.insertItem( SmallIconSet( "info" )
