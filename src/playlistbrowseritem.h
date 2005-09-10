@@ -337,7 +337,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         bool        m_purgeItems;
         int         m_purgeCount;
 
-        PodcastItem         *m_first;
         PodcastItem         *m_last;
         KIO::TransferJob    *m_podcastJob;
         QString              m_podcastCurrentUrl;

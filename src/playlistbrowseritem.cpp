@@ -986,7 +986,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     , m_mediaFetch( DOWNLOAD )
     , m_purgeItems( false )
     , m_purgeCount( 2 ) // we do a small hack here to make sure we only download the first 2 items of a new pc.
-    , m_first( 0 )
     , m_last( 0 )
 {
     setDragEnabled( true );
@@ -1016,7 +1015,6 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     , m_interval( channelSettings.namedItem( "scaninterval").toElement().text().toInt() )
     , m_purgeItems( channelSettings.namedItem( "purge").toElement().text() == "true" )
     , m_purgeCount( channelSettings.namedItem( "purgecount").toElement().text().toInt() )
-    , m_first( 0 )
     , m_last( 0 )
 {
     if( channelSettings.namedItem( "fetch").toElement().text() == "download" )
@@ -1176,7 +1174,6 @@ void
 PodcastChannel::removeChildren()
 {
     QListViewItem *child, *next;
-    m_first = 0;
     if ( (child = firstChild()) )
     {
         while ( (next = child->nextSibling()) )
@@ -1246,6 +1243,8 @@ PodcastChannel::setXml( QDomNode xml )
     PodcastItem *updatingLast = 0;
     PodcastItem *nextFirst = 0;
 
+    PodcastItem* first = (PodcastItem*)firstChild();
+
     QDomNode n = xml.namedItem( "item" );
     int  children = 0;
     bool downloadMedia = ( m_mediaFetch == AVAILABLE );
@@ -1255,10 +1254,8 @@ PodcastChannel::setXml( QDomNode xml )
         {
             // podcasts get inserted in a chronological order,
             // no need to continue traversing, we must have them already
-            if( m_first && m_first->hasXml( n ) )
+            if( first && first->hasXml( n ) )
             {
-                if (nextFirst)
-                    m_first = nextFirst;
                 debug() << "breaking" << endl;
                 break;
             }
@@ -1271,9 +1268,6 @@ PodcastChannel::setXml( QDomNode xml )
                     updatingLast->downloadMedia();
 
                 updatingLast->setNew();
-                if (!nextFirst) {
-                    nextFirst = updatingLast;
-                }
             }
         }
         else
@@ -1289,9 +1283,6 @@ PodcastChannel::setXml( QDomNode xml )
                 if( downloadMedia )
                     m_last->downloadMedia();
                 children++;
-                if (!m_first) {
-                    m_first = m_last;
-                }
             }
         }
 
@@ -1321,8 +1312,6 @@ PodcastChannel::purge()
         if( m_last && m_last != firstChild() )
             newLast = (PodcastItem *)m_last->itemAbove();
 
-        if ( m_last == m_first ) //just to make sure m_first is always valid
-            m_first = 0;
         delete m_last;
         m_last = newLast;
     }
