@@ -619,6 +619,15 @@ Playlist::addSpecialCustomTracks( uint songCount )
         KURL::List urls = KURL::List( items );
         KURL::List addMe;
 
+        if( urls.isEmpty() ) {
+            amaroK::StatusBar::instance()->longMessage( i18n(
+                "<div align=\"center\"><b>Warning</b></div>"
+                "The smart-playlist titled <i>%1</i> contains no tracks."
+                "<br><br>"
+                "Please modify your smart-playlist or choose a different source." ).arg( item->text(0) ) );
+            return;
+        }
+
         // we have to randomly select tracks from the returned query since we can't have
         // ORDER BY RAND() for some statements
         for( uint i=0; !useDirect && i < songCount; i++ )
@@ -627,14 +636,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
             addMe << urls[x];
         }
 
-        if( urls.isEmpty() )
-            amaroK::StatusBar::instance()->longMessage( i18n(
-                "<div align=\"center\"><b>Warning</b></div>"
-                "The smart-playlist titled <i>%1</i> contains no tracks."
-                "<br><br>"
-                "Please modify your smart-playlist or choose a different source." ).arg( item->text(0) ) );
-        else
-            insertMedia( useDirect ? urls : addMe );
+        insertMedia( useDirect ? urls : addMe );
 
         #undef sp
     }
@@ -2853,7 +2855,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
        amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
        amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
        if(AmarokConfig::dynamicMode())
-            popup.insertItem( SmallIconSet( "rebuild" ), i18n("Repopulate"), REPOPULATE); 
+            popup.insertItem( SmallIconSet( "rebuild" ), i18n("Repopulate"), REPOPULATE);
        else
             popup.insertItem( SmallIconSet( "dynamic" ), i18n("Enable Dynamic Mode && Repopulate"), ENABLEDYNAMIC);
        switch(popup.exec(p))
