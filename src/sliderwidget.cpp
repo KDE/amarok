@@ -288,7 +288,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.fillRect( rect(), colorGroup().background() );
     p.end();
 
-    const int offset = int(double((width()-2) * value()) / maxValue());
+    const int offset = int(double(width() * value()) / maxValue());
 
     bitBlt( &buf, offset, 0, &m_lightGradient, offset, 0, width() - offset  );
     bitBlt( &buf, 0, 0, &m_darkGradient, 0, 0, offset );
