@@ -86,7 +86,7 @@ namespace amaroK
             PrettySlider &operator=( const PrettySlider& ); //undefined
     };
 
-    class VolumeSlider: public PrettySlider
+    class VolumeSlider: public Slider
     {
         public:
             VolumeSlider( Qt::Orientation orientation, QWidget *parent, uint max = 0 );
@@ -95,6 +95,9 @@ namespace amaroK
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void resizeEvent( QResizeEvent* );
+            virtual void slideEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* );
+            virtual void wheelEvent( QWheelEvent *e );
 
         private:
             void drawGradients();

@@ -46,7 +46,7 @@ amaroK::Slider::wheelEvent( QWheelEvent *e )
     if( orientation() == Vertical ) step = -step;
     // Position Slider
     else step = step * 1500;
-    setValue( QSlider::value() + step );
+    QSlider::setValue( QSlider::value() + step );
 
     emit sliderReleased( value() );
 }
@@ -139,7 +139,7 @@ amaroK::PrettySlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::PrettySlider::slideEvent( QMouseEvent *e )
 {
-    setValue( orientation() == Horizontal
+    QSlider::setValue( orientation() == Horizontal
         ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
         : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
 }
@@ -215,8 +215,11 @@ amaroK::PrettySlider::sizeHint() const
 //////////////////////////////////////////////////////////////////////////////////////////
 
 amaroK::VolumeSlider::VolumeSlider( Qt::Orientation orientation, QWidget *parent, uint max )
-    : amaroK::PrettySlider( orientation, parent, max )
+    : amaroK::Slider( orientation, parent, max )
 {
+    setWFlags( Qt::WNoAutoErase );
+    setFocusPolicy( QWidget::NoFocus );
+
     drawGradients();
 }
 
@@ -284,6 +287,30 @@ void amaroK::VolumeSlider::setValue( int value )
     m_darkGradient.setMask( m_darkMask );
 
     QSlider::setValue( value );
+}
+
+void amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
+{
+    amaroK::Slider::mousePressEvent( e );
+
+    slideEvent( e );
+}
+
+void amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
+{
+    setValue( orientation() == Horizontal
+        ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
+        : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+}
+
+void amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
+{
+    uint step = e->delta() / 18;
+    // Volume Slider
+    if( orientation() == Vertical ) step = -step;
+    setValue( QSlider::value() + step );
+
+    emit sliderReleased( value() );
 }
 
 void amaroK::VolumeSlider::paintEvent( QPaintEvent * )
