@@ -600,7 +600,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         else //LIMIT found
         {
             uint tmpSongCount;
-            if( songCount < 10 ) tmpSongCount = 10; // increase range to min of 350 songs
+            tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
             sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount * 35 ) );
         }
 
