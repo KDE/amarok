@@ -86,27 +86,26 @@ namespace amaroK
             PrettySlider &operator=( const PrettySlider& ); //undefined
     };
 
-    class VolumeSlider: public PrettySlider
+    class VolumeSlider: public Slider
     {
-        Q_OBJECT
         public:
-            VolumeSlider( Qt::Orientation orientation, QWidget *parent, uint max = 0 );
+            VolumeSlider( QWidget *parent, uint max = 0 );
 
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void resizeEvent( QResizeEvent* );
+            virtual void slideEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* );
             virtual void wheelEvent( QWheelEvent *e );
-
-        private slots:
-            void slotValueChanged( int value );
 
         private:
             void drawGradients();
 
+            int drawHeight() const { return height() / 2; }
+
             KPixmap m_lightGradient;
             KPixmap m_darkGradient;
-            QBitmap m_lightMask;
-            QBitmap m_darkMask;
+            QBitmap m_mask;
 
             VolumeSlider( const VolumeSlider& ); //undefined
             VolumeSlider &operator=( const VolumeSlider& ); //undefined

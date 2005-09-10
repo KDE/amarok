@@ -321,7 +321,7 @@ VolumeAction::plug( QWidget *w, int index )
 
     delete (amaroK::VolumeSlider*) m_slider; //just in case, remember, we only support one plugging!
 
-    m_slider = new amaroK::VolumeSlider( Qt::Horizontal, w, amaroK::VOLUME_MAX );
+    m_slider = new amaroK::VolumeSlider( w, amaroK::VOLUME_MAX );
     m_slider->setName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setMinimumHeight( 35 );
