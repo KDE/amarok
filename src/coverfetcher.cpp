@@ -112,6 +112,9 @@ CoverFetcher::startFetch()
     QString query = m_queries.front();
     m_queries.pop_front();
 
+    // '&' breaks searching
+    query.remove('&');
+
     // Bug 97901: Import cover from amazon france doesn't work properly
     // (we have to set "mode=music-fr" instead of "mode=music")
     QString musicMode = AmarokConfig::amazonLocale() == "fr" ? "music-fr" : "music";
