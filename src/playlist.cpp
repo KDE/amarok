@@ -576,7 +576,11 @@ Playlist::addSpecialCustomTracks( uint songCount )
         bool useDirect = false;
         QString sql = sp->query();
 
-        if ( sql.find( QString("ORDER BY"), false ) == -1 ) {
+        // Many smart playlists require a special ordering in order to be effective (eg, last played).
+        // We respect this, so if there is no order by statement, we add a random ordering and use the result
+        // without further processing
+        if ( sql.find( QString("ORDER BY"), false ) == -1 )
+        {
             QRegExp limit( ";$" );
             sql.replace( limit, QString(" ORDER BY RAND() LIMIT 0, %1;").arg( songCount ) );
             useDirect = true;
@@ -587,13 +591,17 @@ Playlist::addSpecialCustomTracks( uint songCount )
         int findLocation = sql.find( limitSearch, false );
         if( findLocation == -1 ) //not found, add to end
         {
+            uint tmpSongCount;
+            if( songCount < 10 ) tmpSongCount = 10; // increase range to min of 350 songs
             QRegExp limit( ";$" );
              //increase the limit to ensure that we get a good selection.
-            sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( songCount * 35 ) );
+            sql.replace( limit, QString(" LIMIT 0, %1;" ).arg( tmpSongCount * 35 ) );
         }
         else //LIMIT found
         {
-            sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( songCount * 35 ) );
+            uint tmpSongCount;
+            if( songCount < 10 ) tmpSongCount = 10; // increase range to min of 350 songs
+            sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount * 35 ) );
         }
 
         QStringList queryResult = CollectionDB::instance()->query( sql );
@@ -611,6 +619,8 @@ Playlist::addSpecialCustomTracks( uint songCount )
         KURL::List urls = KURL::List( items );
         KURL::List addMe;
 
+        // we have to randomly select tracks from the returned query since we can't have
+        // ORDER BY RAND() for some statements
         for( uint i=0; !useDirect && i < songCount; i++ )
         {
             int x = KApplication::random() % urls.count();
