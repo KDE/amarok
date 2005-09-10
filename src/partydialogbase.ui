@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>302</width>
+            <width>306</width>
             <height>211</height>
         </rect>
     </property>
@@ -97,7 +97,10 @@
                         <cstring>m_cycleTracks</cstring>
                     </property>
                     <property name="text">
-                        <string>&amp;Cycle tracks</string>
+                        <string>&amp;Remove played tracks</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+R</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Automatically remove played tracks to the playlist</string>

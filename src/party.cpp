@@ -85,6 +85,9 @@ Party::Party( QWidget *parent, const char *name )
              enableButton, SLOT( setChecked( bool ) ) );
 
     loadConfig();
+
+    if( !m_base->m_cycleTracks->isChecked() )
+        m_base->m_previousIntSpinBox->setEnabled( false );
     /*
      * We don't want to show the info dialog on startup, so we set the dynamic parameter manually and connect
      * the signal afterwards
