@@ -22,14 +22,15 @@
 #include <math.h>
 
 #include <qapplication.h>
-#include <qbitmap.h>
 #include <qbrush.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qsize.h>
+
 #include <kglobal.h>
+#include <kiconeffect.h>
 #include <kpixmap.h>
-#include <kpixmapeffect.h>
+#include <kstandarddirs.h>
 
 
 amaroK::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
@@ -223,39 +224,19 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
 
-    drawGradients();
+    m_volumeslider_inset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
+    m_volumeslider_handle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
+
+    generateGradient();
 }
 
 void
-amaroK::VolumeSlider::drawGradients()
+amaroK::VolumeSlider::generateGradient()
 {
-    m_lightGradient.resize( size() );
-    m_darkGradient.resize( size() );
-    m_mask.resize( size() );
+    QImage temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
+    KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
 
-    int h, s, v;
-    QColor c1, c2;
-    colorGroup().highlight().getHsv( h, s, v );
-    c1.setHsv( h, 255/4, v );
-    c2.setHsv( h, 255, v );
-
-    KPixmapEffect::gradient( m_lightGradient, colorGroup().background(), c1, KPixmapEffect::HorizontalGradient );
-    KPixmapEffect::gradient( m_darkGradient, colorGroup().background(), c2, KPixmapEffect::HorizontalGradient );
-
-    m_mask.fill( Qt::color0 );
-
-    QPainter p( &m_mask );
-    p.setPen( Qt::color1 );
-    p.setBrush( Qt::color1 );
-    QPointArray pa( 3 );
-    pa.setPoint( 0, 0, height() / 2 + drawHeight() / 2 - 1 );
-    pa.setPoint( 1, width() - 1, height() / 2 + drawHeight() / 2 - 1 );
-    pa.setPoint( 2, width() - 1, height() / 2 - drawHeight() / 2 - 1  );
-    p.drawConvexPolygon( pa );
-    p.end();
-
-    m_lightGradient.setMask( m_mask );
-    m_darkGradient.setMask( m_mask );
+    m_volumeslider_gradient.convertFromImage( temp );
 }
 
 void
@@ -276,7 +257,7 @@ amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
 void
 amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
 {
-    uint step = e->delta() / 18;
+    const uint step = e->delta() / 18;
     // Volume Slider
     QSlider::setValue( QSlider::value() + step );
 
@@ -293,10 +274,18 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.end();
 
     const double w = width(), v = value(), mV = maxValue();
+    const int h = m_volumeslider_inset.height();
     const int offset = int( sqrt( (w*w) * ( v / mV ) ) );
 
-    bitBlt( &buf, offset, 0, &m_lightGradient, offset, 0, width() - offset  );
-    bitBlt( &buf, 0, 0, &m_darkGradient, 0, 0, offset );
+    bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_inset, 0, 0 );
+    bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_gradient, 0, 0, offset );
+    bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, h - m_volumeslider_handle.height() / 2, &m_volumeslider_handle );
+
+    p.begin( &buf );
+    p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
+    const QRect rect( 0, 0, 34, 15 );
+    p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + "%" );
+    p.end();
 
     bitBlt( this, 0, 0, &buf );
 }
@@ -304,7 +293,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 void
 amaroK::VolumeSlider::resizeEvent( QResizeEvent * )
 {
-    drawGradients();
+    generateGradient();
 }
 
 #include "sliderwidget.moc"

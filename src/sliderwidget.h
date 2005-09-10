@@ -20,7 +20,6 @@
 #ifndef AMAROKSLIDER_H
 #define AMAROKSLIDER_H
 
-#include <qbitmap.h>
 #include <qslider.h>
 #include <kpixmap.h>
 
@@ -99,13 +98,13 @@ namespace amaroK
             virtual void wheelEvent( QWheelEvent *e );
 
         private:
-            void drawGradients();
+            void generateGradient();
 
             int drawHeight() const { return height() / 4 * 3; }
 
-            KPixmap m_lightGradient;
-            KPixmap m_darkGradient;
-            QBitmap m_mask;
+            KPixmap m_volumeslider_handle;
+            KPixmap m_volumeslider_inset;
+            KPixmap m_volumeslider_gradient;
 
             VolumeSlider( const VolumeSlider& ); //undefined
             VolumeSlider &operator=( const VolumeSlider& ); //undefined

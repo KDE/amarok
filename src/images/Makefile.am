@@ -36,6 +36,9 @@ images_DATA = \
     time_minus.png \
     time_plus.png \
     vol_speaker.png \
+    volumeslider-gradient.png \
+    volumeslider-handle.png \
+    volumeslider-inset.png \
     wizard_compact.png \
     wizard_xmms.png \
     xine_logo.png
