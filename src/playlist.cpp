@@ -2853,9 +2853,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
        amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
        amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
        if(AmarokConfig::dynamicMode())
-            popup.insertItem( SmallIconSet( "rebuild" ), i18n("Repopulate"), REPOPULATE);
+            popup.insertItem( SmallIconSet( "dynamic" ), i18n("Repopulate"), REPOPULATE); 
        else
-            popup.insertItem( SmallIconSet( "dynamic" ), i18n("Enable Dynamic Mode && Repopulate"), ENABLEDYNAMIC);
+            popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load Dynamic Playlist"), ENABLEDYNAMIC);
        switch(popup.exec(p))
        {
            case  ENABLEDYNAMIC:
