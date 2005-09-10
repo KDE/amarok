@@ -386,6 +386,7 @@ TagDialog::setMultipleTracksMode()
     line1->hide();
     lengthLabel->hide();
     kLineEdit_length->hide();
+    playcountLabel->hide();
     kLineEdit_playcount->hide();
     bitrateLabel->hide();
     kLineEdit_bitrate->hide();
