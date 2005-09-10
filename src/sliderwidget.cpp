@@ -19,6 +19,8 @@
 
 #include "sliderwidget.h"
 
+#include <math.h>
+
 #include <qapplication.h>
 #include <qbitmap.h>
 #include <qbrush.h>
@@ -266,7 +268,8 @@ amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( QRangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
+    const double x = e->x() + 1, h = height(), w = width();
+    QSlider::setValue( int( maxValue() * ( ( x * ( ( h / w ) * x ) ) / ( h * w ) ) ) );
 }
 
 void
@@ -274,7 +277,7 @@ amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
 {
     uint step = e->delta() / 18;
     // Volume Slider
-    setValue( QSlider::value() + step );
+    QSlider::setValue( QSlider::value() + step );
 
     emit sliderReleased( value() );
 }
@@ -288,7 +291,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.fillRect( rect(), colorGroup().background() );
     p.end();
 
-    const int offset = int(double(width() * value()) / maxValue());
+    const int offset = int( sqrt( double( width() * width() * value() ) / maxValue() ) );
 
     bitBlt( &buf, offset, 0, &m_lightGradient, offset, 0, width() - offset  );
     bitBlt( &buf, 0, 0, &m_darkGradient, 0, 0, offset );
