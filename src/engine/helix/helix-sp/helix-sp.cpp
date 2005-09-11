@@ -645,16 +645,18 @@ int HelixSimplePlayer::addPlayer()
          STDERR("No Volume Interface - how can we play music!!\n");
       else
       {
+#ifndef HELIX_SW_VOLUME_INTERFACE
          HelixSimplePlayerVolumeAdvice *pVA = new HelixSimplePlayerVolumeAdvice(this, nNumPlayers);
          pVA->AddRef();
          ppctrl[nNumPlayers]->pVolume->AddAdviseSink((IHXVolumeAdviseSink *)pVA);
          ppctrl[nNumPlayers]->pVolumeAdvise = pVA;
-#ifndef HELIX_SW_VOLUME_INTERFACE
          ppctrl[nNumPlayers]->volume = 50; // should get volume advise, which will set this properly
 #else
          // set the helix sw interface volume to 100, we'll control the volume either ourselves post equalization or by
          // amaorok using direct hardware volume
+         //ppctrl[nNumPlayers]->pVolume->SetVolume(100);
          ppctrl[nNumPlayers]->pVolume->SetVolume(100);
+         ppctrl[nNumPlayers]->pVolumeAdvise = 0;
 #endif
       }
 
@@ -713,10 +715,13 @@ void HelixSimplePlayer::tearDown()
          ppctrl[i]->pAudioPlayer->RemoveStreamInfoResponse((IHXAudioStreamInfoResponse *) ppctrl[i]->pStreamInfoResponse);
          ppctrl[i]->pStreamInfoResponse->Release();
 
-         if (ppctrl[i]->pVolume && ppctrl[i]->pVolumeAdvise)
+         if (ppctrl[i]->pVolume)
          {
-            ppctrl[i]->pVolume->RemoveAdviseSink(ppctrl[i]->pVolumeAdvise);
-            ppctrl[i]->pVolumeAdvise->Release();
+            if (ppctrl[i]->pVolumeAdvise)
+            {
+               ppctrl[i]->pVolume->RemoveAdviseSink(ppctrl[i]->pVolumeAdvise);
+               ppctrl[i]->pVolumeAdvise->Release();
+            }
             ppctrl[i]->pVolume->Release();
          }
 

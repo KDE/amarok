@@ -63,7 +63,6 @@ private:
 
    int           m_numPlayers;
    int           m_current;  // the current player
-   int           m_xfadeLength;
 
    bool          m_isStream;
    HelixSimplePlayer::metaData m_md;

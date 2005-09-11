@@ -61,7 +61,6 @@ HelixEngine::HelixEngine()
      m_pluginsdir("/usr/local/RealPlayer/plugins"),
      m_codecsdir("/usr/local/RealPlayer/codecs"),
      m_inited(false),
-     m_xfadeLength(0),
      m_item(0),
 #ifdef DEBUG_PURPOSES_ONLY
      m_fps(0.0),m_fcount(0),m_ftime(0.0),m_scopebufwaste(0), m_scopebufnone(0), m_scopebuftotal(0),
@@ -211,7 +210,12 @@ HelixEngine::load( const KURL &url, bool isStream )
       return false;
    }
 
-   stop();
+   debug() << "xfadeLength is " << m_xfadeLength << endl;
+   if( m_xfadeLength > 0 && m_state == Engine::Playing )
+   {
+   }
+   else
+      stop();
 
    m_isStream = isStream;
    int nextPlayer;
@@ -277,7 +281,7 @@ HelixEngine::stop()
 
    debug() << "In stop\n";
    m_url = KURL();
-   HelixSimplePlayer::stop(m_current);
+   HelixSimplePlayer::stop(); // stop all players
    resetScope();
    killTimers();
    m_lasttime = 0;
@@ -403,7 +407,7 @@ void
 HelixEngine::timerEvent( QTimerEvent * )
 {
    HelixSimplePlayer::dispatch(); // dispatch the players
-   if (m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
+   if (m_xfadeLength <= 0 && m_state == Engine::Playing && HelixSimplePlayer::done(m_current))
       play_finished(m_current);
 
    m_lasttime += HELIX_ENGINE_TIMER;
