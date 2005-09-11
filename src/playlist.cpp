@@ -511,7 +511,15 @@ Playlist::addSpecialTracks( uint songCount, const QString type )
         amaroK::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") );
         return;
     }
-    insertMedia( KURL::List( url ), Playlist::Unique );
+    //QStringList list;
+    KURL::List escapedPaths;
+    foreach(url) //we have to run setPath on all raw paths
+    {
+        KURL tmp;
+        tmp.setPath( *it );
+        escapedPaths << tmp;
+    }
+    insertMedia( escapedPaths, Playlist::Unique );
 }
 
 void
@@ -614,7 +622,13 @@ Playlist::addSpecialCustomTracks( uint songCount )
             items = queryResult;
         }
 
-        KURL::List urls = KURL::List( items );
+        KURL::List urls;
+        foreach(items) //we have to run setPath on all raw paths
+        {
+            KURL tmp;
+            tmp.setPath( *it );
+            urls << tmp;
+        }
         KURL::List addMe;
 
         if( urls.isEmpty() ) {
