@@ -282,7 +282,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, h - m_volumeslider_handle.height() / 2 - 3, &m_volumeslider_handle );
 
     p.begin( &buf );
-    p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
+    p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ).dark() );
     const QRect rect( 0, 0, 34, 15 );
     p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + "%" );
     p.end();
