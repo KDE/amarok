@@ -27,6 +27,8 @@ VERSION 1.3.2:
       it'll now play the first and queue the rest.
 
   BUGFIXES:
+    * The delete key for removing playlist items works even if the file browser
+      is open. (BR 100145)
     * Filenames with XML entity codes were not playable in dynamic mode
       and caused it to stop. (BR 108783)
     * If the album or artist contained "&", cover fetching wouldn't work
