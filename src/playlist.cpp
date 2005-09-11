@@ -2847,24 +2847,27 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 {
     //if clicked on an empty area
     enum { REPOPULATE, ENABLEDYNAMIC };
-    if( item == 0 ) {
-       KPopupMenu popup;
-       amaroK::actionCollection()->action("playlist_save")->plug( &popup );
-       amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
-       amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
-       if(AmarokConfig::dynamicMode())
-            popup.insertItem( SmallIconSet( "dynamic" ), i18n("Repopulate"), REPOPULATE); 
-       else
+    if( item == 0 )
+    {
+        KPopupMenu popup;
+        amaroK::actionCollection()->action("playlist_save")->plug( &popup );
+        amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
+        if(AmarokConfig::dynamicMode())
+             popup.insertItem( SmallIconSet( "dynamic" ), i18n("Repopulate"), REPOPULATE);
+        else
+        {
+            amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
             popup.insertItem( SmallIconSet( "dynamic" ), i18n("Load Dynamic Playlist"), ENABLEDYNAMIC);
-       switch(popup.exec(p))
-       {
-           case  ENABLEDYNAMIC:
+        }
+        switch(popup.exec(p))
+        {
+            case  ENABLEDYNAMIC:
                 static_cast<KToggleAction*>(amaroK::actionCollection()->action( "dynamic_mode" ))->setChecked( true );
                 repopulate();
                 break;
-           case REPOPULATE: repopulate(); break;
-       }
-       return;
+            case REPOPULATE: repopulate(); break;
+        }
+        return;
     }
 
     #define item static_cast<PlaylistItem*>(item)
