@@ -194,7 +194,7 @@ EqualizerSetup::setBands( int preamp, QValueList<int> gains )
     m_slider_preamp->setValue( preamp );
 
     // Note: As a side effect, this automatically switches the
-    //       preset to 'Manual', which is by intention 
+    //       preset to 'Manual', which is by intention
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
         m_bandSliders.at(i)->setValue( ( *gains.at(i) ) );
 
@@ -313,7 +313,7 @@ EqualizerSetup::savePresets()
 
         QDomElement i = doc.createElement("preset");
         i.setAttribute( "name", title );
-        debug() << "Title: " << title << endl;
+//         debug() << "Title: " << title << endl;
 
         QDomElement attr;
         QDomText t;
@@ -323,7 +323,7 @@ EqualizerSetup::savePresets()
             t    = doc.createTextNode( QString::number( gains.first() ) );
             attr.appendChild( t );
             i.appendChild( attr );
-            debug() << "\t" << info[y] << ": " << gains.first() << endl;
+//             debug() << "\t" << info[y] << ": " << gains.first() << endl;
             gains.pop_front();
         }
         e.appendChild( i );
