@@ -432,7 +432,8 @@ XineEngine::canDecode( const KURL &url ) const
         list.remove("ssa");
 //HACK we also check for m4a because xine plays them but
 //for some reason doesn't return the extension
-        list << "m4a";
+        if(!list.contains("m4a"))
+            list << "m4a";
     }
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();

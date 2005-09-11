@@ -27,6 +27,7 @@ VERSION 1.3.2:
       it'll now play the first and queue the rest.
 
   BUGFIXES:
+    * Xine engine no longer adds images to the playlist.
     * The delete key for removing playlist items works even if the file browser
       is open. (BR 100145)
     * Filenames with XML entity codes were not playable in dynamic mode
