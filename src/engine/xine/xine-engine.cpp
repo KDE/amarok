@@ -410,16 +410,34 @@ XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 bool
 XineEngine::canDecode( const KURL &url ) const
 {
-    //TODO should free the file_extensions char*
-    static QStringList list = QStringList::split( ' ', xine_get_file_extensions( m_xine ) );
-
+    static QStringList list;
+    if(list.isEmpty())
+    {
+        char* exts = xine_get_file_extensions( m_xine );
+        list = QStringList::split( ' ', exts );
+        delete [] exts; exts = NULL;
+        //images
+        list.remove("png");
+        list.remove("jpg");
+        list.remove("jpeg");
+        list.remove("gif");
+        list.remove("ilbm");
+        list.remove("iff");
+        //subtitles
+        list.remove("asc");
+        list.remove("txt"); 
+        list.remove("sub"); 
+        list.remove("srt");
+        list.remove("smi");
+        list.remove("ssa");
+//HACK we also check for m4a because xine plays them but
+//for some reason doesn't return the extension
+        list << "m4a";
+    }
     const QString path = url.path();
     const QString ext  = path.mid( path.findRev( '.' ) + 1 ).lower();
 
-    //HACK we also check for m4a because xine plays them but
-    //     for some reason doesn't return the extension
-
-    return ext != "txt" && (list.contains( ext ) || ext =="m4a");
+    return list.contains( ext );
 }
 
 const Engine::Scope&
