@@ -156,6 +156,7 @@ FileBrowser::FileBrowser( const char * name )
         searchPane = new SearchPane( this );
 
         setStretchFactor( container, 2 );
+        
     }
 
     {
@@ -219,6 +220,8 @@ FileBrowser::FileBrowser( const char * name )
     setSpacing( 4 );
     setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
     setMinimumWidth( toolbar->sizeHint().width() );
+    //TODO can we make this event filter more specific? m_dir doesn't seem to catch del. WTF does?
+    PlaylistWindow::self()->installEventFilter(this);
 }
 
 
@@ -234,6 +237,19 @@ FileBrowser::~FileBrowser()
 
 //END Constructor/Destructor
 
+bool FileBrowser::eventFilter(QObject* /*obj*/, QEvent *ev)
+{
+    if(ev->type() == QEvent::KeyRelease)
+    {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(ev);
+        if(ke->key() == Key_Delete)
+        {
+            Playlist::instance()->removeSelectedItems();
+            return true;
+        }
+    }
+    return false;
+}
 
 //BEGIN Private Methods
 

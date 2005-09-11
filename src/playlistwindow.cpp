@@ -562,12 +562,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             return true;
         }
 
-        if( e->key() == Key_Delete )
-        {
-            pl->removeSelectedItems();
-            return true;
-        }
-
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
         {
             m_lineEdit->setFocus();

@@ -60,7 +60,7 @@ public:
    ~FileBrowser();
 
     KURL url() const { return m_dir->url(); }
-
+    virtual bool eventFilter ( QObject * watched, QEvent * e );
 public slots:
     void setUrl( const KURL &url ) { m_dir->setFocus(); m_dir->setURL( url, true ); }
     void setUrl( const QString &url ) { setUrl( KURL(url) ); }
