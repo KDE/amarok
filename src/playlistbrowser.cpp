@@ -1088,7 +1088,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> 
     for( int i = 0, n = in_urls.count(); i < n; ++i )
     {
         const KURL &url = in_urls[i];
-        if( QFileInfo( url.path() ).isDir() )
+        if( url.isLocalFile() && QFileInfo( url.path() ).isDir() )
             urls += recurse( url );
         else
             urls += url;
