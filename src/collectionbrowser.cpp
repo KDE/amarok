@@ -1422,7 +1422,6 @@ CollectionView::listSelected()
                 {
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                     yearAlbumCalc( year, tmptext );
-                    tmptext = tmptext.right(tmptext.find(i18n(" - ")));
                     qb.addMatch( QueryBuilder::tabYear, year );
                     qb.addMatch( q_cat1, tmptext );
                 }
@@ -1497,7 +1496,6 @@ CollectionView::listSelected()
                         {
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
-                            tmptext = tmptext.right(tmptext.find(i18n(" - ")));
                             qb.addMatch( QueryBuilder::tabYear, year );
                             qb.addMatch( q_cat1, tmptext );
                         }
@@ -1520,7 +1518,6 @@ CollectionView::listSelected()
                     {
                         QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                         yearAlbumCalc( year, tmptext );
-                        tmptext = tmptext.right(tmptext.find(i18n(" - ")));
                         qb.addMatch( QueryBuilder::tabYear, year );
                         qb.addMatch( q_cat2, tmptext );
                     }
@@ -1603,7 +1600,6 @@ CollectionView::listSelected()
                             {
                                 QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                                 yearAlbumCalc( year, tmptext );
-                                tmptext = tmptext.right(tmptext.find(i18n(" - ")));
                                 qb.addMatch( QueryBuilder::tabYear, year );
                                 qb.addMatch( q_cat1, tmptext );
                             }
@@ -1625,7 +1621,6 @@ CollectionView::listSelected()
                         {
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
-                            tmptext = tmptext.right(tmptext.find(i18n(" - ")));
                             qb.addMatch( QueryBuilder::tabYear, year );
                             qb.addMatch( q_cat2, tmptext );
                         }
@@ -1645,7 +1640,6 @@ CollectionView::listSelected()
                         {
                             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
-                            tmptext = tmptext.right(tmptext.find(i18n(" - ")));
                             qb.addMatch( QueryBuilder::tabYear, year );
                             qb.addMatch( q_cat3, tmptext );
                         }
