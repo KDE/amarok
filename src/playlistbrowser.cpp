@@ -1769,7 +1769,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from Dynamic Mode" ), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to Dynamic Mode" ), DYNADD );
         }
@@ -1831,7 +1831,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( isDynamicEnabled() && AmarokConfig::dynamicType() == "Custom" )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove from Dynamic Mode" ), DYNSUB );
+                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From Dynamic Mode" ), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to Dynamic Mode" ), DYNADD );
         }
