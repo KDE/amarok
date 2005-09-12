@@ -561,7 +561,10 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             pl->ensureItemVisible( *It( pl, It::Visible ) );
             return true;
         }
-
+        if( e->key() == Key_Delete )
+        {
+            return true;
+        }
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
         {
             m_lineEdit->setFocus();
