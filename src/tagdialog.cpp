@@ -318,6 +318,8 @@ void TagDialog::init()
 
 void TagDialog::readTags()
 {
+    bool local = m_bundle.url().isLocalFile();
+
     kLineEdit_title->setText( m_bundle.title() );
     kComboBox_artist->setCurrentText( m_bundle.artist() );
     kComboBox_album->setCurrentText( m_bundle.album() );
@@ -330,7 +332,7 @@ void TagDialog::readTags()
     kLineEdit_playcount->setText( QString::number( m_playcount ) );
     kLineEdit_bitrate->setText( m_bundle.prettyBitrate() );
     kLineEdit_samplerate->setText( m_bundle.prettySampleRate() );
-    kLineEdit_location->setText( m_bundle.url().isLocalFile() ? m_bundle.url().path() : m_bundle.url().url() );
+    kLineEdit_location->setText( local ? m_bundle.url().path() : m_bundle.url().url() );
     // draw the album cover on the dialog
     QString cover = CollectionDB::instance()->albumImage( m_bundle );
 
@@ -340,18 +342,17 @@ void TagDialog::readTags()
     }
 
     // enable only for local files
-    bool local = !m_bundle.url().isLocalFile();
-    kLineEdit_title->setReadOnly( local );
-    kComboBox_artist->setEnabled( !local );
-    kComboBox_album->setEnabled( !local );
-    kComboBox_genre->setEnabled( !local );
-    kIntSpinBox_track->setEnabled( !local );
-    kIntSpinBox_year->setEnabled( !local );
-    kIntSpinBox_score->setEnabled( !local );
-    kLineEdit_comment->setEnabled( !local );
+    kLineEdit_title->setReadOnly( !local );
+    kComboBox_artist->setEnabled( local );
+    kComboBox_album->setEnabled( local );
+    kComboBox_genre->setEnabled( local );
+    kIntSpinBox_track->setEnabled( local );
+    kIntSpinBox_year->setEnabled( local );
+    kIntSpinBox_score->setEnabled( local );
+    kLineEdit_comment->setEnabled( local );
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
-    if ( m_bundle.url().isLocalFile() )
+    if ( local )
         m_path = m_bundle.url().directory();
     else
         pushButton_open->setEnabled( false );
