@@ -125,24 +125,30 @@ void ItunesDBParser::parse(QFile& file)
             stream >> blocklen;
             stream >> blocklen;
 
-            uint datalen = blocklen - 40;
-            QByteArray buffer( datalen+2 );
+            uint ucs2len = ( blocklen - 40 ) / sizeof( Q_UINT16 );
 
             stream >> type;
-
-            seekRelative(stream, 24);    // skip stuff
-            stream.readRawBytes(buffer.data(), datalen);
-            buffer[datalen] = 0;
-            buffer[datalen + 1] = 0;
 
             if( type == itunesdb::MHOD_PLAYLIST)
                 break;    // ignore
 
+            unsigned short* buffer = new unsigned short[ucs2len+1];
+
+            seekRelative(stream, 24);    // skip stuff
+            for ( int i = 0; i < ucs2len; ++i ) {
+              Q_UINT16 h;
+              stream >> h;
+              buffer[i] = h;
+            }
+
+            buffer[ucs2len]= 0;
+
             if( listitem != NULL)
-                listitem->setItemProperty( QString::fromUcs2( (unsigned short *)buffer.data()), (ItemProperty)type);
+                listitem->setItemProperty( QString::fromUcs2(buffer), (ItemProperty)type);
+
+            delete [] buffer;
             }
             break;
-
         case 0x706C686D: {    // mhlp
             Q_UINT32 numplaylists;
             if( listitem != NULL) {
