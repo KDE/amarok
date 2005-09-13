@@ -19,15 +19,12 @@
 
 #include "sliderwidget.h"
 
-#include <math.h>
-
 #include <qapplication.h>
 #include <qbrush.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qsize.h>
 
-#include <kglobal.h>
 #include <kiconeffect.h>
 #include <kpixmap.h>
 #include <kstandarddirs.h>
@@ -251,8 +248,7 @@ amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    const double x = kClamp( e->x() + 1, 1, width() ), h = height(), w = width();
-    QSlider::setValue( int( maxValue() * ( ( x * ( ( h / w ) * x ) ) / ( h * w ) ) ) );
+    QSlider::setValue( QRangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
 }
 
 void
@@ -275,9 +271,8 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.fillRect( rect(), colorGroup().background() );
     p.end();
 
-    const double w = width(), v = value(), mV = maxValue();
     const int h = m_volumeslider_inset.height();
-    const int offset = int( sqrt( (w*w) * ( v / mV ) ) );
+    const int offset = int(double(width() * value()) / maxValue());
 
     bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_inset, 0, 0 );
     bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_gradient, 0, 0, offset );
