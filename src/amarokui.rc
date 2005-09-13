@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="amarok" version="15">
+<kpartgui name="amarok" version="16">
 <ToolBar name="mainToolBar"><Text>Playlist Toolbar</Text>
 
  <Action name="prev" />
@@ -9,11 +9,11 @@
 
  <Separator lineSeparator="true"/>
 
- <Action name="toolbar_analyzer"/>
+ <Action name="toolbar_volume" />
 
  <Separator lineSeparator="true"/>
 
- <Action name="toolbar_volume" />
+ <Action name="toolbar_analyzer"/>
 
  <Separator lineSeparator="true"/>
 
