@@ -223,7 +223,6 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 {
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
-    setBackgroundMode( NoBackground ); // Required to prevent erasing
 
     m_volumeslider_inset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
     m_volumeslider_handle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
@@ -295,6 +294,20 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.end();
 
     bitBlt( this, 0, 0, &buf );
+}
+
+void
+amaroK::VolumeSlider::hideEvent( QHideEvent* )
+{
+    setBackgroundMode( PaletteBackground ); // Required to prevent erasing
+}
+
+void
+amaroK::VolumeSlider::showEvent( QShowEvent* )
+{
+    // HACK To prevent ugly uninitialised background when the window is shown,
+    //      needed because we use NoBackground to prevent flickering while painting
+    setBackgroundMode( NoBackground );
 }
 
 void

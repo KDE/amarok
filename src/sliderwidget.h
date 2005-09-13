@@ -94,6 +94,8 @@ namespace amaroK
 
         protected:
             virtual void paintEvent( QPaintEvent* );
+            virtual void hideEvent( QHideEvent* );
+            virtual void showEvent( QShowEvent* );
             virtual void paletteChange( const QPalette& );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
