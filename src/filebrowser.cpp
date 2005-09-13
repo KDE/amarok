@@ -237,6 +237,9 @@ FileBrowser::~FileBrowser()
 
 //END Constructor/Destructor
 
+//to work around a bug with the delete key event being mysterously eaten
+//by an unknown object when the file browser is open, so folks couldn't
+//remove items from the playlist.
 bool FileBrowser::eventFilter(QObject* /*obj*/, QEvent *ev)
 {
     if(ev->type() == QEvent::KeyRelease)
