@@ -226,8 +226,9 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 
     m_volumeslider_inset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
     m_volumeslider_handle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
-
     generateGradient();
+
+    setMinimumWidth( m_volumeslider_inset.width() );
 }
 
 void
@@ -269,6 +270,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPixmap buf( size() );
 
+    // Erase buffer pixmap
     QPainter p( &buf );
     p.fillRect( rect(), colorGroup().background() );
     p.end();
@@ -281,8 +283,12 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_gradient, 0, 0, offset );
     bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, h - m_volumeslider_handle.height() / 2 - 3, &m_volumeslider_handle );
 
+    // Draw percentage number
     p.begin( &buf );
     p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ).dark() );
+    QFont font;
+    font.setPixelSize( 9 );
+    p.setFont( font );
     const QRect rect( 0, 0, 34, 15 );
     p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + "%" );
     p.end();
@@ -291,7 +297,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 }
 
 void
-amaroK::VolumeSlider::resizeEvent( QResizeEvent * )
+amaroK::VolumeSlider::paletteChange( const QPalette& )
 {
     generateGradient();
 }

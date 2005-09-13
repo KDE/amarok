@@ -23,6 +23,8 @@
 #include <qslider.h>
 #include <kpixmap.h>
 
+class QPalette;
+
 namespace amaroK
 {
     class Slider : public QSlider
@@ -92,15 +94,13 @@ namespace amaroK
 
         protected:
             virtual void paintEvent( QPaintEvent* );
-            virtual void resizeEvent( QResizeEvent* );
+            virtual void paletteChange( const QPalette& );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void wheelEvent( QWheelEvent *e );
 
         private:
             void generateGradient();
-
-            int drawHeight() const { return height() / 4 * 3; }
 
             KPixmap m_volumeslider_handle;
             KPixmap m_volumeslider_inset;
