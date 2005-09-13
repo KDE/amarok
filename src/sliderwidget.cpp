@@ -223,6 +223,7 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 {
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
+    setBackgroundMode( NoBackground ); // Required to prevent erasing
 
     m_volumeslider_inset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
     m_volumeslider_handle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
