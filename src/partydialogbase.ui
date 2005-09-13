@@ -99,9 +99,6 @@
                     <property name="text">
                         <string>&amp;Remove played tracks</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
                     <property name="toolTip" stdset="0">
                         <string>Automatically remove played tracks to the playlist</string>
                     </property>

@@ -22,6 +22,7 @@
 
 #include "popupMessage.h"
 #include "debug.h"
+
 #include <kactivelabel.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
@@ -128,12 +129,12 @@ void PopupMessage::display() //SLOT
 
     if( m_maskEffect == Dissolve )
     {
-        m_mask.resize( sizeHint() ); // Important, creates a valid pixmap
-        debug() << "Size: " << m_mask.height() << " x " << m_mask.width() << endl;
-        m_timerId = startTimer( 100 );
+        m_timerId = startTimer( 1000 / 30 );
     }
     else
+    {
         m_timerId = startTimer( 6 );
+    }
     show();
 }
 
@@ -194,17 +195,21 @@ void PopupMessage::countDown()
 
 void PopupMessage::dissolveMask()
 {
-    repaint( false );
+    // why do we need to keep resizing the mask!?!
+    m_mask.resize( width(), height() );
+
     if( m_stage == 1 )
     {
         QPainter maskPainter(&m_mask);
-        m_mask.fill(Qt::red);
-        maskPainter.setBrush(Qt::red);
-        maskPainter.setPen(Qt::red);
+
+        m_mask.fill(Qt::black);
+
+        maskPainter.setBrush(Qt::white);
+        maskPainter.setPen(Qt::white);
         maskPainter.drawRect( m_mask.rect() );
+
         m_dissolveSize += m_dissolveDelta;
 
-        debug() << "m_dissolveSize: " << m_dissolveSize << endl;
         if( m_dissolveSize > 0 )
         {
             maskPainter.setRasterOp( Qt::EraseROP );
@@ -216,12 +221,12 @@ void PopupMessage::dissolveMask()
             {
                 x = width();
                 s = m_dissolveSize * x / 128;
-                for (; x > -size; x -= size, s -= 2)
+
+                for ( ; x > size; x -= size, s -= 2 )
                 {
                     if (s < 0)
-                    {
-                        s = 0;
-                    }
+                        break;
+
                     maskPainter.drawEllipse(x - s / 2, y - s / 2, s, s);
                 }
             }
