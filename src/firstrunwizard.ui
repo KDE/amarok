@@ -490,10 +490,5 @@ combined (like JuK)</string>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>dbsetup.h</includehint>
-    <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>
