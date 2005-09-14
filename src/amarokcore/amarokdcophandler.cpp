@@ -3,6 +3,7 @@
                             -------------------
    begin                : Sat Oct 11 2003
    copyright            : (C) 2003 by Stanislav Karchebny
+                          (C) 2005 Ian Monroe
    email                : berkus@users.sf.net
 ***************************************************************************/
 
@@ -653,6 +654,33 @@ namespace amaroK
         Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
     }
 
+    QString DcopScriptHandler::readConfig(const QString& key)
+    {
+        QString cleanKey = key.remove(' ');
+        KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey);
+        if (configItem)
+            return configItem->property().toString();
+        else
+            return QString::null;
+    }
+
+    QStringList DcopScriptHandler::readListConfig(const QString& key)
+    {
+        QString cleanKey = key.remove(' ');
+        KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey);
+        QStringList stringList;
+        if(configItem)
+        {
+            QValueList<QVariant> variantList = configItem->property().toList();
+            QValueList<QVariant>::Iterator it = variantList.begin();
+            while(it != variantList.end())
+            {
+                stringList << (*it).toString();
+                ++it;
+            }
+        }
+        return stringList;
+    }
 } //namespace amaroK
 
 #include "amarokdcophandler.moc"

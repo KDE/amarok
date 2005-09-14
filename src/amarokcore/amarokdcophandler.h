@@ -3,6 +3,7 @@
                              -------------------
     begin                : Sat Oct 11 2003
     copyright            : (C) 2003 by Stanislav Karchebny
+                           (C) 2005 Ian Monroe
     email                : berkus@users.sf.net
  ***************************************************************************/
 
@@ -20,6 +21,7 @@
 
 #include <qobject.h>
 #include "amarokdcopiface.h"
+class AmarokConfig;
 
 namespace amaroK
 {
@@ -159,7 +161,10 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual QStringList listRunningScripts();
       virtual void addCustomMenuItem(QString submenu, QString itemTitle );
       virtual void removeCustomMenuItem(QString submenu, QString itemTitle );
+      virtual QString readConfig(const QString& key);
+      virtual QStringList readListConfig(const QString& key);
 };
+
 
 
 } // namespace amaroK

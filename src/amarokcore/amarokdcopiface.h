@@ -3,6 +3,7 @@
                              -------------------
     begin                : Sat Oct 11 2003
     copyright            : (C) 2003 by Stanislav Karchebny
+                           (C) 2005 Ian Monroe
     email                : berkus@users.sf.net
  ***************************************************************************/
 
@@ -157,6 +158,9 @@ k_dcop:
    virtual QStringList listRunningScripts() = 0;            ///< Returns a list of all currently running scripts.
    virtual void addCustomMenuItem(QString submenu, QString itemTitle ) = 0;  ///< Enables and sets custom menu item title.
    virtual void removeCustomMenuItem(QString submenu, QString itemTitle ) = 0;  ///< Removes the custom menu item.
+   virtual QString readConfig(const QString& key) = 0; ///< returns a AmarokConfig configuration entry value from the given key
+   virtual QStringList readListConfig(const QString& key) = 0; ///< AmarokConfig lists must use this function
+
 };
 
 

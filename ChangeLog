@@ -5,6 +5,10 @@ amaroK ChangeLog
 
 VERSION 1.3.2:
   FEATURES:
+    * Two new dcop calls which allow scripts to read many of amaroK's
+      configuration options. script readConfig(key) for strings, integers and
+      bools. script readListConfig(key) for lists. Note that these functions
+      are not guaranteed to always return the latest settings (though many do).
     * Added a right click menu for blank areas of the playlist, with options
       to save, clear or shuffle the playlist and to "enable the dynamic
       mode & repopulate".
