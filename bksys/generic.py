@@ -8,6 +8,11 @@ import SCons.Util
 from SCons.Script.SConscript import SConsEnvironment
 from SCons.Options import Options, PathOption
 
+def getreldir(lenv):
+	cwd=os.getcwd()
+	root=SCons.Node.FS.default_fs.Dir('#').abspath
+	return cwd.replace(root,'').lstrip('/')
+
 def dist(env, appname, version=None):
 	### To make a tarball of your masterpiece, use 'scons dist'
 	import os
@@ -116,11 +121,15 @@ class genobj:
 
 		# these members are private
 		self.chdir_lock=None
+		self.dirprefix='./'
 		self.old_os_dir=''
 		self.old_fs_dir=''
 		self.p_local_shlibs=[]
 		self.p_local_staticlibs=[]
 		self.p_global_shlibs=[]
+
+		self.p_localsource=None
+		self.p_localtarget=None
 
 		# work directory
 		self.workdir_lock=None
@@ -130,6 +139,38 @@ class genobj:
 
 		if not env.has_key('USE_THE_FORCE_LUKE'): env['USE_THE_FORCE_LUKE']=[self]
 		else: env['USE_THE_FORCE_LUKE'].append(self)
+
+	def joinpath(self, val):
+		dir=self.dirprefix
+
+		thing=self.orenv.make_list(val)
+		files=[]
+		bdir="./"
+		if self.orenv.has_key('_BUILDDIR_'): bdir=self.orenv['_BUILDDIR_']
+
+		for v in thing:
+			files.append( self.orenv.join(bdir, dir, v) )
+
+		#for f in files: print f
+		#print "\n"
+		return files
+
+	# a list of paths, with absolute and relative ones
+	def fixpath(self, val):
+		dir=self.dirprefix
+
+		thing=self.orenv.make_list(val)
+		ret=[]
+		bdir="./"
+		if self.orenv.has_key('_BUILDDIR_'): bdir=self.orenv['_BUILDDIR_']
+		for v in thing:
+			if v[:2] == "./" or v[:3] == "../":
+				ret.append( self.orenv.join(bdir, dir, v) )
+			elif v[:1] == "#" or v[:1] == "/":
+				ret.append( v )
+			else:
+				ret.append( self.orenv.join(bdir, dir, v) )
+		return ret
 
 	def lockworkdir(self):
 		if self.workdir_lock: return
@@ -168,17 +209,24 @@ class genobj:
 		if self.orenv.has_key('DUMPCONFIG'):
 			print self.xml()
 			self.unlockchdir()
+			self.executed=1
 			return
 
 		self.env = self.orenv.Copy()
 
-		if not self.src or len(self.src) == 0:
+		if not self.p_localtarget: self.p_localtarget = self.joinpath(self.target)
+		if not self.p_localsource: self.p_localsource = self.joinpath(self.src)
+
+		if (not self.src or len(self.src) == 0) and not self.p_localsource:
 			self.env.pprint('RED',"no source file given to object - self.src")
+			self.env.Exit(1)
+		if not self.target:
+			self.env.pprint('RED',"no target given to object - self.target")
 			self.env.Exit(1)
 		if not self.env.has_key('nosmart_includes'): self.env.AppendUnique(CPPPATH=['./'])
 		if self.type == "kioslave": self.libprefix=''
 
-		if len(self.includes)>0: self.env.AppendUnique(CPPPATH=self.env.make_list(self.includes))
+		if len(self.includes)>0: self.env.AppendUnique(CPPPATH=self.fixpath(self.includes))
 		if len(self.cxxflags)>0: self.env.AppendUnique(CXXFLAGS=self.env.make_list(self.cxxflags))
 		if len(self.cflags)>0: self.env.AppendUnique(CCFLAGS=self.env.make_list(self.cflags))
 
@@ -188,33 +236,35 @@ class genobj:
 		for l in llist:
 			sal=SCons.Util.splitext(l)
 			if len(sal)>1:
-				if sal[1] in lext: self.p_local_shlibs.append(sal[0]+'.so')
+				if sal[1] in lext: self.p_local_shlibs.append(self.fixpath(sal[0]+'.so')[0])
 				elif sal[1] in sext: self.p_local_staticlibs.append(sal[0]+'.a')
 				else: self.p_global_shlibs.append(l)
 
 		if len(self.p_global_shlibs)>0: self.env.AppendUnique(LIBS=self.p_global_shlibs)
-		if len(self.libpaths)>0:   self.env.PrependUnique(LIBPATH=self.env.make_list(self.libpaths))
+		if len(self.libpaths)>0:   self.env.PrependUnique(LIBPATH=self.fixpath(self.libpaths))
 		if len(self.linkflags)>0:  self.env.PrependUnique(LINKFLAGS=self.env.make_list(self.linkflags))
+		if len(self.p_local_shlibs)>0:
+			self.env.link_local_shlib(self.p_local_shlibs)
+		if len(self.p_local_staticlibs)>0:
+			self.env.link_local_staticlib(self.p_local_staticlibs)
 
-		# the target to return
+		# the target to return - no more self.env modification is allowed after this part
 		ret=None
 		if self.type=='shlib' or self.type=='kioslave':
-			ret=self.env.bksys_shlib(self.target, self.src, self.instdir, 
+			ret=self.env.bksys_shlib(self.p_localtarget, self.p_localsource, self.instdir, 
 				self.libprefix, self.vnum)
 		elif self.type=='program':
-			ret=self.env.Program(self.target, self.src)
+			ret=self.env.Program(self.p_localtarget, self.p_localsource)
 			if not self.env.has_key('NOAUTOINSTALL'):
 				ins=self.env.bksys_install(self.instdir, ret)
 				if self.perms: self.env.AddPostAction(ins, self.env.Chmod(ins, self.perms))
 		elif self.type=='staticlib':
-			ret=self.env.StaticLibrary(self.target, self.src)
+			ret=self.env.StaticLibrary(self.p_localtarget, self.p_localsource)
 
 		# we link the program against a shared library made locally, add the dependency
 		if len(self.p_local_shlibs)>0:
-			self.env.link_local_shlib(self.p_local_shlibs)
 			if ret: self.env.Depends( ret, self.p_local_shlibs )
 		if len(self.p_local_staticlibs)>0:
-			self.env.link_local_staticlib(self.p_local_staticlibs)
 			if ret: self.env.Depends( ret, self.p_local_staticlibs )
 
 		self.unlockchdir()
@@ -260,6 +310,7 @@ def generate(env):
 	SConsEnvironment.make_list = make_list
 	SConsEnvironment.join = join
 	SConsEnvironment.dist = dist
+	SConsEnvironment.getreldir = getreldir
 
 	env['HELP']=0
 	if '--help' in sys.argv or '-h' in sys.argv or 'help' in sys.argv: env['HELP']=1
@@ -276,7 +327,8 @@ def generate(env):
 		p('BOLD','* debug        ','debug=1 (-g) or debug=full (-g3, slower) else use environment CXXFLAGS, or -O2 by default')
 		p('BOLD','* prefix       ','the installation path')
 		p('BOLD','* extraincludes','a list of paths separated by ":"')
-		p('BOLD','* scons configure debug=full prefix=/usr/local extraincludes=/tmp/include:/usr/local\n')
+		p('BOLD','* scons configure debug=full prefix=/usr/local extraincludes=/tmp/include:/usr/local')
+		p('BOLD','* scons install prefix=/opt/local DESTDIR=/tmp/blah\n')
 		return
 	
 	## Global cache directory
@@ -445,7 +497,7 @@ def generate(env):
 	env['BUILDERS']['LaFile'] = env.Builder(action=la_file,suffix='.la',src_suffix=env['SHLIBSUFFIX'])
 
 	## Function for building shared libraries
-	def bksys_shlib(lenv, target, source, libdir, libprefix='lib', vnum='', noinst=None):
+	def bksys_shlib(lenv, ntarget, source, libdir, libprefix='lib', vnum='', noinst=None):
 		""" Install a shared library.
 		
 		Installs a shared library, with or without a version number, and create a
@@ -460,6 +512,10 @@ def generate(env):
 		libfoo.so.1.2.3, and create symlinks libfoo.so and
 		libfoo.so.1 that point to it.
 		"""
+		# parameter can be a list
+		if type(ntarget) is types.ListType: target=ntarget[0]
+		else: target=ntarget
+
 		thisenv = lenv.Copy() # copying an existing environment is cheap
 		thisenv['BKSYS_DESTDIR']=libdir
 		thisenv['BKSYS_VNUM']=vnum
@@ -469,7 +525,9 @@ def generate(env):
 			thisenv['SHLIBSUFFIX']='.so.'+vnum
 			thisenv.Depends(target, thisenv.Value(vnum))
 			num=vnum.split('.')[0]
-			libname=target.split('.')[0]
+			lst=target.split('/')
+			tname=lst[len(lst)-1]
+			libname=tname.split('.')[0]
 			thisenv.AppendUnique(LINKFLAGS = ["-Wl,--soname=%s.so.%s" % (libname, num)] )
 
 		# Fix against a scons bug - shared libs and ordinal out of range(128)
@@ -497,12 +555,11 @@ def generate(env):
 			thisenv.Command(nm2, tg, symlinkcom)
 			thisenv.bksys_install(libdir, nm1)
 			thisenv.bksys_install(libdir, nm2)
+		return library_list
 
 	# Declare scons scripts to process
 	def subdirs(lenv, folderlist):
-		flist=[]
-		if type(folderlist) is types.ListType: flist = folderlist
-		else: flist = folderlist.split()
+		flist=lenv.make_list(folderlist)
 		for i in flist:
 			lenv.SConscript(lenv.join(i, 'SConscript'))
 		# take all objects - warn those who are not already executed
@@ -549,6 +606,13 @@ def generate(env):
 			f=SCons.Node.FS.default_fs.File(file)
 			lenv.Append(LINKFLAGS=[f.path])
 
+	def set_build_dir(lenv, dirs, buildto):
+		lenv.SetOption('duplicate', 'soft-copy')
+		lenv['_BUILDDIR_']=buildto
+		ldirs=lenv.make_list(dirs)
+		for dir in ldirs:
+			lenv.BuildDir(buildto+os.path.sep+dir, dir)
+
 	#valid_targets = "program shlib kioslave staticlib".split()
         SConsEnvironment.bksys_install = bksys_install
 	SConsEnvironment.bksys_shlib   = bksys_shlib
@@ -556,6 +620,7 @@ def generate(env):
 	SConsEnvironment.link_local_shlib = link_local_shlib
 	SConsEnvironment.link_local_staticlib = link_local_staticlib
 	SConsEnvironment.genobj=genobj
+	SConsEnvironment.set_build_dir=set_build_dir
 
 	if env.has_key('GENCXXFLAGS'):  env.AppendUnique( CPPFLAGS = env['GENCXXFLAGS'] )
 	if env.has_key('GENCCFLAGS'):   env.AppendUnique( CCFLAGS = env['GENCCFLAGS'] )

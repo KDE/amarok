@@ -59,16 +59,23 @@ def detect_kde(env):
 		if v: v=os.path.abspath(v)
 		return v
 
+	def getstr(varname):
+		if env.has_key('ARGS'): return env['ARGS'].get(varname, '')
+		return ''
+
 	prefix      = getpath('prefix')
 	execprefix  = getpath('execprefix')
 	datadir     = getpath('datadir')
 	libdir      = getpath('libdir')
+
+	kdedir      = getstr('kdedir')
 	kdeincludes = getpath('kdeincludes')
 	kdelibs     = getpath('kdelibs')
+
+	qtdir       = getstr('qtdir')
 	qtincludes  = getpath('qtincludes')
 	qtlibs      = getpath('qtlibs')
-	libsuffix   = ''
-	if env.has_key('ARGS'): libsuffix=env['ARGS'].get('libsuffix', '')
+	libsuffix   = getstr('libsuffix')
 
 	p=env.pprint
 
@@ -76,18 +83,22 @@ def detect_kde(env):
 
 	## Detect the kde libraries
 	print "Checking for kde-config           : ",
-	kde_config = os.popen("which kde-config 2>/dev/null").read().strip()
+	str="which kde-config 2>/dev/null"
+	if kdedir: str="which %s 2>/dev/null" % (kdedir+'/bin/kde-config')
+	kde_config = os.popen(str).read().strip()
 	if len(kde_config):
-		p('GREEN', 'kde-config was found')
+		p('GREEN', 'kde-config was found as '+kde_config)
 	else:
-		p('RED','kde-config was NOT found in your PATH')
+		if kdedir: p('RED','kde-config was NOT found in the folder given '+kdedir)
+		else: p('RED','kde-config was NOT found in your PATH')
 		print "Make sure kde is installed properly"
 		print "(missing package kdebase-devel?)"
 		env.Exit(1)
-	env['KDEDIR'] = os.popen('kde-config -prefix').read().strip()
+	if kdedir: env['KDEDIR']=kdedir
+	else: env['KDEDIR'] = os.popen(kde_config+' -prefix').read().strip()
 
 	print "Checking for kde version          : ",
-	kde_version = os.popen("kde-config --version|grep KDE").read().strip().split()[1]
+	kde_version = os.popen(kde_config+" --version|grep KDE").read().strip().split()[1]
 	if int(kde_version[0]) != 3 or int(kde_version[2]) < 2:
 		p('RED', kde_version)
 		p('RED',"Your kde version can be too old")
@@ -97,12 +108,12 @@ def detect_kde(env):
 
 	## Detect the qt library
 	print "Checking for the qt library       : ",
-	qtdir = os.getenv("QTDIR")
+	if not qtdir: qtdir = os.getenv("QTDIR")
 	if qtdir:
 		p('GREEN',"qt is in "+qtdir)
 	else:
 		try:
-			tmplibdir = os.popen('kde-config --expandvars --install lib').read().strip()
+			tmplibdir = os.popen(kde_config+' --expandvars --install lib').read().strip()
 			libkdeuiSO = env.join(tmplibdir, getSOfromLA(env.join(tmplibdir,'/libkdeui.la')) )
 			m = re.search('(.*)/lib/libqt.*', os.popen('ldd ' + libkdeuiSO + ' | grep libqt').read().strip().split()[2])
 		except: m=None
@@ -168,7 +179,7 @@ def detect_kde(env):
 			env.Exit(1)
 
 	print "Checking for the kde includes     : ",
-	kdeprefix = os.popen("kde-config --prefix").read().strip()
+	kdeprefix = os.popen(kde_config+" --prefix").read().strip()
 	if not kdeincludes:
 		kdeincludes = kdeprefix+"/include/"
 	if os.path.isfile(kdeincludes + "/klineedit.h"):
@@ -206,23 +217,23 @@ def detect_kde(env):
 		env['PREFIX'] = prefix
 		env['KDELIB'] = libdir
 		for (var, option) in kdec_opts.items():
-			dir = os.popen('kde-config --install ' + option).read().strip()
+			dir = os.popen(kde_config+' --install ' + option).read().strip()
 			if var == 'KDEDOC': dir = debian_fix(dir)
 			env[var] = subst_vars(dir)
 
 	else:
-		env['PREFIX'] = os.popen('kde-config --expandvars --prefix').read().strip()
-		env['KDELIB'] = os.popen('kde-config --expandvars --install lib').read().strip()
+		env['PREFIX'] = os.popen(kde_config+' --expandvars --prefix').read().strip()
+		env['KDELIB'] = os.popen(kde_config+' --expandvars --install lib').read().strip()
 		for (var, option) in kdec_opts.items():
-			dir = os.popen('kde-config --expandvars --install ' + option).read().strip()
+			dir = os.popen(kde_config+' --expandvars --install ' + option).read().strip()
 			env[var] = dir
 
-	env['QTPLUGINS']=os.popen('kde-config --expandvars --install qtplugins').read().strip()
+	env['QTPLUGINS']=os.popen(kde_config+' --expandvars --install qtplugins').read().strip()
 
 	## kde libs and includes
 	env['KDEINCLUDEPATH']=kdeincludes
 	if not kdelibs:
-		kdelibs=os.popen('kde-config --expandvars --install lib').read().strip()
+		kdelibs=os.popen(kde_config+' --expandvars --install lib').read().strip()
 	env['KDELIBPATH']=kdelibs
 
 	## qt libs and includes
@@ -245,6 +256,10 @@ def generate(env):
                 p('BOLD','* execprefix ','install path for binaries, ie: /usr/bin')
                 p('BOLD','* datadir    ','install path for the data, ie: /usr/local/share')
                 p('BOLD','* libdir     ','install path for the libs, ie: /usr/lib')
+
+		p('BOLD','* qtdir      ','base of the kde libraries')
+		p('BOLD','* kdedir     ','base of the qt libraries')
+
 		p('BOLD','* libsuffix  ','suffix of libraries on amd64, ie: 64, 32')
 		p('BOLD','* kdeincludes','kde includes path (/usr/include/kde on debian, ..)')
 		p('BOLD','* qtincludes ','qt includes path (/usr/include/qt on debian, ..)')
@@ -356,15 +371,17 @@ def generate(env):
 		bs = env.join(str(target[0].get_dir()),bs)
 		# .h file is already there
 		target.append( bs+'.cpp' )
+		
+		content=source[0].srcnode().get_contents()
+		#print content
 
-		content=source[0].get_contents()
 		kcfgfilename=""
 		kcfgFileDeclRx = re.compile("[fF]ile\s*=\s*(.+)\s*")
 		match = kcfgFileDeclRx.search(content)
 		if match: kcfgfilename = match.group(1)
 
 		if not kcfgfilename:
-			env.pprint('RED','invalid kcfgc file')
+			env.pprint('RED','invalid kcfgc file '+source[0].srcnode().abspath)
 			env.Exit(1)
 		source.append( env.join( str(source[0].get_dir()), kcfgfilename) )
 		return target, source
@@ -386,7 +403,7 @@ def generate(env):
 	env['BUILDERS']['Stub']=Builder(action= 'dcopidl2cpp --c++-suffix cpp --no-signals --no-skel $SOURCE',
 			suffix='_stub.cpp', src_suffix='.kidl')
 	## DOCUMENTATION
-	env['BUILDERS']['Meinproc']=Builder(action='$MEINPROC --check --cache $TARGET $SOURCE',suffix='.cache.bz2')
+	env['BUILDERS']['Meinproc']=Builder(action='cd $TARGET.dir && $MEINPROC --check --cache $TARGET.name $SOURCE.name',suffix='.cache.bz2')
 	## TRANSLATIONS
 	env['BUILDERS']['Transfiles']=Builder(action='$MSGFMT $SOURCE -o $TARGET',suffix='.gmo',src_suffix='.po')
 
@@ -501,11 +518,11 @@ def generate(env):
 	def KDEinstall(lenv, restype, subdir, files, perms=None):
 		if env.has_key('DUMPCONFIG'):
 			print "<install type=\"%s\" subdir=\"%s\">" % (restype, subdir)
-			for i in lenv.make_list(files): print "    <file name=\"%s\"/>" % i
+			for i in lenv.make_list(files): print "    <file name=\"%s\"/>" % (lenv.join(lenv.getreldir(),i))
 			print "</install>"
 			return
 
-		if not env['_INSTALL']: return
+		if not env['_INSTALL']: return None
 		dir = getInstDirForResType(lenv, restype)
 
 		p=None
@@ -609,7 +626,15 @@ def generate(env):
 		import glob
 		dir=SCons.Node.FS.default_fs.Dir(folder).srcnode()
 		fld=dir.srcnode()
-		transfiles = glob.glob(str(fld)+'/*.po')
+		tmptransfiles = glob.glob(str(fld)+'/*.po')
+
+		transfiles=[]
+		if lenv.has_key('_BUILDDIR_'):
+			bdir=lenv['_BUILDDIR_']
+			for dir in lenv.make_list(tmptransfiles):
+				transfiles.append( lenv.join(bdir, dir) )
+		else: tmptransfiles=transfiles
+
 		languages=None
 		if lenv['ARGS'] and lenv['ARGS'].has_key('languages'):
 			languages=lenv.make_list(lenv['ARGS']['languages'])
@@ -639,7 +664,7 @@ def generate(env):
 		env.KDEicon('name', './', 'KDEDATA', 'appname/icons')"""
 
 		if env.has_key('DUMPCONFIG'):
-			print "<icondirent subdir=\"%s\">" % (path+subdir)
+			print "<icondirent subdir=\"%s\" />" % (lenv.join(lenv.getreldir(),path,subdir))
 			return
 
 		type_dic = { 'action':'actions', 'app':'apps', 'device':'devices',
@@ -680,7 +705,7 @@ def generate(env):
 				continue
 			lenv.bksys_install(destdir, iconfile, icon_filename)
 
-	## This function uses env imported above
+	## This function uses env imported above - WARNING ugly code, i will have to rewrite (ITA)
 	def docfolder(lenv, folder, lang, destination=""):
 		# folder is the folder to process
 		# lang is the language
@@ -689,9 +714,11 @@ def generate(env):
 		docfiles=[]
 		dir=SCons.Node.FS.default_fs.Dir(folder).srcnode()
 		mydir=SCons.Node.FS.default_fs.Dir('.')
+		dirpath=mydir.srcnode().abspath
 		docg = glob.glob(str(dir)+"/???*.*") # file files that are at least 4 chars wide :)
 		for file in docg:
-			docfiles.append( file.replace(mydir.abspath, '') )
+			f = file.replace(dirpath, '')
+			docfiles.append(f)
 		
 		# warn about errors
 		#if len(lang) != 2:
@@ -700,9 +727,16 @@ def generate(env):
 		# when the destination is not given, use the folder
 		if len(destination) == 0: destination=folder
 		docbook_list = []
+
+		bdir='.'
+		if lenv.has_key('_BUILDDIR_'): bdir = lenv['_BUILDDIR_']
 		for file in docfiles:
 			# do not process folders
-			if not os.path.isfile(file): continue
+			#if not os.path.isfile( lenv.join('.', file) ): continue
+
+			# using nodefile forces to symlink in builddir
+			nodefile=SCons.Node.FS.default_fs.File( lenv.join(mydir.abspath, file) )
+
 			# do not process the cache file
 			if file == 'index.cache.bz2': continue
 			# ignore invalid files (TODO??)
@@ -710,11 +744,13 @@ def generate(env):
 			ext = SCons.Util.splitext( file )[1]
 
 			# install picture files
-			if ext in ['.jpeg', '.jpg', '.png']: lenv.KDEinstall('KDEDOC', lenv.join(lang,destination), file)
+			if ext in ['.jpeg', '.jpg', '.png']: lenv.KDEinstall('KDEDOC', lenv.join(lang,destination), nodefile.srcnode())
                         # docbook files are processed by meinproc
 			if ext != '.docbook': continue
-			docbook_list.append( file )
-			lenv.KDEinstall('KDEDOC', lenv.join(lang,destination), file)
+			
+			docbook_list.append( nodefile )
+			lenv.KDEinstall('KDEDOC', lenv.join(lang,destination), nodefile.srcnode())
+
 		# Now process the index.docbook files ..
 		if len(docbook_list) == 0: return
 		# TODO
@@ -722,11 +758,19 @@ def generate(env):
 		#	print "Error, index.docbook was not found in "+folder+'/index.docbook'
 		#	return
 		## Define this to 1 if you are writing documentation else to 0 :)
-		if env.has_key('i_am_a_documentation_writer'):
-			for file in docbook_list:
-				lenv.Depends( folder+'index.cache.bz2', file )
-		lenv.Meinproc( folder+'/index.cache.bz2', folder+'/index.docbook' )
+		#if lenv.has_key('i_am_a_documentation_writer'):
+		for file in docbook_list:
+			lenv.Depends( folder+'index.cache.bz2', nodefile )
+
+		if lenv.has_key('_BUILDDIR_'): folder=lenv.join(lenv['_BUILDDIR_'], folder)
+
+		lenv.Meinproc( lenv.join(folder,'index.cache.bz2'), lenv.join(folder,'index.docbook') )
 		lenv.KDEinstall( 'KDEDOC', lenv.join(lang,destination), lenv.join(folder,'index.cache.bz2') )
+		
+		if env['_INSTALL']:
+			dir=lenv.join(lenv.getInstDirForResType('KDEDOC'), lang, destination)
+			comp='mkdir -p %s && cd %s && rm -f common && ln -s ../common common' % (dir, dir)
+			lenv.Execute(comp)
 
 	#valid_targets = "program shlib kioslave staticlib".split()
 	import generic
@@ -742,6 +786,7 @@ def generate(env):
 			if self.orenv.has_key('DUMPCONFIG'):
 				print self.xml()
 				self.unlockchdir()
+				self.executed=1
 				return
 			if (self.type=='shlib' or self.type=='kioslave'):
 				install_dir = 'KDEMODULE'
@@ -751,12 +796,13 @@ def generate(env):
 				self.instdir=getInstDirForResType(self.orenv, 'KDEBIN')
 				self.perms=0755
 
-			self.src=KDEfiles(env, self.target, self.source)
+			self.p_localsource=KDEfiles(env, self.joinpath(self.target), self.joinpath(self.source))
 			generic.genobj.execute(self)
 			self.unlockchdir()
 
 		def xml(self):
-			ret= '<compile type="%s" chdir="%s" target="%s" cxxflags="%s" cflags="%s" includes="%s" linkflags="%s" libpaths="%s" libs="%s" vnum="%s" iskdelib="%s" libprefix="%s">\n' % (self.type, self.chdir, self.target, self.cxxflags, self.cflags, self.includes, self.linkflags, self.libpaths, self.libs, self.vnum, self.iskdelib, self.libprefix)
+			chdirto=self.orenv.join(self.orenv.getreldir(),self.chdir)
+			ret= '<compile type="%s" chdir="%s" target="%s" cxxflags="%s" cflags="%s" includes="%s" linkflags="%s" libpaths="%s" libs="%s" vnum="%s" iskdelib="%s" libprefix="%s">\n' % (self.type, chdirto, self.target, self.cxxflags, self.cflags, self.includes, self.linkflags, self.libpaths, self.libs, self.vnum, self.iskdelib, self.libprefix)
 			if self.source:
 				for i in self.orenv.make_list(self.source): ret+='  <source file="%s"/>\n' % i
 			ret += "</compile>"
