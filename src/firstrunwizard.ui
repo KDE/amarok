@@ -435,7 +435,7 @@ combined (like JuK)</string>
 <customwidgets>
     <customwidget>
         <class>DbSetup</class>
-        <header location="local">DbSetup.h</header>
+        <header location="local">dbsetup.h</header>
         <sizehint>
             <width>380</width>
             <height>165</height>
