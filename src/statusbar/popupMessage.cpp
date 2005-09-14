@@ -198,8 +198,8 @@ void PopupMessage::countDown()
 
 void PopupMessage::dissolveMask()
 {
-    // why do we need to keep resizing the mask!?!
-    m_mask.resize( width(), height() );
+    if( m_dissolveSize == 24 ) //first occurrance
+        m_mask.resize( width(), height() );
 
     if( m_stage == 1 )
     {
