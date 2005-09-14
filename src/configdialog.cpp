@@ -17,7 +17,7 @@ email                : markey@web.de
 #include "config.h" // Has USE_MYSQL
 #include "configdialog.h"
 #include "contextbrowser.h"
-#include "DbSetup.h"
+#include "dbsetup.h"
 #include "debug.h"
 #include "directorylist.h"
 #include "enginecontroller.h"

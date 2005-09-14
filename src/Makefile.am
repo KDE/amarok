@@ -43,8 +43,6 @@ INCLUDES = \
     $(all_includes)
 
 amarokapp_SOURCES = \
-    DbSetup.ui  \
-    DbSetup.ui.h \
     Options1.ui \
     Options2.ui \
     Options4.ui \
@@ -63,6 +61,8 @@ amarokapp_SOURCES = \
     coverfetcher.cpp \
     covermanager.cpp \
     cuefile.cpp \
+    dbsetup.ui  \
+    dbsetup.ui.h \
     directorylist.cpp \
     effectwidget.cpp \
     enginecontroller.cpp \
