@@ -1,0 +1,244 @@
+
+## required for all bksys SConscript files
+Import( 'env' )
+
+
+## HACK
+## bksys doesn't support generating moc files if the moc doesn't have a
+## associated cpp file
+import os
+os.popen( "moc -o toggleLabel.moc ../src/statusbar/toggleLabel.h" )
+os.popen( "moc -o multitabbar_p.moc ../src/multitabbar_p.h" )
+
+
+## TODO
+## we build some components with separate SConscript files so we can keep this
+## script a little more tidy
+#env.SConscript( dirs = Split( "engine") )
+
+amarok_sources = """
+    actionclasses.cpp
+    app.cpp
+    browserbar.cpp
+    clicklineedit.cpp
+    collectiondb.cpp
+    collectionreader.cpp
+    configdialog.cpp
+    coverfetcher.cpp
+    covermanager.cpp
+    cuefile.cpp
+    directorylist.cpp
+    effectwidget.cpp
+    enginecontroller.cpp
+    engineobserver.cpp
+    equalizergraph.cpp
+    equalizerpresetmanager.cpp
+    equalizersetup.cpp
+    fht.cpp
+    k3bexporter.cpp
+    kbookmarkhandler.cpp
+    ktrm.cpp
+    metabundle.cpp
+    multitabbar.cpp
+    osd.cpp
+    party.cpp
+    playerwindow.cpp
+    playlist.cpp
+    playlistitem.cpp
+    playlistloader.cpp
+    playlistwindow.cpp
+    pluginmanager.cpp
+    podcastsettings.cpp
+    prettypopupmenu.cpp
+    queuemanager.cpp
+    refreshimages.cpp
+    scriptmanager.cpp
+    scrobbler.cpp
+    sliderwidget.cpp
+    smartplaylisteditor.cpp
+    socketserver.cpp
+    streamprovider.cpp
+    systray.cpp
+    tagdialog.cpp
+    threadweaver.cpp
+    tracktooltip.cpp
+    trackpickerdialog.cpp
+
+    collectionbrowser.cpp
+    contextbrowser.cpp
+    filebrowser.cpp
+    mediabrowser.cpp
+    playlistbrowser.cpp
+    playlistbrowseritem.cpp
+
+    amarokcore/main.cpp
+    amarokcore/amarokdcopiface.skel
+    amarokcore/amarokconfig.kcfgc
+    amarokcore/crashhandler.cpp
+    amarokcore/amarokdcophandler.cpp
+
+    analyzers/analyzerbase.cpp
+    analyzers/analyzerfactory.cpp
+    analyzers/baranalyzer.cpp
+    analyzers/blockanalyzer.cpp
+    analyzers/boomanalyzer.cpp
+    analyzers/glanalyzer.cpp
+    analyzers/glanalyzer2.cpp
+    analyzers/glanalyzer3.cpp
+    analyzers/sonogram.cpp
+    analyzers/turbine.cpp
+
+    ipod/ipod.cpp
+    ipod/itunesdb.cpp
+    ipod/tracklist.cpp
+    ipod/trackmetadata.cpp
+
+    ipod/itunesdb/itunesdbdatasource.cpp
+    ipod/itunesdb/itunesdbparser.cpp
+    ipod/itunesdb/itunesdbwriter.cpp
+    ipod/itunesdb/listitem.cpp
+    ipod/itunesdb/ipod_playlist.cpp
+    ipod/itunesdb/ipod_playlistitem.cpp
+    ipod/itunesdb/track.cpp
+
+    plugin/plugin.cpp
+
+    statusbar/statusBarBase.cpp
+    statusbar/statusbar.cpp
+    statusbar/overlayWidget.cpp
+    statusbar/popupMessage.cpp
+    statusbar/progressBar.cpp
+    statusbar/squeezedtextlabel.cpp
+    statusbar/queueLabel.cpp
+
+    sqlite/alter.c
+    sqlite/attach.c
+    sqlite/auth.c
+    sqlite/btree.c
+    sqlite/build.c
+    sqlite/callback.c
+    sqlite/date.c
+    sqlite/delete.c
+    sqlite/expr.c
+    sqlite/func.c
+    sqlite/hash.c
+    sqlite/insert.c
+    sqlite/legacy.c
+    sqlite/main.c
+    sqlite/opcodes.c
+    sqlite/os_unix.c
+    sqlite/os_win.c
+    sqlite/pager.c
+    sqlite/parse.c
+    sqlite/pragma.c
+    sqlite/prepare.c
+    sqlite/printf.c
+    sqlite/random.c
+    sqlite/select.c
+    sqlite/shell.c
+    sqlite/table.c
+    sqlite/tokenize.c
+    sqlite/trigger.c
+    sqlite/update.c
+    sqlite/utf.c
+    sqlite/util.c
+    sqlite/vacuum.c
+    sqlite/vdbe.c
+    sqlite/vdbeapi.c
+    sqlite/vdbeaux.c
+    sqlite/vdbemem.c
+    sqlite/where.c
+
+    dbsetup.ui
+    dbsetup.ui.h
+
+    firstrunwizard.ui
+    scriptmanagerbase.ui
+    partydialogbase.ui
+    podcastsettingsbase.ui
+    tagdialogbase.ui
+    trackpickerdialogbase.ui
+
+    Options1.ui
+    Options2.ui
+    Options4.ui
+    Options5.ui
+    Options7.ui
+    Options8.ui
+    Options8.ui
+"""
+
+amarok_libs = """
+    qt-mt
+    kio kdecore
+    kfile
+    khtml
+"""
+
+
+## what a horrible mishmash of different syntax policies!
+env.KDEaddpaths_includes( """
+    amarokcore
+    analyzers
+    engine
+    plugin
+    statusbar
+    /usr/include/taglib
+""" )
+
+
+amarok          = env.kobject( 'program' )
+amarok.target   = 'amarokapp'
+amarok.source   = amarok_sources
+amarok.cxxflags = '-DQT_THREAD_SUPPORT'
+amarok.libs     = amarok_libs
+amarok.execute()
+
+
+loader          = env.kobject( 'program' )
+loader.target   = 'amarok'
+loader.source   = 'loader/loader.cpp loader/splash.cpp'
+loader.libs     = 'qt-mt kdecore'
+loader.execute()
+
+
+
+
+
+env.KDEinstall( 'KDEKCFG', '', 'amarokcore/amarok.kcfg' )
+
+"""
+KDE_ICON =
+    AUTO
+
+rcdir =
+    $(kde_datadir)/amarok
+
+rc_DATA =
+    amarokui.rc
+    amarokui_xmms.rc
+
+configdir =
+    $(kde_confdir)
+
+config_DATA =
+    amarokrc
+
+xdg_apps_DATA =
+    amarok.desktop
+
+kde_servicetypes_DATA =
+    amarok_plugin.desktop
+
+servicemenudir =
+    $(kde_datadir)/konqueror/servicemenus
+
+servicemenu_DATA =
+    amarok_append.desktop
+
+profiledatadir =
+    $(kde_datadir)/profiles
+
+profiledata_DATA =
+    amarok.profile.xml
+"""

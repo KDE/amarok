@@ -93,7 +93,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 BrowserBar::~BrowserBar()
 {
     KConfig* const config = amaroK::config( "BrowserBar" );
-    config->writeEntry( "CurrentPane", m_currentIndex != -1 ? currentBrowser()->name() : QString::null );
+    config->writeEntry( "CurrentPane", m_currentIndex != -1 ? QString(currentBrowser()->name()) : QString::null );
     config->writeEntry( "Width", m_browserBox->width() );
 }
 
