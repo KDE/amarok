@@ -7,8 +7,8 @@ Import( 'env' )
 ## bksys doesn't support generating moc files if the moc doesn't have a
 ## associated cpp file
 import os
-os.popen( "moc -o toggleLabel.moc ../src/statusbar/toggleLabel.h" )
-os.popen( "moc -o multitabbar_p.moc ../src/multitabbar_p.h" )
+os.popen( env['QT_MOC']+" -o toggleLabel.moc ../src/statusbar/toggleLabel.h" )
+os.popen( env['QT_MOC']+" -o multitabbar_p.moc ../src/multitabbar_p.h" )
 
 
 ## TODO
