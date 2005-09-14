@@ -88,6 +88,8 @@ amarok_sources = """
     analyzers/sonogram.cpp
     analyzers/turbine.cpp
 
+    engine/enginebase.cpp
+
     ipod/ipod.cpp
     ipod/itunesdb.cpp
     ipod/tracklist.cpp
@@ -102,14 +104,6 @@ amarok_sources = """
     ipod/itunesdb/track.cpp
 
     plugin/plugin.cpp
-
-    statusbar/statusBarBase.cpp
-    statusbar/statusbar.cpp
-    statusbar/overlayWidget.cpp
-    statusbar/popupMessage.cpp
-    statusbar/progressBar.cpp
-    statusbar/squeezedtextlabel.cpp
-    statusbar/queueLabel.cpp
 
     sqlite/alter.c
     sqlite/attach.c
@@ -149,9 +143,15 @@ amarok_sources = """
     sqlite/vdbemem.c
     sqlite/where.c
 
-    dbsetup.ui
-    dbsetup.ui.h
+    statusbar/statusBarBase.cpp
+    statusbar/statusbar.cpp
+    statusbar/overlayWidget.cpp
+    statusbar/popupMessage.cpp
+    statusbar/progressBar.cpp
+    statusbar/squeezedtextlabel.cpp
+    statusbar/queueLabel.cpp
 
+    dbsetup.ui
     firstrunwizard.ui
     scriptmanagerbase.ui
     partydialogbase.ui
@@ -165,34 +165,44 @@ amarok_sources = """
     Options5.ui
     Options7.ui
     Options8.ui
-    Options8.ui
 """
 
 amarok_libs = """
     qt-mt
-    kio kdecore
-    kfile
-    khtml
+    kdecore kdeui kio khtml knewstuff
+    tag
 """
 
-
-## what a horrible mishmash of different syntax policies!
-env.KDEaddpaths_includes( """
+amarok_includes = """
     amarokcore
     analyzers
     engine
     plugin
     statusbar
     /usr/include/taglib
-""" )
-
+"""
 
 amarok          = env.kobject( 'program' )
 amarok.target   = 'amarokapp'
 amarok.source   = amarok_sources
+amarok.includes = amarok_includes
 amarok.cxxflags = '-DQT_THREAD_SUPPORT'
 amarok.libs     = amarok_libs
 amarok.execute()
+
+
+"""
+sqlite_sources = """
+"""
+
+## genobj is a stupid name
+sqlite          = env.genobj( 'staticlib' )
+sqlite.target   = 'sqlite'
+sqlite.source   = sqlite_sources
+sqlite.ccflags  = '-DTHREADSAFE=1 -DHAVE_USLEEP=1'
+sqlite.libs     = 'pthread'
+sqlite.execute()
+"""
 
 
 loader          = env.kobject( 'program' )
@@ -203,11 +213,11 @@ loader.execute()
 
 
 
-
-
 env.KDEinstall( 'KDEKCFG', '', 'amarokcore/amarok.kcfg' )
 
 """
+## TODO
+
 KDE_ICON =
     AUTO
 
