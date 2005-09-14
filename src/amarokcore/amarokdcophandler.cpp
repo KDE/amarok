@@ -656,8 +656,8 @@ namespace amaroK
 
     QString DcopScriptHandler::readConfig(const QString& key)
     {
-        QString cleanKey = key.remove(' ');
-        KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey);
+        QString cleanKey = key;
+        KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey.remove(' '));
         if (configItem)
             return configItem->property().toString();
         else
@@ -666,8 +666,8 @@ namespace amaroK
 
     QStringList DcopScriptHandler::readListConfig(const QString& key)
     {
-        QString cleanKey = key.remove(' ');
-        KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey);
+        QString cleanKey = key;
+        KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey.remove(' '));
         QStringList stringList;
         if(configItem)
         {
