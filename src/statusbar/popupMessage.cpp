@@ -129,6 +129,9 @@ void PopupMessage::display() //SLOT
 
     if( m_maskEffect == Dissolve )
     {
+        //this will create a mask which is empty, and hence not show the widget
+        m_mask.resize( width(), height() );
+        setMask( m_mask );
         m_timerId = startTimer( 1000 / 30 );
     }
     else
