@@ -272,7 +272,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     p.end();
 
     const int padding = 5;
-    const int offset = double( ( width() - 2 * padding ) * value() ) / maxValue();
+    const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
 
     bitBlt( &buf, 0, 0, &m_volumeslider_inset );
     bitBlt( &buf, 0, 0, &m_volumeslider_gradient, 0, 0, offset + padding );
