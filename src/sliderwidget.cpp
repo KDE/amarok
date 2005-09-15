@@ -268,15 +268,14 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 
     // Erase buffer pixmap
     QPainter p( &buf );
-    p.fillRect( rect(), colorGroup().background() );
+    p.fillRect( rect(), colorGroup()->backgroundColor() );
     p.end();
 
-    const int h = m_volumeslider_inset.height();
     const int offset = int(double(width() * value()) / maxValue());
 
-    bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_inset, 0, 0 );
-    bitBlt( &buf, 0, height() / 2 - h / 2, &m_volumeslider_gradient, 0, 0, offset );
-    bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, h - m_volumeslider_handle.height() / 2 - 3, &m_volumeslider_handle );
+    bitBlt( &buf, 0, 0, &m_volumeslider_inset );
+    bitBlt( &buf, 0, 0, &m_volumeslider_gradient, 0, 0, offset );
+    bitBlt( &buf, offset - m_volumeslider_handle.width() / 2, 0, &m_volumeslider_handle );
 
     // Draw percentage number
     p.begin( &buf );
