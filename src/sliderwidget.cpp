@@ -235,7 +235,9 @@ amaroK::VolumeSlider::generateGradient()
     //QImage temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
     //KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
 
-    QBitmap mask( QPixmap( locate( "data","amarok/images/volumeslider-gradient.png" ) ).createHeuristicMask() );
+    const QPixmap temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
+    const QBitmap mask( temp.createHeuristicMask() );
+
     m_volumeslider_gradient = QPixmap( m_volumeslider_inset.size() );
     KPixmapEffect::gradient( m_volumeslider_gradient, colorGroup().background(), colorGroup().highlight(),
                              KPixmapEffect::HorizontalGradient );
