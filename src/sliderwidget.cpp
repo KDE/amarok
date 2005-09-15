@@ -227,6 +227,7 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     generateGradient();
 
     setMinimumWidth( m_volumeslider_inset.width() );
+    setMinimumHeight( m_volumeslider_inset.height() );
 }
 
 void
