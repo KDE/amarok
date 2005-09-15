@@ -275,7 +275,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 
     // Erase buffer pixmap
     QPainter p( &buf );
-    p.fillRect( rect(), colorGroup().background() );
+    p.fillRect( rect(), backgroundBrush() != QBrush() ? backgroundBrush() : colorGroup().background() );
     p.end();
 
     const int padding = 5;
