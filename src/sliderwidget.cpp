@@ -20,12 +20,13 @@
 #include "sliderwidget.h"
 
 #include <qapplication.h>
+#include <qbitmap.h>
 #include <qbrush.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qsize.h>
 
-#include <kiconeffect.h>
+#include <kpixmapeffect.h>
 #include <kpixmap.h>
 #include <kstandarddirs.h>
 
@@ -231,10 +232,14 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 void
 amaroK::VolumeSlider::generateGradient()
 {
-    QImage temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
-    KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
+    //QImage temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
+    //KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
 
-    m_volumeslider_gradient.convertFromImage( temp );
+    QBitmap mask( QPixmap( locate( "data","amarok/images/volumeslider-gradient.png" ) ).createHeuristicMask() );
+    m_volumeslider_gradient = QPixmap( m_volumeslider_inset.size() );
+    KPixmapEffect::gradient( m_volumeslider_gradient, colorGroup().background(), colorGroup().highlight(),
+                             KPixmapEffect::HorizontalGradient );
+    m_volumeslider_gradient.setMask( mask );
 }
 
 void
