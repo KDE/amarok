@@ -8,7 +8,7 @@ VERSION 1.3.2:
     * Two new dcop calls which allow scripts to read many of amaroK's
       configuration options. script readConfig(key) for strings, integers and
       bools. script readListConfig(key) for lists. Note that these functions
-      are not guaranteed to always return the latest settings (though many do).
+      aren't guaranteed to always return the latest settings (though many do).
     * Added a right click menu for blank areas of the playlist, with options
       to save, clear or shuffle the playlist and to "enable the dynamic
       mode & repopulate".
@@ -34,8 +34,8 @@ VERSION 1.3.2:
     * When using "Year - Album" on Collection Browser, some Albums that
       had "-" on its name could present problems.
     * Xine engine no longer adds images to the playlist.
-    * The delete key for removing playlist items works even if the file browser
-      is open. (BR 100145)
+    * The delete key for removing playlist items works even if the file
+      browser is open. (BR 100145)
     * Filenames with XML entity codes were not playable in dynamic mode
       and caused it to stop. (BR 108783)
     * If the album or artist contained "&", cover fetching wouldn't work
