@@ -609,7 +609,6 @@ Playlist::addSpecialCustomTracks( uint songCount )
             uint tmpSongCount = songCount < 10 ? 10 : songCount; // increase range to min of 350 songs
             sql.replace( limitSearch, QString("LIMIT 0, %1" ).arg( tmpSongCount * 35 ) );
         }
-        debug() << "\n\n\n\n\n"<< sql << endl;
         QStringList queryResult = CollectionDB::instance()->query( sql );
 
         QStringList items;

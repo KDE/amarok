@@ -201,10 +201,6 @@ OSDWidget::render( const uint M, const QSize &size )
     const uint xround = (M * 200) / size.width();
     const uint yround = (M * 200) / size.height();
 
-    debug() << size << endl;
-    debug() << xround << endl;
-    debug() << yround << endl;
-
     {   /// apply the mask
         static QBitmap mask;
 
