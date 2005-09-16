@@ -16,7 +16,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
-#include "debug.h"
+
 #include "overlayWidget.h"
 #include "statusbar.h"
 
@@ -39,7 +39,6 @@ OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name
 void
 OverlayWidget::reposition()
 {
-    debug() << "Overlay widget is repositioning" << endl;
     setMaximumSize( parentWidget()->size() );
     adjustSize();
 
