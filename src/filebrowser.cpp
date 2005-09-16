@@ -76,6 +76,16 @@ class MyDirOperator : public KDirOperator {
 public:
     MyDirOperator( const KURL &url, QWidget *parent ) : KDirOperator( url, parent ) {
         setDirLister( new MyDirLister( true ) );
+//the delete key event was being eaten with the file browser open
+//so folks couldn't use the del key to remove items from the playlist
+//refer to KDirOperator::setupActions() to understand this code
+        KActionCollection* dirActionCollection = static_cast<KActionCollection*>(KDirOperator::child("KDirOperator::myActionCollection"));
+        if(dirActionCollection)
+        {
+            KAction* trash = dirActionCollection->action("trash");
+            if(trash)
+                trash->setEnabled(false);
+        }
     }
 public slots:
     //reimplemented due to a bug in KDirOperator::activatedMenu ( KDE 3.4.2 ) - See Bug #103305
@@ -156,7 +166,6 @@ FileBrowser::FileBrowser( const char * name )
         searchPane = new SearchPane( this );
 
         setStretchFactor( container, 2 );
-
     }
 
     {
@@ -221,8 +230,6 @@ FileBrowser::FileBrowser( const char * name )
     setSpacing( 4 );
     setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
     setMinimumWidth( toolbar->sizeHint().width() );
-    //TODO can we make this event filter more specific? m_dir doesn't seem to catch del. WTF does?
-    PlaylistWindow::self()->installEventFilter(this);
 }
 
 
@@ -237,23 +244,6 @@ FileBrowser::~FileBrowser()
 }
 
 //END Constructor/Destructor
-
-//to work around a bug with the delete key event being mysterously eaten
-//by an unknown object when the file browser is open, so folks couldn't
-//remove items from the playlist.
-bool FileBrowser::eventFilter(QObject* /*obj*/, QEvent *ev)
-{
-    if(ev->type() == QEvent::KeyRelease)
-    {
-        QKeyEvent *ke = static_cast<QKeyEvent*>(ev);
-        if(ke->key() == Key_Delete)
-        {
-            Playlist::instance()->removeSelectedItems();
-            return true;
-        }
-    }
-    return false;
-}
 
 //BEGIN Private Methods
 

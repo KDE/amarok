@@ -561,11 +561,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             pl->ensureItemVisible( *It( pl, It::Visible ) );
             return true;
         }
-        //the delete key is handled by a event filter in filebrowser. However, some unknown force
-        //was causing the delete key to unselect all but one item on keypress so only one item would
-        //be removed. This works around that.
         if( e->key() == Key_Delete )
         {
+            pl->removeSelectedItems();
             return true;
         }
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace )
