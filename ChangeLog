@@ -5,6 +5,8 @@ amaroK ChangeLog
 
 VERSION 1.3.2:
   FEATURES:
+    * Tabs will open automatically when dragging files between tabs.
+      Patch by Christian Baumgart <christianbaumgart@web.de>.
     * Two new dcop calls which allow scripts to read many of amaroK's
       configuration options. script readConfig(key) for strings, integers and
       bools. script readListConfig(key) for lists. Note that these functions
