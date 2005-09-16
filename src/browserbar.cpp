@@ -330,8 +330,6 @@ BrowserBar::eventFilter( QObject *o, QEvent *e )
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
 
-        debug() << "HELLO\n";
-
         // we put an event filter on this browser to check
         // if it is still being used within 5 seconds of
         // playback starting. If so we shouldn't auto-switch
