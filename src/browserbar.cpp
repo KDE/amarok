@@ -217,6 +217,7 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     //we use a SignalMapper to show/hide the corresponding browser when tabs are clicked
     connect( tab, SIGNAL(clicked()), m_mapper, SLOT(map()) );
     m_mapper->setMapping( tab, id );
+    connect( tab, SIGNAL(initiateDrag ( int ) ), this, SLOT( showBrowser( int )) );
 
     m_browsers.push_back( widget );
 }

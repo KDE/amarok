@@ -193,11 +193,16 @@ class MultiTabBarButton: public QPushButton
         bool m_animEnter;
         int m_animCount;
         class QTimer* m_animTimer;
+        class QTimer* m_dragSwitchTimer;
 
         virtual void hideEvent( class QHideEvent* );
         virtual void showEvent( class QShowEvent* );
         virtual void enterEvent( class QEvent* );
         virtual void leaveEvent( class QEvent* );
+
+        virtual void dragEnterEvent ( class QDragEnterEvent * );
+        virtual void dragMoveEvent ( class QDragMoveEvent * );
+        virtual void dragLeaveEvent ( class QDragLeaveEvent * );
     private:
         MultiTabBarButtonPrivate *d;
     signals:
@@ -206,9 +211,11 @@ class MultiTabBarButton: public QPushButton
         * @param id	the ID identifying the button
         */
         void clicked( int id );
+        void initiateDrag ( int id );
     protected slots:
         virtual void slotClicked();
         virtual void slotAnimTimer();
+        virtual void slotDragSwitchTimer();
 };
 
 /**

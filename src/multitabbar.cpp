@@ -401,7 +401,9 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
         : QPushButton( QIconSet(), text, parent ), m_style( style )
         , m_animCount( 0 )
         , m_animTimer( new QTimer( this ) )
+        , m_dragSwitchTimer( new QTimer( this ) )
 {
+    setAcceptDrops( true );
     setIconSet( pic );
     setText( text );
     m_position = pos;
@@ -413,6 +415,7 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
 //     QToolTip::add( this, text );
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+    connect( m_dragSwitchTimer, SIGNAL( timeout() ), this, SLOT( slotDragSwitchTimer() ) );
 }
 
 MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
@@ -420,7 +423,9 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
         : QPushButton( QIconSet(), text, parent ), m_style( style )
         , m_animCount( 0 )
         , m_animTimer( new QTimer( this ) )
+        , m_dragSwitchTimer( new QTimer( this ) )
 {
+    setAcceptDrops( true );
     setText( text );
     m_position = pos;
     if ( popup ) setPopup( popup );
@@ -431,6 +436,7 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
 //     QToolTip::add( this, text );
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
+    connect( m_dragSwitchTimer, SIGNAL( timeout() ), this, SLOT( slotDragSwitchTimer() ) );
 }
 
 MultiTabBarButton::~MultiTabBarButton()
@@ -495,6 +501,28 @@ void MultiTabBarButton::leaveEvent( QEvent* )
 
     m_animEnter = false;
     m_animTimer->start( ANIM_INTERVAL );
+}
+
+void MultiTabBarButton::dragEnterEvent ( QDragEnterEvent *e )
+{
+    enterEvent ( e );
+}
+
+void MultiTabBarButton::dragMoveEvent ( QDragMoveEvent * )
+{
+    if ( !m_dragSwitchTimer->isActive() )
+        m_dragSwitchTimer->start( ANIM_INTERVAL * ANIM_MAX + 300, TRUE );
+}
+
+void MultiTabBarButton::dragLeaveEvent ( QDragLeaveEvent *e )
+{
+    m_dragSwitchTimer->stop();
+    leaveEvent( e );
+}
+
+void MultiTabBarButton::slotDragSwitchTimer()
+{
+    emit ( initiateDrag ( m_id ) );
 }
 
 void MultiTabBarButton::slotAnimTimer()
