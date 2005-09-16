@@ -156,7 +156,7 @@ FileBrowser::FileBrowser( const char * name )
         searchPane = new SearchPane( this );
 
         setStretchFactor( container, 2 );
-        
+
     }
 
     {
@@ -167,8 +167,10 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), AppendToPlaylist );
         menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MakePlaylist );
         menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
-        menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
         menu->insertSeparator();
+
+        if( MediaDevice::instance()->isConnected() )
+            menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BurnDataCd );
         menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BurnAudioCd );
         menu->insertSeparator();

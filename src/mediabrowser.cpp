@@ -467,6 +467,7 @@ MediaDeviceView::~MediaDeviceView()
 
 MediaDevice::MediaDevice( MediaDeviceView* parent )
     : m_parent( parent )
+    , m_connection( false )
 {
     s_instance = this;
 
@@ -897,7 +898,8 @@ MediaDevice::deleteFromIPod( MediaItem* item )
 void
 MediaDevice::ipodConnection() //SLOT
 {
-    if ( m_parent->m_connectButton->isOn() ){
+    if ( m_parent->m_connectButton->isOn() )
+    {
         if ( !m_mntcmd.isEmpty() )
         {
             mount();
@@ -910,6 +912,7 @@ MediaDevice::ipodConnection() //SLOT
         {
             m_parent->m_connectButton->setOn( true );
             m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
+            m_connection = true;
         }
         else
         {
@@ -917,33 +920,38 @@ MediaDevice::ipodConnection() //SLOT
                 i18n( "Could not find device, please mount it and try again." ),
                 i18n( "Media Device Browser" ) );
             m_parent->m_connectButton->setOn( false );
+            m_connection = false;
         }
     }
-    else{
-    if ( m_parent->m_transferList->childCount() != 0 &&  m_ipod->isStillConnected() )
+    else
+    {
+        if ( m_parent->m_transferList->childCount() != 0 &&  m_ipod->isStillConnected() )
         {
             int button = KMessageBox::warningContinueCancel( m_parent->m_parent,
-                                                        i18n( "There are tracks queued for transfer."
-                                                          " Would you like to transfer them before disconnecting?"),
-                                                         i18n( "Media Device Browser" ),
-                                                         KGuiItem(i18n("&Transfer"),"rebuild") );
+                                                            i18n( "There are tracks queued for transfer."
+                                                            " Would you like to transfer them before disconnecting?"),
+                                                            i18n( "Media Device Browser" ),
+                                                            KGuiItem(i18n("&Transfer"),"rebuild") );
 
-          if ( button == KMessageBox::Continue )
+            if ( button == KMessageBox::Continue )
                 transferFiles();
-      }
+        }
+
         fileTransferFinished();
         m_ipod->close();
-        QString text=i18n( "Your device is now in sync, please unmount it and disconnect now." );
+        QString text = i18n( "Your device is now in sync, please unmount it and disconnect now." );
+
         if ( !m_umntcmd.isEmpty() )
         {
             umount();
+            m_connection = false;
             text=i18n( "Your device is now in sync, you can disconnect now." );
         }
+
         m_ipod = new IPod::IPod();
         m_parent->m_deviceList->renderView( 0 );
         m_parent->m_connectButton->setOn( false );
-        KMessageBox::error( m_parent->m_parent,
-            text, i18n( "Media Device Browser" ) );
+        KMessageBox::error( m_parent->m_parent, text, i18n( "Media Device Browser" ) );
     }
 }
 

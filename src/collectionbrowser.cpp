@@ -1142,9 +1142,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MAKE );
         if( selection.count() > 1 || item->isExpandable() )
             menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SAVE );
-        menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
+
+        if( MediaDevice::instance()->isConnected() )
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         if( cat == CollectionBrowser::IdArtist )
         {

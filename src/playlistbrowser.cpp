@@ -1991,10 +1991,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
         menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
-        menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         menu.setItemEnabled( GET, !item->hasDownloaded() );
-        menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
+
+        if( MediaDevice::instance()->isConnected() )
+        {
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+            menu.setItemEnabled( MEDIA_DEVICE, item->hasDownloaded() );
+        }
 
         switch( menu.exec( p ) )
         {

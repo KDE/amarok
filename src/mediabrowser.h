@@ -129,28 +129,30 @@ class MediaDevice : public QObject
         MediaDevice( MediaDeviceView* parent );
         ~MediaDevice();
 
-        void addURL( const KURL& url );
-        void addURLs( const KURL::List urls );
+        void        addURL( const KURL& url );
+        void        addURLs( const KURL::List urls );
+        bool        isConnected() { return m_connection; }
         QStringList items( QListViewItem* item );
-        KURL::List songsByArtist( const QString& artist );
-        KURL::List songsByArtistAlbum( const QString& artist, const QString& album );
-        QString m_mntcmd;
-        QString m_umntcmd;
+        KURL::List  songsByArtist( const QString& artist );
+        KURL::List  songsByArtistAlbum( const QString& artist, const QString& album );
+
+        QString     m_mntcmd;
+        QString     m_umntcmd;
 
         static MediaDevice *instance() { return s_instance; }
 
     public slots:
         void clearItems();
-        void removeSelected();
         void config();
-        void setMountCommand(const QString & mnt);
-        void setUmountCommand(const QString & umnt);
-        int mount();
-        int umount();
-        void transferFiles();
         void deleteFiles( const KURL::List& urls );
         void deleteFromIPod( MediaItem* item );
         void ipodConnection();
+        int  mount();
+        void removeSelected();
+        void setMountCommand(const QString & mnt);
+        void setUmountCommand(const QString & umnt);
+        int  umount();
+        void transferFiles();
 
     private slots:
         void fileTransferred();
@@ -158,16 +160,17 @@ class MediaDevice : public QObject
         void syncIPod();
 
     private:
-        int sysCall(const QString & command);
-        void openIPod();
-        bool fileExists( const MetaBundle& bundle );
-        KURL::List m_transferURLs;
-        KShellProcess     *sysProc;
+        int              sysCall(const QString & command);
+        void             openIPod();
+        bool             fileExists( const MetaBundle& bundle );
+        KURL::List       m_transferURLs;
+        KShellProcess   *sysProc;
 
-        bool m_wait;
-
+        bool             m_wait;
         MediaDeviceView* m_parent;
-        IPod::IPod* m_ipod;
+        IPod::IPod*      m_ipod;
+        bool             m_connection;
+
         static MediaDevice *s_instance;
 };
 

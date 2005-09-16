@@ -52,6 +52,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 {
     setFrameStyle( QFrame::Panel | QFrame::Raised );
     setFrameShape( QFrame::StyledPanel );
+    setWFlags( Qt::WX11BypassWM );
 
     QHBoxLayout *hbox;
     QLabel *label;

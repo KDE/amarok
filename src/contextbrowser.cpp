@@ -598,7 +598,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), ASNEXT );
         menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
-        menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
+        if( MediaDevice::instance()->isConnected() )
+            menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), INFO );
