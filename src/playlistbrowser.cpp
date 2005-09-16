@@ -857,10 +857,12 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
         connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
         e = d.namedItem( "category" ).toElement();
-        return new PlaylistCategory( m_listview, m_playlistCategory , e );
+        PlaylistCategory *p = new PlaylistCategory( m_listview, m_playlistCategory , e );
 
         if( !m_podcastItemsToScan.isEmpty() )
             m_podcastTimer->start( m_podcastTimerInterval );
+
+        return p;
     }
 }
 
