@@ -133,9 +133,10 @@ void PopupMessage::display() //SLOT
 
     if( m_maskEffect == Dissolve )
     {
-        //this will create a mask which is empty, and hence not show the widget
+        // necessary to create the mask
         m_mask.resize( width(), height() );
-        setMask( m_mask );
+        // make the mask empty and hence will not show widget with show() called below
+        dissolveMask();
         m_timerId = startTimer( 1000 / 30 );
     }
     else
@@ -198,11 +199,9 @@ void PopupMessage::countDown()
 
 void PopupMessage::dissolveMask()
 {
-    if( m_dissolveSize == 24 ) //first occurrance
-        m_mask.resize( width(), height() );
-
     if( m_stage == 1 )
     {
+        repaint( false );
         QPainter maskPainter(&m_mask);
 
         m_mask.fill(Qt::black);
@@ -236,7 +235,6 @@ void PopupMessage::dissolveMask()
         }
         else if( m_dissolveSize < 0 )
         {
-
             m_dissolveDelta = 1;
             killTimer( m_timerId );
 

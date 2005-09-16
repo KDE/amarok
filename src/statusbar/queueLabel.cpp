@@ -223,7 +223,7 @@ void QueueLabel::showToolTip()
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
     m_tooltip->showCloseButton( false );
     m_tooltip->showCounter( false );
-    m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
+    m_tooltip->setMaskEffect( KDE::PopupMessage::Dissolve );
     m_tooltip->setText( text );
     m_tooltip->setImage( KGlobal::iconLoader()->iconPath( "goto", -KIcon::SizeHuge ) );
 
