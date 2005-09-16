@@ -287,7 +287,7 @@ char* HelixSimplePlayer::RemoveWrappingQuotes(char* str)
    if (len > 0)
    {
       if (str[len-1] == '"') str[--len] = 0;
-      if (str[0] == '"') {int i = 0; do { str[i++] = str[i+1]; } while(--len); }
+      if (str[0] == '"') {int i = 0; do { str[i] = str[i+1]; ++i; } while(--len); }
    }
    return str;
 }
