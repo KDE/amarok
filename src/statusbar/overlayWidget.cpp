@@ -14,9 +14,9 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.             *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
-
+#include "debug.h"
 #include "overlayWidget.h"
 #include "statusbar.h"
 
@@ -39,6 +39,7 @@ OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name
 void
 OverlayWidget::reposition()
 {
+    debug() << "Overlay widget is repositioning" << endl;
     setMaximumSize( parentWidget()->size() );
     adjustSize();
 
@@ -54,7 +55,7 @@ OverlayWidget::reposition()
     // Position in the widget's parentWidget coordinates
     QPoint pParent = parentWidget() ->mapFrom( topLevelWidget(), pTopLevel );
     // keep it on the screen
-    if ( pParent.x() < 0 )
+    if( pParent.x() < 0 )
         pParent.rx() = 0;
 
     // Move 'this' to that position.

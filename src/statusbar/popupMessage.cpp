@@ -86,17 +86,20 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 void PopupMessage::addWidget( QWidget *widget )
 {
     m_layout->add( widget );
+    adjustSize();
 }
 
 void PopupMessage::showCloseButton( const bool show )
 {
     static_cast<KPushButton*>(child( "closeButton" ))->setShown( show );
+    adjustSize();
 }
 
 void PopupMessage::showCounter( const bool show )
 {
     m_showCounter = show;
     static_cast<QFrame*>(child( "counterVisual" ))->setShown( show );
+    adjustSize();
 }
 
 void PopupMessage::setText( const QString &text )
@@ -108,6 +111,7 @@ void PopupMessage::setText( const QString &text )
 void PopupMessage::setImage( const QString &location )
 {
     static_cast<QLabel*>(child( "image" ))->setPixmap( QPixmap( location ) );
+    adjustSize();
 }
 
 
@@ -142,7 +146,7 @@ void PopupMessage::display() //SLOT
 }
 
 ////////////////////////////////////////////////////////////////////////
-//     Private Slots
+//     Protected
 ////////////////////////////////////////////////////////////////////////
 
 void PopupMessage::timerEvent( QTimerEvent* )
@@ -162,10 +166,6 @@ void PopupMessage::timerEvent( QTimerEvent* )
             break;
     }
 }
-
-////////////////////////////////////////////////////////////////////////
-//     Protected
-////////////////////////////////////////////////////////////////////////
 
 void PopupMessage::countDown()
 {

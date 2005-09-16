@@ -121,14 +121,14 @@ class ToggleLabel : public QLabel
             const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
 
 
-            m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timout*/ );
+            m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
             m_tooltip->showCloseButton( false );
             m_tooltip->showCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Dissolve );
             m_tooltip->setText( tip.arg(m_action->text().remove('&') ) );
             m_tooltip->setImage( path );
 
-            m_tooltip->move( this->x(), this->y() + m_tooltip->height() );
+            m_tooltip->reposition();
             m_tooltip->display();
         }
 

@@ -14,7 +14,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.             *
+ *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 
 #ifndef KDEOVERLAYWIDGET_H
@@ -32,14 +32,12 @@ namespace KDE
          * this could be an issue if that widget has an autoAdd Layout
          */
         OverlayWidget( QWidget *parent, QWidget *anchor, const char *name = 0 );
+        virtual void reposition();
 
     protected:
         virtual void resizeEvent( QResizeEvent* );
         virtual bool eventFilter( QObject*, QEvent* );
         virtual bool event( QEvent* );
-
-    private:
-        void reposition();
 
     private:
         QWidget *m_anchor;
