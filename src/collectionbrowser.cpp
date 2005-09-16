@@ -1096,11 +1096,10 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
 {
     if ( !item )
         return;
-
+    //append and prevent doubles in playlist
     if( item->isExpandable() )
         Playlist::instance()->insertMedia( listSelected(), Playlist::Unique | Playlist::Append );
     else
-        //direct play & prevent doubles in playlist
         Playlist::instance()->insertMedia( static_cast<CollectionItem*>( item )->url(), Playlist::Unique | Playlist::Append );
 
 }
