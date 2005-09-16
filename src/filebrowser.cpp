@@ -163,9 +163,8 @@ FileBrowser::FileBrowser( const char * name )
         QPopupMenu* const menu = ((KActionMenu*)actionCollection->action("popupMenu"))->popupMenu();
 
         menu->clear();
-
+        menu->insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MakePlaylist );
         menu->insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), AppendToPlaylist );
-        menu->insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MakePlaylist );
         menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 

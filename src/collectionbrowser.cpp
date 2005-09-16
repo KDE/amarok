@@ -1135,11 +1135,11 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                        COMPILATION_SET, COMPILATION_UNSET, MEDIA_DEVICE };
         #endif
         KURL::List selection = listSelected();
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), selection.count() == 1 ? i18n( "&Queue Track" )
             : i18n( "&Queue Tracks" ), QUEUE );
 
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "Set as &Playlist" ), MAKE );
         if( selection.count() > 1 || item->isExpandable() )
             menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SAVE );
 
