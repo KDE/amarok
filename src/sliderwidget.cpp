@@ -272,10 +272,14 @@ void
 amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPixmap buf( size() );
+
+    // Erase background
     if( parentWidget()->backgroundPixmap() )
         buf.fill( parentWidget(), pos() );
-    else
-        buf.fill( colorGroup().background() );
+    else {
+        QPainter p( &buf );
+        p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
+    }
 
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
