@@ -1170,7 +1170,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum );
+        menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum );
         #endif
         menu.insertItem( SmallIconSet( "info" )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
@@ -1274,7 +1274,27 @@ CollectionView::fetchCover() //SLOT
     CollectionItem* item = static_cast<CollectionItem*>( currentItem() );
     if ( !item ) return;
 
+    int cat = 0;
+    switch ( item->depth() )
+    {
+        case 0:
+            cat = m_cat1;
+            break;
+        case 1:
+            cat = m_cat2;
+            break;
+        case 2:
+            cat = m_cat3;
+            break;
+    }
+
     QString album = item->text(0);
+    if( cat == CollectionBrowser::IdVisYearAlbum )
+    {
+        // we can't use findRev since an album may have " - " within it.
+        QString sep = i18n(" - ");
+        album = album.right( album.length() - sep.length() - album.find( sep ) );
+    }
 
     // find the first artist's name
     QStringList values =

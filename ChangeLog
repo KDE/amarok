@@ -33,8 +33,8 @@ VERSION 1.3.2:
       it'll now play the first and queue the rest.
 
   BUGFIXES:
-    * When using "Year - Album" on Collection Browser, some Albums that
-      had "-" on its name could present problems.
+    * "Year - Album" category in the Collection Browser didn't allow for
+      dragging tracks or fetching cover images.
     * Xine engine no longer adds images to the playlist.
     * The delete key for removing playlist items works even if the file
       browser is open. (BR 100145)
