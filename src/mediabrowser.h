@@ -169,7 +169,6 @@ class MediaDevice : public QObject
         bool             m_wait;
         MediaDeviceView* m_parent;
         IPod::IPod*      m_ipod;
-        bool             m_connection;
 
         static MediaDevice *s_instance;
 };

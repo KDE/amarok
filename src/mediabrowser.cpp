@@ -467,7 +467,6 @@ MediaDeviceView::~MediaDeviceView()
 
 MediaDevice::MediaDevice( MediaDeviceView* parent )
     : m_parent( parent )
-    , m_connection( false )
 {
     s_instance = this;
 
@@ -912,7 +911,6 @@ MediaDevice::ipodConnection() //SLOT
         {
             m_parent->m_connectButton->setOn( true );
             m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
-            m_connection = true;
         }
         else
         {
@@ -920,7 +918,6 @@ MediaDevice::ipodConnection() //SLOT
                 i18n( "Could not find device, please mount it and try again." ),
                 i18n( "Media Device Browser" ) );
             m_parent->m_connectButton->setOn( false );
-            m_connection = false;
         }
     }
     else
@@ -944,7 +941,6 @@ MediaDevice::ipodConnection() //SLOT
         if ( !m_umntcmd.isEmpty() )
         {
             umount();
-            m_connection = false;
             text=i18n( "Your device is now in sync, you can disconnect now." );
         }
 
