@@ -69,6 +69,7 @@ private slots:
     void urlChanged( const KURL& );
     void activate( const KFileItem* );
     void contextMenuActivated( int );
+    void prepareContextMenu();
     void slotViewChanged( KFileView* );
 
 private:

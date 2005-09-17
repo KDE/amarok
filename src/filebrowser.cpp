@@ -191,6 +191,7 @@ FileBrowser::FileBrowser( const char * name )
         menu->setItemEnabled( BurnDataCd, K3bExporter::isAvailable() );
         menu->setItemEnabled( BurnAudioCd, K3bExporter::isAvailable() );
 
+        connect( menu, SIGNAL(aboutToShow()), SLOT(prepareContextMenu()) );
         connect( menu, SIGNAL(activated( int )), SLOT(contextMenuActivated( int )) );
     }
 
@@ -332,6 +333,14 @@ inline void
 FileBrowser::activate( const KFileItem *item )
 {
     Playlist::instance()->insertMedia( item->url(), Playlist::DirectPlay );
+}
+
+inline void
+FileBrowser::prepareContextMenu()
+{
+    const KFileItemList &items = *m_dir->selectedItems();
+    ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
+        items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
 }
 
 inline void
