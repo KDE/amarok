@@ -19,7 +19,7 @@
 #define AMAROK_EQUALIZERSETUP_H
 
 #include <qptrlist.h>           //stack alloc
-#include <qvbox.h>
+#include <kdialogbase.h>
 
 class EqualizerGraph;
 class QCheckBox;
@@ -29,7 +29,7 @@ class KPopupMenu;
 namespace amaroK { class Slider; }
 
 
-class EqualizerSetup : public QVBox
+class EqualizerSetup : public KDialogBase
 {
     Q_OBJECT
 

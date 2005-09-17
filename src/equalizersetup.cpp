@@ -26,7 +26,6 @@
 #include "sliderwidget.h"
 
 #include <qcheckbox.h>
-#include <qdesktopwidget.h>
 #include <qdom.h>
 #include <qfile.h>
 #include <qgroupbox.h>
@@ -36,6 +35,7 @@
 #include <qstringlist.h>
 #include <qtextstream.h>   //presets
 #include <qtooltip.h>
+#include <qvbox.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -52,8 +52,7 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
-        : QVBox( amaroK::mainWindow(), 0, WType_TopLevel|WDestructiveClose|WStyle_Customize|
-                                          WStyle_DialogBorder|WStyle_StaysOnTop )
+        : KDialogBase( amaroK::mainWindow(), 0, false, 0, 0, Ok, false )
 {
     using amaroK::Slider;
 
@@ -66,13 +65,11 @@ EqualizerSetup::EqualizerSetup()
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
-    setMargin( KDialog::marginHint() );
-    setSpacing( KDialog::spacingHint() );
-
-    QVBoxLayout* layout = new QVBoxLayout( this );
+    QVBox* vbox = makeVBoxMainWidget();
+    vbox->setSpacing( KDialog::spacingHint() );
 
     // BEGIN Presets
-    QHBox* presetBox = new QHBox( this );
+    QHBox* presetBox = new QHBox( vbox );
     presetBox->setSpacing( KDialog::spacingHint() );
 
     new QLabel( i18n("Presets:"), presetBox );
@@ -90,18 +87,16 @@ EqualizerSetup::EqualizerSetup()
     QToolTip::add( presetConf, i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 
-    layout->addWidget( presetBox );
     loadPresets();
     connect( m_presetCombo, SIGNAL( activated(int) ), SLOT( presetChanged(int) ) );
     // END Presets
 
     // BEGIN GroupBox
-    QGroupBox* groupBoxSliders = new QGroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), this );
+    QGroupBox* groupBoxSliders = new QGroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
     groupBoxSliders->setCheckable( true );
     groupBoxSliders->setChecked( AmarokConfig::equalizerEnabled() );
     groupBoxSliders->setInsideMargin( KDialog::marginHint() );
     connect( groupBoxSliders, SIGNAL( toggled( bool ) ), SLOT( setEqualizerEnabled( bool ) ) );
-    layout->addWidget( groupBoxSliders );
 
     // Helper widget for layouting inside the groupbox
     QWidget* slidersLayoutWidget = new QWidget( groupBoxSliders );
@@ -149,9 +144,8 @@ EqualizerSetup::EqualizerSetup()
     // END
 
     // BEGIN Equalizer Graph Widget
-    QGroupBox* graphGBox = new QGroupBox( 2, Qt::Horizontal, 0, this  );
+    QGroupBox* graphGBox = new QGroupBox( 2, Qt::Horizontal, 0, vbox );
     graphGBox->setInsideMargin( KDialog::marginHint() );
-    layout->addWidget( graphGBox );
 
     QVBox* graphVBox = new QVBox( graphGBox );
     QLabel* graphLabel1 = new QLabel("+20 db", graphVBox);
@@ -173,12 +167,6 @@ EqualizerSetup::EqualizerSetup()
 
     // Init sliders
     presetChanged( AmarokConfig::equalizerPreset() );
-
-    // Center the widget on screen
-    const QDesktopWidget dw;
-    const int w = dw.screenGeometry().width();
-    const int h = dw.screenGeometry().height();
-    move( w / 2 - width() / 2, h / 2 - height() / 2 );
 }
 
 
