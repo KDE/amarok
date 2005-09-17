@@ -243,8 +243,7 @@ QueueList::contentsDropEvent( QDropEvent *e )
 QueueManager *QueueManager::s_instance = 0;
 
 QueueManager::QueueManager( QWidget *parent, const char *name )
-    : KDialogBase( KDialogBase::Swallow, WType_Dialog|WStyle_Customize|WStyle_DialogBorder|WStyle_StaysOnTop,
-                   parent, name, false, 0, Ok|Cancel )
+    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Ok|Cancel )
 {
     s_instance = this;
 
