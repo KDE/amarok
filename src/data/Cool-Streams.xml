@@ -19,7 +19,7 @@
   <url>http://www.digitallyimported.com/mp3/trance96k.pls</url>
  </stream>
  <stream name="Electronic Culture [Minimal Techno]">
-  <url>http://electronic-culture.couch-heads.de:1337/listen.pls</url>
+  <url>http://ambient.mthn.net:8400/listen.pls</url>
  </stream>
  <stream name="Frequence 3 [Pop]">
   <url>http://streams.frequence3.net/hd-mp3.m3u</url>
@@ -43,7 +43,7 @@
   <url>http://stream.mth-house.de:8500/listen.pls</url>
  </stream>
  <stream name="Nectarine Demoscene Radio [Computer-Music]">
-  <url>http://shoutcast.com/sbin/shoutcast-playlist.pls?rn=1750&amp;file=filename.pls</url>
+  <url>http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=2527&amp;file=filename.pls</url>
  </stream>
  <stream name="Philosomatika [Psytrance]">
   <url>http://philosomatika.com/Philosomatika.pls</url>
