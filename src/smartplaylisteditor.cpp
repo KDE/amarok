@@ -7,10 +7,12 @@
 #include "metabundle.h"
 #include "smartplaylisteditor.h"
 
+#include <kdebug.h>
 #include <kcombobox.h>
 #include <klineedit.h>
 #include <klocale.h>
 #include <knuminput.h>
+#include <kpushbutton.h>
 
 #include <qcheckbox.h>
 #include <qdatetime.h>
@@ -24,6 +26,7 @@
 #include <qtoolbutton.h>
 #include <qvbox.h>
 #include <qvgroupbox.h>
+#include <qhgroupbox.h>
 
 
 QStringList m_fields;
@@ -65,6 +68,16 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
     else {
         addCriteria();
         m_matchCheck->setChecked( false );
+    }
+    // expression
+    QDomNodeList expressionList = xml.elementsByTagName( "expression" );
+    if( expressionList.count() ) {
+        QString text = expressionList.item(0).toElement().text().stripWhiteSpace();
+        if( !text.isEmpty() )
+        {
+            m_exprBox->setChecked( true );
+            m_exprEdit->setText( text );
+        }
     }
     // orderby
     QDomNodeList orderbyList =  xml.elementsByTagName( "orderby" );
@@ -130,16 +143,23 @@ void SmartPlaylistEditor::init(QString defaultName)
 
     //match box
     QHBox *matchBox = new QHBox( mainWidget() );
-    m_matchCheck = new QCheckBox( i18n("Match the following condition" ), matchBox );
+    m_matchCheck = new QCheckBox( i18n("Match the following condition:" ), matchBox );
     m_matchCheck->setChecked( true );
     m_matchCombo = new KComboBox( matchBox );
     m_matchCombo->insertItem( i18n("All") );
     m_matchCombo->insertItem( i18n("Any") );
-    m_matchLabel = new QLabel( i18n(" of the following conditions"), matchBox );
+    m_matchLabel = new QLabel( i18n(" of the following conditions:"), matchBox );
     matchBox->setStretchFactor( new QWidget( matchBox ), 1 );
 
     //criteria box
     m_criteriaGroupBox = new QVGroupBox( QString::null, mainWidget() );
+
+    m_exprBox = new QHGroupBox( i18n("Match the following terms:"), mainWidget() );
+    m_exprBox->setCheckable( true );
+    m_exprBox->setChecked( false );
+    m_exprEdit = new KLineEdit( m_exprBox );
+    KPushButton* exprHelp = new KPushButton( KGuiItem( i18n( "Help" ), "help",
+                                             i18n("Explanation of available search features") ), m_exprBox );
 
     //order box
     QHBox *hbox2 = new QHBox( mainWidget() );
@@ -179,7 +199,9 @@ void SmartPlaylistEditor::init(QString defaultName)
     //add stretch
     static_cast<QHBox *>(mainWidget())->setStretchFactor(new QWidget(mainWidget()), 1);
 
-    connect( m_matchCheck, SIGNAL( toggled(bool) ), m_criteriaGroupBox, SLOT( setEnabled(bool) ) );
+    connect( m_matchCheck, SIGNAL( toggled(bool) ), this, SLOT( slotMatchBoxToggled(bool) ) );
+    connect( m_exprBox, SIGNAL( toggled(bool) ), this, SLOT( slotExprBoxToggled(bool) ) );
+    connect( exprHelp, SIGNAL( clicked() ), this, SLOT( slotShowExpressionHelp() ) );
     connect( m_orderCheck, SIGNAL( toggled(bool) ), orderBox, SLOT( setEnabled(bool) ) );
     connect( m_limitCheck, SIGNAL( toggled(bool) ), limitBox, SLOT(  setEnabled(bool) ) );
     connect( m_expandCheck, SIGNAL( toggled(bool) ), expandBox, SLOT( setEnabled(bool) ) );
@@ -221,6 +243,19 @@ void SmartPlaylistEditor::removeCriteria( CriteriaEditor *criteria )
 
     if( m_criteriaEditorList.count() == 1 )
         m_criteriaEditorList.first()->enableRemove( false );
+}
+
+void SmartPlaylistEditor::slotMatchBoxToggled( bool on )
+{
+    m_criteriaGroupBox->setEnabled( on );
+    if( on )
+        m_exprBox->setChecked( false );
+}
+
+void SmartPlaylistEditor::slotExprBoxToggled( bool on )
+{
+    if( on )
+        m_matchCheck->setChecked( false );
 }
 
 void SmartPlaylistEditor::updateOrderTypes( int index )
@@ -270,6 +305,13 @@ QDomElement SmartPlaylistEditor::result() {
             matches.setAttribute( "glue", m_matchCombo->currentItem() == 0 ? "AND" : "OR" );
         }
         smartplaylist.appendChild( matches );
+    }
+    // Expression
+    if( m_exprBox->isChecked() ) {
+        QDomElement expression = doc.createElement("expression");
+        QDomText t = doc.createTextNode( m_exprEdit->text() );
+        expression.appendChild( t );
+        smartplaylist.appendChild( expression );
     }
     // Order By
     if( m_orderCheck->isChecked() ) {
@@ -333,6 +375,24 @@ void SmartPlaylistEditor::buildQuery()
             }
             whereStr += str+")";
         }
+    }
+
+    if( m_exprBox->isChecked() ) {
+        QueryBuilder qb;
+        qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabAlbum | QueryBuilder::tabArtist,
+                            m_exprEdit->text() );
+        whereStr = qb.query().stripWhiteSpace();
+        if( whereStr.endsWith(";") )
+            whereStr = whereStr.left( whereStr.length() - 1 );
+        const int i = whereStr.find( "WHERE" ); // this is a bit HACK ish, maybe there's a better way?
+        if( i >= 0 )
+            whereStr = whereStr.mid( i );
+        else
+        {
+            kdDebug() << "no WHERE found in SQL: " << whereStr << endl;
+            whereStr = QString("WHERE %1").arg( CollectionDB::instance()->boolF() );
+        }
+        kdDebug() << "ASDF" << ( whereStr = " " + whereStr ) << endl;
     }
 
     //order by expression
