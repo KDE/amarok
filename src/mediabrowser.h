@@ -131,7 +131,7 @@ class MediaDevice : public QObject
 
         void        addURL( const KURL& url );
         void        addURLs( const KURL::List urls );
-        bool        isConnected() { return m_connection; }
+        bool        isConnected() { return m_ipod->isStillConnected(); }
         QStringList items( QListViewItem* item );
         KURL::List  songsByArtist( const QString& artist );
         KURL::List  songsByArtistAlbum( const QString& artist, const QString& album );
