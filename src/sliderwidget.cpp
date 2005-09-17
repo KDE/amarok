@@ -272,17 +272,10 @@ void
 amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPixmap buf( size() );
-    QPainter p( &buf );
-
-    // Erase buffer pixmap
-/*    if ( topLevelWidget()->backgroundMode() == FixedPixmap ) {
-        // This crap is required for Baghira, which uses a giant background pixmap
-        const QPoint pos = mapTo( topLevelWidget(), QPoint( 0, 0 ) );
-        p.drawPixmap( 0, 0, *topLevelWidget()->paletteBackgroundPixmap(), pos.x(), pos.y(), width(), height() );
-    }
-    else*/
-    p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
-    p.end();
+    if( parentWidget()->backgroundPixmap() )
+        buf.fill( parentWidget(), pos() );
+    else
+        buf.fill( colorGroup().background() );
 
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
@@ -292,7 +285,7 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     bitBlt( &buf, offset - m_volumeslider_handle.width() / 2 + padding, 0, &m_volumeslider_handle );
 
     // Draw percentage number
-    p.begin( &buf );
+    QPainter p( &buf );
     p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ).dark() );
     QFont font;
     font.setPixelSize( 9 );
