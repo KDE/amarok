@@ -594,10 +594,9 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //TODO it would be handy and more usable to have this menu under the cover one too
 
         menu.insertTitle( i18n("Track"), TITLE );
-
+        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( "2rightarrow" ), i18n( "&Queue Track" ), ASNEXT );
-        menu.insertItem( SmallIconSet( "player_playlist_2" ), i18n( "&Make Playlist" ), MAKE );
         if( MediaDevice::instance()->isConnected() )
             menu.insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MEDIA_DEVICE );
 
