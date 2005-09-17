@@ -9,7 +9,6 @@
 #include <qdom.h>
 #include <qhbox.h>       //baseclass
 #include <qptrlist.h>    //definition required
-#include <kapplication.h>
 #include <klineedit.h>   //inline function
 
 class KComboBox;
@@ -19,7 +18,6 @@ class QCheckBox;
 class QDateEdit;
 class QLabel;
 class QToolButton;
-class QHGroupBox;
 class QVGroupBox;
 
 class CriteriaEditor;
@@ -47,9 +45,6 @@ Q_OBJECT
     private slots:
         void updateOrderTypes( int index );
         void buildQuery();
-        void slotMatchBoxToggled( bool on );
-        void slotExprBoxToggled( bool on );
-        void slotShowExpressionHelp() { kapp->invokeHelp( "installing" ); }
 
     private:
         void init(QString defaultName);
@@ -60,11 +55,8 @@ Q_OBJECT
         QCheckBox *m_matchCheck;
         KComboBox *m_matchCombo;
         QLabel *m_matchLabel;
+
         QVGroupBox *m_criteriaGroupBox;
-
-        QHGroupBox *m_exprBox;
-        KLineEdit *m_exprEdit;
-
         //limit widgets
         QCheckBox *m_limitCheck;
         KIntSpinBox *m_limitSpin;
