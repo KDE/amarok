@@ -177,8 +177,7 @@ FileBrowser::FileBrowser( const char * name )
         menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 
-        if( MediaDevice::instance()->isConnected() )
-            menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
+        menu->insertItem( SmallIconSet( "usbpendrive_unmount" ), i18n( "Add to Media Device &Transfer Queue" ), MediaDevice );
         menu->insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD as Data"), BurnDataCd );
         menu->insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Burn to CD as Audio"), BurnAudioCd );
         menu->insertSeparator();
@@ -341,6 +340,8 @@ FileBrowser::prepareContextMenu()
     const KFileItemList &items = *m_dir->selectedItems();
     ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
         items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
+    ((KActionMenu*)m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
+        MediaDevice::instance()->isConnected() );
 }
 
 inline void
