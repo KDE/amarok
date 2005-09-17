@@ -276,13 +276,13 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     QPainter p( &buf );
 
     // Erase buffer pixmap
-    if ( topLevelWidget()->backgroundMode() == FixedPixmap ) {
+/*    if ( topLevelWidget()->backgroundMode() == FixedPixmap ) {
         // This crap is required for Baghira, which uses a giant background pixmap
         const QPoint pos = mapTo( topLevelWidget(), QPoint( 0, 0 ) );
         p.drawPixmap( 0, 0, *topLevelWidget()->paletteBackgroundPixmap(), pos.x(), pos.y(), width(), height() );
     }
-    else
-        p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
+    else*/
+    p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
     p.end();
 
     const int padding = 5;
