@@ -306,6 +306,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         static const int RTTI = 1006;              //podcastchannel
 
     private slots:
+        void abortFetch();
         void fetchResult( KIO::Job* job );
         void slotAnimation();
 

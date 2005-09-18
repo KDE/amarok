@@ -1099,10 +1099,21 @@ PodcastChannel::fetch()
     m_podcastJob = KIO::storedGet( m_url, false, false );
 
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastJob )
-            .setDescription( i18n( "Fetching Podcast" ) );
+            .setDescription( i18n( "Fetching Podcast" ) )
+            .setAbortSlot( this, SLOT( abortFetch() ) );
 
     connect( m_podcastJob, SIGNAL( result( KIO::Job* ) ), SLOT( fetchResult( KIO::Job* ) ) );
 
+}
+
+void
+PodcastChannel::abortFetch()
+{
+    m_podcastJob->kill();
+
+    stopAnimation();
+    setText( 0, m_url.prettyURL() );
+    setPixmap( 0, SmallIcon("cancel") );
 }
 
 
