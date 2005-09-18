@@ -15,7 +15,7 @@ Run from a subdirectory -> scons -u
 
 
 ## this loads the bksys modules and stuff
-env = Environment( tools=['default', 'generic', 'kde'], toolpath=['./', './bksys'])
+env = Environment( tools=['default', 'generic', 'kde3'], toolpath=['./', './bksys'])
 
 
 ## some settings bksys will apply to the build, eg threaded libs

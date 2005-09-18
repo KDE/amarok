@@ -672,7 +672,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
             break;
         }
         default:
-            EngineController::instance()->increaseVolume( e->delta() / 18 );
+            EngineController::instance()->increaseVolume( e->delta() / amaroK::VOLUME_SENSITIVITY );
         }
 
         e->accept();

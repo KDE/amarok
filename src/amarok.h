@@ -18,6 +18,7 @@ namespace amaroK
     const int VOLUME_MAX = 100;
     const int SCOPE_SIZE = 9; //= 2**9 = 512
     const int blue       = 0x202050;
+    const int VOLUME_SENSITIVITY = 30; //for mouse wheels
 
     namespace ColorScheme
     {
