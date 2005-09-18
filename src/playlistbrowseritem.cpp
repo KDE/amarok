@@ -1445,7 +1445,10 @@ void
 PodcastItem::downloadMedia()
 {
     if( QFile::exists( m_localUrlString ) )
+    {
+        m_downloaded = true;
         return;
+    }
 
     setText(0, i18n( "Downloading Media..." ) );
 
@@ -1466,6 +1469,8 @@ PodcastItem::downloadMedia()
 void
 PodcastItem::abortDownload() //SLOT
 {
+    m_podcastItemJob->kill();
+
     stopAnimation();
     setText( 0, m_title );
     m_downloaded = false;
