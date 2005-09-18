@@ -7,6 +7,7 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
  <sebr>    Reflect lyrics text to say "unfetchable" when there is a server timeout or whatnot.  Currently
            stays stuck at "Fetching lyrics..."
+ <sebr>    Cancelling a podcast download shows an empty popup message and i can't figure out where from
  <illis.>  A whole lot (all?) of my mp3s have their titles truncated at 30-ish characters. This is almost
            certainly an ID3v1 vs 2 issue, v2 I think allows for unlimited length (or at least very very
            long), why don't we use it? (not sure whether the problem is in taglib or amarok...)
