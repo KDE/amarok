@@ -1992,7 +1992,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( "player_play" ), i18n( "&Play" ), LOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( "info" ), i18n( "Show &Information" ), INFO );
-        menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
+
+        PodcastChannel *chan = dynamic_cast<PodcastChannel*>(item->itemChannel());
+        if( chan && chan->mediaFetch() != PodcastChannel::STREAM )
+            menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
 
         menu.setItemEnabled( GET, !item->hasDownloaded() );
 

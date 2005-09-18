@@ -222,6 +222,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         const bool hasDownloaded() { return m_downloaded; }
         const bool hasXml( const QDomNode &xml );
         void  showAbout();
+        QListViewItem *itemChannel() { return m_parent; }
 
         void setNew( bool n = true );
         bool isNew() { return m_new; }
@@ -248,7 +249,7 @@ class PodcastItem : public QObject, public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
 
-        QListViewItem *m_parent;
+        QListViewItem *m_parent;                   //podcast channel it belongs to
         QString     m_author;
         QString     m_description;
         QString     m_date;
@@ -280,6 +281,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
                         QDomNode channelSettings, QDomDocument xml );
 
+        enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
+
         void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
 
         void setNew( bool n = true );
@@ -292,6 +295,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const KURL &url() { return m_url; }
         const QString &title() { return m_title; }
         const int timeout() { return m_interval; }
+        const int mediaFetch() { return m_mediaFetch; }
         const bool autoScan() { return m_autoScan; }
         const KURL &saveLocation() { return m_saveLocation; }
 
@@ -306,8 +310,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void slotAnimation();
 
     private:
-        enum MediaFetch{ STREAM=0, DOWNLOAD=1, AVAILABLE=2 };
-
         bool containsItem( QDomElement xml );
         void purge();
         void removeChildren();
