@@ -277,8 +277,9 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     if( parentWidget()->backgroundPixmap() )
         buf.fill( parentWidget(), pos() );
     else {
-        QPainter p( &buf );
-        p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
+        buf.fill( colorGroup().background() );
+//         QPainter p( &buf );
+//         p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
     }
 
     const int padding = 7;
