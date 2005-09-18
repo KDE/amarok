@@ -1423,7 +1423,8 @@ PodcastItem::PodcastItem( QListViewItem *parent, QListViewItem *after, QDomEleme
     if( m_title.isEmpty() )
         m_title = m_url.fileName();
 
-    m_localUrlString = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation().prettyURL();
+    m_localUrlString = dynamic_cast<PodcastChannel*>(m_parent)->saveLocation().path();
+
     QString filename = m_title;
 
     m_localUrlString += filename.replace( " ", "_" ).replace( "/", "_" );;
