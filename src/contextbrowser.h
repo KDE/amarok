@@ -9,7 +9,7 @@
 
 #include "engineobserver.h"
 #include <kurl.h>
-#include <qtabwidget.h>
+#include <ktabwidget.h>
 
 class CollectionDB;
 class Color;
@@ -27,7 +27,7 @@ namespace Browser { class ToolBar; }
 namespace KIO { class Job; class TransferJob; }
 
 
-class ContextBrowser : public QTabWidget, public EngineObserver
+class ContextBrowser : public KTabWidget, public EngineObserver
 {
     Q_OBJECT
 
@@ -54,6 +54,9 @@ class ContextBrowser : public QTabWidget, public EngineObserver
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void paletteChange( const QPalette& );
+
+    protected slots:
+        void wheelDelta( int delta );
 
     private slots:
         void tabChanged( QWidget *page );

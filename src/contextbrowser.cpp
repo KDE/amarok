@@ -85,7 +85,7 @@ ContextBrowser *ContextBrowser::s_instance = 0;
 
 
 ContextBrowser::ContextBrowser( const char *name )
-        : QTabWidget( 0, name )
+        : KTabWidget( 0, name )
         , EngineObserver( EngineController::instance() )
         , m_dirtyHomePage( true )
         , m_dirtyCurrentTrackPage( true )
@@ -526,10 +526,37 @@ void ContextBrowser::saveHtmlData()
 
 void ContextBrowser::paletteChange( const QPalette& pal )
 {
-    QTabWidget::paletteChange( pal );
+    KTabWidget::paletteChange( pal );
     setStyleSheet();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// PROTECTED SLOTS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//parts of this function from ktabwidget.cpp, copyright (C) 2003 Zack Rusin and Stephan Binner
+//fucking setCurrentTab() isn't virtual so we have to override this instead =(
+void ContextBrowser::wheelDelta( int delta )
+{
+    if ( count() < 2 || delta == 0 )
+        return;
+
+    int index = currentPageIndex(), start = index;
+    do
+    {
+        if( delta < 0 )
+            index = (index + 1) % count();
+        else
+        {
+            index = index - 1;
+            if( index < 0 )
+                index = count() - 1;
+        }
+        if( index == start ) // full circle, none enabled
+            return;
+    } while( !isTabEnabled( page( index ) ) );
+    setCurrentPage( index );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
