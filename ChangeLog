@@ -5,8 +5,6 @@ amaroK ChangeLog
 
 VERSION 1.3.2:
   FEATURES:
-    * Playlist columns can have multiple sorting. Secondary sort will be based
-      on the last used sort. Patch by Stefan Seigel <kde@sdas.de> (BR 111157)
     * Tabs will open automatically when dragging files between tabs.
       Patch by Christian Baumgart <christianbaumgart@web.de>.
     * Two new dcop calls which allow scripts to read many of amaroK's
