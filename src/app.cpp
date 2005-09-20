@@ -869,8 +869,6 @@ void App::firstRunWizard()
 void App::pruneCoverImages()
 {
 #ifdef AMAZON_SUPPORT
-    // TODO Offer the option to refresh the images, instead of deleting
-
     const int MAX_DAYS = 90;
 
     QDir covers( amaroK::saveLocation( "albumcovers/large/" ) );
