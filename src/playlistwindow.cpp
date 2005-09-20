@@ -83,7 +83,7 @@ namespace amaroK
 
         virtual void
         wheelEvent( QWheelEvent *e ) {
-            EngineController::instance()->increaseVolume( e->delta() /  amaroK::VOLUME_SENSITIVITY);
+            EngineController::instance()->increaseVolume( e->delta() / amaroK::VOLUME_SENSITIVITY );
         }
     };
 }

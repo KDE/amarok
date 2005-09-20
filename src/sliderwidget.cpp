@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "amarok.h"
 #include "sliderwidget.h"
 
 #include <qapplication.h>
@@ -262,7 +263,7 @@ amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
 void
 amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
 {
-    const uint step = e->delta() / 30;
+    const uint step = e->delta() / amaroK::VOLUME_SENSITIVITY;
     QSlider::setValue( QSlider::value() + step );
 
     emit sliderReleased( value() );
