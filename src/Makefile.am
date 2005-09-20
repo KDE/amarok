@@ -60,6 +60,7 @@ amarokapp_SOURCES = \
     contextbrowser.cpp \
     coverfetcher.cpp \
     covermanager.cpp \
+    pixmapviewer.cpp \
     cuefile.cpp \
     dbsetup.ui  \
     dbsetup.ui.h \

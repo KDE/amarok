@@ -7,6 +7,9 @@ VERSION 1.3.3:
   FEATURES:
 
   CHANGES:
+    * When viewing covers in fullsize, the window has a maximum size, and
+      scrollbars are shown if necessary. The user can also scroll the cover
+      by dragging it. Patch by Eyal Lotem <eyal.lotem@gmail.com>. (BR 103990)
 
   BUGFIXES:
     * Adding entries to a playlist and saving it could duplicate some tracks,

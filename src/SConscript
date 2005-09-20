@@ -26,6 +26,7 @@ amarok_sources = """
     configdialog.cpp
     coverfetcher.cpp
     covermanager.cpp
+    pixmapviewer.cpp
     cuefile.cpp
     directorylist.cpp
     effectwidget.cpp

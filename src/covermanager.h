@@ -8,6 +8,8 @@
 #include <qptrlist.h>
 #include <qsplitter.h>
 #include <kiconview.h>
+#include <qdialog.h>
+#include <qpixmap.h>
 
 class QListViewItem;
 class CoverViewItem;
@@ -20,6 +22,8 @@ class KListView;
 class CoverView;
 class QHBox;
 class KProgress;
+class QHBoxLayout;
+class PixmapViewer;
 
 class CoverManager : public QSplitter
 {
@@ -145,5 +149,21 @@ class CoverViewItem : public KIconViewItem
         QPixmap m_coverPixmap;
 };
 
+
+class CoverViewDialog : public QDialog {
+        Q_OBJECT
+        
+    public:
+        CoverViewDialog(const QString& artist, const QString& album, QWidget *parent);
+
+    protected slots:
+        void fitSize();
+        
+    private:
+        QHBoxLayout *m_layout;
+        QPixmap m_pixmap;
+        PixmapViewer *m_pixmapViewer;
+        QLabel *m_label;
+};
 
 #endif

@@ -10,6 +10,7 @@
 #include "config.h"
 #include "coverfetcher.h"
 #include "covermanager.h"
+#include "pixmapviewer.h"
 
 #include <qdesktopwidget.h>  //ctor: desktop size
 #include <qfile.h>
@@ -249,23 +250,31 @@ void CoverManager::init()
 }
 
 
+CoverViewDialog::CoverViewDialog(const QString& artist, const QString& album, QWidget *parent)
+    : QDialog(parent, 0, false, WDestructiveClose | WType_TopLevel | WNoAutoErase)
+    , m_pixmap(CollectionDB::instance()->albumImage( artist, album, 0 ))
+{
+    setCaption( kapp->makeStdCaption( artist + " - " + album ) );
+    m_layout = new QHBoxLayout( this );
+    m_layout->setAutoAdd(true);
+    m_pixmapViewer = new PixmapViewer( this, m_pixmap );
+    
+    setMaximumSize( m_pixmapViewer->maximalSize() );
+    connect(m_pixmapViewer, SIGNAL(doubleClicked()), this, SLOT(fitSize()));
+}
+
+
+void CoverViewDialog::fitSize()
+{
+    resize(maximumSize());
+}
+
+
 void CoverManager::viewCover( const QString& artist, const QString& album, QWidget *parent ) //static
 {
     //QDialog means "escape" works as expected
-    QDialog *dialog = new QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel );
+    QDialog *dialog = new CoverViewDialog( artist, album, parent );
     kapp->setTopWidget( dialog );
-    dialog->setCaption( kapp->makeStdCaption( artist + i18n(" - ") + album ) );
-
-    // Gives the window a small title bar
-    KWin::setType( dialog->winId(), NET::Utility );
-
-    QPixmap pixmap( CollectionDB::instance()->albumImage( artist, album, 0 ) );
-    QLabel* label = new QLabel( dialog );
-    label->setFrameShape( QFrame::NoFrame );
-    dialog->setFixedSize( pixmap.size() );
-    label->setFixedSize( pixmap.size() );
-    label->setPixmap( pixmap );
-
     dialog->show();
 }
 
