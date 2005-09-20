@@ -37,7 +37,7 @@ if [ `/usr/bin/whoami` = 'root' ]; then
 
 	olddir=`pwd`
 	cd $WORK/mklivecd
-	dd if=/dev/zero of=livecd/isolinux/initrd bs=1k count=4646
+	dd if=/dev/zero of=livecd/isolinux/initrd bs=1k count=6646
 	mke2fs -q -m 0 -F -N 1250 -s 1 livecd/isolinux/initrd
 	mount -o loop -t ext2 livecd/isolinux/initrd initrd.mnt
 	rm -rf initrd.mnt/lost+found
