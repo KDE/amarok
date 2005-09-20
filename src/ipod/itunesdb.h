@@ -73,7 +73,7 @@ public:
      */
     bool isOpen();
 
-    bool writeDatabase(const QString& filename = QString()) const;
+    bool writeDatabase(const QString& filename = QString());
 
     /**
      * Returns true if the itunesdb file has been changed thus needs to be reloaded or does not exist anymore

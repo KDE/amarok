@@ -35,7 +35,7 @@ http://www.ipodlinux.org/ITunesDB
 */
 class ItunesDBWriter{
 public:
-    ItunesDBWriter(ItunesDBDataSource& trackdatasource);
+    ItunesDBWriter(ItunesDBDataSource* trackdatasource);
 
     ~ItunesDBWriter();
 

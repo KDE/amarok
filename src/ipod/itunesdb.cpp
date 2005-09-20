@@ -59,12 +59,12 @@ bool ITunesDB::isOpen() {
     return timestamp.isValid();
 }
 
-bool ITunesDB::writeDatabase(const QString& filename) const {
+bool ITunesDB::writeDatabase(const QString& filename) {
     QFile outfile(filename);
     if(filename.isEmpty())
         outfile.setName(itunesdbfile.name());
 
-    ItunesDBWriter writer((ItunesDBDataSource&)*this);
+    ItunesDBWriter writer(this);
     writer.write(outfile);
 
     QFile outfilesd( itunessdfile.name() );

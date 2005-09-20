@@ -27,9 +27,9 @@
 
 namespace itunesdb {
 
-ItunesDBWriter::ItunesDBWriter(ItunesDBDataSource& trackdatasource)
+ItunesDBWriter::ItunesDBWriter(ItunesDBDataSource* trackdatasource)
 {
-    datasource= &trackdatasource;
+    datasource= trackdatasource;
 }
 
 
