@@ -2390,6 +2390,13 @@ Playlist::removeSelectedItems() //SLOT
         ( m_nextTracks.contains( *it ) ? queued : list ).prepend( *it );
     }
 
+    if( (int)list.count() == childCount() )
+    {
+        //clear() will saveUndoState for us.
+        clear();        // faster
+        return;
+    }
+
     if( list.isEmpty() && queued.isEmpty() ) return;
     saveUndoState();
 
