@@ -360,19 +360,26 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
             b = b.rightJustify( a.length(), '0' ); //so simply left-padding is sufficient
             break;
 
-         default:;
-     }
+        case Year:
+            if( a == b )
+                return this->compare( i, Artist, ascending );
+            break;
 
-    /*!
-     * Qt sorts our items using Heapsort, which is not a stable sort algorithm.
-     * The simplest way to let the user sort by multiple colums is to use a stable
-     * sort algorithm, so we stabilize it: If a and b are equal we don't return 0 but
-     * a value based on the current order in the list. The localeAwareCompare value
-     * is multiplied by 2 so it always dominates the current order if it is non-zero.
-     */
+        case Artist:
+            if( a == b ) //if same artist, try to sort by album
+                return this->compare( i, Album, ascending );
+            break;
 
-    return QString::localeAwareCompare( a, b ) * 2
-            + ( ( itemPos() < i->itemPos() ) == ascending ? -1 : 1 );
+        case Album:
+            if( a == b ) //if same album, try to sort by track
+                //TODO only sort in ascending order?
+                return this->compare( i, Track, true ) * (ascending ? 1 : -1);
+            break;
+
+        default:;
+    }
+
+    return QString::localeAwareCompare( a, b );
 }
 
 void PlaylistItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
