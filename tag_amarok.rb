@@ -16,8 +16,8 @@ protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "sv
 source = "#{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia"
 
 `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/`
-`cd amarok`
-`svn mkdir #[tagname}`
+Dir.chdir('amarok')
+`svn mkdir #{tagname}`
 `svn mkdir #{tagname}/doc`
 `svn cp #{source}/amarok #{tagname}/amarok`
 `svn cp #{source}/doc/amarok #{tagname}/doc`

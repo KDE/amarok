@@ -42,7 +42,7 @@ $changelog.sub!(newOldArray[1],newOldArray[1].gsub( /\n/, "</br>\n" ))
 
 
 # Format version headers
-$changelog.gsub!(/(VERSION)(.*$)/, '<h3>Version\2</h3>');
+$changelog.gsub!(/(VERSION)(.*$)/, '</ul><h3>Version\2</h3>');
 # Write destination file
 $output.write( $changelog )
 
