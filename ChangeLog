@@ -3,6 +3,16 @@ amaroK ChangeLog
 (C) 2002-2005 the amaroK authors.
 
 
+VERSION 1.3.3:
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+    * Adding entries to a playlist and saving it could duplicate some tracks,
+      if the playlist hadn't been expanded before. (BR 111579)
+
+
 VERSION 1.3.2:
   FEATURES:
     * Tabs will open automatically when dragging files between tabs.

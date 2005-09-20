@@ -487,6 +487,7 @@ void PlaylistEntry::setModified( bool chg )
         else {
             delete m_savePix;
             m_savePix = 0;
+            tmp_droppedTracks.clear();
         }
 
         m_modified = chg;
