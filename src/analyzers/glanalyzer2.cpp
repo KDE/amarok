@@ -237,11 +237,11 @@ void GLAnalyzer2::paintGL()
 //     for (; particle; particle = particleList.next())
     {
 	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-	drawDot( 0, 0, 10 >? (10.0 * frame.energy) );
+	drawDot( 0, 0, kMax(10.0,(10.0 * frame.energy)) );
 	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-	drawDot( 6, 0, 10 >? (5.0 * frame.energy) );
+	drawDot( 6, 0, kMax(10.0 (5.0 * frame.energy)) );
 	glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
-	drawDot( -6, 0, 10 >? (5.0 * frame.energy) );
+	drawDot( -6, 0, kMax(10.0, (5.0 * frame.energy)) );
     }
     glEnd();
 }
