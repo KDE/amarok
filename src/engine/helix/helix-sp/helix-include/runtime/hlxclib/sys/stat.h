@@ -60,7 +60,7 @@ int stat(const char* pFilename, struct stat *buf)
 
 
 #ifdef __cplusplus
-};
+}
 #endif /* __cplusplus */
 
 
