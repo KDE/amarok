@@ -223,12 +223,12 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     setWFlags( getWFlags() | WNoAutoErase );
     setFocusPolicy( QWidget::NoFocus );
 
-    m_volumeslider_inset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
-    m_volumeslider_handle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
+    m_pixmapInset  = QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) );
+    m_pixmapHandle = QPixmap( locate( "data","amarok/images/volumeslider-handle.png" ) );
     generateGradient();
 
-    setMinimumWidth( m_volumeslider_inset.width() );
-    setMinimumHeight( m_volumeslider_inset.height() );
+    setMinimumWidth( m_pixmapInset.width() );
+    setMinimumHeight( m_pixmapInset.height() );
 }
 
 void
@@ -240,10 +240,14 @@ amaroK::VolumeSlider::generateGradient()
     const QPixmap temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
     const QBitmap mask( temp.createHeuristicMask() );
 
-    m_volumeslider_gradient = QPixmap( m_volumeslider_inset.size() );
-    KPixmapEffect::gradient( m_volumeslider_gradient, colorGroup().background(), colorGroup().highlight(),
+    m_pixmapGradient = QPixmap( m_pixmapInset.size() );
+    KPixmapEffect::gradient( m_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
                              KPixmapEffect::HorizontalGradient );
-    m_volumeslider_gradient.setMask( mask );
+    m_pixmapGradient.setMask( mask );
+
+    // Generate pixmap for mouse-over effect
+    m_pixmapInsetHilight = m_pixmapInset;
+    KPixmapEffect::fade( m_pixmapInsetHilight, 0.4, colorGroup().highlight() );
 }
 
 void
@@ -286,9 +290,9 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
 
-    bitBlt( &buf, 0, 0, &m_volumeslider_gradient, 0, 0, offset + padding );
-    bitBlt( &buf, 0, 0, &m_volumeslider_inset );
-    bitBlt( &buf, offset - m_volumeslider_handle.width() / 2 + padding, 0, &m_volumeslider_handle );
+    bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset + padding );
+    bitBlt( &buf, 0, 0, hasMouse() ? &m_pixmapInsetHilight : &m_pixmapInset );
+    bitBlt( &buf, offset - m_pixmapHandle.width() / 2 + padding, 0, &m_pixmapHandle );
 
     // Draw percentage number
     QPainter p( &buf );
@@ -315,6 +319,18 @@ amaroK::VolumeSlider::showEvent( QShowEvent* )
     // HACK To prevent ugly uninitialised background when the window is shown,
     //      needed because we use NoBackground to prevent flickering while painting
     setBackgroundMode( NoBackground );
+}
+
+void
+amaroK::VolumeSlider::enterEvent( QEvent* )
+{
+    update();
+}
+
+void
+amaroK::VolumeSlider::leaveEvent( QEvent* )
+{
+    update();
 }
 
 void

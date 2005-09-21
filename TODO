@@ -7,8 +7,6 @@ TODO-list for amaroK
 SHORT-TERM (URGENT):
  <markey>  When clicking sidebar tabs, the whole text plus icon moves down a few pixels.
 
- <markey>  Add a nice mouse-over effect to the volume slider.
-
  <sebr>    Reflect lyrics text to say "unfetchable" when there is a server timeout or whatnot.  Currently
            stays stuck at "Fetching lyrics..."
  <sebr>    Cancelling a podcast download shows an empty popup message and i can't figure out where from

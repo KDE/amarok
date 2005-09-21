@@ -96,6 +96,8 @@ namespace amaroK
             virtual void paintEvent( QPaintEvent* );
             virtual void hideEvent( QHideEvent* );
             virtual void showEvent( QShowEvent* );
+            virtual void enterEvent( QEvent* );
+            virtual void leaveEvent( QEvent* );
             virtual void paletteChange( const QPalette& );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
@@ -104,9 +106,10 @@ namespace amaroK
         private:
             void generateGradient();
 
-            KPixmap m_volumeslider_handle;
-            KPixmap m_volumeslider_inset;
-            KPixmap m_volumeslider_gradient;
+            KPixmap m_pixmapHandle;
+            KPixmap m_pixmapInset;
+            KPixmap m_pixmapInsetHilight;
+            KPixmap m_pixmapGradient;
 
             VolumeSlider( const VolumeSlider& ); //undefined
             VolumeSlider &operator=( const VolumeSlider& ); //undefined
