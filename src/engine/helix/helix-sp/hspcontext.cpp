@@ -40,7 +40,7 @@ HSPEngineContext::HSPEngineContext(IHXCommonClassFactory *pCommonClassFactory) :
 HSPEngineContext::~HSPEngineContext()
 {
     Close();
-};
+}
 
 void HSPEngineContext::Close()
 {
@@ -177,7 +177,7 @@ HSPClientContext::HSPClientContext(LONG32 lClientIndex, HelixSimplePlayer *pSpla
 HSPClientContext::~HSPClientContext()
 {
     Close();
-};
+}
 
 void HSPClientContext::Init(IUnknown*	    pUnknown,
                             IHXPreferences* pPreferences,
