@@ -8,7 +8,7 @@
 namespace KIO {
     class StoredTransferJob;
     class Job;
-};
+}
 class QStringList;
 
 class JobInfo
@@ -31,7 +31,7 @@ class RefreshImages : public QObject
     void finishedXmlFetch( KIO::Job* );
     void finishedImageFetch( KIO::Job* );
   private:
-    static QString RefreshImages::localeToTLD(const QString& locale);
+    static QString localeToTLD(const QString& locale);
     QMap<QString, JobInfo> m_jobInfo;
 };
 #endif
