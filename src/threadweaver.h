@@ -370,7 +370,7 @@ public:
         const QGuardedPtr<QObject> m_dependent;
 
     protected:
-        DISABLE_GENERATED_MEMBER_FUNCTIONS_4( DependentJob );
+        DISABLE_GENERATED_MEMBER_FUNCTIONS_4( DependentJob )
     };
 
 protected:
