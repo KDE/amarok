@@ -67,9 +67,6 @@
 #ifndef _LINUX
 #define _LINUX 1
 #endif
-#ifndef _LITTLE_ENDIAN
-#define _LITTLE_ENDIAN 1
-#endif
 #ifndef _RED_HAT_5_X_
 #define _RED_HAT_5_X_ 1
 #endif
