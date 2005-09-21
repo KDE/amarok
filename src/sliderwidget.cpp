@@ -27,8 +27,10 @@
 #include <qpixmap.h>
 #include <qsize.h>
 
+#include <klocale.h>
 #include <kpixmapeffect.h>
 #include <kpixmap.h>
+#include <kpopupmenu.h>
 #include <kstandarddirs.h>
 
 
@@ -253,9 +255,29 @@ amaroK::VolumeSlider::generateGradient()
 void
 amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
 {
-    amaroK::Slider::mousePressEvent( e );
+    if( e->button() == RightButton )
+    {
+        KPopupMenu menu;
+        menu.insertTitle( i18n( "Volume" ) );
+        menu.insertItem(  i18n(   "100%" ), 100 );
+        menu.insertItem(  i18n(    "80%" ),  80 );
+        menu.insertItem(  i18n(    "60%" ),  60 );
+        menu.insertItem(  i18n(    "40%" ),  40 );
+        menu.insertItem(  i18n(    "20%" ),  20 );
+        menu.insertItem(  i18n(     "0%" ),   0 );
+        const int n = menu.exec( mapToGlobal( e->pos() ) );
+        if( n >= 0 )
+        {
+            QSlider::setValue( n );
+            emit sliderReleased( n );
+        }
+    }
+    else
+    {
+        amaroK::Slider::mousePressEvent( e );
 
-    slideEvent( e );
+        slideEvent( e );
+    }
 }
 
 void
