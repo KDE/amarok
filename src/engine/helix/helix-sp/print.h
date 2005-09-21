@@ -24,7 +24,7 @@ extern "C" {
 #define STDERR print2stderr
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 
