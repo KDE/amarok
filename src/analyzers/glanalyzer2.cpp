@@ -239,7 +239,7 @@ void GLAnalyzer2::paintGL()
 	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
 	drawDot( 0, 0, kMax(10.0,(10.0 * frame.energy)) );
 	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-	drawDot( 6, 0, kMax(10.0 (5.0 * frame.energy)) );
+	drawDot( 6, 0, kMax(10.0, (5.0 * frame.energy)) );
 	glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
 	drawDot( -6, 0, kMax(10.0, (5.0 * frame.energy)) );
     }
