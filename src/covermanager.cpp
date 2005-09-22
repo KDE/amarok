@@ -254,19 +254,15 @@ CoverViewDialog::CoverViewDialog(const QString& artist, const QString& album, QW
     : QDialog(parent, 0, false, WDestructiveClose | WType_TopLevel | WNoAutoErase)
     , m_pixmap(CollectionDB::instance()->albumImage( artist, album, 0 ))
 {
-    setCaption( kapp->makeStdCaption( artist + " - " + album ) );
+    KWin::setType( winId(), NET::Utility );
+    kapp->setTopWidget( this );
+    setCaption( kapp->makeStdCaption( artist + i18n(" - ") + album ) );
+
     m_layout = new QHBoxLayout( this );
     m_layout->setAutoAdd(true);
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
-    
-    setMaximumSize( m_pixmapViewer->maximalSize() );
-    connect(m_pixmapViewer, SIGNAL(doubleClicked()), this, SLOT(fitSize()));
-}
 
-
-void CoverViewDialog::fitSize()
-{
-    resize(maximumSize());
+    setFixedSize( m_pixmapViewer->maximalSize() );
 }
 
 
@@ -274,7 +270,6 @@ void CoverManager::viewCover( const QString& artist, const QString& album, QWidg
 {
     //QDialog means "escape" works as expected
     QDialog *dialog = new CoverViewDialog( artist, album, parent );
-    kapp->setTopWidget( dialog );
     dialog->show();
 }
 
@@ -791,8 +786,8 @@ void CoverManager::updateStatusBar()
             if ( values.count() >= 2 )
             {
                 text = i18n( "Fetching cover for " );
-		if ( !values[0].isEmpty() ) text += values[0] + i18n(" - ");
-		text += values[1] + i18n("...");
+        if ( !values[0].isEmpty() ) text += values[0] + i18n(" - ");
+        text += values[1] + i18n("...");
             }
         }
         else if( m_fetchingCovers ) {
@@ -800,7 +795,7 @@ void CoverManager::updateStatusBar()
             if( m_coversFetched )
                 text += i18n( "1 fetched", "%n fetched", m_coversFetched );
             if( m_coverErrors ) {
-		    if( m_coversFetched ) text += i18n(" - ");
+            if( m_coversFetched ) text += i18n(" - ");
                 text += i18n( "1 not found", "%n not found", m_coverErrors );
             }
             if( m_coversFetched + m_coverErrors == 0 )
@@ -984,14 +979,14 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
     int nameWidth = fm.width( str );
     if( nameWidth > textRect().width() )
     {
-	    QString nameJustify = i18n("...");
+        QString nameJustify = i18n("...");
         int i = 0;
         while ( fm.width( nameJustify + str[ i ] ) < textRect().width() )
             nameJustify += str[ i++ ];
         nameJustify.remove( 0, 3 );
         if ( nameJustify.isEmpty() )
             nameJustify = str.left( 1 );
-	nameJustify += i18n("...");
+    nameJustify += i18n("...");
         str = nameJustify;
     }
     p->setPen( cg.text() );

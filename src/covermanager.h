@@ -152,13 +152,10 @@ class CoverViewItem : public KIconViewItem
 
 class CoverViewDialog : public QDialog {
         Q_OBJECT
-        
+
     public:
         CoverViewDialog(const QString& artist, const QString& album, QWidget *parent);
 
-    protected slots:
-        void fitSize();
-        
     private:
         QHBoxLayout *m_layout;
         QPixmap m_pixmap;

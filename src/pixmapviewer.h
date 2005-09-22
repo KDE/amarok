@@ -24,9 +24,6 @@
 class PixmapViewer : public QScrollView {
     Q_OBJECT
 
-signals:
-    void doubleClicked();
-
 public:
     PixmapViewer(QWidget *widget, const QPixmap &pixmap);
 
@@ -38,7 +35,6 @@ public:
     void contentsMousePressEvent(QMouseEvent *event);
     void contentsMouseReleaseEvent(QMouseEvent *event);
     void contentsMouseMoveEvent(QMouseEvent *event);
-    void contentsMouseDoubleClickEvent(QMouseEvent *);
 
 private:
     bool m_isDragging;

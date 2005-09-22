@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2005 Eyal Lotem <eyal.lotem@gmail.com>                  *
+ *   Copyright (C) 2005 Alexandre Oliveira <aleprj@gmail.com>              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,6 +18,7 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307, USA.          *
  ***************************************************************************/
 #include "pixmapviewer.h"
+#include <kapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 
@@ -56,12 +58,8 @@ void PixmapViewer::contentsMouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void PixmapViewer::contentsMouseDoubleClickEvent(QMouseEvent *) {
-    emit doubleClicked();
-}
-
 QSize PixmapViewer::maximalSize() {
-    return size() - viewport()->size() + m_pixmap.size();
+    return m_pixmap.size().boundedTo( KApplication::desktop()->size() ) + size() - viewport()->size();
 }
 
 #include "pixmapviewer.moc"
