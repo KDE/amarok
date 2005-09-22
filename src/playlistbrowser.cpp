@@ -2559,7 +2559,7 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
 PlaylistDialog::PlaylistDialog()
     : KDialogBase( PlaylistWindow::self(), "saveplaylist", true /*modal*/,
                    i18n( "Save Playlist" ), Ok | Cancel | User1, Ok, false /*seperator*/,
-                   KGuiItem( i18n( "Save to Location..." ), SmallIconSet( "folder" ) ) )
+                   KGuiItem( i18n( "Save to location..." ), SmallIconSet( "folder" ) ) )
     , customChosen( false )
 {
     QVBox *vbox = makeVBoxMainWidget();
