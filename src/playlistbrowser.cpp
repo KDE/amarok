@@ -459,7 +459,8 @@ void PlaylistBrowser::saveStreams()
     streamB.setAttribute( "product", "amaroK" );
     streamB.setAttribute( "version", APP_VERSION );
     streamB.setAttribute( "formatversion", "1.1" );
-    doc.appendChild( streamB );
+    QDomNode streamsNode = doc.importNode( streamB, TRUE );
+    doc.appendChild( streamsNode );
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -659,7 +660,8 @@ void PlaylistBrowser::saveSmartPlaylists()
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
     smartB.setAttribute( "formatversion", "1.1" );
-    doc.appendChild( smartB );
+    QDomNode smartplaylistsNode = doc.importNode( smartB, TRUE );
+    doc.appendChild( smartplaylistsNode );
 
     QTextStream smart( &file );
     smart.setEncoding( QTextStream::UnicodeUTF8 );
@@ -768,7 +770,8 @@ void PlaylistBrowser::saveDynamics()
     dynamicB.setAttribute( "product", "amaroK" );
     dynamicB.setAttribute( "version", APP_VERSION );
     dynamicB.setAttribute( "formatversion", "1.1" );
-    doc.appendChild( dynamicB );
+    QDomNode dynamicsNode = doc.importNode( dynamicB, TRUE );
+    doc.appendChild( dynamicsNode );
 
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -878,12 +881,12 @@ void PlaylistBrowser::savePodcasts()
     podcastB.setAttribute( "product", "amaroK" );
     podcastB.setAttribute( "version", APP_VERSION );
     podcastB.setAttribute( "formatversion", "1.1" );
-    doc.appendChild( podcastB );
+    QDomNode podcastNode = doc.importNode( podcastB, TRUE );
+    doc.appendChild ( podcastNode );
 
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
-
 }
 
 void PlaylistBrowser::scanPodcasts()
@@ -1149,7 +1152,8 @@ void PlaylistBrowser::savePlaylists()
     playlistsB.setAttribute( "product", "amaroK" );
     playlistsB.setAttribute( "version", APP_VERSION );
     playlistsB.setAttribute( "formatversion", "1.1" );
-    doc.appendChild( playlistsB );
+    QDomNode playlistsNode = doc.importNode( playlistsB, TRUE );
+    doc.appendChild( playlistsNode );
 
     QTextStream stream( &file );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
