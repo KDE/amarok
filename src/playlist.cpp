@@ -214,7 +214,6 @@ Playlist::Playlist( QWidget *parent )
     setDropVisualizer( false );   //we handle the drawing for ourselves
     setDropVisualizerWidth( 3 );
     setItemsRenameable( true );
-    KListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
     setAcceptDrops( true );
     setSelectionMode( QListView::Extended );
     setAllColumnsShowFocus( true );
@@ -304,6 +303,10 @@ Playlist::Playlist( QWidget *parent )
     engineStateChanged( EngineController::engine()->state() ); //initialise state of UI
     paletteChange( palette() ); //sets up glowColors
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
+
+    // Sorting must be disabled when current.xml is being loaded. See BUG 113042
+    KListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
+
     columnOrderChanged();
     //cause the column fractions to be updated, but in a safe way, ie no specific column
     columnResizeEvent( header()->count(), 0, 0 );
