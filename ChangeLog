@@ -5,6 +5,7 @@ amaroK ChangeLog
 
 VERSION 1.3.3:
   FEATURES:
+    * Smartplaylist has Length property. (BR 113039)
     * Added a mouse-over effect for the volume slider.
 
   CHANGES:
