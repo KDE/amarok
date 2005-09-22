@@ -293,7 +293,7 @@ MediaDeviceList::viewportPaintEvent( QPaintEvent *e )
 
     // Superimpose bubble help:
 
-    if ( childCount() == 0 )
+    if ( !m_parent->m_device->isConnected() )
     {
         QPainter p( viewport() );
 
@@ -420,7 +420,7 @@ MediaDeviceView::MediaDeviceView( MediaBrowser* parent )
     QToolTip::add( m_configButton,   i18n( "Configure mount commands" ) );
 
     m_connectButton->setToggleButton( true );
-    m_connectButton->setOn( m_deviceList->childCount() != 0 );
+    m_connectButton->setOn( m_device->isConnected() );
     m_transferButton->setDisabled( true );
 
     m_progress->setFixedHeight( m_transferButton->sizeHint().height() );
@@ -527,7 +527,7 @@ MediaDevice::addURL( const KURL& url )
 
         m_transferURLs << url;
         m_parent->m_stats->setText( i18n( "1 track in queue", "%n tracks in queue", m_parent->m_transferList->childCount() ) );
-        m_parent->m_transferButton->setEnabled( m_parent->m_deviceList->childCount() != 0 );
+        m_parent->m_transferButton->setEnabled( m_parent->m_device->isConnected() );
     } else
         amaroK::StatusBar::instance()->longMessage( i18n( "Track already exists on iPod: " + url.path().local8Bit() ) );
 }
@@ -537,7 +537,7 @@ MediaDevice::addURLs( const KURL::List urls )
 {
         KURL::List::ConstIterator it = urls.begin();
         for ( ; it != urls.end(); ++it )
-            addURL( (*it).path() );
+            addURL( *it );
 }
 
 QStringList
@@ -907,7 +907,7 @@ MediaDevice::ipodConnection() //SLOT
         openIPod();
         m_parent->m_deviceList->renderView( 0 );
 
-        if( m_parent->m_deviceList->childCount() != 0 )
+        if( isConnected() )
         {
             m_parent->m_connectButton->setOn( true );
             m_parent->m_transferButton->setEnabled( m_parent->m_transferList->childCount() != 0 );
