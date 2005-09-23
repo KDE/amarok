@@ -2980,7 +2980,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     KPopupMenu burnMenu;
-    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Selected Tracks"), BURN_SELECTION );
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Track", "Selected Tracks", itemCount), BURN_SELECTION );
     burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album: %1").arg( item->album() ), BURN_ALBUM );
     burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by %1").arg( item->artist() ), BURN_ARTIST );
     popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
