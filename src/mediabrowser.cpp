@@ -815,10 +815,7 @@ MediaDevice::deleteFiles( const KURL::List& urls )
 
     if ( button == KMessageBox::Continue )
     {
-        KURL::List::ConstIterator it = urls.begin();
-        for ( ; it != urls.end(); ++it )
-            QFile::remove( (*it).path() );
-
+        KIO::del( urls, false, true );
         if ( m_ipod->ensureConsistency() )
         {
             m_ipod->lock( true );
