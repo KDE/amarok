@@ -306,12 +306,13 @@ void SmartPlaylistEditor::buildQuery()
     QString joins = "tags INNER JOIN year ON year.id=tags.year INNER JOIN genre ON genre.id=tags.genre"
                     " INNER JOIN artist ON artist.id=tags.artist INNER JOIN album ON album.id=tags.album";
     QString whereStr;
+    QString criteriaListStr;
     QString orderStr;
     QString limitStr;
 
     //where expression
     if( m_matchCheck->isChecked() ) {
-        whereStr += " WHERE (";
+        criteriaListStr += " (";
 
         CriteriaEditor *criteria = m_criteriaEditorList.first();
         for( int i=0; criteria; criteria = m_criteriaEditorList.next(), i++ ) {
@@ -331,8 +332,9 @@ void SmartPlaylistEditor::buildQuery()
                 str.prepend( " " + op + " (");
 
             }
-            whereStr += str+")";
+            criteriaListStr += str+")";
         }
+        whereStr = " WHERE" + criteriaListStr;
     }
 
     //order by expression
@@ -384,8 +386,10 @@ void SmartPlaylistEditor::buildQuery()
         if( !joins.contains( table ) ) {
             joins += " INNER JOIN statistics ON statistics.url=tags.url";
         }
-        whereStr = QString("%1 AND %1 = \"(*ExpandString*)\"").arg(whereStr).arg(field);
-
+        if ( !criteriaListStr.isEmpty() )
+            whereStr = QString(" WHERE (%1) AND %2 = \"(*ExpandString*)\"").arg(criteriaListStr).arg(field);
+        else
+            whereStr = QString("WHERE %1 = \"(*ExpandString*)\"").arg(field);
         m_expandQuery = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
                             "tags.comment, tags.track, tags.bitrate, tags.length, tags.samplerate, tags.url"
                             " FROM " + joins + whereStr + orderStr + limitStr + ";";
