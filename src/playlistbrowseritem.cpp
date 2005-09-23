@@ -1172,16 +1172,10 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     }
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString xml = QString( storedJob->data() );
-
-    // FIXME: Get a better way to detect this
-    if ( xml.contains( "encoding=\"UTF-8\"", false  ) ) {
-         xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-    }
 
     QDomDocument d;
 
-    if( !d.setContent( xml ) )
+    if( !d.setContent( storedJob->data() ) )
     {
         amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
 
