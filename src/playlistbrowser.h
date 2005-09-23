@@ -38,6 +38,7 @@ class PlaylistBrowser : public QVBox
     friend class PlaylistBrowserView;
     friend class PlaylistCategory;
     friend class PlaylistEntry;
+    friend class PodcastChannel;  //for changing podcast timer list
 
     public:
         enum ViewMode { DETAILEDVIEW, LISTVIEW, UNSORTED, ASCENDING, DESCENDING };
@@ -90,7 +91,6 @@ class PlaylistBrowser : public QVBox
         void scanPodcasts();
         void slotDoubleClicked( QListViewItem *item );
         void subFromDynamic();
-
 
         void slotAddMenu( int id );
         void slotSaveMenu( int id );

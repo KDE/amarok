@@ -52,14 +52,11 @@ PodcastSettings::PodcastSettings( QString& url, QString& save, bool &autoScan, i
         m_downloadRadio->setChecked( true );
     }
 
-
-
     m_purgeCheck->setChecked( purge );
     m_purgeCountSpinBox->setValue( purgeCount );
 
     if( !purge )
         m_purgeCountSpinBox->setEnabled( false );
-
     pushButton_ok->setEnabled( false );
 
     connect( m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
