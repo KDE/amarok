@@ -369,7 +369,7 @@ class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
 
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
     {
-        const QCString qcs = m_codec->fromUnicode( ts.toCString( true ) );
+        const QCString qcs = m_codec->fromUnicode( TStringToQString(ts) );
         return TagLib::ByteVector( qcs, qcs.length() );
     }
 
