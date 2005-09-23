@@ -249,7 +249,7 @@ amaroK::VolumeSlider::generateGradient()
 
     // Generate pixmap for mouse-over effect
     m_pixmapInsetHilight = m_pixmapInset;
-    KPixmapEffect::fade( m_pixmapInsetHilight, 0.4, colorGroup().highlight() );
+    KPixmapEffect::fade( m_pixmapInsetHilight, 0.3, colorGroup().highlight() );
 }
 
 void
