@@ -971,7 +971,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 
     if( !file.open( IO_WriteOnly ) )
     {
-        debug() << "Couldn't write file: " << m_savePath << endl;
+        debug() << "[SCROBBLER] Couldn't write submit queue to file: " << m_savePath << endl;
         return;
     }
 
@@ -979,7 +979,8 @@ void ScrobblerSubmitter::saveSubmitQueue()
     QDomElement submitQueue = newdoc.createElement( "submit" );
     submitQueue.setAttribute( "product", "amaroK" );
     submitQueue.setAttribute( "version", APP_VERSION );
-    newdoc.appendChild( submitQueue );
+    QDomNode submitNode = newdoc.importNode( submitQueue, true );
+    newdoc.appendChild( submitNode );
 
     m_submitQueue.first();
     for ( uint idx = 0; idx < m_submitQueue.count(); idx++ )
