@@ -2897,8 +2897,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     enum {
         PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
-        BURN_MENU, BURN_SELECTION_DATA, BURN_SELECTION_AUDIO, BURN_ALBUM_DATA, BURN_ALBUM_AUDIO,
-        BURN_ARTIST_DATA, BURN_ARTIST_AUDIO, LAST }; //keep LAST last
+        BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, LAST }; //keep LAST last
 
     const bool canRename   = isRenameable( col );
     const bool isCurrent   = (item == m_currentTrack);
@@ -2981,14 +2980,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.insertSeparator();
 
     KPopupMenu burnMenu;
-    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Selected Tracks as Data CD"), BURN_SELECTION_DATA );
-    burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("Selected Tracks as Audio CD"), BURN_SELECTION_AUDIO );
-    burnMenu.insertSeparator();
-    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album as Data CD"), BURN_ALBUM_DATA );
-    burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("This Album as Audio CD"), BURN_ALBUM_AUDIO );
-    burnMenu.insertSeparator();
-    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by This Artist as Data CD"), BURN_ARTIST_DATA );
-    burnMenu.insertItem( SmallIconSet( "cdaudio_unmount" ), i18n("All Tracks by This Artist as Audio CD"), BURN_ARTIST_AUDIO );
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Selected Tracks"), BURN_SELECTION );
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("This Album: %1").arg( item->album() ), BURN_ALBUM );
+    burnMenu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("All Tracks by %1").arg( item->artist() ), BURN_ARTIST );
     popup.insertItem( SmallIconSet( "cdwriter_unmount" ), i18n("Burn"), &burnMenu, BURN_MENU );
     popup.insertSeparator();
 
@@ -3188,28 +3182,16 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         saveSelectedAsPlaylist();
         break;
 
-    case BURN_SELECTION_DATA:
-        burnSelectedTracks( K3bExporter::DataCD );
+    case BURN_SELECTION:
+        burnSelectedTracks();
         break;
 
-    case BURN_SELECTION_AUDIO:
-        burnSelectedTracks( K3bExporter::AudioCD );
+    case BURN_ALBUM:
+        K3bExporter::instance()->exportAlbum( item->album() );
         break;
 
-    case BURN_ALBUM_DATA:
-        K3bExporter::instance()->exportAlbum( item->album(), K3bExporter::DataCD );
-        break;
-
-    case BURN_ALBUM_AUDIO:
-        K3bExporter::instance()->exportAlbum( item->album(), K3bExporter::AudioCD );
-        break;
-
-    case BURN_ARTIST_DATA:
-        K3bExporter::instance()->exportArtist( item->artist(), K3bExporter::DataCD );
-        break;
-
-    case BURN_ARTIST_AUDIO:
-        K3bExporter::instance()->exportArtist( item->artist(), K3bExporter::AudioCD );
+    case BURN_ARTIST:
+        K3bExporter::instance()->exportArtist( item->artist() );
         break;
 
     default:
