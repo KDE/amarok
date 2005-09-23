@@ -459,7 +459,7 @@ void PlaylistBrowser::saveStreams()
     streamB.setAttribute( "product", "amaroK" );
     streamB.setAttribute( "version", APP_VERSION );
     streamB.setAttribute( "formatversion", "1.1" );
-    QDomNode streamsNode = doc.importNode( streamB, TRUE );
+    QDomNode streamsNode = doc.importNode( streamB, true );
     doc.appendChild( streamsNode );
 
     QTextStream stream( &file );
@@ -660,7 +660,7 @@ void PlaylistBrowser::saveSmartPlaylists()
     smartB.setAttribute( "product", "amaroK" );
     smartB.setAttribute( "version", APP_VERSION );
     smartB.setAttribute( "formatversion", "1.1" );
-    QDomNode smartplaylistsNode = doc.importNode( smartB, TRUE );
+    QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
     QTextStream smart( &file );
@@ -770,7 +770,7 @@ void PlaylistBrowser::saveDynamics()
     dynamicB.setAttribute( "product", "amaroK" );
     dynamicB.setAttribute( "version", APP_VERSION );
     dynamicB.setAttribute( "formatversion", "1.1" );
-    QDomNode dynamicsNode = doc.importNode( dynamicB, TRUE );
+    QDomNode dynamicsNode = doc.importNode( dynamicB, true );
     doc.appendChild( dynamicsNode );
 
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -881,7 +881,7 @@ void PlaylistBrowser::savePodcasts()
     podcastB.setAttribute( "product", "amaroK" );
     podcastB.setAttribute( "version", APP_VERSION );
     podcastB.setAttribute( "formatversion", "1.1" );
-    QDomNode podcastNode = doc.importNode( podcastB, TRUE );
+    QDomNode podcastNode = doc.importNode( podcastB, true );
     doc.appendChild ( podcastNode );
 
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -1152,7 +1152,7 @@ void PlaylistBrowser::savePlaylists()
     playlistsB.setAttribute( "product", "amaroK" );
     playlistsB.setAttribute( "version", APP_VERSION );
     playlistsB.setAttribute( "formatversion", "1.1" );
-    QDomNode playlistsNode = doc.importNode( playlistsB, TRUE );
+    QDomNode playlistsNode = doc.importNode( playlistsB, true );
     doc.appendChild( playlistsNode );
 
     QTextStream stream( &file );
