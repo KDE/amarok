@@ -118,7 +118,7 @@ EqualizerPresetManager::slotRename()
 void
 EqualizerPresetManager::slotDefault()
 {
-    int button = KMessageBox::warningYesNo( this, i18n( "Resettings to defaults will delete all present presets. Are you sure?" ) );
+    int button = KMessageBox::warningYesNo( this, i18n( "All presets will be deleted and defaults will be restored. Are you sure?" ) );
 
     if ( button != KMessageBox::Yes )
         return;

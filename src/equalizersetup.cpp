@@ -17,7 +17,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizergraph.h"
@@ -39,7 +38,6 @@
 
 #include <kapplication.h>
 #include <kcombobox.h>
-#include <kdebug.h>
 #include <kiconloader.h>
 #include <kinputdialog.h>  //presets
 #include <klocale.h>
@@ -301,7 +299,6 @@ EqualizerSetup::savePresets()
 
         QDomElement i = doc.createElement("preset");
         i.setAttribute( "name", title );
-//         debug() << "Title: " << title << endl;
 
         QDomElement attr;
         QDomText t;
@@ -311,7 +308,6 @@ EqualizerSetup::savePresets()
             t    = doc.createTextNode( QString::number( gains.first() ) );
             attr.appendChild( t );
             i.appendChild( attr );
-//             debug() << "\t" << info[y] << ": " << gains.first() << endl;
             gains.pop_front();
         }
         e.appendChild( i );
