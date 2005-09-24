@@ -36,6 +36,21 @@
 //TODO decide whether to use 16 bit integers or 32 bit floats as data sent to analyzers
 //TODO allow visualisations to determine their own data sizes
 
+////////////////////////////////////////////////////////////////////////////////
+// class AmaroKProcess
+////////////////////////////////////////////////////////////////////////////////
+/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  * See bug #103750 for more information.
+  */
+class AmaroKProcess : public KProcess {
+    public:
+    virtual int commSetupDoneC() {
+        for (int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
+            if (i!=KProcess::out[0] && i!=KProcess::in[0] && i!=KProcess::err[0])
+                close(i);
+        return KProcess::commSetupDoneC();
+    };
+};
 
 
 /// @class amaroK::SocketServer
@@ -296,7 +311,7 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 {
     switch( state() ) {
     case On:
-        m_proc = new KProcess();
+        m_proc = new AmaroKProcess();
        *m_proc << KStandardDirs::findExe( m_command )
                << Selector::instance()->m_server->path()
                << text( 0 );

@@ -58,6 +58,24 @@
 #include <knewstuff/provider.h>       // "
 
 
+
+////////////////////////////////////////////////////////////////////////////////
+// class AmaroKProcIO
+////////////////////////////////////////////////////////////////////////////////
+/** Due to xine-lib, we have to make KProcIO close all fds, otherwise we get "device is busy" messages
+  * See bug #103750 for more information.
+  */
+class AmaroKProcIO : public KProcIO {
+    public:
+    virtual int commSetupDoneC() {
+        for (int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
+            if (i!=KProcIO::out[0] && i!=KProcIO::in[0] && i!=KProcIO::err[0])
+                close(i);
+        return KProcIO::commSetupDoneC();
+    };
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // class AmarokScriptNewStuff
 ////////////////////////////////////////////////////////////////////////////////
@@ -436,7 +454,7 @@ ScriptManager::slotRunScript()
     if ( m_scripts[name].process ) return false;
 
     const KURL url = m_scripts[name].url;
-    KProcIO* script = new KProcIO();
+    AmaroKProcIO* script = new AmaroKProcIO();
 //     script->setComm( (KProcess::Communication) ( KProcess::Stdin | KProcess::Stdout | KProcess::Stderr ) );
 
     *script << url.path();
