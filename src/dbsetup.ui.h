@@ -33,10 +33,10 @@ void DbSetup::init()
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql))
     {
         databaseEngine->setCurrentItem("Postgresql");
-        mySqlFrame->setShown( true );
+        postgreSqlFrame->setShown( true );
     }
 #endif
- 
+
     connect(databaseEngine, SIGNAL(activated( int )), SLOT(databaseEngineChanged()) );
 }
 
