@@ -5,7 +5,7 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <markey>  Blacklist the GStreamer autosink; it sucks
+ <markey>  Blacklist the GStreamer autoaudiosink; it sucks
 
  <markey>  When clicking sidebar tabs, the whole text plus icon moves down a few pixels.
 
