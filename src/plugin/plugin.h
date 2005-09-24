@@ -6,7 +6,7 @@
 
 #define AMAROK_EXPORT_PLUGIN( classname ) \
     extern "C" { \
-         amaroK::Plugin* create_plugin() { return new classname; } \
+          KDE_EXPORT amaroK::Plugin* create_plugin() { return new classname; } \
     }
 
 #include <qmap.h>
