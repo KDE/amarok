@@ -542,7 +542,7 @@ void EngineController::playRemote( KIO::Job* job ) //SLOT
 
 void EngineController::slotSigError()
 {
-	emit orderNext( true );
+    emit orderNext( true );
 }
 
 void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
@@ -564,7 +564,9 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
 
 void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpleBundle ) //SLOT
 {
-    if( m_engine->isStream() )
+    DEBUG_BLOCK
+
+    if ( !m_bundle.url().isLocalFile() )
     {
         MetaBundle bundle = m_bundle;
         bundle.setArtist( simpleBundle.artist );

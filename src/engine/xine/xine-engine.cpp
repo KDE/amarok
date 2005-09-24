@@ -9,6 +9,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "xine-engine"
+
 #include "xine-config.h"
 #include "xinecfg.h"
 #include "xine-engine.h"
@@ -425,8 +427,8 @@ XineEngine::canDecode( const KURL &url ) const
         list.remove("iff");
         //subtitles
         list.remove("asc");
-        list.remove("txt"); 
-        list.remove("sub"); 
+        list.remove("txt");
+        list.remove("sub");
         list.remove("srt");
         list.remove("smi");
         list.remove("ssa");
@@ -568,8 +570,9 @@ XineEngine::customEvent( QCustomEvent *e )
 
     case 3003: { //meta info has changed
 
-        Engine::SimpleMetaBundle bundle;
+        debug() << "Metadata received." << endl;
 
+        Engine::SimpleMetaBundle bundle;
         bundle.title   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_TITLE ) );
         bundle.artist  = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ARTIST ) );
         bundle.album   = QString::fromUtf8( xine_get_meta_info( m_stream, XINE_META_INFO_ALBUM ) );
