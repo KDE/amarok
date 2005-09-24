@@ -1,6 +1,6 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>XineConfigBase</class>
-<widget class="QDialog">
+<widget class="QWidget">
     <property name="name">
         <cstring>XineConfigBase</cstring>
     </property>

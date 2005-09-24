@@ -154,7 +154,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
         : PluginConfig()
         , m_xine (const_cast<xine_t*>(xine))
 {
-    m_view = new XineConfigBase( 0 );
+    m_view = new XineConfigBase();
     m_view->xineLogo->setPixmap( QPixmap( locate( "data", "amarok/images/xine_logo.png" ) ) );
     //sound output combo box
     m_view->deviceComboBox->insertItem(i18n("Autodetect"));
