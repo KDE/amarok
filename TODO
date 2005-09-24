@@ -5,8 +5,6 @@ TODO-list for amaroK
 
 
 SHORT-TERM (URGENT):
- <markey>  Blacklist the GStreamer autoaudiosink; it sucks
-
  <markey>  When clicking sidebar tabs, the whole text plus icon moves down a few pixels.
 
  <sebr>    Reflect lyrics text to say "unfetchable" when there is a server timeout or whatnot.  Currently
