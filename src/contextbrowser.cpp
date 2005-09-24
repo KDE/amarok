@@ -2440,6 +2440,13 @@ void ContextBrowser::showLyrics( const QString &hash )
 
     QString title  = EngineController::instance()->bundle().title();
 
+    if ( title.isEmpty() ) {
+        /* If title is empty, try to use pretty title.
+           The fact that it often (but not always) has artist name together, can be bad,
+           but at least the user will get nice suggestions. */
+        title = EngineController::instance()->bundle().prettyTitle();
+    }
+
     for ( uint x = 0; x < production.count(); ++x )
     {
         QRegExp re = replaceMe.arg( production[x] );
