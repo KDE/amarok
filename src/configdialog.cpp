@@ -99,7 +99,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     // it was created. How shit. Hence we can't make recodeEncoding
     // a string (which we need to because by index is not consistent)
     QTextCodec *codec;
-    m_opt1->kcfg_RecodeEncoding->insertItem( QString::null );
+    m_opt1->kcfg_RecodeEncoding->insertItem( i18n("Locale Encoding") );
     for( int i = 1; (codec = QTextCodec::codecForIndex( i )); i++ )
         m_opt1->kcfg_RecodeEncoding->insertItem( codec->name() );
 

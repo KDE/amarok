@@ -380,6 +380,13 @@ public:
         debug() << "codec: " << m_codec << endl;
         debug() << "codec-name: " << m_codec->name() << endl;
     }
+
+    ID3v1StringHandler( QTextCodec *codec )
+	    : m_codec( codec )
+    {
+        debug() << "codec: " << m_codec << endl;
+        debug() << "codec-name: " << m_codec->name() << endl;
+    }
 };
 
 //SLOT
@@ -443,8 +450,12 @@ void App::applySettings( bool firstTime )
 
     // we check > 0 because textCodecForIndex( 0 ) crashes amaroK for unknown
     // reasons, also now we assign index 0 to "" in the config combobox
-    if( AmarokConfig::recodeID3v1Tags() && AmarokConfig::recodeEncoding() > 0 )
-        TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::recodeEncoding() ) );
+    if( AmarokConfig::recodeID3v1Tags() )
+	if( AmarokConfig::recodeEncoding() > 0 )
+            TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( AmarokConfig::recodeEncoding() ) );
+        else
+            // otherwise the locale encoding is used
+            TagLib::ID3v1::Tag::setStringHandler( new ID3v1StringHandler( QTextCodec::codecForLocale() ) );
 
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
