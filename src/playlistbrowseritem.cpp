@@ -64,7 +64,6 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
     setPixmap( 0, SmallIcon("folder_red") );
 
     setText( 0, t );
-    setText( 1, "" );
 }
 
 
@@ -79,7 +78,6 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     setPixmap( 0, SmallIcon("folder") );
 
     setText( 0, t );
-    setText( 1, "" );
 }
 
 
@@ -92,7 +90,6 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, QDo
     setRenameEnabled( 0, isFolder );
 
     setPixmap( 0, SmallIcon("folder_red") );
-    setText( 1, "" );
 }
 
 
