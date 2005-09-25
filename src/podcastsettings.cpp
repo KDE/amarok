@@ -7,8 +7,8 @@
 #include <klineedit.h>
 #include <knuminput.h>
 #include <kurlrequester.h>
-#include <kwin.h>
 #include <klocale.h>
+#include <kwin.h>
 
 #include <qcheckbox.h>
 #include <qpushbutton.h>
@@ -28,6 +28,7 @@ PodcastSettings::PodcastSettings( const QString& url, const QString& save, bool 
                     , m_purge( purge )
                     , m_purgeCount( purgeCount )
 {
+    KWin::setState( winId(), NET::SkipTaskbar );
 
     setMainWidget(m_ps);
     m_ps->m_urlLine->setText( url );
