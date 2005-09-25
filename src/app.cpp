@@ -146,21 +146,23 @@ App::App()
     pruneCoverImages();
     #endif
 
-    // Check for HyperThreading, see BUG 99199
+    // BEGIN Check for HyperThreading, see BUG 99199
     QString line;
+    uint cpuCount = 0;
     QFile cpuinfo( "/proc/cpuinfo" );
     if ( cpuinfo.open( IO_ReadOnly ) ) {
         while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
             if ( line.startsWith( "flags" ) ) {
                 const QString flagsLine = line.section( ":", 1 );
                 const QStringList flags = QStringList::split( " ", flagsLine );
-                if ( flags.contains( "ht" ) ) {
-                    QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-                    break;
-                }
+                if ( flags.contains( "ht" ) ) ++cpuCount;
             }
         }
     }
+    // If multiple CPUs are listed with the HT flag, we got HyperThreading enabled
+    if ( cpuCount > 1 )
+        QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
+    // END
 
     // Trigger collection scan if folder setup was changed by wizard
     if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
